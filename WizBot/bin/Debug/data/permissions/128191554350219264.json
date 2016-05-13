@@ -1,0 +1,18 @@
+{
+  "PermissionsControllerRole": "WizBot",
+  "Verbose": true,
+  "Id": 128191554350219264,
+  "Permissions": {
+    "Name": "Neko Kingdom",
+    "Modules": {
+      "NSFW": true
+    },
+    "Commands": {},
+    "FilterInvites": false,
+    "FilterWords": false
+  },
+  "Words": [],
+  "UserPermissions": {},
+  "ChannelPermissions": {},
+  "RolePermissions": {}
+}

@@ -2,25 +2,26 @@ ________________________________________________________________________________
 *Thanks to @Flatbread for making this guide*
 ________________________________________________________________________________
 
-#### Setting Up NadekoBot v0.93.2
+#### Setting Up WizBot v0.93.2
 ###### Prerequisites: 
 1) NET Framework 4.5.2 (or 4.6)
+- Download WizBot
 - Rename credentials_example.json into credentials.json. (Note: If you do not see a .json after credentials_example.json, do not add the .json. You likely have "Hide file extensions" as enabled.)
 - Go to (https://discordapp.com/developers/applications/me). Log in if you have to with your Discord account. Press "New Application" and fill out an App Name and, optionally, an app description and icon. Afterwards, create the application. Once the application is created, click on "Create a Bot User" and confirm it. You will then see the bot's username, ID and token. Reveal and copy the token and the bot ID.
 - Open up credentials.json. Paste the token into the Token field, between the quotes. Paste the ID into the BotID field. Leave email and password fields empty. Save and close credentials.json.
-- Go into data folder and make sure you have config.json file. If there is no config.json, rename the config_example.json to config.json.
-- Copy your CLIENT ID (that's in the same Developer page where you brought your token) and replace `12345678` in the this link: 
+- Go into data folder and make sure you have config.json file. If there is no config.json, rename the config_example.json to config.json. [REFERENCE IMAGE](https://cdn.discordapp.com/attachments/117523346618318850/178813495872192513/unknown.png)
+- Copy your CLIENT ID (that's in the same Developer page where you brought your token) and replace `12345678` in this link: 
 https://discordapp.com/oauth2/authorize?client_id=12345678&scope=bot&permissions=66186303 with it. Go to that link and you will be able to add your bot to your server.
-- Start NadekoBot.exe. In a text channel, **not a direct message**, type in [.uid @______] without the brackets, filling in the underlined portion with your name and send the message. Your bot will reply with a number; this is your ID. Copy this ID and close NadekoBot.exe.   
+- Start WizBot.exe. In a text channel, **not a direct message**, type in [.uid @______] without the brackets, filling in the underlined portion with your name and send the message. Your bot will reply with a number; this is your ID. Copy this ID and close WizBot.exe.   
 - Reopen credentials.json. Paste your ID into the square brackets ("OwnerIds": [1231312313]). You can add multiple owners by separating IDs with a comma. Close and save credentials.json.  
 
 
 ________________________________________________________________________________
 
-#### Setting Up NadekoBot For Music
+#### Setting Up WizBot For Music
 ###### Prerequisites: 
 1) FFMPEG, Static Build Version (See below) Google Account  
-2) Soundcloud Account  
+2) Soundcloud Account (if you want soundcloud support)
 - Download FFMPEG through the link (https://ffmpeg.zeranoe.com/builds/).
 - Go to My Computer, right click and select Properties. On the left tab, select Advanced System Settings. Under the Advanced tab, select Environmental Variables near the bottom. One of the variables should be called "Path". Add a semi-colon (;) to the end followed by your FFMPEG's **bin** install location (**for example C:\\ffmpeg\\bin**). Save and close.
 - Go to console.developers.google.com and log in.
@@ -32,8 +33,8 @@ ________________________________________________________________________________
 
 ________________________________________________________________________________
 
-#### Setting Up NadekoBot Permissions
-###### NadekoBot's permissions can be set up to be very specific through commands in the Permissions module.  
+#### Setting Up WizBot Permissions
+###### WizBot's permissions can be set up to be very specific through commands in the Permissions module.  
 Each command or module can be turned on or off at: 
 - a user level (so specific users can or cannot use a command/module)  
 - a role level (so only certain roles have access to certain commands/module)

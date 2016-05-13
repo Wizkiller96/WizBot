@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
-using static NadekoBot.Modules.Gambling.Helpers.Cards;
+using static WizBot.Modules.Gambling.Helpers.Cards;
 
 namespace Tests
 {
