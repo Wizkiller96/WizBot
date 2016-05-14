@@ -36,3 +36,6 @@ Tests/bin
 NadekoBot/bin/Debug/data/nadekobot.sqlite
 NadekoBot/bin/Debug/data/config.json
 NadekoBot/bin/Debug/data/ServerSpecificConfigs.json
+/WizBot/bin/Debug/data/config.json
+/WizBot/bin/Debug/data/WizBot.sqlite
+/WizBot/bin/Debug/credentials.json
