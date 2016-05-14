@@ -1,4 +1,4 @@
-[![build status](https://gitlab.com/Wizkiller96/WizBot-Updated/badges/master/build.svg)](https://gitlab.com/Wizkiller96/WizBot-Updated/commits/master)
+![img](https://ci.appveyor.com/api/projects/status/gmu6b3ltc80hr3k9?svg=true)
 # WizBot
 
 [**click here for a list of commands**](http://wizkiller96network.com/wizbot-cmds.html)  
