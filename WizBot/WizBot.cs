@@ -32,7 +32,7 @@ namespace WizBot
 {
     public class WizBot
     {
-        public static string Title { get; set; } = Console.Title = "WizBot by Kwoth & Wizkiller96";
+        public static string Title { get; set; } = Console.Title = "WizBot v0.97 by Kwoth & Wizkiller96";
         public static DiscordClient Client { get; private set; }
         public static Credentials Creds { get; set; }
         public static Configuration Config { get; set; }
