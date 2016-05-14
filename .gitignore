@@ -19,10 +19,10 @@ obj/
 !**/Bin/Debug/WebSocket4Net.dll
 !**/Bin/Debug/sqlite3.dll
 !**/Bin/Debug/credentials_example.json
-NadekoBot/bin/debug/*.*
-NadekoBot/bin/debug/data/permissions
-NadekoBot/bin/debug/data/incidents
-!NadekoBot/bin/Debug/data/currency_images/*
+WizBot/bin/debug/*.*
+WizBot/bin/debug/data/permissions
+WizBot/bin/debug/data/incidents
+!WizBot/bin/Debug/data/currency_images/*
 Tests/bin
 
 # NuGet Packages
@@ -33,9 +33,6 @@ Tests/bin
 !**/packages/build/
 # Uncomment if necessary however generally it will be regenerated when needed
 #!**/packages/repositories.config
-NadekoBot/bin/Debug/data/nadekobot.sqlite
-NadekoBot/bin/Debug/data/config.json
-NadekoBot/bin/Debug/data/ServerSpecificConfigs.json
-/WizBot/bin/Debug/data/config.json
-/WizBot/bin/Debug/data/WizBot.sqlite
-/WizBot/bin/Debug/credentials.json
+WizBot/bin/Debug/data/WizBot.sqlite
+WizBot/bin/Debug/data/config.json
+WizBot/bin/Debug/data/ServerSpecificConfigs.json
