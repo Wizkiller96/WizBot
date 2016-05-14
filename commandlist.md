@@ -1,5 +1,4 @@
 ######For more information on WizBot, go to: **http://wizkiller95network.com/**
-######You can donate on paypal: `inick01@live.com`
 
 #WizBot List Of Commands  
 Version: `WizBot v0.9.5973.39686`
