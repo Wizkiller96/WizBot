@@ -1,0 +1,18 @@
+{
+  "PermissionsControllerRole": "Wiz Bot",
+  "Verbose": true,
+  "Id": 99273784988557312,
+  "Permissions": {
+    "Name": "Wizkiller96 Network",
+    "Modules": {
+      "NSFW": false
+    },
+    "Commands": {},
+    "FilterInvites": false,
+    "FilterWords": false
+  },
+  "Words": [],
+  "UserPermissions": {},
+  "ChannelPermissions": {},
+  "RolePermissions": {}
+}
