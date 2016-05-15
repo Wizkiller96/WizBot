@@ -948,7 +948,26 @@ namespace WizBot.Modules.Administration
                     .Description("Shows updates that have been done to WizBot.")
                     .Do(async e =>
                     {
-                        await e.Channel.SendMessage(" **WizBot Update Notes - Last Updated:** 05/11/2016\n\n`1.` Added `.remindmsg` for custom remind message formatting.\n`2.` Added auto assigned role on user join. (`.aar`)\n`3.` Updated emojis in logserver.\n`4.` Added `$lb` command. Lists top 10 richest people (without name atm).\n`5.` Added custom number of points for winning trivia.\n`6.` The command `$$$ @someuser` now works. Wrote some useless functions in-line.\n`7.` Added `.renr`. Which renames a role. Role you are renaming must be lower than bot's highest role.").ConfigureAwait(false);
+                        await e.Channel.SendMessage(" **WizBot Update Notes - Last Updated:** 05/14/2016\n\n`1.` Added `.whoplays` command.").ConfigureAwait(false);
+                    });
+
+                cgb.CreateCommand(Prefix + "whoplays")
+                    .Description("Shows a list of users who are playing the specified game")
+                    .Parameter("game")
+                    .Do(async e =>
+                    {
+                        var game = e.GetArg("game").Trim().ToUpperInvariant();
+                        var en = e.Server.Users
+                            .Where(u => u.CurrentGame?.ToUpperInvariant() == game)
+                                .Select(u => $"{u.Name}");
+
+                        var arr = en as string[] ?? en.ToArray();
+
+                        if (arr.Length == 0)
+                            await e.Channel.SendMessage("Nobody. (not 100% sure)");
+                        else
+                            await e.Channel.SendMessage("• " + string.Join("\n• ", arr));
+
                     });
 
             });
