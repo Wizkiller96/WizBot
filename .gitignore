@@ -36,3 +36,5 @@ Tests/bin
 WizBot/bin/Debug/data/WizBot.sqlite
 WizBot/bin/Debug/data/config.json
 WizBot/bin/Debug/data/ServerSpecificConfigs.json
+.vs/config
+BuildProcessTemplates
