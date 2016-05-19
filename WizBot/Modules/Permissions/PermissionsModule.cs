@@ -727,7 +727,7 @@ namespace WizBot.Modules.Permissions
                     });
 
                 cgb.CreateCommand(Prefix + "sbl")
-                    .Description("Blacklists a server by a name or id (#general for example). **BOT OWNER ONLY**\n**Usage**: ;usl [servername/serverid]")
+                    .Description("Blacklists a server by a name or id (#general for example). **BOT OWNER ONLY**\n**Usage**: ;sbl [servername/serverid]")
                     .Parameter("server", ParameterType.Unparsed)
                     .AddCheck(SimpleCheckers.OwnerOnly())
                     .Do(async e =>
