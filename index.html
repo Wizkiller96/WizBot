@@ -64,207 +64,83 @@
       <div class="container">
         <div class="row">
           <div class="col-md-12">
-            <p>
-              <img src="https://ci.appveyor.com/api/projects/status/gmu6b3ltc80hr3k9?svg=true" alt="img">
-            </p>
-            <h1>
-              <a id="wizbot" class="anchor" href="#wizbot" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>WizBot</h1>
-            <p>
-              <a href="http://wizkiller96network.com/wizbot-cmds.html"><strong>click here for a list of commands</strong></a>
-              <br>WizBot Discord chatbot written in C# using Discord.net library.</p>
-            <h2>
-              <a id="this-section-will-guide-you-through-how-to-setup-wizbot" class="anchor" href="#this-section-will-guide-you-through-how-to-setup-wizbot" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>This section will guide you through how to setup WizBot</h2>
-            <p>In your bin/debug folder (or next to your exe if you are using release
-              version), you must have a file called 'credentials.json' in which you will
-              store all the necessary data to make the bot know who the owner is, and
-              your api keys.</p>
-            <p>When you clone the project, make sure to run
-              <code>git submodule init</code>and
-              <code>git submodule update</code>to get the correct discord.net version</p>
-            <p>
-              <strong>This is how the credentials.json should look like:</strong>
-            </p>
-            <div class="highlight highlight-source-json">
-              <pre>{
-                <span class="pl-s">
-                  <span class="pl-pds">"</span>BotId
-                  <span class="pl-pds">"</span>
-                </span>:
-                <span class="pl-c1">123123123123</span>,
-                <span class="pl-s">
-                  <span class="pl-pds">"</span>Token
-                  <span class="pl-pds">"</span>
-                </span>:
-                <span class="pl-s">
-                  <span class="pl-pds">"</span>Bot.Token
-                  <span class="pl-pds">"</span>
-                </span>,
-                <span class="pl-s">
-                  <span class="pl-pds">"</span>GoogleAPIKey
-                  <span class="pl-pds">"</span>
-                </span>:
-                <span class="pl-s">
-                  <span class="pl-pds">"</span>google_api_key
-                  <span class="pl-pds">"</span>
-                </span>,
-                <span class="pl-s">
-                  <span class="pl-pds">"</span>OwnerIds
-                  <span class="pl-pds">"</span>
-                </span>:[
-                <span class="pl-c1">123123123123</span>,
-                <span class="pl-c1">123123123123</span>],
-                <span class="pl-s">
-                  <span class="pl-pds">"</span>TrelloAppKey
-                  <span class="pl-pds">"</span>
-                </span>:
-                <span class="pl-s">
-                  <span class="pl-pds">"</span>your_trello_app_key (optional)
-                  <span class="pl-pds">"</span>
-                </span>,
-                <span class="pl-s">
-                  <span class="pl-pds">"</span>SoundCloudClientID
-                  <span class="pl-pds">"</span>
-                </span>:
-                <span class="pl-s">
-                  <span class="pl-pds">"</span>your_soundcloud_key (optional)
-                  <span class="pl-pds">"</span>
-                </span>,
-                <span class="pl-s">
-                  <span class="pl-pds">"</span>MashapeKey
-                  <span class="pl-pds">"</span>
-                </span>:
-                <span class="pl-s">
-                  <span class="pl-pds">"</span>your_mashape_key (optional)
-                  <span class="pl-pds">"</span>
-                </span>,
-                <span class="pl-s">
-                  <span class="pl-pds">"</span>LoLAPIKey
-                  <span class="pl-pds">"</span>
-                </span>:
-                <span class="pl-s">
-                  <span class="pl-pds">"</span>your_champion.gg_apikey (optional)',</span>
-                <span class="pl-s">}</span>
-              </pre>
-            </div>
-            <h5>
-              <a id="you-can-omit" class="anchor" href="#you-can-omit" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>You can omit:</h5>
-            <ul>
-              <li>googleAPIKey if you don't want music
-                <br>
-              </li>
-              <li>TrelloAppKey if you don't need trello notifications</li>
-              <li>ForwardMessages if you don't want bot PM messages to be redirected to
-                you</li>
-            </ul>
-            <div class="highlight highlight-source-json">
-              <pre>{
-                <span class="pl-s">
-                  <span class="pl-pds">"</span>Username
-                  <span class="pl-pds">"</span>
-                </span>:
-                <span class="pl-s">
-                  <span class="pl-pds">"</span>bot_email
-                  <span class="pl-pds">"</span>
-                </span>,
-                <span class="pl-s">
-                  <span class="pl-pds">"</span>BotId
-                  <span class="pl-pds">"</span>
-                </span>:
-                <span class="pl-c1">12312312312313</span>,
-                <span class="pl-s">
-                  <span class="pl-pds">"</span>Password
-                  <span class="pl-pds">"</span>
-                </span>:
-                <span class="pl-s">
-                  <span class="pl-pds">"</span>bot_password
-                  <span class="pl-pds">"</span>
-                </span>,
-                <span class="pl-s">
-                  <span class="pl-pds">"</span>OwnerIds
-                  <span class="pl-pds">"</span>
-                </span>:[
-                <span class="pl-c1">123123123123</span>,
-                <span class="pl-c1">1231231232</span>], }</pre>
-            </div>
-            <p>Next to your exe you must also have a data folder in which there is config.json
-              (among other things) which will contain some user specific config, like
-              should bot join servers, should pms to bot be forwarded to you and list
-              of ids of blacklisted users, channels and servers.</p>
-            <h5>
-              <a id="dataconfigjson-example" class="anchor" href="#dataconfigjson-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>data/config.json example</h5>
-            <div class="highlight highlight-source-json">
-              <pre>{
-                <span class="pl-s">
-                  <span class="pl-pds">"</span>DontJoinServers
-                  <span class="pl-pds">"</span>
-                </span>:
-                <span class="pl-c1">false</span>,
-                <span class="pl-s">
-                  <span class="pl-pds">"</span>ForwardMessages
-                  <span class="pl-pds">"</span>
-                </span>:
-                <span class="pl-c1">true</span>,
-                <span class="pl-s">
-                  <span class="pl-pds">"</span>ServerBlacklist
-                  <span class="pl-pds">"</span>
-                </span>: [],
-                <span class="pl-s">
-                  <span class="pl-pds">"</span>ChannelBlacklist
-                  <span class="pl-pds">"</span>
-                </span>: [],
-                <span class="pl-s">
-                  <span class="pl-pds">"</span>UserBlacklist
-                  <span class="pl-pds">"</span>
-                </span>: [] }</pre>
-            </div>
-            <ul>
-              <li>
-                <a href="http://discord.kongslien.net/guide.html">http://discord.kongslien.net/guide.html</a>&lt;- to make a bot account and get the
-                <code>Token</code>
-              </li>
-              <li>BotId and OwnerIds are
-                <strong>NOT</strong>names of the owner and the bot. If you do not know the id
-                of your bot, put 2 random numbers in those fields, run the bot and do
-                <code>.uid @MyBotName</code>- that will give you your bot_id, do the same for
-                yourself
-                <code>.uid @MyName</code>and copy the numbers in their respective fields.</li>
-              <li>For google api key, you need to enable URL shortner, Youtube video search
-                <strong>and custom search</strong>in the
-                <a href="https://console.developers.google.com/">dev console</a>.</li>
-              <li>For the Soundcloud Api key you need a Soundcloud account. You need to
-                create a new app on
-                <a href="http://soundcloud.com/you/apps/new">http://soundcloud.com/you/apps/new</a>and after that go here
-                <a href="http://soundcloud.com/you/apps">http://soundcloud.com/you/apps</a>click on the name of your created your app and copy the Client ID. Paste
-                it into credentials.json.</li>
-              <li>For Mashape Api Key you need to create an account on their api marketplace
-                here
-                <a href="https://market.mashape.com/">https://market.mashape.com/</a>. After that you need to go to market.mashape.com/YOURNAMEHERE/applications/default-application
-                and press GET THE KEYS in the right top corner copy paste it into your
-                credentials.json and you are ready to race!</li>
-              <li>If you want to have music, you need to download FFMPEG from this link
-                <a href="http://ffmpeg.zeranoe.com/builds/">http://ffmpeg.zeranoe.com/builds/</a>(static build version) and add ffmpeg/bin
-                  folder to your PATH environment variable. You do that by opening explorer
-                  -&gt; right click 'This PC' -&gt; properties -&gt; advanced system settings
-                  -&gt; In the top part, there is a PATH field, add
-                  <code>;</code>to the end and then your ffmpeg install location /bin (for example
-                  ;C:\ffmpeg-5.6.7\bin) and save. Open command prompt and type ffmpeg to
-                  see if you added it correctly. If it says "command not found" then you
-                  made a mistake somewhere. There are a lot of guides on the internet on
-                  how to add stuff to your PATH, check them out if you are stuck.</li>
-              <li>
-                <strong>IF YOU HAVE BEEN USING THIS BOT BEFORE AND YOU HAVE DATA FROM PARSE THAT
-                  YOU WANT TO KEEP</strong>you should export your parse data and extract
-                it inside /data/parsedata in your bot's folder. Next time you start the
-                bot, type
-                <code>.parsetosql</code>and the bot will fill your local sqlite db with data
-                from those .json files.</li>
-            </ul>
-            <p>Enjoy</p>
-            <h2>
-              <a id="list-of-commands" class="anchor" href="#list-of-commands" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>List of commands</h2>
-            <p>
-              <a href="http://wizkiller96network.com/wizbot-cmds.html"><strong>click here for a list of commands</strong></a>
-            </p>
+            <p><img src="https://ci.appveyor.com/api/projects/status/gmu6b3ltc80hr3k9?svg=true" alt="img"></p>
+
+<h1>
+<a id="wizbot" class="anchor" href="#wizbot" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>WizBot</h1>
+
+<p><a href="http://wizkiller96network.com/wizbot-cmds.html"><strong>click here for a list of commands</strong></a><br>
+WizBot Discord chatbot written in C# using Discord.net library. </p>
+
+<h2>
+<a id="this-section-will-guide-you-through-how-to-setup-wizbot" class="anchor" href="#this-section-will-guide-you-through-how-to-setup-wizbot" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>This section will guide you through how to setup WizBot</h2>
+
+<p>In your bin/debug folder (or next to your exe if you are using release version), you must have a file called 'credentials.json' in which you will store all the necessary data to make the bot know who the owner is, and your api keys.</p>
+
+<p>When you clone the project, make sure to run <code>git submodule init</code> and <code>git submodule update</code> to get the correct discord.net version</p>
+
+<p><strong>This is how the credentials.json should look like:</strong></p>
+
+<div class="highlight highlight-source-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>BotId<span class="pl-pds">"</span></span>: <span class="pl-c1">123123123123</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>Token<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>Bot.Token<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>GoogleAPIKey<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>google_api_key<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>OwnerIds<span class="pl-pds">"</span></span>:[<span class="pl-c1">123123123123</span>, <span class="pl-c1">123123123123</span>],
+    <span class="pl-s"><span class="pl-pds">"</span>TrelloAppKey<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>your_trello_app_key (optional)<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>SoundCloudClientID<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>your_soundcloud_key (optional)<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>MashapeKey<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>your_mashape_key (optional)<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>LoLAPIKey<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>your_champion.gg_apikey (optional)',</span>
+<span class="pl-s">}</span></pre></div>
+
+<h5>
+<a id="you-can-omit" class="anchor" href="#you-can-omit" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>You can omit:</h5>
+
+<ul>
+<li>googleAPIKey if you don't want music<br>
+</li>
+<li>TrelloAppKey if you don't need trello notifications</li>
+<li>ForwardMessages if you don't want bot PM messages to be redirected to you</li>
+</ul>
+
+<div class="highlight highlight-source-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>Username<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>bot_email<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>BotId<span class="pl-pds">"</span></span>: <span class="pl-c1">12312312312313</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>Password<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>bot_password<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>OwnerIds<span class="pl-pds">"</span></span>:[<span class="pl-c1">123123123123</span>, <span class="pl-c1">1231231232</span>],
+}</pre></div>
+
+<p>Next to your exe you must also have a data folder in which there is config.json (among other things) which will contain some user specific config, like should bot join servers, should pms to bot be forwarded to you and list of ids of blacklisted users, channels and servers.</p>
+
+<h5>
+<a id="dataconfigjson-example" class="anchor" href="#dataconfigjson-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>data/config.json example</h5>
+
+<div class="highlight highlight-source-json"><pre>{
+  <span class="pl-s"><span class="pl-pds">"</span>DontJoinServers<span class="pl-pds">"</span></span>: <span class="pl-c1">false</span>,
+  <span class="pl-s"><span class="pl-pds">"</span>ForwardMessages<span class="pl-pds">"</span></span>: <span class="pl-c1">true</span>,
+  <span class="pl-s"><span class="pl-pds">"</span>ServerBlacklist<span class="pl-pds">"</span></span>: [],
+  <span class="pl-s"><span class="pl-pds">"</span>ChannelBlacklist<span class="pl-pds">"</span></span>: [],
+  <span class="pl-s"><span class="pl-pds">"</span>UserBlacklist<span class="pl-pds">"</span></span>: []
+}</pre></div>
+
+<ul>
+<li>
+<a href="http://discord.kongslien.net/guide.html">http://discord.kongslien.net/guide.html</a> &lt;- to make a bot account and get the <code>Token</code>
+</li>
+<li>BotId and OwnerIds are <strong>NOT</strong> names of the owner and the bot. If you do not know the id of your bot, put 2 random numbers in those fields, run the bot and do <code>.uid @MyBotName</code> - that will give you your bot_id, do the same for yourself <code>.uid @MyName</code> and copy the numbers in their respective fields.</li>
+<li>For google api key, you need to enable URL shortner, Youtube video search <strong>and custom search</strong> in the <a href="https://console.developers.google.com/">dev console</a>.</li>
+<li>For the Soundcloud Api key you need a Soundcloud account. You need to create a new app on <a href="http://soundcloud.com/you/apps/new">http://soundcloud.com/you/apps/new</a> and after that go here <a href="http://soundcloud.com/you/apps">http://soundcloud.com/you/apps</a> click on the name of your created your app and copy the Client ID. Paste it into credentials.json.</li>
+<li>For Mashape Api Key you need to create an account on their api marketplace here <a href="https://market.mashape.com/">https://market.mashape.com/</a>. After that you need to go to market.mashape.com/YOURNAMEHERE/applications/default-application and press GET THE KEYS in the right top corner copy paste it into your credentials.json and you are ready to race! </li>
+<li>If you want to have music, you need to download FFMPEG from this link <a href="http://ffmpeg.zeranoe.com/builds/">http://ffmpeg.zeranoe.com/builds/</a> (static build version) and add ffmpeg/bin folder to your PATH environment variable. You do that by opening explorer -&gt; right click 'This PC' -&gt; properties -&gt; advanced system settings -&gt; In the top part, there is a PATH field, add <code>;</code> to the end and then your ffmpeg install location /bin (for example ;C:\ffmpeg-5.6.7\bin) and save. Open command prompt and type ffmpeg to see if you added it correctly. If it says "command not found" then you made a mistake somewhere. There are a lot of guides on the internet on how to add stuff to your PATH, check them out if you are stuck.</li>
+<li>
+<strong>IF YOU HAVE BEEN USING THIS BOT BEFORE AND YOU HAVE DATA FROM PARSE THAT YOU WANT TO KEEP</strong> you should export your parse data and extract it inside /data/parsedata in your bot's folder. Next time you start the bot, type <code>.parsetosql</code> and the bot will fill your local sqlite db with data from those .json files.</li>
+</ul>
+
+<p>Enjoy</p>
+
+<h2>
+<a id="list-of-commands" class="anchor" href="#list-of-commands" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>List of commands</h2>
+
+<p><a href="http://wizkiller96network.com/wizbot-cmds.html"><strong>click here for a list of commands</strong></a></p>
           </div>
         </div>
       </div>
