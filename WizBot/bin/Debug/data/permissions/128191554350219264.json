@@ -5,14 +5,24 @@
   "Permissions": {
     "Name": "Neko Kingdom",
     "Modules": {
-      "NSFW": true
+      "NSFW": false
     },
     "Commands": {},
     "FilterInvites": false,
     "FilterWords": false
   },
   "Words": [],
-  "UserPermissions": {},
+  "UserPermissions": {
+    "126918396854927360": {
+      "Name": "Mizore-Chan",
+      "Modules": {
+        "Permissions": false
+      },
+      "Commands": {},
+      "FilterInvites": false,
+      "FilterWords": false
+    }
+  },
   "ChannelPermissions": {},
   "RolePermissions": {}
 }

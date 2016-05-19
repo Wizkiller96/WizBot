@@ -19,9 +19,9 @@ obj/
 !**/Bin/Debug/WebSocket4Net.dll
 !**/Bin/Debug/sqlite3.dll
 !**/Bin/Debug/credentials_example.json
-WizBot/bin/debug/*.*
-WizBot/bin/debug/data/permissions
-WizBot/bin/debug/data/incidents
+WizBot/bin/Debug/*.*
+WizBot/bin/Debug/data/permissions
+WizBot/bin/Debug/data/incidents
 !WizBot/bin/Debug/data/currency_images/*
 Tests/bin
 
