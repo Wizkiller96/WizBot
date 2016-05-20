@@ -214,7 +214,7 @@ namespace WizBot
                     return;
                 }
 
-                await Task.Delay(2000).ConfigureAwait(false);
+                await Task.Delay(1000).ConfigureAwait(false);
                 Console.WriteLine("-----------------");
                 Console.WriteLine(await WizStats.Instance.GetStats().ConfigureAwait(false));
                 Console.WriteLine("-----------------");
