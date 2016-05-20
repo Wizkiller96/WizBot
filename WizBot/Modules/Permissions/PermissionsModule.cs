@@ -562,7 +562,8 @@ namespace WizBot.Modules.Permissions
                         try
                         {
                             var state = PermissionHelper.ValidateBool(e.GetArg("bool"));
-                            var channel = PermissionHelper.ValidateChannel(e.Server, e.GetArg("channel"));
+                            var chArg = e.GetArg("channel");
+                            var channel = string.IsNullOrWhiteSpace(chArg) ? e.Channel : PermissionHelper.ValidateChannel(e.Server, chArg);
                             foreach (var module in WizBot.Client.GetService<ModuleService>().Modules)
                             {
                                 PermissionsHandler.SetChannelModulePermission(channel, module.Name, state);
