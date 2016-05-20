@@ -1,10 +1,13 @@
-{
+﻿{
   "frameworks": {
-    "net45": { }
+    "net45": {}
   },
   "runtimes": {
-    "win": { },
-    "win-x86": { },
-    "win-x64": { }
+    "win": {},
+    "win-x86": {},
+    "win-x64": {}
+  },
+  "dependencies": {
+    "Newtonsoft.Json": "8.0.4-beta1"
   }
 }
