@@ -2,6 +2,7 @@ using Discord;
 using Discord.Commands;
 using Discord.Modules;
 using WizBot.Classes.Conversations.Commands;
+using WizBot.DataModels;
 using WizBot.Extensions;
 using WizBot.Modules.Permissions.Classes;
 using WizBot.Properties;
@@ -73,6 +74,25 @@ namespace WizBot.Modules.Conversations
                         else
                             await e.Channel.SendMessage("💢`No quote found.`").ConfigureAwait(false);
                     });
+
+                cgb.CreateCommand("..qdel")
+                    .Description("Deletes all quotes with the specified keyword. You have to either be bot owner or the creator of the quote to delete it.\n**Usage**: `..qdel abc`")
+                    .Parameter("quote", ParameterType.Required)
+                    .Do(async e =>
+                    {
+                        var text = e.GetArg("quote")?.Trim();
+                        if (string.IsNullOrWhiteSpace(text))
+                            return;
+                        await Task.Run(() =>
+                        {
+                            if (WizBot.IsOwner(e.User.Id))
+                                Classes.DbHandler.Instance.DeleteWhere<UserQuote>(uq => uq.Keyword == text);
+                            else
+                                Classes.DbHandler.Instance.DeleteWhere<UserQuote>(uq => uq.Keyword == text && uq.UserName == e.User.Name);
+                        }).ConfigureAwait(false);
+
+                        await e.Channel.SendMessage("`Done.`").ConfigureAwait(false);
+                    });
             });
 
             manager.CreateCommands(WizBot.BotMention, cgb =>
@@ -84,7 +104,7 @@ namespace WizBot.Modules.Conversations
                 commands.ForEach(cmd => cmd.Init(cgb));
 
                 cgb.CreateCommand("uptime")
-                    .Description("Shows how long Wiz Bot has been running for.")
+                    .Description("Shows how long WizBot has been running for.")
                     .Do(async e =>
                     {
                         var time = (DateTime.Now - Process.GetCurrentProcess().StartTime);
@@ -141,7 +161,7 @@ namespace WizBot.Modules.Conversations
                     });
 
                 cgb.CreateCommand("fire")
-                    .Description("Shows a unicode fire message. Optional parameter [x] tells her how many times to repeat the fire.\n**Usage**: @WizBot fire [x]")
+                    .Description("Shows a unicode fire message. Optional parameter [x] tells her how many times to repeat the fire.\n**Usage**: @Wiz-Bot fire [x]")
                     .Parameter("times", ParameterType.Optional)
                     .Do(async e =>
                     {
@@ -164,7 +184,7 @@ namespace WizBot.Modules.Conversations
                     });
 
                 cgb.CreateCommand("rip")
-                    .Description("Shows a grave image of someone with a start year\n**Usage**: @WizBot rip @Someone 2000")
+                    .Description("Shows a grave image of someone with a start year\n**Usage**: @Wiz-Bot rip @Someone 2000")
                     .Parameter("user", ParameterType.Required)
                     .Parameter("year", ParameterType.Optional)
                     .Do(async e =>
@@ -206,39 +226,39 @@ namespace WizBot.Modules.Conversations
                 }
 
                 cgb.CreateCommand("slm")
-                    .Description("Shows the message where you were last mentioned in this channel (checks last 10k messages)")
-                    .Do(async e =>
-                    {
+                                .Description("Shows the message where you were last mentioned in this channel (checks last 10k messages)")
+                                .Do(async e =>
+                                {
 
-                        Message msg = null;
-                        var msgs = (await e.Channel.DownloadMessages(100).ConfigureAwait(false))
+                                    Message msg = null;
+                                    var msgs = (await e.Channel.DownloadMessages(100).ConfigureAwait(false))
                                     .Where(m => m.MentionedUsers.Contains(e.User))
                                     .OrderByDescending(m => m.Timestamp);
-                        if (msgs.Any())
-                            msg = msgs.First();
-                        else
-                        {
-                            var attempt = 0;
-                            Message lastMessage = null;
-                            while (msg == null && attempt++ < 5)
-                            {
-                                var msgsarr = await e.Channel.DownloadMessages(100, lastMessage?.Id).ConfigureAwait(false);
-                                msg = msgsarr
+                                    if (msgs.Any())
+                                        msg = msgs.First();
+                                    else
+                                    {
+                                        var attempt = 0;
+                                        Message lastMessage = null;
+                                        while (msg == null && attempt++ < 5)
+                                        {
+                                            var msgsarr = await e.Channel.DownloadMessages(100, lastMessage?.Id).ConfigureAwait(false);
+                                            msg = msgsarr
                                         .Where(m => m.MentionedUsers.Contains(e.User))
                                         .OrderByDescending(m => m.Timestamp)
                                         .FirstOrDefault();
-                                lastMessage = msgsarr.OrderBy(m => m.Timestamp).First();
-                            }
-                        }
-                        if (msg != null)
-                            await e.Channel.SendMessage($"Last message mentioning you was at {msg.Timestamp}\n**Message from {msg.User.Name}:** {msg.RawText}")
+                                            lastMessage = msgsarr.OrderBy(m => m.Timestamp).First();
+                                        }
+                                    }
+                                    if (msg != null)
+                                        await e.Channel.SendMessage($"Last message mentioning you was at {msg.Timestamp}\n**Message from {msg.User.Name}:** {msg.RawText}")
                                            .ConfigureAwait(false);
-                        else
-                            await e.Channel.SendMessage("I can't find a message mentioning you.").ConfigureAwait(false);
-                    });
+                                    else
+                                        await e.Channel.SendMessage("I can't find a message mentioning you.").ConfigureAwait(false);
+                                });
 
                 cgb.CreateCommand("hide")
-                    .Description("Hides Wiz Bot in plain sight!11!!")
+                    .Description("Hides WizBot in plain sight!11!!")
                     .Do(async e =>
                     {
                         using (var ms = Resources.hidden.ToStream(ImageFormat.Png))
@@ -249,7 +269,7 @@ namespace WizBot.Modules.Conversations
                     });
 
                 cgb.CreateCommand("unhide")
-                    .Description("Unhides Wiz Bot in plain sight!1!!1")
+                    .Description("Unhides WizBot in plain sight!1!!1")
                     .Do(async e =>
                     {
                         using (var fs = new FileStream("data/avatar.png", FileMode.Open))
@@ -314,12 +334,6 @@ namespace WizBot.Modules.Conversations
                         }
                         await e.Channel.SendMessage(await usr.AvatarUrl.ShortenUrl()).ConfigureAwait(false);
                     });
-                cgb.CreateCommand("chatbot")
-                    .Description("Provides a link to the Chat Bot Version of WizBot")
-                    .Do(async e =>
-                    {
-                        await e.Channel.SendMessage("Feel free to chat with me at <http://chatbot.wizkiller96network.com>").ConfigureAwait(false);
-                    });
 
             });
         }
@@ -349,5 +363,3 @@ namespace WizBot.Modules.Conversations
 
         private static Func<CommandEventArgs, Task> SayYes()
             => async e => await e.Channel.SendMessage("Yes. :)").ConfigureAwait(false);
-    }
-}
