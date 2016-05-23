@@ -364,3 +364,5 @@ namespace WizBot.Modules.Conversations
 
         private static Func<CommandEventArgs, Task> SayYes()
             => async e => await e.Channel.SendMessage("Yes. :)").ConfigureAwait(false);
+    }
+}
