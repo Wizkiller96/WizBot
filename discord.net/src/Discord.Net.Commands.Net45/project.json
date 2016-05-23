@@ -8,8 +8,8 @@
     "win-x64": {}
   },
   "dependencies": {
-    "Discord.Net": "0.9.2",
-    "Discord.Net.Audio": "0.9.2",
+    "Discord.Net": "0.9.3",
+    "Discord.Net.Audio": "0.9.3",
     "Manatee.Json": "4.0.1",
     "Manatee.StateMachine": "1.1.2",
     "Manatee.Trello": "1.10.0",
