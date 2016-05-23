@@ -149,8 +149,8 @@ namespace WizBot.Modules.Administration
 
                         var roleToEdit = e.Server.FindRoles(r1).FirstOrDefault();
                         if (roleToEdit == null)
-                                            {
-                        await e.Channel.SendMessage("Can't find that role.");
+                        {
+                            await e.Channel.SendMessage("Can't find that role.");
                             return;
                         }
 
@@ -158,19 +158,19 @@ namespace WizBot.Modules.Administration
                         {
                             if (roleToEdit.Position > e.Server.CurrentUser.Roles.Max(r => r.Position))
                             {
-                        await e.Channel.SendMessage("I can't edit roles higher than my highest role.");
+                                await e.Channel.SendMessage("I can't edit roles higher than my highest role.");
                                 return;
                             }
-                        await roleToEdit.Edit(r2);
-                        await e.Channel.SendMessage("Role renamed.");
+                            await roleToEdit.Edit(r2);
+                            await e.Channel.SendMessage("Role renamed.");
                         }
                         catch (Exception)
                         {
-                        await e.Channel.SendMessage("Failed to rename role. Probably insufficient permissions.");
+                            await e.Channel.SendMessage("Failed to rename role. Probably insufficient permissions.");
                         }
                     });
 
-                 cgb.CreateCommand(Prefix + "rar").Alias(Prefix + "removeallroles")
+                cgb.CreateCommand(Prefix + "rar").Alias(Prefix + "removeallroles")
                     .Description("Removes all roles from a mentioned user.\n**Usage**: .rar @User")
                     .Parameter("user_name", ParameterType.Unparsed)
                     .AddCheck(SimpleCheckers.CanManageRoles)
@@ -546,6 +546,7 @@ namespace WizBot.Modules.Administration
                     });
 
                 cgb.CreateCommand(Prefix + "schn").Alias(Prefix + "setchannelname")
+                    .Alias(Prefix + "topic")
                     .Description("Changed the name of the current channel.")
                     .AddCheck(SimpleCheckers.ManageChannels())
                     .Parameter("name", ParameterType.Unparsed)
@@ -603,7 +604,8 @@ namespace WizBot.Modules.Administration
 
                 cgb.CreateCommand(Prefix + "prune")
                     .Alias(".clr")
-                    .Description("`.prune` removes all WizBot's messages in the last 100 messages.`.prune X` removes last X messages from the channel (up to 100)`.prune @Someone` removes all Someone's messages in the last 100 messages.`.prune @Someone X` removes last X 'Someone's' messages in the channel.\n**Usage**: `.prune` or `.prune 5` or `.prune @Someone` or `.prune @Someone X`")
+                    .Description(
+    "`.prune` removes all WizBot's messages in the last 100 messages.`.prune X` removes last X messages from the channel (up to 100)`.prune @Someone` removes all Someone's messages in the last 100 messages.`.prune @Someone X` removes last X 'Someone's' messages in the channel.\n**Usage**: `.prune` or `.prune 5` or `.prune @Someone` or `.prune @Someone X`")
                     .Parameter("user_or_num", ParameterType.Optional)
                     .Parameter("num", ParameterType.Optional)
                     .Do(async e =>
@@ -645,6 +647,7 @@ namespace WizBot.Modules.Administration
                                 await msg.Delete().ConfigureAwait(false);
                                 await Task.Delay(100).ConfigureAwait(false);
                             }
+                            return;
                         }
                         //else if first argument is user
                         var usr = e.Server.FindUsers(e.GetArg("user_or_num")).FirstOrDefault();
@@ -943,20 +946,14 @@ namespace WizBot.Modules.Administration
                         await e.Channel.SendMessage(":ok:");
                     });
 
-                cgb.CreateCommand(Prefix + "updates")
-                    .Alias(Prefix + "unotes")
-                    .Description("Shows updates that have been done to WizBot.")
-                    .Do(async e =>
-                    {
-                        await e.Channel.SendMessage(" **WizBot Update Notes - Last Updated:** 05/14/2016\n\n`1.` Added `.whoplays` command.").ConfigureAwait(false);
-                    });
-
                 cgb.CreateCommand(Prefix + "whoplays")
-                    .Description("Shows a list of users who are playing the specified game")
-                    .Parameter("game")
+                    .Description("Shows a list of users who are playing the specified game.")
+                    .Parameter("game", ParameterType.Unparsed)
                     .Do(async e =>
                     {
-                        var game = e.GetArg("game").Trim().ToUpperInvariant();
+                        var game = e.GetArg("game")?.Trim().ToUpperInvariant();
+                        if (string.IsNullOrWhiteSpace(game))
+                            return;
                         var en = e.Server.Users
                             .Where(u => u.CurrentGame?.ToUpperInvariant() == game)
                                 .Select(u => $"{u.Name}");
@@ -968,6 +965,14 @@ namespace WizBot.Modules.Administration
                         else
                             await e.Channel.SendMessage("• " + string.Join("\n• ", arr));
 
+                    });
+
+                cgb.CreateCommand(Prefix + "updates")
+                    .Alias(Prefix + "unotes")
+                    .Description("Shows updates that have been done to WizBot.")
+                    .Do(async e =>
+                    {
+                        await e.Channel.SendMessage(" **WizBot Update Notes - Last Updated:** 05/14/2016\n\n`1.` Added `.whoplays` command.").ConfigureAwait(false);
                     });
 
             });
