@@ -21,7 +21,7 @@ namespace WizBot.Modules.Administration.Commands
 
             cgb.CreateCommand(Prefix + "addcustomreaction")
                 .Alias(Prefix + "acr")
-                .Description($"Add a custom reaction. **Owner Only!**\n**Usage**: {Prefix}acr \"hello\" I love saying hello to %user%")
+                .Description($"Add a custom reaction. Guide here: <Coming Soon> **Owner Only!**  \n**Usage**: {Prefix}acr \"hello\" I love saying hello to %user%")
                 .AddCheck(SimpleCheckers.OwnerOnly())
                 .Parameter("name", ParameterType.Required)
                 .Parameter("message", ParameterType.Unparsed)
