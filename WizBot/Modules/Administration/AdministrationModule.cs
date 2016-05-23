@@ -1003,7 +1003,7 @@ namespace WizBot.Modules.Administration
                     .Description("Shows updates that have been done to WizBot.")
                     .Do(async e =>
                     {
-                        await e.Channel.SendMessage(" **WizBot Update Notes - Last Updated:** 05/14/2016\n\n`1.` Added `.whoplays` command.").ConfigureAwait(false);
+                        await e.Channel.SendMessage(" **WizBot Update Notes**\n\n<https://github.com/Wizkiller96/WizBot-Updated/commits/master>").ConfigureAwait(false);
                     });
 
             });
