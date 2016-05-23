@@ -38,7 +38,7 @@ Command and aliases | Description | Usage
 `.uinfo`, `.userinfo`  |  Shows info about the user. If no user is supplied, it defaults a user running the command. | .uinfo @SomeUser
 `.addcustomreaction`, `.acr`  |  Add a custom reaction. Guide here: <Coming Soon> **Owner Only!**   |  .acr "hello" I love saying hello to %user%
 `.listcustomreactions`, `.lcr`  |  Lists all current custom reactions (paginated with 5 commands per page). | .lcr 1
-`.deletecustomreaction`, `.dcr`  |  Deletes a custome reaction with given name (and index)
+`.deletecustomreaction`, `.dcr`  |  Deletes a custom reaction with given name (and index)
 `.aar`, `.autoassignrole`  |  Automaticaly assigns a specified role to every user who joins the server. Type `.aar` to disable, `.aar Role Name` to enable
 `.restart`  |  Restarts the bot. Might not work.
 `.sr`, `.setrole`  |  Sets a role for a given user. |  .sr @User Guest
