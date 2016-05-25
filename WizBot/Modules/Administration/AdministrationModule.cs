@@ -986,7 +986,7 @@ namespace WizBot.Modules.Administration
                         if (string.IsNullOrWhiteSpace(game))
                             return;
                         var en = e.Server.Users
-                            .Where(u => u.CurrentGame?.ToUpperInvariant() == game)
+                            .Where(u => u.CurrentGame?.Name.ToUpperInvariant() == game)
                                 .Select(u => $"{u.Name}");
 
                         var arr = en as string[] ?? en.ToArray();
@@ -995,7 +995,6 @@ namespace WizBot.Modules.Administration
                             await e.Channel.SendMessage("Nobody. (not 100% sure)");
                         else
                             await e.Channel.SendMessage("• " + string.Join("\n• ", arr));
-
                     });
 
                 cgb.CreateCommand(Prefix + "updates")
