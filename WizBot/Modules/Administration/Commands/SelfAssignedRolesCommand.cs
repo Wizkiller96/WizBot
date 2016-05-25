@@ -4,6 +4,7 @@ using WizBot.Modules.Permissions.Classes;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace WizBot.Modules.Administration.Commands
 {
@@ -120,8 +121,15 @@ namespace WizBot.Modules.Administration.Commands
                         await e.Channel.SendMessage($":anger:You already have {role.Name} role.").ConfigureAwait(false);
                         return;
                     }
-                    await e.User.AddRoles(role).ConfigureAwait(false);
-                    await e.Channel.SendMessage($":ok:You now have {role.Name} role.").ConfigureAwait(false);
+                        await e.User.AddRoles(role).ConfigureAwait(false);
+                        var msg = await e.Channel.SendMessage($":ok:You now have {role.Name} role.").ConfigureAwait(false);
+                        await Task.Delay(3000);
+                        await msg.Delete();
+                        try
+                        {
+                            await e.Message.Delete();
+                        }
+                    catch { }
                 });
 
             cgb.CreateCommand(".iamn")
