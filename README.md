@@ -1,7 +1,7 @@
 ![img](https://ci.appveyor.com/api/projects/status/gmu6b3ltc80hr3k9?svg=true)
 # WizBot
 
-[**click here for a list of commands**](http://wizkiller96network.com/wizbot-cmds.html)  
+[**click here for a list of commands**](https://github.com/Wizkiller96/WizBot-Updated/blob/master/commandlist.md)  
 WizBot Discord chatbot written in C# using Discord.net library. 
 
 ##This section will guide you through how to setup WizBot
@@ -60,4 +60,4 @@ Enjoy
 
 ##List of commands   
 
-[**click here for a list of commands**](http://wizkiller96network.com/wizbot-cmds.html)
+[**click here for a list of commands**](https://github.com/Wizkiller96/WizBot-Updated/blob/master/commandlist.md)
