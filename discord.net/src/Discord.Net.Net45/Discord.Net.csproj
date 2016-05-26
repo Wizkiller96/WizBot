@@ -70,6 +70,9 @@
     <Compile Include="..\Discord.Net\API\Client\Common\ExtendedMember.cs">
       <Link>API\Client\Common\ExtendedMember.cs</Link>
     </Compile>
+    <Compile Include="..\Discord.Net\API\Client\Common\Game.cs">
+      <Link>API\Client\Common\Game.cs</Link>
+    </Compile>
     <Compile Include="..\Discord.Net\API\Client\Common\Guild.cs">
       <Link>API\Client\Common\Guild.cs</Link>
     </Compile>
@@ -337,6 +340,9 @@
     <Compile Include="..\Discord.Net\API\Client\Rest\UpdateMessage.cs">
       <Link>API\Client\Rest\UpdateMessage.cs</Link>
     </Compile>
+    <Compile Include="..\Discord.Net\API\Client\Rest\UpdateOwnNick.cs">
+      <Link>API\Client\Rest\UpdateOwnNick.cs</Link>
+    </Compile>
     <Compile Include="..\Discord.Net\API\Client\Rest\UpdateProfile.cs">
       <Link>API\Client\Rest\UpdateProfile.cs</Link>
     </Compile>
@@ -517,6 +523,9 @@
     <Compile Include="..\Discord.Net\Models\Color.cs">
       <Link>Models\Color.cs</Link>
     </Compile>
+    <Compile Include="..\Discord.Net\Models\Game.cs">
+      <Link>Models\Game.cs</Link>
+    </Compile>
     <Compile Include="..\Discord.Net\Models\Invite.cs">
       <Link>Models\Invite.cs</Link>
     </Compile>
@@ -546,9 +555,6 @@
     </Compile>
     <Compile Include="..\Discord.Net\Net\Rest\CompletedRequestEventArgs.cs">
       <Link>Net\Rest\CompletedRequestEventArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\Discord.Net\Net\Rest\ETFRestClient.cs">
-      <Link>Net\Rest\ETFRestClient.cs</Link>
     </Compile>
     <Compile Include="..\Discord.Net\Net\Rest\IRestEngine.cs">
       <Link>Net\Rest\IRestEngine.cs</Link>
@@ -601,6 +607,7 @@
     <Compile Include="..\Discord.Net\TaskManager.cs">
       <Link>TaskManager.cs</Link>
     </Compile>
+    <Compile Include="Enums\GameType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

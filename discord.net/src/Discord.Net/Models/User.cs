@@ -63,7 +63,7 @@ namespace Discord
         /// <summary> Gets the unique identifier for this user's current avatar. </summary>
         public string AvatarId { get; private set; }
         /// <summary> Gets the name of the game this user is currently playing. </summary>
-        public string CurrentGame { get; internal set; }
+        public Game? CurrentGame { get; internal set; }
         /// <summary> Determines whether this user is a Bot account. </summary>
         public bool IsBot { get; internal set; }
         /// <summary> Gets the current status for this user. </summary>
@@ -83,6 +83,8 @@ namespace Discord
         public Channel PrivateChannel => Client.GetPrivateChannel(Id);
         /// <summary> Returns the string used to mention this user. </summary>
         public string Mention => $"<@{Id}>";
+        /// <summary> Returns the string used to mention this user by nickname. </summary>
+        public string NicknameMention => $"<@!{Id}>";
         /// <summary> Returns true if this user has marked themselves as muted. </summary>
         public bool IsSelfMuted => (_voiceState & VoiceState.SelfMuted) != 0;
         /// <summary> Returns true if this user has marked themselves as deafened. </summary>
@@ -207,8 +209,11 @@ namespace Discord
 				if (Status == UserStatus.Offline)
 					_lastOnline = DateTime.UtcNow;
 			}
-			
-			CurrentGame = model.Game?.Name; //Allows null
+
+            if (model.Game != null)
+                CurrentGame = new Game(model.Game.Name, model.Game.Type, model.Game.Url);
+            else
+                CurrentGame = null;
 		}
 		internal void Update(MemberVoiceState model)
         {
@@ -247,7 +252,7 @@ namespace Discord
 				LastActivityAt = activity ?? DateTime.UtcNow;
 		}
 
-        public Task Edit(bool? isMuted = null, bool? isDeafened = null, Channel voiceChannel = null, IEnumerable<Role> roles = null)
+        public async Task Edit(bool? isMuted = null, bool? isDeafened = null, Channel voiceChannel = null, IEnumerable<Role> roles = null, string nickname = "")
         {
             if (Server == null) throw new InvalidOperationException("Unable to edit users in a private channel");
 
@@ -258,14 +263,26 @@ namespace Discord
                 .Distinct()
                 .ToArray();
 
-            var request = new UpdateMemberRequest(Server.Id, Id)
+            bool isCurrentUser = Id == Server.CurrentUser.Id;
+            if (isCurrentUser && nickname != "")
             {
-                IsMuted = isMuted ?? IsServerMuted,
-                IsDeafened = isDeafened ?? IsServerDeafened,
-                VoiceChannelId = voiceChannel?.Id,
-                RoleIds = roleIds
-            };
-            return Client.ClientAPI.Send(request);
+                var request = new UpdateOwnNick(Server.Id, nickname ?? "");
+                await Client.ClientAPI.Send(request).ConfigureAwait(false);
+                nickname = "";
+            }
+            if (!isCurrentUser || isMuted != null || isDeafened != null | voiceChannel != null || roles != null)
+            {
+                if (nickname == "") nickname = Nickname;
+                var request = new UpdateMemberRequest(Server.Id, Id)
+                {
+                    IsMuted = isMuted ?? IsServerMuted,
+                    IsDeafened = isDeafened ?? IsServerDeafened,
+                    VoiceChannelId = voiceChannel?.Id,
+                    RoleIds = roleIds,
+                    Nickname = nickname ?? ""
+                };
+                await Client.ClientAPI.Send(request).ConfigureAwait(false);
+            }
         }
         
         public Task Kick()

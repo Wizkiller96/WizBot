@@ -65,7 +65,7 @@ namespace Discord
         /// <summary> Gets the status of the current user. </summary>
         public UserStatus Status { get; private set; }
         /// <summary> Gets the game the current user is displayed as playing. </summary>
-        public string CurrentGame { get; private set; }
+        public Game CurrentGame { get; private set; }
 
         /// <summary> Gets a collection of all extensions added to this DiscordClient. </summary>
         public IEnumerable<IService> Services => _services;
@@ -243,12 +243,15 @@ namespace Discord
             }
 
             ClientAPI.Token = token;
-            var request = new LoginRequest() { Email = email, Password = password };
-            var response = await ClientAPI.Send(request).ConfigureAwait(false);
-            token = response.Token;
-            if (Config.CacheDir != null && token != oldToken && tokenPath != null)
-                SaveToken(tokenPath, cacheKey, token);
-            ClientAPI.Token = token;
+            if (email != null && password != null)
+            {
+                var request = new LoginRequest() { Email = email, Password = password };
+                var response = await ClientAPI.Send(request).ConfigureAwait(false);
+                token = response.Token;
+                if (Config.CacheDir != null && token != oldToken && tokenPath != null)
+                    SaveToken(tokenPath, cacheKey, token);
+                ClientAPI.Token = token;
+            }
 
             //Cache other stuff
             var regionsResponse = (await ClientAPI.Send(new GetVoiceRegionsRequest()).ConfigureAwait(false));
@@ -316,9 +319,19 @@ namespace Discord
             Status = status;
             SendStatus();
         }
-        public void SetGame(string game)
+        public void SetGame(Game game)
         {
             CurrentGame = game;
+            SendStatus();
+        }
+        public void SetGame(string game)
+        {
+            CurrentGame = new Game(game);
+            SendStatus();
+        }
+        public void SetGame(string game, GameType type, string url)
+        {
+            CurrentGame = new Game(game, type, url);
             SendStatus();
         }
         private void SendStatus()
@@ -1078,19 +1091,21 @@ namespace Discord
                     const short batchSize = 50;
                     ulong[] serverIds = new ulong[batchSize];
 
-                    while (true)
+                    while (!cancelToken.IsCancellationRequested && State == ConnectionState.Connecting)
+                        await Task.Delay(1000, cancelToken).ConfigureAwait(false);
+
+                    while (!cancelToken.IsCancellationRequested && State == ConnectionState.Connected)
                     {
-                        if (!cancelToken.IsCancellationRequested && State == ConnectionState.Connected)
+                        if (_largeServers.Count > 0)
                         {
                             int count = 0;
-
                             while (count < batchSize && _largeServers.TryDequeue(out serverIds[count]))
                                 count++;
 
-                            if (count > 0 && !cancelToken.IsCancellationRequested)
+                            if (count > 0)
                                 GatewaySocket.SendRequestMembers(serverIds.Take(count), "", 0);
                         }
-                        await Task.Delay(1250);
+                        await Task.Delay(1250, cancelToken).ConfigureAwait(false);
                     }
                 }
                 catch (OperationCanceledException) { }

@@ -23,12 +23,14 @@ namespace Discord
         /// <summary> Gets an id uniquely identifying from others with the same name. </summary>
         public ushort Discriminator => Client.PrivateUser.Discriminator;
         /// <summary> Gets the name of the game this user is currently playing. </summary>
-        public string CurrentGame => Client.PrivateUser.CurrentGame;
+        public Game? CurrentGame => Client.PrivateUser.CurrentGame;
         /// <summary> Gets the current status for this user. </summary>
         public UserStatus Status => Client.PrivateUser.Status;
         /// <summary> Returns the string used to mention this user. </summary>
         public string Mention => $"<@{Id}>";
-        
+        /// <summary> Returns the string used to mention this user by nickname. </summary>
+        public string NicknameMention => $"<@!{Id}>";
+
         /// <summary> Gets the email for this user. </summary>
         public string Email { get; private set; }
 		/// <summary> Gets if the email for this user has been verified. </summary>
