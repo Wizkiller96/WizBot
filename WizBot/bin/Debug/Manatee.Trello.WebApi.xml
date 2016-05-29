@@ -4,5 +4,10 @@
         <name>Manatee.Trello.WebApi</name>
     </assembly>
     <members>
+        <member name="T:Manatee.Trello.WebApi.WebApiRequestProvider">
+            <summary>
+            Implements IRestRequestProvider for WebApi.
+            </summary>
+        </member>
     </members>
 </doc>

@@ -2049,6 +2049,11 @@
             Gets or sets how many results to return;
             </summary>
         </member>
+        <member name="P:Manatee.Trello.Json.IJsonSearch.Partial">
+            <summary>
+            Gets or sets whether the search should match on partial words.
+            </summary>
+        </member>
         <member name="T:Manatee.Trello.Json.IJsonToken">
             <summary>
             Defines the JSON structure for the Token object.
@@ -2135,7 +2140,7 @@
             <summary>
             Creates a new <see cref="T:Manatee.Trello.SearchFor"/> specifying a text search parameter.
             </summary>
-            <param name="text"></param>
+            <param name="text">The text to search for.</param>
             <returns></returns>
         </member>
         <member name="M:Manatee.Trello.SearchFor.TextInName(System.String)">
@@ -5877,27 +5882,29 @@
             Gets the query.
             </summary>
         </member>
-        <member name="M:Manatee.Trello.Search.#ctor(Manatee.Trello.SearchFor,System.Nullable{System.Int32},Manatee.Trello.SearchModelType,System.Collections.Generic.IEnumerable{Manatee.Trello.Contracts.IQueryable},Manatee.Trello.TrelloAuthorization)">
+        <member name="M:Manatee.Trello.Search.#ctor(Manatee.Trello.SearchFor,System.Nullable{System.Int32},Manatee.Trello.SearchModelType,System.Collections.Generic.IEnumerable{Manatee.Trello.Contracts.IQueryable},Manatee.Trello.TrelloAuthorization,System.Boolean)">
             <summary>
             Creates a new instance of the <see cref="T:Manatee.Trello.Search"/> object and performs the search.
             </summary>
             <param name="query">The query.</param>
             <param name="limit">The maximum number of results to return.</param>
-            <param name="modelTypes">Optional - The desired model types to return.  Can be joined using the | operator.  Default is All.</param>
-            <param name="context">Optional - A collection of queryable items to serve as a context in which to search.</param>
+            <param name="modelTypes">(Optional) The desired model types to return.  Can be joined using the | operator.  Default is All.</param>
+            <param name="context">(Optional) A collection of queryable items to serve as a context in which to search.</param>
             <param name="auth">(Optional) Custom authorization parameters. When not provided,
             <see cref="P:Manatee.Trello.TrelloAuthorization.Default"/> will be used.</param>
+            <param name="isPartial">(Optional) Indicates whether to include matches that <em>start with</em> the query text.  Default is false.</param>
         </member>
-        <member name="M:Manatee.Trello.Search.#ctor(System.String,System.Nullable{System.Int32},Manatee.Trello.SearchModelType,System.Collections.Generic.IEnumerable{Manatee.Trello.Contracts.IQueryable},Manatee.Trello.TrelloAuthorization)">
+        <member name="M:Manatee.Trello.Search.#ctor(System.String,System.Nullable{System.Int32},Manatee.Trello.SearchModelType,System.Collections.Generic.IEnumerable{Manatee.Trello.Contracts.IQueryable},Manatee.Trello.TrelloAuthorization,System.Boolean)">
             <summary>
             Creates a new instance of the <see cref="T:Manatee.Trello.Search"/> object and performs the search.
             </summary>
             <param name="query">The query.</param>
             <param name="limit">The maximum number of results to return.</param>
-            <param name="modelTypes">Optional - The desired model types to return.  Can be joined using the | operator.  Default is All.</param>
-            <param name="context">Optional - A collection of queryable items to serve as a context in which to search.</param>
+            <param name="modelTypes">(Optional) The desired model types to return.  Can be joined using the | operator.  Default is All.</param>
+            <param name="context">(Optional) A collection of queryable items to serve as a context in which to search.</param>
             <param name="auth">(Optional) Custom authorization parameters. When not provided,
             <see cref="P:Manatee.Trello.TrelloAuthorization.Default"/> will be used.</param>
+            <param name="isPartial">(Optional) Indicates whether to include matches that <em>start with</em> the query text.  Default is false.</param>
         </member>
         <member name="M:Manatee.Trello.Search.Refresh">
             <summary>
@@ -6247,14 +6254,22 @@
             environments.
             </remarks>
         </member>
+        <member name="P:Manatee.Trello.TrelloProcessor.ConcurrentCallCount">
+            <summary>
+            Specifies the number of concurrent calls to the Trello API that the processor can make.  Default is 1.
+            </summary>
+        </member>
         <member name="M:Manatee.Trello.TrelloProcessor.Shutdown">
             <summary>
-            Signals the processor that the application is shutting down.  The processor will perform a "last call" for pending requests.
+            Signals the processor that the application is shutting down.  The processor will reject any new changes and perform a
+            "last call" for pending requests.
             </summary>
-            <remarks>
-            Calling this method is only required when <see cref="P:Manatee.Trello.TrelloProcessor.WaitForPendingRequests"/> is set to true.  This method can also be used
-            in testing environments to complete all expected calls.
-            </remarks>
+        </member>
+        <member name="M:Manatee.Trello.TrelloProcessor.Flush">
+            <summary>
+            Signals the processor that the application is shutting down.  The processor will reject any new changes and perform a
+            "last call" for pending requests.
+            </summary>
         </member>
         <member name="T:Manatee.Trello.WebColor">
             <summary>
@@ -6383,6 +6398,84 @@
             <summary>
             Marks the webhook to be refreshed the next time data is accessed.
             </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.ContractAnnotationAttribute">
+            <summary>
+            Describes dependency between method input and output.
+            </summary>
+            <syntax>
+            <p>Function Definition Table syntax:</p>
+            <list>
+            <item>FDT      ::= FDTRow [;FDTRow]*</item>
+            <item>FDTRow   ::= Input =&gt; Output | Output &lt;= Input</item>
+            <item>Input    ::= ParameterName: Value [, Input]*</item>
+            <item>Output   ::= [ParameterName: Value]* {halt|stop|void|nothing|Value}</item>
+            <item>Value    ::= true | false | null | notnull | canbenull</item>
+            </list>
+            If method has single input parameter, it's name could be omitted.<br/>
+            Using <c>halt</c> (or <c>void</c>/<c>nothing</c>, which is the same)
+            for method output means that the methos doesn't return normally.<br/>
+            <c>canbenull</c> annotation is only applicable for output parameters.<br/>
+            You can use multiple <c>[ContractAnnotation]</c> for each FDT row,
+            or use single attribute with rows separated by semicolon.<br/>
+            </syntax>
+            <examples><list>
+            <item><code>
+            [ContractAnnotation("=> halt")]
+            public void TerminationMethod()
+            </code></item>
+            <item><code>
+            [ContractAnnotation("halt &lt;= condition: false")]
+            public void Assert(bool condition, string text) // regular assertion method
+            </code></item>
+            <item><code>
+            [ContractAnnotation("s:null => true")]
+            public bool IsNullOrEmpty(string s) // string.IsNullOrEmpty()
+            </code></item>
+            <item><code>
+            // A method that returns null if the parameter is null,
+            // and not null if the parameter is not null
+            [ContractAnnotation("null => null; notnull => notnull")]
+            public object Transform(object data) 
+            </code></item>
+            <item><code>
+            [ContractAnnotation("s:null=>false; =>true,result:notnull; =>false, result:null")]
+            public bool TryParse(string s, out Person result)
+            </code></item>
+            </list></examples>
+        </member>
+        <member name="M:JetBrains.Annotations.ContractAnnotationAttribute.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="contract"></param>
+        </member>
+        <member name="M:JetBrains.Annotations.ContractAnnotationAttribute.#ctor(System.String,System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="contract"></param>
+            <param name="forceFullStates"></param>
+        </member>
+        <member name="P:JetBrains.Annotations.ContractAnnotationAttribute.Contract">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:JetBrains.Annotations.ContractAnnotationAttribute.ForceFullStates">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.NotNullAttribute">
+            <summary>
+            Indicates that the value of the marked element could never be <c>null</c>.
+            </summary>
+            <example><code>
+            [NotNull] object Foo() {
+              return null; // Warning: Possible 'null' assignment
+            }
+            </code></example>
         </member>
     </members>
 </doc>
