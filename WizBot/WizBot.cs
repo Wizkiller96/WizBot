@@ -12,7 +12,9 @@ using WizBot.Modules.Gambling;
 using WizBot.Modules.Games;
 using WizBot.Modules.Games.Commands;
 using WizBot.Modules.Help;
+#if !WIZBOT_RELEASE
 using WizBot.Modules.Music;
+#endif
 using WizBot.Modules.NSFW;
 using WizBot.Modules.Permissions;
 using WizBot.Modules.Permissions.Classes;
@@ -179,7 +181,9 @@ namespace WizBot
             modules.Add(new Conversations(), "Conversations", ModuleFilter.None);
             modules.Add(new GamblingModule(), "Gambling", ModuleFilter.None);
             modules.Add(new GamesModule(), "Games", ModuleFilter.None);
+#if !WIZBOT_RELEASE
             modules.Add(new MusicModule(), "Music", ModuleFilter.None);
+#endif
             modules.Add(new SearchesModule(), "Searches", ModuleFilter.None);
             modules.Add(new NSFWModule(), "NSFW", ModuleFilter.None);
             modules.Add(new ClashOfClansModule(), "ClashOfClans", ModuleFilter.None);
@@ -214,7 +218,12 @@ namespace WizBot
                     return;
                 }
 
+#if !WIZBOT_RELEASE
+                await Task.Delay(100000).ConfigureAwait(false);
+#else
                 await Task.Delay(1000).ConfigureAwait(false);
+#endif
+
                 Console.WriteLine("-----------------");
                 Console.WriteLine(await WizStats.Instance.GetStats().ConfigureAwait(false));
                 Console.WriteLine("-----------------");
