@@ -45,11 +45,7 @@ namespace WizBot.Modules.Searches.Commands.IMDB
             ImdbMovie mov = new ImdbMovie();
             string imdbUrl = "http://www.imdb.com/title/" + imdbId + "/";
             mov.Status = false;
-            if (!string.IsNullOrEmpty(imdbUrl))
-            {
-                ParseIMDbPage(imdbUrl, GetExtraInfo, mov);
-            }
-
+            ParseIMDbPage(imdbUrl, GetExtraInfo, mov);
             return mov;
         }
 
