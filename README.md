@@ -1,5 +1,5 @@
 ![img](https://ci.appveyor.com/api/projects/status/gmu6b3ltc80hr3k9?svg=true)
-# WizBot
+# WizBot - Outdated Version
 
 [**click here for a list of commands**](https://github.com/Wizkiller96/WizBot-Updated/blob/master/commandlist.md)  
 WizBot Discord chatbot written in C# using Discord.net library. 
