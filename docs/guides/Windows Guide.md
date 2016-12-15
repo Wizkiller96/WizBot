@@ -20,8 +20,7 @@ ________________________________________________________________________________
 - Next, [Right-Click on this link](https://github.com/Wizkiller96/WizBotInstallerWin/raw/master/WizBotInstaller.bat) and select **Save link as** and save the file `WizBotInstaller.bat` inside the `WizBot` folder that we created earlier. (**DO NOT** rename the file `WizBotInstaller.bat`)
 - Once that's done, double-click on `WizBotInstaller.bat` to run it.
 - From the options, 
-	- Choose `1` to get the **most recent build**.
-	- Choose `2` to get the **stable build**.
+	- Choose `3` to get the **most recent build**.
 - Wait a while for the file to finish installing, it'll display it's progress in the command prompt.
 - You should now have a new folder named `WizBot` inside the `WizBot` folder we previously created.
 - Once Installation is completed, press any key to close the command prompt.
@@ -61,9 +60,9 @@ ________________________________________________________________________________
 ####Starting the bot
 - Go to the `WizBot` folder that we have created earlier, and run the `WizBotInstaller.bat` file.
 - From the options,
-	- Choose `3` to **run the bot normally**.	
+	- Choose `1` to **run the bot normally**.	
 	(with normal-run the bot will shutdown and will stay offline if it disconnects by the use of `.die` command until you manually run it again. Useful if you want to test the bot.)
-	- Choose `4` to **run the bot with auto restart**.	
+	- Choose `2` to **run the bot with auto restart**.	
 	(with auto restart the bot will restart itself if it disconnects by the use of `.die` command. Useful if you want to have restart function for any reason.)
 
 ####Updating WizBot
@@ -71,8 +70,7 @@ ________________________________________________________________________________
 - Once that's checked, go to the `WizBot` folder.
 - Run the `WizBotInstaller.bat` file.
 - From the options, 
-	- Choose `1` to get the **most recent build**.
-	- Choose `2` to get the **stable build**.
+	- Choose `3` to get the **most recent build**.
 - Follow the messages and press any key to continue.
 - Wait for it to finish. 
 - Press any key to close the window when it shows **Installation complete.** 
