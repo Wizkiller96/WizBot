@@ -6,9 +6,10 @@ You must also use the commands for adding, deleting and listing these reactions 
 You must also use the commands for adding, deleting and listing these reactions in the server you want the custom reactions to work on.  
 
 ###Commands and Their Use
+
 | Command Name | Description | Example |
 |:------------:|-------------|---------|
-|`.acr`|Add a custom reaction with a trigger and a response. Running this command in a server requries the Administrator permission. Running this command in DM is Bot Owner only, and adds a new global custom reaction. Guide [here](http://nadekobot.readthedocs.io/en/1.0/Custom%20Reactions/)|`.acr "hello" Hi there, %user%!`|
+|`.acr`|Add a custom reaction with a trigger and a response. Running this command in a server requries the Administrator permission. Running this command in DM is Bot Owner only, and adds a new global custom reaction. Guide [here](Coming Soon)|`.acr "hello" Hi there, %user%!`|
 |`.lcr`|Lists a page of global or server custom reactions (15 reactions per page). Running this command in a DM will list the global custom reactions, while running it in a server will list that server's custom reactions.|`.lcr 1`|
 |`.dcr`|Deletes a custom reaction based on the provided index. Running this command in a server requires the Administrator permission. Running this command in DM is Bot Owner only, and will delete a global custom reaction.|`.dcr 5`|
 
@@ -27,14 +28,6 @@ There's no special requirement for the formatting of the response, so we could j
 
 Now, if that command was ran in a server, anyone on that server can make the bot mention them, saying `It sure is, @Username` anytime they say "Nice Weather". If the command is ran in a direct message with the bot, then the custom reaction can be used on every server the bot is connected to.  
 
-###Block global Custom Reactions
-If you want to disable some global custom reactions which you do not like, and you do not want to remove them or you are not the bot owner you can do so by adding a new Custom Reaction with the same trigger on your server, and set the response to `-`.
-
-For example:
-`.acr /o/ -`
-
-Now if you try to trigger `/o/`, it won't print anything.
-
 ###Placeholders!
 There are currently three different placeholders which we will look at, with more placeholders potentially coming in the future.  
 
@@ -42,7 +35,7 @@ There are currently three different placeholders which we will look at, with mor
 |:-----------:|-------------|---------------|-------|
 |`%mention`|The `%mention%` placeholder is triggered when you type `@BotName` - It's important to note that if you've given the bot a custom nickname, this trigger won't work!|```.acr "Hello %mention%" I,  %mention%, also say hello!```|Input: "Hello @BotName" Output: "I, @BotName, also say hello!"|
 |`%user%`|The `%user%` placeholder mentions the person who said the command|`.acr "Who am I?" You are %user%!`|Input: "Who am I?" Output: "You are @Username!"|
-|`%rng%`|The `%rng%` placeholder generates a random number between 0 and 10. You can also specify a custom range (%rng1-100%) even with negative numbers: `%rng-9--1%` (from -9 to -1) . |`.acr "Random number" %rng%`|Input: "Random number" Output: "2"|
-|`%target%`|The `%target%` placeholder is used to make Nadeko Mention another person or phrase, it is only supported as part of the response|`.acr "Say this: " %target%`|Input: "Say this: I, @BotName, am a parrot!". Output: "I, @BotName, am a parrot!".|
-		
+|`%rng%`|The `%rng%` placeholder generates a random number between 0 and 10|`.acr "Random number" %rng%`|Input: "Random number" Output: "2"|
+|`%target%`|The `%target%` placeholder is used to make WizBot Mention another person or phrase, it is only supported as part of the response|`.acr "Say this: " %target%`|Input: "Say this: I, @BotName, am a parrot!". Output: "I, @BotName, am a parrot!".|
+
  Thanks to Nekai for being creative. <3

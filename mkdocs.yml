@@ -1,5 +1,5 @@
-site_name: NadekoBot
-repo_url: https://github.com/Kwoth/NadekoBot
+site_name: WizBot
+repo_url: https://github.com/Wizkiller96/WizBot
 pages:
 - Home: index.md
 - About: about.md

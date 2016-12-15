@@ -1,4 +1,4 @@
-You can support the project on patreon: <https://patreon.com/nadekobot> or paypal: <https://www.paypal.me/Kwoth>
+You can support the project on paypal: <https://www.paypal.me/Wizkiller96Network>
 
 ##Table Of Contents
 - [Help](#help)
@@ -29,6 +29,13 @@ Command and aliases | Description | Usage
 `.ban` `.b` | Bans a user by ID or name with an optional message. **Requires BanMembers server permission.** | `.b "@some Guy" Your behaviour is toxic.`
 `.softban` `.sb` | Bans and then unbans a user by ID or name with an optional message. **Requires KickMembers server permission.** **Requires ManageMessages server permission.** | `.sb "@some Guy" Your behaviour is toxic.`
 `.kick` `.k` | Kicks a mentioned user. **Requires KickMembers server permission.** | `.k "@some Guy" Your behaviour is toxic.`
+`.setmuterole`  | Sets a name of the role which will be assigned to people who should be muted. Default is wizbot-mute. **Requires ManageRoles server permission.** | `.setmuterole Silenced`
+`.mute`  | Mutes a mentioned user both from speaking and chatting. **Requires ManageRoles server permission.** **Requires MuteMembers server permission.** | `.mute @Someone`
+`.unmute`  | Unmutes a mentioned user previously muted with `.mute` command. **Requires ManageRoles server permission.** **Requires MuteMembers server permission.** | `.unmute @Someone`
+`.chatmute`  | Prevents a mentioned user from chatting in text channels. **Requires ManageRoles server permission.** | `.chatmute @Someone`
+`.chatunmute`  | Removes a mute role previously set on a mentioned user with `.chatmute` which prevented him from chatting in text channels. **Requires ManageRoles server permission.** | `.chatunmute @Someone`
+`.voicemute`  | Prevents a mentioned user from speaking in voice channels. **Requires MuteMembers server permission.** | `.voicemute @Someone`
+`.voiceunmute`  | Gives a previously voice-muted user a permission to speak. **Requires MuteMembers server permission.** | `.voiceunmute @Someguy`
 `.deafen` `.deaf` | Deafens mentioned user or users. **Requires DeafenMembers server permission.** | `.deaf "@Someguy"` or `.deaf "@Someguy" "@Someguy"`
 `.undeafen` `.undef` | Undeafens mentioned user or users. **Requires DeafenMembers server permission.** | `.undef "@Someguy"` or `.undef "@Someguy" "@Someguy"`
 `.delvoichanl` `.dvch` | Deletes a voice channel with a given name. **Requires ManageChannels server permission.** | `.dvch VoiceChannelName`
@@ -37,10 +44,10 @@ Command and aliases | Description | Usage
 `.creatxtchanl` `.ctch` | Creates a new text channel with a given name. **Requires ManageChannels server permission.** | `.ctch TextChannelName`
 `.settopic` `.st` | Sets a topic on the current channel. **Requires ManageChannels server permission.** | `.st My new topic`
 `.setchanlname` `.schn` | Changes the name of the current channel. **Requires ManageChannels server permission.** | `.schn NewName`
-`.prune` `.clr` | `.prune` removes all nadeko's messages in the last 100 messages.`.prune X` removes last X messages from the channel (up to 100)`.prune @Someone` removes all Someone's messages in the last 100 messages.`.prune @Someone X` removes last X 'Someone's' messages in the channel.  | `.prune` or `.prune 5` or `.prune @Someone` or `.prune @Someone X`
+`.prune` `.clr` | `.prune` removes all WizBot's messages in the last 100 messages.`.prune X` removes last X messages from the channel (up to 100)`.prune @Someone` removes all Someone's messages in the last 100 messages.`.prune @Someone X` removes last X 'Someone's' messages in the channel.  | `.prune` or `.prune 5` or `.prune @Someone` or `.prune @Someone X`
 `.die`  | Shuts the bot down. **Bot Owner only.** | `.die`
 `.setname` `.newnm` | Gives the bot a new name. **Bot Owner only.** | `.newnm BotName`
-`.setavatar` `.setav` | Sets a new avatar image for the NadekoBot. Argument is a direct link to an image. **Bot Owner only.** | `.setav http://i.imgur.com/xTG3a1I.jpg`
+`.setavatar` `.setav` | Sets a new avatar image for the WizBot. Argument is a direct link to an image. **Bot Owner only.** | `.setav http://i.imgur.com/xTG3a1I.jpg`
 `.setgame`  | Sets the bots game. **Bot Owner only.** | `.setgame with snakes`
 `.setstream`  | Sets the bots stream. First argument is the twitch link, second argument is stream name. **Bot Owner only.** | `.setstream TWITCHLINK Hello`
 `.send`  | Sends a message to someone on a different server through the bot.  Separate server and channel/user ids with `|` and prepend channel id with `c:` and user id with `u:`. **Bot Owner only.** | `.send serverid|c:channelid message` or `.send serverid|u:userid message`
@@ -64,13 +71,6 @@ Command and aliases | Description | Usage
 `.repeatinvoke` `.repinv` | Immediately shows the repeat message and restarts the timer. **Requires ManageMessages server permission.** | `.repinv`
 `.repeat`  | Repeat a message every X minutes. If no parameters are specified, repeat is disabled. **Requires ManageMessages server permission.** | `.repeat 5 Hello there`
 `.migratedata`  | Migrate data from old bot configuration **Bot Owner only.** | `.migratedata`
-`.setmuterole`  | Sets a name of the role which will be assigned to people who should be muted. Default is nadeko-mute. **Requires ManageRoles server permission.** | `.setmuterole Silenced`
-`.mute`  | Mutes a mentioned user both from speaking and chatting. **Requires ManageRoles server permission.** **Requires MuteMembers server permission.** | `.mute @Someone`
-`.unmute`  | Unmutes a mentioned user previously muted with `.mute` command. **Requires ManageRoles server permission.** **Requires MuteMembers server permission.** | `.unmute @Someone`
-`.chatmute`  | Prevents a mentioned user from chatting in text channels. **Requires ManageRoles server permission.** | `.chatmute @Someone`
-`.chatunmute`  | Removes a mute role previously set on a mentioned user with `.chatmute` which prevented him from chatting in text channels. **Requires ManageRoles server permission.** | `.chatunmute @Someone`
-`.voicemute`  | Prevents a mentioned user from speaking in voice channels. **Requires MuteMembers server permission.** | `.voicemute @Someone`
-`.voiceunmute`  | Gives a previously voice-muted user a permission to speak. **Requires MuteMembers server permission.** | `.voiceunmute @Someguy`
 `.rotateplaying` `.ropl` | Toggles rotation of playing status of the dynamic strings you previously specified. **Bot Owner only.** | `.ropl`
 `.addplaying` `.adpl` | Adds a specified string to the list of playing strings to rotate. Supported placeholders: %servers%, %users%, %playing%, %queued% **Bot Owner only.** | `.adpl`
 `.listplaying` `.lipl` | Lists all playing statuses with their corresponding number. **Bot Owner only.** | `.lipl`
@@ -83,14 +83,14 @@ Command and aliases | Description | Usage
 `.togglexclsar` `.tesar` | Toggles whether the self-assigned roles are exclusive. (So that any person can have only one of the self assignable roles) **Requires ManageRoles server permission.** | `.tesar`
 `.iam`  | Adds a role to you that you choose. Role must be on a list of self-assignable roles.  | `.iam Gamer`
 `.iamnot` `.iamn` | Removes a role to you that you choose. Role must be on a list of self-assignable roles.  | `.iamn Gamer`
-`.leave`  | Makes Nadeko leave the server. Either name or id required. **Bot Owner only.** | `.leave 123123123331`
+`.leave`  | Makes WizBot leave the server. Either name or id required. **Bot Owner only.** | `.leave 123123123331`
 `.greetdel` `.grdel` | Sets the time it takes (in seconds) for greet messages to be auto-deleted. Set 0 to disable automatic deletion. **Requires ManageServer server permission.** | `.greetdel 0` or `.greetdel 30`
 `.greet`  | Toggles anouncements on the current channel when someone joins the server. **Requires ManageServer server permission.** | `.greet`
 `.greetmsg`  | Sets a new join announcement message which will be shown in the server's channel. Type %user% if you want to mention the new member. Using it with no message will show the current greet message. **Requires ManageServer server permission.** | `.greetmsg Welcome, %user%.`
 `.greetdm`  | Toggles whether the greet messages will be sent in a DM (This is separate from greet - you can have both, any or neither enabled). **Requires ManageServer server permission.** | `.greetdm`
 `.greetdmmsg`  | Sets a new join announcement message which will be sent to the user who joined. Type %user% if you want to mention the new member. Using it with no message will show the current DM greet message. **Requires ManageServer server permission.** | `.greetdmmsg Welcome to the server, %user%`.
 `.bye`  | Toggles anouncements on the current channel when someone leaves the server. **Requires ManageServer server permission.** | `.bye`
-`.byemsg`  | Sets a new leave announcement message. Type %user% if you want to show the name the user who left. Type %id% to show id. Using this command with no message will show the current bye message. **Requires ManageServer server permission.** | `.byemsg %user% has left.`
+`.byemsg`  | Sets a new leave announcement message. Type %user% if you want to mention the new member. Using it with no message will show the current bye message. **Requires ManageServer server permission.** | `.byemsg %user% has left.`
 `.byedel`  | Sets the time it takes (in seconds) for bye messages to be auto-deleted. Set 0 to disable automatic deletion. **Requires ManageServer server permission.** | `.byedel 0` or `.byedel 30`
 `.voice+text` `.v+t` | Creates a text channel for each voice channel only users in that voice channel can see.If you are server owner, keep in mind you will see them all the time regardless. **Requires ManageRoles server permission.** **Requires ManageChannels server permission.** | `.voice+text`
 `.cleanvplust` `.cv+t` | Deletes all text channels ending in `-voice` for which voicechannels are not found. Use at your own risk. **Requires ManageChannels server permission.** **Requires ManageRoles server permission.** | `.cleanv+t`
@@ -115,7 +115,7 @@ Command and aliases | Description | Usage
 ### CustomReactions  
 Command and aliases | Description | Usage
 ----------------|--------------|-------
-`.addcustreact` `.acr` | Add a custom reaction with a trigger and a response. Running this command in server requires Administration permission. Running this command in DM is Bot Owner only and adds a new global custom reaction. Guide here: <http://nadekobot.readthedocs.io/en/latest/Custom%20Reactions/>  | `.acr "hello" Hi there %user%`
+`.addcustreact` `.acr` | Add a custom reaction with a trigger and a response. Running this command in server requires Administration permission. Running this command in DM is Bot Owner only and adds a new global custom reaction. Guide here: <N/A>  | `.acr "hello" Hi there %user%`
 `.listcustreact` `.lcr` | Lists global or server custom reactions (20 commands per page). Running the command in DM will list global custom reactions, while running it in server will list that server's custom reactions. Specifying `all` argument instead of the number will DM you a text file with a list of all custom reactions.  | `.lcr 1` or `.lcr all`
 `.listcustreactg` `.lcrg` | Lists global or server custom reactions (20 commands per page) grouped by trigger, and show a number of responses for each. Running the command in DM will list global custom reactions, while running it in server will list that server's custom reactions.  | `.lcrg 1`
 `.showcustreact` `.scr` | Shows a custom reaction's response on a given ID.  | `.scr 1`
@@ -150,7 +150,7 @@ Command and aliases | Description | Usage
 ----------------|--------------|-------
 `>choose`  | Chooses a thing from a list of things  | `>choose Get up;Sleep;Sleep more`
 `>8ball`  | Ask the 8ball a yes/no question.  | `>8ball should I do something`
-`>rps`  | Play a game of rocket paperclip scissors with Nadeko.  | `>rps scissors`
+`>rps`  | Play a game of rocket paperclip scissors with WizBot.  | `>rps scissors`
 `>linux`  | Prints a customizable Linux interjection  | `>linux Spyware Windows`
 `>leet`  | Converts a text to leetspeak with 6 (1-6) severity levels  | `>leet 3 Hello`
 `>poll`  | Creates a poll which requires users to send the number of the voting option to the bot. **Requires ManageMessages server permission.** | `>poll Question?;Answer1;Answ 2;A_3`
@@ -209,7 +209,7 @@ Command and aliases | Description | Usage
 `!!reptcursong` `!!rcs` | Toggles repeat of current song.  | `!!rcs`
 `!!rpeatplaylst` `!!rpl` | Toggles repeat of all songs in the queue (every song that finishes is added to the end of the queue).  | `!!rpl`
 `!!save`  | Saves a playlist under a certain name. Name must be no longer than 20 characters and mustn't contain dashes.  | `!!save classical1`
-`!!load`  | Loads a saved playlist using it's ID. Use `!!pls` to list all saved playlists and !!save to save new ones.  | `!!load 5`
+`!!load`  | Loads a playlist under a certain name.  | `!!load classical-1`
 `!!playlists` `!!pls` | Lists all playlists. Paginated. 20 per page. Default page is 0.  | `!!pls 1`
 `!!deleteplaylist` `!!delpls` | Deletes a saved playlist. Only if you made it or if you are the bot owner.  | `!!delpls animu-5`
 `!!goto`  | Goes to a specific time in seconds in a song.  | `!!goto 30`
@@ -239,7 +239,7 @@ Command and aliases | Description | Usage
 Command and aliases | Description | Usage
 ----------------|--------------|-------
 `;verbose` `;v` | Sets whether to show when a command/module is blocked.  | `;verbose true`
-`;permrole` `;pr` | Sets a role which can change permissions. Or supply no parameters to find out the current one. Default one is 'Nadeko'.  | `;pr role`
+`;permrole` `;pr` | Sets a role which can change permissions. Or supply no parameters to find out the current one. Default one is 'WizBot'.  | `;pr role`
 `;listperms` `;lp` | Lists whole permission chain with their indexes. You can specify an optional page number if there are a lot of permissions.  | `;lp` or `;lp 3`
 `;removeperm` `;rp` | Removes a permission from a given position in Permissions list.  | `;rp 1`
 `;moveperm` `;mp` | Moves permission from one position to another in Permissions list.  | `;mp 2 4`
@@ -274,9 +274,9 @@ Command and aliases | Description | Usage
 ----------------|--------------|-------
 `>attack`  | Attacks a target with the given move. Use `>movelist` to see a list of moves your type can use.  | `>attack "vine whip" @someguy`
 `>movelist` `>ml` | Lists the moves you are able to use  | `>ml`
-`>heal`  | Heals someone. Revives those who fainted. Costs a NadekoFlower  | `>heal @someone`
+`>heal`  | Heals someone. Revives those who fainted. Costs a Cherry Blossom  | `>heal @someone`
 `>type`  | Get the poketype of the target.  | `>type @someone`
-`>settype`  | Set your poketype. Costs a NadekoFlower. Provide no arguments to see a list of available types.  | `>settype fire` or `>settype`
+`>settype`  | Set your poketype. Costs a Cherry Blossom. Provide no arguments to see a list of available types.  | `>settype fire` or `>settype`
 
 ###### [Back to TOC](#table-of-contents)
 
@@ -351,7 +351,7 @@ Command and aliases | Description | Usage
 `.serverid` `.sid` | Shows current server ID.  | `.sid`
 `.roles`  | List roles on this server or a roles of a specific user if specified. Paginated. 20 roles per page.  | `.roles 2` or `.roles @Someone`
 `.channeltopic` `.ct` | Sends current channel's topic as a message.  | `.ct`
-`.stats`  | Shows some basic stats for Nadeko.  | `.stats`
+`.stats`  | Shows some basic stats for WizBot.  | `.stats`
 `.showemojis` `.se` | Shows a name and a link to every SPECIAL emoji in the message.  | `.se A message full of SPECIAL emojis`
 `.listservers`  | Lists servers the bot is on with some basic info. 15 per page. **Bot Owner only.** | `.listservers 3`
 `.calculate` `.calc` | Evaluate a mathematical expression.  | `.calc 1+1`
