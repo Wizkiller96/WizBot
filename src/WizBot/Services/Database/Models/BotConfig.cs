@@ -35,8 +35,8 @@ You can use `{1}commands ModuleName`
 For a specific command help, use `{1}h CommandName` (for example {1}h !!q)
 
 
-**LIST OF COMMANDS CAN BE FOUND ON THIS LINK**
-By using the commands above.
+**LIST OF COMMANDS CAN BE FOUND AT THIS LINK**
+Coming Soon!
 
 
 WizBot Support Server: `No Link`";

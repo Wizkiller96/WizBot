@@ -173,8 +173,8 @@ namespace WizBot.Modules.Utility
                     Author = new EmbedAuthor()
                     {
                         Name = $"WizBot v{StatsService.BotVersion}",
-                        Url = "http://WizBot.readthedocs.io/en/latest/",
-                        IconUrl = "https://cdn.discordapp.com/avatars/116275390695079945/b21045e778ef21c96d175400e779f0fb.jpg"
+                        Url = "http://wizkiller96network.com/",
+                        IconUrl = "https://cdn.discordapp.com/avatars/170849991357628416/412367ac7ffd3915a0b969f6f3e17aca.jpg"
                     },
                     Fields = new[] {
                         new EmbedField() {
