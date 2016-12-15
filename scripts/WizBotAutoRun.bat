@@ -1,6 +1,6 @@
 @ECHO off
-@TITLE NadekoBot
+@TITLE WizBot
 :auto
-CD /D %~dp0NadekoBot\src\NadekoBot
+CD /D %~dp0WizBot\src\WizBot
 dotnet run --configuration Release
 goto auto

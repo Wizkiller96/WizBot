@@ -1,13 +1,13 @@
 @ECHO off
-TITLE Downloading NadekoBot, please wait
+TITLE Downloading WizBot, please wait
 ::Setting convenient to read variables which don't delete the windows temp folder
 SET root=%~dp0
 CD /D %root%
 SET rootdir=%cd%
-SET build1=%root%NadekoInstall_Temp\NadekoBot\discord.net\src\Discord.Net\
-SET build2=%root%NadekoInstall_Temp\NadekoBot\discord.net\src\Discord.Net.Commands\
-SET build3=%root%NadekoInstall_Temp\NadekoBot\src\NadekoBot\
-SET installtemp=%root%NadekoInstall_Temp\
+SET build1=%root%WizBotInstall_Temp\WizBot\discord.net\src\Discord.Net\
+SET build2=%root%WizBotInstall_Temp\WizBot\discord.net\src\Discord.Net.Commands\
+SET build3=%root%WizBotInstall_Temp\WizBot\src\WizBot\
+SET installtemp=%root%WizBotInstall_Temp\
 ::Deleting traces of last setup for the sake of clean folders, if by some miracle it still exists
 IF EXIST %installtemp% ( RMDIR %installtemp% /S /Q >nul 2>&1)
 ::Checks that both git and dotnet are installed
@@ -15,17 +15,17 @@ dotnet --version >nul 2>&1 || GOTO :dotnet
 git --version >nul 2>&1 || GOTO :git
 ::Creates the install directory to work in and get the current directory because spaces ruins everything otherwise
 :start
-MKDIR NadekoInstall_Temp
+MKDIR WizBotInstall_Temp
 CD /D %installtemp%
-::Downloads the latest version of Nadeko
-ECHO Downloading Nadeko...
+::Downloads the latest version of Wiz
+ECHO Downloading WizBot...
 ECHO.
-git clone -b master --recursive --depth 1 --progress https://github.com/Kwoth/NadekoBot.git >nul
+git clone -b master --recursive --depth 1 --progress https://github.com/Wizkiller96/WizBot.git >nul
 IF %ERRORLEVEL% EQU 128 (GOTO :giterror)
-TITLE Installing NadekoBot, please wait
+TITLE Installing WizBot, please wait
 ECHO.
 ECHO Installing...
-::Building Nadeko
+::Building WizBot
 CD /D %build1%
 dotnet restore >nul 2>&1
 CD /D %build2%
@@ -34,38 +34,38 @@ CD /D %build3%
 dotnet restore >nul 2>&1
 dotnet build --configuration Release >nul 2>&1
 ::Attempts to backup old files if they currently exist in the same folder as the batch file
-IF EXIST "%root%NadekoBot\" (GOTO :backupinstall)
+IF EXIST "%root%WizBot\" (GOTO :backupinstall)
 :freshinstall
-	::Moves the NadekoBot folder to keep things tidy
-	ROBOCOPY "%root%NadekoInstall_Temp" "%rootdir%" /E /MOVE >nul 2>&1
+	::Moves the WizBot folder to keep things tidy
+	ROBOCOPY "%root%WizBotInstall_Temp" "%rootdir%" /E /MOVE >nul 2>&1
 	IF %ERRORLEVEL% GEQ 8 (GOTO :copyerror)
 	GOTO :end
 :backupinstall
 	TITLE Backing up old files
 	ECHO.
-	ECHO Make sure to close any files such as NadekoBot.db before PRESSing ANY KEY TO CONTINUE to prevent data loss
+	ECHO Make sure to close any files such as WizBot.db before PRESSing ANY KEY TO CONTINUE to prevent data loss
 	PAUSE >nul 2>&1
-	::Recursively copies all files and folders from NadekoBot to NadekoBot_Old
-	ROBOCOPY "%root%NadekoBot" "%root%NadekoBot_Old" /MIR >nul 2>&1
+	::Recursively copies all files and folders from WizBot to WizBot_Old
+	ROBOCOPY "%root%WizBot" "%root%WizBot_Old" /MIR >nul 2>&1
 	IF %ERRORLEVEL% GEQ 8 (GOTO :copyerror)
 	ECHO.
-	ECHO Old files backed up to NadekoBot_Old
+	ECHO Old files backed up to WizBot_Old
 	::Copies the credentials and database from the backed up data to the new folder
-	COPY "%root%NadekoBot_Old\src\NadekoBot\credentials.json" "%installtemp%NadekoBot\src\NadekoBot\credentials.json" >nul 2>&1
+	COPY "%root%WizBot_Old\src\WizBot\credentials.json" "%installtemp%WizBot\src\WizBot\credentials.json" >nul 2>&1
 	IF %ERRORLEVEL% GEQ 8 (GOTO :copyerror)
 	ECHO.
 	ECHO credentials.json copied to new folder
-	ROBOCOPY "%root%NadekoBot_Old\src\NadekoBot\bin" "%installtemp%NadekoBot\src\NadekoBot\bin" /E >nul 2>&1
+	ROBOCOPY "%root%WizBot_Old\src\WizBot\bin" "%installtemp%WizBot\src\WizBot\bin" /E >nul 2>&1
 	IF %ERRORLEVEL% GEQ 8 (GOTO :copyerror)
 	ECHO.
 	ECHO Old bin folder copied to new folder
-	ROBOCOPY "%root%NadekoBot_Old\src\NadekoBot\data" "%installtemp%NadekoBot\src\NadekoBot\data" /E >nul 2>&1
+	ROBOCOPY "%root%WizBot_Old\src\WizBot\data" "%installtemp%WizBot\src\WizBot\data" /E >nul 2>&1
 	IF %ERRORLEVEL% GEQ 8 (GOTO :copyerror)
 	ECHO.
 	ECHO Old data folder copied to new folder
-	::Moves the setup Nadeko folder
-	RMDIR "%root%NadekoBot\" /S /Q >nul 2>&1
-	ROBOCOPY "%root%NadekoInstall_Temp" "%rootdir%" /E /MOVE >nul 2>&1
+	::Moves the setup WizBot folder
+	RMDIR "%root%WizBot\" /S /Q >nul 2>&1
+	ROBOCOPY "%root%WizBotInstall_Temp" "%rootdir%" /E /MOVE >nul 2>&1
 	IF %ERRORLEVEL% GEQ 8 (GOTO :copyerror)
 	GOTO :end
 :dotnet
@@ -95,7 +95,7 @@ IF EXIST "%root%NadekoBot\" (GOTO :backupinstall)
 	ECHO.
 	ECHO An error in copying data has been encountered, returning an exit code of %ERRORLEVEL%
 	ECHO.
-	ECHO Make sure to close any files, such as `NadekoBot.db` before continuing or try running the installer as an Administrator
+	ECHO Make sure to close any files, such as `WizBot.db` before continuing or try running the installer as an Administrator
 	PAUSE >nul 2>&1
 	CD /D "%root%"
 	GOTO :EOF
