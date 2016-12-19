@@ -1,6 +1,6 @@
-##Donate to NadekoBot
+##Donate to WizBot
 
-If you want to help Nadeko and Nadeko's team by donating, you can do that in the two of the following ways:
+If you want to help WizBot and WizBot's team by donating, you can do that in the two of the following ways:
 
 ###PayPal
 
