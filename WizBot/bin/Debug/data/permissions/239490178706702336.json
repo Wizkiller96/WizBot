@@ -1,0 +1,19 @@
+{
+  "PermissionsControllerRole": "WizBot",
+  "Verbose": true,
+  "Id": 239490178706702336,
+  "Permissions": {
+    "Name": "lol",
+    "Modules": {
+      "NSFW": true
+    },
+    "Commands": {},
+    "FilterInvites": false,
+    "FilterWords": false
+  },
+  "Words": [],
+  "UserPermissions": {},
+  "ChannelPermissions": {},
+  "RolePermissions": {},
+  "CommandCooldowns": {}
+}

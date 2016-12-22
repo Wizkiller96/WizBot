@@ -1,9 +1,9 @@
 ﻿{
   "dependencies": {
-    "Newtonsoft.Json": "8.0.4-beta1",
+    "Newtonsoft.Json": "9.0.2-beta1",
     "Nito.AsyncEx": "3.0.1",
     "RestSharp": "105.2.3",
-    "WebSocket4Net": "0.14.1"
+    "WebSocket4Net": "0.15.0-beta6"
   },
   "frameworks": {
     "net45": {}

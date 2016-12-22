@@ -2,7 +2,6 @@
 using Discord.Commands;
 using WizBot.Classes;
 using WizBot.Extensions;
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +13,7 @@ namespace WizBot.Modules.Games.Commands.Trivia
 {
     internal class TriviaGame
     {
-        private readonly object _guessLock = new object();
+        private readonly SemaphoreSlim _guessLock = new SemaphoreSlim(1,1);
 
         private Server server { get; }
         private Channel channel { get; }
@@ -79,10 +78,7 @@ namespace WizBot.Modules.Games.Commands.Trivia
                     await Task.Delay(QuestionDurationMiliseconds - HintTimeoutMiliseconds, token).ConfigureAwait(false);
 
                 }
-                catch (TaskCanceledException)
-                {
-                    Console.WriteLine("Trivia cancelled");
-                }
+                catch (TaskCanceledException) { } //means someone guessed the answer
                 GameActive = false;
                 if (!triviaCancelSource.IsCancellationRequested)
                     await channel.Send($":clock2: :question: **Time's up!** The correct answer was **{CurrentQuestion.Answer}**").ConfigureAwait(false);
@@ -117,7 +113,8 @@ namespace WizBot.Modules.Games.Commands.Trivia
                 if (e.User.Id == WizBot.Client.CurrentUser.Id) return;
 
                 var guess = false;
-                lock (_guessLock)
+                await _guessLock.WaitAsync().ConfigureAwait(false);
+                try
                 {
                     if (GameActive && CurrentQuestion.IsAnswerCorrect(e.Message.Text) && !triviaCancelSource.IsCancellationRequested)
                     {
@@ -126,6 +123,7 @@ namespace WizBot.Modules.Games.Commands.Trivia
                         guess = true;
                     }
                 }
+                finally { _guessLock.Release(); }
                 if (!guess) return;
                 triviaCancelSource.Cancel();
                 await channel.SendMessage($"☑️ {e.User.Mention} guessed it! The answer was: **{CurrentQuestion.Answer}**").ConfigureAwait(false);

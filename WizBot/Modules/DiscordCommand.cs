@@ -7,13 +7,18 @@ namespace WizBot.Classes
     /// Base DiscordCommand Class.
     /// Inherit this class to create your own command.
     /// </summary>
-    internal abstract class DiscordCommand
+    public abstract class DiscordCommand
     {
 
         /// <summary>
         /// Parent module
         /// </summary>
         protected DiscordModule Module { get; }
+
+        /// <summary>
+        /// Parent module's prefix
+        /// </summary>
+        protected string Prefix => Module.Prefix;
 
         /// <summary>
         /// Creates a new instance of discord command,

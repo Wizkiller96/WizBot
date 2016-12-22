@@ -1,5 +1,6 @@
 ﻿using Discord.API.Converters;
 using Newtonsoft.Json;
+using System.ComponentModel;
 
 namespace Discord.API.Client.Rest
 {
@@ -17,11 +18,11 @@ namespace Discord.API.Client.Rest
         public bool IsMuted { get; set; }
         [JsonProperty("deaf")]
         public bool IsDeafened { get; set; }
-        [JsonProperty("channel_id"), JsonConverter(typeof(NullableLongStringConverter))]
+        [JsonProperty("channel_id", NullValueHandling = NullValueHandling.Ignore), JsonConverter(typeof(NullableLongStringConverter))]
         public ulong? VoiceChannelId { get; set; }
         [JsonProperty("roles"), JsonConverter(typeof(LongStringArrayConverter))]
         public ulong[] RoleIds { get; set; }
-        [JsonProperty("nick")]
+        [JsonProperty("nick", NullValueHandling = NullValueHandling.Ignore)]
         public string Nickname { get; set; }
 
         public UpdateMemberRequest(ulong guildId, ulong userId)

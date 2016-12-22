@@ -22,10 +22,13 @@ namespace Discord.Commands
 		internal IEnumerable<CommandMap> Categories => _categories.Values;
 
         public event EventHandler<CommandEventArgs> CommandExecuted = delegate { };
+        public event EventHandler<CommandEventArgs> CommandFinished = delegate { };
         public event EventHandler<CommandErrorEventArgs> CommandErrored = delegate { };
 
         private void OnCommand(CommandEventArgs args)
             => CommandExecuted(this, args);
+        private void OnAfterCommand(CommandEventArgs args)
+            => CommandFinished(this, args);
         private void OnCommandError(CommandErrorType errorType, CommandEventArgs args, Exception ex = null)
             => CommandErrored(this, new CommandErrorEventArgs(errorType, args, ex));
 
@@ -181,7 +184,8 @@ namespace Discord.Commands
 						{
 							OnCommand(eventArgs);
 							await command.Run(eventArgs).ConfigureAwait(false);
-						}
+                            OnAfterCommand(eventArgs);
+                        }
 						catch (Exception ex)
 						{
 							OnCommandError(CommandErrorType.Exception, eventArgs, ex);

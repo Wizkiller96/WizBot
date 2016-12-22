@@ -17,7 +17,7 @@ namespace WizBot.Modules.Administration.Commands
         public VoicePlusTextCommand(DiscordModule module) : base(module)
         {
             // changing servers may cause bugs
-            WizBot.Client.UserUpdated += async (sender, e) =>
+            WizBot.OnReady += () => WizBot.Client.UserUpdated += async (sender, e) =>
             {
                 try
                 {
@@ -56,7 +56,7 @@ namespace WizBot.Modules.Administration.Commands
                                                    sendMessages: PermValue.Deny)).ConfigureAwait(false);
                     }
                     var afterVch = e.After.VoiceChannel;
-                    if (afterVch != null)
+                    if (afterVch != null && e.Server.AFKChannel != afterVch)
                     {
                         var textChannel = e.Server.FindChannels(
                                                     GetChannelName(afterVch.Name),
@@ -87,20 +87,21 @@ namespace WizBot.Modules.Administration.Commands
         internal override void Init(CommandGroupBuilder cgb)
         {
             cgb.CreateCommand(Module.Prefix + "cleanv+t")
-                .Description("Deletes all text channels ending in `-voice` for which voicechannels are not found. **Use at your own risk.**")
+                .Alias(Module.Prefix + "cv+t")
+                .Description($"Deletes all text channels ending in `-voice` for which voicechannels are not found. **Use at your own risk. Needs Manage Roles and Manage Channels Permissions.** | `{Prefix}cleanv+t`")
                 .AddCheck(SimpleCheckers.CanManageRoles)
                 .AddCheck(SimpleCheckers.ManageChannels())
                 .Do(async e =>
                 {
                     if (!e.Server.CurrentUser.ServerPermissions.ManageChannels)
-                     {
-                         await e.Channel.SendMessage("`I have insufficient permission to do that.`");
-                         return;
+                    {
+                        await e.Channel.SendMessage("`I have insufficient permission to do that.`");
+                        return;
                     }
 
                     var allTxtChannels = e.Server.TextChannels.Where(c => c.Name.EndsWith("-voice"));
                     var validTxtChannelNames = e.Server.VoiceChannels.Select(c => GetChannelName(c.Name));
-                
+
                     var invalidTxtChannels = allTxtChannels.Where(c => !validTxtChannelNames.Contains(c.Name));
 
                     foreach (var c in invalidTxtChannels)
@@ -114,13 +115,12 @@ namespace WizBot.Modules.Administration.Commands
                     }
 
                     await e.Channel.SendMessage("`Done.`");
-               });
+                });
 
-
-            cgb.CreateCommand(Module.Prefix + "v+t")
-                .Alias(Module.Prefix + "voice+text")
+            cgb.CreateCommand(Module.Prefix + "voice+text")
+                .Alias(Module.Prefix + "v+t")
                 .Description("Creates a text channel for each voice channel only users in that voice channel can see." +
-                             "If you are server owner, keep in mind you will see them all the time regardless.")
+                             $"If you are server owner, keep in mind you will see them all the time regardless. **Needs Manage Roles and Manage Channels Permissions.**| `{Prefix}voice+text`")
                 .AddCheck(SimpleCheckers.ManageChannels())
                 .AddCheck(SimpleCheckers.CanManageRoles)
                 .Do(async e =>

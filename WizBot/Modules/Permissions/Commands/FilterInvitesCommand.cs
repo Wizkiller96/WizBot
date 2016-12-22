@@ -14,7 +14,7 @@ namespace WizBot.Modules.Permissions.Commands
 
         public FilterInvitesCommand(DiscordModule module) : base(module)
         {
-            WizBot.Client.MessageReceived += async (sender, args) =>
+            WizBot.OnReady += () => WizBot.Client.MessageReceived += async (sender, args) =>
             {
                 if (args.Channel.IsPrivate || args.User.Id == WizBot.Client.CurrentUser.Id) return;
                 try
@@ -25,9 +25,9 @@ namespace WizBot.Modules.Permissions.Commands
                     if (filterRegex.IsMatch(args.Message.RawText))
                     {
                         await args.Message.Delete().ConfigureAwait(false);
-                        IncidentsHandler.Add(args.Server.Id, $"User [{args.User.Name}/{args.User.Id}] posted " +
-                                                             $"INVITE LINK in [{args.Channel.Name}/{args.Channel.Id}] channel. " +
-                                                             $"Full message: [[{args.Message.Text}]]");
+                        IncidentsHandler.Add(args.Server.Id, args.Channel.Id, $"User [{args.User.Name}/{args.User.Id}] posted " +
+                                                             $"INVITE LINK in [{args.Channel.Name}/{args.Channel.Id}] channel.\n" +
+                                                             $"`Full message:` {args.Message.Text}");
                         if (serverPerms.Verbose)
                             await args.Channel.SendMessage($"{args.User.Mention} Invite links are not " +
                                                            $"allowed on this channel.")
@@ -51,11 +51,11 @@ namespace WizBot.Modules.Permissions.Commands
 
         internal override void Init(CommandGroupBuilder cgb)
         {
-            cgb.CreateCommand(Module.Prefix + "cfi")
-                .Alias(Module.Prefix + "channelfilterinvites")
+            cgb.CreateCommand(Module.Prefix + "chnlfilterinv")
+                .Alias(Module.Prefix + "cfi")
                 .Description("Enables or disables automatic deleting of invites on the channel." +
                              "If no channel supplied, it will default to current one. Use ALL to apply to all existing channels at once." +
-                             "\n**Usage**: ;cfi enable #general-chat")
+                             $" | `{Prefix}cfi enable #general-chat`")
                 .Parameter("bool")
                 .Parameter("channel", ParameterType.Optional)
                 .Do(async e =>
@@ -71,7 +71,7 @@ namespace WizBot.Modules.Permissions.Commands
                             var chan = string.IsNullOrWhiteSpace(chanStr)
                                 ? e.Channel
                                 : PermissionHelper.ValidateChannel(e.Server, chanStr);
-                            PermissionsHandler.SetChannelFilterInvitesPermission(chan, state);
+                            await PermissionsHandler.SetChannelFilterInvitesPermission(chan, state).ConfigureAwait(false);
                             await e.Channel.SendMessage($"Invite Filter has been **{(state ? "enabled" : "disabled")}** for **{chan.Name}** channel.")
                                             .ConfigureAwait(false);
                             return;
@@ -80,7 +80,7 @@ namespace WizBot.Modules.Permissions.Commands
 
                         foreach (var curChannel in e.Server.TextChannels)
                         {
-                            PermissionsHandler.SetChannelFilterInvitesPermission(curChannel, state);
+                            await PermissionsHandler.SetChannelFilterInvitesPermission(curChannel, state).ConfigureAwait(false);
                         }
                         await e.Channel.SendMessage($"Invite Filter has been **{(state ? "enabled" : "disabled")}** for **ALL** channels.")
                                        .ConfigureAwait(false);
@@ -93,16 +93,16 @@ namespace WizBot.Modules.Permissions.Commands
                     }
                 });
 
-            cgb.CreateCommand(Module.Prefix + "sfi")
-                .Alias(Module.Prefix + "serverfilterinvites")
-                .Description("Enables or disables automatic deleting of invites on the server.\n**Usage**: ;sfi disable")
+            cgb.CreateCommand(Module.Prefix + "srvrfilterinv")
+                .Alias(Module.Prefix + "sfi")
+                .Description($"Enables or disables automatic deleting of invites on the server. | `{Prefix}sfi disable`")
                 .Parameter("bool")
                 .Do(async e =>
                 {
                     try
                     {
                         var state = PermissionHelper.ValidateBool(e.GetArg("bool"));
-                        PermissionsHandler.SetServerFilterInvitesPermission(e.Server, state);
+                        await PermissionsHandler.SetServerFilterInvitesPermission(e.Server, state).ConfigureAwait(false);
                         await e.Channel.SendMessage($"Invite Filter has been **{(state ? "enabled" : "disabled")}** for this server.")
                                        .ConfigureAwait(false);
 

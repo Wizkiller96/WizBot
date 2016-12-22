@@ -583,16 +583,6 @@ namespace WizBot.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap hidden {
-            get {
-                object obj = ResourceManager.GetObject("hidden", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         public static System.Drawing.Bitmap jack_of_clubs {
             get {
                 object obj = ResourceManager.GetObject("jack_of_clubs", resourceCulture);
@@ -726,6 +716,16 @@ namespace WizBot.Properties {
         public static System.Drawing.Bitmap rip {
             get {
                 object obj = ResourceManager.GetObject("rip", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap rose_overlay {
+            get {
+                object obj = ResourceManager.GetObject("rose_overlay", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

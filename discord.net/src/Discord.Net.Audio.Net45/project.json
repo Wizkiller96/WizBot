@@ -1,6 +1,6 @@
 ﻿{
   "dependencies": {
-    "Newtonsoft.Json": "8.0.4-beta1",
+    "Newtonsoft.Json": "9.0.2-beta1",
     "Nito.AsyncEx": "3.0.1"
   },
   "frameworks": {

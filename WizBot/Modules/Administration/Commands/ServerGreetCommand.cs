@@ -10,8 +10,10 @@ public class AsyncLazy<T> : Lazy<Task<T>>
 { 
     public AsyncLazy(Func<T> valueFactory) : 
         base(() => Task.Factory.StartNew(valueFactory)) { }
+
     public AsyncLazy(Func<Task<T>> taskFactory) : 
         base(() => Task.Factory.StartNew(() => taskFactory()).Unwrap()) { } 
+
     public TaskAwaiter<T> GetAwaiter() { return Value.GetAwaiter(); } 
 }
 */
@@ -29,8 +31,12 @@ namespace WizBot.Modules.Administration.Commands
         {
             AnnouncementsDictionary = new ConcurrentDictionary<ulong, AnnounceControls>();
 
-            WizBot.Client.UserJoined += UserJoined;
-            WizBot.Client.UserLeft += UserLeft;
+            //gotta subscribe after ready, to prevent trying to send these before all guilds are initialized
+            WizBot.OnReady += () =>
+            {
+                WizBot.Client.UserJoined += UserJoined;
+                WizBot.Client.UserLeft += UserLeft;
+            };
 
             var data = Classes.DbHandler.Instance.GetAllRows<DataModels.Announcement>();
 
@@ -114,67 +120,55 @@ namespace WizBot.Modules.Administration.Commands
         {
             private DataModels.Announcement _model { get; }
 
-            public bool Greet
-            {
+            public bool Greet {
                 get { return _model.Greet; }
                 set { _model.Greet = value; Save(); }
             }
 
-            public ulong GreetChannel
-            {
+            public ulong GreetChannel {
                 get { return (ulong)_model.GreetChannelId; }
                 set { _model.GreetChannelId = (long)value; Save(); }
             }
 
-            public bool GreetPM
-            {
+            public bool GreetPM {
                 get { return _model.GreetPM; }
                 set { _model.GreetPM = value; Save(); }
             }
 
-            public bool ByePM
-            {
+            public bool ByePM {
                 get { return _model.ByePM; }
                 set { _model.ByePM = value; Save(); }
             }
 
-            public string GreetText
-            {
+            public string GreetText {
                 get { return _model.GreetText; }
                 set { _model.GreetText = value; Save(); }
             }
 
-            public bool Bye
-            {
+            public bool Bye {
                 get { return _model.Bye; }
                 set { _model.Bye = value; Save(); }
             }
-            public ulong ByeChannel
-            {
+            public ulong ByeChannel {
                 get { return (ulong)_model.ByeChannelId; }
                 set { _model.ByeChannelId = (long)value; Save(); }
             }
 
-            public string ByeText
-            {
+            public string ByeText {
                 get { return _model.ByeText; }
                 set { _model.ByeText = value; Save(); }
             }
 
-            public ulong ServerId
-            {
+            public ulong ServerId {
                 get { return (ulong)_model.ServerId; }
                 set { _model.ServerId = (long)value; }
             }
 
-            public bool DeleteGreetMessages
-            {
-                get
-                {
+            public bool DeleteGreetMessages {
+                get {
                     return _model.DeleteGreetMessages;
                 }
-                set
-                {
+                set {
                     _model.DeleteGreetMessages = value; Save();
                 }
             }
@@ -229,7 +223,7 @@ namespace WizBot.Modules.Administration.Commands
         internal override void Init(CommandGroupBuilder cgb)
         {
             cgb.CreateCommand(Module.Prefix + "grdel")
-                .Description("Toggles automatic deletion of greet and bye messages.")
+                .Description($"Toggles automatic deletion of greet and bye messages. **Needs Manage Server Permissions.**| `{Prefix}grdel`")
                 .Do(async e =>
                 {
                     if (!e.User.ServerPermissions.ManageServer) return;
@@ -242,7 +236,7 @@ namespace WizBot.Modules.Administration.Commands
                 });
 
             cgb.CreateCommand(Module.Prefix + "greet")
-                .Description("Toggles announcements on the current channel when someone joins the server.")
+                .Description($"Toggles anouncements on the current channel when someone joins the server. **Needs Manage Server Permissions.**| `{Prefix}greet`")
                 .Do(async e =>
                 {
                     if (!e.User.ServerPermissions.ManageServer) return;
@@ -255,17 +249,18 @@ namespace WizBot.Modules.Administration.Commands
                 });
 
             cgb.CreateCommand(Module.Prefix + "greetmsg")
-                .Description("Sets a new join announcement message. Type %user% if you want to mention the new member. Using it with no message will show the current greet message.\n**Usage**: .greetmsg Welcome to the server, %user%.")
+                .Description($"Sets a new join announcement message. Type %user% if you want to mention the new member. Using it with no message will show the current greet message. **Needs Manage Server Permissions.**| `{Prefix}greetmsg Welcome, %user%.`")
                 .Parameter("msg", ParameterType.Unparsed)
                 .Do(async e =>
                 {
                     if (!e.User.ServerPermissions.ManageServer) return;
                     var ann = AnnouncementsDictionary.GetOrAdd(e.Server.Id, new AnnounceControls(e.Server.Id));
                     if (string.IsNullOrWhiteSpace(e.GetArg("msg")))
-                        {
+                    {
                         await e.Channel.SendMessage("`Current greet message:` " + ann.GreetText);
                         return;
-                        }
+                    }
+
 
                     ann.GreetText = e.GetArg("msg");
                     await e.Channel.SendMessage("New greet message set.").ConfigureAwait(false);
@@ -274,7 +269,7 @@ namespace WizBot.Modules.Administration.Commands
                 });
 
             cgb.CreateCommand(Module.Prefix + "bye")
-                .Description("Toggles anouncements on the current channel when someone leaves the server.")
+                .Description($"Toggles anouncements on the current channel when someone leaves the server. | `{Prefix}bye`")
                 .Do(async e =>
                 {
                     if (!e.User.ServerPermissions.ManageServer) return;
@@ -287,17 +282,17 @@ namespace WizBot.Modules.Administration.Commands
                 });
 
             cgb.CreateCommand(Module.Prefix + "byemsg")
-                .Description("Sets a new leave announcement message. Type %user% if you want to mention the new member. Using it with no message will show the current bye message.\n**Usage**: .byemsg %user% has left the server.")
+                .Description($"Sets a new leave announcement message. Type %user% if you want to mention the new member. Using it with no message will show the current bye message. **Needs Manage Server Permissions.**| `{Prefix}byemsg %user% has left.`")
                 .Parameter("msg", ParameterType.Unparsed)
                 .Do(async e =>
                 {
                     if (!e.User.ServerPermissions.ManageServer) return;
                     var ann = AnnouncementsDictionary.GetOrAdd(e.Server.Id, new AnnounceControls(e.Server.Id));
                     if (string.IsNullOrWhiteSpace(e.GetArg("msg")))
-                        {
+                    {
                         await e.Channel.SendMessage("`Current bye message:` " + ann.ByeText);
                         return;
-                        }
+                    }
 
                     ann.ByeText = e.GetArg("msg");
                     await e.Channel.SendMessage("New bye message set.").ConfigureAwait(false);
@@ -306,7 +301,7 @@ namespace WizBot.Modules.Administration.Commands
                 });
 
             cgb.CreateCommand(Module.Prefix + "byepm")
-                .Description("Toggles whether the good bye messages will be sent in a PM or in the text channel.")
+                .Description($"Toggles whether the good bye messages will be sent in a PM or in the text channel. **Needs Manage Server Permissions.**| `{Prefix}byepm`")
                 .Do(async e =>
                 {
                     if (!e.User.ServerPermissions.ManageServer) return;
@@ -322,7 +317,7 @@ namespace WizBot.Modules.Administration.Commands
                 });
 
             cgb.CreateCommand(Module.Prefix + "greetpm")
-                .Description("Toggles whether the greet messages will be sent in a PM or in the text channel.")
+                .Description($"Toggles whether the greet messages will be sent in a PM or in the text channel. **Needs Manage Server Permissions.**| `{Prefix}greetpm`")
                 .Do(async e =>
                 {
                     if (!e.User.ServerPermissions.ManageServer) return;

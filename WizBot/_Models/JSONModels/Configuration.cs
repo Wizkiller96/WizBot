@@ -1,25 +1,18 @@
 ﻿using Discord;
+using WizBot.Extensions;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace WizBot.Classes.JSONModels
 {
     public class Configuration
     {
-        public bool DontJoinServers { get; set; } = false;
-        public bool ForwardMessages { get; set; } = true;
-        public bool IsRotatingStatus { get; set; } = false;
-
         [JsonIgnore]
-        public List<Quote> Quotes { get; set; } = new List<Quote>();
-
-        [JsonIgnore]
-        public List<PokemonType> PokemonTypes { get; set; } = new List<PokemonType>();
-
-        public string RemindMessageFormat { get; set; } = "❗⏰**I've been told to remind you to '%message%' now by %user%.**⏰❗";
-
-        public Dictionary<string, List<string>> CustomReactions { get; set; } = new Dictionary<string, List<string>>()
+        public static readonly Dictionary<string, List<string>> DefaultCustomReactions = new Dictionary<string, List<string>>
         {
             {@"\o\", new List<string>()
             { "/o/" } },
@@ -46,8 +39,7 @@ namespace WizBot.Classes.JSONModels
                 "%target% is awesome!",
                 "%target% Wow."
             } },
-            {"%mention% pat", new List<string>()
-            {
+            {"%mention% pat", new List<string>() {
                 "http://i.imgur.com/IiQwK12.gif",
                 "http://i.imgur.com/JCXj8yD.gif",
                 "http://i.imgur.com/qqBl2bm.gif",
@@ -56,19 +48,7 @@ namespace WizBot.Classes.JSONModels
                 "https://media.giphy.com/media/KZQlfylo73AMU/giphy.gif",
                 "https://media.giphy.com/media/12hvLuZ7uzvCvK/giphy.gif",
                 "http://gallery1.anivide.com/_full/65030_1382582341.gif",
-                "https://49.media.tumblr.com/8e8a099c4eba22abd3ec0f70fd087cce/tumblr_nxovj9oY861ur1mffo1_500.gif "
-            } },
-            {"%mention% neko", new List<string>()
-            {
-                "https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/12750101_1313763215317390_1645972529_n.jpg?ig_cache_key=MTE4NzIzNDIzMzMxMTM3Njc0OQ%3D%3D.2.l",
-                "http://i117.photobucket.com/albums/o47/Nana-gloss/Neko/nekobible3.jpg",
-                "https://s-media-cache-ak0.pinimg.com/564x/7a/9b/bd/7a9bbd1c3b16d2cfba0874974c9794bc.jpg",
-                "https://s-media-cache-ak0.pinimg.com/564x/61/8b/b7/618bb7b7f61d2e3794846a6e6880ba47.jpg",
-                "https://s-media-cache-ak0.pinimg.com/564x/bc/dc/4c/bcdc4cd8d0cc64a51eef1ee5c413cc72.jpg",
-                "https://s-media-cache-ak0.pinimg.com/564x/ff/b2/43/ffb243bc5225426b9916a0fef21ed6ac.jpg",
-                "https://s-media-cache-ak0.pinimg.com/564x/55/31/ac/5531aca0651dee8e60260617c6d28b39.jpg",
-                "https://s-media-cache-ak0.pinimg.com/564x/89/0e/03/890e033cc3411f1b80d977aaffa81c98.jpg",
-                "https://s-media-cache-ak0.pinimg.com/564x/48/ee/78/48ee78d5fe31fb9dd1d2bc32df4159d7.jpg"
+                "https://49.media.tumblr.com/8e8a099c4eba22abd3ec0f70fd087cce/tumblr_nxovj9oY861ur1mffo1_500.gif ",
             } },
             {"%mention% cry", new List<string>()
             {
@@ -101,8 +81,89 @@ namespace WizBot.Classes.JSONModels
                 "https://cdn.discordapp.com/attachments/140007341880901632/156721724430352385/okawari_01_haruka_weird_mask.jpg",
                 "https://cdn.discordapp.com/attachments/140007341880901632/156721728763068417/mustache-best-girl.png"
 
+            } },
+            {"%mention% neko", new List<string>() {
+                "https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/12750101_1313763215317390_1645972529_n.jpg?ig_cache_key=MTE4NzIzNDIzMzMxMTM3Njc0OQ%3D%3D.2.l",
+                "http://i117.photobucket.com/albums/o47/Nana-gloss/Neko/nekobible3.jpg",
+                "https://s-media-cache-ak0.pinimg.com/564x/7a/9b/bd/7a9bbd1c3b16d2cfba0874974c9794bc.jpg",
+                "https://s-media-cache-ak0.pinimg.com/564x/61/8b/b7/618bb7b7f61d2e3794846a6e6880ba47.jpg",
+                "https://s-media-cache-ak0.pinimg.com/564x/bc/dc/4c/bcdc4cd8d0cc64a51eef1ee5c413cc72.jpg",
+                "https://s-media-cache-ak0.pinimg.com/564x/ff/b2/43/ffb243bc5225426b9916a0fef21ed6ac.jpg",
+                "https://s-media-cache-ak0.pinimg.com/564x/55/31/ac/5531aca0651dee8e60260617c6d28b39.jpg",
+                "https://s-media-cache-ak0.pinimg.com/564x/89/0e/03/890e033cc3411f1b80d977aaffa81c98.jpg",
+                "https://s-media-cache-ak0.pinimg.com/564x/48/ee/78/48ee78d5fe31fb9dd1d2bc32df4159d7.jpg",
+                "https://s-media-cache-ak0.pinimg.com/564x/7f/32/b3/7f32b36b58b666cee82d490fc6b903a1.jpg",
+                "https://s-media-cache-ak0.pinimg.com/564x/61/3f/fb/613ffb9b0f83ba6ec6865ffba057bb78.jpg",
+                "https://s-media-cache-ak0.pinimg.com/564x/b2/2d/6f/b22d6fd7fb76118fa35f2d91fcbfe86c.jpg",
+                "https://s-media-cache-ak0.pinimg.com/564x/ff/b2/43/ffb243bc5225426b9916a0fef21ed6ac.jpg",
+                "https://s-media-cache-ak0.pinimg.com/564x/14/07/a3/1407a37dcea7bd519b48f0f2a018989d.jpg",
+                "https://s-media-cache-ak0.pinimg.com/564x/ab/02/a6/ab02a60e2bcfddce008a32702d3f02fe.jpg",
+                "https://s-media-cache-ak0.pinimg.com/564x/32/d2/3b/32d23beb421e654e05c25ecb80c38641.jpg",
+                "https://s-media-cache-ak0.pinimg.com/564x/05/6c/ef/056cefaaf288112b79f76ab0f32adc4e.jpg",
+                "https://s-media-cache-ak0.pinimg.com/564x/40/1f/39/401f39961c4b0961d39811e1a488b40d.jpg",
+                "https://s-media-cache-ak0.pinimg.com/564x/29/e5/be/29e5be8108d1ef820570ec1cdb0347c8.jpg",
+                "https://s-media-cache-ak0.pinimg.com/564x/6c/ce/c1/6ccec19e13abc61913c82fd152582c8f.jpg"
+            } },
+            {"%mention% WizNet", new List<string>() {
+                "http://wizkiller96network.com"
+
+            } },
+            {"Senpai notice me", new List<string>() {
+                "Senpai has notice you %user%."
+
+            } },
+            {"%mention% inv", new List<string>() {
+                "To invite your bot, click on this link -> <https://discordapp.com/oauth2/authorize?client_id=170849867508350977&scope=bot&permissions=66186303>"
+            } },
+            { "%mention% threaten", new List<string>() {
+                "You wanna die, %target%?"
+            } },
+            { "%mention% archer", new List<string>() {
+                "http://i.imgur.com/Bha9NhL.jpg"
+            } },
+            { "%mention% formuoli", new List<string>() {
+                "http://i.imgur.com/sCHYQhl.jpg"
+            } },
+            { "%mention% mei", new List<string>() {
+                "http://i.imgur.com/Xkrf5y7.png"
+            } },
+            { "%mention% omega yato", new List<string>() {
+                "https://cdn.discordapp.com/attachments/168617088892534784/221047921410310144/Yato_Animated.gif"
+            } },
+            { "%mention% smack", new List<string>() {
+                "%target% https://66.media.tumblr.com/dd5d751f86002fd4a544dcef7a9763d6/tumblr_mjpheaAVj51s725bno1_500.gif",
+                "%target% https://media.giphy.com/media/jLeyZWgtwgr2U/giphy.gif",
+                "%target% http://orig11.deviantart.net/2d34/f/2013/339/1/2/golden_time_flower_slap_gif_by_paranoxias-d6wv007.gif",
+                "%target% http://media.giphy.com/media/LB1kIoSRFTC2Q/giphy.gif",
             } }
         };
+
+        public bool DontJoinServers { get; set; } = false;
+        public bool ForwardMessages { get; set; } = true;
+        public bool ForwardToAllOwners { get; set; } = false;
+        public bool IsRotatingStatus { get; set; } = false;
+        public int BufferSize { get; set; } = 4.MiB();
+
+        public string[] RaceAnimals { get; internal set; } = {
+                "🐼",
+                "🐻",
+                "🐧",
+                "🐨",
+                "🐬",
+                "🐞",
+                "🦀",
+                "🦄" };
+
+        [JsonIgnore]
+        public List<Quote> Quotes { get; set; } = new List<Quote>();
+
+        [JsonIgnore]
+        public List<PokemonType> PokemonTypes { get; set; } = new List<PokemonType>();
+
+        public string RemindMessageFormat { get; set; } = "❗⏰**I've been told to remind you to '%message%' now by %user%.**⏰❗";
+
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public Dictionary<string, List<string>> CustomReactions { get; set; }
 
         public List<string> RotatingStatuses { get; set; } = new List<string>();
         public CommandPrefixesModel CommandPrefixes { get; set; } = new CommandPrefixesModel();
@@ -115,6 +176,22 @@ namespace WizBot.Classes.JSONModels
             143515953525817344
         };
 
+        [OnDeserialized]
+        internal void OnDeserialized(StreamingContext context)
+        {
+            if (CustomReactions == null)
+            {
+                CustomReactions = DefaultCustomReactions;
+            }
+        }
+        [OnSerializing]
+        internal void OnSerializing(StreamingContext context)
+        {
+            if (CustomReactions == null)
+            {
+                CustomReactions = DefaultCustomReactions;
+            }
+        }
 
         public string[] _8BallResponses { get; set; } =
             {
@@ -144,6 +221,17 @@ namespace WizBot.Classes.JSONModels
         public string CurrencySign { get; set; } = "🌸";
         public string CurrencyName { get; set; } = "WizFlower";
         public string DMHelpString { get; set; } = "Type `-h` for help.";
+        public string HelpString { get; set; } = @"You can use `{0}modules` command to see a list of all modules.
+You can use `{0}commands ModuleName`
+(for example `{0}commands Administration`) to see a list of all of the commands in that module.
+For a specific command help, use `{0}h ""Command name""` (for example `-h ""!m q""`)
+
+
+**LIST OF COMMANDS CAN BE FOUND ON THIS LINK**
+<http://wizkiller96network.com/wizbot/commands.html>
+
+
+WizBot Support Server: <No Support Server at this time.>";
     }
 
     public class CommandPrefixesModel
@@ -154,23 +242,29 @@ namespace WizBot.Classes.JSONModels
         public string Conversations { get; set; } = "<@{0}>";
         public string ClashOfClans { get; set; } = ",";
         public string Help { get; set; } = "-";
-        public string Music { get; set; } = "!m";
-        public string Trello { get; set; } = "trello";
+        public string Music { get; set; } = "!!";
+        public string Trello { get; set; } = "trello ";
         public string Games { get; set; } = ">";
         public string Gambling { get; set; } = "$";
         public string Permissions { get; set; } = ";";
         public string Programming { get; set; } = "%";
         public string Pokemon { get; set; } = ">";
+        public string Utility { get; set; } = ".";
     }
 
     public static class ConfigHandler
     {
-        private static readonly object configLock = new object();
-        public static void SaveConfig()
+        private static readonly SemaphoreSlim configLock = new SemaphoreSlim(1, 1);
+        public static async Task SaveConfig()
         {
-            lock (configLock)
+            await configLock.WaitAsync();
+            try
             {
                 File.WriteAllText("data/config.json", JsonConvert.SerializeObject(WizBot.Config, Formatting.Indented));
+            }
+            finally
+            {
+                configLock.Release();
             }
         }
 
@@ -193,4 +287,5 @@ namespace WizBot.Classes.JSONModels
         public override string ToString() =>
             $"{Text}\n\t*-{Author}*";
     }
+
 }

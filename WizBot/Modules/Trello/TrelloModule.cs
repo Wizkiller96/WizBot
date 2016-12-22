@@ -63,33 +63,15 @@ namespace WizBot.Modules.Trello
                 }
             };
 
-            manager.CreateCommands("trello ", cgb =>
+            manager.CreateCommands("", cgb =>
             {
 
                 cgb.AddCheck(PermissionChecker.Instance);
 
-                cgb.CreateCommand("join")
-                    .Alias("j")
-                    .Description("Joins a server")
-                    .Parameter("code", Discord.Commands.ParameterType.Required)
-                    .Do(async e =>
-                    {
-                        if (!WizBot.IsOwner(e.User.Id) || WizBot.IsBot) return;
-                        try
-                        {
-                            await (await client.GetInvite(e.GetArg("code")).ConfigureAwait(false)).Accept()
-                                               .ConfigureAwait(false);
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine(ex.ToString());
-                        }
-                    });
-
-                cgb.CreateCommand("bind")
+                cgb.CreateCommand(Prefix + "bind")
                     .Description("Bind a trello bot to a single channel. " +
                                  "You will receive notifications from your board when something is added or edited." +
-                                 "\n**Usage**: bind [board_id]")
+                                 $" **Bot Owner Only!**| `{Prefix}bind [board_id]`")
                     .Parameter("board_id", Discord.Commands.ParameterType.Required)
                     .Do(async e =>
                     {
@@ -109,8 +91,8 @@ namespace WizBot.Modules.Trello
                         }
                     });
 
-                cgb.CreateCommand("unbind")
-                    .Description("Unbinds a bot from the channel and board.")
+                cgb.CreateCommand(Prefix + "unbind")
+                    .Description($"Unbinds a bot from the channel and board. **Bot Owner Only!**| `{Prefix}unbind`")
                     .Do(async e =>
                     {
                         if (!WizBot.IsOwner(e.User.Id)) return;
@@ -122,9 +104,9 @@ namespace WizBot.Modules.Trello
 
                     });
 
-                cgb.CreateCommand("lists")
-                    .Alias("list")
-                    .Description("Lists all lists yo ;)")
+                cgb.CreateCommand(Prefix + "lists")
+                    .Alias(Prefix + "list")
+                    .Description($"Lists all lists, yo ;) **Bot Owner Only!**| `{Prefix}list`")
                     .Do(async e =>
                     {
                         if (!WizBot.IsOwner(e.User.Id)) return;
@@ -133,8 +115,8 @@ namespace WizBot.Modules.Trello
                                        .ConfigureAwait(false);
                     });
 
-                cgb.CreateCommand("cards")
-                    .Description("Lists all cards from the supplied list. You can supply either a name or an index.")
+                cgb.CreateCommand(Prefix + "cards")
+                    .Description($"Lists all cards from the supplied list. You can supply either a name or an index. **Bot Owner Only!**| `{Prefix}cards index`")
                     .Parameter("list_name", Discord.Commands.ParameterType.Unparsed)
                     .Do(async e =>
                     {

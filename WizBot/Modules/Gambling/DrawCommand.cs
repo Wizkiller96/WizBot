@@ -17,13 +17,13 @@ namespace WizBot.Modules.Gambling
         internal override void Init(CommandGroupBuilder cgb)
         {
             cgb.CreateCommand(Module.Prefix + "draw")
-                .Description("Draws a card from the deck.If you supply number [x], she draws up to 5 cards from the deck.\n**Usage**: $draw [x]")
+                .Description($"Draws a card from the deck.If you supply number [x], she draws up to 5 cards from the deck. | `{Prefix}draw [x]`")
                 .Parameter("count", ParameterType.Optional)
                 .Do(DrawCardFunc());
 
             cgb.CreateCommand(Module.Prefix + "shuffle")
                 .Alias(Module.Prefix + "sh")
-                .Description("Reshuffles all cards back into the deck.")
+                .Description($"Reshuffles all cards back into the deck.|`{Prefix}shuffle`")
                 .Do(ReshuffleTask());
         }
 
@@ -79,7 +79,7 @@ namespace WizBot.Modules.Gambling
                 await e.Channel.SendFile(images.Count + " cards.jpg", bitmap.ToStream()).ConfigureAwait(false);
                 if (cardObjects.Count == 5)
                 {
-                    await e.Channel.SendMessage(Cards.GetHandValue(cardObjects)).ConfigureAwait(false);
+                    await e.Channel.SendMessage($"{e.User.Mention} `{Cards.GetHandValue(cardObjects)}`").ConfigureAwait(false);
                 }
             }
             catch (Exception ex)

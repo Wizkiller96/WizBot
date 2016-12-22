@@ -211,7 +211,7 @@ namespace Discord
 			}
 
             if (model.Game != null)
-                CurrentGame = new Game(model.Game.Name, model.Game.Type, model.Game.Url);
+                CurrentGame = new Game(model.Game.Name, model.Game.Type ?? GameType.Default, model.Game.Url);
             else
                 CurrentGame = null;
 		}
@@ -272,14 +272,17 @@ namespace Discord
             }
             if (!isCurrentUser || isMuted != null || isDeafened != null | voiceChannel != null || roles != null)
             {
-                if (nickname == "") nickname = Nickname;
+                //Swap "" and null. Our libs meanings and the API's are flipped.
+                if (nickname == null) nickname = "";
+                else if (nickname == "") nickname = null;
+
                 var request = new UpdateMemberRequest(Server.Id, Id)
                 {
                     IsMuted = isMuted ?? IsServerMuted,
                     IsDeafened = isDeafened ?? IsServerDeafened,
                     VoiceChannelId = voiceChannel?.Id,
                     RoleIds = roleIds,
-                    Nickname = nickname ?? ""
+                    Nickname = nickname
                 };
                 await Client.ClientAPI.Send(request).ConfigureAwait(false);
             }
@@ -397,6 +400,6 @@ namespace Discord
         }
         private User() { } //Used for cloning
 
-        public override string ToString() => Name != null ? $"{Name}#{Discriminator}" : Id.ToIdString();
+        public override string ToString() => Name != null ? $"{Name}#{Discriminator.ToString("D4")}" : Id.ToIdString();
 	}
 }

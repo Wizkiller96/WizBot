@@ -1,28 +1,24 @@
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using Discord.Modules;
-using WizBot.Classes.Conversations.Commands;
 using WizBot.DataModels;
 using WizBot.Extensions;
+using WizBot.Modules.Conversations.Commands;
 using WizBot.Modules.Permissions.Classes;
-using WizBot.Properties;
 using System;
 using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace WizBot.Modules.Conversations
 {
     internal class Conversations : DiscordModule
     {
-        private const string firestr = "🔥 ด้้้้้็็็็็้้้้้็็็็็้้้้้้้้็็็็็้้้้้็็ด้้้้้็็็็็้้้้้็็็็็้้้้้้้้็็็็็้้้้้็็็็็้้้้้้้้็็็ด้้้้้็็็็็้้้้้็็็็็้้้้้้้้็็็็็้้้้้็็็็็้้้้ 🔥";
+        private const string firestr = "🔥 ด้้้้้็็็็็้้้้้็็็็็้้้้้้้้็ด้้้้้็็็็็้้้้้็็็็็้้้้้้้้็็็็็้้้้้็็็็็้้้้้้้้็็็ด้้้้้็็็็็้้้้้็็็็็้้้้้้้้็็็็็้้้้้็็็็็้้้้ 🔥";
         public Conversations()
         {
-            commands.Add(new CopyCommand(this));
-            commands.Add(new RequestsCommand(this));
+            commands.Add(new RipCommand(this));
         }
 
         public override string Prefix { get; } = String.Format(WizBot.Config.CommandPrefixes.Conversations, WizBot.Creds.BotId);
@@ -36,7 +32,7 @@ namespace WizBot.Modules.Conversations
                 cgb.AddCheck(PermissionChecker.Instance);
 
                 cgb.CreateCommand("..")
-                    .Description("Adds a new quote with the specified name (single word) and message (no limit).\n**Usage**: .. abc My message")
+                    .Description("Adds a new quote with the specified name (single word) and message (no limit). | `.. abc My message`")
                     .Parameter("keyword", ParameterType.Required)
                     .Parameter("text", ParameterType.Unparsed)
                     .Do(async e =>
@@ -45,7 +41,7 @@ namespace WizBot.Modules.Conversations
                         if (string.IsNullOrWhiteSpace(text))
                             return;
                         await Task.Run(() =>
-                            Classes.DbHandler.Instance.InsertData(new DataModels.UserQuote()
+                            Classes.DbHandler.Instance.Connection.Insert(new DataModels.UserQuote()
                             {
                                 DateAdded = DateTime.Now,
                                 Keyword = e.GetArg("keyword").ToLowerInvariant(),
@@ -57,7 +53,7 @@ namespace WizBot.Modules.Conversations
                     });
 
                 cgb.CreateCommand("...")
-                    .Description("Shows a random quote with a specified name.\n**Usage**: .. abc")
+                    .Description("Shows a random quote with a specified name. | `... abc`")
                     .Parameter("keyword", ParameterType.Required)
                     .Do(async e =>
                     {
@@ -77,7 +73,7 @@ namespace WizBot.Modules.Conversations
 
                 cgb.CreateCommand("..qdel")
                     .Alias("..quotedelete")
-                    .Description("Deletes all quotes with the specified keyword. You have to either be bot owner or the creator of the quote to delete it.\n**Usage**: `..qdel abc`")
+                    .Description("Deletes all quotes with the specified keyword. You have to either be bot owner or the creator of the quote to delete it. | `..qdel abc`")
                     .Parameter("quote", ParameterType.Required)
                     .Do(async e =>
                     {
@@ -104,17 +100,8 @@ namespace WizBot.Modules.Conversations
 
                 commands.ForEach(cmd => cmd.Init(cgb));
 
-                cgb.CreateCommand("uptime")
-                    .Description("Shows how long WizBot has been running for.")
-                    .Do(async e =>
-                    {
-                        var time = (DateTime.Now - Process.GetCurrentProcess().StartTime);
-                        var str = string.Format("I have been running for {0} days, {1} hours, and {2} minutes.", time.Days, time.Hours, time.Minutes);
-                        await e.Channel.SendMessage(str).ConfigureAwait(false);
-                    });
-
                 cgb.CreateCommand("die")
-                    .Description("Works only for the owner. Shuts the bot down.")
+                    .Description("Works only for the owner. Shuts the bot down. | `@WizBot die`")
                     .Do(async e =>
                     {
                         if (WizBot.IsOwner(e.User.Id))
@@ -131,7 +118,7 @@ namespace WizBot.Modules.Conversations
                 randServerSw.Start();
 
                 cgb.CreateCommand("do you love me")
-                    .Description("Replies with positive answer only to the bot owner.")
+                    .Description("Replies with positive answer only to the bot owner. | `@WizBot do you love me`")
                     .Do(async e =>
                     {
                         if (WizBot.IsOwner(e.User.Id))
@@ -142,7 +129,7 @@ namespace WizBot.Modules.Conversations
 
                 cgb.CreateCommand("how are you")
                     .Alias("how are you?")
-                    .Description("Replies positive only if bot owner is online.")
+                    .Description("Replies positive only if bot owner is online. | `@WizBot how are you`")
                     .Do(async e =>
                     {
                         if (WizBot.IsOwner(e.User.Id))
@@ -162,126 +149,31 @@ namespace WizBot.Modules.Conversations
                     });
 
                 cgb.CreateCommand("fire")
-                    .Description("Shows a unicode fire message. Optional parameter [x] tells her how many times to repeat the fire.\n**Usage**: @Wiz-Bot fire [x]")
+                    .Description("Shows a unicode fire message. Optional parameter [x] tells her how many times to repeat the fire. | `@WizBot fire [x]`")
                     .Parameter("times", ParameterType.Optional)
                     .Do(async e =>
                     {
-                        var count = 1;
-                        int.TryParse(e.Args[0], out count);
-                        if (count == 0)
+                        int count;
+                        if (string.IsNullOrWhiteSpace(e.Args[0]))
                             count = 1;
+                        else
+                            int.TryParse(e.Args[0], out count);
                         if (count < 1 || count > 12)
                         {
-                            await e.Channel.SendMessage("Number must be between 0 and 12").ConfigureAwait(false);
+                            await e.Channel.SendMessage("Number must be between 1 and 12").ConfigureAwait(false);
                             return;
                         }
 
-                        var str = "";
+                        var str = new StringBuilder();
                         for (var i = 0; i < count; i++)
                         {
-                            str += firestr;
+                            str.Append(firestr);
                         }
-                        await e.Channel.SendMessage(str).ConfigureAwait(false);
-                    });
-
-                cgb.CreateCommand("rip")
-                    .Description("Shows a grave image of someone with a start year\n**Usage**: @Wiz-Bot rip @Someone 2000")
-                    .Parameter("user", ParameterType.Required)
-                    .Parameter("year", ParameterType.Optional)
-                    .Do(async e =>
-                    {
-                        if (string.IsNullOrWhiteSpace(e.GetArg("user")))
-                            return;
-                        var usr = e.Channel.FindUsers(e.GetArg("user")).FirstOrDefault();
-                        var text = "";
-                        text = usr?.Name ?? e.GetArg("user");
-                        await e.Channel.SendFile("ripzor_m8.png",
-                                RipName(text, string.IsNullOrWhiteSpace(e.GetArg("year"))
-                                ? null
-                                : e.GetArg("year")))
-                                    .ConfigureAwait(false);
-                    });
-                if (!WizBot.Config.DontJoinServers)
-                {
-                    cgb.CreateCommand("j")
-                        .Description("Joins a server using a code.")
-                        .Parameter("id", ParameterType.Required)
-                        .Do(async e =>
-                        {
-                            var invite = await client.GetInvite(e.Args[0]).ConfigureAwait(false);
-                            if (invite != null)
-                            {
-                                try
-                                {
-                                    await invite.Accept().ConfigureAwait(false);
-                                }
-                                catch
-                                {
-                                    await e.Channel.SendMessage("Failed to accept invite.").ConfigureAwait(false);
-                                }
-                                await e.Channel.SendMessage("I got in!").ConfigureAwait(false);
-                                return;
-                            }
-                            await e.Channel.SendMessage("Invalid code.").ConfigureAwait(false);
-                        });
-                }
-
-                    cgb.CreateCommand("slm")
-                        .Description("Shows the message where you were last mentioned in this channel (checks last 10k messages)")
-                        .Do(async e =>
-                        {
-
-                            Message msg = null;
-                            var msgs = (await e.Channel.DownloadMessages(100).ConfigureAwait(false))
-                            .Where(m => m.MentionedUsers.Contains(e.User))
-                            .OrderByDescending(m => m.Timestamp);
-                            if (msgs.Any())
-                                msg = msgs.First();
-                            else
-                            {
-                                var attempt = 0;
-                                Message lastMessage = null;
-                                while (msg == null && attempt++ < 5)
-                                {
-                                    var msgsarr = await e.Channel.DownloadMessages(100, lastMessage?.Id).ConfigureAwait(false);
-                                    msg = msgsarr
-                                .Where(m => m.MentionedUsers.Contains(e.User))
-                                .OrderByDescending(m => m.Timestamp)
-                                .FirstOrDefault();
-                                    lastMessage = msgsarr.OrderBy(m => m.Timestamp).First();
-                                }
-                            }
-                            if (msg != null)
-                                await e.Channel.SendMessage($"Last message mentioning you was at {msg.Timestamp}\n**Message from {msg.User.Name}:** {msg.RawText}")
-                                    .ConfigureAwait(false);
-                            else
-                                await e.Channel.SendMessage("I can't find a message mentioning you.").ConfigureAwait(false);
-                            });
-
-                cgb.CreateCommand("hide")
-                    .Description("Hides WizBot in plain sight!11!!")
-                    .Do(async e =>
-                    {
-                        using (var ms = Resources.hidden.ToStream(ImageFormat.Png))
-                        {
-                            await client.CurrentUser.Edit(WizBot.Creds.Password, avatar: ms).ConfigureAwait(false);
-                        }
-                        await e.Channel.SendMessage("*hides*").ConfigureAwait(false);
-                    });
-
-                cgb.CreateCommand("unhide")
-                    .Description("Unhides WizBot in plain sight!1!!1")
-                    .Do(async e =>
-                    {
-                        using (var fs = new FileStream("data/avatar.png", FileMode.Open))
-                        {
-                            await client.CurrentUser.Edit(WizBot.Creds.Password, avatar: fs).ConfigureAwait(false);
-                        }
-                        await e.Channel.SendMessage("*unhides*").ConfigureAwait(false);
+                        await e.Channel.SendMessage(str.ToString()).ConfigureAwait(false);
                     });
 
                 cgb.CreateCommand("dump")
-                    .Description("Dumps all of the invites it can to dump.txt.** Owner Only.**")
+                    .Description("Dumps all of the invites it can to dump.txt.** Owner Only.** | `@WizBot dump`")
                     .Do(async e =>
                     {
                         if (!WizBot.IsOwner(e.User.Id)) return;
@@ -308,7 +200,7 @@ namespace WizBot.Modules.Conversations
                     });
 
                 cgb.CreateCommand("ab")
-                    .Description("Try to get 'abalabahaha'")
+                    .Description("Try to get 'abalabahaha'| `@WizBot ab`")
                     .Do(async e =>
                     {
                         string[] strings = { "ba", "la", "ha" };
@@ -321,46 +213,10 @@ namespace WizBot.Modules.Conversations
                         await e.Channel.SendMessage(construct).ConfigureAwait(false);
                     });
 
-                cgb.CreateCommand("av")
-                    .Alias("avatar")
-                    .Parameter("mention", ParameterType.Required)
-                    .Description("Shows a mentioned person's avatar.\n**Usage**: ~av @X")
-                    .Do(async e =>
-                    {
-                        var usr = e.Channel.FindUsers(e.GetArg("mention")).FirstOrDefault();
-                        if (usr == null)
-                        {
-                            await e.Channel.SendMessage("Invalid user specified.").ConfigureAwait(false);
-                            return;
-                        }
-                        await e.Channel.SendMessage(await usr.AvatarUrl.ShortenUrl()).ConfigureAwait(false);
-                    });
-
             });
         }
 
-        public Stream RipName(string name, string year = null)
-        {
-            var bm = Resources.rip;
 
-            var offset = name.Length * 5;
-
-            var fontSize = 20;
-
-            if (name.Length > 10)
-            {
-                fontSize -= (name.Length - 10) / 2;
-            }
-
-            //TODO use measure string
-            var g = Graphics.FromImage(bm);
-            g.DrawString(name, new Font("Comic Sans MS", fontSize, FontStyle.Bold), Brushes.Black, 100 - offset, 200);
-            g.DrawString((year ?? "?") + " - " + DateTime.Now.Year, new Font("Consolas", 12, FontStyle.Bold), Brushes.Black, 80, 235);
-            g.Flush();
-            g.Dispose();
-
-            return bm.ToStream(ImageFormat.Png);
-        }
 
         private static Func<CommandEventArgs, Task> SayYes()
             => async e => await e.Channel.SendMessage("Yes. :)").ConfigureAwait(false);

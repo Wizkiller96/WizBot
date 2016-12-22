@@ -1,4 +1,5 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
 using Discord.Modules;
 using WizBot.Classes;
 using WizBot.Classes.JSONModels;
@@ -13,8 +14,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
+using System.Web;
 
 namespace WizBot.Modules.Searches
 {
@@ -28,6 +29,10 @@ namespace WizBot.Modules.Searches
             commands.Add(new ConverterCommand(this));
             commands.Add(new RedditCommand(this));
             commands.Add(new WowJokeCommand(this));
+            commands.Add(new CalcCommand(this));
+            commands.Add(new OsuCommands(this));
+            commands.Add(new PokemonSearchCommands(this));
+            commands.Add(new MemegenCommands(this));
             rng = new Random();
         }
 
@@ -43,14 +48,14 @@ namespace WizBot.Modules.Searches
                 commands.ForEach(cmd => cmd.Init(cgb));
 
                 cgb.CreateCommand(Prefix + "we")
-                    .Description($"Shows weather data for a specified city and a country. BOTH ARE REQUIRED. Use country abbrevations.\n**Usage**: {Prefix}we Moscow RF")
+                    .Description($"Shows weather data for a specified city and a country. BOTH ARE REQUIRED. Use country abbrevations. | `{Prefix}we Moscow RF`")
                     .Parameter("city", ParameterType.Required)
                     .Parameter("country", ParameterType.Required)
                     .Do(async e =>
                     {
                         var city = e.GetArg("city").Replace(" ", "");
                         var country = e.GetArg("country").Replace(" ", "");
-                        var response = await SearchHelper.GetResponseStringAsync($"http://api.lawlypopzz.xyz/nadekobot/weather/?city={city}&country={country}").ConfigureAwait(false);
+                        var response = await SearchHelper.GetResponseStringAsync($"http://api.lawlypopzz.xyz/WizBot/weather/?city={city}&country={country}").ConfigureAwait(false);
 
                         var obj = JObject.Parse(response)["weather"];
 
@@ -64,11 +69,10 @@ $@"🌍 **Weather for** 【{obj["target"]}】
 
                 cgb.CreateCommand(Prefix + "yt")
                     .Parameter("query", ParameterType.Unparsed)
-                    .Description("Searches youtubes and shows the first result")
+                    .Description($"Searches youtubes and shows the first result | `{Prefix}yt query`")
                     .Do(async e =>
                     {
                         if (!(await SearchHelper.ValidateQuery(e.Channel, e.GetArg("query")).ConfigureAwait(false))) return;
-
                         var link = await SearchHelper.FindYoutubeUrlByKeywords(e.GetArg("query")).ConfigureAwait(false);
                         if (string.IsNullOrWhiteSpace(link))
                         {
@@ -82,7 +86,7 @@ $@"🌍 **Weather for** 【{obj["target"]}】
                 cgb.CreateCommand(Prefix + "ani")
                     .Alias(Prefix + "anime", Prefix + "aq")
                     .Parameter("query", ParameterType.Unparsed)
-                    .Description("Queries anilist for an anime and shows the first result.")
+                    .Description($"Queries anilist for an anime and shows the first result. | `{Prefix}aq aquarion evol`")
                     .Do(async e =>
                     {
                         if (!(await SearchHelper.ValidateQuery(e.Channel, e.GetArg("query")).ConfigureAwait(false))) return;
@@ -102,7 +106,7 @@ $@"🌍 **Weather for** 【{obj["target"]}】
 
                 cgb.CreateCommand(Prefix + "imdb")
                     .Parameter("query", ParameterType.Unparsed)
-                    .Description("Queries imdb for movies or series, show first result.")
+                    .Description($"Queries imdb for movies or series, show first result. | `{Prefix}imdb Batman vs Superman`")
                     .Do(async e =>
                     {
                         if (!(await SearchHelper.ValidateQuery(e.Channel, e.GetArg("query")).ConfigureAwait(false))) return;
@@ -126,7 +130,7 @@ $@"🌍 **Weather for** 【{obj["target"]}】
                 cgb.CreateCommand(Prefix + "mang")
                     .Alias(Prefix + "manga").Alias(Prefix + "mq")
                     .Parameter("query", ParameterType.Unparsed)
-                    .Description("Queries anilist for a manga and shows the first result.")
+                    .Description($"Queries anilist for a manga and shows the first result. | `{Prefix}mq Shingeki no kyojin`")
                     .Do(async e =>
                     {
                         if (!(await SearchHelper.ValidateQuery(e.Channel, e.GetArg("query")).ConfigureAwait(false))) return;
@@ -145,7 +149,7 @@ $@"🌍 **Weather for** 【{obj["target"]}】
 
                 cgb.CreateCommand(Prefix + "randomcat")
                     .Alias(Prefix + "meow")
-                    .Description("Shows a random cat image.")
+                    .Description($"Shows a random cat image. | `{Prefix}meow`")
                     .Do(async e =>
                     {
                         await e.Channel.SendMessage(JObject.Parse(
@@ -153,8 +157,16 @@ $@"🌍 **Weather for** 【{obj["target"]}】
                                 .ConfigureAwait(false);
                     });
 
+                cgb.CreateCommand(Prefix + "randomdog")
+                    .Alias(Prefix + "woof")
+                    .Description($"Shows a random dog image. | `{Prefix}woof`")
+                    .Do(async e =>
+                    {
+                        await e.Channel.SendMessage("http://random.dog/" + await SearchHelper.GetResponseStringAsync("http://random.dog/woof").ConfigureAwait(false)).ConfigureAwait(false);
+                    });
+
                 cgb.CreateCommand(Prefix + "i")
-                   .Description("Pulls the first image found using a search parameter. Use ~ir for different results.\n**Usage**: ~i cute kitten")
+                   .Description($"Pulls the first image found using a search parameter. Use ~ir for different results. | `{Prefix}i cute kitten`")
                    .Parameter("query", ParameterType.Unparsed)
                        .Do(async e =>
                        {
@@ -180,33 +192,34 @@ $@"🌍 **Weather for** 【{obj["target"]}】
                        });
 
                 cgb.CreateCommand(Prefix + "ir")
-                   .Description("Pulls a random image using a search parameter.\n**Usage**: ~ir cute kitten")
+                   .Description($"Pulls a random image using a search parameter. | `{Prefix}ir cute kitten`")
                    .Parameter("query", ParameterType.Unparsed)
-                       .Do(async e =>
-                       {
-                           if (string.IsNullOrWhiteSpace(e.GetArg("query")))
-                               return;
-                           try
-                           {
-                               var reqString = $"https://www.googleapis.com/customsearch/v1?q={Uri.EscapeDataString(e.GetArg("query"))}&cx=018084019232060951019%3Ahs5piey28-e&num=50&searchType=image&start={ rng.Next(1, 50) }&fields=items%2Flink&key={WizBot.Creds.GoogleAPIKey}";
-                               var obj = JObject.Parse(await SearchHelper.GetResponseStringAsync(reqString).ConfigureAwait(false));
-                               var items = obj["items"] as JArray;
-                               await e.Channel.SendMessage(items[rng.Next(0, items.Count)]["link"].ToString()).ConfigureAwait(false);
-                           }
-                           catch (HttpRequestException exception)
-                           {
-                               if (exception.Message.Contains("403 (Forbidden)"))
-                               {
-                                   await e.Channel.SendMessage("Daily limit reached!");
-                               }
-                               else
-                               {
-                                   await e.Channel.SendMessage("Something went wrong.");
-                               }
-                           }
-                       });
+                   .Do(async e =>
+                    {
+                        if (string.IsNullOrWhiteSpace(e.GetArg("query")))
+                            return;
+                        try
+                        {
+                            var reqString = $"https://www.googleapis.com/customsearch/v1?q={Uri.EscapeDataString(e.GetArg("query"))}&cx=018084019232060951019%3Ahs5piey28-e&num=1&searchType=image&start={ rng.Next(1, 50) }&fields=items%2Flink&key={WizBot.Creds.GoogleAPIKey}";
+                            var obj = JObject.Parse(await SearchHelper.GetResponseStringAsync(reqString).ConfigureAwait(false));
+                            var items = obj["items"] as JArray;
+                            await e.Channel.SendMessage(items[0]["link"].ToString()).ConfigureAwait(false);
+                        }
+                        catch (HttpRequestException exception)
+                        {
+                            if (exception.Message.Contains("403 (Forbidden)"))
+                            {
+                                await e.Channel.SendMessage("Daily limit reached!");
+                            }
+                            else
+                            {
+                                await e.Channel.SendMessage("Something went wrong.");
+                            }
+                        }
+                    });
+
                 cgb.CreateCommand(Prefix + "lmgtfy")
-                    .Description("Google something for an idiot.")
+                    .Description($"Google something for an idiot. | `{Prefix}lmgtfy query`")
                     .Parameter("ffs", ParameterType.Unparsed)
                     .Do(async e =>
                     {
@@ -215,8 +228,21 @@ $@"🌍 **Weather for** 【{obj["target"]}】
                                        .ConfigureAwait(false);
                     });
 
+                cgb.CreateCommand(Prefix + "google")
+                    .Alias(Prefix + "g")
+                    .Description($"Get a google search link for some terms. | `{Prefix}google query`")
+                    .Parameter("terms", ParameterType.Unparsed)
+                    .Do(async e =>
+                    {
+                        var terms = e.GetArg("terms")?.Trim();
+                        if (string.IsNullOrWhiteSpace(terms))
+                            return;
+                        await e.Channel.SendMessage($"https://google.com/search?q={ HttpUtility.UrlEncode(terms).Replace(' ', '+') }")
+                                       .ConfigureAwait(false);
+                    });
+
                 cgb.CreateCommand(Prefix + "hs")
-                  .Description("Searches for a Hearthstone card and shows its image. Takes a while to complete.\n**Usage**:~hs Ysera")
+                  .Description($"Searches for a Hearthstone card and shows its image. Takes a while to complete. | `{Prefix}hs Ysera`")
                   .Parameter("name", ParameterType.Unparsed)
                   .Do(async e =>
                   {
@@ -256,40 +282,8 @@ $@"🌍 **Weather for** 【{obj["target"]}】
                       }
                   });
 
-                cgb.CreateCommand(Prefix + "osu")
-                  .Description("Shows osu stats for a player.\n**Usage**:~osu Name")
-                  .Parameter("usr", ParameterType.Unparsed)
-                  .Do(async e =>
-                  {
-                      if (string.IsNullOrWhiteSpace(e.GetArg("usr")))
-                          return;
-
-                      using (WebClient cl = new WebClient())
-                      {
-                          try
-                          {
-                              cl.CachePolicy = new System.Net.Cache.RequestCachePolicy(System.Net.Cache.RequestCacheLevel.NoCacheNoStore);
-                              cl.Headers.Add(HttpRequestHeader.UserAgent, "Mozilla/5.0 (Windows NT 6.2; Win64; x64)");
-                              cl.DownloadDataAsync(new Uri($"http://lemmmy.pw/osusig/sig.php?uname={ e.GetArg("usr") }&flagshadow&xpbar&xpbarhex&pp=2"));
-                              cl.DownloadDataCompleted += async (s, cle) =>
-                              {
-                                  try
-                                  {
-                                      await e.Channel.SendFile($"{e.GetArg("usr")}.png", new MemoryStream(cle.Result)).ConfigureAwait(false);
-                                      await e.Channel.SendMessage($"`Profile Link:`https://osu.ppy.sh/u/{Uri.EscapeDataString(e.GetArg("usr"))}\n`Image provided by https://lemmmy.pw/osusig`").ConfigureAwait(false);
-                                  }
-                                  catch { }
-                              };
-                          }
-                          catch
-                          {
-                              await e.Channel.SendMessage("💢 Failed retrieving osu signature :\\").ConfigureAwait(false);
-                          }
-                      }
-                  });
-
                 cgb.CreateCommand(Prefix + "ud")
-                  .Description("Searches Urban Dictionary for a word.\n**Usage**:~ud Pineapple")
+                  .Description($"Searches Urban Dictionary for a word. | `{Prefix}ud Pineapple`")
                   .Parameter("query", ParameterType.Unparsed)
                   .Do(async e =>
                   {
@@ -306,10 +300,11 @@ $@"🌍 **Weather for** 【{obj["target"]}】
                       {
                           var items = JObject.Parse(res);
                           var sb = new System.Text.StringBuilder();
-                          sb.AppendLine($"`Term:` {items["list"][0]["word"].ToString()}");
-                          sb.AppendLine($"`Definition:` {items["list"][0]["definition"].ToString()}");
-                          sb.Append($"`Link:` <{await items["list"][0]["permalink"].ToString().ShortenUrl().ConfigureAwait(false)}>");
-                          await e.Channel.SendMessage(sb.ToString());
+                          var item = items["list"][0];
+                          sb.AppendLine($"`Term:` {item["word"].ToString()}");
+                          sb.AppendLine($"`Definition:` {item["definition"].ToString()}");
+                          sb.Append($"`Link:` <{item["permalink"].ToString()}>");
+                          await e.Channel.SendMessage(sb.ToString()).ConfigureAwait(false);
                       }
                       catch
                       {
@@ -318,7 +313,7 @@ $@"🌍 **Weather for** 【{obj["target"]}】
                   });
                 // thanks to Blaubeerwald
                 cgb.CreateCommand(Prefix + "#")
-                 .Description("Searches Tagdef.com for a hashtag.\n**Usage**:~# ff")
+                 .Description($"Searches Tagdef.com for a hashtag. | `{Prefix}# ff`")
                   .Parameter("query", ParameterType.Unparsed)
                   .Do(async e =>
                   {
@@ -347,7 +342,7 @@ $@"🌍 **Weather for** 【{obj["target"]}】
                   });
 
                 cgb.CreateCommand(Prefix + "quote")
-                    .Description("Shows a random quote.")
+                    .Description($"Shows a random quote. | `{Prefix}quote`")
                     .Do(async e =>
                     {
                         var quote = WizBot.Config.Quotes[rng.Next(0, WizBot.Config.Quotes.Count)].ToString();
@@ -355,7 +350,7 @@ $@"🌍 **Weather for** 【{obj["target"]}】
                     });
 
                 cgb.CreateCommand(Prefix + "catfact")
-                    .Description("Shows a random catfact from <http://catfacts-api.appspot.com/api/facts>")
+                    .Description($"Shows a random catfact from <http://catfacts-api.appspot.com/api/facts> | `{Prefix}catfact`")
                     .Do(async e =>
                     {
                         var response = await SearchHelper.GetResponseStringAsync("http://catfacts-api.appspot.com/api/facts").ConfigureAwait(false);
@@ -366,7 +361,7 @@ $@"🌍 **Weather for** 【{obj["target"]}】
 
                 cgb.CreateCommand(Prefix + "yomama")
                     .Alias(Prefix + "ym")
-                    .Description("Shows a random joke from <http://api.yomomma.info/>")
+                    .Description($"Shows a random joke from <http://api.yomomma.info/> | `{Prefix}ym`")
                     .Do(async e =>
                     {
                         var response = await SearchHelper.GetResponseStringAsync("http://api.yomomma.info/").ConfigureAwait(false);
@@ -375,7 +370,7 @@ $@"🌍 **Weather for** 【{obj["target"]}】
 
                 cgb.CreateCommand(Prefix + "randjoke")
                     .Alias(Prefix + "rj")
-                    .Description("Shows a random joke from <http://tambal.azurewebsites.net/joke/random>")
+                    .Description($"Shows a random joke from <http://tambal.azurewebsites.net/joke/random> | `{Prefix}rj`")
                     .Do(async e =>
                     {
                         var response = await SearchHelper.GetResponseStringAsync("http://tambal.azurewebsites.net/joke/random").ConfigureAwait(false);
@@ -384,26 +379,26 @@ $@"🌍 **Weather for** 【{obj["target"]}】
 
                 cgb.CreateCommand(Prefix + "chucknorris")
                     .Alias(Prefix + "cn")
-                    .Description("Shows a random chucknorris joke from <http://tambal.azurewebsites.net/joke/random>")
+                    .Description($"Shows a random chucknorris joke from <http://tambal.azurewebsites.net/joke/random> | `{Prefix}cn`")
                     .Do(async e =>
                     {
                         var response = await SearchHelper.GetResponseStringAsync("http://api.icndb.com/jokes/random/").ConfigureAwait(false);
                         await e.Channel.SendMessage("`" + JObject.Parse(response)["value"]["joke"].ToString() + "` 😆").ConfigureAwait(false);
                     });
 
-                cgb.CreateCommand(Prefix + "mi")
-                .Alias(Prefix + "magicitem")
-                .Description("Shows a random magicitem from <https://1d4chan.org/wiki/List_of_/tg/%27s_magic_items>")
-                .Do(async e =>
-                {
-                    var magicItems = JsonConvert.DeserializeObject<List<MagicItem>>(File.ReadAllText("data/magicitems.json"));
-                    var item = magicItems[rng.Next(0, magicItems.Count)].ToString();
+                cgb.CreateCommand(Prefix + "magicitem")
+                    .Alias(Prefix + "mi")
+                    .Description($"Shows a random magicitem from <https://1d4chan.org/wiki/List_of_/tg/%27s_magic_items> | `{Prefix}mi`")
+                    .Do(async e =>
+                    {
+                        var magicItems = JsonConvert.DeserializeObject<List<MagicItem>>(File.ReadAllText("data/magicitems.json"));
+                        var item = magicItems[rng.Next(0, magicItems.Count)].ToString();
 
-                    await e.Channel.SendMessage(item).ConfigureAwait(false);
-                });
+                        await e.Channel.SendMessage(item).ConfigureAwait(false);
+                    });
 
                 cgb.CreateCommand(Prefix + "revav")
-                    .Description("Returns a google reverse image search for someone's avatar.")
+                    .Description($"Returns a google reverse image search for someone's avatar. | `{Prefix}revav \"@SomeGuy\"`")
                     .Parameter("user", ParameterType.Unparsed)
                     .Do(async e =>
                     {
@@ -418,46 +413,48 @@ $@"🌍 **Weather for** 【{obj["target"]}】
                             return;
                         await e.Channel.SendMessage($"https://images.google.com/searchbyimage?image_url={usr.AvatarUrl}").ConfigureAwait(false);
                     });
-            cgb.CreateCommand(Prefix + "revimg")
-                    .Description("Returns a google reverse image search for an image from a link.")
+
+                cgb.CreateCommand(Prefix + "revimg")
+                    .Description($"Returns a google reverse image search for an image from a link. | `{Prefix}revav Image link`")
                     .Parameter("image", ParameterType.Unparsed)
                     .Do(async e =>
                     {
-                var imgLink = e.GetArg("image")?.Trim();
-                
-                if (string.IsNullOrWhiteSpace(imgLink))
-                    return;
-                await e.Channel.SendMessage($"https://images.google.com/searchbyimage?image_url={imgLink}").ConfigureAwait(false);
-                });
+                        var imgLink = e.GetArg("image")?.Trim();
+
+                        if (string.IsNullOrWhiteSpace(imgLink))
+                            return;
+                        await e.Channel.SendMessage($"https://images.google.com/searchbyimage?image_url={imgLink}").ConfigureAwait(false);
+                    });
+
                 cgb.CreateCommand(Prefix + "safebooru")
-                   .Description("Shows a random image from safebooru with a given tag. Tag is optional but preffered. (multiple tags are appended with +)\n**Usage**: ~safebooru yuri+kissing")
-                   .Parameter("tag", ParameterType.Unparsed)
-                   .Do(async e =>
-                   {
-                       var tag = e.GetArg("tag")?.Trim() ?? "";
-                       var link = await SearchHelper.GetSafebooruImageLink(tag).ConfigureAwait(false);
+                    .Description($"Shows a random image from safebooru with a given tag. Tag is optional but preffered. (multiple tags are appended with +) | `{Prefix}safebooru yuri+kissing`")
+                    .Parameter("tag", ParameterType.Unparsed)
+                    .Do(async e =>
+                    {
+                        var tag = e.GetArg("tag")?.Trim() ?? "";
+                        var link = await SearchHelper.GetSafebooruImageLink(tag).ConfigureAwait(false);
                         if (link == null)
-                           await e.Channel.SendMessage("`No results.`");
+                            await e.Channel.SendMessage("`No results.`");
                         else
                             await e.Channel.SendMessage(link).ConfigureAwait(false);
-                   });
+                    });
 
                 cgb.CreateCommand(Prefix + "wiki")
-                    .Description("Gives you back a wikipedia link")
+                    .Description($"Gives you back a wikipedia link | `{Prefix}wiki query`")
                     .Parameter("query", ParameterType.Unparsed)
                     .Do(async e =>
                     {
-                    var query = e.GetArg("query");
-                    var result = await SearchHelper.GetResponseStringAsync("https://en.wikipedia.org//w/api.php?action=query&format=json&prop=info&redirects=1&formatversion=2&inprop=url&titles=" + Uri.EscapeDataString(query));
-                    var data = JsonConvert.DeserializeObject<WikipediaApiModel>(result);
+                        var query = e.GetArg("query");
+                        var result = await SearchHelper.GetResponseStringAsync("https://en.wikipedia.org//w/api.php?action=query&format=json&prop=info&redirects=1&formatversion=2&inprop=url&titles=" + Uri.EscapeDataString(query));
+                        var data = JsonConvert.DeserializeObject<WikipediaApiModel>(result);
                         if (data.Query.Pages[0].Missing)
-                        await e.Channel.SendMessage("`That page could not be found.`");
+                            await e.Channel.SendMessage("`That page could not be found.`");
                         else
-                        await e.Channel.SendMessage(data.Query.Pages[0].FullUrl);
+                            await e.Channel.SendMessage(data.Query.Pages[0].FullUrl);
                     });
 
                 cgb.CreateCommand(Prefix + "clr")
-                    .Description("Shows you what color corresponds to that hex.\n**Usage**: `~clr 00ff00`")
+                    .Description($"Shows you what color corresponds to that hex. | `{Prefix}clr 00ff00`")
                     .Parameter("color", ParameterType.Unparsed)
                     .Do(async e =>
                     {
@@ -469,17 +466,57 @@ $@"🌍 **Weather for** 【{obj["target"]}】
                         var red = Convert.ToInt32(arg1.Substring(0, 2), 16);
                         var green = Convert.ToInt32(arg1.Substring(2, 2), 16);
                         var blue = Convert.ToInt32(arg1.Substring(4, 2), 16);
-                        var brush = new SolidBrush(Color.FromArgb(red, green, blue));
+                        var brush = new SolidBrush(System.Drawing.Color.FromArgb(red, green, blue));
 
                         using (Graphics g = Graphics.FromImage(img))
                         {
-                    g.FillRectangle(brush, 0, 0, 50, 50);
-                    g.Flush();
+                            g.FillRectangle(brush, 0, 0, 50, 50);
+                            g.Flush();
                         }
 
-                await e.Channel.SendFile("arg1.png", img.ToStream());
+                        await e.Channel.SendFile("arg1.png", img.ToStream());
                     });
-        });
+
+
+                cgb.CreateCommand(Prefix + "videocall")
+                  .Description($"Creates a private <http://www.appear.in> video call link for you and other mentioned people. The link is sent to mentioned people via a private message. | `{Prefix}videocall \"@SomeGuy\"`")
+                  .Parameter("arg", ParameterType.Unparsed)
+                  .Do(async e =>
+                  {
+                      try
+                      {
+                          var allUsrs = e.Message.MentionedUsers.Union(new User[] { e.User });
+                          var allUsrsArray = allUsrs as User[] ?? allUsrs.ToArray();
+                          var str = allUsrsArray.Aggregate("http://appear.in/", (current, usr) => current + Uri.EscapeUriString(usr.Name[0].ToString()));
+                          str += new Random().Next();
+                          foreach (var usr in allUsrsArray)
+                          {
+                              await usr.SendMessage(str).ConfigureAwait(false);
+                          }
+                      }
+                      catch (Exception ex)
+                      {
+                          Console.WriteLine(ex);
+                      }
+                  });
+
+                cgb.CreateCommand(Prefix + "av")
+                    .Alias(Prefix + "avatar")
+                    .Parameter("mention", ParameterType.Required)
+                    .Description($"Shows a mentioned person's avatar. | `{Prefix}av \"@SomeGuy\"`")
+                    .Do(async e =>
+                    {
+                        var usr = e.Channel.FindUsers(e.GetArg("mention")).FirstOrDefault();
+                        if (usr == null)
+                        {
+                            await e.Channel.SendMessage("Invalid user specified.").ConfigureAwait(false);
+                            return;
+                        }
+                        await e.Channel.SendMessage(await usr.AvatarUrl.ShortenUrl()).ConfigureAwait(false);
+                    });
+
+            });
         }
     }
 }
+

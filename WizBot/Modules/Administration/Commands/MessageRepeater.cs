@@ -57,7 +57,7 @@ namespace WizBot.Modules.Administration.Commands
 
             cgb.CreateCommand(Module.Prefix + "repeatinvoke")
                 .Alias(Module.Prefix + "repinv")
-                .Description("Immediately shows the repeat message and restarts the timer.")
+                .Description($"Immediately shows the repeat message and restarts the timer. **Needs Manage Messages Permissions.**| `{Prefix}repinv`")
                 .AddCheck(SimpleCheckers.ManageMessages())
                 .Do(async e =>
                 {
@@ -73,7 +73,7 @@ namespace WizBot.Modules.Administration.Commands
 
             cgb.CreateCommand(Module.Prefix + "repeat")
                 .Description("Repeat a message every X minutes. If no parameters are specified, " +
-                             "repeat is disabled. Requires manage messages.\n**Usage**:`.repeat 5 Hello there`")
+                             $"repeat is disabled. **Needs Manage Messages Permissions.** |`{Prefix}repeat 5 Hello there`")
                 .Parameter("minutes", ParameterType.Optional)
                 .Parameter("msg", ParameterType.Unparsed)
                 .AddCheck(SimpleCheckers.ManageMessages())
@@ -85,10 +85,12 @@ namespace WizBot.Modules.Administration.Commands
                     // if both null, disable
                     if (string.IsNullOrWhiteSpace(msg) && string.IsNullOrWhiteSpace(minutesStr))
                     {
-                        await e.Channel.SendMessage("Repeating disabled").ConfigureAwait(false);
+
                         Repeater rep;
-                        if (repeaters.TryRemove(e.Server, out rep))
-                            rep.MessageTimer.Stop();
+                        if (!repeaters.TryRemove(e.Server, out rep))
+                            return;
+                        rep.MessageTimer.Stop();
+                        await e.Channel.SendMessage("Repeating disabled").ConfigureAwait(false);
                         return;
                     }
                     int minutes;

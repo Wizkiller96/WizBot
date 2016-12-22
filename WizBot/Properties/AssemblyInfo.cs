@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyDescription("Discord bot written in C#.")]
 [assembly: AssemblyCompany("Kwoth & Wizkiller96")]
-[assembly: AssemblyCopyright("Copyright © WizNet 2016")]
+[assembly: AssemblyCopyright("Copyright © WizNet 2015-2016")]
 [assembly: AssemblyProduct("WizBot")]
 [assembly: AssemblyVersion("0.9.*")]
 [assembly: AssemblyTitle("WizBot")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyTrademark("WizNet")]
+[assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 

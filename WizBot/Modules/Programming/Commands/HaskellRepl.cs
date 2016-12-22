@@ -1,4 +1,4 @@
-﻿using Discord;
+using Discord;
 using Discord.Commands;
 using WizBot.Classes;
 using System.Collections.Concurrent;

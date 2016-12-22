@@ -39,10 +39,10 @@ namespace Discord.Audio
         /// <param name="data">PCM frame to send. This must be a single or collection of uncompressed 48Kz monochannel 20ms PCM frames. </param>
         /// <param name="offset">Offset . </param>
         /// <param name="count">Number of bytes in this frame. </param>
-        void Send(byte[] data, int offset, int count);
+        Task Send(byte[] data, int offset, int count);
         /// <summary> Clears the PCM buffer. </summary>
-        void Clear();
+        Task Clear();
         /// <summary> Blocks until the voice output buffer is empty. </summary>
-        void Wait();
+        Task Wait();
     }
 }

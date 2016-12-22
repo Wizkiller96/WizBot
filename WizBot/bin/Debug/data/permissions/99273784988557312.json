@@ -1,11 +1,11 @@
 {
-  "PermissionsControllerRole": "Wiz Bot",
+  "PermissionsControllerRole": "WizBot",
   "Verbose": true,
   "Id": 99273784988557312,
   "Permissions": {
     "Name": "Wizkiller96 Network",
     "Modules": {
-      "NSFW": false
+      "NSFW": true
     },
     "Commands": {},
     "FilterInvites": false,
@@ -13,6 +13,71 @@
   },
   "Words": [],
   "UserPermissions": {},
-  "ChannelPermissions": {},
-  "RolePermissions": {}
+  "ChannelPermissions": {
+    "240276477654990848": {
+      "Name": "nsfw",
+      "Modules": {
+        "NSFW": true
+      },
+      "Commands": {},
+      "FilterInvites": false,
+      "FilterWords": false
+    },
+    "99273784988557312": {
+      "Name": "general",
+      "Modules": {
+        "NSFW": false
+      },
+      "Commands": {},
+      "FilterInvites": false,
+      "FilterWords": false
+    },
+    "99286244411842560": {
+      "Name": "staff-area",
+      "Modules": {
+        "NSFW": false
+      },
+      "Commands": {},
+      "FilterInvites": false,
+      "FilterWords": false
+    },
+    "114449372153905155": {
+      "Name": "gaming",
+      "Modules": {
+        "NSFW": false
+      },
+      "Commands": {},
+      "FilterInvites": false,
+      "FilterWords": false
+    },
+    "166450133058191360": {
+      "Name": "logs",
+      "Modules": {
+        "NSFW": false
+      },
+      "Commands": {},
+      "FilterInvites": false,
+      "FilterWords": false
+    },
+    "173784732666953728": {
+      "Name": "wizbot",
+      "Modules": {
+        "NSFW": false
+      },
+      "Commands": {},
+      "FilterInvites": false,
+      "FilterWords": false
+    },
+    "239558250175922177": {
+      "Name": "wizbot-messenger",
+      "Modules": {
+        "NSFW": false
+      },
+      "Commands": {},
+      "FilterInvites": false,
+      "FilterWords": false
+    }
+  },
+  "RolePermissions": {},
+  "CommandCooldowns": {}
 }

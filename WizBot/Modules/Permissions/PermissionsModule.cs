@@ -1,5 +1,6 @@
 ﻿using Discord.Commands;
 using Discord.Modules;
+using WizBot.Classes;
 using WizBot.Classes.JSONModels;
 using WizBot.Extensions;
 using WizBot.Modules.Games.Commands;
@@ -32,7 +33,7 @@ namespace WizBot.Modules.Permissions
 
                 cgb.CreateCommand(Prefix + "permrole")
                     .Alias(Prefix + "pr")
-                    .Description("Sets a role which can change permissions. Or supply no parameters to find out the current one. Default one is 'Wiz Bot'.")
+                    .Description($"Sets a role which can change permissions. Or supply no parameters to find out the current one. Default one is 'WizBot'. | `{Prefix}pr role`")
                     .Parameter("role", ParameterType.Unparsed)
                      .Do(async e =>
                      {
@@ -54,112 +55,110 @@ namespace WizBot.Modules.Permissions
                              await e.Channel.SendMessage($"Role `{arg}` probably doesn't exist. Create the role with that name first.").ConfigureAwait(false);
                              return;
                          }
-                         PermissionsHandler.SetPermissionsRole(e.Server, role.Name);
+                         await PermissionsHandler.SetPermissionsRole(e.Server, role.Name).ConfigureAwait(false);
                          await e.Channel.SendMessage($"Role `{role.Name}` is now required in order to change permissions.").ConfigureAwait(false);
                      });
 
-            cgb.CreateCommand(Prefix + "rpc")
-                    .Alias(Prefix + "rolepermissionscopy")
-                    .Description($"Copies BOT PERMISSIONS (not discord permissions) from one role to another.\n**Usage**:`{Prefix}rpc Some Role ~ Some other role`")
+                cgb.CreateCommand(Prefix + "rolepermscopy")
+                    .Alias(Prefix + "rpc")
+                    .Description($"Copies BOT PERMISSIONS (not discord permissions) from one role to another. |`{Prefix}rpc Some Role ~ Some other role`")
                     .Parameter("from_to", ParameterType.Unparsed)
                     .Do(async e =>
                     {
-                var arg = e.GetArg("from_to")?.Trim();
+                        var arg = e.GetArg("from_to")?.Trim();
                         if (string.IsNullOrWhiteSpace(arg) || !arg.Contains('~'))
                             return;
-                var args = arg.Split('~').Select(a => a.Trim()).ToArray();
+                        var args = arg.Split('~').Select(a => a.Trim()).ToArray();
                         if (args.Length > 2)
                         {
-                    await e.Channel.SendMessage("💢Invalid number of '~'s in the argument.");
+                            await e.Channel.SendMessage("💢Invalid number of '~'s in the argument.").ConfigureAwait(false);
                             return;
                         }
                         try
                         {
-                    var fromRole = PermissionHelper.ValidateRole(e.Server, args[0]);
-                    var toRole = PermissionHelper.ValidateRole(e.Server, args[1]);
-                    
-                    PermissionsHandler.CopyRolePermissions(fromRole, toRole);
-                    await e.Channel.SendMessage($"Copied permission settings from **{fromRole.Name}** to **{toRole.Name}**.");
+                            var fromRole = PermissionHelper.ValidateRole(e.Server, args[0]);
+                            var toRole = PermissionHelper.ValidateRole(e.Server, args[1]);
+
+                            await PermissionsHandler.CopyRolePermissions(fromRole, toRole).ConfigureAwait(false);
+                            await e.Channel.SendMessage($"Copied permission settings from **{fromRole.Name}** to **{toRole.Name}**.").ConfigureAwait(false);
                         }
                         catch (Exception ex)
                         {
-                    await e.Channel.SendMessage($"💢{ex.Message}");
+                            await e.Channel.SendMessage($"💢{ex.Message}").ConfigureAwait(false);
                         }
                     });
-
-            cgb.CreateCommand(Prefix + "cpc")
-                    .Alias(Prefix + "channelpermissionscopy")
-                    .Description($"Copies BOT PERMISSIONS (not discord permissions) from one channel to another.\n**Usage**:`{Prefix}cpc Some Channel ~ Some other channel`")
+                cgb.CreateCommand(Prefix + "chnlpermscopy")
+                    .Alias(Prefix + "cpc")
+                    .Description($"Copies BOT PERMISSIONS (not discord permissions) from one channel to another. |`{Prefix}cpc Some Channel ~ Some other channel`")
                     .Parameter("from_to", ParameterType.Unparsed)
                     .Do(async e =>
                     {
-                var arg = e.GetArg("from_to")?.Trim();
+                        var arg = e.GetArg("from_to")?.Trim();
                         if (string.IsNullOrWhiteSpace(arg) || !arg.Contains('~'))
                             return;
-                var args = arg.Split('~').Select(a => a.Trim()).ToArray();
+                        var args = arg.Split('~').Select(a => a.Trim()).ToArray();
                         if (args.Length > 2)
                         {
-                    await e.Channel.SendMessage("💢Invalid number of '~'s in the argument.");
+                            await e.Channel.SendMessage("💢Invalid number of '~'s in the argument.");
                             return;
                         }
                         try
                         {
-                    var fromChannel = PermissionHelper.ValidateChannel(e.Server, args[0]);
-                    var toChannel = PermissionHelper.ValidateChannel(e.Server, args[1]);
-                    
-                    PermissionsHandler.CopyChannelPermissions(fromChannel, toChannel);
-                    await e.Channel.SendMessage($"Copied permission settings from **{fromChannel.Name}** to **{toChannel.Name}**.");
+                            var fromChannel = PermissionHelper.ValidateChannel(e.Server, args[0]);
+                            var toChannel = PermissionHelper.ValidateChannel(e.Server, args[1]);
+
+                            await PermissionsHandler.CopyChannelPermissions(fromChannel, toChannel).ConfigureAwait(false);
+                            await e.Channel.SendMessage($"Copied permission settings from **{fromChannel.Name}** to **{toChannel.Name}**.").ConfigureAwait(false);
                         }
                         catch (Exception ex)
                         {
-                    await e.Channel.SendMessage($"💢{ex.Message}");
+                            await e.Channel.SendMessage($"💢{ex.Message}");
                         }
                     });
-
-                cgb.CreateCommand(Prefix + "upc")
-                    .Alias(Prefix + "userpermissionscopy")
-                    .Description($"Copies BOT PERMISSIONS (not discord permissions) from one role to another.\n**Usage**:`{Prefix}upc @SomeUser ~ @SomeOtherUser`")
+                cgb.CreateCommand(Prefix + "usrpermscopy")
+                    .Alias(Prefix + "upc")
+                    .Description($"Copies BOT PERMISSIONS (not discord permissions) from one role to another. |`{Prefix}upc @SomeUser ~ @SomeOtherUser`")
                     .Parameter("from_to", ParameterType.Unparsed)
                     .Do(async e =>
                     {
-                    var arg = e.GetArg("from_to")?.Trim();
+                        var arg = e.GetArg("from_to")?.Trim();
                         if (string.IsNullOrWhiteSpace(arg) || !arg.Contains('~'))
                             return;
-                    var args = arg.Split('~').Select(a => a.Trim()).ToArray();
+                        var args = arg.Split('~').Select(a => a.Trim()).ToArray();
                         if (args.Length > 2)
                         {
-                        await e.Channel.SendMessage("💢Invalid number of '~'s in the argument.");
+                            await e.Channel.SendMessage("💢Invalid number of '~'s in the argument.").ConfigureAwait(false);
                             return;
                         }
                         try
                         {
-                        var fromUser = PermissionHelper.ValidateUser(e.Server, args[0]);
-                        var toUser = PermissionHelper.ValidateUser(e.Server, args[1]);
-                        
-                        PermissionsHandler.CopyUserPermissions(fromUser, toUser);
-                        await e.Channel.SendMessage($"Copied permission settings from **{fromUser.ToString()}**to * *{toUser.ToString()}**.");
+                            var fromUser = PermissionHelper.ValidateUser(e.Server, args[0]);
+                            var toUser = PermissionHelper.ValidateUser(e.Server, args[1]);
+
+                            await PermissionsHandler.CopyUserPermissions(fromUser, toUser).ConfigureAwait(false);
+                            await e.Channel.SendMessage($"Copied permission settings from **{fromUser.ToString()}**to * *{toUser.ToString()}**.").ConfigureAwait(false);
                         }
                         catch (Exception ex)
                         {
-                        await e.Channel.SendMessage($"💢{ex.Message}");
+                            await e.Channel.SendMessage($"💢{ex.Message}");
                         }
                     });
 
-                 cgb.CreateCommand(Prefix + "verbose")
+                cgb.CreateCommand(Prefix + "verbose")
                     .Alias(Prefix + "v")
-                    .Description("Sets whether to show when a command/module is blocked.\n**Usage**: ;verbose true")
+                    .Description($"Sets whether to show when a command/module is blocked. | `{Prefix}verbose true`")
                     .Parameter("arg", ParameterType.Required)
                     .Do(async e =>
                     {
                         var arg = e.GetArg("arg");
                         var val = PermissionHelper.ValidateBool(arg);
-                        PermissionsHandler.SetVerbosity(e.Server, val);
+                        await PermissionsHandler.SetVerbosity(e.Server, val).ConfigureAwait(false);
                         await e.Channel.SendMessage($"Verbosity set to {val}.").ConfigureAwait(false);
                     });
 
-                cgb.CreateCommand(Prefix + "serverperms")
+                cgb.CreateCommand(Prefix + "srvrperms")
                     .Alias(Prefix + "sp")
-                    .Description("Shows banned permissions for this server.")
+                    .Description($"Shows banned permissions for this server. | `{Prefix}sp`")
                     .Do(async e =>
                     {
                         var perms = PermissionsHandler.GetServerPermissions(e.Server);
@@ -170,7 +169,7 @@ namespace WizBot.Modules.Permissions
 
                 cgb.CreateCommand(Prefix + "roleperms")
                     .Alias(Prefix + "rp")
-                    .Description("Shows banned permissions for a certain role. No argument means for everyone.\n**Usage**: ;rp AwesomeRole")
+                    .Description($"Shows banned permissions for a certain role. No argument means for everyone. | `{Prefix}rp AwesomeRole`")
                     .Parameter("role", ParameterType.Unparsed)
                     .Do(async e =>
                     {
@@ -194,9 +193,9 @@ namespace WizBot.Modules.Permissions
                         await e.Channel.SendMessage(perms.ToString()).ConfigureAwait(false);
                     });
 
-                cgb.CreateCommand(Prefix + "channelperms")
+                cgb.CreateCommand(Prefix + "chnlperms")
                     .Alias(Prefix + "cp")
-                    .Description("Shows banned permissions for a certain channel. No argument means for this channel.\n**Usage**: ;cp #dev")
+                    .Description($"Shows banned permissions for a certain channel. No argument means for this channel. | `{Prefix}cp #dev`")
                     .Parameter("channel", ParameterType.Unparsed)
                     .Do(async e =>
                     {
@@ -221,7 +220,7 @@ namespace WizBot.Modules.Permissions
 
                 cgb.CreateCommand(Prefix + "userperms")
                     .Alias(Prefix + "up")
-                    .Description("Shows banned permissions for a certain user. No argument means for yourself.\n**Usage**: ;up Wizkiller96")
+                    .Description($"Shows banned permissions for a certain user. No argument means for yourself. | `{Prefix}up Wizkiller96`")
                     .Parameter("user", ParameterType.Unparsed)
                     .Do(async e =>
                     {
@@ -243,10 +242,11 @@ namespace WizBot.Modules.Permissions
                         await e.Channel.SendMessage(perms.ToString()).ConfigureAwait(false);
                     });
 
-                cgb.CreateCommand(Prefix + "sm").Alias(Prefix + "servermodule")
+                cgb.CreateCommand(Prefix + "srvrmdl")
+                    .Alias(Prefix + "sm")
                     .Parameter("module", ParameterType.Required)
                     .Parameter("bool", ParameterType.Required)
-                    .Description("Sets a module's permission at the server level.\n**Usage**: ;sm [module_name] enable")
+                    .Description($"Sets a module's permission at the server level. | `{Prefix}sm \"module name\" enable`")
                     .Do(async e =>
                     {
                         try
@@ -254,7 +254,7 @@ namespace WizBot.Modules.Permissions
                             var module = PermissionHelper.ValidateModule(e.GetArg("module"));
                             var state = PermissionHelper.ValidateBool(e.GetArg("bool"));
 
-                            PermissionsHandler.SetServerModulePermission(e.Server, module, state);
+                            await PermissionsHandler.SetServerModulePermission(e.Server, module, state).ConfigureAwait(false);
                             await e.Channel.SendMessage($"Module **{module}** has been **{(state ? "enabled" : "disabled")}** on this server.").ConfigureAwait(false);
                         }
                         catch (ArgumentException exArg)
@@ -267,10 +267,10 @@ namespace WizBot.Modules.Permissions
                         }
                     });
 
-                cgb.CreateCommand(Prefix + "sc").Alias(Prefix + "servercommand")
+                cgb.CreateCommand(Prefix + "srvrcmd").Alias(Prefix + "sc")
                     .Parameter("command", ParameterType.Required)
                     .Parameter("bool", ParameterType.Required)
-                    .Description("Sets a command's permission at the server level.\n**Usage**: ;sc [command_name] disable")
+                    .Description($"Sets a command's permission at the server level. | `{Prefix}sc \"command name\" disable`")
                     .Do(async e =>
                     {
                         try
@@ -278,7 +278,7 @@ namespace WizBot.Modules.Permissions
                             var command = PermissionHelper.ValidateCommand(e.GetArg("command"));
                             var state = PermissionHelper.ValidateBool(e.GetArg("bool"));
 
-                            PermissionsHandler.SetServerCommandPermission(e.Server, command, state);
+                            await PermissionsHandler.SetServerCommandPermission(e.Server, command, state).ConfigureAwait(false);
                             await e.Channel.SendMessage($"Command **{command}** has been **{(state ? "enabled" : "disabled")}** on this server.").ConfigureAwait(false);
                         }
                         catch (ArgumentException exArg)
@@ -291,11 +291,11 @@ namespace WizBot.Modules.Permissions
                         }
                     });
 
-                cgb.CreateCommand(Prefix + "rm").Alias(Prefix + "rolemodule")
+                cgb.CreateCommand(Prefix + "rolemdl").Alias(Prefix + "rm")
                     .Parameter("module", ParameterType.Required)
                     .Parameter("bool", ParameterType.Required)
                     .Parameter("role", ParameterType.Unparsed)
-                    .Description("Sets a module's permission at the role level.\n**Usage**: ;rm [module_name] enable [role_name]")
+                    .Description($"Sets a module's permission at the role level. | `{Prefix}rm \"module name\" enable MyRole`")
                     .Do(async e =>
                     {
                         try
@@ -307,7 +307,7 @@ namespace WizBot.Modules.Permissions
                             {
                                 foreach (var role in e.Server.Roles)
                                 {
-                                    PermissionsHandler.SetRoleModulePermission(role, module, state);
+                                    await PermissionsHandler.SetRoleModulePermission(role, module, state).ConfigureAwait(false);
                                 }
                                 await e.Channel.SendMessage($"Module **{module}** has been **{(state ? "enabled" : "disabled")}** for **ALL** roles.").ConfigureAwait(false);
                             }
@@ -315,7 +315,7 @@ namespace WizBot.Modules.Permissions
                             {
                                 var role = PermissionHelper.ValidateRole(e.Server, e.GetArg("role"));
 
-                                PermissionsHandler.SetRoleModulePermission(role, module, state);
+                                await PermissionsHandler.SetRoleModulePermission(role, module, state).ConfigureAwait(false);
                                 await e.Channel.SendMessage($"Module **{module}** has been **{(state ? "enabled" : "disabled")}** for **{role.Name}** role.").ConfigureAwait(false);
                             }
                         }
@@ -329,11 +329,11 @@ namespace WizBot.Modules.Permissions
                         }
                     });
 
-                cgb.CreateCommand(Prefix + "rc").Alias(Prefix + "rolecommand")
+                cgb.CreateCommand(Prefix + "rolecmd").Alias(Prefix + "rc")
                     .Parameter("command", ParameterType.Required)
                     .Parameter("bool", ParameterType.Required)
                     .Parameter("role", ParameterType.Unparsed)
-                    .Description("Sets a command's permission at the role level.\n**Usage**: ;rc [command_name] disable [role_name]")
+                    .Description($"Sets a command's permission at the role level. | `{Prefix}rc \"command name\" disable MyRole`")
                     .Do(async e =>
                     {
                         try
@@ -345,7 +345,7 @@ namespace WizBot.Modules.Permissions
                             {
                                 foreach (var role in e.Server.Roles)
                                 {
-                                    PermissionsHandler.SetRoleCommandPermission(role, command, state);
+                                    await PermissionsHandler.SetRoleCommandPermission(role, command, state).ConfigureAwait(false);
                                 }
                                 await e.Channel.SendMessage($"Command **{command}** has been **{(state ? "enabled" : "disabled")}** for **ALL** roles.").ConfigureAwait(false);
                             }
@@ -353,7 +353,7 @@ namespace WizBot.Modules.Permissions
                             {
                                 var role = PermissionHelper.ValidateRole(e.Server, e.GetArg("role"));
 
-                                PermissionsHandler.SetRoleCommandPermission(role, command, state);
+                                await PermissionsHandler.SetRoleCommandPermission(role, command, state).ConfigureAwait(false);
                                 await e.Channel.SendMessage($"Command **{command}** has been **{(state ? "enabled" : "disabled")}** for **{role.Name}** role.").ConfigureAwait(false);
                             }
                         }
@@ -367,37 +367,36 @@ namespace WizBot.Modules.Permissions
                         }
                     });
 
-                cgb.CreateCommand(Prefix + "cm").Alias(Prefix + "channelmodule")
+                cgb.CreateCommand(Prefix + "chnlmdl").Alias(Prefix + "cm")
                     .Parameter("module", ParameterType.Required)
                     .Parameter("bool", ParameterType.Required)
                     .Parameter("channel", ParameterType.Unparsed)
-                    .Description("Sets a module's permission at the channel level.\n**Usage**: ;cm [module_name] enable [channel_name]")
+                    .Description($"Sets a module's permission at the channel level. | `{Prefix}cm \"module name\" enable SomeChannel`")
                     .Do(async e =>
                     {
                         try
                         {
                             var module = PermissionHelper.ValidateModule(e.GetArg("module"));
                             var state = PermissionHelper.ValidateBool(e.GetArg("bool"));
-
                             var channelArg = e.GetArg("channel");
                             if (channelArg?.ToLower() == "all")
                             {
                                 foreach (var channel in e.Server.TextChannels)
                                 {
-                                    PermissionsHandler.SetChannelModulePermission(channel, module, state);
+                                    await PermissionsHandler.SetChannelModulePermission(channel, module, state).ConfigureAwait(false);
                                 }
                                 await e.Channel.SendMessage($"Module **{module}** has been **{(state ? "enabled" : "disabled")}** on **ALL** channels.").ConfigureAwait(false);
                             }
                             else if (string.IsNullOrWhiteSpace(channelArg))
                             {
-                                PermissionsHandler.SetChannelModulePermission(e.Channel, module, state);
+                                await PermissionsHandler.SetChannelModulePermission(e.Channel, module, state).ConfigureAwait(false);
                                 await e.Channel.SendMessage($"Module **{module}** has been **{(state ? "enabled" : "disabled")}** for **{e.Channel.Name}** channel.").ConfigureAwait(false);
                             }
                             else
-                             {
+                            {
                                 var channel = PermissionHelper.ValidateChannel(e.Server, channelArg);
 
-                                PermissionsHandler.SetChannelModulePermission(channel, module, state);
+                                await PermissionsHandler.SetChannelModulePermission(channel, module, state).ConfigureAwait(false);
                                 await e.Channel.SendMessage($"Module **{module}** has been **{(state ? "enabled" : "disabled")}** for **{channel.Name}** channel.").ConfigureAwait(false);
                             }
                         }
@@ -411,11 +410,11 @@ namespace WizBot.Modules.Permissions
                         }
                     });
 
-                cgb.CreateCommand(Prefix + "cc").Alias(Prefix + "channelcommand")
+                cgb.CreateCommand(Prefix + "chnlcmd").Alias(Prefix + "cc")
                     .Parameter("command", ParameterType.Required)
                     .Parameter("bool", ParameterType.Required)
                     .Parameter("channel", ParameterType.Unparsed)
-                    .Description("Sets a command's permission at the channel level.\n**Usage**: ;cc [command_name] enable [channel_name]")
+                    .Description($"Sets a command's permission at the channel level. | `{Prefix}cc \"command name\" enable SomeChannel`")
                     .Do(async e =>
                     {
                         try
@@ -427,7 +426,7 @@ namespace WizBot.Modules.Permissions
                             {
                                 foreach (var channel in e.Server.TextChannels)
                                 {
-                                    PermissionsHandler.SetChannelCommandPermission(channel, command, state);
+                                    await PermissionsHandler.SetChannelCommandPermission(channel, command, state).ConfigureAwait(false);
                                 }
                                 await e.Channel.SendMessage($"Command **{command}** has been **{(state ? "enabled" : "disabled")}** on **ALL** channels.").ConfigureAwait(false);
                             }
@@ -435,7 +434,7 @@ namespace WizBot.Modules.Permissions
                             {
                                 var channel = PermissionHelper.ValidateChannel(e.Server, e.GetArg("channel"));
 
-                                PermissionsHandler.SetChannelCommandPermission(channel, command, state);
+                                await PermissionsHandler.SetChannelCommandPermission(channel, command, state).ConfigureAwait(false);
                                 await e.Channel.SendMessage($"Command **{command}** has been **{(state ? "enabled" : "disabled")}** for **{channel.Name}** channel.").ConfigureAwait(false);
                             }
                         }
@@ -449,11 +448,11 @@ namespace WizBot.Modules.Permissions
                         }
                     });
 
-                cgb.CreateCommand(Prefix + "um").Alias(Prefix + "usermodule")
+                cgb.CreateCommand(Prefix + "usrmdl").Alias(Prefix + "um")
                     .Parameter("module", ParameterType.Required)
                     .Parameter("bool", ParameterType.Required)
                     .Parameter("user", ParameterType.Unparsed)
-                    .Description("Sets a module's permission at the user level.\n**Usage**: ;um [module_name] enable [user_name]")
+                    .Description($"Sets a module's permission at the user level. | `{Prefix}um \"module name\" enable SomeUsername`")
                     .Do(async e =>
                     {
                         try
@@ -462,7 +461,7 @@ namespace WizBot.Modules.Permissions
                             var state = PermissionHelper.ValidateBool(e.GetArg("bool"));
                             var user = PermissionHelper.ValidateUser(e.Server, e.GetArg("user"));
 
-                            PermissionsHandler.SetUserModulePermission(user, module, state);
+                            await PermissionsHandler.SetUserModulePermission(user, module, state).ConfigureAwait(false);
                             await e.Channel.SendMessage($"Module **{module}** has been **{(state ? "enabled" : "disabled")}** for user **{user.Name}**.").ConfigureAwait(false);
                         }
                         catch (ArgumentException exArg)
@@ -475,11 +474,11 @@ namespace WizBot.Modules.Permissions
                         }
                     });
 
-                cgb.CreateCommand(Prefix + "uc").Alias(Prefix + "usercommand")
+                cgb.CreateCommand(Prefix + "usrcmd").Alias(Prefix + "uc")
                     .Parameter("command", ParameterType.Required)
                     .Parameter("bool", ParameterType.Required)
                     .Parameter("user", ParameterType.Unparsed)
-                    .Description("Sets a command's permission at the user level.\n**Usage**: ;uc [command_name] enable [user_name]")
+                    .Description($"Sets a command's permission at the user level. | `{Prefix}uc \"command name\" enable SomeUsername`")
                     .Do(async e =>
                     {
                         try
@@ -488,7 +487,7 @@ namespace WizBot.Modules.Permissions
                             var state = PermissionHelper.ValidateBool(e.GetArg("bool"));
                             var user = PermissionHelper.ValidateUser(e.Server, e.GetArg("user"));
 
-                            PermissionsHandler.SetUserCommandPermission(user, command, state);
+                            await PermissionsHandler.SetUserCommandPermission(user, command, state).ConfigureAwait(false);
                             await e.Channel.SendMessage($"Command **{command}** has been **{(state ? "enabled" : "disabled")}** for user **{user.Name}**.").ConfigureAwait(false);
                         }
                         catch (ArgumentException exArg)
@@ -501,9 +500,9 @@ namespace WizBot.Modules.Permissions
                         }
                     });
 
-                cgb.CreateCommand(Prefix + "asm").Alias(Prefix + "allservermodules")
+                cgb.CreateCommand(Prefix + "allsrvrmdls").Alias(Prefix + "asm")
                     .Parameter("bool", ParameterType.Required)
-                    .Description("Sets permissions for all modules at the server level.\n**Usage**: ;asm [enable/disable]")
+                    .Description($"Sets permissions for all modules at the server level. | `{Prefix}asm [enable/disable]`")
                     .Do(async e =>
                     {
                         try
@@ -512,7 +511,7 @@ namespace WizBot.Modules.Permissions
 
                             foreach (var module in WizBot.Client.GetService<ModuleService>().Modules)
                             {
-                                PermissionsHandler.SetServerModulePermission(e.Server, module.Name, state);
+                                await PermissionsHandler.SetServerModulePermission(e.Server, module.Name, state).ConfigureAwait(false);
                             }
                             await e.Channel.SendMessage($"All modules have been **{(state ? "enabled" : "disabled")}** on this server.").ConfigureAwait(false);
                         }
@@ -526,10 +525,10 @@ namespace WizBot.Modules.Permissions
                         }
                     });
 
-                cgb.CreateCommand(Prefix + "asc").Alias(Prefix + "allservercommands")
+                cgb.CreateCommand(Prefix + "allsrvrcmds").Alias(Prefix + "asc")
                     .Parameter("module", ParameterType.Required)
                     .Parameter("bool", ParameterType.Required)
-                    .Description("Sets permissions for all commands from a certain module at the server level.\n**Usage**: ;asc [module_name] [enable/disable]")
+                    .Description($"Sets permissions for all commands from a certain module at the server level. | `{Prefix}asc \"module name\" [enable/disable]`")
                     .Do(async e =>
                     {
                         try
@@ -539,7 +538,7 @@ namespace WizBot.Modules.Permissions
 
                             foreach (var command in WizBot.Client.GetService<CommandService>().AllCommands.Where(c => c.Category == module))
                             {
-                                PermissionsHandler.SetServerCommandPermission(e.Server, command.Text, state);
+                                await PermissionsHandler.SetServerCommandPermission(e.Server, command.Text, state).ConfigureAwait(false);
                             }
                             await e.Channel.SendMessage($"All commands from the **{module}** module have been **{(state ? "enabled" : "disabled")}** on this server.").ConfigureAwait(false);
                         }
@@ -553,20 +552,20 @@ namespace WizBot.Modules.Permissions
                         }
                     });
 
-                cgb.CreateCommand(Prefix + "acm").Alias(Prefix + "allchannelmodules")
+                cgb.CreateCommand(Prefix + "allchnlmdls").Alias(Prefix + "acm")
                     .Parameter("bool", ParameterType.Required)
                     .Parameter("channel", ParameterType.Unparsed)
-                    .Description("Sets permissions for all modules at the channel level.\n**Usage**: ;acm [enable/disable] [channel_name]")
+                    .Description($"Sets permissions for all modules at the channel level. | `{Prefix}acm [enable/disable] SomeChannel`")
                     .Do(async e =>
                     {
                         try
                         {
                             var state = PermissionHelper.ValidateBool(e.GetArg("bool"));
                             var chArg = e.GetArg("channel");
-                            var channel = string.IsNullOrWhiteSpace(chArg) ? e.Channel :PermissionHelper.ValidateChannel(e.Server, chArg);
+                            var channel = string.IsNullOrWhiteSpace(chArg) ? e.Channel : PermissionHelper.ValidateChannel(e.Server, chArg);
                             foreach (var module in WizBot.Client.GetService<ModuleService>().Modules)
                             {
-                                PermissionsHandler.SetChannelModulePermission(channel, module.Name, state);
+                                await PermissionsHandler.SetChannelModulePermission(channel, module.Name, state).ConfigureAwait(false);
                             }
 
                             await e.Channel.SendMessage($"All modules have been **{(state ? "enabled" : "disabled")}** for **{channel.Name}** channel.").ConfigureAwait(false);
@@ -581,11 +580,11 @@ namespace WizBot.Modules.Permissions
                         }
                     });
 
-                cgb.CreateCommand(Prefix + "acc").Alias(Prefix + "allchannelcommands")
+                cgb.CreateCommand(Prefix + "allchnlcmds").Alias(Prefix + "acc")
                     .Parameter("module", ParameterType.Required)
                     .Parameter("bool", ParameterType.Required)
                     .Parameter("channel", ParameterType.Unparsed)
-                    .Description("Sets permissions for all commands from a certain module at the channel level.\n**Usage**: ;acc [module_name] [enable/disable] [channel_name]")
+                    .Description($"Sets permissions for all commands from a certain module at the channel level. | `{Prefix}acc \"module name\" [enable/disable] SomeChannel`")
                     .Do(async e =>
                     {
                         try
@@ -595,7 +594,7 @@ namespace WizBot.Modules.Permissions
                             var channel = PermissionHelper.ValidateChannel(e.Server, e.GetArg("channel"));
                             foreach (var command in WizBot.Client.GetService<CommandService>().AllCommands.Where(c => c.Category == module))
                             {
-                                PermissionsHandler.SetChannelCommandPermission(channel, command.Text, state);
+                                await PermissionsHandler.SetChannelCommandPermission(channel, command.Text, state).ConfigureAwait(false);
                             }
                             await e.Channel.SendMessage($"All commands from the **{module}** module have been **{(state ? "enabled" : "disabled")}** for **{channel.Name}** channel.").ConfigureAwait(false);
                         }
@@ -609,10 +608,10 @@ namespace WizBot.Modules.Permissions
                         }
                     });
 
-                cgb.CreateCommand(Prefix + "arm").Alias(Prefix + "allrolemodules")
+                cgb.CreateCommand(Prefix + "allrolemdls").Alias(Prefix + "arm")
                     .Parameter("bool", ParameterType.Required)
                     .Parameter("role", ParameterType.Unparsed)
-                    .Description("Sets permissions for all modules at the role level.\n**Usage**: ;arm [enable/disable] [role_name]")
+                    .Description($"Sets permissions for all modules at the role level. | `{Prefix}arm [enable/disable] MyRole`")
                     .Do(async e =>
                     {
                         try
@@ -621,7 +620,7 @@ namespace WizBot.Modules.Permissions
                             var role = PermissionHelper.ValidateRole(e.Server, e.GetArg("role"));
                             foreach (var module in WizBot.Client.GetService<ModuleService>().Modules)
                             {
-                                PermissionsHandler.SetRoleModulePermission(role, module.Name, state);
+                                await PermissionsHandler.SetRoleModulePermission(role, module.Name, state).ConfigureAwait(false);
                             }
 
                             await e.Channel.SendMessage($"All modules have been **{(state ? "enabled" : "disabled")}** for **{role.Name}** role.").ConfigureAwait(false);
@@ -636,23 +635,38 @@ namespace WizBot.Modules.Permissions
                         }
                     });
 
-                cgb.CreateCommand(Prefix + "arc").Alias(Prefix + "allrolecommands")
+                cgb.CreateCommand(Prefix + "allrolecmds").Alias(Prefix + "arc")
                     .Parameter("module", ParameterType.Required)
                     .Parameter("bool", ParameterType.Required)
-                    .Parameter("channel", ParameterType.Unparsed)
-                    .Description("Sets permissions for all commands from a certain module at the role level.\n**Usage**: ;arc [module_name] [enable/disable] [role_name]")
+                    .Parameter("role", ParameterType.Unparsed)
+                    .Description($"Sets permissions for all commands from a certain module at the role level. | `{Prefix}arc \"module name\" [enable/disable] MyRole`")
                     .Do(async e =>
                     {
                         try
                         {
                             var state = PermissionHelper.ValidateBool(e.GetArg("bool"));
                             var module = PermissionHelper.ValidateModule(e.GetArg("module"));
-                            var role = PermissionHelper.ValidateRole(e.Server, e.GetArg("channel"));
-                            foreach (var command in WizBot.Client.GetService<CommandService>().AllCommands.Where(c => c.Category == module))
+                            if (e.GetArg("role")?.ToLower() == "all")
                             {
-                                PermissionsHandler.SetRoleCommandPermission(role, command.Text, state);
+                                foreach (var role in e.Server.Roles)
+                                {
+                                    foreach (var command in WizBot.Client.GetService<CommandService>().AllCommands.Where(c => c.Category == module))
+                                    {
+                                        await PermissionsHandler.SetRoleCommandPermission(role, command.Text, state).ConfigureAwait(false);
+                                    }
+                                }
+                                await e.Channel.SendMessage($"All commands from the **{module}** module have been **{(state ? "enabled" : "disabled")}** for **all roles** role.").ConfigureAwait(false);
                             }
-                            await e.Channel.SendMessage($"All commands from the **{module}** module have been **{(state ? "enabled" : "disabled")}** for **{role.Name}** role.").ConfigureAwait(false);
+                            else
+                            {
+                                var role = PermissionHelper.ValidateRole(e.Server, e.GetArg("role"));
+
+                                foreach (var command in WizBot.Client.GetService<CommandService>().AllCommands.Where(c => c.Category == module))
+                                {
+                                    await PermissionsHandler.SetRoleCommandPermission(role, command.Text, state).ConfigureAwait(false);
+                                }
+                                await e.Channel.SendMessage($"All commands from the **{module}** module have been **{(state ? "enabled" : "disabled")}** for **{role.Name}** role.").ConfigureAwait(false);
+                            }
                         }
                         catch (ArgumentException exArg)
                         {
@@ -665,7 +679,7 @@ namespace WizBot.Modules.Permissions
                     });
 
                 cgb.CreateCommand(Prefix + "ubl")
-                    .Description("Blacklists a mentioned user.\n**Usage**: ;ubl [user_mention]")
+                    .Description($"Blacklists a mentioned user. **Bot Owner Only!**| `{Prefix}ubl [user_mention]`")
                     .Parameter("user", ParameterType.Unparsed)
                     .AddCheck(SimpleCheckers.OwnerOnly())
                     .Do(async e =>
@@ -675,13 +689,13 @@ namespace WizBot.Modules.Permissions
                             if (!e.Message.MentionedUsers.Any()) return;
                             var usr = e.Message.MentionedUsers.First();
                             WizBot.Config.UserBlacklist.Add(usr.Id);
-                            ConfigHandler.SaveConfig();
+                            await ConfigHandler.SaveConfig().ConfigureAwait(false);
                             await e.Channel.SendMessage($"`Sucessfully blacklisted user {usr.Name}`").ConfigureAwait(false);
                         }).ConfigureAwait(false);
                     });
 
                 cgb.CreateCommand(Prefix + "uubl")
-                   .Description($"Unblacklists a mentioned user.\n**Usage**: {Prefix}uubl [user_mention]")
+                   .Description($"Unblacklists a mentioned user. **Bot Owner Only!** | `{Prefix}uubl [user_mention]`")
                    .Parameter("user", ParameterType.Unparsed)
                    .AddCheck(SimpleCheckers.OwnerOnly())
                    .Do(async e =>
@@ -693,7 +707,7 @@ namespace WizBot.Modules.Permissions
                            if (WizBot.Config.UserBlacklist.Contains(usr.Id))
                            {
                                WizBot.Config.UserBlacklist.Remove(usr.Id);
-                               ConfigHandler.SaveConfig();
+                               await ConfigHandler.SaveConfig().ConfigureAwait(false);
                                await e.Channel.SendMessage($"`Sucessfully unblacklisted user {usr.Name}`").ConfigureAwait(false);
                            }
                            else
@@ -704,7 +718,7 @@ namespace WizBot.Modules.Permissions
                    });
 
                 cgb.CreateCommand(Prefix + "cbl")
-                    .Description("Blacklists a mentioned channel (#general for example).\n**Usage**: ;cbl [channel_mention]")
+                    .Description($"Blacklists a mentioned channel (#general for example). | `{Prefix}cbl #some_channel`")
                     .Parameter("channel", ParameterType.Unparsed)
                     .Do(async e =>
                     {
@@ -712,14 +726,14 @@ namespace WizBot.Modules.Permissions
                         {
                             if (!e.Message.MentionedChannels.Any()) return;
                             var ch = e.Message.MentionedChannels.First();
-                            WizBot.Config.UserBlacklist.Add(ch.Id);
-                            ConfigHandler.SaveConfig();
+                            WizBot.Config.ChannelBlacklist.Add(ch.Id);
+                            await ConfigHandler.SaveConfig().ConfigureAwait(false);
                             await e.Channel.SendMessage($"`Sucessfully blacklisted channel {ch.Name}`").ConfigureAwait(false);
                         }).ConfigureAwait(false);
                     });
 
                 cgb.CreateCommand(Prefix + "cubl")
-                    .Description("Unblacklists a mentioned channel (#general for example).\n**Usage**: ;cubl [channel_mention]")
+                    .Description($"Unblacklists a mentioned channel (#general for example). | `{Prefix}cubl #some_channel`")
                     .Parameter("channel", ParameterType.Unparsed)
                     .Do(async e =>
                     {
@@ -727,14 +741,19 @@ namespace WizBot.Modules.Permissions
                         {
                             if (!e.Message.MentionedChannels.Any()) return;
                             var ch = e.Message.MentionedChannels.First();
-                            WizBot.Config.UserBlacklist.Remove(ch.Id);
-                            ConfigHandler.SaveConfig();
-                            await e.Channel.SendMessage($"`Sucessfully blacklisted channel {ch.Name}`").ConfigureAwait(false);
+                            if (WizBot.Config.ChannelBlacklist.Contains(ch.Id))
+                            {
+                                WizBot.Config.ChannelBlacklist.Remove(ch.Id);
+                                await ConfigHandler.SaveConfig().ConfigureAwait(false);
+                                await e.Channel.SendMessage($"`Sucessfully unblacklisted channel {ch.Name}`").ConfigureAwait(false);
+                            }
+                            else
+                                await e.Channel.SendMessage($"`{ch.Name} was not in blacklist`").ConfigureAwait(false);
                         }).ConfigureAwait(false);
                     });
 
                 cgb.CreateCommand(Prefix + "sbl")
-                    .Description("Blacklists a server by a name or id (#general for example). **BOT OWNER ONLY**\n**Usage**: ;sbl [servername/serverid]")
+                    .Description($"Blacklists a server by a name or id (#general for example). **BOT OWNER ONLY** | `{Prefix}sbl [servername/serverid]`")
                     .Parameter("server", ParameterType.Unparsed)
                     .AddCheck(SimpleCheckers.OwnerOnly())
                     .Do(async e =>
@@ -753,7 +772,7 @@ namespace WizBot.Modules.Permissions
                             }
                             var serverId = server.Id;
                             WizBot.Config.ServerBlacklist.Add(serverId);
-                            ConfigHandler.SaveConfig();
+                            await ConfigHandler.SaveConfig().ConfigureAwait(false);
                             //cleanup trivias and typeracing
                             Modules.Games.Commands.Trivia.TriviaGame trivia;
                             TriviaCommands.RunningTrivias.TryRemove(serverId, out trivia);
@@ -762,6 +781,57 @@ namespace WizBot.Modules.Permissions
 
                             await e.Channel.SendMessage($"`Sucessfully blacklisted server {server.Name}`").ConfigureAwait(false);
                         }).ConfigureAwait(false);
+                    });
+
+                cgb.CreateCommand(Prefix + "cmdcooldown")
+                    .Alias(Prefix+ "cmdcd")
+                    .Description($"Sets a cooldown per user for a command. Set 0 to clear. **Needs Manager Messages Permissions**| `{Prefix}cmdcd \"some cmd\" 5`")
+                    .Parameter("command", ParameterType.Required)
+                    .Parameter("secs",ParameterType.Required)
+                    .AddCheck(SimpleCheckers.ManageMessages())
+                    .Do(async e =>
+                    {
+                        try
+                        {
+                            var command = PermissionHelper.ValidateCommand(e.GetArg("command"));
+                            var secsStr = e.GetArg("secs").Trim();
+                            int secs;
+                            if (!int.TryParse(secsStr, out secs) || secs < 0 || secs > 3600)
+                                throw new ArgumentOutOfRangeException("secs", "Invalid second parameter. (Must be a number between 0 and 3600)");
+
+
+                            await PermissionsHandler.SetCommandCooldown(e.Server, command, secs).ConfigureAwait(false);
+                            if(secs == 0)
+                                await e.Channel.SendMessage($"Command **{command}** has no coooldown now.").ConfigureAwait(false);
+                            else
+                                await e.Channel.SendMessage($"Command **{command}** now has a **{secs} {(secs==1 ? "second" : "seconds")}** cooldown.").ConfigureAwait(false);
+                        }
+                        catch (ArgumentException exArg)
+                        {
+                            await e.Channel.SendMessage(exArg.Message).ConfigureAwait(false);
+                        }
+                        catch (Exception ex)
+                        {
+                            await e.Channel.SendMessage("Something went terribly wrong - " + ex.Message).ConfigureAwait(false);
+                        }
+                    });
+
+                cgb.CreateCommand(Prefix + "allcmdcooldowns")
+                    .Alias(Prefix + "acmdcds")
+                    .Description($"Shows a list of all commands and their respective cooldowns. | `{Prefix}acmdcds`")
+                    .Do(async e =>
+                    {
+                        ServerPermissions perms;
+                        PermissionsHandler.PermissionsDict.TryGetValue(e.Server.Id, out perms);
+                        if (perms == null)
+                            return;
+
+                        if (!perms.CommandCooldowns.Any())
+                        {
+                            await e.Channel.SendMessage("`No command cooldowns set.`").ConfigureAwait(false);
+                            return;
+                        }
+                        await e.Channel.SendMessage(SearchHelper.ShowInPrettyCode(perms.CommandCooldowns.Select(c=>c.Key+ ": "+c.Value+" secs"),s=>$"{s,-30}",2)).ConfigureAwait(false);
                     });
             });
         }

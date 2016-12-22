@@ -1,10 +1,38 @@
-﻿using Discord.Commands;
+﻿//
+//                       _oo0oo_
+//                      o8888888o
+//                      88" . "88
+//                      (| -_- |)
+//                      0\  =  /0
+//                    ___/`---'\___
+//                  .' \\|     |// '.
+//                 / \\|||  :  |||// \
+//                / _||||| -:- |||||- \
+//               |   | \\\  -  /// |   |
+//               | \_|  ''\---/''  |_/ |
+//               \  .-\__  '-'  ___/-. /
+//             ___'. .'  /--.--\  `. .'___
+//          ."" '<  `.___\_<|>_/___.' >' "".
+//         | | :  `- \`.;`\ _ /`;.`/ - ` : | |
+//         \  \ `_.   \_ __\ /__ _/   .-` /  /
+//     =====`-.____`.___ \_____/___.-`___.-'=====
+//                       `=---='
+//
+//
+//     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+//               佛祖保佑         永无BUG
+//
+//
+using Discord.Commands;
 using WizBot.Extensions;
 using WizBot.Modules;
 using WizBot.Modules.Permissions.Classes;
 using System;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace WizBot.Classes.Help.Commands
@@ -24,48 +52,47 @@ namespace WizBot.Classes.Help.Commands
                 var com = WizBot.Client.GetService<CommandService>().AllCommands
                     .FirstOrDefault(c => c.Text.ToLowerInvariant().Equals(comToFind) ||
                                         c.Aliases.Select(a => a.ToLowerInvariant()).Contains(comToFind));
+
+                var str = "";
+                var alias = com.Aliases.FirstOrDefault();
+                if (alias != null)
+                    str = $" / `{ com.Aliases.FirstOrDefault()}`";
                 if (com != null)
-                    await e.Channel.SendMessage($"`Help for '{com.Text}':` {com.Description}").ConfigureAwait(false);
+                    await e.Channel.SendMessage($@"**__Help for:__ `{com.Text}`**" + str + $"\n**Desc:** {new Regex(@"\|").Replace(com.Description, "\n**Usage:**", 1)}").ConfigureAwait(false);
             }).ConfigureAwait(false);
         };
-        public static string HelpString => (WizBot.IsBot
-                                           ? $"To add me to your server, use this link** -> <https://discordapp.com/oauth2/authorize?client_id=170849867508350977&scope=bot&permissions=66186303>\n"
-                                           : $"To invite me to your server, just send me an invite link here.") +
-                                           $"You can use `{WizBot.Config.CommandPrefixes.Help}modules` command to see a list of all modules.\n" +
-                                           $"You can use `{WizBot.Config.CommandPrefixes.Help}commands ModuleName`" +
-                                           $" (for example `{WizBot.Config.CommandPrefixes.Help}commands Administration`) to see a list of all of the commands in that module.\n" +
-                                           $"For a specific command help, use `{WizBot.Config.CommandPrefixes.Help}h \"Command name\"` (for example `-h \"!m q\"`)\n" +
-                                           "**LIST OF COMMANDS CAN BE FOUND ON THIS LINK**\n\n <http://wizkiller96network.com/wizbot-cmds.html>";
+        public static string HelpString {
+            get {
+                var str = !string.IsNullOrWhiteSpace(WizBot.Creds.ClientId) && !WizBot.Config.DontJoinServers
+                    ? String.Format("To add me to your server, use this link -> <https://discordapp.com/oauth2/authorize?client_id={0}&scope=bot&permissions=66186303>\n", WizBot.Creds.ClientId)
+                    : "";
+                return str + String.Format(WizBot.Config.HelpString, WizBot.Config.CommandPrefixes.Help);
+            }
+        }
 
         public static string DMHelpString => WizBot.Config.DMHelpString;
 
         public Action<CommandEventArgs> DoGitFunc() => e =>
         {
-            string helpstr =
-$@"######For more information, go to: **http://wizkiller96network.com/**
-######You can donate on paypal: `inick01@live.com`
-#WizBot List Of Commands  
-Version: `{WizStats.Instance.BotVersion}`";
+            var helpstr = new StringBuilder();
 
-
-            string lastCategory = "";
+            var lastCategory = "";
             foreach (var com in WizBot.Client.GetService<CommandService>().AllCommands)
             {
                 if (com.Category != lastCategory)
                 {
-                    helpstr += "\n### " + com.Category + "  \n";
-                    helpstr += "Command and aliases | Description | Usage\n";
-                    helpstr += "----------------|--------------|-------\n";
+                    helpstr.AppendLine("\n### " + com.Category + "  ");
+                    helpstr.AppendLine("Command and aliases | Description | Usage");
+                    helpstr.AppendLine("----------------|--------------|-------");
                     lastCategory = com.Category;
                 }
-                helpstr += PrintCommandHelp(com);
+                helpstr.AppendLine($"`{com.Text}`{string.Concat(com.Aliases.Select(a => $", `{a}`"))} | {com.Description}");
             }
             helpstr = helpstr.Replace(WizBot.BotMention, "@BotName");
-            helpstr = helpstr.Replace("\n**Usage**:", " | ").Replace("**Usage**:", " | ").Replace("**Description:**", " | ").Replace("\n|", " |  \n");
 #if DEBUG
-            File.WriteAllText("../../../commandlist.md", helpstr);
+            File.WriteAllText("../../../docs/Commands List.md", helpstr.ToString());
 #else
-            File.WriteAllText("commandlist.md", helpstr);
+            File.WriteAllText("commandlist.md", helpstr.ToString());
 #endif
         };
 
@@ -73,35 +100,32 @@ Version: `{WizStats.Instance.BotVersion}`";
         {
             cgb.CreateCommand(Module.Prefix + "h")
                 .Alias(Module.Prefix + "help", WizBot.BotMention + " help", WizBot.BotMention + " h", "~h")
-                .Description("Either shows a help for a single command, or PMs you help link if no arguments are specified.\n**Usage**: '-h !m q' or just '-h' ")
+                .Description($"Either shows a help for a single command, or PMs you help link if no arguments are specified. | `{Prefix}h !m q` or just `{Prefix}h` ")
                 .Parameter("command", ParameterType.Unparsed)
                 .Do(HelpFunc());
             cgb.CreateCommand(Module.Prefix + "hgit")
-                .Description("Generates the commandlist.md file. **Owner Only!**")
+                .Description($"Generates the commandlist.md file. **Bot Owner Only!** | `{Prefix}hgit`")
                 .AddCheck(SimpleCheckers.OwnerOnly())
                 .Do(DoGitFunc());
             cgb.CreateCommand(Module.Prefix + "readme")
                 .Alias(Module.Prefix + "guide")
-                .Description("Sends a readme and a guide links to the channel.")
+                .Description($"Sends a readme and a guide links to the channel. | `{Prefix}readme` or `{Prefix}guide`")
                 .Do(async e =>
                     await e.Channel.SendMessage(
-@"**FULL README**: <None>
-**GUIDE ONLY**: <None>
-**WINDOWS SETUP GUIDE**: <None>
-**LINUX SETUP GUIDE**: <None>
-**LIST OF COMMANDS**: <http://wizkiller96network.com/wizbot-cmds.html>").ConfigureAwait(false));
+@"**LIST OF COMMANDS**: <http://WizBot.readthedocs.io/en/latest/Commands%20List/>
+**Hosting Guides and docs can be found here**: <http://WizBot.rtfd.io>").ConfigureAwait(false));
 
             cgb.CreateCommand(Module.Prefix + "donate")
                 .Alias("~donate")
-                .Description("Instructions for helping the project!")
+                .Description($"Instructions for helping the project! | `{Prefix}donate` or `~donate`")
                 .Do(async e =>
                 {
                     await e.Channel.SendMessage(
-$@"I've created a **paypal** email for WizBot, so if you wish to support the project, you can send your donations to `inick01@live.com`
-Don't forget to leave your discord name or id in the message, so that I can reward people who help out.
-You can join WizBot server by typing {Module.Prefix}h and you will get an invite in a private message.
-*If you want to support in some other way or on a different platform, please message me*"
-                    ).ConfigureAwait(false);
+$@"You can support the project at <http://wizkiller96network.com/donate.html> or
+You can send donations to `inick01@live.com`
+Don't forget to leave your discord name or id in the message.
+
+**Thank you** ♥️").ConfigureAwait(false);
                 });
         }
 

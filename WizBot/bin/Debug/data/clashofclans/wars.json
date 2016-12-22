@@ -1,0 +1,29 @@
+{
+  "99273784988557312": [
+    {
+      "EnemyClan": "Test",
+      "Size": 15,
+      "Bases": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "WarState": 2,
+      "StartedAt": "0001-01-01T00:00:00",
+      "ServerId": 99273784988557312,
+      "ChannelId": 99273784988557312
+    }
+  ]
+}

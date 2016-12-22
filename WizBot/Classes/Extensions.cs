@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace WizBot.Extensions
@@ -45,10 +46,10 @@ namespace WizBot.Extensions
             if (num == 0)
                 return string.Empty;
             if (num <= 3)
-                return string.Join("", str.Select(c => '.'));
+                return string.Concat(str.Select(c => '.'));
             if (str.Length < num)
                 return str;
-            return string.Join("", str.Take(num - 3)) + (hideDots ? "" : "...");
+            return string.Concat(str.Take(num - 3)) + (hideDots ? "" : "...");
         }
         /// <summary>
         /// Removes trailing S or ES (if specified) on the given string if the num is 1
@@ -137,7 +138,7 @@ namespace WizBot.Extensions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
-        public static void Shuffle<T>(this IList<T> list)
+        public static IList<T> Shuffle<T>(this IList<T> list)
         {
 
             // Thanks to @Joe4Evr for finding a bug in the old version of the shuffle
@@ -148,17 +149,18 @@ namespace WizBot.Extensions
                 var box = new byte[(n / Byte.MaxValue) + 1];
                 int boxSum;
                 do
-                    {
+                {
                     provider.GetBytes(box);
                     boxSum = box.Sum(b => b);
-                    }
-                while (!(boxSum < n * ((Byte.MaxValue * box.Length) / n))) ;
+                }
+                while (!(boxSum < n * ((Byte.MaxValue * box.Length) / n)));
                 var k = (boxSum % n);
                 n--;
                 var value = list[k];
                 list[k] = list[n];
                 list[n] = value;
             }
+            return list;
         }
 
         /// <summary>
@@ -168,18 +170,64 @@ namespace WizBot.Extensions
         /// <param name="source"></param>
         /// <param name="action"></param>
         public static async Task<string> ShortenUrl(this string str)
-         {
-             try
-             {
-                 var result = await SearchHelper.ShortenUrl(str).ConfigureAwait(false);
-                 return result;
-             }
-             catch (WebException ex)
-             {
-                 throw new InvalidOperationException("You must enable URL shortner in google developers console.", ex);
-             }
-         }
+        {
+            try
+            {
+                var result = await SearchHelper.ShortenUrl(str).ConfigureAwait(false);
+                return result;
+            }
+            catch (WebException ex)
+            {
+                throw new InvalidOperationException("You must enable URL shortner in google developers console.", ex);
+            }
+        }
 
+        public static string GetOnPage<T>(this IEnumerable<T> source, int pageIndex, int itemsPerPage = 5)
+        {
+            var items = source.Skip(pageIndex * itemsPerPage).Take(itemsPerPage);
+            if (!items.Any())
+            {
+                return $"No items on page {pageIndex + 1}.";
+            }
+            var sb = new StringBuilder($"---page {pageIndex + 1} --\n");
+            var itemsDC = items as IEnumerable<KeyValuePair<string, IEnumerable<string>>>;
+            var itemsDS = items as IEnumerable<KeyValuePair<string, string>>;
+            if (itemsDC != null)
+            {
+                foreach (var item in itemsDC)
+                {
+                    sb.Append($"{ Format.Code(item.Key)}\n");
+                    int i = 1;
+                    var last = item.Value.Last();
+                    foreach (var value in item.Value)
+                    {
+                        if (last != value)
+                            sb.AppendLine("  `├" + i++ + "─`" + Format.Bold(value));
+                        else
+                            sb.AppendLine("  `└" + i++ + "─`" + Format.Bold(value));
+                    }
+
+                }
+            }
+            else if (itemsDS != null)
+            {
+                foreach (var item in itemsDS)
+                {
+                    sb.Append($"{ Format.Code(item.Key)}\n");
+                    sb.AppendLine("  `└─`" + Format.Bold(item.Value));
+                }
+
+            }
+            else
+            {
+                foreach (var item in items)
+                {
+                    sb.Append($"{ Format.Code(item.ToString())} \n");
+                }
+            }
+
+            return sb.ToString();
+        }
         /// <summary>
         /// Gets the program runtime
         /// </summary>
@@ -190,7 +238,7 @@ namespace WizBot.Extensions
 
         public static string Matrix(this string s)
             =>
-                string.Join("", s.Select(c => c.ToString() + " ̵̢̬̜͉̞̭̖̰͋̉̎ͬ̔̇̌̀".TrimTo(rng.Next(0, 12), true)));
+                string.Concat(s.Select(c => c.ToString() + " ̵̢̬̜͉̞̭̖̰͋̉̎ͬ̔̇̌̀".TrimTo(rng.Next(0, 12), true)));
         //.Replace("`", "");
 
         public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
@@ -256,6 +304,15 @@ namespace WizBot.Extensions
         public static int GiB(this int value) => value.MiB() * 1024;
         public static int GB(this int value) => value.MB() * 1000;
 
+        public static ulong KiB(this ulong value) => value * 1024;
+        public static ulong KB(this ulong value) => value * 1000;
+
+        public static ulong MiB(this ulong value) => value.KiB() * 1024;
+        public static ulong MB(this ulong value) => value.KB() * 1000;
+
+        public static ulong GiB(this ulong value) => value.MiB() * 1024;
+        public static ulong GB(this ulong value) => value.MB() * 1000;
+
         public static Stream ToStream(this Image img, System.Drawing.Imaging.ImageFormat format = null)
         {
             if (format == null)
@@ -304,6 +361,18 @@ namespace WizBot.Extensions
         public static async Task<Bitmap> MergeAsync(this IEnumerable<Image> images, int reverseScaleFactor = 1) =>
             await Task.Run(() => images.Merge(reverseScaleFactor)).ConfigureAwait(false);
 
-         public static string Unmention(this string str) => str.Replace("@", "ම");
+        public static string Unmention(this string str) => str.Replace("@", "ම");
+
+        public static Stream ToStream(this string str)
+        {
+            var sw = new StreamWriter(new MemoryStream());
+            sw.Write(str);
+            sw.Flush();
+            sw.BaseStream.Position = 0;
+            return sw.BaseStream;
+        }
+
+        public static double UnixTimestamp(this DateTime dt) => dt.ToUniversalTime().Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+
     }
 }

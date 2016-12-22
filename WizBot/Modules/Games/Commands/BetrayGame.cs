@@ -18,18 +18,18 @@ namespace WizBot.Modules.Games.Commands
         internal override void Init(CommandGroupBuilder cgb)
         {
             cgb.CreateCommand(Module.Prefix + "betray")
-                .Description("BETRAY GAME. Betray Wiz Bot next turn." +
-                             "If Wiz Bot cooperates - you get extra points, Wiz Bot loses a LOT." +
-                             "If Wiz Bot betrays - you both lose some points.")
+                .Description("BETRAY GAME. Betray WizBot next turn." +
+                             "If WizBot cooperates - you get extra points, WizBot loses a LOT." +
+                             $"If WizBot betrays - you both lose some points. | `{Prefix}betray`")
                 .Do(async e =>
                 {
                     await ReceiveAnswer(e, Answers.Betray).ConfigureAwait(false);
                 });
 
             cgb.CreateCommand(Module.Prefix + "cooperate")
-                .Description("BETRAY GAME. Cooperate with Wiz Bot next turn." +
-                             "If Wiz Bot cooperates - you both get bonus points." +
-                             "If Wiz Bot betrays - you lose A LOT, Wiz Bot gets extra.")
+                .Description("BETRAY GAME. Cooperate with WizBot next turn." +
+                             "If WizBot cooperates - you both get bonus points." +
+                             $"If WizBot betrays - you lose A LOT, WizBot gets extra. | `{Prefix}cooperater`")
                 .Do(async e =>
                 {
 
@@ -47,8 +47,8 @@ namespace WizBot.Modules.Games.Commands
                 userPoints = value;
             }
         }
-        private int wizPoints = 0;
-        private int WizPoints {
+        private int WizPoints = 0;
+        private int wizPoints {
             get { return wizPoints; }
             set {
                 if (value < 0)
@@ -62,12 +62,12 @@ namespace WizBot.Modules.Games.Commands
         private async Task ReceiveAnswer(CommandEventArgs e, Answers userAnswer)
         {
             var response = userAnswer == Answers.Betray
-                ? ":no_entry: `You betrayed Wiz Bot` - you monster."
-                : ":ok: `You cooperated with Wiz Bot.` ";
+                ? ":no_entry: `You betrayed WizBot` - you monster."
+                : ":ok: `You cooperated with WizBot.` ";
             var currentAnswer = NextAnswer;
             var wizResponse = currentAnswer == Answers.Betray
-                ? ":no_entry: `aww Wiz Bot betrayed you` - she is so cute"
-                : ":ok: `Wiz Bot cooperated.`";
+                ? ":no_entry: `aww WizBot betrayed you` - she is so cute"
+                : ":ok: `WizBot cooperated.`";
             NextAnswer = userAnswer;
             if (userAnswer == Answers.Betray && currentAnswer == Answers.Betray)
             {
@@ -94,7 +94,7 @@ namespace WizBot.Modules.Games.Commands
                                         $"{response}\n" +
                                         $"{wizResponse}\n" +
                                         $"--------------------------------\n" +
-                                        $"Wiz Bot has {WizPoints} points." +
+                                        $"WizBot has {WizPoints} points." +
                                         $"You have {UserPoints} points." +
                                         $"--------------------------------\n")
                                             .ConfigureAwait(false);
@@ -102,7 +102,7 @@ namespace WizBot.Modules.Games.Commands
             if (wizPoints == userPoints)
                 await e.Channel.SendMessage("Its a draw").ConfigureAwait(false);
             else if (wizPoints > userPoints)
-                await e.Channel.SendMessage("Wiz Bot won.").ConfigureAwait(false);
+                await e.Channel.SendMessage("WizBot won.").ConfigureAwait(false);
             else
                 await e.Channel.SendMessage("You won.").ConfigureAwait(false);
             wizPoints = 0;

@@ -10,7 +10,7 @@ namespace WizBot.Modules.Administration.Commands
     {
         public AutoAssignRole(DiscordModule module) : base(module)
         {
-            WizBot.Client.UserJoined += (s, e) =>
+            WizBot.OnReady += () => WizBot.Client.UserJoined += (s, e) =>
             {
                 try
                 {
@@ -32,16 +32,17 @@ namespace WizBot.Modules.Administration.Commands
 
         internal override void Init(CommandGroupBuilder cgb)
         {
-            cgb.CreateCommand(Module.Prefix + "aar")
-                .Alias(Module.Prefix + "autoassignrole")
-                .Description($"Automaticaly assigns a specified role to every user who joins the server. Type `.aar` to disable, `.aar Role Name` to enable")
+            cgb.CreateCommand(Module.Prefix + "autoassignrole")
+                .Alias(Module.Prefix + "aar")
+                .Description($"Automaticaly assigns a specified role to every user who joins the server. **Needs Manage Roles Permissions.** |`{Prefix}aar` to disable, `{Prefix}aar Role Name` to enable")
                 .Parameter("role", ParameterType.Unparsed)
                 .AddCheck(new SimpleCheckers.ManageRoles())
                 .Do(async e =>
                 {
                     if (!e.Server.CurrentUser.ServerPermissions.ManageRoles)
                     {
-                        await e.Channel.SendMessage("I do not have the permission to manage roles.");
+                        await e.Channel.SendMessage("I do not have the permission to manage roles.").ConfigureAwait(false);
+                        return;
                     }
                     var r = e.GetArg("role")?.Trim();
 
@@ -51,19 +52,19 @@ namespace WizBot.Modules.Administration.Commands
                     {
                         config.AutoAssignedRole = 0;
 
-                        await e.Channel.SendMessage("`Auto assign role on user join is now disabled.`");
+                        await e.Channel.SendMessage("`Auto assign role on user join is now disabled.`").ConfigureAwait(false);
                         return;
                     }
                     var role = e.Server.FindRoles(r).FirstOrDefault();
 
                     if (role == null)
                     {
-                        await e.Channel.SendMessage("💢 `Role not found.`");
+                        await e.Channel.SendMessage("💢 `Role not found.`").ConfigureAwait(false);
                         return;
                     }
 
                     config.AutoAssignedRole = role.Id;
-                    await e.Channel.SendMessage("`Auto assigned role is set.`");
+                    await e.Channel.SendMessage("`Auto assigned role is set.`").ConfigureAwait(false);
 
                 });
         }

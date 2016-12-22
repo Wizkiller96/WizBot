@@ -28,8 +28,7 @@ namespace Discord.Audio
             }
 
             public override long Length { get { throw new InvalidOperationException(); } }
-            public override long Position
-            {
+            public override long Position {
                 get { throw new InvalidOperationException(); }
                 set { throw new InvalidOperationException(); }
             }
@@ -39,8 +38,9 @@ namespace Discord.Audio
             public override int Read(byte[] buffer, int offset, int count) { throw new InvalidOperationException(); }
             public override void Write(byte[] buffer, int offset, int count)
             {
-                _client.Send(buffer, offset, count);
+                throw new InvalidOperationException();
             }
+            public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken) => _client.Send(buffer, offset, count);
         }
 
         private readonly DiscordConfig _config;
@@ -228,7 +228,7 @@ namespace Discord.Audio
             }
         }
 
-        public void Send(byte[] data, int offset, int count)
+        public async Task Send(byte[] data, int offset, int count)
         {
             if (data == null) throw new ArgumentException(nameof(data));
             if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
@@ -236,18 +236,18 @@ namespace Discord.Audio
             if (VoiceSocket.Server == null) return; //Has been closed
             if (count == 0) return;
 
-            VoiceSocket.SendPCMFrames(data, offset, count);
+            await VoiceSocket.SendPCMFrames(data, offset, count);
         }
 
-        public void Clear()
+        public async Task Clear()
         {
             if (VoiceSocket.Server == null) return; //Has been closed
-            VoiceSocket.ClearPCMFrames();
+            await VoiceSocket.ClearPCMFrames();
         }
-        public void Wait()
+        public async Task Wait()
         {
             if (VoiceSocket.Server == null) return; //Has been closed
-            VoiceSocket.WaitForQueue();
+            await VoiceSocket.WaitForQueue();
         }
 
         public void SendVoiceUpdate(ulong? serverId, ulong? channelId)

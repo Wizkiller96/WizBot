@@ -13,7 +13,8 @@ namespace WizBot.Modules.Permissions.Classes
     {
         public static PermissionChecker Instance { get; } = new PermissionChecker();
 
-        private ConcurrentDictionary<User, DateTime> timeBlackList { get; } = new ConcurrentDictionary<User, DateTime>();
+        private ConcurrentDictionary<string, ulong> commandCooldowns = new ConcurrentDictionary<string, ulong>();
+        private ConcurrentDictionary<ulong, bool> timeBlackList { get; } = new ConcurrentDictionary<ulong, bool>();
 
         static PermissionChecker() { }
         private PermissionChecker()
@@ -22,8 +23,7 @@ namespace WizBot.Modules.Permissions.Classes
             {
                 while (true)
                 {
-                    //blacklist is cleared every 1.75 seconds. That is the most time anyone will be blocked
-                    await Task.Delay(1750).ConfigureAwait(false);
+                    await Task.Delay(1000).ConfigureAwait(false);
                     timeBlackList.Clear();
                 }
             });
@@ -39,26 +39,40 @@ namespace WizBot.Modules.Permissions.Classes
             if (channel.IsPrivate || channel.Server == null)
                 return command.Category == "Help";
 
+            if (user == null)
+                return false;
+
             if (ConfigHandler.IsUserBlacklisted(user.Id) ||
                 (!channel.IsPrivate &&
                  (ConfigHandler.IsServerBlacklisted(channel.Server.Id) || ConfigHandler.IsChannelBlacklisted(channel.Id))))
             {
                 return false;
             }
-
-            if (timeBlackList.ContainsKey(user))
-                return false;
-
-            timeBlackList.TryAdd(user, DateTime.Now);
+            try
+            {
+                if (timeBlackList.ContainsKey(user.Id))
+                    return false;
+            }
+            catch { return false; }
 
             if (!channel.IsPrivate && !channel.Server.CurrentUser.GetPermissions(channel).SendMessages)
             {
                 return false;
             }
-            //{
-            //    user.SendMessage($"I ignored your command in {channel.Server.Name}/#{channel.Name} because i don't have permissions to write to it. Please use `;acm channel_name 0` in that server instead of muting me.").GetAwaiter().GetResult();
-            //}
-            
+
+            timeBlackList.TryAdd(user.Id, true);
+
+            ServerPermissions perms;
+            PermissionsHandler.PermissionsDict.TryGetValue(user.Server.Id, out perms);
+
+            AddUserCooldown(user.Server.Id, user.Id, command.Text.ToLower());
+            if (commandCooldowns.Keys.Contains(user.Server.Id + ":" + command.Text.ToLower()))
+            {
+                if (perms?.Verbose == true)
+                    error = $"{user.Mention} You have a cooldown on that command.";
+                return false;
+            }
+
             try
             {
                 //is it a permission command?
@@ -75,9 +89,7 @@ namespace WizBot.Modules.Permissions.Classes
                     catch { }
                     if (user.Server.Owner.Id == user.Id || (role != null && user.HasRole(role)))
                         return true;
-                    ServerPermissions perms;
-                    PermissionsHandler.PermissionsDict.TryGetValue(user.Server.Id, out perms);
-                    throw new Exception($"You don't have the necessary role (**{(perms?.PermissionsControllerRole ?? "Wiz Bot")}**) to change permissions.");
+                    throw new Exception($"You don't have the necessary role (**{(perms?.PermissionsControllerRole ?? "WizBot")}**) to change permissions.");
                 }
 
                 var permissionType = PermissionsHandler.GetPermissionBanType(command, user, channel);
@@ -128,8 +140,7 @@ namespace WizBot.Modules.Permissions.Classes
                 Console.WriteLine($"Exception in canrun: {ex}");
                 try
                 {
-                    ServerPermissions perms;
-                    if (PermissionsHandler.PermissionsDict.TryGetValue(user.Server.Id, out perms) && perms.Verbose)
+                    if (perms != null && perms.Verbose)
                         //if verbose - print errors
                         error = ex.Message;
                 }
@@ -139,6 +150,29 @@ namespace WizBot.Modules.Permissions.Classes
                 }
                 return false;
             }
+        }
+
+        public void AddUserCooldown(ulong serverId, ulong userId, string commandName)
+        {
+            commandCooldowns.TryAdd(commandName, userId);
+            var tosave = serverId + ":" + commandName;
+            Task.Run(async () =>
+            {
+                ServerPermissions perms;
+                PermissionsHandler.PermissionsDict.TryGetValue(serverId, out perms);
+                int cd;
+                if (!perms.CommandCooldowns.TryGetValue(commandName, out cd))
+                {
+                    return;
+                }
+                if (commandCooldowns.TryAdd(tosave, userId))
+                {
+                    await Task.Delay(cd * 1000);
+                    ulong throwaway;
+                    commandCooldowns.TryRemove(tosave, out throwaway);
+                }
+
+            });
         }
     }
 }

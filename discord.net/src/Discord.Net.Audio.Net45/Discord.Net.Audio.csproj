@@ -83,9 +83,6 @@
     <Compile Include="..\Discord.Net.Audio\UserIsTalkingEventArgs.cs">
       <Link>UserIsTalkingEventArgs.cs</Link>
     </Compile>
-    <Compile Include="..\Discord.Net.Audio\VirtualClient.cs">
-      <Link>VirtualClient.cs</Link>
-    </Compile>
     <Compile Include="..\Discord.Net.Audio\VoiceBuffer.cs">
       <Link>VoiceBuffer.cs</Link>
     </Compile>

@@ -2,6 +2,7 @@
 using Discord.Audio;
 using Discord.Commands;
 using Discord.Modules;
+using WizBot.Classes;
 using WizBot.Classes.Help.Commands;
 using WizBot.Classes.JSONModels;
 using WizBot.Modules.Administration;
@@ -12,7 +13,7 @@ using WizBot.Modules.Gambling;
 using WizBot.Modules.Games;
 using WizBot.Modules.Games.Commands;
 using WizBot.Modules.Help;
-#if !WIZBOT_RELEASE
+#if !WIZ_RELEASE
 using WizBot.Modules.Music;
 #endif
 using WizBot.Modules.NSFW;
@@ -22,6 +23,7 @@ using WizBot.Modules.Pokemon;
 using WizBot.Modules.Searches;
 using WizBot.Modules.Translator;
 using WizBot.Modules.Trello;
+using WizBot.Modules.Utility;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -41,29 +43,14 @@ namespace WizBot
         public static LocalizedStrings Locale { get; set; } = new LocalizedStrings();
         public static string BotMention { get; set; } = "";
         public static bool Ready { get; set; } = false;
-        public static bool IsBot { get; set; } = false;
+        public static Action OnReady { get; set; } = delegate { };
 
-        private static Channel OwnerPrivateChannel { get; set; }
+        private static List<Channel> OwnerPrivateChannels { get; set; }
 
         private static void Main()
         {
             Console.OutputEncoding = Encoding.Unicode;
 
-            //var lines = File.ReadAllLines("data/input.txt");
-            //HashSet<dynamic> list = new HashSet<dynamic>();
-            //for (int i = 0; i < lines.Length; i += 3) {
-            //    dynamic obj = new JArray();
-            //    obj.Text = lines[i];
-            //    obj.Author = lines[i + 1];
-            //    if (obj.Author.StartsWith("-"))
-            //        obj.Author = obj.Author.Substring(1, obj.Author.Length - 1).Trim();
-            //    list.Add(obj);
-            //}
-
-            //File.WriteAllText("data/quotes.json", Newtonsoft.Json.JsonConvert.SerializeObject(list, Formatting.Indented));
-
-            //Console.ReadKey();
-            // generate credentials example so people can know about the changes i make
             try
             {
                 File.WriteAllText("data/config_example.json", JsonConvert.SerializeObject(new Configuration(), Formatting.Indented));
@@ -104,10 +91,10 @@ namespace WizBot
             }
 
             //if password is not entered, prompt for password
-            if (string.IsNullOrWhiteSpace(Creds.Password) && string.IsNullOrWhiteSpace(Creds.Token))
+            if (string.IsNullOrWhiteSpace(Creds.Token))
             {
-                Console.WriteLine("Password blank. Please enter your password:\n");
-                Creds.Password = Console.ReadLine();
+                Console.WriteLine("Token blank. Please enter your bot's token:\n");
+                Creds.Token = Console.ReadLine();
             }
 
             Console.WriteLine(string.IsNullOrWhiteSpace(Creds.GoogleAPIKey)
@@ -122,6 +109,9 @@ namespace WizBot
             Console.WriteLine(string.IsNullOrWhiteSpace(Creds.SoundCloudClientID)
                 ? "No soundcloud Client ID found. Soundcloud streaming is disabled."
                 : "SoundCloud streaming enabled.");
+            Console.WriteLine(string.IsNullOrWhiteSpace(Creds.OsuAPIKey)
+                ? "No osu! api key found. Song & top score lookups will not work. User lookups still available."
+                : "osu! API key provided.");
 
             BotMention = $"<@{Creds.BotId}>";
 
@@ -129,12 +119,12 @@ namespace WizBot
             Client = new DiscordClient(new DiscordConfigBuilder()
             {
                 MessageCacheSize = 10,
-                ConnectionTimeout = 120000,
+                ConnectionTimeout = int.MaxValue,
                 LogLevel = LogSeverity.Warning,
                 LogHandler = (s, e) =>
                     Console.WriteLine($"Severity: {e.Severity}" +
-                                      $"Message: {e.Message}" +
-                                      $"ExceptionMessage: {e.Exception?.Message ?? "-"}"),
+                                      $"ExceptionMessage: {e.Exception?.Message ?? "-"}" +
+                                      $"Message: {e.Message}"),
             });
 
             //create a command service
@@ -157,9 +147,6 @@ namespace WizBot
                 }
             });
 
-            //reply to personal messages and forward if enabled.
-            Client.MessageReceived += Client_MessageReceived;
-
             //add command service
             Client.AddService<CommandService>(commandService);
 
@@ -175,13 +162,14 @@ namespace WizBot
             }));
 
             //install modules
-            modules.Add(new AdministrationModule(), "Administration", ModuleFilter.None);
             modules.Add(new HelpModule(), "Help", ModuleFilter.None);
+            modules.Add(new AdministrationModule(), "Administration", ModuleFilter.None);
+            modules.Add(new UtilityModule(), "Utility", ModuleFilter.None);
             modules.Add(new PermissionModule(), "Permissions", ModuleFilter.None);
             modules.Add(new Conversations(), "Conversations", ModuleFilter.None);
             modules.Add(new GamblingModule(), "Gambling", ModuleFilter.None);
             modules.Add(new GamesModule(), "Games", ModuleFilter.None);
-#if !WIZBOT_RELEASE
+#if !WIZ_RELEASE
             modules.Add(new MusicModule(), "Music", ModuleFilter.None);
 #endif
             modules.Add(new SearchesModule(), "Searches", ModuleFilter.None);
@@ -196,30 +184,28 @@ namespace WizBot
             //run the bot
             Client.ExecuteAndWait(async () =>
             {
+                await Task.Run(() =>
+                {
+                    Console.WriteLine("Specific config started initializing.");
+                    var x = SpecificConfigurations.Default;
+                    Console.WriteLine("Specific config done initializing.");
+                });
+
+                await PermissionsHandler.Initialize();
+
                 try
                 {
-                    if (string.IsNullOrWhiteSpace(Creds.Token))
-                        await Client.Connect(Creds.Username, Creds.Password).ConfigureAwait(false);
-                    else
-                    {
-                        await Client.Connect(Creds.Token).ConfigureAwait(false);
-                        IsBot = true;
-                    }
-                    
+                    await Client.Connect(Creds.Token, TokenType.Bot).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
-                    if (string.IsNullOrWhiteSpace(Creds.Token))
-                        Console.WriteLine($"Probably wrong EMAIL or PASSWORD.");
-                    else
-                        Console.WriteLine($"Token is wrong. Don't set a token if you don't have an official BOT account.");
+                    Console.WriteLine($"Token is wrong. Don't set a token if you don't have an official BOT account.");
                     Console.WriteLine(ex);
                     Console.ReadKey();
                     return;
                 }
-
-#if !WIZBOT_RELEASE
-                await Task.Delay(100000).ConfigureAwait(false);
+#if WIZ_RELEASE
+                await Task.Delay(300000).ConfigureAwait(false);
 #else
                 await Task.Delay(1000).ConfigureAwait(false);
 #endif
@@ -228,15 +214,19 @@ namespace WizBot
                 Console.WriteLine(await WizStats.Instance.GetStats().ConfigureAwait(false));
                 Console.WriteLine("-----------------");
 
-                try
-                {
-                    OwnerPrivateChannel = await Client.CreatePrivateChannel(Creds.OwnerIds[0]).ConfigureAwait(false);
-                }
-                catch
-                {
-                    Console.WriteLine("Failed creating private channel with the first owner listed in credentials.json");
-                }
 
+                OwnerPrivateChannels = new List<Channel>(Creds.OwnerIds.Length);
+                foreach (var id in Creds.OwnerIds)
+                {
+                    try
+                    {
+                        OwnerPrivateChannels.Add(await Client.CreatePrivateChannel(id).ConfigureAwait(false));
+                    }
+                    catch
+                    {
+                        Console.WriteLine($"Failed creating private channel with the owner {id} listed in credentials.json");
+                    }
+                }
                 Client.ClientAPI.SendingRequest += (s, e) =>
                 {
                     var request = e.Request as Discord.API.Client.Rest.SendMessageRequest;
@@ -246,8 +236,22 @@ namespace WizBot
                     if (string.IsNullOrWhiteSpace(request.Content))
                         e.Cancel = true;
                 };
-                PermissionsHandler.Initialize();
+#if WIZ_RELEASE
+                Client.ClientAPI.SentRequest += (s, e) =>
+                {
+                    Console.WriteLine($"[Request of type {e.Request.GetType()} sent in {e.Milliseconds}]");
+
+                    var request = e.Request as Discord.API.Client.Rest.SendMessageRequest;
+                    if (request == null) return;
+
+                    Console.WriteLine($"[Content: { request.Content }");
+                };
+#endif
                 WizBot.Ready = true;
+                WizBot.OnReady();
+                Console.WriteLine("Ready!");
+                //reply to personal messages and forward if enabled.
+                Client.MessageReceived += Client_MessageReceived;
             });
             Console.WriteLine("Exiting...");
             Console.ReadKey();
@@ -255,10 +259,20 @@ namespace WizBot
 
         public static bool IsOwner(ulong id) => Creds.OwnerIds.Contains(id);
 
-        public async Task SendMessageToOwner(string message)
+        public static async Task SendMessageToOwner(string message)
         {
-            if (Config.ForwardMessages && OwnerPrivateChannel != null)
-                await OwnerPrivateChannel.SendMessage(message).ConfigureAwait(false);
+            if (Config.ForwardMessages && OwnerPrivateChannels.Any())
+                if (Config.ForwardToAllOwners)
+                    OwnerPrivateChannels.ForEach(async c =>
+                    {
+                        try { await c.SendMessage(message).ConfigureAwait(false); } catch { }
+                    });
+                else
+                {
+                    var c = OwnerPrivateChannels.FirstOrDefault();
+                    if (c != null)
+                        await c.SendMessage(message).ConfigureAwait(false);
+                }
         }
 
         private static bool repliedRecently = false;
@@ -271,31 +285,13 @@ namespace WizBot
                 if (ConfigHandler.IsBlackListed(e))
                     return;
 
-                if (!WizBot.Config.DontJoinServers && !IsBot)
-                {
-                    try
-                    {
-                        await (await Client.GetInvite(e.Message.Text).ConfigureAwait(false)).Accept().ConfigureAwait(false);
-                        await e.Channel.SendMessage("I got in!").ConfigureAwait(false);
-                        return;
-                    }
-                    catch
-                    {
-                        if (e.User.Id == 109338686889476096)
-                        { //carbonitex invite
-                            await e.Channel.SendMessage("Failed to join the server.").ConfigureAwait(false);
-                            return;
-                        }
-                    }
-                }
-
-                if (Config.ForwardMessages && !WizBot.Creds.OwnerIds.Contains(e.User.Id) && OwnerPrivateChannel != null)
-                    await OwnerPrivateChannel.SendMessage(e.User + ": ```\n" + e.Message.Text + "\n```").ConfigureAwait(false);
+                if (Config.ForwardMessages && !WizBot.Creds.OwnerIds.Contains(e.User.Id) && OwnerPrivateChannels.Any())
+                    await SendMessageToOwner(e.User + ": ```\n" + e.Message.Text + "\n```").ConfigureAwait(false);
 
                 if (repliedRecently) return;
 
                 repliedRecently = true;
-                if (e.Message.RawText != "-h")
+                if (e.Message.RawText != WizBot.Config.CommandPrefixes.Help + "h")
                     await e.Channel.SendMessage(HelpCommand.DMHelpString).ConfigureAwait(false);
                 await Task.Delay(2000).ConfigureAwait(false);
                 repliedRecently = false;
@@ -304,5 +300,3 @@ namespace WizBot
         }
     }
 }
-
-//95520984584429568 meany

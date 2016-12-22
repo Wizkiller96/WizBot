@@ -10,7 +10,7 @@ namespace WizBot.Classes
                 return;
             await Task.Run(() =>
             {
-                DbHandler.Instance.InsertData(new DataModels.CurrencyTransaction
+                DbHandler.Instance.Connection.Insert(new DataModels.CurrencyTransaction
                 {
                     Reason = reason,
                     UserId = (long)u.Id,
@@ -26,7 +26,7 @@ namespace WizBot.Classes
             await u.SendMessage("👑Congratulations!👑\nYou received: " + flows).ConfigureAwait(false);
         }
 
-        public static bool RemoveFlowers(Discord.User u, string reason, int amount)
+        public static async Task<bool> RemoveFlowers(Discord.User u, string reason, int amount, bool silent=false, string message="👎`Bot owner has taken {0}{1} from you.`")
         {
             if (amount <= 0)
                 return false;
@@ -36,12 +36,17 @@ namespace WizBot.Classes
             if (state.Value < amount)
                 return false;
 
-            DbHandler.Instance.InsertData(new DataModels.CurrencyTransaction
+            DbHandler.Instance.Connection.Insert(new DataModels.CurrencyTransaction
             {
                 Reason = reason,
                 UserId = (long)u.Id,
                 Value = -amount,
             });
+
+            if (silent)
+                return true;
+
+            await u.SendMessage(string.Format(message,amount,WizBot.Config.CurrencySign)).ConfigureAwait(false);
             return true;
         }
     }

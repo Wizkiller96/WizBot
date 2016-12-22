@@ -1,10 +1,15 @@
 ﻿using Discord.Commands;
 using Discord.Modules;
 using WizBot.Classes.ClashOfClans;
+using WizBot.Modules.Permissions.Classes;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace WizBot.Modules.ClashOfClans
 {
@@ -12,72 +17,179 @@ namespace WizBot.Modules.ClashOfClans
     {
         public override string Prefix { get; } = WizBot.Config.CommandPrefixes.ClashOfClans;
 
-        public static ConcurrentDictionary<ulong, List<ClashWar>> ClashWars { get; } = new ConcurrentDictionary<ulong, List<ClashWar>>();
+        public static ConcurrentDictionary<ulong, List<ClashWar>> ClashWars { get; set; } = new ConcurrentDictionary<ulong, List<ClashWar>>();
 
         private readonly object writeLock = new object();
 
+        public ClashOfClansModule()
+        {
+            WizBot.OnReady += () =>
+            {
+                Task.Run(async () =>
+            {
+                if (File.Exists("data/clashofclans/wars.json"))
+                {
+                    try
+                    {
+                        var content = File.ReadAllText("data/clashofclans/wars.json");
+
+                        var dict = JsonConvert.DeserializeObject<Dictionary<ulong, List<ClashWar>>>(content);
+
+                        foreach (var cw in dict)
+                        {
+                            cw.Value.ForEach(war =>
+                            {
+                                war.Channel = WizBot.Client.GetServer(war.ServerId)?.GetChannel(war.ChannelId);
+                                if (war.Channel == null)
+                                {
+                                    cw.Value.Remove(war);
+                                }
+                            }
+                            );
+                        }
+                        //urgh
+                        ClashWars = new ConcurrentDictionary<ulong, List<ClashWar>>(dict);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("Could not load coc wars: " + e.Message);
+                    }
+
+
+                }
+                //Can't this be disabled if the modules is disabled too :)
+                var callExpire = new TimeSpan(2, 0, 0);
+                var warExpire = new TimeSpan(23, 0, 0);
+                while (true)
+                {
+                    try
+                    {
+                        var hash = ClashWars.GetHashCode();
+                        foreach (var cw in ClashWars)
+                        {
+                            foreach (var war in cw.Value)
+                            {
+                                await CheckWar(callExpire, war);
+                            }
+                            List<ClashWar> newVal = new List<ClashWar>();
+                            foreach (var w in cw.Value)
+                            {
+                                //We add when A: the war is not ended
+                                if (w.WarState != WarState.Ended)
+                                {
+                                    //and B: the war has not expired
+                                    if ((w.WarState == WarState.Started && DateTime.UtcNow - w.StartedAt <= warExpire) || w.WarState == WarState.Created)
+                                    {
+                                        newVal.Add(w);
+                                    }
+                                }
+                            }
+                            //var newVal = cw.Value.Where(w => !(w.Ended || DateTime.UtcNow - w.StartedAt >= warExpire)).ToList();
+                            foreach (var exWar in cw.Value.Except(newVal))
+                            {
+                                await exWar.Channel.SendMessage($"War against {exWar.EnemyClan} ({exWar.Size}v{exWar.Size}) has ended");
+                            }
+
+                            if (newVal.Count == 0)
+                            {
+                                List<ClashWar> obj;
+                                ClashWars.TryRemove(cw.Key, out obj);
+                            }
+                            else
+                            {
+                                ClashWars.AddOrUpdate(cw.Key, newVal, (x, s) => newVal);
+                            }
+                        }
+                        if (hash != ClashWars.GetHashCode()) //something changed 
+                        {
+                            Save();
+                        }
+
+
+                    }
+                    catch { }
+                    await Task.Delay(5000);
+                }
+            });
+            };
+        }
+
+        private static void Save()
+        {
+            try
+            {
+                Directory.CreateDirectory("data/clashofclans");
+                File.WriteAllText("data/clashofclans/wars.json", JsonConvert.SerializeObject(ClashWars, Formatting.Indented));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+
+        private static async Task CheckWar(TimeSpan callExpire, ClashWar war)
+        {
+            var Bases = war.Bases;
+            for (var i = 0; i < Bases.Length; i++)
+            {
+                if (Bases[i] == null) continue;
+                if (!Bases[i].BaseDestroyed && DateTime.UtcNow - Bases[i].TimeAdded >= callExpire)
+                {
+                    await war.Channel.SendMessage($"❗🔰**Claim from @{Bases[i].CallUser} for a war against {war.ShortPrint()} has expired.**").ConfigureAwait(false);
+                    Bases[i] = null;
+                }
+            }
+        }
+
+        #region commands
         public override void Install(ModuleManager manager)
         {
             manager.CreateCommands("", cgb =>
             {
 
-                cgb.CreateCommand(Prefix + "createwar")
-                    .Alias(Prefix + "cw")
-                    .Description(
-                        $"Creates a new war by specifying a size (>10 and multiple of 5) and enemy clan name.\n**Usage**:{Prefix}cw 15 The Enemy Clan")
-                    .Parameter("size")
-                    .Parameter("enemy_clan", ParameterType.Unparsed)
-                    .Do(async e =>
-                    {
-                        if (!e.User.ServerPermissions.ManageChannels)
-                            return;
-                        List<ClashWar> wars;
-                        if (!ClashWars.TryGetValue(e.Server.Id, out wars))
-                        {
-                            wars = new List<ClashWar>();
-                            if (!ClashWars.TryAdd(e.Server.Id, wars))
-                                return;
-                        }
-                        var enemyClan = e.GetArg("enemy_clan");
-                        if (string.IsNullOrWhiteSpace(enemyClan))
-                        {
-                            return;
-                        }
-                        int size;
-                        if (!int.TryParse(e.GetArg("size"), out size) || size < 10 || size > 50 || size % 5 != 0)
-                        {
-                            await e.Channel.SendMessage("💢🔰 Not a Valid war size").ConfigureAwait(false);
-                            return;
-                        }
-                        var cw = new ClashWar(enemyClan, size, e);
-                        //cw.Start();
-                        wars.Add(cw);
-                        cw.OnUserTimeExpired += async (u) =>
-                        {
-                            try
-                            {
-                                await
-                                    e.Channel.SendMessage(
-                                        $"❗🔰**Claim from @{u} for a war against {cw.ShortPrint()} has expired.**")
-                                        .ConfigureAwait(false);
-                            }
-                            catch { }
-                        };
-                        cw.OnWarEnded += async () =>
-                        {
-                            try
-                            {
-                                await e.Channel.SendMessage($"❗🔰**War against {cw.ShortPrint()} ended.**").ConfigureAwait(false);
-                            }
-                            catch { }
-                        };
-                        await e.Channel.SendMessage($"❗🔰**CREATED CLAN WAR AGAINST {cw.ShortPrint()}**").ConfigureAwait(false);
-                        //war with the index X started.
-                    });
+                cgb.AddCheck(PermissionChecker.Instance);
 
-                cgb.CreateCommand(Prefix + "sw")
-                    .Alias(Prefix + "startwar")
-                    .Description("Starts a war with a given number.")
+                cgb.CreateCommand(Prefix + "createwar")
+                      .Alias(Prefix + "cw")
+                      .Description($"Creates a new war by specifying a size (>10 and multiple of 5) and enemy clan name. | `{Prefix}cw 15 The Enemy Clan`")
+                      .Parameter("size")
+                      .Parameter("enemy_clan", ParameterType.Unparsed)
+                      .Do(async e =>
+                      {
+                          if (!e.User.ServerPermissions.ManageChannels)
+                              return;
+                          var enemyClan = e.GetArg("enemy_clan");
+                          if (string.IsNullOrWhiteSpace(enemyClan))
+                          {
+                              return;
+                          }
+                          int size;
+                          if (!int.TryParse(e.GetArg("size"), out size) || size < 10 || size > 50 || size % 5 != 0)
+                          {
+                              await e.Channel.SendMessage("💢🔰 Not a Valid war size").ConfigureAwait(false);
+                              return;
+                          }
+                          List<ClashWar> wars;
+                          if (!ClashWars.TryGetValue(e.Server.Id, out wars))
+                          {
+                              wars = new List<ClashWar>();
+                              if (!ClashWars.TryAdd(e.Server.Id, wars))
+                                  return;
+                          }
+
+
+                          var cw = new ClashWar(enemyClan, size, e.Server.Id, e.Channel.Id);
+                          //cw.Start();
+
+                          wars.Add(cw);
+                          await e.Channel.SendMessage($"❗🔰**CREATED CLAN WAR AGAINST {cw.ShortPrint()}**").ConfigureAwait(false);
+                          Save();
+                          //war with the index X started.
+                      });
+
+                cgb.CreateCommand(Prefix + "startwar")
+                    .Alias(Prefix + "sw")
+                    .Description($"Starts a war with a given number. | `{Prefix}sw 15`")
                     .Parameter("number", ParameterType.Required)
                     .Do(async e =>
                     {
@@ -90,19 +202,19 @@ namespace WizBot.Modules.ClashOfClans
                         var war = warsInfo.Item1[warsInfo.Item2];
                         try
                         {
-                            var startTask = war.Start();
+                            war.Start();
                             await e.Channel.SendMessage($"🔰**STARTED WAR AGAINST {war.ShortPrint()}**").ConfigureAwait(false);
-                            await startTask.ConfigureAwait(false);
                         }
                         catch
                         {
-                            await e.Channel.SendMessage($"🔰**WAR AGAINST {war.ShortPrint()} IS ALREADY STARTED**").ConfigureAwait(false);
+                            await e.Channel.SendMessage($"🔰**WAR AGAINST {war.ShortPrint()} HAS ALREADY STARTED**").ConfigureAwait(false);
                         }
+                        Save();
                     });
 
                 cgb.CreateCommand(Prefix + "listwar")
                     .Alias(Prefix + "lw")
-                    .Description($"Shows the active war claims by a number. Shows all wars in a short way if no number is specified.\n**Usage**: {Prefix}lw [war_number] or {Prefix}lw")
+                    .Description($"Shows the active war claims by a number. Shows all wars in a short way if no number is specified. | `{Prefix}lw [war_number] or {Prefix}lw`")
                     .Parameter("number", ParameterType.Optional)
                     .Do(async e =>
                     {
@@ -129,6 +241,7 @@ namespace WizBot.Modules.ClashOfClans
                             }
                             await e.Channel.SendMessage(sb.ToString()).ConfigureAwait(false);
                             return;
+
                         }
                         //if number is not null, print the war needed
                         var warsInfo = GetInfo(e);
@@ -143,7 +256,7 @@ namespace WizBot.Modules.ClashOfClans
                 cgb.CreateCommand(Prefix + "claim")
                     .Alias(Prefix + "call")
                     .Alias(Prefix + "c")
-                    .Description($"Claims a certain base from a certain war. You can supply a name in the third optional argument to claim in someone else's place. \n**Usage**: {Prefix}call [war_number] [base_number] [optional_other_name]")
+                    .Description($"Claims a certain base from a certain war. You can supply a name in the third optional argument to claim in someone else's place.  | `{Prefix}call [war_number] [base_number] [optional_other_name]`")
                     .Parameter("number")
                     .Parameter("baseNumber")
                     .Parameter("other_name", ParameterType.Unparsed)
@@ -170,6 +283,7 @@ namespace WizBot.Modules.ClashOfClans
                             var war = warsInfo.Item1[warsInfo.Item2];
                             war.Call(usr, baseNum - 1);
                             await e.Channel.SendMessage($"🔰**{usr}** claimed a base #{baseNum} for a war against {war.ShortPrint()}").ConfigureAwait(false);
+                            Save();
                         }
                         catch (Exception ex)
                         {
@@ -177,40 +291,33 @@ namespace WizBot.Modules.ClashOfClans
                         }
                     });
 
-                cgb.CreateCommand(Prefix + "cf")
-                    .Alias(Prefix + "claimfinish")
-                    .Description($"Finish your claim if you destroyed a base. Optional second argument finishes for someone else.\n**Usage**: {Prefix}cf [war_number] [optional_other_name]")
+                cgb.CreateCommand(Prefix + "claimfinish")
+                    .Alias(Prefix + "cf")
+                    .Alias(Prefix + "cf3")
+                    .Alias(Prefix + "claimfinish3")
+                    .Description($"Finish your claim with 3 stars if you destroyed a base. Optional second argument finishes for someone else. | `{Prefix}cf [war_number] [optional_other_name]`")
                     .Parameter("number", ParameterType.Required)
                     .Parameter("other_name", ParameterType.Unparsed)
-                    .Do(async e =>
-                    {
-                        var warInfo = GetInfo(e);
-                        if (warInfo == null || warInfo.Item1.Count == 0)
-                        {
-                            await e.Channel.SendMessage("💢🔰 **That war does not exist.**").ConfigureAwait(false);
-                            return;
-                        }
-                        var usr =
-                            string.IsNullOrWhiteSpace(e.GetArg("other_name")) ?
-                            e.User.Name :
-                            e.GetArg("other_name");
+                    .Do(e => FinishClaim(e));
 
-                        var war = warInfo.Item1[warInfo.Item2];
-                        try
-                        {
-                            var baseNum = war.FinishClaim(usr);
-                            await e.Channel.SendMessage($"❗🔰{e.User.Mention} **DESTROYED** a base #{baseNum + 1} in a war against {war.ShortPrint()}").ConfigureAwait(false);
-                        }
-                        catch (Exception ex)
-                        {
-                            await e.Channel.SendMessage($"💢🔰 {ex.Message}").ConfigureAwait(false);
-                        }
-                    });
+                cgb.CreateCommand(Prefix + "claimfinish2")
+                    .Alias(Prefix + "cf2")
+                    .Description($"Finish your claim with 2 stars if you destroyed a base. Optional second argument finishes for someone else. | `{Prefix}cf [war_number] [optional_other_name]`")
+                    .Parameter("number", ParameterType.Required)
+                    .Parameter("other_name", ParameterType.Unparsed)
+                    .Do(e => FinishClaim(e, 2));
+
+                cgb.CreateCommand(Prefix + "claimfinish1")
+                    .Alias(Prefix + "cf1")
+                    .Description($"Finish your claim with 1 stars if you destroyed a base. Optional second argument finishes for someone else. | `{Prefix}cf [war_number] [optional_other_name]`")
+                    .Parameter("number", ParameterType.Required)
+                    .Parameter("other_name", ParameterType.Unparsed)
+                    .Do(e => FinishClaim(e, 1));
 
                 cgb.CreateCommand(Prefix + "unclaim")
                     .Alias(Prefix + "uncall")
                     .Alias(Prefix + "uc")
-                    .Description($"Removes your claim from a certain war. Optional second argument denotes a person in whos place to unclaim\n**Usage**: {Prefix}uc [war_number] [optional_other_name]")
+                    .Description($"Removes your claim from a certain war. Optional second argument denotes a person in whose place to unclaim | `{Prefix}uc [war_number] [optional_other_name]`")
                     .Parameter("number", ParameterType.Required)
                     .Parameter("other_name", ParameterType.Unparsed)
                     .Do(async e =>
@@ -230,6 +337,7 @@ namespace WizBot.Modules.ClashOfClans
                             var war = warsInfo.Item1[warsInfo.Item2];
                             var baseNumber = war.Uncall(usr);
                             await e.Channel.SendMessage($"🔰 @{usr} has **UNCLAIMED** a base #{baseNumber + 1} from a war against {war.ShortPrint()}").ConfigureAwait(false);
+                            Save();
                         }
                         catch (Exception ex)
                         {
@@ -239,7 +347,7 @@ namespace WizBot.Modules.ClashOfClans
 
                 cgb.CreateCommand(Prefix + "endwar")
                     .Alias(Prefix + "ew")
-                    .Description($"Ends the war with a given index.\n**Usage**:{Prefix}ew [war_number]")
+                    .Description($"Ends the war with a given index. | `{Prefix}ew [war_number]`")
                     .Parameter("number")
                     .Do(async e =>
                     {
@@ -250,11 +358,42 @@ namespace WizBot.Modules.ClashOfClans
                             return;
                         }
                         warsInfo.Item1[warsInfo.Item2].End();
+                        await e.Channel.SendMessage($"❗🔰**War against {warsInfo.Item1[warsInfo.Item2].ShortPrint()} ended.**").ConfigureAwait(false);
 
                         var size = warsInfo.Item1[warsInfo.Item2].Size;
                         warsInfo.Item1.RemoveAt(warsInfo.Item2);
+                        Save();
                     });
             });
+
+        }
+        #endregion
+
+
+        private async Task FinishClaim(CommandEventArgs e, int stars = 3)
+        {
+            var warInfo = GetInfo(e);
+            if (warInfo == null || warInfo.Item1.Count == 0)
+            {
+                await e.Channel.SendMessage("💢🔰 **That war does not exist.**").ConfigureAwait(false);
+                return;
+            }
+            var usr =
+                string.IsNullOrWhiteSpace(e.GetArg("other_name")) ?
+                e.User.Name :
+                e.GetArg("other_name");
+
+            var war = warInfo.Item1[warInfo.Item2];
+            try
+            {
+                var baseNum = war.FinishClaim(usr, stars);
+                await e.Channel.SendMessage($"❗🔰{e.User.Mention} **DESTROYED** a base #{baseNum + 1} in a war against {war.ShortPrint()}").ConfigureAwait(false);
+                Save();
+            }
+            catch (Exception ex)
+            {
+                await e.Channel.SendMessage($"💢🔰 {ex.Message}").ConfigureAwait(false);
+            }
         }
 
         private static Tuple<List<ClashWar>, int> GetInfo(CommandEventArgs e)

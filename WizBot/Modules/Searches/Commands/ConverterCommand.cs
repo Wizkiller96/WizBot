@@ -32,7 +32,7 @@ namespace WizBot.Modules.Searches.Commands
         internal override void Init(CommandGroupBuilder cgb)
         {
             cgb.CreateCommand(Module.Prefix + "convert")
-                .Description("Convert quantities from>to. Like `~convert m>km 1000`")
+                .Description($"Convert quantities from>to. | `{Prefix}convert m>km 1000`")
                 .Parameter("from-to", ParameterType.Required)
                 .Parameter("quantity", ParameterType.Optional)
                 .Do(ConvertFunc());
@@ -116,12 +116,12 @@ namespace WizBot.Modules.Searches.Commands
                     exchangeRateProvider = new WebExchangeRatesProvider();
                     currTable = new CurrencyExchangeTable(exchangeRateProvider);
                     lastChanged = DateTime.Now;
-                    }
+                }
                 catch
                 {
                     Console.WriteLine("Error with the currency download.");
-                    }
                 }
+            }
         }
 
         private void ResolveUnitCodes(string from, string to, out UnitTable table, out int fromCode, out int toCode)

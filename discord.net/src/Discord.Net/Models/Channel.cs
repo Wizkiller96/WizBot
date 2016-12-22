@@ -200,6 +200,20 @@ namespace Discord
             }
         }
 
+        public async Task DeleteMessages(Message[] messages) => await DeleteMessages(messages.Select(m => m.Id).ToArray());
+
+        public async Task DeleteMessages(ulong[] messageIds)
+        {
+            if (messageIds.Count() > 100)
+                throw new ArgumentOutOfRangeException("messageIds",
+                    "You must provide no more than 100 Messages or Message Ids");
+                    
+            if (messageIds.Count() == 1)
+                await Client.ClientAPI.Send(new DeleteMessageRequest(Id, messageIds.First()));
+            else if (messageIds.Any())
+                await Client.ClientAPI.Send(new BulkMessageDelete(Id, messageIds));
+        }
+
         public async Task Delete()
         {
             try { await Client.ClientAPI.Send(new DeleteChannelRequest(Id)).ConfigureAwait(false); }
@@ -286,10 +300,17 @@ namespace Discord
 
             try
             {
+                string dir;
+                switch (relativeDir)
+                {
+                    case Relative.Before: default: dir = "before"; break;
+                    case Relative.After: dir = "after"; break;
+                    case Relative.Around: dir = "around"; break;
+                }
                 var request = new GetMessagesRequest(Id)
                 {
                     Limit = limit,
-                    RelativeDir = relativeMessageId.HasValue ? relativeDir == Relative.Before ? "before" : "after" : null,
+                    RelativeDir = relativeMessageId.HasValue ? dir : null,
                     RelativeId = relativeMessageId ?? 0
                 };
                 var msgs = await Client.ClientAPI.Send(request).ConfigureAwait(false);

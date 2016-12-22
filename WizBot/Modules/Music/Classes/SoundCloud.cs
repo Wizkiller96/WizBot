@@ -1,5 +1,7 @@
 ﻿using WizBot.Classes;
+using Newtonsoft.Json;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace WizBot.Modules.Music.Classes
@@ -12,7 +14,7 @@ namespace WizBot.Modules.Music.Classes
         static SoundCloud() { }
         public SoundCloud() { }
 
-        public async Task<SoundCloudVideo> GetVideoAsync(string url)
+        public async Task<SoundCloudVideo> ResolveVideoAsync(string url)
         {
             if (string.IsNullOrWhiteSpace(url))
                 throw new ArgumentNullException(nameof(url));
@@ -30,22 +32,42 @@ namespace WizBot.Modules.Music.Classes
 
         public bool IsSoundCloudLink(string url) =>
             System.Text.RegularExpressions.Regex.IsMatch(url, "(.*)(soundcloud.com|snd.sc)(.*)");
+
+        internal async Task<SoundCloudVideo> GetVideoByQueryAsync(string query)
+        {
+            if (string.IsNullOrWhiteSpace(query))
+                throw new ArgumentNullException(nameof(query));
+            if (string.IsNullOrWhiteSpace(WizBot.Creds.SoundCloudClientID))
+                throw new ArgumentNullException(nameof(WizBot.Creds.SoundCloudClientID));
+
+            var response = await SearchHelper.GetResponseStringAsync($"http://api.soundcloud.com/tracks?q={Uri.EscapeDataString(query)}&client_id={WizBot.Creds.SoundCloudClientID}").ConfigureAwait(false);
+
+            var responseObj = JsonConvert.DeserializeObject<SoundCloudVideo[]>(response).Where(s => s.Streamable).FirstOrDefault();
+            if (responseObj?.Kind != "track")
+                throw new InvalidOperationException("Query yielded no results.");
+
+            return responseObj;
+        }
     }
 
     public class SoundCloudVideo
     {
-        public string Kind = "";
-        public long Id = 0;
-        public SoundCloudUser User = new SoundCloudUser();
-        public string Title = "";
+        public string Kind { get; set; } = "";
+        public long Id { get; set; } = 0;
+        public SoundCloudUser User { get; set; } = new SoundCloudUser();
+        public string Title { get; set; } = "";
+        [JsonIgnore]
         public string FullName => User.Name + " - " + Title;
-        public bool Streamable = false;
+        public bool Streamable { get; set; } = false;
+        [JsonProperty("permalink_url")]
+        public string TrackLink { get; set; } = "";
+        [JsonIgnore]
         public string StreamLink => $"https://api.soundcloud.com/tracks/{Id}/stream?client_id={WizBot.Creds.SoundCloudClientID}";
     }
     public class SoundCloudUser
     {
         [Newtonsoft.Json.JsonProperty("username")]
-        public string Name;
+        public string Name { get; set; }
     }
     /*
     {"kind":"track",

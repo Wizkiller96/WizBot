@@ -1,0 +1,19 @@
+{
+  "PermissionsControllerRole": "WizBot",
+  "Verbose": true,
+  "Id": 232008287510462474,
+  "Permissions": {
+    "Name": "Apoc Rising",
+    "Modules": {
+      "NSFW": true
+    },
+    "Commands": {},
+    "FilterInvites": false,
+    "FilterWords": false
+  },
+  "Words": [],
+  "UserPermissions": {},
+  "ChannelPermissions": {},
+  "RolePermissions": {},
+  "CommandCooldowns": {}
+}

@@ -84,6 +84,22 @@
             <param name="indentLevel">The indention level for the array.</param>
             <returns>A string.</returns>
         </member>
+        <member name="M:Manatee.Json.JsonArray.Add(Manatee.Json.JsonValue)">
+            <summary>
+            Adds an object to the end of the <see cref="T:Manatee.Json.JsonArray"/>.
+            </summary>
+            <param name="item">The object to be added to the end of the <see cref="T:Manatee.Json.JsonArray"/>.
+            If the value is null, it will be replaced by <see cref="F:Manatee.Json.JsonValue.Null"/>.</param>
+        </member>
+        <member name="M:Manatee.Json.JsonArray.AddRange(System.Collections.Generic.IEnumerable{Manatee.Json.JsonValue})">
+            <summary>
+            Adds the elements of the specified collection to the end of the <see cref="T:Manatee.Json.JsonArray"/>.
+            </summary>
+            <param name="collection">The collection whose elements should be added to the end of the
+            <see cref="T:Manatee.Json.JsonArray"/>. The collection itself cannot be null, but it can contain elements
+            that are null.  These elements will be replaced by <see cref="F:Manatee.Json.JsonValue.Null"/></param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="collection"/> is null.</exception>
+        </member>
         <member name="M:Manatee.Json.JsonArray.ToString">
             <summary>
             Creates a string representation of the JSON data.
@@ -197,7 +213,8 @@
             Adds the specified key and value to the dictionary.
             </summary>
             <param name="key">The key of the element to add.</param>
-            <param name="value">The value of the element to add. The value can be null for reference types.</param>
+            <param name="value">The value of the element to add. If the value is null,
+            it will be replaced by <see cref="F:Manatee.Json.JsonValue.Null"/>.</param>
         </member>
         <member name="M:Manatee.Json.JsonObject.ToString">
             <summary>
@@ -652,14 +669,55 @@
             serialization of values.</param>
             <returns>A collection of the deserialized objects</returns>
         </member>
+        <member name="T:Manatee.Json.Path.Slice">
+            <summary>
+            Defines an index in a JSON Path array.
+            </summary>
+        </member>
+        <member name="M:Manatee.Json.Path.Slice.#ctor(System.Int32)">
+            <summary>
+            Creates a new instance of the <see cref="T:Manatee.Json.Path.Slice"/> class.
+            </summary>
+            <param name="index">A single index.</param>
+        </member>
+        <member name="M:Manatee.Json.Path.Slice.#ctor(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Creates a new instance of the <see cref="T:Manatee.Json.Path.Slice"/> class.
+            </summary>
+            <param name="start">The start index of the slice.</param>
+            <param name="end">The end index of the slice.</param>
+            <param name="step">Optional. The increment between each selected index between <paramref name="start"/> and <paramref name="end"/>.</param>
+        </member>
+        <member name="M:Manatee.Json.Path.Slice.ToString">
+            <summary>Returns a string that represents the current object.</summary>
+            <returns>A string that represents the current object.</returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:Manatee.Json.Path.Slice.Equals(Manatee.Json.Path.Slice)">
+            <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+            <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+            <param name="other">An object to compare with this object.</param>
+        </member>
+        <member name="M:Manatee.Json.Path.Slice.Equals(System.Object)">
+            <summary>Determines whether the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:System.Object" />.</summary>
+            <returns>true if the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:System.Object" />; otherwise, false.</returns>
+            <param name="obj">The object to compare with the current object. </param>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:Manatee.Json.Path.Slice.GetHashCode">
+            <summary>Serves as a hash function for a particular type. </summary>
+            <returns>A hash code for the current <see cref="T:System.Object" />.</returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:Manatee.Json.Path.Slice.op_Implicit(System.Int32)~Manatee.Json.Path.Slice">
+            <summary>
+            Implicit conversion from integer to a single-indexed <see cref="T:Manatee.Json.Path.Slice"/>.
+            </summary>
+            <param name="i">The index.</param>
+        </member>
         <member name="T:Manatee.Json.Path.JsonPath">
             <summary>
             Provides primary functionality for JSON Path objects.
-            </summary>
-        </member>
-        <member name="M:Manatee.Json.Path.JsonPath.Finalize">
-            <summary>
-            Finalizes memory management responsibilities.
             </summary>
         </member>
         <member name="M:Manatee.Json.Path.JsonPath.Parse(System.String)">
@@ -686,6 +744,22 @@
             <returns>
             A string that represents the current object.
             </returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:Manatee.Json.Path.JsonPath.Equals(Manatee.Json.Path.JsonPath)">
+            <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+            <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+            <param name="other">An object to compare with this object.</param>
+        </member>
+        <member name="M:Manatee.Json.Path.JsonPath.Equals(System.Object)">
+            <summary>Determines whether the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:System.Object" />.</summary>
+            <returns>true if the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:System.Object" />; otherwise, false.</returns>
+            <param name="obj">The object to compare with the current object. </param>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:Manatee.Json.Path.JsonPath.GetHashCode">
+            <summary>Serves as a hash function for a particular type. </summary>
+            <returns>A hash code for the current <see cref="T:System.Object" />.</returns>
             <filterpriority>2</filterpriority>
         </member>
         <member name="T:Manatee.Json.Path.JsonPathArray">
@@ -748,33 +822,6 @@
             <summary>
             Serves as a stand-in for JsonValue in Path Expressions.
             </summary>
-        </member>
-        <member name="M:Manatee.Json.Path.JsonPathValue.Equals(Manatee.Json.Path.JsonPathValue)">
-            <summary>
-            Determines whether the specified <see cref="T:Manatee.Json.Path.JsonPathValue"/> is equal to the current <see cref="T:Manatee.Json.Path.JsonPathValue"/>.
-            </summary>
-            <returns>
-            true if the specified <see cref="T:Manatee.Json.Path.JsonPathValue"/> is equal to the current <see cref="T:Manatee.Json.Path.JsonPathValue"/>; otherwise, false.
-            </returns>
-            <param name="other">The <see cref="T:Manatee.Json.Path.JsonPathValue"/> to compare with the current <see cref="T:Manatee.Json.Path.JsonPathValue"/>. </param><filterpriority>2</filterpriority>
-        </member>
-        <member name="M:Manatee.Json.Path.JsonPathValue.Equals(System.Object)">
-            <summary>
-            Determines whether the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>.
-            </summary>
-            <returns>
-            true if the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>; otherwise, false.
-            </returns>
-            <param name="obj">The <see cref="T:System.Object"/> to compare with the current <see cref="T:System.Object"/>. </param><filterpriority>2</filterpriority>
-        </member>
-        <member name="M:Manatee.Json.Path.JsonPathValue.GetHashCode">
-            <summary>
-            Serves as a hash function for a particular type. 
-            </summary>
-            <returns>
-            A hash code for the current <see cref="T:System.Object"/>.
-            </returns>
-            <filterpriority>2</filterpriority>
         </member>
         <member name="M:Manatee.Json.Path.JsonPathValue.op_Equality(Manatee.Json.Path.JsonPathValue,Manatee.Json.Path.JsonPathValue)">
             <summary>
@@ -1184,17 +1231,11 @@
             </summary>
             <returns>A new <see cref="T:Manatee.Json.Path.JsonPath"/>.</returns>
         </member>
-        <member name="M:Manatee.Json.Path.JsonPathWith.SearchArray">
-            <summary>
-            Appends a <see cref="T:Manatee.Json.Path.JsonPath"/> by including all array values.
-            </summary>
-            <returns>The new <see cref="T:Manatee.Json.Path.JsonPath"/>.</returns>
-        </member>
-        <member name="M:Manatee.Json.Path.JsonPathWith.SearchArray(System.Int32[])">
+        <member name="M:Manatee.Json.Path.JsonPathWith.SearchArray(Manatee.Json.Path.Slice[])">
             <summary>
             Appends a <see cref="T:Manatee.Json.Path.JsonPath"/> by specifying a series of array indicies.
             </summary>
-            <param name="indices">The indices of the <see cref="T:Manatee.Json.JsonValue"/>s to include.</param>
+            <param name="slices">The indices and slices of the <see cref="T:Manatee.Json.JsonValue"/>s to include.</param>
             <returns>The new <see cref="T:Manatee.Json.Path.JsonPath"/>.</returns>
         </member>
         <member name="M:Manatee.Json.Path.JsonPathWith.SearchArraySlice(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32})">
@@ -1223,17 +1264,11 @@
             <param name="expression">The predicate expression</param>
             <returns>The new <see cref="T:Manatee.Json.Path.JsonPath"/>.</returns>
         </member>
-        <member name="M:Manatee.Json.Path.JsonPathWith.Array">
-            <summary>
-            Appends a <see cref="T:Manatee.Json.Path.JsonPath"/> by including all array values.
-            </summary>
-            <returns>The new <see cref="T:Manatee.Json.Path.JsonPath"/>.</returns>
-        </member>
-        <member name="M:Manatee.Json.Path.JsonPathWith.Array(System.Int32[])">
+        <member name="M:Manatee.Json.Path.JsonPathWith.Array(Manatee.Json.Path.Slice[])">
             <summary>
             Appends a <see cref="T:Manatee.Json.Path.JsonPath"/> by specifying a series of array indicies.
             </summary>
-            <param name="indices">The indices of the <see cref="T:Manatee.Json.JsonValue"/>s to include.</param>
+            <param name="slices">The indices and slices of the <see cref="T:Manatee.Json.JsonValue"/>s to include.</param>
             <returns>The new <see cref="T:Manatee.Json.Path.JsonPath"/>.</returns>
         </member>
         <member name="M:Manatee.Json.Path.JsonPathWith.ArraySlice(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32})">
@@ -1308,6 +1343,30 @@
             <param name="path">The <see cref="T:Manatee.Json.Path.JsonPath"/> to extend.</param>
             <returns>The new <see cref="T:Manatee.Json.Path.JsonPath"/>.</returns>
         </member>
+        <member name="M:Manatee.Json.Path.JsonPathWith.SearchArray(Manatee.Json.Path.JsonPath,Manatee.Json.Path.Slice[])">
+            <summary>
+            Appends a <see cref="T:Manatee.Json.Path.JsonPath"/> by specifying a series of array indicies.
+            </summary>
+            <param name="path">The <see cref="T:Manatee.Json.Path.JsonPath"/> to extend.</param>
+            <param name="slices">The indices and slices of the <see cref="T:Manatee.Json.JsonValue"/>s to include.</param>
+            <returns>The new <see cref="T:Manatee.Json.Path.JsonPath"/>.</returns>
+        </member>
+        <member name="M:Manatee.Json.Path.JsonPathWith.SearchArray(Manatee.Json.Path.JsonPath,System.Linq.Expressions.Expression{System.Func{Manatee.Json.Path.JsonPathArray,System.Int32}})">
+            <summary>
+            Appends a <see cref="T:Manatee.Json.Path.JsonPath"/> by specifying an expression which evaluates to the index to include.
+            </summary>
+            <param name="path">The <see cref="T:Manatee.Json.Path.JsonPath"/> to extend.</param>
+            <param name="expression">The expression.</param>
+            <returns>The new <see cref="T:Manatee.Json.Path.JsonPath"/>.</returns>
+        </member>
+        <member name="M:Manatee.Json.Path.JsonPathWith.SearchArray(Manatee.Json.Path.JsonPath,System.Linq.Expressions.Expression{System.Func{Manatee.Json.Path.JsonPathValue,System.Boolean}})">
+            <summary>
+            Appends a <see cref="T:Manatee.Json.Path.JsonPath"/> by specifying a predicate expression which filters the values.
+            </summary>
+            <param name="path">The <see cref="T:Manatee.Json.Path.JsonPath"/> to extend.</param>
+            <param name="expression">The predicate expression</param>
+            <returns>The new <see cref="T:Manatee.Json.Path.JsonPath"/>.</returns>
+        </member>
         <member name="M:Manatee.Json.Path.JsonPathWith.Array(Manatee.Json.Path.JsonPath)">
             <summary>
             Appends a <see cref="T:Manatee.Json.Path.JsonPath"/> by including all array values.
@@ -1315,12 +1374,12 @@
             <param name="path">The <see cref="T:Manatee.Json.Path.JsonPath"/> to extend.</param>
             <returns>The new <see cref="T:Manatee.Json.Path.JsonPath"/>.</returns>
         </member>
-        <member name="M:Manatee.Json.Path.JsonPathWith.Array(Manatee.Json.Path.JsonPath,System.Int32[])">
+        <member name="M:Manatee.Json.Path.JsonPathWith.Array(Manatee.Json.Path.JsonPath,Manatee.Json.Path.Slice[])">
             <summary>
             Appends a <see cref="T:Manatee.Json.Path.JsonPath"/> by specifying a series of array indicies.
             </summary>
             <param name="path">The <see cref="T:Manatee.Json.Path.JsonPath"/> to extend.</param>
-            <param name="indices">The indices of the <see cref="T:Manatee.Json.JsonValue"/>s to include.</param>
+            <param name="slices">The indices of the <see cref="T:Manatee.Json.JsonValue"/>s to include.</param>
             <returns>The new <see cref="T:Manatee.Json.Path.JsonPath"/>.</returns>
         </member>
         <member name="M:Manatee.Json.Path.JsonPathWith.ArraySlice(Manatee.Json.Path.JsonPath,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32})">
@@ -1364,6 +1423,14 @@
             <param name="json">The array.</param>
             <returns>The length of the array.</returns>
         </member>
+        <member name="M:Manatee.Json.Path.PathExpressionExtensions.Name(Manatee.Json.Path.JsonPathArray,System.String)">
+            <summary>
+            Specifies the length of a <see cref="T:Manatee.Json.JsonArray"/>.
+            </summary>
+            <param name="json">The array.</param>
+            <param name="name">The name of the property.</param>
+            <returns>The length of the array.</returns>
+        </member>
         <member name="M:Manatee.Json.Path.PathExpressionExtensions.Length(Manatee.Json.Path.JsonPathValue)">
             <summary>
             Specifies the length of a <see cref="T:Manatee.Json.JsonArray"/>.
@@ -1403,19 +1470,93 @@
             <param name="value">The query.</param>
             <returns>The index of the requested value or -1 if the value does not exist.</returns>
         </member>
+        <member name="T:Manatee.Json.Schema.AdditionalItems">
+            <summary>
+            Defines additional items for array-type schemas.
+            </summary>
+        </member>
+        <member name="F:Manatee.Json.Schema.AdditionalItems.True">
+            <summary>
+            Allows any additional items to be added to the JSON.
+            </summary>
+        </member>
+        <member name="F:Manatee.Json.Schema.AdditionalItems.False">
+            <summary>
+            Prohibits additional items in the JSON.
+            </summary>
+        </member>
+        <member name="P:Manatee.Json.Schema.AdditionalItems.Definition">
+            <summary>
+            Defines a schema to which any additional properties must validate.
+            </summary>
+            <exception cref="T:System.Data.ReadOnlyException">Thrown when attempting to set the definition
+            of one of the static <see cref="T:Manatee.Json.Schema.AdditionalProperties"/> fields.</exception>
+        </member>
+        <member name="M:Manatee.Json.Schema.AdditionalItems.Equals(Manatee.Json.Schema.AdditionalItems)">
+            <summary>
+            Indicates whether the current object is equal to another object of the same type.
+            </summary>
+            <returns>
+            true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
+            </returns>
+            <param name="other">An object to compare with this object.</param>
+        </member>
+        <member name="M:Manatee.Json.Schema.AdditionalItems.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>.
+            </summary>
+            <returns>
+            true if the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>; otherwise, false.
+            </returns>
+            <param name="obj">The object to compare with the current object. </param><filterpriority>2</filterpriority>
+        </member>
+        <member name="M:Manatee.Json.Schema.AdditionalItems.GetHashCode">
+            <summary>
+            Serves as a hash function for a particular type. 
+            </summary>
+            <returns>
+            A hash code for the current <see cref="T:System.Object"/>.
+            </returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:Manatee.Json.Schema.AdditionalItems.ToString">
+            <summary>
+            Returns a string that represents the current object.
+            </summary>
+            <returns>
+            A string that represents the current object.
+            </returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:Manatee.Json.Schema.AdditionalItems.FromJson(Manatee.Json.JsonValue,Manatee.Json.Serialization.JsonSerializer)">
+            <summary>
+            Builds an object from a <see cref="T:Manatee.Json.JsonValue"/>.
+            </summary>
+            <param name="json">The <see cref="T:Manatee.Json.JsonValue"/> representation of the object.</param>
+            <param name="serializer">The <see cref="T:Manatee.Json.Serialization.JsonSerializer"/> instance to use for additional
+            serialization of values.</param>
+        </member>
+        <member name="M:Manatee.Json.Schema.AdditionalItems.ToJson(Manatee.Json.Serialization.JsonSerializer)">
+            <summary>
+            Converts an object to a <see cref="T:Manatee.Json.JsonValue"/>.
+            </summary>
+            <param name="serializer">The <see cref="T:Manatee.Json.Serialization.JsonSerializer"/> instance to use for additional
+            serialization of values.</param>
+            <returns>The <see cref="T:Manatee.Json.JsonValue"/> representation of the object.</returns>
+        </member>
         <member name="T:Manatee.Json.Schema.AdditionalProperties">
             <summary>
-            Defines additional properties for ObjectSchema.
+            Defines additional properties for object-specific schemas.
             </summary>
         </member>
         <member name="F:Manatee.Json.Schema.AdditionalProperties.True">
             <summary>
-            Allows any additional property to be added to the schema.
+            Allows any additional property to be added to the JSON.
             </summary>
         </member>
         <member name="F:Manatee.Json.Schema.AdditionalProperties.False">
             <summary>
-            Prohibits additional properties in the schema.
+            Prohibits additional properties in the JSON.
             </summary>
         </member>
         <member name="P:Manatee.Json.Schema.AdditionalProperties.Definition">
@@ -1477,273 +1618,6 @@
             serialization of values.</param>
             <returns>The <see cref="T:Manatee.Json.JsonValue"/> representation of the object.</returns>
         </member>
-        <member name="T:Manatee.Json.Schema.AllOfSchema">
-            <summary>
-            Used to define a collection of schema conditions, all of which must be satisfied.
-            </summary>
-        </member>
-        <member name="P:Manatee.Json.Schema.AllOfSchema.Requirements">
-            <summary>
-            A collection of required schema which must be satisfied.
-            </summary>
-        </member>
-        <member name="M:Manatee.Json.Schema.AllOfSchema.Validate(Manatee.Json.JsonValue,Manatee.Json.JsonValue)">
-            <summary>
-            Validates a <see cref="T:Manatee.Json.JsonValue"/> against the schema.
-            </summary>
-            <param name="json">A <see cref="T:Manatee.Json.JsonValue"/></param>
-            <param name="root">The root schema serialized to a <see cref="T:Manatee.Json.JsonValue"/>.  Used internally for resolving references.</param>
-            <returns>True if the <see cref="T:Manatee.Json.JsonValue"/> passes validation; otherwise false.</returns>
-        </member>
-        <member name="M:Manatee.Json.Schema.AllOfSchema.FromJson(Manatee.Json.JsonValue,Manatee.Json.Serialization.JsonSerializer)">
-            <summary>
-            Builds an object from a <see cref="T:Manatee.Json.JsonValue"/>.
-            </summary>
-            <param name="json">The <see cref="T:Manatee.Json.JsonValue"/> representation of the object.</param>
-            <param name="serializer">The <see cref="T:Manatee.Json.Serialization.JsonSerializer"/> instance to use for additional
-            serialization of values.</param>
-        </member>
-        <member name="M:Manatee.Json.Schema.AllOfSchema.ToJson(Manatee.Json.Serialization.JsonSerializer)">
-            <summary>
-            Converts an object to a <see cref="T:Manatee.Json.JsonValue"/>.
-            </summary>
-            <param name="serializer">The <see cref="T:Manatee.Json.Serialization.JsonSerializer"/> instance to use for additional
-            serialization of values.</param>
-            <returns>The <see cref="T:Manatee.Json.JsonValue"/> representation of the object.</returns>
-        </member>
-        <member name="M:Manatee.Json.Schema.AllOfSchema.Equals(Manatee.Json.Schema.IJsonSchema)">
-            <summary>
-            Indicates whether the current object is equal to another object of the same type.
-            </summary>
-            <returns>
-            true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
-            </returns>
-            <param name="other">An object to compare with this object.</param>
-        </member>
-        <member name="M:Manatee.Json.Schema.AllOfSchema.GetHashCode">
-            <summary>
-            Serves as a hash function for a particular type. 
-            </summary>
-            <returns>
-            A hash code for the current <see cref="T:System.Object"/>.
-            </returns>
-            <filterpriority>2</filterpriority>
-        </member>
-        <member name="T:Manatee.Json.Schema.AnyOfSchema">
-            <summary>
-            Used to define a collection of schema conditions, any number of which may
-            be satisfied.
-            </summary>
-        </member>
-        <member name="P:Manatee.Json.Schema.AnyOfSchema.Options">
-            <summary>
-            A collection of schema options.
-            </summary>
-        </member>
-        <member name="M:Manatee.Json.Schema.AnyOfSchema.Validate(Manatee.Json.JsonValue,Manatee.Json.JsonValue)">
-            <summary>
-            Validates a <see cref="T:Manatee.Json.JsonValue"/> against the schema.
-            </summary>
-            <param name="json">A <see cref="T:Manatee.Json.JsonValue"/></param>
-            <param name="root">The root schema serialized to a <see cref="T:Manatee.Json.JsonValue"/>.  Used internally for resolving references.</param>
-            <returns>True if the <see cref="T:Manatee.Json.JsonValue"/> passes validation; otherwise false.</returns>
-        </member>
-        <member name="M:Manatee.Json.Schema.AnyOfSchema.FromJson(Manatee.Json.JsonValue,Manatee.Json.Serialization.JsonSerializer)">
-            <summary>
-            Builds an object from a <see cref="T:Manatee.Json.JsonValue"/>.
-            </summary>
-            <param name="json">The <see cref="T:Manatee.Json.JsonValue"/> representation of the object.</param>
-            <param name="serializer">The <see cref="T:Manatee.Json.Serialization.JsonSerializer"/> instance to use for additional
-            serialization of values.</param>
-        </member>
-        <member name="M:Manatee.Json.Schema.AnyOfSchema.ToJson(Manatee.Json.Serialization.JsonSerializer)">
-            <summary>
-            Converts an object to a <see cref="T:Manatee.Json.JsonValue"/>.
-            </summary>
-            <param name="serializer">The <see cref="T:Manatee.Json.Serialization.JsonSerializer"/> instance to use for additional
-            serialization of values.</param>
-            <returns>The <see cref="T:Manatee.Json.JsonValue"/> representation of the object.</returns>
-        </member>
-        <member name="M:Manatee.Json.Schema.AnyOfSchema.Equals(Manatee.Json.Schema.IJsonSchema)">
-            <summary>
-            Indicates whether the current object is equal to another object of the same type.
-            </summary>
-            <returns>
-            true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
-            </returns>
-            <param name="other">An object to compare with this object.</param>
-        </member>
-        <member name="M:Manatee.Json.Schema.AnyOfSchema.GetHashCode">
-            <summary>
-            Serves as a hash function for a particular type. 
-            </summary>
-            <returns>
-            A hash code for the current <see cref="T:System.Object"/>.
-            </returns>
-            <filterpriority>2</filterpriority>
-        </member>
-        <member name="T:Manatee.Json.Schema.ArraySchema">
-            <summary>
-            Defines a schema which expects an array.
-            </summary>
-        </member>
-        <member name="P:Manatee.Json.Schema.ArraySchema.Definitions">
-            <summary>
-            Defines a collection of schema type definitions.
-            </summary>
-        </member>
-        <member name="P:Manatee.Json.Schema.ArraySchema.MinItems">
-            <summary>
-            Gets and sets a minimum number of items required for the array.
-            </summary>
-        </member>
-        <member name="P:Manatee.Json.Schema.ArraySchema.MaxItems">
-            <summary>
-            Defines a maximum number of items required for the array.
-            </summary>
-        </member>
-        <member name="P:Manatee.Json.Schema.ArraySchema.Items">
-            <summary>
-            Defines the schema for the items contained in the array.
-            </summary>
-        </member>
-        <member name="P:Manatee.Json.Schema.ArraySchema.UniqueItems">
-            <summary>
-            Defines whether the array should contain only unique items.
-            </summary>
-        </member>
-        <member name="M:Manatee.Json.Schema.ArraySchema.#ctor">
-            <summary>
-            Creates a new instance of the <see cref="T:Manatee.Json.Schema.ArraySchema"/> class.
-            </summary>
-        </member>
-        <member name="M:Manatee.Json.Schema.ArraySchema.Validate(Manatee.Json.JsonValue,Manatee.Json.JsonValue)">
-            <summary>
-            Validates a <see cref="T:Manatee.Json.JsonValue"/> against the schema.
-            </summary>
-            <param name="json">A <see cref="T:Manatee.Json.JsonValue"/></param>
-            <param name="root">The root schema serialized to a <see cref="T:Manatee.Json.JsonValue"/>.  Used internally for resolving references.</param>
-            <returns>True if the <see cref="T:Manatee.Json.JsonValue"/> passes validation; otherwise false.</returns>
-        </member>
-        <member name="M:Manatee.Json.Schema.ArraySchema.FromJson(Manatee.Json.JsonValue,Manatee.Json.Serialization.JsonSerializer)">
-            <summary>
-            Builds an object from a <see cref="T:Manatee.Json.JsonValue"/>.
-            </summary>
-            <param name="json">The <see cref="T:Manatee.Json.JsonValue"/> representation of the object.</param>
-            <param name="serializer">The <see cref="T:Manatee.Json.Serialization.JsonSerializer"/> instance to use for additional
-            serialization of values.</param>
-        </member>
-        <member name="M:Manatee.Json.Schema.ArraySchema.ToJson(Manatee.Json.Serialization.JsonSerializer)">
-            <summary>
-            Converts an object to a <see cref="T:Manatee.Json.JsonValue"/>.
-            </summary>
-            <param name="serializer">The <see cref="T:Manatee.Json.Serialization.JsonSerializer"/> instance to use for additional
-            serialization of values.</param>
-            <returns>The <see cref="T:Manatee.Json.JsonValue"/> representation of the object.</returns>
-        </member>
-        <member name="M:Manatee.Json.Schema.ArraySchema.Equals(Manatee.Json.Schema.IJsonSchema)">
-            <summary>
-            Indicates whether the current object is equal to another object of the same type.
-            </summary>
-            <returns>
-            true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
-            </returns>
-            <param name="other">An object to compare with this object.</param>
-        </member>
-        <member name="M:Manatee.Json.Schema.ArraySchema.GetHashCode">
-            <summary>
-            Serves as a hash function for a particular type. 
-            </summary>
-            <returns>
-            A hash code for the current <see cref="T:System.Object"/>.
-            </returns>
-            <filterpriority>2</filterpriority>
-        </member>
-        <member name="T:Manatee.Json.Schema.BooleanSchema">
-            <summary>
-            Defines a schema which expects an boolean value.
-            </summary>
-        </member>
-        <member name="M:Manatee.Json.Schema.BooleanSchema.#ctor">
-            <summary>
-            Creates a new instance of the <see cref="T:Manatee.Json.Schema.BooleanSchema"/> class.
-            </summary>
-        </member>
-        <member name="M:Manatee.Json.Schema.BooleanSchema.Validate(Manatee.Json.JsonValue,Manatee.Json.JsonValue)">
-            <summary>
-            Validates a <see cref="T:Manatee.Json.JsonValue"/> against the schema.
-            </summary>
-            <param name="json">A <see cref="T:Manatee.Json.JsonValue"/></param>
-            <param name="root">The root schema serialized to a <see cref="T:Manatee.Json.JsonValue"/>.  Used internally for resolving references.</param>
-            <returns>True if the <see cref="T:Manatee.Json.JsonValue"/> passes validation; otherwise false.</returns>
-        </member>
-        <member name="M:Manatee.Json.Schema.BooleanSchema.ToJson(Manatee.Json.Serialization.JsonSerializer)">
-            <summary>
-            Converts an object to a <see cref="T:Manatee.Json.JsonValue"/>.
-            </summary>
-            <returns>The <see cref="T:Manatee.Json.JsonValue"/> representation of the object.</returns>
-        </member>
-        <member name="M:Manatee.Json.Schema.BooleanSchema.Equals(Manatee.Json.Schema.IJsonSchema)">
-            <summary>
-            Indicates whether the current object is equal to another object of the same type.
-            </summary>
-            <returns>
-            true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
-            </returns>
-            <param name="other">An object to compare with this object.</param>
-        </member>
-        <member name="T:Manatee.Json.Schema.EnumSchema">
-            <summary>
-            Defines a schema which expects one of an explicit list of values.
-            </summary>
-        </member>
-        <member name="P:Manatee.Json.Schema.EnumSchema.Values">
-            <summary>
-            A collection of acceptable values.
-            </summary>
-        </member>
-        <member name="M:Manatee.Json.Schema.EnumSchema.Validate(Manatee.Json.JsonValue,Manatee.Json.JsonValue)">
-            <summary>
-            Validates a <see cref="T:Manatee.Json.JsonValue"/> against the schema.
-            </summary>
-            <param name="json">A <see cref="T:Manatee.Json.JsonValue"/></param>
-            <param name="root">The root schema serialized to a <see cref="T:Manatee.Json.JsonValue"/>.  Used internally for resolving references.</param>
-            <returns>True if the <see cref="T:Manatee.Json.JsonValue"/> passes validation; otherwise false.</returns>
-        </member>
-        <member name="M:Manatee.Json.Schema.EnumSchema.FromJson(Manatee.Json.JsonValue,Manatee.Json.Serialization.JsonSerializer)">
-            <summary>
-            Builds an object from a <see cref="T:Manatee.Json.JsonValue"/>.
-            </summary>
-            <param name="json">The <see cref="T:Manatee.Json.JsonValue"/> representation of the object.</param>
-            <param name="serializer">The <see cref="T:Manatee.Json.Serialization.JsonSerializer"/> instance to use for additional
-            serialization of values.</param>
-        </member>
-        <member name="M:Manatee.Json.Schema.EnumSchema.ToJson(Manatee.Json.Serialization.JsonSerializer)">
-            <summary>
-            Converts an object to a <see cref="T:Manatee.Json.JsonValue"/>.
-            </summary>
-            <param name="serializer">The <see cref="T:Manatee.Json.Serialization.JsonSerializer"/> instance to use for additional
-            serialization of values.</param>
-            <returns>The <see cref="T:Manatee.Json.JsonValue"/> representation of the object.</returns>
-        </member>
-        <member name="M:Manatee.Json.Schema.EnumSchema.Equals(Manatee.Json.Schema.IJsonSchema)">
-            <summary>
-            Indicates whether the current object is equal to another object of the same type.
-            </summary>
-            <returns>
-            true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
-            </returns>
-            <param name="other">An object to compare with this object.</param>
-        </member>
-        <member name="M:Manatee.Json.Schema.EnumSchema.GetHashCode">
-            <summary>
-            Serves as a hash function for a particular type. 
-            </summary>
-            <returns>
-            A hash code for the current <see cref="T:System.Object"/>.
-            </returns>
-            <filterpriority>2</filterpriority>
-        </member>
         <member name="T:Manatee.Json.Schema.EnumSchemaValue">
             <summary>
             Defines a single schema enumeration value.
@@ -1800,77 +1674,28 @@
             <param name="root">The root schema serialized to a <see cref="T:Manatee.Json.JsonValue"/>.  Used internally for resolving references.</param>
             <returns>The results of the validation.</returns>
         </member>
-        <member name="T:Manatee.Json.Schema.IntegerSchema">
+        <member name="T:Manatee.Json.Schema.IJsonSchemaDependency">
             <summary>
-            Defines a schema which expects an integer.
+            Defines properties and methods required to represent dependencies within JSON Schema.
             </summary>
         </member>
-        <member name="P:Manatee.Json.Schema.IntegerSchema.Minimum">
+        <member name="P:Manatee.Json.Schema.IJsonSchemaDependency.PropertyName">
             <summary>
-            Defines a minimum acceptable value.
+            Gets or sets the property with the dependency.
             </summary>
         </member>
-        <member name="P:Manatee.Json.Schema.IntegerSchema.Maximum">
-            <summary>
-            Defines a maximum acceptable value;
-            </summary>
-        </member>
-        <member name="P:Manatee.Json.Schema.IntegerSchema.ExclusiveMinimum">
-            <summary>
-            Defines whether the minimum value is itself acceptable.
-            </summary>
-        </member>
-        <member name="P:Manatee.Json.Schema.IntegerSchema.ExclusiveMaximum">
-            <summary>
-            Defines whether the maximum value is itself acceptable.
-            </summary>
-        </member>
-        <member name="M:Manatee.Json.Schema.IntegerSchema.#ctor">
-            <summary>
-            Creates a new instance of the <see cref="T:Manatee.Json.Schema.IntegerSchema"/> class.
-            </summary>
-        </member>
-        <member name="M:Manatee.Json.Schema.IntegerSchema.Validate(Manatee.Json.JsonValue,Manatee.Json.JsonValue)">
+        <member name="M:Manatee.Json.Schema.IJsonSchemaDependency.Validate(Manatee.Json.JsonValue,Manatee.Json.JsonValue)">
             <summary>
             Validates a <see cref="T:Manatee.Json.JsonValue"/> against the schema.
             </summary>
             <param name="json">A <see cref="T:Manatee.Json.JsonValue"/></param>
             <param name="root">The root schema serialized to a <see cref="T:Manatee.Json.JsonValue"/>.  Used internally for resolving references.</param>
-            <returns>True if the <see cref="T:Manatee.Json.JsonValue"/> passes validation; otherwise false.</returns>
+            <returns>The results of the validation.</returns>
         </member>
-        <member name="M:Manatee.Json.Schema.IntegerSchema.FromJson(Manatee.Json.JsonValue,Manatee.Json.Serialization.JsonSerializer)">
+        <member name="M:Manatee.Json.Schema.IJsonSchemaDependency.GetJsonData">
             <summary>
-            Builds an object from a <see cref="T:Manatee.Json.JsonValue"/>.
+            Gets the JSON data to be used as the value portion in the dependency list of the schema.
             </summary>
-            <param name="json">The <see cref="T:Manatee.Json.JsonValue"/> representation of the object.</param>
-            <param name="serializer">The <see cref="T:Manatee.Json.Serialization.JsonSerializer"/> instance to use for additional
-            serialization of values.</param>
-        </member>
-        <member name="M:Manatee.Json.Schema.IntegerSchema.ToJson(Manatee.Json.Serialization.JsonSerializer)">
-            <summary>
-            Converts an object to a <see cref="T:Manatee.Json.JsonValue"/>.
-            </summary>
-            <param name="serializer">The <see cref="T:Manatee.Json.Serialization.JsonSerializer"/> instance to use for additional
-            serialization of values.</param>
-            <returns>The <see cref="T:Manatee.Json.JsonValue"/> representation of the object.</returns>
-        </member>
-        <member name="M:Manatee.Json.Schema.IntegerSchema.Equals(Manatee.Json.Schema.IJsonSchema)">
-            <summary>
-            Indicates whether the current object is equal to another object of the same type.
-            </summary>
-            <returns>
-            true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
-            </returns>
-            <param name="other">An object to compare with this object.</param>
-        </member>
-        <member name="M:Manatee.Json.Schema.IntegerSchema.GetHashCode">
-            <summary>
-            Serves as a hash function for a particular type. 
-            </summary>
-            <returns>
-            A hash code for the current <see cref="T:System.Object"/>.
-            </returns>
-            <filterpriority>2</filterpriority>
         </member>
         <member name="T:Manatee.Json.Schema.JsonSchema">
             <summary>
@@ -1887,24 +1712,18 @@
             Defines the Draft-04 Schema as presented at http://json-schema.org/draft-04/schema#
             </summary>
         </member>
-        <member name="P:Manatee.Json.Schema.JsonSchema.Type">
-            <summary>
-            The JSON Schema type which defines this schema.
-            </summary>
-        </member>
-        <member name="P:Manatee.Json.Schema.JsonSchema.Default">
-            <summary>
-            The default value for this schema.
-            </summary>
-            <remarks>
-            The default value is defined as a JSON value which may need to be deserialized
-            to a .Net data structure.
-            </remarks>
-        </member>
         <member name="P:Manatee.Json.Schema.JsonSchema.Id">
             <summary>
             Used to specify which this schema defines.
             </summary>
+        </member>
+        <member name="P:Manatee.Json.Schema.JsonSchema.Schema">
+            <summary>
+            Used to specify a schema which contains the definitions used by this schema.
+            </summary>
+            <remarks>
+            if left null, the default of http://json-schema.org/draft-04/schema# is used.
+            </remarks>
         </member>
         <member name="P:Manatee.Json.Schema.JsonSchema.Title">
             <summary>
@@ -1916,12 +1735,154 @@
             Defines a description for this schema.
             </summary>
         </member>
-        <member name="M:Manatee.Json.Schema.JsonSchema.#ctor(Manatee.Json.Schema.JsonSchemaTypeDefinition)">
+        <member name="P:Manatee.Json.Schema.JsonSchema.Default">
             <summary>
-            Creates a new instance of the indicated type.
+            The default value for this schema.
             </summary>
-            <param name="type">The JSON Schema type which defines this schema.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="type"/> is null.</exception>
+            <remarks>
+            The default value is defined as a JSON value which may need to be deserialized
+            to a .Net data structure.
+            </remarks>
+        </member>
+        <member name="P:Manatee.Json.Schema.JsonSchema.MultipleOf">
+            <summary>
+            Defines a divisor for acceptable values.
+            </summary>
+        </member>
+        <member name="P:Manatee.Json.Schema.JsonSchema.Maximum">
+            <summary>
+            Defines a maximum acceptable value.
+            </summary>
+        </member>
+        <member name="P:Manatee.Json.Schema.JsonSchema.ExclusiveMaximum">
+            <summary>
+            Defines whether the maximum value is itself acceptable.
+            </summary>
+        </member>
+        <member name="P:Manatee.Json.Schema.JsonSchema.Minimum">
+            <summary>
+            Defines a minimum acceptable value.
+            </summary>
+        </member>
+        <member name="P:Manatee.Json.Schema.JsonSchema.ExclusiveMinimum">
+            <summary>
+            Defines whether the minimum value is itself acceptable.
+            </summary>
+        </member>
+        <member name="P:Manatee.Json.Schema.JsonSchema.MaxLength">
+            <summary>
+            Defines a maximum acceptable length.
+            </summary>
+        </member>
+        <member name="P:Manatee.Json.Schema.JsonSchema.MinLength">
+            <summary>
+            Defines a minimum acceptable length.
+            </summary>
+        </member>
+        <member name="P:Manatee.Json.Schema.JsonSchema.Pattern">
+            <summary>
+            Defines a <see cref="T:System.Text.RegularExpressions.Regex"/> pattern for to which the value must adhere.
+            </summary>
+        </member>
+        <member name="P:Manatee.Json.Schema.JsonSchema.AdditionalItems">
+            <summary>
+            Defines any additional items to be expected by this schema.
+            </summary>
+        </member>
+        <member name="P:Manatee.Json.Schema.JsonSchema.Items">
+            <summary>
+            Defines the schema for the items contained in the array.
+            </summary>
+        </member>
+        <member name="P:Manatee.Json.Schema.JsonSchema.MaxItems">
+            <summary>
+            Defines a maximum number of items required for the array.
+            </summary>
+        </member>
+        <member name="P:Manatee.Json.Schema.JsonSchema.MinItems">
+            <summary>
+            Gets and sets a minimum number of items required for the array.
+            </summary>
+        </member>
+        <member name="P:Manatee.Json.Schema.JsonSchema.UniqueItems">
+            <summary>
+            Defines whether the array should contain only unique items.
+            </summary>
+        </member>
+        <member name="P:Manatee.Json.Schema.JsonSchema.MaxProperties">
+            <summary>
+            Defines a maximum acceptable length.
+            </summary>
+        </member>
+        <member name="P:Manatee.Json.Schema.JsonSchema.MinProperties">
+            <summary>
+            Defines a minimum acceptable length.
+            </summary>
+        </member>
+        <member name="P:Manatee.Json.Schema.JsonSchema.AdditionalProperties">
+            <summary>
+            Defines any additional properties to be expected by this schema.
+            </summary>
+        </member>
+        <member name="P:Manatee.Json.Schema.JsonSchema.Definitions">
+            <summary>
+            Defines a collection of schema type definitions.
+            </summary>
+        </member>
+        <member name="P:Manatee.Json.Schema.JsonSchema.Properties">
+            <summary>
+            Defines a collection of properties expected by this schema.
+            </summary>
+        </member>
+        <member name="P:Manatee.Json.Schema.JsonSchema.PatternProperties">
+            <summary>
+            Defines additional properties based on regular expression matching of the property name.
+            </summary>
+        </member>
+        <member name="P:Manatee.Json.Schema.JsonSchema.Dependencies">
+            <summary>
+            Defines property dependencies.
+            </summary>
+        </member>
+        <member name="P:Manatee.Json.Schema.JsonSchema.Enum">
+            <summary>
+            A collection of acceptable values.
+            </summary>
+        </member>
+        <member name="P:Manatee.Json.Schema.JsonSchema.Type">
+            <summary>
+            The JSON Schema type which defines this schema.
+            </summary>
+        </member>
+        <member name="P:Manatee.Json.Schema.JsonSchema.AllOf">
+            <summary>
+            A collection of required schema which must be satisfied.
+            </summary>
+        </member>
+        <member name="P:Manatee.Json.Schema.JsonSchema.AnyOf">
+            <summary>
+            A collection of schema options.
+            </summary>
+        </member>
+        <member name="P:Manatee.Json.Schema.JsonSchema.OneOf">
+            <summary>
+            A collection of schema options.
+            </summary>
+        </member>
+        <member name="P:Manatee.Json.Schema.JsonSchema.Not">
+            <summary>
+            A collection of schema which must not be satisfied.
+            </summary>
+        </member>
+        <member name="P:Manatee.Json.Schema.JsonSchema.Format">
+            <summary>
+            Defines a required format for the string.
+            </summary>
+        </member>
+        <member name="P:Manatee.Json.Schema.JsonSchema.ExtraneousDetails">
+            <summary>
+            Gets other, non-schema-defined properties.
+            </summary>
         </member>
         <member name="M:Manatee.Json.Schema.JsonSchema.Validate(Manatee.Json.JsonValue,Manatee.Json.JsonValue)">
             <summary>
@@ -2007,6 +1968,70 @@
             <param name="type">The type to convert to a schema.</param>
             <returns>The schema object.</returns>
         </member>
+        <member name="T:Manatee.Json.Schema.JsonSchemaMultiTypeDefinition">
+            <summary>
+            Supports a collection of schema types.
+            </summary>
+        </member>
+        <member name="M:Manatee.Json.Schema.JsonSchemaMultiTypeDefinition.#ctor(Manatee.Json.Schema.JsonSchemaTypeDefinition[])">
+            <summary>
+            Creates a new instance of the <see cref="T:Manatee.Json.Schema.JsonSchemaMultiTypeDefinition"/> class.
+            </summary>
+        </member>
+        <member name="M:Manatee.Json.Schema.JsonSchemaMultiTypeDefinition.FromJson(Manatee.Json.JsonValue,Manatee.Json.Serialization.JsonSerializer)">
+            <summary>
+            Builds an object from a <see cref="T:Manatee.Json.JsonValue"/>.
+            </summary>
+            <param name="json">The <see cref="T:Manatee.Json.JsonValue"/> representation of the object.</param>
+            <param name="serializer">The <see cref="T:Manatee.Json.Serialization.JsonSerializer"/> instance to use for additional
+            serialization of values.</param>
+        </member>
+        <member name="M:Manatee.Json.Schema.JsonSchemaMultiTypeDefinition.ToJson(Manatee.Json.Serialization.JsonSerializer)">
+            <summary>
+            Converts an object to a <see cref="T:Manatee.Json.JsonValue"/>.
+            </summary>
+            <param name="serializer">The <see cref="T:Manatee.Json.Serialization.JsonSerializer"/> instance to use for additional
+            serialization of values.</param>
+            <returns>The <see cref="T:Manatee.Json.JsonValue"/> representation of the object.</returns>
+        </member>
+        <member name="M:Manatee.Json.Schema.JsonSchemaMultiTypeDefinition.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>.
+            </summary>
+            <returns>
+            true if the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>; otherwise, false.
+            </returns>
+            <param name="obj">The object to compare with the current object. </param><filterpriority>2</filterpriority>
+        </member>
+        <member name="M:Manatee.Json.Schema.JsonSchemaMultiTypeDefinition.GetHashCode">
+            <summary>
+            Serves as a hash function for a particular type. 
+            </summary>
+            <returns>
+            A hash code for the current <see cref="T:System.Object"/>.
+            </returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="T:Manatee.Json.Schema.JsonSchemaOptions">
+            <summary>
+            Defines options associated with JSON Schema.
+            </summary>
+        </member>
+        <member name="P:Manatee.Json.Schema.JsonSchemaOptions.Download">
+            <summary>
+            Gets and sets a method used to download online schema.
+            </summary>
+        </member>
+        <member name="P:Manatee.Json.Schema.JsonSchemaOptions.ValidateFormat">
+            <summary>
+            Gets or sets whether the "format" schema keyword should be validated.  The default is true.
+            </summary>
+        </member>
+        <member name="M:Manatee.Json.Schema.JsonSchemaOptions.#cctor">
+            <summary>
+            Initializes all properties.
+            </summary>
+        </member>
         <member name="T:Manatee.Json.Schema.JsonSchemaPropertyDefinition">
             <summary>
             Defines a single property within a schema.
@@ -2050,31 +2075,25 @@
             serialization of values.</param>
             <returns>The <see cref="T:Manatee.Json.JsonValue"/> representation of the object.</returns>
         </member>
+        <member name="M:Manatee.Json.Schema.JsonSchemaPropertyDefinition.ToString">
+            <summary>Returns a string that represents the current object.</summary>
+            <returns>A string that represents the current object.</returns>
+            <filterpriority>2</filterpriority>
+        </member>
         <member name="M:Manatee.Json.Schema.JsonSchemaPropertyDefinition.Equals(Manatee.Json.Schema.JsonSchemaPropertyDefinition)">
-            <summary>
-            Indicates whether the current object is equal to another object of the same type.
-            </summary>
-            <returns>
-            true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
-            </returns>
+            <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+            <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
             <param name="other">An object to compare with this object.</param>
         </member>
         <member name="M:Manatee.Json.Schema.JsonSchemaPropertyDefinition.Equals(System.Object)">
-            <summary>
-            Determines whether the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>.
-            </summary>
-            <returns>
-            true if the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>; otherwise, false.
-            </returns>
-            <param name="obj">The object to compare with the current object. </param><filterpriority>2</filterpriority>
+            <summary>Determines whether the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:System.Object" />.</summary>
+            <returns>true if the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:System.Object" />; otherwise, false.</returns>
+            <param name="obj">The object to compare with the current object. </param>
+            <filterpriority>2</filterpriority>
         </member>
         <member name="M:Manatee.Json.Schema.JsonSchemaPropertyDefinition.GetHashCode">
-            <summary>
-            Serves as a hash function for a particular type. 
-            </summary>
-            <returns>
-            A hash code for the current <see cref="T:System.Object"/>.
-            </returns>
+            <summary>Serves as a hash function for a particular type. </summary>
+            <returns>A hash code for the current <see cref="T:System.Object" />.</returns>
             <filterpriority>2</filterpriority>
         </member>
         <member name="T:Manatee.Json.Schema.JsonSchemaPropertyDefinitionCollection">
@@ -2228,6 +2247,11 @@
             <param name="serializer">The <see cref="T:Manatee.Json.Serialization.JsonSerializer"/> instance to use for additional
             serialization of values.</param>
         </member>
+        <member name="M:Manatee.Json.Schema.JsonSchemaTypeDefinition.ToString">
+            <summary>Returns a string that represents the current object.</summary>
+            <returns>A string that represents the current object.</returns>
+            <filterpriority>2</filterpriority>
+        </member>
         <member name="M:Manatee.Json.Schema.JsonSchemaTypeDefinition.ToJson(Manatee.Json.Serialization.JsonSerializer)">
             <summary>
             Converts an object to a <see cref="T:Manatee.Json.JsonValue"/>.
@@ -2275,44 +2299,25 @@
             <param name="name">The name of the type definition.</param>
             <returns>The requested type definition or null if it does not exist.</returns>
         </member>
-        <member name="T:Manatee.Json.Schema.MultiSchema">
+        <member name="T:Manatee.Json.Schema.JsonSchemaCollection">
             <summary>
-            Provides a mechanism to define a mutli-type schema.
+            Represents a collection of schemata.
             </summary>
         </member>
-        <member name="M:Manatee.Json.Schema.MultiSchema.#ctor(Manatee.Json.Schema.IJsonSchema[])">
-            <summary>
-            Creates an instance of the <see cref="T:Manatee.Json.Schema.MultiSchema"/> class.
-            </summary>
-            <param name="schemata">The collection of <see cref="T:Manatee.Json.Schema.IJsonSchema"/> objects.</param>
-        </member>
-        <member name="M:Manatee.Json.Schema.MultiSchema.Validate(Manatee.Json.JsonValue,Manatee.Json.JsonValue)">
+        <member name="M:Manatee.Json.Schema.JsonSchemaCollection.Validate(Manatee.Json.JsonValue,Manatee.Json.JsonValue)">
             <summary>
             Validates a <see cref="T:Manatee.Json.JsonValue"/> against the schema.
             </summary>
             <param name="json">A <see cref="T:Manatee.Json.JsonValue"/></param>
             <param name="root">The root schema serialized to a <see cref="T:Manatee.Json.JsonValue"/>.  Used internally for resolving references.</param>
-            <returns>True if the <see cref="T:Manatee.Json.JsonValue"/> passes validation; otherwise false.</returns>
+            <returns>The results of the validation.</returns>
         </member>
-        <member name="T:Manatee.Json.Schema.NotSchema">
-            <summary>
-            Used to define a collection of schema conditions, none of which may be satisfied.
-            </summary>
+        <member name="M:Manatee.Json.Schema.JsonSchemaCollection.Equals(Manatee.Json.Schema.IJsonSchema)">
+            <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+            <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+            <param name="other">An object to compare with this object.</param>
         </member>
-        <member name="P:Manatee.Json.Schema.NotSchema.Restrictions">
-            <summary>
-            A collection of schema which must not be satisfied.
-            </summary>
-        </member>
-        <member name="M:Manatee.Json.Schema.NotSchema.Validate(Manatee.Json.JsonValue,Manatee.Json.JsonValue)">
-            <summary>
-            Validates a <see cref="T:Manatee.Json.JsonValue"/> against the schema.
-            </summary>
-            <param name="json">A <see cref="T:Manatee.Json.JsonValue"/></param>
-            <param name="root">The root schema serialized to a <see cref="T:Manatee.Json.JsonValue"/>.  Used internally for resolving references.</param>
-            <returns>True if the <see cref="T:Manatee.Json.JsonValue"/> passes validation; otherwise false.</returns>
-        </member>
-        <member name="M:Manatee.Json.Schema.NotSchema.FromJson(Manatee.Json.JsonValue,Manatee.Json.Serialization.JsonSerializer)">
+        <member name="M:Manatee.Json.Schema.JsonSchemaCollection.FromJson(Manatee.Json.JsonValue,Manatee.Json.Serialization.JsonSerializer)">
             <summary>
             Builds an object from a <see cref="T:Manatee.Json.JsonValue"/>.
             </summary>
@@ -2320,7 +2325,7 @@
             <param name="serializer">The <see cref="T:Manatee.Json.Serialization.JsonSerializer"/> instance to use for additional
             serialization of values.</param>
         </member>
-        <member name="M:Manatee.Json.Schema.NotSchema.ToJson(Manatee.Json.Serialization.JsonSerializer)">
+        <member name="M:Manatee.Json.Schema.JsonSchemaCollection.ToJson(Manatee.Json.Serialization.JsonSerializer)">
             <summary>
             Converts an object to a <see cref="T:Manatee.Json.JsonValue"/>.
             </summary>
@@ -2328,269 +2333,104 @@
             serialization of values.</param>
             <returns>The <see cref="T:Manatee.Json.JsonValue"/> representation of the object.</returns>
         </member>
-        <member name="M:Manatee.Json.Schema.NotSchema.Equals(Manatee.Json.Schema.IJsonSchema)">
+        <member name="T:Manatee.Json.Schema.JsonSchemaRegistry">
             <summary>
-            Indicates whether the current object is equal to another object of the same type.
-            </summary>
-            <returns>
-            true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
-            </returns>
-            <param name="other">An object to compare with this object.</param>
-        </member>
-        <member name="M:Manatee.Json.Schema.NotSchema.GetHashCode">
-            <summary>
-            Serves as a hash function for a particular type. 
-            </summary>
-            <returns>
-            A hash code for the current <see cref="T:System.Object"/>.
-            </returns>
-            <filterpriority>2</filterpriority>
-        </member>
-        <member name="T:Manatee.Json.Schema.NullSchema">
-            <summary>
-            Defines a schema which expects a null value.
+            Provides a registry in which JSON schema can be saved to be referenced by the
+            system.
             </summary>
         </member>
-        <member name="M:Manatee.Json.Schema.NullSchema.#ctor">
+        <member name="M:Manatee.Json.Schema.JsonSchemaRegistry.#cctor">
             <summary>
-            Creates an instance of the <see cref="T:Manatee.Json.Schema.NullSchema"/> class.
+            Initializes the <see cref="T:Manatee.Json.Schema.JsonSchemaRegistry"/> class.
             </summary>
         </member>
-        <member name="M:Manatee.Json.Schema.NullSchema.Validate(Manatee.Json.JsonValue,Manatee.Json.JsonValue)">
+        <member name="M:Manatee.Json.Schema.JsonSchemaRegistry.Get(System.String)">
+            <summary>
+            Downloads and registers a schema at the specified URI.
+            </summary>
+        </member>
+        <member name="M:Manatee.Json.Schema.JsonSchemaRegistry.Register(Manatee.Json.Schema.JsonSchema)">
+            <summary>
+            Explicitly registers an existing schema.
+            </summary>
+        </member>
+        <member name="M:Manatee.Json.Schema.JsonSchemaRegistry.Unregister(Manatee.Json.Schema.JsonSchema)">
+            <summary>
+            Removes a schema from the registry.
+            </summary>
+        </member>
+        <member name="M:Manatee.Json.Schema.JsonSchemaRegistry.Unregister(System.String)">
+            <summary>
+            Removes a schema from the registry.
+            </summary>
+        </member>
+        <member name="T:Manatee.Json.Schema.PropertyDependency">
+            <summary>
+            Declares a dependency that is based on the presence of other properties in the JSON.
+            </summary>
+        </member>
+        <member name="P:Manatee.Json.Schema.PropertyDependency.PropertyName">
+            <summary>
+            Gets or sets the property with the dependency.
+            </summary>
+        </member>
+        <member name="M:Manatee.Json.Schema.PropertyDependency.#ctor(System.String,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Creates a new instance of the <see cref="T:Manatee.Json.Schema.PropertyDependency"/> class.
+            </summary>
+            <param name="propertyName">The property name.</param>
+            <param name="dependencies"></param>
+        </member>
+        <member name="M:Manatee.Json.Schema.PropertyDependency.#ctor(System.String,System.String,System.String[])">
+            <summary>
+            Creates a new instance of the <see cref="T:Manatee.Json.Schema.PropertyDependency"/> class.
+            </summary>
+            <param name="propertyName">The property name.</param>
+            <param name="firstDependency">A minimal required property dependency.</param>
+            <param name="otherDependencies">Additional property dependencies.</param>
+        </member>
+        <member name="M:Manatee.Json.Schema.PropertyDependency.Validate(Manatee.Json.JsonValue,Manatee.Json.JsonValue)">
             <summary>
             Validates a <see cref="T:Manatee.Json.JsonValue"/> against the schema.
             </summary>
             <param name="json">A <see cref="T:Manatee.Json.JsonValue"/></param>
             <param name="root">The root schema serialized to a <see cref="T:Manatee.Json.JsonValue"/>.  Used internally for resolving references.</param>
-            <returns>True if the <see cref="T:Manatee.Json.JsonValue"/> passes validation; otherwise false.</returns>
+            <returns>The results of the validation.</returns>
         </member>
-        <member name="M:Manatee.Json.Schema.NullSchema.Equals(Manatee.Json.Schema.IJsonSchema)">
+        <member name="M:Manatee.Json.Schema.PropertyDependency.GetJsonData">
             <summary>
-            Indicates whether the current object is equal to another object of the same type.
-            </summary>
-            <returns>
-            true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
-            </returns>
-            <param name="other">An object to compare with this object.</param>
-        </member>
-        <member name="M:Manatee.Json.Schema.NullSchema.GetHashCode">
-            <summary>
-            Serves as a hash function for a particular type. 
-            </summary>
-            <returns>
-            A hash code for the current <see cref="T:System.Object"/>.
-            </returns>
-            <filterpriority>2</filterpriority>
-        </member>
-        <member name="T:Manatee.Json.Schema.NumberSchema">
-            <summary>
-            Defines a schema which expects a number.
+            Gets the JSON data to be used as the value portion in the dependency list of the schema.
             </summary>
         </member>
-        <member name="P:Manatee.Json.Schema.NumberSchema.Minimum">
+        <member name="T:Manatee.Json.Schema.SchemaDependency">
             <summary>
-            Defines a minimum acceptable value.
+            Creates a dependency that is based on a secondary schema.
             </summary>
         </member>
-        <member name="P:Manatee.Json.Schema.NumberSchema.Maximum">
+        <member name="P:Manatee.Json.Schema.SchemaDependency.PropertyName">
             <summary>
-            Defines a maximum acceptable value;
+            Gets or sets the property with the dependency.
             </summary>
         </member>
-        <member name="P:Manatee.Json.Schema.NumberSchema.ExclusiveMinimum">
+        <member name="M:Manatee.Json.Schema.SchemaDependency.#ctor(System.String,Manatee.Json.Schema.IJsonSchema)">
             <summary>
-            Defines whether the minimum value is itself acceptable.
+            Creates a new instance of the <see cref="T:Manatee.Json.Schema.SchemaDependency"/> class.
             </summary>
+            <param name="propertyName">The property name.</param>
+            <param name="schema">The schema which must be validated.</param>
         </member>
-        <member name="P:Manatee.Json.Schema.NumberSchema.ExclusiveMaximum">
-            <summary>
-            Defines whether the maximum value is itself acceptable.
-            </summary>
-        </member>
-        <member name="M:Manatee.Json.Schema.NumberSchema.#ctor">
-            <summary>
-            Creates a new instance of the <see cref="T:Manatee.Json.Schema.NumberSchema"/> class.
-            </summary>
-        </member>
-        <member name="M:Manatee.Json.Schema.NumberSchema.Validate(Manatee.Json.JsonValue,Manatee.Json.JsonValue)">
+        <member name="M:Manatee.Json.Schema.SchemaDependency.Validate(Manatee.Json.JsonValue,Manatee.Json.JsonValue)">
             <summary>
             Validates a <see cref="T:Manatee.Json.JsonValue"/> against the schema.
             </summary>
             <param name="json">A <see cref="T:Manatee.Json.JsonValue"/></param>
             <param name="root">The root schema serialized to a <see cref="T:Manatee.Json.JsonValue"/>.  Used internally for resolving references.</param>
-            <returns>True if the <see cref="T:Manatee.Json.JsonValue"/> passes validation; otherwise false.</returns>
+            <returns>The results of the validation.</returns>
         </member>
-        <member name="M:Manatee.Json.Schema.NumberSchema.FromJson(Manatee.Json.JsonValue,Manatee.Json.Serialization.JsonSerializer)">
+        <member name="M:Manatee.Json.Schema.SchemaDependency.GetJsonData">
             <summary>
-            Builds an object from a <see cref="T:Manatee.Json.JsonValue"/>.
+            Gets the JSON data to be used as the value portion in the dependency list of the schema.
             </summary>
-            <param name="json">The <see cref="T:Manatee.Json.JsonValue"/> representation of the object.</param>
-            <param name="serializer">The <see cref="T:Manatee.Json.Serialization.JsonSerializer"/> instance to use for additional
-            serialization of values.</param>
-        </member>
-        <member name="M:Manatee.Json.Schema.NumberSchema.ToJson(Manatee.Json.Serialization.JsonSerializer)">
-            <summary>
-            Converts an object to a <see cref="T:Manatee.Json.JsonValue"/>.
-            </summary>
-            <param name="serializer">The <see cref="T:Manatee.Json.Serialization.JsonSerializer"/> instance to use for additional
-            serialization of values.</param>
-            <returns>The <see cref="T:Manatee.Json.JsonValue"/> representation of the object.</returns>
-        </member>
-        <member name="M:Manatee.Json.Schema.NumberSchema.Equals(Manatee.Json.Schema.IJsonSchema)">
-            <summary>
-            Indicates whether the current object is equal to another object of the same type.
-            </summary>
-            <returns>
-            true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
-            </returns>
-            <param name="other">An object to compare with this object.</param>
-        </member>
-        <member name="M:Manatee.Json.Schema.NumberSchema.GetHashCode">
-            <summary>
-            Serves as a hash function for a particular type. 
-            </summary>
-            <returns>
-            A hash code for the current <see cref="T:System.Object"/>.
-            </returns>
-            <filterpriority>2</filterpriority>
-        </member>
-        <member name="T:Manatee.Json.Schema.ObjectSchema">
-            <summary>
-            Defines a schema which expects an object.
-            </summary>
-        </member>
-        <member name="P:Manatee.Json.Schema.ObjectSchema.Schema">
-            <summary>
-            Used to specify a schema which contains the definitions used by this schema.
-            </summary>
-            <remarks>
-            if left null, the default of http://json-schema.org/draft-04/schema# is used.
-            </remarks>
-        </member>
-        <member name="P:Manatee.Json.Schema.ObjectSchema.Definitions">
-            <summary>
-            Defines a collection of schema type definitions.
-            </summary>
-        </member>
-        <member name="P:Manatee.Json.Schema.ObjectSchema.Properties">
-            <summary>
-            Defines a collection of properties expected by this schema.
-            </summary>
-        </member>
-        <member name="P:Manatee.Json.Schema.ObjectSchema.AdditionalProperties">
-            <summary>
-            Defines any additional properties to be expected by this schema.
-            </summary>
-        </member>
-        <member name="P:Manatee.Json.Schema.ObjectSchema.PatternProperties">
-            <summary>
-            Defines additional properties based on regular expression matching of the property name.
-            </summary>
-        </member>
-        <member name="P:Manatee.Json.Schema.ObjectSchema.Dependencies">
-            <summary>
-            Defines property dependencies.
-            </summary>
-        </member>
-        <member name="M:Manatee.Json.Schema.ObjectSchema.#ctor">
-            <summary>
-            Creates a new instance of the <see cref="T:Manatee.Json.Schema.ObjectSchema"/> class.
-            </summary>
-        </member>
-        <member name="M:Manatee.Json.Schema.ObjectSchema.Validate(Manatee.Json.JsonValue,Manatee.Json.JsonValue)">
-            <summary>
-            Validates a <see cref="T:Manatee.Json.JsonValue"/> against the schema.
-            </summary>
-            <param name="json">A <see cref="T:Manatee.Json.JsonValue"/></param>
-            <param name="root">The root schema serialized to a <see cref="T:Manatee.Json.JsonValue"/>.  Used internally for resolving references.</param>
-            <returns>True if the <see cref="T:Manatee.Json.JsonValue"/> passes validation; otherwise false.</returns>
-        </member>
-        <member name="M:Manatee.Json.Schema.ObjectSchema.FromJson(Manatee.Json.JsonValue,Manatee.Json.Serialization.JsonSerializer)">
-            <summary>
-            Builds an object from a <see cref="T:Manatee.Json.JsonValue"/>.
-            </summary>
-            <param name="json">The <see cref="T:Manatee.Json.JsonValue"/> representation of the object.</param>
-            <param name="serializer">The <see cref="T:Manatee.Json.Serialization.JsonSerializer"/> instance to use for additional
-            serialization of values.</param>
-        </member>
-        <member name="M:Manatee.Json.Schema.ObjectSchema.ToJson(Manatee.Json.Serialization.JsonSerializer)">
-            <summary>
-            Converts an object to a <see cref="T:Manatee.Json.JsonValue"/>.
-            </summary>
-            <param name="serializer">The <see cref="T:Manatee.Json.Serialization.JsonSerializer"/> instance to use for additional
-            serialization of values.</param>
-            <returns>The <see cref="T:Manatee.Json.JsonValue"/> representation of the object.</returns>
-        </member>
-        <member name="M:Manatee.Json.Schema.ObjectSchema.Equals(Manatee.Json.Schema.IJsonSchema)">
-            <summary>
-            Indicates whether the current object is equal to another object of the same type.
-            </summary>
-            <returns>
-            true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
-            </returns>
-            <param name="other">An object to compare with this object.</param>
-        </member>
-        <member name="M:Manatee.Json.Schema.ObjectSchema.GetHashCode">
-            <summary>
-            Serves as a hash function for a particular type. 
-            </summary>
-            <returns>
-            A hash code for the current <see cref="T:System.Object"/>.
-            </returns>
-            <filterpriority>2</filterpriority>
-        </member>
-        <member name="T:Manatee.Json.Schema.OneOfSchema">
-            <summary>
-            Used to define a collection of schema conditions, exactly one of which must
-            be satisfied.
-            </summary>
-        </member>
-        <member name="P:Manatee.Json.Schema.OneOfSchema.Options">
-            <summary>
-            A collection of schema options.
-            </summary>
-        </member>
-        <member name="M:Manatee.Json.Schema.OneOfSchema.Validate(Manatee.Json.JsonValue,Manatee.Json.JsonValue)">
-            <summary>
-            Validates a <see cref="T:Manatee.Json.JsonValue"/> against the schema.
-            </summary>
-            <param name="json">A <see cref="T:Manatee.Json.JsonValue"/></param>
-            <param name="root">The root schema serialized to a <see cref="T:Manatee.Json.JsonValue"/>.  Used internally for resolving references.</param>
-            <returns>True if the <see cref="T:Manatee.Json.JsonValue"/> passes validation; otherwise false.</returns>
-        </member>
-        <member name="M:Manatee.Json.Schema.OneOfSchema.FromJson(Manatee.Json.JsonValue,Manatee.Json.Serialization.JsonSerializer)">
-            <summary>
-            Builds an object from a <see cref="T:Manatee.Json.JsonValue"/>.
-            </summary>
-            <param name="json">The <see cref="T:Manatee.Json.JsonValue"/> representation of the object.</param>
-            <param name="serializer">The <see cref="T:Manatee.Json.Serialization.JsonSerializer"/> instance to use for additional
-            serialization of values.</param>
-        </member>
-        <member name="M:Manatee.Json.Schema.OneOfSchema.ToJson(Manatee.Json.Serialization.JsonSerializer)">
-            <summary>
-            Converts an object to a <see cref="T:Manatee.Json.JsonValue"/>.
-            </summary>
-            <param name="serializer">The <see cref="T:Manatee.Json.Serialization.JsonSerializer"/> instance to use for additional
-            serialization of values.</param>
-            <returns>The <see cref="T:Manatee.Json.JsonValue"/> representation of the object.</returns>
-        </member>
-        <member name="M:Manatee.Json.Schema.OneOfSchema.Equals(Manatee.Json.Schema.IJsonSchema)">
-            <summary>
-            Indicates whether the current object is equal to another object of the same type.
-            </summary>
-            <returns>
-            true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
-            </returns>
-            <param name="other">An object to compare with this object.</param>
-        </member>
-        <member name="M:Manatee.Json.Schema.OneOfSchema.GetHashCode">
-            <summary>
-            Serves as a hash function for a particular type. 
-            </summary>
-            <returns>
-            A hash code for the current <see cref="T:System.Object"/>.
-            </returns>
-            <filterpriority>2</filterpriority>
         </member>
         <member name="T:Manatee.Json.Schema.SchemaValidationError">
             <summary>
@@ -2614,6 +2454,22 @@
             <returns>
             A string that represents the current object.
             </returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:Manatee.Json.Schema.SchemaValidationError.Equals(Manatee.Json.Schema.SchemaValidationError)">
+            <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+            <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+            <param name="other">An object to compare with this object.</param>
+        </member>
+        <member name="M:Manatee.Json.Schema.SchemaValidationError.Equals(System.Object)">
+            <summary>Determines whether the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:System.Object" />.</summary>
+            <returns>true if the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:System.Object" />; otherwise, false.</returns>
+            <param name="obj">The object to compare with the current object. </param>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:Manatee.Json.Schema.SchemaValidationError.GetHashCode">
+            <summary>Serves as a hash function for a particular type. </summary>
+            <returns>A hash code for the current <see cref="T:System.Object" />.</returns>
             <filterpriority>2</filterpriority>
         </member>
         <member name="T:Manatee.Json.Schema.SchemaValidationResults">
@@ -2692,78 +2548,6 @@
             </summary>
             <param name="formatKey">The predefined key for the format.</param>
             <returns>A <see cref="T:Manatee.Json.Schema.StringFormat"/> object, or null if none exists for the key.</returns>
-        </member>
-        <member name="T:Manatee.Json.Schema.StringSchema">
-            <summary>
-            Defines a schema which expects a string.
-            </summary>
-        </member>
-        <member name="P:Manatee.Json.Schema.StringSchema.Format">
-            <summary>
-            Defines a required format for the string.
-            </summary>
-        </member>
-        <member name="P:Manatee.Json.Schema.StringSchema.MinLength">
-            <summary>
-            Defines a minimum acceptable length.
-            </summary>
-        </member>
-        <member name="P:Manatee.Json.Schema.StringSchema.MaxLength">
-            <summary>
-            Defines a maximum acceptable length.
-            </summary>
-        </member>
-        <member name="P:Manatee.Json.Schema.StringSchema.Pattern">
-            <summary>
-            Defines a <see cref="T:System.Text.RegularExpressions.Regex"/> pattern for to which the value must adhere.
-            </summary>
-        </member>
-        <member name="M:Manatee.Json.Schema.StringSchema.#ctor">
-            <summary>
-            Creates a new instance of the <see cref="T:Manatee.Json.Schema.StringSchema"/> class
-            </summary>
-        </member>
-        <member name="M:Manatee.Json.Schema.StringSchema.Validate(Manatee.Json.JsonValue,Manatee.Json.JsonValue)">
-            <summary>
-            Validates a <see cref="T:Manatee.Json.JsonValue"/> against the schema.
-            </summary>
-            <param name="json">A <see cref="T:Manatee.Json.JsonValue"/></param>
-            <param name="root">The root schema serialized to a <see cref="T:Manatee.Json.JsonValue"/>.  Used internally for resolving references.</param>
-            <returns>True if the <see cref="T:Manatee.Json.JsonValue"/> passes validation; otherwise false.</returns>
-        </member>
-        <member name="M:Manatee.Json.Schema.StringSchema.FromJson(Manatee.Json.JsonValue,Manatee.Json.Serialization.JsonSerializer)">
-            <summary>
-            Builds an object from a <see cref="T:Manatee.Json.JsonValue"/>.
-            </summary>
-            <param name="json">The <see cref="T:Manatee.Json.JsonValue"/> representation of the object.</param>
-            <param name="serializer">The <see cref="T:Manatee.Json.Serialization.JsonSerializer"/> instance to use for additional
-            serialization of values.</param>
-        </member>
-        <member name="M:Manatee.Json.Schema.StringSchema.ToJson(Manatee.Json.Serialization.JsonSerializer)">
-            <summary>
-            Converts an object to a <see cref="T:Manatee.Json.JsonValue"/>.
-            </summary>
-            <param name="serializer">The <see cref="T:Manatee.Json.Serialization.JsonSerializer"/> instance to use for additional
-            serialization of values.</param>
-            <returns>The <see cref="T:Manatee.Json.JsonValue"/> representation of the object.</returns>
-        </member>
-        <member name="M:Manatee.Json.Schema.StringSchema.Equals(Manatee.Json.Schema.IJsonSchema)">
-            <summary>
-            Indicates whether the current object is equal to another object of the same type.
-            </summary>
-            <returns>
-            true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
-            </returns>
-            <param name="other">An object to compare with this object.</param>
-        </member>
-        <member name="M:Manatee.Json.Schema.StringSchema.GetHashCode">
-            <summary>
-            Serves as a hash function for a particular type. 
-            </summary>
-            <returns>
-            A hash code for the current <see cref="T:System.Object"/>.
-            </returns>
-            <filterpriority>2</filterpriority>
         </member>
         <member name="T:Manatee.Json.Serialization.DateTimeSerializationFormat">
             <summary>
@@ -2933,6 +2717,16 @@
             </summary>
             <param name="type">The abstraction type.</param>
             <returns>The mapped type if a mapping exists; otherwise the abstraction type.</returns>
+        </member>
+        <member name="T:Manatee.Json.Serialization.JsonSerializationException">
+            <summary>
+            Thrown when an error occurs during serialization or deserialization.
+            </summary>
+        </member>
+        <member name="M:Manatee.Json.Serialization.JsonSerializationException.#ctor(System.String)">
+            <summary>
+            Creates a new instance of the <see cref="T:Manatee.Json.Serialization.JsonSerializationException"/> class.
+            </summary>
         </member>
         <member name="T:Manatee.Json.Serialization.JsonSerializationTypeRegistry">
             <summary>
@@ -3336,6 +3130,11 @@
             <param name="formatParameterName">
             Specifies which parameter of an annotated method should be treated as format-string
             </param>
+        </member>
+        <member name="P:JetBrains.Annotations.StringFormatMethodAttribute.FormatParameterName">
+            <summary>
+            
+            </summary>
         </member>
     </members>
 </doc>

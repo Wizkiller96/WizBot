@@ -4,6 +4,8 @@ using WizBot.Classes;
 using WizBot.Modules.Permissions.Classes;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace WizBot.Modules.NSFW
 {
@@ -22,24 +24,24 @@ namespace WizBot.Modules.NSFW
                 cgb.AddCheck(PermissionChecker.Instance);
 
                 cgb.CreateCommand(Prefix + "hentai")
-                    .Description("Shows a random NSFW hentai image from gelbooru and danbooru with a given tag. Tag is optional but preffered. (multiple tags are appended with +)\n**Usage**: ~hentai yuri+kissing")
+                    .Description($"Shows a random NSFW hentai image from gelbooru and danbooru with a given tag. Tag is optional but preffered. (multiple tags are appended with +) | `{Prefix}hentai yuri+kissing`")
                     .Parameter("tag", ParameterType.Unparsed)
                     .Do(async e =>
                     {
                         var tag = e.GetArg("tag")?.Trim() ?? "";
-                        var gel = await SearchHelper.GetGelbooruImageLink("rating%3Aexplicit+" + tag).ConfigureAwait(false);
-                        if (gel != null)
-                            await e.Channel.SendMessage(":heart: Gelbooru: " + gel)
-                                           .ConfigureAwait(false);
-                        var dan = await SearchHelper.GetDanbooruImageLink("rating%3Aexplicit+" + tag).ConfigureAwait(false);
-                        if (dan != null)
-                            await e.Channel.SendMessage(":heart: Danbooru: " + dan)
-                                           .ConfigureAwait(false);
-                        if (dan == null && gel == null)
+
+                        var links = await Task.WhenAll(SearchHelper.GetGelbooruImageLink("rating%3Aexplicit+" + tag), SearchHelper.GetDanbooruImageLink("rating%3Aexplicit+" + tag)).ConfigureAwait(false);
+
+                        if (links.All(l => l == null))
+                        {
                             await e.Channel.SendMessage("`No results.`");
+                            return;
+                        }
+
+                        await e.Channel.SendMessage(String.Join("\n\n", links)).ConfigureAwait(false);
                     });
                 cgb.CreateCommand(Prefix + "danbooru")
-                    .Description("Shows a random hentai image from danbooru with a given tag. Tag is optional but preffered. (multiple tags are appended with +)\n**Usage**: ~danbooru yuri+kissing")
+                    .Description($"Shows a random hentai image from danbooru with a given tag. Tag is optional but preffered. (multiple tags are appended with +) | `{Prefix}danbooru yuri+kissing`")
                     .Parameter("tag", ParameterType.Unparsed)
                     .Do(async e =>
                     {
@@ -51,7 +53,7 @@ namespace WizBot.Modules.NSFW
                             await e.Channel.SendMessage(link).ConfigureAwait(false);
                     });
                 cgb.CreateCommand(Prefix + "gelbooru")
-                    .Description("Shows a random hentai image from gelbooru with a given tag. Tag is optional but preffered. (multiple tags are appended with +)\n**Usage**: ~gelbooru yuri+kissing")
+                    .Description($"Shows a random hentai image from gelbooru with a given tag. Tag is optional but preffered. (multiple tags are appended with +) | `{Prefix}gelbooru yuri+kissing`")
                     .Parameter("tag", ParameterType.Unparsed)
                     .Do(async e =>
                     {
@@ -64,7 +66,7 @@ namespace WizBot.Modules.NSFW
                     });
 
                 cgb.CreateCommand(Prefix + "rule34")
-                    .Description("Shows a random image from rule34.xx with a given tag. Tag is optional but preffered. (multiple tags are appended with +)\n**Usage**: ~rule34 yuri+kissing")
+                    .Description($"Shows a random image from rule34.xx with a given tag. Tag is optional but preffered. (multiple tags are appended with +) | `{Prefix}rule34 yuri+kissing`")
                     .Parameter("tag", ParameterType.Unparsed)
                     .Do(async e =>
                     {
@@ -76,7 +78,7 @@ namespace WizBot.Modules.NSFW
                             await e.Channel.SendMessage(link).ConfigureAwait(false);
                     });
                 cgb.CreateCommand(Prefix + "e621")
-                    .Description("Shows a random hentai image from e621.net with a given tag. Tag is optional but preffered. Use spaces for multiple tags.\n**Usage**: ~e621 yuri kissing")
+                    .Description($"Shows a random hentai image from e621.net with a given tag. Tag is optional but preffered. Use spaces for multiple tags. | `{Prefix}e621 yuri kissing`")
                     .Parameter("tag", ParameterType.Unparsed)
                     .Do(async e =>
                     {
@@ -84,14 +86,14 @@ namespace WizBot.Modules.NSFW
                         await e.Channel.SendMessage(await SearchHelper.GetE621ImageLink(tag).ConfigureAwait(false)).ConfigureAwait(false);
                     });
                 cgb.CreateCommand(Prefix + "cp")
-                    .Description("We all know where this will lead you to.")
+                    .Description($"We all know where this will lead you to. | `{Prefix}cp`")
                     .Parameter("anything", ParameterType.Unparsed)
                     .Do(async e =>
                     {
                         await e.Channel.SendMessage("http://i.imgur.com/MZkY1md.jpg").ConfigureAwait(false);
                     });
                 cgb.CreateCommand(Prefix + "boobs")
-                    .Description("Real adult content.")
+                    .Description($"Real adult content. | `{Prefix}boobs`")
                     .Do(async e =>
                     {
                         try
@@ -106,7 +108,7 @@ namespace WizBot.Modules.NSFW
                     });
                 cgb.CreateCommand(Prefix + "butts")
                     .Alias(Prefix + "ass", Prefix + "butt")
-                    .Description("Real adult content.")
+                    .Description($"Real adult content. | `{Prefix}butts` or `{Prefix}ass`")
                     .Do(async e =>
                     {
                         try

@@ -5031,11 +5031,11 @@
             <paramref name="index"/> is less than 0 or greater than or equal to the number of elements in the collection.
             </exception>
         </member>
-        <member name="M:Manatee.Trello.ReadOnlyCollection`1.#ctor(System.String,Manatee.Trello.TrelloAuthorization)">
+        <member name="M:Manatee.Trello.ReadOnlyCollection`1.#ctor(System.Func{System.String},Manatee.Trello.TrelloAuthorization)">
             <summary>
             Creates a new instance of the <see cref="T:Manatee.Trello.ReadOnlyCollection`1"/> object.
             </summary>
-            <param name="ownerId"></param>
+            <param name="getOwnerId"></param>
             <param name="auth"></param>
         </member>
         <member name="M:Manatee.Trello.ReadOnlyCollection`1.GetEnumerator">
@@ -6261,14 +6261,17 @@
         </member>
         <member name="M:Manatee.Trello.TrelloProcessor.Shutdown">
             <summary>
-            Signals the processor that the application is shutting down.  The processor will reject any new changes and perform a
-            "last call" for pending requests.
+            Signals the processor that the application is shutting down.  The processor will perform a "last call" for pending requests.
             </summary>
         </member>
         <member name="M:Manatee.Trello.TrelloProcessor.Flush">
             <summary>
-            Signals the processor that the application is shutting down.  The processor will reject any new changes and perform a
-            "last call" for pending requests.
+            Signals the processor that the application is shutting down.  The processor will perform a "last call" for pending requests.
+            </summary>
+        </member>
+        <member name="M:Manatee.Trello.TrelloProcessor.CancelPendingRequests">
+            <summary>
+            Cancels any requests that are still pending.  This applies to both downloads and uploads.
             </summary>
         </member>
         <member name="T:Manatee.Trello.WebColor">

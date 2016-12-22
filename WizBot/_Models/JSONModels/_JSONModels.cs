@@ -6,17 +6,17 @@ namespace WizBot.Classes.JSONModels
 {
     public class Credentials
     {
-        public string Username = "myemail@email.com";
-        public string Password = "xxxxxxx";
-        public string Token = "";
-        public ulong BotId = 1231231231231;
-        public string GoogleAPIKey = "";
-        public ulong[] OwnerIds = { 123123123123, 99272781513920512 };
-        public string TrelloAppKey = "";
-        public string SoundCloudClientID = "";
-        public string MashapeKey = "";
-        public string LOLAPIKey = "";
-        public string CarbonKey = "";
+        public string Token { get; set; } = "MTcwODQ5OTkxMzU3NjI4NDE2.CfOr9A.tjG-24e_GdE3vxiqcdDeEH4jDH4";
+        public string ClientId { get; set; } = "170254782546575360";
+        public ulong BotId { get; set; } = 170849991357628416;
+        public ulong[] OwnerIds { get; set; } = { 99272781513920512 };
+        public string GoogleAPIKey { get; set; } = "AIzaSyCBq_aWCkE9mRU8TAG25KRLx_zxGZ4T6FU";
+        public string SoundCloudClientID { get; set; } = "f16f3b87c6ebc1aafe87d9cf27a03dc2";
+        public string MashapeKey { get; set; } = "DqSgyzWUj7mshDhiCNMirRRZvpCjp1EDyEPjsnhK6yOVY2HEtp";
+        public string LOLAPIKey { get; set; } = "04ba3ad6-2ba8-43df-b9de-9810b3f4b0aa";
+        public string TrelloAppKey { get; set; } = "a9a0a9587fd27fe82a3a1cd94a5b5e24";
+        public string CarbonKey { get; set; } = "";
+        public string OsuAPIKey { get; set; } = "2b9c70c9b973326cca071d70dc627da697340ad9";
     }
     [DebuggerDisplay("{items[0].id.playlistId}")]
     public class YoutubePlaylistSearch
@@ -99,7 +99,7 @@ namespace WizBot.Classes.JSONModels
         public bool Missing { get; set; } = false;
         public string FullUrl { get; set; }
     }
-	
+
     public class WoWJoke
     {
         public string Question { get; set; }

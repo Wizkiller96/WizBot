@@ -20,7 +20,7 @@ namespace WizBot.Modules.Games.Commands
             cgb.CreateCommand(Module.Prefix + "t")
                 .Description($"Starts a game of trivia. You can add nohint to prevent hints." +
                               "First player to get to 10 points wins by default. You can specify a different number. 30 seconds per question." +
-                              $"\n**Usage**:`{Module.Prefix}t nohint` or `{Module.Prefix}t 5 nohint`")
+                              $" |`{Module.Prefix}t nohint` or `{Module.Prefix}t 5 nohint`")
                 .Parameter("args", ParameterType.Multiple)
                 .Do(async e =>
                 {
@@ -28,16 +28,19 @@ namespace WizBot.Modules.Games.Commands
                     if (!RunningTrivias.TryGetValue(e.Server.Id, out trivia))
                     {
                         var showHints = !e.Args.Contains("nohint");
-                    var number = e.Args.Select(s =>
+                        var number = e.Args.Select(s =>
                         {
-                        int num;
+                            int num;
                             return new Tuple<bool, int>(int.TryParse(s, out num), num);
                         }).Where(t => t.Item1).Select(t => t.Item2).FirstOrDefault();
-                        if (number < 0)
+                        if (number < 3)
+                        {
+                            await e.Channel.SendMessage("Number too small.");
                             return;
-            var triviaGame = new TriviaGame(e, showHints, number == 0 ? 10 : number);
-            if (RunningTrivias.TryAdd(e.Server.Id, triviaGame))
-                            await e.Channel.SendMessage("**Trivia game started! {triviaGame.WinRequirement} points needed to win.**").ConfigureAwait(false);
+                        }
+                        var triviaGame = new TriviaGame(e, showHints, number == 0 ? 10 : number);
+                        if (RunningTrivias.TryAdd(e.Server.Id, triviaGame))
+                            await e.Channel.SendMessage($"**Trivia game started! {triviaGame.WinRequirement} points needed to win.**").ConfigureAwait(false);
                         else
                             await triviaGame.StopGame().ConfigureAwait(false);
                     }
@@ -46,7 +49,7 @@ namespace WizBot.Modules.Games.Commands
                 });
 
             cgb.CreateCommand(Module.Prefix + "tl")
-                .Description("Shows a current trivia leaderboard.")
+                .Description($"Shows a current trivia leaderboard. | `{Prefix}tl`")
                 .Do(async e =>
                 {
                     TriviaGame trivia;
@@ -57,7 +60,7 @@ namespace WizBot.Modules.Games.Commands
                 });
 
             cgb.CreateCommand(Module.Prefix + "tq")
-                .Description("Quits current trivia after current question.")
+                .Description($"Quits current trivia after current question. | `{Prefix}tq`")
                 .Do(async e =>
                 {
                     TriviaGame trivia;

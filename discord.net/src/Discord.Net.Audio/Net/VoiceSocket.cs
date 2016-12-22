@@ -152,7 +152,7 @@ namespace Discord.Net.WebSockets
                     decoder.Dispose();
             }
 
-            ClearPCMFrames();
+            await ClearPCMFrames();
             _udp = null;
 
             await base.Cleanup().ConfigureAwait(false);
@@ -477,19 +477,10 @@ namespace Discord.Net.WebSockets
             }
         }
 
-        public void SendPCMFrames(byte[] data, int offset, int count)
-        {
-            _sendBuffer.Push(data, offset, count, CancelToken);
-        }
-        public void ClearPCMFrames()
-        {
-            _sendBuffer.Clear(CancelToken);
-        }
+        public Task SendPCMFrames(byte[] data, int offset, int count) => _sendBuffer.Push(data, offset, count, CancelToken);
+        public Task ClearPCMFrames() => _sendBuffer.Clear();
 
-        public void WaitForQueue()
-        {
-            _sendBuffer.Wait(CancelToken);
-        }
+        public Task WaitForQueue() => _sendBuffer.Wait(CancelToken);
 
         public override void SendHeartbeat()
             => QueueMessage(new HeartbeatCommand());

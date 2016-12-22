@@ -4,8 +4,7 @@ namespace WizBot.Classes.JSONModels {
     public class LocalizedStrings {
         public string[] Insults { get; set; } = {
             " You are a poop.", " You're a jerk.",
-            " I will eat you when I get my powers back.",
-            " You are a baka."
+            " I will eat you when I get my powers back."
         };
 
         public string[] Praises { get; set; } = {
@@ -14,8 +13,7 @@ namespace WizBot.Classes.JSONModels {
             " You did a good job.",
             " You did something nice.",
             " is awesome!",
-            " Wow.",
-            " You did well."
+            " Wow."
         };
 
         public static string[] GetAvailableLocales() {

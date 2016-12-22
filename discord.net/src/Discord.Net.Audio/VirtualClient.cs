@@ -33,8 +33,8 @@ namespace Discord.Audio
         public Task Disconnect() => _client.Service.Leave(Server);
         public Task Join(Channel channel) => _client.Join(channel);
 
-        public void Send(byte[] data, int offset, int count) => _client.Send(data, offset, count);
-        public void Clear() => _client.Clear();
-        public void Wait() => _client.Wait();
+        public Task Send(byte[] data, int offset, int count) => _client.Send(data, offset, count);
+        public Task Clear() => _client.Clear();
+        public Task Wait() => _client.Wait();
     }
 }

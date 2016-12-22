@@ -6,6 +6,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace WizBot.Classes
 {
@@ -27,7 +29,16 @@ namespace WizBot.Classes
                 {
                     configs = JsonConvert
                         .DeserializeObject<ConcurrentDictionary<ulong, ServerSpecificConfig>>(
-                            File.ReadAllText(filePath));
+                            File.ReadAllText(filePath), new JsonSerializerSettings()
+                            {
+                                Error = (s, e) =>
+                                {
+                                    if (e.ErrorContext.Member.ToString() == "GenerateCurrencyChannels")
+                                    {
+                                        e.ErrorContext.Handled = true;
+                                    }
+                                }
+                            });
                 }
                 catch (Exception ex)
                 {
@@ -46,13 +57,18 @@ namespace WizBot.Classes
         public ServerSpecificConfig Of(ulong id) =>
             configs.GetOrAdd(id, _ => new ServerSpecificConfig());
 
-        private readonly object saveLock = new object();
+        private readonly SemaphoreSlim saveLock = new SemaphoreSlim(1, 1);
 
-        public void Save()
+        public async Task Save()
         {
-            lock (saveLock)
+            await saveLock.WaitAsync();
+            try
             {
-                File.WriteAllText(filePath, JsonConvert.SerializeObject(configs, Formatting.Indented));
+                await Task.Run(() => File.WriteAllText(filePath, JsonConvert.SerializeObject(configs, Formatting.Indented)));
+            }
+            finally
+            {
+                saveLock.Release();
             }
         }
     }
@@ -66,6 +82,7 @@ namespace WizBot.Classes
             get { return voicePlusTextEnabled; }
             set {
                 voicePlusTextEnabled = value;
+                if (!SpecificConfigurations.Instantiated) return;
                 OnPropertyChanged();
             }
         }
@@ -76,7 +93,62 @@ namespace WizBot.Classes
             get { return sendPrivateMessageOnMention; }
             set {
                 sendPrivateMessageOnMention = value;
+                if (!SpecificConfigurations.Instantiated) return;
                 OnPropertyChanged();
+            }
+        }
+
+        [JsonProperty("LogChannel")]
+        private ulong? logServerChannel = null;
+        [JsonIgnore]
+        public ulong? LogServerChannel {
+            get { return logServerChannel; }
+            set {
+                logServerChannel = value;
+                if (!SpecificConfigurations.Instantiated) return;
+                OnPropertyChanged();
+            }
+        }
+
+        [JsonIgnore]
+        private ObservableCollection<ulong> logserverIgnoreChannels;
+        public ObservableCollection<ulong> LogserverIgnoreChannels {
+            get { return logserverIgnoreChannels; }
+            set {
+                logserverIgnoreChannels = value;
+                if (value != null)
+                    logserverIgnoreChannels.CollectionChanged += (s, e) =>
+                    {
+                        if (!SpecificConfigurations.Instantiated) return;
+                        OnPropertyChanged();
+                    };
+            }
+        }
+
+        [JsonProperty("LogPresenceChannel")]
+        private ulong? logPresenceChannel = null;
+        [JsonIgnore]
+        public ulong? LogPresenceChannel {
+            get { return logPresenceChannel; }
+            set {
+                logPresenceChannel = value;
+                if (!SpecificConfigurations.Instantiated) return;
+                OnPropertyChanged();
+            }
+        }
+
+        [JsonIgnore]
+        private ObservableConcurrentDictionary<ulong, ulong> voiceChannelLog;
+        public ObservableConcurrentDictionary<ulong, ulong> VoiceChannelLog {
+            get { return voiceChannelLog; }
+            set {
+                voiceChannelLog = value;
+                if (value != null)
+                    voiceChannelLog.CollectionChanged += (s, e) =>
+                    {
+                        if (!SpecificConfigurations.Instantiated) return;
+                        OnPropertyChanged();
+                    };
             }
         }
 
@@ -95,18 +167,56 @@ namespace WizBot.Classes
             }
         }
 
+
+
         [JsonIgnore]
         private ulong autoAssignedRole = 0;
-        public ulong AutoAssignedRole
-        {
+        public ulong AutoAssignedRole {
             get { return autoAssignedRole; }
-            set
-            {
+            set {
                 autoAssignedRole = value;
                 if (!SpecificConfigurations.Instantiated) return;
                 OnPropertyChanged();
             }
         }
+
+        [JsonIgnore]
+        private ObservableConcurrentDictionary<ulong, int> generateCurrencyChannels;
+        public ObservableConcurrentDictionary<ulong, int> GenerateCurrencyChannels {
+            get { return generateCurrencyChannels; }
+            set {
+                generateCurrencyChannels = value;
+                if (value != null)
+                    generateCurrencyChannels.CollectionChanged += (s, e) =>
+                    {
+                        if (!SpecificConfigurations.Instantiated) return;
+                        OnPropertyChanged();
+                    };
+            }
+        }
+
+        [JsonIgnore]
+        private bool autoDeleteMessagesOnCommand = false;
+        public bool AutoDeleteMessagesOnCommand {
+            get { return autoDeleteMessagesOnCommand; }
+            set {
+                autoDeleteMessagesOnCommand = value;
+                if (!SpecificConfigurations.Instantiated) return;
+                OnPropertyChanged();
+            }
+        }
+
+        [JsonIgnore]
+        private bool exclusiveSelfAssignedRoles = false;
+        public bool ExclusiveSelfAssignedRoles {
+            get { return exclusiveSelfAssignedRoles; }
+            set {
+                exclusiveSelfAssignedRoles = value;
+                if (!SpecificConfigurations.Instantiated) return;
+                OnPropertyChanged();
+            }
+        }
+
 
         [JsonIgnore]
         private ObservableCollection<StreamNotificationConfig> observingStreams;
@@ -123,17 +233,30 @@ namespace WizBot.Classes
             }
         }
 
+        [JsonIgnore]
+        private float defaultMusicVolume = 1f;
+        public float DefaultMusicVolume {
+            get { return defaultMusicVolume; }
+            set {
+                defaultMusicVolume = value;
+                if (!SpecificConfigurations.Instantiated) return;
+                OnPropertyChanged();
+            }
+        }
+
         public ServerSpecificConfig()
         {
             ListOfSelfAssignableRoles = new ObservableCollection<ulong>();
             ObservingStreams = new ObservableCollection<StreamNotificationConfig>();
+            GenerateCurrencyChannels = new ObservableConcurrentDictionary<ulong, int>();
+            VoiceChannelLog = new ObservableConcurrentDictionary<ulong, ulong>();
+            LogserverIgnoreChannels = new ObservableCollection<ulong>();
         }
 
-        public event PropertyChangedEventHandler PropertyChanged = delegate { SpecificConfigurations.Default.Save(); };
+        public event PropertyChangedEventHandler PropertyChanged = async delegate { await SpecificConfigurations.Default.Save().ConfigureAwait(false); };
 
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-
             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
     }
@@ -155,13 +278,13 @@ namespace WizBot.Classes
         }
 
         public bool Equals(StreamNotificationConfig other) =>
-            this.Username.ToLower().Trim() == other.Username.ToLower().Trim() &&
+            this.Username.ToUpperInvariant().Trim() == other.Username.ToUpperInvariant().Trim() &&
             this.Type == other.Type &&
             this.ServerId == other.ServerId;
 
         public override int GetHashCode()
         {
-            return (int)((int)ServerId + Username.Length + (int)Type);
+            return (int)ServerId + Username.Length + (int)Type;
         }
     }
 }

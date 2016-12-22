@@ -1,0 +1,198 @@
+{
+  "DontJoinServers": false,
+  "ForwardMessages": true,
+  "ForwardToAllOwners": false,
+  "IsRotatingStatus": false,
+  "BufferSize": 4194304,
+  "RaceAnimals": [
+    "🐼",
+    "🐻",
+    "🐧",
+    "🐨",
+    "🐬",
+    "🐞",
+    "🦀",
+    "🦄"
+  ],
+  "RemindMessageFormat": "❗⏰**I've been told to remind you to '%message%' now by %user%.**⏰❗",
+  "CustomReactions": {
+    "\\o\\": [
+      "/o/"
+    ],
+    "/o/": [
+      "\\o\\"
+    ],
+    "moveto": [
+      "(👉 ͡° ͜ʖ ͡°)👉 %target%"
+    ],
+    "comeatmebro": [
+      "%target% (ง’̀-‘́)ง"
+    ],
+    "e": [
+      "%user% did it 😒 🔫",
+      "%target% did it 😒 🔫"
+    ],
+    "%mention% insult": [
+      "%target% You are a poop.",
+      "%target% You're a jerk.",
+      "%target% I will eat you when I get my powers back."
+    ],
+    "%mention% praise": [
+      "%target% You are cool.",
+      "%target% You are nice!",
+      "%target% You did a good job.",
+      "%target% You did something nice.",
+      "%target% is awesome!",
+      "%target% Wow."
+    ],
+    "%mention% pat": [
+      "http://i.imgur.com/IiQwK12.gif",
+      "http://i.imgur.com/JCXj8yD.gif",
+      "http://i.imgur.com/qqBl2bm.gif",
+      "http://i.imgur.com/eOJlnwP.gif",
+      "https://45.media.tumblr.com/229ec0458891c4dcd847545c81e760a5/tumblr_mpfy232F4j1rxrpjzo1_r2_500.gif",
+      "https://media.giphy.com/media/KZQlfylo73AMU/giphy.gif",
+      "https://media.giphy.com/media/12hvLuZ7uzvCvK/giphy.gif",
+      "http://gallery1.anivide.com/_full/65030_1382582341.gif",
+      "https://49.media.tumblr.com/8e8a099c4eba22abd3ec0f70fd087cce/tumblr_nxovj9oY861ur1mffo1_500.gif "
+    ],
+    "%mention% cry": [
+      "http://i.imgur.com/Xg3i1Qy.gif",
+      "http://i.imgur.com/3K8DRrU.gif",
+      "http://i.imgur.com/k58BcAv.gif",
+      "http://i.imgur.com/I2fLXwo.gif"
+    ],
+    "%mention% are you real?": [
+      "%user%, I will be soon."
+    ],
+    "%mention% are you there?": [
+      "Yes. :)"
+    ],
+    "%mention% draw": [
+      "Sorry, I don't gamble, type $draw for that function."
+    ],
+    "%mention% bb": [
+      "Bye %target%"
+    ],
+    "%mention% call": [
+      "Calling %target%"
+    ],
+    "%mention% disguise": [
+      "https://cdn.discordapp.com/attachments/140007341880901632/156721710458994690/Cc5mixjUYAADgBs.jpg",
+      "https://cdn.discordapp.com/attachments/140007341880901632/156721715831898113/hqdefault.jpg",
+      "https://cdn.discordapp.com/attachments/140007341880901632/156721724430352385/okawari_01_haruka_weird_mask.jpg",
+      "https://cdn.discordapp.com/attachments/140007341880901632/156721728763068417/mustache-best-girl.png"
+    ],
+    "%mention% neko": [
+      "https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/12750101_1313763215317390_1645972529_n.jpg?ig_cache_key=MTE4NzIzNDIzMzMxMTM3Njc0OQ%3D%3D.2.l",
+      "http://i117.photobucket.com/albums/o47/Nana-gloss/Neko/nekobible3.jpg",
+      "https://s-media-cache-ak0.pinimg.com/564x/7a/9b/bd/7a9bbd1c3b16d2cfba0874974c9794bc.jpg",
+      "https://s-media-cache-ak0.pinimg.com/564x/61/8b/b7/618bb7b7f61d2e3794846a6e6880ba47.jpg",
+      "https://s-media-cache-ak0.pinimg.com/564x/bc/dc/4c/bcdc4cd8d0cc64a51eef1ee5c413cc72.jpg",
+      "https://s-media-cache-ak0.pinimg.com/564x/ff/b2/43/ffb243bc5225426b9916a0fef21ed6ac.jpg",
+      "https://s-media-cache-ak0.pinimg.com/564x/55/31/ac/5531aca0651dee8e60260617c6d28b39.jpg",
+      "https://s-media-cache-ak0.pinimg.com/564x/89/0e/03/890e033cc3411f1b80d977aaffa81c98.jpg",
+      "https://s-media-cache-ak0.pinimg.com/564x/48/ee/78/48ee78d5fe31fb9dd1d2bc32df4159d7.jpg",
+      "https://s-media-cache-ak0.pinimg.com/564x/7f/32/b3/7f32b36b58b666cee82d490fc6b903a1.jpg",
+      "https://s-media-cache-ak0.pinimg.com/564x/61/3f/fb/613ffb9b0f83ba6ec6865ffba057bb78.jpg",
+      "https://s-media-cache-ak0.pinimg.com/564x/b2/2d/6f/b22d6fd7fb76118fa35f2d91fcbfe86c.jpg",
+      "https://s-media-cache-ak0.pinimg.com/564x/ff/b2/43/ffb243bc5225426b9916a0fef21ed6ac.jpg",
+      "https://s-media-cache-ak0.pinimg.com/564x/14/07/a3/1407a37dcea7bd519b48f0f2a018989d.jpg",
+      "https://s-media-cache-ak0.pinimg.com/564x/ab/02/a6/ab02a60e2bcfddce008a32702d3f02fe.jpg",
+      "https://s-media-cache-ak0.pinimg.com/564x/32/d2/3b/32d23beb421e654e05c25ecb80c38641.jpg",
+      "https://s-media-cache-ak0.pinimg.com/564x/05/6c/ef/056cefaaf288112b79f76ab0f32adc4e.jpg",
+      "https://s-media-cache-ak0.pinimg.com/564x/40/1f/39/401f39961c4b0961d39811e1a488b40d.jpg",
+      "https://s-media-cache-ak0.pinimg.com/564x/29/e5/be/29e5be8108d1ef820570ec1cdb0347c8.jpg",
+      "https://s-media-cache-ak0.pinimg.com/564x/6c/ce/c1/6ccec19e13abc61913c82fd152582c8f.jpg"
+    ],
+    "%mention% WizNet": [
+      "http://wizkiller96network.com"
+    ],
+    "Senpai notice me": [
+      "Senpai has notice you %user%."
+    ],
+    "%mention% inv": [
+      "To invite your bot, click on this link -> <https://discordapp.com/oauth2/authorize?client_id=170849867508350977&scope=bot&permissions=66186303>"
+    ],
+    "%mention% threaten": [
+      "You wanna die, %target%?"
+    ],
+    "%mention% archer": [
+      "http://i.imgur.com/Bha9NhL.jpg"
+    ],
+    "%mention% formuoli": [
+      "http://i.imgur.com/sCHYQhl.jpg"
+    ],
+    "%mention% mei": [
+      "http://i.imgur.com/Xkrf5y7.png"
+    ],
+    "%mention% omega yato": [
+      "https://cdn.discordapp.com/attachments/168617088892534784/221047921410310144/Yato_Animated.gif"
+    ],
+    "%mention% smack": [
+      "%target% https://66.media.tumblr.com/dd5d751f86002fd4a544dcef7a9763d6/tumblr_mjpheaAVj51s725bno1_500.gif",
+      "%target% https://media.giphy.com/media/jLeyZWgtwgr2U/giphy.gif",
+      "%target% http://orig11.deviantart.net/2d34/f/2013/339/1/2/golden_time_flower_slap_gif_by_paranoxias-d6wv007.gif",
+      "%target% http://media.giphy.com/media/LB1kIoSRFTC2Q/giphy.gif"
+    ],
+    "%mention% Roblox": [
+      "%user% Here the link to Roblox: <http://roblox.com/>"
+    ]
+  },
+  "RotatingStatuses": [
+    "%playing%",
+    "%queued% queued songs.",
+    "with %users% users.",
+    "on %servers% servers."
+  ],
+  "CommandPrefixes": {
+    "Administration": ".",
+    "Searches": "~",
+    "NSFW": "~",
+    "Conversations": "<@{0}>",
+    "ClashOfClans": ",",
+    "Help": "-",
+    "Music": "!!",
+    "Trello": "trello ",
+    "Games": ">",
+    "Gambling": "$",
+    "Permissions": ";",
+    "Programming": "%",
+    "Pokemon": ">",
+    "Utility": "."
+  },
+  "ServerBlacklist": [],
+  "ChannelBlacklist": [],
+  "UserBlacklist": [
+    105309315895693312,
+    119174277298782216,
+    143515953525817344
+  ],
+  "_8BallResponses": [
+    "Most definitely yes",
+    "For sure",
+    "As I see it, yes",
+    "My sources say yes",
+    "Yes",
+    "Most likely",
+    "Perhaps",
+    "Maybe",
+    "Not sure",
+    "It is uncertain",
+    "Ask me again later",
+    "Don't count on it",
+    "Probably not",
+    "Very doubtful",
+    "Most likely no",
+    "Nope",
+    "No",
+    "My sources say no",
+    "Don't even think about it",
+    "Definitely no",
+    "NO - It may cause disease contraction"
+  ],
+  "CurrencySign": "🌸",
+  "CurrencyName": "WizFlower",
+  "DMHelpString": "Type `-h` for help.",
+  "HelpString": "You can use `{0}modules` command to see a list of all modules.\r\nYou can use `{0}commands ModuleName`\r\n(for example `{0}commands Administration`) to see a list of all of the commands in that module.\r\nFor a specific command help, use `{0}h \"Command name\"` (for example `-h \"!m q\"`)\r\n\r\n\r\n**LIST OF COMMANDS CAN BE FOUND ON THIS LINK**\r\n<http://wizkiller96network.com/wizbot/commands.html>\r\n\r\n\r\nWizBot Support Server: <No Support Server at this time.>"
+}

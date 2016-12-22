@@ -3,6 +3,7 @@ using WizBot.Classes;
 using WizBot.Extensions;
 using System;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -27,12 +28,10 @@ namespace WizBot.Modules.Music.Classes
     {
         public StreamState State { get; internal set; }
         public string PrettyName =>
-            $"**【 {SongInfo.Title.TrimTo(55)} 】**`{(SongInfo.Provider ?? "-")}`";
+            $"**【 {SongInfo.Title.TrimTo(55)} 】**`{(SongInfo.Provider ?? "-")}` `by {QueuerName}`";
         public SongInfo SongInfo { get; }
+        public string QueuerName { get; set; }
 
-        private PoopyBuffer songBuffer { get; } = new PoopyBuffer(4.MiB());
-
-        private bool prebufferingComplete { get; set; } = false;
         public MusicPlayer MusicPlayer { get; set; }
 
         public string PrettyCurrentTime()
@@ -54,7 +53,7 @@ namespace WizBot.Modules.Music.Classes
             }
         }
 
-        private Song(SongInfo songInfo)
+        public Song(SongInfo songInfo)
         {
             this.SongInfo = songInfo;
         }
@@ -67,114 +66,111 @@ namespace WizBot.Modules.Music.Classes
             return s;
         }
 
-        private Task BufferSong(CancellationToken cancelToken) =>
-            Task.Factory.StartNew(async () =>
-            {
-                Process p = null;
-                try
-                {
-                    p = Process.Start(new ProcessStartInfo
-                    {
-                        FileName = "ffmpeg",
-                        Arguments = $"-ss {skipTo} -i {SongInfo.Uri} -f s16le -ar 48000 -ac 2 pipe:1 -loglevel quiet",
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = false,
-                        CreateNoWindow = true,
-                    });
-                    const int blockSize = 3840;
-                    var buffer = new byte[blockSize];
-                    var attempt = 0;
-                    while (!cancelToken.IsCancellationRequested)
-                    {
-                        var read = 0;
-                        try
-                        {
-                            read = await p.StandardOutput.BaseStream.ReadAsync(buffer, 0, blockSize, cancelToken)
-                                          .ConfigureAwait(false);
-                        }
-                        catch
-                        {
-                            return;
-                        }
-                        if (read == 0)
-                            if (attempt++ == 50)
-                                break;
-                            else
-                                await Task.Delay(100, cancelToken).ConfigureAwait(false);
-                        else
-                            attempt = 0;
-                        await songBuffer.WriteAsync(buffer, read, cancelToken).ConfigureAwait(false);
-                        if (songBuffer.ContentLength > 2.MB())
-                            prebufferingComplete = true;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Buffering errored: {ex.Message}");
-                }
-                finally
-                {
-                    Console.WriteLine($"Buffering done." + $" [{songBuffer.ContentLength}]");
-                    if (p != null)
-                    {
-                        try
-                        {
-                            p.Kill();
-                        }
-                        catch { }
-                        p.Dispose();
-                    }
-                }
-            }, TaskCreationOptions.LongRunning);
+        public Song SetMusicPlayer(MusicPlayer mp)
+        {
+            this.MusicPlayer = mp;
+            return this;
+        }
 
         internal async Task Play(IAudioClient voiceClient, CancellationToken cancelToken)
         {
-            var bufferTask = BufferSong(cancelToken).ConfigureAwait(false);
-            var bufferAttempts = 0;
-            const int waitPerAttempt = 500;
-            var toAttemptTimes = SongInfo.ProviderType != MusicType.Normal ? 5 : 9;
-            while (!prebufferingComplete && bufferAttempts++ < toAttemptTimes)
+            var filename = Path.Combine(MusicModule.MusicDataPath, DateTime.Now.UnixTimestamp().ToString());
+
+            SongBuffer sb = new SongBuffer(filename, SongInfo, skipTo);
+            var bufferTask = sb.BufferSong(cancelToken).ConfigureAwait(false);
+
+            var inStream = new FileStream(sb.GetNextFile(), FileMode.OpenOrCreate, FileAccess.Read, FileShare.Write); ;
+
+            bytesSent = 0;
+
+            try
             {
-                await Task.Delay(waitPerAttempt, cancelToken).ConfigureAwait(false);
-            }
-            cancelToken.ThrowIfCancellationRequested();
-            Console.WriteLine($"Prebuffering done? in {waitPerAttempt * bufferAttempts}");
-            const int blockSize = 3840;
-            var attempt = 0;
-            while (!cancelToken.IsCancellationRequested)
-            {
-                //Console.WriteLine($"Read: {songBuffer.ReadPosition}\nWrite: {songBuffer.WritePosition}\nContentLength:{songBuffer.ContentLength}\n---------");
-                byte[] buffer = new byte[blockSize];
-                var read = songBuffer.Read(buffer, blockSize);
-                unchecked
+                var attempt = 0;             
+
+                var prebufferingTask = CheckPrebufferingAsync(inStream, sb, cancelToken);
+                var sw = new Stopwatch();
+                sw.Start();
+                var t = await Task.WhenAny(prebufferingTask, Task.Delay(5000, cancelToken));
+                if (t != prebufferingTask)
                 {
-                    bytesSent += (ulong)read;
+                    Console.WriteLine("Prebuffering timed out or canceled. Cannot get any data from the stream.");
+                    return;
                 }
-                if (read == 0)
-                    if (attempt++ == 20)
+                else if(prebufferingTask.IsCanceled)
+                {
+                    Console.WriteLine("Prebuffering timed out. Cannot get any data from the stream.");
+                    return;
+                }
+                sw.Stop();
+                Console.WriteLine("Prebuffering successfully completed in "+ sw.Elapsed);
+
+                const int blockSize = 3840;
+                byte[] buffer = new byte[blockSize];
+                while (!cancelToken.IsCancellationRequested)
+                {
+                    //Console.WriteLine($"Read: {songBuffer.ReadPosition}\nWrite: {songBuffer.WritePosition}\nContentLength:{songBuffer.ContentLength}\n---------");
+                    var read = inStream.Read(buffer, 0, buffer.Length);
+                    //await inStream.CopyToAsync(voiceClient.OutputStream);
+                    unchecked
                     {
-                        voiceClient.Wait();
-                        Console.WriteLine($"Song finished. [{songBuffer.ContentLength}]");
-                        break;
+                        bytesSent += (ulong)read;
+                    }
+                    if (read < blockSize)
+                    {
+                        if (sb.IsNextFileReady())
+                        {
+                            inStream.Dispose();
+                            inStream = new FileStream(sb.GetNextFile(), FileMode.Open, FileAccess.Read, FileShare.Write);
+                            read += inStream.Read(buffer, read, buffer.Length - read);
+                            attempt = 0;
+                        }
+                        if (read == 0)
+                        {
+                            if (sb.BufferingCompleted)
+                                break;
+                            if (attempt++ == 20)
+                            {
+                                voiceClient.Wait();
+                                MusicPlayer.SongCancelSource.Cancel();
+                                break;
+                            }
+                            else
+                                await Task.Delay(100, cancelToken).ConfigureAwait(false);                         
+                        }
+                        else
+                            attempt = 0;
                     }
                     else
-                        await Task.Delay(100, cancelToken).ConfigureAwait(false);
-                else
-                    attempt = 0;
+                        attempt = 0;
 
-                while (this.MusicPlayer.Paused)
-                    await Task.Delay(200, cancelToken).ConfigureAwait(false);
-                buffer = AdjustVolume(buffer, MusicPlayer.Volume);
-                voiceClient.Send(buffer, 0, read);
+                    while (this.MusicPlayer.Paused)
+                        await Task.Delay(200, cancelToken).ConfigureAwait(false);
+
+                    buffer = AdjustVolume(buffer, MusicPlayer.Volume);
+                    voiceClient.Send(buffer, 0, read);
+                }
             }
-            Console.WriteLine("Awiting buffer task");
-            await bufferTask;
-            Console.WriteLine("Buffer task done.");
-            voiceClient.Clear();
-            cancelToken.ThrowIfCancellationRequested();
+            finally
+            {
+                await bufferTask;
+                await Task.Run(() => voiceClient.Clear());
+                if(inStream != null)
+                    inStream.Dispose();
+                Console.WriteLine("l");
+                sb.CleanFiles();
+            }
         }
 
+        private async Task CheckPrebufferingAsync(Stream inStream, SongBuffer sb, CancellationToken cancelToken)
+        {
+            while (!sb.BufferingCompleted && inStream.Length < 2.MiB())
+            {
+                await Task.Delay(100, cancelToken);
+            }
+            Console.WriteLine("Buffering successfull");
+        }
+
+        /*
         //stackoverflow ftw
         private static byte[] AdjustVolume(byte[] audioSamples, float volume)
         {
@@ -200,6 +196,33 @@ namespace WizBot.Modules.Music.Classes
 
             }
             return array;
+        }
+        */
+
+        //aidiakapi ftw
+        public unsafe static byte[] AdjustVolume(byte[] audioSamples, float volume)
+        {
+            Contract.Requires(audioSamples != null);
+            Contract.Requires(audioSamples.Length % 2 == 0);
+            Contract.Requires(volume >= 0f && volume <= 1f);
+            Contract.Assert(BitConverter.IsLittleEndian);
+
+            if (Math.Abs(volume - 1f) < 0.0001f) return audioSamples;
+
+            // 16-bit precision for the multiplication
+            int volumeFixed = (int)Math.Round(volume * 65536d);
+
+            int count = audioSamples.Length / 2;
+
+            fixed (byte* srcBytes = audioSamples)
+            {
+                short* src = (short*)srcBytes;
+
+                for (int i = count; i != 0; i--, src++)
+                    *src = (short)(((*src) * volumeFixed) >> 16);
+            }
+
+            return audioSamples;
         }
 
         public static async Task<Song> ResolveSong(string query, MusicType musicType = MusicType.Normal)
@@ -238,16 +261,30 @@ namespace WizBot.Modules.Music.Classes
                 }
                 if (SoundCloud.Default.IsSoundCloudLink(query))
                 {
-                    var svideo = await SoundCloud.Default.GetVideoAsync(query).ConfigureAwait(false);
+                    var svideo = await SoundCloud.Default.ResolveVideoAsync(query).ConfigureAwait(false);
                     return new Song(new SongInfo
                     {
                         Title = svideo.FullName,
                         Provider = "SoundCloud",
                         Uri = svideo.StreamLink,
                         ProviderType = musicType,
-                        Query = query,
+                        Query = svideo.TrackLink,
                     });
                 }
+
+                if (musicType == MusicType.Soundcloud)
+                {
+                    var svideo = await SoundCloud.Default.GetVideoByQueryAsync(query).ConfigureAwait(false);
+                    return new Song(new SongInfo
+                    {
+                        Title = svideo.FullName,
+                        Provider = "SoundCloud",
+                        Uri = svideo.StreamLink,
+                        ProviderType = MusicType.Normal,
+                        Query = svideo.TrackLink,
+                    });
+                }
+
                 var link = await SearchHelper.FindYoutubeUrlByKeywords(query).ConfigureAwait(false);
                 if (string.IsNullOrWhiteSpace(link))
                     throw new OperationCanceledException("Not a valid youtube query.");
@@ -260,10 +297,22 @@ namespace WizBot.Modules.Music.Classes
 
                 if (video == null) // do something with this error
                     throw new Exception("Could not load any video elements based on the query.");
-                var m = Regex.Match(query, @"\?t=(?<t>\d*)");
+
+                var m = Regex.Match(query, @"\?t=((?<h>\d*)h)?((?<m>\d*)m)?((?<s>\d*)s?)?");
                 int gotoTime = 0;
                 if (m.Captures.Count > 0)
-                    int.TryParse(m.Groups["t"].ToString(), out gotoTime);
+                {
+                    int hours;
+                    int minutes;
+                    int seconds;
+
+                    int.TryParse(m.Groups["h"].ToString(), out hours);
+                    int.TryParse(m.Groups["m"].ToString(), out minutes);
+                    int.TryParse(m.Groups["s"].ToString(), out seconds);
+
+                    gotoTime = hours * 60 * 60 + minutes * 60 + seconds;
+                }
+
                 var song = new Song(new SongInfo
                 {
                     Title = video.Title.Substring(0, video.Title.Length - 10), // removing trailing "- You Tube"

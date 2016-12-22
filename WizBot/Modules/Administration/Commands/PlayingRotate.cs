@@ -7,14 +7,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
+using Timer = System.Timers.Timer;
 
 namespace WizBot.Modules.Administration.Commands
 {
     internal class PlayingRotate : DiscordCommand
     {
-        private static readonly Timer timer = new Timer(12000);
+        private static readonly Timer timer = new Timer(20000);
 
         public static Dictionary<string, Func<string>> PlayingPlaceholders { get; } =
             new Dictionary<string, Func<string>> {
@@ -36,51 +37,56 @@ namespace WizBot.Modules.Administration.Commands
                 {"%trivia%", () => Games.Commands.TriviaCommands.RunningTrivias.Count.ToString()}
             };
 
-        private readonly object playingPlaceholderLock = new object();
+        private readonly SemaphoreSlim playingPlaceholderLock = new SemaphoreSlim(1, 1);
 
         public PlayingRotate(DiscordModule module) : base(module)
         {
             var i = -1;
-            timer.Elapsed += (s, e) =>
+            timer.Elapsed += async (s, e) =>
             {
                 try
                 {
                     i++;
                     var status = "";
-                    lock (playingPlaceholderLock)
+                    //wtf am i doing, just use a queue ffs
+                    await playingPlaceholderLock.WaitAsync().ConfigureAwait(false);
+                    try
                     {
                         if (PlayingPlaceholders.Count == 0
                             || WizBot.Config.RotatingStatuses.Count == 0
-                            || i >= PlayingPlaceholders.Count
                             || i >= WizBot.Config.RotatingStatuses.Count)
                         {
-                            i = -1;
-                            return;
+                            i = 0;
                         }
                         status = WizBot.Config.RotatingStatuses[i];
                         status = PlayingPlaceholders.Aggregate(status,
                             (current, kvp) => current.Replace(kvp.Key, kvp.Value()));
                     }
+                    finally { playingPlaceholderLock.Release(); }
                     if (string.IsNullOrWhiteSpace(status))
                         return;
-                    Task.Run(() => { WizBot.Client.SetGame(status); });
+                    await Task.Run(() => { WizBot.Client.SetGame(status); });
                 }
                 catch { }
             };
-
-            timer.Enabled = WizBot.Config.IsRotatingStatus;
+            WizBot.OnReady += () => timer.Enabled = WizBot.Config.IsRotatingStatus;
         }
 
         public Func<CommandEventArgs, Task> DoFunc() => async e =>
         {
-            lock (playingPlaceholderLock)
+            await playingPlaceholderLock.WaitAsync().ConfigureAwait(false);
+            try
             {
                 if (timer.Enabled)
                     timer.Stop();
                 else
                     timer.Start();
                 WizBot.Config.IsRotatingStatus = timer.Enabled;
-                ConfigHandler.SaveConfig();
+                await ConfigHandler.SaveConfig().ConfigureAwait(false);
+            }
+            finally
+            {
+                playingPlaceholderLock.Release();
             }
             await e.Channel.SendMessage($"❗`Rotating playing status has been {(timer.Enabled ? "enabled" : "disabled")}.`").ConfigureAwait(false);
         };
@@ -89,14 +95,14 @@ namespace WizBot.Modules.Administration.Commands
         {
             cgb.CreateCommand(Module.Prefix + "rotateplaying")
                 .Alias(Module.Prefix + "ropl")
-                .Description("Toggles rotation of playing status of the dynamic strings you specified earlier.")
+                .Description($"Toggles rotation of playing status of the dynamic strings you specified earlier. **Bot Owner Only!** | `{Prefix}ropl`")
                 .AddCheck(SimpleCheckers.OwnerOnly())
                 .Do(DoFunc());
 
             cgb.CreateCommand(Module.Prefix + "addplaying")
                 .Alias(Module.Prefix + "adpl")
                 .Description("Adds a specified string to the list of playing strings to rotate. " +
-                             "Supported placeholders: " + string.Join(", ", PlayingPlaceholders.Keys))
+                             "Supported placeholders: " + string.Join(", ", PlayingPlaceholders.Keys) + $" **Bot Owner Only!**| `{Prefix}adpl`")
                 .Parameter("text", ParameterType.Unparsed)
                 .AddCheck(SimpleCheckers.OwnerOnly())
                 .Do(async e =>
@@ -104,17 +110,22 @@ namespace WizBot.Modules.Administration.Commands
                     var arg = e.GetArg("text");
                     if (string.IsNullOrWhiteSpace(arg))
                         return;
-                    lock (playingPlaceholderLock)
+                    await playingPlaceholderLock.WaitAsync().ConfigureAwait(false);
+                    try
                     {
                         WizBot.Config.RotatingStatuses.Add(arg);
-                        ConfigHandler.SaveConfig();
+                        await ConfigHandler.SaveConfig();
+                    }
+                    finally
+                    {
+                        playingPlaceholderLock.Release();
                     }
                     await e.Channel.SendMessage("🆗 `Added a new playing string.`").ConfigureAwait(false);
                 });
 
             cgb.CreateCommand(Module.Prefix + "listplaying")
                 .Alias(Module.Prefix + "lipl")
-                .Description("Lists all playing statuses with their corresponding number.")
+                .Description($"Lists all playing statuses with their corresponding number. **Bot Owner Only!**| `{Prefix}lipl`")
                 .AddCheck(SimpleCheckers.OwnerOnly())
                 .Do(async e =>
                 {
@@ -131,7 +142,7 @@ namespace WizBot.Modules.Administration.Commands
 
             cgb.CreateCommand(Module.Prefix + "removeplaying")
                 .Alias(Module.Prefix + "repl", Module.Prefix + "rmpl")
-                .Description("Removes a playing string on a given number.")
+                .Description($"Removes a playing string on a given number. **Bot Owner Only!**| `{Prefix}rmpl`")
                 .Parameter("number", ParameterType.Required)
                 .AddCheck(SimpleCheckers.OwnerOnly())
                 .Do(async e =>
@@ -139,14 +150,16 @@ namespace WizBot.Modules.Administration.Commands
                     var arg = e.GetArg("number");
                     int num;
                     string str;
-                    lock (playingPlaceholderLock)
+                    await playingPlaceholderLock.WaitAsync().ConfigureAwait(false);
+                    try
                     {
                         if (!int.TryParse(arg.Trim(), out num) || num <= 0 || num > WizBot.Config.RotatingStatuses.Count)
                             return;
                         str = WizBot.Config.RotatingStatuses[num - 1];
                         WizBot.Config.RotatingStatuses.RemoveAt(num - 1);
-                        ConfigHandler.SaveConfig();
+                        await ConfigHandler.SaveConfig().ConfigureAwait(false);
                     }
+                    finally { playingPlaceholderLock.Release(); }
                     await e.Channel.SendMessage($"🆗 `Removed playing string #{num}`({str})").ConfigureAwait(false);
                 });
         }

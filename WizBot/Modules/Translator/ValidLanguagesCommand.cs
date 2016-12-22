@@ -13,7 +13,7 @@ namespace WizBot.Modules.Translator
         internal override void Init(CommandGroupBuilder cgb)
         {
             cgb.CreateCommand(Module.Prefix + "translangs")
-                .Description("List the valid languages for translation.")
+                .Description($"List the valid languages for translation. | `{Prefix}translangs` or `{Prefix}translangs language`")
                 .Parameter("search", ParameterType.Optional)
                 .Do(ListLanguagesFunc());
         }

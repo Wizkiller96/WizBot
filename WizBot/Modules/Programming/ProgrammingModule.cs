@@ -1,4 +1,4 @@
-﻿using Discord.Modules;
+using Discord.Modules;
 using WizBot.Extensions;
 using WizBot.Modules.Permissions.Classes;
 using WizBot.Modules.Programming.Commands;

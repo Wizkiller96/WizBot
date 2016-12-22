@@ -15,15 +15,10 @@ namespace WizBot.Modules.Games.Commands
 
         public static ConcurrentDictionary<Server, Poll> ActivePolls = new ConcurrentDictionary<Server, Poll>();
 
-        public Func<CommandEventArgs, Task> DoFunc()
-        {
-            throw new NotImplementedException();
-        }
-
         internal override void Init(CommandGroupBuilder cgb)
         {
             cgb.CreateCommand(Module.Prefix + "poll")
-                  .Description("Creates a poll, only person who has manage server permission can do it.\n**Usage**: >poll Question?;Answer1;Answ 2;A_3")
+                  .Description($"Creates a poll, only person who has manage server permission can do it. **Needs Manage Server Permissions**| `{Prefix}poll Question?;Answer1;Answ 2;A_3`")
                   .Parameter("allargs", ParameterType.Unparsed)
                   .Do(async e =>
                   {
@@ -48,7 +43,7 @@ namespace WizBot.Modules.Games.Commands
                       }).ConfigureAwait(false);
                   });
             cgb.CreateCommand(Module.Prefix + "pollend")
-                  .Description("Stops active poll on this server and prints the results in this channel.")
+                  .Description($"Stops active poll on this server and prints the results in this channel. | `{Prefix}pollend`")
                   .Do(async e =>
                   {
                       if (!e.User.ServerPermissions.ManageChannels)
