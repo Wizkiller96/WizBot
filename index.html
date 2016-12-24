@@ -70,80 +70,160 @@
             <p><img src="https://ci.appveyor.com/api/projects/status/gmu6b3ltc80hr3k9?svg=true" alt="img"></p>
 
 <h1>
-<a id="wizbot" class="anchor" href="#wizbot" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>WizBot v0.9 <span class="label label-danger">Outdated</span></h1>
+<a id="wizbot" class="anchor" href="#wizbot" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>WizBot v1.0 <span class="label label-successr">Latest</span></h1>
 
-<p><a href="https://github.com/Wizkiller96/WizBot/blob/master/commandlist.md"><strong>click here for a list of commands</strong></a><br>
-WizBot Discord chatbot written in C# using Discord.net library. </p>
-
-<h2>
-<a id="this-section-will-guide-you-through-how-to-setup-wizbot" class="anchor" href="#this-section-will-guide-you-through-how-to-setup-wizbot" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>This section will guide you through how to setup WizBot</h2>
-
-<p>In your bin/debug folder (or next to your exe if you are using release version), you must have a file called 'credentials.json' in which you will store all the necessary data to make the bot know who the owner is, and your api keys.</p>
-
-<p>When you clone the project, make sure to run <code>git submodule init</code> and <code>git submodule update</code> to get the correct discord.net version</p>
-
-<p><strong>This is how the credentials.json should look like:</strong></p>
-
-<div class="highlight highlight-source-json"><pre>{
-    <span class="pl-s"><span class="pl-pds">"</span>BotId<span class="pl-pds">"</span></span>: <span class="pl-c1">123123123123</span>,
-    <span class="pl-s"><span class="pl-pds">"</span>Token<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>Bot.Token<span class="pl-pds">"</span></span>,
-    <span class="pl-s"><span class="pl-pds">"</span>GoogleAPIKey<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>google_api_key<span class="pl-pds">"</span></span>,
-    <span class="pl-s"><span class="pl-pds">"</span>OwnerIds<span class="pl-pds">"</span></span>:[<span class="pl-c1">123123123123</span>, <span class="pl-c1">123123123123</span>],
-    <span class="pl-s"><span class="pl-pds">"</span>TrelloAppKey<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>your_trello_app_key (optional)<span class="pl-pds">"</span></span>,
-    <span class="pl-s"><span class="pl-pds">"</span>SoundCloudClientID<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>your_soundcloud_key (optional)<span class="pl-pds">"</span></span>,
-    <span class="pl-s"><span class="pl-pds">"</span>MashapeKey<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>your_mashape_key (optional)<span class="pl-pds">"</span></span>,
-    <span class="pl-s"><span class="pl-pds">"</span>LoLAPIKey<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>your_champion.gg_apikey (optional)',</span>
-<span class="pl-s">}</span></pre></div>
-
-<h5>
-<a id="you-can-omit" class="anchor" href="#you-can-omit" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>You can omit:</h5>
-
-<ul>
-<li>googleAPIKey if you don't want music<br>
-</li>
-<li>TrelloAppKey if you don't need trello notifications</li>
-<li>ForwardMessages if you don't want bot PM messages to be redirected to you</li>
-</ul>
-
-<div class="highlight highlight-source-json"><pre>{
-    <span class="pl-s"><span class="pl-pds">"</span>Username<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>bot_email<span class="pl-pds">"</span></span>,
-    <span class="pl-s"><span class="pl-pds">"</span>BotId<span class="pl-pds">"</span></span>: <span class="pl-c1">12312312312313</span>,
-    <span class="pl-s"><span class="pl-pds">"</span>Password<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>bot_password<span class="pl-pds">"</span></span>,
-    <span class="pl-s"><span class="pl-pds">"</span>OwnerIds<span class="pl-pds">"</span></span>:[<span class="pl-c1">123123123123</span>, <span class="pl-c1">1231231232</span>],
-}</pre></div>
-
-<p>Next to your exe you must also have a data folder in which there is config.json (among other things) which will contain some user specific config, like should bot join servers, should pms to bot be forwarded to you and list of ids of blacklisted users, channels and servers.</p>
-
-<h5>
-<a id="dataconfigjson-example" class="anchor" href="#dataconfigjson-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>data/config.json example</h5>
-
-<div class="highlight highlight-source-json"><pre>{
-  <span class="pl-s"><span class="pl-pds">"</span>DontJoinServers<span class="pl-pds">"</span></span>: <span class="pl-c1">false</span>,
-  <span class="pl-s"><span class="pl-pds">"</span>ForwardMessages<span class="pl-pds">"</span></span>: <span class="pl-c1">true</span>,
-  <span class="pl-s"><span class="pl-pds">"</span>ServerBlacklist<span class="pl-pds">"</span></span>: [],
-  <span class="pl-s"><span class="pl-pds">"</span>ChannelBlacklist<span class="pl-pds">"</span></span>: [],
-  <span class="pl-s"><span class="pl-pds">"</span>UserBlacklist<span class="pl-pds">"</span></span>: []
-}</pre></div>
-
+<hr>
+<p><em>Thanks to @Flatbread and Mirai for making this guide</em></p>
+<hr>
+<h3><a id="Setting_Up_WizBot_on_Windows_4" draggable="false"></a>Setting Up WizBot on Windows</h3>
+<h4><a id="Prerequisites_6" draggable="false"></a>Prerequisites</h4>
 <ul>
 <li>
-<a href="http://discord.kongslien.net/guide.html">http://discord.kongslien.net/guide.html</a> &lt;- to make a bot account and get the <code>Token</code>
+<a href="https://www.microsoft.com/net/core#windowscmd" draggable="false">.NET Core SDK</a>
 </li>
-<li>BotId and OwnerIds are <strong>NOT</strong> names of the owner and the bot. If you do not know the id of your bot, put 2 random numbers in those fields, run the bot and do <code>.uid @MyBotName</code> - that will give you your bot_id, do the same for yourself <code>.uid @MyName</code> and copy the numbers in their respective fields.</li>
-<li>For google api key, you need to enable URL shortner, Youtube video search <strong>and custom search</strong> in the <a href="https://console.developers.google.com/">dev console</a>.</li>
-<li>For the Soundcloud Api key you need a Soundcloud account. You need to create a new app on <a href="http://soundcloud.com/you/apps/new">http://soundcloud.com/you/apps/new</a> and after that go here <a href="http://soundcloud.com/you/apps">http://soundcloud.com/you/apps</a> click on the name of your created your app and copy the Client ID. Paste it into credentials.json.</li>
-<li>For Mashape Api Key you need to create an account on their api marketplace here <a href="https://market.mashape.com/">https://market.mashape.com/</a>. After that you need to go to market.mashape.com/YOURNAMEHERE/applications/default-application and press GET THE KEYS in the right top corner copy paste it into your credentials.json and you are ready to race! </li>
-<li>If you want to have music, you need to download FFMPEG from this link <a href="http://ffmpeg.zeranoe.com/builds/">http://ffmpeg.zeranoe.com/builds/</a> (static build version) and add ffmpeg/bin folder to your PATH environment variable. You do that by opening explorer -&gt; right click 'This PC' -&gt; properties -&gt; advanced system settings -&gt; In the top part, there is a PATH field, add <code>;</code> to the end and then your ffmpeg install location /bin (for example ;C:\ffmpeg-5.6.7\bin) and save. Open command prompt and type ffmpeg to see if you added it correctly. If it says "command not found" then you made a mistake somewhere. There are a lot of guides on the internet on how to add stuff to your PATH, check them out if you are stuck.</li>
 <li>
-<strong>IF YOU HAVE BEEN USING THIS BOT BEFORE AND YOU HAVE DATA FROM PARSE THAT YOU WANT TO KEEP</strong> you should export your parse data and extract it inside /data/parsedata in your bot's folder. Next time you start the bot, type <code>.parsetosql</code> and the bot will fill your local sqlite db with data from those .json files.</li>
+<a href="https://git-scm.com/download/win" draggable="false">Git</a>
+</li>
+<li>
+<a href="https://github.com/Soundofdarkness/FFMPEG-Inst/releases" draggable="false">FFMPEG</a>
+</li>
+<li>
+Google Account
+</li>
+<li>
+Soundcloud Account (if you want soundcloud support)
+</li>
+<li>
+<a href="http://www.7-zip.org/download.html" draggable="false">7zip</a> (or whatever you are using, WinRar)
+</li>
+<li>
+<a href="https://notepad-plus-plus.org/" draggable="false">Notepad++</a>
+</li>
+<li>
+Windows 8 or later
+</li>
+</ul>
+<h3>Guide</h3>
+<ul>
+<li>Make sure you have installed both <a href="https://git-scm.com/download/win" draggable="false">Git</a> and the <a href="https://www.microsoft.com/net/core#windowscmd" draggable="false">.NET Core SDK</a>.</li>
+<li>Create a <strong>new folder</strong> anywhere you like and name it <code>WizBot</code>.</li>
+<li>Next, <a href="https://github.com/Wizkiller96/WizBotInstallerWin/raw/master/WizBotInstaller.bat" draggable="false">Right-Click on this link</a> and select <strong>Save link as</strong> and save the file <code>WizBotInstaller.bat</code> inside the <code>WizBot</code> folder that we created earlier. (<strong>DO NOT</strong> rename the file <code>WizBotInstaller.bat</code>)</li>
+<li>Once that’s done, double-click on <code>WizBotInstaller.bat</code> to run it.</li>
+<li>From the options,
+<ul>
+<li>Choose <code>3</code> to get the <strong>most recent build</strong>.</li>
+</ul>
+</li>
+<li>Wait a while for the file to finish installing, it’ll display it’s progress in the command prompt.</li>
+<li>You should now have a new folder named <code>WizBot</code> inside the <code>WizBot</code> folder we previously created.</li>
+<li>Once Installation is completed, press any key to close the command prompt.</li>
+</ul>
+<h3>Creating DiscordBot application</h3>
+<ul>
+<li>Go to <a href="https://discordapp.com/developers/applications/me" draggable="false">the Discord developer application page</a>.</li>
+<li>Log in with your Discord account.</li>
+<li>On the left side, press <code>New Application</code>.</li>
+<li>Fill out the <code>App Name</code> (your bot’s name, in this case), put the image you want, and add an app description(optional).</li>
+<li>Create the application.</li>
+<li>Click on <code>Create a Bot User</code> and confirm that you do want to add a bot to this app.</li>
+<li>Keep this window open for now.</li>
+</ul>
+<h3>Setting up credentials.json file</h3>
+<ul>
+<li>In our <code>WizBot</code> folder you should see a <code>src</code> folder, then <em>another</em> <code>WizBot</code> folder, in this final folder, you should see a <code>.json</code> file named <code>credentials.json</code>. (Note: If you do not see a <code>.json</code> after <code>credentials.json</code>, do not add the <code>.json</code>. You most likely have <strong>“Hide file extensions”</strong> enabled.)</li>
+<li>If you mess up the setup of <code>credentials.json</code>, rename <code>credentials_example.json</code> to <code>credentials.json</code>.</li>
+<li>Open the file with <a href="https://notepad-plus-plus.org/" draggable="false">Notepad++</a>.</li>
+<li>In there you will see fields such as <code>Token</code>, <code>ClientId</code>, <code>BotId</code> and <code>OwnerIDs</code>.</li>
+<li>In your <a href="https://discordapp.com/developers/applications/me" draggable="false">applications page</a> (the window you were asked to keep open earlier), under the <code>Bot User</code> section, you will see <code>Token:click to reveal</code>, click to reveal the token.</li>
+<li>Copy your bot’s token, and on the <code>"Token"</code> line of your <code>credentials.json</code>, paste your bot token between the quotation marks.</li>
+<li>Copy the <code>Client ID</code> on the page and replace the <code>12312123</code> part of the <code>ClientId</code> line with it.</li>
+<li>Again, copy the same <code>Client ID</code> and replace the <code>null</code> part of the <code>BotId</code> line with it.</li>
+<li>Go to a server on discord and attempt to mention yourself, but put a backslash at the start like shown below</li>
+<li>So the message <code>\@fearnlj01#3535</code> will appears as <code>&lt;@145521851676884992&gt;</code> after you send the message (to make it slightly easier, add the backslash after you type the mention out)</li>
+<li>The message will appear as a mention if done correctly, copy the numbers from the message you sent (<code>145521851676884992</code>) and replace the <code>0</code> on the <code>OwnerIds</code> section with your user ID shown earlier.</li>
+<li>Save <code>credentials.json</code> (make sure you aren’t saving it as <code>credentials.json.txt</code>)</li>
+<li>If done correctly, you are now the bot owner. You can add multiple owners by seperating each owner ID with a comma within the square brackets.</li>
+</ul>
+<h3>Inviting your bot to your server</h3>
+<ul>
+<li><a href="http://discord.kongslien.net/guide.html" draggable="false">Invite Guide</a></li>
+<li>Copy your <code>Client ID</code> from your <a href="https://discordapp.com/developers/applications/me" draggable="false">applications page</a>.</li>
+<li>Replace the <code>12345678</code> in this link <code>https://discordapp.com/oauth2/authorize?client_id=12345678&amp;scope=bot&amp;permissions=66186303</code> with your <code>Client ID</code>.</li>
+<li>The link should now look like this: <code>https://discordapp.com/oauth2/authorize?client_id=**YOUR_CLENT_ID_HERE**&amp;scope=bot&amp;permissions=66186303</code>.</li>
+<li>Go to the newly created link and pick the server we created, and click <code>Authorize</code>.</li>
+<li>The bot should have been added to your server.</li>
+</ul>
+<h3>Starting the bot</h3>
+<ul>
+<li>Go to the <code>WizBot</code> folder that we have created earlier, and run the <code>WizBotInstaller.bat</code> file.</li>
+<li>From the options,
+<ul>
+<li>Choose <code>1</code> to <strong>run the bot normally</strong>.<br>
+(with normal-run the bot will shutdown and will stay offline if it disconnects by the use of <code>.die</code> command until you manually run it again. Useful if you want to test the bot.)</li>
+<li>Choose <code>2</code> to <strong>run the bot with auto restart</strong>.<br>
+(with auto restart the bot will restart itself if it disconnects by the use of <code>.die</code> command. Useful if you want to have restart function for any reason.)</li>
+</ul>
+</li>
+</ul>
+<h3>Updating WizBot</h3>
+<ul>
+<li>Make sure the bot is closed and is not running (Run <code>.die</code> in a connected server to ensure it’s not running).</li>
+<li>Once that’s checked, go to the <code>WizBot</code> folder.</li>
+<li>Run the <code>WizBotInstaller.bat</code> file.</li>
+<li>From the options,
+<ul>
+<li>Choose <code>3</code> to get the <strong>most recent build</strong>.</li>
+</ul>
+</li>
+<li>Follow the messages and press any key to continue.</li>
+<li>Wait for it to finish.</li>
+<li>Press any key to close the window when it shows <strong>Installation complete.</strong></li>
+<li><a href="N/A" draggable="false">Start the bot again.</a></li>
+<li>You’ve updated and are running again, easy as that!</li>
+</ul>
+<hr>
+<h4><a id="Setting_Up_WizBot_For_Music_80" draggable="false"></a>Setting Up WizBot For Music</h4>
+<h5><a id="Prerequisites_81" draggable="false"></a>Prerequisites</h5>
+<ul>
+<li>
+<a href="https://github.com/Soundofdarkness/FFMPEG-Inst/releases" draggable="false">FFMPEG</a> installed.
+</li>
+<li>
+Setting up API keys.
+</li>
+<p>Follow these steps on how to setup Google API keys:</p>
+<ul>
+<li>Go to <a href="https://console.developers.google.com" draggable="false">Google Console</a> and log in.</li>
+<li>Create a new project (name does not matter). Once the project is created, go into “Enable and manage APIs.”</li>
+<li>Under the “Other Popular APIs” section, enable <code>URL Shortener API</code> and <code>Custom Search Api</code>. Under the <code>YouTube APIs</code> section, enable <code>YouTube Data API</code>.</li>
+<li>On the left tab, access <code>Credentials</code>. Click <code>Create Credentials</code> button. Click on <code>API Key</code>. A new window will appear with your <code>Google API key</code>.</li>
+<li>Copy the key.</li>
+<li>Open up <code>credentials.json</code>.</li>
+<li>For <code>"GoogleAPIKey"</code>, paste your API key inbetween the quotation marks, like how the <code>Token</code> and <code>ClientId</code> should be set up.</li>
 </ul>
 
-<p>Enjoy</p>
-
-<h2>
-<a id="list-of-commands" class="anchor" href="#list-of-commands" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>List of commands</h2>
-
-<p><a href="https://github.com/Wizkiller96/WizBot/blob/master/commandlist.md"><strong>click here for a list of commands</strong></a></p>
+<p>Follow these steps on how to setup Soundcloud API key:</p>
+<ul>
+<li>Go to <a href="https://soundcloud.com/you/apps/new" draggable="false">Soundcloud</a>.</li>
+<li>Enter a name for the app and create it.</li>
+<li>You will need to fill out an application form to request access to the Soundcloud API.</li>
+<li>All requests for an API key must go through the review process, where applications will be reviewed on a case by case basis, in line with Soundcloud API Terms of Use. If your application is successful, you will receive an API key.</li>
+</ul>
+<li>
+<strong>Restart your computer</strong>.
+</li>
+</ul>
+<h3>Manual <code>ffmpeg</code> setup</h3><br>
+<p><strong>Do this step in case you were not able to install <code>ffmpeg</code> with the installer.</strong></p>
+<ul>
+<li>Create a folder named <code>ffmpeg</code> in your main Windows directory. We will use <strong>C:\ffmpeg</strong> (for our guide)</li>
+<li>Download FFMPEG through the link <a href="https://ffmpeg.zeranoe.com/builds/" draggable="false">https://ffmpeg.zeranoe.com/builds/</a> (download static build)</li>
+<li>Extract it using <code>7zip</code> and place the folder <code>ffmpeg-xxxxx-git-xxxxx-xxxx-static</code> inside <strong>C:\ffmpeg</strong></li>
+<li>Before proceeding, check out this gif to set up <code>ffmpeg</code> PATH correctly <img src="http://i.imgur.com/aR5l1Hn.gif" alt="LINK TO gif" draggable="false"> <em>(thanks to PooPeePants#7135)</em></li>
+<li>Go to My Computer, right click and select Properties. On the left tab, select Advanced System Settings. Under the Advanced tab, select Environmental Variables near the bottom. One of the variables should be called “Path”. Add a semi-colon (;) to the end followed by your FFMPEG’s <strong>bin</strong> install location (<strong>for example C:\ffmpeg\ffmpeg-xxxxx-git-xxxxx-xxxx-static\bin</strong>). Save and close.</li>
+<li>Setup your API keys as explained above.</li>
+<li>Restart your computer.</li>
+</ul>
           </div>
         </div>
       </div>
