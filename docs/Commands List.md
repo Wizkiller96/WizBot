@@ -1,4 +1,4 @@
-You can support the project on patreon: <https://patreon.com/nadekobot> or paypal: <https://www.paypal.me/Kwoth>
+You can support the project on paypal: <https://www.paypal.me/Wizkiller96Network>
 
 ##Table Of Contents
 - [Help](#help)
@@ -28,10 +28,10 @@ Command and aliases | Description | Usage
 `.bye` | Toggles anouncements on the current channel when someone leaves the server. **Requires ManageServer server permission.** | `.bye`
 `.byemsg` | Sets a new leave announcement message. Type %user% if you want to show the name the user who left. Type %id% to show id. Using this command with no message will show the current bye message. **Requires ManageServer server permission.** | `.byemsg %user% has left.`
 `.byedel` | Sets the time it takes (in seconds) for bye messages to be auto-deleted. Set 0 to disable automatic deletion. **Requires ManageServer server permission.** | `.byedel 0` or `.byedel 30`
-`.leave` | Makes Nadeko leave the server. Either name or id required. **Bot Owner only.** | `.leave 123123123331`
+`.leave` | Makes WizBot leave the server. Either name or id required. **Bot Owner only.** | `.leave 123123123331`
 `.die` | Shuts the bot down. **Bot Owner only.** | `.die`
 `.setname` `.newnm` | Gives the bot a new name. **Bot Owner only.** | `.newnm BotName`
-`.setavatar` `.setav` | Sets a new avatar image for the NadekoBot. Argument is a direct link to an image. **Bot Owner only.** | `.setav http://i.imgur.com/xTG3a1I.jpg`
+`.setavatar` `.setav` | Sets a new avatar image for the WizBot. Argument is a direct link to an image. **Bot Owner only.** | `.setav http://i.imgur.com/xTG3a1I.jpg`
 `.setgame` | Sets the bots game. **Bot Owner only.** | `.setgame with snakes`
 `.setstream` | Sets the bots stream. First argument is the twitch link, second argument is stream name. **Bot Owner only.** | `.setstream TWITCHLINK Hello`
 `.send` | Sends a message to someone on a different server through the bot.  Separate server and channel/user ids with `|` and prepend channel id with `c:` and user id with `u:`. **Bot Owner only.** | `.send serverid|c:channelid message` or `.send serverid|u:userid message`
@@ -48,7 +48,7 @@ Command and aliases | Description | Usage
 `.addplaying` `.adpl` | Adds a specified string to the list of playing strings to rotate. Supported placeholders: %servers%, %users%, %playing%, %queued% **Bot Owner only.** | `.adpl`
 `.listplaying` `.lipl` | Lists all playing statuses with their corresponding number. **Bot Owner only.** | `.lipl`
 `.removeplaying` `.rmpl` `.repl` | Removes a playing string on a given number. **Bot Owner only.** | `.rmpl`
-`.setmuterole` | Sets a name of the role which will be assigned to people who should be muted. Default is nadeko-mute. **Requires ManageRoles server permission.** | `.setmuterole Silenced`
+`.setmuterole` | Sets a name of the role which will be assigned to people who should be muted. Default is wizbot-mute. **Requires ManageRoles server permission.** | `.setmuterole Silenced`
 `.mute` | Mutes a mentioned user both from speaking and chatting. **Requires ManageRoles server permission.** **Requires MuteMembers server permission.** | `.mute @Someone`
 `.unmute` | Unmutes a mentioned user previously muted with `.mute` command. **Requires ManageRoles server permission.** **Requires MuteMembers server permission.** | `.unmute @Someone`
 `.chatmute` | Prevents a mentioned user from chatting in text channels. **Requires ManageRoles server permission.** | `.chatmute @Someone`
@@ -89,7 +89,7 @@ Command and aliases | Description | Usage
 `.creatxtchanl` `.ctch` | Creates a new text channel with a given name. **Requires ManageChannels server permission.** | `.ctch TextChannelName`
 `.settopic` `.st` | Sets a topic on the current channel. **Requires ManageChannels server permission.** | `.st My new topic`
 `.setchanlname` `.schn` | Changes the name of the current channel. **Requires ManageChannels server permission.** | `.schn NewName`
-`.prune` `.clr` | `.prune` removes all nadeko's messages in the last 100 messages.`.prune X` removes last X messages from the channel (up to 100)`.prune @Someone` removes all Someone's messages in the last 100 messages.`.prune @Someone X` removes last X 'Someone's' messages in the channel.  | `.prune` or `.prune 5` or `.prune @Someone` or `.prune @Someone X`
+`.prune` `.clr` | `.prune` removes all WizBot's messages in the last 100 messages.`.prune X` removes last X messages from the channel (up to 100)`.prune @Someone` removes all Someone's messages in the last 100 messages.`.prune @Someone X` removes last X 'Someone's' messages in the channel.  | `.prune` or `.prune 5` or `.prune @Someone` or `.prune @Someone X`
 `.savechat` | Saves a number of messages to a text file and sends it to you. **Bot Owner only.** | `.savechat 150`
 `.mentionrole` `.menro` | Mentions every person from the provided role or roles (separated by a ',') on this server. Requires you to have mention everyone permission. **Requires MentionEveryone server permission.** | `.menro RoleName`
 `.donators` | List of lovely people who donated to keep this project alive.  | `.donators`
@@ -115,7 +115,7 @@ Command and aliases | Description | Usage
 ### CustomReactions  
 Command and aliases | Description | Usage
 ----------------|--------------|-------
-`.addcustreact` `.acr` | Add a custom reaction with a trigger and a response. Running this command in server requires Administration permission. Running this command in DM is Bot Owner only and adds a new global custom reaction. Guide here: <http://nadekobot.readthedocs.io/en/latest/Custom%20Reactions/>  | `.acr "hello" Hi there %user%`
+`.addcustreact` `.acr` | Add a custom reaction with a trigger and a response. Running this command in server requires Administration permission. Running this command in DM is Bot Owner only and adds a new global custom reaction. Guide here: <http://wizbot.readthedocs.io/en/latest/Custom%20Reactions/>  | `.acr "hello" Hi there %user%`
 `.listcustreact` `.lcr` | Lists global or server custom reactions (20 commands per page). Running the command in DM will list global custom reactions, while running it in server will list that server's custom reactions. Specifying `all` argument instead of the number will DM you a text file with a list of all custom reactions.  | `.lcr 1` or `.lcr all`
 `.listcustreactg` `.lcrg` | Lists global or server custom reactions (20 commands per page) grouped by trigger, and show a number of responses for each. Running the command in DM will list global custom reactions, while running it in server will list that server's custom reactions.  | `.lcrg 1`
 `.showcustreact` `.scr` | Shows a custom reaction's response on a given ID.  | `.scr 1`
@@ -170,7 +170,7 @@ Command and aliases | Description | Usage
 `>acrophobia` `>acro` | Starts an Acrophobia game. Second argment is optional round length in seconds. (default is 60)  | `>acro` or `>acro 30`
 `>choose` | Chooses a thing from a list of things  | `>choose Get up;Sleep;Sleep more`
 `>8ball` | Ask the 8ball a yes/no question.  | `>8ball should I do something`
-`>rps` | Play a game of rocket paperclip scissors with Nadeko.  | `>rps scissors`
+`>rps` | Play a game of rocket paperclip scissors with WizBot.  | `>rps scissors`
 `>linux` | Prints a customizable Linux interjection  | `>linux Spyware Windows`
 `>leet` | Converts a text to leetspeak with 6 (1-6) severity levels  | `>leet 3 Hello`
 
@@ -257,7 +257,7 @@ Command and aliases | Description | Usage
 `;cbl` | Either [add]s or [rem]oves a channel specified by an ID from a blacklist. **Bot Owner only.** | `;cbl rem 12312312312`
 `;sbl` | Either [add]s or [rem]oves a server specified by a Name or ID from a blacklist. **Bot Owner only.** | `;sbl add 12312321312` or `;sbl rem SomeTrashServer`
 `;verbose` `;v` | Sets whether to show when a command/module is blocked.  | `;verbose true`
-`;permrole` `;pr` | Sets a role which can change permissions. Or supply no parameters to find out the current one. Default one is 'Nadeko'.  | `;pr role`
+`;permrole` `;pr` | Sets a role which can change permissions. Or supply no parameters to find out the current one. Default one is 'WizBot'.  | `;pr role`
 `;listperms` `;lp` | Lists whole permission chain with their indexes. You can specify an optional page number if there are a lot of permissions.  | `;lp` or `;lp 3`
 `;removeperm` `;rp` | Removes a permission from a given position in Permissions list.  | `;rp 1`
 `;moveperm` `;mp` | Moves permission from one position to another in Permissions list.  | `;mp 2 4`
@@ -281,9 +281,9 @@ Command and aliases | Description | Usage
 ----------------|--------------|-------
 `>attack` | Attacks a target with the given move. Use `>movelist` to see a list of moves your type can use.  | `>attack "vine whip" @someguy`
 `>movelist` `>ml` | Lists the moves you are able to use  | `>ml`
-`>heal` | Heals someone. Revives those who fainted. Costs a NadekoFlower  | `>heal @someone`
+`>heal` | Heals someone. Revives those who fainted. Costs a Cherry Blossom  | `>heal @someone`
 `>type` | Get the poketype of the target.  | `>type @someone`
-`>settype` | Set your poketype. Costs a NadekoFlower. Provide no arguments to see a list of available types.  | `>settype fire` or `>settype`
+`>settype` | Set your poketype. Costs a Cherry Blossom. Provide no arguments to see a list of available types.  | `>settype fire` or `>settype`
 
 ###### [Back to TOC](#table-of-contents)
 
@@ -375,7 +375,7 @@ Command and aliases | Description | Usage
 `.serverid` `.sid` | Shows current server ID.  | `.sid`
 `.roles` | List roles on this server or a roles of a specific user if specified. Paginated. 20 roles per page.  | `.roles 2` or `.roles @Someone`
 `.channeltopic` `.ct` | Sends current channel's topic as a message.  | `.ct`
-`.stats` | Shows some basic stats for Nadeko.  | `.stats`
+`.stats` | Shows some basic stats for WizBot.  | `.stats`
 `.showemojis` `.se` | Shows a name and a link to every SPECIAL emoji in the message.  | `.se A message full of SPECIAL emojis`
 `.listservers` | Lists servers the bot is on with some basic info. 15 per page. **Bot Owner only.** | `.listservers 3`
 `.activity` | Checks for spammers. **Bot Owner only.** | `.activity`

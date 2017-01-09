@@ -2,7 +2,7 @@ ________________________________________________________________________________
 *Thanks to @Flatbread and Mirai for making this guide*
 ________________________________________________________________________________
 
-## Setting Up NadekoBot on Windows
+## Setting Up WizBot on Windows
 
 #### Prerequisites 
 - 1) [.NET Core SDK][.NET Core SDK]
@@ -16,14 +16,14 @@ ________________________________________________________________________________
 
 ####Guide 
 - Make sure you have installed both [Git][Git] and the [.NET Core SDK][.NET Core SDK].
-- Create a **new folder** anywhere you like and name it `Nadeko`.
-- Next, [Right-Click on this link](https://github.com/Kwoth/NadekoBotInstallerWin/raw/master/NadekoInstaller.bat) and select **Save link as** and save the file `NadekoInstaller.bat` inside the `Nadeko` folder that we created earlier. (**DO NOT** rename the file `NadekoInstaller.bat`)
-- Once that's done, double-click on `NadekoInstaller.bat` to run it.
+- Create a **new folder** anywhere you like and name it `WizBot`.
+- Next, [Right-Click on this link](https://github.com/Wizkiller96/WizBotInstallerWin/raw/master/WizBotInstaller.bat) and select **Save link as** and save the file `WizBotInstaller.bat` inside the `WizBot` folder that we created earlier. (**DO NOT** rename the file `WizBotInstaller.bat`)
+- Once that's done, double-click on `WizBotInstaller.bat` to run it.
 - From the options, 
 	- Choose `1` to get the **most recent build**.
 	- Choose `2` to get the **stable build**.
 - Wait a while for the file to finish installing, it'll display it's progress in the command prompt.
-- You should now have a new folder named `NadekoBot` inside the `Nadeko` folder we previously created.
+- You should now have a new folder named `WizBot` inside the `WizBot` folder we previously created.
 - Once Installation is completed, press any key to close the command prompt.
 
 ####Creating DiscordBot application
@@ -36,7 +36,7 @@ ________________________________________________________________________________
 - Keep this window open for now.
 
 ####Setting up credentials.json file
-- In our `NadekoBot` folder you should see a `src` folder, then *another* `NadekoBot` folder, in this final folder, you should see a `.json` file named `credentials.json`. (Note: If you do not see a `.json` after `credentials.json`, do not add the `.json`. You most likely have **"Hide file extensions"** enabled.)
+- In our `WizBot` folder you should see a `src` folder, then *another* `WizBot` folder, in this final folder, you should see a `.json` file named `credentials.json`. (Note: If you do not see a `.json` after `credentials.json`, do not add the `.json`. You most likely have **"Hide file extensions"** enabled.)
 - If you mess up the setup of `credentials.json`, rename `credentials_example.json` to `credentials.json`.
 - Open the file with [Notepad++][Notepad++].
 - In there you will see fields such as `Token`, `ClientId`, `BotId` and `OwnerIDs`.
@@ -59,28 +59,28 @@ ________________________________________________________________________________
 - The bot should have been added to your server.
 
 ####Starting the bot
-- Go to the `Nadeko` folder that we have created earlier, and run the `NadekoInstaller.bat` file.
+- Go to the `WizBot` folder that we have created earlier, and run the `WizBotInstaller.bat` file.
 - From the options,
 	- Choose `3` to **run the bot normally**.	
 	(with normal-run the bot will shutdown and will stay offline if it disconnects by the use of `.die` command until you manually run it again. Useful if you want to test the bot.)
 	- Choose `4` to **run the bot with auto restart**.	
 	(with auto restart the bot will restart itself if it disconnects by the use of `.die` command. Useful if you want to have restart function for any reason.)
 
-####Updating NadekoBot
+####Updating WizBot
 - Make sure the bot is closed and is not running (Run `.die` in a connected server to ensure it's not running).
-- Once that's checked, go to the `Nadeko` folder.
-- Run the `NadekoInstaller.bat` file.
+- Once that's checked, go to the `WizBot` folder.
+- Run the `WizBotInstaller.bat` file.
 - From the options, 
 	- Choose `1` to get the **most recent build**.
 	- Choose `2` to get the **stable build**.
 - Follow the messages and press any key to continue.
 - Wait for it to finish. 
 - Press any key to close the window when it shows **Installation complete.** 
-- [Start the bot again.](http://nadekobot.readthedocs.io/en/latest/guides/Windows%20Guide/#starting-the-bot)
+- [Start the bot again.](http://wizbot.readthedocs.io/en/latest/guides/Windows%20Guide/#starting-the-bot)
 - You've updated and are running again, easy as that!
 ________________________________________________________________________________
 
-#### Setting Up NadekoBot For Music
+#### Setting Up WizBot For Music
 ##### Prerequisites
 - 1) [FFMPEG][FFMPEG] installed.
 - 2) Setting up API keys.

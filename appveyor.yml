@@ -5,7 +5,7 @@ before_build:
 
     dotnet restore
 
-    cd src/NadekoBot/
+    cd src/WizBot/
 build_script:
 - cmd: >-
     dotnet build
