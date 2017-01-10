@@ -247,9 +247,9 @@ namespace WizBot.Modules.Utility
 
             var topic = channel.Topic;
             if (string.IsNullOrWhiteSpace(topic))
-                await channel.SendErrorAsync("No topic set.").ConfigureAwait(false);
+                await Context.Channel.SendErrorAsync("No topic set.").ConfigureAwait(false);
             else
-                await channel.SendConfirmAsync("Channel topic", topic).ConfigureAwait(false);
+                await Context.Channel.SendConfirmAsync("Channel topic", topic).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -272,7 +272,7 @@ namespace WizBot.Modules.Utility
                 new EmbedBuilder().WithOkColor()
                     .WithAuthor(eab => eab.WithName($"WizBot v{StatsService.BotVersion}")
                                           .WithUrl("http://wizbot.readthedocs.io/en/latest/")
-                                          .WithIconUrl("https://cdn.discordapp.com/avatars/116275390695079945/b21045e778ef21c96d175400e779f0fb.jpg"))
+                                          .WithIconUrl("https://cdn.discordapp.com/avatars/170849991357628416/412367ac7ffd3915a0b969f6f3e17aca.jpg"))
                     .AddField(efb => efb.WithName(Format.Bold("Author")).WithValue(stats.Author).WithIsInline(true))
                     .AddField(efb => efb.WithName(Format.Bold("Library")).WithValue(stats.Library).WithIsInline(true))
                     .AddField(efb => efb.WithName(Format.Bold("Bot ID")).WithValue(WizBot.Client.CurrentUser().Id.ToString()).WithIsInline(true))

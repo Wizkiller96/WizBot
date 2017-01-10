@@ -102,7 +102,7 @@ namespace WizBot.Modules.Utility
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         [OwnerOnly]
-        public async Task Activity(IUserMessage imsg, int page = 1)
+        public async Task Activity(int page = 1)
         {
             const int activityPerPage = 15;
             page -= 1;
@@ -118,7 +118,7 @@ namespace WizBot.Modules.Utility
                 str.AppendLine($"`{++startCount}.` **{kvp.Key}** [{kvp.Value/WizBot.Stats.GetUptime().TotalSeconds:F2}/s] - {kvp.Value} total");
             }
 
-            await imsg.Channel.EmbedAsync(new EmbedBuilder().WithTitle($"Activity Page #{page}")
+            await Context.Channel.EmbedAsync(new EmbedBuilder().WithTitle($"Activity Page #{page}")
                 .WithOkColor()
                 .WithFooter(efb => efb.WithText($"{WizBot.CommandHandler.UserMessagesSent.Count} users total."))
                 .WithDescription(str.ToString()));
