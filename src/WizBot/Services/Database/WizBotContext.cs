@@ -142,6 +142,17 @@ namespace WizBot.Services.Database
                 .HasIndex(c => c.GuildId)
                 .IsUnique();
 
+            modelBuilder.Entity<AntiSpamSetting>()
+                .HasOne(x => x.GuildConfig)
+                .WithOne(x => x.AntiSpamSetting);
+
+            modelBuilder.Entity<AntiRaidSetting>()
+                .HasOne(x => x.GuildConfig)
+                .WithOne(x => x.AntiRaidSetting);
+
+            //modelBuilder.Entity<ProtectionIgnoredChannel>()
+            //    .HasAlternateKey(c => new { c.ChannelId, c.ProtectionType });
+
             #endregion
 
             #region BotConfig
@@ -219,6 +230,12 @@ namespace WizBot.Services.Database
             pokeGameEntity
                 .HasIndex(pt => pt.UserId)
                 .IsUnique();
+
+
+            #endregion
+
+            #region Protection
+
 
 
             #endregion

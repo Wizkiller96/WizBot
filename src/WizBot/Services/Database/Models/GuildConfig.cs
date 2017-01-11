@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using static WizBot.Modules.Administration.Administration;
 
 namespace WizBot.Services.Database.Models
 {
@@ -59,6 +60,11 @@ namespace WizBot.Services.Database.Models
         public string MuteRoleName { get; set; }
         public bool CleverbotEnabled { get; set; }
         public HashSet<GuildRepeater> GuildRepeaters { get; set; } = new HashSet<GuildRepeater>();
+
+        public AntiRaidSetting AntiRaidSetting { get; set; }
+        public AntiSpamSetting AntiSpamSetting { get; set; }
+
+        //public List<ProtectionIgnoredChannel> ProtectionIgnoredChannels { get; set; } = new List<ProtectionIgnoredChannel>();
     }
 
     public class FilterChannelId : DbEntity
