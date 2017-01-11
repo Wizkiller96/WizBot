@@ -92,7 +92,7 @@ namespace WizBot.Modules.Administration
                 var _log = LogManager.GetCurrentClassLogger();
                 var sw = Stopwatch.StartNew();
 
-                repeaters = new ConcurrentDictionary<ulong, ConcurrentQueue<RepeatRunner>>(NadekoBot.AllGuildConfigs
+                repeaters = new ConcurrentDictionary<ulong, ConcurrentQueue<RepeatRunner>>(WizBot.AllGuildConfigs
                     .ToDictionary(gc => gc.GuildId,
                                     gc => new ConcurrentQueue<RepeatRunner>(gc.GuildRepeaters.Select(gr => new RepeatRunner(gr))
                                     .Where(gr => gr.Channel != null))));
