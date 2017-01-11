@@ -80,6 +80,11 @@ namespace WizBot.Modules.Administration
                 {
                     source.Cancel();
                 }
+
+                public override string ToString()
+                {
+                    return $"{this.Channel.Mention} | {(int)this.Repeater.Interval.TotalHours}:{this.Repeater.Interval:mm} | {this.Repeater.Message.TrimTo(33)}";
+                }
             }
 
             static RepeatCommands()
@@ -105,7 +110,7 @@ namespace WizBot.Modules.Administration
             {
                 index -= 1;
                 ConcurrentQueue<RepeatRunner> rep;
-                if (!repeaters.TryGetValue(Context.Channel.Id, out rep))
+                if (!repeaters.TryGetValue(Context.Guild.Id, out rep))
                 {
                     await Context.Channel.SendErrorAsync("ℹ️ **No repeating message found on this server.**").ConfigureAwait(false);
                     return;
@@ -158,7 +163,7 @@ namespace WizBot.Modules.Administration
                 }
 
                 if (repeaters.TryUpdate(Context.Guild.Id, new ConcurrentQueue<RepeatRunner>(repeaterList), rep))
-                    await Context.Channel.SendConfirmAsync("✅ **Stopped repeating a message.**").ConfigureAwait(false);
+                    await Context.Channel.SendConfirmAsync("Message Repeater", $"#{index + 1} stopped.\n\n{repeater.ToString()}").ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -173,13 +178,22 @@ namespace WizBot.Modules.Administration
                 if (string.IsNullOrWhiteSpace(message))
                     return;
 
-                var toAdd = new Repeater()
+                var toAdd = new GuildRepeater()
                 {
                     ChannelId = Context.Channel.Id,
                     GuildId = Context.Guild.Id,
                     Interval = TimeSpan.FromMinutes(minutes),
                     Message = message
                 };
+
+                using (var uow = DbHandler.UnitOfWork())
+                {
+                    var gc = uow.GuildConfigs.For(Context.Guild.Id, set => set.Include(x => x.GuildRepeaters));
+
+                    gc.GuildRepeaters.Add(toAdd);
+
+                    await uow.CompleteAsync().ConfigureAwait(false);
+                }
 
                 var rep = new RepeatRunner(toAdd, (ITextChannel)Context.Channel);
 
@@ -211,7 +225,7 @@ namespace WizBot.Modules.Administration
                 {
                     var rep = replist[i];
 
-                    sb.AppendLine($"`{i + 1}.` {rep.Channel.Mention} | {(int)rep.Repeater.Interval.TotalHours}:{rep.Repeater.Interval:mm} | {rep.Repeater.Message.TrimTo(20)}");
+                    sb.AppendLine($"`{i + 1}.` {rep.ToString()}");
                 }
 
                 await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()

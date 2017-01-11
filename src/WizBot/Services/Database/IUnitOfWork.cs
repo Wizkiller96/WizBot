@@ -15,7 +15,6 @@ namespace WizBot.Services.Database
         IReminderRepository Reminders { get; }
         ISelfAssignedRolesRepository SelfAssignedRoles { get; }
         IBotConfigRepository BotConfig { get; }
-        IRepeaterRepository Repeaters { get; }
         IUnitConverterRepository ConverterUnits { get; }
         ICustomReactionRepository CustomReactions { get; }
         ICurrencyRepository Currency { get; }

@@ -10,9 +10,10 @@ using WizBot.Modules.Music.Classes;
 namespace WizBot.Migrations
 {
     [DbContext(typeof(WizBotContext))]
-    partial class WizBotSqliteContextModelSnapshot : ModelSnapshot
+    [Migration("20170110111159_repeater-drop")]
+    partial class repeaterdrop
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.0-rtm-22752");
@@ -382,28 +383,6 @@ namespace WizBot.Migrations
                 b.HasIndex("RootPermissionId");
 
                 b.ToTable("GuildConfigs");
-            });
-
-            modelBuilder.Entity("WizBot.Services.Database.Models.GuildRepeater", b =>
-            {
-                b.Property<int>("Id")
-                    .ValueGeneratedOnAdd();
-
-                b.Property<ulong>("ChannelId");
-
-                b.Property<int?>("GuildConfigId");
-
-                b.Property<ulong>("GuildId");
-
-                b.Property<TimeSpan>("Interval");
-
-                b.Property<string>("Message");
-
-                b.HasKey("Id");
-
-                b.HasIndex("GuildConfigId");
-
-                b.ToTable("GuildRepeater");
             });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.IgnoredLogChannel", b =>
@@ -792,13 +771,6 @@ namespace WizBot.Migrations
                 b.HasOne("WizBot.Services.Database.Models.Permission", "RootPermission")
                     .WithMany()
                     .HasForeignKey("RootPermissionId");
-            });
-
-            modelBuilder.Entity("WizBot.Services.Database.Models.GuildRepeater", b =>
-            {
-                b.HasOne("WizBot.Services.Database.Models.GuildConfig")
-                    .WithMany("GuildRepeaters")
-                    .HasForeignKey("GuildConfigId");
             });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.IgnoredLogChannel", b =>
