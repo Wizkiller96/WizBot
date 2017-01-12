@@ -30,7 +30,7 @@ After a few moments you should be able to invite WizBot to your server. If you c
 
 ## Updates
 
-* Manual
+# Manual
 Updates are handled by pulling the new layer of the Docker Container which contains a pre compiled update to WizBot.
 The following commands are required for the default options
 1. ```docker pull wizkiller96/wizbot:dev```
@@ -38,7 +38,7 @@ The following commands are required for the default options
 3. ```docker create --name=wizbot -v /wizbot/data:/opt/WizBot/src/WizBot/bin/Release/netcoreapp1.0/data -v /wizbot/credentials.json:/opt/WizBot/src/WizBot/credentials.json wizkiller96/wizbot```
 4. ```docker start wizbot```
 
-* Automatic Updates
+# Automatic Updates
 Automatic update are now handled by watchertower https://github.com/CenturyLinkLabs/watchtower
 To setup watchtower to keep wizbot up-to-date for you with the default settings use the following command
 ```docker run -d --name watchtower -v /var/run/docker.sock:/var/run/docker.sock centurylink/watchtower --cleanup wizbot```
