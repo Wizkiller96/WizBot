@@ -30,7 +30,6 @@ namespace WizBot.Services.Impl
         public int TextChannels => _textChannels;
         private int _voiceChannels = 0;
         public int VoiceChannels => _voiceChannels;
-        public string OwnerIds => string.Join(", ", WizBot.Credentials.OwnerIds);
         
         Timer carbonitexTimer { get; }
 
@@ -114,7 +113,7 @@ namespace WizBot.Services.Impl
 Author: [{Author}] | Library: [{Library}]
 Bot Version: [{BotVersion}]
 Bot ID: {curUser.Id}
-Owner ID(s): {OwnerIds}
+Owner ID(s): {string.Join(", ", WizBot.Credentials.OwnerIds)}
 Uptime: {GetUptimeString()}
 Servers: {client.GetGuildsCount()} | TextChannels: {TextChannels} | VoiceChannels: {VoiceChannels}
 Commands Ran this session: {CommandsRan}
