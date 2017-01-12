@@ -14,7 +14,7 @@ namespace WizBot.Services
             var success = await RemoveCurrencyAsync(author.Id, reason, amount);
 
             if (success && sendMessage)
-                try { await author.SendErrorAsync($"`You lost:` {amount} {Gambling.CurrencySign}\n`Reason:` {reason}").ConfigureAwait(false); } catch { }
+                try { await author.SendErrorAsync($"`You lost:` {amount} {WizBot.BotConfig.CurrencySign}\n`Reason:` {reason}").ConfigureAwait(false); } catch { }
 
             return success;
         }
@@ -47,7 +47,7 @@ namespace WizBot.Services
             await AddCurrencyAsync(author.Id, reason, amount);
 
             if (sendMessage)
-                try { await author.SendConfirmAsync($"`You received:` {amount} {Gambling.CurrencySign}\n`Reason:` {reason}").ConfigureAwait(false); } catch { }
+                try { await author.SendConfirmAsync($"`You received:` {amount} {WizBot.BotConfig.CurrencySign}\n`Reason:` {reason}").ConfigureAwait(false); } catch { }
         }
 
         public static async Task AddCurrencyAsync(ulong receiverId, string reason, long amount)

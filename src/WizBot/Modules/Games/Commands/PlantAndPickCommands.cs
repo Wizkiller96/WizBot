@@ -81,7 +81,7 @@ namespace WizBot.Modules.Games
                         var sent = await channel.SendFileAsync(
                             File.Open(GetRandomCurrencyImagePath(), FileMode.OpenOrCreate),
                             "RandomFlower.jpg",
-                            $"❗ A random { Gambling.Gambling.CurrencyName } appeared! Pick it up by typing `{WizBot.ModulePrefixes[typeof(Games).Name]}pick`")
+                            $"❗ A random { WizBot.BotConfig.CurrencyName } appeared! Pick it up by typing `{WizBot.ModulePrefixes[typeof(Games).Name]}pick`")
                                 .ConfigureAwait(false);
                         plantedFlowers.AddOrUpdate(channel.Id, new List<IUserMessage>() { sent }, (id, old) => { old.Add(sent); return old; });
 
@@ -114,8 +114,8 @@ namespace WizBot.Modules.Games
 
                     await Task.WhenAll(msgs.Select(toDelete => toDelete.DeleteAsync())).ConfigureAwait(false);
 
-                    await CurrencyHandler.AddCurrencyAsync((IGuildUser)Context.User, $"Picked {Gambling.Gambling.CurrencyPluralName}", msgs.Count, false).ConfigureAwait(false);
-                    var msg = await channel.SendConfirmAsync($"**{Context.User}** picked {msgs.Count}{Gambling.Gambling.CurrencySign}!").ConfigureAwait(false);
+                    await CurrencyHandler.AddCurrencyAsync((IGuildUser)Context.User, $"Picked {WizBot.BotConfig.CurrencyPluralName}", msgs.Count, false).ConfigureAwait(false);
+                    var msg = await channel.SendConfirmAsync($"**{Context.User}** picked {msgs.Count}{WizBot.BotConfig.CurrencySign}!").ConfigureAwait(false);
                     msg.DeleteAfter(10);
                 }
                 finally
@@ -131,21 +131,21 @@ namespace WizBot.Modules.Games
             [RequireContext(ContextType.Guild)]
             public async Task Plant()
             {
-                var removed = await CurrencyHandler.RemoveCurrencyAsync((IGuildUser)Context.User, $"Planted a {Gambling.Gambling.CurrencyName}", 1, false).ConfigureAwait(false);
+                var removed = await CurrencyHandler.RemoveCurrencyAsync((IGuildUser)Context.User, $"Planted a {WizBot.BotConfig.CurrencyName}", 1, false).ConfigureAwait(false);
                 if (!removed)
                 {
-                    await Context.Channel.SendErrorAsync($"You don't have any {Gambling.Gambling.CurrencyPluralName}.").ConfigureAwait(false);
+                    await Context.Channel.SendErrorAsync($"You don't have any {WizBot.BotConfig.CurrencyPluralName}.").ConfigureAwait(false);
                     return;
                 }
 
                 var file = GetRandomCurrencyImagePath();
                 IUserMessage msg;
-                var vowelFirst = new[] { 'a', 'e', 'i', 'o', 'u' }.Contains(Gambling.Gambling.CurrencyName[0]);
+                var vowelFirst = new[] { 'a', 'e', 'i', 'o', 'u' }.Contains(WizBot.BotConfig.CurrencyName[0]);
 
-                var msgToSend = $"Oh how Nice! **{Context.User.Username}** planted {(vowelFirst ? "an" : "a")} {Gambling.Gambling.CurrencyName}. Pick it using {WizBot.ModulePrefixes[typeof(Games).Name]}pick";
+                var msgToSend = $"Oh how Nice! **{Context.User.Username}** planted {(vowelFirst ? "an" : "a")} {WizBot.BotConfig.CurrencyName}. Pick it using {WizBot.ModulePrefixes[typeof(Games).Name]}pick";
                 if (file == null)
                 {
-                    msg = await Context.Channel.SendConfirmAsync(Gambling.Gambling.CurrencySign).ConfigureAwait(false);
+                    msg = await Context.Channel.SendConfirmAsync(WizBot.BotConfig.CurrencySign).ConfigureAwait(false);
                 }
                 else
                 {
