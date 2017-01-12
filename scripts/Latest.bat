@@ -48,9 +48,6 @@ IF EXIST "%root%WizBot\" (GOTO :backupinstall)
 	GOTO :end
 :backupinstall
 	TITLE Backing up old files
-	ECHO.
-	ECHO Make sure to close any files such as WizBot.db before PRESSing ANY KEY TO CONTINUE to prevent data loss
-	PAUSE >nul 2>&1
 	::Recursively copies all files and folders from WizBot to WizBot_Old
 	ROBOCOPY "%root%WizBot" "%root%WizBot_Old" /MIR >nul 2>&1
 	IF %ERRORLEVEL% GEQ 8 (GOTO :copyerror)
