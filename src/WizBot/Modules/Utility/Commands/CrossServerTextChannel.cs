@@ -9,9 +9,9 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WizBot.Modules.Administration
+namespace WizBot.Modules.Utility
 {
-    public partial class Administration
+    public partial class Utility
     {
         [Group]
         public class CrossServerTextChannel : ModuleBase
