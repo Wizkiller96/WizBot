@@ -20,14 +20,9 @@ namespace WizBot.Modules.Gambling
 
         static Gambling()
         {
-            using (var uow = DbHandler.UnitOfWork())
-            {
-                var conf = uow.BotConfig.GetOrCreate();
-
-                CurrencyName = conf.CurrencyName;
-                CurrencySign = conf.CurrencySign;
-                CurrencyPluralName = conf.CurrencyPluralName;
-            }
+            CurrencyName = WizBot.BotConfig.CurrencyName;
+            CurrencyPluralName = WizBot.BotConfig.CurrencyPluralName;
+            CurrencySign = WizBot.BotConfig.CurrencySign;
         }
 
         public static long GetCurrency(ulong id)

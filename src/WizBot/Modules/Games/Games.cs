@@ -13,14 +13,7 @@ namespace WizBot.Modules.Games
     [WizBotModule("Games", ">")]
     public partial class Games : DiscordModule
     {
-        private IEnumerable<string> _8BallResponses {
-            get {
-                using (var uow = DbHandler.UnitOfWork())
-                {
-                    return uow.BotConfig.GetOrCreate().EightBallResponses.Select(ebr => ebr.Text);
-                }
-            }
-        }
+        private static IEnumerable<string> _8BallResponses { get; } = WizBot.BotConfig.EightBallResponses.Select(ebr => ebr.Text);
 
 
         [WizBotCommand, Usage, Description, Aliases]

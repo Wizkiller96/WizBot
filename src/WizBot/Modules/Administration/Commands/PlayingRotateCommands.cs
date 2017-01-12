@@ -27,12 +27,8 @@ namespace WizBot.Modules.Administration
             {
                 _log = LogManager.GetCurrentClassLogger();
 
-                using (var uow = DbHandler.UnitOfWork())
-                {
-                    var conf = uow.BotConfig.GetOrCreate();
-                    RotatingStatusMessages = conf.RotatingStatusMessages;
-                    RotatingStatuses = conf.RotatingStatuses;
-                }
+                RotatingStatusMessages = WizBot.BotConfig.RotatingStatusMessages;
+                RotatingStatuses = WizBot.BotConfig.RotatingStatuses;
 
                 var t = Task.Run(async () =>
                 {
