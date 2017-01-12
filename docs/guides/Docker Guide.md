@@ -8,7 +8,7 @@ Follow the respective guide for your operating system found here https://docs.do
 For this guide we will be using the folder /wizbot as our config root folder.
 
 ```
-docker create --name=wizbot -v /wizbot/data:/opt/WizBot/src/WizBot/bin/Release/netcoreapp1.0/data -v /WizBot/credentials.json:/opt/WizBot/src/WizBot/credentials.json kwoth/wizbot:dev
+docker create --name=wizbot -v /wizbot/data:/opt/WizBot/src/WizBot/bin/Release/netcoreapp1.0/data -v /WizBot/credentials.json:/opt/WizBot/src/WizBot/credentials.json wizkiller96/wizbot:dev
 ```
 -If you are coming from a previous version of WizBot (the old docker) make sure your crednetials.json has been copied into this directory and is the only thing in this folder. 
 
@@ -24,10 +24,27 @@ Once the log ends with "WizBot | Starting WizBot v1.0-rc2" the bot is ready and 
 
 After a few moments you should be able to invite WizBot to your server. If you cannot check the log file for errors 
 
-## Updates / Monitoring
+## Monitoring
 
-* Upgrade to the latest version of WizBot simply `docker restart wizbot`.
 * Monitor the logs of the container in realtime `docker logs -f wizbot`.
+
+## Updates
+
+* Manual
+Updates are handled by pulling the new layer of the Docker Container which contains a pre compiled update to WizBot.
+The following commands are required for the default options
+1. ```docker pull wizkiller96/wizbot:dev```
+2. ```docker stop wizbot; docker rm wizbot```
+3. ```docker create --name=wizbot -v /wizbot/data:/opt/WizBot/src/WizBot/bin/Release/netcoreapp1.0/data -v /wizbot/credentials.json:/opt/WizBot/src/WizBot/credentials.json wizkiller96/wizbot```
+4. ```docker start wizbot```
+
+* Automatic Updates
+Automatic update are now handled by watchertower https://github.com/CenturyLinkLabs/watchtower
+To setup watchtower to keep wizbot up-to-date for you with the default settings use the following command
+```docker run -d --name watchtower -v /var/run/docker.sock:/var/run/docker.sock centurylink/watchtower --cleanup wizbot```
+This will check for updates to the docker every 5 minutes and update immediately. Alternatively using the ```--interval X``` command to change the interval, where X is the amount of time in seconds to wait. eg 21600 for 6 hours.
+
+
 
 If you have any issues with the docker setup, please ask in #help but indicate you are using the docker.
 
