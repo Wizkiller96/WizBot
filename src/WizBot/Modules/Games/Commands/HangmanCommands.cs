@@ -55,6 +55,9 @@ namespace WizBot.Modules.Games
                 catch (Exception ex)
                 {
                     try { await Context.Channel.SendErrorAsync($"Starting errored: {ex.Message}").ConfigureAwait(false); } catch { }
+                    HangmanGame throwaway;
+                    HangmanGames.TryRemove(Context.Channel.Id, out throwaway);
+                    throwaway.Dispose();
                     return;
                 }
 
