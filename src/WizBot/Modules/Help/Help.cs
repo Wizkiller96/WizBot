@@ -161,7 +161,7 @@ namespace WizBot.Modules.Help
 
             await channel.SendConfirmAsync(
 $@"You can support the WizBot project on paypal.
-You can send donations to `inick01@live.com`
+Paypal <https://paypal.me/Wizkiller96Network>
 Don't forget to leave your discord name or id in the message.
 
 **Thank you** ♥️").ConfigureAwait(false);
