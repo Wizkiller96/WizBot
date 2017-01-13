@@ -46,7 +46,7 @@ namespace WizBot.Modules.Games.Commands.Hangman
             HangmanObject[] termTypes;
             data.TryGetValue(type, out termTypes);
 
-            if (termTypes.Length == 0)
+            if (termTypes == null || termTypes.Length == 0)
                 return null;
 
             return termTypes[rng.Next(0, termTypes.Length)];
