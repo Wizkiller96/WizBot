@@ -80,7 +80,7 @@ ________________________________________________________________________________
 - You've updated and are running again, easy as that!
 ________________________________________________________________________________
 
-### Setting Up NadekoBot For Music
+### Setting Up WizBot For Music
 
 +In order to have a functioning music module, you need to install ffmpeg and setup api keys.
 
