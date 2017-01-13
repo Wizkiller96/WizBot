@@ -234,10 +234,10 @@ namespace WizBot.Services.Database
 
             #endregion
 
-            #region Protection
-
-
-
+            #region CommandPrice
+            modelBuilder.Entity<CommandPrice>()
+                .HasIndex(cp => cp.Price)
+                .IsUnique();
             #endregion
         }
     }

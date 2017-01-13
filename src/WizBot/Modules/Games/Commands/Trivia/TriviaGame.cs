@@ -2,6 +2,7 @@
 using Discord.Net;
 using Discord.WebSocket;
 using WizBot.Extensions;
+using WizBot.Services;
 using NLog;
 using System;
 using System.Collections.Concurrent;
@@ -177,7 +178,10 @@ namespace WizBot.Modules.Games.Trivia
                 if (Users[guildUser] == WinRequirement)
                 {
                     ShouldStopGame = true;
-                    await channel.SendConfirmAsync("Trivia Game", $"{guildUser.Mention} guessed it and WON the game! The answer was: **{CurrentQuestion.Answer}**").ConfigureAwait(false);
+                    try { await channel.SendConfirmAsync("Trivia Game", $"{guildUser.Mention} guessed it and WON the game! The answer was: **{CurrentQuestion.Answer}**").ConfigureAwait(false); } catch { }
+                    var reward = WizBot.BotConfig.TriviaCurrencyReward;
+                    if (reward > 0)
+                        await CurrencyHandler.AddCurrencyAsync(guildUser.Id, "Won trivia", reward).ConfigureAwait(false);
                     return;
                 }
                 await channel.SendConfirmAsync("Trivia Game", $"{guildUser.Mention} guessed it! The answer was: **{CurrentQuestion.Answer}**").ConfigureAwait(false);

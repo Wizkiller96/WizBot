@@ -96,7 +96,17 @@ namespace WizBot.Migrations
                 b.Property<int>("Id")
                     .ValueGeneratedOnAdd();
 
+                b.Property<float>("BetflipMultiplier");
+
+                b.Property<float>("Betroll100Multiplier");
+
+                b.Property<float>("Betroll67Multiplier");
+
+                b.Property<float>("Betroll91Multiplier");
+
                 b.Property<ulong>("BufferSize");
+
+                b.Property<int>("CurrencyDropAmount");
 
                 b.Property<float>("CurrencyGenerationChance");
 
@@ -118,9 +128,13 @@ namespace WizBot.Migrations
 
                 b.Property<int>("MigrationVersion");
 
+                b.Property<int>("MinimumBetAmount");
+
                 b.Property<string>("RemindMessageFormat");
 
                 b.Property<bool>("RotatingStatuses");
+
+                b.Property<int>("TriviaCurrencyReward");
 
                 b.HasKey("Id");
 
@@ -191,8 +205,29 @@ namespace WizBot.Migrations
                 b.ToTable("CommandCooldown");
             });
 
-            modelBuilder.Entity("WizBot.Services.Database.Models.ConvertUnit", b =>
-            {
+            modelBuilder.Entity("NadekoBot.Services.Database.Models.CommandPrice", b =>
+                {
+                b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                b.Property<int?>("BotConfigId");
+
+                b.Property<string>("CommandName");
+
+                b.Property<int>("Price");
+
+                b.HasKey("Id");
+
+                b.HasIndex("BotConfigId");
+
+                b.HasIndex("Price")
+                        .IsUnique();
+
+                b.ToTable("CommandPrice");
+                });
+
+           modelBuilder.Entity("WizBot.Services.Database.Models.ConvertUnit", b =>
+                {
                 b.Property<int>("Id")
                     .ValueGeneratedOnAdd();
 
@@ -822,6 +857,13 @@ namespace WizBot.Migrations
                     .WithMany("CommandCooldowns")
                     .HasForeignKey("GuildConfigId");
             });
+
+            modelBuilder.Entity("NadekoBot.Services.Database.Models.CommandPrice", b =>
+                {
+                b.HasOne("NadekoBot.Services.Database.Models.BotConfig")
+                        .WithMany("CommandPrices")
+                        .HasForeignKey("BotConfigId");
+                });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.EightBallResponse", b =>
             {

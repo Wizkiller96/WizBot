@@ -78,14 +78,32 @@ namespace WizBot.Modules.Games
                     {
                         lastGenerations.AddOrUpdate(channel.Id, DateTime.Now, (id, old) => DateTime.Now);
 
-                        var sent = await channel.SendFileAsync(
-                            File.Open(GetRandomCurrencyImagePath(), FileMode.OpenOrCreate),
-                            "RandomFlower.jpg",
-                            $"❗ A random { WizBot.BotConfig.CurrencyName } appeared! Pick it up by typing `{WizBot.ModulePrefixes[typeof(Games).Name]}pick`")
-                                .ConfigureAwait(false);
-                        plantedFlowers.AddOrUpdate(channel.Id, new List<IUserMessage>() { sent }, (id, old) => { old.Add(sent); return old; });
+                        var dropAmount = WizBot.BotConfig.CurrencyDropAmount;
 
+                        if (dropAmount > 0)
+                        {
+                            var msgs = new List<IUserMessage>(dropAmount);
 
+                            string firstPart;
+                            if (dropAmount == 1)
+                            {
+                                firstPart = $"A random { WizBot.BotConfig.CurrencyName } appeared!";
+                            }
+                            else
+                            {
+                                firstPart = $"{dropAmount} random { WizBot.BotConfig.CurrencyPluralName } appeared!";
+                            }
+
+                            var sent = await channel.SendFileAsync(
+                                File.Open(GetRandomCurrencyImagePath(), FileMode.OpenOrCreate),
+                                "RandomFlower.jpg",
+                                $"❗ {firstPart} Pick it up by typing `{WizBot.ModulePrefixes[typeof(Games).Name]}pick`")
+                                    .ConfigureAwait(false);
+
+                            msgs.Add(sent);
+
+                            plantedFlowers.AddOrUpdate(channel.Id, msgs, (id, old) => { old.AddRange(msgs); return old; });
+                        }
                     }
                 }
                 catch { }
@@ -112,7 +130,7 @@ namespace WizBot.Modules.Games
                     if (!plantedFlowers.TryRemove(channel.Id, out msgs))
                         return;
 
-                    await Task.WhenAll(msgs.Select(toDelete => toDelete.DeleteAsync())).ConfigureAwait(false);
+                    await Task.WhenAll(msgs.Where(m => m != null).Select(toDelete => toDelete.DeleteAsync())).ConfigureAwait(false);
 
                     await CurrencyHandler.AddCurrencyAsync((IGuildUser)Context.User, $"Picked {WizBot.BotConfig.CurrencyPluralName}", msgs.Count, false).ConfigureAwait(false);
                     var msg = await channel.SendConfirmAsync($"**{Context.User}** picked {msgs.Count}{WizBot.BotConfig.CurrencySign}!").ConfigureAwait(false);
