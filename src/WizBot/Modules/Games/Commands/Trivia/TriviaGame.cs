@@ -181,7 +181,7 @@ namespace WizBot.Modules.Games.Trivia
                     try { await channel.SendConfirmAsync("Trivia Game", $"{guildUser.Mention} guessed it and WON the game! The answer was: **{CurrentQuestion.Answer}**").ConfigureAwait(false); } catch { }
                     var reward = WizBot.BotConfig.TriviaCurrencyReward;
                     if (reward > 0)
-                        await CurrencyHandler.AddCurrencyAsync(guildUser.Id, "Won trivia", reward).ConfigureAwait(false);
+                        await CurrencyHandler.AddCurrencyAsync(guildUser, "Won trivia", reward, true).ConfigureAwait(false);
                     return;
                 }
                 await channel.SendConfirmAsync("Trivia Game", $"{guildUser.Mention} guessed it! The answer was: **{CurrentQuestion.Answer}**").ConfigureAwait(false);
