@@ -22,7 +22,7 @@ CD /D %installtemp%
 ::Downloads the latest version of WizBot
 ECHO Downloading WizBot...
 ECHO.
-git clone -b dev --recursive --depth 1 --progress https://github.com/Kwoth/WizBot.git >nul
+git clone -b dev --recursive --depth 1 --progress https://github.com/Wizkiller96/WizBot.git >nul
 IF %ERRORLEVEL% EQU 128 (GOTO :giterror)
 TITLE Installing WizBot, please wait
 ECHO.
@@ -109,5 +109,5 @@ IF EXIST "%root%WizBot\" (GOTO :backupinstall)
 	RMDIR /S /Q "%installtemp%" >nul 2>&1
 	ECHO.
 	ECHO Installation complete, press any key to close this window!
-	PAUSE >nul 2>&1
+	timeout /t 5
 	del Latest.bat
