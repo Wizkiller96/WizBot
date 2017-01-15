@@ -95,6 +95,7 @@ namespace WizBot
             //connect
             await Client.LoginAsync(TokenType.Bot, Credentials.Token).ConfigureAwait(false);
             await Client.ConnectAsync().ConfigureAwait(false);
+            Stats.Initialize();
 #if !GLOBAL_WIZBOT
             await Client.DownloadAllUsersAsync().ConfigureAwait(false);
 #endif
