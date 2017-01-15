@@ -277,7 +277,7 @@ namespace WizBot.Modules.Utility
                                           .WithIconUrl("https://cdn.discordapp.com/avatars/170849991357628416/412367ac7ffd3915a0b969f6f3e17aca.jpg"))
                     .AddField(efb => efb.WithName(Format.Bold("Author")).WithValue(stats.Author).WithIsInline(true))
                     .AddField(efb => efb.WithName(Format.Bold("Library")).WithValue(stats.Library).WithIsInline(true))
-                    .AddField(efb => efb.WithName(Format.Bold("Bot ID")).WithValue(WizBot.Client.CurrentUser().Id.ToString()).WithIsInline(true))
+                    .AddField(efb => efb.WithName(Format.Bold("Bot ID")).WithValue(WizBot.Client.CurrentUser.Id.ToString()).WithIsInline(true))
                     .AddField(efb => efb.WithName(Format.Bold("Commands Ran")).WithValue(stats.CommandsRan.ToString()).WithIsInline(true))
                     .AddField(efb => efb.WithName(Format.Bold("Messages")).WithValue($"{stats.MessageCounter} ({stats.MessagesPerSecond:F2}/sec)").WithIsInline(true))
                     .AddField(efb => efb.WithName(Format.Bold("Memory")).WithValue($"{stats.Heap} MB").WithIsInline(true))

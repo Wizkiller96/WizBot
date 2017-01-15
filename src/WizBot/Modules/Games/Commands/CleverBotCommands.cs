@@ -58,7 +58,7 @@ namespace WizBot.Modules.Games
                 if (!CleverbotGuilds.TryGetValue(channel.Guild.Id, out cleverbot))
                     return false;
 
-                var wizbotId = WizBot.Client.CurrentUser().Id;
+                var wizbotId = WizBot.Client.CurrentUser.Id;
                 var normalMention = $"<@{wizbotId}> ";
                 var nickMention = $"<@!{wizbotId}> ";
                 string message;

@@ -31,7 +31,7 @@ namespace WizBot.Modules.Utility
                         var channel = imsg.Channel as ITextChannel;
                         if (channel == null)
                             return;
-                        if (msg.Author.Id == WizBot.Client.CurrentUser().Id) return;
+                        if (msg.Author.Id == WizBot.Client.CurrentUser.Id) return;
                         foreach (var subscriber in Subscribers)
                         {
                             var set = subscriber.Value;

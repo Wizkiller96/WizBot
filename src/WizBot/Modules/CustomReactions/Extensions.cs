@@ -18,7 +18,7 @@ namespace WizBot.Modules.CustomReactions
 
         public static Dictionary<string, Func<IUserMessage, string>> placeholders = new Dictionary<string, Func<IUserMessage, string>>()
         {
-            {"%mention%", (ctx) => { return $"<@{WizBot.Client.CurrentUser().Id}>"; } },
+            {"%mention%", (ctx) => { return $"<@{WizBot.Client.CurrentUser.Id}>"; } },
             {"%user%", (ctx) => { return ctx.Author.Mention; } },
             {"%rnduser%", (ctx) => {
                 var ch = ctx.Channel as ITextChannel;

@@ -1,4 +1,5 @@
 ﻿using Discord;
+using Discord.WebSocket;
 using WizBot.Extensions;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace WizBot.Services.Impl
 {
     public class StatsService : IStatsService
     {
-        private ShardedDiscordClient client;
+        private DiscordShardedClient client;
         private DateTime started;
 
         public const string BotVersion = "1.1.0";
@@ -33,7 +34,7 @@ namespace WizBot.Services.Impl
         
         Timer carbonitexTimer { get; }
 
-        public StatsService(ShardedDiscordClient client, CommandHandler cmdHandler)
+        public StatsService(DiscordShardedClient client, CommandHandler cmdHandler)
         {
 
             this.client = client;
@@ -41,15 +42,6 @@ namespace WizBot.Services.Impl
             Reset();
             this.client.MessageReceived += _ => Task.FromResult(MessageCounter++);
             cmdHandler.CommandExecuted += (_, e) => Task.FromResult(CommandsRan++);
-
-            this.client.Disconnected += _ => Reset();
-
-            this.client.Connected += () =>
-            {
-                var guilds = this.client.GetGuilds();
-                _textChannels = guilds.Sum(g => g.Channels.Where(cx => cx is ITextChannel).Count());
-                _voiceChannels = guilds.Sum(g => g.Channels.Count) - _textChannels;
-            };
 
             this.client.ChannelCreated += (c) =>
             {
@@ -93,7 +85,7 @@ namespace WizBot.Services.Impl
                     {
                         using (var content = new FormUrlEncodedContent(
                             new Dictionary<string, string> {
-                                { "servercount", this.client.GetGuildsCount().ToString() },
+                                { "servercount", this.client.GetGuildCount().ToString() },
                                 { "key", WizBot.Credentials.CarbonKey }}))
                         {
                             content.Headers.Clear();
@@ -106,16 +98,24 @@ namespace WizBot.Services.Impl
                 catch { }
             }, null, TimeSpan.FromHours(1), TimeSpan.FromHours(1));
         }
+
+        public void Initialize()
+        {
+            var guilds = this.client.GetGuilds();
+            _textChannels = guilds.Sum(g => g.Channels.Where(cx => cx is ITextChannel).Count());
+            _voiceChannels = guilds.Sum(g => g.Channels.Count) - _textChannels;
+        }
+
         public Task<string> Print()
         {
-            var curUser = client.CurrentUser();
+            var curUser = client.CurrentUser;
             return Task.FromResult($@"
 Author: [{Author}] | Library: [{Library}]
 Bot Version: [{BotVersion}]
 Bot ID: {curUser.Id}
 Owner ID(s): {string.Join(", ", WizBot.Credentials.OwnerIds)}
 Uptime: {GetUptimeString()}
-Servers: {client.GetGuildsCount()} | TextChannels: {TextChannels} | VoiceChannels: {VoiceChannels}
+Servers: {client.GetGuildCount()} | TextChannels: {TextChannels} | VoiceChannels: {VoiceChannels}
 Commands Ran this session: {CommandsRan}
 Messages: {MessageCounter} [{MessagesPerSecond:F2}/sec] Heap: [{Heap} MB]");
         }

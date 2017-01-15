@@ -80,7 +80,7 @@ namespace WizBot.Modules.Games
             else if ((pick == 0 && wizbotPick == 1) ||
                      (pick == 1 && wizbotPick == 2) ||
                      (pick == 2 && wizbotPick == 0))
-                msg = $"{WizBot.Client.CurrentUser().Mention} won! {GetRPSPick(wizbotPick)} beats {GetRPSPick(pick)}";
+                msg = $"{WizBot.Client.CurrentUser.Mention} won! {GetRPSPick(wizbotPick)} beats {GetRPSPick(pick)}";
             else
                 msg = $"{Context.User.Mention} won! {GetRPSPick(pick)} beats {GetRPSPick(wizbotPick)}";
 

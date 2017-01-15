@@ -50,7 +50,7 @@ namespace WizBot.Modules.Administration
                                 if (string.IsNullOrWhiteSpace(status))
                                     continue;
                                 PlayingPlaceholders.ForEach(e => status = status.Replace(e.Key, e.Value()));
-                                await WizBot.Client.SetGame(status);
+                                await WizBot.Client.SetGameAsync(status).ConfigureAwait(false);
                             }
                         }
                         catch (Exception ex)
