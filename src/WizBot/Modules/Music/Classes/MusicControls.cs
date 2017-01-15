@@ -140,10 +140,16 @@ namespace WizBot.Modules.Music.Classes
                             RemoveSongAt(index, true);
 
                         OnStarted(this, CurrentSong);
-                        await CurrentSong.Play(audioClient, cancelToken);
+                        try
+                        {
+                            await CurrentSong.Play(audioClient, cancelToken);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            OnCompleted(this, CurrentSong);
+                        }
 
-                        OnCompleted(this, CurrentSong);
-
+                       
                         if (RepeatPlaylist)
                             AddSong(CurrentSong, CurrentSong.QueuerName);
 
@@ -151,7 +157,6 @@ namespace WizBot.Modules.Music.Classes
                             AddSong(CurrentSong, 0);
 
                     }
-                    catch (OperationCanceledException) { }
                     catch (Exception ex)
                     {
                         Console.WriteLine("Music thread almost crashed.");
