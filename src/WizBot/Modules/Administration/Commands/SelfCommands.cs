@@ -168,6 +168,7 @@ namespace WizBot.Modules.Administration
                         .ConfigureAwait(false);
 
                 await Context.Channel.SendConfirmAsync("🆗").ConfigureAwait(false);
+            }
 
                 private static UserStatus SettableUserStatusToUserStatus(SettableUserStatus sus)
             {
@@ -184,7 +185,6 @@ namespace WizBot.Modules.Administration
                 }
 
                 return UserStatus.Online;
-                }
             }
         }
     }
