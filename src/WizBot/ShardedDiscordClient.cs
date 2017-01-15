@@ -181,9 +181,7 @@ public Task<IDMChannel> GetDMChannelAsync(ulong channelId) =>
 
         public Task SetStream(string name, string url) => Task.WhenAll(Clients.Select(ms => ms.SetGameAsync(name, url, StreamType.Twitch)));
 
-        public Task SetStatus(SettableUserStatus status) => Task.WhenAll(Clients.Select(ms => ms.SetStatusAsync(SettableUserStatusToUserStatus(status))));
-
-      
+        //public Task SetStatus(SettableUserStatus status) => Task.WhenAll(Clients.Select(ms => ms.SetStatusAsync(SettableUserStatusToUserStatus(status))));
     }
 
     public enum SettableUserStatus

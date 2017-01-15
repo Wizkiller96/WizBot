@@ -143,7 +143,7 @@ namespace WizBot.Modules.Games.Trivia
                 try { await channel.SendConfirmAsync("Trivia Game", "Stopping after this question.").ConfigureAwait(false); } catch (Exception ex) { _log.Warn(ex); }
         }
 
-        private async void PotentialGuess(SocketMessage imsg)
+        private async Task PotentialGuess(SocketMessage imsg)
         {
             try
             {

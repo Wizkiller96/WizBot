@@ -49,6 +49,8 @@ namespace WizBot.Services.Impl
                     ++_textChannels;
                 else if (c is IVoiceChannel)
                     ++_voiceChannels;
+
+                return Task.CompletedTask;
             };
 
             this.client.ChannelDestroyed += (c) =>
@@ -57,6 +59,8 @@ namespace WizBot.Services.Impl
                     --_textChannels;
                 else if (c is IVoiceChannel)
                     --_voiceChannels;
+
+                return Task.CompletedTask;
             };
 
             this.client.JoinedGuild += (g) =>
@@ -65,6 +69,8 @@ namespace WizBot.Services.Impl
                 var vc = g.Channels.Count - tc;
                 _textChannels += tc;
                 _voiceChannels += vc;
+
+                return Task.CompletedTask;
             };
 
             this.client.LeftGuild += (g) =>
@@ -73,6 +79,8 @@ namespace WizBot.Services.Impl
                 var vc = g.Channels.Count - tc;
                 _textChannels -= tc;
                 _voiceChannels -= vc;
+
+                return Task.CompletedTask;
             };
 
                                   this.carbonitexTimer = new Timer(async (state) =>

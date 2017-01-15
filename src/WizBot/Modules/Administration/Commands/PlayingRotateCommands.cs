@@ -67,7 +67,7 @@ namespace WizBot.Modules.Administration
 
             public static Dictionary<string, Func<string>> PlayingPlaceholders { get; } =
                 new Dictionary<string, Func<string>> {
-                    {"%servers%", () => WizBot.Client.GetGuildsCount().ToString()},
+                    {"%servers%", () => WizBot.Client.GetGuildCount().ToString()},
                     {"%users%", () => WizBot.Client.GetGuilds().Sum(s => s.Users.Count).ToString()},
                     {"%playing%", () => {
                             var cnt = Music.Music.MusicPlayers.Count(kvp => kvp.Value.CurrentSong != null);
