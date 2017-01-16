@@ -67,8 +67,9 @@ namespace WizBot
                 TotalShards = Credentials.TotalShards,
                 ConnectionTimeout = int.MaxValue
             });
-
+#if GLOBAL_WIZBOT
             Client.Log += Client_Log;
+#endif
 
             //initialize Services
             CommandService = new CommandService(new CommandServiceConfig() {
