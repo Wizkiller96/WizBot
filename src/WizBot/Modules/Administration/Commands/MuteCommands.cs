@@ -37,7 +37,6 @@ namespace WizBot.Modules.Administration
             static MuteCommands()
             {
                 var _log = LogManager.GetCurrentClassLogger();
-                var sw = Stopwatch.StartNew();
                 
                 var configs = WizBot.AllGuildConfigs;
                 GuildMuteRoles = new ConcurrentDictionary<ulong, string>(configs
@@ -50,9 +49,6 @@ namespace WizBot.Modules.Administration
                 ));
 
                 WizBot.Client.UserJoined += Client_UserJoined;
-
-                sw.Stop();
-                _log.Debug($"Loaded in {sw.Elapsed.TotalSeconds:F2}s");
             }
 
             private static async Task Client_UserJoined(IGuildUser usr)

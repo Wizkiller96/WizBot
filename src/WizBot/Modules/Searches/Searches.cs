@@ -260,7 +260,7 @@ namespace WizBot.Modules.Searches
                 .WithTitle(Context.User.Mention)
                 .WithFooter(efb => efb.WithText(totalResults));
 
-            var desc = await Task.WhenAll(results.Select(async res => 
+            var desc = await Task.WhenAll(results.Select(async res =>
                     $"[{Format.Bold(res?.Title)}]({(await WizBot.Google.ShortenUrl(res?.Link))})\n{res?.Text}\n\n"))
                 .ConfigureAwait(false);
             await Context.Channel.EmbedAsync(embed.WithDescription(String.Concat(desc))).ConfigureAwait(false);
@@ -517,7 +517,8 @@ namespace WizBot.Modules.Searches
                                                                  .WithAuthor(eab => eab.WithUrl(link)
                                                                                        .WithIconUrl("http://res.cloudinary.com/urbandictionary/image/upload/a_exif,c_fit,h_200,w_200/v1394975045/b8oszuu3tbq7ebyo7vo1.jpg")
                                                                                        .WithName(query))
-                                                                 .WithDescription(desc));
+                                                                 .WithDescription(desc))
+                                                                 .ConfigureAwait(false);
             }
             catch
             {
@@ -572,9 +573,9 @@ namespace WizBot.Modules.Searches
                 var result = await http.GetStringAsync("https://en.wikipedia.org//w/api.php?action=query&format=json&prop=info&redirects=1&formatversion=2&inprop=url&titles=" + Uri.EscapeDataString(query));
                 var data = JsonConvert.DeserializeObject<WikipediaApiModel>(result);
                 if (data.Query.Pages[0].Missing)
-                    await Context.Channel.SendErrorAsync("That page could not be found.");
+                    await Context.Channel.SendErrorAsync("That page could not be found.").ConfigureAwait(false);
                 else
-                    await Context.Channel.SendMessageAsync(data.Query.Pages[0].FullUrl);
+                    await Context.Channel.SendMessageAsync(data.Query.Pages[0].FullUrl).ConfigureAwait(false);
             }
         }
 
@@ -588,7 +589,7 @@ namespace WizBot.Modules.Searches
 
             img.BackgroundColor(new ImageSharp.Color(color));
 
-            await Context.Channel.SendFileAsync(img.ToStream(), $"{color}.png");
+            await Context.Channel.SendFileAsync(img.ToStream(), $"{color}.png").ConfigureAwait(false); ;
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -642,7 +643,7 @@ namespace WizBot.Modules.Searches
                     var response = $@"`Title:` {found["title"].ToString()}
 `Quality:` {found["quality"]}
 `URL:` {await WizBot.Google.ShortenUrl(found["url"].ToString()).ConfigureAwait(false)}";
-                    await Context.Channel.SendMessageAsync(response);
+                    await Context.Channel.SendMessageAsync(response).ConfigureAwait(false);
                 }
                 catch
                 {
@@ -774,20 +775,24 @@ namespace WizBot.Modules.Searches
             }
             try
             {
-                using (var http = new HttpClient())
+                var toReturn = await Task.Run(async () =>
                 {
-                    http.AddFakeHeaders();
-                    var data = await http.GetStreamAsync(website);
-                    var doc = new XmlDocument();
-                    doc.Load(data);
+                    using (var http = new HttpClient())
+                    {
+                        http.AddFakeHeaders();
+                        var data = await http.GetStreamAsync(website).ConfigureAwait(false);
+                        var doc = new XmlDocument();
+                        doc.Load(data);
 
-                    var node = doc.LastChild.ChildNodes[new WizBotRandom().Next(0, doc.LastChild.ChildNodes.Count)];
+                        var node = doc.LastChild.ChildNodes[new WizBotRandom().Next(0, doc.LastChild.ChildNodes.Count)];
 
-                    var url = node.Attributes["file_url"].Value;
-                    if (!url.StartsWith("http"))
-                        url = "https:" + url;
-                    return url;
-                }
+                        var url = node.Attributes["file_url"].Value;
+                        if (!url.StartsWith("http"))
+                            url = "https:" + url;
+                        return url;
+                    }
+                }).ConfigureAwait(false);
+                return toReturn;
             }
             catch
             {
