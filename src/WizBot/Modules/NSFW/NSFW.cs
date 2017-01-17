@@ -66,6 +66,7 @@ namespace WizBot.Modules.NSFW
             InternalHentai(Context.Channel, tag, false);
 
         [WizBotCommand, Usage, Description, Aliases]
+        [RequireUserPermission(ChannelPermission.ManageMessages)]
         public async Task AutoHentai(int interval = 0, string tags = null)
         {
             Timer t;
