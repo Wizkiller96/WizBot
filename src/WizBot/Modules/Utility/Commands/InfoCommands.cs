@@ -53,7 +53,7 @@ namespace WizBot.Modules.Utility
                     .WithColor(WizBot.OkColor);
                 if (guild.Emojis.Count() > 0)
                 {
-                    embed.AddField(fb => fb.WithName("**Custom Emojis**").WithValue(Format.Italics(string.Join(" | ", guild.Emojis.Select(e => $"{e.Name} <:{e.Name}:{e.Id}>")))));
+                    embed.AddField(fb => fb.WithName("**Custom Emojis**").WithValue(string.Join(" ", guild.Emojis.Select(e => $"{e.Name} <:{e.Name}:{e.Id}>"))));
                 }
                 await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
