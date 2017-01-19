@@ -831,6 +831,7 @@ namespace WizBot.Modules.Music
                         lastFinishedMessage = await textCh.EmbedAsync(new EmbedBuilder().WithOkColor()
                                                   .WithAuthor(eab => eab.WithName("Finished Song").WithMusicIcon())
                                                   .WithDescription(song.PrettyName)
+                                                  .WithThumbnailUrl(song.Thumbnail)
                                                   .WithFooter(ef => ef.WithText(song.PrettyInfo)))
                                                     .ConfigureAwait(false);
 
@@ -856,6 +857,7 @@ namespace WizBot.Modules.Music
                         playingMessage = await textCh.EmbedAsync(new EmbedBuilder().WithOkColor()
                                                     .WithAuthor(eab => eab.WithName("Playing Song").WithMusicIcon())
                                                     .WithDescription(song.PrettyName)
+                                                    .WithThumbnailUrl(song.Thumbnail)
                                                     .WithFooter(ef => ef.WithText(song.PrettyInfo)))
                                                     .ConfigureAwait(false);
                     }
