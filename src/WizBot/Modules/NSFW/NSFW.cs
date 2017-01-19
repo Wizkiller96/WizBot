@@ -19,6 +19,7 @@ namespace WizBot.Modules.NSFW
     [WizBotModule("NSFW", "~")]
     public class NSFW : DiscordModule
     {
+#if !GLOBAL_WIZBOT
         private static ConcurrentDictionary<ulong, Timer> AutoHentaiTimers { get; } = new ConcurrentDictionary<ulong, Timer>();
         private static ConcurrentHashSet<ulong> _hentaiBombBlacklist { get; } = new ConcurrentHashSet<ulong>();
 
@@ -190,6 +191,7 @@ namespace WizBot.Modules.NSFW
                     .WithFooter(efb => efb.WithText("e621")))
                     .ConfigureAwait(false);
         }
+#endif
 
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Cp()
@@ -205,7 +207,7 @@ namespace WizBot.Modules.NSFW
                 JToken obj;
                 using (var http = new HttpClient())
                 {
-                    obj = JArray.Parse(await http.GetStringAsync($"http://api.oboobs.ru/boobs/{ new WizBotRandom().Next(0, 10229) }").ConfigureAwait(false))[0];
+                    obj = JArray.Parse(await http.GetStringAsync($"http://api.oboobs.ru/boobs/{ new WizBotRandom().Next(0, 10330) }").ConfigureAwait(false))[0];
                 }
                 await Context.Channel.SendMessageAsync($"http://media.oboobs.ru/{ obj["preview"].ToString() }").ConfigureAwait(false);
             }
@@ -223,7 +225,7 @@ namespace WizBot.Modules.NSFW
                 JToken obj;
                 using (var http = new HttpClient())
                 {
-                    obj = JArray.Parse(await http.GetStringAsync($"http://api.obutts.ru/butts/{ new WizBotRandom().Next(0, 4222) }").ConfigureAwait(false))[0];
+                    obj = JArray.Parse(await http.GetStringAsync($"http://api.obutts.ru/butts/{ new WizBotRandom().Next(0, 4335) }").ConfigureAwait(false))[0];
                 }
                 await Context.Channel.SendMessageAsync($"http://media.obutts.ru/{ obj["preview"].ToString() }").ConfigureAwait(false);
             }
@@ -232,7 +234,7 @@ namespace WizBot.Modules.NSFW
                 await Context.Channel.SendErrorAsync(ex.Message).ConfigureAwait(false);
             }
         }
-
+#if !GLOBAL_WIZBOT
         public static Task<string> GetDanbooruImageLink(string tag) => Task.Run(async () =>
         {
             try
@@ -290,4 +292,5 @@ namespace WizBot.Modules.NSFW
         public static Task<string> GetRule34ImageLink(string tag) =>
             Searches.Searches.InternalDapiSearch(tag, Searches.Searches.DapiSearchType.Rule34);
     }
+#endif
 }
