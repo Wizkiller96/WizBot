@@ -10,17 +10,18 @@ using WizBot.Modules.Music.Classes;
 namespace WizBot.Migrations
 {
     [DbContext(typeof(WizBotContext))]
-    partial class WizBotSqliteContextModelSnapshot : ModelSnapshot
+    [Migration("20170122044958_waifus")]
+    partial class waifus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.0-rtm-22752");
 
             modelBuilder.Entity("WizBot.Services.Database.Models.AntiRaidSetting", b =>
-                {
+            {
                 b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                    .ValueGeneratedOnAdd();
 
                 b.Property<int>("Action");
 
@@ -33,15 +34,15 @@ namespace WizBot.Migrations
                 b.HasKey("Id");
 
                 b.HasIndex("GuildConfigId")
-                        .IsUnique();
+                    .IsUnique();
 
                 b.ToTable("AntiRaidSetting");
-                });
+            });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.AntiSpamIgnore", b =>
-                {
+            {
                 b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                    .ValueGeneratedOnAdd();
 
                 b.Property<int?>("AntiSpamSettingId");
 
@@ -52,12 +53,12 @@ namespace WizBot.Migrations
                 b.HasIndex("AntiSpamSettingId");
 
                 b.ToTable("AntiSpamIgnore");
-                });
+            });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.AntiSpamSetting", b =>
-                {
+            {
                 b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                    .ValueGeneratedOnAdd();
 
                 b.Property<int>("Action");
 
@@ -68,12 +69,12 @@ namespace WizBot.Migrations
                 b.HasKey("Id");
 
                 b.HasIndex("GuildConfigId")
-                        .IsUnique();
+                    .IsUnique();
 
                 b.ToTable("AntiSpamSetting");
-                });
+            });
 
-                       modelBuilder.Entity("WizBot.Services.Database.Models.BlacklistItem", b =>
+            modelBuilder.Entity("WizBot.Services.Database.Models.BlacklistItem", b =>
             {
                 b.Property<int>("Id")
                     .ValueGeneratedOnAdd();
@@ -209,10 +210,10 @@ namespace WizBot.Migrations
                 b.ToTable("CommandCooldown");
             });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.CommandPrice", b =>
-                {
+            modelBuilder.Entity("WizBot.Services.Database.Models.CommandPrice", b =>
+            {
                 b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                    .ValueGeneratedOnAdd();
 
                 b.Property<int?>("BotConfigId");
 
@@ -225,13 +226,13 @@ namespace WizBot.Migrations
                 b.HasIndex("BotConfigId");
 
                 b.HasIndex("Price")
-                        .IsUnique();
+                    .IsUnique();
 
                 b.ToTable("CommandPrice");
-                });
+            });
 
-           modelBuilder.Entity("WizBot.Services.Database.Models.ConvertUnit", b =>
-                {
+            modelBuilder.Entity("WizBot.Services.Database.Models.ConvertUnit", b =>
+            {
                 b.Property<int>("Id")
                     .ValueGeneratedOnAdd();
 
@@ -300,9 +301,9 @@ namespace WizBot.Migrations
             });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.DiscordUser", b =>
-                {
+            {
                 b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                    .ValueGeneratedOnAdd();
 
                 b.Property<string>("AvatarId");
 
@@ -317,7 +318,7 @@ namespace WizBot.Migrations
                 b.HasAlternateKey("UserId");
 
                 b.ToTable("DiscordUser");
-                });
+            });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.Donator", b =>
             {
@@ -838,9 +839,9 @@ namespace WizBot.Migrations
             });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.WaifuInfo", b =>
-                {
+            {
                 b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                    .ValueGeneratedOnAdd();
 
                 b.Property<int?>("AffinityId");
 
@@ -857,15 +858,15 @@ namespace WizBot.Migrations
                 b.HasIndex("ClaimerId");
 
                 b.HasIndex("WaifuId")
-                        .IsUnique();
+                    .IsUnique();
 
                 b.ToTable("WaifuInfo");
-                });
+            });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.WaifuUpdate", b =>
-                {
+            {
                 b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                    .ValueGeneratedOnAdd();
 
                 b.Property<int?>("NewId");
 
@@ -884,32 +885,32 @@ namespace WizBot.Migrations
                 b.HasIndex("UserId");
 
                 b.ToTable("WaifuUpdates");
-                });
+            });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.AntiRaidSetting", b =>
-                {
+            {
                 b.HasOne("WizBot.Services.Database.Models.GuildConfig", "GuildConfig")
-                        .WithOne("AntiRaidSetting")
-                        .HasForeignKey("WizBot.Services.Database.Models.AntiRaidSetting", "GuildConfigId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
+                    .WithOne("AntiRaidSetting")
+                    .HasForeignKey("WizBot.Services.Database.Models.AntiRaidSetting", "GuildConfigId")
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.AntiSpamIgnore", b =>
-                {
+            {
                 b.HasOne("WizBot.Services.Database.Models.AntiSpamSetting")
-                        .WithMany("IgnoredChannels")
-                        .HasForeignKey("AntiSpamSettingId");
-                });
+                    .WithMany("IgnoredChannels")
+                    .HasForeignKey("AntiSpamSettingId");
+            });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.AntiSpamSetting", b =>
-                {
+            {
                 b.HasOne("WizBot.Services.Database.Models.GuildConfig", "GuildConfig")
-                        .WithOne("AntiSpamSetting")
-                        .HasForeignKey("WizBot.Services.Database.Models.AntiSpamSetting", "GuildConfigId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
+                    .WithOne("AntiSpamSetting")
+                    .HasForeignKey("WizBot.Services.Database.Models.AntiSpamSetting", "GuildConfigId")
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
 
-                       modelBuilder.Entity("WizBot.Services.Database.Models.BlacklistItem", b =>
+            modelBuilder.Entity("WizBot.Services.Database.Models.BlacklistItem", b =>
             {
                 b.HasOne("WizBot.Services.Database.Models.BotConfig")
                     .WithMany("Blacklist")
@@ -931,12 +932,12 @@ namespace WizBot.Migrations
                     .HasForeignKey("GuildConfigId");
             });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.CommandPrice", b =>
-                {
-                b.HasOne("NadekoBot.Services.Database.Models.BotConfig")
-                        .WithMany("CommandPrices")
-                        .HasForeignKey("BotConfigId");
-                });
+            modelBuilder.Entity("WizBot.Services.Database.Models.CommandPrice", b =>
+            {
+                b.HasOne("WizBot.Services.Database.Models.BotConfig")
+                    .WithMany("CommandPrices")
+                    .HasForeignKey("BotConfigId");
+            });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.EightBallResponse", b =>
             {
@@ -1053,36 +1054,36 @@ namespace WizBot.Migrations
             });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.WaifuInfo", b =>
-                {
+            {
                 b.HasOne("WizBot.Services.Database.Models.DiscordUser", "Affinity")
-                        .WithMany()
-                        .HasForeignKey("AffinityId");
+                    .WithMany()
+                    .HasForeignKey("AffinityId");
 
                 b.HasOne("WizBot.Services.Database.Models.DiscordUser", "Claimer")
-                        .WithMany()
-                        .HasForeignKey("ClaimerId");
+                    .WithMany()
+                    .HasForeignKey("ClaimerId");
 
                 b.HasOne("WizBot.Services.Database.Models.DiscordUser", "Waifu")
-                        .WithOne()
-                        .HasForeignKey("WizBot.Services.Database.Models.WaifuInfo", "WaifuId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
+                    .WithOne()
+                    .HasForeignKey("WizBot.Services.Database.Models.WaifuInfo", "WaifuId")
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.WaifuUpdate", b =>
-                {
+            {
                 b.HasOne("WizBot.Services.Database.Models.DiscordUser", "New")
-                        .WithMany()
-                        .HasForeignKey("NewId");
+                    .WithMany()
+                    .HasForeignKey("NewId");
 
                 b.HasOne("WizBot.Services.Database.Models.DiscordUser", "Old")
-                        .WithMany()
-                        .HasForeignKey("OldId");
+                    .WithMany()
+                    .HasForeignKey("OldId");
 
                 b.HasOne("WizBot.Services.Database.Models.DiscordUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
+                    .WithMany()
+                    .HasForeignKey("UserId")
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
         }
     }
 }

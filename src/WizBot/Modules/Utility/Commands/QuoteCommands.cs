@@ -48,7 +48,7 @@ namespace WizBot.Modules.Utility
                 keyword = keyword.ToUpperInvariant();
 
                 Quote quote;
-                using (var uow = DbHandler.Instance.GetUnitOfWork())
+                using (var uow = DbHandler.UnitOfWork())
                 {
                     quote = await uow.Quotes.GetRandomQuoteByKeywordAsync(Context.Guild.Id, keyword).ConfigureAwait(false);
                 }

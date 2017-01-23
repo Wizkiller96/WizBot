@@ -147,7 +147,7 @@ namespace WizBot.Modules.Gambling
 
         [WizBotCommand, Usage, Description, Aliases]
         [OwnerOnly]
-        public async Task BrTest(int tests = 1000)
+        public Task BrTest(int tests = 1000)
         {
             var t = Task.Run(async () =>
             {
@@ -189,10 +189,15 @@ namespace WizBot.Modules.Gambling
                     sb.AppendLine($"x{key} occured {dict[key]} times. {dict[key] * 1.0f / tests * 100}%");
                     payout += key* dict[key];
                 }
+            try
+                {
                 await Context.Channel.SendConfirmAsync("BetRoll Test Results", sb.ToString(),
-                    footer: $"Total Bet: {tests * bet} | Payout: {payout * bet} | {payout * 1.0f / tests * 100}%");
+                footer: $"Total Bet: {tests * bet} | Payout: {payout * bet} | {payout * 1.0f / tests * 100}%");
+                }
+                catch { }
 
             });
+            return Task.CompletedTask;
         }
 
         [WizBotCommand, Usage, Description, Aliases]

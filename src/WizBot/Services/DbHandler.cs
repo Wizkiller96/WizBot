@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using WizBot.Services.Database;
 
 namespace WizBot.Services
@@ -13,7 +15,8 @@ namespace WizBot.Services
 
         static DbHandler() { }
 
-        private DbHandler() {
+        private DbHandler()
+        {
             connectionString = WizBot.Credentials.Db.ConnectionString;
             var optionsBuilder = new DbContextOptionsBuilder();
             optionsBuilder.UseSqlite(WizBot.Credentials.Db.ConnectionString);
@@ -32,10 +35,16 @@ namespace WizBot.Services
             //}
         }
 
-        public WizBotContext GetDbContext() =>
-            new WizBotContext(options);
+        public WizBotContext GetDbContext()
+        {
+            var context = new WizBotContext(options);
+            context.Database.Migrate();
+            context.EnsureSeedData();
 
-        public IUnitOfWork GetUnitOfWork() =>
+            return context;
+        }
+
+        private IUnitOfWork GetUnitOfWork() =>
             new UnitOfWork(GetDbContext());
 
         public static IUnitOfWork UnitOfWork() =>
