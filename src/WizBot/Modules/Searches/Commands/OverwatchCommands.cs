@@ -92,7 +92,6 @@ namespace WizBot.Modules.Searches
                     return null;
                 }
             }
-
         }
     }
 }
