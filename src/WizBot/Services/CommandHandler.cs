@@ -214,12 +214,12 @@ namespace WizBot.Services
                 if (IsBlacklisted(guild, usrMsg))
                     return;
 
-                var cleverBotRan = await TryRunCleverbot(usrMsg, guild).ConfigureAwait(false);
+                var cleverBotRan = await Task.Run(() => TryRunCleverbot(usrMsg, guild)).ConfigureAwait(false);
                 if (cleverBotRan)
                     return;
 
                 // maybe this message is a custom reaction
-                var crExecuted = await CustomReactions.TryExecuteCustomReaction(usrMsg).ConfigureAwait(false);
+                var crExecuted = await Task.Run(() => CustomReactions.TryExecuteCustomReaction(usrMsg)).ConfigureAwait(false);
                 if (crExecuted) //if it was, don't execute the command
                     return;
 
@@ -227,7 +227,7 @@ namespace WizBot.Services
 
                 // execute the command and measure the time it took
                 
-                var exec = await ExecuteCommand(new CommandContext(_client, usrMsg), messageContent, DependencyMap.Empty, MultiMatchHandling.Best);
+                var exec = await Task.Run(() => ExecuteCommand(new CommandContext(_client, usrMsg), messageContent, DependencyMap.Empty, MultiMatchHandling.Best)).ConfigureAwait(false);
                 execTime = Environment.TickCount - execTime;
 
                 if (exec.Result.IsSuccess)
