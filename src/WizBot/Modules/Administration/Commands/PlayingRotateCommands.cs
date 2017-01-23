@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
+using Discord.WebSocket;
 using WizBot.Attributes;
 using WizBot.Extensions;
 using WizBot.Services;
@@ -50,8 +51,17 @@ namespace WizBot.Modules.Administration
                                 if (string.IsNullOrWhiteSpace(status))
                                     continue;
                                 PlayingPlaceholders.ForEach(e => status = status.Replace(e.Key, e.Value()));
-                                await WizBot.Client.SetGameAsync(status).ConfigureAwait(false);
-                            }
+                                var shards = WizBot.Client.Shards;
+                                for (int i = 0; i < shards.Count; i++)
+                                {
+                                    ShardSpecificPlaceholders.ForEach(e => status = status.Replace(e.Key, e.Value(shards.ElementAt(i))));
+                                    try { await shards.ElementAt(i).SetGameAsync(status).ConfigureAwait(false); }
+                                    catch (Exception ex)
+                                    {
+                            _log.Warn(ex);
+                                    }
+                                }
+                    }
                         }
                         catch (Exception ex)
                         {
@@ -82,7 +92,14 @@ namespace WizBot.Modules.Administration
                         }
                     },
                     { "%queued%", () => Music.Music.MusicPlayers.Sum(kvp => kvp.Value.Playlist.Count).ToString()},
-                    { "%time%", () => DateTime.Now.ToString("hh:mm " + TimeZoneInfo.Local.StandardName.GetInitials()) }
+                    { "%time%", () => DateTime.Now.ToString("hh:mm " + TimeZoneInfo.Local.StandardName.GetInitials()) },
+                    { "%shardcount%", () => WizBot.Client.Shards.Count.ToString() },
+                };
+
+            public static Dictionary<string, Func<DiscordSocketClient, string>> ShardSpecificPlaceholders { get; } =
+                new Dictionary<string, Func<DiscordSocketClient, string>> {
+                    { "%shardid%", (client) => client.ShardId.ToString()},
+                    { "%shardguilds%", (client) => client.Guilds.Count.ToString()},
                 };
 
             [WizBotCommand, Usage, Description, Aliases]
