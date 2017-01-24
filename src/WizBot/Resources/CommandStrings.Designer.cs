@@ -8025,6 +8025,33 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
+        ///    Looks up a localized string similar to updates.
+        /// </summary>
+        public static string updates_cmd {
+            get {
+                return ResourceManager.GetString("updates_cmd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Show the lastest changes to WizBot..
+        /// </summary>
+        public static string updates_desc {
+            get {
+                return ResourceManager.GetString("updates_desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to `{0}updates`.
+        /// </summary>
+        public static string updates_usage {
+            get {
+                return ResourceManager.GetString("updates_usage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///    Looks up a localized string similar to urbandict ud.
         /// </summary>
         public static string urbandict_cmd {

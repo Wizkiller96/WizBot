@@ -548,5 +548,26 @@ namespace WizBot.Modules.Administration
 
             await Context.Channel.SendConfirmAsync($"Successfuly added a new donator. Total donated amount from this user: {don.Amount} 👑").ConfigureAwait(false);
         }
+
+        [WizBotCommand, Usage, Description, Aliases]
+        public async Task Updates()
+        {
+            var stats = WizBot.Stats;
+
+            await Context.Channel.EmbedAsync(
+                new EmbedBuilder().WithOkColor()
+                    .WithAuthor(eab => eab.WithName($"WizBot Changelogs - Jan 24, 2017")
+                                          .WithUrl("https://github.com/Wizkiller96/WizBot/commits/dev")
+                                          .WithIconUrl("https://cdn.discordapp.com/avatars/170849991357628416/412367ac7ffd3915a0b969f6f3e17aca.jpg"))
+                    .AddField(efb => efb.WithName(Format.Bold("=>")).WithValue("`$claim`, `$waifuinfo`, `$affinity` and `$divorce` commands added for a waifu currency game").WithIsInline(true))
+                    .AddField(efb => efb.WithName(Format.Bold("=>")).WithValue("You can now plant multiple flowers (default is still one) >plant 5").WithIsInline(true))
+                    .AddField(efb => efb.WithName(Format.Bold("=>")).WithValue("`~ow` fix for no rank players").WithIsInline(true))
+                    .AddField(efb => efb.WithName(Format.Bold("=>")).WithValue("`!!lq` now shows 'now playing' song").WithIsInline(true))
+                    .AddField(efb => efb.WithName(Format.Bold("=>")).WithValue("`;cmdcd` confirmation response fix").WithIsInline(true))
+                    .AddField(efb => efb.WithName(Format.Bold("=>")).WithValue("`.sinfo` fixed. Shows 25 random emojis from the server.").WithIsInline(true))
+                    .AddField(efb => efb.WithName(Format.Bold("=>")).WithValue("Updated `$lb` and added `-updates`").WithIsInline(true))
+                    .WithFooter(efb => efb.WithText($"More info at <http://github.com/Wizkiller96/WizBot>"))
+                    );
+        }
     }
 }

@@ -3024,4 +3024,13 @@
   <data name="waifuleaderboard_usage" xml:space="preserve">
     <value>`{0}waifus`</value>
   </data>
+  <data name="updates_cmd" xml:space="preserve">
+    <value>updates</value>
+  </data>
+  <data name="updates_desc" xml:space="preserve">
+    <value>Show the lastest changes to WizBot.</value>
+  </data>
+  <data name="updates_usage" xml:space="preserve">
+    <value>`{0}updates`</value>
+  </data>
 </root>
