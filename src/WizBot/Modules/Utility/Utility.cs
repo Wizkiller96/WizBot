@@ -352,16 +352,14 @@ namespace WizBot.Modules.Utility
 
             await Context.Channel.EmbedAsync(
                 new EmbedBuilder().WithOkColor()
-                    .WithAuthor(eab => eab.WithName($"WizBot Changelogs - Jan 24, 2017")
+                    .WithAuthor(eab => eab.WithName($"WizBot Changelogs | 📅 Jan 25, 2017")
                                           .WithUrl("https://github.com/Wizkiller96/WizBot/commits/dev")
                                           .WithIconUrl("https://cdn.discordapp.com/avatars/170849991357628416/412367ac7ffd3915a0b969f6f3e17aca.jpg"))
-                    .AddField(efb => efb.WithName(Format.Bold("1.")).WithValue("`$claim`, `$waifuinfo`, `$affinity` and `$divorce` commands added for a waifu currency game").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("2.")).WithValue("You can now plant multiple flowers (default is still one) >plant 5").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("3.")).WithValue("`~ow` fix for no rank players").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("4.")).WithValue("`!!lq` now shows 'now playing' song").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("5.")).WithValue("`;cmdcd` confirmation response fix").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("6.")).WithValue("`.sinfo` fixed. Shows 25 random emojis from the server.").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("7.")).WithValue("Updated `$lb` and added `.updates`").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("1.")).WithValue("`.adpl` help updated.").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("2.")).WithValue("`~img` and `~rimg` will use google images first. if it fails, then fallback to imgur").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("3.")).WithValue("Flower event fix").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("4.")).WithValue("Added `~mal` command").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("5.")).WithValue("Fixed `~img` and `~rimg`").WithIsInline(false))
                     .WithFooter(efb => efb.WithText($"More info at: http://github.com/Wizkiller96/WizBot"))
                     );
         }
