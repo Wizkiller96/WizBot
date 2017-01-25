@@ -3033,4 +3033,13 @@
   <data name="updates_usage" xml:space="preserve">
     <value>`{0}updates`</value>
   </data>
+  <data name="mal_cmd" xml:space="preserve">
+    <value>mal</value>
+  </data>
+  <data name="mal_desc" xml:space="preserve">
+    <value>Shows basic info from myanimelist profile.</value>
+  </data>
+  <data name="mal_usage" xml:space="preserve">
+    <value>`{0}mal wizkiller96`</value>
+  </data>
 </root>
