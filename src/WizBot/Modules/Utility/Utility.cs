@@ -352,14 +352,10 @@ namespace WizBot.Modules.Utility
 
             await Context.Channel.EmbedAsync(
                 new EmbedBuilder().WithOkColor()
-                    .WithAuthor(eab => eab.WithName($"WizBot Changelogs | 📅 Jan 25, 2017")
+                    .WithAuthor(eab => eab.WithName($"WizBot Changelogs | 📅 Jan 26, 2017")
                                           .WithUrl("https://github.com/Wizkiller96/WizBot/commits/dev")
                                           .WithIconUrl("https://cdn.discordapp.com/avatars/170849991357628416/412367ac7ffd3915a0b969f6f3e17aca.jpg"))
-                    .AddField(efb => efb.WithName(Format.Bold("1.")).WithValue("`.adpl` help updated.").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("2.")).WithValue("`~img` and `~rimg` will use google images first. if it fails, then fallback to imgur").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("3.")).WithValue("Flower event fix").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("4.")).WithValue("Added `~mal` command").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("5.")).WithValue("Fixed `~img` and `~rimg`").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("1.")).WithValue("Hangman fixed.").WithIsInline(false))
                     .WithFooter(efb => efb.WithText($"More info at: http://github.com/Wizkiller96/WizBot"))
                     );
         }
