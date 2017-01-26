@@ -351,14 +351,14 @@ namespace WizBot.Modules.Utility
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Updates()
         {
-            var stats = WizBot.Stats;
-
             await Context.Channel.EmbedAsync(
                 new EmbedBuilder().WithOkColor()
                     .WithAuthor(eab => eab.WithName($"WizBot Changelogs | 📅 Jan 26, 2017")
                                           .WithUrl("https://github.com/Wizkiller96/WizBot/commits/dev")
                                           .WithIconUrl("https://cdn.discordapp.com/avatars/170849991357628416/412367ac7ffd3915a0b969f6f3e17aca.jpg"))
                     .AddField(efb => efb.WithName(Format.Bold("1.")).WithValue("Hangman fixed.").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("2.")).WithValue("`.whpl` fix on many users.").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("3.")).WithValue("Users can no longer submit multiple sentences in acrophobia.").WithIsInline(false))
                     .WithFooter(efb => efb.WithText($"More info at: http://github.com/Wizkiller96/WizBot"))
                     );
         }
