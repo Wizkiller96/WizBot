@@ -360,6 +360,7 @@ namespace WizBot.Modules.Utility
                     .AddField(efb => efb.WithName(Format.Bold("2.")).WithValue("`$raffle` prettified").WithIsInline(false))
                     .AddField(efb => efb.WithName(Format.Bold("3.")).WithValue("Fixed typing articles.").WithIsInline(false))
                     .AddField(efb => efb.WithName(Format.Bold("4.")).WithValue("Fixed acrophobia not working if you type something other than the sentence.").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("5.")).WithValue("Fixed `.prune` in combination with `.delmsgoncmd`").WithIsInline(false))
                     .WithFooter(efb => efb.WithText($"More info at: http://github.com/Wizkiller96/WizBot"))
                     );
         }
