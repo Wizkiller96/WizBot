@@ -353,14 +353,11 @@ namespace WizBot.Modules.Utility
         {
             await Context.Channel.EmbedAsync(
                 new EmbedBuilder().WithOkColor()
-                    .WithAuthor(eab => eab.WithName($"WizBot Changelogs | 📅 Jan 27, 2017")
+                    .WithAuthor(eab => eab.WithName($"WizBot Changelogs | 📅 Jan 28, 2017")
                                           .WithUrl("https://github.com/Wizkiller96/WizBot/commits/dev")
                                           .WithIconUrl("https://cdn.discordapp.com/avatars/170849991357628416/412367ac7ffd3915a0b969f6f3e17aca.jpg"))
-                    .AddField(efb => efb.WithName(Format.Bold("1.")).WithValue("`~osu` now links to new profile").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("2.")).WithValue("`$raffle` prettified").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("3.")).WithValue("Fixed typing articles.").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("4.")).WithValue("Fixed acrophobia not working if you type something other than the sentence.").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("5.")).WithValue("Fixed `.prune` in combination with `.delmsgoncmd`").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("1.")).WithValue("Removed 'current' from overwatch field names").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("2.")).WithValue("here and everyone no longer work in cross server text channel").WithIsInline(false))
                     .WithFooter(efb => efb.WithText($"More info at: http://github.com/Wizkiller96/WizBot"))
                     );
         }
