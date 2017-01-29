@@ -88,7 +88,7 @@ namespace WizBot.Modules.Administration
                         }
                     },
                     { "%queued%", () => Music.Music.MusicPlayers.Sum(kvp => kvp.Value.Playlist.Count).ToString()},
-                    { "%time%", () => DateTime.Now.ToString("hh:mm " + TimeZoneInfo.Local.StandardName.GetInitials()) },
+                    { "%time%", () => DateTime.Now.ToString("HH:mm " + TimeZoneInfo.Local.StandardName.GetInitials()) },
                     { "%shardcount%", () => WizBot.Client.Shards.Count.ToString() },
                 };
 
