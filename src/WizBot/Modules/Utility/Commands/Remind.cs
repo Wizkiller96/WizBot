@@ -68,9 +68,7 @@ namespace WizBot.Modules.Utility
                     }
                     else
                     {
-                        var t = WizBot.Client.GetGuild(r.ServerId)?.GetTextChannelAsync(r.ChannelId).ConfigureAwait(false);
-                        if (t != null)
-                            ch = await t.Value;
+                        ch = WizBot.Client.GetGuild(r.ServerId)?.GetTextChannel(r.ChannelId);
                     }
                     if (ch == null)
                         return;

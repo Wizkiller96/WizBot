@@ -37,9 +37,7 @@ namespace WizBot.Modules.ClashOfClans
                         .Select(cw =>
                         {
                             cw.Channel = WizBot.Client.GetGuild(cw.GuildId)
-                                                         ?.GetTextChannelAsync(cw.ChannelId)
-                                                         .GetAwaiter()
-                                                         .GetResult();
+                                                         .GetTextChannel(cw.ChannelId);
                             return cw;
                         })
                         .Where(cw => cw.Channel != null)
@@ -322,7 +320,7 @@ namespace WizBot.Modules.ClashOfClans
 
         public static async Task<ClashWar> CreateWar(string enemyClan, int size, ulong serverId, ulong channelId)
         {
-            var channel = await WizBot.Client.GetGuild(serverId)?.GetTextChannelAsync(channelId);
+            var channel = WizBot.Client.GetGuild(serverId)?.GetTextChannel(channelId);
             using (var uow = DbHandler.UnitOfWork())
             {
                 var cw = new ClashWar

@@ -132,7 +132,7 @@ namespace WizBot.Modules.Administration
                 if (ids[1].ToUpperInvariant().StartsWith("C:"))
                 {
                     var cid = ulong.Parse(ids[1].Substring(2));
-                    var ch = (await server.GetTextChannelsAsync()).Where(c => c.Id == cid).FirstOrDefault();
+                    var ch = server.TextChannels.Where(c => c.Id == cid).FirstOrDefault();
                     if (ch == null)
                     {
                         return;
@@ -159,9 +159,7 @@ namespace WizBot.Modules.Administration
             [OwnerOnly]
             public async Task Announce([Remainder] string message)
             {
-                var channels = await Task.WhenAll(WizBot.Client.GetGuilds().Select(g =>
-                    g.GetDefaultChannelAsync()
-                )).ConfigureAwait(false);
+                var channels = WizBot.Client.GetGuilds().Select(g => g.DefaultChannel).ToArray();
                 if (channels == null)
                     return;
                 await Task.WhenAll(channels.Where(c => c != null).Select(c => c.SendConfirmAsync($"🆕 Message from {Context.User} `[Bot Owner]`:", message)))

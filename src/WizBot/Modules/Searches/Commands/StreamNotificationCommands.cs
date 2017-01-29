@@ -105,7 +105,7 @@ namespace WizBot.Modules.Searches
                                 var server = WizBot.Client.GetGuild(fs.GuildId);
                                 if (server == null)
                                     return;
-                                var channel = await server.GetTextChannelAsync(fs.ChannelId);
+                                var channel = server.GetTextChannel(fs.ChannelId);
                                 if (channel == null)
                                     return;
                                 try
