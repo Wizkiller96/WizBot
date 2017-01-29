@@ -712,13 +712,10 @@ namespace WizBot.Modules.Music
 
         }
 
-        //todo only author or owner
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task DeletePlaylist([Remainder] int id)
         {
-
-
             bool success = false;
             MusicPlaylist pl = null;
             try
@@ -747,7 +744,7 @@ namespace WizBot.Modules.Music
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                _log.Warn(ex);
             }
         }
 
