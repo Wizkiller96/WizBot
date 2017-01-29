@@ -353,11 +353,12 @@ namespace WizBot.Modules.Utility
         {
             await Context.Channel.EmbedAsync(
                 new EmbedBuilder().WithOkColor()
-                    .WithAuthor(eab => eab.WithName($"WizBot Changelogs | 📅 Jan 28, 2017")
+                    .WithAuthor(eab => eab.WithName($"WizBot Changelogs | 📅 Jan 29, 2017")
                                           .WithUrl("https://github.com/Wizkiller96/WizBot/commits/dev")
                                           .WithIconUrl("https://cdn.discordapp.com/avatars/170849991357628416/412367ac7ffd3915a0b969f6f3e17aca.jpg"))
-                    .AddField(efb => efb.WithName(Format.Bold("1.")).WithValue("Removed 'current' from overwatch field names").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("2.")).WithValue("here and everyone no longer work in cross server text channel").WithIsInline(false))
+                    .AddField(efb => efb.WithValue("**1.** Updated discord.net framework.").WithIsInline(false))
+                    .AddField(efb => efb.WithValue("**2.** Fixed Clash Of Clans.").WithIsInline(false))
+                    .AddField(efb => efb.WithValue("**3.** Custom reaction bug fixes and perf improvements.").WithIsInline(false))
                     .WithFooter(efb => efb.WithText($"More info at: http://github.com/Wizkiller96/WizBot"))
                     );
         }
