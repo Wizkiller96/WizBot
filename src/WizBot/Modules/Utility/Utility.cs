@@ -359,6 +359,9 @@ namespace WizBot.Modules.Utility
                     .AddField(efb => efb.WithName(Format.Bold("1.")).WithValue("Updated discord.net framework.").WithIsInline(false))
                     .AddField(efb => efb.WithName(Format.Bold("2.")).WithValue("Fixed Clash Of Clans.").WithIsInline(false))
                     .AddField(efb => efb.WithName(Format.Bold("3.")).WithValue("Custom reaction bug fixes and perf improvements.").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("4.")).WithValue("Small change to how `.ropl` works.").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("5.")).WithValue("Optimizations. bugfixes. 13:12:07.08 shows 00-24 instead of 0-12.").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("6.")).WithValue("Small v+t fix.").WithIsInline(false))
                     .WithFooter(efb => efb.WithText($"More info at: http://github.com/Wizkiller96/WizBot"))
                     );
         }
