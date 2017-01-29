@@ -36,7 +36,7 @@ namespace WizBot.Modules.ClashOfClans
                         .GetAllWars()
                         .Select(cw =>
                         {
-                            cw.Channel = WizBot.Client.GetGuild(cw.GuildId)
+                            cw.Channel = WizBot.Client.GetGuild(cw.GuildId)?
                                                          .GetTextChannel(cw.ChannelId);
                             return cw;
                         })
