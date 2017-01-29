@@ -356,9 +356,9 @@ namespace WizBot.Modules.Utility
                     .WithAuthor(eab => eab.WithName($"WizBot Changelogs | 📅 Jan 29, 2017")
                                           .WithUrl("https://github.com/Wizkiller96/WizBot/commits/dev")
                                           .WithIconUrl("https://cdn.discordapp.com/avatars/170849991357628416/412367ac7ffd3915a0b969f6f3e17aca.jpg"))
-                    .AddField(efb => efb.WithValue("**1.** Updated discord.net framework.").WithIsInline(false))
-                    .AddField(efb => efb.WithValue("**2.** Fixed Clash Of Clans.").WithIsInline(false))
-                    .AddField(efb => efb.WithValue("**3.** Custom reaction bug fixes and perf improvements.").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("1.")).WithValue("Updated discord.net framework.").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("2.")).WithValue("Fixed Clash Of Clans.").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("3.")).WithValue("Custom reaction bug fixes and perf improvements.").WithIsInline(false))
                     .WithFooter(efb => efb.WithText($"More info at: http://github.com/Wizkiller96/WizBot"))
                     );
         }
