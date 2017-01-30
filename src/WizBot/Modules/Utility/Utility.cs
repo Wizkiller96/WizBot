@@ -370,6 +370,7 @@ namespace WizBot.Modules.Utility
                     .AddField(efb => efb.WithName(Format.Bold("1.")).WithValue("Fixed the worst affinity title.").WithIsInline(false))
                     .AddField(efb => efb.WithName(Format.Bold("2.")).WithValue("`.uinfo` now works with users without avatar. `$give` and `$award` messages are arguably nicer.").WithIsInline(false))
                     .AddField(efb => efb.WithName(Format.Bold("3.")).WithValue("!!smch added. Set music output's text channel.").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("4.")).WithValue("sneakygamestatus event added").WithIsInline(false))
                     .WithFooter(efb => efb.WithText($"More info at: http://github.com/Wizkiller96/WizBot"))
                     );
         }
