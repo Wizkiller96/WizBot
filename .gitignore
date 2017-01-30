@@ -1,7 +1,7 @@
 #Manually added files
 
 src/WizBot/credentials.json
-src/WizBot/data/NadekoBot.db
+src/WizBot/data/WizBot.db
 src/WizBot/data/musicdata
 
 # Created by https://www.gitignore.io/api/visualstudio,visualstudiocode,windows,linux,macos
