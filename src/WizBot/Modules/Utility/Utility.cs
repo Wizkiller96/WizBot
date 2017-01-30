@@ -15,6 +15,8 @@ using System.Threading;
 using ImageSharp;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Discord.WebSocket;
+using WizBot.Services;
 
 namespace WizBot.Modules.Utility
 {
@@ -113,21 +115,30 @@ namespace WizBot.Modules.Utility
             game = game.Trim().ToUpperInvariant();
             if (string.IsNullOrWhiteSpace(game))
                 return;
-            var arr = (await (Context.Channel as IGuildChannel).Guild.GetUsersAsync())
-                    .Where(u => u.Game?.Name?.ToUpperInvariant() == game)
+
+            var socketGuild = Context.Guild as SocketGuild;
+            if (socketGuild == null)
+            {
+                _log.Warn("Can't cast guild to socket guild.");
+                return;
+            }
+            var rng = new WizBotRandom();
+            var arr = await Task.Run(() => socketGuild.Users
+                   .Where(u => u.Game?.Name?.ToUpperInvariant() == game)
                     .Select(u => u.Username)
-                    .Shuffle()
+                    .OrderBy(x => rng.Next())
                     .Take(60)
-                    .ToList();
+                    .ToArray()).ConfigureAwait(false);
 
             int i = 0;
-            if (!arr.Any())
+            if (arr.Length == 0)
                 await Context.Channel.SendErrorAsync("Nobody is playing that game.").ConfigureAwait(false);
-            else {
+            else
+            {
                 await Context.Channel.SendConfirmAsync("```css\n" + string.Join("\n", arr.GroupBy(item => (i++) / 2)
                                                                                  .Select(ig => string.Concat(ig.Select(el => $"• {el,-27}")))) + "\n```")
                                                                                  .ConfigureAwait(false);
-                }
+             }
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -353,15 +364,12 @@ namespace WizBot.Modules.Utility
         {
             await Context.Channel.EmbedAsync(
                 new EmbedBuilder().WithOkColor()
-                    .WithAuthor(eab => eab.WithName($"WizBot Changelogs | 📅 Jan 29, 2017")
+                    .WithAuthor(eab => eab.WithName($"WizBot Changelogs | 📅 Jan 30, 2017")
                                           .WithUrl("https://github.com/Wizkiller96/WizBot/commits/dev")
                                           .WithIconUrl("https://cdn.discordapp.com/avatars/170849991357628416/412367ac7ffd3915a0b969f6f3e17aca.jpg"))
-                    .AddField(efb => efb.WithName(Format.Bold("1.")).WithValue("Updated discord.net framework.").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("2.")).WithValue("Fixed Clash Of Clans.").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("3.")).WithValue("Custom reaction bug fixes and perf improvements.").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("4.")).WithValue("Small change to how `.ropl` works.").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("5.")).WithValue("Optimizations. bugfixes. 13:12:07.08 shows 00-24 instead of 0-12.").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("6.")).WithValue("Small v+t fix.").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("1.")).WithValue("Fixed the worst affinity title.").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("2.")).WithValue("`.uinfo` now works with users without avatar. `$give` and `$award` messages are arguably nicer.").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("3.")).WithValue("!!smch added. Set music output's text channel.").WithIsInline(false))
                     .WithFooter(efb => efb.WithText($"More info at: http://github.com/Wizkiller96/WizBot"))
                     );
         }

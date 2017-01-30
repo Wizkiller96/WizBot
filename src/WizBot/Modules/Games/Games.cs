@@ -13,7 +13,7 @@ namespace WizBot.Modules.Games
     [WizBotModule("Games", ">")]
     public partial class Games : DiscordModule
     {
-        private static IEnumerable<string> _8BallResponses { get; } = WizBot.BotConfig.EightBallResponses.Select(ebr => ebr.Text);
+        private static string[] _8BallResponses { get; } = WizBot.BotConfig.EightBallResponses.Select(ebr => ebr.Text).ToArray();
 
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -37,7 +37,7 @@ namespace WizBot.Modules.Games
 
             await Context.Channel.EmbedAsync(new EmbedBuilder().WithColor(WizBot.OkColor)
                                .AddField(efb => efb.WithName("❓ Question").WithValue(question).WithIsInline(false))
-                               .AddField(efb => efb.WithName("🎱 8Ball").WithValue(_8BallResponses.Shuffle().FirstOrDefault()).WithIsInline(false)));
+                               .AddField(efb => efb.WithName("🎱 8Ball").WithValue(_8BallResponses[new WizBotRandom().Next(0, _8BallResponses.Length)]).WithIsInline(false)));
         }
 
         [WizBotCommand, Usage, Description, Aliases]

@@ -834,7 +834,14 @@ namespace WizBot.Modules.Music
 
                         if (mp.Autoplay && mp.Playlist.Count == 0 && song.SongInfo.ProviderType == MusicType.Normal)
                         {
-                            await QueueSong(await queuer.Guild.GetCurrentUserAsync(), textCh, voiceCh, (await WizBot.Google.GetRelatedVideosAsync(song.SongInfo.Query, 4)).ToList().Shuffle().FirstOrDefault(), silent, musicType).ConfigureAwait(false);
+                            var relatedVideos = (await WizBot.Google.GetRelatedVideosAsync(song.SongInfo.Query, 4)).ToList();
+                            if (relatedVideos.Count > 0)
+                                await QueueSong(await queuer.Guild.GetCurrentUserAsync(),
+                                textCh,
+                                voiceCh,
+                                relatedVideos[new WizBotRandom().Next(0, relatedVideos.Count)],
+                                silent,
+                                musicType).ConfigureAwait(false);
                         }
                     }
                     catch { }
