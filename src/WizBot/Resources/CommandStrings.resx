@@ -3042,4 +3042,13 @@
   <data name="mal_usage" xml:space="preserve">
     <value>`{0}mal wizkiller96`</value>
   </data>
+  <data name="setmusicchannel_cmd" xml:space="preserve">
+    <value>setmusicchannel smch</value>
+  </data>
+  <data name="setmusicchannel_des" xml:space="preserve">
+    <value>Sets the current channel as the default music output channel. This will output playing, finished, paused and removed songs to that channel instead of the channel where the first song was queued in.</value>
+  </data>
+  <data name="setmusicchannel_usage" xml:space="preserve">
+    <value>`{0}smch`</value>
+  </data>
 </root>
