@@ -1,5 +1,5 @@
 @ECHO off
-TITLE Downloading WizBot, please wait
+TITLE Downloading Latest Build of WizBot...
 ::Setting convenient to read variables which don't delete the windows temp folder
 SET root=%~dp0
 CD /D %root%
@@ -24,30 +24,43 @@ ECHO Downloading WizBot...
 ECHO.
 git clone -b dev --recursive --depth 1 --progress https://github.com/Wizkiller96/WizBot.git >nul
 IF %ERRORLEVEL% EQU 128 (GOTO :giterror)
-TITLE Installing WizBot, please wait
+TITLE Installing WizBot, please wait...
 ECHO.
-ECHO Installing...
+ECHO Installing Discord.Net(1/4)...
 ::Building WizBot
 CD /D %build1%
 dotnet restore >nul 2>&1
+ECHO Installing Discord.Net(2/4)...
 CD /D %build2%
 dotnet restore >nul 2>&1
+ECHO Installing Discord.Net(3/4)...
 CD /D %build3%
 dotnet restore >nul 2>&1
+ECHO Installing Discord.Net(4/4)...
 CD /D %build4%
 dotnet restore >nul 2>&1
+ECHO.
+ECHO Discord.Net installation completed successfully...
+ECHO.
+ECHO Installing WizBot...
 CD /D %build5%
 dotnet restore >nul 2>&1
 dotnet build --configuration Release >nul 2>&1
+ECHO.
+ECHO WizBot installation completed successfully...
 ::Attempts to backup old files if they currently exist in the same folder as the batch file
 IF EXIST "%root%WizBot\" (GOTO :backupinstall)
 :freshinstall
 	::Moves the WizBot folder to keep things tidy
+	ECHO.
+	ECHO Moving files, Please wait...
 	ROBOCOPY "%root%WizBotInstall_Temp" "%rootdir%" /E /MOVE >nul 2>&1
 	IF %ERRORLEVEL% GEQ 8 (GOTO :copyerror)
-	GOTO :end
+	IF EXIST "%PROGRAMFILES(X86)%" (GOTO 64BIT) ELSE (GOTO 32BIT)
 :backupinstall
-	TITLE Backing up old files
+	TITLE Backing up old files...
+	ECHO.
+	ECHO Moving and Backing up old files...
 	::Recursively copies all files and folders from WizBot to WizBot_Old
 	ROBOCOPY "%root%WizBot" "%root%WizBot_Old" /MIR >nul 2>&1
 	IF %ERRORLEVEL% GEQ 8 (GOTO :copyerror)
@@ -70,7 +83,7 @@ IF EXIST "%root%WizBot\" (GOTO :backupinstall)
 	RMDIR "%root%WizBot\" /S /Q >nul 2>&1
 	ROBOCOPY "%root%WizBotInstall_Temp" "%rootdir%" /E /MOVE >nul 2>&1
 	IF %ERRORLEVEL% GEQ 8 (GOTO :copyerror)
-	GOTO :end
+	IF EXIST "%PROGRAMFILES(X86)%" (GOTO 64BIT) ELSE (GOTO 32BIT)
 :dotnet
 	::Terminates the batch script if it can't run dotnet --version
 	TITLE Error!
@@ -102,6 +115,25 @@ IF EXIST "%root%WizBot\" (GOTO :backupinstall)
 	PAUSE >nul 2>&1
 	CD /D "%root%"
 	GOTO :EOF
+	:64BIT
+ECHO.
+ECHO Your System Architecture is 64bit...
+GOTO end
+:32BIT
+ECHO.
+ECHO Your System Architecture is 32bit...
+timeout /t 5
+ECHO.
+ECHO Downloading libsodium.dll and libopus.dll...
+SET "FILENAME=%~dp0\WizBot\src\WizBot\libsodium.dll"
+bitsadmin.exe /transfer "Downloading libsodium.dll" /priority high https://github.com/Wizkiller96/WizBot/raw/dev/src/WizBot/_libs/32/libsodium.dll "%FILENAME%"
+ECHO libsodium.dll downloaded.
+ECHO.
+timeout /t 5
+SET "FILENAME=%~dp0\WizBot\src\WizBot\opus.dll"
+bitsadmin.exe /transfer "Downloading libopus.dll" /priority high https://github.com/Wizkiller96/WizBot/raw/dev/src/WizBot/_libs/32/opus.dll "%FILENAME%"
+ECHO libopus.dll downloaded.
+GOTO end
 :end
 	::Normal execution of end of script
 	TITLE Installation complete!

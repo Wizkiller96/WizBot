@@ -97,7 +97,7 @@ namespace WizBot.Modules.Music.Classes
                 {
                     Title = video.Title.Substring(0, video.Title.Length - 10), // removing trailing "- You Tube"
                     Provider = "YouTube",
-                    Uri = video.Uri,
+                    Uri = await video.GetUriAsync().ConfigureAwait(false),
                     Query = link,
                     ProviderType = musicType,
                 });
