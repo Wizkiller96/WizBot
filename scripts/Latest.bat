@@ -124,15 +124,15 @@ ECHO.
 ECHO Your System Architecture is 32bit...
 timeout /t 5
 ECHO.
-ECHO Downloading libsodium.dll and libopus.dll...
+ECHO Downloading libsodium.dll and opus.dll...
 SET "FILENAME=%~dp0\WizBot\src\WizBot\libsodium.dll"
 bitsadmin.exe /transfer "Downloading libsodium.dll" /priority high https://github.com/Wizkiller96/WizBot/raw/dev/src/WizBot/_libs/32/libsodium.dll "%FILENAME%"
 ECHO libsodium.dll downloaded.
 ECHO.
 timeout /t 5
 SET "FILENAME=%~dp0\WizBot\src\WizBot\opus.dll"
-bitsadmin.exe /transfer "Downloading libopus.dll" /priority high https://github.com/Wizkiller96/WizBot/raw/dev/src/WizBot/_libs/32/opus.dll "%FILENAME%"
-ECHO libopus.dll downloaded.
+bitsadmin.exe /transfer "Downloading opus.dll" /priority high https://github.com/Wizkiller96/WizBot/raw/dev/src/WizBot/_libs/32/opus.dll "%FILENAME%"
+ECHO opus.dll downloaded.
 GOTO end
 :end
 	::Normal execution of end of script
