@@ -364,13 +364,10 @@ namespace WizBot.Modules.Utility
         {
             await Context.Channel.EmbedAsync(
                 new EmbedBuilder().WithOkColor()
-                    .WithAuthor(eab => eab.WithName($"WizBot Changelogs | 📅 Jan 30, 2017")
+                    .WithAuthor(eab => eab.WithName($"WizBot Changelogs | 📅 Feb 1, 2017")
                                           .WithUrl("https://github.com/Wizkiller96/WizBot/commits/dev")
                                           .WithIconUrl("https://cdn.discordapp.com/avatars/170849991357628416/412367ac7ffd3915a0b969f6f3e17aca.jpg"))
-                    .AddField(efb => efb.WithName(Format.Bold("1.")).WithValue("Fixed the worst affinity title.").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("2.")).WithValue("`.uinfo` now works with users without avatar. `$give` and `$award` messages are arguably nicer.").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("3.")).WithValue("!!smch added. Set music output's text channel.").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("4.")).WithValue("sneakygamestatus event added").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("1.")).WithValue("Fixed music errors?").WithIsInline(false))
                     .WithFooter(efb => efb.WithText($"More info at: http://github.com/Wizkiller96/WizBot"))
                     );
         }
