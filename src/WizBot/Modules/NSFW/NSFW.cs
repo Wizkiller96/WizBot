@@ -141,24 +141,6 @@ namespace WizBot.Modules.NSFW
             }
         }
 
-
-        [WizBotCommand, Usage, Description, Aliases]
-        public async Task Danbooru([Remainder] string tag = null)
-        {
-            tag = tag?.Trim() ?? "";
-
-            var url = await GetDanbooruImageLink(tag).ConfigureAwait(false);
-
-            if (url == null)
-                await Context.Channel.SendErrorAsync(Context.User.Mention + " No results.").ConfigureAwait(false);
-            else
-                await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                    .WithDescription(Context.User.Mention + " " + tag)
-                    .WithImageUrl(url)
-                    .WithFooter(efb => efb.WithText("Danbooru")))
-                    .ConfigureAwait(false);
-        }
-
         [WizBotCommand, Usage, Description, Aliases]
         public Task Yandere([Remainder] string tag = null)
             => Searches.Searches.InternalDapiCommand(Context.Message, tag, Searches.Searches.DapiSearchType.Yandere);
@@ -166,10 +148,6 @@ namespace WizBot.Modules.NSFW
         [WizBotCommand, Usage, Description, Aliases]
         public Task Konachan([Remainder] string tag = null)
             => Searches.Searches.InternalDapiCommand(Context.Message, tag, Searches.Searches.DapiSearchType.Konachan);
-
-        [WizBotCommand, Usage, Description, Aliases]
-        public Task Gelbooru([Remainder] string tag = null)
-            => Searches.Searches.InternalDapiCommand(Context.Message, tag, Searches.Searches.DapiSearchType.Gelbooru);
 
         [WizBotCommand, Usage, Description, Aliases]
         public Task Rule34([Remainder] string tag = null)
@@ -192,6 +170,26 @@ namespace WizBot.Modules.NSFW
                     .ConfigureAwait(false);
         }
 #endif
+        [WizBotCommand, Usage, Description, Aliases]
+        public async Task Danbooru([Remainder] string tag = null)
+        {
+            tag = tag?.Trim() ?? "";
+
+            var url = await GetDanbooruImageLink(tag).ConfigureAwait(false);
+
+            if (url == null)
+                await Context.Channel.SendErrorAsync(Context.User.Mention + " No results.").ConfigureAwait(false);
+            else
+                await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
+                    .WithDescription(Context.User.Mention + " " + tag)
+                    .WithImageUrl(url)
+                    .WithFooter(efb => efb.WithText("Danbooru")))
+                    .ConfigureAwait(false);
+        }
+
+        [WizBotCommand, Usage, Description, Aliases]
+        public Task Gelbooru([Remainder] string tag = null)
+            => Searches.Searches.InternalDapiCommand(Context.Message, tag, Searches.Searches.DapiSearchType.Gelbooru);
 
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Cp()
