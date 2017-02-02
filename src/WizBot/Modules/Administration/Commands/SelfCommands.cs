@@ -184,6 +184,14 @@ namespace WizBot.Modules.Administration
 
                 return UserStatus.Online;
             }
+
+            public enum SettableUserStatus
+            {
+                Online,
+                Invisible,
+                Idle,
+                Dnd
+            }
         }
     }
 }
