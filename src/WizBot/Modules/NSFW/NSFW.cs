@@ -187,6 +187,28 @@ namespace WizBot.Modules.NSFW
                     .ConfigureAwait(false);
         }
 
+        public static Task<string> GetDanbooruImageLink(string tag) => Task.Run(async () =>
+        {
+            try
+            {
+                using (var http = new HttpClient())
+                {
+                    http.AddFakeHeaders();
+                    var data = await http.GetStreamAsync("https://danbooru.donmai.us/posts.xml?limit=100&tags=" + tag).ConfigureAwait(false);
+                    var doc = new XmlDocument();
+                    doc.Load(data);
+                    var nodes = doc.GetElementsByTagName("file-url");
+
+                    var node = nodes[new WizBotRandom().Next(0, nodes.Count)];
+                    return "https://danbooru.donmai.us" + node.InnerText;
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        });
+
         [WizBotCommand, Usage, Description, Aliases]
         public Task Gelbooru([Remainder] string tag = null)
             => Searches.Searches.InternalDapiCommand(Context.Message, tag, Searches.Searches.DapiSearchType.Gelbooru);
@@ -233,27 +255,6 @@ namespace WizBot.Modules.NSFW
             }
         }
 #if !GLOBAL_WIZBOT
-        public static Task<string> GetDanbooruImageLink(string tag) => Task.Run(async () =>
-        {
-            try
-            {
-                using (var http = new HttpClient())
-                {
-                    http.AddFakeHeaders();
-                    var data = await http.GetStreamAsync("https://danbooru.donmai.us/posts.xml?limit=100&tags=" + tag).ConfigureAwait(false);
-                    var doc = new XmlDocument();
-                    doc.Load(data);
-                    var nodes = doc.GetElementsByTagName("file-url");
-
-                    var node = nodes[new WizBotRandom().Next(0, nodes.Count)];
-                    return "https://danbooru.donmai.us" + node.InnerText;
-                }
-            }
-            catch
-            {
-                return null;
-            }
-        });
 
 
         public static Task<string> GetE621ImageLink(string tag) => Task.Run(async () =>
