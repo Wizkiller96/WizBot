@@ -67,7 +67,8 @@ namespace WizBot
                 MessageCacheSize = 10,
                 LogLevel = LogSeverity.Warning,
                 TotalShards = Credentials.TotalShards,
-                ConnectionTimeout = int.MaxValue
+                ConnectionTimeout = int.MaxValue,
+                AlwaysDownloadUsers = true,
             });
 #if GLOBAL_WIZBOT
             Client.Log += Client_Log;
