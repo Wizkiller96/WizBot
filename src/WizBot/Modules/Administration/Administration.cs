@@ -38,20 +38,24 @@ namespace WizBot.Modules.Administration
 
         }
 
-        private static async Task DelMsgOnCmd_Handler(SocketUserMessage msg, CommandInfo cmd)
+        private static Task DelMsgOnCmd_Handler(SocketUserMessage msg, CommandInfo cmd)
         {
+            var _ = Task.Run(async () =>
+            {
             try
-            {
+                {
                 var channel = msg.Channel as SocketTextChannel;
-                if (channel == null)
-                    return;
-                if (DeleteMessagesOnCommand.Contains(channel.Guild.Id) && cmd.Name != "prune")
+                    if (channel == null)
+                        return;
+                    if (DeleteMessagesOnCommand.Contains(channel.Guild.Id) && cmd.Name != "prune")
                     await msg.DeleteAsync().ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
+                }
+                catch (Exception ex)
+                {
                 _log.Warn(ex, "Delmsgoncmd errored...");
-            }
+                }
+            });
+            return Task.CompletedTask;
         }
 
         [WizBotCommand, Usage, Description, Aliases]
