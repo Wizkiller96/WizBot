@@ -170,12 +170,9 @@ namespace WizBot.Modules.Administration
             }
 
             [WizBotCommand, Usage, Description, Aliases]
-            [RequireContext(ContextType.Guild)]
             [OwnerOnly]
             public async Task ReloadImages()
             {
-                var channel = (ITextChannel)Context.Channel;
-
                 var msg = await Context.Channel.SendMessageAsync("Reloading Images...").ConfigureAwait(false);
                 var sw = Stopwatch.StartNew();
                 await WizBot.Images.Reload().ConfigureAwait(false);

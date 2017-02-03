@@ -369,6 +369,8 @@ namespace WizBot.Modules.Utility
                                           .WithIconUrl("https://cdn.discordapp.com/avatars/170849991357628416/412367ac7ffd3915a0b969f6f3e17aca.jpg"))
                     .AddField(efb => efb.WithName(Format.Bold("1.")).WithValue("v+t slower but much better and reliable.").WithIsInline(false))
                     .AddField(efb => efb.WithName(Format.Bold("2.")).WithValue("Images service. Preloads images bot uses.").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("3.")).WithValue("`.reloadimages` owner-only command added.").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("4.")).WithValue("Commandlist updated: http://wizbot.readthedocs.io/en/latest/Commands%20List/").WithIsInline(false))
                     .WithFooter(efb => efb.WithText($"More info at: http://github.com/Wizkiller96/WizBot"))
                     );
         }
