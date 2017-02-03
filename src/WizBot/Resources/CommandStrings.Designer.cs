@@ -6821,9 +6821,9 @@ namespace WizBot.Resources {
         /// <summary>
         ///    Looks up a localized string similar to Sets the current channel as the default music output channel. This will output playing, finished, paused and removed songs to that channel instead of the channel where the first song was queued in..
         /// </summary>
-        public static string setmusicchannel_des {
+        public static string setmusicchannel_desc {
             get {
-                return ResourceManager.GetString("setmusicchannel_des", resourceCulture);
+                return ResourceManager.GetString("setmusicchannel_desc", resourceCulture);
             }
         }
         
