@@ -3,6 +3,7 @@ using Discord.Commands;
 using WizBot.Attributes;
 using WizBot.Extensions;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -168,7 +169,24 @@ namespace WizBot.Modules.Administration
                 await Context.Channel.SendConfirmAsync("🆗").ConfigureAwait(false);
             }
 
-                private static UserStatus SettableUserStatusToUserStatus(SettableUserStatus sus)
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [OwnerOnly]
+            public async Task ReloadImages()
+            {
+                var channel = (ITextChannel)Context.Channel;
+
+                var msg = await Context.Channel.SendMessageAsync("Reloading Images...").ConfigureAwait(false);
+                var sw = Stopwatch.StartNew();
+                await WizBot.Images.Reload().ConfigureAwait(false);
+                sw.Stop();
+                await msg.ModifyAsync(x =>
+                {
+                x.Content = "✅ Images reloaded.";
+                }).ConfigureAwait(false);
+            }
+
+            private static UserStatus SettableUserStatusToUserStatus(SettableUserStatus sus)
             {
                 switch (sus)
                 {
