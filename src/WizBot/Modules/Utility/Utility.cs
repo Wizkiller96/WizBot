@@ -364,10 +364,11 @@ namespace WizBot.Modules.Utility
         {
             await Context.Channel.EmbedAsync(
                 new EmbedBuilder().WithOkColor()
-                    .WithAuthor(eab => eab.WithName($"WizBot Changelogs | 📅 Feb 1, 2017")
+                    .WithAuthor(eab => eab.WithName($"WizBot Changelogs | 📅 Feb 3, 2017")
                                           .WithUrl("https://github.com/Wizkiller96/WizBot/commits/dev")
                                           .WithIconUrl("https://cdn.discordapp.com/avatars/170849991357628416/412367ac7ffd3915a0b969f6f3e17aca.jpg"))
-                    .AddField(efb => efb.WithName(Format.Bold("1.")).WithValue("Fixed music errors?").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("1.")).WithValue("v+t slower but much better and reliable.").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("2.")).WithValue("Images service. Preloads images bot uses.").WithIsInline(false))
                     .WithFooter(efb => efb.WithText($"More info at: http://github.com/Wizkiller96/WizBot"))
                     );
         }
