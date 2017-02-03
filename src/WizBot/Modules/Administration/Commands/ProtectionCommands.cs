@@ -183,7 +183,7 @@ namespace WizBot.Modules.Administration
 
             private static async Task PunishUsers(PunishmentAction action, ProtectionType pt, params IGuildUser[] gus)
             {
-                _log.Warn($"[{pt}] - Punishing [{gus.Length}] users with [{action}] in {gus[0].Guild.Name} guild");
+                _log.Info($"[{pt}] - Punishing [{gus.Length}] users with [{action}] in {gus[0].Guild.Name} guild");
                 foreach (var gu in gus)
                 {
                     switch (action)
