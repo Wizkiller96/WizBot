@@ -16,9 +16,15 @@ namespace WizBot.Modules.Gambling
         [Group]
         public class FlipCoinCommands : ModuleBase
         {
+            private readonly IImagesService _images;
+
             private static WizBotRandom rng { get; } = new WizBotRandom();
-            private const string headsPath = "data/images/coins/heads.png";
-            private const string tailsPath = "data/images/coins/tails.png";
+
+            public FlipCoinCommands()
+            {
+                //todo DI in the future, can't atm
+                this._images = WizBot.Images;
+            }
 
             [WizBotCommand, Usage, Description, Aliases]
             public async Task Flip(int count = 1)
@@ -26,22 +32,22 @@ namespace WizBot.Modules.Gambling
                 if (count == 1)
                 {
                     if (rng.Next(0, 2) == 1)
-                        await Context.Channel.SendFileAsync(File.Open(headsPath, FileMode.OpenOrCreate), "heads.jpg", $"{Context.User.Mention} flipped " + Format.Code("Heads") + ".").ConfigureAwait(false);
+                        await Context.Channel.SendFileAsync(_images.Heads, "heads.jpg", $"{Context.User.Mention} flipped " + Format.Code("Heads") + ".").ConfigureAwait(false);
                     else
-                        await Context.Channel.SendFileAsync(File.Open(tailsPath, FileMode.OpenOrCreate), "tails.jpg", $"{Context.User.Mention} flipped " + Format.Code("Tails") + ".").ConfigureAwait(false);
+                        await Context.Channel.SendFileAsync(_images.Tails, "tails.jpg", $"{Context.User.Mention} flipped " + Format.Code("Tails") + ".").ConfigureAwait(false);
                     return;
                 }
                 if (count > 10 || count < 1)
                 {
-                    await Context.Channel.SendErrorAsync("`Invalid number specified. You can flip 1 to 10 coins.`");
+                    await Context.Channel.SendErrorAsync("`Invalid number specified. You can flip 1 to 10 coins.`").ConfigureAwait(false);
                     return;
                 }
                 var imgs = new Image[count];
                 for (var i = 0; i < count; i++)
                 {
                     imgs[i] = rng.Next(0, 10) < 5 ?
-                                new Image(File.OpenRead(headsPath)) :
-                                new Image(File.OpenRead(tailsPath));
+                                new Image(_images.Heads) :
+                                new Image(_images.Tails);
                 }
                 await Context.Channel.SendFileAsync(imgs.Merge().ToStream(), $"{count} coins.png").ConfigureAwait(false);
             }
@@ -70,15 +76,15 @@ namespace WizBot.Modules.Gambling
 
                 var isHeads = guessStr == "HEADS" || guessStr == "H";
                 bool result = false;
-                string imgPathToSend;
+                Stream imageToSend;
                 if (rng.Next(0, 2) == 1)
                 {
-                    imgPathToSend = headsPath;
+                    imageToSend = _images.Heads;
                     result = true;
                 }
                 else
                 {
-                    imgPathToSend = tailsPath;
+                    imageToSend = _images.Tails;
                 }
 
                 string str;
@@ -93,7 +99,7 @@ namespace WizBot.Modules.Gambling
                     str = $"{Context.User.Mention}`Better luck next time.`";
                 }
 
-                await Context.Channel.SendFileAsync(File.Open(imgPathToSend, FileMode.OpenOrCreate), new FileInfo(imgPathToSend).Name, str).ConfigureAwait(false);
+                await Context.Channel.SendFileAsync(imageToSend, "result.png", str).ConfigureAwait(false);
             }
         }
     }
