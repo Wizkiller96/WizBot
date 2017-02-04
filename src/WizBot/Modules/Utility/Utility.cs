@@ -395,8 +395,11 @@ namespace WizBot.Modules.Utility
                 new EmbedBuilder().WithOkColor()
                     .WithAuthor(eab => eab.WithName($"WizBot Changelogs | 📅 Feb 4, 2017")
                                           .WithUrl("https://github.com/Wizkiller96/WizBot/commits/dev")
-                                          .WithIconUrl("https://cdn.discordapp.com/avatars/170849991357628416/412367ac7ffd3915a0b969f6f3e17aca.jpg")
-                                          .WithDescription("**1.** Sneaky game will say a number of rewarded users at the end. \n**2.** Images service almost done. \n**3.** `.shardstats` added. \n**4.** `.connectshard` added."))
+                                          .WithIconUrl("https://cdn.discordapp.com/avatars/170849991357628416/412367ac7ffd3915a0b969f6f3e17aca.jpg"))
+                    .AddField(efb => efb.WithName(Format.Bold("1.")).WithValue("Sneaky game will say a number of rewarded users at the end").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("2.")).WithValue("Images service almost done.").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("3.")).WithValue("`.shardstats` added").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("4.")).WithValue("`.connectshard` added").WithIsInline(false))
                     .WithFooter(efb => efb.WithText($"More info at: http://github.com/Wizkiller96/WizBot"))
                     );
         }
