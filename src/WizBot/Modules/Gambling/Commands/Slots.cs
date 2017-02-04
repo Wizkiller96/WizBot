@@ -21,51 +21,18 @@ namespace WizBot.Modules.Gambling
             private static int totalBet = 0;
             private static int totalPaidOut = 0;
 
-            private const string backgroundPath = "data/slots/background.png";
-
-            private static readonly byte[] backgroundBuffer;
-            private static readonly byte[][] numbersBuffer = new byte[10][];
-            private static readonly byte[][] emojiBuffer;
-
             const int alphaCutOut = byte.MaxValue / 3;
-
-            static Slots()
-            {
-                backgroundBuffer = File.ReadAllBytes(backgroundPath);
-
-                for (int i = 0; i < 10; i++)
-                {
-                    numbersBuffer[i] = File.ReadAllBytes("data/slots/" + i + ".png");
-                }
-                int throwaway;
-                var emojiFiles = Directory.GetFiles("data/slots/emojis/", "*.png")
-                    .Where(f => int.TryParse(Path.GetFileNameWithoutExtension(f), out throwaway))
-                    .OrderBy(f => int.Parse(Path.GetFileNameWithoutExtension(f)))
-                    .ToArray();
-
-                emojiBuffer = new byte[emojiFiles.Length][];
-                for (int i = 0; i < emojiFiles.Length; i++)
-                {
-                    emojiBuffer[i] = File.ReadAllBytes(emojiFiles[i]);
-                }
-            }
-
-
-            private static MemoryStream InternalGetStream(string path)
-            {
-                var ms = new MemoryStream();
-                using (var fs = File.Open(path, FileMode.Open))
-                {
-                    fs.CopyTo(ms);
-                    fs.Flush();
-                }
-                ms.Position = 0;
-                return ms;
-            }
 
             //here is a payout chart
             //https://lh6.googleusercontent.com/-i1hjAJy_kN4/UswKxmhrbPI/AAAAAAAAB1U/82wq_4ZZc-Y/DE6B0895-6FC1-48BE-AC4F-14D1B91AB75B.jpg
             //thanks to judge for helping me with this
+
+            private readonly IImagesService _images;
+
+            public Slots()
+            {
+                this._images = WizBot.Images;
+            }
 
             public class SlotMachine
             {
@@ -164,6 +131,7 @@ namespace WizBot.Modules.Gambling
             }
 
             static HashSet<ulong> runningUsers = new HashSet<ulong>();
+
             [WizBotCommand, Usage, Description, Aliases]
             public async Task Slot(int amount = 0)
             {
@@ -189,7 +157,7 @@ namespace WizBot.Modules.Gambling
                         return;
                     }
                     Interlocked.Add(ref totalBet, amount);
-                    using (var bgFileStream = new MemoryStream(backgroundBuffer))
+                    using (var bgFileStream = WizBot.Images.SlotBackground.ToStream())
                     {
                         var bgImage = new ImageSharp.Image(bgFileStream);
 
@@ -199,7 +167,7 @@ namespace WizBot.Modules.Gambling
                         {
                             for (int i = 0; i < 3; i++)
                             {
-                                using (var file = new MemoryStream(emojiBuffer[numbers[i]]))
+                                using (var file = _images.SlotEmojis[numbers[i]].ToStream())
                                 {
                                     var randomImage = new ImageSharp.Image(file);
                                     using (var toAdd = randomImage.Lock())
@@ -226,7 +194,7 @@ namespace WizBot.Modules.Gambling
                             do
                             {
                                 var digit = printWon % 10;
-                                using (var fs = new MemoryStream(numbersBuffer[digit]))
+                                using (var fs = WizBot.Images.SlotNumbers[digit].ToStream())
                                 {
                                     var img = new ImageSharp.Image(fs);
                                     using (var pixels = img.Lock())
@@ -251,7 +219,7 @@ namespace WizBot.Modules.Gambling
                             do
                             {
                                 var digit = printAmount % 10;
-                                using (var fs = new MemoryStream(numbersBuffer[digit]))
+                                using (var fs = _images.SlotNumbers[digit].ToStream())
                                 {
                                     var img = new ImageSharp.Image(fs);
                                     using (var pixels = img.Lock())
