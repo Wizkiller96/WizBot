@@ -70,7 +70,7 @@ namespace WizBot
                 TotalShards = Credentials.TotalShards,
                 ConnectionTimeout = int.MaxValue,
 #if !GLOBAL_WIZBOT
-                AlwaysDownloadUsers = true,
+                //AlwaysDownloadUsers = true,
 #endif
             });
 
