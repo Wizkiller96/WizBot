@@ -78,6 +78,7 @@ namespace WizBot.Modules.Gambling
                     _secretCode += _sneakyGameStatusChars[rng.Next(0, _sneakyGameStatusChars.Length)];
                 }
 
+                var game = WizBot.Client.Game?.Name;
                 await WizBot.Client.SetGameAsync($"type {_secretCode} for " + WizBot.BotConfig.CurrencyPluralName)
                     .ConfigureAwait(false);
                 try
@@ -94,10 +95,11 @@ namespace WizBot.Modules.Gambling
                 await Task.Delay(num* 1000);
                 WizBot.Client.MessageReceived -= SneakyGameMessageReceivedEventHandler;
 
+                var cnt = _sneakyGameAwardedUsers.Count;
                 _sneakyGameAwardedUsers.Clear();
                 _secretCode = String.Empty;
 
-                await WizBot.Client.SetGameAsync($"SneakyGame event ended.")
+                await WizBot.Client.SetGameAsync($"SneakyGame event ended. {cnt} users received a reward.")
                     .ConfigureAwait(false);
             }
 

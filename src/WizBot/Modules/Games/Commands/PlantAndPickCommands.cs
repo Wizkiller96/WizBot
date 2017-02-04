@@ -231,7 +231,7 @@ namespace WizBot.Modules.Games
             private static Tuple<string, Stream> GetRandomCurrencyImage()
             {
                 var rng = new WizBotRandom();
-                var images = WizBot.Images.CurrencyImages;
+                var images = WizBot.Images.Currency;
 
                 return images[rng.Next(0, images.Count)];
             }
