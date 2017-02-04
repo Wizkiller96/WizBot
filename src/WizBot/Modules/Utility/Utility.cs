@@ -281,9 +281,41 @@ namespace WizBot.Modules.Utility
         }
 
         [WizBotCommand, Usage, Description, Aliases]
+        public async Task ShardStats(int page = 1)
+        {
+            page -= 1;
+            if (page< 0)
+                return;
+
+            var shards = WizBot.Client.Shards.Skip(page * 25).Take(25);
+
+            var info = string.Join("\n",
+                shards.Select(x => $"Shard **#{x.ShardId.ToString()}** is in {Format.Bold(x.ConnectionState.ToString())} state with {Format.Bold(x.Guilds.Count.ToString())} servers"));
+
+            if (string.IsNullOrWhiteSpace(info))
+                info = "No shard stats on this page.";
+ 
+            await Context.Channel.EmbedAsync(new EmbedBuilder()
+                .WithOkColor()
+                .WithTitle("Shard Stats - page " + (page + 1))
+                .WithDescription(info))
+                .ConfigureAwait(false);
+        }
+
+        [WizBotCommand, Usage, Description, Aliases]
         public async Task Stats()
         {
             var stats = WizBot.Stats;
+
+            var shardId = Context.Guild != null
+                ? WizBot.Client.GetShardIdFor(Context.Guild.Id)
+                : 0;
+            var footer = $"Shard {shardId} | {WizBot.Client.Shards.Count} total shards";
+
+#if !GLOBAL_WIZBOT
+            footer += $" | Playing {Music.Music.MusicPlayers.Where(mp => mp.Value.CurrentSong != null).Count()} songs, {Music.Music.MusicPlayers.Sum(mp => mp.Value.Playlist.Count)} queued.";
+
+#endif
 
             await Context.Channel.EmbedAsync(
                 new EmbedBuilder().WithOkColor()
@@ -299,10 +331,7 @@ namespace WizBot.Modules.Utility
                     .AddField(efb => efb.WithName(Format.Bold("Owner ID(s)")).WithValue(string.Join("\n", WizBot.Credentials.OwnerIds)).WithIsInline(true))
                     .AddField(efb => efb.WithName(Format.Bold("Uptime")).WithValue(stats.GetUptimeString("\n")).WithIsInline(true))
                     .AddField(efb => efb.WithName(Format.Bold("Presence")).WithValue($"{WizBot.Client.GetGuildCount()} Servers\n{stats.TextChannels} Text Channels\n{stats.VoiceChannels} Voice Channels").WithIsInline(true))
-#if !GLOBAL_WIZBOT
-                    .WithFooter(efb => efb.WithText($"Playing {Music.Music.MusicPlayers.Where(mp => mp.Value.CurrentSong != null).Count()} songs, {Music.Music.MusicPlayers.Sum(mp => mp.Value.Playlist.Count)} queued."))
-#endif
-                    );
+                    .WithFooter(efb => efb.WithText(footer)));
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -369,6 +398,7 @@ namespace WizBot.Modules.Utility
                                           .WithIconUrl("https://cdn.discordapp.com/avatars/170849991357628416/412367ac7ffd3915a0b969f6f3e17aca.jpg"))
                     .AddField(efb => efb.WithName(Format.Bold("1.")).WithValue("Sneaky game will say a number of rewarded users at the end").WithIsInline(false))
                     .AddField(efb => efb.WithName(Format.Bold("2.")).WithValue("Images service almost done.").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("3.")).WithValue("`.shardstats` added").WithIsInline(false))
                     .WithFooter(efb => efb.WithText($"More info at: http://github.com/Wizkiller96/WizBot"))
                     );
         }
