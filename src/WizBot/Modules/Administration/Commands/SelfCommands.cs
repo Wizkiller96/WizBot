@@ -173,14 +173,10 @@ namespace WizBot.Modules.Administration
             [OwnerOnly]
             public async Task ReloadImages()
             {
-                var msg = await Context.Channel.SendMessageAsync("Reloading Images...").ConfigureAwait(false);
                 var sw = Stopwatch.StartNew();
                 await WizBot.Images.Reload().ConfigureAwait(false);
                 sw.Stop();
-                await msg.ModifyAsync(x =>
-                {
-                x.Content = "✅ Images reloaded.";
-                }).ConfigureAwait(false);
+                await Context.Channel.SendConfirmAsync("Images Reloaded").ConfigureAwait(false);
             }
 
             private static UserStatus SettableUserStatusToUserStatus(SettableUserStatus sus)
