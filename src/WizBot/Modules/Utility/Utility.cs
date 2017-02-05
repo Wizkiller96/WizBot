@@ -303,6 +303,14 @@ namespace WizBot.Modules.Utility
         }
 
         [WizBotCommand, Usage, Description, Aliases]
+        public async Task ShardId(ulong guildid)
+        {
+            var shardId = WizBot.Client.GetShardIdFor(guildid);
+
+            await Context.Channel.SendConfirmAsync($"ShardId for **{guildid}** with {WizBot.Client.Shards.Count} total shards", shardId.ToString()).ConfigureAwait(false);
+        }
+
+        [WizBotCommand, Usage, Description, Aliases]
         public async Task Stats()
         {
             var stats = WizBot.Stats;
