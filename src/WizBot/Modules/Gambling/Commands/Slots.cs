@@ -262,7 +262,7 @@ namespace WizBot.Modules.Gambling
                 {
                     var t = Task.Run(async () =>
                     {
-                        await Task.Delay(3000);
+                        await Task.Delay(2000);
                         runningUsers.Remove(Context.User.Id);
                     });
                 }
