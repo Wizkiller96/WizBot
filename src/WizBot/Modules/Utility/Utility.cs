@@ -25,6 +25,36 @@ namespace WizBot.Modules.Utility
     {
         private static ConcurrentDictionary<ulong, Timer> rotatingRoleColors = new ConcurrentDictionary<ulong, Timer>();
 
+        //[WizBotCommand, Usage, Description, Aliases]
+        //[RequireContext(ContextType.Guild)]
+        //public async Task Midorina([Remainder] string arg)
+        //{
+        //    var channel = (ITextChannel)Context.Channel;
+
+        //    var roleNames = arg?.Split(';');
+
+        //    if (roleNames == null || roleNames.Length == 0)
+        //        return;
+
+        //    var j = 0;
+        //    var roles = roleNames.Select(x => Context.Guild.Roles.FirstOrDefault(r => String.Compare(r.Name, x) == 0))
+        //            .Where(x => x != null)
+        //            .Select(x => $"`{++j}.` {x.Name}")
+        //            .Take(10)
+        //            .ToArray();
+
+        //    string[] reactions = { "one", ":two:", ":three:", ":four:", ":five:", ":six:", ":seven:", ":eight:", ":nine:", ":ten:" };
+
+        //    var msg = await Context.Channel.SendConfirmAsync("Pick a Role",
+        //        string.Join("\n", roles)).ConfigureAwait(false);
+
+        //    for (int i = 0; i < roles.Length; i++)
+        //    {
+        //        await msg.AddReactionAsync(reactions[i]).ConfigureAwait(false);
+        //        await Task.Delay(1000).ConfigureAwait(false);
+        //    }
+        //}
+
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         [RequireUserPermission(GuildPermission.ManageRoles)]
@@ -318,12 +348,6 @@ namespace WizBot.Modules.Utility
             var shardId = Context.Guild != null
                 ? WizBot.Client.GetShardIdFor(Context.Guild.Id)
                 : 0;
-            var footer = $"Shard {shardId} | {WizBot.Client.Shards.Count} total shards";
-
-#if !GLOBAL_WIZBOT
-            footer += $" | Playing {Music.Music.MusicPlayers.Where(mp => mp.Value.CurrentSong != null).Count()} songs, {Music.Music.MusicPlayers.Sum(mp => mp.Value.Playlist.Count)} queued.";
-
-#endif
 
             await Context.Channel.EmbedAsync(
                 new EmbedBuilder().WithOkColor()
@@ -331,15 +355,19 @@ namespace WizBot.Modules.Utility
                                           .WithUrl("http://wizbot.readthedocs.io/en/latest/")
                                           .WithIconUrl("https://cdn.discordapp.com/avatars/170849991357628416/412367ac7ffd3915a0b969f6f3e17aca.jpg"))
                     .AddField(efb => efb.WithName(Format.Bold("Author")).WithValue(stats.Author).WithIsInline(true))
-                    .AddField(efb => efb.WithName(Format.Bold("Library")).WithValue(stats.Library).WithIsInline(true))
                     .AddField(efb => efb.WithName(Format.Bold("Bot ID")).WithValue(WizBot.Client.CurrentUser.Id.ToString()).WithIsInline(true))
+                    .AddField(efb => efb.WithName(Format.Bold("Shard")).WithValue($"#{shardId}, {WizBot.Client.Shards.Count} total").WithIsInline(true))
                     .AddField(efb => efb.WithName(Format.Bold("Commands Ran")).WithValue(stats.CommandsRan.ToString()).WithIsInline(true))
                     .AddField(efb => efb.WithName(Format.Bold("Messages")).WithValue($"{stats.MessageCounter} ({stats.MessagesPerSecond:F2}/sec)").WithIsInline(true))
                     .AddField(efb => efb.WithName(Format.Bold("Memory")).WithValue($"{stats.Heap} MB").WithIsInline(true))
                     .AddField(efb => efb.WithName(Format.Bold("Owner ID(s)")).WithValue(string.Join("\n", WizBot.Credentials.OwnerIds)).WithIsInline(true))
                     .AddField(efb => efb.WithName(Format.Bold("Uptime")).WithValue(stats.GetUptimeString("\n")).WithIsInline(true))
                     .AddField(efb => efb.WithName(Format.Bold("Presence")).WithValue($"{WizBot.Client.GetGuildCount()} Servers\n{stats.TextChannels} Text Channels\n{stats.VoiceChannels} Voice Channels").WithIsInline(true))
-                    .WithFooter(efb => efb.WithText(footer)));
+#if !GLOBAL_WIZBOT
+                    .WithFooter(efb => efb.WithText($"Playing {Music.Music.MusicPlayers.Where(mp => mp.Value.CurrentSong != null).Count()} songs, {Music.Music.MusicPlayers.Sum(mp => mp.Value.Playlist.Count)} queued."))
+
+#endif
+                    );
         }
 
         [WizBotCommand, Usage, Description, Aliases]

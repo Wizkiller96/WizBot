@@ -148,11 +148,7 @@ namespace WizBot.Modules.NSFW
         [WizBotCommand, Usage, Description, Aliases]
         public Task Konachan([Remainder] string tag = null)
             => Searches.Searches.InternalDapiCommand(Context.Message, tag, Searches.Searches.DapiSearchType.Konachan);
-
-        [WizBotCommand, Usage, Description, Aliases]
-        public Task Rule34([Remainder] string tag = null)
-            => Searches.Searches.InternalDapiCommand(Context.Message, tag, Searches.Searches.DapiSearchType.Rule34);
-
+#endif
         [WizBotCommand, Usage, Description, Aliases]
         public async Task E621([Remainder] string tag = null)
         {
@@ -169,7 +165,11 @@ namespace WizBot.Modules.NSFW
                     .WithFooter(efb => efb.WithText("e621")))
                     .ConfigureAwait(false);
         }
-#endif
+
+        [WizBotCommand, Usage, Description, Aliases]
+        public Task Rule34([Remainder] string tag = null)
+            => Searches.Searches.InternalDapiCommand(Context.Message, tag, Searches.Searches.DapiSearchType.Rule34);
+
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Danbooru([Remainder] string tag = null)
         {
