@@ -37,22 +37,68 @@ namespace WizBot.Modules.Utility
         //        return;
 
         //    var j = 0;
-        //    var roles = roleNames.Select(x => Context.Guild.Roles.FirstOrDefault(r => String.Compare(r.Name, x) == 0))
+        //    var roles = roleNames.Select(x => Context.Guild.Roles.FirstOrDefault(r => String.Compare(r.Name, x, StringComparison.OrdinalIgnoreCase) == 0))
         //            .Where(x => x != null)
-        //            .Select(x => $"`{++j}.` {x.Name}")
         //            .Take(10)
         //            .ToArray();
 
-        //    string[] reactions = { "one", ":two:", ":three:", ":four:", ":five:", ":six:", ":seven:", ":eight:", ":nine:", ":ten:" };
+        //    var rnd = new WizBotRandom();
+        //    var reactions = new[] { "🎬", "🐧", "🌍", "🌺", "🚀", "☀", "🌲", "🍒", "🐾", "🏀" }
+        //        .OrderBy(x => rnd.Next())
+        //        .ToArray();
+
+        //    var roleStrings = roles
+        //            .Select(x => $"{reactions[j++]} -> {x.Name}");
 
         //    var msg = await Context.Channel.SendConfirmAsync("Pick a Role",
-        //        string.Join("\n", roles)).ConfigureAwait(false);
+        //        string.Join("\n", roleStrings)).ConfigureAwait(false);
 
         //    for (int i = 0; i < roles.Length; i++)
         //    {
-        //        await msg.AddReactionAsync(reactions[i]).ConfigureAwait(false);
+        //        try { await msg.AddReactionAsync(reactions[i]).ConfigureAwait(false); }
+        //        catch (Exception ex) { _log.Warn(ex); }
         //        await Task.Delay(1000).ConfigureAwait(false);
         //    }
+
+        //    msg.OnReaction((r) => Task.Run(async () =>
+        //    {
+        //        try
+        //        {
+        //            var usr = r.User.GetValueOrDefault() as IGuildUser;
+
+        //            if (usr == null)
+        //                return;
+
+        //            var index = Array.IndexOf<string>(reactions, r.Emoji.Name);
+        //            if (index == -1)
+        //                return;
+
+        //            await usr.RemoveRolesAsync(roles[index]);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            _log.Warn(ex);
+        //        }
+        //    }), (r) => Task.Run(async () =>
+        //    {
+        //        try
+        //        {
+        //            var usr = r.User.GetValueOrDefault() as IGuildUser;
+
+        //            if (usr == null)
+        //                return;
+
+        //            var index = Array.IndexOf<string>(reactions, r.Emoji.Name);
+        //            if (index == -1)
+        //                return;
+
+        //            await usr.RemoveRolesAsync(roles[index]);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            _log.Warn(ex);
+        //        }
+        //    }));
         //}
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -154,7 +200,7 @@ namespace WizBot.Modules.Utility
             }
             var rng = new WizBotRandom();
             var arr = await Task.Run(() => socketGuild.Users
-                   .Where(u => u.Game?.Name?.ToUpperInvariant() == game)
+                    .Where(u => u.Game?.Name?.ToUpperInvariant() == game)
                     .Select(u => u.Username)
                     .OrderBy(x => rng.Next())
                     .Take(60)
@@ -168,7 +214,7 @@ namespace WizBot.Modules.Utility
                 await Context.Channel.SendConfirmAsync("```css\n" + string.Join("\n", arr.GroupBy(item => (i++) / 2)
                                                                                  .Select(ig => string.Concat(ig.Select(el => $"• {el,-27}")))) + "\n```")
                                                                                  .ConfigureAwait(false);
-             }
+            }
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -326,7 +372,8 @@ namespace WizBot.Modules.Utility
 
 
 
-            await Context.Channel.SendPaginatedConfirmAsync(page, (curPage) => {
+            await Context.Channel.SendPaginatedConfirmAsync(page, (curPage) =>
+            {
 
                 var str = string.Join("\n", allShardStrings.Skip(25 * (curPage - 1)).Take(25));
 
@@ -374,7 +421,6 @@ namespace WizBot.Modules.Utility
                     .AddField(efb => efb.WithName(Format.Bold("Presence")).WithValue($"{WizBot.Client.GetGuildCount()} Servers\n{stats.TextChannels} Text Channels\n{stats.VoiceChannels} Voice Channels").WithIsInline(true))
 #if !GLOBAL_WIZBOT
                     .WithFooter(efb => efb.WithText($"Playing {Music.Music.MusicPlayers.Where(mp => mp.Value.CurrentSong != null).Count()} songs, {Music.Music.MusicPlayers.Sum(mp => mp.Value.Playlist.Count)} queued."))
-
 #endif
                     );
         }

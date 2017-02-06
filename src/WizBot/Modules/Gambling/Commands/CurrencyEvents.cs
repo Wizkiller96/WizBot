@@ -125,7 +125,7 @@ namespace WizBot.Modules.Gambling
             {
                 var msg = await Context.Channel.SendConfirmAsync("Flower reaction event started!",
                     "Add 🌸 reaction to this message to get 100" + WizBot.BotConfig.CurrencySign,
-                    footer: "This event is active for 24 hours.")
+                    footer: "This event is active for up to 24 hours.")
                                                .ConfigureAwait(false);
                 try { await msg.AddReactionAsync("🌸").ConfigureAwait(false); }
                 catch
