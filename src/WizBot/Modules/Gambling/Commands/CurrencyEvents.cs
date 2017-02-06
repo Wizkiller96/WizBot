@@ -11,6 +11,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord.WebSocket;
 using WizBot.Services.Database;
+using System.Threading;
+using NLog;
 
 namespace WizBot.Modules.Gambling
 {
@@ -25,7 +27,6 @@ namespace WizBot.Modules.Gambling
                 SneakyGameStatus
             }
             //flower reaction event
-            public static readonly ConcurrentHashSet<ulong> _flowerReactionAwardedUsers = new ConcurrentHashSet<ulong>();
             public static readonly ConcurrentHashSet<ulong> _sneakyGameAwardedUsers = new ConcurrentHashSet<ulong>();
 
 
@@ -45,7 +46,6 @@ namespace WizBot.Modules.Gambling
                 var channel = (ITextChannel)Context.Channel;
                 try
                 {
-
                     switch (e)
                     {
                         case CurrencyEvent.FlowerReaction:
@@ -64,7 +64,7 @@ namespace WizBot.Modules.Gambling
             public static async Task SneakyGameStatusEvent(CommandContext Context, int? arg)
             {
                 int num;
-                if (arg == null || arg< 5)
+                if (arg == null || arg < 5)
                     num = 60;
                 else
                     num = arg.Value;
@@ -73,7 +73,7 @@ namespace WizBot.Modules.Gambling
                     return;
                 var rng = new WizBotRandom();
 
-                for (int i = 0; i< 5; i++)
+                for (int i = 0; i < 5; i++)
                 {
                     _secretCode += _sneakyGameStatusChars[rng.Next(0, _sneakyGameStatusChars.Length)];
                 }
@@ -92,7 +92,7 @@ namespace WizBot.Modules.Gambling
 
 
                 WizBot.Client.MessageReceived += SneakyGameMessageReceivedEventHandler;
-                await Task.Delay(num* 1000);
+                await Task.Delay(num * 1000);
                 WizBot.Client.MessageReceived -= SneakyGameMessageReceivedEventHandler;
 
                 var cnt = _sneakyGameAwardedUsers.Count;
@@ -121,38 +121,100 @@ namespace WizBot.Modules.Gambling
                 return Task.Delay(0);
             }
 
-            public static async Task FlowerReactionEvent(CommandContext Context)
+            public static Task FlowerReactionEvent(CommandContext Context) =>
+                new FlowerReactionEvent().Start(Context);
+        }
+    }
+
+    public abstract class CurrencyEvent
+    {
+        public abstract Task Start(CommandContext channel);
+    }
+
+    public class FlowerReactionEvent : CurrencyEvent
+    {
+        public readonly ConcurrentHashSet<ulong> _flowerReactionAwardedUsers = new ConcurrentHashSet<ulong>();
+        private readonly Logger _log;
+
+        private IUserMessage msg { get; set; } = null;
+
+        private CancellationTokenSource source { get; }
+        private CancellationToken cancelToken { get; }
+
+        public FlowerReactionEvent()
+        {
+            _log = LogManager.GetCurrentClassLogger();
+            source = new CancellationTokenSource();
+            cancelToken = source.Token;
+        }
+
+        private async Task End()
+        {
+            if (msg != null)
+                await msg.DeleteAsync().ConfigureAwait(false);
+
+            if (!source.IsCancellationRequested)
+                source.Cancel();
+
+            WizBot.Client.MessageDeleted -= MessageDeletedEventHandler;
+        }
+
+        private Task MessageDeletedEventHandler(ulong id, Optional<SocketMessage> _)
+        {
+            if (msg?.Id == id)
             {
-                var msg = await Context.Channel.SendConfirmAsync("Flower reaction event started!",
+                _log.Warn("Stopping flower reaction event because message is deleted.");
+                Task.Run(() => End());
+            }
+
+            return Task.CompletedTask;
+        }
+
+        public override async Task Start(CommandContext context)
+        {
+            msg = await context.Channel.SendConfirmAsync("Flower reaction event started!",
                     "Add 🌸 reaction to this message to get 100" + WizBot.BotConfig.CurrencySign,
                     footer: "This event is active for up to 24 hours.")
                                                .ConfigureAwait(false);
+
+            WizBot.Client.MessageDeleted += MessageDeletedEventHandler;
+
+            try { await msg.AddReactionAsync("🌸").ConfigureAwait(false); }
+            catch
+            {
                 try { await msg.AddReactionAsync("🌸").ConfigureAwait(false); }
                 catch
                 {
-                    try { await msg.AddReactionAsync("🌸").ConfigureAwait(false); }
-                    catch
+                    try { await msg.DeleteAsync().ConfigureAwait(false); }
+                    catch { return; }
+                }
+            }
+            using (msg.OnReaction(async (r) =>
+            {
+                try
+                {
+                    if (r.Emoji.Name == "🌸" && r.User.IsSpecified && ((DateTime.UtcNow - r.User.Value.CreatedAt).TotalDays > 5) && _flowerReactionAwardedUsers.Add(r.User.Value.Id))
                     {
-                        try { await msg.DeleteAsync().ConfigureAwait(false); }
-                        catch { return; }
+                        try { await CurrencyHandler.AddCurrencyAsync(r.User.Value, "Flower Reaction Event", 100, false).ConfigureAwait(false); } catch { }
                     }
                 }
-                using (msg.OnReaction(async (r) =>
+                catch { }
+            }))
+            {
+                try
                 {
-                    try
-                    {
-                        if (r.Emoji.Name == "🌸" && r.User.IsSpecified && ((DateTime.UtcNow - r.User.Value.CreatedAt).TotalDays > 5) && _flowerReactionAwardedUsers.Add(r.User.Value.Id))
-                         {
-                             try { await CurrencyHandler.AddCurrencyAsync(r.User.Value, "Flower Reaction Event", 100, false).ConfigureAwait(false); } catch { }
-                         }
-                    }
-                    catch { }
-                }))
-                {
-                    await Task.Delay(TimeSpan.FromHours(24)).ConfigureAwait(false);
-                    try { await msg.DeleteAsync().ConfigureAwait(false); } catch { }
-                    _flowerReactionAwardedUsers.Clear();
+                    await Task.Delay(TimeSpan.FromHours(24), cancelToken).ConfigureAwait(false);
                 }
+                catch (OperationCanceledException)
+                {
+
+                }
+                if (cancelToken.IsCancellationRequested)
+                    return;
+
+                _log.Warn("Stopping flower reaction event because it expired.");
+                await End();
+
             }
         }
     }
