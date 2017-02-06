@@ -490,6 +490,7 @@ namespace WizBot.Modules.Utility
                     .AddField(efb => efb.WithName(Format.Bold("1.")).WithValue("rule34, e621 back on public bot.").WithIsInline(false))
                     .AddField(efb => efb.WithName(Format.Bold("2.")).WithValue("`.shardstats` improved.").WithIsInline(false))
                     .AddField(efb => efb.WithName(Format.Bold("3.")).WithValue("flowerreaction event under the hood improvements.").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("4.")).WithValue("`.greetmsg`, `.greetdmmsg`, `.acr` and `.byemsg` now accept json which will cause the output to be a discord embed.").WithIsInline(false))
                     .WithFooter(efb => efb.WithText($"More info at: http://github.com/Wizkiller96/WizBot"))
                     );
         }
