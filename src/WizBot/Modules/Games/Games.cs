@@ -15,7 +15,6 @@ namespace WizBot.Modules.Games
     {
         private static string[] _8BallResponses { get; } = WizBot.BotConfig.EightBallResponses.Select(ebr => ebr.Text).ToArray();
 
-
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Choose([Remainder] string list = null)
         {
