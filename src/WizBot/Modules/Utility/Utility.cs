@@ -484,13 +484,10 @@ namespace WizBot.Modules.Utility
         {
             await Context.Channel.EmbedAsync(
                 new EmbedBuilder().WithOkColor()
-                    .WithAuthor(eab => eab.WithName($"WizBot Changelogs | 📅 Feb 6, 2017")
+                    .WithAuthor(eab => eab.WithName($"WizBot Changelogs | 📅 Feb 8, 2017")
                                           .WithUrl("https://github.com/Wizkiller96/WizBot/commits/dev")
                                           .WithIconUrl("https://cdn.discordapp.com/avatars/170849991357628416/412367ac7ffd3915a0b969f6f3e17aca.jpg"))
-                    .AddField(efb => efb.WithName(Format.Bold("1.")).WithValue("rule34, e621 back on public bot.").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("2.")).WithValue("`.shardstats` improved.").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("3.")).WithValue("flowerreaction event under the hood improvements.").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("4.")).WithValue("`.greetmsg`, `.greetdmmsg`, `.acr` and `.byemsg` now accept json which will cause the output to be a discord embed.").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("1.")).WithValue("TicTacToe added").WithIsInline(false))
                     .WithFooter(efb => efb.WithText($"More info at: http://github.com/Wizkiller96/WizBot"))
                     );
         }
