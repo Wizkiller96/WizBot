@@ -141,6 +141,7 @@ namespace WizBot.Modules.Utility
                 }
                 var repeater = repList[index].Repeater;
 
+                repList[index].Reset();
                 await Context.Channel.SendMessageAsync("🔄 " + repeater.Message).ConfigureAwait(false);
             }
 
