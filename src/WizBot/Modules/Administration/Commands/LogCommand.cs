@@ -652,7 +652,7 @@ namespace WizBot.Modules.Administration
                         return;
                     var embed = new EmbedBuilder()
                         .WithOkColor()
-                        .WithTitle($"🗑 Message Deleted in {((ITextChannel)msg.Channel).Mention}")
+                        .WithTitle($"🗑 Message Deleted in #{((ITextChannel)msg.Channel).Name}")
                         .WithDescription($"{msg.Author}")
                         .AddField(efb => efb.WithName("Content").WithValue(msg.Resolve(userHandling: TagHandling.FullName)).WithIsInline(false))
                         .AddField(efb => efb.WithName("Id").WithValue(msg.Id.ToString()).WithIsInline(false))
@@ -696,7 +696,7 @@ namespace WizBot.Modules.Administration
 
                     var embed = new EmbedBuilder()
                         .WithOkColor()
-                        .WithTitle($"📝 Message Updated in {((ITextChannel)after.Channel).Mention}")
+                        .WithTitle($"📝 Message Updated in #{((ITextChannel)after.Channel).Name}")
                         .WithDescription(after.Author.ToString())
                         .AddField(efb => efb.WithName("Old Message").WithValue(before.Resolve(userHandling: TagHandling.FullName)).WithIsInline(false))
                         .AddField(efb => efb.WithName("New Message").WithValue(after.Resolve(userHandling: TagHandling.FullName)).WithIsInline(false))
