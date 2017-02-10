@@ -65,13 +65,12 @@ namespace WizBot.Modules.Games.Commands.Hangman
         public uint MessagesSinceLastPost { get; private set; } = 0;
         public string ScrambledWord => "`" + String.Concat(Term.Word.Select(c =>
         {
+            if (c == ' ')
+                return " \u2000";
             if (!(char.IsLetter(c) || char.IsDigit(c)))
                 return $" {c}";
 
             c = char.ToUpperInvariant(c);
-
-            if (c == ' ')
-                return "   ";
             return Guesses.Contains(c) ? $" {c}" : " _";
         })) + "`";
 
