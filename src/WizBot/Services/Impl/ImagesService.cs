@@ -82,6 +82,7 @@ namespace WizBot.Services.Impl
                     .ToImmutableArray();
 
                 SlotEmojis = Directory.GetFiles(slotEmojisPath)
+                    .OrderBy(f => int.Parse(Path.GetFileNameWithoutExtension(f)))
                     .Select(x => File.ReadAllBytes(x).ToImmutableArray())
                     .ToImmutableArray();
 
