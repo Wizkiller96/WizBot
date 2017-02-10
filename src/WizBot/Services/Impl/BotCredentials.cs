@@ -25,7 +25,20 @@ namespace WizBot.Services.Impl
 
         public string LoLApiKey { get; }
         public string OsuApiKey { get; }
-        public string SoundCloudClientId { get; }
+        private string _soundcloudClientId;
+        public string SoundCloudClientId
+        {
+            get
+            {
+                return string.IsNullOrWhiteSpace(_soundcloudClientId)
+                    ? "f16f3b87c6ebc1aafe87d9cf27a03dc2"
+                    : _soundcloudClientId;
+            }
+            set
+            {
+                _soundcloudClientId = value;
+            }
+        }
 
         public DBConfig Db { get; }
         public int TotalShards { get; }
