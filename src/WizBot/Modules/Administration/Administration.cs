@@ -530,7 +530,7 @@ namespace WizBot.Modules.Administration
             if (wizbotSupportServer == null)
                 return;
 
-            var patreonRole = wizbotSupportServer.GetRole(236667642088259585);
+            var patreonRole = wizbotSupportServer.GetRole(280182841114099722);
             if (patreonRole == null)
                 return;
 
@@ -552,5 +552,45 @@ namespace WizBot.Modules.Administration
 
             await Context.Channel.SendConfirmAsync($"Successfuly added a new donator. Total donated amount from this user: {don.Amount} 👑").ConfigureAwait(false);
         }
+
+        //[WizBotCommand, Usage, Description, Aliases]
+        //[RequireContext(ContextType.Guild)]
+        //public async Task Timezones(int page = 1)
+        //{
+        //    page -= 1;
+
+        //    if (page < 0 || page > 20)
+        //        return;
+
+        //    var timezones = TimeZoneInfo.GetSystemTimeZones();
+        //    var timezonesPerPage = 20;
+
+        //    await Context.Channel.SendPaginatedConfirmAsync(page + 1, (curPage) => new EmbedBuilder()
+        //        .WithOkColor()
+        //        .WithTitle("Available Timezones")
+        //        .WithDescription(string.Join("\n", timezones.Skip((curPage - 1) * timezonesPerPage).Take(timezonesPerPage).Select(x => $"`{x.Id,-25}` UTC{x.BaseUtcOffset:hhmm}"))),
+        //        timezones.Count / timezonesPerPage);
+        //}
+
+        //[WizBotCommand, Usage, Description, Aliases]
+        //[RequireContext(ContextType.Guild)]
+        //public async Task Timezone([Remainder] string id)
+        //{
+        //    TimeZoneInfo tz;
+        //    try
+        //    {
+        //        tz = TimeZoneInfo.FindSystemTimeZoneById(id);
+        //        if (tz != null)
+        //            await Context.Channel.SendConfirmAsync(tz.ToString()).ConfigureAwait(false);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        tz = null;
+        //        _log.Warn(ex);
+        //    }
+
+        //    if (tz == null)
+        //        await Context.Channel.SendErrorAsync("Timezone not found. You should specify one of the timezones listed in the 'timezones' command.").ConfigureAwait(false);
+        //}
     }
 }
