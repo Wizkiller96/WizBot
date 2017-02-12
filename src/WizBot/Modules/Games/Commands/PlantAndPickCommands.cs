@@ -167,7 +167,7 @@ namespace WizBot.Modules.Games
                 var removed = await CurrencyHandler.RemoveCurrencyAsync((IGuildUser)Context.User, $"Planted a {WizBot.BotConfig.CurrencyName}", amount, false).ConfigureAwait(false);
                 if (!removed)
                 {
-                    await Context.Channel.SendErrorAsync($"You don't have any {WizBot.BotConfig.CurrencyPluralName}.").ConfigureAwait(false);
+                    await Context.Channel.SendErrorAsync($"You don't have enough {WizBot.BotConfig.CurrencyPluralName}.").ConfigureAwait(false);
                     return;
                 }
 
