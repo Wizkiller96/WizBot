@@ -19,7 +19,7 @@ namespace WizBot.Modules.NSFW
     [WizBotModule("NSFW", "~")]
     public class NSFW : DiscordModule
     {
-#if !GLOBAL_WIZBOT
+
         private static ConcurrentDictionary<ulong, Timer> AutoHentaiTimers { get; } = new ConcurrentDictionary<ulong, Timer>();
         private static ConcurrentHashSet<ulong> _hentaiBombBlacklist { get; } = new ConcurrentHashSet<ulong>();
 
@@ -65,7 +65,7 @@ namespace WizBot.Modules.NSFW
         [WizBotCommand, Usage, Description, Aliases]
         public Task Hentai([Remainder] string tag = null) =>
             InternalHentai(Context.Channel, tag, false);
-
+#if !GLOBAL_WIZBOT
         [WizBotCommand, Usage, Description, Aliases]
         [RequireUserPermission(ChannelPermission.ManageMessages)]
         public async Task AutoHentai(int interval = 0, string tags = null)
@@ -140,7 +140,7 @@ namespace WizBot.Modules.NSFW
                 _hentaiBombBlacklist.TryRemove(Context.User.Id);
             }
         }
-
+#endif
         [WizBotCommand, Usage, Description, Aliases]
         public Task Yandere([Remainder] string tag = null)
             => Searches.Searches.InternalDapiCommand(Context.Message, tag, Searches.Searches.DapiSearchType.Yandere);
@@ -148,7 +148,7 @@ namespace WizBot.Modules.NSFW
         [WizBotCommand, Usage, Description, Aliases]
         public Task Konachan([Remainder] string tag = null)
             => Searches.Searches.InternalDapiCommand(Context.Message, tag, Searches.Searches.DapiSearchType.Konachan);
-#endif
+
         [WizBotCommand, Usage, Description, Aliases]
         public async Task E621([Remainder] string tag = null)
         {
@@ -280,7 +280,6 @@ namespace WizBot.Modules.NSFW
         public static Task<string> GetRule34ImageLink(string tag) =>
             Searches.Searches.InternalDapiSearch(tag, Searches.Searches.DapiSearchType.Rule34);
 
-#if !GLOBAL_WIZBOT
         public static Task<string> GetYandereImageLink(string tag) =>
             Searches.Searches.InternalDapiSearch(tag, Searches.Searches.DapiSearchType.Yandere);
 
@@ -289,6 +288,5 @@ namespace WizBot.Modules.NSFW
 
         public static Task<string> GetGelbooruImageLink(string tag) =>
             Searches.Searches.InternalDapiSearch(tag, Searches.Searches.DapiSearchType.Gelbooru);
-#endif
     }
 }
