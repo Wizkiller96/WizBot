@@ -31,9 +31,9 @@ namespace Services.CleverBotApi
         {
 
 #if GLOBAL_WIZBOT
-            var url = "http://www.cleverbot.com/webservicemin?uc=777&botapi=nadekobot";
+            var url = "http://www.cleverbot.com/webservicemin?uc=UseOfficialAPI&botapi=nadekobot";
 #else
-            var url = "http://www.cleverbot.com/webservicemin?uc=777&botapi=chatterbotapi";
+            var url = "http://www.cleverbot.com/webservicemin?uc=UseOfficialAPI&botapi=chatterbotapi";
 #endif
 
             switch (type)
