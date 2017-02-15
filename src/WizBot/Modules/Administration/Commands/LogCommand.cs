@@ -35,7 +35,6 @@ namespace WizBot.Modules.Administration
 
             private static ConcurrentDictionary<ITextChannel, List<string>> PresenceUpdates { get; } = new ConcurrentDictionary<ITextChannel, List<string>>();
             private static Timer timerReference { get; }
-            private IGoogleApiService _google { get; }
 
             static LogCommands()
             {
@@ -43,11 +42,8 @@ namespace WizBot.Modules.Administration
                 _log = LogManager.GetCurrentClassLogger();
                 var sw = Stopwatch.StartNew();
 
-                using (var uow = DbHandler.UnitOfWork())
-                {
-                    GuildLogSettings = new ConcurrentDictionary<ulong, LogSetting>(WizBot.AllGuildConfigs
-                                                                                      .ToDictionary(g => g.GuildId, g => g.LogSetting));
-                }
+                GuildLogSettings = new ConcurrentDictionary<ulong, LogSetting>(WizBot.AllGuildConfigs
+                    .ToDictionary(g => g.GuildId, g => g.LogSetting));
 
                 timerReference = new Timer(async (state) =>
                 {
@@ -59,7 +55,11 @@ namespace WizBot.Modules.Administration
                         {
                             List<string> messages;
                             if (PresenceUpdates.TryRemove(key, out messages))
-                                try { await key.SendConfirmAsync("Presence Updates", string.Join(Environment.NewLine, messages)); } catch { }
+                                try { await key.SendConfirmAsync("Presence Updates", string.Join(Environment.NewLine, messages)); }
+                                catch
+                                {
+                                    // ignored
+                                }
                         }));
                     }
                     catch (Exception ex)
@@ -130,6 +130,7 @@ namespace WizBot.Modules.Administration
                     {
                         embed.WithTitle("👥 Avatar Changed")
                             .WithDescription($"{before.Username}#{before.Discriminator} | {before.Id}")
+                            .WithTitle($"{before.Username}#{before.Discriminator} | {before.Id}")
                             .WithThumbnailUrl(before.AvatarUrl)
                             .WithImageUrl(after.AvatarUrl)
                             .WithFooter(fb => fb.WithText(currentTime))
@@ -158,7 +159,9 @@ namespace WizBot.Modules.Administration
                     //}
                 }
                 catch
-                { }
+                {
+                    // ignored
+                }
             }
 
             private static async Task _client_UserVoiceStateUpdated_TTS(SocketUser iusr, SocketVoiceState before, SocketVoiceState after)
@@ -187,7 +190,7 @@ namespace WizBot.Modules.Administration
                     var str = "";
                     if (beforeVch?.Guild == afterVch?.Guild)
                     {
-                        str = $"{usr.Username} moved from {beforeVch.Name} to {afterVch.Name}";
+                        str = $"{usr.Username} moved from {beforeVch?.Name} to {afterVch?.Name}";
                     }
                     else if (beforeVch == null)
                     {
@@ -200,7 +203,10 @@ namespace WizBot.Modules.Administration
                     var toDelete = await logChannel.SendMessageAsync(str, true).ConfigureAwait(false);
                     toDelete.DeleteAfter(5);
                 }
-                catch { }
+                catch
+                {
+                    // ignored
+                }
             }
 
             private static async void MuteCommands_UserMuted(IGuildUser usr, MuteCommands.MuteType muteType)
@@ -215,7 +221,7 @@ namespace WizBot.Modules.Administration
                     ITextChannel logChannel;
                     if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.UserMuted)) == null)
                         return;
-                    string mutes = "";
+                    var mutes = "";
                     switch (muteType)
                     {
                         case MuteCommands.MuteType.Voice:
@@ -528,7 +534,7 @@ namespace WizBot.Modules.Administration
                     //    str += $"👾`{prettyCurrentTime}`👤__**{usr.Username}**__ is now playing **{after.Game?.Name}**.";
                     //}
 
-                                       PresenceUpdates.AddOrUpdate(logChannel, new List<string>() { str }, (id, list) => { list.Add(str); return list; });
+                    PresenceUpdates.AddOrUpdate(logChannel, new List<string>() { str }, (id, list) => { list.Add(str); return list; });
                 }
                 catch { }
             }

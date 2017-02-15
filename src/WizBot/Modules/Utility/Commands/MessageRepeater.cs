@@ -91,7 +91,7 @@ namespace WizBot.Modules.Utility
                 public void Reset()
                 {
                     source.Cancel();
-                    var t = Task.Run(Run);
+                    var _ = Task.Run(Run);
                 }
 
                 public void Stop()

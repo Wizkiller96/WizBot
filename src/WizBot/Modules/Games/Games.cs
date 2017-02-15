@@ -32,7 +32,6 @@ namespace WizBot.Modules.Games
         {
             if (string.IsNullOrWhiteSpace(question))
                 return;
-                var rng = new WizBotRandom();
 
             await Context.Channel.EmbedAsync(new EmbedBuilder().WithColor(WizBot.OkColor)
                                .AddField(efb => efb.WithName("❓ Question").WithValue(question).WithIsInline(false))

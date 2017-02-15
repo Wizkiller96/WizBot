@@ -43,22 +43,15 @@ namespace WizBot.Modules.Gambling
             [OwnerOnly]
             public async Task StartEvent(CurrencyEvent e, int arg = -1)
             {
-                var channel = (ITextChannel)Context.Channel;
-                try
+                switch (e)
                 {
-                    switch (e)
-                    {
-                        case CurrencyEvent.FlowerReaction:
-                            await FlowerReactionEvent(Context).ConfigureAwait(false);
-                            break;
-                        case CurrencyEvent.SneakyGameStatus:
-                            await SneakyGameStatusEvent(Context, arg).ConfigureAwait(false);
-                            break;
-                        default:
-                            break;
-                    }
+                    case CurrencyEvent.FlowerReaction:
+                        await FlowerReactionEvent(Context).ConfigureAwait(false);
+                        break;
+                    case CurrencyEvent.SneakyGameStatus:
+                        await SneakyGameStatusEvent(Context, arg).ConfigureAwait(false);
+                        break;
                 }
-                catch { }
             }
 
             public static async Task SneakyGameStatusEvent(CommandContext Context, int? arg)
@@ -78,7 +71,6 @@ namespace WizBot.Modules.Gambling
                     _secretCode += _sneakyGameStatusChars[rng.Next(0, _sneakyGameStatusChars.Length)];
                 }
 
-                var game = WizBot.Client.Game?.Name;
                 await WizBot.Client.SetGameAsync($"type {_secretCode} for " + WizBot.BotConfig.CurrencyPluralName)
                     .ConfigureAwait(false);
                 try
@@ -88,7 +80,10 @@ namespace WizBot.Modules.Gambling
                         $"Lasts {num} seconds. Don't tell anyone. Shhh.")
                         .ConfigureAwait(false);
                 }
-                catch { }
+                catch
+                {
+                    // ignored
+                }
 
 
                 WizBot.Client.MessageReceived += SneakyGameMessageReceivedEventHandler;
@@ -114,15 +109,18 @@ namespace WizBot.Modules.Gambling
                             .ConfigureAwait(false);
 
                         try { await arg.DeleteAsync(new RequestOptions() { RetryMode = RetryMode.AlwaysFail }).ConfigureAwait(false); }
-                        catch { }
+                        catch
+                        {
+                            // ignored
+                        }
                     });
                 }
 
                 return Task.Delay(0);
             }
 
-            public static Task FlowerReactionEvent(CommandContext Context) =>
-                new FlowerReactionEvent().Start(Context);
+            public static Task FlowerReactionEvent(CommandContext context) =>
+                new FlowerReactionEvent().Start(context);
         }
     }
 
@@ -164,7 +162,7 @@ namespace WizBot.Modules.Gambling
             if (msg?.Id == id)
             {
                 _log.Warn("Stopping flower reaction event because message is deleted.");
-                Task.Run(() => End());
+                var __ = Task.Run(End);
             }
 
             return Task.CompletedTask;
@@ -195,10 +193,14 @@ namespace WizBot.Modules.Gambling
                 {
                     if (r.Emoji.Name == "🌸" && r.User.IsSpecified && ((DateTime.UtcNow - r.User.Value.CreatedAt).TotalDays > 5) && _flowerReactionAwardedUsers.Add(r.User.Value.Id))
                     {
-                        try { await CurrencyHandler.AddCurrencyAsync(r.User.Value, "Flower Reaction Event", 100, false).ConfigureAwait(false); } catch { }
+                        await CurrencyHandler.AddCurrencyAsync(r.User.Value, "Flower Reaction Event", 100, false)
+                            .ConfigureAwait(false);
                     }
                 }
-                catch { }
+                catch
+                {
+                    // ignored
+                }
             }))
             {
                 try

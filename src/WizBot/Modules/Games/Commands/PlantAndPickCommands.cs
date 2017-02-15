@@ -29,7 +29,7 @@ namespace WizBot.Modules.Games
         /// https://discord.gg/0TYNJfCU4De7YIk8
         /// </summary>
         [Group]
-        public class PlantPickCommands : ModuleBase
+        public class PlantPickCommands : WizBotSubmodule
         {
             private static ConcurrentHashSet<ulong> generationChannels { get; } = new ConcurrentHashSet<ulong>();
             //channelid/message
@@ -103,7 +103,8 @@ namespace WizBot.Modules.Games
                                     var sent = await channel.SendFileAsync(
                                         fileStream,
                                         file.Key,
-                                        $"❗ {firstPart} Pick it up by typing `{WizBot.ModulePrefixes[typeof(Games).Name]}pick`")
+                                            string.Format("❗ {0} Pick it up by typing `{1}pick`", firstPart,
+                                                WizBot.ModulePrefixes[typeof(Games).Name]))
                                             .ConfigureAwait(false);
 
                                     msgs[0] = sent;
@@ -160,7 +161,7 @@ namespace WizBot.Modules.Games
                 var imgData = GetRandomCurrencyImage();
                 var vowelFirst = new[] { 'a', 'e', 'i', 'o', 'u' }.Contains(WizBot.BotConfig.CurrencyName[0]);
 
-                var msgToSend = $"Oh how Nice! **{Context.User.Username}** planted {(amount == 1 ? (vowelFirst ? "an" : "a") : amount.ToString())} {(amount > 1 ? WizBot.BotConfig.CurrencyPluralName : WizBot.BotConfig.CurrencyName)}. Pick it using {WizBot.ModulePrefixes[typeof(Games).Name]}pick";
+                var msgToSend = $"Oh how Nice! **{Context.User.Username}** planted {(amount == 1 ? (vowelFirst ? "an" : "a") : amount.ToString())} {(amount > 1 ? WizBot.BotConfig.CurrencyPluralName : WizBot.BotConfig.CurrencyName)}. Pick it using {Prefix}pick";
 
                 IUserMessage msg;
                 using (var toSend = imgData.Value.ToStream())

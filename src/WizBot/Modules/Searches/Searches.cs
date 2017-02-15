@@ -187,11 +187,11 @@ namespace WizBot.Modules.Searches
                 _log.Warn("Falling back to Imgur");
                 terms = WebUtility.UrlEncode(terms).Replace(' ', '+');
 
-                    var fullQueryLink = $"http://imgur.com/search?q={ terms }";
-                    var config = Configuration.Default.WithDefaultLoader();
-                    var document = await BrowsingContext.New(config).OpenAsync(fullQueryLink);
+                var fullQueryLink = $"http://imgur.com/search?q={ terms }";
+                var config = Configuration.Default.WithDefaultLoader();
+                var document = await BrowsingContext.New(config).OpenAsync(fullQueryLink);
 
-                    var elems = document.QuerySelectorAll("a.image-list-link").ToList();
+                var elems = document.QuerySelectorAll("a.image-list-link").ToList();
 
                 if (!elems.Any())
                     return;
@@ -499,12 +499,12 @@ namespace WizBot.Modules.Searches
 
                 var data = JsonConvert.DeserializeObject<DefineModel>(res);
 
-                var sense = data.Results.Where(x => x.Senses != null && x.Senses[0].Definition != null).FirstOrDefault()?.Senses[0];
+                var sense = data.Results.FirstOrDefault(x => x.Senses?[0].Definition != null)?.Senses[0];
 
                 if (sense?.Definition == null)
                     return;
 
-                string definition = sense.Definition.ToString();
+                var definition = sense.Definition.ToString();
                 if (!(sense.Definition is string))
                     definition = ((JArray)JToken.Parse(sense.Definition.ToString())).First.ToString();
 
@@ -536,7 +536,7 @@ namespace WizBot.Modules.Searches
             }
 
             await Context.Channel.TriggerTypingAsync().ConfigureAwait(false);
-            string res = "";
+            var res = "";
             using (var http = new HttpClient())
             {
                 http.DefaultRequestHeaders.Clear();
@@ -548,7 +548,7 @@ namespace WizBot.Modules.Searches
             {
                 var items = JObject.Parse(res);
                 var item = items["defs"]["def"];
-                var hashtag = item["hashtag"].ToString();
+                //var hashtag = item["hashtag"].ToString();
                 var link = item["uri"].ToString();
                 var desc = item["text"].ToString();
                 await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()

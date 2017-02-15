@@ -37,26 +37,22 @@ namespace WizBot.Modules.Administration
 
                 public bool CheckUserRatelimit(ulong id)
                 {
-                    RatelimitedUser usr = Users.GetOrAdd(id, (key) => new RatelimitedUser() { UserId = id });
+                    var usr = Users.GetOrAdd(id, (key) => new RatelimitedUser() { UserId = id });
                     if (usr.MessageCount == MaxMessages)
                     {
                         return true;
                     }
-                    else
+                    usr.MessageCount++;
+                    var _ = Task.Run(async () =>
                     {
-                        usr.MessageCount++;
-                        var t = Task.Run(async () =>
+                        try
                         {
-                            try
-                            {
-                                await Task.Delay(PerSeconds * 1000, cancelSource.Token);
-                            }
-                            catch (OperationCanceledException) { }
-                            usr.MessageCount--;
-                        });
-                        return false;
-                    }
-
+                            await Task.Delay(PerSeconds * 1000, cancelSource.Token);
+                        }
+                        catch (OperationCanceledException) { }
+                        usr.MessageCount--;
+                    });
+                    return false;
                 }
             }
 
@@ -65,25 +61,25 @@ namespace WizBot.Modules.Administration
                 _log = LogManager.GetCurrentClassLogger();
 
                 WizBot.Client.MessageReceived += async (umsg) =>
-                 {
-                     try
-                     {
-                         var usrMsg = umsg as IUserMessage;
-                         if (usrMsg == null)
-                             return;
-                         var channel = usrMsg.Channel as ITextChannel;
+                {
+                    try
+                    {
+                        var usrMsg = umsg as IUserMessage;
+                        if (usrMsg == null)
+                            return;
+                        var channel = usrMsg.Channel as ITextChannel;
 
-                         if (channel == null || usrMsg.IsAuthor())
-                             return;
-                         Ratelimiter limiter;
-                         if (!RatelimitingChannels.TryGetValue(channel.Id, out limiter))
-                             return;
+                        if (channel == null || usrMsg.IsAuthor())
+                            return;
+                        Ratelimiter limiter;
+                        if (!RatelimitingChannels.TryGetValue(channel.Id, out limiter))
+                            return;
 
-                         if (limiter.CheckUserRatelimit(usrMsg.Author.Id))
-                             await usrMsg.DeleteAsync();
-                     }
-                     catch (Exception ex) { _log.Warn(ex); }
-                 };
+                        if (limiter.CheckUserRatelimit(usrMsg.Author.Id))
+                            await usrMsg.DeleteAsync();
+                    }
+                    catch (Exception ex) { _log.Warn(ex); }
+                };
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -106,7 +102,7 @@ namespace WizBot.Modules.Administration
             public async Task Slowmode(int msg, int perSec)
             {
                 await Slowmode().ConfigureAwait(false); // disable if exists
-                
+
                 if (msg < 1 || perSec < 1 || msg > 100 || perSec > 3600)
                 {
                     await Context.Channel.SendErrorAsync("⚠️ Invalid parameters.");
@@ -118,7 +114,7 @@ namespace WizBot.Modules.Administration
                     MaxMessages = msg,
                     PerSeconds = perSec,
                 };
-                if(RatelimitingChannels.TryAdd(Context.Channel.Id, toAdd))
+                if (RatelimitingChannels.TryAdd(Context.Channel.Id, toAdd))
                 {
                     await Context.Channel.SendConfirmAsync("Slow mode initiated",
                                                 $"Users can't send more than `{toAdd.MaxMessages} message(s)` every `{toAdd.PerSeconds} second(s)`.")

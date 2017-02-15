@@ -27,7 +27,7 @@ namespace WizBot.Modules.Permissions
             public static ConcurrentHashSet<string> FilteredWordsForChannel(ulong channelId, ulong guildId)
             {
                 ConcurrentHashSet<string> words = new ConcurrentHashSet<string>();
-                if(WordFilteringChannels.Contains(channelId))
+                if (WordFilteringChannels.Contains(channelId))
                     ServerFilteredWords.TryGetValue(guildId, out words);
                 return words;
             }
@@ -35,30 +35,26 @@ namespace WizBot.Modules.Permissions
             public static ConcurrentHashSet<string> FilteredWordsForServer(ulong guildId)
             {
                 var words = new ConcurrentHashSet<string>();
-                if(WordFilteringServers.Contains(guildId))
+                if (WordFilteringServers.Contains(guildId))
                     ServerFilteredWords.TryGetValue(guildId, out words);
                 return words;
             }
 
             static FilterCommands()
             {
-                using (var uow = DbHandler.UnitOfWork())
-                {
-                    var guildConfigs = WizBot.AllGuildConfigs;
+                var guildConfigs = WizBot.AllGuildConfigs;
 
-                    InviteFilteringServers = new ConcurrentHashSet<ulong>(guildConfigs.Where(gc => gc.FilterInvites).Select(gc => gc.GuildId));
-                    InviteFilteringChannels = new ConcurrentHashSet<ulong>(guildConfigs.SelectMany(gc => gc.FilterInvitesChannelIds.Select(fci => fci.ChannelId)));
+                InviteFilteringServers = new ConcurrentHashSet<ulong>(guildConfigs.Where(gc => gc.FilterInvites).Select(gc => gc.GuildId));
+                InviteFilteringChannels = new ConcurrentHashSet<ulong>(guildConfigs.SelectMany(gc => gc.FilterInvitesChannelIds.Select(fci => fci.ChannelId)));
 
-                    var dict = guildConfigs.ToDictionary(gc => gc.GuildId, gc => new ConcurrentHashSet<string>(gc.FilteredWords.Select(fw => fw.Word)));
+                var dict = guildConfigs.ToDictionary(gc => gc.GuildId, gc => new ConcurrentHashSet<string>(gc.FilteredWords.Select(fw => fw.Word)));
 
-                    ServerFilteredWords = new ConcurrentDictionary<ulong, ConcurrentHashSet<string>>(dict);
+                ServerFilteredWords = new ConcurrentDictionary<ulong, ConcurrentHashSet<string>>(dict);
 
-                    var serverFiltering = guildConfigs.Where(gc => gc.FilterWords);
-                    WordFilteringServers = new ConcurrentHashSet<ulong>(serverFiltering.Select(gc => gc.GuildId));
+                var serverFiltering = guildConfigs.Where(gc => gc.FilterWords);
+                WordFilteringServers = new ConcurrentHashSet<ulong>(serverFiltering.Select(gc => gc.GuildId));
 
-                    WordFilteringChannels = new ConcurrentHashSet<ulong>(guildConfigs.SelectMany(gc => gc.FilterWordsChannelIds.Select(fwci => fwci.ChannelId)));
-
-                }
+                WordFilteringChannels = new ConcurrentHashSet<ulong>(guildConfigs.SelectMany(gc => gc.FilterWordsChannelIds.Select(fwci => fwci.ChannelId)));
             }
 
             [WizBotCommand, Usage, Description, Aliases]

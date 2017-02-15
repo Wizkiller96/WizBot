@@ -36,8 +36,6 @@ namespace WizBot.Modules.Administration
 
             static MuteCommands()
             {
-                var _log = LogManager.GetCurrentClassLogger();
-                
                 var configs = WizBot.AllGuildConfigs;
                 GuildMuteRoles = new ConcurrentDictionary<ulong, string>(configs
                         .Where(c => !string.IsNullOrWhiteSpace(c.MuteRoleName))

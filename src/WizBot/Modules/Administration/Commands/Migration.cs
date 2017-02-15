@@ -79,9 +79,9 @@ namespace WizBot.Modules.Administration
 
             private void MigrateDb0_9(IUnitOfWork uow)
             {
-                var db = new SqliteConnection("Data Source=data/WizBot.sqlite");
+                var db = new SqliteConnection("Data Source=data/wizbot.sqlite");
 
-                if (!File.Exists("data/WizBot.sqlite"))
+                if (!File.Exists("data/wizbot.sqlite"))
                 {
                     _log.Warn("No data from the old database will be migrated.");
                     return;
@@ -103,17 +103,14 @@ namespace WizBot.Modules.Administration
                         var greetChannel = (ulong)(long)reader["GreetChannelId"];
                         var greetMsg = (string)reader["GreetText"];
                         var bye = (long)reader["Bye"] == 1;
-                        var byeDM = (long)reader["ByePM"] == 1;
                         var byeChannel = (ulong)(long)reader["ByeChannelId"];
                         var byeMsg = (string)reader["ByeText"];
-                        var grdel = false;
-                        var byedel = grdel;
                         var gc = uow.GuildConfigs.For(gid, set => set);
 
                         if (greetDM)
                             gc.SendDmGreetMessage = greet;
                         else
-                        gc.SendChannelGreetMessage = greet;
+                            gc.SendChannelGreetMessage = greet;
                         gc.GreetMessageChannelId = greetChannel;
                         gc.ChannelGreetMessageText = greetMsg;
 
@@ -121,7 +118,6 @@ namespace WizBot.Modules.Administration
                         gc.ByeMessageChannelId = byeChannel;
                         gc.ChannelByeMessageText = byeMsg;
 
-                        gc.AutoDeleteGreetMessagesTimer = gc.AutoDeleteByeMessagesTimer = grdel ? 30 : 0;
                         _log.Info(++i);
                     }
                 }
@@ -130,12 +126,12 @@ namespace WizBot.Modules.Administration
                     _log.Warn("Greet/bye messages won't be migrated");
                 }
                 var com2 = db.CreateCommand();
-                com.CommandText = "SELECT * FROM CurrencyState GROUP BY UserId";
+                com2.CommandText = "SELECT * FROM CurrencyState GROUP BY UserId";
 
                 i = 0;
                 try
                 {
-                    var reader2 = com.ExecuteReader();
+                    var reader2 = com2.ExecuteReader();
                     while (reader2.Read())
                     {
                         _log.Info(++i);
@@ -152,7 +148,7 @@ namespace WizBot.Modules.Administration
                     _log.Warn("Currency won't be migrated");
                 }
                 db.Close();
-                try { File.Move("data/WizBot.sqlite", "data/DELETE_ME_WizBot.sqlite"); } catch { }
+                try { File.Move("data/wizbot.sqlite", "data/DELETE_ME_wizbot.sqlite"); } catch { }
             }
 
             private void MigrateServerSpecificConfigs0_9(IUnitOfWork uow)
@@ -204,7 +200,6 @@ namespace WizBot.Modules.Administration
                             guildConfig.ExclusiveSelfAssignedRoles = data.ExclusiveSelfAssignedRoles;
                             guildConfig.GenerateCurrencyChannelIds = new HashSet<GCChannelId>(data.GenerateCurrencyChannels.Select(gc => new GCChannelId() { ChannelId = gc.Key }));
                             selfAssRoles.AddRange(data.ListOfSelfAssignableRoles.Select(r => new SelfAssignedRole() { GuildId = guildConfig.GuildId, RoleId = r }).ToArray());
-                            var logSetting = guildConfig.LogSetting;
                             guildConfig.LogSetting.IgnoredChannels = new HashSet<IgnoredLogChannel>(data.LogserverIgnoreChannels.Select(id => new IgnoredLogChannel() { ChannelId = id }));
 
                             guildConfig.LogSetting.LogUserPresenceId = data.LogPresenceChannel;
@@ -250,7 +245,7 @@ namespace WizBot.Modules.Administration
 
             private void MigratePermissions0_9(IUnitOfWork uow)
             {
-                var PermissionsDict = new ConcurrentDictionary<ulong, ServerPermissions0_9>();
+                var permissionsDict = new ConcurrentDictionary<ulong, ServerPermissions0_9>();
                 if (!Directory.Exists("data/permissions/"))
                 {
                     _log.Warn("No data from permissions will be migrated.");
@@ -264,12 +259,15 @@ namespace WizBot.Modules.Administration
                         if (string.IsNullOrWhiteSpace(strippedFileName)) continue;
                         var id = ulong.Parse(strippedFileName);
                         var data = JsonConvert.DeserializeObject<ServerPermissions0_9>(File.ReadAllText(file));
-                        PermissionsDict.TryAdd(id, data);
+                        permissionsDict.TryAdd(id, data);
                     }
-                    catch { }
+                    catch
+                    {
+                        // ignored
+                    }
                 }
                 var i = 0;
-                PermissionsDict
+                permissionsDict
                     .Select(p => new { data = p.Value, gconfig = uow.GuildConfigs.For(p.Key) })
                     .AsParallel()
                     .ForAll(perms =>

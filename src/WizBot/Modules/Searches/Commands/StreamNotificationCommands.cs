@@ -27,11 +27,12 @@ namespace WizBot.Modules.Searches
             public string Views { get; set; }
         }
 
-        public class HitboxResponse {
+        public class HitboxResponse
+        {
             public bool Success { get; set; } = true;
             [JsonProperty("media_is_live")]
             public string MediaIsLive { get; set; }
-            public bool IsLive  => MediaIsLive == "1";
+            public bool IsLive => MediaIsLive == "1";
             [JsonProperty("media_views")]
             public string Views { get; set; }
         }
@@ -103,19 +104,23 @@ namespace WizBot.Modules.Searches
                                 oldStatus.IsLive != newStatus.IsLive)
                             {
                                 var server = WizBot.Client.GetGuild(fs.GuildId);
-                                if (server == null)
-                                    return;
-                                var channel = server.GetTextChannel(fs.ChannelId);
+                                var channel = server?.GetTextChannel(fs.ChannelId);
                                 if (channel == null)
                                     return;
                                 try
                                 {
                                     var msg = await channel.EmbedAsync(fs.GetEmbed(newStatus)).ConfigureAwait(false);
                                 }
-                                catch { }
+                                catch
+                                {
+                                    // ignored
+                                }
                             }
                         }
-                        catch { }
+                        catch
+                        {
+                            // ignored
+                        }
                     }));
 
                     FirstPass = false;
@@ -223,7 +228,7 @@ namespace WizBot.Modules.Searches
                 using (var uow = DbHandler.UnitOfWork())
                 {
                     streams = uow.GuildConfigs
-                                 .For(Context.Guild.Id, 
+                                 .For(Context.Guild.Id,
                                       set => set.Include(gc => gc.FollowedStreams))
                                  .FollowedStreams;
                 }
@@ -356,7 +361,8 @@ namespace WizBot.Modules.Searches
             return embed;
         }
 
-        public static string GetLink(this FollowedStream fs) {
+        public static string GetLink(this FollowedStream fs)
+        {
             if (fs.Type == FollowedStream.FollowedStreamType.Hitbox)
                 return $"http://www.hitbox.tv/{fs.Username}/";
             else if (fs.Type == FollowedStream.FollowedStreamType.Twitch)

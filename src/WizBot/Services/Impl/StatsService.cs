@@ -22,16 +22,13 @@ namespace WizBot.Services.Impl
         public int MessageCounter { get; private set; } = 0;
         public int CommandsRan { get; private set; } = 0;
         public string Heap =>
-
-
-        Math.Round((double)GC.GetTotalMemory(false) / 1.MiB(), 2).ToString();
-
+            Math.Round((double)GC.GetTotalMemory(false) / 1.MiB(), 2).ToString();
         public double MessagesPerSecond => MessageCounter / GetUptime().TotalSeconds;
         private int _textChannels = 0;
         public int TextChannels => _textChannels;
         private int _voiceChannels = 0;
         public int VoiceChannels => _voiceChannels;
-        
+
         Timer carbonitexTimer { get; }
 
         public StatsService(DiscordShardedClient client, CommandHandler cmdHandler)
@@ -83,7 +80,7 @@ namespace WizBot.Services.Impl
                 return Task.CompletedTask;
             };
 
-                                  this.carbonitexTimer = new Timer(async (state) =>
+            this.carbonitexTimer = new Timer(async (state) =>
             {
                 if (string.IsNullOrWhiteSpace(WizBot.Credentials.CarbonKey))
                     return;
@@ -99,18 +96,21 @@ namespace WizBot.Services.Impl
                             content.Headers.Clear();
                             content.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
 
-                            var res = await http.PostAsync("https://www.carbonitex.net/discord/data/botdata.php", content).ConfigureAwait(false);
+                            await http.PostAsync("https://www.carbonitex.net/discord/data/botdata.php", content).ConfigureAwait(false);
                         }
                     };
                 }
-                catch { }
+                catch
+                {
+                    // ignored
+                }
             }, null, TimeSpan.FromHours(1), TimeSpan.FromHours(1));
         }
 
         public void Initialize()
         {
-            var guilds = this.client.GetGuilds();
-            _textChannels = guilds.Sum(g => g.Channels.Where(cx => cx is ITextChannel).Count());
+            var guilds = this.client.GetGuilds().ToArray();
+            _textChannels = guilds.Sum(g => g.Channels.Count(cx => cx is ITextChannel));
             _voiceChannels = guilds.Sum(g => g.Channels.Count) - _textChannels;
         }
 

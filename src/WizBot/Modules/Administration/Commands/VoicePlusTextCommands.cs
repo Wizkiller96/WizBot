@@ -30,10 +30,8 @@ namespace WizBot.Modules.Administration
             {
                 var _log = LogManager.GetCurrentClassLogger();
                 var sw = Stopwatch.StartNew();
-                using (var uow = DbHandler.UnitOfWork())
-                {
-                    voicePlusTextCache = new ConcurrentHashSet<ulong>(WizBot.AllGuildConfigs.Where(g => g.VoicePlusTextEnabled).Select(g => g.GuildId));
-                }
+
+                voicePlusTextCache = new ConcurrentHashSet<ulong>(WizBot.AllGuildConfigs.Where(g => g.VoicePlusTextEnabled).Select(g => g.GuildId));
                 WizBot.Client.UserVoiceStateUpdated += UserUpdatedEventHandler;
 
                 sw.Stop();

@@ -23,7 +23,8 @@ namespace WizBot.Modules.Games
             static HangmanCommands()
             {
                 _log = LogManager.GetCurrentClassLogger();
-                typesStr = $"`List of \"{WizBot.ModulePrefixes[typeof(Games).Name]}hangman\" term types:`\n" + String.Join(", ", HangmanTermPool.data.Keys);
+                typesStr =
+                    string.Format("`List of \"{0}hangman\" term types:`\n", WizBot.ModulePrefixes[typeof(Games).Name]) + String.Join(", ", HangmanTermPool.data.Keys);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
