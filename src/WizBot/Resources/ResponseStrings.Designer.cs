@@ -204,7 +204,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to @{0} You are either not participating in that war, or you have already destroyed a base..
+        ///    Looks up a localized string similar to @{0} You are either not participating in that war, or that base is already destroyed..
         /// </summary>
         public static string clashofclans_not_partic_or_destroyed {
             get {
@@ -222,7 +222,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to War against {0} is already started..
+        ///    Looks up a localized string similar to War against {0} has already started..
         /// </summary>
         public static string clashofclans_war_already_started {
             get {
@@ -263,6 +263,123 @@ namespace WizBot.Resources {
         public static string clashofclans_war_started {
             get {
                 return ResourceManager.GetString("clashofclans_war_started", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to All custom reaction stats cleared..
+        /// </summary>
+        public static string customreactions_all_stats_cleared {
+            get {
+                return ResourceManager.GetString("customreactions_all_stats_cleared", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Custom Reaction deleted.
+        /// </summary>
+        public static string customreactions_deleted {
+            get {
+                return ResourceManager.GetString("customreactions_deleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Insufficient permissions. Requires Bot ownership for global custom reactions, and Administrator for guild custom reactions..
+        /// </summary>
+        public static string customreactions_insuff_perms {
+            get {
+                return ResourceManager.GetString("customreactions_insuff_perms", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to List of all custom reactions.
+        /// </summary>
+        public static string customreactions_list_all {
+            get {
+                return ResourceManager.GetString("customreactions_list_all", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Custom Reactions.
+        /// </summary>
+        public static string customreactions_name {
+            get {
+                return ResourceManager.GetString("customreactions_name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to New Custom Reaction.
+        /// </summary>
+        public static string customreactions_new_cust_react {
+            get {
+                return ResourceManager.GetString("customreactions_new_cust_react", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to No custom reactions found..
+        /// </summary>
+        public static string customreactions_no_found {
+            get {
+                return ResourceManager.GetString("customreactions_no_found", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to No custom reaction found with that id..
+        /// </summary>
+        public static string customreactions_no_found_id {
+            get {
+                return ResourceManager.GetString("customreactions_no_found_id", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Response.
+        /// </summary>
+        public static string customreactions_response {
+            get {
+                return ResourceManager.GetString("customreactions_response", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Custom Reaction Stats.
+        /// </summary>
+        public static string customreactions_stats {
+            get {
+                return ResourceManager.GetString("customreactions_stats", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Stats cleared for {0} custom reaction..
+        /// </summary>
+        public static string customreactions_stats_cleared {
+            get {
+                return ResourceManager.GetString("customreactions_stats_cleared", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to No stats for that trigger found, no action taken..
+        /// </summary>
+        public static string customreactions_stats_not_found {
+            get {
+                return ResourceManager.GetString("customreactions_stats_not_found", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Trigger.
+        /// </summary>
+        public static string customreactions_trigger {
+            get {
+                return ResourceManager.GetString("customreactions_trigger", resourceCulture);
             }
         }
         

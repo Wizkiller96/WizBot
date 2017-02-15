@@ -128,7 +128,6 @@
   </data>
   <data name="pokemon_attack" xml:space="preserve">
     <value>је искористио {0}{1} на {2}{3} и нанео {4} штете.</value>
-    <comment>Wizkiller96 used punch:type_icon: on Mysticalia:type_icon: for 50 damage.</comment>
   </data>
   <data name="pokemon_cant_attack_again" xml:space="preserve">
     <value>Не можеш напасти пре узвратног ударца.</value>
