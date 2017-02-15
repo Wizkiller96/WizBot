@@ -84,7 +84,7 @@ namespace WizBot
 #endif
 
             //initialize Services
-            Localization = new Localization(WizBot.AllGuildConfigs.ToDictionary(x => x.GuildId, x => x.Locale));
+            Localization = new Localization(WizBot.BotConfig.Locale, WizBot.AllGuildConfigs.ToDictionary(x => x.GuildId, x => x.Locale));
             CommandService = new CommandService(new CommandServiceConfig() {
                 CaseSensitiveCommands = false,
                 DefaultRunMode = RunMode.Sync
