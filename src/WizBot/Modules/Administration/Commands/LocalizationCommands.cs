@@ -25,16 +25,17 @@ namespace WizBot.Modules.Administration
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            [RequireUserPermission(GuildPermission.Administrator)]
-            public async Task LanguageSet([Remainder] string name = null)
+            public async Task LanguageSet()
             {
-                if (string.IsNullOrWhiteSpace(name))
-                {
-                    var cul = WizBot.Localization.GetCultureInfo(Context.Guild);
-                    await Context.Channel.SendConfirmAsync("This server's language is set to " + cul + " - " + cul.NativeName).ConfigureAwait(false);
-                    return;
-                }
+                var cul = WizBot.Localization.GetCultureInfo(Context.Guild);
+                await Context.Channel.SendConfirmAsync("This server's language is set to " + Format.Bold(cul.ToString()) + " - " + Format.Bold(cul.NativeName)).ConfigureAwait(false);
+            }
 
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [RequireUserPermission(GuildPermission.Administrator)]
+            public async Task LanguageSet(string name)
+            {
                 CultureInfo ci = null;
                 try
                 {
@@ -60,15 +61,17 @@ namespace WizBot.Modules.Administration
             }
 
             [WizBotCommand, Usage, Description, Aliases]
-            [OwnerOnly]
-            public async Task LanguageSetDefault([Remainder]string name = null)
+            public async Task LanguageSetDefault()
             {
-                if (string.IsNullOrWhiteSpace(name))
-                {
-                    var cul = WizBot.Localization.GetCultureInfo(Context.Guild);
-                    await Context.Channel.SendConfirmAsync("Bot's language is set to " + cul + " - " + cul.NativeName).ConfigureAwait(false);
-                    return;
-                }
+                var cul = WizBot.Localization.DefaultCultureInfo;
+                await Context.Channel.SendConfirmAsync("Bot's language is set to " + cul + " - " + cul.NativeName).ConfigureAwait(false);
+                return;
+            }
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [OwnerOnly]
+            public async Task LanguageSetDefault(string name)
+            {
                 CultureInfo ci = null;
                 try
                 {
