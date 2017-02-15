@@ -73,7 +73,7 @@ namespace WizBot.Services
             if (!ownerChannels.Any())
                 _log.Warn("No owner channels created! Make sure you've specified correct OwnerId in the credentials.json file.");
             else
-                _log.Info($"Created {ownerChannels.Count} out of {WizBot.Credentials.OwnerIds.Length} owner message channels.");
+                _log.Info($"Created {ownerChannels.Count} out of {WizBot.Credentials.OwnerIds.Count} owner message channels.");
 
             _client.MessageReceived += MessageReceivedHandler;
         }

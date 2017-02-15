@@ -12,6 +12,8 @@ using System;
 using Newtonsoft.Json;
 using System.IO;
 using System.Collections.Concurrent;
+using WizBot.Modules;
+using WizBot.Resources;
 
 namespace WizBot.Modules.Pokemon
 {
@@ -105,12 +107,12 @@ namespace WizBot.Modules.Pokemon
 
             if (targetUser == null)
             {
-                await ReplyLocalized("no user found").ConfigureAwait(false);
+                await ErrorLocalized(nameof(ResponseStrings.Culture)).ConfigureAwait(false);
                 return;
             }
             else if (targetUser == user)
             {
-                await Context.Channel.SendMessageAsync("You can't attack yourself.").ConfigureAwait(false);
+                await ErrorLocalized("You can't attack yourself.").ConfigureAwait(false);
                 return;
             }
 
