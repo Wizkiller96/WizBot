@@ -69,7 +69,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {1} already has full HP..
+        ///    Looks up a localized string similar to {0} already has full HP..
         /// </summary>
         public static string pokemon_already_full {
             get {
@@ -87,7 +87,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to used **{0}**{1} on {2}{3} for **{4}** damage..
+        ///    Looks up a localized string similar to used {0}{1} on {2}{3} for {4} damage..
         /// </summary>
         public static string pokemon_attack {
             get {
@@ -141,7 +141,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Movelist for &quot;{0}&quot; type.
+        ///    Looks up a localized string similar to Movelist for {0} type.
         /// </summary>
         public static string pokemon_moves {
             get {
@@ -222,7 +222,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Type of {0} is **{1}**.
+        ///    Looks up a localized string similar to Type of {0} is {1}.
         /// </summary>
         public static string pokemon_type_of_user {
             get {

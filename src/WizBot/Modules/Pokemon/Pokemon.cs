@@ -78,8 +78,6 @@ namespace WizBot.Modules.Pokemon
             return PokemonTypes[remainder];
         }
 
-
-
         private PokemonType StringToPokemonType(string v)
         {
             var str = v?.ToUpperInvariant();
@@ -93,7 +91,6 @@ namespace WizBot.Modules.Pokemon
             }
             return null;
         }
-
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
@@ -157,7 +154,7 @@ namespace WizBot.Modules.Pokemon
             var enabledMoves = userType.Moves;
             if (!enabledMoves.Contains(move.ToLowerInvariant()))
             {
-                await ReplyErrorLocalized("invalid_move", move, _prefix).ConfigureAwait(false);
+                await ReplyErrorLocalized("invalid_move", Format.Bold(move), _prefix).ConfigureAwait(false);
                 return;
             }
 
@@ -168,7 +165,7 @@ namespace WizBot.Modules.Pokemon
             //apply damage to target
             targetStats.Hp -= damage;
 
-            var response = GetText("attack", move, userType.Icon, targetUser.Mention, targetType.Icon, damage);
+            var response = GetText("attack", Format.Bold(move), userType.Icon, Format.Bold(targetUser.ToString()), targetType.Icon, Format.Bold(damage.ToString()));
 
             //Damage type
             if (damage < 40)
@@ -188,11 +185,11 @@ namespace WizBot.Modules.Pokemon
 
             if (targetStats.Hp <= 0)
             {
-                response += $"\n" + GetText("fainted", targetUser);
+                response += $"\n" + GetText("fainted", Format.Bold(targetUser.ToString()));
             }
             else
             {
-                response += $"\n" + GetText("hp_remaining", targetUser, targetStats.Hp);
+                response += $"\n" + GetText("hp_remaining", Format.Bold(targetUser.ToString()), targetStats.Hp);
             }
 
             //update other stats
@@ -244,7 +241,7 @@ namespace WizBot.Modules.Pokemon
                 var targetStats = Stats[targetUser.Id];
                 if (targetStats.Hp == targetStats.MaxHp)
                 {
-                    await ReplyErrorLocalized("already_full", targetUser).ConfigureAwait(false);
+                    await ReplyErrorLocalized("already_full", Format.Bold(targetUser.ToString())).ConfigureAwait(false);
                     return;
                 }
                 //Payment~
@@ -272,14 +269,14 @@ namespace WizBot.Modules.Pokemon
                         return;
                     }
 
-                    await ReplyConfirmLocalized("revive_other", targetUser, WizBot.BotConfig.CurrencySign).ConfigureAwait(false);
+                    await ReplyConfirmLocalized("revive_other", Format.Bold(targetUser.ToString()), WizBot.BotConfig.CurrencySign).ConfigureAwait(false);
                 }
-                await ReplyConfirmLocalized("healed", targetUser, WizBot.BotConfig.CurrencySign).ConfigureAwait(false);
+                await ReplyConfirmLocalized("healed", Format.Bold(targetUser.ToString()), WizBot.BotConfig.CurrencySign).ConfigureAwait(false);
                 return;
             }
             else
             {
-                await ErrorLocalized("already_full", targetUser);
+                await ErrorLocalized("already_full", Format.Bold(targetUser.ToString()));
             }
         }
 
@@ -290,7 +287,7 @@ namespace WizBot.Modules.Pokemon
         {
             targetUser = targetUser ?? (IGuildUser)Context.User;
             var pType = GetPokeType(targetUser.Id);
-            await ReplyConfirmLocalized("type_of_user", targetUser.Mention, pType.Name.ToLowerInvariant() + pType.Icon).ConfigureAwait(false);
+            await ReplyConfirmLocalized("type_of_user", Format.Bold(targetUser.ToString()), pType).ConfigureAwait(false);
 
         }
 
@@ -312,7 +309,7 @@ namespace WizBot.Modules.Pokemon
             }
             if (targetType == GetPokeType(user.Id))
             {
-                await ReplyErrorLocalized("already_that_type", targetType.Name.ToLowerInvariant() + targetType.Icon).ConfigureAwait(false);
+                await ReplyErrorLocalized("already_that_type", targetType).ConfigureAwait(false);
                 return;
             }
 
@@ -356,7 +353,7 @@ namespace WizBot.Modules.Pokemon
 
             //Now for the response
             await ReplyConfirmLocalized("settype_success",
-                typeTargeted + targetType.Icon,
+                targetType,
                 WizBot.BotConfig.CurrencySign).ConfigureAwait(false);
         }
     }
