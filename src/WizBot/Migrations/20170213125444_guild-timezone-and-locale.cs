@@ -17,6 +17,7 @@ namespace WizBot.Migrations
             migrationBuilder.AddColumn<string>(
                 name: "TimeZoneId",
                 table: "GuildConfigs",
+                nullable: true,
                 defaultValue: null);
         }
 
