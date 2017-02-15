@@ -70,7 +70,7 @@ namespace WizBot.Services
             }
         }
 
-        internal void SetDefaultCulture(CultureInfo ci)
+        public void SetDefaultCulture(CultureInfo ci)
         {
             DefaultCultureInfo = ci;
         }

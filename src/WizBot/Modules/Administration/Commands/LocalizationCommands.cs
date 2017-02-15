@@ -27,11 +27,15 @@ namespace WizBot.Modules.Administration
                     if (name.Trim().ToLowerInvariant() == "default")
                     {
                         WizBot.Localization.RemoveGuildCulture(Context.Guild);
+                        ci = WizBot.Localization.DefaultCultureInfo;
                     }
-                    ci = new CultureInfo(name);
-                    WizBot.Localization.SetGuildCulture(Context.Guild, ci);
+                    else
+                    {
+                        ci = new CultureInfo(name);
+                        WizBot.Localization.SetGuildCulture(Context.Guild, ci);
+                    }
 
-                    await Context.Channel.SendConfirmAsync($"Your guild's locale is now {ci}.").ConfigureAwait(false);
+                    await Context.Channel.SendConfirmAsync($"Your guild's locale is now {Format.Bold(ci.ToString())} - {Format.Bold(ci.NativeName)}.").ConfigureAwait(false);
                 }
                 catch (Exception)
                 {
@@ -51,11 +55,15 @@ namespace WizBot.Modules.Administration
                     if (name.Trim().ToLowerInvariant() == "default")
                     {
                         WizBot.Localization.ResetDefaultCulture();
+                        ci = WizBot.Localization.DefaultCultureInfo;
                     }
-                    ci = new CultureInfo(name);
-                    WizBot.Localization.SetDefaultCulture(ci);
+                    else
+                    {
+                        ci = new CultureInfo(name);
+                        WizBot.Localization.SetDefaultCulture(ci);
+                    }
 
-                    await Context.Channel.SendConfirmAsync($"Your guild's locale is now {ci}.").ConfigureAwait(false);
+                    await Context.Channel.SendConfirmAsync($"Bot's default locale is now {Format.Bold(ci.ToString())} - {Format.Bold(ci.NativeName)}.").ConfigureAwait(false);
                 }
                 catch (Exception)
                 {

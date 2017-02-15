@@ -32,8 +32,10 @@ namespace WizBot.Modules
         protected override void BeforeExecute()
         {
             _cultureInfo = (Context.Guild == null
-                ? CultureInfo.CurrentCulture
+                ? WizBot.Localization.DefaultCultureInfo
                 : WizBot.Localization.GetCultureInfo(Context.Guild));
+
+            _log.Warn("Culture info is {0}", _cultureInfo);
         }
 
         //public Task<IUserMessage> ReplyConfirmLocalized(string titleKey, string textKey, string url = null, string footer = null)
