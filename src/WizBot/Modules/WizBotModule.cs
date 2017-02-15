@@ -13,8 +13,7 @@ namespace WizBot.Modules
     {
         protected readonly Logger _log;
         protected CultureInfo _cultureInfo { get; private set; }
-        public readonly string _prefix;
-        public readonly CultureInfo cultureInfo;
+        public readonly string Prefix;
         public readonly string ModuleTypeName;
         public readonly string LowerModuleTypeName;
 
@@ -24,16 +23,14 @@ namespace WizBot.Modules
             ModuleTypeName = isTopLevelModule ? this.GetType().Name : this.GetType().DeclaringType.Name;
             LowerModuleTypeName = ModuleTypeName.ToLowerInvariant();
 
-            if (!WizBot.ModulePrefixes.TryGetValue(ModuleTypeName, out _prefix))
-                _prefix = "?err?";
+            if (!WizBot.ModulePrefixes.TryGetValue(ModuleTypeName, out Prefix))
+                Prefix = "?err?";
             _log = LogManager.GetCurrentClassLogger();
         }
 
         protected override void BeforeExecute()
         {
-            _cultureInfo = (Context.Guild == null
-                ? WizBot.Localization.DefaultCultureInfo
-                : WizBot.Localization.GetCultureInfo(Context.Guild));
+            _cultureInfo = WizBot.Localization.GetCultureInfo(Context.Guild?.Id);
 
             _log.Warn("Culture info is {0}", _cultureInfo);
         }
@@ -61,23 +58,30 @@ namespace WizBot.Modules
         /// <summary>
         /// Used as failsafe in case response key doesn't exist in the selected or default language.
         /// </summary>
-        private readonly CultureInfo usCultureInfo = new CultureInfo("en-US");
-        protected string GetText(string key)
+        private static readonly CultureInfo usCultureInfo = new CultureInfo("en-US");
+
+        public static string GetTextStatic(string key, CultureInfo _cultureInfo, string lowerModuleTypeName)
         {
-            var text = WizBot.ResponsesResourceManager.GetString(LowerModuleTypeName + "_" + key, _cultureInfo);
+            var text = WizBot.ResponsesResourceManager.GetString(lowerModuleTypeName + "_" + key, _cultureInfo);
 
             if (string.IsNullOrWhiteSpace(text))
             {
-                _log.Warn(LowerModuleTypeName + "_" + key + " key is missing from " + _cultureInfo + " response strings. PLEASE REPORT THIS.");
-                return WizBot.ResponsesResourceManager.GetString(LowerModuleTypeName + "_" + key, usCultureInfo);
+                LogManager.GetCurrentClassLogger().Warn(lowerModuleTypeName + "_" + key + " key is missing from " + _cultureInfo + " response strings. PLEASE REPORT THIS.");
+                return WizBot.ResponsesResourceManager.GetString(lowerModuleTypeName + "_" + key, usCultureInfo) ?? $"Error: dkey {lowerModuleTypeName + "_" + key} found!";
             }
-            return text;
+            return text ?? $"Error: key {lowerModuleTypeName + "_" + key} not found.";
         }
 
-        protected string GetText(string key, params object[] replacements)
+        public static string GetTextStatic(string key, CultureInfo _cultureInfo, string lowerModuleTypeName, params object[] replacements)
         {
-            return string.Format(GetText(key), replacements);
+            return string.Format(GetTextStatic(key, _cultureInfo, lowerModuleTypeName), replacements);
         }
+
+        protected string GetText(string key) =>
+            GetTextStatic(key, _cultureInfo, LowerModuleTypeName);
+
+        protected string GetText(string key, params object[] replacements) =>
+            GetText(key, _cultureInfo, LowerModuleTypeName, replacements);
 
         public Task<IUserMessage> ErrorLocalized(string textKey, params object[] replacements)
         {

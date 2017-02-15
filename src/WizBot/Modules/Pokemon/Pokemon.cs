@@ -154,7 +154,7 @@ namespace WizBot.Modules.Pokemon
             var enabledMoves = userType.Moves;
             if (!enabledMoves.Contains(move.ToLowerInvariant()))
             {
-                await ReplyErrorLocalized("invalid_move", Format.Bold(move), _prefix).ConfigureAwait(false);
+                await ReplyErrorLocalized("invalid_move", Format.Bold(move), Prefix).ConfigureAwait(false);
                 return;
             }
 
