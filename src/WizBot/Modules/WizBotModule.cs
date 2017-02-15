@@ -17,7 +17,7 @@ namespace WizBot.Modules
         public readonly string ModuleTypeName;
         public readonly string LowerModuleTypeName;
 
-        public WizBotModule(bool isTopLevelModule = true)
+        protected WizBotModule(bool isTopLevelModule = true)
         {
             //if it's top level module
             ModuleTypeName = isTopLevelModule ? this.GetType().Name : this.GetType().DeclaringType.Name;
@@ -81,7 +81,7 @@ namespace WizBot.Modules
             GetTextStatic(key, _cultureInfo, LowerModuleTypeName);
 
         protected string GetText(string key, params object[] replacements) =>
-            GetText(key, _cultureInfo, LowerModuleTypeName, replacements);
+            GetTextStatic(key, _cultureInfo, LowerModuleTypeName, replacements);
 
         public Task<IUserMessage> ErrorLocalized(string textKey, params object[] replacements)
         {
@@ -110,7 +110,7 @@ namespace WizBot.Modules
 
     public abstract class WizBotSubmodule : WizBotModule
     {
-        public WizBotSubmodule() : base(false)
+        protected WizBotSubmodule() : base(false)
         {
         }
     }
