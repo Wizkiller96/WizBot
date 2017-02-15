@@ -1,4 +1,6 @@
 ﻿using Discord;
+using System.Collections.Generic;
+using System.Collections.Immutable;
 
 namespace WizBot.Services
 {
@@ -9,7 +11,7 @@ namespace WizBot.Services
 
         string Token { get; }
         string GoogleApiKey { get; }
-        ulong[] OwnerIds { get; }
+        ImmutableHashSet<ulong> OwnerIds { get; }
         string MashapeKey { get; }
         string LoLApiKey { get; }
 
