@@ -168,31 +168,31 @@ namespace WizBot.Modules.Pokemon
             //apply damage to target
             targetStats.Hp -= damage;
 
-            var response = $"{user.Mention} used **{move}**{userType.Icon} on {targetUser.Mention}{targetType.Icon} for **{damage}** damage";
+            var response = GetText("attack", move, userType.Icon, targetUser.Mention, targetType.Icon, damage);
 
             //Damage type
             if (damage < 40)
             {
-                response += "\nIt's not effective.";
+                response += "\n" + GetText("not_effective");
             }
             else if (damage > 60)
             {
-                response += "\nIt's super effective!";
+                response += "\n" + GetText("super_effective");
             }
             else
             {
-                response += "\nIt's somewhat effective";
+                response += "\n" + GetText("somewhat_effective");
             }
 
             //check fainted
 
             if (targetStats.Hp <= 0)
             {
-                response += $"\n**{targetUser.Mention}** has fainted!";
+                response += $"\n" + GetText("fainted", targetUser);
             }
             else
             {
-                response += $"\n**{targetUser.Mention}** has {targetStats.Hp} HP remaining";
+                response += $"\n" + GetText("hp_remaining", targetUser, targetStats.Hp);
             }
 
             //update other stats
@@ -209,7 +209,7 @@ namespace WizBot.Modules.Pokemon
             Stats[user.Id] = userStats;
             Stats[targetUser.Id] = targetStats;
 
-            await Context.Channel.SendMessageAsync(response).ConfigureAwait(false);
+            await Context.Channel.SendConfirmAsync(Context.User.Mention + " " + response).ConfigureAwait(false);
         }
 
 
@@ -221,12 +221,10 @@ namespace WizBot.Modules.Pokemon
 
             var userType = GetPokeType(user.Id);
             var movesList = userType.Moves;
-            var str = $"**Moves for `{userType.Name}` type.**";
-            foreach (string m in movesList)
-            {
-                str += $"\n{userType.Icon}{m}";
-            }
-            await Context.Channel.SendMessageAsync(str).ConfigureAwait(false);
+            var embed = new EmbedBuilder().WithOkColor()
+                .WithTitle(GetText("moves", userType))
+                .WithDescription(string.Join("\n", movesList.Select(m => userType.Icon + " " + m)));
+            await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -270,13 +268,13 @@ namespace WizBot.Modules.Pokemon
                     Stats[targetUser.Id].Hp = (targetStats.MaxHp / 2);
                     if (target == "yourself")
                     {
-                        await ReplyErrorLocalized("revive_yourself", WizBot.BotConfig.CurrencySign).ConfigureAwait(false);
+                        await ReplyConfirmLocalized("revive_yourself", WizBot.BotConfig.CurrencySign).ConfigureAwait(false);
                         return;
                     }
 
-                    await ReplyErrorLocalized("revive_other", targetUser, WizBot.BotConfig.CurrencySign).ConfigureAwait(false);
+                    await ReplyConfirmLocalized("revive_other", targetUser, WizBot.BotConfig.CurrencySign).ConfigureAwait(false);
                 }
-                await ReplyErrorLocalized("healed", targetUser, WizBot.BotConfig.CurrencySign).ConfigureAwait(false);
+                await ReplyConfirmLocalized("healed", targetUser, WizBot.BotConfig.CurrencySign).ConfigureAwait(false);
                 return;
             }
             else
