@@ -12,6 +12,7 @@ namespace WizBot.Modules
     public abstract class WizBotModule : ModuleBase
     {
         protected readonly Logger _log;
+        protected CultureInfo _cultureInfo { get; private set; }
         public readonly string _prefix;
         public readonly CultureInfo cultureInfo;
         public readonly string ModuleTypeName;
@@ -26,8 +27,11 @@ namespace WizBot.Modules
             if (!WizBot.ModulePrefixes.TryGetValue(ModuleTypeName, out _prefix))
                 _prefix = "?err?";
             _log = LogManager.GetCurrentClassLogger();
+        }
 
-            cultureInfo = (Context.Guild == null
+        protected override void BeforeExecute()
+        {
+            _cultureInfo = (Context.Guild == null
                 ? CultureInfo.CurrentCulture
                 : WizBot.Localization.GetCultureInfo(Context.Guild));
         }
@@ -54,7 +58,7 @@ namespace WizBot.Modules
 
         protected string GetText(string key)
         {
-            return WizBot.ResponsesResourceManager.GetString(LowerModuleTypeName + "_" + key, cultureInfo);
+            return WizBot.ResponsesResourceManager.GetString(LowerModuleTypeName + "_" + key, _cultureInfo);
         }
 
         protected string GetText(string key, params object[] replacements)

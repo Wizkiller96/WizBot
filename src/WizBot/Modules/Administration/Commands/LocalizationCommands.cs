@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WizBot.Modules.Administration.Commands
+namespace WizBot.Modules.Administration
 {
     public partial class Administration
     {
