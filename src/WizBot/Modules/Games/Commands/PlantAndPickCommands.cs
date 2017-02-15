@@ -37,13 +37,8 @@ namespace WizBot.Modules.Games
             //channelId/last generation
             private static ConcurrentDictionary<ulong, DateTime> lastGenerations { get; } = new ConcurrentDictionary<ulong, DateTime>();
 
-            private static ConcurrentHashSet<ulong> usersRecentlyPicked { get; } = new ConcurrentHashSet<ulong>();
-
-            private static Logger _log { get; }
-
             static PlantPickCommands()
             {
-                _log = LogManager.GetCurrentClassLogger();
 
 #if !GLOBAL_WIZBOT
                 WizBot.Client.MessageReceived += PotentialFlowerGeneration;
@@ -116,7 +111,7 @@ namespace WizBot.Modules.Games
                     }
                     catch (Exception ex)
                     {
-                        _log.Warn(ex);
+                        LogManager.GetCurrentClassLogger().Warn(ex);
                     }
                 });
                 return Task.CompletedTask;
