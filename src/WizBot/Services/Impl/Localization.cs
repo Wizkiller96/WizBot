@@ -14,6 +14,7 @@ namespace WizBot.Services
     public class Localization
     {
         public ConcurrentDictionary<ulong, CultureInfo> GuildCultureInfos { get; }
+        public CultureInfo DefaultCultureInfo { get; private set; } = CultureInfo.CurrentCulture;
 
         private Localization() { }
         public Localization(IDictionary<ulong, string> cultureInfoNames)
@@ -69,10 +70,18 @@ namespace WizBot.Services
             }
         }
 
+        internal void SetDefaultCulture(CultureInfo ci)
+        {
+            DefaultCultureInfo = ci;
+        }
+
+        public void ResetDefaultCulture()
+        {
+            DefaultCultureInfo = CultureInfo.CurrentCulture;
+        }
+
         public CultureInfo GetCultureInfo(IGuild guild) =>
             GetCultureInfo(guild.Id);
-
-        public CultureInfo DefaultCultureInfo { get; } = CultureInfo.CurrentCulture;
 
         public CultureInfo GetCultureInfo(ulong guildId)
         {

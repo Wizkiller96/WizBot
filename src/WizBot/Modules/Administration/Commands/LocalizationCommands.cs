@@ -19,7 +19,7 @@ namespace WizBot.Modules.Administration.Commands
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.Administrator)]
-            public async Task SetLocale([Remainder] string name)
+            public async Task SetLocale([Remainder] string name = null)
             {
                 CultureInfo ci = null;
                 try
@@ -43,17 +43,17 @@ namespace WizBot.Modules.Administration.Commands
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
-            public async Task SetDefaulLocale(string name)
+            public async Task SetDefaultLocale(string name)
             {
                 CultureInfo ci = null;
                 try
                 {
                     if (name.Trim().ToLowerInvariant() == "default")
                     {
-                        WizBot.Localization.RemoveGuildCulture(Context.Guild);
+                        WizBot.Localization.ResetDefaultCulture();
                     }
                     ci = new CultureInfo(name);
-                    WizBot.Localization.SetGuildCulture(Context.Guild, ci);
+                    WizBot.Localization.SetDefaultCulture(ci);
 
                     await Context.Channel.SendConfirmAsync($"Your guild's locale is now {ci}.").ConfigureAwait(false);
                 }
