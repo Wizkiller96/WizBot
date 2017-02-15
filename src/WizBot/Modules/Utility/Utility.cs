@@ -21,7 +21,7 @@ using WizBot.Services;
 namespace WizBot.Modules.Utility
 {
     [WizBotModule("Utility", ".")]
-    public partial class Utility : DiscordModule
+    public partial class Utility : WizBotModule
     {
         private static ConcurrentDictionary<ulong, Timer> rotatingRoleColors = new ConcurrentDictionary<ulong, Timer>();
 

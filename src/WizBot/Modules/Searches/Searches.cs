@@ -28,7 +28,7 @@ using System.Xml.Linq;
 namespace WizBot.Modules.Searches
 {
     [WizBotModule("Searches", "~")]
-    public partial class Searches : DiscordModule
+    public partial class Searches : WizBotModule
     {
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Weather([Remainder] string query)

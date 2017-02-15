@@ -20,7 +20,7 @@ using NLog;
 namespace WizBot.Modules.Administration
 {
     [WizBotModule("Administration", ".")]
-    public partial class Administration : DiscordModule
+    public partial class Administration : WizBotModule
     {
 
         private static ConcurrentDictionary<ulong, string> GuildMuteRoles { get; } = new ConcurrentDictionary<ulong, string>();

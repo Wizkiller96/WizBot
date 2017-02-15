@@ -17,7 +17,7 @@ using WizBot.DataStructures;
 namespace WizBot.Modules.CustomReactions
 {
     [WizBotModule("CustomReactions", ".")]
-    public class CustomReactions : DiscordModule
+    public class CustomReactions : WizBotModule
     {
         private static CustomReaction[] _globalReactions = new CustomReaction[] { };
         public static CustomReaction[] GlobalReactions => _globalReactions;

@@ -11,7 +11,7 @@ using WizBot.Extensions;
 namespace WizBot.Modules.Games
 {
     [WizBotModule("Games", ">")]
-    public partial class Games : DiscordModule
+    public partial class Games : WizBotModule
     {
         private static string[] _8BallResponses { get; } = WizBot.BotConfig.EightBallResponses.Select(ebr => ebr.Text).ToArray();
 

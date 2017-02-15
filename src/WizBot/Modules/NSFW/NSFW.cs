@@ -17,7 +17,7 @@ using System.Collections.Concurrent;
 namespace WizBot.Modules.NSFW
 {
     [WizBotModule("NSFW", "~")]
-    public class NSFW : DiscordModule
+    public class NSFW : WizBotModule
     {
 
         private static ConcurrentDictionary<ulong, Timer> AutoHentaiTimers { get; } = new ConcurrentDictionary<ulong, Timer>();
