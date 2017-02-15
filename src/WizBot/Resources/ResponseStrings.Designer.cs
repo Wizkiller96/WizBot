@@ -132,7 +132,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to You are not able to use **{0}**. Type {1}ml to see a list of moves you can use..
+        ///    Looks up a localized string similar to You can&apos;t use {0}. Type `{1}ml` to see a list of moves you can use..
         /// </summary>
         public static string pokemon_invalid_move {
             get {
