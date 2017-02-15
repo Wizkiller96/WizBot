@@ -15,7 +15,7 @@ namespace WizBot.Modules.Administration
     public partial class Administration
     {
         [Group]
-        public class LocalizationCommands : ModuleBase
+        public class LocalizationCommands : WizBotSubmodule
         {
             private ImmutableDictionary<string, string> SupportedLocales { get; } = new Dictionary<string, string>()
             {

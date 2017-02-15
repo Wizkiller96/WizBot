@@ -20,7 +20,7 @@ namespace WizBot.Modules.Administration
     public partial class Administration
     {
         [Group]
-        public class Migration : ModuleBase
+        public class Migration : WizBotSubmodule
         {
             private const int CURRENT_VERSION = 1;
 

@@ -16,7 +16,7 @@ namespace WizBot.Modules.Administration
     public partial class Administration
     {
         [Group]
-        public class SelfAssignedRolesCommands : ModuleBase
+        public class SelfAssignedRolesCommands : WizBotSubmodule
         {
             
             [WizBotCommand, Usage, Description, Aliases]

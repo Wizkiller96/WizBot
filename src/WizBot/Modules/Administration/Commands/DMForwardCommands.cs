@@ -15,16 +15,13 @@ namespace WizBot.Modules.Administration
     public partial class Administration
     {
         [Group]
-        public class DMForwardCommands : ModuleBase
+        public class DMForwardCommands : WizBotSubmodule
         {
             private static bool ForwardDMs { get; set; }
             private static bool ForwardDMsToAllOwners { get; set; }
-
-            private static readonly Logger _log;
             
             static DMForwardCommands()
             {
-                _log = LogManager.GetCurrentClassLogger();
 
                 using (var uow = DbHandler.UnitOfWork())
                 {

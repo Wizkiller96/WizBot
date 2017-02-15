@@ -14,7 +14,7 @@ namespace WizBot.Modules.Administration
     public partial class Administration
     {
         [Group]
-        class SelfCommands : ModuleBase
+        public class SelfCommands : WizBotSubmodule
         {
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]

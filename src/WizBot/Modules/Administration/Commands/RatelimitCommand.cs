@@ -13,7 +13,7 @@ namespace WizBot.Modules.Administration
     public partial class Administration
     {
         [Group]
-        public class RatelimitCommand : ModuleBase
+        public class RatelimitCommand : WizBotSubmodule
         {
             public static ConcurrentDictionary<ulong, Ratelimiter> RatelimitingChannels = new ConcurrentDictionary<ulong, Ratelimiter>();
             private static Logger _log { get; }

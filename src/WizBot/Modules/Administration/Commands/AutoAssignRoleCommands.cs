@@ -16,7 +16,7 @@ namespace WizBot.Modules.Administration
     public partial class Administration
     {
         [Group]
-        public class AutoAssignRoleCommands : ModuleBase
+        public class AutoAssignRoleCommands : WizBotSubmodule
         {
             private static Logger _log { get; }
             //guildid/roleid
