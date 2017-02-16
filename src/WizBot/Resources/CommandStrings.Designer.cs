@@ -9069,7 +9069,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0}yodify I was once an adventurer like you` or `{0}yoda my feelings hurt`.
+        ///    Looks up a localized string similar to `{0}yoda my feelings hurt`.
         /// </summary>
         public static string yodify_usage {
             get {
