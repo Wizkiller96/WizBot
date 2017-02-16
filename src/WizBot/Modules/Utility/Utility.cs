@@ -486,8 +486,8 @@ namespace WizBot.Modules.Utility
                     .WithAuthor(eab => eab.WithName($"WizBot Changelogs | 📅 Feb 13, 2017")
                                           .WithUrl("https://github.com/Wizkiller96/WizBot/commits/dev")
                                           .WithIconUrl("https://cdn.discordapp.com/avatars/170849991357628416/412367ac7ffd3915a0b969f6f3e17aca.jpg"))
-                    .AddField(efb => efb.WithName(Format.Bold("Fixes:")).WithValue("`1.` Cleverbot Fixed.").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("Additions:")).WithValue("None.").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("Fixes:")).WithValue("Lots of Fixes.").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("Additions:")).WithValue("Added Localization.").WithIsInline(false))
                     .AddField(efb => efb.WithName(Format.Bold("Removals:")).WithValue("None.").WithIsInline(false))
                     .WithFooter(efb => efb.WithText($"More info at: http://github.com/Wizkiller96/WizBot"))
                     );
