@@ -15,7 +15,7 @@ namespace WizBot.Services.Impl
         private DiscordShardedClient client;
         private DateTime started;
 
-        public const string BotVersion = "1.1.6";
+        public const string BotVersion = "1.1.8-alpha";
 
         public string Author => "Kwoth#2560 & Wizkiller96#2947";
         public string Library => "Discord.Net";
