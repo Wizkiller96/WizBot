@@ -273,7 +273,7 @@ namespace WizBot.Services
 
                             await msg.Channel.SendMessageAsync(Help.DMHelpString).ConfigureAwait(false);
 
-                            await DMForwardCommands.HandleDMForwarding(msg, ownerChannels).ConfigureAwait(false);
+                            await SelfCommands.HandleDmForwarding(msg, ownerChannels).ConfigureAwait(false);
                         }
                     }
                 }
