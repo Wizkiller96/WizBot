@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace WizBot.Modules.Administration
@@ -17,7 +16,7 @@ namespace WizBot.Modules.Administration
         [Group]
         public class LocalizationCommands : WizBotSubmodule
         {
-            private ImmutableDictionary<string, string> SupportedLocales { get; } = new Dictionary<string, string>()
+            private ImmutableDictionary<string, string> supportedLocales { get; } = new Dictionary<string, string>()
             {
                 {"en-US", "English, United States" },
                 {"sr-cyrl-rs", "Serbian, Cyrillic" }
@@ -28,7 +27,8 @@ namespace WizBot.Modules.Administration
             public async Task LanguageSet()
             {
                 var cul = WizBot.Localization.GetCultureInfo(Context.Guild);
-                await Context.Channel.SendConfirmAsync("This server's language is set to " + Format.Bold(cul.ToString()) + " - " + Format.Bold(cul.NativeName)).ConfigureAwait(false);
+                await ReplyConfirmLocalized("lang_set_show", Format.Bold(cul.ToString()), Format.Bold(cul.NativeName))
+                    .ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -36,9 +36,9 @@ namespace WizBot.Modules.Administration
             [RequireUserPermission(GuildPermission.Administrator)]
             public async Task LanguageSet(string name)
             {
-                CultureInfo ci = null;
                 try
                 {
+                    CultureInfo ci;
                     if (name.Trim().ToLowerInvariant() == "default")
                     {
                         WizBot.Localization.RemoveGuildCulture(Context.Guild);
@@ -50,13 +50,11 @@ namespace WizBot.Modules.Administration
                         WizBot.Localization.SetGuildCulture(Context.Guild, ci);
                     }
 
-                    await Context.Channel.SendConfirmAsync($"Your server's locale is now {Format.Bold(ci.ToString())} - {Format.Bold(ci.NativeName)}.").ConfigureAwait(false);
+                    await ReplyConfirmLocalized("lang_set", Format.Bold(ci.ToString()), Format.Bold(ci.NativeName)).ConfigureAwait(false);
                 }
                 catch (Exception)
                 {
-
-                    //_log.warn(ex);
-                    await Context.Channel.SendConfirmAsync($"Failed setting locale. Revisit this command's help.").ConfigureAwait(false);
+                    await ReplyErrorLocalized("lang_set_fail").ConfigureAwait(false);
                 }
             }
 
@@ -64,17 +62,16 @@ namespace WizBot.Modules.Administration
             public async Task LanguageSetDefault()
             {
                 var cul = WizBot.Localization.DefaultCultureInfo;
-                await Context.Channel.SendConfirmAsync("Bot's language is set to " + cul + " - " + cul.NativeName).ConfigureAwait(false);
-                return;
+                await ReplyConfirmLocalized("lang_set_bot_show", cul, cul.NativeName).ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
             public async Task LanguageSetDefault(string name)
             {
-                CultureInfo ci = null;
                 try
                 {
+                    CultureInfo ci;
                     if (name.Trim().ToLowerInvariant() == "default")
                     {
                         WizBot.Localization.ResetDefaultCulture();
@@ -85,22 +82,21 @@ namespace WizBot.Modules.Administration
                         ci = new CultureInfo(name);
                         WizBot.Localization.SetDefaultCulture(ci);
                     }
-
-                    await Context.Channel.SendConfirmAsync($"Bot's default locale is now {Format.Bold(ci.ToString())} - {Format.Bold(ci.NativeName)}.").ConfigureAwait(false);
+                    await ReplyConfirmLocalized("lang_set_bot", Format.Bold(ci.ToString()), Format.Bold(ci.NativeName)).ConfigureAwait(false);
                 }
                 catch (Exception)
                 {
-                    //_log.warn(ex);
-                    await Context.Channel.SendConfirmAsync($"Failed setting locale. Revisit this command's help.").ConfigureAwait(false);
+                    await ReplyErrorLocalized("lang_set_fail").ConfigureAwait(false);
                 }
             }
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
-            public async Task LanguagesList(string name)
+            public async Task LanguagesList()
             {
-                await Context.Channel.SendConfirmAsync("List Of Languages",
-                    string.Join("\n", SupportedLocales.Select(x => $"{Format.Code(x.Key)} => {x.Value}")));
+                await ReplyConfirmLocalized("lang_list",
+                        string.Join("\n", supportedLocales.Select(x => $"{Format.Code(x.Key)} => {x.Value}")))
+                    .ConfigureAwait(false);
             }
         }
     }
