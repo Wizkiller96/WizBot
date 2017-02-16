@@ -1,12 +1,10 @@
 using Discord;
 using Discord.Commands;
-using ImageSharp;
 using WizBot.Attributes;
 using WizBot.Extensions;
 using WizBot.Services;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using Image = ImageSharp.Image;
 
@@ -15,7 +13,7 @@ namespace WizBot.Modules.Gambling
     public partial class Gambling
     {
         [Group]
-        public class FlipCoinCommands : ModuleBase
+        public class FlipCoinCommands : WizBotSubmodule
         {
             private readonly IImagesService _images;
 
@@ -24,7 +22,7 @@ namespace WizBot.Modules.Gambling
             public FlipCoinCommands()
             {
                 //todo DI in the future, can't atm
-                this._images = WizBot.Images;
+                _images = WizBot.Images;
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -36,21 +34,21 @@ namespace WizBot.Modules.Gambling
                     {
                         using (var heads = _images.Heads.ToStream())
                         {
-                            await Context.Channel.SendFileAsync(heads, "heads.jpg", $"{Context.User.Mention} flipped " + Format.Code("Heads") + ".").ConfigureAwait(false);
+                            await Context.Channel.SendFileAsync(heads, "heads.jpg", Context.User.Mention + " " + GetText("flipped", Format.Bold(GetText("heads"))) + ".").ConfigureAwait(false);
                         }
                     }
                     else
                     {
                         using (var tails = _images.Tails.ToStream())
                         {
-                            await Context.Channel.SendFileAsync(tails, "tails.jpg", $"{Context.User.Mention} flipped " + Format.Code("Tails") + ".").ConfigureAwait(false);
+                            await Context.Channel.SendFileAsync(tails, "tails.jpg", Context.User.Mention + " " + GetText("flipped", Format.Bold(GetText("tails"))) + ".").ConfigureAwait(false);
                         }
                     }
                     return;
                 }
                 if (count > 10 || count < 1)
                 {
-                    await Context.Channel.SendErrorAsync("`Invalid number specified. You can flip 1 to 10 coins.`").ConfigureAwait(false);
+                    await ReplyErrorLocalized("flip_invalid", 10).ConfigureAwait(false);
                     return;
                 }
                 var imgs = new Image[count];
@@ -60,8 +58,8 @@ namespace WizBot.Modules.Gambling
                     for (var i = 0; i < count; i++)
                     {
                         imgs[i] = rng.Next(0, 10) < 5 ?
-                        new Image(heads) :
-                        new Image(tails);
+                                    new Image(heads) :
+                                    new Image(tails);
                     }
                     await Context.Channel.SendFileAsync(imgs.Merge().ToStream(), $"{count} coins.png").ConfigureAwait(false);
                 }
@@ -76,14 +74,13 @@ namespace WizBot.Modules.Gambling
 
                 if (amount < WizBot.BotConfig.MinimumBetAmount)
                 {
-                    await Context.Channel.SendErrorAsync($"You can't bet less than {WizBot.BotConfig.MinimumBetAmount}{CurrencySign}.")
-                                 .ConfigureAwait(false);
+                    await ReplyErrorLocalized("min_bet_limit", WizBot.BotConfig.MinimumBetAmount + CurrencySign).ConfigureAwait(false);
                     return;
                 }
                 var removed = await CurrencyHandler.RemoveCurrencyAsync(Context.User, "Betflip Gamble", amount, false).ConfigureAwait(false);
                 if (!removed)
                 {
-                    await Context.Channel.SendErrorAsync($"{Context.User.Mention} You don't have enough {CurrencyPluralName}.").ConfigureAwait(false);
+                    await ReplyErrorLocalized("not_enough", CurrencyPluralName).ConfigureAwait(false);
                     return;
                 }
                 //heads = true
@@ -91,7 +88,7 @@ namespace WizBot.Modules.Gambling
 
                 //todo this seems stinky, no time to look at it right now
                 var isHeads = guessStr == "HEADS" || guessStr == "H";
-                bool result = false;
+                var result = false;
                 IEnumerable<byte> imageToSend;
                 if (rng.Next(0, 2) == 1)
                 {
@@ -107,12 +104,12 @@ namespace WizBot.Modules.Gambling
                 if (isHeads == result)
                 {
                     var toWin = (int)Math.Round(amount * WizBot.BotConfig.BetflipMultiplier);
-                    str = $"{Context.User.Mention}`You guessed it!` You won {toWin}{CurrencySign}";
-                    await CurrencyHandler.AddCurrencyAsync(Context.User, "Betflip Gamble", toWin, false).ConfigureAwait(false);
+                    str = Context.User.Mention + " " + GetText("flip_guess", toWin + CurrencySign);
+                    await CurrencyHandler.AddCurrencyAsync(Context.User, GetText("betflip_gamble"), toWin, false).ConfigureAwait(false);
                 }
                 else
                 {
-                    str = $"{Context.User.Mention}`Better luck next time.`";
+                    str = Context.User.Mention + " " + GetText("better_luck");
                 }
                 using (var toSend = imageToSend.ToStream())
                 {
