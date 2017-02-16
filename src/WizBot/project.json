@@ -47,7 +47,7 @@
       "version": "1.0.0-*"
     },
     "NLog": "5.0.0-beta04",
-    "libvideo": "1.0.0",
+    "libvideo": "1.0.1"
   },
   "tools": {
     "Microsoft.EntityFrameworkCore.Tools.DotNet": "1.1.0-preview4-final",
