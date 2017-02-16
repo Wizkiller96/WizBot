@@ -24,7 +24,7 @@ namespace WizBot.Modules.Administration
         {
             private const int CURRENT_VERSION = 1;
 
-            private static Logger _log { get; }
+            private new static readonly Logger _log;
 
             static Migration()
             {
