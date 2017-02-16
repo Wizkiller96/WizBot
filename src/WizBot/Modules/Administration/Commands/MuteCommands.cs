@@ -8,8 +8,6 @@ using WizBot.Services.Database.Models;
 using NLog;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,15 +18,15 @@ namespace WizBot.Modules.Administration
         [Group]
         public class MuteCommands : WizBotSubmodule
         {
-            private static ConcurrentDictionary<ulong, string> GuildMuteRoles { get; } = new ConcurrentDictionary<ulong, string>();
-
-            private static ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>> MutedUsers { get; } = new ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>>();
+            private static ConcurrentDictionary<ulong, string> guildMuteRoles { get; }
+            private static ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>> mutedUsers { get; }
 
             public static event Action<IGuildUser, MuteType> UserMuted = delegate { };
             public static event Action<IGuildUser, MuteType> UserUnmuted = delegate { };
 
 
-            public enum MuteType {
+            public enum MuteType
+            {
                 Voice,
                 Chat,
                 All
@@ -37,11 +35,11 @@ namespace WizBot.Modules.Administration
             static MuteCommands()
             {
                 var configs = WizBot.AllGuildConfigs;
-                GuildMuteRoles = new ConcurrentDictionary<ulong, string>(configs
+                guildMuteRoles = new ConcurrentDictionary<ulong, string>(configs
                         .Where(c => !string.IsNullOrWhiteSpace(c.MuteRoleName))
                         .ToDictionary(c => c.GuildId, c => c.MuteRoleName));
 
-                MutedUsers = new ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>>(configs.ToDictionary(
+                mutedUsers = new ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>>(configs.ToDictionary(
                     k => k.GuildId,
                     v => new ConcurrentHashSet<ulong>(v.MutedUsers.Select(m => m.UserId))
                 ));
@@ -54,7 +52,7 @@ namespace WizBot.Modules.Administration
                 try
                 {
                     ConcurrentHashSet<ulong> muted;
-                    MutedUsers.TryGetValue(usr.Guild.Id, out muted);
+                    mutedUsers.TryGetValue(usr.Guild.Id, out muted);
 
                     if (muted == null || !muted.Contains(usr.Id))
                         return;
@@ -64,7 +62,7 @@ namespace WizBot.Modules.Administration
                 {
                     LogManager.GetCurrentClassLogger().Warn(ex);
                 }
-                    
+
             }
 
             public static async Task MuteUser(IGuildUser usr)
@@ -79,9 +77,9 @@ namespace WizBot.Modules.Administration
                         UserId = usr.Id
                     });
                     ConcurrentHashSet<ulong> muted;
-                    if (MutedUsers.TryGetValue(usr.Guild.Id, out muted))
+                    if (mutedUsers.TryGetValue(usr.Guild.Id, out muted))
                         muted.Add(usr.Id);
-                    
+
                     await uow.CompleteAsync().ConfigureAwait(false);
                 }
                 UserMuted(usr, MuteType.All);
@@ -99,7 +97,7 @@ namespace WizBot.Modules.Administration
                         UserId = usr.Id
                     });
                     ConcurrentHashSet<ulong> muted;
-                    if (MutedUsers.TryGetValue(usr.Guild.Id, out muted))
+                    if (mutedUsers.TryGetValue(usr.Guild.Id, out muted))
                         muted.TryRemove(usr.Id);
                     await uow.CompleteAsync().ConfigureAwait(false);
                 }
@@ -110,7 +108,7 @@ namespace WizBot.Modules.Administration
             {
                 const string defaultMuteRoleName = "wizbot-mute";
 
-                var muteRoleName = GuildMuteRoles.GetOrAdd(guild.Id, defaultMuteRoleName);
+                var muteRoleName = guildMuteRoles.GetOrAdd(guild.Id, defaultMuteRoleName);
 
                 var muteRole = guild.Roles.FirstOrDefault(r => r.Name == muteRoleName);
                 if (muteRole == null)
@@ -132,7 +130,10 @@ namespace WizBot.Modules.Administration
                             await toOverwrite.AddPermissionOverwriteAsync(muteRole, new OverwritePermissions(sendMessages: PermValue.Deny, attachFiles: PermValue.Deny))
                                     .ConfigureAwait(false);
                         }
-                        catch { }
+                        catch
+                        {
+                            // ignored
+                        }
                         await Task.Delay(200).ConfigureAwait(false);
                     }
                 }
@@ -145,7 +146,6 @@ namespace WizBot.Modules.Administration
             [Priority(1)]
             public async Task SetMuteRole([Remainder] string name)
             {
-                //var channel = (ITextChannel)Context.Channel;
                 name = name.Trim();
                 if (string.IsNullOrWhiteSpace(name))
                     return;
@@ -154,7 +154,7 @@ namespace WizBot.Modules.Administration
                 {
                     var config = uow.GuildConfigs.For(Context.Guild.Id, set => set);
                     config.MuteRoleName = name;
-                    GuildMuteRoles.AddOrUpdate(Context.Guild.Id, name, (id, old) => name);
+                    guildMuteRoles.AddOrUpdate(Context.Guild.Id, name, (id, old) => name);
                     await uow.CompleteAsync().ConfigureAwait(false);
                 }
                 await Context.Channel.SendConfirmAsync("☑️ **New mute role set.**").ConfigureAwait(false);
@@ -175,7 +175,7 @@ namespace WizBot.Modules.Administration
             {
                 try
                 {
-                    await MuteUser(user).ConfigureAwait(false);                    
+                    await MuteUser(user).ConfigureAwait(false);
                     await Context.Channel.SendConfirmAsync($"🔇 **{user}** has been **muted** from text and voice chat.").ConfigureAwait(false);
                 }
                 catch

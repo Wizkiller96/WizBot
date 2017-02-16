@@ -22,9 +22,6 @@ namespace WizBot.Modules.Administration
     [WizBotModule("Administration", ".")]
     public partial class Administration : WizBotModule
     {
-
-        private static ConcurrentDictionary<ulong, string> GuildMuteRoles { get; } = new ConcurrentDictionary<ulong, string>();
-
         private static ConcurrentHashSet<ulong> DeleteMessagesOnCommand { get; } = new ConcurrentHashSet<ulong>();
 
         private new static Logger _log { get; }
@@ -206,7 +203,7 @@ namespace WizBot.Modules.Administration
                 return;
             }
             var roleName = args[0].ToUpperInvariant();
-            var role = Context.Guild.Roles.Where(r => r.Name.ToUpperInvariant() == roleName).FirstOrDefault();
+            var role = Context.Guild.Roles.FirstOrDefault(r => r.Name.ToUpperInvariant() == roleName);
 
             if (role == null)
             {
@@ -513,7 +510,7 @@ namespace WizBot.Modules.Administration
             await Context.Channel.SendMessageAsync(send).ConfigureAwait(false);
         }
 
-        IGuild wizbotSupportServer;
+        IGuild _wizbotSupportServer;
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Donators()
         {
@@ -525,16 +522,13 @@ namespace WizBot.Modules.Administration
             }
             await Context.Channel.SendConfirmAsync("Thanks to the people listed below for making this project happen!", string.Join("⭐", donatorsOrdered.Select(d => d.Name))).ConfigureAwait(false);
 
-            wizbotSupportServer = wizbotSupportServer ?? WizBot.Client.GetGuild(99273784988557312);
+            _wizbotSupportServer = _wizbotSupportServer ?? WizBot.Client.GetGuild(117523346618318850);
 
-            if (wizbotSupportServer == null)
-                return;
-
-            var patreonRole = wizbotSupportServer.GetRole(280182841114099722);
+            var patreonRole = _wizbotSupportServer?.GetRole(280182841114099722);
             if (patreonRole == null)
                 return;
 
-            var usrs = (await wizbotSupportServer.GetUsersAsync()).Where(u => u.RoleIds.Contains(236667642088259585u));
+            var usrs = (await _wizbotSupportServer.GetUsersAsync()).Where(u => u.RoleIds.Contains(236667642088259585u));
             await Context.Channel.SendConfirmAsync("Patreon supporters", string.Join("⭐", usrs.Select(d => d.Username))).ConfigureAwait(false);
         }
 
