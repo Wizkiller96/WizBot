@@ -841,12 +841,19 @@ namespace WizBot.Modules.Music
                     {
                         lastFinishedMessage?.DeleteAfter(0);
 
-                        lastFinishedMessage = await mp.OutputTextChannel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                                                  .WithAuthor(eab => eab.WithName("Finished Song").WithMusicIcon())
-                                                  .WithDescription(song.PrettyName)
-                                                  .WithThumbnailUrl(song.Thumbnail)
-                                                  .WithFooter(ef => ef.WithText(song.PrettyInfo)))
-                                                    .ConfigureAwait(false);
+                        try
+                        {
+                            lastFinishedMessage = await mp.OutputTextChannel.EmbedAsync(new EmbedBuilder().WithOkColor()
+                                    .WithAuthor(eab => eab.WithName("Finished Song").WithMusicIcon())
+                                    .WithDescription(song.PrettyName)
+                                    .WithThumbnailUrl(song.Thumbnail)
+                                    .WithFooter(ef => ef.WithText(song.PrettyInfo)))
+                                .ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            // ignored
+                        }
 
                         if (mp.Autoplay && mp.Playlist.Count == 0 && song.SongInfo.ProviderType == MusicType.Normal)
                         {
