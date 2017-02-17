@@ -319,12 +319,12 @@
     <value>Опис</value>
   </data>
   <data name="help_donate" xml:space="preserve">
-    <value>Можете подржати НадекоБот пројекат на 
-Пејтриону &lt;{0}&gt; или
-Пејпалу &lt;{1}&gt;
-Не заборавите да оставите своје корисничко име или ИД.
+    <value>Можете подржати пројекат ВизБот на
+Патреон &lt;{0}&gt; или
+Паипал &lt;{1}&gt;
+Не заборавите да оставите своје име раздор или ид у поруци.
 
-**Хвала** ♥️</value>
+** Хвала ** ♥</value>
   </data>
   <data name="help_guide" xml:space="preserve">
     <value>**List of Commands**: &lt;{0}&gt;

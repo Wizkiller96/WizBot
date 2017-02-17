@@ -1282,9 +1282,9 @@ namespace WizBot.Resources {
         /// <summary>
         ///    Looks up a localized string similar to You now have {0} role..
         /// </summary>
-        public static string administration_self_assign_sucess {
+        public static string administration_self_assign_success {
             get {
-                return ResourceManager.GetString("administration_self_assign_sucess", resourceCulture);
+                return ResourceManager.GetString("administration_self_assign_success", resourceCulture);
             }
         }
         
