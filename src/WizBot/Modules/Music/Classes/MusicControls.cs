@@ -43,7 +43,7 @@ namespace WizBot.Modules.Music.Classes
         /// </summary>
         public uint MaxPlaytimeSeconds { get; set; } = 0;
 
-        
+
         // this should be written better
         public TimeSpan TotalPlaytime =>
             playlist.Any(s => s.TotalTime == TimeSpan.MaxValue) ?
@@ -67,7 +67,7 @@ namespace WizBot.Modules.Music.Classes
         public float Volume { get; private set; }
 
         public event Action<MusicPlayer, Song> OnCompleted = delegate { };
-        public event Action<MusicPlayer, Song> OnStarted = delegate {  };
+        public event Action<MusicPlayer, Song> OnStarted = delegate { };
         public event Action<bool> OnPauseChanged = delegate { };
 
         public IVoiceChannel PlaybackVoiceChannel { get; private set; }
@@ -130,13 +130,9 @@ namespace WizBot.Modules.Music.Classes
                 {
                     try
                     {
-                        if (audioClient?.ConnectionState != ConnectionState.Connected)
-                        {
-                            if (audioClient != null)
-                                try { await audioClient.DisconnectAsync().ConfigureAwait(false); } catch { }
-                            audioClient = await PlaybackVoiceChannel.ConnectAsync().ConfigureAwait(false);
-                            continue;
-                        }
+                        if (audioClient != null)
+                            try { await audioClient.DisconnectAsync().ConfigureAwait(false); } catch { }
+                        audioClient = await PlaybackVoiceChannel.ConnectAsync().ConfigureAwait(false);
 
                         CurrentSong = GetNextSong();
 
@@ -157,7 +153,7 @@ namespace WizBot.Modules.Music.Classes
                             OnCompleted(this, CurrentSong);
                         }
 
-                       
+
                         if (RepeatPlaylist)
                             AddSong(CurrentSong, CurrentSong.QueuerName);
 
@@ -297,7 +293,7 @@ namespace WizBot.Modules.Music.Classes
                 {
                     SongRemoved(song, index);
                 }
-                
+
             });
         }
 
@@ -313,11 +309,15 @@ namespace WizBot.Modules.Music.Classes
         {
             var curSong = CurrentSong;
             var toUpdate = playlist.Where(s => s.SongInfo.ProviderType == MusicType.Normal &&
-                                                            s.TotalTime == TimeSpan.Zero);
+                                                            s.TotalTime == TimeSpan.Zero)
+                                                            .ToArray();
             if (curSong != null)
-                toUpdate = toUpdate.Append(curSong);
+            {
+                Array.Resize(ref toUpdate, toUpdate.Length + 1);
+                toUpdate[toUpdate.Length - 1] = curSong;
+            }
             var ids = toUpdate.Select(s => s.SongInfo.Query.Substring(s.SongInfo.Query.LastIndexOf("?v=") + 3))
-                                .Distinct();
+                              .Distinct();
 
             var durations = await WizBot.Google.GetVideoDurationsAsync(ids);
 
@@ -352,13 +352,13 @@ namespace WizBot.Modules.Music.Classes
 
         //public async Task MoveToVoiceChannel(IVoiceChannel voiceChannel)
         //{
-        //if (audioClient?.ConnectionState != ConnectionState.Connected)
-        //throw new InvalidOperationException("Can't move while bot is not connected to voice channel.");
-        //PlaybackVoiceChannel = voiceChannel;
-        //audioClient = await voiceChannel.ConnectAsync().ConfigureAwait(false);
-    //}
+        //    if (audioClient?.ConnectionState != ConnectionState.Connected)
+        //        throw new InvalidOperationException("Can't move while bot is not connected to voice channel.");
+        //    PlaybackVoiceChannel = voiceChannel;
+        //    audioClient = await voiceChannel.ConnectAsync().ConfigureAwait(false);
+        //}
 
-    public bool ToggleRepeatSong() => this.RepeatSong = !this.RepeatSong;
+        public bool ToggleRepeatSong() => this.RepeatSong = !this.RepeatSong;
 
         public bool ToggleRepeatPlaylist() => this.RepeatPlaylist = !this.RepeatPlaylist;
 
