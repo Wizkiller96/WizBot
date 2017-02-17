@@ -133,6 +133,27 @@ namespace WizBot.Modules.Utility
             }
 
             [WizBotCommand, Usage, Description, Aliases]
+  	        [RequireContext(ContextType.Guild)] 
+            public async Task SearchQuote(string keyword, [Remainder] string text)
+            {
+	        if (string.IsNullOrWhiteSpace(keyword) || string.IsNullOrWhiteSpace(text))
+		    return;
+
+                keyword = keyword.ToUpperInvariant();
+
+                Quote keywordquote;
+                using (var uow = DbHandler.UnitOfWork())
+               {
+                    keywordquote = await uow.Quotes.SearchQuoteKeywordTextAsync(Context.Guild.Id, keyword, text).ConfigureAwait(false);
+               }
+
+                if (keywordquote == null)
+                    return;
+
+                await Context.Channel.SendMessageAsync("💬 " + keyword + ":  " + keywordquote.Text.SanitizeMentions());
+            }
+
+            [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.Administrator)]
             public async Task DelAllQuotes([Remainder] string keyword)

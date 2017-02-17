@@ -3141,4 +3141,13 @@
   <data name="languageslist_usage" xml:space="preserve">
     <value>`{0}langli`</value>
   </data>
+  <data name="searchquote_cmd" xml:space="preserve">
+    <value>qsearch</value>
+  </data>
+  <data name="searchquote_desc" xml:space="preserve">
+    <value>Searches a quote for a given keyword and any string portion of a quote matching that keyword.</value>
+  </data>
+  <data name="searchquote_usage" xml:space="preserve">
+    <value>`{0}qsearch keyword text`</value>
+  </data>
 </root>
