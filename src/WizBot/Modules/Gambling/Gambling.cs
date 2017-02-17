@@ -49,8 +49,10 @@ namespace WizBot.Modules.Gambling
         [Priority(0)]
         public async Task Cash([Remainder] IUser user = null)
         {
-            user = user ?? Context.User;
-            await ReplyConfirmLocalized("has", Format.Bold(user.ToString()), $"{GetCurrency(user.Id)} {CurrencySign}").ConfigureAwait(false);
+            if (user == null)
+                await ConfirmLocalized("has", Format.Bold(Context.User.ToString()), $"{GetCurrency(Context.User.Id)} {CurrencySign}").ConfigureAwait(false);
+            else
+                await ReplyConfirmLocalized("has", Format.Bold(user.ToString()), $"{GetCurrency(user.Id)} {CurrencySign}").ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
