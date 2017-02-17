@@ -601,6 +601,7 @@ namespace WizBot.Modules.Music
                     .WithOkColor()
                     .WithAuthor(eab => eab.WithMusicIcon().WithName("🔂 Repeating track"))
                     .WithDescription(currentSong.PrettyName)
+                    .WithThumbnailUrl(currentSong.Thumbnail)
                     .WithFooter(ef => ef.WithText(currentSong.PrettyInfo))).ConfigureAwait(false);
             else
                 await Context.Channel.SendConfirmAsync($"🔂 Current track repeat stopped.")
@@ -838,8 +839,7 @@ namespace WizBot.Modules.Music
                 {
                     try
                     {
-                        if (lastFinishedMessage != null)
-                            lastFinishedMessage.DeleteAfter(0);
+                        lastFinishedMessage?.DeleteAfter(0);
 
                         lastFinishedMessage = await mp.OutputTextChannel.EmbedAsync(new EmbedBuilder().WithOkColor()
                                                   .WithAuthor(eab => eab.WithName("Finished Song").WithMusicIcon())
@@ -853,11 +853,11 @@ namespace WizBot.Modules.Music
                             var relatedVideos = (await WizBot.Google.GetRelatedVideosAsync(song.SongInfo.Query, 4)).ToList();
                             if (relatedVideos.Count > 0)
                                 await QueueSong(await queuer.Guild.GetCurrentUserAsync(),
-                                textCh,
-                                voiceCh,
-                                relatedVideos[new WizBotRandom().Next(0, relatedVideos.Count)],
-                                silent,
-                                musicType).ConfigureAwait(false);
+                                    textCh,
+                                    voiceCh,
+                                    relatedVideos[new WizBotRandom().Next(0, relatedVideos.Count)],
+                                    true,
+                                    musicType).ConfigureAwait(false);
                         }
                     }
                     catch { }
@@ -871,8 +871,7 @@ namespace WizBot.Modules.Music
                         return;
                     try
                     {
-                        if (playingMessage != null)
-                            playingMessage.DeleteAfter(0);
+                        playingMessage?.DeleteAfter(0);
 
                         playingMessage = await mp.OutputTextChannel.EmbedAsync(new EmbedBuilder().WithOkColor()
                                                     .WithAuthor(eab => eab.WithName("Playing Song").WithMusicIcon())
@@ -887,14 +886,13 @@ namespace WizBot.Modules.Music
                 {
                     try
                     {
-                    IUserMessage msg;
+                        IUserMessage msg;
                         if (paused)
-                        msg = await mp.OutputTextChannel.SendConfirmAsync("🎵 Music playback **paused**.").ConfigureAwait(false);
+                            msg = await mp.OutputTextChannel.SendConfirmAsync("🎵 Music playback **paused**.").ConfigureAwait(false);
                         else
-                        msg = await mp.OutputTextChannel.SendConfirmAsync("🎵 Music playback **resumed**.").ConfigureAwait(false);
+                            msg = await mp.OutputTextChannel.SendConfirmAsync("🎵 Music playback **resumed**.").ConfigureAwait(false);
 
-                        if (msg != null)
-                            msg.DeleteAfter(10);
+                        msg?.DeleteAfter(10);
                     }
                     catch { }
                 };
@@ -906,6 +904,7 @@ namespace WizBot.Modules.Music
                         var embed = new EmbedBuilder()
                             .WithAuthor(eab => eab.WithName("Removed song #" + (index + 1)).WithMusicIcon())
                             .WithDescription(song.PrettyName)
+                            .WithThumbnailUrl(song.Thumbnail)
                             .WithFooter(ef => ef.WithText(song.PrettyInfo))
                             .WithErrorColor();
 
