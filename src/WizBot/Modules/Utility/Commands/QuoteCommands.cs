@@ -8,13 +8,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WizBot.DataStructures;
 
 namespace WizBot.Modules.Utility
 {
     public partial class Utility
     {
         [Group]
-        public class QuoteCommands : ModuleBase
+        public class QuoteCommands : WizBotSubmodule
         {
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
@@ -56,6 +57,17 @@ namespace WizBot.Modules.Utility
                 if (quote == null)
                     return;
 
+                CREmbed crembed;
+                if (CREmbed.TryParse(quote.Text, out crembed))
+                {
+                    try { await Context.Channel.EmbedAsync(crembed.ToEmbed(), crembed.PlainText ?? "").ConfigureAwait(false); }
+                    catch (Exception ex)
+                    {
+                        _log.Warn("Sending CREmbed failed");
+                        _log.Warn(ex);
+                    }
+                    return;
+                }
                 await Context.Channel.SendMessageAsync("📣 " + quote.Text.SanitizeMentions());
             }
 
@@ -109,7 +121,6 @@ namespace WizBot.Modules.Utility
                         var q = qs[new WizBotRandom().Next(0, qs.Length)];
 
                         uow.Quotes.Remove(q);
-
                         await uow.CompleteAsync().ConfigureAwait(false);
                         sucess = true;
                         response = "🗑 **Deleted a random quote.**";
