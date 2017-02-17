@@ -14,7 +14,6 @@ using System.Net.Http;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using WizBot.Services.Database.Models;
-using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace WizBot.Modules.Music
@@ -78,7 +77,10 @@ namespace WizBot.Modules.Music
                 }
 
             }
-            catch { }
+            catch
+            {
+                // ignored
+            }
             return Task.CompletedTask;
         }
 
@@ -216,8 +218,7 @@ namespace WizBot.Modules.Music
                         .Take(itemsPerPage)
                         .Select(v => $"`{++number}.` {v.PrettyFullName}"));
 
-                if (currentSong != null)
-                    desc = $"`🔊` {currentSong.PrettyFullName}\n\n" + desc;
+                desc = $"`🔊` {currentSong.PrettyFullName}\n\n" + desc;
 
                 if (musicPlayer.RepeatSong)
                     desc = "🔂 Repeating Current Song\n\n" + desc;
@@ -518,6 +519,7 @@ namespace WizBot.Modules.Music
             MusicPlayer musicPlayer;
             if (!MusicPlayers.TryGetValue(Context.Guild.Id, out musicPlayer))
                 return;
+
             fromto = fromto?.Trim();
             var fromtoArr = fromto.Split('>');
 
@@ -863,8 +865,7 @@ namespace WizBot.Modules.Music
                                     textCh,
                                     voiceCh,
                                     relatedVideos[new WizBotRandom().Next(0, relatedVideos.Count)],
-                                    true,
-                                    musicType).ConfigureAwait(false);
+                                    true).ConfigureAwait(false);
                         }
                     }
                     catch { }
@@ -872,7 +873,11 @@ namespace WizBot.Modules.Music
 
                 mp.OnStarted += async (player, song) =>
                 {
-                    try { await mp.UpdateSongDurationsAsync().ConfigureAwait(false); } catch { }
+                    try { await mp.UpdateSongDurationsAsync().ConfigureAwait(false); }
+                    catch
+                    {
+                        // ignored
+                    }
                     var sender = player as MusicPlayer;
                     if (sender == null)
                         return;
@@ -918,7 +923,10 @@ namespace WizBot.Modules.Music
                         await mp.OutputTextChannel.EmbedAsync(embed).ConfigureAwait(false);
 
                     }
-                    catch { }
+                    catch
+                    {
+                        // ignored
+                    }
                 };
                 return mp;
             });
@@ -949,10 +957,12 @@ namespace WizBot.Modules.Music
                                                             .WithThumbnailUrl(resolvedSong.Thumbnail)
                                                             .WithFooter(ef => ef.WithText(resolvedSong.PrettyProvider)))
                                                             .ConfigureAwait(false);
-                    if (queuedMessage != null)
-                        queuedMessage.DeleteAfter(10);
+                    queuedMessage?.DeleteAfter(10);
                 }
-                catch { } // if queued message sending fails, don't attempt to delete it
+                catch
+                {
+                    // ignored
+                } // if queued message sending fails, don't attempt to delete it
             }
         }
     }
