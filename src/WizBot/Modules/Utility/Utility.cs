@@ -483,12 +483,12 @@ namespace WizBot.Modules.Utility
         {
             await Context.Channel.EmbedAsync(
                 new EmbedBuilder().WithOkColor()
-                    .WithAuthor(eab => eab.WithName($"WizBot Changelogs | 📅 Feb 13, 2017")
+                    .WithAuthor(eab => eab.WithName($"WizBot Changelogs | 📅 Feb 16, 2017")
                                           .WithUrl("https://github.com/Wizkiller96/WizBot/commits/dev")
                                           .WithIconUrl("https://cdn.discordapp.com/avatars/170849991357628416/412367ac7ffd3915a0b969f6f3e17aca.jpg"))
-                    .AddField(efb => efb.WithName(Format.Bold("Fixes:")).WithValue("Lots of Fixes.").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("Additions:")).WithValue("Added Localization.").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("Removals:")).WithValue("None.").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("Fixes:")).WithValue("`1.` Fixed self_assign_success key.\n`2.` A few speedtyping fixes.\n`3.` Fixed random disconnects and reconnects.\n`4.` Fixes to music.\n`5.` Stats should work properly now.").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("Additions:")).WithValue("None").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("Removals:")).WithValue("`1.` Banning, kicking and softbanning no longer have delay.").WithIsInline(false))
                     .WithFooter(efb => efb.WithText($"More info at: http://github.com/Wizkiller96/WizBot"))
                     );
         }
