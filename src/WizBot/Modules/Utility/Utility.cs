@@ -486,8 +486,8 @@ namespace WizBot.Modules.Utility
                     .WithAuthor(eab => eab.WithName($"WizBot Changelogs | 📅 Feb 17, 2017")
                                           .WithUrl("https://github.com/Wizkiller96/WizBot/commits/dev")
                                           .WithIconUrl("https://cdn.discordapp.com/avatars/170849991357628416/412367ac7ffd3915a0b969f6f3e17aca.jpg"))
-                    .AddField(efb => efb.WithName(Format.Bold("Fixes:")).WithValue("`1.` Fixed `!!ms` on local songs.\n`2.` Fixed `!!ap` bug.\n`3.` Fixed current time on repeating songs.\n`4.` Fixed rare randomcat bug.\n`5.` Fixed `~g`.").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("Additions:")).WithValue("`1.` ../... now support embeds too.\n`2.` Word and invite filtering work on edited messages too, now.").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("Fixes:")).WithValue("`1.` Fixed `!!ms` on local songs.\n`2.` Fixed `!!ap` bug.\n`3.` Fixed current time on repeating songs.\n`4.` Fixed rare randomcat bug.\n`5.` Fixed `~g`.\n`6.` Fixed `.logevents`.").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("Additions:")).WithValue("`1.` ../... now support embeds too.\n`2.` Word and invite filtering work on edited messages too, now.\n`3.` Added `.qsearch` which will allow you to search up a quote.").WithIsInline(false))
                     .AddField(efb => efb.WithName(Format.Bold("Removals:")).WithValue("None").WithIsInline(false))
                     .WithFooter(efb => efb.WithText($"More info at: http://github.com/Wizkiller96/WizBot"))
                     );

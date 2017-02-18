@@ -988,7 +988,9 @@ namespace WizBot.Modules.Administration
             [OwnerOnly]
             public async Task LogEvents()
             {
-                await ReplyConfirmLocalized("log_events", string.Join(", ", Enum.GetNames(typeof(LogType)).Cast<string>())).ConfigureAwait(false);
+                await Context.Channel.SendConfirmAsync(GetText("log_events") + "\n" +
+                                                        string.Join(", ", Enum.GetNames(typeof(LogType)).Cast<string>()))
+                    .ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
