@@ -146,7 +146,7 @@ namespace WizBot.Modules.Games.Commands.Hangman
                         MessagesSinceLastPost = 0;
                         ++Errors;
                         if (Errors < MaxErrors)
-                            await GameChannel.SendErrorAsync("Hangman Game", $"{msg.Author.Mention} Letter `{guess}` has already been used.\n" + ScrambledWord + "\n" + GetHangman(),
+                            await GameChannel.SendErrorAsync("Hangman Game", $"{msg.Author} Letter `{guess}` has already been used.\n" + ScrambledWord + "\n" + GetHangman(),
                                 footer: string.Join(" ", Guesses)).ConfigureAwait(false);
                         else
                             await End().ConfigureAwait(false);
@@ -159,7 +159,7 @@ namespace WizBot.Modules.Games.Commands.Hangman
                     {
                         if (GuessedAll)
                         {
-                            try { await GameChannel.SendConfirmAsync("Hangman Game", $"{msg.Author.Mention} guessed a letter `{guess}`!").ConfigureAwait(false); } catch { }
+                            try { await GameChannel.SendConfirmAsync("Hangman Game", $"{msg.Author} guessed a letter `{guess}`!").ConfigureAwait(false); } catch { }
 
                             await End().ConfigureAwait(false);
                             return;
@@ -167,7 +167,7 @@ namespace WizBot.Modules.Games.Commands.Hangman
                         MessagesSinceLastPost = 0;
                         try
                         {
-                            await GameChannel.SendConfirmAsync("Hangman Game", $"{msg.Author.Mention} guessed a letter `{guess}`!\n" + ScrambledWord + "\n" + GetHangman(),
+                            await GameChannel.SendConfirmAsync("Hangman Game", $"{msg.Author} guessed a letter `{guess}`!\n" + ScrambledWord + "\n" + GetHangman(),
                           footer: string.Join(" ", Guesses)).ConfigureAwait(false);
                         }
                         catch { }
@@ -178,7 +178,7 @@ namespace WizBot.Modules.Games.Commands.Hangman
                         MessagesSinceLastPost = 0;
                         ++Errors;
                         if (Errors < MaxErrors)
-                            await GameChannel.SendErrorAsync("Hangman Game", $"{msg.Author.Mention} Letter `{guess}` does not exist.\n" + ScrambledWord + "\n" + GetHangman(),
+                            await GameChannel.SendErrorAsync("Hangman Game", $"{msg.Author} Letter `{guess}` does not exist.\n" + ScrambledWord + "\n" + GetHangman(),
                                 footer: string.Join(" ", Guesses)).ConfigureAwait(false);
                         else
                             await End().ConfigureAwait(false);
