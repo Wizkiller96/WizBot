@@ -240,9 +240,7 @@ namespace WizBot.Modules.Gambling
                         (int)(amount * WizBot.BotConfig.Betroll100Multiplier), false).ConfigureAwait(false);
                 }
             }
-            Console.WriteLine("started sending");
             await Context.Channel.SendConfirmAsync(str).ConfigureAwait(false);
-            Console.WriteLine("done sending");
         }
 
         [WizBotCommand, Usage, Description, Aliases]

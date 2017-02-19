@@ -9,8 +9,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using WizBot.Modules.Games.Commands.Hangman;
 
-namespace WizBot.Modules.Games.Commands.Hangman
+namespace WizBot.Modules.Games.Hangman
 {
     public class HangmanTermPool
     {

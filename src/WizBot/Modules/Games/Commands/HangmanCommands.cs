@@ -6,6 +6,7 @@ using NLog;
 using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using WizBot.Modules.Games.Hangman;
 
 namespace WizBot.Modules.Games
 {
