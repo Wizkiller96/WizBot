@@ -301,7 +301,8 @@ $@"--
             private string GetText(string key, params object[] replacements)
                 => WizBotTopLevelModule.GetTextStatic(key,
                     WizBot.Localization.GetCultureInfo(_channel.Guild),
-                    typeof(Games).Name.ToLowerInvariant());
+                    typeof(Games).Name.ToLowerInvariant(),
+                    replacements);
         }
     }
 }
