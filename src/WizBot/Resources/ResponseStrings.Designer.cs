@@ -2399,10 +2399,8 @@ namespace WizBot.Resources {
         /// <summary>
         ///    Looks up a localized string similar to Nobody.
         /// </summary>
-        public static string gambling_nobody
-        {
-            get
-            {
+        public static string gambling_nobody {
+            get {
                 return ResourceManager.GetString("gambling_nobody", resourceCulture);
             }
         }
@@ -2733,6 +2731,51 @@ namespace WizBot.Resources {
         public static string gambling_waifus_top_waifus {
             get {
                 return ResourceManager.GetString("gambling_waifus_top_waifus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to 8ball.
+        /// </summary>
+        public static string games_8ball {
+            get {
+                return ResourceManager.GetString("games_8ball", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Acrophobia game is already running in this channel..
+        /// </summary>
+        public static string games_acro_running {
+            get {
+                return ResourceManager.GetString("games_acro_running", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Question.
+        /// </summary>
+        public static string games_question {
+            get {
+                return ResourceManager.GetString("games_question", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to It&apos;s a draw! Both picked {0}.
+        /// </summary>
+        public static string games_rps_draw {
+            get {
+                return ResourceManager.GetString("games_rps_draw", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to {0} won! {1} beats {2}.
+        /// </summary>
+        public static string games_rps_win {
+            get {
+                return ResourceManager.GetString("games_rps_win", resourceCulture);
             }
         }
         

@@ -17,7 +17,7 @@ namespace WizBot.Modules.Games
     public partial class Games
     {
         [Group]
-        public class CleverBotCommands : ModuleBase
+        public class CleverBotCommands : WizBotSubmodule
         {
             private static Logger _log { get; }
 

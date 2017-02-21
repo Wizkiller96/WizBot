@@ -6,6 +6,7 @@ using WizBot.Attributes;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using WizBot.Extensions;
 
 namespace WizBot.Modules.Games
@@ -13,7 +14,7 @@ namespace WizBot.Modules.Games
     [WizBotModule("Games", ">")]
     public partial class Games : WizBotModule
     {
-        private static string[] _8BallResponses { get; } = WizBot.BotConfig.EightBallResponses.Select(ebr => ebr.Text).ToArray();
+        private static readonly ImmutableArray<string> _8BallResponses = WizBot.BotConfig.EightBallResponses.Select(ebr => ebr.Text).ToImmutableArray();
 
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Choose([Remainder] string list = null)
@@ -34,20 +35,24 @@ namespace WizBot.Modules.Games
                 return;
 
             await Context.Channel.EmbedAsync(new EmbedBuilder().WithColor(WizBot.OkColor)
-                               .AddField(efb => efb.WithName("❓ Question").WithValue(question).WithIsInline(false))
-                               .AddField(efb => efb.WithName("🎱 8Ball").WithValue(_8BallResponses[new WizBotRandom().Next(0, _8BallResponses.Length)]).WithIsInline(false)));
+                               .AddField(efb => efb.WithName("❓ " + GetText("question")).WithValue(question).WithIsInline(false))
+                               .AddField(efb => efb.WithName("🎱 " + GetText("8ball")).WithValue(_8BallResponses[new WizBotRandom().Next(0, _8BallResponses.Length)]).WithIsInline(false)));
         }
 
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Rps(string input)
         {
-            Func<int,string> GetRPSPick = (p) =>
+            Func<int, string> GetRPSPick = (p) =>
             {
-                if (p == 0)
-                    return "🚀";
-                if (p == 1)
-                    return "📎";
-                return "✂️";
+                switch (p)
+                {
+                    case 0:
+                        return "🚀";
+                    case 1:
+                        return "📎";
+                    default:
+                        return "✂️";
+                }
             };
 
             int pick;
@@ -71,15 +76,17 @@ namespace WizBot.Modules.Games
                     return;
             }
             var wizbotPick = new WizBotRandom().Next(0, 3);
-            var msg = "";
+            string msg;
             if (pick == wizbotPick)
-                msg = $"It's a draw! Both picked {GetRPSPick(pick)}";
+                msg = GetText("rps_draw", GetRPSPick(pick));
             else if ((pick == 0 && wizbotPick == 1) ||
                      (pick == 1 && wizbotPick == 2) ||
                      (pick == 2 && wizbotPick == 0))
-                msg = $"{WizBot.Client.CurrentUser.Mention} won! {GetRPSPick(wizbotPick)} beats {GetRPSPick(pick)}";
+                msg = GetText("rps_win", WizBot.Client.CurrentUser.Mention,
+                    GetRPSPick(wizbotPick), GetRPSPick(pick));
             else
-                msg = $"{Context.User.Mention} won! {GetRPSPick(pick)} beats {GetRPSPick(wizbotPick)}";
+                msg = GetText("rps_win", Context.User.Mention, GetRPSPick(pick),
+                    GetRPSPick(wizbotPick));
 
             await Context.Channel.SendConfirmAsync(msg).ConfigureAwait(false);
         }

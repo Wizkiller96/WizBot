@@ -147,7 +147,7 @@ namespace WizBot.Modules.Games
         }
 
         [Group]
-        public class SpeedTypingCommands : ModuleBase
+        public class SpeedTypingCommands : WizBotSubmodule
         {
             public static List<TypingArticle> TypingArticles { get; } = new List<TypingArticle>();
 

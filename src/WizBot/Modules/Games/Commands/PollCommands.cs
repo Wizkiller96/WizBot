@@ -16,7 +16,7 @@ namespace WizBot.Modules.Games
     public partial class Games
     {
         [Group]
-        public class PollCommands : ModuleBase
+        public class PollCommands : WizBotSubmodule
         {
             public static ConcurrentDictionary<ulong, Poll> ActivePolls = new ConcurrentDictionary<ulong, Poll>();
 

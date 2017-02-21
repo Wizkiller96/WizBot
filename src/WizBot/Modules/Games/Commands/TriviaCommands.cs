@@ -14,7 +14,7 @@ namespace WizBot.Modules.Games
     public partial class Games
     {
         [Group]
-        public class TriviaCommands : ModuleBase
+        public class TriviaCommands : WizBotSubmodule
         {
             public static ConcurrentDictionary<ulong, TriviaGame> RunningTrivias { get; } = new ConcurrentDictionary<ulong, TriviaGame>();
 

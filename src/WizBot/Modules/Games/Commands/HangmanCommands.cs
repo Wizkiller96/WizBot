@@ -13,7 +13,7 @@ namespace WizBot.Modules.Games
     public partial class Games
     {
         [Group]
-        public class HangmanCommands : ModuleBase
+        public class HangmanCommands : WizBotSubmodule
         {
             private static Logger _log { get; }
 
