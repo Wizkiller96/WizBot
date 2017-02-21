@@ -16,7 +16,7 @@ using System.Collections.Concurrent;
 namespace WizBot.Modules.Pokemon
 {
     [WizBotModule("Pokemon", ">")]
-    public class Pokemon : WizBotModule
+    public class Pokemon : WizBotTopLevelModule
     {
         private static readonly List<PokemonType> _pokemonTypes = new List<PokemonType>();
         private static readonly ConcurrentDictionary<ulong, PokeStats> _stats = new ConcurrentDictionary<ulong, PokeStats>();

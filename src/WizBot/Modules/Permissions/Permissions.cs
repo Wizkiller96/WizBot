@@ -15,7 +15,7 @@ using NLog;
 namespace WizBot.Modules.Permissions
 {
     [WizBotModule("Permissions", ";")]
-    public partial class Permissions : WizBotModule
+    public partial class Permissions : WizBotTopLevelModule
     {
         public class PermissionCache
         {

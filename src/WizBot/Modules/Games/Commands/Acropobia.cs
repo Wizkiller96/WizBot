@@ -299,7 +299,7 @@ $@"--
             }
 
             private string GetText(string key, params object[] replacements)
-                => WizBotModule.GetTextStatic(key,
+                => WizBotTopLevelModule.GetTextStatic(key,
                     WizBot.Localization.GetCultureInfo(_channel.Guild),
                     typeof(Games).Name.ToLowerInvariant());
         }

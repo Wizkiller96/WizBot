@@ -1068,7 +1068,7 @@ namespace WizBot.Modules.Administration
     public static class GuildExtensions
     {
         public static string GetLogText(this IGuild guild, string key, params object[] replacements)
-            => WizBotModule.GetTextStatic(key,
+            => WizBotTopLevelModule.GetTextStatic(key,
                 WizBot.Localization.GetCultureInfo(guild),
                 typeof(Administration).Name.ToLowerInvariant(),
                 replacements);

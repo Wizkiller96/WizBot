@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Text;
 using WizBot.Extensions;
-using System.Text.RegularExpressions;
 using System.Reflection;
 using WizBot.Services.Impl;
 using System.Net.Http;
@@ -21,7 +20,7 @@ using WizBot.Services;
 namespace WizBot.Modules.Utility
 {
     [WizBotModule("Utility", ".")]
-    public partial class Utility : WizBotModule
+    public partial class Utility : WizBotTopLevelModule
     {
         private static ConcurrentDictionary<ulong, Timer> rotatingRoleColors = new ConcurrentDictionary<ulong, Timer>();
 
@@ -125,7 +124,7 @@ namespace WizBot.Modules.Utility
 
             var hexColors = hexes.Select(hex =>
             {
-                try { return (ImageSharp.Color?)new ImageSharp.Color(hex.Replace("#", "")); } catch { return null; }
+                try { return (ImageSharp.Color?)ImageSharp.Color.FromHex(hex.Replace("#", "")); } catch { return null; }
             })
             .Where(c => c != null)
             .Select(c => c.Value)

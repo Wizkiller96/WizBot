@@ -17,7 +17,7 @@ using NLog;
 namespace WizBot.Modules.ClashOfClans
 {
     [WizBotModule("ClashOfClans", ",")]
-    public class ClashOfClans : WizBotModule
+    public class ClashOfClans : WizBotTopLevelModule
     {
         public static ConcurrentDictionary<ulong, List<ClashWar>> ClashWars { get; set; } = new ConcurrentDictionary<ulong, List<ClashWar>>();
 

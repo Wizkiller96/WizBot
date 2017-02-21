@@ -12,7 +12,7 @@ using System.Collections.Generic;
 namespace WizBot.Modules.Gambling
 {
     [WizBotModule("Gambling", "$")]
-    public partial class Gambling : WizBotModule
+    public partial class Gambling : WizBotTopLevelModule
     {
         public static string CurrencyName { get; set; }
         public static string CurrencyPluralName { get; set; }

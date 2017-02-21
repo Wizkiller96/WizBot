@@ -20,7 +20,7 @@ namespace WizBot.Modules.Music
 {
     [WizBotModule("Music", "!!")]
     [DontAutoLoad]
-    public partial class Music : WizBotModule
+    public partial class Music : WizBotTopLevelModule
     {
         public static ConcurrentDictionary<ulong, MusicPlayer> MusicPlayers { get; } = new ConcurrentDictionary<ulong, MusicPlayer>();
 

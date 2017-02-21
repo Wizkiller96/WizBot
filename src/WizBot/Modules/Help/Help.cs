@@ -13,7 +13,7 @@ using System.Collections.Generic;
 namespace WizBot.Modules.Help
 {
     [WizBotModule("Help", "-")]
-    public class Help : WizBotModule
+    public class Help : WizBotTopLevelModule
     {
         private static string helpString { get; } = WizBot.BotConfig.HelpString;
         public static string HelpString => String.Format(helpString, WizBot.Credentials.ClientId, WizBot.ModulePrefixes[typeof(Help).Name]);

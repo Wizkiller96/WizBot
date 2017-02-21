@@ -272,12 +272,12 @@ namespace WizBot.Modules.Gambling
                 }
 
                 private string GetText(string text)
-                    => WizBotModule.GetTextStatic(text,
+                    => WizBotTopLevelModule.GetTextStatic(text,
                         WizBot.Localization.GetCultureInfo(_raceChannel.Guild),
                         typeof(Gambling).Name.ToLowerInvariant());
 
                 private string GetText(string text, params object[] replacements)
-                    => WizBotModule.GetTextStatic(text,
+                    => WizBotTopLevelModule.GetTextStatic(text,
                         WizBot.Localization.GetCultureInfo(_raceChannel.Guild),
                         typeof(Gambling).Name.ToLowerInvariant(),
                         replacements);

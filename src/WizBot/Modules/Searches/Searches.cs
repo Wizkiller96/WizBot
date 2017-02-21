@@ -1,5 +1,4 @@
 ﻿using Discord;
-using Discord.Commands;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -8,27 +7,25 @@ using System.Text;
 using System.Net.Http;
 using WizBot.Services;
 using System.Threading.Tasks;
-using WizBot.Attributes;
-using System.Text.RegularExpressions;
 using System.Net;
 using WizBot.Modules.Searches.Models;
 using System.Collections.Generic;
-using ImageSharp;
 using WizBot.Extensions;
 using System.IO;
 using WizBot.Modules.Searches.Commands.OMDB;
 using WizBot.Modules.Searches.Commands.Models;
-using AngleSharp.Parser.Html;
 using AngleSharp;
 using AngleSharp.Dom.Html;
 using AngleSharp.Dom;
 using System.Xml;
-using System.Xml.Linq;
+using Configuration = AngleSharp.Configuration;
+using WizBot.Attributes;
+using Discord.Commands;
 
 namespace WizBot.Modules.Searches
 {
     [WizBotModule("Searches", "~")]
-    public partial class Searches : WizBotModule
+    public partial class Searches : WizBotTopLevelModule
     {
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Weather([Remainder] string query)
@@ -396,7 +393,7 @@ namespace WizBot.Modules.Searches
                         msg = "⚠ Found over 4 images. Showing random 4.";
                     }
                     var ms = new MemoryStream();
-                    await Task.Run(() => images.AsEnumerable().Merge().SaveAsPng(ms));
+                    await Task.Run(() => images.AsEnumerable().Merge().Save(ms));
                     ms.Position = 0;
                     await Context.Channel.SendFileAsync(ms, arg + ".png", msg).ConfigureAwait(false);
                 }
@@ -625,7 +622,7 @@ namespace WizBot.Modules.Searches
                 return;
             var img = new ImageSharp.Image(50, 50);
 
-            img.BackgroundColor(new ImageSharp.Color(color));
+            //img.FillPolygon(new ImageSharp, new ImageSharp.Color(color));
 
             await Context.Channel.SendFileAsync(img.ToStream(), $"{color}.png").ConfigureAwait(false); ;
         }

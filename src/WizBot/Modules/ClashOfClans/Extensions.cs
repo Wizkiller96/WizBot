@@ -135,7 +135,7 @@ namespace WizBot.Modules.ClashOfClans
 
         public static string Localize(this ClashWar cw, string key)
         {
-            return WizBotModule.GetTextStatic(key,
+            return WizBotTopLevelModule.GetTextStatic(key,
                 WizBot.Localization.GetCultureInfo(cw.Channel?.GuildId),
                 typeof(ClashOfClans).Name.ToLowerInvariant());
         }

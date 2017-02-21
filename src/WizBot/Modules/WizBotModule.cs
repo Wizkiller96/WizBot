@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace WizBot.Modules
 {
-    public abstract class WizBotModule : ModuleBase
+    public abstract class WizBotTopLevelModule : ModuleBase
     {
         protected readonly Logger _log;
         protected CultureInfo _cultureInfo;
@@ -17,7 +17,7 @@ namespace WizBot.Modules
         public readonly string ModuleTypeName;
         public readonly string LowerModuleTypeName;
 
-        protected WizBotModule(bool isTopLevelModule = true)
+        protected WizBotTopLevelModule(bool isTopLevelModule = true)
         {
             //if it's top level module
             ModuleTypeName = isTopLevelModule ? this.GetType().Name : this.GetType().DeclaringType.Name;
@@ -120,7 +120,7 @@ namespace WizBot.Modules
         }
     }
 
-    public abstract class WizBotSubmodule : WizBotModule
+    public abstract class WizBotSubmodule : WizBotTopLevelModule
     {
         protected WizBotSubmodule() : base(false)
         {

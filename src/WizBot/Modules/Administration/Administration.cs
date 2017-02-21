@@ -16,7 +16,7 @@ using NLog;
 namespace WizBot.Modules.Administration
 {
     [WizBotModule("Administration", ".")]
-    public partial class Administration : WizBotModule
+    public partial class Administration : WizBotTopLevelModule
     {
         private static ConcurrentHashSet<ulong> deleteMessagesOnCommand { get; }
 
