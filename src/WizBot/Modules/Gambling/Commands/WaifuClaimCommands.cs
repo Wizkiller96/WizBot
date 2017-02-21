@@ -368,7 +368,7 @@ namespace WizBot.Modules.Gambling
 
                 if (waifus.Count == 0)
                 {
-                    await ReplyConfirmLocalized("waifu_none").ConfigureAwait(false);
+                    await ReplyConfirmLocalized("waifus_none").ConfigureAwait(false);
                     return;
                 }
 
