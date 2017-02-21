@@ -482,12 +482,12 @@ namespace WizBot.Modules.Utility
         {
             await Context.Channel.EmbedAsync(
                 new EmbedBuilder().WithOkColor()
-                    .WithAuthor(eab => eab.WithName($"WizBot Changelogs | 📅 Feb 18, 2017")
+                    .WithAuthor(eab => eab.WithName($"WizBot Changelogs | 📅 Feb 21, 2017")
                                           .WithUrl("https://github.com/Wizkiller96/WizBot/commits/dev")
                                           .WithIconUrl("https://cdn.discordapp.com/avatars/170849991357628416/412367ac7ffd3915a0b969f6f3e17aca.jpg"))
-                    .AddField(efb => efb.WithName(Format.Bold("Fixes:")).WithValue("`1.` Woops, now connection really improved by 5 sec.\n`2.` Hangman formatting fix.").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("Additions:")).WithValue("`1.` `.prune` will delete your own message after 3 seconds.\n`2.` `>acro` can now be ran with time between 10 and 120 only.\n`3.` Animal racing localizable.\n`4.` Dice rolls localizable.\n`5.` waifu game completely localizable?").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("Removals:")).WithValue("`1.` Removed unneeded mentions from `>hangman`.").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("Fixes:")).WithValue("`1.` Fixed acrophobia responses.\n`2.` Fixed `.donators` string.\n`3.` Fixed some keys, a bit more localization.\n`4.` Fixed `.sinfo` more reliable?\n`5.` Fixed missing `gambling_waifus_none` string.").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("Additions:")).WithValue("None").WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold("Removals:")).WithValue("None").WithIsInline(false))
                     .WithFooter(efb => efb.WithText($"More info at: http://github.com/Wizkiller96/WizBot"))
                     );
         }
