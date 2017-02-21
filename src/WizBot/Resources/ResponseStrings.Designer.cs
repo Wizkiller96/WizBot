@@ -340,7 +340,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Sucessfully added a new donator.Total donated amount from this user: {0} 👑.
+        ///    Looks up a localized string similar to Sucessfully added a new donator. Total donated amount from this user: {0} 👑.
         /// </summary>
         public static string administration_donadd {
             get {
@@ -349,7 +349,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Thanks to the people listed below for making this project hjappen!.
+        ///    Looks up a localized string similar to Thanks to the people listed below for making this project happen!.
         /// </summary>
         public static string administration_donators {
             get {
