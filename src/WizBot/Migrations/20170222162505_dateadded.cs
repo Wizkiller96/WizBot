@@ -95,7 +95,7 @@ namespace WizBot.Migrations
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "DateAdded",
-                table: "GuildConfig",
+                table: "GuildConfigs",
                 nullable: true);
 
             migrationBuilder.AddColumn<DateTime>(
