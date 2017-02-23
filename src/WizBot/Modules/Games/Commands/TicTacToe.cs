@@ -4,7 +4,9 @@ using WizBot.Attributes;
 using WizBot.Extensions;
 using NLog;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,8 +21,15 @@ namespace WizBot.Modules.Games
         {
             //channelId/game
             private static readonly Dictionary<ulong, TicTacToe> _games = new Dictionary<ulong, TicTacToe>();
+            private readonly Logger _log;
+
+            public TicTacToeCommands()
+            {
+                _log = LogManager.GetCurrentClassLogger();
+            }
 
             private readonly SemaphoreSlim sem = new SemaphoreSlim(1, 1);
+            private readonly object tttLockObj = new object();
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]

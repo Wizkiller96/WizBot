@@ -203,11 +203,11 @@ namespace WizBot.Modules.Games
                 }
                 if (enabled)
                 {
-                    await ReplyConfirmLocalized("curgen_enabled").ConfigureAwait(false);
+                    await channel.SendConfirmAsync("Currency generation enabled on this channel.").ConfigureAwait(false);
                 }
                 else
                 {
-                    await ReplyConfirmLocalized("curgen_disabled").ConfigureAwait(false);
+                    await channel.SendConfirmAsync("Currency generation disabled on this channel.").ConfigureAwait(false);
                 }
             }
 

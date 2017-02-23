@@ -19,7 +19,7 @@ namespace WizBot.Modules.Games
         [Group]
         public class CleverBotCommands : WizBotSubmodule
         {
-            private static new Logger _log { get; }
+            private static Logger _log { get; }
 
             public static ConcurrentDictionary<ulong, Lazy<ChatterBotSession>> CleverbotGuilds { get; } = new ConcurrentDictionary<ulong, Lazy<ChatterBotSession>>();
 

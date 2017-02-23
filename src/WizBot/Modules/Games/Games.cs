@@ -141,11 +141,8 @@ namespace WizBot.Modules.Games
                             var pointy = (int)(miny - length * ((Crazy - 4) / 6));
 
                             var p = new Pen(ImageSharp.Color.Red, 5);
-                            //using (var pointMs = File.ReadAllBytes("data/images/point.png").ToStream())
-                            //using (var pointIMg = new ImageSharp.Image(pointMs))
-                            //{
-                            //    img.DrawImage(pointIMg, 100, new ImageSharp.Size(100, 100), new Point(pointx, pointy));
-                            //}
+
+                            img.Draw(p, new SixLabors.Shapes.Ellipse(200, 200, 5, 5));
 
                             string url;
                             using (var http = new HttpClient())
@@ -170,19 +167,19 @@ namespace WizBot.Modules.Games
             }
         }
 
-        [WizBotCommand, Usage, Description, Aliases]
-        [RequireContext(ContextType.Guild)]
-        public async Task RateGirl(IGuildUser usr)
-        {
-            var gr = _girlRatings.GetOrAdd(usr.Id, GetGirl);
-            var img = await gr.Url;
-            await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                .WithTitle("Girl Rating For " + usr)
-                .AddField(efb => efb.WithName("Hot").WithValue(gr.Hot.ToString("F2")).WithIsInline(true))
-                .AddField(efb => efb.WithName("Crazy").WithValue(gr.Crazy.ToString("F2")).WithIsInline(true))
-                .AddField(efb => efb.WithName("Advice").WithValue(gr.Advice).WithIsInline(false))
-                .WithImageUrl(img)).ConfigureAwait(false);
-        }
+        //[WizBotCommand, Usage, Description, Aliases]
+        //[RequireContext(ContextType.Guild)]
+        //public async Task RateGirl(IGuildUser usr)
+        //{
+        //    var gr = _girlRatings.GetOrAdd(usr.Id, GetGirl);
+        //    var img = await gr.Url;
+        //    await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
+        //        .WithTitle("Girl Rating For " + usr)
+        //        .AddField(efb => efb.WithName("Hot").WithValue(gr.Hot.ToString("F2")).WithIsInline(true))
+        //        .AddField(efb => efb.WithName("Crazy").WithValue(gr.Crazy.ToString("F2")).WithIsInline(true))
+        //        .AddField(efb => efb.WithName("Advice").WithValue(gr.Advice).WithIsInline(false))
+        //        .WithImageUrl(img)).ConfigureAwait(false);
+        //}
 
         private double NextDouble(double x, double y)
         {
