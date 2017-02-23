@@ -491,13 +491,13 @@ namespace WizBot.Modules.Utility
         {
             await Context.Channel.EmbedAsync(
                 new EmbedBuilder().WithOkColor()
-                    .WithAuthor(eab => eab.WithName($"WizBot Changelogs | 📅 Feb 22, 2017")
+                    .WithAuthor(eab => eab.WithName(GetText($"changelog_title_date"))
                                           .WithUrl("https://github.com/Wizkiller96/WizBot/commits/dev")
                                           .WithIconUrl("https://cdn.discordapp.com/avatars/170849991357628416/412367ac7ffd3915a0b969f6f3e17aca.jpg"))
-                    .AddField(efb => efb.WithName(Format.Bold("Fixes:")).WithValue("`1.` Fixed missing `acro_winner` string.\n`2.` Public Poll fixed.").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("Additions:")).WithValue("`1.` A lot more localization, cleanup, inole improved and dateadded is not a field in all database models").WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold("Removals:")).WithValue("None").WithIsInline(false))
-                    .WithFooter(efb => efb.WithText($"More info at: http://github.com/Wizkiller96/WizBot"))
+                    .AddField(efb => efb.WithName(Format.Bold(GetText("changelog_fixes"))).WithValue(GetText("changelog_fixes_msg")).WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold(GetText("changelog_additions"))).WithValue(GetText("changelog_additions_msg")).WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold(GetText("changelog_removals"))).WithValue(GetText("changelog_removals_msg")).WithIsInline(false))
+                    .WithFooter(efb => efb.WithText(GetText($"changelog_footer")))
                     );
         }
     }

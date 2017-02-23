@@ -12,7 +12,7 @@ namespace WizBot.Modules.Utility
     public partial class Utility
     {
         [Group]
-        public class InfoCommands : ModuleBase
+        public class InfoCommands : WizBotSubmodule
         {
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
@@ -24,7 +24,7 @@ namespace WizBot.Modules.Utility
                 if (string.IsNullOrWhiteSpace(guildName))
                     guild = channel.Guild;
                 else
-                    guild = WizBot.Client.GetGuilds().Where(g => g.Name.ToUpperInvariant() == guildName.ToUpperInvariant()).FirstOrDefault();
+                    guild = WizBot.Client.GetGuilds().FirstOrDefault(g => g.Name.ToUpperInvariant() == guildName.ToUpperInvariant());
                 if (guild == null)
                     return;
                 var ownername = await guild.GetUserAsync(guild.OwnerId);
@@ -37,22 +37,22 @@ namespace WizBot.Modules.Utility
                 if (string.IsNullOrWhiteSpace(features))
                     features = "-";
                 var embed = new EmbedBuilder()
-                    .WithAuthor(eab => eab.WithName("Server Info"))
+                    .WithAuthor(eab => eab.WithName(GetText("server_info")))
                     .WithTitle(guild.Name)
-                    .AddField(fb => fb.WithName("**ID**").WithValue(guild.Id.ToString()).WithIsInline(true))
-                    .AddField(fb => fb.WithName("**Owner**").WithValue(ownername.ToString()).WithIsInline(true))
-                    .AddField(fb => fb.WithName("**Members**").WithValue(users.Count.ToString()).WithIsInline(true))
-                    .AddField(fb => fb.WithName("**Text Channels**").WithValue(textchn.ToString()).WithIsInline(true))
-                    .AddField(fb => fb.WithName("**Voice Channels**").WithValue(voicechn.ToString()).WithIsInline(true))
-                    .AddField(fb => fb.WithName("**Created At**").WithValue($"{createdAt:dd.MM.yyyy HH:mm}").WithIsInline(true))
-                    .AddField(fb => fb.WithName("**Region**").WithValue(guild.VoiceRegionId.ToString()).WithIsInline(true))
-                    .AddField(fb => fb.WithName("**Roles**").WithValue((guild.Roles.Count - 1).ToString()).WithIsInline(true))
-                    .AddField(fb => fb.WithName("**Features**").WithValue(features).WithIsInline(true))
+                    .AddField(fb => fb.WithName(GetText("id")).WithValue(guild.Id.ToString()).WithIsInline(true))
+                    .AddField(fb => fb.WithName(GetText("owner")).WithValue(ownername.ToString()).WithIsInline(true))
+                    .AddField(fb => fb.WithName(GetText("members")).WithValue(users.Count.ToString()).WithIsInline(true))
+                    .AddField(fb => fb.WithName(GetText("text_channels")).WithValue(textchn.ToString()).WithIsInline(true))
+                    .AddField(fb => fb.WithName(GetText("voice_channels")).WithValue(voicechn.ToString()).WithIsInline(true))
+                    .AddField(fb => fb.WithName(GetText("created_at")).WithValue($"{createdAt:dd.MM.yyyy HH:mm}").WithIsInline(true))
+                    .AddField(fb => fb.WithName(GetText("region")).WithValue(guild.VoiceRegionId.ToString()).WithIsInline(true))
+                    .AddField(fb => fb.WithName(GetText("roles")).WithValue((guild.Roles.Count - 1).ToString()).WithIsInline(true))
+                    .AddField(fb => fb.WithName(GetText("features")).WithValue(features).WithIsInline(true))
                     .WithImageUrl(guild.IconUrl)
                     .WithColor(WizBot.OkColor);
                 if (guild.Emojis.Any())
                 {
-                    embed.AddField(fb => fb.WithName($"**Custom Emojis ({guild.Emojis.Count})**").WithValue(string.Join(" ", guild.Emojis.Shuffle().Take(20).Select(e => $"{e.Name} <:{e.Name}:{e.Id}>"))));
+                    embed.AddField(fb => fb.WithName(GetText("custom_emojis") + $"({guild.Emojis.Count})").WithValue(string.Join(" ", guild.Emojis.Shuffle().Take(20).Select(e => $"{e.Name} <:{e.Name}:{e.Id}>"))));
                 }
                 await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
@@ -69,9 +69,9 @@ namespace WizBot.Modules.Utility
                 var embed = new EmbedBuilder()
                     .WithTitle(ch.Name)
                     .WithDescription(ch.Topic?.SanitizeMentions())
-                    .AddField(fb => fb.WithName("**ID**").WithValue(ch.Id.ToString()).WithIsInline(true))
-                    .AddField(fb => fb.WithName("**Created At**").WithValue($"{createdAt:dd.MM.yyyy HH:mm}").WithIsInline(true))
-                    .AddField(fb => fb.WithName("**Users**").WithValue(usercount.ToString()).WithIsInline(true))
+                    .AddField(fb => fb.WithName(GetText("id")).WithValue(ch.Id.ToString()).WithIsInline(true))
+                    .AddField(fb => fb.WithName(GetText("created_at")).WithValue($"{createdAt:dd.MM.yyyy HH:mm}").WithIsInline(true))
+                    .AddField(fb => fb.WithName(GetText("users")).WithValue(usercount.ToString()).WithIsInline(true))
                     .WithColor(WizBot.OkColor);
                 await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
@@ -86,15 +86,15 @@ namespace WizBot.Modules.Utility
                     return;
 
                 var embed = new EmbedBuilder()
-                    .AddField(fb => fb.WithName("**Name**").WithValue($"**{user.Username}**#{user.Discriminator}").WithIsInline(true));
+                    .AddField(fb => fb.WithName(GetText("name")).WithValue($"**{user.Username}**#{user.Discriminator}").WithIsInline(true));
                 if (!string.IsNullOrWhiteSpace(user.Nickname))
                 {
-                    embed.AddField(fb => fb.WithName("**Nickname**").WithValue(user.Nickname).WithIsInline(true));
+                    embed.AddField(fb => fb.WithName(GetText("nickname")).WithValue(user.Nickname).WithIsInline(true));
                 }
-                embed.AddField(fb => fb.WithName("**ID**").WithValue(user.Id.ToString()).WithIsInline(true))
-                    .AddField(fb => fb.WithName("**Joined Server**").WithValue($"{user.JoinedAt?.ToString("dd.MM.yyyy HH:mm") ?? "unavail."}").WithIsInline(true))
-                    .AddField(fb => fb.WithName("**Joined Discord**").WithValue($"{user.CreatedAt:dd.MM.yyyy HH:mm}").WithIsInline(true))
-                    .AddField(fb => fb.WithName("**Roles**").WithValue($"**({user.RoleIds.Count - 1})** - {string.Join("\n", user.GetRoles().Take(10).Where(r => r.Id != r.Guild.EveryoneRole.Id).Select(r => r.Name)).SanitizeMentions()}").WithIsInline(true))
+                embed.AddField(fb => fb.WithName(GetText("id")).WithValue(user.Id.ToString()).WithIsInline(true))
+                    .AddField(fb => fb.WithName(GetText("joined_server")).WithValue($"{user.JoinedAt?.ToString("dd.MM.yyyy HH:mm") ?? "?"}").WithIsInline(true))
+                    .AddField(fb => fb.WithName(GetText("joined_discord")).WithValue($"{user.CreatedAt:dd.MM.yyyy HH:mm}").WithIsInline(true))
+                    .AddField(fb => fb.WithName(GetText("roles")).WithValue($"**({user.RoleIds.Count - 1})** - {string.Join("\n", user.GetRoles().Take(10).Where(r => r.Id != r.Guild.EveryoneRole.Id).Select(r => r.Name)).SanitizeMentions()}").WithIsInline(true))
                     .WithColor(WizBot.OkColor);
 
                 if (user.AvatarId != null)
@@ -119,12 +119,17 @@ namespace WizBot.Modules.Utility
             StringBuilder str = new StringBuilder();
             foreach (var kvp in WizBot.CommandHandler.UserMessagesSent.OrderByDescending(kvp => kvp.Value).Skip(page * activityPerPage).Take(activityPerPage))
             {
-                str.AppendLine($"`{++startCount}.` **{kvp.Key}** [{kvp.Value / WizBot.Stats.GetUptime().TotalSeconds:F2}/s] - {kvp.Value} total");
+                str.AppendLine(GetText("activity_line",
+                    ++startCount,
+                    Format.Bold(kvp.Key.ToString()),
+                    kvp.Value / WizBot.Stats.GetUptime().TotalSeconds, kvp.Value));
             }
 
-            await Context.Channel.EmbedAsync(new EmbedBuilder().WithTitle($"Activity Page #{page}")
+            await Context.Channel.EmbedAsync(new EmbedBuilder()
+                .WithTitle(GetText("activity_page", page))
                 .WithOkColor()
-                .WithFooter(efb => efb.WithText($"{WizBot.CommandHandler.UserMessagesSent.Count} users total."))
+                .WithFooter(efb => efb.WithText(GetText("activity_users_total",
+                    WizBot.CommandHandler.UserMessagesSent.Count)))
                 .WithDescription(str.ToString()));
         }
     }

@@ -33,10 +33,11 @@ namespace WizBot.Modules.Utility
                 }
 
                 if (quotes.Any())
-                    await Context.Channel.SendConfirmAsync($"💬 **Page {page + 1} of quotes:**\n```xl\n" + String.Join("\n", quotes.Select((q) => $"{q.Keyword,-20} by {q.AuthorName}")) + "\n```")
+                    await Context.Channel.SendConfirmAsync(GetText("quotes_page", page + 1),
+                            string.Join("\n", quotes.Select(q => $"{q.Keyword,-20} by {q.AuthorName}")))
                                  .ConfigureAwait(false);
                 else
-                    await Context.Channel.SendErrorAsync("No quotes on this page.").ConfigureAwait(false);
+                    await ReplyErrorLocalized("quotes_page_none").ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -73,6 +74,27 @@ namespace WizBot.Modules.Utility
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
+            public async Task SearchQuote(string keyword, [Remainder] string text)
+            {
+                if (string.IsNullOrWhiteSpace(keyword) || string.IsNullOrWhiteSpace(text))
+                    return;
+
+                keyword = keyword.ToUpperInvariant();
+
+                Quote keywordquote;
+                using (var uow = DbHandler.UnitOfWork())
+                {
+                    keywordquote = await uow.Quotes.SearchQuoteKeywordTextAsync(Context.Guild.Id, keyword, text).ConfigureAwait(false);
+                }
+
+                if (keywordquote == null)
+                    return;
+
+                await Context.Channel.SendMessageAsync("💬 " + keyword + ":  " + keywordquote.Text.SanitizeMentions());
+            }
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
             public async Task AddQuote(string keyword, [Remainder] string text)
             {
                 if (string.IsNullOrWhiteSpace(keyword) || string.IsNullOrWhiteSpace(text))
@@ -92,7 +114,7 @@ namespace WizBot.Modules.Utility
                     });
                     await uow.CompleteAsync().ConfigureAwait(false);
                 }
-                await Context.Channel.SendConfirmAsync("✅ Quote added.").ConfigureAwait(false);
+                await ReplyConfirmLocalized("quote_added").ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -114,7 +136,7 @@ namespace WizBot.Modules.Utility
                     if (qs == null || !qs.Any())
                     {
                         sucess = false;
-                        response = "No quotes found which you can remove.";
+                        response = GetText("quotes_remove_none");
                     }
                     else
                     {
@@ -123,34 +145,13 @@ namespace WizBot.Modules.Utility
                         uow.Quotes.Remove(q);
                         await uow.CompleteAsync().ConfigureAwait(false);
                         sucess = true;
-                        response = "🗑 **Deleted a random quote.**";
+                        response = GetText("deleted_quote");
                     }
                 }
                 if (sucess)
                     await Context.Channel.SendConfirmAsync(response);
                 else
                     await Context.Channel.SendErrorAsync(response);
-            }
-
-            [WizBotCommand, Usage, Description, Aliases]
-  	        [RequireContext(ContextType.Guild)] 
-            public async Task SearchQuote(string keyword, [Remainder] string text)
-            {
-	        if (string.IsNullOrWhiteSpace(keyword) || string.IsNullOrWhiteSpace(text))
-		    return;
-
-                keyword = keyword.ToUpperInvariant();
-
-                Quote keywordquote;
-                using (var uow = DbHandler.UnitOfWork())
-               {
-                    keywordquote = await uow.Quotes.SearchQuoteKeywordTextAsync(Context.Guild.Id, keyword, text).ConfigureAwait(false);
-               }
-
-                if (keywordquote == null)
-                    return;
-
-                await Context.Channel.SendMessageAsync("💬 " + keyword + ":  " + keywordquote.Text.SanitizeMentions());
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -172,7 +173,7 @@ namespace WizBot.Modules.Utility
                     await uow.CompleteAsync();
                 }
 
-                await Context.Channel.SendConfirmAsync($"🗑 **Deleted all quotes** with **{keyword}** keyword.");
+                await ReplyConfirmLocalized("quotes_deleted", Format.Bold(keyword)).ConfigureAwait(false);
             }
         }
     }
