@@ -3426,8 +3426,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to `1.` A lot more localization, cleanup, inrole improved and dateadded is not a field in all database models.
-        ///`2.` A lot more localization, utility module done..
+        ///    Looks up a localized string similar to `1.` Finished `&gt;rategirl`.
         /// </summary>
         public static string utility_changelog_additions_msg {
             get {
@@ -3445,8 +3444,8 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to `1.` Fixed missing `acro_winner` string.
-        ///`2.` Public Poll fixed..
+        ///    Looks up a localized string similar to `1.` Fixed special characters for memegen.
+        ///`2.` Fixed `~atl` help..
         /// </summary>
         public static string utility_changelog_fixes_msg {
             get {
@@ -3482,7 +3481,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to WizBot Changelogs | 📅 Feb 22, 2017.
+        ///    Looks up a localized string similar to WizBot Changelogs | 📅 Feb 23, 2017.
         /// </summary>
         public static string utility_changelog_title_date {
             get {

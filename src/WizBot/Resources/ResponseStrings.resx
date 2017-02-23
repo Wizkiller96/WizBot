@@ -1498,15 +1498,14 @@ OwnerID: {2}</value>
     <value>Additions:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` A lot more localization, cleanup, inrole improved and dateadded is not a field in all database models.
-`2.` A lot more localization, utility module done.</value>
+    <value>`1.` Finished `&gt;rategirl`</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Fixes:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>`1.` Fixed missing `acro_winner` string.
-`2.` Public Poll fixed.</value>
+    <value>`1.` Fixed special characters for memegen.
+`2.` Fixed `~atl` help.</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>More info at: http://github.com/Wizkiller96/WizBot</value>
@@ -1518,6 +1517,6 @@ OwnerID: {2}</value>
     <value>None</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Changelogs | 📅 Feb 22, 2017</value>
+    <value>WizBot Changelogs | 📅 Feb 23, 2017</value>
   </data>
 </root>
