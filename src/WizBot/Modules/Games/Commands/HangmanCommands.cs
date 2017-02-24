@@ -1,8 +1,6 @@
 ﻿using Discord.Commands;
 using WizBot.Attributes;
 using WizBot.Extensions;
-using WizBot.Modules.Games.Commands.Hangman;
-using NLog;
 using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
@@ -21,7 +19,7 @@ namespace WizBot.Modules.Games
             [WizBotCommand, Usage, Description, Aliases]
             public async Task Hangmanlist()
             {
-                await Context.Channel.SendConfirmAsync(Format.Code(GetText("hangman_types", Prefix)) + "\n" + String.Join(", ", HangmanTermPool.data.Keys));
+                await Context.Channel.SendConfirmAsync(Format.Code(GetText("hangman_types", Prefix)) + "\n" + string.Join(", ", HangmanTermPool.data.Keys));
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -35,7 +33,7 @@ namespace WizBot.Modules.Games
                     return;
                 }
 
-                hm.OnEnded += (g) =>
+                hm.OnEnded += g =>
                 {
                     HangmanGame throwaway;
                     HangmanGames.TryRemove(g.GameChannel.Id, out throwaway);

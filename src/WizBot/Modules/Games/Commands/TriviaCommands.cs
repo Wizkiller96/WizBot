@@ -3,9 +3,7 @@ using Discord.Commands;
 using WizBot.Attributes;
 using WizBot.Extensions;
 using WizBot.Modules.Games.Trivia;
-using System;
 using System.Collections.Concurrent;
-using System.Linq;
 using System.Threading.Tasks;
 
 
@@ -31,7 +29,7 @@ namespace WizBot.Modules.Games
 
                 var showHints = !additionalArgs.Contains("nohint");
 
-                TriviaGame trivia = new TriviaGame(channel.Guild, channel, showHints, winReq);
+                var trivia = new TriviaGame(channel.Guild, channel, showHints, winReq);
                 if (RunningTrivias.TryAdd(channel.Guild.Id, trivia))
                 {
                     try
@@ -43,10 +41,11 @@ namespace WizBot.Modules.Games
                         RunningTrivias.TryRemove(channel.Guild.Id, out trivia);
                         await trivia.EnsureStopped().ConfigureAwait(false);
                     }
-                    return;                    
+                    return;
                 }
-                else
-                    await Context.Channel.SendErrorAsync("Trivia game is already running on this server.\n" + trivia.CurrentQuestion).ConfigureAwait(false);
+
+                await Context.Channel.SendErrorAsync(GetText("trivia_already_running") + "\n" + trivia.CurrentQuestion)
+                    .ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -58,11 +57,11 @@ namespace WizBot.Modules.Games
                 TriviaGame trivia;
                 if (RunningTrivias.TryGetValue(channel.Guild.Id, out trivia))
                 {
-                    await channel.SendConfirmAsync("Leaderboard", trivia.GetLeaderboard()).ConfigureAwait(false);
+                    await channel.SendConfirmAsync(GetText("leaderboard"), trivia.GetLeaderboard()).ConfigureAwait(false);
                     return;
                 }
 
-                await channel.SendErrorAsync("No trivia is running on this server.").ConfigureAwait(false);
+                await ReplyErrorLocalized("trivia_none").ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -78,7 +77,7 @@ namespace WizBot.Modules.Games
                     return;
                 }
 
-                await channel.SendErrorAsync("No trivia is running on this server.").ConfigureAwait(false);
+                await ReplyErrorLocalized("trivia_none").ConfigureAwait(false);
             }
         }
     }

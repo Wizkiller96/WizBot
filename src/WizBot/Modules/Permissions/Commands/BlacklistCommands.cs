@@ -23,9 +23,9 @@ namespace WizBot.Modules.Permissions
         [Group]
         public class BlacklistCommands : ModuleBase
         {
-            public static ConcurrentHashSet<ulong> BlacklistedUsers { get; set; } = new ConcurrentHashSet<ulong>();
-            public static ConcurrentHashSet<ulong> BlacklistedGuilds { get; set; } = new ConcurrentHashSet<ulong>();
-            public static ConcurrentHashSet<ulong> BlacklistedChannels { get; set; } = new ConcurrentHashSet<ulong>();
+            public static ConcurrentHashSet<ulong> BlacklistedUsers { get; set; }
+            public static ConcurrentHashSet<ulong> BlacklistedGuilds { get; set; }
+            public static ConcurrentHashSet<ulong> BlacklistedChannels { get; set; }
 
             static BlacklistCommands()
             {
@@ -115,7 +115,7 @@ namespace WizBot.Modules.Permissions
                             }
                             break;
                         case BlacklistType.Channel:
-                            var item = Games.Games.TriviaCommands.RunningTrivias.FirstOrDefault(kvp => kvp.Value.channel.Id == id);
+                            var item = Games.Games.TriviaCommands.RunningTrivias.FirstOrDefault(kvp => kvp.Value.Channel.Id == id);
                             Games.Games.TriviaCommands.RunningTrivias.TryRemove(item.Key, out tg);
                             if (tg != null)
                             {
@@ -130,7 +130,7 @@ namespace WizBot.Modules.Permissions
 
                 }
 
-                if(action == AddRemove.Add)
+                if (action == AddRemove.Add)
                     await Context.Channel.SendConfirmAsync($"Blacklisted a `{type}` with id `{id}`").ConfigureAwait(false);
                 else
                     await Context.Channel.SendConfirmAsync($"Unblacklisted a `{type}` with id `{id}`").ConfigureAwait(false);
