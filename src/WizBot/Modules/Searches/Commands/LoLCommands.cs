@@ -33,7 +33,7 @@ namespace WizBot.Modules.Searches
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Lolban()
         {
-            var showCount = 8;
+            const int showCount = 8;
             //http://api.champion.gg/stats/champs/mostBanned?api_key=YOUR_API_TOKEN&page=1&limit=2
             try
             {
@@ -44,19 +44,20 @@ namespace WizBot.Modules.Searches
                                                     $"limit={showCount}")
                                                     .ConfigureAwait(false))["data"] as JArray;
                     var dataList = data.Distinct(new ChampionNameComparer()).Take(showCount).ToList();
-                    var eb = new EmbedBuilder().WithOkColor().WithTitle(Format.Underline($"{dataList.Count} most banned champions"));
-                    for (var i = 0; i < dataList.Count; i++)
+                    var eb = new EmbedBuilder().WithOkColor().WithTitle(Format.Underline(GetText("x_most_banned_champs", dataList.Count)));
+                    foreach (var champ in dataList)
                     {
-                        var champ = dataList[i];
-                        eb.AddField(efb => efb.WithName(champ["name"].ToString()).WithValue(champ["general"]["banRate"] + "%").WithIsInline(true));
+                        var champ1 = champ;
+                        eb.AddField(efb => efb.WithName(champ1["name"].ToString()).WithValue(champ1["general"]["banRate"] + "%").WithIsInline(true));
                     }
 
                     await Context.Channel.EmbedAsync(eb, Format.Italics(trashTalk[new WizBotRandom().Next(0, trashTalk.Length)])).ConfigureAwait(false);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await Context.Channel.SendMessageAsync("Something went wrong.").ConfigureAwait(false);
+                _log.Warn(ex);
+                await ReplyErrorLocalized("something_went_wrong").ConfigureAwait(false);
             }
         }
     }
@@ -126,7 +127,7 @@ namespace WizBot.Modules.Searches
 //                                  await e.Channel.SendFile("champ.png", champ.ImageStream).ConfigureAwait(false);
 //                                  return;
 //                              }
-//                          var allData = JArray.Parse(await Classes.http.GetStringAsync($"http://api.champion.gg/champion/{name}?api_key={WizBot.Credentials.LOLAPIKey}").ConfigureAwait(false));
+//                          var allData = JArray.Parse(await Classes.http.GetStringAsync($"http://api.champion.gg/champion/{name}?api_key={NadekoBot.Credentials.LOLAPIKey}").ConfigureAwait(false));
 //                          JToken data = null;
 //                          if (role != null)
 //                          {
@@ -167,7 +168,7 @@ namespace WizBot.Modules.Searches
 //                                  roles[i] = ">" + roles[i] + "<";
 //                          }
 //                          var general = JArray.Parse(await http.GetStringAsync($"http://api.champion.gg/stats/" +
-//                                                                                               $"champs/{name}?api_key={WizBot.Credentials.LOLAPIKey}")
+//                                                                                               $"champs/{name}?api_key={NadekoBot.Credentials.LOLAPIKey}")
 //                                                                                                .ConfigureAwait(false))
 //                                              .FirstOrDefault(jt => jt["role"].ToString() == role)?["general"];
 //                          if (general == null)

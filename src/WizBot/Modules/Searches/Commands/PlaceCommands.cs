@@ -10,10 +10,9 @@ namespace WizBot.Modules.Searches
     public partial class Searches
     {
         [Group]
-        public class PlaceCommands : ModuleBase
+        public class PlaceCommands : WizBotSubmodule
         {
-            private static string typesStr { get; } =
-                string.Format("`List of \"{0}place\" tags:`\n", WizBot.ModulePrefixes[typeof(Searches).Name]) + String.Join(", ", Enum.GetNames(typeof(PlaceType)));
+            private static string typesStr { get; } = string.Join(", ", Enum.GetNames(typeof(PlaceType)));
 
             public enum PlaceType
             {
@@ -30,14 +29,15 @@ namespace WizBot.Modules.Searches
             [WizBotCommand, Usage, Description, Aliases]
             public async Task Placelist()
             {
-                await Context.Channel.SendConfirmAsync(typesStr)
+                await Context.Channel.SendConfirmAsync(GetText("list_of_place_tags", WizBot.ModulePrefixes[typeof(Searches).Name]),
+                    typesStr)
                              .ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
             public async Task Place(PlaceType placeType, uint width = 0, uint height = 0)
             {
-                string url = "";
+                var url = "";
                 switch (placeType)
                 {
                     case PlaceType.Cage:
