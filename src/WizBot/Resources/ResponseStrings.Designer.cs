@@ -4992,7 +4992,9 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to `1.` Games module done too. Searches and music left..
+        ///    Looks up a localized string similar to `1.` Games module localization done.
+        ///`2.` Permissions module localization done.
+        ///`3.` Searches module localization done..
         /// </summary>
         public static string utility_changelog_additions_msg {
             get {
@@ -5010,7 +5012,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to None.
+        ///    Looks up a localized string similar to `1.` Fixed `&gt;ttt` string..
         /// </summary>
         public static string utility_changelog_fixes_msg {
             get {

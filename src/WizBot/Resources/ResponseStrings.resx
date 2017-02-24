@@ -2029,13 +2029,15 @@ OwnerID: {2}</value>
     <value>Additions:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` Games module done too. Searches and music left.</value>
+    <value>`1.` Games module localization done.
+`2.` Permissions module localization done.
+`3.` Searches module localization done.</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Fixes:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>None</value>
+    <value>`1.` Fixed `&gt;ttt` string.</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>More info at: http://github.com/Wizkiller96/WizBot</value>
