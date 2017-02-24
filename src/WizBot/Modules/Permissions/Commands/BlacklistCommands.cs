@@ -21,7 +21,7 @@ namespace WizBot.Modules.Permissions
         }
 
         [Group]
-        public class BlacklistCommands : ModuleBase
+        public class BlacklistCommands : WizBotSubmodule
         {
             public static ConcurrentHashSet<ulong> BlacklistedUsers { get; set; }
             public static ConcurrentHashSet<ulong> BlacklistedGuilds { get; set; }
@@ -124,16 +124,14 @@ namespace WizBot.Modules.Permissions
                             break;
                         case BlacklistType.User:
                             break;
-                        default:
-                            break;
                     }
 
                 }
 
                 if (action == AddRemove.Add)
-                    await Context.Channel.SendConfirmAsync($"Blacklisted a `{type}` with id `{id}`").ConfigureAwait(false);
+                    await ReplyConfirmLocalized("blacklisted", Format.Code(type.ToString()), Format.Code(id.ToString())).ConfigureAwait(false);
                 else
-                    await Context.Channel.SendConfirmAsync($"Unblacklisted a `{type}` with id `{id}`").ConfigureAwait(false);
+                    await ReplyConfirmLocalized("unblacklisted", Format.Code(type.ToString()), Format.Code(id.ToString())).ConfigureAwait(false);
             }
         }
     }
