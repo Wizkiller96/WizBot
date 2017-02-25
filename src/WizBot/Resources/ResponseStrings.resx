@@ -2031,7 +2031,8 @@ OwnerID: {2}</value>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
     <value>`1.` Games module localization done.
 `2.` Permissions module localization done.
-`3.` Searches module localization done.</value>
+`3.` Searches module localization done.
+`4.` Localization complete, or nearly complete if I missed something.</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Fixes:</value>

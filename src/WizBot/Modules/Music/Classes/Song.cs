@@ -40,7 +40,7 @@ namespace WizBot.Modules.Music.Classes
         //pwetty
 
         public string PrettyProvider =>
-            $"{(SongInfo.Provider ?? "No Provider")}";
+            $"{(SongInfo.Provider ?? "???")}";
 
         public string PrettyFullTime => PrettyCurrentTime + " / " + PrettyTotalTime;
 

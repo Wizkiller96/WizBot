@@ -4994,7 +4994,8 @@ namespace WizBot.Resources {
         /// <summary>
         ///    Looks up a localized string similar to `1.` Games module localization done.
         ///`2.` Permissions module localization done.
-        ///`3.` Searches module localization done..
+        ///`3.` Searches module localization done.
+        ///`4.` Localization complete, or nearly complete if I missed something..
         /// </summary>
         public static string utility_changelog_additions_msg {
             get {

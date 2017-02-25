@@ -14,9 +14,9 @@ namespace WizBot.Services.Impl
     public class StatsService : IStatsService
     {
         private readonly DiscordShardedClient _client;
-        private DateTime _started;
+        private readonly DateTime _started;
 
-        public const string BotVersion = "1.1.8-alpha";
+        public const string BotVersion = "1.2-beta";
 
         public string Author => "Kwoth#2560 & Wizkiller96#2947";
         public string Library => "Discord.Net";
