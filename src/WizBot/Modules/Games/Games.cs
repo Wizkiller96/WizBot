@@ -200,10 +200,12 @@ namespace WizBot.Modules.Games
                 uid == 265642040950390784)
                 roll += 100;
 
-            if (uid == 68946899150839808 ||
-                uid == 99272781513920512 ||
-                uid == 213817345334968330)
+            if (uid == 68946899150839808)
                 roll = 990;
+
+            if (uid == 99272781513920512 ||
+                uid == 213817345334968330)
+                roll = 970;
 
             double hot;
             double crazy;
