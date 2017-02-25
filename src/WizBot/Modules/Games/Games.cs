@@ -196,6 +196,11 @@ namespace WizBot.Modules.Games
 
             var roll = rng.Next(1, 1001);
 
+            if (uid == 185968432783687681 ||
+                uid == 265642040950390784 ||
+                uid == 99272781513920512)
+                roll += 100;
+
             double hot;
             double crazy;
             string advice;
