@@ -2192,7 +2192,8 @@ OwnerID: {2}</value>
     <value>`1.` Games module localization done.
 `2.` Permissions module localization done.
 `3.` Searches module localization done.
-`4.` Localization complete, or nearly complete if I missed something.</value>
+`4.` Localization complete, or nearly complete if I missed something.
+`5.` The `~trans` now properly throws an error if language is invalid.</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Fixes:</value>

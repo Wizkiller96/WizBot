@@ -5490,7 +5490,8 @@ namespace WizBot.Resources {
         ///    Looks up a localized string similar to `1.` Games module localization done.
         ///`2.` Permissions module localization done.
         ///`3.` Searches module localization done.
-        ///`4.` Localization complete, or nearly complete if I missed something..
+        ///`4.` Localization complete, or nearly complete if I missed something.
+        ///`5.` The `~trans` now properly throws an error if language is invalid..
         /// </summary>
         public static string utility_changelog_additions_msg {
             get {
