@@ -82,7 +82,7 @@ namespace WizBot.Modules.Games
                                 var prefix = WizBot.ModulePrefixes[typeof(Games).Name];
                                 var toSend = dropAmount == 1
                                     ? GetLocalText(channel, "curgen_sn", WizBot.BotConfig.CurrencySign, prefix)
-                                    : GetLocalText(channel, "curgen_pl", WizBot.BotConfig.CurrencySign, prefix);
+                                    : GetLocalText(channel, "curgen_pl", dropAmount, WizBot.BotConfig.CurrencySign, prefix);
                                 var file = GetRandomCurrencyImage();
                                 using (var fileStream = file.Value.ToStream())
                                 {

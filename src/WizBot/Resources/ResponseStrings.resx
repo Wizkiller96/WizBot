@@ -2212,4 +2212,7 @@ OwnerID: {2}</value>
   <data name="utility_changelog_title_date" xml:space="preserve">
     <value>WizBot Changelogs | 📅 Feb 24, 2017</value>
   </data>
+  <data name="gambling_animal_race_already_started" xml:space="preserve">
+    <value>Animal Race is already running.</value>
+  </data>
 </root>
