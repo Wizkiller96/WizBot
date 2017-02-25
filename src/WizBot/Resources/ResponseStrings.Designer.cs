@@ -5508,7 +5508,10 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to `1.` Fixed `&gt;ttt` string..
+        ///    Looks up a localized string similar to `1.` Fixed `&gt;ttt` string.
+        ///`2.` Fixed 3 response strings. Fixed ~pokeab rare bug.
+        ///`3.` Fairplay key was missing.
+        ///`4.` Fixed videocall..
         /// </summary>
         public static string utility_changelog_fixes_msg {
             get {

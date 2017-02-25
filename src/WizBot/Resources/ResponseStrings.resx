@@ -2198,7 +2198,10 @@ OwnerID: {2}</value>
     <value>Fixes:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>`1.` Fixed `&gt;ttt` string.</value>
+    <value>`1.` Fixed `&gt;ttt` string.
+`2.` Fixed 3 response strings. Fixed ~pokeab rare bug.
+`3.` Fairplay key was missing.
+`4.` Fixed videocall.</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>More info at: http://github.com/Wizkiller96/WizBot</value>
