@@ -301,7 +301,7 @@ namespace WizBot.Modules.Music
                 uow.GuildConfigs.For(Context.Guild.Id, set => set).DefaultMusicVolume = val / 100.0f;
                 uow.Complete();
             }
-            await ReplyConfirmLocalized("defvol_set").ConfigureAwait(false);
+            await ReplyConfirmLocalized("defvol_set", val).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]

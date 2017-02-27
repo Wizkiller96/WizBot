@@ -2189,21 +2189,14 @@ OwnerID: {2}</value>
     <value>Additions:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` Games module localization done.
-`2.` Permissions module localization done.
-`3.` Searches module localization done.
-`4.` Localization complete, or nearly complete if I missed something.
-`5.` The `~trans` now properly throws an error if language is invalid.
-`6.` Small logging bug.</value>
+    <value>None</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Fixes:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>`1.` Fixed `&gt;ttt` string.
-`2.` Fixed 3 response strings. Fixed ~pokeab rare bug.
-`3.` Fairplay key was missing.
-`4.` Fixed videocall.</value>
+    <value>`1.` Some random changes, and fixed ,cw help.
+`2.` Fixed guess and defvol keys.</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>More info at: http://github.com/Wizkiller96/WizBot</value>
@@ -2215,7 +2208,7 @@ OwnerID: {2}</value>
     <value>None</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Changelogs | 📅 Feb 24, 2017</value>
+    <value>WizBot Changelogs | 📅 Feb 26, 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>Animal Race is already running.</value>

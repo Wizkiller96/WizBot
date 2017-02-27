@@ -11,16 +11,13 @@ using WizBot.Services.Database.Models;
 using System.Linq;
 using WizBot.Extensions;
 using System.Threading;
-using System.Diagnostics;
-using NLog;
-using WizBot.Services.Database;
 
 namespace WizBot.Modules.ClashOfClans
 {
     [WizBotModule("ClashOfClans", ",")]
     public class ClashOfClans : WizBotTopLevelModule
     {
-        public static ConcurrentDictionary<ulong, List<ClashWar>> ClashWars { get; set; } = new ConcurrentDictionary<ulong, List<ClashWar>>();
+        public static ConcurrentDictionary<ulong, List<ClashWar>> ClashWars { get; set; }
 
         private static Timer checkWarTimer { get; }
 

@@ -5487,12 +5487,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to `1.` Games module localization done.
-        ///`2.` Permissions module localization done.
-        ///`3.` Searches module localization done.
-        ///`4.` Localization complete, or nearly complete if I missed something.
-        ///`5.` The `~trans` now properly throws an error if language is invalid.
-        ///`6.` Small logging bug..
+        ///    Looks up a localized string similar to None.
         /// </summary>
         public static string utility_changelog_additions_msg {
             get {
@@ -5510,10 +5505,8 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to `1.` Fixed `&gt;ttt` string.
-        ///`2.` Fixed 3 response strings. Fixed ~pokeab rare bug.
-        ///`3.` Fairplay key was missing.
-        ///`4.` Fixed videocall..
+        ///    Looks up a localized string similar to `1.` Some random changes, and fixed ,cw help.
+        ///`2.` Fixed guess and defvol keys..
         /// </summary>
         public static string utility_changelog_fixes_msg {
             get {
@@ -5549,7 +5542,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to WizBot Changelogs | 📅 Feb 24, 2017.
+        ///    Looks up a localized string similar to WizBot Changelogs | 📅 Feb 26, 2017.
         /// </summary>
         public static string utility_changelog_title_date {
             get {
