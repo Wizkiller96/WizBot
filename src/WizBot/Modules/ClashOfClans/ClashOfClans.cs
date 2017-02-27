@@ -13,6 +13,7 @@ using WizBot.Extensions;
 using System.Threading;
 using System.Diagnostics;
 using NLog;
+using WizBot.Services.Database;
 
 namespace WizBot.Modules.ClashOfClans
 {
@@ -82,11 +83,9 @@ namespace WizBot.Modules.ClashOfClans
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
+        [RequireUserPermission(GuildPermission.ManageMessages)]
         public async Task CreateWar(int size, [Remainder] string enemyClan = null)
         {
-            if (!(Context.User as IGuildUser).GuildPermissions.ManageChannels)
-                return;
-
             if (string.IsNullOrWhiteSpace(enemyClan))
                 return;
 
