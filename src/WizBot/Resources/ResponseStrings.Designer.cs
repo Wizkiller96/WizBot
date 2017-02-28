@@ -5505,8 +5505,9 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to `1.` Some random changes, and fixed ,cw help.
-        ///`2.` Fixed guess and defvol keys..
+        ///    Looks up a localized string similar to `1.` Fixed a missing acropobia string.
+        ///`2.` Fixed `$draw`.
+        ///`3.` More fixes to Music and MessageRepeater..
         /// </summary>
         public static string utility_changelog_fixes_msg {
             get {
@@ -5542,7 +5543,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to WizBot Changelogs | 📅 Feb 26, 2017.
+        ///    Looks up a localized string similar to WizBot Changelogs | 📅 Feb 27, 2017.
         /// </summary>
         public static string utility_changelog_title_date {
             get {
