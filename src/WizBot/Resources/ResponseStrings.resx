@@ -480,13 +480,13 @@ Reason: {1}</value>
     <value>Bot's default locale is now {0} - {1}</value>
   </data>
   <data name="administration_lang_set_bot_show" xml:space="preserve">
-    <value>Bot's language is set to {0} - {0}</value>
+    <value>Bot's language is set to {0} - {1}</value>
   </data>
   <data name="administration_lang_set_fail" xml:space="preserve">
     <value>Failed setting locale. Revisit this command's help.</value>
   </data>
   <data name="administration_lang_set_show" xml:space="preserve">
-    <value>This server's language is set to {0} - {0}</value>
+    <value>This server's language is set to {0} - {1}</value>
   </data>
   <data name="administration_left" xml:space="preserve">
     <value>{0} has left {1}</value>
@@ -822,7 +822,7 @@ Reason: {1}</value>
     <value>{0} has been **voice unmuted**.</value>
   </data>
   <data name="administration_voice_chan_created" xml:space="preserve">
-    <value>Voice Channel Destroyed</value>
+    <value>Voice Channel Created</value>
   </data>
   <data name="administration_voice_chan_destroyed" xml:space="preserve">
     <value>Voice Channel Destroyed</value>
@@ -1074,7 +1074,7 @@ Don't forget to leave your discord name or id in the message.
     <value>{0} as {1} Won the race and {2}!</value>
   </data>
   <data name="gambling_dice_invalid_number" xml:space="preserve">
-    <value>Invalid number specified. You can roll up to {0}-{1} dice at a time.</value>
+    <value>Invalid number specified. You can roll {0}-{1} dice at once.</value>
   </data>
   <data name="gambling_dice_rolled" xml:space="preserve">
     <value>rolled {0}</value>
@@ -1757,7 +1757,7 @@ Don't forget to leave your discord name or id in the message.
     <value>Level</value>
   </data>
   <data name="searches_list_of_place_tags" xml:space="preserve">
-    <value>Lsit of {0}place tags</value>
+    <value>List of {0}place tags</value>
     <comment>Don't translate {0}place</comment>
   </data>
   <data name="searches_location" xml:space="preserve">
@@ -1791,7 +1791,7 @@ Don't forget to leave your discord name or id in the message.
     <value>An osu! API key is required.</value>
   </data>
   <data name="searches_osu_failed" xml:space="preserve">
-    <value>Failed retreiving osu signature.</value>
+    <value>Failed retrieving osu! signature.</value>
   </data>
   <data name="searches_over_x" xml:space="preserve">
     <value>Found over {0} images. Showing random {0}.</value>
@@ -2128,7 +2128,7 @@ OwnerID: {2}</value>
     <value>Page #{0} of all roles on this server:</value>
   </data>
   <data name="utility_roles_page" xml:space="preserve">
-    <value>Page #{0} of roels for {1}</value>
+    <value>Page #{0} of roles for {1}</value>
   </data>
   <data name="utility_rrc_no_colors" xml:space="preserve">
     <value>No colors are in the correct format. Use `#00ff00` for example.</value>
