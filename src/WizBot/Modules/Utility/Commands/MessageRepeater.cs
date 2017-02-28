@@ -9,11 +9,11 @@ using WizBot.Services.Database.Models;
 using NLog;
 using System;
 using System.Collections.Concurrent;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Discord.WebSocket;
 
 namespace WizBot.Modules.Utility
 {
@@ -34,23 +34,16 @@ namespace WizBot.Modules.Utility
                 private CancellationTokenSource source { get; set; }
                 private CancellationToken token { get; set; }
                 public Repeater Repeater { get; }
-                public ITextChannel Channel { get; }
+                public SocketGuild Guild { get; }
+                public ITextChannel Channel { get; private set; }
 
                 public RepeatRunner(Repeater repeater, ITextChannel channel = null)
                 {
                     _log = LogManager.GetCurrentClassLogger();
                     Repeater = repeater;
-                    //if (channel == null)
-                    //{
-                    //    var guild = WizBot.Client.GetGuild(repeater.GuildId);
-                    //    Channel = guild.GetTextChannel(repeater.ChannelId);
-                    //}
-                    //else
-                    //    Channel = channel;
+                    Channel = channel;
 
-                    Channel = channel ?? WizBot.Client.GetGuild(repeater.GuildId)?.GetTextChannel(repeater.ChannelId);
-                    if (Channel == null)
-                        return;
+                    Guild = WizBot.Client.GetGuild(repeater.GuildId);
                     Task.Run(Run);
                 }
 
@@ -72,10 +65,21 @@ namespace WizBot.Modules.Utility
                             //     continue;
 
                             if (oldMsg != null)
-                                try { await oldMsg.DeleteAsync(); } catch { }
+                                try
+                                {
+                                    await oldMsg.DeleteAsync();
+                                }
+                                catch
+                                {
+                                    // ignored
+                                }
                             try
                             {
-                                oldMsg = await Channel.SendMessageAsync(toSend).ConfigureAwait(false);
+                                if (Channel == null)
+                                    Channel = Guild.GetTextChannel(Repeater.ChannelId);
+
+                                if (Channel != null)
+                                    oldMsg = await Channel.SendMessageAsync(toSend).ConfigureAwait(false);
                             }
                             catch (HttpException ex) when (ex.HttpCode == System.Net.HttpStatusCode.Forbidden)
                             {
@@ -93,7 +97,9 @@ namespace WizBot.Modules.Utility
                             }
                         }
                     }
-                    catch (OperationCanceledException) { }
+                    catch (OperationCanceledException)
+                    {
+                    }
                 }
 
                 public void Reset()
@@ -109,7 +115,8 @@ namespace WizBot.Modules.Utility
 
                 public override string ToString()
                 {
-                    return $"{Channel.Mention} | {(int)Repeater.Interval.TotalHours}:{Repeater.Interval:mm} | {Repeater.Message.TrimTo(33)}";
+                    return
+                        $"{Channel.Mention} | {(int)Repeater.Interval.TotalHours}:{Repeater.Interval:mm} | {Repeater.Message.TrimTo(33)}";
                 }
             }
 
@@ -120,8 +127,7 @@ namespace WizBot.Modules.Utility
                     await Task.Delay(5000).ConfigureAwait(false);
                     Repeaters = new ConcurrentDictionary<ulong, ConcurrentQueue<RepeatRunner>>(WizBot.AllGuildConfigs
                         .ToDictionary(gc => gc.GuildId,
-                            gc => new ConcurrentQueue<RepeatRunner>(gc.GuildRepeaters.Select(gr => new RepeatRunner(gr))
-                                .Where(gr => gr.Channel != null))));
+                            gc => new ConcurrentQueue<RepeatRunner>(gc.GuildRepeaters.Select(gr => new RepeatRunner(gr)))));
                     _ready = true;
                 });
             }
