@@ -873,9 +873,6 @@ Reason: {1}</value>
   <data name="gambling_awarded" xml:space="preserve">
     <value>has awarded {0} to {1}</value>
   </data>
-  <data name="gambling_betflip_gamble" xml:space="preserve">
-    <value>Betflip Gamble</value>
-  </data>
   <data name="gambling_better_luck" xml:space="preserve">
     <value>Better luck next time ^_^</value>
   </data>
