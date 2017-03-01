@@ -5478,7 +5478,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to None.
+        ///    Looks up a localized string similar to `1.` Added German and Russian responses..
         /// </summary>
         public static string utility_changelog_additions_msg {
             get {
@@ -5496,9 +5496,9 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to `1.` Fixed a missing acropobia string.
-        ///`2.` Fixed `$draw`.
-        ///`3.` More fixes to Music and MessageRepeater..
+        ///    Looks up a localized string similar to `1.` Fixed voicepresence.
+        ///`2.` Fixed `~ani` and `~mang`, searches might be off for some time
+        ///`3.` Fixed some strings..
         /// </summary>
         public static string utility_changelog_fixes_msg {
             get {
@@ -5534,7 +5534,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to WizBot Changelogs | 📅 Feb 27, 2017.
+        ///    Looks up a localized string similar to WizBot Changelogs | 📅 Feb 28, 2017.
         /// </summary>
         public static string utility_changelog_title_date {
             get {
