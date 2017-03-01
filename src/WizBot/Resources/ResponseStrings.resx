@@ -2193,7 +2193,7 @@ OwnerID: {2}</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
     <value>`1.` Fixed voicepresence.
-`2.` Fixed `~ani` and `~mang`, searches might be off for some time
+`2.` Fixed `~ani` and `~mang`, searches might be off for some time.
 `3.` Fixed some strings.</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">

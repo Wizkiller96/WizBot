@@ -5497,7 +5497,7 @@ namespace WizBot.Resources {
         
         /// <summary>
         ///    Looks up a localized string similar to `1.` Fixed voicepresence.
-        ///`2.` Fixed `~ani` and `~mang`, searches might be off for some time
+        ///`2.` Fixed `~ani` and `~mang`, searches might be off for some time.
         ///`3.` Fixed some strings..
         /// </summary>
         public static string utility_changelog_fixes_msg {
