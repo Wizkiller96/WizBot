@@ -176,6 +176,7 @@
   </data>
   <data name="clashofclans_war_created" xml:space="preserve">
     <value>Krieg gegen {0} erstellt.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_war_ended" xml:space="preserve">
     <value>Krieg gegen {0} ist beendet.</value>
@@ -191,18 +192,22 @@
   </data>
   <data name="customreactions_deleted" xml:space="preserve">
     <value>Benutzerdefinierte Reaktion gelöscht.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_insuff_perms" xml:space="preserve">
     <value>Unzureichende Rechte. Dies erfordert das sie den Bot besitzen für globale Reaktionen, und Administratorrechte für serverseitige Reaktionen.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_list_all" xml:space="preserve">
     <value>Liste aller benutzerdefinierten Reaktionen.</value>
   </data>
   <data name="customreactions_name" xml:space="preserve">
     <value>Benutzerdefinierte Reaktionen</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_new_cust_react" xml:space="preserve">
     <value>Neue benutzerdefinierte Reaktion</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_no_found" xml:space="preserve">
     <value>Keine benutzerdefinierten Reaktionen gefunden.</value>
@@ -374,6 +379,7 @@ Grund: {1}</value>
   </data>
   <data name="administration_deafen" xml:space="preserve">
     <value>Taubschaltung erfolgreich.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_deleted_server" xml:space="preserve">
     <value>Server {0} gelöscht</value>
@@ -526,6 +532,7 @@ Grund: {1}</value>
   </data>
   <data name="administration_moved" xml:space="preserve">
     <value>{0} wurde von {1} zu {2} verschoben</value>
+    <comment>L&apos;utilisateur n&apos;a pas forcément été déplacé de son plein gré. S&apos;est déplacé - déplacé</comment>
   </data>
   <data name="administration_msg_del" xml:space="preserve">
     <value>Nachricht in #{0} gelöscht</value>
@@ -539,16 +546,18 @@ Grund: {1}</value>
   </data>
   <data name="administration_muted_sn" xml:space="preserve">
     <value>wurde Stumm geschalten</value>
-    <comment>singular "User muted."</comment>
+    <comment>singular &quot;User muted.&quot;</comment>
   </data>
   <data name="administration_mute_error" xml:space="preserve">
     <value>Ich habe wahrscheinlich die benötigten Rechte für dies nicht.</value>
   </data>
   <data name="administration_mute_role_set" xml:space="preserve">
     <value>Neue Stumme Rolle gesetzt.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_need_admin" xml:space="preserve">
     <value>Ich brauche **Administrations** rechte um dies tun zu können.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_new_msg" xml:space="preserve">
     <value>Neue Nachricht</value>
@@ -567,6 +576,7 @@ Grund: {1}</value>
   </data>
   <data name="administration_no_shard_id" xml:space="preserve">
     <value>Kein Shard mit dieser ID gefunden.</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="administration_old_msg" xml:space="preserve">
     <value>Alte Nachricht</value>
@@ -688,6 +698,7 @@ Grund: {1}</value>
   </data>
   <data name="administration_self_assign_no_excl" xml:space="preserve">
     <value>Selbstzuweisbare Rollen sind nicht länger exklusiv!</value>
+    <comment>Je ne pense pas que ce soit la bonne traduction.. self-assignable role serait plutôt rôle auto-attribuable</comment>
   </data>
   <data name="administration_self_assign_perms" xml:space="preserve">
     <value>Ich kann dir diese Rolle nicht zuweisen. `Ich kann keine Rollen zu Besitzern oder andere Rollen die höher als meine in der Rangordnung sind hinzufügen.`</value>
@@ -715,6 +726,7 @@ Grund: {1}</value>
   </data>
   <data name="administration_set_game" xml:space="preserve">
     <value>Neues Spiel gesetzt!</value>
+    <comment>Pour &quot;set&quot;, je pense que défini irait mieux que &quot;en service&quot;</comment>
   </data>
   <data name="administration_set_stream" xml:space="preserve">
     <value>Neuer Stream gesetzt!</value>
@@ -724,9 +736,11 @@ Grund: {1}</value>
   </data>
   <data name="administration_shard_reconnected" xml:space="preserve">
     <value>Verbindung zu Shard {0} wiederhergestellt.</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="administration_shard_reconnecting" xml:space="preserve">
     <value>Verbindung zu Shard {0} wird wiederhergestellt.</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="administration_shutting_down" xml:space="preserve">
     <value>Fahre herunter</value>
@@ -823,7 +837,7 @@ __ignoredChannels__: {2}</value>
   </data>
   <data name="administration_voice_chan_created" xml:space="preserve">
     <value>Sprachkanal erstellt</value>
-    <comment>Should say "Voice Channel Created"</comment>
+    <comment>Should say &quot;Voice Channel Created&quot;</comment>
   </data>
   <data name="administration_voice_chan_destroyed" xml:space="preserve">
     <value>Sprachkanal zerstört</value>
@@ -873,9 +887,6 @@ Grund: {1}</value>
   </data>
   <data name="gambling_awarded" xml:space="preserve">
     <value>verleiht {1} {0}</value>
-  </data>
-  <data name="gambling_betflip_gamble" xml:space="preserve">
-    <value>Münzwurf-Glücksspiel</value>
   </data>
   <data name="gambling_better_luck" xml:space="preserve">
     <value>Hoffentlich haben sie beim nächsten Mal mehr Glück ^_^</value>
@@ -1104,6 +1115,9 @@ Vergessen sie bitte nicht, ihren Discord-Namen oder ihre ID in der Nachricht zu 
   <data name="gambling_likes" xml:space="preserve">
     <value>Positive Bewertungen</value>
   </data>
+  <data name="gambling_nobody" xml:space="preserve">
+    <value>Niemand</value>
+  </data>
   <data name="gambling_price" xml:space="preserve">
     <value>Preis</value>
   </data>
@@ -1137,12 +1151,15 @@ Vergessen sie bitte nicht, ihren Discord-Namen oder ihre ID in der Nachricht zu 
   <data name="gambling_waifu_divorced_like" xml:space="preserve">
     <value>Sie haben sich von ihrer Waifu die sie mochte scheiden lassen. Du herzloses Monster. {0} hat {1} als Kompensation erhalten.</value>
   </data>
+  <data name="gambling_waifu_divorced_notlike" xml:space="preserve">
+    <value>Sie haben sich von einer Waifu scheiden lassen die sie nicht mochte, Du erhältst {0} zurück.</value>
+  </data>
   <data name="gambling_waifu_egomaniac" xml:space="preserve">
     <value>Sie können deine Neigung nicht zu ihnen selbst setzen, sie egomanische Person.</value>
   </data>
   <data name="gambling_waifu_fulfilled" xml:space="preserve">
     <value>🎉 Ihre Liebe ist besiegelt! 🎉
-{0}'s neuer Wert ist {1}!</value>
+{0}&apos;s neuer Wert ist {1}!</value>
   </data>
   <data name="gambling_waifu_isnt_cheap" xml:space="preserve">
     <value>Keine Waifu ist so billig. Sie müssen wenigstens {0} bezahlen um diese Waifu zu beanspruchen, selbst wenn ihr tatsächlicher Wert geringer ist.</value>
@@ -1158,12 +1175,6 @@ Vergessen sie bitte nicht, ihren Discord-Namen oder ihre ID in der Nachricht zu 
   </data>
   <data name="gambling_waifu_recent_divorce" xml:space="preserve">
     <value>Sie haben sich vor kurzem scheiden lassen. Sie müssen {0} Stunden und {1} Minuten warten bevor sie sich erneut scheiden lassen können.</value>
-  </data>
-  <data name="gambling_nobody" xml:space="preserve">
-    <value>Niemand</value>
-  </data>
-  <data name="gambling_waifu_divorced_notlike" xml:space="preserve">
-    <value>Sie haben sich von einer Waifu scheiden lassen die sie nicht mochte, Du erhältst {0} zurück.</value>
   </data>
   <data name="games_8ball" xml:space="preserve">
     <value>8ball</value>
@@ -1216,9 +1227,6 @@ Vergessen sie bitte nicht, ihren Discord-Namen oder ihre ID in der Nachricht zu 
   <data name="games_submissions_closed" xml:space="preserve">
     <value>Einsendungen geschlossen</value>
   </data>
-  <data name="gambling_animal_race_already_started" xml:space="preserve">
-    <value>Tierrennen läuft bereits.</value>
-  </data>
   <data name="gambling_total_average" xml:space="preserve">
     <value>Insgesamt: {0} Durchschnitt: {1}</value>
   </data>
@@ -1233,16 +1241,17 @@ Vergessen sie bitte nicht, ihren Discord-Namen oder ihre ID in der Nachricht zu 
   </data>
   <data name="games_curgen_disabled" xml:space="preserve">
     <value>Währungsgeneration in diesem Kanal deaktiviert.</value>
+    <comment>Currency =/= current !!! Il s&apos;agit de monnaie. Par example: Euro is a currency. US Dollar also is. Sur Public WizBot, il s&apos;agit des fleurs :)</comment>
   </data>
   <data name="games_curgen_enabled" xml:space="preserve">
     <value>Währungsgeneration in diesem Kanal aktiviert.</value>
   </data>
   <data name="games_curgen_pl" xml:space="preserve">
-    <value>{0} zufällige {1} sind erschienen! Sammle sie indem sie `{2}pick` schreiben.</value>
+    <value>{0} zufällige {1} sind erschienen! Sammle sie indem sie `{2}pick` schreiben</value>
     <comment>plural</comment>
   </data>
   <data name="games_curgen_sn" xml:space="preserve">
-    <value>Eine zufällige {0} ist erschienen! Sammle sie indem sie `{1}pick` schreiben.</value>
+    <value>Eine zufällige {0} ist erschienen! Sammle sie indem sie `{1}pick` schreiben</value>
   </data>
   <data name="games_failed_loading_question" xml:space="preserve">
     <value>Laden einer Frage fehlgeschlagen.</value>
@@ -1260,7 +1269,7 @@ Vergessen sie bitte nicht, ihren Discord-Namen oder ihre ID in der Nachricht zu 
     <value>Starten von Hangman hat einen Fehler ausgelöst.</value>
   </data>
   <data name="games_hangman_types" xml:space="preserve">
-    <value>Liste der "{0}hangman" Worttypen:</value>
+    <value>Liste der &quot;{0}hangman&quot; Worttypen:</value>
   </data>
   <data name="games_leaderboard" xml:space="preserve">
     <value>Bestenliste</value>
@@ -1273,7 +1282,6 @@ Vergessen sie bitte nicht, ihren Discord-Namen oder ihre ID in der Nachricht zu 
   </data>
   <data name="games_picked" xml:space="preserve">
     <value>{0} aufgehoben</value>
-    <comment>Kwoth picked 5*</comment>
   </data>
   <data name="games_planted" xml:space="preserve">
     <value>{0} pflanzte {1}</value>
@@ -1328,7 +1336,7 @@ Vergessen sie bitte nicht, ihren Discord-Namen oder ihre ID in der Nachricht zu 
     <value>Zeit abgelaufen</value>
   </data>
   <data name="games_ttt_users_move" xml:space="preserve">
-    <value>{0}'s Zug</value>
+    <value>{0}&apos;s Zug</value>
   </data>
   <data name="games_vs" xml:space="preserve">
     <value>{0} gegen {1}</value>
@@ -1347,9 +1355,6 @@ Vergessen sie bitte nicht, ihren Discord-Namen oder ihre ID in der Nachricht zu 
   </data>
   <data name="music_dir_queue_complete" xml:space="preserve">
     <value>Ordner-Einreihung fertig.</value>
-  </data>
-  <data name="music_fairplay" xml:space="preserve">
-    <value>fairer Modus</value>
   </data>
   <data name="music_finished_song" xml:space="preserve">
     <value>Song beendet</value>
@@ -1370,10 +1375,10 @@ Vergessen sie bitte nicht, ihren Discord-Namen oder ihre ID in der Nachricht zu 
     <value>Ungültige Eingabe.</value>
   </data>
   <data name="music_max_playtime_none" xml:space="preserve">
-    <value>Maximale Spielzeit hat kein Limit mehr</value>
+    <value>Maximale Spielzeit hat kein Limit mehr.</value>
   </data>
   <data name="music_max_playtime_set" xml:space="preserve">
-    <value>Maximale Spielzeit ist nun {0} Sekunden</value>
+    <value>Maximale Spielzeit ist nun {0} Sekunden.</value>
   </data>
   <data name="music_max_queue_unlimited" xml:space="preserve">
     <value>Maximale Musik-Warteschlangengröße ist nun unbegrenzt.</value>
@@ -1427,7 +1432,7 @@ Vergessen sie bitte nicht, ihren Discord-Namen oder ihre ID in der Nachricht zu 
     <value>Playlist gespeichert</value>
   </data>
   <data name="music_play_limit" xml:space="preserve">
-    <value>{0}'s Limit</value>
+    <value>{0}&apos;s Limit</value>
   </data>
   <data name="music_queue" xml:space="preserve">
     <value>Warteschlange</value>
@@ -1436,14 +1441,14 @@ Vergessen sie bitte nicht, ihren Discord-Namen oder ihre ID in der Nachricht zu 
     <value>Eingereihter Song</value>
   </data>
   <data name="music_queue_cleared" xml:space="preserve">
-    <value>Musik-Warteschlange geleert</value>
+    <value>Musik-Warteschlange geleert.</value>
   </data>
   <data name="music_queue_full" xml:space="preserve">
-    <value>Warteschlange ist voll bei {0}/{1}</value>
+    <value>Warteschlange ist voll bei {0}/{1}.</value>
   </data>
   <data name="music_removed_song" xml:space="preserve">
     <value>Song entfernt</value>
-    <comment>context: "removed song #5"</comment>
+    <comment>context: &quot;removed song #5&quot;</comment>
   </data>
   <data name="music_repeating_cur_song" xml:space="preserve">
     <value>Aktueller Song wird wiederholt</value>
@@ -1458,7 +1463,7 @@ Vergessen sie bitte nicht, ihren Discord-Namen oder ihre ID in der Nachricht zu 
     <value>Aktueller Song wird nicht mehr wiederholt.</value>
   </data>
   <data name="music_resumed" xml:space="preserve">
-    <value>Musikwiedergabe wiederaufgenommen</value>
+    <value>Musikwiedergabe wiederaufgenommen.</value>
   </data>
   <data name="music_rpl_disabled" xml:space="preserve">
     <value>Playlist-Wiederholung deaktiviert.</value>
@@ -1473,7 +1478,7 @@ Vergessen sie bitte nicht, ihren Discord-Namen oder ihre ID in der Nachricht zu 
     <value>Gesprungen zu `{0}:{1}`</value>
   </data>
   <data name="music_songs_shuffled" xml:space="preserve">
-    <value>Song gemischt</value>
+    <value>Song gemischt.</value>
   </data>
   <data name="music_song_moved" xml:space="preserve">
     <value>Song bewegt</value>
@@ -1522,9 +1527,10 @@ Vergessen sie bitte nicht, ihren Discord-Namen oder ihre ID in der Nachricht zu 
   </data>
   <data name="permissions_blacklisted" xml:space="preserve">
     <value>{0} mit ID {1} wurde zur Sperrliste hinzugefügt</value>
+    <comment>Il ne s&apos;agit pas d&apos;un ban mais d&apos;une blacklist interdisant l&apos;utilisateur d&apos;utiliser le bot.</comment>
   </data>
   <data name="permissions_cmdcd_add" xml:space="preserve">
-    <value>Befehl {0} hat nun {1}s Abklingzeit</value>
+    <value>Befehl {0} hat nun {1}s Abklingzeit.</value>
   </data>
   <data name="permissions_cmdcd_cleared" xml:space="preserve">
     <value>Befehl {0} hat keine Abklingzeit mehr und alle laufenden Abklingzeiten wurden entfernt.</value>
@@ -1595,7 +1601,7 @@ Vergessen sie bitte nicht, ihren Discord-Namen oder ihre ID in der Nachricht zu 
     <value>Benutzer brauchen nun Rolle {0} um die Berechtigungen zu editieren.</value>
   </data>
   <data name="permissions_perm_out_of_range" xml:space="preserve">
-    <value>Keine Berechtigung für diesen Index gefunden</value>
+    <value>Keine Berechtigung für diesen Index gefunden.</value>
   </data>
   <data name="permissions_removed" xml:space="preserve">
     <value>Berechtigung #{0} - {1} entfernt</value>
@@ -1611,7 +1617,7 @@ Vergessen sie bitte nicht, ihren Discord-Namen oder ihre ID in der Nachricht zu 
     <comment>Short of seconds.</comment>
   </data>
   <data name="permissions_sx_disable" xml:space="preserve">
-    <value>Benutzung von {0} {1} wurde für diesen Server verboten</value>
+    <value>Benutzung von {0} {1} wurde für diesen Server verboten.</value>
   </data>
   <data name="permissions_sx_enable" xml:space="preserve">
     <value>Benutzung von {0} {1} wurde für diesen Server erlaubt.</value>
@@ -1659,7 +1665,7 @@ Vergessen sie bitte nicht, ihren Discord-Namen oder ihre ID in der Nachricht zu 
     <value>Ihre Automatische-Übersetzungs Sprache wurde entfernt.</value>
   </data>
   <data name="searches_atl_set" xml:space="preserve">
-    <value>Ihre Automatische-Übersetzungs Sprache wurde zu {from}&gt;{to} gesetzt.</value>
+    <value>Ihre Automatische-Übersetzungs Sprache wurde zu {from}&gt;{to} gesetzt</value>
   </data>
   <data name="searches_atl_started" xml:space="preserve">
     <value>Automatische Übersetzung der Nachrichten wurde auf diesem kanal gestartet.</value>
@@ -1671,7 +1677,7 @@ Vergessen sie bitte nicht, ihren Discord-Namen oder ihre ID in der Nachricht zu 
     <value>Schlechter Eingabeformat, oder etwas lief schief.</value>
   </data>
   <data name="searches_card_not_found" xml:space="preserve">
-    <value>Konnte diese Karte nicht finden</value>
+    <value>Konnte diese Karte nicht finden.</value>
   </data>
   <data name="searches_catfact" xml:space="preserve">
     <value>fakt</value>
@@ -1711,6 +1717,7 @@ Vergessen sie bitte nicht, ihren Discord-Namen oder ihre ID in der Nachricht zu 
   </data>
   <data name="searches_dropped" xml:space="preserve">
     <value>Abgebrochen</value>
+    <comment>droppped as in, &quot;stopped watching&quot; referring to shows/anime</comment>
   </data>
   <data name="searches_episodes" xml:space="preserve">
     <value>Episoden</value>
@@ -1726,6 +1733,7 @@ Vergessen sie bitte nicht, ihren Discord-Namen oder ihre ID in der Nachricht zu 
   </data>
   <data name="searches_failed_finding_manga" xml:space="preserve">
     <value>Konnte diesen mango nicht finden.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_genres" xml:space="preserve">
     <value>Genres</value>
@@ -1749,7 +1757,7 @@ Vergessen sie bitte nicht, ihren Discord-Namen oder ihre ID in der Nachricht zu 
     <value>Konnte diesen Film nicht finden.</value>
   </data>
   <data name="searches_invalid_lang" xml:space="preserve">
-    <value>Ungültige Quell- oder Zielsprache,</value>
+    <value>Ungültige Quell- oder Zielsprache.</value>
   </data>
   <data name="searches_jokes_not_loaded" xml:space="preserve">
     <value>Witze nicht geladen.</value>
@@ -1761,8 +1769,8 @@ Vergessen sie bitte nicht, ihren Discord-Namen oder ihre ID in der Nachricht zu 
     <value>Level</value>
   </data>
   <data name="searches_list_of_place_tags" xml:space="preserve">
-    <value>Liste der "{0}place" Stichwörtern</value>
-    <comment>Don't translate {0}place</comment>
+    <value>Liste der &quot;{0}place&quot; Stichwörtern</value>
+    <comment>Don&apos;t translate {0}place</comment>
   </data>
   <data name="searches_location" xml:space="preserve">
     <value>Standort</value>
@@ -1793,9 +1801,11 @@ Vergessen sie bitte nicht, ihren Discord-Namen oder ihre ID in der Nachricht zu 
   </data>
   <data name="searches_osu_api_key" xml:space="preserve">
     <value>Ein osu! API-Schlüssel wird benötigt.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_osu_failed" xml:space="preserve">
     <value>osu! Signatur konnte nicht geholt werden.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_over_x" xml:space="preserve">
     <value>Über {0} Bilder gefunden. Zeige zufälliges {0}.</value>
@@ -1805,12 +1815,14 @@ Vergessen sie bitte nicht, ihren Discord-Namen oder ihre ID in der Nachricht zu 
   </data>
   <data name="searches_plan_to_watch" xml:space="preserve">
     <value>Vermerkte</value>
+    <comment>Je ne pense pas que le sens de la traduction soit le bon.</comment>
   </data>
   <data name="searches_platform" xml:space="preserve">
     <value>Platform</value>
   </data>
   <data name="searches_pokemon_ability_none" xml:space="preserve">
     <value>Keine Fähigkeit gefunden.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_pokemon_none" xml:space="preserve">
     <value>Kein pokemon gefunden.</value>
@@ -1823,6 +1835,7 @@ Vergessen sie bitte nicht, ihren Discord-Namen oder ihre ID in der Nachricht zu 
   </data>
   <data name="searches_quick_playtime" xml:space="preserve">
     <value>Quick Spielzeit</value>
+    <comment>Is this supposed to be Overwatch Quick Play stats?</comment>
   </data>
   <data name="searches_quick_wins" xml:space="preserve">
     <value>Gewonnene Quicks</value>
@@ -1835,9 +1848,11 @@ Vergessen sie bitte nicht, ihren Discord-Namen oder ihre ID in der Nachricht zu 
   </data>
   <data name="searches_search_for" xml:space="preserve">
     <value>Suche nach:</value>
+    <comment>recherche plutôt non ?</comment>
   </data>
   <data name="searches_shorten_fail" xml:space="preserve">
     <value>Url konnte nicht gekürzt werden</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_short_url" xml:space="preserve">
     <value>Kurze Url</value>
@@ -1916,9 +1931,11 @@ Vergessen sie bitte nicht, ihren Discord-Namen oder ihre ID in der Nachricht zu 
   </data>
   <data name="searches_wikia_input_error" xml:space="preserve">
     <value>Bitte geben sie ein Ziel wikia ein, gefolgt bei der Suchanfrage.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_wiki_page_not_found" xml:space="preserve">
     <value>Seite konnte nicht gefunden werden.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_wind_speed" xml:space="preserve">
     <value>Wind Geschwindigkeit</value>
@@ -2049,13 +2066,15 @@ ID des Besitzers: {2}</value>
     <value>Niemand spielt dieses Spiel.</value>
   </data>
   <data name="utility_no_active_repeaters" xml:space="preserve">
-    <value>Keine aktiven Wiederholer</value>
+    <value>Keine aktiven Wiederholer.</value>
   </data>
   <data name="utility_no_roles_on_page" xml:space="preserve">
     <value>Keine Rollen auf dieser Seite.</value>
   </data>
   <data name="utility_no_shards_on_page" xml:space="preserve">
     <value>Keine Shards auf dieser Seite.</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.
+Fuzzy</comment>
   </data>
   <data name="utility_no_topic_set" xml:space="preserve">
     <value>Kein Thema gesetzt.</value>
@@ -2076,6 +2095,7 @@ ID des Besitzers: {2}</value>
   </data>
   <data name="utility_quotes_deleted" xml:space="preserve">
     <value>Alle Zitate mit dem Stichwort {0} wurden gelöscht.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="utility_quotes_page" xml:space="preserve">
     <value>Seite {0} der Zitate</value>
@@ -2109,6 +2129,7 @@ ID des Besitzers: {2}</value>
   </data>
   <data name="utility_repeater" xml:space="preserve">
     <value>{0} wird jede {1} Tag(e), {2}stunde(n) und {3} minute(n) wiederholt.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="utility_repeaters_list" xml:space="preserve">
     <value>Liste der Wiederholungen</value>
@@ -2138,7 +2159,7 @@ ID des Besitzers: {2}</value>
     <value>Keine Farben sind in dem Richtigen Format. Benutze zum Beispiel `#00ff00`.</value>
   </data>
   <data name="utility_rrc_start" xml:space="preserve">
-    <value>Startete die Farbrotation für Rolle {0}</value>
+    <value>Startete die Farbrotation für Rolle {0}.</value>
   </data>
   <data name="utility_rrc_stop" xml:space="preserve">
     <value>Stoppte die Farbrotation für Rolle {0}</value>
@@ -2151,12 +2172,18 @@ ID des Besitzers: {2}</value>
   </data>
   <data name="utility_shard" xml:space="preserve">
     <value>Shard</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.
+Fuzzy</comment>
   </data>
   <data name="utility_shard_stats" xml:space="preserve">
     <value>Shard Statistiken</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.
+Fuzzy</comment>
   </data>
   <data name="utility_shard_stats_txt" xml:space="preserve">
     <value>Shard **#{0}** ist im {1} status mit {2} Servern</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.
+Fuzzy</comment>
   </data>
   <data name="utility_showemojis" xml:space="preserve">
     <value>**Name:** {0} **Link:** {1}</value>
@@ -2212,4 +2239,12 @@ ID des Besitzers: {2}</value>
   <data name="utility_changelog_title_date" xml:space="preserve">
     <value>WizBot Changelogs | 📅 28. Februar 2017</value>
   </data>
+  <data name="gambling_animal_race_already_started" xml:space="preserve">
+    <value>Tierrennen läuft bereits.</value>
+    <comment>Fuzzy</comment>
+  </data>
+  <data name="music_fairplay" xml:space="preserve">
+    <value>fairer Modus</value>
+  </data>
+
 </root>
