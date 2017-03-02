@@ -133,7 +133,7 @@
     <value>У {0} есть **НЕ ЗАХВАЧЕННАЯ** база #{1}, ведущая войну против {2}</value>
   </data>
   <data name="clashofclans_claimed_base" xml:space="preserve">
-    <value>{0} захватил базу #{1} после войны с {2}</value>
+    <value>{0} захватил базу #{1} ведя войну против {2}</value>
   </data>
   <data name="clashofclans_claimed_other" xml:space="preserve">
     <value>@{0} Вы уже захватили базу #{1}. Вы не можете захватить новую базу.</value>
@@ -158,7 +158,7 @@
     <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_not_claimed" xml:space="preserve">
-    <value>не захваченная</value>
+    <value>не захваченна</value>
   </data>
   <data name="clashofclans_not_partic" xml:space="preserve">
     <value>Вы не участвуете в этой войне.</value>
@@ -204,18 +204,18 @@
     <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_name" xml:space="preserve">
-    <value>Настроить реакции.</value>
+    <value>Настроить ответы.</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_new_cust_react" xml:space="preserve">
-    <value>Создана новая реакция.</value>
+    <value>Новый ответ.</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_no_found" xml:space="preserve">
     <value>Не найдено настраиваемых реакций.</value>
   </data>
   <data name="customreactions_no_found_id" xml:space="preserve">
-    <value>Не найдено настраеваемых реакций с таким номером.</value>
+    <value>Не найдено настраиваемых реакций с таким номером.</value>
   </data>
   <data name="customreactions_response" xml:space="preserve">
     <value>Ответ</value>
@@ -1008,7 +1008,7 @@ Fuzzy</comment>
     <value>не смог забрать {0} у {1}, поскольку у пользователя нет столько {2}!</value>
   </data>
   <data name="help_back_to_toc" xml:space="preserve">
-    <value>Вернуться к содержанию</value>
+    <value>Вернуться к оглавлению</value>
   </data>
   <data name="help_bot_owner_only" xml:space="preserve">
     <value>Только для владельца бота</value>
@@ -1065,8 +1065,7 @@ Paypal &lt;{1}&gt;
     <value>Требуются серверное право {0}</value>
   </data>
   <data name="help_table_of_contents" xml:space="preserve">
-    <value>Содержание</value>
-    <comment>Fuzzy</comment>
+    <value>Оглавление</value>
   </data>
   <data name="help_usage" xml:space="preserve">
     <value>Использование</value>
@@ -1702,7 +1701,7 @@ Fuzzy</comment>
     <value>Ваш язык автоперевода был удалён.</value>
   </data>
   <data name="searches_atl_set" xml:space="preserve">
-    <value>Ваш язык автоперевода изменён с {from} на {to}</value>
+    <value>Ваш язык автоперевода изменён с {0} на {1}</value>
   </data>
   <data name="searches_atl_started" xml:space="preserve">
     <value>Начинается автоматический перевод сообщений в этом канале.</value>
@@ -2277,7 +2276,7 @@ IDВладельца: {2}</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="music_fairplay" xml:space="preserve">
-    <value>fairplay</value>
+    <value>справедливое воспроизведение</value>
   </data>
 
 </root>
