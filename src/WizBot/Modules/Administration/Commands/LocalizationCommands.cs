@@ -25,7 +25,7 @@ namespace WizBot.Modules.Administration
                 //{"nl-NL", "Dutch, Netherlands"},
                 //{"ja-JP", "Japanese, Japan"},
                 {"pt-BR", "Portuguese, Brazil"},
-                {"sr-cyrl-rs", "Serbian, Serbia - Cyrillic"}
+                {"sr-Cyrl-RS", "Serbian, Serbia - Cyrillic"}
             }.ToImmutableDictionary();
 
             [WizBotCommand, Usage, Description, Aliases]
