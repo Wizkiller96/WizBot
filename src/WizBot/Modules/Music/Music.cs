@@ -592,7 +592,7 @@ namespace WizBot.Modules.Music
             if (seconds == 0)
                 await ReplyConfirmLocalized("max_playtime_none").ConfigureAwait(false);
             else
-                await ReplyConfirmLocalized("max_playtime_set").ConfigureAwait(false);
+                await ReplyConfirmLocalized("max_playtime_set", seconds).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
