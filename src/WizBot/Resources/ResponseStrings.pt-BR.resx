@@ -2208,15 +2208,15 @@ OwnerID: {2}</value>
     <value>Aditivos:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` Adicionado alemão e russo respostas.</value>
+    <value>Nenhum</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Conserta:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>`1.` Presença de voz fixa.
-`2.` Corrigido `~ani` e `~mang`, as pesquisas podem estar desativadas por algum tempo.
-`3.` Corrigido algumas strings.</value>
+    <value>`1.` Lista de músicas e correções meteorológicas.
+`2.` Calcops fixo string.
+`3.` Corrigido string NSFW.</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>Mais informações em: http://github.com/Wizkiller96/WizBot</value>
@@ -2225,10 +2225,10 @@ OwnerID: {2}</value>
     <value>Remoções:</value>
   </data>
   <data name="utility_changelog_removals_msg" xml:space="preserve">
-    <value>Nenhum</value>
+    <value>`1.` O comando `.langli` não requer mais a propriedade do bot</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Alterações | 28 de fevereiro de 2017</value>
+    <value>WizBot Alterações | 03 de março de 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>A Corrida de Animais já está em andamento</value>
