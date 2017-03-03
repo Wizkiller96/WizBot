@@ -320,7 +320,7 @@
 Raison: {1}</value>
   </data>
   <data name="administration_banned_pl" xml:space="preserve">
-    <value>banni</value>
+    <value>bannis</value>
     <comment>PLURAL</comment>
   </data>
   <data name="administration_banned_user" xml:space="preserve">
@@ -636,7 +636,7 @@ Raison : {1}</value>
     <value>Erreur due à un manque de permissions ou à une couleur invalide.</value>
   </data>
   <data name="administration_remrole" xml:space="preserve">
-    <value>L&apos;utilisateur {1} n&apos;appartient plus au rôle {0}.</value>
+    <value>L&apos;utilisateur {1} n&apos;a plus le rôle {0}.</value>
   </data>
   <data name="administration_remrole_err" xml:space="preserve">
     <value>Impossible de supprimer ce rôle. Je ne possède pas les permissions suffisantes.</value>
@@ -713,7 +713,7 @@ Raison : {1}</value>
     <value>Vous avez désormais le rôle {0}.</value>
   </data>
   <data name="administration_setrole" xml:space="preserve">
-    <value>L&apos;ajout du rôle {0} pour l&apos;utilisateur {1} a été réalisé avec succès.</value>
+    <value>L&apos;utilisateur {1} a désormais le rôle {0}.</value>
   </data>
   <data name="administration_setrole_err" xml:space="preserve">
     <value>Impossible d&apos;ajouter un rôle. Je ne possède pas les permissions suffisantes.</value>
@@ -735,7 +735,7 @@ Raison : {1}</value>
     <value>Nouveau sujet du salon défini.</value>
   </data>
   <data name="administration_shard_reconnected" xml:space="preserve">
-    <value>Shard {0} reconnectée.</value>
+    <value>Shard {0} reconnecté.</value>
     <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="administration_shard_reconnecting" xml:space="preserve">
@@ -766,13 +766,13 @@ Raison : {1}</value>
   </data>
   <data name="administration_spam_stats" xml:space="preserve">
     <value>Si un utilisateur poste {0} le même message à la suite, je le {1}. 
-    __SalonsIgnorés__: {2} </value>
+    __SalonsIgnorés__: {2}</value>
   </data>
   <data name="administration_text_chan_created" xml:space="preserve">
     <value>Salon textuel crée.</value>
   </data>
   <data name="administration_text_chan_destroyed" xml:space="preserve">
-    <value>Salon textuel détruit.</value>
+    <value>Salon textuel supprimé.</value>
   </data>
   <data name="administration_undeafen" xml:space="preserve">
     <value>Son activé avec succès.</value>
@@ -782,7 +782,7 @@ Raison : {1}</value>
     <comment>singular</comment>
   </data>
   <data name="administration_username" xml:space="preserve">
-    <value>Nom d&apos;utilisateur.</value>
+    <value>Nom d&apos;utilisateur</value>
   </data>
   <data name="administration_username_changed" xml:space="preserve">
     <value>Nom d&apos;utilisateur modifié.</value>
@@ -806,7 +806,7 @@ Raison : {1}</value>
     <value>L&apos;utilisateur a quitté</value>
   </data>
   <data name="administration_user_muted" xml:space="preserve">
-    <value>{0} est maintenant **muet** à la fois sur le salon textuel et vocal.</value>
+    <value>{0} est maintenant **muet** à la fois sur les salons textuels et vocaux.</value>
   </data>
   <data name="administration_user_role_add" xml:space="preserve">
     <value>Rôle ajouté à l&apos;utilisateur</value>
@@ -827,7 +827,7 @@ Raison : {1}</value>
     <value>{0} a quitté le salon vocal {1}.</value>
   </data>
   <data name="administration_user_vmoved" xml:space="preserve">
-    <value>{0} est allé du salon vocal {1} au {2}.</value>
+    <value>{0} est allé du salon vocal {1} à {2}.</value>
   </data>
   <data name="administration_user_voice_mute" xml:space="preserve">
     <value>{0} est maintenant **muet**.</value>
@@ -840,7 +840,7 @@ Raison : {1}</value>
     <comment>Should say &quot;Voice Channel Created&quot;</comment>
   </data>
   <data name="administration_voice_chan_destroyed" xml:space="preserve">
-    <value>Salon vocal détruit.</value>
+    <value>Salon vocal supprimé.</value>
   </data>
   <data name="administration_vt_disabled" xml:space="preserve">
     <value>Fonctionnalités vocales et textuelles désactivées.</value>
@@ -852,10 +852,10 @@ Raison : {1}</value>
     <value>Je n&apos;ai pas la permission **Gérer les rôles** et/ou **Gérer les salons**, je ne peux donc pas utiliser `voice+text` sur le serveur {0}.</value>
   </data>
   <data name="administration_vt_no_admin" xml:space="preserve">
-    <value>Vous activez/désactivez cette fonctionnalité et **je n&apos;ai pas les permissions ADMINISTRATEURS**. Cela pourrait causer des dysfonctionnements, et vous devrez nettoyer les salons textuels vous-même après ça.</value>
+    <value>Vous activez/désactivez cette fonctionnalité et **je n&apos;ai pas la permission ADMINISTRATEUR**. Cela pourrait causer des dysfonctionnements, et vous devrez nettoyer les salons textuels vous-même après ça.</value>
   </data>
   <data name="administration_vt_perms" xml:space="preserve">
-    <value>Je nécessite au moins les permissions  **Gérer les rôles** et **Gérer les salons** pour activer cette fonctionnalité. (permissions administateurs préférées)</value>
+    <value>Je nécessite au moins les permissions  **Gérer les rôles** et **Gérer les salons** pour activer cette fonctionnalité. (Permission Administrateur de préférence)</value>
   </data>
   <data name="administration_xmuted_text" xml:space="preserve">
     <value>Utilisateur {0} depuis un salon textuel.</value>
@@ -889,10 +889,10 @@ Raison: {1}</value>
     <value>a récompensé {0} à {1}</value>
   </data>
   <data name="gambling_better_luck" xml:space="preserve">
-    <value>Meilleure chance la prochaine fois ^_^</value>
+    <value>Plus de chance la prochaine fois ^_^</value>
   </data>
   <data name="gambling_br_win" xml:space="preserve">
-    <value>Félicitations! Vous avez gagné {0} pour avoir lancé au dessus de {1}</value>
+    <value>Félicitations! Vous avez gagné {0} pour avoir lancé au dessus de {1}.</value>
   </data>
   <data name="gambling_deck_reshuffled" xml:space="preserve">
     <value>Deck remélangé.</value>
@@ -902,7 +902,7 @@ Raison: {1}</value>
     <comment>User flipped tails.</comment>
   </data>
   <data name="gambling_flip_guess" xml:space="preserve">
-    <value>Vous l&apos;avez deviné! Vous avez gagné {0}</value>
+    <value>Vous avez deviné! Vous avez gagné {0}</value>
   </data>
   <data name="gambling_flip_invalid" xml:space="preserve">
     <value>Nombre spécifié invalide. Vous pouvez lancer 1 à {0} pièces.</value>
@@ -1343,7 +1343,7 @@ La nouvelle valeur de {0} est {1} !</value>
     <value>{0} contre {1}</value>
   </data>
   <data name="music_attempting_to_queue" xml:space="preserve">
-    <value>Tentative d&apos;ajouter {0} à la file d&apos;attente...</value>
+    <value>Tentative d&apos;ajouter {0} pistes à la file d&apos;attente...</value>
   </data>
   <data name="music_autoplay_disabled" xml:space="preserve">
     <value>Lecture automatique désactivée.</value>
@@ -1352,7 +1352,7 @@ La nouvelle valeur de {0} est {1} !</value>
     <value>Lecture automatique activée.</value>
   </data>
   <data name="music_defvol_set" xml:space="preserve">
-    <value>Volume de base défini à {0}%</value>
+    <value>Volume par défaut défini à {0}%</value>
   </data>
   <data name="music_dir_queue_complete" xml:space="preserve">
     <value>File d&apos;attente complète.</value>
@@ -1376,10 +1376,10 @@ La nouvelle valeur de {0} est {1} !</value>
     <value>Entrée invalide.</value>
   </data>
   <data name="music_max_playtime_none" xml:space="preserve">
-    <value>Le temps maximum de lecture n&apos;a désormais plus de limite.</value>
+    <value>Le temps maximum de lecture est désormais illimité.</value>
   </data>
   <data name="music_max_playtime_set" xml:space="preserve">
-    <value>Le temps de lecture maximum a été mis à {0} seconde(s).</value>
+    <value>Temps maximum de lecture défini à {0} seconde(s).</value>
   </data>
   <data name="music_max_queue_unlimited" xml:space="preserve">
     <value>La taille de la file d&apos;attente est désormais illmitée.</value>
@@ -1403,16 +1403,16 @@ La nouvelle valeur de {0} est {1} !</value>
     <value>Pas de résultat.</value>
   </data>
   <data name="music_paused" xml:space="preserve">
-    <value>Lecteur mis sur pause.</value>
+    <value>Lecteure mise en pause.</value>
   </data>
   <data name="music_player_queue" xml:space="preserve">
-    <value>Liste d&apos;attente - Page {0}/{1}</value>
+    <value>File d&apos;attente - Page {0}/{1}</value>
   </data>
   <data name="music_playing_song" xml:space="preserve">
-    <value>Lecture en cours:</value>
+    <value>Lecture en cours</value>
   </data>
   <data name="music_playlists" xml:space="preserve">
-    <value>`#{0}` - **{1}** par *{2}* ({3} morceaux)</value>
+    <value>`#{0}` - **{1}** par *{2}* ({3} pistes)</value>
   </data>
   <data name="music_playlists_page" xml:space="preserve">
     <value>Page {0} des listes de lecture sauvegardées</value>
@@ -1436,23 +1436,23 @@ La nouvelle valeur de {0} est {1} !</value>
     <value>Limite à {0}s</value>
   </data>
   <data name="music_queue" xml:space="preserve">
-    <value>Liste d&apos;attente</value>
+    <value>File d&apos;attente</value>
   </data>
   <data name="music_queued_song" xml:space="preserve">
-    <value>Son ajouté à la file d&apos;attente</value>
+    <value>Piste ajoutée à la file d&apos;attente</value>
   </data>
   <data name="music_queue_cleared" xml:space="preserve">
-    <value>Liste d&apos;attente effacée.</value>
+    <value>File d&apos;attente effacée.</value>
   </data>
   <data name="music_queue_full" xml:space="preserve">
-    <value>Liste d&apos;attente complète ({0}/{0}).</value>
+    <value>File d&apos;attente complète ({0}/{0}).</value>
   </data>
   <data name="music_removed_song" xml:space="preserve">
-    <value>Son retiré</value>
+    <value>Piste retirée</value>
     <comment>context: &quot;removed song #5&quot;</comment>
   </data>
   <data name="music_repeating_cur_song" xml:space="preserve">
-    <value>Répétition de la musique en cours</value>
+    <value>Répétition de la piste en cours de lecture</value>
   </data>
   <data name="music_repeating_playlist" xml:space="preserve">
     <value>Liste de lecture en boucle</value>
@@ -1473,7 +1473,7 @@ La nouvelle valeur de {0} est {1} !</value>
     <value>Lecture en boucle activée.</value>
   </data>
   <data name="music_set_music_channel" xml:space="preserve">
-    <value>Je vais désormais afficher les musiques en cours, en pause, terminées et supprimées sur ce salon.</value>
+    <value>Je vais désormais afficher les pistess en cours, en pause, terminées et supprimées sur ce salon.</value>
   </data>
   <data name="music_skipped_to" xml:space="preserve">
     <value>Saut à `{0}:{1}`</value>
@@ -1482,13 +1482,13 @@ La nouvelle valeur de {0} est {1} !</value>
     <value>Lecture aléatoire activée.</value>
   </data>
   <data name="music_song_moved" xml:space="preserve">
-    <value>Musique déplacée</value>
+    <value>Piste déplacée</value>
   </data>
   <data name="music_time_format" xml:space="preserve">
     <value>{0}h {1}m {2}s</value>
   </data>
   <data name="music_to_position" xml:space="preserve">
-    <value>En position</value>
+    <value>À la position</value>
   </data>
   <data name="music_unlimited" xml:space="preserve">
     <value>Illimité</value>
@@ -2147,7 +2147,7 @@ OwnerID: {2}</value>
     <value>Page #{0} des rôles pour {1}</value>
   </data>
   <data name="utility_rrc_no_colors" xml:space="preserve">
-    <value>Aucunes couleurs ne sont dans le format correct. Utilisez `#00ff00` par exemple.</value>
+    <value>Aucune couleur n&apos;est dans le bon format. Utilisez `#00ff00` par exemple.</value>
   </data>
   <data name="utility_rrc_start" xml:space="preserve">
     <value>Couleurs alternées pour le rôle {0} activées.</value>
@@ -2180,7 +2180,7 @@ OwnerID: {2}</value>
     <value>Pas d&apos;emojis spéciaux trouvés.</value>
   </data>
   <data name="utility_stats_songs" xml:space="preserve">
-    <value>Joue actuellement {0} musiques, {1} en attente.</value>
+    <value>Joue actuellement {0} piste(s), {1} en attente.</value>
   </data>
   <data name="utility_text_channels" xml:space="preserve">
     <value>Salons textuels</value>
@@ -2192,7 +2192,7 @@ OwnerID: {2}</value>
     <value>Durée de fonctionnement</value>
   </data>
   <data name="utility_userid" xml:space="preserve">
-    <value>{0} de l&apos;utilisateur {1} est {2}</value>
+    <value>{0} de l&apos;utilisateur {1}: {2}</value>
     <comment>Id of the user kwoth#1234 is 123123123123</comment>
   </data>
   <data name="utility_users" xml:space="preserve">
@@ -2205,15 +2205,15 @@ OwnerID: {2}</value>
     <value>Compléments:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` Ajout de réponses en russe et en allemand.</value>
+    <value>Aucun</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Réparations:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>`1.` Présence fixe de voix.
-`2.` Fixe `~ani` et `~mang`, les recherches peuvent être désactivées pendant un certain temps.
-`3.` Corrigé certaines chaînes.</value>
+    <value>`1.` Liste de lecture musicale et corrections météo.
+`2.` Corde fixe de calcops.
+`3.` Correction d&apos;une chaîne NSFW.</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>Plus d&apos;info à: http://github.com/Wizkiller96/WizBot</value>
@@ -2222,10 +2222,10 @@ OwnerID: {2}</value>
     <value>Déménagements:</value>
   </data>
   <data name="utility_changelog_removals_msg" xml:space="preserve">
-    <value>Aucun</value>
+    <value>`1.` La commande `.langli` n&apos;exige plus la propriété bot</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Changelogs | 📅 28 février 2017</value>
+    <value>WizBot Changelogs | 📅 03 mars 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>Une course d&apos;animaux est déjà en cours.</value>
