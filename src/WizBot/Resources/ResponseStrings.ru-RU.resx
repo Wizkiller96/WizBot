@@ -2249,15 +2249,15 @@ IDВладельца: {2}</value>
     <value>дополнения:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` Добавлены немецкие и российские ответы.</value>
+    <value>Никто</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Исправления:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>`1.` Фиксированный голос присутствия.
-`2.` Фиксированный `~ani` и `~mang`, поиски может быть выключен в течение некоторого времени
-`3.` Исправлены некоторые строки.</value>
+    <value>`1.` Музыка плейлист и погода исправления.
+`2.` Исправлена calcops строка.
+`3.` Исправлена NSFW строка.</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>Более подробную информацию по адресу: http://github.com/Wizkiller96/WizBot</value>
@@ -2266,10 +2266,10 @@ IDВладельца: {2}</value>
     <value>Переезды:</value>
   </data>
   <data name="utility_changelog_removals_msg" xml:space="preserve">
-    <value>Никто</value>
+    <value>`1.` нет Параметр `.langli` команда больше не требует владения бота</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot списком изменений | 📅 27 февраля 2017</value>
+    <value>WizBot списком изменений | 📅 3 марта 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>Гонка зверей уже идёт.</value>
