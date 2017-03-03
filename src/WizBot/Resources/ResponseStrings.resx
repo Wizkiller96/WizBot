@@ -2272,15 +2272,15 @@ Fuzzy</comment>
     <value>Additions:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` Added German and Russian responses.</value>
+    <value>None</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Fixes:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>`1.` Fixed voicepresence.
-`2.` Fixed `~ani` and `~mang`, searches might be off for some time.
-`3.` Fixed some strings.</value>
+    <value>`1.` Music playlist and weather fixes.
+`2.` Fixed calcops string.
+`3.` Fixed NSFW string.</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>More info at: http://github.com/Wizkiller96/WizBot</value>
@@ -2289,10 +2289,10 @@ Fuzzy</comment>
     <value>Removals:</value>
   </data>
   <data name="utility_changelog_removals_msg" xml:space="preserve">
-    <value>None</value>
+    <value>`1.` The `.langli` command no longer requires bot ownership</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Changelogs | 📅 Feb 28, 2017</value>
+    <value>WizBot Changelogs | 📅 March 03, 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>Animal Race is already running.</value>
