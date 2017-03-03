@@ -97,7 +97,6 @@ namespace WizBot.Modules.Administration
             }
 
             [WizBotCommand, Usage, Description, Aliases]
-            [OwnerOnly]
             public async Task LanguagesList()
             {
                 await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
