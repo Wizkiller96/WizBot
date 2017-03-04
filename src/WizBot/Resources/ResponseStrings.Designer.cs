@@ -1794,7 +1794,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Claim from @{0} for a war against {1} has expired..
+        ///    Looks up a localized string similar to Claim from @{0} in a war against {1} has expired..
         /// </summary>
         public static string clashofclans_claim_expired {
             get {
@@ -4587,7 +4587,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Your auto-translate language has been set to {from}&gt;{to}.
+        ///    Looks up a localized string similar to Your auto-translate language has been set to {0}&gt;{1}.
         /// </summary>
         public static string searches_atl_set {
             get {
@@ -5469,7 +5469,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to `1.` Added German and Russian responses..
+        ///    Looks up a localized string similar to None.
         /// </summary>
         public static string utility_changelog_additions_msg {
             get {
@@ -5487,9 +5487,9 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to `1.` Fixed voicepresence.
-        ///`2.` Fixed `~ani` and `~mang`, searches might be off for some time.
-        ///`3.` Fixed some strings..
+        ///    Looks up a localized string similar to `1.` Music playlist and weather fixes.
+        ///`2.` Fixed calcops string.
+        ///`3.` Fixed NSFW string..
         /// </summary>
         public static string utility_changelog_fixes_msg {
             get {
@@ -5516,7 +5516,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to None.
+        ///    Looks up a localized string similar to `1.` The `.langli` command no longer requires bot ownership.
         /// </summary>
         public static string utility_changelog_removals_msg {
             get {
@@ -5525,7 +5525,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to WizBot Changelogs | 📅 Feb 28, 2017.
+        ///    Looks up a localized string similar to WizBot Changelogs | 📅 March 03, 2017.
         /// </summary>
         public static string utility_changelog_title_date {
             get {

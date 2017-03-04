@@ -138,10 +138,10 @@
     <value>{0} claimed a base #{1} in a war against {2}</value>
   </data>
   <data name="clashofclans_claimed_other" xml:space="preserve">
-    <value>@{0} You already claimed base #{1}. You can&apos;t claim a new one.</value>
+    <value>@{0} You already claimed base #{1}. You can't claim a new one.</value>
   </data>
   <data name="clashofclans_claim_expired" xml:space="preserve">
-    <value>Claim from @{0} for a war against {1} has expired.</value>
+    <value>Claim from @{0} in a war against {1} has expired.</value>
   </data>
   <data name="clashofclans_enemy" xml:space="preserve">
     <value>Enemy</value>
@@ -256,10 +256,10 @@
     <comment>Kwoth used punch:type_icon: on Sanity:type_icon: for 50 damage.</comment>
   </data>
   <data name="pokemon_cant_attack_again" xml:space="preserve">
-    <value>You can&apos;t attack again without retaliation!</value>
+    <value>You can't attack again without retaliation!</value>
   </data>
   <data name="pokemon_cant_attack_yourself" xml:space="preserve">
-    <value>You can&apos;t attack yourself.</value>
+    <value>You can't attack yourself.</value>
   </data>
   <data name="pokemon_fainted" xml:space="preserve">
     <value>{0} has fainted!</value>
@@ -271,16 +271,16 @@
     <value>{0} has {1} HP remaining.</value>
   </data>
   <data name="pokemon_invalid_move" xml:space="preserve">
-    <value>You can&apos;t use {0}. Type `{1}ml` to see a list of moves you can use.</value>
+    <value>You can't use {0}. Type `{1}ml` to see a list of moves you can use.</value>
   </data>
   <data name="pokemon_moves" xml:space="preserve">
     <value>Movelist for {0} type</value>
   </data>
   <data name="pokemon_not_effective" xml:space="preserve">
-    <value>It&apos;s not effective.</value>
+    <value>It's not effective.</value>
   </data>
   <data name="pokemon_no_currency" xml:space="preserve">
-    <value>You don&apos;t have enough {0}</value>
+    <value>You don't have enough {0}</value>
   </data>
   <data name="pokemon_revive_other" xml:space="preserve">
     <value>revived {0} with one {1}</value>
@@ -293,13 +293,13 @@
     <value>Your type has been changed to {0} for a {1}</value>
   </data>
   <data name="pokemon_somewhat_effective" xml:space="preserve">
-    <value>It&apos;s somewhat effective.</value>
+    <value>It's somewhat effective.</value>
   </data>
   <data name="pokemon_super_effective" xml:space="preserve">
-    <value>It&apos;s super effective!</value>
+    <value>It's super effective!</value>
   </data>
   <data name="pokemon_too_many_moves" xml:space="preserve">
-    <value>You used too many moves in a row, so you can&apos;t move!</value>
+    <value>You used too many moves in a row, so you can't move!</value>
   </data>
   <data name="pokemon_type_of_user" xml:space="preserve">
     <value>Type of {0} is {1}</value>
@@ -461,7 +461,7 @@ Reason: {1}</value>
     <value>Greet announcements enabled on this channel.</value>
   </data>
   <data name="administration_hierarchy" xml:space="preserve">
-    <value>You can&apos;t use this command on users with a role higher or equal to yours in the role hierarchy.</value>
+    <value>You can't use this command on users with a role higher or equal to yours in the role hierarchy.</value>
   </data>
   <data name="administration_images_loaded" xml:space="preserve">
     <value>Images loaded after {0} seconds!</value>
@@ -487,19 +487,19 @@ Reason: {1}</value>
 {0}</value>
   </data>
   <data name="administration_lang_set" xml:space="preserve">
-    <value>Your server&apos;s locale is now {0} - {1}</value>
+    <value>Your server's locale is now {0} - {1}</value>
   </data>
   <data name="administration_lang_set_bot" xml:space="preserve">
-    <value>Bot&apos;s default locale is now {0} - {1}</value>
+    <value>Bot's default locale is now {0} - {1}</value>
   </data>
   <data name="administration_lang_set_bot_show" xml:space="preserve">
-    <value>Bot&apos;s language is set to {0} - {1}</value>
+    <value>Bot's language is set to {0} - {1}</value>
   </data>
   <data name="administration_lang_set_fail" xml:space="preserve">
-    <value>Failed setting locale. Revisit this command&apos;s help.</value>
+    <value>Failed setting locale. Revisit this command's help.</value>
   </data>
   <data name="administration_lang_set_show" xml:space="preserve">
-    <value>This server&apos;s language is set to {0} - {1}</value>
+    <value>This server's language is set to {0} - {1}</value>
   </data>
   <data name="administration_left" xml:space="preserve">
     <value>{0} has left {1}</value>
@@ -539,7 +539,7 @@ Reason: {1}</value>
   </data>
   <data name="administration_moved" xml:space="preserve">
     <value>{0} moved from {1} to {2}</value>
-    <comment>L&apos;utilisateur n&apos;a pas forcément été déplacé de son plein gré. S&apos;est déplacé - déplacé</comment>
+    <comment>L'utilisateur n'a pas forcément été déplacé de son plein gré. S'est déplacé - déplacé</comment>
   </data>
   <data name="administration_msg_del" xml:space="preserve">
     <value>Message Deleted in #{0}</value>
@@ -554,11 +554,11 @@ Fuzzy</comment>
   </data>
   <data name="administration_muted_sn" xml:space="preserve">
     <value>Muted</value>
-    <comment>singular &quot;User muted.&quot;
+    <comment>singular "User muted."
 Fuzzy</comment>
   </data>
   <data name="administration_mute_error" xml:space="preserve">
-    <value>I don&apos;t have the permission necessary for that most likely.</value>
+    <value>I don't have the permission necessary for that most likely.</value>
   </data>
   <data name="administration_mute_role_set" xml:space="preserve">
     <value>New mute role set.</value>
@@ -582,11 +582,11 @@ Fuzzy</comment>
     <value>Nickname Changed</value>
   </data>
   <data name="administration_no_server" xml:space="preserve">
-    <value>Can&apos;t find that server</value>
+    <value>Can't find that server</value>
   </data>
   <data name="administration_no_shard_id" xml:space="preserve">
     <value>No shard with that ID found.</value>
-    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n'a pas d'équivalent francophone.
 Fuzzy</comment>
   </data>
   <data name="administration_old_msg" xml:space="preserve">
@@ -599,7 +599,7 @@ Fuzzy</comment>
     <value>Old Topic</value>
   </data>
   <data name="administration_perms" xml:space="preserve">
-    <value>Error. Most likely I don&apos;t have sufficient permissions.</value>
+    <value>Error. Most likely I don't have sufficient permissions.</value>
   </data>
   <data name="administration_perms_reset" xml:space="preserve">
     <value>Permissions for this server are reset.</value>
@@ -663,7 +663,7 @@ Fuzzy</comment>
     <value>Failed to rename role. I have insufficient permissions.</value>
   </data>
   <data name="administration_renrole_perms" xml:space="preserve">
-    <value>You can&apos;t edit roles higher than your highest role.</value>
+    <value>You can't edit roles higher than your highest role.</value>
   </data>
   <data name="administration_reprm" xml:space="preserve">
     <value>Removed the playing message: {0}</value>
@@ -712,14 +712,14 @@ Fuzzy</comment>
     <value>That role is not self-assignable.</value>
   </data>
   <data name="administration_self_assign_not_have" xml:space="preserve">
-    <value>You don&apos;t have {0} role.</value>
+    <value>You don't have {0} role.</value>
   </data>
   <data name="administration_self_assign_no_excl" xml:space="preserve">
     <value>Self assigned roles are now not exclusive!</value>
     <comment>Je ne pense pas que ce soit la bonne traduction.. self-assignable role serait plutôt rôle auto-attribuable</comment>
   </data>
   <data name="administration_self_assign_perms" xml:space="preserve">
-    <value>I am unable to add that role to you. `I can&apos;t add roles to owners or other roles higher than my role in the role hierarchy.`</value>
+    <value>I am unable to add that role to you. `I can't add roles to owners or other roles higher than my role in the role hierarchy.`</value>
   </data>
   <data name="administration_self_assign_rem" xml:space="preserve">
     <value>{0} has been removed from the list of self-assignable roles.</value>
@@ -745,7 +745,7 @@ Fuzzy</comment>
   </data>
   <data name="administration_set_game" xml:space="preserve">
     <value>New game set!</value>
-    <comment>Pour &quot;set&quot;, je pense que défini irait mieux que &quot;en service&quot;</comment>
+    <comment>Pour "set", je pense que défini irait mieux que "en service"</comment>
   </data>
   <data name="administration_set_stream" xml:space="preserve">
     <value>New stream set!</value>
@@ -755,19 +755,19 @@ Fuzzy</comment>
   </data>
   <data name="administration_shard_reconnected" xml:space="preserve">
     <value>Shard {0} reconnected.</value>
-    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n'a pas d'équivalent francophone.
 Fuzzy</comment>
   </data>
   <data name="administration_shard_reconnecting" xml:space="preserve">
     <value>Shard {0} reconnecting.</value>
-    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n'a pas d'équivalent francophone.
 Fuzzy</comment>
   </data>
   <data name="administration_shutting_down" xml:space="preserve">
     <value>Shutting down</value>
   </data>
   <data name="administration_slowmode_desc" xml:space="preserve">
-    <value>Users can&apos;t send more than {0} messages every {1} seconds.</value>
+    <value>Users can't send more than {0} messages every {1} seconds.</value>
   </data>
   <data name="administration_slowmode_disabled" xml:space="preserve">
     <value>Slow mode disabled.</value>
@@ -833,10 +833,10 @@ Fuzzy</comment>
     <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_role_add" xml:space="preserve">
-    <value>User&apos;s Role Added</value>
+    <value>User's Role Added</value>
   </data>
   <data name="administration_user_role_rem" xml:space="preserve">
-    <value>User&apos;s  Role Removed</value>
+    <value>User's  Role Removed</value>
   </data>
   <data name="administration_user_status_change" xml:space="preserve">
     <value>{0} is now {1}</value>
@@ -864,7 +864,7 @@ Fuzzy</comment>
   </data>
   <data name="administration_voice_chan_created" xml:space="preserve">
     <value>Voice Channel Created</value>
-    <comment>Should say &quot;Voice Channel Created&quot;</comment>
+    <comment>Should say "Voice Channel Created"</comment>
   </data>
   <data name="administration_voice_chan_destroyed" xml:space="preserve">
     <value>Voice Channel Destroyed</value>
@@ -876,7 +876,7 @@ Fuzzy</comment>
     <value>Enabled voice + text feature.</value>
   </data>
   <data name="administration_vt_exit" xml:space="preserve">
-    <value>I don&apos;t have **manage roles** and/or **manage channels** permission, so I cannot run `voice+text` on {0} server.</value>
+    <value>I don't have **manage roles** and/or **manage channels** permission, so I cannot run `voice+text` on {0} server.</value>
   </data>
   <data name="administration_vt_no_admin" xml:space="preserve">
     <value>You are enabling/disabling this feature and **I do not have ADMINISTRATOR permissions**. This may cause some issues, and you will have to clean up text channels yourself afterwards.</value>
@@ -904,7 +904,7 @@ Reason: {1}</value>
     <value>Migration done!</value>
   </data>
   <data name="adminsitration_migration_error" xml:space="preserve">
-    <value>Error while migrating, check bot&apos;s console for more information.</value>
+    <value>Error while migrating, check bot's console for more information.</value>
   </data>
   <data name="administration_presence_updates" xml:space="preserve">
     <value>Presence Updates</value>
@@ -966,13 +966,13 @@ Fuzzy</comment>
     <comment>Fuzzy</comment>
   </data>
   <data name="gambling_max_bet_limit" xml:space="preserve">
-    <value>You can&apos;t bet more than {0}</value>
+    <value>You can't bet more than {0}</value>
   </data>
   <data name="gambling_min_bet_limit" xml:space="preserve">
-    <value>You can&apos;t bet less than {0}</value>
+    <value>You can't bet less than {0}</value>
   </data>
   <data name="gambling_not_enough" xml:space="preserve">
-    <value>You don&apos;t have enough {0}</value>
+    <value>You don't have enough {0}</value>
   </data>
   <data name="gambling_no_more_cards" xml:space="preserve">
     <value>No more cards in the deck.</value>
@@ -1004,7 +1004,7 @@ Fuzzy</comment>
   </data>
   <data name="gambling_sneakygamestatus_desc" xml:space="preserve">
     <value>Users must type a secret code to get {0}.
-Lasts {1} seconds. Don&apos;t tell anyone. Shhh.</value>
+Lasts {1} seconds. Don't tell anyone. Shhh.</value>
   </data>
   <data name="gambling_sneakygamestatus_end" xml:space="preserve">
     <value>SneakyGame event ended. {0} users received the reward.</value>
@@ -1019,7 +1019,7 @@ Lasts {1} seconds. Don&apos;t tell anyone. Shhh.</value>
     <value>successfully took {0} from {1}</value>
   </data>
   <data name="gambling_take_fail" xml:space="preserve">
-    <value>was unable to take {0} from{1} because the user doesn&apos;t have that much {2}!</value>
+    <value>was unable to take {0} from{1} because the user doesn't have that much {2}!</value>
   </data>
   <data name="help_back_to_toc" xml:space="preserve">
     <value>Back to ToC</value>
@@ -1044,7 +1044,7 @@ Lasts {1} seconds. Don&apos;t tell anyone. Shhh.</value>
     <value>Type `{0}h CommandName` to see the help for that specified command. e.g. `{0}h &gt;8ball`</value>
   </data>
   <data name="help_command_not_found" xml:space="preserve">
-    <value>I can&apos;t find that command. Please verify that the command exists before trying again.</value>
+    <value>I can't find that command. Please verify that the command exists before trying again.</value>
   </data>
   <data name="help_desc" xml:space="preserve">
     <value>Description</value>
@@ -1053,7 +1053,7 @@ Lasts {1} seconds. Don&apos;t tell anyone. Shhh.</value>
     <value>You can support the WizBot project on 
 Patreon &lt;{0}&gt; or
 Paypal &lt;{1}&gt;
-Don&apos;t forget to leave your discord name or id in the message.
+Don't forget to leave your discord name or id in the message.
 
 **Thank you** ♥️</value>
     <comment>Fuzzy</comment>
@@ -1168,7 +1168,7 @@ Don&apos;t forget to leave your discord name or id in the message.
     <value>Top Waifus</value>
   </data>
   <data name="gambling_waifu_affinity_already" xml:space="preserve">
-    <value>your affinity is already set to that waifu or you&apos;re trying to remove your affinity while not having one.</value>
+    <value>your affinity is already set to that waifu or you're trying to remove your affinity while not having one.</value>
   </data>
   <data name="gambling_waifu_affinity_changed" xml:space="preserve">
     <value>changed their affinity from {0} to {1}.
@@ -1184,7 +1184,7 @@ Fuzzy</comment>
     <value>Your affinity is reset. You no longer have a person you like.</value>
   </data>
   <data name="gambling_waifu_affinity_set" xml:space="preserve">
-    <value>wants to be {0}&apos;s waifu. Aww &lt;3</value>
+    <value>wants to be {0}'s waifu. Aww &lt;3</value>
   </data>
   <data name="gambling_waifu_claimed" xml:space="preserve">
     <value>claimed {0} as their waifu for {1}!</value>
@@ -1195,14 +1195,14 @@ Fuzzy</comment>
     <comment>Fuzzy</comment>
   </data>
   <data name="gambling_waifu_divorced_notlike" xml:space="preserve">
-    <value>You have divorced a waifu who doesn&apos;t like you. You received {0} back.</value>
+    <value>You have divorced a waifu who doesn't like you. You received {0} back.</value>
   </data>
   <data name="gambling_waifu_egomaniac" xml:space="preserve">
-    <value>you can&apos;t set affinity to yourself, you egomaniac.</value>
+    <value>you can't set affinity to yourself, you egomaniac.</value>
   </data>
   <data name="gambling_waifu_fulfilled" xml:space="preserve">
     <value>🎉 Their love is fulfilled! 🎉
-{0}&apos;s new value is {1}!</value>
+{0}'s new value is {1}!</value>
   </data>
   <data name="gambling_waifu_isnt_cheap" xml:space="preserve">
     <value>No waifu is that cheap. You must pay at least {0} to get a waifu, even if their actual value is lower.</value>
@@ -1214,7 +1214,7 @@ Fuzzy</comment>
     <value>That waifu is not yours.</value>
   </data>
   <data name="gambling_waifu_not_yourself" xml:space="preserve">
-    <value>You can&apos;t claim yourself.</value>
+    <value>You can't claim yourself.</value>
   </data>
   <data name="gambling_waifu_recent_divorce" xml:space="preserve">
     <value>You divorced recently. You must wait {0} hours and {1} minutes to divorce again.</value>
@@ -1262,7 +1262,7 @@ Fuzzy</comment>
     <value>Question</value>
   </data>
   <data name="games_rps_draw" xml:space="preserve">
-    <value>It&apos;s a draw! Both picked {0}</value>
+    <value>It's a draw! Both picked {0}</value>
   </data>
   <data name="games_rps_win" xml:space="preserve">
     <value>{0} won! {1} beats {2}</value>
@@ -1284,7 +1284,7 @@ Fuzzy</comment>
   </data>
   <data name="games_curgen_disabled" xml:space="preserve">
     <value>Currency generation has been disabled on this channel.</value>
-    <comment>Currency =/= current !!! Il s&apos;agit de monnaie. Par example: Euro is a currency. US Dollar also is. Sur Public WizBot, il s&apos;agit des fleurs :)</comment>
+    <comment>Currency =/= current !!! Il s'agit de monnaie. Par example: Euro is a currency. US Dollar also is. Sur Public WizBot, il s'agit des fleurs :)</comment>
   </data>
   <data name="games_curgen_enabled" xml:space="preserve">
     <value>Currency generation has been enabled on this channel.</value>
@@ -1314,13 +1314,13 @@ Fuzzy</comment>
     <value>Starting hangman errored.</value>
   </data>
   <data name="games_hangman_types" xml:space="preserve">
-    <value>List of &quot;{0}hangman&quot; term types:</value>
+    <value>List of "{0}hangman" term types:</value>
   </data>
   <data name="games_leaderboard" xml:space="preserve">
     <value>Leaderboard</value>
   </data>
   <data name="games_not_enough" xml:space="preserve">
-    <value>You don&apos;t have enough {0}</value>
+    <value>You don't have enough {0}</value>
   </data>
   <data name="games_no_results" xml:space="preserve">
     <value>No results</value>
@@ -1353,13 +1353,13 @@ Fuzzy</comment>
     <value>Stopping after this question.</value>
   </data>
   <data name="games_trivia_times_up" xml:space="preserve">
-    <value>Time&apos;s up! The correct answer was {0}</value>
+    <value>Time's up! The correct answer was {0}</value>
   </data>
   <data name="games_trivia_win" xml:space="preserve">
     <value>{0} guessed it and WON the game! The answer was: {1}</value>
   </data>
   <data name="games_ttt_against_yourself" xml:space="preserve">
-    <value>You can&apos;t play against yourself.</value>
+    <value>You can't play against yourself.</value>
   </data>
   <data name="games_ttt_already_running" xml:space="preserve">
     <value>TicTacToe Game is already running in this channel.</value>
@@ -1383,7 +1383,7 @@ Fuzzy</comment>
     <value>Time Expired!</value>
   </data>
   <data name="games_ttt_users_move" xml:space="preserve">
-    <value>{0}&apos;s move</value>
+    <value>{0}'s move</value>
   </data>
   <data name="games_vs" xml:space="preserve">
     <value>{0} vs {1}</value>
@@ -1472,10 +1472,10 @@ Fuzzy</comment>
     <comment>Fuzzy</comment>
   </data>
   <data name="music_playlist_delete_fail" xml:space="preserve">
-    <value>Failed to delete that playlist. It either doesn&apos;t exist, or you are not its author.</value>
+    <value>Failed to delete that playlist. It either doesn't exist, or you are not its author.</value>
   </data>
   <data name="music_playlist_id_not_found" xml:space="preserve">
-    <value>Playlist with that ID doesn&apos;t exist.</value>
+    <value>Playlist with that ID doesn't exist.</value>
   </data>
   <data name="music_playlist_queue_complete" xml:space="preserve">
     <value>Playlist queue complete.</value>
@@ -1501,7 +1501,7 @@ Fuzzy</comment>
   </data>
   <data name="music_removed_song" xml:space="preserve">
     <value>Removed song</value>
-    <comment>context: &quot;removed song #5&quot;</comment>
+    <comment>context: "removed song #5"</comment>
   </data>
   <data name="music_repeating_cur_song" xml:space="preserve">
     <value>Repeating Current Song</value>
@@ -1580,7 +1580,7 @@ Fuzzy</comment>
   </data>
   <data name="permissions_blacklisted" xml:space="preserve">
     <value>Blacklisted {0} with ID {1}</value>
-    <comment>Il ne s&apos;agit pas d&apos;un ban mais d&apos;une blacklist interdisant l&apos;utilisateur d&apos;utiliser le bot.</comment>
+    <comment>Il ne s'agit pas d'un ban mais d'une blacklist interdisant l'utilisateur d'utiliser le bot.</comment>
   </data>
   <data name="permissions_cmdcd_add" xml:space="preserve">
     <value>Command {0} now has a {1}s cooldown.</value>
@@ -1631,7 +1631,7 @@ Fuzzy</comment>
     <value>Moved permission {0} from #{1} to #{2}</value>
   </data>
   <data name="permissions_not_found" xml:space="preserve">
-    <value>Can&apos;t find permission at index #{0}</value>
+    <value>Can't find permission at index #{0}</value>
   </data>
   <data name="permissions_no_costs" xml:space="preserve">
     <value>No costs set.</value>
@@ -1730,7 +1730,7 @@ Fuzzy</comment>
     <value>Bad input format, or something went wrong.</value>
   </data>
   <data name="searches_card_not_found" xml:space="preserve">
-    <value>Couldn&apos;t find that card.</value>
+    <value>Couldn't find that card.</value>
   </data>
   <data name="searches_catfact" xml:space="preserve">
     <value>fact</value>
@@ -1770,7 +1770,7 @@ Fuzzy</comment>
   </data>
   <data name="searches_dropped" xml:space="preserve">
     <value>Dropped</value>
-    <comment>droppped as in, &quot;stopped watching&quot; referring to shows/anime</comment>
+    <comment>droppped as in, "stopped watching" referring to shows/anime</comment>
   </data>
   <data name="searches_episodes" xml:space="preserve">
     <value>Episodes</value>
@@ -1825,7 +1825,7 @@ Fuzzy</comment>
   </data>
   <data name="searches_list_of_place_tags" xml:space="preserve">
     <value>List of {0}place tags</value>
-    <comment>Don&apos;t translate {0}place</comment>
+    <comment>Don't translate {0}place</comment>
   </data>
   <data name="searches_location" xml:space="preserve">
     <value>Location</value>
@@ -1834,10 +1834,10 @@ Fuzzy</comment>
     <value>Magic Items not loaded.</value>
   </data>
   <data name="searches_mal_profile" xml:space="preserve">
-    <value>{0}&apos;s MAL profile</value>
+    <value>{0}'s MAL profile</value>
   </data>
   <data name="searches_mashape_api_missing" xml:space="preserve">
-    <value>Bot owner didn&apos;t specify MashapeApiKey. You can&apos;t use this functionality.</value>
+    <value>Bot owner didn't specify MashapeApiKey. You can't use this functionality.</value>
   </data>
   <data name="searches_min_max" xml:space="preserve">
     <value>Min/Max</value>
@@ -1940,10 +1940,10 @@ Fuzzy</comment>
     <value>No such stream.</value>
   </data>
   <data name="searches_stream_not_exist" xml:space="preserve">
-    <value>Stream probably doesn&apos;t exist.</value>
+    <value>Stream probably doesn't exist.</value>
   </data>
   <data name="searches_stream_removed" xml:space="preserve">
-    <value>Removed {0}&apos;s stream ({1}) from notifications.</value>
+    <value>Removed {0}'s stream ({1}) from notifications.</value>
   </data>
   <data name="searches_stream_tracked" xml:space="preserve">
     <value>I will notify this channel when status changes.</value>
@@ -2128,7 +2128,7 @@ OwnerID: {2}</value>
   </data>
   <data name="utility_no_shards_on_page" xml:space="preserve">
     <value>No shards on this page.</value>
-    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n'a pas d'équivalent francophone.
 Fuzzy</comment>
   </data>
   <data name="utility_no_topic_set" xml:space="preserve">
@@ -2214,7 +2214,7 @@ Fuzzy</comment>
     <value>No colors are in the correct format. Use `#00ff00` for example.</value>
   </data>
   <data name="utility_rrc_start" xml:space="preserve">
-    <value>Started rotating {0} role&apos;s color.</value>
+    <value>Started rotating {0} role's color.</value>
   </data>
   <data name="utility_rrc_stop" xml:space="preserve">
     <value>Stopped rotating colors for the {0} role</value>
@@ -2227,17 +2227,17 @@ Fuzzy</comment>
   </data>
   <data name="utility_shard" xml:space="preserve">
     <value>Shard</value>
-    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n'a pas d'équivalent francophone.
 Fuzzy</comment>
   </data>
   <data name="utility_shard_stats" xml:space="preserve">
     <value>Shard Stats</value>
-    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n'a pas d'équivalent francophone.
 Fuzzy</comment>
   </data>
   <data name="utility_shard_stats_txt" xml:space="preserve">
     <value>Shard **#{0}** is in {1} state with {2} servers</value>
-    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n'a pas d'équivalent francophone.
 Fuzzy</comment>
   </data>
   <data name="utility_showemojis" xml:space="preserve">
@@ -2301,5 +2301,4 @@ Fuzzy</comment>
   <data name="music_fairplay" xml:space="preserve">
     <value>fairplay</value>
   </data>
-
 </root>
