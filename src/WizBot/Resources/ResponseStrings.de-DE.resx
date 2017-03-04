@@ -2222,9 +2222,9 @@ Fuzzy</comment>
     <value>Behebt:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>`1.` Musik-Playlist und Wetterfixes.
-`2.` Fester calcops string.
-`3.` Fester NSFW string.</value>
+    <value>`1.` Feste Sachen.
+`2.` Ändere einen String.
+`3.` Fixed Zitat Befehl.</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>Weitere Infos unter: http://github.com/Wizkiller96/WizBot</value>
@@ -2233,10 +2233,10 @@ Fuzzy</comment>
     <value>Umzüge:</value>
   </data>
   <data name="utility_changelog_removals_msg" xml:space="preserve">
-    <value>`1.` Der Befehl `.langli` verlangt nicht mehr bot Besitz</value>
+    <value>Keiner</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Changelogs | 📅 März 03, 2017</value>
+    <value>WizBot Changelogs | 📅 März 04, 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>Tierrennen läuft bereits.</value>
