@@ -2211,9 +2211,9 @@ OwnerID: {2}</value>
     <value>Réparations:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>`1.` Liste de lecture musicale et corrections météo.
-`2.` Corde fixe de calcops.
-`3.` Correction d&apos;une chaîne NSFW.</value>
+    <value>`1.` Des trucs fixes.
+`2.` Changé une chaîne.
+`3.` Commande de devis fixe.</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>Plus d&apos;info à: http://github.com/Wizkiller96/WizBot</value>
@@ -2222,10 +2222,10 @@ OwnerID: {2}</value>
     <value>Déménagements:</value>
   </data>
   <data name="utility_changelog_removals_msg" xml:space="preserve">
-    <value>`1.` La commande `.langli` n&apos;exige plus la propriété bot</value>
+    <value>Aucun</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Changelogs | 📅 03 mars 2017</value>
+    <value>WizBot Changelogs | 📅 04 mars 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>Une course d&apos;animaux est déjà en cours.</value>
