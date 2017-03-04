@@ -1,4 +1,6 @@
 ﻿using WizBot.Services.Database.Models;
+using WizBot.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,11 +14,11 @@ namespace WizBot.Services.Database.Repositories.Impl
         {
         }
 
-        public IEnumerable<Quote> GetAllQuotesByKeyword(ulong guildId, string keyword) => 
+        public IEnumerable<Quote> GetAllQuotesByKeyword(ulong guildId, string keyword) =>
             _set.Where(q => q.GuildId == guildId && q.Keyword == keyword);
 
-        public IEnumerable<Quote> GetGroup(ulong guildId, int skip, int take) => 
-            _set.Where(q=>q.GuildId == guildId).OrderBy(q => q.Keyword).Skip(skip).Take(take).ToList();
+        public IEnumerable<Quote> GetGroup(ulong guildId, int skip, int take) =>
+            _set.Where(q => q.GuildId == guildId).OrderBy(q => q.Keyword).Skip(skip).Take(take).ToList();
 
         public Task<Quote> GetRandomQuoteByKeywordAsync(ulong guildId, string keyword)
         {
@@ -24,9 +26,9 @@ namespace WizBot.Services.Database.Repositories.Impl
             return _set.Where(q => q.GuildId == guildId && q.Keyword == keyword).OrderBy(q => rng.Next()).FirstOrDefaultAsync();
         }
         public Task<Quote> SearchQuoteKeywordTextAsync(ulong guildId, string keyword, string text)
-        {      			
+        {
             var rngk = new WizBotRandom();
-            return _set.Where(q => q.Text.Contains(text) && q.GuildId == guildId && q.Keyword == keyword).OrderBy(q => rngk.Next()).FirstOrDefaultAsync();
-	    }
+            return _set.Where(q => q.Text.ContainsNoCase(text, StringComparison.OrdinalIgnoreCase) && q.GuildId == guildId && q.Keyword == keyword).OrderBy(q => rngk.Next()).FirstOrDefaultAsync();
+        }
     }
 }

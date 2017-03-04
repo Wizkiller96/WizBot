@@ -90,7 +90,7 @@ namespace WizBot.Modules.Utility
                 if (keywordquote == null)
                     return;
 
-                await Context.Channel.SendMessageAsync("💬 " + keyword + ":  " + keywordquote.Text.SanitizeMentions());
+                await Context.Channel.SendMessageAsync("💬 " + keyword.ToLowerInvariant() + ":  " + keywordquote.Text.SanitizeMentions());
             }
 
             [WizBotCommand, Usage, Description, Aliases]
