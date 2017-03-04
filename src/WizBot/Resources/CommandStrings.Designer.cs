@@ -4461,6 +4461,60 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
+        ///    Looks up a localized string similar to lucky7 l7.
+        /// </summary>
+        public static string lucky7_cmd {
+            get {
+                return ResourceManager.GetString("lucky7_cmd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Bet currency on the game and start rolling 3 sided dice. At any point you can choose to [m]ove (roll again) or [s]tay (get the amount bet times the current multiplier)..
+        /// </summary>
+        public static string lucky7_desc {
+            get {
+                return ResourceManager.GetString("lucky7_desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to `{0}l7 10` or `{0}l7 move` or `{0}l7 s`.
+        /// </summary>
+        public static string lucky7_usage {
+            get {
+                return ResourceManager.GetString("lucky7_usage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to lucky7test l7t.
+        /// </summary>
+        public static string lucky7test_cmd {
+            get {
+                return ResourceManager.GetString("lucky7test_cmd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Tests the l7 command..
+        /// </summary>
+        public static string lucky7test_desc {
+            get {
+                return ResourceManager.GetString("lucky7test_desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to `{0}l7t 10000`.
+        /// </summary>
+        public static string lucky7test_usage {
+            get {
+                return ResourceManager.GetString("lucky7test_usage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///    Looks up a localized string similar to magicitem mi.
         /// </summary>
         public static string magicitem_cmd {
