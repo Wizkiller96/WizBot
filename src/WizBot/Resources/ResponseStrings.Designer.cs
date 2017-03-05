@@ -2082,6 +2082,15 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
+        ///    Looks up a localized string similar to You&apos;ve already joined this race!.
+        /// </summary>
+        public static string gambling_animal_race_already_in {
+            get {
+                return ResourceManager.GetString("gambling_animal_race_already_in", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///    Looks up a localized string similar to Animal Race is already running..
         /// </summary>
         public static string gambling_animal_race_already_started {
@@ -5487,9 +5496,9 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to `1.` Music playlist and weather fixes.
-        ///`2.` Fixed calcops string.
-        ///`3.` Fixed NSFW string..
+        ///    Looks up a localized string similar to `1.` Fixed stuff.
+        ///`2.` Changed a string.
+        ///`3.` Fixed Quote Command..
         /// </summary>
         public static string utility_changelog_fixes_msg {
             get {
@@ -5516,7 +5525,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to `1.` The `.langli` command no longer requires bot ownership.
+        ///    Looks up a localized string similar to None.
         /// </summary>
         public static string utility_changelog_removals_msg {
             get {
@@ -5525,7 +5534,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to WizBot Changelogs | 📅 March 03, 2017.
+        ///    Looks up a localized string similar to WizBot Changelogs | 📅 March 04, 2017.
         /// </summary>
         public static string utility_changelog_title_date {
             get {

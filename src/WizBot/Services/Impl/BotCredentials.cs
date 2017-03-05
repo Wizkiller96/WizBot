@@ -5,7 +5,6 @@ using Discord;
 using System.Linq;
 using NLog;
 using Microsoft.Extensions.Configuration;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 
 namespace WizBot.Services.Impl
@@ -15,7 +14,6 @@ namespace WizBot.Services.Impl
         private Logger _log;
 
         public ulong ClientId { get; }
-        public ulong BotId { get; }
 
         public string GoogleApiKey { get; }
 
@@ -47,6 +45,7 @@ namespace WizBot.Services.Impl
         public string CarbonKey { get; }
 
         public string credsFileName { get; } = Path.Combine(Directory.GetCurrentDirectory(), "credentials.json");
+        public string PatreonAccessToken { get; }
 
         public BotCredentials()
         {
@@ -71,6 +70,7 @@ namespace WizBot.Services.Impl
                 GoogleApiKey = data[nameof(GoogleApiKey)];
                 MashapeKey = data[nameof(MashapeKey)];
                 OsuApiKey = data[nameof(OsuApiKey)];
+                PatreonAccessToken = data[nameof(PatreonAccessToken)];
 
                 int ts = 1;
                 int.TryParse(data[nameof(TotalShards)], out ts);
@@ -112,6 +112,7 @@ namespace WizBot.Services.Impl
             public string CarbonKey { get; set; } = "";
             public DBConfig Db { get; set; } = new DBConfig("sqlite", "Filename=./data/WizBot.db");
             public int TotalShards { get; set; } = 1;
+            public string PatreonAccessToken { get; set; } = "";
         }
 
         private class DbModel
