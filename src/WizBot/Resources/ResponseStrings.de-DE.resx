@@ -2245,5 +2245,8 @@ Fuzzy</comment>
   <data name="music_fairplay" xml:space="preserve">
     <value>fairer Modus</value>
   </data>
+  <data name="gambling_animal_race_already_in" xml:space="preserve">
+    <value>Du bist schon zu diesem Rennen gekommen!</value>
+  </data>
 
 </root>
