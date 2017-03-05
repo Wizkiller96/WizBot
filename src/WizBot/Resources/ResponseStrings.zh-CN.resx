@@ -2239,5 +2239,8 @@ Paypal &lt;{1}&gt;
   <data name="music_fairplay" xml:space="preserve">
     <value>公平播放</value>
   </data>
+  <data name="gambling_animal_race_already_in" xml:space="preserve">
+    <value>你已经加入了这场比赛！</value>
+  </data>
 
 </root>
