@@ -177,6 +177,7 @@
   </data>
   <data name="clashofclans_war_created" xml:space="preserve">
     <value>与{0}的战争已创建。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_war_ended" xml:space="preserve">
     <value>与{0}的战争已结束。</value>
@@ -192,18 +193,22 @@
   </data>
   <data name="customreactions_deleted" xml:space="preserve">
     <value>定制反应删除</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_insuff_perms" xml:space="preserve">
     <value>权限不足。通用定制反应需要机器人主人之权限而服务器定制反应需要管理员之权限。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_list_all" xml:space="preserve">
     <value>列出所有定制反应</value>
   </data>
   <data name="customreactions_name" xml:space="preserve">
     <value>定制反应</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_new_cust_react" xml:space="preserve">
     <value>新定制反应</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_no_found" xml:space="preserve">
     <value>没有找到定制反应。</value>
@@ -375,6 +380,7 @@
   </data>
   <data name="administration_deafen" xml:space="preserve">
     <value>静音成功</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_deleted_server" xml:space="preserve">
     <value>服务器 {0} 已被删除</value>
@@ -527,6 +533,7 @@
   </data>
   <data name="administration_moved" xml:space="preserve">
     <value>{0}被移动由{1}到{2}</value>
+    <comment>L&apos;utilisateur n&apos;a pas forcément été déplacé de son plein gré. S&apos;est déplacé - déplacé</comment>
   </data>
   <data name="administration_msg_del" xml:space="preserve">
     <value>在＃{0}中删除讯息</value>
@@ -540,16 +547,18 @@
   </data>
   <data name="administration_muted_sn" xml:space="preserve">
     <value>已静音</value>
-    <comment>singular "User muted."</comment>
+    <comment>singular &quot;User muted.&quot;</comment>
   </data>
   <data name="administration_mute_error" xml:space="preserve">
     <value>权限不够执行此命令</value>
   </data>
   <data name="administration_mute_role_set" xml:space="preserve">
     <value>新的静音角色设定成功。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_need_admin" xml:space="preserve">
     <value>我需要**管理**权限才能做那个。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_new_msg" xml:space="preserve">
     <value>新消息</value>
@@ -568,6 +577,7 @@
   </data>
   <data name="administration_no_shard_id" xml:space="preserve">
     <value>找不到具有该ID的分片。</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="administration_old_msg" xml:space="preserve">
     <value>旧信息</value>
@@ -689,6 +699,7 @@
   </data>
   <data name="administration_self_assign_no_excl" xml:space="preserve">
     <value>自我分配的身份现在不是独家的！</value>
+    <comment>Je ne pense pas que ce soit la bonne traduction.. self-assignable role serait plutôt rôle auto-attribuable</comment>
   </data>
   <data name="administration_self_assign_perms" xml:space="preserve">
     <value>我无法向您添加该身份。 ‘我不能向身份层次结构中我身份以外的所有者或其他身份添加身份。’</value>
@@ -716,6 +727,7 @@
   </data>
   <data name="administration_set_game" xml:space="preserve">
     <value>新游戏设定！</value>
+    <comment>Pour &quot;set&quot;, je pense que défini irait mieux que &quot;en service&quot;</comment>
   </data>
   <data name="administration_set_stream" xml:space="preserve">
     <value>新直播设定！</value>
@@ -725,9 +737,11 @@
   </data>
   <data name="administration_shard_reconnected" xml:space="preserve">
     <value>分段{0}已重新连接。</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="administration_shard_reconnecting" xml:space="preserve">
     <value>分段{0}重新连接中。</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="administration_shutting_down" xml:space="preserve">
     <value>关闭中</value>
@@ -824,6 +838,7 @@
   </data>
   <data name="administration_voice_chan_created" xml:space="preserve">
     <value>语音频道已创建</value>
+    <comment>Should say &quot;Voice Channel Created&quot;</comment>
   </data>
   <data name="administration_voice_chan_destroyed" xml:space="preserve">
     <value>语音通道已被毁</value>
@@ -1104,6 +1119,9 @@ Paypal &lt;{1}&gt;
   <data name="gambling_likes" xml:space="preserve">
     <value>喜欢</value>
   </data>
+  <data name="gambling_nobody" xml:space="preserve">
+    <value>没人</value>
+  </data>
   <data name="gambling_price" xml:space="preserve">
     <value>价钱</value>
   </data>
@@ -1138,6 +1156,9 @@ Paypal &lt;{1}&gt;
     <value>你已经离婚了一个喜欢你的waifu。 你无情的怪物。
 {0}收到了{1}作为补偿。</value>
   </data>
+  <data name="gambling_waifu_divorced_notlike" xml:space="preserve">
+    <value>你离婚了一个不喜欢你的waifu。 您收到了{0}。</value>
+  </data>
   <data name="gambling_waifu_egomaniac" xml:space="preserve">
     <value>你不能设置兴趣自己，你好自卑。</value>
   </data>
@@ -1159,12 +1180,6 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="gambling_waifu_recent_divorce" xml:space="preserve">
     <value>你最近离婚了。 您必须等待{0}小时和{1}分钟再次离婚。</value>
-  </data>
-  <data name="gambling_nobody" xml:space="preserve">
-    <value>没人</value>
-  </data>
-  <data name="gambling_waifu_divorced_notlike" xml:space="preserve">
-    <value>你离婚了一个不喜欢你的waifu。 您收到了{0}。</value>
   </data>
   <data name="games_8ball" xml:space="preserve">
     <value>8ball</value>
@@ -1217,9 +1232,6 @@ Paypal &lt;{1}&gt;
   <data name="games_submissions_closed" xml:space="preserve">
     <value>提交关闭</value>
   </data>
-  <data name="gambling_animal_race_already_started" xml:space="preserve">
-    <value>动物竞赛已经运行。</value>
-  </data>
   <data name="gambling_total_average" xml:space="preserve">
     <value>总计：{0} 平均：{1}</value>
   </data>
@@ -1234,12 +1246,13 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="games_curgen_disabled" xml:space="preserve">
     <value>在此频道上停用的货币生成功能。</value>
+    <comment>Currency =/= current !!! Il s&apos;agit de monnaie. Par example: Euro is a currency. US Dollar also is. Sur Public WizBot, il s&apos;agit des fleurs :)</comment>
   </data>
   <data name="games_curgen_enabled" xml:space="preserve">
     <value>在此频道上启用的货币生成功能。</value>
   </data>
   <data name="games_curgen_pl" xml:space="preserve">
-    <value>{0} 个 {1}出现了！ 通过输入`{2} pick'来拾取</value>
+    <value>{0} 个 {1}出现了！ 通过输入`{2} pick&apos;来拾取</value>
     <comment>plural</comment>
   </data>
   <data name="games_curgen_sn" xml:space="preserve">
@@ -1274,7 +1287,6 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="games_picked" xml:space="preserve">
     <value>采了{0}</value>
-    <comment>Kwoth picked 5*</comment>
   </data>
   <data name="games_planted" xml:space="preserve">
     <value>{0}种了{1}</value>
@@ -1348,9 +1360,6 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="music_dir_queue_complete" xml:space="preserve">
     <value>目录队列完成。</value>
-  </data>
-  <data name="music_fairplay" xml:space="preserve">
-    <value>公平播放</value>
   </data>
   <data name="music_finished_song" xml:space="preserve">
     <value>完成歌曲</value>
@@ -1445,7 +1454,7 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="music_removed_song" xml:space="preserve">
     <value>歌被移除</value>
-    <comment>context: "removed song #5"</comment>
+    <comment>context: &quot;removed song #5&quot;</comment>
   </data>
   <data name="music_repeating_cur_song" xml:space="preserve">
     <value>重复播放当前歌曲</value>
@@ -1524,6 +1533,7 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="permissions_blacklisted" xml:space="preserve">
     <value>ID为{1}被加入黑名单{0}</value>
+    <comment>Il ne s&apos;agit pas d&apos;un ban mais d&apos;une blacklist interdisant l&apos;utilisateur d&apos;utiliser le bot.</comment>
   </data>
   <data name="permissions_cmdcd_add" xml:space="preserve">
     <value>命令{0}冷却时间现有{1}秒。</value>
@@ -1713,6 +1723,7 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="searches_dropped" xml:space="preserve">
     <value>放掉</value>
+    <comment>droppped as in, &quot;stopped watching&quot; referring to shows/anime</comment>
   </data>
   <data name="searches_episodes" xml:space="preserve">
     <value>剧集</value>
@@ -1764,7 +1775,7 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="searches_list_of_place_tags" xml:space="preserve">
     <value>{0}地方标记列表</value>
-    <comment>Don't translate {0}place</comment>
+    <comment>Don&apos;t translate {0}place</comment>
   </data>
   <data name="searches_location" xml:space="preserve">
     <value>地点</value>
@@ -1807,6 +1818,7 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="searches_plan_to_watch" xml:space="preserve">
     <value>计划看</value>
+    <comment>Je ne pense pas que le sens de la traduction soit le bon.</comment>
   </data>
   <data name="searches_platform" xml:space="preserve">
     <value>平台</value>
@@ -1825,6 +1837,7 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="searches_quick_playtime" xml:space="preserve">
     <value>快速游戏时间</value>
+    <comment>Is this supposed to be Overwatch Quick Play stats?</comment>
   </data>
   <data name="searches_quick_wins" xml:space="preserve">
     <value>快赢</value>
@@ -1837,6 +1850,7 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="searches_search_for" xml:space="preserve">
     <value>搜索：</value>
+    <comment>recherche plutôt non ?</comment>
   </data>
   <data name="searches_shorten_fail" xml:space="preserve">
     <value>无法缩短该链接。</value>
@@ -2059,6 +2073,7 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="utility_no_shards_on_page" xml:space="preserve">
     <value>此页面上没有分片。</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="utility_no_topic_set" xml:space="preserve">
     <value>没有主题设置。</value>
@@ -2154,12 +2169,15 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="utility_shard" xml:space="preserve">
     <value>分片</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="utility_shard_stats" xml:space="preserve">
     <value>分片统计</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="utility_shard_stats_txt" xml:space="preserve">
     <value>分片**＃{0} **处于{1}状态与{2}台服务器</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="utility_showemojis" xml:space="preserve">
     <value>**名称：** {0} **链接：** {1}</value>
@@ -2189,4 +2207,37 @@ Paypal &lt;{1}&gt;
   <data name="utility_voice_channels" xml:space="preserve">
     <value>语音频道</value>
   </data>
+  <data name="utility_changelog_additions" xml:space="preserve">
+    <value>添加：</value>
+  </data>
+  <data name="utility_changelog_additions_msg" xml:space="preserve">
+    <value>没有</value>
+  </data>
+  <data name="utility_changelog_fixes" xml:space="preserve">
+    <value>修正：</value>
+  </data>
+  <data name="utility_changelog_fixes_msg" xml:space="preserve">
+    <value>`1.` 固定的东西。
+`2.` 更改了字符串。
+`3.` 固定报价命令。</value>
+  </data>
+  <data name="utility_changelog_footer" xml:space="preserve">
+    <value>更多信息：http://github.com/Wizkiller96/WizBot</value>
+  </data>
+  <data name="utility_changelog_removals" xml:space="preserve">
+    <value>删除：</value>
+  </data>
+  <data name="utility_changelog_removals_msg" xml:space="preserve">
+    <value>没有</value>
+  </data>
+  <data name="utility_changelog_title_date" xml:space="preserve">
+    <value>WizBot Changelogs | 📅 2017年3月04日</value>
+  </data>
+  <data name="gambling_animal_race_already_started" xml:space="preserve">
+    <value>动物竞赛已经运行。</value>
+  </data>
+  <data name="music_fairplay" xml:space="preserve">
+    <value>公平播放</value>
+  </data>
+
 </root>
