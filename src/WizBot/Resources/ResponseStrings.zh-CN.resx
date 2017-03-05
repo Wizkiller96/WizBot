@@ -121,8 +121,7 @@
     <value>此基地已被认领或毁坏。</value>
   </data>
   <data name="clashofclans_base_already_destroyed" xml:space="preserve">
-    <value>此基地已被毁坏
-</value>
+    <value>此基地已被毁坏</value>
   </data>
   <data name="clashofclans_base_already_unclaimed" xml:space="preserve">
     <value>此基地还未被认领</value>
