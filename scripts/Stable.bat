@@ -1,5 +1,5 @@
 @ECHO off
-TITLE Downloading Latest Build of WizBot...
+TITLE Downloading Stable Build of WizBot...
 ::Setting convenient to read variables which don't delete the windows temp folder
 SET root=%~dp0
 CD /D %root%
@@ -22,7 +22,7 @@ CD /D %installtemp%
 ::Downloads the latest version of WizBot
 ECHO Downloading WizBot...
 ECHO.
-git clone -b dev --recursive --depth 1 --progress https://github.com/Wizkiller96/WizBot.git >nul
+git clone -b master --recursive --depth 1 --progress https://github.com/Wizkiller96/WizBot.git >nul
 IF %ERRORLEVEL% EQU 128 (GOTO :giterror)
 TITLE Installing WizBot, please wait...
 ECHO.
@@ -146,4 +146,4 @@ GOTO end
 	ECHO Installation complete!
 	ECHO.
 	PAUSE
-	del Latest.bat
+	del Stable.bat
