@@ -2248,5 +2248,35 @@ Fuzzy</comment>
   <data name="gambling_animal_race_already_in" xml:space="preserve">
     <value>Du bist schon zu diesem Rennen gekommen!</value>
   </data>
+  <data name="games_current_poll_results" xml:space="preserve">
+    <value>Aktuelle Umfrage Ergebnisse</value>
+  </data>
+  <data name="games_no_votes_cast" xml:space="preserve">
+    <value>Keine Stimmen abgegeben</value>
+  </data>
+  <data name="games_poll_already_running" xml:space="preserve">
+    <value>Die Abfrage läuft bereits auf diesem Server.</value>
+  </data>
+  <data name="games_poll_created" xml:space="preserve">
+    <value>📃 {0} hat eine Umfrage erstellt, die Ihre Aufmerksamkeit erfordert:</value>
+  </data>
+  <data name="games_poll_result" xml:space="preserve">
+    <value>`{0}.` {1} mit {2} Stimmen.</value>
+  </data>
+  <data name="games_poll_voted" xml:space="preserve">
+    <value>{0} gestimmt.</value>
+  </data>
+  <data name="games_poll_vote_private" xml:space="preserve">
+    <value>Private Nachricht mich mit der entsprechenden Nummer der Antwort.</value>
+  </data>
+  <data name="games_poll_vote_public" xml:space="preserve">
+    <value>Senden Sie hier eine Nachricht mit der entsprechenden Nummer der Antwort.</value>
+  </data>
+  <data name="games_thanks_for_voting" xml:space="preserve">
+    <value>Vielen Dank für die Abstimmung, {0}</value>
+  </data>
+  <data name="games_x_votes_cast" xml:space="preserve">
+    <value>{0} Stimmen insgesamt.</value>
+  </data>
 
 </root>
