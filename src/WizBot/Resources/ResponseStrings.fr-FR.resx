@@ -2236,5 +2236,35 @@ OwnerID: {2}</value>
   <data name="gambling_animal_race_already_in" xml:space="preserve">
     <value>Vous avez déjà rejoint cette course!</value>
   </data>
+  <data name="games_current_poll_results" xml:space="preserve">
+    <value>Résultats du sondage actuel</value>
+  </data>
+  <data name="games_no_votes_cast" xml:space="preserve">
+    <value>Aucun vote.</value>
+  </data>
+  <data name="games_poll_already_running" xml:space="preserve">
+    <value>Le sondage est déjà en cours sur ce serveur.</value>
+  </data>
+  <data name="games_poll_created" xml:space="preserve">
+    <value>📃 {0} a créé un sondage qui nécessite votre attention:</value>
+  </data>
+  <data name="games_poll_result" xml:space="preserve">
+    <value>`{0}.` {1} avec {2} votes.</value>
+  </data>
+  <data name="games_poll_voted" xml:space="preserve">
+    <value>{0} ont voté.</value>
+  </data>
+  <data name="games_poll_vote_private" xml:space="preserve">
+    <value>Message privé avec le numéro correspondant de la réponse.</value>
+  </data>
+  <data name="games_poll_vote_public" xml:space="preserve">
+    <value>Envoyez un message ici avec le nombre correspondant de la réponse.</value>
+  </data>
+  <data name="games_thanks_for_voting" xml:space="preserve">
+    <value>Merci de voter, {0}</value>
+  </data>
+  <data name="games_x_votes_cast" xml:space="preserve">
+    <value>{0} total des votes exprimés.</value>
+  </data>
 
 </root>
