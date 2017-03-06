@@ -140,7 +140,6 @@
   </data>
   <data name="clashofclans_claim_expired" xml:space="preserve">
     <value>Anspråk från @{0} för ett krig mot {1} har gått ut.</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_enemy" xml:space="preserve">
     <value>Fiende</value>
@@ -153,11 +152,9 @@
   </data>
   <data name="clashofclans_invalid_size" xml:space="preserve">
     <value>Ogiltig krigsstorlek.</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_list_active_wars" xml:space="preserve">
     <value>Lista Över Aktiva Krig</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_not_claimed" xml:space="preserve">
     <value>Inte gjort anspråk på</value>
@@ -170,7 +167,6 @@
   </data>
   <data name="clashofclans_no_active_wars" xml:space="preserve">
     <value>Inga aktiva krig.</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_size" xml:space="preserve">
     <value>Storlek</value>
@@ -180,6 +176,7 @@
   </data>
   <data name="clashofclans_war_created" xml:space="preserve">
     <value>Krig mot {0} skapat.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_war_ended" xml:space="preserve">
     <value>Krig mot {0} har tagit slut.</value>
@@ -196,22 +193,25 @@
   <data name="customreactions_deleted" xml:space="preserve">
     <value>Anpassad emoji har blivit raderad.
 </value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_insuff_perms" xml:space="preserve">
     <value>Otillräckliga behörigheter. Kräver Bot ägande för globala anpassade reaktioner, och administratör för server anpassade reaktioner.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_list_all" xml:space="preserve">
     <value>Lista av alla egengjorda reaktioner</value>
   </data>
   <data name="customreactions_name" xml:space="preserve">
     <value>Egengjorda Reaktioner</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_new_cust_react" xml:space="preserve">
     <value>Nya egengjorda Reaktioner</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_no_found" xml:space="preserve">
     <value>Inga egnagjorde reaktioner hittades.</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_no_found_id" xml:space="preserve">
     <value>Ingen egengjord reaktion funnen med det id.</value>
@@ -382,6 +382,7 @@
   </data>
   <data name="administration_deafen" xml:space="preserve">
     <value>Dövning lyckats.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_deleted_server" xml:space="preserve">
     <value>Raderad server {0}</value>
@@ -476,12 +477,10 @@ Anledning: {1}</value>
   </data>
   <data name="administration_kicked_user" xml:space="preserve">
     <value>Användare sparkad</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_lang_list" xml:space="preserve">
     <value>Lista av språk 
 {0}</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_lang_set" xml:space="preserve">
     <value>Din servers lokal är nu {0} -{ 1}</value>
@@ -536,14 +535,13 @@ Anledning: {1}</value>
   </data>
   <data name="administration_moved" xml:space="preserve">
     <value>{0} flyttad från {1] till {2}</value>
+    <comment>L&apos;utilisateur n&apos;a pas forcément été déplacé de son plein gré. S&apos;est déplacé - déplacé</comment>
   </data>
   <data name="administration_msg_del" xml:space="preserve">
     <value>Meddelande Raderat i #{0}</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_msg_update" xml:space="preserve">
     <value>Meddelande Uppdaterat i #{0}</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_muted_pl" xml:space="preserve">
     <value>Mutade</value>
@@ -551,50 +549,46 @@ Anledning: {1}</value>
   </data>
   <data name="administration_muted_sn" xml:space="preserve">
     <value>Mutad</value>
-    <comment>singular "User muted."</comment>
+    <comment>singular &quot;User muted.&quot;</comment>
   </data>
   <data name="administration_mute_error" xml:space="preserve">
     <value>Jag har sannolikt inte de flesta tillstånd för detta.</value>
   </data>
   <data name="administration_mute_role_set" xml:space="preserve">
     <value>Ny mute roll gjord.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_need_admin" xml:space="preserve">
     <value>Jag behöver **Administration** tillåtelse för att göra det där.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_new_msg" xml:space="preserve">
     <value>Nytt Meddelande</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_new_nick" xml:space="preserve">
     <value>Nytt Smeknamn</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_new_topic" xml:space="preserve">
     <value>Nytt Ämne</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_nick_change" xml:space="preserve">
     <value>Smeknamn Ändrat</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_no_server" xml:space="preserve">
     <value>Kan inte hitta den servern</value>
   </data>
   <data name="administration_no_shard_id" xml:space="preserve">
     <value>Ingen shard med den ID funnen</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="administration_old_msg" xml:space="preserve">
     <value>Gammalt Meddelande</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_old_nick" xml:space="preserve">
     <value>Gammalt Smeknamn</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_old_topic" xml:space="preserve">
     <value>Gammalt Ämne</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_perms" xml:space="preserve">
     <value>Fel. Troligtvis så har jag inte tillräcklig behörighet.</value>
@@ -604,7 +598,6 @@ Anledning: {1}</value>
   </data>
   <data name="administration_prot_active" xml:space="preserve">
     <value>Aktiva Skydd</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_prot_disable" xml:space="preserve">
     <value>{0} har blivit **avaktiverat** på denna server.</value>
@@ -619,7 +612,6 @@ Anledning: {1}</value>
   </data>
   <data name="administration_prot_none" xml:space="preserve">
     <value>Inga skydd är aktiverade.</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_raid_cnt" xml:space="preserve">
     <value>Användar </value>
@@ -711,9 +703,10 @@ Anledning: {1}</value>
   </data>
   <data name="administration_self_assign_no_excl" xml:space="preserve">
     <value>Egentilldelade roller är nu inte exklusiva!</value>
+    <comment>Je ne pense pas que ce soit la bonne traduction.. self-assignable role serait plutôt rôle auto-attribuable</comment>
   </data>
   <data name="administration_self_assign_perms" xml:space="preserve">
-    <value>Jag är oförmögen att lägga den rollen för dig. 'Jag kan inte lägga till roller till ägare eller andra roller högre än min roll i roll hierarkin.` 
+    <value>Jag är oförmögen att lägga den rollen för dig. &apos;Jag kan inte lägga till roller till ägare eller andra roller högre än min roll i roll hierarkin.` 
 
 </value>
   </data>
@@ -740,6 +733,7 @@ Anledning: {1}</value>
   </data>
   <data name="administration_set_game" xml:space="preserve">
     <value>Nytt spel satt!</value>
+    <comment>Pour &quot;set&quot;, je pense que défini irait mieux que &quot;en service&quot;</comment>
   </data>
   <data name="administration_set_stream" xml:space="preserve">
     <value>Nytt stream satt!</value>
@@ -749,9 +743,11 @@ Anledning: {1}</value>
   </data>
   <data name="administration_shard_reconnected" xml:space="preserve">
     <value>Shard {0} har återansluts.</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="administration_shard_reconnecting" xml:space="preserve">
     <value>Shard {0} håller på att återansluta.</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="administration_shutting_down" xml:space="preserve">
     <value>Stänger ner.</value>
@@ -781,11 +777,9 @@ __IgnoreradeKannaler_: {2}</value>
   </data>
   <data name="administration_text_chan_created" xml:space="preserve">
     <value>Text kanal skapad</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_text_chan_destroyed" xml:space="preserve">
     <value>Text kanal förstörd␣</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_undeafen" xml:space="preserve">
     <value>Borttagning av dövning lyckats.</value>
@@ -799,14 +793,12 @@ __IgnoreradeKannaler_: {2}</value>
   </data>
   <data name="administration_username_changed" xml:space="preserve">
     <value>Användarnamn ändrats</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_users" xml:space="preserve">
     <value>Användare</value>
   </data>
   <data name="administration_user_banned" xml:space="preserve">
     <value>Användare Bannad</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_chat_mute" xml:space="preserve">
     <value>{0} har blivit **mutad** från att chatta.</value>
@@ -816,22 +808,18 @@ __IgnoreradeKannaler_: {2}</value>
   </data>
   <data name="administration_user_joined" xml:space="preserve">
     <value>Användare har gått med.</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_left" xml:space="preserve">
     <value>Användare har lämnat.</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_muted" xml:space="preserve">
     <value>{0} har blivit **mutad** från text och röst kanal.</value>
   </data>
   <data name="administration_user_role_add" xml:space="preserve">
     <value>Användarens roll har blivit tillagd.</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_role_rem" xml:space="preserve">
     <value>Användarens roll har blivit borttagen.</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_status_change" xml:space="preserve">
     <value>{0} är nu {1}</value>
@@ -856,11 +844,10 @@ __IgnoreradeKannaler_: {2}</value>
   </data>
   <data name="administration_voice_chan_created" xml:space="preserve">
     <value>Röst Kanal Skapad</value>
-    <comment>Fuzzy</comment>
+    <comment>Should say &quot;Voice Channel Created&quot;</comment>
   </data>
   <data name="administration_voice_chan_destroyed" xml:space="preserve">
     <value>Röst Kanal Förstörd</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_vt_disabled" xml:space="preserve">
     <value>Avaktiverat röst + text funktion.</value>
@@ -892,7 +879,6 @@ Anledning: {1}</value>
   </data>
   <data name="administration_user_unbanned" xml:space="preserve">
     <value>Användare inte längre bannad.</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_migration_done" xml:space="preserve">
     <value>Migration gjort!</value>
@@ -902,11 +888,9 @@ Anledning: {1}</value>
   </data>
   <data name="administration_presence_updates" xml:space="preserve">
     <value>Närvaro Uppdateringar.</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_sb_user" xml:space="preserve">
     <value>Användare mjuk-bannad.</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_awarded" xml:space="preserve">
     <value>har tilldelat {0} till {1}</value>
@@ -949,7 +933,6 @@ Anledning: {1}</value>
   </data>
   <data name="gambling_heads" xml:space="preserve">
     <value>Krona</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_leaderboard" xml:space="preserve">
     <value>Topplista</value>
@@ -971,7 +954,6 @@ Anledning: {1}</value>
   </data>
   <data name="gambling_raffled_user" xml:space="preserve">
     <value>Lotto användare</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_roll" xml:space="preserve">
     <value>Du rullade {0}</value>
@@ -1006,7 +988,6 @@ Varar {1} sekunder. Berätta inte för någon. Shhh.</value>
   </data>
   <data name="gambling_tails" xml:space="preserve">
     <value>Klave</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_take" xml:space="preserve">
     <value>Lyckats ta {0} från {1}</value>
@@ -1019,7 +1000,6 @@ Varar {1} sekunder. Berätta inte för någon. Shhh.</value>
   </data>
   <data name="help_bot_owner_only" xml:space="preserve">
     <value>Bara Bot ägare</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="help_channel_permission" xml:space="preserve">
     <value>Kräver {0} kanal tillstånd.</value>
@@ -1029,7 +1009,6 @@ Varar {1} sekunder. Berätta inte för någon. Shhh.</value>
   </data>
   <data name="help_cmd_and_alias" xml:space="preserve">
     <value>Kommando och alias</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="help_commandlist_regen" xml:space="preserve">
     <value>Kommando lista regenereras.</value>
@@ -1053,16 +1032,13 @@ Glömm inte att lämna ditt discord namn eller id i meddelandet.
   </data>
   <data name="help_guide" xml:space="preserve">
     <value>**Lista av kommandon**. &lt;{0}&gt;
-**Värd guider och dokument kan bli hittade här*':  &lt;{1}&gt;</value>
-    <comment>Fuzzy</comment>
+**Värd guider och dokument kan bli hittade här*&apos;:  &lt;{1}&gt;</value>
   </data>
   <data name="help_list_of_commands" xml:space="preserve">
     <value>Kommandolista</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="help_list_of_modules" xml:space="preserve">
     <value>Modullista</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="help_modules_footer" xml:space="preserve">
     <value>Skriv `{0}cmds ModuleName` för att få en lista av kommandon i den modulen. t.ex.  `{0}cmds games` </value>
@@ -1075,7 +1051,6 @@ Glömm inte att lämna ditt discord namn eller id i meddelandet.
   </data>
   <data name="help_table_of_contents" xml:space="preserve">
     <value>Innehållsförteckning</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="help_usage" xml:space="preserve">
     <value>Användning</value>
@@ -1089,7 +1064,6 @@ Glömm inte att lämna ditt discord namn eller id i meddelandet.
   </data>
   <data name="gambling_animal_race" xml:space="preserve">
     <value>Djur Lopp</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_animal_race_failed" xml:space="preserve">
     <value>Det gick inte att starta eftersom det inte fanns tillräckligt många deltagare.</value>
@@ -1140,17 +1114,18 @@ Glömm inte att lämna ditt discord namn eller id i meddelandet.
   </data>
   <data name="gambling_changes_of_heart" xml:space="preserve">
     <value>Ändring av hjärta</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_claimed_by" xml:space="preserve">
     <value>Anspråk av</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_divorces" xml:space="preserve">
     <value>Skilsmässor</value>
   </data>
   <data name="gambling_likes" xml:space="preserve">
     <value>Gillar</value>
+  </data>
+  <data name="gambling_nobody" xml:space="preserve">
+    <value>Ingen</value>
   </data>
   <data name="gambling_price" xml:space="preserve">
     <value>Pris</value>
@@ -1186,6 +1161,9 @@ Glömm inte att lämna ditt discord namn eller id i meddelandet.
     <value>Du har skilt dig från en waifu som gillar dig. Ditt hjärtlösa monster.
 {0} har fått {1} som kompensation.</value>
   </data>
+  <data name="gambling_waifu_divorced_notlike" xml:space="preserve">
+    <value>Du har frånskild en waifu som inte gillar dig. Du har fått {0} tillbaka.</value>
+  </data>
   <data name="gambling_waifu_egomaniac" xml:space="preserve">
     <value>du kan inte ställa affinitet till dig själv, din egoist.</value>
   </data>
@@ -1207,12 +1185,6 @@ Glömm inte att lämna ditt discord namn eller id i meddelandet.
   </data>
   <data name="gambling_waifu_recent_divorce" xml:space="preserve">
     <value>Du blev frånskild nyligen. Du måste vänta {0} timmar och {1} minuter att skilja sig igen.</value>
-  </data>
-  <data name="gambling_nobody" xml:space="preserve">
-    <value>Ingen</value>
-  </data>
-  <data name="gambling_waifu_divorced_notlike" xml:space="preserve">
-    <value>Du har frånskild en waifu som inte gillar dig. Du har fått {0} tillbaka.</value>
   </data>
   <data name="games_8ball" xml:space="preserve">
     <value>8boll</value>
@@ -1264,10 +1236,6 @@ Glömm inte att lämna ditt discord namn eller id i meddelandet.
   </data>
   <data name="games_submissions_closed" xml:space="preserve">
     <value>Förslag Stängda </value>
-    <comment>Fuzzy</comment>
-  </data>
-  <data name="gambling_animal_race_already_started" xml:space="preserve">
-    <value>Djur lopp körs redan.</value>
   </data>
   <data name="gambling_total_average" xml:space="preserve">
     <value>Totalt: {0} Genomsnitt: {1} </value>
@@ -1283,6 +1251,7 @@ Glömm inte att lämna ditt discord namn eller id i meddelandet.
   </data>
   <data name="games_curgen_disabled" xml:space="preserve">
     <value>Valuta skapande har inaktiverats på denna kanal.</value>
+    <comment>Currency =/= current !!! Il s&apos;agit de monnaie. Par example: Euro is a currency. US Dollar also is. Sur Public WizBot, il s&apos;agit des fleurs :)</comment>
   </data>
   <data name="games_curgen_enabled" xml:space="preserve">
     <value>Valuta skapande har aktiverats på denna kanal.</value>
@@ -1299,7 +1268,6 @@ Glömm inte att lämna ditt discord namn eller id i meddelandet.
   </data>
   <data name="games_game_started" xml:space="preserve">
     <value>Spel börjat</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="games_hangman_game_started" xml:space="preserve">
     <value>Hänga gubbe har börjat</value>
@@ -1311,7 +1279,7 @@ Glömm inte att lämna ditt discord namn eller id i meddelandet.
     <value>Startar hänga gubbe errored.</value>
   </data>
   <data name="games_hangman_types" xml:space="preserve">
-    <value>Lista över "{0} hängagubbe" term typer:</value>
+    <value>Lista över &quot;{0} hängagubbe&quot; term typer:</value>
   </data>
   <data name="games_leaderboard" xml:space="preserve">
     <value>Ledartavla</value>
@@ -1324,7 +1292,6 @@ Glömm inte att lämna ditt discord namn eller id i meddelandet.
   </data>
   <data name="games_picked" xml:space="preserve">
     <value>plockade {0}</value>
-    <comment>Kwoth picked 5*</comment>
   </data>
   <data name="games_planted" xml:space="preserve">
     <value>{0} planterade {1}</value>
@@ -1368,18 +1335,15 @@ Glömm inte att lämna ditt discord namn eller id i meddelandet.
   </data>
   <data name="games_ttt_has_won" xml:space="preserve">
     <value>{0} har Vunnit! </value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="games_ttt_matched_three" xml:space="preserve">
     <value>Matchade Tre</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="games_ttt_no_moves" xml:space="preserve">
     <value>Inga drag kvar!</value>
   </data>
   <data name="games_ttt_time_expired" xml:space="preserve">
     <value>Tiden är Slut!</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="games_ttt_users_move" xml:space="preserve">
     <value>{0}s drag</value>
@@ -1402,12 +1366,8 @@ Glömm inte att lämna ditt discord namn eller id i meddelandet.
   <data name="music_dir_queue_complete" xml:space="preserve">
     <value>Katalog kö komplett.</value>
   </data>
-  <data name="music_fairplay" xml:space="preserve">
-    <value>rent spel</value>
-  </data>
   <data name="music_finished_song" xml:space="preserve">
     <value>Sång Avslutad</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="music_fp_disabled" xml:space="preserve">
     <value>Rent spel avaktiverat</value>
@@ -1444,7 +1404,6 @@ Glömm inte att lämna ditt discord namn eller id i meddelandet.
   </data>
   <data name="music_now_playing" xml:space="preserve">
     <value>Nu Spelas</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="music_no_player" xml:space="preserve">
     <value>Ingen aktiv musikspelare.</value>
@@ -1457,18 +1416,15 @@ Glömm inte att lämna ditt discord namn eller id i meddelandet.
   </data>
   <data name="music_player_queue" xml:space="preserve">
     <value>Spelar Kö - Sida {0}/{1}</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="music_playing_song" xml:space="preserve">
     <value>Spelar låt</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="music_playlists" xml:space="preserve">
     <value> `#{0}` - **{1}** by *{2}* ({3} låtar)</value>
   </data>
   <data name="music_playlists_page" xml:space="preserve">
     <value>Sida {0} av Sparade Spellistor</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="music_playlist_deleted" xml:space="preserve">
     <value>Spelllista borttagen.</value>
@@ -1484,7 +1440,6 @@ Glömm inte att lämna ditt discord namn eller id i meddelandet.
   </data>
   <data name="music_playlist_saved" xml:space="preserve">
     <value>Spellista Sparad</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="music_play_limit" xml:space="preserve">
     <value>{0}s gräns</value>
@@ -1494,7 +1449,6 @@ Glömm inte att lämna ditt discord namn eller id i meddelandet.
   </data>
   <data name="music_queued_song" xml:space="preserve">
     <value>Köad sång</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="music_queue_cleared" xml:space="preserve">
     <value>Musik kön rensad.</value>
@@ -1504,19 +1458,16 @@ Glömm inte att lämna ditt discord namn eller id i meddelandet.
   </data>
   <data name="music_removed_song" xml:space="preserve">
     <value>Tog bort låt</value>
-    <comment>context: "removed song #5"</comment>
+    <comment>context: &quot;removed song #5&quot;</comment>
   </data>
   <data name="music_repeating_cur_song" xml:space="preserve">
     <value>Repeterar Nuvarande Låt</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="music_repeating_playlist" xml:space="preserve">
     <value>Repeterar Spellistan</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="music_repeating_track" xml:space="preserve">
     <value>Repeterar Låt</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="music_repeating_track_stopped" xml:space="preserve">
     <value>Nuvarande låt repetering stoppad.</value>
@@ -1538,11 +1489,9 @@ Glömm inte att lämna ditt discord namn eller id i meddelandet.
   </data>
   <data name="music_songs_shuffled" xml:space="preserve">
     <value>Sånger blandade.</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="music_song_moved" xml:space="preserve">
     <value>Sång flyttad</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="music_time_format" xml:space="preserve">
     <value>{0}h {1}m {2}s</value>
@@ -1588,6 +1537,7 @@ Glömm inte att lämna ditt discord namn eller id i meddelandet.
   </data>
   <data name="permissions_blacklisted" xml:space="preserve">
     <value>Svartlistat {0} med ID {1}</value>
+    <comment>Il ne s&apos;agit pas d&apos;un ban mais d&apos;une blacklist interdisant l&apos;utilisateur d&apos;utiliser le bot.</comment>
   </data>
   <data name="permissions_cmdcd_add" xml:space="preserve">
     <value>Kommando {0} har nu {1}s väntetid.</value>
@@ -1750,16 +1700,12 @@ Glömm inte att lämna ditt discord namn eller id i meddelandet.
   </data>
   <data name="searches_compet_loses" xml:space="preserve">
     <value>Kompetitiva Förluster</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="searches_compet_played" xml:space="preserve">
     <value>Kompetitiva Spelade</value>
-    <comment>Enbart kompetitiva eller kompetitiva matcher? :thinking:
-Fuzzy</comment>
   </data>
   <data name="searches_compet_rank" xml:space="preserve">
     <value>Kompetitiv Rank</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="searches_compet_wins" xml:space="preserve">
     <value>Kompetitiva Vinster</value>
@@ -1781,7 +1727,7 @@ Fuzzy</comment>
   </data>
   <data name="searches_dropped" xml:space="preserve">
     <value>Övergivna</value>
-    <comment>Fuzzy</comment>
+    <comment>droppped as in, &quot;stopped watching&quot; referring to shows/anime</comment>
   </data>
   <data name="searches_episodes" xml:space="preserve">
     <value>Avsnitt</value>
@@ -1797,7 +1743,6 @@ Fuzzy</comment>
   </data>
   <data name="searches_failed_finding_manga" xml:space="preserve">
     <value>Kunde ej hitta den mangon.</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="searches_genres" xml:space="preserve">
     <value>Genres</value>
@@ -1816,7 +1761,6 @@ Fuzzy</comment>
   </data>
   <data name="searches_image_search_for" xml:space="preserve">
     <value>Bild Sökning För:</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="searches_imdb_fail" xml:space="preserve">
     <value>Kunde ej hitta den filmen.</value>
@@ -1835,7 +1779,7 @@ Fuzzy</comment>
   </data>
   <data name="searches_list_of_place_tags" xml:space="preserve">
     <value>Lista av {0} plats taggar</value>
-    <comment>Don't translate {0}place</comment>
+    <comment>Don&apos;t translate {0}place</comment>
   </data>
   <data name="searches_location" xml:space="preserve">
     <value>Plats</value>
@@ -1845,7 +1789,6 @@ Fuzzy</comment>
   </data>
   <data name="searches_mal_profile" xml:space="preserve">
     <value>{0}:s MAL profil</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="searches_mashape_api_missing" xml:space="preserve">
     <value>Bot ägare specificerade  inte MashapeApiKey. Du kan inte använda den här funktionen.</value>
@@ -1879,6 +1822,7 @@ Fuzzy</comment>
   </data>
   <data name="searches_plan_to_watch" xml:space="preserve">
     <value>Planerar att kolla</value>
+    <comment>Je ne pense pas que le sens de la traduction soit le bon.</comment>
   </data>
   <data name="searches_platform" xml:space="preserve">
     <value>Plattform</value>
@@ -1897,10 +1841,10 @@ Fuzzy</comment>
   </data>
   <data name="searches_quick_playtime" xml:space="preserve">
     <value>Snabb speltid</value>
+    <comment>Is this supposed to be Overwatch Quick Play stats?</comment>
   </data>
   <data name="searches_quick_wins" xml:space="preserve">
     <value>Snabba vinster</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="searches_rating" xml:space="preserve">
     <value>Betyg</value>
@@ -1910,7 +1854,7 @@ Fuzzy</comment>
   </data>
   <data name="searches_search_for" xml:space="preserve">
     <value>Leta efter:</value>
-    <comment>Fuzzy</comment>
+    <comment>recherche plutôt non ?</comment>
   </data>
   <data name="searches_shorten_fail" xml:space="preserve">
     <value>Misslyckades att förkorta den url.</value>
@@ -1949,7 +1893,7 @@ Fuzzy</comment>
     <value>Stream existerar förmodligen inte.</value>
   </data>
   <data name="searches_stream_removed" xml:space="preserve">
-    <value>Tog bort {0}'s stream från notifikationer.</value>
+    <value>Tog bort {0}&apos;s stream från notifikationer.</value>
   </data>
   <data name="searches_stream_tracked" xml:space="preserve">
     <value>Jag kommer notifikera denna kanal när status ändras.</value>
@@ -2036,7 +1980,6 @@ Fuzzy</comment>
   </data>
   <data name="utility_commands_ran" xml:space="preserve">
     <value>Kommandon Körda</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="utility_convert" xml:space="preserve">
     <value>{0} {1} är samma som {2} {3}</value>
@@ -2092,13 +2035,11 @@ Fuzzy</comment>
   </data>
   <data name="utility_joined_server" xml:space="preserve">
     <value>Gick med Server</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="utility_listservers" xml:space="preserve">
     <value>ID: {0}
 Medlemmar: {1}
 ÄgarID: {2}</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="utility_listservers_none" xml:space="preserve">
     <value>Inga servrar funna på den sidan.</value>
@@ -2135,6 +2076,7 @@ Medlemmar: {1}
   </data>
   <data name="utility_no_shards_on_page" xml:space="preserve">
     <value>Inga shards på denna sida.</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="utility_no_topic_set" xml:space="preserve">
     <value>Inget ämne satt</value>
@@ -2227,16 +2169,18 @@ Medlemmar: {1}
   </data>
   <data name="utility_server_info" xml:space="preserve">
     <value>Server Information</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="utility_shard" xml:space="preserve">
     <value>Shard</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="utility_shard_stats" xml:space="preserve">
     <value>Shard status</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="utility_shard_stats_txt" xml:space="preserve">
     <value>Shard **#{0}** är i {1} status med {2} servers</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="utility_showemojis" xml:space="preserve">
     <value>**Namn:** {0} **Länk:** {1}</value>
@@ -2249,7 +2193,6 @@ Medlemmar: {1}
   </data>
   <data name="utility_text_channels" xml:space="preserve">
     <value>Textkanaler</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="utility_togtub_room_link" xml:space="preserve">
     <value>Här är länken till ditt rum:</value>
@@ -2266,9 +2209,71 @@ Medlemmar: {1}
   </data>
   <data name="utility_voice_channels" xml:space="preserve">
     <value>Röstkanaler</value>
-    <comment>Fuzzy</comment>
+  </data>
+  <data name="utility_changelog_additions" xml:space="preserve">
+    <value>tillägg:</value>
+  </data>
+  <data name="utility_changelog_additions_msg" xml:space="preserve">
+    <value>Ingen</value>
+  </data>
+  <data name="utility_changelog_fixes" xml:space="preserve">
+    <value>korrigeringar:</value>
+  </data>
+  <data name="utility_changelog_fixes_msg" xml:space="preserve">
+    <value>`1.` Fast saker.
+`2.` Förändrat en sträng.
+`3.` Fast Citat Command.</value>
+  </data>
+  <data name="utility_changelog_footer" xml:space="preserve">
+    <value>Mer info på: http://github.com/Wizkiller96/WizBot</value>
+  </data>
+  <data name="utility_changelog_removals" xml:space="preserve">
+    <value>upptag:</value>
+  </data>
+  <data name="utility_changelog_removals_msg" xml:space="preserve">
+    <value>Ingen</value>
+  </data>
+  <data name="utility_changelog_title_date" xml:space="preserve">
+    <value>WizBot ändringsloggar | 📅 4 mars, 2017</value>
+  </data>
+  <data name="gambling_animal_race_already_started" xml:space="preserve">
+    <value>Djur lopp körs redan.</value>
+  </data>
+  <data name="music_fairplay" xml:space="preserve">
+    <value>rent spel</value>
   </data>
   <data name="gambling_animal_race_already_in" xml:space="preserve">
     <value>Du har redan gått med detta lopp!</value>
   </data>
+  <data name="games_current_poll_results" xml:space="preserve">
+    <value>Nuvarande enkät resultat</value>
+  </data>
+  <data name="games_no_votes_cast" xml:space="preserve">
+    <value>Inga röster</value>
+  </data>
+  <data name="games_poll_already_running" xml:space="preserve">
+    <value>Poll körs redan på den här servern.</value>
+  </data>
+  <data name="games_poll_created" xml:space="preserve">
+    <value>📃 {0} har skapat en enkät som kräver din uppmärksamhet:</value>
+  </data>
+  <data name="games_poll_result" xml:space="preserve">
+    <value>`{0}.` {1} med {2} röster.</value>
+  </data>
+  <data name="games_poll_voted" xml:space="preserve">
+    <value>{0} röstat.</value>
+  </data>
+  <data name="games_poll_vote_private" xml:space="preserve">
+    <value>Privat meddelande mig med motsvarande antal svaret.</value>
+  </data>
+  <data name="games_poll_vote_public" xml:space="preserve">
+    <value>Skicka ett meddelande här med motsvarande antal svaret.</value>
+  </data>
+  <data name="games_thanks_for_voting" xml:space="preserve">
+    <value>Tack för att rösta, {0}</value>
+  </data>
+  <data name="games_x_votes_cast" xml:space="preserve">
+    <value>{0} totala röster.</value>
+  </data>
+
 </root>
