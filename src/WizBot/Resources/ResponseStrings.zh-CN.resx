@@ -127,7 +127,7 @@
     <value>此基地还未被认领</value>
   </data>
   <data name="clashofclans_base_destroyed" xml:space="preserve">
-    <value>在与{1} 对战时**毁坏**基地 #{0}</value>
+    <value>{0} 在与{2} 对战时**毁坏**基地 #{1}</value>
   </data>
   <data name="clashofclans_base_unclaimed" xml:space="preserve">
     <value>{0} 在与 {2} 对战时 **取消认领** 基地 #{1}</value>
@@ -136,10 +136,10 @@
     <value>{0} 在与 {2} 对战时 **认领** 基地 #{1}</value>
   </data>
   <data name="clashofclans_claimed_other" xml:space="preserve">
-    <value>@{0} 您已认领基地 #{1}。您不能认领一个新的。</value>
+    <value>@{0} 您已认领基地 #{1}，不能再认领新的。</value>
   </data>
   <data name="clashofclans_claim_expired" xml:space="preserve">
-    <value>@{0} 在与 {1} 对战后认领的基地已过期。</value>
+    <value>@{0} 在与 {1} 对战时认领的基地已过期。</value>
   </data>
   <data name="clashofclans_enemy" xml:space="preserve">
     <value>敌人</value>
@@ -163,7 +163,7 @@
     <value>您并未参与此战争。</value>
   </data>
   <data name="clashofclans_not_partic_or_destroyed" xml:space="preserve">
-    <value>@{0} 您并未参与此战争或此基地已被毁坏。</value>
+    <value>@{0} 您并未参与此战争，或此基地已被毁坏。</value>
   </data>
   <data name="clashofclans_no_active_wars" xml:space="preserve">
     <value>现无战争进行。</value>
@@ -172,7 +172,7 @@
     <value>大小</value>
   </data>
   <data name="clashofclans_war_already_started" xml:space="preserve">
-    <value>与{0}的战争已开始。</value>
+    <value>与{0}的战争已经开始了。</value>
   </data>
   <data name="clashofclans_war_created" xml:space="preserve">
     <value>与{0}的战争已创建。</value>
@@ -185,13 +185,13 @@
     <value>此战争不存在。</value>
   </data>
   <data name="clashofclans_war_started" xml:space="preserve">
-    <value>与{0}的对战已开始！</value>
+    <value>与{0}的战争开始！</value>
   </data>
   <data name="customreactions_all_stats_cleared" xml:space="preserve">
     <value>所有定制反应清除。</value>
   </data>
   <data name="customreactions_deleted" xml:space="preserve">
-    <value>定制反应删除</value>
+    <value>定制反应删除。</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_insuff_perms" xml:space="preserve">
@@ -199,7 +199,7 @@
     <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_list_all" xml:space="preserve">
-    <value>列出所有定制反应</value>
+    <value>所有定制反应列表。</value>
   </data>
   <data name="customreactions_name" xml:space="preserve">
     <value>定制反应</value>
@@ -216,7 +216,7 @@
     <value>于此用户标识相联系的定制反应并未找到。</value>
   </data>
   <data name="customreactions_response" xml:space="preserve">
-    <value>回应</value>
+    <value>反应</value>
   </data>
   <data name="customreactions_stats" xml:space="preserve">
     <value>定制反应数据</value>
@@ -240,7 +240,7 @@
     <value>{0} 已昏厥。</value>
   </data>
   <data name="pokemon_already_full" xml:space="preserve">
-    <value>{0} 气血已满。</value>
+    <value>{0} HP已满。</value>
   </data>
   <data name="pokemon_already_that_type" xml:space="preserve">
     <value>您的属性已是 {0}</value>
@@ -259,13 +259,13 @@
     <value>{0} 已昏厥！</value>
   </data>
   <data name="pokemon_healed" xml:space="preserve">
-    <value>用 {1} 医好 {0}</value>
+    <value>用 {1} 治疗 {0}</value>
   </data>
   <data name="pokemon_hp_remaining" xml:space="preserve">
     <value>{0} 还剩余 {1} 生命值。 </value>
   </data>
   <data name="pokemon_invalid_move" xml:space="preserve">
-    <value>您不能使用{0}.  输入`{1}ml` 观看您能用的招式。</value>
+    <value>您不能使用{0}。输入`{1}ml` 观看您能用的招式。</value>
   </data>
   <data name="pokemon_moves" xml:space="preserve">
     <value>{0} 属性的招式列表</value>
@@ -292,7 +292,7 @@
     <value>效果绝佳！</value>
   </data>
   <data name="pokemon_too_many_moves" xml:space="preserve">
-    <value>您已一连使用太多招式，所以您不能行动！</value>
+    <value>您已连使用太多招式，因此不能行动！</value>
   </data>
   <data name="pokemon_type_of_user" xml:space="preserve">
     <value> {0} 的属性是 {1} </value>
@@ -304,10 +304,10 @@
     <value>您已昏厥所以不能移动！</value>
   </data>
   <data name="administration_aar_disabled" xml:space="preserve">
-    <value>**已解除**.为刚加入的用户 **自动指派身份** 的功能。</value>
+    <value>为刚加入的用户 **自动指派身份** 的功能**已解除**。</value>
   </data>
   <data name="administration_aar_enabled" xml:space="preserve">
-    <value>**已启动**.为刚加入的用户 **自动指派身份** 的功能。</value>
+    <value>为刚加入的用户 **自动指派身份** 的功能**已启动**。</value>
   </data>
   <data name="administration_attachments" xml:space="preserve">
     <value>附件</value>
@@ -316,15 +316,15 @@
     <value>头像更换成功。</value>
   </data>
   <data name="administration_bandm" xml:space="preserve">
-    <value>你已经被{0}服务器封号。
+    <value>你被{0}服务器禁止。
 原因： {1}</value>
   </data>
   <data name="administration_banned_pl" xml:space="preserve">
-    <value>你被禁止了</value>
+    <value>你已被禁止。</value>
     <comment>PLURAL</comment>
   </data>
   <data name="administration_banned_user" xml:space="preserve">
-    <value>用户禁止</value>
+    <value>此用户已被禁止。</value>
   </data>
   <data name="administration_bot_name" xml:space="preserve">
     <value>机器人名改成{0}</value>
@@ -403,19 +403,19 @@
     <value>成功添加新的捐赠者. 此用户总共捐赠了: {0}</value>
   </data>
   <data name="administration_donators" xml:space="preserve">
-    <value>感谢下面列出的人们使这个项目发生！</value>
+    <value>感谢下面列出的人们，没有他们的贡献，这个项目是不可能的！</value>
   </data>
   <data name="administration_fwall_start" xml:space="preserve">
     <value>我会将DM转发给所有业主。</value>
   </data>
   <data name="administration_fwall_stop" xml:space="preserve">
-    <value>我会将DM转发给第一个业主。</value>
+    <value>我只会将DM转发给第一个业主。</value>
   </data>
   <data name="administration_fwdm_start" xml:space="preserve">
-    <value>我将从现在起转发DMs。</value>
+    <value>我将从此开始转发私人信息。</value>
   </data>
   <data name="administration_fwdm_stop" xml:space="preserve">
-    <value>从现在开始我将停止转发DMs。</value>
+    <value>我将从此停止转发私人信息。</value>
   </data>
   <data name="administration_greetdel_off" xml:space="preserve">
     <value>已关闭自动删除欢迎消息。</value>
@@ -504,7 +504,7 @@
     <value>在此频道中记录{0}事件。</value>
   </data>
   <data name="administration_log_all" xml:space="preserve">
-    <value>记录频道中所有事件</value>
+    <value>正在记录频道中所有事件</value>
   </data>
   <data name="administration_log_disabled" xml:space="preserve">
     <value>记录功能取消</value>
@@ -538,7 +538,7 @@
     <value>在＃{0}中删除讯息</value>
   </data>
   <data name="administration_msg_update" xml:space="preserve">
-    <value>讯息在＃{0}中被更新</value>
+    <value>在＃{0}中讯息被更新</value>
   </data>
   <data name="administration_muted_pl" xml:space="preserve">
     <value>已静音</value>
@@ -556,7 +556,7 @@
     <comment>Fuzzy</comment>
   </data>
   <data name="administration_need_admin" xml:space="preserve">
-    <value>我需要**管理**权限才能做那个。</value>
+    <value>我需要**管理**权限才能那样做。</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="administration_new_msg" xml:space="preserve">
@@ -648,7 +648,7 @@
     <value>身份重命名失败。我的权限不足。</value>
   </data>
   <data name="administration_renrole_perms" xml:space="preserve">
-    <value>您不能编辑比你</value>
+    <value>您不能编辑高于最高身份的身份。</value>
   </data>
   <data name="administration_reprm" xml:space="preserve">
     <value>已移除游玩消息：{0}</value>
@@ -657,7 +657,7 @@
     <value>身份{0}已添加到列表中。</value>
   </data>
   <data name="administration_role_clean" xml:space="preserve">
-    <value>{0}未找到。已清理。</value>
+    <value>{0}未找到。{0}已被清理。</value>
   </data>
   <data name="administration_role_in_list" xml:space="preserve">
     <value>身份{0}已在列表中。</value>
@@ -701,7 +701,7 @@
     <comment>Je ne pense pas que ce soit la bonne traduction.. self-assignable role serait plutôt rôle auto-attribuable</comment>
   </data>
   <data name="administration_self_assign_perms" xml:space="preserve">
-    <value>我无法向您添加该身份。 ‘我不能向身份层次结构中我身份以外的所有者或其他身份添加身份。’</value>
+    <value>我无法向您添加该身份。 ‘我不能向身份层次结构中高于我身份的所有者或其他身份添加身份。’</value>
   </data>
   <data name="administration_self_assign_rem" xml:space="preserve">
     <value>{0}已从可自我分配身份列表中删除。</value>
@@ -719,7 +719,7 @@
     <value>无法添加身份。 我没有足够的权限。</value>
   </data>
   <data name="administration_set_avatar" xml:space="preserve">
-    <value>新头像集！</value>
+    <value>新头像设定！</value>
   </data>
   <data name="administration_set_channel_name" xml:space="preserve">
     <value>新频道名称设定。</value>
@@ -732,7 +732,7 @@
     <value>新直播设定！</value>
   </data>
   <data name="administration_set_topic" xml:space="preserve">
-    <value>新频道主题集。</value>
+    <value>新频道主题设定。</value>
   </data>
   <data name="administration_shard_reconnected" xml:space="preserve">
     <value>分段{0}已重新连接。</value>
@@ -762,7 +762,7 @@
     <value>{0}将忽略此通道。</value>
   </data>
   <data name="administration_spam_not_ignore" xml:space="preserve">
-    <value>0}将不再忽略此通道。</value>
+    <value>{0}将不再忽略此通道。</value>
   </data>
   <data name="administration_spam_stats" xml:space="preserve">
     <value>如果用户发布{0}个相同的消息，我会{1}他们。
@@ -806,7 +806,7 @@
     <value>用户离开了</value>
   </data>
   <data name="administration_user_muted" xml:space="preserve">
-    <value>{0} 已被文字与语音静音了</value>
+    <value>{0} 已从文字与语音频道被静音</value>
   </data>
   <data name="administration_user_role_add" xml:space="preserve">
     <value>用户身份添加成功</value>
@@ -830,10 +830,10 @@
     <value>{0}已从{1}移至{2}语音通道。</value>
   </data>
   <data name="administration_user_voice_mute" xml:space="preserve">
-    <value>{0}已被**静音**。</value>
+    <value>{0}已从语音频道被**静音**。</value>
   </data>
   <data name="administration_user_voice_unmute" xml:space="preserve">
-    <value>{0}已被**取消静音**。</value>
+    <value>{0}已从语音频道被**取消静音**。</value>
   </data>
   <data name="administration_voice_chan_created" xml:space="preserve">
     <value>语音频道已创建</value>
@@ -849,13 +849,13 @@
     <value>启用语音+文字功能。</value>
   </data>
   <data name="administration_vt_exit" xml:space="preserve">
-    <value>我没有**管理身份**和/或**管理频道**权限，所以我不能在{0}服务器上运行`语音+文字`。</value>
+    <value>我没有**管理身份**和/或**管理频道**权限，所以不能在{0}服务器上运行`语音+文字`。</value>
   </data>
   <data name="administration_vt_no_admin" xml:space="preserve">
     <value>您正在启用/禁用此功能，并且**我没有ADMINISTRATOR权限**。 这可能会导致一些问题，您必须自己清理文本频道。</value>
   </data>
   <data name="administration_vt_perms" xml:space="preserve">
-    <value>我需要至少**管理身份**和**管理频道**权限，以启用此功能。 （优先管理权限）</value>
+    <value>我需要至少**管理身份**和**管理频道**权限才能启用此功能。 （优先管理权限）</value>
   </data>
   <data name="administration_xmuted_text" xml:space="preserve">
     <value>用户{0}来自文字频道</value>
@@ -883,7 +883,7 @@
     <value>在线状态更新</value>
   </data>
   <data name="administration_sb_user" xml:space="preserve">
-    <value>用户被软禁用</value>
+    <value>用户被软禁止</value>
   </data>
   <data name="gambling_awarded" xml:space="preserve">
     <value>已将{0}奖励给{1}</value>
@@ -892,17 +892,17 @@
     <value>下一次好运^ _ ^</value>
   </data>
   <data name="gambling_br_win" xml:space="preserve">
-    <value>恭喜！ 您赢得{0}因为您滚{1}或以上</value>
+    <value>恭喜！您滚{1}或以上而赢得{0}！</value>
   </data>
   <data name="gambling_deck_reshuffled" xml:space="preserve">
-    <value>卡牌改组。</value>
+    <value>洗牌成功。</value>
   </data>
   <data name="gambling_flipped" xml:space="preserve">
     <value>抛了{0}。</value>
     <comment>User flipped tails.</comment>
   </data>
   <data name="gambling_flip_guess" xml:space="preserve">
-    <value>你猜到了！ 您赢得了{0}</value>
+    <value>猜到了！ 您赢得了{0}</value>
   </data>
   <data name="gambling_flip_invalid" xml:space="preserve">
     <value>指定的数字无效。 你可以抛1到{0}钱币。</value>
@@ -917,7 +917,7 @@
     <value>花反应活动开始了！</value>
   </data>
   <data name="gambling_gifted" xml:space="preserve">
-    <value>给了{1}{0}</value>
+    <value>{1}送给了{0}</value>
     <comment>X has gifted 15 flowers to Y</comment>
   </data>
   <data name="gambling_has" xml:space="preserve">
@@ -943,7 +943,7 @@
     <value>您没有足够的{0}</value>
   </data>
   <data name="gambling_no_more_cards" xml:space="preserve">
-    <value>卡牌组中没有更多的牌。</value>
+    <value>已没有有更多的牌。</value>
   </data>
   <data name="gambling_raffled_user" xml:space="preserve">
     <value>抽奖用户</value>
@@ -958,10 +958,10 @@
     <value>哇啊啊啊啊啊啊！ 恭喜！ x {0}</value>
   </data>
   <data name="gambling_slot_single" xml:space="preserve">
-    <value>单个{0}，x {1}</value>
+    <value>单{0}，x {1}</value>
   </data>
   <data name="gambling_slot_three" xml:space="preserve">
-    <value>哇！好运！ 三个相同！ x {0}</value>
+    <value>哇！好运！ 三条！ x {0}</value>
   </data>
   <data name="gambling_slot_two" xml:space="preserve">
     <value>做得好！ 两个{0} - 投注x {1}</value>
@@ -998,7 +998,7 @@
     <value>需要{0}频道权限。</value>
   </data>
   <data name="help_cmdlist_donate" xml:space="preserve">
-    <value>您可以在patreon上支持项目：&lt;{0}&gt;或paypal：&lt;{1}&gt;</value>
+    <value>您可以在patreon：&lt;{0}&gt;或paypal：&lt;{1}&gt;上支持此项目</value>
   </data>
   <data name="help_cmd_and_alias" xml:space="preserve">
     <value>命令和别名</value>
@@ -1020,7 +1020,7 @@
 Patreon &lt;{0}&gt;或
 Paypal &lt;{1}&gt;
 上支持WizBot
-不要忘记在邮件中留下您的不和名字或ID。
+请不要忘记在邮件中留下您的Discord名字或ID。
 
 **谢谢**♥️</value>
   </data>
@@ -1035,7 +1035,7 @@ Paypal &lt;{1}&gt;
     <value>组件列表</value>
   </data>
   <data name="help_modules_footer" xml:space="preserve">
-    <value>输入“{0} cmds ModuleName”以获取该组件中的命令列表。 例如`{0} cmds games`</value>
+    <value>输入“{0} cmds ModuleName”可获取该组件中的命令列表。 例如`{0} cmds games`</value>
   </data>
   <data name="help_module_not_found" xml:space="preserve">
     <value>该组件不存在。</value>
@@ -1060,7 +1060,7 @@ Paypal &lt;{1}&gt;
     <value>动物竞赛</value>
   </data>
   <data name="gambling_animal_race_failed" xml:space="preserve">
-    <value>启动失败，因为没有足够的参与者。</value>
+    <value>参与者不够，启动失败。</value>
   </data>
   <data name="gambling_animal_race_full" xml:space="preserve">
     <value>竞赛已满！ 立即开始。</value>
@@ -1084,7 +1084,7 @@ Paypal &lt;{1}&gt;
     <value>{0}为{1}赢得竞赛！</value>
   </data>
   <data name="gambling_animal_race_won_money" xml:space="preserve">
-    <value>0}为{1}赢得竞赛，和赢得{2}！</value>
+    <value>0}为{1}赢得竞赛和{2}！</value>
   </data>
   <data name="gambling_dice_invalid_number" xml:space="preserve">
     <value>指定的数字无效。 您可以一次滚动{0} - {1}骰子。</value>
@@ -1101,13 +1101,13 @@ Paypal &lt;{1}&gt;
     <value>竞赛启动失败。 另一个比赛可能正在运行。</value>
   </data>
   <data name="gambling_race_not_exist" xml:space="preserve">
-    <value>此服务器上不存在竞赛</value>
+    <value>此服务器上不存在任何竞赛</value>
   </data>
   <data name="gambling_second_larger_than_first" xml:space="preserve">
     <value>第二个数字必须大于第一个数字。</value>
   </data>
   <data name="gambling_changes_of_heart" xml:space="preserve">
-    <value>爱被改变</value>
+    <value>改变主意</value>
   </data>
   <data name="gambling_claimed_by" xml:space="preserve">
     <value>声称</value>
@@ -1140,10 +1140,10 @@ Paypal &lt;{1}&gt;
     <comment>Make sure to get the formatting right, and leave the thinking emoji</comment>
   </data>
   <data name="gambling_waifu_affinity_cooldown" xml:space="preserve">
-    <value>您必须等待{0}小时和{1}分钟才能再次更改您的兴趣。</value>
+    <value>您必须等待{0}小时{1}分钟才能再次更改您的兴趣。</value>
   </data>
   <data name="gambling_waifu_affinity_reset" xml:space="preserve">
-    <value>您的兴趣已重置。 你不再有你喜欢的人。</value>
+    <value>您的兴趣已重置，不再有你喜欢的人。</value>
   </data>
   <data name="gambling_waifu_affinity_set" xml:space="preserve">
     <value>想成为{0}的waifu。哇非常可爱&lt;3</value>
@@ -1152,17 +1152,17 @@ Paypal &lt;{1}&gt;
     <value>声明{0}为他的waifu，花了{1}！</value>
   </data>
   <data name="gambling_waifu_divorced_like" xml:space="preserve">
-    <value>你已经离婚了一个喜欢你的waifu。 你无情的怪物。
+    <value>你离婚了一个喜欢你的waifu。 你这个无情的怪物。
 {0}收到了{1}作为补偿。</value>
   </data>
   <data name="gambling_waifu_divorced_notlike" xml:space="preserve">
     <value>你离婚了一个不喜欢你的waifu。 您收到了{0}。</value>
   </data>
   <data name="gambling_waifu_egomaniac" xml:space="preserve">
-    <value>你不能设置兴趣自己，你好自卑。</value>
+    <value>你不能设置自己为兴趣，你好自卑。</value>
   </data>
   <data name="gambling_waifu_fulfilled" xml:space="preserve">
-    <value>🎉他的爱实现！ 🎉
+    <value>🎉他们的爱实现！ 🎉
 {0}的新值为{1}！</value>
   </data>
   <data name="gambling_waifu_isnt_cheap" xml:space="preserve">
@@ -1172,13 +1172,13 @@ Paypal &lt;{1}&gt;
     <value>您必须支付{0}或更多才能认领那个waifu！</value>
   </data>
   <data name="gambling_waifu_not_yours" xml:space="preserve">
-    <value>那waifu不是你的。</value>
+    <value>那个waifu不是你的。</value>
   </data>
   <data name="gambling_waifu_not_yourself" xml:space="preserve">
     <value>你不能认领自己。</value>
   </data>
   <data name="gambling_waifu_recent_divorce" xml:space="preserve">
-    <value>你最近离婚了。 您必须等待{0}小时和{1}分钟再次离婚。</value>
+    <value>你最近离婚了。 您必须等待{0}小时{1}分钟再次离婚。</value>
   </data>
   <data name="games_8ball" xml:space="preserve">
     <value>8ball</value>
@@ -2240,6 +2240,36 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="gambling_animal_race_already_in" xml:space="preserve">
     <value>你已经加入了这场比赛！</value>
+  </data>
+  <data name="games_current_poll_results" xml:space="preserve">
+    <value>当前投票结果</value>
+  </data>
+  <data name="games_no_votes_cast" xml:space="preserve">
+    <value>没有投票。</value>
+  </data>
+  <data name="games_poll_already_running" xml:space="preserve">
+    <value>投票已在此服务器上运行。</value>
+  </data>
+  <data name="games_poll_created" xml:space="preserve">
+    <value>📃{0}已创建一个需要您注意的投票：</value>
+  </data>
+  <data name="games_poll_result" xml:space="preserve">
+    <value>`{0}.` {1} {2}投票。</value>
+  </data>
+  <data name="games_poll_voted" xml:space="preserve">
+    <value>{0}投了票。</value>
+  </data>
+  <data name="games_poll_vote_private" xml:space="preserve">
+    <value>私人消息我与相应的数字的答案。</value>
+  </data>
+  <data name="games_poll_vote_public" xml:space="preserve">
+    <value>发送消息在这里与相应的数字的答案。</value>
+  </data>
+  <data name="games_thanks_for_voting" xml:space="preserve">
+    <value>谢谢投票，{0}</value>
+  </data>
+  <data name="games_x_votes_cast" xml:space="preserve">
+    <value>{0}投票总数。</value>
   </data>
 
 </root>
