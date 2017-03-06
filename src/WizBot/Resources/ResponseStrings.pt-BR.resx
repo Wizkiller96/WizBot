@@ -2239,5 +2239,35 @@ OwnerID: {2}</value>
   <data name="gambling_animal_race_already_in" xml:space="preserve">
     <value>Você já se juntou a esta corrida!</value>
   </data>
+  <data name="games_current_poll_results" xml:space="preserve">
+    <value>Resultados da pesquisa atual</value>
+  </data>
+  <data name="games_no_votes_cast" xml:space="preserve">
+    <value>Nenhum voto.</value>
+  </data>
+  <data name="games_poll_already_running" xml:space="preserve">
+    <value>A pesquisa já está em execução neste servidor.</value>
+  </data>
+  <data name="games_poll_created" xml:space="preserve">
+    <value>📃 {0} criou uma pesquisa que requer sua atenção:</value>
+  </data>
+  <data name="games_poll_result" xml:space="preserve">
+    <value>`{0}.` {1} com {2} votos</value>
+  </data>
+  <data name="games_poll_voted" xml:space="preserve">
+    <value>{0} Votado</value>
+  </data>
+  <data name="games_poll_vote_private" xml:space="preserve">
+    <value>Mensagem Privada me com o número correspondente da resposta.</value>
+  </data>
+  <data name="games_poll_vote_public" xml:space="preserve">
+    <value>Envie uma mensagem aqui com o número correspondente da resposta.</value>
+  </data>
+  <data name="games_thanks_for_voting" xml:space="preserve">
+    <value>Obrigado por votar, {0}</value>
+  </data>
+  <data name="games_x_votes_cast" xml:space="preserve">
+    <value>{0} total de votos expressos.</value>
+  </data>
 
 </root>
