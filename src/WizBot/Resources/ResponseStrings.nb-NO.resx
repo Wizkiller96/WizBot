@@ -130,7 +130,7 @@
     <value>**ØDELAGT** base #{0} i en krig mot {1}</value>
   </data>
   <data name="clashofclans_base_unclaimed" xml:space="preserve">
-    <value />
+    <value>{0} har **ikke er blitt gjort** basen #{1} i en krig mot {2}</value>
   </data>
   <data name="clashofclans_claimed_base" xml:space="preserve">
     <value>{0} har hevdet en base #{1} i en krig mot {2}</value>
@@ -140,7 +140,6 @@
   </data>
   <data name="clashofclans_claim_expired" xml:space="preserve">
     <value>Krav fra @{0} for en krig mot {1} har utløpt.</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_enemy" xml:space="preserve">
     <value>Fiende</value>
@@ -153,11 +152,9 @@
   </data>
   <data name="clashofclans_invalid_size" xml:space="preserve">
     <value>Ikke en gyldig krigstørrelse</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_list_active_wars" xml:space="preserve">
     <value>Liste over aktive kriger</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_not_claimed" xml:space="preserve">
     <value>ikke hevdet</value>
@@ -170,7 +167,6 @@
   </data>
   <data name="clashofclans_no_active_wars" xml:space="preserve">
     <value>Ingen aktive kriger.</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_size" xml:space="preserve">
     <value>Størrelse</value>
@@ -180,6 +176,7 @@
   </data>
   <data name="clashofclans_war_created" xml:space="preserve">
     <value>Krig mot {0} opprettet.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_war_ended" xml:space="preserve">
     <value>Krig mot {0} avsluttet.</value>
@@ -195,25 +192,28 @@
   </data>
   <data name="customreactions_deleted" xml:space="preserve">
     <value>Tilpasset reaksjon fjernet</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_insuff_perms" xml:space="preserve">
     <value>Utilstrekkelig tilgang. Krever Bot-eierskap for globale tilpassede reaksjoner, og Administrator for server reaksjoner.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_list_all" xml:space="preserve">
     <value>Liste av alel tilpassede reaksjoner.</value>
   </data>
   <data name="customreactions_name" xml:space="preserve">
     <value>Tilpassede reaksjoner.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_new_cust_react" xml:space="preserve">
     <value>Ny tilpasset reaksjon</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_no_found" xml:space="preserve">
     <value>Ingen tilpasset reaksjon funnet.</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_no_found_id" xml:space="preserve">
-    <value>Ingen tilpasset reaksjon funnet med den ID'en.</value>
+    <value>Ingen tilpasset reaksjon funnet med den ID&apos;en.</value>
   </data>
   <data name="customreactions_response" xml:space="preserve">
     <value>Respons</value>
@@ -251,7 +251,6 @@
   </data>
   <data name="pokemon_cant_attack_again" xml:space="preserve">
     <value>Du kan ikke angripe igjen uten motstanderens hevn.</value>
-    <comment>Sjekk om Kwoth oppdaterer original setningen senere. Har sendt forslag om endring.</comment>
   </data>
   <data name="pokemon_cant_attack_yourself" xml:space="preserve">
     <value>Du kan ikke angripe deg selv.</value>
@@ -334,25 +333,25 @@ Grunn: {1}</value>
     <value>Bot status endret til {0}</value>
   </data>
   <data name="administration_byedel_off" xml:space="preserve">
-    <value>Automatisk sletting av 'farvel'-meldinger er aktivert</value>
+    <value>Automatisk sletting av &apos;farvel&apos;-meldinger er aktivert</value>
   </data>
   <data name="administration_byedel_on" xml:space="preserve">
     <value>Farvel-meldinger vil bli slettet etter {0} sekunder.</value>
   </data>
   <data name="administration_byemsg_cur" xml:space="preserve">
-    <value>Nåværende 'farvel'-melding: {0}</value>
+    <value>Nåværende &apos;farvel&apos;-melding: {0}</value>
   </data>
   <data name="administration_byemsg_enable" xml:space="preserve">
-    <value>Aktivér 'farvel'-meldinger ved å skrive {0}</value>
+    <value>Aktivér &apos;farvel&apos;-meldinger ved å skrive {0}</value>
   </data>
   <data name="administration_byemsg_new" xml:space="preserve">
-    <value>Ny 'farvel'-melding satt.</value>
+    <value>Ny &apos;farvel&apos;-melding satt.</value>
   </data>
   <data name="administration_bye_off" xml:space="preserve">
-    <value>'farvel'-kunngjøringer deaktivert.</value>
+    <value>&apos;farvel&apos;-kunngjøringer deaktivert.</value>
   </data>
   <data name="administration_bye_on" xml:space="preserve">
-    <value>'farvel'-kunngjøringer aktivert i denne kanalen.</value>
+    <value>&apos;farvel&apos;-kunngjøringer aktivert i denne kanalen.</value>
   </data>
   <data name="administration_ch_name_change" xml:space="preserve">
     <value>Kanalnavn endret.</value>
@@ -380,6 +379,7 @@ Grunn: {1}</value>
   </data>
   <data name="administration_deafen" xml:space="preserve">
     <value>Demping vellykket.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_deleted_server" xml:space="preserve">
     <value>Slettet server {0}</value>
@@ -474,20 +474,18 @@ Grunn: {1}</value>
   </data>
   <data name="administration_kicked_user" xml:space="preserve">
     <value>Bruker sparket</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_lang_list" xml:space="preserve">
     <value>Liste over språk {0}</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_lang_set" xml:space="preserve">
-    <value>Din servers' lokasjon er nå {0} - {1}</value>
+    <value>Din servers&apos; lokasjon er nå {0} - {1}</value>
   </data>
   <data name="administration_lang_set_bot" xml:space="preserve">
-    <value>Bot'ens standard språk er satt til {1} - {1}</value>
+    <value>Bot&apos;ens standard språk er satt til {1} - {1}</value>
   </data>
   <data name="administration_lang_set_bot_show" xml:space="preserve">
-    <value>Bot'ens språk er satt til {0} - {1}</value>
+    <value>Bot&apos;ens språk er satt til {0} - {1}</value>
   </data>
   <data name="administration_lang_set_fail" xml:space="preserve">
     <value>Kunne ikke sette språk. Vennligst sjekk denne kommandoens bruksinformasjon.</value>
@@ -526,21 +524,20 @@ Grunn: {1}</value>
     <value>{0} har påkalt en nevnelse av følgende roller</value>
   </data>
   <data name="administration_message_from_bo" xml:space="preserve">
-    <value>Melding fra {0} '[Bot Eier]':</value>
+    <value>Melding fra {0} &apos;[Bot Eier]&apos;:</value>
   </data>
   <data name="administration_message_sent" xml:space="preserve">
     <value>Melding sendt.</value>
   </data>
   <data name="administration_moved" xml:space="preserve">
     <value>{0} flyttet fra {1} til {2}</value>
+    <comment>L&apos;utilisateur n&apos;a pas forcément été déplacé de son plein gré. S&apos;est déplacé - déplacé</comment>
   </data>
   <data name="administration_msg_del" xml:space="preserve">
     <value>Melding slettet i #{0}</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_msg_update" xml:space="preserve">
     <value>Melding oppdatert i #{0}</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_muted_pl" xml:space="preserve">
     <value>Dempet</value>
@@ -548,50 +545,46 @@ Grunn: {1}</value>
   </data>
   <data name="administration_muted_sn" xml:space="preserve">
     <value>Dempet</value>
-    <comment>singular "User muted."</comment>
+    <comment>singular &quot;User muted.&quot;</comment>
   </data>
   <data name="administration_mute_error" xml:space="preserve">
     <value>Jeg har mest sannsynlig ikke de nødvendige tillatelsene til det.</value>
   </data>
   <data name="administration_mute_role_set" xml:space="preserve">
-    <value>Ny 'dempet'-rolle satt.</value>
+    <value>Ny &apos;dempet&apos;-rolle satt.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_need_admin" xml:space="preserve">
     <value>Jeg trenger **Administrasjon** tillatelse til å gjøre det.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_new_msg" xml:space="preserve">
     <value>Ny Melding</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_new_nick" xml:space="preserve">
     <value>Nytt kallenavn</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_new_topic" xml:space="preserve">
     <value>Nytt emne</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_nick_change" xml:space="preserve">
     <value>Kallenavn endret.</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_no_server" xml:space="preserve">
     <value>Kan ikke finne den serveren</value>
   </data>
   <data name="administration_no_shard_id" xml:space="preserve">
     <value>Ingen shard med den IDen funnet.</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="administration_old_msg" xml:space="preserve">
     <value>Gammel melding</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_old_nick" xml:space="preserve">
     <value>Gammelt kallenavn</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_old_topic" xml:space="preserve">
     <value>Gammelt emne</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_perms" xml:space="preserve">
     <value>Feil. Mest sansynlig har jeg ikke tilstrekkelige tillatelser.</value>
@@ -601,7 +594,6 @@ Grunn: {1}</value>
   </data>
   <data name="administration_prot_active" xml:space="preserve">
     <value>Aktive Beskyttelser</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_prot_disable" xml:space="preserve">
     <value>{0} har blitt **deaktivert** på denne serveren.</value>
@@ -610,11 +602,10 @@ Grunn: {1}</value>
     <value>{0} aktivert</value>
   </data>
   <data name="administration_prot_error" xml:space="preserve">
-    <value>Feil. Jeg trenger "Behandle roller" tillatelse.</value>
+    <value>Feil. Jeg trenger &quot;Behandle roller&quot; tillatelse.</value>
   </data>
   <data name="administration_prot_none" xml:space="preserve">
     <value>Ingen beskyttelser aktivert</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_raid_cnt" xml:space="preserve">
     <value>Bruker terskelen må være mellom {0} og {1}</value>
@@ -659,7 +650,7 @@ Grunn: {1}</value>
     <value>Du kan ikke endre på roller som er høyere enn din i hierarkiet.</value>
   </data>
   <data name="administration_reprm" xml:space="preserve">
-    <value>Fjernet 'Spiller'-melding: {0}</value>
+    <value>Fjernet &apos;Spiller&apos;-melding: {0}</value>
   </data>
   <data name="administration_role_added" xml:space="preserve">
     <value>Roller {0} er lagt til i listen</value>
@@ -674,10 +665,10 @@ Grunn: {1}</value>
     <value>Lagt til.</value>
   </data>
   <data name="administration_ropl_disabled" xml:space="preserve">
-    <value>Roterende 'spiller'-status deaktivert.</value>
+    <value>Roterende &apos;spiller&apos;-status deaktivert.</value>
   </data>
   <data name="administration_ropl_enabled" xml:space="preserve">
-    <value>Roterende 'spiller'-status aktivert.</value>
+    <value>Roterende &apos;spiller&apos;-status aktivert.</value>
   </data>
   <data name="administration_ropl_list" xml:space="preserve">
     <value>Liste med roterende statuser:
@@ -706,6 +697,7 @@ Grunn: {1}</value>
   </data>
   <data name="administration_self_assign_no_excl" xml:space="preserve">
     <value>Selvsettende roller er nå ikke eksklusive!</value>
+    <comment>Je ne pense pas que ce soit la bonne traduction.. self-assignable role serait plutôt rôle auto-attribuable</comment>
   </data>
   <data name="administration_self_assign_perms" xml:space="preserve">
     <value>Jeg kan ikke gi deg den rollen.
@@ -734,6 +726,7 @@ Grunn: {1}</value>
   </data>
   <data name="administration_set_game" xml:space="preserve">
     <value>Nytt spill satt.</value>
+    <comment>Pour &quot;set&quot;, je pense que défini irait mieux que &quot;en service&quot;</comment>
   </data>
   <data name="administration_set_stream" xml:space="preserve">
     <value>Ny strøm satt.</value>
@@ -743,9 +736,11 @@ Grunn: {1}</value>
   </data>
   <data name="administration_shard_reconnected" xml:space="preserve">
     <value>Shard {0} gjentilkoblet.</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="administration_shard_reconnecting" xml:space="preserve">
     <value>Kobler til shard {0} på nytt</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="administration_shutting_down" xml:space="preserve">
     <value>Avslutter</value>
@@ -775,11 +770,9 @@ __IgnoredChannels__: {2}</value>
   </data>
   <data name="administration_text_chan_created" xml:space="preserve">
     <value>Tekstkanal opprettet</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_text_chan_destroyed" xml:space="preserve">
     <value>Tekstkanal fjernet</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_undeafen" xml:space="preserve">
     <value>Demping fjernet</value>
@@ -793,14 +786,12 @@ __IgnoredChannels__: {2}</value>
   </data>
   <data name="administration_username_changed" xml:space="preserve">
     <value>Brukernavn endret</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_users" xml:space="preserve">
     <value>Brukere</value>
   </data>
   <data name="administration_user_banned" xml:space="preserve">
     <value>Bruker utestengt</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_chat_mute" xml:space="preserve">
     <value>{0} har blit **dempet** fra å chatte.</value>
@@ -810,22 +801,18 @@ __IgnoredChannels__: {2}</value>
   </data>
   <data name="administration_user_joined" xml:space="preserve">
     <value>Bruker ble med i samtalen.</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_left" xml:space="preserve">
     <value>Bruker Forlatt.</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_muted" xml:space="preserve">
     <value>{0} har blitt **dempet** fra tekst og talekanaler.</value>
   </data>
   <data name="administration_user_role_add" xml:space="preserve">
     <value>Brukerrolle lagt til</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_role_rem" xml:space="preserve">
     <value>Brukerrolle fjernet</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_status_change" xml:space="preserve">
     <value>{0} er nå {1}</value>
@@ -850,11 +837,10 @@ __IgnoredChannels__: {2}</value>
   </data>
   <data name="administration_voice_chan_created" xml:space="preserve">
     <value>Talekanal laget</value>
-    <comment>Fuzzy</comment>
+    <comment>Should say &quot;Voice Channel Created&quot;</comment>
   </data>
   <data name="administration_voice_chan_destroyed" xml:space="preserve">
     <value>Talekanal fjernet</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_vt_disabled" xml:space="preserve">
     <value>Deaktivert tale + tekst funksjon.</value>
@@ -881,7 +867,7 @@ __IgnoredChannels__: {2}</value>
     <value>Bruker {0} fra stemmechat</value>
   </data>
   <data name="administration_sbdm" xml:space="preserve">
-    <value>Du har blitt 'soft-banned' fra {0} server.
+    <value>Du har blitt &apos;soft-banned&apos; fra {0} server.
 Grunn: {1}</value>
   </data>
   <data name="administration_user_unbanned" xml:space="preserve">
@@ -940,7 +926,6 @@ Grunn: {1}</value>
   </data>
   <data name="gambling_heads" xml:space="preserve">
     <value>Mynt</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_leaderboard" xml:space="preserve">
     <value>Resultattavle</value>
@@ -996,7 +981,6 @@ Varer i {1} sekunder. Ikke si det til noen. Shhh.</value>
   </data>
   <data name="gambling_tails" xml:space="preserve">
     <value>Kron</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_take" xml:space="preserve">
     <value>vellykket i og ta {0} fra {1}</value>
@@ -1009,7 +993,6 @@ Varer i {1} sekunder. Ikke si det til noen. Shhh.</value>
   </data>
   <data name="help_bot_owner_only" xml:space="preserve">
     <value>Kun boteier</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="help_channel_permission" xml:space="preserve">
     <value>Krever {0} kanal tillatelse.</value>
@@ -1046,14 +1029,12 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
   </data>
   <data name="help_list_of_commands" xml:space="preserve">
     <value>Liste av kommandoer</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="help_list_of_modules" xml:space="preserve">
     <value>Liste av moduler</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="help_modules_footer" xml:space="preserve">
-    <value />
+    <value>Type `{0}cmds ModuleName` å få en liste over kommandoer i den modulen. f.eks `{0}cmds games`</value>
   </data>
   <data name="help_module_not_found" xml:space="preserve">
     <value>Den modulen finnes ikke.</value>
@@ -1063,7 +1044,6 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
   </data>
   <data name="help_table_of_contents" xml:space="preserve">
     <value>Innholdsfortegnelse</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="help_usage" xml:space="preserve">
     <value>Bruk</value>
@@ -1126,17 +1106,18 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
   </data>
   <data name="gambling_changes_of_heart" xml:space="preserve">
     <value>Ombestemmelser</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_claimed_by" xml:space="preserve">
     <value>Hevdet av</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_divorces" xml:space="preserve">
     <value>Skilsmisser</value>
   </data>
   <data name="gambling_likes" xml:space="preserve">
     <value>Liker</value>
+  </data>
+  <data name="gambling_nobody" xml:space="preserve">
+    <value>Ingen</value>
   </data>
   <data name="gambling_price" xml:space="preserve">
     <value>Pris</value>
@@ -1172,6 +1153,9 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
     <value>Du har skillt deg fra en waifu som liker deg, ditt hjerteløse monster!
 {0} fikk {1} som kompensation.</value>
   </data>
+  <data name="gambling_waifu_divorced_notlike" xml:space="preserve">
+    <value>Du har skilt deg fra en waifu som ikke liker deg. Du fikk {0} tilbake.</value>
+  </data>
   <data name="gambling_waifu_egomaniac" xml:space="preserve">
     <value>du kan ikke sette affiniteten din til deg selv, ditt egoistiske monster!</value>
   </data>
@@ -1193,12 +1177,6 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
   </data>
   <data name="gambling_waifu_recent_divorce" xml:space="preserve">
     <value>Du er nylig skilt. Du må vente {0} timer og {1} minutter for å kunne skille deg igjen.</value>
-  </data>
-  <data name="gambling_nobody" xml:space="preserve">
-    <value>Ingen</value>
-  </data>
-  <data name="gambling_waifu_divorced_notlike" xml:space="preserve">
-    <value>Du har skilt deg fra en waifu som ikke liker deg. Du fikk {0} tilbake.</value>
   </data>
   <data name="games_8ball" xml:space="preserve">
     <value>8ball</value>
@@ -1250,10 +1228,6 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
   </data>
   <data name="games_submissions_closed" xml:space="preserve">
     <value>Innleveringer avluttet.</value>
-    <comment>Fuzzy</comment>
-  </data>
-  <data name="gambling_animal_race_already_started" xml:space="preserve">
-    <value>Veddeløp med dyr er allerede igang.</value>
   </data>
   <data name="gambling_total_average" xml:space="preserve">
     <value>Totalt: {0} Gjennomsnitt: {1}</value>
@@ -1269,23 +1243,23 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
   </data>
   <data name="games_curgen_disabled" xml:space="preserve">
     <value>Valuta generering har blitt deaktivert på denne kanalen.</value>
+    <comment>Currency =/= current !!! Il s&apos;agit de monnaie. Par example: Euro is a currency. US Dollar also is. Sur Public WizBot, il s&apos;agit des fleurs :)</comment>
   </data>
   <data name="games_curgen_enabled" xml:space="preserve">
     <value>Valuta generering har blitt aktivert på denne kanalen.</value>
   </data>
   <data name="games_curgen_pl" xml:space="preserve">
-    <value>{0} tilfeldig {1} dukket opp! Plukk dem opp ved og skrive'{2}pick'</value>
+    <value>{0} tilfeldig {1} dukket opp! Plukk dem opp ved og skrive&apos;{2}pick&apos;</value>
     <comment>plural</comment>
   </data>
   <data name="games_curgen_sn" xml:space="preserve">
-    <value>En tilfeldig {0} dukket opp! Plukk den opp ved og skrive '{1}pick'</value>
+    <value>En tilfeldig {0} dukket opp! Plukk den opp ved og skrive &apos;{1}pick&apos;</value>
   </data>
   <data name="games_failed_loading_question" xml:space="preserve">
     <value>Kunne ikke laste inn spørsmål.</value>
   </data>
   <data name="games_game_started" xml:space="preserve">
     <value>Spill startet</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="games_hangman_game_started" xml:space="preserve">
     <value>Hangman spill startet</value>
@@ -1297,7 +1271,7 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
     <value>Kunne ikke starte Hangman</value>
   </data>
   <data name="games_hangman_types" xml:space="preserve">
-    <value>Liste av "{0}hangman" begrepstyper:</value>
+    <value>Liste av &quot;{0}hangman&quot; begrepstyper:</value>
   </data>
   <data name="games_leaderboard" xml:space="preserve">
     <value>Resultattavle</value>
@@ -1310,7 +1284,6 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
   </data>
   <data name="games_picked" xml:space="preserve">
     <value>Plukket {0}</value>
-    <comment>Kwoth picked 5*</comment>
   </data>
   <data name="games_planted" xml:space="preserve">
     <value>{0} plantet {1}</value>
@@ -1354,18 +1327,15 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
   </data>
   <data name="games_ttt_has_won" xml:space="preserve">
     <value>{0} har vunnet!</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="games_ttt_matched_three" xml:space="preserve">
     <value>Matchet tre</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="games_ttt_no_moves" xml:space="preserve">
     <value>Ingen bevegelser igjen!</value>
   </data>
   <data name="games_ttt_time_expired" xml:space="preserve">
     <value>Tiden er ute!</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="games_ttt_users_move" xml:space="preserve">
     <value>{0} sin tur</value>
@@ -1374,7 +1344,7 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
     <value>{0} mot {1}</value>
   </data>
   <data name="music_attempting_to_queue" xml:space="preserve">
-    <value />
+    <value>Forsøk på å stå i kø {0} sanger ...</value>
   </data>
   <data name="music_autoplay_disabled" xml:space="preserve">
     <value>Automatisk avspilling deaktivert</value>
@@ -1386,20 +1356,16 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
     <value>Standard volume satt til {0}%</value>
   </data>
   <data name="music_dir_queue_complete" xml:space="preserve">
-    <value />
-  </data>
-  <data name="music_fairplay" xml:space="preserve">
-    <value />
+    <value>Directory kø fullført.</value>
   </data>
   <data name="music_finished_song" xml:space="preserve">
     <value>Sang ferdig</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="music_fp_disabled" xml:space="preserve">
-    <value />
+    <value>Fair play deaktivert.</value>
   </data>
   <data name="music_fp_enabled" xml:space="preserve">
-    <value />
+    <value>Fair play er aktivert.</value>
   </data>
   <data name="music_from_position" xml:space="preserve">
     <value>Fra possisjon</value>
@@ -1430,7 +1396,6 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
   </data>
   <data name="music_now_playing" xml:space="preserve">
     <value>Spiller</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="music_no_player" xml:space="preserve">
     <value>Ingen aktive musikkspillere.</value>
@@ -1443,18 +1408,15 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
   </data>
   <data name="music_player_queue" xml:space="preserve">
     <value>Spilleliste - Side {0}/{1}</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="music_playing_song" xml:space="preserve">
     <value>Spiller sang</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="music_playlists" xml:space="preserve">
     <value>#{0}` - **{1}** av *{2}* ({3} sanger) </value>
   </data>
   <data name="music_playlists_page" xml:space="preserve">
     <value>Side {0} av lagrede spillelister</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="music_playlist_deleted" xml:space="preserve">
     <value>Spilleliste slettet.</value>
@@ -1470,7 +1432,6 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
   </data>
   <data name="music_playlist_saved" xml:space="preserve">
     <value>Spilleliste lagret</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="music_play_limit" xml:space="preserve">
     <value>{0}er grense</value>
@@ -1480,7 +1441,6 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
   </data>
   <data name="music_queued_song" xml:space="preserve">
     <value>Sang i kø</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="music_queue_cleared" xml:space="preserve">
     <value>Musikk-kø tømt.</value>
@@ -1490,41 +1450,40 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
   </data>
   <data name="music_removed_song" xml:space="preserve">
     <value>Fjernet sang</value>
-    <comment>context: "removed song #5"</comment>
+    <comment>context: &quot;removed song #5&quot;</comment>
   </data>
   <data name="music_repeating_cur_song" xml:space="preserve">
-    <value />
+    <value>Gjenta gjeldende sang</value>
   </data>
   <data name="music_repeating_playlist" xml:space="preserve">
-    <value />
+    <value>Repeterende spilleliste</value>
   </data>
   <data name="music_repeating_track" xml:space="preserve">
-    <value />
+    <value>gjenta spor</value>
   </data>
   <data name="music_repeating_track_stopped" xml:space="preserve">
-    <value />
+    <value>Nåværende spors repetisjon stoppet.</value>
   </data>
   <data name="music_resumed" xml:space="preserve">
     <value>Musikk-avspilling startet</value>
   </data>
   <data name="music_rpl_disabled" xml:space="preserve">
-    <value />
+    <value>Gjenta spilleliste deaktivert.</value>
   </data>
   <data name="music_rpl_enabled" xml:space="preserve">
-    <value />
+    <value>Gjenta spilleliste aktivert.</value>
   </data>
   <data name="music_set_music_channel" xml:space="preserve">
-    <value />
+    <value>Jeg vil nå utgang spille, ferdig, stoppet og fjernet sanger i denne kanalen.</value>
   </data>
   <data name="music_skipped_to" xml:space="preserve">
-    <value>Skippet til '{0}:{1}'</value>
+    <value>Skippet til &apos;{0}:{1}&apos;</value>
   </data>
   <data name="music_songs_shuffled" xml:space="preserve">
     <value>Sanger stokket</value>
   </data>
   <data name="music_song_moved" xml:space="preserve">
     <value>Sang flyttet</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="music_time_format" xml:space="preserve">
     <value>{0}t {1}m {2}s</value>
@@ -1543,11 +1502,9 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
   </data>
   <data name="permissions_acm_disable" xml:space="preserve">
     <value>Deaktivert bruk av ALLE MODULER på {0} kanalen.</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="permissions_acm_enable" xml:space="preserve">
     <value>Aktivert bruk av ALLE MODULER på {0} kanalen.</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="permissions_allowed" xml:space="preserve">
     <value>Tillatt</value>
@@ -1572,9 +1529,10 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
   </data>
   <data name="permissions_blacklisted" xml:space="preserve">
     <value>Svartelistet {0} med ID {1}</value>
+    <comment>Il ne s&apos;agit pas d&apos;un ban mais d&apos;une blacklist interdisant l&apos;utilisateur d&apos;utiliser le bot.</comment>
   </data>
   <data name="permissions_cmdcd_add" xml:space="preserve">
-    <value>Kommando {0} har nå en {1}'s ventetid.</value>
+    <value>Kommando {0} har nå en {1}&apos;s ventetid.</value>
   </data>
   <data name="permissions_cmdcd_cleared" xml:space="preserve">
     <value>Kommando {0} har ingen ventetid nå og alle eksisterende ventetider har blitt fjernet.</value>
@@ -1657,7 +1615,7 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
     <value>Aktivert bruk av {0} {1} for {2} rollen.</value>
   </data>
   <data name="permissions_sec" xml:space="preserve">
-    <value />
+    <value>sek.</value>
     <comment>Short of seconds.</comment>
   </data>
   <data name="permissions_sx_disable" xml:space="preserve">
@@ -1667,7 +1625,7 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
     <value>Aktivert bruk av {0} {1} på denne serveren.</value>
   </data>
   <data name="permissions_unblacklisted" xml:space="preserve">
-    <value />
+    <value>Unblacklisted {0} med ID {1}</value>
   </data>
   <data name="permissions_uneditable" xml:space="preserve">
     <value>uredigerbar</value>
@@ -1700,16 +1658,16 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
     <value>Ferdigheter</value>
   </data>
   <data name="searches_anime_no_fav" xml:space="preserve">
-    <value />
+    <value>Ingen favoritt anime ennå</value>
   </data>
   <data name="searches_atl_ad_started" xml:space="preserve">
     <value>Startet automatisk oversettelse av meldinger i denne kanalen. Bruker-meldinger vil bli slettet automatisk.</value>
   </data>
   <data name="searches_atl_removed" xml:space="preserve">
-    <value />
+    <value>auto-sette språket har blitt fjernet.</value>
   </data>
   <data name="searches_atl_set" xml:space="preserve">
-    <value />
+    <value>Din automatisk oversette språk er satt til {0}&gt;{1}</value>
   </data>
   <data name="searches_atl_started" xml:space="preserve">
     <value>Startet automatisk oversettelse av meldinger i denne kanalen.</value>
@@ -1742,7 +1700,7 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
     <value>Konkurrerende rangering</value>
   </data>
   <data name="searches_compet_wins" xml:space="preserve">
-    <value />
+    <value>Konkurransedyktige Wins</value>
   </data>
   <data name="searches_completed" xml:space="preserve">
     <value>Fullført</value>
@@ -1761,6 +1719,7 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
   </data>
   <data name="searches_dropped" xml:space="preserve">
     <value>Droppet</value>
+    <comment>droppped as in, &quot;stopped watching&quot; referring to shows/anime</comment>
   </data>
   <data name="searches_episodes" xml:space="preserve">
     <value>Episoder</value>
@@ -1772,16 +1731,16 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
     <value>Eksempel</value>
   </data>
   <data name="searches_failed_finding_anime" xml:space="preserve">
-    <value />
+    <value>Kunne ikke finne den animu.</value>
   </data>
   <data name="searches_failed_finding_manga" xml:space="preserve">
-    <value />
+    <value>Kunne ikke finne at mango.</value>
   </data>
   <data name="searches_genres" xml:space="preserve">
     <value>Sjangere</value>
   </data>
   <data name="searches_hashtag_error" xml:space="preserve">
-    <value />
+    <value>Kunne ikke finne en definisjon for den koden.</value>
   </data>
   <data name="searches_height_weight" xml:space="preserve">
     <value>Høyde/vekt</value>
@@ -1805,23 +1764,23 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
     <value>Vitser ikke lastet.</value>
   </data>
   <data name="searches_latlong" xml:space="preserve">
-    <value />
+    <value>Lat/Long</value>
   </data>
   <data name="searches_level" xml:space="preserve">
     <value>Nivå</value>
   </data>
   <data name="searches_list_of_place_tags" xml:space="preserve">
-    <value />
-    <comment>Don't translate {0}place</comment>
+    <value>Liste over {0} sted tags</value>
+    <comment>Don&apos;t translate {0}place</comment>
   </data>
   <data name="searches_location" xml:space="preserve">
     <value>Plassering</value>
   </data>
   <data name="searches_magicitems_not_loaded" xml:space="preserve">
-    <value />
+    <value>Magic Items ikke lastes.</value>
   </data>
   <data name="searches_mal_profile" xml:space="preserve">
-    <value />
+    <value>{0}&apos;s MAL profile</value>
   </data>
   <data name="searches_mashape_api_missing" xml:space="preserve">
     <value>Bot eieren ikke spesifisere MashapeApiKey. Du kan ikke bruke denne funksjonaliteten.</value>
@@ -1842,10 +1801,10 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
     <value>Original url</value>
   </data>
   <data name="searches_osu_api_key" xml:space="preserve">
-    <value>En 'osu!' API-nøkkel er nødvendig.</value>
+    <value>En &apos;osu!&apos; API-nøkkel er nødvendig.</value>
   </data>
   <data name="searches_osu_failed" xml:space="preserve">
-    <value>Kunne ikke hente 'osu!' signatur.</value>
+    <value>Kunne ikke hente &apos;osu!&apos; signatur.</value>
   </data>
   <data name="searches_over_x" xml:space="preserve">
     <value>Fant mer enn {0} bilder. Viser tilfeldig {0}.</value>
@@ -1855,6 +1814,7 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
   </data>
   <data name="searches_plan_to_watch" xml:space="preserve">
     <value>Planlegg å se</value>
+    <comment>Je ne pense pas que le sens de la traduction soit le bon.</comment>
   </data>
   <data name="searches_platform" xml:space="preserve">
     <value>Plattform</value>
@@ -1873,6 +1833,7 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
   </data>
   <data name="searches_quick_playtime" xml:space="preserve">
     <value>Rask spilletid</value>
+    <comment>Is this supposed to be Overwatch Quick Play stats?</comment>
   </data>
   <data name="searches_quick_wins" xml:space="preserve">
     <value>Rask vinner</value>
@@ -1881,10 +1842,11 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
     <value>Vurdering</value>
   </data>
   <data name="searches_score" xml:space="preserve">
-    <value />
+    <value>Score:</value>
   </data>
   <data name="searches_search_for" xml:space="preserve">
     <value>Søk etter:</value>
+    <comment>recherche plutôt non ?</comment>
   </data>
   <data name="searches_shorten_fail" xml:space="preserve">
     <value>Kunne forkorte den URLen.</value>
@@ -1941,7 +1903,7 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
     <value>Tittel:</value>
   </data>
   <data name="searches_top_3_fav_anime" xml:space="preserve">
-    <value />
+    <value>Top 3 favorite anime:</value>
   </data>
   <data name="searches_translation" xml:space="preserve">
     <value>Oversettelse:</value>
@@ -1953,13 +1915,13 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
     <value>Kunne ikke finne definisjonen for dette ordet.</value>
   </data>
   <data name="searches_url" xml:space="preserve">
-    <value />
+    <value>Url</value>
   </data>
   <data name="searches_viewers" xml:space="preserve">
     <value>Seerne</value>
   </data>
   <data name="searches_watching" xml:space="preserve">
-    <value />
+    <value>Watching</value>
   </data>
   <data name="searches_wikia_error" xml:space="preserve">
     <value>Kunne ikke finne det ordet på den angitte Wikia.</value>
@@ -1974,16 +1936,16 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
     <value>Vindfart</value>
   </data>
   <data name="searches_x_most_banned_champs" xml:space="preserve">
-    <value>De {0} mest forbydde 'champions'</value>
+    <value>De {0} mest forbydde &apos;champions&apos;</value>
   </data>
   <data name="searches_yodify_error" xml:space="preserve">
-    <value />
+    <value>Kunne yodify din setning.</value>
   </data>
   <data name="utiliity_joined" xml:space="preserve">
     <value>Ble med</value>
   </data>
   <data name="utility_activity_line" xml:space="preserve">
-    <value />
+    <value>`{0}.` {1} [{2:F2}/s] - {3} total</value>
     <comment>/s and total need to be localized to fit the context -
 `1.`</comment>
   </data>
@@ -1997,7 +1959,7 @@ Ikke glem å skrive Discord navnet eller ID i meldingen.
     <value>Forfatter</value>
   </data>
   <data name="utility_botid" xml:space="preserve">
-    <value />
+    <value>Bot ID</value>
   </data>
   <data name="utility_calcops" xml:space="preserve">
     <value>Liste over funksjoner i {0}calc kommandoer</value>
@@ -2087,7 +2049,7 @@ Eier ID: {2}</value>
     <value>Meldinger</value>
   </data>
   <data name="utility_message_repeater" xml:space="preserve">
-    <value />
+    <value>Message repeater</value>
   </data>
   <data name="utility_name" xml:space="preserve">
     <value>Navn</value>
@@ -2106,6 +2068,7 @@ Eier ID: {2}</value>
   </data>
   <data name="utility_no_shards_on_page" xml:space="preserve">
     <value>Det er ingen shards på denne siden.</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="utility_no_topic_set" xml:space="preserve">
     <value>Ingen emne er satt.</value>
@@ -2155,22 +2118,22 @@ Eier ID: {2}</value>
     <value>Ikke et gyldig format. Sjekk kommandolisten.</value>
   </data>
   <data name="utility_remind_template" xml:space="preserve">
-    <value />
+    <value>New minne mal sett.</value>
   </data>
   <data name="utility_repeater" xml:space="preserve">
     <value>Repeterer {0} {1} hver dag(er), {2} time(r) og {3} minutt(er).</value>
   </data>
   <data name="utility_repeaters_list" xml:space="preserve">
-    <value />
+    <value>Liste over repeatere</value>
   </data>
   <data name="utility_repeaters_none" xml:space="preserve">
-    <value />
+    <value>Ingen repeatere som kjører på denne serveren.</value>
   </data>
   <data name="utility_repeater_stopped" xml:space="preserve">
     <value>#{0} stoppet.</value>
   </data>
   <data name="utility_repeat_invoke_none" xml:space="preserve">
-    <value />
+    <value>Ingen gjentatte meldinger funnet på denne serveren.</value>
   </data>
   <data name="utility_result" xml:space="preserve">
     <value>Resultat</value>
@@ -2200,13 +2163,16 @@ Eier ID: {2}</value>
     <value>Server info</value>
   </data>
   <data name="utility_shard" xml:space="preserve">
-    <value />
+    <value>Shard</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="utility_shard_stats" xml:space="preserve">
-    <value />
+    <value>shard statistikk</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="utility_shard_stats_txt" xml:space="preserve">
-    <value />
+    <value>Shard **#{0}** er i {1} stat med {2} servere</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="utility_showemojis" xml:space="preserve">
     <value>**Navn:** {0} **Link:** {1}</value>
@@ -2236,7 +2202,70 @@ Eier ID: {2}</value>
   <data name="utility_voice_channels" xml:space="preserve">
     <value>Tale kanaler</value>
   </data>
+  <data name="utility_changelog_additions" xml:space="preserve">
+    <value>tillegg:</value>
+  </data>
+  <data name="utility_changelog_additions_msg" xml:space="preserve">
+    <value>Ingen</value>
+  </data>
+  <data name="utility_changelog_fixes" xml:space="preserve">
+    <value>Fixes:</value>
+  </data>
+  <data name="utility_changelog_fixes_msg" xml:space="preserve">
+    <value>`1.` Fast ting.
+`2.` Endret en streng.
+`3.` Fast Sitat Command.</value>
+  </data>
+  <data name="utility_changelog_footer" xml:space="preserve">
+    <value>Mer info på: http://github.com/Wizkiller96/WizBot</value>
+  </data>
+  <data name="utility_changelog_removals" xml:space="preserve">
+    <value>Flytting:</value>
+  </data>
+  <data name="utility_changelog_removals_msg" xml:space="preserve">
+    <value>Ingen</value>
+  </data>
+  <data name="utility_changelog_title_date" xml:space="preserve">
+    <value>WizBot Endrings | 📅 4 mars 2017</value>
+  </data>
+  <data name="gambling_animal_race_already_started" xml:space="preserve">
+    <value>Veddeløp med dyr er allerede igang.</value>
+  </data>
+  <data name="music_fairplay" xml:space="preserve">
+    <value>rettferdig spill</value>
+  </data>
   <data name="gambling_animal_race_already_in" xml:space="preserve">
     <value>Du har allerede sluttet deg til dette løpet!</value>
   </data>
+  <data name="games_current_poll_results" xml:space="preserve">
+    <value>Nåværende meningsmåling resultater</value>
+  </data>
+  <data name="games_no_votes_cast" xml:space="preserve">
+    <value>Ingen stemmer avgitt.</value>
+  </data>
+  <data name="games_poll_already_running" xml:space="preserve">
+    <value>Poll allerede kjører på denne serveren.</value>
+  </data>
+  <data name="games_poll_created" xml:space="preserve">
+    <value>📃 {0} har laget en avstemning som krever din oppmerksomhet:</value>
+  </data>
+  <data name="games_poll_result" xml:space="preserve">
+    <value>`{0} .` {1} med {2} stemmer.</value>
+  </data>
+  <data name="games_poll_voted" xml:space="preserve">
+    <value>{0} fram</value>
+  </data>
+  <data name="games_poll_vote_private" xml:space="preserve">
+    <value>Private Message meg med tilsvarende antall svar.</value>
+  </data>
+  <data name="games_poll_vote_public" xml:space="preserve">
+    <value>Send en melding her med tilsvarende antall svar.</value>
+  </data>
+  <data name="games_thanks_for_voting" xml:space="preserve">
+    <value>Takk for din stemme, {0}</value>
+  </data>
+  <data name="games_x_votes_cast" xml:space="preserve">
+    <value>{0} totalt avgitte stemmer.</value>
+  </data>
+
 </root>
