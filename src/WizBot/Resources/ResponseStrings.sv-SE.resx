@@ -776,10 +776,10 @@ Anledning: {1}</value>
 __IgnoreradeKannaler_: {2}</value>
   </data>
   <data name="administration_text_chan_created" xml:space="preserve">
-    <value>Text kanal skapad</value>
+    <value>Text kanal skapad.</value>
   </data>
   <data name="administration_text_chan_destroyed" xml:space="preserve">
-    <value>Text kanal förstörd␣</value>
+    <value>Text kanal förstörd.</value>
   </data>
   <data name="administration_undeafen" xml:space="preserve">
     <value>Borttagning av dövning lyckats.</value>
@@ -1760,7 +1760,7 @@ Glömm inte att lämna ditt discord namn eller id i meddelandet.
     <value>Fuktighet</value>
   </data>
   <data name="searches_image_search_for" xml:space="preserve">
-    <value>Bild Sökning För:</value>
+    <value>Bild sökning för:</value>
   </data>
   <data name="searches_imdb_fail" xml:space="preserve">
     <value>Kunde ej hitta den filmen.</value>
@@ -2246,34 +2246,34 @@ Medlemmar: {1}
     <value>Du har redan gått med detta lopp!</value>
   </data>
   <data name="games_current_poll_results" xml:space="preserve">
-    <value>Nuvarande enkät resultat</value>
+    <value>Nuvarande röstningsresultat</value>
   </data>
   <data name="games_no_votes_cast" xml:space="preserve">
-    <value>Inga röster</value>
+    <value>Inga röster gjorda.</value>
   </data>
   <data name="games_poll_already_running" xml:space="preserve">
-    <value>Poll körs redan på den här servern.</value>
+    <value>Rösten är redan igång på denna server.</value>
   </data>
   <data name="games_poll_created" xml:space="preserve">
-    <value>📃 {0} har skapat en enkät som kräver din uppmärksamhet:</value>
+    <value>📃 {0} har skapat en röst som kräver din uppmärksamhet:</value>
   </data>
   <data name="games_poll_result" xml:space="preserve">
     <value>`{0}.` {1} med {2} röster.</value>
   </data>
   <data name="games_poll_voted" xml:space="preserve">
-    <value>{0} röstat.</value>
+    <value>{0} röstade.</value>
   </data>
   <data name="games_poll_vote_private" xml:space="preserve">
-    <value>Privat meddelande mig med motsvarande antal svaret.</value>
+    <value>Privat Meddela mig det nummer som stämmer överens med svaret.</value>
   </data>
   <data name="games_poll_vote_public" xml:space="preserve">
-    <value>Skicka ett meddelande här med motsvarande antal svaret.</value>
+    <value>Skicka ett Meddelande här med det nummer som stämmer överens med svaret.</value>
   </data>
   <data name="games_thanks_for_voting" xml:space="preserve">
-    <value>Tack för att rösta, {0}</value>
+    <value>Tack för att du röstade, {0}</value>
   </data>
   <data name="games_x_votes_cast" xml:space="preserve">
-    <value>{0} totala röster.</value>
+    <value>{0} antal röster gjorda.</value>
   </data>
 
 </root>
