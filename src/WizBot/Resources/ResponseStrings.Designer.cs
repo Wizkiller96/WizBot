@@ -277,7 +277,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Deafen successful..
+        ///    Looks up a localized string similar to Mute successful..
         /// </summary>
         public static string administration_deafen {
             get {
@@ -349,7 +349,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Thanks to the people listed below for making this project happen!.
+        ///    Looks up a localized string similar to Thanks to the people listed below, without whose contributions this project would have been impossible!.
         /// </summary>
         public static string administration_donators {
             get {
@@ -764,7 +764,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to I don&apos;t have the permission necessary for that most likely..
+        ///    Looks up a localized string similar to I don&apos;t have the permission necessary to do that..
         /// </summary>
         public static string administration_mute_error {
             get {
@@ -1106,7 +1106,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} not found.Cleaned up..
+        ///    Looks up a localized string similar to {0} not found. {0} has been cleaned..
         /// </summary>
         public static string administration_role_clean {
             get {
@@ -1775,7 +1775,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to **DESTROYED** base #{0} in a war against {1}.
+        ///    Looks up a localized string similar to {0} has **DESTROYED** base #{0} in a war against {1}.
         /// </summary>
         public static string clashofclans_base_destroyed {
             get {
@@ -4586,7 +4586,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Your type has been changed to {0} for a {1}.
+        ///    Looks up a localized string similar to Your type has been changed to {0} from {1}.
         /// </summary>
         public static string pokemon_settype_success {
             get {
@@ -5776,7 +5776,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Here is a list of users in those roles:.
+        ///    Looks up a localized string similar to List of users in {0} role.
         /// </summary>
         public static string utility_inrole_list {
             get {
