@@ -5,12 +5,15 @@ using WizBot.Attributes;
 using WizBot.Extensions;
 using WizBot.Services;
 using NLog;
-using Services.CleverBotApi;
+//using Services.CleverBotApi;
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Services.CleverBotApi;
 
 namespace WizBot.Modules.Games
 {
@@ -28,12 +31,10 @@ namespace WizBot.Modules.Games
                 _log = LogManager.GetCurrentClassLogger();
                 var sw = Stopwatch.StartNew();
 
-
-                var bot = ChatterBotFactory.Create(ChatterBotType.CLEVERBOT);
                 CleverbotGuilds = new ConcurrentDictionary<ulong, Lazy<ChatterBotSession>>(
                     WizBot.AllGuildConfigs
                         .Where(gc => gc.CleverbotEnabled)
-                        .ToDictionary(gc => gc.GuildId, gc => new Lazy<ChatterBotSession>(() => bot.CreateSession(), true)));
+                        .ToDictionary(gc => gc.GuildId, gc => new Lazy<ChatterBotSession>(() => new ChatterBotSession(gc.GuildId), true)));
 
                 sw.Stop();
                 _log.Debug($"Loaded in {sw.Elapsed.TotalSeconds:F2}s");
@@ -100,9 +101,7 @@ namespace WizBot.Modules.Games
                     return;
                 }
 
-                var cleverbot = ChatterBotFactory.Create(ChatterBotType.CLEVERBOT);
-
-                CleverbotGuilds.TryAdd(channel.Guild.Id, new Lazy<ChatterBotSession>(() => cleverbot.CreateSession(), true));
+                CleverbotGuilds.TryAdd(channel.Guild.Id, new Lazy<ChatterBotSession>(() => new ChatterBotSession(Context.Guild.Id), true));
 
                 using (var uow = DbHandler.UnitOfWork())
                 {
@@ -112,6 +111,43 @@ namespace WizBot.Modules.Games
 
                 await ReplyConfirmLocalized("cleverbot_enabled").ConfigureAwait(false);
             }
+        }
+
+        public class ChatterBotSession
+        {
+            private static WizBotRandom rng { get; } = new WizBotRandom();
+            public string ChatterbotId { get; }
+            public string ChannelId { get; }
+            private int _botId = 6;
+
+            public ChatterBotSession(ulong channelId)
+            {
+                ChannelId = channelId.ToString().ToBase64();
+                ChatterbotId = rng.Next(0, 1000000).ToString().ToBase64();
+            }
+
+            private string apiEndpoint => "http://api.program-o.com/v2/chatbot/" +
+                                          $"?bot_id={_botId}&" +
+                                          "say={0}&" +
+                                          $"convo_id=wizbot_{ChatterbotId}_{ChannelId}&" +
+                                          "format=json";
+
+            public async Task<string> Think(string message)
+            {
+                using (var http = new HttpClient())
+                {
+                    var res = await http.GetStringAsync(string.Format(apiEndpoint, message)).ConfigureAwait(false);
+                    var cbr = JsonConvert.DeserializeObject<ChatterBotResponse>(res);
+                    //Console.WriteLine(cbr.Convo_id);
+                    return cbr.BotSay.Replace("<br/>", "\n");
+                }
+            }
+        }
+
+        public class ChatterBotResponse
+        {
+            public string Convo_id { get; set; }
+            public string BotSay { get; set; }
         }
     }
 }
