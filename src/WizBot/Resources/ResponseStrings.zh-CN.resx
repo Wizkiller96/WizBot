@@ -2210,15 +2210,13 @@ Paypal &lt;{1}&gt;
     <value>添加：</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>没有</value>
+    <value>`1.` 更新了一堆语言响应字符串。</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>修正：</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>`1.` 固定的东西。
-`2.` 更改了字符串。
-`3.` 固定报价命令。</value>
+    <value>没有</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>更多信息：http://github.com/Wizkiller96/WizBot</value>
@@ -2230,7 +2228,7 @@ Paypal &lt;{1}&gt;
     <value>没有</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Changelogs | 📅 2017年3月04日</value>
+    <value>WizBot Changelogs | 📅 2017年3月08日</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>动物竞赛已经运行。</value>
