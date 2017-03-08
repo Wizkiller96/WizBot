@@ -2246,15 +2246,13 @@ IDВладельца: {2}</value>
     <value>дополнения:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>Никто</value>
+    <value>`1.` Обновлен набор строк ответа на язык.</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Исправления:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>`1.` Фиксированный материал.
-`2.` Изменить строку.
-`3.` Fixed Цитировать Command.</value>
+    <value>Никто</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>Более подробную информацию по адресу: http://github.com/Wizkiller96/WizBot</value>
@@ -2266,7 +2264,7 @@ IDВладельца: {2}</value>
     <value>Никто</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot списком изменений | 📅 4 марта 2017</value>
+    <value>WizBot списком изменений | 📅 8 марта 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>Гонка зверей уже идёт.</value>
@@ -2276,37 +2274,37 @@ IDВладельца: {2}</value>
     <value>справедливое воспроизведение</value>
   </data>
   <data name="gambling_animal_race_already_in" xml:space="preserve">
-    <value>Вы уже присоединились к этой гонке!</value>
+    <value>Вы уже участвуете в этой гонке!</value>
   </data>
   <data name="games_current_poll_results" xml:space="preserve">
-    <value>Текущие результаты опроса</value>
+    <value>Результаты опроса</value>
   </data>
   <data name="games_no_votes_cast" xml:space="preserve">
-    <value>Нет голосов не отбрасывают.</value>
+    <value>Не получено ни одного ответа.</value>
   </data>
   <data name="games_poll_already_running" xml:space="preserve">
-    <value>Опрос уже работает на этом сервере.</value>
+    <value>На данном сервере уже идёт опрос.</value>
   </data>
   <data name="games_poll_created" xml:space="preserve">
-    <value>📃 {0} создал опрос, который требует вашего внимания:</value>
+    <value>{0} создал опрос, требующий Вашего внимания:</value>
   </data>
   <data name="games_poll_result" xml:space="preserve">
-    <value>`{0}.` {1} с {2} голосов.</value>
+    <value>&apos;{0}.&apos; У {1} {2} голосов.</value>
   </data>
   <data name="games_poll_voted" xml:space="preserve">
-    <value>{0} проголосовали.</value>
+    <value>{0} проголосовал.</value>
   </data>
   <data name="games_poll_vote_private" xml:space="preserve">
-    <value>Личное сообщение мне с соответствующим номером ответа.</value>
+    <value>Отправьте сообщение в этом текстовом канале с номером, соответствующему Вашему ответу.</value>
   </data>
   <data name="games_poll_vote_public" xml:space="preserve">
-    <value>Отправить сообщение здесь с соответствующим номером ответа.</value>
+    <value>Отправьте сообщение в этом текстовом канале с номером, соответствующему Вашему ответу.</value>
   </data>
   <data name="games_thanks_for_voting" xml:space="preserve">
-    <value>Спасибо за голосование, {0}</value>
+    <value>Спасибо за Ваш ответ, {0}.</value>
   </data>
   <data name="games_x_votes_cast" xml:space="preserve">
-    <value>{0} всего голосов.</value>
+    <value>Всего получено {0} ответов.</value>
   </data>
 
 </root>
