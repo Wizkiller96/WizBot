@@ -118,7 +118,7 @@ ________________________________________________________________________________
     - All requests for an API key must go through the review process, where applications will be reviewed on a case by case basis, in line with Soundcloud API Terms of Use. If your application is successful, you will receive an API key. 
 - **Restart your computer**
 
-[.NET Core SDK]: https://www.microsoft.com/net/core#windowscmd
+[.NET Core SDK]: https://github.com/dotnet/core/blob/master/release-notes/download-archives/1.1-preview2.1-download.md
 [Git]: https://git-scm.com/download/win
 [7zip]: http://www.7-zip.org/download.html
 [DiscordApp]: https://discordapp.com/developers/applications/me

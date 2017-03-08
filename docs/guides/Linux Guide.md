@@ -1,7 +1,7 @@
 ##Setting up WizBot on Linux
 
 ####Setting up WizBot on Linux Digital Ocean Droplet
-If you want WizBot to play music for you 24/7 without having to hosting it on your PC and want to keep it cheap, reliable and convenient as possible, you can try WizBot on Linux Digital Ocean Droplet using the link [DigitalOcean](http://m.do.co/c/46b4d3d44795/) (and using this link will be supporting WizBot and will give you **$10 credit**)
+If you want WizBot to play music for you 24/7 without having to hosting it on your PC and want to keep it cheap, reliable and convenient as possible, you can try Nadeko on Linux Digital Ocean Droplet using the link [DigitalOcean](https://m.do.co/c/7290047d0c84/) (and using this link will be supporting WizBot and will give you **$10 credit**)
 
 ####Setting up WizBot
 Assuming you have followed the link above to setup an account and Droplet with 64bit OS in Digital Ocean and got the `IP address and root password (in email)` to login, its time to get started.
@@ -55,7 +55,7 @@ You should see these following options after using the above command:
 6. Set up credentials.json (if you have downloaded the bot already)
 7. To exit
 ```
-#####Part II
+#####Part II (Optional)
 **If** you are running WizBot for the first time on your system and never had any *prerequisites* installed and have Ubuntu, Debian or CentOS, Press `5` and `enter` key, then `y` when you see the following:
 ```
 Welcome to WizBot Auto Prerequisites Installer.
@@ -76,8 +76,8 @@ and then press `enter` key.
 Once Installation is completed you should see the options again.
 
 Next, check out:
-#####Part IV
-If you prefer to do this step [manually](http://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#setting-up-sftp), and skip other parts click on the link. *(Optional)*
+#####Part IV (Optional)
+If you prefer to skip this step and want to do it [manually](http://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#setting-up-sftp) or already have the `credentials.json` file, click on the link. *(Optional)*
 
 - [1. Setting up credentials.json](http://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#setting-up-credentialsjson)
 - [2. To Get the Google API](http://wizbot.readthedocs.io/en/latest/guides/Windows%20Guide/#setting-up-wizbot-for-music)
@@ -103,12 +103,12 @@ You will be asked to enter the required informations, just follow the on-screen 
 (If you want to skip any optional infos, just press `enter` key without typing/pasting anything.)		
 Once done,		
 #####Part V
-You should see the options again.
+You should see the options again.	
 Next, press `3` to **Run WizBot (Normally)**	
 Check in your discord server if your new bot is working properly.	
 #####Part VI
 If your bot is working properly in your server, type `.die` to **shut down the bot**, then press `7` to **exit**.
-Next, [Run your bot again with **tmux**.](http://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#running-wizbot)
+Next, [Run your bot again with **tmux**.](http://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#running-wizbot)	
 
 [Check this when you need to **restart** your **WizBot** anytime later along with tmux session.](http://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#restarting-wizbot)
 
@@ -147,7 +147,7 @@ See how that happens:
 
 **Now check your Discord, the bot should be online**
 
-Next to **move the bot to background** and to do that, press **CTRL+B+D** (that will detach the wizbot session using TMUX), and you can finally close **PuTTYY** if you want.
+Next to **move the bot to background** and to do that, press **CTRL+B+D** (that will detach the wizbot session using TMUX) and you can finally close **PuTTY** if you want.
 
 ####Restarting WizBot
 
@@ -198,17 +198,49 @@ CentOS:
 ![img2](https://cdn.discordapp.com/attachments/251504306010849280/251504746987388938/dotnet.gif)
 
 Go to [this link](https://www.microsoft.com/net/core#ubuntu) (for Ubuntu) or to [this link](https://www.microsoft.com/net/core#linuxcentos) (for CentOS) provided by microsoft for instructions on how to get the most up to date version of the dotnet core sdk!  
-Make sure that you're on the correct page for your distribution of linux as the guides are different for the various distributions  
+Make sure that you're on the correct page for your distribution of linux as the guides are different for the various distributions.		
+Install the **currently supported version** `1.0.0-preview2-1-003177`.		
+You can find it [here](https://github.com/dotnet/core/blob/master/release-notes/download-archives/1.1-preview2.1-download.md) if you prefer manual installing `dpkg` files.
 
-We'll go over the steps here for Ubuntu 16.04 anyway (these will **only** work on Ubuntu 16.04), accurate as of 3/2/2017
+We'll go over the steps here for few linux distributions, accurate as of March 08, 2017:
+**NOTE:** .NET CORE SDK only supports 64-bit Linux Operating Systems (Raspberry Pis are not supported because of this)
 
+**Ubuntu x64 17.04 & 16.10**
+```sh
+sudo sh -c 'echo "deb [arch=amd64] https://apt-mo.trafficmanager.net/repos/dotnet-release/ yakkety main" > /etc/apt/sources.list.d/dotnetdev.list'
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 417A0893
+sudo apt-get update && sudo apt-get install dotnet-dev-1.0.0-preview2.1-003177 -y
 ```
+
+**Ubuntu x64 16.04**
+```sh
 sudo sh -c 'echo "deb [arch=amd64] https://apt-mo.trafficmanager.net/repos/dotnet-release/ xenial main" > /etc/apt/sources.list.d/dotnetdev.list'
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 417A0893
 sudo apt-get update && sudo apt-get install dotnet-dev-1.0.0-preview2.1-003177 -y
 ```
 
-**NOTE:** .NET CORE SDK only supports 64-bit Linux Operating Systems (Raspberry Pis are not supported because of this)
+**Ubuntu x64 14.04**
+```sh
+sudo sh -c 'echo "deb [arch=amd64] https://apt-mo.trafficmanager.net/repos/dotnet-release/ trusty main" > /etc/apt/sources.list.d/dotnetdev.list'
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 417A0893
+sudo apt-get update && sudo apt-get install dotnet-dev-1.0.0-preview2.1-003177 -y
+```
+
+**Debian 8 x64**
+```sh
+sudo apt-get install curl libunwind8 gettext -y
+curl -sSL -o dotnet.tar.gz https://go.microsoft.com/fwlink/?LinkID=835021
+sudo mkdir -p /opt/dotnet && sudo tar zxf dotnet.tar.gz -C /opt/dotnet
+sudo ln -s /opt/dotnet/dotnet /usr/local/bin
+```
+
+**CentOS 7 x64**
+```sh
+sudo yum install libunwind libicu -y
+curl -sSL -o dotnet.tar.gz https://go.microsoft.com/fwlink/?LinkID=835019
+sudo mkdir -p /opt/dotnet && sudo tar zxf dotnet.tar.gz -C /opt/dotnet
+sudo ln -s /opt/dotnet/dotnet /usr/local/bin
+```
 
 #####Installing Opus Voice Codec and libsodium
 
@@ -232,14 +264,14 @@ Ubuntu:
 
 Centos: 
 
-```
+```sh
 yum -y install http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm epel-release
 yum -y install ffmpeg
 ```
 
 **NOTE:** If you are running **UBUNTU 14.04**, you must run these first:
 
-```
+```sh
 sudo add-apt-repository ppa:mc3man/trusty-media
 sudo apt-get update
 sudo apt-get dist-upgrade
@@ -250,7 +282,7 @@ sudo apt-get dist-upgrade
 
 **NOTE:** If you are running **Debian 8 Jessie**, please, follow these steps:
 
-```
+```sh
 sudo apt-get update
 echo "deb http://ftp.debian.org/debian jessie-backports main" | tee /etc/apt/sources.list.d/debian-backports.list
 sudo apt-get update && sudo apt-get install ffmpeg -y
@@ -330,14 +362,14 @@ If the [WizBot installer](http://wizbot.readthedocs.io/en/latest/guides/Linux%20
 
 **OR**
 
-```
+```sh
 cd ~ && git clone -b dev --recursive --depth 1 https://github.com/Wizkiller96/WizBot.git
 cd ~/WizBot/discord.net/src/Discord.Net && dotnet restore && cd ../Discord.Net.Commands && dotnet restore && cd ../../../src/WizBot/ && dotnet restore && dotnet build --configuration Release
 ```
   
 If you are getting error using the above steps try:
 
-```
+```sh
 cd ~/WizBot/discord.net && dotnet restore -s https://dotnet.myget.org/F/dotnet-core/api/v3/index.json && dotnet restore
 cd ~/WizBot/src/WizBot/ && dotnet restore && dotnet build --configuration Release
 ```
