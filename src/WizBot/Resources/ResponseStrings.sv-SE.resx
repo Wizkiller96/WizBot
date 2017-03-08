@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="clashofclans_base_already_claimed" xml:space="preserve">
-    <value>Denna bas är redan tagen eller förstörd. </value>
+    <value>Denna bas är redan tagen eller förstörd.</value>
   </data>
   <data name="clashofclans_base_already_destroyed" xml:space="preserve">
     <value>Denna bas är redan förstörd.</value>
@@ -191,8 +191,7 @@
     <value>Alla anpassade emojis uppgifter borttagna.</value>
   </data>
   <data name="customreactions_deleted" xml:space="preserve">
-    <value>Anpassad emoji har blivit raderad.
-</value>
+    <value>Anpassad emoji har blivit raderad</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_insuff_perms" xml:space="preserve">
@@ -217,10 +216,10 @@
     <value>Ingen egengjord reaktion funnen med det id.</value>
   </data>
   <data name="customreactions_response" xml:space="preserve">
-    <value>svar</value>
+    <value>Svar</value>
   </data>
   <data name="customreactions_stats" xml:space="preserve">
-    <value>Egengjord reaktion statistiker.</value>
+    <value>Egengjord reaktion statistiker</value>
   </data>
   <data name="customreactions_stats_cleared" xml:space="preserve">
     <value>Statistiker rensade för {0} egengjorda reaktioner.</value>
@@ -229,7 +228,7 @@
     <value>Inga statistik för den triggern funnen, inget återgärd gjord.</value>
   </data>
   <data name="customreactions_trigger" xml:space="preserve">
-    <value>Trigger.</value>
+    <value>Trigger</value>
   </data>
   <data name="nsfw_autohentai_stopped" xml:space="preserve">
     <value>Automatisk hentai stoppad.</value>
@@ -238,11 +237,10 @@
     <value>Inga resultat hittades.</value>
   </data>
   <data name="pokemon_already_fainted" xml:space="preserve">
-    <value>
-{0} har redan svimmat</value>
+    <value>{0} har redan svimmat.</value>
   </data>
   <data name="pokemon_already_full" xml:space="preserve">
-    <value>{0} har redan full hälsa</value>
+    <value>{0} har redan full hälsa.</value>
   </data>
   <data name="pokemon_already_that_type" xml:space="preserve">
     <value>din typ är redan {0}</value>
@@ -2214,15 +2212,13 @@ Medlemmar: {1}
     <value>tillägg:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>Ingen</value>
+    <value>`1.` Uppdaterad ett gäng språksvarssträngar.</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>korrigeringar:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>`1.` Fast saker.
-`2.` Förändrat en sträng.
-`3.` Fast Citat Command.</value>
+    <value>Ingen</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>Mer info på: http://github.com/Wizkiller96/WizBot</value>
@@ -2234,7 +2230,7 @@ Medlemmar: {1}
     <value>Ingen</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot ändringsloggar | 📅 4 mars, 2017</value>
+    <value>WizBot ändringsloggar | 📅 8 mars, 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>Djur lopp körs redan.</value>
