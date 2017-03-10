@@ -1290,6 +1290,7 @@ Glömm inte att lämna ditt discord namn eller id i meddelandet.
   </data>
   <data name="games_picked" xml:space="preserve">
     <value>plockade {0}</value>
+    <comment>Kwoth picked 5*</comment>
   </data>
   <data name="games_planted" xml:space="preserve">
     <value>{0} planterade {1}</value>
@@ -2212,7 +2213,7 @@ Medlemmar: {1}
     <value>tillägg:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` Uppdaterad ett gäng språksvarssträngar.</value>
+    <value>&apos;1.` Omarbetad behörigheter modul.</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>korrigeringar:</value>
@@ -2270,6 +2271,18 @@ Medlemmar: {1}
   </data>
   <data name="games_x_votes_cast" xml:space="preserve">
     <value>{0} antal röster gjorda.</value>
+  </data>
+  <data name="games_pick_pl" xml:space="preserve">
+    <value>Plocka upp de genom att skriva `{0}pick`</value>
+  </data>
+  <data name="games_pick_sn" xml:space="preserve">
+    <value>Plocka upp den genom att skriva `{0}pick`</value>
+  </data>
+  <data name="gambling_no_users_found" xml:space="preserve">
+    <value>Inga användare funna.</value>
+  </data>
+  <data name="gambling_page" xml:space="preserve">
+    <value>sida {0}</value>
   </data>
 
 </root>
