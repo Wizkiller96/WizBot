@@ -128,7 +128,7 @@
     <value>That base is not claimed.</value>
   </data>
   <data name="clashofclans_base_destroyed" xml:space="preserve">
-    <value>{0} has **DESTROYED** base #{0} in a war against {1}</value>
+    <value>**DESTROYED** base #{0} in a war against {1}</value>
   </data>
   <data name="clashofclans_base_unclaimed" xml:space="preserve">
     <value>{0} has **UNCLAIMED** base #{1} in a war against {2}</value>
@@ -289,7 +289,7 @@
     <comment>Fuzzy</comment>
   </data>
   <data name="pokemon_settype_success" xml:space="preserve">
-    <value>Your type has been changed to {0} from {1}</value>
+    <value>Your type has been changed to {0} for a {1}</value>
   </data>
   <data name="pokemon_somewhat_effective" xml:space="preserve">
     <value>It's somewhat effective.</value>
@@ -384,7 +384,7 @@ Reason: {1}</value>
     <value>Voice channel {0} created.</value>
   </data>
   <data name="administration_deafen" xml:space="preserve">
-    <value>Mute successful.</value>
+    <value>Deafen successful.</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="administration_deleted_server" xml:space="preserve">
@@ -409,7 +409,7 @@ Reason: {1}</value>
     <value>Sucessfully added a new donator.Total donated amount from this user: {0} 👑</value>
   </data>
   <data name="administration_donators" xml:space="preserve">
-    <value>Thanks to the people listed below, without whose contributions this project would have been impossible!</value>
+    <value>Thanks to the people listed below for making this project happen!</value>
   </data>
   <data name="administration_fwall_start" xml:space="preserve">
     <value>I will forward DMs to all owners.</value>
@@ -556,7 +556,7 @@ Fuzzy</comment>
 Fuzzy</comment>
   </data>
   <data name="administration_mute_error" xml:space="preserve">
-    <value>I don't have the permission necessary to do that.</value>
+    <value>I don't have the permission necessary for that most likely.</value>
   </data>
   <data name="administration_mute_role_set" xml:space="preserve">
     <value>New mute role set.</value>
@@ -670,7 +670,7 @@ Fuzzy</comment>
     <value>Role {0} as been added to the list.</value>
   </data>
   <data name="administration_role_clean" xml:space="preserve">
-    <value>{0} not found. {0} has been cleaned.</value>
+    <value>{0} not found.Cleaned up.</value>
   </data>
   <data name="administration_role_in_list" xml:space="preserve">
     <value>Role {0} is already in the list.</value>
@@ -1321,7 +1321,8 @@ Fuzzy</comment>
   </data>
   <data name="games_picked" xml:space="preserve">
     <value>picked {0}</value>
-    <comment>Fuzzy</comment>
+    <comment>Kwoth picked 5*
+Fuzzy</comment>
   </data>
   <data name="games_planted" xml:space="preserve">
     <value>{0} planted {1}</value>
@@ -1980,7 +1981,6 @@ Fuzzy</comment>
   </data>
   <data name="searches_wikia_input_error" xml:space="preserve">
     <value>Please enter a target wikia, followed by search query.</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="searches_wiki_page_not_found" xml:space="preserve">
     <value>Page not found.</value>
@@ -2159,7 +2159,7 @@ Fuzzy</comment>
     <value>Quote Added</value>
   </data>
   <data name="utility_quote_deleted" xml:space="preserve">
-    <value>Quote #{0} deleted</value>
+    <value>Quote #{0} deleted.</value>
   </data>
   <data name="utility_region" xml:space="preserve">
     <value>Region</value>
@@ -2265,15 +2265,13 @@ Fuzzy</comment>
     <value>Additions:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>None</value>
+    <value>`1.` Reworked permissions module.</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Fixes:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>`1.` Fixed stuff.
-`2.` Changed a string.
-`3.` Fixed Quote Command.</value>
+    <value>None</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>More info at: http://github.com/Wizkiller96/WizBot</value>
@@ -2285,7 +2283,7 @@ Fuzzy</comment>
     <value>None</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Changelogs | 📅 March 04, 2017</value>
+    <value>WizBot Changelogs | 📅 March 10, 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>Animal Race is already running.</value>
@@ -2328,16 +2326,16 @@ Fuzzy</comment>
   <data name="games_x_votes_cast" xml:space="preserve">
     <value>{0} total votes cast.</value>
   </data>
-  <data name="gambling_no_users_found" xml:space="preserve">
-    <value>No user found.</value>
-  </data>
-  <data name="gambling_page" xml:space="preserve">
-    <value>page {0}</value>
-  </data>
   <data name="games_pick_pl" xml:space="preserve">
     <value>Pick them up by typing `{0}pick`</value>
   </data>
   <data name="games_pick_sn" xml:space="preserve">
     <value>Pick it up by typing `{0}pick`</value>
+  </data>
+  <data name="gambling_no_users_found" xml:space="preserve">
+    <value>No user found.</value>
+  </data>
+  <data name="gambling_page" xml:space="preserve">
+    <value>page {0}</value>
   </data>
 </root>

@@ -277,7 +277,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Mute successful..
+        ///    Looks up a localized string similar to Deafen successful..
         /// </summary>
         public static string administration_deafen {
             get {
@@ -349,7 +349,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Thanks to the people listed below, without whose contributions this project would have been impossible!.
+        ///    Looks up a localized string similar to Thanks to the people listed below for making this project happen!.
         /// </summary>
         public static string administration_donators {
             get {
@@ -764,7 +764,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to I don&apos;t have the permission necessary to do that..
+        ///    Looks up a localized string similar to I don&apos;t have the permission necessary for that most likely..
         /// </summary>
         public static string administration_mute_error {
             get {
@@ -1106,7 +1106,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} not found. {0} has been cleaned..
+        ///    Looks up a localized string similar to {0} not found.Cleaned up..
         /// </summary>
         public static string administration_role_clean {
             get {
@@ -1775,7 +1775,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to {0} has **DESTROYED** base #{0} in a war against {1}.
+        ///    Looks up a localized string similar to **DESTROYED** base #{0} in a war against {1}.
         /// </summary>
         public static string clashofclans_base_destroyed {
             get {
@@ -4622,7 +4622,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Your type has been changed to {0} from {1}.
+        ///    Looks up a localized string similar to Your type has been changed to {0} for a {1}.
         /// </summary>
         public static string pokemon_settype_success {
             get {
@@ -5603,7 +5603,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to None.
+        ///    Looks up a localized string similar to `1.` Reworked permissions module..
         /// </summary>
         public static string utility_changelog_additions_msg {
             get {
@@ -5621,9 +5621,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to `1.` Fixed stuff.
-        ///`2.` Changed a string.
-        ///`3.` Fixed Quote Command..
+        ///    Looks up a localized string similar to None.
         /// </summary>
         public static string utility_changelog_fixes_msg {
             get {
@@ -5659,7 +5657,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to WizBot Changelogs | 📅 March 04, 2017.
+        ///    Looks up a localized string similar to WizBot Changelogs | 📅 March 10, 2017.
         /// </summary>
         public static string utility_changelog_title_date {
             get {
@@ -6032,7 +6030,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Quote #{0} deleted.
+        ///    Looks up a localized string similar to Quote #{0} deleted..
         /// </summary>
         public static string utility_quote_deleted {
             get {
