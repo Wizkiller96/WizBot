@@ -199,7 +199,7 @@
     <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_list_all" xml:space="preserve">
-    <value>Liste aller benutzerdefinierten Reaktionen.</value>
+    <value>Liste aller benutzerdefinierten Reaktionen</value>
   </data>
   <data name="customreactions_name" xml:space="preserve">
     <value>Benutzerdefinierte Reaktionen</value>
@@ -1282,6 +1282,7 @@ Vergessen Sie bitte nicht, Ihren Discord-Namen oder Ihre ID in der Nachricht zu 
   </data>
   <data name="games_picked" xml:space="preserve">
     <value>hat {0} aufgehoben</value>
+    <comment>Kwoth picked 5*</comment>
   </data>
   <data name="games_planted" xml:space="preserve">
     <value>{0} pflanzte {1}</value>
@@ -2109,7 +2110,7 @@ Fuzzy</comment>
     <value>Zitat hinzugefügt</value>
   </data>
   <data name="utility_quote_deleted" xml:space="preserve">
-    <value>Zufälliges Zitat wurde gelöscht.</value>
+    <value>Zitat #{0} wurde gelöscht.</value>
   </data>
   <data name="utility_region" xml:space="preserve">
     <value>Region</value>
@@ -2216,7 +2217,7 @@ Fuzzy</comment>
     <value>Ergänzungen:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` Aktualisiert eine Reihe von Sprachantwort Strings.</value>
+    <value>`1.` Überarbeitete Berechtigungsmodul.</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Behebt:</value>
@@ -2275,6 +2276,18 @@ Fuzzy</comment>
   </data>
   <data name="games_x_votes_cast" xml:space="preserve">
     <value>{0} totale Abstimmungen eingereicht.</value>
+  </data>
+  <data name="games_pick_pl" xml:space="preserve">
+    <value>Sammel sie durch das Schreiben von `{0}pick`</value>
+  </data>
+  <data name="games_pick_sn" xml:space="preserve">
+    <value>Sammel sie durch das Schreiben von `{0}pick</value>
+  </data>
+  <data name="gambling_no_users_found" xml:space="preserve">
+    <value>Kein Benutzer gefunden.</value>
+  </data>
+  <data name="gambling_page" xml:space="preserve">
+    <value>Seite {0}</value>
   </data>
 
 </root>
