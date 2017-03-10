@@ -224,7 +224,7 @@ namespace WizBot.Modules.Permissions
                                  .Select(p =>
                                  {
                                      var str =
-                                         $"`{p.Index + startPos + 1}.` {Format.Bold(p.GetCommand((SocketGuild)Context.Guild))}";
+                                         $"`{p.Index + 1}.` {Format.Bold(p.GetCommand((SocketGuild)Context.Guild))}";
                                      if (p.Index == 0)
                                          str += $" [{GetText("uneditable")}]";
                                      return str;
