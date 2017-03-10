@@ -1015,7 +1015,11 @@ Sebep: {1}</value>
     <value>Tanıtım</value>
   </data>
   <data name="help_donate" xml:space="preserve">
-    <value>Yakında
+    <value>WizBot projesini destekleyebilirsiniz 
+ Patreon &lt;{0}&gt; yada
+ Paypal &lt;{1}&gt;
+ Mesajda discord adınızı veya kimliğini bırakmayı unutma.
+ 
 **Teşekkür ederim** ♥️</value>
   </data>
   <data name="help_guide" xml:space="preserve">
@@ -1245,11 +1249,11 @@ Sebep: {1}</value>
     <value>Para birimi oluşturma, bu kanalda etkinleştirildi.</value>
   </data>
   <data name="games_curgen_pl" xml:space="preserve">
-    <value>{0} rastgele {1} ortaya çıktı! `{2}pick` yazarak onları topla</value>
+    <value>{0} rastgele {1} ortaya çıktı!</value>
     <comment>plural</comment>
   </data>
   <data name="games_curgen_sn" xml:space="preserve">
-    <value>Rastgele bir {0} ortaya çıktı! `{1}pick` yazarak topla</value>
+    <value>Rastgele bir {0} ortaya çıktı!</value>
   </data>
   <data name="games_failed_loading_question" xml:space="preserve">
     <value>Bir soru yüklenemedi.</value>
@@ -1280,6 +1284,7 @@ Sebep: {1}</value>
   </data>
   <data name="games_picked" xml:space="preserve">
     <value>{0} adet topladı</value>
+    <comment>Kwoth picked 5*</comment>
   </data>
   <data name="games_planted" xml:space="preserve">
     <value>{0},{1} dikti.</value>
@@ -1941,7 +1946,7 @@ Sebep: {1}</value>
     <value>Katıldı</value>
   </data>
   <data name="utility_activity_line" xml:space="preserve">
-    <value>`{0}.` {1} [{2:F2}/s] - {3} total </value>
+    <value>`{0}.` {1} [her saniye/{2:F2}] - toplam {3}</value>
     <comment>/s and total need to be localized to fit the context -
 `1.`</comment>
   </data>
@@ -1955,7 +1960,7 @@ Sebep: {1}</value>
     <value>Yapımcı</value>
   </data>
   <data name="utility_botid" xml:space="preserve">
-    <value>Bot ID</value>
+    <value>Bot Kimliği</value>
   </data>
   <data name="utility_calcops" xml:space="preserve">
     <value>{0}calc komutundaki fonksiyonların listesi</value>
@@ -2076,7 +2081,7 @@ Kurucu Kimliği: {2}</value>
     <value>Sahip kimlikleri</value>
   </data>
   <data name="utility_presence" xml:space="preserve">
-    <value>Varlık</value>
+    <value>Durum</value>
   </data>
   <data name="utility_presence_txt" xml:space="preserve">
     <value>{0} Sunucu
@@ -2202,7 +2207,7 @@ Kurucu Kimliği: {2}</value>
     <value>İlaveler:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` Bir sürü dil cevap dizgesi güncellendi.</value>
+    <value>`1.` Tekrar çalıştırılan izin modülü.</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Düzeltmeler:</value>
@@ -2260,6 +2265,18 @@ Kurucu Kimliği: {2}</value>
   </data>
   <data name="games_x_votes_cast" xml:space="preserve">
     <value>{0} toplam oynanan oy.</value>
+  </data>
+  <data name="games_pick_pl" xml:space="preserve">
+    <value>`{0} pick` yazarak onları topla</value>
+  </data>
+  <data name="games_pick_sn" xml:space="preserve">
+    <value>`{0}pick` yazarak topla</value>
+  </data>
+  <data name="gambling_no_users_found" xml:space="preserve">
+    <value>Kullanıcı bulunamadı.</value>
+  </data>
+  <data name="gambling_page" xml:space="preserve">
+    <value>sayfa {0}</value>
   </data>
 
 </root>
