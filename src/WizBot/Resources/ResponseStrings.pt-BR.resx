@@ -904,7 +904,7 @@ Motivo: {1}</value>
     <comment>User flipped tails.</comment>
   </data>
   <data name="gambling_flip_guess" xml:space="preserve">
-    <value>Você Adivinhou! Você ganhou {0}</value>
+    <value>Você adivinhou! Você ganhou {0}</value>
   </data>
   <data name="gambling_flip_invalid" xml:space="preserve">
     <value>O número especificado é inválido. Você pode girar de 1 a {0} moedas.</value>
@@ -1286,6 +1286,7 @@ O novo valor de {0} é {1}!</value>
   </data>
   <data name="games_picked" xml:space="preserve">
     <value>pegou {0}</value>
+    <comment>Kwoth picked 5*</comment>
   </data>
   <data name="games_planted" xml:space="preserve">
     <value>{0} plantou {1}</value>
@@ -1754,7 +1755,7 @@ O novo valor de {0} é {1}!</value>
     <value>Humidade</value>
   </data>
   <data name="searches_image_search_for" xml:space="preserve">
-    <value>Busca de Imagens para:</value>
+    <value>Busca de imagem para:</value>
   </data>
   <data name="searches_imdb_fail" xml:space="preserve">
     <value>Falha ao encontrar este filme.</value>
@@ -2208,7 +2209,7 @@ OwnerID: {2}</value>
     <value>Aditivos:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` Atualizado um monte de cordas de resposta de idioma.</value>
+    <value>`1.` Módulo de permissões reformuladas.</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Conserta:</value>
@@ -2266,6 +2267,18 @@ OwnerID: {2}</value>
   </data>
   <data name="games_x_votes_cast" xml:space="preserve">
     <value>Total de {0} votos proferidos.</value>
+  </data>
+  <data name="games_pick_pl" xml:space="preserve">
+    <value>Pegue-os digitando `{0}pick`</value>
+  </data>
+  <data name="games_pick_sn" xml:space="preserve">
+    <value>Escolha-o digitando `{0}pick`</value>
+  </data>
+  <data name="gambling_no_users_found" xml:space="preserve">
+    <value>Nenhum usuário encontrado.</value>
+  </data>
+  <data name="gambling_page" xml:space="preserve">
+    <value>Página {0}</value>
   </data>
 
 </root>
