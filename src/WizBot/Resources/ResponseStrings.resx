@@ -2328,6 +2328,12 @@ Fuzzy</comment>
   <data name="games_x_votes_cast" xml:space="preserve">
     <value>{0} total votes cast.</value>
   </data>
+  <data name="gambling_no_users_found" xml:space="preserve">
+    <value>No user found.</value>
+  </data>
+  <data name="gambling_page" xml:space="preserve">
+    <value>page {0}</value>
+  </data>
   <data name="games_pick_pl" xml:space="preserve">
     <value>Pick them up by typing `{0}pick`</value>
   </data>

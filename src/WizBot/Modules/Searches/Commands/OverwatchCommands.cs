@@ -6,7 +6,6 @@ using WizBot.Extensions;
 using WizBot.Modules.Searches.Models;
 using Newtonsoft.Json;
 using System.Net.Http;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace WizBot.Modules.Searches
@@ -56,7 +55,7 @@ namespace WizBot.Modules.Searches
                             .AddField(fb => fb.WithName(GetText("level")).WithValue($"{model.level}").WithIsInline(true))
                             .AddField(fb => fb.WithName(GetText("quick_wins")).WithValue($"{model.Games.Quick.wins}").WithIsInline(true))
                             .AddField(fb => fb.WithName(GetText("compet_wins")).WithValue($"{model.Games.Competitive.wins}").WithIsInline(true))
-                            .AddField(fb => fb.WithName(GetText("compet_losses")).WithValue($"{model.Games.Competitive.lost}").WithIsInline(true))
+                            .AddField(fb => fb.WithName(GetText("compet_loses")).WithValue($"{model.Games.Competitive.lost}").WithIsInline(true))
                             .AddField(fb => fb.WithName(GetText("compet_played")).WithValue($"{model.Games.Competitive.played}").WithIsInline(true))
                             .AddField(fb => fb.WithName(GetText("compet_rank")).WithValue(rank).WithIsInline(true))
                             .AddField(fb => fb.WithName(GetText("compet_played")).WithValue($"{model.Playtime.competitive}").WithIsInline(true))
