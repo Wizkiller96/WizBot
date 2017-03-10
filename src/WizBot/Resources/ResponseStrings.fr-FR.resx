@@ -1473,7 +1473,7 @@ La nouvelle valeur de {0} est {1} !</value>
     <value>Lecture en boucle activée.</value>
   </data>
   <data name="music_set_music_channel" xml:space="preserve">
-    <value>Je vais désormais afficher les pistess en cours, en pause, terminées et supprimées sur ce salon.</value>
+    <value>Je vais désormais afficher les pistes en cours, en pause, terminées et supprimées dans ce salon.</value>
   </data>
   <data name="music_skipped_to" xml:space="preserve">
     <value>Saut à `{0}:{1}`</value>
@@ -2205,15 +2205,13 @@ OwnerID: {2}</value>
     <value>Compléments:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>Aucun</value>
+    <value>`1.` Mise à jour d&apos;un tas de chaînes de réponses de langue.</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Réparations:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>`1.` Des trucs fixes.
-`2.` Changé une chaîne.
-`3.` Commande de devis fixe.</value>
+    <value>Aucun</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>Plus d&apos;info à: http://github.com/Wizkiller96/WizBot</value>
@@ -2225,7 +2223,7 @@ OwnerID: {2}</value>
     <value>Aucun</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Changelogs | 📅 04 mars 2017</value>
+    <value>WizBot Changelogs | 📅 08 mars 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>Une course d&apos;animaux est déjà en cours.</value>

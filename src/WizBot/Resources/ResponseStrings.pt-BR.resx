@@ -2208,15 +2208,13 @@ OwnerID: {2}</value>
     <value>Aditivos:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>Nenhum</value>
+    <value>`1.` Atualizado um monte de cordas de resposta de idioma.</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Conserta:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>`1.` Material fixo.
-`2.` Muda uma string.
-`3.` Comando de Cotações Fixas.</value>
+    <value>Nenhum</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>Mais informações em: http://github.com/Wizkiller96/WizBot</value>
@@ -2228,7 +2226,7 @@ OwnerID: {2}</value>
     <value>Nenhum</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Alterações | 04 de março de 2017</value>
+    <value>WizBot Alterações | 08 de março de 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>A Corrida de Animais já está em andamento</value>

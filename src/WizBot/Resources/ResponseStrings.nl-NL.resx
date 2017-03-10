@@ -1105,10 +1105,10 @@ Vergeet niet je discord naam en id in het bericht te zetten.
     <value>Het tweede nummer moet groter zijn dan het eerste nummer.</value>
   </data>
   <data name="gambling_changes_of_heart" xml:space="preserve">
-    <value>Verandering Van Het Hart</value>
+    <value>Verandering van het hart</value>
   </data>
   <data name="gambling_claimed_by" xml:space="preserve">
-    <value>Overwonnen door</value>
+    <value>Opgeëist door</value>
   </data>
   <data name="gambling_divorces" xml:space="preserve">
     <value>Scheidingen</value>
@@ -1185,7 +1185,7 @@ Dit is moreel twijfelachtig🤔 </value>
     <value>Acrophobie</value>
   </data>
   <data name="games_acro_ended_no_sub" xml:space="preserve">
-    <value>Spel geëindigd zonder submissies.</value>
+    <value>Spel afgelopen zonder inzendingen.</value>
   </data>
   <data name="games_acro_no_votes_cast" xml:space="preserve">
     <value>Geen stemmen ingestuurdt. Spel geëindigd zonder winnaar.</value>
@@ -1265,7 +1265,7 @@ Dit is moreel twijfelachtig🤔 </value>
     <value>Hangman</value>
   </data>
   <data name="games_hangman_running" xml:space="preserve">
-    <value></value>
+    <value>Er is al een spel galgje aan de gang in dit kanaal.</value>
   </data>
   <data name="games_hangman_start_errored" xml:space="preserve">
     <value></value>
@@ -1274,35 +1274,35 @@ Dit is moreel twijfelachtig🤔 </value>
     <value></value>
   </data>
   <data name="games_leaderboard" xml:space="preserve">
-    <value></value>
+    <value>Scoreboard</value>
   </data>
   <data name="games_not_enough" xml:space="preserve">
-    <value></value>
+    <value>Je hebt niet genoeg {0}</value>
   </data>
   <data name="games_no_results" xml:space="preserve">
-    <value></value>
+    <value>Geen resultaten</value>
   </data>
   <data name="games_picked" xml:space="preserve">
-    <value></value>
+    <value>{0} geplukt</value>
   </data>
   <data name="games_planted" xml:space="preserve">
-    <value></value>
+    <value>{0} heeft {1} geplant</value>
     <comment>Kwoth planted 5*</comment>
   </data>
   <data name="games_trivia_already_running" xml:space="preserve">
     <value></value>
   </data>
   <data name="games_trivia_game" xml:space="preserve">
-    <value></value>
+    <value>Trivia spel</value>
   </data>
   <data name="games_trivia_guess" xml:space="preserve">
-    <value></value>
+    <value>{0} heeft &apos;m geraden! Het antwoord was: {1}</value>
   </data>
   <data name="games_trivia_none" xml:space="preserve">
     <value></value>
   </data>
   <data name="games_trivia_points" xml:space="preserve">
-    <value></value>
+    <value>{0} heeft {1} punten</value>
   </data>
   <data name="games_trivia_stopping" xml:space="preserve">
     <value></value>
@@ -1314,19 +1314,19 @@ Dit is moreel twijfelachtig🤔 </value>
     <value></value>
   </data>
   <data name="games_ttt_against_yourself" xml:space="preserve">
-    <value></value>
+    <value>Je kan niet tegen jezelf spelen.</value>
   </data>
   <data name="games_ttt_already_running" xml:space="preserve">
     <value></value>
   </data>
   <data name="games_ttt_a_draw" xml:space="preserve">
-    <value></value>
+    <value>Gelijkspel!</value>
   </data>
   <data name="games_ttt_created" xml:space="preserve">
-    <value></value>
+    <value>heeft een Boter, Kaas en eieren sessie aangemaakt.</value>
   </data>
   <data name="games_ttt_has_won" xml:space="preserve">
-    <value></value>
+    <value>{0} heeft gewonnen!</value>
   </data>
   <data name="games_ttt_matched_three" xml:space="preserve">
     <value></value>
@@ -1335,31 +1335,31 @@ Dit is moreel twijfelachtig🤔 </value>
     <value></value>
   </data>
   <data name="games_ttt_time_expired" xml:space="preserve">
-    <value></value>
+    <value>Tijd voorbij!</value>
   </data>
   <data name="games_ttt_users_move" xml:space="preserve">
-    <value></value>
+    <value>{0}&apos;s beurt</value>
   </data>
   <data name="games_vs" xml:space="preserve">
     <value></value>
   </data>
   <data name="music_attempting_to_queue" xml:space="preserve">
-    <value></value>
+    <value>Aan het proberen om {0} liedjes in de wachtrij te zetten...</value>
   </data>
   <data name="music_autoplay_disabled" xml:space="preserve">
-    <value></value>
+    <value>Autoplay uitgezet.</value>
   </data>
   <data name="music_autoplay_enabled" xml:space="preserve">
-    <value></value>
+    <value>Autoplay aangezet.</value>
   </data>
   <data name="music_defvol_set" xml:space="preserve">
-    <value></value>
+    <value>Standaard volume op {0}% gezet</value>
   </data>
   <data name="music_dir_queue_complete" xml:space="preserve">
     <value></value>
   </data>
   <data name="music_finished_song" xml:space="preserve">
-    <value></value>
+    <value>Liedje afgelopen</value>
   </data>
   <data name="music_fp_disabled" xml:space="preserve">
     <value></value>
@@ -1368,43 +1368,43 @@ Dit is moreel twijfelachtig🤔 </value>
     <value></value>
   </data>
   <data name="music_from_position" xml:space="preserve">
-    <value></value>
+    <value>van positie</value>
   </data>
   <data name="music_id" xml:space="preserve">
     <value></value>
   </data>
   <data name="music_invalid_input" xml:space="preserve">
-    <value></value>
+    <value>ongeldige invoer.</value>
   </data>
   <data name="music_max_playtime_none" xml:space="preserve">
-    <value></value>
+    <value>Maximale speeltijd heeft geen limiet meer.</value>
   </data>
   <data name="music_max_playtime_set" xml:space="preserve">
-    <value></value>
+    <value>Maximale speeltijd op {0} seconden gezet.</value>
   </data>
   <data name="music_max_queue_unlimited" xml:space="preserve">
-    <value></value>
+    <value>Maximale muziek wachtrij heeft geen limiet meer.</value>
   </data>
   <data name="music_max_queue_x" xml:space="preserve">
-    <value></value>
+    <value>Maximale muziek wachtrij is nu {0} liedjes.</value>
   </data>
   <data name="music_must_be_in_voice" xml:space="preserve">
-    <value></value>
+    <value>Je moet in het spraakkanaal van de server zijn.</value>
   </data>
   <data name="music_name" xml:space="preserve">
-    <value></value>
+    <value>Naam</value>
   </data>
   <data name="music_now_playing" xml:space="preserve">
-    <value></value>
+    <value>Nu aan het spelen</value>
   </data>
   <data name="music_no_player" xml:space="preserve">
-    <value></value>
+    <value>Geen actieve muziek speler.</value>
   </data>
   <data name="music_no_search_results" xml:space="preserve">
-    <value></value>
+    <value>Geen zoekresultaten.</value>
   </data>
   <data name="music_paused" xml:space="preserve">
-    <value></value>
+    <value>Muziek gepauzeerd.</value>
   </data>
   <data name="music_player_queue" xml:space="preserve">
     <value></value>
@@ -1416,10 +1416,11 @@ Dit is moreel twijfelachtig🤔 </value>
     <value></value>
   </data>
   <data name="music_playlists_page" xml:space="preserve">
-    <value></value>
+    <value>Pagina {0} van opgeslagen afspeellijsten
+</value>
   </data>
   <data name="music_playlist_deleted" xml:space="preserve">
-    <value></value>
+    <value>Afspeellijst verwijderd</value>
   </data>
   <data name="music_playlist_delete_fail" xml:space="preserve">
     <value></value>
@@ -1431,32 +1432,32 @@ Dit is moreel twijfelachtig🤔 </value>
     <value></value>
   </data>
   <data name="music_playlist_saved" xml:space="preserve">
-    <value></value>
+    <value>Afspeellijst opgeslagen</value>
   </data>
   <data name="music_play_limit" xml:space="preserve">
-    <value></value>
+    <value>{0}s limiet</value>
   </data>
   <data name="music_queue" xml:space="preserve">
-    <value></value>
+    <value>Wachtrij</value>
   </data>
   <data name="music_queued_song" xml:space="preserve">
     <value></value>
   </data>
   <data name="music_queue_cleared" xml:space="preserve">
-    <value></value>
+    <value>Muziek wachtrij leeggemaakt.</value>
   </data>
   <data name="music_queue_full" xml:space="preserve">
-    <value></value>
+    <value>Wachtrij is vol op {0}/{0}.</value>
   </data>
   <data name="music_removed_song" xml:space="preserve">
-    <value></value>
+    <value>Liedje verwijderd</value>
     <comment>context: &quot;removed song #5&quot;</comment>
   </data>
   <data name="music_repeating_cur_song" xml:space="preserve">
-    <value></value>
+    <value>Huidig liedje word herhaald</value>
   </data>
   <data name="music_repeating_playlist" xml:space="preserve">
-    <value></value>
+    <value>Huidige afspeellijst word herhaald</value>
   </data>
   <data name="music_repeating_track" xml:space="preserve">
     <value></value>
@@ -1480,25 +1481,25 @@ Dit is moreel twijfelachtig🤔 </value>
     <value></value>
   </data>
   <data name="music_songs_shuffled" xml:space="preserve">
-    <value></value>
+    <value>Liedjes geschud</value>
   </data>
   <data name="music_song_moved" xml:space="preserve">
-    <value></value>
+    <value>Liedje verzet</value>
   </data>
   <data name="music_time_format" xml:space="preserve">
-    <value></value>
+    <value>{0}u {1}m {2}s</value>
   </data>
   <data name="music_to_position" xml:space="preserve">
-    <value></value>
+    <value>Naar positie</value>
   </data>
   <data name="music_unlimited" xml:space="preserve">
-    <value></value>
+    <value>ongelimiteerd</value>
   </data>
   <data name="music_volume_input_invalid" xml:space="preserve">
-    <value></value>
+    <value>Volume moet tussen 0 en 100 zijn</value>
   </data>
   <data name="music_volume_set" xml:space="preserve">
-    <value></value>
+    <value>Volume op {0}% gezet</value>
   </data>
   <data name="permissions_acm_disable" xml:space="preserve">
     <value></value>
@@ -1507,7 +1508,7 @@ Dit is moreel twijfelachtig🤔 </value>
     <value></value>
   </data>
   <data name="permissions_allowed" xml:space="preserve">
-    <value></value>
+    <value>Toegestaan</value>
   </data>
   <data name="permissions_arm_disable" xml:space="preserve">
     <value></value>
@@ -1532,13 +1533,13 @@ Dit is moreel twijfelachtig🤔 </value>
     <comment>Il ne s&apos;agit pas d&apos;un ban mais d&apos;une blacklist interdisant l&apos;utilisateur d&apos;utiliser le bot.</comment>
   </data>
   <data name="permissions_cmdcd_add" xml:space="preserve">
-    <value></value>
+    <value>Commando {0} heeft nu een {1}s afkoel tijd.</value>
   </data>
   <data name="permissions_cmdcd_cleared" xml:space="preserve">
-    <value></value>
+    <value>Commando {0} heeft geen afkoel tijd meer, en alle bestaande afkoeltijden zijn weggehaald.</value>
   </data>
   <data name="permissions_cmdcd_none" xml:space="preserve">
-    <value></value>
+    <value>Geen commando afkoeltijden ingesteld.</value>
   </data>
   <data name="permissions_command_costs" xml:space="preserve">
     <value></value>
@@ -1550,13 +1551,13 @@ Dit is moreel twijfelachtig🤔 </value>
     <value></value>
   </data>
   <data name="permissions_denied" xml:space="preserve">
-    <value></value>
+    <value>Geweigerd</value>
   </data>
   <data name="permissions_filter_word_add" xml:space="preserve">
     <value></value>
   </data>
   <data name="permissions_filter_word_list" xml:space="preserve">
-    <value></value>
+    <value>Lijst van gefilterde worden</value>
   </data>
   <data name="permissions_filter_word_remove" xml:space="preserve">
     <value></value>
@@ -1586,15 +1587,15 @@ Dit is moreel twijfelachtig🤔 </value>
     <value></value>
   </data>
   <data name="permissions_of_command" xml:space="preserve">
-    <value></value>
+    <value>Commando</value>
     <comment>Gen (of command)</comment>
   </data>
   <data name="permissions_of_module" xml:space="preserve">
-    <value></value>
+    <value>Module</value>
     <comment>Gen. (of module)</comment>
   </data>
   <data name="permissions_page" xml:space="preserve">
-    <value></value>
+    <value>Rechten pagina {0}</value>
   </data>
   <data name="permissions_permrole" xml:space="preserve">
     <value></value>
@@ -1661,7 +1662,7 @@ Dit is moreel twijfelachtig🤔 </value>
     <value></value>
   </data>
   <data name="searches_atl_ad_started" xml:space="preserve">
-    <value></value>
+    <value>Gestart met het automatisch vertalen van berichten op dit kanaal. Gebruiker berichten worden automatisch verwijderd.</value>
   </data>
   <data name="searches_atl_removed" xml:space="preserve">
     <value></value>
@@ -1670,10 +1671,10 @@ Dit is moreel twijfelachtig🤔 </value>
     <value></value>
   </data>
   <data name="searches_atl_started" xml:space="preserve">
-    <value></value>
+    <value>Gestart met het automatisch vertalen van berichten op dit kanaal.</value>
   </data>
   <data name="searches_atl_stopped" xml:space="preserve">
-    <value></value>
+    <value>Gestopt met het automatisch vertalen van berichten op dit kanaal.</value>
   </data>
   <data name="searches_bad_input_format" xml:space="preserve">
     <value></value>
@@ -1682,10 +1683,10 @@ Dit is moreel twijfelachtig🤔 </value>
     <value></value>
   </data>
   <data name="searches_catfact" xml:space="preserve">
-    <value></value>
+    <value>feit</value>
   </data>
   <data name="searches_chapters" xml:space="preserve">
-    <value></value>
+    <value>hoofdstukken</value>
   </data>
   <data name="searches_comic_number" xml:space="preserve">
     <value></value>
@@ -1703,65 +1704,65 @@ Dit is moreel twijfelachtig🤔 </value>
     <value></value>
   </data>
   <data name="searches_completed" xml:space="preserve">
-    <value></value>
+    <value>Voltooid</value>
   </data>
   <data name="searches_condition" xml:space="preserve">
-    <value></value>
+    <value>Conditie</value>
   </data>
   <data name="searches_cost" xml:space="preserve">
-    <value></value>
+    <value>Kost</value>
   </data>
   <data name="searches_date" xml:space="preserve">
-    <value></value>
+    <value>Datum</value>
   </data>
   <data name="searches_define" xml:space="preserve">
-    <value></value>
+    <value>Definiëren:</value>
   </data>
   <data name="searches_dropped" xml:space="preserve">
-    <value></value>
+    <value>Laten vallen</value>
     <comment>droppped as in, &quot;stopped watching&quot; referring to shows/anime</comment>
   </data>
   <data name="searches_episodes" xml:space="preserve">
-    <value></value>
+    <value>Afleveringen</value>
   </data>
   <data name="searches_error_occured" xml:space="preserve">
-    <value></value>
+    <value>Fout opgedaagd.</value>
   </data>
   <data name="searches_example" xml:space="preserve">
-    <value></value>
+    <value>Voorbeeld</value>
   </data>
   <data name="searches_failed_finding_anime" xml:space="preserve">
-    <value></value>
+    <value>Mislukt in het vinden van die chinese tekenfilm</value>
   </data>
   <data name="searches_failed_finding_manga" xml:space="preserve">
-    <value></value>
+    <value>Mislukt in het vinden van die </value>
   </data>
   <data name="searches_genres" xml:space="preserve">
-    <value></value>
+    <value>Genres</value>
   </data>
   <data name="searches_hashtag_error" xml:space="preserve">
     <value></value>
   </data>
   <data name="searches_height_weight" xml:space="preserve">
-    <value></value>
+    <value>Lengte/Gewicht</value>
   </data>
   <data name="searches_height_weight_val" xml:space="preserve">
     <value></value>
   </data>
   <data name="searches_humidity" xml:space="preserve">
-    <value></value>
+    <value>Vochtigheid</value>
   </data>
   <data name="searches_image_search_for" xml:space="preserve">
-    <value></value>
+    <value>Afbeelding zoekopdracht voor:</value>
   </data>
   <data name="searches_imdb_fail" xml:space="preserve">
-    <value></value>
+    <value>Mislukt in het vinden van die film.</value>
   </data>
   <data name="searches_invalid_lang" xml:space="preserve">
     <value></value>
   </data>
   <data name="searches_jokes_not_loaded" xml:space="preserve">
-    <value></value>
+    <value>Grapjes niet geladen.</value>
   </data>
   <data name="searches_latlong" xml:space="preserve">
     <value></value>
@@ -1774,13 +1775,13 @@ Dit is moreel twijfelachtig🤔 </value>
     <comment>Don&apos;t translate {0}place</comment>
   </data>
   <data name="searches_location" xml:space="preserve">
-    <value></value>
+    <value>Lokatie</value>
   </data>
   <data name="searches_magicitems_not_loaded" xml:space="preserve">
     <value></value>
   </data>
   <data name="searches_mal_profile" xml:space="preserve">
-    <value></value>
+    <value>{0}&apos;s MAL profiel</value>
   </data>
   <data name="searches_mashape_api_missing" xml:space="preserve">
     <value></value>
@@ -1789,19 +1790,19 @@ Dit is moreel twijfelachtig🤔 </value>
     <value></value>
   </data>
   <data name="searches_no_channel_found" xml:space="preserve">
-    <value></value>
+    <value>Geen kanaal gevonden.</value>
   </data>
   <data name="searches_no_results" xml:space="preserve">
-    <value></value>
+    <value>Geen resultaten gevonden.</value>
   </data>
   <data name="searches_on_hold" xml:space="preserve">
     <value></value>
   </data>
   <data name="searches_original_url" xml:space="preserve">
-    <value></value>
+    <value>Originele URL</value>
   </data>
   <data name="searches_osu_api_key" xml:space="preserve">
-    <value></value>
+    <value>Een osu! API sleutel is vereist.</value>
   </data>
   <data name="searches_osu_failed" xml:space="preserve">
     <value></value>
@@ -1829,7 +1830,7 @@ Dit is moreel twijfelachtig🤔 </value>
     <value></value>
   </data>
   <data name="searches_quality" xml:space="preserve">
-    <value></value>
+    <value>Kwaliteit:</value>
   </data>
   <data name="searches_quick_playtime" xml:space="preserve">
     <value></value>
@@ -1867,16 +1868,16 @@ Dit is moreel twijfelachtig🤔 </value>
     <value></value>
   </data>
   <data name="searches_streamer_offline" xml:space="preserve">
-    <value></value>
+    <value>Streamer {0} is offline.</value>
   </data>
   <data name="searches_streamer_online" xml:space="preserve">
-    <value></value>
+    <value>Streamer {0} is online met {1} kijkers.</value>
   </data>
   <data name="searches_streams_following" xml:space="preserve">
-    <value></value>
+    <value>Je volgt {0} streams op deze server.</value>
   </data>
   <data name="searches_streams_none" xml:space="preserve">
-    <value></value>
+    <value>Je volgt geen streams op deze server.</value>
   </data>
   <data name="searches_stream_no" xml:space="preserve">
     <value></value>
@@ -1891,25 +1892,25 @@ Dit is moreel twijfelachtig🤔 </value>
     <value></value>
   </data>
   <data name="searches_sunrise" xml:space="preserve">
-    <value></value>
+    <value>Zon&apos;s opgang</value>
   </data>
   <data name="searches_sunset" xml:space="preserve">
-    <value></value>
+    <value>Zon&apos;s ondergang</value>
   </data>
   <data name="searches_temperature" xml:space="preserve">
-    <value></value>
+    <value>Temperatuur</value>
   </data>
   <data name="searches_title" xml:space="preserve">
-    <value></value>
+    <value>Titel:</value>
   </data>
   <data name="searches_top_3_fav_anime" xml:space="preserve">
     <value></value>
   </data>
   <data name="searches_translation" xml:space="preserve">
-    <value></value>
+    <value>Vertaling:</value>
   </data>
   <data name="searches_types" xml:space="preserve">
-    <value></value>
+    <value>Types</value>
   </data>
   <data name="searches_ud_error" xml:space="preserve">
     <value></value>
@@ -1918,7 +1919,7 @@ Dit is moreel twijfelachtig🤔 </value>
     <value></value>
   </data>
   <data name="searches_viewers" xml:space="preserve">
-    <value></value>
+    <value>Kijkers</value>
   </data>
   <data name="searches_watching" xml:space="preserve">
     <value></value>
@@ -1930,13 +1931,13 @@ Dit is moreel twijfelachtig🤔 </value>
     <value></value>
   </data>
   <data name="searches_wiki_page_not_found" xml:space="preserve">
-    <value></value>
+    <value>Pagina niet gevonden</value>
   </data>
   <data name="searches_wind_speed" xml:space="preserve">
-    <value></value>
+    <value>Wind snelheid</value>
   </data>
   <data name="searches_x_most_banned_champs" xml:space="preserve">
-    <value></value>
+    <value>De {0} meest verbannen kampioenen.</value>
   </data>
   <data name="searches_yodify_error" xml:space="preserve">
     <value></value>
@@ -1950,16 +1951,16 @@ Dit is moreel twijfelachtig🤔 </value>
 `1.`</comment>
   </data>
   <data name="utility_activity_page" xml:space="preserve">
-    <value></value>
+    <value>Activiteit pagina #{0}</value>
   </data>
   <data name="utility_activity_users_total" xml:space="preserve">
-    <value></value>
+    <value>{0} gebruikers totaal.</value>
   </data>
   <data name="utility_author" xml:space="preserve">
-    <value></value>
+    <value>Auteur</value>
   </data>
   <data name="utility_botid" xml:space="preserve">
-    <value></value>
+    <value>Bot ID</value>
   </data>
   <data name="utility_calcops" xml:space="preserve">
     <value></value>
@@ -1968,25 +1969,25 @@ Dit is moreel twijfelachtig🤔 </value>
     <value></value>
   </data>
   <data name="utility_channel_topic" xml:space="preserve">
-    <value></value>
+    <value>Kanaal onderwerp</value>
   </data>
   <data name="utility_commands_ran" xml:space="preserve">
-    <value></value>
+    <value>Commando&apos;s uitgevoerd</value>
   </data>
   <data name="utility_convert" xml:space="preserve">
-    <value></value>
+    <value>{0} {1} is gelijk aan {2} {3}</value>
   </data>
   <data name="utility_convertlist" xml:space="preserve">
-    <value></value>
+    <value>Eenheden die gebruikt kunnen worden door de omvormer</value>
   </data>
   <data name="utility_convert_not_found" xml:space="preserve">
-    <value></value>
+    <value>Kan {0} niet naar {1} omvormen: Eenheden niet gevonden</value>
   </data>
   <data name="utility_convert_type_error" xml:space="preserve">
-    <value></value>
+    <value>Kan {0} niet naar {1} omvormen: Type eenheden zijn niet gelijk</value>
   </data>
   <data name="utility_created_at" xml:space="preserve">
-    <value></value>
+    <value>Gemaakt op</value>
   </data>
   <data name="utility_csc_join" xml:space="preserve">
     <value></value>
@@ -1995,31 +1996,31 @@ Dit is moreel twijfelachtig🤔 </value>
     <value></value>
   </data>
   <data name="utility_csc_token" xml:space="preserve">
-    <value></value>
+    <value>Dit is je CSC token</value>
   </data>
   <data name="utility_custom_emojis" xml:space="preserve">
-    <value></value>
+    <value>Speciale emojis</value>
   </data>
   <data name="utility_error" xml:space="preserve">
-    <value></value>
+    <value>Fout</value>
   </data>
   <data name="utility_features" xml:space="preserve">
-    <value></value>
+    <value>Kenmerken</value>
   </data>
   <data name="utility_id" xml:space="preserve">
-    <value></value>
+    <value>ID</value>
   </data>
   <data name="utility_index_out_of_range" xml:space="preserve">
-    <value></value>
+    <value>Index buiten bereik.</value>
   </data>
   <data name="utility_inrole_list" xml:space="preserve">
-    <value></value>
+    <value>Hier is de lijst met gebruikers in die rollen:</value>
   </data>
   <data name="utility_inrole_not_allowed" xml:space="preserve">
-    <value></value>
+    <value>Om misbruik te voorkomen ben je niet gemachtigd om dit commando te gebruiken op rollen met veel gebruikers.</value>
   </data>
   <data name="utility_invalid_value" xml:space="preserve">
-    <value></value>
+    <value>Ongeldige {0} waarde.</value>
     <comment>Invalid months value/ Invalid hours value</comment>
   </data>
   <data name="utility_joined_discord" xml:space="preserve">
@@ -2029,68 +2030,72 @@ Dit is moreel twijfelachtig🤔 </value>
     <value></value>
   </data>
   <data name="utility_listservers" xml:space="preserve">
-    <value></value>
+    <value>ID: {0}
+Leden: {1}
+Eigenaar ID: {2}</value>
   </data>
   <data name="utility_listservers_none" xml:space="preserve">
-    <value></value>
+    <value>Geen servers gevonden op die pagina.</value>
   </data>
   <data name="utility_list_of_repeaters" xml:space="preserve">
-    <value></value>
+    <value>Lijst van de repeater</value>
   </data>
   <data name="utility_members" xml:space="preserve">
-    <value></value>
+    <value>Leden</value>
   </data>
   <data name="utility_memory" xml:space="preserve">
-    <value></value>
+    <value>Geheugen</value>
   </data>
   <data name="utility_messages" xml:space="preserve">
-    <value></value>
+    <value>Berichten</value>
   </data>
   <data name="utility_message_repeater" xml:space="preserve">
-    <value></value>
+    <value>Bericht repeater</value>
   </data>
   <data name="utility_name" xml:space="preserve">
-    <value></value>
+    <value>Naam</value>
   </data>
   <data name="utility_nickname" xml:space="preserve">
-    <value></value>
+    <value>Roepnaam</value>
   </data>
   <data name="utility_nobody_playing_game" xml:space="preserve">
-    <value></value>
+    <value>Niemand speelt dat spel.</value>
   </data>
   <data name="utility_no_active_repeaters" xml:space="preserve">
     <value></value>
   </data>
   <data name="utility_no_roles_on_page" xml:space="preserve">
-    <value></value>
+    <value>Geen rollen op deze pagina.</value>
   </data>
   <data name="utility_no_shards_on_page" xml:space="preserve">
-    <value></value>
+    <value>Geen shards op deze pagina.</value>
     <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="utility_no_topic_set" xml:space="preserve">
-    <value></value>
+    <value>Geen onderwerp ingesteld.</value>
   </data>
   <data name="utility_owner" xml:space="preserve">
-    <value></value>
+    <value>Eigenaar</value>
   </data>
   <data name="utility_owner_ids" xml:space="preserve">
-    <value></value>
+    <value>Eigenaar IDs</value>
   </data>
   <data name="utility_presence" xml:space="preserve">
-    <value></value>
+    <value>Aanwezigheid</value>
   </data>
   <data name="utility_presence_txt" xml:space="preserve">
-    <value></value>
+    <value>{0} Servers
+{1} Tekst Kanalen
+{2} Spraak Kanalen</value>
   </data>
   <data name="utility_quotes_deleted" xml:space="preserve">
-    <value></value>
+    <value>Verwijder alle citaten met het trefwoord {0}</value>
   </data>
   <data name="utility_quotes_page" xml:space="preserve">
-    <value></value>
+    <value>Pagina {0} met citaten</value>
   </data>
   <data name="utility_quotes_page_none" xml:space="preserve">
-    <value></value>
+    <value>Geen citaten op deze pagina.</value>
   </data>
   <data name="utility_quotes_remove_none" xml:space="preserve">
     <value>Geen verwijderbare citaten gevonden</value>
@@ -2102,13 +2107,13 @@ Dit is moreel twijfelachtig🤔 </value>
     <value>Een willekeurig citaat verwijderd</value>
   </data>
   <data name="utility_region" xml:space="preserve">
-    <value></value>
+    <value>Regio</value>
   </data>
   <data name="utility_registered_on" xml:space="preserve">
-    <value></value>
+    <value>Geregistreerd op</value>
   </data>
   <data name="utility_remind" xml:space="preserve">
-    <value></value>
+    <value>Ik zal {0} herinneren om {1} in {2} `({3:d.M.yyyy.} op {4:HH:mm})`</value>
   </data>
   <data name="utility_remind_invalid_format" xml:space="preserve">
     <value></value>
@@ -2117,13 +2122,13 @@ Dit is moreel twijfelachtig🤔 </value>
     <value></value>
   </data>
   <data name="utility_repeater" xml:space="preserve">
-    <value></value>
+    <value>Herhalen van {0} elke {1} dagen, {2} uren en {3} minuten.</value>
   </data>
   <data name="utility_repeaters_list" xml:space="preserve">
-    <value></value>
+    <value>Lijst van repeaters</value>
   </data>
   <data name="utility_repeaters_none" xml:space="preserve">
-    <value></value>
+    <value>Geen repeaters actief op deze server.</value>
   </data>
   <data name="utility_repeater_stopped" xml:space="preserve">
     <value></value>
@@ -2147,7 +2152,7 @@ Dit is moreel twijfelachtig🤔 </value>
     <value></value>
   </data>
   <data name="utility_rrc_start" xml:space="preserve">
-    <value>Gestart met het routeren van kleuren voor de rol {0}</value>
+    <value>Begonnen met het routeren van kleuren voor de rol {0}</value>
   </data>
   <data name="utility_rrc_stop" xml:space="preserve">
     <value>Gestopt met het routeren van kleuren voor de rol {0}</value>
@@ -2229,7 +2234,7 @@ Dit is moreel twijfelachtig🤔 </value>
     <value></value>
   </data>
   <data name="gambling_animal_race_already_in" xml:space="preserve">
-    <value></value>
+    <value>Je maakt al deel uit van deze race!</value>
   </data>
   <data name="games_current_poll_results" xml:space="preserve">
     <value></value>
@@ -2247,7 +2252,7 @@ Dit is moreel twijfelachtig🤔 </value>
     <value></value>
   </data>
   <data name="games_poll_voted" xml:space="preserve">
-    <value></value>
+    <value>{0} gestemd.</value>
   </data>
   <data name="games_poll_vote_private" xml:space="preserve">
     <value></value>

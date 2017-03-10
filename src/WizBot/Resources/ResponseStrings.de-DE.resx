@@ -1027,7 +1027,7 @@ Vergessen Sie bitte nicht, Ihren Discord-Namen oder Ihre ID in der Nachricht zu 
 **Hosting Anleitungen und Dokumentationen können hier gefunden werden**: &lt;{1}&gt;</value>
   </data>
   <data name="help_list_of_commands" xml:space="preserve">
-    <value>Lister der Befehle</value>
+    <value>Liste der Befehle</value>
   </data>
   <data name="help_list_of_modules" xml:space="preserve">
     <value>Liste der Module</value>
@@ -1247,11 +1247,11 @@ Vergessen Sie bitte nicht, Ihren Discord-Namen oder Ihre ID in der Nachricht zu 
     <value>Währungsgeneration in diesem Kanal aktiviert.</value>
   </data>
   <data name="games_curgen_pl" xml:space="preserve">
-    <value>{0} zufällige {1} sind erschienen! Sammle sie indem Sie `{2}pick` schreiben</value>
+    <value>{0} zufällige {1} sind erschienen! Sammlen Sie sie indem Sie `{2}pick` schreiben</value>
     <comment>plural</comment>
   </data>
   <data name="games_curgen_sn" xml:space="preserve">
-    <value>Eine zufällige {0} ist erschienen! Sammle sie indem Sie `{1}pick` schreiben</value>
+    <value>Eine zufällige {0} ist erschienen! Sammlen Sie sie indem Sie `{1}pick` schreiben</value>
   </data>
   <data name="games_failed_loading_question" xml:space="preserve">
     <value>Laden einer Frage fehlgeschlagen.</value>
@@ -2216,15 +2216,13 @@ Fuzzy</comment>
     <value>Ergänzungen:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>Keiner</value>
+    <value>`1.` Aktualisiert eine Reihe von Sprachantwort Strings.</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Behebt:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>`1.` Feste Sachen.
-`2.` Ändere einen String.
-`3.` Fixed Zitat Befehl.</value>
+    <value>Keiner</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>Weitere Infos unter: http://github.com/Wizkiller96/WizBot</value>
@@ -2236,7 +2234,7 @@ Fuzzy</comment>
     <value>Keiner</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Changelogs | 📅 März 04, 2017</value>
+    <value>WizBot Changelogs | 📅 März 08, 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>Tierrennen läuft bereits.</value>

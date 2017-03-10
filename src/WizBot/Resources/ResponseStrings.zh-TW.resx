@@ -298,7 +298,7 @@
     <value>{0} 的屬性是 {1} </value>
   </data>
   <data name="pokemon_user_not_found" xml:space="preserve">
-    <value>該用戶不存在。</value>
+    <value>該成員不存在。</value>
   </data>
   <data name="pokemon_you_fainted" xml:space="preserve">
     <value>您已昏厥所以不能移動！</value>
@@ -324,7 +324,7 @@
     <comment>PLURAL</comment>
   </data>
   <data name="administration_banned_user" xml:space="preserve">
-    <value>用戶已封鎖</value>
+    <value>成員已封鎖</value>
   </data>
   <data name="administration_bot_name" xml:space="preserve">
     <value>Bot 暱稱已改為 {0}</value>
@@ -400,7 +400,7 @@
     <value>私人訊息來自</value>
   </data>
   <data name="administration_donadd" xml:space="preserve">
-    <value>成功新增了新的捐贈者。此用戶總共捐贈了：{0}</value>
+    <value>成功新增了新的捐贈者。此成員總共捐贈了：{0}</value>
   </data>
   <data name="administration_donators" xml:space="preserve">
     <value>感謝下列的人使這個項目繼續運作!</value>
@@ -454,7 +454,7 @@
     <value>在這個頻道啟用歡迎通知。</value>
   </data>
   <data name="administration_hierarchy" xml:space="preserve">
-    <value>您不能對身分組與您一樣或更高的人使用此指令。</value>
+    <value>您不能對身分組與您一樣或更高的成員使用此指令。</value>
   </data>
   <data name="administration_images_loaded" xml:space="preserve">
     <value>圖片共花了 {0} 秒載入!</value>
@@ -473,7 +473,7 @@
 原因：{1}</value>
   </data>
   <data name="administration_kicked_user" xml:space="preserve">
-    <value>用戶已被踢出</value>
+    <value>成員已被踢出</value>
   </data>
   <data name="administration_lang_list" xml:space="preserve">
     <value>可用的語言清單
@@ -609,16 +609,16 @@
     <value>沒有生效中的保護機制</value>
   </data>
   <data name="administration_raid_cnt" xml:space="preserve">
-    <value>用戶緩衝數應介於 {0} 和 {1} 之間。</value>
+    <value>成員緩衝數應介於 {0} 和 {1} 之間。</value>
   </data>
   <data name="administration_raid_stats" xml:space="preserve">
-    <value>如果 {1} 秒內進入了 {0} 或更多位使用者，我則會將他們 {2} 。</value>
+    <value>如果 {1} 秒內進入了 {0} 或更多位成員，我則會將他們 {2} 。</value>
   </data>
   <data name="administration_raid_time" xml:space="preserve">
     <value>時間必須在於 {0} 和 {1} 秒之間。</value>
   </data>
   <data name="administration_rar" xml:space="preserve">
-    <value>已成功移除了使用者 {0} 上所有的身分組。</value>
+    <value>成功的移除了 {0} 所有的身分組。</value>
   </data>
   <data name="administration_rar_err" xml:space="preserve">
     <value>無法移除身分組。我的權限不夠。</value>
@@ -636,7 +636,7 @@
     <value>無效的色碼或是權限不足引起錯誤。</value>
   </data>
   <data name="administration_remrole" xml:space="preserve">
-    <value>成功的移除 {1} 的 {0} 身分組。</value>
+    <value>成功的移除了 {1} 的 {0} 身分組。</value>
   </data>
   <data name="administration_remrole_err" xml:space="preserve">
     <value>無法移除身分組。我沒有足夠的權限。</value>
@@ -746,7 +746,7 @@
     <value>關閉中</value>
   </data>
   <data name="administration_slowmode_desc" xml:space="preserve">
-    <value>使用者無法在 {1} 秒發送超過 {0} 條訊息。</value>
+    <value>成員無法在 {1} 秒發送超過 {0} 條訊息。</value>
   </data>
   <data name="administration_slowmode_disabled" xml:space="preserve">
     <value>慢速模式已停用。</value>
@@ -765,7 +765,7 @@
     <value>{0} 將會注意此頻道。</value>
   </data>
   <data name="administration_spam_stats" xml:space="preserve">
-    <value>如果使用者連續貼出 {0} 個相同的訊息，我將會把他們 {1}。
+    <value>如果成員連續貼出 {0} 個相同的訊息，我將會把他們 {1}。
      __忽略的頻道__: {2}</value>
   </data>
   <data name="administration_text_chan_created" xml:space="preserve">
@@ -782,22 +782,22 @@
     <comment>singular</comment>
   </data>
   <data name="administration_username" xml:space="preserve">
-    <value>使用者名稱</value>
+    <value>成員名稱</value>
   </data>
   <data name="administration_username_changed" xml:space="preserve">
-    <value>使用者名稱已更改</value>
+    <value>成員名稱已更改</value>
   </data>
   <data name="administration_users" xml:space="preserve">
-    <value>使用者</value>
+    <value>成員</value>
   </data>
   <data name="administration_user_banned" xml:space="preserve">
-    <value>使用者已封鎖</value>
+    <value>成員已封鎖</value>
   </data>
   <data name="administration_user_chat_mute" xml:space="preserve">
-    <value>{0} 已**被禁**__文字聊天__。</value>
+    <value>已**禁止** {0} 的__文字聊天__。</value>
   </data>
   <data name="administration_user_chat_unmute" xml:space="preserve">
-    <value>{0} 已**允許**__文字聊天__。</value>
+    <value>已**開啟** {0} 的__文字聊天__。</value>
   </data>
   <data name="administration_user_joined" xml:space="preserve">
     <value>使用者已加入</value>
@@ -806,7 +806,7 @@
     <value>使用者已離開</value>
   </data>
   <data name="administration_user_muted" xml:space="preserve">
-    <value>{0} 已**被禁**__文字和語音聊天__。</value>
+    <value>已**禁止** {0} 的__文字和語音聊天__。</value>
   </data>
   <data name="administration_user_role_add" xml:space="preserve">
     <value>使用者身分組已新增</value>
@@ -818,7 +818,7 @@
     <value>{0} 改成了 {1}</value>
   </data>
   <data name="administration_user_unmuted" xml:space="preserve">
-    <value>{0} 已從文字頻道和語音頻道被**取消禁音**。</value>
+    <value>已**開放** {0} 的__文字和語音聊天__。</value>
   </data>
   <data name="administration_user_vjoined" xml:space="preserve">
     <value>{0} 已加入 {1} 語音頻道。</value>
@@ -830,10 +830,10 @@
     <value>{0} 已從 {1} 移至 {2} 語音頻道。</value>
   </data>
   <data name="administration_user_voice_mute" xml:space="preserve">
-    <value>{0} 已被**静音**。</value>
+    <value>已**禁止** {0} 的__語音聊天__。</value>
   </data>
   <data name="administration_user_voice_unmute" xml:space="preserve">
-    <value>{0} 已被**取消静音**。</value>
+    <value>已**開放** {0} 的__語音聊天__。</value>
   </data>
   <data name="administration_voice_chan_created" xml:space="preserve">
     <value>已建立語音頻道</value>
@@ -849,29 +849,29 @@
     <value>已啟用語音+文字功能。</value>
   </data>
   <data name="administration_vt_exit" xml:space="preserve">
-    <value>我沒有**管理身分組**和/或**管理頻道**權限，所以我無法在 {0} 伺服器上運行`語音+文字`。</value>
+    <value>我沒有**管理身分組**和/或**管理頻道**權限，所以我無法在 {0} 伺服器上執行`語音+文字`功能。</value>
   </data>
   <data name="administration_vt_no_admin" xml:space="preserve">
-    <value>您正在啟用/停用此功能，而且**我没有管理員權限**。這可能會造成一些問題，您必須自己清理文字頻道。</value>
+    <value>您正在啟用/停用此功能，但我**__没有__管理員權限**。這可能會造成一些問題，而事後您必須自行處理這些文字頻道。</value>
   </data>
   <data name="administration_vt_perms" xml:space="preserve">
-    <value>我需要至少**管理身份**和**管理频道**权限，以启用此功能。 （优先管理权限）</value>
+    <value>我至少需要**管理身份組**和**管理頻道**權限才能使用此功能。(建議給我管理員權限)</value>
   </data>
   <data name="administration_xmuted_text" xml:space="preserve">
-    <value>用户{0}来自文字频道</value>
+    <value>使用者被 {0} 文字聊天</value>
   </data>
   <data name="administration_xmuted_text_and_voice" xml:space="preserve">
-    <value>用户{0}来自文字和语音频道</value>
+    <value>使用者被 {0} 文字及語音聊天</value>
   </data>
   <data name="administration_xmuted_voice" xml:space="preserve">
-    <value>用户{0}来自语音频道</value>
+    <value>使用者被 {0} 語音聊天</value>
   </data>
   <data name="administration_sbdm" xml:space="preserve">
-    <value>您已从{0}服务器软禁止。
-原因：{1}</value>
+    <value>您已被伺服器 {0} 軟禁。
+理由: {1}</value>
   </data>
   <data name="administration_user_unbanned" xml:space="preserve">
-    <value>用户已取消禁止</value>
+    <value>使用者已解禁</value>
   </data>
   <data name="administration_migration_done" xml:space="preserve">
     <value>迁移完成！</value>
@@ -946,7 +946,7 @@
     <value>卡牌组中没有更多的牌。</value>
   </data>
   <data name="gambling_raffled_user" xml:space="preserve">
-    <value>抽奖用户</value>
+    <value>得獎用戶</value>
   </data>
   <data name="gambling_roll" xml:space="preserve">
     <value>您抛了{0}。</value>
@@ -992,13 +992,13 @@
     <value>返回ToC</value>
   </data>
   <data name="help_bot_owner_only" xml:space="preserve">
-    <value>仅限Bot Owner</value>
+    <value>只限 BOT 擁有者</value>
   </data>
   <data name="help_channel_permission" xml:space="preserve">
-    <value>需要{0}频道权限。</value>
+    <value>需要 {0} 頻道權限。</value>
   </data>
   <data name="help_cmdlist_donate" xml:space="preserve">
-    <value>您可以在patreon上支持项目：&lt;{0}&gt;或paypal：&lt;{1}&gt;</value>
+    <value>您可以在 patreon 上：&lt;{0}&gt; 或 paypal：&lt;{1}&gt; 支持這個項目</value>
   </data>
   <data name="help_cmd_and_alias" xml:space="preserve">
     <value>命令和别名</value>
@@ -1029,7 +1029,7 @@ Paypal &lt;{1}&gt;
 **主机指南和文档可以在这里找到**：&lt;{1}&gt;</value>
   </data>
   <data name="help_list_of_commands" xml:space="preserve">
-    <value>命令列表</value>
+    <value>指令列表</value>
   </data>
   <data name="help_list_of_modules" xml:space="preserve">
     <value>组件列表</value>
@@ -1047,38 +1047,38 @@ Paypal &lt;{1}&gt;
     <value>目录</value>
   </data>
   <data name="help_usage" xml:space="preserve">
-    <value>用法</value>
+    <value>使用方式</value>
   </data>
   <data name="nsfw_autohentai_started" xml:space="preserve">
-    <value>自动hentai启动。 使用以下标记之一重新排列每个{0}：
+    <value>Autohentai 啟動。每 {0} 秒發送一張含有以下標籤的圖片：
 {1}</value>
   </data>
   <data name="nsfw_tag" xml:space="preserve">
-    <value>标签</value>
+    <value>標籤</value>
   </data>
   <data name="gambling_animal_race" xml:space="preserve">
-    <value>动物竞赛</value>
+    <value>動物競速比賽</value>
   </data>
   <data name="gambling_animal_race_failed" xml:space="preserve">
-    <value>启动失败，因为没有足够的参与者。</value>
+    <value>參賽者不足，無法啟動比賽。</value>
   </data>
   <data name="gambling_animal_race_full" xml:space="preserve">
-    <value>竞赛已满！ 立即开始。</value>
+    <value>參賽者已滿！將立即開始比賽。</value>
   </data>
   <data name="gambling_animal_race_join" xml:space="preserve">
-    <value>{0}加入为{1}</value>
+    <value>{0} 扮演為 {1}</value>
   </data>
   <data name="gambling_animal_race_join_bet" xml:space="preserve">
-    <value>{0}加入为{1}，赌注{2}！</value>
+    <value>{0} 扮演為 {1} 並下注了 {2}！</value>
   </data>
   <data name="gambling_animal_race_join_instr" xml:space="preserve">
-    <value>输入{0} jr 以加入竞赛。</value>
+    <value>輸入 {0}jr 來加入比賽。</value>
   </data>
   <data name="gambling_animal_race_starting" xml:space="preserve">
-    <value>在20内秒或当房间满后开始。</value>
+    <value>比賽將開始於20秒內或房間人數滿後。</value>
   </data>
   <data name="gambling_animal_race_starting_with_x" xml:space="preserve">
-    <value>{0}个参与者开始。</value>
+    <value>比賽開始，共有 {0} 個參賽者。</value>
   </data>
   <data name="gambling_animal_race_won" xml:space="preserve">
     <value>{0}为{1}赢得竞赛！</value>
@@ -1122,7 +1122,7 @@ Paypal &lt;{1}&gt;
     <value>没人</value>
   </data>
   <data name="gambling_price" xml:space="preserve">
-    <value>价钱</value>
+    <value>價格</value>
   </data>
   <data name="gambling_waifus_none" xml:space="preserve">
     <value>没有waifus被要求。</value>
@@ -2207,28 +2207,28 @@ Paypal &lt;{1}&gt;
     <value>語音頻道</value>
   </data>
   <data name="utility_changelog_additions" xml:space="preserve">
-    <value></value>
+    <value>添加：</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value></value>
+    <value>`1.` 更新了一堆語言響應字符串。</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
-    <value></value>
+    <value>修正：</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value></value>
+    <value>沒有</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
-    <value></value>
+    <value>更多信息：http://github.com/Wizkiller96/WizBot</value>
   </data>
   <data name="utility_changelog_removals" xml:space="preserve">
-    <value></value>
+    <value>刪除：</value>
   </data>
   <data name="utility_changelog_removals_msg" xml:space="preserve">
-    <value></value>
+    <value>沒有</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value></value>
+    <value>WizBot Changelogs | 📅2017年3月08日</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>动物竞赛已经运行。</value>
