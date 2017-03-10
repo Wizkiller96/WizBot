@@ -10,5 +10,6 @@ namespace WizBot.Services.Database.Repositories
         Task<Quote> GetRandomQuoteByKeywordAsync(ulong guildId, string keyword);
         Task<Quote> SearchQuoteKeywordTextAsync(ulong guildId, string keyword, string text);
         IEnumerable<Quote> GetGroup(ulong guildId, int skip, int take);
+        void RemoveAllByKeyword(ulong guildId, string keyword);
     }
 }

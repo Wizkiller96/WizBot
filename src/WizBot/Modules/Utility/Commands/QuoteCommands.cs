@@ -34,8 +34,8 @@ namespace WizBot.Modules.Utility
 
                 if (quotes.Any())
                     await Context.Channel.SendConfirmAsync(GetText("quotes_page", page + 1),
-                            string.Join("\n", quotes.Select(q => $"{q.Keyword,-20} by {q.AuthorName}")))
-                                 .ConfigureAwait(false);
+                            string.Join("\n", quotes.Select(q => $"`#{q.Id}` {Format.Bold(q.Keyword),-20} by {q.AuthorName}")))
+                        .ConfigureAwait(false);
                 else
                     await ReplyErrorLocalized("quotes_page_none").ConfigureAwait(false);
             }
@@ -52,7 +52,8 @@ namespace WizBot.Modules.Utility
                 Quote quote;
                 using (var uow = DbHandler.UnitOfWork())
                 {
-                    quote = await uow.Quotes.GetRandomQuoteByKeywordAsync(Context.Guild.Id, keyword).ConfigureAwait(false);
+                    quote =
+                        await uow.Quotes.GetRandomQuoteByKeywordAsync(Context.Guild.Id, keyword).ConfigureAwait(false);
                 }
 
                 if (quote == null)
@@ -61,7 +62,11 @@ namespace WizBot.Modules.Utility
                 CREmbed crembed;
                 if (CREmbed.TryParse(quote.Text, out crembed))
                 {
-                    try { await Context.Channel.EmbedAsync(crembed.ToEmbed(), crembed.PlainText ?? "").ConfigureAwait(false); }
+                    try
+                    {
+                        await Context.Channel.EmbedAsync(crembed.ToEmbed(), crembed.PlainText ?? "")
+                            .ConfigureAwait(false);
+                    }
                     catch (Exception ex)
                     {
                         _log.Warn("Sending CREmbed failed");
@@ -69,7 +74,7 @@ namespace WizBot.Modules.Utility
                     }
                     return;
                 }
-                await Context.Channel.SendMessageAsync("📣 " + quote.Text.SanitizeMentions());
+                await Context.Channel.SendMessageAsync($"`#{quote.Id}` 📣 " + quote.Text.SanitizeMentions());
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -84,13 +89,16 @@ namespace WizBot.Modules.Utility
                 Quote keywordquote;
                 using (var uow = DbHandler.UnitOfWork())
                 {
-                    keywordquote = await uow.Quotes.SearchQuoteKeywordTextAsync(Context.Guild.Id, keyword, text).ConfigureAwait(false);
+                    keywordquote =
+                        await uow.Quotes.SearchQuoteKeywordTextAsync(Context.Guild.Id, keyword, text)
+                            .ConfigureAwait(false);
                 }
 
                 if (keywordquote == null)
                     return;
 
-                await Context.Channel.SendMessageAsync("💬 " + keyword.ToLowerInvariant() + ":  " + keywordquote.Text.SanitizeMentions());
+                await Context.Channel.SendMessageAsync("💬 " + keyword.ToLowerInvariant() + ":  " +
+                                                       keywordquote.Text.SanitizeMentions());
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -119,33 +127,26 @@ namespace WizBot.Modules.Utility
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            public async Task DeleteQuote([Remainder] string keyword)
+            public async Task DeleteQuote(int id)
             {
-                if (string.IsNullOrWhiteSpace(keyword))
-                    return;
-
                 var isAdmin = ((IGuildUser)Context.Message.Author).GuildPermissions.Administrator;
 
-                keyword = keyword.ToUpperInvariant();
                 var sucess = false;
                 string response;
                 using (var uow = DbHandler.UnitOfWork())
                 {
-                    var qs = uow.Quotes.GetAllQuotesByKeyword(Context.Guild.Id, keyword)?.Where(elem => isAdmin || elem.AuthorId == Context.Message.Author.Id).ToArray();
+                    var q = uow.Quotes.Get(id);
 
-                    if (qs == null || !qs.Any())
+                    if (q == null || (!isAdmin && q.AuthorId != Context.Message.Author.Id))
                     {
-                        sucess = false;
                         response = GetText("quotes_remove_none");
                     }
                     else
                     {
-                        var q = qs[new WizBotRandom().Next(0, qs.Length)];
-
                         uow.Quotes.Remove(q);
                         await uow.CompleteAsync().ConfigureAwait(false);
                         sucess = true;
-                        response = GetText("quote_deleted");
+                        response = GetText("quote_deleted", id);
                     }
                 }
                 if (sucess)
@@ -166,9 +167,7 @@ namespace WizBot.Modules.Utility
 
                 using (var uow = DbHandler.UnitOfWork())
                 {
-                    var quotes = uow.Quotes.GetAllQuotesByKeyword(Context.Guild.Id, keyword);
-                    //todo kwoth please don't be complete retard
-                    uow.Quotes.RemoveRange(quotes.ToArray());//wtf?!
+                    uow.Quotes.RemoveAllByKeyword(Context.Guild.Id, keyword.ToUpperInvariant());
 
                     await uow.CompleteAsync();
                 }

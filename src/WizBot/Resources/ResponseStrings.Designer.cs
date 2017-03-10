@@ -6032,7 +6032,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Deleted a random quote..
+        ///    Looks up a localized string similar to Quote #{0} deleted.
         /// </summary>
         public static string utility_quote_deleted {
             get {
