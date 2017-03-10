@@ -18,7 +18,7 @@ namespace WizBot.Modules.Administration
         {
             private ImmutableDictionary<string, string> supportedLocales { get; } = new Dictionary<string, string>()
             {
-                //{"zh-TW", "Chinese (Traditional), China" },
+                {"zh-TW", "Chinese (Traditional), China" },
                 {"zh-CN", "Chinese (Simplified), China"},
                 //{"nl-NL", "Dutch, Netherlands"},
                 {"en-US", "English, United States"},
@@ -30,7 +30,8 @@ namespace WizBot.Modules.Administration
                 {"pt-BR", "Portuguese, Brazil"},
                 {"ru-RU", "Russian, Russia"},
                 //{"sr-Cyrl-RS", "Serbian, Serbia - Cyrillic"}
-                {"sv-SE", "Swedish, Sweden"}
+                {"sv-SE", "Swedish, Sweden"},
+                {"tr-TR", "Turkish, Turkey" }
             }.ToImmutableDictionary();
 
             [WizBotCommand, Usage, Description, Aliases]
