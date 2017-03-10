@@ -1284,11 +1284,11 @@ Fuzzy</comment>
     <value>Currency generation has been enabled on this channel.</value>
   </data>
   <data name="games_curgen_pl" xml:space="preserve">
-    <value>{0} random {1} appeared! Pick them up by typing `{2}pick`</value>
+    <value>{0} random {1} appeared!</value>
     <comment>plural</comment>
   </data>
   <data name="games_curgen_sn" xml:space="preserve">
-    <value>A random {0} appeared! Pick it up by typing `{1}pick`</value>
+    <value>A random {0} appeared!</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="games_failed_loading_question" xml:space="preserve">
@@ -1321,7 +1321,8 @@ Fuzzy</comment>
   </data>
   <data name="games_picked" xml:space="preserve">
     <value>picked {0}</value>
-    <comment>Fuzzy</comment>
+    <comment>Kwoth picked 5*
+Fuzzy</comment>
   </data>
   <data name="games_planted" xml:space="preserve">
     <value>{0} planted {1}</value>
@@ -2067,7 +2068,7 @@ Fuzzy</comment>
     <value>Index out of range.</value>
   </data>
   <data name="utility_inrole_list" xml:space="preserve">
-    <value>Here is a list of users in those roles:</value>
+    <value>List of users in {0} role</value>
   </data>
   <data name="utility_inrole_not_allowed" xml:space="preserve">
     <value>You are not allowed to use this command on roles with a lot of users in them to prevent abuse.</value>
@@ -2159,7 +2160,7 @@ Fuzzy</comment>
     <value>Quote Added</value>
   </data>
   <data name="utility_quote_deleted" xml:space="preserve">
-    <value>Deleted a random quote.</value>
+    <value>Quote #{0} deleted.</value>
   </data>
   <data name="utility_region" xml:space="preserve">
     <value>Region</value>
@@ -2265,7 +2266,7 @@ Fuzzy</comment>
     <value>Additions:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` Updated a bunch of language response strings.</value>
+    <value>`1.` Reworked permissions module.</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Fixes:</value>
@@ -2283,7 +2284,7 @@ Fuzzy</comment>
     <value>None</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Changelogs | 📅 March 08, 2017</value>
+    <value>WizBot Changelogs | 📅 March 10, 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>Animal Race is already running.</value>
@@ -2325,6 +2326,18 @@ Fuzzy</comment>
   </data>
   <data name="games_x_votes_cast" xml:space="preserve">
     <value>{0} total votes cast.</value>
+  </data>
+  <data name="games_pick_pl" xml:space="preserve">
+    <value>Pick them up by typing `{0}pick`</value>
+  </data>
+  <data name="games_pick_sn" xml:space="preserve">
+    <value>Pick it up by typing `{0}pick`</value>
+  </data>
+  <data name="gambling_no_users_found" xml:space="preserve">
+    <value>No user found.</value>
+  </data>
+  <data name="gambling_page" xml:space="preserve">
+    <value>page {0}</value>
   </data>
 
 </root>
