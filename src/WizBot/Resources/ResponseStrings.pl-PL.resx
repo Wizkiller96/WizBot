@@ -1282,6 +1282,7 @@ Nie zapomnij zostawić swojej discordowej nazwy użytkownika albo ID w wiadomoś
   </data>
   <data name="games_picked" xml:space="preserve">
     <value>podniósł {0}</value>
+    <comment>Kwoth picked 5*</comment>
   </data>
   <data name="games_planted" xml:space="preserve">
     <value>{0} zasadził {1]</value>
@@ -2259,6 +2260,18 @@ Nie zapomnij zostawić swojej discordowej nazwy użytkownika albo ID w wiadomoś
     <value></value>
   </data>
   <data name="games_x_votes_cast" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="games_pick_pl" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="games_pick_sn" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="gambling_no_users_found" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="gambling_page" xml:space="preserve">
     <value></value>
   </data>
 
