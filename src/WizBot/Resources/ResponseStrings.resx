@@ -1284,11 +1284,11 @@ Fuzzy</comment>
     <value>Currency generation has been enabled on this channel.</value>
   </data>
   <data name="games_curgen_pl" xml:space="preserve">
-    <value>{0} random {1} appeared! Pick them up by typing `{2}pick`</value>
+    <value>{0} random {1} appeared!</value>
     <comment>plural</comment>
   </data>
   <data name="games_curgen_sn" xml:space="preserve">
-    <value>A random {0} appeared! Pick it up by typing `{1}pick`</value>
+    <value>A random {0} appeared!</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="games_failed_loading_question" xml:space="preserve">
@@ -2327,5 +2327,11 @@ Fuzzy</comment>
   </data>
   <data name="games_x_votes_cast" xml:space="preserve">
     <value>{0} total votes cast.</value>
+  </data>
+  <data name="games_pick_pl" xml:space="preserve">
+    <value>Pick them up by typing `{0}pick`</value>
+  </data>
+  <data name="games_pick_sn" xml:space="preserve">
+    <value>Pick it up by typing `{0}pick`</value>
   </data>
 </root>
