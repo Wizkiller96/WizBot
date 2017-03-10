@@ -478,8 +478,7 @@
     <value>Пользователь выгнан</value>
   </data>
   <data name="administration_lang_list" xml:space="preserve">
-    <value>Список языков
-{0}</value>
+    <value>Список языков</value>
   </data>
   <data name="administration_lang_set" xml:space="preserve">
     <value>Язык вашего сервера теперь {0} - {1}</value>
@@ -941,7 +940,7 @@ Fuzzy</comment>
     <comment>X has Y flowers</comment>
   </data>
   <data name="gambling_heads" xml:space="preserve">
-    <value>Орёл</value>
+    <value>Решка</value>
   </data>
   <data name="gambling_leaderboard" xml:space="preserve">
     <value>Таблица рекордов</value>
@@ -996,7 +995,7 @@ Fuzzy</comment>
     <value>Началось событие SneakyGameStatus</value>
   </data>
   <data name="gambling_tails" xml:space="preserve">
-    <value>Решка</value>
+    <value>Орёл</value>
   </data>
   <data name="gambling_take" xml:space="preserve">
     <value>успешно забрал {0} у {1}</value>
@@ -1270,12 +1269,11 @@ Fuzzy</comment>
     <value>В этом канале включено появление валюты.</value>
   </data>
   <data name="games_curgen_pl" xml:space="preserve">
-    <value>{0} случайных {1} появились! Напишите &apos;{2}pick&apos;, чтобы собрать их.</value>
+    <value>{0} случайных {1} появились!</value>
     <comment>plural</comment>
   </data>
   <data name="games_curgen_sn" xml:space="preserve">
-    <value>Случайный {0} появился! Напишите &apos;{1}pick&apos;, чтобы собрать его.</value>
-    <comment>Fuzzy</comment>
+    <value>Случайный {0} появился!</value>
   </data>
   <data name="games_failed_loading_question" xml:space="preserve">
     <value>Не удалось загрузить вопрос.</value>
@@ -1307,7 +1305,8 @@ Fuzzy</comment>
   </data>
   <data name="games_picked" xml:space="preserve">
     <value>собрал {0}</value>
-    <comment>Fuzzy</comment>
+    <comment>Kwoth picked 5*
+Fuzzy</comment>
   </data>
   <data name="games_planted" xml:space="preserve">
     <value>{0} посадил {1}</value>
@@ -1487,10 +1486,10 @@ Fuzzy</comment>
     <value>Повторяется текущая песня.</value>
   </data>
   <data name="music_repeating_playlist" xml:space="preserve">
-    <value>Повторяется плейлист.</value>
+    <value>Повторяется плейлист</value>
   </data>
   <data name="music_repeating_track" xml:space="preserve">
-    <value>Повторяется песня.</value>
+    <value>Повторяется песня</value>
   </data>
   <data name="music_repeating_track_stopped" xml:space="preserve">
     <value>Повтор текущей песни приостановлен.</value>
@@ -1511,10 +1510,10 @@ Fuzzy</comment>
     <value>Пропускаю до &apos;{0}:{1}&apos;</value>
   </data>
   <data name="music_songs_shuffled" xml:space="preserve">
-    <value>Песни перемешаны.</value>
+    <value>Песни перемешаны</value>
   </data>
   <data name="music_song_moved" xml:space="preserve">
-    <value>Песня перемещена.</value>
+    <value>Песня перемещена</value>
   </data>
   <data name="music_time_format" xml:space="preserve">
     <value>{0}ч {1}м {2}с</value>
@@ -1572,13 +1571,13 @@ Fuzzy</comment>
     <value>У команды не установлено время перезарядки.</value>
   </data>
   <data name="permissions_command_costs" xml:space="preserve">
-    <value>Стоимость команды</value>
+    <value>Стоимость команд</value>
   </data>
   <data name="permissions_cx_disable" xml:space="preserve">
-    <value>Отключено использование {0} {1} в канале {2}</value>
+    <value>Отключено использование {0} {1} в канале {2}.</value>
   </data>
   <data name="permissions_cx_enable" xml:space="preserve">
-    <value>Включено использование {0} {1} в канале {2}</value>
+    <value>Включено использование {0} {1} в канале {2}.</value>
   </data>
   <data name="permissions_denied" xml:space="preserve">
     <value>Отказано</value>
@@ -1722,10 +1721,10 @@ Fuzzy</comment>
     <value>Комикс #</value>
   </data>
   <data name="searches_compet_loses" xml:space="preserve">
-    <value>Поражения в соревновательном режиме</value>
+    <value>Поражений в соревновательном режиме</value>
   </data>
   <data name="searches_compet_played" xml:space="preserve">
-    <value>Матчи в соревновательном режиме</value>
+    <value>Матчей в соревновательном режиме</value>
   </data>
   <data name="searches_compet_rank" xml:space="preserve">
     <value>Соревновательный ранг</value>
@@ -1902,7 +1901,7 @@ Fuzzy</comment>
     <value>Состояние</value>
   </data>
   <data name="searches_store_url" xml:space="preserve">
-    <value>Url Магазина</value>
+    <value>URL Магазина</value>
   </data>
   <data name="searches_streamer_offline" xml:space="preserve">
     <value>Стример {0} в оффлане.</value>
@@ -1973,7 +1972,7 @@ Fuzzy</comment>
     <comment>Fuzzy</comment>
   </data>
   <data name="searches_wind_speed" xml:space="preserve">
-    <value>Скорость ветра.</value>
+    <value>Скорость ветра</value>
   </data>
   <data name="searches_x_most_banned_champs" xml:space="preserve">
     <value>{0} наиболее часто забаненных чемпионов.</value>
@@ -2053,10 +2052,10 @@ Fuzzy</comment>
     <value>Указатель вышел за пределы диапазона.</value>
   </data>
   <data name="utility_inrole_list" xml:space="preserve">
-    <value>Список пользователей с этими ролями:</value>
+    <value>Список пользователей с ролью {0}:</value>
   </data>
   <data name="utility_inrole_not_allowed" xml:space="preserve">
-    <value>Вам запрещено использовать эту комманду в отношении ролей с большим числом пользователей для предотвращения</value>
+    <value>Вам запрещено использовать эту комманду в отношении ролей с большим числом пользователей для предотвращения чрезмерного использования.</value>
   </data>
   <data name="utility_invalid_value" xml:space="preserve">
     <value>Неправильное значение {0}.</value>
@@ -2089,7 +2088,7 @@ IDВладельца: {2}</value>
     <value>Сообщения</value>
   </data>
   <data name="utility_message_repeater" xml:space="preserve">
-    <value>Повторяемое сообщения</value>
+    <value>Повторяемые сообщения</value>
   </data>
   <data name="utility_name" xml:space="preserve">
     <value>Имя</value>
@@ -2143,7 +2142,7 @@ IDВладельца: {2}</value>
     <value>Цитата добавлена</value>
   </data>
   <data name="utility_quote_deleted" xml:space="preserve">
-    <value>Случайно выбранная цитата удалена.</value>
+    <value>Цитата #{0} удалена.</value>
   </data>
   <data name="utility_region" xml:space="preserve">
     <value>Регион</value>
@@ -2207,7 +2206,7 @@ IDВладельца: {2}</value>
     <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="utility_shard_stats" xml:space="preserve">
-    <value>Статискика Shard-а</value>
+    <value>Статистика Shard-а</value>
     <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="utility_shard_stats_txt" xml:space="preserve">
@@ -2246,7 +2245,7 @@ IDВладельца: {2}</value>
     <value>дополнения:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` Обновлен набор строк ответа на язык.</value>
+    <value>`1.` Переделан модуль разрешений.</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Исправления:</value>
@@ -2305,6 +2304,18 @@ IDВладельца: {2}</value>
   </data>
   <data name="games_x_votes_cast" xml:space="preserve">
     <value>Всего получено {0} ответов.</value>
+  </data>
+  <data name="games_pick_pl" xml:space="preserve">
+    <value>Напишите &apos;{0}pick&apos;, чтобы собрать их</value>
+  </data>
+  <data name="games_pick_sn" xml:space="preserve">
+    <value>Напишите &apos;{0}pick&apos;, чтобы собрать его</value>
+  </data>
+  <data name="gambling_no_users_found" xml:space="preserve">
+    <value>Пользователи не найдены.</value>
+  </data>
+  <data name="gambling_page" xml:space="preserve">
+    <value>Страница {0}</value>
   </data>
 
 </root>
