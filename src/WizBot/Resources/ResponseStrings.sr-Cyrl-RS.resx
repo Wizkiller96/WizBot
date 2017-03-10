@@ -139,7 +139,7 @@
     <value>@{0} Ти већ захтеваш базу #{1}. Не можеш захтевати још једну.</value>
   </data>
   <data name="clashofclans_claim_expired" xml:space="preserve">
-    <value>Захтев од @{0} за рат против {1} је истекао.</value>
+    <value>Захтев од @{0} у рату против {1} је истекао.</value>
   </data>
   <data name="clashofclans_enemy" xml:space="preserve">
     <value>Противник</value>
@@ -1282,6 +1282,7 @@ Lasts {1} seconds. Don&apos;t tell anyone. Shhh.</value>
   </data>
   <data name="games_picked" xml:space="preserve">
     <value>је убрао {0}</value>
+    <comment>Kwoth picked 5*</comment>
   </data>
   <data name="games_planted" xml:space="preserve">
     <value>{0} је засадио {1}</value>
@@ -2263,6 +2264,18 @@ Lasts {1} seconds. Don&apos;t tell anyone. Shhh.</value>
     <value></value>
   </data>
   <data name="games_x_votes_cast" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="games_pick_pl" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="games_pick_sn" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="gambling_no_users_found" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="gambling_page" xml:space="preserve">
     <value></value>
   </data>
 
