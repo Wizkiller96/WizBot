@@ -20,7 +20,7 @@ namespace WizBot.Modules.Searches
             {
                 if (string.IsNullOrWhiteSpace(query))
                     return;
-                var battletag = Regex.Replace(query, "#", "-", RegexOptions.IgnoreCase);
+                var battletag = Regex.Replace(query, "#", "-");
 
                 await Context.Channel.TriggerTypingAsync().ConfigureAwait(false);
                 try
