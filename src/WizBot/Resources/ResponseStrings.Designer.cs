@@ -1532,6 +1532,15 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
+        ///    Looks up a localized string similar to {0} has been **muted** from text and voice chat for {1} minutes..
+        /// </summary>
+        public static string administration_user_muted_time {
+            get {
+                return ResourceManager.GetString("administration_user_muted_time", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///    Looks up a localized string similar to User&apos;s role added.
         /// </summary>
         public static string administration_user_role_add {
