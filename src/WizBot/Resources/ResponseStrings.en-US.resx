@@ -2266,13 +2266,15 @@ Fuzzy</comment>
     <value>Additions:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` Reworked permissions module.</value>
+    <value>`1.` Added `.vcrole` and `.vcrolelist`.
+`2.` Timed Mute added `.mute X @User`</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Fixes:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>None</value>
+    <value>`1.` The `$lb` command should have correct numbers now on pages &gt; 1
+`2.` Fixed `.remind #channel`</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>More info at: http://github.com/Wizkiller96/WizBot</value>
@@ -2284,7 +2286,7 @@ Fuzzy</comment>
     <value>None</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Changelogs | 📅 March 10, 2017</value>
+    <value>WizBot Changelogs | 📅 March 12, 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>Animal Race is already running.</value>
@@ -2338,6 +2340,24 @@ Fuzzy</comment>
   </data>
   <data name="gambling_page" xml:space="preserve">
     <value>page {0}</value>
+  </data>
+  <data name="administration_user_muted_time" xml:space="preserve">
+    <value>{0} has been **muted** from text and voice chat for {1} minutes.</value>
+  </data>
+  <data name="administration_must_be_in_voice" xml:space="preserve">
+    <value>You must be in a voice channel on this server.</value>
+  </data>
+  <data name="administration_no_vcroles" xml:space="preserve">
+    <value>There are no voice channel roles.</value>
+  </data>
+  <data name="administration_vcrole_added" xml:space="preserve">
+    <value>Users who join {0} voice channel will get {1} role.</value>
+  </data>
+  <data name="administration_vcrole_removed" xml:space="preserve">
+    <value>Users who join {0} voice channel will no longer get a role.</value>
+  </data>
+  <data name="administration_vc_role_list" xml:space="preserve">
+    <value>Voice channel roles</value>
   </data>
 
 </root>
