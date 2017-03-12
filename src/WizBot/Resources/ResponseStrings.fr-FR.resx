@@ -1282,7 +1282,7 @@ La nouvelle valeur de {0} est {1} !</value>
     <value>Pas de résultat</value>
   </data>
   <data name="games_picked" xml:space="preserve">
-    <value>a cueilli {0}</value>
+    <value>a ramassé {0}</value>
     <comment>Kwoth picked 5*</comment>
   </data>
   <data name="games_planted" xml:space="preserve">
@@ -2206,13 +2206,15 @@ OwnerID: {2}</value>
     <value>Compléments:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` Module de permissions retravaillé.</value>
+    <value>`1.` Ajouté `.vcrole` et `.vcrolelist`.
+`2.` Timed Mute ajouté `.mute X @User`</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Réparations:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>Aucun</value>
+    <value>`1.` La commande `$lb` devrait avoir un nombre correct maintenant sur les pages&gt; 1
+`2.` Correction de `.remind #channel`</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>Plus d&apos;info à: http://github.com/Wizkiller96/WizBot</value>
@@ -2224,7 +2226,7 @@ OwnerID: {2}</value>
     <value>Aucun</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Changelogs | 📅 08 mars 2017</value>
+    <value>WizBot Changelogs | 📅 12 mars 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>Une course d&apos;animaux est déjà en cours.</value>
@@ -2266,16 +2268,34 @@ OwnerID: {2}</value>
     <value>{0} votes enregistrés au total.</value>
   </data>
   <data name="games_pick_pl" xml:space="preserve">
-    <value>Attrapez-les en écrivant `{0}pick`</value>
+    <value>Ramassez-les en écrivant `{0}pick`</value>
   </data>
   <data name="games_pick_sn" xml:space="preserve">
-    <value>Attrapez-le en écrivant `{0}pick`</value>
+    <value>Ramassez-le en écrivant `{0}pick`</value>
   </data>
   <data name="gambling_no_users_found" xml:space="preserve">
     <value>Aucun utilisateur trouvé.</value>
   </data>
   <data name="gambling_page" xml:space="preserve">
     <value>page {0}</value>
+  </data>
+  <data name="administration_user_muted_time" xml:space="preserve">
+    <value>{0} est désormais **muet** du chat textuel et vocal pour {1} minutes.</value>
+  </data>
+  <data name="administration_must_be_in_voice" xml:space="preserve">
+    <value>Vous devez être sur un canal vocal sur ce serveur.</value>
+  </data>
+  <data name="administration_no_vcroles" xml:space="preserve">
+    <value>Il n&apos;y a pas de rôle de canal vocal.</value>
+  </data>
+  <data name="administration_vcrole_added" xml:space="preserve">
+    <value>Les utilisateurs rejoignant le canal vocal {0} obtiendrons le rôle {1}.</value>
+  </data>
+  <data name="administration_vcrole_removed" xml:space="preserve">
+    <value>Les utilisateurs rejoignant le canal vocal {0} n’obtiendrons plus de rôle.</value>
+  </data>
+  <data name="administration_vc_role_list" xml:space="preserve">
+    <value>Rôles du canal vocal</value>
   </data>
 
 </root>
