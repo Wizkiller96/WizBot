@@ -541,11 +541,11 @@ Grund: {1}</value>
     <value>Nachricht in #{0} aktualisiert</value>
   </data>
   <data name="administration_muted_pl" xml:space="preserve">
-    <value>wurden Stumm geschalten</value>
+    <value>wurden Stummgeschalten</value>
     <comment>PLURAL (users have been muted)</comment>
   </data>
   <data name="administration_muted_sn" xml:space="preserve">
-    <value>wurde Stumm geschalten</value>
+    <value>wurde Stummgeschalten</value>
     <comment>singular &quot;User muted.&quot;</comment>
   </data>
   <data name="administration_mute_error" xml:space="preserve">
@@ -2211,19 +2211,21 @@ Fuzzy</comment>
     <value>Benutzer</value>
   </data>
   <data name="utility_voice_channels" xml:space="preserve">
-    <value>Sprach Kanäle</value>
+    <value>Sprach-Kanäle</value>
   </data>
   <data name="utility_changelog_additions" xml:space="preserve">
     <value>Ergänzungen:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` Überarbeitete Berechtigungsmodul.</value>
+    <value>`1.` Hinzugefügt `.vcrole` und `.vcrolelist`.
+`2.` Timed Mute hat `.mute X @User` hinzugefügt</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Behebt:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>Keiner</value>
+    <value>`1.` The `$lb` command should have correct numbers now on pages &gt; 1
+`2.` Fixed `.remind #channel`</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>Weitere Infos unter: http://github.com/Wizkiller96/WizBot</value>
@@ -2235,7 +2237,7 @@ Fuzzy</comment>
     <value>Keiner</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Changelogs | 📅 März 08, 2017</value>
+    <value>WizBot Changelogs | 📅 März 12, 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>Tierrennen läuft bereits.</value>
@@ -2288,6 +2290,24 @@ Fuzzy</comment>
   </data>
   <data name="gambling_page" xml:space="preserve">
     <value>Seite {0}</value>
+  </data>
+  <data name="administration_user_muted_time" xml:space="preserve">
+    <value>{0} wurde **stummgeschaltet** im Text- und Sprachchat für {1} minuten.</value>
+  </data>
+  <data name="administration_must_be_in_voice" xml:space="preserve">
+    <value>Sie müssen in einem Sprachkanal auf diesem Server sein.</value>
+  </data>
+  <data name="administration_no_vcroles" xml:space="preserve">
+    <value>Keine Sprachkanal Rollen gefunden.</value>
+  </data>
+  <data name="administration_vcrole_added" xml:space="preserve">
+    <value>Benutzer die dem Sprachkanal {0} beitreten werden der Rolle {1} zugeweist.</value>
+  </data>
+  <data name="administration_vcrole_removed" xml:space="preserve">
+    <value>Benutzer die den Sprachkanal {0} beitreten werden nicht länger einer Rolle zugeweist.</value>
+  </data>
+  <data name="administration_vc_role_list" xml:space="preserve">
+    <value>Rollen für Sprachkanäle</value>
   </data>
 
 </root>
