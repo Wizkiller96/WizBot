@@ -2213,13 +2213,15 @@ Medlemmar: {1}
     <value>tillägg:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>&apos;1.` Omarbetad behörigheter modul.</value>
+    <value>`1.` Added &apos;.vcrole` och&apos; .vcrolelist`.
+`2.` Tids Mute lagt `.mute X @User`</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>korrigeringar:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>Ingen</value>
+    <value>`1.` Den `$lb` kommandot ska ha rätt nummer nu på sidorna&gt; 1
+`2.` Fast `.remind #channel`</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>Mer info på: http://github.com/Wizkiller96/WizBot</value>
@@ -2231,7 +2233,7 @@ Medlemmar: {1}
     <value>Ingen</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot ändringsloggar | 📅 8 mars, 2017</value>
+    <value>WizBot ändringsloggar | 📅 12 mars, 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>Djur lopp körs redan.</value>
@@ -2283,6 +2285,24 @@ Medlemmar: {1}
   </data>
   <data name="gambling_page" xml:space="preserve">
     <value>sida {0}</value>
+  </data>
+  <data name="administration_user_muted_time" xml:space="preserve">
+    <value>{0} har **avstängd** från text och röstchatt för {1} minuter.</value>
+  </data>
+  <data name="administration_must_be_in_voice" xml:space="preserve">
+    <value>Du måste vara i en talkanal på den här servern.</value>
+  </data>
+  <data name="administration_no_vcroles" xml:space="preserve">
+    <value>Det finns inga röstkanal roller.</value>
+  </data>
+  <data name="administration_vcrole_added" xml:space="preserve">
+    <value>Användare som ansluter {0} talkanal får {1} roll.</value>
+  </data>
+  <data name="administration_vcrole_removed" xml:space="preserve">
+    <value>Användare som går {0} talkanal kommer inte längre att få en roll.</value>
+  </data>
+  <data name="administration_vc_role_list" xml:space="preserve">
+    <value>Talkanal roller</value>
   </data>
 
 </root>
