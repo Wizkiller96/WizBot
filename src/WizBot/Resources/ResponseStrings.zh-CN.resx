@@ -536,10 +536,10 @@
     <comment>L&apos;utilisateur n&apos;a pas forcément été déplacé de son plein gré. S&apos;est déplacé - déplacé</comment>
   </data>
   <data name="administration_msg_del" xml:space="preserve">
-    <value>在＃{0}中删除讯息</value>
+    <value>在#{0}中删除讯息</value>
   </data>
   <data name="administration_msg_update" xml:space="preserve">
-    <value>讯息在＃{0}中被更新</value>
+    <value>讯息在#{0}中被更新</value>
   </data>
   <data name="administration_muted_pl" xml:space="preserve">
     <value>已静音</value>
@@ -1955,7 +1955,7 @@ Paypal &lt;{1}&gt;
 `1.`</comment>
   </data>
   <data name="utility_activity_page" xml:space="preserve">
-    <value>活动页面＃{0}</value>
+    <value>活动页面#{0}</value>
   </data>
   <data name="utility_activity_users_total" xml:space="preserve">
     <value>{0}个用户。</value>
@@ -2108,7 +2108,7 @@ Paypal &lt;{1}&gt;
     <value>引用被添加</value>
   </data>
   <data name="utility_quote_deleted" xml:space="preserve">
-    <value>随机删除了一个引用。</value>
+    <value>引用#{0}删除。</value>
   </data>
   <data name="utility_region" xml:space="preserve">
     <value>区域</value>
@@ -2211,13 +2211,15 @@ Paypal &lt;{1}&gt;
     <value>添加：</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` 重做的权限模块。</value>
+    <value>`1.` 添加 `.vcrole` 和 `.vcrolelist`
+`2.`定时静音添加 `.mute X @User`</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>修正：</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>没有</value>
+    <value>`1.` `$lb` 命令现在在页面&gt; 1上应该有正确的数字
+`2.`固定 `.remind ＃channel`</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>更多信息：http://github.com/Wizkiller96/WizBot</value>
@@ -2229,7 +2231,7 @@ Paypal &lt;{1}&gt;
     <value>没有</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Changelogs | 📅 2017年3月08日</value>
+    <value>WizBot Changelogs | 📅 2017年3月12日</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>动物竞赛已经运行。</value>
@@ -2281,6 +2283,24 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="gambling_page" xml:space="preserve">
     <value>页面{0}</value>
+  </data>
+  <data name="administration_user_muted_time" xml:space="preserve">
+    <value>已将{0}从文字和语音聊天中静音{1}分钟。</value>
+  </data>
+  <data name="administration_must_be_in_voice" xml:space="preserve">
+    <value>您必须位于此服务器上的语音通道中。</value>
+  </data>
+  <data name="administration_no_vcroles" xml:space="preserve">
+    <value>没有语音通道角色。</value>
+  </data>
+  <data name="administration_vcrole_added" xml:space="preserve">
+    <value>加入{0}语音通道的用户将获得{1}角色。</value>
+  </data>
+  <data name="administration_vcrole_removed" xml:space="preserve">
+    <value>加入{0}语音通道的用户将不再获得角色。</value>
+  </data>
+  <data name="administration_vc_role_list" xml:space="preserve">
+    <value>语音通道角色</value>
   </data>
 
 </root>
