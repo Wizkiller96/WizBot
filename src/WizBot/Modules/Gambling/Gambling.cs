@@ -274,7 +274,7 @@ namespace WizBot.Modules.Gambling
                     : usr.Username?.TrimTo(20, true);
 
                 var j = i;
-                embed.AddField(efb => efb.WithName("#" + (j + 1) + " " + usrStr)
+                embed.AddField(efb => efb.WithName("#" + (9 * (page - 1) + j + 1) + " " + usrStr)
                                          .WithValue(x.Amount.ToString() + " " + WizBot.BotConfig.CurrencySign)
                                          .WithIsInline(true));
             }
