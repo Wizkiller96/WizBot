@@ -818,7 +818,7 @@ Fuzzy</comment>
     <value>Пользователь вышел</value>
   </data>
   <data name="administration_user_muted" xml:space="preserve">
-    <value>{0} получил **запрет** на разговор в текстовых и голосовых каналах</value>
+    <value>{0} получил **запрет** на разговор в текстовых и голосовых каналах.</value>
   </data>
   <data name="administration_user_role_add" xml:space="preserve">
     <value>Добавлена роль пользователя</value>
@@ -1153,9 +1153,8 @@ Paypal &lt;{1}&gt;
   <data name="gambling_waifu_affinity_changed" xml:space="preserve">
     <value>сменил свою предрасположенность с {0} на {1}.
 
-*Это сомнительно с точки зрения морали* :thinking:</value>
-    <comment>Make sure to get the formatting right, and leave the thinking emoji
-Fuzzy</comment>
+*Это сомнительно с моральной точки зрения* :thinking:</value>
+    <comment>Make sure to get the formatting right, and leave the thinking emoji</comment>
   </data>
   <data name="gambling_waifu_affinity_cooldown" xml:space="preserve">
     <value>Вам нужно подождать {0} часов и {1} минут перед тем, как опять менять Вашу предрасположенность.</value>
@@ -2245,13 +2244,15 @@ IDВладельца: {2}</value>
     <value>дополнения:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` Переделан модуль разрешений.</value>
+    <value>`1.` Добавлены `.vcrole` и `.vcrolelist`.
+`2.` Timed Mute добавил `.mute X @User`.</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Исправления:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>Никто</value>
+    <value>`1.` Команда `$lb` должна теперь иметь правильные номера на страницах&gt; 1
+`2.` Исправлена ошибка `.remind #channel`</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>Более подробную информацию по адресу: http://github.com/Wizkiller96/WizBot</value>
@@ -2263,7 +2264,7 @@ IDВладельца: {2}</value>
     <value>Никто</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot списком изменений | 📅 8 марта 2017</value>
+    <value>WizBot списком изменений | 📅 12 марта 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>Гонка зверей уже идёт.</value>
@@ -2316,6 +2317,24 @@ IDВладельца: {2}</value>
   </data>
   <data name="gambling_page" xml:space="preserve">
     <value>Страница {0}</value>
+  </data>
+  <data name="administration_user_muted_time" xml:space="preserve">
+    <value>{0} получил **запрет** на разговор в текстовых и голосовых каналах на {1} минут.</value>
+  </data>
+  <data name="administration_must_be_in_voice" xml:space="preserve">
+    <value>Вы должны быть в голосовом канале на этом сервере.</value>
+  </data>
+  <data name="administration_no_vcroles" xml:space="preserve">
+    <value>Нет ролей для голосовых каналов.</value>
+  </data>
+  <data name="administration_vcrole_added" xml:space="preserve">
+    <value>Пользователи, присоединяющиеся к голосовому каналу {0}, получат роль {1}.</value>
+  </data>
+  <data name="administration_vcrole_removed" xml:space="preserve">
+    <value>Пользователи, присоединяющиеся к голосовому каналу {0}, больше не будут получать роль.</value>
+  </data>
+  <data name="administration_vc_role_list" xml:space="preserve">
+    <value>Роли голосовых каналов</value>
   </data>
 
 </root>
