@@ -296,7 +296,7 @@ namespace WizBot.Modules.Administration
             [Priority(0)]
             public async Task Mute(int minutes, IGuildUser user)
             {
-                if (minutes < 1)
+                if (minutes < 1 || minutes > 1440)
                     return;
                 try
                 {
