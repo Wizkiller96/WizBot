@@ -2209,13 +2209,15 @@ OwnerID: {2}</value>
     <value>Aditivos:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` Módulo de permissões reformuladas.</value>
+    <value>`1.` Adicionado `.vcrole` e `.vcrolelist`.
+`2.` Timed Mute adicionado `.mute X @User`</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Conserta:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>Nenhum</value>
+    <value>`1.` O comando `$lb` deve ter números corretos agora nas páginas&gt; 1
+`2.` Corrigido `.remind #channel`</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>Mais informações em: http://github.com/Wizkiller96/WizBot</value>
@@ -2227,7 +2229,7 @@ OwnerID: {2}</value>
     <value>Nenhum</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Alterações | 08 de março de 2017</value>
+    <value>WizBot Alterações | 12 de março de 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>A Corrida de Animais já está em andamento</value>
@@ -2279,6 +2281,24 @@ OwnerID: {2}</value>
   </data>
   <data name="gambling_page" xml:space="preserve">
     <value>Página {0}</value>
+  </data>
+  <data name="administration_user_muted_time" xml:space="preserve">
+    <value>{0} foi **mudo** do chat de texto e de voz durante {1} minutos.</value>
+  </data>
+  <data name="administration_must_be_in_voice" xml:space="preserve">
+    <value>Você deve estar em um canal de voz neste servidor.</value>
+  </data>
+  <data name="administration_no_vcroles" xml:space="preserve">
+    <value>Não há funções de canal de voz.</value>
+  </data>
+  <data name="administration_vcrole_added" xml:space="preserve">
+    <value>Os usuários que se juntarem ao {0} canal de voz receberão {1} papel.</value>
+  </data>
+  <data name="administration_vcrole_removed" xml:space="preserve">
+    <value>Os usuários que se juntam ao {0} canal de voz não receberão mais um papel.</value>
+  </data>
+  <data name="administration_vc_role_list" xml:space="preserve">
+    <value>Funções do canal de voz</value>
   </data>
 
 </root>
