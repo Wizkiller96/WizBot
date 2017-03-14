@@ -2373,7 +2373,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to `{0}delq abc`.
+        ///    Looks up a localized string similar to `{0}delq 123456`.
         /// </summary>
         public static string deletequote_usage {
             get {
