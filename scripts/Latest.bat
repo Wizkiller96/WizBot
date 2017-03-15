@@ -1,24 +1,25 @@
 @ECHO off
 TITLE Downloading Latest Build of WizBot...
 ::Setting convenient to read variables which don't delete the windows temp folder
-SET root=%~dp0
-CD /D %root%
-SET rootdir=%cd%
-SET build1=%root%WizBotInstall_Temp\WizBot\Discord.Net\src\Discord.Net.Core\
-SET build2=%root%WizBotInstall_Temp\WizBot\Discord.Net\src\Discord.Net.Rest\
-SET build3=%root%WizBotInstall_Temp\WizBot\Discord.Net\src\Discord.Net.WebSocket\
-SET build4=%root%WizBotInstall_Temp\WizBot\Discord.Net\src\Discord.Net.Commands\
-SET build5=%root%WizBotInstall_Temp\WizBot\src\WizBot\
-SET installtemp=%root%WizBotInstall_Temp\
+SET "root=%~dp0"
+CD /D "%root%"
+SET "rootdir=%cd%"
+SET "build1=%root%WizBotInstall_Temp\WizBot\Discord.Net\src\Discord.Net.Core\"
+SET "build2=%root%WizBotInstall_Temp\WizBot\Discord.Net\src\Discord.Net.Rest\"
+SET "build3=%root%WizBotInstall_Temp\WizBot\Discord.Net\src\Discord.Net.WebSocket\"
+SET "build4=%root%WizBotInstall_Temp\WizBot\Discord.Net\src\Discord.Net.Commands\"
+SET "build5=%root%WizBotInstall_Temp\WizBot\src\WizBot\"
+SET "installtemp=%root%WizBotInstall_Temp\"
 ::Deleting traces of last setup for the sake of clean folders, if by some miracle it still exists
-IF EXIST %installtemp% ( RMDIR %installtemp% /S /Q >nul 2>&1)
+IF EXIST "%installtemp%" ( RMDIR "%installtemp%" /S /Q >nul 2>&1)
+timeout /t 5
 ::Checks that both git and dotnet are installed
 dotnet --version >nul 2>&1 || GOTO :dotnet
 git --version >nul 2>&1 || GOTO :git
 ::Creates the install directory to work in and get the current directory because spaces ruins everything otherwise
 :start
-MKDIR WizBotInstall_Temp
-CD /D %installtemp%
+MKDIR "%root%WizBotInstall_Temp"
+CD /D "%installtemp%"
 ::Downloads the latest version of WizBot
 ECHO Downloading WizBot...
 ECHO.
@@ -28,28 +29,28 @@ TITLE Installing WizBot, please wait...
 ECHO.
 ECHO Installing Discord.Net(1/4)...
 ::Building WizBot
-CD /D %build1%
+CD /D "%build1%"
 dotnet restore >nul 2>&1
 ECHO Installing Discord.Net(2/4)...
-CD /D %build2%
+CD /D "%build2%"
 dotnet restore >nul 2>&1
 ECHO Installing Discord.Net(3/4)...
-CD /D %build3%
+CD /D "%build3%"
 dotnet restore >nul 2>&1
 ECHO Installing Discord.Net(4/4)...
-CD /D %build4%
+CD /D "%build4%"
 dotnet restore >nul 2>&1
 ECHO.
 ECHO Discord.Net installation completed successfully...
 ECHO.
 ECHO Installing WizBot...
-CD /D %build5%
+CD /D "%build5%"
 dotnet restore >nul 2>&1
 dotnet build --configuration Release >nul 2>&1
 ECHO.
 ECHO WizBot installation completed successfully...
 ::Attempts to backup old files if they currently exist in the same folder as the batch file
-IF EXIST "%root%WizBot\" (GOTO :backupinstall)
+IF EXIST "%root%WizBot\" (GOTO :backupinstall) ELSE (GOTO :freshinstall)
 :freshinstall
 	::Moves the WizBot folder to keep things tidy
 	ECHO.
@@ -106,7 +107,7 @@ IF EXIST "%root%WizBot\" (GOTO :backupinstall)
 :giterror
 	ECHO.
 	ECHO Git clone failed, trying again
-	RMDIR %installtemp% /S /Q >nul 2>&1
+	RMDIR "%installtemp%" /S /Q >nul 2>&1
 	GOTO :start
 :copyerror
 	::If at any point a copy error is encountered 
@@ -127,12 +128,28 @@ ECHO.
 ECHO Your System Architecture is 32bit...
 timeout /t 5
 ECHO.
-ECHO Downloading libsodium.dll and opus.dll...
+ECHO Getting 32bit libsodium.dll and opus.dll...
+IF EXIST "%root%WizBot\src\WizBot\_libs\32\libsodium.dll" (GOTO copysodium) ELSE (GOTO downloadsodium)
+:copysodium
+del "%root%WizBot\src\WizBot\libsodium.dll"
+copy "%root%WizBot\src\WizBot\_libs\32\libsodium.dll" "%root%WizBot\src\WizBot\libsodium.dll"
+ECHO libsodium.dll copied.
+ECHO.
+timeout /t 5
+IF EXIST "%root%WizBot\src\WizBot\_libs\32\opus.dll" (GOTO copyopus) ELSE (GOTO downloadopus)
+:downloadsodium
 SET "FILENAME=%~dp0\WizBot\src\WizBot\libsodium.dll"
 powershell -Command "Invoke-WebRequest https://github.com/Wizkiller96/WizBot/raw/dev/src/WizBot/_libs/32/libsodium.dll -OutFile '%FILENAME%'"
 ECHO libsodium.dll downloaded.
 ECHO.
 timeout /t 5
+IF EXIST "%root%WizBot\src\WizBot\_libs\32\opus.dll" (GOTO copyopus) ELSE (GOTO downloadopus)
+:copyopus
+del "%root%WizBot\src\WizBot\opus.dll"
+copy "%root%WizBot\src\WizBot\_libs\32\opus.dll" "%root%WizBot\src\WizBot\opus.dll"
+ECHO opus.dll copied.
+GOTO end
+:downloadopus
 SET "FILENAME=%~dp0\WizBot\src\WizBot\opus.dll"
 powershell -Command "Invoke-WebRequest https://github.com/Wizkiller96/WizBot/raw/dev/src/WizBot/_libs/32/opus.dll -OutFile '%FILENAME%'"
 ECHO opus.dll downloaded.
