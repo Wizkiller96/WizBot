@@ -62,6 +62,7 @@ namespace WizBot.Services.Database.Models
         int Index { get; set; }
     }
 
+    [DebuggerDisplay("{PrimaryTarget}{SecondaryTarget} {SecondaryTargetName} {State} {PrimaryTargetId}")]
     public class Permissionv2 : DbEntity, IIndexed
     {
         public int? GuildConfigId { get; set; }
