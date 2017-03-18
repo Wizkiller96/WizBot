@@ -176,6 +176,7 @@
   </data>
   <data name="clashofclans_war_created" xml:space="preserve">
     <value>La guerra contra {0} ha sido creada.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_war_ended" xml:space="preserve">
     <value>La guerra contra {0} ha terminado.</value>
@@ -191,18 +192,22 @@
   </data>
   <data name="customreactions_deleted" xml:space="preserve">
     <value>Comando personalizado eliminado</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_insuff_perms" xml:space="preserve">
     <value>Insuficientes permisos. Necesitas administrar propiamente el Bot para comandos globales y ser administrador del servidor para locales.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_list_all" xml:space="preserve">
     <value>Lista de todos los comandos personalizados</value>
   </data>
   <data name="customreactions_name" xml:space="preserve">
     <value>Comandos personalizados</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_new_cust_react" xml:space="preserve">
     <value>Nuevo comando personalizado</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_no_found" xml:space="preserve">
     <value>No se ha encontrado el comando.</value>
@@ -374,6 +379,7 @@ Razón: {1}</value>
   </data>
   <data name="administration_deafen" xml:space="preserve">
     <value>Ensordecimiento satisfactorio.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_deleted_server" xml:space="preserve">
     <value>Servidor eliminado {0}</value>
@@ -525,6 +531,7 @@ Razón: {1}</value>
   </data>
   <data name="administration_moved" xml:space="preserve">
     <value>{0} movido de {1} a {2}</value>
+    <comment>L&apos;utilisateur n&apos;a pas forcément été déplacé de son plein gré. S&apos;est déplacé - déplacé</comment>
   </data>
   <data name="administration_msg_del" xml:space="preserve">
     <value>Mensaje eliminado en #{0}</value>
@@ -538,16 +545,18 @@ Razón: {1}</value>
   </data>
   <data name="administration_muted_sn" xml:space="preserve">
     <value>Silenciado.</value>
-    <comment>singular "User muted."</comment>
+    <comment>singular &quot;User muted.&quot;</comment>
   </data>
   <data name="administration_mute_error" xml:space="preserve">
     <value>No tengo los permisos necesarios.</value>
   </data>
   <data name="administration_mute_role_set" xml:space="preserve">
     <value>Nuevo rol de Silenciar definido.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_need_admin" xml:space="preserve">
     <value>Necesito permisos de **administrador** para hacer eso.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_new_msg" xml:space="preserve">
     <value>Nuevo mensaje.</value>
@@ -566,10 +575,10 @@ Razón: {1}</value>
   </data>
   <data name="administration_no_shard_id" xml:space="preserve">
     <value>No encontré un fragmento con esa ID.</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="administration_old_msg" xml:space="preserve">
     <value>Mensaje anterior</value>
-    <comment>Creo que "anterior" suena más acorde.</comment>
   </data>
   <data name="administration_old_nick" xml:space="preserve">
     <value>Apodo anterior</value>
@@ -648,7 +657,6 @@ Razón: {1}</value>
   </data>
   <data name="administration_role_clean" xml:space="preserve">
     <value>No encontré {0}.</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_role_in_list" xml:space="preserve">
     <value>El rol {0} ya está en la lista.</value>
@@ -688,6 +696,7 @@ Razón: {1}</value>
   </data>
   <data name="administration_self_assign_no_excl" xml:space="preserve">
     <value>Los roles autoasignables ya no son exclusivos.</value>
+    <comment>Je ne pense pas que ce soit la bonne traduction.. self-assignable role serait plutôt rôle auto-attribuable</comment>
   </data>
   <data name="administration_self_assign_perms" xml:space="preserve">
     <value>No puedo añadirte ese rol. No puedo añadirle roles a administradores u otros roles con rangos más altos.</value>
@@ -715,6 +724,7 @@ Razón: {1}</value>
   </data>
   <data name="administration_set_game" xml:space="preserve">
     <value>Nuevo juego configurado.</value>
+    <comment>Pour &quot;set&quot;, je pense que défini irait mieux que &quot;en service&quot;</comment>
   </data>
   <data name="administration_set_stream" xml:space="preserve">
     <value>Nueva transmisión configurada.</value>
@@ -724,9 +734,11 @@ Razón: {1}</value>
   </data>
   <data name="administration_shard_reconnected" xml:space="preserve">
     <value>Fragmento {0} reconectado.</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="administration_shard_reconnecting" xml:space="preserve">
     <value>Fragmento {0} reconectando.</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="administration_shutting_down" xml:space="preserve">
     <value>Apagando</value>
@@ -823,6 +835,7 @@ __CanalesIgnorados__: {2}</value>
   </data>
   <data name="administration_voice_chan_created" xml:space="preserve">
     <value>Canal de voz creado</value>
+    <comment>Should say &quot;Voice Channel Created&quot;</comment>
   </data>
   <data name="administration_voice_chan_destroyed" xml:space="preserve">
     <value>Canal de voz destruido</value>
@@ -1000,7 +1013,7 @@ Razón: {1}</value>
     <value>Descripción</value>
   </data>
   <data name="help_donate" xml:space="preserve">
-    <value>Puedes apoyar el proyecto de WizBot en
+    <value>Puedes apoyar el proyecto de NadekoBot en
 Patreon &lt;{0}&gt; o
 PayPal &lt;{1}&gt;
 No olvides dejar tu usuario de Discord o ID en el mensaje.
@@ -1101,6 +1114,9 @@ No olvides dejar tu usuario de Discord o ID en el mensaje.
   <data name="gambling_likes" xml:space="preserve">
     <value>Le gusta</value>
   </data>
+  <data name="gambling_nobody" xml:space="preserve">
+    <value>Nadi</value>
+  </data>
   <data name="gambling_price" xml:space="preserve">
     <value>Precio</value>
   </data>
@@ -1134,6 +1150,9 @@ No olvides dejar tu usuario de Discord o ID en el mensaje.
   <data name="gambling_waifu_divorced_like" xml:space="preserve">
     <value>Te has divorciado de una waifu que te quería. Monstruo sin corazón. {0} recibió {1} como compensación.</value>
   </data>
+  <data name="gambling_waifu_divorced_notlike" xml:space="preserve">
+    <value>Te has divorciado de uan waifu que no te querías. Recibes {0} de regreso.</value>
+  </data>
   <data name="gambling_waifu_egomaniac" xml:space="preserve">
     <value>no puedes configurar tu afinidad hacia ti mismo, rarito.</value>
   </data>
@@ -1155,12 +1174,6 @@ No olvides dejar tu usuario de Discord o ID en el mensaje.
   </data>
   <data name="gambling_waifu_recent_divorce" xml:space="preserve">
     <value>Te divorciaste recientemente. Debes esperar {0} horas y {1} minutos para divorciarte otra vez.</value>
-  </data>
-  <data name="gambling_nobody" xml:space="preserve">
-    <value>Nadi</value>
-  </data>
-  <data name="gambling_waifu_divorced_notlike" xml:space="preserve">
-    <value>Te has divorciado de uan waifu que no te querías. Recibes {0} de regreso.</value>
   </data>
   <data name="games_8ball" xml:space="preserve">
     <value>Bola 8</value>
@@ -1213,9 +1226,6 @@ No olvides dejar tu usuario de Discord o ID en el mensaje.
   <data name="games_submissions_closed" xml:space="preserve">
     <value>Envíos cerrados</value>
   </data>
-  <data name="gambling_animal_race_already_started" xml:space="preserve">
-    <value>La carrera de animales ya está en ejecución.</value>
-  </data>
   <data name="gambling_total_average" xml:space="preserve">
     <value>Total: {0} Promedio: {1}</value>
   </data>
@@ -1230,6 +1240,7 @@ No olvides dejar tu usuario de Discord o ID en el mensaje.
   </data>
   <data name="games_curgen_disabled" xml:space="preserve">
     <value>La regeneración ha sido desactivada en este canal.</value>
+    <comment>Currency =/= current !!! Il s&apos;agit de monnaie. Par example: Euro is a currency. US Dollar also is. Sur Public WizBot, il s&apos;agit des fleurs :)</comment>
   </data>
   <data name="games_curgen_enabled" xml:space="preserve">
     <value>La regeneración ha sido activada en este canal.</value>
@@ -1257,7 +1268,7 @@ No olvides dejar tu usuario de Discord o ID en el mensaje.
     <value>Error iniciando el ahorcado.</value>
   </data>
   <data name="games_hangman_types" xml:space="preserve">
-    <value>Lista de "{0}hangman" términos:</value>
+    <value>Lista de &quot;{0}hangman&quot; términos:</value>
   </data>
   <data name="games_leaderboard" xml:space="preserve">
     <value>Marcador</value>
@@ -1344,9 +1355,6 @@ No olvides dejar tu usuario de Discord o ID en el mensaje.
   </data>
   <data name="music_dir_queue_complete" xml:space="preserve">
     <value>Directorio completo</value>
-  </data>
-  <data name="music_fairplay" xml:space="preserve">
-    <value>Juego sucio</value>
   </data>
   <data name="music_finished_song" xml:space="preserve">
     <value>Canción finalizada</value>
@@ -1440,7 +1448,7 @@ No olvides dejar tu usuario de Discord o ID en el mensaje.
   </data>
   <data name="music_removed_song" xml:space="preserve">
     <value>Canción eliminada:</value>
-    <comment>context: "removed song #5"</comment>
+    <comment>context: &quot;removed song #5&quot;</comment>
   </data>
   <data name="music_repeating_cur_song" xml:space="preserve">
     <value>Repitiendo la canción actual</value>
@@ -1519,6 +1527,7 @@ No olvides dejar tu usuario de Discord o ID en el mensaje.
   </data>
   <data name="permissions_blacklisted" xml:space="preserve">
     <value>Enviado a la lista negra a: {0} con la ID: {1}</value>
+    <comment>Il ne s&apos;agit pas d&apos;un ban mais d&apos;une blacklist interdisant l&apos;utilisateur d&apos;utiliser le bot.</comment>
   </data>
   <data name="permissions_cmdcd_add" xml:space="preserve">
     <value>El comando {0} ahora tiene {1} de enfriamiento.</value>
@@ -1708,6 +1717,7 @@ No olvides dejar tu usuario de Discord o ID en el mensaje.
   </data>
   <data name="searches_dropped" xml:space="preserve">
     <value>Eliminadas</value>
+    <comment>droppped as in, &quot;stopped watching&quot; referring to shows/anime</comment>
   </data>
   <data name="searches_episodes" xml:space="preserve">
     <value>Episodios</value>
@@ -1759,7 +1769,7 @@ No olvides dejar tu usuario de Discord o ID en el mensaje.
   </data>
   <data name="searches_list_of_place_tags" xml:space="preserve">
     <value>Lista de tags en {0}place</value>
-    <comment>Don't translate {0}place</comment>
+    <comment>Don&apos;t translate {0}place</comment>
   </data>
   <data name="searches_location" xml:space="preserve">
     <value>Locación</value>
@@ -1802,6 +1812,7 @@ No olvides dejar tu usuario de Discord o ID en el mensaje.
   </data>
   <data name="searches_plan_to_watch" xml:space="preserve">
     <value>Planeadas</value>
+    <comment>Je ne pense pas que le sens de la traduction soit le bon.</comment>
   </data>
   <data name="searches_platform" xml:space="preserve">
     <value>Plataforma</value>
@@ -1820,6 +1831,7 @@ No olvides dejar tu usuario de Discord o ID en el mensaje.
   </data>
   <data name="searches_quick_playtime" xml:space="preserve">
     <value>Reproducción rápida:</value>
+    <comment>Is this supposed to be Overwatch Quick Play stats?</comment>
   </data>
   <data name="searches_quick_wins" xml:space="preserve">
     <value>Victorias rápidas</value>
@@ -1832,6 +1844,7 @@ No olvides dejar tu usuario de Discord o ID en el mensaje.
   </data>
   <data name="searches_search_for" xml:space="preserve">
     <value>Búsqueda para:</value>
+    <comment>recherche plutôt non ?</comment>
   </data>
   <data name="searches_shorten_fail" xml:space="preserve">
     <value>No pude acortar ese enlace.</value>
@@ -2053,6 +2066,7 @@ ID del admin: {2}</value>
   </data>
   <data name="utility_no_shards_on_page" xml:space="preserve">
     <value>No hay fragmentos en esta página.</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="utility_no_topic_set" xml:space="preserve">
     <value>No hay tema configurado.</value>
@@ -2148,12 +2162,15 @@ ID del admin: {2}</value>
   </data>
   <data name="utility_shard" xml:space="preserve">
     <value>Fragmento.</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="utility_shard_stats" xml:space="preserve">
     <value>Estadísticas del fragmento.</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="utility_shard_stats_txt" xml:space="preserve">
     <value>Fragmento **#{0}** está en estado {1} con {2} servidores.</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="utility_showemojis" xml:space="preserve">
     <value>**Nombre:** {0} **Enlace:** {1}</value>
@@ -2183,6 +2200,38 @@ ID del admin: {2}</value>
   <data name="utility_voice_channels" xml:space="preserve">
     <value>Canales de voz</value>
   </data>
+  <data name="utility_changelog_additions" xml:space="preserve">
+    <value>Adiciones:</value>
+  </data>
+  <data name="utility_changelog_additions_msg" xml:space="preserve">
+    <value>`1.` Añadida `.vcrole` y `.vcrolelist`.
+`2.` Timed Mute añadido `.mute X @User`</value>
+  </data>
+  <data name="utility_changelog_fixes" xml:space="preserve">
+    <value>Correcciones:</value>
+  </data>
+  <data name="utility_changelog_fixes_msg" xml:space="preserve">
+    <value>`1.` El comando `$lb` debe tener números correctos ahora en las páginas&gt; 1
+`2.` Se ha corregido `.remind #channel`</value>
+  </data>
+  <data name="utility_changelog_footer" xml:space="preserve">
+    <value>Más información en: http://github.com/Wizkiller96/WizBot</value>
+  </data>
+  <data name="utility_changelog_removals" xml:space="preserve">
+    <value>Mudanzas:</value>
+  </data>
+  <data name="utility_changelog_removals_msg" xml:space="preserve">
+    <value>Ninguna</value>
+  </data>
+  <data name="utility_changelog_title_date" xml:space="preserve">
+    <value>WizBot Cambios | 📅 12 de marzo de 2017</value>
+  </data>
+  <data name="gambling_animal_race_already_started" xml:space="preserve">
+    <value>La carrera de animales ya está en ejecución.</value>
+  </data>
+  <data name="music_fairplay" xml:space="preserve">
+    <value>Juego sucio</value>
+  </data>
   <data name="gambling_animal_race_already_in" xml:space="preserve">
     <value>¡Ya entraste a esta carrera!</value>
   </data>
@@ -2203,7 +2252,6 @@ ID del admin: {2}</value>
   </data>
   <data name="games_poll_voted" xml:space="preserve">
     <value>{0} votó.</value>
-    <comment>Kwoth voted.</comment>
   </data>
   <data name="games_poll_vote_private" xml:space="preserve">
     <value>Envíame un mensaje privado con el número correspondiente a la respuesta.</value>
@@ -2229,14 +2277,14 @@ ID del admin: {2}</value>
   <data name="gambling_page" xml:space="preserve">
     <value>página {0}</value>
   </data>
+  <data name="administration_user_muted_time" xml:space="preserve">
+    <value>{0} ha sido **silenciado** de chat y voz por {1} minutos.</value>
+  </data>
   <data name="administration_must_be_in_voice" xml:space="preserve">
     <value>debes estar en un canal de voz.</value>
   </data>
   <data name="administration_no_vcroles" xml:space="preserve">
     <value>No hay roles para el canal de voz.</value>
-  </data>
-  <data name="administration_user_muted_time" xml:space="preserve">
-    <value>{0} ha sido **silenciado** de chat y voz por {1} minutos.</value>
   </data>
   <data name="administration_vcrole_added" xml:space="preserve">
     <value>Los usuarios que entren al canal de voz {0} obtendrán el rol {1}.</value>
@@ -2247,4 +2295,5 @@ ID del admin: {2}</value>
   <data name="administration_vc_role_list" xml:space="preserve">
     <value>Roles para el canal de voz</value>
   </data>
+
 </root>
