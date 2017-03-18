@@ -151,7 +151,8 @@
     <value>Ongeldige basis nummer</value>
   </data>
   <data name="clashofclans_invalid_size" xml:space="preserve">
-    <value>Ongeldige oorlogs formaat.</value>
+    <value>Ongeldig oorlogs
+formaat.</value>
   </data>
   <data name="clashofclans_list_active_wars" xml:space="preserve">
     <value>Lijst van voorlopende oorlogen.</value>
