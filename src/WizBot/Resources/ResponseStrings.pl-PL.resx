@@ -188,14 +188,14 @@
     <value>Wojna przeciwko {o} zaczęła się!</value>
   </data>
   <data name="customreactions_all_stats_cleared" xml:space="preserve">
-    <value></value>
+    <value>Wszystkie statystyki niestandardowych reakcji zostały wyczyszczone.</value>
   </data>
   <data name="customreactions_deleted" xml:space="preserve">
     <value>Własne reakcje zostały usunięte</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_insuff_perms" xml:space="preserve">
-    <value></value>
+    <value>Niewystarczające uprawnienia. Wymagane są uprawnienia właściciela dla globalnych niestandardowych reakcji oraz uprawnienia administratora dla niestandardowych reakcji na serwerze.</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_list_all" xml:space="preserve">
@@ -219,7 +219,7 @@
     <value>Odpowiedź</value>
   </data>
   <data name="customreactions_stats" xml:space="preserve">
-    <value></value>
+    <value>Statystyki niestandardowych reakcji</value>
   </data>
   <data name="customreactions_stats_cleared" xml:space="preserve">
     <value></value>
@@ -418,7 +418,8 @@ Powód: {1}</value>
     <value>Od teraz nie będę wysyłać prywatnych wiadomości.</value>
   </data>
   <data name="administration_greetdel_off" xml:space="preserve">
-    <value></value>
+    <value>Automatyczne usuwanie wiadomości powitalnych zostało wyłączone.
+</value>
   </data>
   <data name="administration_greetdel_on" xml:space="preserve">
     <value>Wiadomości powitalne będą usuwane po {0} sekundach.</value>
@@ -460,10 +461,10 @@ Powód: {1}</value>
     <value>Obrazki załadowane po {0} sekundach.</value>
   </data>
   <data name="administration_invalid_format" xml:space="preserve">
-    <value></value>
+    <value>Niepoprawny format zmiennej.</value>
   </data>
   <data name="administration_invalid_params" xml:space="preserve">
-    <value></value>
+    <value>Niepoprawne parametry.</value>
   </data>
   <data name="administration_joined" xml:space="preserve">
     <value>{0} dołączył do {1}</value>
@@ -1077,16 +1078,16 @@ Nie zapomnij zostawić swojej discordowej nazwy użytkownika albo ID w wiadomoś
     <value>Zaczyna z {0} uczestnikami.</value>
   </data>
   <data name="gambling_animal_race_won" xml:space="preserve">
-    <value>{0} jako {1} wygrał wyścig!</value>
+    <value>{1} czyli {0} wygrał wyścig!</value>
   </data>
   <data name="gambling_animal_race_won_money" xml:space="preserve">
-    <value>{0} jako {1} wygrał wyścig i {2}!</value>
+    <value>{1} czyli {0} wygrał wyścig i {2}!</value>
   </data>
   <data name="gambling_dice_invalid_number" xml:space="preserve">
     <value></value>
   </data>
   <data name="gambling_dice_rolled" xml:space="preserve">
-    <value></value>
+    <value>wyrzucono {0}</value>
     <comment>Someone rolled 35</comment>
   </data>
   <data name="gambling_dice_rolled_num" xml:space="preserve">
@@ -1176,7 +1177,7 @@ Nie zapomnij zostawić swojej discordowej nazwy użytkownika albo ID w wiadomoś
     <value>Rozwiodłeś się ostatnio. Musisz poczekać {0} ny i {1} minuty aby rozwieść się ponownie.</value>
   </data>
   <data name="games_8ball" xml:space="preserve">
-    <value></value>
+    <value>Magiczna kula nr 8</value>
   </data>
   <data name="games_acrophobia" xml:space="preserve">
     <value></value>
@@ -1185,10 +1186,10 @@ Nie zapomnij zostawić swojej discordowej nazwy użytkownika albo ID w wiadomoś
     <value></value>
   </data>
   <data name="games_acro_no_votes_cast" xml:space="preserve">
-    <value></value>
+    <value>Brak głosów. Gra zakończyła się bez zwycięzcy.</value>
   </data>
   <data name="games_acro_nym_was" xml:space="preserve">
-    <value></value>
+    <value>Akronim to {0}.</value>
   </data>
   <data name="games_acro_running" xml:space="preserve">
     <value></value>
@@ -1239,11 +1240,11 @@ Nie zapomnij zostawić swojej discordowej nazwy użytkownika albo ID w wiadomoś
     <value>Włączono cleverbota na tym serwerze.</value>
   </data>
   <data name="games_curgen_disabled" xml:space="preserve">
-    <value></value>
+    <value>Generowanie przychodów zostało wyłączone na tym kanale.</value>
     <comment>Currency =/= current !!! Il s&apos;agit de monnaie. Par example: Euro is a currency. US Dollar also is. Sur Public WizBot, il s&apos;agit des fleurs :)</comment>
   </data>
   <data name="games_curgen_enabled" xml:space="preserve">
-    <value></value>
+    <value>Generowanie przychodów zostało włączone na tym kanale.</value>
   </data>
   <data name="games_curgen_pl" xml:space="preserve">
     <value></value>
@@ -1321,7 +1322,7 @@ Nie zapomnij zostawić swojej discordowej nazwy użytkownika albo ID w wiadomoś
     <value>Remis!</value>
   </data>
   <data name="games_ttt_created" xml:space="preserve">
-    <value></value>
+    <value>stworzył grę w kółko i krzyżyk.</value>
   </data>
   <data name="games_ttt_has_won" xml:space="preserve">
     <value>{0} wygrał!</value>
@@ -1372,7 +1373,7 @@ Nie zapomnij zostawić swojej discordowej nazwy użytkownika albo ID w wiadomoś
     <value>ID</value>
   </data>
   <data name="music_invalid_input" xml:space="preserve">
-    <value></value>
+    <value>Niepoprawna zmienna.</value>
   </data>
   <data name="music_max_playtime_none" xml:space="preserve">
     <value>Maksymalny czas grania ustawiony na: bez limitu.</value>
@@ -1402,7 +1403,7 @@ Nie zapomnij zostawić swojej discordowej nazwy użytkownika albo ID w wiadomoś
     <value>Brak wyników</value>
   </data>
   <data name="music_paused" xml:space="preserve">
-    <value></value>
+    <value>Odtwarzanie muzyki wstrzymane.</value>
   </data>
   <data name="music_player_queue" xml:space="preserve">
     <value></value>
@@ -1463,7 +1464,7 @@ Nie zapomnij zostawić swojej discordowej nazwy użytkownika albo ID w wiadomoś
     <value>Powtarzanie aktualnego utworu zatrzymane.</value>
   </data>
   <data name="music_resumed" xml:space="preserve">
-    <value></value>
+    <value>Odtwarzanie muzyki wznowione.</value>
   </data>
   <data name="music_rpl_disabled" xml:space="preserve">
     <value>Powtarzanie playlisty wyłączone.</value>
@@ -1505,7 +1506,7 @@ Nie zapomnij zostawić swojej discordowej nazwy użytkownika albo ID w wiadomoś
     <value>Włączono użycie WSZYSTKICH MODÓŁÓW na kanale {0}.</value>
   </data>
   <data name="permissions_allowed" xml:space="preserve">
-    <value></value>
+    <value>Dozwolone</value>
   </data>
   <data name="permissions_arm_disable" xml:space="preserve">
     <value>Wyłączono użycie WSZYSTKICH MODÓŁÓW dla roli {0}.</value>
@@ -1656,7 +1657,7 @@ Nie zapomnij zostawić swojej discordowej nazwy użytkownika albo ID w wiadomoś
     <value>Zdolności</value>
   </data>
   <data name="searches_anime_no_fav" xml:space="preserve">
-    <value>Brak ulubionego zwierzęcia</value>
+    <value>Brak ulubionego anime</value>
   </data>
   <data name="searches_atl_ad_started" xml:space="preserve">
     <value>Zaczęto automatyczne tłumaczenie wiadomości na tym kanale. Wiadomości użytkowników będą automatycznie usuwane.</value>
@@ -1686,7 +1687,7 @@ Nie zapomnij zostawić swojej discordowej nazwy użytkownika albo ID w wiadomoś
     <value>Rozdziały</value>
   </data>
   <data name="searches_comic_number" xml:space="preserve">
-    <value></value>
+    <value>Komiks #</value>
   </data>
   <data name="searches_compet_loses" xml:space="preserve">
     <value>Przegrane rywalizacje</value>
@@ -1713,7 +1714,7 @@ Nie zapomnij zostawić swojej discordowej nazwy użytkownika albo ID w wiadomoś
     <value>Data</value>
   </data>
   <data name="searches_define" xml:space="preserve">
-    <value></value>
+    <value>Zdefiniuj:</value>
   </data>
   <data name="searches_dropped" xml:space="preserve">
     <value></value>
@@ -1824,7 +1825,7 @@ Nie zapomnij zostawić swojej discordowej nazwy użytkownika albo ID w wiadomoś
     <value></value>
   </data>
   <data name="searches_profile_link" xml:space="preserve">
-    <value></value>
+    <value>Link profilowy:</value>
   </data>
   <data name="searches_quality" xml:space="preserve">
     <value></value>
@@ -1837,13 +1838,13 @@ Nie zapomnij zostawić swojej discordowej nazwy użytkownika albo ID w wiadomoś
     <value></value>
   </data>
   <data name="searches_rating" xml:space="preserve">
-    <value></value>
+    <value>Ocena</value>
   </data>
   <data name="searches_score" xml:space="preserve">
-    <value></value>
+    <value>Wynik:</value>
   </data>
   <data name="searches_search_for" xml:space="preserve">
-    <value></value>
+    <value>Szukaj:</value>
     <comment>recherche plutôt non ?</comment>
   </data>
   <data name="searches_shorten_fail" xml:space="preserve">
@@ -1859,7 +1860,7 @@ Nie zapomnij zostawić swojej discordowej nazwy użytkownika albo ID w wiadomoś
     <value></value>
   </data>
   <data name="searches_status" xml:space="preserve">
-    <value></value>
+    <value>Status</value>
   </data>
   <data name="searches_store_url" xml:space="preserve">
     <value></value>
@@ -1898,7 +1899,7 @@ Nie zapomnij zostawić swojej discordowej nazwy użytkownika albo ID w wiadomoś
     <value>Temperatura</value>
   </data>
   <data name="searches_title" xml:space="preserve">
-    <value></value>
+    <value>Tytuł:</value>
   </data>
   <data name="searches_top_3_fav_anime" xml:space="preserve">
     <value>3 ulubione anime:</value>
@@ -1916,7 +1917,7 @@ Nie zapomnij zostawić swojej discordowej nazwy użytkownika albo ID w wiadomoś
     <value>Url</value>
   </data>
   <data name="searches_viewers" xml:space="preserve">
-    <value></value>
+    <value>Widzowie:</value>
   </data>
   <data name="searches_watching" xml:space="preserve">
     <value></value>
@@ -1954,7 +1955,7 @@ Nie zapomnij zostawić swojej discordowej nazwy użytkownika albo ID w wiadomoś
     <value></value>
   </data>
   <data name="utility_author" xml:space="preserve">
-    <value></value>
+    <value>Autor</value>
   </data>
   <data name="utility_botid" xml:space="preserve">
     <value>ID bota</value>
@@ -1966,7 +1967,7 @@ Nie zapomnij zostawić swojej discordowej nazwy użytkownika albo ID w wiadomoś
     <value></value>
   </data>
   <data name="utility_channel_topic" xml:space="preserve">
-    <value></value>
+    <value>Temat kanału</value>
   </data>
   <data name="utility_commands_ran" xml:space="preserve">
     <value></value>
@@ -1984,7 +1985,7 @@ Nie zapomnij zostawić swojej discordowej nazwy użytkownika albo ID w wiadomoś
     <value></value>
   </data>
   <data name="utility_created_at" xml:space="preserve">
-    <value></value>
+    <value>Stworzono w</value>
   </data>
   <data name="utility_csc_join" xml:space="preserve">
     <value></value>
@@ -1996,13 +1997,13 @@ Nie zapomnij zostawić swojej discordowej nazwy użytkownika albo ID w wiadomoś
     <value></value>
   </data>
   <data name="utility_custom_emojis" xml:space="preserve">
-    <value></value>
+    <value>Niestandardowe emotikony</value>
   </data>
   <data name="utility_error" xml:space="preserve">
     <value>Błąd</value>
   </data>
   <data name="utility_features" xml:space="preserve">
-    <value></value>
+    <value>Funkcje</value>
   </data>
   <data name="utility_id" xml:space="preserve">
     <value>ID</value>
@@ -2027,7 +2028,9 @@ Nie zapomnij zostawić swojej discordowej nazwy użytkownika albo ID w wiadomoś
     <value>Dołączył do serwera</value>
   </data>
   <data name="utility_listservers" xml:space="preserve">
-    <value></value>
+    <value>ID: {0}
+Członkowie: {1}
+ID właściciela: {2}</value>
   </data>
   <data name="utility_listservers_none" xml:space="preserve">
     <value>Nie znaleziono serwerów na tej stronie.</value>
@@ -2117,7 +2120,7 @@ Nie zapomnij zostawić swojej discordowej nazwy użytkownika albo ID w wiadomoś
     <value></value>
   </data>
   <data name="utility_repeater" xml:space="preserve">
-    <value></value>
+    <value>Powtarzanie {0} co {1} dni, {2} godzin i {3} minut.</value>
   </data>
   <data name="utility_repeaters_list" xml:space="preserve">
     <value></value>
@@ -2126,7 +2129,7 @@ Nie zapomnij zostawić swojej discordowej nazwy użytkownika albo ID w wiadomoś
     <value></value>
   </data>
   <data name="utility_repeater_stopped" xml:space="preserve">
-    <value></value>
+    <value>#{0} zatrzymany.</value>
   </data>
   <data name="utility_repeat_invoke_none" xml:space="preserve">
     <value></value>
@@ -2244,10 +2247,10 @@ Nie zapomnij zostawić swojej discordowej nazwy użytkownika albo ID w wiadomoś
     <value></value>
   </data>
   <data name="games_poll_result" xml:space="preserve">
-    <value></value>
+    <value>`{0}.` {1} z {2} głosami.</value>
   </data>
   <data name="games_poll_voted" xml:space="preserve">
-    <value></value>
+    <value>{0} głosów.</value>
   </data>
   <data name="games_poll_vote_private" xml:space="preserve">
     <value></value>
@@ -2274,22 +2277,22 @@ Nie zapomnij zostawić swojej discordowej nazwy użytkownika albo ID w wiadomoś
     <value></value>
   </data>
   <data name="administration_user_muted_time" xml:space="preserve">
-    <value></value>
+    <value>{0} został **wyciszony** w kanałach tekstowych oraz głosowych na {1} minut.</value>
   </data>
   <data name="administration_must_be_in_voice" xml:space="preserve">
-    <value></value>
+    <value>Musisz znajdować się w kanale głosowym na tym serwerze.</value>
   </data>
   <data name="administration_no_vcroles" xml:space="preserve">
     <value></value>
   </data>
   <data name="administration_vcrole_added" xml:space="preserve">
-    <value></value>
+    <value>Użytkownicy którzy dołączą do kanału głosowego {0} , otrzymają rolę {1}.</value>
   </data>
   <data name="administration_vcrole_removed" xml:space="preserve">
     <value></value>
   </data>
   <data name="administration_vc_role_list" xml:space="preserve">
-    <value></value>
+    <value>Uprawnienia kanału głosowego</value>
   </data>
 
 </root>
