@@ -30,6 +30,7 @@ namespace WizBot.Modules.Administration
                 {"pt-BR", "Portuguese, Brazil"},
                 {"ru-RU", "Russian, Russia"},
                 //{"sr-Cyrl-RS", "Serbian, Serbia - Cyrillic"}
+                {"es-ES", "Spanish, Spain"},
                 {"sv-SE", "Swedish, Sweden"},
                 {"tr-TR", "Turkish, Turkey" }
             }.ToImmutableDictionary();
