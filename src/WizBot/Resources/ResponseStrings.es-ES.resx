@@ -1013,7 +1013,7 @@ Razón: {1}</value>
     <value>Descripción</value>
   </data>
   <data name="help_donate" xml:space="preserve">
-    <value>Puedes apoyar el proyecto de NadekoBot en
+    <value>Puedes apoyar el proyecto de WizBot en
 Patreon &lt;{0}&gt; o
 PayPal &lt;{1}&gt;
 No olvides dejar tu usuario de Discord o ID en el mensaje.
