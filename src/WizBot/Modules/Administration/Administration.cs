@@ -59,7 +59,7 @@ namespace WizBot.Modules.Administration
         {
             using (var uow = DbHandler.UnitOfWork())
             {
-                var config = uow.GuildConfigs.For(Context.Guild.Id, set => set.Include(x => x.Permissions));
+                var config = uow.GuildConfigs.GcWithPermissionsv2For(Context.Guild.Id);
                 config.Permissions = Permissionv2.GetDefaultPermlist;
                 await uow.CompleteAsync();
                 UpdateCache(config);
