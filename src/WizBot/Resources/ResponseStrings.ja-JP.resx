@@ -2498,5 +2498,17 @@ Paypal &lt;{1}&gt;
   <data name="administration_vc_role_list" xml:space="preserve">
     <value></value>
   </data>
+  <data name="customreactions_crad_disabled" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="customreactions_crad_enabled" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="customreactions_crdm_enabled" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="customreactions_crdm_disabled" xml:space="preserve">
+    <value></value>
+  </data>
 
 </root>
