@@ -2018,6 +2018,42 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
+        ///    Looks up a localized string similar to Message triggering the custom reaction with id {0} won&apos;t get automatically deleted..
+        /// </summary>
+        public static string customreactions_crad_disabled {
+            get {
+                return ResourceManager.GetString("customreactions_crad_disabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Message triggering the custom reaction with id {0} will get automatically deleted..
+        /// </summary>
+        public static string customreactions_crad_enabled {
+            get {
+                return ResourceManager.GetString("customreactions_crad_enabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Response message for the custom reaction with id {0} won&apos;t be sent as a DM..
+        /// </summary>
+        public static string customreactions_crdm_disabled {
+            get {
+                return ResourceManager.GetString("customreactions_crdm_disabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Response message for the custom reaction with id {0} will be sent as a DM..
+        /// </summary>
+        public static string customreactions_crdm_enabled {
+            get {
+                return ResourceManager.GetString("customreactions_crdm_enabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///    Looks up a localized string similar to Custom Reaction deleted.
         /// </summary>
         public static string customreactions_deleted {
@@ -5657,7 +5693,8 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to `1.` Reworked permissions module..
+        ///    Looks up a localized string similar to `1.` Added `.crad` and `.crdm`.
+        ///`2.` Embed and image support for `.savechat`.
         /// </summary>
         public static string utility_changelog_additions_msg {
             get {
@@ -5711,7 +5748,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to WizBot Changelogs | 📅 March 10, 2017.
+        ///    Looks up a localized string similar to WizBot Changelogs | 📅 March 20, 2017.
         /// </summary>
         public static string utility_changelog_title_date {
             get {

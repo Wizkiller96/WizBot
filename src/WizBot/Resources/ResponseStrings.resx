@@ -1981,6 +1981,7 @@ Fuzzy</comment>
   </data>
   <data name="searches_wikia_input_error" xml:space="preserve">
     <value>Please enter a target wikia, followed by search query.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_wiki_page_not_found" xml:space="preserve">
     <value>Page not found.</value>
@@ -2265,7 +2266,8 @@ Fuzzy</comment>
     <value>Additions:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` Reworked permissions module.</value>
+    <value>`1.` Added `.crad` and `.crdm`.
+`2.` Embed and image support for `.savechat`</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Fixes:</value>
@@ -2283,7 +2285,7 @@ Fuzzy</comment>
     <value>None</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Changelogs | 📅 March 10, 2017</value>
+    <value>WizBot Changelogs | 📅 March 20, 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>Animal Race is already running.</value>
@@ -2338,14 +2340,14 @@ Fuzzy</comment>
   <data name="gambling_page" xml:space="preserve">
     <value>page {0}</value>
   </data>
+  <data name="administration_user_muted_time" xml:space="preserve">
+    <value>{0} has been **muted** from text and voice chat for {1} minutes.</value>
+  </data>
   <data name="administration_must_be_in_voice" xml:space="preserve">
     <value>You must be in a voice channel on this server.</value>
   </data>
   <data name="administration_no_vcroles" xml:space="preserve">
     <value>There are no voice channel roles.</value>
-  </data>
-  <data name="administration_user_muted_time" xml:space="preserve">
-    <value>{0} has been **muted** from text and voice chat for {1} minutes.</value>
   </data>
   <data name="administration_vcrole_added" xml:space="preserve">
     <value>Users who join {0} voice channel will get {1} role.</value>
@@ -2355,5 +2357,17 @@ Fuzzy</comment>
   </data>
   <data name="administration_vc_role_list" xml:space="preserve">
     <value>Voice channel roles</value>
+  </data>
+  <data name="customreactions_crad_disabled" xml:space="preserve">
+    <value>Message triggering the custom reaction with id {0} won't get automatically deleted.</value>
+  </data>
+  <data name="customreactions_crad_enabled" xml:space="preserve">
+    <value>Message triggering the custom reaction with id {0} will get automatically deleted.</value>
+  </data>
+  <data name="customreactions_crdm_enabled" xml:space="preserve">
+    <value>Response message for the custom reaction with id {0} will be sent as a DM.</value>
+  </data>
+  <data name="customreactions_crdm_disabled" xml:space="preserve">
+    <value>Response message for the custom reaction with id {0} won't be sent as a DM.</value>
   </data>
 </root>
