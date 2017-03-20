@@ -1016,7 +1016,7 @@ Lasts {1} seconds. Don&apos;t tell anyone. Shhh.</value>
     <value>Опис</value>
   </data>
   <data name="help_donate" xml:space="preserve">
-    <value>Можете подржати WizBot пројекат на 
+    <value>Можете подржати ВизБот пројекат на 
 Пејтриону &lt;{0}&gt; или
 Пејпалу &lt;{1}&gt;
 Не заборавите да оставите своје корисничко име или ИД.
@@ -2205,15 +2205,14 @@ Lasts {1} seconds. Don&apos;t tell anyone. Shhh.</value>
     <value>слике:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` Додати немачки и руски одговора.</value>
+    <value>`1.` Додато `.crad` и `.crdm`.
+`2.` Додајте и слика подршка за `.savechat`</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>исправке:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>`1,` Фиксни глас присуство.
-`2.` Фиксни `~ani` и `~mang`, претрага може бити искључен неко време.
-`3.` Фиксни неке везе.</value>
+    <value>Ниједан</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>Више информација на: http://github.com/Wizkiller96/WizBot</value>
@@ -2225,7 +2224,7 @@ Lasts {1} seconds. Don&apos;t tell anyone. Shhh.</value>
     <value>Ниједан</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>ВизБот Цхангелогс | 📅 Јан 28, 2017</value>
+    <value>ВизБот Цхангелогс | 📅 март 20, 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>Трка животиња већ постоји.</value>
@@ -2291,10 +2290,22 @@ Lasts {1} seconds. Don&apos;t tell anyone. Shhh.</value>
     <value>Корисници који уђу у говорни канал {0} ће добити ролу {1}.</value>
   </data>
   <data name="administration_vcrole_removed" xml:space="preserve">
-    <value></value>
+    <value>Корисници који се придруже {0} говорни канал више неће добити улогу.</value>
   </data>
   <data name="administration_vc_role_list" xml:space="preserve">
-    <value></value>
+    <value>Воице цханнел улоге</value>
+  </data>
+  <data name="customreactions_crad_disabled" xml:space="preserve">
+    <value>Порука ов прилагођене реакцију са ИД {0} неће бити аутоматски бришу.</value>
+  </data>
+  <data name="customreactions_crad_enabled" xml:space="preserve">
+    <value>Порука ов прилагођене реакцију са ИД {0} ће се аутоматски бришу.</value>
+  </data>
+  <data name="customreactions_crdm_enabled" xml:space="preserve">
+    <value>Одговор порука за прилагођену реакцију са ИД {0} ће бити послата као ДМ.</value>
+  </data>
+  <data name="customreactions_crdm_disabled" xml:space="preserve">
+    <value>Одговор порука за прилагођену реакцију са ИД {0} неће бити послата као ДМ.</value>
   </data>
 
 </root>
