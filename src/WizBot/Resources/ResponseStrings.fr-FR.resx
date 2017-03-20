@@ -2205,15 +2205,14 @@ OwnerID: {2}</value>
     <value>Compléments:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` Ajouté `.vcrole` et `.vcrolelist`.
-`2.` Timed Mute ajouté `.mute X @User`</value>
+    <value>`1.` Ajouté `.crad` et `.crdm`.
+`2.` Intégrer et prendre en charge l&apos;image de `.savechat`</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Réparations:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>`1.` La commande `$lb` devrait avoir un nombre correct maintenant sur les pages&gt; 1
-`2.` Correction de `.remind #channel`</value>
+    <value>Aucun</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>Plus d&apos;info à: http://github.com/Wizkiller96/WizBot</value>
@@ -2225,7 +2224,7 @@ OwnerID: {2}</value>
     <value>Aucun</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Changelogs | 📅 12 mars 2017</value>
+    <value>WizBot Changelogs | 📅 20 mars 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>Une course d&apos;animaux est déjà en cours.</value>
@@ -2295,6 +2294,18 @@ OwnerID: {2}</value>
   </data>
   <data name="administration_vc_role_list" xml:space="preserve">
     <value>Rôles du salon vocal</value>
+  </data>
+  <data name="customreactions_crad_disabled" xml:space="preserve">
+    <value>Le message déclenchant la réaction personnalisée avec id {0} ne sera pas supprimé automatiquement.</value>
+  </data>
+  <data name="customreactions_crad_enabled" xml:space="preserve">
+    <value>Le message déclenchant la réaction personnalisée avec id {0} sera automatiquement supprimé.</value>
+  </data>
+  <data name="customreactions_crdm_enabled" xml:space="preserve">
+    <value>Le message de réponse pour la réaction personnalisée avec id {0} sera envoyé en tant que DM.</value>
+  </data>
+  <data name="customreactions_crdm_disabled" xml:space="preserve">
+    <value>Le message de réponse pour la réaction personnalisée avec id {0} ne sera pas envoyé en tant que DM.</value>
   </data>
 
 </root>
