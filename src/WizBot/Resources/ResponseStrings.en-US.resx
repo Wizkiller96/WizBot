@@ -2266,15 +2266,14 @@ Fuzzy</comment>
     <value>Additions:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` Added `.vcrole` and `.vcrolelist`.
-`2.` Timed Mute added `.mute X @User`</value>
+    <value>`1.` Added `.crad` and `.crdm`.
+`2.` Embed and image support for `.savechat`</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Fixes:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>`1.` The `$lb` command should have correct numbers now on pages &gt; 1
-`2.` Fixed `.remind #channel`</value>
+    <value>None</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>More info at: http://github.com/Wizkiller96/WizBot</value>
@@ -2286,7 +2285,7 @@ Fuzzy</comment>
     <value>None</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Changelogs | 📅 March 12, 2017</value>
+    <value>WizBot Changelogs | 📅 March 20, 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>Animal Race is already running.</value>
@@ -2358,6 +2357,18 @@ Fuzzy</comment>
   </data>
   <data name="administration_vc_role_list" xml:space="preserve">
     <value>Voice channel roles</value>
+  </data>
+  <data name="customreactions_crad_disabled" xml:space="preserve">
+    <value>Message triggering the custom reaction with id {0} won&apos;t get automatically deleted.</value>
+  </data>
+  <data name="customreactions_crad_enabled" xml:space="preserve">
+    <value>Message triggering the custom reaction with id {0} will get automatically deleted.</value>
+  </data>
+  <data name="customreactions_crdm_enabled" xml:space="preserve">
+    <value>Response message for the custom reaction with id {0} will be sent as a DM.</value>
+  </data>
+  <data name="customreactions_crdm_disabled" xml:space="preserve">
+    <value>Response message for the custom reaction with id {0} won&apos;t be sent as a DM.</value>
   </data>
 
 </root>
