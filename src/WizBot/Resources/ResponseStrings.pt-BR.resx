@@ -2209,15 +2209,14 @@ OwnerID: {2}</value>
     <value>Aditivos:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` Adicionado `.vcrole` e `.vcrolelist`.
-`2.` Timed Mute adicionado `.mute X @User`</value>
+    <value>`1.` Adicionado `.crad` e `.crdm`.
+`2.` Inserção e suporte de imagem para `.savechat`</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Conserta:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>`1.` O comando `$lb` deve ter números corretos agora nas páginas&gt; 1
-`2.` Corrigido `.remind #channel`</value>
+    <value>Nenhum</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>Mais informações em: http://github.com/Wizkiller96/WizBot</value>
@@ -2229,7 +2228,7 @@ OwnerID: {2}</value>
     <value>Nenhum</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Alterações | 12 de março de 2017</value>
+    <value>WizBot Alterações | 20 de março de 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>A Corrida de Animais já está em andamento</value>
@@ -2299,6 +2298,18 @@ OwnerID: {2}</value>
   </data>
   <data name="administration_vc_role_list" xml:space="preserve">
     <value>Cargos de canais de voz</value>
+  </data>
+  <data name="customreactions_crad_disabled" xml:space="preserve">
+    <value>A mensagem que aciona a reação personalizada com id {0} não será automaticamente excluída.</value>
+  </data>
+  <data name="customreactions_crad_enabled" xml:space="preserve">
+    <value>A mensagem que aciona a reação personalizada com id {0} será automaticamente excluída.</value>
+  </data>
+  <data name="customreactions_crdm_enabled" xml:space="preserve">
+    <value>A mensagem de resposta para a reação personalizada com id {0} será enviada como um DM.</value>
+  </data>
+  <data name="customreactions_crdm_disabled" xml:space="preserve">
+    <value>A mensagem de resposta para a reação personalizada com id {0} não será enviada como um DM.</value>
   </data>
 
 </root>
