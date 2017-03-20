@@ -2211,15 +2211,14 @@ Paypal &lt;{1}&gt;
     <value>添加：</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` 添加 `.vcrole` 和 `.vcrolelist`
-`2.`定时静音添加 `.mute X @User`</value>
+    <value>`1.` 添加了`.crad` 和 `.crdm`。
+`2.` 嵌入和图像支持 `.savechat`</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>修正：</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>`1.` `$lb` 命令现在在页面&gt; 1上应该有正确的数字
-`2.`固定 `.remind ＃channel`</value>
+    <value>没有</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>更多信息：http://github.com/Wizkiller96/WizBot</value>
@@ -2231,7 +2230,7 @@ Paypal &lt;{1}&gt;
     <value>没有</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Changelogs | 📅 2017年3月12日</value>
+    <value>WizBot Changelogs | 📅 2017年3月20日</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>动物竞赛已经运行。</value>
@@ -2301,6 +2300,18 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="administration_vc_role_list" xml:space="preserve">
     <value>语音通道角色</value>
+  </data>
+  <data name="customreactions_crad_disabled" xml:space="preserve">
+    <value>触发标识为{0}的自定义响应的消息不会自动删除。</value>
+  </data>
+  <data name="customreactions_crad_enabled" xml:space="preserve">
+    <value>触发标识为{0}的自定义响应的消息将自动删除。</value>
+  </data>
+  <data name="customreactions_crdm_enabled" xml:space="preserve">
+    <value>标识为{0}的自定义响应的响应消息将作为DM发送。</value>
+  </data>
+  <data name="customreactions_crdm_disabled" xml:space="preserve">
+    <value>标识为{0}的自定义响应的响应消息不会作为DM发送。</value>
   </data>
 
 </root>
