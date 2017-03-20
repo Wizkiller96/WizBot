@@ -2213,15 +2213,14 @@ Medlemmar: {1}
     <value>tillägg:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` Added &apos;.vcrole` och&apos; .vcrolelist`.
-`2.` Tids Mute lagt `.mute X @User`</value>
+    <value>`1.` Added `.crad` och `.crdm`.
+`2.` Bädda och bild stöd för `.savechat`</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>korrigeringar:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>`1.` Den `$lb` kommandot ska ha rätt nummer nu på sidorna&gt; 1
-`2.` Fast `.remind #channel`</value>
+    <value>Ingen</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>Mer info på: http://github.com/Wizkiller96/WizBot</value>
@@ -2233,7 +2232,7 @@ Medlemmar: {1}
     <value>Ingen</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot ändringsloggar | 📅 12 mars, 2017</value>
+    <value>WizBot ändringsloggar | 📅 20 mars, 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>Djur lopp körs redan.</value>
@@ -2303,6 +2302,18 @@ Medlemmar: {1}
   </data>
   <data name="administration_vc_role_list" xml:space="preserve">
     <value>Röstkanalsroller</value>
+  </data>
+  <data name="customreactions_crad_disabled" xml:space="preserve">
+    <value>Meddelande utlöser anpassade reaktion med id {0} kommer inte att gå bort automatiskt.</value>
+  </data>
+  <data name="customreactions_crad_enabled" xml:space="preserve">
+    <value>Meddelande utlöser anpassade reaktion med id {0} kommer att få bort automatiskt.</value>
+  </data>
+  <data name="customreactions_crdm_enabled" xml:space="preserve">
+    <value>Svarsmeddelande för anpassade reaktion med id {0} kommer att sändas som en DM.</value>
+  </data>
+  <data name="customreactions_crdm_disabled" xml:space="preserve">
+    <value>Svarsmeddelande för anpassade reaktion med id {0} kommer inte att skickas som en DM.</value>
   </data>
 
 </root>
