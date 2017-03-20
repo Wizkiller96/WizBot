@@ -2244,15 +2244,14 @@ IDВладельца: {2}</value>
     <value>дополнения:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` Добавлены `.vcrole` и `.vcrolelist`.
-`2.` Timed Mute добавил `.mute X @User`.</value>
+    <value>`1.` Добавлены `.crad` и `.crdm`.
+`2.` Встраивание и поддержка изображений для `.savechat`</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Исправления:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>`1.` Команда `$lb` должна теперь иметь правильные номера на страницах&gt; 1
-`2.` Исправлена ошибка `.remind #channel`</value>
+    <value>Никто</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>Более подробную информацию по адресу: http://github.com/Wizkiller96/WizBot</value>
@@ -2264,7 +2263,7 @@ IDВладельца: {2}</value>
     <value>Никто</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot списком изменений | 📅 12 марта 2017</value>
+    <value>WizBot списком изменений | 📅 20 марта 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>Гонка зверей уже идёт.</value>
@@ -2335,6 +2334,18 @@ IDВладельца: {2}</value>
   </data>
   <data name="administration_vc_role_list" xml:space="preserve">
     <value>Роли голосовых каналов</value>
+  </data>
+  <data name="customreactions_crad_disabled" xml:space="preserve">
+    <value>Сообщение, инициирующее пользовательскую реакцию с идентификатором {0}, не будет автоматически удалено.</value>
+  </data>
+  <data name="customreactions_crad_enabled" xml:space="preserve">
+    <value>Сообщение, инициирующее пользовательскую реакцию с идентификатором {0}, будет автоматически удалено.</value>
+  </data>
+  <data name="customreactions_crdm_enabled" xml:space="preserve">
+    <value>Ответное сообщение для пользовательской реакции с id {0} будет отправлено как DM.</value>
+  </data>
+  <data name="customreactions_crdm_disabled" xml:space="preserve">
+    <value>Ответное сообщение для пользовательской реакции с id {0} не будет отправлено как DM.</value>
   </data>
 
 </root>
