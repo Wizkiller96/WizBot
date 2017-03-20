@@ -2207,15 +2207,14 @@ Kurucu Kimliği: {2}</value>
     <value>İlaveler:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` `.vcrole` ve `.vcrolelist` ekledi.
-`2.` Zamanlı Sessiz `.mute X @user` yı ekledi</value>
+    <value>`1.` `.crad` ve `.crdm` eklendi.
+`2.` `.savechat` için gömme ve resim desteği</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Düzeltmeler:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>`1.` `$lb` komutu artık sayfaların üzerinde doğru sayıya sahip olmalıdır&gt; 1
-`2.` Sabit `.remind #channel`</value>
+    <value>Yok</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>Daha fazla bilgi için: http://github.com/Wizkiller96/WizBot</value>
@@ -2227,7 +2226,7 @@ Kurucu Kimliği: {2}</value>
     <value>Yok</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Değişiklikler | 📅 12 Mart 2017</value>
+    <value>WizBot Değişiklikler | 📅 20 Mart 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>Hayvan yarışı zaten çalışıyor.</value>
@@ -2297,6 +2296,18 @@ Kurucu Kimliği: {2}</value>
   </data>
   <data name="administration_vc_role_list" xml:space="preserve">
     <value>Sesli kanal rolleri</value>
+  </data>
+  <data name="customreactions_crad_disabled" xml:space="preserve">
+    <value>{0} kimliğiyle özel reaksiyonu tetikleyen mesaj otomatik olarak silinmeyecek.</value>
+  </data>
+  <data name="customreactions_crad_enabled" xml:space="preserve">
+    <value>{0} kimliğiyle özel reaksiyonu tetikleyen mesaj otomatik olarak silinir.</value>
+  </data>
+  <data name="customreactions_crdm_enabled" xml:space="preserve">
+    <value>{0} kimliğine sahip özel reaksiyon için verilen yanıt mesajı bir DM olarak gönderilecek.</value>
+  </data>
+  <data name="customreactions_crdm_disabled" xml:space="preserve">
+    <value>{0} kimliğine sahip özel reaksiyon için verilen yanıt mesajı DM olarak gönderilmez.</value>
   </data>
 
 </root>
