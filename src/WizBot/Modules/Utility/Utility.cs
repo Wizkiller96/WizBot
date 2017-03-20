@@ -396,7 +396,7 @@ namespace WizBot.Modules.Utility
                 new EmbedBuilder().WithOkColor()
                     .WithAuthor(eab => eab.WithName($"WizBot v{StatsService.BotVersion}")
                                           .WithUrl("http://wizbot.readthedocs.io/en/latest/")
-                                          .WithIconUrl("https://cdn.discordapp.com/avatars/170849991357628416/412367ac7ffd3915a0b969f6f3e17aca.jpg"))
+                                          .WithIconUrl("https://i.imgur.com/1X7IWnw.jpg"))
                     .AddField(efb => efb.WithName(GetText("author")).WithValue(stats.Author).WithIsInline(true))
                     .AddField(efb => efb.WithName(GetText("botid")).WithValue(WizBot.Client.CurrentUser.Id.ToString()).WithIsInline(true))
                     .AddField(efb => efb.WithName(GetText("shard")).WithValue($"#{shardId} / {WizBot.Client.Shards.Count}").WithIsInline(true))
@@ -466,8 +466,32 @@ namespace WizBot.Modules.Utility
 
             var title = $"Chatlog-{Context.Guild.Name}/#{Context.Channel.Name}-{DateTime.Now}.txt";
             var grouping = msgs.GroupBy(x => $"{x.CreatedAt.Date:dd.MM.yyyy}")
-                .Select(g => new { date = g.Key, messages = g.OrderBy(x => x.CreatedAt).Select(s => $"【{s.Timestamp:HH:mm:ss}】{s.Author}:" + s.ToString()) });
-            await Context.User.SendFileAsync(
+                .Select(g => new
+                {
+                date = g.Key,
+                messages = g.OrderBy(x => x.CreatedAt).Select(s =>
+                    {
+                    var msg = $"【{s.Timestamp:HH:mm:ss}】{s.Author}:";
+                        if (string.IsNullOrWhiteSpace(s.ToString()))
+                        {
+                            if (s.Attachments.Any())
+                            {
+                            msg += "FILES_UPLOADED: " + string.Join("\n", s.Attachments.Select(x => x.Url));
+                            }
+                            else if (s.Embeds.Any())
+                            {
+                                //todo probably just go through all properties and check if they are set, if they are, add them
+                            msg += "EMBEDS: " + string.Join("\n--------\n", s.Embeds.Select(x => $"Description: {x.Description}"));
+                            }
+                        }
+                        else
+                        {
+                        msg += s.ToString();
+                        }
+                        return msg;
+                    })
+                });
+                await Context.User.SendFileAsync(
                 await JsonConvert.SerializeObject(grouping, Formatting.Indented).ToStream().ConfigureAwait(false), title, title).ConfigureAwait(false);
         }
 
@@ -478,7 +502,7 @@ namespace WizBot.Modules.Utility
                 new EmbedBuilder().WithOkColor()
                     .WithAuthor(eab => eab.WithName(GetText($"changelog_title_date"))
                                           .WithUrl("https://github.com/Wizkiller96/WizBot/commits/dev")
-                                          .WithIconUrl("https://cdn.discordapp.com/avatars/170849991357628416/412367ac7ffd3915a0b969f6f3e17aca.jpg"))
+                                          .WithIconUrl("https://i.imgur.com/1X7IWnw.jpg"))
                     .AddField(efb => efb.WithName(Format.Bold(GetText("changelog_fixes"))).WithValue(GetText("changelog_fixes_msg")).WithIsInline(false))
                     .AddField(efb => efb.WithName(Format.Bold(GetText("changelog_additions"))).WithValue(GetText("changelog_additions_msg")).WithIsInline(false))
                     .AddField(efb => efb.WithName(Format.Bold(GetText("changelog_removals"))).WithValue(GetText("changelog_removals_msg")).WithIsInline(false))
