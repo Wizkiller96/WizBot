@@ -1390,7 +1390,7 @@ Paypal &lt;{1}&gt;
     <value>播放清單大小現在沒有限制了。</value>
   </data>
   <data name="music_max_queue_x" xml:space="preserve">
-    <value>播放清單最多可以排序 {0} 首。</value>
+    <value>播放清單最多可以點播 {0} 首。</value>
   </data>
   <data name="music_must_be_in_voice" xml:space="preserve">
     <value>你必須要進入在此伺服器上的語音頻道。</value>
@@ -1478,7 +1478,7 @@ Paypal &lt;{1}&gt;
     <value>啟用重複播放清單。</value>
   </data>
   <data name="music_set_music_channel" xml:space="preserve">
-    <value>我將在此頻道輸出播放、暫停、結束和移除的歌曲。</value>
+    <value>我將在此頻道輸出播放、暫停、結束和移除歌曲的訊息。</value>
   </data>
   <data name="music_skipped_to" xml:space="preserve">
     <value>跳至 ‘{0}:{1}’</value>
@@ -2210,14 +2210,16 @@ Paypal &lt;{1}&gt;
     <value>添加：</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` 添加了 `.crad` 和 `.crdm`。
-`2.` 嵌入和圖像支持 `.savechat`</value>
+    <value>`1.` 命令別名添加 - `.alias` 和 `.aliases` 命令。
+`2.` 更新支持的語言列表。
+`3.` `$rolluo` 現在可以沒有參數。</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>修正：</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>沒有</value>
+    <value>`1.` 添加了錯過的字符串。
+`2.` 修復了一個權限錯誤。</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>更多信息：http://github.com/Wizkiller96/WizBot</value>
@@ -2229,7 +2231,7 @@ Paypal &lt;{1}&gt;
     <value>沒有</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Changelogs | 📅2017年3月20日</value>
+    <value>WizBot Changelogs | 📅2017年3月21日</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>動物賽跑已經在運行中了。</value>
@@ -2311,6 +2313,24 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="customreactions_crdm_disabled" xml:space="preserve">
     <value>標識為{0}的自定義響應的響應消息不會作為DM發送。</value>
+  </data>
+  <data name="utility_aliases_none" xml:space="preserve">
+    <value>沒有找到別名</value>
+  </data>
+  <data name="utility_alias_added" xml:space="preserve">
+    <value>打字{0}現在將的別名{1}。</value>
+  </data>
+  <data name="utility_alias_list" xml:space="preserve">
+    <value>別名列表</value>
+  </data>
+  <data name="utility_alias_removed" xml:space="preserve">
+    <value>觸發{0}不再有一個別名。</value>
+  </data>
+  <data name="utility_alias_remove_fail" xml:space="preserve">
+    <value>觸發{0}沒有一個別名。</value>
+  </data>
+  <data name="searches_compet_playtime" xml:space="preserve">
+    <value>競爭遊戲時間</value>
   </data>
 
 </root>
