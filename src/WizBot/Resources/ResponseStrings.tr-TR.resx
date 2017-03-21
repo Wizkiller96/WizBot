@@ -2207,14 +2207,16 @@ Kurucu Kimliği: {2}</value>
     <value>İlaveler:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` `.crad` ve `.crdm` eklendi.
-`2.` `.savechat` için gömme ve resim desteği</value>
+    <value>`1.` Komut ekleme eklendi - `.alias` ve `.aliases` komutları.
+`2.` Desteklenen dil listesi güncellendi.
+`3.` `$rolluo` artık argüman olmadan çalışıyor.</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Düzeltmeler:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>Yok</value>
+    <value>`1.` Cevapsız bir dize eklendi.
+`2.` Bir izin hatası düzeltildi.</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>Daha fazla bilgi için: http://github.com/Wizkiller96/WizBot</value>
@@ -2226,7 +2228,7 @@ Kurucu Kimliği: {2}</value>
     <value>Yok</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Değişiklikler | 📅 20 Mart 2017</value>
+    <value>WizBot Değişiklikler | 📅 21 Mart 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>Hayvan yarışı zaten çalışıyor.</value>
@@ -2301,13 +2303,31 @@ Kurucu Kimliği: {2}</value>
     <value>{0} kimliğiyle özel reaksiyonu tetikleyen mesaj otomatik olarak silinmeyecek.</value>
   </data>
   <data name="customreactions_crad_enabled" xml:space="preserve">
-    <value>{0} kimliğiyle özel reaksiyonu tetikleyen mesaj otomatik olarak silinir.</value>
+    <value>{0} kimliğiyle özel reaksiyonu tetikleyen mesaj otomatik olarak silinecek.</value>
   </data>
   <data name="customreactions_crdm_enabled" xml:space="preserve">
     <value>{0} kimliğine sahip özel reaksiyon için verilen yanıt mesajı bir DM olarak gönderilecek.</value>
   </data>
   <data name="customreactions_crdm_disabled" xml:space="preserve">
-    <value>{0} kimliğine sahip özel reaksiyon için verilen yanıt mesajı DM olarak gönderilmez.</value>
+    <value>{0} kimliğine sahip özel reaksiyon için verilen yanıt mesajı DM olarak gönderilmeyecek.</value>
+  </data>
+  <data name="utility_aliases_none" xml:space="preserve">
+    <value>Takma ad bulunamadı</value>
+  </data>
+  <data name="utility_alias_added" xml:space="preserve">
+    <value>Yazma {0} şimdi {1} &apos;in bir takma adı olacak.</value>
+  </data>
+  <data name="utility_alias_list" xml:space="preserve">
+    <value>Takma ad listesi</value>
+  </data>
+  <data name="utility_alias_removed" xml:space="preserve">
+    <value>Tetikleyici {0} artık bir takma ada sahip değil.</value>
+  </data>
+  <data name="utility_alias_remove_fail" xml:space="preserve">
+    <value>Tetikleyici {0} &apos;nin takma adı yoktu.</value>
+  </data>
+  <data name="searches_compet_playtime" xml:space="preserve">
+    <value>Rekabetçi oyun süresi</value>
   </data>
 
 </root>
