@@ -284,7 +284,7 @@
     <value>Você reviveu a si mesmo com uma {0}</value>
   </data>
   <data name="pokemon_settype_success" xml:space="preserve">
-    <value>Seu tipo foi mudado de {0} para {1}</value>
+    <value>Seu tipo foi mudado para {0} por uma {1}</value>
   </data>
   <data name="pokemon_somewhat_effective" xml:space="preserve">
     <value>É mais ou menos efetivo.</value>
@@ -2209,14 +2209,16 @@ OwnerID: {2}</value>
     <value>Aditivos:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` Adicionado `.crad` e `.crdm`.
-`2.` Inserção e suporte de imagem para `.savechat`</value>
+    <value>`1.` Comando aliasing adicionado - `.alias` e `.aliases` comandos.
+`2.` Lista de idiomas suportada atualizada.
+`3.` `$rolluo` agora funciona sem argumentos.</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Conserta:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>Nenhum</value>
+    <value>`1.` Adicionado uma string perdida.
+`2.` Corrigido um bug de permissão.</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>Mais informações em: http://github.com/Wizkiller96/WizBot</value>
@@ -2228,7 +2230,7 @@ OwnerID: {2}</value>
     <value>Nenhum</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Alterações | 20 de março de 2017</value>
+    <value>WizBot Alterações | 21 de março de 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>A Corrida de Animais já está em andamento</value>
@@ -2300,16 +2302,34 @@ OwnerID: {2}</value>
     <value>Cargos de canais de voz</value>
   </data>
   <data name="customreactions_crad_disabled" xml:space="preserve">
-    <value>A mensagem que aciona a reação personalizada com id {0} não será automaticamente excluída.</value>
+    <value>A mensagem que ativa a reação personalizada com id {0} não será deletada automaticamente.</value>
   </data>
   <data name="customreactions_crad_enabled" xml:space="preserve">
-    <value>A mensagem que aciona a reação personalizada com id {0} será automaticamente excluída.</value>
+    <value>A mensagem que ativa a reação personalizada com id {0} será deletada automaticamente.</value>
   </data>
   <data name="customreactions_crdm_enabled" xml:space="preserve">
-    <value>A mensagem de resposta para a reação personalizada com id {0} será enviada como um DM.</value>
+    <value>A resposta para a reação personalizada com o id {0} será enviada como mensagem direta.</value>
   </data>
   <data name="customreactions_crdm_disabled" xml:space="preserve">
-    <value>A mensagem de resposta para a reação personalizada com id {0} não será enviada como um DM.</value>
+    <value>A resposta para a reação personalizada com o id {0} não será enviada como mensagem direta.</value>
+  </data>
+  <data name="utility_aliases_none" xml:space="preserve">
+    <value>Nenhum alias encontrados</value>
+  </data>
+  <data name="utility_alias_added" xml:space="preserve">
+    <value>Typing {0} agora será um alias de {1}.</value>
+  </data>
+  <data name="utility_alias_list" xml:space="preserve">
+    <value>Lista de aliases</value>
+  </data>
+  <data name="utility_alias_removed" xml:space="preserve">
+    <value>Gatilho {0} já não tem um apelido.</value>
+  </data>
+  <data name="utility_alias_remove_fail" xml:space="preserve">
+    <value>Gatilho {0} não tem um apelido.</value>
+  </data>
+  <data name="searches_compet_playtime" xml:space="preserve">
+    <value>playtime competitiva</value>
   </data>
 
 </root>
