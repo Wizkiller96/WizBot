@@ -2207,14 +2207,16 @@ Eier ID: {2}</value>
     <value>tillegg:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` Lagt `.crad` og `.crdm`.
-`2.` Bygg og bildestøtte for `.savechat`</value>
+    <value>`1.` Command aliasing lagt - `.alias` og `.aliases` kommandoer.
+`2.` Oppdatert støttet språk listen.
+`3.` `$rolluo` fungerer nå uten argumenter.</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Fixes:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>Ingen</value>
+    <value>`1.` Lagt til en savnet streng.
+`2.` Fikset en tillatelse bug.</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>Mer info på: http://github.com/Wizkiller96/WizBot</value>
@@ -2226,7 +2228,7 @@ Eier ID: {2}</value>
     <value>Ingen</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Endrings | 📅 20 mars 2017</value>
+    <value>WizBot Endrings | 📅 21 mars 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>Veddeløp med dyr er allerede igang.</value>
@@ -2308,6 +2310,24 @@ Eier ID: {2}</value>
   </data>
   <data name="customreactions_crdm_disabled" xml:space="preserve">
     <value>Svarmelding for den tilpassede reaksjon med id {0} vil ikke bli sendt som en DM.</value>
+  </data>
+  <data name="utility_aliases_none" xml:space="preserve">
+    <value>Ingen alias funnet</value>
+  </data>
+  <data name="utility_alias_added" xml:space="preserve">
+    <value>Typing {0} vil nå være et alias for {1}.</value>
+  </data>
+  <data name="utility_alias_list" xml:space="preserve">
+    <value>Liste over aliaser</value>
+  </data>
+  <data name="utility_alias_removed" xml:space="preserve">
+    <value>Trigger {0} ikke lenger har et alias.</value>
+  </data>
+  <data name="utility_alias_remove_fail" xml:space="preserve">
+    <value>Trigger {0} har ikke et alias.</value>
+  </data>
+  <data name="searches_compet_playtime" xml:space="preserve">
+    <value>konkurranse~~POS=TRUNC spilletid</value>
   </data>
 
 </root>
