@@ -154,7 +154,7 @@
     <value>Величина рата није валидна.</value>
   </data>
   <data name="clashofclans_list_active_wars" xml:space="preserve">
-    <value>Листа Ратова У Току</value>
+    <value>Листа ратова у току</value>
   </data>
   <data name="clashofclans_not_claimed" xml:space="preserve">
     <value>нема захтева</value>
@@ -473,7 +473,7 @@ Reason: {1}</value>
 Reason: {1}</value>
   </data>
   <data name="administration_kicked_user" xml:space="preserve">
-    <value>User Kicked</value>
+    <value>Кикован корисник</value>
   </data>
   <data name="administration_lang_list" xml:space="preserve">
     <value>List Of Languages
@@ -579,13 +579,13 @@ Reason: {1}</value>
     <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="administration_old_msg" xml:space="preserve">
-    <value>Old Message</value>
+    <value>Стара порука</value>
   </data>
   <data name="administration_old_nick" xml:space="preserve">
-    <value>Old Nickname</value>
+    <value>Стари надимак</value>
   </data>
   <data name="administration_old_topic" xml:space="preserve">
-    <value>Old Topic</value>
+    <value>Стара тема</value>
   </data>
   <data name="administration_perms" xml:space="preserve">
     <value>Error. Most likely I don&apos;t have sufficient permissions.</value>
@@ -594,7 +594,7 @@ Reason: {1}</value>
     <value>Permissions for this server are reset.</value>
   </data>
   <data name="administration_prot_active" xml:space="preserve">
-    <value>Active Protections</value>
+    <value>Активне заштите</value>
   </data>
   <data name="administration_prot_disable" xml:space="preserve">
     <value>{0} has been **disabled** on this server.</value>
@@ -606,7 +606,7 @@ Reason: {1}</value>
     <value>Error. I need ManageRoles permission</value>
   </data>
   <data name="administration_prot_none" xml:space="preserve">
-    <value>No protections enabled.</value>
+    <value>Нема активних заштита.</value>
   </data>
   <data name="administration_raid_cnt" xml:space="preserve">
     <value>User threshold must be between {0} and {1}.</value>
@@ -769,7 +769,7 @@ Reason: {1}</value>
     __IgnoredChannels__: {2}</value>
   </data>
   <data name="administration_text_chan_created" xml:space="preserve">
-    <value>Text Channel Destroyed </value>
+    <value>Уништен текстуелни канал</value>
   </data>
   <data name="administration_text_chan_destroyed" xml:space="preserve">
     <value>Text Channel Destroyed </value>
@@ -2205,14 +2205,16 @@ Lasts {1} seconds. Don&apos;t tell anyone. Shhh.</value>
     <value>слике:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` Додато `.crad` и `.crdm`.
-`2.` Додајте и слика подршка за `.savechat`</value>
+    <value>`1.` команда алиасинг додао -`.аlias` и `.aliases` команде.
+`2.` ажурирано листу подржана језика.
+`3.` `$rolluo` сада ради без аргумената.</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>исправке:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>Ниједан</value>
+    <value>`1.` Додато пропуштени низ.
+`2.` Фиксни дозволу буг.</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>Више информација на: http://github.com/Wizkiller96/WizBot</value>
@@ -2224,7 +2226,7 @@ Lasts {1} seconds. Don&apos;t tell anyone. Shhh.</value>
     <value>Ниједан</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>ВизБот Цхангелогс | 📅 март 20, 2017</value>
+    <value>ВизБот Цхангелогс | 📅 март 21, 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>Трка животиња већ постоји.</value>
@@ -2306,6 +2308,24 @@ Lasts {1} seconds. Don&apos;t tell anyone. Shhh.</value>
   </data>
   <data name="customreactions_crdm_disabled" xml:space="preserve">
     <value>Одговор порука за прилагођену реакцију са ИД {0} неће бити послата као ДМ.</value>
+  </data>
+  <data name="utility_aliases_none" xml:space="preserve">
+    <value>Но звани фоунд</value>
+  </data>
+  <data name="utility_alias_added" xml:space="preserve">
+    <value>Куцање {0} ће сада бити псеудоним {1}.</value>
+  </data>
+  <data name="utility_alias_list" xml:space="preserve">
+    <value>Списак псеудонимима</value>
+  </data>
+  <data name="utility_alias_removed" xml:space="preserve">
+    <value>Окидач {0} више нема алиас.</value>
+  </data>
+  <data name="utility_alias_remove_fail" xml:space="preserve">
+    <value>Окидач {0} није имао псеудоним.</value>
+  </data>
+  <data name="searches_compet_playtime" xml:space="preserve">
+    <value>конкурентан време за игру</value>
   </data>
 
 </root>
