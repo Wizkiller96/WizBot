@@ -26,7 +26,7 @@ namespace WizBot.Modules.Administration
                 {"de-DE", "German, Germany"},
                 //{"ja-JP", "Japanese, Japan"},
                 {"nb-NO", "Norwegian (bokmål), Norway"},
-                {"pl-PL", "Polish, Poland" },
+                //{"pl-PL", "Polish, Poland" },
                 {"pt-BR", "Portuguese, Brazil"},
                 {"ru-RU", "Russian, Russia"},
                 {"sr-Cyrl-RS", "Serbian, Serbia - Cyrillic"},
