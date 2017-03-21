@@ -2217,14 +2217,16 @@ Fuzzy</comment>
     <value>Ergänzungen:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` Hinzugefügt `.crad` und `.crdm`.
-`2.` Einbetten und Bildunterstützung für `.savechat`</value>
+    <value>`1.` Befehls-Aliasing hinzugefügt - `.alias` und `.aliases` Befehle.
+`2.` Aktualisierte unterstützte Sprachliste.
+`3.` `$rolluo` funktioniert jetzt ohne Argumente.</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Behebt:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>Keiner</value>
+    <value>`1.` Eine verpasste Zeichenfolge hinzugefügt
+`2.` Ein Berechtigungsfehler behoben.</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>Weitere Infos unter: http://github.com/Wizkiller96/WizBot</value>
@@ -2236,7 +2238,7 @@ Fuzzy</comment>
     <value>Keiner</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Changelogs | 📅 März 20, 2017</value>
+    <value>WizBot Changelogs | 📅 März 21, 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>Tierrennen läuft bereits.</value>
@@ -2279,10 +2281,10 @@ Fuzzy</comment>
     <value>{0} totale Abstimmungen eingereicht.</value>
   </data>
   <data name="games_pick_pl" xml:space="preserve">
-    <value>Sammel sie durch das Schreiben von `{0}pick`</value>
+    <value>sammel sie durch das Schreiben von `{0}pick`</value>
   </data>
   <data name="games_pick_sn" xml:space="preserve">
-    <value>Sammel sie durch das Schreiben von `{0}pick</value>
+    <value>sammel sie durch das Schreiben von `{0}pick</value>
   </data>
   <data name="gambling_no_users_found" xml:space="preserve">
     <value>Kein Benutzer gefunden.</value>
@@ -2309,16 +2311,34 @@ Fuzzy</comment>
     <value>Rollen für Sprachkanäle</value>
   </data>
   <data name="customreactions_crad_disabled" xml:space="preserve">
-    <value>Nachricht, die die benutzerdefinierte Reaktion mit id {0} auslöst, wird nicht automatisch gelöscht.</value>
+    <value>Auslösende Nachricht der benutzerdefinierten Reaktion mit der ID {0} wird nicht automatisch gelöscht.</value>
   </data>
   <data name="customreactions_crad_enabled" xml:space="preserve">
-    <value>Die Meldung, die die benutzerdefinierte Reaktion mit id {0} auslöst, wird automatisch gelöscht.</value>
+    <value>Auslösende Nachricht der benutzerdefinierten Reaktion mit der ID {0} wird automatisch gelöscht.</value>
   </data>
   <data name="customreactions_crdm_enabled" xml:space="preserve">
-    <value>Antwortmeldung für die benutzerdefinierte Reaktion mit id {0} wird als DM gesendet.</value>
+    <value>Reaktionsnachricht für die benutzerdefinierte Reaktion mit der ID {0} wird nicht als DN gesendet.</value>
   </data>
   <data name="customreactions_crdm_disabled" xml:space="preserve">
-    <value>Antwortmeldung für die benutzerdefinierte Reaktion mit id {0} wird nicht als DM gesendet.</value>
+    <value>Reaktionsnachricht für die benutzerdefinierte Reaktion mit der ID {0} wird nicht als DN gesendet.</value>
+  </data>
+  <data name="utility_aliases_none" xml:space="preserve">
+    <value>Keine alias gefunden</value>
+  </data>
+  <data name="utility_alias_added" xml:space="preserve">
+    <value>Tippen {0} wird nun ein Alias ​​von {1}.</value>
+  </data>
+  <data name="utility_alias_list" xml:space="preserve">
+    <value>Liste der Aliase</value>
+  </data>
+  <data name="utility_alias_removed" xml:space="preserve">
+    <value>Auslöser {0} nicht mehr einen Alias.</value>
+  </data>
+  <data name="utility_alias_remove_fail" xml:space="preserve">
+    <value>Auslöser {0} hat keinen Alias ​​haben.</value>
+  </data>
+  <data name="searches_compet_playtime" xml:space="preserve">
+    <value>Competitive Spielzeit</value>
   </data>
 
 </root>
