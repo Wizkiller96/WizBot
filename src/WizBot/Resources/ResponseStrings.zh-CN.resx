@@ -2211,14 +2211,16 @@ Paypal &lt;{1}&gt;
     <value>添加：</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` 添加了`.crad` 和 `.crdm`。
-`2.` 嵌入和图像支持 `.savechat`</value>
+    <value>`1.` 命令别名添加 - `.alias` 和 `.aliases` 命令。
+`2.` 更新支持的语言列表。
+`3.` $rolluo` 现在可以没有参数。</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>修正：</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>没有</value>
+    <value>`1.` 添加了错过的字符串。
+`2.` 修复了一个权限错误。</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>更多信息：http://github.com/Wizkiller96/WizBot</value>
@@ -2230,7 +2232,7 @@ Paypal &lt;{1}&gt;
     <value>没有</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Changelogs | 📅 2017年3月20日</value>
+    <value>WizBot Changelogs | 📅 2017年3月21日</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>动物竞赛已经运行。</value>
@@ -2312,6 +2314,24 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="customreactions_crdm_disabled" xml:space="preserve">
     <value>标识为{0}的自定义响应的响应消息不会作为DM发送。</value>
+  </data>
+  <data name="utility_aliases_none" xml:space="preserve">
+    <value>未找到别名</value>
+  </data>
+  <data name="utility_alias_added" xml:space="preserve">
+    <value>键入{0}现在将是{1}的别名。</value>
+  </data>
+  <data name="utility_alias_list" xml:space="preserve">
+    <value>别名列表</value>
+  </data>
+  <data name="utility_alias_removed" xml:space="preserve">
+    <value>触发器{0}不再有别名。</value>
+  </data>
+  <data name="utility_alias_remove_fail" xml:space="preserve">
+    <value>触发器{0}没有别名。</value>
+  </data>
+  <data name="searches_compet_playtime" xml:space="preserve">
+    <value>竞争游戏时间</value>
   </data>
 
 </root>
