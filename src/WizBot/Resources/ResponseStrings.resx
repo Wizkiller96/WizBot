@@ -2370,6 +2370,9 @@ Fuzzy</comment>
   <data name="customreactions_crdm_disabled" xml:space="preserve">
     <value>Response message for the custom reaction with id {0} won't be sent as a DM.</value>
   </data>
+  <data name="searches_compet_playtime" xml:space="preserve">
+    <value>Competitive playtime</value>
+  </data>
   <data name="utility_aliases_none" xml:space="preserve">
     <value>No alias found</value>
   </data>

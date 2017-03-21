@@ -58,7 +58,7 @@ namespace WizBot.Modules.Searches
                             .AddField(fb => fb.WithName(GetText("compet_loses")).WithValue($"{model.Games.Competitive.lost}").WithIsInline(true))
                             .AddField(fb => fb.WithName(GetText("compet_played")).WithValue($"{model.Games.Competitive.played}").WithIsInline(true))
                             .AddField(fb => fb.WithName(GetText("compet_rank")).WithValue(rank).WithIsInline(true))
-                            .AddField(fb => fb.WithName(GetText("compet_played")).WithValue($"{model.Playtime.competitive}").WithIsInline(true))
+                            .AddField(fb => fb.WithName(GetText("compet_playtime")).WithValue($"{model.Playtime.competitive}").WithIsInline(true))
                             .AddField(fb => fb.WithName(GetText("quick_playtime")).WithValue($"{model.Playtime.quick}").WithIsInline(true))
                             .WithColor(WizBot.OkColor);
                         await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
