@@ -5747,8 +5747,9 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to `1.` Added `.crad` and `.crdm`.
-        ///`2.` Embed and image support for `.savechat`.
+        ///    Looks up a localized string similar to `1.` Command aliasing added - `.alias` and `.aliases` commands.
+        ///`2.` Updated supported language list.
+        ///`3.` `$rolluo` now works without arguments..
         /// </summary>
         public static string utility_changelog_additions_msg {
             get {
@@ -5766,7 +5767,8 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to None.
+        ///    Looks up a localized string similar to `1.` Added a missed string.
+        ///`2.` Fixed a permission bug..
         /// </summary>
         public static string utility_changelog_fixes_msg {
             get {
@@ -5802,7 +5804,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to WizBot Changelogs | 📅 March 20, 2017.
+        ///    Looks up a localized string similar to WizBot Changelogs | 📅 March 21, 2017.
         /// </summary>
         public static string utility_changelog_title_date {
             get {

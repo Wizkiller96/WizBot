@@ -2266,14 +2266,16 @@ Fuzzy</comment>
     <value>Additions:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` Added `.crad` and `.crdm`.
-`2.` Embed and image support for `.savechat`</value>
+    <value>`1.` Command aliasing added - `.alias` and `.aliases` commands.
+`2.` Updated supported language list.
+`3.` `$rolluo` now works without arguments.</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Fixes:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>None</value>
+    <value>`1.` Added a missed string.
+`2.` Fixed a permission bug.</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>More info at: http://github.com/Wizkiller96/WizBot</value>
@@ -2285,7 +2287,7 @@ Fuzzy</comment>
     <value>None</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Changelogs | 📅 March 20, 2017</value>
+    <value>WizBot Changelogs | 📅 March 21, 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>Animal Race is already running.</value>
