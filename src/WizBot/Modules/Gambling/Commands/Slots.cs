@@ -144,11 +144,11 @@ namespace WizBot.Modules.Gambling
                         await ReplyErrorLocalized("min_bet_limit", 1 + CurrencySign).ConfigureAwait(false);
                         return;
                     }
-
-                    if (amount > 9999)
+                    const int maxAmount = 9999;
+                    if (amount > maxAmount)
                     {
-                        GetText("slot_maxbet", 9999 + CurrencySign);
-                        await ReplyErrorLocalized("max_bet_limit", 9999 + CurrencySign).ConfigureAwait(false);
+                        GetText("slot_maxbet", maxAmount + CurrencySign);
+                        await ReplyErrorLocalized("max_bet_limit", maxAmount + CurrencySign).ConfigureAwait(false);
                         return;
                     }
 
