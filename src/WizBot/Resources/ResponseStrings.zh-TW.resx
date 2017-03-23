@@ -2197,7 +2197,7 @@ Paypal &lt;{1}&gt;
     <value>上線時間</value>
   </data>
   <data name="utility_userid" xml:space="preserve">
-    <value>{1} 成員的 {0} 是 {2}</value>
+    <value>{1} 的 {0} 是 {2}</value>
     <comment>Id of the user kwoth#1234 is 123123123123</comment>
   </data>
   <data name="utility_users" xml:space="preserve">
@@ -2315,10 +2315,10 @@ Paypal &lt;{1}&gt;
     <value>標識為{0}的自定義響應的響應消息不會作為DM發送。</value>
   </data>
   <data name="utility_aliases_none" xml:space="preserve">
-    <value>沒有找到別名</value>
+    <value>找不到別名</value>
   </data>
   <data name="utility_alias_added" xml:space="preserve">
-    <value>打字{0}現在將的別名{1}。</value>
+    <value>現在輸入 {0} 會被辨識為 {1} 的別名了。</value>
   </data>
   <data name="utility_alias_list" xml:space="preserve">
     <value>別名列表</value>
