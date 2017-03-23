@@ -2274,64 +2274,64 @@ Paypal &lt;{1}&gt;
     <value>{0}投票总数。</value>
   </data>
   <data name="games_pick_pl" xml:space="preserve">
-    <value>通过键入`{0}pick` 来选择它们</value>
+    <value>用 `{0}pick` 命令來捡起。</value>
   </data>
   <data name="games_pick_sn" xml:space="preserve">
-    <value>通过键入`{0}pick` 来选择它</value>
+    <value>用 `{0}pick` 命令來捡起。</value>
   </data>
   <data name="gambling_no_users_found" xml:space="preserve">
-    <value>未找到用户。</value>
+    <value>此用户不存在。</value>
   </data>
   <data name="gambling_page" xml:space="preserve">
-    <value>页面{0}</value>
+    <value>页面 {0} </value>
   </data>
   <data name="administration_user_muted_time" xml:space="preserve">
-    <value>已将{0}从文字和语音聊天中静音{1}分钟。</value>
+    <value>用户 {0} 被静音和禁言 {1} 分钟。</value>
   </data>
   <data name="administration_must_be_in_voice" xml:space="preserve">
-    <value>您必须位于此服务器上的语音通道中。</value>
+    <value>您必须加入此服务器的语音频道。</value>
   </data>
   <data name="administration_no_vcroles" xml:space="preserve">
-    <value>没有语音通道角色。</value>
+    <value>没有可设置的语音频道身份。</value>
   </data>
   <data name="administration_vcrole_added" xml:space="preserve">
-    <value>加入{0}语音通道的用户将获得{1}角色。</value>
+    <value>新加入{0}语音频道的用户会得到{1}身份。</value>
   </data>
   <data name="administration_vcrole_removed" xml:space="preserve">
-    <value>加入{0}语音通道的用户将不再获得角色。</value>
+    <value>新加入{0}语音频道的用户不会再得到身份。</value>
   </data>
   <data name="administration_vc_role_list" xml:space="preserve">
-    <value>语音通道角色</value>
+    <value>语音频道身份</value>
   </data>
   <data name="customreactions_crad_disabled" xml:space="preserve">
-    <value>触发标识为{0}的自定义响应的消息不会自动删除。</value>
+    <value>触发 ID{0} 定制反应的命令不会被自动删除。</value>
   </data>
   <data name="customreactions_crad_enabled" xml:space="preserve">
-    <value>触发标识为{0}的自定义响应的消息将自动删除。</value>
+    <value>触发 ID{0} 定制反应的命令将会被被自动删除。</value>
   </data>
   <data name="customreactions_crdm_enabled" xml:space="preserve">
-    <value>标识为{0}的自定义响应的响应消息将作为DM发送。</value>
+    <value>ID {0}定制反应的回复会以私聊模式发送。</value>
   </data>
   <data name="customreactions_crdm_disabled" xml:space="preserve">
-    <value>标识为{0}的自定义响应的响应消息不会作为DM发送。</value>
+    <value>ID {0}定制反应的回复不会已私聊模式发送。</value>
   </data>
   <data name="utility_aliases_none" xml:space="preserve">
-    <value>未找到别名</value>
+    <value>没有找到任何命令别名。</value>
   </data>
   <data name="utility_alias_added" xml:space="preserve">
-    <value>键入{0}现在将是{1}的别名。</value>
+    <value>{1} 命令的新别名设置成为 {0}。</value>
   </data>
   <data name="utility_alias_list" xml:space="preserve">
     <value>别名列表</value>
   </data>
   <data name="utility_alias_removed" xml:space="preserve">
-    <value>触发器{0}不再有别名。</value>
+    <value>{0} 命令的别名已经成功删除。</value>
   </data>
   <data name="utility_alias_remove_fail" xml:space="preserve">
-    <value>触发器{0}没有别名。</value>
+    <value>{0} 命令没有已经设置的别名。</value>
   </data>
   <data name="searches_compet_playtime" xml:space="preserve">
-    <value>竞争游戏时间</value>
+    <value>竞争比赛游戏时间。</value>
   </data>
 
 </root>
