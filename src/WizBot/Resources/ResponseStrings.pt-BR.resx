@@ -1018,7 +1018,7 @@ Dura {1} segundos. Não diga a ninguém. Shhh.</value>
     <value>Descrição</value>
   </data>
   <data name="help_donate" xml:space="preserve">
-    <value>Você pode dar suporte ao projeto da WizBot por
+    <value>Você pode dar suporte ao projeto da NadekoBot por
 Patreon &lt;{0}&gt; ou
 Paypal &lt;{1}&gt;
 Não esqueça de deixar seu nome ou id do discord na mensagem.
@@ -2314,22 +2314,22 @@ OwnerID: {2}</value>
     <value>A resposta para a reação personalizada com o id {0} não será enviada como mensagem direta.</value>
   </data>
   <data name="utility_aliases_none" xml:space="preserve">
-    <value>Nenhum alias encontrados</value>
+    <value>Atalho não encontrado</value>
   </data>
   <data name="utility_alias_added" xml:space="preserve">
-    <value>Typing {0} agora será um alias de {1}.</value>
+    <value>Digitar {0} agora será um atalho de {1}.</value>
   </data>
   <data name="utility_alias_list" xml:space="preserve">
-    <value>Lista de aliases</value>
+    <value>Lista de atalhos</value>
   </data>
   <data name="utility_alias_removed" xml:space="preserve">
-    <value>Gatilho {0} já não tem um apelido.</value>
+    <value>Comando {0} não possui mais um atalho.</value>
   </data>
   <data name="utility_alias_remove_fail" xml:space="preserve">
-    <value>Gatilho {0} não tem um apelido.</value>
+    <value>Comando {0} não possui um atalho.</value>
   </data>
   <data name="searches_compet_playtime" xml:space="preserve">
-    <value>playtime competitiva</value>
+    <value>Tempo de jogo competitivo</value>
   </data>
 
 </root>
