@@ -1121,7 +1121,7 @@ Paypal &lt;{1}&gt;
     <value>Второе число должно быть больше первого.</value>
   </data>
   <data name="gambling_changes_of_heart" xml:space="preserve">
-    <value>Смены чувств</value>
+    <value>Изменения в чувствах</value>
   </data>
   <data name="gambling_claimed_by" xml:space="preserve">
     <value>Является мужем</value>
@@ -1384,10 +1384,10 @@ Fuzzy</comment>
     <value>Песня завершилась.</value>
   </data>
   <data name="music_fp_disabled" xml:space="preserve">
-    <value>Отключено справедливое воспроизведение.</value>
+    <value>Отключено честное воспроизведение.</value>
   </data>
   <data name="music_fp_enabled" xml:space="preserve">
-    <value>Включено справедливое воспроизведение.</value>
+    <value>Включено честное воспроизведение.</value>
   </data>
   <data name="music_from_position" xml:space="preserve">
     <value>С момента</value>
@@ -1450,7 +1450,7 @@ Fuzzy</comment>
     <value>Не удалось удалить плейлист. Он либо не существует, либо Вы не его автор.</value>
   </data>
   <data name="music_playlist_id_not_found" xml:space="preserve">
-    <value>Плейлист с таким ID не существует.</value>
+    <value>Плейлист с таким номером не существует.</value>
   </data>
   <data name="music_playlist_queue_complete" xml:space="preserve">
     <value>Добавление плейлиста в очередь завершено.</value>
@@ -1554,14 +1554,14 @@ Fuzzy</comment>
     <value>Включено использование ВСЕХ МОДУЛЕЙ для пользователя {0}.</value>
   </data>
   <data name="permissions_blacklisted" xml:space="preserve">
-    <value>Добавлено {0} в чёрный список c ID {1}</value>
+    <value>{0} добавлено в чёрный список под номером {1}</value>
     <comment>Il ne s&apos;agit pas d&apos;un ban mais d&apos;une blacklist interdisant l&apos;utilisateur d&apos;utiliser le bot.</comment>
   </data>
   <data name="permissions_cmdcd_add" xml:space="preserve">
     <value>У команды {0} теперь есть время перезарядки {1}c</value>
   </data>
   <data name="permissions_cmdcd_cleared" xml:space="preserve">
-    <value>У команды {0} больше нет времени перезарядки и все существующие времена перезадки были сброшены.</value>
+    <value>У команды {0} больше нет времени перезарядки и все существующие перезарядки были сброшены.</value>
   </data>
   <data name="permissions_cmdcd_none" xml:space="preserve">
     <value>У команды не установлено время перезарядки.</value>
@@ -1651,7 +1651,7 @@ Fuzzy</comment>
     <value>Включено использование {0} {1} для данного сервера.</value>
   </data>
   <data name="permissions_unblacklisted" xml:space="preserve">
-    <value>{0} с ID {1} убраны из черного списка.</value>
+    <value>{0} с номером {1} убраны из черного списка.</value>
   </data>
   <data name="permissions_uneditable" xml:space="preserve">
     <value>нередактируемое</value>
@@ -2066,7 +2066,7 @@ Fuzzy</comment>
   <data name="utility_listservers" xml:space="preserve">
     <value>Имя: {0}
 Участники: {1}
-IDВладельца: {2}</value>
+ID Владельца: {2}</value>
   </data>
   <data name="utility_listservers_none" xml:space="preserve">
     <value>На этой странице не найдено серверов.</value>
@@ -2228,7 +2228,7 @@ IDВладельца: {2}</value>
     <value>Время работы</value>
   </data>
   <data name="utility_userid" xml:space="preserve">
-    <value>{} пользователя {1} — {2}</value>
+    <value>{0} пользователя {1} — {2}</value>
     <comment>Id of the user kwoth#1234 is 123123123123</comment>
   </data>
   <data name="utility_users" xml:space="preserve">
@@ -2335,22 +2335,22 @@ IDВладельца: {2}</value>
     <value>Роли голосовых каналов</value>
   </data>
   <data name="customreactions_crad_disabled" xml:space="preserve">
-    <value>Сообщение, инициирующее настраеваемую реакцию с ИД {0}, не будет автоматически удалено.</value>
+    <value>Сообщение, инициирующее настраиваемую реакцию с номером {0}, не будет автоматически удалено.</value>
   </data>
   <data name="customreactions_crad_enabled" xml:space="preserve">
-    <value>Сообщение, инициирующее настраеваемую реакцию с ИД {0}, будет автоматически удалено.</value>
+    <value>Сообщение, инициирующее настраеваемую реакцию с номером {0}, будет автоматически удалено.</value>
   </data>
   <data name="customreactions_crdm_enabled" xml:space="preserve">
-    <value>Ответное сообщение для настраиваемой реакцией с ИД {0} будет отправлено в ЛС.</value>
+    <value>Ответное сообщение для настраиваемой реакцией с номером {0} будет отправлено в ЛС.</value>
   </data>
   <data name="customreactions_crdm_disabled" xml:space="preserve">
-    <value>Ответное сообщение для настраеваемой реакцией с ИД {0} не будет отправлено в ЛС.</value>
+    <value>Ответное сообщение для настраеваемой реакцией с номером {0} не будет отправлено в ЛС.</value>
   </data>
   <data name="utility_aliases_none" xml:space="preserve">
     <value>Альтернативная команда не найдена</value>
   </data>
   <data name="utility_alias_added" xml:space="preserve">
-    <value>{0} будет теперь альтернативной командой для {1}.</value>
+    <value>{0} теперь будет альтернативной командой для {1}.</value>
   </data>
   <data name="utility_alias_list" xml:space="preserve">
     <value>Список альтернативных команд</value>
