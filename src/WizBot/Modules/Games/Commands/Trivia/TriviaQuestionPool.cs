@@ -52,8 +52,8 @@ namespace WizBot.Modules.Games.Trivia
                 return new TriviaQuestion("Who's That Pokémon?",
                     map[num].ToTitleCase(),
                     "Pokemon",
-                    $@"http://server.wizkiller96network.com/images/pokemon/shadows/{num}.png",
-                    $@"http://server.wizkiller96network.com/images/pokemon/real/{num}.png");
+                    $@"http://wizbot-db.wizkiller96network.com/images/pokemon/shadows/{num}.png",
+                    $@"http://wizbot-db.wizkiller96network.com/images/pokemon/real/{num}.png");
             }
             TriviaQuestion randomQuestion;
             while (exclude.Contains(randomQuestion = pool[rng.Next(0, pool.Length)])) ;
