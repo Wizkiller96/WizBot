@@ -203,7 +203,7 @@ namespace WizBot.Modules.Permissions
         [RequireContext(ContextType.Guild)]
         public async Task ListPerms(int page = 1)
         {
-            if (page < 1 || page > 4)
+            if (page < 1)
                 return;
 
             PermissionCache permCache;
