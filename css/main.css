@@ -1,0 +1,43 @@
+/* WizBot Website CSS Sheet */
+/* By: Wizkiller96 */
+/* Website: http://wizkiller96network.com */
+
+/* Main Background */
+
+.wb-background {
+  /* background-image:url('./images/background1.jpg');
+  background-attachment:fixed;
+  background-position:center center; */
+  background-color:rgb(10, 10, 10);
+}
+
+/* Panel Transparency */
+
+.panel-transparent {
+  background:rgba(34, 34, 34, 0.9);
+}
+
+/* Content Area Panel */
+
+.content-area{
+  margin:80px auto;
+  width: 60%;
+}
+
+/* Changelog Section */
+
+.table-transparent {
+  background-color:rgba(24, 24, 24, 0.7);
+}
+
+.changelog-title {
+  text-align: center;
+}
+
+.changelog-desc {
+  text-align: center;
+}
+
+.img-circle {
+    border-radius: 50%;
+}
