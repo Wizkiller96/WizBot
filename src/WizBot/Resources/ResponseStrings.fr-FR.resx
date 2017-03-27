@@ -537,7 +537,7 @@ Raison: {1}</value>
     <value>Message supprimé dans #{0}</value>
   </data>
   <data name="administration_msg_update" xml:space="preserve">
-    <value>Mise à jour du message dans #{0}</value>
+    <value>Message mis-à-jour dans #{0}</value>
   </data>
   <data name="administration_muted_pl" xml:space="preserve">
     <value>Tous les utilisateurs sont maintenant muets.</value>
@@ -1452,7 +1452,7 @@ La nouvelle valeur de {0} est {1} !</value>
     <comment>context: &quot;removed song #5&quot;</comment>
   </data>
   <data name="music_repeating_cur_song" xml:space="preserve">
-    <value>Répétition de la piste actuelle</value>
+    <value>Répétition de la piste actuelle.</value>
   </data>
   <data name="music_repeating_playlist" xml:space="preserve">
     <value>Liste de lecture en boucle</value>
@@ -1534,7 +1534,7 @@ La nouvelle valeur de {0} est {1} !</value>
     <value>La commande {0} a désormais {1}s de temps de recharge.</value>
   </data>
   <data name="permissions_cmdcd_cleared" xml:space="preserve">
-    <value>La commande {0} n&apos;a pas de temps de recharge et tous les temps de recharge ont été réinitialisés.</value>
+    <value>La commande {0} n&apos;a plus de temps de recharge et tous les temps de recharge ont été réinitialisés.</value>
   </data>
   <data name="permissions_cmdcd_none" xml:space="preserve">
     <value>Aucune commande n&apos;a de temps de recharge.</value>
@@ -1844,7 +1844,7 @@ La nouvelle valeur de {0} est {1} !</value>
     <value>Score:</value>
   </data>
   <data name="searches_search_for" xml:space="preserve">
-    <value>Chercher pour:</value>
+    <value>Recherche pour:</value>
     <comment>recherche plutôt non ?</comment>
   </data>
   <data name="searches_shorten_fail" xml:space="preserve">
@@ -1863,7 +1863,7 @@ La nouvelle valeur de {0} est {1} !</value>
     <value>Statut</value>
   </data>
   <data name="searches_store_url" xml:space="preserve">
-    <value>Url stockée</value>
+    <value>Url du magasin</value>
   </data>
   <data name="searches_streamer_offline" xml:space="preserve">
     <value>Le streamer {0} est hors ligne.</value>
@@ -2048,7 +2048,7 @@ ID du propriétaire: {2}</value>
     <value>Messages</value>
   </data>
   <data name="utility_message_repeater" xml:space="preserve">
-    <value>Répéteur de messages</value>
+    <value>Répétition de messages</value>
   </data>
   <data name="utility_name" xml:space="preserve">
     <value>Nom</value>
