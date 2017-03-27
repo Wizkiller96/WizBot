@@ -176,6 +176,7 @@
   </data>
   <data name="clashofclans_war_created" xml:space="preserve">
     <value>מלחמה נגד {0} נוצרה.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_war_ended" xml:space="preserve">
     <value>המלחמה נגד {0} נגמרה.</value>
@@ -191,18 +192,22 @@
   </data>
   <data name="customreactions_deleted" xml:space="preserve">
     <value>תגובות מתאם נמחקו</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_insuff_perms" xml:space="preserve">
     <value>אין מספיק רשות, מתחייבת בעלות של הבוט בשביל תגובות מתאם גלובליות, ומנהג בשביל תגובות מתאם של הרשת.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_list_all" xml:space="preserve">
     <value>רשימה של כל התגובות מתאם</value>
   </data>
   <data name="customreactions_name" xml:space="preserve">
     <value>תגובות מתאם</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_new_cust_react" xml:space="preserve">
     <value>תגובות מתאם חדשות</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_no_found" xml:space="preserve">
     <value>לא נמצאו תגובות מתאם.</value>
@@ -374,6 +379,7 @@
   </data>
   <data name="administration_deafen" xml:space="preserve">
     <value>החרשה הצליחה.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_deleted_server" xml:space="preserve">
     <value>השרת {0} נמחק</value>
@@ -525,6 +531,7 @@
   </data>
   <data name="administration_moved" xml:space="preserve">
     <value>{0} עבר מ{1} ל{2}.</value>
+    <comment>L&apos;utilisateur n&apos;a pas forcément été déplacé de son plein gré. S&apos;est déplacé - déplacé</comment>
   </data>
   <data name="administration_msg_del" xml:space="preserve">
     <value>הודעה נמחקה ב#{0}</value>
@@ -545,9 +552,11 @@
   </data>
   <data name="administration_mute_role_set" xml:space="preserve">
     <value>תפקיד מושתק חדש נוצר.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_need_admin" xml:space="preserve">
     <value>אני צריך אישור **מנהל** כדי לעשות את זה.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_new_msg" xml:space="preserve">
     <value>הודעה חדשה</value>
@@ -566,6 +575,7 @@
   </data>
   <data name="administration_no_shard_id" xml:space="preserve">
     <value></value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="administration_old_msg" xml:space="preserve">
     <value>הודעה ישנה</value>
@@ -686,6 +696,7 @@
   </data>
   <data name="administration_self_assign_no_excl" xml:space="preserve">
     <value></value>
+    <comment>Je ne pense pas que ce soit la bonne traduction.. self-assignable role serait plutôt rôle auto-attribuable</comment>
   </data>
   <data name="administration_self_assign_perms" xml:space="preserve">
     <value></value>
@@ -713,6 +724,7 @@
   </data>
   <data name="administration_set_game" xml:space="preserve">
     <value>משחק חדש נוצר.</value>
+    <comment>Pour &quot;set&quot;, je pense que défini irait mieux que &quot;en service&quot;</comment>
   </data>
   <data name="administration_set_stream" xml:space="preserve">
     <value></value>
@@ -722,9 +734,11 @@
   </data>
   <data name="administration_shard_reconnected" xml:space="preserve">
     <value></value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="administration_shard_reconnecting" xml:space="preserve">
     <value></value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="administration_shutting_down" xml:space="preserve">
     <value>קורס</value>
@@ -820,6 +834,7 @@
   </data>
   <data name="administration_voice_chan_created" xml:space="preserve">
     <value>ערוץ קול הוצר</value>
+    <comment>Should say &quot;Voice Channel Created&quot;</comment>
   </data>
   <data name="administration_voice_chan_destroyed" xml:space="preserve">
     <value>ערוץ קול מושמד</value>
@@ -998,7 +1013,7 @@
     <value>תאור</value>
   </data>
   <data name="help_donate" xml:space="preserve">
-    <value>אתה יכול למתוח את הנאדקובוט פרוייקט על Patreon &lt;{0}&gt; או Paypal &lt;{1}&gt;
+    <value>אתה יכול למתוח את וויזבוט פרוייקט על Patreon &lt;{0}&gt; או Paypal &lt;{1}&gt;
 אל תשכח להשאיר את השם של הדיסקורד שלך או הזהוי בהודעה.
 
 **תודה** ♥️</value>
@@ -1097,6 +1112,9 @@
   <data name="gambling_likes" xml:space="preserve">
     <value>מחבב</value>
   </data>
+  <data name="gambling_nobody" xml:space="preserve">
+    <value>אף אחד</value>
+  </data>
   <data name="gambling_price" xml:space="preserve">
     <value>מחיר</value>
   </data>
@@ -1131,6 +1149,9 @@
     <value>אתה גירשת וואיפו שאוהבת אותך. אתה מפלצת חסרת לב.
 {0} קיבל {1} כפיצוי.</value>
   </data>
+  <data name="gambling_waifu_divorced_notlike" xml:space="preserve">
+    <value>אתה גירשת וואיפו שלא מחבבת אותך. אתה קיבלת {0} בחזרה.</value>
+  </data>
   <data name="gambling_waifu_egomaniac" xml:space="preserve">
     <value>אתה לא יכול להגדיר זיקה לעצמך, אתה אגומניאק.</value>
   </data>
@@ -1152,12 +1173,6 @@
   </data>
   <data name="gambling_waifu_recent_divorce" xml:space="preserve">
     <value>אתה התגרשת לא מזמן. אתה צריך לחכות {0} שעות ו{1} דקות כדי להתגרש עוד פעם.</value>
-  </data>
-  <data name="gambling_nobody" xml:space="preserve">
-    <value>אף אחד</value>
-  </data>
-  <data name="gambling_waifu_divorced_notlike" xml:space="preserve">
-    <value>אתה גירשת וואיפו שלא מחבבת אותך. אתה קיבלת {0} בחזרה.</value>
   </data>
   <data name="games_8ball" xml:space="preserve">
     <value>8כדור</value>
@@ -1210,9 +1225,6 @@
   <data name="games_submissions_closed" xml:space="preserve">
     <value>ההגשות סגורות</value>
   </data>
-  <data name="gambling_animal_race_already_started" xml:space="preserve">
-    <value>מרוץ חיות כבר התחיל.</value>
-  </data>
   <data name="gambling_total_average" xml:space="preserve">
     <value>סה&quot;כ: {0} ממוצע: {1}</value>
   </data>
@@ -1227,6 +1239,7 @@
   </data>
   <data name="games_curgen_disabled" xml:space="preserve">
     <value>דור המטבע מופעל על הערוץ הזה.</value>
+    <comment>Currency =/= current !!! Il s&apos;agit de monnaie. Par example: Euro is a currency. US Dollar also is. Sur Public WizBot, il s&apos;agit des fleurs :)</comment>
   </data>
   <data name="games_curgen_enabled" xml:space="preserve">
     <value>דור המטבע מכובה על הערוץ הזה.</value>
@@ -1341,9 +1354,6 @@
   </data>
   <data name="music_dir_queue_complete" xml:space="preserve">
     <value>תור מנחה מושלם.</value>
-  </data>
-  <data name="music_fairplay" xml:space="preserve">
-    <value>לנגןהוגן</value>
   </data>
   <data name="music_finished_song" xml:space="preserve">
     <value>שיר הסיים</value>
@@ -1516,6 +1526,7 @@
   </data>
   <data name="permissions_blacklisted" xml:space="preserve">
     <value></value>
+    <comment>Il ne s&apos;agit pas d&apos;un ban mais d&apos;une blacklist interdisant l&apos;utilisateur d&apos;utiliser le bot.</comment>
   </data>
   <data name="permissions_cmdcd_add" xml:space="preserve">
     <value></value>
@@ -1705,6 +1716,7 @@
   </data>
   <data name="searches_dropped" xml:space="preserve">
     <value></value>
+    <comment>droppped as in, &quot;stopped watching&quot; referring to shows/anime</comment>
   </data>
   <data name="searches_episodes" xml:space="preserve">
     <value></value>
@@ -1799,6 +1811,7 @@
   </data>
   <data name="searches_plan_to_watch" xml:space="preserve">
     <value>מתקבן לראות</value>
+    <comment>Je ne pense pas que le sens de la traduction soit le bon.</comment>
   </data>
   <data name="searches_platform" xml:space="preserve">
     <value>פלטפורמה</value>
@@ -1817,6 +1830,7 @@
   </data>
   <data name="searches_quick_playtime" xml:space="preserve">
     <value></value>
+    <comment>Is this supposed to be Overwatch Quick Play stats?</comment>
   </data>
   <data name="searches_quick_wins" xml:space="preserve">
     <value>ניצחונות מהירים</value>
@@ -1829,6 +1843,7 @@
   </data>
   <data name="searches_search_for" xml:space="preserve">
     <value>חיפוש של:</value>
+    <comment>recherche plutôt non ?</comment>
   </data>
   <data name="searches_shorten_fail" xml:space="preserve">
     <value>קיצר שורת הקישור נחשל</value>
@@ -2050,6 +2065,7 @@
   </data>
   <data name="utility_no_shards_on_page" xml:space="preserve">
     <value></value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="utility_no_topic_set" xml:space="preserve">
     <value></value>
@@ -2143,12 +2159,15 @@
   </data>
   <data name="utility_shard" xml:space="preserve">
     <value></value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="utility_shard_stats" xml:space="preserve">
     <value></value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="utility_shard_stats_txt" xml:space="preserve">
     <value></value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="utility_showemojis" xml:space="preserve">
     <value></value>
@@ -2178,6 +2197,36 @@
   <data name="utility_voice_channels" xml:space="preserve">
     <value></value>
   </data>
+  <data name="utility_changelog_additions" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="utility_changelog_additions_msg" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="utility_changelog_fixes" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="utility_changelog_fixes_msg" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="utility_changelog_footer" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="utility_changelog_removals" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="utility_changelog_removals_msg" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="utility_changelog_title_date" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="gambling_animal_race_already_started" xml:space="preserve">
+    <value>מרוץ חיות כבר התחיל.</value>
+  </data>
+  <data name="music_fairplay" xml:space="preserve">
+    <value>לנגןהוגן</value>
+  </data>
   <data name="gambling_animal_race_already_in" xml:space="preserve">
     <value>אתה כבר חלק מהמרוץ הזה.</value>
   </data>
@@ -2198,7 +2247,6 @@
   </data>
   <data name="games_poll_voted" xml:space="preserve">
     <value>{0} הצביע.</value>
-    <comment>Kwoth voted.</comment>
   </data>
   <data name="games_poll_vote_private" xml:space="preserve">
     <value></value>
@@ -2224,13 +2272,13 @@
   <data name="gambling_page" xml:space="preserve">
     <value>דף {0}</value>
   </data>
+  <data name="administration_user_muted_time" xml:space="preserve">
+    <value></value>
+  </data>
   <data name="administration_must_be_in_voice" xml:space="preserve">
     <value>אתה חייב להיות בערוץ קול.</value>
   </data>
   <data name="administration_no_vcroles" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="administration_user_muted_time" xml:space="preserve">
     <value></value>
   </data>
   <data name="administration_vcrole_added" xml:space="preserve">
@@ -2248,10 +2296,10 @@
   <data name="customreactions_crad_enabled" xml:space="preserve">
     <value></value>
   </data>
-  <data name="customreactions_crdm_disabled" xml:space="preserve">
+  <data name="customreactions_crdm_enabled" xml:space="preserve">
     <value></value>
   </data>
-  <data name="customreactions_crdm_enabled" xml:space="preserve">
+  <data name="customreactions_crdm_disabled" xml:space="preserve">
     <value></value>
   </data>
   <data name="utility_aliases_none" xml:space="preserve">
