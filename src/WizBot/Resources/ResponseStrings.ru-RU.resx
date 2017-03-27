@@ -2341,10 +2341,10 @@ ID Владельца: {2}</value>
     <value>Сообщение, инициирующее настраеваемую реакцию с номером {0}, будет автоматически удалено.</value>
   </data>
   <data name="customreactions_crdm_enabled" xml:space="preserve">
-    <value>Ответное сообщение для настраиваемой реакцией с номером {0} будет отправлено в ЛС.</value>
+    <value>Ответное сообщение для настраиваемой реакции с номером {0} будет отправлено в ЛС.</value>
   </data>
   <data name="customreactions_crdm_disabled" xml:space="preserve">
-    <value>Ответное сообщение для настраеваемой реакцией с номером {0} не будет отправлено в ЛС.</value>
+    <value>Ответное сообщение для настраеваемой реакции с номером {0} не будет отправлено в ЛС.</value>
   </data>
   <data name="utility_aliases_none" xml:space="preserve">
     <value>Альтернативная команда не найдена</value>
