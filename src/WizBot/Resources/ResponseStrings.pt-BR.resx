@@ -580,7 +580,7 @@ Razão: {1}</value>
     <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="administration_old_msg" xml:space="preserve">
-    <value>Mensagem Antiga</value>
+    <value>Mensagem Anterior</value>
   </data>
   <data name="administration_old_nick" xml:space="preserve">
     <value>Apelido Antigo</value>
@@ -1018,7 +1018,7 @@ Dura {1} segundos. Não diga a ninguém. Shhh.</value>
     <value>Descrição</value>
   </data>
   <data name="help_donate" xml:space="preserve">
-    <value>Você pode dar suporte ao projeto da NadekoBot por
+    <value>Você pode dar suporte ao projeto da WizBot por
 Patreon &lt;{0}&gt; ou
 Paypal &lt;{1}&gt;
 Não esqueça de deixar seu nome ou id do discord na mensagem.
@@ -1107,7 +1107,7 @@ Não esqueça de deixar seu nome ou id do discord na mensagem.
     <value>O segundo número deve ser maior que o primeiro.</value>
   </data>
   <data name="gambling_changes_of_heart" xml:space="preserve">
-    <value>Mudanças no Coração</value>
+    <value>Mudanças de ideia</value>
   </data>
   <data name="gambling_claimed_by" xml:space="preserve">
     <value>Reivindicado por</value>
@@ -1848,7 +1848,7 @@ O novo valor de {0} é {1}!</value>
     <value>Pontuação:</value>
   </data>
   <data name="searches_search_for" xml:space="preserve">
-    <value>Busca Por:</value>
+    <value>Buscar Por:</value>
     <comment>recherche plutôt non ?</comment>
   </data>
   <data name="searches_shorten_fail" xml:space="preserve">
@@ -2016,7 +2016,7 @@ O novo valor de {0} é {1}!</value>
     <value>Índice fora de alcance.</value>
   </data>
   <data name="utility_inrole_list" xml:space="preserve">
-    <value>Aqui está uma lista de usuários nestes cargos:</value>
+    <value>Lista de usuários no cargo {0}</value>
   </data>
   <data name="utility_inrole_not_allowed" xml:space="preserve">
     <value>você não tem permissão de usar esse comando em cargos com muitos usuários para prevenir abuso.</value>
@@ -2106,7 +2106,7 @@ OwnerID: {2}</value>
     <value>Citação adicionada</value>
   </data>
   <data name="utility_quote_deleted" xml:space="preserve">
-    <value>Uma citação aleatória foi removida.</value>
+    <value>Citação #{0} Deletada.</value>
   </data>
   <data name="utility_region" xml:space="preserve">
     <value>Região</value>
