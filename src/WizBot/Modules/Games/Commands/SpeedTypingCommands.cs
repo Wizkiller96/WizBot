@@ -151,7 +151,7 @@ namespace WizBot.Modules.Games
         {
             public static List<TypingArticle> TypingArticles { get; } = new List<TypingArticle>();
 
-            private const string _typingArticlesPath = "data/typing_articles.json";
+            private const string _typingArticlesPath = "data/typing_articles2.json";
 
             static SpeedTypingCommands()
             {
