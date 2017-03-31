@@ -119,6 +119,7 @@
   </resheader>
   <data name="clashofclans_base_already_claimed" xml:space="preserve">
     <value>Bu köy daha önceden alınmış veya yok edilmiş.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_base_already_destroyed" xml:space="preserve">
     <value>Bu köy önceden yok edilmiş.</value>
@@ -131,6 +132,7 @@
   </data>
   <data name="clashofclans_base_unclaimed" xml:space="preserve">
     <value>{0},{2} karşı savaşta #{1} üssünü alamadı.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_claimed_base" xml:space="preserve">
     <value>{0}, {2} ile savaşan bir #{1} temel hak iddia etti.</value>
@@ -158,6 +160,7 @@
   </data>
   <data name="clashofclans_not_claimed" xml:space="preserve">
     <value>Alınmamış</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_not_partic" xml:space="preserve">
     <value>Bu savaşa katılmadınız.</value>
@@ -200,6 +203,7 @@
   </data>
   <data name="customreactions_list_all" xml:space="preserve">
     <value>Tüm özel reaksiyonların listesi</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_name" xml:space="preserve">
     <value>Özel reaksiyonlar</value>
@@ -241,6 +245,7 @@
   </data>
   <data name="pokemon_already_full" xml:space="preserve">
     <value>{0} zaten canı dolu.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="pokemon_already_that_type" xml:space="preserve">
     <value>Senin türün zaten {0}</value>
@@ -281,6 +286,7 @@
   </data>
   <data name="pokemon_revive_yourself" xml:space="preserve">
     <value>{0} ile kendinizi yeniden canlandırdınız.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="pokemon_settype_success" xml:space="preserve">
     <value>{1} için türünüz {0} olarak değiştirildi.</value>
@@ -600,15 +606,18 @@ Sebep: {1}</value>
   </data>
   <data name="administration_prot_enable" xml:space="preserve">
     <value>{0} Etkin</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_prot_error" xml:space="preserve">
     <value>Hata. Rolleri Yönet iznine ihtiyacım var</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_prot_none" xml:space="preserve">
     <value>Hiçbir koruma etkin değil.</value>
   </data>
   <data name="administration_raid_cnt" xml:space="preserve">
     <value>Kullanıcı eşiği {0} ile {1} arasında olmalıdır.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_raid_stats" xml:space="preserve">
     <value>{0} veya daha fazla kullanıcı {1} saniye içinde katılırsa, onlara {2} uygulayacağım.</value>
@@ -630,6 +639,7 @@ Sebep: {1}</value>
   </data>
   <data name="administration_rc_params" xml:space="preserve">
     <value>Belirtilen parametreler geçersiz.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_rc_perms" xml:space="preserve">
     <value>Renk geçersiz veya yetersiz izinler nedeniyle hata oluştu.</value>
@@ -682,12 +692,15 @@ Sebep: {1}</value>
   </data>
   <data name="administration_self_assign_already_excl" xml:space="preserve">
     <value>{0} özel otomatik atanmış role zaten sahibidir.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_self_assign_excl" xml:space="preserve">
     <value>Otomatik atanmış roller artık özel!</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_self_assign_list" xml:space="preserve">
     <value>{0} otomatik atanabilir rolü var</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_self_assign_not" xml:space="preserve">
     <value>Bu rol otomatik atanabilir değil.</value>
@@ -704,6 +717,7 @@ Sebep: {1}</value>
   </data>
   <data name="administration_self_assign_rem" xml:space="preserve">
     <value>{0}, otomatik atanabilir roller listesinden kaldırıldı.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_self_assign_remove" xml:space="preserve">
     <value>Artık {0} rolü yok.</value>
@@ -794,9 +808,11 @@ __Yok Sayılan Kanallar__:  {2}</value>
   </data>
   <data name="administration_user_chat_mute" xml:space="preserve">
     <value>{0} sohbet **edemiyor**.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_chat_unmute" xml:space="preserve">
     <value>{0} sohbet **edebiliyor**.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_joined" xml:space="preserve">
     <value>Kullanıcı katıldı</value>
@@ -806,6 +822,7 @@ __Yok Sayılan Kanallar__:  {2}</value>
   </data>
   <data name="administration_user_muted" xml:space="preserve">
     <value>{0}, metin ve sesli sohbetde **sessiz durumda**.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_role_add" xml:space="preserve">
     <value>Kullanıcının rolü eklendi</value>
@@ -818,6 +835,7 @@ __Yok Sayılan Kanallar__:  {2}</value>
   </data>
   <data name="administration_user_unmuted" xml:space="preserve">
     <value>{0}, metin ve sesli sohbetde **sessiz durumda değil**.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_vjoined" xml:space="preserve">
     <value>{0}, {1} sesli kanalına katıldı.</value>
@@ -830,9 +848,11 @@ __Yok Sayılan Kanallar__:  {2}</value>
   </data>
   <data name="administration_user_voice_mute" xml:space="preserve">
     <value>{0} **susturuldu**.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_voice_unmute" xml:space="preserve">
     <value>{0} **susturulması kaldırıldı**.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_voice_chan_created" xml:space="preserve">
     <value>Ses kanalı oluşturuldu</value>
@@ -895,6 +915,7 @@ Sebep: {1}</value>
   </data>
   <data name="gambling_deck_reshuffled" xml:space="preserve">
     <value>Deste yeniden düzenlendi.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_flipped" xml:space="preserve">
     <value>{0} çevirdi.</value>
@@ -908,12 +929,14 @@ Sebep: {1}</value>
   </data>
   <data name="gambling_flowerreaction_desc" xml:space="preserve">
     <value>{1} almak için bu mesaja {0} reaksiyon ekleyin. </value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_flowerreaction_footer" xml:space="preserve">
     <value>Bu etkinlik {0} saat boyunca aktiftir.</value>
   </data>
   <data name="gambling_flowerreaction_title" xml:space="preserve">
     <value>Çiçek reaksiyonu olayı başladı!</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_gifted" xml:space="preserve">
     <value>{0}&apos;dan {1}&apos;e hediye verdi</value>
@@ -931,6 +954,7 @@ Sebep: {1}</value>
   </data>
   <data name="gambling_mass_award" xml:space="preserve">
     <value>{2} rolünden {1} kullanıcıya {0} kazandı.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_max_bet_limit" xml:space="preserve">
     <value>{0}&apos;dan fazla bahse giremezsiniz.</value>
@@ -949,6 +973,7 @@ Sebep: {1}</value>
   </data>
   <data name="gambling_roll" xml:space="preserve">
     <value>{0} çevrildi.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_slot_bet" xml:space="preserve">
     <value>Bahis</value>
@@ -995,6 +1020,7 @@ Sebep: {1}</value>
   </data>
   <data name="help_channel_permission" xml:space="preserve">
     <value>{0} kanal izni gerektiriyor.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="help_cmdlist_donate" xml:space="preserve">
     <value>Projeyi patreonda destekleyebilirsin:&lt;{0}&gt; ya da paypalde:&lt;{1}&gt;</value>
@@ -1152,6 +1178,7 @@ Sebep: {1}</value>
   <data name="gambling_waifu_divorced_like" xml:space="preserve">
     <value>Seni seven bir talipden boşandın. Seni kalpsiz canavar.
 {0} tazminat olarak {1} aldı.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_waifu_divorced_notlike" xml:space="preserve">
     <value>Senden hoşlanmayan bir talib den boşandın. {0} geri aldınız.</value>
@@ -1254,6 +1281,7 @@ Sebep: {1}</value>
   </data>
   <data name="games_curgen_sn" xml:space="preserve">
     <value>Rastgele bir {0} ortaya çıktı!</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="games_failed_loading_question" xml:space="preserve">
     <value>Bir soru yüklenemedi.</value>
@@ -1266,6 +1294,7 @@ Sebep: {1}</value>
   </data>
   <data name="games_hangman_running" xml:space="preserve">
     <value>Adam asmaca oyunu zaten bu kanalda çalışıyor.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="games_hangman_start_errored" xml:space="preserve">
     <value>Adam asmaca başlatılırken hata verdi.</value>
@@ -1301,6 +1330,7 @@ Sebep: {1}</value>
   </data>
   <data name="games_trivia_none" xml:space="preserve">
     <value>Bu sunucuda hiçbir oyuncak çalışmıyor.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="games_trivia_points" xml:space="preserve">
     <value>{0}&apos;da {1} puan var</value>
@@ -1349,9 +1379,11 @@ Sebep: {1}</value>
   </data>
   <data name="music_autoplay_disabled" xml:space="preserve">
     <value>Otomatik Oynatıcı devre dışı.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_autoplay_enabled" xml:space="preserve">
     <value>Otomatik Oynatıcı etkin.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_defvol_set" xml:space="preserve">
     <value>Varsayılan müzik sesi {0}%</value>
@@ -1376,6 +1408,7 @@ Sebep: {1}</value>
   </data>
   <data name="music_invalid_input" xml:space="preserve">
     <value>Geçersiz giriş.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_max_playtime_none" xml:space="preserve">
     <value>Şu anda maksimum oynatıcı zaman limiti yok.</value>
@@ -1403,6 +1436,7 @@ Sebep: {1}</value>
   </data>
   <data name="music_no_search_results" xml:space="preserve">
     <value>Aranılan sonuç bulunamadı.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_paused" xml:space="preserve">
     <value>Müzik oynatıcısı duraklatıldı.</value>
@@ -1421,6 +1455,7 @@ Sebep: {1}</value>
   </data>
   <data name="music_playlist_deleted" xml:space="preserve">
     <value>Çalma listesi silindi.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_playlist_delete_fail" xml:space="preserve">
     <value>Bu çalma listesini silmek başarısız oldu.Ya mevcut değil yada oluşturan siz değilsiniz.</value>
@@ -1448,6 +1483,7 @@ Sebep: {1}</value>
   </data>
   <data name="music_queue_full" xml:space="preserve">
     <value>Sıra {0}/{0} dolu.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_removed_song" xml:space="preserve">
     <value>Şu numaradaki şarkı kaldırıldı.</value>
@@ -1733,9 +1769,11 @@ Sebep: {1}</value>
   </data>
   <data name="searches_failed_finding_anime" xml:space="preserve">
     <value>Animu bulunamadı.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_failed_finding_manga" xml:space="preserve">
     <value>Mango bulunamadı.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_genres" xml:space="preserve">
     <value>Türler</value>
@@ -1760,6 +1798,7 @@ Sebep: {1}</value>
   </data>
   <data name="searches_invalid_lang" xml:space="preserve">
     <value>Geçersiz kaynak veya hedef dili.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_jokes_not_loaded" xml:space="preserve">
     <value>Şakalar yüklenmedi.</value>
@@ -1803,9 +1842,11 @@ Sebep: {1}</value>
   </data>
   <data name="searches_osu_api_key" xml:space="preserve">
     <value>Bir osu! API anahtarı gerekiyor.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_osu_failed" xml:space="preserve">
     <value>Başarısız osu! imza.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_over_x" xml:space="preserve">
     <value>{0} resimler üzerinde bulundu. Rastgele {0} gösteriliyor.</value>
@@ -1822,6 +1863,7 @@ Sebep: {1}</value>
   </data>
   <data name="searches_pokemon_ability_none" xml:space="preserve">
     <value>Hiçbir yetenek bulunamadı.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_pokemon_none" xml:space="preserve">
     <value>Pokemon bulunamadı.</value>
@@ -1851,6 +1893,7 @@ Sebep: {1}</value>
   </data>
   <data name="searches_shorten_fail" xml:space="preserve">
     <value>URL kısaltılamadı..</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_short_url" xml:space="preserve">
     <value>Kısa URL</value>
@@ -1929,9 +1972,11 @@ Sebep: {1}</value>
   </data>
   <data name="searches_wikia_input_error" xml:space="preserve">
     <value>Lütfen bir hedef wikia girip ardından arama sorgusu yapın.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_wiki_page_not_found" xml:space="preserve">
     <value>Sayfa bulunamadı.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_wind_speed" xml:space="preserve">
     <value>Rüzgar hızı</value>
@@ -2090,6 +2135,7 @@ Kurucu Kimliği: {2}</value>
   </data>
   <data name="utility_quotes_deleted" xml:space="preserve">
     <value>Tüm teklifleri {0} anahtar kelime ile silindi.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="utility_quotes_page" xml:space="preserve">
     <value>Alıntılar Sayfa {0}</value>
@@ -2123,6 +2169,7 @@ Kurucu Kimliği: {2}</value>
   </data>
   <data name="utility_repeater" xml:space="preserve">
     <value>{0} her {1} gün(de) {2} saat(te) {3} dakika(da) bir tekrarlanıyor.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="utility_repeaters_list" xml:space="preserve">
     <value>Tekrarlayıcıların listesi</value>
@@ -2207,16 +2254,17 @@ Kurucu Kimliği: {2}</value>
     <value>İlaveler:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` Komut ekleme eklendi - `.alias` ve `.aliases` komutları.
-`2.` Desteklenen dil listesi güncellendi.
-`3.` `$rolluo` artık argüman olmadan çalışıyor.</value>
+    <value>`1.` Uyarı komutları eklendi.
+`2.` Kısır emir eklendi.
+`3.` `-cmds` artık çok uzun mesajlar halinde bölünür.
+`4.` Endonezya dili eklendi.
+`5.` Başlangıç komutları eklendi.</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Düzeltmeler:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>`1.` Cevapsız bir dize eklendi.
-`2.` Bir izin hatası düzeltildi.</value>
+    <value>Yok</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>Daha fazla bilgi için: http://github.com/Wizkiller96/WizBot</value>
@@ -2228,10 +2276,11 @@ Kurucu Kimliği: {2}</value>
     <value>Yok</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Değişiklikler | 📅 21 Mart 2017</value>
+    <value>WizBot Değişiklikler | 📅 31 Mart 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>Hayvan yarışı zaten çalışıyor.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_fairplay" xml:space="preserve">
     <value>adil oynatıcı</value>
@@ -2328,6 +2377,81 @@ Kurucu Kimliği: {2}</value>
   </data>
   <data name="searches_compet_playtime" xml:space="preserve">
     <value>Rekabetçi oyun süresi</value>
+  </data>
+  <data name="administration_moderator" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_page" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_reason" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_user_warned" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warned_on" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warned_on_by" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warnings_cleared" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warnings_none" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warnlog_for" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warn_cleared_by" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warn_punish_list" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warn_punish_rem" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warn_punish_set" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_unbanned_user" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_user_not_found" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_user_warned_and_punished" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warnpl_none" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_channel" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_command_text" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_scadd" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_scrm" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_scrm_fail" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_server" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_startcmdlist_none" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_startcmds_cleared" xml:space="preserve">
+    <value></value>
   </data>
 
 </root>
