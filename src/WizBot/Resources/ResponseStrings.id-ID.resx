@@ -119,6 +119,7 @@
   </resheader>
   <data name="clashofclans_base_already_claimed" xml:space="preserve">
     <value>Markas itu telah diklaim atau dihancurkan.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_base_already_destroyed" xml:space="preserve">
     <value>Markas itu telah dihancurkan.</value>
@@ -131,6 +132,7 @@
   </data>
   <data name="clashofclans_base_unclaimed" xml:space="preserve">
     <value>{0} telah **MEMBATALKAN KLAIM** markas #{1} di sebuah perang melawan {2}</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_claimed_base" xml:space="preserve">
     <value>{0} Telah mengklaim sebuah markas #{1} di perang melawan {2}</value>
@@ -158,6 +160,7 @@
   </data>
   <data name="clashofclans_not_claimed" xml:space="preserve">
     <value>Tidak diklaim.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_not_partic" xml:space="preserve">
     <value>Anda tidak berpartisipasi di perang itu.</value>
@@ -176,6 +179,7 @@
   </data>
   <data name="clashofclans_war_created" xml:space="preserve">
     <value>Telah membuat perang melawan {0}.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_war_ended" xml:space="preserve">
     <value>Perang melawan {0} telah selesai.</value>
@@ -191,18 +195,23 @@
   </data>
   <data name="customreactions_deleted" xml:space="preserve">
     <value>Reaksi kustom telah dihapus.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_insuff_perms" xml:space="preserve">
     <value>Izin anda kurang. Dibutuhkan kepemilikan Bot untuk reaksi kostum global, dan Administrator untuk reaksi kustom server.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_list_all" xml:space="preserve">
     <value>Daftar dari semua reaksi kustom.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_name" xml:space="preserve">
     <value>Reaksi kustom.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_new_cust_react" xml:space="preserve">
     <value>Reaksi kustom baru</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_no_found" xml:space="preserve">
     <value>Tidak ada reaksi kustom yang ditemukan.</value>
@@ -236,6 +245,7 @@
   </data>
   <data name="pokemon_already_full" xml:space="preserve">
     <value>{0} sudah memiliki HP penuh.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="pokemon_already_that_type" xml:space="preserve">
     <value>Tipe anda sudah {0}</value>
@@ -260,7 +270,7 @@
     <value>{0} memiliki {1} HP tersisa.</value>
   </data>
   <data name="pokemon_invalid_move" xml:space="preserve">
-    <value>Anda tidak bisa menggunakan {0}. Ketik '{1}ml' untuk melihat daftar gerakan yang anda bisa gunakan.</value>
+    <value>Anda tidak bisa menggunakan {0}. Ketik &apos;{1}ml&apos; untuk melihat daftar gerakan yang anda bisa gunakan.</value>
   </data>
   <data name="pokemon_moves" xml:space="preserve">
     <value>Daftar gerakan untuk tipe {0}</value>
@@ -276,6 +286,7 @@
   </data>
   <data name="pokemon_revive_yourself" xml:space="preserve">
     <value>Anda menghidupkan diri sendiri dengan satu {0}</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="pokemon_settype_success" xml:space="preserve">
     <value>Tipe anda telah diganti ke {0} untuk sebuah {1}</value>
@@ -315,11 +326,11 @@
 Alasan: {1}</value>
   </data>
   <data name="administration_banned_pl" xml:space="preserve">
-    <value>'banned'</value>
+    <value>&apos;banned&apos;</value>
     <comment>PLURAL</comment>
   </data>
   <data name="administration_banned_user" xml:space="preserve">
-    <value>Pengguna 'banned'</value>
+    <value>Pengguna &apos;banned&apos;</value>
   </data>
   <data name="administration_bot_name" xml:space="preserve">
     <value>Nama bot diubah ke {0}</value>
@@ -328,20 +339,19 @@ Alasan: {1}</value>
     <value>Status bot diubah ke {0}.</value>
   </data>
   <data name="administration_byedel_off" xml:space="preserve">
-    <value>Penghapusan otomatis dari pesan 'bye' telah dimatikan.</value>
+    <value>Penghapusan otomatis dari pesan &apos;bye&apos; telah dimatikan.</value>
   </data>
   <data name="administration_byedel_on" xml:space="preserve">
-    <value>Pesan 'bye' akan dihapus setelah {0} detik.</value>
+    <value>Pesan &apos;bye&apos; akan dihapus setelah {0} detik.</value>
   </data>
   <data name="administration_byemsg_cur" xml:space="preserve">
-    <value>Pesan 'bye' sekarang: {0}</value>
+    <value>Pesan &apos;bye&apos; sekarang: {0}</value>
   </data>
   <data name="administration_byemsg_enable" xml:space="preserve">
-    <value>Nyalakan pesan 'bye' dengan menggunakan {0}</value>
+    <value>Nyalakan pesan &apos;bye&apos; dengan menggunakan {0}</value>
   </data>
   <data name="administration_byemsg_new" xml:space="preserve">
     <value>Pesan tinggal baru tersetel.</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="administration_bye_off" xml:space="preserve">
     <value>Pengumuman tinggal dimatikan.</value>
@@ -375,6 +385,7 @@ Alasan: {1}</value>
   </data>
   <data name="administration_deafen" xml:space="preserve">
     <value>Penulian berhasil.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_deleted_server" xml:space="preserve">
     <value>Server {0} dihapus</value>
@@ -526,6 +537,7 @@ Alasan: {1}</value>
   </data>
   <data name="administration_moved" xml:space="preserve">
     <value>{0} telah pindah dari {1} ke {2}</value>
+    <comment>L&apos;utilisateur n&apos;a pas forcément été déplacé de son plein gré. S&apos;est déplacé - déplacé</comment>
   </data>
   <data name="administration_msg_del" xml:space="preserve">
     <value>Pesan dihapus dalam #{0}</value>
@@ -539,16 +551,18 @@ Alasan: {1}</value>
   </data>
   <data name="administration_muted_sn" xml:space="preserve">
     <value>Didiamkan.</value>
-    <comment>singular "User muted."</comment>
+    <comment>singular &quot;User muted.&quot;</comment>
   </data>
   <data name="administration_mute_error" xml:space="preserve">
     <value>Kemungkinan besar saya tidak punya izin yang dibutuhkan untuk itu.</value>
   </data>
   <data name="administration_mute_role_set" xml:space="preserve">
     <value>Peran diam baru telah diset</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_need_admin" xml:space="preserve">
     <value>Saya butuh izin **Administrasi** untuk melakukan itu.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_new_msg" xml:space="preserve">
     <value>Pesan baru</value>
@@ -567,6 +581,7 @@ Alasan: {1}</value>
   </data>
   <data name="administration_no_shard_id" xml:space="preserve">
     <value>Tidak ada potongan dengan ID itu ditemukan.</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="administration_old_msg" xml:space="preserve">
     <value>Pesan lama</value>
@@ -591,15 +606,18 @@ Alasan: {1}</value>
   </data>
   <data name="administration_prot_enable" xml:space="preserve">
     <value>{0} diaktifkan</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_prot_error" xml:space="preserve">
     <value>Error. Saya butuh izin ManageRoles</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_prot_none" xml:space="preserve">
     <value>Tidak ada perlindungan diaktifkan.</value>
   </data>
   <data name="administration_raid_cnt" xml:space="preserve">
     <value>Batas user harus diantara {0} dan {1}.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_raid_stats" xml:space="preserve">
     <value>Jika {0} atau lebih user bergabung dalam {1} detik, Saya akan {2} mereka.</value>
@@ -621,6 +639,7 @@ Alasan: {1}</value>
   </data>
   <data name="administration_rc_params" xml:space="preserve">
     <value>Parameter yang ditentukan tidak valid.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_rc_perms" xml:space="preserve">
     <value>Error disebabkan warna tidak valid atau tidak punya izin.</value>
@@ -673,12 +692,15 @@ Alasan: {1}</value>
   </data>
   <data name="administration_self_assign_already_excl" xml:space="preserve">
     <value>Anda sudah memiliki {0} peran eksklusif yang ditetapkan sendiri.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_self_assign_excl" xml:space="preserve">
     <value>Peran yang ditetapkan sendiri sekarang eksklusif!</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_self_assign_list" xml:space="preserve">
     <value>Ada {0} peran yang ditetapkan sendiri</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_self_assign_not" xml:space="preserve">
     <value>Peran itu tidak dapat ditetapkan sendiri.</value>
@@ -688,12 +710,14 @@ Alasan: {1}</value>
   </data>
   <data name="administration_self_assign_no_excl" xml:space="preserve">
     <value>Peran yang ditetapkan sendiri sekarang tidak eksklusif!</value>
+    <comment>Je ne pense pas que ce soit la bonne traduction.. self-assignable role serait plutôt rôle auto-attribuable</comment>
   </data>
   <data name="administration_self_assign_perms" xml:space="preserve">
-    <value>Saya tidak dapat menambahkan peran itu pada anda. 'Saya tidak dapat menambahkan peran kepada pemilik atau peran lain yang lebih tinggi daripada peran saya di dalam hierarki peran.'</value>
+    <value>Saya tidak dapat menambahkan peran itu pada anda. &apos;Saya tidak dapat menambahkan peran kepada pemilik atau peran lain yang lebih tinggi daripada peran saya di dalam hierarki peran.&apos;</value>
   </data>
   <data name="administration_self_assign_rem" xml:space="preserve">
     <value>{0} telah dihapus dari daftar peran yang dapat ditetapkan sendiri.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_self_assign_remove" xml:space="preserve">
     <value>Anda tidak lagi memiliki peran {0}.</value>
@@ -715,6 +739,7 @@ Alasan: {1}</value>
   </data>
   <data name="administration_set_game" xml:space="preserve">
     <value>Permainan baru telah diset!</value>
+    <comment>Pour &quot;set&quot;, je pense que défini irait mieux que &quot;en service&quot;</comment>
   </data>
   <data name="administration_set_stream" xml:space="preserve">
     <value>Aliran baru telah diset!</value>
@@ -724,9 +749,11 @@ Alasan: {1}</value>
   </data>
   <data name="administration_shard_reconnected" xml:space="preserve">
     <value>Potongan {0} telah tersambung ulang.</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="administration_shard_reconnecting" xml:space="preserve">
     <value>Potongan {0} sedang menyambung ulang.</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="administration_shutting_down" xml:space="preserve">
     <value>Mematikan</value>
@@ -781,9 +808,11 @@ Alasan: {1}</value>
   </data>
   <data name="administration_user_chat_mute" xml:space="preserve">
     <value>{0} telah **didiamkan** dari chatting.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_chat_unmute" xml:space="preserve">
     <value>{0} telah **tidak didiamkan** dari chatting.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_joined" xml:space="preserve">
     <value>User bergabung</value>
@@ -793,6 +822,7 @@ Alasan: {1}</value>
   </data>
   <data name="administration_user_muted" xml:space="preserve">
     <value>{0} telah **didiamkan** dari chat teks dan suara</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_role_add" xml:space="preserve">
     <value>Peran pengguna telah ditambahkan</value>
@@ -805,6 +835,7 @@ Alasan: {1}</value>
   </data>
   <data name="administration_user_unmuted" xml:space="preserve">
     <value>{0} telah **tidak didiamkan** dari chat teks dan suara.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_vjoined" xml:space="preserve">
     <value>{0} telah bergabung di channel suara  {1} .</value>
@@ -817,12 +848,15 @@ Alasan: {1}</value>
   </data>
   <data name="administration_user_voice_mute" xml:space="preserve">
     <value>{0} telah **dibisukan**</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_voice_unmute" xml:space="preserve">
     <value>{0} telah di **voice non-bisukan**.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_voice_chan_created" xml:space="preserve">
     <value>Channel suara telah dibuat</value>
+    <comment>Should say &quot;Voice Channel Created&quot;</comment>
   </data>
   <data name="administration_voice_chan_destroyed" xml:space="preserve">
     <value>Channel suara telah dihancurkan</value>
@@ -834,7 +868,7 @@ Alasan: {1}</value>
     <value>Fitur suara + teks diaktfikan.</value>
   </data>
   <data name="administration_vt_exit" xml:space="preserve">
-    <value>Saya tidak memiliki izin **mengatur peran** dan/atau **mengatur channel**, jadi saya tidak dapat menjalankan 'suara+teks' di server {0}.</value>
+    <value>Saya tidak memiliki izin **mengatur peran** dan/atau **mengatur channel**, jadi saya tidak dapat menjalankan &apos;suara+teks&apos; di server {0}.</value>
   </data>
   <data name="administration_vt_no_admin" xml:space="preserve">
     <value>Anda mengaktifkan/menonaktifkan fitur ini dan **Saya tidak punya izin administrator**. Ini dapat menyebabkan beberapa isu, dan anda harus membersihkan sendiri channel-channel teks setelahnya.</value>
@@ -881,6 +915,7 @@ Alasan: {1}</value>
   </data>
   <data name="gambling_deck_reshuffled" xml:space="preserve">
     <value>Deck telah dikocok ulang.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_flipped" xml:space="preserve">
     <value>Terlemparkan {0}.</value>
@@ -894,12 +929,14 @@ Alasan: {1}</value>
   </data>
   <data name="gambling_flowerreaction_desc" xml:space="preserve">
     <value>Tambahkan reaksi {0} pada pesan ini untuk mendapatkan {1}␣</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_flowerreaction_footer" xml:space="preserve">
     <value>Event ini akan aktif selama {0} jam.</value>
   </data>
   <data name="gambling_flowerreaction_title" xml:space="preserve">
     <value>Event reaksi bunga telah dimulai!</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_gifted" xml:space="preserve">
     <value>Telah menghadiahi {0} ke {1}</value>
@@ -917,6 +954,7 @@ Alasan: {1}</value>
   </data>
   <data name="gambling_mass_award" xml:space="preserve">
     <value>Diserahkan {0} sampai {1} pengguna dari peran {2}.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_max_bet_limit" xml:space="preserve">
     <value>Anda tidak bisa bertaruh lebih dari {0}</value>
@@ -935,6 +973,7 @@ Alasan: {1}</value>
   </data>
   <data name="gambling_roll" xml:space="preserve">
     <value>Kamu mendapatkan {0}.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_slot_bet" xml:space="preserve">
     <value>Bertaruh</value>
@@ -981,6 +1020,7 @@ Berlangsung selama {1} detik. Jangan bilang bilang. Shhh.</value>
   </data>
   <data name="help_channel_permission" xml:space="preserve">
     <value>Memerlukan izin {0} channel.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="help_cmdlist_donate" xml:space="preserve">
     <value>Anda dapat mendukung project ini di patreon: &lt;{0}&gt; atau paypal: &lt;{1}&gt;</value>
@@ -992,7 +1032,7 @@ Berlangsung selama {1} detik. Jangan bilang bilang. Shhh.</value>
     <value>Daftar perintah telah dibuat ulang.</value>
   </data>
   <data name="help_commands_instr" xml:space="preserve">
-    <value>Ketik '{0}h CommandName' untuk melihat bantuan untuk perintah tersebut. Contoh '{0}h &gt;8ball'</value>
+    <value>Ketik &apos;{0}h CommandName&apos; untuk melihat bantuan untuk perintah tersebut. Contoh &apos;{0}h &gt;8ball&apos;</value>
   </data>
   <data name="help_command_not_found" xml:space="preserve">
     <value>Saya tidak dapat menemukan perintah itu. Tolong verifikasi perintah itu ada sebelum mencoba lagi.</value>
@@ -1019,7 +1059,7 @@ Jangan lupa untuk meninggalkan nama atau ID Discord anda di dalam pesan.
     <value>Daftar modul</value>
   </data>
   <data name="help_modules_footer" xml:space="preserve">
-    <value>Ketik '{0}cmds ModuleName' untuk mendapatkan daftar perintah di dalam modul tersebut. Contoh '{0}cmds games'</value>
+    <value>Ketik &apos;{0}cmds ModuleName&apos; untuk mendapatkan daftar perintah di dalam modul tersebut. Contoh &apos;{0}cmds games&apos;</value>
   </data>
   <data name="help_module_not_found" xml:space="preserve">
     <value>Modul tersebut tidak ada.</value>
@@ -1102,6 +1142,9 @@ Jangan lupa untuk meninggalkan nama atau ID Discord anda di dalam pesan.
   <data name="gambling_likes" xml:space="preserve">
     <value>Suka</value>
   </data>
+  <data name="gambling_nobody" xml:space="preserve">
+    <value>Tidak seorangpun</value>
+  </data>
   <data name="gambling_price" xml:space="preserve">
     <value>Harga</value>
   </data>
@@ -1135,6 +1178,10 @@ Jangan lupa untuk meninggalkan nama atau ID Discord anda di dalam pesan.
   <data name="gambling_waifu_divorced_like" xml:space="preserve">
     <value>Kamu telah menceraikan waifu yang menyukaimu. Kamu monster tanpa hati.
 {0} menerima {1} sebagai kompensasi.</value>
+    <comment>Fuzzy</comment>
+  </data>
+  <data name="gambling_waifu_divorced_notlike" xml:space="preserve">
+    <value>Anda telah menceraikan waifu yang tidak menyukaimu. Anda menerima {0} kembali.</value>
   </data>
   <data name="gambling_waifu_egomaniac" xml:space="preserve">
     <value>Anda tidak bisa merubah afinitas ke diri sendiri, anda egois.</value>
@@ -1157,12 +1204,6 @@ Nilai {0} sekarang adalah {1}!</value>
   </data>
   <data name="gambling_waifu_recent_divorce" xml:space="preserve">
     <value>Anda baru saja bercerai. Anda harus menunggu {0} jam dan {1} menit untuk bercerai lagi.</value>
-  </data>
-  <data name="gambling_nobody" xml:space="preserve">
-    <value>Tidak seorangpun</value>
-  </data>
-  <data name="gambling_waifu_divorced_notlike" xml:space="preserve">
-    <value>Anda telah menceraikan waifu yang tidak menyukaimu. Anda menerima {0} kembali.</value>
   </data>
   <data name="games_8ball" xml:space="preserve">
     <value>8ball</value>
@@ -1215,9 +1256,6 @@ Nilai {0} sekarang adalah {1}!</value>
   <data name="games_submissions_closed" xml:space="preserve">
     <value>Waktu pengajuan selesai.</value>
   </data>
-  <data name="gambling_animal_race_already_started" xml:space="preserve">
-    <value>Animal Race telah berlangsung.</value>
-  </data>
   <data name="gambling_total_average" xml:space="preserve">
     <value>Total: {0} Rata - rata: {0}</value>
   </data>
@@ -1232,6 +1270,7 @@ Nilai {0} sekarang adalah {1}!</value>
   </data>
   <data name="games_curgen_disabled" xml:space="preserve">
     <value>Pembuatan mata uang telah dinonaktifkan di channel ini.</value>
+    <comment>Currency =/= current !!! Il s&apos;agit de monnaie. Par example: Euro is a currency. US Dollar also is. Sur Public WizBot, il s&apos;agit des fleurs :)</comment>
   </data>
   <data name="games_curgen_enabled" xml:space="preserve">
     <value>Pembuatan mata uang telah diaktifkan di channel ini.</value>
@@ -1242,6 +1281,7 @@ Nilai {0} sekarang adalah {1}!</value>
   </data>
   <data name="games_curgen_sn" xml:space="preserve">
     <value>Sebuah {0} muncul!</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="games_failed_loading_question" xml:space="preserve">
     <value>Gagal memuat pertanyaan</value>
@@ -1254,13 +1294,13 @@ Nilai {0} sekarang adalah {1}!</value>
   </data>
   <data name="games_hangman_running" xml:space="preserve">
     <value>Permainan Hangman telah berlangsung di channel ini</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="games_hangman_start_errored" xml:space="preserve">
     <value>Ada kesalahan saat memulai Hangman</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="games_hangman_types" xml:space="preserve">
-    <value>Daftar dari "{0}hangman" tipe istilah:</value>
+    <value>Daftar dari &quot;{0}hangman&quot; tipe istilah:</value>
   </data>
   <data name="games_leaderboard" xml:space="preserve">
     <value>Leaderboard</value>
@@ -1290,6 +1330,7 @@ Nilai {0} sekarang adalah {1}!</value>
   </data>
   <data name="games_trivia_none" xml:space="preserve">
     <value>Tidak ada trivia yang sedang berlangsung di server ini.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="games_trivia_points" xml:space="preserve">
     <value>{0} memiliki {1} poin</value>
@@ -1320,7 +1361,6 @@ Nilai {0} sekarang adalah {1}!</value>
   </data>
   <data name="games_ttt_matched_three" xml:space="preserve">
     <value>Mendapat tiga.</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="games_ttt_no_moves" xml:space="preserve">
     <value>TIdak ada jalan tersisa!</value>
@@ -1339,18 +1379,17 @@ Nilai {0} sekarang adalah {1}!</value>
   </data>
   <data name="music_autoplay_disabled" xml:space="preserve">
     <value>Autoplay dimatikan.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_autoplay_enabled" xml:space="preserve">
     <value>Autoplay diaktifkan.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_defvol_set" xml:space="preserve">
     <value>Volume awal di set ke {0}%</value>
   </data>
   <data name="music_dir_queue_complete" xml:space="preserve">
     <value>Antrian direktori selesai.</value>
-  </data>
-  <data name="music_fairplay" xml:space="preserve">
-    <value>fairplay</value>
   </data>
   <data name="music_finished_song" xml:space="preserve">
     <value>Lagu selesai</value>
@@ -1369,6 +1408,7 @@ Nilai {0} sekarang adalah {1}!</value>
   </data>
   <data name="music_invalid_input" xml:space="preserve">
     <value>Input tidak valid.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_max_playtime_none" xml:space="preserve">
     <value>Sekarang, waktu bermain maksimal tidak memiliki batas.</value>
@@ -1396,6 +1436,7 @@ Nilai {0} sekarang adalah {1}!</value>
   </data>
   <data name="music_no_search_results" xml:space="preserve">
     <value>Tidak ada hasil pencarian.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_paused" xml:space="preserve">
     <value>Pemutaran musik berhenti sebentar.</value>
@@ -1414,6 +1455,7 @@ Nilai {0} sekarang adalah {1}!</value>
   </data>
   <data name="music_playlist_deleted" xml:space="preserve">
     <value>Playlist dihapus</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_playlist_delete_fail" xml:space="preserve">
     <value>Gagal untuk menghapus playlist. Playlist tidak ditemukan, atau anda bukan pemilik playlist tersebut.</value>
@@ -1441,10 +1483,11 @@ Nilai {0} sekarang adalah {1}!</value>
   </data>
   <data name="music_queue_full" xml:space="preserve">
     <value>Antrian penuh pada {0}/{0}.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_removed_song" xml:space="preserve">
     <value>Menghapus lagu</value>
-    <comment>context: "removed song #5"</comment>
+    <comment>context: &quot;removed song #5&quot;</comment>
   </data>
   <data name="music_repeating_cur_song" xml:space="preserve">
     <value>Mengulang lagu yang diputar saat ini</value>
@@ -1523,6 +1566,7 @@ Nilai {0} sekarang adalah {1}!</value>
   </data>
   <data name="permissions_blacklisted" xml:space="preserve">
     <value>Mendaftarhitamkan {0} dengan ID {1}</value>
+    <comment>Il ne s&apos;agit pas d&apos;un ban mais d&apos;une blacklist interdisant l&apos;utilisateur d&apos;utiliser le bot.</comment>
   </data>
   <data name="permissions_cmdcd_add" xml:space="preserve">
     <value>Perintah {0} sekarang memiliki jeda selama {1} detik.</value>
@@ -1712,6 +1756,7 @@ Nilai {0} sekarang adalah {1}!</value>
   </data>
   <data name="searches_dropped" xml:space="preserve">
     <value>Terjatuh.</value>
+    <comment>droppped as in, &quot;stopped watching&quot; referring to shows/anime</comment>
   </data>
   <data name="searches_episodes" xml:space="preserve">
     <value>Episode</value>
@@ -1724,9 +1769,11 @@ Nilai {0} sekarang adalah {1}!</value>
   </data>
   <data name="searches_failed_finding_anime" xml:space="preserve">
     <value>Gagal menemukan animu tersebut</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_failed_finding_manga" xml:space="preserve">
     <value>Gagal menemukan mango tersebut</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_genres" xml:space="preserve">
     <value>Aliran</value>
@@ -1751,6 +1798,7 @@ Nilai {0} sekarang adalah {1}!</value>
   </data>
   <data name="searches_invalid_lang" xml:space="preserve">
     <value>Kesalahan sumber atau target bahasa.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_jokes_not_loaded" xml:space="preserve">
     <value>Candaan tidak dimuat.</value>
@@ -1763,7 +1811,7 @@ Nilai {0} sekarang adalah {1}!</value>
   </data>
   <data name="searches_list_of_place_tags" xml:space="preserve">
     <value>Daftar dari {0}tempat yang ditandai</value>
-    <comment>Don't translate {0}place</comment>
+    <comment>Don&apos;t translate {0}place</comment>
   </data>
   <data name="searches_location" xml:space="preserve">
     <value>Lokasi</value>
@@ -1794,9 +1842,11 @@ Nilai {0} sekarang adalah {1}!</value>
   </data>
   <data name="searches_osu_api_key" xml:space="preserve">
     <value>Sebuah osu! API key diperlukan.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_osu_failed" xml:space="preserve">
     <value>Gagal mengambil tanda osu!</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_over_x" xml:space="preserve">
     <value>Ditemukan diantara {0} gambar. Memperlihatkan acak {0}.</value>
@@ -1806,12 +1856,14 @@ Nilai {0} sekarang adalah {1}!</value>
   </data>
   <data name="searches_plan_to_watch" xml:space="preserve">
     <value>Rencana untuk menonton</value>
+    <comment>Je ne pense pas que le sens de la traduction soit le bon.</comment>
   </data>
   <data name="searches_platform" xml:space="preserve">
     <value>Peron</value>
   </data>
   <data name="searches_pokemon_ability_none" xml:space="preserve">
     <value>Kemampuan tidak ditemukan.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_pokemon_none" xml:space="preserve">
     <value>Pokemon tidak ditemukan.</value>
@@ -1824,6 +1876,7 @@ Nilai {0} sekarang adalah {1}!</value>
   </data>
   <data name="searches_quick_playtime" xml:space="preserve">
     <value>Waktu bermain cepat</value>
+    <comment>Is this supposed to be Overwatch Quick Play stats?</comment>
   </data>
   <data name="searches_quick_wins" xml:space="preserve">
     <value>Kemenangan cepat</value>
@@ -1836,9 +1889,11 @@ Nilai {0} sekarang adalah {1}!</value>
   </data>
   <data name="searches_search_for" xml:space="preserve">
     <value>Pencarian untuk:</value>
+    <comment>recherche plutôt non ?</comment>
   </data>
   <data name="searches_shorten_fail" xml:space="preserve">
     <value>Gagal untuk mempersingkat url tersebut.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_short_url" xml:space="preserve">
     <value>Url pendek</value>
@@ -1917,9 +1972,11 @@ Nilai {0} sekarang adalah {1}!</value>
   </data>
   <data name="searches_wikia_input_error" xml:space="preserve">
     <value>Harap memasukkan target wikia, diikuti dengan pertanyaan pencarian.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_wiki_page_not_found" xml:space="preserve">
     <value>Halaman tidak ditemukan.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_wind_speed" xml:space="preserve">
     <value>Kecepatan angin</value>
@@ -2057,6 +2114,7 @@ ID Pemilik: {2}</value>
   </data>
   <data name="utility_no_shards_on_page" xml:space="preserve">
     <value>Tidak ada pecahan di halaman ini.</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="utility_no_topic_set" xml:space="preserve">
     <value>Tidak ada topik yang ditentukan</value>
@@ -2077,6 +2135,7 @@ ID Pemilik: {2}</value>
   </data>
   <data name="utility_quotes_deleted" xml:space="preserve">
     <value>Menghapus semua kutipan dengan {0} kata kunci.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="utility_quotes_page" xml:space="preserve">
     <value>Halaman {0} dari kutipan</value>
@@ -2100,7 +2159,7 @@ ID Pemilik: {2}</value>
     <value>Terdaftar pada</value>
   </data>
   <data name="utility_remind" xml:space="preserve">
-    <value>Saya akan mengigatakn {0} untuk {1} dalam {2} '({3:d:M.yyyy.} saat {4:HH:mm}</value>
+    <value>Saya akan mengigatakn {0} untuk {1} dalam {2} &apos;({3:d:M.yyyy.} saat {4:HH:mm}</value>
   </data>
   <data name="utility_remind_invalid_format" xml:space="preserve">
     <value>Bukan format waktu yang benar. Silakan periksa daftar perintah.</value>
@@ -2110,6 +2169,7 @@ ID Pemilik: {2}</value>
   </data>
   <data name="utility_repeater" xml:space="preserve">
     <value>Mengulang {0} setiap {1} hari, {2} jam dan {3} menit.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="utility_repeaters_list" xml:space="preserve">
     <value>Daftar pemutaran.</value>
@@ -2136,7 +2196,7 @@ ID Pemilik: {2}</value>
     <value>Halaman #{0} dari peran untuk {1}</value>
   </data>
   <data name="utility_rrc_no_colors" xml:space="preserve">
-    <value>Tidak ada warna di format benar. Gunakan '#00ff00' sebagai contoh.</value>
+    <value>Tidak ada warna di format benar. Gunakan &apos;#00ff00&apos; sebagai contoh.</value>
   </data>
   <data name="utility_rrc_start" xml:space="preserve">
     <value>Memulai pemutaran di peran {0}.</value>
@@ -2152,12 +2212,15 @@ ID Pemilik: {2}</value>
   </data>
   <data name="utility_shard" xml:space="preserve">
     <value>Pecahan</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="utility_shard_stats" xml:space="preserve">
     <value>Statistik pecahan</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="utility_shard_stats_txt" xml:space="preserve">
     <value>Pecahan **#{0}** sedang di dalam keadaan {1} di {2} server.</value>
+    <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="utility_showemojis" xml:space="preserve">
     <value>**Nama:** {0} **Tautan:** {1}</value>
@@ -2187,6 +2250,41 @@ ID Pemilik: {2}</value>
   <data name="utility_voice_channels" xml:space="preserve">
     <value>Channel suara</value>
   </data>
+  <data name="utility_changelog_additions" xml:space="preserve">
+    <value>Penambahan:</value>
+  </data>
+  <data name="utility_changelog_additions_msg" xml:space="preserve">
+    <value>`1.` Ditambahkan memperingatkan perintah.
+`2.` Ditambahkan perintah unban.
+`3.` The `-cmds` sekarang terbagi menjadi beberapa pesan jika terlalu lama.
+`4.` bahasa Indonesia menambahkan.
+`5.` Ditambahkan perintah startup.</value>
+  </data>
+  <data name="utility_changelog_fixes" xml:space="preserve">
+    <value>Perbaikan:</value>
+  </data>
+  <data name="utility_changelog_fixes_msg" xml:space="preserve">
+    <value>tak satupun</value>
+  </data>
+  <data name="utility_changelog_footer" xml:space="preserve">
+    <value>info lebih lanjut di: http://github.com/Wizkiller96/WizBot</value>
+  </data>
+  <data name="utility_changelog_removals" xml:space="preserve">
+    <value>Penghapusan:</value>
+  </data>
+  <data name="utility_changelog_removals_msg" xml:space="preserve">
+    <value>tak satupun</value>
+  </data>
+  <data name="utility_changelog_title_date" xml:space="preserve">
+    <value>WizBot Changelogs | 📅 31 Maret 2017</value>
+  </data>
+  <data name="gambling_animal_race_already_started" xml:space="preserve">
+    <value>Animal Race telah berlangsung.</value>
+    <comment>Fuzzy</comment>
+  </data>
+  <data name="music_fairplay" xml:space="preserve">
+    <value>fairplay</value>
+  </data>
   <data name="gambling_animal_race_already_in" xml:space="preserve">
     <value>Anda telah bergabung pada perlombaan ini!</value>
   </data>
@@ -2203,11 +2301,10 @@ ID Pemilik: {2}</value>
     <value>📃 {0} telah membuat pemilihan yang memerlukan perhatian anda:</value>
   </data>
   <data name="games_poll_result" xml:space="preserve">
-    <value>'{0}.' {1} dengan {2} suara.</value>
+    <value>&apos;{0}.&apos; {1} dengan {2} suara.</value>
   </data>
   <data name="games_poll_voted" xml:space="preserve">
     <value>{0} memilih.</value>
-    <comment>Kwoth voted.</comment>
   </data>
   <data name="games_poll_vote_private" xml:space="preserve">
     <value>Kirim saya pesan pribadi dengan angka yang sesuai dari jawaban.</value>
@@ -2225,7 +2322,7 @@ ID Pemilik: {2}</value>
     <value>Mengambil barang tersebut dengan mengetik `{0}ambil`</value>
   </data>
   <data name="games_pick_sn" xml:space="preserve">
-    <value>Ambil dengan mengetik '{0}pick'</value>
+    <value>Ambil dengan mengetik &apos;{0}pick&apos;</value>
   </data>
   <data name="gambling_no_users_found" xml:space="preserve">
     <value>Pengguna tidak ditemukan.</value>
@@ -2233,14 +2330,14 @@ ID Pemilik: {2}</value>
   <data name="gambling_page" xml:space="preserve">
     <value>halaman {0}</value>
   </data>
+  <data name="administration_user_muted_time" xml:space="preserve">
+    <value>{0} telah **dibisukan** dari teks dan saluran suara selama {1} menit.</value>
+  </data>
   <data name="administration_must_be_in_voice" xml:space="preserve">
     <value>Anda harus berada pada channel suara di server ini.</value>
   </data>
   <data name="administration_no_vcroles" xml:space="preserve">
     <value>Tidak ada peran untuk saluran suara.</value>
-  </data>
-  <data name="administration_user_muted_time" xml:space="preserve">
-    <value>{0} telah **dibisukan** dari teks dan saluran suara selama {1} menit.</value>
   </data>
   <data name="administration_vcrole_added" xml:space="preserve">
     <value>Pengguna yang bergabung {0} channel suara akan mendapatkan peran {1}.</value>
@@ -2257,11 +2354,11 @@ ID Pemilik: {2}</value>
   <data name="customreactions_crad_enabled" xml:space="preserve">
     <value>Mereaksikan reaksi kustom menggunakan pesan dengan id {0} akan dihapus secara otomatis.</value>
   </data>
-  <data name="customreactions_crdm_disabled" xml:space="preserve">
-    <value>Pesan respon untuk reaksi kustom dengan id {0} tidak akan dikirim sebagai DM.</value>
-  </data>
   <data name="customreactions_crdm_enabled" xml:space="preserve">
     <value>Pesan respon untuk reaksi kustom dengan id {0} akan dikirim sebagai DM.</value>
+  </data>
+  <data name="customreactions_crdm_disabled" xml:space="preserve">
+    <value>Pesan respon untuk reaksi kustom dengan id {0} tidak akan dikirim sebagai DM.</value>
   </data>
   <data name="utility_aliases_none" xml:space="preserve">
     <value>Alias tidak ditemukan</value>
@@ -2281,4 +2378,80 @@ ID Pemilik: {2}</value>
   <data name="searches_compet_playtime" xml:space="preserve">
     <value>Waktu bermain kompetitif</value>
   </data>
+  <data name="administration_moderator" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_page" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_reason" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_user_warned" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warned_on" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warned_on_by" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warnings_cleared" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warnings_none" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warnlog_for" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warn_cleared_by" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warn_punish_list" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warn_punish_rem" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warn_punish_set" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_unbanned_user" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_user_not_found" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_user_warned_and_punished" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warnpl_none" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_channel" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_command_text" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_scadd" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_scrm" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_scrm_fail" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_server" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_startcmdlist_none" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_startcmds_cleared" xml:space="preserve">
+    <value></value>
+  </data>
+
 </root>
