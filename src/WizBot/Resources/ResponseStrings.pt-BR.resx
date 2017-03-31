@@ -119,6 +119,7 @@
   </resheader>
   <data name="clashofclans_base_already_claimed" xml:space="preserve">
     <value>Esta base já foi reivindicada ou destruída.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_base_already_destroyed" xml:space="preserve">
     <value>Esta base já está destruída.</value>
@@ -131,6 +132,7 @@
   </data>
   <data name="clashofclans_base_unclaimed" xml:space="preserve">
     <value>{0} **RENUNCIOU** a base #{1} na guerra contra {2}</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_claimed_base" xml:space="preserve">
     <value>{0} reivindicou a base #{1} durante a guerra contra {2}</value>
@@ -159,6 +161,7 @@
   </data>
   <data name="clashofclans_not_claimed" xml:space="preserve">
     <value>não reivindicado</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_not_partic" xml:space="preserve">
     <value>Você não está participando nesta guerra.</value>
@@ -201,6 +204,7 @@
   </data>
   <data name="customreactions_list_all" xml:space="preserve">
     <value>Lista de todas as reações personalizadas</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_name" xml:space="preserve">
     <value>Reações Personalizadas</value>
@@ -242,6 +246,7 @@
   </data>
   <data name="pokemon_already_full" xml:space="preserve">
     <value>{0} já tem HP cheio.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="pokemon_already_that_type" xml:space="preserve">
     <value>Seu tipo já é {0}</value>
@@ -282,6 +287,7 @@
   </data>
   <data name="pokemon_revive_yourself" xml:space="preserve">
     <value>Você reviveu a si mesmo com uma {0}</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="pokemon_settype_success" xml:space="preserve">
     <value>Seu tipo foi mudado para {0} por uma {1}</value>
@@ -602,15 +608,18 @@ Razão: {1}</value>
   </data>
   <data name="administration_prot_enable" xml:space="preserve">
     <value>{0} Ativado</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_prot_error" xml:space="preserve">
     <value>Erro. Preciso da permissão &quot;Gerenciar Cargos&quot;.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_prot_none" xml:space="preserve">
     <value>Nenhuma proteção ativa.</value>
   </data>
   <data name="administration_raid_cnt" xml:space="preserve">
     <value>O limite de usuários deve ser entre {0} e {1}.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_raid_stats" xml:space="preserve">
     <value>Se {0} ou mais usuários entrarem em menos de {1} segundos, {2}.</value>
@@ -633,6 +642,7 @@ Razão: {1}</value>
   </data>
   <data name="administration_rc_params" xml:space="preserve">
     <value>Os parâmetros especificados são inválidos.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_rc_perms" xml:space="preserve">
     <value>Um erro ocorreu devido à cor inválida ou permissões insuficientes.</value>
@@ -685,12 +695,15 @@ Razão: {1}</value>
   </data>
   <data name="administration_self_assign_already_excl" xml:space="preserve">
     <value>Você já possui o cargo auto-atribuível exclusivo {0}.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_self_assign_excl" xml:space="preserve">
     <value>Cargos auto-atribuíveis agora são exclusivos!</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_self_assign_list" xml:space="preserve">
     <value>Existem {0} cargos auto-atribuíveis</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_self_assign_not" xml:space="preserve">
     <value>Esse cargo não é auto-atribuível.</value>
@@ -707,6 +720,7 @@ Razão: {1}</value>
   </data>
   <data name="administration_self_assign_rem" xml:space="preserve">
     <value>{0} foi removido da lista de cargos auto-atribuíveis.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_self_assign_remove" xml:space="preserve">
     <value>Você não possui mais o cargo {0}.</value>
@@ -797,9 +811,11 @@ __Canais Ignorados__: {2}</value>
   </data>
   <data name="administration_user_chat_mute" xml:space="preserve">
     <value>{0} foi **mutado**</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_chat_unmute" xml:space="preserve">
     <value>{0} foi **desmutado**</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_joined" xml:space="preserve">
     <value>Usuário juntou-se</value>
@@ -809,6 +825,7 @@ __Canais Ignorados__: {2}</value>
   </data>
   <data name="administration_user_muted" xml:space="preserve">
     <value>{0} foi **mutado** nos chats de voz e texto.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_role_add" xml:space="preserve">
     <value>Cargo do usuário adicionado</value>
@@ -821,6 +838,7 @@ __Canais Ignorados__: {2}</value>
   </data>
   <data name="administration_user_unmuted" xml:space="preserve">
     <value>{0} foi **desmutado** nos chats de voz e texto.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_vjoined" xml:space="preserve">
     <value>{0} juntou-se ao canal de voz {1}.</value>
@@ -833,9 +851,11 @@ __Canais Ignorados__: {2}</value>
   </data>
   <data name="administration_user_voice_mute" xml:space="preserve">
     <value>{0} foi **mutado por voz**.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_voice_unmute" xml:space="preserve">
     <value>{0} foi **desmutado por voz**.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_voice_chan_created" xml:space="preserve">
     <value>Canal de voz criado</value>
@@ -898,6 +918,7 @@ Motivo: {1}</value>
   </data>
   <data name="gambling_deck_reshuffled" xml:space="preserve">
     <value>Baralho re-embaralhado.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_flipped" xml:space="preserve">
     <value>girou {0}.</value>
@@ -911,12 +932,14 @@ Motivo: {1}</value>
   </data>
   <data name="gambling_flowerreaction_desc" xml:space="preserve">
     <value>Adicione {0} reação a esta mensagem para ganhar {1}</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_flowerreaction_footer" xml:space="preserve">
     <value>Este evento está ativo por até {0} horas.</value>
   </data>
   <data name="gambling_flowerreaction_title" xml:space="preserve">
     <value>Evento de Reação da Flor iniciado!</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_gifted" xml:space="preserve">
     <value>deu {0} de presente para {1}</value>
@@ -934,6 +957,7 @@ Motivo: {1}</value>
   </data>
   <data name="gambling_mass_award" xml:space="preserve">
     <value>Concedeu {0} a {1} usuários do cargo {2}.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_max_bet_limit" xml:space="preserve">
     <value>Você não pode apostar mais que {0}</value>
@@ -952,6 +976,7 @@ Motivo: {1}</value>
   </data>
   <data name="gambling_roll" xml:space="preserve">
     <value>Você rolou {0}.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_slot_bet" xml:space="preserve">
     <value>Aposta</value>
@@ -998,6 +1023,7 @@ Dura {1} segundos. Não diga a ninguém. Shhh.</value>
   </data>
   <data name="help_channel_permission" xml:space="preserve">
     <value>Requer a permissão {0} do canal.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="help_cmdlist_donate" xml:space="preserve">
     <value>Você pode dar suporte ao projeto no Patreon: &lt;{0}&gt; ou Paypal: &lt;{1}&gt;</value>
@@ -1154,6 +1180,7 @@ Não esqueça de deixar seu nome ou id do discord na mensagem.
   <data name="gambling_waifu_divorced_like" xml:space="preserve">
     <value>Você se divorciou de uma waifu que gostava de você. Seu monstro sem coração.
 {0} recebeu {1} como compensação.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_waifu_divorced_notlike" xml:space="preserve">
     <value>Você se divorciou de uma waifu que não gostava de você. Você recebeu {0} de volta.</value>
@@ -1256,6 +1283,7 @@ O novo valor de {0} é {1}!</value>
   </data>
   <data name="games_curgen_sn" xml:space="preserve">
     <value>Um {0} aleatório apareceu! Capture-o digitando `{1}pick`</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="games_failed_loading_question" xml:space="preserve">
     <value>Falha ao carregar a questão.</value>
@@ -1268,6 +1296,7 @@ O novo valor de {0} é {1}!</value>
   </data>
   <data name="games_hangman_running" xml:space="preserve">
     <value>Já existe um Jogo da Forca em andamento neste canal.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="games_hangman_start_errored" xml:space="preserve">
     <value>Erro ao iniciar o Jogo da Forca.</value>
@@ -1303,6 +1332,7 @@ O novo valor de {0} é {1}!</value>
   </data>
   <data name="games_trivia_none" xml:space="preserve">
     <value>Nenhuma trivia está em andamento neste servidor.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="games_trivia_points" xml:space="preserve">
     <value>{0} tem {1} pontos</value>
@@ -1351,9 +1381,11 @@ O novo valor de {0} é {1}!</value>
   </data>
   <data name="music_autoplay_disabled" xml:space="preserve">
     <value>Autoplay desabilitado.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_autoplay_enabled" xml:space="preserve">
     <value>Autoplay habilitado.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_defvol_set" xml:space="preserve">
     <value>Volume padrão definido para {0}%</value>
@@ -1378,6 +1410,7 @@ O novo valor de {0} é {1}!</value>
   </data>
   <data name="music_invalid_input" xml:space="preserve">
     <value>Entrada inválida.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_max_playtime_none" xml:space="preserve">
     <value>Tempo de atividade máximo agora não tem limite.</value>
@@ -1405,6 +1438,7 @@ O novo valor de {0} é {1}!</value>
   </data>
   <data name="music_no_search_results" xml:space="preserve">
     <value>Nenhum resultado para a busca.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_paused" xml:space="preserve">
     <value>Música pausada.</value>
@@ -1423,6 +1457,7 @@ O novo valor de {0} é {1}!</value>
   </data>
   <data name="music_playlist_deleted" xml:space="preserve">
     <value>Playlist deletada.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_playlist_delete_fail" xml:space="preserve">
     <value>Falha ao deletar essa playlist. Ela não existe ou você não é seu o criador.</value>
@@ -1450,6 +1485,7 @@ O novo valor de {0} é {1}!</value>
   </data>
   <data name="music_queue_full" xml:space="preserve">
     <value>A fila está cheia em {0}/{0}</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_removed_song" xml:space="preserve">
     <value>Música removida:</value>
@@ -1735,9 +1771,11 @@ O novo valor de {0} é {1}!</value>
   </data>
   <data name="searches_failed_finding_anime" xml:space="preserve">
     <value>Falha ao encontrar este animu.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_failed_finding_manga" xml:space="preserve">
     <value>Falha ao encontrar este mango.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_genres" xml:space="preserve">
     <value>Gêneros</value>
@@ -1762,6 +1800,7 @@ O novo valor de {0} é {1}!</value>
   </data>
   <data name="searches_invalid_lang" xml:space="preserve">
     <value>Linguagem ou fonte inválida.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_jokes_not_loaded" xml:space="preserve">
     <value>Piadas não carregadas.</value>
@@ -1805,9 +1844,11 @@ O novo valor de {0} é {1}!</value>
   </data>
   <data name="searches_osu_api_key" xml:space="preserve">
     <value>Requer uma API key de osu!</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_osu_failed" xml:space="preserve">
     <value>Falha ao obter a assinatura osu!</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_over_x" xml:space="preserve">
     <value>Cerca de {0} imagens encontradas. Mostrando aleatória {0}.</value>
@@ -1824,6 +1865,7 @@ O novo valor de {0} é {1}!</value>
   </data>
   <data name="searches_pokemon_ability_none" xml:space="preserve">
     <value>Nenhuma habilidade encontrada.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_pokemon_none" xml:space="preserve">
     <value>Nenhum pokemon encontrado.</value>
@@ -1853,6 +1895,7 @@ O novo valor de {0} é {1}!</value>
   </data>
   <data name="searches_shorten_fail" xml:space="preserve">
     <value>Falha ao encurtar esse url.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_short_url" xml:space="preserve">
     <value>Url Curta</value>
@@ -1931,9 +1974,11 @@ O novo valor de {0} é {1}!</value>
   </data>
   <data name="searches_wikia_input_error" xml:space="preserve">
     <value>Por favor, insira a wikia alvo, seguida do que deve ser pesquisado.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_wiki_page_not_found" xml:space="preserve">
     <value>Página não encontrada.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_wind_speed" xml:space="preserve">
     <value>Velocidade do Vento</value>
@@ -2092,6 +2137,7 @@ OwnerID: {2}</value>
   </data>
   <data name="utility_quotes_deleted" xml:space="preserve">
     <value>Todas as citações com a palavra-chave {0} foram deletadas.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="utility_quotes_page" xml:space="preserve">
     <value>Página {0} de citações</value>
@@ -2125,6 +2171,7 @@ OwnerID: {2}</value>
   </data>
   <data name="utility_repeater" xml:space="preserve">
     <value>Repetindo {0} a cada {1} dia(s), {2} hora(s) e {3} minuto(s).</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="utility_repeaters_list" xml:space="preserve">
     <value>Lista de Repetidores</value>
@@ -2209,16 +2256,17 @@ OwnerID: {2}</value>
     <value>Aditivos:</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` Comando aliasing adicionado - `.alias` e `.aliases` comandos.
-`2.` Lista de idiomas suportada atualizada.
-`3.` `$rolluo` agora funciona sem argumentos.</value>
+    <value>`1.` Adicionado comandos de aviso.
+`2.` Adicionado comando unban.
+`3.` O `-cmds` agora se divide em várias mensagens se for muito longo.
+`4.` Língua indonésia acrescentada.
+`5.` Adicionado comandos de inicialização.</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>Conserta:</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>`1.` Adicionado uma string perdida.
-`2.` Corrigido um bug de permissão.</value>
+    <value>Nenhum</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>Mais informações em: http://github.com/Wizkiller96/WizBot</value>
@@ -2230,10 +2278,11 @@ OwnerID: {2}</value>
     <value>Nenhum</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Alterações | 21 de março de 2017</value>
+    <value>WizBot Alterações | 31 de março de 2017</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>A Corrida de Animais já está em andamento</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_fairplay" xml:space="preserve">
     <value>fairplay</value>
@@ -2330,6 +2379,81 @@ OwnerID: {2}</value>
   </data>
   <data name="searches_compet_playtime" xml:space="preserve">
     <value>Tempo de jogo competitivo</value>
+  </data>
+  <data name="administration_moderator" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_page" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_reason" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_user_warned" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warned_on" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warned_on_by" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warnings_cleared" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warnings_none" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warnlog_for" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warn_cleared_by" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warn_punish_list" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warn_punish_rem" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warn_punish_set" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_unbanned_user" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_user_not_found" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_user_warned_and_punished" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warnpl_none" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_channel" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_command_text" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_scadd" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_scrm" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_scrm_fail" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_server" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_startcmdlist_none" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_startcmds_cleared" xml:space="preserve">
+    <value></value>
   </data>
 
 </root>
