@@ -10,6 +10,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Discord.WebSocket;
 using WizBot.Services;
+using WizBot.Services.Database.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace WizBot.Modules.Administration
 {
@@ -31,6 +33,166 @@ namespace WizBot.Modules.Administration
                     _forwardDMs = config.ForwardMessages;
                     _forwardDMsToAllOwners = config.ForwardToAllOwners;
                 }
+
+                var _ = Task.Run(async () =>
+                {
+#if !GLOBAL_WIZBOT
+                    await Task.Delay(2000);
+#else
+                    await Task.Delay(10000);
+#endif
+                    foreach (var cmd in WizBot.BotConfig.StartupCommands)
+                    {
+                        if (cmd.GuildId != null)
+                        {
+                            var guild = WizBot.Client.GetGuild(cmd.GuildId.Value);
+                            var channel = guild?.GetChannel(cmd.ChannelId) as SocketTextChannel;
+                            if (channel == null)
+                                continue;
+
+                            try
+                            {
+                                var msg = await channel.SendMessageAsync(cmd.CommandText).ConfigureAwait(false);
+                                await WizBot.CommandHandler.TryRunCommand(guild, channel, msg).ConfigureAwait(false);
+                                //msg.DeleteAfter(5);
+                            }
+                            catch { }
+                        }
+                    }
+                });
+            }
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [OwnerOnly]
+            public async Task StartupCommandAdd([Remainder] string cmdText)
+            {
+                var guser = ((IGuildUser)Context.User);
+                var cmd = new StartupCommand()
+                {
+                    CommandText = cmdText,
+                    ChannelId = Context.Channel.Id,
+                    ChannelName = Context.Channel.Name,
+                    GuildId = Context.Guild?.Id,
+                    GuildName = Context.Guild?.Name,
+                    VoiceChannelId = guser.VoiceChannel?.Id,
+                    VoiceChannelName = guser.VoiceChannel?.Name,
+                };
+                using (var uow = DbHandler.UnitOfWork())
+                {
+                    uow.BotConfig
+                       .GetOrCreate(set => set.Include(x => x.StartupCommands))
+                       .StartupCommands.Add(cmd);
+                    await uow.CompleteAsync().ConfigureAwait(false);
+                }
+
+                await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
+                    .WithTitle(GetText("scadd"))
+                    .AddField(efb => efb.WithName(GetText("server"))
+                        .WithValue(cmd.GuildId == null ? $"-" : $"{cmd.GuildName}/{cmd.GuildId}").WithIsInline(true))
+                    .AddField(efb => efb.WithName(GetText("channel"))
+                        .WithValue($"{cmd.ChannelName}/{cmd.ChannelId}").WithIsInline(true))
+                    .AddField(efb => efb.WithName(GetText("command_text"))
+                        .WithValue(cmdText).WithIsInline(false)));
+            }
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [OwnerOnly]
+            public async Task StartupCommands(int page = 1)
+            {
+                if (page < 1)
+                    return;
+                page -= 1;
+                IEnumerable<StartupCommand> scmds;
+                using (var uow = DbHandler.UnitOfWork())
+                {
+                    scmds = uow.BotConfig
+                       .GetOrCreate(set => set.Include(x => x.StartupCommands))
+                       .StartupCommands
+                       .OrderBy(x => x.Id)
+                       .ToArray();
+                }
+                scmds = scmds.Skip(page * 5).Take(5);
+                if (!scmds.Any())
+                {
+                    await ReplyErrorLocalized("startcmdlist_none").ConfigureAwait(false);
+                }
+                else
+                {
+                    await Context.Channel.SendConfirmAsync("", string.Join("\n--\n", scmds.Select(x =>
+                    {
+                        string str = Format.Code(GetText("server")) + ": " + (x.GuildId == null ? "-" : x.GuildName + "/" + x.GuildId);
+
+                        str += $@"
+{Format.Code(GetText("channel"))}: {x.ChannelName}/{x.ChannelId}
+{Format.Code(GetText("command_text"))}: {x.CommandText}";
+                        return str;
+                    })), footer: GetText("page", page + 1))
+                         .ConfigureAwait(false);
+                }
+            }
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [OwnerOnly]
+            public async Task Wait(int miliseconds)
+            {
+                if (miliseconds <= 0)
+                    return;
+                Context.Message.DeleteAfter(0);
+                try
+                {
+                    var msg = await Context.Channel.SendConfirmAsync($"⏲ {miliseconds}ms")
+                   .ConfigureAwait(false);
+                    msg.DeleteAfter(miliseconds / 1000);
+                }
+                catch { }
+
+                await Task.Delay(miliseconds);
+            }
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [OwnerOnly]
+            public async Task StartupCommandRemove([Remainder] string cmdText)
+            {
+                StartupCommand cmd;
+                using (var uow = DbHandler.UnitOfWork())
+                {
+                    var cmds = uow.BotConfig
+                       .GetOrCreate(set => set.Include(x => x.StartupCommands))
+                       .StartupCommands;
+                    cmd = cmds
+                       .FirstOrDefault(x => x.CommandText.ToLowerInvariant() == cmdText.ToLowerInvariant());
+
+                    if (cmd != null)
+                    {
+                        cmds.Remove(cmd);
+                        await uow.CompleteAsync().ConfigureAwait(false);
+                    }
+                }
+
+                if (cmd == null)
+                    await ReplyErrorLocalized("scrm_fail").ConfigureAwait(false);
+                else
+                    await ReplyConfirmLocalized("scrm").ConfigureAwait(false);
+            }
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [OwnerOnly]
+            public async Task StartupCommandsClear()
+            {
+                using (var uow = DbHandler.UnitOfWork())
+                {
+                    uow.BotConfig
+                       .GetOrCreate(set => set.Include(x => x.StartupCommands))
+                       .StartupCommands
+                       .Clear();
+                    uow.Complete();
+                }
+
+                await ReplyConfirmLocalized("startcmds_cleared").ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -68,7 +230,7 @@ namespace WizBot.Modules.Administration
 
             }
 
-            public static async Task HandleDmForwarding(SocketMessage msg, List<IDMChannel> ownerChannels)
+            public static async Task HandleDmForwarding(IUserMessage msg, List<IDMChannel> ownerChannels)
             {
                 if (_forwardDMs && ownerChannels.Any())
                 {

@@ -18,11 +18,11 @@ namespace WizBot.Services.Database.Models
 
         public bool RotatingStatuses { get; set; } = false;
         public string RemindMessageFormat { get; set; } = "❗⏰**I've been told to remind you to '%message%' now by %user%.**⏰❗";
-        
+
         //currency
         public string CurrencySign { get; set; } = "🌸";
         public string CurrencyName { get; set; } = "Cherry Blossom";
-        public string CurrencyPluralName { get; set; } = "Cherry Blossom";
+        public string CurrencyPluralName { get; set; } = "Cherry Blossoms";
 
         public int TriviaCurrencyReward { get; set; } = 0;
         public int MinimumBetAmount { get; set; } = 2;
@@ -43,7 +43,7 @@ namespace WizBot.Services.Database.Models
         public HashSet<RaceAnimal> RaceAnimals { get; set; } = new HashSet<RaceAnimal>();
 
         public string DMHelpString { get; set; } = "Type `-h` for help.";
-        public string HelpString { get; set; } = @"To add me to your server, use this link -> `Link Disabled`
+        public string HelpString { get; set; } = @"To add me to your server, use this link -> <https://discordapp.com/oauth2/authorize?client_id=170849867508350977&scope=bot&permissions=66186303>
 You can use `{1}modules` command to see a list of all modules.
 You can use `{1}commands ModuleName`
 (for example `{1}commands Administration`) to see a list of all of the commands in that module.
@@ -51,7 +51,7 @@ For a specific command help, use `{1}h CommandName` (for example {1}h !!q)
 
 
 **LIST OF COMMANDS CAN BE FOUND ON THIS LINK**
-<http://WizBot.readthedocs.io/en/latest/Commands%20List/>
+<http://wizbot.readthedocs.io/en/latest/Commands%20List/>
 
 
 WizBot Support Server: N/A";
@@ -61,9 +61,22 @@ WizBot Support Server: N/A";
         public string OkColor { get; set; } = "71cd40";
         public string ErrorColor { get; set; } = "ee281f";
         public string Locale { get; set; } = null;
+        public List<StartupCommand> StartupCommands { get; set; }
     }
 
-    public class PlayingStatus :DbEntity
+    public class StartupCommand : DbEntity, IIndexed
+    {
+        public int Index { get; set; }
+        public string CommandText { get; set; }
+        public ulong ChannelId { get; set; }
+        public string ChannelName { get; set; }
+        public ulong? GuildId { get; set; }
+        public string GuildName { get; set; }
+        public ulong? VoiceChannelId { get; set; }
+        public string VoiceChannelName { get; set; }
+    }
+
+    public class PlayingStatus : DbEntity
     {
         public string Status { get; set; }
     }
@@ -117,7 +130,7 @@ WizBot Support Server: N/A";
             return ((RaceAnimal)obj).Icon == Icon;
         }
     }
-    
+
     public class ModulePrefix : DbEntity
     {
         public string ModuleName { get; set; }
@@ -130,7 +143,7 @@ WizBot Support Server: N/A";
 
         public override bool Equals(object obj)
         {
-            if(!(obj is ModulePrefix))
+            if (!(obj is ModulePrefix))
                 return base.Equals(obj);
 
             return ((ModulePrefix)obj).ModuleName == ModuleName;

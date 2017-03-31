@@ -232,11 +232,29 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
+        ///    Looks up a localized string similar to Channel.
+        /// </summary>
+        public static string administration_channel {
+            get {
+                return ResourceManager.GetString("administration_channel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///    Looks up a localized string similar to Cleaned up..
         /// </summary>
         public static string administration_cleaned_up {
             get {
                 return ResourceManager.GetString("administration_cleaned_up", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Command Text.
+        /// </summary>
+        public static string administration_command_text {
+            get {
+                return ResourceManager.GetString("administration_command_text", resourceCulture);
             }
         }
         
@@ -1234,6 +1252,33 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
+        ///    Looks up a localized string similar to New startup command added..
+        /// </summary>
+        public static string administration_scadd {
+            get {
+                return ResourceManager.GetString("administration_scadd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Startup command successfully removed..
+        /// </summary>
+        public static string administration_scrm {
+            get {
+                return ResourceManager.GetString("administration_scrm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Startup command not found..
+        /// </summary>
+        public static string administration_scrm_fail {
+            get {
+                return ResourceManager.GetString("administration_scrm_fail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///    Looks up a localized string similar to You already have {0} role..
         /// </summary>
         public static string administration_self_assign_already {
@@ -1329,6 +1374,15 @@ namespace WizBot.Resources {
         public static string administration_self_assign_success {
             get {
                 return ResourceManager.GetString("administration_self_assign_success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Server.
+        /// </summary>
+        public static string administration_server {
+            get {
+                return ResourceManager.GetString("administration_server", resourceCulture);
             }
         }
         
@@ -1483,6 +1537,24 @@ namespace WizBot.Resources {
         public static string administration_spam_stats {
             get {
                 return ResourceManager.GetString("administration_spam_stats", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to No startup commands on this page..
+        /// </summary>
+        public static string administration_startcmdlist_none {
+            get {
+                return ResourceManager.GetString("administration_startcmdlist_none", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Cleared all startup commands..
+        /// </summary>
+        public static string administration_startcmds_cleared {
+            get {
+                return ResourceManager.GetString("administration_startcmds_cleared", resourceCulture);
             }
         }
         
@@ -5900,9 +5972,11 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to `1.` Command aliasing added - `.alias` and `.aliases` commands.
-        ///`2.` Updated supported language list.
-        ///`3.` `$rolluo` now works without arguments..
+        ///    Looks up a localized string similar to `1.` Added warn commands.
+        ///`2.` Added unban command.
+        ///`3.` The `-cmds` now splits into multiple messages if too long.
+        ///`4.` Indonesian language added.
+        ///`5.` Added startup commands..
         /// </summary>
         public static string utility_changelog_additions_msg {
             get {
@@ -5920,8 +5994,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to `1.` Added a missed string.
-        ///`2.` Fixed a permission bug..
+        ///    Looks up a localized string similar to None.
         /// </summary>
         public static string utility_changelog_fixes_msg {
             get {
@@ -5957,7 +6030,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to WizBot Changelogs | 📅 March 21, 2017.
+        ///    Looks up a localized string similar to WizBot Changelogs | 📅 March 31, 2017.
         /// </summary>
         public static string utility_changelog_title_date {
             get {

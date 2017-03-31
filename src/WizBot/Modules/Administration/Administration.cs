@@ -32,7 +32,7 @@ namespace WizBot.Modules.Administration
 
         }
 
-        private static Task DelMsgOnCmd_Handler(SocketUserMessage msg, CommandInfo cmd)
+        private static Task DelMsgOnCmd_Handler(IUserMessage msg, CommandInfo cmd)
         {
             var _ = Task.Run(async () =>
             {
