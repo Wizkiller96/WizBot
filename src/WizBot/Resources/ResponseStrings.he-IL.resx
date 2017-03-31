@@ -119,6 +119,7 @@
   </resheader>
   <data name="clashofclans_base_already_claimed" xml:space="preserve">
     <value>הבסיס הזה נתפס או נהרס.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_base_already_destroyed" xml:space="preserve">
     <value>הבסיס הזה כבר נהרס.</value>
@@ -131,6 +132,7 @@
   </data>
   <data name="clashofclans_base_unclaimed" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_claimed_base" xml:space="preserve">
     <value></value>
@@ -158,6 +160,7 @@
   </data>
   <data name="clashofclans_not_claimed" xml:space="preserve">
     <value>לא תפוס</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_not_partic" xml:space="preserve">
     <value>אתה לא משתתף במלחמה הזאת</value>
@@ -200,6 +203,7 @@
   </data>
   <data name="customreactions_list_all" xml:space="preserve">
     <value>רשימה של כל התגובות מתאם</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_name" xml:space="preserve">
     <value>תגובות מתאם</value>
@@ -241,6 +245,7 @@
   </data>
   <data name="pokemon_already_full" xml:space="preserve">
     <value>{0} כבר בחיים מלאים.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="pokemon_already_that_type" xml:space="preserve">
     <value>הסוג שלך הוא כבר {0}</value>
@@ -281,6 +286,7 @@
   </data>
   <data name="pokemon_revive_yourself" xml:space="preserve">
     <value>החזרתה את אצמך עם {1} אחד.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="pokemon_settype_success" xml:space="preserve">
     <value>הסוג שלך שונה ל{0} בתמורה ל{1}.</value>
@@ -600,15 +606,18 @@
   </data>
   <data name="administration_prot_enable" xml:space="preserve">
     <value>{0} אופשר.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_prot_error" xml:space="preserve">
     <value>שגיאה. אני צריך אישור **ManageRole**</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_prot_none" xml:space="preserve">
     <value>אין הגנות פעילות</value>
   </data>
   <data name="administration_raid_cnt" xml:space="preserve">
     <value>הסף של המשתמש צריך להיות בין {0} ל{1}.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_raid_stats" xml:space="preserve">
     <value>אם {0} או יותר משתמשים יצטרפו בעוד {1} שניות, אני {2} אותם.</value>
@@ -630,6 +639,7 @@
   </data>
   <data name="administration_rc_params" xml:space="preserve">
     <value>הפרמטר המבוקש אינו חוקי.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_rc_perms" xml:space="preserve">
     <value>השגייה התרחשה בגלל צבע לא נכון או חוסר הרשאות.</value>
@@ -681,12 +691,15 @@
   </data>
   <data name="administration_self_assign_already_excl" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_self_assign_excl" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_self_assign_list" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_self_assign_not" xml:space="preserve">
     <value></value>
@@ -703,6 +716,7 @@
   </data>
   <data name="administration_self_assign_rem" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_self_assign_remove" xml:space="preserve">
     <value>אין לך את התפקיד {0}.</value>
@@ -792,9 +806,11 @@
   </data>
   <data name="administration_user_chat_mute" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_chat_unmute" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_joined" xml:space="preserve">
     <value>משתמש הצתרף</value>
@@ -804,6 +820,7 @@
   </data>
   <data name="administration_user_muted" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_role_add" xml:space="preserve">
     <value>התפקיד של המשתמש הוסף.</value>
@@ -816,6 +833,7 @@
   </data>
   <data name="administration_user_unmuted" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_vjoined" xml:space="preserve">
     <value>{0} הצטרף ל{1} ערוץ קול.</value>
@@ -828,9 +846,11 @@
   </data>
   <data name="administration_user_voice_mute" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_voice_unmute" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_voice_chan_created" xml:space="preserve">
     <value>ערוץ קול הוצר</value>
@@ -894,6 +914,7 @@
   </data>
   <data name="gambling_deck_reshuffled" xml:space="preserve">
     <value>חסיפה מעורבבת.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_flipped" xml:space="preserve">
     <value>הפך {0}.</value>
@@ -907,12 +928,14 @@
   </data>
   <data name="gambling_flowerreaction_desc" xml:space="preserve">
     <value>תצרף תגובה {0} להודעה הזאת כדי לקבל {1}.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_flowerreaction_footer" xml:space="preserve">
     <value>האירוע הזה פעיל עד {0} שעות.</value>
   </data>
   <data name="gambling_flowerreaction_title" xml:space="preserve">
     <value>אירוע תגובות הפרח התחיל!</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_gifted" xml:space="preserve">
     <value>נתן מתנה של {0} ל{1}</value>
@@ -930,6 +953,7 @@
   </data>
   <data name="gambling_mass_award" xml:space="preserve">
     <value>הוענק {0} ל {1} למשתמשים מ{2} תפקיד.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_max_bet_limit" xml:space="preserve">
     <value>אתה לא יכול להמר יותר מ-{0}</value>
@@ -948,6 +972,7 @@
   </data>
   <data name="gambling_roll" xml:space="preserve">
     <value>אתה גלגלת {0}.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_slot_bet" xml:space="preserve">
     <value>להמר</value>
@@ -993,6 +1018,7 @@
   </data>
   <data name="help_channel_permission" xml:space="preserve">
     <value>מתחייבת {0} רשות ערוץ.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="help_cmdlist_donate" xml:space="preserve">
     <value>אתה יכול לתמוח בפרוייקט על Patreon: &lt;{0}&gt; או Paypal: &lt;{1}&gt;</value>
@@ -1148,6 +1174,7 @@
   <data name="gambling_waifu_divorced_like" xml:space="preserve">
     <value>אתה גירשת וואיפו שאוהבת אותך. אתה מפלצת חסרת לב.
 {0} קיבל {1} כפיצוי.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_waifu_divorced_notlike" xml:space="preserve">
     <value>אתה גירשת וואיפו שלא מחבבת אותך. אתה קיבלת {0} בחזרה.</value>
@@ -1250,6 +1277,7 @@
   </data>
   <data name="games_curgen_sn" xml:space="preserve">
     <value>מקרי {0} הופיע!</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="games_failed_loading_question" xml:space="preserve">
     <value>נכשל לטעון שאלה.</value>
@@ -1262,6 +1290,7 @@
   </data>
   <data name="games_hangman_running" xml:space="preserve">
     <value>משחק איש תלוי בל פעיל על הערוץ הזה.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="games_hangman_start_errored" xml:space="preserve">
     <value>שגיאה בהתחלה של איש תלוי</value>
@@ -1297,6 +1326,7 @@
   </data>
   <data name="games_trivia_none" xml:space="preserve">
     <value>משחק טריוויה לא פעיל על השרת הזה.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="games_trivia_points" xml:space="preserve">
     <value>{0} יש {1} נקודות</value>
@@ -1345,9 +1375,11 @@
   </data>
   <data name="music_autoplay_disabled" xml:space="preserve">
     <value>הפעלה אוטומטית מכובה.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_autoplay_enabled" xml:space="preserve">
     <value>הפעלה אוטומטית מופעלה.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_defvol_set" xml:space="preserve">
     <value>ווליום ברירת מחדל מכוון ל%{0}</value>
@@ -1372,6 +1404,7 @@
   </data>
   <data name="music_invalid_input" xml:space="preserve">
     <value>קלט לא תקין.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_max_playtime_none" xml:space="preserve">
     <value>מקסימום פלייטיים אין הגבלה עכשיו.</value>
@@ -1399,6 +1432,7 @@
   </data>
   <data name="music_no_search_results" xml:space="preserve">
     <value>אין תוצאות חיפוש</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_paused" xml:space="preserve">
     <value>השמעת מוזיקה נעצרה.</value>
@@ -1417,6 +1451,7 @@
   </data>
   <data name="music_playlist_deleted" xml:space="preserve">
     <value>פלייליסט נמחק.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_playlist_delete_fail" xml:space="preserve">
     <value>נכשל לנסות למחוק אל הפלייליסט הזה. זה אולי לא קיים, או שאתה לא מחברו.</value>
@@ -1444,6 +1479,7 @@
   </data>
   <data name="music_queue_full" xml:space="preserve">
     <value>התור מלא ב{0}/{0}</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_removed_song" xml:space="preserve">
     <value>שיר מחוק</value>
@@ -1729,9 +1765,11 @@
   </data>
   <data name="searches_failed_finding_anime" xml:space="preserve">
     <value>מציאת האנימה נחשל.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_failed_finding_manga" xml:space="preserve">
     <value>מציאת המנגה נחשלה</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_genres" xml:space="preserve">
     <value>ג&apos;אנר</value>
@@ -1756,6 +1794,7 @@
   </data>
   <data name="searches_invalid_lang" xml:space="preserve">
     <value>מקור או שפה לא נכונה.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_jokes_not_loaded" xml:space="preserve">
     <value>בדיחה לא הועלתה.</value>
@@ -1799,9 +1838,11 @@
   </data>
   <data name="searches_osu_api_key" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_osu_failed" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_over_x" xml:space="preserve">
     <value></value>
@@ -1818,6 +1859,7 @@
   </data>
   <data name="searches_pokemon_ability_none" xml:space="preserve">
     <value>יכולת לא נמצאה</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_pokemon_none" xml:space="preserve">
     <value>פוקמון לא נמצא</value>
@@ -1847,6 +1889,7 @@
   </data>
   <data name="searches_shorten_fail" xml:space="preserve">
     <value>קיצר שורת הקישור נחשל</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_short_url" xml:space="preserve">
     <value>קישור קצר</value>
@@ -1925,9 +1968,11 @@
   </data>
   <data name="searches_wikia_input_error" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_wiki_page_not_found" xml:space="preserve">
     <value>העמוד לא נמצא</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_wind_speed" xml:space="preserve">
     <value>מהירות הרוח</value>
@@ -2084,6 +2129,7 @@
   </data>
   <data name="utility_quotes_deleted" xml:space="preserve">
     <value>מחק את כל הציטוטים עם {0} מילות המפתח.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="utility_quotes_page" xml:space="preserve">
     <value>עמוד {0} של ציטוטים.</value>
@@ -2117,6 +2163,7 @@
   </data>
   <data name="utility_repeater" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="utility_repeaters_list" xml:space="preserve">
     <value></value>
@@ -2223,6 +2270,7 @@
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>מרוץ חיות כבר התחיל.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_fairplay" xml:space="preserve">
     <value>לנגןהוגן</value>
@@ -2318,6 +2366,81 @@
     <value></value>
   </data>
   <data name="searches_compet_playtime" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_moderator" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_page" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_reason" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_user_warned" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warned_on" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warned_on_by" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warnings_cleared" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warnings_none" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warnlog_for" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warn_cleared_by" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warn_punish_list" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warn_punish_rem" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warn_punish_set" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_unbanned_user" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_user_not_found" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_user_warned_and_punished" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warnpl_none" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_channel" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_command_text" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_scadd" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_scrm" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_scrm_fail" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_server" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_startcmdlist_none" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_startcmds_cleared" xml:space="preserve">
     <value></value>
   </data>
 
