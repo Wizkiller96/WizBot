@@ -23,6 +23,7 @@ namespace WizBot.Services.Database
         IPokeGameRepository PokeGame { get; }
         IWaifuRepository Waifus { get; }
         IDiscordUserRepository DiscordUsers { get; }
+        IWarningsRepository Warnings { get; }
 
         int Complete();
         Task<int> CompleteAsync();

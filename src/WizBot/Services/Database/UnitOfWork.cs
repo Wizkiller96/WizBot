@@ -54,6 +54,9 @@ namespace WizBot.Services.Database
         private IDiscordUserRepository _discordUsers;
         public IDiscordUserRepository DiscordUsers => _discordUsers ?? (_discordUsers = new DiscordUserRepository(_context));
 
+        private IWarningsRepository _warnings;
+        public IWarningsRepository Warnings => _warnings ?? (_warnings = new WarningsRepository(_context));
+
         public UnitOfWork(WizBotContext context)
         {
             _context = context;
