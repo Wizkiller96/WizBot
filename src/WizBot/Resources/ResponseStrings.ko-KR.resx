@@ -119,6 +119,7 @@
   </resheader>
   <data name="clashofclans_base_already_claimed" xml:space="preserve">
     <value>기지가 이미 요청되었거나 파괴되었습니다.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_base_already_destroyed" xml:space="preserve">
     <value>기지가 이미 파괴되었습니다.</value>
@@ -131,6 +132,7 @@
   </data>
   <data name="clashofclans_base_unclaimed" xml:space="preserve">
     <value>{2} 와의 전쟁에서 {0} 가 #{1} 번 기지를 **요청**하지 못했습니다.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_claimed_base" xml:space="preserve">
     <value>{2} 와의 전쟁에서 #{1} 번 기지를 {0} 가 요청하였습니다.</value>
@@ -158,6 +160,7 @@
   </data>
   <data name="clashofclans_not_claimed" xml:space="preserve">
     <value>요청되지 않았습니다.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_not_partic" xml:space="preserve">
     <value>당신은 이 전쟁에 참여하고 있지 않습니다.</value>
@@ -200,6 +203,7 @@
   </data>
   <data name="customreactions_list_all" xml:space="preserve">
     <value>모든 커스텀 리액션 목록</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_name" xml:space="preserve">
     <value>커스텀 리액션</value>
@@ -241,6 +245,7 @@
   </data>
   <data name="pokemon_already_full" xml:space="preserve">
     <value>{0} 은(는) 이미 최대 체력입니다.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="pokemon_already_that_type" xml:space="preserve">
     <value>당신은 이미 {0} 타입 입니다.</value>
@@ -281,6 +286,7 @@
   </data>
   <data name="pokemon_revive_yourself" xml:space="preserve">
     <value>{0} 을(를) 사용해서 자기자신을 소생시켰습니다.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="pokemon_settype_success" xml:space="preserve">
     <value>당신의 타입이 {0} 에서 {1} 으로 변경되었습니다.</value>
@@ -600,15 +606,18 @@
   </data>
   <data name="administration_prot_enable" xml:space="preserve">
     <value>{0} 가 활성화되었습니다.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_prot_error" xml:space="preserve">
     <value>오류. 관리자 권한이 필요합니다.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_prot_none" xml:space="preserve">
     <value>활성화된 보호기능이 없습니다.</value>
   </data>
   <data name="administration_raid_cnt" xml:space="preserve">
     <value>사용자의 값은 반드시 {0} 과 {1} 사이의 값이여야 합니다.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_raid_stats" xml:space="preserve">
     <value>만약 {0} 명 이상의 사용자가 {1} 초안에 접속한다면 {2} 합니다.</value>
@@ -630,6 +639,7 @@
   </data>
   <data name="administration_rc_params" xml:space="preserve">
     <value>지정된 파라미터가 유효하지 않습니다.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_rc_perms" xml:space="preserve">
     <value>유효하지 않은 색이거나 권한이 부족하여서 오류가 발생했습니다.</value>
@@ -682,12 +692,15 @@
   </data>
   <data name="administration_self_assign_already_excl" xml:space="preserve">
     <value>당신은 이미 독점 자가 배정 역할 {0} 가 있습니다.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_self_assign_excl" xml:space="preserve">
     <value>자가 배정 역할은 이제 하나만 선택 할 수 있습니다!</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_self_assign_list" xml:space="preserve">
     <value>{0} 개의 자가 배정 역할이 있습니다.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_self_assign_not" xml:space="preserve">
     <value>그 역할은 자신이 적용 할 수 없습니다.</value>
@@ -704,6 +717,7 @@
   </data>
   <data name="administration_self_assign_rem" xml:space="preserve">
     <value>{0} 은(는) 자신이 적용 할 수 있는 역할 목록에서 삭제되었습니다.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_self_assign_remove" xml:space="preserve">
     <value>당신은 더 이상 {0} 역할이 아닙니다.</value>
@@ -794,9 +808,11 @@
   </data>
   <data name="administration_user_chat_mute" xml:space="preserve">
     <value>{0} 님이 채팅으로부터 **음소거**되었습니다.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_chat_unmute" xml:space="preserve">
     <value>{0} 님이 채팅으로부터 **음소거 해제**되었습니다.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_joined" xml:space="preserve">
     <value>사용자 입장</value>
@@ -806,6 +822,7 @@
   </data>
   <data name="administration_user_muted" xml:space="preserve">
     <value>{0} 은(는) 텍스트와 음성 채팅으로부터 **차단**되었습니다.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_role_add" xml:space="preserve">
     <value>사용자의 역할이 추가되었습니다.</value>
@@ -818,6 +835,7 @@
   </data>
   <data name="administration_user_unmuted" xml:space="preserve">
     <value>{0} 은(는) 텍스트와 음성 채팅으로부터 **차단해제**되었습니다.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_vjoined" xml:space="preserve">
     <value>{0} 님이 {1} 음성채널에 입장하셨습니다.</value>
@@ -830,9 +848,11 @@
   </data>
   <data name="administration_user_voice_mute" xml:space="preserve">
     <value>{0} 님이 **음성 음소거**되었습니다.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_voice_unmute" xml:space="preserve">
     <value>{0} 님이 **음성 음소거 해제**되었습니다.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_voice_chan_created" xml:space="preserve">
     <value>음성 채널이 생성되었습니다.</value>
@@ -895,6 +915,7 @@
   </data>
   <data name="gambling_deck_reshuffled" xml:space="preserve">
     <value>덱이 섞였습니다.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_flipped" xml:space="preserve">
     <value>동전뒤집기의 결과는 {0}.</value>
@@ -908,12 +929,14 @@
   </data>
   <data name="gambling_flowerreaction_desc" xml:space="preserve">
     <value>{1} 을(를) 받으려면 이 메세지에 {0} 리액션을 추가하세요.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_flowerreaction_footer" xml:space="preserve">
     <value>이 이벤트는 최대 {0} 시간 동안 활성화됩니다.</value>
   </data>
   <data name="gambling_flowerreaction_title" xml:space="preserve">
     <value>플라워 리액션 이벤트가 시작되었습니다.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_gifted" xml:space="preserve">
     <value>님이 {1} 에게 {0} 개를 선물하셨습니다.</value>
@@ -931,6 +954,7 @@
   </data>
   <data name="gambling_mass_award" xml:space="preserve">
     <value>{2} 역할의 {1} 명의 사용자에게 {0} 를 보상하였습니다.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_max_bet_limit" xml:space="preserve">
     <value>{0} 보다 더 배팅 할 수 없습니다.</value>
@@ -949,6 +973,7 @@
   </data>
   <data name="gambling_roll" xml:space="preserve">
     <value>{0} 를 굴렸습니다.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_slot_bet" xml:space="preserve">
     <value>배팅</value>
@@ -995,6 +1020,7 @@
   </data>
   <data name="help_channel_permission" xml:space="preserve">
     <value>{0} 채널의 권한이 필요합니다.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="help_cmdlist_donate" xml:space="preserve">
     <value>Patreon( &lt;0&gt; )이나 Paypal( &lt;1&gt; )을 통해서 프로젝트를 후원 할 수 있습니다.</value>
@@ -1152,6 +1178,7 @@ Discord 닉네임이나 ID를 메시지에 남겨 두는 것을 잊지 마십시
   </data>
   <data name="gambling_waifu_divorced_like" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_waifu_divorced_notlike" xml:space="preserve">
     <value></value>
@@ -1253,6 +1280,7 @@ Discord 닉네임이나 ID를 메시지에 남겨 두는 것을 잊지 마십시
   </data>
   <data name="games_curgen_sn" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="games_failed_loading_question" xml:space="preserve">
     <value></value>
@@ -1265,6 +1293,7 @@ Discord 닉네임이나 ID를 메시지에 남겨 두는 것을 잊지 마십시
   </data>
   <data name="games_hangman_running" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="games_hangman_start_errored" xml:space="preserve">
     <value></value>
@@ -1300,6 +1329,7 @@ Discord 닉네임이나 ID를 메시지에 남겨 두는 것을 잊지 마십시
   </data>
   <data name="games_trivia_none" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="games_trivia_points" xml:space="preserve">
     <value></value>
@@ -1348,9 +1378,11 @@ Discord 닉네임이나 ID를 메시지에 남겨 두는 것을 잊지 마십시
   </data>
   <data name="music_autoplay_disabled" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_autoplay_enabled" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_defvol_set" xml:space="preserve">
     <value></value>
@@ -1375,6 +1407,7 @@ Discord 닉네임이나 ID를 메시지에 남겨 두는 것을 잊지 마십시
   </data>
   <data name="music_invalid_input" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_max_playtime_none" xml:space="preserve">
     <value></value>
@@ -1402,6 +1435,7 @@ Discord 닉네임이나 ID를 메시지에 남겨 두는 것을 잊지 마십시
   </data>
   <data name="music_no_search_results" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_paused" xml:space="preserve">
     <value></value>
@@ -1420,6 +1454,7 @@ Discord 닉네임이나 ID를 메시지에 남겨 두는 것을 잊지 마십시
   </data>
   <data name="music_playlist_deleted" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_playlist_delete_fail" xml:space="preserve">
     <value></value>
@@ -1447,6 +1482,7 @@ Discord 닉네임이나 ID를 메시지에 남겨 두는 것을 잊지 마십시
   </data>
   <data name="music_queue_full" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_removed_song" xml:space="preserve">
     <value></value>
@@ -1732,9 +1768,11 @@ Discord 닉네임이나 ID를 메시지에 남겨 두는 것을 잊지 마십시
   </data>
   <data name="searches_failed_finding_anime" xml:space="preserve">
     <value>애니메이션 검색에 실패했습니다.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_failed_finding_manga" xml:space="preserve">
     <value>만화 검색에 실패했습니다.</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_genres" xml:space="preserve">
     <value>장르</value>
@@ -1759,6 +1797,7 @@ Discord 닉네임이나 ID를 메시지에 남겨 두는 것을 잊지 마십시
   </data>
   <data name="searches_invalid_lang" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_jokes_not_loaded" xml:space="preserve">
     <value></value>
@@ -1802,9 +1841,11 @@ Discord 닉네임이나 ID를 메시지에 남겨 두는 것을 잊지 마십시
   </data>
   <data name="searches_osu_api_key" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_osu_failed" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_over_x" xml:space="preserve">
     <value></value>
@@ -1821,6 +1862,7 @@ Discord 닉네임이나 ID를 메시지에 남겨 두는 것을 잊지 마십시
   </data>
   <data name="searches_pokemon_ability_none" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_pokemon_none" xml:space="preserve">
     <value></value>
@@ -1850,6 +1892,7 @@ Discord 닉네임이나 ID를 메시지에 남겨 두는 것을 잊지 마십시
   </data>
   <data name="searches_shorten_fail" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_short_url" xml:space="preserve">
     <value></value>
@@ -1928,9 +1971,11 @@ Discord 닉네임이나 ID를 메시지에 남겨 두는 것을 잊지 마십시
   </data>
   <data name="searches_wikia_input_error" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_wiki_page_not_found" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_wind_speed" xml:space="preserve">
     <value></value>
@@ -2085,6 +2130,7 @@ Discord 닉네임이나 ID를 메시지에 남겨 두는 것을 잊지 마십시
   </data>
   <data name="utility_quotes_deleted" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="utility_quotes_page" xml:space="preserve">
     <value></value>
@@ -2118,6 +2164,7 @@ Discord 닉네임이나 ID를 메시지에 남겨 두는 것을 잊지 마십시
   </data>
   <data name="utility_repeater" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="utility_repeaters_list" xml:space="preserve">
     <value>반복 메시지 목록</value>
@@ -2224,6 +2271,7 @@ Discord 닉네임이나 ID를 메시지에 남겨 두는 것을 잊지 마십시
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value></value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_fairplay" xml:space="preserve">
     <value></value>
@@ -2320,6 +2368,81 @@ Discord 닉네임이나 ID를 메시지에 남겨 두는 것을 잊지 마십시
   </data>
   <data name="searches_compet_playtime" xml:space="preserve">
     <value>경기한 시간</value>
+  </data>
+  <data name="administration_moderator" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_page" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_reason" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_user_warned" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warned_on" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warned_on_by" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warnings_cleared" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warnings_none" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warnlog_for" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warn_cleared_by" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warn_punish_list" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warn_punish_rem" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warn_punish_set" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_unbanned_user" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_user_not_found" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_user_warned_and_punished" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warnpl_none" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_channel" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_command_text" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_scadd" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_scrm" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_scrm_fail" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_server" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_startcmdlist_none" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_startcmds_cleared" xml:space="preserve">
+    <value></value>
   </data>
 
 </root>
