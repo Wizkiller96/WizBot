@@ -119,6 +119,7 @@
   </resheader>
   <data name="clashofclans_base_already_claimed" xml:space="preserve">
     <value>該基地已被佔領或摧毀。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_base_already_destroyed" xml:space="preserve">
     <value>該基地已摧毀。</value>
@@ -131,6 +132,7 @@
   </data>
   <data name="clashofclans_base_unclaimed" xml:space="preserve">
     <value>{0} 在與 {2} 對戰時 **解放** 基地 #{1}</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_claimed_base" xml:space="preserve">
     <value>{0} 在與 {2} 對戰時 **佔領** 基地 #{1}</value>
@@ -158,6 +160,7 @@
   </data>
   <data name="clashofclans_not_claimed" xml:space="preserve">
     <value>未佔領</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_not_partic" xml:space="preserve">
     <value>您並未参與此戰爭。</value>
@@ -200,6 +203,7 @@
   </data>
   <data name="customreactions_list_all" xml:space="preserve">
     <value>列出所有自訂回應</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="customreactions_name" xml:space="preserve">
     <value>自訂回應</value>
@@ -241,6 +245,7 @@
   </data>
   <data name="pokemon_already_full" xml:space="preserve">
     <value>{0} HP已滿。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="pokemon_already_that_type" xml:space="preserve">
     <value>您的屬性已是 {0}</value>
@@ -281,6 +286,7 @@
   </data>
   <data name="pokemon_revive_yourself" xml:space="preserve">
     <value>您使用了一個 {0} 復活了自己</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="pokemon_settype_success" xml:space="preserve">
     <value>您的屬性已從 {0} 變更成 {1}</value>
@@ -601,15 +607,18 @@
   </data>
   <data name="administration_prot_enable" xml:space="preserve">
     <value>{0} 已啟用。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_prot_error" xml:space="preserve">
     <value>錯誤。我需要此伺服器的 管理身分組 權限</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_prot_none" xml:space="preserve">
     <value>沒有生效中的保護機制</value>
   </data>
   <data name="administration_raid_cnt" xml:space="preserve">
     <value>成員緩衝數應介於 {0} 和 {1} 之間。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_raid_stats" xml:space="preserve">
     <value>如果 {1} 秒內進入了 {0} 或更多位成員，我則會將他們 {2} 。</value>
@@ -631,6 +640,7 @@
   </data>
   <data name="administration_rc_params" xml:space="preserve">
     <value>指定的參數錯誤。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_rc_perms" xml:space="preserve">
     <value>無效的色碼或是權限不足引起錯誤。</value>
@@ -683,12 +693,15 @@
   </data>
   <data name="administration_self_assign_already_excl" xml:space="preserve">
     <value>您已經是 {0} 身分組的成員，您一次只能加入一個自入身分群組。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_self_assign_excl" xml:space="preserve">
     <value>自入身分群組現在為擇一模式。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_self_assign_list" xml:space="preserve">
     <value>有 {0} 個可以自入的身分群組</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_self_assign_not" xml:space="preserve">
     <value>此身分組並不能自行加入。</value>
@@ -705,6 +718,7 @@
   </data>
   <data name="administration_self_assign_rem" xml:space="preserve">
     <value>{0} 已從自入身分組清單中移除。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_self_assign_remove" xml:space="preserve">
     <value>您不再是 {0} 身分組的成員了。</value>
@@ -795,9 +809,11 @@
   </data>
   <data name="administration_user_chat_mute" xml:space="preserve">
     <value>已**禁止** {0} 的__文字聊天__。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_chat_unmute" xml:space="preserve">
     <value>已**開啟** {0} 的__文字聊天__。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_joined" xml:space="preserve">
     <value>成員已加入</value>
@@ -807,6 +823,7 @@
   </data>
   <data name="administration_user_muted" xml:space="preserve">
     <value>已**禁止** {0} 的__文字和語音聊天__。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_role_add" xml:space="preserve">
     <value>成員身分組已新增</value>
@@ -819,6 +836,7 @@
   </data>
   <data name="administration_user_unmuted" xml:space="preserve">
     <value>已**開放** {0} 的__文字和語音聊天__。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_vjoined" xml:space="preserve">
     <value>{0} 加入了 {1} 語音頻道。</value>
@@ -831,9 +849,11 @@
   </data>
   <data name="administration_user_voice_mute" xml:space="preserve">
     <value>已**禁止** {0} 的__語音聊天__。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_user_voice_unmute" xml:space="preserve">
     <value>已**開放** {0} 的__語音聊天__。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="administration_voice_chan_created" xml:space="preserve">
     <value>已建立語音頻道</value>
@@ -896,6 +916,7 @@
   </data>
   <data name="gambling_deck_reshuffled" xml:space="preserve">
     <value>重新洗牌。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_flipped" xml:space="preserve">
     <value>丟出了 {0}。</value>
@@ -909,12 +930,14 @@
   </data>
   <data name="gambling_flowerreaction_desc" xml:space="preserve">
     <value>點選此訊息的 {0} 回應來獲得 {1}␣</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_flowerreaction_footer" xml:space="preserve">
     <value>此活動只在 {0} 小時內有效。</value>
   </data>
   <data name="gambling_flowerreaction_title" xml:space="preserve">
     <value>花幣大放送開始了!</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_gifted" xml:space="preserve">
     <value>送了 {1} 給 {0}</value>
@@ -932,6 +955,7 @@
   </data>
   <data name="gambling_mass_award" xml:space="preserve">
     <value>賜予了 {0} 給 {1} 名 {2} 身分組成員。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_max_bet_limit" xml:space="preserve">
     <value>你的賭注不能大於 {0}</value>
@@ -950,6 +974,7 @@
   </data>
   <data name="gambling_roll" xml:space="preserve">
     <value>您骰了 {0}。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_slot_bet" xml:space="preserve">
     <value>下注</value>
@@ -996,6 +1021,7 @@
   </data>
   <data name="help_channel_permission" xml:space="preserve">
     <value>需要 {0} 頻道權限。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="help_cmdlist_donate" xml:space="preserve">
     <value>您可以透過 Patreon: &lt;{0}&gt; 或 Paypal: &lt;{1}&gt; 來贊助此專案</value>
@@ -1155,6 +1181,7 @@ Paypal &lt;{1}&gt;
   <data name="gambling_waifu_divorced_like" xml:space="preserve">
     <value>你已經甩掉了一位喜歡你的對象，你這無情的怪物。
 作為補償，{0} 獲得了{1}。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="gambling_waifu_divorced_notlike" xml:space="preserve">
     <value>您已經與一位不愛您的人離婚了。您回收了{0}。</value>
@@ -1257,6 +1284,7 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="games_curgen_sn" xml:space="preserve">
     <value>發現了一個野生的 {0}!</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="games_failed_loading_question" xml:space="preserve">
     <value>載入問題失敗。</value>
@@ -1269,6 +1297,7 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="games_hangman_running" xml:space="preserve">
     <value>Hangman遊戲已經在此頻道上執行中。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="games_hangman_start_errored" xml:space="preserve">
     <value>Hangman啟動失敗。</value>
@@ -1304,6 +1333,7 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="games_trivia_none" xml:space="preserve">
     <value>此伺服器上沒有運行中的知識小學堂。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="games_trivia_points" xml:space="preserve">
     <value>{0} 有 {1} 分</value>
@@ -1352,9 +1382,11 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="music_autoplay_disabled" xml:space="preserve">
     <value>已停用自動播放。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_autoplay_enabled" xml:space="preserve">
     <value>已啟用自動播放。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_defvol_set" xml:space="preserve">
     <value>預設音量設定為 {0}％</value>
@@ -1379,6 +1411,7 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="music_invalid_input" xml:space="preserve">
     <value>輸入錯誤。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_max_playtime_none" xml:space="preserve">
     <value>音樂長度現在沒有限制了。</value>
@@ -1406,6 +1439,7 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="music_no_search_results" xml:space="preserve">
     <value>沒有搜尋結果。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_paused" xml:space="preserve">
     <value>暫停播放音樂。</value>
@@ -1424,6 +1458,7 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="music_playlist_deleted" xml:space="preserve">
     <value>播放清單已刪除。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_playlist_delete_fail" xml:space="preserve">
     <value>刪除清單失敗。清單要不是不存在，或你不是該清單的作者。</value>
@@ -1451,6 +1486,7 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="music_queue_full" xml:space="preserve">
     <value>排序已滿於 {0} / {0}。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_removed_song" xml:space="preserve">
     <value>已移除歌曲</value>
@@ -1736,9 +1772,11 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="searches_failed_finding_anime" xml:space="preserve">
     <value>找不到該動畫。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_failed_finding_manga" xml:space="preserve">
     <value>找不到該漫畫。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_genres" xml:space="preserve">
     <value>類型</value>
@@ -1763,6 +1801,7 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="searches_invalid_lang" xml:space="preserve">
     <value>來源或目標語言錯誤</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_jokes_not_loaded" xml:space="preserve">
     <value>沒有載入笑話。</value>
@@ -1806,9 +1845,11 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="searches_osu_api_key" xml:space="preserve">
     <value>需要 osu! API 代碼。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_osu_failed" xml:space="preserve">
     <value>讀取 osu! 簽名檔失敗。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_over_x" xml:space="preserve">
     <value>找到超過 {0} 張圖。 顯示隨機 {0}。</value>
@@ -1825,6 +1866,7 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="searches_pokemon_ability_none" xml:space="preserve">
     <value>找不到技能</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_pokemon_none" xml:space="preserve">
     <value>找不到寶可夢</value>
@@ -1854,6 +1896,7 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="searches_shorten_fail" xml:space="preserve">
     <value>縮短網址失敗。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_short_url" xml:space="preserve">
     <value>短網址</value>
@@ -1932,9 +1975,11 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="searches_wikia_input_error" xml:space="preserve">
     <value>請輸入要搜尋的維基，然後才是搜尋單詞。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_wiki_page_not_found" xml:space="preserve">
     <value>找不到該頁面。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="searches_wind_speed" xml:space="preserve">
     <value>風速</value>
@@ -2093,6 +2138,7 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="utility_quotes_deleted" xml:space="preserve">
     <value>刪除了所有包含了 {0} 關鍵字的引句。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="utility_quotes_page" xml:space="preserve">
     <value>引句第{0}頁</value>
@@ -2126,6 +2172,7 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="utility_repeater" xml:space="preserve">
     <value>每 {1} 天 {2} 小時又 {3} 分鐘後重複 {0}。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="utility_repeaters_list" xml:space="preserve">
     <value>重複器清單</value>
@@ -2210,16 +2257,17 @@ Paypal &lt;{1}&gt;
     <value>添加：</value>
   </data>
   <data name="utility_changelog_additions_msg" xml:space="preserve">
-    <value>`1.` 命令別名添加 - `.alias` 和 `.aliases` 命令。
-`2.` 更新支持的語言列表。
-`3.` `$rolluo` 現在可以沒有參數。</value>
+    <value>`1.` 添加了警告命令。
+`2.` 添加了unban命令。
+`3.` `-cmds` 現在分為多個消息，如果太長。
+`4.` 印度尼西亞語。
+`5.` 添加啟動命令。</value>
   </data>
   <data name="utility_changelog_fixes" xml:space="preserve">
     <value>修正：</value>
   </data>
   <data name="utility_changelog_fixes_msg" xml:space="preserve">
-    <value>`1.` 添加了錯過的字符串。
-`2.` 修復了一個權限錯誤。</value>
+    <value>沒有</value>
   </data>
   <data name="utility_changelog_footer" xml:space="preserve">
     <value>更多信息：http://github.com/Wizkiller96/WizBot</value>
@@ -2231,10 +2279,11 @@ Paypal &lt;{1}&gt;
     <value>沒有</value>
   </data>
   <data name="utility_changelog_title_date" xml:space="preserve">
-    <value>WizBot Changelogs | 📅2017年3月21日</value>
+    <value>WizBot Changelogs | 📅2017年3月31日</value>
   </data>
   <data name="gambling_animal_race_already_started" xml:space="preserve">
     <value>動物賽跑已經在運行中了。</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="music_fairplay" xml:space="preserve">
     <value>公平播放</value>
@@ -2331,6 +2380,81 @@ Paypal &lt;{1}&gt;
   </data>
   <data name="searches_compet_playtime" xml:space="preserve">
     <value>競技時數</value>
+  </data>
+  <data name="administration_moderator" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_page" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_reason" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_user_warned" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warned_on" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warned_on_by" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warnings_cleared" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warnings_none" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warnlog_for" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warn_cleared_by" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warn_punish_list" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warn_punish_rem" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warn_punish_set" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_unbanned_user" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_user_not_found" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_user_warned_and_punished" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_warnpl_none" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_channel" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_command_text" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_scadd" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_scrm" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_scrm_fail" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_server" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_startcmdlist_none" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_startcmds_cleared" xml:space="preserve">
+    <value></value>
   </data>
 
 </root>
