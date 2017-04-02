@@ -57,6 +57,7 @@ namespace WizBot.Modules.Administration
                             }
                             catch { }
                         }
+                        await Task.Delay(400).ConfigureAwait(false);
                     }
                 });
             }
