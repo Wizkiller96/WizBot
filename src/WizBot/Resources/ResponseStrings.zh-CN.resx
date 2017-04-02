@@ -2457,5 +2457,54 @@ Paypal &lt;{1}&gt;
   <data name="administration_startcmds_cleared" xml:space="preserve">
     <value></value>
   </data>
+  <data name="administration_kicked_pl" xml:space="preserve">
+    <value></value>
+    <comment>PLURAL</comment>
+  </data>
+  <data name="administration_slowmodewl_role_start" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_slowmodewl_role_stop" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_slowmodewl_user_start" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_slowmodewl_user_stop" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="utility_clpa_fail" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="utility_clpa_fail_already" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="utility_clpa_fail_already_title" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="utility_clpa_fail_conn" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="utility_clpa_fail_conn_title" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="utility_clpa_fail_sup" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="utility_clpa_fail_sup_title" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="utility_clpa_fail_wait" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="utility_clpa_fail_wait_title" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="utility_clpa_success" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="utility_clpa_too_early" xml:space="preserve">
+    <value></value>
+  </data>
 
 </root>
