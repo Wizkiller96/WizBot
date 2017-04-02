@@ -1,11 +1,11 @@
-﻿//using System;
+﻿using System;
 
-//namespace WizBot.Services.Database.Models
-//{
-//    public class RewardedUser
-//    {
-//        public ulong UserId { get; set; }
-//        public int AmountRewardedThisMonth { get; set; }
-//        public DateTime LastReward { get; set; }
-//    }
-//}
+namespace WizBot.Services.Database.Models
+{
+    public class RewardedUser
+    {
+        public ulong UserId { get; set; }
+        public int AmountRewardedThisMonth { get; set; }
+        public DateTime LastReward { get; set; }
+    }
+}
