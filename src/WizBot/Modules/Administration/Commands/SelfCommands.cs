@@ -36,11 +36,9 @@ namespace WizBot.Modules.Administration
 
                 var _ = Task.Run(async () =>
                 {
-#if !GLOBAL_WIZBOT
-                    await Task.Delay(2000);
-#else
-                    await Task.Delay(10000);
-#endif
+                    while (!WizBot.Ready)
+                        await Task.Delay(1000);
+
                     foreach (var cmd in WizBot.BotConfig.StartupCommands)
                     {
                         if (cmd.GuildId != null)
@@ -52,7 +50,8 @@ namespace WizBot.Modules.Administration
 
                             try
                             {
-                                var msg = await channel.SendMessageAsync(cmd.CommandText).ConfigureAwait(false);
+                                IUserMessage msg = await channel.SendMessageAsync(cmd.CommandText).ConfigureAwait(false);
+                                msg = (IUserMessage)await channel.GetMessageAsync(msg.Id).ConfigureAwait(false);
                                 await WizBot.CommandHandler.TryRunCommand(guild, channel, msg).ConfigureAwait(false);
                                 //msg.DeleteAfter(5);
                             }
