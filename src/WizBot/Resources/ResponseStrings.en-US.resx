@@ -788,7 +788,7 @@ Fuzzy</comment>
     <value>Slow mode initiated</value>
   </data>
   <data name="administration_soft_banned_pl" xml:space="preserve">
-    <value>soft-banned (kicked)</value>
+    <value>soft-banned</value>
     <comment>PLURAL</comment>
   </data>
   <data name="administration_spam_ignore" xml:space="preserve">
@@ -2513,6 +2513,55 @@ Fuzzy</comment>
   </data>
   <data name="administration_startcmds_cleared" xml:space="preserve">
     <value>Cleared all startup commands.</value>
+  </data>
+  <data name="administration_kicked_pl" xml:space="preserve">
+    <value>Kicked</value>
+    <comment>PLURAL</comment>
+  </data>
+  <data name="administration_slowmodewl_role_start" xml:space="preserve">
+    <value>Slowmode will now ignore {0} role.</value>
+  </data>
+  <data name="administration_slowmodewl_role_stop" xml:space="preserve">
+    <value>Slowmode will no longer ignore {0} role.</value>
+  </data>
+  <data name="administration_slowmodewl_user_start" xml:space="preserve">
+    <value>Slowmode will now ignore user {0}.</value>
+  </data>
+  <data name="administration_slowmodewl_user_stop" xml:space="preserve">
+    <value>Slowmode will no longer ignore user {0}.</value>
+  </data>
+  <data name="utility_clpa_fail" xml:space="preserve">
+    <value>Failed claiming rewards due to one of the following reasons:</value>
+  </data>
+  <data name="utility_clpa_fail_already" xml:space="preserve">
+    <value>Maybe you&apos;ve already received your reward for this month. You can receive rewards only once a month unless you increase your pledge.</value>
+  </data>
+  <data name="utility_clpa_fail_already_title" xml:space="preserve">
+    <value>Already rewarded</value>
+  </data>
+  <data name="utility_clpa_fail_conn" xml:space="preserve">
+    <value>Your discord account might not be connected to Patreon.. If you are unsure what that means, or don&apos;t know how to connect it - you have to go to [Patreon account settings page](https://patreon.com/settings/account) and click &apos;Connect to discord&apos; button.</value>
+  </data>
+  <data name="utility_clpa_fail_conn_title" xml:space="preserve">
+    <value>Discord account not connected</value>
+  </data>
+  <data name="utility_clpa_fail_sup" xml:space="preserve">
+    <value>In order to be eligible for the reward, you must support the project on patreon. You can use {0} command to get the link.</value>
+  </data>
+  <data name="utility_clpa_fail_sup_title" xml:space="preserve">
+    <value>Not supporting</value>
+  </data>
+  <data name="utility_clpa_fail_wait" xml:space="preserve">
+    <value>You have to wait a few hours after making your pledge, if you didn&apos;t, try again later.</value>
+  </data>
+  <data name="utility_clpa_fail_wait_title" xml:space="preserve">
+    <value>Wait some time</value>
+  </data>
+  <data name="utility_clpa_success" xml:space="preserve">
+    <value>You&apos;ve received {0} thanks for supporting the project!</value>
+  </data>
+  <data name="utility_clpa_too_early" xml:space="preserve">
+    <value>Rewards can be claimed on or after 5th of each month.</value>
   </data>
 
 </root>
