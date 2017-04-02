@@ -10,9 +10,10 @@ using WizBot.Modules.Music.Classes;
 namespace WizBot.Migrations
 {
     [DbContext(typeof(WizBotContext))]
-    partial class WizBotSqliteContextModelSnapshot : ModelSnapshot
+    [Migration("20170401205753_patreon-rewards")]
+    partial class patreonrewards
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.0-rtm-22752");

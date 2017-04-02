@@ -18,7 +18,7 @@ namespace WizBot.Services.Database
         public WizBotContext Create(DbContextFactoryOptions options)
         {
             var optionsBuilder = new DbContextOptionsBuilder();
-            optionsBuilder.UseSqlite("Filename=./data/NadekoBot.db");
+            optionsBuilder.UseSqlite("Filename=./data/WizBot.db");
             return new WizBotContext(optionsBuilder.Options);
         }
     }
@@ -51,6 +51,7 @@ namespace WizBot.Services.Database
         public DbSet<EightBallResponse> EightBallResponses { get; set; }
         public DbSet<RaceAnimal> RaceAnimals { get; set; }
         public DbSet<ModulePrefix> ModulePrefixes { get; set; }
+        public DbSet<RewardedUser> RewardedUsers { get; set; }
 
         public WizBotContext() : base()
         {
@@ -132,11 +133,11 @@ namespace WizBot.Services.Database
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             #region QUOTES
-            
+
             //var quoteEntity = modelBuilder.Entity<Quote>();
 
             #endregion
-            
+
             #region Donators
 
             var donatorEntity = modelBuilder.Entity<Donator>();
@@ -172,7 +173,7 @@ namespace WizBot.Services.Database
             //    .HasMany(c => c.ModulePrefixes)
             //    .WithOne(mp => mp.BotConfig)
             //    .HasForeignKey(mp => mp.BotConfigId);
-                
+
             #endregion
 
             #region ClashOfClans
@@ -272,11 +273,16 @@ namespace WizBot.Services.Database
             var du = modelBuilder.Entity<DiscordUser>();
             du.HasAlternateKey(w => w.UserId);
 
-
             #endregion
 
             #region Warnings
             var warn = modelBuilder.Entity<Warning>();
+            #endregion
+
+            #region PatreonRewards
+            var pr = modelBuilder.Entity<RewardedUser>();
+            pr.HasIndex(x => x.UserId)
+                .IsUnique();
             #endregion
         }
     }
