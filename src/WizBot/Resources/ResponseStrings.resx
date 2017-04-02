@@ -774,7 +774,7 @@ Fuzzy</comment>
     <value>Slow mode initiated</value>
   </data>
   <data name="administration_soft_banned_pl" xml:space="preserve">
-    <value>soft-banned (kicked)</value>
+    <value>soft-banned</value>
     <comment>PLURAL</comment>
   </data>
   <data name="administration_spam_ignore" xml:space="preserve">
@@ -2465,5 +2465,9 @@ Fuzzy</comment>
   </data>
   <data name="administration_startcmds_cleared" xml:space="preserve">
     <value>Cleared all startup commands.</value>
+  </data>
+  <data name="administration_kicked_pl" xml:space="preserve">
+    <value>Kicked</value>
+    <comment>PLURAL</comment>
   </data>
 </root>

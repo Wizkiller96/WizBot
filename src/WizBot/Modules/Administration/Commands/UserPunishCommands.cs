@@ -72,7 +72,18 @@ namespace WizBot.Modules.Administration
                         case PunishmentAction.Ban:
                             await guild.AddBanAsync(user).ConfigureAwait(false);
                             break;
-                        default:
+                        case PunishmentAction.Softban:
+                            await guild.AddBanAsync(user).ConfigureAwait(false);
+                            try
+                            {
+                                await guild.RemoveBanAsync(user).ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await guild.RemoveBanAsync(user).ConfigureAwait(false);
+                            }
+                            break;
+                            default:
                             break;
                     }
                     return p.Punishment;
