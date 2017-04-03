@@ -2493,5 +2493,8 @@ Discord 닉네임이나 ID를 메시지에 남겨 두는 것을 잊지 마십시
   <data name="utility_clpa_too_early" xml:space="preserve">
     <value></value>
   </data>
+  <data name="utility_quotes_notfound" xml:space="preserve">
+    <value></value>
+  </data>
 
 </root>
