@@ -2502,5 +2502,8 @@ Eier ID: {2}</value>
   <data name="utility_clpa_too_early" xml:space="preserve">
     <value></value>
   </data>
+  <data name="utility_quotes_notfound" xml:space="preserve">
+    <value></value>
+  </data>
 
 </root>
