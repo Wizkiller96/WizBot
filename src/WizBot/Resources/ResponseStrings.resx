@@ -2515,4 +2515,7 @@ Fuzzy</comment>
   <data name="utility_clpa_too_early" xml:space="preserve">
     <value>Rewards can be claimed on or after 5th of each month.</value>
   </data>
+  <data name="utility_quotes_notfound" xml:space="preserve">
+    <value>No quotes found matching the quote ID specified.</value>
+  </data>
 </root>

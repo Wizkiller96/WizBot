@@ -6565,6 +6565,15 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
+        ///    Looks up a localized string similar to No quotes found matching the quote ID specified..
+        /// </summary>
+        public static string utility_quotes_notfound {
+            get {
+                return ResourceManager.GetString("utility_quotes_notfound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///    Looks up a localized string similar to Page {0} of quotes.
         /// </summary>
         public static string utility_quotes_page {
