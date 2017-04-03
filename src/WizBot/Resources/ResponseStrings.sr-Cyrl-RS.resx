@@ -2500,5 +2500,8 @@ Lasts {1} seconds. Don&apos;t tell anyone. Shhh.</value>
   <data name="utility_clpa_too_early" xml:space="preserve">
     <value></value>
   </data>
+  <data name="utility_quotes_notfound" xml:space="preserve">
+    <value></value>
+  </data>
 
 </root>
