@@ -2540,7 +2540,7 @@ Fuzzy</comment>
     <value>Already rewarded</value>
   </data>
   <data name="utility_clpa_fail_conn" xml:space="preserve">
-    <value>Your discord account might not be connected to Patreon.. If you are unsure what that means, or don&apos;t know how to connect it - you have to go to [Patreon account settings page](https://patreon.com/settings/account) and click &apos;Connect to discord&apos; button.</value>
+    <value>Your discord account might not be connected to Patreon. If you are unsure what that means, or don&apos;t know how to connect it - you have to go to [Patreon account settings page](https://patreon.com/settings/account) and click &apos;Connect to discord&apos; button.</value>
   </data>
   <data name="utility_clpa_fail_conn_title" xml:space="preserve">
     <value>Discord account not connected</value>
@@ -2562,6 +2562,9 @@ Fuzzy</comment>
   </data>
   <data name="utility_clpa_too_early" xml:space="preserve">
     <value>Rewards can be claimed on or after 5th of each month.</value>
+  </data>
+  <data name="utility_quotes_notfound" xml:space="preserve">
+    <value>No quotes found matching the quote ID specified.</value>
   </data>
 
 </root>
