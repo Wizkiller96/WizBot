@@ -342,9 +342,21 @@ namespace WizBot.Services
                 ConcurrentDictionary<string, string> maps;
                 if (Modules.Utility.Utility.CommandMapCommands.AliasMaps.TryGetValue(guild.Id, out maps))
                 {
-                    string newMessageContent;
-                    if (maps.TryGetValue(messageContent.Trim().ToLowerInvariant(), out newMessageContent))
+
+                    var keys = maps.Keys
+                        .OrderByDescending(x => x.Length);
+
+                    var lowerMessageContent = messageContent.ToLowerInvariant();
+                    foreach (var k in keys)
                     {
+                        string newMessageContent;
+                        if (lowerMessageContent.StartsWith(k + " "))
+                            newMessageContent = maps[k] + messageContent.Substring(k.Length, messageContent.Length - k.Length);
+                        else if (lowerMessageContent == k)
+                            newMessageContent = maps[k];
+                        else
+                            continue;
+
                         _log.Info(@"--Mapping Command--
     GuildId: {0}
     Trigger: {1}
@@ -353,6 +365,7 @@ namespace WizBot.Services
                         messageContent = newMessageContent;
 
                         try { await usrMsg.Channel.SendConfirmAsync($"{oldMessageContent} => {newMessageContent}").ConfigureAwait(false); } catch { }
+                        break;
                     }
                 }
             }
