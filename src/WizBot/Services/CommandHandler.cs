@@ -16,9 +16,7 @@ using WizBot.Modules.CustomReactions;
 using WizBot.Modules.Games;
 using System.Collections.Concurrent;
 using System.Threading;
-using Microsoft.EntityFrameworkCore;
 using WizBot.DataStructures;
-using Services.CleverBotApi;
 
 namespace WizBot.Services
 {

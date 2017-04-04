@@ -1,11 +1,9 @@
 ﻿using Discord;
 using Discord.Commands;
-using Discord.WebSocket;
 using WizBot.Attributes;
 using WizBot.Extensions;
 using WizBot.Services;
 using NLog;
-//using Services.CleverBotApi;
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
@@ -13,7 +11,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Services.CleverBotApi;
 
 namespace WizBot.Modules.Games
 {
