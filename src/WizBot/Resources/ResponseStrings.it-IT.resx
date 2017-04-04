@@ -2497,8 +2497,9 @@ ID del proprietario: {2}</value>
   <data name="utility_clpa_too_early" xml:space="preserve">
     <value></value>
   </data>
-  <data name="utility_quotes_notfound" xml:space="preserve">
+  <data name="searches_time" xml:space="preserve">
     <value></value>
+    <comment>Time in London, UK is 15:30 - Time Zone Name</comment>
   </data>
 
 </root>
