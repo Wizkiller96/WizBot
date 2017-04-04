@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using WizBot.Attributes;
+using WizBot.Extensions;
 using WizBot.Services;
 using NLog;
 using System;
@@ -48,6 +49,11 @@ namespace WizBot.Modules.Administration
             [RequireUserPermission(GuildPermission.ManageRoles)]
             public async Task AutoAssignRole([Remainder] IRole role = null)
             {
+                var guser = (IGuildUser)Context.User;
+                if (role != null)
+                    if (Context.User.Id != guser.Guild.OwnerId && guser.GetRoles().Max(x => x.Position) <= role.Position)
+                        return;
+
                 using (var uow = DbHandler.UnitOfWork())
                 {
                     var conf = uow.GuildConfigs.For(Context.Guild.Id, set => set);
