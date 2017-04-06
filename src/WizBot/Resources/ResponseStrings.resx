@@ -2519,4 +2519,7 @@ Fuzzy</comment>
     <value>Time in {0} is {1} - {2}</value>
     <comment>Time in London, UK is 15:30 - Time Zone Name</comment>
   </data>
+  <data name="administration_rh" xml:space="preserve">
+    <value>Set the display of guild role {0} to {1}.</value>
+  </data>
 </root>

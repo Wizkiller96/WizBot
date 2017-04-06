@@ -12,6 +12,7 @@ using WizBot.Services.Database.Models;
 using static WizBot.Modules.Permissions.Permissions;
 using System.Collections.Concurrent;
 using NLog;
+using WizBot.Modules.Permissions;
 
 namespace WizBot.Modules.Administration
 {
@@ -194,6 +195,19 @@ namespace WizBot.Modules.Administration
 
             var r = await Context.Guild.CreateRoleAsync(roleName).ConfigureAwait(false);
             await ReplyConfirmLocalized("cr", Format.Bold(r.Name)).ConfigureAwait(false);
+        }
+
+        [WizBotCommand, Usage, Description, Aliases]
+        [RequireContext(ContextType.Guild)]
+        [RequireUserPermission(GuildPermission.ManageRoles)]
+        [RequireBotPermission(GuildPermission.ManageRoles)]
+        public async Task RoleHoist(string roleSearchName, PermissionAction targetState)
+        {
+            var roleName = roleSearchName.ToUpperInvariant();
+            var role = Context.Guild.Roles.FirstOrDefault(r => r.Name.ToUpperInvariant() == roleName);
+
+            await role.ModifyAsync(r => r.Hoist = targetState.Value).ConfigureAwait(false);
+            await ReplyConfirmLocalized("rh", Format.Bold(role.Name), Format.Bold(targetState.Value.ToString())).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
