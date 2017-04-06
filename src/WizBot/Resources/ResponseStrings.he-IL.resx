@@ -131,14 +131,14 @@
     <value>הבסיס #{0} **הושמד** במלחמה נגד {1}</value>
   </data>
   <data name="clashofclans_base_unclaimed" xml:space="preserve">
-    <value></value>
+    <value>{0} **שיחרר** את בסיס #{0} במלחמה נגד {2}</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="clashofclans_claimed_base" xml:space="preserve">
-    <value></value>
+    <value>{0} תפס את בסיס #{1} במלחמה נגד {2}</value>
   </data>
   <data name="clashofclans_claimed_other" xml:space="preserve">
-    <value></value>
+    <value>@{0} אתה כבר תפסת את בסיס #{1}. אינך יכול לתפוס אחד חדש</value>
   </data>
   <data name="clashofclans_claim_expired" xml:space="preserve">
     <value></value>
@@ -223,7 +223,7 @@
     <value>תגובה</value>
   </data>
   <data name="customreactions_stats" xml:space="preserve">
-    <value></value>
+    <value>נתוני תגובות מותאמות</value>
   </data>
   <data name="customreactions_stats_cleared" xml:space="preserve">
     <value></value>
@@ -235,7 +235,7 @@
     <value></value>
   </data>
   <data name="nsfw_autohentai_stopped" xml:space="preserve">
-    <value></value>
+    <value>אוטוהנטאי הפסיק</value>
   </data>
   <data name="nsfw_not_found" xml:space="preserve">
     <value>לא נמצאו תוצאות.</value>
@@ -310,10 +310,10 @@
     <value>את\ה התעלפת אז את\ה לא יכול לזוז.</value>
   </data>
   <data name="administration_aar_disabled" xml:space="preserve">
-    <value></value>
+    <value>**נתינת תפקיד אוטומטי** כאשר משתמש מתווסף **הופסקה** כעת.</value>
   </data>
   <data name="administration_aar_enabled" xml:space="preserve">
-    <value></value>
+    <value>**נתינת תפקיד אוטומטי** כאשר משתמש מתווסף **התחילה** כעת.</value>
   </data>
   <data name="administration_attachments" xml:space="preserve">
     <value>קבצים מצורפים </value>
@@ -424,10 +424,10 @@
     <value>אני אפסיק להעביר את ההודאות הפרטיות מעכשיו.</value>
   </data>
   <data name="administration_greetdel_off" xml:space="preserve">
-    <value></value>
+    <value>מחיקה אוטומטית של הודאות ברכה הופסקה.</value>
   </data>
   <data name="administration_greetdel_on" xml:space="preserve">
-    <value></value>
+    <value>הודאות </value>
   </data>
   <data name="administration_greetdmmsg_cur" xml:space="preserve">
     <value>הודאה פרטית נוכחית: {0}</value>
@@ -454,10 +454,10 @@
     <value></value>
   </data>
   <data name="administration_greet_off" xml:space="preserve">
-    <value></value>
+    <value>הודאות ברכה בוטלו.</value>
   </data>
   <data name="administration_greet_on" xml:space="preserve">
-    <value></value>
+    <value>הודאות ברכה הופעלו עבור ערוץ זה.</value>
   </data>
   <data name="administration_hierarchy" xml:space="preserve">
     <value>אתה לא יכול להשתמש בפקודה זו על משתמשים עם תפקיד שווה או גבוהה ממך בדירוג.</value>
