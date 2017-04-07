@@ -13,6 +13,7 @@ using WizBot.Services;
 using WizBot.Services.Database.Models;
 using WizBot.Extensions;
 using Discord;
+using NLog;
 
 namespace WizBot.Modules.Utility
 {
@@ -74,11 +75,13 @@ namespace WizBot.Modules.Utility
 
             private readonly Timer update;
             private readonly SemaphoreSlim claimLockJustInCase = new SemaphoreSlim(1, 1);
+            private readonly Logger _log;
 
             private PatreonThingy()
             {
                 if (string.IsNullOrWhiteSpace(WizBot.Credentials.PatreonAccessToken))
                     return;
+                _log = LogManager.GetCurrentClassLogger();
                 update = new Timer(async (_) => await LoadPledges(), null, TimeSpan.Zero, TimeSpan.FromHours(3));
             }
 
@@ -118,6 +121,10 @@ namespace WizBot.Modules.Utility
                         User = y,
                         Reward = x,
                     }).ToImmutableArray();
+                }
+                catch (Exception ex)
+                {
+                    _log.Warn(ex);
                 }
                 finally
                 {
