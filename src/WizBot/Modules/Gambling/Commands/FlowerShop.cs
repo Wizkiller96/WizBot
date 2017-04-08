@@ -152,7 +152,7 @@ namespace WizBot.Modules.Gambling
                                 .ConfigureAwait(false);
 
                             await CurrencyHandler.AddCurrencyAsync(entry.AuthorId,
-                                    $"Shop error refund - {entry.Name}",
+                                    $"Shop sell item - {entry.Name}",
                                     GetProfitAmount(entry.Price)).ConfigureAwait(false);
                         }
                         catch
