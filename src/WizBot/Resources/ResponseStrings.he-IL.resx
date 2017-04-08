@@ -2496,5 +2496,75 @@
     <value></value>
     <comment>Time in London, UK is 15:30 - Time Zone Name</comment>
   </data>
+  <data name="administration_rh" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="gambling_item" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="gambling_name" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="gambling_out_of_stock" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="gambling_random_unique_item" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="gambling_shop" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="gambling_shop_buy_error" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="gambling_shop_item_add" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="gambling_shop_item_not_found" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="gambling_shop_item_purchase" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="gambling_shop_item_rm" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="gambling_shop_item_wrong_type" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="gambling_shop_list_item_added" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="gambling_shop_list_item_not_unique" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="gambling_shop_none" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="gambling_shop_purchase" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="gambling_shop_role" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="gambling_shop_role_not_found" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="gambling_shop_role_purchase" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="gambling_shop_role_purchase_error" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="gambling_type" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="gambling_unique_items_left" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="utility_clpa_next_update" xml:space="preserve">
+    <value></value>
+    <comment>Next update in 05:30</comment>
+  </data>
 
 </root>
