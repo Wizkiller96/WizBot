@@ -116,7 +116,7 @@ namespace WizBot.Modules.Utility
                         {
                             Links = new PatreonDataLinks()
                             {
-                                next = "https://api.patreon.com/oauth2/api/campaigns/334038/pledges"
+                                next = "https://api.patreon.com/oauth2/api/campaigns/4696953/pledges"
                             }
                         };
                         do

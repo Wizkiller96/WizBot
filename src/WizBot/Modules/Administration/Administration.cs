@@ -442,11 +442,11 @@ namespace WizBot.Modules.Administration
 
             _wizbotSupportServer = _wizbotSupportServer ?? WizBot.Client.GetGuild(99273784988557312);
 
-            var patreonRole = _wizbotSupportServer?.GetRole(280182841114099722);
+            var patreonRole = _wizbotSupportServer?.GetRole(299174013597646868);
             if (patreonRole == null)
                 return;
 
-            var usrs = (await _wizbotSupportServer.GetUsersAsync()).Where(u => u.RoleIds.Contains(280182841114099722u));
+            var usrs = (await _wizbotSupportServer.GetUsersAsync()).Where(u => u.RoleIds.Contains(299174013597646868u));
             await Context.Channel.SendConfirmAsync("Patreon supporters", string.Join("⭐", usrs.Select(d => d.Username))).ConfigureAwait(false);
         }
 
