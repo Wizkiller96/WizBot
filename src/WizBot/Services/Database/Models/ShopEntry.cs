@@ -6,7 +6,7 @@ namespace WizBot.Services.Database.Models
     {
         Role,
         List,
-        Infinite_List,
+        //Infinite_List,
     }
 
     public class ShopEntry : DbEntity, IIndexed
@@ -17,9 +17,13 @@ namespace WizBot.Services.Database.Models
         public ulong AuthorId { get; set; }
 
         public ShopEntryType Type { get; set; }
+
+        //role
         public string RoleName { get; set; }
         public ulong RoleId { get; set; }
-        public List<ShopEntryItem> Items { get; set; }
+
+        //list
+        public HashSet<ShopEntryItem> Items { get; set; } = new HashSet<ShopEntryItem>();
     }
 
     public class ShopEntryItem : DbEntity

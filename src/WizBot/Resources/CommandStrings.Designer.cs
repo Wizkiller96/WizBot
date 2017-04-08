@@ -1032,6 +1032,33 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
+        ///    Looks up a localized string similar to buy.
+        /// </summary>
+        public static string buy_cmd {
+            get {
+                return ResourceManager.GetString("buy_cmd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Buys an item from the shop on a given index. If buying items, make sure that the bot can DM you..
+        /// </summary>
+        public static string buy_desc {
+            get {
+                return ResourceManager.GetString("buy_desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to `{0}buy 2`.
+        /// </summary>
+        public static string buy_usage {
+            get {
+                return ResourceManager.GetString("buy_usage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///    Looks up a localized string similar to bye.
         /// </summary>
         public static string bye_cmd {
@@ -7575,7 +7602,7 @@ namespace WizBot.Resources {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Adds an item to the shop by specifying type price and name..
+        ///    Looks up a localized string similar to Adds an item to the shop by specifying type price and name. Available types are role and list..
         /// </summary>
         public static string shopadd_desc {
             get {
@@ -7589,6 +7616,33 @@ namespace WizBot.Resources {
         public static string shopadd_usage {
             get {
                 return ResourceManager.GetString("shopadd_usage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to shoplistadd.
+        /// </summary>
+        public static string shoplistadd_cmd {
+            get {
+                return ResourceManager.GetString("shoplistadd_cmd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Adds an item to the list of items for sale in the shop entry given the index..
+        /// </summary>
+        public static string shoplistadd_desc {
+            get {
+                return ResourceManager.GetString("shoplistadd_desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to `{0}shoplistadd 1 Uni-que-Steam-Key`.
+        /// </summary>
+        public static string shoplistadd_usage {
+            get {
+                return ResourceManager.GetString("shoplistadd_usage", resourceCulture);
             }
         }
         
@@ -7607,6 +7661,15 @@ namespace WizBot.Resources {
         public static string shopremove_desc {
             get {
                 return ResourceManager.GetString("shopremove_desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to `{0}shoprm 1`.
+        /// </summary>
+        public static string shopremove_usage {
+            get {
+                return ResourceManager.GetString("shopremove_usage", resourceCulture);
             }
         }
         

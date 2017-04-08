@@ -127,7 +127,7 @@ namespace WizBot.Modules.Searches
 //                                  await e.Channel.SendFile("champ.png", champ.ImageStream).ConfigureAwait(false);
 //                                  return;
 //                              }
-//                          var allData = JArray.Parse(await Classes.http.GetStringAsync($"http://api.champion.gg/champion/{name}?api_key={NadekoBot.Credentials.LOLAPIKey}").ConfigureAwait(false));
+//                          var allData = JArray.Parse(await Classes.http.GetStringAsync($"http://api.champion.gg/champion/{name}?api_key={WizBot.Credentials.LOLAPIKey}").ConfigureAwait(false));
 //                          JToken data = null;
 //                          if (role != null)
 //                          {
@@ -168,7 +168,7 @@ namespace WizBot.Modules.Searches
 //                                  roles[i] = ">" + roles[i] + "<";
 //                          }
 //                          var general = JArray.Parse(await http.GetStringAsync($"http://api.champion.gg/stats/" +
-//                                                                                               $"champs/{name}?api_key={NadekoBot.Credentials.LOLAPIKey}")
+//                                                                                               $"champs/{name}?api_key={WizBot.Credentials.LOLAPIKey}")
 //                                                                                                .ConfigureAwait(false))
 //                                              .FirstOrDefault(jt => jt["role"].ToString() == role)?["general"];
 //                          if (general == null)

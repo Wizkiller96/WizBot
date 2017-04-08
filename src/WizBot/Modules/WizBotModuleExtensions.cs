@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace WizBot.Modules
 {
-    public static class NadekoModuleExtensions
+    public static class WizBotModuleExtensions
     {
 
     }
