@@ -2576,5 +2576,14 @@ Kurucu Kimliği: {2}</value>
     <value></value>
     <comment>Next update in 05:30</comment>
   </data>
+  <data name="administration_gvc_disabled" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_gvc_enabled" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="administration_not_in_voice" xml:space="preserve">
+    <value></value>
+  </data>
 
 </root>
