@@ -49,12 +49,17 @@ namespace WizBot.Modules.Utility
                     }
                     Units = data.ToList();
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    _log.Warn("Could not load units: " + e.Message);
+                    _log.Warn("Could not load units: " + ex.Message);
                 }
 
                 _timer = new Timer(async (obj) => await UpdateCurrency(), null, _updateInterval, _updateInterval);
+            }
+
+            public static void Unload()
+            {
+                _timer.Change(Timeout.Infinite, Timeout.Infinite);
             }
 
             public static async Task UpdateCurrency()
@@ -100,7 +105,7 @@ namespace WizBot.Modules.Utility
             //[RequireContext(ContextType.Guild)]
             //public async Task Aurorina(IGuildUser usr = null)
             //{
-            //    var rng = new WizBotRandom();
+            //    var rng = new WizRandom();
             //    var nums = Enumerable.Range(48, 10)
             //        .Concat(Enumerable.Range(65, 26))
             //        .Concat(Enumerable.Range(97, 26))

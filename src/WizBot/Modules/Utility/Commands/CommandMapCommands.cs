@@ -41,7 +41,12 @@ namespace WizBot.Modules.Utility
                             .ToDictionary(ca => ca.Trigger, ca => ca.Mapping))));
             }
 
-            [WizBotCommand, Usage, Description, Aliases]
+            public static void Unload()
+            {
+                AliasMaps.Clear();
+            }
+
+        [WizBotCommand, Usage, Description, Aliases]
             [RequireUserPermission(GuildPermission.Administrator)]
             [RequireContext(ContextType.Guild)]
             public async Task Alias(string trigger, [Remainder] string mapping = null)

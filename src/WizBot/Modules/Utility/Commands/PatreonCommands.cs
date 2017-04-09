@@ -29,6 +29,11 @@ namespace WizBot.Modules.Utility
                 patreon = PatreonThingy.Instance;
             }
 
+            public static void Unload()
+            {
+                patreon.Updater.Change(Timeout.Infinite, Timeout.Infinite);
+            }
+
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
             public async Task PatreonRewardsReload()
@@ -86,7 +91,7 @@ namespace WizBot.Modules.Utility
             public ImmutableArray<PatreonUserAndReward> Pledges { get; private set; }
             public DateTime LastUpdate { get; private set; } = DateTime.UtcNow;
 
-            private readonly Timer update;
+            public readonly Timer Updater;
             private readonly SemaphoreSlim claimLockJustInCase = new SemaphoreSlim(1, 1);
             private readonly Logger _log;
 
@@ -97,7 +102,7 @@ namespace WizBot.Modules.Utility
                 if (string.IsNullOrWhiteSpace(WizBot.Credentials.PatreonAccessToken))
                     return;
                 _log = LogManager.GetCurrentClassLogger();
-                update = new Timer(async (_) => await LoadPledges(), null, TimeSpan.Zero, Interval);
+                Updater = new Timer(async (_) => await LoadPledges(), null, TimeSpan.Zero, Interval);
             }
 
             public async Task LoadPledges()
@@ -116,7 +121,7 @@ namespace WizBot.Modules.Utility
                         {
                             Links = new PatreonDataLinks()
                             {
-                                next = "https://api.patreon.com/oauth2/api/campaigns/4696953/pledges"
+                                next = "https://api.patreon.com/oauth2/api/campaigns/334038/pledges"
                             }
                         };
                         do

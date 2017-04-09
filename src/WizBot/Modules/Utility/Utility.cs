@@ -25,6 +25,12 @@ namespace WizBot.Modules.Utility
     {
         private static ConcurrentDictionary<ulong, Timer> _rotatingRoleColors = new ConcurrentDictionary<ulong, Timer>();
 
+        public static void Unload()
+        {
+            _rotatingRoleColors.ForEach(x => x.Value?.Change(Timeout.Infinite, Timeout.Infinite));
+            _rotatingRoleColors.Clear();
+        }
+
         //[WizBotCommand, Usage, Description, Aliases]
         //[RequireContext(ContextType.Guild)]
         //public async Task Midorina([Remainder] string arg)

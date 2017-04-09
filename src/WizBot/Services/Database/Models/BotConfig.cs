@@ -54,7 +54,7 @@ For a specific command help, use `{1}h CommandName` (for example {1}h !!q)
 <http://wizbot.readthedocs.io/en/latest/Commands%20List/>
 
 
-WizBot Support Server: N/A";
+WizBot Community Server: N/A";
 
         public int MigrationVersion { get; set; }
 
@@ -62,7 +62,26 @@ WizBot Support Server: N/A";
         public string ErrorColor { get; set; } = "ee281f";
         public string Locale { get; set; } = null;
         public List<StartupCommand> StartupCommands { get; set; }
+        public HashSet<BlockedCmdOrMdl> BlockedCommands { get; set; }
+        public HashSet<BlockedCmdOrMdl> BlockedModules { get; set; }
     }
+
+    public class BlockedCmdOrMdl : DbEntity
+    {
+        public string Name { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            return ((BlockedCmdOrMdl)obj).Name.ToLowerInvariant() == Name.ToLowerInvariant();
+        }
+
+        public override int GetHashCode() => Name.GetHashCode();
+}
 
     public class StartupCommand : DbEntity, IIndexed
     {
