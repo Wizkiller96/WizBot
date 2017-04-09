@@ -2587,5 +2587,29 @@ OwnerID: {2}</value>
   <data name="administration_not_in_voice" xml:space="preserve">
     <value></value>
   </data>
+  <data name="administration_global_perms_reset" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="permissions_blocked_commands" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="permissions_blocked_modules" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="permissions_gcmd_add" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="permissions_gcmd_remove" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="permissions_gmod_add" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="permissions_gmod_remove" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="permissions_lgp_none" xml:space="preserve">
+    <value></value>
+  </data>
 
 </root>
