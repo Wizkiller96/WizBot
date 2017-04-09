@@ -31,6 +31,7 @@ namespace WizBot.Modules.Help
                 .WithTitle(GetText("list_of_modules"))
                 .WithDescription(string.Join("\n",
                                      WizBot.CommandService.Modules.GroupBy(m => m.GetTopLevelModule())
+                                         .Where(m => !Permissions.Permissions.GlobalPermissionCommands.BlockedModules.Contains(m.Key.Name.ToLowerInvariant()))
                                          .Select(m => "• " + m.Key.Name)
                                          .OrderBy(s => s)));
             await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
@@ -45,6 +46,7 @@ namespace WizBot.Modules.Help
             if (string.IsNullOrWhiteSpace(module))
                 return;
             var cmds = WizBot.CommandService.Commands.Where(c => c.Module.GetTopLevelModule().Name.ToUpperInvariant().StartsWith(module))
+                                                  .Where(c => !Permissions.Permissions.GlobalPermissionCommands.BlockedCommands.Contains(c.Aliases.First().ToLowerInvariant()))
                                                   .OrderBy(c => c.Aliases.First())
                                                   .Distinct(new CommandTextEqualityComparer())
                                                   .AsEnumerable();
