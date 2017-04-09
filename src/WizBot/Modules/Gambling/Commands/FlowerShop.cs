@@ -140,7 +140,6 @@ namespace WizBot.Modules.Gambling
 
                             removed = uow.Complete();
                         }
-                        _log.Warn($"Removed {removed} items");
                         try
                         {
                             await (await Context.User.CreateDMChannelAsync())

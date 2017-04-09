@@ -533,6 +533,8 @@ namespace WizBot.Migrations
 
                 b.Property<bool>("FilterWords");
 
+                b.Property<ulong?>("GameVoiceChannel");
+
                 b.Property<ulong>("GreetMessageChannelId");
 
                 b.Property<ulong>("GuildId");
