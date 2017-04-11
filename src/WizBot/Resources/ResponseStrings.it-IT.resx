@@ -899,7 +899,7 @@ Motivo : {1}</value>
     <value>Errore durante il trasferimento, guarda la console del bot per più informazioni.</value>
   </data>
   <data name="administration_presence_updates" xml:space="preserve">
-    <value></value>
+    <value>Aggiornamenti sulla presenza</value>
   </data>
   <data name="administration_sb_user" xml:space="preserve">
     <value>Utente ammonito</value>
@@ -953,7 +953,7 @@ Motivo : {1}</value>
     <value>Classifica</value>
   </data>
   <data name="gambling_mass_award" xml:space="preserve">
-    <value></value>
+    <value>Premiati con {0} {1} utenti con il ruolo {2}.</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="gambling_max_bet_limit" xml:space="preserve">
@@ -1448,7 +1448,7 @@ il nuovo valore di {0} è {1}!</value>
     <value>Canzone iniziata</value>
   </data>
   <data name="music_playlists" xml:space="preserve">
-    <value></value>
+    <value>`#{0}` - **{1}** da *{2}* ({3} canzoni)</value>
   </data>
   <data name="music_playlists_page" xml:space="preserve">
     <value>Pagina {0} della playlist salvata</value>
@@ -1634,7 +1634,7 @@ il nuovo valore di {0} è {1}!</value>
     <value>Pagina dei comandi {0}</value>
   </data>
   <data name="permissions_permrole" xml:space="preserve">
-    <value></value>
+    <value>Attualmente i permessi del ruolo sono {0}.</value>
   </data>
   <data name="permissions_permrole_changed" xml:space="preserve">
     <value>Gli utenti ora devono avere il ruolo di {0} per modificare i permessi.</value>
@@ -1797,7 +1797,7 @@ il nuovo valore di {0} è {1}!</value>
     <value>Fallito a trovare questo film.</value>
   </data>
   <data name="searches_invalid_lang" xml:space="preserve">
-    <value></value>
+    <value>Fonte o lingua non valida.</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="searches_jokes_not_loaded" xml:space="preserve">
@@ -1991,7 +1991,7 @@ il nuovo valore di {0} è {1}!</value>
     <value>Entrato</value>
   </data>
   <data name="utility_activity_line" xml:space="preserve">
-    <value></value>
+    <value>`{0}.` {1} [{2:F2}/s] - {3} totali</value>
     <comment>/s and total need to be localized to fit the context -
 `1.`</comment>
   </data>
@@ -2035,10 +2035,10 @@ il nuovo valore di {0} è {1}!</value>
     <value>Creato a</value>
   </data>
   <data name="utility_csc_join" xml:space="preserve">
-    <value></value>
+    <value>Entrato nel canale tra server.</value>
   </data>
   <data name="utility_csc_leave" xml:space="preserve">
-    <value></value>
+    <value>Uscito dal canale tra server.</value>
   </data>
   <data name="utility_csc_token" xml:space="preserve">
     <value>Questo é il tuo token CSC</value>
@@ -2219,7 +2219,7 @@ ID del proprietario: {2}</value>
     <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="utility_shard_stats_txt" xml:space="preserve">
-    <value></value>
+    <value>Il frammento **#{0}** é nello stato {1} con {2} server</value>
     <comment>Ne pas confondre Shard et Shared ;) Dans discord, le mot shard n&apos;a pas d&apos;équivalent francophone.</comment>
   </data>
   <data name="utility_showemojis" xml:space="preserve">
@@ -2487,7 +2487,7 @@ ID del proprietario: {2}</value>
     <value>Non sta donando</value>
   </data>
   <data name="utility_clpa_fail_wait" xml:space="preserve">
-    <value>Devi aspettae un po&apos; di ore dopo aver fatto la tua donazione, se non lo hai fatto, prova di nuovo piú tardi</value>
+    <value>Devi aspettare un po&apos; di ore dopo aver donato, se non lo hai fatto, prova di nuovo piú tardi.</value>
   </data>
   <data name="utility_clpa_fail_wait_title" xml:space="preserve">
     <value>Aspetta un po&apos; di tempo</value>
