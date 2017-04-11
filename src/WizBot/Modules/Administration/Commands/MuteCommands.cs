@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
+using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Attributes;
 using WizBot.Services;
@@ -33,6 +34,9 @@ namespace WizBot.Modules.Administration
                 Chat,
                 All
             }
+            private static readonly OverwritePermissions denyOverwrite = new OverwritePermissions(sendMessages: PermValue.Deny, attachFiles: PermValue.Deny);
+
+            private static readonly new Logger _log = LogManager.GetCurrentClassLogger();
 
             static MuteCommands()
             {
@@ -153,21 +157,26 @@ namespace WizBot.Modules.Administration
                         muteRole = guild.Roles.FirstOrDefault(r => r.Name == muteRoleName) ??
                             await guild.CreateRoleAsync(defaultMuteRoleName, GuildPermissions.None).ConfigureAwait(false);
                     }
+                }
 
-                    foreach (var toOverwrite in (await guild.GetTextChannelsAsync()))
+                foreach (var toOverwrite in (await guild.GetTextChannelsAsync()))
+                {
+                    try
                     {
-                        try
+                        if (!toOverwrite.PermissionOverwrites.Select(x => x.Permissions).Contains(denyOverwrite))
                         {
-                            await toOverwrite.AddPermissionOverwriteAsync(muteRole, new OverwritePermissions(sendMessages: PermValue.Deny, attachFiles: PermValue.Deny))
+                            await toOverwrite.AddPermissionOverwriteAsync(muteRole, denyOverwrite)
                                     .ConfigureAwait(false);
+
+                            await Task.Delay(200).ConfigureAwait(false);
                         }
-                        catch
-                        {
-                            // ignored
-                        }
-                        await Task.Delay(200).ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        // ignored
                     }
                 }
+
                 return muteRole;
             }
 
