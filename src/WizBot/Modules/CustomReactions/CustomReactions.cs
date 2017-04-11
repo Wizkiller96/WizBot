@@ -28,7 +28,7 @@ namespace WizBot.Modules.CustomReactions
             {
                 return await channel.EmbedAsync(crembed.ToEmbed(), crembed.PlainText ?? "");
             }
-            return await channel.SendMessageAsync(cr.ResponseWithContext(context));
+            return await channel.SendMessageAsync(cr.ResponseWithContext(context).SanitizeMentions());
         }
     }
 
