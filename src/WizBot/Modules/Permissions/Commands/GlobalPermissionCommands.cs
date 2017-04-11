@@ -52,7 +52,7 @@ namespace WizBot.Modules.Permissions
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
-            public async Task Gmod(ModuleInfo module)
+            public async Task Gmod(ModuleOrCrInfo module)
             {
                 var moduleName = module.Name.ToLowerInvariant();
                 if (BlockedModules.Add(moduleName))

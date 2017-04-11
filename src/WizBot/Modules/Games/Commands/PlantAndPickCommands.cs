@@ -181,7 +181,7 @@ namespace WizBot.Modules.Games
                     return old;
                 });
             }
-
+#if !GLOBAL_WIZBOT
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.ManageMessages)]
@@ -218,7 +218,7 @@ namespace WizBot.Modules.Games
                     await ReplyConfirmLocalized("curgen_disabled").ConfigureAwait(false);
                 }
             }
-
+#endif
             private static KeyValuePair<string, ImmutableArray<byte>> GetRandomCurrencyImage()
             {
                 var rng = new WizBotRandom();
