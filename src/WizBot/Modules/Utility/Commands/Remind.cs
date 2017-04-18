@@ -17,7 +17,7 @@ namespace WizBot.Modules.Utility
     public partial class Utility
     {
         [Group]
-        public class RemindCommands : WizSubmodule
+        public class RemindCommands : WizBotSubmodule
         {
             readonly Regex _regex = new Regex(@"^(?:(?<months>\d)mo)?(?:(?<weeks>\d)w)?(?:(?<days>\d{1,2})d)?(?:(?<hours>\d{1,2})h)?(?:(?<minutes>\d{1,2})m)?$",
                                     RegexOptions.Compiled | RegexOptions.Multiline);
