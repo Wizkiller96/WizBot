@@ -2,13 +2,13 @@
 
   <PropertyGroup>
     <Description>General purpose Discord bot written in C#.</Description>
-    <Copyright>Kwoth</Copyright>
-    <Authors>Kwoth</Authors>
+    <Copyright>WizNet</Copyright>
+    <Authors>Kwoth and Wizkiller96</Authors>
     <TargetFramework>netcoreapp1.1</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <AssemblyName>NadekoBot</AssemblyName>
+    <AssemblyName>WizBot</AssemblyName>
     <OutputType>Exe</OutputType>
-    <PackageId>NadekoBot</PackageId>
+    <PackageId>WizBot</PackageId>
     <RuntimeFrameworkVersion>1.1.1</RuntimeFrameworkVersion>
     <PackageTargetFallback>$(PackageTargetFallback);dnxcore50;portable-net45+win8+wpa81</PackageTargetFallback>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
@@ -63,8 +63,8 @@
     <PackageReference Include="System.Xml.XPath" Version="4.3.0" />
   </ItemGroup>
 
-  <PropertyGroup Condition=" '$(Configuration)' == 'GlobalNadeko' ">
-    <DefineConstants>$(DefineConstants);GLOBAL_NADEKO</DefineConstants>
+  <PropertyGroup Condition=" '$(Configuration)' == 'GlobalWizBot' ">
+    <DefineConstants>$(DefineConstants);GLOBAL_WIZBOT</DefineConstants>
     <NoWarn>$(NoWarn);CS1573;CS1591</NoWarn>
   </PropertyGroup>
 
