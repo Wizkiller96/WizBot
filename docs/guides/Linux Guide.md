@@ -1,12 +1,12 @@
-##Setting up NadekoBot on Linux
+##Setting up WizBot on Linux
 
-####Setting up NadekoBot on Linux Digital Ocean Droplet
-If you want Nadeko to play music for you 24/7 without having to hosting it on your PC and want to keep it cheap, reliable and convenient as possible, you can try Nadeko on Linux Digital Ocean Droplet using the link [DigitalOcean](http://m.do.co/c/46b4d3d44795/) (and using this link will be supporting Nadeko and will give you **$10 credit**)
+####Setting up WizBot on Linux Digital Ocean Droplet
+If you want WizBot to play music for you 24/7 without having to hosting it on your PC and want to keep it cheap, reliable and convenient as possible, you can try Nadeko on Linux Digital Ocean Droplet using the link [DigitalOcean](https://m.do.co/c/7290047d0c84/) (and using this link will be supporting WizBot and will give you **$10 credit**)
 
-####Setting up NadekoBot
+####Setting up WizBot
 Assuming you have followed the link above to setup an account and Droplet with 64bit OS in Digital Ocean and got the `IP address and root password (in email)` to login, its time to get started.
 
-**Go through this whole guide before setting up Nadeko**
+**Go through this whole guide before setting up WizBot**
 
 ####Prerequisites
 - Download [PuTTY](http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html)
@@ -26,7 +26,7 @@ If you entered your Droplets IP address correctly, it should show **login as:** 
 
 ####Creating and Inviting bot
 
-- Read here how to [create a DiscordBot application](http://nadekobot.readthedocs.io/en/latest/guides/Windows%20Guide/#creating-discordbot-application)
+- Read here how to [create a DiscordBot application](http://wizbot.readthedocs.io/en/latest/guides/Windows%20Guide/#creating-discordbot-application)
 - [Visual Invite Guide](http://discord.kongslien.net/guide.html) **(Note: Client ID is your Bot ID)**
 - Copy your `Client ID` from your [applications page](https://discordapp.com/developers/applications/me).
 - Replace the **12345678** in this link: 	
@@ -37,63 +37,63 @@ If you entered your Droplets IP address correctly, it should show **login as:** 
 - Go to the newly created link and pick the server we created, and click `Authorize`
 - The bot should have been added to your server.
 
-####Getting NadekoBot
+####Getting WizBot
 #####Part I
 Use the following command to get and run `linuxAIO.sh`		
 (Remember **Do Not** rename the file **linuxAIO.sh**)
 
-`cd ~ && wget -N https://github.com/Kwoth/NadekoBot-BashScript/raw/master/linuxAIO.sh && bash linuxAIO.sh`
+`cd ~ && wget -N https://github.com/Wizkiller96/WizBot-BashScript/raw/master/linuxAIO.sh && bash linuxAIO.sh`
 
 You should see these following options after using the above command:
 
 ```
 1. Download Dev Build (Latest)
 2. Download Stable Build
-3. Run Nadeko (Normally)
-4. Run Nadeko with Auto Restart (Run Nadeko normally before using this.)
+3. Run WizBot (Normally)
+4. Run WizBot with Auto Restart (Run WizBot normally before using this.)
 5. Auto-Install Prerequisites (for Ubuntu, Debian and CentOS)
 6. Set up credentials.json (if you have downloaded the bot already)
 7. To exit
 ```
 #####Part II (Optional)
-**If** you are running NadekoBot for the first time on your system and never had any *prerequisites* installed and have Ubuntu, Debian or CentOS, Press `5` and `enter` key, then `y` when you see the following:
+**If** you are running WizBot for the first time on your system and never had any *prerequisites* installed and have Ubuntu, Debian or CentOS, Press `5` and `enter` key, then `y` when you see the following:
 ```
-Welcome to NadekoBot Auto Prerequisites Installer.
+Welcome to WizBot Auto Prerequisites Installer.
 Would you like to continue?
 ```
-That will install all the prerequisites your system need to run NadekoBot.
+That will install all the prerequisites your system need to run WizBot.
 
-If you prefer to install them [manually](http://nadekobot.readthedocs.io/en/latest/guides/Linux%20Guide/#installing-manually-optional), click on the link. *(Optional)*
+If you prefer to install them [manually](http://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#installing-manually-optional), click on the link. *(Optional)*
 
 Once *prerequisites* finish installing.
 #####Part III
 Choose either 
-`1` to get the **most updated build of NadekoBot** 
+`1` to get the **most updated build of WizBot** 
 or 
-`2` to get the **previously stable build of NadekoBot**
+`2` to get the **previously stable build of WizBot**
 and then press `enter` key.	
 
 Once Installation is completed you should see the options again.
 
 Next, check out:
 #####Part IV (Optional)
-If you prefer to skip this step and want to do it [manually](http://nadekobot.readthedocs.io/en/latest/guides/Linux%20Guide/#setting-up-sftp) or already have the `credentials.json` file, click on the link. *(Optional)*
+If you prefer to skip this step and want to do it [manually](http://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#setting-up-sftp) or already have the `credentials.json` file, click on the link. *(Optional)*
 
-- [1. Setting up credentials.json](http://nadekobot.readthedocs.io/en/latest/guides/Linux%20Guide/#setting-up-credentialsjson)
-- [2. To Get the Google API](http://nadekobot.readthedocs.io/en/latest/guides/Windows%20Guide/#setting-up-nadekobot-for-music)
-- [3. JSON Explanations for other APIs](http://nadekobot.readthedocs.io/en/latest/JSON%20Explanations/)
+- [1. Setting up credentials.json](http://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#setting-up-credentialsjson)
+- [2. To Get the Google API](http://wizbot.readthedocs.io/en/latest/guides/Windows%20Guide/#setting-up-wizbot-for-music)
+- [3. JSON Explanations for other APIs](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/)
 
 You will need the following for the next step:
 ![botimg](https://cdn.discordapp.com/attachments/251504306010849280/276455844223123457/Capture.PNG)
 
-- **Bot's Client ID** and **Bot's ID** (both are same) [(*required)](http://nadekobot.readthedocs.io/en/latest/guides/Windows%20Guide/#setting-up-credentialsjson-file)
-- **Bot's Token** (not client secret) [(*required)](http://nadekobot.readthedocs.io/en/latest/guides/Windows%20Guide/#setting-up-credentialsjson-file)
-- Your **Discord userID** [(*required)](http://nadekobot.readthedocs.io/en/latest/guides/Windows%20Guide/#setting-up-credentialsjson-file)
-- **Google Api Key** [(optional)](http://nadekobot.readthedocs.io/en/latest/guides/Windows%20Guide/#setting-up-nadekobot-for-music)
-- **LoL Api Key** [(optional)](http://nadekobot.readthedocs.io/en/latest/JSON%20Explanations/)
-- **Mashape Key** [(optional)](http://nadekobot.readthedocs.io/en/latest/JSON%20Explanations/)
-- **Osu Api Key** [(optional)](http://nadekobot.readthedocs.io/en/latest/JSON%20Explanations/)
-- **Sound Cloud Client Id** [(optional)](http://nadekobot.readthedocs.io/en/latest/JSON%20Explanations/)
+- **Bot's Client ID** and **Bot's ID** (both are same) [(*required)](http://wizbot.readthedocs.io/en/latest/guides/Windows%20Guide/#setting-up-credentialsjson-file)
+- **Bot's Token** (not client secret) [(*required)](http://wizbot.readthedocs.io/en/latest/guides/Windows%20Guide/#setting-up-credentialsjson-file)
+- Your **Discord userID** [(*required)](http://wizbot.readthedocs.io/en/latest/guides/Windows%20Guide/#setting-up-credentialsjson-file)
+- **Google Api Key** [(optional)](http://wizbot.readthedocs.io/en/latest/guides/Windows%20Guide/#setting-up-wizbot-for-music)
+- **LoL Api Key** [(optional)](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/)
+- **Mashape Key** [(optional)](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/)
+- **Osu Api Key** [(optional)](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/)
+- **Sound Cloud Client Id** [(optional)](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/)
 
 Once you have acquired them, press `6` to **Set up credentials.json**
 
@@ -104,21 +104,21 @@ You will be asked to enter the required informations, just follow the on-screen 
 Once done,		
 #####Part V
 You should see the options again.	
-Next, press `3` to **Run Nadeko (Normally)**	
+Next, press `3` to **Run WizBot (Normally)**	
 Check in your discord server if your new bot is working properly.	
 #####Part VI
 If your bot is working properly in your server, type `.die` to **shut down the bot**, then press `7` to **exit**.
-Next, [Run your bot again with **tmux**.](http://nadekobot.readthedocs.io/en/latest/guides/Linux%20Guide/#running-nadekobot)	
+Next, [Run your bot again with **tmux**.](http://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#running-wizbot)	
 
-[Check this when you need to **restart** your **NadekoBot** anytime later along with tmux session.](http://nadekobot.readthedocs.io/en/latest/guides/Linux%20Guide/#restarting-nadeko)
+[Check this when you need to **restart** your **WizBot** anytime later along with tmux session.](http://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#restarting-wizbot)
 
-####Running NadekoBot
+####Running WizBot
 
 **Create a new Session:**
 
-- `tmux new -s nadeko`  
+- `tmux new -s wizbot`  
   
-The above command will create a new session named **nadeko** *(you can replace “nadeko” with anything you prefer and remember its your session name)* so you can run the bot in background without having to keep the PuTTY running.
+The above command will create a new session named **wizbot** *(you can replace “wizbot” with anything you prefer and remember its your session name)* so you can run the bot in background without having to keep the PuTTY running.
 
 **Next, we need to run `linuxAIO.sh` in order to get the latest running scripts with patches:**
 
@@ -126,10 +126,10 @@ The above command will create a new session named **nadeko** *(you can replace �
 
 **From the options,**
 
-Choose `3` to **Run NadekoBot normally.**		
-**NOTE:** With option `3` (Running Normally), if you use `.die` [command](http://nadekobot.readthedocs.io/en/latest/Commands%20List/#administration) in discord. The bot will shut down and will stay offline until you manually run it again. (best if you want to check the bot.)
+Choose `3` to **Run WizBot normally.**		
+**NOTE:** With option `3` (Running Normally), if you use `.die` [command](http://wizbot.readthedocs.io/en/latest/Commands%20List/#administration) in discord. The bot will shut down and will stay offline until you manually run it again. (best if you want to check the bot.)
 
-Choose `4` to **Run NadekoBot with Auto Restart.**	
+Choose `4` to **Run WizBot with Auto Restart.**	
 It will show you more options: 
 ```
 1. Run Auto Restart normally without Updating.
@@ -137,41 +137,41 @@ It will show you more options:
 3. Auto Restart and Update with Stable Build
 4. Exit
 ```
-**NOTE:** With option `4` (Running with Auto Restart), bot will auto run if you use `.die` [command](http://nadekobot.readthedocs.io/en/latest/Commands%20List/#administration) making the command `.die` to function as restart.	
+**NOTE:** With option `4` (Running with Auto Restart), bot will auto run if you use `.die` [command](http://wizbot.readthedocs.io/en/latest/Commands%20List/#administration) making the command `.die` to function as restart.	
 
 See how that happens:
 
 ![img9](https://cdn.discordapp.com/attachments/251504306010849280/251506312893038592/die_explaination.gif)
 
-**Remember** that, while running with Auto Restart, you will need to [close the tmux session](http://nadekobot.readthedocs.io/en/latest/guides/Linux%20Guide/#restarting-nadeko) to stop the bot completely.
+**Remember** that, while running with Auto Restart, you will need to [close the tmux session](http://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#restarting-wizbot) to stop the bot completely.
 
 **Now check your Discord, the bot should be online**
 
-Next to **move the bot to background** and to do that, press **CTRL+B+D** (that will detach the nadeko session using TMUX) and you can finally close **PuTTY** if you want.
+Next to **move the bot to background** and to do that, press **CTRL+B+D** (that will detach the wizbot session using TMUX) and you can finally close **PuTTY** if you want.
 
-####Restarting Nadeko
+####Restarting WizBot
 
-**Restarting NadekoBot:**
+**Restarting WizBot:**
 
-**If** you have chosen option `4` to **Run Nadeko with Auto Restart** from Nadeko's `linuxAIO.sh` *[(you got it from this step)](http://nadekobot.readthedocs.io/en/latest/guides/Linux%20Guide/#getting-nadekobot)*	
-You can simply type `.die` in the server you have your NadekoBot to make her restart.
+**If** you have chosen option `4` to **Run WizBot with Auto Restart** from WizBot's `linuxAIO.sh` *[(you got it from this step)](http://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#getting-wizbot)*	
+You can simply type `.die` in the server you have your WizBot to make her restart.
 
-**Restarting Nadeko with the Server:**
+**Restarting WizBot with the Server:**
 
 Open **PuTTY** and login as you have before, type `reboot` and hit Enter.
 
 **Restarting Manually:**
 
 - Kill your previous session, check with `tmux ls`
-- `tmux kill-session -t nadeko` (don't forget to replace "nadeko" to what ever you named your bot's session)
-- [Run the bot again.](http://nadekobot.readthedocs.io/en/latest/guides/Linux%20Guide/#running-nadekobot)
+- `tmux kill-session -t wizbot` (don't forget to replace "wizbot" to what ever you named your bot's session)
+- [Run the bot again.](http://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#running-wizbot)
 
-####Updating Nadeko
+####Updating WizBot
 
 - Connect to the terminal through **PuTTY**.
-- `tmux kill-session -t nadeko` (don't forget to replace **nadeko** in the command with the name of your bot's session)
+- `tmux kill-session -t wizbot` (don't forget to replace **wizbot** in the command with the name of your bot's session)
 - Make sure the bot is **not** running.
-- `tmux new -s nadeko` (**nadeko** is the name of the session)
+- `tmux new -s wizbot` (**wizbot** is the name of the session)
 - `cd ~ && bash linuxAIO.sh`
 - Choose either `1` or `2` to update the bot with **latest build** or **stable build** respectively.
 - Choose either `3` or `4` to run the bot again with **normally** or **auto restart** respectively.
@@ -304,18 +304,18 @@ Centos:
 
 **Skip this step if you are a Regular User or New to Linux.**
 
-[![img7][img7]](http://nadekobot.readthedocs.io/en/latest/guides/Linux%20Guide/#getting-nadekobot)
+[![img7][img7]](http://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#getting-wizbot)
 
-- Right after [Getting NadekoBot](http://nadekobot.readthedocs.io/en/latest/guides/Linux%20Guide/#getting-nadekobot)
-- `cd NadekoBot/src/NadekoBot/` (go to this folder)
+- Right after [Getting WizBot](http://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#getting-wizbot)
+- `cd WizBot/src/WizBot/` (go to this folder)
 - `pico credentials.json` (open credentials.json to edit)
-- Insert your bot **Client ID, Bot ID** (should be same as your Client ID) **and Token** if you got it following [Creating and Inviting bot](http://nadekobot.readthedocs.io/en/latest/guides/Linux%20Guide/#creating-and-inviting-bot).
-- Insert your own ID in Owners ID follow: [Setting up credentials.json](http://nadekobot.readthedocs.io/en/latest/guides/Windows%20Guide/#setting-up-credentialsjson-file)
-- And Google API from [Setting up NadekoBot for Music](http://nadekobot.readthedocs.io/en/latest/guides/Windows%20Guide/#setting-up-nadekobot-for-music)
+- Insert your bot **Client ID, Bot ID** (should be same as your Client ID) **and Token** if you got it following [Creating and Inviting bot](http://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#creating-and-inviting-bot).
+- Insert your own ID in Owners ID follow: [Setting up credentials.json](http://wizbot.readthedocs.io/en/latest/guides/Windows%20Guide/#setting-up-credentialsjson-file)
+- And Google API from [Setting up WizBot for Music](http://wizbot.readthedocs.io/en/latest/guides/Windows%20Guide/#setting-up-wizbot-for-music)
 - Once done, press `CTRL+X`
 - It will ask for "Save Modified Buffer?", press `Y` for yes
 - It will then ask "File Name to Write" (rename), just hit `Enter` and Done.
-- You can now move to [Running NadekoBot](http://nadekobot.readthedocs.io/en/latest/guides/Linux%20Guide/#running-nadekobot)
+- You can now move to [Running WizBot](http://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#running-wizbot)
 
 ####Setting up SFTP
 
@@ -327,20 +327,20 @@ Centos:
 - In **Username:** type `root`
 - In **Password:** type `the new root password (you changed at the start)`
 - Click on **Login**, it should connect.
-- It should show you the NadekoBot folder which was created by git earlier on the right-hand side window.
-- Open that folder, then open the `src` folder, followed by another `NadekoBot` folder and you should see `credentials.json` there.
+- It should show you the WizBot folder which was created by git earlier on the right-hand side window.
+- Open that folder, then open the `src` folder, followed by another `WizBot` folder and you should see `credentials.json` there.
 
 ####Setting up credentials.json
 
 - Copy the `credentials.json` to desktop
-- EDIT it as it is guided here: [Setting up credentials.json](http://nadekobot.readthedocs.io/en/latest/guides/Windows%20Guide/#setting-up-credentialsjson-file)
+- EDIT it as it is guided here: [Setting up credentials.json](http://wizbot.readthedocs.io/en/latest/guides/Windows%20Guide/#setting-up-credentialsjson-file)
 - Paste/put it back in the folder once done. `(Using WinSCP)`
-- **If** you already have Nadeko 1.0 setup and have `credentials.json` and `NadekoBot.db`, you can just copy and paste the `credentials.json` to `NadekoBot/src/NadekoBot` and `NadekoBot.db` to `NadekoBot/src/NadekoBot/bin/Release/netcoreapp1.0/data` using WinSCP.
-- **If** you have Nadeko 0.9x follow the [Upgrading Guide](http://nadekobot.readthedocs.io/en/latest/guides/Upgrading%20Guide/)
+- **If** you already have WizBot 1.0 setup and have `credentials.json` and `WizBot.db`, you can just copy and paste the `credentials.json` to `WizBot/src/WizBot` and `WizBot.db` to `WizBot/src/WizBot/bin/Release/netcoreapp1.0/data` using WinSCP.
+- **If** you have WizBot 0.9x follow the [Upgrading Guide](http://wizbot.readthedocs.io/en/latest/guides/Upgrading%20Guide/)
 
 ####Setting up Music
 
-To set up Nadeko for music and Google API Keys, follow [Setting up NadekoBot for Music](http://nadekobot.readthedocs.io/en/latest/guides/Windows%20Guide/#setting-up-nadekobot-for-music)
+To set up WizBot for music and Google API Keys, follow [Setting up WizBot for Music](http://wizbot.readthedocs.io/en/latest/guides/Windows%20Guide/#setting-up-wizbot-for-music)
 
 Once done, go back to **PuTTY**
 
@@ -349,28 +349,28 @@ Once done, go back to **PuTTY**
 #####Info about tmux
 
 - If you want to **see the sessions** after logging back again, type `tmux ls`, and that will give you the list of sessions running.
-- If you want to **switch to/ see that session**, type `tmux a -t nadeko` (**nadeko** is the name of the session we created before so, replace **“nadeko”** with the session name you created.)
-- If you want to **kill** NadekoBot **session**, type `tmux kill-session -t nadeko`
+- If you want to **switch to/ see that session**, type `tmux a -t wizbot` (**wizbot** is the name of the session we created before so, replace **“wizbot”** with the session name you created.)
+- If you want to **kill** WizBot **session**, type `tmux kill-session -t wizbot`
 
 #####Alternative way to Install
 
-If the [Nadeko installer](http://nadekobot.readthedocs.io/en/latest/guides/Linux%20Guide/#getting-nadekobot) shows any kind error, check if you have the `linuxAIO.sh` file and make sure its not renamed or if you want to manually install the bot. Use the following command(s):
+If the [WizBot installer](http://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#getting-wizbot) shows any kind error, check if you have the `linuxAIO.sh` file and make sure its not renamed or if you want to manually install the bot. Use the following command(s):
 
 ![img6](https://cdn.discordapp.com/attachments/251504306010849280/251505587089571850/getting_nadeko.gif)
 
-`cd ~ && curl -L https://github.com/Kwoth/NadekoBot-BashScript/raw/master/nadeko_installer.sh | sh`
+`cd ~ && curl -L https://github.com/Wizkiller96/WizBot-BashScript/raw/master/wizbot_installer.sh | sh`
 
 **OR**
 
 ```sh
-cd ~ && git clone -b dev --recursive --depth 1 https://github.com/Kwoth/NadekoBot.git
-cd ~/NadekoBot/discord.net/src/Discord.Net && dotnet restore && cd ../Discord.Net.Commands && dotnet restore && cd ../../../src/NadekoBot/ && dotnet restore && dotnet build --configuration Release
+cd ~ && git clone -b dev --recursive --depth 1 https://github.com/Wizkiller96/WizBot.git
+cd ~/WizBot/discord.net/src/Discord.Net && dotnet restore && cd ../Discord.Net.Commands && dotnet restore && cd ../../../src/WizBot/ && dotnet restore && dotnet build --configuration Release
 ```
   
 If you are getting error using the above steps try:
 
 ```sh
-cd ~/NadekoBot/discord.net && dotnet restore -s https://dotnet.myget.org/F/dotnet-core/api/v3/index.json && dotnet restore
-cd ~/NadekoBot/src/NadekoBot/ && dotnet restore && dotnet build --configuration Release
+cd ~/WizBot/discord.net && dotnet restore -s https://dotnet.myget.org/F/dotnet-core/api/v3/index.json && dotnet restore
+cd ~/WizBot/src/WizBot/ && dotnet restore && dotnet build --configuration Release
 ```
 [img7]: https://cdn.discordapp.com/attachments/251504306010849280/251505766370902016/setting_up_credentials.gif

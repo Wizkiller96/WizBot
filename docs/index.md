@@ -1,18 +1,18 @@
-#NadekoBot Documentation
+#WizBot Documentation
 
-To invite NadekoBot to your server, click on the image bellow:
+To invite WizBot to your server, click on the image bellow:
 
-[![img][img]](https://discordapp.com/oauth2/authorize?client_id=170254782546575360&scope=bot&permissions=66186303)
+[![img][img]](https://discordapp.com/oauth2/authorize?client_id=170849867508350977&scope=bot&permissions=66186303)
 
-In case you need any help, hop on the [NadekoBot Server][NadekoBot Server], where we can provide support.
+In case you need any help, hop on the [WizBot Server][WizBot Server], where we can provide support.
 
-NadekoBot is an open source project, and it can be found on our [GitHub][GitHub] page.
+WizBot is an open source project, and it can be found on our [GitHub][GitHub] page.
 
 Here you can read current [Issues][Issues].
 
 If you want to contribute, be sure to PR on the **[dev][dev]** branch.
 
-**NadekoBot 1.1 release currently does not support x86/32bit architecture.**
+**WizBot 1.1 release currently does not support x86/32bit architecture.**
 
 ##Content
 - [About](about.md)
@@ -33,7 +33,7 @@ If you want to contribute, be sure to PR on the **[dev][dev]** branch.
 - [Donate](Donate.md)
 
 [img]: https://cdn.discordapp.com/attachments/202743183774318593/210580315381563392/discord.png
-[NadekoBot Server]: https://discord.gg/nadekobot
-[GitHub]: https://github.com/Kwoth/NadekoBot
-[Issues]: https://github.com/Kwoth/NadekoBot/issues
-[dev]: https://github.com/Kwoth/NadekoBot/tree/dev
+[WizBot Server]: https://discord.gg/0ehQwTK2RBjAxzEY
+[GitHub]: https://github.com/Wizkiller96/WizBot
+[Issues]: https://github.com/Wizkiller96/WizBot/issues
+[dev]: https://github.com/Wizkiller96/WizBot/tree/dev

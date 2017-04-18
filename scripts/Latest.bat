@@ -1,15 +1,15 @@
 @ECHO off
-TITLE Downloading Latest Build of NadekoBot...
+TITLE Downloading Latest Build of WizBot...
 ::Setting convenient to read variables which don't delete the windows temp folder
 SET "root=%~dp0"
 CD /D "%root%"
 SET "rootdir=%cd%"
-SET "build1=%root%NadekoInstall_Temp\NadekoBot\Discord.Net\src\Discord.Net.Core\"
-SET "build2=%root%NadekoInstall_Temp\NadekoBot\Discord.Net\src\Discord.Net.Rest\"
-SET "build3=%root%NadekoInstall_Temp\NadekoBot\Discord.Net\src\Discord.Net.WebSocket\"
-SET "build4=%root%NadekoInstall_Temp\NadekoBot\Discord.Net\src\Discord.Net.Commands\"
-SET "build5=%root%NadekoInstall_Temp\NadekoBot\src\NadekoBot\"
-SET "installtemp=%root%NadekoInstall_Temp\"
+SET "build1=%root%WizBotInstall_Temp\WizBot\Discord.Net\src\Discord.Net.Core\"
+SET "build2=%root%WizBotInstall_Temp\WizBot\Discord.Net\src\Discord.Net.Rest\"
+SET "build3=%root%WizBotInstall_Temp\WizBot\Discord.Net\src\Discord.Net.WebSocket\"
+SET "build4=%root%WizBotInstall_Temp\WizBot\Discord.Net\src\Discord.Net.Commands\"
+SET "build5=%root%WizBotInstall_Temp\WizBot\src\WizBot\"
+SET "installtemp=%root%WizBotInstall_Temp\"
 ::Deleting traces of last setup for the sake of clean folders, if by some miracle it still exists
 IF EXIST "%installtemp%" ( RMDIR "%installtemp%" /S /Q >nul 2>&1)
 timeout /t 5
@@ -18,17 +18,17 @@ dotnet --version >nul 2>&1 || GOTO :dotnet
 git --version >nul 2>&1 || GOTO :git
 ::Creates the install directory to work in and get the current directory because spaces ruins everything otherwise
 :start
-MKDIR "%root%NadekoInstall_Temp"
+MKDIR "%root%WizBotInstall_Temp"
 CD /D "%installtemp%"
-::Downloads the latest version of Nadeko
-ECHO Downloading Nadeko...
+::Downloads the latest version of WizBot
+ECHO Downloading WizBot...
 ECHO.
-git clone -b dev --recursive --depth 1 --progress https://github.com/Kwoth/NadekoBot.git >nul
+git clone -b dev --recursive --depth 1 --progress https://github.com/Wizkiller96/WizBot.git >nul
 IF %ERRORLEVEL% EQU 128 (GOTO :giterror)
-TITLE Installing NadekoBot, please wait...
+TITLE Installing WizBot, please wait...
 ECHO.
 ECHO Installing Discord.Net(1/4)...
-::Building Nadeko
+::Building WizBot
 CD /D "%build1%"
 dotnet restore >nul 2>&1
 ECHO Installing Discord.Net(2/4)...
@@ -43,49 +43,49 @@ dotnet restore >nul 2>&1
 ECHO.
 ECHO Discord.Net installation completed successfully...
 ECHO.
-ECHO Installing NadekoBot...
+ECHO Installing WizBot...
 CD /D "%build5%"
 dotnet restore >nul 2>&1
 dotnet build --configuration Release >nul 2>&1
 ECHO.
-ECHO NadekoBot installation completed successfully...
+ECHO WizBot installation completed successfully...
 ::Attempts to backup old files if they currently exist in the same folder as the batch file
-IF EXIST "%root%NadekoBot\" (GOTO :backupinstall) ELSE (GOTO :freshinstall)
+IF EXIST "%root%WizBot\" (GOTO :backupinstall) ELSE (GOTO :freshinstall)
 :freshinstall
-	::Moves the NadekoBot folder to keep things tidy
+	::Moves the WizBot folder to keep things tidy
 	ECHO.
 	ECHO Moving files, Please wait...
-	ROBOCOPY "%root%NadekoInstall_Temp" "%rootdir%" /E /MOVE >nul 2>&1
+	ROBOCOPY "%root%WizBotInstall_Temp" "%rootdir%" /E /MOVE >nul 2>&1
 	IF %ERRORLEVEL% GEQ 8 (GOTO :copyerror)
 	IF EXIST "%PROGRAMFILES(X86)%" (GOTO 64BIT) ELSE (GOTO 32BIT)
 :backupinstall
 	TITLE Backing up old files...
 	ECHO.
 	ECHO Moving and Backing up old files...
-	::Recursively copies all files and folders from NadekoBot to NadekoBot_Old
-	ROBOCOPY "%root%NadekoBot" "%root%NadekoBot_Old" /MIR >nul 2>&1
+	::Recursively copies all files and folders from WizBot to WizBot_Old
+	ROBOCOPY "%root%WizBot" "%root%WizBot_Old" /MIR >nul 2>&1
 	IF %ERRORLEVEL% GEQ 8 (GOTO :copyerror)
 	ECHO.
-	ECHO Old files backed up to NadekoBot_Old...
+	ECHO Old files backed up to WizBot_Old...
 	::Copies the credentials and database from the backed up data to the new folder
-	COPY "%root%NadekoBot_Old\src\NadekoBot\credentials.json" "%installtemp%NadekoBot\src\NadekoBot\credentials.json" >nul 2>&1
+	COPY "%root%WizBot_Old\src\WizBot\credentials.json" "%installtemp%WizBot\src\WizBot\credentials.json" >nul 2>&1
 	IF %ERRORLEVEL% GEQ 8 (GOTO :copyerror)
 	ECHO.
 	ECHO credentials.json copied...
-	ROBOCOPY "%root%NadekoBot_Old\src\NadekoBot\bin" "%installtemp%NadekoBot\src\NadekoBot\bin" /E >nul 2>&1
+	ROBOCOPY "%root%WizBot_Old\src\WizBot\bin" "%installtemp%WizBot\src\WizBot\bin" /E >nul 2>&1
 	IF %ERRORLEVEL% GEQ 8 (GOTO :copyerror)
 	ECHO.
 	ECHO bin folder copied...
-	RD /S /Q "%root%NadekoBot_Old\src\NadekoBot\data\musicdata"
+	RD /S /Q "%root%WizBot_Old\src\WizBot\data\musicdata"
 	ECHO.
 	ECHO music cache cleared...
-	ROBOCOPY "%root%NadekoBot_Old\src\NadekoBot\data" "%installtemp%NadekoBot\src\NadekoBot\data" /E >nul 2>&1
+	ROBOCOPY "%root%WizBot_Old\src\WizBot\data" "%installtemp%WizBot\src\WizBot\data" /E >nul 2>&1
 	IF %ERRORLEVEL% GEQ 8 (GOTO :copyerror)
 	ECHO.
 	ECHO Old data folder copied...
-	::Moves the setup Nadeko folder
-	RMDIR "%root%NadekoBot\" /S /Q >nul 2>&1
-	ROBOCOPY "%root%NadekoInstall_Temp" "%rootdir%" /E /MOVE >nul 2>&1
+	::Moves the setup WizBot folder
+	RMDIR "%root%WizBot\" /S /Q >nul 2>&1
+	ROBOCOPY "%root%WizBotInstall_Temp" "%rootdir%" /E /MOVE >nul 2>&1
 	IF %ERRORLEVEL% GEQ 8 (GOTO :copyerror)
 	IF EXIST "%PROGRAMFILES(X86)%" (GOTO 64BIT) ELSE (GOTO 32BIT)
 :dotnet
@@ -115,7 +115,7 @@ IF EXIST "%root%NadekoBot\" (GOTO :backupinstall) ELSE (GOTO :freshinstall)
 	ECHO.
 	ECHO An error in copying data has been encountered, returning an exit code of %ERRORLEVEL%
 	ECHO.
-	ECHO Make sure to close any files, such as `NadekoBot.db` before continuing or try running the installer as an Administrator
+	ECHO Make sure to close any files, such as `WizBot.db` before continuing or try running the installer as an Administrator
 	PAUSE >nul 2>&1
 	CD /D "%root%"
 	GOTO :EOF
@@ -129,34 +129,34 @@ ECHO Your System Architecture is 32bit...
 timeout /t 5
 ECHO.
 ECHO Getting 32bit libsodium.dll and opus.dll...
-IF EXIST "%root%NadekoBot\src\NadekoBot\_libs\32\libsodium.dll" (GOTO copysodium) ELSE (GOTO downloadsodium)
+IF EXIST "%root%WizBot\src\WizBot\_libs\32\libsodium.dll" (GOTO copysodium) ELSE (GOTO downloadsodium)
 :copysodium
-del "%root%NadekoBot\src\NadekoBot\libsodium.dll"
-copy "%root%NadekoBot\src\NadekoBot\_libs\32\libsodium.dll" "%root%NadekoBot\src\NadekoBot\libsodium.dll"
+del "%root%WizBot\src\WizBot\libsodium.dll"
+copy "%root%WizBot\src\WizBot\_libs\32\libsodium.dll" "%root%WizBot\src\WizBot\libsodium.dll"
 ECHO libsodium.dll copied.
 ECHO.
 timeout /t 5
-IF EXIST "%root%NadekoBot\src\NadekoBot\_libs\32\opus.dll" (GOTO copyopus) ELSE (GOTO downloadopus)
+IF EXIST "%root%WizBot\src\WizBot\_libs\32\opus.dll" (GOTO copyopus) ELSE (GOTO downloadopus)
 :downloadsodium
-SET "FILENAME=%~dp0\NadekoBot\src\NadekoBot\libsodium.dll"
-powershell -Command "Invoke-WebRequest https://github.com/Kwoth/NadekoBot/raw/dev/src/NadekoBot/_libs/32/libsodium.dll -OutFile '%FILENAME%'"
+SET "FILENAME=%~dp0\WizBot\src\WizBot\libsodium.dll"
+powershell -Command "Invoke-WebRequest https://github.com/Kwoth/WizBot/raw/dev/src/WizBot/_libs/32/libsodium.dll -OutFile '%FILENAME%'"
 ECHO libsodium.dll downloaded.
 ECHO.
 timeout /t 5
-IF EXIST "%root%NadekoBot\src\NadekoBot\_libs\32\opus.dll" (GOTO copyopus) ELSE (GOTO downloadopus)
+IF EXIST "%root%WizBot\src\WizBot\_libs\32\opus.dll" (GOTO copyopus) ELSE (GOTO downloadopus)
 :copyopus
-del "%root%NadekoBot\src\NadekoBot\opus.dll"
-copy "%root%NadekoBot\src\NadekoBot\_libs\32\opus.dll" "%root%NadekoBot\src\NadekoBot\opus.dll"
+del "%root%WizBot\src\WizBot\opus.dll"
+copy "%root%WizBot\src\WizBot\_libs\32\opus.dll" "%root%WizBot\src\WizBot\opus.dll"
 ECHO opus.dll copied.
 GOTO end
 :downloadopus
-SET "FILENAME=%~dp0\NadekoBot\src\NadekoBot\opus.dll"
-powershell -Command "Invoke-WebRequest https://github.com/Kwoth/NadekoBot/raw/dev/src/NadekoBot/_libs/32/opus.dll -OutFile '%FILENAME%'"
+SET "FILENAME=%~dp0\WizBot\src\WizBot\opus.dll"
+powershell -Command "Invoke-WebRequest https://github.com/Wizkiller96/WizBot/raw/dev/src/WizBot/_libs/32/opus.dll -OutFile '%FILENAME%'"
 ECHO opus.dll downloaded.
 GOTO end
 :end
 	::Normal execution of end of script
-	TITLE NadekoBot Installation complete!
+	TITLE WizBot Installation complete!
 	CD /D "%root%"
 	RMDIR /S /Q "%installtemp%" >nul 2>&1
 	ECHO.

@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>WizBot</id>
+    <version>1.4.0-2$suffix$</version>
+    <title>WizBot</title>
+    <authors>Kwoth and Wizkiller96</authors>
+    <owners>Kwoth and Wizkiller96</owners>
+    <description>General purpose discord chat bot written in C#.</description>
+    <tags>wiz;bot;wizbot;discord bot</tags>
+    <projectUrl>https://github.com/Wizkiller96/WizBot</projectUrl>
+    <licenseUrl>https://choosealicense.com/licenses/unlicense/</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+  </metadata>
+</package>
