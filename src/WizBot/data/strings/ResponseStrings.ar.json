@@ -319,6 +319,7 @@
     "gambling_claimed_by": "المطالبة",
     "gambling_divorces": "طلاق",
     "gambling_likes": "اعجاب",
+    "gambling_nobody": "لا أحد",
     "gambling_price": "ثمن",
     "gambling_waifus_none": "لم يتم المطلبة بأي waifus بعد.",
     "gambling_waifus_top_waifus": "افضل Waifus",
@@ -329,6 +330,7 @@
     "gambling_waifu_affinity_set": "يريد ان يكون {0} وايفو. كيوووت 3>",
     "gambling_waifu_claimed": "امتلك {0} waifu مقابل {1}!",
     "gambling_waifu_divorced_like": "لقد طلقت waifu التي معجبة بك. أنت الوحش بلا قلب.\n{0} تلقى {1} كتعويض.",
+    "gambling_waifu_divorced_notlike": "لقد طلقت waifu التي لا تحبك . لقد تلقيت {0}",
     "gambling_waifu_egomaniac": "لا يمكنك تعيين تقارب لنفسك، انت إغومانياك.",
     "gambling_waifu_fulfilled": "🎉 يتم الوفاء بحبهم! 🎉\nقيمة {0} الجديدة {1}!",
     "gambling_waifu_isnt_cheap": "ليس هنلك waifu بذلك الرخيص. يجب أن تدفع {0} على الأقل للحصول على waifu، حتى لو كانت قيمتها الفعلية أقل.",
@@ -336,8 +338,6 @@
     "gambling_waifu_not_yours": "هذه ليست زوجنك",
     "gambling_waifu_not_yourself": "لا يمكنك المطالبة بنفسك.",
     "gambling_waifu_recent_divorce": "كنت مطلقا مؤخرا. يجب عليك الانتظار {0} ساعة و {1} دقائق للطلاق مرة أخرى.",
-    "gambling_nobody": "لا أحد",
-    "gambling_waifu_divorced_notlike": "لقد طلقت waifu التي لا تحبك . لقد تلقيت {0}",
     "games_8ball": "8 كرة",
     "games_acrophobia": "رهاب الأجسام.",
     "games_acro_ended_no_sub": "اللعبة انتهت بدون اي اخضاع.",
@@ -355,7 +355,6 @@
     "games_rps_draw": "انها التعادل! اختار كلاهما {0}.",
     "games_rps_win": "{0} فاز! {1} هزم على {2}.",
     "games_submissions_closed": "اغلاق الاخضاع",
-    "gambling_animal_race_already_started": "سباق الحيوانات جاهز للركض.",
     "gambling_total_average": "المجموع: {0} المعدل: {1}",
     "games_category": "قوائم",
     "games_cleverbot_disabled": "ايقاف البوت الذكي في هذا السيرفر",
@@ -398,7 +397,6 @@
     "music_autoplay_enabled": "تم تفعيلل التشغيل التلقائي.",
     "music_defvol_set": "تم ضبط مستوى الصوت الافتراضي على {0}٪",
     "music_dir_queue_complete": "اكتمال دليل  قائمة الانتظار",
-    "music_fairplay": "اللعب العادل",
     "music_finished_song": "انتهت الاغنية",
     "music_fp_disabled": "تم تعطيل اللعب العادل.",
     "music_fp_enabled": "تم تفعيل اللعب العادل.",
@@ -673,6 +671,16 @@
     "utility_userid": "{0} للمستخدم {1} هو {2}",
     "utility_users": "المستخدمين",
     "utility_voice_channels": "قناة الصوت",
+    "utility_changelog_additions": "",
+    "utility_changelog_additions_msg": "",
+    "utility_changelog_fixes": "",
+    "utility_changelog_fixes_msg": "",
+    "utility_changelog_footer": "",
+    "utility_changelog_removals": "",
+    "utility_changelog_removals_msg": "",
+    "utility_changelog_title_date": "",
+    "gambling_animal_race_already_started": "سباق الحيوانات جاهز للركض.",
+    "music_fairplay": "اللعب العادل",
     "gambling_animal_race_already_in": "لقد انضممت بالفعل لهذا السباق!",
     "games_current_poll_results": "نتائج الاستطلاع الحالية",
     "games_no_votes_cast": "لا اصوات وضعت",
@@ -688,48 +696,48 @@
     "games_pick_sn": "التقطها بكتابة `{0} pick`",
     "gambling_no_users_found": "لم يتم العثور على مستخدم",
     "gambling_page": "صفحة {0}",
+    "administration_user_muted_time": "{0} تم **كتم صوت ** من الدردشة النصية والصوتية لمدة {1} دقيقة",
     "administration_must_be_in_voice": "يجب أن تكون في قناة الصوت على هذا السيرفر",
     "administration_no_vcroles": "لا توجد أدوار لقنوات الصوت",
-    "administration_user_muted_time": "{0} تم **كتم صوت ** من الدردشة النصية والصوتية لمدة {1} دقيقة",
     "administration_vcrole_added": "سيحصل المستخدمون الذين ينضمون إلى القناة الصوتية {0} على الدور {1}.",
     "administration_vcrole_removed": "لن يحصل المستخدمون الذين ينضمون إلى القناة الصوتية {0} على دور.",
     "administration_vc_role_list": "ادوار قناة الصوت",
     "customreactions_crad_disabled": "لن يتم حذف الرسالة التي تؤدي إلى تفاعل الرموز مخصص مع المعرف {0} تلقائيا",
     "customreactions_crad_enabled": "سيتم حذف الرسالة التي تؤدي إلى تفاعل مخصص مع المعرف {0} تلقائيا.",
-    "customreactions_crdm_disabled": "لن يتم إرسال رسالة الاستجابة لتفاعل مخصص مع المعرف {0} ك DM.",
     "customreactions_crdm_enabled": "سيتم إرسال رسالة الاستجابة لتفاعل مخصص مع المعرف {0} ك DM.",
+    "customreactions_crdm_disabled": "لن يتم إرسال رسالة الاستجابة لتفاعل مخصص مع المعرف {0} ك DM.",
     "utility_aliases_none": "لم يتم العثور على اسم مستعار",
     "utility_alias_added": "كتابة {0}  ستصبح الآن اسما مستعار ل {1}.",
     "utility_alias_list": "قائمة الأسماء المستعارة",
     "utility_alias_removed": "تفعيل {0} لم يعد له اسم مستعار.",
     "utility_alias_remove_fail": "فعلت {0} لا تملك اسم مستعار.",
     "searches_compet_playtime": "تنافسية  وقت اللعب",
-    "administration_channel": "قناة",
-    "administration_command_text": "امر نصي",
-    "administration_kicked_pl": "طرد",
     "administration_moderator": "مشرف",
     "administration_page": "صفحة {0}",
     "administration_reason": "سبب",
+    "administration_user_warned": "تم تحذير المستخدم {0}.",
+    "administration_warned_on": "تم تحذيره على سيرفر {0}",
+    "administration_warned_on_by": "على {0} في {1} بواسطة {2}",
+    "administration_warnings_cleared": "تم مسح جميع التحذيرات {0}.",
+    "administration_warnings_none": "لا يوجد تحذير في هذه الصفحة",
+    "administration_warnlog_for": "سجل التحذير ل {0}",
+    "administration_warn_cleared_by": "تم حذفها بواسطة {0}",
+    "administration_warn_punish_list": "تحذير قائمة العقاب",
+    "administration_warn_punish_rem": "امتلاك {0} تحذيرات لن تؤدي إلى عقاب.",
+    "administration_warn_punish_set": "سأطبق {0} عقوبة على المستخدمين الذين لديهم {1} تحذيرات.",
+    "administration_unbanned_user": "المستخدم {0} اصبح غير محظور.",
+    "administration_user_not_found": "المستخدم ليس موجود.",
+    "administration_user_warned_and_punished": "تم تحذير المستخدم {0} وتم تطبيق العقوبة {1}",
+    "administration_warnpl_none": "لم يتم تعيين عقوبات.",
+    "administration_channel": "قناة",
+    "administration_command_text": "امر نصي",
     "administration_scadd": "تمت إضافة أمر بدء التشغيل الجديد.",
     "administration_scrm": "تمت إزالة أمر بدء التشغيل بنجاح.",
     "administration_scrm_fail": "لم يتم العثور على أمر بدء التشغيل.",
     "administration_server": "سيرفر",
     "administration_startcmdlist_none": "لا توجد أوامر بدء التشغيل في هذه الصفحة.",
     "administration_startcmds_cleared": "مسح جميع أوامر بدء التشغيل.",
-    "administration_unbanned_user": "المستخدم {0} اصبح غير محظور.",
-    "administration_user_not_found": "المستخدم ليس موجود.",
-    "administration_user_warned": "تم تحذير المستخدم {0}.",
-    "administration_user_warned_and_punished": "تم تحذير المستخدم {0} وتم تطبيق العقوبة {1}",
-    "administration_warned_on": "تم تحذيره على سيرفر {0}",
-    "administration_warned_on_by": "على {0} في {1} بواسطة {2}",
-    "administration_warnings_cleared": "تم مسح جميع التحذيرات {0}.",
-    "administration_warnings_none": "لا يوجد تحذير في هذه الصفحة",
-    "administration_warnlog_for": "سجل التحذير ل {0}",
-    "administration_warnpl_none": "لم يتم تعيين عقوبات.",
-    "administration_warn_cleared_by": "تم حذفها بواسطة {0}",
-    "administration_warn_punish_list": "تحذير قائمة العقاب",
-    "administration_warn_punish_rem": "امتلاك {0} تحذيرات لن تؤدي إلى عقاب.",
-    "administration_warn_punish_set": "سأطبق {0} عقوبة على المستخدمين الذين لديهم {1} تحذيرات.",
+    "administration_kicked_pl": "طرد",
     "administration_slowmodewl_role_start": "سيتجاهل الوضع البطيئ هذا الدور {0}",
     "administration_slowmodewl_role_stop": "الوضع البطيئ لن يتجاهل هذا الدور {0} بعد الان",
     "administration_slowmodewl_user_start": "الوضع البطيئ سيتجاهل المستخدم {0}",
@@ -747,32 +755,32 @@
     "utility_clpa_too_early": "يمكن المطالبة بالمكافآت في أو بعد 5 من كل شهر.",
     "searches_time": "الوقت {0} هو {1} - {2}",
     "administration_rh": "تعيين عرض دور التحالف {0} إلى {1}.",
-    "gambling_name": "اسم",
-    "gambling_shop": "متجر",
-    "gambling_shop_item_add": "تمت إضافة عنصر التسوق",
-    "gambling_shop_none": "لم يتم العثور على عنصر تسوق في هذه الصفحة.",
-    "gambling_shop_role": "ستحصل على دور {0}.",
-    "gambling_type": "نوع",
-    "utility_clpa_next_update": "التحديث التالي في {0}",
-    "administration_global_perms_reset": "تمت إعادة تعيين الأذونات العامة.",
-    "administration_gvc_disabled": "تم تعطيل ميزة قناة صوت اللعبة على هذا السيرفر.",
-    "administration_gvc_enabled": "{0} هي قناة صوت اللعبة الآن.",
-    "administration_not_in_voice": "أنت لست في قناة صوتية على هذا السيرفر.",
     "gambling_item": "عنصر",
+    "gambling_name": "اسم",
     "gambling_out_of_stock": "إنتهى من المخزن.",
     "gambling_random_unique_item": "عنصر فريد عشوائي.",
+    "gambling_shop": "متجر",
     "gambling_shop_buy_error": "خطأ ارسال العنصر. لقد تم رد الأموال إليك.",
+    "gambling_shop_item_add": "تمت إضافة عنصر التسوق",
     "gambling_shop_item_not_found": "لم يتم العثور على أي عنصر في هذا الفهرس.",
     "gambling_shop_item_purchase": "شراء العنصر بناجح.",
     "gambling_shop_item_rm": "تمت إزالة عنصر التسوق",
     "gambling_shop_item_wrong_type": "ذلك الادخال للتسوق لا يدعم اضافة العنصر",
     "gambling_shop_list_item_added": "تمت إضافة العنصر بنجاح.",
     "gambling_shop_list_item_not_unique": "تمت إضافة هذا العنصر من قبل.",
+    "gambling_shop_none": "لم يتم العثور على عنصر تسوق في هذه الصفحة.",
     "gambling_shop_purchase": "الشراء على السيرفر {0}",
+    "gambling_shop_role": "ستحصل على دور {0}.",
     "gambling_shop_role_not_found": "الدور الذي يتم بيعه لم يعد موجودا.",
     "gambling_shop_role_purchase": "لقد اشتريت الدور {0} بنجاح.",
     "gambling_shop_role_purchase_error": "حدث خطأ أثناء تعيين الدور. تم رد أموال عملية الشراء.",
+    "gambling_type": "نوع",
     "gambling_unique_items_left": "{0} العناصر الفريدة المتبقية.",
+    "utility_clpa_next_update": "التحديث التالي في {0}",
+    "administration_gvc_disabled": "تم تعطيل ميزة قناة صوت اللعبة على هذا السيرفر.",
+    "administration_gvc_enabled": "{0} هي قناة صوت اللعبة الآن.",
+    "administration_not_in_voice": "أنت لست في قناة صوتية على هذا السيرفر.",
+    "administration_global_perms_reset": "تمت إعادة تعيين الأذونات العامة.",
     "permissions_blocked_commands": "الأوامر المحظورة",
     "permissions_blocked_modules": "وحدات الامر المحظورة",
     "permissions_gcmd_add": "تم تعطيل الأمر {0} على كافة السيرفرات.",
