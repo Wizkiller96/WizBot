@@ -351,3 +351,4 @@ __pycache__/
 
 ### VisualStudio Patch ###
 build/
+src/WizBot/credentials.json
