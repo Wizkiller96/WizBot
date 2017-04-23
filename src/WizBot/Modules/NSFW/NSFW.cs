@@ -212,11 +212,11 @@ namespace WizBot.Modules.NSFW
         public Task Gelbooru([Remainder] string tag = null)
             => InternalDapiCommand(tag, Searches.Searches.DapiSearchType.Gelbooru);
 
-        [WizBotCommand, Usage, Description, Aliases]
-        public async Task Cp()
-        {
-            await Context.Channel.SendMessageAsync("http://i.imgur.com/MZkY1md.jpg").ConfigureAwait(false);
-        }
+        //[WizBotCommand, Usage, Description, Aliases]
+        //public async Task Cp()
+        //{
+            //await Context.Channel.SendMessageAsync("http://i.imgur.com/MZkY1md.jpg").ConfigureAwait(false);
+        //}
 
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Boobs()
