@@ -4,7 +4,7 @@ ________________________________________________________________________________
 
 ## Setting Up WizBot on Windows
 
-#### Prerequisites 
+#### Prerequisites
 - 1) [.NET Core SDK][.NET Core SDK]
 - 2) [Git][Git]
 - 3) Google Account
@@ -13,19 +13,20 @@ ________________________________________________________________________________
 - 6) [Notepad++][Notepad++]
 - 7) Windows 8 or later
 
-####Guide 
+#### Guide
 - Make sure you have installed both [Git][Git] and the [.NET Core SDK][.NET Core SDK].
 - Create a **new folder** anywhere you like and name it `WizBot`.
 - Next, [Right-Click on this link](https://github.com/Wizkiller96/WizBotInstallerWin/raw/master/WizBotInstaller.bat) and select **Save link as** and save the file `WizBotInstaller.bat` inside the `WizBot` folder that we created earlier. (Please **DO NOT** rename the file `WizBotInstaller.bat`.)
 - Once that's done, right-click on `WizBotInstaller.bat` to run it as Administrator.
-- From the options, 
+- From the options,
 	- Choose `1` to get the **most recent build**.
 	- Choose `2` to get the **stable build**.
 - Wait a while for the file to finish installing, it'll display it's progress in the command prompt.
 - You should now have a new folder named `WizBot` inside the `WizBot` folder we previously created.
 - Once Installation is completed, press any key to close the command prompt.
+![img1](http://i.imgur.com/O1dY9eW.gif)
 
-####Creating DiscordBot application
+#### Creating DiscordBot application
 - Go to [the Discord developer application page][DiscordApp].
 - Log in with your Discord account.
 - On the left side, press `New Application`.
@@ -33,8 +34,9 @@ ________________________________________________________________________________
 - Create the application.
 - Click on `Create a Bot User` and confirm that you do want to add a bot to this app.
 - Keep this window open for now.
+![img2](http://i.imgur.com/x3jWudH.gif)
 
-####Setting up credentials.json file
+#### Setting up credentials.json file
 - In our `WizBot` folder you should see a `src` folder, then *another* `WizBot` folder, in this final folder, you should see a `.json` file named `credentials.json`. (Note: If you do not see a `.json` after `credentials.json`, do not add the `.json`. You most likely have **"Hide file extensions"** enabled.)
 - If you mess up the setup of `credentials.json`, rename `credentials_example.json` to `credentials.json`.
 - Open the file with [Notepad++][Notepad++].
@@ -48,33 +50,35 @@ ________________________________________________________________________________
 - The message will appear as a mention if done correctly, copy the numbers from the message you sent (`145521851676884992`) and replace the ID (By default, the ID is `0` or `105635576866156544`) on the `OwnerIds` section with your user ID shown earlier.
 - Save `credentials.json` (make sure you aren't saving it as `credentials.json.txt`)
 - If done correctly, you are now the bot owner. You can add multiple owners by seperating each owner ID with a comma within the square brackets.
+![img3](http://i.imgur.com/QwKMnTG.gif)
 
-####Inviting your bot to your server 
+#### Inviting your bot to your server
 - [Invite Guide][Invite Guide]
 - Copy your `Client ID` from your [applications page][DiscordApp].
 - Replace the `12345678` in this link `https://discordapp.com/oauth2/authorize?client_id=12345678&scope=bot&permissions=66186303` with your `Client ID`.
 - The link should now look like this: `https://discordapp.com/oauth2/authorize?client_id=**YOUR_CLENT_ID_HERE**&scope=bot&permissions=66186303`.
 - Go to the newly created link and pick the server we created, and click `Authorize`.
 - The bot should have been added to your server.
+![img4](http://i.imgur.com/aFK7InR.gif)
 
-####Starting the bot
+#### Starting the bot
 - Go to the `WizBot` folder that we have created earlier, and run the `WizBotInstaller.bat` file as Administrator.
 - From the options,
-	- Choose `3` to **run the bot normally**.	
+	- Choose `3` to **run the bot normally**.
 	(with normal-run the bot will shutdown and will stay offline if it disconnects by the use of `.die` command until you manually run it again. Useful if you want to test the bot.)
-	- Choose `4` to **run the bot with auto restart**.	
+	- Choose `4` to **run the bot with auto restart**.
 	(with auto restart the bot will restart itself if it disconnects by the use of `.die` command. Useful if you want to have restart function for any reason.)
 
-####Updating WizBot
+#### Updating WizBot
 - Make sure the bot is closed and is not running (Run `.die` in a connected server to ensure it's not running).
 - Once that's checked, go to the `WizBot` folder.
 - Run the `WizBotInstaller.bat` file.
-- From the options, 
+- From the options,
 	- Choose `1` to get the **most recent build**.
 	- Choose `2` to get the **stable build**.
 - Follow the messages and press any key to continue.
-- Wait for it to finish. 
-- Press any key to close the window when it shows **Installation complete.** 
+- Wait for it to finish.
+- Press any key to close the window when it shows **Installation complete.**
 - [Start the bot again.](http://wizbot.readthedocs.io/en/latest/guides/Windows%20Guide/#starting-the-bot)
 - You've updated and are running again, easy as that!
 ________________________________________________________________________________
@@ -87,13 +91,13 @@ ________________________________________________________________________________
 - Go to the `WizBot` folder that we have created earlier, and run the `WizBotInstaller.bat` file as Administrator.
 - From the options select `6` Install ffmpeg (for music)
 - Next, **Press Any Key** if you are running as Administrator or just close and relaunch it as Administrator using mouse right-click.
-- Wait for it to finish installing and backing up existing. 
+- Wait for it to finish installing and backing up existing.
 - Once done, you should see "ffmpeg Installation complete!".
 - Next, **Press Any Key** to go back to WizBot Client.
 - Press `3` to run the bot normally just to test music. (optional)
 - `ffmpeg` installation for Music is now complete.
 
-#### Manual `ffmpeg` setup 
+#### Manual `ffmpeg` setup
 - Create a folder named `ffmpeg` in your main Windows directory. We will use **C:\ffmpeg** (for our guide)
 - Download FFMPEG through the link https://ffmpeg.zeranoe.com/builds/ (download static build)
 - EXTRACT it using `7zip` and place the FOLDER `ffmpeg-xxxxx-git-xxxxx-xxxx-static` inside **C:\ffmpeg**
@@ -108,15 +112,15 @@ ________________________________________________________________________________
     - Create a new project (name does not matter). Once the project is created, go into "Enable and manage APIs."
     - Under the "Other Popular APIs" section, enable `URL Shortener API` and `Custom Search API`. Under the `YouTube APIs` section, enable `YouTube Data API`.
     - Under the "Google Maps APIs" section, enable `Google Maps Geocoding API` and `Google Maps Time Zone API`.
-    - On the left tab, access `Credentials`. Click `Create Credentials` button. Click on `API Key`. A new window will appear with your `Google API key`. 
+    - On the left tab, access `Credentials`. Click `Create Credentials` button. Click on `API Key`. A new window will appear with your `Google API key`.
     - Copy the key.
-    - Open up `credentials.json`. 
+    - Open up `credentials.json`.
     - For `"GoogleAPIKey"`, paste your API key inbetween the quotation marks, like how the `Token` and `ClientId` should be set up.
 - Follow these steps on how to setup Soundcloud API key:
-    - Go to [Soundcloud][Soundcloud]. 
-    - Enter a name for the app and create it. 
+    - Go to [Soundcloud][Soundcloud].
+    - Enter a name for the app and create it.
     - You will need to fill out an application form to request access to the Soundcloud API.
-    - All requests for an API key must go through the review process, where applications will be reviewed on a case by case basis, in line with Soundcloud API Terms of Use. If your application is successful, you will receive an API key. 
+    - All requests for an API key must go through the review process, where applications will be reviewed on a case by case basis, in line with Soundcloud API Terms of Use. If your application is successful, you will receive an API key.
 - **Restart your computer**
 
 
