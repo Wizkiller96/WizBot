@@ -1,4 +1,4 @@
-You can support the project on paypal: <https://paypal.me/Wizkiller96Network> or from the website: <https://wizkiller96network.com/donate.html>
+You can support the project on patreon: <https://patreon.com/wiznet> or paypal: <https://paypal.me/Wizkiller96Network>
 
 ##Table of contents
 - [Help](#help)
@@ -51,7 +51,7 @@ Commands and aliases | Description | Usage
 `.log` | Toggles logging event. Disables it if it is active anywhere on the server. Enables if it isn't active. Use `.logevents` to see a list of all events you can subscribe to. **Requires Administrator server permission.** **Bot owner only** | `.log userpresence` or `.log userbanned`
 `.migratedata` | Migrate data from old bot configuration **Bot owner only** | `.migratedata`
 `.setmuterole` | Sets a name of the role which will be assigned to people who should be muted. Default is wizbot-mute. **Requires ManageRoles server permission.** | `.setmuterole Silenced`
-`.mute` | Mutes a mentioned user both from speaking and chatting. You can also specify time in minutes (up to 1440) for how long the user should be muted. **Requires ManageRoles server permission.** **Requires MuteMembers server permission.** | `.mute @Someone` or `.mute 30 @Someone`
+`.mute` | Mutes a mentioned user both from speaking and chatting.  You can also specify time in minutes (up to 1440) for how long the user should be muted. **Requires ManageRoles server permission.** **Requires MuteMembers server permission.** | `.mute @Someone` or `.mute 30 @Someone`
 `.unmute` | Unmutes a mentioned user previously muted with `.mute` command. **Requires ManageRoles server permission.** **Requires MuteMembers server permission.** | `.unmute @Someone`
 `.chatmute` | Prevents a mentioned user from chatting in text channels. **Requires ManageRoles server permission.** | `.chatmute @Someone`
 `.chatunmute` | Removes a mute role previously set on a mentioned user with `.chatmute` which prevented him from chatting in text channels. **Requires ManageRoles server permission.** | `.chatunmute @Someone`
@@ -86,7 +86,7 @@ Commands and aliases | Description | Usage
 `.die` | Shuts the bot down. **Bot owner only** | `.die`
 `.setname` `.newnm` | Gives the bot a new name. **Bot owner only** | `.newnm BotName`
 `.setstatus` | Sets the bot's status. (Online/Idle/Dnd/Invisible) **Bot owner only** | `.setstatus Idle`
-`.setavatar` `.setav` | Sets a new avatar image for the WizBot. Argument is a direct link to an image. **Bot owner only** | `.setav http://i.imgur.com/xTG3a1I.jpg`
+`.setavatar` `.setav` | Sets a new avatar image for WizBot. Argument is a direct link to an image. **Bot owner only** | `.setav http://i.imgur.com/xTG3a1I.jpg`
 `.setgame` | Sets the bots game. **Bot owner only** | `.setgame with snakes`
 `.setstream` | Sets the bots stream. First argument is the twitch link, second argument is stream name. **Bot owner only** | `.setstream TWITCHLINK Hello`
 `.send` | Sends a message to someone on a different server through the bot.  Separate server and channel/user ids with `|` and prefix the channel id with `c:` and the user id with `u:`. **Bot owner only** | `.send serverid|c:channelid message` or `.send serverid|u:userid message`
@@ -96,9 +96,9 @@ Commands and aliases | Description | Usage
 `.greet` | Toggles anouncements on the current channel when someone joins the server. **Requires ManageServer server permission.** | `.greet`
 `.greetmsg` | Sets a new join announcement message which will be shown in the server's channel. Type `%user%` if you want to mention the new member. Using it with no message will show the current greet message. You can use embed json from <http://wizkiller96network.com/database/files/embedbuilder/> instead of a regular text, if you want the message to be embedded. **Requires ManageServer server permission.** | `.greetmsg Welcome, %user%.`
 `.greetdm` | Toggles whether the greet messages will be sent in a DM (This is separate from greet - you can have both, any or neither enabled). **Requires ManageServer server permission.** | `.greetdm`
-`.greetdmmsg` | Sets a new join announcement message which will be sent to the user who joined. Type `%user%` if you want to mention the new member. Using it with no message will show the current DM greet message. You can use embed json from <http://http://wizkiller96network.com/database/files/embedbuilder/> instead of a regular text, if you want the message to be embedded. **Requires ManageServer server permission.** | `.greetdmmsg Welcome to the server, %user%`.
+`.greetdmmsg` | Sets a new join announcement message which will be sent to the user who joined. Type `%user%` if you want to mention the new member. Using it with no message will show the current DM greet message. You can use embed json from <http://wizkiller96network.com/database/files/embedbuilder/> instead of a regular text, if you want the message to be embedded. **Requires ManageServer server permission.** | `.greetdmmsg Welcome to the server, %user%`.
 `.bye` | Toggles anouncements on the current channel when someone leaves the server. **Requires ManageServer server permission.** | `.bye`
-`.byemsg` | Sets a new leave announcement message. Type `%user%` if you want to show the name the user who left. Type `%id%` to show id. Using this command with no message will show the current bye message. You can use embed json from <http://http://wizkiller96network.com/database/files/embedbuilder/> instead of a regular text, if you want the message to be embedded. **Requires ManageServer server permission.** | `.byemsg %user% has left.`
+`.byemsg` | Sets a new leave announcement message. Type `%user%` if you want to show the name the user who left. Type `%id%` to show id. Using this command with no message will show the current bye message. You can use embed json from <http://wizkiller96network.com//database/files/embedbuilder/> instead of a regular text, if you want the message to be embedded. **Requires ManageServer server permission.** | `.byemsg %user% has left.`
 `.byedel` | Sets the time it takes (in seconds) for bye messages to be auto-deleted. Set it to `0` to disable automatic deletion. **Requires ManageServer server permission.** | `.byedel 0` or `.byedel 30`
 `.warn` | Warns a user. **Requires BanMembers server permission.** | `.warn @b1nzy Very rude person`
 `.warnlog` | See a list of warnings of a certain user. **Requires BanMembers server permission.** | `.warnlog @b1nzy`
@@ -185,12 +185,12 @@ Commands and aliases | Description | Usage
 ### Games  
 Commands and aliases | Description | Usage
 ----------------|--------------|-------
+`>leet` | Converts a text to leetspeak with 6 (1-6) severity levels  | `>leet 3 Hello`
 `>choose` | Chooses a thing from a list of things  | `>choose Get up;Sleep;Sleep more`
 `>8ball` | Ask the 8ball a yes/no question.  | `>8ball should I do something`
 `>rps` | Play a game of Rocket-Paperclip-Scissors with WizBot.  | `>rps scissors`
 `>rategirl` | Use the universal hot-crazy wife zone matrix to determine the girl's worth. It is everything young men need to know about women. At any moment in time, any woman you have previously located on this chart can vanish from that location and appear anywhere else on the chart.  | `>rategirl @SomeGurl`
 `>linux` | Prints a customizable Linux interjection  | `>linux Spyware Windows`
-`>leet` | Converts a text to leetspeak with 6 (1-6) severity levels  | `>leet 3 Hello`
 `>acrophobia` `>acro` | Starts an Acrophobia game. Second argument is optional round length in seconds. (default is 60)  | `>acro` or `>acro 30`
 `>cleverbot` | Toggles cleverbot session. When enabled, the bot will reply to messages starting with bot mention in the server. Custom reactions starting with %mention% won't work if cleverbot is enabled. **Requires ManageMessages server permission.** | `>cleverbot`
 `>hangmanlist` | Shows a list of hangman term types.  | `> hangmanlist`
@@ -312,7 +312,7 @@ Commands and aliases | Description | Usage
 `;lstfilterwords` `;lfw` | Shows a list of filtered words.  | `;lfw`
 `;listglobalperms` `;lgp` | Lists global permissions set by the bot owner. **Bot owner only** | `;lgp`
 `;globalmodule` `;gmod` | Enable or disable a module from use on all servers. **Bot owner only** | `;gmod nsfw disable`
-`;globalcommand` `;gcmd` | Enables or disables a command from use on all servers. **Bot owner only** | `;gcmd  `
+`;globalcommand` `;gcmd` | Enables or disables a command from use on all servers. **Bot owner only** | `;gcmd`
 
 ###### [Back to ToC](#table-of-contents)
 
@@ -330,6 +330,7 @@ Commands and aliases | Description | Usage
 ### Searches  
 Commands and aliases | Description | Usage
 ----------------|--------------|-------
+`~lolban` | Shows top banned champions ordered by ban rate.  | `~lolban`
 `~weather` `~we` | Shows weather data for a specified city. You can also specify a country after a comma.  | `~we Moscow, RU`
 `~time` | Shows the current time and timezone in the specified location.  | `~time London, UK`
 `~youtube` `~yt` | Searches youtubes and shows the first result  | `~yt query`
@@ -356,7 +357,6 @@ Commands and aliases | Description | Usage
 `~videocall` | Creates a private <http://www.appear.in> video call link for you and other mentioned people. The link is sent to mentioned people via a private message.  | `~videocall "@SomeGuy"`
 `~avatar` `~av` | Shows a mentioned person's avatar.  | `~av "@SomeGuy"`
 `~wikia` | Gives you back a wikia link  | `~wikia mtg Vigilance` or `~wikia mlp Dashy`
-`~lolban` | Shows top banned champions ordered by ban rate.  | `~lolban`
 `~mal` | Shows basic info from a MyAnimeList profile.  | `~mal straysocks`
 `~anime` `~ani` `~aq` | Queries anilist for an anime and shows the first result.  | `~ani aquarion evol`
 `~manga` `~mang` `~mq` | Queries anilist for a manga and shows the first result.  | `~mq Shingeki no kyojin`
@@ -392,6 +392,7 @@ Commands and aliases | Description | Usage
 ### Utility  
 Commands and aliases | Description | Usage
 ----------------|--------------|-------
+`.activity` | Checks for spammers. **Bot owner only** | `.activity`
 `.rotaterolecolor` `.rrc` | Rotates a roles color on an interval with a list of supplied colors. First argument is interval in seconds (Minimum 60). Second argument is a role, followed by a space-separated list of colors in hex. Provide a rolename with a 0 interval to disable. **Requires ManageRoles server permission.** **Bot owner only** | `.rrc 60 MyLsdRole #ff0000 #00ff00 #0000ff` or `.rrc 0 MyLsdRole`
 `.togethertube` `.totube` | Creates a new room on <https://togethertube.com> and shows the link in the chat.  | `.totube`
 `.whosplaying` `.whpl` | Shows a list of users who are playing the specified game.  | `.whpl Overwatch`
@@ -410,10 +411,10 @@ Commands and aliases | Description | Usage
 `.listservers` | Lists servers the bot is on with some basic info. 15 per page. **Bot owner only** | `.listservers 3`
 `.savechat` | Saves a number of messages to a text file and sends it to you. **Bot owner only** | `.savechat 150`
 `.ping` | Ping the bot to see if there are latency issues.  | `.ping`
-`.activity` | Checks for spammers. **Bot owner only** | `.activity`
+`.updates` `.changelogs` | Show the lastest changes to WizBot.  | `.updates` or `.changelogs
 `.calculate` `.calc` | Evaluate a mathematical expression.  | `.calc 1+1`
 `.calcops` | Shows all available operations in the `.calc` command  | `.calcops`
-`.alias` `.cmdmap` | Create a custom alias for a certain WizBot command. Provide no alias to remove the existing one. **Requires Administrator server permission.** | `.alias allin $bf 100 h` or `.alias "linux thingy" >loonix Spyware Windows`
+`.alias` `.cmdmap` | Create a custom alias for a certain WizBot command. Provide no alias to remove the existing one. **Requires Administrator server permission.** | `.alias allin $bf 100 h` or `.alias "linux thingy" &gt;loonix Spyware Windows`
 `.aliaslist` `.cmdmaplist` `.aliases` | Shows the list of currently set aliases. Paginated.  | `.aliaslist` or `.aliaslist 3`
 `.scsc` | Starts an instance of cross server channel. You will get a token as a DM that other people will use to tune in to the same instance. **Bot owner only** | `.scsc`
 `.jcsc` | Joins current channel to an instance of cross server channel using the token. **Requires ManageServer server permission.** | `.jcsc TokenHere`
@@ -438,4 +439,3 @@ Commands and aliases | Description | Usage
 `.remindtemplate` | Sets message for when the remind is triggered.  Available placeholders are `%user%` - user who ran the command, `%message%` - Message specified in the remind, `%target%` - target channel of the remind. **Bot owner only** | `.remindtemplate %user%, do %message%!`
 `.convertlist` | List of the convertible dimensions and currencies.  | `.convertlist`
 `.convert` | Convert quantities. Use `.convertlist` to see supported dimensions and currencies.  | `.convert m km 1000`
-`.updates` or `.changelogs` | Shows a list of changes to WizBot. | `.updates`
