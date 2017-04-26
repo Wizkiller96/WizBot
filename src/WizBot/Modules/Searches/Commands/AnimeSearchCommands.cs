@@ -161,8 +161,9 @@ namespace WizBot.Modules.Searches
             }
 
             [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
             [Priority(0)]
-            public Task Mal(IUser usr) => Mal(usr.Username);
+            public Task Mal(IGuildUser usr) => Mal(usr.Username);
 
             [WizBotCommand, Usage, Description, Aliases]
             public async Task Anime([Remainder] string query)
