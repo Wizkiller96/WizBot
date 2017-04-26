@@ -648,10 +648,11 @@ namespace WizBot.Modules.Searches
         }
 
         [WizBotCommand, Usage, Description, Aliases]
-        public async Task Avatar([Remainder] IUser usr = null)
+        [RequireContext(ContextType.Guild)]
+        public async Task Avatar([Remainder] IGuildUser usr = null)
         {
             if (usr == null)
-                usr = Context.User;
+                usr = (IGuildUser)Context.User;
 
             var avatarUrl = usr.RealAvatarUrl();
             var shortenedAvatarUrl = await WizBot.Google.ShortenUrl(avatarUrl).ConfigureAwait(false);
