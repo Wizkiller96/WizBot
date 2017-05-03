@@ -58,23 +58,27 @@ namespace WizBot.Services
 
         public async Task ExecuteExternal(ulong? guildId, ulong channelId, string commandText)
         {
-                if (guildId != null)
+            if (guildId != null)
+            {
+                var guild = WizBot.Client.GetGuild(guildId.Value);
+                var channel = guild?.GetChannel(channelId) as SocketTextChannel;
+                if (channel == null)
                 {
-                    var guild = WizBot.Client.GetGuild(guildId.Value);
-                    var channel = guild?.GetChannel(channelId) as SocketTextChannel;
-                    if (channel == null)
-                        return;
-
-                    try
-                    {
-                        IUserMessage msg = await channel.SendMessageAsync(commandText).ConfigureAwait(false);
-                        msg = (IUserMessage) await channel.GetMessageAsync(msg.Id).ConfigureAwait(false);
-                        await TryRunCommand(guild, channel, msg).ConfigureAwait(false);
-                        //msg.DeleteAfter(5);
-                    }
-                    catch { }
+                    _log.Warn("Channel for external execution not found.");
+                    return;
                 }
+
+                try
+                {
+                    IUserMessage msg = await channel.SendMessageAsync(commandText).ConfigureAwait(false);
+                    msg = (IUserMessage)await channel.GetMessageAsync(msg.Id).ConfigureAwait(false);
+                    await TryRunCommand(guild, channel, msg).ConfigureAwait(false);
+                    //msg.DeleteAfter(5);
+                }
+                catch { }
+            }
         }
+
         public Task StartHandling()
         {
             var _ = Task.Run(async () =>
@@ -315,7 +319,7 @@ namespace WizBot.Services
                 return;
 
             var exec1 = Environment.TickCount - execTime;
-            
+
 
             var cleverBotRan = await Task.Run(() => TryRunCleverbot(usrMsg, guild)).ConfigureAwait(false);
             if (cleverBotRan)
@@ -510,7 +514,7 @@ namespace WizBot.Services
                     //}
                 }
 
-                if (cmd.Name != "resetglobalperms" && 
+                if (cmd.Name != "resetglobalperms" &&
                     (GlobalPermissionCommands.BlockedCommands.Contains(cmd.Aliases.First().ToLowerInvariant()) ||
                     GlobalPermissionCommands.BlockedModules.Contains(module.Name.ToLowerInvariant())))
                 {
