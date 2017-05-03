@@ -173,7 +173,7 @@ namespace WizBot.Modules.Utility
                     using (var uow = DbHandler.UnitOfWork())
                     {
                         var users = uow._context.Set<RewardedUser>();
-                        var usr = users.FirstOrDefault(x => x.UserId == userId);
+                        var usr = users.FirstOrDefault(x => x.PatreonUserId == data.User.id);
 
                         if (usr == null)
                         {
@@ -194,6 +194,7 @@ namespace WizBot.Modules.Utility
                         {
                             usr.LastReward = now;
                             usr.AmountRewardedThisMonth = amount;
+                            usr.PatreonUserId = data.User.id;
 
                             await CurrencyHandler.AddCurrencyAsync(userId, "Patreon reward - recurring", amount, uow).ConfigureAwait(false);
 
@@ -207,6 +208,7 @@ namespace WizBot.Modules.Utility
 
                             usr.LastReward = now;
                             usr.AmountRewardedThisMonth = amount;
+                            usr.PatreonUserId = data.User.id;
 
                             await CurrencyHandler.AddCurrencyAsync(usr.UserId, "Patreon reward - update", toAward, uow).ConfigureAwait(false);
 

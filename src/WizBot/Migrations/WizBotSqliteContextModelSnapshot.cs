@@ -966,6 +966,8 @@ namespace WizBot.Migrations
 
                     b.Property<DateTime>("LastReward");
 
+                    b.Property<string>("PatreonUserId");
+
                     b.Property<ulong>("UserId");
 
                     b.HasKey("Id");
