@@ -41,22 +41,7 @@ namespace WizBot.Modules.Administration
 
                     foreach (var cmd in WizBot.BotConfig.StartupCommands)
                     {
-                        if (cmd.GuildId != null)
-                        {
-                            var guild = WizBot.Client.GetGuild(cmd.GuildId.Value);
-                            var channel = guild?.GetChannel(cmd.ChannelId) as SocketTextChannel;
-                            if (channel == null)
-                                continue;
-
-                            try
-                            {
-                                IUserMessage msg = await channel.SendMessageAsync(cmd.CommandText).ConfigureAwait(false);
-                                msg = (IUserMessage)await channel.GetMessageAsync(msg.Id).ConfigureAwait(false);
-                                await WizBot.CommandHandler.TryRunCommand(guild, channel, msg).ConfigureAwait(false);
-                                //msg.DeleteAfter(5);
-                            }
-                            catch { }
-                        }
+                        await WizBot.CommandHandler.ExecuteExternal(cmd.GuildId, cmd.ChannelId, cmd.CommandText);
                         await Task.Delay(400).ConfigureAwait(false);
                     }
                 });
