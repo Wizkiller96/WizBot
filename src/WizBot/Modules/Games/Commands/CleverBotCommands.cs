@@ -123,7 +123,7 @@ namespace WizBot.Modules.Games
             private static WizBotRandom rng { get; } = new WizBotRandom();
             public string ChatterbotId { get; }
             public string ChannelId { get; }
-            private int _botId = 6;
+            private int _botId = 1;
 
             public ChatterBotSession(ulong channelId)
             {
@@ -131,7 +131,7 @@ namespace WizBot.Modules.Games
                 ChatterbotId = rng.Next(0, 1000000).ToString().ToBase64();
             }
 
-            private string apiEndpoint => "http://api.program-o.com/v2/chatbot/" +
+            private string apiEndpoint => "http://chatbot2.wizkiller96network.com/chatbot/" +
                                           $"?bot_id={_botId}&" +
                                           "say={0}&" +
                                           $"convo_id=wizbot_{ChatterbotId}_{ChannelId}&" +
