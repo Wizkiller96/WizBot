@@ -11,7 +11,7 @@ namespace WizBot.Services
 {
     public class WizBotStrings
     {
-        public const string stringsPath = @"data/strings/";
+        public const string stringsPath = @"_strings/";
 
         private readonly ImmutableDictionary<string, ImmutableDictionary<string, string>> responseStrings;
         private readonly Logger _log;
