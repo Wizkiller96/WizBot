@@ -18,6 +18,7 @@ using System.Diagnostics;
 using WizBot.Modules.Music;
 using WizBot.Services.Database.Models;
 using System.Threading;
+using WizBot.Services.Music;
 
 namespace WizBot
 {
@@ -49,6 +50,7 @@ namespace WizBot
         //services 
         //todo DI in the future 
         public static GreetSettingsService GreetSettingsService { get; private set; }
+        public static MusicService MusicService { get; private set; }
 
         static WizBot()
         {

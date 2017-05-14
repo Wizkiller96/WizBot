@@ -11,7 +11,6 @@ using NLog;
 
 namespace WizBot.Modules.Music.Classes
 {
-
     public enum MusicType
     {
         Radio,

@@ -76,10 +76,10 @@ namespace WizBot.Modules.Administration
                     { "%servers%", () => WizBot.Client.Guilds.Count.ToString()},
                     { "%users%", () => WizBot.Client.Guilds.Sum(s => s.Users.Count).ToString()},
                     { "%playing%", () => {
-                            var cnt = Music.Music.MusicPlayers.Count(kvp => kvp.Value.CurrentSong != null);
+                            var cnt = WizBot.MusicService.MusicPlayers.Count(kvp => kvp.Value.CurrentSong != null);
                             if (cnt != 1) return cnt.ToString();
                             try {
-                                var mp = Music.Music.MusicPlayers.FirstOrDefault();
+                                var mp = WizBot.MusicService.MusicPlayers.FirstOrDefault();
                                 return mp.Value.CurrentSong.SongInfo.Title;
                             }
                             catch {
@@ -87,7 +87,7 @@ namespace WizBot.Modules.Administration
                             }
                         }
                     },
-                    { "%queued%", () => Music.Music.MusicPlayers.Sum(kvp => kvp.Value.Playlist.Count).ToString()},
+                    { "%queued%", () => WizBot.MusicService.MusicPlayers.Sum(kvp => kvp.Value.Playlist.Count).ToString()},
                     { "%time%", () => DateTime.Now.ToString("HH:mm " + TimeZoneInfo.Local.StandardName.GetInitials()) },
                     { "%shardcount%", () => WizBot.Client.Shards.Count.ToString() },
                 };

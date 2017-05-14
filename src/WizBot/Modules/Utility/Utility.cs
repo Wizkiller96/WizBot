@@ -418,8 +418,8 @@ namespace WizBot.Modules.Utility
                             WizBot.Client.Guilds.Count, stats.TextChannels, stats.VoiceChannels)).WithIsInline(true))
 #if !GLOBAL_WIZBOT
                     .WithFooter(efb => efb.WithText(GetText("stats_songs",
-                        Music.Music.MusicPlayers.Count(mp => mp.Value.CurrentSong != null),
-                        Music.Music.MusicPlayers.Sum(mp => mp.Value.Playlist.Count))))
+                        WizBot.MusicService.MusicPlayers.Count(mp => mp.Value.CurrentSong != null),
+                        WizBot.MusicService.MusicPlayers.Sum(mp => mp.Value.Playlist.Count))))
 #endif
                     );
         }
