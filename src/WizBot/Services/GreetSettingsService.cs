@@ -67,6 +67,9 @@ namespace WizBot.Services
                 conf.SendChannelByeMessage = settings.SendChannelByeMessage;
 
                 await uow.CompleteAsync().ConfigureAwait(false);
+
+                var toAdd = GreetSettings.Create(conf);
+                GuildConfigsCache.AddOrUpdate(guildId, toAdd, (key, old) => toAdd);
             }
 
             return true;
