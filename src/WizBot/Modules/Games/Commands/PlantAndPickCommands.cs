@@ -80,11 +80,11 @@ namespace WizBot.Modules.Games
                             {
                                 var msgs = new IUserMessage[dropAmount];
                                 var prefix = WizBot.ModulePrefixes[typeof(Games).Name];
-                                var toSend = dropAmount == 1 
-                                    ? GetLocalText(channel, "curgen_sn", WizBot.BotConfig.CurrencySign) 
-                                        + GetLocalText(channel, "pick_sn", prefix)
+                                var toSend = dropAmount == 1
+                                    ? GetLocalText(channel, "curgen_sn", WizBot.BotConfig.CurrencySign)
+                                        + " " + GetLocalText(channel, "pick_sn", prefix)
                                     : GetLocalText(channel, "curgen_pl", dropAmount, WizBot.BotConfig.CurrencySign)
-                                        + GetLocalText(channel, "pick_pl", prefix);
+                                        + " " + GetLocalText(channel, "pick_pl", prefix);
                                 var file = GetRandomCurrencyImage();
                                 using (var fileStream = file.Value.ToStream())
                                 {

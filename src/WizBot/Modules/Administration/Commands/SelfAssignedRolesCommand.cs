@@ -18,7 +18,7 @@ namespace WizBot.Modules.Administration
         [Group]
         public class SelfAssignedRolesCommands : WizBotSubmodule
         {
-            
+
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.ManageMessages)]
@@ -108,19 +108,20 @@ namespace WizBot.Modules.Administration
                 using (var uow = DbHandler.UnitOfWork())
                 {
                     var roleModels = uow.SelfAssignedRoles.GetFromGuild(Context.Guild.Id).ToList();
-                    roleCnt = roleModels.Count;
                     msg.AppendLine();
-                    
+
                     foreach (var roleModel in roleModels)
                     {
                         var role = Context.Guild.Roles.FirstOrDefault(r => r.Id == roleModel.RoleId);
                         if (role == null)
                         {
+                            toRemove.Add(roleModel);
                             uow.SelfAssignedRoles.Remove(roleModel);
                         }
                         else
                         {
                             msg.Append($"**{role.Name}**, ");
+                            roleCnt++;
                         }
                     }
                     foreach (var role in toRemove)
@@ -145,7 +146,7 @@ namespace WizBot.Modules.Administration
                     areExclusive = config.ExclusiveSelfAssignedRoles = !config.ExclusiveSelfAssignedRoles;
                     await uow.CompleteAsync();
                 }
-                if(areExclusive)
+                if (areExclusive)
                     await ReplyConfirmLocalized("self_assign_excl").ConfigureAwait(false);
                 else
                     await ReplyConfirmLocalized("self_assign_no_excl").ConfigureAwait(false);
@@ -164,7 +165,7 @@ namespace WizBot.Modules.Administration
                     conf = uow.GuildConfigs.For(Context.Guild.Id, set => set);
                     roles = uow.SelfAssignedRoles.GetFromGuild(Context.Guild.Id).ToArray();
                 }
-                if (roles.FirstOrDefault(r=>r.RoleId == role.Id) == null)
+                if (roles.FirstOrDefault(r => r.RoleId == role.Id) == null)
                 {
                     await ReplyErrorLocalized("self_assign_not").ConfigureAwait(false);
                     return;
@@ -179,13 +180,13 @@ namespace WizBot.Modules.Administration
                 if (conf.ExclusiveSelfAssignedRoles)
                 {
                     var sameRoleId = guildUser.RoleIds.FirstOrDefault(r => roleIds.Contains(r));
-                    
+
                     if (sameRoleId != default(ulong))
                     {
                         var sameRole = Context.Guild.GetRole(sameRoleId);
                         if (sameRole != null)
                         {
-                            await guildUser.RemoveRoleAsync(sameRole).ConfigureAwait(false);
+                            await guildUser.RemoveRolesAsync(sameRole).ConfigureAwait(false);
                             await Task.Delay(500).ConfigureAwait(false);
                         }
                         //await ReplyErrorLocalized("self_assign_already_excl", Format.Bold(sameRole?.Name)).ConfigureAwait(false);
@@ -194,7 +195,7 @@ namespace WizBot.Modules.Administration
                 }
                 try
                 {
-                    await guildUser.AddRoleAsync(role).ConfigureAwait(false);
+                    await guildUser.AddRolesAsync(role).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -202,7 +203,7 @@ namespace WizBot.Modules.Administration
                     Console.WriteLine(ex);
                     return;
                 }
-                var msg = await ReplyConfirmLocalized("self_assign_success",Format.Bold(role.Name)).ConfigureAwait(false);
+                var msg = await ReplyConfirmLocalized("self_assign_success", Format.Bold(role.Name)).ConfigureAwait(false);
 
                 if (conf.AutoDeleteSelfAssignedRoleMessages)
                 {
@@ -231,12 +232,12 @@ namespace WizBot.Modules.Administration
                 }
                 if (!guildUser.RoleIds.Contains(role.Id))
                 {
-                    await ReplyErrorLocalized("self_assign_not_have",Format.Bold(role.Name)).ConfigureAwait(false);
+                    await ReplyErrorLocalized("self_assign_not_have", Format.Bold(role.Name)).ConfigureAwait(false);
                     return;
                 }
                 try
                 {
-                    await guildUser.RemoveRoleAsync(role).ConfigureAwait(false);
+                    await guildUser.RemoveRolesAsync(role).ConfigureAwait(false);
                 }
                 catch (Exception)
                 {
