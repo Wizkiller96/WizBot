@@ -126,7 +126,7 @@ namespace WizBot.Modules.Utility
             }
 
             await Context.Channel.EmbedAsync(new EmbedBuilder()
-                .WithTitle(GetText("activity_page", page))
+                .WithTitle(GetText("activity_page", page + 1))
                 .WithOkColor()
                 .WithFooter(efb => efb.WithText(GetText("activity_users_total",
                     WizBot.CommandHandler.UserMessagesSent.Count)))

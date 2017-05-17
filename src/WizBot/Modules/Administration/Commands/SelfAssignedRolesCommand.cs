@@ -186,7 +186,7 @@ namespace WizBot.Modules.Administration
                         var sameRole = Context.Guild.GetRole(sameRoleId);
                         if (sameRole != null)
                         {
-                            await guildUser.RemoveRolesAsync(sameRole).ConfigureAwait(false);
+                            await guildUser.RemoveRoleAsync(sameRole).ConfigureAwait(false);
                             await Task.Delay(500).ConfigureAwait(false);
                         }
                         //await ReplyErrorLocalized("self_assign_already_excl", Format.Bold(sameRole?.Name)).ConfigureAwait(false);
@@ -195,7 +195,7 @@ namespace WizBot.Modules.Administration
                 }
                 try
                 {
-                    await guildUser.AddRolesAsync(role).ConfigureAwait(false);
+                    await guildUser.AddRoleAsync(role).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -237,7 +237,7 @@ namespace WizBot.Modules.Administration
                 }
                 try
                 {
-                    await guildUser.RemoveRolesAsync(role).ConfigureAwait(false);
+                    await guildUser.RemoveRoleAsync(role).ConfigureAwait(false);
                 }
                 catch (Exception)
                 {

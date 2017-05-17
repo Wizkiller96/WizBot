@@ -118,7 +118,7 @@ namespace WizBot.Modules.Administration
         {
             var guser = (IGuildUser)Context.User;
             var maxRole = guser.GetRoles().Max(x => x.Position);
-            if (maxRole < role.Position || maxRole <= usr.GetRoles().Max(x => x.Position))
+            if ((Context.User.Id != Context.Guild.OwnerId) && (maxRole < role.Position || maxRole <= usr.GetRoles().Max(x => x.Position)))
                 return;
             try
             {
@@ -187,7 +187,7 @@ namespace WizBot.Modules.Administration
             var guser = (IGuildUser)Context.User;
 
             var userRoles = user.GetRoles();
-            if (guser.Id != Context.Guild.OwnerId && 
+            if (guser.Id != Context.Guild.OwnerId &&
                 (user.Id == Context.Guild.OwnerId || guser.GetRoles().Max(x => x.Position) <= userRoles.Max(x => x.Position)))
                 return;
             try
@@ -324,7 +324,7 @@ namespace WizBot.Modules.Administration
         public async Task CreatVoiChanl([Remainder] string channelName)
         {
             var ch = await Context.Guild.CreateVoiceChannelAsync(channelName).ConfigureAwait(false);
-            await ReplyConfirmLocalized("createvoich",Format.Bold(ch.Name)).ConfigureAwait(false);
+            await ReplyConfirmLocalized("createvoich", Format.Bold(ch.Name)).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -378,12 +378,14 @@ namespace WizBot.Modules.Administration
         {
             var user = await Context.Guild.GetCurrentUserAsync().ConfigureAwait(false);
 
-            var enumerable = (await Context.Channel.GetMessagesAsync().Flatten()).AsEnumerable();
-            enumerable = enumerable.Where(x => x.Author.Id == user.Id);
+            var enumerable = (await Context.Channel.GetMessagesAsync().Flatten())
+                .Where(x => x.Author.Id == user.Id && DateTime.Now - x.CreatedAt < twoWeeks);
             await Context.Channel.DeleteMessagesAsync(enumerable).ConfigureAwait(false);
             Context.Message.DeleteAfter(3);
         }
 
+
+        private TimeSpan twoWeeks => TimeSpan.FromDays(14);
         // prune x
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
@@ -396,7 +398,8 @@ namespace WizBot.Modules.Administration
                 return;
             await Context.Message.DeleteAsync().ConfigureAwait(false);
             int limit = (count < 100) ? count + 1 : 100;
-            var enumerable = (await Context.Channel.GetMessagesAsync(limit: limit).Flatten().ConfigureAwait(false));
+            var enumerable = (await Context.Channel.GetMessagesAsync(limit: limit).Flatten().ConfigureAwait(false))
+                .Where(x => DateTime.Now - x.CreatedAt < twoWeeks);
             if (enumerable.FirstOrDefault()?.Id == Context.Message.Id)
                 enumerable = enumerable.Skip(1).ToArray();
             else
@@ -419,7 +422,8 @@ namespace WizBot.Modules.Administration
                 count += 1;
 
             int limit = (count < 100) ? count : 100;
-            var enumerable = (await Context.Channel.GetMessagesAsync(limit: limit).Flatten()).Where(m => m.Author == user);
+            var enumerable = (await Context.Channel.GetMessagesAsync(limit: limit).Flatten())
+                .Where(m => m.Author == user && DateTime.Now - m.CreatedAt < twoWeeks);
             await Context.Channel.DeleteMessagesAsync(enumerable).ConfigureAwait(false);
 
             Context.Message.DeleteAfter(3);
@@ -430,11 +434,13 @@ namespace WizBot.Modules.Administration
         [RequireUserPermission(GuildPermission.MentionEveryone)]
         public async Task MentionRole(params IRole[] roles)
         {
-            string send = "❕" +GetText("menrole",Context.User.Mention);
+            string send = "❕" + GetText("menrole", Context.User.Mention);
             foreach (var role in roles)
             {
                 send += $"\n**{role.Name}**\n";
-                send += string.Join(", ", (await Context.Guild.GetUsersAsync()).Where(u => u.GetRoles().Contains(role)).Take(50).Select(u => u.Mention));
+                send += string.Join(", ", (await Context.Guild.GetUsersAsync())
+                    .Where(u => u.GetRoles().Contains(role))
+                    .Take(50).Select(u => u.Mention));
             }
 
             while (send.Length > 2000)

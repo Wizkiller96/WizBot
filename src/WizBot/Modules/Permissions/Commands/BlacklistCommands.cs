@@ -65,6 +65,9 @@ namespace WizBot.Modules.Permissions
 
             private async Task Blacklist(AddRemove action, ulong id, BlacklistType type)
             {
+                if (action == AddRemove.Add && WizBot.Credentials.OwnerIds.Contains(id))
+                    return;
+
                 using (var uow = DbHandler.UnitOfWork())
                 {
                     if (action == AddRemove.Add)
@@ -82,7 +85,7 @@ namespace WizBot.Modules.Permissions
                         else if (type == BlacklistType.User)
                         {
                             BlacklistedUsers.Add(id);
-                        }                        
+                        }
                     }
                     else
                     {
@@ -128,7 +131,7 @@ namespace WizBot.Modules.Permissions
 
                 }
 
-                if(action == AddRemove.Add)
+                if (action == AddRemove.Add)
                     await ReplyConfirmLocalized("blacklisted", Format.Code(type.ToString()), Format.Code(id.ToString())).ConfigureAwait(false);
                 else
                     await ReplyConfirmLocalized("unblacklisted", Format.Code(type.ToString()), Format.Code(id.ToString())).ConfigureAwait(false);

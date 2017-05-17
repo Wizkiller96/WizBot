@@ -173,6 +173,8 @@ namespace WizBot.Modules.Gambling
                     amount + CurrencySign);
                 if (w.Affinity?.UserId == Context.User.Id)
                     msg += "\n" + GetText("waifu_fulfilled", target, w.Price + CurrencySign);
+                else
+                    msg = " " + msg;
                 await Context.Channel.SendConfirmAsync(Context.User.Mention + msg).ConfigureAwait(false);
             }
 
@@ -189,7 +191,7 @@ namespace WizBot.Modules.Gambling
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [Priority(1)]
-            public Task Divorce([Remainder]IUser target) => Divorce(target.Id);
+            public Task Divorce([Remainder]IGuildUser target) => Divorce(target.Id);
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
@@ -270,7 +272,7 @@ namespace WizBot.Modules.Gambling
             private static readonly TimeSpan _affinityLimit = TimeSpan.FromMinutes(30);
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            public async Task WaifuClaimerAffinity([Remainder]IUser u = null)
+            public async Task WaifuClaimerAffinity([Remainder]IGuildUser u = null)
             {
                 if (u?.Id == Context.User.Id)
                 {
@@ -395,10 +397,10 @@ namespace WizBot.Modules.Gambling
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            public async Task WaifuInfo([Remainder]IUser target = null)
+            public async Task WaifuInfo([Remainder]IGuildUser target = null)
             {
                 if (target == null)
-                    target = Context.User;
+                    target = (IGuildUser)Context.User;
                 WaifuInfo w;
                 IList<WaifuInfo> claims;
                 int divorces;

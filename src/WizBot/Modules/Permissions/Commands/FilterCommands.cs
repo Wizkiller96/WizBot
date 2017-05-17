@@ -27,7 +27,7 @@ namespace WizBot.Modules.Permissions
             public static ConcurrentHashSet<string> FilteredWordsForChannel(ulong channelId, ulong guildId)
             {
                 ConcurrentHashSet<string> words = new ConcurrentHashSet<string>();
-                if(WordFilteringChannels.Contains(channelId))
+                if (WordFilteringChannels.Contains(channelId))
                     serverFilteredWords.TryGetValue(guildId, out words);
                 return words;
             }
@@ -35,7 +35,7 @@ namespace WizBot.Modules.Permissions
             public static ConcurrentHashSet<string> FilteredWordsForServer(ulong guildId)
             {
                 var words = new ConcurrentHashSet<string>();
-                if(WordFilteringServers.Contains(guildId))
+                if (WordFilteringServers.Contains(guildId))
                     serverFilteredWords.TryGetValue(guildId, out words);
                 return words;
             }
@@ -190,7 +190,7 @@ namespace WizBot.Modules.Permissions
                 {
                     var config = uow.GuildConfigs.For(channel.Guild.Id, set => set.Include(gc => gc.FilteredWords));
 
-                    removed = config.FilteredWords.RemoveWhere(fw => fw.Word == word);
+                    removed = config.FilteredWords.RemoveWhere(fw => fw.Word.Trim().ToLowerInvariant() == word);
 
                     if (removed == 0)
                         config.FilteredWords.Add(new Services.Database.Models.FilteredWord() { Word = word });
