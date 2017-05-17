@@ -42,7 +42,7 @@ namespace WizBot.Modules.Administration
                         .WarnPunishments;
 
                     warnings += uow.Warnings
-                        .For(guildId, userId)                        
+                        .For(guildId, userId)
                         .Where(w => !w.Forgiven && w.UserId == userId)
                         .Count();
 
@@ -158,7 +158,7 @@ namespace WizBot.Modules.Administration
 
                 var embed = new EmbedBuilder().WithOkColor()
                     .WithTitle(GetText("warnlog_for", (Context.Guild as SocketGuild)?.GetUser(userId)?.ToString() ?? userId.ToString()))
-                    .WithFooter(efb => efb.WithText(GetText("page", page  + 1)));
+                    .WithFooter(efb => efb.WithText(GetText("page", page + 1)));
 
                 if (!warnings.Any())
                 {
@@ -214,30 +214,20 @@ namespace WizBot.Modules.Administration
 
                 using (var uow = DbHandler.UnitOfWork())
                 {
-                    var ps = uow.GuildConfigs.For(Context.Guild.Id).WarnPunishments;
-                    var p = ps.FirstOrDefault(x => x.Count == number);
+                    var ps = uow.GuildConfigs.For(Context.Guild.Id, set => set.Include(x => x.WarnPunishments)).WarnPunishments;
+                    ps.RemoveAll(x => x.Count == number);
 
-                    if (p == null)
+                    ps.Add(new WarningPunishment()
                     {
-                        ps.Add(new WarningPunishment()
-                        {
-                            Count = number,
-                            Punishment = punish,
-                            Time = time,
-                        });
-                    }
-                    else
-                    {
-                        p.Count = number;
-                        p.Punishment = punish;
-                        p.Time = time;
-                        uow._context.Update(p);
-                    }
+                        Count = number,
+                        Punishment = punish,
+                        Time = time,
+                    });
                     uow.Complete();
                 }
 
-                await ReplyConfirmLocalized("warn_punish_set", 
-                    Format.Bold(punish.ToString()), 
+                await ReplyConfirmLocalized("warn_punish_set",
+                    Format.Bold(punish.ToString()),
                     Format.Bold(number.ToString())).ConfigureAwait(false);
             }
 
