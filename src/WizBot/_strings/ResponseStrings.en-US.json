@@ -1,4 +1,4 @@
-{
+g{
     "clashofclans_base_already_claimed": "That base is already claimed or destroyed.",
     "clashofclans_base_already_destroyed": "That base is already destroyed.",
     "clashofclans_base_already_unclaimed": "That base is not claimed.",
@@ -302,6 +302,7 @@
     "gambling_animal_race": "Animal race",
     "gambling_animal_race_failed": "Failed to start since there was not enough participants.",
     "gambling_animal_race_full": "Race is full! Starting immediately.",
+    "gambling_animal_race_no_race": "This Animal Race is full!",
     "gambling_animal_race_join": "{0} joined as a {1}",
     "gambling_animal_race_join_bet": "{0} joined as a {1} and bet {2}!",
     "gambling_animal_race_join_instr": "Type {0}jr to join the race.",
