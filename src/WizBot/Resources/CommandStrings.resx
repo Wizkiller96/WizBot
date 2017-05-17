@@ -184,7 +184,7 @@
     <value>greetmsg</value>
   </data>
   <data name="greetmsg_desc" xml:space="preserve">
-    <value>Sets a new join announcement message which will be shown in the server's channel. Type `%user%` if you want to mention the new member. Using it with no message will show the current greet message. You can use embed json from &lt;http://wizkiller96network.com/database/files/embedbuilder/&gt; instead of a regular text, if you want the message to be embedded.</value>
+    <value>Sets a new join announcement message which will be shown in the server's channel. Type `%user%` if you want to mention the new member. Using it with no message will show the current greet message. You can use embed json from &lt;http://embedbuilder.wizkiller96network.com/&gt; instead of a regular text, if you want the message to be embedded.</value>
   </data>
   <data name="greetmsg_usage" xml:space="preserve">
     <value>`{0}greetmsg Welcome, %user%.`</value>
@@ -202,7 +202,7 @@
     <value>byemsg</value>
   </data>
   <data name="byemsg_desc" xml:space="preserve">
-    <value>Sets a new leave announcement message. Type `%user%` if you want to show the name the user who left. Type `%id%` to show id. Using this command with no message will show the current bye message. You can use embed json from &lt;http://wizkiller96network.com//database/files/embedbuilder/&gt; instead of a regular text, if you want the message to be embedded.</value>
+    <value>Sets a new leave announcement message. Type `%user%` if you want to show the name the user who left. Type `%id%` to show id. Using this command with no message will show the current bye message. You can use embed json from &lt;http://embedbuilder.wizkiller96network.com/&gt; instead of a regular text, if you want the message to be embedded.</value>
   </data>
   <data name="byemsg_usage" xml:space="preserve">
     <value>`{0}byemsg %user% has left.`</value>
@@ -409,7 +409,7 @@
     <value>iam</value>
   </data>
   <data name="iam_desc" xml:space="preserve">
-    <value>Adds a role to you that you choose. Role must be on a list of self-assignable roles.</value>
+    <value>Adds a specified role to you. Role must be on a list of self-assignable roles.</value>
   </data>
   <data name="iam_usage" xml:space="preserve">
     <value>`{0}iam Gamer`</value>
@@ -418,7 +418,7 @@
     <value>iamnot iamn</value>
   </data>
   <data name="iamnot_desc" xml:space="preserve">
-    <value>Removes a role to you that you choose. Role must be on a list of self-assignable roles.</value>
+    <value>Removes a specified role from you. Role must be on a list of self-assignable roles.</value>
   </data>
   <data name="iamnot_usage" xml:space="preserve">
     <value>`{0}iamn Gamer`</value>
@@ -2029,7 +2029,7 @@
     <value>chucknorris cn</value>
   </data>
   <data name="chucknorris_desc" xml:space="preserve">
-    <value>Shows a random Chuck Norris joke from &lt;http://tambal.azurewebsites.net/joke/random&gt;</value>
+    <value>Shows a random Chuck Norris joke from &lt;http://api.icndb.com/jokes/random/&gt;</value>
   </data>
   <data name="chucknorris_usage" xml:space="preserve">
     <value>`{0}cn`</value>
@@ -2320,7 +2320,7 @@
     <value>`{0}greetdmmsg Welcome to the server, %user%`.</value>
   </data>
   <data name="greetdmmsg_desc" xml:space="preserve">
-    <value>Sets a new join announcement message which will be sent to the user who joined. Type `%user%` if you want to mention the new member. Using it with no message will show the current DM greet message. You can use embed json from &lt;http://wizkiller96network.com/database/files/embedbuilder/&gt; instead of a regular text, if you want the message to be embedded.</value>
+    <value>Sets a new join announcement message which will be sent to the user who joined. Type `%user%` if you want to mention the new member. Using it with no message will show the current DM greet message. You can use embed json from &lt;http://embedbuilder.wizkiller96network.com/&gt; instead of a regular text, if you want the message to be embedded.</value>
   </data>
   <data name="cash_desc" xml:space="preserve">
     <value>Check how much currency a person has. (Defaults to yourself)</value>
@@ -3382,7 +3382,7 @@
     <value>Toggles whether this role is displayed in the sidebar or not.</value>
   </data>
   <data name="rolehoist_usage" xml:space="preserve">
-    <value>`{0}rh Guests` or `{0}rh "Space Wizards"</value>
+    <value>`{0}rh Guests` or `{0}rh "Space Wizards"`</value>
   </data>
   <data name="patreonrewardsreload_cmd" xml:space="preserve">
     <value>parewrel</value>
@@ -3406,7 +3406,7 @@
     <value>shoprem shoprm</value>
   </data>
   <data name="shopremove_desc" xml:space="preserve">
-    <value>Removes an item from the shop by its color.</value>
+    <value>Removes an item from the shop by its ID.</value>
   </data>
   <data name="shop_cmd" xml:space="preserve">
     <value>shop</value>
@@ -3451,19 +3451,19 @@
     <value>globalcommand gcmd</value>
   </data>
   <data name="gcmd_desc" xml:space="preserve">
-    <value>Enables or disables a command from use on all servers.</value>
+    <value>Toggles whether a command can be used on any server</value>
   </data>
   <data name="gcmd_usage" xml:space="preserve">
-    <value>`{0}gcmd`</value>
+    <value>`{0}gcmd .stats`</value>
   </data>
   <data name="gmod_cmd" xml:space="preserve">
     <value>globalmodule gmod</value>
   </data>
   <data name="gmod_desc" xml:space="preserve">
-    <value>Enable or disable a module from use on all servers.</value>
+    <value>Toggles whether a module can be used on any server.</value>
   </data>
   <data name="gmod_usage" xml:space="preserve">
-    <value>`{0}gmod nsfw disable`</value>
+    <value>`{0}gmod nsfw`</value>
   </data>
   <data name="lgp_cmd" xml:space="preserve">
     <value>listglobalperms lgp</value>
