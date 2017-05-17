@@ -168,8 +168,8 @@ namespace WizBot.Modules.Gambling
                     await ReplyErrorLocalized("not_enough", CurrencySign).ConfigureAwait(false);
                     return;
                 }
-                var msg = GetText("waifu_claimed", 
-                    Format.Bold(target.ToString()), 
+                var msg = GetText("waifu_claimed",
+                    Format.Bold(target.ToString()),
                     amount + CurrencySign);
                 if (w.Affinity?.UserId == Context.User.Id)
                     msg += "\n" + GetText("waifu_fulfilled", target, w.Price + CurrencySign);
@@ -188,9 +188,15 @@ namespace WizBot.Modules.Gambling
             private static readonly TimeSpan _divorceLimit = TimeSpan.FromHours(6);
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            public async Task Divorce([Remainder]IGuildUser target)
+            [Priority(1)]
+            public Task Divorce([Remainder]IUser target) => Divorce(target.Id);
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [Priority(0)]
+            public async Task Divorce([Remainder]ulong targetId)
             {
-                if (target.Id == Context.User.Id)
+                if (targetId == Context.User.Id)
                     return;
 
                 DivorceResult result;
@@ -199,7 +205,7 @@ namespace WizBot.Modules.Gambling
                 WaifuInfo w = null;
                 using (var uow = DbHandler.UnitOfWork())
                 {
-                    w = uow.Waifus.ByWaifuUserId(target.Id);
+                    w = uow.Waifus.ByWaifuUserId(targetId);
                     var now = DateTime.UtcNow;
                     if (w?.Claimer == null || w.Claimer.UserId != Context.User.Id)
                         result = DivorceResult.NotYourWife;
@@ -255,7 +261,7 @@ namespace WizBot.Modules.Gambling
                 else
                 {
                     var remaining = _divorceLimit.Subtract(difference);
-                    await ReplyErrorLocalized("waifu_recent_divorce", 
+                    await ReplyErrorLocalized("waifu_recent_divorce",
                         Format.Bold(((int)remaining.TotalHours).ToString()),
                         Format.Bold(remaining.Minutes.ToString())).ConfigureAwait(false);
                 }
@@ -264,7 +270,7 @@ namespace WizBot.Modules.Gambling
             private static readonly TimeSpan _affinityLimit = TimeSpan.FromMinutes(30);
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            public async Task WaifuClaimerAffinity([Remainder]IGuildUser u = null)
+            public async Task WaifuClaimerAffinity([Remainder]IUser u = null)
             {
                 if (u?.Id == Context.User.Id)
                 {
@@ -332,7 +338,7 @@ namespace WizBot.Modules.Gambling
                     if (cooldown)
                     {
                         var remaining = _affinityLimit.Subtract(difference);
-                        await ReplyErrorLocalized("waifu_affinity_cooldown", 
+                        await ReplyErrorLocalized("waifu_affinity_cooldown",
                             Format.Bold(((int)remaining.TotalHours).ToString()),
                             Format.Bold(remaining.Minutes.ToString())).ConfigureAwait(false);
                     }
@@ -371,7 +377,7 @@ namespace WizBot.Modules.Gambling
                     await ReplyConfirmLocalized("waifus_none").ConfigureAwait(false);
                     return;
                 }
-                
+
                 var embed = new EmbedBuilder()
                     .WithTitle(GetText("waifus_top_waifus"))
                     .WithOkColor();
@@ -389,10 +395,10 @@ namespace WizBot.Modules.Gambling
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            public async Task WaifuInfo([Remainder]IGuildUser target = null)
+            public async Task WaifuInfo([Remainder]IUser target = null)
             {
                 if (target == null)
-                    target = (IGuildUser)Context.User;
+                    target = Context.User;
                 WaifuInfo w;
                 IList<WaifuInfo> claims;
                 int divorces;
