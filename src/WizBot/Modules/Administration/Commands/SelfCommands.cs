@@ -12,6 +12,9 @@ using Discord.WebSocket;
 using WizBot.Services;
 using WizBot.Services.Database.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Immutable;
+using WizBot.DataStructures;
+using NLog;
 
 namespace WizBot.Modules.Administration
 {
@@ -25,8 +28,11 @@ namespace WizBot.Modules.Administration
 
             private static readonly object _locker = new object();
 
+            private new static readonly Logger _log;
+
             static SelfCommands()
             {
+                _log = LogManager.GetCurrentClassLogger();
                 using (var uow = DbHandler.UnitOfWork())
                 {
                     var config = uow.BotConfig.GetOrCreate();
@@ -36,7 +42,7 @@ namespace WizBot.Modules.Administration
 
                 var _ = Task.Run(async () =>
                 {
-                    while(!WizBot.Ready)
+                    while (!WizBot.Ready)
                         await Task.Delay(1000);
 
                     foreach (var cmd in WizBot.BotConfig.StartupCommands)
@@ -113,7 +119,7 @@ namespace WizBot.Modules.Administration
 {Format.Code(GetText("channel"))}: {x.ChannelName}/{x.ChannelId}
 {Format.Code(GetText("command_text"))}: {x.CommandText}";
                         return str;
-                    })),footer: GetText("page", page + 1))
+                    })), footer: GetText("page", page + 1))
                          .ConfigureAwait(false);
                 }
             }
@@ -123,7 +129,7 @@ namespace WizBot.Modules.Administration
             public async Task Wait(int miliseconds)
             {
                 if (miliseconds <= 0)
-                    return;                
+                    return;
                 Context.Message.DeleteAfter(0);
                 try
                 {
@@ -157,7 +163,7 @@ namespace WizBot.Modules.Administration
                     }
                 }
 
-                if(cmd == null)
+                if (cmd == null)
                     await ReplyErrorLocalized("scrm_fail").ConfigureAwait(false);
                 else
                     await ReplyConfirmLocalized("scrm").ConfigureAwait(false);
@@ -215,9 +221,9 @@ namespace WizBot.Modules.Administration
 
             }
 
-            public static async Task HandleDmForwarding(IUserMessage msg, List<IDMChannel> ownerChannels)
+            public static async Task HandleDmForwarding(IUserMessage msg, ImmutableArray<AsyncLazy<IDMChannel>> ownerChannels)
             {
-                if (_forwardDMs && ownerChannels.Any())
+                if (_forwardDMs && ownerChannels.Length > 0)
                 {
                     var title = GetTextStatic("dm_from",
                                     WizBot.Localization.DefaultCultureInfo,
@@ -238,12 +244,25 @@ namespace WizBot.Modules.Administration
 
                     if (_forwardDMsToAllOwners)
                     {
-                        await Task.WhenAll(ownerChannels.Where(ch => ch.Recipient.Id != msg.Author.Id)
-                            .Select(ch => ch.SendConfirmAsync(title, toSend))).ConfigureAwait(false);
+                        var allOwnerChannels = await Task.WhenAll(ownerChannels
+                            .Select(x => x.Value))
+                            .ConfigureAwait(false);
+
+                        foreach (var ownerCh in allOwnerChannels.Where(ch => ch.Recipient.Id != msg.Author.Id))
+                        {
+                            try
+                            {
+                                await ownerCh.SendConfirmAsync(title, toSend).ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                _log.Warn("Can't contact owner with id {0}", ownerCh.Recipient.Id);
+                            }
+                        }
                     }
                     else
                     {
-                        var firstOwnerChannel = ownerChannels.First();
+                        var firstOwnerChannel = await ownerChannels[0];
                         if (firstOwnerChannel.Recipient.Id != msg.Author.Id)
                         {
                             try
