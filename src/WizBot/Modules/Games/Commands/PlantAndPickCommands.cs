@@ -36,10 +36,7 @@ namespace WizBot.Modules.Games
 
             static PlantPickCommands()
             {
-
-#if !GLOBAL_WIZBOT
                 WizBot.Client.MessageReceived += PotentialFlowerGeneration;
-#endif
                 generationChannels = new ConcurrentHashSet<ulong>(WizBot.AllGuildConfigs
                     .SelectMany(c => c.GenerateCurrencyChannelIds.Select(obj => obj.ChannelId)));
             }
