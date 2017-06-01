@@ -20,6 +20,7 @@ using WizBot.Modules.Utility;
 using WizBot.Services.Searches;
 using WizBot.Services.ClashOfClans;
 using WizBot.Services.Music;
+using WizBot.Services.CustomReactions;
 
 namespace WizBot
 {
@@ -99,6 +100,7 @@ namespace WizBot
             var searchesService = new SearchesService();
             var clashService = new ClashOfClansService(Client, db, localization, strings);
             var musicService = new MusicService(google, strings, localization, db, soundcloud, credentials);
+            var crService = new CustomReactionsService(db, Client);
 
             //initialize Services
             Services = new NServiceProvider.ServiceProviderBuilder() //todo all Adds should be interfaces
@@ -121,6 +123,9 @@ namespace WizBot
                 .Add<UtilityService>(utilityService)
                 .Add<SearchesService>(searchesService)
                 .Add<ClashOfClansService>(clashService)
+                .Add<MusicService>(musicService)
+                .Add<GreetSettingsService>(greetSettingsService)
+                .Add<CustomReactionsService>(crService)
                 .Build();
 
             commandHandler.AddServices(Services);

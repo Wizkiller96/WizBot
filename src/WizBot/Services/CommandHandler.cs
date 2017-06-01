@@ -11,6 +11,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using WizBot.DataStructures;
 using System.Collections.Immutable;
+using WizBot.DataStructures.ModuleBehaviors;
 
 namespace WizBot.Services
 {
@@ -132,23 +133,23 @@ namespace WizBot.Services
 
             foreach (var s in _client.Shards)
             {
-                if (hs.Count == 0)
+                if(hs.Count == 0)
                     break;
-                foreach (var g in s.Guilds)
-                {
-                    if (hs.Count == 0)
-                        break;
-
-                    foreach (var u in g.Users)
+                    foreach (var g in s.Guilds)
                     {
-                        if (hs.Remove(u.Id))
+                        if(hs.Count == 0)
+                            break;
+
+                        foreach (var u in g.Users)
                         {
-                            channels.Add(u.Id, new AsyncLazy<IDMChannel>(async () => await u.CreateDMChannelAsync()));
-                            if (hs.Count == 0)
-                                break;
+                            if(hs.Remove(u.Id))
+                            {
+                                channels.Add(u.Id, new AsyncLazy<IDMChannel>(async () => await u.CreateDMChannelAsync()));
+                                if(hs.Count == 0)   
+                                        break;
+                            }
                         }
                     }
-                }
             }
 
             ownerChannels = channels.OrderBy(x => _creds.OwnerIds.IndexOf(x.Key))
@@ -201,7 +202,7 @@ namespace WizBot.Services
 
         private const float _oneThousandth = 1.0f / 1000;
 
-        private Task LogSuccessfulExecution(IUserMessage usrMsg, ExecuteCommandResult exec, ITextChannel channel, params int[] execPoints)
+        private Task LogSuccessfulExecution(IUserMessage usrMsg, bool exec, ITextChannel channel, params int[] execPoints)
         {
             _log.Info("Command Executed after " + string.Join("/", execPoints.Select(x => x * _oneThousandth)) + "s\n\t" +
                         "User: {0}\n\t" +
@@ -216,7 +217,7 @@ namespace WizBot.Services
             return Task.CompletedTask;
         }
 
-        private void LogErroredExecution(IUserMessage usrMsg, ExecuteCommandResult exec, ITextChannel channel, params int[] execPoints)
+        private void LogErroredExecution(IUserMessage usrMsg, bool exec, ITextChannel channel, params int[] execPoints)
         {
             _log.Warn("Command Errored after " + string.Join("/", execPoints.Select(x => x * _oneThousandth)) + "s\n\t" +
                         "User: {0}\n\t" +
@@ -228,7 +229,8 @@ namespace WizBot.Services
                         (channel == null ? "PRIVATE" : channel.Guild.Name + " [" + channel.Guild.Id + "]"), // {1}
                         (channel == null ? "PRIVATE" : channel.Name + " [" + channel.Id + "]"), // {2}
                         usrMsg.Content,// {3}
-                        exec.Result.ErrorReason // {4}
+                        exec
+                        //exec.Result.ErrorReason // {4}
                         );
         }
         ////todo invite filtering
@@ -323,6 +325,17 @@ namespace WizBot.Services
         {
             var execTime = Environment.TickCount;
 
+            foreach (var svc in _services)
+            {
+                if (svc is IBlockingExecutor _executor && 
+                    await _executor.TryExecute(_client, guild, usrMsg))
+                {
+                    _log.Info("User [{0}] executed [{1}] in [{2}]", usrMsg.Author, usrMsg.Content, svc.GetType().Name);
+                    return;
+                }
+            }
+
+
             ////todo word and invite filtering
             //if (guild != null && guild.OwnerId != usrMsg.Author.Id)
             //{
@@ -336,7 +349,7 @@ namespace WizBot.Services
             ////todo blacklisting
             //if (IsBlacklisted(guild, usrMsg))
             //    return;
-
+            
             //var cleverBotRan = await Task.Run(() => TryRunCleverbot(usrMsg, guild)).ConfigureAwait(false);
             //if (cleverBotRan)
             //    return;
@@ -423,22 +436,23 @@ namespace WizBot.Services
                 var exec = await Task.Run(() => ExecuteCommandAsync(new CommandContext(_client, usrMsg), WizBot.Prefix.Length, _services, MultiMatchHandling.Best)).ConfigureAwait(false);
                 execTime = Environment.TickCount - execTime;
 
-                if (exec.Result.IsSuccess)
-                {
-                    await CommandExecuted(usrMsg, exec.CommandInfo).ConfigureAwait(false);
-                    await LogSuccessfulExecution(usrMsg, exec, channel, exec2, exec3, execTime).ConfigureAwait(false);
-                    return;
-                }
-                else if (!exec.Result.IsSuccess && exec.Result.Error != CommandError.UnknownCommand)
-                {
-                    LogErroredExecution(usrMsg, exec, channel, exec2, exec3, execTime);
-                    if (guild != null && exec.CommandInfo != null && exec.Result.Error == CommandError.Exception)
-                    {
-                        if (exec.PermissionCache != null && exec.PermissionCache.Verbose)
-                            try { await usrMsg.Channel.SendMessageAsync("⚠️ " + exec.Result.ErrorReason).ConfigureAwait(false); } catch { }
-                    }
-                    return;
-                }
+                ////todo permissions
+                //if (exec.Result.IsSuccess)
+                //{
+                //    await CommandExecuted(usrMsg, exec.CommandInfo).ConfigureAwait(false);
+                //    await LogSuccessfulExecution(usrMsg, exec, channel, exec2, exec3, execTime).ConfigureAwait(false);
+                //    return;
+                //}
+                //else if (!exec.Result.IsSuccess && exec.Result.Error != CommandError.UnknownCommand)
+                //{
+                //    LogErroredExecution(usrMsg, exec, channel, exec2, exec3, execTime);
+                //    if (guild != null && exec.CommandInfo != null && exec.Result.Error == CommandError.Exception)
+                //    {
+                //        if (exec.PermissionCache != null && exec.PermissionCache.Verbose)
+                //            try { await usrMsg.Channel.SendMessageAsync("⚠️ " + exec.Result.ErrorReason).ConfigureAwait(false); } catch { }
+                //    }
+                //    return;
+                //}
             }
 
             if (usrMsg.Channel is IPrivateChannel)
@@ -455,15 +469,15 @@ namespace WizBot.Services
             }
         }
 
-        public Task<ExecuteCommandResult> ExecuteCommandAsync(CommandContext context, int argPos, IServiceProvider serviceProvider, MultiMatchHandling multiMatchHandling = MultiMatchHandling.Exception)
+        public Task<bool> ExecuteCommandAsync(CommandContext context, int argPos, IServiceProvider serviceProvider, MultiMatchHandling multiMatchHandling = MultiMatchHandling.Exception)
             => ExecuteCommand(context, context.Message.Content.Substring(argPos), serviceProvider, multiMatchHandling);
 
 
-        public async Task<ExecuteCommandResult> ExecuteCommand(CommandContext context, string input, IServiceProvider serviceProvider, MultiMatchHandling multiMatchHandling = MultiMatchHandling.Exception)
+        public async Task<bool> ExecuteCommand(CommandContext context, string input, IServiceProvider serviceProvider, MultiMatchHandling multiMatchHandling = MultiMatchHandling.Exception)
         {
             var searchResult = _commandService.Search(context, input);
             if (!searchResult.IsSuccess)
-                return new ExecuteCommandResult(null, null, searchResult);
+                return false;
 
             var commands = searchResult.Commands;
             for (int i = commands.Count - 1; i >= 0; i--)
@@ -472,7 +486,7 @@ namespace WizBot.Services
                 if (!preconditionResult.IsSuccess)
                 {
                     if (commands.Count == 1)
-                        return new ExecuteCommandResult(null, null, preconditionResult);
+                        return false;
                     else
                         continue;
                 }
@@ -496,7 +510,7 @@ namespace WizBot.Services
                     if (!parseResult.IsSuccess)
                     {
                         if (commands.Count == 1)
-                            return new ExecuteCommandResult(null, null, parseResult);
+                            return false;
                         else
                             continue;
                     }
@@ -549,16 +563,19 @@ namespace WizBot.Services
                 // Bot will ignore commands which are ran more often than what specified by
                 // GlobalCommandsCooldown constant (miliseconds)
                 if (!UsersOnShortCooldown.Add(context.Message.Author.Id))
-                    return new ExecuteCommandResult(cmd, null, SearchResult.FromError(CommandError.Exception, "You are on a global cooldown."));
+                    return false;
+                    //return SearchResult.FromError(CommandError.Exception, "You are on a global cooldown.");
 
                 ////todo cmdcds
                 //if (CmdCdsCommands.HasCooldown(cmd, context.Guild, context.User))
                 //    return new ExecuteCommandResult(cmd, null, SearchResult.FromError(CommandError.Exception, "That command is on a cooldown for you."));
-
-                return new ExecuteCommandResult(cmd, null, await commands[i].ExecuteAsync(context, parseResult, serviceProvider));
+                
+                await commands[i].ExecuteAsync(context, parseResult, serviceProvider);
+                return true;
             }
 
-            return new ExecuteCommandResult(null, null, SearchResult.FromError(CommandError.UnknownCommand, "This input does not match any overload."));
+            return false;
+            //return new ExecuteCommandResult(null, null, SearchResult.FromError(CommandError.UnknownCommand, "This input does not match any overload."));
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WizBot.DataStructures
+namespace WizBot.Services.Permissions
 {
     public class OldPermissionCache
     {

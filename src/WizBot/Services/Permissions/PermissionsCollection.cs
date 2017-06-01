@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using WizBot.Services.Database.Models;
+using WizBot.DataStructures;
 
-namespace WizBot.DataStructures
+namespace WizBot.Services.Permissions
 {
     public class PermissionsCollection<T> : IndexedCollection<T> where T : IIndexed
     {
