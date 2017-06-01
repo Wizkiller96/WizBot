@@ -4,8 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using WizBot.Extensions;
-using WizBot.Modules;
-using WizBot.Services.Impl;
 using WizBot.Services.Database.Models;
 using System.Text.RegularExpressions;
 using NLog;
@@ -22,7 +20,6 @@ namespace WizBot.Services.Music
         private readonly IGoogleApiService _google;
         private readonly WizBotStrings _strings;
         private readonly ILocalization _localization;
-        private GoogleApiService google;
         private readonly DbHandler _db;
         private readonly Logger _log;
         private readonly SoundCloudApiService _sc;

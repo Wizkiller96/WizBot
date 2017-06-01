@@ -18,7 +18,6 @@ namespace WizBot.Modules.Gambling
         public class DrawCommands : WizBotSubmodule
         {
             private static readonly ConcurrentDictionary<IGuild, Cards> _allDecks = new ConcurrentDictionary<IGuild, Cards>();
-
             private const string _cardsPath = "data/images/cards";
 
             [WizBotCommand, Usage, Description, Aliases]

@@ -3,6 +3,7 @@ using Discord.Commands;
 using WizBot.Attributes;
 using WizBot.Extensions;
 using WizBot.Services;
+using WizBot.Services.Database.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -16,13 +17,16 @@ namespace WizBot.Modules.Gambling
         public class FlipCoinCommands : WizBotSubmodule
         {
             private readonly IImagesService _images;
+            private readonly BotConfig _bc;
+            private readonly CurrencyHandler _ch;
 
-            private static WizBotRandom rng { get; } = new WizBotRandom();
+            private readonly WizBotRandom rng = new WizBotRandom();
 
-            public FlipCoinCommands()
+            public FlipCoinCommands(IImagesService images, CurrencyHandler ch, BotConfig bc)
             {
-                //todo DI in the future, can't atm
-                _images = WizBot.Images;
+                _images = images;
+                _bc = bc;
+                _ch = ch;
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -77,15 +81,15 @@ namespace WizBot.Modules.Gambling
                 if (guessStr != "H" && guessStr != "T" && guessStr != "HEADS" && guessStr != "TAILS")
                     return;
 
-                if (amount < WizBot.BotConfig.MinimumBetAmount)
+                if (amount < _bc.MinimumBetAmount)
                 {
-                    await ReplyErrorLocalized("min_bet_limit", WizBot.BotConfig.MinimumBetAmount + CurrencySign).ConfigureAwait(false);
+                    await ReplyErrorLocalized("min_bet_limit", _bc.MinimumBetAmount + _bc.CurrencySign).ConfigureAwait(false);
                     return;
                 }
-                var removed = await CurrencyHandler.RemoveCurrencyAsync(Context.User, "Betflip Gamble", amount, false).ConfigureAwait(false);
+                var removed = await _ch.RemoveCurrencyAsync(Context.User, "Betflip Gamble", amount, false).ConfigureAwait(false);
                 if (!removed)
                 {
-                    await ReplyErrorLocalized("not_enough", CurrencyPluralName).ConfigureAwait(false);
+                    await ReplyErrorLocalized("not_enough", _bc.CurrencyPluralName).ConfigureAwait(false);
                     return;
                 }
                 //heads = true
@@ -108,9 +112,9 @@ namespace WizBot.Modules.Gambling
                 string str;
                 if (isHeads == result)
                 { 
-                    var toWin = (int)Math.Round(amount * WizBot.BotConfig.BetflipMultiplier);
-                    str = Context.User.Mention + " " + GetText("flip_guess", toWin + CurrencySign);
-                    await CurrencyHandler.AddCurrencyAsync(Context.User, "Betflip Gamble", toWin, false).ConfigureAwait(false);
+                    var toWin = (int)Math.Round(amount * _bc.BetflipMultiplier);
+                    str = Context.User.Mention + " " + GetText("flip_guess", toWin + _bc.CurrencySign);
+                    await _ch.AddCurrencyAsync(Context.User, "Betflip Gamble", toWin, false).ConfigureAwait(false);
                 }
                 else
                 {
