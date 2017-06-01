@@ -44,19 +44,13 @@ namespace WizBot.Services.Impl
         public ImmutableArray<byte> WifeMatrix { get; private set; }
         public ImmutableArray<byte> RategirlDot { get; private set; }
 
-        private ImagesService()
+        public ImagesService()
         {
             _log = LogManager.GetCurrentClassLogger();
+            this.Reload();
         }
 
-        public static async Task<IImagesService> Create()
-        {
-            var srvc = new ImagesService();
-            await srvc.Reload().ConfigureAwait(false);
-            return srvc;
-        }
-
-        public Task<TimeSpan> Reload() => Task.Run(() =>
+        public TimeSpan Reload()
         {
             try
             {
@@ -67,16 +61,16 @@ namespace WizBot.Services.Impl
 
                 Currency = Directory.GetFiles(_currencyImagesPath)
                     .Select(x => new KeyValuePair<string, ImmutableArray<byte>>(
-                                        Path.GetFileName(x), 
+                                        Path.GetFileName(x),
                                         File.ReadAllBytes(x).ToImmutableArray()))
                     .ToImmutableArray();
 
                 Dice = Directory.GetFiles(_diceImagesPath)
                                 .OrderBy(x => int.Parse(Path.GetFileNameWithoutExtension(x)))
-                                .Select(x => new KeyValuePair<string, ImmutableArray<byte>>(x, 
+                                .Select(x => new KeyValuePair<string, ImmutableArray<byte>>(x,
                                                     File.ReadAllBytes(x).ToImmutableArray()))
                                 .ToImmutableArray();
-                
+
                 SlotBackground = File.ReadAllBytes(_slotBackgroundPath).ToImmutableArray();
 
                 SlotNumbers = Directory.GetFiles(_slotNumbersPath)
@@ -101,6 +95,6 @@ namespace WizBot.Services.Impl
                 _log.Error(ex);
                 throw;
             }
-        });
+        }
     }
 }

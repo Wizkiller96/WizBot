@@ -15,11 +15,12 @@ namespace WizBot.Services.Impl
     public class StatsService : IStatsService
     {
         private readonly DiscordShardedClient _client;
+        private readonly IBotCredentials _creds;
         private readonly DateTime _started;
 
         public const string BotVersion = "1.4";
 
-        public string Author => "Kwoth#2560 and Wizkiller96#2947";
+        public string Author => "Kwoth#2560 & Wizkiller96#2947";
         public string Library => "Discord.Net";
         public string Heap =>
             Math.Round((double)GC.GetTotalMemory(false) / 1.MiB(), 2).ToString(CultureInfo.InvariantCulture);
@@ -36,10 +37,10 @@ namespace WizBot.Services.Impl
 
         private readonly Timer _carbonitexTimer;
 
-        public StatsService(DiscordShardedClient client, CommandHandler cmdHandler)
+        public StatsService(DiscordShardedClient client, CommandHandler cmdHandler, IBotCredentials creds)
         {
-
             _client = client;
+            _creds = creds;
 
             _started = DateTime.Now;
             _client.MessageReceived += _ => Task.FromResult(Interlocked.Increment(ref _messageCounter));
@@ -117,7 +118,7 @@ namespace WizBot.Services.Impl
 
             _carbonitexTimer = new Timer(async (state) =>
             {
-                if (string.IsNullOrWhiteSpace(WizBot.Credentials.CarbonKey))
+                if (string.IsNullOrWhiteSpace(_creds.CarbonKey))
                     return;
                 try
                 {
@@ -126,7 +127,7 @@ namespace WizBot.Services.Impl
                         using (var content = new FormUrlEncodedContent(
                             new Dictionary<string, string> {
                                 { "servercount", _client.Guilds.Count.ToString() },
-                                { "key", WizBot.Credentials.CarbonKey }}))
+                                { "key", _creds.CarbonKey }}))
                         {
                             content.Headers.Clear();
                             content.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
@@ -158,7 +159,7 @@ namespace WizBot.Services.Impl
 Author: [{Author}] | Library: [{Library}]
 Bot Version: [{BotVersion}]
 Bot ID: {curUser.Id}
-Owner ID(s): {string.Join(", ", WizBot.Credentials.OwnerIds)}
+Owner ID(s): {string.Join(", ", _creds.OwnerIds)}
 Uptime: {GetUptimeString()}
 Servers: {_client.Guilds.Count} | TextChannels: {TextChannels} | VoiceChannels: {VoiceChannels}
 Commands Ran this session: {CommandsRan}

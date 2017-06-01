@@ -9,8 +9,9 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Net;
+using Discord;
 
-namespace WizBot.Modules.Music.Classes
+namespace WizBot.Services.Music
 {
     public class SongInfo
     {
@@ -28,14 +29,9 @@ namespace WizBot.Modules.Music.Classes
         public MusicPlayer MusicPlayer { get; set; }
 
         private string _queuerName;
-        public string QueuerName
-        {
-            get
-            {
-                return Discord.Format.Sanitize(_queuerName);
-            }
-            set { _queuerName = value; }
-        }
+        public string QueuerName { get{
+            return Format.Sanitize(_queuerName);
+        } set { _queuerName = value; } }
 
         public TimeSpan TotalTime { get; set; } = TimeSpan.Zero;
         public TimeSpan CurrentTime => TimeSpan.FromSeconds(BytesSent / (float)_frameBytes / (1000 / (float)_milliseconds));
@@ -59,10 +55,8 @@ namespace WizBot.Modules.Music.Classes
 
         public string PrettyFullName => $"{PrettyName}\n\t\t`{PrettyTotalTime} | {PrettyProvider} | {QueuerName}`";
 
-        public string PrettyCurrentTime
-        {
-            get
-            {
+        public string PrettyCurrentTime {
+            get {
                 var time = CurrentTime.ToString(@"mm\:ss");
                 var hrs = (int)CurrentTime.TotalHours;
 
@@ -73,8 +67,7 @@ namespace WizBot.Modules.Music.Classes
             }
         }
 
-        public string PrettyTotalTime
-        {
+        public string PrettyTotalTime {
             get
             {
                 if (TotalTime == TimeSpan.Zero)
@@ -90,10 +83,8 @@ namespace WizBot.Modules.Music.Classes
             }
         }
 
-        public string Thumbnail
-        {
-            get
-            {
+        public string Thumbnail {
+            get {
                 switch (SongInfo.ProviderType)
                 {
                     case MusicType.Radio:
@@ -112,10 +103,8 @@ namespace WizBot.Modules.Music.Classes
             }
         }
 
-        public string SongUrl
-        {
-            get
-            {
+        public string SongUrl {
+            get {
                 switch (SongInfo.ProviderType)
                 {
                     case MusicType.Normal:
@@ -154,8 +143,8 @@ namespace WizBot.Modules.Music.Classes
 
         public async Task Play(IAudioClient voiceClient, CancellationToken cancelToken)
         {
-            BytesSent = (ulong)SkipTo * 3840 * 50;
-            var filename = Path.Combine(Music.MusicDataPath, DateTime.Now.UnixTimestamp().ToString());
+            BytesSent = (ulong) SkipTo * 3840 * 50;
+            var filename = Path.Combine(MusicPlayer.MusicDataPath, DateTime.Now.UnixTimestamp().ToString());
 
             var inStream = new SongBuffer(MusicPlayer, filename, SongInfo, SkipTo, _frameBytes * 100);
             var bufferTask = inStream.BufferSong(cancelToken).ConfigureAwait(false);

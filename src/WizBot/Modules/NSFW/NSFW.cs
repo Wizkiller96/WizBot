@@ -11,15 +11,21 @@ using WizBot.Extensions;
 using System.Xml;
 using System.Threading;
 using System.Collections.Concurrent;
+using WizBot.Services.Searches;
 
 namespace WizBot.Modules.NSFW
 {
-    [WizBotModule("NSFW", "~")]
+    [WizBotModule("NSFW")]
     public class NSFW : WizBotTopLevelModule
     {
-
         private static readonly ConcurrentDictionary<ulong, Timer> _autoHentaiTimers = new ConcurrentDictionary<ulong, Timer>();
         private static readonly ConcurrentHashSet<ulong> _hentaiBombBlacklist = new ConcurrentHashSet<ulong>();
+        private readonly SearchesService _service;
+
+        public NSFW(SearchesService service)
+        {
+            _service = service;
+        }
 
         private async Task InternalHentai(IMessageChannel channel, string tag, bool noError)
         {
@@ -103,8 +109,8 @@ namespace WizBot.Modules.NSFW
                 return t;
             });
 
-            await ReplyConfirmLocalized("autohentai_started", 
-                interval, 
+            await ReplyConfirmLocalized("autohentai_started",
+                interval,
                 string.Join(", ", tagsArr)).ConfigureAwait(false);
         }
 
@@ -142,11 +148,11 @@ namespace WizBot.Modules.NSFW
 #endif
         [WizBotCommand, Usage, Description, Aliases]
         public Task Yandere([Remainder] string tag = null)
-            => InternalDapiCommand(tag, Searches.Searches.DapiSearchType.Yandere);
+            => InternalDapiCommand(tag, DapiSearchType.Yandere);
 
         [WizBotCommand, Usage, Description, Aliases]
         public Task Konachan([Remainder] string tag = null)
-            => InternalDapiCommand(tag, Searches.Searches.DapiSearchType.Konachan);
+            => InternalDapiCommand(tag, DapiSearchType.Konachan);
 
         [WizBotCommand, Usage, Description, Aliases]
         public async Task E621([Remainder] string tag = null)
@@ -167,7 +173,7 @@ namespace WizBot.Modules.NSFW
 
         [WizBotCommand, Usage, Description, Aliases]
         public Task Rule34([Remainder] string tag = null)
-            => InternalDapiCommand(tag, Searches.Searches.DapiSearchType.Rule34);
+            => InternalDapiCommand(tag, DapiSearchType.Rule34);
 
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Danbooru([Remainder] string tag = null)
@@ -210,13 +216,7 @@ namespace WizBot.Modules.NSFW
 
         [WizBotCommand, Usage, Description, Aliases]
         public Task Gelbooru([Remainder] string tag = null)
-            => InternalDapiCommand(tag, Searches.Searches.DapiSearchType.Gelbooru);
-
-        //[WizBotCommand, Usage, Description, Aliases]
-        //public async Task Cp()
-        //{
-            //await Context.Channel.SendMessageAsync("http://i.imgur.com/MZkY1md.jpg").ConfigureAwait(false);
-        //}
+            => InternalDapiCommand(tag, DapiSearchType.Gelbooru);
 
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Boobs()
@@ -276,23 +276,23 @@ namespace WizBot.Modules.NSFW
             }
         });
 
-        public static Task<string> GetRule34ImageLink(string tag) =>
-            Searches.Searches.InternalDapiSearch(tag, Searches.Searches.DapiSearchType.Rule34);
+        public Task<string> GetRule34ImageLink(string tag) =>
+            _service.DapiSearch(tag, DapiSearchType.Rule34);
 
-        public static Task<string> GetYandereImageLink(string tag) =>
-            Searches.Searches.InternalDapiSearch(tag, Searches.Searches.DapiSearchType.Yandere);
+        public Task<string> GetYandereImageLink(string tag) =>
+            _service.DapiSearch(tag, DapiSearchType.Yandere);
 
-        public static Task<string> GetKonachanImageLink(string tag) =>
-            Searches.Searches.InternalDapiSearch(tag, Searches.Searches.DapiSearchType.Konachan);
+        public Task<string> GetKonachanImageLink(string tag) =>
+            _service.DapiSearch(tag, DapiSearchType.Konachan);
 
-        public static Task<string> GetGelbooruImageLink(string tag) =>
-            Searches.Searches.InternalDapiSearch(tag, Searches.Searches.DapiSearchType.Gelbooru);
+        public Task<string> GetGelbooruImageLink(string tag) =>
+            _service.DapiSearch(tag, DapiSearchType.Gelbooru);
 
-        public async Task InternalDapiCommand(string tag, Searches.Searches.DapiSearchType type)
+        public async Task InternalDapiCommand(string tag, DapiSearchType type)
         {
             tag = tag?.Trim() ?? "";
 
-            var url = await Searches.Searches.InternalDapiSearch(tag, type).ConfigureAwait(false);
+            var url = await _service.DapiSearch(tag, type).ConfigureAwait(false);
 
             if (url == null)
                 await ReplyErrorLocalized("not_found").ConfigureAwait(false);

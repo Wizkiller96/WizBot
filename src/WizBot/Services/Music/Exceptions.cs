@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WizBot.Modules.Music.Classes
+namespace WizBot.Services.Music
 {
     class PlaylistFullException : Exception
     {

@@ -22,16 +22,20 @@ namespace WizBot.Modules.Utility
         [Group]
         public class PatreonCommands : WizBotSubmodule
         {
-            private static readonly PatreonThingy patreon;
+            //todo rename patreon thingy and move it to be a service, or a part of utility service
+            private readonly PatreonThingy patreon;
+            private readonly IBotCredentials _creds;
+            private readonly BotConfig _config;
+            private readonly DbHandler _db;
+            private readonly CurrencyHandler _currency;
 
-            static PatreonCommands()
+            public PatreonCommands(IBotCredentials creds, BotConfig config, DbHandler db, CurrencyHandler currency)
             {
-                patreon = PatreonThingy.Instance;
-            }
-
-            public static void Unload()
-            {
-                patreon.Updater.Change(Timeout.Infinite, Timeout.Infinite);
+                _creds = creds;
+                _config = config;
+                _db = db;
+                _currency = currency;
+                patreon = PatreonThingy.GetInstance(creds, db, currency);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -46,7 +50,7 @@ namespace WizBot.Modules.Utility
             [WizBotCommand, Usage, Description, Aliases]
             public async Task ClaimPatreonRewards()
             {
-                if (string.IsNullOrWhiteSpace(WizBot.Credentials.PatreonAccessToken))
+                if (string.IsNullOrWhiteSpace(_creds.PatreonAccessToken))
                     return;
                 if (DateTime.UtcNow.Day < 5)
                 {
@@ -65,11 +69,11 @@ namespace WizBot.Modules.Utility
 
                 if (amount > 0)
                 {
-                    await ReplyConfirmLocalized("clpa_success", amount + WizBot.BotConfig.CurrencySign).ConfigureAwait(false);
+                    await ReplyConfirmLocalized("clpa_success", amount + _config.CurrencySign).ConfigureAwait(false);
                     return;
                 }
                 var rem = (patreon.Interval - (DateTime.UtcNow - patreon.LastUpdate));
-                var helpcmd = Format.Code(WizBot.ModulePrefixes[typeof(Help.Help).Name] + "donate");
+                var helpcmd = Format.Code(WizBot.Prefix + "donate");
                 await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                     .WithDescription(GetText("clpa_fail"))
                     .AddField(efb => efb.WithName(GetText("clpa_fail_already_title")).WithValue(GetText("clpa_fail_already")))
@@ -83,8 +87,10 @@ namespace WizBot.Modules.Utility
 
         public class PatreonThingy
         {
-            public static PatreonThingy _instance = new PatreonThingy();
-            public static PatreonThingy Instance => _instance;
+            //todo quickly hacked while rewriting, fix this
+            private static PatreonThingy _instance = null;
+            public static PatreonThingy GetInstance(IBotCredentials creds, DbHandler db, CurrencyHandler cur)
+                => _instance ?? (_instance = new PatreonThingy(creds, db, cur));
 
             private readonly SemaphoreSlim getPledgesLocker = new SemaphoreSlim(1, 1);
 
@@ -96,10 +102,17 @@ namespace WizBot.Modules.Utility
             private readonly Logger _log;
 
             public readonly TimeSpan Interval = TimeSpan.FromHours(1);
+            private IBotCredentials _creds;
+            private readonly DbHandler _db;
+            private readonly CurrencyHandler _currency;
 
-            private PatreonThingy()
+            static PatreonThingy() { }
+            private PatreonThingy(IBotCredentials creds, DbHandler db, CurrencyHandler currency)
             {
-                if (string.IsNullOrWhiteSpace(WizBot.Credentials.PatreonAccessToken))
+                _creds = creds;
+                _db = db;
+                _currency = currency;
+                if (string.IsNullOrWhiteSpace(creds.PatreonAccessToken))
                     return;
                 _log = LogManager.GetCurrentClassLogger();
                 Updater = new Timer(async (_) => await LoadPledges(), null, TimeSpan.Zero, Interval);
@@ -116,7 +129,7 @@ namespace WizBot.Modules.Utility
                     using (var http = new HttpClient())
                     {
                         http.DefaultRequestHeaders.Clear();
-                        http.DefaultRequestHeaders.Add("Authorization", "Bearer " + WizBot.Credentials.PatreonAccessToken);
+                        http.DefaultRequestHeaders.Add("Authorization", "Bearer " + _creds.PatreonAccessToken);
                         var data = new PatreonData()
                         {
                             Links = new PatreonDataLinks()
@@ -170,7 +183,7 @@ namespace WizBot.Modules.Utility
 
                     var amount = data.Reward.attributes.amount_cents;
 
-                    using (var uow = DbHandler.UnitOfWork())
+                    using (var uow = _db.UnitOfWork)
                     {
                         var users = uow._context.Set<RewardedUser>();
                         var usr = users.FirstOrDefault(x => x.PatreonUserId == data.User.id);
@@ -180,11 +193,12 @@ namespace WizBot.Modules.Utility
                             users.Add(new RewardedUser()
                             {
                                 UserId = userId,
+                                PatreonUserId = data.User.id,
                                 LastReward = now,
                                 AmountRewardedThisMonth = amount,
                             });
 
-                            await CurrencyHandler.AddCurrencyAsync(userId, "Patreon reward - new", amount, uow).ConfigureAwait(false);
+                            await _currency.AddCurrencyAsync(userId, "Patreon reward - new", amount, uow).ConfigureAwait(false);
 
                             await uow.CompleteAsync().ConfigureAwait(false);
                             return amount;
@@ -196,13 +210,13 @@ namespace WizBot.Modules.Utility
                             usr.AmountRewardedThisMonth = amount;
                             usr.PatreonUserId = data.User.id;
 
-                            await CurrencyHandler.AddCurrencyAsync(userId, "Patreon reward - recurring", amount, uow).ConfigureAwait(false);
+                            await _currency.AddCurrencyAsync(userId, "Patreon reward - recurring", amount, uow).ConfigureAwait(false);
 
                             await uow.CompleteAsync().ConfigureAwait(false);
                             return amount;
                         }
 
-                        if ( usr.AmountRewardedThisMonth < amount)
+                        if (usr.AmountRewardedThisMonth < amount)
                         {
                             var toAward = amount - usr.AmountRewardedThisMonth;
 
@@ -210,7 +224,7 @@ namespace WizBot.Modules.Utility
                             usr.AmountRewardedThisMonth = amount;
                             usr.PatreonUserId = data.User.id;
 
-                            await CurrencyHandler.AddCurrencyAsync(usr.UserId, "Patreon reward - update", toAward, uow).ConfigureAwait(false);
+                            await _currency.AddCurrencyAsync(usr.UserId, "Patreon reward - update", toAward, uow).ConfigureAwait(false);
 
                             await uow.CompleteAsync().ConfigureAwait(false);
                             return toAward;

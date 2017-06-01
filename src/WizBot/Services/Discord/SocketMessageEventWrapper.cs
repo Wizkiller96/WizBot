@@ -15,13 +15,14 @@ namespace WizBot.Services.Discord
         public event Action<SocketReaction> OnReactionRemoved = delegate { };
         public event Action OnReactionsCleared = delegate { };
 
-        public ReactionEventWrapper(IUserMessage msg)
+        public ReactionEventWrapper(DiscordShardedClient client, IUserMessage msg)
         {
             Message = msg ?? throw new ArgumentNullException(nameof(msg));
+            _client = client;
 
-            WizBot.Client.ReactionAdded += Discord_ReactionAdded;
-            WizBot.Client.ReactionRemoved += Discord_ReactionRemoved;
-            WizBot.Client.ReactionsCleared += Discord_ReactionsCleared;
+            _client.ReactionAdded += Discord_ReactionAdded;
+            _client.ReactionRemoved += Discord_ReactionRemoved;
+            _client.ReactionsCleared += Discord_ReactionsCleared;
         }
 
         private Task Discord_ReactionsCleared(Cacheable<IUserMessage, ulong> msg, ISocketMessageChannel channel)
@@ -62,15 +63,17 @@ namespace WizBot.Services.Discord
 
         public void UnsubAll()
         {
-            WizBot.Client.ReactionAdded -= Discord_ReactionAdded;
-            WizBot.Client.ReactionRemoved -= Discord_ReactionRemoved;
-            WizBot.Client.ReactionsCleared -= Discord_ReactionsCleared;
+            _client.ReactionAdded -= Discord_ReactionAdded;
+            _client.ReactionRemoved -= Discord_ReactionRemoved;
+            _client.ReactionsCleared -= Discord_ReactionsCleared;
             OnReactionAdded = null;
             OnReactionRemoved = null;
             OnReactionsCleared = null;
         }
 
         private bool disposing = false;
+        private readonly DiscordShardedClient _client;
+
         public void Dispose()
         {
             if (disposing)

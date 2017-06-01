@@ -20,15 +20,23 @@ using System.Diagnostics;
 
 namespace WizBot.Modules.Utility
 {
-    [WizBotModule("Utility", ".")]
+    [WizBotModule("Utility")]
     public partial class Utility : WizBotTopLevelModule
     {
         private static ConcurrentDictionary<ulong, Timer> _rotatingRoleColors = new ConcurrentDictionary<ulong, Timer>();
+        private readonly DiscordShardedClient _client;
+        private readonly IStatsService _stats;
+        private readonly UtilityService _service;
+        //private readonly MusicService _music;
+        private readonly IBotCredentials _creds;
 
-        public static void Unload()
+        public Utility(UtilityService service, DiscordShardedClient client, IStatsService stats, IBotCredentials creds)
         {
-            _rotatingRoleColors.ForEach(x => x.Value?.Change(Timeout.Infinite, Timeout.Infinite));
-            _rotatingRoleColors.Clear();
+            _client = client;
+            _stats = stats;
+            _service = service;
+            //_music = music;
+            _creds = creds;
         }
 
         //[WizBotCommand, Usage, Description, Aliases]
@@ -106,7 +114,7 @@ namespace WizBot.Modules.Utility
         //        }
         //    }));
         //}
-        
+
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
@@ -129,7 +137,7 @@ namespace WizBot.Modules.Utility
                 }
                 return;
             }
-            
+
             var hexColors = hexes.Select(hex =>
             {
                 try { return (ImageSharp.Color?)ImageSharp.Color.FromHex(hex.Replace("#", "")); } catch { return null; }
@@ -187,7 +195,7 @@ namespace WizBot.Modules.Utility
                 .WithAuthor(eab => eab.WithIconUrl("https://togethertube.com/assets/img/favicons/favicon-32x32.png")
                 .WithName("Together Tube")
                 .WithUrl("https://togethertube.com/"))
-                .WithDescription(Context.User.Mention + " " + GetText("togtub_room_link") +  "\n" + target));
+                .WithDescription(Context.User.Mention + " " + GetText("togtub_room_link") + "\n" + target));
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -245,7 +253,7 @@ namespace WizBot.Modules.Utility
         {
 
             StringBuilder builder = new StringBuilder();
-            var user = (IGuildUser) Context.User;
+            var user = (IGuildUser)Context.User;
             var perms = user.GetPermissions((ITextChannel)Context.Channel);
             foreach (var p in perms.GetType().GetProperties().Where(p => !p.GetGetMethod().GetParameters().Any()))
             {
@@ -299,8 +307,8 @@ namespace WizBot.Modules.Utility
                 }
                 else
                 {
-                    
-                    await channel.SendConfirmAsync(GetText("roles_page", page, Format.Bold(target.ToString())), 
+
+                    await channel.SendConfirmAsync(GetText("roles_page", page, Format.Bold(target.ToString())),
                         "\n• " + string.Join("\n• ", (IEnumerable<IRole>)roles).SanitizeMentions()).ConfigureAwait(false);
                 }
             }
@@ -355,11 +363,11 @@ namespace WizBot.Modules.Utility
             if (page < 1)
                 return;
 
-            var status = string.Join(", ", WizBot.Client.Shards.GroupBy(x => x.ConnectionState)
+            var status = string.Join(", ", _client.Shards.GroupBy(x => x.ConnectionState)
                 .Select(x => $"{x.Count()} {x.Key}")
                 .ToArray());
 
-            var allShardStrings = WizBot.Client.Shards
+            var allShardStrings = _client.Shards
                 .Select(x =>
                     GetText("shard_stats_txt", x.ShardId.ToString(),
                         Format.Bold(x.ConnectionState.ToString()), Format.Bold(x.Guilds.Count.ToString())))
@@ -367,7 +375,7 @@ namespace WizBot.Modules.Utility
 
 
 
-            await Context.Channel.SendPaginatedConfirmAsync(page, (curPage) =>
+            await Context.Channel.SendPaginatedConfirmAsync(_client, page, (curPage) =>
             {
 
                 var str = string.Join("\n", allShardStrings.Skip(25 * (curPage - 1)).Take(25));
@@ -386,7 +394,7 @@ namespace WizBot.Modules.Utility
         [WizBotCommand, Usage, Description, Aliases]
         public async Task ShardId(IGuild guild)
         {
-            var shardId = WizBot.Client.GetShardIdFor(guild);
+            var shardId = _client.GetShardIdFor(guild);
 
             await Context.Channel.SendConfirmAsync(shardId.ToString()).ConfigureAwait(false);
         }
@@ -394,10 +402,8 @@ namespace WizBot.Modules.Utility
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Stats()
         {
-            var stats = WizBot.Stats;
-
             var shardId = Context.Guild != null
-                ? WizBot.Client.GetShardIdFor(Context.Guild)
+                ? _client.GetShardIdFor(Context.Guild)
                 : 0;
 
             await Context.Channel.EmbedAsync(
@@ -405,21 +411,21 @@ namespace WizBot.Modules.Utility
                     .WithAuthor(eab => eab.WithName($"WizBot v{StatsService.BotVersion}")
                                           .WithUrl("http://wizbot.readthedocs.io/en/latest/")
                                           .WithIconUrl("https://i.imgur.com/1X7IWnw.jpg"))
-                    .AddField(efb => efb.WithName(GetText("author")).WithValue(stats.Author).WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("botid")).WithValue(WizBot.Client.CurrentUser.Id.ToString()).WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("shard")).WithValue($"#{shardId} / {WizBot.Client.Shards.Count}").WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("commands_ran")).WithValue(stats.CommandsRan.ToString()).WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("messages")).WithValue($"{stats.MessageCounter} ({stats.MessagesPerSecond:F2}/sec)").WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("memory")).WithValue($"{stats.Heap} MB").WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("owner_ids")).WithValue(string.Join("\n", WizBot.Credentials.OwnerIds)).WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("uptime")).WithValue(stats.GetUptimeString("\n")).WithIsInline(true))
+                    .AddField(efb => efb.WithName(GetText("author")).WithValue(_stats.Author).WithIsInline(true))
+                    .AddField(efb => efb.WithName(GetText("botid")).WithValue(_client.CurrentUser.Id.ToString()).WithIsInline(true))
+                    .AddField(efb => efb.WithName(GetText("shard")).WithValue($"#{shardId} / {_client.Shards.Count}").WithIsInline(true))
+                    .AddField(efb => efb.WithName(GetText("commands_ran")).WithValue(_stats.CommandsRan.ToString()).WithIsInline(true))
+                    .AddField(efb => efb.WithName(GetText("messages")).WithValue($"{_stats.MessageCounter} ({_stats.MessagesPerSecond:F2}/sec)").WithIsInline(true))
+                    .AddField(efb => efb.WithName(GetText("memory")).WithValue($"{_stats.Heap} MB").WithIsInline(true))
+                    .AddField(efb => efb.WithName(GetText("owner_ids")).WithValue(string.Join("\n", _creds.OwnerIds)).WithIsInline(true))
+                    .AddField(efb => efb.WithName(GetText("uptime")).WithValue(_stats.GetUptimeString("\n")).WithIsInline(true))
                     .AddField(efb => efb.WithName(GetText("presence")).WithValue(
                         GetText("presence_txt",
-                            WizBot.Client.Guilds.Count, stats.TextChannels, stats.VoiceChannels)).WithIsInline(true))
+                            _client.Guilds.Count, _stats.TextChannels, _stats.VoiceChannels)).WithIsInline(true))
 #if !GLOBAL_WIZBOT
-                    .WithFooter(efb => efb.WithText(GetText("stats_songs",
-                        WizBot.MusicService.MusicPlayers.Count(mp => mp.Value.CurrentSong != null),
-                        WizBot.MusicService.MusicPlayers.Sum(mp => mp.Value.Playlist.Count))))
+                    //.WithFooter(efb => efb.WithText(GetText("stats_songs",
+                    //    _music.MusicPlayers.Count(mp => mp.Value.CurrentSong != null),
+                    //    _music.MusicPlayers.Sum(mp => mp.Value.Playlist.Count))))
 #endif
                     );
         }
@@ -427,7 +433,7 @@ namespace WizBot.Modules.Utility
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Showemojis([Remainder] string emojis)
         {
-            var tags = Context.Message.Tags.Where(t => t.Type == TagType.Emoji).Select(t => (Emoji)t.Value);
+            var tags = Context.Message.Tags.Where(t => t.Type == TagType.Emoji).Select(t => (Emote)t.Value);
 
             var result = string.Join("\n", tags.Select(m => GetText("showemojis", m, m.Url)));
 
@@ -446,7 +452,7 @@ namespace WizBot.Modules.Utility
             if (page < 0)
                 return;
 
-            var guilds = await Task.Run(() => WizBot.Client.Guilds.OrderBy(g => g.Name).Skip((page - 1) * 15).Take(15)).ConfigureAwait(false);
+            var guilds = await Task.Run(() => _client.Guilds.OrderBy(g => g.Name).Skip((page - 1) * 15).Take(15)).ConfigureAwait(false);
 
             if (!guilds.Any())
             {

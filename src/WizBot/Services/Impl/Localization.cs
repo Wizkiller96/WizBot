@@ -12,17 +12,19 @@ using NLog;
 
 namespace WizBot.Services
 {
-    public class Localization
+    public class Localization : ILocalization
     {
         private readonly Logger _log;
+        private readonly DbHandler _db;
 
         public ConcurrentDictionary<ulong, CultureInfo> GuildCultureInfos { get; }
         public CultureInfo DefaultCultureInfo { get; private set; } = CultureInfo.CurrentCulture;
 
         private Localization() { }
-        public Localization(string defaultCulture, IDictionary<ulong, string> cultureInfoNames)
+        public Localization(string defaultCulture, IDictionary<ulong, string> cultureInfoNames, DbHandler db)
         {
             _log = LogManager.GetCurrentClassLogger();
+            _db = db;
             if (string.IsNullOrWhiteSpace(defaultCulture))
                 DefaultCultureInfo = new CultureInfo("en-US");
             else
@@ -38,17 +40,17 @@ namespace WizBot.Services
                 }
             }
             GuildCultureInfos = new ConcurrentDictionary<ulong, CultureInfo>(cultureInfoNames.ToDictionary(x => x.Key, x =>
-              {
-                  CultureInfo cultureInfo = null;
-                  try
-                  {
-                      if (x.Value == null)
-                          return null;
-                      cultureInfo = new CultureInfo(x.Value);
-                  }
-                  catch { }
-                  return cultureInfo;
-              }).Where(x => x.Value != null));
+            {
+                CultureInfo cultureInfo = null;
+                try
+                {
+                    if (x.Value == null)
+                        return null;
+                    cultureInfo = new CultureInfo(x.Value);
+                }
+                catch { }
+                return cultureInfo;
+            }).Where(x => x.Value != null));
         }
 
         public void SetGuildCulture(IGuild guild, CultureInfo ci) =>
@@ -62,7 +64,7 @@ namespace WizBot.Services
                 return;
             }
 
-            using (var uow = DbHandler.UnitOfWork())
+            using (var uow = _db.UnitOfWork)
             {
                 var gc = uow.GuildConfigs.For(guildId, set => set);
                 gc.Locale = ci.Name;
@@ -72,15 +74,16 @@ namespace WizBot.Services
             GuildCultureInfos.AddOrUpdate(guildId, ci, (id, old) => ci);
         }
 
-        public void RemoveGuildCulture(IGuild guild) => 
+        public void RemoveGuildCulture(IGuild guild) =>
             RemoveGuildCulture(guild.Id);
 
-        public void RemoveGuildCulture(ulong guildId) {
+        public void RemoveGuildCulture(ulong guildId)
+        {
 
             CultureInfo throwaway;
             if (GuildCultureInfos.TryRemove(guildId, out throwaway))
             {
-                using (var uow = DbHandler.UnitOfWork())
+                using (var uow = _db.UnitOfWork)
                 {
                     var gc = uow.GuildConfigs.For(guildId, set => set);
                     gc.Locale = null;
@@ -91,7 +94,7 @@ namespace WizBot.Services
 
         public void SetDefaultCulture(CultureInfo ci)
         {
-            using (var uow = DbHandler.UnitOfWork())
+            using (var uow = _db.UnitOfWork)
             {
                 var bc = uow.BotConfig.GetOrCreate();
                 bc.Locale = ci.Name;

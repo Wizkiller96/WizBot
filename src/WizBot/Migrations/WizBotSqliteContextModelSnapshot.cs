@@ -2,10 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using WizBot.Services.Database;
-using WizBot.Services.Database.Models;
-using WizBot.Modules.Music.Classes;
 
 namespace WizBot.Migrations
 {

@@ -7,19 +7,17 @@ namespace WizBot.Services
 {
     public class DbHandler
     {
-        private static DbHandler _instance = null;
-        public static DbHandler Instance = _instance ?? (_instance = new DbHandler());
         private readonly DbContextOptions options;
 
         private string connectionString { get; }
 
         static DbHandler() { }
 
-        private DbHandler()
+        public DbHandler(IBotCredentials creds)
         {
-            connectionString = WizBot.Credentials.Db.ConnectionString;
+            connectionString = creds.Db.ConnectionString;
             var optionsBuilder = new DbContextOptionsBuilder();
-            optionsBuilder.UseSqlite(WizBot.Credentials.Db.ConnectionString);
+            optionsBuilder.UseSqlite(creds.Db.ConnectionString);
             options = optionsBuilder.Options;
             //switch (WizBot.Credentials.Db.Type.ToUpperInvariant())
             //{
@@ -44,10 +42,7 @@ namespace WizBot.Services
             return context;
         }
 
-        private IUnitOfWork GetUnitOfWork() =>
+        public IUnitOfWork UnitOfWork =>
             new UnitOfWork(GetDbContext());
-
-        public static IUnitOfWork UnitOfWork() =>
-            DbHandler.Instance.GetUnitOfWork();
     }
 }

@@ -6,7 +6,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace WizBot.Modules.Music.Classes
+namespace WizBot.Services.Music
 {
     /// <summary>
     /// Create a buffer for a song file. It will create multiples files to ensure, that radio don't fill up disk space.

@@ -23,8 +23,6 @@ namespace WizBot.Modules.Music
     [DontAutoLoad]
     public class Music : WizBotTopLevelModule
     {
-        public const string MusicDataPath = "data/musicdata";
-
         private static MusicService music;
 
         static Music()
