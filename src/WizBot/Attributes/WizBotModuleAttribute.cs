@@ -6,7 +6,7 @@ namespace WizBot.Attributes
     [AttributeUsage(AttributeTargets.Class)]
     sealed class WizBotModuleAttribute : GroupAttribute
     {
-        public WizBotModuleAttribute(string moduleName) : base("")
+        public WizBotModuleAttribute(string moduleName) : base(moduleName)
         {
         }
     }

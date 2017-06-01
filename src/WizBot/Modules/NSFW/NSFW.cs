@@ -15,7 +15,6 @@ using WizBot.Services.Searches;
 
 namespace WizBot.Modules.NSFW
 {
-    [WizBotModule("NSFW")]
     public class NSFW : WizBotTopLevelModule
     {
         private static readonly ConcurrentDictionary<ulong, Timer> _autoHentaiTimers = new ConcurrentDictionary<ulong, Timer>();

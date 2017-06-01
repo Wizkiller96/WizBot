@@ -18,13 +18,15 @@ using WizBot.Services.Database.Models;
 using System.Threading;
 using WizBot.Modules.Utility;
 using WizBot.Services.Searches;
+using WizBot.Services.ClashOfClans;
+using WizBot.Services.Music;
 
 namespace WizBot
 {
     public class WizBot
     {
         private Logger _log;
-
+        
         /* I don't know how to make this not be static
          * and keep the convenience of .WithOkColor
          * and .WithErrorColor extensions methods.
@@ -33,7 +35,7 @@ namespace WizBot
          * I'll keep this for now */
         public static Color OkColor { get; private set; }
         public static Color ErrorColor { get; private set; }
-
+        
         //todo placeholder, will be guild-based
         public static string Prefix { get; } = ".";
 
@@ -59,7 +61,7 @@ namespace WizBot
                 OkColor = new Color(Convert.ToUInt32(BotConfig.OkColor, 16));
                 ErrorColor = new Color(Convert.ToUInt32(BotConfig.ErrorColor, 16));
             }
-
+            
             Client = new DiscordShardedClient(new DiscordSocketConfig
             {
                 MessageCacheSize = 10,
@@ -75,7 +77,6 @@ namespace WizBot
             var greetSettingsService = new GreetSettingsService(AllGuildConfigs, db);
 
             var localization = new Localization(BotConfig.Locale, AllGuildConfigs.ToDictionary(x => x.GuildId, x => x.Locale), db);
-            //var musicService = new MusicService(google, strings, localization);
 
             var commandService = new CommandService(new CommandServiceConfig()
             {
@@ -89,9 +90,15 @@ namespace WizBot
 
             var images = new ImagesService();
 
+            var currencyHandler = new CurrencyHandler(BotConfig, db);
+
+            var soundcloud = new SoundCloudApiService(credentials);
+
             //module services
             var utilityService = new UtilityService(AllGuildConfigs, Client, BotConfig, db);
             var searchesService = new SearchesService();
+            var clashService = new ClashOfClansService(Client, db, localization, strings);
+            var musicService = new MusicService(google, strings, localization, db, soundcloud, credentials);
 
             //initialize Services
             Services = new NServiceProvider.ServiceProviderBuilder() //todo all Adds should be interfaces
@@ -105,12 +112,15 @@ namespace WizBot
                 .Add<WizBotStrings>(strings)
                 .Add<DiscordShardedClient>(Client)
                 .Add<GreetSettingsService>(greetSettingsService)
-                //.Add(musicService)
+                .Add<BotConfig>(BotConfig)
+                .Add<CurrencyHandler>(currencyHandler)
+                .Add(musicService)
                 .Add<CommandHandler>(commandHandler)
                 .Add<DbHandler>(db)
                 //modules
                 .Add<UtilityService>(utilityService)
                 .Add<SearchesService>(searchesService)
+                .Add<ClashOfClansService>(clashService)
                 .Build();
 
             commandHandler.AddServices(Services);
@@ -141,7 +151,7 @@ namespace WizBot
             //connect
             await Client.LoginAsync(TokenType.Bot, creds.Token).ConfigureAwait(false);
             await Client.StartAsync().ConfigureAwait(false);
-
+            
             // wait for all shards to be ready
             int readyCount = 0;
             foreach (var s in Client.Shards)
@@ -149,7 +159,7 @@ namespace WizBot
 
             while (readyCount < Client.Shards.Count)
                 await Task.Delay(100).ConfigureAwait(false);
-
+            
             stats.Initialize();
 
             sw.Stop();

@@ -8,12 +8,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NLog;
-using WizBot.Services.Music;
-using WizBot.Services;
+using WizBot.Services.Database.Models;
 
 namespace WizBot.Services.Music
 {
-
     public enum StreamState
     {
         Resolving,
@@ -24,7 +22,6 @@ namespace WizBot.Services.Music
 
     public class MusicPlayer
     {
-        public const string MusicDataPath = "data/musicdata";
         private IAudioClient AudioClient { get; set; }
 
         /// <summary>

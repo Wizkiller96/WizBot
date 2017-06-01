@@ -20,7 +20,6 @@ using System.Diagnostics;
 
 namespace WizBot.Modules.Utility
 {
-    [WizBotModule("Utility")]
     public partial class Utility : WizBotTopLevelModule
     {
         private static ConcurrentDictionary<ulong, Timer> _rotatingRoleColors = new ConcurrentDictionary<ulong, Timer>();
