@@ -3,6 +3,7 @@ using Discord.Net;
 using Discord.WebSocket;
 using WizBot.Extensions;
 using WizBot.Services;
+using WizBot.Services.Database.Models;
 using NLog;
 using System;
 using System.Collections.Concurrent;
@@ -18,6 +19,10 @@ namespace WizBot.Modules.Games.Trivia
     {
         private readonly SemaphoreSlim _guessLock = new SemaphoreSlim(1, 1);
         private readonly Logger _log;
+        private readonly WizBotStrings _strings;
+        private readonly DiscordShardedClient _client;
+        private readonly BotConfig _bc;
+        private readonly CurrencyHandler _ch;
 
         public IGuild Guild { get; }
         public ITextChannel Channel { get; }
@@ -38,9 +43,15 @@ namespace WizBot.Modules.Games.Trivia
 
         public int WinRequirement { get; }
 
-        public TriviaGame(IGuild guild, ITextChannel channel, bool showHints, int winReq, bool isPokemon)
+        public TriviaGame(WizBotStrings strings, DiscordShardedClient client, BotConfig bc,
+            CurrencyHandler ch, IGuild guild, ITextChannel channel,
+            bool showHints, int winReq, bool isPokemon)
         {
             _log = LogManager.GetCurrentClassLogger();
+            _strings = strings;
+            _client = client;
+            _bc = bc;
+            _ch = ch;
 
             ShowHints = showHints;
             Guild = guild;
@@ -50,8 +61,8 @@ namespace WizBot.Modules.Games.Trivia
         }
 
         private string GetText(string key, params object[] replacements) =>
-            WizBotTopLevelModule.GetTextStatic(key,
-                WizBot.Localization.GetCultureInfo(Channel.GuildId),
+            _strings.GetText(key,
+                Channel.GuildId,
                 typeof(Games).Name.ToLowerInvariant(),
                 replacements);
 
@@ -99,7 +110,7 @@ namespace WizBot.Modules.Games.Trivia
                 //receive messages
                 try
                 {
-                    WizBot.Client.MessageReceived += PotentialGuess;
+                    _client.MessageReceived += PotentialGuess;
 
                     //allow people to guess
                     GameActive = true;
@@ -128,7 +139,7 @@ namespace WizBot.Modules.Games.Trivia
                 finally
                 {
                     GameActive = false;
-                    WizBot.Client.MessageReceived -= PotentialGuess;
+                    _client.MessageReceived -= PotentialGuess;
                 }
                 if (!triviaCancelSource.IsCancellationRequested)
                 {
@@ -214,9 +225,9 @@ namespace WizBot.Modules.Games.Trivia
                     {
                         // ignored
                     }
-                    var reward = WizBot.BotConfig.TriviaCurrencyReward;
+                    var reward = _bc.TriviaCurrencyReward;
                     if (reward > 0)
-                        await CurrencyHandler.AddCurrencyAsync(guildUser, "Won trivia", reward, true).ConfigureAwait(false);
+                        await _ch.AddCurrencyAsync(guildUser, "Won trivia", reward, true).ConfigureAwait(false);
                     return;
                 }
 

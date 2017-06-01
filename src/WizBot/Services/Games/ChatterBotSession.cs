@@ -1,0 +1,39 @@
+using WizBot.Extensions;
+using Newtonsoft.Json;
+using System.Collections.Immutable;
+using System.Net.Http;
+using System.Threading.Tasks;
+
+namespace WizBot.Services.Games
+{
+    public class ChatterBotSession
+    {
+        private static WizBotRandom rng { get; } = new WizBotRandom();
+        public string ChatterbotId { get; }
+        public string ChannelId { get; }
+        private int _botId = 6;
+
+        public ChatterBotSession(ulong channelId)
+        {
+            ChannelId = channelId.ToString().ToBase64();
+            ChatterbotId = rng.Next(0, 1000000).ToString().ToBase64();
+        }
+
+        private string apiEndpoint => "http://api.program-o.com/v2/chatbot/" +
+                                      $"?bot_id={_botId}&" +
+                                      "say={0}&" +
+                                      $"convo_id=wizbot_{ChatterbotId}_{ChannelId}&" +
+                                      "format=json";
+
+        public async Task<string> Think(string message)
+        {
+            using (var http = new HttpClient())
+            {
+                var res = await http.GetStringAsync(string.Format(apiEndpoint, message)).ConfigureAwait(false);
+                var cbr = JsonConvert.DeserializeObject<ChatterBotResponse>(res);
+                //Console.WriteLine(cbr.Convo_id);
+                return cbr.BotSay.Replace("<br/>", "\n");
+            }
+        }
+    }
+}

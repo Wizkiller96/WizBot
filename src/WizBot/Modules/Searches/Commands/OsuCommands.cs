@@ -2,6 +2,7 @@
 using Discord.Commands;
 using WizBot.Attributes;
 using WizBot.Extensions;
+using WizBot.Services;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Globalization;
@@ -17,6 +18,15 @@ namespace WizBot.Modules.Searches
         [Group]
         public class OsuCommands : WizBotSubmodule
         {
+            private readonly IGoogleApiService _google;
+            private readonly IBotCredentials _creds;
+
+            public OsuCommands(IGoogleApiService google, IBotCredentials creds)
+            {
+                _google = google;
+                _creds = creds;
+            }
+
             [WizBotCommand, Usage, Description, Aliases]
             public async Task Osu(string usr, [Remainder] string mode = null)
             {
@@ -51,7 +61,7 @@ namespace WizBot.Modules.Searches
             [WizBotCommand, Usage, Description, Aliases]
             public async Task Osub([Remainder] string map)
             {
-                if (string.IsNullOrWhiteSpace(WizBot.Credentials.OsuApiKey))
+                if (string.IsNullOrWhiteSpace(_creds.OsuApiKey))
                 {
                     await ReplyErrorLocalized("osu_api_key").ConfigureAwait(false);
                     return;
@@ -65,7 +75,7 @@ namespace WizBot.Modules.Searches
                     using (var http = new HttpClient())
                     {
                         var mapId = ResolveMap(map);
-                        var reqString = $"https://osu.ppy.sh/api/get_beatmaps?k={WizBot.Credentials.OsuApiKey}&{mapId}";
+                        var reqString = $"https://osu.ppy.sh/api/get_beatmaps?k={_creds.OsuApiKey}&{mapId}";
                         var obj = JArray.Parse(await http.GetStringAsync(reqString).ConfigureAwait(false))[0];
                         var sb = new System.Text.StringBuilder();
                         var starRating = Math.Round(double.Parse($"{obj["difficultyrating"]}", CultureInfo.InvariantCulture), 2);
@@ -86,7 +96,7 @@ namespace WizBot.Modules.Searches
             public async Task Osu5(string user, [Remainder] string mode = null)
             {
                 var channel = (ITextChannel)Context.Channel;
-                if (string.IsNullOrWhiteSpace(WizBot.Credentials.OsuApiKey))
+                if (string.IsNullOrWhiteSpace(_creds.OsuApiKey))
                 {
                     await channel.SendErrorAsync("An osu! API key is required.").ConfigureAwait(false);
                     return;
@@ -107,12 +117,12 @@ namespace WizBot.Modules.Searches
                             m = ResolveGameMode(mode);
                         }
 
-                        var reqString = $"https://osu.ppy.sh/api/get_user_best?k={WizBot.Credentials.OsuApiKey}&u={Uri.EscapeDataString(user)}&type=string&limit=5&m={m}";
+                        var reqString = $"https://osu.ppy.sh/api/get_user_best?k={_creds.OsuApiKey}&u={Uri.EscapeDataString(user)}&type=string&limit=5&m={m}";
                         var obj = JArray.Parse(await http.GetStringAsync(reqString).ConfigureAwait(false));
                         var sb = new System.Text.StringBuilder($"`Top 5 plays for {user}:`\n```xl" + Environment.NewLine);
                         foreach (var item in obj)
                         {
-                            var mapReqString = $"https://osu.ppy.sh/api/get_beatmaps?k={WizBot.Credentials.OsuApiKey}&b={item["beatmap_id"]}";
+                            var mapReqString = $"https://osu.ppy.sh/api/get_beatmaps?k={_creds.OsuApiKey}&b={item["beatmap_id"]}";
                             var map = JArray.Parse(await http.GetStringAsync(mapReqString).ConfigureAwait(false))[0];
                             var pp = Math.Round(double.Parse($"{item["pp"]}", CultureInfo.InvariantCulture), 2);
                             var acc = CalculateAcc(item, m);

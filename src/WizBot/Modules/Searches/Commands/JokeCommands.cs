@@ -3,6 +3,7 @@ using WizBot.Attributes;
 using WizBot.Extensions;
 using WizBot.Modules.Searches.Models;
 using WizBot.Services;
+using WizBot.Services.Searches;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog;
@@ -19,27 +20,11 @@ namespace WizBot.Modules.Searches
         [Group]
         public class JokeCommands : WizBotSubmodule
         {
-            private static List<WoWJoke> wowJokes { get; } = new List<WoWJoke>();
-            private static List<MagicItem> magicItems { get; } = new List<MagicItem>();
-            private new static readonly Logger _log;
+            private readonly SearchesService _searches;
 
-            static JokeCommands()
+            public JokeCommands(SearchesService searches)
             {
-                _log = LogManager.GetCurrentClassLogger();
-
-                if (File.Exists("data/wowjokes.json"))
-                {
-                    wowJokes = JsonConvert.DeserializeObject<List<WoWJoke>>(File.ReadAllText("data/wowjokes.json"));
-                }
-                else
-                    _log.Warn("data/wowjokes.json is missing. WOW Jokes are not loaded.");
-
-                if (File.Exists("data/magicitems.json"))
-                {
-                    magicItems = JsonConvert.DeserializeObject<List<MagicItem>>(File.ReadAllText("data/magicitems.json"));
-                }
-                else
-                    _log.Warn("data/magicitems.json is missing. Magic items are not loaded.");
+                _searches = searches;
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -75,24 +60,24 @@ namespace WizBot.Modules.Searches
             [WizBotCommand, Usage, Description, Aliases]
             public async Task WowJoke()
             {
-                if (!wowJokes.Any())
+                if (!_searches.WowJokes.Any())
                 {
                     await ReplyErrorLocalized("jokes_not_loaded").ConfigureAwait(false);
                     return;
                 }
-                var joke = wowJokes[new WizBotRandom().Next(0, wowJokes.Count)];
+                var joke = _searches.WowJokes[new WizBotRandom().Next(0, _searches.WowJokes.Count)];
                 await Context.Channel.SendConfirmAsync(joke.Question, joke.Answer).ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
             public async Task MagicItem()
             {
-                if (!wowJokes.Any())
+                if (!_searches.WowJokes.Any())
                 {
                     await ReplyErrorLocalized("magicitems_not_loaded").ConfigureAwait(false);
                     return;
                 }
-                var item = magicItems[new WizBotRandom().Next(0, magicItems.Count)];
+                var item = _searches.MagicItems[new WizBotRandom().Next(0, _searches.MagicItems.Count)];
 
                 await Context.Channel.SendConfirmAsync("✨" + item.Name, item.Description).ConfigureAwait(false);
             }

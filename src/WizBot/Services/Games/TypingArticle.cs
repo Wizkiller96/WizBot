@@ -1,4 +1,4 @@
-﻿namespace WizBot.Modules.Games.Commands.Models
+﻿namespace WizBot.Services.Games
 {
     public class TypingArticle
     {

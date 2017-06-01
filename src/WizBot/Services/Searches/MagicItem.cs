@@ -1,6 +1,6 @@
-﻿namespace WizBot.Modules.Searches.Models
+﻿namespace WizBot.Services.Searches
 {
-    class MagicItem
+    public class MagicItem
     {
         public string Name { get; set; }
         public string Description { get; set; }

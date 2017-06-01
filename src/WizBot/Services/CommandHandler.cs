@@ -544,7 +544,7 @@ namespace WizBot.Services
                     //////int price;
                     //////if (Permissions.CommandCostCommands.CommandCosts.TryGetValue(cmd.Aliases.First().Trim().ToLowerInvariant(), out price) && price > 0)
                     //////{
-                    //////    var success = await CurrencyHandler.RemoveCurrencyAsync(context.User.Id, $"Running {cmd.Name} command.", price).ConfigureAwait(false);
+                    //////    var success = await _ch.RemoveCurrencyAsync(context.User.Id, $"Running {cmd.Name} command.", price).ConfigureAwait(false);
                     //////    if (!success)
                     //////    {
                     //////        return new ExecuteCommandResult(cmd, pc, SearchResult.FromError(CommandError.Exception, $"Insufficient funds. You need {price}{WizBot.BotConfig.CurrencySign} to run this command."));

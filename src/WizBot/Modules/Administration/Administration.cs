@@ -7,82 +7,54 @@ using System.Linq;
 using System.Threading.Tasks;
 using WizBot.Services;
 using WizBot.Attributes;
-using Discord.WebSocket;
 using WizBot.Services.Database.Models;
-using static WizBot.Modules.Permissions.Permissions;
-using System.Collections.Concurrent;
-using NLog;
-using WizBot.Modules.Permissions;
+using WizBot.Services.Administration;
 
 namespace WizBot.Modules.Administration
 {
-    [WizBotModule("Administration", ".")]
     public partial class Administration : WizBotTopLevelModule
     {
-        private static readonly ConcurrentHashSet<ulong> deleteMessagesOnCommand;
+        private IGuild _wizbotSupportServer;
+        private readonly DbHandler _db;
+        private readonly AdministrationService _admin;
 
-        private new static readonly Logger _log;
-
-        static Administration()
+        public Administration(DbHandler db, AdministrationService admin)
         {
-            _log = LogManager.GetCurrentClassLogger();
-            WizBot.CommandHandler.CommandExecuted += DelMsgOnCmd_Handler;
-
-            deleteMessagesOnCommand = new ConcurrentHashSet<ulong>(WizBot.AllGuildConfigs.Where(g => g.DeleteMessageOnCommand).Select(g => g.GuildId));
-
+            _db = db;
+            _admin = admin;
         }
 
-        private static Task DelMsgOnCmd_Handler(IUserMessage msg, CommandInfo cmd)
-        {
-            var _ = Task.Run(async () =>
-            {
-                try
-                {
-                    var channel = msg.Channel as SocketTextChannel;
-                    if (channel == null)
-                        return;
-                    if (deleteMessagesOnCommand.Contains(channel.Guild.Id) && cmd.Name != "prune" && cmd.Name != "pick")
-                        await msg.DeleteAsync().ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    _log.Warn(ex, "Delmsgoncmd errored...");
-                }
-            });
-            return Task.CompletedTask;
-        }
+        ////todo permissions
+        //[WizBotCommand, Usage, Description, Aliases]
+        //[RequireContext(ContextType.Guild)]
+        //[RequireUserPermission(GuildPermission.Administrator)]
+        //public async Task ResetPermissions()
+        //{
+        //    using (var uow = _db.UnitOfWork)
+        //    {
+        //        var config = uow.GuildConfigs.GcWithPermissionsv2For(Context.Guild.Id);
+        //        config.Permissions = Permissionv2.GetDefaultPermlist;
+        //        await uow.CompleteAsync();
+        //        UpdateCache(config);
+        //    }
+        //    await ReplyConfirmLocalized("perms_reset").ConfigureAwait(false);
+        //}
+        //[WizBotCommand, Usage, Description, Aliases]
+        //[OwnerOnly]
+        //public async Task ResetGlobalPermissions()
+        //{
+        //    using (var uow = _db.UnitOfWork)
+        //    {
+        //        var gc = uow.BotConfig.GetOrCreate();
+        //        gc.BlockedCommands.Clear();
+        //        gc.BlockedModules.Clear();
 
-        [WizBotCommand, Usage, Description, Aliases]
-        [RequireContext(ContextType.Guild)]
-        [RequireUserPermission(GuildPermission.Administrator)]
-        public async Task ResetPermissions()
-        {
-            using (var uow = DbHandler.UnitOfWork())
-            {
-                var config = uow.GuildConfigs.GcWithPermissionsv2For(Context.Guild.Id);
-                config.Permissions = Permissionv2.GetDefaultPermlist;
-                await uow.CompleteAsync();
-                UpdateCache(config);
-            }
-            await ReplyConfirmLocalized("perms_reset").ConfigureAwait(false);
-        }
-
-        [WizBotCommand, Usage, Description, Aliases]
-        [OwnerOnly]
-        public async Task ResetGlobalPermissions()
-        {
-            using (var uow = DbHandler.UnitOfWork())
-            {
-                var gc = uow.BotConfig.GetOrCreate();
-                gc.BlockedCommands.Clear();
-                gc.BlockedModules.Clear();
-
-                GlobalPermissionCommands.BlockedCommands.Clear();
-                GlobalPermissionCommands.BlockedModules.Clear();
-                await uow.CompleteAsync();
-            }
-            await ReplyConfirmLocalized("global_perms_reset").ConfigureAwait(false);
-        }
+        //        GlobalPermissionCommands.BlockedCommands.Clear();
+        //        GlobalPermissionCommands.BlockedModules.Clear();
+        //        await uow.CompleteAsync();
+        //    }
+        //    await ReplyConfirmLocalized("global_perms_reset").ConfigureAwait(false);
+        //}
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
@@ -91,7 +63,7 @@ namespace WizBot.Modules.Administration
         public async Task Delmsgoncmd()
         {
             bool enabled;
-            using (var uow = DbHandler.UnitOfWork())
+            using (var uow = _db.UnitOfWork)
             {
                 var conf = uow.GuildConfigs.For(Context.Guild.Id, set => set);
                 enabled = conf.DeleteMessageOnCommand = !conf.DeleteMessageOnCommand;
@@ -100,12 +72,12 @@ namespace WizBot.Modules.Administration
             }
             if (enabled)
             {
-                deleteMessagesOnCommand.Add(Context.Guild.Id);
+                _admin.DeleteMessagesOnCommand.Add(Context.Guild.Id);
                 await ReplyConfirmLocalized("delmsg_on").ConfigureAwait(false);
             }
             else
             {
-                deleteMessagesOnCommand.TryRemove(Context.Guild.Id);
+                _admin.DeleteMessagesOnCommand.TryRemove(Context.Guild.Id);
                 await ReplyConfirmLocalized("delmsg_off").ConfigureAwait(false);
             }
         }
@@ -187,7 +159,7 @@ namespace WizBot.Modules.Administration
             var guser = (IGuildUser)Context.User;
 
             var userRoles = user.GetRoles();
-            if (guser.Id != Context.Guild.OwnerId &&
+            if (guser.Id != Context.Guild.OwnerId && 
                 (user.Id == Context.Guild.OwnerId || guser.GetRoles().Max(x => x.Position) <= userRoles.Max(x => x.Position)))
                 return;
             try
@@ -324,7 +296,7 @@ namespace WizBot.Modules.Administration
         public async Task CreatVoiChanl([Remainder] string channelName)
         {
             var ch = await Context.Guild.CreateVoiceChannelAsync(channelName).ConfigureAwait(false);
-            await ReplyConfirmLocalized("createvoich", Format.Bold(ch.Name)).ConfigureAwait(false);
+            await ReplyConfirmLocalized("createvoich",Format.Bold(ch.Name)).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -434,7 +406,7 @@ namespace WizBot.Modules.Administration
         [RequireUserPermission(GuildPermission.MentionEveryone)]
         public async Task MentionRole(params IRole[] roles)
         {
-            string send = "❕" + GetText("menrole", Context.User.Mention);
+            string send = "❕" +GetText("menrole",Context.User.Mention);
             foreach (var role in roles)
             {
                 send += $"\n**{role.Name}**\n";
@@ -454,19 +426,18 @@ namespace WizBot.Modules.Administration
             await Context.Channel.SendMessageAsync(send).ConfigureAwait(false);
         }
 
-        private IGuild _wizbotSupportServer;
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Donators()
         {
             IEnumerable<Donator> donatorsOrdered;
 
-            using (var uow = DbHandler.UnitOfWork())
+            using (var uow = _db.UnitOfWork)
             {
                 donatorsOrdered = uow.Donators.GetDonatorsOrdered();
             }
             await Context.Channel.SendConfirmAsync(GetText("donators"), string.Join("⭐", donatorsOrdered.Select(d => d.Name))).ConfigureAwait(false);
 
-            _wizbotSupportServer = _wizbotSupportServer ?? WizBot.Client.GetGuild(99273784988557312);
+            _wizbotSupportServer = _wizbotSupportServer ?? (await Context.Client.GetGuildAsync(99273784988557312));
 
             var patreonRole = _wizbotSupportServer?.GetRole(299174013597646868);
             if (patreonRole == null)
@@ -482,7 +453,7 @@ namespace WizBot.Modules.Administration
         public async Task Donadd(IUser donator, int amount)
         {
             Donator don;
-            using (var uow = DbHandler.UnitOfWork())
+            using (var uow = _db.UnitOfWork)
             {
                 don = uow.Donators.AddOrUpdateDonator(donator.Id, donator.Username, amount);
                 await uow.CompleteAsync();

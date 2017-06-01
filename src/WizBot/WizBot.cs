@@ -21,6 +21,8 @@ using WizBot.Services.Searches;
 using WizBot.Services.ClashOfClans;
 using WizBot.Services.Music;
 using WizBot.Services.CustomReactions;
+using WizBot.Services.Games;
+using WizBot.Services.Administration;
 
 namespace WizBot
 {
@@ -73,11 +75,10 @@ namespace WizBot
             });
 
             var google = new GoogleApiService(credentials);
-            var strings = new WizBotStrings();
-
-            var greetSettingsService = new GreetSettingsService(AllGuildConfigs, db);
-
             var localization = new Localization(BotConfig.Locale, AllGuildConfigs.ToDictionary(x => x.GuildId, x => x.Locale), db);
+            var strings = new WizBotStrings(localization);
+
+            var greetSettingsService = new GreetSettingsService(Client, AllGuildConfigs, db);
 
             var commandService = new CommandService(new CommandServiceConfig()
             {
@@ -97,10 +98,18 @@ namespace WizBot
 
             //module services
             var utilityService = new UtilityService(AllGuildConfigs, Client, BotConfig, db);
-            var searchesService = new SearchesService();
+            var searchesService = new SearchesService(Client, google, db);
             var clashService = new ClashOfClansService(Client, db, localization, strings);
             var musicService = new MusicService(google, strings, localization, db, soundcloud, credentials);
             var crService = new CustomReactionsService(db, Client);
+            var gamesService = new GamesService(Client, BotConfig, AllGuildConfigs, strings, images);
+#region administration
+            var administrationService = new AdministrationService(AllGuildConfigs, commandHandler);
+            var selfService = new SelfService(this, commandHandler, db, BotConfig);
+            var vcRoleService = new VcRoleService(Client, AllGuildConfigs);
+            var vPlusTService = new VplusTService(Client, AllGuildConfigs, strings, db);
+#endregion
+
 
             //initialize Services
             Services = new NServiceProvider.ServiceProviderBuilder() //todo all Adds should be interfaces
@@ -113,10 +122,8 @@ namespace WizBot
                 .Add<CommandService>(commandService)
                 .Add<WizBotStrings>(strings)
                 .Add<DiscordShardedClient>(Client)
-                .Add<GreetSettingsService>(greetSettingsService)
                 .Add<BotConfig>(BotConfig)
                 .Add<CurrencyHandler>(currencyHandler)
-                .Add(musicService)
                 .Add<CommandHandler>(commandHandler)
                 .Add<DbHandler>(db)
                 //modules
@@ -126,6 +133,10 @@ namespace WizBot
                 .Add<MusicService>(musicService)
                 .Add<GreetSettingsService>(greetSettingsService)
                 .Add<CustomReactionsService>(crService)
+                .Add<GamesService>(gamesService)
+                .Add(selfService)
+                .Add(vcRoleService)
+                .Add(vPlusTService)
                 .Build();
 
             commandHandler.AddServices(Services);

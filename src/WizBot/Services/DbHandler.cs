@@ -19,7 +19,7 @@ namespace WizBot.Services
             var optionsBuilder = new DbContextOptionsBuilder();
             optionsBuilder.UseSqlite(creds.Db.ConnectionString);
             options = optionsBuilder.Options;
-            //switch (WizBot.Credentials.Db.Type.ToUpperInvariant())
+            //switch (_creds.Db.Type.ToUpperInvariant())
             //{
             //    case "SQLITE":
             //        dbType = typeof(WizBotSqliteContext);

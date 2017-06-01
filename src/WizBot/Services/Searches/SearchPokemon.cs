@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace WizBot.Modules.Searches.Models
+namespace WizBot.Services.Searches
 {
     public class SearchPokemon
     {

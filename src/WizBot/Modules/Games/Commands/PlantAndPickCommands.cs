@@ -6,6 +6,7 @@ using WizBot.Attributes;
 using WizBot.Extensions;
 using WizBot.Services;
 using WizBot.Services.Database.Models;
+using WizBot.Services.Games;
 using NLog;
 using System;
 using System.Collections.Concurrent;
@@ -28,88 +29,19 @@ namespace WizBot.Modules.Games
         [Group]
         public class PlantPickCommands : WizBotSubmodule
         {
-            private static ConcurrentHashSet<ulong> generationChannels { get; }
-            //channelid/message
-            private static ConcurrentDictionary<ulong, List<IUserMessage>> plantedFlowers { get; } = new ConcurrentDictionary<ulong, List<IUserMessage>>();
-            //channelId/last generation
-            private static ConcurrentDictionary<ulong, DateTime> lastGenerations { get; } = new ConcurrentDictionary<ulong, DateTime>();
+            private readonly CurrencyHandler _ch;
+            private readonly BotConfig _bc;
+            private readonly GamesService _games;
+            private readonly DbHandler _db;
 
-            static PlantPickCommands()
+            public PlantPickCommands(BotConfig bc, CurrencyHandler ch, GamesService games,
+                DbHandler db)
             {
-                WizBot.Client.MessageReceived += PotentialFlowerGeneration;
-                generationChannels = new ConcurrentHashSet<ulong>(WizBot.AllGuildConfigs
-                    .SelectMany(c => c.GenerateCurrencyChannelIds.Select(obj => obj.ChannelId)));
+                _bc = bc;
+                _ch = ch;
+                _games = games;
+                _db = db;
             }
-
-            private static Task PotentialFlowerGeneration(SocketMessage imsg)
-            {
-                var msg = imsg as SocketUserMessage;
-                if (msg == null || msg.IsAuthor() || msg.Author.IsBot)
-                    return Task.CompletedTask;
-
-                var channel = imsg.Channel as ITextChannel;
-                if (channel == null)
-                    return Task.CompletedTask;
-
-                if (!generationChannels.Contains(channel.Id))
-                    return Task.CompletedTask;
-
-                var _ = Task.Run(async () =>
-                {
-                    try
-                    {
-                        var lastGeneration = lastGenerations.GetOrAdd(channel.Id, DateTime.MinValue);
-                        var rng = new WizBotRandom();
-
-                        //todo i'm stupid :rofl: wtg kwoth. real async programming :100: :ok_hand: :100: :100: :thumbsup:
-                        if (DateTime.Now - TimeSpan.FromSeconds(WizBot.BotConfig.CurrencyGenerationCooldown) < lastGeneration) //recently generated in this channel, don't generate again
-                            return;
-
-                        var num = rng.Next(1, 101) + WizBot.BotConfig.CurrencyGenerationChance * 100;
-
-                        if (num > 100)
-                        {
-                            lastGenerations.AddOrUpdate(channel.Id, DateTime.Now, (id, old) => DateTime.Now);
-
-                            var dropAmount = WizBot.BotConfig.CurrencyDropAmount;
-
-                            if (dropAmount > 0)
-                            {
-                                var msgs = new IUserMessage[dropAmount];
-                                var prefix = WizBot.ModulePrefixes[typeof(Games).Name];
-                                var toSend = dropAmount == 1
-                                    ? GetLocalText(channel, "curgen_sn", WizBot.BotConfig.CurrencySign)
-                                        + " " + GetLocalText(channel, "pick_sn", prefix)
-                                    : GetLocalText(channel, "curgen_pl", dropAmount, WizBot.BotConfig.CurrencySign)
-                                        + " " + GetLocalText(channel, "pick_pl", prefix);
-                                var file = GetRandomCurrencyImage();
-                                using (var fileStream = file.Value.ToStream())
-                                {
-                                    var sent = await channel.SendFileAsync(
-                                        fileStream,
-                                        file.Key,
-                                        toSend).ConfigureAwait(false);
-
-                                    msgs[0] = sent;
-                                }
-
-                                plantedFlowers.AddOrUpdate(channel.Id, msgs.ToList(), (id, old) => { old.AddRange(msgs); return old; });
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        LogManager.GetCurrentClassLogger().Warn(ex);
-                    }
-                });
-                return Task.CompletedTask;
-            }
-
-            public static string GetLocalText(ITextChannel channel, string key, params object[] replacements) =>
-                WizBotTopLevelModule.GetTextStatic(key,
-                    WizBot.Localization.GetCultureInfo(channel.GuildId),
-                    typeof(Games).Name.ToLowerInvariant(),
-                    replacements);
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
@@ -120,16 +52,15 @@ namespace WizBot.Modules.Games
                 if (!(await channel.Guild.GetCurrentUserAsync()).GetPermissions(channel).ManageMessages)
                     return;
 
-                List<IUserMessage> msgs;
 
                 try { await Context.Message.DeleteAsync().ConfigureAwait(false); } catch { }
-                if (!plantedFlowers.TryRemove(channel.Id, out msgs))
+                if (!_games.PlantedFlowers.TryRemove(channel.Id, out List<IUserMessage> msgs))
                     return;
 
                 await Task.WhenAll(msgs.Where(m => m != null).Select(toDelete => toDelete.DeleteAsync())).ConfigureAwait(false);
 
-                await CurrencyHandler.AddCurrencyAsync((IGuildUser)Context.User, $"Picked {WizBot.BotConfig.CurrencyPluralName}", msgs.Count, false).ConfigureAwait(false);
-                var msg = await ReplyConfirmLocalized("picked", msgs.Count + WizBot.BotConfig.CurrencySign)
+                await _ch.AddCurrencyAsync((IGuildUser)Context.User, $"Picked {_bc.CurrencyPluralName}", msgs.Count, false).ConfigureAwait(false);
+                var msg = await ReplyConfirmLocalized("picked", msgs.Count + _bc.CurrencySign)
                     .ConfigureAwait(false);
                 msg.DeleteAfter(10);
             }
@@ -141,21 +72,21 @@ namespace WizBot.Modules.Games
                 if (amount < 1)
                     return;
 
-                var removed = await CurrencyHandler.RemoveCurrencyAsync((IGuildUser)Context.User, $"Planted a {WizBot.BotConfig.CurrencyName}", amount, false).ConfigureAwait(false);
+                var removed = await _ch.RemoveCurrencyAsync((IGuildUser)Context.User, $"Planted a {_bc.CurrencyName}", amount, false).ConfigureAwait(false);
                 if (!removed)
                 {
-                    await ReplyErrorLocalized("not_enough", WizBot.BotConfig.CurrencySign).ConfigureAwait(false);
+                    await ReplyErrorLocalized("not_enough", _bc.CurrencySign).ConfigureAwait(false);
                     return;
                 }
 
-                var imgData = GetRandomCurrencyImage();
+                var imgData = _games.GetRandomCurrencyImage();
 
                 //todo upload all currency images to transfer.sh and use that one as cdn
                 //and then 
 
                 var msgToSend = GetText("planted",
                     Format.Bold(Context.User.ToString()),
-                    amount + WizBot.BotConfig.CurrencySign,
+                    amount + _bc.CurrencySign,
                     Prefix);
 
                 if (amount > 1)
@@ -172,7 +103,7 @@ namespace WizBot.Modules.Games
                 var msgs = new IUserMessage[amount];
                 msgs[0] = msg;
 
-                plantedFlowers.AddOrUpdate(Context.Channel.Id, msgs.ToList(), (id, old) =>
+                _games.PlantedFlowers.AddOrUpdate(Context.Channel.Id, msgs.ToList(), (id, old) =>
                 {
                     old.AddRange(msgs);
                     return old;
@@ -190,7 +121,7 @@ namespace WizBot.Modules.Games
                 var channel = (ITextChannel)Context.Channel;
 
                 bool enabled;
-                using (var uow = DbHandler.UnitOfWork())
+                using (var uow = _db.UnitOfWork)
                 {
                     var guildConfig = uow.GuildConfigs.For(channel.Id, set => set.Include(gc => gc.GenerateCurrencyChannelIds));
 
@@ -198,13 +129,13 @@ namespace WizBot.Modules.Games
                     if (!guildConfig.GenerateCurrencyChannelIds.Contains(toAdd))
                     {
                         guildConfig.GenerateCurrencyChannelIds.Add(toAdd);
-                        generationChannels.Add(channel.Id);
+                        _games.GenerationChannels.Add(channel.Id);
                         enabled = true;
                     }
                     else
                     {
                         guildConfig.GenerateCurrencyChannelIds.Remove(toAdd);
-                        generationChannels.TryRemove(channel.Id);
+                        _games.GenerationChannels.TryRemove(channel.Id);
                         enabled = false;
                     }
                     await uow.CompleteAsync();
@@ -217,14 +148,6 @@ namespace WizBot.Modules.Games
                 {
                     await ReplyConfirmLocalized("curgen_disabled").ConfigureAwait(false);
                 }
-            }
-
-            private static KeyValuePair<string, ImmutableArray<byte>> GetRandomCurrencyImage()
-            {
-                var rng = new WizBotRandom();
-                var images = WizBot.Images.Currency;
-
-                return images[rng.Next(0, images.Length)];
             }
         }
     }

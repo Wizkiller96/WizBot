@@ -21,8 +21,15 @@ namespace WizBot.Modules.Games
         [Group]
         public class Acropobia : WizBotSubmodule
         {
+            private readonly DiscordShardedClient _client;
+
             //channelId, game
             public static ConcurrentDictionary<ulong, AcrophobiaGame> AcrophobiaGames { get; } = new ConcurrentDictionary<ulong, AcrophobiaGame>();
+
+            public Acropobia(DiscordShardedClient client)
+            {
+                _client = client;
+            }
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
@@ -32,7 +39,7 @@ namespace WizBot.Modules.Games
                     return;
                 var channel = (ITextChannel)Context.Channel;
 
-                var game = new AcrophobiaGame(channel, time);
+                var game = new AcrophobiaGame(_client, _strings, channel, time);
                 if (AcrophobiaGames.TryAdd(channel.Id, game))
                 {
                     try
@@ -59,6 +66,7 @@ namespace WizBot.Modules.Games
             Voting
         }
 
+        //todo Isolate, this shouldn't print or anything like that.
         public class AcrophobiaGame
         {
             private readonly ITextChannel _channel;
@@ -79,10 +87,14 @@ namespace WizBot.Modules.Games
             //text, votes
             private readonly ConcurrentDictionary<string, int> _votes = new ConcurrentDictionary<string, int>();
             private readonly Logger _log;
+            private readonly DiscordShardedClient _client;
+            private readonly WizBotStrings _strings;
 
-            public AcrophobiaGame(ITextChannel channel, int time)
+            public AcrophobiaGame(DiscordShardedClient client, WizBotStrings strings, ITextChannel channel, int time)
             {
                 _log = LogManager.GetCurrentClassLogger();
+                _client = client;
+                _strings = strings;
 
                 _channel = channel;
                 _time = time;
@@ -123,7 +135,7 @@ $@"--
 
             public async Task Run()
             {
-                WizBot.Client.MessageReceived += PotentialAcro;
+                _client.MessageReceived += PotentialAcro;
                 var embed = GetEmbed();
 
                 //SUBMISSIONS PHASE
@@ -292,14 +304,14 @@ $@"--
 
             public void EnsureStopped()
             {
-                WizBot.Client.MessageReceived -= PotentialAcro;
+                _client.MessageReceived -= PotentialAcro;
                 if (!_source.IsCancellationRequested)
                     _source.Cancel();
             }
 
             private string GetText(string key, params object[] replacements)
-                => GetTextStatic(key,
-                    WizBot.Localization.GetCultureInfo(_channel.Guild),
+                => _strings.GetText(key,
+                    _channel.Guild.Id,
                     typeof(Games).Name.ToLowerInvariant(),
                     replacements);
         }

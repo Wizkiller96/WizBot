@@ -32,7 +32,7 @@ namespace WizBot.Services.Impl
                     ? "d0bd7768e3a1a2d15430f0dccb871117"
                     : _soundcloudClientId;
             }
-            set {
+            private set {
                 _soundcloudClientId = value;
             }
         }
