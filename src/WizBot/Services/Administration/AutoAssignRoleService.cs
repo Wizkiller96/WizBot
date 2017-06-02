@@ -1,4 +1,4 @@
-using Discord.WebSocket;
+﻿using Discord.WebSocket;
 using WizBot.Services.Database.Models;
 using NLog;
 using System;

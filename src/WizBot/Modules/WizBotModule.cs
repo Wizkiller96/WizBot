@@ -89,9 +89,9 @@ namespace WizBot.Modules
         }
     }
 
-    public abstract class WizBotSubmodule : WizBotTopLevelModule
+    public abstract class WizBotSubModule : WizBotTopLevelModule
     {
-        protected WizBotSubmodule() : base(false)
+        protected WizBotSubModule() : base(false)
         {
         }
     }

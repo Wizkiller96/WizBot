@@ -14,7 +14,7 @@ namespace WizBot.Modules.Utility
     public partial class Utility
     {
         [Group]
-        public class InfoCommands : WizBotSubmodule
+        public class InfoCommands : WizBotSubModule
         {
             private readonly DiscordShardedClient _client;
             private readonly IStatsService _stats;

@@ -15,7 +15,7 @@ namespace WizBot.Modules.Searches
     public partial class Searches
     {
         [Group]
-        public class MemegenCommands : WizBotSubmodule
+        public class MemegenCommands : WizBotSubModule
         {
             private static readonly ImmutableDictionary<char, string> _map = new Dictionary<char, string>()
             {

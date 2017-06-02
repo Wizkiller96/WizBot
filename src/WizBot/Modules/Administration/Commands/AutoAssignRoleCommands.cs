@@ -12,7 +12,7 @@ namespace WizBot.Modules.Administration
     public partial class Administration
     {
         [Group]
-        public class AutoAssignRoleCommands : WizBotSubmodule
+        public class AutoAssignRoleCommands : WizBotSubModule
         {
             private readonly DbService _db;
             private readonly AutoAssignRoleService _service;

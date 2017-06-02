@@ -22,7 +22,7 @@ namespace WizBot.Modules.Games
         /// https://discord.gg/0TYNJfCU4De7YIk8
         /// </summary>
         [Group]
-        public class PlantPickCommands : WizBotSubmodule
+        public class PlantPickCommands : WizBotSubModule
         {
             private readonly CurrencyService _cs;
             private readonly BotConfig _bc;

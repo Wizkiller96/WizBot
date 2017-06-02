@@ -18,7 +18,7 @@ namespace WizBot.Modules.Games
     public partial class Games
     {
         [Group]
-        public class Acropobia : WizBotSubmodule
+        public class Acropobia : WizBotSubModule
         {
             private readonly DiscordShardedClient _client;
 

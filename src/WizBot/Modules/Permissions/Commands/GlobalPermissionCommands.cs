@@ -13,7 +13,7 @@ namespace WizBot.Modules.Permissions
     public partial class Permissions
     {
         [Group]
-        public class GlobalPermissionCommands : WizBotSubmodule
+        public class GlobalPermissionCommands : WizBotSubModule
         {
             private GlobalPermissionService _service;
             private readonly DbService _db;

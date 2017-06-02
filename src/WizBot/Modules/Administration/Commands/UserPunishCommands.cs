@@ -17,7 +17,7 @@ namespace WizBot.Modules.Administration
     public partial class Administration
     {
         [Group]
-        public class UserPunishCommands : WizBotSubmodule
+        public class UserPunishCommands : WizBotSubModule
         {
             private readonly DbService _db;
             private readonly MuteService _muteService;

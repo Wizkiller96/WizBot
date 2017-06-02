@@ -15,7 +15,7 @@ namespace WizBot.Modules.Administration
     public partial class Administration
     {
         [Group]
-        public class VoicePlusTextCommands : WizBotSubmodule
+        public class VoicePlusTextCommands : WizBotSubModule
         {
             private readonly VplusTService _service;
             private readonly DbService _db;

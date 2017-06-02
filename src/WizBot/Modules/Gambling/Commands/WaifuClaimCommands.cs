@@ -45,7 +45,7 @@ namespace WizBot.Modules.Gambling
         }
 
         [Group]
-        public class WaifuClaimCommands : WizBotSubmodule
+        public class WaifuClaimCommands : WizBotSubModule
         {
             private static ConcurrentDictionary<ulong, DateTime> divorceCooldowns { get; } = new ConcurrentDictionary<ulong, DateTime>();
             private static ConcurrentDictionary<ulong, DateTime> affinityCooldowns { get; } = new ConcurrentDictionary<ulong, DateTime>();

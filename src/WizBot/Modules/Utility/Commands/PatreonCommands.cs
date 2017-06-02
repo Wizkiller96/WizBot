@@ -13,7 +13,7 @@ namespace WizBot.Modules.Utility
     public partial class Utility
     {
         [Group]
-        public class PatreonCommands : WizBotSubmodule
+        public class PatreonCommands : WizBotSubModule
         {
             private readonly PatreonRewardsService _patreon;
             private readonly IBotCredentials _creds;

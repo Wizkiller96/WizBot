@@ -11,7 +11,7 @@ namespace WizBot.Modules.Games
     public partial class Games
     {
         [Group]
-        public class CleverBotCommands : WizBotSubmodule
+        public class CleverBotCommands : WizBotSubModule
         {
             private readonly DbService _db;
             private readonly ChatterBotService _games;

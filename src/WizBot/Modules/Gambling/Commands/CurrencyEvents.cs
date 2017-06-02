@@ -17,7 +17,7 @@ namespace WizBot.Modules.Gambling
     public partial class Gambling
     {
         [Group]
-        public class CurrencyEvents : WizBotSubmodule
+        public class CurrencyEvents : WizBotSubModule
         {
             public enum CurrencyEvent
             {

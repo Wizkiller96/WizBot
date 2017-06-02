@@ -19,7 +19,7 @@ namespace WizBot.Modules.Administration
     public partial class Administration
     {
         [Group]
-        public class Migration : WizBotSubmodule
+        public class Migration : WizBotSubModule
         {
             private const int CURRENT_VERSION = 1;
             private readonly DbService _db;
@@ -77,9 +77,9 @@ namespace WizBot.Modules.Administration
 
             private void MigrateDb0_9(IUnitOfWork uow)
             {
-                var db = new SqliteConnection("Data Source=data/wizbot.sqlite");
+                var db = new SqliteConnection("Data Source=data/WizBot.sqlite");
 
-                if (!File.Exists("data/wizbot.sqlite"))
+                if (!File.Exists("data/WizBot.sqlite"))
                 {
                     _log.Warn("No data from the old database will be migrated.");
                     return;
@@ -145,7 +145,7 @@ namespace WizBot.Modules.Administration
                     _log.Warn("Currency won't be migrated");
                 }
                 db.Close();
-                try { File.Move("data/wizbot.sqlite", "data/DELETE_ME_wizbot.sqlite"); } catch { }
+                try { File.Move("data/WizBot.sqlite", "data/DELETE_ME_WizBot.sqlite"); } catch { }
             }
 
             private void MigrateServerSpecificConfigs0_9(IUnitOfWork uow)

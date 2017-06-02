@@ -14,7 +14,7 @@ namespace WizBot.Modules.Gambling
     public partial class Gambling
     {
         [Group]
-        public class FlipCoinCommands : WizBotSubmodule
+        public class FlipCoinCommands : WizBotSubModule
         {
             private readonly IImagesService _images;
             private readonly BotConfig _bc;

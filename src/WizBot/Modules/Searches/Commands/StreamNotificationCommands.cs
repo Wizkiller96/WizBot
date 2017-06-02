@@ -15,7 +15,7 @@ namespace WizBot.Modules.Searches
     public partial class Searches
     {
         [Group]
-        public class StreamNotificationCommands : WizBotSubmodule
+        public class StreamNotificationCommands : WizBotSubModule
         {
             private readonly DbService _db;
             private readonly StreamNotificationService _service;

@@ -10,7 +10,7 @@ namespace WizBot.Modules.Administration
     public partial class Administration
     {
         [Group]
-        public class GameChannelCommands : WizBotSubmodule
+        public class GameChannelCommands : WizBotSubModule
         {
             private readonly DbService _db;
             private readonly GameVoiceChannelService _service;

@@ -13,7 +13,7 @@ namespace WizBot.Modules.Searches
     public partial class Searches
     {
         [Group]
-        public class JokeCommands : WizBotSubmodule
+        public class JokeCommands : WizBotSubModule
         {
             private readonly SearchesService _searches;
 

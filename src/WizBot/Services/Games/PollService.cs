@@ -1,4 +1,4 @@
-using WizBot.DataStructures.ModuleBehaviors;
+﻿using WizBot.DataStructures.ModuleBehaviors;
 using System;
 using System.Collections.Concurrent;
 using System.Linq;

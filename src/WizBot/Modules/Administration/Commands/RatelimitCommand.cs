@@ -15,7 +15,7 @@ namespace WizBot.Modules.Administration
     public partial class Administration
     {
         [Group]
-        public class SlowModeCommands : WizBotSubmodule
+        public class SlowModeCommands : WizBotSubModule
         {
             private readonly SlowmodeService _service;
             private readonly DbService _db;

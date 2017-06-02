@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using WizBot.Services.Database.Models;
 using System.Collections.Concurrent;
 

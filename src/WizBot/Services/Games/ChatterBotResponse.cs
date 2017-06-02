@@ -1,4 +1,4 @@
-namespace WizBot.Services.Games
+﻿namespace WizBot.Services.Games
 {
     public class ChatterBotResponse
     {

@@ -11,7 +11,7 @@ namespace WizBot.Modules.Games
     public partial class Games
     {
         [Group]
-        public class PollCommands : WizBotSubmodule
+        public class PollCommands : WizBotSubModule
         {
             private readonly DiscordShardedClient _client;
             private readonly PollService _polls;

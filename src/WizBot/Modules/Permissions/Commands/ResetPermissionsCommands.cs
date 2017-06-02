@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using WizBot.Attributes;
 using WizBot.Services;
@@ -11,7 +11,7 @@ namespace WizBot.Modules.Permissions.Commands
     public partial class Permissions
     {
         [Group]
-        public class ResetPermissionsCommands : WizBotSubmodule
+        public class ResetPermissionsCommands : WizBotSubModule
         {
             private readonly PermissionService _service;
             private readonly DbService _db;

@@ -11,7 +11,7 @@ namespace WizBot.Modules.Administration
     public partial class Administration
     {
         [Group]
-        public class MuteCommands : WizBotSubmodule
+        public class MuteCommands : WizBotSubModule
         {
             private readonly MuteService _service;
             private readonly DbService _db;

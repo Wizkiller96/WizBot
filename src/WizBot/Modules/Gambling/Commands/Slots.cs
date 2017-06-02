@@ -17,7 +17,7 @@ namespace WizBot.Modules.Gambling
     public partial class Gambling
     {
         [Group]
-        public class Slots : WizBotSubmodule
+        public class Slots : WizBotSubModule
         {
             private static int _totalBet;
             private static int _totalPaidOut;

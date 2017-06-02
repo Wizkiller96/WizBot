@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using System;
 using System.Collections.Concurrent;
 using System.Linq;

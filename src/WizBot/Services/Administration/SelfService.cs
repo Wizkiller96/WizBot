@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using WizBot.DataStructures;
 using WizBot.DataStructures.ModuleBehaviors;
 using WizBot.Extensions;

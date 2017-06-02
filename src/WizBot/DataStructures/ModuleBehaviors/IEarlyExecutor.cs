@@ -1,4 +1,4 @@
-namespace WizBot.DataStructures.ModuleBehaviors
+﻿namespace WizBot.DataStructures.ModuleBehaviors
 {
     public interface IEarlyExecutor
     {

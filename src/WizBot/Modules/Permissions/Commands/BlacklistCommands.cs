@@ -20,7 +20,7 @@ namespace WizBot.Modules.Permissions
         }
 
         [Group]
-        public class BlacklistCommands : WizBotSubmodule
+        public class BlacklistCommands : WizBotSubModule
         {
             private readonly BlacklistService _bs;
             private readonly DbService _db;

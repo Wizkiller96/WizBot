@@ -405,13 +405,13 @@ namespace WizBot.Modules.Administration
             }
             await Context.Channel.SendConfirmAsync(GetText("donators"), string.Join("⭐", donatorsOrdered.Select(d => d.Name))).ConfigureAwait(false);
 
-            _wizbotSupportServer = _wizbotSupportServer ?? (await Context.Client.GetGuildAsync(99273784988557312));
+            _wizbotSupportServer = _wizbotSupportServer ?? (await Context.Client.GetGuildAsync(117523346618318850));
 
-            var patreonRole = _wizbotSupportServer?.GetRole(299174013597646868);
+            var patreonRole = _wizbotSupportServer?.GetRole(236667642088259585);
             if (patreonRole == null)
                 return;
 
-            var usrs = (await _wizbotSupportServer.GetUsersAsync()).Where(u => u.RoleIds.Contains(299174013597646868u));
+            var usrs = (await _wizbotSupportServer.GetUsersAsync()).Where(u => u.RoleIds.Contains(236667642088259585u));
             await Context.Channel.SendConfirmAsync("Patreon supporters", string.Join("⭐", usrs.Select(d => d.Username))).ConfigureAwait(false);
         }
 

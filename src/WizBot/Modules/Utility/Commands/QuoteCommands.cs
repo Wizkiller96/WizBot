@@ -15,7 +15,7 @@ namespace WizBot.Modules.Utility
     public partial class Utility
     {
         [Group]
-        public class QuoteCommands : WizBotSubmodule
+        public class QuoteCommands : WizBotSubModule
         {
             private readonly DbService _db;
 
@@ -107,26 +107,26 @@ namespace WizBot.Modules.Utility
                 await Context.Channel.SendMessageAsync($"`#{keywordquote.Id}` 💬 " + keyword.ToLowerInvariant() + ":  " +
                                                        keywordquote.Text.SanitizeMentions());
             }
-
+            
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task QuoteId(int id)
-            {
+            {  
                 if (id < 0)
                     return;
-
+                
                 using (var uow = _db.UnitOfWork)
-                {
+                { 
                     var qfromid = uow.Quotes.Get(id);
                     CREmbed crembed;
-
+                    
                     if (qfromid == null)
                     {
                         await Context.Channel.SendErrorAsync(GetText("quotes_notfound"));
                     }
                     else if (CREmbed.TryParse(qfromid.Text, out crembed))
                     {
-                        try
+                        try 
                         {
                             await Context.Channel.EmbedAsync(crembed.ToEmbed(), crembed.PlainText ?? "")
                                 .ConfigureAwait(false);
@@ -134,19 +134,16 @@ namespace WizBot.Modules.Utility
                         catch (Exception ex)
                         {
                             _log.Warn("Sending CREmbed failed");
-                            _log.Warn(ex);
-                        }
+                            _log.Warn(ex);    
+                        } 
                         return;
                     }
-
-                    else
-                    {
-                        await Context.Channel.SendMessageAsync($"`#{qfromid.Id}` 🗯️ " + qfromid.Keyword.ToLowerInvariant().SanitizeMentions() + ":  " +
-                                                    qfromid.Text.SanitizeMentions());
-                    }
+                    
+                    else { await Context.Channel.SendMessageAsync($"`#{qfromid.Id}` 🗯️ " + qfromid.Keyword.ToLowerInvariant().SanitizeMentions() + ":  " +
+                                                       qfromid.Text.SanitizeMentions()); }
                 }
-            }
-
+            }        
+                          
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task AddQuote(string keyword, [Remainder] string text)
@@ -175,8 +172,8 @@ namespace WizBot.Modules.Utility
             [RequireContext(ContextType.Guild)]
             public async Task DeleteQuote(int id)
             {
-                var isAdmin = ((IGuildUser)Context.Message.Author).GuildPermissions.Administrator;
-
+                var isAdmin = ((IGuildUser) Context.Message.Author).GuildPermissions.Administrator;
+                
                 var success = false;
                 string response;
                 using (var uow = _db.UnitOfWork)

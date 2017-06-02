@@ -12,7 +12,7 @@ namespace WizBot.Modules.Searches
     public partial class Searches
     {
         [Group]
-        public class XkcdCommands : WizBotSubmodule
+        public class XkcdCommands : WizBotSubModule
         {
             private const string _xkcdUrl = "https://xkcd.com";
 

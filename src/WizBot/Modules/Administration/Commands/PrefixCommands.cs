@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using WizBot.Attributes;
 using WizBot.Services;
@@ -10,7 +10,7 @@ namespace WizBot.Modules.Administration
     public partial class Administration
     {
         [Group]
-        public class PrefixCommands : WizBotSubmodule
+        public class PrefixCommands : WizBotSubModule
         {
             [WizBotCommand, Usage, Description, Aliases]
             [Priority(0)]

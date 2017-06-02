@@ -7,7 +7,7 @@ namespace WizBot.Modules.Permissions
     public partial class Permissions
     {
         [Group]
-        public class CommandCostCommands : WizBotSubmodule
+        public class CommandCostCommands : WizBotSubModule
         {
             private static readonly ConcurrentDictionary<string, int> _commandCosts = new ConcurrentDictionary<string, int>();
             public static IReadOnlyDictionary<string, int> CommandCosts => _commandCosts;

@@ -19,7 +19,7 @@ namespace WizBot.Modules.Searches
     public partial class Searches
     {
         [Group]
-        public class AnimeSearchCommands : WizBotSubmodule
+        public class AnimeSearchCommands : WizBotSubModule
         {
             private static readonly Timer anilistTokenRefresher;
             private static string anilistToken { get; set; }
@@ -33,8 +33,8 @@ namespace WizBot.Modules.Searches
                         var headers = new Dictionary<string, string>
                         {
                             {"grant_type", "client_credentials"},
-                            {"client_id", "wizkiller96-yrm0j"},
-                            {"client_secret", "VGhofNh6j7GVlC5WL4enxF49c"},
+                            {"client_id", "kwoth-w0ki9"},
+                            {"client_secret", "Qd6j4FIAi1ZK6Pc7N7V4Z"},
                         };
 
                         using (var http = new HttpClient())

@@ -16,7 +16,7 @@ namespace WizBot.Modules.Administration
     public partial class Administration
     {
         [Group]
-        public class VcRoleCommands : WizBotSubmodule
+        public class VcRoleCommands : WizBotSubModule
         {
             private readonly VcRoleService _service;
             private readonly DbService _db;

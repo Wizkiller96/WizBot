@@ -12,7 +12,7 @@ namespace WizBot.Modules.Searches
     public partial class Searches
     {
         [Group]
-        public class TranslateCommands : WizBotSubmodule
+        public class TranslateCommands : WizBotSubModule
         {
             private readonly SearchesService _searches;
             private readonly IGoogleApiService _google;

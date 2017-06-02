@@ -18,7 +18,7 @@ namespace WizBot.Modules.Utility
     public partial class Utility
     {
         [Group]
-        public class RepeatCommands : WizBotSubmodule
+        public class RepeatCommands : WizBotSubModule
         {
             private readonly MessageRepeaterService _service;
             private readonly DiscordShardedClient _client;

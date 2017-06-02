@@ -14,7 +14,7 @@ namespace WizBot.Modules.Administration
     public partial class Administration
     {
         [Group]
-        public class LocalizationCommands : WizBotSubmodule
+        public class LocalizationCommands : WizBotSubModule
         {
             //Română, România
             //Bahasa Indonesia, Indonesia

@@ -162,7 +162,7 @@ namespace WizBot.Services.Impl
 
             return toReturn;
         }
-        
+
         public async Task<IReadOnlyDictionary<string, TimeSpan>> GetVideoDurationsAsync(IEnumerable<string> videoIds)
         {
             var videoIdsList = videoIds as List<string> ?? videoIds.ToList();

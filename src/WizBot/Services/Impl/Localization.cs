@@ -35,17 +35,17 @@ namespace WizBot.Services
                 }
             }
             GuildCultureInfos = new ConcurrentDictionary<ulong, CultureInfo>(cultureInfoNames.ToDictionary(x => x.Key, x =>
-            {
-                CultureInfo cultureInfo = null;
-                try
-                {
-                    if (x.Value == null)
-                        return null;
-                    cultureInfo = new CultureInfo(x.Value);
-                }
-                catch { }
-                return cultureInfo;
-            }).Where(x => x.Value != null));
+              {
+                  CultureInfo cultureInfo = null;
+                  try
+                  {
+                      if (x.Value == null)
+                          return null;
+                      cultureInfo = new CultureInfo(x.Value);
+                  }
+                  catch { }
+                  return cultureInfo;
+              }).Where(x => x.Value != null));
         }
 
         public void SetGuildCulture(IGuild guild, CultureInfo ci) =>
@@ -69,11 +69,10 @@ namespace WizBot.Services
             GuildCultureInfos.AddOrUpdate(guildId, ci, (id, old) => ci);
         }
 
-        public void RemoveGuildCulture(IGuild guild) =>
+        public void RemoveGuildCulture(IGuild guild) => 
             RemoveGuildCulture(guild.Id);
 
-        public void RemoveGuildCulture(ulong guildId)
-        {
+        public void RemoveGuildCulture(ulong guildId) {
 
             CultureInfo throwaway;
             if (GuildCultureInfos.TryRemove(guildId, out throwaway))

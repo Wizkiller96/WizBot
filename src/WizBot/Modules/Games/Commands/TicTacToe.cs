@@ -15,7 +15,7 @@ namespace WizBot.Modules.Games
     public partial class Games
     {
         [Group]
-        public class TicTacToeCommands : WizBotSubmodule
+        public class TicTacToeCommands : WizBotSubModule
         {
             //channelId/game
             private static readonly Dictionary<ulong, TicTacToe> _games = new Dictionary<ulong, TicTacToe>();

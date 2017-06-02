@@ -11,7 +11,7 @@ namespace WizBot.Modules.Administration
     public partial class Administration
     {
         [Group]
-        public class PlayingRotateCommands : WizBotSubmodule
+        public class PlayingRotateCommands : WizBotSubModule
         {
             private static readonly object _locker = new object();
             private readonly DbService _db;

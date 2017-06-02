@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using Discord.WebSocket;
 using WizBot.DataStructures.ModuleBehaviors;
 using WizBot.Services.Database.Models;

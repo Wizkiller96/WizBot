@@ -1,4 +1,4 @@
-using ImageSharp;
+﻿using ImageSharp;
 using WizBot.DataStructures;
 using WizBot.Extensions;
 using NLog;

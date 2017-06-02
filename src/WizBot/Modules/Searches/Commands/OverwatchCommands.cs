@@ -13,7 +13,7 @@ namespace WizBot.Modules.Searches
     public partial class Searches
     {
         [Group]
-        public class OverwatchCommands : WizBotSubmodule
+        public class OverwatchCommands : WizBotSubModule
         {
             public enum Region
             {

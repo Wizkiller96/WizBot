@@ -10,7 +10,7 @@ namespace WizBot.Modules.Searches
     public partial class Searches
     {
         [Group]
-        public class PlaceCommands : WizBotSubmodule
+        public class PlaceCommands : WizBotSubModule
         {
             private static string typesStr { get; } = string.Join(", ", Enum.GetNames(typeof(PlaceType)));
 

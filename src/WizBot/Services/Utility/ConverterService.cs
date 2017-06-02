@@ -1,4 +1,4 @@
-using WizBot.Services.Database.Models;
+﻿using WizBot.Services.Database.Models;
 using Newtonsoft.Json;
 using NLog;
 using System;

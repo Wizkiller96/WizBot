@@ -1,4 +1,4 @@
-using WizBot.Extensions;
+﻿using WizBot.Extensions;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Threading.Tasks;

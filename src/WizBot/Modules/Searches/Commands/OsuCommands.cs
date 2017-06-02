@@ -16,7 +16,7 @@ namespace WizBot.Modules.Searches
     public partial class Searches
     {
         [Group]
-        public class OsuCommands : WizBotSubmodule
+        public class OsuCommands : WizBotSubModule
         {
             private readonly IGoogleApiService _google;
             private readonly IBotCredentials _creds;

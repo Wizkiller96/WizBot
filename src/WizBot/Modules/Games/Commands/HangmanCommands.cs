@@ -13,7 +13,7 @@ namespace WizBot.Modules.Games
     public partial class Games
     {
         [Group]
-        public class HangmanCommands : WizBotSubmodule
+        public class HangmanCommands : WizBotSubModule
         {
             private readonly DiscordShardedClient _client;
 

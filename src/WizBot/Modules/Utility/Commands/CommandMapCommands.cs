@@ -17,7 +17,7 @@ namespace WizBot.Modules.Utility
     public partial class Utility
     {
         [Group]
-        public class CommandMapCommands : WizBotSubmodule
+        public class CommandMapCommands : WizBotSubModule
         {
             private readonly CommandMapService _service;
             private readonly DbService _db;

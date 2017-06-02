@@ -1,4 +1,4 @@
-using WizBot.DataStructures.ModuleBehaviors;
+﻿using WizBot.DataStructures.ModuleBehaviors;
 using WizBot.Services.Database.Models;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

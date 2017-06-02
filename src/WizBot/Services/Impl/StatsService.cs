@@ -17,9 +17,9 @@ namespace WizBot.Services.Impl
         private readonly IBotCredentials _creds;
         private readonly DateTime _started;
 
-        public const string BotVersion = "1.4.1-alpha";
+        public const string BotVersion = "1.41-alpha";
 
-        public string Author => "Kwoth#2560 & Wizkiller96#2947";
+        public string Author => "Kwoth#2560";
         public string Library => "Discord.Net";
         public string Heap =>
             Math.Round((double)GC.GetTotalMemory(false) / 1.MiB(), 2).ToString(CultureInfo.InvariantCulture);

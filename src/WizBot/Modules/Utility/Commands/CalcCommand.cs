@@ -12,7 +12,7 @@ namespace WizBot.Modules.Utility
     public partial class Utility
     {
         [Group]
-        public class CalcCommands : WizBotSubmodule
+        public class CalcCommands : WizBotSubModule
         {
             [WizBotCommand, Usage, Description, Aliases]
             public async Task Calculate([Remainder] string expression)

@@ -12,7 +12,7 @@ namespace WizBot.Modules.Utility
     public partial class Utility
     {
         [Group]
-        public class UnitConverterCommands : WizBotSubmodule
+        public class UnitConverterCommands : WizBotSubModule
         {
             private readonly ConverterService _service;
 

@@ -18,7 +18,7 @@ namespace WizBot.Modules.Gambling
     public partial class Gambling
     {
         [Group]
-        public class AnimalRacing : WizBotSubmodule
+        public class AnimalRacing : WizBotSubModule
         {
             private readonly BotConfig _bc;
             private readonly CurrencyService _cs;

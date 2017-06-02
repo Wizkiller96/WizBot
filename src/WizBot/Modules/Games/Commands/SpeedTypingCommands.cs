@@ -16,7 +16,7 @@ namespace WizBot.Modules.Games
     public partial class Games
     {
         [Group]
-        public class SpeedTypingCommands : WizBotSubmodule
+        public class SpeedTypingCommands : WizBotSubModule
         {
             public static ConcurrentDictionary<ulong, TypingGame> RunningContests = new ConcurrentDictionary<ulong, TypingGame>();
             private readonly GamesService _games;

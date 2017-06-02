@@ -15,7 +15,7 @@ namespace WizBot.Modules.Games
     public partial class Games
     {
         [Group]
-        public class TriviaCommands : WizBotSubmodule
+        public class TriviaCommands : WizBotSubModule
         {
             private readonly CurrencyService _cs;
             private readonly DiscordShardedClient _client;

@@ -15,7 +15,7 @@ namespace WizBot.Modules.Utility
     public partial class Utility
     {
         [Group]
-        public class RemindCommands : WizBotSubmodule
+        public class RemindCommands : WizBotSubModule
         {
             private readonly RemindService _service;
             private readonly DbService _db;

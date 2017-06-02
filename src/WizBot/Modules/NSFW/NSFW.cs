@@ -108,8 +108,8 @@ namespace WizBot.Modules.NSFW
                 return t;
             });
 
-            await ReplyConfirmLocalized("autohentai_started",
-                interval,
+            await ReplyConfirmLocalized("autohentai_started", 
+                interval, 
                 string.Join(", ", tagsArr)).ConfigureAwait(false);
         }
 

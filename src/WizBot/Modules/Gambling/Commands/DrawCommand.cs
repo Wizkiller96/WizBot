@@ -14,7 +14,7 @@ namespace WizBot.Modules.Gambling
     public partial class Gambling
     {
         [Group]
-        public class DrawCommands : WizBotSubmodule
+        public class DrawCommands : WizBotSubModule
         {
             private static readonly ConcurrentDictionary<IGuild, Cards> _allDecks = new ConcurrentDictionary<IGuild, Cards>();
             private const string _cardsPath = "data/images/cards";

@@ -15,7 +15,7 @@ namespace WizBot.Modules.Permissions
     public partial class Permissions
     {
         [Group]
-        public class CmdCdsCommands : WizBotSubmodule
+        public class CmdCdsCommands : WizBotSubModule
         {
             private readonly DbService _db;
             private readonly CmdCdService _service;

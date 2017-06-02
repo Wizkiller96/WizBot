@@ -1,4 +1,4 @@
-using WizBot.Services.Database.Models;
+﻿using WizBot.Services.Database.Models;
 using System;
 using System.Linq;
 

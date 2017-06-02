@@ -11,7 +11,7 @@ namespace WizBot.Modules.Administration
     public partial class Administration
     {
         [Group]
-        public class ServerGreetCommands : WizBotSubmodule
+        public class ServerGreetCommands : WizBotSubModule
         {
             private readonly GreetSettingsService _greetService;
             private readonly DbService _db;

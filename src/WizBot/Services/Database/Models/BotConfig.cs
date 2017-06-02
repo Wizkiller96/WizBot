@@ -22,7 +22,7 @@ namespace WizBot.Services.Database.Models
         //currency
         public string CurrencySign { get; set; } = "🌸";
         public string CurrencyName { get; set; } = "Cherry Blossom";
-        public string CurrencyPluralName { get; set; } = "Cherry Blossoms";
+        public string CurrencyPluralName { get; set; } = "Cherry Blossom";
 
         public int TriviaCurrencyReward { get; set; } = 0;
         public int MinimumBetAmount { get; set; } = 2;

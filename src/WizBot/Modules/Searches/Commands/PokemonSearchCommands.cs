@@ -12,7 +12,7 @@ namespace WizBot.Modules.Searches
     public partial class Searches
     {
         [Group]
-        public class PokemonSearchCommands : WizBotSubmodule
+        public class PokemonSearchCommands : WizBotSubModule
         {
             private readonly SearchesService _searches;
 

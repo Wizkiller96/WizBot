@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using System.Threading.Tasks;
 
 namespace WizBot.DataStructures.ModuleBehaviors

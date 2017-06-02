@@ -1,4 +1,4 @@
-using WizBot.DataStructures.ModuleBehaviors;
+﻿using WizBot.DataStructures.ModuleBehaviors;
 using WizBot.Services.Database.Models;
 using System.Threading.Tasks;
 using Discord;

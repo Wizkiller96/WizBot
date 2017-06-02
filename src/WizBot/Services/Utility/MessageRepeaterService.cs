@@ -1,4 +1,4 @@
-using Discord.WebSocket;
+﻿using Discord.WebSocket;
 using WizBot.Services.Database.Models;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

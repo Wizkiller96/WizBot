@@ -19,7 +19,7 @@ namespace WizBot.Modules.Administration
     public partial class Administration
     {
         [Group]
-        public class SelfCommands : WizBotSubmodule
+        public class SelfCommands : WizBotSubModule
         {
             private readonly DbService _db;
 

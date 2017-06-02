@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using WizBot.DataStructures.ModuleBehaviors;
 using WizBot.Services.Database.Models;
 using NLog;

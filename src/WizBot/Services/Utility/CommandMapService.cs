@@ -1,4 +1,4 @@
-using WizBot.DataStructures.ModuleBehaviors;
+﻿using WizBot.DataStructures.ModuleBehaviors;
 using WizBot.Services.Database.Models;
 using System;
 using System.Collections.Concurrent;
@@ -35,7 +35,7 @@ namespace WizBot.Services.Utility
 
             if (guild == null || string.IsNullOrWhiteSpace(input))
                 return input;
-
+            
             if (guild != null)
             {
                 input = input.ToLowerInvariant();

@@ -8,7 +8,7 @@ namespace WizBot.Services.Database.Models
         public ulong GuildId { get; set; }
 
         public string Prefix { get; set; } = null;
-        
+
         public bool DeleteMessageOnCommand { get; set; }
         public ulong AutoAssignRoleId { get; set; }
         //greet stuff
