@@ -18,13 +18,11 @@ namespace WizBot.Modules.Utility
         {
             private readonly DiscordShardedClient _client;
             private readonly IStatsService _stats;
-            private readonly CommandHandler _cmdHandler;
 
             public InfoCommands(DiscordShardedClient client, IStatsService stats, CommandHandler ch)
             {
                 _client = client;
                 _stats = stats;
-                _cmdHandler = ch;
             }
 
             [WizBotCommand, Usage, Description, Aliases]
