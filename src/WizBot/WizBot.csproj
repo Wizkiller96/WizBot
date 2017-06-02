@@ -68,15 +68,6 @@
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="0.9.9" />
     <PackageReference Include="Discord.Net" Version="1.0.0-rc2-00015" />
-    <PackageReference Include="Discord.Net.Audio" Version="0.9.6" />
-    <PackageReference Include="Discord.Net.Commands" Version="1.0.0-rc2-00015" />
-    <PackageReference Include="Discord.Net.Core" Version="1.0.0-rc2-00015" />
-    <PackageReference Include="Discord.Net.Modules" Version="0.9.6" />
-    <PackageReference Include="Discord.Net.Rest" Version="1.0.0-rc2-00014" />
-    <PackageReference Include="Discord.Net.Rpc" Version="1.0.0-rc2-00014" />
-    <PackageReference Include="Discord.Net.Webhook" Version="1.0.0-rc2-00014" />
-    <PackageReference Include="Discord.Net.WebSocket" Version="1.0.0" />
-    <PackageReference Include="Discord.Oauth2" Version="1.4.0.10" />
     <PackageReference Include="libvideo" Version="1.0.1" />
     <PackageReference Include="CoreCLR-NCalc" Version="2.1.2" />
     <PackageReference Include="Google.Apis.Urlshortener.v1" Version="1.19.0.138" />

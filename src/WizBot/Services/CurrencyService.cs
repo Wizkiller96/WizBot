@@ -7,12 +7,12 @@ using WizBot.Services.Database;
 
 namespace WizBot.Services
 {
-    public class CurrencyHandler
+    public class CurrencyService
     {
         private readonly BotConfig _config;
-        private readonly DbHandler _db;
+        private readonly DbService _db;
 
-        public CurrencyHandler(BotConfig config, DbHandler db)
+        public CurrencyService(BotConfig config, DbService db)
         {
             _config = config;
             _db = db;
