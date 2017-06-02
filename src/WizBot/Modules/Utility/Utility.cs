@@ -406,7 +406,7 @@ namespace WizBot.Modules.Utility
                 new EmbedBuilder().WithOkColor()
                     .WithAuthor(eab => eab.WithName($"WizBot v{StatsService.BotVersion}")
                                           .WithUrl("http://wizbot.readthedocs.io/en/latest/")
-                                          .WithIconUrl("https://cdn.discordapp.com/avatars/116275390695079945/b21045e778ef21c96d175400e779f0fb.jpg"))
+                                          .WithIconUrl("https://i.imgur.com/1X7IWnw.jpg"))
                     .AddField(efb => efb.WithName(GetText("author")).WithValue(_stats.Author).WithIsInline(true))
                     .AddField(efb => efb.WithName(GetText("botid")).WithValue(_client.CurrentUser.Id.ToString()).WithIsInline(true))
                     .AddField(efb => efb.WithName(GetText("shard")).WithValue($"#{shardId} / {_client.Shards.Count}").WithIsInline(true))
@@ -512,6 +512,20 @@ namespace WizBot.Modules.Utility
             msg.DeleteAfter(0);
 
             await Context.Channel.SendConfirmAsync($"{Format.Bold(Context.User.ToString())} 🏓 {(int)sw.Elapsed.TotalMilliseconds}ms").ConfigureAwait(false);
+        }
+        [WizBotCommand, Usage, Description, Aliases]
+        public async Task Updates()
+        {
+            await Context.Channel.EmbedAsync(
+                new EmbedBuilder().WithOkColor()
+                    .WithAuthor(eab => eab.WithName(GetText($"changelog_title_date"))
+                                          .WithUrl("https://github.com/Wizkiller96/WizBot/commits/dev")
+                                          .WithIconUrl("https://i.imgur.com/1X7IWnw.jpg"))
+                    .AddField(efb => efb.WithName(Format.Bold(GetText("changelog_fixes"))).WithValue(GetText("changelog_fixes_msg")).WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold(GetText("changelog_additions"))).WithValue(GetText("changelog_additions_msg")).WithIsInline(false))
+                    .AddField(efb => efb.WithName(Format.Bold(GetText("changelog_removals"))).WithValue(GetText("changelog_removals_msg")).WithIsInline(false))
+                    .WithFooter(efb => efb.WithText(GetText($"changelog_footer")))
+                    );
         }
     }
 }
