@@ -14,9 +14,9 @@ namespace WizBot.Modules.Utility
         [Group]
         public class CrossServerTextChannel : WizBotSubmodule
         {
-            private readonly UtilityService _service;
+            private readonly CrossServerTextService _service;
 
-            public CrossServerTextChannel(UtilityService service)
+            public CrossServerTextChannel(CrossServerTextService service)
             {
                 _service = service;
             }

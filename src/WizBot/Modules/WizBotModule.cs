@@ -15,8 +15,7 @@ namespace WizBot.Modules
         public readonly string Prefix;
         public readonly string ModuleTypeName;
         public readonly string LowerModuleTypeName;
-
-        //todo :thinking:
+        
         public WizBotStrings _strings { get; set; }
         public ILocalization _localization { get; set; }
 

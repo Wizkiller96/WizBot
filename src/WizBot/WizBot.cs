@@ -105,10 +105,11 @@ namespace WizBot
             //module services
             //todo 90 - autodiscover, DI, and add instead of manual like this
             #region utility
-            var utilityService = new UtilityService(AllGuildConfigs, Client);
+            var crossServerTextService = new CrossServerTextService(AllGuildConfigs, Client);
             var remindService = new RemindService(Client, BotConfig, Db);
             var repeaterService = new MessageRepeaterService(Client, AllGuildConfigs);
             var converterService = new ConverterService(Db);
+            var commandMapService = new CommandMapService(AllGuildConfigs);
             #endregion
 
             #region Searches
@@ -142,7 +143,7 @@ namespace WizBot
             var permissionsService = new PermissionsService(Db, BotConfig);
             var blacklistService = new BlacklistService(BotConfig);
             var cmdcdsService = new CmdCdService(AllGuildConfigs);
-            var filterService = new FilterService(AllGuildConfigs);
+            var filterService = new FilterService(Client, AllGuildConfigs);
             var globalPermsService = new GlobalPermissionService(BotConfig);
             #endregion
 
@@ -162,7 +163,8 @@ namespace WizBot
                 .Add<CommandHandler>(commandHandler)
                 .Add<DbService>(Db)
                 //modules
-                .Add<UtilityService>(utilityService)
+                    .Add(crossServerTextService)
+                    .Add(commandMapService)
                     .Add(remindService)
                     .Add(repeaterService)
                     .Add(converterService)
@@ -241,7 +243,7 @@ namespace WizBot
             await commandHandler.StartHandling().ConfigureAwait(false);
 
             var _ = await CommandService.AddModulesAsync(this.GetType().GetTypeInfo().Assembly);
-#if GLOBAL_WizBot
+#if GLOBAL_WIZBOT
             //unload modules which are not available on the public bot
             CommandService
                 .Modules

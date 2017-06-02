@@ -16,25 +16,23 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Discord.WebSocket;
 using System.Diagnostics;
-using WizBot.Modules;
 using Color = Discord.Color;
+using WizBot.Services;
 
-namespace WizBot.Services.Utility
+namespace WizBot.Modules.Utility
 {
     public partial class Utility : WizBotTopLevelModule
     {
         private static ConcurrentDictionary<ulong, Timer> _rotatingRoleColors = new ConcurrentDictionary<ulong, Timer>();
         private readonly DiscordShardedClient _client;
         private readonly IStatsService _stats;
-        private readonly UtilityService _service;
         //private readonly MusicService _music;
         private readonly IBotCredentials _creds;
 
-        public Utility(UtilityService service, DiscordShardedClient client, IStatsService stats, IBotCredentials creds)
+        public Utility(DiscordShardedClient client, IStatsService stats, IBotCredentials creds)
         {
             _client = client;
             _stats = stats;
-            _service = service;
             //_music = music;
             _creds = creds;
         }
