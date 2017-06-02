@@ -51,7 +51,7 @@ namespace WizBot.Extensions
             lastPage += 1;
             var embed = pageFunc(currentPage);
 
-            if(addPaginatedFooter)
+            if (addPaginatedFooter)
                 embed.AddPaginatedFooter(currentPage, lastPage);
 
             var msg = await channel.EmbedAsync(embed) as IUserMessage;
@@ -59,8 +59,8 @@ namespace WizBot.Extensions
             if (currentPage >= lastPage && lastPage == 1)
                 return;
 
-            
-            await msg.AddReactionAsync( arrow_left).ConfigureAwait(false);
+
+            await msg.AddReactionAsync(arrow_left).ConfigureAwait(false);
             await msg.AddReactionAsync(arrow_right).ConfigureAwait(false);
 
             await Task.Delay(2000).ConfigureAwait(false);
@@ -289,7 +289,7 @@ namespace WizBot.Extensions
                 return list;
             }
         }
-    
+
         /// <summary>
         /// Easy use of fast, efficient case-insensitive Contains check with StringComparison Member Types 
         /// CurrentCulture, CurrentCultureIgnoreCase, InvariantCulture, InvariantCultureIgnoreCase, Ordinal, OrdinalIgnoreCase

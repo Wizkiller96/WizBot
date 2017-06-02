@@ -2,12 +2,9 @@
 using Discord.Commands;
 using WizBot.Attributes;
 using WizBot.Extensions;
-using WizBot.Services;
-using WizBot.Services.Database.Models;
 using WizBot.Services.Utility;
 using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace WizBot.Modules.Utility
@@ -15,140 +12,82 @@ namespace WizBot.Modules.Utility
     public partial class Utility
     {
         [Group]
-        public class RemindCommands : WizBotSubmodule
+        public class UnitConverterCommands : WizBotSubmodule
         {
-            private readonly RemindService _service;
-            private readonly DbHandler _db;
+            private readonly ConverterService _service;
 
-            public RemindCommands(RemindService service, DbHandler db)
+            public UnitConverterCommands(ConverterService service)
             {
                 _service = service;
-                _db = db;
-            }
-
-            public enum MeOrHere
-            {
-                Me,Here
             }
 
             [WizBotCommand, Usage, Description, Aliases]
-            [RequireContext(ContextType.Guild)]
-            [Priority(1)]
-            public async Task Remind(MeOrHere meorhere, string timeStr, [Remainder] string message)
+            public async Task ConvertList()
             {
-                ulong target;
-                target = meorhere == MeOrHere.Me ? Context.User.Id : Context.Channel.Id;
-                await RemindInternal(target, meorhere == MeOrHere.Me, timeStr, message).ConfigureAwait(false);
+                var res = _service.Units.GroupBy(x => x.UnitType)
+                               .Aggregate(new EmbedBuilder().WithTitle(GetText("convertlist"))
+                                                            .WithColor(WizBot.OkColor),
+                                          (embed, g) => embed.AddField(efb =>
+                                                                         efb.WithName(g.Key.ToTitleCase())
+                                                                         .WithValue(String.Join(", ", g.Select(x => x.Triggers.FirstOrDefault())
+                                                                                                       .OrderBy(x => x)))));
+                await Context.Channel.EmbedAsync(res);
             }
-
             [WizBotCommand, Usage, Description, Aliases]
-            [RequireContext(ContextType.Guild)]
-            [RequireUserPermission(GuildPermission.ManageMessages)]
-            [Priority(0)]
-            public async Task Remind(ITextChannel channel, string timeStr, [Remainder] string message)
+            public async Task Convert(string origin, string target, decimal value)
             {
-                var perms = ((IGuildUser)Context.User).GetPermissions((ITextChannel)channel);
-                if (!perms.SendMessages || !perms.ReadMessages)
+                var originUnit = _service.Units.Find(x => x.Triggers.Select(y => y.ToLowerInvariant()).Contains(origin.ToLowerInvariant()));
+                var targetUnit = _service.Units.Find(x => x.Triggers.Select(y => y.ToLowerInvariant()).Contains(target.ToLowerInvariant()));
+                if (originUnit == null || targetUnit == null)
                 {
-                    await ReplyErrorLocalized("cant_read_or_send").ConfigureAwait(false);
+                    await ReplyErrorLocalized("convert_not_found", Format.Bold(origin), Format.Bold(target)).ConfigureAwait(false);
                     return;
+                }
+                if (originUnit.UnitType != targetUnit.UnitType)
+                {
+                    await ReplyErrorLocalized("convert_type_error", Format.Bold(originUnit.Triggers.First()), Format.Bold(targetUnit.Triggers.First())).ConfigureAwait(false);
+                    return;
+                }
+                decimal res;
+                if (originUnit.Triggers == targetUnit.Triggers) res = value;
+                else if (originUnit.UnitType == "temperature")
+                {
+                    //don't really care too much about efficiency, so just convert to Kelvin, then to target
+                    switch (originUnit.Triggers.First().ToUpperInvariant())
+                    {
+                        case "C":
+                            res = value + 273.15m; //celcius!
+                            break;
+                        case "F":
+                            res = (value + 459.67m) * (5m / 9m);
+                            break;
+                        default:
+                            res = value;
+                            break;
+                    }
+                    //from Kelvin to target
+                    switch (targetUnit.Triggers.First().ToUpperInvariant())
+                    {
+                        case "C":
+                            res = res - 273.15m; //celcius!
+                            break;
+                        case "F":
+                            res = res * (9m / 5m) - 459.67m;
+                            break;
+                    }
                 }
                 else
                 {
-                    var _ = RemindInternal(channel.Id, false, timeStr, message).ConfigureAwait(false);
-                }
-            }
-
-            public async Task RemindInternal(ulong targetId, bool isPrivate, string timeStr, [Remainder] string message)
-            {
-                var m = _service.Regex.Match(timeStr);
-
-                if (m.Length == 0)
-                {
-                    await ReplyErrorLocalized("remind_invalid_format").ConfigureAwait(false);
-                    return;
-                }
-
-                string output = "";
-                var namesAndValues = new Dictionary<string, int>();
-
-                foreach (var groupName in _service.Regex.GetGroupNames())
-                {
-                    if (groupName == "0") continue;
-                    int value;
-                    int.TryParse(m.Groups[groupName].Value, out value);
-
-                    if (string.IsNullOrEmpty(m.Groups[groupName].Value))
+                    if (originUnit.UnitType == "currency")
                     {
-                        namesAndValues[groupName] = 0;
-                        continue;
+                        res = (value * targetUnit.Modifier) / originUnit.Modifier;
                     }
-                    if (value < 1 ||
-                        (groupName == "months" && value > 1) ||
-                        (groupName == "weeks" && value > 4) ||
-                        (groupName == "days" && value >= 7) ||
-                        (groupName == "hours" && value > 23) ||
-                        (groupName == "minutes" && value > 59))
-                    {
-                        await Context.Channel.SendErrorAsync($"Invalid {groupName} value.").ConfigureAwait(false);
-                        return;
-                    }
-                    namesAndValues[groupName] = value;
-                    output += m.Groups[groupName].Value + " " + groupName + " ";
+                    else
+                        res = (value * originUnit.Modifier) / targetUnit.Modifier;
                 }
-                var time = DateTime.Now + new TimeSpan(30 * namesAndValues["months"] +
-                                                        7 * namesAndValues["weeks"] +
-                                                        namesAndValues["days"],
-                                                        namesAndValues["hours"],
-                                                        namesAndValues["minutes"],
-                                                        0);
+                res = Math.Round(res, 4);
 
-                var rem = new Reminder
-                {
-                    ChannelId = targetId,
-                    IsPrivate = isPrivate,
-                    When = time,
-                    Message = message,
-                    UserId = Context.User.Id,
-                    ServerId = Context.Guild.Id
-                };
-
-                using (var uow = _db.UnitOfWork)
-                {
-                    uow.Reminders.Add(rem);
-                    await uow.CompleteAsync();
-                }
-
-                try
-                {
-                    await Context.Channel.SendConfirmAsync(
-                        "⏰ " + GetText("remind",
-                            Format.Bold(!isPrivate ? $"<#{targetId}>" : Context.User.Username),
-                            Format.Bold(message.SanitizeMentions()),
-                            Format.Bold(output),
-                            time, time)).ConfigureAwait(false);
-                }
-                catch
-                {
-                    // ignored
-                }
-                await _service.StartReminder(rem);
-            }
-            
-            [WizBotCommand, Usage, Description, Aliases]
-            [OwnerOnly]
-            public async Task RemindTemplate([Remainder] string arg)
-            {
-                if (string.IsNullOrWhiteSpace(arg))
-                    return;
-
-                using (var uow = _db.UnitOfWork)
-                {
-                    uow.BotConfig.GetOrCreate().RemindMessageFormat = arg.Trim();
-                    await uow.CompleteAsync().ConfigureAwait(false);
-                }
-
-                await ReplyConfirmLocalized("remind_template").ConfigureAwait(false);
+                await Context.Channel.SendConfirmAsync(GetText("convert", value, (originUnit.Triggers.First()).SnPl(value.IsInteger() ? (int)value : 2), res, (targetUnit.Triggers.First() + "s").SnPl(res.IsInteger() ? (int)res : 2)));
             }
         }
     }
