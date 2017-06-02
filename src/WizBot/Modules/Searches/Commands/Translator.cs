@@ -2,11 +2,8 @@
 using Discord.Commands;
 using WizBot.Attributes;
 using WizBot.Extensions;
-using System;
 using System.Threading.Tasks;
-using System.Collections.Concurrent;
 using System.Linq;
-using Discord.WebSocket;
 using WizBot.Services.Searches;
 using WizBot.Services;
 

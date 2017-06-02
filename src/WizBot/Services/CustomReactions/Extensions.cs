@@ -2,7 +2,6 @@
 using Discord.WebSocket;
 using WizBot.DataStructures;
 using WizBot.Extensions;
-using WizBot.Services;
 using WizBot.Services.Database.Models;
 using System;
 using System.Collections.Generic;

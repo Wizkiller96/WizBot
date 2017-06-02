@@ -1,18 +1,13 @@
 using Discord;
 using Discord.Commands;
-using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Attributes;
 using WizBot.Extensions;
 using WizBot.Services;
 using WizBot.Services.Administration;
 using WizBot.Services.Database.Models;
-using NLog;
-using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace WizBot.Modules.Administration

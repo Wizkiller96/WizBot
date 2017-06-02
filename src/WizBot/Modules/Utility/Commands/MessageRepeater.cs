@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Discord.WebSocket;
-using WizBot.Modules.Utility.Models;
+using WizBot.Services.Utility;
 
 namespace WizBot.Modules.Utility
 {
@@ -20,11 +20,11 @@ namespace WizBot.Modules.Utility
         [Group]
         public class RepeatCommands : WizBotSubmodule
         {
-            private readonly UtilityService _service;
+            private readonly MessageRepeaterService _service;
             private readonly DiscordShardedClient _client;
             private readonly DbHandler _db;
 
-            public RepeatCommands(UtilityService service, DiscordShardedClient client, DbHandler db)
+            public RepeatCommands(MessageRepeaterService service, DiscordShardedClient client, DbHandler db)
             {
                 _service = service;
                 _client = client;
@@ -70,7 +70,7 @@ namespace WizBot.Modules.Utility
                 if (index < 1)
                     return;
                 index -= 1;
-
+                
                 if (!_service.Repeaters.TryGetValue(Context.Guild.Id, out var rep))
                     return;
 
@@ -132,9 +132,9 @@ namespace WizBot.Modules.Utility
                     await uow.CompleteAsync().ConfigureAwait(false);
                 }
 
-                var rep = new RepeatRunner(_client, toAdd, (ITextChannel)Context.Channel);
+                var rep = new RepeatRunner(_client, toAdd, (ITextChannel) Context.Channel);
 
-                _service.Repeaters.AddOrUpdate(Context.Guild.Id, new ConcurrentQueue<RepeatRunner>(new[] { rep }), (key, old) =>
+                _service.Repeaters.AddOrUpdate(Context.Guild.Id, new ConcurrentQueue<RepeatRunner>(new[] {rep}), (key, old) =>
                 {
                     old.Enqueue(rep);
                     return old;

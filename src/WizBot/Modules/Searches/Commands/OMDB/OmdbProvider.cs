@@ -1,5 +1,4 @@
 ﻿using Discord;
-using Discord.API;
 using WizBot.Extensions;
 using WizBot.Services;
 using Newtonsoft.Json;

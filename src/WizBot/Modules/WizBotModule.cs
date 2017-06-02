@@ -3,7 +3,6 @@ using Discord.Commands;
 using WizBot.Extensions;
 using WizBot.Services;
 using NLog;
-using System;
 using System.Globalization;
 using System.Threading.Tasks;
 

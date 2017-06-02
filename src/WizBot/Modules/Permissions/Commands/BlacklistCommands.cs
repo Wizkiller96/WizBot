@@ -1,14 +1,13 @@
 ﻿using Discord;
 using Discord.Commands;
 using WizBot.Attributes;
-using WizBot.Extensions;
 using WizBot.Modules.Games.Trivia;
 using WizBot.Services;
 using WizBot.Services.Database.Models;
+using WizBot.Services.Permissions;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
-using static WizBot.Services.Database.Models.BlacklistItem;
 
 namespace WizBot.Modules.Permissions
 {
@@ -23,19 +22,19 @@ namespace WizBot.Modules.Permissions
         [Group]
         public class BlacklistCommands : WizBotSubmodule
         {
-            public static ConcurrentHashSet<ulong> BlacklistedUsers { get; set; }
-            public static ConcurrentHashSet<ulong> BlacklistedGuilds { get; set; }
-            public static ConcurrentHashSet<ulong> BlacklistedChannels { get; set; }
+            private readonly BlacklistService _bs;
+            private readonly DbHandler _db;
+            private readonly IBotCredentials _creds;
 
-            static BlacklistCommands()
+            private ConcurrentHashSet<ulong> BlacklistedUsers => _bs.BlacklistedUsers;
+            private ConcurrentHashSet<ulong> BlacklistedGuilds => _bs.BlacklistedGuilds;
+            private ConcurrentHashSet<ulong> BlacklistedChannels => _bs.BlacklistedChannels;
+
+            public BlacklistCommands(BlacklistService bs, DbHandler db, IBotCredentials creds)
             {
-                using (var uow = DbHandler.UnitOfWork())
-                {
-                    var blacklist = uow.BotConfig.GetOrCreate().Blacklist;
-                    BlacklistedUsers = new ConcurrentHashSet<ulong>(blacklist.Where(bi => bi.Type == BlacklistType.User).Select(c => c.ItemId));
-                    BlacklistedGuilds = new ConcurrentHashSet<ulong>(blacklist.Where(bi => bi.Type == BlacklistType.Server).Select(c => c.ItemId));
-                    BlacklistedChannels = new ConcurrentHashSet<ulong>(blacklist.Where(bi => bi.Type == BlacklistType.Channel).Select(c => c.ItemId));
-                }
+                _bs = bs;
+                _db = db;
+                _creds = creds;
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -65,10 +64,10 @@ namespace WizBot.Modules.Permissions
 
             private async Task Blacklist(AddRemove action, ulong id, BlacklistType type)
             {
-                if (action == AddRemove.Add && WizBot.Credentials.OwnerIds.Contains(id))
+                if(action == AddRemove.Add && _creds.OwnerIds.Contains(id))
                     return;
 
-                using (var uow = DbHandler.UnitOfWork())
+                using (var uow = _db.UnitOfWork)
                 {
                     if (action == AddRemove.Add)
                     {
@@ -85,7 +84,7 @@ namespace WizBot.Modules.Permissions
                         else if (type == BlacklistType.User)
                         {
                             BlacklistedUsers.Add(id);
-                        }
+                        }                        
                     }
                     else
                     {
@@ -131,7 +130,7 @@ namespace WizBot.Modules.Permissions
 
                 }
 
-                if (action == AddRemove.Add)
+                if(action == AddRemove.Add)
                     await ReplyConfirmLocalized("blacklisted", Format.Code(type.ToString()), Format.Code(id.ToString())).ConfigureAwait(false);
                 else
                     await ReplyConfirmLocalized("unblacklisted", Format.Code(type.ToString()), Format.Code(id.ToString())).ConfigureAwait(false);

@@ -1,14 +1,9 @@
 ﻿using Discord.Commands;
 using WizBot.Attributes;
 using WizBot.Extensions;
-using WizBot.Modules.Searches.Models;
 using WizBot.Services;
 using WizBot.Services.Searches;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using NLog;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;

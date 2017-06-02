@@ -4,16 +4,7 @@ using WizBot.Services;
 using System.Threading.Tasks;
 using WizBot.Attributes;
 using System;
-using System.Collections.Concurrent;
-using System.Linq;
-using System.Collections.Immutable;
-using System.IO;
-using System.Threading;
 using WizBot.Extensions;
-using System.Net.Http;
-using ImageSharp;
-using WizBot.DataStructures;
-using NLog;
 using WizBot.Services.Games;
 
 namespace WizBot.Modules.Games

@@ -1,4 +1,5 @@
 ﻿using Discord.Commands;
+using WizBot.Services.CustomReactions;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,12 +16,12 @@ namespace WizBot.TypeReaders
         public override Task<TypeReaderResult> Read(ICommandContext context, string input)
         {
             input = input.ToUpperInvariant();
-            if (!input.StartsWith(NadekoBot.Prefix.ToUpperInvariant()))
+            if (!input.StartsWith(WizBot.Prefix.ToUpperInvariant()))
                 return Task.FromResult(TypeReaderResult.FromError(CommandError.ParseFailed, "No such command found."));
 
-            input = input.Substring(NadekoBot.Prefix.Length);
-            
-            var cmd = _cmds.Commands.FirstOrDefault(c =>
+            input = input.Substring(WizBot.Prefix.Length);
+
+            var cmd = _cmds.Commands.FirstOrDefault(c => 
                 c.Aliases.Select(a => a.ToUpperInvariant()).Contains(input));
             if (cmd == null)
                 return Task.FromResult(TypeReaderResult.FromError(CommandError.ParseFailed, "No such command found."));
@@ -29,37 +30,43 @@ namespace WizBot.TypeReaders
         }
     }
 
-    //public class CommandOrCrTypeReader : CommandTypeReader
-    //{
-    //    public override async Task<TypeReaderResult> Read(ICommandContext context, string input)
-    //    {
-    //        input = input.ToUpperInvariant();
+    public class CommandOrCrTypeReader : CommandTypeReader
+    {
+        private readonly CustomReactionsService _crs;
 
-    //        if (CustomReactions.GlobalReactions.Any(x => x.Trigger.ToUpperInvariant() == input))
-    //        {
-    //            return TypeReaderResult.FromSuccess(new CommandOrCrInfo(input));
-    //        }
-    //        var guild = context.Guild;
-    //        if (guild != null)
-    //        {
-    //            CustomReaction[] crs;
-    //            if (CustomReactions.GuildReactions.TryGetValue(guild.Id, out crs))
-    //            {
-    //                if (crs.Any(x => x.Trigger.ToUpperInvariant() == input))
-    //                {
-    //                    return TypeReaderResult.FromSuccess(new CommandOrCrInfo(input));
-    //                }
-    //            }
-    //        }
+        public CommandOrCrTypeReader(CustomReactionsService crs, CommandService cmds) : base(cmds)
+        {
+            _crs = crs;
+        }
 
-    //        var cmd = await base.Read(context, input);
-    //        if (cmd.IsSuccess)
-    //        {
-    //            return TypeReaderResult.FromSuccess(new CommandOrCrInfo(((CommandInfo)cmd.Values.First().Value).Aliases.First()));
-    //        }
-    //        return TypeReaderResult.FromError(CommandError.ParseFailed, "No such command or cr found.");
-    //    }
-    //}
+        public override async Task<TypeReaderResult> Read(ICommandContext context, string input)
+        {
+            input = input.ToUpperInvariant();
+
+            if (_crs.GlobalReactions.Any(x => x.Trigger.ToUpperInvariant() == input))
+            {
+                return TypeReaderResult.FromSuccess(new CommandOrCrInfo(input));
+            }
+            var guild = context.Guild;
+            if (guild != null)
+            {
+                if (_crs.GuildReactions.TryGetValue(guild.Id, out var crs))
+                {
+                    if (crs.Concat(_crs.GlobalReactions).Any(x => x.Trigger.ToUpperInvariant() == input))
+                    {
+                        return TypeReaderResult.FromSuccess(new CommandOrCrInfo(input));
+                    }
+                }
+            }
+
+            var cmd = await base.Read(context, input);
+            if (cmd.IsSuccess)
+            {
+                return TypeReaderResult.FromSuccess(new CommandOrCrInfo(((CommandInfo)cmd.Values.First().Value).Aliases.First()));
+            }
+            return TypeReaderResult.FromError(CommandError.ParseFailed, "No such command or cr found.");
+        }
+    }
 
     public class CommandOrCrInfo
     {

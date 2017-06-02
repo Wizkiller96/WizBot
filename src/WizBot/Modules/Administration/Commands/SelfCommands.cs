@@ -12,9 +12,6 @@ using Discord.WebSocket;
 using WizBot.Services;
 using WizBot.Services.Database.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Immutable;
-using WizBot.DataStructures;
-using NLog;
 using WizBot.Services.Administration;
 
 namespace WizBot.Modules.Administration

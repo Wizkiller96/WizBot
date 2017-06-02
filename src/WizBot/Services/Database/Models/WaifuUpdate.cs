@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WizBot.Services.Database.Models
+﻿namespace WizBot.Services.Database.Models
 {
     public class WaifuUpdate : DbEntity
     {

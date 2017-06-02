@@ -1,17 +1,12 @@
 ﻿using Discord;
 using Discord.Commands;
-using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Attributes;
 using WizBot.Extensions;
 using WizBot.Services;
 using WizBot.Services.Database.Models;
 using WizBot.Services.Games;
-using NLog;
-using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -81,9 +76,7 @@ namespace WizBot.Modules.Games
 
                 var imgData = _games.GetRandomCurrencyImage();
 
-                //todo upload all currency images to transfer.sh and use that one as cdn
-                //and then 
-
+                //todo 81 upload all currency images to transfer.sh and use that one as cdn
                 var msgToSend = GetText("planted",
                     Format.Bold(Context.User.ToString()),
                     amount + _bc.CurrencySign,

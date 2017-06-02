@@ -1,16 +1,6 @@
-﻿using Discord;
-using Discord.Commands;
-using WizBot.Attributes;
-using WizBot.Extensions;
-using WizBot.Services;
-using WizBot.Services.Database;
-using WizBot.Services.Database.Models;
-using System;
+﻿using Discord.Commands;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WizBot.Modules.Permissions
 {
@@ -67,7 +57,7 @@ namespace WizBot.Modules.Permissions
             //        Cost = cost
             //    };
 
-            //    using (var uow = DbHandler.UnitOfWork())
+            //    using (var uow = _db.UnitOfWork)
             //    {
             //        var bc = uow.BotConfig.GetOrCreate();
                     

@@ -15,10 +15,11 @@ using ImageSharp;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Discord.WebSocket;
-using WizBot.Services;
 using System.Diagnostics;
+using WizBot.Modules;
+using Color = Discord.Color;
 
-namespace WizBot.Modules.Utility
+namespace WizBot.Services.Utility
 {
     public partial class Utility : WizBotTopLevelModule
     {
@@ -164,7 +165,7 @@ namespace WizBot.Modules.Utility
                 try
                 {
                     var color = hexColors[i];
-                    await role.ModifyAsync(r => r.Color = new Discord.Color(color.R, color.G, color.B)).ConfigureAwait(false);
+                    await role.ModifyAsync(r => r.Color = new Color(color.R, color.G, color.B)).ConfigureAwait(false);
                     ++i;
                     if (i >= hexColors.Length)
                         i = 0;

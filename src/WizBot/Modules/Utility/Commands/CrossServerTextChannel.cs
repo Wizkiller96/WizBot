@@ -3,9 +3,8 @@ using Discord.Commands;
 using WizBot.Attributes;
 using WizBot.Extensions;
 using WizBot.Services;
-using System;
+using WizBot.Services.Utility;
 using System.Collections.Concurrent;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace WizBot.Modules.Utility

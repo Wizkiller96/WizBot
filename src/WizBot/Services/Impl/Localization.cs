@@ -1,13 +1,8 @@
 ﻿using Discord;
-using Discord.Commands;
-using WizBot.Extensions;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Threading.Tasks;
-using System;
-using WizBot.Services.Database;
 using NLog;
 
 namespace WizBot.Services

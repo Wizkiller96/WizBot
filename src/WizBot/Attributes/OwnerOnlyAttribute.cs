@@ -1,8 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Discord.Commands;
 using System;
-using WizBot.Services.Impl;
-using Discord;
 using WizBot.Services;
 
 namespace WizBot.Attributes

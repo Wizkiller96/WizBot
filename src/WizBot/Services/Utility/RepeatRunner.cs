@@ -1,18 +1,14 @@
 ﻿using Discord;
 using Discord.Net;
 using Discord.WebSocket;
-using Microsoft.Extensions.Logging;
 using WizBot.Extensions;
 using WizBot.Services.Database.Models;
 using NLog;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace WizBot.Modules.Utility.Models
+namespace WizBot.Services.Utility
 {
     public class RepeatRunner
     {

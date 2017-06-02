@@ -54,7 +54,7 @@ For a specific command help, use `{1}h CommandName` (for example {1}h !!q)
 <http://wizbot.readthedocs.io/en/latest/Commands%20List/>
 
 
-WizBot Community Server: N/A";
+WizNet Community Server: N/A";
 
         public int MigrationVersion { get; set; }
 
@@ -104,13 +104,13 @@ WizBot Community Server: N/A";
     {
         public ulong ItemId { get; set; }
         public BlacklistType Type { get; set; }
+    }
 
-        public enum BlacklistType
-        {
-            Server,
-            Channel,
-            User
-        }
+    public enum BlacklistType
+    {
+        Server,
+        Channel,
+        User
     }
 
     public class EightBallResponse : DbEntity

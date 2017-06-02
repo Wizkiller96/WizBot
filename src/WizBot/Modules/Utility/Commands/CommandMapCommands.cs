@@ -6,6 +6,7 @@ using WizBot.Attributes;
 using WizBot.Extensions;
 using WizBot.Services;
 using WizBot.Services.Database.Models;
+using WizBot.Services.Utility;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;

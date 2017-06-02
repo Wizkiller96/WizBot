@@ -1,12 +1,10 @@
 ﻿using Discord;
-using Discord.Commands;
 using Discord.WebSocket;
 using WizBot.Services.Database.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace WizBot.Modules.Permissions
+namespace WizBot.Services.Permissions
 {
     public static class PermissionExtensions
     {
@@ -118,7 +116,7 @@ namespace WizBot.Modules.Permissions
                     break;
             }
 
-            return WizBot.ModulePrefixes[typeof(Permissions).Name] + com;
+            return WizBot.Prefix + com;
         }
 
         public static IEnumerable<Permission> AsEnumerable(this Permission perm)

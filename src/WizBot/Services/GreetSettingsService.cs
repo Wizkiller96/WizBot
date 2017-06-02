@@ -2,14 +2,12 @@
 using Discord.WebSocket;
 using WizBot.DataStructures;
 using WizBot.Extensions;
-using WizBot.Services;
 using WizBot.Services.Database.Models;
 using NLog;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace WizBot.Services

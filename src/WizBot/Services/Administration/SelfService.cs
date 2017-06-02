@@ -1,9 +1,4 @@
 using WizBot.Services.Database.Models;
-using NLog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace WizBot.Services.Administration
@@ -12,7 +7,7 @@ namespace WizBot.Services.Administration
     {
         public volatile bool ForwardDMs;
         public volatile bool ForwardDMsToAllOwners;
-        
+
         private readonly WizBot _bot;
         private readonly CommandHandler _cmdHandler;
         private readonly DbHandler _db;

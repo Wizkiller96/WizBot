@@ -1,6 +1,4 @@
 using Newtonsoft.Json;
-using System;
-using System.Text.RegularExpressions;
 
 namespace WizBot.Modules.Searches.Models
 {

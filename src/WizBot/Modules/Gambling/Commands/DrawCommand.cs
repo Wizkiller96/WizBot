@@ -1,6 +1,5 @@
 ﻿using Discord;
 using Discord.Commands;
-using ImageSharp;
 using WizBot.Attributes;
 using WizBot.Extensions;
 using WizBot.Modules.Gambling.Models;

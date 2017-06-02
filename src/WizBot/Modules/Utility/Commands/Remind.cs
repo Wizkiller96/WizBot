@@ -4,12 +4,10 @@ using WizBot.Attributes;
 using WizBot.Extensions;
 using WizBot.Services;
 using WizBot.Services.Database.Models;
-using NLog;
+using WizBot.Services.Utility;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace WizBot.Modules.Utility
@@ -19,10 +17,10 @@ namespace WizBot.Modules.Utility
         [Group]
         public class RemindCommands : WizBotSubmodule
         {
-            private readonly UtilityService _service;
+            private readonly RemindService _service;
             private readonly DbHandler _db;
 
-            public RemindCommands(UtilityService service, DbHandler db)
+            public RemindCommands(RemindService service, DbHandler db)
             {
                 _service = service;
                 _db = db;
@@ -30,7 +28,7 @@ namespace WizBot.Modules.Utility
 
             public enum MeOrHere
             {
-                Me, Here
+                Me,Here
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -63,7 +61,7 @@ namespace WizBot.Modules.Utility
 
             public async Task RemindInternal(ulong targetId, bool isPrivate, string timeStr, [Remainder] string message)
             {
-                var m = _service.Remind.Regex.Match(timeStr);
+                var m = _service.Regex.Match(timeStr);
 
                 if (m.Length == 0)
                 {
@@ -74,7 +72,7 @@ namespace WizBot.Modules.Utility
                 string output = "";
                 var namesAndValues = new Dictionary<string, int>();
 
-                foreach (var groupName in _service.Remind.Regex.GetGroupNames())
+                foreach (var groupName in _service.Regex.GetGroupNames())
                 {
                     if (groupName == "0") continue;
                     int value;
@@ -134,9 +132,9 @@ namespace WizBot.Modules.Utility
                 {
                     // ignored
                 }
-                await _service.Remind.StartReminder(rem);
+                await _service.StartReminder(rem);
             }
-
+            
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
             public async Task RemindTemplate([Remainder] string arg)

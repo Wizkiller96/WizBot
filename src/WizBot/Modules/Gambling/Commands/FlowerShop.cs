@@ -6,7 +6,6 @@ using WizBot.Attributes;
 using WizBot.DataStructures;
 using WizBot.Extensions;
 using WizBot.Services;
-using WizBot.Services.Database;
 using WizBot.Services.Database.Models;
 using System;
 using System.Collections.Generic;
