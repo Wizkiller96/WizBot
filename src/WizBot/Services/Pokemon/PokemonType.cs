@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace WizBot.Modules.Pokemon
+namespace WizBot.Services.Pokemon
 {
     public class PokemonType
     {

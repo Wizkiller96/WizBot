@@ -8,7 +8,6 @@ using WizBot.Attributes;
 using WizBot.Services;
 using WizBot.Services.Database.Models;
 using Newtonsoft.Json;
-using NLog;
 using WizBot.Modules.Administration.Commands.Migration;
 using System.Collections.Concurrent;
 using WizBot.Extensions;
@@ -23,12 +22,11 @@ namespace WizBot.Modules.Administration
         public class Migration : WizBotSubmodule
         {
             private const int CURRENT_VERSION = 1;
+            private readonly DbHandler _db;
 
-            private new static readonly Logger _log;
-
-            static Migration()
+            public Migration(DbHandler db)
             {
-                _log = LogManager.GetCurrentClassLogger();
+                _db = db;
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -36,7 +34,7 @@ namespace WizBot.Modules.Administration
             public async Task MigrateData()
             {
                 var version = 0;
-                using (var uow = DbHandler.UnitOfWork())
+                using (var uow = _db.UnitOfWork)
                 {
                     version = uow.BotConfig.GetOrCreate().MigrationVersion;
                 }
@@ -62,7 +60,7 @@ namespace WizBot.Modules.Administration
 
             private void Migrate0_9To1_0()
             {
-                using (var uow = DbHandler.UnitOfWork())
+                using (var uow = _db.UnitOfWork)
                 {
                     var botConfig = uow.BotConfig.GetOrCreate();
                     MigrateConfig0_9(uow, botConfig);

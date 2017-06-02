@@ -18,6 +18,9 @@ namespace WizBot.Extensions
 {
     public static class Extensions
     {
+        public static bool IsAuthor(this IMessage msg, IDiscordClient client) =>
+            msg.Author?.Id == client.CurrentUser.Id;
+
         private static readonly IEmote arrow_left = Emote.Parse("⬅");
         private static readonly IEmote arrow_right = Emote.Parse("➡");
 

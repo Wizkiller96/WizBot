@@ -12,8 +12,7 @@ namespace WizBot.Services.Administration
     {
         public volatile bool ForwardDMs;
         public volatile bool ForwardDMsToAllOwners;
-
-        private readonly Logger _log;
+        
         private readonly WizBot _bot;
         private readonly CommandHandler _cmdHandler;
         private readonly DbHandler _db;

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace WizBot.Modules.Pokemon
+namespace WizBot.Services.Pokemon
 {
-    class PokeStats
+    public class PokeStats
     {
         //Health left
         public int Hp { get; set; } = 500;

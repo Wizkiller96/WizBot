@@ -18,7 +18,7 @@ namespace WizBot.Modules.Administration
         {
             //Română, România
             //Bahasa Indonesia, Indonesia
-            private ImmutableDictionary<string, string> supportedLocales { get; } = new Dictionary<string, string>()
+            private static ImmutableDictionary<string, string> supportedLocales { get; } = new Dictionary<string, string>()
             {
                 //{"ar", "العربية" },
                 {"zh-TW", "繁體中文, 台灣" },
@@ -46,7 +46,7 @@ namespace WizBot.Modules.Administration
             [RequireContext(ContextType.Guild)]
             public async Task LanguageSet()
             {
-                var cul = WizBot.Localization.GetCultureInfo(Context.Guild);
+                var cul = _localization.GetCultureInfo(Context.Guild);
                 await ReplyConfirmLocalized("lang_set_show", Format.Bold(cul.ToString()), Format.Bold(cul.NativeName))
                     .ConfigureAwait(false);
             }
@@ -61,13 +61,13 @@ namespace WizBot.Modules.Administration
                     CultureInfo ci;
                     if (name.Trim().ToLowerInvariant() == "default")
                     {
-                        WizBot.Localization.RemoveGuildCulture(Context.Guild);
-                        ci = WizBot.Localization.DefaultCultureInfo;
+                        _localization.RemoveGuildCulture(Context.Guild);
+                        ci = _localization.DefaultCultureInfo;
                     }
                     else
                     {
                         ci = new CultureInfo(name);
-                        WizBot.Localization.SetGuildCulture(Context.Guild, ci);
+                        _localization.SetGuildCulture(Context.Guild, ci);
                     }
 
                     await ReplyConfirmLocalized("lang_set", Format.Bold(ci.ToString()), Format.Bold(ci.NativeName)).ConfigureAwait(false);
@@ -81,7 +81,7 @@ namespace WizBot.Modules.Administration
             [WizBotCommand, Usage, Description, Aliases]
             public async Task LanguageSetDefault()
             {
-                var cul = WizBot.Localization.DefaultCultureInfo;
+                var cul = _localization.DefaultCultureInfo;
                 await ReplyConfirmLocalized("lang_set_bot_show", cul, cul.NativeName).ConfigureAwait(false);
             }
 
@@ -94,13 +94,13 @@ namespace WizBot.Modules.Administration
                     CultureInfo ci;
                     if (name.Trim().ToLowerInvariant() == "default")
                     {
-                        WizBot.Localization.ResetDefaultCulture();
-                        ci = WizBot.Localization.DefaultCultureInfo;
+                        _localization.ResetDefaultCulture();
+                        ci = _localization.DefaultCultureInfo;
                     }
                     else
                     {
                         ci = new CultureInfo(name);
-                        WizBot.Localization.SetDefaultCulture(ci);
+                        _localization.SetDefaultCulture(ci);
                     }
                     await ReplyConfirmLocalized("lang_set_bot", Format.Bold(ci.ToString()), Format.Bold(ci.NativeName)).ConfigureAwait(false);
                 }
