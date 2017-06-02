@@ -11,8 +11,8 @@ RUN echo "deb http://www.deb-multimedia.org jessie main non-free" | tee /etc/apt
 	&& apt-get install -y git libopus0 opus-tools libopus-dev libsodium-dev ffmpeg
 
 #Download and install stable version of WizBot
-RUN curl -L https://github.com/Wizkiller9/WizBot-BashScript/raw/master/wizbot_installer_latest.sh | sh \
-	&& curl -L https://github.com/Kwoth/WizBot-BashScript/raw/master/wizbot_autorestart.sh > wizbot.sh \
+RUN curl -L https://github.com/Wizkiller96/WizBot-BashScript/raw/master/wizbot_installer_latest.sh | sh \
+	&& curl -L https://github.com/Wizkiller96/WizBot-BashScript/raw/master/wizbot_autorestart.sh > wizbot.sh \
 	&& chmod 755 wizbot.sh
 
 VOLUME ["/opt"]
