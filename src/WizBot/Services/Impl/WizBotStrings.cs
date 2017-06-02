@@ -61,7 +61,7 @@ namespace WizBot.Services
         }
 
         public string GetText(string key, ulong guildId, string lowerModuleTypeName, params object[] replacements) =>
-            GetText(key, _localization.GetCultureInfo(guildId), lowerModuleTypeName);
+            GetText(key, _localization.GetCultureInfo(guildId), lowerModuleTypeName, replacements);
 
         public string GetText(string key, CultureInfo cultureInfo, string lowerModuleTypeName)
         {

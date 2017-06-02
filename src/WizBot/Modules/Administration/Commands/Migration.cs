@@ -22,9 +22,9 @@ namespace WizBot.Modules.Administration
         public class Migration : WizBotSubmodule
         {
             private const int CURRENT_VERSION = 1;
-            private readonly DbHandler _db;
+            private readonly DbService _db;
 
-            public Migration(DbHandler db)
+            public Migration(DbService db)
             {
                 _db = db;
             }

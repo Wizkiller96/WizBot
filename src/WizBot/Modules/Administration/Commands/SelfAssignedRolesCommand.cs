@@ -18,9 +18,9 @@ namespace WizBot.Modules.Administration
         [Group]
         public class SelfAssignedRolesCommands : WizBotSubmodule
         {
-            private readonly DbHandler _db;
+            private readonly DbService _db;
 
-            public SelfAssignedRolesCommands(DbHandler db)
+            public SelfAssignedRolesCommands(DbService db)
             {
                 _db = db;
             }

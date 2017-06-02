@@ -1,10 +1,5 @@
-﻿using WizBot.DataStructures;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Collections.Immutable;
-using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace WizBot.Services
 {
@@ -13,8 +8,8 @@ namespace WizBot.Services
         ImmutableArray<byte> Heads { get; }
         ImmutableArray<byte> Tails { get; }
 
-        ImmutableArray<KeyValuePair<string, ImmutableArray<byte>>> Currency { get; }
-        ImmutableArray<KeyValuePair<string, ImmutableArray<byte>>> Dice { get; }
+        ImmutableArray<(string, ImmutableArray<byte>)> Currency { get; }
+        ImmutableArray<ImmutableArray<byte>> Dice { get; }
 
         ImmutableArray<byte> SlotBackground { get; }
         ImmutableArray<ImmutableArray<byte>> SlotEmojis { get; }

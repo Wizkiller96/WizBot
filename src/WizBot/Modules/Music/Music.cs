@@ -14,19 +14,21 @@ using System.Collections.Generic;
 using WizBot.Services.Database.Models;
 using System.Threading;
 using WizBot.Services.Music;
+using WizBot.DataStructures;
 
 namespace WizBot.Modules.Music
 {
+    [NoPublicBot]
     public class Music : WizBotTopLevelModule 
     {
         private static MusicService _music;
         private readonly DiscordShardedClient _client;
         private readonly IBotCredentials _creds;
         private readonly IGoogleApiService _google;
-        private readonly DbHandler _db;
+        private readonly DbService _db;
 
         public Music(DiscordShardedClient client, IBotCredentials creds, IGoogleApiService google,
-            DbHandler db, MusicService music)
+            DbService db, MusicService music)
         {
             _client = client;
             _creds = creds;
@@ -555,7 +557,7 @@ namespace WizBot.Modules.Music
             .WithAuthor(eab => eab.WithName(GetText("song_moved")).WithIconUrl("https://cdn.discordapp.com/attachments/155726317222887425/258605269972549642/music1.png"))
             .AddField(fb => fb.WithName(GetText("from_position")).WithValue($"#{n1}").WithIsInline(true))
             .AddField(fb => fb.WithName(GetText("to_position")).WithValue($"#{n2}").WithIsInline(true))
-            .WithColor(WizBot.OkColor);
+            .WithColor(WizBotBot.OkColor);
             await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
 
             //await channel.SendConfirmAsync($"🎵Moved {s.PrettyName} `from #{n1} to #{n2}`").ConfigureAwait(false);

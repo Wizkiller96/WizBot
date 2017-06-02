@@ -22,7 +22,7 @@ namespace WizBot.Modules.Games.Trivia
         private readonly WizBotStrings _strings;
         private readonly DiscordShardedClient _client;
         private readonly BotConfig _bc;
-        private readonly CurrencyHandler _ch;
+        private readonly CurrencyService _cs;
 
         public IGuild Guild { get; }
         public ITextChannel Channel { get; }
@@ -44,14 +44,14 @@ namespace WizBot.Modules.Games.Trivia
         public int WinRequirement { get; }
 
         public TriviaGame(WizBotStrings strings, DiscordShardedClient client, BotConfig bc,
-            CurrencyHandler ch, IGuild guild, ITextChannel channel,
+            CurrencyService cs, IGuild guild, ITextChannel channel,
             bool showHints, int winReq, bool isPokemon)
         {
             _log = LogManager.GetCurrentClassLogger();
             _strings = strings;
             _client = client;
             _bc = bc;
-            _ch = ch;
+            _cs = cs;
 
             ShowHints = showHints;
             Guild = guild;
@@ -227,7 +227,7 @@ namespace WizBot.Modules.Games.Trivia
                     }
                     var reward = _bc.TriviaCurrencyReward;
                     if (reward > 0)
-                        await _ch.AddCurrencyAsync(guildUser, "Won trivia", reward, true).ConfigureAwait(false);
+                        await _cs.AddAsync(guildUser, "Won trivia", reward, true).ConfigureAwait(false);
                     return;
                 }
 

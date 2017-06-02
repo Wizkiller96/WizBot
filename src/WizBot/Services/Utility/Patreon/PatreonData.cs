@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 
-namespace WizBot.Modules.Utility.Models
+namespace WizBot.Services.Utility.Patreon
 {
     public class PatreonData
     {

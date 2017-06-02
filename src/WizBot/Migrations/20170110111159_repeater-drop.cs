@@ -30,7 +30,7 @@ namespace WizBot.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Repeaters_ChannelId",
+                name: "IX_Repeaters_channelId",
                 table: "Repeaters",
                 column: "ChannelId",
                 unique: true);

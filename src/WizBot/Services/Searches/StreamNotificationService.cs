@@ -19,11 +19,11 @@ namespace WizBot.Services.Searches
         private bool firstStreamNotifPass { get; set; } = true;
         private readonly ConcurrentDictionary<string, StreamStatus> _cachedStatuses = new ConcurrentDictionary<string, StreamStatus>();
 
-        private readonly DbHandler _db;
+        private readonly DbService _db;
         private readonly DiscordShardedClient _client;
         private readonly WizBotStrings _strings;
 
-        public StreamNotificationService(DbHandler db, DiscordShardedClient client, WizBotStrings strings)
+        public StreamNotificationService(DbService db, DiscordShardedClient client, WizBotStrings strings)
         {
             _db = db;
             _client = client;
