@@ -14,6 +14,7 @@ using System.Collections.Immutable;
 using WizBot.DataStructures.ModuleBehaviors;
 using WizBot.Services.Database.Models;
 using WizBot.Services;
+using System.IO;
 
 namespace WizBot.Services
 {
@@ -356,8 +357,11 @@ namespace WizBot.Services
                 }
 
                 var execResult = await commands[i].ExecuteAsync(context, parseResult, serviceProvider);
-                if (execResult.Exception != null) //todo temp, to not be blind
+                if (execResult.Exception != null)
+                {
+                    File.AppendAllText($"./Command Errors {DateTime.Now:yyyy-MM-dd}.txt", execResult.Exception.ToString() + "\n\n\n\n");
                     _log.Warn(execResult.Exception);
+                }
                 return (true, null);
             }
 
