@@ -29,7 +29,7 @@ namespace WizBot.Modules.Searches
             [WizBotCommand, Usage, Description, Aliases]
             public async Task Placelist()
             {
-                await Context.Channel.SendConfirmAsync(GetText("list_of_place_tags", WizBot.Prefix), 
+                await Context.Channel.SendConfirmAsync(GetText("list_of_place_tags", Prefix), 
                     typesStr)
                              .ConfigureAwait(false);
             }

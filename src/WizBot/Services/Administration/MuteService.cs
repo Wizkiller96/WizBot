@@ -1,6 +1,7 @@
 using Discord;
 using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
+using WizBot.Extensions;
 using WizBot.Services.Database.Models;
 using NLog;
 using System;
@@ -26,16 +27,17 @@ namespace WizBot.Services.Administration
 
         private readonly Logger _log = LogManager.GetCurrentClassLogger();
         private readonly DiscordShardedClient _client;
-        private readonly DbHandler _db;
+        private readonly DbService _db;
 
-        public MuteService(DiscordShardedClient client, IEnumerable<GuildConfig> gcs, DbHandler db)
+        public MuteService(DiscordShardedClient client, IEnumerable<GuildConfig> gcs, DbService db)
         {
             _client = client;
             _db = db;
 
-            GuildMuteRoles = new ConcurrentDictionary<ulong, string>(gcs
+            GuildMuteRoles = gcs
                     .Where(c => !string.IsNullOrWhiteSpace(c.MuteRoleName))
-                    .ToDictionary(c => c.GuildId, c => c.MuteRoleName));
+                    .ToDictionary(c => c.GuildId, c => c.MuteRoleName)
+                    .ToConcurrent();
 
             MutedUsers = new ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>>(gcs.ToDictionary(
                 k => k.GuildId,

@@ -116,7 +116,7 @@ namespace WizBot.Services.Permissions
                     break;
             }
 
-            return WizBot.Prefix + com;
+            return "." + com;
         }
 
         public static IEnumerable<Permission> AsEnumerable(this Permission perm)

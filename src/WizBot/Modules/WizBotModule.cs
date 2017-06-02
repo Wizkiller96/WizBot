@@ -2,6 +2,7 @@
 using Discord.Commands;
 using WizBot.Extensions;
 using WizBot.Services;
+using WizBot.Services.Administration;
 using NLog;
 using System.Globalization;
 using System.Threading.Tasks;
@@ -12,25 +13,27 @@ namespace WizBot.Modules
     {
         protected readonly Logger _log;
         protected CultureInfo _cultureInfo;
-        public readonly string Prefix;
+        
         public readonly string ModuleTypeName;
         public readonly string LowerModuleTypeName;
         
         public WizBotStrings _strings { get; set; }
+        public CommandHandler _cmdHandler { get; set; }
         public ILocalization _localization { get; set; }
+
+        public string Prefix => _cmdHandler.GetPrefix(Context.Guild);
 
         protected WizBotTopLevelModule(bool isTopLevelModule = true)
         {
             //if it's top level module
             ModuleTypeName = isTopLevelModule ? this.GetType().Name : this.GetType().DeclaringType.Name;
             LowerModuleTypeName = ModuleTypeName.ToLowerInvariant();
-            Prefix = WizBot.Prefix;
             _log = LogManager.GetCurrentClassLogger();
         }
 
         protected override void BeforeExecute()
         {
-            _cultureInfo = _localization.GetCultureInfo(Context.Guild?.Id);
+            _cultureInfo =_localization.GetCultureInfo(Context.Guild?.Id);
 
             _log.Info("Culture info is {0}", _cultureInfo);
         }
@@ -54,7 +57,7 @@ namespace WizBot.Modules
         //    var text = WizBot.ResponsesResourceManager.GetString(textKey, cultureInfo);
         //    return Context.Channel.SendErrorAsync(title, text, url, footer);
         //}
-
+        
         protected string GetText(string key) =>
             _strings.GetText(key, _cultureInfo, LowerModuleTypeName);
 
