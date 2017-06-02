@@ -6,18 +6,18 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord;
-using NadekoBot.Attributes;
-using NadekoBot.Extensions;
-using NadekoBot.Services;
+using WizBot.Attributes;
+using WizBot.Extensions;
+using WizBot.Services;
 
-namespace NadekoBot.Modules.Gambling
+namespace WizBot.Modules.Gambling
 {
     //public partial class Gambling
     //{
     //    [Group]
-    //    public class Lucky7Commands : NadekoSubmodule
+    //    public class Lucky7Commands : WizBotSubmodule
     //    {
-    //        [NadekoCommand, Usage, Description, Aliases]
+    //        [WizBotCommand, Usage, Description, Aliases]
     //        [RequireContext(ContextType.Guild)]
     //        [OwnerOnly]
     //        public async Task Lucky7Test(uint tests)
@@ -56,7 +56,7 @@ namespace NadekoBot.Modules.Gambling
     //        private static readonly ConcurrentDictionary<ulong, Lucky7Game> _games =
     //            new ConcurrentDictionary<ulong, Lucky7Game>();
 
-    //        [NadekoCommand, Usage, Description, Aliases]
+    //        [WizBotCommand, Usage, Description, Aliases]
     //        [RequireContext(ContextType.Guild)]
     //        public async Task Lucky7(int bet)
     //        {
@@ -87,7 +87,7 @@ namespace NadekoBot.Modules.Gambling
     //            S = 2
     //        }
 
-    //        [NadekoCommand, Usage, Description, Aliases]
+    //        [WizBotCommand, Usage, Description, Aliases]
     //        [RequireContext(ContextType.Guild)]
     //        public async Task Lucky7(MoveOrStay action)
     //        {
@@ -159,7 +159,7 @@ namespace NadekoBot.Modules.Gambling
     //        public int CurrentPosition { get; private set; } = -1;
     //        public int Rolled { get; private set; }
     //        public float CurrentMultiplier => Winnings[CurrentPosition];
-    //        private readonly NadekoRandom _rng = new NadekoRandom();
+    //        private readonly WizBotRandom _rng = new WizBotRandom();
 
     //        public static readonly ImmutableArray<float> Winnings = new[]
     //        {
