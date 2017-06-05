@@ -13,7 +13,6 @@ using WizBot.DataStructures;
 using System.Collections.Immutable;
 using WizBot.DataStructures.ModuleBehaviors;
 using WizBot.Services.Database.Models;
-using WizBot.Services;
 using System.IO;
 using Discord.Net;
 

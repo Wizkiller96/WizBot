@@ -25,6 +25,7 @@ using WizBot.Services.Administration;
 using WizBot.Services.Permissions;
 using WizBot.Services.Utility;
 using WizBot.Services.Help;
+using System.IO;
 
 namespace WizBot
 {
@@ -63,6 +64,7 @@ namespace WizBot
         {
             SetupLogger();
             _log = LogManager.GetCurrentClassLogger();
+            TerribleElevatedPermissionCheck();
             
             Credentials = new BotCredentials();
             Db = new DbService(Credentials);
@@ -221,6 +223,7 @@ namespace WizBot
 
         private async Task LoginAsync(string token)
         {
+            _log.Info("Logging in...");
             //connect
             await Client.LoginAsync(TokenType.Bot, token).ConfigureAwait(false);
             await Client.StartAsync().ConfigureAwait(false);
@@ -230,6 +233,7 @@ namespace WizBot
             foreach (var s in Client.Shards)
                 s.Ready += () => Task.FromResult(Interlocked.Increment(ref readyCount));
 
+            _log.Info("Waiting for all shards to connect...");
             while (readyCount < Client.Shards.Count)
                 await Task.Delay(100).ConfigureAwait(false);
         }
@@ -242,10 +246,11 @@ namespace WizBot
 
             await LoginAsync(Credentials.Token).ConfigureAwait(false);
 
+            _log.Info("Loading services...");
             AddServices();
 
             sw.Stop();
-            _log.Info("Connected in " + sw.Elapsed.TotalSeconds.ToString("F2"));
+            _log.Info($"Connected in {sw.Elapsed.TotalSeconds:F2} s");
 
             var stats = Services.GetService<IStatsService>();
             stats.Initialize();
@@ -256,6 +261,16 @@ namespace WizBot
             await commandHandler.StartHandling().ConfigureAwait(false);
 
             var _ = await CommandService.AddModulesAsync(this.GetType().GetTypeInfo().Assembly);
+
+            
+            
+            //Console.WriteLine(string.Join(", ", CommandService.Commands
+            //    .Distinct(x => x.Name + x.Module.Name)
+            //    .SelectMany(x => x.Aliases)
+            //    .GroupBy(x => x)
+            //    .Where(x => x.Count() > 1)
+            //    .Select(x => x.Key + $"({x.Count()})")));
+
 #if GLOBAL_WIZBOT
             //unload modules which are not available on the public bot
             CommandService
@@ -281,6 +296,21 @@ namespace WizBot
         {
             await RunAsync(args).ConfigureAwait(false);
             await Task.Delay(-1).ConfigureAwait(false);
+        }
+
+        private void TerribleElevatedPermissionCheck()
+        {
+            try
+            {
+                File.WriteAllText("test", "test");
+                File.Delete("test");
+            }
+            catch
+            {
+                _log.Error("You must run the application as an ADMINISTRATOR.");
+                Console.ReadKey();
+                Environment.Exit(2);
+            }
         }
 
         private static void SetupLogger()

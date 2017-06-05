@@ -1,16 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Discord.Commands;
-using Discord;
-using WizBot.Attributes;
-using WizBot.Extensions;
-using WizBot.Services;
-
-namespace WizBot.Modules.Gambling
+﻿namespace WizBot.Modules.Gambling
 {
     //public partial class Gambling
     //{

@@ -260,7 +260,7 @@ namespace WizBot.Modules.Utility
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        public async Task UserId(IGuildUser target = null)
+        public async Task UserId([Remainder] IGuildUser target = null)
         {
             var usr = target ?? Context.User;
             await ReplyConfirmLocalized("userid", "🆔", Format.Bold(usr.ToString()),

@@ -1,8 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
 using WizBot.Attributes;
-using WizBot.Services;
-using WizBot.Services.Administration;
 using System.Threading.Tasks;
 
 namespace WizBot.Modules.Administration
