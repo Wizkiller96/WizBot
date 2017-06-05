@@ -15,6 +15,7 @@ OutputDir=userdocs:projekti/WizBotInstallerOutput
 OutputBaseFilename=WizBot-setup-{#version}
 AppReadmeFile=http://wizbot.readthedocs.io/en/1.4/Commands%20List/
 ArchitecturesInstallIn64BitMode=x64
+UsePreviousSetupType=no
 
 [Files]
 ;install 
@@ -39,8 +40,12 @@ Filename: "{app}\{#sysfolder}\credentials.json"; Flags: postinstall shellexec ru
 Name: "{app}\WizBot"; Filename: "{app}\{#sysfolder}\WizBot.exe"; IconFilename: "{app}\{#sysfolder}\wizbot_icon.ico"
 Name: "{app}\credentials"; Filename: "{app}\{#sysfolder}\credentials.json" 
 Name: "{app}\data"; Filename: "{app}\{#sysfolder}\data" 
+
 ; desktop shortcut 
-Name: "{commondesktop}\WizBot"; Filename: "{app}\WizBot";
+Name: "{commondesktop}\WizBot"; Filename: "{app}\WizBot"; Tasks: desktopicon
+; desktop icon checkbox
+[Tasks]
+Name: desktopicon; Description: "Create a &desktop shortcut";
 
 [Registry]
 ;make the app run as administrator
