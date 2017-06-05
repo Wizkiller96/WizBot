@@ -302,7 +302,6 @@
     "gambling_animal_race": "Animal race",
     "gambling_animal_race_failed": "Failed to start since there was not enough participants.",
     "gambling_animal_race_full": "Race is full! Starting immediately.",
-    "gambling_animal_race_no_race": "This Animal Race is full!",
     "gambling_animal_race_join": "{0} joined as a {1}",
     "gambling_animal_race_join_bet": "{0} joined as a {1} and bet {2}!",
     "gambling_animal_race_join_instr": "Type {0}jr to join the race.",
@@ -789,10 +788,11 @@
     "permissions_gmod_add": "Module {0} has been disabled on all servers.",
     "permissions_gmod_remove": "Module {0} has been enabled on all servers.",
     "permissions_lgp_none": "No blocked commands or modules.",
+    "gambling_animal_race_no_race": "This Animal Race is full!",
     "utility_cant_read_or_send": "You can't read from or send messages to that channel.",
     "utility_quotes_notfound": "No quotes found matching the quote ID specified.",
     "administration_prefix_current": "Prefix on this server is {0}",
-    "administration_prefix_new":  "Changed prefix on this server from {0} to {1}",
+    "administration_prefix_new": "Changed prefix on this server from {0} to {1}",
     "administration_defprefix_current": "Default bot prefix is {0}",
-    "administration_defprefix_new":  "Changed Default bot prefix from {0} to {1}"
+    "administration_defprefix_new": "Changed Default bot prefix from {0} to {1}"
 }
