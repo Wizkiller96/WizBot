@@ -6,6 +6,8 @@ using NLog;
 using System.Diagnostics;
 using Newtonsoft.Json;
 using System;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace WizBot.Services
 {
@@ -20,6 +22,8 @@ namespace WizBot.Services
         /// </summary>
         private readonly CultureInfo _usCultureInfo = new CultureInfo("en-US");
         private readonly ILocalization _localization;
+
+        private readonly Regex formatFinder = new Regex(@"{\d}", RegexOptions.Compiled);
 
         public WizBotStrings(ILocalization loc)
         {
@@ -42,6 +46,31 @@ namespace WizBot.Services
                 responseStrings.Count,
                 string.Join(",", responseStrings.Keys),
                 sw.Elapsed.TotalSeconds);
+
+            //improper string format checks
+            //var compareTo = responseStrings["en-us"]
+            //    .Select(x => {
+            //        return (StringKey: x.Key,Placeholders: formatFinder.Matches(x.Value).Cast<Match>().Select(y => y.Value).ToArray());
+            //    })
+            //    .ToDictionary(x => x.StringKey, x => x.Placeholders);
+
+            //var errors = responseStrings
+            //    .Select(a => (a.Key, a.Value.Select(x =>
+            //        {
+            //            if (!compareTo.ContainsKey(x.Key))
+            //                return (StringKey: x.Key, Placeholders: new HashSet<string>(), Missing: true);
+            //            var hs = new HashSet<string>(compareTo[x.Key]);
+            //            hs.SymmetricExceptWith(formatFinder.Matches(x.Value).Cast<Match>().Select(y => y.Value).ToArray());
+            //            return (StringKey: x.Key, Placeholders: hs, Missing: false);
+            //        })
+            //        .Where(x => x.Placeholders.Any() || x.Missing)))
+            //    .Where(x => x.Item2.Any());
+
+            //var str = string.Join("\n", errors.Select(x => $"------{x.Item1}------\n" +
+            //                            string.Join("\n", x.Item2.Select(y =>
+            //                                y.StringKey + ": " + (y.Missing ? "MISSING" : string.Join(", ", y.Placeholders))))));
+            //if(!string.IsNullOrWhiteSpace(str))
+            //    _log.Warn($"Improperly Formatted strings:\n{str}");
         }
 
         private string GetLocaleName(string fileName)
