@@ -791,8 +791,8 @@
     "gambling_animal_race_no_race": "Tento Závod zvířat je plný!",
     "utility_cant_read_or_send": "Nemůžeš číst z ani posílat zprávy do tohoto kanálu.",
     "utility_quotes_notfound": "Nebyl nalezen žádný citát s ID, které jsi použil.",
-    "administration_prefix_current": "",
-    "administration_prefix_new": "",
-    "administration_defprefix_current": "",
-    "administration_defprefix_new": ""
+    "administration_prefix_current": "Prefix na tomto serveru je {0}",
+    "administration_prefix_new": "Na tomto serveru byl změněn prefix z {0} na {1}",
+    "administration_defprefix_current": "Výchozí prefix bota je {0}",
+    "administration_defprefix_new": "Výchozí prefix bota byl změněn z {0} na {1}"
 }
