@@ -1,11 +1,13 @@
 #define sysfolder "system"
-#define version "1.4.1"
+#define version GetEnv('WIZBOT_INSTALL_VERSION')
 #define target "win7-x64"
 
 [Setup]
 AppName=WizBot
 AppVersion={#version}
 AppPublisher=WizNet
+AppPublisherURL=http://wizkiller96network.com
+AppCopyright=WizNet
 DefaultDirName={pf}\WizBot
 DefaultGroupName=WizBot
 UninstallDisplayIcon={app}\{#sysfolder}\wizbot_icon.ico
@@ -56,6 +58,12 @@ Root: "HKLM"; Subkey: "SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFla
 Root: "HKCU"; Subkey: "SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers"; \
     ValueType: String; ValueName: "{app}\{#sysfolder}\WizBot.exe"; ValueData: "RUNASADMIN"; \
     Flags: uninsdeletekeyifempty uninsdeletevalue;
+Root: "HKLM"; Subkey: "SOFTWARE\WizBot"; \
+    ValueType: String; ValueName: "InstallPath"; ValueData: "{app}\{#sysfolder}"; \
+    Flags: deletevalue uninsdeletekeyifempty uninsdeletevalue;
+Root: "HKLM"; Subkey: "SOFTWARE\WizBot"; \
+    ValueType: String; ValueName: "Version"; ValueData: "{#version}"; \
+    Flags: deletevalue uninsdeletekeyifempty uninsdeletevalue;
 
 [Messages]
 WelcomeLabel2=IMPORTANT! READ BELOW!%n%nIt is recommended that you CLOSE any ANTI VIRUS before continuing.%n%nYou can only update v1.4 or newer.%n%nDo not select your old WizBot folder as an install path if it's not 1.4 or newer.
