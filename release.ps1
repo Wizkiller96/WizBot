@@ -2,6 +2,9 @@ function GitHub-Release($versionNumber)
 {
     $ErrorActionPreference = "Stop"
 
+    git pull
+    git push #making sure commit id exists on remote
+
     $nl = [Environment]::NewLine
     $env:WIZBOT_INSTALL_VERSION=$versionNumber
     $gitHubApiKey = $env:GITHUB_API_KEY
