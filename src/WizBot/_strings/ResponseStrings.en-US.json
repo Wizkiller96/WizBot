@@ -66,7 +66,7 @@
     "administration_bandm": "You have been banned from {0} server.\nReason: {1}",
     "administration_banned_pl": "banned",
     "administration_banned_user": "User Banned",
-    "administration_bot_name": "Bot name changed to {0}",
+    "administration_bot_name": "Bot's name changed to {0}",
     "administration_bot_status": "Bot status changed to {0}",
     "administration_byedel_off": "Automatic deletion of bye messages has been disabled.",
     "administration_byedel_on": "Bye messages will be deleted after {0} seconds.",
@@ -794,5 +794,7 @@
     "administration_prefix_current": "Prefix on this server is {0}",
     "administration_prefix_new": "Changed prefix on this server from {0} to {1}",
     "administration_defprefix_current": "Default bot prefix is {0}",
-    "administration_defprefix_new": "Changed Default bot prefix from {0} to {1}"
+    "administration_defprefix_new": "Changed Default bot prefix from {0} to {1}",
+    "administration_bot_nick": "Bot's nickname changed to {0}",
+    "administration_user_nick": "Nickname of the user {0} changed to {1}"
 }
