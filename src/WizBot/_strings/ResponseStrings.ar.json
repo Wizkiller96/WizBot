@@ -794,5 +794,7 @@
     "administration_prefix_current": "اعدادات التحديد على هذا السيرفر {0}",
     "administration_prefix_new": "تم تغيير اعدادات التحديد على هذا السيرفر من {0} إلى {1}",
     "administration_defprefix_current": "اعدادات التحديد الافتراضي للبوت هو {0}",
-    "administration_defprefix_new": "تم تغيير اعدادات التحديد الافتراضية للبوت من {0} إلى {1}"
+    "administration_defprefix_new": "تم تغيير اعدادات التحديد الافتراضية للبوت من {0} إلى {1}",
+    "administration_bot_nick": "",
+    "administration_user_nick": ""
 }
