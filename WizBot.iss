@@ -15,7 +15,7 @@ Compression=lzma2
 SolidCompression=yes
 OutputDir=userdocs:projekti/WizBotInstallerOutput
 OutputBaseFilename=WizBot-setup-{#version}
-AppReadmeFile=http://wizbot.readthedocs.io/en/1.4/Commands%20List/
+AppReadmeFile=http://wizbot.readthedocs.io/en/latest/Commands%20List/
 ArchitecturesInstallIn64BitMode=x64
 UsePreviousSetupType=no
 DisableWelcomePage=no
@@ -35,7 +35,7 @@ Source: "src\WizBot\bin\Release\netcoreapp1.1\{#target}\publish\data\*"; DestDir
 ;Source: "readme"; DestDir: "{app}"; Flags: isreadme
 
 [Run]
-Filename: "http://wizbot.readthedocs.io/en/1.4/JSON%20Explanations/"; Flags: postinstall shellexec runasoriginaluser; Description: "Open setup guide"
+Filename: "http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/"; Flags: postinstall shellexec runasoriginaluser; Description: "Open setup guide"
 Filename: "{app}\{#sysfolder}\credentials.json"; Flags: postinstall shellexec runasoriginaluser; Description: "Open credentials file"
 
 [Icons]

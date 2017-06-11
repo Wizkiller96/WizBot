@@ -7,7 +7,7 @@
 
 ###Question 2: I want to change permissions, but it isn't working!
 ----
-**Answer:** You must have the `.permrole` (by default this is the `WizBot` role, for more details on permissions check [here](http://wizbot.readthedocs.io/en/1.4/Permissions%20System/ "Permissions"). If you have a role called `WizBot` but can't assign it it's probably the Bot Role so, just create a **New Role** called `WizBot` and assign that to yourself instead.)
+**Answer:** You must have the `.permrole` (by default this is the `WizBot` role, for more details on permissions check [here](http://wizbot.readthedocs.io/en/latest/Permissions%20System/ "Permissions"). If you have a role called `WizBot` but can't assign it it's probably the Bot Role so, just create a **New Role** called `WizBot` and assign that to yourself instead.)
 
 ###Question 3: I want to disable NSFW on my server.
 ----
@@ -27,13 +27,13 @@ If your problem or suggestion is not there, feel free to request/notify us about
 --------
 **Answer:** You can see the description and usage of certain commands by using `.h command` **i.e** `.h .sm`. 
 
-The whole list of commands can be found [here](http://wizbot.readthedocs.io/en/1.4/Commands%20List/ "Command List")
+The whole list of commands can be found [here](http://wizbot.readthedocs.io/en/latest/Commands%20List/ "Command List")
 
 ###Question 7: Music isn't working?
 ----
 **Answer:** Music is disabled on public WizBot due to large hosting costs, it will be re-enabled later in the future for donators. 
 
-**If you would like music in the meantime, you must host WizBot yourself**. Be sure you have FFMPEG installed correctly, and have followed the [guide](http://wizbot.readthedocs.io/en/1.4/guides/Windows%20Guide/#setting-up-wizbot-for-music) carefully.
+**If you would like music in the meantime, you must host WizBot yourself**. Be sure you have FFMPEG installed correctly, and have followed the [guide](http://wizbot.readthedocs.io/en/latest/guides/Windows%20Guide/#setting-up-wizbot-for-music) carefully.
 
 ###Question 8: My music is still not working/very laggy?
 ----
@@ -42,7 +42,7 @@ The whole list of commands can be found [here](http://wizbot.readthedocs.io/en/1
 
 ###Question 9: I want to change data in the database like Cherry Blossom or something else but how?
 ----
-**Answer:** Follow the [DB Guide](http://wizbot.readthedocs.io/en/1.4/JSON%20Explanations/#db-files), Open `/data/WizBot.db` using **sqlitebrowser** (or some alternative), Browse Data, select relevant table, change data, Write changes and done.
+**Answer:** Follow the [DB Guide](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/#db-files), Open `/data/WizBot.db` using **sqlitebrowser** (or some alternative), Browse Data, select relevant table, change data, Write changes and done.
 
 ###Question 10: The .greet and .bye commands doesn't work, but everything else is!
 -----
