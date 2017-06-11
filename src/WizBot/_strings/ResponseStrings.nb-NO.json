@@ -794,5 +794,7 @@
     "administration_prefix_current": "Denne serverens prefiks er {0}",
     "administration_prefix_new": "Endret prefiks fra {0} til {1}",
     "administration_defprefix_current": "Standard prefiks er {1}",
-    "administration_defprefix_new": "Endret standard prefiks fra {0} til {1}"
+    "administration_defprefix_new": "Endret standard prefiks fra {0} til {1}",
+    "administration_bot_nick": "",
+    "administration_user_nick": ""
 }
