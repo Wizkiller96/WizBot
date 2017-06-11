@@ -794,5 +794,7 @@
     "administration_prefix_current": "Prefix na tomto serveru je {0}",
     "administration_prefix_new": "Na tomto serveru byl změněn prefix z {0} na {1}",
     "administration_defprefix_current": "Výchozí prefix bota je {0}",
-    "administration_defprefix_new": "Výchozí prefix bota byl změněn z {0} na {1}"
+    "administration_defprefix_new": "Výchozí prefix bota byl změněn z {0} na {1}",
+    "administration_bot_nick": "",
+    "administration_user_nick": ""
 }
