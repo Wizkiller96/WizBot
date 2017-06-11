@@ -794,5 +794,7 @@
     "administration_prefix_current": "",
     "administration_prefix_new": "",
     "administration_defprefix_current": "",
-    "administration_defprefix_new": ""
+    "administration_defprefix_new": "",
+    "administration_bot_nick": "",
+    "administration_user_nick": ""
 }
