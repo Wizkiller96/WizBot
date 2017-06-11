@@ -1,5 +1,5 @@
 #define sysfolder "system"
-#define version GetEnv("WIZBOT_INSTALL_VERSION")
+#define version GetEnv('WIZBOT_INSTALL_VERSION')
 #define target "win7-x64"
 
 [Setup]
@@ -10,6 +10,7 @@ AppCopyright=WizNet
 DefaultDirName={pf}\WizBot
 DefaultGroupName=WizBot
 UninstallDisplayIcon={app}\{#sysfolder}\wizbot_icon.ico
+WizardImageFile=wizbot_installer.bmp
 Compression=lzma2
 SolidCompression=yes
 OutputDir=userdocs:projekti/WizBotInstallerOutput
