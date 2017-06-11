@@ -794,5 +794,7 @@
     "administration_prefix_current": "De Prefix op deze server is {0}",
     "administration_prefix_new": "De prefix op deze server is aangepast van {0} naar {1}",
     "administration_defprefix_current": "De default bot prefix is {0}",
-    "administration_defprefix_new": "Default bot prefix is aangepast van {0} naar {1}"
+    "administration_defprefix_new": "Default bot prefix is aangepast van {0} naar {1}",
+    "administration_bot_nick": "",
+    "administration_user_nick": ""
 }
