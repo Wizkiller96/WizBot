@@ -5,7 +5,8 @@
 [Setup]
 AppName=WizBot
 AppVersion={#version}
-AppPublisher=Kwoth
+AppPublisher=WizNet
+AppCopyright=WizNet
 DefaultDirName={pf}\WizBot
 DefaultGroupName=WizBot
 UninstallDisplayIcon={app}\{#sysfolder}\wizbot_icon.ico
