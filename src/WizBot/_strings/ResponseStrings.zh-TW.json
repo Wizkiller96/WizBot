@@ -794,5 +794,7 @@
     "administration_prefix_current": "指令開頭於此伺服器為 {0}",
     "administration_prefix_new": "變更此伺服器指令開頭從 {0} 至 {1}",
     "administration_defprefix_current": "預設機器人指令開頭為 {0}",
-    "administration_defprefix_new": "變更預設機器人指令開頭從 {0} 至 {1}"
+    "administration_defprefix_new": "變更預設機器人指令開頭從 {0} 至 {1}",
+    "administration_bot_nick": "",
+    "administration_user_nick": ""
 }
