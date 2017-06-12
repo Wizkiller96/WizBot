@@ -1,6 +1,6 @@
 ﻿using WizBot.Extensions;
 
-namespace WizBot.Modules.Searches.Models
+namespace WizBot.Services.Searches
 {
     public class AnimeResult
     {
