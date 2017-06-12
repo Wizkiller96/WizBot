@@ -34,6 +34,10 @@ Source: "src\WizBot\bin\Release\netcoreapp1.1\{#target}\publish\data\*"; DestDir
 ;readme   
 ;Source: "readme"; DestDir: "{app}"; Flags: isreadme
 
+[Dirs]
+Name:"{app}\{#sysfolder}\data"; Permissions: everyone-modify
+Name:"{app}\{#sysfolder}"; Permissions: everyone-modify
+
 [Run]
 Filename: "http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/"; Flags: postinstall shellexec runasoriginaluser; Description: "Open setup guide"
 Filename: "{app}\{#sysfolder}\credentials.json"; Flags: postinstall shellexec runasoriginaluser; Description: "Open credentials file"
