@@ -8,3 +8,13 @@
 - Paste your **old** `WizBot` data folder into **WizBot 1.4x+** `C:\Program Files\WizBot\system` folder.
 - If it asks you to overwrite files, it is fine to do so.
 - Next launch your **new** WizBot as the guide describes, if it is not already running.
+
+
+**If you are running Dockerised WizBot**
+ +- Shutdown your existing container **docker stop wizbot**
+ +- Move you credentials and other files to another folder
+ +- Delete your container **docker rm wizbot**
+ +- Create a new container **docker create --name=wizbot -v /wizbot/:/root/wizbot wizkiller96/wizbot:dev**
+ +- Start the container **docker start wizbot** wait for it to complain about lacking credentials
+ +- Stop the container **docker stop wizbot** open the WizBot folder and replace the crednetials, database and other files with your copies
+ +- Restart the container **docker start wizbot**
