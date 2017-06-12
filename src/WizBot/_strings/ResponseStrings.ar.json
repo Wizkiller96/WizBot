@@ -796,5 +796,7 @@
     "administration_defprefix_current": "اعدادات التحديد الافتراضي للبوت هو {0}",
     "administration_defprefix_new": "تم تغيير اعدادات التحديد الافتراضية للبوت من {0} إلى {1}",
     "administration_bot_nick": "",
-    "administration_user_nick": ""
+    "administration_user_nick": "",
+    "utility_verbose_errors_enabled": "",
+    "utility_verbose_errors_disabled": ""
 }
