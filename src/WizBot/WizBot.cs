@@ -26,6 +26,7 @@ using WizBot.Services.Permissions;
 using WizBot.Services.Utility;
 using WizBot.Services.Help;
 using System.IO;
+using WizBot.Services.Pokemon;
 
 namespace WizBot
 {
@@ -160,6 +161,10 @@ namespace WizBot
             var logCommandService = new LogCommandService(Client, Strings, AllGuildConfigs, Db, muteService, protectionService);
             #endregion
 
+            #region pokemon 
+            var pokemonService = new PokemonService();
+            #endregion
+
 
             //initialize Services
             Services = new NServiceProvider.ServiceProviderBuilder()
@@ -208,6 +213,7 @@ namespace WizBot
                     .Add(cmdcdsService)
                     .Add(filterService)
                     .Add(globalPermsService)
+                .Add<PokemonService>(pokemonService)
                 .Build();
 
             CommandHandler.AddServices(Services);
