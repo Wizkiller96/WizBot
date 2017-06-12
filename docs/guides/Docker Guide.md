@@ -8,11 +8,11 @@ Follow the respective guide for your operating system found here [Docker Engine 
 For this guide we will be using the folder /wizbot as our config root folder.
 
 ```bash
-docker create --name=wizbot -v /wizbot/data:/opt/WizBot/src/WizBot/bin/Release/netcoreapp1.0/data -v /WizBot/credentials.json:/opt/WizBot/src/WizBot/credentials.json wizkiller96/wizbot:dev
+docker create --name=wizbot -v /wizbot/:/root/wizbot wizkiller96/wizbot:dev
 ```
--If you are coming from a previous version of WizBot (the old docker) make sure your crednetials.json has been copied into this directory and is the only thing in this folder. 
+-If you are coming from a previous version of wizbot (the old docker) make sure your crednetials.json has been copied into this directory and is the only thing in this folder. 
 
--If you are making a fresh install, create your credentials.json from the following guide and palce it in the /wizbot folder [WizBot JSON Guide](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/)
+-If you are making a fresh install, create your credentials.json from the following guide and place it in the /wizbot folder [WizBot JSON Guide](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/)
 
 Next start the docker up with 
 
@@ -33,18 +33,18 @@ After a few moments you should be able to invite WizBot to your server. If you c
 Updates are handled by pulling the new layer of the Docker Container which contains a pre compiled update to WizBot.
 The following commands are required for the default options
 
-`docker pull wizkiller96/wizbot:dev`
+`docker pull wizkiller96/wizbot:latest`
 
 `docker stop wizbot; docker rm wizbot`
 
-`docker create --name=wizbot -v /wizbot/data:/opt/WizBot/src/WizBot/bin/Release/netcoreapp1.0/data -v /wizbot/credentials.json:/opt/WizBot/src/WizBot/credentials.json wizkiller96/wizbot`
+`docker create --name=wizbot -v /wizbot/:/root/wizbot wizkiller96/wizbot:dev`
 
 `docker start wizbot`
 
 
 # Automatic Updates
 Automatic update are now handled by watchertower [WatchTower GitHub](https://github.com/CenturyLinkLabs/watchtower)
-To setup watchtower to keep wizbot up-to-date for you with the default settings use the following command
+To setup watchtower to keep WizBot up-to-date for you with the default settings use the following command
 
 ```bash
 docker run -d --name watchtower -v /var/run/docker.sock:/var/run/docker.sock centurylink/watchtower --cleanup wizbot
