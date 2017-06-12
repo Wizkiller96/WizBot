@@ -796,5 +796,7 @@
     "administration_defprefix_current": "Standard bot Präfix ist {0}",
     "administration_defprefix_new": "Standard bot Präfix wurde von {0} zu {1} geändert",
     "administration_bot_nick": "",
-    "administration_user_nick": ""
+    "administration_user_nick": "",
+    "utility_verbose_errors_enabled": "",
+    "utility_verbose_errors_disabled": ""
 }
