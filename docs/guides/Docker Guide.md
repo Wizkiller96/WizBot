@@ -8,9 +8,9 @@ Follow the respective guide for your operating system found here [Docker Engine 
 For this guide we will be using the folder /wizbot as our config root folder.
 
 ```bash
-docker create --name=wizbot -v /wizbot/:/root/wizbot wizkiller96/wizbot:dev
+docker create --name=wizbot -v /wizbot/:/root/wizbot uirel/wizbot:dev
 ```
--If you are coming from a previous version of wizbot (the old docker) make sure your crednetials.json has been copied into this directory and is the only thing in this folder. 
+-If you are coming from a previous version of WizBot (the old docker) make sure your crednetials.json has been copied into this directory and is the only thing in this folder. 
 
 -If you are making a fresh install, create your credentials.json from the following guide and place it in the /wizbot folder [WizBot JSON Guide](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/)
 
@@ -33,11 +33,11 @@ After a few moments you should be able to invite WizBot to your server. If you c
 Updates are handled by pulling the new layer of the Docker Container which contains a pre compiled update to WizBot.
 The following commands are required for the default options
 
-`docker pull wizkiller96/wizbot:latest`
+`docker pull uirel/wizbot:latest`
 
 `docker stop wizbot; docker rm wizbot`
 
-`docker create --name=wizbot -v /wizbot/:/root/wizbot wizkiller96/wizbot:dev`
+`docker create --name=wizbot -v /wizbot/:/root/wizbot uirel/wizbot:dev`
 
 `docker start wizbot`
 
