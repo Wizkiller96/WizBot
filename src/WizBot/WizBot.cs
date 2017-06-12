@@ -111,6 +111,10 @@ namespace WizBot
         {
             var soundcloudApiService = new SoundCloudApiService(Credentials);
 
+            #region help
+            var helpService = new HelpService(BotConfig, CommandHandler, Strings);
+            #endregion
+
             //module services
             //todo 90 - autodiscover, DI, and add instead of manual like this
             #region utility
@@ -120,6 +124,7 @@ namespace WizBot
             var converterService = new ConverterService(Db);
             var commandMapService = new CommandMapService(AllGuildConfigs);
             var patreonRewardsService = new PatreonRewardsService(Credentials, Db, Currency);
+            var verboseErrorsService = new VerboseErrorsService(AllGuildConfigs, Db, CommandHandler, helpService);
             #endregion
 
             #region permissions
@@ -133,12 +138,12 @@ namespace WizBot
             #region Searches
             var searchesService = new SearchesService(Client, GoogleApi, Db);
             var streamNotificationService = new StreamNotificationService(Db, Client, Strings);
+            var animeSearchService = new AnimeSearchService();
             #endregion
 
             var clashService = new ClashOfClansService(Client, Db, Localization, Strings);
             var musicService = new MusicService(GoogleApi, Strings, Localization, Db, soundcloudApiService, Credentials, AllGuildConfigs);
             var crService = new CustomReactionsService(permissionsService, Db, Client, CommandHandler);
-            var helpService = new HelpService(BotConfig);
 
             #region Games
             var gamesService = new GamesService(Client, BotConfig, AllGuildConfigs, Strings, Images, CommandHandler);
@@ -187,8 +192,10 @@ namespace WizBot
                     .Add(remindService)
                     .Add(repeaterService)
                     .Add(converterService)
+                    .Add(verboseErrorsService)
                 .Add<SearchesService>(searchesService)
                     .Add(streamNotificationService)
+                    .Add(animeSearchService)
                 .Add<ClashOfClansService>(clashService)
                 .Add<MusicService>(musicService)
                 .Add<GreetSettingsService>(greetSettingsService)
@@ -268,7 +275,6 @@ namespace WizBot
 
             var _ = await CommandService.AddModulesAsync(this.GetType().GetTypeInfo().Assembly);
 
-            
             
             //Console.WriteLine(string.Join(", ", CommandService.Commands
             //    .Distinct(x => x.Name + x.Module.Name)

@@ -1,6 +1,8 @@
 #Manually added files
 
-src/NadekoBot/Command Errors*.txt
+command_errors*.txt
+
+src/WizBot/Command Errors*.txt
 
 src/WizBot/credentials.json
 src/WizBot/data/WizBot.db

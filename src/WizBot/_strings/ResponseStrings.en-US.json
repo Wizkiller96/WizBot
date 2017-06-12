@@ -670,6 +670,8 @@
     "utility_uptime": "Uptime",
     "utility_userid": "{0} of the user {1} is {2}",
     "utility_users": "Users",
+    "utility_verbose_errors_enabled": "Incorrectly used commands will now show errors.",
+    "utility_verbose_errors_disabled": "Incorrectly used commands will no longer show errors.",
     "utility_voice_channels": "Voice channels",
     "utility_changelog_additions": "Additions:",
     "utility_changelog_additions_msg": "`1.` Added warn commands.\n`2.` Added unban command.\n`3.` The `-cmds` now splits into multiple messages if too long.\n`4.` Indonesian language added.\n`5.` Added startup commands.",
