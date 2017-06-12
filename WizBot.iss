@@ -1,5 +1,5 @@
 #define sysfolder "system"
-#define version GetEnv('WIZBOT_INSTALL_VERSION')
+#define version GetEnv("WIZBOT_INSTALL_VERSION")
 #define target "win7-x64"
 
 [Setup]
