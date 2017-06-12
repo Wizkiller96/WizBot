@@ -796,5 +796,7 @@
     "administration_defprefix_current": "표준의 봇 명령어 접두사는 {0} 입니다.",
     "administration_defprefix_new": "표준의 봇 명령어 접두사가 {0}에서 {1}(으)로 변경되었습니다.",
     "administration_bot_nick": "",
-    "administration_user_nick": ""
+    "administration_user_nick": "",
+    "utility_verbose_errors_enabled": "",
+    "utility_verbose_errors_disabled": ""
 }
