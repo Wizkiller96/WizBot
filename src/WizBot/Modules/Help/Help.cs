@@ -1,4 +1,4 @@
-﻿using Discord.Commands;
+using Discord.Commands;
 using WizBot.Extensions;
 using System.Linq;
 using Discord;
@@ -81,8 +81,15 @@ namespace WizBot.Modules.Help
 
             await ConfirmLocalized("commands_instr", Prefix).ConfigureAwait(false);
         }
+        [WizBotCommand, Usage, Description, Aliases]
+        [Priority(1)]
+        public async Task H([Remainder] string fail)
+        {
+            await ReplyErrorLocalized("command_not_found").ConfigureAwait(false);
+        }
 
         [WizBotCommand, Usage, Description, Aliases]
+        [Priority(0)]
         public async Task H([Remainder] CommandInfo com = null)
         {
             var channel = Context.Channel;
@@ -147,7 +154,7 @@ namespace WizBot.Modules.Help
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Guide()
         {
-            await ConfirmLocalized("guide", 
+            await ConfirmLocalized("guide",
                 "http://wizbot.readthedocs.io/en/latest/Commands%20List/",
                 "http://wizbot.readthedocs.io/en/latest/").ConfigureAwait(false);
         }
