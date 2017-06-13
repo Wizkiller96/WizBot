@@ -110,7 +110,7 @@ namespace WizBot.Modules.Utility
         //        }
         //    }));
         //}
-        
+
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
@@ -133,7 +133,7 @@ namespace WizBot.Modules.Utility
                 }
                 return;
             }
-            
+
             var hexColors = hexes.Select(hex =>
             {
                 try { return (ImageSharp.Color?)ImageSharp.Color.FromHex(hex.Replace("#", "")); } catch { return null; }
@@ -303,8 +303,8 @@ namespace WizBot.Modules.Utility
                 }
                 else
                 {
-                    
-                    await channel.SendConfirmAsync(GetText("roles_page", page, Format.Bold(target.ToString())), 
+
+                    await channel.SendConfirmAsync(GetText("roles_page", page, Format.Bold(target.ToString())),
                         "\n• " + string.Join("\n• ", (IEnumerable<IRole>)roles).SanitizeMentions()).ConfigureAwait(false);
                 }
             }
@@ -448,7 +448,7 @@ namespace WizBot.Modules.Utility
             if (page < 0)
                 return;
 
-            var guilds = await Task.Run(() => _client.Guilds.OrderBy(g => g.Name).Skip((page - 1) * 15).Take(15)).ConfigureAwait(false);
+            var guilds = await Task.Run(() => _client.Guilds.OrderBy(g => g.Name).Skip((page) * 15).Take(15)).ConfigureAwait(false);
 
             if (!guilds.Any())
             {
