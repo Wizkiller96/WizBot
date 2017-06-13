@@ -798,5 +798,11 @@
     "administration_bot_nick": "",
     "administration_user_nick": "",
     "utility_verbose_errors_enabled": "",
-    "utility_verbose_errors_disabled": ""
+    "utility_verbose_errors_disabled": "",
+    "administration_timezone_guild": "",
+    "administration_timezone_not_found": "",
+    "administration_timezones_available": "",
+    "music_song_not_found": "",
+    "searches_define_unknown": "",
+    "utility_repeater_initial": ""
 }
