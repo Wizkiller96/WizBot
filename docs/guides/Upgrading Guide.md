@@ -15,7 +15,7 @@
 - Shutdown your existing container **docker stop wizbot**.
 - Move you credentials and other files to another folder.
 - Delete your container **docker rm wizbot**.
-- Create a new container **docker create --name=wizbot -v /wizbot/:/root/wizbot uirel/wizbot:dev**.
+- Create a new container **docker create --name=wizbot -v /wizbot/:/root/wizbot uirel/wizbot:1.4**.
 - Start the container **docker start wizbot** wait for it to complain about lacking credentials.
-- Stop the container **docker stop wizbot** open the WizBot folder and replace the crednetials, database and other files with your copies.
+- Stop the container **docker stop wizbot** open the WizBot folder and replace the credentials, database and other files with your copies.
 - Restart the container **docker start wizbot**.
