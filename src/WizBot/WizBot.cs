@@ -1,4 +1,4 @@
-﻿using Discord;
+using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using WizBot.Services;
@@ -37,7 +37,7 @@ namespace WizBot
         /* I don't know how to make this not be static
          * and keep the convenience of .WithOkColor
          * and .WithErrorColor extensions methods.
-         * I don't want to pass botconfig every time I 
+         * I don't want to pass botconfig every time I
          * want to send a confirm or error message, so
          * I'll keep this for now */
         public static Color OkColor { get; private set; }
@@ -66,7 +66,7 @@ namespace WizBot
             SetupLogger();
             _log = LogManager.GetCurrentClassLogger();
             TerribleElevatedPermissionCheck();
-            
+
             Credentials = new BotCredentials();
             Db = new DbService(Credentials);
 
@@ -77,7 +77,7 @@ namespace WizBot
                 OkColor = new Color(Convert.ToUInt32(BotConfig.OkColor, 16));
                 ErrorColor = new Color(Convert.ToUInt32(BotConfig.ErrorColor, 16));
             }
-            
+
             Client = new DiscordShardedClient(new DiscordSocketConfig
             {
                 MessageCacheSize = 10,
@@ -120,7 +120,7 @@ namespace WizBot
             #region utility
             var crossServerTextService = new CrossServerTextService(AllGuildConfigs, Client);
             var remindService = new RemindService(Client, BotConfig, Db);
-            var repeaterService = new MessageRepeaterService(Client, AllGuildConfigs);
+            var repeaterService = new MessageRepeaterService(this, Client, AllGuildConfigs);
             var converterService = new ConverterService(Db);
             var commandMapService = new CommandMapService(AllGuildConfigs);
             var patreonRewardsService = new PatreonRewardsService(Credentials, Db, Currency);
@@ -164,9 +164,10 @@ namespace WizBot
             var gameVcService = new GameVoiceChannelService(Client, Db, AllGuildConfigs);
             var autoAssignRoleService = new AutoAssignRoleService(Client, AllGuildConfigs);
             var logCommandService = new LogCommandService(Client, Strings, AllGuildConfigs, Db, muteService, protectionService);
+            var guildTimezoneService = new GuildTimezoneService(AllGuildConfigs, Db);
             #endregion
 
-            #region pokemon 
+            #region pokemon
             var pokemonService = new PokemonService();
             #endregion
 
@@ -215,6 +216,7 @@ namespace WizBot
                     .Add(autoAssignRoleService)
                     .Add(protectionService)
                     .Add(logCommandService)
+                    .Add(guildTimezoneService)
                 .Add<PermissionService>(permissionsService)
                     .Add(blacklistService)
                     .Add(cmdcdsService)
@@ -232,6 +234,7 @@ namespace WizBot
             CommandService.AddTypeReader<ModuleInfo>(new ModuleTypeReader(CommandService));
             CommandService.AddTypeReader<ModuleOrCrInfo>(new ModuleOrCrTypeReader(CommandService));
             CommandService.AddTypeReader<IGuild>(new GuildTypeReader(Client));
+            CommandService.AddTypeReader<GuildDateTime>(new GuildTypeReader(Client));
         }
 
         private async Task LoginAsync(string token)
@@ -275,7 +278,7 @@ namespace WizBot
 
             var _ = await CommandService.AddModulesAsync(this.GetType().GetTypeInfo().Assembly);
 
-            
+
             //Console.WriteLine(string.Join(", ", CommandService.Commands
             //    .Distinct(x => x.Name + x.Module.Name)
             //    .SelectMany(x => x.Aliases)

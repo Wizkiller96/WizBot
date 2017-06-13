@@ -1,4 +1,4 @@
-﻿using Discord;
+using Discord;
 using WizBot.Attributes;
 using WizBot.Extensions;
 using WizBot.Services;
@@ -70,7 +70,7 @@ namespace WizBot.Modules.Searches
 //            public string Name { get; set; }
 //        }
 
-//        
+//
 //        private static Dictionary<string, CachedChampion> CachedChampionImages = new Dictionary<string, CachedChampion>();
 
 //        private System.Timers.Timer clearTimer { get; } = new System.Timers.Timer();
@@ -83,7 +83,7 @@ namespace WizBot.Modules.Searches
 //                try
 //                {
 //                    CachedChampionImages = CachedChampionImages
-//                        .Where(kvp => DateTime.Now - kvp.Value.AddedAt > new TimeSpan(1, 0, 0))
+//                        .Where(kvp => DateTime.UtcNow - kvp.Value.AddedAt > new TimeSpan(1, 0, 0))
 //                        .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 //                }
 //                catch { }
@@ -303,7 +303,7 @@ namespace WizBot.Modules.Searches
 //                                              smallImgSize));
 //                              }
 //                          }
-//                          var cachedChamp = new CachedChampion { AddedAt = DateTime.Now, ImageStream = img.ToStream(System.Drawing.Imaging.ImageFormat.Png), Name = name.ToLower() + "_" + resolvedRole };
+//                          var cachedChamp = new CachedChampion { AddedAt = DateTime.UtcNow, ImageStream = img.ToStream(System.Drawing.Imaging.ImageFormat.Png), Name = name.ToLower() + "_" + resolvedRole };
 //                          CachedChampionImages.Add(cachedChamp.Name, cachedChamp);
 //                          await e.Channel.SendFile(data["title"] + "_stats.png", cachedChamp.ImageStream).ConfigureAwait(false);
 //                      }

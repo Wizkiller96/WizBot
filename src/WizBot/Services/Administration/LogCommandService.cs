@@ -19,8 +19,8 @@ namespace WizBot.Services.Administration
         private readonly DiscordShardedClient _client;
         private readonly Logger _log;
 
-        private string PrettyCurrentTime => $"【{DateTime.Now:HH:mm:ss}】";
-        private string CurrentTime => $"{DateTime.Now:HH:mm:ss}";
+        private string PrettyCurrentTime => $"【{DateTime.UtcNow:HH:mm:ss}】";
+        private string CurrentTime => $"{DateTime.UtcNow:HH:mm:ss}";
 
         public ConcurrentDictionary<ulong, LogSetting> GuildLogSettings { get; }
 
@@ -31,7 +31,7 @@ namespace WizBot.Services.Administration
         private readonly MuteService _mute;
         private readonly ProtectionService _prot;
 
-        public LogCommandService(DiscordShardedClient client, WizBotStrings strings, 
+        public LogCommandService(DiscordShardedClient client, WizBotStrings strings,
             IEnumerable<GuildConfig> gcs, DbService db, MuteService mute, ProtectionService prot)
         {
             _client = client;

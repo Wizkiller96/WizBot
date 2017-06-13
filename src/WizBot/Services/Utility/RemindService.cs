@@ -58,7 +58,7 @@ namespace WizBot.Services.Utility
         public async Task StartReminder(Reminder r)
         {
             var t = cancelAllToken;
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
 
             var time = r.When - now;
 

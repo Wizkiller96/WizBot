@@ -33,7 +33,7 @@ namespace WizBot.Services.Games
 
         public List<TypingArticle> TypingArticles { get; } = new List<TypingArticle>();
 
-        public GamesService(DiscordShardedClient client, BotConfig bc, IEnumerable<GuildConfig> gcs, 
+        public GamesService(DiscordShardedClient client, BotConfig bc, IEnumerable<GuildConfig> gcs,
             WizBotStrings strings, IImagesService images, CommandHandler cmdHandler)
         {
             _bc = bc;
@@ -87,7 +87,7 @@ namespace WizBot.Services.Games
         public ConcurrentDictionary<ulong, DateTime> LastGenerations { get; } = new ConcurrentDictionary<ulong, DateTime>();
 
         private ConcurrentDictionary<ulong, object> _locks { get; } = new ConcurrentDictionary<ulong, object>();
-        
+
         public (string Name, ImmutableArray<byte> Data) GetRandomCurrencyImage()
         {
             var rng = new WizBotRandom();
@@ -109,17 +109,17 @@ namespace WizBot.Services.Games
 
             if (!GenerationChannels.Contains(channel.Id))
                 return;
-            
+
             try
             {
                 var lastGeneration = LastGenerations.GetOrAdd(channel.Id, DateTime.MinValue);
                 var rng = new WizBotRandom();
 
-                if (DateTime.Now - TimeSpan.FromSeconds(_bc.CurrencyGenerationCooldown) < lastGeneration) //recently generated in this channel, don't generate again
+                if (DateTime.UtcNow - TimeSpan.FromSeconds(_bc.CurrencyGenerationCooldown) < lastGeneration) //recently generated in this channel, don't generate again
                     return;
 
                 var num = rng.Next(1, 101) + _bc.CurrencyGenerationChance * 100;
-                if (num > 100 && LastGenerations.TryUpdate(channel.Id, DateTime.Now, lastGeneration))
+                if (num > 100 && LastGenerations.TryUpdate(channel.Id, DateTime.UtcNow, lastGeneration))
                 {
                     var dropAmount = _bc.CurrencyDropAmount;
 

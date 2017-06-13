@@ -9,6 +9,7 @@ using WizBot.Services;
 using WizBot.Attributes;
 using WizBot.Services.Database.Models;
 using WizBot.Services.Administration;
+using Discord.WebSocket;
 
 namespace WizBot.Modules.Administration
 {
@@ -127,7 +128,7 @@ namespace WizBot.Modules.Administration
             var guser = (IGuildUser)Context.User;
 
             var userRoles = user.GetRoles();
-            if (guser.Id != Context.Guild.OwnerId && 
+            if (guser.Id != Context.Guild.OwnerId &&
                 (user.Id == Context.Guild.OwnerId || guser.GetRoles().Max(x => x.Position) <= userRoles.Max(x => x.Position)))
                 return;
             try
@@ -319,7 +320,7 @@ namespace WizBot.Modules.Administration
             var user = await Context.Guild.GetCurrentUserAsync().ConfigureAwait(false);
 
             var enumerable = (await Context.Channel.GetMessagesAsync().Flatten())
-                .Where(x => x.Author.Id == user.Id && DateTime.Now - x.CreatedAt < twoWeeks);
+                .Where(x => x.Author.Id == user.Id && DateTime.UtcNow - x.CreatedAt < twoWeeks);
             await Context.Channel.DeleteMessagesAsync(enumerable).ConfigureAwait(false);
             Context.Message.DeleteAfter(3);
         }
@@ -339,7 +340,7 @@ namespace WizBot.Modules.Administration
             await Context.Message.DeleteAsync().ConfigureAwait(false);
             int limit = (count < 100) ? count + 1 : 100;
             var enumerable = (await Context.Channel.GetMessagesAsync(limit: limit).Flatten().ConfigureAwait(false))
-                .Where(x => DateTime.Now - x.CreatedAt < twoWeeks);
+                .Where(x => DateTime.UtcNow - x.CreatedAt < twoWeeks);
             if (enumerable.FirstOrDefault()?.Id == Context.Message.Id)
                 enumerable = enumerable.Skip(1).ToArray();
             else
@@ -363,7 +364,7 @@ namespace WizBot.Modules.Administration
 
             int limit = (count < 100) ? count : 100;
             var enumerable = (await Context.Channel.GetMessagesAsync(limit: limit).Flatten())
-                .Where(m => m.Author == user && DateTime.Now - m.CreatedAt < twoWeeks);
+                .Where(m => m.Author == user && DateTime.UtcNow - m.CreatedAt < twoWeeks);
             await Context.Channel.DeleteMessagesAsync(enumerable).ConfigureAwait(false);
 
             Context.Message.DeleteAfter(3);
@@ -428,45 +429,5 @@ namespace WizBot.Modules.Administration
             }
             await ReplyConfirmLocalized("donadd", don.Amount).ConfigureAwait(false);
         }
-
-        //[WizBotCommand, Usage, Description, Aliases]
-        //[RequireContext(ContextType.Guild)]
-        //public async Task Timezones(int page = 1)
-        //{
-        //    page -= 1;
-
-        //    if (page < 0 || page > 20)
-        //        return;
-
-        //    var timezones = TimeZoneInfo.GetSystemTimeZones();
-        //    var timezonesPerPage = 20;
-
-        //    await Context.Channel.SendPaginatedConfirmAsync(page + 1, (curPage) => new EmbedBuilder()
-        //        .WithOkColor()
-        //        .WithTitle("Available Timezones")
-        //        .WithDescription(string.Join("\n", timezones.Skip((curPage - 1) * timezonesPerPage).Take(timezonesPerPage).Select(x => $"`{x.Id,-25}` UTC{x.BaseUtcOffset:hhmm}"))),
-        //        timezones.Count / timezonesPerPage);
-        //}
-
-        //[WizBotCommand, Usage, Description, Aliases]
-        //[RequireContext(ContextType.Guild)]
-        //public async Task Timezone([Remainder] string id)
-        //{
-        //    TimeZoneInfo tz;
-        //    try
-        //    {
-        //        tz = TimeZoneInfo.FindSystemTimeZoneById(id);
-        //        if (tz != null)
-        //            await Context.Channel.SendConfirmAsync(tz.ToString()).ConfigureAwait(false);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        tz = null;
-        //        _log.Warn(ex);
-        //    }
-
-        //    if (tz == null)
-        //        await Context.Channel.SendErrorAsync("Timezone not found. You should specify one of the timezones listed in the 'timezones' command.").ConfigureAwait(false);
-        //}
     }
 }
