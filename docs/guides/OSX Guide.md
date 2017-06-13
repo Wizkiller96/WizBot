@@ -1,4 +1,4 @@
-## Setting Up WizBot on OSX/ macOS
+## Setting Up WizBot on OSX (macOS)
 
 #### Prerequisites 
 - [Homebrew][Homebrew]
