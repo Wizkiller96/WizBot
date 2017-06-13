@@ -20,11 +20,11 @@
 - Stop the container **docker stop wizbot** open the WizBot folder and replace the credentials, database and other files with your copies.
 - Restart the container **docker start wizbot**.
 
-#### If you have WizBot 1.x on Linux or MacOS
+#### If you have WizBot 1.x on Linux or macOS
 
 - Backup the `WizBot.db` from `WizBot/src/WizBot/bin/Release/netcoreapp1.0/data`
 - Backup the `credentials.json` from `WizBot/src/WizBot/`
-- **For MacOS Users Only:** download and install the latest version of [.NET Core SDK](https://www.microsoft.com/net/core#macos)
+- **For macOS Users Only:** download and install the latest version of [.NET Core SDK](https://www.microsoft.com/net/core#macos)
 - Next, use the command `cd ~ && wget -N https://github.com/Wizkiller96/WizBot-BashScript/raw/1.4/linuxAIO.sh && bash linuxAIO.sh`
 - **For Ubuntu, Debian and CentOS Users Only:** use the option `4. Auto-Install Prerequisites` to install the latest version of .NET Core SDK.
 - Use option `1. Download WizBot` to update your WizBot to 1.4.x.
