@@ -12,10 +12,10 @@ namespace WizBot.Modules
     {
         protected readonly Logger _log;
         protected CultureInfo _cultureInfo;
-        
+
         public readonly string ModuleTypeName;
         public readonly string LowerModuleTypeName;
-        
+
         public WizBotStrings _strings { get; set; }
         public CommandHandler _cmdHandler { get; set; }
         public ILocalization _localization { get; set; }
@@ -33,8 +33,6 @@ namespace WizBot.Modules
         protected override void BeforeExecute()
         {
             _cultureInfo =_localization.GetCultureInfo(Context.Guild?.Id);
-
-            _log.Info("Culture info is {0}", _cultureInfo);
         }
 
         //public Task<IUserMessage> ReplyConfirmLocalized(string titleKey, string textKey, string url = null, string footer = null)
@@ -56,7 +54,7 @@ namespace WizBot.Modules
         //    var text = WizBot.ResponsesResourceManager.GetString(textKey, cultureInfo);
         //    return Context.Channel.SendErrorAsync(title, text, url, footer);
         //}
-        
+
         protected string GetText(string key) =>
             _strings.GetText(key, _cultureInfo, LowerModuleTypeName);
 
