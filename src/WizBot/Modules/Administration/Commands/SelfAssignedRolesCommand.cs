@@ -1,4 +1,4 @@
-﻿using Discord;
+using Discord;
 using Discord.Commands;
 using WizBot.Attributes;
 using WizBot.Extensions;
@@ -109,13 +109,12 @@ namespace WizBot.Modules.Administration
             {
                 var toRemove = new ConcurrentHashSet<SelfAssignedRole>();
                 var removeMsg = new StringBuilder();
-                var msg = new StringBuilder();
+                var roles = new List<string>();
                 var roleCnt = 0;
                 using (var uow = _db.UnitOfWork)
                 {
                     var roleModels = uow.SelfAssignedRoles.GetFromGuild(Context.Guild.Id).ToList();
-                    msg.AppendLine();
-                    
+
                     foreach (var roleModel in roleModels)
                     {
                         var role = Context.Guild.Roles.FirstOrDefault(r => r.Id == roleModel.RoleId);
@@ -126,7 +125,7 @@ namespace WizBot.Modules.Administration
                         }
                         else
                         {
-                            msg.Append($"**{role.Name}**, ");
+                            roles.Add(Format.Bold(role.Name));
                             roleCnt++;
                         }
                     }
@@ -136,7 +135,7 @@ namespace WizBot.Modules.Administration
                     }
                     await uow.CompleteAsync();
                 }
-                await Context.Channel.SendConfirmAsync(GetText("self_assign_list", roleCnt), msg + "\n\n" + removeMsg).ConfigureAwait(false);
+                await Context.Channel.SendConfirmAsync(GetText("self_assign_list", roleCnt), "\n" + string.Join(", ", roles) + "\n\n" + removeMsg).ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -186,7 +185,7 @@ namespace WizBot.Modules.Administration
                 if (conf.ExclusiveSelfAssignedRoles)
                 {
                     var sameRoleId = guildUser.RoleIds.FirstOrDefault(r => roleIds.Contains(r));
-                    
+
                     if (sameRoleId != default(ulong))
                     {
                         var sameRole = Context.Guild.GetRole(sameRoleId);
