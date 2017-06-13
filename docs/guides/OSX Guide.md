@@ -1,6 +1,6 @@
-## Setting Up WizBot on OSX
+## Setting Up WizBot on OSX/ MacOS
 
-#### Prerequisites
+#### Prerequisites 
 - [Homebrew][Homebrew]
 - Google Account
 - Soundcloud Account (if you want soundcloud support)
@@ -59,16 +59,14 @@ A dialog box will open asking if you want to install `xcode-select`. Select inst
 Use the following command to get and run `linuxAIO.sh`:		
 (Remember **DO NOT** rename the file `linuxAIO.sh`)
 
-`cd ~ && wget -N https://github.com/Wizkiller96/WizBot-BashScript/raw/master/linuxAIO.sh && bash linuxAIO.sh`
+`cd ~ && wget -N https://github.com/Wizkiller96/WizBot-BashScript/raw/1.4/linuxAIO.sh && bash linuxAIO.sh`
 
 Follow the on screen instructions:
 
-1. To Get the latest build. (most recent updates)
-2. To Get the stable build.
+Choose `1. Download WizBot` To Get the latest build. (most recent updates)
 
-Choose either `1` or `2` then press `enter` key.
-Once Installation is completed you should see the options again.
-Next, choose `5` to exit.
+Once Installation is completed you should see the options again.	
+Next, choose `6` to exit. 
 
 #### Creating and Inviting bot
 
@@ -79,7 +77,7 @@ Next, choose `5` to exit.
 - The link should now look like this: `https://discordapp.com/oauth2/authorize?client_id=**YOUR_CLENT_ID_HERE**&scope=bot&permissions=66186303`.
 - Go to the newly created link and pick the server we created, and click `Authorize`.
 - The bot should have been added to your server.
-
+ 
 #### Setting up Credentials.json file
 - Open up the `WizBot` folder, which should be in your home directory, then `WizBot` folder then `src` folder and then the additonal `WizBot` folder.
 - EDIT it as it is guided here: [Setting up credentials.json](http://wizbot.readthedocs.io/en/latest/guides/Windows%20Guide/#setting-up-credentialsjson-file)
@@ -94,17 +92,17 @@ For Music Setup and API keys check [Setting up WizBot for Music](http://wizbot.r
 
 - Using tmux
 
-`tmux new -s WizBot`
+`tmux new -s wizbot`
 
-^this will create a new session named “WizBot”  
-`(you can replace “WizBot” with anything you prefer and remember its your session name)`.
+^this will create a new session named “wizbot”  
+`(you can replace “wizbot” with anything you prefer and remember its your session name)`.
 
 - Using Screen
 
-`screen -S WizBot`
+`screen -S wizbot`
 
-^this will create a new screen named “WizBot”  
-`(you can replace “WizBot” with anything you prefer and remember its your screen name)`.
+^this will create a new screen named “wizbot”  
+`(you can replace “wizbot” with anything you prefer and remember its your screen name)`.
 
 - Start WizBot using .NET Core:
 
@@ -112,62 +110,45 @@ For Music Setup and API keys check [Setting up WizBot for Music](http://wizbot.r
 
 From the options,
 
-Choose `3` To Run the bot normally.		
-**NOTE:** With option `3` (Running Normally), if you use `.die` [command](http://wizbot.readthedocs.io/en/latest/Commands%20List/#administration) in discord. The bot will shut down and will stay offline untill you manually run it again. (best if you want to check the bot.)
+Choose `2` To Run the bot normally.		
+**NOTE:** With option `2` (Running Normally), if you use `.die` [command](http://wizbot.readthedocs.io/en/latest/Commands%20List/#administration) in discord. The bot will shut down and will stay offline untill you manually run it again. (best if you want to check the bot.)
 
-Choose `4` To Run the bot with Auto Restart.
-**NOTE:** With option `4` (Running with Auto Restart), bot will auto run if you use `.die` [command](http://wizbot.readthedocs.io/en/latest/Commands%20List/#administration) making the command `.die` to be used as restart.
+Choose `3` To Run the bot with Auto Restart.	
+**NOTE:** With option `3` (Running with Auto Restart), bot will auto run if you use `.die` [command](http://wizbot.readthedocs.io/en/latest/Commands%20List/#administration) making the command `.die` to be used as restart.	
 **NOTE:** [To stop the bot you will have to kill the session.](http://wizbot.readthedocs.io/en/latest/guides/OSX%20Guide/#some-more-info)
 
 **Now check your Discord, the bot should be online**
 
-Now time to move bot to background and to do that, press CTRL+B+D (this will detach the WizBot session using TMUX)
-If you used Screen press CTRL+A+D (this will detach the WizBot screen)
+Now time to move bot to background and to do that, press CTRL+B,D (this will detach the wizbot session using TMUX)	
+If you used Screen press CTRL+A+D (this will detach the wizbot screen) 
 
 #### Updating WizBot
 
 - Connect to the terminal.
-- `tmux kill-session -t WizBot` [(don't forget to replace **WizBot** in the command to what ever you named your bot's session)](http://wizbot.readthedocs.io/en/latest/guides/OSX%20Guide/#some-more-info)
+- `tmux kill-session -t wizbot` [(don't forget to replace **wizbot** in the command to what ever you named your bot's session)](http://wizbot.readthedocs.io/en/latest/guides/OSX%20Guide/#some-more-info)
 - Make sure the bot is **not** running.
-- `tmux new -s WizBot` (**WizBot** is the name of the session)
-- `cd ~ && bash linuxAIO.sh`
-- Choose either `1` or `2` to update the bot with **latest build** or **stable build** respectively.
-- Choose either `3` or `4` to run the bot again with **normally** or **auto restart** respectively.
-- Done. You can close terminal now.
+- `tmux new -s wizbot` (**wizbot** is the name of the session)
+- `cd ~ && wget -N https://github.com/Wizkiller96/WizBot-BashScript/raw/1.4/linuxAIO.sh && bash linuxAIO.sh`
+- Choose `1` to update the bot with **latest build** available.
+- Next, choose either `2` or `3` to run the bot again with **normally** or **auto restart** respectively.
+- Done.
 
 #### Some more Info
 
 **TMUX**
 
-- If you want to see the sessions after logging back again, type `tmux ls`, and that will give you the list of sessions running.
-- If you want to switch to/ see that session, type `tmux a -t WizBot` (WizBot is the name of the session we created before so, replace `WizBot` with the session name you created.)
-- If you want to kill WizBot session, type `tmux kill-session -t WizBot`
+- If you want to see the sessions after logging back again, type `tmux ls`, and that will give you the list of sessions running. 
+- If you want to switch to/ see that session, type `tmux a -t wizbot` (wizbot is the name of the session we created before so, replace `wizbot` with the session name you created.)
+- If you want to kill WizBot session, type `tmux kill-session -t wizbot`
 
 **Screen**
 
-- If you want to see the sessions after logging back again, type `screen -ls`, and that will give you the list of screens.
-- If you want to switch to/ see that screen, type `screen -r WizBot` (WizBot is the name of the screen we created before so, replace `WizBot` with the screen name you created.)
-- If you want to kill the WizBot screen, type `screen -X -S WizBot quit`
-
-#### Alternative Method to Install WizBot
-
-**METHOD I**
-
-- `cd ~ && curl -L https://github.com/Wizkiller96/WizBot-BashScript/raw/master/wizbot_installer.sh | sh`
-
-**METHOD II**
-
-- `cd ~`
-- `git clone -b 1.0 --recursive https://github.com/Wizkiller96/WizBot.git`
-- `cd ~/WizBot/discord.net`
-- `dotnet restore -s https://dotnet.myget.org/F/dotnet-core/api/v3/index.json`
-- `dotnet restore`
-- `cd ~/WizBot/src/WizBot/`
-- `dotnet restore`
-- `dotnet build --configuration Release`
+- If you want to see the sessions after logging back again, type `screen -ls`, and that will give you the list of screens. 
+- If you want to switch to/ see that screen, type `screen -r wizbot` (wizbot is the name of the screen we created before so, replace `wizbot` with the screen name you created.)
+- If you want to kill the WizBot screen, type `screen -X -S wizbot quit`
 
 [Homebrew]: http://brew.sh/
-[.NET Core SDK]: https://github.com/dotnet/core/blob/master/release-notes/download-archives/1.1-preview2.1-download.md
+[.NET Core SDK]: https://www.microsoft.com/net/core#macos
 [DiscordApp]: https://discordapp.com/developers/applications/me
 [Atom]: https://atom.io/
 [Invite Guide]: http://discord.kongslien.net/guide.html

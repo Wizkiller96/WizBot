@@ -1,7 +1,7 @@
 ## Setting up WizBot on Linux
 
 #### Setting up WizBot on Linux Digital Ocean Droplet
-If you want WizBot to play music for you 24/7 without having to hosting it on your PC and want to keep it cheap, reliable and convenient as possible, you can try Wiz on Linux Digital Ocean Droplet using the link [DigitalOcean](https://m.do.co/c/7290047d0c84/) (and using this link will be supporting WizBot and will give you **$10 credit**)
+If you want WizBot to play music for you 24/7 without having to hosting it on your PC and want to keep it cheap, reliable and convenient as possible, you can try Wiz on Linux Digital Ocean Droplet using the link [DigitalOcean](https://m.do.co/c/7290047d0c84/) (and using this link will be supporting Wiz and will give you **$10 credit**)
 
 #### Setting up WizBot
 Assuming you have followed the link above to setup an account and Droplet with 64bit OS in Digital Ocean and got the `IP address and root password (in email)` to login, its time to get started.
@@ -42,40 +42,37 @@ If you entered your Droplets IP address correctly, it should show **login as:** 
 Use the following command to get and run `linuxAIO.sh`		
 (Remember **Do Not** rename the file **linuxAIO.sh**)
 
-`cd ~ && wget -N https://github.com/Wizkiller96/WizBot-BashScript/raw/master/linuxAIO.sh && bash linuxAIO.sh`
+`cd ~ && wget -N https://github.com/Wizkiller96/WizBot-BashScript/raw/1.4/linuxAIO.sh && bash linuxAIO.sh`
 
 You should see these following options after using the above command:
 
 ```
-1. Download Dev Build (Latest)
-2. Download Stable Build
-3. Run WizBot (Normally)
-4. Run WizBot with Auto Restart (Run WizBot normally before using this.)
-5. Auto-Install Prerequisites (for Ubuntu, Debian and CentOS)
-6. Set up credentials.json (if you have downloaded the bot already)
-7. To exit
+1. Download WizBot
+2. Run WizBot (Normally)
+3. Run WizBot with Auto Restart (Run WizBot normally before using this.)
+4. Auto-Install Prerequisites (for Ubuntu, Debian and CentOS)
+5. Set up credentials.json (if you have downloaded the bot already)
+6. To exit
 ```
 ##### Part II - Downloading WizBot prerequisites
 
-**If** you are running WizBot for the first time on your system and never had any *prerequisites* installed and have Ubuntu, Debian or CentOS, Press `5` and `enter` key, then `y` when you see the following:
+**If** you are running WizBot for the first time on your system and never had any *prerequisites* installed and have Ubuntu, Debian or CentOS, Press `4` and `enter` key, then `y` when you see the following:
 ```
 Welcome to WizBot Auto Prerequisites Installer.
 Would you like to continue?
 ```
 That will install all the prerequisites your system need to run WizBot.
 
-(Optional) **If** you want to install it manually, you can try finding it [here](https://github.com/Wizkiller96/WizBot-BashScript/blob/master/wizbotautoinstaller.sh)
+(Optional) **If** you want to install it manually, you can try finding it [here](https://github.com/Wizkiller96/WizBot-BashScript/blob/1.4/wizbotautoinstaller.sh)
 
 Once *prerequisites* finish installing,
 
 ##### Part III - Installing WizBot
-Choose either
-`1` to get the **most updated build of WizBot**
-or
-`2` to get the **previously stable build of WizBot**
-and then press `enter` key.
+Choose `1` to get the **most updated build of WizBot** 
 
-Once Installation is completed you should see the options again.
+and then press `enter` key.	
+
+Once installation is completed you should see the options again.
 
 Next, check out:
 ##### Part IV - Setting up credentials
@@ -96,7 +93,7 @@ You will need the following for the next step:
 - **Osu Api Key** [(optional)](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/)
 - **Sound Cloud Client Id** [(optional)](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/)
 
-Once you have acquired them, press `6` to **Set up credentials.json**
+Once you have acquired them, press `5` to **Set up credentials.json**
 
 You will be asked to enter the required informations, just follow the on-screen instructions and enter the required information.		
 *i.e* If you are asked **Bot's Token**, then just copy and paste or type the **Bot's Token** and press `enter` key.
@@ -104,12 +101,12 @@ You will be asked to enter the required informations, just follow the on-screen 
 (If you want to skip any optional infos, just press `enter` key without typing/pasting anything.)		
 Once done,		
 ##### Part V - Checking if WizBot is working
-You should see the options again.
-Next, press `3` to **Run WizBot (Normally)**.
-Check in your discord server if your new bot is working properly.
+You should see the options again.	
+Next, press `2` to **Run WizBot (Normally)**.
+Check in your discord server if your new bot is working properly.	
 ##### Part VI - Running WizBot on tmux
-If your bot is working properly in your server, type `.die` to **shut down the bot**, then press `7` to **exit**.
-Next, [Run your bot again with **tmux**.](http://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#running-wizbot)
+If your bot is working properly in your server, type `.die` to **shut down the bot**, then press `6` on the console to **exit**.
+Next, [Run your bot again with **tmux**.](http://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#running-wizbot)	
 
 [Check this when you need to **restart** your **WizBot** anytime later along with tmux session.](http://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#restarting-wizbot)
 
@@ -118,43 +115,42 @@ Next, [Run your bot again with **tmux**.](http://wizbot.readthedocs.io/en/latest
 **Create a new Session:**
 
 - `tmux new -s wizbot`  
-
+  
 The above command will create a new session named **wizbot** *(you can replace “wizbot” with anything you prefer and remember its your session name)* so you can run the bot in background without having to keep the PuTTY running.
 
 **Next, we need to run `linuxAIO.sh` in order to get the latest running scripts with patches:**
 
-- `cd ~ && bash linuxAIO.sh`
+- `cd ~ && wget -N https://github.com/Wizkiller96/WizBot-BashScript/raw/1.4/linuxAIO.sh && bash linuxAIO.sh`
 
 **From the options,**
 
-Choose `3` to **Run WizBot normally.**		
-**NOTE:** With option `3` (Running Normally), if you use `.die` [command](http://wizbot.readthedocs.io/en/latest/Commands%20List/#administration) in discord. The bot will shut down and will stay offline until you manually run it again. (best if you want to check the bot.)
+Choose `2` to **Run WizBot normally.**		
+**NOTE:** With option `2` (Running normally), if you use `.die` [command](http://wizbot.readthedocs.io/en/latest/Commands%20List/#administration) in discord. The bot will shut down and will stay offline until you manually run it again. (best if you want to check the bot.)
 
-Choose `4` to **Run WizBot with Auto Restart.**
-It will show you more options:
+Choose `3` to **Run WizBot with Auto Restart.**	
+**NOTE:** With option `3` (Running with Auto Restart), bot will auto run if you use `.die` [command](http://wizbot.readthedocs.io/en/latest/Commands%20List/#administration) making the command `.die` to function as restart.	
+
+It will show you the following options: 
 ```
 1. Run Auto Restart normally without Updating.
-2. Auto Restart and Update with Dev Build (latest)
-3. Auto Restart and Update with Stable Build
-4. Exit
+2. Run Auto Restart and update WizBot.
+3. Exit
 ```
-**NOTE:** With option `4` (Running with Auto Restart), bot will auto run if you use `.die` [command](http://wizbot.readthedocs.io/en/latest/Commands%20List/#administration) making the command `.die` to function as restart.
 
-See how that happens:
-
-![img9](https://cdn.discordapp.com/attachments/251504306010849280/251506312893038592/die_explaination.gif)
+- With option `1. Run Auto Restart normally without Updating.` Bot will restart on `die` command and will not be downloading the latest build available.
+- With option `2. Run Auto Restart and update WizBot.` Bot will restart and download the latest build of bot available everytime `die` command is used.
 
 **Remember** that, while running with Auto Restart, you will need to [close the tmux session](http://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#restarting-wizbot) to stop the bot completely.
 
 **Now check your Discord, the bot should be online**
 
-Next to **move the bot to background** and to do that, press **CTRL+B, release, D** (that will detach the wizbot session using TMUX) and you can finally close **PuTTY** if you want.
+Next to **move the bot to background** and to do that, press **CTRL+B, release, D** (that will detach the wizbot session using TMUX) and you can finally close **PuTTY**.
 
 #### Restarting WizBot
 
 **Restarting WizBot:**
 
-**If** you have chosen option `4` to **Run WizBot with Auto Restart** from WizBot's `linuxAIO.sh` *[(you got it from this step)](http://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#getting-wizbot)*
+**If** you have chosen option `2` to **Run WizBot with Auto Restart** from WizBot's `linuxAIO.sh` *[(you got it from this step)](http://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#getting-wizbot)*	
 You can simply type `.die` in the server you have your WizBot to make her restart.
 
 **Restarting WizBot with the Server:**
@@ -173,10 +169,10 @@ Open **PuTTY** and login as you have before, type `reboot` and hit Enter.
 - `tmux kill-session -t wizbot` (don't forget to replace **wizbot** in the command with the name of your bot's session)
 - Make sure the bot is **not** running.
 - `tmux new -s wizbot` (**wizbot** is the name of the session)
-- `cd ~ && bash linuxAIO.sh`
-- Choose either `1` or `2` to update the bot with **latest build** or **stable build** respectively.
-- Choose either `3` or `4` to run the bot again with **normally** or **auto restart** respectively.
-- Done. You can close **PuTTY** now.
+- `cd ~ && wget -N https://github.com/Wizkiller96/WizBot-BashScript/raw/1.4/linuxAIO.sh && bash linuxAIO.sh`
+- Choose `1` to update the bot with **latest build** available.
+- Next, choose either `2` or `3` to run the bot again with **normally** or **auto restart** respectively.
+- Done.
 
 #### Setting up Music
 
@@ -227,7 +223,7 @@ Once done, go back to **PuTTY**
 - Copy the `credentials.json` to desktop
 - EDIT it as it is guided here: [Setting up credentials.json](http://wizbot.readthedocs.io/en/latest/guides/Windows%20Guide/#setting-up-credentialsjson-file)
 - Paste/put it back in the folder once done. `(Using WinSCP)`
-- **If** you already have WizBot 1.0 setup and have `credentials.json` and `WizBot.db`, you can just copy and paste the `credentials.json` to `WizBot/src/WizBot` and `WizBot.db` to `WizBot/src/WizBot/bin/Release/netcoreapp1.0/data` using WinSCP.
+- **If** you already have WizBot 1.3.x setup and have `credentials.json` and `WizBot.db`, you can just copy and paste the `credentials.json` to `WizBot/src/WizBot` and `WizBot.db` to `WizBot/src/WizBot/bin/Release/netcoreapp1.1/data` using WinSCP.
 - **If** you have WizBot 0.9x follow the [Upgrading Guide](http://wizbot.readthedocs.io/en/latest/guides/Upgrading%20Guide/)
 
 
