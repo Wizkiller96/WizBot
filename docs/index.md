@@ -1,6 +1,6 @@
 #WizBot Documentation
 
-To invite WizBot to your server, click on the image bellow:
+To invite public WizBot to your server, click on the image bellow:
 
 [![img][img]](https://discordapp.com/oauth2/authorize?client_id=170849867508350977&scope=bot&permissions=66186303)
 
@@ -10,9 +10,7 @@ WizBot is an open source project, and it can be found on our [GitHub][GitHub] pa
 
 Here you can read current [Issues][Issues].
 
-If you want to contribute, be sure to PR on the **[dev][dev]** branch.
-
-**WizBot 1.1 release currently does not support x86/32bit architecture.**
+If you want to contribute, be sure to PR on the **[1.4][1.4]** branch.
 
 ##Content
 - [About](about.md)
@@ -38,4 +36,4 @@ If you want to contribute, be sure to PR on the **[dev][dev]** branch.
 [WizBot Server]: https://discord.gg/0ehQwTK2RBjAxzEY
 [GitHub]: https://github.com/Wizkiller96/WizBot
 [Issues]: https://github.com/Wizkiller96/WizBot/issues
-[dev]: https://github.com/Wizkiller96/WizBot/tree/dev
+[1.4]: https://github.com/Wizkiller96/WizBot/tree/1.4
