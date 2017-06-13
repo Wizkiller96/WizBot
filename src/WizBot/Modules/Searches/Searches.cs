@@ -89,7 +89,7 @@ namespace WizBot.Modules.Searches
         public async Task Youtube([Remainder] string query = null)
         {
             if (!await ValidateQuery(Context.Channel, query).ConfigureAwait(false)) return;
-            var result = (await _google.GetVideosByKeywordsAsync(query, 1)).FirstOrDefault();
+            var result = (await _google.GetVideoLinksByKeywordAsync(query, 1)).FirstOrDefault();
             if (string.IsNullOrWhiteSpace(result))
             {
                 await ReplyErrorLocalized("no_results").ConfigureAwait(false);
@@ -786,7 +786,7 @@ namespace WizBot.Modules.Searches
                     .WithImageUrl(url)
                     .WithFooter(efb => efb.WithText(type.ToString()))).ConfigureAwait(false);
         }
-        
+
         public async Task<bool> ValidateQuery(IMessageChannel ch, string query)
         {
             if (!string.IsNullOrWhiteSpace(query)) return true;

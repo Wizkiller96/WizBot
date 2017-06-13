@@ -1,4 +1,4 @@
-﻿using Discord.Commands;
+using Discord.Commands;
 using Discord.WebSocket;
 using WizBot.Services;
 using System.IO;
@@ -19,7 +19,7 @@ using WizBot.DataStructures;
 namespace WizBot.Modules.Music
 {
     [NoPublicBot]
-    public class Music : WizBotTopLevelModule 
+    public class Music : WizBotTopLevelModule
     {
         private static MusicService _music;
         private readonly DiscordShardedClient _client;
@@ -67,7 +67,7 @@ namespace WizBot.Modules.Music
 
 
                 //if some other user moved
-                if ((player.PlaybackVoiceChannel == newState.VoiceChannel && //if joined first, and player paused, unpause 
+                if ((player.PlaybackVoiceChannel == newState.VoiceChannel && //if joined first, and player paused, unpause
                         player.Paused &&
                         newState.VoiceChannel.Users.Count == 2) ||  // keep in mind bot is in the channel (+1)
                     (player.PlaybackVoiceChannel == oldState.VoiceChannel && // if left last, and player unpaused, pause
@@ -184,6 +184,44 @@ namespace WizBot.Modules.Music
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
+        public async Task QueueSearch([Remainder] string query)
+        {
+            var videos = (await _google.GetVideoInfosByKeywordAsync(query, 5))
+                .ToArray();
+
+            if (!videos.Any())
+            {
+                await ReplyErrorLocalized("song_not_found").ConfigureAwait(false);
+                return;
+            }
+
+            var msg = await Context.Channel.SendConfirmAsync(string.Join("\n", videos.Select((x, i) => $"`{i + 1}.`\n\t{Format.Bold(x.Name)}\n\t{x.Url}")));
+
+            try
+            {
+                var input = await GetUserInputAsync(Context.User.Id, Context.Channel.Id);
+                if (input == null
+                    || !int.TryParse(input, out var index)
+                    || (index -= 1) < 0
+                    || index >= videos.Length)
+                {
+                    try { await msg.DeleteAsync().ConfigureAwait(false); } catch { }
+                    return;
+                }
+
+                query = videos[index].Url;
+
+                await Queue(query).ConfigureAwait(false);
+            }
+            finally
+            {
+                try { await msg.DeleteAsync().ConfigureAwait(false); } catch { }
+            }
+
+        }
+
+        [WizBotCommand, Usage, Description, Aliases]
+        [RequireContext(ContextType.Guild)]
         public async Task SoundCloudQueue([Remainder] string query)
         {
             await _music.QueueSong(((IGuildUser)Context.User), (ITextChannel)Context.Channel, ((IGuildUser)Context.User).VoiceChannel, query, musicType: MusicType.Soundcloud).ConfigureAwait(false);
@@ -214,9 +252,9 @@ namespace WizBot.Modules.Music
             const int itemsPerPage = 10;
 
             var total = musicPlayer.TotalPlaytime;
-            var totalStr = total == TimeSpan.MaxValue ? "∞" : GetText("time_format", 
-                (int) total.TotalHours, 
-                total.Minutes, 
+            var totalStr = total == TimeSpan.MaxValue ? "∞" : GetText("time_format",
+                (int) total.TotalHours,
+                total.Minutes,
                 total.Seconds);
             var maxPlaytime = musicPlayer.MaxPlaytimeSeconds;
             var lastPage = musicPlayer.Playlist.Count / itemsPerPage;
@@ -228,7 +266,7 @@ namespace WizBot.Modules.Music
                         .Skip(startAt)
                         .Take(itemsPerPage)
                         .Select(v => $"`{++number}.` {v.PrettyFullName}"));
-                
+
                 desc = $"`🔊` {currentSong.PrettyFullName}\n\n" + desc;
 
                 if (musicPlayer.RepeatSong)
@@ -728,7 +766,7 @@ namespace WizBot.Modules.Music
             await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
 
         }
-        
+
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task DeletePlaylist([Remainder] int id)
