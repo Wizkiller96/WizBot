@@ -1,7 +1,7 @@
 ## Setting up WizBot on Linux
 
 #### Setting up WizBot on Linux Digital Ocean Droplet
-If you want WizBot to play music for you 24/7 without having to hosting it on your PC and want to keep it cheap, reliable and convenient as possible, you can try Wiz on Linux Digital Ocean Droplet using the link [DigitalOcean](https://m.do.co/c/7290047d0c84/) (and using this link will be supporting Wiz and will give you **$10 credit**)
+If you want WizBot to play music for you 24/7 without having to hosting it on your PC and want to keep it cheap, reliable and convenient as possible, you can try WizBot on Linux Digital Ocean Droplet using the link [DigitalOcean](https://m.do.co/c/7290047d0c84/) (and using this link will be supporting WizBot and will give you **$10 credit**)
 
 #### Setting up WizBot
 Assuming you have followed the link above to setup an account and Droplet with 64bit OS in Digital Ocean and got the `IP address and root password (in email)` to login, its time to get started.
