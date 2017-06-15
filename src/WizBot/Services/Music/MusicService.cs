@@ -83,6 +83,7 @@ namespace WizBot.Services.Music
                             lastFinishedMessage = await mp.OutputTextChannel.EmbedAsync(new EmbedBuilder().WithOkColor()
                                     .WithAuthor(eab => eab.WithName(GetText("finished_song")).WithMusicIcon())
                                     .WithDescription(song.PrettyName)
+                                    .WithThumbnailUrl(song.Thumbnail)
                                     .WithFooter(ef => ef.WithText(song.PrettyInfo)))
                                 .ConfigureAwait(false);
                         }
@@ -125,6 +126,7 @@ namespace WizBot.Services.Music
                         playingMessage = await mp.OutputTextChannel.EmbedAsync(new EmbedBuilder().WithOkColor()
                                                     .WithAuthor(eab => eab.WithName(GetText("playing_song")).WithMusicIcon())
                                                     .WithDescription(song.PrettyName)
+                                                    .WithThumbnailUrl(song.Thumbnail)
                                                     .WithFooter(ef => ef.WithText(song.PrettyInfo)))
                                                     .ConfigureAwait(false);
                     }
@@ -158,6 +160,7 @@ namespace WizBot.Services.Music
                         var embed = new EmbedBuilder()
                             .WithAuthor(eab => eab.WithName(GetText("removed_song") + " #" + (index + 1)).WithMusicIcon())
                             .WithDescription(song.PrettyName)
+                            .WithThumbnailUrl(song.Thumbnail)
                             .WithFooter(ef => ef.WithText(song.PrettyInfo))
                             .WithErrorColor();
 

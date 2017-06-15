@@ -263,7 +263,7 @@ namespace WizBot.Services.Music
             ActionQueue.Enqueue(() =>
             {
                 s.MusicPlayer = this;
-                s.QueuerName = username.TrimTo(10);
+                s.QueuerName = username.TrimTo(15);
                 _playlist.Add(s);
             });
         }

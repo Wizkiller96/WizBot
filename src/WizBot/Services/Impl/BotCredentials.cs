@@ -29,7 +29,7 @@ namespace WizBot.Services.Impl
         public string SoundCloudClientId {
             get {
                 return string.IsNullOrWhiteSpace(_soundcloudClientId)
-                    ? "d0bd7768e3a1a2d15430f0dccb871117"
+                    ? "f16f3b87c6ebc1aafe87d9cf27a03dc2"
                     : _soundcloudClientId;
             }
             private set {
