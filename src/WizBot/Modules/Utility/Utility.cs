@@ -356,7 +356,7 @@ namespace WizBot.Modules.Utility
         [WizBotCommand, Usage, Description, Aliases]
         public async Task ShardStats(int page = 1)
         {
-            if (page < 1)
+            if (--page < 0)
                 return;
 
             var status = string.Join(", ", _client.Shards.GroupBy(x => x.ConnectionState)
@@ -374,7 +374,7 @@ namespace WizBot.Modules.Utility
             await Context.Channel.SendPaginatedConfirmAsync(_client, page, (curPage) =>
             {
 
-                var str = string.Join("\n", allShardStrings.Skip(25 * (curPage - 1)).Take(25));
+                var str = string.Join("\n", allShardStrings.Skip(25 * curPage).Take(25));
 
                 if (string.IsNullOrWhiteSpace(str))
                     str = GetText("no_shards_on_page");
@@ -406,7 +406,7 @@ namespace WizBot.Modules.Utility
                 new EmbedBuilder().WithOkColor()
                     .WithAuthor(eab => eab.WithName($"WizBot v{StatsService.BotVersion}")
                                           .WithUrl("http://wizbot.readthedocs.io/en/latest/")
-                                          .WithIconUrl("https://i.imgur.com/1X7IWnw.jpg"))
+                                          .WithIconUrl("http://i.imgur.com/fObUYFS.jpg"))
                     .AddField(efb => efb.WithName(GetText("author")).WithValue(_stats.Author).WithIsInline(true))
                     .AddField(efb => efb.WithName(GetText("botid")).WithValue(_client.CurrentUser.Id.ToString()).WithIsInline(true))
                     .AddField(efb => efb.WithName(GetText("shard")).WithValue($"#{shardId} / {_client.Shards.Count}").WithIsInline(true))
@@ -520,7 +520,7 @@ namespace WizBot.Modules.Utility
                 new EmbedBuilder().WithOkColor()
                     .WithAuthor(eab => eab.WithName(GetText($"changelog_title_date"))
                                           .WithUrl("https://github.com/Wizkiller96/WizBot/commits/dev")
-                                          .WithIconUrl("https://i.imgur.com/1X7IWnw.jpg"))
+                                          .WithIconUrl("http://i.imgur.com/fObUYFS.jpg"))
                     .AddField(efb => efb.WithName(Format.Bold(GetText("changelog_fixes"))).WithValue(GetText("changelog_fixes_msg")).WithIsInline(false))
                     .AddField(efb => efb.WithName(Format.Bold(GetText("changelog_additions"))).WithValue(GetText("changelog_additions_msg")).WithIsInline(false))
                     .AddField(efb => efb.WithName(Format.Bold(GetText("changelog_removals"))).WithValue(GetText("changelog_removals_msg")).WithIsInline(false))

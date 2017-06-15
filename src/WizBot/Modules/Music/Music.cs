@@ -19,7 +19,7 @@ using WizBot.DataStructures;
 namespace WizBot.Modules.Music
 {
     [NoPublicBot]
-    public class Music : WizBotTopLevelModule
+    public class Music : WizBotTopLevelModule 
     {
         private static MusicService _music;
         private readonly DiscordShardedClient _client;
@@ -67,7 +67,7 @@ namespace WizBot.Modules.Music
 
 
                 //if some other user moved
-                if ((player.PlaybackVoiceChannel == newState.VoiceChannel && //if joined first, and player paused, unpause
+                if ((player.PlaybackVoiceChannel == newState.VoiceChannel && //if joined first, and player paused, unpause 
                         player.Paused &&
                         newState.VoiceChannel.Users.Count == 2) ||  // keep in mind bot is in the channel (+1)
                     (player.PlaybackVoiceChannel == oldState.VoiceChannel && // if left last, and player unpaused, pause
@@ -217,7 +217,7 @@ namespace WizBot.Modules.Music
             {
                 try { await msg.DeleteAsync().ConfigureAwait(false); } catch { }
             }
-
+            
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -244,7 +244,8 @@ namespace WizBot.Modules.Music
                 await ReplyErrorLocalized("no_player").ConfigureAwait(false);
                 return;
             }
-            if (page <= 0)
+
+            if (--page < 0)
                 return;
 
             try { await musicPlayer.UpdateSongDurationsAsync().ConfigureAwait(false); } catch { }
@@ -252,21 +253,21 @@ namespace WizBot.Modules.Music
             const int itemsPerPage = 10;
 
             var total = musicPlayer.TotalPlaytime;
-            var totalStr = total == TimeSpan.MaxValue ? "∞" : GetText("time_format",
-                (int) total.TotalHours,
-                total.Minutes,
+            var totalStr = total == TimeSpan.MaxValue ? "∞" : GetText("time_format", 
+                (int) total.TotalHours, 
+                total.Minutes, 
                 total.Seconds);
             var maxPlaytime = musicPlayer.MaxPlaytimeSeconds;
             var lastPage = musicPlayer.Playlist.Count / itemsPerPage;
             Func<int, EmbedBuilder> printAction = curPage =>
             {
-                var startAt = itemsPerPage * (curPage - 1);
+                var startAt = itemsPerPage * curPage;
                 var number = 0 + startAt;
                 var desc = string.Join("\n", musicPlayer.Playlist
                         .Skip(startAt)
                         .Take(itemsPerPage)
                         .Select(v => $"`{++number}.` {v.PrettyFullName}"));
-
+                
                 desc = $"`🔊` {currentSong.PrettyFullName}\n\n" + desc;
 
                 if (musicPlayer.RepeatSong)
@@ -277,7 +278,7 @@ namespace WizBot.Modules.Music
 
 
                 var embed = new EmbedBuilder()
-                    .WithAuthor(eab => eab.WithName(GetText("player_queue", curPage, lastPage + 1))
+                    .WithAuthor(eab => eab.WithName(GetText("player_queue", curPage + 1, lastPage + 1))
                         .WithMusicIcon())
                     .WithDescription(desc)
                     .WithFooter(ef => ef.WithText($"{musicPlayer.PrettyVolume} | {musicPlayer.Playlist.Count} " +
@@ -766,7 +767,7 @@ namespace WizBot.Modules.Music
             await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
 
         }
-
+        
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task DeletePlaylist([Remainder] int id)

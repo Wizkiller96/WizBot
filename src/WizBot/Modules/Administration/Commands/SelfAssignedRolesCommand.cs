@@ -1,5 +1,6 @@
 using Discord;
 using Discord.Commands;
+using Discord.WebSocket;
 using WizBot.Attributes;
 using WizBot.Extensions;
 using WizBot.Services;
@@ -105,8 +106,11 @@ namespace WizBot.Modules.Administration
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            public async Task Lsar()
+            public async Task Lsar(int page = 1)
             {
+                if (--page < 0)
+                    return;
+
                 var toRemove = new ConcurrentHashSet<SelfAssignedRole>();
                 var removeMsg = new StringBuilder();
                 var roles = new List<string>();
@@ -114,7 +118,7 @@ namespace WizBot.Modules.Administration
                 using (var uow = _db.UnitOfWork)
                 {
                     var roleModels = uow.SelfAssignedRoles.GetFromGuild(Context.Guild.Id).ToList();
-
+                    
                     foreach (var roleModel in roleModels)
                     {
                         var role = Context.Guild.Roles.FirstOrDefault(r => r.Id == roleModel.RoleId);
@@ -131,11 +135,18 @@ namespace WizBot.Modules.Administration
                     }
                     foreach (var role in toRemove)
                     {
-                        removeMsg.AppendLine(GetText("role_clean", role.RoleId));
+                        roles.Add(GetText("role_clean", role.RoleId));
                     }
                     await uow.CompleteAsync();
                 }
-                await Context.Channel.SendConfirmAsync(GetText("self_assign_list", roleCnt), "\n" + string.Join(", ", roles) + "\n\n" + removeMsg).ConfigureAwait(false);
+
+                await Context.Channel.SendPaginatedConfirmAsync((DiscordShardedClient)Context.Client, page, (curPage) =>
+                {
+                    return new EmbedBuilder()
+                        .WithTitle(GetText("self_assign_list", roleCnt))
+                        .WithDescription(string.Join("\n", roles.Skip(curPage * 10).Take(10)))
+                        .WithOkColor();
+                }, roles.Count / 10);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -185,7 +196,7 @@ namespace WizBot.Modules.Administration
                 if (conf.ExclusiveSelfAssignedRoles)
                 {
                     var sameRoleId = guildUser.RoleIds.FirstOrDefault(r => roleIds.Contains(r));
-
+                    
                     if (sameRoleId != default(ulong))
                     {
                         var sameRole = Context.Guild.GetRole(sameRoleId);

@@ -54,7 +54,6 @@ namespace WizBot.Extensions
         /// </summary>
         public static async Task SendPaginatedConfirmAsync(this IMessageChannel channel, DiscordShardedClient client, int currentPage, Func<int, EmbedBuilder> pageFunc, int? lastPage = null, bool addPaginatedFooter = true)
         {
-            lastPage += 1;
             var embed = pageFunc(currentPage);
 
             if(addPaginatedFooter)
@@ -62,7 +61,7 @@ namespace WizBot.Extensions
 
             var msg = await channel.EmbedAsync(embed) as IUserMessage;
 
-            if (currentPage >= lastPage && lastPage == 1)
+            if (lastPage == 0)
                 return;
 
             
@@ -77,7 +76,7 @@ namespace WizBot.Extensions
                 {
                     if (r.Emote.Name == arrow_left.Name)
                     {
-                        if (currentPage == 1)
+                        if (currentPage == 0)
                             return;
                         var toSend = pageFunc(--currentPage);
                         if (addPaginatedFooter)
@@ -109,7 +108,7 @@ namespace WizBot.Extensions
         private static EmbedBuilder AddPaginatedFooter(this EmbedBuilder embed, int curPage, int? lastPage)
         {
             if (lastPage != null)
-                return embed.WithFooter(efb => efb.WithText($"{curPage} / {lastPage}"));
+                return embed.WithFooter(efb => efb.WithText($"{curPage + 1} / {lastPage + 1}"));
             else
                 return embed.WithFooter(efb => efb.WithText(curPage.ToString()));
         }
@@ -120,8 +119,8 @@ namespace WizBot.Extensions
                 reactionRemoved = delegate { };
 
             var wrap = new ReactionEventWrapper(client, msg);
-            wrap.OnReactionAdded += reactionAdded;
-            wrap.OnReactionRemoved += reactionRemoved;
+            wrap.OnReactionAdded += (r) => { var _ = Task.Run(() => reactionAdded(r)); };
+            wrap.OnReactionRemoved += (r) => { var _ = Task.Run(() => reactionRemoved(r)); };
             return wrap;
         }
 
