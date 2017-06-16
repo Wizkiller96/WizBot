@@ -151,7 +151,6 @@
     "administration_old_nick": "Nickname precedente",
     "administration_old_topic": "Discussione precedente",
     "administration_perms": "Errore. Probabilmente non dispongo dei permessi necessari.",
-    "administration_perms_reset": "I permessi di questo server sono stati reimpostati.",
     "administration_prot_active": "Protezioni attive",
     "administration_prot_disable": "{0} è stato **disattivato** in questo server.",
     "administration_prot_enable": "{0} Attivato",
@@ -780,7 +779,6 @@
     "administration_gvc_disabled": "La funzione di canale vocale di gioco  é stata disabilitata in questo server.",
     "administration_gvc_enabled": "{0} é un canale vocale di gioco ora.",
     "administration_not_in_voice": "Non sei in un canale vocale in questo server.",
-    "administration_global_perms_reset": "I permessi globali sono stati resettati.",
     "permissions_blocked_commands": "Comandi bloccati",
     "permissions_blocked_modules": "Moduli bloccati",
     "permissions_gcmd_add": "Il comando {0} é stato disabilitato in tutti i server",
@@ -804,5 +802,8 @@
     "administration_timezones_available": "",
     "music_song_not_found": "",
     "searches_define_unknown": "",
-    "utility_repeater_initial": ""
+    "utility_repeater_initial": "",
+    "permissions_perms_reset": "",
+    "searches_hex_invalid": "",
+    "permissions_global_perms_reset": ""
 }
