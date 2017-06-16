@@ -151,7 +151,6 @@
     "administration_old_nick": "Старое имя",
     "administration_old_topic": "Старый заголовок",
     "administration_perms": "Ошибка. Скорее всего мне не хватает прав.",
-    "administration_perms_reset": "Разрешения для этого сервера были сброшены.",
     "administration_prot_active": "Активные защиты от рейдов",
     "administration_prot_disable": "{0} был **отключён** на этом сервере.",
     "administration_prot_enable": "{0} включен",
@@ -780,7 +779,6 @@
     "administration_gvc_disabled": "Функция Игрового Голосового Канала отключена на этом сервере.",
     "administration_gvc_enabled": "{0} теперь является Игровым Голосовом Каналом.",
     "administration_not_in_voice": "Вы не находитесь в голосовом канале на этом сервере.",
-    "administration_global_perms_reset": "Глобальные разрешения были сброшены.",
     "permissions_blocked_commands": "Заблокированные Команды",
     "permissions_blocked_modules": "Заблокированные Модули",
     "permissions_gcmd_add": "Команда {0} была отключена на всех серверах.",
@@ -804,5 +802,8 @@
     "administration_timezones_available": "",
     "music_song_not_found": "",
     "searches_define_unknown": "",
-    "utility_repeater_initial": ""
+    "utility_repeater_initial": "",
+    "permissions_perms_reset": "",
+    "searches_hex_invalid": "",
+    "permissions_global_perms_reset": ""
 }
