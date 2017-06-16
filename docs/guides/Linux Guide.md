@@ -79,7 +79,6 @@ You will need the following for the next step:
 - **LoL Api Key** [(optional)](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/#setting-up-your-api-keys)
 - **Mashape Key** [(optional)](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/#setting-up-your-api-keys)
 - **Osu Api Key** [(optional)](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/#setting-up-your-api-keys)
-- **Sound Cloud Client Id** [(optional)](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/#setting-up-your-api-keys)
 
 Once you have acquired them, press `5` to **Set up credentials.json**
 
@@ -199,4 +198,4 @@ To set up WizBot for music and Google API Keys, follow [Setting up your API keys
 [img7]: https://cdn.discordapp.com/attachments/251504306010849280/251505766370902016/setting_up_credentials.gif
 [setup credentials]: http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/#setting-up-credentialsjson-file
 [setup music]: http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/#setting-up-your-api-keys
-[upgrading]: http://wizbot.readthedocs.io/en/latest/guides/Upgrading%20Guide/
+[upgrading]: http://nadekobot.readthedocs.io/en/latest/guides/Upgrading%20Guide/
