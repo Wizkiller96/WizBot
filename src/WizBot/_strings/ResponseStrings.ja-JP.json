@@ -151,7 +151,6 @@
     "administration_old_nick": "古いニックネーム",
     "administration_old_topic": "古いトピック",
     "administration_perms": "エラー。ほとんどの場合、十分な権限がありません。\n",
-    "administration_perms_reset": "このサーバーのアクセス許可はリセットされます。\n",
     "administration_prot_active": "アクティブな保護\n",
     "administration_prot_disable": "このサーバーで{0}は**無効**になっています。\n",
     "administration_prot_enable": "{0}を有効にしました\n",
@@ -780,7 +779,6 @@
     "administration_gvc_disabled": "このサーバーでGame Voice Channel機能が無効になっています。\n",
     "administration_gvc_enabled": "{0}はゲーム音声チャンネルです。\n",
     "administration_not_in_voice": "あなたはこのサーバー上の音声チャネルにいません。\n",
-    "administration_global_perms_reset": "グローバル権限がリセットされました。\n",
     "permissions_blocked_commands": "ブロックされたコマンド\n",
     "permissions_blocked_modules": "ブロックされたモジュール\n",
     "permissions_gcmd_add": "コマンド{0}はすべてのサーバーで無効になっています。\n",
@@ -804,5 +802,8 @@
     "administration_timezones_available": "",
     "music_song_not_found": "",
     "searches_define_unknown": "",
-    "utility_repeater_initial": ""
+    "utility_repeater_initial": "",
+    "permissions_perms_reset": "",
+    "searches_hex_invalid": "",
+    "permissions_global_perms_reset": ""
 }
