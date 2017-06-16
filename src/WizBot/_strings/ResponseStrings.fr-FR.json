@@ -151,7 +151,6 @@
     "administration_old_nick": "Ancien pseudonyme",
     "administration_old_topic": "Ancien sujet",
     "administration_perms": "Erreur. Je ne dois sûrement pas posséder les permissions suffisantes.",
-    "administration_perms_reset": "Les permissions pour ce serveur ont été réinitialisées.",
     "administration_prot_active": "Protections actives",
     "administration_prot_disable": "{0} a été **désactivé** sur ce serveur.",
     "administration_prot_enable": "{0} Activé",
@@ -780,7 +779,6 @@
     "administration_gvc_disabled": "Les salons vocaux de jeux ont été désactivés sur ce serveur.",
     "administration_gvc_enabled": "{0} est maintenant un salon vocal de jeu.",
     "administration_not_in_voice": "Vous n'êtes pas connectés à un salon vocal sur ce serveur.",
-    "administration_global_perms_reset": "Permissions globales réinitialisées.",
     "permissions_blocked_commands": "Commandes bloquées",
     "permissions_blocked_modules": "Modules bloqués",
     "permissions_gcmd_add": "La commande {0} a été désactivée sur tous les serveurs.",
@@ -804,5 +802,8 @@
     "administration_timezones_available": "",
     "music_song_not_found": "",
     "searches_define_unknown": "",
-    "utility_repeater_initial": ""
+    "utility_repeater_initial": "",
+    "permissions_perms_reset": "",
+    "searches_hex_invalid": "",
+    "permissions_global_perms_reset": ""
 }
