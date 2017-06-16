@@ -151,7 +151,6 @@
     "administration_old_nick": "لقب قديم .",
     "administration_old_topic": "موضوع قديم .",
     "administration_perms": "خطأ . على الاغلب لا امتلك الصلاحيات الكافية .",
-    "administration_perms_reset": "جميع الأذون في السيرفر أعاد تعيينهم.",
     "administration_prot_active": "الحماية فعالة .",
     "administration_prot_disable": "تم تعطيل {0} على هذا السيرفر.",
     "administration_prot_enable": "{0} مفعل",
@@ -780,7 +779,6 @@
     "administration_gvc_disabled": "تم تعطيل ميزة قناة صوت اللعبة على هذا السيرفر.",
     "administration_gvc_enabled": "{0} هي قناة صوت اللعبة الآن.",
     "administration_not_in_voice": "أنت لست في قناة صوتية على هذا السيرفر.",
-    "administration_global_perms_reset": "تمت إعادة تعيين الأذونات العامة.",
     "permissions_blocked_commands": "الأوامر المحظورة",
     "permissions_blocked_modules": "وحدات الامر المحظورة",
     "permissions_gcmd_add": "تم تعطيل الأمر {0} على كافة السيرفرات.",
@@ -804,5 +802,8 @@
     "administration_timezones_available": "",
     "music_song_not_found": "",
     "searches_define_unknown": "",
-    "utility_repeater_initial": ""
+    "utility_repeater_initial": "",
+    "permissions_perms_reset": "",
+    "searches_hex_invalid": "",
+    "permissions_global_perms_reset": ""
 }
