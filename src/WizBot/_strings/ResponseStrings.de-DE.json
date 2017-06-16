@@ -151,7 +151,6 @@
     "administration_old_nick": "Alter Nickname",
     "administration_old_topic": "Altes Thema",
     "administration_perms": "Fehler. Ich habe wahrscheinlich nicht ausreichend Rechte.",
-    "administration_perms_reset": "Rechte für diesen Server zurückgesetzt.",
     "administration_prot_active": "Aktive Schutzmechanismen",
     "administration_prot_disable": "{0} wurde auf diesem Server **deaktiviert**.",
     "administration_prot_enable": "{0} aktiviert",
@@ -780,7 +779,6 @@
     "administration_gvc_disabled": "Spiel-Sprachkanal-Feature ist nicht eingeschaltet auf diesem Server.",
     "administration_gvc_enabled": "{0} ist nun ein Spiel-Sprachkanal",
     "administration_not_in_voice": "Du bist in keinem Sprachkanal auf diesem Server.",
-    "administration_global_perms_reset": "Globale Rechte zurückgesetzt.",
     "permissions_blocked_commands": "Gesperrte Befehle",
     "permissions_blocked_modules": "Gesperrte Module",
     "permissions_gcmd_add": "Der Befehl {0} wurde auf allen Servern ausgeschaltet.",
@@ -804,5 +802,8 @@
     "administration_timezones_available": "",
     "music_song_not_found": "",
     "searches_define_unknown": "",
-    "utility_repeater_initial": ""
+    "utility_repeater_initial": "",
+    "permissions_perms_reset": "",
+    "searches_hex_invalid": "",
+    "permissions_global_perms_reset": ""
 }
