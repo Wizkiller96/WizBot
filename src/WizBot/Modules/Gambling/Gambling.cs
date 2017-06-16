@@ -43,6 +43,10 @@ namespace WizBot.Modules.Gambling
 
             var members = role.Members().Where(u => u.Status != UserStatus.Offline);
             var membersArray = members as IUser[] ?? members.ToArray();
+            if (membersArray.Length == 0)
+            {
+
+            }
             var usr = membersArray[new WizBotRandom().Next(0, membersArray.Length)];
             await Context.Channel.SendConfirmAsync("🎟 "+ GetText("raffled_user"), $"**{usr.Username}#{usr.Discriminator}**", footer: $"ID: {usr.Id}").ConfigureAwait(false);
         }

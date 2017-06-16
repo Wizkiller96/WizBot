@@ -6,7 +6,7 @@ using WizBot.Services.Database.Models;
 using WizBot.Services.Permissions;
 using System.Threading.Tasks;
 
-namespace WizBot.Modules.Permissions.Commands
+namespace WizBot.Modules.Permissions
 {
     public partial class Permissions
     {
