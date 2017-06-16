@@ -151,7 +151,6 @@
     "administration_old_nick": "כינוי ישן",
     "administration_old_topic": "נושא ישן",
     "administration_perms": "שגיאה. כנראה אין לי את האישורים המתאימים.",
-    "administration_perms_reset": "ההרשאות לשרת זה התחדשו.",
     "administration_prot_active": "הגנות פועלות",
     "administration_prot_disable": "{0} **הופסק** בשרת זה.",
     "administration_prot_enable": "{0} אופשר.",
@@ -780,7 +779,6 @@
     "administration_gvc_disabled": "התכונה 'ערוץ קול' של המשחק הושבתה בשרת זה.",
     "administration_gvc_enabled": "{0} הוא ערוץ קול של משחקים כעת.",
     "administration_not_in_voice": "אינך נמצא בערוץ קול בשרת זה.",
-    "administration_global_perms_reset": "הרשאות גלובליות אופסו.",
     "permissions_blocked_commands": "פקודות חסומות",
     "permissions_blocked_modules": "מודולים חסומים",
     "permissions_gcmd_add": "הפקודה {0} הושבתה בכל השרתים.",
@@ -804,5 +802,8 @@
     "administration_timezones_available": "",
     "music_song_not_found": "",
     "searches_define_unknown": "",
-    "utility_repeater_initial": ""
+    "utility_repeater_initial": "",
+    "permissions_perms_reset": "",
+    "searches_hex_invalid": "",
+    "permissions_global_perms_reset": ""
 }
