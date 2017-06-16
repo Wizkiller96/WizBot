@@ -151,7 +151,6 @@
     "administration_old_nick": "Apodo anterior",
     "administration_old_topic": "Tema anterior",
     "administration_perms": "Error. Creo que no tengo suficientes permisos.",
-    "administration_perms_reset": "Los permisos de este servidor han sido reiniciados.",
     "administration_prot_active": "Protecciones activas",
     "administration_prot_disable": "{0} ha sido **desactivado** en este servidor.",
     "administration_prot_enable": "{0} activado",
@@ -780,7 +779,6 @@
     "administration_gvc_disabled": "El canal de juego por voz ha sido desactivado.",
     "administration_gvc_enabled": "{0} ahora es un canal de juego por voz.",
     "administration_not_in_voice": "No estás en un canal de voz en este servidor.",
-    "administration_global_perms_reset": "Los permisos globales han sido reiniciados.",
     "permissions_blocked_commands": "Comandos bloqueados",
     "permissions_blocked_modules": "Módulos bloqueados",
     "permissions_gcmd_add": "El comando {0} ha sido desactivado en todos los servidores.",
@@ -804,5 +802,8 @@
     "administration_timezones_available": "",
     "music_song_not_found": "",
     "searches_define_unknown": "",
-    "utility_repeater_initial": ""
+    "utility_repeater_initial": "",
+    "permissions_perms_reset": "",
+    "searches_hex_invalid": "",
+    "permissions_global_perms_reset": ""
 }
