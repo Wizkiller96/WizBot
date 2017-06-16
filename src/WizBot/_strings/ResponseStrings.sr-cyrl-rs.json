@@ -151,7 +151,6 @@
     "administration_old_nick": "Стари надимак",
     "administration_old_topic": "Стара тема",
     "administration_perms": "Error. Most likely I don't have sufficient permissions.",
-    "administration_perms_reset": "Permissions for this server are reset.",
     "administration_prot_active": "Активне заштите",
     "administration_prot_disable": "{0} has been **disabled** on this server.",
     "administration_prot_enable": "{0} Enabled",
@@ -780,7 +779,6 @@
     "administration_gvc_disabled": "Игра карактеристика Глас канал је онемогућен на овом серверу.",
     "administration_gvc_enabled": "{0} је игра Глас канал сада.",
     "administration_not_in_voice": "Нисте у говорног канала на овом серверу.",
-    "administration_global_perms_reset": "Глобални дозволе су ресет.",
     "permissions_blocked_commands": "Блокирани Команде",
     "permissions_blocked_modules": "Блокирани Модули",
     "permissions_gcmd_add": "Команда {0} је онемогућена на свим серверима.",
@@ -804,5 +802,8 @@
     "administration_timezones_available": "",
     "music_song_not_found": "",
     "searches_define_unknown": "",
-    "utility_repeater_initial": ""
+    "utility_repeater_initial": "",
+    "permissions_perms_reset": "",
+    "searches_hex_invalid": "",
+    "permissions_global_perms_reset": ""
 }
