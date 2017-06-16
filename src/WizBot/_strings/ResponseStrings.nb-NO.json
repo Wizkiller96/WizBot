@@ -151,7 +151,6 @@
     "administration_old_nick": "Gammelt kallenavn",
     "administration_old_topic": "Gammelt emne",
     "administration_perms": "Feil. Mest sansynlig har jeg ikke tilstrekkelige tillatelser.",
-    "administration_perms_reset": "Tillatelsene til denne serveren er nullstilt.",
     "administration_prot_active": "Aktive Beskyttelser",
     "administration_prot_disable": "{0} har blitt **deaktivert** på denne serveren.",
     "administration_prot_enable": "{0} aktivert",
@@ -780,7 +779,6 @@
     "administration_gvc_disabled": "Funksjonen 'Talekanal for spill' er slått av.",
     "administration_gvc_enabled": "{0} er nå 'talekanal for spill'.",
     "administration_not_in_voice": "Du er ikke i en talekanal på denne serveren.",
-    "administration_global_perms_reset": "Globale tillatelser er nullstilt",
     "permissions_blocked_commands": "Blokkerte kommandoer",
     "permissions_blocked_modules": "Blokkerte moduler",
     "permissions_gcmd_add": "Kommandoen {0} er nå blokkert på alle servere.",
@@ -804,5 +802,8 @@
     "administration_timezones_available": "",
     "music_song_not_found": "",
     "searches_define_unknown": "",
-    "utility_repeater_initial": ""
+    "utility_repeater_initial": "",
+    "permissions_perms_reset": "",
+    "searches_hex_invalid": "",
+    "permissions_global_perms_reset": ""
 }
