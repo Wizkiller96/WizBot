@@ -151,7 +151,6 @@
     "administration_old_nick": "Nama panggilan lama",
     "administration_old_topic": "Topik lama",
     "administration_perms": "Error. Kemungkinan besar saya tidak punya izin yang cukup.",
-    "administration_perms_reset": "Izin untuk server ini telah diatur ulang.",
     "administration_prot_active": "Perlindungan aktif",
     "administration_prot_disable": "{0} telah **dinonaktifkan** pada server ini.",
     "administration_prot_enable": "{0} diaktifkan",
@@ -780,7 +779,6 @@
     "administration_gvc_disabled": "Fitur channel suara permainan telah dinonaktifkan di server ini. ",
     "administration_gvc_enabled": "{0} sekarang adalah saluran suara permainan.",
     "administration_not_in_voice": "Anda tidak ada di saluran suara server ini.",
-    "administration_global_perms_reset": "Ijin global telah diulang.",
     "permissions_blocked_commands": "Perintah yang dilarang",
     "permissions_blocked_modules": "Modul yang dilarang",
     "permissions_gcmd_add": "Perintah {0} telah dinonaktifkan di semua server.",
@@ -804,5 +802,8 @@
     "administration_timezones_available": "",
     "music_song_not_found": "",
     "searches_define_unknown": "",
-    "utility_repeater_initial": ""
+    "utility_repeater_initial": "",
+    "permissions_perms_reset": "",
+    "searches_hex_invalid": "",
+    "permissions_global_perms_reset": ""
 }
