@@ -151,7 +151,6 @@
     "administration_old_nick": "Oude bijnaam",
     "administration_old_topic": "Oud onderwerp",
     "administration_perms": "Error. Hoogst waarschijnlijk heb ik geen voldoende rechten.",
-    "administration_perms_reset": "De rechten op deze server zijn gereset.",
     "administration_prot_active": "Actieve beschermingen.",
     "administration_prot_disable": "{0} is nu ** uitgeschakeld** op deze server.",
     "administration_prot_enable": "{0} Ingeschakeld",
@@ -780,7 +779,6 @@
     "administration_gvc_disabled": "Game Voice kanaal-functie is uitgeschakeld op deze server.",
     "administration_gvc_enabled": "{0} is een Game Voice Kanaal nu.",
     "administration_not_in_voice": "Je zit niet in een spraak kanaal in deze server.",
-    "administration_global_perms_reset": "Globale machtigingen zijn teruggezet.",
     "permissions_blocked_commands": "Geblokkeerde Commando's",
     "permissions_blocked_modules": "Geblokkeerde Modules",
     "permissions_gcmd_add": "Commando {0} is uitgeschakeld op alle servers.",
@@ -804,5 +802,8 @@
     "administration_timezones_available": "",
     "music_song_not_found": "",
     "searches_define_unknown": "",
-    "utility_repeater_initial": ""
+    "utility_repeater_initial": "",
+    "permissions_perms_reset": "",
+    "searches_hex_invalid": "",
+    "permissions_global_perms_reset": ""
 }
