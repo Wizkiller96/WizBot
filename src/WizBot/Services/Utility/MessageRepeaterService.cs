@@ -17,7 +17,6 @@ namespace WizBot.Services.Utility
 
         public MessageRepeaterService(WizBot bot, DiscordShardedClient client, IEnumerable<GuildConfig> gcs)
         {
-            System.Console.WriteLine(bot.Ready);
             var _ = Task.Run(async () =>
             {
                 while (!bot.Ready)

@@ -37,7 +37,7 @@ namespace WizBot
         /* I don't know how to make this not be static
          * and keep the convenience of .WithOkColor
          * and .WithErrorColor extensions methods.
-         * I don't want to pass botconfig every time I
+         * I don't want to pass botconfig every time I 
          * want to send a confirm or error message, so
          * I'll keep this for now */
         public static Color OkColor { get; private set; }
@@ -66,7 +66,7 @@ namespace WizBot
             SetupLogger();
             _log = LogManager.GetCurrentClassLogger();
             TerribleElevatedPermissionCheck();
-
+            
             Credentials = new BotCredentials();
             Db = new DbService(Credentials);
 
@@ -77,7 +77,7 @@ namespace WizBot
                 OkColor = new Color(Convert.ToUInt32(BotConfig.OkColor, 16));
                 ErrorColor = new Color(Convert.ToUInt32(BotConfig.ErrorColor, 16));
             }
-
+            
             Client = new DiscordShardedClient(new DiscordSocketConfig
             {
                 MessageCacheSize = 10,
@@ -167,7 +167,7 @@ namespace WizBot
             var guildTimezoneService = new GuildTimezoneService(AllGuildConfigs, Db);
             #endregion
 
-            #region pokemon
+            #region pokemon 
             var pokemonService = new PokemonService();
             #endregion
 
@@ -279,7 +279,7 @@ namespace WizBot
 
             var _ = await CommandService.AddModulesAsync(this.GetType().GetTypeInfo().Assembly);
 
-
+            
             //Console.WriteLine(string.Join(", ", CommandService.Commands
             //    .Distinct(x => x.Name + x.Module.Name)
             //    .SelectMany(x => x.Aliases)
@@ -331,23 +331,16 @@ namespace WizBot
 
         private static void SetupLogger()
         {
-            try
+            var logConfig = new LoggingConfiguration();
+            var consoleTarget = new ColoredConsoleTarget()
             {
-                var logConfig = new LoggingConfiguration();
-                var consoleTarget = new ColoredConsoleTarget()
-                {
-                    Layout = @"${date:format=HH\:mm\:ss} ${logger} | ${message}"
-                };
-                logConfig.AddTarget("Console", consoleTarget);
+                Layout = @"${date:format=HH\:mm\:ss} ${logger} | ${message}"
+            };
+            logConfig.AddTarget("Console", consoleTarget);
 
-                logConfig.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, consoleTarget));
+            logConfig.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, consoleTarget));
 
-                LogManager.Configuration = logConfig;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
+            LogManager.Configuration = logConfig;
         }
     }
 }

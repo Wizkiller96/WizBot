@@ -94,7 +94,7 @@ namespace WizBot.Extensions
                         }
                     }
                 }
-                catch (Exception ex) { Console.WriteLine(ex); }
+                catch (Exception ex) {  }
             };
 
             using (msg.OnReaction(client, changePage, changePage))

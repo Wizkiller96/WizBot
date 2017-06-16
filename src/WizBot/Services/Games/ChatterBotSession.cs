@@ -30,7 +30,6 @@ namespace WizBot.Services.Games
             {
                 var res = await http.GetStringAsync(string.Format(apiEndpoint, message)).ConfigureAwait(false);
                 var cbr = JsonConvert.DeserializeObject<ChatterBotResponse>(res);
-                //Console.WriteLine(cbr.Convo_id);
                 return cbr.BotSay.Replace("<br/>", "\n");
             }
         }
