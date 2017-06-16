@@ -28,6 +28,7 @@ using WizBot.Services.Help;
 using System.IO;
 using WizBot.Services.Pokemon;
 using WizBot.DataStructures;
+using WizBot.Extensions;
 
 namespace WizBot
 {
