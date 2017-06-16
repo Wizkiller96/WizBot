@@ -151,7 +151,6 @@
     "administration_old_nick": "Gammal smeknamn",
     "administration_old_topic": "Gammal ämne",
     "administration_perms": "Fel. Troligtvis så har jag inte tillräcklig behörighet.",
-    "administration_perms_reset": "Tillstånd för denna server har blivit återställt.",
     "administration_prot_active": "Aktiva skydd",
     "administration_prot_disable": "{0} har blivit **avaktiverat** på denna server.",
     "administration_prot_enable": "{0} Aktiverad",
@@ -780,7 +779,6 @@
     "administration_gvc_disabled": "Spel Röst Kanal funktion har blivit inaktiverad på denna servern. ",
     "administration_gvc_enabled": "{0} är ett Spel Röst Kanal nu.\n",
     "administration_not_in_voice": "Du är inte i röst kanalen på denna server. ",
-    "administration_global_perms_reset": "Global tillåtelse har blivit återställt. ",
     "permissions_blocked_commands": "Blockerad Kommandos",
     "permissions_blocked_modules": "Blockerad Moduller",
     "permissions_gcmd_add": "Kommando {0} har blivit avaktiverad på alla server. ",
@@ -804,5 +802,8 @@
     "administration_timezones_available": "",
     "music_song_not_found": "",
     "searches_define_unknown": "",
-    "utility_repeater_initial": ""
+    "utility_repeater_initial": "",
+    "permissions_perms_reset": "",
+    "searches_hex_invalid": "",
+    "permissions_global_perms_reset": ""
 }
