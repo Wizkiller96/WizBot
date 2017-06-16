@@ -27,6 +27,7 @@ using WizBot.Services.Utility;
 using WizBot.Services.Help;
 using System.IO;
 using WizBot.Services.Pokemon;
+using WizBot.DataStructures;
 
 namespace WizBot
 {
@@ -279,7 +280,7 @@ namespace WizBot
 
             var _ = await CommandService.AddModulesAsync(this.GetType().GetTypeInfo().Assembly);
 
-            
+
             //Console.WriteLine(string.Join(", ", CommandService.Commands
             //    .Distinct(x => x.Name + x.Module.Name)
             //    .SelectMany(x => x.Aliases)
@@ -287,8 +288,8 @@ namespace WizBot
             //    .Where(x => x.Count() > 1)
             //    .Select(x => x.Key + $"({x.Count()})")));
 
+//unload modules which are not available on the public bot
 #if GLOBAL_WIZBOT
-            //unload modules which are not available on the public bot
             CommandService
                 .Modules
                 .ToArray()

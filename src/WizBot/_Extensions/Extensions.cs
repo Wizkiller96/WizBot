@@ -94,7 +94,10 @@ namespace WizBot.Extensions
                         }
                     }
                 }
-                catch (Exception ex) {  }
+                catch (Exception)
+                {
+                    //ignored
+                }
             };
 
             using (msg.OnReaction(client, changePage, changePage))
