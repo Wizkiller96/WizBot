@@ -151,7 +151,6 @@
     "administration_old_nick": "旧昵称",
     "administration_old_topic": "旧题目",
     "administration_perms": "失败。很可能我没有足够的权限。",
-    "administration_perms_reset": "重置此服务器的权限。",
     "administration_prot_active": "主动保护",
     "administration_prot_disable": "{0}已在此服务器禁用。",
     "administration_prot_enable": "{0}已启用。",
@@ -780,7 +779,6 @@
     "administration_gvc_disabled": "这服务器的游戏语音频道功能已被禁用。",
     "administration_gvc_enabled": "{0} 现在是个游戏语音频道。",
     "administration_not_in_voice": "你不在这服务器的语音频道。",
-    "administration_global_perms_reset": "铜盘权限被重置",
     "permissions_blocked_commands": "已禁用命令。",
     "permissions_blocked_modules": "已禁用模块。",
     "permissions_gcmd_add": "{0} 命令已在所有服务器禁用。",
@@ -804,5 +802,8 @@
     "administration_timezones_available": "",
     "music_song_not_found": "",
     "searches_define_unknown": "",
-    "utility_repeater_initial": ""
+    "utility_repeater_initial": "",
+    "permissions_perms_reset": "",
+    "searches_hex_invalid": "",
+    "permissions_global_perms_reset": ""
 }
