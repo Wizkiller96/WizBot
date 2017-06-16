@@ -151,7 +151,6 @@
     "administration_old_nick": "이전 닉네임",
     "administration_old_topic": "이전 주제",
     "administration_perms": "오류. 봇에게 충분한 권한이 없습니다.",
-    "administration_perms_reset": "이 서버의 모든 권한이 초기화되었습니다.",
     "administration_prot_active": "보호기능 활성화",
     "administration_prot_disable": "{0}은(는) 이 서버에서 **비활성화**되었습니다.",
     "administration_prot_enable": "{0}이(가) 활성화되었습니다.",
@@ -780,7 +779,6 @@
     "administration_gvc_disabled": "이 서버에서 게임 음성 채널 기능이 비활성화되었습니다.",
     "administration_gvc_enabled": "이제 {0}이(가) 게임 음성 채널입니다.",
     "administration_not_in_voice": "당신은 이 서버의 음성 채널에 있지 않습니다.",
-    "administration_global_perms_reset": "글로벌 권한이 리셋되었습니다.",
     "permissions_blocked_commands": "차단된 명령어",
     "permissions_blocked_modules": "차단된 모듈",
     "permissions_gcmd_add": "모든 서버에서 {0} 명령어가 비활성화되었습니다.",
@@ -804,5 +802,8 @@
     "administration_timezones_available": "",
     "music_song_not_found": "",
     "searches_define_unknown": "",
-    "utility_repeater_initial": ""
+    "utility_repeater_initial": "",
+    "permissions_perms_reset": "",
+    "searches_hex_invalid": "",
+    "permissions_global_perms_reset": ""
 }
