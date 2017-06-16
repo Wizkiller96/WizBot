@@ -198,4 +198,4 @@ To set up WizBot for music and Google API Keys, follow [Setting up your API keys
 [img7]: https://cdn.discordapp.com/attachments/251504306010849280/251505766370902016/setting_up_credentials.gif
 [setup credentials]: http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/#setting-up-credentialsjson-file
 [setup music]: http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/#setting-up-your-api-keys
-[upgrading]: http://nadekobot.readthedocs.io/en/latest/guides/Upgrading%20Guide/
+[upgrading]: http://wizbot.readthedocs.io/en/latest/guides/Upgrading%20Guide/
