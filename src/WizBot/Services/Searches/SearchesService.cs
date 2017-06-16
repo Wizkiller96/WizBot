@@ -39,34 +39,37 @@ namespace WizBot.Services.Searches
             _log = LogManager.GetCurrentClassLogger();
 
             //translate commands
-            _client.MessageReceived += async (msg) =>
+            _client.MessageReceived += (msg) =>
             {
-                try
+                var _ = Task.Run(async () =>
                 {
-                    var umsg = msg as SocketUserMessage;
-                    if (umsg == null)
-                        return;
-
-                    if (!TranslatedChannels.TryGetValue(umsg.Channel.Id, out var autoDelete))
-                        return;
-
-                    var key = new UserChannelPair()
+                    try
                     {
-                        UserId = umsg.Author.Id,
-                        ChannelId = umsg.Channel.Id,
-                    };
+                        var umsg = msg as SocketUserMessage;
+                        if (umsg == null)
+                            return;
 
-                    string langs;
-                    if (!UserLanguages.TryGetValue(key, out langs))
-                        return;
+                        if (!TranslatedChannels.TryGetValue(umsg.Channel.Id, out var autoDelete))
+                            return;
 
-                    var text = await Translate(langs, umsg.Resolve(TagHandling.Ignore))
-                                        .ConfigureAwait(false);
-                    if (autoDelete)
-                        try { await umsg.DeleteAsync().ConfigureAwait(false); } catch { }
-                    await umsg.Channel.SendConfirmAsync($"{umsg.Author.Mention} `:` " + text.Replace("<@ ", "<@").Replace("<@! ", "<@!")).ConfigureAwait(false);
-                }
-                catch { }
+                        var key = new UserChannelPair()
+                        {
+                            UserId = umsg.Author.Id,
+                            ChannelId = umsg.Channel.Id,
+                        };
+
+                        if (!UserLanguages.TryGetValue(key, out string langs))
+                            return;
+
+                        var text = await Translate(langs, umsg.Resolve(TagHandling.Ignore))
+                                            .ConfigureAwait(false);
+                        if (autoDelete)
+                            try { await umsg.DeleteAsync().ConfigureAwait(false); } catch { }
+                        await umsg.Channel.SendConfirmAsync($"{umsg.Author.Mention} `:` " + text.Replace("<@ ", "<@").Replace("<@! ", "<@!")).ConfigureAwait(false);
+                    }
+                    catch { }
+                });
+                return Task.CompletedTask;
             };
 
             //pokemon commands

@@ -187,7 +187,6 @@ namespace WizBot.Services
 
         private async Task MessageReceivedHandler(SocketMessage msg)
         {
-            await Task.Yield();
             try
             {
                 if (msg.Author.IsBot || !_bot.Ready) //no bots, wait until bot connected and initialized

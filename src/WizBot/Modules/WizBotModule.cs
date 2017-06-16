@@ -34,7 +34,7 @@ namespace WizBot.Modules
 
         protected override void BeforeExecute()
         {
-            _cultureInfo =_localization.GetCultureInfo(Context.Guild?.Id);
+            _cultureInfo = _localization.GetCultureInfo(Context.Guild?.Id);
         }
 
         //public Task<IUserMessage> ReplyConfirmLocalized(string titleKey, string textKey, string url = null, string footer = null)
@@ -111,16 +111,20 @@ namespace WizBot.Modules
 
             Task MessageReceived(SocketMessage arg)
             {
-                if (!(arg is SocketUserMessage userMsg) ||
-                    !(userMsg.Channel is ITextChannel chan) ||
-                    userMsg.Author.Id != userId ||
-                    userMsg.Channel.Id != channelId)
+                var _ = Task.Run(() =>
                 {
-                    return Task.CompletedTask;
-                }
+                    if (!(arg is SocketUserMessage userMsg) ||
+                        !(userMsg.Channel is ITextChannel chan) ||
+                        userMsg.Author.Id != userId ||
+                        userMsg.Channel.Id != channelId)
+                    {
+                        return Task.CompletedTask;
+                    }
 
-                userInputTask.SetResult(arg.Content);
-                userMsg.DeleteAfter(1);
+                    userInputTask.SetResult(arg.Content);
+                    userMsg.DeleteAfter(1);
+                    return Task.CompletedTask;
+                });
                 return Task.CompletedTask;
             }
         }
