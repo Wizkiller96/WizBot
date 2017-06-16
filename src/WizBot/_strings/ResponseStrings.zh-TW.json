@@ -151,7 +151,6 @@
     "administration_old_nick": "原始暱稱",
     "administration_old_topic": "原始主題",
     "administration_perms": "錯誤: 很可能我並沒有足夠的權限。",
-    "administration_perms_reset": "此伺服器的權限已重設。",
     "administration_prot_active": "生效中的保護機制",
     "administration_prot_disable": "{0} 已在此伺服器 **停用**。",
     "administration_prot_enable": "{0} 已啟用。",
@@ -780,7 +779,6 @@
     "administration_gvc_disabled": "遊戲語音頻道功能在此伺服器上停用。",
     "administration_gvc_enabled": "{0}現在是一個遊戲語音頻道了。",
     "administration_not_in_voice": "你並沒有在此伺服器上的語音頻道。",
-    "administration_global_perms_reset": "全域權限已重置。",
     "permissions_blocked_commands": "阻擋的指令",
     "permissions_blocked_modules": "阻擋的模組",
     "permissions_gcmd_add": "{0} 指令已在所有伺服器上停用。",
@@ -804,5 +802,8 @@
     "administration_timezones_available": "",
     "music_song_not_found": "",
     "searches_define_unknown": "",
-    "utility_repeater_initial": ""
+    "utility_repeater_initial": "",
+    "permissions_perms_reset": "",
+    "searches_hex_invalid": "",
+    "permissions_global_perms_reset": ""
 }
