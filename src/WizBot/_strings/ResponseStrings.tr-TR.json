@@ -151,7 +151,6 @@
     "administration_old_nick": "Eski takma ad",
     "administration_old_topic": "Eski konu",
     "administration_perms": "Hata.Yüksek ihtimalle yeterli yetki'ye sahip değilim.",
-    "administration_perms_reset": "Bu server için yetkiler sıfırlandı.",
     "administration_prot_active": "Koruma Aktif",
     "administration_prot_disable": "{0} Bu sunucudaki {0} **Devre Dışı**.",
     "administration_prot_enable": "{0} Etkin",
@@ -780,7 +779,6 @@
     "administration_gvc_disabled": "Oyun Ses Kanalı özelliği bu sunucuda devre dışı bırakıldı.",
     "administration_gvc_enabled": "{0} şimdi bir Oyun Sesli Kanal.",
     "administration_not_in_voice": "Bu sunucuda sesli kanalda değilsiniz.",
-    "administration_global_perms_reset": "Genel izinler sıfırlandı.",
     "permissions_blocked_commands": "Engellenen Komutlar",
     "permissions_blocked_modules": "Engellenen Modüller",
     "permissions_gcmd_add": "{0} komutu tüm sunucularda devre dışı bırakıldı.",
@@ -804,5 +802,8 @@
     "administration_timezones_available": "",
     "music_song_not_found": "",
     "searches_define_unknown": "",
-    "utility_repeater_initial": ""
+    "utility_repeater_initial": "",
+    "permissions_perms_reset": "",
+    "searches_hex_invalid": "",
+    "permissions_global_perms_reset": ""
 }
