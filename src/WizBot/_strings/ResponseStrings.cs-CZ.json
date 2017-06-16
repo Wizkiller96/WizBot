@@ -151,7 +151,6 @@
     "administration_old_nick": "Stará přezdívka",
     "administration_old_topic": "Staré téma",
     "administration_perms": "Chyba. Pravděpodobně nemám potřebná oprávnění.",
-    "administration_perms_reset": "Opatření jsou pro tento server resetována.",
     "administration_prot_active": "Aktivní ochrany",
     "administration_prot_disable": "{0} byl **vypnut** na tomto serveru.",
     "administration_prot_enable": "{0} Zapnut",
@@ -780,7 +779,6 @@
     "administration_gvc_disabled": "Herní hlasový kanál byl zakázán na tomto serveru.",
     "administration_gvc_enabled": "{0} je nyní Herní hlasový kanál.",
     "administration_not_in_voice": "Nejseš v hlasovém kanále na tomto serveru.",
-    "administration_global_perms_reset": "Globální povolení byla resetována.",
     "permissions_blocked_commands": "Zablokované příkazy",
     "permissions_blocked_modules": "Zablokované moduly",
     "permissions_gcmd_add": "Příkaz {0} byl zakázán na všech serverech.",
@@ -804,5 +802,8 @@
     "administration_timezones_available": "",
     "music_song_not_found": "",
     "searches_define_unknown": "",
-    "utility_repeater_initial": ""
+    "utility_repeater_initial": "",
+    "permissions_perms_reset": "",
+    "searches_hex_invalid": "",
+    "permissions_global_perms_reset": ""
 }
