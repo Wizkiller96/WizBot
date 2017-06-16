@@ -151,7 +151,6 @@
     "administration_old_nick": "Apelido Antigo",
     "administration_old_topic": "Tópico Antigo",
     "administration_perms": "Erro. Não tenho permissões suficientes.",
-    "administration_perms_reset": "As permissões para este servidor foram resetadas.",
     "administration_prot_active": "Proteções ativadas",
     "administration_prot_disable": "{0} foi **desativado** neste servidor.",
     "administration_prot_enable": "{0} Ativado",
@@ -780,7 +779,6 @@
     "administration_gvc_disabled": "Canais de Voz de Jogos foram desabilitados neste server.",
     "administration_gvc_enabled": "{0} é um Canal de Voz de Jogos agora.",
     "administration_not_in_voice": "Você não está em um canal de voz neste server.",
-    "administration_global_perms_reset": "Permissões globais foram resetadas.",
     "permissions_blocked_commands": "Comandos Bloqueados",
     "permissions_blocked_modules": "Módulos Bloqueados",
     "permissions_gcmd_add": "Comando {0} foi desabilitado em todos os servidores.",
@@ -804,5 +802,8 @@
     "administration_timezones_available": "",
     "music_song_not_found": "",
     "searches_define_unknown": "",
-    "utility_repeater_initial": ""
+    "utility_repeater_initial": "",
+    "permissions_perms_reset": "",
+    "searches_hex_invalid": "",
+    "permissions_global_perms_reset": ""
 }
