@@ -121,8 +121,10 @@ namespace WizBot.Modules
                         return Task.CompletedTask;
                     }
 
-                    userInputTask.SetResult(arg.Content);
-                    userMsg.DeleteAfter(1);
+                    if (userInputTask.TrySetResult(arg.Content))
+                    {
+                        userMsg.DeleteAfter(1);
+                    }
                     return Task.CompletedTask;
                 });
                 return Task.CompletedTask;
