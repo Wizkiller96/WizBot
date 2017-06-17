@@ -19,7 +19,7 @@ namespace WizBot.Services.Impl
 
         public const string BotVersion = "1.43";
 
-        public string Author => "Kwoth#2560";
+        public string Author => "Kwoth#2560 & Wizkiller96#2947";
         public string Library => "Discord.Net";
         public string Heap =>
             Math.Round((double)GC.GetTotalMemory(false) / 1.MiB(), 2).ToString(CultureInfo.InvariantCulture);
