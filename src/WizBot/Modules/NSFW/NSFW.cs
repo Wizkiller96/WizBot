@@ -66,7 +66,6 @@ namespace WizBot.Modules.NSFW
         [WizBotCommand, Usage, Description, Aliases]
         public Task Hentai([Remainder] string tag = null) =>
             InternalHentai(Context.Channel, tag, false);
-#if !GLOBAL_WIZBOT
         [WizBotCommand, Usage, Description, Aliases]
         [RequireUserPermission(ChannelPermission.ManageMessages)]
         public async Task AutoHentai(int interval = 0, string tags = null)
@@ -144,7 +143,7 @@ namespace WizBot.Modules.NSFW
                 _hentaiBombBlacklist.TryRemove(Context.User.Id);
             }
         }
-#endif
+
         [WizBotCommand, Usage, Description, Aliases]
         public Task Yandere([Remainder] string tag = null)
             => InternalDapiCommand(tag, DapiSearchType.Yandere);
