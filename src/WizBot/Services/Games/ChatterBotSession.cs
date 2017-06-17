@@ -10,7 +10,11 @@ namespace WizBot.Services.Games
         private static WizBotRandom rng { get; } = new WizBotRandom();
         public string ChatterbotId { get; }
         public string ChannelId { get; }
+#if GLOBAL_WIZBOT
+        private int _botId = 1;
+#else
         private int _botId = 6;
+#endif
 
         public ChatterBotSession(ulong channelId)
         {
@@ -18,11 +22,19 @@ namespace WizBot.Services.Games
             ChatterbotId = rng.Next(0, 1000000).ToString().ToBase64();
         }
 
+#if GLOBAL_WIZBOT
+        private string apiEndpoint => "http://wizbot.xyz/chatbot/chatbot/" +
+                                      $"?bot_id={_botId}&" +
+                                      "say={0}&" +
+                                      $"convo_id=wizbot_{ChatterbotId}_{ChannelId}&" +
+                                      "format=json";
+#else
         private string apiEndpoint => "http://api.program-o.com/v2/chatbot/" +
                                       $"?bot_id={_botId}&" +
                                       "say={0}&" +
                                       $"convo_id=wizbot_{ChatterbotId}_{ChannelId}&" +
                                       "format=json";
+#endif
 
         public async Task<string> Think(string message)
         {

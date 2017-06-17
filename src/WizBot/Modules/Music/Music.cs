@@ -18,7 +18,6 @@ using WizBot.DataStructures;
 
 namespace WizBot.Modules.Music
 {
-    [NoPublicBot]
     public class Music : WizBotTopLevelModule 
     {
         private static MusicService _music;
