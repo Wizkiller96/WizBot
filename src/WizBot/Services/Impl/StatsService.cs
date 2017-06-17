@@ -19,7 +19,7 @@ namespace WizBot.Services.Impl
 
         public const string BotVersion = "1.43";
 
-        public string Author => "Kwoth#2560 & Wizkiller96#2947";
+        public string Author => "Kwoth#2560";
         public string Library => "Discord.Net";
         public string Heap =>
             Math.Round((double)GC.GetTotalMemory(false) / 1.MiB(), 2).ToString(CultureInfo.InvariantCulture);
@@ -47,20 +47,26 @@ namespace WizBot.Services.Impl
 
             _client.ChannelCreated += (c) =>
             {
-                if (c is ITextChannel)
-                    Interlocked.Increment(ref _textChannels);
-                else if (c is IVoiceChannel)
-                    Interlocked.Increment(ref _voiceChannels);
+                var _ = Task.Run(() =>
+                {
+                    if (c is ITextChannel)
+                        Interlocked.Increment(ref _textChannels);
+                    else if (c is IVoiceChannel)
+                        Interlocked.Increment(ref _voiceChannels);
+                });
 
                 return Task.CompletedTask;
             };
 
             _client.ChannelDestroyed += (c) =>
             {
-                if (c is ITextChannel)
-                    Interlocked.Decrement(ref _textChannels);
-                else if (c is IVoiceChannel)
-                    Interlocked.Decrement(ref _voiceChannels);
+                var _ = Task.Run(() =>
+                {
+                    if (c is ITextChannel)
+                        Interlocked.Decrement(ref _textChannels);
+                    else if (c is IVoiceChannel)
+                        Interlocked.Decrement(ref _voiceChannels);
+                });
 
                 return Task.CompletedTask;
             };

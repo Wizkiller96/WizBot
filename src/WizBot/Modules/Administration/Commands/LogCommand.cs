@@ -10,12 +10,14 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using static WizBot.Services.Administration.LogCommandService;
+using WizBot.DataStructures;
 
 namespace WizBot.Modules.Administration
 {
     public partial class Administration
     {
         [Group]
+        [NoPublicBot]
         public class LogCommands : WizBotSubModule
         {
             private readonly LogCommandService _lc;

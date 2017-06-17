@@ -9,9 +9,10 @@ using WizBot.Services.Database.Models;
 namespace WizBot.Migrations
 {
     [DbContext(typeof(WizBotContext))]
-    partial class WizBotSqliteContextModelSnapshot : ModelSnapshot
+    [Migration("20170616154106_crstartswith")]
+    partial class crstartswith
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1");
@@ -150,7 +151,7 @@ namespace WizBot.Migrations
                     b.Property<string>("CurrencySign");
 
                     b.Property<bool>("CustomReactionsStartWith");
-                    
+
                     b.Property<string>("DMHelpString");
 
                     b.Property<DateTime?>("DateAdded");
