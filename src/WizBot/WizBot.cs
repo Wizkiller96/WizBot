@@ -86,7 +86,7 @@ namespace WizBot
                 LogLevel = LogSeverity.Warning,
                 TotalShards = Credentials.TotalShards,
                 ConnectionTimeout = int.MaxValue,
-                AlwaysDownloadUsers = true,
+                AlwaysDownloadUsers = false,
             });
 
             CommandService = new CommandService(new CommandServiceConfig()
