@@ -49,6 +49,11 @@ If you do not see `credentials.json` you will need to rename `credentials_exampl
 
 
 #### Setting up credentials.json file
+**For Windows** you can find `credentials.json` file in `WizBot\system` folder. 			
+e.g. `C:\Program Files\WizBot\system`			
+**For Linux** you can find `credentials.json` in `WizBot/src/WizBot` folder. 			
+e.g. `/root/WizBot/src/WizBot`			
+
 ![img3](http://i.imgur.com/QwKMnTG.gif)
 
 ##### Getting Bot's Token:
@@ -156,7 +161,7 @@ It should look like:
 ## DB files
 
 WizBot saves all the settings and infomations in `WizBot.db` file here:		
-`WizBot\src\WizBot\bin\Release\netcoreapp1.1\data\WizBot.db` (macOS and Linux) 		
+`WizBot/src/WizBot/bin/Release/netcoreapp1.1/data/WizBot.db` (macOS and Linux) 		
 `WizBot\system\data` (Windows)		
 in order to open the database file you will need [DB Browser for SQLite](http://sqlitebrowser.org/).
 
@@ -177,7 +182,7 @@ in order to open the database file you will need [DB Browser for SQLite](http://
 and that will save all the changes.
 
 
-![wizbotdb](https://cdn.discordapp.com/attachments/251504306010849280/254067055240806400/nadekodb.gif)
+![wizbotdb](https://cdn.discordapp.com/attachments/251504306010849280/254067055240806400/Wizdb.gif)
 
 [Google Console]: https://console.developers.google.com
 [DiscordApp]: https://discordapp.com/developers/applications/me
