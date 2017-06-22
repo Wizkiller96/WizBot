@@ -41,20 +41,22 @@ namespace WizBot.Services.Impl
         public int TotalShards { get; }
         public string CarbonKey { get; }
 
-        public string credsFileName { get; } = Path.Combine(Directory.GetCurrentDirectory(), "credentials.json");
+        private readonly string _credsFileName = Path.Combine(Directory.GetCurrentDirectory(), "credentials.json");
         public string PatreonAccessToken { get; }
+        public string ShardRunCommand { get; }
+        public string ShardRunArguments { get; }
 
         public BotCredentials()
         {
             _log = LogManager.GetCurrentClassLogger();
 
             try { File.WriteAllText("./credentials_example.json", JsonConvert.SerializeObject(new CredentialsModel(), Formatting.Indented)); } catch { }
-            if(!File.Exists(credsFileName))
+            if(!File.Exists(_credsFileName))
                 _log.Warn($"credentials.json is missing. Attempting to load creds from environment variables prefixed with 'WizBot_'. Example is in {Path.GetFullPath("./credentials_example.json")}");
             try
             {
                 var configBuilder = new ConfigurationBuilder();
-                configBuilder.AddJsonFile(credsFileName, true)
+                configBuilder.AddJsonFile(_credsFileName, true)
                     .AddEnvironmentVariables("WizBot_");
 
                 var data = configBuilder.Build();
@@ -72,13 +74,19 @@ namespace WizBot.Services.Impl
                 MashapeKey = data[nameof(MashapeKey)];
                 OsuApiKey = data[nameof(OsuApiKey)];
                 PatreonAccessToken = data[nameof(PatreonAccessToken)];
+                ShardRunCommand = data[nameof(ShardRunCommand)];
+                ShardRunArguments = data[nameof(ShardRunArguments)];
+
+                if (string.IsNullOrWhiteSpace(ShardRunCommand))
+                    ShardRunCommand = "dotnet";
+                if (string.IsNullOrWhiteSpace(ShardRunArguments))
+                    ShardRunArguments = "run -c Release -- {0} {1}";
 
                 int ts = 1;
                 int.TryParse(data[nameof(TotalShards)], out ts);
                 TotalShards = ts < 1 ? 1 : ts;
 
-                ulong clId = 0;
-                ulong.TryParse(data[nameof(ClientId)], out clId);
+                ulong.TryParse(data[nameof(ClientId)], out ulong clId);
                 ClientId = clId;
 
                 var scId = data[nameof(SoundCloudClientId)];
@@ -118,6 +126,7 @@ namespace WizBot.Services.Impl
             public DBConfig Db { get; set; } = new DBConfig("sqlite", "Filename=./data/WizBot.db");
             public int TotalShards { get; set; } = 1;
             public string PatreonAccessToken { get; set; } = "";
+            public string ShardRunCommand { get; set; } = "";
         }
 
         private class DbModel
