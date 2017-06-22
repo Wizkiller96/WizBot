@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace WizBot.Services.Utility
 {
+    //todo periodically load from the database, update only on shard 0
     public class ConverterService
     {
         public List<ConvertUnit> Units { get; set; } = new List<ConvertUnit>();
