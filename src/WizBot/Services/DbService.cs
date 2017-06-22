@@ -32,6 +32,7 @@ namespace WizBot.Services
         public WizBotContext GetDbContext()
         {
             var context = new WizBotContext(options);
+            context.Database.SetCommandTimeout(60);
             context.Database.Migrate();
             context.EnsureSeedData();
 

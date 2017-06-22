@@ -18,8 +18,9 @@ namespace WizBot.Services.Database
         public WizBotContext Create(DbContextFactoryOptions options)
         {
             var optionsBuilder = new DbContextOptionsBuilder();
-            optionsBuilder.UseSqlite("Filename=./data/WizBot.db;Default Command Timeout=60000;Busy Timeout=60000");
+            optionsBuilder.UseSqlite("Filename=./data/WizBot.db");
             var ctx = new WizBotContext(optionsBuilder.Options);
+            ctx.Database.SetCommandTimeout(60);
             return ctx;
         }
     }
