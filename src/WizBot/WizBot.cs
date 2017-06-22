@@ -28,6 +28,7 @@ using WizBot.Services.Help;
 using System.IO;
 using WizBot.Services.Pokemon;
 using WizBot.DataStructures.ShardCom;
+using WizBot.DataStructures;
 
 namespace WizBot
 {
@@ -341,6 +342,7 @@ namespace WizBot
                 .Where(x => x.Preconditions.Any(y => y.GetType() == typeof(NoPublicBot)))
                 .ForEach(x => CommandService.RemoveModuleAsync(x));
 #endif
+
             Ready = true;
             _log.Info($"Shard {ShardId} ready.");
             //_log.Info(await stats.Print().ConfigureAwait(false));
