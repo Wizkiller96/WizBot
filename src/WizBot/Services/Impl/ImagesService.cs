@@ -29,7 +29,7 @@ namespace WizBot.Services.Impl
 
         public ImmutableArray<byte> Heads { get; private set; }
         public ImmutableArray<byte> Tails { get; private set; }
-        
+
         public ImmutableArray<(string, ImmutableArray<byte>)> Currency { get; private set; }
 
         public ImmutableArray<ImmutableArray<byte>> Dice { get; private set; }
@@ -47,12 +47,10 @@ namespace WizBot.Services.Impl
             this.Reload();
         }
 
-        public TimeSpan Reload()
+        public void Reload()
         {
             try
             {
-                _log.Info("Loading images...");
-                var sw = Stopwatch.StartNew();
                 Heads = File.ReadAllBytes(_headsPath).ToImmutableArray();
                 Tails = File.ReadAllBytes(_tailsPath).ToImmutableArray();
 
@@ -64,7 +62,7 @@ namespace WizBot.Services.Impl
                                 .OrderBy(x => int.Parse(Path.GetFileNameWithoutExtension(x)))
                                 .Select(x => File.ReadAllBytes(x).ToImmutableArray())
                                 .ToImmutableArray();
-                
+
                 SlotBackground = File.ReadAllBytes(_slotBackgroundPath).ToImmutableArray();
 
                 SlotNumbers = Directory.GetFiles(_slotNumbersPath)
@@ -79,10 +77,6 @@ namespace WizBot.Services.Impl
 
                 WifeMatrix = File.ReadAllBytes(_wifeMatrixPath).ToImmutableArray();
                 RategirlDot = File.ReadAllBytes(_rategirlDot).ToImmutableArray();
-
-                sw.Stop();
-                _log.Info($"Images loaded after {sw.Elapsed.TotalSeconds:F2}s!");
-                return sw.Elapsed;
             }
             catch (Exception ex)
             {

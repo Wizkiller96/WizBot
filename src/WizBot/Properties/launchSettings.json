@@ -1,0 +1,8 @@
+﻿{
+  "profiles": {
+    "WizBot": {
+      "commandName": "Project",
+      "commandLineArgs": "main"
+    }
+  }
+}

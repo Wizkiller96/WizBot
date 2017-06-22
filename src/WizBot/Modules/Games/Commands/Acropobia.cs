@@ -20,12 +20,12 @@ namespace WizBot.Modules.Games
         [Group]
         public class Acropobia : WizBotSubModule
         {
-            private readonly DiscordShardedClient _client;
+            private readonly DiscordSocketClient _client;
 
             //channelId, game
             public static ConcurrentDictionary<ulong, AcrophobiaGame> AcrophobiaGames { get; } = new ConcurrentDictionary<ulong, AcrophobiaGame>();
 
-            public Acropobia(DiscordShardedClient client)
+            public Acropobia(DiscordSocketClient client)
             {
                 _client = client;
             }
@@ -86,10 +86,10 @@ namespace WizBot.Modules.Games
             //text, votes
             private readonly ConcurrentDictionary<string, int> _votes = new ConcurrentDictionary<string, int>();
             private readonly Logger _log;
-            private readonly DiscordShardedClient _client;
+            private readonly DiscordSocketClient _client;
             private readonly WizBotStrings _strings;
 
-            public AcrophobiaGame(DiscordShardedClient client, WizBotStrings strings, ITextChannel channel, int time)
+            public AcrophobiaGame(DiscordSocketClient client, WizBotStrings strings, ITextChannel channel, int time)
             {
                 _log = LogManager.GetCurrentClassLogger();
                 _client = client;

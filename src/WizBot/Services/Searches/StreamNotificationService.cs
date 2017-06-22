@@ -20,10 +20,10 @@ namespace WizBot.Services.Searches
         private readonly ConcurrentDictionary<string, StreamStatus> _cachedStatuses = new ConcurrentDictionary<string, StreamStatus>();
 
         private readonly DbService _db;
-        private readonly DiscordShardedClient _client;
+        private readonly DiscordSocketClient _client;
         private readonly WizBotStrings _strings;
 
-        public StreamNotificationService(DbService db, DiscordShardedClient client, WizBotStrings strings)
+        public StreamNotificationService(DbService db, DiscordSocketClient client, WizBotStrings strings)
         {
             _db = db;
             _client = client;

@@ -13,10 +13,10 @@ namespace WizBot.Modules.Games
         [Group]
         public class PollCommands : WizBotSubModule
         {
-            private readonly DiscordShardedClient _client;
+            private readonly DiscordSocketClient _client;
             private readonly PollService _polls;
 
-            public PollCommands(DiscordShardedClient client, PollService polls)
+            public PollCommands(DiscordSocketClient client, PollService polls)
             {
                 _client = client;
                 _polls = polls;

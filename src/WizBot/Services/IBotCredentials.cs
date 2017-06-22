@@ -20,6 +20,7 @@ namespace WizBot.Services
         string OsuApiKey { get; }
 
         bool IsOwner(IUser u);
+        int TotalShards { get; }
     }
 
     public class DBConfig

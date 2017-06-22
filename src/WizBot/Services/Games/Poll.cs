@@ -18,7 +18,7 @@ namespace WizBot.Services.Games
         private string[] answers { get; }
         private readonly ConcurrentDictionary<ulong, int> _participants = new ConcurrentDictionary<ulong, int>();
         private readonly string _question;
-        private readonly DiscordShardedClient _client;
+        private readonly DiscordSocketClient _client;
         private readonly WizBotStrings _strings;
         private bool running = false;
         private HashSet<ulong> _guildUsers;
@@ -27,7 +27,7 @@ namespace WizBot.Services.Games
 
         public bool IsPublic { get; }
 
-        public Poll(DiscordShardedClient client, WizBotStrings strings, IUserMessage umsg, string question, IEnumerable<string> enumerable, bool isPublic = false)
+        public Poll(DiscordSocketClient client, WizBotStrings strings, IUserMessage umsg, string question, IEnumerable<string> enumerable, bool isPublic = false)
         {
             _client = client;
             _strings = strings;

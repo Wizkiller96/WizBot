@@ -13,10 +13,10 @@ namespace WizBot.Services.Games
     {
         public ConcurrentDictionary<ulong, Poll> ActivePolls = new ConcurrentDictionary<ulong, Poll>();
         private readonly Logger _log;
-        private readonly DiscordShardedClient _client;
+        private readonly DiscordSocketClient _client;
         private readonly WizBotStrings _strings;
 
-        public PollService(DiscordShardedClient client, WizBotStrings strings)
+        public PollService(DiscordSocketClient client, WizBotStrings strings)
         {
             _log = LogManager.GetCurrentClassLogger();
             _client = client;
@@ -45,7 +45,7 @@ namespace WizBot.Services.Games
             return false;
         }
 
-        public async Task<bool> TryExecuteEarly(DiscordShardedClient client, IGuild guild, IUserMessage msg)
+        public async Task<bool> TryExecuteEarly(DiscordSocketClient client, IGuild guild, IUserMessage msg)
         {
             if (guild == null)
             {

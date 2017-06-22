@@ -13,6 +13,7 @@ using WizBot.Services;
 using WizBot.Services.Database.Models;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Services.Administration;
+using System.Diagnostics;
 
 namespace WizBot.Modules.Administration
 {
@@ -25,10 +26,10 @@ namespace WizBot.Modules.Administration
 
             private static readonly object _locker = new object();
             private readonly SelfService _service;
-            private readonly DiscordShardedClient _client;
+            private readonly DiscordSocketClient _client;
             private readonly IImagesService _images;
 
-            public SelfCommands(DbService db, SelfService service, DiscordShardedClient client,
+            public SelfCommands(DbService db, SelfService service, DiscordSocketClient client,
                 IImagesService images)
             {
                 _db = db;
@@ -204,28 +205,29 @@ namespace WizBot.Modules.Administration
 
             }
 
-            [WizBotCommand, Usage, Description, Aliases]
-            [OwnerOnly]
-            public async Task ConnectShard(int shardid)
-            {
-                var shard = _client.GetShard(shardid);
+            //todo 2 shard commands
+            //[WizBotCommand, Usage, Description, Aliases]
+            //[OwnerOnly]
+            //public async Task ConnectShard(int shardid)
+            //{
+            //    var shard = _client.GetShard(shardid);
 
-                if (shard == null)
-                {
-                    await ReplyErrorLocalized("no_shard_id").ConfigureAwait(false);
-                    return;
-                }
-                try
-                {
-                    await ReplyConfirmLocalized("shard_reconnecting", Format.Bold("#" + shardid)).ConfigureAwait(false);
-                    await shard.StartAsync().ConfigureAwait(false);
-                    await ReplyConfirmLocalized("shard_reconnected", Format.Bold("#" + shardid)).ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    _log.Warn(ex);
-                }
-            }
+            //    if (shard == null)
+            //    {
+            //        await ReplyErrorLocalized("no_shard_id").ConfigureAwait(false);
+            //        return;
+            //    }
+            //    try
+            //    {
+            //        await ReplyConfirmLocalized("shard_reconnecting", Format.Bold("#" + shardid)).ConfigureAwait(false);
+            //        await shard.StartAsync().ConfigureAwait(false);
+            //        await ReplyConfirmLocalized("shard_reconnected", Format.Bold("#" + shardid)).ConfigureAwait(false);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        _log.Warn(ex);
+            //    }
+            //}
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
@@ -417,8 +419,10 @@ namespace WizBot.Modules.Administration
             [OwnerOnly]
             public async Task ReloadImages()
             {
-                var time = _images.Reload();
-                await ReplyConfirmLocalized("images_loaded", time.TotalSeconds.ToString("F3")).ConfigureAwait(false);
+                var sw = Stopwatch.StartNew();
+                _images.Reload();
+                sw.Stop();
+                await ReplyConfirmLocalized("images_loaded", sw.Elapsed.TotalSeconds.ToString("F3")).ConfigureAwait(false);
             }
 
             private static UserStatus SettableUserStatusToUserStatus(SettableUserStatus sus)

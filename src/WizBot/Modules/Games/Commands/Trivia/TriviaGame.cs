@@ -20,7 +20,7 @@ namespace WizBot.Modules.Games.Trivia
         private readonly SemaphoreSlim _guessLock = new SemaphoreSlim(1, 1);
         private readonly Logger _log;
         private readonly WizBotStrings _strings;
-        private readonly DiscordShardedClient _client;
+        private readonly DiscordSocketClient _client;
         private readonly BotConfig _bc;
         private readonly CurrencyService _cs;
 
@@ -43,7 +43,7 @@ namespace WizBot.Modules.Games.Trivia
 
         public int WinRequirement { get; }
 
-        public TriviaGame(WizBotStrings strings, DiscordShardedClient client, BotConfig bc,
+        public TriviaGame(WizBotStrings strings, DiscordSocketClient client, BotConfig bc,
             CurrencyService cs, IGuild guild, ITextChannel channel,
             bool showHints, int winReq, bool isPokemon)
         {
