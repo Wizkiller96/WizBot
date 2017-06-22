@@ -105,7 +105,7 @@ namespace WizBot
             CommandService = new CommandService(new CommandServiceConfig()
             {
                 CaseSensitiveCommands = false,
-                DefaultRunMode = RunMode.Async,
+                DefaultRunMode = RunMode.Sync,
             });
 
             Images = new ImagesService();
@@ -263,6 +263,7 @@ namespace WizBot
                     .Add(filterService)
                     .Add(globalPermsService)
                 .Add<PokemonService>(pokemonService)
+                .Add<WizBot>(this)
                 .Build();
 
             CommandHandler.AddServices(Services);
@@ -291,7 +292,7 @@ namespace WizBot
             }
             finally
             {
-                _log.Info("Shard {0} logged in ...", ShardId);
+                _log.Info("Shard {0} logged in.", ShardId);
                 sem.Release();
             }
             return Task.CompletedTask;
@@ -305,7 +306,8 @@ namespace WizBot
 
         public async Task RunAsync(params string[] args)
         {
-            _log.Info("Starting WizBot v" + StatsService.BotVersion);
+            if (ShardId == 0)
+                _log.Info("Starting WizBot v" + StatsService.BotVersion);
 
             var sw = Stopwatch.StartNew();
 
@@ -315,7 +317,7 @@ namespace WizBot
             AddServices();
 
             sw.Stop();
-            _log.Info($"Shard {ShardId} connected in {sw.Elapsed.TotalSeconds:F2} s");
+            _log.Info($"Shard {ShardId} connected in {sw.Elapsed.TotalSeconds:F2}s");
 
             var stats = Services.GetService<IStatsService>();
             stats.Initialize();
