@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using WizBot.Extensions;
+using WizBot.Services.Database;
 using WizBot.Services.Database.Models;
 using System;
 using System.Collections.Concurrent;
@@ -25,28 +26,27 @@ namespace WizBot.Services.ClashOfClans
 
         public ConcurrentDictionary<ulong, List<ClashWar>> ClashWars { get; set; }
 
-        public ClashOfClansService(DiscordSocketClient client, DbService db, ILocalization localization, WizBotStrings strings)
+        public ClashOfClansService(DiscordSocketClient client, DbService db,
+            ILocalization localization, WizBotStrings strings, IUnitOfWork uow,
+            List<long> guilds)
         {
             _client = client;
             _db = db;
             _localization = localization;
             _strings = strings;
 
-            using (var uow = _db.UnitOfWork)
-            {
-                ClashWars = new ConcurrentDictionary<ulong, List<ClashWar>>(
-                    uow.ClashOfClans
-                        .GetAllWars()
-                        .Select(cw =>
-                        {
-                            cw.Channel = _client.GetGuild(cw.GuildId)?
-                                                         .GetTextChannel(cw.ChannelId);
-                            return cw;
-                        })
-                        .Where(cw => cw.Channel != null)
-                        .GroupBy(cw => cw.GuildId)
-                        .ToDictionary(g => g.Key, g => g.ToList()));
-            }
+            ClashWars = new ConcurrentDictionary<ulong, List<ClashWar>>(
+                uow.ClashOfClans
+                    .GetAllWars(guilds)
+                    .Select(cw =>
+                    {
+                        cw.Channel = _client.GetGuild(cw.GuildId)?
+                                                        .GetTextChannel(cw.ChannelId);
+                        return cw;
+                    })
+                    .Where(cw => cw.Channel != null)
+                    .GroupBy(cw => cw.GuildId)
+                    .ToDictionary(g => g.Key, g => g.ToList()));
 
             checkWarTimer = new Timer(async _ =>
             {

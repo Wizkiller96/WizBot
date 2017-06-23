@@ -7,6 +7,7 @@
 //using System.Linq;
 //using System.Threading.Tasks;
 
+////todo Rewrite
 //namespace WizBot.Modules.Utility
 //{
 //    public partial class Utility

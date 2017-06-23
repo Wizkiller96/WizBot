@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using WizBot.Extensions;
+using WizBot.Services.Database;
 using WizBot.Services.Database.Models;
 using NLog;
 using System;
@@ -33,7 +34,8 @@ namespace WizBot.Services.Utility
         private readonly DiscordSocketClient _client;
         private readonly DbService _db;
 
-        public RemindService(DiscordSocketClient client, BotConfig config, DbService db, List<long> guilds)
+        public RemindService(DiscordSocketClient client, BotConfig config, DbService db,
+            List<long> guilds, IUnitOfWork uow)
         {
             _config = config;
             _client = client;
@@ -42,11 +44,8 @@ namespace WizBot.Services.Utility
 
             cancelSource = new CancellationTokenSource();
             cancelAllToken = cancelSource.Token;
-            List<Reminder> reminders;
-            using (var uow = _db.UnitOfWork)
-            {
-                reminders = uow.Reminders.GetIncludedReminders(guilds).ToList();
-            }
+
+            var reminders = uow.Reminders.GetIncludedReminders(guilds).ToList();
             RemindMessageFormat = _config.RemindMessageFormat;
 
             foreach (var r in reminders)

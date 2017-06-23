@@ -13,6 +13,7 @@ namespace WizBot.Services
         double MessagesPerSecond { get; }
         long TextChannels { get; }
         long VoiceChannels { get; }
+        int GuildCount { get; }
 
         TimeSpan GetUptime();
         string GetUptimeString(string separator = ", ");

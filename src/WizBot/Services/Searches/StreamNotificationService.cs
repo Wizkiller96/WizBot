@@ -1,6 +1,8 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using WizBot.Extensions;
+using WizBot.Services;
+using WizBot.Services.Database;
 using WizBot.Services.Database.Models;
 using Newtonsoft.Json;
 using System;
@@ -73,7 +75,7 @@ namespace WizBot.Services.Searches
                 }));
 
                 firstStreamNotifPass = false;
-            }, null, TimeSpan.Zero, TimeSpan.FromSeconds(60));
+            }, null, TimeSpan.FromSeconds(60), TimeSpan.FromSeconds(60));
         }
 
         public async Task<StreamStatus> GetStreamStatus(FollowedStream stream, bool checkCache = true)
