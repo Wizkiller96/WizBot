@@ -100,7 +100,7 @@ namespace WizBot.Services.Impl
                                 ? "sqlite" 
                                 : dbSection["Type"], 
                             string.IsNullOrWhiteSpace(dbSection["ConnectionString"]) 
-                                ? "Filename=./data/WizBot.db" 
+                                ? "Filename=./data/WizBot.db"
                                 : dbSection["ConnectionString"]);
             }
             catch (Exception ex)
