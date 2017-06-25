@@ -19,15 +19,18 @@ namespace WizBot.Services.Games
         private readonly Logger _log;
         private readonly PermissionService _perms;
         private readonly CommandHandler _cmd;
+        private readonly WizBotStrings _strings;
 
         public ConcurrentDictionary<ulong, Lazy<ChatterBotSession>> ChatterBotGuilds { get; }
 
-        public ChatterBotService(DiscordSocketClient client, PermissionService perms, IEnumerable<GuildConfig> gcs, CommandHandler cmd)
+        public ChatterBotService(DiscordSocketClient client, PermissionService perms, IEnumerable<GuildConfig> gcs,
+            CommandHandler cmd, WizBotStrings strings)
         {
             _client = client;
             _log = LogManager.GetCurrentClassLogger();
             _perms = perms;
             _cmd = cmd;
+            _strings = strings;
 
             ChatterBotGuilds = new ConcurrentDictionary<ulong, Lazy<ChatterBotSession>>(
                     gcs.Where(gc => gc.CleverbotEnabled)
@@ -92,7 +95,7 @@ namespace WizBot.Services.Games
                 var message = PrepareMessage(usrMsg, out ChatterBotSession cbs);
                 if (message == null || cbs == null)
                     return false;
-                
+
                 var pc = _perms.GetCache(guild.Id);
                 if (!pc.Permissions.CheckPermissions(usrMsg,
                     "cleverbot",
@@ -102,7 +105,7 @@ namespace WizBot.Services.Games
                     if (pc.Verbose)
                     {
                         //todo move this to permissions
-                        var returnMsg = $"Permission number #{index + 1} **{pc.Permissions[index].GetCommand(_cmd.GetPrefix(guild), sg)}** is preventing this action.";
+                        var returnMsg = _strings.GetText("trigger", guild.Id, "Permissions".ToLowerInvariant(), index + 1, Format.Bold(pc.Permissions[index].GetCommand(_cmd.GetPrefix(guild), (SocketGuild)guild)));
                         try { await usrMsg.Channel.SendErrorAsync(returnMsg).ConfigureAwait(false); } catch { }
                         _log.Info(returnMsg);
                     }
