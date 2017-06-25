@@ -290,8 +290,11 @@ namespace WizBot
 
             Task SetClientReady()
             {
-                clientReady.TrySetResult(true);
-                return Task.CompletedTask;
+                var _ = Task.Run(() =>
+                {
+                    clientReady.TrySetResult(true);
+                });
+            return Task.CompletedTask;
             }
 
             //connect
