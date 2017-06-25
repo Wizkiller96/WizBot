@@ -65,9 +65,9 @@ namespace WizBot
         public int ShardId { get; }
         public ShardsCoordinator ShardCoord { get; private set; }
 
-        private readonly ShardComClient _comClient = new ShardComClient();
+        private readonly ShardComClient _comClient;
 
-        public WizBot(int shardId, int parentProcessId)
+        public WizBot(int shardId, int parentProcessId, int? port = null)
         {
             if (shardId < 0)
                 throw new ArgumentOutOfRangeException(nameof(shardId));
@@ -79,6 +79,10 @@ namespace WizBot
             TerribleElevatedPermissionCheck();
 
             Credentials = new BotCredentials();
+
+            port = port ?? Credentials.ShardRunPort;
+            _comClient = new ShardComClient(port.Value);
+
             Db = new DbService(Credentials);
 
             using (var uow = Db.UnitOfWork)
@@ -87,7 +91,7 @@ namespace WizBot
                 OkColor = new Color(Convert.ToUInt32(BotConfig.OkColor, 16));
                 ErrorColor = new Color(Convert.ToUInt32(BotConfig.ErrorColor, 16));
             }
-
+            
             Client = new DiscordSocketClient(new DiscordSocketConfig
             {
                 MessageCacheSize = 10,
@@ -103,12 +107,12 @@ namespace WizBot
                 CaseSensitiveCommands = false,
                 DefaultRunMode = RunMode.Sync,
             });
-
+            
             Images = new ImagesService();
             Currency = new CurrencyService(BotConfig, Db);
             GoogleApi = new GoogleApiService(Credentials);
 
-            SetupShard(shardId, parentProcessId);
+            SetupShard(shardId, parentProcessId, port.Value);
 
 #if GLOBAL_WIZBOT
             Client.Log += Client_Log;
@@ -140,7 +144,7 @@ namespace WizBot
             using (var uow = Db.UnitOfWork)
             {
                 AllGuildConfigs = uow.GuildConfigs.GetAllGuildConfigs(startingGuildIdList).ToImmutableArray();
-
+                
                 Localization = new Localization(BotConfig.Locale, AllGuildConfigs.ToDictionary(x => x.GuildId, x => x.Locale), Db);
                 Strings = new WizBotStrings(Localization);
                 CommandHandler = new CommandHandler(Client, Db, BotConfig, AllGuildConfigs, CommandService, Credentials, this);
@@ -302,7 +306,7 @@ namespace WizBot
                     }
                     finally
                     {
-
+                        
                     }
                 });
                 return Task.CompletedTask;
@@ -330,8 +334,8 @@ namespace WizBot
 
         public async Task RunAsync(params string[] args)
         {
-            if (ShardId == 0)
-                _log.Info("Starting WizBot v" + StatsService.BotVersion);
+            if(ShardId == 0)
+            _log.Info("Starting WizBot v" + StatsService.BotVersion);
 
             var sw = Stopwatch.StartNew();
 
@@ -361,7 +365,7 @@ namespace WizBot
             //    .Where(x => x.Count() > 1)
             //    .Select(x => x.Key + $"({x.Count()})")));
 
-            //unload modules which are not available on the public bot
+//unload modules which are not available on the public bot
 #if GLOBAL_WIZBOT
             CommandService
                 .Modules
@@ -411,7 +415,7 @@ namespace WizBot
             }
         }
 
-        private void SetupShard(int shardId, int parentProcessId)
+        private void SetupShard(int shardId, int parentProcessId, int port)
         {
             if (shardId != 0)
             {
@@ -432,7 +436,7 @@ namespace WizBot
             }
             else
             {
-                ShardCoord = new ShardsCoordinator();
+                ShardCoord = new ShardsCoordinator(port);
             }
         }
     }

@@ -45,6 +45,7 @@ namespace WizBot.Services.Impl
         public string PatreonAccessToken { get; }
         public string ShardRunCommand { get; }
         public string ShardRunArguments { get; }
+        public int ShardRunPort { get; }
 
         public BotCredentials()
         {
@@ -76,11 +77,16 @@ namespace WizBot.Services.Impl
                 PatreonAccessToken = data[nameof(PatreonAccessToken)];
                 ShardRunCommand = data[nameof(ShardRunCommand)];
                 ShardRunArguments = data[nameof(ShardRunArguments)];
-
                 if (string.IsNullOrWhiteSpace(ShardRunCommand))
                     ShardRunCommand = "dotnet";
                 if (string.IsNullOrWhiteSpace(ShardRunArguments))
-                    ShardRunArguments = "run -c Release -- {0} {1}";
+                    ShardRunArguments = "run -c Release -- {0} {1} {2}";
+                
+                var portStr = data[nameof(ShardRunPort)];
+                if (string.IsNullOrWhiteSpace(portStr))
+                    ShardRunPort = new WizBotRandom().Next(5000, 6000);
+                else
+                    ShardRunPort = int.Parse(portStr);
 
                 int ts = 1;
                 int.TryParse(data[nameof(TotalShards)], out ts);
@@ -126,7 +132,10 @@ namespace WizBot.Services.Impl
             public DBConfig Db { get; set; } = new DBConfig("sqlite", "Filename=./data/WizBot.db");
             public int TotalShards { get; set; } = 1;
             public string PatreonAccessToken { get; set; } = "";
+
             public string ShardRunCommand { get; set; } = "";
+            public string ShardRunArguments { get; set; } = "";
+            public int? ShardRunPort { get; set; } = null;
         }
 
         private class DbModel
