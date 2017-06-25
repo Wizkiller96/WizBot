@@ -28,12 +28,12 @@ namespace WizBot.Modules.Utility
 
             public enum MeOrHere
             {
-                Me,Here
+                Me, Here
             }
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            [Priority(1)]
+            [Priority(0)]
             public async Task Remind(MeOrHere meorhere, string timeStr, [Remainder] string message)
             {
                 ulong target;
@@ -44,7 +44,7 @@ namespace WizBot.Modules.Utility
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.ManageMessages)]
-            [Priority(0)]
+            [Priority(1)]
             public async Task Remind(ITextChannel channel, string timeStr, [Remainder] string message)
             {
                 var perms = ((IGuildUser)Context.User).GetPermissions((ITextChannel)channel);

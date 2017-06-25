@@ -15,7 +15,7 @@ namespace WizBot.Services.Utility
         public ConcurrentDictionary<ulong, ConcurrentQueue<RepeatRunner>> Repeaters { get; set; }
         public bool RepeaterReady { get; private set; }
 
-        public MessageRepeaterService(WizBot bot, DiscordShardedClient client, IEnumerable<GuildConfig> gcs)
+        public MessageRepeaterService(WizBot bot, DiscordSocketClient client, IEnumerable<GuildConfig> gcs)
         {
             var _ = Task.Run(async () =>
             {

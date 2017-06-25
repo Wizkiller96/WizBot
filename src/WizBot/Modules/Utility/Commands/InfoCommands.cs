@@ -16,10 +16,10 @@ namespace WizBot.Modules.Utility
         [Group]
         public class InfoCommands : WizBotSubModule
         {
-            private readonly DiscordShardedClient _client;
+            private readonly DiscordSocketClient _client;
             private readonly IStatsService _stats;
 
-            public InfoCommands(DiscordShardedClient client, IStatsService stats, CommandHandler ch)
+            public InfoCommands(DiscordSocketClient client, IStatsService stats, CommandHandler ch)
             {
                 _client = client;
                 _stats = stats;

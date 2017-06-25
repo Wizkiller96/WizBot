@@ -19,7 +19,9 @@ namespace WizBot.Services.Database
         {
             var optionsBuilder = new DbContextOptionsBuilder();
             optionsBuilder.UseSqlite("Filename=./data/WizBot.db");
-            return new WizBotContext(optionsBuilder.Options);
+            var ctx = new WizBotContext(optionsBuilder.Options);
+            ctx.Database.SetCommandTimeout(60);
+            return ctx;
         }
     }
 

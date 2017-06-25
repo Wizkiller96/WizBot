@@ -15,9 +15,9 @@ namespace WizBot.Modules.Games
         [Group]
         public class HangmanCommands : WizBotSubModule
         {
-            private readonly DiscordShardedClient _client;
+            private readonly DiscordSocketClient _client;
 
-            public HangmanCommands(DiscordShardedClient client)
+            public HangmanCommands(DiscordSocketClient client)
             {
                 _client = client;
             }

@@ -16,9 +16,9 @@ If you do not see `credentials.json` you will need to rename `credentials_exampl
   "GoogleApiKey": "AIzaSyDSci1sdlWQOWNVj1vlXxxxxxbk0oWMEzM",
   "MashapeKey": "4UrKpcWXc2mshS8RKi00000y8Kf5p1Q8kI6jsn32bmd8oVWiY7",
   "OsuApiKey": "4c8c8fdff8e1234581725db27fd140a7d93320d6",
-  "PatreonAccessToken": "",
   "Db": null,
-  "TotalShards": 1
+  "TotalShards": 1,
+  "ShardRunCommand": ""
 }
 ```
 -----
@@ -49,15 +49,9 @@ If you do not see `credentials.json` you will need to rename `credentials_exampl
 
 
 #### Setting up credentials.json file
-**For Windows** you can find `credentials.json` file in `WizBot\system` folder. 			
-e.g. `C:\Program Files\WizBot\system`			
-**For Linux** you can find `credentials.json` in `WizBot/src/WizBot` folder. 			
-e.g. `/root/WizBot/src/WizBot`			
-
 ![img3](http://i.imgur.com/QwKMnTG.gif)
 
-##### Getting Bot's Token:
-- In your [Discord applications page][DiscordApp], under the **`APP BOT USER`** section, you will see `Token:click to reveal`, click to reveal the token. 
+- In your [Discord applications page][DiscordApp], under the `Bot User` section, you will see `Token:click to reveal`, click to reveal the token. 		
 *Note: Make sure that you actually use a Token and not a Client Secret!* It is in the **App Bot User** section.
 - Copy your bot's token, and on the **`"Token"`** line of your `credentials.json`, paste your bot token **between** the quotation marks.
 ```
@@ -66,7 +60,6 @@ It should look like:
 ```json
 "Token": "MTc5MzcyXXX2MDI1ODY3MjY0.ChKs4g.I8J_R9XX0t-QY-0PzXXXiN0-7vo",
 ```
-##### Getting Client and Bot ID:
 - Copy the `Client ID` on the page and replace the `12312123` part of the **`"ClientId"`** line with it.
 	- **Important: Bot ID and Client ID** will be the same in **newer bot accounts** due to recent changes by Discord.
 	- If that's the case, **copy the same client ID** to **`"BotId"`**
@@ -77,9 +70,6 @@ It should look like:
 "ClientId": 179372110000358912,
 "BotId": 179372110000358912,
 ```
------
-##### Getting Owner ID*(s)*:		
-
 - Go to your Discord server and attempt to mention yourself, but put a backslash at the start like shown below: 			
 *(to make it slightly easier, add the backslash after you type the mention out)*
 - So the message `\@fearnlj01#3535` will appear as `<@145521851676884992>` after you send the message. 
@@ -150,24 +140,37 @@ It should look like:
 - **OsuAPIKey** 
 	- Required for Osu commands
 	- You can get this key [here.](https://osu.ppy.sh/p/api) 		
-- **PatreonAccessToken**
-	- For Patreon creators only.
+*You will need to log in and like the soundcloud it may take a few tries.*
 - **TotalShards** 
 	- Required if the bot will be connected to more than 1500 servers. 
 	- Most likely unnecessary to change until your bot is added to more than 1500 servers.  
-
+- **ShardRunCommand**
+	- Command with which to run shards 1+
+	- Required if you're sharding your bot on windows using .exe, or in a custom way.
+	- This internally defaults to `dotnet`
+	- For example, if you want to shard your WizBot which you installed using windows installer, you would want to set it to something like this: `C:\Program Files\WizBot\system\WizBot.exe`
+- **ShardRunArguments**
+	- Arguments to the shard run command
+	- Required if you're sharding your bot on windows using .exe, or in a custom way. 
+	- This internally defaults to `run -c Release -- {0} {1} {2}` which will be enough to run linux and other 'from source' setups
+	- {0} will be replaced by the `shard ID` of the shard being ran, {1} by the shard 0's process id, and {2} by the port shard communication is happening on
+	- If shard0 (main window) is closed, all other shards will close too
+	- For example, if you want to shard your WizBot which you installed using windows installer, you would want to set it to `{0} {1} {2}`
+- **ShardRunPort**
+	- Bot uses a random UDP port in [5000, 6000) range for communication between shards
 -----
 
 ## DB files
 
-WizBot saves all the settings and infomations in `WizBot.db` file here:		
-`WizBot/src/WizBot/bin/Release/netcoreapp1.1/data/WizBot.db` (macOS and Linux) 		
-`WizBot\system\data` (Windows)		
-in order to open the database file you will need [DB Browser for SQLite](http://sqlitebrowser.org/).
+WizBot saves all the settings and infomations in `WizBot.db` file here:  
+**On linux**		
+`WizBot\src\WizBot\bin\Release\netcoreapp1.1\data\WizBot.db` (WizBot v1.4x) 		
+**On windows**
+`[INSTALL_PATH]\WizBot\system\data\WizBot.db`  
 
-*NOTE: You don't have to worry if you don't have `WizBot.db` file, it gets auto created once you run the bot successfully.*		    
+In order to open the database file you will need [DB Browser for SQLite](http://sqlitebrowser.org/).
 
-**To make changes:**
+To make changes
 
 - Copy the `WizBot.db` to someplace safe. (Back up)
 - Open `WizBot.db`
@@ -181,8 +184,7 @@ in order to open the database file you will need [DB Browser for SQLite](http://
 
 and that will save all the changes.
 
-
-![wizbotdb](https://cdn.discordapp.com/attachments/251504306010849280/254067055240806400/Wizdb.gif)
+![wizbotdb](https://cdn.discordapp.com/attachments/251504306010849280/254067055240806400/nadekodb.gif)
 
 [Google Console]: https://console.developers.google.com
 [DiscordApp]: https://discordapp.com/developers/applications/me

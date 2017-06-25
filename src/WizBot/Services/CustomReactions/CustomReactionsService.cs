@@ -10,6 +10,7 @@ using System;
 using System.Threading.Tasks;
 using WizBot.Services.Permissions;
 using WizBot.Extensions;
+using WizBot.Services.Database;
 
 namespace WizBot.Services.CustomReactions
 {
@@ -22,13 +23,14 @@ namespace WizBot.Services.CustomReactions
 
         private readonly Logger _log;
         private readonly DbService _db;
-        private readonly DiscordShardedClient _client;
+        private readonly DiscordSocketClient _client;
         private readonly PermissionService _perms;
         private readonly CommandHandler _cmd;
         private readonly BotConfig _bc;
+        private readonly WizBotStrings _strings;
 
-        public CustomReactionsService(PermissionService perms, DbService db, 
-            DiscordShardedClient client, CommandHandler cmd, BotConfig bc)
+        public CustomReactionsService(PermissionService perms, DbService db, WizBotStrings strings,
+            DiscordSocketClient client, CommandHandler cmd, BotConfig bc, IUnitOfWork uow)
         {
             _log = LogManager.GetCurrentClassLogger();
             _db = db;
@@ -36,16 +38,11 @@ namespace WizBot.Services.CustomReactions
             _perms = perms;
             _cmd = cmd;
             _bc = bc;
+            _strings = strings;
 
-            var sw = Stopwatch.StartNew();
-            using (var uow = _db.UnitOfWork)
-            {
-                var items = uow.CustomReactions.GetAll();
-                GuildReactions = new ConcurrentDictionary<ulong, CustomReaction[]>(items.Where(g => g.GuildId != null && g.GuildId != 0).GroupBy(k => k.GuildId.Value).ToDictionary(g => g.Key, g => g.ToArray()));
-                GlobalReactions = items.Where(g => g.GuildId == null || g.GuildId == 0).ToArray();
-            }
-            sw.Stop();
-            _log.Debug($"Loaded in {sw.Elapsed.TotalSeconds:F2}s");
+            var items = uow.CustomReactions.GetAll();
+            GuildReactions = new ConcurrentDictionary<ulong, CustomReaction[]>(items.Where(g => g.GuildId != null && g.GuildId != 0).GroupBy(k => k.GuildId.Value).ToDictionary(g => g.Key, g => g.ToArray()));
+            GlobalReactions = items.Where(g => g.GuildId == null || g.GuildId == 0).ToArray();
         }
 
         public void ClearStats() => ReactionStats.Clear();
@@ -68,7 +65,7 @@ namespace WizBot.Services.CustomReactions
 
                         var hasTarget = cr.Response.ToLowerInvariant().Contains("%target%");
                         var trigger = cr.TriggerWithContext(umsg, _client).Trim().ToLowerInvariant();
-                        return ((hasTarget && content.StartsWith(trigger + " ")) || (_bc.CustomReactionsStartWith && content.StartsWith(trigger + " "))  || content == trigger);
+                        return ((hasTarget && content.StartsWith(trigger + " ")) || (_bc.CustomReactionsStartWith && content.StartsWith(trigger + " ")) || content == trigger);
                     }).ToArray();
 
                     if (rs.Length != 0)
@@ -98,7 +95,7 @@ namespace WizBot.Services.CustomReactions
             return greaction;
         }
 
-        public async Task<bool> TryExecuteEarly(DiscordShardedClient client, IGuild guild, IUserMessage msg)
+        public async Task<bool> TryExecuteEarly(DiscordSocketClient client, IGuild guild, IUserMessage msg)
         {
             // maybe this message is a custom reaction
             var cr = await Task.Run(() => TryGetCustomReaction(msg)).ConfigureAwait(false);
@@ -114,7 +111,7 @@ namespace WizBot.Services.CustomReactions
                         {
                             if (pc.Verbose)
                             {
-                                var returnMsg = $"Permission number #{index + 1} **{pc.Permissions[index].GetCommand(_cmd.GetPrefix(guild), sg)}** is preventing this action.";
+                                var returnMsg = _strings.GetText("trigger", guild.Id, "Permissions".ToLowerInvariant(), index + 1, Format.Bold(pc.Permissions[index].GetCommand(_cmd.GetPrefix(guild), (SocketGuild)guild)));
                                 try { await msg.Channel.SendErrorAsync(returnMsg).ConfigureAwait(false); } catch { }
                                 _log.Info(returnMsg);
                             }

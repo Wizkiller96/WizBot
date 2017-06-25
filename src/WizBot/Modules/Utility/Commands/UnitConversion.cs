@@ -6,7 +6,6 @@ using WizBot.Services.Utility;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-
 namespace WizBot.Modules.Utility
 {
     public partial class Utility
