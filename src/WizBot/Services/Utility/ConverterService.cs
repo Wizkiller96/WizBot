@@ -18,7 +18,6 @@ namespace WizBot.Services.Utility
         public List<ConvertUnit> Units { get; } = new List<ConvertUnit>();
         private readonly Logger _log;
         private readonly Timer _currencyUpdater;
-        private readonly Timer _currencyLoader;
         private readonly TimeSpan _updateInterval = new TimeSpan(12, 0, 0);
         private readonly DbService _db;
 

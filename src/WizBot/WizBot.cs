@@ -290,11 +290,25 @@ namespace WizBot
 
             Task SetClientReady()
             {
-                var _ = Task.Run(() =>
+                var _ = Task.Run(async () =>
                 {
                     clientReady.TrySetResult(true);
+                    try
+                    {
+                        await Task.WhenAll((await Client.GetDMChannelsAsync())
+                             .Select(x => x.CloseAsync()))
+                             .ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
+                    finally
+                    {
+
+                    }
                 });
-            return Task.CompletedTask;
+                return Task.CompletedTask;
             }
 
             //connect
@@ -304,8 +318,8 @@ namespace WizBot
 
             try
             {
-                Client.LoginAsync(TokenType.Bot, token).GetAwaiter().GetResult();
-                Client.StartAsync().GetAwaiter().GetResult();
+                await Client.LoginAsync(TokenType.Bot, token).ConfigureAwait(false);
+                await Client.StartAsync().ConfigureAwait(false);
                 Client.Ready += SetClientReady;
                 await clientReady.Task.ConfigureAwait(false);
                 Client.Ready -= SetClientReady;

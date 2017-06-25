@@ -15,7 +15,6 @@ using System.Threading.Tasks;
 
 namespace WizBot.Services.Utility
 {
-    //todo periodically load from the database, update only on shard 0
     public class PatreonRewardsService
     {
         private readonly SemaphoreSlim getPledgesLocker = new SemaphoreSlim(1, 1);
@@ -96,15 +95,12 @@ namespace WizBot.Services.Utility
                 {
                     getPledgesLocker.Release();
                 }
-                Console.WriteLine("Pledges loaded from the website");
             }
             else
             {
                 if (File.Exists(cacheFileName))
                     Pledges = JsonConvert.DeserializeObject<PatreonUserAndReward[]>(File.ReadAllText("./patreon_rewards.json"))
                         .ToImmutableArray();
-
-                Console.WriteLine("Pledges loaded from the file");
             }
         }
 
