@@ -299,8 +299,6 @@ namespace WizBot.Modules.Utility
                         Format.Bold(x.ConnectionState.ToString()), Format.Bold(x.Guilds.ToString())))
                 .ToArray();
 
-
-
             await Context.Channel.SendPaginatedConfirmAsync(_client, page, (curPage) =>
             {
 

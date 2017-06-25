@@ -116,7 +116,7 @@ namespace WizBot.Modules.Games
                 bool enabled;
                 using (var uow = _db.UnitOfWork)
                 {
-                    var guildConfig = uow.GuildConfigs.For(channel.Id, set => set.Include(gc => gc.GenerateCurrencyChannelIds));
+                    var guildConfig = uow.GuildConfigs.For(channel.Guild.Id, set => set.Include(gc => gc.GenerateCurrencyChannelIds));
 
                     var toAdd = new GCChannelId() { ChannelId = channel.Id };
                     if (!guildConfig.GenerateCurrencyChannelIds.Contains(toAdd))

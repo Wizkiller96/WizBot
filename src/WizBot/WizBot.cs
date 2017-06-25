@@ -4,8 +4,6 @@ using Discord.WebSocket;
 using WizBot.Services;
 using WizBot.Services.Impl;
 using NLog;
-using NLog.Config;
-using NLog.Targets;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -28,8 +26,6 @@ using WizBot.Services.Help;
 using System.IO;
 using WizBot.Services.Pokemon;
 using WizBot.DataStructures.ShardCom;
-using WizBot.DataStructures;
-using WizBot.Extensions;
 
 namespace WizBot
 {
@@ -295,9 +291,10 @@ namespace WizBot
                     clientReady.TrySetResult(true);
                     try
                     {
-                        await Task.WhenAll((await Client.GetDMChannelsAsync())
-                             .Select(x => x.CloseAsync()))
-                             .ConfigureAwait(false);
+                        foreach (var chan in (await Client.GetDMChannelsAsync()))
+                        {
+                            await chan.CloseAsync().ConfigureAwait(false);
+                        }
                     }
                     catch
                     {
