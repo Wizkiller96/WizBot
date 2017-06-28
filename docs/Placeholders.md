@@ -21,4 +21,4 @@ Some features have their own specific placeholders which are noted in that featu
 
 **If you're using placeholders in embeds, don't use %user% and  in titles, footers and field names. They will not show properly.**
 
-![img](http://i.imgur.com/lNNNfs1.png)
+![img](http://i.imgur.com/eEqRUFU.jpg)
