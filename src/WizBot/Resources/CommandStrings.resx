@@ -3276,6 +3276,15 @@
   <data name="warn_usage" xml:space="preserve">
     <value>`{0}warn @b1nzy Very rude person`</value>
   </data>
+  <data name="warnlogall_cmd" xml:space="preserve">
+    <value>warnlogall</value>
+  </data>
+  <data name="warnlogall_desc" xml:space="preserve">
+    <value>See a list of all warnings on the server. 15 users per page.</value>
+  </data>
+  <data name="warnlogall_usage" xml:space="preserve">
+    <value>`{0}warnlogall` or `{0}warnlogall 2`</value>
+  </data>
   <data name="startupcommandadd_cmd" xml:space="preserve">
     <value>scadd</value>
   </data>
