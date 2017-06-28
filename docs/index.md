@@ -25,9 +25,10 @@ If you want to contribute, be sure to PR on the **[1.4][1.4]** branch.
 	- [Readme](Readme.md)
 	- [Commands List](Commands List.md)
 - Features Explained
-	- [Permissions System](Permissions System.md)
 	- [JSON Explanations](JSON Explanations.md)
+	- [Permissions System](Permissions System.md)
 	- [Custom Reactions](Custom Reactions.md)
+	- [Placeholders](Placeholders.md)
 - [Frequently Asked Questions](Frequently Asked Questions.md)
 - [Contribution Guide](Contribution Guide.md)
 - [Donate](Donate.md)
