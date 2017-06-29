@@ -26,6 +26,8 @@ using WizBot.Services.Help;
 using System.IO;
 using WizBot.Services.Pokemon;
 using WizBot.DataStructures.ShardCom;
+using WizBot.DataStructures;
+using WizBot.Extensions;
 
 namespace WizBot
 {
@@ -346,6 +348,10 @@ namespace WizBot
             var _ = await CommandService.AddModulesAsync(this.GetType().GetTypeInfo().Assembly);
 
 
+            bool isPublicWizBot = false;
+#if GLOBAL_WIZBOT
+            isPublicWizBot = true;
+ #endif
             //Console.WriteLine(string.Join(", ", CommandService.Commands
             //    .Distinct(x => x.Name + x.Module.Name)
             //    .SelectMany(x => x.Aliases)
@@ -353,14 +359,14 @@ namespace WizBot
             //    .Where(x => x.Count() > 1)
             //    .Select(x => x.Key + $"({x.Count()})")));
 
-//unload modules which are not available on the public bot
-#if GLOBAL_WIZBOT
-            CommandService
-                .Modules
-                .ToArray()
-                .Where(x => x.Preconditions.Any(y => y.GetType() == typeof(NoPublicBot)))
-                .ForEach(x => CommandService.RemoveModuleAsync(x));
-#endif
+            //unload modules which are not available on the public bot
+
+            if(isPublicWizBot)
+                CommandService
+                    .Modules
+                    .ToArray()
+                    .Where(x => x.Preconditions.Any(y => y.GetType() == typeof(NoPublicBot)))
+                    .ForEach(x => CommandService.RemoveModuleAsync(x));
 
             Ready = true;
             _log.Info($"Shard {ShardId} ready.");
