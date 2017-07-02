@@ -1,3 +1,4 @@
+using WizBot.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,17 +50,23 @@ namespace WizBot.Services.Music
             }
         }
 
+        public uint maxQueueSize { get; private set; }
+
         public void Add(SongInfo song)
         {
+            song.ThrowIfNull(nameof(song));
             lock (locker)
             {
+                if(CurrentIndex >= maxQueueSize)
+                    throw new PlaylistFullException();
                 Songs.AddLast(song);
             }
         }
 
         public void Next()
         {
-            CurrentIndex++;
+            lock(locker)
+                CurrentIndex++;
         }
 
         public void Dispose()
@@ -116,6 +123,25 @@ namespace WizBot.Services.Music
             lock (locker)
             {
                 CurrentIndex = 0;
+            }
+        }
+
+        public void Random()
+        {
+            lock (locker)
+            {
+                CurrentIndex = new WizBotRandom().Next(Songs.Count);
+            }
+        }
+
+        public void SetMaxQueueSize(uint size)
+        {
+            if (size < 0)
+                throw new ArgumentOutOfRangeException(nameof(size));
+
+            lock (locker)
+            {
+                maxQueueSize = size;
             }
         }
     }
