@@ -136,7 +136,6 @@ namespace WizBot.Modules.Administration
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
                 await ReplyErrorLocalized("rar_err").ConfigureAwait(false);
             }
         }

@@ -1,6 +1,7 @@
 using WizBot.Extensions;
 using WizBot.Services;
 using Newtonsoft.Json;
+using NLog;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -19,9 +20,11 @@ namespace WizBot.DataStructures
         private readonly ConcurrentDictionary<DapiSearchType, SemaphoreSlim> _locks = new ConcurrentDictionary<DapiSearchType, SemaphoreSlim>();
 
         private readonly SortedSet<ImageCacherObject> _cache;
+        private readonly Logger _log;
 
         public SearchImageCacher()
         {
+            _log = LogManager.GetCurrentClassLogger();
             _rng = new WizBotRandom();
             _cache = new SortedSet<ImageCacherObject>();
         }
@@ -85,7 +88,7 @@ namespace WizBot.DataStructures
 
         public async Task<ImageCacherObject[]> DownloadImages(string tag, bool isExplicit, DapiSearchType type)
         {
-            Console.WriteLine($"Loading extra images from {type}");
+            _log.Info($"Loading extra images from {type}");
             tag = tag?.Replace(" ", "_").ToLowerInvariant();
             if (isExplicit)
                 tag = "rating%3Aexplicit+" + tag;
