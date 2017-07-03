@@ -806,6 +806,7 @@
   "administration_timezone_not_found": "Timezone not found. Use \"timezones\" command to see the list of available timezones.",
   "administration_timezones_available": "Available Timezones",
   "music_song_not_found": "No song found.",
+  "music_song_skips_after": "Songs will skip after {0}",
   "searches_define_unknown": "Can't find the definition for that term.",
   "utility_repeater_initial": "Initial repeating message will be sent in {0}h and {1}min.",
   "permissions_perms_reset": "Permissions for this server are reset.",
