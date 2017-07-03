@@ -227,10 +227,18 @@ namespace WizBot.Modules.Music
 
                 desc = $"`🔊` {songs[current].PrettyFullName}\n\n" + desc;
 
+
                 if (mp.RepeatCurrentSong)
                     desc = "🔂 " + GetText("repeating_cur_song") + "\n\n" + desc;
                 else if (mp.Shuffle)
                     desc = "🔀 " + GetText("shuffling_playlist") + "\n\n" + desc;
+                else
+                {
+                    if(mp.Autoplay)
+                        desc = "↪ " + GetText("autoplaying") + "\n\n" + desc;
+                    if (mp.RepeatPlaylist)
+                        desc = "🔁 " + GetText("repeating_playlist") + "\n\n" + desc;
+                }
                 
                 var embed = new EmbedBuilder()
                     .WithAuthor(eab => eab.WithName(GetText("player_queue", curPage + 1, lastPage + 1))
@@ -797,8 +805,7 @@ namespace WizBot.Modules.Music
         //    else
         //        await ReplyConfirmLocalized("max_playtime_set", seconds).ConfigureAwait(false);
         //}
-
-        //todo test rcs
+        
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task ReptCurSong()
@@ -819,8 +826,7 @@ namespace WizBot.Modules.Music
                 await Context.Channel.SendConfirmAsync("🔂 " + GetText("repeating_track_stopped"))
                                             .ConfigureAwait(false);
         }
-
-        //todo test rpl
+        
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task RepeatPl()
