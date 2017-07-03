@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using Discord.Audio;
 using System;
 using System.Threading;

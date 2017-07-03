@@ -1,4 +1,4 @@
-using WizBot.Extensions;
+﻿using WizBot.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
