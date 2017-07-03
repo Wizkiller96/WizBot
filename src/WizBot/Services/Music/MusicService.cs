@@ -103,7 +103,6 @@ namespace WizBot.Services.Music
                             lastFinishedMessage = await mp.OutputTextChannel.EmbedAsync(new EmbedBuilder().WithOkColor()
                                     .WithAuthor(eab => eab.WithName(GetText("finished_song")).WithMusicIcon())
                                     .WithDescription(song.PrettyName)
-                                    .WithThumbnailUrl(song.Thumbnail)
                                     .WithFooter(ef => ef.WithText(song.PrettyInfo)))
                                 .ConfigureAwait(false);
                         }
@@ -132,10 +131,9 @@ namespace WizBot.Services.Music
                         playingMessage?.DeleteAfter(0);
 
                         playingMessage = await mp.OutputTextChannel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                                                    .WithAuthor(eab => eab.WithName(GetText("playing_song")).WithMusicIcon())
-                                                    .WithDescription(song.PrettyName)
-                                                    .WithThumbnailUrl(song.Thumbnail)
-                                                    .WithFooter(ef => ef.WithText(mp.PrettyVolume + " | " + song.PrettyInfo)))
+                                                    .WithAuthor(eab => eab.WithName(GetText("playing_song", song.Index + 1)).WithMusicIcon())
+                                                    .WithDescription(song.Song.PrettyName)
+                                                    .WithFooter(ef => ef.WithText(mp.PrettyVolume + " | " + song.Song.PrettyInfo)))
                                                     .ConfigureAwait(false);
                     }
                     catch
@@ -290,11 +288,15 @@ namespace WizBot.Services.Music
                 .FirstOrDefault();
 
             if (video == null) // do something with this error
+            {
                 _log.Info("Could not load any video elements based on the query.");
+                return null;
+            }
             //var m = Regex.Match(query, @"\?t=(?<t>\d*)");
             //int gotoTime = 0;
             //if (m.Captures.Count > 0)
             //    int.TryParse(m.Groups["t"].ToString(), out gotoTime);
+            
             var song = new SongInfo
             {
                 Title = video.Title.Substring(0, video.Title.Length - 10), // removing trailing "- You Tube"

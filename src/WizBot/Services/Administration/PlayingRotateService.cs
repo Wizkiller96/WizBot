@@ -1,6 +1,5 @@
 ﻿using Discord.WebSocket;
 using WizBot.DataStructures.Replacements;
-using WizBot.Services;
 using WizBot.Services.Database.Models;
 using WizBot.Services.Music;
 using NLog;
