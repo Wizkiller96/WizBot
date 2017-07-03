@@ -212,8 +212,6 @@ namespace WizBot
                 var pokemonService = new PokemonService();
                 #endregion
 
-
-
                 //initialize Services
                 Services = new NServiceProvider.ServiceProviderBuilder()
                     .Add<ILocalization>(Localization)
@@ -268,7 +266,6 @@ namespace WizBot
                     .Add<PokemonService>(pokemonService)
                     .Add<WizBot>(this)
                     .Build();
-
 
                 CommandHandler.AddServices(Services);
 
