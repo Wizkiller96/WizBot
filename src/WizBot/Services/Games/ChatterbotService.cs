@@ -104,7 +104,6 @@ namespace WizBot.Services.Games
                 {
                     if (pc.Verbose)
                     {
-                        //todo move this to permissions
                         var returnMsg = _strings.GetText("trigger", guild.Id, "Permissions".ToLowerInvariant(), index + 1, Format.Bold(pc.Permissions[index].GetCommand(_cmd.GetPrefix(guild), (SocketGuild)guild)));
                         try { await usrMsg.Channel.SendErrorAsync(returnMsg).ConfigureAwait(false); } catch { }
                         _log.Info(returnMsg);

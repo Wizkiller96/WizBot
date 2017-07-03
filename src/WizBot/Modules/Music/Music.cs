@@ -180,11 +180,10 @@ namespace WizBot.Modules.Music
                 try { await msg.DeleteAsync().ConfigureAwait(false); } catch { }
             }
         }
-
-        //todo, page should default to the page the current song is on
+        
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        public async Task ListQueue(int page = 1)
+        public async Task ListQueue(int page = 0)
         {
             var mp = await _music.GetOrCreatePlayer(Context);
             var (current, songs) = mp.QueueArray();
@@ -194,13 +193,17 @@ namespace WizBot.Modules.Music
                 await ReplyErrorLocalized("no_player").ConfigureAwait(false);
                 return;
             }
-
-            if (--page < 0)
+            
+            if (--page < -1)
                 return;
-            //todo say whether music player is stopped
             //try { await musicPlayer.UpdateSongDurationsAsync().ConfigureAwait(false); } catch { }
 
             const int itemsPerPage = 10;
+
+            if (page == -1)
+                page = current / itemsPerPage;
+
+            //if page is 0 (-1 after this decrement) that means default to the page current song is playing from
 
             //var total = musicPlayer.TotalPlaytime;
             //var totalStr = total == TimeSpan.MaxValue ? "∞" : GetText("time_format",
@@ -227,6 +230,8 @@ namespace WizBot.Modules.Music
                 desc = $"`🔊` {songs[current].PrettyFullName}\n\n" + desc;
 
                 var add = "";
+                if (mp.Stopped)
+                    add += Format.Bold(GetText("queue_stopped", Format.Code(Prefix + "play"))) + "\n";
                 if (mp.RepeatCurrentSong)
                     add += "🔂 " + GetText("repeating_cur_song") + "\n";
                 else if (mp.Shuffle)
@@ -344,7 +349,7 @@ namespace WizBot.Modules.Music
             }
             catch (ArgumentOutOfRangeException)
             {
-                //todo error message
+                await ReplyErrorLocalized("removed_song_error").ConfigureAwait(false);
             }
         }
 
