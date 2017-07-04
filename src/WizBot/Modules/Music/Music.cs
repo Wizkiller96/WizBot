@@ -18,7 +18,6 @@ using Newtonsoft.Json.Linq;
 
 namespace WizBot.Modules.Music
 {
-    [NoPublicBot]
     public class Music : WizBotTopLevelModule 
     {
         private static MusicService _music;
@@ -70,11 +69,10 @@ namespace WizBot.Modules.Music
                         //    player.TogglePause();
                         //else if (!player.Paused && newState.VoiceChannel.Users.Count <= 1) // pause if there are no users in the new channel
                         //    player.TogglePause();
-
+                       
                        // player.SetVoiceChannel(newState.VoiceChannel);
                         return;
                     }
-
 
                     ////if some other user moved
                     //if ((player.VoiceChannel == newState.VoiceChannel && //if joined first, and player paused, unpause 
@@ -232,7 +230,8 @@ namespace WizBot.Modules.Music
             
             if (--page < -1)
                 return;
-            //try { await musicPlayer.UpdateSongDurationsAsync().ConfigureAwait(false); } catch { }
+            
+            try { await mp.UpdateSongDurationsAsync().ConfigureAwait(false); } catch { }
 
             const int itemsPerPage = 10;
 
@@ -604,13 +603,13 @@ namespace WizBot.Modules.Music
             var (_, currentSong) = mp.Current;
             if (currentSong == null)
                 return;
-            //try { await mp.UpdateSongDurationsAsync().ConfigureAwait(false); } catch { }
+            try { await mp.UpdateSongDurationsAsync().ConfigureAwait(false); } catch { }
 
             var embed = new EmbedBuilder().WithOkColor()
                             .WithAuthor(eab => eab.WithName(GetText("now_playing")).WithMusicIcon())
                             .WithDescription(currentSong.PrettyName)
                             .WithThumbnailUrl(currentSong.Thumbnail)
-                            .WithFooter(ef => ef.WithText(mp.PrettyVolume + " | " + /*currentSong.PrettyFullTime  +*/ $" | {currentSong.PrettyProvider} | {currentSong.QueuerName}"));
+                            .WithFooter(ef => ef.WithText(mp.PrettyVolume + " | " + mp.PrettyFullTime  + $" | {currentSong.PrettyProvider} | {currentSong.QueuerName}"));
 
             await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
         }
@@ -847,7 +846,7 @@ namespace WizBot.Modules.Music
             else
                 await ReplyConfirmLocalized("rpl_disabled").ConfigureAwait(false);
         }
-
+        //todo readd goto
         //[WizBotCommand, Usage, Description, Aliases]
         //[RequireContext(ContextType.Guild)]
         //public async Task Goto(int time)
