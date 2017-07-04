@@ -31,6 +31,7 @@ using WizBot.Extensions;
 
 namespace WizBot
 {
+    //todo log when joining or leaving the server
     public class WizBot
     {
         private Logger _log;
