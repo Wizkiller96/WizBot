@@ -9,7 +9,7 @@ namespace WizBot.Services.Music
 {
     public class MusicQueue : IDisposable
     {
-        private LinkedList<SongInfo> Songs { get; } = new LinkedList<SongInfo>();
+        private LinkedList<SongInfo> Songs { get; set; } = new LinkedList<SongInfo>();
         private int _currentIndex = 0;
         public int CurrentIndex
         {
@@ -145,6 +145,22 @@ namespace WizBot.Services.Music
             lock (locker)
             {
                 CurrentIndex = new WizBotRandom().Next(Songs.Count);
+            }
+        }
+
+        public SongInfo MoveSong(int n1, int n2)
+        {
+            lock (locker)
+            {
+                var playlist = Songs.ToList();
+                if (n1 > playlist.Count || n2 > playlist.Count)
+                    return null;
+                var s = playlist[n1 - 1];
+                playlist.Insert(n2 - 1, s);
+                var nn1 = n2 < n1 ? n1 : n1 - 1;
+                playlist.RemoveAt(nn1);
+                Songs = new LinkedList<SongInfo>(playlist);
+                return s;
             }
         }
     }
