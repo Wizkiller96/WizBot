@@ -16,13 +16,13 @@ namespace WizBot.Services
         string CarbonKey { get; }
 
         DBConfig Db { get; }
-        string SoundCloudClientId { get; }
         string OsuApiKey { get; }
 
         bool IsOwner(IUser u);
         int TotalShards { get; }
         string ShardRunCommand { get; }
         string ShardRunArguments { get; }
+        string PatreonCampaignId { get; }
     }
 
     public class DBConfig
