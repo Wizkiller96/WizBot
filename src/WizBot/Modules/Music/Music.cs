@@ -107,6 +107,7 @@ namespace WizBot.Modules.Music
             int index;
             try
             {
+                _log.Info("Added");
                 index = mp.Enqueue(songInfo);
             }
             catch (QueueFullException)
@@ -168,11 +169,13 @@ namespace WizBot.Modules.Music
         [RequireContext(ContextType.Guild)]
         public async Task Queue([Remainder] string query)
         {
+            _log.Info("Getting player");
             var mp = await _music.GetOrCreatePlayer(Context);
+            _log.Info("Resolving song");
             var songInfo = await _music.ResolveSong(query, Context.User.ToString());
-            
+            _log.Info("Queueing song");
             try { await InternalQueue(mp, songInfo, false); } catch (QueueFullException) { return; }
-
+            _log.Info("--------------");
             if ((await Context.Guild.GetCurrentUserAsync()).GetPermissions((IGuildChannel)Context.Channel).ManageMessages)
             {
                 Context.Message.DeleteAfter(10);
