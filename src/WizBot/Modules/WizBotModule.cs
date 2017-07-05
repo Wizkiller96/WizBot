@@ -32,7 +32,7 @@ namespace WizBot.Modules
             _log = LogManager.GetCurrentClassLogger();
         }
 
-        protected override void BeforeExecute()
+        protected override void BeforeExecute(CommandInfo cmd)
         {
             _cultureInfo = _localization.GetCultureInfo(Context.Guild?.Id);
         }

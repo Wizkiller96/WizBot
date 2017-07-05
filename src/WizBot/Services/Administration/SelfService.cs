@@ -84,7 +84,7 @@ namespace WizBot.Services.Administration
                     {
                         if (hs.Remove(u.Id))
                         {
-                            channels.Add(u.Id, new AsyncLazy<IDMChannel>(async () => await u.CreateDMChannelAsync()));
+                            channels.Add(u.Id, new AsyncLazy<IDMChannel>(async () => await u.GetOrCreateDMChannelAsync()));
                             if (hs.Count == 0)
                                 break;
                         }

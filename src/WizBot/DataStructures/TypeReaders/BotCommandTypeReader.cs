@@ -1,6 +1,7 @@
 ﻿using Discord.Commands;
 using WizBot.Services;
 using WizBot.Services.CustomReactions;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,7 +18,7 @@ namespace WizBot.TypeReaders
             _cmdHandler = cmdHandler;
         }
 
-        public override Task<TypeReaderResult> Read(ICommandContext context, string input)
+        public override Task<TypeReaderResult> Read(ICommandContext context, string input, IServiceProvider _)
         {
             input = input.ToUpperInvariant();
             var prefix = _cmdHandler.GetPrefix(context.Guild);
@@ -44,7 +45,7 @@ namespace WizBot.TypeReaders
             _crs = crs;
         }
 
-        public override async Task<TypeReaderResult> Read(ICommandContext context, string input)
+        public override async Task<TypeReaderResult> Read(ICommandContext context, string input, IServiceProvider _)
         {
             input = input.ToUpperInvariant();
 
@@ -64,7 +65,7 @@ namespace WizBot.TypeReaders
                 }
             }
 
-            var cmd = await base.Read(context, input);
+            var cmd = await base.Read(context, input, _);
             if (cmd.IsSuccess)
             {
                 return TypeReaderResult.FromSuccess(new CommandOrCrInfo(((CommandInfo)cmd.Values.First().Value).Name));
