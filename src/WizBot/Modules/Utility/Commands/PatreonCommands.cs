@@ -27,11 +27,12 @@ namespace WizBot.Modules.Utility
                 _config = config;
                 _db = db;
                 _currency = currency;
-                _patreon = p;
+                _patreon = p;                
             }
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
+            [RequireContext(ContextType.DM)]
             public async Task PatreonRewardsReload()
             {
                 if (string.IsNullOrWhiteSpace(_creds.PatreonAccessToken))
@@ -42,6 +43,7 @@ namespace WizBot.Modules.Utility
             }
 
             [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.DM)]
             public async Task ClaimPatreonRewards()
             {
                 if (string.IsNullOrWhiteSpace(_creds.PatreonAccessToken))

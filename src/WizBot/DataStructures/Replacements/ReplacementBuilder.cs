@@ -3,6 +3,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using WizBot.Extensions;
 using WizBot.Services;
+using WizBot.Services.Administration;
 using WizBot.Services.Music;
 using System;
 using System.Collections.Concurrent;
@@ -26,7 +27,7 @@ namespace WizBot.DataStructures.Replacements
         {
             return this.WithUser(usr)
                 .WithChannel(ch)
-                .WithServer(g)
+                .WithServer(client, g)
                 .WithClient(client);
         }
 
@@ -41,10 +42,24 @@ namespace WizBot.DataStructures.Replacements
             return this;
         }
 
-        public ReplacementBuilder WithServer(IGuild g)
+        public ReplacementBuilder WithServer(DiscordSocketClient client, IGuild g)
         {
+
             _reps.TryAdd("%sid%", () => g == null ? "DM" : g.Id.ToString());
             _reps.TryAdd("%server%", () => g == null ? "DM" : g.Name);
+            _reps.TryAdd("%server_time%", () =>
+            {
+                TimeZoneInfo to = TimeZoneInfo.Local;
+                if (g != null)
+                {
+                    if (GuildTimezoneService.AllServices.TryGetValue(client.CurrentUser.Id, out var tz))
+                        to = tz.GetTimeZoneOrDefault(g.Id) ?? TimeZoneInfo.Local;
+                }
+
+                return TimeZoneInfo.ConvertTime(DateTime.UtcNow,
+                    TimeZoneInfo.Utc,
+                    to).ToString("HH:mm ") + to.StandardName.GetInitials();
+            });
             return this;
         }
 
@@ -74,25 +89,26 @@ namespace WizBot.DataStructures.Replacements
             return this;
         }
 
-        //public ReplacementBuilder WithMusic(MusicService ms)
-        //{
-        //    _reps.TryAdd("%playing%", () =>
-        //    {
-        //        var cnt = ms.MusicPlayers.Count(kvp => kvp.Value.CurrentSong != null);
-        //        if (cnt != 1) return cnt.ToString();
-        //        try
-        //        {
-        //            var mp = ms.MusicPlayers.FirstOrDefault();
-        //            return mp.Value.CurrentSong.SongInfo.Title;
-        //        }
-        //        catch
-        //        {
-        //            return "No songs";
-        //        }
-        //    });
-        //    _reps.TryAdd("%queued%", () => ms.MusicPlayers.Sum(kvp => kvp.Value.Playlist.Count).ToString());
-        //    return this;
-        //}
+        public ReplacementBuilder WithMusic(MusicService ms)
+        {
+            _reps.TryAdd("%playing%", () =>
+            {
+                var cnt = ms.MusicPlayers.Count(kvp => kvp.Value.Current.Current != null);
+                if (cnt != 1) return cnt.ToString();
+                try
+                {
+                    var mp = ms.MusicPlayers.FirstOrDefault();
+                    var title =  mp.Value?.Current.Current?.Title;
+                    return title ?? "No songs";
+                }
+                catch
+                {
+                    return "error";
+                }
+            });
+            _reps.TryAdd("%queued%", () => ms.MusicPlayers.Sum(kvp => kvp.Value.QueueArray().Songs.Length).ToString());
+            return this;
+        }
 
         public ReplacementBuilder WithRngRegex()
         {

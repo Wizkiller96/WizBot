@@ -31,7 +31,6 @@ using WizBot.Extensions;
 
 namespace WizBot
 {
-    //todo log when joining or leaving the server
     public class WizBot
     {
         private Logger _log;
@@ -131,8 +130,9 @@ namespace WizBot
                         ConnectionState = Client.ConnectionState,
                         Guilds = Client.ConnectionState == ConnectionState.Connected ? Client.Guilds.Count : 0,
                         ShardId = Client.ShardId,
+                        Time = DateTime.UtcNow,
                     });
-                    await Task.Delay(1000);
+                    await Task.Delay(5000);
                 }
             });
         }
@@ -205,8 +205,8 @@ namespace WizBot
                 var playingRotateService = new PlayingRotateService(Client, BotConfig, musicService, Db);
                 var gameVcService = new GameVoiceChannelService(Client, Db, AllGuildConfigs);
                 var autoAssignRoleService = new AutoAssignRoleService(Client, AllGuildConfigs);
-                var logCommandService = new LogCommandService(Client, Strings, AllGuildConfigs, Db, muteService, protectionService);
-                var guildTimezoneService = new GuildTimezoneService(AllGuildConfigs, Db);
+                var guildTimezoneService = new GuildTimezoneService(Client, AllGuildConfigs, Db);
+                var logCommandService = new LogCommandService(Client, Strings, AllGuildConfigs, Db, muteService, protectionService, guildTimezoneService);
                 #endregion
 
                 #region pokemon 
@@ -317,7 +317,21 @@ namespace WizBot
             Client.Ready += SetClientReady;
             await clientReady.Task.ConfigureAwait(false);
             Client.Ready -= SetClientReady;
+            Client.JoinedGuild += Client_JoinedGuild;
+            Client.LeftGuild += Client_LeftGuild;
             _log.Info("Shard {0} logged in.", ShardId);
+        }
+
+        private Task Client_LeftGuild(SocketGuild arg)
+        {
+            _log.Info("Left server: {0} [{1}]", arg?.Name, arg?.Id);
+            return Task.CompletedTask;
+        }
+
+        private Task Client_JoinedGuild(SocketGuild arg)
+        {
+            _log.Info("Joined server: {0} [{1}]", arg?.Name, arg?.Id);
+            return Task.CompletedTask;
         }
 
         public async Task RunAsync(params string[] args)
@@ -349,7 +363,7 @@ namespace WizBot
             bool isPublicWizBot = false;
 #if GLOBAL_WIZBOT
             isPublicWizBot = true;
- #endif
+#endif
             //_log.Info(string.Join(", ", CommandService.Commands
             //    .Distinct(x => x.Name + x.Module.Name)
             //    .SelectMany(x => x.Aliases)

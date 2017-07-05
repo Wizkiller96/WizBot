@@ -3,6 +3,7 @@ using Discord.Commands;
 using WizBot.Attributes;
 using WizBot.Extensions;
 using WizBot.Services;
+using WizBot.Services.Administration;
 using WizBot.Services.Database.Models;
 using WizBot.Services.Utility;
 using System;
@@ -19,16 +20,18 @@ namespace WizBot.Modules.Utility
         {
             private readonly RemindService _service;
             private readonly DbService _db;
+            private readonly GuildTimezoneService _tz;
 
-            public RemindCommands(RemindService service, DbService db)
+            public RemindCommands(RemindService service, DbService db, GuildTimezoneService tz)
             {
                 _service = service;
                 _db = db;
+                _tz = tz;
             }
 
             public enum MeOrHere
             {
-                Me, Here
+                Me,Here
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -119,6 +122,7 @@ namespace WizBot.Modules.Utility
                     await uow.CompleteAsync();
                 }
 
+                var gTime = TimeZoneInfo.ConvertTime(time, _tz.GetTimeZoneOrUtc(Context.Guild.Id));
                 try
                 {
                     await Context.Channel.SendConfirmAsync(
@@ -126,7 +130,7 @@ namespace WizBot.Modules.Utility
                             Format.Bold(!isPrivate ? $"<#{targetId}>" : Context.User.Username),
                             Format.Bold(message.SanitizeMentions()),
                             Format.Bold(output),
-                            time, time)).ConfigureAwait(false);
+                            gTime, gTime)).ConfigureAwait(false);
                 }
                 catch
                 {
@@ -134,7 +138,7 @@ namespace WizBot.Modules.Utility
                 }
                 await _service.StartReminder(rem);
             }
-
+            
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
             public async Task RemindTemplate([Remainder] string arg)

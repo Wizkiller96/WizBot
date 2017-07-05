@@ -25,17 +25,6 @@ namespace WizBot.Services.Impl
 
         public string LoLApiKey { get; }
         public string OsuApiKey { get; }
-        private string _soundcloudClientId;
-        public string SoundCloudClientId {
-            get {
-                return string.IsNullOrWhiteSpace(_soundcloudClientId)
-                    ? "f16f3b87c6ebc1aafe87d9cf27a03dc2"
-                    : _soundcloudClientId;
-            }
-            private set {
-                _soundcloudClientId = value;
-            }
-        }
 
         public DBConfig Db { get; }
         public int TotalShards { get; }
@@ -46,6 +35,8 @@ namespace WizBot.Services.Impl
         public string ShardRunCommand { get; }
         public string ShardRunArguments { get; }
         public int ShardRunPort { get; }
+
+        public string PatreonCampaignId { get; }
 
         public BotCredentials()
         {
@@ -75,6 +66,7 @@ namespace WizBot.Services.Impl
                 MashapeKey = data[nameof(MashapeKey)];
                 OsuApiKey = data[nameof(OsuApiKey)];
                 PatreonAccessToken = data[nameof(PatreonAccessToken)];
+                PatreonCampaignId = data[nameof(PatreonCampaignId)] ?? "334038";
                 ShardRunCommand = data[nameof(ShardRunCommand)];
                 ShardRunArguments = data[nameof(ShardRunArguments)];
                 if (string.IsNullOrWhiteSpace(ShardRunCommand))
@@ -95,8 +87,8 @@ namespace WizBot.Services.Impl
                 ulong.TryParse(data[nameof(ClientId)], out ulong clId);
                 ClientId = clId;
 
-                var scId = data[nameof(SoundCloudClientId)];
-                SoundCloudClientId = scId;
+                //var scId = data[nameof(SoundCloudClientId)];
+                //SoundCloudClientId = scId;
                 //SoundCloudClientId = string.IsNullOrWhiteSpace(scId)
                 //    ? 
                 //    : scId;
@@ -132,6 +124,7 @@ namespace WizBot.Services.Impl
             public DBConfig Db { get; set; } = new DBConfig("sqlite", "Filename=./data/WizBot.db");
             public int TotalShards { get; set; } = 1;
             public string PatreonAccessToken { get; set; } = "";
+            public string PatreonCampaignId { get; set; } = "334038";
 
             public string ShardRunCommand { get; set; } = "";
             public string ShardRunArguments { get; set; } = "";
