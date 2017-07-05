@@ -269,7 +269,7 @@ namespace WizBot.Modules.Music
                     add += Format.Bold(GetText("queue_stopped", Format.Code(Prefix + "play"))) + "\n";
                 var mps = mp.MaxPlaytimeSeconds;
                 if (mps > 0)
-                    add += Format.Bold(GetText("song_skips_after", TimeSpan.FromSeconds(mps).ToString("g"))) + "\n";
+                    add += Format.Bold(GetText("song_skips_after", TimeSpan.FromSeconds(mps).ToString("HH\\:mm\\:ss"))) + "\n";
                 if (mp.RepeatCurrentSong)
                     add += "🔂 " + GetText("repeating_cur_song") + "\n";
                 else if (mp.Shuffle)
