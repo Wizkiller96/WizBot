@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using WizBot.Services.Administration;
 using System.Diagnostics;
 using WizBot.DataStructures;
+using WizBot.Services.Music;
 
 namespace WizBot.Modules.Administration
 {
@@ -29,14 +30,16 @@ namespace WizBot.Modules.Administration
             private readonly SelfService _service;
             private readonly DiscordSocketClient _client;
             private readonly IImagesService _images;
+            private readonly MusicService _music;
 
             public SelfCommands(DbService db, SelfService service, DiscordSocketClient client,
-                IImagesService images)
+                MusicService music, IImagesService images)
             {
                 _db = db;
                 _service = service;
                 _client = client;
                 _images = images;
+                _music = music;
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -268,6 +271,7 @@ namespace WizBot.Modules.Administration
                     // ignored
                 }
                 await Task.Delay(2000).ConfigureAwait(false);
+                try { await _music.DestroyAllPlayers().ConfigureAwait(false); } catch { }
                 Environment.Exit(0);
             }
 
