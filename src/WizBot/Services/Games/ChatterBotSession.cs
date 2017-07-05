@@ -23,7 +23,7 @@ namespace WizBot.Services.Games
         }
 
 #if GLOBAL_WIZBOT
-        private string apiEndpoint => "http://wizbot.xyz/chatbot/chatbot/" +
+        private string apiEndpoint => "http://wizbot.xyz/cb/chatbot/" +
                                       $"?bot_id={_botId}&" +
                                       "say={0}&" +
                                       $"convo_id=wizbot_{ChatterbotId}_{ChannelId}&" +
