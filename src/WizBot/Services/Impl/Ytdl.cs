@@ -32,7 +32,8 @@ namespace WizBot.Services.Impl
                 process.Start();
                 var str = await process.StandardOutput.ReadToEndAsync();
                 var err = await process.StandardError.ReadToEndAsync();
-                _log.Warn(err);
+                if(!string.IsNullOrEmpty(err))
+                    _log.Warn(err);
                 return str;
             }
         }
