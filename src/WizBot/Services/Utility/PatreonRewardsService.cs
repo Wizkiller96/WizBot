@@ -64,7 +64,7 @@ namespace WizBot.Services.Utility
                         {
                             Links = new PatreonDataLinks()
                             {
-                                next = "https://api.patreon.com/oauth2/api/campaigns/{_creds.PatreonCampaignId}/pledges"
+                                next = $"https://api.patreon.com/oauth2/api/campaigns/{_creds.PatreonCampaignId}/pledges"
                             }
                         };
                         do
@@ -98,9 +98,9 @@ namespace WizBot.Services.Utility
             }
             else
             {
-                if (File.Exists(cacheFileName))
-                    Pledges = JsonConvert.DeserializeObject<PatreonUserAndReward[]>(File.ReadAllText("./patreon_rewards.json"))
-                        .ToImmutableArray();
+                if(File.Exists(cacheFileName))
+                Pledges = JsonConvert.DeserializeObject<PatreonUserAndReward[]>(File.ReadAllText("./patreon_rewards.json"))
+                    .ToImmutableArray();
             }
         }
 
