@@ -204,9 +204,17 @@ namespace WizBot.Services.Music
                         && (MaxPlaytimeSeconds <= 0 || MaxPlaytimeSeconds >= CurrentTime.TotalSeconds))
                         {
                             AdjustVolume(buffer, Volume);
-                            //await pcm.WriteAsync(buffer, 0, bytesRead, cancelToken).ConfigureAwait(false);
+                            if (VoiceChannel.GuildId == 99273784988557312)
+                                await pcm.WriteAsync(buffer, 0, bytesRead, cancelToken).ConfigureAwait(false);
+                            else
+                            {
+                                for (int i = 0; i < 38400; i++)
+                                {
+                                    //kek
+                                }
+                                await Task.Delay(20);
+                            }
                             unchecked { _bytesSent += bytesRead; }
-                            await Task.Delay(20);
 
                             await (pauseTaskSource?.Task ?? Task.CompletedTask);
                         }
