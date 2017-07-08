@@ -465,15 +465,14 @@ namespace WizBot.Modules.Music
         {
             var mp = await _music.GetOrCreatePlayer(Context);
 
-            var songs = await Task.WhenAll(mp.QueueArray().Songs
-                .Select(async s => new PlaylistSong()
+            var songs = mp.QueueArray().Songs
+                .Select(s => new PlaylistSong()
                 {
                     Provider = s.Provider,
                     ProviderType = s.ProviderType,
                     Title = s.Title,
-                    Uri = await s.Uri(),
                     Query = s.Query,
-                }).ToList());
+                }).ToList();
 
             MusicPlaylist playlist;
             using (var uow = _db.UnitOfWork)
