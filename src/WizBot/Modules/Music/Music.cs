@@ -15,6 +15,8 @@ using System.Collections.Concurrent;
 using System.IO;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
+using WizBot.Services.Music.Extensions;
+using WizBot.Services.Impl;
 
 namespace WizBot.Modules.Music
 {
@@ -121,12 +123,15 @@ namespace WizBot.Modules.Music
                 {
                     try
                     {
-                        var queuedMessage = await mp.OutputTextChannel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                                                                .WithAuthor(eab => eab.WithName(GetText("queued_song") + " #" + (index)).WithMusicIcon())
-                                                                .WithDescription($"{songInfo.PrettyName}\n{GetText("queue")} ")
-                                                                .WithThumbnailUrl(songInfo.Thumbnail)
-                                                                .WithFooter(ef => ef.WithText(songInfo.PrettyProvider)))
-                                                                .ConfigureAwait(false);
+                        var embed = new EmbedBuilder().WithOkColor()
+                                        .WithAuthor(eab => eab.WithName(GetText("queued_song") + " #" + (index)).WithMusicIcon())
+                                        .WithDescription($"{songInfo.PrettyName}\n{GetText("queue")} ")
+                                        .WithFooter(ef => ef.WithText(songInfo.PrettyProvider));
+
+                        if (Uri.IsWellFormedUriString(songInfo.Thumbnail, UriKind.Absolute))
+                            embed.WithThumbnailUrl(songInfo.Thumbnail);
+
+                        var queuedMessage = await mp.OutputTextChannel.EmbedAsync(embed).ConfigureAwait(false);
                         if (mp.Stopped)
                         {
                             (await ReplyErrorLocalized("queue_stopped", Format.Code(Prefix + "play")).ConfigureAwait(false)).DeleteAfter(10);
@@ -374,6 +379,11 @@ namespace WizBot.Modules.Music
         [Priority(0)]
         public async Task SongRemove(int index)
         {
+            if (index < 1)
+            {
+                await ReplyErrorLocalized("removed_song_error").ConfigureAwait(false);
+                return;
+            }
             var mp = await _music.GetOrCreatePlayer(Context);
             try
             {
@@ -398,7 +408,9 @@ namespace WizBot.Modules.Music
         [Priority(1)]
         public async Task SongRemove(All all)
         {
-            var mp = await _music.GetOrCreatePlayer(Context);
+            var mp = _music.GetPlayerOrDefault(Context.Guild.Id);
+            if (mp == null)
+                return;
             mp.Stop(true);
             await ReplyConfirmLocalized("queue_cleared").ConfigureAwait(false);
         }
@@ -585,7 +597,9 @@ namespace WizBot.Modules.Music
                     try
                     {
                         await Task.Yield();
-                        await InternalQueue(mp, await _music.SongInfoFromSVideo(svideo, Context.User.ToString()), true);
+                        var sinfo = await svideo.GetSongInfo();
+                        sinfo.QueuerName = Context.User.ToString();
+                        await InternalQueue(mp, sinfo, true);
                     }
                     catch (Exception ex)
                     {

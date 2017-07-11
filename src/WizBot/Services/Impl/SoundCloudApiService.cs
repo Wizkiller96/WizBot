@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace WizBot.Services.Music
+namespace WizBot.Services.Impl
 {
     public class SoundCloudApiService
     {

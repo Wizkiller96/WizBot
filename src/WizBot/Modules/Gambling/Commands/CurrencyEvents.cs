@@ -196,10 +196,10 @@ namespace WizBot.Modules.Gambling
             StartingMessage = umsg;
             _client.MessageDeleted += MessageDeletedEventHandler;
 
-            try { await StartingMessage.AddReactionAsync(Emote.Parse("🌸")).ConfigureAwait(false); }
+            try { await StartingMessage.AddReactionAsync(new Emoji("🌸")).ConfigureAwait(false); }
             catch
             {
-                try { await StartingMessage.AddReactionAsync(Emote.Parse("🌸")).ConfigureAwait(false); }
+                try { await StartingMessage.AddReactionAsync(new Emoji("🌸")).ConfigureAwait(false); }
                 catch
                 {
                     try { await StartingMessage.DeleteAsync().ConfigureAwait(false); }
