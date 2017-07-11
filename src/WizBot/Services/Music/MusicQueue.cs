@@ -95,11 +95,12 @@ namespace WizBot.Services.Music
                 if (index < 0 || index >= Songs.Count)
                     throw new ArgumentOutOfRangeException(nameof(index));
 
-                var current = Songs.First;
+                var current = Songs.First.Value;
                 for (int i = 0; i < Songs.Count; i++)
                 {
                     if (i == index)
                     {
+                        current = Songs.ElementAt(index);
                         Songs.Remove(current);
                         if (CurrentIndex != 0)
                         {
@@ -111,7 +112,7 @@ namespace WizBot.Services.Music
                         break;
                     }
                 }
-                return current.Value;
+                return current;
             }
         }
 
