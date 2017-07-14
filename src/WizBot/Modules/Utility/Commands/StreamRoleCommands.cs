@@ -2,38 +2,41 @@ using Discord;
 using Discord.Commands;
 using WizBot.Attributes;
 using WizBot.Services.Utility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace WizBot.Modules.Utility.Commands
+namespace WizBot.Modules.Utility
 {
-    public class StreamRoleCommands  : WizBotSubModule
+    public partial class Utility
     {
-        private readonly StreamRoleService service;
-
-        public StreamRoleCommands(StreamRoleService service)
+        public class StreamRoleCommands : WizBotSubModule
         {
-            this.service = service;
-        }
+            private readonly StreamRoleService service;
 
-        [WizBotCommand, Usage, Description, Aliases]
-        [RequireContext(ContextType.Guild)]
-        public async Task StreamRole(IRole fromRole, IRole addRole)
-        {
-            this.service.SetStreamRole(fromRole, addRole);
+            public StreamRoleCommands(StreamRoleService service)
+            {
+                this.service = service;
+            }
 
-            await ReplyConfirmLocalized("stream_role_enabled", Format.Bold(fromRole.ToString()), Format.Bold(addRole.ToString())).ConfigureAwait(false);
-        }
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireBotPermission(GuildPermission.ManageRoles)]
+            [RequireUserPermission(GuildPermission.ManageRoles)]
+            [RequireContext(ContextType.Guild)]
+            public async Task StreamRole(IRole fromRole, IRole addRole)
+            {
+                this.service.SetStreamRole(fromRole, addRole);
 
-        [WizBotCommand, Usage, Description, Aliases]
-        [RequireContext(ContextType.Guild)]
-        public async Task StreamRole()
-        {
-            this.service.StopStreamRole(Context.Guild.Id);
-            await ReplyConfirmLocalized("stream_role_disabled").ConfigureAwait(false);
+                await ReplyConfirmLocalized("stream_role_enabled", Format.Bold(fromRole.ToString()), Format.Bold(addRole.ToString())).ConfigureAwait(false);
+            }
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireBotPermission(GuildPermission.ManageRoles)]
+            [RequireUserPermission(GuildPermission.ManageRoles)]
+            [RequireContext(ContextType.Guild)]
+            public async Task StreamRole()
+            {
+                this.service.StopStreamRole(Context.Guild.Id);
+                await ReplyConfirmLocalized("stream_role_disabled").ConfigureAwait(false);
+            }
         }
     }
 }
