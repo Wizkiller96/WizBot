@@ -83,6 +83,8 @@ namespace WizBot.Services.Database.Models
         public ulong? GameVoiceChannel { get; set; } = null;
         public bool VerboseErrors { get; set; } = false;
 
+        public StreamRoleSettings StreamRole { get; set; } = new StreamRoleSettings();
+        
         //public List<ProtectionIgnoredChannel> ProtectionIgnoredChannels { get; set; } = new List<ProtectionIgnoredChannel>();
     }
 
