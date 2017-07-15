@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 
 namespace WizBot.Services
 {
-    public interface IImagesService
+    public interface IImagesService : INService
     {
         ImmutableArray<byte> Heads { get; }
         ImmutableArray<byte> Tails { get; }

@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace WizBot.Services.Games
 {
-    public class GamesService
+    public class GamesService : INService
     {
         private readonly BotConfig _bc;
 

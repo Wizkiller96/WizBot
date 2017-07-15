@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace WizBot.Services.Administration
 {
-    public class VcRoleService
+    public class VcRoleService : INService
     {
         private readonly Logger _log;
         private readonly DbService _db;

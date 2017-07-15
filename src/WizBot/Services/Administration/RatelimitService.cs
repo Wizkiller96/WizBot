@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace WizBot.Services.Administration
 {
-    public class SlowmodeService : IEarlyBlocker
+    public class SlowmodeService : IEarlyBlocker, INService
     {
         public ConcurrentDictionary<ulong, Ratelimiter> RatelimitingChannels = new ConcurrentDictionary<ulong, Ratelimiter>();
         public ConcurrentDictionary<ulong, HashSet<ulong>> IgnoredRoles = new ConcurrentDictionary<ulong, HashSet<ulong>>();

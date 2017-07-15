@@ -132,24 +132,27 @@ namespace WizBot.Modules.Administration
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.BanMembers)]
+            [Priority(2)]
             public Task Warnlog(int page, IGuildUser user)
                 => Warnlog(page, user.Id);
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            [RequireUserPermission(GuildPermission.BanMembers)]
+            [Priority(3)]
             public Task Warnlog(IGuildUser user)
-                => Warnlog(user.Id);
+                => Context.User.Id == user.Id || ((IGuildUser)Context.User).GuildPermissions.BanMembers ? Warnlog(user.Id) : Task.CompletedTask;
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.BanMembers)]
+            [Priority(0)]
             public Task Warnlog(int page, ulong userId)
                 => InternalWarnlog(userId, page - 1);
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.BanMembers)]
+            [Priority(1)]
             public Task Warnlog(ulong userId)
                 => InternalWarnlog(userId, 0);
 

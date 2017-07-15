@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace WizBot.Services.Administration
 {
-    public class LogCommandService
+    public class LogCommandService : INService
     {
 
         private readonly DiscordSocketClient _client;

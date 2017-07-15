@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WizBot.Services.Searches
 {
-    public class AnimeSearchService
+    public class AnimeSearchService : INService
     {
         private readonly Logger _log;
 

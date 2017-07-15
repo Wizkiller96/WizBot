@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace WizBot.Services
 {
-    public interface IStatsService
+    public interface IStatsService : INService
     {
         string Author { get; }
         long CommandsRan { get; }

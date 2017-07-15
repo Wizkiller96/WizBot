@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WizBot.Services.Impl
 {
-    public class SoundCloudApiService
+    public class SoundCloudApiService : INService
     {
         private readonly IBotCredentials _creds;
 

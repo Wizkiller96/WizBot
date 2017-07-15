@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace WizBot.Services.Administration
 {
-    public class GameVoiceChannelService
+    public class GameVoiceChannelService : INService
     {
         public readonly ConcurrentHashSet<ulong> GameVoiceChannels = new ConcurrentHashSet<ulong>();
 

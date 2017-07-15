@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 
 namespace WizBot.Services
 {
-    public class WizBotStrings
+    public class WizBotStrings : INService
     {
         public const string stringsPath = @"_strings/";
 
@@ -42,9 +42,9 @@ namespace WizBot.Services
             responseStrings = allLangsDict.ToImmutableDictionary();
             sw.Stop();
 
-            _log.Info("Loaded {0} languages ({1}) in {2:F2}s",
+            _log.Info("Loaded {0} languages in {1:F2}s",
                 responseStrings.Count,
-                string.Join(",", responseStrings.Keys),
+                //string.Join(",", responseStrings.Keys),
                 sw.Elapsed.TotalSeconds);
 
             //improper string format checks

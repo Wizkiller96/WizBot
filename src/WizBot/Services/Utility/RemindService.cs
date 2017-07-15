@@ -4,9 +4,9 @@ using WizBot.DataStructures.Replacements;
 using WizBot.Extensions;
 using WizBot.Services.Database;
 using WizBot.Services.Database.Models;
+using WizBot.Services.Impl;
 using NLog;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace WizBot.Services.Utility
 {
-    public class RemindService
+    public class RemindService : INService
     {
         public readonly Regex Regex = new Regex(@"^(?:(?<months>\d)mo)?(?:(?<weeks>\d)w)?(?:(?<days>\d{1,2})d)?(?:(?<hours>\d{1,2})h)?(?:(?<minutes>\d{1,2})m)?$",
                                 RegexOptions.Compiled | RegexOptions.Multiline);
@@ -28,8 +28,8 @@ namespace WizBot.Services.Utility
         private readonly DiscordSocketClient _client;
         private readonly DbService _db;
 
-        public RemindService(DiscordSocketClient client, BotConfig config, DbService db, 
-            List<long> guilds, IUnitOfWork uow)
+        public RemindService(DiscordSocketClient client, BotConfig config, DbService db,
+             StartingGuildsService guilds, IUnitOfWork uow)
         {
             _config = config;
             _client = client;

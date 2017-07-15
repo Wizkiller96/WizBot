@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace WizBot.Services
 {
-    public class GreetSettingsService
+    public class GreetSettingsService : INService
     {
         private readonly DbService _db;
 

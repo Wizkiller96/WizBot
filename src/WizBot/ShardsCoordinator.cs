@@ -3,7 +3,6 @@ using WizBot.Services;
 using WizBot.Services.Impl;
 using NLog;
 using System;
-using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;

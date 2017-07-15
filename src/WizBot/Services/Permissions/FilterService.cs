@@ -12,7 +12,7 @@ using NLog;
 
 namespace WizBot.Services.Permissions
 {
-    public class FilterService : IEarlyBlocker
+    public class FilterService : IEarlyBlocker, INService
     {
         private readonly Logger _log;
 

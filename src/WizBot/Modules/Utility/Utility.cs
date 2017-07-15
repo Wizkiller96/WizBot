@@ -28,14 +28,14 @@ namespace WizBot.Modules.Utility
         private readonly DiscordSocketClient _client;
         private readonly IStatsService _stats;
         private readonly IBotCredentials _creds;
-        private readonly WizBot _bot;
+        private readonly ShardsCoordinator _shardCoord;
 
-        public Utility(WizBot bot, DiscordSocketClient client, IStatsService stats, IBotCredentials creds)
+        public Utility(ShardsCoordinator shardCoord, DiscordSocketClient client, IStatsService stats, IBotCredentials creds)
         {
             _client = client;
             _stats = stats;
             _creds = creds;
-            _bot = bot;
+            _shardCoord = shardCoord;
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -286,7 +286,7 @@ namespace WizBot.Modules.Utility
         {
             if (--page < 0)
                 return;
-            var statuses = _bot.ShardCoord.Statuses.ToArray()
+            var statuses = _shardCoord.Statuses.ToArray()
                 .Where(x => x != null);
 
             var status = string.Join(", ", statuses
@@ -331,7 +331,7 @@ namespace WizBot.Modules.Utility
                                           .WithIconUrl("http://i.imgur.com/fObUYFS.jpg"))
                     .AddField(efb => efb.WithName(GetText("author")).WithValue(_stats.Author).WithIsInline(true))
                     .AddField(efb => efb.WithName(GetText("botid")).WithValue(_client.CurrentUser.Id.ToString()).WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("shard")).WithValue($"#{_bot.ShardId} / {_creds.TotalShards}").WithIsInline(true))
+                    .AddField(efb => efb.WithName(GetText("shard")).WithValue($"#{_client.ShardId} / {_creds.TotalShards}").WithIsInline(true))
                     .AddField(efb => efb.WithName(GetText("commands_ran")).WithValue(_stats.CommandsRan.ToString()).WithIsInline(true))
                     .AddField(efb => efb.WithName(GetText("messages")).WithValue($"{_stats.MessageCounter} ({_stats.MessagesPerSecond:F2}/sec)").WithIsInline(true))
                     .AddField(efb => efb.WithName(GetText("memory")).WithValue($"{_stats.Heap} MB").WithIsInline(true))

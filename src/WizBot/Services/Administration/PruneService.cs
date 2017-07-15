@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace WizBot.Services.Administration
 {
-    public class PruneService
+    public class PruneService : INService
     {
         //channelids where prunes are currently occuring
         private ConcurrentHashSet<ulong> _pruningGuilds = new ConcurrentHashSet<ulong>();

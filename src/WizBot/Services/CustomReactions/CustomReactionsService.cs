@@ -14,7 +14,7 @@ using WizBot.Services.Database;
 
 namespace WizBot.Services.CustomReactions
 {
-    public class CustomReactionsService : IEarlyBlockingExecutor
+    public class CustomReactionsService : IEarlyBlockingExecutor, INService
     {
         public CustomReaction[] GlobalReactions = new CustomReaction[] { };
         public ConcurrentDictionary<ulong, CustomReaction[]> GuildReactions { get; } = new ConcurrentDictionary<ulong, CustomReaction[]>();

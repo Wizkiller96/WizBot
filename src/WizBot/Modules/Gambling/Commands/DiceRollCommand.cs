@@ -58,7 +58,7 @@ namespace WizBot.Modules.Gambling
             }
 
             [WizBotCommand, Usage, Description, Aliases]
-            [Priority(0)]
+            [Priority(1)]
             public async Task Roll(int num)
             {
                 await InternalRoll(num, true).ConfigureAwait(false);
@@ -66,21 +66,21 @@ namespace WizBot.Modules.Gambling
 
 
             [WizBotCommand, Usage, Description, Aliases]
-            [Priority(0)]
+            [Priority(1)]
             public async Task Rolluo(int num = 1)
             {
                 await InternalRoll(num, false).ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
-            [Priority(1)]
+            [Priority(0)]
             public async Task Roll(string arg)
             {
                 await InternallDndRoll(arg, true).ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
-            [Priority(1)]
+            [Priority(0)]
             public async Task Rolluo(string arg)
             {
                 await InternallDndRoll(arg, false).ConfigureAwait(false);
