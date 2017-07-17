@@ -9,7 +9,7 @@ using System.Threading;
 
 namespace WizBot.Services.Administration
 {
-    public class PlayingRotateService
+    public class PlayingRotateService  : INService
     {
         private readonly Timer _t;
         private readonly DiscordSocketClient _client;
