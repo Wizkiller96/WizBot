@@ -1,6 +1,5 @@
 using Discord;
 using Discord.Commands;
-using WizBot.Attributes;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,9 +15,10 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Discord.WebSocket;
 using System.Diagnostics;
+using WizBot.Common;
+using WizBot.Common.Attributes;
 using Color = Discord.Color;
 using WizBot.Services;
-using WizBot.DataStructures;
 
 namespace WizBot.Modules.Utility
 {
@@ -36,7 +36,7 @@ namespace WizBot.Modules.Utility
             _stats = stats;
             _creds = creds;
             _shardCoord = shardCoord;
-        }
+        }        
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
@@ -59,7 +59,7 @@ namespace WizBot.Modules.Utility
                 }
                 return;
             }
-
+            
             var hexColors = hexes.Select(hex =>
             {
                 try { return (ImageSharp.Color?)ImageSharp.Color.FromHex(hex.Replace("#", "")); } catch { return null; }
@@ -117,7 +117,7 @@ namespace WizBot.Modules.Utility
                 .WithAuthor(eab => eab.WithIconUrl("https://togethertube.com/assets/img/favicons/favicon-32x32.png")
                 .WithName("Together Tube")
                 .WithUrl("https://togethertube.com/"))
-                .WithDescription(Context.User.Mention + " " + GetText("togtub_room_link") + "\n" + target));
+                .WithDescription(Context.User.Mention + " " + GetText("togtub_room_link") +  "\n" + target));
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -176,7 +176,7 @@ namespace WizBot.Modules.Utility
         {
 
             StringBuilder builder = new StringBuilder();
-            var user = (IGuildUser)Context.User;
+            var user = (IGuildUser) Context.User;
             var perms = user.GetPermissions((ITextChannel)Context.Channel);
             foreach (var p in perms.GetType().GetProperties().Where(p => !p.GetGetMethod().GetParameters().Any()))
             {
@@ -230,8 +230,8 @@ namespace WizBot.Modules.Utility
                 }
                 else
                 {
-
-                    await channel.SendConfirmAsync(GetText("roles_page", page, Format.Bold(target.ToString())),
+                    
+                    await channel.SendConfirmAsync(GetText("roles_page", page, Format.Bold(target.ToString())), 
                         "\n• " + string.Join("\n• ", (IEnumerable<IRole>)roles).SanitizeMentions()).ConfigureAwait(false);
                 }
             }
@@ -296,7 +296,7 @@ namespace WizBot.Modules.Utility
 
             var allShardStrings = statuses
                 .Select(x =>
-                    {
+                {
                     var timeDiff = DateTime.UtcNow - x.Time;
                     if (timeDiff > TimeSpan.FromSeconds(20))
                         return $"Shard #{Format.Bold(x.ShardId.ToString())} **UNRESPONSIVE** for {timeDiff.ToString(@"hh\:mm\:ss")}";
@@ -323,7 +323,7 @@ namespace WizBot.Modules.Utility
 
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Stats()
-        {
+        {            
             await Context.Channel.EmbedAsync(
                 new EmbedBuilder().WithOkColor()
                     .WithAuthor(eab => eab.WithName($"WizBot v{StatsService.BotVersion}")

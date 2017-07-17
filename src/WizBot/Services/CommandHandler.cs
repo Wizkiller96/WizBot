@@ -9,12 +9,13 @@ using Discord.Commands;
 using WizBot.Extensions;
 using System.Collections.Concurrent;
 using System.Threading;
-using WizBot.DataStructures;
 using System.Collections.Immutable;
-using WizBot.DataStructures.ModuleBehaviors;
 using WizBot.Services.Database.Models;
 using System.IO;
 using Discord.Net;
+using WizBot.Common;
+using WizBot.Common.Collections;
+using WizBot.Common.ModuleBehaviors;
 
 namespace WizBot.Services
 {
@@ -274,8 +275,6 @@ namespace WizBot.Services
                 }
                 else if (result.Error != null)
                 {
-                    //todo 80 should have log levels and it should return some kind of result, 
-                    // instead of tuple with the type of thing that went wrong, like before
                     LogErroredExecution(result.Error, usrMsg,  channel as ITextChannel, exec2, exec3, execTime);
                     if (guild != null)
                         await CommandErrored(result.Info, channel as ITextChannel, result.Error);

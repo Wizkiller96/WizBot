@@ -5,23 +5,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WizBot.Common.Attributes;
 using WizBot.Services;
-using WizBot.Attributes;
+using WizBot.Modules.Administration.Services;
 using WizBot.Services.Database.Models;
-using WizBot.Services.Administration;
 
 namespace WizBot.Modules.Administration
 {
-    public partial class Administration : WizBotTopLevelModule
+    public partial class Administration : WizBotTopLevelModule<AdministrationService>
     {
         private IGuild _wizbotSupportServer;
         private readonly DbService _db;
-        private readonly AdministrationService _admin;
 
-        public Administration(DbService db, AdministrationService admin)
+        public Administration(DbService db)
         {
             _db = db;
-            _admin = admin;
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -40,12 +38,12 @@ namespace WizBot.Modules.Administration
             }
             if (enabled)
             {
-                _admin.DeleteMessagesOnCommand.Add(Context.Guild.Id);
+                _service.DeleteMessagesOnCommand.Add(Context.Guild.Id);
                 await ReplyConfirmLocalized("delmsg_on").ConfigureAwait(false);
             }
             else
             {
-                _admin.DeleteMessagesOnCommand.TryRemove(Context.Guild.Id);
+                _service.DeleteMessagesOnCommand.TryRemove(Context.Guild.Id);
                 await ReplyConfirmLocalized("delmsg_off").ConfigureAwait(false);
             }
         }

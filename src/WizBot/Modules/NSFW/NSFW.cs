@@ -1,6 +1,5 @@
 ﻿using Discord;
 using Discord.Commands;
-using WizBot.Attributes;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
@@ -8,24 +7,20 @@ using System.Threading.Tasks;
 using WizBot.Services;
 using System.Net.Http;
 using WizBot.Extensions;
-using System.Xml;
 using System.Threading;
 using System.Collections.Concurrent;
-using WizBot.Services.Searches;
-using WizBot.DataStructures;
+using WizBot.Common;
+using WizBot.Common.Attributes;
+using WizBot.Common.Collections;
+using WizBot.Modules.Searches.Common;
+using WizBot.Modules.Searches.Services;
 
 namespace WizBot.Modules.NSFW
 {
-    public class NSFW : WizBotTopLevelModule
+    public class NSFW : WizBotTopLevelModule<SearchesService>
     {
         private static readonly ConcurrentDictionary<ulong, Timer> _autoHentaiTimers = new ConcurrentDictionary<ulong, Timer>();
         private static readonly ConcurrentHashSet<ulong> _hentaiBombBlacklist = new ConcurrentHashSet<ulong>();
-        private readonly SearchesService _service;
-
-        public NSFW(SearchesService service)
-        {
-            _service = service;
-        }
 
         private async Task InternalHentai(IMessageChannel channel, string tag, bool noError)
         {
@@ -50,7 +45,7 @@ namespace WizBot.Modules.NSFW
         [WizBotCommand, Usage, Description, Aliases]
         public Task Hentai([Remainder] string tag = null) =>
             InternalHentai(Context.Channel, tag, false);
-            
+
         [WizBotCommand, Usage, Description, Aliases]
         [RequireUserPermission(ChannelPermission.ManageMessages)]
         public async Task AutoHentai(int interval = 0, string tags = null)

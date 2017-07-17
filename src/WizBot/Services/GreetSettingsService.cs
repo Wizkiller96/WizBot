@@ -1,7 +1,5 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using WizBot.DataStructures;
-using WizBot.DataStructures.Replacements;
 using WizBot.Extensions;
 using WizBot.Services.Database.Models;
 using NLog;
@@ -10,6 +8,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WizBot.Common;
+using WizBot.Common.Replacements;
 
 namespace WizBot.Services
 {

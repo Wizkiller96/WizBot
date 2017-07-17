@@ -6,6 +6,7 @@ using System.Linq;
 using NLog;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Immutable;
+using WizBot.Common;
 
 namespace WizBot.Services.Impl
 {

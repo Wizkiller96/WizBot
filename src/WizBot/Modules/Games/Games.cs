@@ -2,21 +2,21 @@
 using Discord;
 using WizBot.Services;
 using System.Threading.Tasks;
-using WizBot.Attributes;
 using System;
+using WizBot.Common;
+using WizBot.Common.Attributes;
 using WizBot.Extensions;
-using WizBot.Services.Games;
+using WizBot.Modules.Games.Common;
+using WizBot.Modules.Games.Services;
 
 namespace WizBot.Modules.Games
 {
-    public partial class Games : WizBotTopLevelModule
+    public partial class Games : WizBotTopLevelModule<GamesService>
     {
-        private readonly GamesService _games;
         private readonly IImagesService _images;
 
-        public Games(GamesService games, IImagesService images)
+        public Games(IImagesService images)
         {
-            _games = games;
             _images = images;
         }
 
@@ -40,7 +40,7 @@ namespace WizBot.Modules.Games
 
             await Context.Channel.EmbedAsync(new EmbedBuilder().WithColor(WizBot.OkColor)
                                .AddField(efb => efb.WithName("❓ " + GetText("question") ).WithValue(question).WithIsInline(false))
-                               .AddField(efb => efb.WithName("🎱 " + GetText("8ball")).WithValue(_games.EightBallResponses[new WizBotRandom().Next(0, _games.EightBallResponses.Length)]).WithIsInline(false)));
+                               .AddField(efb => efb.WithName("🎱 " + GetText("8ball")).WithValue(_service.EightBallResponses[new WizBotRandom().Next(0, _service.EightBallResponses.Length)]).WithIsInline(false)));
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -100,7 +100,7 @@ namespace WizBot.Modules.Games
         [RequireContext(ContextType.Guild)]
         public async Task RateGirl(IGuildUser usr)
         {
-            var gr = _games.GirlRatings.GetOrAdd(usr.Id, GetGirl);
+            var gr = _service.GirlRatings.GetOrAdd(usr.Id, GetGirl);
             var img = await gr.Url;
             await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                 .WithTitle("Girl Rating For " + usr)

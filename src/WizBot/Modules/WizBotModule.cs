@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using WizBot.Extensions;
 using WizBot.Services;
@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Threading.Tasks;
 using System;
 using Discord.WebSocket;
+using WizBot.Services.Impl;
 
 namespace WizBot.Modules
 {
@@ -86,7 +87,7 @@ namespace WizBot.Modules
             var text = GetText(textKey, replacements);
             return Context.Channel.SendConfirmAsync(Context.User.Mention + " " + text);
         }
-
+        
         // TypeConverter typeConverter = TypeDescriptor.GetConverter(propType); ?
         public async Task<string> GetUserInputAsync(ulong userId, ulong channelId)
         {
@@ -130,10 +131,24 @@ namespace WizBot.Modules
             }
         }
     }
-
-    public abstract class WizBotSubModule : WizBotTopLevelModule
+    
+    public abstract class WizBotTopLevelModule<TService> : WizBotTopLevelModule where TService : INService
     {
-        protected WizBotSubModule() : base(false)
+        public TService _service { get; set; }
+
+        public WizBotTopLevelModule(bool isTopLevel = true) : base(isTopLevel)
+        {
+        }
+    }
+
+    public abstract class WizBotSubmodule : WizBotTopLevelModule
+    {
+        protected WizBotSubmodule() : base(false) { }
+    }
+
+    public abstract class WizBotSubmodule<TService> : WizBotTopLevelModule<TService> where TService : INService
+    {
+        protected WizBotSubmodule() : base(false)
         {
         }
     }

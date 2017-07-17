@@ -18,11 +18,11 @@ namespace WizBot.Services.Database.Models
 
         public bool RotatingStatuses { get; set; } = false;
         public string RemindMessageFormat { get; set; } = "❗⏰**I've been told to remind you to '%message%' now by %user%.**⏰❗";
-
+        
         //currency
         public string CurrencySign { get; set; } = "🌸";
         public string CurrencyName { get; set; } = "Cherry Blossom";
-        public string CurrencyPluralName { get; set; } = "Cherry Blossom";
+        public string CurrencyPluralName { get; set; } = "Cherry Blossoms";
 
         public int TriviaCurrencyReward { get; set; } = 0;
         public int MinimumBetAmount { get; set; } = 2;
@@ -153,7 +153,7 @@ WizNet Community Server: N/A";
             return ((RaceAnimal)obj).Icon == Icon;
         }
     }
-
+    
     public class ModulePrefix : DbEntity
     {
         public string ModuleName { get; set; }

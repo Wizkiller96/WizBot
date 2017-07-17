@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!--
-    Microsoft ResX Schema
-
+  <!-- 
+    Microsoft ResX Schema 
+    
     Version 2.0
-
-    The primary goals of this format is to allow a simple XML format
-    that is mostly human readable. The generation and parsing of the
-    various data types are done through the TypeConverter classes
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
     associated with the data types.
-
+    
     Example:
-
+    
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-
-    There are any number of "resheader" rows that contain simple
+                
+    There are any number of "resheader" rows that contain simple 
     name/value pairs.
-
-    Each data row contains a name, and value. The row also contains a
-    type or mimetype. Type corresponds to a .NET class that support
-    text/value conversion through the TypeConverter architecture.
-    Classes that don't support this are serialized and stored with the
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
     mimetype set.
-
-    The mimetype is used for serialized objects, and tells the
-    ResXResourceReader how to depersist the object. This is currently not
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
     extensible. For a given mimetype the value must be set accordingly:
-
-    Note - application/x-microsoft.net.object.binary.base64 is the format
-    that the ResXResourceWriter will generate, however the reader can
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
     read any of the formats listed below.
-
+    
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with
+    value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-
+    
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with
+    value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array
+    value   : The object must be serialized into a byte array 
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -427,7 +427,7 @@
     <value>addcustreact acr</value>
   </data>
   <data name="addcustreact_desc" xml:space="preserve">
-    <value>Add a custom reaction with a trigger and a response. Running this command in server requires the Administration permission. Running this command in DM is Bot Owner only and adds a new global custom reaction. Guide here: &lt;http://wizbot.readthedocs.io/en/latest/Custom%20Reactions/&gt;</value>
+    <value>Add a custom reaction with a trigger and a response. Running this command in server requires the Administration permission. Running this command in DM is Bot Owner only and adds a new global custom reaction. Guide here: &lt;http://WizBot.readthedocs.io/en/latest/Custom%20Reactions/&gt;</value>
   </data>
   <data name="addcustreact_usage" xml:space="preserve">
     <value>`{0}acr "hello" Hi there %user%`</value>
@@ -1701,7 +1701,7 @@
   <data name="save_usage" xml:space="preserve">
     <value>`{0}save classical1`</value>
   </data>
-  <data name="streamrole_cmd" xml:space="preserve">
+    <data name="streamrole_cmd" xml:space="preserve">
     <value>streamrole</value>
   </data>
   <data name="streamrole_desc" xml:space="preserve">
@@ -3157,7 +3157,7 @@
     <value>Sets this guilds timezone. This affects bot's time output in this server (logs, etc..)</value>
   </data>
   <data name="timezone_usage" xml:space="preserve">
-    <value>`{0}timezone`  or `{0}timezone GMT Standard Time`</value>
+    <value>`{0}timezone` or `{0}timezone GMT Standard Time`</value>
   </data>
   <data name="languagesetdefault_cmd" xml:space="preserve">
     <value>langsetdefault langsetd</value>
@@ -3212,15 +3212,6 @@
   </data>
   <data name="lucky7_usage" xml:space="preserve">
     <value>`{0}l7 10` or `{0}l7 move` or `{0}l7 s`</value>
-  </data>
-  <data name="updates_cmd" xml:space="preserve">
-    <value>updates changelogs</value>
-  </data>
-  <data name="updates_desc" xml:space="preserve">
-    <value>Show the lastest changes to WizBot.</value>
-  </data>
-  <data name="updates_usage" xml:space="preserve">
-    <value>`{0}updates` or `{0}changelogs</value>
   </data>
   <data name="vcrolelist_cmd" xml:space="preserve">
     <value>vcrolelist</value>
@@ -3285,15 +3276,6 @@
   <data name="warnlog_usage" xml:space="preserve">
     <value>`{0}warnlog @b1nzy`</value>
   </data>
-  <data name="warn_cmd" xml:space="preserve">
-    <value>warn</value>
-  </data>
-  <data name="warn_desc" xml:space="preserve">
-    <value>Warns a user.</value>
-  </data>
-  <data name="warn_usage" xml:space="preserve">
-    <value>`{0}warn @b1nzy Very rude person`</value>
-  </data>
   <data name="warnlogall_cmd" xml:space="preserve">
     <value>warnlogall</value>
   </data>
@@ -3302,6 +3284,15 @@
   </data>
   <data name="warnlogall_usage" xml:space="preserve">
     <value>`{0}warnlogall` or `{0}warnlogall 2`</value>
+  </data>
+  <data name="warn_cmd" xml:space="preserve">
+    <value>warn</value>
+  </data>
+  <data name="warn_desc" xml:space="preserve">
+    <value>Warns a user.</value>
+  </data>
+  <data name="warn_usage" xml:space="preserve">
+    <value>`{0}warn @b1nzy Very rude person`</value>
   </data>
   <data name="startupcommandadd_cmd" xml:space="preserve">
     <value>scadd</value>

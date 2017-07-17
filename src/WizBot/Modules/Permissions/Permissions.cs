@@ -1,5 +1,4 @@
-﻿using WizBot.Attributes;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord.Commands;
@@ -8,20 +7,22 @@ using Discord;
 using WizBot.Services.Database.Models;
 using System.Collections.Generic;
 using Discord.WebSocket;
-using WizBot.TypeReaders;
-using WizBot.Services.Permissions;
+using WizBot.Common;
+using WizBot.Common.Attributes;
+using WizBot.Common.TypeReaders;
+using WizBot.Common.TypeReaders.Models;
+using WizBot.Modules.Permissions.Common;
+using WizBot.Modules.Permissions.Services;
 
 namespace WizBot.Modules.Permissions
 {
-    public partial class Permissions : WizBotTopLevelModule
+    public partial class Permissions : WizBotTopLevelModule<PermissionService>
     {
         private readonly DbService _db;
-        private readonly PermissionService _service;
 
-        public Permissions(PermissionService service, DbService db)
+        public Permissions(DbService db)
         {
             _db = db;
-            _service = service;
         }
 
         [WizBotCommand, Usage, Description, Aliases]

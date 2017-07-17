@@ -4,12 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Reflection;
-using Discord.Commands;
-using Discord.WebSocket;
-using WizBot.Services.Database.Models;
-using WizBot.Services.Impl;
 using System.Linq;
-using WizBot.Extensions;
 using System.Diagnostics;
 using NLog;
 

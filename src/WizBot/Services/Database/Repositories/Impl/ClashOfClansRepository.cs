@@ -13,7 +13,7 @@ namespace WizBot.Services.Database.Repositories.Impl
 
         public IEnumerable<ClashWar> GetAllWars(List<long> guilds)
         {
-            var toReturn = _set
+            var toReturn =  _set
                 .Where(cw => guilds.Contains((long)cw.GuildId))
                 .Include(cw => cw.Bases)
                         .ToList();

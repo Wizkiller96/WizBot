@@ -1,40 +1,38 @@
-using Discord.Commands;
+﻿using Discord.Commands;
 using WizBot.Extensions;
 using System.Linq;
 using Discord;
 using WizBot.Services;
 using System.Threading.Tasks;
-using WizBot.Attributes;
 using System;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
+using WizBot.Common.Attributes;
 using WizBot.Services.Database.Models;
-using WizBot.Services.Permissions;
-using WizBot.Services.Help;
+using WizBot.Modules.Help.Services;
+using WizBot.Modules.Permissions.Services;
 
 namespace WizBot.Modules.Help
 {
-    public class Help : WizBotTopLevelModule
+    public class Help : WizBotTopLevelModule<HelpService>
     {
-        public const string PatreonUrl = "https://patreon.com/wiznet";
-        public const string PaypalUrl = "https://paypal.me/Wizkiller96Network";
+        public const string PatreonUrl = "https://patreon.com/WizBot";
+        public const string PaypalUrl = "https://paypal.me/Kwoth";
         private readonly IBotCredentials _creds;
         private readonly BotConfig _config;
         private readonly CommandService _cmds;
         private readonly GlobalPermissionService _perms;
-        private readonly HelpService _h;
 
         public string HelpString => String.Format(_config.HelpString, _creds.ClientId, Prefix);
         public string DMHelpString => _config.DMHelpString;
 
-        public Help(IBotCredentials creds, GlobalPermissionService perms, BotConfig config, CommandService cmds, HelpService h)
+        public Help(IBotCredentials creds, GlobalPermissionService perms, BotConfig config, CommandService cmds)
         {
             _creds = creds;
             _config = config;
             _cmds = cmds;
             _perms = perms;
-            _h = h;
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -107,7 +105,7 @@ namespace WizBot.Modules.Help
             //    return;
             //}
 
-            var embed = _h.GetCommandHelp(com, Context.Guild);
+            var embed = _service.GetCommandHelp(com, Context.Guild);
             await channel.EmbedAsync(embed).ConfigureAwait(false);
         }
 
@@ -144,7 +142,7 @@ namespace WizBot.Modules.Help
                     lastModule = module.Name;
                 }
                 helpstr.AppendLine($"{string.Join(" ", com.Aliases.Select(a => "`" + Prefix + a + "`"))} |" +
-                                   $" {string.Format(com.Summary, Prefix)} {_h.GetCommandRequirements(com, Context.Guild)} |" +
+                                   $" {string.Format(com.Summary, Prefix)} {_service.GetCommandRequirements(com, Context.Guild)} |" +
                                    $" {string.Format(com.Remarks, Prefix)}");
             }
             File.WriteAllText("../../docs/Commands List.md", helpstr.ToString());
@@ -155,8 +153,8 @@ namespace WizBot.Modules.Help
         public async Task Guide()
         {
             await ConfirmLocalized("guide", 
-                "http://wizbot.readthedocs.io/en/latest/Commands%20List/",
-                "http://wizbot.readthedocs.io/en/latest/").ConfigureAwait(false);
+                "http://WizBot.readthedocs.io/en/latest/Commands%20List/",
+                "http://WizBot.readthedocs.io/en/latest/").ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]

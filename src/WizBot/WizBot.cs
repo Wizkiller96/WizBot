@@ -9,16 +9,17 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using WizBot.Modules.Permissions;
-using WizBot.TypeReaders;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using WizBot.Services.Database.Models;
 using System.Threading;
 using System.IO;
-using WizBot.DataStructures.ShardCom;
-using WizBot.DataStructures;
 using WizBot.Extensions;
 using System.Collections.Generic;
+using WizBot.Common;
+using WizBot.Common.ShardCom;
+using WizBot.Common.TypeReaders;
+using WizBot.Common.TypeReaders.Models;
 using WizBot.Services.Database;
 
 namespace WizBot
@@ -177,7 +178,7 @@ namespace WizBot
                     }
                     finally
                     {
-                        
+
                     }
                 });
                 return Task.CompletedTask;
@@ -209,8 +210,8 @@ namespace WizBot
 
         public async Task RunAsync(params string[] args)
         {
-            if(Client.ShardId == 0)
-            _log.Info("Starting WizBot v" + StatsService.BotVersion);
+            if (Client.ShardId == 0)
+                _log.Info("Starting WizBot v" + StatsService.BotVersion);
 
             var sw = Stopwatch.StartNew();
 
@@ -246,7 +247,7 @@ namespace WizBot
 
             //unload modules which are not available on the public bot
 
-            if(isPublicWizBot)
+            if (isPublicWizBot)
                 CommandService
                     .Modules
                     .ToArray()

@@ -29,7 +29,7 @@ namespace WizBot.Services.Impl
 
         public ImmutableArray<byte> Heads { get; private set; }
         public ImmutableArray<byte> Tails { get; private set; }
-
+        
         public ImmutableArray<(string, ImmutableArray<byte>)> Currency { get; private set; }
 
         public ImmutableArray<ImmutableArray<byte>> Dice { get; private set; }
@@ -62,7 +62,7 @@ namespace WizBot.Services.Impl
                                 .OrderBy(x => int.Parse(Path.GetFileNameWithoutExtension(x)))
                                 .Select(x => File.ReadAllBytes(x).ToImmutableArray())
                                 .ToImmutableArray();
-
+                
                 SlotBackground = File.ReadAllBytes(_slotBackgroundPath).ToImmutableArray();
 
                 SlotNumbers = Directory.GetFiles(_slotNumbersPath)

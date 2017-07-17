@@ -135,11 +135,11 @@ namespace WizBot.Services.Database
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             #region QUOTES
-            
+
             //var quoteEntity = modelBuilder.Entity<Quote>();
 
             #endregion
-            
+
             #region Donators
 
             var donatorEntity = modelBuilder.Entity<Donator>();

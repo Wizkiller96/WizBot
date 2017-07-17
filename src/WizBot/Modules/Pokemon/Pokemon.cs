@@ -1,5 +1,4 @@
 using Discord.Commands;
-using WizBot.Attributes;
 using WizBot.Extensions;
 using System.Linq;
 using WizBot.Services;
@@ -8,20 +7,20 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Discord;
 using System;
-using WizBot.Services.Pokemon;
+using WizBot.Common.Attributes;
+using WizBot.Modules.Pokemon.Common;
+using WizBot.Modules.Pokemon.Services;
 
 namespace WizBot.Modules.Pokemon
 {
-    public class Pokemon : WizBotTopLevelModule
+    public class Pokemon : WizBotTopLevelModule<PokemonService>
     {
-        private readonly PokemonService _service;
         private readonly DbService _db;
         private readonly BotConfig _bc;
         private readonly CurrencyService _cs;
 
-        public Pokemon(PokemonService pokemonService, DbService db, BotConfig bc, CurrencyService cs)
+        public Pokemon(DbService db, BotConfig bc, CurrencyService cs)
         {
-            _service = pokemonService;
             _db = db;
             _bc = bc;
             _cs = cs;

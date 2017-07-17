@@ -1,15 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using NLog;
-using System.Diagnostics;
-using Newtonsoft.Json;
-using System;
-using System.Linq;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
+using NLog;
 
-namespace WizBot.Services
+namespace WizBot.Services.Impl
 {
     public class WizBotStrings : INService
     {
@@ -47,7 +46,7 @@ namespace WizBot.Services
                 //string.Join(",", responseStrings.Keys),
                 sw.Elapsed.TotalSeconds);
 
-            //improper string format checks
+            ////improper string format checks
             //var compareTo = responseStrings["en-us"]
             //    .Select(x =>
             //    {
