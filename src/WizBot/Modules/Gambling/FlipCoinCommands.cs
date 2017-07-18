@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using WizBot.Common;
 using WizBot.Common.Attributes;
 using Image = ImageSharp.Image;
+using ImageSharp;
 
 namespace WizBot.Modules.Gambling
 {
@@ -56,7 +57,7 @@ namespace WizBot.Modules.Gambling
                     await ReplyErrorLocalized("flip_invalid", 10).ConfigureAwait(false);
                     return;
                 }
-                var imgs = new Image[count];
+                var imgs = new Image<Rgba32>[count];
                 for (var i = 0; i < count; i++)
                 {
                     using (var heads = _images.Heads.ToStream())
@@ -64,11 +65,11 @@ namespace WizBot.Modules.Gambling
                     {
                         if (rng.Next(0, 10) < 5)
                         {
-                            imgs[i] = new Image(heads);
+                            imgs[i] = Image.Load(heads);
                         }
                         else
                         {
-                            imgs[i] = new Image(tails);
+                            imgs[i] = Image.Load(tails);
                         }
                     }
                 }

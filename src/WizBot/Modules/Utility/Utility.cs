@@ -59,10 +59,10 @@ namespace WizBot.Modules.Utility
                 }
                 return;
             }
-            
+
             var hexColors = hexes.Select(hex =>
             {
-                try { return (ImageSharp.Color?)ImageSharp.Color.FromHex(hex.Replace("#", "")); } catch { return null; }
+                try { return (Rgba32?)Rgba32.FromHex(hex.Replace("#", "")); } catch { return null; }
             })
             .Where(c => c != null)
             .Select(c => c.Value)
@@ -76,7 +76,7 @@ namespace WizBot.Modules.Utility
 
             var images = hexColors.Select(color =>
             {
-                var img = new ImageSharp.Image(50, 50);
+                var img = new ImageSharp.Image<Rgba32>(50, 50);
                 img.BackgroundColor(color);
                 return img;
             }).Merge().ToStream();
