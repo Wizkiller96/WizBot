@@ -67,7 +67,7 @@ namespace WizBot.Services.Impl
                 MashapeKey = data[nameof(MashapeKey)];
                 OsuApiKey = data[nameof(OsuApiKey)];
                 PatreonAccessToken = data[nameof(PatreonAccessToken)];
-                PatreonCampaignId = data[nameof(PatreonCampaignId)] ?? "334038";
+                PatreonCampaignId = data[nameof(PatreonCampaignId)] ?? "834469";
                 ShardRunCommand = data[nameof(ShardRunCommand)];
                 ShardRunArguments = data[nameof(ShardRunArguments)];
                 if (string.IsNullOrWhiteSpace(ShardRunCommand))
@@ -125,7 +125,7 @@ namespace WizBot.Services.Impl
             public DBConfig Db { get; set; } = new DBConfig("sqlite", "Filename=./data/WizBot.db");
             public int TotalShards { get; set; } = 1;
             public string PatreonAccessToken { get; set; } = "";
-            public string PatreonCampaignId { get; set; } = "334038";
+            public string PatreonCampaignId { get; set; } = "834469";
 
             public string ShardRunCommand { get; set; } = "";
             public string ShardRunArguments { get; set; } = "";

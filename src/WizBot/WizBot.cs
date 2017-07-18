@@ -178,7 +178,7 @@ namespace WizBot
                     }
                     finally
                     {
-
+                        
                     }
                 });
                 return Task.CompletedTask;
@@ -210,8 +210,8 @@ namespace WizBot
 
         public async Task RunAsync(params string[] args)
         {
-            if (Client.ShardId == 0)
-                _log.Info("Starting WizBot v" + StatsService.BotVersion);
+            if(Client.ShardId == 0)
+            _log.Info("Starting WizBot v" + StatsService.BotVersion);
 
             var sw = Stopwatch.StartNew();
 
@@ -247,7 +247,7 @@ namespace WizBot
 
             //unload modules which are not available on the public bot
 
-            if (isPublicWizBot)
+            if(isPublicWizBot)
                 CommandService
                     .Modules
                     .ToArray()
