@@ -20,17 +20,15 @@
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
     <ApplicationIcon>wizbot_icon.ico</ApplicationIcon>
-    <RuntimeIdentifiers>
-      win7-x64<!--;ubuntu.14.04-x64;osx.10.10-x64 -->
-    </RuntimeIdentifiers>
-  </PropertyGroup>
+    <RuntimeIdentifiers>win7-x64<!--;ubuntu.14.04-x64;osx.10.10-x64 --></RuntimeIdentifiers>
+    </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Version)' == '' ">
     <VersionPrefix Condition=" '$(VersionPrefix)' == '' ">1.4.1</VersionPrefix>
     <Version Condition=" '$(VersionSuffix)' != '' ">$(VersionPrefix).$(VersionSuffix)</Version>
     <Version Condition=" '$(Version)' == '' ">$(VersionPrefix)</Version>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <Compile Remove="data\**\*;credentials.json" />
     <Compile Remove="Modules\Music\Classes\**" />
