@@ -2,24 +2,18 @@
 using Discord.Commands;
 using WizBot.Services;
 using WizBot.Services.Database.Models;
-using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
 using WizBot.Common.Attributes;
 using WizBot.Common.Collections;
 using WizBot.Modules.Games.Common.Trivia;
 using WizBot.Modules.Permissions.Services;
+using WizBot.Common.TypeReaders;
 
 namespace WizBot.Modules.Permissions
 {
     public partial class Permissions
     {
-        public enum AddRemove
-        {
-            Add,
-            Rem
-        }
-
         [Group]
         public class BlacklistCommands : WizBotSubmodule
         {
