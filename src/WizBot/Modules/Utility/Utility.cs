@@ -30,12 +30,12 @@ namespace WizBot.Modules.Utility
         private readonly IBotCredentials _creds;
         private readonly ShardsCoordinator _shardCoord;
 
-        public Utility(ShardsCoordinator shardCoord, DiscordSocketClient client, IStatsService stats, IBotCredentials creds)
+        public Utility(WizBot wizbot, DiscordSocketClient client, IStatsService stats, IBotCredentials creds)
         {
             _client = client;
             _stats = stats;
             _creds = creds;
-            _shardCoord = shardCoord;
+            _shardCoord = wizbot.ShardCoord;
         }        
 
         [WizBotCommand, Usage, Description, Aliases]

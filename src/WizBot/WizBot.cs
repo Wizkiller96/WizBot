@@ -137,7 +137,6 @@ namespace WizBot
                     .AddManual<IEnumerable<GuildConfig>>(AllGuildConfigs) //todo wrap this
                     .AddManual<WizBot>(this)
                     .AddManual<IUnitOfWork>(uow)
-                    .AddManual(ShardCoord)
                     .LoadFrom(Assembly.GetEntryAssembly())
                     .Build();
 
