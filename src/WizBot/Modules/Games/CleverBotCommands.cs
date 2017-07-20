@@ -4,19 +4,19 @@ using WizBot.Services;
 using System;
 using System.Threading.Tasks;
 using WizBot.Common.Attributes;
-using WizBot.Modules.Games.Common;
 using WizBot.Modules.Games.Services;
+using WizBot.Modules.Games.Common.ChatterBot;
 
 namespace WizBot.Modules.Games
 {
     public partial class Games
     {
         [Group]
-        public class CleverBotCommands : WizBotSubmodule<ChatterBotService>
+        public class ChatterBotCommands : WizBotSubmodule<ChatterBotService>
         {
             private readonly DbService _db;
 
-            public CleverBotCommands(DbService db)
+            public ChatterBotCommands(DbService db)
             {
                 _db = db;
             }
@@ -28,7 +28,7 @@ namespace WizBot.Modules.Games
             {
                 var channel = (ITextChannel)Context.Channel;
 
-                if (_service.ChatterBotGuilds.TryRemove(channel.Guild.Id, out Lazy<ChatterBotSession> throwaway))
+                if (_service.ChatterBotGuilds.TryRemove(channel.Guild.Id, out Lazy<IChatterBotSession> throwaway))
                 {
                     using (var uow = _db.UnitOfWork)
                     {
@@ -39,7 +39,7 @@ namespace WizBot.Modules.Games
                     return;
                 }
 
-                _service.ChatterBotGuilds.TryAdd(channel.Guild.Id, new Lazy<ChatterBotSession>(() => new ChatterBotSession(Context.Guild.Id), true));
+                _service.ChatterBotGuilds.TryAdd(channel.Guild.Id, new Lazy<IChatterBotSession>(() => _service.CreateSession(), true));
 
                 using (var uow = _db.UnitOfWork)
                 {

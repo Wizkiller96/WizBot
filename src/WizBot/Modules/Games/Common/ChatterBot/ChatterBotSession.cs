@@ -4,36 +4,34 @@ using WizBot.Common;
 using WizBot.Extensions;
 using Newtonsoft.Json;
 
-namespace WizBot.Modules.Games.Common
+namespace WizBot.Modules.Games.Common.ChatterBot
 {
-    public class ChatterBotSession
+    public class ChatterBotSession : IChatterBotSession
     {
-        private static WizBotRandom rng { get; } = new WizBotRandom();
-        public string ChatterbotId { get; }
-        public string ChannelId { get; }
+        private static WizBotRandom Rng { get; } = new WizBotRandom();
+        private readonly string _chatterBotId; { get; }
 #if GLOBAL_WIZBOT
         private int _botId = 1;
 #else
         private int _botId = 6;
 #endif
 
-        public ChatterBotSession(ulong channelId)
+        public ChatterBotSession()
         {
-            ChannelId = channelId.ToString().ToBase64();
-            ChatterbotId = rng.Next(0, 1000000).ToString().ToBase64();
+            _chatterBotId = Rng.Next(0, 1000000).ToString().ToBase64();
         }
 
 #if GLOBAL_WIZBOT
         private string apiEndpoint => "http://wizbot.xyz/cb/chatbot/" +
                                       $"?bot_id={_botId}&" +
                                       "say={0}&" +
-                                      $"convo_id=wizbot_{ChatterbotId}_{ChannelId}&" +
+                                      $"convo_id=wizbot_{_chatterBotId}&" +
                                       "format=json";
 #else
         private string apiEndpoint => "http://api.program-o.com/v2/chatbot/" +
                                       $"?bot_id={_botId}&" +
                                       "say={0}&" +
-                                      $"convo_id=WizBot_{ChatterbotId}_{ChannelId}&" +
+                                      $"convo_id=WizBot_{_chatterBotId}&" +
                                       "format=json";
 #endif
 
