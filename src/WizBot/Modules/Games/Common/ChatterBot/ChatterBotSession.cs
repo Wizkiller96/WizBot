@@ -9,7 +9,8 @@ namespace WizBot.Modules.Games.Common.ChatterBot
     public class ChatterBotSession : IChatterBotSession
     {
         private static WizBotRandom Rng { get; } = new WizBotRandom();
-        private readonly string _chatterBotId; { get; }
+
+        private readonly string _chatterBotId;
 #if GLOBAL_WIZBOT
         private int _botId = 1;
 #else
@@ -31,7 +32,7 @@ namespace WizBot.Modules.Games.Common.ChatterBot
         private string apiEndpoint => "http://api.program-o.com/v2/chatbot/" +
                                       $"?bot_id={_botId}&" +
                                       "say={0}&" +
-                                      $"convo_id=WizBot_{_chatterBotId}&" +
+                                      $"convo_id=wizbot_{_chatterBotId}&" +
                                       "format=json";
 #endif
 

@@ -71,6 +71,7 @@ namespace WizBot.Services.Impl
                 PatreonCampaignId = data[nameof(PatreonCampaignId)] ?? "834469";
                 ShardRunCommand = data[nameof(ShardRunCommand)];
                 ShardRunArguments = data[nameof(ShardRunArguments)];
+                CleverbotApiKey = data[nameof(CleverbotApiKey)];
                 if (string.IsNullOrWhiteSpace(ShardRunCommand))
                     ShardRunCommand = "dotnet";
                 if (string.IsNullOrWhiteSpace(ShardRunArguments))
