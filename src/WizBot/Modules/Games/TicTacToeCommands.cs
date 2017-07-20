@@ -2,7 +2,6 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using WizBot.Extensions;
-using WizBot.Services;
 using System;
 using System.Collections.Generic;
 using System.Text;

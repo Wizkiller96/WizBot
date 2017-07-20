@@ -4,7 +4,6 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using WizBot.Services;
 using System.Net.Http;
 using WizBot.Extensions;
 using System.Threading;

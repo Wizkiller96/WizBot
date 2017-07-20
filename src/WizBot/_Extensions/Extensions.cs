@@ -16,7 +16,6 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using WizBot.Common.Collections;
 using SixLabors.Primitives;
-using ImageSharp.PixelFormats;
 
 namespace WizBot.Extensions
 {

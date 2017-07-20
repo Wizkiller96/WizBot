@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using NLog;
 using System.Linq;
-using System.Collections.Concurrent;
 using WizBot.Extensions;
 using System.Diagnostics;
 using WizBot.Common.Collections;

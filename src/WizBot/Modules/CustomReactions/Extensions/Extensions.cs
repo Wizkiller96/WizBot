@@ -4,7 +4,6 @@ using Discord;
 using Discord.WebSocket;
 using WizBot.Extensions;
 using WizBot.Modules.CustomReactions.Services;
-using WizBot.Services;
 using WizBot.Services.Database.Models;
 using System;
 using System.Collections.Generic;

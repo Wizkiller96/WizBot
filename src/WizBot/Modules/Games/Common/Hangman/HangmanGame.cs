@@ -7,7 +7,6 @@ using Discord;
 using Discord.WebSocket;
 using WizBot.Common;
 using WizBot.Extensions;
-using WizBot.Services;
 using Newtonsoft.Json;
 using NLog;
 

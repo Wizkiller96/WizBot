@@ -7,7 +7,6 @@ using Discord;
 using WizBot.Services.Database.Models;
 using System.Collections.Generic;
 using Discord.WebSocket;
-using WizBot.Common;
 using WizBot.Common.Attributes;
 using WizBot.Common.TypeReaders;
 using WizBot.Common.TypeReaders.Models;

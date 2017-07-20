@@ -2,7 +2,6 @@
 using Discord.Commands;
 using System;
 using WizBot.Services;
-using WizBot.Services.Database.Models;
 using WizBot.Extensions;
 using Discord;
 using WizBot.Common.Attributes;
@@ -16,11 +15,11 @@ namespace WizBot.Modules.Utility
         public class PatreonCommands : WizBotSubmodule<PatreonRewardsService>
         {
             private readonly IBotCredentials _creds;
-            private readonly BotConfig _config;
+            private readonly IBotConfigProvider _config;
             private readonly DbService _db;
             private readonly CurrencyService _currency;
 
-            public PatreonCommands(IBotCredentials creds, BotConfig config, DbService db, CurrencyService currency)
+            public PatreonCommands(IBotCredentials creds, IBotConfigProvider config, DbService db, CurrencyService currency)
             {
                 _creds = creds;
                 _config = config;
@@ -64,7 +63,7 @@ namespace WizBot.Modules.Utility
 
                 if (amount > 0)
                 {
-                    await ReplyConfirmLocalized("clpa_success", amount + _config.CurrencySign).ConfigureAwait(false);
+                    await ReplyConfirmLocalized("clpa_success", amount + _config.BotConfig.CurrencySign).ConfigureAwait(false);
                     return;
                 }
                 var rem = (_service.Interval - (DateTime.UtcNow - _service.LastUpdate));

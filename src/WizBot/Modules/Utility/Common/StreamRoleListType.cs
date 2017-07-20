@@ -1,4 +1,4 @@
-namespace WizBot.Modules.Utility.Common
+﻿namespace WizBot.Modules.Utility.Common
 {
     public enum StreamRoleListType
     {

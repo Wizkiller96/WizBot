@@ -30,11 +30,11 @@ namespace WizBot.Modules.CustomReactions.Services
         private readonly DiscordSocketClient _client;
         private readonly PermissionService _perms;
         private readonly CommandHandler _cmd;
-        private readonly BotConfig _bc;
+        private readonly IBotConfigProvider _bc;
         private readonly WizBotStrings _strings;
 
         public CustomReactionsService(PermissionService perms, DbService db, WizBotStrings strings,
-            DiscordSocketClient client, CommandHandler cmd, BotConfig bc, IUnitOfWork uow)
+            DiscordSocketClient client, CommandHandler cmd, IBotConfigProvider bc, IUnitOfWork uow)
         {
             _log = LogManager.GetCurrentClassLogger();
             _db = db;
@@ -69,7 +69,7 @@ namespace WizBot.Modules.CustomReactions.Services
 
                         var hasTarget = cr.Response.ToLowerInvariant().Contains("%target%");
                         var trigger = cr.TriggerWithContext(umsg, _client).Trim().ToLowerInvariant();
-                        return ((hasTarget && content.StartsWith(trigger + " ")) || (_bc.CustomReactionsStartWith && content.StartsWith(trigger + " "))  || content == trigger);
+                        return ((hasTarget && content.StartsWith(trigger + " ")) || (_bc.BotConfig.CustomReactionsStartWith && content.StartsWith(trigger + " "))  || content == trigger);
                     }).ToArray();
 
                     if (rs.Length != 0)
@@ -90,7 +90,7 @@ namespace WizBot.Modules.CustomReactions.Services
                     return false;
                 var hasTarget = cr.Response.ToLowerInvariant().Contains("%target%");
                 var trigger = cr.TriggerWithContext(umsg, _client).Trim().ToLowerInvariant();
-                return ((hasTarget && content.StartsWith(trigger + " ")) || (_bc.CustomReactionsStartWith && content.StartsWith(trigger + " ")) || content == trigger);
+                return ((hasTarget && content.StartsWith(trigger + " ")) || (_bc.BotConfig.CustomReactionsStartWith && content.StartsWith(trigger + " ")) || content == trigger);
             }).ToArray();
             if (grs.Length == 0)
                 return null;

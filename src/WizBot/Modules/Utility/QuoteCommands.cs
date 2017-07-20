@@ -3,7 +3,6 @@ using Discord.Commands;
 using WizBot.Extensions;
 using WizBot.Services;
 using WizBot.Services.Database.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;

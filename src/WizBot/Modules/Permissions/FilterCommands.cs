@@ -4,7 +4,6 @@ using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Extensions;
 using WizBot.Services;
-using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
 using WizBot.Common.Attributes;

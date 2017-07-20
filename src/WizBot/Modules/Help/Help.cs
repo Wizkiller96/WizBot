@@ -9,7 +9,6 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using WizBot.Common.Attributes;
-using WizBot.Services.Database.Models;
 using WizBot.Modules.Help.Services;
 using WizBot.Modules.Permissions.Services;
 
@@ -20,14 +19,14 @@ namespace WizBot.Modules.Help
         public const string PatreonUrl = "https://patreon.com/WizBot";
         public const string PaypalUrl = "https://paypal.me/Kwoth";
         private readonly IBotCredentials _creds;
-        private readonly BotConfig _config;
+        private readonly IBotConfigProvider _config;
         private readonly CommandService _cmds;
         private readonly GlobalPermissionService _perms;
 
-        public string HelpString => String.Format(_config.HelpString, _creds.ClientId, Prefix);
-        public string DMHelpString => _config.DMHelpString;
+        public string HelpString => String.Format(_config.BotConfig.HelpString, _creds.ClientId, Prefix);
+        public string DMHelpString => _config.BotConfig.DMHelpString;
 
-        public Help(IBotCredentials creds, GlobalPermissionService perms, BotConfig config, CommandService cmds)
+        public Help(IBotCredentials creds, GlobalPermissionService perms, IBotConfigProvider config, CommandService cmds)
         {
             _creds = creds;
             _config = config;

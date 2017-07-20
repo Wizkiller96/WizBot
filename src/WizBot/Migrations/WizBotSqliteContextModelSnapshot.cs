@@ -2,9 +2,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using WizBot.Services.Database;
-using WizBot.Services.Database.Models;
 
 namespace WizBot.Migrations
 {

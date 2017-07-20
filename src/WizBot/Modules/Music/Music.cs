@@ -8,7 +8,6 @@ using System.Linq;
 using WizBot.Extensions;
 using System.Collections.Generic;
 using WizBot.Services.Database.Models;
-using System.Collections.Concurrent;
 using System.IO;
 using System.Net.Http;
 using WizBot.Common;

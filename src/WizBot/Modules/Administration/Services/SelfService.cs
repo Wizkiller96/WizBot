@@ -8,7 +8,6 @@ using WizBot.Common;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Extensions;
 using WizBot.Services;
-using WizBot.Services.Database.Models;
 using WizBot.Services.Impl;
 using NLog;
 
@@ -16,8 +15,9 @@ namespace WizBot.Modules.Administration.Services
 {
     public class SelfService : ILateExecutor, INService
     {
-        public volatile bool ForwardDMs;
-        public volatile bool ForwardDMsToAllOwners;
+        //todo bot config
+        public bool ForwardDMs => _bc.BotConfig.ForwardMessages;
+        public bool ForwardDMsToAllOwners => _bc.BotConfig.ForwardToAllOwners;
         
         private readonly WizBot _bot;
         private readonly CommandHandler _cmdHandler;
@@ -28,9 +28,10 @@ namespace WizBot.Modules.Administration.Services
         private readonly DiscordSocketClient _client;
         private readonly IBotCredentials _creds;
         private ImmutableArray<AsyncLazy<IDMChannel>> ownerChannels = new ImmutableArray<AsyncLazy<IDMChannel>>();
+        private readonly IBotConfigProvider _bc;
 
         public SelfService(DiscordSocketClient client, WizBot bot, CommandHandler cmdHandler, DbService db,
-            BotConfig bc, ILocalization localization, WizBotStrings strings, IBotCredentials creds)
+            IBotConfigProvider bc, ILocalization localization, WizBotStrings strings, IBotCredentials creds)
         {
             _bot = bot;
             _cmdHandler = cmdHandler;
@@ -40,15 +41,13 @@ namespace WizBot.Modules.Administration.Services
             _strings = strings;
             _client = client;
             _creds = creds;
-
-            ForwardDMs = bc.ForwardMessages;
-            ForwardDMsToAllOwners = bc.ForwardToAllOwners;
+            _bc = bc;
 
             var _ = Task.Run(async () =>
             {
                 await bot.Ready.Task.ConfigureAwait(false);
 
-                foreach (var cmd in bc.StartupCommands)
+                foreach (var cmd in bc.BotConfig.StartupCommands)
                 {
                     await cmdHandler.ExecuteExternal(cmd.GuildId, cmd.ChannelId, cmd.CommandText);
                     await Task.Delay(400).ConfigureAwait(false);

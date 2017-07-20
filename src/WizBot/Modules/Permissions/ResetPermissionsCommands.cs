@@ -1,7 +1,5 @@
 ﻿using Discord;
 using Discord.Commands;
-using WizBot.Services;
-using WizBot.Services.Database.Models;
 using System.Threading.Tasks;
 using WizBot.Common.Attributes;
 using WizBot.Modules.Permissions.Services;

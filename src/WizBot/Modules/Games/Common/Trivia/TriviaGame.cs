@@ -10,7 +10,6 @@ using Discord.Net;
 using Discord.WebSocket;
 using WizBot.Extensions;
 using WizBot.Services;
-using WizBot.Services.Database.Models;
 using WizBot.Services.Impl;
 using NLog;
 
@@ -22,7 +21,7 @@ namespace WizBot.Modules.Games.Common.Trivia
         private readonly Logger _log;
         private readonly WizBotStrings _strings;
         private readonly DiscordSocketClient _client;
-        private readonly BotConfig _bc;
+        private readonly IBotConfigProvider _bc;
         private readonly CurrencyService _cs;
 
         public IGuild Guild { get; }
@@ -44,7 +43,7 @@ namespace WizBot.Modules.Games.Common.Trivia
 
         public int WinRequirement { get; }
 
-        public TriviaGame(WizBotStrings strings, DiscordSocketClient client, BotConfig bc,
+        public TriviaGame(WizBotStrings strings, DiscordSocketClient client, IBotConfigProvider bc,
             CurrencyService cs, IGuild guild, ITextChannel channel,
             bool showHints, int winReq, bool isPokemon)
         {
@@ -232,7 +231,7 @@ namespace WizBot.Modules.Games.Common.Trivia
                         {
                             // ignored
                         }
-                        var reward = _bc.TriviaCurrencyReward;
+                        var reward = _bc.BotConfig.TriviaCurrencyReward;
                         if (reward > 0)
                             await _cs.AddAsync(guildUser, "Won trivia", reward, true).ConfigureAwait(false);
                         return;

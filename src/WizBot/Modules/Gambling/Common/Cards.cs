@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using WizBot.Common;
 using WizBot.Extensions;
-using WizBot.Services;
 
 namespace WizBot.Modules.Gambling.Common
 {

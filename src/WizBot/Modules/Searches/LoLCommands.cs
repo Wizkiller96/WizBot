@@ -1,7 +1,5 @@
 ﻿using Discord;
 using WizBot.Extensions;
-using WizBot.Services;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;

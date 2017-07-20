@@ -1,7 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
 using WizBot.Extensions;
-using WizBot.Modules.Permissions;
 using WizBot.Services;
 using WizBot.Services.Database.Models;
 using System;
@@ -18,7 +17,6 @@ namespace WizBot.Modules.Administration
     public partial class Administration
     {
         [Group]
-        [NoPublicBot]
         public class LogCommands : WizBotSubmodule<LogCommandService>
         {
             private readonly DbService _db;

@@ -5,7 +5,6 @@ using WizBot.Services;
 using NLog;
 using System.Globalization;
 using System.Threading.Tasks;
-using System;
 using Discord.WebSocket;
 using WizBot.Services.Impl;
 

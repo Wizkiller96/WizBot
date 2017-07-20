@@ -1,10 +1,8 @@
 ﻿using WizBot.Extensions;
 using WizBot.Modules.Music.Common.Exceptions;
-using WizBot.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using WizBot.Common;
 

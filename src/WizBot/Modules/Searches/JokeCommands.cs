@@ -2,7 +2,6 @@
 using Discord.Commands;
 using WizBot.Extensions;
 using WizBot.Modules.Searches.Services;
-using WizBot.Services;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using System.Net.Http;

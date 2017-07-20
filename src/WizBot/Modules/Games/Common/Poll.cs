@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using WizBot.Extensions;
-using WizBot.Services;
 using WizBot.Services.Impl;
 
 namespace WizBot.Modules.Games.Common

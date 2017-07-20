@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using WizBot.Common;
 using WizBot.Extensions;
-using WizBot.Services;
 using Newtonsoft.Json;
 
 namespace WizBot.Modules.Games.Common.Trivia

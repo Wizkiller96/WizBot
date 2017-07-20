@@ -50,7 +50,7 @@ namespace WizBot.Services
         public ConcurrentHashSet<ulong> UsersOnShortCooldown { get; } = new ConcurrentHashSet<ulong>();
         private readonly Timer _clearUsersOnShortCooldown;
 
-        public CommandHandler(DiscordSocketClient client, DbService db, BotConfig bc, IEnumerable<GuildConfig> gcs, CommandService commandService, IBotCredentials credentials, WizBot bot)
+        public CommandHandler(DiscordSocketClient client, DbService db, IBotConfigProvider bc, IEnumerable<GuildConfig> gcs, CommandService commandService, IBotCredentials credentials, WizBot bot)
         {
             _client = client;
             _commandService = commandService;
@@ -65,7 +65,7 @@ namespace WizBot.Services
                 UsersOnShortCooldown.Clear();
             }, null, GlobalCommandsCooldown, GlobalCommandsCooldown);
 
-            DefaultPrefix = bc.DefaultPrefix;
+            DefaultPrefix = bc.BotConfig.DefaultPrefix;
             _prefixes = gcs
                 .Where(x => x.Prefix != null)
                 .ToDictionary(x => x.GuildId, x => x.Prefix)

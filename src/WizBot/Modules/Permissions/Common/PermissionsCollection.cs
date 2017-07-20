@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using WizBot.Common;
 using WizBot.Common.Collections;
 using WizBot.Services.Database.Models;
 

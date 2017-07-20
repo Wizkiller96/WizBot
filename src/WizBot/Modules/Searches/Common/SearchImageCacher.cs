@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using System.Xml;
 using WizBot.Common;
 using WizBot.Extensions;
-using WizBot.Services;
 using Newtonsoft.Json;
 using NLog;
 
