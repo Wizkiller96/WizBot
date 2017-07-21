@@ -18,7 +18,7 @@ namespace WizBot.Services.Impl
 {
     public class GoogleApiService : IGoogleApiService
     {
-        const string search_engine_id = "018084019232060951019:hs5piey28-e";
+        const string search_engine_id = "000266294330878826600:-xl2rmeerdc";
 
         private YouTubeService yt;
         private UrlshortenerService sh;
@@ -32,7 +32,7 @@ namespace WizBot.Services.Impl
 
             var bcs = new BaseClientService.Initializer
             {
-                ApplicationName = "WizBot",
+                ApplicationName = "Wiz-Bot",
                 ApiKey = _creds.GoogleApiKey,
             };
 
