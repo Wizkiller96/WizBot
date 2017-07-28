@@ -433,8 +433,7 @@ namespace WizBot.Modules.CustomReactions
             }
             else
             {
-                uint throwaway;
-                if (_service.ReactionStats.TryRemove(trigger, out throwaway))
+                if (_service.ReactionStats.TryRemove(trigger, out _))
                 {
                     await ReplyErrorLocalized("stats_cleared", Format.Bold(trigger)).ConfigureAwait(false);
                 }

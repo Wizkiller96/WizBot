@@ -10,8 +10,15 @@ namespace WizBot.Modules.Utility
 {
     public partial class Utility
     {
-        public class BotConfigCommands : WizBotSubmodule<IBotConfigProvider>
+        public class BotConfigCommands : WizBotSubmodule
         {
+            private readonly IBotConfigProvider _service;
+
+            public BotConfigCommands(IBotConfigProvider service)
+            {
+                _service = service;
+            }
+
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
             public async Task BotConfigEdit()

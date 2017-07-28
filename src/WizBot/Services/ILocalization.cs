@@ -4,7 +4,7 @@ using Discord;
 
 namespace WizBot.Services
 {
-    public interface ILocalization
+    public interface ILocalization : INService
     {
         CultureInfo DefaultCultureInfo { get; }
         ConcurrentDictionary<ulong, CultureInfo> GuildCultureInfos { get; }

@@ -74,8 +74,7 @@ namespace WizBot.Modules.Permissions
             //        else
             //        {
             //            bc.CommandCosts.RemoveAt(bc.CommandCosts.IndexOf(cmdPrice));
-            //            int throwaway;
-            //            _commandCosts.TryRemove(cmdName, out throwaway);
+            //            _commandCosts.TryRemove(cmdName, out _);
             //        }
 
             //        await uow.CompleteAsync().ConfigureAwait(false);

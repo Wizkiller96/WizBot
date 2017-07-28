@@ -3,7 +3,7 @@ using WizBot.Services.Database.Models;
 
 namespace WizBot.Services
 {
-    public interface IBotConfigProvider : INService
+    public interface IBotConfigProvider
     {
         BotConfig BotConfig { get; }
         void Reload();
