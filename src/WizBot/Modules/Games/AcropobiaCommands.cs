@@ -2,18 +2,12 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using WizBot.Extensions;
-using NLog;
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using WizBot.Common;
 using WizBot.Common.Attributes;
-using WizBot.Common.Collections;
-using WizBot.Services.Impl;
 using WizBot.Modules.Games.Common.Acrophobia;
 
 namespace WizBot.Modules.Games
