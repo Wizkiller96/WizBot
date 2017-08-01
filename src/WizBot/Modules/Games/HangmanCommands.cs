@@ -29,7 +29,7 @@ namespace WizBot.Modules.Games
             [RequireContext(ContextType.Guild)]
             public async Task Hangmanlist()
             {
-                await Context.Channel.SendConfirmAsync(Format.Code(GetText("hangman_types", Prefix)) + "\n" + string.Join(", ", TermPool.data.Keys));
+                await Context.Channel.SendConfirmAsync(Format.Code(GetText("hangman_types", Prefix)) + "\n" + string.Join(", ", TermPool.Data.Keys));
             }
 
             [WizBotCommand, Usage, Description, Aliases]
