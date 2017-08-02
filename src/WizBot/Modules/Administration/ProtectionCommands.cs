@@ -112,11 +112,14 @@ namespace WizBot.Modules.Administration
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.Administrator)]
-            public async Task AntiSpam(int messageCount = 3, PunishmentAction action = PunishmentAction.Mute)
+            public async Task AntiSpam(int messageCount = 3, PunishmentAction action = PunishmentAction.Mute, int time = 0)
             {
                 if (messageCount < 2 || messageCount > 10)
                     return;
                 
+                if (time < 0 || time > 60 * 12)
+                    return;
+
                 if (_service.AntiSpamGuilds.TryRemove(Context.Guild.Id, out var removed))
                 {
                     removed.UserStats.ForEach(x => x.Value.Dispose());
