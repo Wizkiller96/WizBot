@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using WizBot.Modules.Searches.Common;
-using WizBot.Common.Collections;
 using WizBot.Services.Database.Models;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
