@@ -97,7 +97,7 @@ namespace WizBot.Modules.Music
         //    return Task.CompletedTask;
         //}
 
-        private async Task InternalQueue(MusicPlayer mp, SongInfo songInfo, bool silent)
+        private async Task InternalQueue(MusicPlayer mp, SongInfo songInfo, bool silent, bool queueFirst = false)
         {
             if (songInfo == null)
             {
@@ -109,8 +109,9 @@ namespace WizBot.Modules.Music
             int index;
             try
             {
-                _log.Info("Added");
-                index = mp.Enqueue(songInfo);
+                index = queueFirst
+                    ? mp.EnqueueNext(songInfo)
+                    : mp.Enqueue(songInfo);
             }
             catch (QueueFullException)
             {
@@ -174,13 +175,22 @@ namespace WizBot.Modules.Music
         [RequireContext(ContextType.Guild)]
         public async Task Queue([Remainder] string query)
         {
-            _log.Info("Getting player");
             var mp = await _service.GetOrCreatePlayer(Context);
-            _log.Info("Resolving song");
             var songInfo = await _service.ResolveSong(query, Context.User.ToString());
-            _log.Info("Queueing song");
             try { await InternalQueue(mp, songInfo, false); } catch (QueueFullException) { return; }
-            _log.Info("--------------");
+            if ((await Context.Guild.GetCurrentUserAsync()).GetPermissions((IGuildChannel)Context.Channel).ManageMessages)
+            {
+                Context.Message.DeleteAfter(10);
+            }
+        }
+
+        [WizBotCommand, Usage, Description, Aliases]
+        [RequireContext(ContextType.Guild)]
+        public async Task QueueNext([Remainder] string query)
+        {
+            var mp = await _service.GetOrCreatePlayer(Context);
+            var songInfo = await _service.ResolveSong(query, Context.User.ToString());
+            try { await InternalQueue(mp, songInfo, false, true); } catch (QueueFullException) { return; }
             if ((await Context.Guild.GetCurrentUserAsync()).GetPermissions((IGuildChannel)Context.Channel).ManageMessages)
             {
                 Context.Message.DeleteAfter(10);
