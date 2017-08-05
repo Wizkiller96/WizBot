@@ -11,7 +11,6 @@ namespace WizBot.Modules.Utility
 {
     public partial class Utility
     {
-        [NoPublicBot]
         public class StreamRoleCommands : WizBotSubmodule<StreamRoleService>
         {
             [WizBotCommand, Usage, Description, Aliases]
