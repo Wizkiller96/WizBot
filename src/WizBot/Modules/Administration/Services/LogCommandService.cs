@@ -12,9 +12,11 @@ using WizBot.Services;
 using WizBot.Services.Database.Models;
 using WizBot.Services.Impl;
 using NLog;
+using WizBot.Common;
 
 namespace WizBot.Modules.Administration.Services
 {
+    [NoPublicBot]
     public class LogCommandService : INService
     {
 

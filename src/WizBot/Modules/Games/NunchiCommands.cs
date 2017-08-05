@@ -5,9 +5,7 @@ using WizBot.Common.Attributes;
 using WizBot.Modules.Games.Common.Nunchi;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace WizBot.Modules.Games
@@ -100,9 +98,11 @@ namespace WizBot.Modules.Games
                 }
             }
 
-            private Task Nunchi_OnRoundStarted(Nunchi arg)
+            private Task Nunchi_OnRoundStarted(Nunchi arg, int cur)
             {
-                return ConfirmLocalized("nunchi_round_started", Format.Bold(arg.CurrentNumber.ToString()));
+                return ConfirmLocalized("nunchi_round_started", 
+                    Format.Bold(arg.ParticipantCount.ToString()), 
+                    Format.Bold(cur.ToString()));
             }
 
             private Task Nunchi_OnUserGuessed(Nunchi arg)

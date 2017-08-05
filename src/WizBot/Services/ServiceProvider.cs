@@ -7,6 +7,10 @@ using System.Reflection;
 using System.Linq;
 using System.Diagnostics;
 using NLog;
+#if GLOBAL_WIZBOT
+using WizBot.Common;
+#endif
+
 
 namespace WizBot.Services
 {
@@ -42,11 +46,18 @@ namespace WizBot.Services
             {
                 var allTypes = assembly.GetTypes();
                 var services = new Queue<Type>(allTypes
-                        .Where(x => x.GetInterfaces().Contains(typeof(INService)) && !x.GetTypeInfo().IsInterface && !x.GetTypeInfo().IsAbstract)
+                        .Where(x => x.GetInterfaces().Contains(typeof(INService)) 
+                            && !x.GetTypeInfo().IsInterface && !x.GetTypeInfo().IsAbstract
+
+#if GLOBAL_WIZBOT
+                            && x.GetTypeInfo().GetCustomAttribute<NoPublicBot>() == null
+#endif
+                            )
                         .ToArray());
 
                 var interfaces = new HashSet<Type>(allTypes
-                        .Where(x => x.GetInterfaces().Contains(typeof(INService)) && x.GetTypeInfo().IsInterface));
+                        .Where(x => x.GetInterfaces().Contains(typeof(INService)) 
+                            && x.GetTypeInfo().IsInterface));
 
                 var alreadyFailed = new Dictionary<Type, int>();
 
