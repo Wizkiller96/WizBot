@@ -16,7 +16,6 @@ using WizBot.Common;
 
 namespace WizBot.Modules.Administration.Services
 {
-    [NoPublicBot]
     public class LogCommandService : INService
     {
 
