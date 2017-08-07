@@ -125,7 +125,7 @@ namespace WizBot.Modules.Music
                     try
                     {
                         var embed = new EmbedBuilder().WithOkColor()
-                                        .WithAuthor(eab => eab.WithName(GetText("queued_song") + " #" + (index)).WithMusicIcon())
+                                        .WithAuthor(eab => eab.WithName(GetText("queued_song") + " #" + (index + 1)).WithMusicIcon())
                                         .WithDescription($"{songInfo.PrettyName}\n{GetText("queue")} ")
                                         .WithFooter(ef => ef.WithText(songInfo.PrettyProvider));
 

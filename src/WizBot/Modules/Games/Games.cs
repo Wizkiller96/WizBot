@@ -15,7 +15,6 @@ namespace WizBot.Modules.Games
     - Blackjack
     - Shiritori
     - Simple RPG adventure
-    - Connect 4
     */
     public partial class Games : WizBotTopLevelModule<GamesService>
     {

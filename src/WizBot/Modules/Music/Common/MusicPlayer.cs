@@ -401,7 +401,7 @@ namespace WizBot.Modules.Music.Common
                 if (Exited)
                     return -1;
                 Queue.Add(song);
-                return Queue.Count;
+                return Queue.Count - 1;
             }
         }
 
