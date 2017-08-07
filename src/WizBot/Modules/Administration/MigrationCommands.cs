@@ -212,7 +212,7 @@ namespace WizBot.Modules.Administration
                                         type = FollowedStream.FollowedStreamType.Twitch;
                                         break;
                                     case StreamNotificationConfig0_9.StreamType.Beam:
-                                        type = FollowedStream.FollowedStreamType.Beam;
+                                        type = FollowedStream.FollowedStreamType.Mixer;
                                         break;
                                     case StreamNotificationConfig0_9.StreamType.Hitbox:
                                         type = FollowedStream.FollowedStreamType.Hitbox;

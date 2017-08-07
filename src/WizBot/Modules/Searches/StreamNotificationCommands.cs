@@ -41,8 +41,8 @@ namespace WizBot.Modules.Searches
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.ManageMessages)]
-            public async Task Beam([Remainder] string username) =>
-                await TrackStream((ITextChannel)Context.Channel, username, FollowedStream.FollowedStreamType.Beam)
+            public async Task Mixer([Remainder] string username) =>
+                await TrackStream((ITextChannel)Context.Channel, username, FollowedStream.FollowedStreamType.Mixer)
                     .ConfigureAwait(false);
 
             [WizBotCommand, Usage, Description, Aliases]
