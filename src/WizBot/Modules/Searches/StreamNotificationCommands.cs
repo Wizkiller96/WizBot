@@ -27,8 +27,8 @@ namespace WizBot.Modules.Searches
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.ManageMessages)]
-            public async Task Hitbox([Remainder] string username) =>
-                await TrackStream((ITextChannel)Context.Channel, username, FollowedStream.FollowedStreamType.Hitbox)
+            public async Task Smashcast([Remainder] string username) =>
+                await TrackStream((ITextChannel)Context.Channel, username, FollowedStream.FollowedStreamType.Smashcast)
                     .ConfigureAwait(false);
 
             [WizBotCommand, Usage, Description, Aliases]
