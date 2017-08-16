@@ -22,6 +22,7 @@ namespace WizBot.Services.Database.Models
             Violin,
             Ring,
             Helicopter,
+            Airplane,
         }
 
         public WaifuItem()
@@ -64,6 +65,8 @@ namespace WizBot.Services.Database.Models
                     return new WaifuItem("💍", 10000, itemName);
                 case ItemName.Helicopter:
                     return new WaifuItem("🚁", 20000, itemName);
+                case ItemName.Airplane:
+                    return new WaifuItem("✈", 100000, itemName);
                 default:
                     throw new ArgumentException(nameof(itemName));
             }
@@ -84,4 +87,6 @@ namespace WizBot.Services.Database.Models
 💻 Laptop 5k
 🎻 Violin 7.5k
 💍 Ring 10k
+🚁 Helicopter 20k
+✈ Airplane 100k
 */
