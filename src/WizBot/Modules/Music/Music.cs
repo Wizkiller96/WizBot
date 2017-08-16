@@ -579,6 +579,23 @@ namespace WizBot.Modules.Music
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
+        public async Task SongAutoDelete()
+        {
+            var mp = await _service.GetOrCreatePlayer(Context);
+            var val = mp.AutoDelete = !mp.AutoDelete;
+
+            if (val)
+            {
+                await ReplyConfirmLocalized("sad_enabled").ConfigureAwait(false);
+            }
+            else
+            {
+                await ReplyConfirmLocalized("sad_disabled").ConfigureAwait(false);
+            }
+        }
+
+        [WizBotCommand, Usage, Description, Aliases]
+        [RequireContext(ContextType.Guild)]
         public async Task SoundCloudQueue([Remainder] string query)
         {
             var mp = await _service.GetOrCreatePlayer(Context);
