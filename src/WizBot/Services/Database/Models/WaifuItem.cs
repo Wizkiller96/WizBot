@@ -66,7 +66,7 @@ namespace WizBot.Services.Database.Models
                 case ItemName.Helicopter:
                     return new WaifuItem("🚁", 20000, itemName);
                 case ItemName.Airplane:
-                    return new WaifuItem("✈", 100000, itemName);
+                    return new WaifuItem("✈", 25000, itemName);
                 default:
                     throw new ArgumentException(nameof(itemName));
             }
