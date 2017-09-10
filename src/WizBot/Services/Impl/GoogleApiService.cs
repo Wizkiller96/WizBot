@@ -377,8 +377,7 @@ namespace WizBot.Services.Impl
 
         private string ConvertToLanguageCode(string language)
         {
-            string mode;
-            _languageDictionary.TryGetValue(language, out mode);
+            _languageDictionary.TryGetValue(language, out var mode);
             return mode;
         }
     }

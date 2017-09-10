@@ -1,11 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WizBot.Services.Database;
+using System.Linq;
 
 namespace WizBot.Services
 {
     public class DbService
     {
         private readonly DbContextOptions options;
+        private readonly DbContextOptions migrateOptions;
 
         private readonly string _connectionString;
 
@@ -15,25 +17,23 @@ namespace WizBot.Services
             var optionsBuilder = new DbContextOptionsBuilder();
             optionsBuilder.UseSqlite(creds.Db.ConnectionString);
             options = optionsBuilder.Options;
-            //switch (_creds.Db.Type.ToUpperInvariant())
-            //{
-            //    case "SQLITE":
-            //        dbType = typeof(WizBotSqliteContext);
-            //        break;
-            //    //case "SQLSERVER":
-            //    //    dbType = typeof(WizBotSqlServerContext);
-            //    //    break;
-            //    default:
-            //        break;
 
-            //}
+            optionsBuilder = new DbContextOptionsBuilder();
+            optionsBuilder.UseSqlite(creds.Db.ConnectionString, x => x.SuppressForeignKeyEnforcement());
+            migrateOptions = optionsBuilder.Options;
         }
 
         public WizBotContext GetDbContext()
         {
             var context = new WizBotContext(options);
+            if (context.Database.GetPendingMigrations().Any())
+            {
+                var mContext = new WizBotContext(migrateOptions);
+                mContext.Database.Migrate();
+                mContext.SaveChanges();
+                mContext.Dispose();
+            }
             context.Database.SetCommandTimeout(60);
-            context.Database.Migrate();
             context.EnsureSeedData();
 
             //set important sqlite stuffs

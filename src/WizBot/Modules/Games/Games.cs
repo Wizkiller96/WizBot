@@ -11,7 +11,7 @@ using WizBot.Modules.Games.Services;
 
 namespace WizBot.Modules.Games
 {
-    /*todo more games
+    /* more games
     - Blackjack
     - Shiritori
     - Simple RPG adventure

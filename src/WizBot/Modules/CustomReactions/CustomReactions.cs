@@ -153,7 +153,7 @@ namespace WizBot.Modules.CustomReactions
             if (Context.Guild == null) // its a private one, just send back
                 await Context.Channel.SendFileAsync(txtStream, "customreactions.txt", GetText("list_all")).ConfigureAwait(false);
             else
-                await ((IGuildUser)Context.User).SendFileAsync(txtStream, "customreactions.txt", GetText("list_all")).ConfigureAwait(false);
+                await ((IGuildUser)Context.User).SendFileAsync(txtStream, "customreactions.txt", GetText("list_all"), false).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]

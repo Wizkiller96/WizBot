@@ -17,6 +17,8 @@ namespace WizBot.Common
         CurrencyDropAmountMax,
         MinimumBetAmount,
         TriviaCurrencyReward,
+        XpPerMessage,
+        XpMinutesTimeout,
         
         //ErrorColor, //after i fix the wizbot.cs static variables
         //OkColor

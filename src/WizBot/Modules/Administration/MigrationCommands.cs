@@ -78,9 +78,9 @@ namespace WizBot.Modules.Administration
 
             private void MigrateDb0_9(IUnitOfWork uow)
             {
-                var db = new SqliteConnection("Data Source=data/WizBot.sqlite");
+                var db = new SqliteConnection("Data Source=data/wizbot.sqlite");
 
-                if (!File.Exists("data/WizBot.sqlite"))
+                if (!File.Exists("data/wizbot.sqlite"))
                 {
                     _log.Warn("No data from the old database will be migrated.");
                     return;
@@ -146,7 +146,7 @@ namespace WizBot.Modules.Administration
                     _log.Warn("Currency won't be migrated");
                 }
                 db.Close();
-                try { File.Move("data/WizBot.sqlite", "data/DELETE_ME_WizBot.sqlite"); } catch { }
+                try { File.Move("data/wizbot.sqlite", "data/DELETE_ME_wizbot.sqlite"); } catch { }
             }
 
             private void MigrateServerSpecificConfigs0_9(IUnitOfWork uow)
@@ -351,54 +351,6 @@ namespace WizBot.Modules.Administration
 
                 oldConfig.RotatingStatuses.ForEach(i => messages.Add(new PlayingStatus { Status = i }));
                 botConfig.RotatingStatusMessages = messages;
-
-                //Prefix
-                botConfig.ModulePrefixes.Clear();
-                botConfig.ModulePrefixes.AddRange(new HashSet<ModulePrefix>
-                {
-                    new ModulePrefix()
-                    {
-                        ModuleName = "Administration",
-                        Prefix = oldConfig.CommandPrefixes.Administration
-                    },
-                    new ModulePrefix()
-                    {
-                        ModuleName = "Searches",
-                        Prefix = oldConfig.CommandPrefixes.Searches
-                    },
-                    new ModulePrefix() {ModuleName = "NSFW", Prefix = oldConfig.CommandPrefixes.NSFW},
-                    new ModulePrefix()
-                    {
-                        ModuleName = "Conversations",
-                        Prefix = oldConfig.CommandPrefixes.Conversations
-                    },
-                    new ModulePrefix()
-                    {
-                        ModuleName = "ClashOfClans",
-                        Prefix = oldConfig.CommandPrefixes.ClashOfClans
-                    },
-                    new ModulePrefix() {ModuleName = "Help", Prefix = oldConfig.CommandPrefixes.Help},
-                    new ModulePrefix() {ModuleName = "Music", Prefix = oldConfig.CommandPrefixes.Music},
-                    new ModulePrefix() {ModuleName = "Trello", Prefix = oldConfig.CommandPrefixes.Trello},
-                    new ModulePrefix() {ModuleName = "Games", Prefix = oldConfig.CommandPrefixes.Games},
-                    new ModulePrefix()
-                    {
-                        ModuleName = "Gambling",
-                        Prefix = oldConfig.CommandPrefixes.Gambling
-                    },
-                    new ModulePrefix()
-                    {
-                        ModuleName = "Permissions",
-                        Prefix = oldConfig.CommandPrefixes.Permissions
-                    },
-                    new ModulePrefix()
-                    {
-                        ModuleName = "Programming",
-                        Prefix = oldConfig.CommandPrefixes.Programming
-                    },
-                    new ModulePrefix() {ModuleName = "Pokemon", Prefix = oldConfig.CommandPrefixes.Pokemon},
-                    new ModulePrefix() {ModuleName = "Utility", Prefix = oldConfig.CommandPrefixes.Utility}
-                });
 
                 //Blacklist
                 var blacklist = new HashSet<BlacklistItem>(oldConfig.ServerBlacklist.Select(server => new BlacklistItem() { ItemId = server, Type = BlacklistType.Server }));

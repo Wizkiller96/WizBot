@@ -15,6 +15,7 @@ using WizBot.Modules.Searches.Common;
 using WizBot.Modules.Searches.Services;
 using WizBot.Modules.NSFW.Exceptions;
 
+//todo static httpclient
 namespace WizBot.Modules.NSFW
 {
     public class NSFW : WizBotTopLevelModule<SearchesService>

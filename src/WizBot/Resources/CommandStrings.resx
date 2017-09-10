@@ -427,7 +427,7 @@
     <value>addcustreact acr</value>
   </data>
   <data name="addcustreact_desc" xml:space="preserve">
-    <value>Add a custom reaction with a trigger and a response. Running this command in server requires the Administration permission. Running this command in DM is Bot Owner only and adds a new global custom reaction. Guide here: &lt;http://WizBot.readthedocs.io/en/latest/Custom%20Reactions/&gt;</value>
+    <value>Add a custom reaction with a trigger and a response. Running this command in server requires the Administration permission. Running this command in DM is Bot Owner only and adds a new global custom reaction. Guide here: &lt;http://wizbot.readthedocs.io/en/latest/Custom%20Reactions/&gt;</value>
   </data>
   <data name="addcustreact_usage" xml:space="preserve">
     <value>`{0}acr "hello" Hi there %user%`</value>
@@ -481,7 +481,7 @@
     <value>leave</value>
   </data>
   <data name="leave_desc" xml:space="preserve">
-    <value>Makes WizBot leave the server. Either server name or server ID is required.</value>
+    <value>Makes Nadeko leave the server. Either server name or server ID is required.</value>
   </data>
   <data name="leave_usage" xml:space="preserve">
     <value>`{0}leave 123123123331`</value>
@@ -679,7 +679,7 @@
     <value>prune clear</value>
   </data>
   <data name="prune_desc" xml:space="preserve">
-    <value>`{0}prune` removes all WizBot's messages in the last 100 messages. `{0}prune X` removes last `X` number of messages from the channel (up to 100). `{0}prune @Someone` removes all Someone's messages in the last 100 messages. `{0}prune @Someone X` removes last `X` number of 'Someone's' messages in the channel.</value>
+    <value>`{0}prune` removes all Nadeko's messages in the last 100 messages. `{0}prune X` removes last `X` number of messages from the channel (up to 100). `{0}prune @Someone` removes all Someone's messages in the last 100 messages. `{0}prune @Someone X` removes last `X` number of 'Someone's' messages in the channel.</value>
   </data>
   <data name="prune_usage" xml:space="preserve">
     <value>`{0}prune` or `{0}prune 5` or `{0}prune @Someone` or `{0}prune @Someone X`</value>
@@ -868,7 +868,7 @@
     <value>stats</value>
   </data>
   <data name="stats_desc" xml:space="preserve">
-    <value>Shows some basic stats for WizBot.</value>
+    <value>Shows some basic stats for Nadeko.</value>
   </data>
   <data name="stats_usage" xml:space="preserve">
     <value>`{0}stats`</value>
@@ -976,7 +976,7 @@
     <value>permrole pr</value>
   </data>
   <data name="permrole_desc" xml:space="preserve">
-    <value>Sets a role which can change permissions. Supply no parameters to see the current one. Default is 'WizBot'.</value>
+    <value>Sets a role which can change permissions. Supply no parameters to see the current one. Default is 'Nadeko'.</value>
   </data>
   <data name="permrole_usage" xml:space="preserve">
     <value>`{0}pr role`</value>
@@ -1471,7 +1471,7 @@
     <value>rps</value>
   </data>
   <data name="rps_desc" xml:space="preserve">
-    <value>Play a game of Rocket-Paperclip-Scissors with WizBot.</value>
+    <value>Play a game of Rocket-Paperclip-Scissors with Nadeko.</value>
   </data>
   <data name="rps_usage" xml:space="preserve">
     <value>`{0}rps scissors`</value>
@@ -2470,7 +2470,7 @@
     <value>setmuterole</value>
   </data>
   <data name="setmuterole_desc" xml:space="preserve">
-    <value>Sets a name of the role which will be assigned to people who should be muted. Default is wizbot-mute.</value>
+    <value>Sets a name of the role which will be assigned to people who should be muted. Default is nadeko-mute.</value>
   </data>
   <data name="setmuterole_usage" xml:space="preserve">
     <value>`{0}setmuterole Silenced`</value>
@@ -2704,7 +2704,7 @@
     <value>heal</value>
   </data>
   <data name="heal_desc" xml:space="preserve">
-    <value>Heals someone. Revives those who fainted. Costs a Cherry Blossom. </value>
+    <value>Heals someone. Revives those who fainted. Costs a NadekoFlower. </value>
   </data>
   <data name="heal_usage" xml:space="preserve">
     <value>`{0}heal @someone`</value>
@@ -2722,7 +2722,7 @@
     <value>settype</value>
   </data>
   <data name="settype_desc" xml:space="preserve">
-    <value>Set your poketype. Costs a Cherry Blossom. Provide no arguments to see a list of available types.</value>
+    <value>Set your poketype. Costs a NadekoFlower. Provide no arguments to see a list of available types.</value>
   </data>
   <data name="settype_usage" xml:space="preserve">
     <value>`{0}settype fire` or `{0}settype`</value>
@@ -2959,13 +2959,13 @@
     <value>Sets a price for a command. Running that command will take currency from users. Set 0 to remove the price.</value>
   </data>
   <data name="commandcost_usage" xml:space="preserve">
-    <value>`{0}cmdcost 0 {0}q` or `{0}cmdcost 1 {0}8ball`</value>
+    <value>`{0}cmdcost 0 !!q` or `{0}cmdcost 1 {0}8ball`</value>
   </data>
   <data name="startevent_cmd" xml:space="preserve">
     <value>startevent</value>
   </data>
   <data name="startevent_desc" xml:space="preserve">
-    <value>Starts one of the events seen on public WizBot.</value>
+    <value>Starts one of the events seen on public nadeko.</value>
   </data>
   <data name="startevent_usage" xml:space="preserve">
     <value>`{0}startevent flowerreaction`</value>
@@ -2992,7 +2992,7 @@
     <value>slot</value>
   </data>
   <data name="slot_desc" xml:space="preserve">
-    <value>Play WizBot slots. Max bet is 9999. 1.5 second cooldown per user.</value>
+    <value>Play Nadeko slots. Max bet is 9999. 1.5 second cooldown per user.</value>
   </data>
   <data name="slot_usage" xml:space="preserve">
     <value>`{0}slot 5`</value>
@@ -3112,7 +3112,7 @@
     <value>Starts a game of tic tac toe. Another user must run the command in the same channel in order to accept the challenge. Use numbers 1-9 to play. 15 seconds per move.</value>
   </data>
   <data name="tictactoe_usage" xml:space="preserve">
-    <value>`{0}ttt`</value>
+    <value>{0}ttt</value>
   </data>
   <data name="timezones_cmd" xml:space="preserve">
     <value>timezones</value>
@@ -3244,7 +3244,7 @@
     <value>alias cmdmap</value>
   </data>
   <data name="alias_desc" xml:space="preserve">
-    <value>Create a custom alias for a certain WizBot command. Provide no alias to remove the existing one.</value>
+    <value>Create a custom alias for a certain Nadeko command. Provide no alias to remove the existing one.</value>
   </data>
   <data name="alias_usage" xml:space="preserve">
     <value>`{0}alias allin $bf 100 h` or `{0}alias "linux thingy" &gt;loonix Spyware Windows`</value>
@@ -3572,6 +3572,213 @@
   </data>
   <data name="nsfwtagblacklist_desc" xml:space="preserve">
     <value>Toggles whether the tag is blacklisted or not in nsfw searches. Provide no parameters to see the list of blacklisted tags.</value>
+  </data>
+  <data name="experience_cmd" xml:space="preserve">
+    <value>experience xp</value>
+  </data>
+  <data name="experience_usage" xml:space="preserve">
+    <value>`{0}xp`</value>
+  </data>
+  <data name="experience_desc" xml:space="preserve">
+    <value>Shows your xp stats. Specify the user to show that user's stats instead.</value>
+  </data>
+  <data name="xpexclusionlist_cmd" xml:space="preserve">
+    <value>xpexclusionlist xpexl</value>
+  </data>
+  <data name="xpexclusionlist_usage" xml:space="preserve">
+    <value>`{0}xpexl`</value>
+  </data>
+  <data name="xpexclusionlist_desc" xml:space="preserve">
+    <value>Shows the roles and channels excluded from the XP system on this server, as well as whether the whole server is excluded.</value>
+  </data>
+  <data name="xpexclude_cmd" xml:space="preserve">
+    <value>xpexclude xpex</value>
+  </data>
+  <data name="xpexclude_usage" xml:space="preserve">
+    <value>`{0}xpex User @b1nzy` `{0}xpex Server`</value>
+  </data>
+  <data name="xpexclude_desc" xml:space="preserve">
+    <value>Exclude a user or a role from the xp system, or whole current server.</value>
+  </data>
+  <data name="xpnotify_cmd" xml:space="preserve">
+    <value>xpnotify xpn</value>
+  </data>
+  <data name="xpnotify_usage" xml:space="preserve">
+    <value>`{0}xpn global dm` `{0}xpn server channel`</value>
+  </data>
+  <data name="xpnotify_desc" xml:space="preserve">
+    <value>Sets how the bot should notify you when you get a `server` or `global` level. You can set `dm` (for the bot to send a direct message), `channel` (to get notified in the channel you sent the last message in) or `none` to disable.</value>
+  </data>
+  <data name="xprolerewards_cmd" xml:space="preserve">
+    <value>xprolerewards xprrs</value>
+  </data>
+  <data name="xprolerewards_usage" xml:space="preserve">
+    <value>`{0}xprrs`</value>
+  </data>
+  <data name="xprolerewards_desc" xml:space="preserve">
+    <value>Shows currently set role rewards.</value>
+  </data>
+  <data name="xprolereward_cmd" xml:space="preserve">
+    <value>xprolereward xprr</value>
+  </data>
+  <data name="xprolereward_usage" xml:space="preserve">
+    <value>`{0}xprr 3 Social`</value>
+  </data>
+  <data name="xprolereward_desc" xml:space="preserve">
+    <value>Sets a role reward on a specified level.</value>
+  </data>
+  <data name="xpleaderboard_cmd" xml:space="preserve">
+    <value>xpleaderboard xplb</value>
+  </data>
+  <data name="xpleaderboard_usage" xml:space="preserve">
+    <value>`{0}xplb`</value>
+  </data>
+  <data name="xpleaderboard_desc" xml:space="preserve">
+    <value>Shows current server's xp leaderboard.</value>
+  </data>
+  <data name="xpgloballeaderboard_cmd" xml:space="preserve">
+    <value>xpgleaderboard xpglb</value>
+  </data>
+  <data name="xpgloballeaderboard_usage" xml:space="preserve">
+    <value>`{0}xpglb`</value>
+  </data>
+  <data name="xpgloballeaderboard_desc" xml:space="preserve">
+    <value>Shows current server's xp leaderboard.</value>
+  </data>
+  <data name="xpadd_cmd" xml:space="preserve">
+    <value>xpadd</value>
+  </data>
+  <data name="xpadd_usage" xml:space="preserve">
+    <value>`{0}xpadd 100 @b1nzy`</value>
+  </data>
+  <data name="xpadd_desc" xml:space="preserve">
+    <value>Adds xp to a user on the server. This does not affect their global ranking. You can use negative values.</value>
+  </data>
+  <data name="clubcreate_cmd" xml:space="preserve">
+    <value>clubcreate</value>
+  </data>
+  <data name="clubcreate_usage" xml:space="preserve">
+    <value>`{0}clubcreate b1nzy's friends`</value>
+  </data>
+  <data name="clubcreate_desc" xml:space="preserve">
+    <value>Creates a club. You must be atleast level 5 and not be in the club already.</value>
+  </data>
+  <data name="clubinformation_cmd" xml:space="preserve">
+    <value>clubinfo</value>
+  </data>
+  <data name="clubinformation_usage" xml:space="preserve">
+    <value>`{0}clubinfo b1nzy's friends#123`</value>
+  </data>
+  <data name="clubinformation_desc" xml:space="preserve">
+    <value>Shows information about the club.</value>
+  </data>
+  <data name="clubapply_cmd" xml:space="preserve">
+    <value>clubapply</value>
+  </data>
+  <data name="clubapply_usage" xml:space="preserve">
+    <value>`{0}clubapply b1nzy's friends#123`</value>
+  </data>
+  <data name="clubapply_desc" xml:space="preserve">
+    <value>Apply to join a club. You must meet that club's minimum level requirement, and not be on its ban list.</value>
+  </data>
+  <data name="clubaccept_cmd" xml:space="preserve">
+    <value>clubaccept</value>
+  </data>
+  <data name="clubaccept_usage" xml:space="preserve">
+    <value>`{0}clubaccept b1nzy#1337`</value>
+  </data>
+  <data name="clubaccept_desc" xml:space="preserve">
+    <value>Apply to join a club. You must meet that club's minimum level requirement, and not be on its ban list.</value>
+  </data>
+  <data name="clubleave_cmd" xml:space="preserve">
+    <value>clubleave</value>
+  </data>
+  <data name="clubleave_usage" xml:space="preserve">
+    <value>`{0}clubleave`</value>
+  </data>
+  <data name="clubleave_desc" xml:space="preserve">
+    <value>Leaves the club you're currently in.</value>
+  </data>
+  <data name="clubdisband_cmd" xml:space="preserve">
+    <value>clubdisband</value>
+  </data>
+  <data name="clubdisband_usage" xml:space="preserve">
+    <value>`{0}clubdisband`</value>
+  </data>
+  <data name="clubdisband_desc" xml:space="preserve">
+    <value>Disbands the club you're the owner of. This action is irreversible.</value>
+  </data>
+  <data name="clubkick_cmd" xml:space="preserve">
+    <value>clubkick</value>
+  </data>
+  <data name="clubkick_usage" xml:space="preserve">
+    <value>`{0}clubkick b1nzy#1337`</value>
+  </data>
+  <data name="clubkick_desc" xml:space="preserve">
+    <value>Kicks the user from the club. You must be the club owner. They will be able to apply again.</value>
+  </data>
+  <data name="clubban_cmd" xml:space="preserve">
+    <value>clubban</value>
+  </data>
+  <data name="clubban_usage" xml:space="preserve">
+    <value>`{0}clubban b1nzy#1337`</value>
+  </data>
+  <data name="clubban_desc" xml:space="preserve">
+    <value>Bans the user from the club. You must be the club owner. They will not be able to apply again.</value>
+  </data>
+  <data name="clubunban_cmd" xml:space="preserve">
+    <value>clubunban</value>
+  </data>
+  <data name="clubunban_usage" xml:space="preserve">
+    <value>`{0}clubunban b1nzy#1337`</value>
+  </data>
+  <data name="clubunban_desc" xml:space="preserve">
+    <value>Unbans the previously banned user from the club. You must be the club owner.</value>
+  </data>
+  <data name="clublevelreq_cmd" xml:space="preserve">
+    <value>clublevelreq</value>
+  </data>
+  <data name="clublevelreq_usage" xml:space="preserve">
+    <value>`{0}clublevelreq 7`</value>
+  </data>
+  <data name="clublevelreq_desc" xml:space="preserve">
+    <value>Sets the club required level to apply to join the club. You must be club owner. You can't set this number below 5.</value>
+  </data>
+  <data name="clubicon_cmd" xml:space="preserve">
+    <value>clubicon</value>
+  </data>
+  <data name="clubicon_usage" xml:space="preserve">
+    <value>`{0}clubicon https://i.imgur.com/htfDMfU.png`</value>
+  </data>
+  <data name="clubicon_desc" xml:space="preserve">
+    <value>Sets the club icon.</value>
+  </data>
+  <data name="clubapps_cmd" xml:space="preserve">
+    <value>clubapps</value>
+  </data>
+  <data name="clubapps_usage" xml:space="preserve">
+    <value>`{0}clubapps 2`</value>
+  </data>
+  <data name="clubapps_desc" xml:space="preserve">
+    <value>Shows the list of users who have applied to your club. Paginated. You must be club owner to use this command.</value>
+  </data>
+  <data name="clubbans_cmd" xml:space="preserve">
+    <value>clubbans</value>
+  </data>
+  <data name="clubbans_usage" xml:space="preserve">
+    <value>`{0}clubbans 2`</value>
+  </data>
+  <data name="clubbans_desc" xml:space="preserve">
+    <value>Shows the list of users who have banned from your club. Paginated. You must be club owner to use this command.</value>
+  </data>
+  <data name="clubleaderboard_cmd" xml:space="preserve">
+    <value>clublb</value>
+  </data>
+  <data name="clubleaderboard_usage" xml:space="preserve">
+    <value>`{0}clublb 2`</value>
+  </data>
+  <data name="clubleaderboard_desc" xml:space="preserve">
+    <value>Shows club rankings on the specified page.</value>
   </data>
   <data name="updates_cmd" xml:space="preserve">
     <value>updates changelogs</value>

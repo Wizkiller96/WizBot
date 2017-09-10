@@ -351,7 +351,7 @@ namespace WizBot.Modules.Utility
                     })
                 });
             await Context.User.SendFileAsync(
-                await JsonConvert.SerializeObject(grouping, Formatting.Indented).ToStream().ConfigureAwait(false), title, title).ConfigureAwait(false);
+                await JsonConvert.SerializeObject(grouping, Formatting.Indented).ToStream().ConfigureAwait(false), title, title, false).ConfigureAwait(false);
         }
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Ping()

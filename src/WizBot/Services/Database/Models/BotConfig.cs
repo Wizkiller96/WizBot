@@ -68,6 +68,8 @@ WizNet Community Server: N/A";
         public int PermissionVersion { get; set; }
         public string DefaultPrefix { get; set; } = ".";
         public bool CustomReactionsStartWith { get; set; } = false;
+        public int XpPerMessage { get; set; } = 3;
+        public int XpMinutesTimeout { get; set; } = 5;
     }
 
     public class BlockedCmdOrMdl : DbEntity
