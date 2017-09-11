@@ -79,6 +79,7 @@ namespace WizBot.Modules.Xp.Services
             _strings = strings;
 
             //load settings
+            allGuildConfigs = allGuildConfigs.Where(x => x.XpSettings != null);
             _excludedChannels = allGuildConfigs
                 .ToDictionary(
                     x => x.GuildId,
