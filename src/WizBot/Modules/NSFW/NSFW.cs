@@ -4,7 +4,6 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Net.Http;
 using WizBot.Extensions;
 using System.Threading;
 using System.Collections.Concurrent;
@@ -15,7 +14,6 @@ using WizBot.Modules.Searches.Common;
 using WizBot.Modules.Searches.Services;
 using WizBot.Modules.NSFW.Exceptions;
 
-//todo static httpclient
 namespace WizBot.Modules.NSFW
 {
     public class NSFW : WizBotTopLevelModule<SearchesService>
@@ -160,10 +158,7 @@ namespace WizBot.Modules.NSFW
             try
             {
                 JToken obj;
-                using (var http = new HttpClient())
-                {
-                    obj = JArray.Parse(await http.GetStringAsync($"http://api.oboobs.ru/boobs/{new WizBotRandom().Next(0, 10330)}").ConfigureAwait(false))[0];
-                }
+                obj = JArray.Parse(await _service.Http.GetStringAsync($"http://api.oboobs.ru/boobs/{new WizBotRandom().Next(0, 10330)}").ConfigureAwait(false))[0];
                 await Context.Channel.SendMessageAsync($"http://media.oboobs.ru/{obj["preview"]}").ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -178,10 +173,7 @@ namespace WizBot.Modules.NSFW
             try
             {
                 JToken obj;
-                using (var http = new HttpClient())
-                {
-                    obj = JArray.Parse(await http.GetStringAsync($"http://api.obutts.ru/butts/{new WizBotRandom().Next(0, 4335)}").ConfigureAwait(false))[0];
-                }
+                obj = JArray.Parse(await _service.Http.GetStringAsync($"http://api.obutts.ru/butts/{new WizBotRandom().Next(0, 4335)}").ConfigureAwait(false))[0];
                 await Context.Channel.SendMessageAsync($"http://media.obutts.ru/{obj["preview"]}").ConfigureAwait(false);
             }
             catch (Exception ex)
