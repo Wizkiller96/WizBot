@@ -3616,7 +3616,7 @@
     <value>`{0}xprrs`</value>
   </data>
   <data name="xprolerewards_desc" xml:space="preserve">
-    <value>Shows currently set role rewards.</value>
+    <value>Shows currently set role rewards. Provide no role name in order to remove the role reward.</value>
   </data>
   <data name="xprolereward_cmd" xml:space="preserve">
     <value>xprolereward xprr</value>
