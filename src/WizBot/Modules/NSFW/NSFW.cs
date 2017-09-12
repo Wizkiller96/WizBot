@@ -206,6 +206,15 @@ namespace WizBot.Modules.NSFW
             }
         }
 
+        [WizBotCommand, Usage, Description, Aliases]
+        [RequireContext(ContextType.Guild)]
+        [OwnerOnly]
+        public Task NsfwClearCache()
+        {
+            _service.ClearCache();
+            return Context.Channel.SendConfirmAsync("👌");
+        }
+
         public async Task InternalDapiCommand(string tag, DapiSearchType type, bool forceExplicit)
         {
             ImageCacherObject imgObj;
