@@ -76,13 +76,11 @@ namespace WizBot.Modules.Searches.Common
                     if (images.Length == 0)
                         return null;
                     var toReturn = images[_rng.Next(images.Length)];
-#if !GLOBAL_WIZBOT
                     foreach (var dledImg in images)
                     {
                         if(dledImg != toReturn)
                             _cache.Add(dledImg);
                     }
-#endif
                     return toReturn;
                 }                    
             }

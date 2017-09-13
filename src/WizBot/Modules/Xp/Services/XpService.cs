@@ -36,7 +36,6 @@ namespace WizBot.Modules.Xp.Services
         private readonly IImagesService _images;
         private readonly Logger _log;
         private readonly WizBotStrings _strings;
-        private readonly IDataCache _cache;
         private readonly FontCollection _fonts = new FontCollection();
         public const int XP_REQUIRED_LVL_1 = 36;
 
@@ -55,6 +54,9 @@ namespace WizBot.Modules.Xp.Services
         private readonly ConcurrentQueue<UserCacheItem> _addMessageXp 
             = new ConcurrentQueue<UserCacheItem>();
 
+        private readonly ConcurrentDictionary<string, byte[]> _imageStreams 
+            = new ConcurrentDictionary<string, byte[]>();
+
         private readonly Timer updateXpTimer;
         private readonly HttpClient http = new HttpClient();
         private FontFamily _usernameFontFamily;
@@ -67,7 +69,7 @@ namespace WizBot.Modules.Xp.Services
 
         public XpService(CommandHandler cmd, IBotConfigProvider bc,
             IEnumerable<GuildConfig> allGuildConfigs, IImagesService images,
-            DbService db, WizBotStrings strings, IDataCache cache)
+            DbService db, WizBotStrings strings)
         {
             _db = db;
             _cmd = cmd;
@@ -75,7 +77,6 @@ namespace WizBot.Modules.Xp.Services
             _images = images;
             _log = LogManager.GetCurrentClassLogger();
             _strings = strings;
-            _cache = cache;
 
             //load settings
             allGuildConfigs = allGuildConfigs.Where(x => x.XpSettings != null);
@@ -549,7 +550,7 @@ namespace WizBot.Modules.Xp.Services
             }
         }
 
-        public Task<MemoryStream> GenerateImageAsync(IGuildUser user)
+        public Task<Image<Rgba32>> GenerateImageAsync(IGuildUser user)
         {
             return GenerateImageAsync(GetUserStats(user));
         }
@@ -565,166 +566,170 @@ namespace WizBot.Modules.Xp.Services
             _timeFont = _fonts.Find("Whitney-Bold").CreateFont(20);
         }
 
-        public Task<MemoryStream> GenerateImageAsync(FullUserStats stats) => Task.Run(async () =>
+        public Task<Image<Rgba32>> GenerateImageAsync(FullUserStats stats) => Task.Run(async () =>
         {
-            using (var img = Image.Load(_images.XpCard.ToArray()))
+            var img = Image.Load(_images.XpCard.ToArray());
+
+            var username = stats.User.ToString();
+            var usernameFont = _usernameFontFamily
+                .CreateFont(username.Length <= 6
+                    ? 50
+                    : 50 - username.Length);
+
+            img.DrawText("@" + username, usernameFont, Rgba32.White,
+                new PointF(130, 5));
+
+            // level
+
+            img.DrawText(stats.Global.Level.ToString(), _levelFont, Rgba32.White,
+                new PointF(47, 137));
+
+            img.DrawText(stats.Guild.Level.ToString(), _levelFont, Rgba32.White,
+                new PointF(47, 285));
+
+            //club name
+
+            var clubName = stats.User.Club?.ToString() ?? "-";
+
+            var clubFont = _clubFontFamily
+                .CreateFont(clubName.Length <= 8
+                    ? 35
+                    : 35 - (clubName.Length / 2));
+
+            img.DrawText(clubName, clubFont, Rgba32.White,
+                new PointF(650 - clubName.Length * 10, 40));
+
+            var pen = new Pen<Rgba32>(Rgba32.Black, 1);
+            var brush = Brushes.Solid<Rgba32>(Rgba32.White);
+            var xpBgBrush = Brushes.Solid<Rgba32>(new Rgba32(0, 0, 0, 0.4f));
+
+            var global = stats.Global;
+            var guild = stats.Guild;
+
+            //xp bar
+
+            img.FillPolygon(xpBgBrush, new[] {
+                new PointF(321, 104),
+                new PointF(321 + (450 * (global.LevelXp / (float)global.RequiredXp)), 104),
+                new PointF(286 + (450 * (global.LevelXp / (float)global.RequiredXp)), 235),
+                new PointF(286, 235),
+            });
+            img.DrawText($"{global.LevelXp}/{global.RequiredXp}", _xpFont, brush, pen,
+                new PointF(430, 130));
+
+            img.FillPolygon(xpBgBrush, new[] {
+                new PointF(282, 248),
+                new PointF(282 + (450 * (guild.LevelXp / (float)guild.RequiredXp)), 248),
+                new PointF(247 + (450 * (guild.LevelXp / (float)guild.RequiredXp)), 379),
+                new PointF(247, 379),
+            });
+            img.DrawText($"{guild.LevelXp}/{guild.RequiredXp}", _xpFont, brush, pen,
+                new PointF(400, 270));
+
+            if (stats.FullGuildStats.AwardedXp != 0)
             {
-
-                var username = stats.User.ToString();
-                var usernameFont = _usernameFontFamily
-                    .CreateFont(username.Length <= 6
-                        ? 50
-                        : 50 - username.Length);
-
-                img.DrawText("@" + username, usernameFont, Rgba32.White,
-                    new PointF(130, 5));
-
-                // level
-
-                img.DrawText(stats.Global.Level.ToString(), _levelFont, Rgba32.White,
-                    new PointF(47, 137));
-
-                img.DrawText(stats.Guild.Level.ToString(), _levelFont, Rgba32.White,
-                    new PointF(47, 285));
-
-                //club name
-
-                var clubName = stats.User.Club?.ToString() ?? "-";
-
-                var clubFont = _clubFontFamily
-                    .CreateFont(clubName.Length <= 8
-                        ? 35
-                        : 35 - (clubName.Length / 2));
-
-                img.DrawText(clubName, clubFont, Rgba32.White,
-                    new PointF(650 - clubName.Length * 10, 40));
-
-                var pen = new Pen<Rgba32>(Rgba32.Black, 1);
-                var brush = Brushes.Solid<Rgba32>(Rgba32.White);
-                var xpBgBrush = Brushes.Solid<Rgba32>(new Rgba32(0, 0, 0, 0.4f));
-
-                var global = stats.Global;
-                var guild = stats.Guild;
-
-                //xp bar
-
-                img.FillPolygon(xpBgBrush, new[] {
-                    new PointF(321, 104),
-                    new PointF(321 + (450 * (global.LevelXp / (float)global.RequiredXp)), 104),
-                    new PointF(286 + (450 * (global.LevelXp / (float)global.RequiredXp)), 235),
-                    new PointF(286, 235),
-                });
-                img.DrawText($"{global.LevelXp}/{global.RequiredXp}", _xpFont, brush, pen,
-                    new PointF(430, 130));
-
-                img.FillPolygon(xpBgBrush, new[] {
-                    new PointF(282, 248),
-                    new PointF(282 + (450 * (guild.LevelXp / (float)guild.RequiredXp)), 248),
-                    new PointF(247 + (450 * (guild.LevelXp / (float)guild.RequiredXp)), 379),
-                    new PointF(247, 379),
-                });
-                img.DrawText($"{guild.LevelXp}/{guild.RequiredXp}", _xpFont, brush, pen,
-                    new PointF(400, 270));
-
-                if (stats.FullGuildStats.AwardedXp != 0)
-                {
-                    var sign = stats.FullGuildStats.AwardedXp > 0
-                        ? "+ "
-                        : "";
-                    img.DrawText($"({sign}{stats.FullGuildStats.AwardedXp})", _awardedFont, brush, pen,
-                        new PointF(445 - (Math.Max(0, (stats.FullGuildStats.AwardedXp.ToString().Length - 2)) * 5), 335));
-                }
-
-                //ranking
-
-                img.DrawText(stats.GlobalRanking.ToString(), _rankFont, Rgba32.White,
-                    new PointF(148, 170));
-
-                img.DrawText(stats.GuildRanking.ToString(), _rankFont, Rgba32.White,
-                    new PointF(148, 317));
-
-                //time on this level
-
-                string GetTimeSpent(DateTime time)
-                {
-                    var offset = DateTime.UtcNow - time;
-                    return $"{offset.Days}d{offset.Hours}h{offset.Minutes}m";
-                }
-
-                img.DrawText(GetTimeSpent(stats.User.LastLevelUp), _timeFont, Rgba32.White,
-                    new PointF(50, 197));
-
-                img.DrawText(GetTimeSpent(stats.FullGuildStats.LastLevelUp), _timeFont, Rgba32.White,
-                    new PointF(50, 344));
-
-                //avatar
-
-                if (stats.User.AvatarId != null)
-                {
-                    try
-                    {
-                        var avatarUrl = stats.User.RealAvatarUrl();
-
-                        var (succ, data) = await _cache.TryGetImageDataAsync(avatarUrl);
-                        if (!succ)
-                        {
-                            using (var temp = await http.GetStreamAsync(avatarUrl))
-                            using (var tempDraw = Image.Load(temp).Resize(69, 70))
-                            {
-                                ApplyRoundedCorners(tempDraw, 35);
-                                data = tempDraw.ToStream().ToArray();
-                            }
-
-                            await _cache.SetImageDataAsync(avatarUrl, data);
-                        }
-                        var toDraw = Image.Load(data);
-
-
-                        img.DrawImage(toDraw,
-                            1,
-                            new Size(69, 70),
-                            new Point(32, 10));
-                    }
-                    catch (Exception ex)
-                    {
-                        _log.Warn(ex);
-                    }
-                }
-
-                //club image
-
-                if (!string.IsNullOrWhiteSpace(stats.User.Club?.ImageUrl))
-                {
-                    var imgUrl = stats.User.Club.ImageUrl;
-                    try
-                    {
-                        var (succ, data) = await _cache.TryGetImageDataAsync(imgUrl);
-                        if (!succ)
-                        {
-                            using (var temp = await http.GetStreamAsync(imgUrl))
-                            using (var tempDraw = Image.Load(temp).Resize(45, 45))
-                            {
-                                ApplyRoundedCorners(tempDraw, 22.5f);
-                                data = tempDraw.ToStream().ToArray();
-                            }
-
-                            await _cache.SetImageDataAsync(imgUrl, data);
-                        }
-                        var toDraw = Image.Load(data);
-
-                        img.DrawImage(toDraw,
-                            1,
-                            new Size(45, 45),
-                            new Point(722, 25));
-                    }
-                    catch (Exception ex)
-                    {
-                        _log.Warn(ex);
-                    }
-                }
-
-                return img.Resize(432, 211).ToStream();
+                var sign = stats.FullGuildStats.AwardedXp > 0
+                    ? "+ "
+                    : "";
+                img.DrawText($"({sign}{stats.FullGuildStats.AwardedXp})", _awardedFont, brush, pen,
+                    new PointF(445 - (Math.Max(0, (stats.FullGuildStats.AwardedXp.ToString().Length - 2)) * 5), 335));
             }
+
+            //ranking
+
+            img.DrawText(stats.GlobalRanking.ToString(), _rankFont, Rgba32.White,
+                new PointF(148, 170));
+
+            img.DrawText(stats.GuildRanking.ToString(), _rankFont, Rgba32.White,
+                new PointF(148, 317));
+
+            //time on this level
+
+            string GetTimeSpent(DateTime time)
+            {
+                var offset = DateTime.UtcNow - time;
+                return $"{offset.Days}d{offset.Hours}h{offset.Minutes}m";
+            }
+
+            img.DrawText(GetTimeSpent(stats.User.LastLevelUp), _timeFont, Rgba32.White,
+                new PointF(50, 197));
+
+            img.DrawText(GetTimeSpent(stats.FullGuildStats.LastLevelUp), _timeFont, Rgba32.White,
+                new PointF(50, 344));
+
+            //avatar
+
+            if (stats.User.AvatarId != null)
+            {
+                try
+                {
+                    var avatarUrl = stats.User.RealAvatarUrl();
+
+                    byte[] s;
+                    if (!_imageStreams.TryGetValue(avatarUrl, out s))
+                    {
+                        using (var temp = await http.GetStreamAsync(avatarUrl))
+                        {
+                            var tempDraw = Image.Load(temp);
+                            tempDraw = tempDraw.Resize(69, 70);
+                            ApplyRoundedCorners(tempDraw, 35);
+                            s = tempDraw.ToStream().ToArray();
+                        }
+
+                        _imageStreams.AddOrUpdate(avatarUrl, s, (k, v) => s);
+                    }
+                    var toDraw = Image.Load(s);
+
+
+                    img.DrawImage(toDraw,
+                        1,
+                        new Size(69, 70),
+                        new Point(32, 10));
+                }
+                catch (Exception ex)
+                {
+                    _log.Warn(ex);
+                }
+            }
+
+            //club image
+
+            if (!string.IsNullOrWhiteSpace(stats.User.Club?.ImageUrl))
+            {
+                var imgUrl = stats.User.Club.ImageUrl;
+                try
+                {
+                    byte[] s;
+                    if (!_imageStreams.TryGetValue(imgUrl, out s))
+                    {
+                        using (var temp = await http.GetStreamAsync(imgUrl))
+                        {
+                            var tempDraw = Image.Load(temp);
+                            tempDraw = tempDraw.Resize(45, 45);
+                            ApplyRoundedCorners(tempDraw, 22.5f);
+                            s = tempDraw.ToStream().ToArray();
+                        }
+
+                        _imageStreams.AddOrUpdate(imgUrl, s, (k, v) => s);
+                    }
+                    var toDraw = Image.Load(s);
+
+                    img.DrawImage(toDraw,
+                        1,
+                        new Size(45, 45),
+                        new Point(722, 25));
+                }
+                catch (Exception ex)
+                {
+                    _log.Warn(ex);
+                }
+            }
+
+            var arr = img.ToStream().ToArray();
+
+            //_log.Info("{0:F2} KB", arr.Length * 1.0f / 1.KB());
+
+            return img;
         });
 
 

@@ -58,7 +58,8 @@ namespace WizBot.Modules.CustomReactions
 
             if (channel == null)
             {
-                await _service.AddGcr(cr).ConfigureAwait(false);
+                Array.Resize(ref _service.GlobalReactions, _service.GlobalReactions.Length + 1);
+                _service.GlobalReactions[_service.GlobalReactions.Length - 1] = cr;
             }
             else
             {
@@ -236,7 +237,8 @@ namespace WizBot.Modules.CustomReactions
                     if ((toDelete.GuildId == null || toDelete.GuildId == 0) && Context.Guild == null)
                     {
                         uow.CustomReactions.Remove(toDelete);
-                        await _service.DelGcr(toDelete.Id);
+                        //todo 91 i can dramatically improve performance of this, if Ids are ordered.
+                        _service.GlobalReactions = _service.GlobalReactions.Where(cr => cr?.Id != toDelete.Id).ToArray();
                         success = true;
                     }
                     else if ((toDelete.GuildId != null && toDelete.GuildId != 0) && Context.Guild.Id == toDelete.GuildId)

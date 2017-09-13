@@ -139,7 +139,6 @@ namespace WizBot
                     .AddManual<IEnumerable<GuildConfig>>(AllGuildConfigs) //todo wrap this
                     .AddManual<WizBot>(this)
                     .AddManual<IUnitOfWork>(uow)
-                    .AddManual<IDataCache>(new RedisCache())
                     .LoadFrom(Assembly.GetEntryAssembly())
                     .Build();
 
