@@ -20,6 +20,8 @@ using WizBot.Common.ShardCom;
 using WizBot.Common.TypeReaders;
 using WizBot.Common.TypeReaders.Models;
 using WizBot.Services.Database;
+using StackExchange.Redis;
+using Newtonsoft.Json;
 
 namespace WizBot
 {
@@ -257,6 +259,7 @@ namespace WizBot
                     .ForEach(x => CommandService.RemoveModuleAsync(x));
 
             Ready.TrySetResult(true);
+            HandleStatusChanges();
             _log.Info($"Shard {Client.ShardId} ready.");
             //_log.Info(await stats.Print().ConfigureAwait(false));
         }
@@ -318,6 +321,52 @@ namespace WizBot
                     Environment.Exit(10);
                 }
             })).Start();
+        }
+
+        private void HandleStatusChanges()
+        {
+            var sub = Services.GetService<IDataCache>().Redis.GetSubscriber();
+            sub.Subscribe("status.game_set", async (ch, game) =>
+            {
+                try
+                {
+                    var obj = new { Name = default(string) };
+                    obj = JsonConvert.DeserializeAnonymousType(game, obj);
+                    await Client.SetGameAsync(obj.Name).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    _log.Warn(ex);
+                }
+            }, CommandFlags.FireAndForget);
+
+            sub.Subscribe("status.stream_set", async (ch, streamData) =>
+            {
+                try
+                {
+                    var obj = new { Name = "", Url = "" };
+                    obj = JsonConvert.DeserializeAnonymousType(streamData, obj);
+                    await Client.SetGameAsync(obj.Name, obj.Url, StreamType.Twitch).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    _log.Warn(ex);
+                }
+            }, CommandFlags.FireAndForget);
+        }
+
+        public Task SetGameAsync(string game)
+        {
+            var obj = new { Name = game };
+            var sub = Services.GetService<IDataCache>().Redis.GetSubscriber();
+            return sub.PublishAsync("status.game_set", JsonConvert.SerializeObject(obj));
+        }
+
+        public Task SetStreamAsync(string name, string url)
+        {
+            var obj = new { Name = name, Url = url };
+            var sub = Services.GetService<IDataCache>().Redis.GetSubscriber();
+            return sub.PublishAsync("status.game_set", JsonConvert.SerializeObject(obj));
         }
     }
 }

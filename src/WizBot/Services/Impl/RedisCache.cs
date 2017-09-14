@@ -10,7 +10,7 @@ namespace WizBot.Services.Impl
 
         public RedisCache()
         {
-            Redis = ConnectionMultiplexer.Connect("localhost");
+            Redis = ConnectionMultiplexer.Connect("127.0.0.1");
             Redis.PreserveAsyncOrder = false;
             _db = Redis.GetDatabase();
         }
