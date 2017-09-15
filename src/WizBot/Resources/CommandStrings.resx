@@ -481,7 +481,7 @@
     <value>leave</value>
   </data>
   <data name="leave_desc" xml:space="preserve">
-    <value>Makes Nadeko leave the server. Either server name or server ID is required.</value>
+    <value>Makes WizBot leave the server. Either server name or server ID is required.</value>
   </data>
   <data name="leave_usage" xml:space="preserve">
     <value>`{0}leave 123123123331`</value>
@@ -679,7 +679,7 @@
     <value>prune clear</value>
   </data>
   <data name="prune_desc" xml:space="preserve">
-    <value>`{0}prune` removes all Nadeko's messages in the last 100 messages. `{0}prune X` removes last `X` number of messages from the channel (up to 100). `{0}prune @Someone` removes all Someone's messages in the last 100 messages. `{0}prune @Someone X` removes last `X` number of 'Someone's' messages in the channel.</value>
+    <value>`{0}prune` removes all WizBot's messages in the last 100 messages. `{0}prune X` removes last `X` number of messages from the channel (up to 100). `{0}prune @Someone` removes all Someone's messages in the last 100 messages. `{0}prune @Someone X` removes last `X` number of 'Someone's' messages in the channel.</value>
   </data>
   <data name="prune_usage" xml:space="preserve">
     <value>`{0}prune` or `{0}prune 5` or `{0}prune @Someone` or `{0}prune @Someone X`</value>
@@ -859,7 +859,7 @@
     <value>stats</value>
   </data>
   <data name="stats_desc" xml:space="preserve">
-    <value>Shows some basic stats for Nadeko.</value>
+    <value>Shows some basic stats for WizBot.</value>
   </data>
   <data name="stats_usage" xml:space="preserve">
     <value>`{0}stats`</value>
@@ -967,7 +967,7 @@
     <value>permrole pr</value>
   </data>
   <data name="permrole_desc" xml:space="preserve">
-    <value>Sets a role which can change permissions. Supply no parameters to see the current one. Default is 'Nadeko'.</value>
+    <value>Sets a role which can change permissions. Supply no parameters to see the current one. Default is 'WizBot'.</value>
   </data>
   <data name="permrole_usage" xml:space="preserve">
     <value>`{0}pr role`</value>
@@ -1462,7 +1462,7 @@
     <value>rps</value>
   </data>
   <data name="rps_desc" xml:space="preserve">
-    <value>Play a game of Rocket-Paperclip-Scissors with Nadeko.</value>
+    <value>Play a game of Rocket-Paperclip-Scissors with WizBot.</value>
   </data>
   <data name="rps_usage" xml:space="preserve">
     <value>`{0}rps scissors`</value>
@@ -2461,7 +2461,7 @@
     <value>setmuterole</value>
   </data>
   <data name="setmuterole_desc" xml:space="preserve">
-    <value>Sets a name of the role which will be assigned to people who should be muted. Default is nadeko-mute.</value>
+    <value>Sets a name of the role which will be assigned to people who should be muted. Default is wizbot-mute.</value>
   </data>
   <data name="setmuterole_usage" xml:space="preserve">
     <value>`{0}setmuterole Silenced`</value>
@@ -2695,7 +2695,7 @@
     <value>heal</value>
   </data>
   <data name="heal_desc" xml:space="preserve">
-    <value>Heals someone. Revives those who fainted. Costs a NadekoFlower. </value>
+    <value>Heals someone. Revives those who fainted. Costs a Cherry Blossom. </value>
   </data>
   <data name="heal_usage" xml:space="preserve">
     <value>`{0}heal @someone`</value>
@@ -2713,7 +2713,7 @@
     <value>settype</value>
   </data>
   <data name="settype_desc" xml:space="preserve">
-    <value>Set your poketype. Costs a NadekoFlower. Provide no arguments to see a list of available types.</value>
+    <value>Set your poketype. Costs a Cherry Blossom. Provide no arguments to see a list of available types.</value>
   </data>
   <data name="settype_usage" xml:space="preserve">
     <value>`{0}settype fire` or `{0}settype`</value>
@@ -2956,7 +2956,7 @@
     <value>startevent</value>
   </data>
   <data name="startevent_desc" xml:space="preserve">
-    <value>Starts one of the events seen on public nadeko.</value>
+    <value>Starts one of the events seen on public wizbot.</value>
   </data>
   <data name="startevent_usage" xml:space="preserve">
     <value>`{0}startevent flowerreaction`</value>
@@ -2983,7 +2983,7 @@
     <value>slot</value>
   </data>
   <data name="slot_desc" xml:space="preserve">
-    <value>Play Nadeko slots. Max bet is 9999. 1.5 second cooldown per user.</value>
+    <value>Play WizBot slots. Max bet is 9999. 1.5 second cooldown per user.</value>
   </data>
   <data name="slot_usage" xml:space="preserve">
     <value>`{0}slot 5`</value>
@@ -3235,7 +3235,7 @@
     <value>alias cmdmap</value>
   </data>
   <data name="alias_desc" xml:space="preserve">
-    <value>Create a custom alias for a certain Nadeko command. Provide no alias to remove the existing one.</value>
+    <value>Create a custom alias for a certain WizBot command. Provide no alias to remove the existing one.</value>
   </data>
   <data name="alias_usage" xml:space="preserve">
     <value>`{0}alias allin $bf 100 h` or `{0}alias "linux thingy" &gt;loonix Spyware Windows`</value>
@@ -3788,5 +3788,32 @@
   </data>
   <data name="nsfwclearcache_desc" xml:space="preserve">
     <value>Clears nsfw cache.</value>
+  </data>
+  <data name="clubadmin_cmd" xml:space="preserve">
+    <value>clubadmin</value>
+  </data>
+  <data name="clubadmin_usage" xml:space="preserve">
+    <value>`{0}clubadmin`</value>
+  </data>
+  <data name="clubadmin_desc" xml:space="preserve">
+    <value>Assigns (or unassigns) staff role to the member of the club. Admins can ban, kick and accept applications.</value>
+  </data>
+  <data name="autoboobs_cmd" xml:space="preserve">
+    <value>autoboobs</value>
+  </data>
+  <data name="autoboobs_desc" xml:space="preserve">
+    <value>Posts a boobs every X seconds. 20 seconds minimum. Provide no arguments to disable.</value>
+  </data>
+  <data name="autoboobs_usage" xml:space="preserve">
+    <value>`{0}autoboobs 30` or `{0}autoboobs`</value>
+  </data>
+  <data name="autobutts_cmd" xml:space="preserve">
+    <value>autobutts</value>
+  </data>
+  <data name="autobutts_desc" xml:space="preserve">
+    <value>Posts a butts every X seconds. 20 seconds minimum. Provide no arguments to disable.</value>
+  </data>
+  <data name="autobutts_usage" xml:space="preserve">
+    <value>`{0}autobutts 30` or `{0}autobutts`</value>
   </data>
 </root>

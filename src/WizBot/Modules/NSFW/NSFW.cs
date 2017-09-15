@@ -16,9 +16,13 @@ using WizBot.Modules.NSFW.Exceptions;
 
 namespace WizBot.Modules.NSFW
 {
+    // thanks to halitalf for adding autoboob and autobutt features :D
     public class NSFW : WizBotTopLevelModule<SearchesService>
     {
         private static readonly ConcurrentDictionary<ulong, Timer> _autoHentaiTimers = new ConcurrentDictionary<ulong, Timer>();
+        private static readonly ConcurrentDictionary<ulong, Timer> _autoBoobTimers = new ConcurrentDictionary<ulong, Timer>();
+        private static readonly ConcurrentDictionary<ulong, Timer> _autoButtTimers = new ConcurrentDictionary<ulong, Timer>();
+
         private static readonly ConcurrentHashSet<ulong> _hentaiBombBlacklist = new ConcurrentHashSet<ulong>();
 
         private async Task InternalHentai(IMessageChannel channel, string tag, bool noError)
@@ -49,10 +53,33 @@ namespace WizBot.Modules.NSFW
                 .WithDescription($"[{GetText("tag")}: {tag}]({img})"))
                 .ConfigureAwait(false);
         }
+        private async Task InternalBoobs(IMessageChannel Channel)
+        {
+            try
+            {
+                JToken obj;
+                obj = JArray.Parse(await _service.Http.GetStringAsync($"http://api.oboobs.ru/boobs/{new WizBotRandom().Next(0, 10330)}").ConfigureAwait(false))[0];
+                await Channel.SendMessageAsync($"http://media.oboobs.ru/{obj["preview"]}").ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                await Channel.SendErrorAsync(ex.Message).ConfigureAwait(false);
+            }
+        }
 
-        [WizBotCommand, Usage, Description, Aliases]
-        public Task Hentai([Remainder] string tag = null) =>
-            InternalHentai(Context.Channel, tag, false);
+        private async Task InternalButts(IMessageChannel Channel)
+        {
+            try
+            {
+                JToken obj;
+                obj = JArray.Parse(await _service.Http.GetStringAsync($"http://api.obutts.ru/butts/{new WizBotRandom().Next(0, 4335)}").ConfigureAwait(false))[0];
+                await Channel.SendMessageAsync($"http://media.obutts.ru/{obj["preview"]}").ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                await Channel.SendErrorAsync(ex.Message).ConfigureAwait(false);
+            }
+        }
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireUserPermission(ChannelPermission.ManageMessages)]
@@ -65,7 +92,7 @@ namespace WizBot.Modules.NSFW
                 if (!_autoHentaiTimers.TryRemove(Context.Channel.Id, out t)) return;
 
                 t.Change(Timeout.Infinite, Timeout.Infinite); //proper way to disable the timer
-                await ReplyConfirmLocalized("autohentai_stopped").ConfigureAwait(false);
+                await ReplyConfirmLocalized("stopped").ConfigureAwait(false);
                 return;
             }
 
@@ -100,6 +127,87 @@ namespace WizBot.Modules.NSFW
                 string.Join(", ", tagsArr)).ConfigureAwait(false);
         }
 
+        [WizBotCommand, Usage, Description, Aliases]
+        [RequireUserPermission(ChannelPermission.ManageMessages)]
+        public async Task AutoBoobs(int interval = 0)
+        {
+            Timer t;
+
+            if (interval == 0)
+            {
+                if (!_autoBoobTimers.TryRemove(Context.Channel.Id, out t)) return;
+
+                t.Change(Timeout.Infinite, Timeout.Infinite); //proper way to disable the timer
+                await ReplyConfirmLocalized("stopped").ConfigureAwait(false);
+                return;
+            }
+
+            if (interval < 20)
+                return;
+
+            t = new Timer(async (state) =>
+            {
+                try
+                {
+                    await InternalBoobs(Context.Channel).ConfigureAwait(false);
+                }
+                catch
+                {
+                    // ignored
+                }
+            }, null, interval * 1000, interval * 1000);
+
+            _autoBoobTimers.AddOrUpdate(Context.Channel.Id, t, (key, old) =>
+            {
+                old.Change(Timeout.Infinite, Timeout.Infinite);
+                return t;
+            });
+
+            await ReplyConfirmLocalized("started", interval).ConfigureAwait(false);
+        }
+
+        [WizBotCommand, Usage, Description, Aliases]
+        [RequireUserPermission(ChannelPermission.ManageMessages)]
+        public async Task AutoButts(int interval = 0)
+        {
+            Timer t;
+
+            if (interval == 0)
+            {
+                if (!_autoButtTimers.TryRemove(Context.Channel.Id, out t)) return;
+
+                t.Change(Timeout.Infinite, Timeout.Infinite); //proper way to disable the timer
+                await ReplyConfirmLocalized("stopped").ConfigureAwait(false);
+                return;
+            }
+
+            if (interval < 20)
+                return;
+
+            t = new Timer(async (state) =>
+            {
+                try
+                {
+                    await InternalButts(Context.Channel).ConfigureAwait(false);
+                }
+                catch
+                {
+                    // ignored
+                }
+            }, null, interval * 1000, interval * 1000);
+
+            _autoButtTimers.AddOrUpdate(Context.Channel.Id, t, (key, old) =>
+            {
+                old.Change(Timeout.Infinite, Timeout.Infinite);
+                return t;
+            });
+
+            await ReplyConfirmLocalized("started", interval).ConfigureAwait(false);
+        }
+
+        [WizBotCommand, Usage, Description, Aliases]
+        public Task Hentai([Remainder] string tag = null) =>
+            InternalHentai(Context.Channel, tag, false);
 
         [WizBotCommand, Usage, Description, Aliases]
         public async Task HentaiBomb([Remainder] string tag = null)
@@ -199,7 +307,7 @@ namespace WizBot.Modules.NSFW
                 tag = tag.Trim().ToLowerInvariant();
                 var added = _service.ToggleBlacklistedTag(Context.Guild.Id, tag);
 
-                if(added)
+                if (added)
                     await ReplyConfirmLocalized("blacklisted_tag_add", tag).ConfigureAwait(false);
                 else
                     await ReplyConfirmLocalized("blacklisted_tag_remove", tag).ConfigureAwait(false);

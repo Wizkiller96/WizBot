@@ -9,9 +9,10 @@ using WizBot.Services.Database.Models;
 namespace WizBot.Migrations
 {
     [DbContext(typeof(WizBotContext))]
-    partial class WizBotSqliteContextModelSnapshot : ModelSnapshot
+    [Migration("20170915034808_club-admins")]
+    partial class clubadmins
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1");
