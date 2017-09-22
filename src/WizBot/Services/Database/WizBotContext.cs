@@ -3,22 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using WizBot.Services.Database.Models;
 using WizBot.Extensions;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
+using Microsoft.EntityFrameworkCore.Design;
 
 namespace WizBot.Services.Database
 {
-
-    public class WizBotContextFactory : IDbContextFactory<WizBotContext>
+    public class WizBotContextFactory : IDesignTimeDbContextFactory<WizBotContext>
     {
-        /// <summary>
-        /// :\ Used for migrations
-        /// </summary>
-        /// <param name="options"></param>
-        /// <returns></returns>
-        public WizBotContext Create(DbContextFactoryOptions options)
+        public WizBotContext CreateDbContext(string[] args)
         {
-            var optionsBuilder = new DbContextOptionsBuilder();
+            var optionsBuilder = new DbContextOptionsBuilder<WizBotContext>();
             optionsBuilder.UseSqlite("Filename=./data/WizBot.db");
             var ctx = new WizBotContext(optionsBuilder.Options);
             ctx.Database.SetCommandTimeout(60);
@@ -58,12 +52,7 @@ namespace WizBot.Services.Database
         public DbSet<ModulePrefix> ModulePrefixes { get; set; }
         public DbSet<RewardedUser> RewardedUsers { get; set; }
 
-        public WizBotContext() : base()
-        {
-
-        }
-
-        public WizBotContext(DbContextOptions options) : base(options)
+        public WizBotContext(DbContextOptions<WizBotContext> options) : base(options)
         {
         }
 
@@ -231,7 +220,7 @@ namespace WizBot.Services.Database
             musicPlaylistEntity
                 .HasMany(p => p.Songs)
                 .WithOne()
-                .OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Cascade);
 
 
             #endregion

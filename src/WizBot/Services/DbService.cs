@@ -6,19 +6,19 @@ namespace WizBot.Services
 {
     public class DbService
     {
-        private readonly DbContextOptions options;
-        private readonly DbContextOptions migrateOptions;
+        private readonly DbContextOptions<WizBotContext> options;
+        private readonly DbContextOptions<WizBotContext> migrateOptions;
 
         private readonly string _connectionString;
 
         public DbService(IBotCredentials creds)
         {
             _connectionString = creds.Db.ConnectionString;
-            var optionsBuilder = new DbContextOptionsBuilder();
+            var optionsBuilder = new DbContextOptionsBuilder<WizBotContext>();
             optionsBuilder.UseSqlite(creds.Db.ConnectionString);
             options = optionsBuilder.Options;
 
-            optionsBuilder = new DbContextOptionsBuilder();
+            optionsBuilder = new DbContextOptionsBuilder<WizBotContext>();
             optionsBuilder.UseSqlite(creds.Db.ConnectionString, x => x.SuppressForeignKeyEnforcement());
             migrateOptions = optionsBuilder.Options;
         }
