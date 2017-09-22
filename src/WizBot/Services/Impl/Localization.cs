@@ -137,7 +137,7 @@ namespace WizBot.Services.Impl
                 {
                     Cmd = key,
                     Desc = key,
-                    Usage = key,
+                    Usage = new[] { key },
                 };
 
             return toReturn;
