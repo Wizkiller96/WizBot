@@ -5,15 +5,19 @@ using WizBot.Services.Database.Models;
 using WizBot.Extensions;
 using System;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Data.Sqlite;
+using System.IO;
 
 namespace WizBot.Services.Database
 {
     public class WizBotContextFactory : IDesignTimeDbContextFactory<WizBotContext>
-    {
+    {        
         public WizBotContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<WizBotContext>();
-            optionsBuilder.UseSqlite("Filename=./data/WizBot.db");
+            var builder = new SqliteConnectionStringBuilder("Data Source=data/WizBot.db");
+            builder.DataSource = Path.Combine(AppContext.BaseDirectory, builder.DataSource);
+            optionsBuilder.UseSqlite(builder.ToString());
             var ctx = new WizBotContext(optionsBuilder.Options);
             ctx.Database.SetCommandTimeout(60);
             return ctx;

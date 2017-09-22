@@ -6,7 +6,7 @@ namespace WizBot.Common.Attributes
 {
     public class WizBotCommand : CommandAttribute
     {
-        public WizBotCommand([CallerMemberName] string memberName="") : base(Localization.LoadCommandString(memberName.ToLowerInvariant() + "_cmd").Split(' ')[0])
+        public WizBotCommand([CallerMemberName] string memberName="") : base(Localization.LoadCommand(memberName.ToLowerInvariant()).Cmd)
         {
 
         }

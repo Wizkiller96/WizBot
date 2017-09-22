@@ -1,5 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using WizBot.Services.Database;
+using System;
+using System.IO;
 using System.Linq;
 
 namespace WizBot.Services
@@ -9,17 +12,17 @@ namespace WizBot.Services
         private readonly DbContextOptions<WizBotContext> options;
         private readonly DbContextOptions<WizBotContext> migrateOptions;
 
-        private readonly string _connectionString;
-
         public DbService(IBotCredentials creds)
         {
-            _connectionString = creds.Db.ConnectionString;
+            var builder = new SqliteConnectionStringBuilder(creds.Db.ConnectionString);
+            builder.DataSource = Path.Combine(AppContext.BaseDirectory, builder.DataSource);
+            
             var optionsBuilder = new DbContextOptionsBuilder<WizBotContext>();
-            optionsBuilder.UseSqlite(creds.Db.ConnectionString);
+            optionsBuilder.UseSqlite(builder.ToString());
             options = optionsBuilder.Options;
 
             optionsBuilder = new DbContextOptionsBuilder<WizBotContext>();
-            optionsBuilder.UseSqlite(creds.Db.ConnectionString, x => x.SuppressForeignKeyEnforcement());
+            optionsBuilder.UseSqlite(builder.ToString(), x => x.SuppressForeignKeyEnforcement());
             migrateOptions = optionsBuilder.Options;
         }
 

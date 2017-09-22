@@ -38,7 +38,7 @@ namespace WizBot.Modules.Games
         }
 
         [WizBotCommand, Usage, Description, Aliases]
-        public async Task _8Ball([Remainder] string question = null)
+        public async Task EightBall([Remainder] string question = null)
         {
             if (string.IsNullOrWhiteSpace(question))
                 return;
