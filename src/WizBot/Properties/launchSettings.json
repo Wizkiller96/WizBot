@@ -2,6 +2,10 @@
   "profiles": {
     "WizBot": {
       "commandName": "Project"
+    },
+    "Watch": {
+      "executablePath": "C:\\Program Files\\dotnet\\dotnet.exe",
+      "commandLineArgs": "watch run"
     }
   }
 }

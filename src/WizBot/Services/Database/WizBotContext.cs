@@ -15,7 +15,7 @@ namespace WizBot.Services.Database
         public WizBotContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<WizBotContext>();
-            var builder = new SqliteConnectionStringBuilder("Data Source=data/WizBot.db");
+            var builder = new SqliteConnectionStringBuilder("Data Source=data/WizBotBot.db");
             builder.DataSource = Path.Combine(AppContext.BaseDirectory, builder.DataSource);
             optionsBuilder.UseSqlite(builder.ToString());
             var ctx = new WizBotContext(optionsBuilder.Options);
@@ -141,6 +141,9 @@ namespace WizBot.Services.Database
             modelBuilder.Entity<AntiRaidSetting>()
                 .HasOne(x => x.GuildConfig)
                 .WithOne(x => x.AntiRaidSetting);
+
+            modelBuilder.Entity<FeedSub>()
+                .HasAlternateKey(x => new { x.GuildConfigId, x.Url });
 
             //modelBuilder.Entity<ProtectionIgnoredChannel>()
             //    .HasAlternateKey(c => new { c.ChannelId, c.ProtectionType });
@@ -304,6 +307,7 @@ namespace WizBot.Services.Database
                 .WithOne(x => x.XpSettings);
             #endregion
 
+            //todo major bug
             #region XpRoleReward
             modelBuilder.Entity<XpRoleReward>()
                 .HasAlternateKey(x => x.Level);

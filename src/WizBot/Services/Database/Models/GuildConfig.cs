@@ -87,6 +87,7 @@ namespace WizBot.Services.Database.Models
         public StreamRoleSettings StreamRole { get; set; }
 
         public XpSettings XpSettings { get; set; }
+        public List<FeedSub> FeedSubs { get; set; } = new List<FeedSub>();
 
         //public List<ProtectionIgnoredChannel> ProtectionIgnoredChannels { get; set; } = new List<ProtectionIgnoredChannel>();
     }
