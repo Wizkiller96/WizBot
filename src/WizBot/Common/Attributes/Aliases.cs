@@ -2,9 +2,6 @@
 using System.Runtime.CompilerServices;
 using Discord.Commands;
 using WizBot.Services.Impl;
-
-//todo what if it doesn't exist
-
 namespace WizBot.Common.Attributes
 {
     public class Aliases : AliasAttribute
