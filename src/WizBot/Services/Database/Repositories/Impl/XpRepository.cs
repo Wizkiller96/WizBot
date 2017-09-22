@@ -2,7 +2,6 @@ using WizBot.Services.Database.Models;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
-//todo add pagination to .lb
 namespace WizBot.Services.Database.Repositories.Impl
 {
     public class XpRepository : Repository<UserXpStats>, IXpRepository
