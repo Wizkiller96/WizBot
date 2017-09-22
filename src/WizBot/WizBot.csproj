@@ -9,6 +9,7 @@
     <RuntimeIdentifiers>win7-x64<!--;ubuntu.14.04-x64;osx.10.10-x64 --></RuntimeIdentifiers>
     <Configurations>Debug;Release;global_wizbot</Configurations>
     <LangVersion>latest</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Version)' == '' ">
@@ -71,10 +72,6 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'GlobalWizBot' ">
     <DefineConstants>$(DefineConstants);GLOBAL_WIZBOT</DefineConstants>
     <NoWarn>$(NoWarn);CS1573;CS1591</NoWarn>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
