@@ -113,7 +113,7 @@ namespace WizBot.Modules.Xp.Services
 
             using (var uow = _db.UnitOfWork)
             {
-                club = uow.Clubs.GetByName(name.Trim().ToLowerInvariant(), discrim);
+                club = uow.Clubs.GetByName(name, discrim);
                 if (club == null)
                     return false;
                 else
