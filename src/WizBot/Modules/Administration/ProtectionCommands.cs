@@ -194,6 +194,7 @@ namespace WizBot.Modules.Administration
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
+            [RequireUserPermission(GuildPermission.Administrator)]
             public async Task AntispamIgnore()
             {
                 var channel = (ITextChannel)Context.Channel;
