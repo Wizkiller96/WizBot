@@ -10,7 +10,7 @@ WizBot is an open source project, and it can be found on our [GitHub][GitHub] pa
 
 Here you can read current [Issues][Issues].
 
-If you want to contribute, be sure to PR on the **[1.4][1.4]** branch.
+If you want to contribute, be sure to PR on the current **[default][repo]** branch.
 
 ##Content
 - [About](about.md)
@@ -34,7 +34,7 @@ If you want to contribute, be sure to PR on the **[1.4][1.4]** branch.
 - [Donate](Donate.md)
 
 [img]: https://cdn.discordapp.com/attachments/202743183774318593/210580315381563392/discord.png
-[WizBot Server]: https://discord.gg/0ehQwTK2RBjAxzEY
+[WizNet Server]: https://discord.gg/0ehQwTK2RBjAxzEY
 [GitHub]: https://github.com/Wizkiller96/WizBot
 [Issues]: https://github.com/Wizkiller96/WizBot/issues
-[1.4]: https://github.com/Wizkiller96/WizBot/tree/1.4
+[repo]: https://github.com/Wizkiller96/WizBot
