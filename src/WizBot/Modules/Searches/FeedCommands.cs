@@ -6,7 +6,6 @@ using WizBot.Common.Attributes;
 using WizBot.Extensions;
 using WizBot.Modules.Searches.Services;
 using System;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
