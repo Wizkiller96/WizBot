@@ -156,7 +156,7 @@ Open **PuTTY** and login as you have before, type `reboot` and press Enter.
 - `tmux kill-session -t wizbot` (don't forget to replace **wizbot** in the command with the name of your bot's session)
 - Make sure the bot is **not** running.
 - `tmux new -s wizbot` (**wizbot** is the name of the session)
-- `cd ~ && wget -N https://github.com/Wizkiller96/WizBot-BashScript/raw/1.4/linuxAIO.sh && bash linuxAIO.sh`
+- `cd ~ && wget -N https://github.com/Wizkiller96/WizBot-BashScript/raw/1.9/linuxAIO.sh && bash linuxAIO.sh`
 - Choose `1` to update the bot with **latest build** available.
 - Next, choose either `2` or `3` to run the bot again with **normally** or **auto restart** respectively.
 - Done.
