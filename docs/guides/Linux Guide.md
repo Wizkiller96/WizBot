@@ -32,7 +32,7 @@ After you've done that, you are ready to use your VPS.
 Use the following command to get and run `linuxAIO.sh`		
 (Remember **Do Not** rename the file **linuxAIO.sh**)
 
-`cd ~ && wget -N https://github.com/Wizkiller96/WizBot-BashScript/raw/1.4/linuxAIO.sh && bash linuxAIO.sh`
+`cd ~ && wget -N https://github.com/Wizkiller96/WizBot-BashScript/raw/1.9/linuxAIO.sh && bash linuxAIO.sh`
 
 You should see these following options after using the above command:
 
@@ -52,7 +52,7 @@ Welcome to WizBot Auto Prerequisites Installer.
 Would you like to continue?
 ```
 That will install all the prerequisites your system need to run WizBot.			
-(Optional) **If** you want to install it manually, you can try finding it [here.](https://github.com/Wizkiller96/WizBot-BashScript/blob/1.4/wizbotautoinstaller.sh)
+(Optional) **If** you want to install it manually, you can try finding it [here.](https://github.com/Wizkiller96/WizBot-BashScript/blob/1.9/wizbotautoinstaller.sh)
 
 Once *prerequisites* finish installing,
 
@@ -107,7 +107,7 @@ The above command will create a new session named **wizbot** *(you can replace â
 
 **Next, we need to run `linuxAIO.sh` in order to get the latest running scripts with patches:**
 
-- `cd ~ && wget -N https://github.com/Wizkiller96/WizBot-BashScript/raw/1.4/linuxAIO.sh && bash linuxAIO.sh`
+- `cd ~ && wget -N https://github.com/Wizkiller96/WizBot-BashScript/raw/1.9/linuxAIO.sh && bash linuxAIO.sh`
 
 **From the options,**
 
