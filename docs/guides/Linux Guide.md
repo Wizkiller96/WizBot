@@ -191,7 +191,7 @@ To set up WizBot for music and Google API Keys, follow [Setting up your API keys
 - Copy the `credentials.json` to desktop
 - EDIT it as it is guided here: [Setting up credentials.json][setup credentials]
 - Paste/put it back in the folder once done. `(Using WinSCP)`
-- **If** you already have WizBot 1.3.x setup and have `credentials.json` and `WizBot.db`, you can just copy and paste the `credentials.json` to `WizBot/src/WizBot` and `WizBot.db` to `WizBot/src/WizBot/bin/Release/netcoreapp1.1/data` using WinSCP.			
+- **If** you already have WizBot 1.3.x setup and have `credentials.json` and `WizBot.db`, you can just copy and paste the `credentials.json` to `WizBot/src/WizBot` and `WizBot.db` to `WizBot/src/WizBot/bin/Release/netcoreapp2.0/data` using WinSCP.			
 **Or** follow the [Upgrading Guide.][upgrading]
 
 
