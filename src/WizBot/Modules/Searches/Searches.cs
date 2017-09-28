@@ -20,6 +20,8 @@ using WizBot.Common;
 using WizBot.Common.Attributes;
 using WizBot.Modules.Searches.Common;
 using WizBot.Modules.Searches.Services;
+using WizBot.Common.Replacements;
+using Discord.WebSocket;
 
 namespace WizBot.Modules.Searches
 {
@@ -32,6 +34,40 @@ namespace WizBot.Modules.Searches
         {
             _creds = creds;
             _google = google;
+        }
+
+        [WizBotCommand, Usage, Description, Aliases]
+        [RequireContext(ContextType.Guild)]
+        [RequireUserPermission(GuildPermission.ManageMessages)]
+        public async Task Say([Remainder]string message)
+        {
+            if (string.IsNullOrWhiteSpace(message))
+                return;
+
+            var rep = new ReplacementBuilder()
+                        .WithDefault(Context.User, Context.Channel, Context.Guild, (DiscordSocketClient)Context.Client)
+                        .Build();
+
+            if (CREmbed.TryParse(message, out var embedData))
+            {
+                rep.Replace(embedData);
+                try
+                {
+                    await Context.Channel.EmbedAsync(embedData.ToEmbed(), embedData.PlainText?.SanitizeMentions() ?? "").ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    _log.Warn(ex);
+                }
+            }
+            else
+            {
+                var msg = rep.Replace(message);
+                if (!string.IsNullOrWhiteSpace(msg))
+                {
+                    await Context.Channel.SendConfirmAsync(msg).ConfigureAwait(false);
+                }
+            }
         }
 
         [WizBotCommand, Usage, Description, Aliases]
