@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using WizBot.Common.Attributes;
 using WizBot.Extensions;
 using WizBot.Modules.Searches.Services;
+using WizBot.Modules.Searches.Common;
 
 namespace WizBot.Modules.Searches
 {
@@ -124,11 +125,11 @@ namespace WizBot.Modules.Searches
                         Username = stream,
                         Type = platform,
                     }));
-                    if (streamStatus.IsLive)
+                    if (streamStatus.Live)
                     {
                         await ReplyConfirmLocalized("streamer_online",
                                 username,
-                                streamStatus.Views)
+                                streamStatus.Viewers)
                             .ConfigureAwait(false);
                     }
                     else
@@ -154,7 +155,7 @@ namespace WizBot.Modules.Searches
                     Type = type,
                 };
 
-                StreamStatus status;
+                IStreamResponse status;
                 try
                 {
                     status = await _service.GetStreamStatus(fs).ConfigureAwait(false);
