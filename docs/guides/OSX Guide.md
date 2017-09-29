@@ -76,7 +76,7 @@ Next, choose `6` to exit.
 #### Setting up Credentials.json file
 - Open up the `WizBot` folder, which should be in your home directory, then `WizBot` folder then `src` folder and then the additonal `WizBot` folder.
 - Edit the way its guided here: [Setting up credentials.json](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/#setting-up-credentialsjson-file)
-- **If** you already have WizBot 1.x setup and have `credentials.json` and `WizBot.db`, you can just copy and paste the `credentials.json` to `WizBot/src/WizBot` and `WizBot.db` to `WizBot/src/WizBot/bin/Release/netcoreapp1.1/data`.			
+- **If** you already have WizBot 1.x setup and have `credentials.json` and `WizBot.db`, you can just copy and paste the `credentials.json` to `WizBot/src/WizBot` and `WizBot.db` to `WizBot/src/WizBot/bin/Release/netcoreapp2.0/data`.			
 **Or** follow the [Upgrading Guide.](http://wizbot.readthedocs.io/en/latest/guides/Upgrading%20Guide/)
 
 #### Setting WizBot Music
