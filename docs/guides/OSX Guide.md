@@ -60,7 +60,7 @@ A dialog box will open asking if you want to install `xcode-select`. Select inst
 Use the following command to get and run `linuxAIO.sh`:		
 (Remember **DO NOT** rename the file `linuxAIO.sh`)
 
-`cd ~ && wget -N https://github.com/Wizkiller96/WizBot-BashScript/raw/1.4/linuxAIO.sh && bash linuxAIO.sh`
+`cd ~ && wget -N https://github.com/Wizkiller96/WizBot-BashScript/raw/1.9/linuxAIO.sh && bash linuxAIO.sh`
 
 Follow the on screen instructions:
 
@@ -99,7 +99,7 @@ The above command will create a new session named **wizbot** *(you can replace â
 
 **Next, we need to run `linuxAIO.sh` in order to get the latest running scripts with patches:**
 
-- `cd ~ && wget -N https://github.com/Wizkiller96/WizBot-BashScript/raw/1.4/linuxAIO.sh && bash linuxAIO.sh`
+- `cd ~ && wget -N https://github.com/Wizkiller96/WizBot-BashScript/raw/1.9/linuxAIO.sh && bash linuxAIO.sh`
 
 **From the options,**
 
@@ -131,7 +131,7 @@ If you used Screen press CTRL+A+D (this will detach the wizbot screen)
 - `tmux kill-session -t wizbot` [(don't forget to replace **wizbot** in the command to what ever you named your bot's session)](http://wizbot.readthedocs.io/en/latest/guides/OSX%20Guide/#some-more-info)
 - Make sure the bot is **not** running.
 - `tmux new -s wizbot` (**wizbot** is the name of the session)
-- `cd ~ && wget -N https://github.com/Wizkiller96/WizBot-BashScript/raw/1.4/linuxAIO.sh && bash linuxAIO.sh`
+- `cd ~ && wget -N https://github.com/Wizkiller96/WizBot-BashScript/raw/1.9/linuxAIO.sh && bash linuxAIO.sh`
 - Choose `1` to update the bot with **latest build** available.
 - Next, choose either `2` or `3` to run the bot again with **normally** or **auto restart** respectively.
 - Done.

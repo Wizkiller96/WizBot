@@ -1,3 +1,5 @@
+# This section is for users who are upgrading from versions older than 1.4 to 1.4+
+
 #### If you have WizBot 1.x on Windows
 
 **If you have WizBot 1.x**

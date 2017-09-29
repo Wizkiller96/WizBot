@@ -22,14 +22,14 @@ DisableWelcomePage=no
 
 [Files]
 ;install 
-Source: "src\WizBot\bin\Release\netcoreapp1.1\{#target}\publish\*"; DestDir: "{app}\{#sysfolder}"; Permissions: users-full; Flags: recursesubdirs onlyifdoesntexist ignoreversion createallsubdirs; Excludes: "*.pdb, *.db"
+Source: "src\WizBot\bin\Release\netcoreapp2.0\{#target}\publish\*"; DestDir: "{app}\{#sysfolder}"; Permissions: users-full; Flags: recursesubdirs onlyifdoesntexist ignoreversion createallsubdirs; Excludes: "*.pdb, *.db"
 ;rename credentials example to credentials, but don't overwrite if it exists
-;Source: "src\WizBot\bin\Release\netcoreapp1.1\{#target}\publish\credentials_example.json"; DestName: "credentials.json"; DestDir: "{app}\{#sysfolder}"; Permissions: users-full; Flags: skipifsourcedoesntexist onlyifdoesntexist;
+;Source: "src\WizBot\bin\Release\netcoreapp2.0\{#target}\publish\credentials_example.json"; DestName: "credentials.json"; DestDir: "{app}\{#sysfolder}"; Permissions: users-full; Flags: skipifsourcedoesntexist onlyifdoesntexist;
 
 ;reinstall - i want to copy all files, but i don't want to overwrite any data files because users will lose their customization if they don't have a backup, 
 ;            and i don't want them to have to backup and then copy-merge into data folder themselves, or lose their currency images due to overwrite.
-Source: "src\WizBot\bin\Release\netcoreapp1.1\{#target}\publish\*"; DestDir: "{app}\{#sysfolder}"; Permissions: users-full; Flags: recursesubdirs ignoreversion onlyifdestfileexists createallsubdirs; Excludes: "*.pdb, *.db, data\*, credentials.json";
-Source: "src\WizBot\bin\Release\netcoreapp1.1\{#target}\publish\data\*"; DestDir: "{app}\{#sysfolder}\data"; Permissions: users-full; Flags: recursesubdirs onlyifdoesntexist createallsubdirs;
+Source: "src\WizBot\bin\Release\netcoreapp2.0\{#target}\publish\*"; DestDir: "{app}\{#sysfolder}"; Permissions: users-full; Flags: recursesubdirs ignoreversion onlyifdestfileexists createallsubdirs; Excludes: "*.pdb, *.db, data\*, credentials.json";
+Source: "src\WizBot\bin\Release\netcoreapp2.0\{#target}\publish\data\*"; DestDir: "{app}\{#sysfolder}\data"; Permissions: users-full; Flags: recursesubdirs onlyifdoesntexist createallsubdirs;
 
 ;readme   
 ;Source: "readme"; DestDir: "{app}"; Flags: isreadme
