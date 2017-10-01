@@ -70,7 +70,7 @@ Next, check out:
 - [2. Get the Google API](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/#setting-up-your-api-keys)
 
 You will need the following for the next step:
-![botimg](https://cdn.discordapp.com/attachments/251504306010849280/276455844223123457/Capture.PNG)
+![botimg](https://i.imgur.com/0HWyQkj.jpg)
 
 - **Bot's Client ID** and **Bot's ID** (both are same) [(*required)](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/#setting-up-credentialsjson-file)
 - **Bot's Token** (not client secret) [(*required)](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/#setting-up-credentialsjson-file)
