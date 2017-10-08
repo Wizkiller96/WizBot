@@ -17,6 +17,7 @@ namespace WizBot.Modules.Administration
     public partial class Administration
     {
         [Group]
+        [NoPublicBot]
         public class LogCommands : WizBotSubmodule<LogCommandService>
         {
             private readonly DbService _db;
