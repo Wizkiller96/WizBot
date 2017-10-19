@@ -9,10 +9,10 @@ namespace WizBot.Common.TypeReaders
 {
     public class GuildDateTimeTypeReader : WizBotTypeReader<GuildDateTime>
     {
-        public class GuildDateTimeTypeReader(DiscordSocketClient client, CommandService cmds) : base(client, cmds)
+        public GuildDateTimeTypeReader(DiscordSocketClient client, CommandService cmds) : base(client, cmds)
         {
         }
-        
+
         public override Task<TypeReaderResult> Read(ICommandContext context, string input, IServiceProvider services)
         {
             var _gts = (GuildTimezoneService)services.GetService(typeof(GuildTimezoneService));

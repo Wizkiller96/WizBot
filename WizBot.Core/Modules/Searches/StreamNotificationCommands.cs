@@ -2,9 +2,9 @@
 using Discord;
 using System.Linq;
 using System.Threading.Tasks;
-using WizBot.Services;
+using WizBot.Core.Services;
 using System.Collections.Generic;
-using WizBot.Services.Database.Models;
+using WizBot.Core.Services.Database.Models;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Common.Attributes;
 using WizBot.Extensions;

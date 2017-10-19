@@ -13,7 +13,7 @@ namespace WizBot.Modules.Administration
     {
         [Group]
         [OwnerOnly]
-        public class DangerousCommands : NadekoSubmodule
+        public class DangerousCommands : WizBotSubmodule
         {
             private readonly DbService _db;
 

@@ -8,7 +8,7 @@ using Discord.WebSocket;
 using WizBot.Common;
 using WizBot.Extensions;
 using WizBot.Modules.Games.Services;
-using WizBot.Services;
+using WizBot.Core.Services;
 using NLog;
 
 namespace WizBot.Modules.Games.Common

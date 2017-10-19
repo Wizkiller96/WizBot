@@ -26,7 +26,7 @@ namespace WizBot.Core.Modules.Gambling.Common
 
         public async Task<bool> AddUser(string username, ulong userId)
         {
-
+            
         }
 
         public void ForceStop()

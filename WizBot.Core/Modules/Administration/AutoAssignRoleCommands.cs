@@ -1,7 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using WizBot.Extensions;
-using WizBotC.Core.Services;
+using WizBot.Core.Services;
 using System.Linq;
 using System.Threading.Tasks;
 using WizBot.Common.Attributes;

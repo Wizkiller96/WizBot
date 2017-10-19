@@ -11,7 +11,7 @@ using System;
 
 namespace WizBot.Migrations
 {
-    [DbContext(typeof(WarningsInitializedContext))]
+    [DbContext(typeof(WizBotContext))]
     [Migration("20171016091343_remove-convertunits")]
     partial class removeconvertunits
     {

@@ -170,7 +170,7 @@ namespace WizBot.Extensions
 
         public static async Task<IEnumerable<IGuildUser>> GetMembersAsync(this IRole role) =>
             (await role.Guild.GetUsersAsync(CacheMode.CacheOnly)).Where(u => u.RoleIds.Contains(role.Id)) ?? Enumerable.Empty<IGuildUser>();
-
+        
         public static string ToJson<T>(this T any, Formatting formatting = Formatting.Indented) =>
             JsonConvert.SerializeObject(any, formatting);
 
