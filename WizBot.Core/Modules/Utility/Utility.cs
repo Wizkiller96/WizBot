@@ -24,13 +24,17 @@ namespace WizBot.Modules.Utility
         private readonly IStatsService _stats;
         private readonly IBotCredentials _creds;
         private readonly WizBot _bot;
+        private readonly DbService _db;
 
-        public Utility(WizBot wizbot, DiscordSocketClient client, IStatsService stats, IBotCredentials creds)
+        public Utility(WizBot wizbot, DiscordSocketClient client, 
+            IStatsService stats, IBotCredentials creds,
+            DbService db)
         {
             _client = client;
             _stats = stats;
             _creds = creds;
             _bot = wizbot;
+            _db = db;
         }
 
         [WizBotCommand, Usage, Description, Aliases]
