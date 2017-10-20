@@ -38,6 +38,7 @@ namespace WizBot.Modules.Help
         public async Task Modules()
         {
             var embed = new EmbedBuilder().WithOkColor()
+                .WithAuthor(eab => eab.WithIconUrl("http://i.imgur.com/fObUYFS.jpg"))
                 .WithFooter(efb => efb.WithText("ℹ️" + GetText("modules_footer", Prefix)))
                 .WithTitle(GetText("list_of_modules"))
                 .WithDescription(string.Join("\n",

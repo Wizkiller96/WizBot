@@ -47,6 +47,9 @@ namespace WizBot.Modules.Help.Services
             if (alias != null)
                 str += string.Format(" **/ `{0}`**", prefix + alias);
             return new EmbedBuilder()
+                .WithAuthor(eab => eab.WithName("WizBot - Command Help")
+                                          .WithUrl("http://wizbot.readthedocs.io/en/latest/")
+                                          .WithIconUrl("http://i.imgur.com/fObUYFS.jpg"))
                 .AddField(fb => fb.WithName(str).WithValue($"{com.RealSummary(prefix)} {GetCommandRequirements(com, guild)}").WithIsInline(true))
                 .AddField(fb => fb.WithName(GetText("usage", guild)).WithValue(com.RealRemarks(prefix)).WithIsInline(false))
                 .WithFooter(efb => efb.WithText(GetText("module", guild, com.Module.GetTopLevelModule().Name)))
