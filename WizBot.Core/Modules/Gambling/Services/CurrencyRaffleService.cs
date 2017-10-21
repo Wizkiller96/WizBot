@@ -37,7 +37,7 @@ namespace WizBot.Core.Modules.Gambling.Services
                 if (!Games.TryGetValue(channelId, out var crg))
                 {
                     newGame = true;
-                    crg = new CurrencyRaffleGame(mixed 
+                    crg = new CurrencyRaffleGame(mixed
                         ? CurrencyRaffleGame.Type.Mixed
                         : CurrencyRaffleGame.Type.Normal);
                     Games.Add(channelId, crg);
@@ -65,7 +65,7 @@ namespace WizBot.Core.Modules.Gambling.Services
                 {
                     var _t = Task.Run(async () =>
                     {
-                        await Task.Delay(30000).ConfigureAwait(false);
+                        await Task.Delay(60000).ConfigureAwait(false);
                         await _locker.WaitAsync().ConfigureAwait(false);
                         try
                         {
