@@ -6,7 +6,7 @@ using WizBot.Core.Services;
 using System;
 using System.Threading.Tasks;
 
-#if !GLOBAL_WIZBOT
+//#if !GLOBAL_WIZBOT
 namespace WizBot.Modules.Administration
 {
     public partial class Administration
@@ -71,4 +71,4 @@ DELETE FROM Clubs;");
         }
     }
 }
-#endif
+//#endif
