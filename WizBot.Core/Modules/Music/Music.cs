@@ -1,4 +1,4 @@
-using Discord.Commands;
+﻿using Discord.Commands;
 using Discord.WebSocket;
 using WizBot.Core.Services;
 using Discord;
@@ -30,8 +30,8 @@ namespace WizBot.Modules.Music
         private readonly IGoogleApiService _google;
         private readonly DbService _db;
 
-        public Music(DiscordSocketClient client,
-            IBotCredentials creds,
+        public Music(DiscordSocketClient client, 
+            IBotCredentials creds, 
             IGoogleApiService google,
             DbService db)
         {
@@ -66,13 +66,13 @@ namespace WizBot.Modules.Music
         //                //    player.TogglePause();
         //                //else if (!player.Paused && newState.VoiceChannel.Users.Count <= 1) // pause if there are no users in the new channel
         //                //    player.TogglePause();
-
+                       
         //               // player.SetVoiceChannel(newState.VoiceChannel);
         //                return;
         //            }
 
         //            ////if some other user moved
-        //            //if ((player.VoiceChannel == newState.VoiceChannel && //if joined first, and player paused, unpause
+        //            //if ((player.VoiceChannel == newState.VoiceChannel && //if joined first, and player paused, unpause 
         //            //        player.Paused &&
         //            //        newState.VoiceChannel.Users.Count >= 2) ||  // keep in mind bot is in the channel (+1)
         //            //    (player.VoiceChannel == oldState.VoiceChannel && // if left last, and player unpaused, pause
@@ -136,7 +136,7 @@ namespace WizBot.Modules.Music
                     catch
                     {
                         // ignored
-                    }
+                    } 
                 }
             }
         }
@@ -227,7 +227,7 @@ namespace WizBot.Modules.Music
                 try { await msg.DeleteAsync().ConfigureAwait(false); } catch { }
             }
         }
-
+        
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task ListQueue(int page = 0)
@@ -240,10 +240,10 @@ namespace WizBot.Modules.Music
                 await ReplyErrorLocalized("no_player").ConfigureAwait(false);
                 return;
             }
-
+            
             if (--page < -1)
                 return;
-
+            
             try { await mp.UpdateSongDurationsAsync().ConfigureAwait(false); } catch { }
 
             const int itemsPerPage = 10;
@@ -297,7 +297,7 @@ namespace WizBot.Modules.Music
 
                 if (!string.IsNullOrWhiteSpace(add))
                     desc = add + "\n" + desc;
-
+                
                 var embed = new EmbedBuilder()
                     .WithAuthor(eab => eab.WithName(GetText("player_queue", curPage + 1, (songs.Length / itemsPerPage) + 1))
                         .WithMusicIcon())
@@ -308,7 +308,7 @@ namespace WizBot.Modules.Music
 
                 return embed;
             };
-            await Context.Channel.SendPaginatedConfirmAsync(_client,
+            await Context.Channel.SendPaginatedConfirmAsync(_client, 
                 page, printAction, songs.Length, itemsPerPage, false).ConfigureAwait(false);
         }
 
@@ -318,7 +318,7 @@ namespace WizBot.Modules.Music
         {
             if (skipCount < 1)
                 return;
-
+            
             var mp = await _service.GetOrCreatePlayer(Context);
 
             mp.Next(skipCount);
@@ -539,7 +539,7 @@ namespace WizBot.Modules.Music
                     try
                     {
                         await Task.Yield();
-
+                        
                         await Task.WhenAll(Task.Delay(1000), InternalQueue(mp, await _service.ResolveSong(item.Query, Context.User.ToString(), item.ProviderType), true)).ConfigureAwait(false);
                     }
                     catch (SongNotFoundException) { }
@@ -596,7 +596,7 @@ namespace WizBot.Modules.Music
             var song = await _service.ResolveSong(query, Context.User.ToString(), MusicType.Soundcloud);
             await InternalQueue(mp, song, false).ConfigureAwait(false);
         }
-
+        
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task SoundCloudPl([Remainder] string pl)
@@ -632,7 +632,7 @@ namespace WizBot.Modules.Music
                     await msg.ModifyAsync(m => m.Content = GetText("playlist_queue_complete")).ConfigureAwait(false);
             }
         }
-
+        
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task NowPlaying()
@@ -688,7 +688,7 @@ namespace WizBot.Modules.Music
             var count = ids.Count();
             var msg = await Context.Channel.SendMessageAsync("🎵 " + GetText("attempting_to_queue",
                 Format.Bold(count.ToString()))).ConfigureAwait(false);
-
+            
             foreach (var song in ids)
             {
                 try
@@ -861,7 +861,7 @@ namespace WizBot.Modules.Music
                 await Context.Channel.SendConfirmAsync("🔂 " + GetText("repeating_track_stopped"))
                                             .ConfigureAwait(false);
         }
-
+        
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task RepeatPl()

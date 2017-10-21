@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 //#if !GLOBAL_WIZBOT
 namespace WizBot.Modules.Administration
 {
+    //todo make users confirm their decision
     public partial class Administration
     {
         [Group]
@@ -45,7 +46,9 @@ namespace WizBot.Modules.Administration
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
             public Task DeleteWaifus() =>
-                ExecSql("DELETE FROM WaifuUpdates; DELETE FROM WaifuInfo;");
+                ExecSql(@"DELETE FROM WaifuUpdates;
+ DELETE FROM WaifuItem;
+ DELETE FROM WaifuInfo;");
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]

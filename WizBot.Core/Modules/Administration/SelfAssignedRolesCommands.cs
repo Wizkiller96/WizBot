@@ -1,6 +1,5 @@
 ﻿using Discord;
 using Discord.Commands;
-using Discord.WebSocket;
 using WizBot.Extensions;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
@@ -11,7 +10,6 @@ using System.Text;
 using System.Threading.Tasks;
 using WizBot.Common.Attributes;
 using WizBot.Common.Collections;
-using Microsoft.EntityFrameworkCore;
 
 namespace WizBot.Modules.Administration
 {

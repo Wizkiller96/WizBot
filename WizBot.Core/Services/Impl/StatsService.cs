@@ -1,8 +1,6 @@
 using Discord;
 using Discord.WebSocket;
-using WizBot.Common.ShardCom;
 using WizBot.Extensions;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -23,7 +21,7 @@ namespace WizBot.Core.Services.Impl
         private readonly IBotCredentials _creds;
         private readonly DateTime _started;
 
-        public const string BotVersion = "2.0.0";
+        public const string BotVersion = "2.0.2";
 
         public string Author => "Kwoth#2560\nWizkiller96#2947";
         public string Library => "Discord.Net";
