@@ -1,13 +1,14 @@
 ## Setting Up WizBot on Windows
 
-#### Prerequisites 
+#### Prerequisites
 - [Notepad++][Notepad++] (or some other decent text editor)
 - Windows 8 or later
-- [Create Discord Bot application](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/#creating-discord-bot-application) and [Invite the bot to your server](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/#inviting-your-bot-to-your-server). 
+- [Create Discord Bot application](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/#creating-discord-bot-application) and [Invite the bot to your server](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/#inviting-your-bot-to-your-server).
 
-#### Guide 
+#### Guide
 - Download and run the [WizBot Updater (Not Avaliable Yet).][Updater]
-- Press **`Install ffmpeg`** and **`Install youtube-dl`** if you want music features. 			
+- Press **`Install Redis`** then   
+- Press **`Install ffmpeg`** and **`Install youtube-dl`** if you want music features.  			
 ***NOTE:** RESTART YOUR PC IF YOU DO.*
 - Press **`Update`** and go through the installation wizard.			
 ***NOTE:** If you're upgrading from 1.3, DO NOT select your old wizbot folder. Install it in a separate directory and read the [upgrading guide](http://wizbot.readthedocs.io/en/latest/guides/Upgrading%20Guide/).*
