@@ -78,7 +78,7 @@ namespace WizBot.Modules.Music.Common.SongResolver.Strategies
             }
             if (query.Contains(".m3u"))
             {
-                /*
+                /* 
 # This is a comment
                    C:\xxx4xx\xxxxxx3x\xx2xxxx\xx.mp3
                    C:\xxx5xx\x6xxxxxx\x7xxxxx\xx.mp3

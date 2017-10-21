@@ -130,7 +130,7 @@ namespace WizBot.Modules.Music.Common
                     : new TimeSpan(songs.Sum(s => s.TotalTime.Ticks));
             }
         }
-
+            
 
         public MusicPlayer(MusicService musicService, IGoogleApiService google, IVoiceChannel vch, ITextChannel output, float volume)
         {
@@ -287,7 +287,7 @@ namespace WizBot.Modules.Music.Common
                                     {
                                         _log.Info("Loading related song");
                                         await _musicService.TryQueueRelatedSongAsync(data.Song, OutputTextChannel, VoiceChannel);
-                                        if (!AutoDelete)
+                                        if(!AutoDelete)
                                             Queue.Next();
                                     }
                                     catch
@@ -337,7 +337,7 @@ namespace WizBot.Modules.Music.Common
                                     lock (locker)
                                     {
                                         if (!Stopped)
-                                            if (!AutoDelete)
+                                            if(!AutoDelete)
                                                 Queue.Next();
                                     }
                                 }
