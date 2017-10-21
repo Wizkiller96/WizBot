@@ -46,7 +46,9 @@ namespace WizBot.Modules.Administration
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
             public Task DeleteWaifus() =>
-                ExecSql("DELETE FROM WaifuUpdates; DELETE FROM WaifuInfo;");
+                ExecSql(@"DELETE FROM WaifuUpdates;
+ DELETE FROM WaifuItem;
+ DELETE FROM WaifuInfo;");
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]

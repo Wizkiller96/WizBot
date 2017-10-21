@@ -58,7 +58,6 @@ namespace WizBot
 
         public WizBot(int shardId, int parentProcessId)
         {
-            Console.WriteLine(typeof(DiscordSocketClient).Assembly.GetName().Version);
             if (shardId < 0)
                 throw new ArgumentOutOfRangeException(nameof(shardId));
 
