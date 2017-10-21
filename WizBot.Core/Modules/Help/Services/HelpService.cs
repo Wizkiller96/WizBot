@@ -47,7 +47,7 @@ namespace WizBot.Modules.Help.Services
             if (alias != null)
                 str += string.Format(" **/ `{0}`**", prefix + alias);
             return new EmbedBuilder()
-                .WithAuthor(eab => eab.WithName("WizBot - Command Help")
+                .WithAuthor(eab => eab.WithName("WizBot - Command Helper")
                                           .WithUrl("http://wizbot.readthedocs.io/en/latest/")
                                           .WithIconUrl("http://i.imgur.com/fObUYFS.jpg"))
                 .AddField(fb => fb.WithName(str).WithValue($"{com.RealSummary(prefix)} {GetCommandRequirements(com, guild)}").WithIsInline(true))
