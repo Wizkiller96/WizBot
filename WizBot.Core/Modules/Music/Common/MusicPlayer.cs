@@ -193,7 +193,7 @@ namespace WizBot.Modules.Music.Common
                         {
                             _log.Info("Can't join");
                             await Task.Delay(900, cancelToken);
-                            // just wait some time, maybe bot doesn't even have perms to join that voice channel,
+                            // just wait some time, maybe bot doesn't even have perms to join that voice channel, 
                             // i don't want to spam connection attempts
                             continue;
                         }
@@ -227,7 +227,7 @@ namespace WizBot.Modules.Music.Common
                     {
                         if (pcm != null)
                         {
-                            // flush is known to get stuck from time to time,
+                            // flush is known to get stuck from time to time, 
                             // just skip flushing if it takes more than 1 second
                             var flushCancel = new CancellationTokenSource();
                             var flushToken = flushCancel.Token;
@@ -251,7 +251,7 @@ namespace WizBot.Modules.Music.Common
                     }
                     try
                     {
-                        //if repeating current song, just ignore other settings,
+                        //if repeating current song, just ignore other settings, 
                         // and play this song again (don't change the index)
                         // ignore rcs if song is manually skipped
 
@@ -287,7 +287,7 @@ namespace WizBot.Modules.Music.Common
                                     {
                                         _log.Info("Loading related song");
                                         await _musicService.TryQueueRelatedSongAsync(data.Song, OutputTextChannel, VoiceChannel);
-                                        if(!AutoDelete)
+                                        if (!AutoDelete)
                                             Queue.Next();
                                     }
                                     catch
@@ -337,7 +337,7 @@ namespace WizBot.Modules.Music.Common
                                     lock (locker)
                                     {
                                         if (!Stopped)
-                                            if(!AutoDelete)
+                                            if (!AutoDelete)
                                                 Queue.Next();
                                     }
                                 }
@@ -449,7 +449,7 @@ namespace WizBot.Modules.Music.Common
                 if (Exited)
                     return;
                 manualSkip = true;
-                // if player is stopped, and user uses .n, it should play current song.
+                // if player is stopped, and user uses .n, it should play current song.  
                 // It's a bit weird, but that's the least annoying solution
                 if (!Stopped)
                     if (!RepeatPlaylist && Queue.IsLast()) // if it's the last song in the queue, and repeat playlist is disabled
@@ -662,9 +662,9 @@ namespace WizBot.Modules.Music.Common
             => Queue.MoveSong(n1, n2);
 
         //// this should be written better
-        //public TimeSpan TotalPlaytime =>
-        //    _playlist.Any(s => s.TotalTime == TimeSpan.MaxValue) ?
-        //    TimeSpan.MaxValue :
-        //    new TimeSpan(_playlist.Sum(s => s.TotalTime.Ticks));
+        //public TimeSpan TotalPlaytime => 
+        //    _playlist.Any(s => s.TotalTime == TimeSpan.MaxValue) ? 
+        //    TimeSpan.MaxValue : 
+        //    new TimeSpan(_playlist.Sum(s => s.TotalTime.Ticks));        
     }
 }
