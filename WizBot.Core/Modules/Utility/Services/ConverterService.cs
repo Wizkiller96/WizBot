@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,7 +21,7 @@ namespace WizBot.Modules.Utility.Services
                 .StringGet("converter_units")
                 .ToString()
                 .MapJson<ConvertUnit[]>();
-
+                
         private readonly Logger _log;
         private readonly Timer _currencyUpdater;
         private readonly TimeSpan _updateInterval = new TimeSpan(12, 0, 0);

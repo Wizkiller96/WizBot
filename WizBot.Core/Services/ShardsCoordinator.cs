@@ -65,6 +65,10 @@ namespace WizBot.Core.Services
             sub.Subscribe(_key + "_shardcoord_stop",
                 OnStop,
                 CommandFlags.FireAndForget);
+
+            sub.Subscribe(_key + "_die",
+                (ch, x) => Environment.Exit(0),
+                CommandFlags.FireAndForget);
         }
 
         private void OnStop(RedisChannel ch, RedisValue data)
