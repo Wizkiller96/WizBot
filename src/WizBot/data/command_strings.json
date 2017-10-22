@@ -3054,5 +3054,13 @@
       "{0}rafflecur 20",
       "{0}rafflecur mixed 15"
     ]
+  },
+  "autodisconnect": {
+    "cmd": "autodisconnect autodc",
+    "desc": "Toggles whether the bot should disconnect from the voice channel once it's done playing all of the songs.",
+    "usage": [
+      "{0}autodc"
+
+    ]
   }
 }

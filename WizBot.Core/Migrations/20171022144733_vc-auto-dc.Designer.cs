@@ -12,9 +12,10 @@ using System;
 namespace WizBot.Migrations
 {
     [DbContext(typeof(WizBotContext))]
-    partial class WizBotSqliteContextModelSnapshot : ModelSnapshot
+    [Migration("20171022144733_vc-auto-dc")]
+    partial class vcautodc
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
