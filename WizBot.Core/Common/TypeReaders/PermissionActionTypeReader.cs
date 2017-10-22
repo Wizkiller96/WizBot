@@ -1,15 +1,21 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Discord.Commands;
+using Discord.WebSocket;
 using WizBot.Common.TypeReaders.Models;
+using WizBot.Core.Common.TypeReaders;
 
 namespace WizBot.Common.TypeReaders
 {
     /// <summary>
     /// Used instead of bool for more flexible keywords for true/false only in the permission module
     /// </summary>
-    public class PermissionActionTypeReader : TypeReader
+    public class PermissionActionTypeReader : WizBotTypeReader<PermissionAction>
     {
+        public PermissionActionTypeReader(DiscordSocketClient client, CommandService cmds) : base(client, cmds)
+        {
+        }
+
         public override Task<TypeReaderResult> Read(ICommandContext context, string input, IServiceProvider _)
         {
             input = input.ToUpperInvariant();
