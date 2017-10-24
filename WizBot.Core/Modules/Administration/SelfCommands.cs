@@ -335,7 +335,8 @@ namespace WizBot.Modules.Administration
 
                 await ReplyConfirmLocalized("restarting").ConfigureAwait(false);
                 Process.Start(cmd.Cmd, cmd.Args);
-                Environment.Exit(0);
+                var sub = _cache.Redis.GetSubscriber();
+                sub.Publish(_creds.RedisKey() + "_die", "", StackExchange.Redis.CommandFlags.FireAndForget);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
