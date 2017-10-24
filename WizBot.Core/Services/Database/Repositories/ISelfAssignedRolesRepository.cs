@@ -7,6 +7,6 @@ namespace WizBot.Core.Services.Database.Repositories
     public interface ISelfAssignedRolesRepository : IRepository<SelfAssignedRole>
     {
         bool DeleteByGuildAndRoleId(ulong guildId, ulong roleId);
-        IEnumerable<IGrouping<int, SelfAssignedRole>> GetFromGuild(ulong guildId);
+        IGrouping<int, SelfAssignedRole>[] GetFromGuild(ulong guildId);
     }
 }
