@@ -252,12 +252,14 @@ namespace WizBot.Core.Services
 
                         if (!statuses.Any())
                         {
+#if !DEBUG
                             for (var i = 0; i < _shardProcesses.Length; i++)
                             {
                                 var p = _shardProcesses[i];
                                 if (p == null || p.HasExited)
                                     _shardStartQueue.Enqueue(i);
                             }
+#endif
                         }
                         else
                         {
