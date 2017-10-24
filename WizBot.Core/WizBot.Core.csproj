@@ -13,12 +13,6 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='GlobalWizBot'">
-    <DefineConstants>$(DefineConstants);GLOBAL_WIZBOT</DefineConstants>
-    <NoWarn>$(NoWarn);CS1573;CS1591</NoWarn>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="0.9.9" />
     <PackageReference Include="Discord.Net" Version="2.0.0-alpha-build-00839" />
@@ -50,4 +44,10 @@
   <ItemGroup>
     <None Include="Modules\Utility\WizBot.Modules.Searches.csproj" />
   </ItemGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='GlobalWizBot'">
+    <DefineConstants>$(DefineConstants);GLOBAL_WIZBOT</DefineConstants>
+    <NoWarn>$(NoWarn);CS1573;CS1591</NoWarn>
+  </PropertyGroup>
+  
 </Project>

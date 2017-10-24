@@ -16,6 +16,7 @@ using WizBot.Common.Attributes;
 using WizBot.Modules.Administration.Services;
 using Newtonsoft.Json;
 using WizBot.Common.ShardCom;
+using Discord.Net;
 
 namespace WizBot.Modules.Administration
 {
@@ -239,7 +240,7 @@ namespace WizBot.Modules.Administration
                     .Select(x =>
                     {
                         var timeDiff = DateTime.UtcNow - x.Time;
-                        if (timeDiff > TimeSpan.FromSeconds(20))
+                        if (timeDiff > TimeSpan.FromSeconds(30))
                             return $"Shard #{Format.Bold(x.ShardId.ToString())} **UNRESPONSIVE** for {timeDiff.ToString(@"hh\:mm\:ss")}";
                         return GetText("shard_stats_txt", x.ShardId.ToString(),
                             Format.Bold(x.ConnectionState.ToString()), Format.Bold(x.Guilds.ToString()), timeDiff.ToString(@"hh\:mm\:ss"));
@@ -334,7 +335,8 @@ namespace WizBot.Modules.Administration
 
                 await ReplyConfirmLocalized("restarting").ConfigureAwait(false);
                 Process.Start(cmd.Cmd, cmd.Args);
-                Environment.Exit(0);
+                var sub = _cache.Redis.GetSubscriber();
+                sub.Publish(_creds.RedisKey() + "_die", "", StackExchange.Redis.CommandFlags.FireAndForget);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -344,7 +346,14 @@ namespace WizBot.Modules.Administration
                 if (string.IsNullOrWhiteSpace(newName))
                     return;
 
-                await _client.CurrentUser.ModifyAsync(u => u.Username = newName).ConfigureAwait(false);
+                try
+                {
+                    await _client.CurrentUser.ModifyAsync(u => u.Username = newName).ConfigureAwait(false);
+                }
+                catch (RateLimitedException)
+                {
+                    _log.Warn("You've been ratelimited. Wait 2 hours to change your name.");
+                }
 
                 await ReplyConfirmLocalized("bot_name", Format.Bold(newName)).ConfigureAwait(false);
             }
