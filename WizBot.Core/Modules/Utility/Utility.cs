@@ -284,7 +284,7 @@ namespace WizBot.Modules.Utility
             await Context.Channel.GetMessagesAsync(cnt).ForEachAsync(dled => msgs.AddRange(dled)).ConfigureAwait(false);
 
             var title = $"Chatlog-{Context.Guild.Name}/#{Context.Channel.Name}-{DateTime.Now}.txt";
-            var grouping = msgs.GroupBy(x => $"{x.CreatedAt.Date:dd.MM.yyyy}")
+            var grouping = msgs.GroupBy(x => $"{x.CreatedAt.Date:MM.dd.yyyy}")
                 .Select(g => new
                 {
                     date = g.Key,
