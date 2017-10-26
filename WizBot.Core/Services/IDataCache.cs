@@ -12,5 +12,6 @@ namespace WizBot.Core.Services
         Task SetImageDataAsync(string key, byte[] data);
         Task SetAnimeDataAsync(string link, string data);
         TimeSpan? AddTimelyClaim(ulong id, int period);
+        void RemoveAllTimelyClaims();
     }
 }
