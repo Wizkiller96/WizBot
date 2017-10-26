@@ -1,7 +1,5 @@
-using System;
 using WizBot.Common;
 using WizBot.Core.Services.Database.Models;
-using WizBot.Core.Services;
 
 namespace WizBot.Core.Services.Impl
 {
@@ -28,7 +26,7 @@ namespace WizBot.Core.Services.Impl
         {
             using (var uow = _db.UnitOfWork)
             {
-                var bc = uow.BotConfig.GetOrCreate();
+                var bc = uow.BotConfig.GetOrCreate(set => set);
                 switch (type)
                 {
                     case BotConfigEditType.CurrencyGenerationChance:

@@ -1,4 +1,6 @@
+using WizBot.Extensions;
 using StackExchange.Redis;
+using System;
 using System.Threading.Tasks;
 
 namespace WizBot.Core.Services.Impl
@@ -7,16 +9,18 @@ namespace WizBot.Core.Services.Impl
     {
         public ConnectionMultiplexer Redis { get; }
         private readonly IDatabase _db;
+        private readonly string _redisKey;
 
-        public RedisCache()
+        public RedisCache(IBotCredentials creds)
         {
             Redis = ConnectionMultiplexer.Connect("127.0.0.1");
             Redis.PreserveAsyncOrder = false;
             _db = Redis.GetDatabase();
+            _redisKey = creds.RedisKey();
         }
 
         // things here so far don't need the bot id
-        // because it's a good thing if different bots
+        // because it's a good thing if different bots 
         // which are hosted on the same PC
         // can re-use the same image/anime data
         public async Task<(bool Success, byte[] Data)> TryGetImageDataAsync(string key)
@@ -39,6 +43,22 @@ namespace WizBot.Core.Services.Impl
         public Task SetAnimeDataAsync(string key, string data)
         {
             return _db.StringSetAsync("anime_" + key, data);
+        }
+
+        private readonly object timelyLock = new object();
+        public TimeSpan? AddTimelyClaim(ulong id, int period)
+        {
+            lock (timelyLock)
+            {
+                var time = TimeSpan.FromHours(period);
+                if ((bool?)_db.StringGet($"{_redisKey}_timelyclaim_{id}") == null)
+                {
+                    _db.StringSet($"{_redisKey}_timelyclaim_{id}", true);
+                    _db.KeyExpire($"{_redisKey}_timelyclaim_{id}", time);
+                    return time;
+                }
+                return _db.KeyTimeToLive($"{_redisKey}_timelyclaim_{id}");
+            }
         }
     }
 }

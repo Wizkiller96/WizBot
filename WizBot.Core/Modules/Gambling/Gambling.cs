@@ -8,6 +8,7 @@ using WizBot.Core.Services.Database.Models;
 using System.Collections.Generic;
 using WizBot.Common;
 using WizBot.Common.Attributes;
+using System;
 
 namespace WizBot.Modules.Gambling
 {
@@ -16,16 +17,19 @@ namespace WizBot.Modules.Gambling
         private readonly IBotConfigProvider _bc;
         private readonly DbService _db;
         private readonly CurrencyService _currency;
+        private readonly IDataCache _cache;
 
         private string CurrencyName => _bc.BotConfig.CurrencyName;
         private string CurrencyPluralName => _bc.BotConfig.CurrencyPluralName;
         private string CurrencySign => _bc.BotConfig.CurrencySign;
 
-        public Gambling(IBotConfigProvider bc, DbService db, CurrencyService currency)
+        public Gambling(IBotConfigProvider bc, DbService db, CurrencyService currency,
+            IDataCache cache)
         {
             _bc = bc;
             _db = db;
             _currency = currency;
+            _cache = cache;
         }
 
         public long GetCurrency(ulong id)
@@ -34,6 +38,45 @@ namespace WizBot.Modules.Gambling
             {
                 return uow.Currency.GetUserCurrency(id);
             }
+        }
+
+        [WizBotCommand, Usage, Description, Aliases]
+        public async Task Timely()
+        {
+            var val = _bc.BotConfig.TimelyCurrency;
+            var period = _bc.BotConfig.TimelyCurrencyPeriod;
+            if (val <= 0)
+            {
+                await ReplyErrorLocalized("timely_none").ConfigureAwait(false);
+                return;
+            }
+
+            TimeSpan? rem;
+            if ((rem = _cache.AddTimelyClaim(Context.User.Id, period)) != null)
+            {
+                await ReplyErrorLocalized("timely_already_claimed", rem?.ToString(@"HH\:mm\:ss")).ConfigureAwait(false);
+                return;
+            }
+
+            await ReplyConfirmLocalized("timely", val + _bc.BotConfig.CurrencySign, period).ConfigureAwait(false);
+        }
+
+        [WizBotCommand, Usage, Description, Aliases]
+        [OwnerOnly]
+        public async Task TimelySet(int num, int period = 24)
+        {
+            if (num < 0 || period < 1)
+                return;
+            using (var uow = _db.UnitOfWork)
+            {
+                uow.BotConfig.GetOrCreate(set => set)
+                    .TimelyCurrency = num;
+                uow.Complete();
+            }
+            if (num == 0)
+                await ReplyConfirmLocalized("timely_set_none").ConfigureAwait(false);
+            else
+                await ReplyConfirmLocalized("timely_set", num, period).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -46,17 +89,17 @@ namespace WizBot.Modules.Gambling
             var membersArray = members as IUser[] ?? members.ToArray();
             if (membersArray.Length == 0)
             {
-
+                return;
             }
             var usr = membersArray[new WizBotRandom().Next(0, membersArray.Length)];
-            await Context.Channel.SendConfirmAsync("🎟 "+ GetText("raffled_user"), $"**{usr.Username}#{usr.Discriminator}**", footer: $"ID: {usr.Id}").ConfigureAwait(false);
+            await Context.Channel.SendConfirmAsync("🎟 " + GetText("raffled_user"), $"**{usr.Username}#{usr.Discriminator}**", footer: $"ID: {usr.Id}").ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
         [Priority(1)]
         public async Task Cash([Remainder] IUser user = null)
         {
-            if(user == null)
+            if (user == null)
                 await ConfirmLocalized("has", Format.Bold(Context.User.ToString()), $"{GetCurrency(Context.User.Id)} {CurrencySign}").ConfigureAwait(false);
             else
                 await ReplyConfirmLocalized("has", Format.Bold(user.ToString()), $"{GetCurrency(user.Id)} {CurrencySign}").ConfigureAwait(false);
@@ -134,7 +177,7 @@ namespace WizBot.Modules.Gambling
                 return;
 
             if (await _currency.RemoveAsync(user, $"Taken by bot owner.({Context.User.Username}/{Context.User.Id})", amount, true).ConfigureAwait(false))
-                await ReplyConfirmLocalized("take", amount+CurrencySign, Format.Bold(user.ToString())).ConfigureAwait(false);
+                await ReplyConfirmLocalized("take", amount + CurrencySign, Format.Bold(user.ToString())).ConfigureAwait(false);
             else
                 await ReplyErrorLocalized("take_fail", amount + CurrencySign, Format.Bold(user.ToString()), CurrencyPluralName).ConfigureAwait(false);
         }
@@ -232,19 +275,19 @@ namespace WizBot.Modules.Gambling
                 {
                     str += GetText("br_win", (amount * _bc.BotConfig.Betroll67Multiplier) + CurrencySign, 66);
                     await _currency.AddAsync(Context.User, "Betroll Gamble",
-                        (int) (amount * _bc.BotConfig.Betroll67Multiplier), false).ConfigureAwait(false);
+                        (int)(amount * _bc.BotConfig.Betroll67Multiplier), false).ConfigureAwait(false);
                 }
                 else if (rnd < 100)
                 {
                     str += GetText("br_win", (amount * _bc.BotConfig.Betroll91Multiplier) + CurrencySign, 90);
                     await _currency.AddAsync(Context.User, "Betroll Gamble",
-                        (int) (amount * _bc.BotConfig.Betroll91Multiplier), false).ConfigureAwait(false);
+                        (int)(amount * _bc.BotConfig.Betroll91Multiplier), false).ConfigureAwait(false);
                 }
                 else
                 {
                     str += GetText("br_win", (amount * _bc.BotConfig.Betroll100Multiplier) + CurrencySign, 100) + " 👑";
                     await _currency.AddAsync(Context.User, "Betroll Gamble",
-                        (int) (amount * _bc.BotConfig.Betroll100Multiplier), false).ConfigureAwait(false);
+                        (int)(amount * _bc.BotConfig.Betroll100Multiplier), false).ConfigureAwait(false);
                 }
             }
             await Context.Channel.SendConfirmAsync(str).ConfigureAwait(false);
