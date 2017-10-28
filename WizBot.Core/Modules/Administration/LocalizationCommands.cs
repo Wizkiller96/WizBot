@@ -42,6 +42,7 @@ namespace WizBot.Modules.Administration
                 {"es-ES", "Español, España"},
                 {"sv-SE", "Svenska, Sverige"},
                 {"tr-TR", "Türkçe, Türkiye"},
+                {"ts-TS", "Tsundere, You Baka"},
             }.ToImmutableDictionary();
 
             [WizBotCommand, Usage, Description, Aliases]
