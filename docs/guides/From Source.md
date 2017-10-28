@@ -14,7 +14,15 @@ Edit `credentials.json.` Read the [JSON Explanations](http://wizbot.readthedocs.
 
 *when you decide to update in the future (might not work if you've made custom edits to the source, make sure you know how git works)*  
 `git pull` 
-`dotnet run -c Release`  
+`dotnet run -c Release`
+
+### !!! NOTE FOR WINDOWS USERS  !!!
+If you're running from source on windows, you will have to setup your credentials to have these 2 extra lines:
+```js
+    "ShardRunCommand": "dotnet",
+    "ShardRunArguments": "run -c Release -- {0} {1}"
+```
+
 
 [.netcore]: https://www.microsoft.com/net/download/core#/sdk
 [ffmpeg]: http://ffmpeg.zeranoe.com/builds/
