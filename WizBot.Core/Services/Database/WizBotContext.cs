@@ -341,6 +341,13 @@ namespace WizBot.Core.Services.Database
                 .WithMany(x => x.Bans);
 
             #endregion
+
+            #region Polls
+            modelBuilder.Entity<Poll>()
+                .HasIndex(x => x.GuildId)
+                .IsUnique();
+
+            #endregion
         }
     }
 }
