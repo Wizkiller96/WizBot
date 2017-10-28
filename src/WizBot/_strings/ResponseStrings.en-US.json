@@ -650,7 +650,6 @@
     "games_no_votes_cast": "No votes cast.",
     "games_poll_already_running": "Poll is already running on this server.",
     "games_poll_created": "📃 {0} has created a poll",
-    "games_poll_closed": "Poll Closed!",
     "games_poll_result": "`{0}.` {1} with {2} votes.",
     "games_poll_voted": "{0} voted.",
     "games_poll_vote_private": "Private Message me with the corresponding number of the answer.",
@@ -908,5 +907,6 @@
     "gambling_timely": "You've claimed your {0}. You can claim again in {1}h",
     "gambling_timely_set": "Users will be able to claim {0} every {1}h",
     "gambling_timely_set_none": "Users will not be able to claim any timely currency.",
-    "gambling_timely_reset": "All users will be able to claim timely currency again."
+    "gambling_timely_reset": "All users will be able to claim timely currency again.",
+    "games_poll_closed": "Poll Closed!"
 }
