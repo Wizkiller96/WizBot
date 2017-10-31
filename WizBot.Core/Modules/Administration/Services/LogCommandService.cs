@@ -12,7 +12,6 @@ using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Core.Services.Impl;
 using NLog;
-using WizBot.Common;
 
 namespace WizBot.Modules.Administration.Services
 {

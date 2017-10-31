@@ -22,7 +22,6 @@ using WizBot.Modules.Music.Extensions;
 
 namespace WizBot.Modules.Music
 {
-    [NoPublicBot]
     public class Music : WizBotTopLevelModule<MusicService>
     {
         private readonly DiscordSocketClient _client;
