@@ -25,6 +25,35 @@ namespace WizBot.Modules.Games
             _images = images;
         }
 
+#if GLOBAL_WIZBOT
+        [WizBotCommand, Usage, Description, Aliases]
+        [RequireContext(ContextType.Guild)]
+        public async Task TrickOrTreat()
+        {
+            if (DateTime.UtcNow.Day != 31 ||
+                DateTime.UtcNow.Month != 10
+                || !_service.HalloweenAwardedUsers.Add(Context.User.Id)
+        )
+            {
+                return;
+            }
+            if (await _service.GetTreat(Context.User.Id))
+            {
+                await Context.Channel
+                    .SendConfirmAsync($"You've got a treat of 10🍬! Happy Halloween!")
+                    .ConfigureAwait(false);
+            }
+            else
+            {
+                await Context.Channel
+                    .EmbedAsync(new EmbedBuilder()
+                    .WithDescription("No treat for you :c Happy Halloween!")
+                    .WithImageUrl("http://tinyurl.com/ybntddbb")
+                    .WithErrorColor())
+                    .ConfigureAwait(false);
+            }
+        }
+#endif
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Choose([Remainder] string list = null)
         {

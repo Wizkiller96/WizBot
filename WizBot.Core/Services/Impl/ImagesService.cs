@@ -6,6 +6,7 @@ using System.Linq;
 
 namespace WizBot.Core.Services.Impl
 {
+    //todo move everything to redis
     public class ImagesService : IImagesService
     {
         private readonly Logger _log;

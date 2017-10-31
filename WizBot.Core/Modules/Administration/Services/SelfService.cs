@@ -10,6 +10,7 @@ using WizBot.Extensions;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Impl;
 using NLog;
+using StackExchange.Redis;
 
 namespace WizBot.Modules.Administration.Services
 {
@@ -18,6 +19,7 @@ namespace WizBot.Modules.Administration.Services
         public bool ForwardDMs => _bc.BotConfig.ForwardMessages;
         public bool ForwardDMsToAllOwners => _bc.BotConfig.ForwardToAllOwners;
 
+        private readonly ConnectionMultiplexer _redis;
         private readonly WizBot _bot;
         private readonly CommandHandler _cmdHandler;
         private readonly DbService _db;
@@ -28,10 +30,13 @@ namespace WizBot.Modules.Administration.Services
         private readonly IBotCredentials _creds;
         private ImmutableArray<AsyncLazy<IDMChannel>> ownerChannels = new ImmutableArray<AsyncLazy<IDMChannel>>();
         private readonly IBotConfigProvider _bc;
+        private readonly IImagesService _imgs;
 
         public SelfService(DiscordSocketClient client, WizBot bot, CommandHandler cmdHandler, DbService db,
-            IBotConfigProvider bc, ILocalization localization, WizBotStrings strings, IBotCredentials creds)
+            IBotConfigProvider bc, ILocalization localization, WizBotStrings strings, IBotCredentials creds,
+            IDataCache cache, IImagesService imgs)
         {
+            _redis = cache.Redis;
             _bot = bot;
             _cmdHandler = cmdHandler;
             _db = db;
@@ -41,6 +46,11 @@ namespace WizBot.Modules.Administration.Services
             _client = client;
             _creds = creds;
             _bc = bc;
+            _imgs = imgs;
+
+            var sub = _redis.GetSubscriber();
+            sub.Subscribe(_creds.RedisKey() + "_reload_images",
+                delegate { _imgs.Reload(); }, CommandFlags.FireAndForget);
 
             Task.Run(async () =>
             {
@@ -63,7 +73,7 @@ namespace WizBot.Modules.Administration.Services
 
                 await Task.Delay(5000);
 
-                if(client.ShardId == 0)
+                if (client.ShardId == 0)
                     LoadOwnerChannels();
             });
         }
