@@ -34,10 +34,6 @@
     <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="Modules\Utility\WizBot.Modules.Searches.csproj" />
-  </ItemGroup>
-
   <PropertyGroup Condition="'$(Configuration)'=='GlobalWizBot'">
     <DefineConstants>$(DefineConstants);GLOBAL_WIZBOT</DefineConstants>
     <NoWarn>$(NoWarn);CS1573;CS1591</NoWarn>

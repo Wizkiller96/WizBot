@@ -21,7 +21,7 @@ namespace WizBot.Modules.Gambling
             private readonly IBotConfigProvider _bc;
             private readonly CurrencyService _cs;
 
-            private readonly WizBotRandom rng = new WizBotRandom();
+            private static readonly WizBotRandom rng = new WizBotRandom();
 
             public FlipCoinCommands(IImagesService images, CurrencyService cs, IBotConfigProvider bc)
             {
