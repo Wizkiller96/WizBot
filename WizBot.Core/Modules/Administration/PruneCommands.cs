@@ -13,7 +13,7 @@ namespace WizBot.Modules.Administration
         [Group]
         public class PruneCommands : WizBotSubmodule<PruneService>
         {
-            private readonly TimeSpan twoWeeks = TimeSpan.FromDays(14);
+            private static readonly TimeSpan twoWeeks = TimeSpan.FromDays(14);
 
             //delets her own messages, no perm required
             [WizBotCommand, Usage, Description, Aliases]
