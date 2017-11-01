@@ -17,32 +17,6 @@ namespace WizBot.Modules.Searches
         public class AnimeSearchCommands : WizBotSubmodule<AnimeSearchService>
         {
             [WizBotCommand, Usage, Description, Aliases]
-            public async Task Novel([Remainder] string query)
-            {
-                if (string.IsNullOrWhiteSpace(query))
-                    return;
-
-                var novelData = await _service.GetNovelData(query).ConfigureAwait(false);
-
-                if (novelData == null)
-                {
-                    await ReplyErrorLocalized("failed_finding_novel").ConfigureAwait(false);
-                    return;
-                }
-
-                var embed = new EmbedBuilder().WithColor(WizBot.OkColor)
-                    .WithDescription(novelData.Description.Replace("<br>", Environment.NewLine))
-                    .WithTitle(novelData.Title)
-                    .WithUrl(novelData.Link)
-                    .WithImageUrl(novelData.ImageUrl)
-                    .AddField(efb => efb.WithName(GetText("authors")).WithValue(String.Join("\n", novelData.Authors)).WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("status")).WithValue(novelData.Status).WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("genres")).WithValue(string.Join(",\n", novelData.Genres.Any() ? novelData.Genres : new[] { "none" })).WithIsInline(true))
-                    .WithFooter(efb => efb.WithText(GetText("score") + " " + novelData.Score));
-                await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
-            }
-
-            [WizBotCommand, Usage, Description, Aliases]
             [Priority(0)]
             public async Task Mal([Remainder] string name)
             {
