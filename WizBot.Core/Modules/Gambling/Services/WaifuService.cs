@@ -1,7 +1,5 @@
 using Discord;
 using WizBot.Core.Services;
-using System;
-using System.Collections.Concurrent;
 using System.Threading.Tasks;
 
 namespace WizBot.Modules.Gambling.Services
@@ -10,9 +8,6 @@ namespace WizBot.Modules.Gambling.Services
     {
         private readonly DbService _db;
         private readonly CurrencyService _cs;
-
-        public ConcurrentDictionary<ulong, DateTime> DivorceCooldowns { get; } = new ConcurrentDictionary<ulong, DateTime>();
-        public ConcurrentDictionary<ulong, DateTime> AffinityCooldowns { get; } = new ConcurrentDictionary<ulong, DateTime>();
 
         public WaifuService(DbService db, CurrencyService cs)
         {

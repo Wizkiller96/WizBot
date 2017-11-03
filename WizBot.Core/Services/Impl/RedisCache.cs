@@ -83,5 +83,31 @@ namespace WizBot.Core.Services.Impl
                 _db.KeyDelete(k, CommandFlags.FireAndForget);
             }
         }
+
+        public bool TryAddAffinityCooldown(ulong userId, out TimeSpan? time)
+        {
+            time = _db.KeyTimeToLive($"{_redisKey}_affinity_{userId}");
+            if (time == null)
+            {
+                time = TimeSpan.FromMinutes(30);
+                _db.StringSet($"{_redisKey}_affinity_{userId}", true);
+                _db.KeyExpire($"{_redisKey}_affinity_{userId}", time);
+                return true;
+            }
+            return false;
+        }
+
+        public bool TryAddDivorceCooldown(ulong userId, out TimeSpan? time)
+        {
+            time = _db.KeyTimeToLive($"{_redisKey}_divorce_{userId}");
+            if (time == null)
+            {
+                time = TimeSpan.FromHours(6);
+                _db.StringSet($"{_redisKey}_divorce_{userId}", true);
+                _db.KeyExpire($"{_redisKey}_divorce_{userId}", time);
+                return true;
+            }
+            return false;
+        }
     }
 }

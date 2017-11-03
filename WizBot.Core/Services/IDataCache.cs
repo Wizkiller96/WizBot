@@ -15,5 +15,7 @@ namespace WizBot.Core.Services
         Task SetNovelDataAsync(string link, string data);
         TimeSpan? AddTimelyClaim(ulong id, int period);
         void RemoveAllTimelyClaims();
+        bool TryAddAffinityCooldown(ulong userId, out TimeSpan? time);
+        bool TryAddDivorceCooldown(ulong userId, out TimeSpan? time);
     }
 }
