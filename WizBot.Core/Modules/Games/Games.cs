@@ -163,7 +163,7 @@ namespace WizBot.Modules.Games
 
             if ((uid == 99272781513920512 ||
                  uid == 213817345334968330) && roll >= 1)
-                roll = 400;
+                roll = 10;
 
 
             double hot;
