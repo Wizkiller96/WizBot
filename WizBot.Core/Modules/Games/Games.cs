@@ -19,42 +19,41 @@ namespace WizBot.Modules.Games
     //todo update docs
     public partial class Games : WizBotTopLevelModule<GamesService>
     {
-        private readonly IImagesService _images;
+        private readonly IImageCache _images;
 
-        public Games(IImagesService images)
+        public Games(IDataCache data)
         {
-            _images = images;
+            _images = data.LocalImages;
         }
-
-//#if GLOBAL_NADEKO
-//        [NadekoCommand, Usage, Description, Aliases]
-//        [RequireContext(ContextType.Guild)]
-//        public async Task TrickOrTreat()
-//        {
-//            if (DateTime.UtcNow.Day != 31 ||
-//                DateTime.UtcNow.Month != 10
-//                || !_service.HalloweenAwardedUsers.Add(Context.User.Id)
-//        )
-//            {
-//                return;
-//            }
-//            if (await _service.GetTreat(Context.User.Id))
-//            {
-//                await Context.Channel
-//                    .SendConfirmAsync($"You've got a treat of 10🍬! Happy Halloween!")
-//                    .ConfigureAwait(false);
-//            }
-//            else
-//            {
-//                await Context.Channel
-//                    .EmbedAsync(new EmbedBuilder()
-//                    .WithDescription("No treat for you :c Happy Halloween!")
-//                    .WithImageUrl("http://tinyurl.com/ybntddbb")
-//                    .WithErrorColor())
-//                    .ConfigureAwait(false);
-//            }
-//        }
-//#endif
+        //#if GLOBAL_WIZBOT
+        //        [WizBotCommand, Usage, Description, Aliases]
+        //        [RequireContext(ContextType.Guild)]
+        //        public async Task TrickOrTreat()
+        //        {
+        //            if (DateTime.UtcNow.Day != 31 ||
+        //                DateTime.UtcNow.Month != 10
+        //                || !_service.HalloweenAwardedUsers.Add(Context.User.Id)
+        //        )
+        //            {
+        //                return;
+        //            }
+        //            if (await _service.GetTreat(Context.User.Id))
+        //            {
+        //                await Context.Channel
+        //                    .SendConfirmAsync($"You've got a treat of 10🍬! Happy Halloween!")
+        //                    .ConfigureAwait(false);
+        //            }
+        //            else
+        //            {
+        //                await Context.Channel
+        //                    .EmbedAsync(new EmbedBuilder()
+        //                    .WithDescription("No treat for you :c Happy Halloween!")
+        //                    .WithImageUrl("http://tinyurl.com/ybntddbb")
+        //                    .WithErrorColor())
+        //                    .ConfigureAwait(false);
+        //            }
+        //        }
+        //#endif
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Choose([Remainder] string list = null)
         {
@@ -81,18 +80,18 @@ namespace WizBot.Modules.Games
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Rps(string input)
         {
-            Func<int,string> getRpsPick = (p) =>
-            {
-                switch (p)
-                {
-                    case 0:
-                        return "🚀";
-                    case 1:
-                        return "📎";
-                    default:
-                        return "✂️";
-                }
-            };
+            Func<int, string> getRpsPick = (p) =>
+             {
+                 switch (p)
+                 {
+                     case 0:
+                         return "🚀";
+                     case 1:
+                         return "📎";
+                     default:
+                         return "✂️";
+                 }
+             };
 
             int pick;
             switch (input)
@@ -158,8 +157,13 @@ namespace WizBot.Modules.Games
             var roll = rng.Next(1, 1001);
 
             if ((uid == 185968432783687681 ||
-                 uid == 265642040950390784) && roll >= 900)
+                 uid == 265642040950390784 ||
+                 uid == 99272781513920512) && roll >= 900)
                 roll = 1000;
+
+            if ((uid == 99272781513920512 ||
+                 uid == 213817345334968330) && roll >= 1)
+                roll = 400;
 
 
             double hot;

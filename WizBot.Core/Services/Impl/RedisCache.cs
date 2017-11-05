@@ -9,6 +9,9 @@ namespace WizBot.Core.Services.Impl
     public class RedisCache : IDataCache
     {
         public ConnectionMultiplexer Redis { get; }
+
+        public IImageCache LocalImages { get; }
+
         private readonly IDatabase _db;
         private readonly string _redisKey;
 
@@ -16,6 +19,7 @@ namespace WizBot.Core.Services.Impl
         {
             Redis = ConnectionMultiplexer.Connect("127.0.0.1");
             Redis.PreserveAsyncOrder = false;
+            LocalImages = new RedisImagesCache(Redis, creds);
             _db = Redis.GetDatabase();
             _redisKey = creds.RedisKey();
         }
@@ -46,6 +50,17 @@ namespace WizBot.Core.Services.Impl
             return _db.StringSetAsync("anime_" + key, data);
         }
 
+        public async Task<(bool Success, string Data)> TryGetNovelDataAsync(string key)
+        {
+            string x = await _db.StringGetAsync("novel_" + key);
+            return (x != null, x);
+        }
+
+        public Task SetNovelDataAsync(string key, string data)
+        {
+            return _db.StringSetAsync("novel_" + key, data);
+        }
+
         private readonly object timelyLock = new object();
         public TimeSpan? AddTimelyClaim(ulong id, int period)
         {
@@ -71,6 +86,32 @@ namespace WizBot.Core.Services.Impl
             {
                 _db.KeyDelete(k, CommandFlags.FireAndForget);
             }
+        }
+
+        public bool TryAddAffinityCooldown(ulong userId, out TimeSpan? time)
+        {
+            time = _db.KeyTimeToLive($"{_redisKey}_affinity_{userId}");
+            if (time == null)
+            {
+                time = TimeSpan.FromMinutes(30);
+                _db.StringSet($"{_redisKey}_affinity_{userId}", true);
+                _db.KeyExpire($"{_redisKey}_affinity_{userId}", time);
+                return true;
+            }
+            return false;
+        }
+
+        public bool TryAddDivorceCooldown(ulong userId, out TimeSpan? time)
+        {
+            time = _db.KeyTimeToLive($"{_redisKey}_divorce_{userId}");
+            if (time == null)
+            {
+                time = TimeSpan.FromHours(6);
+                _db.StringSet($"{_redisKey}_divorce_{userId}", true);
+                _db.KeyExpire($"{_redisKey}_divorce_{userId}", time);
+                return true;
+            }
+            return false;
         }
     }
 }

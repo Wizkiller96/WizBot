@@ -54,12 +54,17 @@ namespace WizBot.Modules.Gambling
                 NotEnoughFunds,
                 InsufficientAmount
             }
+            private readonly IBotConfigProvider _bc;
+            private readonly CurrencyService _cs;
+            private readonly DbService _db;
+            private readonly IDataCache _cache;
 
-            public WaifuClaimCommands(IBotConfigProvider bc, CurrencyService cs, DbService db)
+            public WaifuClaimCommands(IDataCache cache, IBotConfigProvider bc, CurrencyService cs, DbService db)
             {
                 _bc = bc;
                 _cs = cs;
                 _db = db;
+                _cache = cache;
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -183,6 +188,23 @@ namespace WizBot.Modules.Gambling
                 await Context.Channel.SendConfirmAsync(Context.User.Mention + msg).ConfigureAwait(false);
             }
 
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            public async Task WaifuTransfer(IUser waifu, IUser newOwner)
+            {
+                if (!await _service.WaifuTransfer(Context.User, waifu.Id, newOwner)
+                    .ConfigureAwait(false))
+                {
+                    await ReplyErrorLocalized("waifu_transfer_fail").ConfigureAwait(false);
+                    return;
+                }
+
+                await ReplyConfirmLocalized("waifu_transfer_success",
+                    Format.Bold(waifu.ToString()),
+                    Format.Bold(Context.User.ToString()),
+                    Format.Bold(newOwner.ToString())).ConfigureAwait(false);
+            }
+
             public enum DivorceResult
             {
                 Success,
@@ -191,8 +213,6 @@ namespace WizBot.Modules.Gambling
                 Cooldown
             }
 
-
-            private static readonly TimeSpan _divorceLimit = TimeSpan.FromHours(6);
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [Priority(0)]
@@ -207,7 +227,7 @@ namespace WizBot.Modules.Gambling
                     return;
 
                 DivorceResult result;
-                var difference = TimeSpan.Zero;
+                TimeSpan? remaining = null;
                 var amount = 0;
                 WaifuInfo w = null;
                 using (var uow = _db.UnitOfWork)
@@ -216,9 +236,7 @@ namespace WizBot.Modules.Gambling
                     var now = DateTime.UtcNow;
                     if (w?.Claimer == null || w.Claimer.UserId != Context.User.Id)
                         result = DivorceResult.NotYourWife;
-                    else if (_service.DivorceCooldowns.AddOrUpdate(Context.User.Id,
-                        now,
-                        (key, old) => ((difference = now.Subtract(old)) > _divorceLimit) ? now : old) != now)
+                    else if (!_cache.TryAddDivorceCooldown(Context.User.Id, out remaining))
                     {
                         result = DivorceResult.Cooldown;
                     }
@@ -267,17 +285,11 @@ namespace WizBot.Modules.Gambling
                 }
                 else
                 {
-                    var remaining = _divorceLimit.Subtract(difference);
                     await ReplyErrorLocalized("waifu_recent_divorce",
-                        Format.Bold(((int)remaining.TotalHours).ToString()),
-                        Format.Bold(remaining.Minutes.ToString())).ConfigureAwait(false);
+                        Format.Bold(((int)remaining?.TotalHours).ToString()),
+                        Format.Bold(remaining?.Minutes.ToString())).ConfigureAwait(false);
                 }
             }
-
-            private static readonly TimeSpan _affinityLimit = TimeSpan.FromMinutes(30);
-            private readonly IBotConfigProvider _bc;
-            private readonly CurrencyService _cs;
-            private readonly DbService _db;
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
@@ -290,8 +302,7 @@ namespace WizBot.Modules.Gambling
                 }
                 DiscordUser oldAff = null;
                 var sucess = false;
-                var cooldown = false;
-                var difference = TimeSpan.Zero;
+                TimeSpan? remaining = null;
                 using (var uow = _db.UnitOfWork)
                 {
                     var w = uow.Waifus.ByWaifuUserId(Context.User.Id);
@@ -299,12 +310,10 @@ namespace WizBot.Modules.Gambling
                     var now = DateTime.UtcNow;
                     if (w?.Affinity?.UserId == u?.Id)
                     {
+                        //todo don't let people change affinity on different shards
                     }
-                    else if (_service.AffinityCooldowns.AddOrUpdate(Context.User.Id,
-                        now,
-                        (key, old) => ((difference = now.Subtract(old)) > _affinityLimit) ? now : old) != now)
+                    else if (!_cache.TryAddAffinityCooldown(Context.User.Id, out remaining))
                     {
-                        cooldown = true;
                     }
                     else if (w == null)
                     {
@@ -346,12 +355,11 @@ namespace WizBot.Modules.Gambling
                 }
                 if (!sucess)
                 {
-                    if (cooldown)
+                    if (remaining != null)
                     {
-                        var remaining = _affinityLimit.Subtract(difference);
                         await ReplyErrorLocalized("waifu_affinity_cooldown",
-                            Format.Bold(((int)remaining.TotalHours).ToString()),
-                            Format.Bold(remaining.Minutes.ToString())).ConfigureAwait(false);
+                            Format.Bold(((int)remaining?.TotalHours).ToString()),
+                            Format.Bold(remaining?.Minutes.ToString())).ConfigureAwait(false);
                     }
                     else
                     {
@@ -476,7 +484,7 @@ namespace WizBot.Modules.Gambling
                     .Select(x => WaifuItem.GetItem(x))
                     .ForEach(x => embed.AddField(f => f.WithName(x.ItemEmoji + " " + x.Item).WithValue(x.Price).WithIsInline(true)));
 
-                    await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
+                await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -524,7 +532,7 @@ namespace WizBot.Modules.Gambling
                     await uow.CompleteAsync().ConfigureAwait(false);
                 }
 
-                await ReplyConfirmLocalized("waifu_gift", Format.Bold(item.ToString() + " " +itemObj.ItemEmoji), Format.Bold(waifu.ToString())).ConfigureAwait(false);
+                await ReplyConfirmLocalized("waifu_gift", Format.Bold(item.ToString() + " " + itemObj.ItemEmoji), Format.Bold(waifu.ToString())).ConfigureAwait(false);
             }
 
 
