@@ -30,11 +30,11 @@ namespace WizBot.Modules.Administration.Services
         private readonly IBotCredentials _creds;
         private ImmutableArray<AsyncLazy<IDMChannel>> ownerChannels = new ImmutableArray<AsyncLazy<IDMChannel>>();
         private readonly IBotConfigProvider _bc;
-        private readonly IImagesService _imgs;
+        private readonly IImageCache _imgs;
 
         public SelfService(DiscordSocketClient client, WizBot bot, CommandHandler cmdHandler, DbService db,
             IBotConfigProvider bc, ILocalization localization, WizBotStrings strings, IBotCredentials creds,
-            IDataCache cache, IImagesService imgs)
+            IDataCache cache)
         {
             _redis = cache.Redis;
             _bot = bot;
@@ -46,7 +46,7 @@ namespace WizBot.Modules.Administration.Services
             _client = client;
             _creds = creds;
             _bc = bc;
-            _imgs = imgs;
+            _imgs = cache.LocalImages;
 
             var sub = _redis.GetSubscriber();
             sub.Subscribe(_creds.RedisKey() + "_reload_images",

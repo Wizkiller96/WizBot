@@ -29,19 +29,18 @@ namespace WizBot.Modules.Administration
 
             private static readonly object _locker = new object();
             private readonly DiscordSocketClient _client;
-            private readonly IImagesService _images;
+            private readonly IImageCache _images;
             private readonly IBotConfigProvider _bc;
             private readonly WizBot _bot;
             private readonly IBotCredentials _creds;
             private readonly IDataCache _cache;
 
             public SelfCommands(DbService db, WizBot bot, DiscordSocketClient client,
-                IImagesService images, IBotConfigProvider bc,
-                IBotCredentials creds, IDataCache cache)
+                IBotConfigProvider bc, IBotCredentials creds, IDataCache cache)
             {
                 _db = db;
                 _client = client;
-                _images = images;
+                _images = cache.LocalImages;
                 _bc = bc;
                 _bot = bot;
                 _creds = creds;

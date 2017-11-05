@@ -24,11 +24,11 @@ namespace WizBot.Modules.Gambling
             private static readonly Regex fudgeRegex = new Regex(@"^(?<n1>\d+)d(?:F|f)$", RegexOptions.Compiled);
 
             private static readonly char[] _fateRolls = { '-', ' ', '+' };
-            private readonly IImagesService _images;
+            private readonly IImageCache _images;
 
-            public DriceRollCommands(IImagesService images)
+            public DriceRollCommands(IDataCache data)
             {
-                _images = images;
+                _images = data.LocalImages;
             }
 
 
@@ -131,7 +131,7 @@ namespace WizBot.Modules.Gambling
                 bitmap.SaveAsPng(ms);
                 ms.Position = 0;
                 await Context.Channel.SendFileAsync(ms, "dice.png",
-                    Context.User.Mention +  " " +
+                    Context.User.Mention + " " +
                     GetText("dice_rolled_num", Format.Bold(values.Count.ToString())) +
                     " " + GetText("total_average",
                         Format.Bold(values.Sum().ToString()),
@@ -141,10 +141,8 @@ namespace WizBot.Modules.Gambling
             private async Task InternallDndRoll(string arg, bool ordered)
             {
                 Match match;
-                int n1;
-                int n2;
                 if ((match = fudgeRegex.Match(arg)).Length != 0 &&
-                    int.TryParse(match.Groups["n1"].ToString(), out n1) &&
+                    int.TryParse(match.Groups["n1"].ToString(), out int n1) &&
                     n1 > 0 && n1 < 500)
                 {
                     var rng = new WizBotRandom();
@@ -164,13 +162,14 @@ namespace WizBot.Modules.Gambling
                 {
                     var rng = new WizBotRandom();
                     if (int.TryParse(match.Groups["n1"].ToString(), out n1) &&
-                        int.TryParse(match.Groups["n2"].ToString(), out n2) &&
+                        int.TryParse(match.Groups["n2"].ToString(), out int n2) &&
                         n1 <= 50 && n2 <= 100000 && n1 > 0 && n2 > 0)
                     {
-                        var add = 0;
-                        var sub = 0;
-                        int.TryParse(match.Groups["add"].Value, out add);
-                        int.TryParse(match.Groups["sub"].Value, out sub);
+                        if (!int.TryParse(match.Groups["add"].Value, out int add) ||
+                           !int.TryParse(match.Groups["sub"].Value, out int sub))
+                        {
+                            return;
+                        }
 
                         var arr = new int[n1];
                         for (int i = 0; i < n1; i++)
@@ -179,7 +178,7 @@ namespace WizBot.Modules.Gambling
                         }
 
                         var sum = arr.Sum();
-                        var embed = new EmbedBuilder().WithOkColor().WithDescription(Context.User.Mention + " " +GetText("dice_rolled_num", n1) + $"`1 - {n2}`")
+                        var embed = new EmbedBuilder().WithOkColor().WithDescription(Context.User.Mention + " " + GetText("dice_rolled_num", n1) + $"`1 - {n2}`")
                         .AddField(efb => efb.WithName(Format.Bold("Rolls"))
                             .WithValue(string.Join(" ", (ordered ? arr.OrderBy(x => x).AsEnumerable() : arr).Select(x => Format.Code(x.ToString())))))
                         .AddField(efb => efb.WithName(Format.Bold("Sum"))
