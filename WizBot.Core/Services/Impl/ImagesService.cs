@@ -8,7 +8,6 @@ using System.Linq;
 
 namespace WizBot.Core.Services.Impl
 {
-    //todo move everything to redis
     public class RedisImagesCache : IImageCache
     {
         private readonly ConnectionMultiplexer _con;
