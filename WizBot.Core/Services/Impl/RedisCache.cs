@@ -1,7 +1,6 @@
 using WizBot.Extensions;
 using StackExchange.Redis;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace WizBot.Core.Services.Impl
@@ -11,6 +10,7 @@ namespace WizBot.Core.Services.Impl
         public ConnectionMultiplexer Redis { get; }
 
         public IImageCache LocalImages { get; }
+        public ILocalDataCache LocalData { get; }
 
         private readonly IDatabase _db;
         private readonly string _redisKey;
@@ -20,6 +20,7 @@ namespace WizBot.Core.Services.Impl
             Redis = ConnectionMultiplexer.Connect("127.0.0.1");
             Redis.PreserveAsyncOrder = false;
             LocalImages = new RedisImagesCache(Redis, creds);
+            LocalData = new RedisLocalDataCache(Redis, creds);
             _db = Redis.GetDatabase();
             _redisKey = creds.RedisKey();
         }
