@@ -3098,5 +3098,13 @@
     "usage": [
       "{0}novel the nine cauldrons"
     ]
+  },
+  "rip": {
+    "cmd": "rip",
+    "desc": "Displays a user who is mention on a tombstone. If no user is mention then it will display the user who ran the command instead.",
+    "usage": [
+      "{0}rip",
+      "{0}rip @someone"
+    ]
   }
 }

@@ -6,7 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WizBot.Common.Attributes;
-using WizBot.Modules.Searches.Common;
+using WizBot.Core.Common.Pokemon;
+using WizBot.Core.Services;
 
 namespace WizBot.Modules.Searches
 {
@@ -15,8 +16,15 @@ namespace WizBot.Modules.Searches
         [Group]
         public class PokemonSearchCommands : WizBotSubmodule<SearchesService>
         {
-            public Dictionary<string, SearchPokemon> Pokemons => _service.Pokemons;
-            public Dictionary<string, SearchPokemonAbility> PokemonAbilities => _service.PokemonAbilities;
+            private readonly IDataCache _cache;
+
+            public IReadOnlyDictionary<string, SearchPokemon> Pokemons => _cache.LocalData.Pokemons;
+            public IReadOnlyDictionary<string, SearchPokemonAbility> PokemonAbilities => _cache.LocalData.PokemonAbilities;
+
+            public PokemonSearchCommands(IDataCache cache)
+            {
+                _cache = cache;
+            }
 
             [WizBotCommand, Usage, Description, Aliases]
             public async Task Pokemon([Remainder] string pokemon = null)
@@ -54,7 +62,7 @@ namespace WizBot.Modules.Searches
                     {
                         await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                             .WithTitle(kvp.Value.Name)
-                            .WithDescription(string.IsNullOrWhiteSpace(kvp.Value.Desc) 
+                            .WithDescription(string.IsNullOrWhiteSpace(kvp.Value.Desc)
                                 ? kvp.Value.ShortDesc
                                 : kvp.Value.Desc)
                             .AddField(efb => efb.WithName(GetText("rating"))
