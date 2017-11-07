@@ -17,11 +17,13 @@ using System.Net.Http;
 using Newtonsoft.Json.Linq;
 using AngleSharp;
 using System.Threading;
+using WizBot.Modules.Searches.Exceptions;
 using ImageSharp;
 using Image = ImageSharp.Image;
 using SixLabors.Primitives;
 using SixLabors.Fonts;
 using WizBot.Core.Services.Impl;
+using WizBot.Core.Modules.Searches.Common;
 
 namespace WizBot.Modules.Searches.Services
 {
@@ -36,10 +38,15 @@ namespace WizBot.Modules.Searches.Services
         private readonly IImageCache _imgs;
         private readonly IDataCache _cache;
         private readonly FontProvider _fonts;
-        private readonly HttpClient http;
 
         public ConcurrentDictionary<ulong, bool> TranslatedChannels { get; } = new ConcurrentDictionary<ulong, bool>();
         public ConcurrentDictionary<UserChannelPair, string> UserLanguages { get; } = new ConcurrentDictionary<UserChannelPair, string>();
+
+        public readonly string PokemonAbilitiesFile = "data/pokemon/pokemon_abilities7.json";
+
+        public readonly string PokemonListFile = "data/pokemon/pokemon_list7.json";
+        public Dictionary<string, SearchPokemon> Pokemons { get; } = new Dictionary<string, SearchPokemon>();
+        public Dictionary<string, SearchPokemonAbility> PokemonAbilities { get; } = new Dictionary<string, SearchPokemonAbility>();
 
         public List<WoWJoke> WowJokes { get; } = new List<WoWJoke>();
         public List<MagicItem> MagicItems { get; } = new List<MagicItem>();
@@ -51,6 +58,15 @@ namespace WizBot.Modules.Searches.Services
         public ConcurrentDictionary<ulong, Timer> AutoButtTimers { get; } = new ConcurrentDictionary<ulong, Timer>();
 
         private readonly ConcurrentDictionary<ulong, HashSet<string>> _blacklistedTags = new ConcurrentDictionary<ulong, HashSet<string>>();
+        private readonly Timer _t;
+
+        public async Task<CryptoData[]> CryptoData()
+        {
+            var data = await _cache.Redis.GetDatabase()
+                .StringGetAsync("crypto_data").ConfigureAwait(false);
+
+            return JsonConvert.DeserializeObject<CryptoData[]>(data);
+        }
 
         public SearchesService(DiscordSocketClient client, IGoogleApiService google,
             DbService db, WizBot bot, IDataCache cache,
@@ -65,7 +81,6 @@ namespace WizBot.Modules.Searches.Services
             _imgs = cache.LocalImages;
             _cache = cache;
             _fonts = fonts;
-            http = new HttpClient();
 
             _blacklistedTags = new ConcurrentDictionary<ulong, HashSet<string>>(
                 bot.AllGuildConfigs.ToDictionary(
@@ -106,6 +121,28 @@ namespace WizBot.Modules.Searches.Services
                 return Task.CompletedTask;
             };
 
+            if (client.ShardId == 0)
+            {
+                _t = new Timer(async _ =>
+                {
+                    var r = _cache.Redis.GetDatabase();
+                    try
+                    {
+                        var data = (string)(await r.StringGetAsync("crypto_data").ConfigureAwait(false));
+                        if (data == null)
+                        {
+                            data = await Http.GetStringAsync("https://api.coinmarketcap.com/v1/ticker/")
+                                .ConfigureAwait(false);
+
+                            await r.StringSetAsync("crypto_data", data, TimeSpan.FromHours(6)).ConfigureAwait(false);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _log.Warn(ex);
+                    }
+                }, null, TimeSpan.Zero, TimeSpan.FromHours(1));
+            }
 
             //joke commands
             if (File.Exists("data/wowjokes.json"))
@@ -128,7 +165,7 @@ namespace WizBot.Modules.Searches.Services
             var (succ, data) = await _cache.TryGetImageDataAsync(imgUrl);
             if (!succ)
             {
-                using (var temp = await http.GetAsync(imgUrl, HttpCompletionOption.ResponseHeadersRead))
+                using (var temp = await Http.GetAsync(imgUrl, HttpCompletionOption.ResponseHeadersRead))
                 {
                     if (temp.Content.Headers.ContentType.MediaType != "image/png"
                         && temp.Content.Headers.ContentType.MediaType != "image/jpeg"
