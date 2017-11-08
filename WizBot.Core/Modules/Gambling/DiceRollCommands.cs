@@ -31,7 +31,6 @@ namespace WizBot.Modules.Gambling
                 _images = data.LocalImages;
             }
 
-
             [WizBotCommand, Usage, Description, Aliases]
             public async Task Roll()
             {
