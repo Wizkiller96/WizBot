@@ -3114,5 +3114,12 @@
       "{0}c btc",
       "{0}c bitcoin"
     ]
+    },
+  "rolelevelreq": {
+    "cmd": "rolelevelreq rlr",
+    "desc": "Set a level requirement on a self-assignable role.",
+    "usage": [
+      "{0}rlr 5 SomeRole"
+    ]
   }
 }
