@@ -200,7 +200,7 @@ namespace WizBot.Modules.Games.Services
                             {
                                 var sent = await channel.SendFileAsync(
                                     fileStream,
-                                    "drop.png",
+                                    "drop.gif",
                                     toSend).ConfigureAwait(false);
 
                                 msgs[0] = sent;
