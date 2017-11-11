@@ -3122,12 +3122,19 @@
       "{0}c btc",
       "{0}c bitcoin"
     ]
-    },
+  },
   "rolelevelreq": {
     "cmd": "rolelevelreq rlr",
     "desc": "Set a level requirement on a self-assignable role.",
     "usage": [
       "{0}rlr 5 SomeRole"
+    ]
+  },
+  "masskill": {
+    "cmd": "masskill",
+    "desc": "Specify a new-line separated list of `userid reason`. You can use Username#discrim instead of UserId. Specified users will be banned from the current server, blacklisted from the bot, and have all of their flowers taken away.",
+    "usage": [
+      "{0}masskill BadPerson#1234 Toxic person"
     ]
   }
 }
