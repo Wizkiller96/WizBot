@@ -108,6 +108,22 @@ namespace WizBot.Modules.Gambling
         }
 
         [WizBotCommand, Usage, Description, Aliases]
+        [RequireContext(ContextType.Guild)]
+        public async Task RaffleAny([Remainder] IRole role = null)
+        {
+            role = role ?? Context.Guild.EveryoneRole;
+
+            var members = (await role.GetMembersAsync());
+            var membersArray = members as IUser[] ?? members.ToArray();
+            if (membersArray.Length == 0)
+            {
+                return;
+            }
+            var usr = membersArray[new WizBotRandom().Next(0, membersArray.Length)];
+            await Context.Channel.SendConfirmAsync("🎟 " + GetText("raffled_user"), $"**{usr.Username}#{usr.Discriminator}**", footer: $"ID: {usr.Id}").ConfigureAwait(false);
+        }
+
+        [WizBotCommand, Usage, Description, Aliases]
         [Priority(1)]
         public async Task Cash([Remainder] IUser user = null)
         {
