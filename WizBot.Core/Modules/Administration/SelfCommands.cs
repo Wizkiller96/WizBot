@@ -303,7 +303,7 @@ namespace WizBot.Modules.Administration
                 }
             }
 
-
+#if !GLOBAL_WIZBOT
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
             public async Task Die()
@@ -337,6 +337,7 @@ namespace WizBot.Modules.Administration
                 var sub = _cache.Redis.GetSubscriber();
                 sub.Publish(_creds.RedisKey() + "_die", "", StackExchange.Redis.CommandFlags.FireAndForget);
             }
+#endif
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
