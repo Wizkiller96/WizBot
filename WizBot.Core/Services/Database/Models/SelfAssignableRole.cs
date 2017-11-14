@@ -6,5 +6,6 @@ namespace WizBot.Core.Services.Database.Models
         public ulong RoleId { get; set; }
 
         public int Group { get; set; }
+        public int LevelRequirement { get; set; }
     }
 }
