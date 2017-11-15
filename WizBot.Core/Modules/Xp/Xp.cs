@@ -18,39 +18,15 @@ namespace WizBot.Modules.Xp
         private readonly DiscordSocketClient _client;
         private readonly DbService _db;
 
-        public Xp(DiscordSocketClient client,DbService db)
+        public Xp(DiscordSocketClient client, DbService db)
         {
             _client = client;
             _db = db;
         }
 
-        //[WizBotCommand, Usage, Description, Aliases]
-        //[RequireContext(ContextType.Guild)]
-        //[OwnerOnly]
-        //public async Task Populate()
-        //{
-        //    var rng = new WizBotRandom();
-        //    using (var uow = _db.UnitOfWork)
-        //    {
-        //        for (var i = 0ul; i < 1000000; i++)
-        //        {
-        //            uow.DiscordUsers.Add(new DiscordUser()
-        //            {
-        //                AvatarId = i.ToString(),
-        //                Discriminator = "1234",
-        //                UserId = i,
-        //                Username = i.ToString(),
-        //                Club = null,
-        //            });
-        //            var xp = uow.Xp.GetOrCreateUser(Context.Guild.Id, i);
-        //            xp.Xp = rng.Next(100, 100000);
-        //        }
-        //        uow.Complete();
-        //    }
-        //}
-
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
+        //todo add ratelimit attribute
         //[Ratelimit(30)]
         public async Task Experience([Remainder]IUser user = null)
         {
@@ -82,7 +58,7 @@ namespace WizBot.Modules.Xp
                 .Take(9);
 
             var embed = new EmbedBuilder()
-                .WithTitle(GetText("role_rewards"))
+                .WithTitle(GetText("level_up_rewards"))
                 .WithOkColor();
 
             if (!roles.Any())
@@ -110,10 +86,25 @@ namespace WizBot.Modules.Xp
 
             _service.SetRoleReward(Context.Guild.Id, level, role?.Id);
 
-            if(role == null)
+            if (role == null)
                 await ReplyConfirmLocalized("role_reward_cleared", level).ConfigureAwait(false);
             else
                 await ReplyConfirmLocalized("role_reward_added", level, Format.Bold(role.ToString())).ConfigureAwait(false);
+        }
+
+        [WizBotCommand, Usage, Description, Aliases]
+        [RequireContext(ContextType.Guild)]
+        public async Task XpCurrencyReward(int level, int amount = 0)
+        {
+            if (level < 1 || amount < 0)
+                return;
+
+            _service.SetCurrencyReward(Context.Guild.Id, level, amount);
+
+            if (amount == 0)
+                await ReplyConfirmLocalized("cur_reward_cleared", level).ConfigureAwait(false);
+            else
+                await ReplyConfirmLocalized("cur_reward_added", level, Format.Bold(amount.ToString())).ConfigureAwait(false);
         }
 
         public enum NotifyPlace
