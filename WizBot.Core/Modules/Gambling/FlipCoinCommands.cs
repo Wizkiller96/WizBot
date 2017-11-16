@@ -20,14 +20,16 @@ namespace WizBot.Modules.Gambling
             private readonly IImageCache _images;
             private readonly IBotConfigProvider _bc;
             private readonly CurrencyService _cs;
-
+            private readonly DbService _db;
             private static readonly WizBotRandom rng = new WizBotRandom();
 
-            public FlipCoinCommands(IDataCache data, CurrencyService cs, IBotConfigProvider bc)
+            public FlipCoinCommands(IDataCache data, CurrencyService cs,
+                IBotConfigProvider bc, DbService db)
             {
                 _images = data.LocalImages;
                 _bc = bc;
                 _cs = cs;
+                _db = db;
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -86,7 +88,18 @@ namespace WizBot.Modules.Gambling
             }
 
             [WizBotCommand, Usage, Description, Aliases]
-            public async Task Betflip(int amount, BetFlipGuess guess)
+            public Task Betflip(Allin _, BetFlipGuess guess)
+            {
+                long cur;
+                using (var uow = _db.UnitOfWork)
+                {
+                    cur = uow.Currency.GetUserCurrency(Context.User.Id);
+                }
+                return Betflip(cur, guess);
+            }
+
+            [WizBotCommand, Usage, Description, Aliases]
+            public async Task Betflip(long amount, BetFlipGuess guess)
             {
                 if (amount < _bc.BotConfig.MinimumBetAmount)
                 {

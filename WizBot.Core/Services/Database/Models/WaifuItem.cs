@@ -81,7 +81,7 @@ namespace WizBot.Core.Services.Database.Models
                 case ItemName.Helicopter:
                     return new WaifuItem("🚁", 20000, itemName);
                 case ItemName.Airplane:
-                    return new WaifuItem("🚁", 50000, itemName);
+                    return new WaifuItem("✈", 25000, itemName);
                 case ItemName.Iphone:
                     return new WaifuItem("📱", 4000, itemName);
                 case ItemName.Cat:

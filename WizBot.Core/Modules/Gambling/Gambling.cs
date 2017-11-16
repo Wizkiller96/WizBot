@@ -278,9 +278,9 @@ namespace WizBot.Modules.Gambling
         //    });
         //    return Task.CompletedTask;
         //}
+        public enum Allin { Allin, All }
 
-        [WizBotCommand, Usage, Description, Aliases]
-        public async Task BetRoll(long amount)
+        private async Task InternallBetroll(long amount)
         {
             if (amount < 1)
                 return;
@@ -319,6 +319,21 @@ namespace WizBot.Modules.Gambling
                 }
             }
             await Context.Channel.SendConfirmAsync(str).ConfigureAwait(false);
+        }
+
+        [WizBotCommand, Usage, Description, Aliases]
+        public Task BetRoll(long amount)
+            => InternallBetroll(amount);
+
+        [WizBotCommand, Usage, Description, Aliases]
+        public Task BetRoll(Allin _)
+        {
+            long cur;
+            using (var uow = _db.UnitOfWork)
+            {
+                cur = uow.Currency.GetUserCurrency(Context.User.Id);
+            }
+            return InternallBetroll(cur);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
