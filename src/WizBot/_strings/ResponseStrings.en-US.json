@@ -599,6 +599,7 @@
     "utility_no_topic_set": "No topic set.",
     "utility_owner": "Owner",
     "utility_owner_ids": "Owner IDs",
+    "utility_admin_ids": "Admin IDs",
     "utility_presence": "Presence",
     "utility_presence_txt": "{0} Servers\n{1} Text Channels\n{2} Voice Channels",
     "utility_quotes_deleted": "Deleted all quotes with {0} keyword.",
