@@ -211,6 +211,7 @@ Author: [{Author}] | Library: [{Library}]
 Bot Version: [{BotVersion}]
 Bot ID: {curUser.Id}
 Owner ID(s): {string.Join(", ", _creds.OwnerIds)}
+Admin ID(s): {string.Join(", ", _creds.AdminIds)}
 Uptime: {GetUptimeString()}
 Servers: {_client.Guilds.Count} | TextChannels: {TextChannels} | VoiceChannels: {VoiceChannels}
 Commands Ran this session: {CommandsRan}
