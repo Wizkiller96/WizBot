@@ -9,6 +9,8 @@ using WizBot.Common.Attributes;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Impl;
+using WizBot.Common;
+using NLog;
 
 namespace WizBot.Modules.Help.Services
 {
@@ -17,25 +19,33 @@ namespace WizBot.Modules.Help.Services
         private readonly IBotConfigProvider _bc;
         private readonly CommandHandler _ch;
         private readonly WizBotStrings _strings;
+        private readonly Logger _log;
 
         public HelpService(IBotConfigProvider bc, CommandHandler ch, WizBotStrings strings)
         {
             _bc = bc;
             _ch = ch;
             _strings = strings;
+            _log = LogManager.GetCurrentClassLogger();
         }
 
-        public async Task LateExecute(DiscordSocketClient client, IGuild guild, IUserMessage msg)
+        public Task LateExecute(DiscordSocketClient client, IGuild guild, IUserMessage msg)
         {
             try
             {
-                if(guild == null)
-                    await msg.Channel.SendMessageAsync(_bc.BotConfig.DMHelpString).ConfigureAwait(false);
+                if (guild == null)
+                {
+                    if (CREmbed.TryParse(_bc.BotConfig.DMHelpString, out var embed))
+                        return msg.Channel.EmbedAsync(embed.ToEmbed(), embed.PlainText?.SanitizeMentions() ?? "");
+
+                    return msg.Channel.SendMessageAsync(_bc.BotConfig.DMHelpString);
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                //ignore
+                _log.Warn(ex);
             }
+            return Task.CompletedTask;
         }
 
         public EmbedBuilder GetCommandHelp(CommandInfo com, IGuild guild)

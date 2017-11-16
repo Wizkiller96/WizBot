@@ -11,6 +11,8 @@ using System.Collections.Generic;
 using WizBot.Common.Attributes;
 using WizBot.Modules.Help.Services;
 using WizBot.Modules.Permissions.Services;
+using WizBot.Common;
+using WizBot.Common.Replacements;
 
 namespace WizBot.Modules.Help
 {
@@ -23,8 +25,23 @@ namespace WizBot.Modules.Help
         private readonly CommandService _cmds;
         private readonly GlobalPermissionService _perms;
 
-        public string HelpString => String.Format(_config.BotConfig.HelpString, _creds.ClientId, Prefix);
-        public string DMHelpString => _config.BotConfig.DMHelpString;
+        public EmbedBuilder GetHelpStringEmbed()
+        {
+            var r = new ReplacementBuilder()
+                .WithDefault(Context)
+                .WithOverride("{0}", () => _creds.ClientId.ToString())
+                .WithOverride("{1}", () => Prefix)
+                .Build();
+
+
+            if (!CREmbed.TryParse(_config.BotConfig.HelpString, out var embed))
+                return new EmbedBuilder().WithOkColor()
+                    .WithDescription(String.Format(_config.BotConfig.HelpString, _creds.ClientId, Prefix));
+
+            r.Replace(embed);
+
+            return embed.ToEmbed();
+        }
 
         public Help(IBotCredentials creds, GlobalPermissionService perms, IBotConfigProvider config, CommandService cmds)
         {
@@ -95,15 +112,9 @@ namespace WizBot.Modules.Help
             if (com == null)
             {
                 IMessageChannel ch = channel is ITextChannel ? await ((IGuildUser)Context.User).GetOrCreateDMChannelAsync() : channel;
-                await ch.SendMessageAsync(HelpString).ConfigureAwait(false);
+                await ch.EmbedAsync(GetHelpStringEmbed()).ConfigureAwait(false);
                 return;
             }
-
-            //if (com == null)
-            //{
-            //    await ReplyErrorLocalized("command_not_found").ConfigureAwait(false);
-            //    return;
-            //}
 
             var embed = _service.GetCommandHelp(com, Context.Guild);
             await channel.EmbedAsync(embed).ConfigureAwait(false);
@@ -116,7 +127,7 @@ namespace WizBot.Modules.Help
         {
             var helpstr = new StringBuilder();
             helpstr.AppendLine(GetText("cmdlist_donate", PatreonUrl, PaypalUrl) + "\n");
-            helpstr.AppendLine("##"+ GetText("table_of_contents"));
+            helpstr.AppendLine("##" + GetText("table_of_contents"));
             helpstr.AppendLine(string.Join("\n", _cmds.Modules.Where(m => m.GetTopLevelModule().Name.ToLowerInvariant() != "help")
                 .Select(m => m.GetTopLevelModule().Name)
                 .Distinct()
@@ -153,8 +164,8 @@ namespace WizBot.Modules.Help
         public async Task Guide()
         {
             await ConfirmLocalized("guide",
-                "http://WizBot.readthedocs.io/en/latest/Commands%20List/",
-                "http://WizBot.readthedocs.io/en/latest/").ConfigureAwait(false);
+                "http://wizbot.readthedocs.io/en/latest/Commands%20List/",
+                "http://wizbot.readthedocs.io/en/latest/").ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
