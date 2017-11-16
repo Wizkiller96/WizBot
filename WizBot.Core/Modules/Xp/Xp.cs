@@ -102,6 +102,7 @@ namespace WizBot.Modules.Xp
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         [OwnerOnly]
+        [AdminOnly]
         public async Task XpCurrencyReward(int level, int amount = 0)
         {
             if (level < 1 || amount < 0)

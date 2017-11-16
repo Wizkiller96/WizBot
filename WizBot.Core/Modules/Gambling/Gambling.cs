@@ -65,6 +65,7 @@ namespace WizBot.Modules.Gambling
 
         [WizBotCommand, Usage, Description, Aliases]
         [OwnerOnly]
+        [AdminOnly]
         public async Task TimelyReset()
         {
             _cache.RemoveAllTimelyClaims();
@@ -73,6 +74,7 @@ namespace WizBot.Modules.Gambling
 
         [WizBotCommand, Usage, Description, Aliases]
         [OwnerOnly]
+        [AdminOnly]
         public async Task TimelySet(int num, int period = 24)
         {
             if (num < 0 || period < 0)
@@ -160,12 +162,14 @@ namespace WizBot.Modules.Gambling
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         [OwnerOnly]
+        [AdminOnly]
         [Priority(0)]
         public Task Award(int amount, [Remainder] IGuildUser usr) =>
             Award(amount, usr.Id);
 
         [WizBotCommand, Usage, Description, Aliases]
         [OwnerOnly]
+        [AdminOnly]
         [Priority(1)]
         public async Task Award(int amount, ulong usrId)
         {
@@ -179,6 +183,7 @@ namespace WizBot.Modules.Gambling
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         [OwnerOnly]
+        [AdminOnly]
         [Priority(2)]
         public async Task Award(int amount, [Remainder] IRole role)
         {
@@ -199,6 +204,7 @@ namespace WizBot.Modules.Gambling
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         [OwnerOnly]
+        [AdminOnly]
         public async Task Take(long amount, [Remainder] IGuildUser user)
         {
             if (amount <= 0)
@@ -213,6 +219,7 @@ namespace WizBot.Modules.Gambling
 
         [WizBotCommand, Usage, Description, Aliases]
         [OwnerOnly]
+        [AdminOnly]
         public async Task Take(long amount, [Remainder] ulong usrId)
         {
             if (amount <= 0)

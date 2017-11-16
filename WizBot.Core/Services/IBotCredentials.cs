@@ -10,6 +10,7 @@ namespace WizBot.Core.Services
         string Token { get; }
         string GoogleApiKey { get; }
         ImmutableArray<ulong> OwnerIds { get; }
+        ImmutableArray<ulong> AdminIds { get; }
         string MashapeKey { get; }
         string LoLApiKey { get; }
         string PatreonAccessToken { get; }
@@ -19,6 +20,7 @@ namespace WizBot.Core.Services
         string OsuApiKey { get; }
 
         bool IsOwner(IUser u);
+        bool IsAdmin(IUser u);
         int TotalShards { get; }
         string ShardRunCommand { get; }
         string ShardRunArguments { get; }

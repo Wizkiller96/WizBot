@@ -252,6 +252,7 @@
     "gambling_take_fail": "was unable to take {0} from{1} because the user doesn't have that much {2}!",
     "help_back_to_toc": "Back to ToC",
     "help_bot_owner_only": "Bot owner only",
+    "help_bot_admin_only": "Bot admin only",
     "help_channel_permission": "Requires {0} channel permission.",
     "help_cmdlist_donate": "You can support the project on patreon: <{0}> or paypal: <{1}>",
     "help_cmd_and_alias": "Commands and aliases",

@@ -68,11 +68,13 @@ namespace WizBot.Modules.Help.Services
 
         public string GetCommandRequirements(CommandInfo cmd, IGuild guild) =>
             string.Join(" ", cmd.Preconditions
-                  .Where(ca => ca is OwnerOnlyAttribute || ca is RequireUserPermissionAttribute)
+                  .Where(ca => ca is OwnerOnlyAttribute || ca is AdminOnlyAttribute || ca is RequireUserPermissionAttribute)
                   .Select(ca =>
                   {
                       if (ca is OwnerOnlyAttribute)
                           return Format.Bold(GetText("bot_owner_only", guild));
+                      if (ca is AdminOnlyAttribute)
+                          return Format.Bold(GetText("bot_admin_only", guild));
                       var cau = (RequireUserPermissionAttribute)ca;
                       if (cau.GuildPermission != null)
                           return Format.Bold(GetText("server_permission", guild, cau.GuildPermission))

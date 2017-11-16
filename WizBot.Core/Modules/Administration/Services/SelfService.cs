@@ -29,6 +29,7 @@ namespace WizBot.Modules.Administration.Services
         private readonly DiscordSocketClient _client;
         private readonly IBotCredentials _creds;
         private ImmutableArray<AsyncLazy<IDMChannel>> ownerChannels = new ImmutableArray<AsyncLazy<IDMChannel>>();
+        private ImmutableArray<AsyncLazy<IDMChannel>> adminChannels = new ImmutableArray<AsyncLazy<IDMChannel>>();
         private readonly IBotConfigProvider _bc;
         private readonly IImageCache _imgs;
 
@@ -76,6 +77,16 @@ namespace WizBot.Modules.Administration.Services
                 if (client.ShardId == 0)
                     LoadOwnerChannels();
             });
+
+            Task.Run(async () =>
+            {
+                await bot.Ready.Task.ConfigureAwait(false);
+
+                await Task.Delay(5000);
+
+                if (client.ShardId == 0)
+                    LoadAdminChannels();
+            });
         }
 
         private void LoadOwnerChannels()
@@ -110,6 +121,40 @@ namespace WizBot.Modules.Administration.Services
                 _log.Warn("No owner channels created! Make sure you've specified correct OwnerId in the credentials.json file.");
             else
                 _log.Info($"Created {ownerChannels.Length} out of {_creds.OwnerIds.Length} owner message channels.");
+        }
+
+        private void LoadAdminChannels()
+        {
+            var hs = new HashSet<ulong>(_creds.OwnerIds);
+            var channels = new Dictionary<ulong, AsyncLazy<IDMChannel>>();
+
+            if (hs.Count > 0)
+            {
+                foreach (var g in _client.Guilds)
+                {
+                    if (hs.Count == 0)
+                        break;
+
+                    foreach (var u in g.Users)
+                    {
+                        if (hs.Remove(u.Id))
+                        {
+                            channels.Add(u.Id, new AsyncLazy<IDMChannel>(async () => await u.GetOrCreateDMChannelAsync()));
+                            if (hs.Count == 0)
+                                break;
+                        }
+                    }
+                }
+            }
+
+            adminChannels = channels.OrderBy(x => _creds.AdminIds.IndexOf(x.Key))
+                    .Select(x => x.Value)
+                    .ToImmutableArray();
+
+            if (!adminChannels.Any())
+                _log.Warn("No admin channels created! Make sure you've specified correct AdminId in the credentials.json file.");
+            else
+                _log.Info($"Created {adminChannels.Length} out of {_creds.AdminIds.Length} admin message channels.");
         }
 
         // forwards dms

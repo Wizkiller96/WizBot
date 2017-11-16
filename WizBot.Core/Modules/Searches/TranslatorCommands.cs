@@ -69,6 +69,7 @@ namespace WizBot.Modules.Searches
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.Administrator)]
             [OwnerOnly]
+            [AdminOnly]
             public async Task AutoTranslate(AutoDeleteAutoTranslate autoDelete = AutoDeleteAutoTranslate.Nodel)
             {
                 var channel = (ITextChannel)Context.Channel;

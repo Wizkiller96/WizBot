@@ -29,6 +29,7 @@ namespace WizBot.Modules.Permissions
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
+            [AdminOnly]
             public async Task ResetGlobalPermissions()
             {
                 await _service.ResetGlobalPermissions().ConfigureAwait(false);

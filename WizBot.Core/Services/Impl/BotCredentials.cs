@@ -20,6 +20,7 @@ namespace WizBot.Core.Services.Impl
         public string Token { get; }
 
         public ImmutableArray<ulong> OwnerIds { get; }
+        public ImmutableArray<ulong> AdminIds { get; }
 
         public string LoLApiKey { get; }
         public string OsuApiKey { get; }
@@ -60,6 +61,7 @@ namespace WizBot.Core.Services.Impl
                     Environment.Exit(3);
                 }
                 OwnerIds = data.GetSection("OwnerIds").GetChildren().Select(c => ulong.Parse(c.Value)).ToImmutableArray();
+                AdminIds = data.GetSection("AdminIds").GetChildren().Select(c => ulong.Parse(c.Value)).ToImmutableArray();
                 LoLApiKey = data[nameof(LoLApiKey)];
                 GoogleApiKey = data[nameof(GoogleApiKey)];
                 MashapeKey = data[nameof(MashapeKey)];
@@ -127,6 +129,7 @@ namespace WizBot.Core.Services.Impl
             public ulong ClientId { get; set; } = 123123123;
             public string Token { get; set; } = "";
             public ulong[] OwnerIds { get; set; } = new ulong[1];
+            public ulong[] AdminIds { get; set; } = new ulong[1];
             public string LoLApiKey { get; set; } = "";
             public string GoogleApiKey { get; set; } = "";
             public string MashapeKey { get; set; } = "";
@@ -152,5 +155,6 @@ namespace WizBot.Core.Services.Impl
         }
 
         public bool IsOwner(IUser u) => OwnerIds.Contains(u.Id);
+        public bool IsAdmin(IUser u) => AdminIds.Contains(u.Id);
     }
 }

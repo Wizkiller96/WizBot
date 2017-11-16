@@ -380,6 +380,8 @@ namespace WizBot.Migrations
 
                     b.Property<bool>("OwnerOnly");
 
+                    b.Property<bool>("AdminOnly");
+
                     b.Property<string>("Response");
 
                     b.Property<string>("Trigger");

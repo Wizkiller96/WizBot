@@ -371,6 +371,8 @@ namespace WizBot.Migrations
                     b.Property<bool>("IsRegex");
 
                     b.Property<bool>("OwnerOnly");
+                    
+                    b.Property<bool>("AdminOnly");
 
                     b.Property<string>("Response");
 
