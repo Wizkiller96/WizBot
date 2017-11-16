@@ -407,7 +407,7 @@ namespace WizBot.Modules.Administration
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.BanMembers)]
             [RequireBotPermission(GuildPermission.BanMembers)]
-            [OwnerOnly, AdminOnly]
+            [AdminOnly]
             public async Task MassKill([Remainder] string people)
             {
                 if (string.IsNullOrWhiteSpace(people))

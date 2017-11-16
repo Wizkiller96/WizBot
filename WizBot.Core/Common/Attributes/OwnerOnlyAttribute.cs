@@ -11,7 +11,7 @@ namespace WizBot.Common.Attributes
         {
             var creds = (IBotCredentials)services.GetService(typeof(IBotCredentials));
 
-            return Task.FromResult((creds.IsOwner(context.User) || context.Client.CurrentUser.Id == context.User.Id ? PreconditionResult.FromSuccess() : PreconditionResult.FromError("Not owner")));
+            return Task.FromResult((creds.IsOwner(context.User) || context.Client.CurrentUser.Id == context.User.Id ? PreconditionResult.FromSuccess() : PreconditionResult.FromError("Not bot owner")));
         }
     }
 }

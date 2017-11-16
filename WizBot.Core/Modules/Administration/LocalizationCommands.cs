@@ -91,7 +91,7 @@ namespace WizBot.Modules.Administration
             }
 
             [WizBotCommand, Usage, Description, Aliases]
-            [OwnerOnly, AdminOnly]
+            [AdminOnly]
             public async Task LanguageSetDefault(string name)
             {
                 try

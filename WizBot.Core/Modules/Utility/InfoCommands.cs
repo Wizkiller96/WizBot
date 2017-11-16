@@ -115,7 +115,7 @@ namespace WizBot.Modules.Utility
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            [OwnerOnly, AdminOnly]
+            [AdminOnly]
             public async Task Activity(int page = 1)
             {
                 const int activityPerPage = 10;

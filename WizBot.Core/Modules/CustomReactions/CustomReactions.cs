@@ -461,7 +461,7 @@ namespace WizBot.Modules.CustomReactions
         }
 
         [WizBotCommand, Usage, Description, Aliases]
-        [OwnerOnly, AdminOnly]
+        [AdminOnly]
         public async Task CrStatsClear(string trigger = null)
         {
             if (string.IsNullOrWhiteSpace(trigger))
