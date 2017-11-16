@@ -125,7 +125,7 @@ namespace WizBot.Modules.Administration.Services
 
         private void LoadAdminChannels()
         {
-            var hs = new HashSet<ulong>(_creds.OwnerIds);
+            var hs = new HashSet<ulong>(_creds.AdminIds);
             var channels = new Dictionary<ulong, AsyncLazy<IDMChannel>>();
 
             if (hs.Count > 0)
