@@ -162,7 +162,7 @@ namespace WizBot.Modules.Games
                 roll = 1000;
 
             if ((uid == 99272781513920512 ||
-                 uid == 213817345334968330) && roll >= 1)
+                 uid == 213817345334968330) && roll >= 10)
                 roll = 10;
 
 
