@@ -89,8 +89,7 @@ namespace WizBot.Modules.Gambling
             }
 
             [WizBotCommand, Usage, Description, Aliases]
-            [OwnerOnly]
-            [AdminOnly]
+            [OwnerOnly, AdminOnly]
             public async Task SlotStats()
             {
                 //i remembered to not be a moron
@@ -111,8 +110,7 @@ namespace WizBot.Modules.Gambling
             }
 
             [WizBotCommand, Usage, Description, Aliases]
-            [OwnerOnly]
-            [AdminOnly]
+            [OwnerOnly, AdminOnly]
             public async Task SlotTest(int tests = 1000)
             {
                 if (tests <= 0)

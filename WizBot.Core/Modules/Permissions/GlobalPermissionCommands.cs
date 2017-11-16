@@ -27,8 +27,7 @@ namespace WizBot.Modules.Permissions
             }
 
             [WizBotCommand, Usage, Description, Aliases]
-            [OwnerOnly]
-            [AdminOnly]
+            [OwnerOnly, AdminOnly]
             public async Task Lgp()
             {
                 if (!_service.BlockedModules.Any() && !_service.BlockedCommands.Any())
@@ -49,8 +48,7 @@ namespace WizBot.Modules.Permissions
             }
 
             [WizBotCommand, Usage, Description, Aliases]
-            [OwnerOnly]
-            [AdminOnly]
+            [OwnerOnly, AdminOnly]
             public async Task Gmod(ModuleOrCrInfo module)
             {
                 var moduleName = module.Name.ToLowerInvariant();
@@ -82,8 +80,7 @@ namespace WizBot.Modules.Permissions
             }
 
             [WizBotCommand, Usage, Description, Aliases]
-            [OwnerOnly]
-            [AdminOnly]
+            [OwnerOnly, AdminOnly]
             public async Task Gcmd(CommandOrCrInfo cmd)
             {
                 var commandName = cmd.Name.ToLowerInvariant();

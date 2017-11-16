@@ -63,8 +63,7 @@ namespace WizBot.Modules.Games
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            [OwnerOnly]
-            [AdminOnly]
+            [OwnerOnly, AdminOnly]
             public async Task Typeadd([Remainder] string text)
             {
                 var channel = (ITextChannel)Context.Channel;
@@ -99,8 +98,7 @@ namespace WizBot.Modules.Games
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            [OwnerOnly]
-            [AdminOnly]
+            [OwnerOnly, AdminOnly]
             public async Task Typedel(int index)
             {
                 var channel = (ITextChannel)Context.Channel;

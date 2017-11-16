@@ -312,8 +312,7 @@ namespace WizBot.Modules.NSFW
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        [OwnerOnly]
-        [AdminOnly]
+        [OwnerOnly, AdminOnly]
         public Task NsfwClearCache()
         {
             _service.ClearCache();

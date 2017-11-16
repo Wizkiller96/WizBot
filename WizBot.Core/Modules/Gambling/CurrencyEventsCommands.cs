@@ -35,8 +35,7 @@ namespace WizBot.Modules.Gambling
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            [OwnerOnly]
-            [AdminOnly]
+            [OwnerOnly, AdminOnly]
             public async Task StartEvent(CurrencyEvent e, int arg = -1)
             {
                 switch (e)

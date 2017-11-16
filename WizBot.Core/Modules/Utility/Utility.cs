@@ -249,8 +249,7 @@ namespace WizBot.Modules.Utility
         }
 
         [WizBotCommand, Usage, Description, Aliases]
-        [OwnerOnly]
-        [AdminOnly]
+        [OwnerOnly, AdminOnly]
         public async Task ListServers(int page = 1)
         {
             page -= 1;
@@ -278,8 +277,7 @@ namespace WizBot.Modules.Utility
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        [OwnerOnly]
-        [AdminOnly]
+        [OwnerOnly, AdminOnly]
         public async Task SaveChat(int cnt)
         {
             var msgs = new List<IMessage>(cnt);

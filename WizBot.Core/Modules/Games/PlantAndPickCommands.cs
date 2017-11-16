@@ -116,8 +116,7 @@ namespace WizBot.Modules.Games
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.ManageMessages)]
 #if GLOBAL_WIZBOT
-            [OwnerOnly]
-            [AdminOnly]
+            [OwnerOnly, AdminOnly]
 #endif
             public async Task GenCurrency()
             {

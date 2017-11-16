@@ -31,32 +31,27 @@ namespace WizBot.Modules.Permissions
             }
 
             [WizBotCommand, Usage, Description, Aliases]
-            [OwnerOnly]
-            [AdminOnly]
+            [OwnerOnly, AdminOnly]
             public Task UserBlacklist(AddRemove action, ulong id)
                 => Blacklist(action, id, BlacklistType.User);
 
             [WizBotCommand, Usage, Description, Aliases]
-            [OwnerOnly]
-            [AdminOnly]
+            [OwnerOnly, AdminOnly]
             public Task UserBlacklist(AddRemove action, IUser usr)
                 => Blacklist(action, usr.Id, BlacklistType.User);
 
             [WizBotCommand, Usage, Description, Aliases]
-            [OwnerOnly]
-            [AdminOnly]
+            [OwnerOnly, AdminOnly]
             public Task ChannelBlacklist(AddRemove action, ulong id)
                 => Blacklist(action, id, BlacklistType.Channel);
 
             [WizBotCommand, Usage, Description, Aliases]
-            [OwnerOnly]
-            [AdminOnly]
+            [OwnerOnly, AdminOnly]
             public Task ServerBlacklist(AddRemove action, ulong id)
                 => Blacklist(action, id, BlacklistType.Server);
 
             [WizBotCommand, Usage, Description, Aliases]
-            [OwnerOnly]
-            [AdminOnly]
+            [OwnerOnly, AdminOnly]
             public Task ServerBlacklist(AddRemove action, IGuild guild)
                 => Blacklist(action, guild.Id, BlacklistType.Server);
 
