@@ -290,7 +290,8 @@ namespace WizBot.Modules.Administration
                 await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                         .WithTitle("⛔️ " + GetText("banned_user"))
                         .AddField(efb => efb.WithName(GetText("username")).WithValue(user.ToString()).WithIsInline(true))
-                        .AddField(efb => efb.WithName("ID").WithValue(user.Id.ToString()).WithIsInline(true)))
+                        .AddField(efb => efb.WithName("ID").WithValue(user.Id.ToString()).WithIsInline(true))
+                        .AddField(efb => efb.WithName("Moderator").WithValue(Context.User.ToString()).WithIsInline(true)))
                     .ConfigureAwait(false);
             }
 
@@ -371,7 +372,8 @@ namespace WizBot.Modules.Administration
                 await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                         .WithTitle("☣ " + GetText("sb_user"))
                         .AddField(efb => efb.WithName(GetText("username")).WithValue(user.ToString()).WithIsInline(true))
-                        .AddField(efb => efb.WithName("ID").WithValue(user.Id.ToString()).WithIsInline(true)))
+                        .AddField(efb => efb.WithName("ID").WithValue(user.Id.ToString()).WithIsInline(true))
+                        .AddField(efb => efb.WithName("Moderator").WithValue(Context.User.ToString()).WithIsInline(true)))
                     .ConfigureAwait(false);
             }
 
@@ -399,7 +401,8 @@ namespace WizBot.Modules.Administration
                 await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                         .WithTitle(GetText("kicked_user"))
                         .AddField(efb => efb.WithName(GetText("username")).WithValue(user.ToString()).WithIsInline(true))
-                        .AddField(efb => efb.WithName("ID").WithValue(user.Id.ToString()).WithIsInline(true)))
+                        .AddField(efb => efb.WithName("ID").WithValue(user.Id.ToString()).WithIsInline(true))
+                        .AddField(efb => efb.WithName("Moderator").WithValue(Context.User.ToString()).WithIsInline(true)))
                     .ConfigureAwait(false);
             }
 
