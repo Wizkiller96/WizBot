@@ -286,7 +286,7 @@ namespace WizBot.Modules.Administration
                     }
                 }
 
-                await Context.Guild.AddBanAsync(user, 7).ConfigureAwait(false);
+                await Context.Guild.AddBanAsync(user, 7, msg).ConfigureAwait(false);
                 await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                         .WithTitle("⛔️ " + GetText("banned_user"))
                         .AddField(efb => efb.WithName(GetText("username")).WithValue(user.ToString()).WithIsInline(true))
@@ -395,7 +395,7 @@ namespace WizBot.Modules.Administration
                     catch { }
                 }
 
-                await user.KickAsync().ConfigureAwait(false);
+                await user.KickAsync(msg).ConfigureAwait(false);
                 await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                         .WithTitle(GetText("kicked_user"))
                         .AddField(efb => efb.WithName(GetText("username")).WithValue(user.ToString()).WithIsInline(true))
@@ -407,7 +407,7 @@ namespace WizBot.Modules.Administration
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.BanMembers)]
             [RequireBotPermission(GuildPermission.BanMembers)]
-            [AdminOnly]
+            [OwnerOnly]
             public async Task MassKill([Remainder] string people)
             {
                 if (string.IsNullOrWhiteSpace(people))
