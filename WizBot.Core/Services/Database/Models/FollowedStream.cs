@@ -9,7 +9,8 @@ namespace WizBot.Core.Services.Database.Models
 
         public enum FollowedStreamType
         {
-            Twitch, Smashcast, Mixer
+            Twitch, Smashcast, Mixer,
+            Picarto
         }
 
         public override int GetHashCode() =>
