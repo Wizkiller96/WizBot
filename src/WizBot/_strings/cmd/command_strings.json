@@ -2878,6 +2878,13 @@
       "{0}clubinfo b1nzy's friends#123"
     ]
   },
+  "clubtransfer": {
+    "Cmd": "clubtransfer",
+    "Desc": "Transfers the ownership of the club to another member of the club.",
+    "Usage": [
+      "{0}clubtransfer @b1nzy"
+    ]
+  },
   "clubapply": {
     "Cmd": "clubapply",
     "Desc": "Apply to join a club. You must meet that club's minimum level requirement, and not be on its ban list.",
