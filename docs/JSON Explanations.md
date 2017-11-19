@@ -186,7 +186,7 @@ For windows (regular installation, or from the updater), this is usually
 ## DB files
 
 WizBot saves all the settings and infomations in `WizBot.db` file here:		
-`WizBot/src/WizBot/bin/Release/netcoreapp1.1/data/WizBot.db` (macOS and Linux) 		
+`WizBot/src/WizBot/bin/Release/netcoreapp2.0/data/WizBot.db` (macOS and Linux) 		
 `WizBot\system\data` (Windows)  
 
 in order to open the database file you will need [DB Browser for SQLite](http://sqlitebrowser.org/).
