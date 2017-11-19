@@ -8,7 +8,7 @@ WizBot is written in C# and Discord.Net for more information visit <https://gith
 #### Setting up the container
 For this guide we will be using the folder /wizbot as our config root folder.
 ```
-docker create --name=wizbot -v /wizbot/conf/:/root/wizbot -v /wizbot/data:/opt/WizBot/src/WizBot/bin/Release/netcoreapp1.1/data uirel/wizbot:1.4
+docker create --name=wizbot -v /wizbot/conf/:/root/wizbot -v /wizbot/data:/opt/WizBot/src/WizBot/bin/Release/netcoreapp2.0/data uirel/wizbot:1.4
 ```
 
 #### Moving `credentials.json` into the docker container. 
@@ -46,7 +46,7 @@ The following commands are required for the default options
 `docker stop wizbot; docker rm wizbot`
 
 ```
-docker create --name=wizbot -v /wizbot/conf/:/root/wizbot -v /wizbot/data:/opt/WizBot/src/WizBot/bin/Release/netcoreapp1.1/data uirel/wizbot:1.4
+docker create --name=wizbot -v /wizbot/conf/:/root/wizbot -v /wizbot/data:/opt/WizBot/src/WizBot/bin/Release/netcoreapp2.0/data uirel/wizbot:1.4
 ```
 
 `docker start wizbot`
