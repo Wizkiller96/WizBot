@@ -26,7 +26,7 @@ namespace WizBot.Modules.Utility
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            public async Task ListQuotes(int page = 1)
+            public async Task ListQuotes(int page = 1, OrderType order = OrderType.Keyword)
             {
                 page -= 1;
 
@@ -36,7 +36,7 @@ namespace WizBot.Modules.Utility
                 IEnumerable<Quote> quotes;
                 using (var uow = _db.UnitOfWork)
                 {
-                    quotes = uow.Quotes.GetGroup(Context.Guild.Id, page * 16, 16);
+                    quotes = uow.Quotes.GetGroup(Context.Guild.Id, page, order);
                 }
 
                 if (quotes.Any())
