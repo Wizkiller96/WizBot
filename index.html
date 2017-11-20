@@ -1,136 +1,218 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>WizBot - Home</title>
-    <link rel="stylesheet" type="text/css" href="https://bootswatch.com/cyborg/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="./css/main.css">
-    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="WizNet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" href="assets/images/wizbot-icon-887x889.png" type="image/x-icon">
+  <meta name="description" content="">
+  <title>WizBot - Home</title>
+  <link rel="stylesheet" href="assets/web/assets/mobirise-icons/mobirise-icons.css">
+  <link rel="stylesheet" href="assets/tether/tether.min.css">
+  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-grid.min.css">
+  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-reboot.min.css">
+  <link rel="stylesheet" href="assets/dropdown/css/style.css">
+  <link rel="stylesheet" href="assets/data-tables/data-tables.bootstrap4.min.css">
+  <link rel="stylesheet" href="assets/animate.css/animate.min.css">
+  <link rel="stylesheet" href="assets/theme/css/style.css">
+  <link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css" type="text/css">
+  <script type="text/javascript" src="https://use.fontawesome.com/5438cea58b.js"></script>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.js"></script>
+  <script type="text/javascript" src="./api/github-api.js"></script>
+  
+  
+  
+</head>
+<body>
+<section class="menu cid-qz6j10m926" once="menu" id="menu1-e" data-rv-view="152">
 
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.2/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-  </head>
-  <body class="wb-background" style="background-image:url(./images/background1.jpg);background-repeat: no-repeat;background-attachment: fixed;background-position:center center;">
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#"><!--<img src="http://i.imgur.com/1X7IWnw.jpg" class="img-circle" style="width:25px;float:left;margin-right:5px;">-->WizBot <span class="label label-default">v1.3a</span></a>
+    
+
+    <nav class="navbar navbar-expand beta-menu navbar-dropdown align-items-center navbar-fixed-top navbar-toggleable-sm">
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </button>
+        <div class="menu-logo">
+            <div class="navbar-brand">
+                <span class="navbar-logo">
+                    <a href="#">
+                         <img src="assets/images/wizbot-icon-887x889.png" alt="WizBot" title="" media-simple="true" style="height: 3.8rem;">
+                    </a>
+                </span>
+                
+            </div>
         </div>
-
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="navbar">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="./index.html" class="fa fa-home"> Home</a></li>
-            <li><a href="http://wizbot.readthedocs.io/en/latest/" class="fa fa-book"> Documentation</a></li>
-            <li><a href="http://wizbot.readthedocs.io/en/latest/Commands%20List/" class="fa fa-list-alt"> Command List</a></li>
-            <li><a href="http://github.com/Wizkiller96/WizBot" class="fa fa-github"> GitHub</a></li>
-            <li><a href="http://chatbot.wizkiller96network.com" class="fa fa-commenting"> ChatBot</a></li>
-            <li><a href="./donate.html" class="fa fa-paypal"> Donate</a></li>
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="http://wizkiller96network.com" class="fa fa-home"> WizNet</a></li>
-          </ul>
-        </div><!-- /.navbar-collapse -->
-      </div><!-- /.container-fluid -->
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav nav-dropdown nav-right" data-app-modern-menu="true">
+                <li class="nav-item">
+                    <a class="nav-link link text-white display-4" href="index.html"><span class="mbri-home mbr-iconfont mbr-iconfont-btn"></span>Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link link text-white display-4" href="http://docs.wizbot.xyz/"><span class="mbri-pages mbr-iconfont mbr-iconfont-btn"></span>Documentation</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link link text-white display-4" href="http://docs.wizbot.xyz/en/latest/Commands%20List/"><span class="mbri-browse mbr-iconfont mbr-iconfont-btn"></span>Command List</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link link text-white display-4" href="http://github.com/Wizkiller96/WizBot"><span class="mbri-github mbr-iconfont mbr-iconfont-btn"></span>Github</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link link text-white display-4" href="http://chatbot.wizkiller96network.com/"><span class="mbri-chat mbr-iconfont mbr-iconfont-btn"></span>Chatbot</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link link text-white dropdown-toggle display-4" href="#" data-toggle="dropdown-submenu" aria-expanded="false"><span class="mbri-setting mbr-iconfont mbr-iconfont-btn"></span>Tools</a>
+                    <div class="dropdown-menu">
+                        <a class="text-white dropdown-item display-4" href="http://embedbuilder.wizkiller96network.com/"><span class="mbri-code mbr-iconfont mbr-iconfont-btn"></span>Embed Builder</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link link text-white display-4" href="donate.html"><span class="mbri-cash mbr-iconfont mbr-iconfont-btn"></span>Donate</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link link text-white display-4" href="about.html" aria-expanded="true"><span class="mbri-question mbr-iconfont mbr-iconfont-btn"></span>About</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link link text-white dropdown-toggle display-4" href="#" data-toggle="dropdown-submenu" aria-expanded="false"><span class="mbri-user mbr-iconfont mbr-iconfont-btn"></span>Dashboard</a>
+                    <div class="dropdown-menu">
+                        <a class="text-white dropdown-item display-4" href="#"><span class="mbri-info mbr-iconfont mbr-iconfont-btn"></span>Coming Soon!</a>
+                    </div>
+                </li>
+            </ul>
+            
+        </div>
     </nav>
+</section>
 
-    <div class="content-area panel panel-default panel-transparent">
-      <div class="panel-heading">
-        Welcome to WizBot!
-      </div>
-      <div class="panel-body" style="color:#fff;">
-        <div class="alert alert-info" role="alert">The main site is under maintenance.</div>
-        <center><img src="http://i.imgur.com/1X7IWnw.jpg" style="border:3px solid dimgray;	background-position: center; box-shadow: 0 0 8px rgba(0,0,0, .8); -webkit-box-shadow: 0 0 8px rgba(0,0,0, .8); -moz-box-shadow: 0 0 8px rgba(0,0,0, .8); width: 120px; height: 120px; border-radius: 120px; -webkit-border-radius: 120px; -moz-border-radius: 120px"></center>
-        <hr />
-        <p>Here you can find documentation on WizBot and other useful links.<p>
-          <p>This is for the discord WizBot.</p>
-        <hr />
-        <!--<h4 class="changelog-title">WizBot - Changelog</h4>-->
-        <!--<p class="changelog-desc">This is for the discord bot.<p>-->
-        <table class="table table-bordered table-condensed">
-          <thead>
-            <tr>
-              <th colspan="2"><center>WizBot Changelogs | 📅 March 31, 2017</center></th>
-            </tr>
-            <tr>
-              <th colspan="2" class="warning"><center><span class="fa fa-wrench"></span> Fixes</center></th>
-            </tr>
-            <tr>
-              <th><center>#</center></th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody style="background-color:rgba(0,0,0,1.0);">
-            <tr>
-              <th class="row" colspan="2"><center>None</center></th>
-            </tr>
-          </tbody>
-          <thead>
-            <tr>
-              <th colspan="2" class="success"><center><span class="fa fa-plus"></span> Additions</center></th>
-            </tr>
-              <tr>
-              <th><center>#</center></th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody style="background-color:rgba(0,0,0,1.0);">
-            <tr>
-              <th class="row"><center>1</center></th>
-              <td>Added warn commands.</td>
-            </tr>
-            <tr>
-              <th class="row"><center>2</center></th>
-              <td>Added unban command.</td>
-            </tr>
-            <tr>
-              <th class="row"><center>3</center></th>
-              <td>The <code>-cmds</code> now splits into multiple messages if too long.</td>
-            </tr>
-            <tr>
-              <th class="row"><center>4</center></th>
-              <td>Indonesian language added.</td>
-            </tr>
-            <tr>
-              <th class="row"><center>5</center></th>
-              <td>Added startup commands.</td>
-            </tr>
-          </tbody>
-          <thead>
-            <tr>
-              <th colspan="2" class="danger"><center><span class="fa fa-times"></span> Removals</center></th>
-            </tr>
-              <tr>
-              <th><center>#</center></th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody style="background-color:rgba(0,0,0,1.0);">
-            <tr>
-              <th class="row" colspan="2"><center>None</center></th>
-            </tr>
-          </tbody>
-          <tfoot>
-            <td colspan="2">View all changes on WizBot <a href="https://github.com/Wizkiller96/WizBot/commits/dev">GitHub</a></td>
-          </tfoot>
-        </table>
-      </div>
-      <div class="panel-footer">
-        <center>Copyright &copy; 2008-2017 <a href="http://wizkiller96network.com/">WizNet</a>. All Rights Reserved.</center>
-      </div>
+<section class="engine"><a href="./index.html">WizBot</a></section><section class="header1 cid-qz6xpYHYrf mbr-parallax-background" id="header1-p" data-rv-view="154">
+
+    
+
+    
+
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <div class="mbr-white col-md-10">
+                <h1 class="mbr-section-title align-center mbr-bold pb-3 mbr-fonts-style display-1">
+                    Welcome to WizBot!</h1>
+                <h3 class="mbr-section-subtitle align-center mbr-light pb-3 mbr-fonts-style display-2">
+                    A Multipurpose Discord Bot</h3>
+                
+                <div class="mbr-section-btn align-center"><a class="btn btn-md btn-primary display-4 disabled" href="#"><span class="mbri-plus mbr-iconfont mbr-iconfont-btn"></span>
+                        Add WizBot</a> <a class="btn btn-md btn-white display-4" href="http://github.com/Wizkiller96/WizBot"><span class="mbri-github mbr-iconfont mbr-iconfont-btn"></span>
+                        Source Code</a></div>
+            </div>
+        </div>
     </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</section>
+
+<section class="mbr-section article content1 cid-qz6yuzPQsf" id="content2-r" data-rv-view="157">
+
+     
+
+    <div class="container">
+        <div class="media-container-row">
+            <div class="mbr-text col-12 col-md-8 mbr-fonts-style display-7">
+                <blockquote><strong><span style="font-size: 1.09rem;">WizBot is a Multipurpose Discord Bot,</span><span style="font-size: 1.09rem;"> </span><span style="font-size: 1.09rem;">which comes with Music, Moderation, Utilities, Games, Xp, NSFW, and other useful tools. WizBot is always being improved and worked on to make it better then what it already is. We hope you enjoy using this bot as much as we have.</span></strong><br></blockquote>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-table cid-qz6y3617qj" id="table1-q" data-rv-view="158">
+
+  
+  
+  <div class="container container-table">
+      <h2 class="mbr-section-title mbr-fonts-style align-center pb-3 display-2">
+          Changelog</h2>
+      <h3 class="mbr-section-subtitle mbr-fonts-style align-center pb-5 mbr-light display-5">
+            Here you will find a list of changes done to WizBot.</h3>
+      <div class="table-wrapper">
+        <div class="container">
+          <div class="row search">
+            <div class="col-md-6"></div>
+            <!--<div class="col-md-6">
+                <div class="dataTables_filter">
+                  <label class="searchInfo mbr-fonts-style display-7">Search:</label>
+                  <input class="form-control input-sm" disabled="">
+                </div>
+            </div>-->
+          </div>
+        </div>
+
+        <div class="container scroll">
+        <table class="table isSearch table-bordered table-sm" cellspacing="0">
+            <thead>
+                <tr class="table-heads">
+                <th class="head-item mbr-fonts-style display-7" scope="col">#</th>
+                <th class="head-item mbr-fonts-style display-7" scope="col">Author</th>
+                <th class="head-item mbr-fonts-style display-7" scope="col">Description</th>
+                <th class="head-item mbr-fonts-style display-7" scope="col">Date/Time</th>
+                </tr>
+            </thead>
+            <tbody id="changes">
+            </tbody>
+        </table>
+        </div>
+        <!--<div class="container table-info-container">
+          <div class="row info">
+            <div class="col-md-6">
+              <div class="dataTables_info mbr-fonts-style display-7">
+                <span class="infoBefore">Showing</span>
+                <span class="inactive infoRows"></span>
+                <span class="infoAfter">entries</span>
+                <span class="infoFilteredBefore">(filtered from</span>
+                <span class="inactive infoRows"></span>
+                <span class="infoFilteredAfter"> total entries)</span>
+              </div>
+            </div>
+            <div class="col-md-6"></div>
+          </div>
+        </div>-->
+      </div>
+    </div>
+</section>
+
+<section once="" class="cid-qz6te68joA" id="footer6-h" data-rv-view="214">
+
+    
+
+    
+
+    <div class="container">
+        <div class="media-container-row align-center mbr-white">
+            <div class="col-12">
+                <p class="mbr-text mb-0 mbr-fonts-style display-7">
+                    © Copyright 2017 WizNet - All Rights Reserved
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+  <!--<script src="assets/web/assets/jquery/jquery.min.js"></script>-->
+  <script type="text/javascript" src="assets/popper/popper.min.js"></script>
+  <script type="text/javascript" src="assets/tether/tether.min.js"></script>
+  <script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="assets/smooth-scroll/smooth-scroll.js"></script>
+  <script type="text/javascript" src="assets/dropdown/js/script.min.js"></script>
+  <script type="text/javascript" src="assets/data-tables/jquery.data-tables.min.js"></script>
+  <script type="text/javascript" src="assets/data-tables/data-tables.bootstrap4.min.js"></script>
+  <script type="text/javascript" src="assets/viewport-checker/jquery.viewportchecker.js"></script>
+  <script type="text/javascript" src="assets/jarallax/jarallax.min.js"></script>
+  <script type="text/javascript" src="assets/touch-swipe/jquery.touch-swipe.min.js"></script>
+  <script type="text/javascript" src="assets/theme/js/script.js"></script>
+  
+  
+ <div id="scrollToTop" class="scrollToTop mbr-arrow-up"><a style="text-align: center;"><i class="mbri-down mbr-iconfont"></i></a></div>
+    <input name="animation" type="hidden">
   </body>
 </html>
