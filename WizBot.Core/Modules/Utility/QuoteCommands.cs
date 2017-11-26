@@ -26,6 +26,11 @@ namespace WizBot.Modules.Utility
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
+            public Task ListQuotes(OrderType order = OrderType.Keyword)
+                => ListQuotes(order: order);
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
             public async Task ListQuotes(int page = 1, OrderType order = OrderType.Keyword)
             {
                 page -= 1;
