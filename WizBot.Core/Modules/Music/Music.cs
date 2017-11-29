@@ -29,8 +29,8 @@ namespace WizBot.Modules.Music
         private readonly IGoogleApiService _google;
         private readonly DbService _db;
 
-        public Music(DiscordSocketClient client, 
-            IBotCredentials creds, 
+        public Music(DiscordSocketClient client,
+            IBotCredentials creds,
             IGoogleApiService google,
             DbService db)
         {
@@ -65,7 +65,7 @@ namespace WizBot.Modules.Music
         //                //    player.TogglePause();
         //                //else if (!player.Paused && newState.VoiceChannel.Users.Count <= 1) // pause if there are no users in the new channel
         //                //    player.TogglePause();
-                       
+
         //               // player.SetVoiceChannel(newState.VoiceChannel);
         //                return;
         //            }
@@ -94,7 +94,7 @@ namespace WizBot.Modules.Music
         {
             if (songInfo == null)
             {
-                if(!silent)
+                if (!silent)
                     await ReplyErrorLocalized("song_not_found").ConfigureAwait(false);
                 return;
             }
@@ -135,7 +135,7 @@ namespace WizBot.Modules.Music
                     catch
                     {
                         // ignored
-                    } 
+                    }
                 }
             }
         }
@@ -226,7 +226,7 @@ namespace WizBot.Modules.Music
                 try { await msg.DeleteAsync().ConfigureAwait(false); } catch { }
             }
         }
-        
+
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task ListQueue(int page = 0)
@@ -239,10 +239,10 @@ namespace WizBot.Modules.Music
                 await ReplyErrorLocalized("no_player").ConfigureAwait(false);
                 return;
             }
-            
+
             if (--page < -1)
                 return;
-            
+
             try { await mp.UpdateSongDurationsAsync().ConfigureAwait(false); } catch { }
 
             const int itemsPerPage = 10;
@@ -266,7 +266,7 @@ namespace WizBot.Modules.Music
                         .Take(itemsPerPage)
                         .Select(v =>
                         {
-                            if(number++ == current)
+                            if (number++ == current)
                                 return $"**⇒**`{number}.` {v.PrettyFullName}";
                             else
                                 return $"`{number}.` {v.PrettyFullName}";
@@ -296,7 +296,7 @@ namespace WizBot.Modules.Music
 
                 if (!string.IsNullOrWhiteSpace(add))
                     desc = add + "\n" + desc;
-                
+
                 var embed = new EmbedBuilder()
                     .WithAuthor(eab => eab.WithName(GetText("player_queue", curPage + 1, (songs.Length / itemsPerPage) + 1))
                         .WithMusicIcon())
@@ -307,7 +307,7 @@ namespace WizBot.Modules.Music
 
                 return embed;
             };
-            await Context.Channel.SendPaginatedConfirmAsync(_client, 
+            await Context.Channel.SendPaginatedConfirmAsync(_client,
                 page, printAction, songs.Length, itemsPerPage, false).ConfigureAwait(false);
         }
 
@@ -317,7 +317,7 @@ namespace WizBot.Modules.Music
         {
             if (skipCount < 1)
                 return;
-            
+
             var mp = await _service.GetOrCreatePlayer(Context);
 
             mp.Next(skipCount);
@@ -337,7 +337,7 @@ namespace WizBot.Modules.Music
         {
             var newVal = _service.ToggleAutoDc(Context.Guild.Id);
 
-            if(newVal)
+            if (newVal)
                 await ReplyConfirmLocalized("autodc_enable").ConfigureAwait(false);
             else
                 await ReplyConfirmLocalized("autodc_disable").ConfigureAwait(false);
@@ -551,7 +551,7 @@ namespace WizBot.Modules.Music
                     try
                     {
                         await Task.Yield();
-                        
+
                         await Task.WhenAll(Task.Delay(1000), InternalQueue(mp, await _service.ResolveSong(item.Query, Context.User.ToString(), item.ProviderType), true)).ConfigureAwait(false);
                     }
                     catch (SongNotFoundException) { }
@@ -590,6 +590,7 @@ namespace WizBot.Modules.Music
             var mp = await _service.GetOrCreatePlayer(Context);
             var val = mp.AutoDelete = !mp.AutoDelete;
 
+            _service.SetSongAutoDelete(Context.Guild.Id, val);
             if (val)
             {
                 await ReplyConfirmLocalized("sad_enabled").ConfigureAwait(false);
@@ -608,7 +609,7 @@ namespace WizBot.Modules.Music
             var song = await _service.ResolveSong(query, Context.User.ToString(), MusicType.Soundcloud);
             await InternalQueue(mp, song, false).ConfigureAwait(false);
         }
-        
+
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task SoundCloudPl([Remainder] string pl)
@@ -644,7 +645,7 @@ namespace WizBot.Modules.Music
                     await msg.ModifyAsync(m => m.Content = GetText("playlist_queue_complete")).ConfigureAwait(false);
             }
         }
-        
+
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task NowPlaying()
@@ -659,7 +660,7 @@ namespace WizBot.Modules.Music
                             .WithAuthor(eab => eab.WithName(GetText("now_playing")).WithMusicIcon())
                             .WithDescription(currentSong.PrettyName)
                             .WithThumbnailUrl(currentSong.Thumbnail)
-                            .WithFooter(ef => ef.WithText(mp.PrettyVolume + " | " + mp.PrettyFullTime  + $" | {currentSong.PrettyProvider} | {currentSong.QueuerName}"));
+                            .WithFooter(ef => ef.WithText(mp.PrettyVolume + " | " + mp.PrettyFullTime + $" | {currentSong.PrettyProvider} | {currentSong.QueuerName}"));
 
             await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
         }
@@ -670,7 +671,7 @@ namespace WizBot.Modules.Music
         {
             var mp = await _service.GetOrCreatePlayer(Context);
             var val = mp.ToggleShuffle();
-            if(val)
+            if (val)
                 await ReplyConfirmLocalized("songs_shuffle_enable").ConfigureAwait(false);
             else
                 await ReplyConfirmLocalized("songs_shuffle_disable").ConfigureAwait(false);
@@ -700,7 +701,7 @@ namespace WizBot.Modules.Music
             var count = ids.Count();
             var msg = await Context.Channel.SendMessageAsync("🎵 " + GetText("attempting_to_queue",
                 Format.Bold(count.ToString()))).ConfigureAwait(false);
-            
+
             foreach (var song in ids)
             {
                 try
@@ -815,10 +816,11 @@ namespace WizBot.Modules.Music
             var embed = new EmbedBuilder()
                 .WithTitle(s.Title.TrimTo(65))
                 .WithUrl(s.SongUrl)
-            .WithAuthor(eab => eab.WithName(GetText("song_moved")).WithIconUrl("https://cdn.discordapp.com/attachments/155726317222887425/258605269972549642/music1.png"))
-            .AddField(fb => fb.WithName(GetText("from_position")).WithValue($"#{n1 + 1}").WithIsInline(true))
-            .AddField(fb => fb.WithName(GetText("to_position")).WithValue($"#{n2 + 1}").WithIsInline(true))
-            .WithColor(WizBot.OkColor);
+                .WithAuthor(eab => eab.WithName(GetText("song_moved")).WithIconUrl("https://cdn.discordapp.com/attachments/155726317222887425/258605269972549642/music1.png"))
+                .AddField(fb => fb.WithName(GetText("from_position")).WithValue($"#{n1 + 1}").WithIsInline(true))
+                .AddField(fb => fb.WithName(GetText("to_position")).WithValue($"#{n2 + 1}").WithIsInline(true))
+                .WithColor(WizBot.OkColor);
+
             await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
         }
 
@@ -873,7 +875,7 @@ namespace WizBot.Modules.Music
                 await Context.Channel.SendConfirmAsync("🔂 " + GetText("repeating_track_stopped"))
                                             .ConfigureAwait(false);
         }
-        
+
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task RepeatPl()
@@ -906,8 +908,22 @@ namespace WizBot.Modules.Music
             var mp = await _service.GetOrCreatePlayer(Context);
 
             mp.OutputTextChannel = (ITextChannel)Context.Channel;
+            _service.SetMusicChannel(Context.Guild.Id, Context.Channel.Id);
 
             await ReplyConfirmLocalized("set_music_channel").ConfigureAwait(false);
+        }
+
+        [WizBotCommand, Usage, Description, Aliases]
+        [RequireContext(ContextType.Guild)]
+        [RequireUserPermission(GuildPermission.ManageMessages)]
+        public async Task UnsetMusicChannel()
+        {
+            var mp = await _service.GetOrCreatePlayer(Context);
+
+            mp.OutputTextChannel = null;
+            _service.SetMusicChannel(Context.Guild.Id, null);
+
+            await ReplyConfirmLocalized("unset_music_channel").ConfigureAwait(false);
         }
     }
 }
