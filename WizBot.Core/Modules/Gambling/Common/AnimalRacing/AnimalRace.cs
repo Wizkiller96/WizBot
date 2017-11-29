@@ -43,7 +43,6 @@ namespace WizBot.Modules.Gambling.Common.AnimalRacing
 
         public AnimalRace(RaceOptions options, CurrencyService currency, RaceAnimal[] availableAnimals)
         {
-            NormalizeOptions(options);
             this._currency = currency;
             this._options = options;
             this._animalsQueue = new Queue<RaceAnimal>(availableAnimals);
@@ -53,17 +52,11 @@ namespace WizBot.Modules.Gambling.Common.AnimalRacing
                 CurrentPhase = Phase.Ended;
         }
 
-        private void NormalizeOptions(RaceOptions options)
-        {
-            if (options.StartDelay< 10 || options.StartDelay> 120)
-                options.StartDelay = 20;
-        }
-
         public void Initialize() //lame name
         {
             var _t = Task.Run(async () =>
             {
-                await Task.Delay(_options.StartDelay * 1000).ConfigureAwait(false);
+                await Task.Delay(_options.StartTime * 1000).ConfigureAwait(false);
 
                 await _locker.WaitAsync().ConfigureAwait(false);
                 try
@@ -118,7 +111,7 @@ namespace WizBot.Modules.Gambling.Common.AnimalRacing
             {
                 foreach (var user in _users)
                 {
-                    if(user.Bet > 0)
+                    if (user.Bet > 0)
                         await _currency.AddAsync(user.UserId, "Race refund", user.Bet).ConfigureAwait(false);
                 }
 

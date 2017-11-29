@@ -7,7 +7,7 @@ namespace WizBot.Common.Attributes
 {
     public class AdminOnlyAttribute : PreconditionAttribute
     {
-        public override Task<PreconditionResult> CheckPermissions(ICommandContext context, CommandInfo executingCommand, IServiceProvider services)
+        public override Task<PreconditionResult> CheckPermissionsAsync(ICommandContext context, CommandInfo executingCommand, IServiceProvider services)
         {
             var creds = (IBotCredentials)services.GetService(typeof(IBotCredentials));
 

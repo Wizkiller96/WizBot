@@ -35,12 +35,13 @@ namespace WizBot.Modules.Gambling
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
+            [WizBotOptions(typeof(RaceOptions))]
             public Task Race(params string[] args)
             {
                 var options = new RaceOptions();
                 var res = Parser.Default.ParseArguments<RaceOptions>(args);
-                res.MapResult(x => options, x => options);
-                
+                options = res.MapResult(x => x, x => options);
+                options.NormalizeOptions();
                 var ar = new AnimalRace(options, _cs, _bc.BotConfig.RaceAnimals.Shuffle().ToArray());
                 if (!_service.AnimalRaces.TryAdd(Context.Guild.Id, ar))
                     return Context.Channel.SendErrorAsync(GetText("animal_race"), GetText("animal_race_already_started"));
@@ -50,12 +51,13 @@ namespace WizBot.Modules.Gambling
                 var count = 0;
                 Task _client_MessageReceived(SocketMessage arg)
                 {
-                    var _ = Task.Run(() => {
+                    var _ = Task.Run(() =>
+                    {
                         try
                         {
                             if (arg.Channel.Id == Context.Channel.Id)
                             {
-                                if (ar.CurrentPhase  == AnimalRace.Phase.Running && ++count % 9 == 0)
+                                if (ar.CurrentPhase == AnimalRace.Phase.Running && ++count % 9 == 0)
                                 {
                                     raceMessage = null;
                                 }
@@ -90,13 +92,13 @@ namespace WizBot.Modules.Gambling
                 ar.OnStarted += Ar_OnStarted;
                 _client.MessageReceived += _client_MessageReceived;
 
-                return Context.Channel.SendConfirmAsync(GetText("animal_race"), GetText("animal_race_starting"),
+                return Context.Channel.SendConfirmAsync(GetText("animal_race"), GetText("animal_race_starting", options.StartTime),
                                     footer: GetText("animal_race_join_instr", Prefix));
             }
 
             private Task Ar_OnStarted(AnimalRace race)
             {
-                if(race.Users.Length == race.MaxUsers)
+                if (race.Users.Length == race.MaxUsers)
                     return Context.Channel.SendConfirmAsync(GetText("animal_race"), GetText("animal_race_full"));
                 else
                     return Context.Channel.SendConfirmAsync(GetText("animal_race"), GetText("animal_race_starting_with_x", race.Users.Length));

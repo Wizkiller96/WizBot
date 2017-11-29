@@ -11,6 +11,7 @@ using WizBot.Core.Services;
 using WizBot.Core.Services.Impl;
 using WizBot.Common;
 using NLog;
+using CommandLine;
 
 namespace WizBot.Modules.Help.Services
 {
@@ -56,7 +57,7 @@ namespace WizBot.Modules.Help.Services
             var alias = com.Aliases.Skip(1).FirstOrDefault();
             if (alias != null)
                 str += string.Format(" **/ `{0}`**", prefix + alias);
-            return new EmbedBuilder()
+            var em = new EmbedBuilder()
                 .WithAuthor(eab => eab.WithName("WizBot - Command Helper")
                                           .WithUrl("http://wizbot.readthedocs.io/en/latest/")
                                           .WithIconUrl("http://i.imgur.com/fObUYFS.jpg"))
@@ -64,6 +65,17 @@ namespace WizBot.Modules.Help.Services
                 .AddField(fb => fb.WithName(GetText("usage", guild)).WithValue(com.RealRemarks(prefix)).WithIsInline(false))
                 .WithFooter(efb => efb.WithText(GetText("module", guild, com.Module.GetTopLevelModule().Name)))
                 .WithColor(WizBot.OkColor);
+
+            var opt = (WizBotOptions)com.Attributes.FirstOrDefault(x => x is WizBotOptions);
+            if (opt != null)
+            {
+                var x = Activator.CreateInstance(opt.OptionType);
+                var hs = Parser.Default.FormatCommandLine(x);
+                if (!string.IsNullOrWhiteSpace(hs))
+                    em.AddField(GetText("options", guild), string.Join("\n--", hs.Split(" --")), false);
+            }
+ 
+            return em;
         }
 
         public string GetCommandRequirements(CommandInfo cmd, IGuild guild) =>

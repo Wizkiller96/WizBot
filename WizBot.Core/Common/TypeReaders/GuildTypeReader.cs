@@ -17,7 +17,7 @@ namespace WizBot.Common.TypeReaders
             _client = client;
         }
 
-        public override Task<TypeReaderResult> Read(ICommandContext context, string input, IServiceProvider _)
+        public override Task<TypeReaderResult> ReadAsync(ICommandContext context, string input, IServiceProvider _)
         {
             input = input.Trim().ToLowerInvariant();
             var guilds = _client.Guilds;
