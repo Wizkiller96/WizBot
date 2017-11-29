@@ -11,6 +11,7 @@ using WizBot.Common.Collections;
 using WizBot.Modules.Music.Services;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
+using Discord.WebSocket;
 
 namespace WizBot.Modules.Music.Common
 {
@@ -25,6 +26,8 @@ namespace WizBot.Modules.Music.Common
     {
         private readonly Thread _player;
         public IVoiceChannel VoiceChannel { get; private set; }
+
+        private readonly ITextChannel _originalTextChannel;
         private readonly Logger _log;
 
         private MusicQueue Queue { get; } = new MusicQueue();
@@ -132,13 +135,18 @@ namespace WizBot.Modules.Music.Common
         }
             
 
-        public MusicPlayer(MusicService musicService, IGoogleApiService google, IVoiceChannel vch, ITextChannel output, float volume)
+        public MusicPlayer(MusicService musicService, MusicSettings ms, IGoogleApiService google,
+            IVoiceChannel vch, ITextChannel original, float volume)
         {
             _log = LogManager.GetCurrentClassLogger();
             this.Volume = volume;
             this.VoiceChannel = vch;
+            this._originalTextChannel = original;
             this.SongCancelSource = new CancellationTokenSource();
-            this.OutputTextChannel = output;
+            if (ms.MusicChannelId is ulong cid)
+            {
+                this.OutputTextChannel = ((SocketGuild)original.Guild).GetTextChannel(cid) ?? original;
+            }
             this._musicService = musicService;
             this._google = google;
 
@@ -657,8 +665,13 @@ namespace WizBot.Modules.Music.Common
         public SongInfo MoveSong(int n1, int n2)
             => Queue.MoveSong(n1, n2);
 
-        //// this should be written better
-        //public TimeSpan TotalPlaytime => 
+        public void SetMusicChannelToOriginal()
+        {
+            this.OutputTextChannel = _originalTextChannel;
+        }
+
+        // this should be written better
+        // public TimeSpan TotalPlaytime => 
         //    _playlist.Any(s => s.TotalTime == TimeSpan.MaxValue) ? 
         //    TimeSpan.MaxValue : 
         //    new TimeSpan(_playlist.Sum(s => s.TotalTime.Ticks));        

@@ -93,7 +93,7 @@ namespace WizBot.Core.Services.Database.Models
         public List<FeedSub> FeedSubs { get; set; } = new List<FeedSub>();
         public bool AutoDcFromVc { get; set; }
 
-        //public List<ProtectionIgnoredChannel> ProtectionIgnoredChannels { get; set; } = new List<ProtectionIgnoredChannel>();
+        public MusicSettings MusicSettings { get; set; } = new MusicSettings();
     }
 
     public class NsfwBlacklitedTag : DbEntity
