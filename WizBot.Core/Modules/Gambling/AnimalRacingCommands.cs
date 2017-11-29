@@ -12,6 +12,7 @@ using WizBot.Modules.Gambling.Common.AnimalRacing;
 using WizBot.Modules.Gambling.Services;
 using WizBot.Core.Modules.Gambling.Common.AnimalRacing;
 using CommandLine;
+using WizBot.Core.Common;
 
 namespace WizBot.Modules.Gambling
 {
@@ -38,10 +39,8 @@ namespace WizBot.Modules.Gambling
             [WizBotOptions(typeof(RaceOptions))]
             public Task Race(params string[] args)
             {
-                var options = new RaceOptions();
-                var res = Parser.Default.ParseArguments<RaceOptions>(args);
-                options = res.MapResult(x => x, x => options);
-                options.NormalizeOptions();
+                var options = OptionsParser.Default.ParseFrom(new RaceOptions(), args);
+                
                 var ar = new AnimalRace(options, _cs, _bc.BotConfig.RaceAnimals.Shuffle().ToArray());
                 if (!_service.AnimalRaces.TryAdd(Context.Guild.Id, ar))
                     return Context.Channel.SendErrorAsync(GetText("animal_race"), GetText("animal_race_already_started"));

@@ -1,8 +1,9 @@
 using CommandLine;
+using WizBot.Core.Common;
 
 namespace WizBot.Core.Modules.Gambling.Common.AnimalRacing
 {
-    public class RaceOptions
+    public class RaceOptions : IWizBotCommandOptions
     {
         [Option('s', "start-time", Default = 20, Required = false)]
         public int StartTime { get; set; } = 20;
