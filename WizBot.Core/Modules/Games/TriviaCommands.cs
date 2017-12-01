@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using WizBot.Common.Attributes;
 using WizBot.Modules.Games.Common.Trivia;
 using WizBot.Modules.Games.Services;
+using WizBot.Core.Common;
+using WizBot.Core.Modules.Games.Common.Trivia;
 
 namespace WizBot.Modules.Games
 {
@@ -31,24 +33,18 @@ namespace WizBot.Modules.Games
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            public Task Trivia([Remainder] string additionalArgs = "")
-                => InternalTrivia(10, additionalArgs);
+            [Priority(0)]
+            [WizBotOptions(typeof(TriviaOptions))]
+            public Task Trivia(params string[] args)
+                => Trivia(args);
 
-            [WizBotCommand, Usage, Description, Aliases]
-            [RequireContext(ContextType.Guild)]
-            public Task Trivia(int winReq = 10, [Remainder] string additionalArgs = "")
-                => InternalTrivia(winReq, additionalArgs);
-
-            public async Task InternalTrivia(int winReq, string additionalArgs = "")
+            public async Task InternalTrivia(params string[] args)
             {
                 var channel = (ITextChannel)Context.Channel;
 
-                additionalArgs = additionalArgs?.Trim()?.ToLowerInvariant();
+                var (opts, _) = OptionsParser.Default.ParseFrom(new TriviaOptions(), args);
 
-                var showHints = !additionalArgs.Contains("nohint");
-                var isPokemon = additionalArgs.Contains("pokemon");
-
-                var trivia = new TriviaGame(_strings, _client, _bc, _cache, _cs, channel.Guild, channel, showHints, winReq, isPokemon);
+                var trivia = new TriviaGame(_strings, _client, _bc, _cache, _cs, channel.Guild, channel, opts);
                 if (_service.RunningTrivias.TryAdd(channel.Guild.Id, trivia))
                 {
                     try

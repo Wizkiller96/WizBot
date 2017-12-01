@@ -9,12 +9,12 @@ namespace WizBot.Core.Common
 
         static OptionsParser() { }
 
-        public T ParseFrom<T>(T options, string[] args) where T : IWizBotCommandOptions
+        public (T, bool) ParseFrom<T>(T options, string[] args) where T : IWizBotCommandOptions
         {
             var res = Parser.Default.ParseArguments<T>(args);
-            options = (T)res.MapResult(x => x, x => options);
+            options = res.MapResult(x => x, x => options);
             options.NormalizeOptions();
-            return options;
+            return (options, res.Tag == ParserResultType.Parsed);
         }
     }
 }

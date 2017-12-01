@@ -12,6 +12,7 @@ using WizBot.Core.Services.Impl;
 using WizBot.Common;
 using NLog;
 using CommandLine;
+using CommandLine.Text;
 
 namespace WizBot.Modules.Help.Services
 {
@@ -70,9 +71,10 @@ namespace WizBot.Modules.Help.Services
             if (opt != null)
             {
                 var x = Activator.CreateInstance(opt.OptionType);
-                var hs = Parser.Default.FormatCommandLine(x);
+                var res = Parser.Default.ParseArguments(new[] { "--help" }, x.GetType());
+                var hs = HelpText.RenderUsageTextAsLines();
                 if (!string.IsNullOrWhiteSpace(hs))
-                    em.AddField(GetText("options", guild), string.Join("\n--", hs.Split(" --")), false);
+                    em.AddField(GetText("options", guild), hs, false);
             }
  
             return em;

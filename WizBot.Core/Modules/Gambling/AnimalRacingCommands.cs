@@ -11,7 +11,6 @@ using WizBot.Modules.Gambling.Common.AnimalRacing.Exceptions;
 using WizBot.Modules.Gambling.Common.AnimalRacing;
 using WizBot.Modules.Gambling.Services;
 using WizBot.Core.Modules.Gambling.Common.AnimalRacing;
-using CommandLine;
 using WizBot.Core.Common;
 
 namespace WizBot.Modules.Gambling
@@ -39,7 +38,7 @@ namespace WizBot.Modules.Gambling
             [WizBotOptions(typeof(RaceOptions))]
             public Task Race(params string[] args)
             {
-                var options = OptionsParser.Default.ParseFrom(new RaceOptions(), args);
+                var (options, success) = OptionsParser.Default.ParseFrom(new RaceOptions(), args);
                 
                 var ar = new AnimalRace(options, _cs, _bc.BotConfig.RaceAnimals.Shuffle().ToArray());
                 if (!_service.AnimalRaces.TryAdd(Context.Guild.Id, ar))

@@ -12,6 +12,7 @@ using WizBot.Extensions;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Impl;
 using NLog;
+using WizBot.Core.Modules.Games.Common.Trivia;
 
 namespace WizBot.Modules.Games.Common.Trivia
 {
@@ -48,7 +49,7 @@ namespace WizBot.Modules.Games.Common.Trivia
 
         public TriviaGame(WizBotStrings strings, DiscordSocketClient client, IBotConfigProvider bc,
             IDataCache cache, CurrencyService cs, IGuild guild, ITextChannel channel,
-            bool showHints, int winReq, bool isPokemon)
+            TriviaOptions options)
         {
             _log = LogManager.GetCurrentClassLogger();
             _cache = cache;
@@ -58,11 +59,8 @@ namespace WizBot.Modules.Games.Common.Trivia
             _bc = bc;
             _cs = cs;
 
-            ShowHints = showHints;
             Guild = guild;
             Channel = channel;
-            WinRequirement = winReq;
-            IsPokemon = isPokemon;
         }
 
         private string GetText(string key, params object[] replacements) =>

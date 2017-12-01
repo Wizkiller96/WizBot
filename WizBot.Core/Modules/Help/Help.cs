@@ -111,7 +111,9 @@ namespace WizBot.Modules.Help
 
             if (com == null)
             {
-                IMessageChannel ch = channel is ITextChannel ? await ((IGuildUser)Context.User).GetOrCreateDMChannelAsync() : channel;
+                IMessageChannel ch = channel is ITextChannel
+                    ? await ((IGuildUser)Context.User).GetOrCreateDMChannelAsync()
+                    : channel;
                 await ch.EmbedAsync(GetHelpStringEmbed()).ConfigureAwait(false);
                 return;
             }
