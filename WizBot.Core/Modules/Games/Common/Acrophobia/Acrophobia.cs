@@ -1,4 +1,6 @@
+using CommandLine;
 using WizBot.Common;
+using WizBot.Core.Common;
 using WizBot.Extensions;
 using System;
 using System.Collections.Generic;
@@ -14,7 +16,22 @@ namespace WizBot.Modules.Games.Common.Acrophobia
     /// </summary>
     public class Acrophobia : IDisposable
     {
-        private const int VotingPhaseLength = 30;
+        public class Options : IWizBotCommandOptions
+        {
+            [Option('s', "submission-time", Required = false, Default = 60, HelpText = "Time after which the submissions are closed and voting starts.")]
+            public int SubmissionTime { get; set; } = 60;
+
+            [Option('v', "vote-time", Required = false, Default = 60, HelpText = "Time after which the voting is closed and the winner is declared.")]
+            public int VoteTime { get; set; } = 30;
+
+            public void NormalizeOptions()
+            {
+                if (SubmissionTime < 15 || SubmissionTime > 300)
+                    SubmissionTime = 60;
+                if (VoteTime < 15 || VoteTime > 120)
+                    VoteTime = 30;
+            }
+        }
 
         public enum Phase
         {
@@ -32,13 +49,12 @@ namespace WizBot.Modules.Games.Common.Acrophobia
             Failed
         }
 
-        public int SubmissionPhaseLength { get; }
-
         public Phase CurrentPhase { get; private set; } = Phase.Submission;
         public ImmutableArray<char> StartingLetters { get; private set; }
 
         private readonly Dictionary<AcrophobiaUser, int> submissions = new Dictionary<AcrophobiaUser, int>();
         private readonly SemaphoreSlim locker = new SemaphoreSlim(1, 1);
+        public Options Opts { get; }
         private readonly WizBotRandom _rng;
 
         public event Func<Acrophobia, Task> OnStarted = delegate { return Task.CompletedTask; };
@@ -48,17 +64,17 @@ namespace WizBot.Modules.Games.Common.Acrophobia
 
         private readonly HashSet<ulong> _usersWhoVoted = new HashSet<ulong>();
 
-        public Acrophobia(int submissionPhaseLength = 30)
+        public Acrophobia(Options options)
         {
+            Opts = options;
             _rng = new WizBotRandom();
-            SubmissionPhaseLength = submissionPhaseLength;
             InitializeStartingLetters();
         }
 
         public async Task Run()
         {
             await OnStarted(this).ConfigureAwait(false);
-            await Task.Delay(SubmissionPhaseLength * 1000);
+            await Task.Delay(Opts.SubmissionTime * 1000);
             await locker.WaitAsync().ConfigureAwait(false);
             try
             {
@@ -81,12 +97,12 @@ namespace WizBot.Modules.Games.Common.Acrophobia
             }
             finally { locker.Release(); }
 
-            await Task.Delay(VotingPhaseLength * 1000);
+            await Task.Delay(Opts.VoteTime * 1000);
             await locker.WaitAsync().ConfigureAwait(false);
             try
             {
                 CurrentPhase = Phase.Ended;
-                await OnEnded(this, submissions.ToArray().ToImmutableArray()).ConfigureAwait(false) ;
+                await OnEnded(this, submissions.ToArray().ToImmutableArray()).ConfigureAwait(false);
             }
             finally { locker.Release(); }
         }
