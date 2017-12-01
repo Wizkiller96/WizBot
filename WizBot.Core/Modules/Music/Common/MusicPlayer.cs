@@ -152,6 +152,7 @@ namespace WizBot.Modules.Music.Common
                 this.OutputTextChannel = original;
             }
             this._musicService = musicService;
+            this.AutoDelete = ms.SongAutoDelete;
             this._google = google;
 
             _player = new Thread(new ThreadStart(PlayerLoop));
