@@ -2,6 +2,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using WizBot.Common.Attributes;
+using WizBot.Core.Common;
 using WizBot.Extensions;
 using WizBot.Modules.Games.Common.Connect4;
 using WizBot.Modules.Games.Services;
@@ -27,9 +28,11 @@ namespace WizBot.Modules.Games
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            public async Task Connect4()
+            [WizBotOptions(typeof(Connect4Game.Options))]
+            public async Task Connect4(params string[] args)
             {
-                var newGame = new Connect4Game(Context.User.Id, Context.User.ToString());
+                var (options, _) = OptionsParser.Default.ParseFrom(new Connect4Game.Options(), args);
+                var newGame = new Connect4Game(Context.User.Id, Context.User.ToString(), options);
                 Connect4Game game;
                 if ((game = _service.Connect4Games.GetOrAdd(Context.Channel.Id, newGame)) != newGame)
                 {

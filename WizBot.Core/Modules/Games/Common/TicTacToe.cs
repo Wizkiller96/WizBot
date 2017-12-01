@@ -6,11 +6,24 @@ using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using CommandLine;
+using WizBot.Core.Common;
 
 namespace WizBot.Modules.Games.Common
 {
     public class TicTacToe
     {
+        public class Options : IWizBotCommandOptions
+        {
+            public void NormalizeOptions()
+            {
+                if (TurnTimer < 5 || TurnTimer > 60)
+                    TurnTimer = 15;
+            }
+
+            [Option('t', "turn-timer", Required = false, Default = 15, HelpText = "Turn time in seconds. Default 15.")]
+            public int TurnTimer { get; set; } = 15;
+        }
         enum Phase
         {
             Starting,
@@ -35,12 +48,15 @@ namespace WizBot.Modules.Games.Common
         private Timer _timeoutTimer;
         private readonly WizBotStrings _strings;
         private readonly DiscordSocketClient _client;
+        private readonly Options _options;
 
-        public TicTacToe(WizBotStrings strings, DiscordSocketClient client, ITextChannel channel, IGuildUser firstUser)
+        public TicTacToe(WizBotStrings strings, DiscordSocketClient client, ITextChannel channel,
+            IGuildUser firstUser, Options options)
         {
             _channel = channel;
             _strings = strings;
             _client = client;
+            _options = options;
 
             _users = new[] { firstUser, null };
             _state = new int?[,] {
@@ -163,7 +179,7 @@ namespace WizBot.Modules.Games.Common
                 {
                     _moveLock.Release();
                 }
-            }, null, 15000, Timeout.Infinite);
+            }, null, _options.TurnTimer * 1000, Timeout.Infinite);
 
             _client.MessageReceived += Client_MessageReceived;
 
@@ -262,7 +278,7 @@ namespace WizBot.Modules.Games.Common
                         });
                         _curUserIndex ^= 1;
 
-                        _timeoutTimer.Change(15000, Timeout.Infinite);
+                        _timeoutTimer.Change(_options.TurnTimer * 1000, Timeout.Infinite);
                     }
                 }
                 finally

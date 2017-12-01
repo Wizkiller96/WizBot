@@ -1,4 +1,6 @@
+using CommandLine;
 using WizBot.Common;
+using WizBot.Core.Common;
 using System;
 using System.Collections.Immutable;
 using System.Linq;
@@ -57,6 +59,7 @@ namespace WizBot.Modules.Games.Common.Connect4
         public event Func<Connect4Game, Result, Task> OnGameEnded;
 
         private readonly SemaphoreSlim _locker = new SemaphoreSlim(1, 1);
+        private readonly Options _options;
         private readonly WizBotRandom _rng;
 
         private Timer _playerTimeoutTimer;
@@ -70,9 +73,10 @@ namespace WizBot.Modules.Games.Common.Connect4
          * [ ][ ][ ][ ][ ][ ]
          */
 
-        public Connect4Game(ulong userId, string userName)
+        public Connect4Game(ulong userId, string userName, Options options)
         {
             _players[0] = (userId, userName);
+            _options = options;
 
             _rng = new WizBotRandom();
             for (int i = 0; i < NumberOfColumns * NumberOfRows; i++)
@@ -130,7 +134,7 @@ namespace WizBot.Modules.Games.Common.Connect4
                         EndGame(Result.OtherPlayerWon);
                     }
                     finally { _locker.Release(); }
-                }, null, TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(30));
+                }, null, TimeSpan.FromSeconds(_options.TurnTimer), TimeSpan.FromSeconds(_options.TurnTimer));
                 var __ = OnGameStateUpdated?.Invoke(this);
 
                 return true;
@@ -169,7 +173,7 @@ namespace WizBot.Modules.Games.Common.Connect4
 
                 //check winnning condition
                 // ok, i'll go from [0-2] in rows (and through all columns) and check upward if 4 are connected
-                
+
                 for (int i = 0; i < NumberOfRows - 3; i++)
                 {
                     if (CurrentPhase == Phase.Ended)
@@ -326,7 +330,7 @@ namespace WizBot.Modules.Games.Common.Connect4
 
         private void ResetTimer()
         {
-            _playerTimeoutTimer.Change(TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(30));
+            _playerTimeoutTimer.Change(TimeSpan.FromSeconds(_options.TurnTimer), TimeSpan.FromSeconds(_options.TurnTimer));
         }
 
         private void EndGame(Result result)
@@ -359,6 +363,19 @@ namespace WizBot.Modules.Games.Common.Connect4
             OnGameStateUpdated = null;
             OnGameEnded = null;
             _playerTimeoutTimer?.Change(Timeout.Infinite, Timeout.Infinite);
+        }
+
+
+        public class Options : IWizBotCommandOptions
+        {
+            public void NormalizeOptions()
+            {
+                if (TurnTimer < 5 || TurnTimer > 60)
+                    TurnTimer = 15;
+            }
+
+            [Option('t', "turn-timer", Required = false, Default = 15, HelpText = "Turn time in seconds. Default 15.")]
+            public int TurnTimer { get; set; } = 15;
         }
     }
 }
