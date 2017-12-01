@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using WizBot.Common.Attributes;
 using WizBot.Modules.Games.Common;
 using WizBot.Modules.Games.Services;
+using WizBot.Core.Common;
 
 namespace WizBot.Modules.Games
 {
@@ -28,11 +29,13 @@ namespace WizBot.Modules.Games
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            public async Task TypeStart()
+            [WizBotOptions(typeof(TypingGame.Options))]
+            public async Task TypeStart(params string[] args)
             {
+                var (options, _) = OptionsParser.Default.ParseFrom(new TypingGame.Options(), args);
                 var channel = (ITextChannel)Context.Channel;
 
-                var game = _service.RunningContests.GetOrAdd(channel.Guild.Id, id => new TypingGame(_games, _client, channel, Prefix));
+                var game = _service.RunningContests.GetOrAdd(channel.Guild.Id, id => new TypingGame(_games, _client, channel, Prefix, options));
 
                 if (game.IsActive)
                 {

@@ -8,13 +8,26 @@ using Discord.WebSocket;
 using WizBot.Common;
 using WizBot.Extensions;
 using WizBot.Modules.Games.Services;
-using WizBot.Core.Services;
 using NLog;
+using CommandLine;
+using WizBot.Core.Common;
 
 namespace WizBot.Modules.Games.Common
 {
     public class TypingGame
     {
+        public class Options : IWizBotCommandOptions
+        {
+            [Option('s', "start-time", Default = 20, Required = false, HelpText = "How long does it take for the race to start. Default 20.")]
+            public int StartTime { get; set; }
+
+            public void NormalizeOptions()
+            {
+                if (StartTime < 10 || StartTime > 90)
+                    StartTime = 20;
+            }
+        }
+
         public const float WORD_VALUE = 4.5f;
         public ITextChannel Channel { get; }
         public string CurrentSentence { get; private set; }
@@ -24,15 +37,18 @@ namespace WizBot.Modules.Games.Common
         private readonly DiscordSocketClient _client;
         private readonly GamesService _games;
         private readonly string _prefix;
+        private readonly Options _options;
 
         private Logger _log { get; }
 
-        public TypingGame(GamesService games, DiscordSocketClient client, ITextChannel channel, string prefix) //kek@prefix
+        public TypingGame(GamesService games, DiscordSocketClient client, ITextChannel channel,
+            string prefix, Options options) //kek@prefix
         {
             _log = LogManager.GetCurrentClassLogger();
             _games = games;
             _client = client;
             _prefix = prefix;
+            _options = options;
 
             this.Channel = channel;
             IsActive = false;

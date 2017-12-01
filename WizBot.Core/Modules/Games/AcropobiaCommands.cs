@@ -27,6 +27,7 @@ namespace WizBot.Modules.Games
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
+            [WizBotOptions(typeof(Acrophobia.Options))]
             public async Task Acro(params string[] args)
             {
                 var (options, _) = OptionsParser.Default.ParseFrom(new Acrophobia.Options(), args);
