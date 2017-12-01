@@ -36,7 +36,7 @@ namespace WizBot.Modules.Games
             [Priority(0)]
             [WizBotOptions(typeof(TriviaOptions))]
             public Task Trivia(params string[] args)
-                => Trivia(args);
+                => InternalTrivia(args);
 
             public async Task InternalTrivia(params string[] args)
             {
