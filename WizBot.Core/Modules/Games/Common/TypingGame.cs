@@ -95,10 +95,7 @@ namespace WizBot.Modules.Games.Common
 
                 await msg.ModifyAsync(m =>
                 {
-                    m.Embed = new EmbedBuilder()
-                        .WithDescription(CurrentSentence)
-                        .Build();
-                    m.Content = "";
+                    m.Content = CurrentSentence;
                 }).ConfigureAwait(false);
                 sw.Start();
                 HandleAnswers();

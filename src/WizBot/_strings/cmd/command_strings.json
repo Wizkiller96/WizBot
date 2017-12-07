@@ -2329,6 +2329,13 @@
       "{0}claim 50 @Himesama"
     ]
   },
+  "waifureset": {
+    "Cmd": "waifureset",
+    "Desc": "Resets your waifu stats, except current waifus.",
+    "Usage": [
+      "{0}waifureset"
+    ]
+  },
   "waifutransfer": {
     "cmd": "waifutransfer",
     "desc": "Transfer the ownership of one of your waifus to another user. You must pay 10% of your waifu's value.",
