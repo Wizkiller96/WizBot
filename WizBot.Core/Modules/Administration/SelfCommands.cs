@@ -478,7 +478,7 @@ namespace WizBot.Modules.Administration
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
-            public async Task ReloadImages()
+            public async Task ImagesReload()
             {
                 var sub = _cache.Redis.GetSubscriber();
                 sub.Publish(_creds.RedisKey() + "_reload_images", 
@@ -489,7 +489,7 @@ namespace WizBot.Modules.Administration
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
-            public async Task ReloadBotConfig()
+            public async Task BotConfigReload()
             {
                 var sub = _cache.Redis.GetSubscriber();
                 sub.Publish(_creds.RedisKey() + "_reload_bot_config",
