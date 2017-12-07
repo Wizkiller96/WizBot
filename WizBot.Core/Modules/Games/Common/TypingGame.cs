@@ -95,7 +95,7 @@ namespace WizBot.Modules.Games.Common
 
                 await msg.ModifyAsync(m =>
                 {
-                    m.Content = CurrentSentence;
+                    m.Content = CurrentSentence.Replace(" ", " \x200B");
                 }).ConfigureAwait(false);
                 sw.Start();
                 HandleAnswers();
