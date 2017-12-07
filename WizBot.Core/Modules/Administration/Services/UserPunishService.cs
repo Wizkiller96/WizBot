@@ -6,6 +6,7 @@ using Discord;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
+using WizBot.Extensions;
 
 namespace WizBot.Modules.Administration.Services
 {
@@ -84,6 +85,9 @@ namespace WizBot.Modules.Administration.Services
                         {
                             await guild.RemoveBanAsync(user).ConfigureAwait(false);
                         }
+                        break;
+                    case PunishmentAction.RemoveRoles:
+                        await user.RemoveRolesAsync(user.GetRoles().Where(x => x.Id != guild.EveryoneRole.Id));
                         break;
                     default:
                         break;

@@ -19,6 +19,7 @@ namespace WizBot.Common
         TriviaCurrencyReward,
         XpPerMessage,
         XpMinutesTimeout,
+        PatreonCurrencyPerCent,
         
         //ErrorColor, //after i fix the wizbot.cs static variables
         //OkColor

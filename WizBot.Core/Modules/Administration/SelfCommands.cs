@@ -17,6 +17,7 @@ using WizBot.Modules.Administration.Services;
 using Newtonsoft.Json;
 using WizBot.Common.ShardCom;
 using Discord.Net;
+using WizBot.Core.Common;
 
 namespace WizBot.Modules.Administration
 {
@@ -413,9 +414,9 @@ namespace WizBot.Modules.Administration
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
-            public async Task SetGame([Remainder] string game = null)
+            public async Task SetGame(PlayingType type, [Remainder] string game = null)
             {
-                await _bot.SetGameAsync(game).ConfigureAwait(false);
+                await _bot.SetGameAsync(game, type).ConfigureAwait(false);
 
                 await ReplyConfirmLocalized("set_game").ConfigureAwait(false);
             }
@@ -479,12 +480,22 @@ namespace WizBot.Modules.Administration
             [OwnerOnly]
             public async Task ReloadImages()
             {
-                var sw = Stopwatch.StartNew();
                 var sub = _cache.Redis.GetSubscriber();
                 sub.Publish(_creds.RedisKey() + "_reload_images", 
                     "",
                     StackExchange.Redis.CommandFlags.FireAndForget);
                 await ReplyConfirmLocalized("images_loaded", 0).ConfigureAwait(false);
+            }
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [OwnerOnly]
+            public async Task ReloadBotConfig()
+            {
+                var sub = _cache.Redis.GetSubscriber();
+                sub.Publish(_creds.RedisKey() + "_reload_bot_config",
+                    "",
+                    StackExchange.Redis.CommandFlags.FireAndForget);
+                await ReplyConfirmLocalized("bot_config_reloaded").ConfigureAwait(false);
             }
 
             private static UserStatus SettableUserStatusToUserStatus(SettableUserStatus sus)

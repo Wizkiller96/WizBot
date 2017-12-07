@@ -52,6 +52,8 @@ namespace WizBot.Modules.Administration.Services
             var sub = _redis.GetSubscriber();
             sub.Subscribe(_creds.RedisKey() + "_reload_images",
                 delegate { _imgs.Reload(); }, CommandFlags.FireAndForget);
+            sub.Subscribe(_creds.RedisKey() + "_reload_bot_config",
+                delegate { _bc.Reload(); }, CommandFlags.FireAndForget);
 
             Task.Run(async () =>
             {

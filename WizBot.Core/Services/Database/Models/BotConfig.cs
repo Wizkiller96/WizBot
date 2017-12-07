@@ -72,6 +72,7 @@ WizNet Community Server: https://discord.gg/0YNaDOYuD5QOpeNI";
         public int XpMinutesTimeout { get; set; } = 5;
         public HashSet<LoadedPackage> LoadedPackages { get; set; } = new HashSet<LoadedPackage>();
         public int DivorcePriceMultiplier { get; set; } = 150;
+        public float PatreonCurrencyPerCent { get; set; } = 1.0f;
     }
 
     public class BlockedCmdOrMdl : DbEntity

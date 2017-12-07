@@ -67,7 +67,7 @@ namespace WizBot.Modules.Administration.Services
 
                         try
                         {
-                            await bot.SetGameAsync(status).ConfigureAwait(false);
+                            await bot.SetGameAsync(status, Core.Common.PlayingType.Playing).ConfigureAwait(false);
                         }
                         catch (Exception ex)
                         {
