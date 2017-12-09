@@ -157,9 +157,15 @@ namespace WizBot.Core.Services
                     JsonConvert.SerializeObject(msg),
                     CommandFlags.FireAndForget);
             var p = _shardProcesses[shardId];
+            if (p == null)
+                return; // ignore
             _shardProcesses[shardId] = null;
-            try { p?.Kill(); } catch { }
-            try { p?.Dispose(); } catch { }
+            try
+            {
+                p.KillTree();
+                p.Dispose();
+            }
+            catch { }
         }
 
         private void OnDataReceived(RedisChannel ch, RedisValue data)
@@ -228,11 +234,17 @@ namespace WizBot.Core.Services
                         {
                             _log.Warn("Auto-restarting shard {0}", id);
                         }
-                        var p = StartShard(id);
-                        var toRemove = _shardProcesses[id];
-                        try { toRemove?.Kill(); } catch { }
-                        try { toRemove?.Dispose(); } catch { }
-                        _shardProcesses[id] = p;
+                        var rem = _shardProcesses[id];
+                        if (rem != null)
+                        {
+                            try
+                            {
+                                rem.KillTree();
+                                rem.Dispose();
+                            }
+                            catch { }
+                        }
+                        _shardProcesses[id] = StartShard(id);
                         _shardStartQueue.TryDequeue(out var __);
                         await Task.Delay(6000).ConfigureAwait(false);
                     }
@@ -319,8 +331,14 @@ namespace WizBot.Core.Services
                 _log.Error(ex);
                 foreach (var p in _shardProcesses)
                 {
-                    try { p.Kill(); } catch { }
-                    try { p.Dispose(); } catch { }
+                    if (p == null)
+                        continue;
+                    try
+                    {
+                        p.KillTree();
+                        p.Dispose();
+                    }
+                    catch { }
                 }
                 return;
             }
