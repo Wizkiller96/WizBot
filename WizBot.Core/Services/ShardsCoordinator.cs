@@ -239,7 +239,7 @@ namespace WizBot.Core.Services
                         {
                             try
                             {
-                                rem.KillTree();
+                                rem.Kill();
                                 rem.Dispose();
                             }
                             catch { }
