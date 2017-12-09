@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using WizBot.Common.Attributes;
 using WizBot.Modules.Administration.Services;
 using Microsoft.EntityFrameworkCore;
+using WizBot.Core.Common;
 
 namespace WizBot.Modules.Administration
 {
@@ -42,12 +43,12 @@ namespace WizBot.Modules.Administration
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
-            public async Task AddPlaying([Remainder] string status)
+            public async Task AddPlaying(PlayingType t, [Remainder] string status)
             {
                 using (var uow = _db.UnitOfWork)
                 {
                     var config = uow.BotConfig.GetOrCreate(set => set.Include(x => x.RotatingStatusMessages));
-                    var toAdd = new PlayingStatus { Status = status };
+                    var toAdd = new PlayingStatus { Status = status, Type = t };
                     config.RotatingStatusMessages.Add(toAdd);
                     await uow.CompleteAsync();
                 }
@@ -65,7 +66,7 @@ namespace WizBot.Modules.Administration
                 {
                     var i = 1;
                     await ReplyConfirmLocalized("ropl_list",
-                            string.Join("\n\t", _service.BotConfig.RotatingStatusMessages.Select(rs => $"`{i++}.` {rs.Status}")))
+                            string.Join("\n\t", _service.BotConfig.RotatingStatusMessages.Select(rs => $"`{i++}.` *{rs.Type}* {rs.Status}")))
                         .ConfigureAwait(false);
                 }
 

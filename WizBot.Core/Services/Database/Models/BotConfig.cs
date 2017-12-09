@@ -1,3 +1,4 @@
+using WizBot.Core.Common;
 using System.Collections.Generic;
 
 namespace WizBot.Core.Services.Database.Models
@@ -107,6 +108,7 @@ WizNet Community Server: https://discord.gg/0YNaDOYuD5QOpeNI";
     public class PlayingStatus :DbEntity
     {
         public string Status { get; set; }
+        public PlayingType Type { get; set; }
     }
 
     public class BlacklistItem : DbEntity
