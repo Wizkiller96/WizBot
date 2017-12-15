@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace NadekoBot.Core.Modules.Searches.Common
+namespace WizBot.Core.Modules.Searches.Common
 {
 
     public class Account
