@@ -110,7 +110,7 @@ namespace WizBot.Modules.Help
                         transformed = transformed
                             .GroupBy(x => grp++ % count / 2)
                             .Select(x =>
-                        {
+                            {
                                 if (x.Count() == 1)
                                     return $"{x.First()}";
                                 else
@@ -123,7 +123,7 @@ namespace WizBot.Modules.Help
             embed.WithFooter(GetText("commands_instr", Prefix));
             await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
         }
-        
+
         [WizBotCommand, Usage, Description, Aliases]
         [Priority(0)]
         public async Task H([Remainder] string fail)
