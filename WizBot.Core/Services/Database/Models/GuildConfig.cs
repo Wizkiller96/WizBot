@@ -1,3 +1,4 @@
+using WizBot.Common.Collections;
 using System;
 using System.Collections.Generic;
 
@@ -93,8 +94,8 @@ namespace WizBot.Core.Services.Database.Models
         public XpSettings XpSettings { get; set; }
         public List<FeedSub> FeedSubs { get; set; } = new List<FeedSub>();
         public bool AutoDcFromVc { get; set; }
-
         public MusicSettings MusicSettings { get; set; } = new MusicSettings();
+        public IndexedCollection<ReactionRoleMessage> ReactionRoleMessages { get; set; } = new IndexedCollection<ReactionRoleMessage>();
     }
 
     public class DelMsgOnCmdChannel : DbEntity
