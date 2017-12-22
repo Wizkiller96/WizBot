@@ -76,8 +76,10 @@ namespace WizBot.Modules.Administration.Services
                                 var dl = await msg.GetOrDownloadAsync().ConfigureAwait(false);
                                     foreach (var r in dl.Reactions)
                                     {
+                                        if (r.Key.Name == reaction.Emote.Name)
+                                            continue;
                                         try { await dl.RemoveReactionAsync(r.Key, gusr); } catch { }
-                                    await Task.Delay(100).ConfigureAwait(false);
+                                        await Task.Delay(100).ConfigureAwait(false);
                                     }
                                 }
                                 catch { }
