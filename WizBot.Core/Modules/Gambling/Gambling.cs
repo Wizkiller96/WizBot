@@ -66,7 +66,7 @@ namespace WizBot.Modules.Gambling
         }
 
         [WizBotCommand, Usage, Description, Aliases]
-        [AdminOnly]
+        [OwnerOnly]
         public async Task TimelyReset()
         {
             _cache.RemoveAllTimelyClaims();
@@ -74,7 +74,7 @@ namespace WizBot.Modules.Gambling
         }
 
         [WizBotCommand, Usage, Description, Aliases]
-        [AdminOnly]
+        [OwnerOnly]
         public async Task TimelySet(int num, int period = 24)
         {
             if (num < 0 || period < 0)
@@ -144,7 +144,8 @@ namespace WizBot.Modules.Gambling
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        public async Task Give(long amount, [Remainder] IGuildUser receiver)
+        [Priority(0)]
+        public async Task Give(long amount, IGuildUser receiver, [Remainder] string msg = null)
         {
             if (amount <= 0 || Context.User.Id == receiver.Id)
                 return;
@@ -154,27 +155,40 @@ namespace WizBot.Modules.Gambling
                 await ReplyErrorLocalized("not_enough", CurrencyPluralName).ConfigureAwait(false);
                 return;
             }
-            await _cs.AddAsync(receiver, $"Gift from {Context.User.Username} ({Context.User.Id}).", amount, true).ConfigureAwait(false);
-            await ReplyConfirmLocalized("gifted", amount + CurrencySign, Format.Bold(receiver.ToString()))
+            await _cs.AddAsync(receiver, $"Gift from {Context.User.Username} ({Context.User.Id}).", amount, true, msg).ConfigureAwait(false);
+            await ReplyConfirmLocalized("gifted", amount + CurrencySign, Format.Bold(receiver.ToString()), msg)
                 .ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
+        [Priority(1)]
+        public Task Give(long amount, [Remainder] IGuildUser receiver)
+            => Give(amount, receiver, null);
+
+        [WizBotCommand, Usage, Description, Aliases]
+        [RequireContext(ContextType.Guild)]
         [AdminOnly]
         [Priority(0)]
+        public Task Award(int amount, IGuildUser usr, [Remainder] string msg) =>
+            Award(amount, usr.Id, msg);
+
+        [WizBotCommand, Usage, Description, Aliases]
+        [RequireContext(ContextType.Guild)]
+        [AdminOnly]
+        [Priority(1)]
         public Task Award(int amount, [Remainder] IGuildUser usr) =>
             Award(amount, usr.Id);
 
         [WizBotCommand, Usage, Description, Aliases]
         [AdminOnly]
-        [Priority(1)]
-        public async Task Award(int amount, ulong usrId)
+        [Priority(2)]
+        public async Task Award(int amount, ulong usrId, [Remainder] string msg = null)
         {
             if (amount <= 0)
                 return;
 
-            await _cs.AddAsync(usrId, $"Awarded by bot staff. ({Context.User.Username}/{Context.User.Id})", amount).ConfigureAwait(false);
+            await _cs.AddAsync(usrId, $"Awarded by bot staff. ({Context.User.Username}/{Context.User.Id}) {(msg ?? "")}", amount).ConfigureAwait(false);
             await ReplyConfirmLocalized("awarded", amount + CurrencySign, $"<@{usrId}>").ConfigureAwait(false);
         }
 
@@ -206,7 +220,7 @@ namespace WizBot.Modules.Gambling
             if (amount <= 0)
                 return;
 
-            if (await _cs.RemoveAsync(user, $"Taken by bot staff. ({Context.User.Username}/{Context.User.Id})", amount, true).ConfigureAwait(false))
+            if (await _cs.RemoveAsync(user, $"Taken by bot staff.({Context.User.Username}/{Context.User.Id})", amount, true).ConfigureAwait(false))
                 await ReplyConfirmLocalized("take", amount + CurrencySign, Format.Bold(user.ToString())).ConfigureAwait(false);
             else
                 await ReplyErrorLocalized("take_fail", amount + CurrencySign, Format.Bold(user.ToString()), CurrencyPluralName).ConfigureAwait(false);
@@ -220,7 +234,7 @@ namespace WizBot.Modules.Gambling
             if (amount <= 0)
                 return;
 
-            if (await _cs.RemoveAsync(usrId, $"Taken by bot staff. ({Context.User.Username}/{Context.User.Id})", amount).ConfigureAwait(false))
+            if (await _cs.RemoveAsync(usrId, $"Taken by bot staff.({Context.User.Username}/{Context.User.Id})", amount).ConfigureAwait(false))
                 await ReplyConfirmLocalized("take", amount + CurrencySign, $"<@{usrId}>").ConfigureAwait(false);
             else
                 await ReplyErrorLocalized("take_fail", amount + CurrencySign, Format.Code(usrId.ToString()), CurrencyPluralName).ConfigureAwait(false);
