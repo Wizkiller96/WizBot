@@ -4,6 +4,7 @@ using WizBot.Core.Services.Database.Models;
 using Discord;
 using WizBot.Modules.Xp.Common;
 using System.Linq;
+using WizBot.Extensions;
 
 namespace WizBot.Modules.Xp.Services
 {
@@ -232,6 +233,21 @@ namespace WizBot.Modules.Xp.Services
                     return false;
 
                 club.MinimumLevelReq = level;
+                uow.Complete();
+            }
+
+            return true;
+        }
+
+        public bool ChangeClubDescription(ulong userId, string desc)
+        {
+            using (var uow = _db.UnitOfWork)
+            {
+                var club = uow.Clubs.GetByOwner(userId);
+                if (club == null)
+                    return false;
+
+                club.Description = desc?.TrimTo(150, true);
                 uow.Complete();
             }
 

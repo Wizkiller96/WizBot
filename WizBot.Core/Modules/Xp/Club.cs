@@ -126,6 +126,7 @@ namespace WizBot.Modules.Xp
                         .WithOkColor()
                         .WithTitle($"{club.ToString()}")
                         .WithDescription(GetText("level_x", lvl.Level) + $" ({club.Xp} xp)")
+                        .AddField("Description", string.IsNullOrWhiteSpace(club.Description) ? "-" : club.Description, false)
                         .AddField("Owner", club.Owner.ToString(), true)
                         .AddField("Level Req.", club.MinimumLevelReq.ToString(), true)
                         .AddField("Members", string.Join("\n", club.Users
@@ -325,6 +326,19 @@ namespace WizBot.Modules.Xp
                 else
                 {
                     await ReplyErrorLocalized("club_level_req_change_error").ConfigureAwait(false);
+                }
+            }
+
+            [WizBotCommand, Usage, Description, Aliases]
+            public async Task ClubDescription([Remainder] string desc = null)
+            {
+                if (_service.ChangeClubDescription(Context.User.Id, desc))
+                {
+                    await ReplyConfirmLocalized("club_desc_updated", Format.Bold(desc ?? "-")).ConfigureAwait(false);
+                }
+                else
+                {
+                    await ReplyErrorLocalized("club_desc_update_failed").ConfigureAwait(false);
                 }
             }
 
