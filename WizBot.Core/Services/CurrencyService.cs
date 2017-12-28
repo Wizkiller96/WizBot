@@ -4,7 +4,6 @@ using Discord;
 using WizBot.Extensions;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Core.Services.Database;
-using WizBot.Core.Services;
 
 namespace WizBot.Core.Services
 {

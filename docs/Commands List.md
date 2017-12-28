@@ -19,13 +19,6 @@ You can support the project on patreon: <https://patreon.com/wiznet> or paypal: 
 Commands and aliases | Description | Usage
 ----------------|--------------|-------
 `.delmsgoncmd` | Toggles the automatic deletion of the user's successful command message to prevent chat flood. You can use it either as a server toggle, channel whitelist, or channel blacklist, as channel option has 3 settings: Enable (always do it on this channel), Disable (never do it on this channel), and Inherit (respect server setting). Use `list` parameter to see the current states. **Requires Administrator server permission.** | `.delmsgoncmd` or `.delmsgoncmd channel enable` or `.delmsgoncmd channel inherit` or `.delmsgoncmd list`
-`.setrole` `.sr` | Sets a role for a given user. **Requires ManageRoles server permission.** | `.sr @User Guest`
-`.removerole` `.rr` | Removes a role from a given user. **Requires ManageRoles server permission.** | `.rr @User Admin`
-`.renamerole` `.renr` | Renames a role. The role you are renaming must be lower than bot's highest role. **Requires ManageRoles server permission.** | `.renr "First role" SecondRole`
-`.removeallroles` `.rar` | Removes all roles from a mentioned user. **Requires ManageRoles server permission.** | `.rar @User`
-`.createrole` `.cr` | Creates a role with a given name. **Requires ManageRoles server permission.** | `.cr Awesome Role`
-`.rolehoist` `.rh` | Toggles whether this role is displayed in the sidebar or not. **Requires ManageRoles server permission.** | `.rh Guests` or `.rh "Space Wizards"`
-`.rolecolor` `.roleclr` | Set a role's color to the hex or 0-255 rgb color value provided. **Requires ManageRoles server permission.** | `.roleclr Admin 255 200 100` or `.roleclr Admin ffba55`
 `.deafen` `.deaf` | Deafens mentioned user or users. **Requires DeafenMembers server permission.** | `.deaf "@Someguy"` or `.deaf "@Someguy" "@Someguy"`
 `.undeafen` `.undef` | Undeafens mentioned user or users. **Requires DeafenMembers server permission.** | `.undef "@Someguy"` or `.undef "@Someguy" "@Someguy"`
 `.delvoichanl` `.dvch` | Deletes a voice channel with a given name. **Requires ManageChannels server permission.** | `.dvch VoiceChannelName`
@@ -34,10 +27,9 @@ Commands and aliases | Description | Usage
 `.creatxtchanl` `.ctch` | Creates a new text channel with a given name. **Requires ManageChannels server permission.** | `.ctch TextChannelName`
 `.settopic` `.st` | Sets a topic on the current channel. **Requires ManageChannels server permission.** | `.st My new topic`
 `.setchanlname` `.schn` | Changes the name of the current channel. **Requires ManageChannels server permission.** | `.schn NewName`
-`.mentionrole` `.menro` | Mentions every person from the provided role or roles (separated by a ',') on this server. **Requires MentionEveryone server permission.** | `.menro RoleName`
 `.donators` | List of the lovely people who donated to keep this project alive.  | `.donators`
 `.donadd` | Add a donator to the database. **Bot owner only** | `.donadd Donate Amount`
-`.autoassignrole` `.aar` | Automaticaly assigns a specified role to every user who joins the server. **Requires ManageRoles server permission.** | `.aar to disable` or `.aar Role Name to enable`
+`.autoassignrole` `.aar` | Automaticaly assigns a specified role to every user who joins the server. Provide no arguments to disable. **Requires ManageRoles server permission.** | `.aar` or `.aar RoleName`
 `.execsql` | Executes an sql command and returns the number of affected rows. Dangerous. **Bot owner only** | `.execsql UPDATE Currency SET Amount=Amount+1234`
 `.deletewaifus` | Deletes everything from WaifuUpdates and WaifuInfo tables. **Bot owner only** | `.deletewaifus`
 `.deletecurrency` | Deletes everything from Currency and CurrencyTransactions. **Bot owner only** | `.deletecurrency`
@@ -47,10 +39,10 @@ Commands and aliases | Description | Usage
 `.languageset` `.langset` | Sets this server's response language. If bot's response strings have been translated to that language, bot will use that language in this server. Reset by using `default` as the locale name. Provide no arguments to see currently set language.  | `.langset de-DE ` or `.langset default`
 `.langsetdefault` `.langsetd` | Sets the bot's default response language. All servers which use a default locale will use this one. Setting to `default` will use the host's current culture. Provide no arguments to see currently set language.  | `.langsetd en-US` or `.langsetd default`
 `.languageslist` `.langli` | List of languages for which translation (or part of it) exist atm.  | `.langli`
-`.logserver` | Enables or Disables ALL log events. If enabled, all log events will log to this channel. **Requires Administrator server permission.** **Bot owner & bot admin only** | `.logserver enable` or `.logserver disable`
-`.logignore` | Toggles whether the `.logserver` command ignores this channel. Useful if you have hidden admin channel and public log channel. **Requires Administrator server permission.** **Bot owner & bot admin only** | `.logignore`
-`.logevents` | Shows a list of all events you can subscribe to with `.log` **Requires Administrator server permission.** **Bot owner & bot admin only** | `.logevents`
-`.log` | Toggles logging event. Disables it if it is active anywhere on the server. Enables if it isn't active. Use `.logevents` to see a list of all events you can subscribe to. **Requires Administrator server permission.** **Bot owner & bot admin only** | `.log userpresence` or `.log userbanned`
+`.logserver` | Enables or Disables ALL log events. If enabled, all log events will log to this channel. **Requires Administrator server permission.** **Bot owner only** | `.logserver enable` or `.logserver disable`
+`.logignore` | Toggles whether the `.logserver` command ignores this channel. Useful if you have hidden admin channel and public log channel. **Requires Administrator server permission.** **Bot owner only** | `.logignore`
+`.logevents` | Shows a list of all events you can subscribe to with `.log` **Requires Administrator server permission.** **Bot owner only** | `.logevents`
+`.log` | Toggles logging event. Disables it if it is active anywhere on the server. Enables if it isn't active. Use `.logevents` to see a list of all events you can subscribe to. **Requires Administrator server permission.** **Bot owner only** | `.log userpresence` or `.log userbanned`
 `.setmuterole` | Sets a name of the role which will be assigned to people who should be muted. Default is wizbot-mute. **Requires ManageRoles server permission.** | `.setmuterole Silenced`
 `.mute` | Mutes a mentioned user both from speaking and chatting. You can also specify time in minutes (up to 1440) for how long the user should be muted. **Requires ManageRoles server permission.** **Requires MuteMembers server permission.** | `.mute @Someone` or `.mute 30 @Someone`
 `.unmute` | Unmutes a mentioned user previously muted with `.mute` command. **Requires ManageRoles server permission.** **Requires MuteMembers server permission.** | `.unmute @Someone`
@@ -59,7 +51,7 @@ Commands and aliases | Description | Usage
 `.voicemute` | Prevents a mentioned user from speaking in voice channels. **Requires MuteMembers server permission.** | `.voicemute @Someone`
 `.voiceunmute` | Gives a previously voice-muted user a permission to speak. **Requires MuteMembers server permission.** | `.voiceunmute @Someguy`
 `.rotateplaying` `.ropl` | Toggles rotation of playing status of the dynamic strings you previously specified. **Bot owner only** | `.ropl`
-`.addplaying` `.adpl` | Adds a specified string to the list of playing strings to rotate. Supported placeholders: `%servers%`, `%users%`, `%playing%`, `%queued%`, `%time%`, `%shardid%`, `%shardcount%`, `%shardguilds%`. **Bot owner only** | `.adpl`
+`.addplaying` `.adpl` | Adds a specified string to the list of playing strings to rotate. You have to pick either 'Playing', 'Watching' or 'ListeningTo' as the first parameter. Supported placeholders: `%servers%`, `%users%`, `%playing%`, `%queued%`, `%time%`, `%shardid%`, `%shardcount%`, `%shardguilds%`. **Bot owner only** | `.adpl Playing with you` or `.adpl Watching you sleep`
 `.listplaying` `.lipl` | Lists all playing statuses with their corresponding number. **Bot owner only** | `.lipl`
 `.removeplaying` `.rmpl` `.repl` | Removes a playing string on a given number. **Bot owner only** | `.rmpl`
 `.prefix` | Sets this server's prefix for all bot commands. Provide no arguments to see the current server prefix.  | `.prefix +`
@@ -71,6 +63,17 @@ Commands and aliases | Description | Usage
 `.prune` `.clear` | `.prune` removes all WizBot's messages in the last 100 messages. `.prune X` removes last `X` number of messages from the channel (up to 100). `.prune @Someone` removes all Someone's messages in the last 100 messages. `.prune @Someone X` removes last `X` number of 'Someone's' messages in the channel.  | `.prune` or `.prune 5` or `.prune @Someone` or `.prune @Someone X`
 `.slowmode` | Toggles slowmode. Disable by specifying no parameters. To enable, specify a number of messages each user can send, and an interval in seconds. For example 1 message every 5 seconds. **Requires ManageMessages server permission.** | `.slowmode 1 5` or `.slowmode`
 `.slowmodewl` | Ignores a role or a user from the slowmode feature. **Requires ManageMessages server permission.** | `.slowmodewl SomeRole` or `.slowmodewl AdminDude`
+`.reactionroles` `.rero` | Specify role names and server emojis with which they're represented, the bot will then add those emojis to the previous message in the channel, and users will be able to get the roles by clicking on the emoji. You can set 'excl' as the first argument to make them exclusive. You can have up to 5 of these enabled on one server at a time. **Requires ManageRoles server permission.** | `.reactionroles Gamer :SomeServerEmoji: Streamer :Other: Watcher :Other2:` or `.reactionroles excl Horde :Horde: Alliance :Alliance:`
+`.reactionroleslist` `.reroli` | Lists all ReactionRole messages on this channel and their indexes. **Requires ManageRoles server permission.** | `.reactionroleslist`
+`.reactionrolesremove` `.rerorm` | Removed a ReactionRole message on the specified index. **Requires ManageRoles server permission.** | `.reactionrolesrm 1`
+`.setrole` `.sr` | Sets a role for a given user. **Requires ManageRoles server permission.** | `.sr @User Guest`
+`.removerole` `.rr` | Removes a role from a given user. **Requires ManageRoles server permission.** | `.rr @User Admin`
+`.renamerole` `.renr` | Renames a role. The role you are renaming must be lower than bot's highest role. **Requires ManageRoles server permission.** | `.renr "First role" SecondRole`
+`.removeallroles` `.rar` | Removes all roles from a mentioned user. **Requires ManageRoles server permission.** | `.rar @User`
+`.createrole` `.cr` | Creates a role with a given name. **Requires ManageRoles server permission.** | `.cr Awesome Role`
+`.rolehoist` `.rh` | Toggles whether this role is displayed in the sidebar or not. **Requires ManageRoles server permission.** | `.rh Guests` or `.rh "Space Wizards"`
+`.rolecolor` `.roleclr` | Set a role's color to the hex or 0-255 rgb color value provided. **Requires ManageRoles server permission.** | `.roleclr Admin 255 200 100` or `.roleclr Admin ffba55`
+`.mentionrole` `.menro` | Mentions every person from the provided role or roles (separated by a ',') on this server. **Requires MentionEveryone server permission.** | `.menro RoleName`
 `.adsarm` | Toggles the automatic deletion of confirmations for `.iam` and `.iamn` commands. **Requires ManageMessages server permission.** | `.adsarm`
 `.asar` | Adds a role to the list of self-assignable roles. You can also specify a group. If 'Exclusive self-assignable roles' feature is enabled, users will be able to pick one role per group. **Requires ManageRoles server permission.** | `.asar Gamer` or `.asar 1 Alliance` or `.asar 1 Horde`
 `.rsar` | Removes a specified role from the list of self-assignable roles. **Requires ManageRoles server permission.** | `.rsar`
@@ -97,9 +100,9 @@ Commands and aliases | Description | Usage
 `.setavatar` `.setav` | Sets a new avatar image for the WizBot. Argument is a direct link to an image. **Bot owner only** | `.setav http://i.imgur.com/xTG3a1I.jpg`
 `.setgame` | Sets the bots game status to either Playing, ListeningTo, or Watching. **Bot owner only** | `.setgame Playing with snakes.` or `.setgame Watching anime.` or `.setgame ListeningTo music.`
 `.setstream` | Sets the bots stream. First argument is the twitch link, second argument is stream name. **Bot owner only** | `.setstream TWITCHLINK Hello`
-`.send` | Sends a message to someone on a different server through the bot.  Separate server and channel/user ids with `|` and prefix the channel id with `c:` and the user id with `u:`. **Bot owner & bot admin only** | `.send serverid|c:channelid message` or `.send serverid|u:userid message`
-`.reloadimages` | Reloads images bot is using. Safe to use even when bot is being used heavily. **Bot owner only** | `.reloadimages`
-`.reloadbotconfig` | reloadbotconfig **Bot owner only** | `reloadbotconfig`
+`.send` | Sends a message to someone on a different server through the bot.  Separate server and channel/user ids with `|` and prefix the channel id with `c:` and the user id with `u:`. **Bot owner only** | `.send serverid|c:channelid message` or `.send serverid|u:userid message`
+`.imagesreload` | Reloads images bot is using. Safe to use even when bot is being used heavily. **Bot owner only** | `.imagesreload`
+`.botconfigreload` | Reloads bot configuration in case you made changes to the BotConfig table either with .execsql or manually in the .db file. **Bot owner only** | `.botconfigreload`
 `.greetdel` `.grdel` | Sets the time it takes (in seconds) for greet messages to be auto-deleted. Set it to 0 to disable automatic deletion. **Requires ManageServer server permission.** | `.greetdel 0` or `.greetdel 30`
 `.greet` | Toggles anouncements on the current channel when someone joins the server. **Requires ManageServer server permission.** | `.greet`
 `.greetmsg` | Sets a new join announcement message which will be shown in the server's channel. Type `%user%` if you want to mention the new member. Using it with no message will show the current greet message. You can use embed json from <http://embedbuilder.wizkiller96network.com/> instead of a regular text, if you want the message to be embedded. **Requires ManageServer server permission.** | `.greetmsg Welcome, %user%.`
@@ -149,20 +152,20 @@ Commands and aliases | Description | Usage
 Commands and aliases | Description | Usage
 ----------------|--------------|-------
 `.timely` | Use to claim your 'timely' currency. Bot owner has to specify the amount and the period on how often you can claim your currency.  | `.timely`
-`.timelyreset` | Resets all user timeouts on `.timely` command. **Bot owner & bot admin only** | `.timelyreset`
-`.timelyset` | Sets the 'timely' currency allowance amount for users. Second argument is period in hours, default is 24 hours. **Bot owner & bot admin only** | `.timelyset 100` or `.timelyset 50 12`
+`.timelyreset` | Resets all user timeouts on `.timely` command. **Bot owner only** | `.timelyreset`
+`.timelyset` | Sets the 'timely' currency allowance amount for users. Second argument is period in hours, default is 24 hours. **Bot owner only** | `.timelyset 100` or `.timelyset 50 12`
 `.raffle` | Prints a name and ID of a random online user from the server, or from the online user in the specified role.  | `.raffle` or `.raffle RoleName`
 `.raffleany` | Prints a name and ID of a random user from the server, or from the specified role.  | `.raffleany` or `.raffleany  RoleName`
 `.$` `.currency` `.$$` `.$$$` `.cash` `.cur` | Check how much currency a person has. (Defaults to yourself)  | `.$` or `.$ @SomeGuy`
-`.give` | Give someone a certain amount of currency.  | `.give 1 @SomeGuy`
-`.award` | Awards someone a certain amount of currency.  You can also specify a role name to award currency to all users in a role. **Bot owner & bot admin only** | `.award 100 @person` or `.award 5 Role Of Gamblers`
-`.take` | Takes a certain amount of currency from someone. **Bot owner & bot admin only** | `.take 1 @SomeGuy`
+`.give` | Give someone a certain amount of currency. You can specify the reason after the mention.  | `.give 1 @SomeGuy` or `.give 5 @CootGurl Ur so pwetty`
+`.award` | Awards someone a certain amount of currency. You can specify the reason after the Username. You can also specify a role name to award currency to all users in a role. **Bot owner only** | `.award 100 @person` or `.award 5 Role Of Gamblers`
+`.take` | Takes a certain amount of currency from someone. **Bot owner only** | `.take 1 @SomeGuy`
 `.rollduel` | Challenge someone to a roll duel by specifying the amount and the user you wish to challenge as the parameters. To accept the challenge, just specify the name of the user who challenged you, without the amount.  | `.rollduel 50 @SomeGuy` or `.rollduel @Challenger`
 `.betroll` `.br` | Bets a certain amount of currency and rolls a dice. Rolling over 66 yields x2 of your currency, over 90 - x4 and 100 x10.  | `.br 5`
 `.leaderboard` `.lb` | Displays the bot's currency leaderboard.  | `.lb`
 `.race` | Starts a new animal race.  | `.race`
 `.joinrace` `.jr` | Joins a new race. You can specify an amount of currency for betting (optional). You will get YourBet*(participants-1) back if you win.  | `.jr` or `.jr 5`
-`.startevent` | Starts one of the events seen on public wizbot. `reaction` and `sneakygamestatus` are the only 2 available now. **Bot owner & bot admin only** | `.startevent reaction`
+`.startevent` | Starts one of the events seen on public wizbot. `reaction` and `sneakygamestatus` are the only 2 available now. **Bot owner only** | `.startevent reaction`
 `.rafflecur` | Starts or joins a currency raffle with a specified amount. Users who join the raffle will lose the amount of currency specified and add it to the pot. After 30 seconds, random winner will be selected who will receive the whole pot. There is also a `mixed` mode in which the users will be able to join the game with any amount of currency, and have their chances be proportional to the amount they've bet.  | `.rafflecur 20` or `.rafflecur mixed 15`
 `.roll` | Rolls 0-100. If you supply a number `X` it rolls up to 30 normal dice. If you split 2 numbers with letter `d` (`xdy`) it will roll `X` dice from 1 to `y`. `Y` can be a letter 'F' if you want to roll fate dice instead of dnd.  | `.roll` or `.roll 7` or `.roll 3d5` or `.roll 5dF`
 `.rolluo` | Rolls `X` normal dice (up to 30) unordered. If you split 2 numbers with letter `d` (`xdy`) it will roll `X` dice from 1 to `y`.  | `.rolluo` or `.rolluo 7` or `.rolluo 3d5`
@@ -177,8 +180,8 @@ Commands and aliases | Description | Usage
 `.shopadd` | Adds an item to the shop by specifying type price and name. Available types are role and list. **Requires Administrator server permission.** | `.shopadd role 1000 Rich`
 `.shoplistadd` | Adds an item to the list of items for sale in the shop entry given the index. You usually want to run this command in the secret channel, so that the unique items are not leaked. **Requires Administrator server permission.** | `.shoplistadd 1 Uni-que-Steam-Key`
 `.shoprem` `.shoprm` | Removes an item from the shop by its ID. **Requires Administrator server permission.** | `.shoprm 1`
-`.slotstats` | Shows the total stats of the slot command for this bot's session. **Bot owner & bot admin only** | `.slotstats`
-`.slottest` | Tests to see how much slots payout for X number of plays. **Bot owner & bot admin only** | `.slottest 1000`
+`.slotstats` | Shows the total stats of the slot command for this bot's session. **Bot owner only** | `.slotstats`
+`.slottest` | Tests to see how much slots payout for X number of plays. **Bot owner only** | `.slottest 1000`
 `.slot` | Play WizBot slots. Max bet is 9999. 1.5 second cooldown per user.  | `.slot 5`
 `.waifureset` | Resets your waifu stats, except current waifus.  | `.waifureset`
 `.claimwaifu` `.claim` | Claim a waifu for yourself by spending currency.  You must spend at least 10% more than her current value unless she set `.affinity` towards you.  | `.claim 50 @Himesama`
@@ -216,9 +219,9 @@ Commands and aliases | Description | Usage
 `.pollend` | Stops active poll on this server and prints the results in this channel. **Requires ManageMessages server permission.** | `.pollend`
 `.typestart` | Starts a typing contest.  | `.typestart`
 `.typestop` | Stops a typing contest on the current channel.  | `.typestop`
-`.typeadd` | Adds a new article to the typing contest. **Bot owner & bot admin only** | `.typeadd wordswords`
+`.typeadd` | Adds a new article to the typing contest. **Bot owner only** | `.typeadd wordswords`
 `.typelist` | Lists added typing articles with their IDs. 15 per page.  | `.typelist` or `.typelist 3`
-`.typedel` | Deletes a typing article given the ID. **Bot owner & bot admin only** | `.typedel 3`
+`.typedel` | Deletes a typing article given the ID. **Bot owner only** | `.typedel 3`
 `.tictactoe` `.ttt` | Starts a game of tic tac toe. Another user must run the command in the same channel in order to accept the challenge. Use numbers 1-9 to play.  | `.ttt`
 `.trivia` `.t` | Starts a game of trivia. You can add `nohint` to prevent hints. First player to get to 10 points wins by default. You can specify a different number. 30 seconds per question.  | `.t` or `.t --timeout 5 -p -w 3 -q 10`
 `.tl` | Shows a current trivia leaderboard.  | `.tl`
@@ -232,7 +235,7 @@ Commands and aliases | Description | Usage
 `.modules` `.mdls` | Lists all bot modules.  | `.modules`
 `.commands` `.cmds` | List all of the bot's commands from a certain module. You can either specify the full name or only the first few letters of the module name.  | `.commands Administration` or `.cmds Admin`
 `.help` `.h` | Either shows a help for a single command, or DMs you help link if no arguments are specified.  | `.h .cmds` or `.h`
-`.hgit` | Generates the commandlist.md file. **Bot owner & bot admin only** | `.hgit`
+`.hgit` | Generates the commandlist.md file. **Bot owner only** | `.hgit`
 `.readme` `.guide` | Sends a readme and a guide links to the channel.  | `.readme` or `.guide`
 `.donate` | Instructions for helping the project financially.  | `.donate`
 
@@ -297,7 +300,7 @@ Commands and aliases | Description | Usage
 `.boobs` | Real adult content.  | `.boobs`
 `.butts` `.ass` `.butt` | Real adult content.  | `.butts` or `.ass`
 `.nsfwtagbl` `.nsfwtbl` | Toggles whether the tag is blacklisted or not in nsfw searches. Provide no parameters to see the list of blacklisted tags.  | `.nsfwtbl poop`
-`.nsfwcc` | Clears nsfw cache. **Bot owner & bot admin only** | `.nsfwcc`
+`.nsfwcc` | Clears nsfw cache. **Bot owner only** | `.nsfwcc`
 
 ###### [Back to ToC](#table-of-contents)
 
@@ -321,9 +324,9 @@ Commands and aliases | Description | Usage
 `.allrolemdls` `.arm` | Enable or disable all modules for a specific role.  | `.arm [enable/disable] MyRole`
 `.allusrmdls` `.aum` | Enable or disable all modules for a specific user.  | `.aum enable @someone`
 `.allsrvrmdls` `.asm` | Enable or disable all modules for your server.  | `.asm [enable/disable]`
-`.ubl` | Either [add]s or [rem]oves a user specified by a Mention or an ID from a blacklist. **Bot owner & bot admin only** | `.ubl add @SomeUser` or `.ubl rem 12312312313`
-`.cbl` | Either [add]s or [rem]oves a channel specified by an ID from a blacklist. **Bot owner & bot admin only** | `.cbl rem 12312312312`
-`.sbl` | Either [add]s or [rem]oves a server specified by a Name or an ID from a blacklist. **Bot owner & bot admin only** | `.sbl add 12312321312` or `.sbl rem SomeTrashServer`
+`.ubl` | Either [add]s or [rem]oves a user specified by a Mention or an ID from a blacklist. **Bot owner only** | `.ubl add @SomeUser` or `.ubl rem 12312312313`
+`.cbl` | Either [add]s or [rem]oves a channel specified by an ID from a blacklist. **Bot owner only** | `.cbl rem 12312312312`
+`.sbl` | Either [add]s or [rem]oves a server specified by a Name or an ID from a blacklist. **Bot owner only** | `.sbl add 12312321312` or `.sbl rem SomeTrashServer`
 `.cmdcooldown` `.cmdcd` | Sets a cooldown per user for a command. Set it to 0 to remove the cooldown.  | `.cmdcd "some cmd" 5`
 `.allcmdcooldowns` `.acmdcds` | Shows a list of all commands and their respective cooldowns.  | `.acmdcds`
 `.srvrfilterinv` `.sfi` | Toggles automatic deletion of invites posted in the server. Does not affect the Bot Owner.  | `.sfi`
@@ -332,11 +335,11 @@ Commands and aliases | Description | Usage
 `.chnlfilterwords` `.cfw` | Toggles automatic deletion of messages containing filtered words on the channel. Does not negate the `.srvrfilterwords` enabled setting. Does not affect the Bot Owner.  | `.cfw`
 `.fw` | Adds or removes (if it exists) a word from the list of filtered words. Use`.sfw` or `.cfw` to toggle filtering.  | `.fw poop`
 `.lstfilterwords` `.lfw` | Shows a list of filtered words.  | `.lfw`
-`.listglobalperms` `.lgp` | Lists global permissions set by the bot owner. **Bot owner & bot admin only** | `.lgp`
-`.globalmodule` `.gmod` | Toggles whether a module can be used on any server. **Bot owner & bot admin only** | `.gmod nsfw`
-`.globalcommand` `.gcmd` | Toggles whether a command can be used on any server. **Bot owner & bot admin only** | `.gcmd .stats`
+`.listglobalperms` `.lgp` | Lists global permissions set by the bot owner. **Bot owner only** | `.lgp`
+`.globalmodule` `.gmod` | Toggles whether a module can be used on any server. **Bot owner only** | `.gmod nsfw`
+`.globalcommand` `.gcmd` | Toggles whether a command can be used on any server. **Bot owner only** | `.gcmd .stats`
 `.resetperms` | Resets the bot's permissions module on this server to the default value. **Requires Administrator server permission.** | `.resetperms`
-`.resetglobalperms` | Resets global permissions set by bot owner. **Bot owner & bot admin only** | `.resetglobalperms`
+`.resetglobalperms` | Resets global permissions set by bot owner. **Bot owner only** | `.resetglobalperms`
 
 ###### [Back to ToC](#table-of-contents)
 
@@ -402,6 +405,10 @@ Commands and aliases | Description | Usage
 `.osub` | Shows information about an osu beatmap.  | `.osub https://osu.ppy.sh/s/127712`
 `.osu5` | Displays a user's top 5 plays.  | `.osu5 Name`
 `.overwatch` `.ow` | Show's basic stats on a player (competitive rank, playtime, level etc) Region codes are: `eu` `us` `cn` `kr`  | `.ow us Battletag#1337` or `.overwatch eu Battletag#2016`
+`.pathofexile` `.poe` | Searches characters for a given Path of Exile account. May specify league name to filter results.  | `.poe "Zizaran"`
+`.pathofexileleagues` `.poel` | Returns a list of the main Path of Exile leagues.  | `.poel`
+`.pathofexilecurrency` `.poec` | Returns the chaos equivalent of a given currency or exchange rate between two currencies.  | `.poec Standard "Mirror of Kalandra"`
+`.pathofexileitem` `.poei` | Searches for a Path of Exile item from the Path of Exile GamePedia.  | `.poei "Quill Rain"`
 `.placelist` | Shows the list of available tags for the `.place` command.  | `.placelist`
 `.place` | Shows a placeholder image of a given tag. Use `.placelist` to see all available tags. You can specify the width and height of the image as the last two optional arguments.  | `.place Cage` or `.place steven 500 400`
 `.pokemon` `.poke` | Searches for a pokemon.  | `.poke Sylveon`
@@ -414,14 +421,10 @@ Commands and aliases | Description | Usage
 `.removestream` `.rms` | Removes notifications of a certain streamer from a certain platform on this channel. **Requires ManageMessages server permission.** | `.rms Twitch SomeGuy` or `.rms mixer SomeOtherGuy`
 `.checkstream` `.cs` | Checks if a user is online on a certain streaming platform.  | `.cs twitch MyFavStreamer`
 `.translate` `.trans` | Translates from>to text. From the given language to the destination language.  | `.trans en>fr Hello`
-`.autotrans` `.at` | Starts automatic translation of all messages by users who set their `.atl` in this channel. You can set "del" argument to automatically delete all translated user messages. **Requires Administrator server permission.** **Bot owner & bot admin only** | `.at` or `.at del`
+`.autotrans` `.at` | Starts automatic translation of all messages by users who set their `.atl` in this channel. You can set "del" argument to automatically delete all translated user messages. **Requires Administrator server permission.** **Bot owner only** | `.at` or `.at del`
 `.autotranslang` `.atl` | Sets your source and target language to be used with `.at`. Specify no arguments to remove previously set value.  | `.atl en>fr`
 `.translangs` | Lists the valid languages for translation.  | `.translangs`
 `.xkcd` | Shows a XKCD comic. No arguments will retrieve random one. Number argument will retrieve a specific comic, and "latest" will get the latest one.  | `.xkcd` or `.xkcd 1400` or `.xkcd latest`
-`.pathofexile` `.poe` | Retrieves character list from the specified account name. Can filter by league name. Paginated, 10 characters per page. | `.poe "Zizaran"` or '.poe "Zizaran" "Standard"'
-`.pathofexileleagues` `.poel` | Retrieves the list of current main league names. Non-SSF names are valid for the `.poec` command. | `.poel`
-`.pathofexilecurrency` `.poec` | By default, shows the Chaos Orb equivalent of the input currency. Specify two currencies to determine the exchange rate between them. Some common shorthand currency names can be used. Data is retrieved from https://poe.ninja | `.poec Standard "Mirror of Kalandra"` or `.poec Standard "Orb of Alchemy" "Vaal Orb"`
-`.pathofexileitem` `.poei` | Retrieves tooltip for the specified unique item. | `.poei "Headhunter"`
 
 ###### [Back to ToC](#table-of-contents)
 
@@ -440,8 +443,8 @@ Commands and aliases | Description | Usage
 `.createinvite` `.crinv` | Creates a new invite which has infinite max uses and never expires. **Requires CreateInstantInvite channel permission.** | `.crinv`
 `.stats` | Shows some basic stats for WizBot.  | `.stats`
 `.showemojis` `.se` | Shows a name and a link to every SPECIAL emoji in the message.  | `.se A message full of SPECIAL emojis`
-`.listservers` | Lists servers the bot is on with some basic info. 15 per page. **Bot owner & bot admin only** | `.listservers 3`
-`.savechat` | Saves a number of messages to a text file and sends it to you. **Bot owner & bot admin only** | `.savechat 150`
+`.listservers` | Lists servers the bot is on with some basic info. 15 per page. **Bot owner only** | `.listservers 3`
+`.savechat` | Saves a number of messages to a text file and sends it to you. **Bot owner only** | `.savechat 150`
 `.ping` | Ping the bot to see if there are latency issues.  | `.ping`
 `.botconfigedit` `.bce` | Sets one of available bot config settings to a specified value. Use the command without any parameters to get a list of available settings. **Bot owner only** | `.bce CurrencyName b1nzy` or `.bce`
 `.calculate` `.calc` | Evaluate a mathematical expression.  | `.calc 1+1`
@@ -451,9 +454,9 @@ Commands and aliases | Description | Usage
 `.serverinfo` `.sinfo` | Shows info about the server the bot is on. If no server is supplied, it defaults to current one.  | `.sinfo Some Server`
 `.channelinfo` `.cinfo` | Shows info about the channel. If no channel is supplied, it defaults to current one.  | `.cinfo #some-channel`
 `.userinfo` `.uinfo` | Shows info about the user. If no user is supplied, it defaults a user running the command.  | `.uinfo @SomeUser`
-`.activity` | Checks for spammers. **Bot owner & bot admin only** | `.activity`
+`.activity` | Checks for spammers. **Bot owner only** | `.activity`
 `.parewrel` | Forces the update of the list of patrons who are eligible for the reward.  | `.parewrel`
-`.clparew` | Claim patreon rewards. If you're subscribed to bot owner's patreon you can use this command to claim your rewards - assuming bot owner did setup has their patreon key.  | `.clparew`
+`.clparew` `.claparew` | Claim patreon rewards. If you're subscribed to bot owner's patreon you can use this command to claim your rewards - assuming bot owner did setup has their patreon key.  | `.clparew`
 `.listquotes` `.liqu` | Lists all quotes on the server ordered alphabetically or by ID. 15 Per page.  | `.liqu 3` or `.liqu 3 id`
 `...` | Shows a random quote with a specified name.  | `... abc`
 `.qsearch` | Shows a random quote for a keyword that contains any text specified in the search.  | `.qsearch keyword text`
@@ -484,7 +487,7 @@ Commands and aliases | Description | Usage
 `.experience` `.xp` | Shows your xp stats. Specify the user to show that user's stats instead.  | `.xp`
 `.xplvluprewards` `.xprews` `.xpcrs` `.xprrs` `.xprolerewards` `.xpcurrewards` | Shows currently set level up rewards.  | `.xprews`
 `.xprolereward` `.xprr` | Sets a role reward on a specified level. Provide no role name in order to remove the role reward. **Requires ManageRoles server permission.** | `.xprr 3 Social`
-`.xpcurreward` `.xpcr` | Sets a currency reward on a specified level. Provide no amount in order to remove the reward. **Bot owner & bot admin only** | `.xpcr 3 50`
+`.xpcurreward` `.xpcr` | Sets a currency reward on a specified level. Provide no amount in order to remove the reward. **Bot owner only** | `.xpcr 3 50`
 `.xpnotify` `.xpn` | Sets how the bot should notify you when you get a `server` or `global` level. You can set `dm` (for the bot to send a direct message), `channel` (to get notified in the channel you sent the last message in) or `none` to disable.  | `.xpn global dm` or `.xpn server channel`
 `.xpexclude` `.xpex` | Exclude a channel, role or current server from the xp system. **Requires Administrator server permission.** | `.xpex Role Excluded-Role` or `.xpex Server`
 `.xpexclusionlist` `.xpexl` | Shows the roles and channels excluded from the XP system on this server, as well as whether the whole server is excluded.  | `.xpexl`
