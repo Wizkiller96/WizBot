@@ -27,9 +27,6 @@ namespace WizBot.Core.Services.Database
         private IBotConfigRepository _botConfig;
         public IBotConfigRepository BotConfig => _botConfig ?? (_botConfig = new BotConfigRepository(_context));
 
-        private ICurrencyRepository _currency;
-        public ICurrencyRepository Currency => _currency ?? (_currency = new CurrencyRepository(_context));
-
         private ICurrencyTransactionsRepository _currencyTransactions;
         public ICurrencyTransactionsRepository CurrencyTransactions => _currencyTransactions ?? (_currencyTransactions = new CurrencyTransactionsRepository(_context));
 

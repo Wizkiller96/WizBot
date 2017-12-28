@@ -1,5 +1,6 @@
 using Discord;
 using WizBot.Core.Services.Database.Models;
+using System.Collections.Generic;
 
 namespace WizBot.Core.Services.Database.Repositories
 {
@@ -8,5 +9,10 @@ namespace WizBot.Core.Services.Database.Repositories
         DiscordUser GetOrCreate(IUser original);
         int GetUserGlobalRanking(ulong id);
         DiscordUser[] GetUsersXpLeaderboardFor(int page);
+
+        long GetUserCurrency(ulong userId);
+        bool TryUpdateCurrencyState(ulong userId, long change);
+        IEnumerable<DiscordUser> GetTopRichest(int count, int skip);
+        void RemoveFromMany(List<long> ids);
     }
 }

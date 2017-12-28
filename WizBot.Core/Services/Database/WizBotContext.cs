@@ -32,7 +32,6 @@ namespace WizBot.Core.Services.Database
         public DbSet<Reminder> Reminders { get; set; }
         public DbSet<SelfAssignedRole> SelfAssignableRoles { get; set; }
         public DbSet<BotConfig> BotConfig { get; set; }
-        public DbSet<Currency> Currency { get; set; }
         public DbSet<MusicPlaylist> MusicPlaylists { get; set; }
         public DbSet<CustomReaction> CustomReactions { get; set; }
         public DbSet<CurrencyTransaction> CurrencyTransactions { get; set; }
@@ -184,14 +183,6 @@ namespace WizBot.Core.Services.Database
                 .Property(x => x.Group)
                 .HasDefaultValue(0);
 
-            #endregion
-
-            #region Currency
-            var currencyEntity = modelBuilder.Entity<Currency>();
-
-            currencyEntity
-                .HasIndex(c => c.UserId)
-                .IsUnique();
             #endregion
 
             #region Permission
