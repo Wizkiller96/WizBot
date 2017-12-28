@@ -424,9 +424,9 @@ namespace WizBot.Modules.Administration.Services
                             PresenceUpdates.AddOrUpdate(logChannel,
                                 new List<string>() { str }, (id, list) => { list.Add(str); return list; });
                         }
-                        else if (before.Game?.Name != after.Game?.Name)
+                        else if (before.Activity?.Name != after.Activity?.Name)
                         {
-                            var str = $"👾`{PrettyCurrentTime(after.Guild)}`👤__**{after.Username}**__ is now playing **{after.Game?.Name ?? "-"}**.";
+                            var str = $"👾`{PrettyCurrentTime(after.Guild)}`👤__**{after.Username}**__ is now playing **{after.Activity?.Name ?? "-"}**.";
                             PresenceUpdates.AddOrUpdate(logChannel,
                                 new List<string>() { str }, (id, list) => { list.Add(str); return list; });
                         }
