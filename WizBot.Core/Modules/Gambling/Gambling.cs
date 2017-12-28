@@ -139,6 +139,48 @@ namespace WizBot.Modules.Gambling
         }
 
         [WizBotCommand, Usage, Description, Aliases]
+        [Priority(2)]
+        public Task CurrencyTransactions(int page = 1) =>
+            InternalCurrencyTransactions(Context.User, page);
+
+        [WizBotCommand, Usage, Description, Aliases]
+        [OwnerOnly]
+        [Priority(0)]
+        public Task CurrencyTransactions([Remainder] IUser usr) =>
+            InternalCurrencyTransactions(usr, 1);
+
+        [WizBotCommand, Usage, Description, Aliases]
+        [OwnerOnly]
+        [Priority(1)]
+        public Task CurrencyTransactions(IUser usr, int page) =>
+            InternalCurrencyTransactions(usr, page);
+
+        private async Task InternalCurrencyTransactions(IUser user, int page)
+        {
+            if (--page< 0)
+                return;
+
+            var trs = new List<CurrencyTransaction>();
+            using (var uow = _db.UnitOfWork)
+            {
+                trs = uow.CurrencyTransactions.GetPageFor(user.Id, page);
+            }
+
+            var embed = new EmbedBuilder()
+                .WithTitle(GetText("transactions", user.ToString()))
+                .WithOkColor();
+
+            foreach (var tr in trs)
+            {
+                var type = tr.Amount > 0 ? "🔵" : "🔴";
+                embed.AddField($"*{tr.DateAdded:HH:mm yyyy-MM-dd}* {type} {tr.Amount}", tr.Reason);
+            }
+
+            embed.WithFooter(GetText("page", page + 1));
+            await Context.Channel.EmbedAsync(embed);
+        }
+
+        [WizBotCommand, Usage, Description, Aliases]
         [Priority(0)]
         public async Task Cash(ulong userId)
         {
