@@ -157,7 +157,7 @@ namespace WizBot.Modules.Gambling
 
         private async Task InternalCurrencyTransactions(IUser user, int page)
         {
-            if (--page< 0)
+            if (--page < 0)
                 return;
 
             var trs = new List<CurrencyTransaction>();
