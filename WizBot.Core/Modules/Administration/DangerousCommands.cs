@@ -52,7 +52,7 @@ namespace WizBot.Modules.Administration
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
             public Task DeleteCurrency() =>
-                ExecSql("DELETE FROM Currency; DELETE FROM CurrencyTransactions;");
+                ExecSql("UPDATE DiscordUser SET CurrencyAmount=0; DELETE FROM CurrencyTransactions;");
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
