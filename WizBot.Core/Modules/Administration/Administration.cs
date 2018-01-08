@@ -280,7 +280,7 @@ namespace WizBot.Modules.Administration
 
 
         [WizBotCommand, Usage, Description, Aliases]
-        [OwnerOnly]
+        [AdminOnly]
         public async Task Donadd(IUser donator, int amount)
         {
             Donator don;
