@@ -5,8 +5,8 @@ using WizBot.Extensions;
 using WizBot.Core.Services;
 using System;
 using System.Threading.Tasks;
+using Discord;
 
-//#if !GLOBAL_WIZBOT
 namespace WizBot.Modules.Administration
 {
     public partial class Administration
@@ -28,6 +28,16 @@ namespace WizBot.Modules.Administration
             {
                 try
                 {
+
+                    var embed = new EmbedBuilder()
+                        .WithTitle(GetText("sql_confirm_exec"))
+                        .WithDescription(Format.Code(sql));
+
+                    if (!await PromptUserConfirmAsync(embed))
+                    {
+                        return;
+                    }
+
                     int res;
                     using (var uow = _db.UnitOfWork)
                     {
@@ -46,8 +56,8 @@ namespace WizBot.Modules.Administration
             [OwnerOnly]
             public Task DeleteWaifus() =>
                 ExecSql(@"DELETE FROM WaifuUpdates;
- DELETE FROM WaifuItem;
- DELETE FROM WaifuInfo;");
+DELETE FROM WaifuItem;
+DELETE FROM WaifuInfo;");
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
@@ -73,4 +83,3 @@ DELETE FROM Clubs;");
         }
     }
 }
-//#endif
