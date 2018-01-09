@@ -122,7 +122,7 @@ namespace WizBot.Modules.Administration
 
                         embed.AddField(x => x
                             .WithName(name)
-                            .WithValue(w.Reason));
+                            .WithValue(w.Reason.TrimTo(1020)));
                     }
                 }
 
