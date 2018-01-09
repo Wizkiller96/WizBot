@@ -73,7 +73,7 @@ namespace WizBot.Modules.CustomReactions.Extensions
             }
 
             var rep = new ReplacementBuilder()
-                .WithDefault(ctx.Author, ctx.Channel, (ctx.Channel as ITextChannel)?.Guild, client)
+                .WithDefault(ctx.Author, ctx.Channel, (ctx.Channel as ITextChannel)?.Guild as SocketGuild, client)
                 .WithOverride("%target%", () => ctx.Content.Substring(substringIndex).Trim())
                 .Build();
 
@@ -114,7 +114,7 @@ namespace WizBot.Modules.CustomReactions.Extensions
                 }
 
                 var rep = new ReplacementBuilder()
-                    .WithDefault(ctx.Author, ctx.Channel, (ctx.Channel as ITextChannel)?.Guild, client)
+                    .WithDefault(ctx.Author, ctx.Channel, (ctx.Channel as ITextChannel)?.Guild as SocketGuild, client)
                     .WithOverride("%target%", () => ctx.Content.Substring(substringIndex).Trim())
                     .Build();
 
