@@ -51,6 +51,7 @@ namespace WizBot.Core.Services.Database
         public DbSet<EightBallResponse> EightBallResponses { get; set; }
         public DbSet<RaceAnimal> RaceAnimals { get; set; }
         public DbSet<RewardedUser> RewardedUsers { get; set; }
+        public DbSet<Stake> Stakes { get; set; }
 
         public WizBotContext(DbContextOptions<WizBotContext> options) : base(options)
         {
