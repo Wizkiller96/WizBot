@@ -122,7 +122,7 @@ We can then run the script: `sudo bash linuxAIO.sh` and you will be presented wi
 
 **Make sure you have installed WizBot with the first option [1] before doing this, and also have installed the prerequisites with step [4].** 
 
-+Simply choose **Option 6** to setup pm2 and install it along with NodeJS. This will update your NodeJS so there's no harm running it even if you have NodeJS on your system. It will also install pm2 and then exit to the installer menu again.
+Simply choose **Option 6** to setup pm2 and install it along with NodeJS. This will update your NodeJS so there's no harm running it even if you have NodeJS on your system. It will also install pm2 and then exit to the installer menu again.
 
 ##### Running WizBot with pm2 and Updating WizBot within pm2
 
