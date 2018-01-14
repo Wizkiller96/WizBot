@@ -73,6 +73,10 @@ namespace WizBot.Modules.Gambling
                 {
                     if (bj.Join(Context.User, amount))
                         await ReplyConfirmLocalized("bj_joined").ConfigureAwait(false);
+                    else
+                    {
+                        _log.Info($"{Context.User} can't join a blackjack game as it's in " + bj.State.ToString() + " state already.");
+                    }
                 }
 
                 await Context.Message.DeleteAsync();
@@ -155,19 +159,17 @@ namespace WizBot.Modules.Gambling
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            public Task Hit() => BlackJack(BjAction.Hit);
+            public Task Hit() => InternalBlackJack(BjAction.Hit);
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            public Task Stand() => BlackJack(BjAction.Stand);
+            public Task Stand() => InternalBlackJack(BjAction.Stand);
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            public Task Double() => BlackJack(BjAction.Double);
+            public Task Double() => InternalBlackJack(BjAction.Double);
 
-            [WizBotCommand, Usage, Description, Aliases]
-            [RequireContext(ContextType.Guild)]
-            public async Task BlackJack(BjAction a)
+            public async Task InternalBlackJack(BjAction a)
             {
                 if (!_service.Games.TryGetValue(Context.Channel.Id, out var bj))
                     return;
