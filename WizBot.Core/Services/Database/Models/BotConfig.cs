@@ -105,7 +105,7 @@ WizNet Community Server: https://discord.gg/0YNaDOYuD5QOpeNI";
         public string VoiceChannelName { get; set; }
     }
 
-    public class PlayingStatus :DbEntity
+    public class PlayingStatus : DbEntity
     {
         public string Status { get; set; }
         public PlayingType Type { get; set; }
