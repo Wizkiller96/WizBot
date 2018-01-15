@@ -789,7 +789,7 @@ namespace WizBot.Modules.Searches
             try
             {
                 JToken obj;
-                obj = JObject.Parse(await _service.Http.GetStringAsync($"https://nekos.life/api/neko").ConfigureAwait(false))[0];
+                obj = JObject.Parse(await _service.Http.GetStringAsync($"https://nekos.life/api/neko").ConfigureAwait(false));
                 await Context.Channel.SendMessageAsync($"{obj["neko"]}").ConfigureAwait(false);
             }
             catch (Exception ex)

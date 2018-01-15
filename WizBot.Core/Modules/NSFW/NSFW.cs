@@ -82,7 +82,7 @@ namespace WizBot.Modules.NSFW
             try
             {
                 JToken obj;
-                obj = JObject.Parse(await _service.Http.GetStringAsync($"https://nekos.life/api/lewd/neko").ConfigureAwait(false))[0];
+                obj = JObject.Parse(await _service.Http.GetStringAsync($"https://nekos.life/api/lewd/neko").ConfigureAwait(false));
                 await Channel.SendMessageAsync($"{obj["neko"]}").ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -306,7 +306,7 @@ namespace WizBot.Modules.NSFW
             try
             {
                 JToken obj;
-                obj = JObject.Parse(await _service.Http.GetStringAsync($"https://nekos.life/api/lewd/neko").ConfigureAwait(false))[0];
+                obj = JObject.Parse(await _service.Http.GetStringAsync($"https://nekos.life/api/lewd/neko").ConfigureAwait(false));
                 await Context.Channel.SendMessageAsync($"{obj["neko"]}").ConfigureAwait(false);
             }
             catch (Exception ex)
