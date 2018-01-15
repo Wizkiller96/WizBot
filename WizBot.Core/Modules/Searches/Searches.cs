@@ -784,6 +784,21 @@ namespace WizBot.Modules.Searches
         }
 
         [WizBotCommand, Usage, Description, Aliases]
+        public async Task Nya()
+        {
+            try
+            {
+                JToken obj;
+                obj = JArray.Parse(await _service.Http.GetStringAsync($"https://nekos.life/api/neko").ConfigureAwait(false))[0];
+                await Context.Channel.SendMessageAsync($"{obj["neko"]}").ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                await Context.Channel.SendErrorAsync(ex.Message).ConfigureAwait(false);
+            }
+        }
+
+        [WizBotCommand, Usage, Description, Aliases]
         public async Task Wikia(string target, [Remainder] string query)
         {
             if (string.IsNullOrWhiteSpace(target) || string.IsNullOrWhiteSpace(query))

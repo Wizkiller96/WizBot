@@ -3310,5 +3310,19 @@
       "{0}xpreset @b1nzy",
       "{0}xpreset"
     ]
+  },
+  "nya": {
+    "cmd": "nya",
+    "desc": "Random neko from http://nekos.life",
+    "usage": [
+      "{0}nya"
+    ]
+  },
+  "neko": {
+    "cmd": "neko",
+    "desc": "Random lewd neko from http://nekos.life/lewd",
+    "usage": [
+      "{0}neko"
+    ]
   }
 }

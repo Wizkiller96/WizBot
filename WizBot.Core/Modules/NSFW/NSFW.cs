@@ -77,6 +77,20 @@ namespace WizBot.Modules.NSFW
             }
         }
 
+        private async Task InternalNeko(IMessageChannel Channel)
+        {
+            try
+            {
+                JToken obj;
+                obj = JArray.Parse(await _service.Http.GetStringAsync($"https://nekos.life/api/lewd/neko").ConfigureAwait(false))[0];
+                await Channel.SendMessageAsync($"{obj["neko"]}").ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                await Channel.SendErrorAsync(ex.Message).ConfigureAwait(false);
+            }
+        }
+
         [WizBotCommand, Usage, Description, Aliases]
         [RequireUserPermission(ChannelPermission.ManageMessages)]
         public async Task AutoHentai(int interval = 0, string tags = null)
@@ -279,6 +293,21 @@ namespace WizBot.Modules.NSFW
                 JToken obj;
                 obj = JArray.Parse(await _service.Http.GetStringAsync($"http://api.obutts.ru/butts/{new WizBotRandom().Next(0, 4335)}").ConfigureAwait(false))[0];
                 await Context.Channel.SendMessageAsync($"http://media.obutts.ru/{obj["preview"]}").ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                await Context.Channel.SendErrorAsync(ex.Message).ConfigureAwait(false);
+            }
+        }
+
+        [WizBotCommand, Usage, Description, Aliases]
+        public async Task Neko()
+        {
+            try
+            {
+                JToken obj;
+                obj = JArray.Parse(await _service.Http.GetStringAsync($"https://nekos.life/api/lewd/neko").ConfigureAwait(false))[0];
+                await Context.Channel.SendMessageAsync($"{obj["neko"]}").ConfigureAwait(false);
             }
             catch (Exception ex)
             {
