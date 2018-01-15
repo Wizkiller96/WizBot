@@ -7,6 +7,7 @@ using WizBot.Common.Attributes;
 using WizBot.Modules.Administration.Services;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Core.Common;
+using Discord;
 
 namespace WizBot.Modules.Administration
 {
@@ -43,7 +44,7 @@ namespace WizBot.Modules.Administration
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
-            public async Task AddPlaying(PlayingType t, [Remainder] string status)
+            public async Task AddPlaying(ActivityType t, [Remainder] string status)
             {
                 using (var uow = _db.UnitOfWork)
                 {
