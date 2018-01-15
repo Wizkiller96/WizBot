@@ -83,7 +83,7 @@ namespace WizBot.Modules.NSFW
             {
                 JToken obj;
                 obj = JArray.Parse(await _service.Http.GetStringAsync($"https://nekos.life/api/lewd/neko").ConfigureAwait(false))[0];
-                await Channel.SendMessageAsync($"{obj["neko"]}").ConfigureAwait(false);
+                await Channel.SendMessageAsync($"{obj}").ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -307,7 +307,7 @@ namespace WizBot.Modules.NSFW
             {
                 JToken obj;
                 obj = JArray.Parse(await _service.Http.GetStringAsync($"https://nekos.life/api/lewd/neko").ConfigureAwait(false))[0];
-                await Context.Channel.SendMessageAsync($"{obj["neko"]}").ConfigureAwait(false);
+                await Context.Channel.SendMessageAsync($"{obj}").ConfigureAwait(false);
             }
             catch (Exception ex)
             {
