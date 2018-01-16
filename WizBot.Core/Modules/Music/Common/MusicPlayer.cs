@@ -481,6 +481,7 @@ namespace WizBot.Modules.Music.Common
             lock (locker)
             {
                 Stopped = true;
+                Autoplay = false;
                 //Queue.ResetCurrent();
                 if (clearQueue)
                     Queue.Clear();
