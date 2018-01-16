@@ -963,5 +963,19 @@
     "administration_reaction_roles_message": "",
     "administration_no_reaction_roles": "",
     "administration_reaction_role_removed": "",
-    "administration_reaction_roles_full": ""
+    "administration_reaction_roles_full": "",
+    "gambling_transactions": "",
+    "xp_club_desc_updated": "",
+    "xp_club_desc_update_failed": "",
+    "utility_reminder_list": "",
+    "utility_reminder_deleted": "",
+    "utility_reminder_not_exist": "",
+    "utility_reminders_none": "",
+    "gambling_bj_created": "",
+    "gambling_bj_joined": "",
+    "xp_reset": "",
+    "xp_reset_server_confirm": "",
+    "xp_reset_user_confirm": "",
+    "xp_reset_user": "",
+    "xp_reset_server": ""
 }
