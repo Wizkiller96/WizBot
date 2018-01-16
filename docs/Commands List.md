@@ -306,6 +306,7 @@ Commands and aliases | Description | Usage
 `.butts` `.ass` `.butt` | Real adult content.  | `.butts` or `.ass`
 `.nsfwtagbl` `.nsfwtbl` | Toggles whether the tag is blacklisted or not in nsfw searches. Provide no parameters to see the list of blacklisted tags.  | `.nsfwtbl poop`
 `.nsfwcc` | Clears nsfw cache. **Bot owner only** | `.nsfwcc`
+`.neko` | Random lewd neko from http://nekos.life/lewd | `.neko`
 
 ###### [Back to ToC](#table-of-contents)
 
@@ -430,6 +431,7 @@ Commands and aliases | Description | Usage
 `.autotranslang` `.atl` | Sets your source and target language to be used with `.at`. Specify no arguments to remove previously set value.  | `.atl en>fr`
 `.translangs` | Lists the valid languages for translation.  | `.translangs`
 `.xkcd` | Shows a XKCD comic. No arguments will retrieve random one. Number argument will retrieve a specific comic, and "latest" will get the latest one.  | `.xkcd` or `.xkcd 1400` or `.xkcd latest`
+`.nya` | Random neko from http://nekos.life/ | `.nya`
 
 ###### [Back to ToC](#table-of-contents)
 
