@@ -25,14 +25,12 @@ namespace WizBot.Modules.Administration.Services
             _log = LogManager.GetCurrentClassLogger();
             _db = db;
             _client = client;
-#if !GLOBAL_WIZBOT
             _models = bot.AllGuildConfigs.ToDictionary(x => x.GuildId,
                 x => x.ReactionRoleMessages)
                 .ToConcurrent();
 
             _client.ReactionAdded += _client_ReactionAdded;
             _client.ReactionRemoved += _client_ReactionRemoved;
-#endif
         }
 
         private Task _client_ReactionAdded(Cacheable<IUserMessage, ulong> msg, ISocketMessageChannel chan, SocketReaction reaction)
