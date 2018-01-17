@@ -810,11 +810,13 @@ namespace WizBot.Modules.Administration.Services
                     ITextChannel logChannel;
                     if ((logChannel = await TryGetLogChannel(channel.Guild, logSetting, LogType.MessageDeleted)) == null || logChannel.Id == msg.Id)
                         return;
+
+                    var resolvedMessage = msg.Resolve(userHandling: TagHandling.FullName);
                     var embed = new EmbedBuilder()
                         .WithOkColor()
                         .WithTitle("🗑 " + GetText(logChannel.Guild, "msg_del", ((ITextChannel)msg.Channel).Name))
                         .WithDescription(msg.Author.ToString())
-                        .AddField(efb => efb.WithName(GetText(logChannel.Guild, "content")).WithValue(string.IsNullOrWhiteSpace(msg.Content) ? "-" : msg.Resolve(userHandling: TagHandling.FullName)).WithIsInline(false))
+                        .AddField(efb => efb.WithName(GetText(logChannel.Guild, "content")).WithValue(string.IsNullOrWhiteSpace(resolvedMessage) ? "-" : resolvedMessage).WithIsInline(false))
                         .AddField(efb => efb.WithName("Id").WithValue(msg.Id.ToString()).WithIsInline(false))
                         .WithFooter(efb => efb.WithText(CurrentTime(channel.Guild)));
                     if (msg.Attachments.Any())
