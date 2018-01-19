@@ -98,7 +98,11 @@ namespace WizBot.Core.Modules.Gambling.Common.Blackjack
             }
             catch (Exception ex)
             {
+                _log.Error("REPORT THE MESSAGE BELOW PLEASE");
                 _log.Warn(ex);
+                _log.Error("REPORT THE MESSAGE MESSAGE ABOVE PLEASE");
+                State = GameState.Ended;
+                var _ = GameEnded?.Invoke(this);
             }
         }
 
