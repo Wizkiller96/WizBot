@@ -1,8 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using Discord.Commands;
 using WizBot.Core.Services.Impl;
-using System.Linq;
-using Discord;
+using Newtonsoft.Json;
 
 namespace WizBot.Common.Attributes
 {
@@ -16,8 +15,7 @@ namespace WizBot.Common.Attributes
         public static string GetUsage(string memberName)
         {
             var usage = Localization.LoadCommand(memberName.ToLowerInvariant()).Usage;
-            return string.Join(" or ", usage
-                .Select(x => Format.Code(x)));
+            return JsonConvert.SerializeObject(usage);
         }
     }
 }
