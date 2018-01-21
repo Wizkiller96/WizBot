@@ -1893,6 +1893,13 @@
             ],
             "Description": "Clears nsfw cache.**Bot owner only**",
             "Usage": "`.nsfwcc`"
+        },
+        {
+            "Aliases": [
+                "neko"
+            ],
+            "Description": "Random lewd neko from http://nekos.life/lewd",
+            "Usage": "`.neko`"
         }
     ],
     "Permissions": [
@@ -2714,6 +2721,13 @@
             ],
             "Description": "Shows a XKCD comic. No arguments will retrieve random one. Number argument will retrieve a specific comic, and \"latest\" will get the latest one.",
             "Usage": "`.xkcd` or `.xkcd 1400` or `.xkcd latest`"
+        },
+        {
+            "Aliases": [
+                "nya"
+            ],
+            "Description": "Random neko from http://nekos.life/",
+            "Usage": "`.nya`"
         }
     ],
     "Utility": [
