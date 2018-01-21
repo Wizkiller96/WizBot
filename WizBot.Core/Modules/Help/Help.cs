@@ -195,7 +195,7 @@ namespace WizBot.Modules.Help
                 else
                     cmdData.Add(module.Name, new List<object>
                     {
-                    obj
+                        obj
                     });
             }
             File.WriteAllText("../../docs/Commands List.md", helpstr.ToString());
