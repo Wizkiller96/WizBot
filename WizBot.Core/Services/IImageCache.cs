@@ -1,11 +1,14 @@
-using System.Collections.Immutable;
+using WizBot.Core.Common;
+using System.Threading.Tasks;
 
 namespace WizBot.Core.Services
 {
     public interface IImageCache
     {
-        byte[] Heads { get; }
-        byte[] Tails { get; }
+        ImageUrls ImageUrls { get; }
+
+        byte[][] Heads { get; }
+        byte[][] Tails { get; }
 
         byte[][] Currency { get; }
         byte[][] Dice { get; }
@@ -22,6 +25,6 @@ namespace WizBot.Core.Services
         byte[] Rip { get; }
         byte[] FlowerCircle { get; }
 
-        void Reload();
+        Task Reload();
     }
 }

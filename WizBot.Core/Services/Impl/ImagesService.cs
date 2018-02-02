@@ -1,3 +1,4 @@
+using WizBot.Core.Common;
 using WizBot.Extensions;
 using Newtonsoft.Json;
 using NLog;
@@ -5,6 +6,8 @@ using StackExchange.Redis;
 using System;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace WizBot.Core.Services.Impl
 {
@@ -17,9 +20,6 @@ namespace WizBot.Core.Services.Impl
         private IDatabase _db => _con.GetDatabase();
 
         private const string _basePath = "data/images/";
-
-        private const string _headsPath = _basePath + "coins/heads.png";
-        private const string _tailsPath = _basePath + "coins/tails.png";
 
         private const string _currencyImagesPath = _basePath + "currency";
         private const string _diceImagesPath = _basePath + "dice";
@@ -36,11 +36,14 @@ namespace WizBot.Core.Services.Impl
         private const string _ripPath = _basePath + "rip/rip.png";
         private const string _ripFlowersPath = _basePath + "rip/rose_overlay.png";
 
-        public byte[] Heads
+        private static ImageUrls realImageUrls;
+        public ImageUrls ImageUrls => realImageUrls;
+
+        public byte[][] Heads
         {
             get
             {
-                return Get<byte[]>("heads");
+                return Get<byte[][]>("heads");
             }
             set
             {
@@ -48,11 +51,11 @@ namespace WizBot.Core.Services.Impl
             }
         }
 
-        public byte[] Tails
+        public byte[][] Tails
         {
             get
             {
-                return Get<byte[]>("tails");
+                return Get<byte[][]>("tails");
             }
             set
             {
@@ -177,6 +180,15 @@ namespace WizBot.Core.Services.Impl
             }
         }
 
+        private static readonly HttpClient _http = new HttpClient();
+
+        static RedisImagesCache()
+        {
+            realImageUrls = JsonConvert.DeserializeObject<ImageUrls>(
+                        File.ReadAllText(Path.Combine(_basePath, "images.json")));
+
+        }
+
         public RedisImagesCache(ConnectionMultiplexer con, IBotCredentials creds)
         {
             _con = con;
@@ -184,12 +196,16 @@ namespace WizBot.Core.Services.Impl
             _log = LogManager.GetCurrentClassLogger();
         }
 
-        public void Reload()
+        public async Task Reload()
         {
             try
             {
-                Heads = File.ReadAllBytes(_headsPath);
-                Tails = File.ReadAllBytes(_tailsPath);
+                realImageUrls = JsonConvert.DeserializeObject<ImageUrls>(
+                    File.ReadAllText(Path.Combine(_basePath, "images.json")));
+                Heads = await Task.WhenAll(ImageUrls.Coins.Heads
+                    .Select(x => _http.GetByteArrayAsync(x)));
+                Tails = await Task.WhenAll(ImageUrls.Coins.Tails
+                    .Select(x => _http.GetByteArrayAsync(x)));
 
                 Currency = Directory.GetFiles(_currencyImagesPath)
                     .Select(x => File.ReadAllBytes(x))
@@ -199,7 +215,7 @@ namespace WizBot.Core.Services.Impl
                                 .OrderBy(x => int.Parse(Path.GetFileNameWithoutExtension(x)))
                                 .Select(x => File.ReadAllBytes(x))
                                 .ToArray();
-
+                
                 SlotBackground = File.ReadAllBytes(_slotBackgroundPath);
 
                 SlotNumbers = Directory.GetFiles(_slotNumbersPath)
