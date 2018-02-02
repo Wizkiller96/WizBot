@@ -11,6 +11,8 @@ using WizBot.Modules.Administration.Services;
 using WizBot.Core.Services.Database.Models;
 using Microsoft.EntityFrameworkCore;
 using Discord.WebSocket;
+using WizBot.Common;
+using WizBot.Common.Replacements;
 
 namespace WizBot.Modules.Administration
 {
@@ -290,6 +292,45 @@ namespace WizBot.Modules.Administration
                 await uow.CompleteAsync();
             }
             await ReplyConfirmLocalized("donadd", don.Amount).ConfigureAwait(false);
+        }
+
+        [WizBotCommand, Usage, Description, Aliases]
+        [RequireContext(ContextType.Guild)]
+        [RequireUserPermission(GuildPermission.ManageMessages)]
+        public async Task Edit(ulong messageId, [Remainder] string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+                return;
+
+            var msgs = await Context.Channel.GetMessagesAsync().FlattenAsync()
+                .ConfigureAwait(false);
+
+            IUserMessage msg = (IUserMessage)msgs.FirstOrDefault(x => x.Id == messageId
+                && x.Author.Id == Context.Client.CurrentUser.Id
+                && x is IUserMessage);
+
+            if (msg == null)
+                return;
+
+            var rep = new ReplacementBuilder()
+                    .WithDefault(Context)
+                    .Build();
+
+            if (CREmbed.TryParse(text, out var crembed))
+            {
+                rep.Replace(crembed);
+                await msg.ModifyAsync(x =>
+                {
+                    x.Embed = crembed.ToEmbed().Build();
+                    x.Content = crembed.PlainText?.SanitizeMentions() ?? "";
+                }).ConfigureAwait(false);
+            }
+            else
+            {
+                await msg.ModifyAsync(x => x.Content = text.SanitizeMentions())
+                    .ConfigureAwait(false);
+            }
+
         }
     }
 }
