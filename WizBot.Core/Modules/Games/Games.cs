@@ -12,11 +12,9 @@ using WizBot.Modules.Games.Services;
 namespace WizBot.Modules.Games
 {
     /* more games
-    - Blackjack
     - Shiritori
     - Simple RPG adventure
     */
-    //todo update docs
     public partial class Games : WizBotTopLevelModule<GamesService>
     {
         private readonly IImageCache _images;
