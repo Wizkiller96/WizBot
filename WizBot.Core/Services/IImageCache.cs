@@ -10,7 +10,6 @@ namespace WizBot.Core.Services
         byte[][] Heads { get; }
         byte[][] Tails { get; }
 
-        byte[][] Currency { get; }
         byte[][] Dice { get; }
 
         byte[] SlotBackground { get; }
