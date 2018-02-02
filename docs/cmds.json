@@ -4351,6 +4351,18 @@
         },
         {
             "Aliases": [
+                ".roleid",
+                ".rid"
+            ],
+            "Description": "Shows the id of the specified role.",
+            "Usage": [
+                ".rid Some Role"
+            ],
+            "Submodule": "Utility",
+            "Module": "Utility"
+        },
+        {
+            "Aliases": [
                 ".channelid",
                 ".cid"
             ],

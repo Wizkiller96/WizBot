@@ -3338,5 +3338,12 @@
     "usage": [
       ".edit 7479498384 Hi :^)"
     ]
+  },
+  "roleid": {
+    "cmd": "roleid rid",
+    "desc": "Shows the id of the specified role.",
+    "usage": [
+      ".rid Some Role"
+    ]
   }
 }
