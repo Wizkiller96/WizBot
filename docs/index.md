@@ -22,7 +22,7 @@ If you want to contribute, be sure to PR on the current **[default][repo]** bran
 	- [From Source](guides/From Source.md)
 - Commands
 	- [Readme](Readme.md)
-	- [Commands List](Commands List.md)
+	- [Commands List][cmd_list]
 - Features Explained
 	- [JSON Explanations](JSON Explanations.md)
 	- [Permissions System](Permissions System.md)
@@ -37,3 +37,4 @@ If you want to contribute, be sure to PR on the current **[default][repo]** bran
 [GitHub]: https://github.com/Wizkiller96/WizBot
 [Issues]: https://github.com/Wizkiller96/WizBot/issues
 [repo]: https://github.com/Wizkiller96/WizBot
+[cmd_list]: https://wizbot.cf/commands.html
