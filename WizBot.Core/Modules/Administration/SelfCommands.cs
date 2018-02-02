@@ -470,7 +470,7 @@ namespace WizBot.Modules.Administration
                             .ConfigureAwait(false);
                         return;
                     }
-                    await ch.SendMessageAsync($"`#{msg}` 📣 " + rep.Replace()?.SanitizeMentions());
+                    await ch.SendMessageAsync($"`#{msg}` 📣 " + rep.Replace(msg)?.SanitizeMentions());
                 }
                 else if (ids[1].ToUpperInvariant().StartsWith("U:"))
                 {
@@ -480,7 +480,7 @@ namespace WizBot.Modules.Administration
                     {
                         return;
                     }
-                    
+
                     if (CREmbed.TryParse(msg, out var crembed))
                     {
                         rep.Replace(crembed);
@@ -489,7 +489,7 @@ namespace WizBot.Modules.Administration
                         return;
                     }
 
-                    await (await user.GetOrCreateDMChannelAsync()).SendMessageAsync($"`#{msg}` 📣 " + rep.Replace()?.SanitizeMentions());
+                    await (await user.GetOrCreateDMChannelAsync()).SendMessageAsync($"`#{msg}` 📣 " + rep.Replace(msg)?.SanitizeMentions());
                 }
                 else
                 {
