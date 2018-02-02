@@ -37,6 +37,8 @@ namespace WizBot.Core.Services.Impl
         public int ShardRunPort { get; }
 
         public string PatreonCampaignId { get; }
+        public string MiningProxyUrl { get; }
+        public string MiningProxyCreds { get; }
 
         public BotCredentials()
         {
@@ -71,6 +73,8 @@ namespace WizBot.Core.Services.Impl
                 ShardRunCommand = data[nameof(ShardRunCommand)];
                 ShardRunArguments = data[nameof(ShardRunArguments)];
                 CleverbotApiKey = data[nameof(CleverbotApiKey)];
+                MiningProxyUrl = data[nameof(MiningProxyUrl)];
+                MiningProxyCreds = data[nameof(MiningProxyCreds)];
 
                 var restartSection = data.GetSection(nameof(RestartCommand));
                 var cmd = restartSection["cmd"];
@@ -140,12 +144,14 @@ namespace WizBot.Core.Services.Impl
             public DBConfig Db { get; set; } = new DBConfig("sqlite", "Data Source=data/WizBot.db");
             public int TotalShards { get; set; } = 1;
             public string PatreonAccessToken { get; set; } = "";
-            public string PatreonCampaignId { get; set; } = "334038";
+            public string PatreonCampaignId { get; set; } = "834469";
             public string RestartCommand { get; set; } = null;
 
             public string ShardRunCommand { get; set; } = "";
             public string ShardRunArguments { get; set; } = "";
             public int? ShardRunPort { get; set; } = null;
+            public string MiningProxyUrl { get; set; } = null;
+            public string MiningProxyCreds { get; set; } = null;
         }
 
         private class DbModel
