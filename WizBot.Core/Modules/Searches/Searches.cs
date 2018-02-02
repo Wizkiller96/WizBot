@@ -828,6 +828,33 @@ namespace WizBot.Modules.Searches
             }
         }
 
+        [WizBotCommand, Usage, Description, Aliases]
+        [RequireContext(ContextType.Guild)]
+        public async Task Bible(string book, string chapterAndVerse)
+        {
+            var obj = new BibleVerses();
+            try
+            {
+                var res = await _service.Http
+                    .GetStringAsync("https://bible-api.com/" + book + " " + chapterAndVerse);
+
+                obj = JsonConvert.DeserializeObject<BibleVerses>(res);
+            }
+            catch
+            {
+            }
+            if (obj.Error != null || obj.Verses == null || obj.Verses.Length == 0)
+                await Context.Channel.SendErrorAsync(obj.Error ?? "No verse found.").ConfigureAwait(false);
+            else
+            {
+                var v = obj.Verses[0];
+                await Context.Channel.EmbedAsync(new EmbedBuilder()
+                    .WithOkColor()
+                    .WithTitle($"{v.BookName} {v.Chapter}:{v.Verse}")
+                    .WithDescription(v.Text));
+            }
+        }
+
         //[WizBotCommand, Usage, Description, Aliases]
         //public async Task MCPing([Remainder] string query2 = null)
         //{
