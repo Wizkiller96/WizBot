@@ -18,6 +18,8 @@ using Newtonsoft.Json;
 using WizBot.Common.ShardCom;
 using Discord.Net;
 using WizBot.Core.Common;
+using WizBot.Common;
+using WizBot.Common.Replacements;
 
 namespace WizBot.Modules.Administration
 {
@@ -448,6 +450,10 @@ namespace WizBot.Modules.Administration
                 if (server == null)
                     return;
 
+                var rep = new ReplacementBuilder()
+                    .WithDefault(Context)
+                    .Build();
+
                 if (ids[1].ToUpperInvariant().StartsWith("C:"))
                 {
                     var cid = ulong.Parse(ids[1].Substring(2));
@@ -456,7 +462,15 @@ namespace WizBot.Modules.Administration
                     {
                         return;
                     }
-                    await ch.SendMessageAsync(msg).ConfigureAwait(false);
+
+                    if (CREmbed.TryParse(msg, out var crembed))
+                    {
+                        rep.Replace(crembed);
+                        await ch.EmbedAsync(crembed.ToEmbed(), "📣" + crembed.PlainText?.SanitizeMentions())
+                            .ConfigureAwait(false);
+                        return;
+                    }
+                    await ch.SendMessageAsync($"`#{msg}` 📣 " + rep.Replace()?.SanitizeMentions());
                 }
                 else if (ids[1].ToUpperInvariant().StartsWith("U:"))
                 {
@@ -466,7 +480,16 @@ namespace WizBot.Modules.Administration
                     {
                         return;
                     }
-                    await user.SendMessageAsync(msg).ConfigureAwait(false);
+                    
+                    if (CREmbed.TryParse(msg, out var crembed))
+                    {
+                        rep.Replace(crembed);
+                        await (await user.GetOrCreateDMChannelAsync()).EmbedAsync(crembed.ToEmbed(), "📣" + crembed.PlainText?.SanitizeMentions())
+                            .ConfigureAwait(false);
+                        return;
+                    }
+
+                    await (await user.GetOrCreateDMChannelAsync()).SendMessageAsync($"`#{msg}` 📣 " + rep.Replace()?.SanitizeMentions());
                 }
                 else
                 {
