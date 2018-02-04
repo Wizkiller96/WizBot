@@ -179,7 +179,7 @@ namespace WizBot.Modules.Help
         public async Task Guide()
         {
             await ConfirmLocalized("guide",
-                "http://wizbot.readthedocs.io/en/latest/Commands%20List/",
+                "http://wizbot.cf/commands.html",
                 "http://wizbot.readthedocs.io/en/latest/").ConfigureAwait(false);
         }
 

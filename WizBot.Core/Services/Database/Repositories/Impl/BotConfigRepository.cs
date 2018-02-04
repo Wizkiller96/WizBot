@@ -23,7 +23,6 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
                              .Include(bc => bc.StartupCommands)
                              .Include(bc => bc.BlockedCommands)
                              .Include(bc => bc.BlockedModules)
-                             .Include(bc => bc.Blacklist)
                              //.Include(bc => bc.CommandCosts)
                              .FirstOrDefault();
             else
