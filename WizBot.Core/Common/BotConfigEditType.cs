@@ -20,7 +20,8 @@ namespace WizBot.Common
         XpPerMessage,
         XpMinutesTimeout,
         PatreonCurrencyPerCent,
-        MinWaifuPrice
+        MinWaifuPrice,
+        WaifuGiftMultiplier,
         
         //ErrorColor, //after i fix the wizbot.cs static variables
         //OkColor

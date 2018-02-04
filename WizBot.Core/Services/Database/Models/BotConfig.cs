@@ -55,7 +55,7 @@ For a specific command help, use `{1}h CommandName` (for example {1}h {1}q)
 
 
 **LIST OF COMMANDS CAN BE FOUND ON THIS LINK**
-<http://wizbot.readthedocs.io/en/latest/Commands%20List/>
+<http://wizbot.cf/commands.html>
 
 
 WizNet Community Server: https://discord.gg/0YNaDOYuD5QOpeNI";
@@ -76,6 +76,7 @@ WizNet Community Server: https://discord.gg/0YNaDOYuD5QOpeNI";
         public HashSet<LoadedPackage> LoadedPackages { get; set; } = new HashSet<LoadedPackage>();
         public int DivorcePriceMultiplier { get; set; } = 150;
         public float PatreonCurrencyPerCent { get; set; } = 1.0f;
+        public int WaifuGiftMultiplier { get; set; } = 5;
     }
 
     public class BlockedCmdOrMdl : DbEntity
