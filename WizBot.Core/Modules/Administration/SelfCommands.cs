@@ -466,12 +466,12 @@ namespace WizBot.Modules.Administration
                     if (CREmbed.TryParse(msg, out var crembed))
                     {
                         rep.Replace(crembed);
-                        await ch.EmbedAsync(crembed.ToEmbed(), "📣" + crembed.PlainText?.SanitizeMentions())
+                        await ch.EmbedAsync(crembed.ToEmbed(), $"`#{Context.User}` 📣 " + crembed.PlainText?.SanitizeMentions())
                             .ConfigureAwait(false);
                         await ReplyConfirmLocalized("message_sent").ConfigureAwait(false); 
                         return;
                     }
-                    await ch.SendMessageAsync($"`#{msg}` 📣 " + rep.Replace(msg)?.SanitizeMentions());
+                    await ch.SendMessageAsync($"`#{Context.User}` 📣 " + rep.Replace(msg)?.SanitizeMentions());
                 }
                 else if (ids[1].ToUpperInvariant().StartsWith("U:"))
                 {
@@ -485,13 +485,13 @@ namespace WizBot.Modules.Administration
                     if (CREmbed.TryParse(msg, out var crembed))
                     {
                         rep.Replace(crembed);
-                        await (await user.GetOrCreateDMChannelAsync()).EmbedAsync(crembed.ToEmbed(), "📣" + crembed.PlainText?.SanitizeMentions())
+                        await (await user.GetOrCreateDMChannelAsync()).EmbedAsync(crembed.ToEmbed(), $"`{Context.User}` 📣 " + crembed.PlainText?.SanitizeMentions())
                             .ConfigureAwait(false);
                         await ReplyConfirmLocalized("message_sent").ConfigureAwait(false);
                         return;
                     }
 
-                    await (await user.GetOrCreateDMChannelAsync()).SendMessageAsync($"`#{msg}` 📣 " + rep.Replace(msg)?.SanitizeMentions());
+                    await (await user.GetOrCreateDMChannelAsync()).SendMessageAsync($"`{Context.User}` 📣 " + rep.Replace(msg)?.SanitizeMentions());
                 }
                 else
                 {
