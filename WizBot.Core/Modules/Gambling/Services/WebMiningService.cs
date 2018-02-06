@@ -20,7 +20,7 @@ namespace WizBot.Core.Modules.Gambling.Services
         private readonly CurrencyService _cs;
         private readonly Task _reqTask;
 
-        public WebMiningService(IBotCredentials creds, DbService db, CurrencyService cs)
+        public WebMiningService(WizBot wizbot, IBotCredentials creds, DbService db, CurrencyService cs)
         {
             _log = LogManager.GetCurrentClassLogger();
             _creds = creds;
@@ -35,7 +35,8 @@ namespace WizBot.Core.Modules.Gambling.Services
                     new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
             }
 
-            _reqTask = RequestAsync();
+            if (wizbot.Client.ShardId == 0)
+                _reqTask = RequestAsync();
         }
 
         private async Task RequestAsync()
