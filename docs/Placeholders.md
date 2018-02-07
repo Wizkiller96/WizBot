@@ -4,8 +4,9 @@ They can be used to make the message more user friendly, generate random numbers
 
 Some features have their own specific placeholders which are noted in that feature's command help. Some placeholders are not available in certain features because they don't make sense there.
 
-### Here is a list of the usual placeholders:  
-**Bot placeholders*
+### Here is a list of the usual placeholders:
+
+**Bot placeholders**
 - `%bot.status%` - Bot's status (Online, Idle, AFK, Invisible)
 - `%bot.latency%` - Bot latency
 - `%bot.name%` - Bot username
@@ -14,7 +15,7 @@ Some features have their own specific placeholders which are noted in that featu
 - `%bot.time%` - Bot time (usually the time of the server it's hosted on)
 - `%bot.discrim%` - Bot's discriminator
 
-**Server placeholders*
+**Server placeholders**
 - `%server.id%` - Server ID
 - `%server.name%` - Server name
 - `%server.members%` - Member count
@@ -53,4 +54,4 @@ Some features have their own specific placeholders which are noted in that featu
 
 **If you're using placeholders in embeds, don't use %user.mention% and %bot.mention% in titles, footers and field names. They will not show properly.**
 
-![img]()
+![img](https://i.imgur.com/Jztw4B3.jpg)
