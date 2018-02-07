@@ -132,15 +132,11 @@ namespace WizBot.Common.Replacements
         {
             /*OBSOLETE*/
             _reps.TryAdd("%servers%", () => c.Guilds.Count.ToString());
-#if !GLOBAL_WIZBOT
             _reps.TryAdd("%users%", () => c.Guilds.Sum(s => s.Users.Count).ToString());
-#endif
 
             /*NEW*/
             _reps.TryAdd("%shard.servercount%", () => c.Guilds.Count.ToString());
-#if !GLOBAL_WIZBOT
             _reps.TryAdd("%shard.usercount%", () => c.Guilds.Sum(s => s.Users.Count).ToString());
-#endif
             _reps.TryAdd("%shard.id%", () => c.ShardId.ToString());
             return this;
         }
