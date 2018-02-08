@@ -21,7 +21,7 @@ namespace WizBot.Modules.Searches.Services
         private readonly DbService _db;
         private readonly ConcurrentDictionary<string, HashSet<FeedSub>> _subs;
         private readonly DiscordSocketClient _client;
-        private readonly ConcurrentDictionary<string, DateTime> _lastPosts =
+        private readonly ConcurrentDictionary<string, DateTime> _lastPosts = 
             new ConcurrentDictionary<string, DateTime>();
 
         public FeedsService(WizBot bot, DbService db, DiscordSocketClient client)
@@ -39,16 +39,15 @@ namespace WizBot.Modules.Searches.Services
 
             foreach (var kvp in _subs)
             {
-                // to make sure rss feeds don't post right away, but
+                // to make sure rss feeds don't post right away, but 
                 // only the updates from after the bot has started
                 _lastPosts.AddOrUpdate(kvp.Key, DateTime.UtcNow, (k, old) => DateTime.UtcNow);
             }
 
-#if !GLOBAL_WIZBOT
             var _ = Task.Run(TrackFeeds);
-#endif
-        }
 
+        }
+        
         public async Task<EmbedBuilder> TrackFeeds()
         {
             while (true)
