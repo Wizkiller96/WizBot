@@ -387,7 +387,7 @@ namespace WizBot.Modules.Searches
 
             terms = WebUtility.UrlEncode(terms).Replace(' ', '+');
 
-            var fullQueryLink = $"https://www.google.com/search?q={ terms }&gws_rd=cr,ssl&hl=us";
+            var fullQueryLink = $"https://www.google.ca/search?q={ terms }&gws_rd=cr,ssl&hl=us";
             var config = Configuration.Default.WithDefaultLoader();
             var document = await BrowsingContext.New(config).OpenAsync(fullQueryLink);
 
@@ -425,9 +425,11 @@ namespace WizBot.Modules.Searches
                 .WithFooter(efb => efb.WithText(totalResults));
 
             var desc = await Task.WhenAll(results.Select(async res =>
-                    $"[{Format.Bold(res?.Title)}]({(await _google.ShortenUrl(res?.Link))})\n{res?.Text}\n\n"))
+                    $"[{Format.Bold(res?.Title)}]({(await _google.ShortenUrl(res?.Link))})\n{res?.Text?.TrimTo(400 - res.Value.Title.Length - res.Value.Link.Length)}\n\n"))
                 .ConfigureAwait(false);
-            await Context.Channel.EmbedAsync(embed.WithDescription(string.Concat(desc))).ConfigureAwait(false);
+            var descStr = string.Concat(desc);
+            _log.Info(descStr.Length);
+            await Context.Channel.EmbedAsync(embed.WithDescription(descStr)).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
