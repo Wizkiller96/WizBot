@@ -718,9 +718,10 @@
             "Aliases": [
                 ".lsar"
             ],
-            "Description": "Lists all self-assignable roles.",
+            "Description": "Lists self-assignable roles. Shows 20 roles per page.",
             "Usage": [
-                ".lsar"
+                ".lsar",
+                ".lsar 2"
             ],
             "Submodule": "SelfAssignedRolesCommands",
             "Module": "Administration"
@@ -1163,8 +1164,9 @@
                 ".warnclear",
                 ".warnc"
             ],
-            "Description": "Clears all warnings from a certain user.**Requires BanMembers server permission.**",
+            "Description": "Clears all warnings from a certain user. You can specify a number to clear a specific one.**Requires BanMembers server permission.**",
             "Usage": [
+                ".warnclear @PoorDude 3",
                 ".warnclear @PoorDude"
             ],
             "Submodule": "UserPunishCommands",
@@ -1595,6 +1597,18 @@
         },
         {
             "Aliases": [
+                ".rps"
+            ],
+            "Description": "Play a game of Rocket-Paperclip-Scissors with WizBot. You can bet on it. Multiplier is the same as on betflip.",
+            "Usage": [
+                ".rps r 100",
+                ".rps scissors"
+            ],
+            "Submodule": "Gambling",
+            "Module": "Gambling"
+        },
+        {
+            "Aliases": [
                 ".race"
             ],
             "Description": "Starts a new animal race.",
@@ -1666,7 +1680,7 @@
             "Aliases": [
                 ".startevent"
             ],
-            "Description": "Starts one of the events seen on public wizbot. `reaction` and `sneakygamestatus` are the only 2 available now.**Bot owner only**",
+            "Description": "Starts one of the events seen on public wizbot. Events: `reaction`, `sneakygamestatus` and `botlistupvoters` (for which you need botlisttoken in credentials).**Bot owner only**",
             "Usage": [
                 ".startevent reaction"
             ],
@@ -2010,17 +2024,6 @@
         },
         {
             "Aliases": [
-                ".rps"
-            ],
-            "Description": "Play a game of Rocket-Paperclip-Scissors with WizBot.",
-            "Usage": [
-                ".rps scissors"
-            ],
-            "Submodule": "Games",
-            "Module": "Games"
-        },
-        {
-            "Aliases": [
                 ".rategirl"
             ],
             "Description": "Use the universal hot-crazy wife zone matrix to determine the girl's worth. It is everything young men need to know about women. At any moment in time, any woman you have previously located on this chart can vanish from that location and appear anywhere else on the chart.",
@@ -2126,7 +2129,7 @@
             "Aliases": [
                 ".nunchi"
             ],
-            "Description": "Creates or joins an existing nunchi game. Users have to count up by 1 from the starting number shown by the bot. If someone makes a mistake (types an incorrent number, or repeats the same number) they are out of the game and a new round starts without them.  Minimum 3 users required.",
+            "Description": "Creates or joins an existing nunchi game. Users have to count up by 1 from the starting number shown by the bot. If someone makes a mistake (types an incorrect number, or repeats the same number) they are out of the game and a new round starts without them.  Minimum 3 users required.",
             "Usage": [
                 ".nunchi"
             ],
@@ -2994,17 +2997,17 @@
             ],
             "Submodule": "NSFW",
             "Module": "NSFW"
-        },
-        {
-            "Aliases": [
-                ".neko"
-            ],
-            "Description": "Random lewd neko from http://nekos.life/lewd",
-            "Usage": [
-                ".neko"
-            ],
-            "Submodule": "NSFW",
-            "Module": "NSFW"
+            },
+            {
+                "Aliases": [
+                    ".neko"
+                ],
+                "Description": "Random lewd neko from http://nekos.life/lewd",
+                "Usage": [
+                    ".neko"
+                ],
+                "Submodule": "NSFW",
+                "Module": "NSFW"
         }
     ],
     "Permissions": [
@@ -4275,17 +4278,17 @@
             ],
             "Submodule": "XkcdCommands",
             "Module": "Searches"
-        },
-        {
-            "Aliases": [
-                ".nya"
-            ],
-            "Description": "Random neko from http://nekos.life",
-            "Usage": [
-                ".nya"
-            ],
-            "Submodule": "Searches",
-            "Module": "Searches"
+            },
+            {
+                "Aliases": [
+                    ".nya"
+                ],
+                "Description": "Random neko from http://nekos.life",
+                "Usage": [
+                    ".nya"
+                ],
+                "Submodule": "Searches",
+                "Module": "Searches"
         }
     ],
     "Utility": [
@@ -4871,18 +4874,18 @@
             ],
             "Submodule": "VerboseErrorCommands",
             "Module": "Utility"
-        },
-        {
-            "Aliases": [
-                ".updates",
-                ".changelogs"
-            ],
-            "Description": "Shows a list of changes to WizBot.",
-            "Usage": [
-                ".updates"
-            ],
-            "Submodule": "Utility",
-            "Module": "Utility"
+            },
+            {
+                "Aliases": [
+                    ".updates",
+                    ".changelogs"
+                ],
+                "Description": "Shows a list of changes to WizBot.",
+                "Usage": [
+                    ".updates"
+                ],
+                "Submodule": "Utility",
+                "Module": "Utility"
         }
     ],
     "Xp": [
