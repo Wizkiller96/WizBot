@@ -41,7 +41,9 @@ namespace WizBot.Core.Services.Impl
         public long CommandsRan => Interlocked.Read(ref _commandsRan);
 
         private readonly Timer _carbonitexTimer;
+#if GLOBAL_WIZBOT
         private readonly Timer _botlistTimer;
+#endif
         private readonly Timer _dataTimer;
         private readonly ConnectionMultiplexer _redis;
 
