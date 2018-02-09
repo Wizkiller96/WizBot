@@ -19,7 +19,7 @@ namespace WizBot.Modules.Gambling
     {
         private readonly IBotConfigProvider _bc;
         private readonly DbService _db;
-        private readonly CurrencyService _cs;
+        private readonly ICurrencyService _cs;
         private readonly IDataCache _cache;
         private readonly DiscordSocketClient _client;
 
@@ -27,7 +27,7 @@ namespace WizBot.Modules.Gambling
         private string CurrencyPluralName => _bc.BotConfig.CurrencyPluralName;
         private string CurrencySign => _bc.BotConfig.CurrencySign;
 
-        public Gambling(IBotConfigProvider bc, DbService db, CurrencyService currency,
+        public Gambling(IBotConfigProvider bc, DbService db, ICurrencyService currency,
             IDataCache cache, DiscordSocketClient client)
         {
             _bc = bc;
@@ -75,7 +75,7 @@ namespace WizBot.Modules.Gambling
             _cache.RemoveAllTimelyClaims();
             await ReplyConfirmLocalized("timely_reset").ConfigureAwait(false);
         }
-
+        
         [WizBotCommand, Usage, Description, Aliases]
         [OwnerOnly]
         public async Task TimelySet(int num, int period = 24)
@@ -90,7 +90,7 @@ namespace WizBot.Modules.Gambling
                 uow.Complete();
             }
             _bc.Reload();
-            if (num == 0)
+            if(num == 0)
                 await ReplyConfirmLocalized("timely_set_none").ConfigureAwait(false);
             else
                 await ReplyConfirmLocalized("timely_set", Format.Bold(num + _bc.BotConfig.CurrencySign), Format.Bold(period.ToString())).ConfigureAwait(false);
@@ -109,7 +109,7 @@ namespace WizBot.Modules.Gambling
                 return;
             }
             var usr = membersArray[new WizBotRandom().Next(0, membersArray.Length)];
-            await Context.Channel.SendConfirmAsync("🎟 " + GetText("raffled_user"), $"**{usr.Username}#{usr.Discriminator}**", footer: $"ID: {usr.Id}").ConfigureAwait(false);
+            await Context.Channel.SendConfirmAsync("🎟 "+ GetText("raffled_user"), $"**{usr.Username}#{usr.Discriminator}**", footer: $"ID: {usr.Id}").ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -132,7 +132,7 @@ namespace WizBot.Modules.Gambling
         [Priority(1)]
         public async Task Cash([Remainder] IUser user = null)
         {
-            if (user == null)
+            if(user == null)
                 await ConfirmLocalized("has", Format.Bold(Context.User.ToString()), $"{GetCurrency(Context.User.Id)} {CurrencySign}").ConfigureAwait(false);
             else
                 await ReplyConfirmLocalized("has", Format.Bold(user.ToString()), $"{GetCurrency(user.Id)} {CurrencySign}").ConfigureAwait(false);
@@ -144,13 +144,13 @@ namespace WizBot.Modules.Gambling
             InternalCurrencyTransactions(Context.User, page);
 
         [WizBotCommand, Usage, Description, Aliases]
-        [OwnerOnly]
+        [AdminOnly]
         [Priority(0)]
         public Task CurrencyTransactions([Remainder] IUser usr) =>
             InternalCurrencyTransactions(usr, 1);
 
         [WizBotCommand, Usage, Description, Aliases]
-        [OwnerOnly]
+        [AdminOnly]
         [Priority(1)]
         public Task CurrencyTransactions(IUser usr, int page) =>
             InternalCurrencyTransactions(usr, page);
@@ -200,7 +200,7 @@ namespace WizBot.Modules.Gambling
                 await ReplyErrorLocalized("not_enough", CurrencyPluralName).ConfigureAwait(false);
                 return;
             }
-            await _cs.AddAsync(receiver, $"Gift from {Context.User.Username} ({Context.User.Id}).", amount, true, msg).ConfigureAwait(false);
+            await _cs.AddAsync(receiver, $"Gift from {Context.User.Username} ({Context.User.Id}) - {msg}.", amount, true).ConfigureAwait(false);
             await ReplyConfirmLocalized("gifted", amount + CurrencySign, Format.Bold(receiver.ToString()), msg)
                 .ConfigureAwait(false);
         }
@@ -251,9 +251,9 @@ namespace WizBot.Modules.Gambling
                                                       amount)))
                          .ConfigureAwait(false);
 
-            await ReplyConfirmLocalized("mass_award",
-                amount + CurrencySign,
-                Format.Bold(users.Count.ToString()),
+            await ReplyConfirmLocalized("mass_award", 
+                amount + CurrencySign, 
+                Format.Bold(users.Count.ToString()), 
                 Format.Bold(role.Name)).ConfigureAwait(false);
         }
 
@@ -266,7 +266,7 @@ namespace WizBot.Modules.Gambling
                 return;
 
             if (await _cs.RemoveAsync(user, $"Taken by bot staff.({Context.User.Username}/{Context.User.Id})", amount, true).ConfigureAwait(false))
-                await ReplyConfirmLocalized("take", amount + CurrencySign, Format.Bold(user.ToString())).ConfigureAwait(false);
+                await ReplyConfirmLocalized("take", amount+CurrencySign, Format.Bold(user.ToString())).ConfigureAwait(false);
             else
                 await ReplyErrorLocalized("take_fail", amount + CurrencySign, Format.Bold(user.ToString()), CurrencyPluralName).ConfigureAwait(false);
         }
@@ -279,7 +279,7 @@ namespace WizBot.Modules.Gambling
             if (amount <= 0)
                 return;
 
-            if (_cs.Remove(usrId, $"Taken by bot owner.({Context.User.Username}/{Context.User.Id})", amount))
+            if (await _cs.RemoveAsync(usrId, $"Taken by bot staff.({Context.User.Username}/{Context.User.Id})", amount))
                 await ReplyConfirmLocalized("take", amount + CurrencySign, $"<@{usrId}>").ConfigureAwait(false);
             else
                 await ReplyErrorLocalized("take_fail", amount + CurrencySign, Format.Code(usrId.ToString()), CurrencyPluralName).ConfigureAwait(false);
@@ -315,7 +315,7 @@ namespace WizBot.Modules.Gambling
 
             var game = new RollDuelGame(_cs, _client.CurrentUser.Id, Context.User.Id, u.Id, amount);
             //means challenge is just created
-            if (_service.Duels.TryGetValue((Context.User.Id, u.Id), out var other))
+            if(_service.Duels.TryGetValue((Context.User.Id, u.Id), out var other))
             {
                 if (other.Amount != amount)
                 {
@@ -332,8 +332,8 @@ namespace WizBot.Modules.Gambling
                 game.OnGameTick += Game_OnGameTick;
                 game.OnEnded += Game_OnEnded;
 
-                await ReplyConfirmLocalized("roll_duel_challenge",
-                    Format.Bold(Context.User.ToString()),
+                await ReplyConfirmLocalized("roll_duel_challenge", 
+                    Format.Bold(Context.User.ToString()), 
                     Format.Bold(u.ToString()),
                     Format.Bold(amount + CurrencySign))
                         .ConfigureAwait(false);

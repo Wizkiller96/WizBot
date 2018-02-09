@@ -17,9 +17,9 @@ namespace WizBot.Modules.Pokemon
     {
         private readonly DbService _db;
         private readonly IBotConfigProvider _bc;
-        private readonly CurrencyService _cs;
+        private readonly ICurrencyService _cs;
 
-        public Pokemon(DbService db, IBotConfigProvider bc, CurrencyService cs)
+        public Pokemon(DbService db, IBotConfigProvider bc, ICurrencyService cs)
         {
             _db = db;
             _bc = bc;
@@ -37,7 +37,7 @@ namespace WizBot.Modules.Pokemon
             }
 
             return damage;
-        }
+        }            
 
         private PokemonType GetPokeType(ulong id)
         {
@@ -58,7 +58,7 @@ namespace WizBot.Modules.Pokemon
 
             return _service.PokemonTypes[remainder];
         }
-
+        
         private PokemonType StringToPokemonType(string v)
         {
             var str = v?.ToUpperInvariant();
@@ -72,7 +72,7 @@ namespace WizBot.Modules.Pokemon
             }
             return null;
         }
-
+        
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task Attack(string move, IGuildUser targetUser = null)
@@ -94,7 +94,7 @@ namespace WizBot.Modules.Pokemon
                 return;
             }
 
-
+                   
             // Checking stats first, then move
             //Set up the userstats
             var userStats = _service.Stats.GetOrAdd(user.Id, new PokeStats());
@@ -142,7 +142,7 @@ namespace WizBot.Modules.Pokemon
             int damage = GetDamage(userType, targetType);
             //apply damage to target
             targetStats.Hp -= damage;
-
+            
             var response = GetText("attack", Format.Bold(move), userType.Icon, Format.Bold(targetUser.ToString()), targetType.Icon, Format.Bold(damage.ToString()));
 
             //Damage type
@@ -277,7 +277,7 @@ namespace WizBot.Modules.Pokemon
             var targetType = StringToPokemonType(typeTargeted);
             if (targetType == null)
             {
-                await Context.Channel.EmbedAsync(_service.PokemonTypes.Aggregate(new EmbedBuilder().WithDescription("List of the available types:"),
+                await Context.Channel.EmbedAsync(_service.PokemonTypes.Aggregate(new EmbedBuilder().WithDescription("List of the available types:"), 
                         (eb, pt) => eb.AddField(efb => efb.WithName(pt.Name)
                                                           .WithValue(pt.Icon)
                                                           .WithIsInline(true)))
@@ -328,9 +328,12 @@ namespace WizBot.Modules.Pokemon
             }
 
             //Now for the response
-            await ReplyConfirmLocalized("settype_success",
-                targetType,
+            await ReplyConfirmLocalized("settype_success", 
+                targetType, 
                 _bc.BotConfig.CurrencySign).ConfigureAwait(false);
         }
     }
 }
+
+
+

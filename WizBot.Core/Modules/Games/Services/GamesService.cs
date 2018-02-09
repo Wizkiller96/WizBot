@@ -38,7 +38,7 @@ namespace WizBot.Modules.Games.Services
         private readonly IImageCache _images;
         private readonly Logger _log;
         private readonly WizBotRandom _rng;
-        private readonly CurrencyService _cs;
+        private readonly ICurrencyService _cs;
         public readonly string TypingArticlesPath = "data/typing_articles3.json";
         private readonly CommandHandler _cmdHandler;
 
@@ -58,7 +58,7 @@ namespace WizBot.Modules.Games.Services
 
         public GamesService(CommandHandler cmd, IBotConfigProvider bc, WizBot bot,
             WizBotStrings strings, IDataCache data, CommandHandler cmdHandler,
-            CurrencyService cs)
+            ICurrencyService cs)
         {
             _bc = bc;
             _cmd = cmd;
@@ -197,6 +197,7 @@ namespace WizBot.Modules.Games.Services
                                 : GetText(channel, "curgen_pl", dropAmount, _bc.BotConfig.CurrencySign)
                                     + " " + GetText(channel, "pick_pl", prefix);
                             var file = GetRandomCurrencyImage();
+
                             var sent = await channel.EmbedAsync(new EmbedBuilder()
                                 .WithOkColor()
                                 .WithDescription(toSend)

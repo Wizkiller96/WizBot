@@ -24,9 +24,9 @@ namespace WizBot.Modules.Gambling
 
             private readonly DiscordSocketClient _client;
             private readonly IBotConfigProvider _bc;
-            private readonly CurrencyService _cs;
+            private readonly ICurrencyService _cs;
 
-            public CurrencyEventsCommands(DiscordSocketClient client, IBotConfigProvider bc, CurrencyService cs)
+            public CurrencyEventsCommands(DiscordSocketClient client, IBotConfigProvider bc, ICurrencyService cs)
             {
                 _client = client;
                 _bc = bc;
@@ -35,7 +35,7 @@ namespace WizBot.Modules.Gambling
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            [AdminOnly]
+            [OwnerOnly]
             public async Task StartEvent(CurrencyEvent e, int arg = -1)
             {
                 switch (e)
@@ -60,7 +60,7 @@ namespace WizBot.Modules.Gambling
                 try
                 {
                     var title = GetText("sneakygamestatus_title");
-                    var desc = GetText("sneakygamestatus_desc",
+                    var desc = GetText("sneakygamestatus_desc", 
                         Format.Bold(100.ToString()) + _bc.BotConfig.CurrencySign,
                         Format.Bold(num.ToString()));
                     await context.Channel.SendConfirmAsync(title, desc)

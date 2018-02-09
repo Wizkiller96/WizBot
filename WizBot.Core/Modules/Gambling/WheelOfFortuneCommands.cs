@@ -13,11 +13,11 @@ namespace WizBot.Modules.Gambling
     {
         public class WheelOfFortuneCommands : WizBotSubmodule
         {
-            private readonly CurrencyService _cs;
+            private readonly ICurrencyService _cs;
             private readonly IBotConfigProvider _bc;
             private readonly DbService _db;
 
-            public WheelOfFortuneCommands(CurrencyService cs, IBotConfigProvider bc,
+            public WheelOfFortuneCommands(ICurrencyService cs, IBotConfigProvider bc,
                 DbService db)
             {
                 _cs = cs;
@@ -48,7 +48,7 @@ namespace WizBot.Modules.Gambling
                     return;
                 }
 
-                if(!_cs.Remove(Context.User.Id, "Wheel Of Fortune - bet", bet, gamble: true))
+                if (!await _cs.RemoveAsync(Context.User.Id, "Wheel Of Fortune - bet", bet, gamble: true))
                 {
                     await ReplyErrorLocalized("not_enough", _bc.BotConfig.CurrencySign).ConfigureAwait(false);
                     return;

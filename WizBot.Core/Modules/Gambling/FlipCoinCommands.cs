@@ -18,11 +18,11 @@ namespace WizBot.Modules.Gambling
         {
             private readonly IImageCache _images;
             private readonly IBotConfigProvider _bc;
-            private readonly CurrencyService _cs;
+            private readonly ICurrencyService _cs;
             private readonly DbService _db;
             private static readonly WizBotRandom rng = new WizBotRandom();
 
-            public FlipCoinCommands(IDataCache data, CurrencyService cs,
+            public FlipCoinCommands(IDataCache data, ICurrencyService cs,
                 IBotConfigProvider bc, DbService db)
             {
                 _images = data.LocalImages;

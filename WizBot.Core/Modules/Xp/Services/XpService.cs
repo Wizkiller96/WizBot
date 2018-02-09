@@ -37,7 +37,7 @@ namespace WizBot.Modules.Xp.Services
         private readonly IDataCache _cache;
         private readonly FontProvider _fonts;
         private readonly IBotCredentials _creds;
-        private readonly CurrencyService _cs;
+        private readonly ICurrencyService _cs;
         public const int XP_REQUIRED_LVL_1 = 36;
 
         private readonly ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>> _excludedRoles
@@ -46,13 +46,13 @@ namespace WizBot.Modules.Xp.Services
         private readonly ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>> _excludedChannels
             = new ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>>();
 
-        private readonly ConcurrentHashSet<ulong> _excludedServers
+        private readonly ConcurrentHashSet<ulong> _excludedServers 
             = new ConcurrentHashSet<ulong>();
 
-        private readonly ConcurrentHashSet<ulong> _rewardedUsers
+        private readonly ConcurrentHashSet<ulong> _rewardedUsers 
             = new ConcurrentHashSet<ulong>();
 
-        private readonly ConcurrentQueue<UserCacheItem> _addMessageXp
+        private readonly ConcurrentQueue<UserCacheItem> _addMessageXp 
             = new ConcurrentQueue<UserCacheItem>();
 
         private readonly Timer _updateXpTimer;
@@ -62,7 +62,7 @@ namespace WizBot.Modules.Xp.Services
 
         public XpService(CommandHandler cmd, IBotConfigProvider bc,
             WizBot bot, DbService db, WizBotStrings strings, IDataCache cache,
-            FontProvider fonts, IBotCredentials creds, CurrencyService cs)
+            FontProvider fonts, IBotCredentials creds, ICurrencyService cs)
         {
             _db = db;
             _cmd = cmd;
@@ -186,7 +186,7 @@ namespace WizBot.Modules.Xp.Services
                                 if (crew != null)
                                 {
                                     //give the user the reward if it exists
-                                    await _cs.AddAsync(item.Key.User.Id, "Level-up Reward", crew.Amount, uow);
+                                    await _cs.AddAsync(item.Key.User.Id, "Level-up Reward", crew.Amount);
                                 }
                             }
                         }
@@ -242,7 +242,7 @@ namespace WizBot.Modules.Xp.Services
                     _log.Warn(ex);
                 }
             }, null, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5));
-
+            
             _clearRewardTimerTokenSource = new CancellationTokenSource();
             var token = _clearRewardTimerTokenSource.Token;
             //just a first line, in order to prevent queries. But since other shards can try to do this too,
@@ -252,7 +252,7 @@ namespace WizBot.Modules.Xp.Services
                 while (!token.IsCancellationRequested)
                 {
                     _rewardedUsers.Clear();
-
+                    
                     await Task.Delay(TimeSpan.FromMinutes(_bc.BotConfig.XpMinutesTimeout));
                 }
             }, token);
@@ -449,9 +449,9 @@ namespace WizBot.Modules.Xp.Services
             var r = _cache.Redis.GetDatabase();
             var key = $"{_creds.RedisKey()}_user_xp_gain_{userId}";
 
-            return r.StringSet(key,
-                true,
-                TimeSpan.FromMinutes(_bc.BotConfig.XpMinutesTimeout),
+            return r.StringSet(key, 
+                true, 
+                TimeSpan.FromMinutes(_bc.BotConfig.XpMinutesTimeout), 
                 StackExchange.Redis.When.NotExists);
         }
 
@@ -711,9 +711,9 @@ namespace WizBot.Modules.Xp.Services
                         using (var toDraw = Image.Load(data))
                         {
                             img.DrawImage(toDraw,
-                            1,
-                            new Size(69, 70),
-                            new Point(32, 10));
+                                1,
+                                new Size(69, 70),
+                                new Point(32, 10));
                         }
                     }
                     catch (Exception ex)
@@ -758,9 +758,9 @@ namespace WizBot.Modules.Xp.Services
                     using (var toDraw = Image.Load(data))
                     {
                         img.DrawImage(toDraw,
-                        1,
-                        new Size(45, 45),
-                        new Point(722, 25));
+                            1,
+                            new Size(45, 45),
+                            new Point(722, 25));
                     }
                 }
                 catch (Exception ex)
