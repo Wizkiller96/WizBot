@@ -20,7 +20,6 @@ using WizBot.Common.ShardCom;
 using WizBot.Core.Services.Database;
 using StackExchange.Redis;
 using Newtonsoft.Json;
-using WizBot.Core.Common;
 
 namespace WizBot
 {
@@ -41,8 +40,8 @@ namespace WizBot
          * I don't want to pass botconfig every time I
          * want to send a confirm or error message, so
          * I'll keep this for now */
-        public static Color OkColor { get; private set; }
-        public static Color ErrorColor { get; private set; }
+        public static Color OkColor { get; set; }
+        public static Color ErrorColor { get; set; }
 
         public TaskCompletionSource<bool> Ready { get; private set; } = new TaskCompletionSource<bool>();
 

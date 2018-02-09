@@ -2,7 +2,6 @@
 using Discord.Commands;
 using WizBot.Common;
 using WizBot.Common.Attributes;
-using WizBot.Core.Services;
 using System;
 using System.Threading.Tasks;
 
@@ -12,13 +11,6 @@ namespace WizBot.Modules.Utility
     {
         public class BotConfigCommands : WizBotSubmodule
         {
-            private readonly IBotConfigProvider _service;
-
-            public BotConfigCommands(IBotConfigProvider service)
-            {
-                _service = service;
-            }
-
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
             public async Task BotConfigEdit()
@@ -34,7 +26,7 @@ namespace WizBot.Modules.Utility
                 if (string.IsNullOrWhiteSpace(newValue))
                     newValue = null;
 
-                var success = _service.Edit(type, newValue);
+                var success = _bc.Edit(type, newValue);
 
                 if (!success)
                     await ReplyErrorLocalized("bot_config_edit_fail", Format.Bold(type.ToString()), Format.Bold(newValue ?? "NULL")).ConfigureAwait(false);

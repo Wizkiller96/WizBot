@@ -13,9 +13,10 @@ using System;
 namespace WizBot.Migrations
 {
     [DbContext(typeof(WizBotContext))]
-    partial class WizBotSqliteContextModelSnapshot : ModelSnapshot
+    [Migration("20180208151629_min-max-bets")]
+    partial class minmaxbets
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -166,9 +167,7 @@ namespace WizBot.Migrations
 
                     b.Property<int>("DivorcePriceMultiplier");
 
-                    b.Property<string>("ErrorColor")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValue("ee281f");
+                    b.Property<string>("ErrorColor");
 
                     b.Property<bool>("ForwardMessages");
 
@@ -190,9 +189,7 @@ namespace WizBot.Migrations
 
                     b.Property<int>("MinimumTriviaWinReq");
 
-                    b.Property<string>("OkColor")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValue("00e584");
+                    b.Property<string>("OkColor");
 
                     b.Property<float>("PatreonCurrencyPerCent")
                         .ValueGeneratedOnAdd()
@@ -385,8 +382,6 @@ namespace WizBot.Migrations
                     b.Property<bool>("IsRegex");
 
                     b.Property<bool>("OwnerOnly");
-
-                    b.Property<bool>("AdminOnly");
 
                     b.Property<string>("Response");
 

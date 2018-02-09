@@ -20,14 +20,12 @@ namespace WizBot.Modules.Administration
         {
             private readonly DbService _db;
             private readonly ICurrencyService _cs;
-            private readonly IBotConfigProvider _bc;
 
             public UserPunishCommands(DbService db, MuteService muteService,
-                ICurrencyService cs, IBotConfigProvider bc)
+                ICurrencyService cs)
             {
                 _db = db;
                 _cs = cs;
-                _bc = bc;
             }
 
             [WizBotCommand, Usage, Description, Aliases]

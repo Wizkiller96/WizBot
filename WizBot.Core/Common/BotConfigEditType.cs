@@ -15,16 +15,16 @@ namespace WizBot.Common
         HelpString,
         CurrencyDropAmount,
         CurrencyDropAmountMax,
-        MinimumBetAmount,
         TriviaCurrencyReward,
         XpPerMessage,
         XpMinutesTimeout,
         PatreonCurrencyPerCent,
         MinWaifuPrice,
         WaifuGiftMultiplier,
-        MinimumTriviaWinReq
-        
-        //ErrorColor, //after i fix the wizbot.cs static variables
-        //OkColor
+        MinimumTriviaWinReq,
+        MinBet,
+        MaxBet,
+        ErrorColor,
+        OkColor
     }
 }

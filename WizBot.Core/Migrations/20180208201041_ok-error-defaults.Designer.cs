@@ -13,9 +13,10 @@ using System;
 namespace WizBot.Migrations
 {
     [DbContext(typeof(WizBotContext))]
-    partial class WizBotSqliteContextModelSnapshot : ModelSnapshot
+    [Migration("20180208201041_ok-error-defaults")]
+    partial class okerrordefaults
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -385,8 +386,6 @@ namespace WizBot.Migrations
                     b.Property<bool>("IsRegex");
 
                     b.Property<bool>("OwnerOnly");
-
-                    b.Property<bool>("AdminOnly");
 
                     b.Property<string>("Response");
 

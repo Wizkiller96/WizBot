@@ -12,21 +12,20 @@ using WizBot.Modules.Gambling.Common.AnimalRacing;
 using WizBot.Modules.Gambling.Services;
 using WizBot.Core.Modules.Gambling.Common.AnimalRacing;
 using WizBot.Core.Common;
+using WizBot.Core.Modules.Gambling.Common;
 
 namespace WizBot.Modules.Gambling
 {
     public partial class Gambling
     {
         [Group]
-        public class AnimalRacingCommands : WizBotSubmodule<AnimalRaceService>
+        public class AnimalRacingCommands : GamblingSubmodule<AnimalRaceService>
         {
-            private readonly IBotConfigProvider _bc;
             private readonly ICurrencyService _cs;
             private readonly DiscordSocketClient _client;
 
-            public AnimalRacingCommands(IBotConfigProvider bc, ICurrencyService cs, DiscordSocketClient client)
+            public AnimalRacingCommands(ICurrencyService cs, DiscordSocketClient client)
             {
-                _bc = bc;
                 _cs = cs;
                 _client = client;
             }
@@ -39,7 +38,7 @@ namespace WizBot.Modules.Gambling
             public Task Race(params string[] args)
             {
                 var (options, success) = OptionsParser.Default.ParseFrom(new RaceOptions(), args);
-                
+
                 var ar = new AnimalRace(options, _cs, _bc.BotConfig.RaceAnimals.Shuffle().ToArray());
                 if (!_service.AnimalRaces.TryAdd(Context.Guild.Id, ar))
                     return Context.Channel.SendErrorAsync(GetText("animal_race"), GetText("animal_race_already_started"));
@@ -49,13 +48,12 @@ namespace WizBot.Modules.Gambling
                 var count = 0;
                 Task _client_MessageReceived(SocketMessage arg)
                 {
-                    var _ = Task.Run(() =>
-                    {
+                    var _ = Task.Run(() => {
                         try
                         {
                             if (arg.Channel.Id == Context.Channel.Id)
                             {
-                                if (ar.CurrentPhase == AnimalRace.Phase.Running && ++count % 9 == 0)
+                                if (ar.CurrentPhase  == AnimalRace.Phase.Running && ++count % 9 == 0)
                                 {
                                     raceMessage = null;
                                 }
@@ -96,7 +94,7 @@ namespace WizBot.Modules.Gambling
 
             private Task Ar_OnStarted(AnimalRace race)
             {
-                if (race.Users.Length == race.MaxUsers)
+                if(race.Users.Length == race.MaxUsers)
                     return Context.Channel.SendConfirmAsync(GetText("animal_race"), GetText("animal_race_full"));
                 else
                     return Context.Channel.SendConfirmAsync(GetText("animal_race"), GetText("animal_race_starting_with_x", race.Users.Length));
@@ -137,6 +135,9 @@ namespace WizBot.Modules.Gambling
             [RequireContext(ContextType.Guild)]
             public async Task JoinRace(int amount = 0)
             {
+                if (!await CheckBetOptional(amount))
+                    return;
+
                 if (!_service.AnimalRaces.TryGetValue(Context.Guild.Id, out var ar))
                 {
                     await ReplyErrorLocalized("race_not_exist").ConfigureAwait(false);

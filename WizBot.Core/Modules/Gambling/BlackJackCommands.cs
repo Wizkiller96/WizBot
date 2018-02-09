@@ -1,6 +1,7 @@
 using Discord;
 using Discord.Commands;
 using WizBot.Common.Attributes;
+using WizBot.Core.Modules.Gambling.Common;
 using WizBot.Core.Modules.Gambling.Common.Blackjack;
 using WizBot.Core.Modules.Gambling.Services;
 using WizBot.Core.Services;
@@ -12,11 +13,10 @@ namespace WizBot.Modules.Gambling
 {
     public partial class Gambling
     {
-        public class BlackJackCommands : WizBotSubmodule<BlackJackService>
+        public class BlackJackCommands : GamblingSubmodule<BlackJackService>
         {
             private readonly ICurrencyService _cs;
             private readonly DbService _db;
-            private readonly IBotConfigProvider _bc;
             private IUserMessage _msg;
 
             public enum BjAction
@@ -26,11 +26,10 @@ namespace WizBot.Modules.Gambling
                 Double,
             }
 
-            public BlackJackCommands(ICurrencyService cs, DbService db, IBotConfigProvider bc)
+            public BlackJackCommands(ICurrencyService cs, DbService db)
             {
                 _cs = cs;
                 _db = db;
-                _bc = bc;
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -50,7 +49,7 @@ namespace WizBot.Modules.Gambling
             [RequireContext(ContextType.Guild)]
             public async Task BlackJack(long amount)
             {
-                if (amount < 0)
+                if (!await CheckBetMandatory(amount))
                     return;
 
                 var newBj = new Blackjack(Context.User, amount, _cs, _db);
@@ -71,7 +70,7 @@ namespace WizBot.Modules.Gambling
                 }
                 else
                 {
-                    if (await bj.Join(Context.User, amount))
+                    if(await bj.Join(Context.User, amount))
                         await ReplyConfirmLocalized("bj_joined").ConfigureAwait(false);
                     else
                     {
@@ -179,7 +178,7 @@ namespace WizBot.Modules.Gambling
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             public Task Double() => InternalBlackJack(BjAction.Double);
-
+            
             public async Task InternalBlackJack(BjAction a)
             {
                 if (!_service.Games.TryGetValue(Context.Channel.Id, out var bj))
@@ -191,7 +190,7 @@ namespace WizBot.Modules.Gambling
                     await bj.Stand(Context.User);
                 else if (a == BjAction.Double)
                 {
-                    if (!await bj.Double(Context.User))
+                    if(!await bj.Double(Context.User))
                     {
                         await ReplyErrorLocalized("not_enough").ConfigureAwait(false);
                     }

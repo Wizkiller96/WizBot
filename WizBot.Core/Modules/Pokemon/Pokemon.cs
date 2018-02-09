@@ -16,13 +16,11 @@ namespace WizBot.Modules.Pokemon
     public class Pokemon : WizBotTopLevelModule<PokemonService>
     {
         private readonly DbService _db;
-        private readonly IBotConfigProvider _bc;
         private readonly ICurrencyService _cs;
 
-        public Pokemon(DbService db, IBotConfigProvider bc, ICurrencyService cs)
+        public Pokemon(DbService db, ICurrencyService cs)
         {
             _db = db;
-            _bc = bc;
             _cs = cs;
         }
 

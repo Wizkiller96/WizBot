@@ -2,24 +2,17 @@ using WizBot.Common.Attributes;
 using WizBot.Core.Modules.Gambling.Services;
 using System.Threading.Tasks;
 using Discord;
-using WizBot.Core.Services;
 using WizBot.Extensions;
 using System.Linq;
 using Discord.Commands;
+using WizBot.Core.Modules.Gambling.Common;
 
 namespace WizBot.Modules.Gambling
 {
     public partial class Gambling
     {
-        public class CurrencyRaffleCommands : WizBotSubmodule<CurrencyRaffleService>
+        public class CurrencyRaffleCommands : GamblingSubmodule<CurrencyRaffleService>
         {
-            private readonly IBotConfigProvider _bc;
-
-            public CurrencyRaffleCommands(IBotConfigProvider bc)
-            {
-                _bc = bc;
-            }
-
             public enum Mixed { Mixed }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -33,7 +26,7 @@ namespace WizBot.Modules.Gambling
             [Priority(1)]
             public async Task RaffleCur(int amount, bool mixed = false)
             {
-                if (amount < 1)
+                if (!await CheckBetMandatory(amount))
                     return;
                 async Task OnEnded(IUser arg, int won)
                 {

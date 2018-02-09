@@ -18,12 +18,10 @@ namespace WizBot.Modules.Administration
         {
             private static readonly object _locker = new object();
             private readonly DbService _db;
-            private readonly IBotConfigProvider _bcp;
 
-            public PlayingRotateCommands(DbService db, IBotConfigProvider bcp)
+            public PlayingRotateCommands(DbService db)
             {
                 _db = db;
-                _bcp = bcp;
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -46,7 +44,7 @@ namespace WizBot.Modules.Administration
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
-            public async Task AddPlaying(ActivityType t, [Remainder] string status)
+            public async Task AddPlaying(ActivityType t,[Remainder] string status)
             {
                 using (var uow = _db.UnitOfWork)
                 {
@@ -56,7 +54,7 @@ namespace WizBot.Modules.Administration
                     await uow.CompleteAsync();
                 }
 
-                _bcp.Reload();
+                _bc.Reload();
 
                 await ReplyConfirmLocalized("ropl_added").ConfigureAwait(false);
             }
@@ -95,7 +93,7 @@ namespace WizBot.Modules.Administration
                     await uow.CompleteAsync();
                 }
 
-                _bcp.Reload();
+                _bc.Reload();
                 await ReplyConfirmLocalized("reprm", msg).ConfigureAwait(false);
             }
         }
