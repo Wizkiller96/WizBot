@@ -76,59 +76,6 @@ namespace WizBot.Modules.Games
         }
 
         [WizBotCommand, Usage, Description, Aliases]
-        public async Task Rps(string input)
-        {
-            Func<int, string> getRpsPick = (p) =>
-             {
-                 switch (p)
-                 {
-                     case 0:
-                         return "🚀";
-                     case 1:
-                         return "📎";
-                     default:
-                         return "✂️";
-                 }
-             };
-
-            int pick;
-            switch (input)
-            {
-                case "r":
-                case "rock":
-                case "rocket":
-                    pick = 0;
-                    break;
-                case "p":
-                case "paper":
-                case "paperclip":
-                    pick = 1;
-                    break;
-                case "scissors":
-                case "s":
-                    pick = 2;
-                    break;
-                default:
-                    return;
-            }
-            var wizbotPick = new WizBotRandom().Next(0, 3);
-            string msg;
-            if (pick == wizbotPick)
-                msg = GetText("rps_draw", getRpsPick(pick));
-            else if ((pick == 0 && wizbotPick == 1) ||
-                     (pick == 1 && wizbotPick == 2) ||
-                     (pick == 2 && wizbotPick == 0))
-                msg = GetText("rps_win", Context.Client.CurrentUser.Mention,
-                    getRpsPick(wizbotPick), getRpsPick(pick));
-            else
-                msg = GetText("rps_win", Context.User.Mention, getRpsPick(pick),
-                    getRpsPick(wizbotPick));
-
-            await Context.Channel.SendConfirmAsync(msg).ConfigureAwait(false);
-        }
-
-
-        [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task RateGirl(IGuildUser usr)
         {
