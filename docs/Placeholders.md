@@ -57,4 +57,4 @@ Some features have their own specific placeholders which are noted in that featu
 
 **If you're using placeholders in embeds, don't use %user.mention% and %bot.mention% in titles, footers and field names. They will not show properly.**
 
-![img](https://i.imgur.com/Jztw4B3.jpg)
+![img](https://i.imgur.com/yp0RORk.jpg)
