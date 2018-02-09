@@ -21,7 +21,7 @@ namespace WizBot.Core.Services.Impl
         private readonly IBotCredentials _creds;
         private readonly DateTime _started;
 
-        public const string BotVersion = "2.15";
+        public const string BotVersion = "2.15.1";
 
         public string Author => "Kwoth#2560\nWizkiller96#2947";
         public string Library => "Discord.Net";
@@ -39,6 +39,7 @@ namespace WizBot.Core.Services.Impl
         public long CommandsRan => Interlocked.Read(ref _commandsRan);
 
         private readonly Timer _carbonitexTimer;
+        private readonly Timer _botlistTimer;
         private readonly Timer _dataTimer;
         private readonly ConnectionMultiplexer _redis;
 
@@ -157,41 +158,71 @@ namespace WizBot.Core.Services.Impl
                         // ignored
                     }
                 }, null, TimeSpan.FromHours(1), TimeSpan.FromHours(1));
+                }
+#if GLOBAL_WIZBOT
+            _botlistTimer = new Timer(async (state) =>
+            {
+                if (string.IsNullOrWhiteSpace(_creds.BotListToken))
+                    return;
+                try
+                {
+                    using (var http = new HttpClient())
+                    {
+                        using (var content = new FormUrlEncodedContent(
+                            new Dictionary<string, string> {
+                                    { "shard_count",  _creds.TotalShards.ToString()},
+                                    { "shard_id", client.ShardId.ToString() },
+                                    { "server_count", client.Guilds.Count().ToString() }
+                            }))
+                        {
+                            content.Headers.Clear();
+                            content.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
+                            content.Headers.Add("Authorization", _creds.BotListToken);
 
-                var platform = "other";
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                    platform = "linux";
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-                    platform = "osx";
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                    platform = "windows";
+                await http.PostAsync($"https://discordbots.org/api/bots/{client.CurrentUser.Id}/stats", content).ConfigureAwait(false);
+                        }
+                    }
+                }
+                catch
+                {
+                    // ignored
+                }
+            }, null, TimeSpan.FromHours(1), TimeSpan.FromHours(1));
+#endif
+
+            var platform = "other";
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                platform = "linux";
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                platform = "osx";
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                platform = "windows"
 
                 _dataTimer = new Timer(async (state) =>
+            {
+                try
                 {
-                    try
+                    using (var http = new HttpClient())
                     {
-                        using (var http = new HttpClient())
-                        {
-                            using (var content = new FormUrlEncodedContent(
-                                new Dictionary<string, string> {
+                       using (var content = new FormUrlEncodedContent(
+                            new Dictionary<string, string> {
                                     { "id", string.Concat(MD5.Create().ComputeHash(Encoding.ASCII.GetBytes(_creds.ClientId.ToString())).Select(x => x.ToString("X2"))) },
                                     { "guildCount", wizbot.GuildCount.ToString() },
                                     { "version", BotVersion },
                                     { "platform", platform }}))
-                            {
-                                content.Headers.Clear();
-                                content.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
+                        {
+                            content.Headers.Clear();
+                            content.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
 
-                                await http.PostAsync("https://selfstats.nadekobot.me/", content).ConfigureAwait(false);
-                            }
+                            await http.PostAsync("https://selfstats.nadekobot.me/", content).ConfigureAwait(false);
                         }
                     }
-                    catch
-                    {
-                        // ignored
-                    }
-                }, null, TimeSpan.FromSeconds(1), TimeSpan.FromHours(1));
-            }
+                }
+                catch
+                {
+                    // ignored
+                }
+            }, null, TimeSpan.FromSeconds(1), TimeSpan.FromHours(1));
         }
 
         public void Initialize()

@@ -50,9 +50,13 @@ namespace WizBot.Modules.Gambling
                     case CurrencyEvent.SneakyGameStatus:
                         await SneakyGameStatusEvent(Context, arg).ConfigureAwait(false);
                         break;
+#if GLOBAL_WIZBOT
                     case CurrencyEvent.BotListUpvoters:
                         await BotListUpvoters(arg);
                     break;
+#endif
+                    default:
+                        return;
                 }
             }
 

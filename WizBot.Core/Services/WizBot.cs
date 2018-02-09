@@ -56,6 +56,14 @@ namespace WizBot
                 .Select(x => JsonConvert.DeserializeObject<ShardComMessage>(x))
                 .Sum(x => x.Guilds);
 
+        public int[] ShardGuildCounts =>
+            Cache.Redis.GetDatabase()
+                .ListRange(Credentials.RedisKey() + "_shardstats")
+                .Select(x => JsonConvert.DeserializeObject<ShardComMessage>(x))
+                .OrderBy(x => x.ShardId)
+                .Select(x => x.Guilds)
+                .ToArray();
+
         public WizBot(int shardId, int parentProcessId)
         {
             if (shardId < 0)
