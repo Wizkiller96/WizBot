@@ -24,9 +24,9 @@ namespace WizBot.Core.Services.Impl
         private readonly DateTime _started;
 
         public const string BotVersion = "2.15.2";
-
         public string Author => "Kwoth#2560\nWizkiller96#2947";
         public string Library => "Discord.Net";
+
         public string Heap => Math.Round((double)GC.GetTotalMemory(false) / 1.MiB(), 2)
             .ToString(CultureInfo.InvariantCulture);
         public double MessagesPerSecond => MessageCounter / GetUptime().TotalSeconds;
@@ -163,7 +163,7 @@ namespace WizBot.Core.Services.Impl
                         // ignored
                     }
                 }, null, TimeSpan.FromHours(1), TimeSpan.FromHours(1));
-                }
+            }
 #if GLOBAL_WIZBOT
             _botlistTimer = new Timer(async (state) =>
             {
@@ -184,7 +184,7 @@ namespace WizBot.Core.Services.Impl
                             content.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
                             http.DefaultRequestHeaders.Add("Authorization", _creds.BotListToken);
 
-                await http.PostAsync($"https://discordbots.org/api/bots/{client.CurrentUser.Id}/stats", content).ConfigureAwait(false);
+                            await http.PostAsync($"https://discordbots.org/api/bots/{client.CurrentUser.Id}/stats", content).ConfigureAwait(false);
                         }
                     }
                 }
@@ -202,15 +202,15 @@ namespace WizBot.Core.Services.Impl
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                 platform = "osx";
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                platform = "windows"
+                platform = "windows";
 
-                _dataTimer = new Timer(async (state) =>
+            _dataTimer = new Timer(async (state) =>
             {
                 try
                 {
                     using (var http = new HttpClient())
                     {
-                       using (var content = new FormUrlEncodedContent(
+                        using (var content = new FormUrlEncodedContent(
                             new Dictionary<string, string> {
                                     { "id", string.Concat(MD5.Create().ComputeHash(Encoding.ASCII.GetBytes(_creds.ClientId.ToString())).Select(x => x.ToString("X2"))) },
                                     { "guildCount", wizbot.GuildCount.ToString() },
