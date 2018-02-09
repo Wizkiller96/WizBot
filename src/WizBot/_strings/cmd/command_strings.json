@@ -662,21 +662,21 @@
   },
   "chnlfilterinv": {
     "Cmd": "chnlfilterinv cfi",
-    "Desc": "Toggles automatic deletion of invites posted in the channel. Does not negate the `{0}srvrfilterinv` enabled setting. Does not affect the Bot Owner.",
+    "Desc": "Toggles automatic deletion of invites posted in the channel. Does not negate the `{0}srvrfilterinv` enabled setting. Does not affect the Bot Staff.",
     "Usage": [
       "{0}cfi"
     ]
   },
   "srvrfilterinv": {
     "Cmd": "srvrfilterinv sfi",
-    "Desc": "Toggles automatic deletion of invites posted in the server. Does not affect the Bot Owner.",
+    "Desc": "Toggles automatic deletion of invites posted in the server. Does not affect the Bot Staff.",
     "Usage": [
       "{0}sfi"
     ]
   },
   "chnlfilterwords": {
     "Cmd": "chnlfilterwords cfw",
-    "Desc": "Toggles automatic deletion of messages containing filtered words on the channel. Does not negate the `{0}srvrfilterwords` enabled setting. Does not affect the Bot Owner.",
+    "Desc": "Toggles automatic deletion of messages containing filtered words on the channel. Does not negate the `{0}srvrfilterwords` enabled setting. Does not affect the Bot Staff.",
     "Usage": [
       "{0}cfw"
     ]
@@ -697,7 +697,7 @@
   },
   "srvrfilterwords": {
     "Cmd": "srvrfilterwords sfw",
-    "Desc": "Toggles automatic deletion of messages containing filtered words on the server. Does not affect the Bot Owner.",
+    "Desc": "Toggles automatic deletion of messages containing filtered words on the server. Does not affect the Bot Staff.",
     "Usage": [
       "{0}sfw"
     ]
@@ -1793,7 +1793,7 @@
   },
   "currencytransactions": {
     "Cmd": "curtrs",
-    "Desc": "Shows your currency transactions on the specified page. Bot owner can see other people's transactions too.",
+    "Desc": "Shows your currency transactions on the specified page. Bot staff can see other people's transactions too.",
     "Usage": [
       "{0}curtrs 2",
       "{0}curtrs @SomeUser 2"
