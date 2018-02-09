@@ -40,6 +40,8 @@ namespace WizBot.Core.Services.Impl
         public string MiningProxyUrl { get; }
         public string MiningProxyCreds { get; }
 
+        public string BotListToken { get; set; }
+
         public BotCredentials()
         {
             _log = LogManager.GetCurrentClassLogger();
@@ -75,6 +77,8 @@ namespace WizBot.Core.Services.Impl
                 CleverbotApiKey = data[nameof(CleverbotApiKey)];
                 MiningProxyUrl = data[nameof(MiningProxyUrl)];
                 MiningProxyCreds = data[nameof(MiningProxyCreds)];
+
+                BotListToken = data[nameof(BotListToken)];
 
                 var restartSection = data.GetSection(nameof(RestartCommand));
                 var cmd = restartSection["cmd"];
@@ -152,6 +156,8 @@ namespace WizBot.Core.Services.Impl
             public int? ShardRunPort { get; set; } = null;
             public string MiningProxyUrl { get; set; } = null;
             public string MiningProxyCreds { get; set; } = null;
+
+            public string BotListToken { get; set; }
         }
 
         private class DbModel

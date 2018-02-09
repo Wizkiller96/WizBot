@@ -2321,7 +2321,7 @@
   },
   "startevent": {
     "Cmd": "startevent",
-    "Desc": "Starts one of the events seen on public wizbot. `reaction` and `sneakygamestatus` are the only 2 available now.",
+    "Desc": "Starts one of the events seen on public wizbot. Events: `reaction`, `sneakygamestatus` and `botlistupvoters` (for which you need botlisttoken in credentials).",
     "Usage": [
       "{0}startevent reaction"
     ]
