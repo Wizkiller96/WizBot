@@ -471,7 +471,7 @@ namespace WizBot.Modules.Administration
                         await ReplyConfirmLocalized("message_sent").ConfigureAwait(false); 
                         return;
                     }
-                    await ch.SendMessageAsync($"`#{Context.User}` 📣 " + rep.Replace(msg)?.SanitizeMentions());
+                    await ch.SendMessageAsync($"**{Context.User}** 📣 " + rep.Replace(msg)?.SanitizeMentions());
                 }
                 else if (ids[1].ToUpperInvariant().StartsWith("U:"))
                 {
