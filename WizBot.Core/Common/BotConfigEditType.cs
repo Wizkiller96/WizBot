@@ -22,6 +22,7 @@ namespace WizBot.Common
         PatreonCurrencyPerCent,
         MinWaifuPrice,
         WaifuGiftMultiplier,
+        MinimumTriviaWinReq
         
         //ErrorColor, //after i fix the wizbot.cs static variables
         //OkColor
