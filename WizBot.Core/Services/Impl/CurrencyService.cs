@@ -38,7 +38,7 @@ namespace WizBot.Core.Services
             var result = uow.DiscordUsers.TryUpdateCurrencyState(userId, userName, discrim, avatar, amount);
             if(result && gamble)
             {
-                var t2 = GetCurrencyTransaction(userId, reason, -amount);
+                var t2 = GetCurrencyTransaction(_bot.Id, reason, -amount);
                 uow.CurrencyTransactions.Add(t2);
                 uow.DiscordUsers.TryUpdateCurrencyState(_bot.Id, _bot.Username, _bot.Discriminator, _bot.AvatarId, -amount, true);
             }
