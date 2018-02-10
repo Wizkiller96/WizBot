@@ -21,6 +21,7 @@ using SixLabors.Primitives;
 using System.Net.Http;
 using ImageSharp.Drawing.Pens;
 using ImageSharp.Drawing.Brushes;
+using System.Diagnostics;
 
 namespace WizBot.Modules.Xp.Services
 {
@@ -46,13 +47,13 @@ namespace WizBot.Modules.Xp.Services
         private readonly ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>> _excludedChannels
             = new ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>>();
 
-        private readonly ConcurrentHashSet<ulong> _excludedServers 
+        private readonly ConcurrentHashSet<ulong> _excludedServers
             = new ConcurrentHashSet<ulong>();
 
-        private readonly ConcurrentHashSet<ulong> _rewardedUsers 
+        private readonly ConcurrentHashSet<ulong> _rewardedUsers
             = new ConcurrentHashSet<ulong>();
 
-        private readonly ConcurrentQueue<UserCacheItem> _addMessageXp 
+        private readonly ConcurrentQueue<UserCacheItem> _addMessageXp
             = new ConcurrentQueue<UserCacheItem>();
 
         private readonly Timer _updateXpTimer;
@@ -242,7 +243,7 @@ namespace WizBot.Modules.Xp.Services
                     _log.Warn(ex);
                 }
             }, null, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5));
-            
+
             _clearRewardTimerTokenSource = new CancellationTokenSource();
             var token = _clearRewardTimerTokenSource.Token;
             //just a first line, in order to prevent queries. But since other shards can try to do this too,
@@ -252,7 +253,7 @@ namespace WizBot.Modules.Xp.Services
                 while (!token.IsCancellationRequested)
                 {
                     _rewardedUsers.Clear();
-                    
+
                     await Task.Delay(TimeSpan.FromMinutes(_bc.BotConfig.XpMinutesTimeout));
                 }
             }, token);
@@ -449,26 +450,31 @@ namespace WizBot.Modules.Xp.Services
             var r = _cache.Redis.GetDatabase();
             var key = $"{_creds.RedisKey()}_user_xp_gain_{userId}";
 
-            return r.StringSet(key, 
-                true, 
-                TimeSpan.FromMinutes(_bc.BotConfig.XpMinutesTimeout), 
+            return r.StringSet(key,
+                true,
+                TimeSpan.FromMinutes(_bc.BotConfig.XpMinutesTimeout),
                 StackExchange.Redis.When.NotExists);
         }
 
-        public FullUserStats GetUserStats(IGuildUser user)
+        public async Task<FullUserStats> GetUserStatsAsync(IGuildUser user)
         {
             DiscordUser du;
-            UserXpStats stats;
+            UserXpStats stats = null;
             int totalXp;
             int globalRank;
             int guildRank;
             using (var uow = _db.UnitOfWork)
             {
                 du = uow.DiscordUsers.GetOrCreate(user);
-                stats = uow.Xp.GetOrCreateUser(user.GuildId, user.Id);
                 totalXp = du.TotalXp;
-                globalRank = uow.DiscordUsers.GetUserGlobalRanking(user.Id);
-                guildRank = uow.Xp.GetUserGuildRanking(user.Id, user.GuildId);
+
+                var t1 = Task.Run(() => stats = uow.Xp.GetOrCreateUser(user.GuildId, user.Id));
+                var ranks = await Task.WhenAll(
+                    uow.DiscordUsers.GetUserGlobalRankingAsync(user.Id),
+                    uow.Xp.GetUserGuildRankingAsync(user.Id, user.GuildId));
+                await t1;
+                globalRank = ranks[0];
+                guildRank = ranks[1];
             }
 
             return new FullUserStats(du,
@@ -591,9 +597,10 @@ namespace WizBot.Modules.Xp.Services
             }
         }
 
-        public Task<MemoryStream> GenerateImageAsync(IGuildUser user)
+        public async Task<MemoryStream> GenerateImageAsync(IGuildUser user)
         {
-            return GenerateImageAsync(GetUserStats(user));
+            var stats = await GetUserStatsAsync(user);
+            return await GenerateImageAsync(stats);
         }
 
 
@@ -609,7 +616,6 @@ namespace WizBot.Modules.Xp.Services
 
                 img.DrawText("@" + username, usernameFont, Rgba32.White,
                     new PointF(130, 5));
-
                 // level
 
                 img.DrawText(stats.Global.Level.ToString(), _fonts.LevelFont, Rgba32.White,
@@ -687,7 +693,6 @@ namespace WizBot.Modules.Xp.Services
 
                 img.DrawText(GetTimeSpent(stats.FullGuildStats.LastLevelUp), _fonts.TimeFont, Rgba32.White,
                     new PointF(50, 344));
-
                 //avatar
 
                 if (stats.User.AvatarId != null)
@@ -724,8 +729,8 @@ namespace WizBot.Modules.Xp.Services
 
                 //club image
                 await DrawClubImage(img, stats).ConfigureAwait(false);
-
-                return img.Resize(432, 211).ToStream();
+                var s = img.Resize(432, 211).ToStream();
+                return s;
             }
         });
 

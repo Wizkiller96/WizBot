@@ -75,6 +75,5 @@ namespace WizBot.Modules.Utility
                     .ConfigureAwait(false);
             }
         }
-
     }
 }

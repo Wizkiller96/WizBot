@@ -1,13 +1,14 @@
 using Discord;
 using WizBot.Core.Services.Database.Models;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace WizBot.Core.Services.Database.Repositories
 {
     public interface IDiscordUserRepository : IRepository<DiscordUser>
     {
         DiscordUser GetOrCreate(IUser original);
-        int GetUserGlobalRanking(ulong id);
+        Task<int> GetUserGlobalRankingAsync(ulong id);
         DiscordUser[] GetUsersXpLeaderboardFor(int page);
 
         long GetUserCurrency(ulong userId);

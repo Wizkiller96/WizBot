@@ -2,6 +2,7 @@ using WizBot.Core.Services.Database.Models;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Diagnostics;
 
 namespace WizBot.Core.Services.Database.Repositories.Impl
 {
