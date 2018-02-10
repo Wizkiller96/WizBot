@@ -246,7 +246,8 @@ namespace WizBot.Modules.Gambling
                                .ToList();
             await _cs.AddBulkAsync(users.Select(x => x.Id),
                 users.Select(x => $"Awarded by bot staff to **{role.Name}** role. ({Context.User.Username}/{Context.User.Id})"),
-                users.Select(x => amount))
+                users.Select(x => amount),
+                gamble: true)
                 .ConfigureAwait(false);
 
             await ReplyConfirmLocalized("mass_award", 
