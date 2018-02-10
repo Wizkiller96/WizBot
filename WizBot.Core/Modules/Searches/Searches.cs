@@ -828,9 +828,14 @@ namespace WizBot.Modules.Searches
             try
             {
                 JToken obj;
-                obj = JObject.Parse(await _service.Http.GetStringAsync($"https://nekos.life/api/neko").ConfigureAwait(false));
+                JToken obj2;
+                obj = JObject.Parse(await _service.Http.GetStringAsync($"https://nekos.life/api/v2/img/neko").ConfigureAwait(false));
+                obj2 = JObject.Parse(await _service.Http.GetStringAsync($"https://nekos.life/api/v2/cat").ConfigureAwait(false));
                 await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                    .WithImageUrl($"{obj["neko"]}"), Context.User.Mention).ConfigureAwait(false);
+                    .WithAuthor(eab => eab.WithUrl("http://nekos.life/")
+                        .WithIconUrl("https://i.imgur.com/a36AMkG.png")
+                        .WithName($"Nekos! {obj2["cat"]}"))
+                    .WithImageUrl($"{obj["url"]}"), Context.User.Mention).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
