@@ -424,7 +424,7 @@ namespace WizBot.Modules.Searches
 
             terms = WebUtility.UrlEncode(terms).Replace(' ', '+');
 
-            var fullQueryLink = $"https://www.google.ca/search?q={ terms }&gws_rd=cr,ssl&hl=us";
+            var fullQueryLink = $"https://www.google.ca/search?q={ terms }&gws_rd=cr,ssl&cr=countryUS";
             var config = Configuration.Default.WithDefaultLoader();
             var document = await BrowsingContext.New(config).OpenAsync(fullQueryLink);
 
