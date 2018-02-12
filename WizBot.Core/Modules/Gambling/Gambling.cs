@@ -234,7 +234,7 @@ namespace WizBot.Modules.Gambling
             await _cs.AddAsync(usrId,
                 $"Awarded by bot staff. ({Context.User.Username}/{Context.User.Id}) {(msg ?? "")}",
                 amount,
-                gamble: true).ConfigureAwait(false);
+                gamble: (Context.Client.CurrentUser.Id != usrId)).ConfigureAwait(false);
             await ReplyConfirmLocalized("awarded", amount + CurrencySign, $"<@{usrId}>").ConfigureAwait(false);
         }
 
@@ -267,7 +267,8 @@ namespace WizBot.Modules.Gambling
             if (amount <= 0)
                 return;
 
-            if (await _cs.RemoveAsync(user, $"Taken by bot staff.({Context.User.Username}/{Context.User.Id})", amount, gamble: true).ConfigureAwait(false))
+            if (await _cs.RemoveAsync(user, $"Taken by bot staff.({Context.User.Username}/{Context.User.Id})", amount,
+                gamble: (Context.Client.CurrentUser.Id != user.Id)).ConfigureAwait(false))
                 await ReplyConfirmLocalized("take", amount+CurrencySign, Format.Bold(user.ToString())).ConfigureAwait(false);
             else
                 await ReplyErrorLocalized("take_fail", amount + CurrencySign, Format.Bold(user.ToString()), CurrencyPluralName).ConfigureAwait(false);
@@ -281,7 +282,8 @@ namespace WizBot.Modules.Gambling
             if (amount <= 0)
                 return;
 
-            if (await _cs.RemoveAsync(usrId, $"Taken by bot staff.({Context.User.Username}/{Context.User.Id})", amount, gamble: true))
+            if (await _cs.RemoveAsync(usrId, $"Taken by bot staff.({Context.User.Username}/{Context.User.Id})", amount,
+                gamble: (Context.Client.CurrentUser.Id != usrId)))
                 await ReplyConfirmLocalized("take", amount + CurrencySign, $"<@{usrId}>").ConfigureAwait(false);
             else
                 await ReplyErrorLocalized("take_fail", amount + CurrencySign, Format.Code(usrId.ToString()), CurrencyPluralName).ConfigureAwait(false);
