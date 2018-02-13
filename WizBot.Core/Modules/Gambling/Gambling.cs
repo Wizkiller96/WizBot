@@ -590,9 +590,18 @@ namespace WizBot.Modules.Gambling
             var embed = new EmbedBuilder();
 
             var wizbotPick = (RpsPick)new WizBotRandom().Next(0, 3);
+
+            if (amount > 0)
+            {
+                await _cs.RemoveAsync(Context.User.Id,
+                "Rps-bet", amount, gamble: true);
+            }
+
             string msg;
             if (pick == wizbotPick)
             {
+                await _cs.AddAsync(Context.User.Id,
+                    "Rps-draw", amount, gamble: true);
                 embed.WithOkColor();
                 msg = GetText("rps_draw", getRpsPick(pick));
             }
@@ -600,27 +609,24 @@ namespace WizBot.Modules.Gambling
                      (pick == RpsPick.Rock && wizbotPick == RpsPick.Scissors) ||
                      (pick == RpsPick.Scissors && wizbotPick == RpsPick.Paper))
             {
-                embed.WithOkColor();
                 amount = (long)(amount * _bc.BotConfig.BetflipMultiplier);
-                msg = GetText("rps_win", Context.Client.CurrentUser.Mention,
+                await _cs.AddAsync(Context.User.Id,
+                    "Rps-draw", amount, gamble: true);
+                embed.WithOkColor();
+                embed.AddField(GetText("won"), amount);
+                msg = GetText("rps_win", Context.User.Mention,
                     getRpsPick(wizbotPick), getRpsPick(pick));
-
             }
             else
             {
                 embed.WithErrorColor();
                 amount = 0;
-                msg = GetText("rps_win", Context.User.Mention, getRpsPick(pick),
+                msg = GetText("rps_win", Context.Client.CurrentUser.Mention, getRpsPick(pick),
                     getRpsPick(wizbotPick));
             }
 
             embed
                 .WithDescription(msg);
-
-            if(oldAmount > 0)
-            {
-                embed.AddField(GetText("won"), amount);
-            }
 
             await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
         }
