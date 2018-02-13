@@ -407,6 +407,7 @@ namespace WizBot.Modules.Music
                 var embed = new EmbedBuilder()
                             .WithAuthor(eab => eab.WithName(GetText("removed_song") + " #" + (index)).WithMusicIcon())
                             .WithDescription(song.PrettyName)
+                            .WithThumbnailUrl(song.Thumbnail)
                             .WithFooter(ef => ef.WithText(song.PrettyInfo))
                             .WithErrorColor();
 
@@ -870,6 +871,7 @@ namespace WizBot.Modules.Music
                     .WithOkColor()
                     .WithAuthor(eab => eab.WithMusicIcon().WithName("🔂 " + GetText("repeating_track")))
                     .WithDescription(currentSong.PrettyName)
+                    .WithThumbnailUrl(currentSong.Thumbnail)
                     .WithFooter(ef => ef.WithText(currentSong.PrettyInfo))).ConfigureAwait(false);
             else
                 await Context.Channel.SendConfirmAsync("🔂 " + GetText("repeating_track_stopped"))
