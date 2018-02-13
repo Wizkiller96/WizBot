@@ -1,13 +1,13 @@
-﻿using Discord;
-using Discord.Commands;
-using Microsoft.EntityFrameworkCore;
-using WizBot.Extensions;
-using WizBot.Core.Services;
-using WizBot.Core.Services.Database.Models;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
+using Microsoft.EntityFrameworkCore;
 using WizBot.Common.Attributes;
+using WizBot.Core.Services;
+using WizBot.Core.Services.Database.Models;
+using WizBot.Extensions;
 using WizBot.Modules.Administration.Common;
 using WizBot.Modules.Administration.Services;
 
@@ -224,38 +224,32 @@ namespace WizBot.Modules.Administration
 
                     if (spam.IgnoredChannels.Add(obj))
                     {
-                        AntiSpamStats temp;
-                        if (_service.AntiSpamGuilds.TryGetValue(Context.Guild.Id, out temp))
+                        if (_service.AntiSpamGuilds.TryGetValue(Context.Guild.Id, out var temp))
                             temp.AntiSpamSettings.IgnoredChannels.Add(obj);
                         added = true;
                     }
                     else
                     {
                         spam.IgnoredChannels.Remove(obj);
-                        AntiSpamStats temp;
-                        if (_service.AntiSpamGuilds.TryGetValue(Context.Guild.Id, out temp))
+                        if (_service.AntiSpamGuilds.TryGetValue(Context.Guild.Id, out var temp))
                             temp.AntiSpamSettings.IgnoredChannels.Remove(obj);
                         added = false;
                     }
 
                     await uow.CompleteAsync().ConfigureAwait(false);
                 }
-                if (added)
-                    await ReplyConfirmLocalized("spam_ignore", "Anti-Spam").ConfigureAwait(false);
-                else
-                    await ReplyConfirmLocalized("spam_not_ignore", "Anti-Spam").ConfigureAwait(false);
 
+
+                await ReplyConfirmLocalized(added ? "spam_ignore" : "spam_not_ignore", "Anti-Spam").ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task AntiList()
             {
-                AntiSpamStats spam;
-                _service.AntiSpamGuilds.TryGetValue(Context.Guild.Id, out spam);
+                _service.AntiSpamGuilds.TryGetValue(Context.Guild.Id, out var spam);
 
-                AntiRaidStats raid;
-                _service.AntiRaidGuilds.TryGetValue(Context.Guild.Id, out raid);
+                _service.AntiRaidGuilds.TryGetValue(Context.Guild.Id, out var raid);
 
                 if (spam == null && raid == null)
                 {

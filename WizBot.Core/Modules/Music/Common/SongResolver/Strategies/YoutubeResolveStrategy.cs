@@ -1,9 +1,9 @@
-﻿using WizBot.Core.Services.Database.Models;
-using WizBot.Core.Services.Impl;
-using NLog;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Threading.Tasks;
+using WizBot.Core.Services.Database.Models;
+using WizBot.Core.Services.Impl;
+using NLog;
 
 namespace WizBot.Modules.Music.Common.SongResolver.Strategies
 {
@@ -26,13 +26,14 @@ namespace WizBot.Modules.Music.Common.SongResolver.Strategies
                 {
                     data = (await ytdl.GetDataAsync(query)).Split('\n');
                 }
+
                 if (data.Length < 6)
                 {
                     _log.Info("No song found. Data less than 6");
                     return null;
                 }
-                TimeSpan time;
-                if (!TimeSpan.TryParseExact(data[4], new[] { "ss", "m\\:ss", "mm\\:ss", "h\\:mm\\:ss", "hh\\:mm\\:ss", "hhh\\:mm\\:ss" }, CultureInfo.InvariantCulture, out time))
+
+                if (!TimeSpan.TryParseExact(data[4], new[] { "ss", "m\\:ss", "mm\\:ss", "h\\:mm\\:ss", "hh\\:mm\\:ss", "hhh\\:mm\\:ss" }, CultureInfo.InvariantCulture, out var time))
                     time = TimeSpan.FromHours(24);
 
                 return new SongInfo()

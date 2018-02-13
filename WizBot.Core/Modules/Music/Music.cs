@@ -1,24 +1,24 @@
-﻿using Discord.Commands;
-using Discord.WebSocket;
-using WizBot.Core.Services;
-using Discord;
-using System.Threading.Tasks;
-using System;
-using System.Linq;
-using WizBot.Extensions;
+﻿using System;
 using System.Collections.Generic;
-using WizBot.Core.Services.Database.Models;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
+using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
+using Discord.WebSocket;
 using WizBot.Common;
 using WizBot.Common.Attributes;
 using WizBot.Common.Collections;
-using Newtonsoft.Json.Linq;
+using WizBot.Core.Services;
+using WizBot.Core.Services.Database.Models;
 using WizBot.Core.Services.Impl;
-using WizBot.Modules.Music.Services;
-using WizBot.Modules.Music.Common.Exceptions;
+using WizBot.Extensions;
 using WizBot.Modules.Music.Common;
+using WizBot.Modules.Music.Common.Exceptions;
 using WizBot.Modules.Music.Extensions;
+using WizBot.Modules.Music.Services;
+using Newtonsoft.Json.Linq;
 
 namespace WizBot.Modules.Music
 {

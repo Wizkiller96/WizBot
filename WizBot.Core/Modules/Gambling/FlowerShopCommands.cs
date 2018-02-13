@@ -1,17 +1,17 @@
-﻿using Discord;
-using Discord.Commands;
-using Discord.WebSocket;
-using Microsoft.EntityFrameworkCore;
-using WizBot.Extensions;
-using WizBot.Core.Services;
-using WizBot.Core.Services.Database.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
+using Discord.WebSocket;
+using Microsoft.EntityFrameworkCore;
 using WizBot.Common;
 using WizBot.Common.Attributes;
 using WizBot.Common.Collections;
+using WizBot.Core.Services;
+using WizBot.Core.Services.Database.Models;
+using WizBot.Extensions;
 
 namespace WizBot.Modules.Gambling
 {
@@ -50,7 +50,7 @@ namespace WizBot.Modules.Gambling
                 List<ShopEntry> entries;
                 using (var uow = _db.UnitOfWork)
                 {
-                    entries = new IndexedCollection<ShopEntry>(uow.GuildConfigs.For(Context.Guild.Id, 
+                    entries = new IndexedCollection<ShopEntry>(uow.GuildConfigs.For(Context.Guild.Id,
                         set => set.Include(x => x.ShopEntries)
                                   .ThenInclude(x => x.Items)).ShopEntries);
                 }
@@ -191,7 +191,7 @@ namespace WizBot.Modules.Gambling
 
             }
 
-            private long GetProfitAmount(int price) => 
+            private long GetProfitAmount(int price) =>
                 (int)(Math.Ceiling(0.90 * price));
 
             [WizBotCommand, Usage, Description, Aliases]

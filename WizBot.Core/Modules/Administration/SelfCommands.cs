@@ -1,25 +1,24 @@
-using Discord;
-using Discord.Commands;
-using WizBot.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
+using Discord.Net;
 using Discord.WebSocket;
+using Microsoft.EntityFrameworkCore;
+using WizBot.Common;
+using WizBot.Common.Attributes;
+using WizBot.Common.Replacements;
+using WizBot.Common.ShardCom;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
-using WizBot.Common.Attributes;
+using WizBot.Extensions;
 using WizBot.Modules.Administration.Services;
 using Newtonsoft.Json;
-using WizBot.Common.ShardCom;
-using Discord.Net;
-using WizBot.Core.Common;
-using WizBot.Common;
-using WizBot.Common.Replacements;
 
 namespace WizBot.Modules.Administration
 {
@@ -109,16 +108,14 @@ namespace WizBot.Modules.Administration
                 }
                 else
                 {
-                    await Context.Channel.SendConfirmAsync("", string.Join("\n", scmds.Select(x =>
-                    {
-                        string str = $"```css\n[{GetText("server") + "]: " + (x.GuildId == null ? "-" : x.GuildName + " #" + x.GuildId)}";
-
-                        str += $@"
+                    await Context.Channel.SendConfirmAsync(
+                        text: string.Join("\n", scmds.Select(x => $@"```css
+[{GetText("server")}]: {(x.GuildId.HasValue ? $"{x.GuildName} #{x.GuildId}" : "-")}
 [{GetText("channel")}]: {x.ChannelName} #{x.ChannelId}
-[{GetText("command_text")}]: {x.CommandText}```";
-                        return str;
-                    })), footer: GetText("page", page + 1))
-                         .ConfigureAwait(false);
+[{GetText("command_text")}]: {x.CommandText}```")),
+                        title: string.Empty,
+                        footer: GetText("page", page + 1))
+                    .ConfigureAwait(false);
                 }
             }
 
@@ -504,7 +501,7 @@ namespace WizBot.Modules.Administration
             public async Task ImagesReload()
             {
                 var sub = _cache.Redis.GetSubscriber();
-                sub.Publish(_creds.RedisKey() + "_reload_images", 
+                sub.Publish(_creds.RedisKey() + "_reload_images",
                     "",
                     StackExchange.Redis.CommandFlags.FireAndForget);
                 await ReplyConfirmLocalized("images_loaded", 0).ConfigureAwait(false);

@@ -1,17 +1,17 @@
-using Discord;
-using Discord.Commands;
-using WizBot.Extensions;
-using WizBot.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
+using ImageSharp;
 using WizBot.Common;
 using WizBot.Common.Attributes;
+using WizBot.Core.Services;
+using WizBot.Extensions;
 using Image = ImageSharp.Image;
-using ImageSharp;
 
 namespace WizBot.Modules.Gambling
 {

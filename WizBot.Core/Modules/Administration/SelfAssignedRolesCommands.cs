@@ -1,16 +1,15 @@
-﻿using Discord;
-using Discord.Commands;
-using WizBot.Extensions;
-using WizBot.Core.Services;
-using WizBot.Core.Services.Database.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
 using WizBot.Common.Attributes;
 using WizBot.Common.Collections;
-using Microsoft.EntityFrameworkCore;
+using WizBot.Core.Services;
+using WizBot.Core.Services.Database.Models;
+using WizBot.Extensions;
 using WizBot.Modules.Xp.Common;
 
 namespace WizBot.Modules.Administration

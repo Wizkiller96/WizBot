@@ -1,15 +1,15 @@
-using WizBot.Common;
-using WizBot.Extensions;
-using WizBot.Modules.Gambling.Common.AnimalRacing.Exceptions;
-using WizBot.Core.Services;
-using WizBot.Core.Services.Database.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using WizBot.Common;
 using WizBot.Core.Modules.Gambling.Common.AnimalRacing;
+using WizBot.Core.Services;
+using WizBot.Core.Services.Database.Models;
+using WizBot.Extensions;
+using WizBot.Modules.Gambling.Common.AnimalRacing.Exceptions;
 
 namespace WizBot.Modules.Gambling.Common.AnimalRacing
 {

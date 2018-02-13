@@ -1,19 +1,18 @@
-﻿using Discord;
-using Discord.WebSocket;
-using WizBot.Extensions;
-using WizBot.Core.Services;
-using WizBot.Core.Services.Database.Models;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
+using Discord;
+using Discord.WebSocket;
+using WizBot.Core.Services;
+using WizBot.Core.Services.Database.Models;
+using WizBot.Core.Services.Impl;
+using WizBot.Extensions;
 using WizBot.Modules.Searches.Common;
 using WizBot.Modules.Searches.Common.Exceptions;
-using WizBot.Core.Services.Impl;
+using Newtonsoft.Json;
 
 namespace WizBot.Modules.Searches.Services
 {
@@ -32,7 +31,6 @@ namespace WizBot.Modules.Searches.Services
             _client = client;
             _strings = strings;
             _http = new HttpClient();
-#if !GLOBAL_WIZBOT
             var _ = Task.Run(async () =>
            {
                while (true)
@@ -56,8 +54,7 @@ namespace WizBot.Modules.Searches.Services
                                 return;
                             }
 
-                            IStreamResponse oldResponse;
-                            if (oldCachedStatuses.TryGetValue(newStatus.Url, out oldResponse) &&
+                            if (oldCachedStatuses.TryGetValue(newStatus.Url, out var oldResponse) &&
                             oldResponse.Live != newStatus.Live)
                             {
                                 var server = _client.GetGuild(fs.GuildId);
@@ -83,7 +80,6 @@ namespace WizBot.Modules.Searches.Services
                    firstStreamNotifPass = false;
                }
            });
-#endif
         }
 
         public async Task<IStreamResponse> GetStreamStatus(FollowedStream stream, bool checkCache = true)

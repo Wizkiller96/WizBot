@@ -1,14 +1,14 @@
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 using Discord.Commands;
 using WizBot.Common.Attributes;
 using WizBot.Extensions;
+using Newtonsoft.Json;
 
 namespace WizBot.Modules.Searches
 {
@@ -64,8 +64,7 @@ namespace WizBot.Modules.Searches
 
                 foreach (var c in input)
                 {
-                    string tmp;
-                    if (_map.TryGetValue(c, out tmp))
+                    if (_map.TryGetValue(c, out var tmp))
                         sb.Append(tmp);
                     else
                         sb.Append(c);

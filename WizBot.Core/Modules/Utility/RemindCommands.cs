@@ -1,15 +1,15 @@
-﻿using Discord;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
-using WizBot.Extensions;
+using WizBot.Common.Attributes;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using WizBot.Common.Attributes;
+using WizBot.Extensions;
 using WizBot.Modules.Administration.Services;
 using WizBot.Modules.Utility.Services;
-using System.Linq;
 
 namespace WizBot.Modules.Utility
 {
@@ -149,8 +149,7 @@ namespace WizBot.Modules.Utility
                 foreach (var groupName in _service.Regex.GetGroupNames())
                 {
                     if (groupName == "0") continue;
-                    int value;
-                    int.TryParse(m.Groups[groupName].Value, out value);
+                    int.TryParse(m.Groups[groupName].Value, out var value);
 
                     if (string.IsNullOrEmpty(m.Groups[groupName].Value))
                     {

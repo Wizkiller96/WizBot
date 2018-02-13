@@ -1,18 +1,17 @@
-using Discord;
-using Discord.Commands;
-using WizBot.Extensions;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WizBot.Common.Attributes;
-using WizBot.Core.Services;
-using WizBot.Modules.Administration.Services;
-using WizBot.Core.Services.Database.Models;
-using Microsoft.EntityFrameworkCore;
+using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
+using Microsoft.EntityFrameworkCore;
 using WizBot.Common;
+using WizBot.Common.Attributes;
 using WizBot.Common.Replacements;
+using WizBot.Core.Services;
+using WizBot.Core.Services.Database.Models;
+using WizBot.Extensions;
+using WizBot.Modules.Administration.Services;
 
 namespace WizBot.Modules.Administration
 {

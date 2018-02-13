@@ -1,12 +1,12 @@
-using Newtonsoft.Json;
 using System;
-using System.IO;
-using Discord;
-using System.Linq;
-using NLog;
-using Microsoft.Extensions.Configuration;
 using System.Collections.Immutable;
+using System.IO;
+using System.Linq;
+using Discord;
+using Microsoft.Extensions.Configuration;
 using WizBot.Common;
+using Newtonsoft.Json;
+using NLog;
 
 namespace WizBot.Core.Services.Impl
 {
@@ -47,7 +47,7 @@ namespace WizBot.Core.Services.Impl
             _log = LogManager.GetCurrentClassLogger();
 
             try { File.WriteAllText("./credentials_example.json", JsonConvert.SerializeObject(new CredentialsModel(), Formatting.Indented)); } catch { }
-            if(!File.Exists(_credsFileName))
+            if (!File.Exists(_credsFileName))
                 _log.Warn($"credentials.json is missing. Attempting to load creds from environment variables prefixed with 'WizBot_'. Example is in {Path.GetFullPath("./credentials_example.json")}");
             try
             {
@@ -107,8 +107,7 @@ namespace WizBot.Core.Services.Impl
                 else
                     ShardRunPort = int.Parse(portStr);
 
-                int ts = 1;
-                int.TryParse(data[nameof(TotalShards)], out ts);
+                int.TryParse(data[nameof(TotalShards)], out var ts);
                 TotalShards = ts < 1 ? 1 : ts;
 
                 ulong.TryParse(data[nameof(ClientId)], out ulong clId);

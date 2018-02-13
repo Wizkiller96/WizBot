@@ -6,11 +6,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
-using WizBot.Extensions;
-using WizBot.Modules.Administration.Common;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Core.Services.Impl;
+using WizBot.Extensions;
+using WizBot.Modules.Administration.Common;
 using NLog;
 
 namespace WizBot.Modules.Administration.Services
@@ -24,7 +24,7 @@ namespace WizBot.Modules.Administration.Services
         private string PrettyCurrentTime(IGuild g)
         {
             var time = DateTime.UtcNow;
-            if(g != null)
+            if (g != null)
                 time = TimeZoneInfo.ConvertTime(time, _tz.GetTimeZoneOrUtc(g.Id));
             return $"【{time:HH:mm:ss}】";
         }
@@ -899,7 +899,7 @@ namespace WizBot.Modules.Administration.Services
             VoicePresence,
             VoicePresenceTTS,
             UserMuted
-        };
+        }
 
         private async Task<ITextChannel> TryGetLogChannel(IGuild guild, LogSetting logSetting, LogType logChannelType)
         {

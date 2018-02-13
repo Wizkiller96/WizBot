@@ -6,8 +6,8 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using WizBot.Extensions;
-using WizBot.Modules.Music.Services;
 using WizBot.Modules.Administration.Services;
+using WizBot.Modules.Music.Services;
 
 namespace WizBot.Common.Replacements
 {
@@ -72,7 +72,7 @@ namespace WizBot.Common.Replacements
                     TimeZoneInfo.Utc,
                     to).ToString("HH:mm ") + to.StandardName.GetInitials();
             });
-             /*NEW*/
+            /*NEW*/
             _reps.TryAdd("%server.id%", () => g == null ? "DM" : g.Id.ToString());
             _reps.TryAdd("%server.name%", () => g == null ? "DM" : g.Name);
             _reps.TryAdd("%server.members%", () => g != null && g is SocketGuild sg ? sg.MemberCount.ToString() : "?");
@@ -188,16 +188,11 @@ namespace WizBot.Common.Replacements
             var rng = new WizBotRandom();
             _regex.TryAdd(rngRegex, (match) =>
             {
-                int from = 0;
-                int.TryParse(match.Groups["from"].ToString(), out from);
-
-                int to = 0;
-                int.TryParse(match.Groups["to"].ToString(), out to);
+                int.TryParse(match.Groups["from"].ToString(), out var from);
+                int.TryParse(match.Groups["to"].ToString(), out var to);
 
                 if (from == 0 && to == 0)
-                {
                     return rng.Next(0, 11).ToString();
-                }
 
                 if (from >= to)
                     return string.Empty;
