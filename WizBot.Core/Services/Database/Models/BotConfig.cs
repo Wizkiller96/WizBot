@@ -26,9 +26,7 @@ namespace WizBot.Core.Services.Database.Models
         public string CurrencyPluralName { get; set; } = "Cherry Blossoms";
 
         public int TriviaCurrencyReward { get; set; } = 0;
-        /// <summary>
-        /// UNUSED
-        /// </summary>
+        /// <summary> UNUSED </summary>
         [Obsolete]
         public int MinimumBetAmount { get; set; } = 2;
         public float BetflipMultiplier { get; set; } = 1.95f;
@@ -42,10 +40,8 @@ namespace WizBot.Core.Services.Database.Models
         public int MinWaifuPrice { get; set; } = 50;
         //public HashSet<CommandCost> CommandCosts { get; set; } = new HashSet<CommandCost>();
 
-        /// <summary>
-        /// I messed up, don't use
-        /// </summary>
-        public HashSet<CommandPrice> CommandPrices { get; set; } = new HashSet<CommandPrice>();
+        /// <summary>I messed up, don't use</summary>
+        [Obsolete] public HashSet<CommandPrice> CommandPrices { get; set; } = new HashSet<CommandPrice>();
 
 
         public HashSet<EightBallResponse> EightBallResponses { get; set; } = new HashSet<EightBallResponse>();
@@ -91,17 +87,11 @@ WizNet Community Server: https://discord.gg/0YNaDOYuD5QOpeNI";
     {
         public string Name { get; set; }
 
-        public override bool Equals(object obj)
-        {
-            if (obj == null || GetType() != obj.GetType())
-            {
-                return false;
-            }
+        public override bool Equals(object obj) =>
+            (obj as BlockedCmdOrMdl)?.Name?.ToLowerInvariant() == Name.ToLowerInvariant();
 
-            return ((BlockedCmdOrMdl)obj).Name.ToLowerInvariant() == Name.ToLowerInvariant();
-        }
-
-        public override int GetHashCode() => Name.GetHashCode();
+            public override int GetHashCode() =>
+                Name.GetHashCode();
     }
 
     public class StartupCommand : DbEntity, IIndexed
@@ -139,18 +129,13 @@ WizNet Community Server: https://discord.gg/0YNaDOYuD5QOpeNI";
     {
         public string Text { get; set; }
 
-        public override int GetHashCode()
-        {
-            return Text.GetHashCode();
-        }
+        public override int GetHashCode() =>
+            Text.GetHashCode();
 
-        public override bool Equals(object obj)
-        {
-            if (!(obj is EightBallResponse))
-                return base.Equals(obj);
-
-            return ((EightBallResponse)obj).Text == Text;
-        }
+        public override bool Equals(object obj) =>
+            (obj is EightBallResponse response)
+                ? response.Text == Text
+                : base.Equals(obj);
     }
 
     public class RaceAnimal : DbEntity
@@ -158,17 +143,12 @@ WizNet Community Server: https://discord.gg/0YNaDOYuD5QOpeNI";
         public string Icon { get; set; }
         public string Name { get; set; }
 
-        public override int GetHashCode()
-        {
-            return Icon.GetHashCode();
-        }
+        public override int GetHashCode() =>
+            Icon.GetHashCode();
 
-        public override bool Equals(object obj)
-        {
-            if (!(obj is RaceAnimal))
-                return base.Equals(obj);
-
-            return ((RaceAnimal)obj).Icon == Icon;
-        }
+        public override bool Equals(object obj) =>
+            (obj is RaceAnimal animal)
+                ? animal.Icon == Icon
+                : base.Equals(obj);
     }
 }
