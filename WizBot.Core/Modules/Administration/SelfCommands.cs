@@ -244,7 +244,7 @@ namespace WizBot.Modules.Administration
                     })
                     .ToArray();
 
-                await Context.Channel.SendPaginatedConfirmAsync(_client, page, (curPage) =>
+                await Context.SendPaginatedConfirmAsync(page, (curPage) =>
                 {
 
                     var str = string.Join("\n", allShardStrings.Skip(25 * curPage).Take(25));

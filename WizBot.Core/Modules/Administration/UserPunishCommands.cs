@@ -143,23 +143,23 @@ namespace WizBot.Modules.Administration
                     warnings = uow.Warnings.GetForGuild(Context.Guild.Id).GroupBy(x => x.UserId).ToArray();
                 }
 
-                await Context.Channel.SendPaginatedConfirmAsync((DiscordSocketClient)Context.Client, page, async (curPage) =>
+                await Context.SendPaginatedConfirmAsync(page, (curPage) =>
                 {
-                    var ws = await Task.WhenAll(warnings.Skip(curPage * 15)
+                    var ws = warnings.Skip(curPage * 15)
                         .Take(15)
                         .ToArray()
-                        .Select(async x =>
+                        .Select(x =>
                         {
                             var all = x.Count();
                             var forgiven = x.Count(y => y.Forgiven);
                             var total = all - forgiven;
-                            return ((await Context.Guild.GetUserAsync(x.Key))?.ToString() ?? x.Key.ToString()) + $" | {total} ({all} - {forgiven})";
-                        }));
+                            var usr = ((SocketGuild)Context.Guild).GetUser(x.Key);
+                            return (usr?.ToString() ?? x.Key.ToString()) + $" | {total} ({all} - {forgiven})";
+                        });
 
                     return new EmbedBuilder()
                         .WithTitle(GetText("warnings_list"))
                         .WithDescription(string.Join("\n", ws));
-
                 }, warnings.Length, 15);
             }
 
