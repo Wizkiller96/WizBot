@@ -28,30 +28,34 @@ namespace WizBot.Modules.Searches
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.ManageMessages)]
-            public async Task Smashcast([Remainder] string username) =>
-                await TrackStream((ITextChannel)Context.Channel, username, FollowedStream.FollowedStreamType.Smashcast)
-                    .ConfigureAwait(false);
+            public Task Smashcast([Remainder] string username) =>
+                TrackStream((ITextChannel)Context.Channel,
+                    username,
+                    FollowedStream.FollowedStreamType.Smashcast);
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.ManageMessages)]
-            public async Task Twitch([Remainder] string username) =>
-                await TrackStream((ITextChannel)Context.Channel, username, FollowedStream.FollowedStreamType.Twitch)
-                    .ConfigureAwait(false);
+            public Task Twitch([Remainder] string username) =>
+                TrackStream((ITextChannel)Context.Channel,
+                    username,
+                    FollowedStream.FollowedStreamType.Twitch);
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.ManageMessages)]
-            public async Task Picarto([Remainder] string username) =>
-                await TrackStream((ITextChannel)Context.Channel, username, FollowedStream.FollowedStreamType.Picarto)
-                    .ConfigureAwait(false);
+            public Task Picarto([Remainder] string username) =>
+                TrackStream((ITextChannel)Context.Channel,
+                    username,
+                    FollowedStream.FollowedStreamType.Picarto);
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.ManageMessages)]
-            public async Task Mixer([Remainder] string username) =>
-                await TrackStream((ITextChannel)Context.Channel, username, FollowedStream.FollowedStreamType.Mixer)
-                    .ConfigureAwait(false);
+            public Task Mixer([Remainder] string username) =>
+                TrackStream((ITextChannel)Context.Channel,
+                    username,
+                    FollowedStream.FollowedStreamType.Mixer);
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]

@@ -5,12 +5,14 @@ using WizBot.Core.Services;
 using System.Threading.Tasks;
 using Discord.WebSocket;
 using WizBot.Common.Attributes;
-using WizBot.Modules.Gambling.Common;
 using WizBot.Modules.Gambling.Services;
-using WizBot.Modules.Gambling.Common.CurrencyEvents;
 using System.Net.Http;
 using Newtonsoft.Json;
 using System.Linq;
+using WizBot.Core.Common;
+using WizBot.Core.Services.Database.Models;
+using WizBot.Core.Modules.Gambling.Common.Events;
+using System;
 
 namespace WizBot.Modules.Gambling
 {
@@ -19,10 +21,8 @@ namespace WizBot.Modules.Gambling
         [Group]
         public class CurrencyEventsCommands : WizBotSubmodule<CurrencyEventsService>
         {
-            public enum CurrencyEvent
+            public enum OtherEvent
             {
-                Reaction,
-                SneakyGameStatus,
                 BotListUpvoters
             }
 
@@ -39,23 +39,65 @@ namespace WizBot.Modules.Gambling
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
+            [WizBotOptions(typeof(EventOptions))]
             [AdminOnly]
-            public async Task StartEvent(CurrencyEvent e, long arg = -1)
+            public async Task EventStart(Event.Type ev, params string[] options)
+            {
+                var (opts, _) = OptionsParser.Default.ParseFrom(new EventOptions(), options);
+                if (!await _service.TryCreateEventAsync(Context.Guild.Id,
+                    Context.Channel.Id,
+                    ev,
+                    opts,
+                    GetEmbed
+                    ))
+                {
+                    await ReplyErrorLocalized("start_event_fail").ConfigureAwait(false);
+                    return;
+                }
+            }
+
+            private EmbedBuilder GetEmbed(Event.Type type, EventOptions opts, long currentPot)
+            {
+
+                switch (type)
+                {
+                    case Event.Type.Reaction:
+                        return new EmbedBuilder()
+                                    .WithOkColor()
+                                    .WithTitle(GetText("reaction_title"))
+                                    .WithDescription(GetDescription(opts.Amount, currentPot))
+                                    .WithFooter(GetText("new_reaction_footer", opts.Hours));
+                    default:
+                        break;
+                }
+                throw new ArgumentOutOfRangeException(nameof(type));
+            }
+
+            private string GetDescription(long amount, long potSize)
+            {
+                string potSizeStr = Format.Bold(potSize == 0
+                    ? "∞"
+                    : potSize.ToString() + _bc.BotConfig.CurrencySign);
+                return GetText("new_reaction_event",
+                                   _bc.BotConfig.CurrencySign,
+                                   Format.Bold(amount + _bc.BotConfig.CurrencySign),
+                                   potSize);
+            }
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [AdminOnly]
+            public async Task EventStart(OtherEvent e)
             {
                 switch (e)
                 {
-                    case CurrencyEvent.Reaction:
-                        await ReactionEvent(Context, arg).ConfigureAwait(false);
-                        break;
-                    case CurrencyEvent.SneakyGameStatus:
-                        await SneakyGameStatusEvent(Context, arg).ConfigureAwait(false);
-                        break;
 #if GLOBAL_WIZBOT
                     case CurrencyEvent.BotListUpvoters:
                         await BotListUpvoters(arg);
-                    break;
+                        break;
 #endif
                     default:
+                        await Task.CompletedTask;
                         return;
                 }
             }
@@ -68,7 +110,7 @@ namespace WizBot.Modules.Gambling
                 using (var http = new HttpClient())
                 {
                     http.DefaultRequestHeaders.Add("Authorization", _creds.BotListToken);
-                    res = await http.GetStringAsync($"https://discordbots.org/api/bots/170849991357628416/votes?onlyids=true");
+                    res = await http.GetStringAsync($"https://discordbots.org/api/bots/116275390695079945/votes?onlyids=true");
                 }
                 var ids = JsonConvert.DeserializeObject<ulong[]>(res);
                 await _cs.AddBulkAsync(ids, ids.Select(x => "Botlist Upvoter Event"), ids.Select(x => amount), true);
@@ -77,43 +119,28 @@ namespace WizBot.Modules.Gambling
                     Format.Bold(ids.Length.ToString())).ConfigureAwait(false);
             }
 
-            private async Task SneakyGameStatusEvent(ICommandContext context, long num)
-            {
-                if (num < 10 || num > 600)
-                    num = 60;
+            //    private async Task SneakyGameStatusEvent(ICommandContext context, long num)
+            //    {
+            //        if (num < 10 || num > 600)
+            //            num = 60;
 
-                var ev = new SneakyEvent(_cs, _client, _bc, num);
-                if (!await _service.StartSneakyEvent(ev, context.Message, context))
-                    return;
-                try
-                {
-                    var title = GetText("sneakygamestatus_title");
-                    var desc = GetText("sneakygamestatus_desc", 
-                        Format.Bold(100.ToString()) + _bc.BotConfig.CurrencySign,
-                        Format.Bold(num.ToString()));
-                    await context.Channel.SendConfirmAsync(title, desc)
-                        .ConfigureAwait(false);
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
-
-            public async Task ReactionEvent(ICommandContext context, long amount)
-            {
-                if (amount <= 0)
-                    amount = 100;
-
-                var title = GetText("reaction_title");
-                var desc = GetText("reaction_desc", _bc.BotConfig.CurrencySign, Format.Bold(amount.ToString()) + _bc.BotConfig.CurrencySign);
-                var footer = GetText("reaction_footer", 24);
-                var re = new ReactionEvent(_bc.BotConfig, _client, _cs, amount);
-                var msg = await context.Channel.SendConfirmAsync(title,
-                        desc, footer: footer)
-                    .ConfigureAwait(false);
-                await re.Start(msg, context);
-            }
+            //        var ev = new SneakyEvent(_cs, _client, _bc, num);
+            //        if (!await _service.StartSneakyEvent(ev, context.Message, context))
+            //            return;
+            //        try
+            //        {
+            //            var title = GetText("sneakygamestatus_title");
+            //            var desc = GetText("sneakygamestatus_desc",
+            //                Format.Bold(100.ToString()) + _bc.BotConfig.CurrencySign,
+            //                Format.Bold(num.ToString()));
+            //            await context.Channel.SendConfirmAsync(title, desc)
+            //                .ConfigureAwait(false);
+            //        }
+            //        catch
+            //        {
+            //            // ignored
+            //        }
+            //    }
         }
     }
 }

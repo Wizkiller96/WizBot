@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace WizBot.Core.Modules.Gambling.Common
 {
-    public class GamblingTopLevelModule<TService> : WizBotTopLevelModule<TService> where TService: INService
+    public abstract class GamblingTopLevelModule<TService> : WizBotTopLevelModule<TService> where TService : INService
     {
         public GamblingTopLevelModule(bool isTopLevel = true) : base(isTopLevel)
         {
@@ -49,7 +49,7 @@ namespace WizBot.Core.Modules.Gambling.Common
         }
     }
 
-    public class GamblingSubmodule<TService> : GamblingTopLevelModule<TService> where TService : INService
+    public abstract class GamblingSubmodule<TService> : GamblingTopLevelModule<TService> where TService : INService
     {
         public GamblingSubmodule() : base(false)
         {

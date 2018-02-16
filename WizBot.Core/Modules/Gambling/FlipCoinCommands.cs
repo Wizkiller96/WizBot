@@ -2,7 +2,6 @@ using Discord;
 using Discord.Commands;
 using WizBot.Extensions;
 using WizBot.Core.Services;
-using System;
 using System.Threading.Tasks;
 using WizBot.Common;
 using WizBot.Common.Attributes;
@@ -42,7 +41,7 @@ namespace WizBot.Modules.Gambling
                             .WithOkColor()
                             .WithImageUrl(coins.Heads[rng.Next(0, coins.Heads.Length)])
                             .WithDescription(Context.User.Mention + " " + GetText("flipped", Format.Bold(GetText("heads")))));
-                        
+
                     }
                     else
                     {
@@ -102,7 +101,7 @@ namespace WizBot.Modules.Gambling
             [WizBotCommand, Usage, Description, Aliases]
             public async Task Betflip(long amount, BetFlipGuess guess)
             {
-                if (!await CheckBetMandatory(amount))
+                if (!await CheckBetMandatory(amount) || amount == 1)
                     return;
 
                 var removed = await _cs.RemoveAsync(Context.User, "Betflip Gamble", amount, false, gamble: true).ConfigureAwait(false);
@@ -127,10 +126,10 @@ namespace WizBot.Modules.Gambling
 
                 string str;
                 if (guess == result)
-                { 
-                    var toWin = (int)Math.Round(amount * _bc.BotConfig.BetflipMultiplier);
+                {
+                    var toWin = (long)(amount * _bc.BotConfig.BetflipMultiplier);
                     str = Context.User.Mention + " " + GetText("flip_guess", toWin + _bc.BotConfig.CurrencySign);
-                    await _cs.AddAsync(Context.User, "Betflip Gamble", toWin, false, gamble:true).ConfigureAwait(false);
+                    await _cs.AddAsync(Context.User, "Betflip Gamble", toWin, false, gamble: true).ConfigureAwait(false);
                 }
                 else
                 {

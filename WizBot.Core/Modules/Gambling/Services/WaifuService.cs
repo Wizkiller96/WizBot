@@ -33,9 +33,8 @@ namespace WizBot.Modules.Gambling.Services
                 if (waifu == null || waifu.ClaimerId != ownerUser.Id)
                     return false;
 
-                if (!await _cs.RemoveAsync(owner.Id,
-                    "Waifu Transfer",
-                    waifu.Price / 10))
+                if (!await _cs.RemoveAsync(owner.Id, "Waifu Transfer",
+                    waifu.Price / 10, gamble: true))
                 {
                     return false;
                 }
@@ -63,7 +62,7 @@ namespace WizBot.Modules.Gambling.Services
                         .Where(w => w.User.UserId == user.Id && w.UpdateType == WaifuUpdateType.AffinityChanged && w.New != null)
                         .GroupBy(x => x.New)
                         .Count();
-                
+
                 return (int)Math.Ceiling(waifu.Price * 1.25f) + ((divorces + affs + 2) * _bc.BotConfig.DivorcePriceMultiplier);
             }
         }
@@ -73,7 +72,7 @@ namespace WizBot.Modules.Gambling.Services
             using (var uow = _db.UnitOfWork)
             {
                 var price = GetResetPrice(user);
-                if (!await _cs.RemoveAsync(user.Id, "Waifu Reset", price))
+                if (!await _cs.RemoveAsync(user.Id, "Waifu Reset", price, gamble: true))
                     return false;
 
                 var affs = uow._context.WaifuUpdates

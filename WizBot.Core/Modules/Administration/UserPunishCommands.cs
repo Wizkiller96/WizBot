@@ -189,7 +189,6 @@ namespace WizBot.Modules.Administration
                     }
                     uow.Complete();
                 }
-
                 var userStr = Format.Bold((Context.Guild as SocketGuild)?.GetUser(userId)?.ToString() ?? userId.ToString());
                 if (index == -1)
                 {

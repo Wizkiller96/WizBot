@@ -11,7 +11,8 @@ namespace WizBot.Extensions
     public static class IMessageChannelExtensions
     {
         public static Task<IUserMessage> EmbedAsync(this IMessageChannel ch, EmbedBuilder embed, string msg = "")
-            => ch.SendMessageAsync(msg, embed: embed.Build());
+            => ch.SendMessageAsync(msg, embed: embed.Build(),
+                options: new RequestOptions() { RetryMode = RetryMode.AlwaysRetry });
 
         public static Task<IUserMessage> SendErrorAsync(this IMessageChannel ch, string title, string error, string url = null, string footer = null)
         {
@@ -86,7 +87,7 @@ namespace WizBot.Extensions
 
             var lastPageChange = DateTime.MinValue;
 
-            Action<SocketReaction> changePage = async r =>
+            async Task changePage(SocketReaction r)
             {
                 try
                 {
@@ -120,7 +121,7 @@ namespace WizBot.Extensions
                 {
                     //ignored
                 }
-            };
+            }
 
             using (msg.OnReaction((DiscordSocketClient)ctx.Client, changePage, changePage))
             {

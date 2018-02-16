@@ -237,7 +237,7 @@ namespace WizBot.Modules.Administration
                     .Select(x =>
                     {
                         var timeDiff = DateTime.UtcNow - x.Time;
-                        if (timeDiff > TimeSpan.FromSeconds(30))
+                        if (timeDiff >= TimeSpan.FromSeconds(30))
                             return $"Shard #{Format.Bold(x.ShardId.ToString())} **UNRESPONSIVE** for {timeDiff.ToString(@"hh\:mm\:ss")}";
                         return GetText("shard_stats_txt", x.ShardId.ToString(),
                             Format.Bold(x.ConnectionState.ToString()), Format.Bold(x.Guilds.ToString()), timeDiff.ToString(@"hh\:mm\:ss"));
@@ -300,6 +300,7 @@ namespace WizBot.Modules.Administration
                     await ReplyConfirmLocalized("deleted_server", Format.Bold(server.Name)).ConfigureAwait(false);
                 }
             }
+
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
@@ -430,7 +431,7 @@ namespace WizBot.Modules.Administration
             }
 
             [WizBotCommand, Usage, Description, Aliases]
-            [OwnerOnly]
+            [AdminOnly]
             public async Task Send(string where, [Remainder] string msg = null)
             {
                 if (string.IsNullOrWhiteSpace(msg))
@@ -461,12 +462,12 @@ namespace WizBot.Modules.Administration
                     if (CREmbed.TryParse(msg, out var crembed))
                     {
                         rep.Replace(crembed);
-                        await ch.EmbedAsync(crembed.ToEmbed(), $"`#{Context.User}` 📣 " + crembed.PlainText?.SanitizeMentions())
+                        await ch.EmbedAsync(crembed.ToEmbed(), crembed.PlainText?.SanitizeMentions() ?? "")
                             .ConfigureAwait(false);
-                        await ReplyConfirmLocalized("message_sent").ConfigureAwait(false); 
+                        await ReplyConfirmLocalized("message_sent").ConfigureAwait(false);
                         return;
                     }
-                    await ch.SendMessageAsync($"**{Context.User}** 📣 " + rep.Replace(msg)?.SanitizeMentions());
+                    await ch.SendMessageAsync(rep.Replace(msg).SanitizeMentions());
                 }
                 else if (ids[1].ToUpperInvariant().StartsWith("U:"))
                 {
@@ -480,13 +481,13 @@ namespace WizBot.Modules.Administration
                     if (CREmbed.TryParse(msg, out var crembed))
                     {
                         rep.Replace(crembed);
-                        await (await user.GetOrCreateDMChannelAsync()).EmbedAsync(crembed.ToEmbed(), $"`{Context.User}` 📣 " + crembed.PlainText?.SanitizeMentions())
+                        await (await user.GetOrCreateDMChannelAsync()).EmbedAsync(crembed.ToEmbed(), crembed.PlainText?.SanitizeMentions() ?? "")
                             .ConfigureAwait(false);
                         await ReplyConfirmLocalized("message_sent").ConfigureAwait(false);
                         return;
                     }
 
-                    await (await user.GetOrCreateDMChannelAsync()).SendMessageAsync($"`{Context.User}` 📣 " + rep.Replace(msg)?.SanitizeMentions());
+                    await (await user.GetOrCreateDMChannelAsync()).SendMessageAsync(rep.Replace(msg).SanitizeMentions());
                 }
                 else
                 {

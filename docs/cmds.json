@@ -1678,11 +1678,12 @@
         },
         {
             "Aliases": [
-                ".startevent"
+                ".eventstart"
             ],
-            "Description": "Starts one of the events seen on public wizbot. Events: `reaction`, `sneakygamestatus` and `botlistupvoters` (for which you need botlisttoken in credentials).**Bot owner only**",
+            "Description": "Starts one of the events seen on public wizbot. Events: `reaction`**Bot owner only**",
             "Usage": [
-                ".startevent reaction"
+                ".eventstart reaction",
+                ".eventstart reaction -d 1 -a 50 --pot-size 1500"
             ],
             "Submodule": "CurrencyEventsCommands",
             "Module": "Gambling"
@@ -2046,17 +2047,6 @@
         },
         {
             "Aliases": [
-                ".leet"
-            ],
-            "Description": "Converts a text to leetspeak with 6 (1-6) severity levels",
-            "Usage": [
-                ".leet 3 Hello"
-            ],
-            "Submodule": "Games",
-            "Module": "Games"
-        },
-        {
-            "Aliases": [
                 ".acrophobia",
                 ".acro"
             ],
@@ -2123,6 +2113,17 @@
                 ".hangmanstop"
             ],
             "Submodule": "HangmanCommands",
+            "Module": "Games"
+        },
+        {
+            "Aliases": [
+                ".leet"
+            ],
+            "Description": "Converts a text to leetspeak with 6 (1-6) severity levels",
+            "Usage": [
+                ".leet 3 Hello"
+            ],
+            "Submodule": "LeetCommands",
             "Module": "Games"
         },
         {
@@ -3770,7 +3771,8 @@
         },
         {
             "Aliases": [
-                ".color"
+                ".color",
+                ".clr"
             ],
             "Description": "Shows you what color corresponds to that hex.",
             "Usage": [

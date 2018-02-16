@@ -307,8 +307,8 @@ namespace WizBot.Modules.Music
 
                 return embed;
             };
-            await Context.SendPaginatedConfirmAsync(
-                page, printAction, songs.Length, itemsPerPage, false).ConfigureAwait(false);
+            await Context.SendPaginatedConfirmAsync(page, printAction, songs.Length,
+                itemsPerPage, false).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]

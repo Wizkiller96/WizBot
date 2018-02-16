@@ -23,6 +23,7 @@ using WizBot.Modules.Searches.Services;
 using WizBot.Common.Replacements;
 using Discord.WebSocket;
 using WizBot.Core.Modules.Searches.Common;
+using SixLabors.Primitives;
 
 namespace WizBot.Modules.Searches
 {
@@ -622,9 +623,9 @@ namespace WizBot.Modules.Searches
                 var items = JsonConvert.DeserializeObject<UrbanResponse>(res).List;
                 if (items.Any())
                 {
+
                     await Context.SendPaginatedConfirmAsync(0, (p) =>
                     {
-
                         var item = items[p];
                         return new EmbedBuilder().WithOkColor()
                                      .WithUrl(item.Permalink)
@@ -768,28 +769,37 @@ namespace WizBot.Modules.Searches
         }
 
         [WizBotCommand, Usage, Description, Aliases]
-        public async Task Color([Remainder] string color = null)
+        public async Task Color(params string[] colors)
         {
-            color = color?.Trim().Replace("#", "");
-            if (string.IsNullOrWhiteSpace(color))
+            if (!colors.Any())
                 return;
-            Rgba32 clr;
-            try
+
+            var colorObjects = colors.Take(10).Select(x => x.Trim().Replace("#", ""))
+                .Select(x =>
+                {
+                    try
+                    {
+                        return Rgba32.FromHex(x);
+                    }
+                    catch
+                    {
+                        return Rgba32.FromHex("000");
+                    }
+                }).ToArray();
+            using (var img = new Image<Rgba32>(colorObjects.Length * 50, 50))
             {
-                clr = Rgba32.FromHex(color);
+                for (int i = 0; i < colorObjects.Length; i++)
+                {
+                    var x = i * 50;
+                    img.FillPolygon(colorObjects[i], new PointF[] {
+                        new PointF(x, 0),
+                        new PointF(x + 50, 0),
+                        new PointF(x + 50, 50),
+                        new PointF(x, 50)
+                    });
+                }
+                await Context.Channel.SendFileAsync(img.ToStream(), $"colors.png").ConfigureAwait(false);
             }
-            catch
-            {
-                await ReplyErrorLocalized("hex_invalid").ConfigureAwait(false);
-                return;
-            }
-
-
-            var img = new ImageSharp.Image<Rgba32>(50, 50);
-
-            img.BackgroundColor(clr);
-
-            await Context.Channel.SendFileAsync(img.ToStream(), $"{color}.png").ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -842,7 +852,7 @@ namespace WizBot.Modules.Searches
                 await Context.Channel.SendErrorAsync(ex.Message).ConfigureAwait(false);
             }
         }
-
+        
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Wikia(string target, [Remainder] string query)
         {
@@ -898,7 +908,6 @@ namespace WizBot.Modules.Searches
                     .WithDescription(v.Text));
             }
         }
-
         //[WizBotCommand, Usage, Description, Aliases]
         //public async Task MCPing([Remainder] string query2 = null)
         //{

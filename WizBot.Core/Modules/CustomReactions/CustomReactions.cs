@@ -187,7 +187,7 @@ namespace WizBot.Modules.CustomReactions
             if (Context.Guild == null)
                 customReactions = _service.GlobalReactions.Where(cr => cr != null).ToArray();
             else
-                customReactions = _service.GuildReactions.GetOrAdd(Context.Guild.Id, new CustomReaction[]{ }).Where(cr => cr != null).ToArray();
+                customReactions = _service.GuildReactions.GetOrAdd(Context.Guild.Id, new CustomReaction[] { }).Where(cr => cr != null).ToArray();
 
             if (customReactions == null || !customReactions.Any())
             {
@@ -217,7 +217,7 @@ namespace WizBot.Modules.CustomReactions
             if (Context.Guild == null)
                 customReactions = _service.GlobalReactions.Where(cr => cr != null).ToArray();
             else
-                customReactions = _service.GuildReactions.GetOrAdd(Context.Guild.Id, new CustomReaction[]{ }).Where(cr => cr != null).ToArray();
+                customReactions = _service.GuildReactions.GetOrAdd(Context.Guild.Id, new CustomReaction[] { }).Where(cr => cr != null).ToArray();
 
             if (customReactions == null || !customReactions.Any())
             {
@@ -248,7 +248,7 @@ namespace WizBot.Modules.CustomReactions
             if (Context.Guild == null)
                 customReactions = _service.GlobalReactions;
             else
-                customReactions = _service.GuildReactions.GetOrAdd(Context.Guild.Id, new CustomReaction[]{ });
+                customReactions = _service.GuildReactions.GetOrAdd(Context.Guild.Id, new CustomReaction[] { });
 
             var found = customReactions.FirstOrDefault(cr => cr?.Id == id);
 
@@ -461,7 +461,7 @@ namespace WizBot.Modules.CustomReactions
         }
 
         [WizBotCommand, Usage, Description, Aliases]
-        [AdminOnly]
+        [OwnerOnly]
         public async Task CrStatsClear(string trigger = null)
         {
             if (string.IsNullOrWhiteSpace(trigger))
