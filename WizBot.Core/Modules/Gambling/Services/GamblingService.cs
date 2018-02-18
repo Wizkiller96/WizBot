@@ -1,4 +1,4 @@
-using WizBot.Core.Modules.Gambling.Common;
+﻿using WizBot.Core.Modules.Gambling.Common;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
 using NLog;

@@ -1,4 +1,4 @@
-namespace WizBot.Core.Modules.Gambling.Common
+﻿namespace WizBot.Core.Modules.Gambling.Common
 {
     public class Payout
     {

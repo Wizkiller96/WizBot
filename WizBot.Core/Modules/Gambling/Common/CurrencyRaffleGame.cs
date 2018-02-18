@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using WizBot.Common;
 using NLog;
 using System.Collections.Generic;

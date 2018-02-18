@@ -1,11 +1,11 @@
-using Discord;
+﻿using Discord;
 using WizBot.Core.Services;
 using WizBot.Modules;
 using System.Threading.Tasks;
 
 namespace WizBot.Core.Modules.Gambling.Common
 {
-    public abstract class GamblingTopLevelModule<TService> : WizBotTopLevelModule<TService> where TService : INService
+    public abstract class GamblingTopLevelModule<TService> : WizBotTopLevelModule<TService> where TService: INService
     {
         public GamblingTopLevelModule(bool isTopLevel = true) : base(isTopLevel)
         {

@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using WizBot.Extensions;
 using WizBot.Core.Services;
@@ -68,7 +68,7 @@ namespace WizBot.Modules.Gambling
                 _cache = cache;
                 _client = client;
             }
-
+            
             [WizBotCommand, Usage, Description, Aliases]
             public async Task WaifuReset()
             {
@@ -199,8 +199,8 @@ namespace WizBot.Modules.Gambling
                     await ReplyErrorLocalized("not_enough", _bc.BotConfig.CurrencySign).ConfigureAwait(false);
                     return;
                 }
-                var msg = GetText("waifu_claimed",
-                    Format.Bold(target.ToString()),
+                var msg = GetText("waifu_claimed", 
+                    Format.Bold(target.ToString()), 
                     amount + _bc.BotConfig.CurrencySign);
                 if (w.Affinity?.UserId == Context.User.Id)
                     msg += "\n" + GetText("waifu_fulfilled", target, w.Price + _bc.BotConfig.CurrencySign);
@@ -213,7 +213,7 @@ namespace WizBot.Modules.Gambling
             [RequireContext(ContextType.Guild)]
             public async Task WaifuTransfer(IUser waifu, IUser newOwner)
             {
-                if (!await _service.WaifuTransfer(Context.User, waifu.Id, newOwner)
+                if(!await _service.WaifuTransfer(Context.User, waifu.Id, newOwner)
                     .ConfigureAwait(false))
                 {
                     await ReplyErrorLocalized("waifu_transfer_fail").ConfigureAwait(false);
@@ -306,7 +306,7 @@ namespace WizBot.Modules.Gambling
                 }
                 else
                 {
-                    await ReplyErrorLocalized("waifu_recent_divorce",
+                    await ReplyErrorLocalized("waifu_recent_divorce", 
                         Format.Bold(((int)remaining?.TotalHours).ToString()),
                         Format.Bold(remaining?.Minutes.ToString())).ConfigureAwait(false);
                 }
@@ -378,7 +378,7 @@ namespace WizBot.Modules.Gambling
                 {
                     if (remaining != null)
                     {
-                        await ReplyErrorLocalized("waifu_affinity_cooldown",
+                        await ReplyErrorLocalized("waifu_affinity_cooldown", 
                             Format.Bold(((int)remaining?.TotalHours).ToString()),
                             Format.Bold(remaining?.Minutes.ToString())).ConfigureAwait(false);
                     }
@@ -422,7 +422,7 @@ namespace WizBot.Modules.Gambling
                     await ReplyConfirmLocalized("waifus_none").ConfigureAwait(false);
                     return;
                 }
-
+                
                 var embed = new EmbedBuilder()
                     .WithTitle(GetText("waifus_top_waifus"))
                     .WithOkColor();
@@ -562,7 +562,7 @@ namespace WizBot.Modules.Gambling
                     await uow.CompleteAsync().ConfigureAwait(false);
                 }
 
-                await ReplyConfirmLocalized("waifu_gift", Format.Bold(item.ToString() + " " + itemObj.ItemEmoji), Format.Bold(waifu.ToString())).ConfigureAwait(false);
+                await ReplyConfirmLocalized("waifu_gift", Format.Bold(item.ToString() + " " +itemObj.ItemEmoji), Format.Bold(waifu.ToString())).ConfigureAwait(false);
             }
 
 

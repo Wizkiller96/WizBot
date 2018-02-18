@@ -1,4 +1,4 @@
-using WizBot.Common.Attributes;
+﻿using WizBot.Common.Attributes;
 using WizBot.Core.Modules.Gambling.Services;
 using System.Threading.Tasks;
 using Discord;

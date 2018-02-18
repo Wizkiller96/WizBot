@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using WizBot.Core.Services;
 using System.Threading.Tasks;
 using System;
@@ -33,7 +33,7 @@ namespace WizBot.Modules.Gambling.Services
                 if (waifu == null || waifu.ClaimerId != ownerUser.Id)
                     return false;
 
-                if (!await _cs.RemoveAsync(owner.Id, "Waifu Transfer",
+                if (!await _cs.RemoveAsync(owner.Id, "Waifu Transfer",  
                     waifu.Price / 10, gamble: true))
                 {
                     return false;
@@ -62,7 +62,7 @@ namespace WizBot.Modules.Gambling.Services
                         .Where(w => w.User.UserId == user.Id && w.UpdateType == WaifuUpdateType.AffinityChanged && w.New != null)
                         .GroupBy(x => x.New)
                         .Count();
-
+                
                 return (int)Math.Ceiling(waifu.Price * 1.25f) + ((divorces + affs + 2) * _bc.BotConfig.DivorcePriceMultiplier);
             }
         }

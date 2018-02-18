@@ -1,4 +1,4 @@
-#if GLOBAL_WIZBOT
+﻿#if GLOBAL_WIZBOT
 using WizBot.Core.Modules.Gambling.Common;
 using WizBot.Core.Services;
 using Newtonsoft.Json;
@@ -21,7 +21,7 @@ namespace WizBot.Core.Modules.Gambling.Services
         private readonly CurrencyService _cs;
         private readonly Task _reqTask;
 
-        public WebMiningService(WizBot wizbot, IBotCredentials creds, DbService db, CurrencyService cs)
+        public WebMiningService(WizBot wizbot,IBotCredentials creds, DbService db, CurrencyService cs)
         {
             _log = LogManager.GetCurrentClassLogger();
             _creds = creds;
@@ -35,7 +35,6 @@ namespace WizBot.Core.Modules.Gambling.Services
                 _http.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
             }
-
             if (wizbot.Client.ShardId == 0)
                 _reqTask = RequestAsync();
         }

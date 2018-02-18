@@ -1,4 +1,4 @@
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using WizBot.Core.Services;
 using System.Collections.Concurrent;
 using WizBot.Modules.Gambling.Common.AnimalRacing;

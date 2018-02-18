@@ -1,4 +1,4 @@
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using WizBot.Common;
 
 namespace WizBot.Modules.Gambling.Common.WheelOfFortune

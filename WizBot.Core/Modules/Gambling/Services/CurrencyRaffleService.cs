@@ -1,4 +1,4 @@
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using WizBot.Core.Services;
 using WizBot.Core.Modules.Gambling.Common;
 using System.Threading;

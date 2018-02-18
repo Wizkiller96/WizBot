@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using WizBot.Common.Attributes;
 using WizBot.Extensions;
 using WizBot.Modules.Gambling.Common.WheelOfFortune;

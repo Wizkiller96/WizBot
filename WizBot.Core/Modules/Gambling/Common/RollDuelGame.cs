@@ -1,4 +1,4 @@
-using WizBot.Common;
+﻿using WizBot.Common;
 using WizBot.Core.Services;
 using System;
 using System.Collections.Generic;

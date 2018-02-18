@@ -232,8 +232,8 @@ namespace WizBot.Modules.Gambling
                 return;
 
             await _cs.AddAsync(usrId,
-                $"Awarded by bot staff. ({Context.User.Username}/{Context.User.Id}) {(msg ?? "")}",
-                amount,
+                $"Awarded by bot staff. ({Context.User.Username}/{Context.User.Id}) {(msg ?? "")}", 
+                amount, 
                 gamble: (Context.Client.CurrentUser.Id != usrId)).ConfigureAwait(false);
             await ReplyConfirmLocalized("awarded", amount + CurrencySign, $"<@{usrId}>").ConfigureAwait(false);
         }
@@ -247,6 +247,7 @@ namespace WizBot.Modules.Gambling
             var users = (await Context.Guild.GetUsersAsync())
                                .Where(u => u.GetRoles().Contains(role))
                                .ToList();
+
             await _cs.AddBulkAsync(users.Select(x => x.Id),
                 users.Select(x => $"Awarded by bot staff to **{role.Name}** role. ({Context.User.Username}/{Context.User.Id})"),
                 users.Select(x => amount),
@@ -267,7 +268,7 @@ namespace WizBot.Modules.Gambling
             if (amount <= 0)
                 return;
 
-            if (await _cs.RemoveAsync(user, $"Taken by bot staff.({Context.User.Username}/{Context.User.Id})", amount,
+            if (await _cs.RemoveAsync(user, $"Taken by bot staff.({Context.User.Username}/{Context.User.Id})", amount, 
                 gamble: (Context.Client.CurrentUser.Id != user.Id)).ConfigureAwait(false))
                 await ReplyConfirmLocalized("take", amount+CurrencySign, Format.Bold(user.ToString())).ConfigureAwait(false);
             else
@@ -282,7 +283,7 @@ namespace WizBot.Modules.Gambling
             if (amount <= 0)
                 return;
 
-            if (await _cs.RemoveAsync(usrId, $"Taken by bot staff.({Context.User.Username}/{Context.User.Id})", amount,
+            if (await _cs.RemoveAsync(usrId, $"Taken by bot staff.({Context.User.Username}/{Context.User.Id})", amount, 
                 gamble: (Context.Client.CurrentUser.Id != usrId)))
                 await ReplyConfirmLocalized("take", amount + CurrencySign, $"<@{usrId}>").ConfigureAwait(false);
             else
@@ -591,10 +592,10 @@ namespace WizBot.Modules.Gambling
 
             var wizbotPick = (RpsPick)new WizBotRandom().Next(0, 3);
 
-            if (amount > 0)
+            if(amount > 0)
             {
                 await _cs.RemoveAsync(Context.User.Id,
-                "Rps-bet", amount, gamble: true);
+                    "Rps-bet", amount, gamble: true);
             }
 
             string msg;

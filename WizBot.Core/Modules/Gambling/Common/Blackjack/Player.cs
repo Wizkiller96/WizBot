@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using WizBot.Modules.Gambling.Common;
 using System;
 using System.Collections.Generic;

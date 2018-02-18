@@ -1,4 +1,4 @@
-using WizBot.Core.Modules.Gambling.Common.Blackjack;
+﻿using WizBot.Core.Modules.Gambling.Common.Blackjack;
 using WizBot.Core.Services;
 using System.Collections.Concurrent;
 
