@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using Discord.WebSocket;
 using WizBot.Common.Collections;
 using WizBot.Core.Services;

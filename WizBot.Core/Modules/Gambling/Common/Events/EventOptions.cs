@@ -1,4 +1,4 @@
-using CommandLine;
+﻿using CommandLine;
 using WizBot.Core.Common;
 
 namespace WizBot.Core.Modules.Gambling.Common.Events

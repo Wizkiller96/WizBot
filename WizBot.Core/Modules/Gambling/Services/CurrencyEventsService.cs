@@ -1,4 +1,4 @@
-using WizBot.Core.Services;
+﻿using WizBot.Core.Services;
 using WizBot.Core.Modules.Gambling.Common.Events;
 using System.Collections.Concurrent;
 using WizBot.Modules.Gambling.Common;
