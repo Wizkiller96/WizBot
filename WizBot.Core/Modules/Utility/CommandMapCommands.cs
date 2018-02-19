@@ -110,7 +110,7 @@ namespace WizBot.Modules.Utility
 
                 if (page < 0)
                     return;
-
+                
                 if (!_service.AliasMaps.TryGetValue(Context.Guild.Id, out var maps) || !maps.Any())
                 {
                     await ReplyErrorLocalized("aliases_none").ConfigureAwait(false);

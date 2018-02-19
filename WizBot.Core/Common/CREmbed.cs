@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Discord;
 using WizBot.Extensions;
 using Newtonsoft.Json;
@@ -57,7 +57,6 @@ namespace WizBot.Common
                 embed.WithThumbnailUrl(Thumbnail);
             if(Image != null && Uri.IsWellFormedUriString(Image, UriKind.Absolute))
                 embed.WithImageUrl(Image);
-
             if (Author != null && !string.IsNullOrWhiteSpace(Author.Name))
             {
                 if (!Uri.IsWellFormedUriString(Author.IconUrl, UriKind.Absolute))

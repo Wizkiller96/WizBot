@@ -1,12 +1,12 @@
 ﻿using Discord;
 using WizBot.Common.Attributes;
 using WizBot.Extensions;
-using WizBot.Modules.Gambling.Common.WheelOfFortune;
 using WizBot.Core.Services;
 using System.Threading.Tasks;
 using Wof = WizBot.Modules.Gambling.Common.WheelOfFortune.WheelOfFortune;
 using WizBot.Modules.Gambling.Services;
 using WizBot.Core.Modules.Gambling.Common;
+using WizBot.Core.Common;
 
 namespace WizBot.Modules.Gambling
 {
@@ -23,21 +23,8 @@ namespace WizBot.Modules.Gambling
                 _db = db;
             }
 
-            public enum Allin { Allin = int.MinValue, All = int.MinValue }
-
             [WizBotCommand, Usage, Description, Aliases]
-            public Task WheelOfFortune(Allin _)
-            {
-                long cur;
-                using (var uow = _db.UnitOfWork)
-                {
-                    cur = uow.DiscordUsers.GetUserCurrency(Context.User.Id);
-                }
-                return WheelOfFortune(cur);
-            }
-
-            [WizBotCommand, Usage, Description, Aliases]
-            public async Task WheelOfFortune(long amount)
+            public async Task WheelOfFortune(ShmartNumber amount)
             {
                 if (!await CheckBetMandatory(amount))
                     return;
@@ -48,7 +35,7 @@ namespace WizBot.Modules.Gambling
                     return;
                 }
 
-                var wof = new WheelOfFortune();
+                var wof = new Wof();
 
                 amount = (long)(amount * wof.Multiplier);
 

@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using WizBot.Common;
 using WizBot.Core.Services.Database.Models;
 using System;
@@ -193,6 +193,11 @@ namespace WizBot.Core.Services.Impl
                         {
                         }
                         return false;
+                    case BotConfigEditType.ConsoleOutputType:
+                        if (!Enum.TryParse<ConsoleOutputType>(newValue, true, out var val))
+                            return false;
+                        bc.ConsoleOutputType = val;
+                        break;
                     default:
                         return false;
                 }

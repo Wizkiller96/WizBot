@@ -36,7 +36,6 @@ namespace WizBot.Modules.Administration
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.Administrator)]
             [AdminOnly]
-            
             public async Task LogServer(PermissionAction action)
             {
                 var channel = (ITextChannel)Context.Channel;

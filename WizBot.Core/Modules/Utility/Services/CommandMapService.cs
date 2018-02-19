@@ -34,7 +34,7 @@ namespace WizBot.Modules.Utility.Services
 
             if (guild == null || string.IsNullOrWhiteSpace(input))
                 return input;
-
+            
             if (guild != null)
             {
                 input = input.ToLowerInvariant();
@@ -64,8 +64,7 @@ namespace WizBot.Modules.Utility.Services
                             var _ = Task.Run(async () =>
                             {
                                 await Task.Delay(1500);
-                                await toDelete.DeleteAsync(new RequestOptions()
-                                {
+                                await toDelete.DeleteAsync(new RequestOptions() {
                                     RetryMode = RetryMode.AlwaysRetry
                                 });
                             });

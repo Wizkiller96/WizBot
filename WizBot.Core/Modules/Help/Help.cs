@@ -103,13 +103,12 @@ namespace WizBot.Modules.Help
                         var count = transformed.Count();
                         transformed = transformed
                             .GroupBy(x => grp++ % count / 2)
-                            .Select(x =>
-                            {
+                            .Select(x => {
                                 if (x.Count() == 1)
                                     return $"{x.First()}";
                                 else
                                     return String.Concat(x);
-                            });
+                            });                        
                     }
                     embed.AddField(g.ElementAt(i).Key, "```css\n" + string.Join("\n", transformed) + "\n```", true);
                 }
@@ -133,8 +132,8 @@ namespace WizBot.Modules.Help
 
             if (com == null)
             {
-                IMessageChannel ch = channel is ITextChannel
-                    ? await ((IGuildUser)Context.User).GetOrCreateDMChannelAsync()
+                IMessageChannel ch = channel is ITextChannel 
+                    ? await ((IGuildUser)Context.User).GetOrCreateDMChannelAsync() 
                     : channel;
                 await ch.EmbedAsync(GetHelpStringEmbed()).ConfigureAwait(false);
                 return;
@@ -176,11 +175,11 @@ namespace WizBot.Modules.Help
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Guide()
         {
-            await ConfirmLocalized("guide",
+            await ConfirmLocalized("guide", 
                 "http://wizbot.cf/commands.html",
                 "http://wizbot.readthedocs.io/en/latest/").ConfigureAwait(false);
         }
-
+        
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Donate()
         {
@@ -200,7 +199,7 @@ namespace WizBot.Modules.Help
         public int GetHashCode(CommandInfo obj) => obj.Aliases.First().GetHashCode();
 
     }
-
+    
     public class JsonCommandData
     {
         public string[] Aliases { get; set; }

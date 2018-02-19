@@ -1,4 +1,4 @@
-namespace WizBot.Common
+﻿namespace WizBot.Common
 {
     public enum BotConfigEditType
     {
@@ -25,6 +25,7 @@ namespace WizBot.Common
         MinBet,
         MaxBet,
         ErrorColor,
-        OkColor
+        OkColor,
+        ConsoleOutputType,
     }
 }

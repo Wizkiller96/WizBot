@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,7 +21,7 @@ namespace WizBot.Modules.Searches.Services
 {
     public class StreamNotificationService : INService
     {
-        private bool firstStreamNotifPass { get; set; } = true;
+        private bool _firstStreamNotifPass = true;
 
         private readonly DbService _db;
         private readonly DiscordSocketClient _client;
@@ -54,6 +54,7 @@ namespace WizBot.Modules.Searches.Services
             {
                 var _ = Task.Run(async () =>
                 {
+                    await Task.Delay(20000);
                     var sw = Stopwatch.StartNew();
                     while (true)
                     {
@@ -74,10 +75,11 @@ namespace WizBot.Modules.Searches.Services
                                 uow.Complete();
                             }
                             // get new statuses for those streams
-                            var newStatuses = await Task.WhenAll(fss.Select(f => GetStreamStatus(f.Type, f.Username, false)));
-                            if (firstStreamNotifPass)
+                            var newStatuses = (await Task.WhenAll(fss.Select(f => GetStreamStatus(f.Type, f.Username, false))))
+                                .Where(x => x != null);
+                            if (_firstStreamNotifPass)
                             {
-                                firstStreamNotifPass = false;
+                                _firstStreamNotifPass = false;
                                 continue;
                             }
 
@@ -169,7 +171,7 @@ namespace WizBot.Modules.Searches.Services
 
                 var response = await _http.GetAsync(url).ConfigureAwait(false);
                 if (!response.IsSuccessStatusCode)
-                    throw new StreamNotFoundException($"{username} [{type}]");
+                    throw new StreamNotFoundException($"Stream Not Found: {username} [{type.Name}]");
                 var responseStr = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 var data = JsonConvert.DeserializeObject(responseStr, type) as IStreamResponse;
                 data.ApiUrl = url;
@@ -189,10 +191,15 @@ namespace WizBot.Modules.Searches.Services
                 await _cache.SetStreamDataAsync(url, JsonConvert.SerializeObject(sr));
                 return sr;
             }
+            catch (StreamNotFoundException ex)
+            {
+                _log.Warn(ex.Message);
+                return null;
+            }
             catch (Exception ex)
             {
-                _log.Warn(ex);
-                throw;
+                _log.Warn(ex.Message);
+                return null;
             }
         }
 

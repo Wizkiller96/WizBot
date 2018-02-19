@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using NLog;
 using System.Linq;
 using WizBot.Extensions;
-using System.Diagnostics;
 using WizBot.Common.Collections;
 using WizBot.Modules.Music.Services;
 using WizBot.Core.Services;
@@ -35,8 +34,8 @@ namespace WizBot.Modules.Music.Common
         public bool Exited { get; set; } = false;
         public bool Stopped { get; private set; } = false;
         public float Volume { get; private set; } = 1.0f;
-        public bool Paused => pauseTaskSource != null;
-        private TaskCompletionSource<bool> pauseTaskSource { get; set; } = null;
+        public bool Paused => PauseTaskSource != null;
+        private TaskCompletionSource<bool> PauseTaskSource { get; set; } = null;
 
         public string PrettyVolume => $"🔉 {(int)(Volume * 100)}%";
         public string PrettyCurrentTime
@@ -82,9 +81,9 @@ namespace WizBot.Modules.Music.Common
             {
                 if (value)
                 {
-                    var cur = Queue.Current;
-                    if (cur.Song != null)
-                        RecentlyPlayedUsers.Add(cur.Song.QueuerName);
+                    var (Index, Song) = Queue.Current;
+                    if (Song != null)
+                        RecentlyPlayedUsers.Add(Song.QueuerName);
                 }
                 else
                 {
@@ -133,7 +132,6 @@ namespace WizBot.Modules.Music.Common
                     : new TimeSpan(songs.Sum(s => s.TotalTime.Ticks));
             }
         }
-            
 
         public MusicPlayer(MusicService musicService, MusicSettings ms, IGoogleApiService google,
             IVoiceChannel vch, ITextChannel original, float volume)
@@ -156,6 +154,7 @@ namespace WizBot.Modules.Music.Common
             this._google = google;
 
             _player = new Thread(new ThreadStart(PlayerLoop));
+            _player.Priority = ThreadPriority.AboveNormal;
             _player.Start();
         }
 
@@ -207,21 +206,22 @@ namespace WizBot.Modules.Music.Common
                             // i don't want to spam connection attempts
                             continue;
                         }
-                        pcm = ac.CreatePCMStream(AudioApplication.Music, bufferMillis: 500);
+                        b.StartBuffering();
+                        await Task.Delay(1000);
+                        pcm = ac.CreatePCMStream(AudioApplication.Music, bufferMillis: 1);
                         _log.Info("Created pcm stream");
                         OnStarted?.Invoke(this, data);
-
-                        byte[] buffer = new byte[3840];
-                        int bytesRead = 0;
-
-                        while ((bytesRead = b.Read(buffer, 0, buffer.Length)) > 0
-                        && (MaxPlaytimeSeconds <= 0 || MaxPlaytimeSeconds >= CurrentTime.TotalSeconds))
+                        
+                        while (MaxPlaytimeSeconds <= 0 || MaxPlaytimeSeconds >= CurrentTime.TotalSeconds)
                         {
+                            var buffer = b.Read(3840);
+                            if (buffer.Length == 0)
+                                break;
                             AdjustVolume(buffer, Volume);
-                            await pcm.WriteAsync(buffer, 0, bytesRead, cancelToken).ConfigureAwait(false);
-                            unchecked { _bytesSent += bytesRead; }
+                            await pcm.WriteAsync(buffer, 0, buffer.Length, cancelToken).ConfigureAwait(false);
+                            unchecked { _bytesSent += buffer.Length; }
 
-                            await (pauseTaskSource?.Task ?? Task.CompletedTask);
+                            await (PauseTaskSource?.Task ?? Task.CompletedTask);
                         }
                     }
                     catch (OperationCanceledException)
@@ -297,7 +297,7 @@ namespace WizBot.Modules.Music.Common
                                     {
                                         _log.Info("Loading related song");
                                         await _musicService.TryQueueRelatedSongAsync(data.Song, OutputTextChannel, VoiceChannel);
-                                        if(!AutoDelete)
+                                        if (!AutoDelete)
                                             Queue.Next();
                                     }
                                     catch
@@ -347,7 +347,7 @@ namespace WizBot.Modules.Music.Common
                                     lock (locker)
                                     {
                                         if (!Stopped)
-                                            if(!AutoDelete)
+                                            if (!AutoDelete)
                                                 Queue.Next();
                                     }
                                 }
@@ -494,10 +494,10 @@ namespace WizBot.Modules.Music.Common
         {
             lock (locker)
             {
-                if (pauseTaskSource != null)
+                if (PauseTaskSource != null)
                 {
-                    pauseTaskSource.TrySetResult(true);
-                    pauseTaskSource = null;
+                    PauseTaskSource.TrySetResult(true);
+                    PauseTaskSource = null;
                 }
             }
         }
@@ -506,14 +506,14 @@ namespace WizBot.Modules.Music.Common
         {
             lock (locker)
             {
-                if (pauseTaskSource == null)
-                    pauseTaskSource = new TaskCompletionSource<bool>();
+                if (PauseTaskSource == null)
+                    PauseTaskSource = new TaskCompletionSource<bool>();
                 else
                 {
                     Unpause();
                 }
             }
-            OnPauseChanged?.Invoke(this, pauseTaskSource != null);
+            OnPauseChanged?.Invoke(this, PauseTaskSource != null);
         }
 
         public void SetVolume(int volume)
@@ -530,9 +530,9 @@ namespace WizBot.Modules.Music.Common
         {
             lock (locker)
             {
-                var cur = Queue.Current;
+                var (Index, Song) = Queue.Current;
                 var toReturn = Queue.RemoveAt(index);
-                if (cur.Index == index)
+                if (Index == index)
                     Next();
                 return toReturn;
             }
@@ -652,7 +652,6 @@ namespace WizBot.Modules.Music.Common
                     && x.TotalTime == TimeSpan.Zero);
 
             var vIds = toUpdate.Select(x => x.VideoId);
-
             if (!vIds.Any())
                 return;
 
@@ -673,8 +672,8 @@ namespace WizBot.Modules.Music.Common
             this.OutputTextChannel = OriginalTextChannel;
         }
 
-        // this should be written better
-        // public TimeSpan TotalPlaytime => 
+        //// this should be written better
+        //public TimeSpan TotalPlaytime => 
         //    _playlist.Any(s => s.TotalTime == TimeSpan.MaxValue) ? 
         //    TimeSpan.MaxValue : 
         //    new TimeSpan(_playlist.Sum(s => s.TotalTime.Ticks));        

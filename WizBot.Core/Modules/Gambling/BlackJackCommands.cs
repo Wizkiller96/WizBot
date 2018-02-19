@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using WizBot.Common.Attributes;
+using WizBot.Core.Common;
 using WizBot.Core.Modules.Gambling.Common;
 using WizBot.Core.Modules.Gambling.Common.Blackjack;
 using WizBot.Core.Modules.Gambling.Services;
@@ -34,20 +35,7 @@ namespace WizBot.Modules.Gambling
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            public Task BlackJack(Allin _)
-            {
-                long cur;
-                using (var uow = _db.UnitOfWork)
-                {
-                    cur = uow.DiscordUsers.GetOrCreate(Context.User).CurrencyAmount;
-                }
-
-                return BlackJack(cur);
-            }
-
-            [WizBotCommand, Usage, Description, Aliases]
-            [RequireContext(ContextType.Guild)]
-            public async Task BlackJack(long amount)
+            public async Task BlackJack(ShmartNumber amount)
             {
                 if (!await CheckBetMandatory(amount))
                     return;
