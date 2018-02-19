@@ -1,4 +1,3 @@
-
 {
   "h": {
     "Cmd": "help h",
@@ -663,21 +662,21 @@
   },
   "chnlfilterinv": {
     "Cmd": "chnlfilterinv cfi",
-    "Desc": "Toggles automatic deletion of invites posted in the channel. Does not negate the `{0}srvrfilterinv` enabled setting. Does not affect the Bot Staff.",
+    "Desc": "Toggles automatic deletion of invites posted in the channel. Does not negate the `{0}srvrfilterinv` enabled setting. Does not affect the Bot Owner.",
     "Usage": [
       "{0}cfi"
     ]
   },
   "srvrfilterinv": {
     "Cmd": "srvrfilterinv sfi",
-    "Desc": "Toggles automatic deletion of invites posted in the server. Does not affect the Bot Staff.",
+    "Desc": "Toggles automatic deletion of invites posted in the server. Does not affect the Bot Owner.",
     "Usage": [
       "{0}sfi"
     ]
   },
   "chnlfilterwords": {
     "Cmd": "chnlfilterwords cfw",
-    "Desc": "Toggles automatic deletion of messages containing filtered words on the channel. Does not negate the `{0}srvrfilterwords` enabled setting. Does not affect the Bot Staff.",
+    "Desc": "Toggles automatic deletion of messages containing filtered words on the channel. Does not negate the `{0}srvrfilterwords` enabled setting. Does not affect the Bot Owner.",
     "Usage": [
       "{0}cfw"
     ]
@@ -990,7 +989,6 @@
     "Desc": "Awards someone a certain amount of currency. You can specify the reason after the Username. You can also specify a role name to award currency to all users in a role.",
     "Usage": [
       "{0}award 100 @person",
-      "{0}award 100 @person For being helpful",
       "{0}award 5 Role Of Gamblers"
     ]
   },
@@ -1409,19 +1407,19 @@
       "{0}mixer SomeStreamer"
     ]
   },
-  "streamremove": { 
-    "Cmd": "streamremove strm", 
+  "streamremove": {
+    "Cmd": "streamremove strm",
     "Desc": "Removes notifications of a specified stream on the specified platform on this channel. You can also just specify an url.",
     "Usage": [
       "{0}strm Twitch SomeGuy",
       "{0}strm twitch.tv/someguy"
     ]
   },
-  "streamadd": { 
-    "Cmd": "streamadd stadd", 
-    "Desc": "Notifies this channel when the user's stream on the specified URL goes online or offline.", 
-    "Usage": [ 
-      "{0}strm twitch.tv/someguy"
+  "streamadd": {
+    "Cmd": "streamadd stadd",
+    "Desc": "Notifies this channel when the user's stream on the specified URL goes online or offline.",
+    "Usage": [
+      "{0}stadd twitch.tv/someguy"
     ]
   },
   "liststreams": {
@@ -1802,7 +1800,7 @@
   },
   "currencytransactions": {
     "Cmd": "curtrs",
-    "Desc": "Shows your currency transactions on the specified page. Bot staff can see other people's transactions too.",
+    "Desc": "Shows your currency transactions on the specified page. Bot owner can see other people's transactions too.",
     "Usage": [
       "{0}curtrs 2",
       "{0}curtrs @SomeUser 2"
@@ -2478,7 +2476,7 @@
     "Cmd": "tictactoe ttt",
     "Desc": "Starts a game of tic tac toe. Another user must run the command in the same channel in order to accept the challenge. Use numbers 1-9 to play.",
     "Usage": [
-      "0}ttt"
+      "{0}ttt"
     ]
   },
   "timezones": {
@@ -2936,18 +2934,18 @@
       "{0}clubcreate b1nzy's friends"
     ]
   },
-  "clubinformation": {
-    "Cmd": "clubinfo",
-    "Desc": "Shows information about the club.",
-    "Usage": [
-      "{0}clubinfo b1nzy's friends#123"
-    ]
-  },
   "clubtransfer": {
     "Cmd": "clubtransfer",
     "Desc": "Transfers the ownership of the club to another member of the club.",
     "Usage": [
       "{0}clubtransfer @b1nzy"
+    ]
+  },
+  "clubinformation": {
+    "Cmd": "clubinfo",
+    "Desc": "Shows information about the club.",
+    "Usage": [
+      "{0}clubinfo b1nzy's friends#123"
     ]
   },
   "clubapply": {
@@ -3082,7 +3080,7 @@
     "cmd": "updates changelogs",
     "desc": "Shows a list of changes to WizBot.",
     "usage": [
-    "{0}updates"
+      "{0}updates"
     ]
   },
   "feed": {
@@ -3108,7 +3106,7 @@
   },
   "editcustreact": {
     "cmd": "editcustreact ecr",
-    "desc": "Edits the custom reaction's response given it's ID.",
+    "desc": "Edits the custom reaction's response given its ID.",
     "usage": [
       "{0}ecr 123 I'm a magical girl"
     ]
@@ -3168,7 +3166,6 @@
     "desc": "Toggles whether the bot should disconnect from the voice channel once it's done playing all of the songs.",
     "usage": [
       "{0}autodc"
-
     ]
   },
   "timelyset": {
@@ -3198,14 +3195,6 @@
     "desc": "Searches for a novel on `http://novelupdates.com/`. You have to provide an exact name.",
     "usage": [
       "{0}novel the nine cauldrons"
-    ]
-  },
-  "rip": {
-    "cmd": "rip",
-    "desc": "Displays a user who is mention on a tombstone. If no user is mention then it will display the user who ran the command instead.",
-    "usage": [
-      "{0}rip",
-      "{0}rip @someone"
     ]
   },
   "crypto": {
