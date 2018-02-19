@@ -3774,9 +3774,10 @@
                 ".color",
                 ".clr"
             ],
-            "Description": "Shows you what color corresponds to that hex.",
+            "Description": "Shows you which colors correspond to the inputed hexes.",
             "Usage": [
-                ".color 00ff00"
+                ".color 00ff00",
+                ".color f00 0f0 00f"
             ],
             "Submodule": "Searches",
             "Module": "Searches"
@@ -4185,25 +4186,37 @@
         },
         {
             "Aliases": [
-                ".liststreams",
-                ".ls"
+                ".streamadd",
+                ".stadd"
             ],
-            "Description": "Lists all streams you are following on this server.",
+            "Description": "Notifies this channel when the user's stream on the specified URL goes online or offline.**Requires ManageMessages server permission.**",
             "Usage": [
-                ".ls"
+                ".strm twitch.tv/someguy"
             ],
             "Submodule": "StreamNotificationCommands",
             "Module": "Searches"
         },
         {
             "Aliases": [
-                ".removestream",
-                ".rms"
+                ".streamremove",
+                ".strm"
             ],
-            "Description": "Removes notifications of a certain streamer from a certain platform on this channel.**Requires ManageMessages server permission.**",
+            "Description": "Removes notifications of a specified stream on the specified platform on this channel. You can also just specify an url.**Requires ManageMessages server permission.**",
             "Usage": [
-                ".rms Twitch SomeGuy",
-                ".rms mixer SomeOtherGuy"
+                ".strm Twitch SomeGuy",
+                ".strm twitch.tv/someguy"
+            ],
+            "Submodule": "StreamNotificationCommands",
+            "Module": "Searches"
+        },
+        {
+            "Aliases": [
+                ".liststreams",
+                ".ls"
+            ],
+            "Description": "Lists all streams you are following on this server.",
+            "Usage": [
+                ".ls"
             ],
             "Submodule": "StreamNotificationCommands",
             "Module": "Searches"
