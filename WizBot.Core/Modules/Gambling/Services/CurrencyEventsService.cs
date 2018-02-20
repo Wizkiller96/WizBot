@@ -38,7 +38,10 @@ namespace WizBot.Modules.Gambling.Services
             _log = LogManager.GetCurrentClassLogger();
 
 #if GLOBAL_WIZBOT
-            Task t = BotlistUpvoteLoop();
+            if (_client.ShardId == 0)
+            {
+                Task t = BotlistUpvoteLoop();
+            }
 #endif
         }
 
