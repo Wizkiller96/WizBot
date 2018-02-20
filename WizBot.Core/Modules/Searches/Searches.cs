@@ -264,14 +264,18 @@ namespace WizBot.Modules.Searches
         public async Task RandomCat()
         {
             var res = JObject.Parse(await _service.Http.GetStringAsync("http://www.random.cat/meow").ConfigureAwait(false));
-            await Context.Channel.SendMessageAsync(Uri.EscapeUriString(res["file"].ToString())).ConfigureAwait(false);
+            await Context.Channel.EmbedAsync(new EmbedBuilder()
+                .WithOkColor()
+                .WithImageUrl(Uri.EscapeUriString(res["file"].ToString())))
+                    .ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
         public async Task RandomDog()
         {
-            await Context.Channel.SendMessageAsync("http://random.dog/" + await _service.Http.GetStringAsync("http://random.dog/woof")
-                            .ConfigureAwait(false)).ConfigureAwait(false);
+            await Context.Channel.EmbedAsync(new EmbedBuilder()
+                .WithOkColor()
+                .WithImageUrl("https://random.dog/" + await _service.Http.GetStringAsync("http://random.dog/woof")));
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -837,15 +841,15 @@ namespace WizBot.Modules.Searches
         {
             try
             {
-                JToken obj;
-                JToken obj2;
-                obj = JObject.Parse(await _service.Http.GetStringAsync($"https://nekos.life/api/v2/img/neko").ConfigureAwait(false));
-                obj2 = JObject.Parse(await _service.Http.GetStringAsync($"https://nekos.life/api/v2/cat").ConfigureAwait(false));
+                JToken nyatitle;
+                JToken nyaimg;
+                nyatitle = JObject.Parse(await _service.Http.GetStringAsync($"https://nekos.life/api/v2/cat").ConfigureAwait(false));
+                nyaimg = JObject.Parse(await _service.Http.GetStringAsync($"https://nekos.life/api/v2/img/neko").ConfigureAwait(false));
                 await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                     .WithAuthor(eab => eab.WithUrl("http://nekos.life/")
                         .WithIconUrl("https://i.imgur.com/a36AMkG.png")
-                        .WithName($"Nekos! {obj2["cat"]}"))
-                    .WithImageUrl($"{obj["url"]}"), Context.User.Mention).ConfigureAwait(false);
+                        .WithName($"Nekos! {nyatitle["cat"]}"))
+                    .WithImageUrl($"{nyaimg["url"]}"), Context.User.Mention).ConfigureAwait(false);
             }
             catch (Exception ex)
             {

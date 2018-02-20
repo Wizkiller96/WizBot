@@ -81,15 +81,15 @@ namespace WizBot.Modules.NSFW
         {
             try
             {
-                JToken obj;
-                JToken obj2;
-                obj = JObject.Parse(await _service.Http.GetStringAsync($"https://nekos.life/api/v2/img/lewd").ConfigureAwait(false));
-                obj2 = JObject.Parse(await _service.Http.GetStringAsync($"https://nekos.life/api/v2/cat").ConfigureAwait(false));
+                JToken nekotitle;
+                JToken nekoimg;
+                nekotitle = JObject.Parse(await _service.Http.GetStringAsync($"https://nekos.life/api/v2/cat").ConfigureAwait(false));
+                nekoimg = JObject.Parse(await _service.Http.GetStringAsync($"https://nekos.life/api/v2/img/lewd").ConfigureAwait(false));
                 await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                     .WithAuthor(eab => eab.WithUrl("http://nekos.life/lewd")
                         .WithIconUrl("https://i.imgur.com/a36AMkG.png")
-                        .WithName($"Lewd Nekos! {obj2["cat"]}"))
-                    .WithImageUrl($"{obj["url"]}"), Context.User.Mention).ConfigureAwait(false);
+                        .WithName($"Lewd Nekos! {nekotitle["cat"]}"))
+                    .WithImageUrl($"{nekoimg["url"]}"), Context.User.Mention).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
