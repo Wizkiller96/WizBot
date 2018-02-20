@@ -142,8 +142,8 @@ namespace WizBot.Modules.Music.Services
                             // ignored
                         }
 
-                        var cur = mp.Current;
-                        if (cur.Current == null
+                        var (Index, Current) = mp.Current;
+                        if (Current == null
                             && !mp.RepeatCurrentSong
                             && !mp.RepeatPlaylist
                             && !mp.FairPlay
