@@ -134,7 +134,7 @@ namespace WizBot.Modules.Gambling
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            public async Task JoinRace(ShmartNumber amount)
+            public async Task JoinRace(ShmartNumber amount = default)
             {
                 if (!await CheckBetOptional(amount))
                     return;
