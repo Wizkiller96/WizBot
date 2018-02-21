@@ -571,7 +571,7 @@ namespace WizBot.Modules.Gambling
         }
 
         [WizBotCommand, Usage, Description, Aliases]
-        public async Task Rps(RpsPick pick, ShmartNumber amount)
+        public async Task Rps(RpsPick pick, ShmartNumber amount = default)
         {
             long oldAmount = amount;
             if (!await CheckBetOptional(amount) || (amount == 1))
