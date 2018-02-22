@@ -230,6 +230,14 @@ namespace WizBot.Modules.Utility
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Stats()
         {
+            var ownerIds = string.Join("\n", _creds.OwnerIds);
+            if (string.IsNullOrWhiteSpace(ownerIds))
+                ownerIds = "-";
+
+            var adminIds = string.Join("\n", _creds.AdminIds);
+            if (string.IsNullOrWhiteSpace(adminIds))
+                adminIds = "-";
+
             await Context.Channel.EmbedAsync(
                 new EmbedBuilder().WithOkColor()
                     .WithAuthor(eab => eab.WithName($"WizBot v{StatsService.BotVersion}")
@@ -241,8 +249,8 @@ namespace WizBot.Modules.Utility
                     .AddField(efb => efb.WithName(GetText("commands_ran")).WithValue(_stats.CommandsRan.ToString()).WithIsInline(true))
                     .AddField(efb => efb.WithName(GetText("messages")).WithValue($"{_stats.MessageCounter} ({_stats.MessagesPerSecond:F2}/sec)").WithIsInline(true))
                     .AddField(efb => efb.WithName(GetText("memory")).WithValue($"{_stats.Heap} MB").WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("owner_ids")).WithValue(string.Join("\n", _creds.OwnerIds)).WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("admin_ids")).WithValue(string.Join("\n", _creds.AdminIds)).WithIsInline(true))
+                    .AddField(efb => efb.WithName(GetText("owner_ids")).WithValue(ownerIds).WithIsInline(true))
+                    .AddField(efb => efb.WithName(GetText("admin_ids")).WithValue(adminIds).WithIsInline(true))
                     .AddField(efb => efb.WithName(GetText("uptime")).WithValue(_stats.GetUptimeString("\n")).WithIsInline(true))
                     .AddField(efb => efb.WithName(GetText("presence")).WithValue(
                         GetText("presence_txt",
