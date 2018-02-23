@@ -266,8 +266,17 @@ namespace WizBot.Modules.Administration
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
+            [Priority(1)]
+            public async Task RoleColor([Remainder] IRole role)
+            {
+                await Context.Channel.SendConfirmAsync("Role Color", role.Color.RawValue.ToString("X"));
+            }
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.ManageRoles)]
             [RequireBotPermission(GuildPermission.ManageRoles)]
+            [Priority(0)]
             public async Task RoleColor(params string[] args)
             {
                 if (args.Length != 2 && args.Length != 4)
