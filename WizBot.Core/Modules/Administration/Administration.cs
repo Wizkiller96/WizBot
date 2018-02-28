@@ -259,41 +259,6 @@ namespace WizBot.Modules.Administration
         }
 
         [WizBotCommand, Usage, Description, Aliases]
-        public async Task Donators()
-        {
-            IEnumerable<Donator> donatorsOrdered;
-
-            using (var uow = _db.UnitOfWork)
-            {
-                donatorsOrdered = uow.Donators.GetDonatorsOrdered();
-            }
-            await Context.Channel.SendConfirmAsync(GetText("donators"), string.Join("⭐", donatorsOrdered.Select(d => d.Name))).ConfigureAwait(false);
-
-            _wizbotSupportServer = _wizbotSupportServer ?? (await Context.Client.GetGuildAsync(99273784988557312));
-
-            var patreonRole = _wizbotSupportServer?.GetRole(299174013597646868);
-            if (patreonRole == null)
-                return;
-
-            var usrs = (await _wizbotSupportServer.GetUsersAsync()).Where(u => u.RoleIds.Contains(299174013597646868u));
-            await Context.Channel.SendConfirmAsync("Patreon supporters", string.Join("⭐", usrs.Select(d => d.Username))).ConfigureAwait(false);
-        }
-
-
-        [WizBotCommand, Usage, Description, Aliases]
-        [AdminOnly]
-        public async Task Donadd(IUser donator, int amount)
-        {
-            Donator don;
-            using (var uow = _db.UnitOfWork)
-            {
-                don = uow.Donators.AddOrUpdateDonator(donator.Id, donator.Username, amount);
-                await uow.CompleteAsync();
-            }
-            await ReplyConfirmLocalized("donadd", don.Amount).ConfigureAwait(false);
-        }
-
-        [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         [RequireUserPermission(GuildPermission.ManageMessages)]
         public async Task Edit(ulong messageId, [Remainder] string text)

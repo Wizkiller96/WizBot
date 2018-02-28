@@ -142,7 +142,7 @@ namespace WizBot.Core.Services.Database.Models
                     wi = new WaifuItem("📱", 4000, itemName);
                     break;
                 case ItemName.Dress:
-                    wi = new WaifuItem("📱", 4500, itemName);
+                    wi = new WaifuItem("👗", 4500, itemName);
                     break;
                 case ItemName.Laptop:
                     wi = new WaifuItem("💻", 5000, itemName);
