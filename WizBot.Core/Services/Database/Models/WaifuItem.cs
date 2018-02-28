@@ -85,7 +85,7 @@ namespace WizBot.Core.Services.Database.Models
                     wi = new WaifuItem("🍺", 70, itemName);
                     break;
                 case ItemName.Taco:
-                    wi = new WaifuItem("🍺", 85, itemName);
+                    wi = new WaifuItem("🌮", 85, itemName);
                     break;
                 case ItemName.LoveLetter:
                     wi = new WaifuItem("💌", 100, itemName);

@@ -17,7 +17,6 @@ namespace WizBot.Modules.Administration
 {
     public partial class Administration : WizBotTopLevelModule<AdministrationService>
     {
-        private IGuild _wizbotSupportServer;
         private readonly DbService _db;
 
         public Administration(DbService db)
