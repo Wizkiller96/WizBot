@@ -12,7 +12,8 @@
                 ".delmsgoncmd list"
             ],
             "Submodule": "Administration",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -25,7 +26,8 @@
                 ".deaf \"@Someguy\" \"@Someguy\""
             ],
             "Submodule": "Administration",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -38,7 +40,8 @@
                 ".undef \"@Someguy\" \"@Someguy\""
             ],
             "Submodule": "Administration",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -50,7 +53,8 @@
                 ".dvch VoiceChannelName"
             ],
             "Submodule": "Administration",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -62,7 +66,8 @@
                 ".cvch VoiceChannelName"
             ],
             "Submodule": "Administration",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -74,7 +79,8 @@
                 ".dtch TextChannelName"
             ],
             "Submodule": "Administration",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -86,7 +92,8 @@
                 ".ctch TextChannelName"
             ],
             "Submodule": "Administration",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -98,7 +105,8 @@
                 ".st My new topic"
             ],
             "Submodule": "Administration",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -110,7 +118,8 @@
                 ".schn NewName"
             ],
             "Submodule": "Administration",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -121,7 +130,8 @@
                 ".edit 7479498384 Hi :^)"
             ],
             "Submodule": "Administration",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -134,7 +144,8 @@
                 ".aar RoleName"
             ],
             "Submodule": "AutoAssignRoleCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -145,7 +156,8 @@
                 ".execsql UPDATE Currency SET Amount=Amount+1234"
             ],
             "Submodule": "DangerousCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -156,7 +168,8 @@
                 ".deletewaifus"
             ],
             "Submodule": "DangerousCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -167,7 +180,8 @@
                 ".deletecurrency"
             ],
             "Submodule": "DangerousCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -178,7 +192,8 @@
                 ".deleteplaylists"
             ],
             "Submodule": "DangerousCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -189,7 +204,8 @@
                 "deleteexp"
             ],
             "Submodule": "DangerousCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -200,7 +216,8 @@
                 ".gvc"
             ],
             "Submodule": "GameChannelCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -213,7 +230,8 @@
                 ".langset default"
             ],
             "Submodule": "LocalizationCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -226,7 +244,8 @@
                 ".langsetd default"
             ],
             "Submodule": "LocalizationCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -238,7 +257,8 @@
                 ".langli"
             ],
             "Submodule": "LocalizationCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -250,7 +270,8 @@
                 ".logserver disable"
             ],
             "Submodule": "LogCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -261,7 +282,8 @@
                 ".logignore"
             ],
             "Submodule": "LogCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -272,7 +294,8 @@
                 ".logevents"
             ],
             "Submodule": "LogCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -284,7 +307,8 @@
                 ".log userbanned"
             ],
             "Submodule": "LogCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -295,7 +319,8 @@
                 ".setmuterole Silenced"
             ],
             "Submodule": "MuteCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -307,7 +332,8 @@
                 ".mute 30 @Someone"
             ],
             "Submodule": "MuteCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -318,7 +344,8 @@
                 ".unmute @Someone"
             ],
             "Submodule": "MuteCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -329,7 +356,8 @@
                 ".chatmute @Someone"
             ],
             "Submodule": "MuteCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -340,7 +368,8 @@
                 ".chatunmute @Someone"
             ],
             "Submodule": "MuteCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -351,7 +380,8 @@
                 ".voicemute @Someone"
             ],
             "Submodule": "MuteCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -362,7 +392,8 @@
                 ".voiceunmute @Someguy"
             ],
             "Submodule": "MuteCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -374,7 +405,8 @@
                 ".ropl"
             ],
             "Submodule": "PlayingRotateCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -387,7 +419,8 @@
                 ".adpl Watching you sleep"
             ],
             "Submodule": "PlayingRotateCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -399,7 +432,8 @@
                 ".lipl"
             ],
             "Submodule": "PlayingRotateCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -412,7 +446,8 @@
                 ".rmpl"
             ],
             "Submodule": "PlayingRotateCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -423,7 +458,8 @@
                 ".prefix +"
             ],
             "Submodule": "PrefixCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -434,7 +470,8 @@
                 ".defprefix +"
             ],
             "Submodule": "PrefixCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -445,7 +482,8 @@
                 ".antiraid 5 20 Kick"
             ],
             "Submodule": "ProtectionCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -458,7 +496,8 @@
                 ".antispam 6 Ban"
             ],
             "Submodule": "ProtectionCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -469,7 +508,8 @@
                 ".antispamignore"
             ],
             "Submodule": "ProtectionCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -481,7 +521,8 @@
                 ".antilist"
             ],
             "Submodule": "ProtectionCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -496,7 +537,8 @@
                 ".prune @Someone X"
             ],
             "Submodule": "PruneCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -508,7 +550,8 @@
                 ".slowmode"
             ],
             "Submodule": "SlowModeCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -520,7 +563,8 @@
                 ".slowmodewl AdminDude"
             ],
             "Submodule": "SlowModeCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -533,7 +577,8 @@
                 ".reactionroles excl Horde :Horde: Alliance :Alliance:"
             ],
             "Submodule": "RoleCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -545,7 +590,8 @@
                 ".reactionroleslist"
             ],
             "Submodule": "RoleCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -557,7 +603,8 @@
                 ".reactionrolesrm 1"
             ],
             "Submodule": "RoleCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -569,7 +616,8 @@
                 ".sr @User Guest"
             ],
             "Submodule": "RoleCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -581,7 +629,8 @@
                 ".rr @User Admin"
             ],
             "Submodule": "RoleCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -593,7 +642,8 @@
                 ".renr \"First role\" SecondRole"
             ],
             "Submodule": "RoleCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -605,7 +655,8 @@
                 ".rar @User"
             ],
             "Submodule": "RoleCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -617,7 +668,8 @@
                 ".cr Awesome Role"
             ],
             "Submodule": "RoleCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -630,7 +682,8 @@
                 ".rh \"Space Wizards\""
             ],
             "Submodule": "RoleCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -644,7 +697,8 @@
                 ".roleclr Admin 255 128 0"
             ],
             "Submodule": "RoleCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -656,7 +710,8 @@
                 ".menro RoleName"
             ],
             "Submodule": "RoleCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -667,7 +722,8 @@
                 ".adsarm"
             ],
             "Submodule": "SelfAssignedRolesCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -680,7 +736,8 @@
                 ".asar 1 Horde"
             ],
             "Submodule": "SelfAssignedRolesCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -691,7 +748,8 @@
                 ".rsar"
             ],
             "Submodule": "SelfAssignedRolesCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -703,7 +761,8 @@
                 ".lsar 2"
             ],
             "Submodule": "SelfAssignedRolesCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -715,7 +774,8 @@
                 ".tesar"
             ],
             "Submodule": "SelfAssignedRolesCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -727,7 +787,8 @@
                 ".rlr 5 SomeRole"
             ],
             "Submodule": "SelfAssignedRolesCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -738,7 +799,8 @@
                 ".iam Gamer"
             ],
             "Submodule": "SelfAssignedRolesCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -750,7 +812,8 @@
                 ".iamn Gamer"
             ],
             "Submodule": "SelfAssignedRolesCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -761,7 +824,8 @@
                 ".scadd .stats"
             ],
             "Submodule": "SelfCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -772,7 +836,8 @@
                 ".sclist"
             ],
             "Submodule": "SelfCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -783,7 +848,8 @@
                 ".wait 3000"
             ],
             "Submodule": "SelfCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -794,7 +860,8 @@
                 ".scrm .stats"
             ],
             "Submodule": "SelfCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -805,7 +872,8 @@
                 ".scclr"
             ],
             "Submodule": "SelfCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -816,7 +884,8 @@
                 ".fwmsgs"
             ],
             "Submodule": "SelfCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -827,7 +896,8 @@
                 ".fwtoall"
             ],
             "Submodule": "SelfCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -839,7 +909,8 @@
                 ".shardstats 2"
             ],
             "Submodule": "SelfCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -850,7 +921,8 @@
                 ".restartshard 2"
             ],
             "Submodule": "SelfCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -861,7 +933,8 @@
                 ".leave 123123123331"
             ],
             "Submodule": "SelfCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -872,7 +945,8 @@
                 ".die"
             ],
             "Submodule": "SelfCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -883,7 +957,8 @@
                 ".restart"
             ],
             "Submodule": "SelfCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -895,7 +970,8 @@
                 ".newnm BotName"
             ],
             "Submodule": "SelfCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -907,7 +983,8 @@
                 ".setnick @SomeUser New Nickname"
             ],
             "Submodule": "SelfCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -918,7 +995,8 @@
                 ".setstatus Idle"
             ],
             "Submodule": "SelfCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -930,7 +1008,8 @@
                 ".setav http://i.imgur.com/xTG3a1I.jpg"
             ],
             "Submodule": "SelfCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -943,7 +1022,8 @@
                 ".setgame Listening music."
             ],
             "Submodule": "SelfCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -954,7 +1034,8 @@
                 ".setstream TWITCHLINK Hello"
             ],
             "Submodule": "SelfCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -966,7 +1047,8 @@
                 ".send serverid|u:userid message"
             ],
             "Submodule": "SelfCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -977,7 +1059,8 @@
                 ".imagesreload"
             ],
             "Submodule": "SelfCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -988,7 +1071,8 @@
                 ".botconfigreload"
             ],
             "Submodule": "SelfCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1001,7 +1085,8 @@
                 ".greetdel 30"
             ],
             "Submodule": "ServerGreetCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1012,7 +1097,8 @@
                 ".greet"
             ],
             "Submodule": "ServerGreetCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1023,7 +1109,8 @@
                 ".greetmsg Welcome, %user%."
             ],
             "Submodule": "ServerGreetCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1034,7 +1121,8 @@
                 ".greetdm"
             ],
             "Submodule": "ServerGreetCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1045,7 +1133,8 @@
                 ".greetdmmsg Welcome to the server, %user%"
             ],
             "Submodule": "ServerGreetCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1056,7 +1145,8 @@
                 ".bye"
             ],
             "Submodule": "ServerGreetCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1067,7 +1157,8 @@
                 ".byemsg %user% has left."
             ],
             "Submodule": "ServerGreetCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1079,7 +1170,8 @@
                 ".byedel 30"
             ],
             "Submodule": "ServerGreetCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1090,7 +1182,8 @@
                 ".timezones"
             ],
             "Submodule": "TimeZoneCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1102,7 +1195,8 @@
                 ".timezone GMT Standard Time"
             ],
             "Submodule": "TimeZoneCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1113,7 +1207,8 @@
                 ".warn @b1nzy Very rude person"
             ],
             "Submodule": "UserPunishCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1124,7 +1219,8 @@
                 ".warnlog @b1nzy"
             ],
             "Submodule": "UserPunishCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1136,7 +1232,8 @@
                 ".warnlogall 2"
             ],
             "Submodule": "UserPunishCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1149,7 +1246,8 @@
                 ".warnclear @PoorDude"
             ],
             "Submodule": "UserPunishCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1162,7 +1260,8 @@
                 ".warnpunish 3"
             ],
             "Submodule": "UserPunishCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1174,7 +1273,8 @@
                 ".warnpunishlist"
             ],
             "Submodule": "UserPunishCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1186,7 +1286,8 @@
                 ".b \"@some Guy\" Your behaviour is toxic."
             ],
             "Submodule": "UserPunishCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1198,7 +1299,8 @@
                 ".unban 123123123"
             ],
             "Submodule": "UserPunishCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1210,7 +1312,8 @@
                 ".sb \"@some Guy\" Your behaviour is toxic."
             ],
             "Submodule": "UserPunishCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1222,7 +1325,8 @@
                 ".k \"@some Guy\" Your behaviour is toxic."
             ],
             "Submodule": "UserPunishCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1233,7 +1337,8 @@
                 ".masskill BadPerson#1234 Toxic person"
             ],
             "Submodule": "UserPunishCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1244,7 +1349,8 @@
                 "vcrole"
             ],
             "Submodule": "VcRoleCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1255,7 +1361,8 @@
                 "vcrolelist"
             ],
             "Submodule": "VcRoleCommands",
-            "Module": "Administration"
+            "Module": "Administration",
+            "Options": null
         }
     ],
     "CustomReactions": [
@@ -1269,7 +1376,8 @@
                 ".acr \"hello\" Hi there %user%"
             ],
             "Submodule": "CustomReactions",
-            "Module": "CustomReactions"
+            "Module": "CustomReactions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1281,7 +1389,8 @@
                 ".ecr 123 I'm a magical girl"
             ],
             "Submodule": "CustomReactions",
-            "Module": "CustomReactions"
+            "Module": "CustomReactions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1294,7 +1403,8 @@
                 ".lcr all"
             ],
             "Submodule": "CustomReactions",
-            "Module": "CustomReactions"
+            "Module": "CustomReactions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1306,7 +1416,8 @@
                 ".lcrg 1"
             ],
             "Submodule": "CustomReactions",
-            "Module": "CustomReactions"
+            "Module": "CustomReactions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1318,7 +1429,8 @@
                 ".scr 1"
             ],
             "Submodule": "CustomReactions",
-            "Module": "CustomReactions"
+            "Module": "CustomReactions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1330,7 +1442,8 @@
                 ".dcr 5"
             ],
             "Submodule": "CustomReactions",
-            "Module": "CustomReactions"
+            "Module": "CustomReactions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1341,7 +1454,8 @@
                 ".crca 44"
             ],
             "Submodule": "CustomReactions",
-            "Module": "CustomReactions"
+            "Module": "CustomReactions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1352,7 +1466,8 @@
                 ".crdm 44"
             ],
             "Submodule": "CustomReactions",
-            "Module": "CustomReactions"
+            "Module": "CustomReactions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1363,7 +1478,8 @@
                 ".crad 59"
             ],
             "Submodule": "CustomReactions",
-            "Module": "CustomReactions"
+            "Module": "CustomReactions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1375,7 +1491,8 @@
                 ".crstatsclear rng"
             ],
             "Submodule": "CustomReactions",
-            "Module": "CustomReactions"
+            "Module": "CustomReactions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1387,7 +1504,8 @@
                 ".crstats 3"
             ],
             "Submodule": "CustomReactions",
-            "Module": "CustomReactions"
+            "Module": "CustomReactions",
+            "Options": null
         }
     ],
     "Gambling": [
@@ -1400,7 +1518,8 @@
                 ".timely"
             ],
             "Submodule": "Gambling",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1411,7 +1530,8 @@
                 ".timelyreset"
             ],
             "Submodule": "Gambling",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1423,7 +1543,8 @@
                 ".timelyset 50 12"
             ],
             "Submodule": "Gambling",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1435,7 +1556,8 @@
                 ".raffle RoleName"
             ],
             "Submodule": "Gambling",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1447,7 +1569,8 @@
                 ".raffleany  RoleName"
             ],
             "Submodule": "Gambling",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1464,7 +1587,8 @@
                 ".$ @SomeGuy"
             ],
             "Submodule": "Gambling",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1476,7 +1600,8 @@
                 ".curtrs @SomeUser 2"
             ],
             "Submodule": "Gambling",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1488,7 +1613,8 @@
                 ".give 5 @CootGurl Ur so pwetty"
             ],
             "Submodule": "Gambling",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1500,7 +1626,8 @@
                 ".award 5 Role Of Gamblers"
             ],
             "Submodule": "Gambling",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1511,7 +1638,8 @@
                 ".take 1 @SomeGuy"
             ],
             "Submodule": "Gambling",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1523,7 +1651,8 @@
                 ".rollduel @Challenger"
             ],
             "Submodule": "Gambling",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1535,7 +1664,8 @@
                 ".br 5"
             ],
             "Submodule": "Gambling",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1547,7 +1677,8 @@
                 ".lb"
             ],
             "Submodule": "Gambling",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1559,7 +1690,8 @@
                 ".rps scissors"
             ],
             "Submodule": "Gambling",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1570,7 +1702,8 @@
                 ".race"
             ],
             "Submodule": "AnimalRacingCommands",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": "--start-time (-s)   "
         },
         {
             "Aliases": [
@@ -1583,7 +1716,8 @@
                 ".jr 5"
             ],
             "Submodule": "AnimalRacingCommands",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1595,7 +1729,8 @@
                 ".bj 50"
             ],
             "Submodule": "BlackJackCommands",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1606,7 +1741,8 @@
                 ".hit"
             ],
             "Submodule": "BlackJackCommands",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1617,7 +1753,8 @@
                 ".stand"
             ],
             "Submodule": "BlackJackCommands",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1628,7 +1765,8 @@
                 ".double"
             ],
             "Submodule": "BlackJackCommands",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1640,7 +1778,8 @@
                 ".eventstart reaction -d 1 -a 50 --pot-size 1500"
             ],
             "Submodule": "CurrencyEventsCommands",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": "--amount (-a)   Amount of currency each user receives.\n--pot-size (-p)   The maximum amount of currency that can be rewarded. 0 means no limit.\n--duration (-d)   Number of hours the event should run for. Default 24."
         },
         {
             "Aliases": [
@@ -1652,7 +1791,8 @@
                 ".rafflecur mixed 15"
             ],
             "Submodule": "CurrencyRaffleCommands",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1666,7 +1806,8 @@
                 ".roll 5dF"
             ],
             "Submodule": "DiceRollCommands",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1679,7 +1820,8 @@
                 ".rolluo 3d5"
             ],
             "Submodule": "DiceRollCommands",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1691,7 +1833,8 @@
                 ".nroll 5-15"
             ],
             "Submodule": "DiceRollCommands",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1703,7 +1846,8 @@
                 ".draw 5"
             ],
             "Submodule": "DrawCommands",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1715,7 +1859,8 @@
                 ".drawnew 5"
             ],
             "Submodule": "DrawCommands",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1727,7 +1872,8 @@
                 ".dsh"
             ],
             "Submodule": "DrawCommands",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1739,7 +1885,8 @@
                 ".flip 3"
             ],
             "Submodule": "FlipCoinCommands",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1752,7 +1899,8 @@
                 ".bf 3 t"
             ],
             "Submodule": "FlipCoinCommands",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1764,7 +1912,8 @@
                 ".shop 2"
             ],
             "Submodule": "FlowerShopCommands",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1775,7 +1924,8 @@
                 ".buy 2"
             ],
             "Submodule": "FlowerShopCommands",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1786,7 +1936,8 @@
                 ".shopadd role 1000 Rich"
             ],
             "Submodule": "FlowerShopCommands",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1797,7 +1948,8 @@
                 ".shoplistadd 1 Uni-que-Steam-Key"
             ],
             "Submodule": "FlowerShopCommands",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1809,7 +1961,8 @@
                 ".shoprm 1"
             ],
             "Submodule": "FlowerShopCommands",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1820,7 +1973,8 @@
                 ".slotstats"
             ],
             "Submodule": "SlotCommands",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1831,7 +1985,8 @@
                 ".slottest 1000"
             ],
             "Submodule": "SlotCommands",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1842,7 +1997,8 @@
                 ".slot 5"
             ],
             "Submodule": "SlotCommands",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1853,7 +2009,8 @@
                 ".waifureset"
             ],
             "Submodule": "WaifuClaimCommands",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1865,7 +2022,8 @@
                 ".claim 50 @Himesama"
             ],
             "Submodule": "WaifuClaimCommands",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1876,7 +2034,8 @@
                 ".waifutransfer @ExWaifu @NewOwner"
             ],
             "Submodule": "WaifuClaimCommands",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1887,7 +2046,8 @@
                 ".divorce @CheatingSloot"
             ],
             "Submodule": "WaifuClaimCommands",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1899,7 +2059,8 @@
                 ".affinity"
             ],
             "Submodule": "WaifuClaimCommands",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1912,7 +2073,8 @@
                 ".waifulb 3"
             ],
             "Submodule": "WaifuClaimCommands",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1925,7 +2087,8 @@
                 ".waifuinfo"
             ],
             "Submodule": "WaifuClaimCommands",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1939,7 +2102,8 @@
                 ".gift Rose @Himesama"
             ],
             "Submodule": "WaifuClaimCommands",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1951,7 +2115,8 @@
                 ".wheel 10"
             ],
             "Submodule": "WheelOfFortuneCommands",
-            "Module": "Gambling"
+            "Module": "Gambling",
+            "Options": null
         }
     ],
     "Games": [
@@ -1964,7 +2129,8 @@
                 ".choose Get up;Sleep;Sleep more"
             ],
             "Submodule": "Games",
-            "Module": "Games"
+            "Module": "Games",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1975,7 +2141,8 @@
                 ".8ball Is b1nzy a nice guy?"
             ],
             "Submodule": "Games",
-            "Module": "Games"
+            "Module": "Games",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1986,7 +2153,8 @@
                 ".rategirl @SomeGurl"
             ],
             "Submodule": "Games",
-            "Module": "Games"
+            "Module": "Games",
+            "Options": null
         },
         {
             "Aliases": [
@@ -1997,7 +2165,8 @@
                 ".linux Spyware Windows"
             ],
             "Submodule": "Games",
-            "Module": "Games"
+            "Module": "Games",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2010,7 +2179,8 @@
                 ".acro -s 30"
             ],
             "Submodule": "AcropobiaCommands",
-            "Module": "Games"
+            "Module": "Games",
+            "Options": "--submission-time (-s)   Time after which the submissions are closed and voting starts.\n--vote-time (-v)   Time after which the voting is closed and the winner is declared."
         },
         {
             "Aliases": [
@@ -2021,7 +2191,8 @@
                 ".cleverbot"
             ],
             "Submodule": "ChatterBotCommands",
-            "Module": "Games"
+            "Module": "Games",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2033,7 +2204,8 @@
                 ".connect4"
             ],
             "Submodule": "Connect4Commands",
-            "Module": "Games"
+            "Module": "Games",
+            "Options": "--turn-timer (-t)   Turn time in seconds. Default 15."
         },
         {
             "Aliases": [
@@ -2044,7 +2216,8 @@
                 ".hangmanlist"
             ],
             "Submodule": "HangmanCommands",
-            "Module": "Games"
+            "Module": "Games",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2056,7 +2229,8 @@
                 ".hangman movies"
             ],
             "Submodule": "HangmanCommands",
-            "Module": "Games"
+            "Module": "Games",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2067,7 +2241,8 @@
                 ".hangmanstop"
             ],
             "Submodule": "HangmanCommands",
-            "Module": "Games"
+            "Module": "Games",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2078,7 +2253,8 @@
                 ".leet 3 Hello"
             ],
             "Submodule": "LeetCommands",
-            "Module": "Games"
+            "Module": "Games",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2089,7 +2265,8 @@
                 ".nunchi"
             ],
             "Submodule": "NunchiCommands",
-            "Module": "Games"
+            "Module": "Games",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2100,7 +2277,8 @@
                 ".pick"
             ],
             "Submodule": "PlantPickCommands",
-            "Module": "Games"
+            "Module": "Games",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2112,7 +2290,8 @@
                 ".plant 5"
             ],
             "Submodule": "PlantPickCommands",
-            "Module": "Games"
+            "Module": "Games",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2124,7 +2303,8 @@
                 ".gc"
             ],
             "Submodule": "PlantPickCommands",
-            "Module": "Games"
+            "Module": "Games",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2136,7 +2316,8 @@
                 ".ppoll Question?;Answer1;Answ 2;A_3"
             ],
             "Submodule": "PollCommands",
-            "Module": "Games"
+            "Module": "Games",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2147,7 +2328,8 @@
                 ".pollstats"
             ],
             "Submodule": "PollCommands",
-            "Module": "Games"
+            "Module": "Games",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2158,7 +2340,8 @@
                 ".pollend"
             ],
             "Submodule": "PollCommands",
-            "Module": "Games"
+            "Module": "Games",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2169,7 +2352,8 @@
                 ".typestart"
             ],
             "Submodule": "SpeedTypingCommands",
-            "Module": "Games"
+            "Module": "Games",
+            "Options": "--start-time (-s)   How long does it take for the race to start. Default 5."
         },
         {
             "Aliases": [
@@ -2180,7 +2364,8 @@
                 ".typestop"
             ],
             "Submodule": "SpeedTypingCommands",
-            "Module": "Games"
+            "Module": "Games",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2191,7 +2376,8 @@
                 ".typeadd wordswords"
             ],
             "Submodule": "SpeedTypingCommands",
-            "Module": "Games"
+            "Module": "Games",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2203,7 +2389,8 @@
                 ".typelist 3"
             ],
             "Submodule": "SpeedTypingCommands",
-            "Module": "Games"
+            "Module": "Games",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2214,7 +2401,8 @@
                 ".typedel 3"
             ],
             "Submodule": "SpeedTypingCommands",
-            "Module": "Games"
+            "Module": "Games",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2226,7 +2414,8 @@
                 ".ttt"
             ],
             "Submodule": "TicTacToeCommands",
-            "Module": "Games"
+            "Module": "Games",
+            "Options": "--turn-timer (-t)   Turn time in seconds. Default 15."
         },
         {
             "Aliases": [
@@ -2239,7 +2428,8 @@
                 ".t --timeout 5 -p -w 3 -q 10"
             ],
             "Submodule": "TriviaCommands",
-            "Module": "Games"
+            "Module": "Games",
+            "Options": "--pokemon (-p)   Whether it's 'Who's that pokemon?' trivia.\n--nohint   Don't show any hints.\n--win-req (-w)   Winning requirement. Set 0 for an infinite game. Default 10.\n--question-timer (-q)   How long until the question ends. Default 30.\n--timeout (-t)   Number of questions of inactivity in order stop. Set 0 for never. Default 10."
         },
         {
             "Aliases": [
@@ -2250,7 +2440,8 @@
                 ".tl"
             ],
             "Submodule": "TriviaCommands",
-            "Module": "Games"
+            "Module": "Games",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2261,7 +2452,8 @@
                 ".tq"
             ],
             "Submodule": "TriviaCommands",
-            "Module": "Games"
+            "Module": "Games",
+            "Options": null
         }
     ],
     "Help": [
@@ -2275,7 +2467,8 @@
                 ".modules"
             ],
             "Submodule": "Help",
-            "Module": "Help"
+            "Module": "Help",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2288,7 +2481,8 @@
                 ".cmds Admin"
             ],
             "Submodule": "Help",
-            "Module": "Help"
+            "Module": "Help",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2301,7 +2495,8 @@
                 ".h"
             ],
             "Submodule": "Help",
-            "Module": "Help"
+            "Module": "Help",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2312,7 +2507,8 @@
                 ".hgit"
             ],
             "Submodule": "Help",
-            "Module": "Help"
+            "Module": "Help",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2325,7 +2521,8 @@
                 ".guide"
             ],
             "Submodule": "Help",
-            "Module": "Help"
+            "Module": "Help",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2336,7 +2533,8 @@
                 ".donate"
             ],
             "Submodule": "Help",
-            "Module": "Help"
+            "Module": "Help",
+            "Options": null
         }
     ],
     "Music": [
@@ -2352,7 +2550,8 @@
                 ".play Dream Of Venice"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2365,7 +2564,8 @@
                 ".q Dream Of Venice"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2377,7 +2577,8 @@
                 ".qn Dream Of Venice"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2390,7 +2591,8 @@
                 ".qs Dream Of Venice"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2403,7 +2605,8 @@
                 ".lq 2"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2416,7 +2619,8 @@
                 ".n 5"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2428,7 +2632,8 @@
                 ".s"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2440,7 +2645,8 @@
                 ".autodc"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2452,7 +2658,8 @@
                 ".d"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2464,7 +2671,8 @@
                 ".p"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2476,7 +2684,8 @@
                 ".vol 50"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2488,7 +2697,8 @@
                 ".dv 80"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2500,7 +2710,8 @@
                 ".srm 5"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2512,7 +2723,8 @@
                 ".pls 1"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2524,7 +2736,8 @@
                 ".delpls 5"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2535,7 +2748,8 @@
                 ".save classical1"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2546,7 +2760,8 @@
                 ".load 5"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2558,7 +2773,8 @@
                 ".fp"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2570,7 +2786,8 @@
                 ".sad"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2582,7 +2799,8 @@
                 ".sq Dream Of Venice"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2594,7 +2812,8 @@
                 ".scpl soundcloudseturl"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2606,7 +2825,8 @@
                 ".np"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2619,7 +2839,8 @@
                 ".plsh"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2631,7 +2852,8 @@
                 ".pl <youtube_playlist_link>"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2643,7 +2865,8 @@
                 ".ra radio link here"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2655,7 +2878,8 @@
                 ".lo C:/music/mysong.mp3"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2667,7 +2891,8 @@
                 ".lopl C:/music/classical"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2679,7 +2904,8 @@
                 ".mv"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2691,7 +2917,8 @@
                 ".ms 5>3"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2704,7 +2931,8 @@
                 ".smq"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2717,7 +2945,8 @@
                 ".smp 270"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2729,7 +2958,8 @@
                 ".rcs"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2741,7 +2971,8 @@
                 ".rpl"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2753,7 +2984,8 @@
                 ".ap"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2765,7 +2997,8 @@
                 ".smch"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2777,7 +3010,8 @@
                 ".smch"
             ],
             "Submodule": "Music",
-            "Module": "Music"
+            "Module": "Music",
+            "Options": null
         }
     ],
     "NSFW": [
@@ -2791,7 +3025,8 @@
                 ".autohentai"
             ],
             "Submodule": "NSFW",
-            "Module": "NSFW"
+            "Module": "NSFW",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2803,7 +3038,8 @@
                 ".autoboobs"
             ],
             "Submodule": "NSFW",
-            "Module": "NSFW"
+            "Module": "NSFW",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2815,7 +3051,8 @@
                 ".autobutts"
             ],
             "Submodule": "NSFW",
-            "Module": "NSFW"
+            "Module": "NSFW",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2826,7 +3063,8 @@
                 ".hentai yuri"
             ],
             "Submodule": "NSFW",
-            "Module": "NSFW"
+            "Module": "NSFW",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2837,7 +3075,8 @@
                 ".hentaibomb yuri"
             ],
             "Submodule": "NSFW",
-            "Module": "NSFW"
+            "Module": "NSFW",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2848,7 +3087,8 @@
                 ".yandere tag1+tag2"
             ],
             "Submodule": "NSFW",
-            "Module": "NSFW"
+            "Module": "NSFW",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2859,7 +3099,8 @@
                 ".konachan yuri"
             ],
             "Submodule": "NSFW",
-            "Module": "NSFW"
+            "Module": "NSFW",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2870,7 +3111,8 @@
                 ".e621 yuri kissing"
             ],
             "Submodule": "NSFW",
-            "Module": "NSFW"
+            "Module": "NSFW",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2881,7 +3123,8 @@
                 ".rule34 yuri+kissing"
             ],
             "Submodule": "NSFW",
-            "Module": "NSFW"
+            "Module": "NSFW",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2892,7 +3135,8 @@
                 ".danbooru yuri+kissing"
             ],
             "Submodule": "NSFW",
-            "Module": "NSFW"
+            "Module": "NSFW",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2903,7 +3147,8 @@
                 ".gelbooru yuri+kissing"
             ],
             "Submodule": "NSFW",
-            "Module": "NSFW"
+            "Module": "NSFW",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2914,7 +3159,8 @@
                 ".boobs"
             ],
             "Submodule": "NSFW",
-            "Module": "NSFW"
+            "Module": "NSFW",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2928,7 +3174,8 @@
                 ".ass"
             ],
             "Submodule": "NSFW",
-            "Module": "NSFW"
+            "Module": "NSFW",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2940,7 +3187,8 @@
                 ".nsfwtbl poop"
             ],
             "Submodule": "NSFW",
-            "Module": "NSFW"
+            "Module": "NSFW",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2951,7 +3199,8 @@
                 ".nsfwcc"
             ],
             "Submodule": "NSFW",
-            "Module": "NSFW"
+            "Module": "NSFW",
+            "Options": null
             },
             {
                 "Aliases": [
@@ -2962,7 +3211,8 @@
                     ".neko"
                 ],
                 "Submodule": "NSFW",
-                "Module": "NSFW"
+                "Module": "NSFW",
+                "Options": null
         }
     ],
     "Permissions": [
@@ -2976,7 +3226,8 @@
                 ".verbose true"
             ],
             "Submodule": "Permissions",
-            "Module": "Permissions"
+            "Module": "Permissions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -2988,7 +3239,8 @@
                 ".pr role"
             ],
             "Submodule": "Permissions",
-            "Module": "Permissions"
+            "Module": "Permissions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3001,7 +3253,8 @@
                 ".lp 3"
             ],
             "Submodule": "Permissions",
-            "Module": "Permissions"
+            "Module": "Permissions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3013,7 +3266,8 @@
                 ".rp 1"
             ],
             "Submodule": "Permissions",
-            "Module": "Permissions"
+            "Module": "Permissions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3025,7 +3279,8 @@
                 ".mp 2 4"
             ],
             "Submodule": "Permissions",
-            "Module": "Permissions"
+            "Module": "Permissions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3037,7 +3292,8 @@
                 ".sc \"command name\" disable"
             ],
             "Submodule": "Permissions",
-            "Module": "Permissions"
+            "Module": "Permissions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3049,7 +3305,8 @@
                 ".sm ModuleName enable"
             ],
             "Submodule": "Permissions",
-            "Module": "Permissions"
+            "Module": "Permissions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3061,7 +3318,8 @@
                 ".uc \"command name\" enable SomeUsername"
             ],
             "Submodule": "Permissions",
-            "Module": "Permissions"
+            "Module": "Permissions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3073,7 +3331,8 @@
                 ".um ModuleName enable SomeUsername"
             ],
             "Submodule": "Permissions",
-            "Module": "Permissions"
+            "Module": "Permissions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3085,7 +3344,8 @@
                 ".rc \"command name\" disable MyRole"
             ],
             "Submodule": "Permissions",
-            "Module": "Permissions"
+            "Module": "Permissions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3097,7 +3357,8 @@
                 ".rm ModuleName enable MyRole"
             ],
             "Submodule": "Permissions",
-            "Module": "Permissions"
+            "Module": "Permissions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3109,7 +3370,8 @@
                 ".cc \"command name\" enable SomeChannel"
             ],
             "Submodule": "Permissions",
-            "Module": "Permissions"
+            "Module": "Permissions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3121,7 +3383,8 @@
                 ".cm ModuleName enable SomeChannel"
             ],
             "Submodule": "Permissions",
-            "Module": "Permissions"
+            "Module": "Permissions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3133,7 +3396,8 @@
                 ".acm enable #SomeChannel"
             ],
             "Submodule": "Permissions",
-            "Module": "Permissions"
+            "Module": "Permissions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3145,7 +3409,8 @@
                 ".arm [enable/disable] MyRole"
             ],
             "Submodule": "Permissions",
-            "Module": "Permissions"
+            "Module": "Permissions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3157,7 +3422,8 @@
                 ".aum enable @someone"
             ],
             "Submodule": "Permissions",
-            "Module": "Permissions"
+            "Module": "Permissions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3169,7 +3435,8 @@
                 ".asm [enable/disable]"
             ],
             "Submodule": "Permissions",
-            "Module": "Permissions"
+            "Module": "Permissions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3181,7 +3448,8 @@
                 ".ubl rem 12312312313"
             ],
             "Submodule": "BlacklistCommands",
-            "Module": "Permissions"
+            "Module": "Permissions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3192,7 +3460,8 @@
                 ".cbl rem 12312312312"
             ],
             "Submodule": "BlacklistCommands",
-            "Module": "Permissions"
+            "Module": "Permissions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3204,7 +3473,8 @@
                 ".sbl rem SomeTrashServer"
             ],
             "Submodule": "BlacklistCommands",
-            "Module": "Permissions"
+            "Module": "Permissions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3216,7 +3486,8 @@
                 ".cmdcd \"some cmd\" 5"
             ],
             "Submodule": "CmdCdsCommands",
-            "Module": "Permissions"
+            "Module": "Permissions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3228,7 +3499,8 @@
                 ".acmdcds"
             ],
             "Submodule": "CmdCdsCommands",
-            "Module": "Permissions"
+            "Module": "Permissions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3240,7 +3512,8 @@
                 ".sfi"
             ],
             "Submodule": "FilterCommands",
-            "Module": "Permissions"
+            "Module": "Permissions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3252,7 +3525,8 @@
                 ".cfi"
             ],
             "Submodule": "FilterCommands",
-            "Module": "Permissions"
+            "Module": "Permissions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3264,7 +3538,8 @@
                 ".sfw"
             ],
             "Submodule": "FilterCommands",
-            "Module": "Permissions"
+            "Module": "Permissions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3276,7 +3551,8 @@
                 ".cfw"
             ],
             "Submodule": "FilterCommands",
-            "Module": "Permissions"
+            "Module": "Permissions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3287,7 +3563,8 @@
                 ".fw poop"
             ],
             "Submodule": "FilterCommands",
-            "Module": "Permissions"
+            "Module": "Permissions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3299,7 +3576,8 @@
                 ".lfw"
             ],
             "Submodule": "FilterCommands",
-            "Module": "Permissions"
+            "Module": "Permissions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3311,7 +3589,8 @@
                 ".lgp"
             ],
             "Submodule": "GlobalPermissionCommands",
-            "Module": "Permissions"
+            "Module": "Permissions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3323,7 +3602,8 @@
                 ".gmod nsfw"
             ],
             "Submodule": "GlobalPermissionCommands",
-            "Module": "Permissions"
+            "Module": "Permissions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3335,7 +3615,8 @@
                 ".gcmd .stats"
             ],
             "Submodule": "GlobalPermissionCommands",
-            "Module": "Permissions"
+            "Module": "Permissions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3346,7 +3627,8 @@
                 ".resetperms"
             ],
             "Submodule": "ResetPermissionsCommands",
-            "Module": "Permissions"
+            "Module": "Permissions",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3357,7 +3639,8 @@
                 ".resetglobalperms"
             ],
             "Submodule": "ResetPermissionsCommands",
-            "Module": "Permissions"
+            "Module": "Permissions",
+            "Options": null
         }
     ],
     "Pokemon": [
@@ -3370,7 +3653,8 @@
                 ".attack \"vine whip\" @someguy"
             ],
             "Submodule": "Pokemon",
-            "Module": "Pokemon"
+            "Module": "Pokemon",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3382,7 +3666,8 @@
                 ".ml"
             ],
             "Submodule": "Pokemon",
-            "Module": "Pokemon"
+            "Module": "Pokemon",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3393,7 +3678,8 @@
                 ".heal @someone"
             ],
             "Submodule": "Pokemon",
-            "Module": "Pokemon"
+            "Module": "Pokemon",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3404,7 +3690,8 @@
                 ".type @someone"
             ],
             "Submodule": "Pokemon",
-            "Module": "Pokemon"
+            "Module": "Pokemon",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3416,7 +3703,8 @@
                 ".settype"
             ],
             "Submodule": "Pokemon",
-            "Module": "Pokemon"
+            "Module": "Pokemon",
+            "Options": null
         }
     ],
     "Searches": [
@@ -3429,7 +3717,8 @@
                 ".lolban"
             ],
             "Submodule": "Searches",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3442,7 +3731,8 @@
                 ".c bitcoin"
             ],
             "Submodule": "Searches",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3453,7 +3743,8 @@
                 "rip"
             ],
             "Submodule": "Searches",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3464,7 +3755,8 @@
                 ".say hi"
             ],
             "Submodule": "Searches",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3476,7 +3768,8 @@
                 ".we Moscow, RU"
             ],
             "Submodule": "Searches",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3487,7 +3780,8 @@
                 ".time London, UK"
             ],
             "Submodule": "Searches",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3499,7 +3793,8 @@
                 ".yt query"
             ],
             "Submodule": "Searches",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3511,7 +3806,8 @@
                 ".imdb Batman vs Superman"
             ],
             "Submodule": "Searches",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3523,7 +3819,8 @@
                 ".meow"
             ],
             "Submodule": "Searches",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3535,7 +3832,8 @@
                 ".woof"
             ],
             "Submodule": "Searches",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3547,7 +3845,8 @@
                 ".img cute kitten"
             ],
             "Submodule": "Searches",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3559,7 +3858,8 @@
                 ".rimg cute kitten"
             ],
             "Submodule": "Searches",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3570,7 +3870,8 @@
                 ".lmgtfy query"
             ],
             "Submodule": "Searches",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3581,7 +3882,8 @@
                 ".shorten https://google.com"
             ],
             "Submodule": "Searches",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3593,7 +3895,8 @@
                 ".google query"
             ],
             "Submodule": "Searches",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3606,7 +3909,8 @@
                 ".mtg about face"
             ],
             "Submodule": "Searches",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3618,7 +3922,8 @@
                 ".hs Ysera"
             ],
             "Submodule": "Searches",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3630,7 +3935,8 @@
                 ".yoda my feelings hurt"
             ],
             "Submodule": "Searches",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3642,7 +3948,8 @@
                 ".ud Pineapple"
             ],
             "Submodule": "Searches",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3654,7 +3961,8 @@
                 ".def heresy"
             ],
             "Submodule": "Searches",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3665,7 +3973,8 @@
                 ".# ff"
             ],
             "Submodule": "Searches",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3676,7 +3985,8 @@
                 ".catfact"
             ],
             "Submodule": "Searches",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3687,7 +3997,8 @@
                 ".revav @SomeGuy"
             ],
             "Submodule": "Searches",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3698,7 +4009,8 @@
                 ".revimg Image link"
             ],
             "Submodule": "Searches",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3709,7 +4021,8 @@
                 ".safebooru yuri+kissing"
             ],
             "Submodule": "Searches",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3721,7 +4034,8 @@
                 ".wiki query"
             ],
             "Submodule": "Searches",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3734,7 +4048,8 @@
                 ".color f00 0f0 00f"
             ],
             "Submodule": "Searches",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3745,7 +4060,8 @@
                 ".videocall \"@the First\" \"@Xyz\""
             ],
             "Submodule": "Searches",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3757,7 +4073,8 @@
                 ".av @SomeGuy"
             ],
             "Submodule": "Searches",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3769,7 +4086,8 @@
                 ".wikia mlp Dashy"
             ],
             "Submodule": "Searches",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3780,7 +4098,8 @@
                 ".bible genesis 3:19"
             ],
             "Submodule": "Searches",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3791,7 +4110,8 @@
                 ".novel the nine cauldrons"
             ],
             "Submodule": "AnimeSearchCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3802,7 +4122,8 @@
                 ".mal straysocks"
             ],
             "Submodule": "AnimeSearchCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3815,7 +4136,8 @@
                 ".ani aquarion evol"
             ],
             "Submodule": "AnimeSearchCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3828,7 +4150,8 @@
                 ".mq Shingeki no kyojin"
             ],
             "Submodule": "AnimeSearchCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3840,7 +4163,8 @@
                 ".feed https://www.rt.com/rss/"
             ],
             "Submodule": "FeedCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3853,7 +4177,8 @@
                 ".feedremove 3"
             ],
             "Submodule": "FeedCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3865,7 +4190,8 @@
                 ".feeds"
             ],
             "Submodule": "FeedCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3877,7 +4203,8 @@
                 ".ym"
             ],
             "Submodule": "JokeCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3889,7 +4216,8 @@
                 ".rj"
             ],
             "Submodule": "JokeCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3901,7 +4229,8 @@
                 ".cn"
             ],
             "Submodule": "JokeCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3912,7 +4241,8 @@
                 ".wowjoke"
             ],
             "Submodule": "JokeCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3924,7 +4254,8 @@
                 ".mi"
             ],
             "Submodule": "JokeCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3935,7 +4266,8 @@
                 ".memelist"
             ],
             "Submodule": "MemegenCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3946,7 +4278,8 @@
                 ".memegen biw \"gets iced coffee\" \"in the winter\""
             ],
             "Submodule": "MemegenCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3958,7 +4291,8 @@
                 ".osu Name taiko"
             ],
             "Submodule": "OsuCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3969,7 +4303,8 @@
                 ".osub https://osu.ppy.sh/s/127712"
             ],
             "Submodule": "OsuCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3980,7 +4315,8 @@
                 ".osu5 Name"
             ],
             "Submodule": "OsuCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -3993,7 +4329,8 @@
                 ".overwatch eu Battletag#2016"
             ],
             "Submodule": "OverwatchCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4005,7 +4342,8 @@
                 ".poe \"Zizaran\""
             ],
             "Submodule": "PathOfExileCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4017,7 +4355,8 @@
                 ".poel"
             ],
             "Submodule": "PathOfExileCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4029,7 +4368,8 @@
                 ".poec Standard \"Mirror of Kalandra\""
             ],
             "Submodule": "PathOfExileCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4041,7 +4381,8 @@
                 ".poei \"Quill Rain\""
             ],
             "Submodule": "PathOfExileCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4052,7 +4393,8 @@
                 ".placelist"
             ],
             "Submodule": "PlaceCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4064,7 +4406,8 @@
                 ".place steven 500 400"
             ],
             "Submodule": "PlaceCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4076,7 +4419,8 @@
                 ".poke Sylveon"
             ],
             "Submodule": "PokemonSearchCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4088,7 +4432,8 @@
                 ".pokeab overgrow"
             ],
             "Submodule": "PokemonSearchCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4100,7 +4445,8 @@
                 ".smashcast SomeStreamer"
             ],
             "Submodule": "StreamNotificationCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4112,7 +4458,8 @@
                 ".twitch SomeStreamer"
             ],
             "Submodule": "StreamNotificationCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4124,7 +4471,8 @@
                 ".picarto SomeStreamer"
             ],
             "Submodule": "StreamNotificationCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4136,7 +4484,8 @@
                 ".mixer SomeStreamer"
             ],
             "Submodule": "StreamNotificationCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4148,7 +4497,8 @@
                 ".stadd twitch.tv/someguy"
             ],
             "Submodule": "StreamNotificationCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4161,7 +4511,8 @@
                 ".strm twitch.tv/someguy"
             ],
             "Submodule": "StreamNotificationCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4173,7 +4524,8 @@
                 ".ls"
             ],
             "Submodule": "StreamNotificationCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4185,7 +4537,8 @@
                 ".cs twitch MyFavStreamer"
             ],
             "Submodule": "StreamNotificationCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4197,7 +4550,8 @@
                 ".trans en>fr Hello"
             ],
             "Submodule": "TranslateCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4210,7 +4564,8 @@
                 ".at del"
             ],
             "Submodule": "TranslateCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4222,7 +4577,8 @@
                 ".atl en>fr"
             ],
             "Submodule": "TranslateCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4233,7 +4589,8 @@
                 ".translangs"
             ],
             "Submodule": "TranslateCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4246,7 +4603,8 @@
                 ".xkcd latest"
             ],
             "Submodule": "XkcdCommands",
-            "Module": "Searches"
+            "Module": "Searches",
+            "Options": null
             },
             {
                 "Aliases": [
@@ -4257,7 +4615,8 @@
                     ".nya"
                 ],
                 "Submodule": "Searches",
-                "Module": "Searches"
+                "Module": "Searches",
+                "Options": null
         }
     ],
     "Utility": [
@@ -4271,7 +4630,8 @@
                 ".totube"
             ],
             "Submodule": "Utility",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4283,7 +4643,8 @@
                 ".whpl Overwatch"
             ],
             "Submodule": "Utility",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4294,7 +4655,8 @@
                 ".inrole Some Role"
             ],
             "Submodule": "Utility",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4306,7 +4668,8 @@
                 ".checkperms bot"
             ],
             "Submodule": "Utility",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4319,7 +4682,8 @@
                 ".uid @SomeGuy"
             ],
             "Submodule": "Utility",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4331,7 +4695,8 @@
                 ".rid Some Role"
             ],
             "Submodule": "Utility",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4343,7 +4708,8 @@
                 ".cid"
             ],
             "Submodule": "Utility",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4355,7 +4721,8 @@
                 ".sid"
             ],
             "Submodule": "Utility",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4367,7 +4734,8 @@
                 ".roles @Someone"
             ],
             "Submodule": "Utility",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4379,7 +4747,8 @@
                 ".ct"
             ],
             "Submodule": "Utility",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4391,7 +4760,8 @@
                 ".crinv"
             ],
             "Submodule": "Utility",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4402,7 +4772,8 @@
                 ".stats"
             ],
             "Submodule": "Utility",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4414,7 +4785,8 @@
                 ".se A message full of SPECIAL emojis"
             ],
             "Submodule": "Utility",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4425,7 +4797,8 @@
                 ".listservers 3"
             ],
             "Submodule": "Utility",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4436,7 +4809,8 @@
                 ".savechat 150"
             ],
             "Submodule": "Utility",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4447,7 +4821,8 @@
                 ".ping"
             ],
             "Submodule": "Utility",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4460,7 +4835,8 @@
                 ".bce"
             ],
             "Submodule": "BotConfigCommands",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4472,7 +4848,8 @@
                 ".calc 1+1"
             ],
             "Submodule": "CalcCommands",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4483,7 +4860,8 @@
                 ".calcops"
             ],
             "Submodule": "CalcCommands",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4496,7 +4874,8 @@
                 ".alias \"linux thingy\" >loonix Spyware Windows"
             ],
             "Submodule": "CommandMapCommands",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4510,7 +4889,8 @@
                 ".aliaslist 3"
             ],
             "Submodule": "CommandMapCommands",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4522,7 +4902,8 @@
                 ".sinfo Some Server"
             ],
             "Submodule": "InfoCommands",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4534,7 +4915,8 @@
                 ".cinfo #some-channel"
             ],
             "Submodule": "InfoCommands",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4546,7 +4928,8 @@
                 ".uinfo @SomeUser"
             ],
             "Submodule": "InfoCommands",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4557,7 +4940,8 @@
                 ".activity"
             ],
             "Submodule": "InfoCommands",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4568,7 +4952,8 @@
                 ".parewrel"
             ],
             "Submodule": "PatreonCommands",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4580,7 +4965,8 @@
                 ".clparew"
             ],
             "Submodule": "PatreonCommands",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4593,7 +4979,8 @@
                 ".liqu 3 id"
             ],
             "Submodule": "QuoteCommands",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4604,7 +4991,8 @@
                 "... abc"
             ],
             "Submodule": "QuoteCommands",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4615,7 +5003,8 @@
                 ".qsearch keyword text"
             ],
             "Submodule": "QuoteCommands",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4627,7 +5016,8 @@
                 ".qid 123456"
             ],
             "Submodule": "QuoteCommands",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4638,7 +5028,8 @@
                 ".. sayhi Hi"
             ],
             "Submodule": "QuoteCommands",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4650,7 +5041,8 @@
                 ".qdel 123456"
             ],
             "Submodule": "QuoteCommands",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4662,7 +5054,8 @@
                 ".delallq kek"
             ],
             "Submodule": "QuoteCommands",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4674,7 +5067,8 @@
                 ".remind #general 1m Start now!"
             ],
             "Submodule": "RemindCommands",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4687,7 +5081,8 @@
                 ".remindlist 1"
             ],
             "Submodule": "RemindCommands",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4699,7 +5094,8 @@
                 ".remindrm 3"
             ],
             "Submodule": "RemindCommands",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4710,7 +5106,8 @@
                 ".remindtemplate %user%, do %message%!"
             ],
             "Submodule": "RemindCommands",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4722,7 +5119,8 @@
                 ".repinv 1"
             ],
             "Submodule": "RepeatCommands",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4734,7 +5132,8 @@
                 ".reprm 2"
             ],
             "Submodule": "RepeatCommands",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4746,7 +5145,8 @@
                 ".repeat 17:30 tea time"
             ],
             "Submodule": "RepeatCommands",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4758,7 +5158,8 @@
                 ".repeatlist"
             ],
             "Submodule": "RepeatCommands",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4769,7 +5170,8 @@
                 ".streamrole \"Eligible Streamers\" \"Featured Streams\""
             ],
             "Submodule": "StreamRoleCommands",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4782,7 +5184,8 @@
                 ".srkw PUBG"
             ],
             "Submodule": "StreamRoleCommands",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4795,7 +5198,8 @@
                 ".srbl rem @b1nzy#1234"
             ],
             "Submodule": "StreamRoleCommands",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4808,7 +5212,8 @@
                 ".srwl rem @b1nzy#1234"
             ],
             "Submodule": "StreamRoleCommands",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4819,7 +5224,8 @@
                 ".convertlist"
             ],
             "Submodule": "UnitConverterCommands",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4830,7 +5236,8 @@
                 ".convert m km 1000"
             ],
             "Submodule": "UnitConverterCommands",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4842,7 +5249,8 @@
                 ".ve"
             ],
             "Submodule": "VerboseErrorCommands",
-            "Module": "Utility"
+            "Module": "Utility",
+            "Options": null
             },
             {
                 "Aliases": [
@@ -4854,7 +5262,8 @@
                     ".updates"
                 ],
                 "Submodule": "Utility",
-                "Module": "Utility"
+                "Module": "Utility",
+                "Options": null
         }
     ],
     "Xp": [
@@ -4868,7 +5277,8 @@
                 ".xp"
             ],
             "Submodule": "Xp",
-            "Module": "Xp"
+            "Module": "Xp",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4884,7 +5294,8 @@
                 ".xprews"
             ],
             "Submodule": "Xp",
-            "Module": "Xp"
+            "Module": "Xp",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4896,7 +5307,8 @@
                 ".xprr 3 Social"
             ],
             "Submodule": "Xp",
-            "Module": "Xp"
+            "Module": "Xp",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4908,7 +5320,8 @@
                 ".xpcr 3 50"
             ],
             "Submodule": "Xp",
-            "Module": "Xp"
+            "Module": "Xp",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4921,7 +5334,8 @@
                 ".xpn server channel"
             ],
             "Submodule": "Xp",
-            "Module": "Xp"
+            "Module": "Xp",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4934,7 +5348,8 @@
                 ".xpex Server"
             ],
             "Submodule": "Xp",
-            "Module": "Xp"
+            "Module": "Xp",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4946,7 +5361,8 @@
                 ".xpexl"
             ],
             "Submodule": "Xp",
-            "Module": "Xp"
+            "Module": "Xp",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4958,7 +5374,8 @@
                 ".xplb"
             ],
             "Submodule": "Xp",
-            "Module": "Xp"
+            "Module": "Xp",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4970,7 +5387,8 @@
                 ".xpglb"
             ],
             "Submodule": "Xp",
-            "Module": "Xp"
+            "Module": "Xp",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4981,7 +5399,8 @@
                 ".xpadd 100 @b1nzy"
             ],
             "Submodule": "Xp",
-            "Module": "Xp"
+            "Module": "Xp",
+            "Options": null
         },
         {
             "Aliases": [
@@ -4992,7 +5411,8 @@
                 ".clubtransfer @b1nzy"
             ],
             "Submodule": "Club",
-            "Module": "Xp"
+            "Module": "Xp",
+            "Options": null
         },
         {
             "Aliases": [
@@ -5003,7 +5423,8 @@
                 ".clubadmin"
             ],
             "Submodule": "Club",
-            "Module": "Xp"
+            "Module": "Xp",
+            "Options": null
         },
         {
             "Aliases": [
@@ -5014,7 +5435,8 @@
                 ".clubcreate b1nzy's friends"
             ],
             "Submodule": "Club",
-            "Module": "Xp"
+            "Module": "Xp",
+            "Options": null
         },
         {
             "Aliases": [
@@ -5025,7 +5447,8 @@
                 ".clubicon https://i.imgur.com/htfDMfU.png"
             ],
             "Submodule": "Club",
-            "Module": "Xp"
+            "Module": "Xp",
+            "Options": null
         },
         {
             "Aliases": [
@@ -5036,7 +5459,8 @@
                 ".clubinfo b1nzy's friends#123"
             ],
             "Submodule": "Club",
-            "Module": "Xp"
+            "Module": "Xp",
+            "Options": null
         },
         {
             "Aliases": [
@@ -5047,7 +5471,8 @@
                 ".clubbans 2"
             ],
             "Submodule": "Club",
-            "Module": "Xp"
+            "Module": "Xp",
+            "Options": null
         },
         {
             "Aliases": [
@@ -5058,7 +5483,8 @@
                 ".clubapps 2"
             ],
             "Submodule": "Club",
-            "Module": "Xp"
+            "Module": "Xp",
+            "Options": null
         },
         {
             "Aliases": [
@@ -5069,7 +5495,8 @@
                 ".clubapply b1nzy's friends#123"
             ],
             "Submodule": "Club",
-            "Module": "Xp"
+            "Module": "Xp",
+            "Options": null
         },
         {
             "Aliases": [
@@ -5080,7 +5507,8 @@
                 ".clubaccept b1nzy#1337"
             ],
             "Submodule": "Club",
-            "Module": "Xp"
+            "Module": "Xp",
+            "Options": null
         },
         {
             "Aliases": [
@@ -5091,7 +5519,8 @@
                 ".clubleave"
             ],
             "Submodule": "Club",
-            "Module": "Xp"
+            "Module": "Xp",
+            "Options": null
         },
         {
             "Aliases": [
@@ -5102,7 +5531,8 @@
                 ".clubkick b1nzy#1337"
             ],
             "Submodule": "Club",
-            "Module": "Xp"
+            "Module": "Xp",
+            "Options": null
         },
         {
             "Aliases": [
@@ -5113,7 +5543,8 @@
                 ".clubban b1nzy#1337"
             ],
             "Submodule": "Club",
-            "Module": "Xp"
+            "Module": "Xp",
+            "Options": null
         },
         {
             "Aliases": [
@@ -5124,7 +5555,8 @@
                 ".clubunban b1nzy#1337"
             ],
             "Submodule": "Club",
-            "Module": "Xp"
+            "Module": "Xp",
+            "Options": null
         },
         {
             "Aliases": [
@@ -5135,7 +5567,8 @@
                 ".clublevelreq 7"
             ],
             "Submodule": "Club",
-            "Module": "Xp"
+            "Module": "Xp",
+            "Options": null
         },
         {
             "Aliases": [
@@ -5146,7 +5579,8 @@
                 ".clubdesc This is the best club please join."
             ],
             "Submodule": "Club",
-            "Module": "Xp"
+            "Module": "Xp",
+            "Options": null
         },
         {
             "Aliases": [
@@ -5157,7 +5591,8 @@
                 ".clubdisband"
             ],
             "Submodule": "Club",
-            "Module": "Xp"
+            "Module": "Xp",
+            "Options": null
         },
         {
             "Aliases": [
@@ -5168,7 +5603,8 @@
                 ".clublb 2"
             ],
             "Submodule": "Club",
-            "Module": "Xp"
+            "Module": "Xp",
+            "Options": null
         },
         {
             "Aliases": [
@@ -5180,7 +5616,8 @@
                 ".xpreset"
             ],
             "Submodule": "ResetCommands",
-            "Module": "Xp"
+            "Module": "Xp",
+            "Options": null
         }
     ]
 }
