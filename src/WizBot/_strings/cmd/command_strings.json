@@ -168,20 +168,6 @@
       "{0}slowmode"
     ]
   },
-  "cleanvplust": {
-    "Cmd": "cleanvplust cv+t",
-    "Desc": "Deletes all text channels ending in `-voice` for which voicechannels are not found. Use at your own risk.",
-    "Usage": [
-      "{0}cleanv+t"
-    ]
-  },
-  "voiceplustext": {
-    "Cmd": "voice+text v+t",
-    "Desc": "Creates a text channel for each voice channel only users in that voice channel can see. If you are server owner, keep in mind you will see them all the time regardless.",
-    "Usage": [
-      "{0}v+t"
-    ]
-  },
   "scsc": {
     "Cmd": "scsc",
     "Desc": "Starts an instance of cross server channel. You will get a token as a DM that other people will use to tune in to the same instance.",
@@ -524,20 +510,6 @@
       "{0}unstuck"
     ]
   },
-  "donators": {
-    "Cmd": "donators",
-    "Desc": "List of the lovely people who donated to keep this project alive.",
-    "Usage": [
-      "{0}donators"
-    ]
-  },
-  "donadd": {
-    "Cmd": "donadd",
-    "Desc": "Add a donator to the database.",
-    "Usage": [
-      "{0}donadd Donate Amount"
-    ]
-  },
   "savechat": {
     "Cmd": "savechat",
     "Desc": "Saves a number of messages to a text file and sends it to you.",
@@ -698,7 +670,7 @@
   },
   "srvrfilterwords": {
     "Cmd": "srvrfilterwords sfw",
-    "Desc": "Toggles automatic deletion of messages containing filtered words on the server. Does not affect the Bot Staff.",
+    "Desc": "Toggles automatic deletion of messages containing filtered words on the server. Does not affect the Bot Owner.",
     "Usage": [
       "{0}sfw"
     ]

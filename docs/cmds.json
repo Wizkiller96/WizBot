@@ -114,28 +114,6 @@
         },
         {
             "Aliases": [
-                ".donators"
-            ],
-            "Description": "List of the lovely people who donated to keep this project alive.",
-            "Usage": [
-                ".donators"
-            ],
-            "Submodule": "Administration",
-            "Module": "Administration"
-        },
-        {
-            "Aliases": [
-                ".donadd"
-            ],
-            "Description": "Add a donator to the database.**Bot owner only**",
-            "Usage": [
-                ".donadd Donate Amount"
-            ],
-            "Submodule": "Administration",
-            "Module": "Administration"
-        },
-        {
-            "Aliases": [
                 ".edit"
             ],
             "Description": "Edits bot's message, you have to specify message ID and new text. Supports embeds.**Requires ManageMessages server permission.**",
@@ -659,10 +637,11 @@
                 ".rolecolor",
                 ".roleclr"
             ],
-            "Description": "Set a role's color to the hex or 0-255 rgb color value provided.",
+            "Description": "Set a role's color to the hex or 0-255 rgb color value provided. Provide no color in order to see the hex of the color of the specified role.",
             "Usage": [
-                ".roleclr Admin 255 200 100",
-                ".roleclr Admin ffba55"
+                ".roleclr Admin",
+                ".roleclr Admin ffba55",
+                ".roleclr Admin 255 128 0"
             ],
             "Submodule": "RoleCommands",
             "Module": "Administration"
@@ -1260,10 +1239,9 @@
             "Aliases": [
                 ".vcrole"
             ],
-            "Description": "Sets or resets a role which will be given to users who join the voice channel you're in when you run this command. Provide no role name to disable. You must be in a voice channel to run this command.**Requires ManageRoles server permission.** **Requires ManageChannels server permission.**",
+            "Description": "vcrole**Requires ManageRoles server permission.** **Requires ManageChannels server permission.**",
             "Usage": [
-                ".vcrole SomeRole",
-                ".vcrole"
+                "vcrole"
             ],
             "Submodule": "VcRoleCommands",
             "Module": "Administration"
@@ -1272,35 +1250,11 @@
             "Aliases": [
                 ".vcrolelist"
             ],
-            "Description": "Shows a list of currently set voice channel roles.",
+            "Description": "vcrolelist",
             "Usage": [
-                ".vcrolelist"
+                "vcrolelist"
             ],
             "Submodule": "VcRoleCommands",
-            "Module": "Administration"
-        },
-        {
-            "Aliases": [
-                ".voice+text",
-                ".v+t"
-            ],
-            "Description": "Creates a text channel for each voice channel only users in that voice channel can see. If you are server owner, keep in mind you will see them all the time regardless.**Requires ManageRoles server permission.** **Requires ManageChannels server permission.**",
-            "Usage": [
-                ".v+t"
-            ],
-            "Submodule": "VoicePlusTextCommands",
-            "Module": "Administration"
-        },
-        {
-            "Aliases": [
-                ".cleanvplust",
-                ".cv+t"
-            ],
-            "Description": "Deletes all text channels ending in `-voice` for which voicechannels are not found. Use at your own risk.**Requires ManageChannels server permission.** **Requires ManageRoles server permission.**",
-            "Usage": [
-                ".cleanv+t"
-            ],
-            "Submodule": "VoicePlusTextCommands",
             "Module": "Administration"
         }
     ],
