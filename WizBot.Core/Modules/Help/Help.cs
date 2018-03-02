@@ -161,11 +161,12 @@ namespace WizBot.Modules.Help
                 var obj = new
                 {
                     Aliases = com.Aliases.Select(x => Prefix + x).ToArray(),
-                    Description = string.Format(com.Summary, Prefix) + _service.GetCommandRequirements(com, Context.Guild),
+                    Description = string.Format(com.Summary, Prefix),
                     Usage = JsonConvert.DeserializeObject<string[]>(com.Remarks).Select(x => string.Format(x, Prefix)).ToArray(),
                     Submodule = com.Module.Name,
                     Module = com.Module.GetTopLevelModule().Name,
                     Options = optHelpStr,
+                    Requirements = _service.GetCommandRequirements(com),
                 };
                 if (cmdData.TryGetValue(module.Name, out var cmds))
                     cmds.Add(obj);
@@ -175,7 +176,7 @@ namespace WizBot.Modules.Help
                         obj
                     });
             }
-            File.WriteAllText("../../docs/cmds.json", JsonConvert.SerializeObject(cmdData, Formatting.Indented));
+            File.WriteAllText("../../docs/cmds_new.json", JsonConvert.SerializeObject(cmdData, Formatting.Indented));
             await ReplyConfirmLocalized("commandlist_regen").ConfigureAwait(false);
         }
 
