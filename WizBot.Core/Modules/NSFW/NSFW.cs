@@ -98,6 +98,8 @@ namespace WizBot.Modules.NSFW
         }
 
         [WizBotCommand, Usage, Description, Aliases]
+        [RequireNsfw]
+        [RequireContext(ContextType.Guild)]
         [RequireUserPermission(ChannelPermission.ManageMessages)]
         public async Task AutoHentai(int interval = 0, string tags = null)
         {
@@ -144,6 +146,8 @@ namespace WizBot.Modules.NSFW
         }
 
         [WizBotCommand, Usage, Description, Aliases]
+        [RequireNsfw]
+        [RequireContext(ContextType.Guild)]
         [RequireUserPermission(ChannelPermission.ManageMessages)]
         public async Task AutoBoobs(int interval = 0)
         {
@@ -183,6 +187,7 @@ namespace WizBot.Modules.NSFW
         }
 
         [WizBotCommand, Usage, Description, Aliases]
+        [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
         [RequireUserPermission(ChannelPermission.ManageMessages)]
         public async Task AutoButts(int interval = 0)
         {
@@ -222,10 +227,12 @@ namespace WizBot.Modules.NSFW
         }
 
         [WizBotCommand, Usage, Description, Aliases]
+        [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
         public Task Hentai([Remainder] string tag = null) =>
             InternalHentai(Context.Channel, tag, false);
 
         [WizBotCommand, Usage, Description, Aliases]
+        [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
         public async Task HentaiBomb([Remainder] string tag = null)
         {
             if (!_hentaiBombBlacklist.Add(Context.Guild?.Id ?? Context.User.Id))
@@ -253,30 +260,37 @@ namespace WizBot.Modules.NSFW
         }
 
         [WizBotCommand, Usage, Description, Aliases]
+        [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
         public Task Yandere([Remainder] string tag = null)
             => InternalDapiCommand(tag, DapiSearchType.Yandere, false);
 
         [WizBotCommand, Usage, Description, Aliases]
+        [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
         public Task Konachan([Remainder] string tag = null)
             => InternalDapiCommand(tag, DapiSearchType.Konachan, false);
 
         [WizBotCommand, Usage, Description, Aliases]
+        [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
         public Task E621([Remainder] string tag = null)
             => InternalDapiCommand(tag, DapiSearchType.E621, false);
 
         [WizBotCommand, Usage, Description, Aliases]
+        [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
         public Task Rule34([Remainder] string tag = null)
             => InternalDapiCommand(tag, DapiSearchType.Rule34, false);
 
         [WizBotCommand, Usage, Description, Aliases]
+        [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
         public Task Danbooru([Remainder] string tag = null)
             => InternalDapiCommand(tag, DapiSearchType.Danbooru, false);
 
         [WizBotCommand, Usage, Description, Aliases]
+        [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
         public Task Gelbooru([Remainder] string tag = null)
             => InternalDapiCommand(tag, DapiSearchType.Gelbooru, false);
 
         [WizBotCommand, Usage, Description, Aliases]
+        [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
         public async Task Boobs()
         {
             try
@@ -292,6 +306,7 @@ namespace WizBot.Modules.NSFW
         }
 
         [WizBotCommand, Usage, Description, Aliases]
+        [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
         public async Task Butts()
         {
             try
@@ -307,6 +322,7 @@ namespace WizBot.Modules.NSFW
         }
 
         [WizBotCommand, Usage, Description, Aliases]
+        [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
         public async Task Neko()
         {
             try
