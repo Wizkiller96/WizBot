@@ -7,9 +7,9 @@ using WizBot.Modules.Xp.Common;
 using WizBot.Modules.Xp.Services;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using WizBot.Core.Common.Attributes;
 
 namespace WizBot.Modules.Xp
 {
@@ -26,8 +26,6 @@ namespace WizBot.Modules.Xp
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        //todo add ratelimit attribute
-        //[Ratelimit(30)]
         public async Task Experience([Remainder]IUser user = null)
         {
             user = user ?? Context.User;
