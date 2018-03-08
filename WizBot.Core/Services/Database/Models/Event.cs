@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace WizBot.Core.Services.Database.Models
 {
@@ -12,6 +8,7 @@ namespace WizBot.Core.Services.Database.Models
         public enum Type
         {
             Reaction,
+            //NotRaid,
         }
 
         public ulong ServerId { get; set; }

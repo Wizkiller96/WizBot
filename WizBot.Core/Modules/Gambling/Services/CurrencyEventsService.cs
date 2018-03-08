@@ -11,6 +11,7 @@ using WizBot.Core.Services.Database.Models;
 using System.Net.Http;
 using Newtonsoft.Json;
 using System.Linq;
+using WizBot.Core.Modules.Gambling.Common.CurrencyEvents;
 
 namespace WizBot.Modules.Gambling.Services
 {
@@ -92,9 +93,13 @@ namespace WizBot.Modules.Gambling.Services
             {
                 ce = new ReactionEvent(_client, _cs, _bc, g, ch, opts, embed);
             }
-            else //todo
+            //else if (type == Event.Type.NotRaid)
+            //{
+            //    ce = new NotRaidEvent(_client, _cs, _bc, g, ch, opts, embed);
+            //}
+            else
             {
-                ce = new ReactionEvent(_client, _cs, _bc, g, ch, opts, embed);
+                return false;
             }
 
             var added = _events.TryAdd(guildId, ce);
