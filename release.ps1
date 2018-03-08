@@ -1,12 +1,12 @@
-function GitHub-Release($versionNumber)
-{
+function GitHub-Release($versionNumber) {
+    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
     $ErrorActionPreference = "Stop"
 
     git pull
     git push #making sure commit id exists on remote
 
     $nl = [Environment]::NewLine
-    $env:WIZBOT_INSTALL_VERSION=$versionNumber
+    $env:WIZBOT_INSTALL_VERSION = $versionNumber
     $gitHubApiKey = $env:GITHUB_API_KEY
     $commitId = git rev-parse HEAD
     $lastTag = git describe --tags --abbrev=0
@@ -19,10 +19,9 @@ function GitHub-Release($versionNumber)
 
     $cl2 = $clArr | where { "$_" -like "*Merge pull request*" }
     $changelog = "## Changes$nl$changelog"
-    if ($cl2 -ne $null)
-    {
-      $cl2 = [string]::join([Environment]::NewLine, $cl2)
-      $changelog = $changelog + "$nl ## Pull Requests Merged$nl$cl2"
+    if ($cl2 -ne $null) {
+        $cl2 = [string]::join([Environment]::NewLine, $cl2)
+        $changelog = $changelog + "$nl ## Pull Requests Merged$nl$cl2"
     }
 
     Write-Host $changelog 
@@ -49,13 +48,13 @@ function GitHub-Release($versionNumber)
     $uploadFile = [Environment]::GetFolderPath('MyDocuments') + "\projekti\WizBotInstallerOutput\$artifact"
 
     $uploadParams = @{
-      Uri = $uploadUri;
-      Method = 'POST';
-      Headers = @{
-        Authorization = $auth;
-      }
-      ContentType = 'application/x-msdownload';
-      InFile = $uploadFile
+        Uri         = $uploadUri;
+        Method      = 'POST';
+        Headers     = @{
+            Authorization = $auth;
+        }
+        ContentType = 'application/x-msdownload';
+        InFile      = $uploadFile
     }
 
     Write-Host 'Uploading artifact'
@@ -66,8 +65,7 @@ function GitHub-Release($versionNumber)
     Write-Host 'Done 🎉'
 }
 
-function GitHubMake-Release($versionNumber, $commitId, $draft, $gitHubApiKey, $auth, $releaseId, $body)
-{
+function GitHubMake-Release($versionNumber, $commitId, $draft, $gitHubApiKey, $auth, $releaseId, $body) {
     $releaseId = If ($releaseId -eq "") {""} Else {"/" + $releaseId};
 
     Write-Host $versionNumber
@@ -77,22 +75,22 @@ function GitHubMake-Release($versionNumber, $commitId, $draft, $gitHubApiKey, $a
     Write-Host $body
 
     $releaseData = @{
-       tag_name = $versionNumber;
-       target_commitish = $commitId;
-       name = [string]::Format("WizBot v{0}", $versionNumber);
-       body = $body;
-       draft = $draft;
-       prerelease = $releaseId -ne "";
+        tag_name         = $versionNumber;
+        target_commitish = $commitId;
+        name             = [string]::Format("WizBot v{0}", $versionNumber);
+        body             = $body;
+        draft            = $draft;
+        prerelease       = $releaseId -ne "";
     }
 
     $releaseParams = @{
-       Uri = "https://api.github.com/repos/Wizkiller96/WizBot/releases" + $releaseId;
-       Method = 'POST';
-       Headers = @{
-         Authorization = $auth;
-       }
-       ContentType = 'application/json';
-       Body = (ConvertTo-Json $releaseData -Compress)
+        Uri         = "https://api.github.com/repos/Wizkiller96/WizBot/releases" + $releaseId;
+        Method      = 'POST';
+        Headers     = @{
+            Authorization = $auth;
+        }
+        ContentType = 'application/json';
+        Body        = (ConvertTo-Json $releaseData -Compress)
     }
     return Invoke-RestMethod @releaseParams
 }
