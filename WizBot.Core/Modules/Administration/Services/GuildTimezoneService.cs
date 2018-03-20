@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
 using Discord.WebSocket;
 using WizBot.Extensions;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
+using System.Threading.Tasks;
 
 namespace WizBot.Modules.Administration.Services
 {
@@ -13,28 +13,13 @@ namespace WizBot.Modules.Administration.Services
     {
         // todo 70 this is a hack >.<
         public static ConcurrentDictionary<ulong, GuildTimezoneService> AllServices { get; } = new ConcurrentDictionary<ulong, GuildTimezoneService>();
-        private ConcurrentDictionary<ulong, TimeZoneInfo> _timezones;
+        private readonly ConcurrentDictionary<ulong, TimeZoneInfo> _timezones;
         private readonly DbService _db;
 
         public GuildTimezoneService(DiscordSocketClient client, WizBot bot, DbService db)
         {
             _timezones = bot.AllGuildConfigs
-                .Select(x =>
-                {
-                    TimeZoneInfo tz;
-                    try
-                    {
-                        if (x.TimeZoneId == null)
-                            tz = null;
-                        else
-                            tz = TimeZoneInfo.FindSystemTimeZoneById(x.TimeZoneId);
-                    }
-                    catch
-                    {
-                        tz = null;
-                    }
-                    return (x.GuildId, Timezone: tz);
-                })
+                .Select(GetTimzezoneTuple)
                 .Where(x => x.Timezone != null)
                 .ToDictionary(x => x.GuildId, x => x.Timezone)
                 .ToConcurrent();
@@ -43,6 +28,33 @@ namespace WizBot.Modules.Administration.Services
             if (curUser != null)
                 AllServices.TryAdd(curUser.Id, this);
             _db = db;
+
+            bot.JoinedGuild += Bot_JoinedGuild;
+        }
+
+        private Task Bot_JoinedGuild(GuildConfig arg)
+        {
+            var (guildId, tz) = GetTimzezoneTuple(arg);
+            if (tz != null)
+                _timezones.TryAdd(guildId, tz);
+            return Task.CompletedTask;
+        }
+
+        private (ulong GuildId, TimeZoneInfo Timezone) GetTimzezoneTuple(GuildConfig x)
+        {
+            TimeZoneInfo tz;
+            try
+            {
+                if (x.TimeZoneId == null)
+                    tz = null;
+                else
+                    tz = TimeZoneInfo.FindSystemTimeZoneById(x.TimeZoneId);
+            }
+            catch
+            {
+                tz = null;
+            }
+            return (x.GuildId, Timezone: tz);
         }
 
         public TimeZoneInfo GetTimeZoneOrDefault(ulong guildId)

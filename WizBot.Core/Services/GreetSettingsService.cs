@@ -5,7 +5,6 @@ using WizBot.Core.Services.Database.Models;
 using NLog;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WizBot.Common;
@@ -33,6 +32,23 @@ namespace WizBot.Core.Services
 
             _client.UserJoined += UserJoined;
             _client.UserLeft += UserLeft;
+
+            bot.JoinedGuild += Bot_JoinedGuild;
+            _client.LeftGuild += _client_LeftGuild;
+        }
+
+        private Task _client_LeftGuild(SocketGuild arg)
+        {
+            GuildConfigsCache.TryRemove(arg.Id, out _);
+            return Task.CompletedTask;
+        }
+
+        private Task Bot_JoinedGuild(GuildConfig gc)
+        {
+            GuildConfigsCache.AddOrUpdate(gc.GuildId,
+                GreetSettings.Create(gc),
+                delegate { return GreetSettings.Create(gc); });
+            return Task.CompletedTask;
         }
 
         private Task UserLeft(IGuildUser user)
