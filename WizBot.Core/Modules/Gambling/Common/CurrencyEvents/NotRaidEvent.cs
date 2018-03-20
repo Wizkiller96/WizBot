@@ -2,7 +2,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
@@ -11,7 +10,6 @@ using WizBot.Core.Modules.Gambling.Common.Events;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Extensions;
-using WizBot.Modules.Gambling.Common;
 using NLog;
 
 namespace WizBot.Core.Modules.Gambling.Common.CurrencyEvents

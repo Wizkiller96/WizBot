@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Discord.WebSocket;
-using WizBot.Modules.Administration.Services;
+﻿using System.Collections.Concurrent;
 
 namespace WizBot.Modules.Administration.Common
 {

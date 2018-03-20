@@ -18,6 +18,7 @@ namespace WizBot.Modules.Permissions
     public partial class Permissions : WizBotTopLevelModule<PermissionService>
     {
         private readonly DbService _db;
+        // todo change .pr
 
         public Permissions(DbService db)
         {
