@@ -16,7 +16,7 @@ using NLog;
 
 namespace WizBot.Core.Modules.Gambling.Common.CurrencyEvents
 {
-    public class NotRaidEvent : ICurrencyEvent
+    public class NotRaidEvent
     {
         private DiscordSocketClient _client;
         private ICurrencyService _cs;
@@ -36,7 +36,7 @@ namespace WizBot.Core.Modules.Gambling.Common.CurrencyEvents
         private readonly Logger _log;
         private readonly Timer _t;
 
-        public event Func<ulong, Task> OnEnded;
+        //public event Func<ulong, Task> OnEnded;
 
         public NotRaidEvent(DiscordSocketClient client, ICurrencyService cs, IBotConfigProvider bc,
             SocketGuild g, SocketTextChannel ch, EventOptions opts,
