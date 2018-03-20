@@ -9,7 +9,6 @@ using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
 using System.Linq;
 using System.Threading.Tasks;
-using WizBot.Core.Common.Attributes;
 
 namespace WizBot.Modules.Xp
 {
