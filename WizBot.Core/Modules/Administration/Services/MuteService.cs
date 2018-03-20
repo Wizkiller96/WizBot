@@ -32,6 +32,17 @@ namespace WizBot.Modules.Administration.Services
         public event Action<IGuildUser, MuteType> UserMuted = delegate { };
         public event Action<IGuildUser, MuteType> UserUnmuted = delegate { };
 
+        public async Task SetMuteRoleAsync(ulong guildId, string name)
+        {
+            using (var uow = _db.UnitOfWork)
+            {
+                var config = uow.GuildConfigs.For(guildId, set => set);
+                config.MuteRoleName = name;
+                GuildMuteRoles.AddOrUpdate(guildId, name, (id, old) => name);
+                await uow.CompleteAsync().ConfigureAwait(false);
+            }
+        }
+
         private static readonly OverwritePermissions denyOverwrite = new OverwritePermissions(addReactions: PermValue.Deny, sendMessages: PermValue.Deny, attachFiles: PermValue.Deny);
 
         private readonly Logger _log = LogManager.GetCurrentClassLogger();

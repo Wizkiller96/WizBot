@@ -19,11 +19,13 @@ namespace WizBot.Modules.Administration.Services
 
         private readonly Logger _log;
         private readonly WizBot _bot;
+        private readonly DbService _db;
 
-        public AdministrationService(WizBot bot, CommandHandler cmdHandler)
+        public AdministrationService(WizBot bot, CommandHandler cmdHandler, DbService db)
         {
             _log = LogManager.GetCurrentClassLogger();
             _bot = bot;
+            _db = db;
 
             DeleteMessagesOnCommand = new ConcurrentHashSet<ulong>(bot.AllGuildConfigs
                 .Where(g => g.DeleteMessageOnCommand)
@@ -67,6 +69,19 @@ namespace WizBot.Modules.Administration.Services
                 }
             });
             return Task.CompletedTask;
+        }
+
+        public bool ToggleDeleteMessageOnCommand(ulong guildId)
+        {
+            bool enabled;
+            using (var uow = _db.UnitOfWork)
+            {
+                var conf = uow.GuildConfigs.For(guildId, set => set);
+                enabled = conf.DeleteMessageOnCommand = !conf.DeleteMessageOnCommand;
+
+                uow.Complete();
+            }
+            return enabled;
         }
     }
 }

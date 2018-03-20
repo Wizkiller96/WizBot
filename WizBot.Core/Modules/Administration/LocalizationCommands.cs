@@ -16,7 +16,7 @@ namespace WizBot.Modules.Administration
         [Group]
         public class LocalizationCommands : WizBotSubmodule
         {
-            private static ImmutableDictionary<string, string> supportedLocales { get; } = new Dictionary<string, string>()
+            private static readonly ImmutableDictionary<string, string> supportedLocales = new Dictionary<string, string>()
             {
                 {"ar", "العربية" },
                 {"zh-TW", "繁體中文, 台灣" },
