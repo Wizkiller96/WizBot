@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using WizBot.Common.Attributes;
 using WizBot.Modules.Administration.Services;
 using Microsoft.EntityFrameworkCore;
-using WizBot.Core.Common;
 using Discord;
 
 namespace WizBot.Modules.Administration
