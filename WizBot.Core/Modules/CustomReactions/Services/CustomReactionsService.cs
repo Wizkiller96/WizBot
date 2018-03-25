@@ -34,10 +34,11 @@ namespace WizBot.Modules.CustomReactions.Services
         private readonly IBotConfigProvider _bc;
         private readonly WizBotStrings _strings;
         private readonly IDataCache _cache;
+        private readonly GlobalPermissionService _gperm;
 
         public CustomReactionsService(PermissionService perms, DbService db, WizBotStrings strings,
             DiscordSocketClient client, CommandHandler cmd, IBotConfigProvider bc, IUnitOfWork uow,
-            IDataCache cache)
+            IDataCache cache, GlobalPermissionService gperm)
         {
             _log = LogManager.GetCurrentClassLogger();
             _db = db;
@@ -47,6 +48,7 @@ namespace WizBot.Modules.CustomReactions.Services
             _bc = bc;
             _strings = strings;
             _cache = cache;
+            _gperm = gperm;
 
             var sub = _cache.Redis.GetSubscriber();
             sub.Subscribe(_client.CurrentUser.Id + "_gcr.added", (ch, msg) =>
@@ -80,7 +82,7 @@ namespace WizBot.Modules.CustomReactions.Services
                 var obj = new { Id = 0, Value = false };
                 obj = JsonConvert.DeserializeAnonymousType(msg, obj);
                 var gcr = GlobalReactions.FirstOrDefault(x => x.Id == obj.Id);
-                if(gcr != null)
+                if (gcr != null)
                     gcr.DmResponse = obj.Value;
             }, StackExchange.Redis.CommandFlags.FireAndForget);
             sub.Subscribe(_client.CurrentUser.Id + "_crca.toggle", (ch, msg) =>
@@ -188,6 +190,11 @@ namespace WizBot.Modules.CustomReactions.Services
             {
                 try
                 {
+                    if (_gperm.BlockedModules.Contains("ActualCustomReactions"))
+                    {
+                        return true;
+                    }
+
                     if (guild is SocketGuild sg)
                     {
                         var pc = _perms.GetCache(guild.Id);
