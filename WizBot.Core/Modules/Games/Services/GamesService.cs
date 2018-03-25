@@ -17,7 +17,6 @@ using WizBot.Core.Services.Impl;
 using Newtonsoft.Json;
 using NLog;
 using WizBot.Modules.Games.Common.Acrophobia;
-using WizBot.Modules.Games.Common.Connect4;
 using WizBot.Modules.Games.Common.Hangman;
 using WizBot.Modules.Games.Common.Trivia;
 using WizBot.Modules.Games.Common.Nunchi;
@@ -46,7 +45,6 @@ namespace WizBot.Modules.Games.Services
 
         //channelId, game
         public ConcurrentDictionary<ulong, Acrophobia> AcrophobiaGames { get; } = new ConcurrentDictionary<ulong, Acrophobia>();
-        public ConcurrentDictionary<ulong, Connect4Game> Connect4Games { get; } = new ConcurrentDictionary<ulong, Connect4Game>();
 
         public ConcurrentDictionary<ulong, Hangman> HangmanGames { get; } = new ConcurrentDictionary<ulong, Hangman>();
         public TermPool TermPool { get; } = new TermPool();
@@ -103,8 +101,6 @@ namespace WizBot.Modules.Games.Services
 
             AcrophobiaGames.ForEach(x => x.Value.Dispose());
             AcrophobiaGames.Clear();
-            Connect4Games.ForEach(x => x.Value.Dispose());
-            Connect4Games.Clear();
             HangmanGames.ForEach(x => x.Value.Dispose());
             HangmanGames.Clear();
             await Task.WhenAll(RunningTrivias.Select(x => x.Value.StopGame()));

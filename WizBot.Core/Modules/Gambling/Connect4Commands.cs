@@ -3,27 +3,30 @@ using Discord.Commands;
 using Discord.WebSocket;
 using WizBot.Common.Attributes;
 using WizBot.Core.Common;
+using WizBot.Core.Modules.Gambling.Common;
+using WizBot.Core.Services;
 using WizBot.Extensions;
-using WizBot.Modules.Games.Common.Connect4;
-using WizBot.Modules.Games.Services;
+using WizBot.Modules.Gambling.Common.Connect4;
+using WizBot.Modules.Gambling.Services;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WizBot.Modules.Games
+namespace WizBot.Modules.Gambling
 {
-    public partial class Games
+    public partial class Gambling
     {
         [Group]
-        public class Connect4Commands : WizBotSubmodule<GamesService>
+        public class Connect4Commands : GamblingSubmodule<GamblingService>
         {
             private readonly DiscordSocketClient _client;
-
+            private readonly ICurrencyService _cs;
             private static readonly string[] numbers = new string[] { ":one:", ":two:", ":three:", ":four:", ":five:", ":six:", ":seven:", ":eight:" };
 
-            public Connect4Commands(DiscordSocketClient client)
+            public Connect4Commands(DiscordSocketClient client, ICurrencyService cs)
             {
                 _client = client;
+                _cs = cs;
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -32,7 +35,10 @@ namespace WizBot.Modules.Games
             public async Task Connect4(params string[] args)
             {
                 var (options, _) = OptionsParser.Default.ParseFrom(new Connect4Game.Options(), args);
-                var newGame = new Connect4Game(Context.User.Id, Context.User.ToString(), options);
+                if (!await CheckBetOptional(options.Bet))
+                    return;
+
+                var newGame = new Connect4Game(Context.User.Id, Context.User.ToString(), options, _cs);
                 Connect4Game game;
                 if ((game = _service.Connect4Games.GetOrAdd(Context.Channel.Id, newGame)) != newGame)
                 {
@@ -41,7 +47,7 @@ namespace WizBot.Modules.Games
 
                     newGame.Dispose();
                     //means game already exists, try to join
-                    var joined = await game.Join(Context.User.Id, Context.User.ToString()).ConfigureAwait(false);
+                    var joined = await game.Join(Context.User.Id, Context.User.ToString(), options.Bet).ConfigureAwait(false);
                     return;
                 }
 
@@ -105,11 +111,11 @@ namespace WizBot.Modules.Games
                     string title;
                     if (result == Connect4Game.Result.CurrentPlayerWon)
                     {
-                        title = GetText("connect4_won", Format.Bold(arg.CurrentPlayer), Format.Bold(arg.OtherPlayer));
+                        title = GetText("connect4_won", Format.Bold(arg.CurrentPlayer.Username), Format.Bold(arg.OtherPlayer.Username));
                     }
                     else if (result == Connect4Game.Result.OtherPlayerWon)
                     {
-                        title = GetText("connect4_won", Format.Bold(arg.OtherPlayer), Format.Bold(arg.CurrentPlayer));
+                        title = GetText("connect4_won", Format.Bold(arg.OtherPlayer.Username), Format.Bold(arg.CurrentPlayer.Username));
                     }
                     else
                         title = GetText("connect4_draw");
@@ -156,7 +162,7 @@ namespace WizBot.Modules.Games
 
                 if (game.CurrentPhase == Connect4Game.Phase.P1Move ||
                     game.CurrentPhase == Connect4Game.Phase.P2Move)
-                    sb.AppendLine(GetText("connect4_player_to_move", Format.Bold(game.CurrentPlayer)));
+                    sb.AppendLine(GetText("connect4_player_to_move", Format.Bold(game.CurrentPlayer.Username)));
 
                 for (int i = Connect4Game.NumberOfRows; i > 0; i--)
                 {

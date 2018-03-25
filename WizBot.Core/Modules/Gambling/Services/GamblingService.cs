@@ -1,9 +1,8 @@
 ﻿using WizBot.Core.Modules.Gambling.Common;
 using WizBot.Core.Services;
-using WizBot.Core.Services.Database.Models;
+using WizBot.Modules.Gambling.Common.Connect4;
 using NLog;
 using System.Collections.Concurrent;
-using System.Linq;
 
 namespace WizBot.Modules.Gambling.Services
 {
@@ -14,6 +13,7 @@ namespace WizBot.Modules.Gambling.Services
         private readonly Logger _log;
 
         public ConcurrentDictionary<(ulong, ulong), RollDuelGame> Duels { get; } = new ConcurrentDictionary<(ulong, ulong), RollDuelGame>();
+        public ConcurrentDictionary<ulong, Connect4Game> Connect4Games { get; } = new ConcurrentDictionary<ulong, Connect4Game>();
 
         public GamblingService(DbService db, ICurrencyService cs)
         {
