@@ -12,6 +12,7 @@ using WizBot.Modules.Searches.Services;
 using WizBot.Modules.Searches.Common;
 using System.Text.RegularExpressions;
 using System;
+using Discord.WebSocket;
 
 namespace WizBot.Modules.Searches
 {
@@ -135,10 +136,22 @@ namespace WizBot.Modules.Searches
                 IEnumerable<FollowedStream> streams;
                 using (var uow = _db.UnitOfWork)
                 {
-                    streams = uow.GuildConfigs
+                    var all = uow.GuildConfigs
                                  .For(Context.Guild.Id,
                                       set => set.Include(gc => gc.FollowedStreams))
                                  .FollowedStreams;
+
+                    var toRemove = all.Where(x => ((SocketGuild)Context.Guild).GetTextChannel(x.ChannelId) == null);
+                    streams = all.Except(toRemove);
+                    if (toRemove.Any())
+                    {
+                        foreach (var r in toRemove)
+                        {
+                            _service.UntrackStream(r);
+                        }
+                        uow._context.RemoveRange(toRemove);
+                        uow.Complete();
+                    }
                 }
 
                 if (!streams.Any())
