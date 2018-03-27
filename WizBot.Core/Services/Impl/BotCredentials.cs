@@ -41,6 +41,7 @@ namespace WizBot.Core.Services.Impl
         public string MiningProxyCreds { get; }
 
         public string BotListToken { get; set; }
+        public string TwitchClientId { get; set; }
 
         public BotCredentials()
         {
@@ -121,6 +122,12 @@ namespace WizBot.Core.Services.Impl
                             string.IsNullOrWhiteSpace(dbSection["ConnectionString"])
                                 ? "Data Source=data/WizBot.db"
                                 : dbSection["ConnectionString"]);
+
+                TwitchClientId = data[nameof(TwitchClientId)];
+                if (string.IsNullOrWhiteSpace(TwitchClientId))
+                {
+                    TwitchClientId = "bbo2yju81etnuhfc99sg7yr2ahbrhxg";
+                }
             }
             catch (Exception ex)
             {
@@ -157,6 +164,7 @@ namespace WizBot.Core.Services.Impl
             public string MiningProxyCreds { get; set; } = null;
 
             public string BotListToken { get; set; }
+            public string TwitchClientId { get; set; }
         }
 
         private class DbModel

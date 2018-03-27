@@ -53,11 +53,6 @@ namespace WizBot.Modules.Utility.Services
                         else
                             continue;
 
-                        _log.Info(@"--Mapping Command--
-            GuildId: {0}
-            Trigger: {1}
-            Mapping: {2}", guild.Id, input, newInput);
-
                         try
                         {
                             var toDelete = await channel.SendConfirmAsync($"{input} => {newInput}").ConfigureAwait(false);
