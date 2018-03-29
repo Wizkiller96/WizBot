@@ -1,12 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord.WebSocket;
 using WizBot.Common.Collections;
 using WizBot.Extensions;
 using WizBot.Core.Services;
-using WizBot.Core.Services.Database.Models;
 using NLog;
 
 namespace WizBot.Modules.Administration.Services
