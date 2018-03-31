@@ -83,7 +83,7 @@ namespace WizBot.Modules.Administration.Services
                                 _log.Warn(ex);
                             }
                         }
-                    })));
+                    })).Append(Task.Delay(3000)));
                 }
             });
 
