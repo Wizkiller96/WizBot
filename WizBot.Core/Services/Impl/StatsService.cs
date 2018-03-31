@@ -41,9 +41,7 @@ namespace WizBot.Core.Services.Impl
         public long CommandsRan => Interlocked.Read(ref _commandsRan);
 
         private readonly Timer _carbonitexTimer;
-#if GLOBAL_WIZBOT
         private readonly Timer _botlistTimer;
-#endif
         private readonly Timer _dataTimer;
         private readonly ConnectionMultiplexer _redis;
 
@@ -164,7 +162,7 @@ namespace WizBot.Core.Services.Impl
                     }
                 }, null, TimeSpan.FromHours(1), TimeSpan.FromHours(1));
             }
-#if GLOBAL_WIZBOT
+            
             _botlistTimer = new Timer(async (state) =>
             {
                 if (string.IsNullOrWhiteSpace(_creds.BotListToken))
@@ -194,7 +192,6 @@ namespace WizBot.Core.Services.Impl
                     // ignored
                 }
             }, null, TimeSpan.FromMinutes(5), TimeSpan.FromHours(1));
-#endif
 
             var platform = "other";
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))

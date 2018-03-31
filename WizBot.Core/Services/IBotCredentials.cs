@@ -31,6 +31,7 @@ namespace WizBot.Core.Services
         string MiningProxyCreds { get; }
         string VotesUrl { get; }
         string VotesToken { get; }
+        string BotListToken { get; }
         string TwitchClientId { get; }
     }
 
