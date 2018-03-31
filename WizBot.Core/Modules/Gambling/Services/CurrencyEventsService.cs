@@ -11,12 +11,16 @@ using WizBot.Core.Services.Database.Models;
 using System.Net.Http;
 using Newtonsoft.Json;
 using System.Linq;
-using WizBot.Core.Modules.Gambling.Common.CurrencyEvents;
 
 namespace WizBot.Modules.Gambling.Services
 {
     public class CurrencyEventsService : INService
     {
+        public class VoteModel
+        {
+            public ulong User { get; set; }
+            public long Date { get; set; }
+        }
         private readonly DbService _db;
         private readonly DiscordSocketClient _client;
         private readonly ICurrencyService _cs;
@@ -38,35 +42,35 @@ namespace WizBot.Modules.Gambling.Services
             _http = new HttpClient();
             _log = LogManager.GetCurrentClassLogger();
 
-#if GLOBAL_WIZBOT
             if (_client.ShardId == 0)
             {
                 Task t = BotlistUpvoteLoop();
             }
-#endif
         }
 
         private async Task BotlistUpvoteLoop()
         {
-            if (string.IsNullOrWhiteSpace(_creds.BotListToken))
+            if (string.IsNullOrWhiteSpace(_creds.VotesUrl))
                 return;
             while (true)
             {
                 await Task.Delay(TimeSpan.FromHours(1));
                 try
                 {
-                    var req = new HttpRequestMessage(HttpMethod.Get,
-                        $"https://discordbots.org/api/bots/116275390695079945/votes?onlyids=true&days=1");
-                    req.Headers.Add("Authorization", _creds.BotListToken);
-                    var res = await _http.SendAsync(req);
+                    var req = new HttpRequestMessage(HttpMethod.Get, _creds.VotesUrl);
+                    if (!string.IsNullOrWhiteSpace(_creds.VotesToken))
+                        req.Headers.Add("Authorization", _creds.VotesToken);
+                    var res = await _http.SendAsync(req).ConfigureAwait(false);
                     if (!res.IsSuccessStatusCode)
                     {
                         _log.Warn("Botlist API not reached.");
                         continue;
                     }
                     var resStr = await res.Content.ReadAsStringAsync();
-                    var ids = JsonConvert.DeserializeObject<ulong[]>(resStr);
-                    await _cs.AddBulkAsync(ids, ids.Select(x => "Voted - <https://discordbots.org/bot/nadeko/vote>"), ids.Select(x => 10L), true);
+                    var ids = JsonConvert.DeserializeObject<VoteModel[]>(resStr)
+                        .Select(x => x.User)
+                        .Distinct();
+                    await _cs.AddBulkAsync(ids, ids.Select(x => "Voted - <https://discordbots.org/bot/wizbot/vote>"), ids.Select(x => 10L), true);
 
                 }
                 catch (Exception ex)

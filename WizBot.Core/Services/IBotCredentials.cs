@@ -29,7 +29,8 @@ namespace WizBot.Core.Services
         RestartConfig RestartCommand { get; }
         string MiningProxyUrl { get; }
         string MiningProxyCreds { get; }
-        string BotListToken { get; }
+        string VotesUrl { get; }
+        string VotesToken { get; }
         string TwitchClientId { get; }
     }
 
