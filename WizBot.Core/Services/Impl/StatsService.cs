@@ -23,7 +23,7 @@ namespace WizBot.Core.Services.Impl
         private readonly IBotCredentials _creds;
         private readonly DateTime _started;
 
-        public const string BotVersion = "2.17.3";
+        public const string BotVersion = "2.17.4";
         public string Author => "Kwoth#2560\nWizkiller96#2947";
         public string Library => "Discord.Net";
 
@@ -162,7 +162,7 @@ namespace WizBot.Core.Services.Impl
                     }
                 }, null, TimeSpan.FromHours(1), TimeSpan.FromHours(1));
             }
-            
+
             _botlistTimer = new Timer(async (state) =>
             {
                 if (string.IsNullOrWhiteSpace(_creds.BotListToken))
