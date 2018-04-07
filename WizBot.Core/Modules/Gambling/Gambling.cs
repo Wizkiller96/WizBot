@@ -478,7 +478,7 @@ namespace WizBot.Modules.Gambling
             }
 
             var rnd = new WizBotRandom().Next(0, 101);
-            var str = Context.User.Mention + Format.Code(GetText("roll", rnd));
+            var str = Format.Bold(Context.User.ToString()) + Format.Code(GetText("roll", rnd));
             if (rnd < 67)
             {
                 str += GetText("better_luck");
