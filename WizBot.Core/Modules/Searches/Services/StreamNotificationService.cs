@@ -201,7 +201,7 @@ namespace WizBot.Modules.Searches.Services
             }
             catch (Exception ex)
             {
-                _log.Warn(ex.Message);
+                _log.Warn(ex);
                 return null;
             }
         }
