@@ -27,6 +27,7 @@ namespace WizBot.Modules.Utility
             
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.DM)]
+            [OwnerOnly]
             public async Task PatreonRewardsReload()
             {
                 if (string.IsNullOrWhiteSpace(_creds.PatreonAccessToken))
