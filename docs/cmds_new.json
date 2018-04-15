@@ -3704,9 +3704,11 @@
       "Aliases": [
         ".neko"
       ],
-      "Description": "Random lewd neko from http://nekos.life/lewd",
+      "Description": "Pulls a random image from a category on http://nekos.life. Category: cum, les, meow, tickle, lewd, feed, bj, nsfw_neko_gif, poke, anal, slap, pussy, lizard, classic, kuni, pat, kiss, neko, cuddle, fox_girl, boobs, Random_hentai_gif, hug",
       "Usage": [
-        ".neko"
+        ".neko lewd",
+        ".neko neko",
+        ".neko nsfw_neko_gif"
       ],
       "Submodule": "NSFW",
       "Module": "NSFW",
@@ -4686,19 +4688,6 @@
       "Description": "Shows a mentioned person's avatar.",
       "Usage": [
         ".av @SomeGuy"
-      ],
-      "Submodule": "Searches",
-      "Module": "Searches",
-      "Options": null,
-      "Requirements": []
-    },
-    {
-      "Aliases": [
-        ".nya"
-      ],
-      "Description": "Random neko from http://nekos.life",
-      "Usage": [
-        ".nya"
       ],
       "Submodule": "Searches",
       "Module": "Searches",

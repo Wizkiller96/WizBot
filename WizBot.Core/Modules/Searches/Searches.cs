@@ -826,27 +826,6 @@ namespace WizBot.Modules.Searches
                 .WithThumbnailUrl(avatarUrl)
                 .WithImageUrl(avatarUrl), Context.User.Mention).ConfigureAwait(false);
         }
-
-        [WizBotCommand, Usage, Description, Aliases]
-        public async Task Nya()
-        {
-            try
-            {
-                JToken nyatitle;
-                JToken nyaimg;
-                nyatitle = JObject.Parse(await _service.Http.GetStringAsync($"https://nekos.life/api/v2/cat").ConfigureAwait(false));
-                nyaimg = JObject.Parse(await _service.Http.GetStringAsync($"https://nekos.life/api/v2/img/neko").ConfigureAwait(false));
-                await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                    .WithAuthor(eab => eab.WithUrl("http://nekos.life/")
-                        .WithIconUrl("https://i.imgur.com/a36AMkG.png")
-                        .WithName($"Nekos! {nyatitle["cat"]}"))
-                    .WithImageUrl($"{nyaimg["url"]}"), Context.User.Mention).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                await Context.Channel.SendErrorAsync(ex.Message).ConfigureAwait(false);
-            }
-        }
         
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Wikia(string target, [Remainder] string query)

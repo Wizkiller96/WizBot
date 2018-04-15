@@ -3301,18 +3301,13 @@
       "{0}xpreset"
     ]
   },
-  "nya": {
-    "cmd": "nya",
-    "desc": "Random neko from http://nekos.life",
-    "usage": [
-      "{0}nya"
-    ]
-  },
   "neko": {
     "cmd": "neko",
-    "desc": "Random lewd neko from http://nekos.life/lewd",
+    "desc": "Pulls a random image from a category on http://nekos.life. Category: cum, les, meow, tickle, lewd, feed, bj, nsfw_neko_gif, poke, anal, slap, pussy, lizard, classic, kuni, pat, kiss, neko, cuddle, fox_girl, boobs, Random_hentai_gif, hug",
     "usage": [
-      "{0}neko"
+      "{0}neko lewd",
+      "{0}neko neko",
+      "{0}neko nsfw_neko_gif"
     ]
   },
   "bible": {

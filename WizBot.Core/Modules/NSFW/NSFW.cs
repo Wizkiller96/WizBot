@@ -77,18 +77,18 @@ namespace WizBot.Modules.NSFW
             }
         }
 
-        private async Task InternalNeko(IMessageChannel Channel)
+        private async Task InternalNeko(IMessageChannel Channel, string category)
         {
             try
             {
                 JToken nekotitle;
                 JToken nekoimg;
                 nekotitle = JObject.Parse(await _service.Http.GetStringAsync($"https://nekos.life/api/v2/cat").ConfigureAwait(false));
-                nekoimg = JObject.Parse(await _service.Http.GetStringAsync($"https://nekos.life/api/v2/img/lewd").ConfigureAwait(false));
+                nekoimg = JObject.Parse(await _service.Http.GetStringAsync($"https://nekos.life/api/v2/img/{category}").ConfigureAwait(false));
                 await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                    .WithAuthor(eab => eab.WithUrl("http://nekos.life/lewd")
+                    .WithAuthor(eab => eab.WithUrl("http://nekos.life/")
                         .WithIconUrl("https://i.imgur.com/a36AMkG.png")
-                        .WithName($"Lewd Nekos! {nekotitle["cat"]}"))
+                        .WithName($"Nekos Life - Database {nekotitle["cat"]}"))
                     .WithImageUrl($"{nekoimg["url"]}"), Context.User.Mention).ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -323,19 +323,22 @@ namespace WizBot.Modules.NSFW
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
-        public async Task Neko()
+        public async Task Neko([Remainder] string category)
         {
+            if (string.IsNullOrWhiteSpace(category))
+                return;
+
             try
             {
-                JToken obj;
-                JToken obj2;
-                obj = JObject.Parse(await _service.Http.GetStringAsync($"https://nekos.life/api/v2/img/lewd").ConfigureAwait(false));
-                obj2 = JObject.Parse(await _service.Http.GetStringAsync($"https://nekos.life/api/v2/cat").ConfigureAwait(false));
+                JToken nekotitle;
+                JToken nekoimg;
+                nekoimg = JObject.Parse(await _service.Http.GetStringAsync($"https://nekos.life/api/v2/img/{category}").ConfigureAwait(false));
+                nekotitle = JObject.Parse(await _service.Http.GetStringAsync($"https://nekos.life/api/v2/cat").ConfigureAwait(false));
                 await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                     .WithAuthor(eab => eab.WithUrl("http://nekos.life/lewd")
                         .WithIconUrl("https://i.imgur.com/a36AMkG.png")
-                        .WithName($"Lewd Nekos! {obj2["cat"]}"))
-                    .WithImageUrl($"{obj["url"]}"), Context.User.Mention).ConfigureAwait(false);
+                        .WithName($"Nekos Life - Database {nekotitle["cat"]}"))
+                    .WithImageUrl($"{nekoimg["url"]}"), Context.User.Mention).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
