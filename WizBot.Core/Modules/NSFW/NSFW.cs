@@ -323,7 +323,7 @@ namespace WizBot.Modules.NSFW
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
-        public async Task Neko([Remainder] string category)
+        public async Task Neko([Remainder] string category = "lewd")
         {
             if (string.IsNullOrWhiteSpace(category))
                 return;
@@ -335,7 +335,7 @@ namespace WizBot.Modules.NSFW
                 nekoimg = JObject.Parse(await _service.Http.GetStringAsync($"https://nekos.life/api/v2/img/{category}").ConfigureAwait(false));
                 nekotitle = JObject.Parse(await _service.Http.GetStringAsync($"https://nekos.life/api/v2/cat").ConfigureAwait(false));
                 await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                    .WithAuthor(eab => eab.WithUrl("http://nekos.life/lewd")
+                    .WithAuthor(eab => eab.WithUrl("http://nekos.life/")
                         .WithIconUrl("https://i.imgur.com/a36AMkG.png")
                         .WithName($"Nekos Life - Database {nekotitle["cat"]}"))
                     .WithImageUrl($"{nekoimg["url"]}"), Context.User.Mention).ConfigureAwait(false);

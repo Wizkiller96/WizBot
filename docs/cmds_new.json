@@ -3704,10 +3704,10 @@
       "Aliases": [
         ".neko"
       ],
-      "Description": "Pulls a random image from a category on http://nekos.life. Category: cum, les, meow, tickle, lewd, feed, bj, nsfw_neko_gif, poke, anal, slap, pussy, lizard, classic, kuni, pat, kiss, neko, cuddle, fox_girl, boobs, Random_hentai_gif, hug",
+      "Description": "Pulls a random lewd neko image unless a category from http://nekos.life is picked. Categories: cum, les, meow, tickle, lewd, feed, bj, nsfw_neko_gif, poke, anal, slap, pussy, lizard, classic, kuni, pat, kiss, neko, cuddle, fox_girl, boobs, Random_hentai_gif, hug",
       "Usage": [
-        ".neko lewd",
-        ".neko neko",
+        ".neko",
+        ".neko Random_hentai_gif",
         ".neko nsfw_neko_gif"
       ],
       "Submodule": "NSFW",
