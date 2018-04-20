@@ -55,7 +55,8 @@ namespace WizBot.Modules.NSFW
             {
                 JToken obj;
                 obj = JArray.Parse(await _service.Http.GetStringAsync($"http://api.oboobs.ru/boobs/{new WizBotRandom().Next(0, 10330)}").ConfigureAwait(false))[0];
-                await Channel.SendMessageAsync($"http://media.oboobs.ru/{obj["preview"]}").ConfigureAwait(false);
+                await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
+                    .WithImageUrl($"http://media.oboobs.ru/{obj["preview"]}")).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -69,7 +70,8 @@ namespace WizBot.Modules.NSFW
             {
                 JToken obj;
                 obj = JArray.Parse(await _service.Http.GetStringAsync($"http://api.obutts.ru/butts/{new WizBotRandom().Next(0, 4335)}").ConfigureAwait(false))[0];
-                await Channel.SendMessageAsync($"http://media.obutts.ru/{obj["preview"]}").ConfigureAwait(false);
+                await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
+                    .WithImageUrl($"http://media.obutts.ru/{obj["preview"]}")).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -89,7 +91,7 @@ namespace WizBot.Modules.NSFW
                     .WithAuthor(eab => eab.WithUrl("http://nekos.life/")
                         .WithIconUrl("https://i.imgur.com/a36AMkG.png")
                         .WithName($"Nekos Life - Database {nekotitle["cat"]}"))
-                    .WithImageUrl($"{nekoimg["url"]}"), Context.User.Mention).ConfigureAwait(false);
+                    .WithImageUrl($"{nekoimg["url"]}")).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -297,7 +299,8 @@ namespace WizBot.Modules.NSFW
             {
                 JToken obj;
                 obj = JArray.Parse(await _service.Http.GetStringAsync($"http://api.oboobs.ru/boobs/{new WizBotRandom().Next(0, 10330)}").ConfigureAwait(false))[0];
-                await Context.Channel.SendMessageAsync($"http://media.oboobs.ru/{obj["preview"]}").ConfigureAwait(false);
+                await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
+                    .WithImageUrl($"http://media.oboobs.ru/{obj["preview"]}")).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -313,7 +316,8 @@ namespace WizBot.Modules.NSFW
             {
                 JToken obj;
                 obj = JArray.Parse(await _service.Http.GetStringAsync($"http://api.obutts.ru/butts/{new WizBotRandom().Next(0, 4335)}").ConfigureAwait(false))[0];
-                await Context.Channel.SendMessageAsync($"http://media.obutts.ru/{obj["preview"]}").ConfigureAwait(false);
+                await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
+                    .WithImageUrl($"http://media.obutts.ru/{obj["preview"]}")).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -338,7 +342,7 @@ namespace WizBot.Modules.NSFW
                     .WithAuthor(eab => eab.WithUrl("http://nekos.life/")
                         .WithIconUrl("https://i.imgur.com/a36AMkG.png")
                         .WithName($"Nekos Life - Database {nekotitle["cat"]}"))
-                    .WithImageUrl($"{nekoimg["url"]}"), Context.User.Mention).ConfigureAwait(false);
+                    .WithImageUrl($"{nekoimg["url"]}")).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
