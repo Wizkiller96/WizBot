@@ -6,6 +6,7 @@ namespace WizBot.Core.Services.Database.Models
         public string Username { get; set; }
         public FType Type { get; set; }
         public ulong GuildId { get; set; }
+        public string Message { get; set; }
 
         public enum FType
         {
