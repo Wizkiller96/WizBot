@@ -1,5 +1,4 @@
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
@@ -9,7 +8,6 @@ using WizBot.Common.Collections;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Extensions;
 using WizBot.Core.Services;
-using WizBot.Core.Services.Database.Models;
 using NLog;
 
 namespace WizBot.Modules.Permissions.Services

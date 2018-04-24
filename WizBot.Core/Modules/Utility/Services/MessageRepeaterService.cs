@@ -1,11 +1,9 @@
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord.WebSocket;
 using WizBot.Modules.Utility.Common;
 using WizBot.Core.Services;
-using WizBot.Core.Services.Database.Models;
 
 namespace WizBot.Modules.Utility.Services
 {

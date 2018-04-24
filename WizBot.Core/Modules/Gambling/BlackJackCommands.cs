@@ -180,7 +180,7 @@ namespace WizBot.Modules.Gambling
                 {
                     if (!await bj.Double(Context.User))
                     {
-                        await ReplyErrorLocalized("not_enough").ConfigureAwait(false);
+                        await ReplyErrorLocalized("not_enough", _bc.BotConfig.CurrencySign).ConfigureAwait(false);
                     }
                 }
 
