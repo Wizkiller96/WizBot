@@ -102,7 +102,7 @@ namespace WizBot.Modules.Administration
         [RequireContext(ContextType.Guild)]
         [RequireUserPermission(GuildPermission.Administrator)]
         [RequireBotPermission(GuildPermission.ManageMessages)]
-        [Priority(0)]
+        [Priority(1)]
         public async Task Delmsgoncmd(Channel _, State s, ulong? chId = null)
         {
             chId = chId ?? Context.Channel.Id;
