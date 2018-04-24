@@ -80,7 +80,7 @@ namespace WizBot
             _db = new DbService(Credentials);
             Client = new DiscordSocketClient(new DiscordSocketConfig
             {
-                MessageCacheSize = 0,
+                MessageCacheSize = 50,
                 LogLevel = LogSeverity.Info,
                 ConnectionTimeout = int.MaxValue,
                 TotalShards = Credentials.TotalShards,
