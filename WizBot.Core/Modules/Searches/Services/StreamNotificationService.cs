@@ -135,7 +135,7 @@ namespace WizBot.Modules.Searches.Services
                         .Select(x =>
                     {
                         string msg;
-                        if (string.IsNullOrWhiteSpace(x.fs.Message))
+                        if (!u.Live || string.IsNullOrWhiteSpace(x.fs.Message))
                         {
                             msg = "";
                         }
