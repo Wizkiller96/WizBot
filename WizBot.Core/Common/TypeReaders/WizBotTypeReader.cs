@@ -5,8 +5,8 @@ namespace WizBot.Core.Common.TypeReaders
 {
     public abstract class WizBotTypeReader<T> : TypeReader
     {
-        private readonly DiscordSocketClient _client;
-        private readonly CommandService _cmds;
+        protected readonly DiscordSocketClient _client;
+        protected readonly CommandService _cmds;
 
         private WizBotTypeReader() { }
         public WizBotTypeReader(DiscordSocketClient client, CommandService cmds)

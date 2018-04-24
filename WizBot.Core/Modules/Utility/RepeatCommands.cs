@@ -14,6 +14,7 @@ using WizBot.Common.Attributes;
 using WizBot.Common.TypeReaders;
 using WizBot.Modules.Utility.Common;
 using WizBot.Modules.Utility.Services;
+using WizBot.Core.Common;
 
 namespace WizBot.Modules.Utility
 {
@@ -101,23 +102,25 @@ namespace WizBot.Modules.Utility
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.ManageMessages)]
+            [WizBotOptions(typeof(Repeater.Options))]
             [Priority(0)]
-            public async Task Repeat(int minutes, [Remainder] string message)
+            public async Task Repeat(params string[] options)
             {
                 if (!_service.RepeaterReady)
                     return;
-                if (minutes < 1 || minutes > 10080)
-                    return;
 
-                if (string.IsNullOrWhiteSpace(message))
+                var (opts, _) = OptionsParser.Default.ParseFrom(new Repeater.Options(), options);
+
+                if (string.IsNullOrWhiteSpace(opts.Message))
                     return;
 
                 var toAdd = new GuildRepeater()
                 {
                     ChannelId = Context.Channel.Id,
                     GuildId = Context.Guild.Id,
-                    Interval = TimeSpan.FromMinutes(minutes),
-                    Message = message
+                    Interval = TimeSpan.FromMinutes(opts.Interval),
+                    Message = opts.Message,
+                    NoRedundant = opts.NoRedundant,
                 };
 
                 using (var uow = _db.UnitOfWork)
@@ -133,11 +136,11 @@ namespace WizBot.Modules.Utility
 
                 var rep = new RepeatRunner(_client, (SocketGuild)Context.Guild, toAdd);
 
-                _service.Repeaters.AddOrUpdate(Context.Guild.Id, new ConcurrentQueue<RepeatRunner>(new[] {rep}), (key, old) =>
-                {
-                    old.Enqueue(rep);
-                    return old;
-                });
+                _service.Repeaters.AddOrUpdate(Context.Guild.Id, new ConcurrentQueue<RepeatRunner>(new[] { rep }), (key, old) =>
+                  {
+                      old.Enqueue(rep);
+                      return old;
+                  });
 
                 await Context.Channel.SendConfirmAsync(
                     "🔁 " + GetText("repeater",
@@ -150,13 +153,16 @@ namespace WizBot.Modules.Utility
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.ManageMessages)]
+            [WizBotOptions(typeof(Repeater.Options))]
             [Priority(1)]
-            public async Task Repeat(GuildDateTime gt, [Remainder] string message)
+            public async Task Repeat(GuildDateTime gt, params string[] options)
             {
                 if (!_service.RepeaterReady)
                     return;
 
-                if (string.IsNullOrWhiteSpace(message))
+                var (opts, _) = OptionsParser.Default.ParseFrom(new Repeater.Options(), options);
+
+                if (string.IsNullOrWhiteSpace(opts.Message))
                     return;
 
                 var toAdd = new GuildRepeater()
@@ -165,7 +171,8 @@ namespace WizBot.Modules.Utility
                     GuildId = Context.Guild.Id,
                     Interval = TimeSpan.FromHours(24),
                     StartTimeOfDay = gt.InputTimeUtc.TimeOfDay,
-                    Message = message
+                    Message = opts.Message,
+                    NoRedundant = opts.NoRedundant,
                 };
 
                 using (var uow = _db.UnitOfWork)
