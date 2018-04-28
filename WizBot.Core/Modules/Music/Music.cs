@@ -90,7 +90,7 @@ namespace WizBot.Modules.Music
         //    return Task.CompletedTask;
         //}
 
-        private async Task InternalQueue(MusicPlayer mp, SongInfo songInfo, bool silent, bool queueFirst = false)
+        private async Task InternalQueue(MusicPlayer mp, SongInfo songInfo, bool silent, bool queueFirst = false, bool forcePlay = false)
         {
             if (songInfo == null)
             {
@@ -103,8 +103,8 @@ namespace WizBot.Modules.Music
             try
             {
                 index = queueFirst
-                    ? mp.EnqueueNext(songInfo)
-                    : mp.Enqueue(songInfo);
+                    ? mp.EnqueueNext(songInfo, forcePlay)
+                    : mp.Enqueue(songInfo, forcePlay);
             }
             catch (QueueFullException)
             {
@@ -158,7 +158,7 @@ namespace WizBot.Modules.Music
             {
                 try
                 {
-                    await Queue(query);
+                    await InternalPlay(query, forceplay: true);
                 }
                 catch { }
             }
@@ -166,11 +166,14 @@ namespace WizBot.Modules.Music
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        public async Task Queue([Remainder] string query)
+        public Task Queue([Remainder] string query)
+            => InternalPlay(query, forceplay: false);
+
+        private async Task InternalPlay(string query, bool forceplay)
         {
             var mp = await _service.GetOrCreatePlayer(Context);
             var songInfo = await _service.ResolveSong(query, Context.User.ToString());
-            try { await InternalQueue(mp, songInfo, false); } catch (QueueFullException) { return; }
+            try { await InternalQueue(mp, songInfo, false, forcePlay: forceplay); } catch (QueueFullException) { return; }
             if ((await Context.Guild.GetCurrentUserAsync()).GetPermissions((IGuildChannel)Context.Channel).ManageMessages)
             {
                 Context.Message.DeleteAfter(10);
