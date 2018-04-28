@@ -13,13 +13,6 @@ namespace WizBot.Modules.Administration
         [Group]
         public class MuteCommands : WizBotSubmodule<MuteService>
         {
-            private readonly DbService _db;
-
-            public MuteCommands(DbService db)
-            {
-                _db = db;
-            }
-
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.ManageRoles)]
