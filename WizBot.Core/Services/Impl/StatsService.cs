@@ -23,7 +23,7 @@ namespace WizBot.Core.Services.Impl
         private readonly IBotCredentials _creds;
         private readonly DateTime _started;
 
-        public const string BotVersion = "2.20.0";
+        public const string BotVersion = "2.21.0";
         public string Author => "Kwoth#2560\nWizkiller96#2947";
         public string Library => "Discord.Net";
 
@@ -46,8 +46,7 @@ namespace WizBot.Core.Services.Impl
         private readonly ConnectionMultiplexer _redis;
 
         public StatsService(DiscordSocketClient client, CommandHandler cmdHandler,
-            IBotCredentials creds, WizBot wizbot,
-            IDataCache cache)
+            IBotCredentials creds, WizBot wizbot, IDataCache cache)
         {
             _log = LogManager.GetCurrentClassLogger();
             _client = client;

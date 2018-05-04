@@ -217,9 +217,9 @@ namespace WizBot.Modules.Administration
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.BanMembers)]
-            public async Task WarnPunish(int number, PunishmentAction punish, int time = 0)
+            public async Task WarnPunish(int number, PunishmentAction punish, StoopidTime time = null)
             {
-                if (punish != PunishmentAction.Mute && time != 0)
+                if ((punish != PunishmentAction.Ban && punish != PunishmentAction.Mute) && time != null)
                     return;
                 if (number <= 0)
                     return;
@@ -233,7 +233,7 @@ namespace WizBot.Modules.Administration
                     {
                         Count = number,
                         Punishment = punish,
-                        Time = time,
+                        Time = (int?)(time?.Time.TotalMinutes) ?? 0,
                     });
                     uow.Complete();
                 }

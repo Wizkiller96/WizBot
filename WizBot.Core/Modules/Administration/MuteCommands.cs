@@ -5,6 +5,7 @@ using System;
 using System.Threading.Tasks;
 using WizBot.Common.Attributes;
 using WizBot.Modules.Administration.Services;
+using WizBot.Core.Common.TypeReaders.Models;
 
 namespace WizBot.Modules.Administration
 {
@@ -58,14 +59,14 @@ namespace WizBot.Modules.Administration
             [RequireUserPermission(GuildPermission.ManageRoles)]
             [RequireUserPermission(GuildPermission.MuteMembers)]
             [Priority(1)]
-            public async Task Mute(int minutes, IGuildUser user)
+            public async Task Mute(StoopidTime time, IGuildUser user)
             {
-                if (minutes < 1 || minutes > 1440)
+                if (time.Time < TimeSpan.FromMinutes(1) || time.Time > TimeSpan.FromDays(1))
                     return;
                 try
                 {
-                    await _service.TimedMute(user, TimeSpan.FromMinutes(minutes)).ConfigureAwait(false);
-                    await ReplyConfirmLocalized("user_muted_time", Format.Bold(user.ToString()), minutes).ConfigureAwait(false);
+                    await _service.TimedMute(user, time.Time).ConfigureAwait(false);
+                    await ReplyConfirmLocalized("user_muted_time", Format.Bold(user.ToString()), time).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
