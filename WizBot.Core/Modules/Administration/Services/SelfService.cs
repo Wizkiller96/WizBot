@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using WizBot.Core.Services.Database.Models;
 using System.Threading;
 using System.Collections.Concurrent;
+using System;
 
 namespace WizBot.Modules.Administration.Services
 {
@@ -68,11 +69,6 @@ namespace WizBot.Modules.Administration.Services
             {
                 await bot.Ready.Task.ConfigureAwait(false);
 
-                foreach (var cmd in bc.BotConfig.StartupCommands.Where(x => x.Interval <= 0))
-                {
-                    await ExecuteCommand(cmd);
-                }
-
                 _autoCommands = bc.BotConfig
                     .StartupCommands
                     .Where(x => x.Interval >= 5)
@@ -84,6 +80,10 @@ x => TimerFromStartupCommand((StartupCommand)x))
                     .ToConcurrent())
                     .ToConcurrent();
 
+                foreach (var cmd in bc.BotConfig.StartupCommands.Where(x => x.Interval <= 0))
+                {
+                    try { await ExecuteCommand(cmd); } catch { }
+                }
             });
 
             Task.Run(async () =>
@@ -117,12 +117,19 @@ x => TimerFromStartupCommand((StartupCommand)x))
 
         private async Task ExecuteCommand(StartupCommand cmd)
         {
-            var prefix = _cmdHandler.GetPrefix(cmd.GuildId);
-            //if someone already has .die as their startup command, ignore it
-            if (cmd.CommandText.StartsWith(prefix + "die"))
-                return;
-            await _cmdHandler.ExecuteExternal(cmd.GuildId, cmd.ChannelId, cmd.CommandText);
-            await Task.Delay(400).ConfigureAwait(false);
+            try
+            {
+                var prefix = _cmdHandler.GetPrefix(cmd.GuildId);
+                //if someone already has .die as their startup command, ignore it
+                if (cmd.CommandText.StartsWith(prefix + "die"))
+                    return;
+                await _cmdHandler.ExecuteExternal(cmd.GuildId, cmd.ChannelId, cmd.CommandText);
+                await Task.Delay(400).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                _log.Warn(ex);
+            }
         }
 
         public void AddNewAutoCommand(StartupCommand cmd)
@@ -133,15 +140,15 @@ x => TimerFromStartupCommand((StartupCommand)x))
                    .GetOrCreate(set => set.Include(x => x.StartupCommands))
                    .StartupCommands
                    .Add(cmd);
-
-                var autos = _autoCommands.GetOrAdd(cmd.GuildId, new ConcurrentDictionary<int, Timer>());
-                autos.AddOrUpdate(cmd.Id, key => TimerFromStartupCommand(cmd), (key, old) =>
-                {
-                    old.Change(Timeout.Infinite, Timeout.Infinite);
-                    return TimerFromStartupCommand(cmd);
-                });
                 uow.Complete();
             }
+
+            var autos = _autoCommands.GetOrAdd(cmd.GuildId, new ConcurrentDictionary<int, Timer>());
+            autos.AddOrUpdate(cmd.Id, key => TimerFromStartupCommand(cmd), (key, old) =>
+            {
+                old.Change(Timeout.Infinite, Timeout.Infinite);
+                return TimerFromStartupCommand(cmd);
+            });
         }
 
         public IEnumerable<StartupCommand> GetStartupCommands()
