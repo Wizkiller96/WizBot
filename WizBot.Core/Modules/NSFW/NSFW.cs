@@ -293,6 +293,11 @@ namespace WizBot.Modules.NSFW
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
+        public Task Derpibooru([Remainder] string tag = null)
+            => InternalDapiCommand(tag, DapiSearchType.Derpibooru, false);
+
+        [WizBotCommand, Usage, Description, Aliases]
+        [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
         public async Task Boobs()
         {
             try
