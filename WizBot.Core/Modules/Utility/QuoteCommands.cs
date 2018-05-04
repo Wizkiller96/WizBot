@@ -36,7 +36,6 @@ namespace WizBot.Modules.Utility
             public async Task ListQuotes(int page = 1, OrderType order = OrderType.Keyword)
             {
                 page -= 1;
-
                 if (page < 0)
                     return;
 
@@ -126,6 +125,7 @@ namespace WizBot.Modules.Utility
                         .WithDefault(Context)
                         .Build();
 
+                    var infoText = $"`#{qfromid.Id} added by {qfromid.AuthorName.SanitizeMentions()}` 🗯️ " + qfromid.Keyword.ToLowerInvariant().SanitizeMentions() + ":\n";
                     if (qfromid == null)
                     {
                         await Context.Channel.SendErrorAsync(GetText("quotes_notfound"));
@@ -134,16 +134,14 @@ namespace WizBot.Modules.Utility
                     {
                         rep.Replace(crembed);
 
-                        await Context.Channel.EmbedAsync(crembed.ToEmbed(), crembed.PlainText?.SanitizeMentions() ?? "")
+                        await Context.Channel.EmbedAsync(crembed.ToEmbed(), infoText + crembed.PlainText?.SanitizeMentions())
                             .ConfigureAwait(false);
                     }
                     else
                     {
-                        await Context.Channel.SendMessageAsync($"`#{qfromid.Id} added by {qfromid.AuthorName.SanitizeMentions()}` 🗯️ " + qfromid.Keyword.ToLowerInvariant().SanitizeMentions() + ":  " +
-                            rep.Replace(qfromid.Text)?.SanitizeMentions());
-
+                        await Context.Channel.SendMessageAsync(infoText + rep.Replace(qfromid.Text)?.SanitizeMentions())
+                            .ConfigureAwait(false);
                     }
-
                 }
             }
 
@@ -175,7 +173,7 @@ namespace WizBot.Modules.Utility
             [RequireContext(ContextType.Guild)]
             public async Task QuoteDelete(int id)
             {
-                var isAdmin = ((IGuildUser) Context.Message.Author).GuildPermissions.Administrator;
+                var isAdmin = ((IGuildUser)Context.Message.Author).GuildPermissions.Administrator;
 
                 var success = false;
                 string response;
