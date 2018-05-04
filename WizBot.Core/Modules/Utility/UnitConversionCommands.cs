@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WizBot.Common.Attributes;
 using WizBot.Modules.Utility.Services;
+using WizBot.Core.Common;
 
 namespace WizBot.Modules.Utility
 {
@@ -29,6 +30,12 @@ namespace WizBot.Modules.Utility
             }
 
             [WizBotCommand, Usage, Description, Aliases]
+            [Priority(1)]
+            public Task Convert(string origin, string target, ShmartNumber value)
+                => Convert(origin, target, (decimal) value.Value);
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [Priority(0)]
             public async Task Convert(string origin, string target, decimal value)
             {
                 var originUnit = _service.Units.FirstOrDefault(x => x.Triggers.Select(y => y.ToLowerInvariant()).Contains(origin.ToLowerInvariant()));
