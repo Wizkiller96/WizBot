@@ -1,6 +1,5 @@
 using Discord;
 using Discord.Commands;
-using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Extensions;
 using WizBot.Core.Services;
@@ -25,15 +24,14 @@ namespace WizBot.Modules.Permissions
                 _db = db;
             }
 
-            //[WizBotCommand, Usage, Description, Aliases]
-            //[RequireContext(ContextType.Guild)]
-            //public async Task SrvrFilterLinks()
-            //{
-            //    using (var uow = _db.UnitOfWork)
-            //    {
-            //        var config =
-            //    }
-            //}
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [RequireUserPermission(GuildPermission.Administrator)]
+            public async Task FwClear()
+            {
+                _service.ClearFilteredWords(Context.Guild.Id);
+                await ReplyConfirmLocalized("fw_cleared").ConfigureAwait(false);
+            }
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]

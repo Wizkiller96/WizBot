@@ -29,6 +29,15 @@ namespace WizBot.Modules.Utility
             }
 
             [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [RequireUserPermission(GuildPermission.Administrator)]
+            public async Task AliasesClear()
+            {
+                var count = _service.ClearAliases(Context.Guild.Id);
+                await ReplyConfirmLocalized("aliases_cleared", count).ConfigureAwait(false);
+            }
+
+            [WizBotCommand, Usage, Description, Aliases]
             [RequireUserPermission(GuildPermission.Administrator)]
             [RequireContext(ContextType.Guild)]
             public async Task Alias(string trigger, [Remainder] string mapping = null)
