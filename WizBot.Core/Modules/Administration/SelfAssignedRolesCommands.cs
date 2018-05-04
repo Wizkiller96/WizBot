@@ -136,7 +136,6 @@ namespace WizBot.Modules.Administration
                             ? GetText("self_assign_are_exclusive")
                             : GetText("self_assign_are_not_exclusive"));
                 }, roles.Count(), 20);
-
             }
 
             [WizBotCommand, Usage, Description, Aliases]

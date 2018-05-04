@@ -178,9 +178,9 @@ namespace WizBot.Modules.Searches.Services
                 using (var avatar = Image.Load(data).Resize(85, 85))
                 {
                     bg.DrawImage(avatar,
-                    default,
-                    new Point(82, 139),
-                    GraphicsOptions.Default);
+                        default,
+                        new Point(82, 139),
+                        GraphicsOptions.Default);
                 }
             }
             //text 63, 241
@@ -198,9 +198,9 @@ namespace WizBot.Modules.Searches.Services
             using (var flowers = Image.Load(_imgs.FlowerCircle.ToArray()))
             {
                 bg.DrawImage(flowers,
-                default,
-                new Point(0, 0),
-                GraphicsOptions.Default);
+                    default,
+                    new Point(0, 0),
+                    GraphicsOptions.Default);
             }
 
             return bg;
@@ -287,14 +287,15 @@ namespace WizBot.Modules.Searches.Services
         public async Task<(string Text, string BaseUri)> GetRandomJoke()
         {
             var config = AngleSharp.Configuration.Default.WithDefaultLoader();
-            var document = await BrowsingContext.New(config).OpenAsync("http://www.goodbadjokes.com/random");
+            using (var document = await BrowsingContext.New(config).OpenAsync("http://www.goodbadjokes.com/random"))
+            {
+                var html = document.QuerySelector(".post > .joke-body-wrap > .joke-content");
 
-            var html = document.QuerySelector(".post > .joke-content");
+                var part1 = html.QuerySelector("dt").TextContent;
+                var part2 = html.QuerySelector("dd").TextContent;
 
-            var part1 = html.QuerySelector("dt").TextContent;
-            var part2 = html.QuerySelector("dd").TextContent;
-
-            return (part1 + "\n\n" + part2, document.BaseUri);
+                return (part1 + "\n\n" + part2, document.BaseUri);
+            }
         }
 
         public async Task<string> GetChuckNorrisJoke()
