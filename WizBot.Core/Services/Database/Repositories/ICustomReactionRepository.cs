@@ -7,5 +7,6 @@ namespace WizBot.Core.Services.Database.Repositories
     {
         CustomReaction[] GetGlobalAndFor(IEnumerable<long> ids);
         CustomReaction[] For(ulong id);
+        int ClearFromGuild(ulong id);
     }
 }

@@ -498,5 +498,19 @@ namespace WizBot.Modules.CustomReactions
                 ordered.Length, 9)
                 .ConfigureAwait(false);
         }
+
+        [WizBotCommand, Usage, Description, Aliases]
+        [RequireContext(ContextType.Guild)]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task CrClear()
+        {
+            if (await PromptUserConfirmAsync(new EmbedBuilder()
+                .WithTitle("Custom reaction clear")
+                .WithDescription("This will delete all custom reactions on this server.")))
+            {
+                var count = _service.ClearCustomReactions(Context.Guild.Id);
+                await ReplyConfirmLocalized("cleared", count).ConfigureAwait(false);
+            }
+        }
     }
 }
