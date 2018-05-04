@@ -34,7 +34,7 @@ namespace WizBot.Modules.Searches.Services
         private readonly ConcurrentDictionary<
             (FollowedStream.FType Type, string Username),
             ConcurrentHashSet<(ulong GuildId, FollowedStream fs)>> _followedStreams;
-        private readonly ConcurrentHashSet<ulong> _noOffline = new ConcurrentHashSet<ulong>();
+        private readonly ConcurrentHashSet<ulong> _yesOffline = new ConcurrentHashSet<ulong>();
 
         public StreamNotificationService(WizBot bot, DbService db, DiscordSocketClient client,
             WizBotStrings strings, IDataCache cache, IBotCredentials creds)
@@ -53,6 +53,10 @@ namespace WizBot.Modules.Searches.Services
                 .GroupBy(x => (x.Type, x.Username))
                 .ToDictionary(x => x.Key, x => new ConcurrentHashSet<(ulong, FollowedStream)>(x.Select(y => (y.GuildId, y))))
                 .ToConcurrent();
+
+            _yesOffline = new ConcurrentHashSet<ulong>(bot.AllGuildConfigs
+                .Where(x => x.NotifyStreamOffline)
+                .Select(x => x.GuildId));
 
             _cache.SubscribeToStreamUpdates(OnStreamsUpdated);
 
@@ -131,7 +135,7 @@ namespace WizBot.Modules.Searches.Services
                 {
                     // notify them all
                     var tasks = locs
-                        .Where(x => u.Live || !_noOffline.Contains(x.GuildId))
+                        .Where(x => u.Live || _yesOffline.Contains(x.GuildId))
                         .Select(x =>
                     {
                         string msg;
@@ -255,6 +259,14 @@ namespace WizBot.Modules.Searches.Services
 
                 val = config.NotifyStreamOffline = !config.NotifyStreamOffline;
                 uow.Complete();
+            }
+            if (val)
+            {
+                _yesOffline.Add(guildId);
+            }
+            else
+            {
+                _yesOffline.TryRemove(guildId);
             }
             return val;
         }
