@@ -290,7 +290,7 @@ namespace WizBot
             // start handling messages received in commandhandler
             await commandHandler.StartHandling().ConfigureAwait(false);
 
-            var _ = await CommandService.AddModulesAsync(this.GetType().GetTypeInfo().Assembly);
+            var _ = await CommandService.AddModulesAsync(this.GetType().GetTypeInfo().Assembly, Services);
 
 
             bool isPublicWizBot = false;
