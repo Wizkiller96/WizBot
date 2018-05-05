@@ -672,7 +672,7 @@
     "games_pick_sn": "Pick it up by typing `{0}pick`",
     "gambling_no_users_found": "No user found.",
     "gambling_page": "page {0}",
-    "administration_user_muted_time": "{0} has been **muted** from text and voice chat for {1} minutes.",
+    "administration_user_muted_time": "{0} has been **muted** from text and voice chat for {1}.",
     "administration_must_be_in_voice": "You must be in a voice channel on this server.",
     "administration_no_vcroles": "There are no voice channel roles.",
     "administration_vcrole_added": "Users who join {0} voice channel will get {1} role.",

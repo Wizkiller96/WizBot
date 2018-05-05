@@ -66,7 +66,7 @@ namespace WizBot.Modules.Administration
                 try
                 {
                     await _service.TimedMute(user, time.Time).ConfigureAwait(false);
-                    await ReplyConfirmLocalized("user_muted_time", Format.Bold(user.ToString()), time.Time).ConfigureAwait(false);
+                    await ReplyConfirmLocalized("user_muted_time", Format.Bold(user.ToString()), $"{time.Time.Days}d {time.Time.Hours}h {time.Time.Minutes}m").ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
