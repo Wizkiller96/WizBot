@@ -129,7 +129,7 @@ namespace WizBot.Modules.Administration
                         }
                     }
 
-                    return new EmbedBuilder()
+                    return new EmbedBuilder().WithOkColor()
                         .WithTitle(Format.Bold(GetText("self_assign_list", roles.Count())))
                         .WithDescription(rolesStr.ToString())
                         .WithFooter(exclusive
