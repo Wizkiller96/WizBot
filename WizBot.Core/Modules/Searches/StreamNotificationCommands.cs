@@ -144,7 +144,7 @@ namespace WizBot.Modules.Searches
             public async Task StreamsClear()
             {
                 var count = _service.ClearAllStreams(Context.Guild.Id);
-                await ReplyConfirmLocalized("streams_cleared").ConfigureAwait(false);
+                await ReplyConfirmLocalized("streams_cleared", count).ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
