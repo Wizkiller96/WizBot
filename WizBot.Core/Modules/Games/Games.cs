@@ -217,8 +217,9 @@ namespace WizBot.Modules.Games
                 return;
 
             await Context.Channel.EmbedAsync(new EmbedBuilder().WithColor(WizBot.OkColor)
-                               .AddField(efb => efb.WithName("❓ " + GetText("question")).WithValue(question).WithIsInline(false))
-                               .AddField(efb => efb.WithName("🎱 " + GetText("8ball")).WithValue(_service.EightBallResponses[new WizBotRandom().Next(0, _service.EightBallResponses.Length)]).WithIsInline(false)));
+                .WithDescription(Context.User.ToString())
+                .AddField(efb => efb.WithName("❓ " + GetText("question")).WithValue(question).WithIsInline(false))
+                .AddField(efb => efb.WithName("🎱 " + GetText("8ball")).WithValue(_service.EightBallResponses[new WizBotRandom().Next(0, _service.EightBallResponses.Length)]).WithIsInline(false)));
         }
 
         [WizBotCommand, Usage, Description, Aliases]

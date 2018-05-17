@@ -86,7 +86,7 @@ namespace WizBot.Modules.Administration.Services
                 {
                 _log.Warn(ex);
                 }
-            }, null, TimeSpan.FromSeconds(10), TimeSpan.FromMinutes(2));
+            }, null, TimeSpan.FromHours(8), TimeSpan.FromHours(8));
 
             var sub = _redis.GetSubscriber();
             sub.Subscribe(_creds.RedisKey() + "_reload_images",
