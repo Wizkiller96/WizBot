@@ -84,6 +84,15 @@ WizNet Community Server: https://discord.gg/0YNaDOYuD5QOpeNI";
         public int MinBet { get; set; } = 0;
         public int MaxBet { get; set; } = 0;
         public ConsoleOutputType ConsoleOutputType { get; set; } = ConsoleOutputType.Normal;
+
+        public string UpdateString { get; set; } = "New update has been released.";
+        public UpdateCheckType CheckForUpdates { get; set; } = UpdateCheckType.Release;
+        public DateTime LastUpdate { get; set; } = new DateTime(2018, 5, 5, 0, 0, 0, DateTimeKind.Utc);
+    }
+
+    public enum UpdateCheckType
+    {
+        Release, Commit, None
     }
 
     public class BlockedCmdOrMdl : DbEntity

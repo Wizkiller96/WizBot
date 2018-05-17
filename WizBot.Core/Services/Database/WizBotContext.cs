@@ -169,6 +169,9 @@ namespace WizBot.Core.Services.Database
             botConfigEntity.Property(x => x.ErrorColor)
                 .HasDefaultValue("ee281f");
 
+            botConfigEntity.Property(x => x.LastUpdate)
+                .HasDefaultValue(new DateTime(2018, 5, 5, 0, 0, 0, 0, DateTimeKind.Utc));
+
             //botConfigEntity.Property(x => x.PermissionVersion)
             //    .HasDefaultValue(2);
 

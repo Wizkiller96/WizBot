@@ -12,7 +12,6 @@ using System.Threading;
 using System.Collections.Immutable;
 using System.IO;
 using Discord.Net;
-using WizBot.Common;
 using WizBot.Common.Collections;
 using WizBot.Common.ModuleBehaviors;
 

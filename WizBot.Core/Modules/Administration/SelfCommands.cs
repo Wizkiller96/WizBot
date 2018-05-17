@@ -26,12 +26,20 @@ namespace WizBot.Modules.Administration
             private readonly WizBot _bot;
             private readonly IBotCredentials _creds;
 
-            public SelfCommands(DbService db, WizBot bot, DiscordSocketClient client,
-                IBotCredentials creds, IDataCache cache)
+            public SelfCommands(WizBot bot, DiscordSocketClient client,
+                IBotCredentials creds)
             {
                 _client = client;
                 _bot = bot;
                 _creds = creds;
+            }
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [OwnerOnly]
+            public async Task UpdatesCheck(UpdateCheckType type)
+            {
+                _service.SetUpdateCheck(type);
+                await ReplyConfirmLocalized("updates_check_set", type.ToString()).ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
