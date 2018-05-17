@@ -53,11 +53,11 @@ namespace WizBot.Modules.Utility
                     await ReplyErrorLocalized("index_out_of_range").ConfigureAwait(false);
                     return;
                 }
-                var repeater = repList[index].Repeater;
-                repList[index].Reset();
-                await repList[index].Trigger();
+                var repeater = repList[index];
+                repeater.Reset();
+                await repeater.Trigger().ConfigureAwait(false);
 
-                await Context.Channel.SendMessageAsync("🔄").ConfigureAwait(false);
+                try { await Context.Message.AddReactionAsync(new Emoji("🔄")).ConfigureAwait(false); } catch { }
             }
 
             [WizBotCommand, Usage, Description, Aliases]
