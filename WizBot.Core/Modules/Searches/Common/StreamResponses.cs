@@ -144,6 +144,7 @@ namespace WizBot.Modules.Searches.Common
         public class MixerUser
         {
             public string AvatarUrl { get; set; }
+            public string Name { get; set; }
         }
         public class MixerThumbnail
         {
@@ -157,7 +158,7 @@ namespace WizBot.Modules.Searches.Common
         [JsonProperty("online")]
         public bool IsLive { get; set; }
         public int ViewersCurrent { get; set; }
-        public string Name { get; set; }
+        public string Name => User.Name;
         public int NumFollowers { get; set; }
         public MixerType Type { get; set; }
         public MixerUser User { get; set; }
