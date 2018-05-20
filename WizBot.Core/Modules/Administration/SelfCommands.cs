@@ -35,6 +35,7 @@ namespace WizBot.Modules.Administration
             }
 
             [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.DM)]
             [OwnerOnly]
             public async Task UpdatesCheck(UpdateCheckType type)
             {
