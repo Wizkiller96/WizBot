@@ -20,6 +20,7 @@ namespace WizBot.Core.Services.Database.Models
         public int MessageThreshold { get; set; } = 3;
         public int MuteTime { get; set; } = 0;
         public HashSet<AntiSpamIgnore> IgnoredChannels { get; set; } = new HashSet<AntiSpamIgnore>();
+        public ulong? AddRoleId { get; set; }
     }
 
 
@@ -30,6 +31,7 @@ namespace WizBot.Core.Services.Database.Models
         Ban,
         Softban,
         RemoveRoles,
+        AddRole,
     }
 
     public class AntiSpamIgnore : DbEntity

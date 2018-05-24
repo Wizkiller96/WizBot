@@ -352,6 +352,9 @@ namespace WizBot.Modules.Administration.Services
                         case PunishmentAction.RemoveRoles:
                             punishment = "⛔️ " + GetText(logChannel.Guild, "remove_roles_pl").ToUpperInvariant();
                             break;
+                        case PunishmentAction.AddRole:
+                            punishment = "➕ " + GetText(logChannel.Guild, "add_role_pl").ToUpperInvariant();
+                            break;
                     }
 
                     var embed = new EmbedBuilder().WithAuthor(eab => eab.WithName($"🛡 Anti-{protection}"))

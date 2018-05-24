@@ -215,11 +215,30 @@ namespace WizBot.Modules.Administration
                 }
             }
 
+            public enum AddRole { AddRole }
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.BanMembers)]
-            public async Task WarnPunish(int number, PunishmentAction punish, StoopidTime time = null)
+            public Task WarnPunish(int number, AddRole _, [Remainder] IRole role)
             {
+                return InternalWarnPunish(number, PunishmentAction.AddRole, roleId: role.Id);
+            }
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [RequireUserPermission(GuildPermission.BanMembers)]
+            public Task WarnPunish(int number, PunishmentAction punish, StoopidTime time = null)
+            {
+                if (punish == PunishmentAction.AddRole)
+                    return Task.CompletedTask;
+
+                return InternalWarnPunish(number, punish, time: time);
+            }
+
+            public async Task InternalWarnPunish(int number, PunishmentAction punish, StoopidTime time = null, ulong? roleId = null)
+            {
+                if (punish == PunishmentAction.AddRole && roleId == null)
+                    return;
                 if ((punish != PunishmentAction.Ban && punish != PunishmentAction.Mute) && time != null)
                     return;
                 if (number <= 0 || (time != null && time.Time > TimeSpan.FromDays(49)))

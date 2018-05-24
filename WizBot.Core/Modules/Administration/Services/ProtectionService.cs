@@ -152,7 +152,7 @@ namespace WizBot.Modules.Administration.Services
                         if (spamSettings.UserStats.TryRemove(msg.Author.Id, out stats))
                         {
                             stats.Dispose();
-                            await PunishUsers(spamSettings.AntiSpamSettings.Action, ProtectionType.Spamming, spamSettings.AntiSpamSettings.MuteTime, (IGuildUser)msg.Author)
+                            await PunishUsers(spamSettings.AntiSpamSettings.Action, ProtectionType.Spamming, spamSettings.AntiSpamSettings.MuteTime, spamSettings.AntiSpamSettings.AddRoleId, (IGuildUser)msg.Author)
                                 .ConfigureAwait(false);
                         }
                     }
@@ -165,7 +165,7 @@ namespace WizBot.Modules.Administration.Services
             return Task.CompletedTask;
         }
 
-        private async Task PunishUsers(PunishmentAction action, ProtectionType pt, int muteTime, params IGuildUser[] gus)
+        private async Task PunishUsers(PunishmentAction action, ProtectionType pt, int muteTime, ulong? roleId, params IGuildUser[] gus)
         {
             _log.Info($"[{pt}] - Punishing [{gus.Length}] users with [{action}] in {gus[0].Guild.Name} guild");
             foreach (var gu in gus)
@@ -215,6 +215,12 @@ namespace WizBot.Modules.Administration.Services
                         break;
                     case PunishmentAction.RemoveRoles:
                         await gu.RemoveRolesAsync(gu.GetRoles().Where(x => x.Id != gu.Guild.EveryoneRole.Id));
+                        break;
+                    case PunishmentAction.AddRole:
+                        var addRole = gu.Guild.GetRole(roleId.Value);
+                        if (addRole == null)
+                            continue;
+                        await gu.AddRoleAsync(addRole).ConfigureAwait(false);
                         break;
                 }
             }
