@@ -28,7 +28,7 @@ namespace WizBot.Modules.Searches
                         var comic = JsonConvert.DeserializeObject<XkcdComic>(res);
                         var embed = new EmbedBuilder().WithColor(WizBot.OkColor)
                                                   .WithImageUrl(comic.ImageLink)
-                                                  .WithAuthor(eab => eab.WithName(comic.Title).WithUrl($"{_xkcdUrl}/{comic.Num}").WithIconUrl("http://xkcd.com/s/919f27.ico"))
+                                                  .WithAuthor(eab => eab.WithName(comic.Title).WithUrl($"{_xkcdUrl}/{comic.Num}").WithIconUrl("https://xkcd.com/s/919f27.ico"))
                                                   .AddField(efb => efb.WithName(GetText("comic_number")).WithValue(comic.Num.ToString()).WithIsInline(true))
                                                   .AddField(efb => efb.WithName(GetText("date")).WithValue($"{comic.Month}/{comic.Year}").WithIsInline(true));
                         var sent = await Context.Channel.EmbedAsync(embed)
