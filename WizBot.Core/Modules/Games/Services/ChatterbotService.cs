@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
@@ -10,7 +9,6 @@ using WizBot.Extensions;
 using WizBot.Modules.Permissions.Common;
 using WizBot.Modules.Permissions.Services;
 using WizBot.Core.Services;
-using WizBot.Core.Services.Database.Models;
 using WizBot.Core.Services.Impl;
 using NLog;
 using WizBot.Modules.Games.Common.ChatterBot;
@@ -30,7 +28,7 @@ namespace WizBot.Modules.Games.Services
 
         public ChatterBotService(DiscordSocketClient client, PermissionService perms,
             WizBot bot, CommandHandler cmd, WizBotStrings strings,
-            IBotCredentials creds)
+             IBotCredentials creds)
         {
             _client = client;
             _log = LogManager.GetCurrentClassLogger();
@@ -47,10 +45,10 @@ namespace WizBot.Modules.Games.Services
 
         public IChatterBotSession CreateSession()
         {
-            if (string.IsNullOrWhiteSpace(_creds.CleverbotApiKey))
-                return new ChatterBotSession();
-            else
+            if (!string.IsNullOrWhiteSpace(_creds.CleverbotApiKey))
                 return new OfficialCleverbotSession(_creds.CleverbotApiKey);
+            else
+                return new CleverbotIOSession("jzcHYofmv6XhIaq3", "mnl6XYWNB7HzSaxIJ2tZhjvBdkRRQAuH");
         }
 
         public string PrepareMessage(IUserMessage msg, out IChatterBotSession cleverbot)
@@ -138,7 +136,11 @@ Message: {usrMsg.Content}");
                     return true;
                 }
             }
-            catch (Exception ex) { _log.Warn(ex, "Error in cleverbot"); }
+            catch (Exception ex)
+            {
+                _log.Warn("Error in cleverbot");
+                _log.Warn(ex);
+            }
             return false;
         }
     }
