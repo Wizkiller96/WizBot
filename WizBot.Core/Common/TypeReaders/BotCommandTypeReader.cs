@@ -53,7 +53,7 @@ namespace WizBot.Common.TypeReaders
 
             if (_crs.GlobalReactions.Any(x => x.Trigger.ToUpperInvariant() == input))
             {
-                return TypeReaderResult.FromSuccess(new CommandOrCrInfo(input));
+                return TypeReaderResult.FromSuccess(new CommandOrCrInfo(input, CommandOrCrInfo.Type.Custom));
             }
             var guild = context.Guild;
             if (guild != null)
@@ -62,7 +62,7 @@ namespace WizBot.Common.TypeReaders
                 {
                     if (crs.Concat(_crs.GlobalReactions).Any(x => x.Trigger.ToUpperInvariant() == input))
                     {
-                        return TypeReaderResult.FromSuccess(new CommandOrCrInfo(input));
+                        return TypeReaderResult.FromSuccess(new CommandOrCrInfo(input, CommandOrCrInfo.Type.Custom));
                     }
                 }
             }
@@ -70,7 +70,7 @@ namespace WizBot.Common.TypeReaders
             var cmd = await new CommandTypeReader(_client, _cmds).ReadAsync(context, input, services);
             if (cmd.IsSuccess)
             {
-                return TypeReaderResult.FromSuccess(new CommandOrCrInfo(((CommandInfo)cmd.Values.First().Value).Name));
+                return TypeReaderResult.FromSuccess(new CommandOrCrInfo(((CommandInfo)cmd.Values.First().Value).Name, CommandOrCrInfo.Type.Normal));
             }
             return TypeReaderResult.FromError(CommandError.ParseFailed, "No such command or cr found.");
         }
@@ -78,11 +78,19 @@ namespace WizBot.Common.TypeReaders
 
     public class CommandOrCrInfo
     {
-        public string Name { get; set; }
-
-        public CommandOrCrInfo(string input)
+        public enum Type
         {
-            this.Name = input;
+            Normal,
+            Custom,
+        }
+
+        public string Name { get; set; }
+        public Type CmdType { get; set; }
+        public bool IsCustom => CmdType == Type.Custom;
+
+        public CommandOrCrInfo(string input, Type type)
+        {
+            this.CmdType = type;
         }
     }
 }

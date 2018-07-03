@@ -100,7 +100,7 @@ namespace WizBot.Modules.Permissions.Common
                     break;
             }
 
-            var secName = perm.SecondaryTarget == SecondaryPermissionType.Command ?
+            var secName = perm.SecondaryTarget == SecondaryPermissionType.Command && !perm.IsCustomCommand ?
                 prefix + perm.SecondaryTargetName : perm.SecondaryTargetName;
             com += " " + (perm.SecondaryTargetName != "*" ? secName + " " : "") + (perm.State ? "enable" : "disable") + " ";
 
