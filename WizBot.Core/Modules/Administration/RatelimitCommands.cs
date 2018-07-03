@@ -24,6 +24,7 @@ namespace WizBot.Modules.Administration
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.ManageMessages)]
+            [WizBotOptions(typeof(SlowmodeService.Options))]
             public Task Slowmode()
             {
                 if (_service.StopSlowmode(Context.Channel.Id))
