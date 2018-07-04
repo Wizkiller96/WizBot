@@ -95,6 +95,33 @@ namespace WizBot.Modules.Administration.Services
                 delegate { _imgs.Reload(); }, CommandFlags.FireAndForget);
             sub.Subscribe(_creds.RedisKey() + "_reload_bot_config",
                 delegate { _bc.Reload(); }, CommandFlags.FireAndForget);
+            sub.Subscribe(_creds.RedisKey() + "_leave_guild", async (ch, v) =>
+            {
+                try
+                {
+                    var guildStr = v.ToString()?.Trim().ToUpperInvariant();
+                    if (string.IsNullOrWhiteSpace(guildStr))
+                        return;
+                    var server = _client.Guilds.FirstOrDefault(g => g.Id.ToString() == guildStr) ??
+                        _client.Guilds.FirstOrDefault(g => g.Name.Trim().ToUpperInvariant() == guildStr);
+
+                    if (server == null)
+                    {
+                        return;
+                    }
+                    if (server.OwnerId != _client.CurrentUser.Id)
+                    {
+                        await server.LeaveAsync().ConfigureAwait(false);
+                        _log.Info($"Left server {server.Name} [{server.Id}]");
+                    }
+                    else
+                    {
+                        await server.DeleteAsync().ConfigureAwait(false);
+                        _log.Info($"Deleted server {server.Name} [{server.Id}]");
+                    }
+                }
+                catch { }
+            }, CommandFlags.FireAndForget);
 
             Task.Run(async () =>
             {
@@ -136,6 +163,8 @@ namespace WizBot.Modules.Administration.Services
                 if (client.ShardId == 0)
                     await LoadAdminChannels().ConfigureAwait(false);
             });
+
+            
         }
 
         private async Task<string> GetNewCommit()
