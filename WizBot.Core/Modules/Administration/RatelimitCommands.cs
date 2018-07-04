@@ -25,6 +25,7 @@ namespace WizBot.Modules.Administration
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.ManageMessages)]
             [WizBotOptionsAttribute(typeof(SlowmodeService.Options))]
+            [Priority(1)]
             public Task Slowmode()
             {
                 if (_service.StopSlowmode(Context.Channel.Id))
@@ -33,7 +34,7 @@ namespace WizBot.Modules.Administration
                 }
                 else
                 {
-                    return Slowmode("-m 1 -s 5");
+                    return Slowmode("-m", "1", "-s", "5");
                 }
             }
 
@@ -41,6 +42,7 @@ namespace WizBot.Modules.Administration
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.ManageMessages)]
             [WizBotOptionsAttribute(typeof(SlowmodeService.Options))]
+            [Priority(0)]
             public async Task Slowmode(params string[] args)
             {
                 var (opts, succ) = OptionsParser.ParseFrom(new SlowmodeService.Options(), args);
