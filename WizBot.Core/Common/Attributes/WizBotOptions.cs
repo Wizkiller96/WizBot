@@ -1,16 +1,13 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WizBot.Common.Attributes
 {
-    public class WizBotOptions : Attribute
+    [AttributeUsage(AttributeTargets.Method)]
+    public sealed class WizBotOptionsAttribute : Attribute
     {
         public Type OptionType { get; set; }
 
-        public WizBotOptions(Type t)
+        public WizBotOptionsAttribute(Type t)
         {
             this.OptionType = t;
         }

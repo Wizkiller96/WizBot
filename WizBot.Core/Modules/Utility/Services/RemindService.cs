@@ -17,7 +17,7 @@ namespace WizBot.Modules.Utility.Services
 {
     public class RemindService : INService
     {
-        public readonly Regex Regex = new Regex(@"^(?:(?<months>\d)mo)?(?:(?<weeks>\d)w)?(?:(?<days>\d{1,2})d)?(?:(?<hours>\d{1,2})h)?(?:(?<minutes>\d{1,2})m)?$",
+        public Regex Regex { get; } = new Regex(@"^(?:(?<months>\d)mo)?(?:(?<weeks>\d)w)?(?:(?<days>\d{1,2})d)?(?:(?<hours>\d{1,2})h)?(?:(?<minutes>\d{1,2})m)?$",
                                 RegexOptions.Compiled | RegexOptions.Multiline);
 
         public string RemindMessageFormat { get; }
@@ -94,8 +94,8 @@ namespace WizBot.Modules.Utility.Services
                     .WithOkColor()
                     .WithTitle("Reminder")
                     .AddField("Created At", r.DateAdded.HasValue ? r.DateAdded.Value.ToLongDateString() : "?")
-                    .AddField("By", (await ch.GetUserAsync(r.UserId))?.ToString() ?? r.UserId.ToString()),
-                    msg: r.Message.SanitizeMentions());
+                    .AddField("By", (await ch.GetUserAsync(r.UserId).ConfigureAwait(false))?.ToString() ?? r.UserId.ToString()),
+                    msg: r.Message.SanitizeMentions()).ConfigureAwait(false);
             }
             catch (Exception ex) { _log.Warn(ex); }
             finally
@@ -103,7 +103,7 @@ namespace WizBot.Modules.Utility.Services
                 using (var uow = _db.UnitOfWork)
                 {
                     uow.Reminders.Remove(r);
-                    await uow.CompleteAsync();
+                    await uow.CompleteAsync().ConfigureAwait(false);
                 }
                 var _ = Task.Run(() =>
                 {

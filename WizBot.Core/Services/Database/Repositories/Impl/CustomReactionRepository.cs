@@ -16,7 +16,7 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
             return _context.Database.ExecuteSqlCommand($"DELETE FROM CustomReactions WHERE GuildId={id};");
         }
 
-        public CustomReaction[] For(ulong id)
+        public CustomReaction[] ForId(ulong id)
         {
             return _set.Where(x => x.GuildId == id)
                 .ToArray();
@@ -29,7 +29,7 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
         /// <returns></returns>
         public CustomReaction[] GetGlobalAndFor(IEnumerable<long> ids)
         {
-            return _set.Where(x => x.GuildId == null || x.GuildId == 0 || ids.Contains((long) x.GuildId))
+            return _set.Where(x => x.GuildId == null || x.GuildId == 0 || ids.Contains((long)x.GuildId))
                 .ToArray();
         }
     }

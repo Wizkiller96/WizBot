@@ -12,7 +12,7 @@ namespace WizBot.Modules.Music.Common.SongResolver.Strategies
             {
                 Uri = () => Task.FromResult("\"" + Path.GetFullPath(query) + "\""),
                 Title = Path.GetFileNameWithoutExtension(query),
-                Provider = "Local File",
+                Provider = "WizBot - Local File",
                 ProviderType = MusicType.Local,
                 Query = query,
                 Thumbnail = "https://cdn.discordapp.com/attachments/155726317222887425/261850914783100928/1482522077_music.png",

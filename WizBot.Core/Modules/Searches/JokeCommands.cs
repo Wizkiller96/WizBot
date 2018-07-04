@@ -17,20 +17,20 @@ namespace WizBot.Modules.Searches
             [WizBotCommand, Usage, Description, Aliases]
             public async Task Yomama()
             {
-                await Context.Channel.SendConfirmAsync(await _service.GetYomamaJoke()).ConfigureAwait(false);
+                await Context.Channel.SendConfirmAsync(await _service.GetYomamaJoke().ConfigureAwait(false)).ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
             public async Task Randjoke()
             {
-                var jokeInfo = await _service.GetRandomJoke();
+                var jokeInfo = await SearchesService.GetRandomJoke().ConfigureAwait(false);
                 await Context.Channel.SendConfirmAsync("", jokeInfo.Text, footer: jokeInfo.BaseUri).ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
             public async Task ChuckNorris()
             {
-                await Context.Channel.SendConfirmAsync(await _service.GetChuckNorrisJoke()).ConfigureAwait(false);
+                await Context.Channel.SendConfirmAsync(await _service.GetChuckNorrisJoke().ConfigureAwait(false)).ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]

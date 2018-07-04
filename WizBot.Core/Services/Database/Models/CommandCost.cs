@@ -1,3 +1,5 @@
+using System;
+
 namespace WizBot.Core.Services.Database.Models
 {
     public class CommandCost : DbEntity
@@ -6,16 +8,13 @@ namespace WizBot.Core.Services.Database.Models
         public string CommandName { get; set; }
 
         public override int GetHashCode() =>
-            CommandName.GetHashCode();
+            CommandName.GetHashCode(StringComparison.InvariantCulture);
 
         public override bool Equals(object obj)
         {
-            var instance = obj as CommandCost;
-
-            if (instance == null)
-                return false;
-
-            return instance.CommandName == CommandName;
+            return obj is CommandCost cc
+                ? cc.CommandName == CommandName
+                : false;
         }
     }
 }

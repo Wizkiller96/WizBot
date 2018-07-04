@@ -24,7 +24,7 @@ namespace WizBot.Modules.Administration
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.ManageMessages)]
-            [WizBotOptions(typeof(SlowmodeService.Options))]
+            [WizBotOptionsAttribute(typeof(SlowmodeService.Options))]
             public Task Slowmode()
             {
                 if (_service.StopSlowmode(Context.Channel.Id))
@@ -40,10 +40,10 @@ namespace WizBot.Modules.Administration
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.ManageMessages)]
-            [WizBotOptions(typeof(SlowmodeService.Options))]
+            [WizBotOptionsAttribute(typeof(SlowmodeService.Options))]
             public async Task Slowmode(params string[] args)
             {
-                var (opts, succ) = OptionsParser.Default.ParseFrom(new SlowmodeService.Options(), args);
+                var (opts, succ) = OptionsParser.ParseFrom(new SlowmodeService.Options(), args);
                 if (!succ)
                 {
                     await ReplyErrorLocalized("invalid_params").ConfigureAwait(false);

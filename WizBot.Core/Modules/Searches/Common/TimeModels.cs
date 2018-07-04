@@ -32,6 +32,6 @@ namespace WizBot.Modules.Searches.Common
             public GeometryModel Geometry { get; set; }
         }
 
-        public GeolocationModel[] results;
+        public GeolocationModel[] Results { get; set; }
     }
 }

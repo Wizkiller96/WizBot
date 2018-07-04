@@ -60,7 +60,7 @@ namespace WizBot.Modules.Utility
 
                     using (var uow = _db.UnitOfWork)
                     {
-                        var config = uow.GuildConfigs.For(Context.Guild.Id, set => set.Include(x => x.CommandAliases));
+                        var config = uow.GuildConfigs.ForId(Context.Guild.Id, set => set.Include(x => x.CommandAliases));
                         var toAdd = new CommandAlias()
                         {
                             Mapping = mapping,
@@ -77,7 +77,7 @@ namespace WizBot.Modules.Utility
                 {
                     using (var uow = _db.UnitOfWork)
                     {
-                        var config = uow.GuildConfigs.For(Context.Guild.Id, set => set.Include(x => x.CommandAliases));
+                        var config = uow.GuildConfigs.ForId(Context.Guild.Id, set => set.Include(x => x.CommandAliases));
                         config.CommandAliases.Add(new CommandAlias()
                         {
                             Mapping = mapping,
@@ -92,7 +92,7 @@ namespace WizBot.Modules.Utility
                 {
                     using (var uow = _db.UnitOfWork)
                     {
-                        var config = uow.GuildConfigs.For(Context.Guild.Id, set => set.Include(x => x.CommandAliases));
+                        var config = uow.GuildConfigs.ForId(Context.Guild.Id, set => set.Include(x => x.CommandAliases));
                         var toAdd = new CommandAlias()
                         {
                             Mapping = mapping,
@@ -119,7 +119,7 @@ namespace WizBot.Modules.Utility
 
                 if (page < 0)
                     return;
-                
+
                 if (!_service.AliasMaps.TryGetValue(Context.Guild.Id, out var maps) || !maps.Any())
                 {
                     await ReplyErrorLocalized("aliases_none").ConfigureAwait(false);

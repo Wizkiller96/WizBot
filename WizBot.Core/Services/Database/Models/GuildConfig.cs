@@ -123,7 +123,7 @@ namespace WizBot.Core.Services.Database.Models
 
         public override int GetHashCode()
         {
-            return Tag.GetHashCode();
+            return Tag.GetHashCode(StringComparison.InvariantCulture);
         }
 
         public override bool Equals(object obj)
@@ -224,10 +224,9 @@ namespace WizBot.Core.Services.Database.Models
 
         public override bool Equals(object obj)
         {
-            var ut = obj as UnmuteTimer;
-            if (ut == null)
-                return false;
-            return ut.UserId == UserId;
+            return obj is UnmuteTimer ut
+                ? ut.UserId == UserId
+                : false;
         }
     }
 
@@ -241,10 +240,9 @@ namespace WizBot.Core.Services.Database.Models
 
         public override bool Equals(object obj)
         {
-            var ut = obj as UnbanTimer;
-            if (ut == null)
-                return false;
-            return ut.UserId == UserId;
+            return obj is UnbanTimer ut
+                ? ut.UserId == UserId
+                : false;
         }
     }
 
@@ -286,11 +284,9 @@ namespace WizBot.Core.Services.Database.Models
 
         public override bool Equals(object obj)
         {
-            var mui = obj as MutedUserId;
-            if (mui == null)
-                return false;
-
-            return mui.UserId == this.UserId;
+            return obj is MutedUserId mui
+                ? mui.UserId == UserId
+                : false;
         }
     }
 
@@ -300,11 +296,9 @@ namespace WizBot.Core.Services.Database.Models
 
         public override bool Equals(object obj)
         {
-            var gc = obj as GCChannelId;
-            if (gc == null)
-                return false;
-
-            return gc.ChannelId == this.ChannelId;
+            return obj is GCChannelId gc
+                ? gc.ChannelId == ChannelId
+                : false;
         }
 
         public override int GetHashCode() =>

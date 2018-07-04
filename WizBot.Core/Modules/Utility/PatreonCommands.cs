@@ -24,7 +24,7 @@ namespace WizBot.Modules.Utility
                 _db = db;
                 _currency = currency;
             }
-            
+
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.DM)]
             [OwnerOnly]
@@ -61,7 +61,7 @@ namespace WizBot.Modules.Utility
 
                 if (amount > 0)
                 {
-                    await ReplyConfirmLocalized("clpa_success", amount + _bc.BotConfig.CurrencySign).ConfigureAwait(false);
+                    await ReplyConfirmLocalized("clpa_success", amount + Bc.BotConfig.CurrencySign).ConfigureAwait(false);
                     return;
                 }
                 var rem = (_service.Interval - (DateTime.UtcNow - _service.LastUpdate));

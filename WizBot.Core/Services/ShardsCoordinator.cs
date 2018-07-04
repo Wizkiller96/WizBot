@@ -343,7 +343,7 @@ namespace WizBot.Core.Services
                 return;
             }
 
-            await Task.Delay(-1);
+            await Task.Delay(-1).ConfigureAwait(false);
         }
     }
 }

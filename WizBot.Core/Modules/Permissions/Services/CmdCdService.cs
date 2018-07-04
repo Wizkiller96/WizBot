@@ -19,7 +19,7 @@ namespace WizBot.Modules.Permissions.Services
         public CmdCdService(WizBot bot)
         {
             CommandCooldowns = new ConcurrentDictionary<ulong, ConcurrentHashSet<CommandCooldown>>(
-                bot.AllGuildConfigs.ToDictionary(k => k.GuildId, 
+                bot.AllGuildConfigs.ToDictionary(k => k.GuildId,
                                  v => new ConcurrentHashSet<CommandCooldown>(v.CommandCooldowns)));
         }
 
@@ -46,7 +46,7 @@ namespace WizBot.Modules.Permissions.Services
                 {
                     try
                     {
-                        await Task.Delay(cdRule.Seconds * 1000);
+                        await Task.Delay(cdRule.Seconds * 1000).ConfigureAwait(false);
                         activeCdsForGuild.RemoveWhere(ac => ac.Command == commandName.ToLowerInvariant() && ac.UserId == user.Id);
                     }
                     catch

@@ -26,7 +26,7 @@ namespace WizBot.Modules.Utility
         private readonly WizBot _bot;
         private readonly DbService _db;
 
-        public Utility(WizBot wizbot, DiscordSocketClient client, 
+        public Utility(WizBot wizbot, DiscordSocketClient client,
             IStatsService stats, IBotCredentials creds,
             DbService db)
         {
@@ -51,7 +51,7 @@ namespace WizBot.Modules.Utility
                 .WithAuthor(eab => eab.WithIconUrl("https://togethertube.com/assets/img/favicons/favicon-32x32.png")
                 .WithName("Together Tube")
                 .WithUrl("https://togethertube.com/"))
-                .WithDescription(Context.User.Mention + " " + GetText("togtub_room_link") +  "\n" + target));
+                .WithDescription(Context.User.Mention + " " + GetText("togtub_room_link") + "\n" + target)).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -92,7 +92,7 @@ namespace WizBot.Modules.Utility
         public async Task InRole([Remainder] IRole role)
         {
             var rng = new WizBotRandom();
-            var usrs = (await Context.Guild.GetUsersAsync()).ToArray();
+            var usrs = (await Context.Guild.GetUsersAsync().ConfigureAwait(false)).ToArray();
             var roleUsers = usrs
                 .Where(u => u.RoleIds.Contains(role.Id))
                 .Select(u => u.ToString())
@@ -102,7 +102,7 @@ namespace WizBot.Modules.Utility
             {
                 return new EmbedBuilder().WithOkColor()
                     .WithTitle(Format.Bold(GetText("inrole_list", Format.Bold(role.Name))) + $" - {roleUsers.Length}")
-                     .WithDescription(string.Join("\n", roleUsers.Skip(cur * 20).Take(20)));
+                    .WithDescription(string.Join("\n", roleUsers.Skip(cur * 20).Take(20)));
             }, roleUsers.Length, 20).ConfigureAwait(false);
         }
 
@@ -121,7 +121,7 @@ namespace WizBot.Modules.Utility
             {
                 builder.AppendLine($"{p.Name} : {p.GetValue(perms, null)}");
             }
-            await Context.Channel.SendConfirmAsync(builder.ToString());
+            await Context.Channel.SendConfirmAsync(builder.ToString()).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -222,9 +222,9 @@ namespace WizBot.Modules.Utility
         [RequireUserPermission(ChannelPermission.CreateInstantInvite)]
         public async Task CreateInvite()
         {
-            var invite = await ((ITextChannel)Context.Channel).CreateInviteAsync(0, null, isUnique: true);
+            var invite = await ((ITextChannel)Context.Channel).CreateInviteAsync(0, null, isUnique: true).ConfigureAwait(false);
 
-            await Context.Channel.SendConfirmAsync($"{Context.User.Mention} https://discord.gg/{invite.Code}");
+            await Context.Channel.SendConfirmAsync($"{Context.User.Mention} https://discord.gg/{invite.Code}").ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -237,7 +237,7 @@ namespace WizBot.Modules.Utility
             var adminIds = string.Join("\n", _creds.AdminIds);
             if (string.IsNullOrWhiteSpace(adminIds))
                 adminIds = "-";
-
+                
             await Context.Channel.EmbedAsync(
                 new EmbedBuilder().WithOkColor()
                     .WithAuthor(eab => eab.WithName($"WizBot v{StatsService.BotVersion}")
@@ -254,11 +254,11 @@ namespace WizBot.Modules.Utility
                     .AddField(efb => efb.WithName(GetText("uptime")).WithValue(_stats.GetUptimeString("\n")).WithIsInline(true))
                     .AddField(efb => efb.WithName(GetText("presence")).WithValue(
                         GetText("presence_txt",
-                            _bot.GuildCount, _stats.TextChannels, _stats.VoiceChannels)).WithIsInline(true)));
+                            _bot.GuildCount, _stats.TextChannels, _stats.VoiceChannels)).WithIsInline(true))).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
-        public async Task Showemojis([Remainder] string emojis)
+        public async Task Showemojis([Remainder] string _) // need to have the parameter so that the message.tags gets populated
         {
             var tags = Context.Message.Tags.Where(t => t.Type == TagType.Emoji).Select(t => (Emote)t.Value);
 

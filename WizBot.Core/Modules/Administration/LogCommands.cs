@@ -118,7 +118,7 @@ namespace WizBot.Modules.Administration
                     .ConfigureAwait(false);
             }
 
-            private ulong? GetLogProperty(LogSetting l, LogType type)
+            private static ulong? GetLogProperty(LogSetting l, LogType type)
             {
                 switch (type)
                 {

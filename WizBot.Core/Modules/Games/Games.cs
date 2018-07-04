@@ -219,7 +219,7 @@ namespace WizBot.Modules.Games
             await Context.Channel.EmbedAsync(new EmbedBuilder().WithColor(WizBot.OkColor)
                 .WithDescription(Context.User.ToString())
                 .AddField(efb => efb.WithName("❓ " + GetText("question")).WithValue(question).WithIsInline(false))
-                .AddField(efb => efb.WithName("🎱 " + GetText("8ball")).WithValue(_service.EightBallResponses[new WizBotRandom().Next(0, _service.EightBallResponses.Length)]).WithIsInline(false)));
+                .AddField(efb => efb.WithName("🎱 " + GetText("8ball")).WithValue(_service.EightBallResponses[new WizBotRandom().Next(0, _service.EightBallResponses.Length)]).WithIsInline(false))).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -236,9 +236,9 @@ namespace WizBot.Modules.Games
                 .WithImageUrl(img)).ConfigureAwait(false);
         }
 
-        private double NextDouble(double x, double y)
+        private static double NextDouble(double x, double y)
         {
-            var rng = new Random();
+            var rng = new WizBotRandom();
             return rng.NextDouble() * (y - x) + x;
         }
 
@@ -249,13 +249,8 @@ namespace WizBot.Modules.Games
             var roll = rng.Next(1, 1001);
 
             if ((uid == 185968432783687681 ||
-                 uid == 265642040950390784 ||
-                 uid == 99272781513920512) && roll >= 900)
+                 uid == 265642040950390784) && roll >= 900)
                 roll = 1000;
-
-            if ((uid == 99272781513920512 ||
-                 uid == 213817345334968330) && roll >= 10)
-                roll = 10;
 
 
             double hot;

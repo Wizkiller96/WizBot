@@ -68,16 +68,16 @@ namespace WizBot.Modules.Gambling
                 _cache = cache;
                 _client = client;
             }
-            
+
             [WizBotCommand, Usage, Description, Aliases]
             public async Task WaifuReset()
             {
                 var price = _service.GetResetPrice(Context.User);
                 var embed = new EmbedBuilder()
                         .WithTitle(GetText("waifu_reset_confirm"))
-                        .WithDescription(GetText("cost", Format.Bold(price + _bc.BotConfig.CurrencySign)));
+                        .WithDescription(GetText("cost", Format.Bold(price + Bc.BotConfig.CurrencySign)));
 
-                if (!await PromptUserConfirmAsync(embed))
+                if (!await PromptUserConfirmAsync(embed).ConfigureAwait(false))
                     return;
 
                 if (await _service.TryReset(Context.User).ConfigureAwait(false))
@@ -92,9 +92,9 @@ namespace WizBot.Modules.Gambling
             [RequireContext(ContextType.Guild)]
             public async Task WaifuClaim(int amount, [Remainder]IUser target)
             {
-                if (amount < _bc.BotConfig.MinWaifuPrice)
+                if (amount < Bc.BotConfig.MinWaifuPrice)
                 {
-                    await ReplyErrorLocalized("waifu_isnt_cheap", _bc.BotConfig.MinWaifuPrice + _bc.BotConfig.CurrencySign).ConfigureAwait(false);
+                    await ReplyErrorLocalized("waifu_isnt_cheap", Bc.BotConfig.MinWaifuPrice + Bc.BotConfig.CurrencySign).ConfigureAwait(false);
                     return;
                 }
 
@@ -115,7 +115,7 @@ namespace WizBot.Modules.Gambling
                     {
                         var claimer = uow.DiscordUsers.GetOrCreate(Context.User);
                         var waifu = uow.DiscordUsers.GetOrCreate(target);
-                        if (!await _cs.RemoveAsync(Context.User.Id, "Claimed Waifu", amount, gamble: true))
+                        if (!await _cs.RemoveAsync(Context.User.Id, "Claimed Waifu", amount, gamble: true).ConfigureAwait(false))
                         {
                             result = WaifuClaimResult.NotEnoughFunds;
                         }
@@ -140,7 +140,7 @@ namespace WizBot.Modules.Gambling
                     }
                     else if (isAffinity && amount > w.Price * 0.88f)
                     {
-                        if (!await _cs.RemoveAsync(Context.User.Id, "Claimed Waifu", amount, gamble: true))
+                        if (!await _cs.RemoveAsync(Context.User.Id, "Claimed Waifu", amount, gamble: true).ConfigureAwait(false))
                         {
                             result = WaifuClaimResult.NotEnoughFunds;
                         }
@@ -162,7 +162,7 @@ namespace WizBot.Modules.Gambling
                     }
                     else if (amount >= w.Price * 1.1f) // if no affinity
                     {
-                        if (!await _cs.RemoveAsync(Context.User.Id, "Claimed Waifu", amount, gamble: true))
+                        if (!await _cs.RemoveAsync(Context.User.Id, "Claimed Waifu", amount, gamble: true).ConfigureAwait(false))
                         {
                             result = WaifuClaimResult.NotEnoughFunds;
                         }
@@ -196,14 +196,14 @@ namespace WizBot.Modules.Gambling
                 }
                 if (result == WaifuClaimResult.NotEnoughFunds)
                 {
-                    await ReplyErrorLocalized("not_enough", _bc.BotConfig.CurrencySign).ConfigureAwait(false);
+                    await ReplyErrorLocalized("not_enough", Bc.BotConfig.CurrencySign).ConfigureAwait(false);
                     return;
                 }
-                var msg = GetText("waifu_claimed", 
-                    Format.Bold(target.ToString()), 
-                    amount + _bc.BotConfig.CurrencySign);
+                var msg = GetText("waifu_claimed",
+                    Format.Bold(target.ToString()),
+                    amount + Bc.BotConfig.CurrencySign);
                 if (w.Affinity?.UserId == Context.User.Id)
-                    msg += "\n" + GetText("waifu_fulfilled", target, w.Price + _bc.BotConfig.CurrencySign);
+                    msg += "\n" + GetText("waifu_fulfilled", target, w.Price + Bc.BotConfig.CurrencySign);
                 else
                     msg = " " + msg;
                 await Context.Channel.SendConfirmAsync(Context.User.Mention + msg).ConfigureAwait(false);
@@ -213,7 +213,7 @@ namespace WizBot.Modules.Gambling
             [RequireContext(ContextType.Guild)]
             public async Task WaifuTransfer(IUser waifu, IUser newOwner)
             {
-                if(!await _service.WaifuTransfer(Context.User, waifu.Id, newOwner)
+                if (!await _service.WaifuTransfer(Context.User, waifu.Id, newOwner)
                     .ConfigureAwait(false))
                 {
                     await ReplyErrorLocalized("waifu_transfer_fail").ConfigureAwait(false);
@@ -294,11 +294,11 @@ namespace WizBot.Modules.Gambling
 
                 if (result == DivorceResult.SucessWithPenalty)
                 {
-                    await ReplyConfirmLocalized("waifu_divorced_like", Format.Bold(w.Waifu.ToString()), amount + _bc.BotConfig.CurrencySign).ConfigureAwait(false);
+                    await ReplyConfirmLocalized("waifu_divorced_like", Format.Bold(w.Waifu.ToString()), amount + Bc.BotConfig.CurrencySign).ConfigureAwait(false);
                 }
                 else if (result == DivorceResult.Success)
                 {
-                    await ReplyConfirmLocalized("waifu_divorced_notlike", amount + _bc.BotConfig.CurrencySign).ConfigureAwait(false);
+                    await ReplyConfirmLocalized("waifu_divorced_notlike", amount + Bc.BotConfig.CurrencySign).ConfigureAwait(false);
                 }
                 else if (result == DivorceResult.NotYourWife)
                 {
@@ -306,7 +306,7 @@ namespace WizBot.Modules.Gambling
                 }
                 else
                 {
-                    await ReplyErrorLocalized("waifu_recent_divorce", 
+                    await ReplyErrorLocalized("waifu_recent_divorce",
                         Format.Bold(((int)remaining?.TotalHours).ToString()),
                         Format.Bold(remaining?.Minutes.ToString())).ConfigureAwait(false);
                 }
@@ -378,7 +378,7 @@ namespace WizBot.Modules.Gambling
                 {
                     if (remaining != null)
                     {
-                        await ReplyErrorLocalized("waifu_affinity_cooldown", 
+                        await ReplyErrorLocalized("waifu_affinity_cooldown",
                             Format.Bold(((int)remaining?.TotalHours).ToString()),
                             Format.Bold(remaining?.Minutes.ToString())).ConfigureAwait(false);
                     }
@@ -422,7 +422,7 @@ namespace WizBot.Modules.Gambling
                     await ReplyConfirmLocalized("waifus_none").ConfigureAwait(false);
                     return;
                 }
-                
+
                 var embed = new EmbedBuilder()
                     .WithTitle(GetText("waifus_top_waifus"))
                     .WithOkColor();
@@ -432,7 +432,7 @@ namespace WizBot.Modules.Gambling
                     var w = waifus[i];
 
                     var j = i;
-                    embed.AddField(efb => efb.WithName("#" + ((page * 9) + j + 1) + " - " + w.Price + _bc.BotConfig.CurrencySign).WithValue(w.ToString()).WithIsInline(false));
+                    embed.AddField(efb => efb.WithName("#" + ((page * 9) + j + 1) + " - " + w.Price + Bc.BotConfig.CurrencySign).WithValue(w.ToString()).WithIsInline(false));
                 }
 
                 await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
@@ -518,14 +518,14 @@ namespace WizBot.Modules.Gambling
 
                     Enum.GetValues(typeof(WaifuItem.ItemName))
                                         .Cast<WaifuItem.ItemName>()
-                                        .Select(x => WaifuItem.GetItem(x, _bc.BotConfig.WaifuGiftMultiplier))
+                                        .Select(x => WaifuItem.GetItemObject(x, Bc.BotConfig.WaifuGiftMultiplier))
                                         .OrderBy(x => x.Price)
                                         .Skip(9 * cur)
                                         .Take(9)
                                         .ForEach(x => embed.AddField(f => f.WithName(x.ItemEmoji + " " + x.Item).WithValue(x.Price).WithIsInline(true)));
 
                     return embed;
-                }, Enum.GetValues(typeof(WaifuItem.ItemName)).Length, 9);
+                }, Enum.GetValues(typeof(WaifuItem.ItemName)).Length, 9).ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -536,7 +536,7 @@ namespace WizBot.Modules.Gambling
                 if (waifu.Id == Context.User.Id)
                     return;
 
-                var itemObj = WaifuItem.GetItem(item, _bc.BotConfig.WaifuGiftMultiplier);
+                var itemObj = WaifuItem.GetItemObject(item, Bc.BotConfig.WaifuGiftMultiplier);
 
                 using (var uow = _db.UnitOfWork)
                 {
@@ -544,9 +544,9 @@ namespace WizBot.Modules.Gambling
 
                     //try to buy the item first
 
-                    if (!await _cs.RemoveAsync(Context.User.Id, "Bought waifu item", itemObj.Price, gamble: true))
+                    if (!await _cs.RemoveAsync(Context.User.Id, "Bought waifu item", itemObj.Price, gamble: true).ConfigureAwait(false))
                     {
-                        await ReplyErrorLocalized("not_enough", _bc.BotConfig.CurrencySign).ConfigureAwait(false);
+                        await ReplyErrorLocalized("not_enough", Bc.BotConfig.CurrencySign).ConfigureAwait(false);
                         return;
                     }
                     if (w == null)
@@ -573,7 +573,7 @@ namespace WizBot.Modules.Gambling
                     await uow.CompleteAsync().ConfigureAwait(false);
                 }
 
-                await ReplyConfirmLocalized("waifu_gift", Format.Bold(item.ToString() + " " +itemObj.ItemEmoji), Format.Bold(waifu.ToString())).ConfigureAwait(false);
+                await ReplyConfirmLocalized("waifu_gift", Format.Bold(item.ToString() + " " + itemObj.ItemEmoji), Format.Bold(waifu.ToString())).ConfigureAwait(false);
             }
 
 

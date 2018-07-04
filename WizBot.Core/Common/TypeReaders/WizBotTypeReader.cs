@@ -9,7 +9,7 @@ namespace WizBot.Core.Common.TypeReaders
         private readonly CommandService _cmds;
 
         private WizBotTypeReader() { }
-        public WizBotTypeReader(DiscordSocketClient client, CommandService cmds)
+        protected WizBotTypeReader(DiscordSocketClient client, CommandService cmds)
         {
             _client = client;
             _cmds = cmds;

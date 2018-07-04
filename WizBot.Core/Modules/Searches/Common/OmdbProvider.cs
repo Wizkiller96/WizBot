@@ -16,11 +16,11 @@ namespace WizBot.Modules.Searches.Common
         {
             using (var http = new HttpClient())
             {
-                var res = await http.GetStringAsync(String.Format(queryUrl,name.Trim().Replace(' ','+'))).ConfigureAwait(false);
+                var res = await http.GetStringAsync(String.Format(queryUrl, name.Trim().Replace(' ', '+'))).ConfigureAwait(false);
                 var movie = JsonConvert.DeserializeObject<OmdbMovie>(res);
                 if (movie?.Title == null)
                     return null;
-                movie.Poster = await google.ShortenUrl(movie.Poster);
+                movie.Poster = await google.ShortenUrl(movie.Poster).ConfigureAwait(false);
                 return movie;
             }
         }

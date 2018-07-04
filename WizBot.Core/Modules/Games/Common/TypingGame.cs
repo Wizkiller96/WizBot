@@ -41,7 +41,7 @@ namespace WizBot.Modules.Games.Common
 
         private Logger _log { get; }
 
-        public TypingGame(GamesService games, DiscordSocketClient client, ITextChannel channel, 
+        public TypingGame(GamesService games, DiscordSocketClient client, ITextChannel channel,
             string prefix, Options options) //kek@prefix
         {
             _log = LogManager.GetCurrentClassLogger();
@@ -93,8 +93,9 @@ namespace WizBot.Modules.Games.Common
                     try { await msg.ModifyAsync(m => m.Content = $"Starting new typing contest in **{time}**..").ConfigureAwait(false); } catch { }
                 } while (time > 2);
 
-                await msg.ModifyAsync(m => {
-                    m.Content = CurrentSentence.Replace(" ", " \x200B");
+                await msg.ModifyAsync(m =>
+                {
+                    m.Content = CurrentSentence.Replace(" ", " \x200B", StringComparison.InvariantCulture);
                 }).ConfigureAwait(false);
                 sw.Start();
                 HandleAnswers();
@@ -160,7 +161,8 @@ namespace WizBot.Modules.Games.Common
                                 .ConfigureAwait(false);
                         if (finishedUserIds.Count % 4 == 0)
                         {
-                            await this.Channel.SendConfirmAsync($":exclamation: A lot of people finished, here is the text for those still typing:\n\n**{Format.Sanitize(CurrentSentence.Replace(" ", " \x200B")).SanitizeMentions()}**").ConfigureAwait(false);
+                            await this.Channel.SendConfirmAsync($":exclamation: A lot of people finished, here is the text for those still typing:" +
+                                $"\n\n**{Format.Sanitize(CurrentSentence.Replace(" ", " \x200B", StringComparison.InvariantCulture)).SanitizeMentions()}**").ConfigureAwait(false);
                         }
                     }
                 }
@@ -169,7 +171,7 @@ namespace WizBot.Modules.Games.Common
             return Task.CompletedTask;
         }
 
-        private bool Judge(int errors, int textLength) => errors <= textLength / 25;
+        private static bool Judge(int errors, int textLength) => errors <= textLength / 25;
 
     }
 }

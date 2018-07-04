@@ -21,7 +21,7 @@ namespace WizBot.Modules.Utility.Services
                 .StringGet("converter_units")
                 .ToString()
                 .MapJson<ConvertUnit[]>();
-                
+
         private readonly Logger _log;
         private readonly Timer _currencyUpdater;
         private readonly TimeSpan _updateInterval = new TimeSpan(12, 0, 0);
@@ -39,7 +39,7 @@ namespace WizBot.Modules.Utility.Services
 
             if (client.ShardId == 0)
             {
-                _currencyUpdater = new Timer(async (shouldLoad) => await UpdateCurrency((bool)shouldLoad),
+                _currencyUpdater = new Timer(async (shouldLoad) => await UpdateCurrency((bool)shouldLoad).ConfigureAwait(false),
                     client.ShardId == 0,
                     TimeSpan.Zero,
                     _updateInterval);
@@ -59,7 +59,7 @@ namespace WizBot.Modules.Utility.Services
                 var unitTypeString = "currency";
                 if (shouldLoad)
                 {
-                    var currencyRates = await GetCurrencyRates();
+                    var currencyRates = await GetCurrencyRates().ConfigureAwait(false);
                     var baseType = new ConvertUnit()
                     {
                         Triggers = new[] { currencyRates.Base },

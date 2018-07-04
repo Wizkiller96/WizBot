@@ -23,7 +23,7 @@ namespace WizBot.Modules.Utility.Common
         private IUserMessage oldMsg = null;
         private Timer _t;
 
-        public RepeatRunner(DiscordSocketClient client, SocketGuild guild, Repeater repeater)
+        public RepeatRunner(SocketGuild guild, Repeater repeater)
         {
             _log = LogManager.GetCurrentClassLogger();
             Repeater = repeater;
@@ -58,7 +58,7 @@ namespace WizBot.Modules.Utility.Common
             {
                 try
                 {
-                    await oldMsg.DeleteAsync();
+                    await oldMsg.DeleteAsync().ConfigureAwait(false);
                     oldMsg = null;
                 }
                 catch
@@ -75,7 +75,7 @@ namespace WizBot.Modules.Utility.Common
 
                 if (Repeater.NoRedundant)
                 {
-                    var lastMsgInChannel = (await Channel.GetMessagesAsync(2).FlattenAsync()).FirstOrDefault();
+                    var lastMsgInChannel = (await Channel.GetMessagesAsync(2).FlattenAsync().ConfigureAwait(false)).FirstOrDefault();
                     if (lastMsgInChannel != null && lastMsgInChannel.Id == oldMsg?.Id) //don't send if it's the same message in the channel
                         return;
                 }

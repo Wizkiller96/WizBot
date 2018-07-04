@@ -17,7 +17,6 @@ namespace WizBot.Modules.Administration.Services
 {
     public class LogCommandService : INService
     {
-
         private readonly DiscordSocketClient _client;
         private readonly Logger _log;
 
@@ -77,7 +76,7 @@ namespace WizBot.Modules.Administration.Services
                             return key.SendConfirmAsync(title, desc.TrimTo(2048));
                         }
                         return Task.CompletedTask;
-                    }));
+                    })).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -116,9 +115,7 @@ namespace WizBot.Modules.Administration.Services
             {
                 try
                 {
-                    var after = uAfter as SocketGuildUser;
-
-                    if (after == null)
+                    if (!(uAfter is SocketGuildUser after))
                         return;
 
                     var g = after.Guild;
@@ -128,11 +125,10 @@ namespace WizBot.Modules.Administration.Services
                         return;
 
                     ITextChannel logChannel;
-                    if ((logChannel = await TryGetLogChannel(g, logSetting, LogType.UserUpdated)) == null)
+                    if ((logChannel = await TryGetLogChannel(g, logSetting, LogType.UserUpdated).ConfigureAwait(false)) == null)
                         return;
 
                     var embed = new EmbedBuilder();
-
 
                     if (before.Username != after.Username)
                     {
@@ -150,10 +146,13 @@ namespace WizBot.Modules.Administration.Services
                             .WithFooter(fb => fb.WithText(CurrentTime(g)))
                             .WithOkColor();
 
-                            if (Uri.IsWellFormedUriString(before.RealAvatarUrl(), UriKind.Absolute))
-                            embed.WithThumbnailUrl(before.RealAvatarUrl());
-                            if (Uri.IsWellFormedUriString(after.RealAvatarUrl(), UriKind.Absolute))
-                            embed.WithImageUrl(after.RealAvatarUrl());
+                        var bav = before.RealAvatarUrl();
+                        if (bav != null && bav.IsAbsoluteUri)
+                            embed.WithThumbnailUrl(bav.ToString());
+
+                        var aav = after.RealAvatarUrl();
+                        if (aav != null && aav.IsAbsoluteUri)
+                            embed.WithImageUrl(aav.ToString());
                     }
                     else
                     {
@@ -191,8 +190,7 @@ namespace WizBot.Modules.Administration.Services
             {
                 try
                 {
-                    var usr = iusr as IGuildUser;
-                    if (usr == null)
+                    if (!(iusr is IGuildUser usr))
                         return;
 
                     var beforeVch = before.VoiceChannel;
@@ -206,7 +204,7 @@ namespace WizBot.Modules.Administration.Services
                         return;
 
                     ITextChannel logChannel;
-                    if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.VoicePresenceTTS)) == null)
+                    if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.VoicePresenceTTS).ConfigureAwait(false)) == null)
                         return;
 
                     var str = "";
@@ -244,7 +242,7 @@ namespace WizBot.Modules.Administration.Services
                         return;
 
                     ITextChannel logChannel;
-                    if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.UserMuted)) == null)
+                    if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.UserMuted).ConfigureAwait(false)) == null)
                         return;
                     var mutes = "";
                     var mutedLocalized = GetText(logChannel.Guild, "muted_sn");
@@ -286,7 +284,7 @@ namespace WizBot.Modules.Administration.Services
                         return;
 
                     ITextChannel logChannel;
-                    if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.UserMuted)) == null)
+                    if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.UserMuted).ConfigureAwait(false)) == null)
                         return;
 
                     var mutes = "";
@@ -331,7 +329,7 @@ namespace WizBot.Modules.Administration.Services
                         || (logSetting.LogOtherId == null))
                         return;
                     ITextChannel logChannel;
-                    if ((logChannel = await TryGetLogChannel(users.First().Guild, logSetting, LogType.Other)) == null)
+                    if ((logChannel = await TryGetLogChannel(users.First().Guild, logSetting, LogType.Other).ConfigureAwait(false)) == null)
                         return;
 
                     var punishment = "";
@@ -380,7 +378,7 @@ namespace WizBot.Modules.Administration.Services
                         return;
 
                     ITextChannel logChannel;
-                    if (logSetting.UserUpdatedId != null && (logChannel = await TryGetLogChannel(before.Guild, logSetting, LogType.UserUpdated)) != null)
+                    if (logSetting.UserUpdatedId != null && (logChannel = await TryGetLogChannel(before.Guild, logSetting, LogType.UserUpdated).ConfigureAwait(false)) != null)
                     {
                         var embed = new EmbedBuilder().WithOkColor().WithFooter(efb => efb.WithText(CurrentTime(before.Guild)))
                             .WithTitle($"{before.Username}#{before.Discriminator} | {before.Id}");
@@ -411,7 +409,7 @@ namespace WizBot.Modules.Administration.Services
                     }
 
                     logChannel = null;
-                    if (!before.IsBot && logSetting.LogUserPresenceId != null && (logChannel = await TryGetLogChannel(before.Guild, logSetting, LogType.UserPresence)) != null)
+                    if (!before.IsBot && logSetting.LogUserPresenceId != null && (logChannel = await TryGetLogChannel(before.Guild, logSetting, LogType.UserPresence).ConfigureAwait(false)) != null)
                     {
                         if (before.Status != after.Status)
                         {
@@ -444,9 +442,9 @@ namespace WizBot.Modules.Administration.Services
             {
                 try
                 {
-                    var before = cbefore as IGuildChannel;
-                    if (before == null)
+                    if (!(cbefore is IGuildChannel before))
                         return;
+
                     var after = (IGuildChannel)cafter;
 
                     if (!GuildLogSettings.TryGetValue(before.Guild.Id, out LogSetting logSetting)
@@ -455,7 +453,7 @@ namespace WizBot.Modules.Administration.Services
                         return;
 
                     ITextChannel logChannel;
-                    if ((logChannel = await TryGetLogChannel(before.Guild, logSetting, LogType.ChannelUpdated)) == null)
+                    if ((logChannel = await TryGetLogChannel(before.Guild, logSetting, LogType.ChannelUpdated).ConfigureAwait(false)) == null)
                         return;
 
                     var embed = new EmbedBuilder().WithOkColor().WithFooter(efb => efb.WithText(CurrentTime(before.Guild)));
@@ -495,8 +493,7 @@ namespace WizBot.Modules.Administration.Services
             {
                 try
                 {
-                    var ch = ich as IGuildChannel;
-                    if (ch == null)
+                    if (!(ich is IGuildChannel ch))
                         return;
 
                     if (!GuildLogSettings.TryGetValue(ch.Guild.Id, out LogSetting logSetting)
@@ -505,7 +502,7 @@ namespace WizBot.Modules.Administration.Services
                         return;
 
                     ITextChannel logChannel;
-                    if ((logChannel = await TryGetLogChannel(ch.Guild, logSetting, LogType.ChannelDestroyed)) == null)
+                    if ((logChannel = await TryGetLogChannel(ch.Guild, logSetting, LogType.ChannelDestroyed).ConfigureAwait(false)) == null)
                         return;
                     string title;
                     if (ch is IVoiceChannel)
@@ -534,8 +531,7 @@ namespace WizBot.Modules.Administration.Services
             {
                 try
                 {
-                    var ch = ich as IGuildChannel;
-                    if (ch == null)
+                    if (!(ich is IGuildChannel ch))
                         return;
 
                     if (!GuildLogSettings.TryGetValue(ch.Guild.Id, out LogSetting logSetting)
@@ -543,7 +539,7 @@ namespace WizBot.Modules.Administration.Services
                         return;
 
                     ITextChannel logChannel;
-                    if ((logChannel = await TryGetLogChannel(ch.Guild, logSetting, LogType.ChannelCreated)) == null)
+                    if ((logChannel = await TryGetLogChannel(ch.Guild, logSetting, LogType.ChannelCreated).ConfigureAwait(false)) == null)
                         return;
                     string title;
                     if (ch is IVoiceChannel)
@@ -569,8 +565,7 @@ namespace WizBot.Modules.Administration.Services
             {
                 try
                 {
-                    var usr = iusr as IGuildUser;
-                    if (usr == null || usr.IsBot)
+                    if (!(iusr is IGuildUser usr) || usr.IsBot)
                         return;
 
                     var beforeVch = before.VoiceChannel;
@@ -584,7 +579,7 @@ namespace WizBot.Modules.Administration.Services
                         return;
 
                     ITextChannel logChannel;
-                    if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.VoicePresence)) == null)
+                    if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.VoicePresence).ConfigureAwait(false)) == null)
                         return;
 
                     string str = null;
@@ -671,7 +666,7 @@ namespace WizBot.Modules.Administration.Services
                         return;
 
                     ITextChannel logChannel;
-                    if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.UserLeft)) == null)
+                    if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.UserLeft).ConfigureAwait(false)) == null)
                         return;
                     var embed = new EmbedBuilder()
                         .WithOkColor()
@@ -704,7 +699,7 @@ namespace WizBot.Modules.Administration.Services
                         return;
 
                     ITextChannel logChannel;
-                    if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.UserJoined)) == null)
+                    if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.UserJoined).ConfigureAwait(false)) == null)
                         return;
 
                     var embed = new EmbedBuilder()
@@ -737,7 +732,7 @@ namespace WizBot.Modules.Administration.Services
                         return;
 
                     ITextChannel logChannel;
-                    if ((logChannel = await TryGetLogChannel(guild, logSetting, LogType.UserUnbanned)) == null)
+                    if ((logChannel = await TryGetLogChannel(guild, logSetting, LogType.UserUnbanned).ConfigureAwait(false)) == null)
                         return;
                     var embed = new EmbedBuilder()
                         .WithOkColor()
@@ -767,7 +762,7 @@ namespace WizBot.Modules.Administration.Services
                         return;
 
                     ITextChannel logChannel;
-                    if ((logChannel = await TryGetLogChannel(guild, logSetting, LogType.UserBanned)) == null)
+                    if ((logChannel = await TryGetLogChannel(guild, logSetting, LogType.UserBanned).ConfigureAwait(false)) == null)
                         return;
                     var embed = new EmbedBuilder()
                         .WithOkColor()
@@ -798,8 +793,7 @@ namespace WizBot.Modules.Administration.Services
                     if (msg == null || msg.IsAuthor(_client))
                         return;
 
-                    var channel = ch as ITextChannel;
-                    if (channel == null)
+                    if (!(ch is ITextChannel channel))
                         return;
 
                     if (!GuildLogSettings.TryGetValue(channel.Guild.Id, out LogSetting logSetting)
@@ -808,7 +802,7 @@ namespace WizBot.Modules.Administration.Services
                         return;
 
                     ITextChannel logChannel;
-                    if ((logChannel = await TryGetLogChannel(channel.Guild, logSetting, LogType.MessageDeleted)) == null || logChannel.Id == msg.Id)
+                    if ((logChannel = await TryGetLogChannel(channel.Guild, logSetting, LogType.MessageDeleted).ConfigureAwait(false)) == null || logChannel.Id == msg.Id)
                         return;
 
                     var resolvedMessage = msg.Resolve(userHandling: TagHandling.FullName);
@@ -839,16 +833,14 @@ namespace WizBot.Modules.Administration.Services
             {
                 try
                 {
-                    var after = imsg2 as IUserMessage;
-                    if (after == null || after.IsAuthor(_client))
+                    if (!(imsg2 is IUserMessage after) || after.IsAuthor(_client))
                         return;
 
                     var before = (optmsg.HasValue ? optmsg.Value : null) as IUserMessage;
                     if (before == null)
                         return;
 
-                    var channel = ch as ITextChannel;
-                    if (channel == null)
+                    if (!(ch is ITextChannel channel))
                         return;
 
                     if (before.Content == after.Content)
@@ -860,7 +852,7 @@ namespace WizBot.Modules.Administration.Services
                         return;
 
                     ITextChannel logChannel;
-                    if ((logChannel = await TryGetLogChannel(channel.Guild, logSetting, LogType.MessageUpdated)) == null || logChannel.Id == after.Channel.Id)
+                    if ((logChannel = await TryGetLogChannel(channel.Guild, logSetting, LogType.MessageUpdated).ConfigureAwait(false)) == null || logChannel.Id == after.Channel.Id)
                         return;
 
                     var embed = new EmbedBuilder()

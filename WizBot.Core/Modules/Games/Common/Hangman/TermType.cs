@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace WizBot.Modules.Games.Common.Hangman
 {
     [Flags]
-    public enum TermType
+    public enum TermTypes
     {
         Countries = 0,
         Movies = 1,

@@ -1,12 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace WizBot.Core.Services
 {
-    public class StandardConversions
+    public static class StandardConversions
     {
         public static double CelsiusToFahrenheit(double cel)
         {

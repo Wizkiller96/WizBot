@@ -24,7 +24,7 @@ namespace WizBot.Modules.Administration
                 if (string.IsNullOrWhiteSpace(name))
                     return;
 
-                await _service.SetMuteRoleAsync(Context.Guild.Id, name);
+                await _service.SetMuteRoleAsync(Context.Guild.Id, name).ConfigureAwait(false);
                 
                 await ReplyConfirmLocalized("mute_role_set").ConfigureAwait(false);
             }

@@ -28,7 +28,7 @@ namespace WizBot.Modules.Searches
                         var comic = JsonConvert.DeserializeObject<XkcdComic>(res);
                         var embed = new EmbedBuilder().WithColor(WizBot.OkColor)
                                                   .WithImageUrl(comic.ImageLink)
-                                                  .WithAuthor(eab => eab.WithName(comic.Title).WithUrl($"{_xkcdUrl}/{comic.Num}").WithIconUrl("https://xkcd.com/s/919f27.ico"))
+                                                  .WithAuthor(eab => eab.WithName(comic.Title).WithUrl($"{_xkcdUrl}/{comic.Num}").WithIconUrl("http://xkcd.com/s/919f27.ico"))
                                                   .AddField(efb => efb.WithName(GetText("comic_number")).WithValue(comic.Num.ToString()).WithIsInline(true))
                                                   .AddField(efb => efb.WithName(GetText("date")).WithValue($"{comic.Month}/{comic.Year}").WithIsInline(true));
                         var sent = await Context.Channel.EmbedAsync(embed)
@@ -36,7 +36,7 @@ namespace WizBot.Modules.Searches
 
                         await Task.Delay(10000).ConfigureAwait(false);
 
-                        await sent.ModifyAsync(m => m.Embed = embed.AddField(efb => efb.WithName("Alt").WithValue(comic.Alt.ToString()).WithIsInline(false)).Build());
+                        await sent.ModifyAsync(m => m.Embed = embed.AddField(efb => efb.WithName("Alt").WithValue(comic.Alt.ToString()).WithIsInline(false)).Build()).ConfigureAwait(false);
                     }
                     return;
                 }
@@ -57,7 +57,7 @@ namespace WizBot.Modules.Searches
                     var comic = JsonConvert.DeserializeObject<XkcdComic>(res);
                     var embed = new EmbedBuilder().WithColor(WizBot.OkColor)
                                                   .WithImageUrl(comic.ImageLink)
-                                                  .WithAuthor(eab => eab.WithName(comic.Title).WithUrl($"{_xkcdUrl}/{num}").WithIconUrl("http://xkcd.com/s/919f27.ico"))
+                                                  .WithAuthor(eab => eab.WithName(comic.Title).WithUrl($"{_xkcdUrl}/{num}").WithIconUrl("https://xkcd.com/s/919f27.ico"))
                                                   .AddField(efb => efb.WithName(GetText("comic_number")).WithValue(comic.Num.ToString()).WithIsInline(true))
                                                   .AddField(efb => efb.WithName(GetText("date")).WithValue($"{comic.Month}/{comic.Year}").WithIsInline(true));
                     var sent = await Context.Channel.EmbedAsync(embed)
@@ -65,7 +65,7 @@ namespace WizBot.Modules.Searches
 
                     await Task.Delay(10000).ConfigureAwait(false);
 
-                    await sent.ModifyAsync(m => m.Embed = embed.AddField(efb => efb.WithName("Alt").WithValue(comic.Alt.ToString()).WithIsInline(false)).Build());
+                    await sent.ModifyAsync(m => m.Embed = embed.AddField(efb => efb.WithName("Alt").WithValue(comic.Alt.ToString()).WithIsInline(false)).Build()).ConfigureAwait(false);
                 }
             }
         }

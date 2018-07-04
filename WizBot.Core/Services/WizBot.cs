@@ -37,7 +37,7 @@ namespace WizBot
         /* I don't know how to make this not be static
          * and keep the convenience of .WithOkColor
          * and .WithErrorColor extensions methods.
-         * I don't want to pass botconfig every time I
+         * I don't want to pass botconfig every time I 
          * want to send a confirm or error message, so
          * I'll keep this for now */
         public static Color OkColor { get; set; }
@@ -56,13 +56,13 @@ namespace WizBot
                 .Select(x => JsonConvert.DeserializeObject<ShardComMessage>(x))
                 .Sum(x => x.Guilds);
 
-        public int[] ShardGuildCounts =>
-            Cache.Redis.GetDatabase()
-                .ListRange(Credentials.RedisKey() + "_shardstats")
-                .Select(x => JsonConvert.DeserializeObject<ShardComMessage>(x))
-                .OrderBy(x => x.ShardId)
-                .Select(x => x.Guilds)
-                .ToArray();
+        //public int[] ShardGuildCounts =>
+        //    Cache.Redis.GetDatabase()
+        //        .ListRange(Credentials.RedisKey() + "_shardstats")
+        //        .Select(x => JsonConvert.DeserializeObject<ShardComMessage>(x))
+        //        .OrderBy(x => x.ShardId)
+        //        .Select(x => x.Guilds)
+        //        .ToArray();
 
         public event Func<GuildConfig, Task> JoinedGuild = delegate { return Task.CompletedTask; };
 
@@ -126,7 +126,7 @@ namespace WizBot
                     var msg = JsonConvert.SerializeObject(data);
 
                     await sub.PublishAsync(Credentials.RedisKey() + "_shardcoord_send", msg).ConfigureAwait(false);
-                    await Task.Delay(7500);
+                    await Task.Delay(7500).ConfigureAwait(false);
                 }
             });
         }
@@ -212,7 +212,7 @@ namespace WizBot
                     clientReady.TrySetResult(true);
                     try
                     {
-                        foreach (var chan in (await Client.GetDMChannelsAsync()))
+                        foreach (var chan in (await Client.GetDMChannelsAsync().ConfigureAwait(false)))
                         {
                             await chan.CloseAsync().ConfigureAwait(false);
                         }
@@ -255,14 +255,14 @@ namespace WizBot
                 GuildConfig gc;
                 using (var uow = _db.UnitOfWork)
                 {
-                    gc = uow.GuildConfigs.For(arg.Id);
+                    gc = uow.GuildConfigs.ForId(arg.Id);
                 }
-                await JoinedGuild.Invoke(gc);
+                await JoinedGuild.Invoke(gc).ConfigureAwait(false);
             });
             return Task.CompletedTask;
         }
 
-        public async Task RunAsync(params string[] args)
+        public async Task RunAsync()
         {
             var sw = Stopwatch.StartNew();
 
@@ -290,7 +290,7 @@ namespace WizBot
             // start handling messages received in commandhandler
             await commandHandler.StartHandling().ConfigureAwait(false);
 
-            var _ = await CommandService.AddModulesAsync(this.GetType().GetTypeInfo().Assembly, Services);
+            var _ = await CommandService.AddModulesAsync(this.GetType().GetTypeInfo().Assembly, Services).ConfigureAwait(false);
 
 
             bool isPublicWizBot = false;
@@ -303,7 +303,7 @@ namespace WizBot
                 CommandService
                     .Modules
                     .ToArray()
-                    .Where(x => x.Preconditions.Any(y => y.GetType() == typeof(NoPublicBot)))
+                    .Where(x => x.Preconditions.Any(y => y.GetType() == typeof(NoPublicBotAttribute)))
                     .ForEach(x => CommandService.RemoveModuleAsync(x));
 
             HandleStatusChanges();
@@ -321,9 +321,9 @@ namespace WizBot
             return Task.CompletedTask;
         }
 
-        public async Task RunAndBlockAsync(params string[] args)
+        public async Task RunAndBlockAsync()
         {
-            await RunAsync(args).ConfigureAwait(false);
+            await RunAsync().ConfigureAwait(false);
             await Task.Delay(-1).ConfigureAwait(false);
         }
 
@@ -342,7 +342,7 @@ namespace WizBot
             }
         }
 
-        private void SetupShard(int parentProcessId)
+        private static void SetupShard(int parentProcessId)
         {
             new Thread(new ThreadStart(() =>
             {
@@ -399,9 +399,9 @@ namespace WizBot
             return sub.PublishAsync(Client.CurrentUser.Id + "_status.game_set", JsonConvert.SerializeObject(obj));
         }
 
-        public Task SetStreamAsync(string name, string url)
+        public Task SetStreamAsync(string name, string link)
         {
-            var obj = new { Name = name, Url = url };
+            var obj = new { Name = name, Url = link };
             var sub = Services.GetService<IDataCache>().Redis.GetSubscriber();
             return sub.PublishAsync(Client.CurrentUser.Id + "_status.stream_set", JsonConvert.SerializeObject(obj));
         }
@@ -491,10 +491,10 @@ namespace WizBot
         //        //                                $"WizBot.Modules.{name}.dll"));
         //        var types = Services.LoadFrom(package);
         //        var added = await CommandService.AddModulesAsync(package).ConfigureAwait(false);
-        //        var trs = LoadTypeReaders(package);
+        //        var trs = LoadTypeReaders(package); 
         //        /* i don't have to unload typereaders
         //         * (and there's no api for it)
-        //         * because they get overwritten anyway, and since
+        //         * because they get overwritten anyway, and since 
         //         * the only time I'd unload typereaders, is when unloading a module
         //         * which means they won't have a chance to be used
         //         * */

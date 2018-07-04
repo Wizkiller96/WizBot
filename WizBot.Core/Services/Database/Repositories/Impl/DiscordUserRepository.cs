@@ -39,12 +39,12 @@ VALUES ({userId}, {username}, {discrim}, {avatarId});
         {
             if (!_set.Where(y => y.UserId == id).Any())
             {
-                return await _set.CountAsync() + 1;
+                return await _set.CountAsync().ConfigureAwait(false) + 1;
             }
             return await _set.CountAsync(x => x.TotalXp >=
                 _set.Where(y => y.UserId == id)
                     .DefaultIfEmpty()
-                    .Sum(y => y.TotalXp));
+                    .Sum(y => y.TotalXp)).ConfigureAwait(false);
         }
 
         public DiscordUser[] GetUsersXpLeaderboardFor(int page)
@@ -154,7 +154,7 @@ WHERE CurrencyAmount>0 AND UserId!={botId};");
 
         public long GetCurrencyDecayAmount(float decay)
         {
-            return (long) _set.Sum(x => Math.Round(x.CurrencyAmount* decay - 0.5));
+            return (long)_set.Sum(x => Math.Round(x.CurrencyAmount * decay - 0.5));
         }
     }
 }

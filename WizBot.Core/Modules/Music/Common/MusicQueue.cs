@@ -8,7 +8,7 @@ using WizBot.Common;
 
 namespace WizBot.Modules.Music.Common
 {
-    public class MusicQueue : IDisposable
+    public sealed class MusicQueue : IDisposable
     {
         private LinkedList<SongInfo> Songs { get; set; } = new LinkedList<SongInfo>();
         private int _currentIndex = 0;
@@ -72,7 +72,7 @@ namespace WizBot.Modules.Music.Common
             song.ThrowIfNull(nameof(song));
             lock (locker)
             {
-                if(MaxQueueSize != 0 && Songs.Count >= MaxQueueSize)
+                if (MaxQueueSize != 0 && Songs.Count >= MaxQueueSize)
                     throw new QueueFullException();
                 Songs.AddLast(song);
             }
@@ -101,7 +101,7 @@ namespace WizBot.Modules.Music.Common
 
         public void Next(int skipCount = 1)
         {
-            lock(locker)
+            lock (locker)
                 CurrentIndex += skipCount;
         }
 

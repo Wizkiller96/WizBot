@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace WizBot.Core.Services.Database.Models
@@ -40,6 +41,6 @@ namespace WizBot.Core.Services.Database.Models
         }
 
         public override int GetHashCode() =>
-            Text.GetHashCode();
+            Text.GetHashCode(StringComparison.InvariantCulture);
     }
 }

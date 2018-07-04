@@ -80,7 +80,7 @@ namespace WizBot.Modules.Help.Services
                 .WithFooter(efb => efb.WithText(GetText("module", guild, com.Module.GetTopLevelModule().Name)))
                 .WithColor(WizBot.OkColor);
 
-            var opt = ((WizBotOptions)com.Attributes.FirstOrDefault(x => x is WizBotOptions))?.OptionType;
+            var opt = ((WizBotOptionsAttribute)com.Attributes.FirstOrDefault(x => x is WizBotOptionsAttribute))?.OptionType;
             if (opt != null)
             {
                 var hs = GetCommandOptionHelp(opt);
@@ -91,7 +91,7 @@ namespace WizBot.Modules.Help.Services
             return em;
         }
 
-        public string GetCommandOptionHelp(Type opt)
+        public static string GetCommandOptionHelp(Type opt)
         {
             var strs = opt.GetProperties()
                 .Select(x => x.GetCustomAttributes(true).FirstOrDefault(a => a is OptionAttribute))
@@ -111,7 +111,7 @@ namespace WizBot.Modules.Help.Services
             return string.Join("\n", strs);
         }
 
-        public string[] GetCommandRequirements(CommandInfo cmd) =>
+        public static string[] GetCommandRequirements(CommandInfo cmd) =>
             cmd.Preconditions
                   .Where(ca => ca is OwnerOnlyAttribute || ca is AdminOnlyAttribute || ca is RequireUserPermissionAttribute)
                   .Select(ca =>
@@ -130,11 +130,11 @@ namespace WizBot.Modules.Help.Services
                       if (cau.GuildPermission != null)
                       {
                           return (cau.GuildPermission.ToString() + " Server Permission")
-                                       .Replace("Guild", "Server");
+                                       .Replace("Guild", "Server", StringComparison.InvariantCulture);
                       }
 
                       return (cau.ChannelPermission + " Channel Permission")
-                                       .Replace("Guild", "Server");
+                                       .Replace("Guild", "Server", StringComparison.InvariantCulture);
                   })
                 .ToArray();
 

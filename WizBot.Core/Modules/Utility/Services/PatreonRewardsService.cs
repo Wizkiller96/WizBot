@@ -19,11 +19,11 @@ namespace WizBot.Modules.Utility.Services
 
         private PatreonUserAndReward[] _pledges;
 
-        public readonly Timer Updater;
+        private readonly Timer _updater;
         private readonly SemaphoreSlim claimLockJustInCase = new SemaphoreSlim(1, 1);
         private readonly Logger _log;
 
-        public readonly TimeSpan Interval = TimeSpan.FromMinutes(3);
+        public TimeSpan Interval { get; } = TimeSpan.FromMinutes(3);
         private readonly IBotCredentials _creds;
         private readonly DbService _db;
         private readonly ICurrencyService _currency;
@@ -42,7 +42,7 @@ namespace WizBot.Modules.Utility.Services
             _bc = bc;
 
             if (client.ShardId == 0)
-                Updater = new Timer(async _ => await RefreshPledges(),
+                _updater = new Timer(async _ => await RefreshPledges().ConfigureAwait(false),
                     null, TimeSpan.Zero, Interval);
         }
 
@@ -105,7 +105,7 @@ namespace WizBot.Modules.Utility.Services
 
         public async Task<int> ClaimReward(ulong userId)
         {
-            await claimLockJustInCase.WaitAsync();
+            await claimLockJustInCase.WaitAsync().ConfigureAwait(false);
             var now = DateTime.UtcNow;
             try
             {
@@ -173,7 +173,7 @@ namespace WizBot.Modules.Utility.Services
 
         public Task Unload()
         {
-            Updater?.Change(Timeout.Infinite, Timeout.Infinite);
+            _updater?.Change(Timeout.Infinite, Timeout.Infinite);
             return Task.CompletedTask;
         }
     }

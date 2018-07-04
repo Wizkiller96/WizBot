@@ -52,8 +52,8 @@ namespace WizBot.Modules.Games
 
                 await Task.WhenAll(msgs.Where(m => m != null).Select(toDelete => toDelete.DeleteAsync())).ConfigureAwait(false);
 
-                await _cs.AddAsync((IGuildUser)Context.User, $"Picked {_bc.BotConfig.CurrencyPluralName}", msgs.Count, false).ConfigureAwait(false);
-                var msg = await ReplyConfirmLocalized("picked", msgs.Count + _bc.BotConfig.CurrencySign)
+                await _cs.AddAsync((IGuildUser)Context.User, $"Picked {Bc.BotConfig.CurrencyPluralName}", msgs.Count, false).ConfigureAwait(false);
+                var msg = await ReplyConfirmLocalized("picked", msgs.Count + Bc.BotConfig.CurrencySign)
                     .ConfigureAwait(false);
                 msg.DeleteAfter(10);
             }
@@ -65,10 +65,10 @@ namespace WizBot.Modules.Games
                 if (amount < 1)
                     return;
 
-                var removed = await _cs.RemoveAsync((IGuildUser)Context.User, $"Planted a {_bc.BotConfig.CurrencyName}", amount, false).ConfigureAwait(false);
+                var removed = await _cs.RemoveAsync((IGuildUser)Context.User, $"Planted a {Bc.BotConfig.CurrencyName}", amount, false).ConfigureAwait(false);
                 if (!removed)
                 {
-                    await ReplyErrorLocalized("not_enough", _bc.BotConfig.CurrencySign).ConfigureAwait(false);
+                    await ReplyErrorLocalized("not_enough", Bc.BotConfig.CurrencySign).ConfigureAwait(false);
                     return;
                 }
 
@@ -79,7 +79,7 @@ namespace WizBot.Modules.Games
 
                     var msgToSend = GetText("planted",
                         Format.Bold(Context.User.ToString()),
-                        amount + _bc.BotConfig.CurrencySign,
+                        amount + Bc.BotConfig.CurrencySign,
                         Prefix);
 
                     if (amount > 1)
@@ -90,7 +90,7 @@ namespace WizBot.Modules.Games
                     msg = await Context.Channel.EmbedAsync(new EmbedBuilder()
                         .WithOkColor()
                         .WithDescription(msgToSend)
-                        .WithImageUrl(imgUrl));
+                        .WithImageUrl(imgUrl.ToString())).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -110,9 +110,7 @@ namespace WizBot.Modules.Games
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.ManageMessages)]
-#if GLOBAL_WIZBOT
             [AdminOnly]
-#endif
             public async Task GenCurrency()
             {
                 var channel = (ITextChannel)Context.Channel;
@@ -120,7 +118,7 @@ namespace WizBot.Modules.Games
                 bool enabled;
                 using (var uow = _db.UnitOfWork)
                 {
-                    var guildConfig = uow.GuildConfigs.For(channel.Guild.Id, set => set.Include(gc => gc.GenerateCurrencyChannelIds));
+                    var guildConfig = uow.GuildConfigs.ForId(channel.Guild.Id, set => set.Include(gc => gc.GenerateCurrencyChannelIds));
 
                     var toAdd = new GCChannelId() { ChannelId = channel.Id };
                     if (!guildConfig.GenerateCurrencyChannelIds.Contains(toAdd))
@@ -135,7 +133,7 @@ namespace WizBot.Modules.Games
                         _service.GenerationChannels.TryRemove(channel.Id);
                         enabled = false;
                     }
-                    await uow.CompleteAsync();
+                    await uow.CompleteAsync().ConfigureAwait(false);
                 }
                 if (enabled)
                 {

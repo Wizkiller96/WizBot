@@ -3,7 +3,7 @@ using WizBot.Common.Attributes;
 using WizBot.Extensions;
 using WizBot.Core.Services;
 using System.Threading.Tasks;
-using Wof = WizBot.Modules.Gambling.Common.WheelOfFortune.WheelOfFortune;
+using Wof = WizBot.Modules.Gambling.Common.WheelOfFortune.WheelOfFortuneGame;
 using WizBot.Modules.Gambling.Services;
 using WizBot.Core.Modules.Gambling.Common;
 using WizBot.Core.Common;
@@ -26,12 +26,12 @@ namespace WizBot.Modules.Gambling
             [WizBotCommand, Usage, Description, Aliases]
             public async Task WheelOfFortune(ShmartNumber amount)
             {
-                if (!await CheckBetMandatory(amount))
+                if (!await CheckBetMandatory(amount).ConfigureAwait(false))
                     return;
 
-                if (!await _cs.RemoveAsync(Context.User.Id, "Wheel Of Fortune - bet", amount, gamble: true))
+                if (!await _cs.RemoveAsync(Context.User.Id, "Wheel Of Fortune - bet", amount, gamble: true).ConfigureAwait(false))
                 {
-                    await ReplyErrorLocalized("not_enough", _bc.BotConfig.CurrencySign).ConfigureAwait(false);
+                    await ReplyErrorLocalized("not_enough", Bc.BotConfig.CurrencySign).ConfigureAwait(false);
                     return;
                 }
 
@@ -43,7 +43,7 @@ namespace WizBot.Modules.Gambling
                     await _cs.AddAsync(Context.User.Id, "Wheel Of Fortune - won", amount, gamble: true).ConfigureAwait(false);
 
                 await Context.Channel.SendConfirmAsync(
-Format.Bold($@"{Context.User.ToString()} won: {amount + _bc.BotConfig.CurrencySign}
+Format.Bold($@"{Context.User.ToString()} won: {amount + Bc.BotConfig.CurrencySign}
 
    『{Wof.Multipliers[1]}』   『{Wof.Multipliers[0]}』   『{Wof.Multipliers[7]}』
 

@@ -1,3 +1,5 @@
+using System;
+
 namespace WizBot.Core.Services.Database.Models
 {
     public class FeedSub : DbEntity
@@ -10,7 +12,7 @@ namespace WizBot.Core.Services.Database.Models
 
         public override int GetHashCode()
         {
-            return Url.GetHashCode() ^ GuildConfigId.GetHashCode();
+            return Url.GetHashCode(StringComparison.InvariantCulture) ^ GuildConfigId.GetHashCode();
         }
 
         public override bool Equals(object obj)

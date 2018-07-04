@@ -61,7 +61,7 @@ namespace WizBot.Core.Services.Database.Models
             Item = item;
         }
 
-        public static WaifuItem GetItem(ItemName itemName, int mult)
+        public static WaifuItem GetItemObject(ItemName itemName, int mult)
         {
             WaifuItem wi;
             switch (itemName)
@@ -178,7 +178,7 @@ namespace WizBot.Core.Services.Database.Models
                     wi = new WaifuItem("🌕", 50000, itemName);
                     break;
                 default:
-                    throw new ArgumentException(nameof(itemName));
+                    throw new ArgumentException("Item is not implemented", nameof(itemName));
             }
             wi.Price = wi.Price * mult;
             return wi;

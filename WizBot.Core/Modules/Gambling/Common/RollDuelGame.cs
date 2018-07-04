@@ -31,11 +31,11 @@ namespace WizBot.Core.Modules.Gambling.Common
             NoFunds,
             Timeout,
         }
-        
+
         private readonly Timer _timeoutTimer;
         private readonly WizBotRandom _rng = new WizBotRandom();
         private readonly SemaphoreSlim _locker = new SemaphoreSlim(1, 1);
-        
+
         public event Func<RollDuelGame, Task> OnGameTick;
         public event Func<RollDuelGame, Reason, Task> OnEnded;
 
@@ -53,13 +53,13 @@ namespace WizBot.Core.Modules.Gambling.Common
 
             _timeoutTimer = new Timer(async delegate
             {
-                await _locker.WaitAsync();
+                await _locker.WaitAsync().ConfigureAwait(false);
                 try
                 {
                     if (CurrentState != State.Waiting)
                         return;
                     CurrentState = State.Ended;
-                    await OnEnded?.Invoke(this, Reason.Timeout);
+                    await (OnEnded?.Invoke(this, Reason.Timeout)).ConfigureAwait(false);
                 }
                 catch { }
                 finally
@@ -84,16 +84,16 @@ namespace WizBot.Core.Modules.Gambling.Common
                 _locker.Release();
             }
 
-            if(!await _cs.RemoveAsync(P1, "Roll Duel", Amount))
+            if (!await _cs.RemoveAsync(P1, "Roll Duel", Amount).ConfigureAwait(false))
             {
-                await OnEnded?.Invoke(this, Reason.NoFunds);
+                await (OnEnded?.Invoke(this, Reason.NoFunds)).ConfigureAwait(false);
                 CurrentState = State.Ended;
                 return;
             }
-            if(!await _cs.RemoveAsync(P2, "Roll Duel", Amount))
+            if (!await _cs.RemoveAsync(P2, "Roll Duel", Amount).ConfigureAwait(false))
             {
-                await _cs.AddAsync(P1, "Roll Duel - refund", Amount);
-                await OnEnded?.Invoke(this, Reason.NoFunds);
+                await _cs.AddAsync(P1, "Roll Duel - refund", Amount).ConfigureAwait(false);
+                await (OnEnded?.Invoke(this, Reason.NoFunds)).ConfigureAwait(false);
                 CurrentState = State.Ended;
                 return;
             }
@@ -108,7 +108,7 @@ namespace WizBot.Core.Modules.Gambling.Common
                 {
                     if (n1 > n2)
                     {
-                        Winner = P1;                                                                                                                                                                                                                                                                                                
+                        Winner = P1;
                     }
                     else
                     {
@@ -121,14 +121,14 @@ namespace WizBot.Core.Modules.Gambling.Common
                     await _cs.AddAsync(_botId, "Roll Duel fee", Amount * 2 - won)
                         .ConfigureAwait(false);
                 }
-                try { await OnGameTick?.Invoke(this); } catch { }
+                try { await (OnGameTick?.Invoke(this)).ConfigureAwait(false); } catch { }
                 await Task.Delay(2500).ConfigureAwait(false);
                 if (n1 != n2)
                     break;
             }
             while (true);
             CurrentState = State.Ended;
-            await OnEnded?.Invoke(this, Reason.Normal);
+            await (OnEnded?.Invoke(this, Reason.Normal)).ConfigureAwait(false);
         }
     }
 

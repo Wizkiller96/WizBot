@@ -27,7 +27,7 @@ namespace WizBot.Core.Services.Database.Models
 
         public int TriviaCurrencyReward { get; set; } = 0;
         /// <summary> UNUSED </summary>
-        [Obsolete]
+        [Obsolete("Use MinBet instead.")]
         public int MinimumBetAmount { get; set; } = 2;
         public float BetflipMultiplier { get; set; } = 1.95f;
         public int CurrencyDropAmount { get; set; } = 1;
@@ -43,7 +43,8 @@ namespace WizBot.Core.Services.Database.Models
         //public HashSet<CommandCost> CommandCosts { get; set; } = new HashSet<CommandCost>();
 
         /// <summary>I messed up, don't use</summary>
-        [Obsolete] public HashSet<CommandPrice> CommandPrices { get; set; } = new HashSet<CommandPrice>();
+        [Obsolete("I messed up")]
+        public HashSet<CommandPrice> CommandPrices { get; set; } = new HashSet<CommandPrice>();
 
 
         public HashSet<EightBallResponse> EightBallResponses { get; set; } = new HashSet<EightBallResponse>();
@@ -58,10 +59,10 @@ For a specific command help, use `{1}h CommandName` (for example {1}h {1}q)
 
 
 **LIST OF COMMANDS CAN BE FOUND ON THIS LINK**
-<http://wizbot.cf/commands.html>
+<https://wizbot.cf/commands.html>
 
 
-WizNet Community Server: https://discord.gg/0YNaDOYuD5QOpeNI";
+WizNet's Community Server: https://discord.gg/0YNaDOYuD5QOpeNI";
 
         public int MigrationVersion { get; set; }
 
@@ -100,10 +101,10 @@ WizNet Community Server: https://discord.gg/0YNaDOYuD5QOpeNI";
         public string Name { get; set; }
 
         public override bool Equals(object obj) =>
-            (obj as BlockedCmdOrMdl)?.Name?.ToLowerInvariant() == Name.ToLowerInvariant();
+            (obj as BlockedCmdOrMdl)?.Name?.ToUpperInvariant() == Name.ToUpperInvariant();
 
         public override int GetHashCode() =>
-            Name.GetHashCode();
+            Name.GetHashCode(System.StringComparison.InvariantCulture);
     }
 
     public enum ConsoleOutputType
@@ -149,7 +150,7 @@ WizNet Community Server: https://discord.gg/0YNaDOYuD5QOpeNI";
         public string Text { get; set; }
 
         public override int GetHashCode() =>
-            Text.GetHashCode();
+            Text.GetHashCode(StringComparison.InvariantCulture);
 
         public override bool Equals(object obj) =>
             (obj is EightBallResponse response)
@@ -163,7 +164,7 @@ WizNet Community Server: https://discord.gg/0YNaDOYuD5QOpeNI";
         public string Name { get; set; }
 
         public override int GetHashCode() =>
-            Icon.GetHashCode();
+            Icon.GetHashCode(StringComparison.InvariantCulture);
 
         public override bool Equals(object obj) =>
             (obj is RaceAnimal animal)

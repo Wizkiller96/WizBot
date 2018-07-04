@@ -7,5 +7,13 @@ namespace WizBot.Modules.Utility.Common.Exceptions
         public StreamRolePermissionException() : base("Stream role was unable to be applied.")
         {
         }
+
+        public StreamRolePermissionException(string message) : base(message)
+        {
+        }
+
+        public StreamRolePermissionException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
     }
 }

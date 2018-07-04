@@ -42,20 +42,19 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
         {
             if (!_set.Where(x => x.GuildId == guildId && x.UserId == userId).Any())
             {
-                var cnt = await _set.CountAsync(x => x.GuildId == guildId);
+                var cnt = await _set.CountAsync(x => x.GuildId == guildId).ConfigureAwait(false);
                 if (cnt == 0)
                     return 1;
                 else
                     return cnt;
             }
-
             return await _set
                 .Where(x => x.GuildId == guildId)
                 .CountAsync(x => x.Xp > (_set
                     .Where(y => y.UserId == userId && y.GuildId == guildId)
                     .Select(y => y.Xp)
                     .DefaultIfEmpty()
-                    .Sum())) + 1;
+                    .Sum())).ConfigureAwait(false) + 1;
         }
 
         public void ResetGuildUserXp(ulong userId, ulong guildId)

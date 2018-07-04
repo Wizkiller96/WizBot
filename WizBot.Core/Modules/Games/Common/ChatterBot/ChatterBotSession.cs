@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using WizBot.Common;
 using WizBot.Extensions;
@@ -42,7 +43,7 @@ namespace WizBot.Modules.Games.Common.ChatterBot
             {
                 var res = await http.GetStringAsync(string.Format(apiEndpoint, message)).ConfigureAwait(false);
                 var cbr = JsonConvert.DeserializeObject<ChatterBotResponse>(res);
-                return cbr.BotSay.Replace("<br/>", "\n");
+                return cbr.BotSay.Replace("<br/>", "\n", StringComparison.InvariantCulture);
             }
         }
     }

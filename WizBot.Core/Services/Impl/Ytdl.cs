@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace WizBot.Core.Services.Impl
 {
-    public class YtdlOperation : IDisposable
+    public class YtdlOperation
     {
         private readonly Logger _log;
 
@@ -30,17 +30,12 @@ namespace WizBot.Core.Services.Impl
             })
             {
                 process.Start();
-                var str = await process.StandardOutput.ReadToEndAsync();
-                var err = await process.StandardError.ReadToEndAsync();
-                if(!string.IsNullOrEmpty(err))
+                var str = await process.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
+                var err = await process.StandardError.ReadToEndAsync().ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(err))
                     _log.Warn(err);
                 return str;
             }
-        }
-
-        public void Dispose()
-        {
-
         }
     }
 }

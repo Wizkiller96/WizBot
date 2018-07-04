@@ -167,7 +167,7 @@ namespace WizBot.Modules.Utility.Services
         }
 
         /// <summary>
-        /// Sets the role to monitor, and a role to which to add to
+        /// Sets the role to monitor, and a role to which to add to 
         /// the user who starts streaming in the monitored role.
         /// </summary>
         /// <param name="fromRole">Role to monitor</param>
@@ -192,7 +192,7 @@ namespace WizBot.Modules.Utility.Services
 
             UpdateCache(fromRole.Guild.Id, setting);
 
-            foreach (var usr in await fromRole.GetMembersAsync())
+            foreach (var usr in await fromRole.GetMembersAsync().ConfigureAwait(false))
             {
                 if (usr is IGuildUser x)
                     await RescanUser(x, setting, addRole).ConfigureAwait(false);
@@ -224,7 +224,7 @@ namespace WizBot.Modules.Utility.Services
                 && !setting.Blacklist.Any(x => x.UserId == user.Id)
                 && user.RoleIds.Contains(setting.FromRoleId)
                 && (string.IsNullOrWhiteSpace(setting.Keyword)
-                    || g.Name.ToLowerInvariant().Contains(setting.Keyword.ToLowerInvariant())
+                    || g.Name.ToUpperInvariant().Contains(setting.Keyword.ToUpperInvariant())
                     || setting.Whitelist.Any(x => x.UserId == user.Id)))
             {
                 try
@@ -290,7 +290,7 @@ namespace WizBot.Modules.Utility.Services
                 var users = await guild.GetUsersAsync(CacheMode.CacheOnly).ConfigureAwait(false);
                 foreach (var usr in users.Where(x => x.RoleIds.Contains(setting.FromRoleId) || x.RoleIds.Contains(addRole.Id)))
                 {
-                    if(usr is IGuildUser x)
+                    if (usr is IGuildUser x)
                         await RescanUser(x, setting, addRole).ConfigureAwait(false);
                 }
             }

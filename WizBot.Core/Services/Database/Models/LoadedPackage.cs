@@ -1,3 +1,5 @@
+using System;
+
 namespace WizBot.Core.Services.Database.Models
 {
     public class LoadedPackage : DbEntity
@@ -13,7 +15,7 @@ namespace WizBot.Core.Services.Database.Models
 
         public override int GetHashCode()
         {
-            return Name.GetHashCode();
+            return Name.GetHashCode(StringComparison.InvariantCulture);
         }
     }
 }

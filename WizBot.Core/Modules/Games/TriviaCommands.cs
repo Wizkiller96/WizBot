@@ -31,7 +31,7 @@ namespace WizBot.Modules.Games
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [Priority(0)]
-            [WizBotOptions(typeof(TriviaOptions))]
+            [WizBotOptionsAttribute(typeof(TriviaOptions))]
             public Task Trivia(params string[] args)
                 => InternalTrivia(args);
 
@@ -39,13 +39,13 @@ namespace WizBot.Modules.Games
             {
                 var channel = (ITextChannel)Context.Channel;
 
-                var (opts, _) = OptionsParser.Default.ParseFrom(new TriviaOptions(), args);
+                var (opts, _) = OptionsParser.ParseFrom(new TriviaOptions(), args);
 
-                if (_bc.BotConfig.MinimumTriviaWinReq > 0 && _bc.BotConfig.MinimumTriviaWinReq > opts.WinRequirement)
+                if (Bc.BotConfig.MinimumTriviaWinReq > 0 && Bc.BotConfig.MinimumTriviaWinReq > opts.WinRequirement)
                 {
                     return;
                 }
-                var trivia = new TriviaGame(_strings, _client, _bc, _cache, _cs, channel.Guild, channel, opts);
+                var trivia = new TriviaGame(Strings, _client, Bc, _cache, _cs, channel.Guild, channel, opts);
                 if (_service.RunningTrivias.TryAdd(channel.Guild.Id, trivia))
                 {
                     try

@@ -113,10 +113,12 @@ namespace WizBot.Core.Services.Impl
                 else
                     ShardRunPort = int.Parse(portStr);
 
-                int.TryParse(data[nameof(TotalShards)], out var ts);
+                if (!int.TryParse(data[nameof(TotalShards)], out var ts))
+                    ts = 0;
                 TotalShards = ts < 1 ? 1 : ts;
 
-                ulong.TryParse(data[nameof(ClientId)], out ulong clId);
+                if (!ulong.TryParse(data[nameof(ClientId)], out ulong clId))
+                    clId = 0;
                 ClientId = clId;
 
                 CarbonKey = data[nameof(CarbonKey)];
@@ -131,7 +133,7 @@ namespace WizBot.Core.Services.Impl
                 TwitchClientId = data[nameof(TwitchClientId)];
                 if (string.IsNullOrWhiteSpace(TwitchClientId))
                 {
-                    TwitchClientId = "bbo2yju81etnuhfc99sg7yr2ahbrhxg";
+                    TwitchClientId = "67w6z9i09xv2uoojdm9l0wsyph4hxo6";
                 }
             }
             catch (Exception ex)
@@ -148,7 +150,6 @@ namespace WizBot.Core.Services.Impl
             public ulong ClientId { get; set; } = 123123123;
             public string Token { get; set; } = "";
             public ulong[] OwnerIds { get; set; } = new ulong[1];
-            public ulong[] AdminIds { get; set; } = new ulong[1];
             public string LoLApiKey { get; set; } = "";
             public string GoogleApiKey { get; set; } = "";
             public string MashapeKey { get; set; } = "";
@@ -172,12 +173,6 @@ namespace WizBot.Core.Services.Impl
             public string TwitchClientId { get; set; }
             public string VotesToken { get; set; }
             public string VotesUrl { get; set; }
-        }
-
-        private class DbModel
-        {
-            public string Type { get; set; }
-            public string ConnectionString { get; set; }
         }
 
         public bool IsOwner(IUser u) => OwnerIds.Contains(u.Id);

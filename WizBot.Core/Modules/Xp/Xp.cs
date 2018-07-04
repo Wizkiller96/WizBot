@@ -28,8 +28,8 @@ namespace WizBot.Modules.Xp
         public async Task Experience([Remainder]IUser user = null)
         {
             user = user ?? Context.User;
-            await Context.Channel.TriggerTypingAsync();
-            using (var img = await _service.GenerateImageAsync((IGuildUser)user))
+            await Context.Channel.TriggerTypingAsync().ConfigureAwait(false);
+            using (var img = await _service.GenerateImageAsync((IGuildUser)user).ConfigureAwait(false))
             {
                 await Context.Channel.SendFileAsync(img, $"{user.Id}_xp.png")
                     .ConfigureAwait(false);
@@ -61,7 +61,7 @@ namespace WizBot.Modules.Xp
                 .Where(x => x.RoleStr != null)
                 .Concat(_service.GetCurrencyRewards(Context.Guild.Id)
                     .OrderBy(x => x.Level)
-                    .Select(x => (x.Level, Format.Bold(x.Amount + _bc.BotConfig.CurrencySign))))
+                    .Select(x => (x.Level, Format.Bold(x.Amount + Bc.BotConfig.CurrencySign))))
                     .GroupBy(x => x.Level)
                     .OrderBy(x => x.Key)
                     .Skip(page * 9)
@@ -92,7 +92,7 @@ namespace WizBot.Modules.Xp
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        [AdminOnly]
+        [OwnerOnly]
         public async Task XpCurrencyReward(int level, int amount = 0)
         {
             if (level < 1 || amount < 0)
@@ -101,9 +101,9 @@ namespace WizBot.Modules.Xp
             _service.SetCurrencyReward(Context.Guild.Id, level, amount);
 
             if (amount == 0)
-                await ReplyConfirmLocalized("cur_reward_cleared", level, _bc.BotConfig.CurrencySign).ConfigureAwait(false);
+                await ReplyConfirmLocalized("cur_reward_cleared", level, Bc.BotConfig.CurrencySign).ConfigureAwait(false);
             else
-                await ReplyConfirmLocalized("cur_reward_added", level, Format.Bold(amount + _bc.BotConfig.CurrencySign)).ConfigureAwait(false);
+                await ReplyConfirmLocalized("cur_reward_added", level, Format.Bold(amount + Bc.BotConfig.CurrencySign)).ConfigureAwait(false);
         }
 
         public enum NotifyPlace
@@ -118,9 +118,9 @@ namespace WizBot.Modules.Xp
         public async Task XpNotify(NotifyPlace place = NotifyPlace.Guild, XpNotificationType type = XpNotificationType.Channel)
         {
             if (place == NotifyPlace.Guild)
-                await _service.ChangeNotificationType(Context.User.Id, Context.Guild.Id, type);
+                await _service.ChangeNotificationType(Context.User.Id, Context.Guild.Id, type).ConfigureAwait(false);
             else
-                await _service.ChangeNotificationType(Context.User, type);
+                await _service.ChangeNotificationType(Context.User, type).ConfigureAwait(false);
             await Context.Channel.SendConfirmAsync("👌").ConfigureAwait(false);
         }
 
@@ -254,7 +254,7 @@ namespace WizBot.Modules.Xp
                 }
             }
 
-            await Context.Channel.EmbedAsync(embed);
+            await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]

@@ -32,7 +32,7 @@ namespace WizBot.Modules.Administration
                         .WithTitle(GetText("sql_confirm_exec"))
                         .WithDescription(Format.Code(sql));
 
-                    if (!await PromptUserConfirmAsync(embed))
+                    if (!await PromptUserConfirmAsync(embed).ConfigureAwait(false))
                     {
                         return;
                     }
@@ -43,11 +43,11 @@ namespace WizBot.Modules.Administration
                         res = uow._context.Database.ExecuteSqlCommand(sql);
                     }
 
-                    await Context.Channel.SendConfirmAsync(res.ToString());
+                    await Context.Channel.SendConfirmAsync(res.ToString()).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
-                    await Context.Channel.SendErrorAsync(ex.ToString());
+                    await Context.Channel.SendErrorAsync(ex.ToString()).ConfigureAwait(false);
                 }
             }
 

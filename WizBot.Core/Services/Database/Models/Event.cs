@@ -2,8 +2,7 @@
 
 namespace WizBot.Core.Services.Database.Models
 {
-
-    public class Event
+    public class CurrencyEvent
     {
         public enum Type
         {

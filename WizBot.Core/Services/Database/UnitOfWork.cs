@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace WizBot.Core.Services.Database
 {
-    public class UnitOfWork : IUnitOfWork
+    public sealed class UnitOfWork : IUnitOfWork
     {
         public WizBotContext _context { get; }
 
@@ -65,19 +65,9 @@ namespace WizBot.Core.Services.Database
         public Task<int> CompleteAsync() =>
             _context.SaveChangesAsync();
 
-        private bool disposed = false;
-
-        protected void Dispose(bool disposing)
-        {
-            if (!this.disposed)
-                if (disposing)
-                    _context.Dispose();
-            this.disposed = true;
-        }
-
         public void Dispose()
         {
-            Dispose(true);
+            _context.Dispose();
             GC.SuppressFinalize(this);
         }
     }

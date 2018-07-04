@@ -5,7 +5,8 @@ using WizBot.Core.Services;
 
 namespace WizBot.Common.Attributes
 {
-    public class AdminOnlyAttribute : PreconditionAttribute
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class)]
+    public sealed class AdminOnlyAttribute : PreconditionAttribute
     {
         public override Task<PreconditionResult> CheckPermissionsAsync(ICommandContext context, CommandInfo executingCommand, IServiceProvider services)
         {

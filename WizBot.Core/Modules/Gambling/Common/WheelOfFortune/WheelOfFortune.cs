@@ -3,7 +3,7 @@ using WizBot.Common;
 
 namespace WizBot.Modules.Gambling.Common.WheelOfFortune
 {
-    public class WheelOfFortune
+    public class WheelOfFortuneGame
     {
         private static readonly WizBotRandom _rng = new WizBotRandom();
 
@@ -32,7 +32,7 @@ namespace WizBot.Modules.Gambling.Common.WheelOfFortune
         public string Emoji => _emojis[Result];
         public float Multiplier => Multipliers[Result];
 
-        public WheelOfFortune()
+        public WheelOfFortuneGame()
         {
             this.Result = _rng.Next(0, 8);
         }

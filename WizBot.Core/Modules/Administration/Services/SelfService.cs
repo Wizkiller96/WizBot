@@ -70,15 +70,15 @@ namespace WizBot.Modules.Administration.Services
                         var ch = ownerChannels?.Values.FirstOrDefault();
 
                         if (ch == null) // no owner channels
-                        return;
+                            return;
 
                         var cfo = _bc.BotConfig.CheckForUpdates;
                         if (cfo == UpdateCheckType.None)
                             return;
 
                         string data;
-                        if ((cfo == UpdateCheckType.Commit && (data = await GetNewCommit()) != null)
-                            || (cfo == UpdateCheckType.Release && (data = await GetNewRelease()) != null))
+                        if ((cfo == UpdateCheckType.Commit && (data = await GetNewCommit().ConfigureAwait(false)) != null)
+                            || (cfo == UpdateCheckType.Release && (data = await GetNewRelease().ConfigureAwait(false)) != null))
                         {
                             await ch.SendConfirmAsync("New Bot Update", data).ConfigureAwait(false);
                         }
@@ -87,7 +87,6 @@ namespace WizBot.Modules.Administration.Services
                     {
                         _log.Warn(ex);
                     }
-
                 }, null, TimeSpan.FromHours(8), TimeSpan.FromHours(8));
             }
 
@@ -106,15 +105,15 @@ namespace WizBot.Modules.Administration.Services
                     .Where(x => x.Interval >= 5)
                     .GroupBy(x => x.GuildId)
                     .ToDictionary(
-x => x.Key,
-y => y.ToDictionary(x => x.Id,
-x => TimerFromStartupCommand((StartupCommand)x))
+                        x => x.Key,
+                        y => y.ToDictionary(x => x.Id,
+                            x => TimerFromStartupCommand((StartupCommand)x))
                     .ToConcurrent())
                     .ToConcurrent();
 
                 foreach (var cmd in bc.BotConfig.StartupCommands.Where(x => x.Interval <= 0))
                 {
-                    try { await ExecuteCommand(cmd); } catch { }
+                    try { await ExecuteCommand(cmd).ConfigureAwait(false); } catch { }
                 }
             });
 
@@ -146,7 +145,7 @@ x => TimerFromStartupCommand((StartupCommand)x))
             var commits = await client.Repository.Commit.GetAll("Wizkiller96", "WizBot", new CommitRequest()
             {
                 Since = lu,
-            });
+            }).ConfigureAwait(false);
 
             commits = commits.Where(x => x.Commit.Committer.Date.UtcDateTime > lu)
                 .Take(10)
@@ -155,7 +154,7 @@ x => TimerFromStartupCommand((StartupCommand)x))
             if (!commits.Any())
                 return null;
 
-            SetNewLastUpdate(commits.First().Commit.Committer.Date.UtcDateTime);
+            SetNewLastUpdate(commits[0].Commit.Committer.Date.UtcDateTime);
 
             var newCommits = commits
                 .Select(x => $"[{x.Sha.TrimTo(6, true)}]({x.HtmlUrl})  {x.Commit.Message.TrimTo(50)}");
@@ -179,7 +178,7 @@ x => TimerFromStartupCommand((StartupCommand)x))
         {
             var client = new GitHubClient(new ProductHeaderValue("wizbot"));
             var lu = _bc.BotConfig.LastUpdate;
-            var release = (await client.Repository.Release.GetAll("Wizkiller96", "WizBot")).FirstOrDefault();
+            var release = (await client.Repository.Release.GetAll("Wizkiller96", "WizBot").ConfigureAwait(false)).FirstOrDefault();
 
             if (release == null || release.CreatedAt.UtcDateTime <= lu)
                 return null;
@@ -208,10 +207,10 @@ x => TimerFromStartupCommand((StartupCommand)x))
 
         private Timer TimerFromStartupCommand(StartupCommand x)
         {
-            return new Timer(async (obj) => await ExecuteCommand((StartupCommand) obj),
+            return new Timer(async (obj) => await ExecuteCommand((StartupCommand)obj).ConfigureAwait(false),
                 x,
-                x.Interval* 1000,
-                x.Interval* 1000);
+                x.Interval * 1000,
+                x.Interval * 1000);
         }
 
         private async Task ExecuteCommand(StartupCommand cmd)
@@ -220,9 +219,9 @@ x => TimerFromStartupCommand((StartupCommand)x))
             {
                 var prefix = _cmdHandler.GetPrefix(cmd.GuildId);
                 //if someone already has .die as their startup command, ignore it
-                if (cmd.CommandText.StartsWith(prefix + "die"))
+                if (cmd.CommandText.StartsWith(prefix + "die", StringComparison.InvariantCulture))
                     return;
-                await _cmdHandler.ExecuteExternal(cmd.GuildId, cmd.ChannelId, cmd.CommandText);
+                await _cmdHandler.ExecuteExternal(cmd.GuildId, cmd.ChannelId, cmd.CommandText).ConfigureAwait(false);
                 await Task.Delay(400).ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -271,7 +270,7 @@ x => TimerFromStartupCommand((StartupCommand)x))
                     return Task.FromResult<IDMChannel>(null);
 
                 return user.GetOrCreateDMChannelAsync();
-            }));
+            })).ConfigureAwait(false);
 
             ownerChannels = channels.Where(x => x != null)
                 .ToDictionary(x => x.Recipient.Id, x => x)
@@ -292,7 +291,7 @@ x => TimerFromStartupCommand((StartupCommand)x))
                     return Task.FromResult<IDMChannel>(null);
 
                 return user.GetOrCreateDMChannelAsync();
-            }));
+            })).ConfigureAwait(false);
 
             adminChannels = channels.Where(x => x != null)
                 .ToDictionary(x => x.Recipient.Id, x => x)
@@ -375,8 +374,8 @@ x => TimerFromStartupCommand((StartupCommand)x))
                     cmds.Remove(cmd);
                     if (_autoCommands.TryGetValue(cmd.GuildId, out var autos))
                         if (autos.TryRemove(cmd.Id, out var timer))
-                        timer.Change(Timeout.Infinite, Timeout.Infinite);
-                        
+                            timer.Change(Timeout.Infinite, Timeout.Infinite);
+
                     uow.Complete();
                     return true;
                 }
@@ -455,7 +454,7 @@ x => TimerFromStartupCommand((StartupCommand)x))
             _bc.Reload();
         }
 
-        public IEnumerable<ShardComMessage> GetAllShardStatuses(int page)
+        public IEnumerable<ShardComMessage> GetAllShardStatuses()
         {
             var db = _cache.Redis.GetDatabase();
             return db.ListRange(_creds.RedisKey() + "_shardstats")
