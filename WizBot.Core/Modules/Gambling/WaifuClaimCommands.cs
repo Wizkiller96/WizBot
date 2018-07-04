@@ -565,7 +565,7 @@ namespace WizBot.Modules.Gambling
                     w.Items.Add(itemObj);
                     if (w.Claimer?.UserId == Context.User.Id)
                     {
-                        w.Price += itemObj.Price;
+                        w.Price += (int)(itemObj.Price * 0.95);
                     }
                     else
                         w.Price += itemObj.Price / 2;
