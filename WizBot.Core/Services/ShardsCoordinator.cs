@@ -80,7 +80,15 @@ namespace WizBot.Core.Services
             _key = _creds.RedisKey();
             _redis = ConnectionMultiplexer.Connect("127.0.0.1");
 
-            new RedisImagesCache(_redis, _creds).Reload().GetAwaiter().GetResult(); //reload images into redis
+            var imgCache = new RedisImagesCache(_redis, _creds); //reload images into redis
+            if (!imgCache.AllKeysExist().GetAwaiter().GetResult()) // but only if the keys don't exist. If images exist, you have to reload them manually
+            {
+                imgCache.Reload().GetAwaiter().GetResult();
+            }
+            else
+            {
+                _log.Info("Images are already present in redis. Use .imagesreload to force update if needed.");
+            }
 
             //setup initial shard statuses
             _defaultShardState = new ShardComMessage()

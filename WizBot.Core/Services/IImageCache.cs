@@ -22,7 +22,7 @@ namespace WizBot.Core.Services
         byte[] XpCard { get; }
 
         byte[] Rip { get; }
-        byte[] FlowerCircle { get; }
+        byte[] RipOverlay { get; }
 
         Task Reload();
     }
