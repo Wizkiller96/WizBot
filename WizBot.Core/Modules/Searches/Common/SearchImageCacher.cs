@@ -56,6 +56,7 @@ namespace WizBot.Modules.Searches.Common
                     tag = null;
                     imgs = _cache.Where(x => x.SearchType == type).ToArray();
                 }
+                imgs = imgs.Where(x => x.Tags.All(t => !blacklistedTags.Contains(t))).ToArray();
                 ImageCacherObject img;
                 if (imgs.Length == 0)
                     img = null;
