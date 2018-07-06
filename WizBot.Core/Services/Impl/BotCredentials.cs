@@ -97,7 +97,7 @@ namespace WizBot.Core.Services.Impl
                     if (string.IsNullOrWhiteSpace(ShardRunCommand))
                         ShardRunCommand = "dotnet";
                     if (string.IsNullOrWhiteSpace(ShardRunArguments))
-                        ShardRunArguments = "run -c Release -- {0} {1}";
+                        ShardRunArguments = "run -c Release --no-build -- {0} {1}";
                 }
                 else //windows
                 {
