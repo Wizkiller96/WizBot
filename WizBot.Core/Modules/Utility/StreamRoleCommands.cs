@@ -5,7 +5,6 @@ using WizBot.Common.Attributes;
 using WizBot.Modules.Utility.Services;
 using WizBot.Common.TypeReaders;
 using WizBot.Modules.Utility.Common;
-using WizBot.Common;
 
 namespace WizBot.Modules.Utility
 {

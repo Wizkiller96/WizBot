@@ -1,11 +1,9 @@
 ﻿using Discord.Commands;
 using WizBot.Core.Services;
-using WizBot.Core.Services.Database.Models;
 using System.Linq;
 using System.Threading.Tasks;
 using WizBot.Common.Attributes;
 using WizBot.Modules.Administration.Services;
-using Microsoft.EntityFrameworkCore;
 using Discord;
 
 namespace WizBot.Modules.Administration

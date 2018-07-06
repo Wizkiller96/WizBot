@@ -1,7 +1,6 @@
 ﻿using Discord;
 using WizBot.Common;
 using NLog;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 

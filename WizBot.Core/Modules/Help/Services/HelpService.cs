@@ -12,7 +12,6 @@ using WizBot.Core.Services.Impl;
 using WizBot.Common;
 using NLog;
 using CommandLine;
-using CommandLine.Text;
 
 namespace WizBot.Modules.Help.Services
 {

@@ -7,7 +7,6 @@ using System.Text;
 using WizBot.Extensions;
 using WizBot.Core.Services.Impl;
 using System.Net.Http;
-using ImageSharp;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Discord.WebSocket;

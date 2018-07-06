@@ -536,7 +536,7 @@ namespace WizBot.Modules.Administration
                             Type = BlacklistType.User,
                         }));
                     //clear their currencies
-                    uow.DiscordUsers.RemoveFromMany(found.Select(x => (long)x).ToList());
+                    uow.DiscordUsers.RemoveFromMany(found.Select(x => x).ToList());
                     uow.Complete();
                 }
 

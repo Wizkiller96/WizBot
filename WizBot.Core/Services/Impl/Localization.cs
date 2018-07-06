@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Linq;
 using Discord;
 using NLog;
-using WizBot.Core.Services.Database.Models;
 using WizBot.Common;
 using Newtonsoft.Json;
 using System.IO;

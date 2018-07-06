@@ -1,14 +1,4 @@
-﻿using Discord;
-using Discord.Commands;
-using Discord.WebSocket;
-using WizBot.Common;
-using WizBot.Common.Collections;
-using WizBot.Core.Services;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace WizBot.Modules.Gambling.Common.CurrencyEvents
+﻿namespace WizBot.Modules.Gambling.Common.CurrencyEvents
 {
     //public class SneakyEvent : ICurrencyEvent
     //{

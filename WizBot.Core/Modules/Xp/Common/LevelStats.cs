@@ -1,5 +1,4 @@
 using WizBot.Modules.Xp.Services;
-using System;
 
 namespace WizBot.Modules.Xp.Common
 {

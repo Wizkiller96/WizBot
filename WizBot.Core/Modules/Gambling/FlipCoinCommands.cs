@@ -5,12 +5,13 @@ using WizBot.Core.Services;
 using System.Threading.Tasks;
 using WizBot.Common;
 using WizBot.Common.Attributes;
-using Image = ImageSharp.Image;
-using ImageSharp;
+using Image = SixLabors.ImageSharp.Image;
 using WizBot.Core.Modules.Gambling.Common;
 using WizBot.Modules.Gambling.Services;
 using WizBot.Core.Common;
 using System;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace WizBot.Modules.Gambling
 {
@@ -76,7 +77,11 @@ namespace WizBot.Modules.Gambling
                         }
                     }
                 }
-                await Context.Channel.SendFileAsync(imgs.Merge().ToStream(), $"{count} coins.png").ConfigureAwait(false);
+                using (var img = imgs.Merge())
+                using (var stream = img.ToStream())
+                {
+                    await Context.Channel.SendFileAsync(stream, $"{count} coins.png").ConfigureAwait(false);
+                }
             }
 
             public enum BetFlipGuess

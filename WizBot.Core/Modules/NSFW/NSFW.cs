@@ -11,7 +11,6 @@ using WizBot.Common.Attributes;
 using WizBot.Common.Collections;
 using WizBot.Modules.Searches.Common;
 using WizBot.Modules.Searches.Services;
-using WizBot.Modules.NSFW.Exceptions;
 using WizBot.Modules.Searches.Exceptions;
 
 namespace WizBot.Modules.NSFW

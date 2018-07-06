@@ -133,7 +133,7 @@ namespace WizBot
 
         private void AddServices()
         {
-            var startingGuildIdList = Client.Guilds.Select(x => (long)x.Id).ToList();
+            var startingGuildIdList = Client.Guilds.Select(x => (ulong)x.Id).ToList();
 
             //this unit of work will be used for initialization of all modules too, to prevent multiple queries from running
             using (var uow = _db.UnitOfWork)
@@ -474,7 +474,7 @@ namespace WizBot
         //        if (_loadedPackages.ContainsKey(name))
         //            return false;
 
-        //        var startingGuildIdList = Client.Guilds.Select(x => (long)x.Id).ToList();
+        //        var startingGuildIdList = Client.Guilds.Select(x => (ulong)x.Id).ToList();
         //        using (var uow = _db.UnitOfWork)
         //        {
         //            AllGuildConfigs = uow.GuildConfigs.GetAllGuildConfigs(startingGuildIdList).ToImmutableArray();

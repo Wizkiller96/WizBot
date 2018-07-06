@@ -1,6 +1,5 @@
 ﻿using Discord;
 using Discord.Commands;
-using Discord.WebSocket;
 using WizBot.Extensions;
 using System;
 using System.Linq;

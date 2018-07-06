@@ -1,12 +1,12 @@
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using ImageSharp;
 using WizBot.Common;
 using WizBot.Common.Attributes;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Extensions;
 using WizBot.Modules.Administration.Services;
+using SixLabors.ImageSharp.PixelFormats;
 using System;
 using System.Linq;
 using System.Threading.Tasks;

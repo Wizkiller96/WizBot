@@ -3,7 +3,6 @@ using NLog;
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Threading;
 
 namespace WizBot.Modules.Music.Common
 {

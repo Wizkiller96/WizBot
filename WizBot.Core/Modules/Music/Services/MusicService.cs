@@ -15,7 +15,6 @@ using WizBot.Modules.Music.Common;
 using WizBot.Modules.Music.Common.Exceptions;
 using WizBot.Modules.Music.Common.SongResolver;
 using WizBot.Common.Collections;
-using System;
 using Microsoft.EntityFrameworkCore;
 
 namespace WizBot.Modules.Music.Services
