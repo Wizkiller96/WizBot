@@ -24,7 +24,7 @@ namespace WizBot.Modules.Administration
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.ManageMessages)]
-            [WizBotOptionsAttribute(typeof(SlowmodeService.Options))]
+            [WizBotOptions(typeof(SlowmodeService.Options))]
             [Priority(1)]
             public Task Slowmode()
             {
@@ -41,7 +41,7 @@ namespace WizBot.Modules.Administration
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.ManageMessages)]
-            [WizBotOptionsAttribute(typeof(SlowmodeService.Options))]
+            [WizBotOptions(typeof(SlowmodeService.Options))]
             [Priority(0)]
             public async Task Slowmode(params string[] args)
             {
