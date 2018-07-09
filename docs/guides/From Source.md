@@ -18,8 +18,16 @@
 #### Getting WizBot Ready to Run  
 - Download the source: `git clone -b 1.9 https://github.com/Wizkiller96/WizBot`  
 - Edit the `credentials.json` in `WizBot/src/WizBot` according to this [guide](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/#setting-up-credentialsjson-file).  
-- Move `youtube-dl.exe` and `ffmpeg.exe` into `WizBot/src/WizBot`. 
-- For 32-bit Windows, replace `libsodium.dll` and `opus.dll` with the ones you downloaded.   
+- Move `youtube-dl.exe` and `ffmpeg.exe` into `WizBot/src/WizBot` (or add them to your PATH env variable, if you know how) 
+- For 32-bit Windows, replace `libsodium.dll` and `opus.dll` with the ones you downloaded.
+
+
+**!!! NOTE FOR WINDOWS USERS  !!!**  
+If you're running from source on windows, you will have to add these 2 extra lines to your credentials, after the first open bracket:
+```js
+    "ShardRunCommand": "dotnet",
+    "ShardRunArguments": "run -c Release --no-build -- {0} {1}",
+```
 
 #### Running WizBot  
 - For 32-bit Windows, run the `redis-server.exe` that you downloaded. You must have this window open when you use WizBot.  
@@ -31,13 +39,6 @@
 - Might not work if you've made custom edits to the source, make sure you know how git works  
 - Download updates. `git pull`  
 - Run again. `dotnet run -c Release`
-
-**!!! NOTE FOR WINDOWS USERS  !!!**  
-If you're running from source on windows, you will have to add these 2 extra lines to your credentials, after the first open bracket:
-```js
-    "ShardRunCommand": "dotnet",
-    "ShardRunArguments": "run -c Release -- {0} {1}",
-```
 
 [.netcore]: https://www.microsoft.com/net/download/core#/sdk
 [ffmpeg]: http://ffmpeg.zeranoe.com/builds/
