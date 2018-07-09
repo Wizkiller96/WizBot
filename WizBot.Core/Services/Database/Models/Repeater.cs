@@ -1,9 +1,11 @@
 using CommandLine;
 using WizBot.Core.Common;
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WizBot.Core.Services.Database.Models
 {
+    [Table("GuildRepeater")]
     public class Repeater : DbEntity
     {
         public class Options : IWizBotCommandOptions
@@ -37,9 +39,5 @@ namespace WizBot.Core.Services.Database.Models
         public TimeSpan Interval { get; set; }
         public TimeSpan? StartTimeOfDay { get; set; }
         public bool NoRedundant { get; set; }
-    }
-
-    public class GuildRepeater : Repeater
-    {
     }
 }

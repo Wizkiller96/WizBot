@@ -15,6 +15,7 @@ using WizBot.Common.TypeReaders;
 using WizBot.Modules.Utility.Common;
 using WizBot.Modules.Utility.Services;
 using WizBot.Core.Common;
+using System.Collections.Generic;
 
 namespace WizBot.Modules.Utility
 {
@@ -54,8 +55,8 @@ namespace WizBot.Modules.Utility
                     return;
                 }
                 var repeater = repList[index];
-                repeater.Reset();
-                await repeater.Trigger().ConfigureAwait(false);
+                repeater.Value.Reset();
+                await repeater.Value.Trigger().ConfigureAwait(false);
 
                 try { await Context.Message.AddReactionAsync(new Emoji("🔄")).ConfigureAwait(false); } catch { }
             }
@@ -83,20 +84,17 @@ namespace WizBot.Modules.Utility
                 }
 
                 var repeater = repeaterList[index];
-                repeater.Stop();
-                repeaterList.RemoveAt(index);
+                rep.TryRemove(repeater.Value.Repeater.Id, out _);
 
                 using (var uow = _db.UnitOfWork)
                 {
                     var guildConfig = uow.GuildConfigs.ForId(Context.Guild.Id, set => set.Include(gc => gc.GuildRepeaters));
 
-                    guildConfig.GuildRepeaters.RemoveWhere(r => r.Id == repeater.Repeater.Id);
+                    guildConfig.GuildRepeaters.RemoveWhere(r => r.Id == repeater.Value.Repeater.Id);
                     await uow.CompleteAsync().ConfigureAwait(false);
                 }
-
-                if (_service.Repeaters.TryUpdate(Context.Guild.Id, new ConcurrentQueue<RepeatRunner>(repeaterList), rep))
-                    await Context.Channel.SendConfirmAsync(GetText("message_repeater"),
-                        GetText("repeater_stopped", index + 1) + $"\n\n{repeater}").ConfigureAwait(false);
+                await Context.Channel.SendConfirmAsync(GetText("message_repeater"),
+                    GetText("repeater_stopped", index + 1) + $"\n\n{repeater}").ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -122,7 +120,7 @@ namespace WizBot.Modules.Utility
                 if (string.IsNullOrWhiteSpace(opts.Message))
                     return;
 
-                var toAdd = new GuildRepeater()
+                var toAdd = new Repeater()
                 {
                     ChannelId = Context.Channel.Id,
                     GuildId = Context.Guild.Id,
@@ -143,11 +141,12 @@ namespace WizBot.Modules.Utility
                     await uow.CompleteAsync().ConfigureAwait(false);
                 }
 
-                var rep = new RepeatRunner((SocketGuild)Context.Guild, toAdd);
+                var rep = new RepeatRunner((SocketGuild)Context.Guild, toAdd, _service);
 
-                _service.Repeaters.AddOrUpdate(Context.Guild.Id, new ConcurrentQueue<RepeatRunner>(new[] { rep }), (key, old) =>
+                _service.Repeaters.AddOrUpdate(Context.Guild.Id,
+                    new ConcurrentDictionary<int, RepeatRunner>(new[] { new KeyValuePair<int, RepeatRunner>(toAdd.Id, rep) }), (key, old) =>
                   {
-                      old.Enqueue(rep);
+                      old.TryAdd(rep.Repeater.Id, rep);
                       return old;
                   });
 
