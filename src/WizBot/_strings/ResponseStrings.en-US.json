@@ -887,6 +887,7 @@
     "xp_club_bans_for": "Bans for {0} club",
     "xp_club_apps_for": "Applicants for {0} club",
     "xp_club_leaderboard": "Club leaderboard - page {0}",
+    "xp_template_reloaded": "Xp template has been reloaded.",
     "xp_club_admin_add": "{0} is now a club admin.",
     "xp_club_admin_remove": "{0} is no longer club admin.",
     "xp_club_admin_error": "Error. You are either not the owner of the club, or that user is not in your club.",
