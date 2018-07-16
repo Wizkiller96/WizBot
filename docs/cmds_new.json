@@ -328,7 +328,7 @@
       "Options": null,
       "Requirements": [
         "Administrator Server Permission",
-        "Bot Owner Only"
+        "Bot Owner & Admin Only"
       ]
     },
     {
@@ -344,7 +344,7 @@
       "Options": null,
       "Requirements": [
         "Administrator Server Permission",
-        "Bot Owner Only"
+        "Bot Owner & Admin Only"
       ]
     },
     {
@@ -360,7 +360,7 @@
       "Options": null,
       "Requirements": [
         "Administrator Server Permission",
-        "Bot Owner Only"
+        "Bot Owner & Admin Only"
       ]
     },
     {
@@ -377,7 +377,7 @@
       "Options": null,
       "Requirements": [
         "Administrator Server Permission",
-        "Bot Owner Only"
+        "Bot Owner & Admin Only"
       ]
     },
     {
@@ -2037,7 +2037,7 @@
       "Module": "Gambling",
       "Options": null,
       "Requirements": [
-        "Bot Owner Only"
+        "Bot Owner & Admin Only"
       ]
     },
     {
@@ -2052,7 +2052,7 @@
       "Module": "Gambling",
       "Options": null,
       "Requirements": [
-        "Bot Owner Only"
+        "Bot Owner & Admin Only"
       ]
     },
     {
@@ -2219,7 +2219,7 @@
       "Module": "Gambling",
       "Options": "--amount (-a)   Amount of currency each user receives.  \n--pot-size (-p)   The maximum amount of currency that can be rewarded. 0 means no limit.  \n--duration (-d)   Number of hours the event should run for. Default 24.  ",
       "Requirements": [
-        "Bot Owner Only"
+        "Bot Owner & Admin Only"
       ]
     },
     {
@@ -2872,7 +2872,7 @@
       "Module": "Games",
       "Options": null,
       "Requirements": [
-        "Bot Owner Only"
+        "Bot Owner & Admin Only"
       ]
     },
     {
@@ -2901,7 +2901,7 @@
       "Module": "Games",
       "Options": null,
       "Requirements": [
-        "Bot Owner Only"
+        "Bot Owner & Admin Only"
       ]
     },
     {
@@ -4082,7 +4082,7 @@
       "Module": "Permissions",
       "Options": null,
       "Requirements": [
-        "Bot Owner Only"
+        "Bot Owner & Admin Only"
       ]
     },
     {
@@ -4097,7 +4097,7 @@
       "Module": "Permissions",
       "Options": null,
       "Requirements": [
-        "Bot Owner Only"
+        "Bot Owner & Admin Only"
       ]
     },
     {
@@ -4113,7 +4113,7 @@
       "Module": "Permissions",
       "Options": null,
       "Requirements": [
-        "Bot Owner Only"
+        "Bot Owner & Admin Only"
       ]
     },
     {
@@ -4650,20 +4650,6 @@
       "Description": "Searches for a Hearthstone card and shows its image. Takes a while to complete.",
       "Usage": [
         ".hs Ysera"
-      ],
-      "Submodule": "Searches",
-      "Module": "Searches",
-      "Options": null,
-      "Requirements": []
-    },
-    {
-      "Aliases": [
-        ".yodify",
-        ".yoda"
-      ],
-      "Description": "Translates your normal sentences into Yoda styled sentences!",
-      "Usage": [
-        ".yoda my feelings hurt"
       ],
       "Submodule": "Searches",
       "Module": "Searches",
@@ -5418,7 +5404,7 @@
       "Options": null,
       "Requirements": [
         "Administrator Server Permission",
-        "Bot Owner Only"
+        "Bot Owner & Admin Only"
       ]
     },
     {
@@ -5660,7 +5646,7 @@
       "Module": "Utility",
       "Options": null,
       "Requirements": [
-        "Bot Owner Only"
+        "Bot Owner & Admin Only"
       ]
     },
     {
@@ -5675,7 +5661,7 @@
       "Module": "Utility",
       "Options": null,
       "Requirements": [
-        "Bot Owner Only"
+        "Bot Owner & Admin Only"
       ]
     },
     {
@@ -5852,7 +5838,7 @@
       "Module": "Utility",
       "Options": null,
       "Requirements": [
-        "Bot Owner Only"
+        "Bot Owner & Admin Only"
       ]
     },
     {
@@ -6275,7 +6261,7 @@
       "Module": "Xp",
       "Options": null,
       "Requirements": [
-        "Bot Owner Only"
+        "Bot Owner & Admin Only"
       ]
     },
     {

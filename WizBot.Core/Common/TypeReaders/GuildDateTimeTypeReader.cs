@@ -4,6 +4,7 @@ using Discord.Commands;
 using WizBot.Modules.Administration.Services;
 using WizBot.Core.Common.TypeReaders;
 using Discord.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace WizBot.Common.TypeReaders
 {
@@ -24,7 +25,7 @@ namespace WizBot.Common.TypeReaders
 
         public static GuildDateTime Parse(IServiceProvider services, ulong guildId, string input)
         {
-            var _gts = (GuildTimezoneService)services.GetService(typeof(GuildTimezoneService));
+            var _gts = services.GetService<GuildTimezoneService>();
             if (!DateTime.TryParse(input, out var dt))
                 return null;
 

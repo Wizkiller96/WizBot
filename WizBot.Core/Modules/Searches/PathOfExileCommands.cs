@@ -13,6 +13,7 @@ using WizBot.Core.Modules.Searches.Common;
 using Newtonsoft.Json;
 using AngleSharp.Parser.Html;
 using WizBot.Modules.Searches.Services;
+using System.Net.Http;
 
 namespace WizBot.Modules.Searches
 {
@@ -29,10 +30,12 @@ namespace WizBot.Modules.Searches
             private const string _profileURL = "https://www.pathofexile.com/account/view-profile/";
 
             private readonly DiscordSocketClient _client;
+            private readonly IHttpClientFactory _httpFactory;
 
-            public PathOfExileCommands(DiscordSocketClient client)
+            public PathOfExileCommands(DiscordSocketClient client, IHttpClientFactory httpFactory)
             {
                 _client = client;
+                _httpFactory = httpFactory;
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -51,8 +54,11 @@ namespace WizBot.Modules.Searches
 
                 try
                 {
-                    var res = await _service.Http.GetStringAsync($"{_poeURL}{usr}").ConfigureAwait(false);
-                    characters = JsonConvert.DeserializeObject<List<Account>>(res);
+                    using (var http = _httpFactory.CreateClient())
+                    {
+                        var res = await http.GetStringAsync($"{_poeURL}{usr}").ConfigureAwait(false);
+                        characters = JsonConvert.DeserializeObject<List<Account>>(res);
+                    }
                 }
                 catch
                 {
@@ -109,8 +115,11 @@ namespace WizBot.Modules.Searches
 
                 try
                 {
-                    var res = await _service.Http.GetStringAsync("http://api.pathofexile.com/leagues?type=main&compact=1").ConfigureAwait(false);
-                    leagues = JsonConvert.DeserializeObject<List<Leagues>>(res);
+                    using (var http = _httpFactory.CreateClient())
+                    {
+                        var res = await http.GetStringAsync("http://api.pathofexile.com/leagues?type=main&compact=1").ConfigureAwait(false);
+                        leagues = JsonConvert.DeserializeObject<List<Leagues>>(res);
+                    }
                 }
                 catch
                 {
@@ -163,44 +172,47 @@ namespace WizBot.Modules.Searches
                 try
                 {
                     var res = $"{_ponURL}{leagueName}";
-                    var obj = JObject.Parse(await _service.Http.GetStringAsync(res).ConfigureAwait(false));
-
-                    float chaosEquivalent = 0.0F;
-                    float conversionEquivalent = 0.0F;
-
-                    //	poe.ninja API does not include a "chaosEquivalent" property for Chaos Orbs.
-                    if (cleanCurrency == "Chaos Orb")
+                    using (var http = _httpFactory.CreateClient())
                     {
-                        chaosEquivalent = 1.0F;
-                    }
-                    else
-                    {
-                        var currencyInput = obj["lines"].Values<JObject>()
-                                                        .Where(i => i["currencyTypeName"].Value<string>() == cleanCurrency)
-                                                        .FirstOrDefault();
-                        chaosEquivalent = float.Parse(currencyInput["chaosEquivalent"].ToString(), System.Globalization.CultureInfo.InvariantCulture);
-                    }
+                        var obj = JObject.Parse(await http.GetStringAsync(res).ConfigureAwait(false));
 
-                    if (cleanConvert == "Chaos Orb")
-                    {
-                        conversionEquivalent = 1.0F;
-                    }
-                    else
-                    {
-                        var currencyOutput = obj["lines"].Values<JObject>()
-                                                        .Where(i => i["currencyTypeName"].Value<string>() == cleanConvert)
-                                                        .FirstOrDefault();
-                        conversionEquivalent = float.Parse(currencyOutput["chaosEquivalent"].ToString(), System.Globalization.CultureInfo.InvariantCulture);
-                    }
+                        float chaosEquivalent = 0.0F;
+                        float conversionEquivalent = 0.0F;
 
-                    var embed = new EmbedBuilder().WithAuthor(eau => eau.WithName($"{leagueName} Currency Exchange")
-                        .WithUrl("http://poe.ninja")
-                        .WithIconUrl("https://web.poecdn.com/image/favicon/ogimage.png"))
-                        .AddField(efb => efb.WithName("Currency Type").WithValue(cleanCurrency).WithIsInline(true))
-                        .AddField(efb => efb.WithName($"{cleanConvert} Equivalent").WithValue(chaosEquivalent / conversionEquivalent).WithIsInline(true))
-                        .WithOkColor();
+                        //	poe.ninja API does not include a "chaosEquivalent" property for Chaos Orbs.
+                        if (cleanCurrency == "Chaos Orb")
+                        {
+                            chaosEquivalent = 1.0F;
+                        }
+                        else
+                        {
+                            var currencyInput = obj["lines"].Values<JObject>()
+                                                            .Where(i => i["currencyTypeName"].Value<string>() == cleanCurrency)
+                                                            .FirstOrDefault();
+                            chaosEquivalent = float.Parse(currencyInput["chaosEquivalent"].ToString(), System.Globalization.CultureInfo.InvariantCulture);
+                        }
 
-                    await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
+                        if (cleanConvert == "Chaos Orb")
+                        {
+                            conversionEquivalent = 1.0F;
+                        }
+                        else
+                        {
+                            var currencyOutput = obj["lines"].Values<JObject>()
+                                                            .Where(i => i["currencyTypeName"].Value<string>() == cleanConvert)
+                                                            .FirstOrDefault();
+                            conversionEquivalent = float.Parse(currencyOutput["chaosEquivalent"].ToString(), System.Globalization.CultureInfo.InvariantCulture);
+                        }
+
+                        var embed = new EmbedBuilder().WithAuthor(eau => eau.WithName($"{leagueName} Currency Exchange")
+                            .WithUrl("http://poe.ninja")
+                            .WithIconUrl("https://web.poecdn.com/image/favicon/ogimage.png"))
+                            .AddField(efb => efb.WithName("Currency Type").WithValue(cleanCurrency).WithIsInline(true))
+                            .AddField(efb => efb.WithName($"{cleanConvert} Equivalent").WithValue(chaosEquivalent / conversionEquivalent).WithIsInline(true))
+                            .WithOkColor();
+
+                        await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
+                    }
                 }
                 catch
                 {
@@ -223,79 +235,82 @@ namespace WizBot.Modules.Searches
 
                 try
                 {
-                    var url = new Uri($"{_pogsURL}{itemName}");
-                    var itemNameJson = JArray.Parse($"{await _service.Http.GetStringAsync(url).ConfigureAwait(false)}");
-                    var parsedName = itemNameJson[1][0].ToString().Replace(" ", "_", StringComparison.InvariantCulture);
-                    var fullQueryLink = "https://pathofexile.gamepedia.com/" + parsedName;
-
-                    url = new Uri($"{_pogURL}{parsedName}");
-                    var obj = JObject.Parse(await _service.Http.GetStringAsync(url).ConfigureAwait(false));
-
-                    var infoboxProperty = obj["query"]["data"].Values<JObject>()
-                                                          .Where(i => i["property"].Value<string>() == "Has_infobox_HTML")
-                                                          .FirstOrDefault();
-                    var infobox = infoboxProperty["dataitem"][0]["item"].ToString();
-
-                    // Vessel of Vinktar has multiple variants; separate pages for each but same image.
-                    if (parsedName.Contains("Vessel_of_Vinktar"))
+                    using (var http = _httpFactory.CreateClient())
                     {
-                        parsedName = Regex.Replace(parsedName, @" ?\(.*?\)", string.Empty);
-                        parsedName = parsedName.Remove(parsedName.Length - 1);
+                        var url = new Uri($"{_pogsURL}{itemName}");
+                        var itemNameJson = JArray.Parse($"{await http.GetStringAsync(url).ConfigureAwait(false)}");
+                        var parsedName = itemNameJson[1][0].ToString().Replace(" ", "_", StringComparison.InvariantCulture);
+                        var fullQueryLink = "https://pathofexile.gamepedia.com/" + parsedName;
+
+                        url = new Uri($"{_pogURL}{parsedName}");
+                        var obj = JObject.Parse(await http.GetStringAsync(url).ConfigureAwait(false));
+
+                        var infoboxProperty = obj["query"]["data"].Values<JObject>()
+                                                              .Where(i => i["property"].Value<string>() == "Has_infobox_HTML")
+                                                              .FirstOrDefault();
+                        var infobox = infoboxProperty["dataitem"][0]["item"].ToString();
+
+                        // Vessel of Vinktar has multiple variants; separate pages for each but same image.
+                        if (parsedName.Contains("Vessel_of_Vinktar"))
+                        {
+                            parsedName = Regex.Replace(parsedName, @" ?\(.*?\)", string.Empty);
+                            parsedName = parsedName.Remove(parsedName.Length - 1);
+                        }
+
+                        url = new Uri($"{_pogiURL}{parsedName}_inventory_icon.png");
+                        var img = JObject.Parse(await http.GetStringAsync(url).ConfigureAwait(false));
+
+                        var imgContainer = img.Descendants()
+                            .OfType<JProperty>()
+                            .Where(p => p.Name == "url")
+                            .Select(p => p.Parent)
+                            .ToList();
+
+                        var imgUrl = imgContainer[0]["url"].ToString();
+                        var imageUrl = imgUrl ?? "http://icecream.me/uploads/870b03f36b59cc16ebfe314ef2dde781.png";
+
+                        var parser = new HtmlParser();
+                        infobox = Regex.Replace(infobox, @"[\[\]']+", "");
+                        var document = parser.Parse(infobox);
+
+                        var itemStats = document.QuerySelector("span.item-box.-unique");
+                        var names = itemStats.QuerySelector("span.header.-double").InnerHtml.Split("<br>");
+                        var itemInformation = itemStats.QuerySelector("span.item-stats");
+                        var itemImplicits = itemStats.QuerySelector("span.group").InnerHtml.Replace("<br>", "\n", StringComparison.InvariantCulture);
+                        var itemModsList = itemInformation.QuerySelectorAll("span.group.-mod");
+
+                        var itemModsBuilder = new System.Text.StringBuilder();
+                        foreach (var span in itemModsList)
+                        {
+                            itemModsBuilder.Append(span.InnerHtml.Replace("<br>", "\n", StringComparison.InvariantCulture));
+                            itemModsBuilder.Append("\n");
+                        }
+
+                        var flavorText = String.Empty;
+                        if (itemInformation.QuerySelector("span.group.-flavour") != null)
+                        {
+                            flavorText = "*" + itemInformation.QuerySelector("span.group.-flavour").InnerHtml.Replace("<br>", "\n", StringComparison.InvariantCulture) + "*\n";
+                        }
+
+                        itemImplicits = Regex.Replace(itemImplicits, "<.*?>", String.Empty);
+                        var itemMods = Regex.Replace(itemModsBuilder.ToString(), "<.*?>", String.Empty);
+
+                        var itemInfobox = new System.Text.StringBuilder();
+                        itemInfobox.AppendLine($"{names[1]}\n");
+                        itemInfobox.AppendLine($"{itemImplicits}\n");
+                        itemInfobox.AppendLine($"{itemModsBuilder}");
+                        itemInfobox.AppendLine($"{flavorText}");
+
+                        var embed = new EmbedBuilder()
+                            .WithAuthor(eau => eau.WithName($"{itemName.ToTitleCase()}")
+                            .WithUrl(fullQueryLink)
+                            .WithIconUrl("https://web.poecdn.com/image/favicon/ogimage.png"))
+                            .WithDescription(itemInfobox.ToString())
+                            .WithImageUrl(imageUrl)
+                            .WithOkColor();
+
+                        await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
                     }
-
-                    url = new Uri($"{_pogiURL}{parsedName}_inventory_icon.png");
-                    var img = JObject.Parse(await _service.Http.GetStringAsync(url).ConfigureAwait(false));
-
-                    var imgContainer = img.Descendants()
-                        .OfType<JProperty>()
-                        .Where(p => p.Name == "url")
-                        .Select(p => p.Parent)
-                        .ToList();
-
-                    var imgUrl = imgContainer[0]["url"].ToString();
-                    var imageUrl = imgUrl ?? "http://icecream.me/uploads/870b03f36b59cc16ebfe314ef2dde781.png";
-
-                    var parser = new HtmlParser();
-                    infobox = Regex.Replace(infobox, @"[\[\]']+", "");
-                    var document = parser.Parse(infobox);
-
-                    var itemStats = document.QuerySelector("span.item-box.-unique");
-                    var names = itemStats.QuerySelector("span.header.-double").InnerHtml.Split("<br>");
-                    var itemInformation = itemStats.QuerySelector("span.item-stats");
-                    var itemImplicits = itemStats.QuerySelector("span.group").InnerHtml.Replace("<br>", "\n", StringComparison.InvariantCulture);
-                    var itemModsList = itemInformation.QuerySelectorAll("span.group.-mod");
-
-                    var itemModsBuilder = new System.Text.StringBuilder();
-                    foreach (var span in itemModsList)
-                    {
-                        itemModsBuilder.Append(span.InnerHtml.Replace("<br>", "\n", StringComparison.InvariantCulture));
-                        itemModsBuilder.Append("\n");
-                    }
-
-                    var flavorText = String.Empty;
-                    if (itemInformation.QuerySelector("span.group.-flavour") != null)
-                    {
-                        flavorText = "*" + itemInformation.QuerySelector("span.group.-flavour").InnerHtml.Replace("<br>", "\n", StringComparison.InvariantCulture) + "*\n";
-                    }
-
-                    itemImplicits = Regex.Replace(itemImplicits, "<.*?>", String.Empty);
-                    var itemMods = Regex.Replace(itemModsBuilder.ToString(), "<.*?>", String.Empty);
-
-                    var itemInfobox = new System.Text.StringBuilder();
-                    itemInfobox.AppendLine($"{names[1]}\n");
-                    itemInfobox.AppendLine($"{itemImplicits}\n");
-                    itemInfobox.AppendLine($"{itemModsBuilder}");
-                    itemInfobox.AppendLine($"{flavorText}");
-
-                    var embed = new EmbedBuilder()
-                        .WithAuthor(eau => eau.WithName($"{itemName.ToTitleCase()}")
-                        .WithUrl(fullQueryLink)
-                        .WithIconUrl("https://web.poecdn.com/image/favicon/ogimage.png"))
-                        .WithDescription(itemInfobox.ToString())
-                        .WithImageUrl(imageUrl)
-                        .WithOkColor();
-
-                    await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
                 }
                 catch
                 {

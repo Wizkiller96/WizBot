@@ -24,25 +24,27 @@ namespace WizBot.Modules.Utility
         private readonly IBotCredentials _creds;
         private readonly WizBot _bot;
         private readonly DbService _db;
+        private readonly IHttpClientFactory _httpFactory;
 
         public Utility(WizBot wizbot, DiscordSocketClient client,
             IStatsService stats, IBotCredentials creds,
-            DbService db)
+            DbService db, IHttpClientFactory factory)
         {
             _client = client;
             _stats = stats;
             _creds = creds;
             _bot = wizbot;
             _db = db;
+            _httpFactory = factory;
         }
 
         [WizBotCommand, Usage, Description, Aliases]
         public async Task TogetherTube()
         {
             Uri target;
-            using (var http = new HttpClient())
+            using (var http = _httpFactory.CreateClient())
+            using (var res = await http.GetAsync("https://togethertube.com/room/create").ConfigureAwait(false))
             {
-                var res = await http.GetAsync("https://togethertube.com/room/create").ConfigureAwait(false);
                 target = res.RequestMessage.RequestUri;
             }
 

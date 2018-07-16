@@ -26,14 +26,16 @@ namespace WizBot.Modules.Administration
             private readonly WizBot _bot;
             private readonly IBotCredentials _creds;
             private readonly IDataCache _cache;
+            private readonly IHttpClientFactory _http;
 
             public SelfCommands(WizBot bot, DiscordSocketClient client,
-                IBotCredentials creds, IDataCache cache)
+                IBotCredentials creds, IDataCache cache, IHttpClientFactory http)
             {
                 _client = client;
                 _bot = bot;
                 _creds = creds;
                 _cache = cache;
+                _http = http;
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -394,7 +396,7 @@ namespace WizBot.Modules.Administration
 
                 var uri = new Uri(img);
 
-                using (var http = new HttpClient())
+                using (var http = _http.CreateClient())
                 using (var sr = await http.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false))
                 {
                     if (!sr.IsImage())

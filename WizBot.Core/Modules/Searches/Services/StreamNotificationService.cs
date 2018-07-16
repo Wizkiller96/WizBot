@@ -39,14 +39,14 @@ namespace WizBot.Modules.Searches.Services
         private readonly ConcurrentHashSet<ulong> _yesOffline = new ConcurrentHashSet<ulong>();
 
         public StreamNotificationService(WizBot bot, DbService db, DiscordSocketClient client,
-            WizBotStrings strings, IDataCache cache, IBotCredentials creds)
+            WizBotStrings strings, IDataCache cache, IBotCredentials creds, IHttpClientFactory factory)
         {
             _db = db;
             _client = client;
             _strings = strings;
             _cache = cache;
             _creds = creds;
-            _http = new HttpClient();
+            _http = factory.CreateClient();
             _http.DefaultRequestHeaders.TryAddWithoutValidation("Client-ID", _creds.TwitchClientId);
             _log = LogManager.GetCurrentClassLogger();
 

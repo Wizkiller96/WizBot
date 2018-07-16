@@ -20,11 +20,13 @@ namespace WizBot.Modules.Searches
         {
             private readonly IGoogleApiService _google;
             private readonly IBotCredentials _creds;
+            private readonly IHttpClientFactory _httpFactory;
 
-            public OsuCommands(IGoogleApiService google, IBotCredentials creds)
+            public OsuCommands(IGoogleApiService google, IBotCredentials creds, IHttpClientFactory factory)
             {
                 _google = google;
                 _creds = creds;
+                _httpFactory = factory;
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -33,7 +35,7 @@ namespace WizBot.Modules.Searches
                 if (string.IsNullOrWhiteSpace(usr))
                     return;
 
-                using (var http = new HttpClient())
+                using (var http = _httpFactory.CreateClient())
                 {
                     try
                     {
@@ -46,8 +48,8 @@ namespace WizBot.Modules.Searches
                         using (var res = await http.GetStreamAsync(new Uri($"http://lemmmy.pw/osusig/sig.php?uname={ usr }&flagshadow&xpbar&xpbarhex&pp=2&mode={m}")).ConfigureAwait(false))
                         {
                             await Context.Channel.SendFileAsync(res, $"{usr}.png", $"🎧 **{GetText("profile_link")}** " +
-                            $"<https://new.ppy.sh/u/{Uri.EscapeDataString(usr)}>\n" +
-                            $"`Image provided by https://lemmmy.pw/osusig`").ConfigureAwait(false);
+                                $"<https://new.ppy.sh/u/{Uri.EscapeDataString(usr)}>\n" +
+                                $"`Image provided by https://lemmmy.pw/osusig`").ConfigureAwait(false);
                         }
                     }
                     catch (Exception ex)
@@ -72,7 +74,7 @@ namespace WizBot.Modules.Searches
 
                 try
                 {
-                    using (var http = new HttpClient())
+                    using (var http = _httpFactory.CreateClient())
                     {
                         var mapId = ResolveMap(map);
                         var reqString = $"https://osu.ppy.sh/api/get_beatmaps?k={_creds.OsuApiKey}&{mapId}";
@@ -107,7 +109,7 @@ namespace WizBot.Modules.Searches
                     await channel.SendErrorAsync("Please provide a username.").ConfigureAwait(false);
                     return;
                 }
-                using (var http = new HttpClient())
+                using (var http = _httpFactory.CreateClient())
                 {
                     try
                     {

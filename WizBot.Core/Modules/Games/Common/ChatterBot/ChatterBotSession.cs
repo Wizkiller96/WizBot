@@ -12,19 +12,21 @@ namespace WizBot.Modules.Games.Common.ChatterBot
         private static WizBotRandom Rng { get; } = new WizBotRandom();
 
         private readonly string _chatterBotId;
+        private readonly IHttpClientFactory _httpFactory;
 #if GLOBAL_WIZBOT
         private int _botId = 1;
 #else
         private int _botId = 6;
 #endif
 
-        public ChatterBotSession()
+        public ChatterBotSession(IHttpClientFactory httpFactory)
         {
             _chatterBotId = Rng.Next(0, 1000000).ToString().ToBase64();
+            _httpFactory = httpFactory;
         }
 
 #if GLOBAL_WIZBOT
-        private string apiEndpoint => "http://wizbot.xyz/cb/chatbot/" +
+        private string apiEndpoint => "http://wizbot.cf/cb/chatbot/" +
                                       $"?bot_id={_botId}&" +
                                       "say={0}&" +
                                       $"convo_id=wizbot_{_chatterBotId}&" +
@@ -39,7 +41,7 @@ namespace WizBot.Modules.Games.Common.ChatterBot
 
         public async Task<string> Think(string message)
         {
-            using (var http = new HttpClient())
+            using (var http = _httpFactory.CreateClient())
             {
                 var res = await http.GetStringAsync(string.Format(apiEndpoint, message)).ConfigureAwait(false);
                 var cbr = JsonConvert.DeserializeObject<ChatterBotResponse>(res);

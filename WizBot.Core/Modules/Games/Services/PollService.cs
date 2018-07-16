@@ -16,9 +16,13 @@ using WizBot.Core.Services.Database;
 
 namespace WizBot.Modules.Games.Services
 {
-    public class PollService : IEarlyBlockingExecutor, INService
+    public class PollService : IEarlyBehavior, INService
     {
         public ConcurrentDictionary<ulong, PollRunner> ActivePolls { get; } = new ConcurrentDictionary<ulong, PollRunner>();
+
+        public int Priority => -5;
+        public ModuleBehaviorType BehaviorType => ModuleBehaviorType.Executor;
+
         private readonly Logger _log;
         private readonly DiscordSocketClient _client;
         private readonly WizBotStrings _strings;
@@ -105,7 +109,7 @@ namespace WizBot.Modules.Games.Services
             try { await msg.DeleteAsync().ConfigureAwait(false); } catch { }
         }
 
-        public async Task<bool> TryExecuteEarly(DiscordSocketClient client, IGuild guild, IUserMessage msg)
+        public async Task<bool> RunBehavior(DiscordSocketClient client, IGuild guild, IUserMessage msg)
         {
             if (guild == null)
                 return false;

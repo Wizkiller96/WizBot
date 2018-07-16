@@ -8,6 +8,7 @@ using WizBot.Common.Attributes;
 using WizBot.Extensions;
 using WizBot.Modules.Games.Common;
 using WizBot.Modules.Games.Services;
+using System.Net.Http;
 
 namespace WizBot.Modules.Games
 {
@@ -18,11 +19,13 @@ namespace WizBot.Modules.Games
     public partial class Games : WizBotTopLevelModule<GamesService>
     {
         private readonly IImageCache _images;
+        private readonly IHttpClientFactory _httpFactory;
         private readonly Random _rng = new Random();
 
-        public Games(IDataCache data)
+        public Games(IDataCache data, IHttpClientFactory factory)
         {
             _images = data.LocalImages;
+            _httpFactory = factory;
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -133,7 +136,7 @@ namespace WizBot.Modules.Games
                          "and maybe look at how to replicate that.";
             }
 
-            return new GirlRating(_images, crazy, hot, roll, advice);
+            return new GirlRating(_images, _httpFactory, crazy, hot, roll, advice);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
