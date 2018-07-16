@@ -43,12 +43,12 @@ namespace WizBot.Modules.Searches
                             m = ResolveGameMode(mode);
                         }
                         http.AddFakeHeaders();
-                        var res = await http.GetStreamAsync(new Uri($"http://lemmmy.pw/osusig/sig.php?uname={ usr }&flagshadow&xpbar&xpbarhex&pp=2&mode={m}")).ConfigureAwait(false);
-
-                        var ms = new MemoryStream();
-                        res.CopyTo(ms);
-                        ms.Position = 0;
-                        await Context.Channel.SendFileAsync(ms, $"{usr}.png", $"🎧 **{GetText("profile_link")}** <https://new.ppy.sh/u/{Uri.EscapeDataString(usr)}>\n`Image provided by https://lemmmy.pw/osusig`").ConfigureAwait(false);
+                        using (var res = await http.GetStreamAsync(new Uri($"http://lemmmy.pw/osusig/sig.php?uname={ usr }&flagshadow&xpbar&xpbarhex&pp=2&mode={m}")).ConfigureAwait(false))
+                        {
+                            await Context.Channel.SendFileAsync(res, $"{usr}.png", $"🎧 **{GetText("profile_link")}** " +
+                            $"<https://new.ppy.sh/u/{Uri.EscapeDataString(usr)}>\n" +
+                            $"`Image provided by https://lemmmy.pw/osusig`").ConfigureAwait(false);
+                        }
                     }
                     catch (Exception ex)
                     {

@@ -42,7 +42,9 @@ namespace WizBot.Modules.Gambling
                 var num2 = gen % 10;
 
 
-                using (var img = new[] { GetDice(num1), GetDice(num2) }.Merge())
+                using (var img1 = GetDice(num1))
+                using (var img2 = GetDice(num2))
+                using (var img = new[] { img1, img2 }.Merge())
                 using (var ms = img.ToStream())
                 {
                     await Context.Channel.SendFileAsync(ms,
@@ -127,6 +129,11 @@ namespace WizBot.Modules.Gambling
                 using (var bitmap = dice.Merge())
                 using (var ms = bitmap.ToStream())
                 {
+                    foreach (var d in dice)
+                    {
+                        d.Dispose();
+                    }
+
                     await Context.Channel.SendFileAsync(ms, "dice.png",
                         Context.User.Mention + " " +
                         GetText("dice_rolled_num", Format.Bold(values.Count.ToString())) +
