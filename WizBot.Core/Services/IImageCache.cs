@@ -1,4 +1,5 @@
 using WizBot.Core.Common;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace WizBot.Core.Services
@@ -7,22 +8,24 @@ namespace WizBot.Core.Services
     {
         ImageUrls ImageUrls { get; }
 
-        byte[][] Heads { get; }
-        byte[][] Tails { get; }
+        IReadOnlyList<byte[]> Heads { get; }
+        IReadOnlyList<byte[]> Tails { get; }
 
-        byte[][] Dice { get; }
+        IReadOnlyList<byte[]> Dice { get; }
 
+        IReadOnlyList<byte[]> SlotEmojis { get; }
+        IReadOnlyList<byte[]> SlotNumbers { get; }
         byte[] SlotBackground { get; }
-        byte[][] SlotEmojis { get; }
-        byte[][] SlotNumbers { get; }
 
-        byte[] WifeMatrix { get; }
+        byte[] RategirlMatrix { get; }
         byte[] RategirlDot { get; }
 
-        byte[] XpCard { get; }
+        byte[] XpBackground { get; }
 
         byte[] Rip { get; }
         byte[] RipOverlay { get; }
+
+        byte[] GetCard(string key);
 
         Task Reload();
     }
