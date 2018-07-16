@@ -327,7 +327,7 @@ namespace WizBot.Extensions
                     .Where(x => x.GetInterfaces().Contains(typeof(INService))
                         && !x.GetTypeInfo().IsInterface && !x.GetTypeInfo().IsAbstract
 #if GLOBAL_WIZBOT
-                        && x.GetTypeInfo().GetCustomAttribute<NoPublicBot>() == null
+                        && x.GetTypeInfo().GetCustomAttribute<NoPublicBotAttribute>() == null
 #endif
                             )
                     .ToArray());
