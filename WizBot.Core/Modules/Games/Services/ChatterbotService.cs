@@ -54,7 +54,7 @@ namespace WizBot.Modules.Games.Services
             if (!string.IsNullOrWhiteSpace(_creds.CleverbotApiKey))
                 return new OfficialCleverbotSession(_creds.CleverbotApiKey, _httpFactory);
             else
-                return new CleverbotIOSession("GAh3wUfzDCpDpdpT", "RStKgqn7tcO9blbrv4KbXM8NDlb7H37C", _httpFactory);
+                return new CleverbotIOSession("jzcHYofmv6XhIaq3", "mnl6XYWNB7HzSaxIJ2tZhjvBdkRRQAuH", _httpFactory);
         }
 
         public string PrepareMessage(IUserMessage msg, out IChatterBotSession cleverbot)
