@@ -286,5 +286,15 @@ namespace WizBot.Extensions
             }
             return true;
         }
+
+        public static long? GetImageSize(this HttpResponseMessage msg)
+        {
+            if (msg.Content.Headers.ContentLength == null)
+            {
+                return null;
+            }
+
+            return msg.Content.Headers.ContentLength / 1.MB();
+        }
     }
 }
