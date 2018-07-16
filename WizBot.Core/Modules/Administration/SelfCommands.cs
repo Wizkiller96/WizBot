@@ -509,7 +509,7 @@ namespace WizBot.Modules.Administration
             public async Task ImagesReload()
             {
                 _service.ReloadImages();
-                await ReplyConfirmLocalized("images_loaded", 0).ConfigureAwait(false);
+                await ReplyConfirmLocalized("images_loading", 0).ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
