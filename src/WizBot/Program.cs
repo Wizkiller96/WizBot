@@ -23,6 +23,8 @@ namespace WizBot
 #if DEBUG
                 await new WizBot(0, Process.GetCurrentProcess().Id)
                     .RunAndBlockAsync();
+#else
+                await Task.Delay(-1);
 #endif
             }
         }
