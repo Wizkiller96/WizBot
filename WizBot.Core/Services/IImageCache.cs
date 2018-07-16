@@ -15,6 +15,8 @@ namespace WizBot.Core.Services
 
         IReadOnlyList<byte[]> SlotEmojis { get; }
         IReadOnlyList<byte[]> SlotNumbers { get; }
+        IReadOnlyList<byte[]> Currency { get; }
+        
         byte[] SlotBackground { get; }
 
         byte[] RategirlMatrix { get; }
