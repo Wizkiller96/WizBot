@@ -81,7 +81,6 @@ namespace WizBot.Modules.Searches
                 {
                     using (var handler = new HttpClientHandler())
                     {
-                        handler.ServerCertificateCustomValidationCallback = (x, y, z, e) => true;
                         using (var http = new HttpClient(handler))
                         {
                             http.AddFakeHeaders();

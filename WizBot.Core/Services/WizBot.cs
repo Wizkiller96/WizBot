@@ -20,7 +20,7 @@ using WizBot.Common.ShardCom;
 using StackExchange.Redis;
 using Newtonsoft.Json;
 using Microsoft.Extensions.DependencyInjection;
-using WizBot.Core.Services.Database;
+using System.Net.Http;
 
 namespace WizBot
 {
@@ -145,8 +145,13 @@ namespace WizBot
                     .AddSingleton(botConfigProvider)
                     .AddSingleton(this)
                     .AddSingleton(uow)
-                    .AddSingleton(Cache)
-                    .AddHttpClient();
+                    .AddSingleton(Cache);
+
+                s.AddHttpClient();
+                s.AddHttpClient("memelist").ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+                {
+                    AllowAutoRedirect = false
+                });
 
                 s.LoadFrom(Assembly.GetAssembly(typeof(CommandHandler)));
 
