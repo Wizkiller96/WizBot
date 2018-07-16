@@ -5,16 +5,20 @@ using Discord;
 using WizBot.Modules.Xp.Common;
 using System.Linq;
 using WizBot.Extensions;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace WizBot.Modules.Xp.Services
 {
     public class ClubService : INService
     {
         private readonly DbService _db;
+        private readonly HttpClient _http;
 
         public ClubService(DbService db)
         {
             _db = db;
+            _http = new HttpClient();
         }
 
         public bool CreateClub(IUser user, string clubName, out ClubInfo club)
@@ -102,8 +106,17 @@ namespace WizBot.Modules.Xp.Services
             }
         }
 
-        public bool SetClubIcon(ulong ownerUserId, string url)
+        public async Task<bool> SetClubIcon(ulong ownerUserId, Uri url)
         {
+            if (url != null)
+            {
+                using (var temp = await _http.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false))
+                {
+                    if (!temp.IsImage() || temp.GetImageSize() > 11)
+                        return false;
+                }
+            }
+
             using (var uow = _db.UnitOfWork)
             {
                 var club = uow.Clubs.GetByOwner(ownerUserId, set => set);
@@ -111,7 +124,7 @@ namespace WizBot.Modules.Xp.Services
                 if (club == null)
                     return false;
 
-                club.ImageUrl = url;
+                club.ImageUrl = url.ToString();
                 uow.Complete();
             }
 
