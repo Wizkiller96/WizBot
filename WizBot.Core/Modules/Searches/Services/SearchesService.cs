@@ -201,7 +201,7 @@ namespace WizBot.Modules.Searches.Services
                     WrapTextWidth = 190,
                 },
                 text,
-                _fonts.NotoSans.CreateFont(20),
+                _fonts.NotoSans.CreateFont(20, FontStyle.Bold),
                 Rgba32.Black,
                 new PointF(25, 225)));
 
