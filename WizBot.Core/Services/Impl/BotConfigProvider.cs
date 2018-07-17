@@ -90,7 +90,7 @@ namespace WizBot.Core.Services.Impl
                             return false;
                         break;
                     case BotConfigEditType.TriviaCurrencyReward:
-                        if (int.TryParse(newValue, out var triviaReward) && triviaReward > 0)
+                        if (int.TryParse(newValue, out var triviaReward) && triviaReward >= 0)
                             bc.TriviaCurrencyReward = triviaReward;
                         else
                             return false;
