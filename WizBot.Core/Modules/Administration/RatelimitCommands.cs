@@ -14,13 +14,6 @@ namespace WizBot.Modules.Administration
         [Group]
         public class SlowModeCommands : WizBotSubmodule<SlowmodeService>
         {
-            private readonly DbService _db;
-
-            public SlowModeCommands(DbService db)
-            {
-                _db = db;
-            }
-
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.ManageMessages)]

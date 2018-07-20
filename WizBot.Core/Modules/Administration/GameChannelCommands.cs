@@ -12,13 +12,6 @@ namespace WizBot.Modules.Administration
         [Group]
         public class GameChannelCommands : WizBotSubmodule<GameVoiceChannelService>
         {
-            private readonly DbService _db;
-
-            public GameChannelCommands(DbService db)
-            {
-                _db = db;
-            }
-
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.Administrator)]

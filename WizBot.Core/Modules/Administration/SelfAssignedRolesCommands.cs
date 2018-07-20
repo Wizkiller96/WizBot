@@ -15,13 +15,6 @@ namespace WizBot.Modules.Administration
         [Group]
         public class SelfAssignedRolesCommands : WizBotSubmodule<SelfAssignedRolesService>
         {
-            private readonly DbService _db;
-
-            public SelfAssignedRolesCommands(DbService db)
-            {
-                _db = db;
-            }
-
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.ManageMessages)]

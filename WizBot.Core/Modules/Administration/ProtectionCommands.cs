@@ -12,7 +12,6 @@ namespace WizBot.Modules.Administration
 {
     public partial class Administration
     {
-        // todo server error log
         [Group]
         public class ProtectionCommands : WizBotSubmodule<ProtectionService>
         {
