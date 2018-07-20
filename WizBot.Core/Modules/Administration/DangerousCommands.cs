@@ -1,11 +1,10 @@
 using Discord.Commands;
-using Microsoft.EntityFrameworkCore;
 using WizBot.Common.Attributes;
 using WizBot.Extensions;
-using WizBot.Core.Services;
 using System;
 using System.Threading.Tasks;
 using Discord;
+using WizBot.Core.Modules.Administration.Services;
 
 namespace WizBot.Modules.Administration
 {
@@ -13,15 +12,8 @@ namespace WizBot.Modules.Administration
     {
         [Group]
         [OwnerOnly]
-        public class DangerousCommands : WizBotSubmodule
+        public class DangerousCommands : WizBotSubmodule<DangerousCommandsService>
         {
-            private readonly DbService _db;
-
-            public DangerousCommands(DbService db)
-            {
-                _db = db;
-            }
-
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
             public async Task ExecSql([Remainder]string sql)
@@ -37,12 +29,7 @@ namespace WizBot.Modules.Administration
                         return;
                     }
 
-                    int res;
-                    using (var uow = _db.UnitOfWork)
-                    {
-                        res = uow._context.Database.ExecuteSqlCommand(sql);
-                    }
-
+                    var res = await _service.ExecuteSql(sql).ConfigureAwait(false);
                     await Context.Channel.SendConfirmAsync(res.ToString()).ConfigureAwait(false);
                 }
                 catch (Exception ex)
@@ -54,31 +41,22 @@ namespace WizBot.Modules.Administration
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
             public Task DeleteWaifus() =>
-                ExecSql(@"DELETE FROM WaifuUpdates;
-DELETE FROM WaifuItem;
-DELETE FROM WaifuInfo;");
+                ExecSql(DangerousCommandsService.WaifusDeleteSql);
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
             public Task DeleteCurrency() =>
-                ExecSql("UPDATE DiscordUser SET CurrencyAmount=0; DELETE FROM CurrencyTransactions;");
+                ExecSql(DangerousCommandsService.CurrencyDeleteSql);
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
             public Task DeletePlaylists() =>
-                ExecSql("DELETE FROM MusicPlaylists;");
+                ExecSql(DangerousCommandsService.MusicPlaylistDeleteSql);
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
             public Task DeleteExp() =>
-                ExecSql(@"DELETE FROM UserXpStats;
-UPDATE DiscordUser
-SET ClubId=NULL,
-    IsClubAdmin=0,
-    TotalXp=0;
-DELETE FROM ClubApplicants;
-DELETE FROM ClubBans;
-DELETE FROM Clubs;");
+                ExecSql(DangerousCommandsService.XpDeleteSql);
         }
     }
 }
