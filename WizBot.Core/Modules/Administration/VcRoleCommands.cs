@@ -16,13 +16,6 @@ namespace WizBot.Modules.Administration
         [Group]
         public class VcRoleCommands : WizBotSubmodule<VcRoleService>
         {
-            private readonly DbService _db;
-
-            public VcRoleCommands(DbService db)
-            {
-                _db = db;
-            }
-
             [WizBotCommand, Usage, Description, Aliases]
             [RequireUserPermission(GuildPermission.ManageRoles)]
             [RequireBotPermission(GuildPermission.ManageRoles)]

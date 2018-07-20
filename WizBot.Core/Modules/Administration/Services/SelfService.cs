@@ -19,6 +19,7 @@ using System.Threading;
 using System.Collections.Concurrent;
 using System;
 using Octokit;
+using System.Net.Http;
 
 namespace WizBot.Modules.Administration.Services
 {
@@ -43,11 +44,12 @@ namespace WizBot.Modules.Administration.Services
         private readonly IBotConfigProvider _bc;
         private readonly IDataCache _cache;
         private readonly IImageCache _imgs;
+        private readonly IHttpClientFactory _httpFactory;
         private readonly Timer _updateTimer;
 
         public SelfService(DiscordSocketClient client, WizBot bot, CommandHandler cmdHandler, DbService db,
             IBotConfigProvider bc, ILocalization localization, WizBotStrings strings, IBotCredentials creds,
-            IDataCache cache)
+            IDataCache cache, IHttpClientFactory factory)
         {
             _redis = cache.Redis;
             _bot = bot;
@@ -61,6 +63,7 @@ namespace WizBot.Modules.Administration.Services
             _bc = bc;
             _cache = cache;
             _imgs = cache.LocalImages;
+            _httpFactory = factory;
             if (_client.ShardId == 0)
             {
                 _updateTimer = new Timer(async _ =>
@@ -155,16 +158,15 @@ namespace WizBot.Modules.Administration.Services
             });
 
             Task.Run(async () =>
-            {
-                await bot.Ready.Task.ConfigureAwait(false);
+                        {
+                            await bot.Ready.Task.ConfigureAwait(false);
 
-                await Task.Delay(5000).ConfigureAwait(false);
+                            await Task.Delay(5000).ConfigureAwait(false);
 
-                if (client.ShardId == 0)
-                    await LoadAdminChannels().ConfigureAwait(false);
-            });
+                            if (client.ShardId == 0)
+                                await LoadAdminChannels().ConfigureAwait(false);
+                        });
 
-            
         }
 
         private async Task<string> GetNewCommit()
@@ -332,6 +334,12 @@ namespace WizBot.Modules.Administration.Services
                 _log.Info($"Created {adminChannels.Count} out of {_creds.AdminIds.Length} admin message channels.");
         }
 
+        public Task LeaveGuild(string guildStr)
+        {
+            var sub = _cache.Redis.GetSubscriber();
+            return sub.PublishAsync(_creds.RedisKey() + "_leave_guild", guildStr);
+        }
+
         // forwards dms
         public async Task LateExecute(DiscordSocketClient client, IGuild guild, IUserMessage msg)
         {
@@ -388,6 +396,18 @@ namespace WizBot.Modules.Administration.Services
             }
         }
 
+        public bool RestartBot()
+        {
+            var cmd = _creds.RestartCommand;
+            if (string.IsNullOrWhiteSpace(cmd?.Cmd))
+            {
+                return false;
+            }
+
+            Restart();
+            return true;
+        }
+
         public bool RemoveStartupCommand(int index, out StartupCommand cmd)
         {
             using (var uow = _db.UnitOfWork)
@@ -410,6 +430,32 @@ namespace WizBot.Modules.Administration.Services
                 }
             }
             return false;
+        }
+
+        public async Task<bool> SetAvatar(string img)
+        {
+            if (string.IsNullOrWhiteSpace(img))
+                return false;
+
+            if (!Uri.IsWellFormedUriString(img, UriKind.Absolute))
+                return false;
+
+            var uri = new Uri(img);
+
+            using (var http = _httpFactory.CreateClient())
+            using (var sr = await http.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false))
+            {
+                if (!sr.IsImage())
+                    return false;
+
+                // i can't just do ReadAsStreamAsync because dicord.net's image poops itself
+                var imgData = await sr.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                using (var imgStream = imgData.ToStream())
+                {
+                    await _client.CurrentUser.ModifyAsync(u => u.Avatar = new Image(imgStream)).ConfigureAwait(false);
+                }
+            }
+            return true;
         }
 
         public void ClearStartupCommands()
@@ -462,12 +508,17 @@ namespace WizBot.Modules.Administration.Services
             sub.Publish(_creds.RedisKey() + "_die", "", CommandFlags.FireAndForget);
         }
 
-        public void RestartShard(int shardId)
+        public bool RestartShard(int shardId)
         {
+            if (shardId < 0 || shardId >= _creds.TotalShards)
+                return false;
+
             var pub = _cache.Redis.GetSubscriber();
             pub.Publish(_creds.RedisKey() + "_shardcoord_stop",
                 JsonConvert.SerializeObject(shardId),
                 CommandFlags.FireAndForget);
+
+            return true;
         }
 
         public void ForwardToAll()

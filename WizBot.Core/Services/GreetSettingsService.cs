@@ -106,6 +106,22 @@ namespace WizBot.Core.Services
             return Task.CompletedTask;
         }
 
+        public string GetDmGreetMsg(ulong id)
+        {
+            using (var uow = _db.UnitOfWork)
+            {
+                return uow.GuildConfigs.ForId(id, set => set)?.DmGreetMessageText;
+            }
+        }
+
+        public string GetGreetMsg(ulong gid)
+        {
+            using (var uow = _db.UnitOfWork)
+            {
+                return uow.GuildConfigs.ForId(gid, set => set).ChannelGreetMessageText;
+            }
+        }
+
         private Task UserJoined(IGuildUser user)
         {
             var _ = Task.Run(async () =>
@@ -194,6 +210,14 @@ namespace WizBot.Core.Services
                 }
             });
             return Task.CompletedTask;
+        }
+
+        public string GetByteMessage(ulong gid)
+        {
+            using (var uow = _db.UnitOfWork)
+            {
+                return uow.GuildConfigs.ForId(gid, set => set).ChannelByeMessageText;
+            }
         }
 
         public GreetSettings GetOrAddSettingsForGuild(ulong guildId)

@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -9,7 +8,6 @@ using Discord.WebSocket;
 using WizBot.Common;
 using WizBot.Common.Attributes;
 using WizBot.Common.Replacements;
-using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Extensions;
 using WizBot.Modules.Administration.Services;
@@ -23,18 +21,11 @@ namespace WizBot.Modules.Administration
         {
             private readonly DiscordSocketClient _client;
             private readonly WizBot _bot;
-            private readonly IBotCredentials _creds;
-            private readonly IDataCache _cache;
-            private readonly IHttpClientFactory _http;
 
-            public SelfCommands(WizBot bot, DiscordSocketClient client,
-                IBotCredentials creds, IDataCache cache, IHttpClientFactory http)
+            public SelfCommands(DiscordSocketClient client, WizBot bot)
             {
                 _client = client;
                 _bot = bot;
-                _creds = creds;
-                _cache = cache;
-                _http = http;
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -80,13 +71,13 @@ namespace WizBot.Modules.Administration
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            [AdminOnly]
+            [OwnerOnly]
             public async Task AutoCommandAdd(int interval, [Remainder] string cmdText)
             {
                 if (cmdText.StartsWith(Prefix + "die", StringComparison.InvariantCulture))
                     return;
 
-                if (interval< 5)
+                if (interval < 5)
                     return;
 
                 var guser = ((IGuildUser)Context.User);
@@ -139,7 +130,7 @@ namespace WizBot.Modules.Administration
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            [AdminOnly]
+            [OwnerOnly]
             public async Task AutoCommands(int page = 1)
             {
                 if (page-- < 1)
@@ -282,21 +273,22 @@ namespace WizBot.Modules.Administration
             [OwnerOnly]
             public async Task RestartShard(int shardId)
             {
-                if (shardId < 0 || shardId >= _creds.TotalShards)
+                var success = _service.RestartShard(shardId);
+                if (success)
+                {
+                    await ReplyConfirmLocalized("shard_reconnecting", Format.Bold("#" + shardId)).ConfigureAwait(false);
+                }
+                else
                 {
                     await ReplyErrorLocalized("no_shard_id").ConfigureAwait(false);
-                    return;
                 }
-                _service.RestartShard(shardId);
-                await ReplyConfirmLocalized("shard_reconnecting", Format.Bold("#" + shardId)).ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
             public Task Leave([Remainder] string guildStr)
             {
-                var sub = _cache.Redis.GetSubscriber();
-                return sub.PublishAsync(_creds.RedisKey() + "_leave_guild", guildStr);
+                return _service.LeaveGuild(guildStr);
             }
 
 
@@ -320,15 +312,14 @@ namespace WizBot.Modules.Administration
             [OwnerOnly]
             public async Task Restart()
             {
-                var cmd = _creds.RestartCommand;
-                if (cmd == null || string.IsNullOrWhiteSpace(cmd.Cmd))
+                bool success = _service.RestartBot();
+                if (!success)
                 {
                     await ReplyErrorLocalized("restart_fail").ConfigureAwait(false);
                     return;
                 }
 
                 try { await ReplyConfirmLocalized("restarting").ConfigureAwait(false); } catch { }
-                _service.Restart();
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -387,29 +378,12 @@ namespace WizBot.Modules.Administration
             [OwnerOnly]
             public async Task SetAvatar([Remainder] string img = null)
             {
-                if (string.IsNullOrWhiteSpace(img))
-                    return;
+                var success = await _service.SetAvatar(img);
 
-                if (!Uri.IsWellFormedUriString(img, UriKind.Absolute))
-                    return;
-
-                var uri = new Uri(img);
-
-                using (var http = _http.CreateClient())
-                using (var sr = await http.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false))
+                if (success)
                 {
-                    if (!sr.IsImage())
-                        return;
-
-                    // i can't just do ReadAsStreamAsync because dicord.net's image poops itself
-                    var imgData = await sr.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
-                    using (var imgStream = imgData.ToStream())
-                    {
-                        await _client.CurrentUser.ModifyAsync(u => u.Avatar = new Image(imgStream)).ConfigureAwait(false);
-                    }
+                    await ReplyConfirmLocalized("set_avatar").ConfigureAwait(false);
                 }
-
-                await ReplyConfirmLocalized("set_avatar").ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
