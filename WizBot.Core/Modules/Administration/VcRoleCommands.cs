@@ -7,7 +7,6 @@ using Discord.WebSocket;
 using WizBot.Common.Attributes;
 using WizBot.Extensions;
 using WizBot.Modules.Administration.Services;
-using WizBot.Core.Services;
 
 namespace WizBot.Modules.Administration
 {
