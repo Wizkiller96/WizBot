@@ -2749,9 +2749,10 @@
       "Aliases": [
         ".pick"
       ],
-      "Description": "Picks the currency planted in this channel. 60 seconds cooldown.",
+      "Description": "Picks the currency planted in this channel. If the plant has a password, you need to specify it.",
       "Usage": [
-        ".pick"
+        ".pick",
+        ".pick passwd"
       ],
       "Submodule": "PlantPickCommands",
       "Module": "Games",
@@ -2762,10 +2763,10 @@
       "Aliases": [
         ".plant"
       ],
-      "Description": "Spend an amount of currency to plant it in this channel. Default is 1. (If bot is restarted or crashes, the currency will be lost)",
+      "Description": "Spend an amount of currency to plant it in this channel. Default is 1. You can specify the password after the amount. Password has to be alphanumeric and it will be trimmed down to 10 characters if it's longer.",
       "Usage": [
-        ".plant",
-        ".plant 5"
+        ".plant 5",
+        ".plant 10 meow"
       ],
       "Submodule": "PlantPickCommands",
       "Module": "Games",
@@ -6207,7 +6208,8 @@
       ],
       "Description": "Shows your xp stats. Specify the user to show that user's stats instead.",
       "Usage": [
-        ".xp"
+        ".xp",
+        ".xp @someguy"
       ],
       "Submodule": "Xp",
       "Module": "Xp",
@@ -6351,6 +6353,22 @@
       "Options": null,
       "Requirements": [
         "Administrator Server Permission"
+      ]
+    },
+    {
+      "Aliases": [
+        ".xptempreload",
+        ".xptr"
+      ],
+      "Description": "Reloads the xp template file. Xp template file allows you to customize the position and color of elements on the `.xp` card.",
+      "Usage": [
+        ".xptr"
+      ],
+      "Submodule": "Xp",
+      "Module": "Xp",
+      "Options": null,
+      "Requirements": [
+        "Bot Owner Only"
       ]
     },
     {

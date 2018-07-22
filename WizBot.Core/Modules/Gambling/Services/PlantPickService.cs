@@ -219,8 +219,6 @@ namespace WizBot.Modules.Gambling.Services
 
         public async Task<long> PickAsync(ulong gid, ITextChannel ch, ulong uid, string pass)
         {
-            // normalize the password
-            pass = pass?.Trim().TrimTo(10, hideDots: true).ToUpperInvariant();
 
             long amount;
             ulong[] ids;
