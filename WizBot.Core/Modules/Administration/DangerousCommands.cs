@@ -14,10 +14,10 @@ namespace WizBot.Modules.Administration
         [OwnerOnly]
         public class DangerousCommands : WizBotSubmodule<DangerousCommandsService>
         {
-            [WizBotCommand, Usage, Description, Aliases]
-            [OwnerOnly]
-            public async Task ExecSql([Remainder]string sql)
+
+            private async Task InternalExecSql(string sql, params object[] reps)
             {
+                sql = string.Format(sql, reps);
                 try
                 {
                     var embed = new EmbedBuilder()
@@ -37,11 +37,25 @@ namespace WizBot.Modules.Administration
                     await Context.Channel.SendErrorAsync(ex.ToString()).ConfigureAwait(false);
                 }
             }
+            [WizBotCommand, Usage, Description, Aliases]
+            [OwnerOnly]
+            public Task ExecSql([Remainder]string sql) =>
+                InternalExecSql(sql);
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
             public Task DeleteWaifus() =>
                 ExecSql(DangerousCommandsService.WaifusDeleteSql);
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [OwnerOnly]
+            public Task DeleteWaifu(IUser user) =>
+                DeleteWaifu(user.Id);
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [OwnerOnly]
+            public Task DeleteWaifu(ulong userId) =>
+                InternalExecSql(DangerousCommandsService.WaifuDeleteSql, userId);
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]

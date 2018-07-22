@@ -509,7 +509,7 @@
   },
   "setavatar": {
     "Cmd": "setavatar setav",
-    "Desc": "Sets a new avatar image for the NadekoBot. Parameter is a direct link to an image.",
+    "Desc": "Sets a new avatar image for the WizBot. Parameter is a direct link to an image.",
     "Usage": [
       "{0}setav http://i.imgur.com/xTG3a1I.jpg"
     ]
@@ -3175,9 +3175,16 @@
   },
   "deletewaifus": {
     "cmd": "deletewaifus",
-    "desc": "Deletes everything from WaifuUpdates and WaifuInfo tables.",
+    "desc": "Deletes everything from WaifuUpdates, WaifuItem and WaifuInfo tables.",
     "usage": [
       "{0}deletewaifus"
+    ]
+  },
+  "deletewaifu": {
+    "cmd": "deletewaifu",
+    "desc": "Deletes everything from WaifuUpdates, WaifuItem and WaifuInfo tables for the specified user. Also makes specified user's waifus free.",
+    "usage": [
+      "{0}deletewaifu"
     ]
   },
   "deletecurrency": {
