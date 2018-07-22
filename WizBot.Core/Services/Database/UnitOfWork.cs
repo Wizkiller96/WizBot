@@ -54,6 +54,9 @@ namespace WizBot.Core.Services.Database
         private IPollsRepository _polls;
         public IPollsRepository Polls => _polls ?? (_polls = new PollsRepository(_context));
 
+        private IPlantedCurrencyRepository _planted;
+        public IPlantedCurrencyRepository PlantedCurrency => _planted ?? (_planted = new PlantedCurrencyRepository(_context));
+
         public UnitOfWork(WizBotContext context)
         {
             _context = context;
