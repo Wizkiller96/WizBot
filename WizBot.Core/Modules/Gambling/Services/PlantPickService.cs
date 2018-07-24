@@ -181,7 +181,7 @@ namespace WizBot.Modules.Gambling.Services
                                 : GetText(channel.GuildId, "curgen_pl", dropAmount, _bc.BotConfig.CurrencySign)
                                     + " " + GetText(channel.GuildId, "pick_pl", prefix);
 
-                            var pw = _bc.BotConfig.CurrencyGenerationPassword ? GenerateCurrencyPassword() : null;
+                            var pw = _bc.BotConfig.CurrencyGenerationPassword ? GenerateCurrencyPassword().ToUpperInvariant() : null;
 
                             IUserMessage sent;
                             using (var stream = GetRandomCurrencyImage(pw))
@@ -194,7 +194,7 @@ namespace WizBot.Modules.Gambling.Services
                                 _client.CurrentUser.Id,
                                 sent.Id,
                                 dropAmount,
-                                pw.ToUpperInvariant()).ConfigureAwait(false);
+                                pw).ConfigureAwait(false);
                         }
                     }
                 }
@@ -219,7 +219,6 @@ namespace WizBot.Modules.Gambling.Services
 
         public async Task<long> PickAsync(ulong gid, ITextChannel ch, ulong uid, string pass)
         {
-
             long amount;
             ulong[] ids;
             using (var uow = _db.UnitOfWork)
@@ -227,8 +226,11 @@ namespace WizBot.Modules.Gambling.Services
                 // this method will sum all plants with that password, 
                 // remove them, and get messageids of the removed plants
                 (amount, ids) = uow.PlantedCurrency.RemoveSumAndGetMessageIdsFor(ch.Id, pass);
-                // give the picked currency to the user
-                await _cs.AddAsync(uid, "Picked currency", amount, gamble: false);
+                if (amount > 0)
+                {
+                    // give the picked currency to the user
+                    await _cs.AddAsync(uid, "Picked currency", amount, gamble: false);
+                }
                 uow.Complete();
             }
 
