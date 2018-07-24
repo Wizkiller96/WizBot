@@ -150,6 +150,7 @@ namespace WizBot.Core.Services.Impl
             public ulong ClientId { get; set; } = 123123123;
             public string Token { get; set; } = "";
             public ulong[] OwnerIds { get; set; } = new ulong[1];
+            public ulong[] AdminIds { get; set; } = new ulong[1];
             public string LoLApiKey { get; set; } = "";
             public string GoogleApiKey { get; set; } = "";
             public string MashapeKey { get; set; } = "";

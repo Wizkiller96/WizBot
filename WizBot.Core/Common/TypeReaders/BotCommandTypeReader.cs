@@ -91,6 +91,7 @@ namespace WizBot.Common.TypeReaders
 
         public CommandOrCrInfo(string input, Type type)
         {
+            this.Name = input;
             this.CmdType = type;
         }
     }
