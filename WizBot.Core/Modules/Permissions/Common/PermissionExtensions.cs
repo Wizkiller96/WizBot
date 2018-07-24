@@ -54,7 +54,7 @@ namespace WizBot.Modules.Permissions.Common
                     if (perm.PrimaryTargetId == message.Channel.Id)
                         return perm.State;
                     break;
-                case PrimaryPermissionType.Role:
+                case PrimaryPermissionType.Role:        
                     if (guildUser == null)
                         break;
                     if (guildUser.RoleIds.Contains(perm.PrimaryTargetId))

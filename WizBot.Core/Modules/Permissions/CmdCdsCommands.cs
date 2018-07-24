@@ -21,7 +21,7 @@ namespace WizBot.Modules.Permissions
             private readonly DbService _db;
             private readonly CmdCdService _service;
 
-            private ConcurrentDictionary<ulong, ConcurrentHashSet<CommandCooldown>> CommandCooldowns
+            private ConcurrentDictionary<ulong, ConcurrentHashSet<CommandCooldown>> CommandCooldowns 
                 => _service.CommandCooldowns;
             private ConcurrentDictionary<ulong, ConcurrentHashSet<ActiveCooldown>> ActiveCooldowns
                 => _service.ActiveCooldowns;
@@ -31,7 +31,7 @@ namespace WizBot.Modules.Permissions
                 _service = service;
                 _db = db;
             }
-
+            
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task CmdCooldown(CommandInfo command, int secs)
@@ -66,13 +66,13 @@ namespace WizBot.Modules.Permissions
                 {
                     var activeCds = ActiveCooldowns.GetOrAdd(channel.Guild.Id, new ConcurrentHashSet<ActiveCooldown>());
                     activeCds.RemoveWhere(ac => ac.Command == command.Aliases.First().ToLowerInvariant());
-                    await ReplyConfirmLocalized("cmdcd_cleared",
+                    await ReplyConfirmLocalized("cmdcd_cleared", 
                         Format.Bold(command.Aliases.First())).ConfigureAwait(false);
                 }
                 else
                 {
-                    await ReplyConfirmLocalized("cmdcd_add",
-                        Format.Bold(command.Aliases.First()),
+                    await ReplyConfirmLocalized("cmdcd_add", 
+                        Format.Bold(command.Aliases.First()), 
                         Format.Bold(secs.ToString())).ConfigureAwait(false);
                 }
             }

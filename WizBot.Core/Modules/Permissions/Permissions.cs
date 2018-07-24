@@ -53,7 +53,7 @@ namespace WizBot.Modules.Permissions
         {
             if (role != null && role == role.Guild.EveryoneRole)
                 return;
-
+            
             if (role == null)
             {
                 var cache = _service.GetCacheFor(Context.Guild.Id);

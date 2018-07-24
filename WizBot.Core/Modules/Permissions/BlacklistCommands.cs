@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
@@ -75,7 +75,7 @@ namespace WizBot.Modules.Permissions
                         else if (type == BlacklistType.User)
                         {
                             BlacklistedUsers.Add(id);
-                        }
+                        }                        
                     }
                     else
                     {

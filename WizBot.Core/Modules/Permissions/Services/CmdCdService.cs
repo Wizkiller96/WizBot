@@ -18,11 +18,11 @@ namespace WizBot.Modules.Permissions.Services
         public CmdCdService(WizBot bot)
         {
             CommandCooldowns = new ConcurrentDictionary<ulong, ConcurrentHashSet<CommandCooldown>>(
-                bot.AllGuildConfigs.ToDictionary(k => k.GuildId,
+                bot.AllGuildConfigs.ToDictionary(k => k.GuildId, 
                                  v => new ConcurrentHashSet<CommandCooldown>(v.CommandCooldowns)));
         }
 
-        public Task<bool> TryBlockLate(DiscordSocketClient client, IUserMessage msg, IGuild guild,
+        public Task<bool> TryBlockLate(DiscordSocketClient client, IUserMessage msg, IGuild guild, 
             IMessageChannel channel, IUser user, string moduleName, string commandName)
         {
             if (guild == null)

@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Extensions;
@@ -46,7 +46,7 @@ namespace WizBot.Modules.Permissions
                     enabled = config.FilterInvites = !config.FilterInvites;
                     await uow.CompleteAsync().ConfigureAwait(false);
                 }
-
+                
                 if (enabled)
                 {
                     _service.InviteFilteringServers.Add(channel.Guild.Id);

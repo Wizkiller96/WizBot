@@ -12,7 +12,7 @@ namespace WizBot.Modules.Permissions.Common
         {
         }
 
-        public static implicit operator List<T>(PermissionsCollection<T> x) =>
+        public static implicit operator List<T>(PermissionsCollection<T> x) => 
             x.Source;
 
         public override void Clear()
