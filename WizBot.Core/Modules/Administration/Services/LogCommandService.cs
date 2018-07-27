@@ -154,7 +154,7 @@ namespace WizBot.Modules.Administration.Services
                 logSetting.UserMutedId =
                 logSetting.LogVoicePresenceTTSId = (value ? channelId : (ulong?)null);
 
-                await uow.CompleteAsync().ConfigureAwait(false);
+                await uow.CompleteAsync();
             }
         }
 

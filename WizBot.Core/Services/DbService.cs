@@ -24,32 +24,45 @@ namespace WizBot.Core.Services
             optionsBuilder = new DbContextOptionsBuilder<WizBotContext>();
             optionsBuilder.UseSqlite(builder.ToString(), x => x.SuppressForeignKeyEnforcement());
             migrateOptions = optionsBuilder.Options;
+
+            Setup();
+        }
+
+        private void Setup()
+        {
+            using (var context = new WizBotContext(options))
+            {
+                if (context.Database.GetPendingMigrations().Any())
+                {
+                    var mContext = new WizBotContext(migrateOptions);
+                    mContext.Database.Migrate();
+                    mContext.SaveChanges();
+                    mContext.Dispose();
+                }
+                context.Database.SetCommandTimeout(60);
+                context.EnsureSeedData();
+
+                //set important sqlite stuffs
+                using (var conn = context.Database.GetDbConnection())
+                {
+                    conn.Open();
+
+                    context.Database.ExecuteSqlCommand("PRAGMA journal_mode=WAL");
+                    using (var com = conn.CreateCommand())
+                    {
+                        com.CommandText = "PRAGMA journal_mode=WAL; PRAGMA synchronous=OFF";
+                        com.ExecuteNonQuery();
+                    }
+                    conn.Close();
+                }
+                context.SaveChanges();
+            }
         }
 
         public WizBotContext GetDbContext()
         {
             var context = new WizBotContext(options);
-            if (context.Database.GetPendingMigrations().Any())
-            {
-                var mContext = new WizBotContext(migrateOptions);
-                mContext.Database.Migrate();
-                mContext.SaveChanges();
-                mContext.Dispose();
-            }
             context.Database.SetCommandTimeout(60);
-            context.EnsureSeedData();
-
-            //set important sqlite stuffs
-            var conn = context.Database.GetDbConnection();
-            conn.Open();
-
-            context.Database.ExecuteSqlCommand("PRAGMA journal_mode=WAL");
-            using (var com = conn.CreateCommand())
-            {
-                com.CommandText = "PRAGMA journal_mode=WAL; PRAGMA synchronous=OFF";
-                com.ExecuteNonQuery();
-            }
-
             return context;
         }
 

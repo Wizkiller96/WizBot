@@ -93,7 +93,7 @@ namespace WizBot.Modules.Permissions
                             BlacklistedUsers.TryRemove(id);
                         }
                     }
-                    await uow.CompleteAsync().ConfigureAwait(false);
+                    await uow.CompleteAsync();
                 }
 
                 if(action == AddRemove.Add)

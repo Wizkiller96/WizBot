@@ -319,7 +319,7 @@ namespace WizBot.Modules.Pokemon
                     pokeUserCmd.type = targetType.Name;
                     uow.PokeGame.Update(pokeUserCmd);
                 }
-                await uow.CompleteAsync().ConfigureAwait(false);
+                await uow.CompleteAsync();
             }
 
             //Now for the response
