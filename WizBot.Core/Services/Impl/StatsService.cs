@@ -23,7 +23,7 @@ namespace WizBot.Core.Services.Impl
         private readonly IBotCredentials _creds;
         private readonly DateTime _started;
 
-        public const string BotVersion = "2.26.2";
+        public const string BotVersion = "2.26.3";
         public string Author => "Kwoth#2560\nWizkiller96#0151";
         public string Library => "Discord.Net";
 
