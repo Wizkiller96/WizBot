@@ -98,8 +98,8 @@ namespace WizBot.Modules.NSFW
                 JToken nekoimg;
                 using (var http = _httpFactory.CreateClient())
                 {
-                    nekotitle = JArray.Parse(await http.GetStringAsync($"https://nekos.life/api/v2/cat").ConfigureAwait(false))[0];
-                    nekoimg = JArray.Parse(await http.GetStringAsync($"https://nekos.life/api/v2/img/{category}").ConfigureAwait(false))[0];
+                    nekotitle = JObject.Parse(await http.GetStringAsync($"https://nekos.life/api/v2/cat").ConfigureAwait(false));
+                    nekoimg = JObject.Parse(await http.GetStringAsync($"https://nekos.life/api/v2/img/{category}").ConfigureAwait(false));
                 }
                 await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                     .WithAuthor(eab => eab.WithUrl("http://nekos.life/")
@@ -363,8 +363,8 @@ namespace WizBot.Modules.NSFW
                 JToken nekoimg;
                 using (var http = _httpFactory.CreateClient())
                 {
-                    nekotitle = JArray.Parse(await http.GetStringAsync($"https://nekos.life/api/v2/cat").ConfigureAwait(false))[0];
-                    nekoimg = JArray.Parse(await http.GetStringAsync($"https://nekos.life/api/v2/img/{category}").ConfigureAwait(false))[0];
+                    nekotitle = JObject.Parse(await http.GetStringAsync($"https://nekos.life/api/v2/cat").ConfigureAwait(false));
+                    nekoimg = JObject.Parse(await http.GetStringAsync($"https://nekos.life/api/v2/img/{category}").ConfigureAwait(false));
                 }
                 await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                     .WithAuthor(eab => eab.WithUrl("http://nekos.life/")
