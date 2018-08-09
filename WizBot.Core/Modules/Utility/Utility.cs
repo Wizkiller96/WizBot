@@ -230,6 +230,11 @@ namespace WizBot.Modules.Utility
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Stats()
         {
+            var sw = Stopwatch.StartNew();
+            var msg = await Context.Channel.SendMessageAsync("Getting Ping...").ConfigureAwait(false);
+            sw.Stop();
+            msg.DeleteAfter(0);
+
             var ownerIds = string.Join("\n", _creds.OwnerIds);
             if (string.IsNullOrWhiteSpace(ownerIds))
                 ownerIds = "-";
@@ -243,14 +248,16 @@ namespace WizBot.Modules.Utility
                     .WithAuthor(eab => eab.WithName($"WizBot v{StatsService.BotVersion}")
                                           .WithUrl("http://wizbot.readthedocs.io/en/latest/")
                                           .WithIconUrl("http://i.imgur.com/fObUYFS.jpg"))
-                    .AddField(efb => efb.WithName(GetText("author")).WithValue(_stats.Author).WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("botid")).WithValue(_client.CurrentUser.Id.ToString()).WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("shard")).WithValue($"#{_client.ShardId} / {_creds.TotalShards}").WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("commands_ran")).WithValue(_stats.CommandsRan.ToString()).WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("messages")).WithValue($"{_stats.MessageCounter} ({_stats.MessagesPerSecond:F2}/sec)").WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("memory")).WithValue($"{_stats.Heap} MB").WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("owner_ids")).WithValue(ownerIds).WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("admin_ids")).WithValue(adminIds).WithIsInline(true))
+                    .AddField(efb => efb.WithName(GetText("author")).WithValue($"🛠️ {_stats.Author}").WithIsInline(true))
+                    .AddField(efb => efb.WithName(GetText("botid")).WithValue($"🤖 {_client.CurrentUser.Id.ToString()}").WithIsInline(true))
+                    .AddField(efb => efb.WithName(GetText("shard")).WithValue($"🔷 #{_client.ShardId} / {_creds.TotalShards}").WithIsInline(true))
+                    .AddField(efb => efb.WithName(GetText("documentation")).WithValue(GetText("documentation_text")).WithIsInline(true))
+                    .AddField(efb => efb.WithName(GetText("commands_ran")).WithValue($"🔣 {_stats.CommandsRan.ToString()}").WithIsInline(true))
+                    .AddField(efb => efb.WithName(GetText("messages")).WithValue($"💬 {_stats.MessageCounter} ({_stats.MessagesPerSecond:F2}/sec)").WithIsInline(true))
+                    .AddField(efb => efb.WithName(GetText("memory")).WithValue($"💻 {_stats.Heap} MB").WithIsInline(true))
+                    .AddField(efb => efb.WithName(GetText("Latency")).WithValue($"📡 {(int)sw.Elapsed.TotalMilliseconds} ms").WithIsInline(true))
+                    .AddField(efb => efb.WithName(GetText("owner_ids")).WithValue($"🌟 {ownerIds}").WithIsInline(true))
+                    .AddField(efb => efb.WithName(GetText("admin_ids")).WithValue($"⭐ {adminIds}").WithIsInline(true))
                     .AddField(efb => efb.WithName(GetText("uptime")).WithValue(_stats.GetUptimeString("\n")).WithIsInline(true))
                     .AddField(efb => efb.WithName(GetText("presence")).WithValue(
                         GetText("presence_txt",
