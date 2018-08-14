@@ -43,9 +43,7 @@ namespace WizBot.Modules.Searches.Services
                 // only the updates from after the bot has started
                 _lastPosts.AddOrUpdate(kvp.Key, DateTime.UtcNow, (k, old) => DateTime.UtcNow);
             }
-#if !GLOBAL_WIZBOT
             var _ = Task.Run(TrackFeeds);
-#endif
         }
 
         public async Task<EmbedBuilder> TrackFeeds()
