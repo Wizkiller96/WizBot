@@ -13,6 +13,8 @@ Some features have their own specific placeholders which are noted in that featu
 - `%bot.fullname%` - Bot username#discriminator   
 - `%bot.time%` - Bot time (usually the time of the server it's hosted on)   
 - `%bot.discrim%` - Bot's discriminator   
+- `%bot.id%` - Bot's user ID
+- `%bot.avatar%` - Bot's avatar url
 
 **Server placeholders**     
 - `%server.id%` - Server ID   
@@ -38,7 +40,7 @@ Some features have their own specific placeholders which are noted in that featu
 - `%user.created_time%` - Account creation time (local time)   
 - `%user.created_date%` - Account creation date   
 - `%user.joined_time%` - Account join time (local time)   
-- `%user.joined_date%` - Account join date  
+- `%user.joined_date%` - Account join date   
 
 **Bot stats placeholders**  
 - `%servers%` - Server count bot has joined   
