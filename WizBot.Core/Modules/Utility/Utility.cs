@@ -217,17 +217,6 @@ namespace WizBot.Modules.Utility
         }
 
         [WizBotCommand, Usage, Description, Aliases]
-        [RequireContext(ContextType.Guild)]
-        [RequireBotPermission(ChannelPermission.CreateInstantInvite)]
-        [RequireUserPermission(ChannelPermission.CreateInstantInvite)]
-        public async Task CreateInvite()
-        {
-            var invite = await ((ITextChannel)Context.Channel).CreateInviteAsync(0, null, isUnique: true).ConfigureAwait(false);
-
-            await Context.Channel.SendConfirmAsync($"{Context.User.Mention} https://discord.gg/{invite.Code}").ConfigureAwait(false);
-        }
-
-        [WizBotCommand, Usage, Description, Aliases]
         public async Task Stats()
         {
             var sw = Stopwatch.StartNew();
@@ -274,7 +263,7 @@ namespace WizBot.Modules.Utility
             if (string.IsNullOrWhiteSpace(result))
                 await ReplyErrorLocalized("showemojis_none").ConfigureAwait(false);
             else
-                await Context.Channel.SendMessageAsync(result).ConfigureAwait(false);
+                await Context.Channel.SendMessageAsync(result.TrimTo(2000)).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]

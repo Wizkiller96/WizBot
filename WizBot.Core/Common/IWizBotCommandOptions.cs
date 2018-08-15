@@ -1,4 +1,4 @@
-namespace WizBot.Core.Common
+﻿namespace WizBot.Core.Common
 {
     public interface IWizBotCommandOptions
     {

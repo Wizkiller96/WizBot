@@ -17,7 +17,7 @@ namespace WizBot.Common.TypeReaders
         public override Task<TypeReaderResult> ReadAsync(ICommandContext context, string input, IServiceProvider services)
         {
             var gdt = Parse(services, context.Guild.Id, input);
-            if (gdt == null)
+            if(gdt == null)
                 return Task.FromResult(TypeReaderResult.FromError(CommandError.ParseFailed, "Input string is in an incorrect format."));
 
             return Task.FromResult(TypeReaderResult.FromSuccess(gdt));

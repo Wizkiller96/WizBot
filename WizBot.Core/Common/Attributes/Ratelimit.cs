@@ -1,4 +1,4 @@
-using Discord.Commands;
+﻿using Discord.Commands;
 using WizBot.Core.Services;
 using WizBot.Extensions;
 using System;
@@ -29,7 +29,7 @@ namespace WizBot.Core.Common.Attributes
             var cache = services.GetService<IDataCache>();
             var rem = cache.TryAddRatelimit(context.User.Id, command.Name, Seconds);
 
-            if (rem == null)
+            if(rem == null)
                 return Task.FromResult(PreconditionResult.FromSuccess());
 
             var msgContent = $"You can use this command again in {rem.Value.TotalSeconds:F2} seconds.";

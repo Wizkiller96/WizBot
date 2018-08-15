@@ -1,5 +1,6 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,11 @@ namespace WizBot.Extensions
     {
         public static T MapJson<T>(this string str)
             => JsonConvert.DeserializeObject<T>(str);
+
+        private static readonly HashSet<char> lettersAndDigits = new HashSet<char>(Enumerable.Range(48, 10)
+            .Concat(Enumerable.Range(65, 26))
+            .Concat(Enumerable.Range(97, 26))
+            .Select(x => (char)x));
 
         public static string StripHTML(this string input)
         {
@@ -57,7 +63,9 @@ namespace WizBot.Extensions
                 tokens[i] = token.Substring(0, 1).ToUpperInvariant() + token.Substring(1);
             }
 
-            return string.Join(" ", tokens);
+            return string.Join(" ", tokens)
+                .Replace(" Of ", " of ")
+                .Replace(" The ", " the ");
         }
 
         /// <summary>
@@ -152,6 +160,6 @@ namespace WizBot.Extensions
             string.Join(glue, txt.Split(' ').Select(x => x.FirstOrDefault()));
 
         public static bool IsAlphaNumeric(this string txt) =>
-            txt.All(c => char.IsLetterOrDigit(c));
+            txt.All(c => lettersAndDigits.Contains(c));
     }
 }

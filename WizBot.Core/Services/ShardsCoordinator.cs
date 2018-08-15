@@ -1,4 +1,4 @@
-using WizBot.Core.Services.Impl;
+﻿using WizBot.Core.Services.Impl;
 using NLog;
 using System;
 using System.Diagnostics;
@@ -102,27 +102,32 @@ namespace WizBot.Core.Services
             db.KeyDelete(_key + "_shardstats");
 
             _shardProcesses = new Process[_creds.TotalShards];
-            for (int i = 0; i < _creds.TotalShards; i++)
+            var shardIds = Enumerable.Range(1, _creds.TotalShards - 1)
+                .Shuffle()
+                .Prepend(0)
+                .ToArray();
+            for (var i = 0; i < shardIds.Length; i++)
             {
+                var id = shardIds[i];
                 //add it to the list of shards which should be started
 #if DEBUG
-                if (i > 0)
-                    _shardStartQueue.Enqueue(i);
+                if (id > 0)
+                    _shardStartQueue.Enqueue(id);
                 else
-                    _shardProcesses[i] = Process.GetCurrentProcess();
+                    _shardProcesses[id] = Process.GetCurrentProcess();
 #else
                 _shardStartQueue.Enqueue(i);
 #endif
                 //set the shard's initial state in redis cache
                 var msg = _defaultShardState.Clone();
-                msg.ShardId = i;
+                msg.ShardId = id;
                 //this is to avoid the shard coordinator thinking that
                 //the shard is unresponsive while starting up
                 var delay = 45;
 #if GLOBAL_WIZBOT
                 delay = 180;
 #endif
-                msg.Time = DateTime.UtcNow + TimeSpan.FromSeconds(delay * (i + 1));
+                msg.Time = DateTime.UtcNow + TimeSpan.FromSeconds(delay * (id + 1));
                 db.ListRightPush(_key + "_shardstats",
                     JsonConvert.SerializeObject(msg),
                     flags: CommandFlags.FireAndForget);
@@ -240,7 +245,11 @@ namespace WizBot.Core.Services
                         //and this is an auto-restart
                         if (tsc.Task.IsCompleted)
                         {
-                            _log.Warn("Auto-restarting shard {0}", id);
+                            _log.Warn("Auto-restarting shard {0}, {1} more in queue.", id, _shardStartQueue.Count);
+                        }
+                        else
+                        {
+                            _log.Warn("Starting shard {0}, {1} more in queue.", id, _shardStartQueue.Count - 1);
                         }
                         var rem = _shardProcesses[id];
                         if (rem != null)
@@ -254,7 +263,7 @@ namespace WizBot.Core.Services
                         }
                         _shardProcesses[id] = StartShard(id);
                         _shardStartQueue.TryDequeue(out var __);
-                        await Task.Delay(6000).ConfigureAwait(false);
+                        await Task.Delay(10000).ConfigureAwait(false);
                     }
                     tsc.TrySetResult(true);
                     await Task.Delay(6000).ConfigureAwait(false);
@@ -278,7 +287,8 @@ namespace WizBot.Core.Services
                         var all = db.ListRange(_creds.RedisKey() + "_shardstats")
                            .Select(x => JsonConvert.DeserializeObject<ShardComMessage>(x));
                         var statuses = all
-                           .Where(x => x.Time < DateTime.UtcNow - TimeSpan.FromSeconds(30));
+                           .Where(x => x.Time < DateTime.UtcNow - TimeSpan.FromSeconds(30))
+                           .ToArray();
 
                         if (!statuses.Any())
                         {
@@ -296,8 +306,9 @@ namespace WizBot.Core.Services
                         }
                         else
                         {
-                            foreach (var s in statuses)
+                            for (var i = 0; i < statuses.Length; i++)
                             {
+                                var s = statuses[i];
                                 OnStop(s.ShardId);
                                 _shardStartQueue.Enqueue(s.ShardId);
 

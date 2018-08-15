@@ -1,4 +1,4 @@
-using WizBot.Core.Services.Database.Models;
+﻿using WizBot.Core.Services.Database.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,10 +16,15 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
             return _context.Database.ExecuteSqlCommand($"DELETE FROM CustomReactions WHERE GuildId={id};");
         }
 
-        public CustomReaction[] ForId(ulong id)
+        public IEnumerable<CustomReaction> ForId(ulong id)
         {
             return _set.Where(x => x.GuildId == id)
                 .ToArray();
+        }
+
+        public CustomReaction GetByGuildIdAndInput(ulong? guildId, string input)
+        {
+            return _set.FirstOrDefault(x => x.GuildId == guildId && x.Trigger.ToUpperInvariant() == input);
         }
 
         /// <summary>
@@ -27,9 +32,15 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
-        public CustomReaction[] GetGlobalAndFor(IEnumerable<ulong> ids)
+        public IEnumerable<CustomReaction> GetFor(IEnumerable<ulong> ids)
         {
-            return _set.Where(x => x.GuildId == null || x.GuildId == 0 || ids.Contains(x.GuildId.Value))
+            return _set.Where(x => ids.Contains(x.GuildId.Value))
+                .ToArray();
+        }
+
+        public IEnumerable<CustomReaction> GetGlobal()
+        {
+            return _set.Where(x => x.GuildId == null)
                 .ToArray();
         }
     }

@@ -1,4 +1,4 @@
-using WizBot.Extensions;
+﻿using WizBot.Extensions;
 using System.Collections.Generic;
 
 namespace WizBot.Core.Services.Database.Models
@@ -25,7 +25,7 @@ namespace WizBot.Core.Services.Database.Models
             var waifuUsername = Waifu.Username.TrimTo(20);
             var claimerUsername = Claimer?.Username.TrimTo(20);
 
-            if (Claimer != null)
+            if (ClaimerId != null)
             {
                 claimer = $"{ claimerUsername }#{Claimer.Discriminator}";
             }
@@ -37,10 +37,52 @@ namespace WizBot.Core.Services.Database.Models
             {
                 status = $"... and {waifuUsername} likes {claimerUsername} too <3";
             }
-            else {
+            else
+            {
                 status = $"... but {waifuUsername}'s heart belongs to {Affinity.Username.TrimTo(20)}#{Affinity.Discriminator}";
             }
             return $"**{waifuUsername}#{Waifu.Discriminator}** - claimed by **{claimer}**\n\t{status}";
+        }
+    }
+
+    public class WaifuLbResult
+    {
+        public string Username { get; set; }
+        public string Discrim { get; set; }
+
+        public string Claimer { get; set; }
+        public string ClaimerDiscrim { get; set; }
+
+        public string Affinity { get; set; }
+        public string AffinityDiscrim { get; set; }
+
+        public int Price { get; set; }
+
+        public override string ToString()
+        {
+            var claimer = "no one";
+            var status = "";
+
+            var waifuUsername = Username.TrimTo(20);
+            var claimerUsername = Claimer?.TrimTo(20);
+
+            if (Claimer != null)
+            {
+                claimer = $"{ claimerUsername }#{ClaimerDiscrim}";
+            }
+            if (Affinity == null)
+            {
+                status = $"... but {waifuUsername}'s heart is empty";
+            }
+            else if (Affinity + AffinityDiscrim == Claimer + ClaimerDiscrim)
+            {
+                status = $"... and {waifuUsername} likes {claimerUsername} too <3";
+            }
+            else
+            {
+                status = $"... but {waifuUsername}'s heart belongs to {Affinity.TrimTo(20)}#{AffinityDiscrim}";
+            }
+            return $"**{waifuUsername}#{Discrim}** - claimed by **{claimer}**\n\t{status}";
         }
     }
 }

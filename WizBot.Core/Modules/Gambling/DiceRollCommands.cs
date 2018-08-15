@@ -41,15 +41,14 @@ namespace WizBot.Modules.Gambling
                 var num1 = gen / 10;
                 var num2 = gen % 10;
 
-
                 using (var img1 = GetDice(num1))
                 using (var img2 = GetDice(num2))
-                using (var img = new[] { img1, img2 }.Merge())
-                using (var ms = img.ToStream())
+                using (var img = new[] { img1, img2 }.Merge(out var format))
+                using (var ms = img.ToStream(format))
                 {
                     await Context.Channel.SendFileAsync(ms,
-                        "dice.png",
-                        Context.User.Mention + " " + GetText("dice_rolled", Format.Code(gen.ToString()))).ConfigureAwait(false);
+                        $"dice.{format.FileExtensions.First()}",
+                        Format.Bold(Context.User.ToString()) + " " + GetText("dice_rolled", Format.Code(gen.ToString()))).ConfigureAwait(false);
                 }
             }
 
@@ -126,16 +125,16 @@ namespace WizBot.Modules.Gambling
                     values.Insert(toInsert, randomNumber);
                 }
 
-                using (var bitmap = dice.Merge())
-                using (var ms = bitmap.ToStream())
+                using (var bitmap = dice.Merge(out var format))
+                using (var ms = bitmap.ToStream(format))
                 {
                     foreach (var d in dice)
                     {
                         d.Dispose();
                     }
 
-                    await Context.Channel.SendFileAsync(ms, "dice.png",
-                        Context.User.Mention + " " +
+                    await Context.Channel.SendFileAsync(ms, $"dice.{format.FileExtensions.First()}",
+                        Format.Bold(Context.User.ToString()) + " " +
                         GetText("dice_rolled_num", Format.Bold(values.Count.ToString())) +
                         " " + GetText("total_average",
                             Format.Bold(values.Sum().ToString()),

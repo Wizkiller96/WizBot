@@ -1,4 +1,4 @@
-namespace WizBot.Common
+﻿namespace WizBot.Common
 {
     public class CommandData
     {

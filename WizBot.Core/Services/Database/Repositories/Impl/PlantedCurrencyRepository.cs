@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Extensions;
 using System.Linq;
@@ -9,6 +9,11 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
     {
         public PlantedCurrencyRepository(DbContext context) : base(context)
         {
+        }
+
+        public decimal GetTotalPlanted()
+        {
+            return _set.Sum(x => x.Amount);
         }
 
         public (long Sum, ulong[] MessageIds) RemoveSumAndGetMessageIdsFor(ulong cid, string pass = null)

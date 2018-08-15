@@ -1,4 +1,4 @@
-namespace WizBot.Modules.Searches.Common
+﻿namespace WizBot.Modules.Searches.Common
 {
     public class NovelResult
     {

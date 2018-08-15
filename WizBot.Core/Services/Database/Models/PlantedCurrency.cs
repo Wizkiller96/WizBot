@@ -1,4 +1,4 @@
-namespace WizBot.Core.Services.Database.Models
+﻿namespace WizBot.Core.Services.Database.Models
 {
     public class PlantedCurrency : DbEntity
     {

@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WizBot.Migrations
 {
@@ -21,9 +21,6 @@ INSERT INTO DiscordUser(UserId, Username, Discriminator, AvatarId)
     SELECT UserId, 'Unknown', '????', '' FROM Currency 
     WHERE UserId NOT IN (
         SELECT UserId FROM DiscordUser)");
-
-            //migrationBuilder.DropTable(
-            //    name: "Currency");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using Discord.WebSocket;
 using WizBot.Extensions;
 using WizBot.Core.Services;
@@ -21,7 +21,6 @@ using Image = SixLabors.ImageSharp.Image;
 using SixLabors.Primitives;
 using SixLabors.Fonts;
 using WizBot.Core.Services.Impl;
-using WizBot.Core.Modules.Searches.Common;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing.Text;
@@ -56,34 +55,6 @@ namespace WizBot.Modules.Searches.Services
         public ConcurrentDictionary<ulong, Timer> AutoButtTimers { get; } = new ConcurrentDictionary<ulong, Timer>();
 
         private readonly ConcurrentDictionary<ulong, HashSet<string>> _blacklistedTags = new ConcurrentDictionary<ulong, HashSet<string>>();
-
-        private readonly SemaphoreSlim _cryptoLock = new SemaphoreSlim(1, 1);
-        public async Task<CryptoData[]> CryptoData()
-        {
-            string data;
-            var r = _cache.Redis.GetDatabase();
-            await _cryptoLock.WaitAsync().ConfigureAwait(false);
-            try
-            {
-                data = await r.StringGetAsync("crypto_data").ConfigureAwait(false);
-
-                if (data == null)
-                {
-                    using (var http = _httpFactory.CreateClient())
-                    {
-                        data = await http.GetStringAsync(new Uri("https://api.coinmarketcap.com/v1/ticker/"))
-                            .ConfigureAwait(false);
-                    }
-                    await r.StringSetAsync("crypto_data", data, TimeSpan.FromHours(1)).ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-                _cryptoLock.Release();
-            }
-
-            return JsonConvert.DeserializeObject<CryptoData[]>(data);
-        }
 
         public SearchesService(DiscordSocketClient client, IGoogleApiService google,
             DbService db, WizBot bot, IDataCache cache, IHttpClientFactory factory,
@@ -270,6 +241,9 @@ namespace WizBot.Modules.Searches.Services
                 else
                 {
                     gc.NsfwBlacklistedTags.Remove(tagObj);
+                    var toRemove = gc.NsfwBlacklistedTags.FirstOrDefault(x => x.Equals(tagObj));
+                    if (toRemove != null)
+                        uow._context.Remove(toRemove);
                     added = false;
                 }
                 var newTags = new HashSet<string>(gc.NsfwBlacklistedTags.Select(x => x.Tag));
@@ -304,8 +278,8 @@ namespace WizBot.Modules.Searches.Services
             {
                 var html = document.QuerySelector(".post > .joke-body-wrap > .joke-content");
 
-                var part1 = html.QuerySelector("dt").TextContent;
-                var part2 = html.QuerySelector("dd").TextContent;
+                var part1 = html.QuerySelector("dt")?.TextContent;
+                var part2 = html.QuerySelector("dd")?.TextContent;
 
                 return (part1 + "\n\n" + part2, document.BaseUri);
             }

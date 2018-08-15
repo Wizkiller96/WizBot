@@ -60,7 +60,7 @@ namespace WizBot.Modules.Permissions
             //    using (var uow = _db.UnitOfWork)
             //    {
             //        var bc = uow.BotConfig.GetOrCreate();
-
+                    
             //        if (cost != 0)
             //        {
             //            var elem = bc.CommandCosts.Where(cc => cc.CommandName == cmdPrice.CommandName).FirstOrDefault();

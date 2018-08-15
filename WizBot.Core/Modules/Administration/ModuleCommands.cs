@@ -1,4 +1,4 @@
-//using Discord.Commands;
+﻿//using Discord.Commands;
 //using WizBot.Common.Attributes;
 //using WizBot.Modules.Administration.Services;
 //using WizBot.Extensions;
@@ -30,7 +30,7 @@
 //                _service.ReloadAvailablePackages();
 //                await Context.Channel.SendConfirmAsync(
 //                    string.Join(
-//                        "\n",
+//                        "\n", 
 //                        _service.Packages
 //                            .Select(x => _bot.LoadedPackages.Contains(x)
 //                                ? "【✘】" + x
@@ -49,7 +49,7 @@
 //                                                "modules",
 //                                                $"WizBot.Modules.{name}",
 //                                                $"WizBot.Modules.{name}.dll"));
-
+                
 //                await _bot.UnloadPackage(name).ConfigureAwait(false);
 //                await ReplyAsync(":ok:");
 //            }

@@ -1,10 +1,11 @@
-using Discord;
+﻿using Discord;
 using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Common;
 using WizBot.Common.Collections;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
+using WizBot.Core.Services.Database.Repositories;
 using WizBot.Core.Services.Impl;
 using WizBot.Extensions;
 using NLog;
@@ -17,6 +18,7 @@ using SixLabors.ImageSharp.Processing.Text;
 using SixLabors.Primitives;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -81,7 +83,11 @@ namespace WizBot.Modules.Gambling.Services
                 }
                 else
                 {
-                    guildConfig.GenerateCurrencyChannelIds.Remove(toAdd);
+                    var toDelete = guildConfig.GenerateCurrencyChannelIds.FirstOrDefault(x => x.Equals(toAdd));
+                    if (toDelete != null)
+                    {
+                        uow._context.Remove(toDelete);
+                    }
                     _generationChannels.TryRemove(cid);
                     enabled = false;
                 }
@@ -89,19 +95,44 @@ namespace WizBot.Modules.Gambling.Services
             }
             return enabled;
         }
+
+        public IEnumerable<GeneratingChannel> GetAllGeneratingChannels()
+        {
+            using (var uow = _db.UnitOfWork)
+            {
+                var chs = uow.GuildConfigs.GetGeneratingChannels();
+                return chs;
+            }
+        }
+
         /// <summary>
         /// Get a random currency image stream, with an optional password sticked onto it.
         /// </summary>
         /// <param name="pass">Optional password to add to top left corner.</param>
         /// <returns>Stream of the currency image</returns>
-        public Stream GetRandomCurrencyImage(string pass = null)
+        public Stream GetRandomCurrencyImage(string pass, out string extension)
         {
+            // get a random currency image bytes
             var rng = new WizBotRandom();
             var curImg = _images.Currency[rng.Next(0, _images.Currency.Count)];
-            if (string.IsNullOrWhiteSpace(pass))
-                return curImg.ToStream();
 
-            return AddPassword(curImg, pass);
+            if (string.IsNullOrWhiteSpace(pass))
+            {
+                // determine the extension
+                using (var img = Image.Load(curImg, out var format))
+                {
+                    extension = format.FileExtensions.FirstOrDefault() ?? "png";
+                }
+                // return the image
+                return curImg.ToStream();
+            }
+
+            // get the image stream and extension
+            var (s, ext) = AddPassword(curImg, pass);
+            // set the out extension parameter to the extension we've got
+            extension = ext;
+            // return the image
+            return s;
         }
 
         /// <summary>
@@ -110,11 +141,11 @@ namespace WizBot.Modules.Gambling.Services
         /// <param name="curImg">Image to add password to.</param>
         /// <param name="pass">Password to add to top left corner.</param>
         /// <returns>Image with the password in the top left corner.</returns>
-        private Stream AddPassword(byte[] curImg, string pass)
+        private (Stream, string) AddPassword(byte[] curImg, string pass)
         {
             // draw lower, it looks better
             pass = pass.TrimTo(10, true).ToLowerInvariant();
-            using (var img = Image.Load(curImg))
+            using (var img = Image.Load(curImg, out var format))
             {
                 // choose font size based on the image height, so that it's visible
                 var font = _fonts.NotoSans.CreateFont(img.Height / 12, FontStyle.Bold);
@@ -137,7 +168,7 @@ namespace WizBot.Modules.Gambling.Services
                         new PointF(0, 0));
                 });
                 // return image as a stream for easy sending
-                return img.ToStream();
+                return (img.ToStream(format), format.FileExtensions.FirstOrDefault() ?? "png");
             }
         }
 
@@ -184,9 +215,9 @@ namespace WizBot.Modules.Gambling.Services
                             var pw = _bc.BotConfig.CurrencyGenerationPassword ? GenerateCurrencyPassword().ToUpperInvariant() : null;
 
                             IUserMessage sent;
-                            using (var stream = GetRandomCurrencyImage(pw))
+                            using (var stream = GetRandomCurrencyImage(pw, out var ext))
                             {
-                                sent = await channel.SendFileAsync(stream, "currency_image.png", toSend).ConfigureAwait(false);
+                                sent = await channel.SendFileAsync(stream, $"currency_image.{ext}", toSend).ConfigureAwait(false);
                             }
 
                             await AddPlantToDatabase(channel.GuildId,
@@ -263,10 +294,10 @@ namespace WizBot.Modules.Gambling.Services
                     msgToSend += " " + GetText(gid, "pick_sn", prefix);
 
                 //get the image
-                using (var stream = GetRandomCurrencyImage(pass))
+                using (var stream = GetRandomCurrencyImage(pass, out var ext))
                 {
                     // send it
-                    var msg = await ch.SendFileAsync(stream, "img.png", msgToSend).ConfigureAwait(false);
+                    var msg = await ch.SendFileAsync(stream, $"img.{ext}", msgToSend).ConfigureAwait(false);
                     // return sent message's id (in order to be able to delete it when it's picked)
                     return msg.Id;
                 }

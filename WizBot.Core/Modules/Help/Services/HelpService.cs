@@ -52,7 +52,7 @@ namespace WizBot.Modules.Help.Services
         public EmbedBuilder GetCommandHelp(CommandInfo com, IGuild guild)
         {
             var prefix = _ch.GetPrefix(guild);
-
+            
             var str = string.Format("**`{0}`**", prefix + com.Aliases.First());
             var alias = com.Aliases.Skip(1).FirstOrDefault();
             if (alias != null)
@@ -66,10 +66,10 @@ namespace WizBot.Modules.Help.Services
                     .WithIsInline(true));
 
             var reqs = GetCommandRequirements(com);
-            if (reqs.Any())
+            if(reqs.Any())
             {
                 em.AddField(GetText("requires", guild),
-                string.Join("\n", reqs));
+                    string.Join("\n", reqs));
             }
 
             em
@@ -83,10 +83,10 @@ namespace WizBot.Modules.Help.Services
             if (opt != null)
             {
                 var hs = GetCommandOptionHelp(opt);
-                if (!string.IsNullOrWhiteSpace(hs))
+                if(!string.IsNullOrWhiteSpace(hs))
                     em.AddField(GetText("options", guild), hs, false);
             }
- 
+
             return em;
         }
 
@@ -98,12 +98,12 @@ namespace WizBot.Modules.Help.Services
                 .Cast<OptionAttribute>()
                 .Select(x =>
                 {
-            var toReturn = $"--{x.LongName}";
+                    var toReturn = $"`--{x.LongName}`";
 
                     if (!string.IsNullOrWhiteSpace(x.ShortName))
-                        toReturn += $" (-{x.ShortName})";
+                        toReturn += $" (`-{x.ShortName}`)";
 
-                    toReturn += $"   {x.HelpText}   ";
+                    toReturn += $"   {x.HelpText}  ";
                     return toReturn;
                 });
 

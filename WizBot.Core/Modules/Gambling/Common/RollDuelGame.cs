@@ -31,11 +31,11 @@ namespace WizBot.Core.Modules.Gambling.Common
             NoFunds,
             Timeout,
         }
-
+        
         private readonly Timer _timeoutTimer;
         private readonly WizBotRandom _rng = new WizBotRandom();
         private readonly SemaphoreSlim _locker = new SemaphoreSlim(1, 1);
-
+        
         public event Func<RollDuelGame, Task> OnGameTick;
         public event Func<RollDuelGame, Reason, Task> OnEnded;
 
@@ -84,13 +84,13 @@ namespace WizBot.Core.Modules.Gambling.Common
                 _locker.Release();
             }
 
-            if (!await _cs.RemoveAsync(P1, "Roll Duel", Amount).ConfigureAwait(false))
+            if(!await _cs.RemoveAsync(P1, "Roll Duel", Amount).ConfigureAwait(false))
             {
                 await (OnEnded?.Invoke(this, Reason.NoFunds)).ConfigureAwait(false);
                 CurrentState = State.Ended;
                 return;
             }
-            if (!await _cs.RemoveAsync(P2, "Roll Duel", Amount).ConfigureAwait(false))
+            if(!await _cs.RemoveAsync(P2, "Roll Duel", Amount).ConfigureAwait(false))
             {
                 await _cs.AddAsync(P1, "Roll Duel - refund", Amount).ConfigureAwait(false);
                 await (OnEnded?.Invoke(this, Reason.NoFunds)).ConfigureAwait(false);
@@ -108,7 +108,7 @@ namespace WizBot.Core.Modules.Gambling.Common
                 {
                     if (n1 > n2)
                     {
-                        Winner = P1;
+                        Winner = P1;                                                                                                                                                                                                                                                                                                
                     }
                     else
                     {

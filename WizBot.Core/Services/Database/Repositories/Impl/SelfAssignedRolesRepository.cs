@@ -1,4 +1,4 @@
-using WizBot.Core.Services.Database.Models;
+﻿using WizBot.Core.Services.Database.Models;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +22,7 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
             return true;
         }
 
-        public IEnumerable<SelfAssignedRole> GetFromGuild(ulong guildId)
+        public IEnumerable<SelfAssignedRole> GetFromGuild(ulong guildId) 
             =>  _set.Where(s => s.GuildId == guildId)
                     .ToArray();
     }

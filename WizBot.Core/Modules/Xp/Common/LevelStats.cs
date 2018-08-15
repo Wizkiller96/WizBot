@@ -1,4 +1,4 @@
-using WizBot.Modules.Xp.Services;
+﻿using WizBot.Modules.Xp.Services;
 
 namespace WizBot.Modules.Xp.Common
 {

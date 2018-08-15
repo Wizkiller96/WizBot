@@ -88,7 +88,6 @@ namespace WizBot.Migrations
                     GuildId = table.Column<ulong>(nullable: true),
                     IsRegex = table.Column<bool>(nullable: false),
                     OwnerOnly = table.Column<bool>(nullable: false),
-                    AdminOnly = table.Column<bool>(nullable: false),
                     Response = table.Column<string>(nullable: true),
                     Trigger = table.Column<string>(nullable: true)
                 },

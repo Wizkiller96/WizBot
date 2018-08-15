@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using System.Collections.Immutable;
 
 namespace WizBot.Core.Services

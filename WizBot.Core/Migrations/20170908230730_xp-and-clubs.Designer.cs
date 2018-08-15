@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -440,8 +440,6 @@ namespace WizBot.Migrations
                     b.Property<bool>("IsRegex");
 
                     b.Property<bool>("OwnerOnly");
-
-                    b.Property<bool>("AdminOnly");
 
                     b.Property<string>("Response");
 

@@ -1,8 +1,7 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using WizBot.Extensions;
@@ -12,6 +11,7 @@ using WizBot.Core.Services.Impl;
 using NLog;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
+using Microsoft.EntityFrameworkCore;
 
 namespace WizBot.Modules.Utility.Services
 {
@@ -97,18 +97,15 @@ namespace WizBot.Modules.Utility.Services
                     .AddField("By", (await ch.GetUserAsync(r.UserId).ConfigureAwait(false))?.ToString() ?? r.UserId.ToString()),
                     msg: r.Message.SanitizeMentions()).ConfigureAwait(false);
             }
-            catch (Exception ex) { _log.Warn(ex); }
+            catch (Exception ex) { _log.Info(ex.Message + $"({r.Id})"); }
             finally
             {
                 using (var uow = _db.UnitOfWork)
                 {
-                    uow.Reminders.Remove(r);
-                    await uow.CompleteAsync();
+                    uow._context.Database.ExecuteSqlCommand($"DELETE FROM Reminders WHERE Id={r.Id};");
+                    uow.Complete();
                 }
-                var _ = Task.Run(() =>
-                {
-                    RemoveReminder(r.Id);
-                });
+                RemoveReminder(r.Id);
             }
         }
 

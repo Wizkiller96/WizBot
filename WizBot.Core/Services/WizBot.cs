@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using WizBot.Core.Services;
@@ -71,10 +71,16 @@ namespace WizBot
             Credentials = new BotCredentials();
             Cache = new RedisCache(Credentials, shardId);
             _db = new DbService(Credentials);
+
+            if (shardId == 0)
+            {
+                _db.Setup();
+            }
+
             Client = new DiscordSocketClient(new DiscordSocketConfig
             {
                 MessageCacheSize = 50,
-                LogLevel = LogSeverity.Info,
+                LogLevel = LogSeverity.Warning,
                 ConnectionTimeout = int.MaxValue,
                 TotalShards = Credentials.TotalShards,
                 ShardId = shardId,
@@ -124,9 +130,22 @@ namespace WizBot
             });
         }
 
+        private List<ulong> GetCurrentGuildIds()
+        {
+            return Client.Guilds.Select(x => x.Id).ToList();
+        }
+
+        public IEnumerable<GuildConfig> GetCurrentGuildConfigs()
+        {
+            using (var uow = _db.UnitOfWork)
+            {
+                return uow.GuildConfigs.GetAllGuildConfigs(GetCurrentGuildIds()).ToImmutableArray();
+            }
+        }
+
         private void AddServices()
         {
-            var startingGuildIdList = Client.Guilds.Select(x => x.Id).ToList();
+            var startingGuildIdList = GetCurrentGuildIds();
 
             //this unit of work will be used for initialization of all modules too, to prevent multiple queries from running
             using (var uow = _db.UnitOfWork)
@@ -176,7 +195,7 @@ namespace WizBot
             }
             catch (ReflectionTypeLoadException ex)
             {
-                Console.WriteLine(ex.LoaderExceptions[0]);
+                _log.Warn(ex.LoaderExceptions[0]);
                 return Enumerable.Empty<object>();
             }
             var filteredTypes = allTypes
@@ -335,8 +354,10 @@ namespace WizBot
         {
             try
             {
-                File.WriteAllText("test", "test");
-                File.Delete("test");
+                var rng = new WizBotRandom().Next(100000, 1000000);
+                var str = rng.ToString();
+                File.WriteAllText(str, str);
+                File.Delete(str);
             }
             catch
             {

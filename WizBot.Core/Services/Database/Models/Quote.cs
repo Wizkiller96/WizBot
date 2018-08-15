@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace WizBot.Core.Services.Database.Models
 {
@@ -12,8 +12,9 @@ namespace WizBot.Core.Services.Database.Models
         public ulong AuthorId { get; set; }
         [Required]
         public string Text { get; set; }
+        public ulong UseCount { get; set; }
     }
-    
+
 
     public enum OrderType
     {

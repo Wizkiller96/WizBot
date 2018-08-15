@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading;
 using Discord.WebSocket;
@@ -51,7 +51,7 @@ namespace WizBot.Modules.Administration.Services
                 {
                     try
                     {
-                        bcp.Reload();
+                        // bcp.Reload();
 
                         var state = (TimerState)objState;
                         if (!BotConfig.RotatingStatuses)
@@ -98,11 +98,11 @@ namespace WizBot.Modules.Administration.Services
                 if (index >= config.RotatingStatusMessages.Count)
                     return null;
                 msg = config.RotatingStatusMessages[index].Status;
-                config.RotatingStatusMessages.RemoveAt(index);
+                var remove = config.RotatingStatusMessages[index];
+                uow._context.Remove(remove);
+                _bcp.BotConfig.RotatingStatusMessages = config.RotatingStatusMessages;
                 await uow.CompleteAsync();
             }
-
-            _bcp.Reload();
 
             return msg;
         }
@@ -114,10 +114,9 @@ namespace WizBot.Modules.Administration.Services
                 var config = uow.BotConfig.GetOrCreate(set => set.Include(x => x.RotatingStatusMessages));
                 var toAdd = new PlayingStatus { Status = status, Type = t };
                 config.RotatingStatusMessages.Add(toAdd);
+                _bcp.BotConfig.RotatingStatusMessages = config.RotatingStatusMessages;
                 await uow.CompleteAsync();
             }
-
-            _bcp.Reload();
         }
 
         public bool ToggleRotatePlaying()

@@ -26,13 +26,13 @@ namespace WizBot.Modules.Games.Common.ChatterBot
         }
 
 #if GLOBAL_WIZBOT
-        private string apiEndpoint => "http://wizbot.cf/cb/chatbot/" +
+        private string ApiEndpoint => "http://wizbot.cf/cb/chatbot/" +
                                       $"?bot_id={_botId}&" +
                                       "say={0}&" +
                                       $"convo_id=wizbot_{_chatterBotId}&" +
                                       "format=json";
 #else
-        private string apiEndpoint => "http://api.program-o.com/v2/chatbot/" +
+        private string ApiEndpoint => "http://api.program-o.com/v2/chatbot/" +
                                       $"?bot_id={_botId}&" +
                                       "say={0}&" +
                                       $"convo_id=wizbot_{_chatterBotId}&" +
@@ -43,7 +43,7 @@ namespace WizBot.Modules.Games.Common.ChatterBot
         {
             using (var http = _httpFactory.CreateClient())
             {
-                var res = await http.GetStringAsync(string.Format(apiEndpoint, message)).ConfigureAwait(false);
+                var res = await http.GetStringAsync(string.Format(ApiEndpoint, message)).ConfigureAwait(false);
                 var cbr = JsonConvert.DeserializeObject<ChatterBotResponse>(res);
                 return cbr.BotSay.Replace("<br/>", "\n", StringComparison.InvariantCulture);
             }

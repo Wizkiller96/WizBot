@@ -1,4 +1,4 @@
-namespace WizBot.Core.Services.Database.Models
+﻿namespace WizBot.Core.Services.Database.Models
 {
     /// <summary>
     /// Used to set stakes for gambling games which don't reward right away -

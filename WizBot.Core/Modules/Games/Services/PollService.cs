@@ -71,7 +71,7 @@ namespace WizBot.Modules.Games.Services
 
         public bool StartPoll(Poll p)
         {
-            var pr = new PollRunner(_db, p);
+            var pr = new PollRunner(_db,  p);
             if (ActivePolls.TryAdd(p.GuildId, pr))
             {
                 using (var uow = _db.UnitOfWork)

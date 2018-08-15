@@ -1,4 +1,4 @@
-using WizBot.Core.Common;
+﻿using WizBot.Core.Common;
 using WizBot.Core.Services.Common;
 using WizBot.Extensions;
 using Newtonsoft.Json;

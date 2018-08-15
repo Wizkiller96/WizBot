@@ -1,7 +1,7 @@
-namespace WizBot.Core.Services.Impl
+﻿namespace WizBot.Core.Services.Impl
 {
     public class SyncPreconditionService
     {
-
+        
     }
 }

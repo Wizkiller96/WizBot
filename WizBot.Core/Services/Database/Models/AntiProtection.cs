@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 namespace WizBot.Core.Services.Database.Models
 {
     public class AntiRaidSetting : DbEntity
@@ -21,7 +21,6 @@ namespace WizBot.Core.Services.Database.Models
         public int MuteTime { get; set; } = 0;
         public HashSet<AntiSpamIgnore> IgnoredChannels { get; set; } = new HashSet<AntiSpamIgnore>();
     }
-
 
     public enum PunishmentAction
     {

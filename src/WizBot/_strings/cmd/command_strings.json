@@ -30,7 +30,7 @@
   },
   "commands": {
     "Cmd": "commands cmds",
-    "Desc": "List all of the bot's commands from a certain module. You can either specify the full name or only the first few letters of the module name. You can specify `-v 1` after module name to show which commands you can and can't execute, or `-v 2` to show them all again.",
+    "Desc": "List all of the bot's commands from a certain module. You can either specify the full name or only the first few letters of the module name.",
     "Usage": [
       "{0}cmds Admin",
       "{0}cmds Admin --view 1"
@@ -168,6 +168,21 @@
       "{0}slowmode"
     ]
   },
+  "vcrolelist": {
+    "Cmd": "vcrolelist",
+    "Desc": "Shows a list of currently set voice channel roles.",
+    "Usage": [
+      "{0}vcrolelist"
+    ]
+  },
+  "vcrole": {
+    "Cmd": "vcrole",
+    "Desc": "Sets or resets a role which will be given to users who join the voice channel you're in when you run this command. Provide no role name to disable. You must be in a voice channel to run this command.",
+    "Usage": [
+      "{0}vcrole SomeRole",
+      "{0}vcrole"
+    ]
+  },
   "scsc": {
     "Cmd": "scsc",
     "Desc": "Starts an instance of cross server channel. You will get a token as a DM that other people will use to tune in to the same instance.",
@@ -211,6 +226,14 @@
     "Usage": [
       "{0}lsar",
       "{0}lsar 2"
+    ]
+  },
+  "sargn": {
+    "Cmd": "sargn",
+    "Desc": "Sets a self assignable role group name. Provide no name to remove.",
+    "Usage": [
+      "{0}sargn 1 Faction",
+      "{0}sargn 2"
     ]
   },
   "tesar": {
@@ -545,6 +568,20 @@
       "{0}unstuck"
     ]
   },
+  "donators": {
+    "Cmd": "donators",
+    "Desc": "List of the lovely people who donated to keep this project alive.",
+    "Usage": [
+      "{0}donators"
+    ]
+  },
+  "donadd": {
+    "Cmd": "donadd",
+    "Desc": "Add a donator to the database.",
+    "Usage": [
+      "{0}donadd Donate Amount"
+    ]
+  },
   "savechat": {
     "Cmd": "savechat",
     "Desc": "Saves a number of messages to a text file and sends it to you.",
@@ -714,7 +751,7 @@
     "Cmd": "permrole pr",
     "Desc": "Sets a role which can change permissions. Supply no parameters to see the current one. Type 'reset' instead of the role name to reset the currently set permission role. Users with Administrator server permissions can use permission commands regardless of whether they have the specified role. There is no default permission role.",
     "Usage": [
-      "{0}pr Some Role", 
+      "{0}pr Some Role",
       "{0}pr reset"
     ]
   },
@@ -1100,6 +1137,13 @@
     "Desc": "Toggles currency generation on this channel. Every posted message will have chance to spawn currency. Chance is specified by the Bot Owner. (default is 2%)",
     "Usage": [
       "{0}gc"
+    ]
+  },
+  "gencurlist": {
+    "cmd": "gencurlist gclist",
+    "desc": "Shows the list of server and channel ids where gc is enabled. Paginated with 9 per page.",
+    "usage": [
+      "{0}gclist"
     ]
   },
   "leet": {
@@ -2187,22 +2231,6 @@
       "{0}hangmanstop"
     ]
   },
-  "crstatsclear": {
-    "Cmd": "crstatsclear",
-    "Desc": "Resets the counters on `{0}crstats`. You can specify a trigger to clear stats only for that trigger.",
-    "Usage": [
-      "{0}crstatsclear",
-      "{0}crstatsclear rng"
-    ]
-  },
-  "crstats": {
-    "Cmd": "crstats",
-    "Desc": "Shows a list of custom reactions and the number of times they have been executed. Paginated with 10 per page. Use `{0}crstatsclear` to reset the counters.",
-    "Usage": [
-      "{0}crstats",
-      "{0}crstats 3"
-    ]
-  },
   "overwatch": {
     "Cmd": "overwatch ow",
     "Desc": "Show's basic stats on a player (competitive rank, playtime, level etc) Region codes are: `eu` `us` `cn` `kr`",
@@ -2272,9 +2300,9 @@
   },
   "autohentai": {
     "Cmd": "autohentai",
-    "Desc": "Posts a hentai every X seconds with a random tag from the provided tags. Use `|` to separate tags. 20 seconds minimum. Provide no parameters to disable.",
+    "Desc": "Posts a hentai every X seconds with a random tag from the provided tags. Use `|` to separate tag groups. Random group will be chosen every time the image is sent. Use `+` for multiple tags (max 2 per group). 20 seconds minimum. Provide no parameters to disable.",
     "Usage": [
-      "{0}autohentai 30 yuri|tail|long_hair",
+      "{0}autohentai 30 yuri+kissing|tail+long_hair",
       "{0}autohentai"
     ]
   },
@@ -2293,11 +2321,26 @@
       "{0}rrc 0 MyLsdRole"
     ]
   },
-  "createinvite": {
-    "Cmd": "createinvite crinv",
+  "invitecreate": {
+    "Cmd": "invitecreate invcr",
     "Desc": "Creates a new invite which has infinite max uses and never expires.",
     "Usage": [
       "{0}crinv"
+    ]
+  },
+  "invitelist": {
+    "Cmd": "invitelist invlist invlst",
+    "Desc": "Lists all invites for this channel. Paginated with 9 per page.",
+    "Usage": [
+      "{0}invitelist",
+      "{0}invlist 3"
+    ]
+  },
+  "invitedelete": {
+    "Cmd": "invitedelete invrm invdel",
+    "Desc": "Deletes an invite on the specified index. Use `{0}invitelist` to see the list of invites.",
+    "Usage": [
+      "{0}invrm 2"
     ]
   },
   "pollstats": {
@@ -2353,7 +2396,7 @@
   },
   "eventstart": {
     "Cmd": "eventstart",
-    "Desc": "Starts one of the events seen on public wizbot. Events: `reaction`",
+    "Desc": "Starts one of the events seen on public wizbot. Events: `reaction`, `gamestatus`",
     "Usage": [
       "{0}eventstart reaction",
       "{0}eventstart reaction -d 1 -a 50 --pot-size 1500"
@@ -2470,7 +2513,7 @@
   },
   "botconfigreload": {
     "Cmd": "botconfigreload",
-    "Desc": "Reloads bot configuration in case you made changes to the BotConfig table either with .execsql or manually in the .db file.",
+    "Desc": "Reloads bot configuration in case you made changes to the BotConfig table either with .sqlexec or manually in the .db file.",
     "Usage": [
       "{0}botconfigreload"
     ]
@@ -2565,21 +2608,6 @@
       "{0}l7 s"
     ]
   },
-  "vcrolelist": {
-    "Cmd": "vcrolelist",
-    "Desc": "Shows a list of currently set voice channel roles.",
-    "Usage": [
-      "{0}vcrolelist"
-    ]
-  },
-  "vcrole": {
-    "Cmd": "vcrole",
-    "Desc": "Sets or resets a role which will be given to users who join the voice channel you're in when you run this command. Provide no role name to disable. You must be in a voice channel to run this command.",
-    "Usage": [
-      "{0}vcrole SomeRole",
-      "{0}vcrole"
-    ]
-  },
   "crad": {
     "Cmd": "crad",
     "Desc": "Toggles whether the message triggering the custom reaction will be automatically deleted.",
@@ -2599,6 +2627,13 @@
     "Desc": "Toggles whether the custom reaction will trigger if the triggering message contains the keyword (instead of only starting with it).",
     "Usage": [
       "{0}crca 44"
+    ]
+  },
+  "crsreload": {
+    "Cmd": "crsreload",
+    "Desc": "Reloads all custom reactions on all shards. Use this if you've made changes to the database while the bot is running, or used `.deleteunusedcrnq`",
+    "Usage": [
+      "{0}crsreload"
     ]
   },
   "aliaslist": {
@@ -2811,7 +2846,7 @@
     "Cmd": "globalcommand gcmd",
     "Desc": "Toggles whether a command can be used on any server.",
     "Usage": [
-      "{0}gcmd {0}stats"
+      "{0}gcmd .stats"
     ]
   },
   "gmod": {
@@ -3111,7 +3146,7 @@
   },
   "autobutts": {
     "Cmd": "autobutts",
-    "Desc": "Posts a butts every X seconds. 20 seconds minimum. Provide no parameters to disable.",
+    "Desc": "Posts a butt every X seconds. 20 seconds minimum. Provide no parameters to disable.",
     "Usage": [
       "{0}autobutts 30",
       "{0}autobutts"
@@ -3166,11 +3201,18 @@
       "{0}say hi"
     ]
   },
-  "execsql": {
-    "cmd": "execsql",
-    "desc": "Executes an sql command and returns the number of affected rows. Dangerous.",
+  "sqlexec": {
+    "cmd": "sqlexec",
+    "desc": "Executes provided sql command and returns the number of affected rows. Dangerous.",
     "usage": [
-      "{0}execsql UPDATE DiscordUser SET CurrencyAmount=CurrencyAmount+1234"
+      "{0}sqlexec UPDATE DiscordUser SET CurrencyAmount=CurrencyAmount+1234"
+    ]
+  },
+  "sqlselect": {
+    "cmd": "sqlselect",
+    "desc": "Executes provided sql query and returns the results. Dangerous.",
+    "usage": [
+      "{0}sqlselect SELECT * FROM DiscordUser LIMIT 5"
     ]
   },
   "deletewaifus": {
@@ -3184,7 +3226,14 @@
     "cmd": "deletewaifu",
     "desc": "Deletes everything from WaifuUpdates, WaifuItem and WaifuInfo tables for the specified user. Also makes specified user's waifus free.",
     "usage": [
-      "{0}deletewaifu"
+      "{0}deletewaifus"
+    ]
+  },
+  "deleteunusedcrnq": {
+    "cmd": "deleteunusedcrnq",
+    "desc": "Deletes all quotes and custom reactions which are older than a week and haven't been used a single time.",
+    "usage": [
+      "{0}deleteunusedcrnq"
     ]
   },
   "deletecurrency": {
@@ -3205,7 +3254,7 @@
     "cmd": "deletexp",
     "desc": "Deletes everything from UserXpStats, Clubs and sets users' TotalXP to 0.",
     "usage": [
-      "{0}execsql UPDATE Currency SET Amount=Amount+1234"
+      "{0}deletexp"
     ]
   },
   "rafflecur": {
@@ -3418,6 +3467,13 @@
     "usage": [
       "{0}updatescheck commit",
       "{0}updatescheck release"
+    ]
+  },
+  "economy": {
+    "cmd": "economy",
+    "desc": "Breakdown of the current state of the bot's economy. Updates every 3 minutes.",
+    "usage": [
+      "{0}economy"
     ]
   }
 }

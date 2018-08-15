@@ -24,7 +24,6 @@ namespace WizBot.Modules.Utility.Common
         public ITextChannel Channel { get; private set; }
         public TimeSpan InitialInterval { get; private set; }
 
-        private IUserMessage oldMsg = null;
         private Timer _t;
 
         public RepeatRunner(SocketGuild guild, Repeater repeater, MessageRepeaterService mrs)
@@ -57,55 +56,69 @@ namespace WizBot.Modules.Utility.Common
 
         public async Task Trigger()
         {
-            var toSend = "🔄 " + Repeater.Message;
-
-            if (oldMsg != null && !Repeater.NoRedundant)
+            async Task ChannelMissingError()
             {
+                _log.Warn("Channel not found or insufficient permissions. Repeater stopped. ChannelId : {0}", Channel?.Id);
+                Stop();
+                await _mrs.RemoveRepeater(Repeater);
+            }
+
+            var toSend = "🔄 " + Repeater.Message;
+            try
+            {
+                Channel = Channel ?? Guild.GetTextChannel(Repeater.ChannelId);
+
+                if (Channel == null)
+                {
+                    await ChannelMissingError().ConfigureAwait(false);
+                    return;
+                }
+
+                if (Repeater.NoRedundant)
+                {
+                    var lastMsgInChannel = (await Channel.GetMessagesAsync(2).FlattenAsync().ConfigureAwait(false)).FirstOrDefault();
+                    if (lastMsgInChannel != null && lastMsgInChannel.Id == Repeater.LastMessageId) //don't send if it's the same message in the channel
+                        return;
+                }
+
+                // if the message needs to be send
+                // delete previous message if it exists
                 try
                 {
-                    await oldMsg.DeleteAsync().ConfigureAwait(false);
-                    oldMsg = null;
+                    if (Repeater.LastMessageId != null)
+                    {
+                        var oldMsg = await Channel.GetMessageAsync(Repeater.LastMessageId.Value).ConfigureAwait(false);
+                        if (oldMsg != null)
+                        {
+                            await oldMsg.DeleteAsync().ConfigureAwait(false);
+                            oldMsg = null;
+                        }
+                    }
                 }
                 catch
                 {
                     // ignored
                 }
-            }
 
-            try
-            {
-                if (Channel == null)
-                    Channel = Guild.GetTextChannel(Repeater.ChannelId);
-
+                var newMsg = await Channel.SendMessageAsync(toSend.SanitizeMentions()).ConfigureAwait(false);
 
                 if (Repeater.NoRedundant)
                 {
-                    var lastMsgInChannel = (await Channel.GetMessagesAsync(2).FlattenAsync().ConfigureAwait(false)).FirstOrDefault();
-                    if (lastMsgInChannel != null && lastMsgInChannel.Id == oldMsg?.Id) //don't send if it's the same message in the channel
-                        return;
+                    _mrs.SetRepeaterLastMessage(Repeater.Id, newMsg.Id);
+                    Repeater.LastMessageId = newMsg.Id;
                 }
-
-                if (Channel != null)
-                    oldMsg = await Channel.SendMessageAsync(toSend.SanitizeMentions()).ConfigureAwait(false);
             }
-            catch (HttpException ex) when (ex.HttpCode == System.Net.HttpStatusCode.Forbidden)
+            catch (HttpException ex)
             {
-                _log.Warn("Missing permissions. Repeater stopped. ChannelId : {0}", Channel?.Id);
-                Stop();
-                return;
-            }
-            catch (HttpException ex) when (ex.HttpCode == System.Net.HttpStatusCode.NotFound)
-            {
-                _log.Warn("Channel not found. Repeater stopped. ChannelId : {0}", Channel?.Id);
-                Stop();
-                await _mrs.RemoveRepeater(Repeater);
+                _log.Warn(ex.Message);
+                await ChannelMissingError().ConfigureAwait(false);
                 return;
             }
             catch (Exception ex)
             {
                 _log.Warn(ex);
                 Stop();
-                await _mrs.RemoveRepeater(Repeater);
+                await _mrs.RemoveRepeater(Repeater).ConfigureAwait(false);
             }
         }
 

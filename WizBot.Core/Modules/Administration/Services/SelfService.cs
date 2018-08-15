@@ -1,4 +1,4 @@
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
@@ -158,14 +158,14 @@ namespace WizBot.Modules.Administration.Services
             });
 
             Task.Run(async () =>
-                        {
-                            await bot.Ready.Task.ConfigureAwait(false);
+            {
+                await bot.Ready.Task.ConfigureAwait(false);
 
-                            await Task.Delay(5000).ConfigureAwait(false);
+                await Task.Delay(5000).ConfigureAwait(false);
 
-                            if (client.ShardId == 0)
-                                await LoadAdminChannels().ConfigureAwait(false);
-                        });
+                if (client.ShardId == 0)
+                    await LoadAdminChannels().ConfigureAwait(false);
+            });
 
         }
 
@@ -202,7 +202,7 @@ namespace WizBot.Modules.Administration.Services
                 uow.Complete();
             }
 
-            _bc.Reload();
+            _bc.BotConfig.LastUpdate = dt;
         }
 
         private async Task<string> GetNewRelease()
@@ -224,7 +224,7 @@ namespace WizBot.Modules.Administration.Services
             using (var uow = _db.UnitOfWork)
             {
                 var bc = uow.BotConfig.GetOrCreate(set => set);
-                bc.CheckForUpdates = type;
+                _bc.BotConfig.CheckForUpdates = bc.CheckForUpdates = type;
                 uow.Complete();
             }
 
@@ -232,8 +232,6 @@ namespace WizBot.Modules.Administration.Services
             {
                 _updateTimer.Change(Timeout.Infinite, Timeout.Infinite);
             }
-
-            _bc.Reload();
         }
 
         private Timer TimerFromStartupCommand(StartupCommand x)
@@ -420,7 +418,7 @@ namespace WizBot.Modules.Administration.Services
 
                 if (cmd != null)
                 {
-                    cmds.Remove(cmd);
+                    uow._context.Remove(cmd);
                     if (_autoCommands.TryGetValue(cmd.GuildId, out var autos))
                         if (autos.TryRemove(cmd.Id, out var timer))
                             timer.Change(Timeout.Infinite, Timeout.Infinite);
@@ -495,10 +493,9 @@ namespace WizBot.Modules.Administration.Services
             using (var uow = _db.UnitOfWork)
             {
                 var config = uow.BotConfig.GetOrCreate(set => set);
-                config.ForwardMessages = !config.ForwardMessages;
+                _bc.BotConfig.ForwardMessages = config.ForwardMessages = !config.ForwardMessages;
                 uow.Complete();
             }
-            _bc.Reload();
         }
 
         public void Restart()
@@ -526,10 +523,9 @@ namespace WizBot.Modules.Administration.Services
             using (var uow = _db.UnitOfWork)
             {
                 var config = uow.BotConfig.GetOrCreate(set => set);
-                config.ForwardToAllOwners = !config.ForwardToAllOwners;
+                _bc.BotConfig.ForwardToAllOwners = config.ForwardToAllOwners = !config.ForwardToAllOwners;
                 uow.Complete();
             }
-            _bc.Reload();
         }
 
         public IEnumerable<ShardComMessage> GetAllShardStatuses()

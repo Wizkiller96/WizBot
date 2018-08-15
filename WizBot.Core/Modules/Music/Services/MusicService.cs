@@ -102,7 +102,7 @@ namespace WizBot.Modules.Music.Services
         {
             string GetText(string text, params object[] replacements) =>
                 _strings.GetText(text, _localization.GetCultureInfo(textCh.Guild), "Music".ToLowerInvariant(), replacements);
-
+            
             if (voiceCh == null || voiceCh.Guild != textCh.Guild)
             {
                 if (textCh != null)

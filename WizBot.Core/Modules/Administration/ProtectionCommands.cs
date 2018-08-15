@@ -20,7 +20,7 @@ namespace WizBot.Modules.Administration
             [RequireUserPermission(GuildPermission.Administrator)]
             public Task AntiRaid()
             {
-                if (_service.TryStopAntiRaid(Context.Guild.Id))
+                if(_service.TryStopAntiRaid(Context.Guild.Id))
                 {
                     return ReplyConfirmLocalized("prot_disable", "Anti-Raid");
                 }
@@ -59,7 +59,7 @@ namespace WizBot.Modules.Administration
             [Priority(1)]
             public Task AntiSpam()
             {
-                if (_service.TryStopAntiSpam(Context.Guild.Id))
+                if(_service.TryStopAntiSpam(Context.Guild.Id))
                 {
                     return ReplyConfirmLocalized("prot_disable", "Anti-Spam");
                 }
@@ -83,7 +83,7 @@ namespace WizBot.Modules.Administration
 
                 var stats = await _service.StartAntiSpamAsync(Context.Guild.Id, messageCount, time, action).ConfigureAwait(false);
 
-                await Context.Channel.SendConfirmAsync(GetText("prot_enable", "Anti-Spam"),
+                await Context.Channel.SendConfirmAsync(GetText("prot_enable", "Anti-Spam"), 
                     $"{Context.User.Mention} {GetAntiSpamString(stats)}").ConfigureAwait(false);
             }
 

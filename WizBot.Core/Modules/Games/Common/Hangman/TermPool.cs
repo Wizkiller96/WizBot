@@ -1,4 +1,4 @@
-using WizBot.Common;
+﻿using WizBot.Common;
 using WizBot.Modules.Games.Common.Hangman.Exceptions;
 using Newtonsoft.Json;
 using System;

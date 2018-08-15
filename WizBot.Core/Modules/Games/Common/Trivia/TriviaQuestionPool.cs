@@ -29,7 +29,7 @@ namespace WizBot.Modules.Games.Common.Trivia
             if (isPokemon)
             {
                 var num = _rng.Next(1, maxPokemonId + 1);
-                return new TriviaQuestion("Who's That Pokémon?",
+                return new TriviaQuestion("Who's That Pokémon?", 
                     Map[num].ToTitleCase(),
                     "Pokemon",
                     $@"http://wizbot.cf/images/pokemon/shadows/{num}.png",

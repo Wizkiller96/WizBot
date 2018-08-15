@@ -7,6 +7,7 @@ namespace WizBot.Core.Services.Database.Models
         public enum Type
         {
             Reaction,
+            GameStatus,
             //NotRaid,
         }
 

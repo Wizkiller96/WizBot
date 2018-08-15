@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Net;
 using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Core.Common.TypeReaders.Models;
@@ -128,7 +129,7 @@ namespace WizBot.Modules.Administration.Services
             {
                 if (index == 0)
                 {
-                    await uow.Warnings.ForgiveAll(guildId, userId, moderator).ConfigureAwait(false);
+                    await uow.Warnings.ForgiveAll(guildId, userId, moderator);
                 }
                 else
                 {
@@ -149,7 +150,9 @@ namespace WizBot.Modules.Administration.Services
             using (var uow = _db.UnitOfWork)
             {
                 var ps = uow.GuildConfigs.ForId(guildId, set => set.Include(x => x.WarnPunishments)).WarnPunishments;
-                ps.RemoveAll(x => x.Count == number);
+                var toDelete = ps.Where(x => x.Count == number);
+
+                uow._context.RemoveRange(toDelete);
 
                 ps.Add(new WarningPunishment()
                 {

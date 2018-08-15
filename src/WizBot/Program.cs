@@ -1,4 +1,4 @@
-using WizBot.Core.Services;
+﻿using WizBot.Core.Services;
 using System.Diagnostics;
 using System.Threading.Tasks;
 

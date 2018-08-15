@@ -79,7 +79,7 @@ namespace WizBot.Modules.Searches
                     await ReplyConfirmLocalized("atl_ad_started").ConfigureAwait(false);
                     return;
                 }
-
+                
                 if (_searches.TranslatedChannels.TryRemove(channel.Id, out _))
                 {
                     await ReplyConfirmLocalized("atl_stopped").ConfigureAwait(false);

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
@@ -111,9 +111,16 @@ namespace WizBot.Modules.Administration.Services
                     ChannelId = chId,
                     State = s == Administration.State.Enable,
                 };
-                conf.DelMsgOnCmdChannels.Remove(obj);
+                var del = conf.DelMsgOnCmdChannels.FirstOrDefault(x => x.Equals(obj));
                 if (s != Administration.State.Inherit)
                     conf.DelMsgOnCmdChannels.Add(obj);
+                else
+                {
+                    if (del != null)
+                    {
+                        uow._context.Remove(del);
+                    }
+                }
 
                 await uow.CompleteAsync();
             }

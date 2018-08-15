@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using WizBot.Common;
@@ -67,7 +67,7 @@ namespace WizBot.Modules.Administration
                     await Task.Delay(100).ConfigureAwait(false);
                 }
 
-                if (_service.Add(Context.Guild.Id, new ReactionRoleMessage()
+                if(_service.Add(Context.Guild.Id, new ReactionRoleMessage()
                 {
                     Exclusive = exclusive,
                     MessageId = prev.Id,
@@ -93,7 +93,6 @@ namespace WizBot.Modules.Administration
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            [NoPublicBot]
             [RequireUserPermission(GuildPermission.ManageRoles)]
             [RequireBotPermission(GuildPermission.ManageRoles)]
             [Priority(0)]
@@ -115,7 +114,7 @@ namespace WizBot.Modules.Administration
             {
                 var embed = new EmbedBuilder()
                     .WithOkColor();
-                if (!_service.Get(Context.Guild.Id, out var rrs) ||
+                if(!_service.Get(Context.Guild.Id, out var rrs) || 
                     !rrs.Any())
                 {
                     embed.WithDescription(GetText("no_reaction_roles"));
@@ -127,8 +126,8 @@ namespace WizBot.Modules.Administration
                     {
                         var ch = g.GetTextChannel(rr.ChannelId);
                         var msg = (await (ch?.GetMessageAsync(rr.MessageId)).ConfigureAwait(false)) as IUserMessage;
-                        var content = msg?.Content.TrimTo(30) ?? "DELETED!";
-                        embed.AddField($"**{rr.Index + 1}.** {(ch?.Name ?? "DELETED!")}",
+                        var content = msg?.Content.TrimTo(30) ?? "DELETED!"; 
+                        embed.AddField($"**{rr.Index + 1}.** {(ch?.Name ?? "DELETED!")}", 
                             GetText("reaction_roles_message", rr.ReactionRoles?.Count ?? 0, content));
                     }
                 }
@@ -140,7 +139,7 @@ namespace WizBot.Modules.Administration
             [RequireUserPermission(GuildPermission.ManageRoles)]
             public async Task ReactionRolesRemove(int index)
             {
-                if (index < 1 || index > 5 ||
+                if(index < 1 || index > 5 || 
                     !_service.Get(Context.Guild.Id, out var rrs) ||
                     !rrs.Any() || rrs.Count < index)
                 {
@@ -165,7 +164,7 @@ namespace WizBot.Modules.Administration
                 try
                 {
                     await usr.AddRoleAsync(role).ConfigureAwait(false);
-
+                           
                     await ReplyConfirmLocalized("setrole", Format.Bold(role.Name), Format.Bold(usr.ToString()))
                         .ConfigureAwait(false);
                 }
@@ -263,7 +262,7 @@ namespace WizBot.Modules.Administration
             public async Task DeleteRole([Remainder] IRole role)
             {
                 var guser = (IGuildUser)Context.User;
-                if (Context.User.Id != guser.Guild.OwnerId
+                if (Context.User.Id != guser.Guild.OwnerId 
                     && guser.GetRoles().Max(x => x.Position) <= role.Position)
                     return;
 
@@ -313,7 +312,7 @@ namespace WizBot.Modules.Administration
             [RequireBotPermission(GuildPermission.ManageRoles)]
             public async Task MentionRole([Remainder] IRole role)
             {
-                if (!role.IsMentionable)
+                if(!role.IsMentionable)
                 {
                     await role.ModifyAsync(x => x.Mentionable = true).ConfigureAwait(false);
                     await Context.Channel.SendMessageAsync(role.Mention).ConfigureAwait(false);

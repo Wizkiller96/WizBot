@@ -1,7 +1,6 @@
 using Discord;
 using Discord.Commands;
 using WizBot.Extensions;
-using WizBot.Core.Services;
 using System.Threading.Tasks;
 using WizBot.Common.Attributes;
 using WizBot.Modules.Administration.Services;
@@ -12,7 +11,7 @@ namespace WizBot.Modules.Administration
     public partial class Administration
     {
         [Group]
-        public class SlowModeCommands : WizBotSubmodule<SlowmodeService>
+        public class SlowmodeCommands : WizBotSubmodule<SlowmodeService>
         {
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
@@ -56,7 +55,7 @@ namespace WizBot.Modules.Administration
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.ManageMessages)]
             [Priority(0)]
-            public async Task SlowmodeWhitelist(IGuildUser user)
+            public async Task SlowmodeWhitelist([Remainder]IGuildUser user)
             {
                 bool added = _service.ToggleWhitelistUser(user.Guild.Id, user.Id);
 
@@ -70,7 +69,7 @@ namespace WizBot.Modules.Administration
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.ManageMessages)]
             [Priority(1)]
-            public async Task SlowmodeWhitelist(IRole role)
+            public async Task SlowmodeWhitelist([Remainder]IRole role)
             {
                 bool added = _service.ToggleWhitelistRole(role.Guild.Id, role.Id);
 

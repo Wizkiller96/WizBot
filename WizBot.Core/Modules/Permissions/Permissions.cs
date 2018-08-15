@@ -185,13 +185,13 @@ namespace WizBot.Modules.Permissions
 
                         if (!fromFound)
                         {
-                            await ReplyErrorLocalized("not_found", ++from).ConfigureAwait(false);
+                            await ReplyErrorLocalized("not_found", ++from);
                             return;
                         }
 
                         if (!toFound)
                         {
-                            await ReplyErrorLocalized("not_found", ++to).ConfigureAwait(false);
+                            await ReplyErrorLocalized("not_found", ++to);
                             return;
                         }
                         fromPerm = permsCol[from];

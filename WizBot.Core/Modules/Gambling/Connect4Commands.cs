@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using WizBot.Common.Attributes;
@@ -185,7 +185,6 @@ namespace WizBot.Modules.Gambling
                 {
                     for (int j = 0; j < Connect4Game.NumberOfColumns; j++)
                     {
-                        //Console.WriteLine(i + (j * Connect4Game.NumberOfRows) - 1);
                         var cur = game.GameState[i + (j * Connect4Game.NumberOfRows) - 1];
 
                         if (cur == Connect4Game.Field.Empty)

@@ -1,10 +1,11 @@
-using Discord.Commands;
+﻿using Discord.Commands;
 using WizBot.Common.Attributes;
 using WizBot.Extensions;
 using System;
 using System.Threading.Tasks;
 using Discord;
 using WizBot.Core.Modules.Administration.Services;
+using System.Linq;
 
 namespace WizBot.Modules.Administration
 {
@@ -37,15 +38,43 @@ namespace WizBot.Modules.Administration
                     await Context.Channel.SendErrorAsync(ex.ToString()).ConfigureAwait(false);
                 }
             }
+
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
-            public Task ExecSql([Remainder]string sql) =>
+            public Task SqlSelect([Remainder]string sql)
+            {
+                var result = _service.SelectSql(sql);
+
+                return Context.SendPaginatedConfirmAsync(0, (cur) =>
+                {
+                    var items = result.Results.Skip(cur * 20).Take(20);
+
+                    if (!items.Any())
+                    {
+                        return new EmbedBuilder()
+                            .WithErrorColor()
+                            .WithFooter(sql)
+                            .WithDescription("-");
+                    }
+
+                    return new EmbedBuilder()
+                        .WithOkColor()
+                        .WithFooter(sql)
+                        .WithTitle(string.Join(" ║ ", result.ColumnNames))
+                        .WithDescription(string.Join('\n', items.Select(x => string.Join(" ║ ", x))));
+
+                }, result.Results.Count, 20);
+            }
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [OwnerOnly]
+            public Task SqlExec([Remainder]string sql) =>
                 InternalExecSql(sql);
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
             public Task DeleteWaifus() =>
-                ExecSql(DangerousCommandsService.WaifusDeleteSql);
+                SqlExec(DangerousCommandsService.WaifusDeleteSql);
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
@@ -60,17 +89,22 @@ namespace WizBot.Modules.Administration
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
             public Task DeleteCurrency() =>
-                ExecSql(DangerousCommandsService.CurrencyDeleteSql);
+                SqlExec(DangerousCommandsService.CurrencyDeleteSql);
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
             public Task DeletePlaylists() =>
-                ExecSql(DangerousCommandsService.MusicPlaylistDeleteSql);
+                SqlExec(DangerousCommandsService.MusicPlaylistDeleteSql);
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
             public Task DeleteExp() =>
-                ExecSql(DangerousCommandsService.XpDeleteSql);
+                SqlExec(DangerousCommandsService.XpDeleteSql);
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [OwnerOnly]
+            public Task DeleteUnusedCrnQ() =>
+                SqlExec(DangerousCommandsService.DeleteUnusedCustomReactionsAndQuotes);
         }
     }
 }

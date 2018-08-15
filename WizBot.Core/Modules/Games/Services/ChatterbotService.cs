@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
@@ -145,7 +145,7 @@ Message: {usrMsg.Content}");
             catch (Exception ex)
             {
                 _log.Warn("Error in cleverbot");
-                _log.Warn(ex);
+                _log.Warn(ex.Message);
             }
             return false;
         }

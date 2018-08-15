@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using WizBot.Extensions;
@@ -73,7 +73,7 @@ namespace WizBot.Modules.Games
                 if (string.IsNullOrWhiteSpace(text))
                     return;
 
-                _games.AddTypingArticle(Context.User, text);
+                _games.AddTypingArticle(Context.User, text);                
 
                 await channel.SendConfirmAsync("Added new article for typing game.").ConfigureAwait(false);
             }
@@ -112,7 +112,7 @@ namespace WizBot.Modules.Games
 
                 var removed = _games.TypingArticles[index];
                 _games.TypingArticles.RemoveAt(index);
-
+                
                 File.WriteAllText(_games.TypingArticlesPath, JsonConvert.SerializeObject(_games.TypingArticles));
 
                 await channel.SendConfirmAsync($"`Removed typing article:` #{index + 1} - {removed.Text.TrimTo(50)}")

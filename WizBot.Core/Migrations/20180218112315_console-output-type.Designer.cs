@@ -22,7 +22,7 @@ namespace WizBot.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.0.1-rtm-125");
 
-            modelBuilder.Entity("WizBot.Core.Services.Database.Models.AntiRaidSetting", b =>
+            modelBuilder.Entity("WizBotBot.Core.Services.Database.Models.AntiRaidSetting", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();

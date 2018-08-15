@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -34,7 +34,7 @@ namespace WizBot.Core.Common.TypeReaders.Models
                     namesAndValues[groupName] = 0;
                     continue;
                 }
-                
+
                 if (value < 1 ||
                     (groupName == "months" && value > 3) ||
                     (groupName == "weeks" && value > 15) ||

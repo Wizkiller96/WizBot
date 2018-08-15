@@ -60,10 +60,10 @@ namespace WizBot.Modules.Utility
                     .AddField(fb => fb.WithName(GetText("features")).WithValue(features).WithIsInline(true))
                     .WithColor(WizBot.OkColor);
                 if (Uri.IsWellFormedUriString(guild.IconUrl, UriKind.Absolute))
-                    embed.WithImageUrl(guild.IconUrl);
+                    embed.WithThumbnailUrl(guild.IconUrl);
                 if (guild.Emotes.Any())
                 {
-                    embed.AddField(fb =>
+                    embed.AddField(fb => 
                         fb.WithName(GetText("custom_emojis") + $"({guild.Emotes.Count})")
                         .WithValue(string.Join(" ", guild.Emotes
                             .Shuffle()

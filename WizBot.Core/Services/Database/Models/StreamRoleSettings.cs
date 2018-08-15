@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace WizBot.Core.Services.Database.Models
 {
@@ -46,7 +46,6 @@ namespace WizBot.Core.Services.Database.Models
 
         public override bool Equals(object obj)
         {
-
             if (!(obj is StreamRoleBlacklistedUser x))
                 return false;
 

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 
@@ -66,17 +66,8 @@ namespace WizBot.Core.Services.Database.Models
             {
                 AllowAllPerm
             };
-
-        //public Permission Clone() => new Permission()
-        //{
-        //    PrimaryTarget = PrimaryTarget,
-        //    SecondaryTarget = SecondaryTarget,
-        //    PrimaryTargetId = PrimaryTargetId,
-        //    SecondaryTargetName = SecondaryTargetName,
-        //    State = State,
-        //};
     }
-    
+
     public enum PrimaryPermissionType
     {
         User,

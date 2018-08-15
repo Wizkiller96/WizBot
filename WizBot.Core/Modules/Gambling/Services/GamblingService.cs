@@ -1,10 +1,14 @@
-﻿using WizBot.Core.Modules.Gambling.Common;
+﻿using Discord.WebSocket;
+using WizBot.Core.Modules.Gambling.Common;
 using WizBot.Core.Services;
 using WizBot.Modules.Gambling.Common.Connect4;
+using WizBot.Modules.Gambling.Common.WheelOfFortune;
+using Newtonsoft.Json;
 using NLog;
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace WizBot.Modules.Gambling.Services
 {
@@ -15,19 +19,24 @@ namespace WizBot.Modules.Gambling.Services
         private readonly IBotConfigProvider _bc;
         private readonly WizBot _bot;
         private readonly Logger _log;
+        private readonly DiscordSocketClient _client;
+        private readonly IDataCache _cache;
 
         public ConcurrentDictionary<(ulong, ulong), RollDuelGame> Duels { get; } = new ConcurrentDictionary<(ulong, ulong), RollDuelGame>();
         public ConcurrentDictionary<ulong, Connect4Game> Connect4Games { get; } = new ConcurrentDictionary<ulong, Connect4Game>();
 
         private readonly Timer _decayTimer;
 
-        public GamblingService(DbService db, WizBot bot, ICurrencyService cs, IBotConfigProvider bc)
+        public GamblingService(DbService db, WizBot bot, ICurrencyService cs, IBotConfigProvider bc,
+            DiscordSocketClient client, IDataCache cache)
         {
             _db = db;
             _cs = cs;
             _bc = bc;
             _bot = bot;
             _log = LogManager.GetCurrentClassLogger();
+            _client = client;
+            _cache = cache;
 
             if (_bot.Client.ShardId == 0)
             {
@@ -47,10 +56,9 @@ namespace WizBot.Modules.Gambling.Services
                         _cs.AddAsync(_bot.Client.CurrentUser.Id,
                             "Currency Decay",
                             uow.DiscordUsers.GetCurrencyDecayAmount(decay));
-                        botc.LastCurrencyDecay = DateTime.UtcNow;
+                        _bc.BotConfig.LastCurrencyDecay = botc.LastCurrencyDecay = DateTime.UtcNow;
                         uow.Complete();
                     }
-                    _bc.Reload();
                 }, null, TimeSpan.FromHours(1), TimeSpan.FromHours(1));
             }
 
@@ -79,6 +87,59 @@ namespace WizBot.Modules.Gambling.Services
             //    uow.Complete();
             //    _log.Info("Refunded {0} users' stakes.", stakes.Length);
             //}
+        }
+
+        public struct EconomyResult
+        {
+            public decimal Cash { get; set; }
+            public decimal Planted { get; set; }
+            public decimal Waifus { get; set; }
+            public decimal OnePercent { get; set; }
+            public long Bot { get; set; }
+        }
+
+        public EconomyResult GetEconomy()
+        {
+            if (_cache.TryGetEconomy(out var data))
+            {
+                try
+                {
+                    return JsonConvert.DeserializeObject<EconomyResult>(data);
+                }
+                catch { }
+            }
+
+            decimal cash;
+            decimal onePercent;
+            decimal planted;
+            decimal waifus;
+            long bot;
+
+            using (var uow = _db.UnitOfWork)
+            {
+                cash = uow.DiscordUsers.GetTotalCurrency(_client.CurrentUser.Id);
+                onePercent = uow.DiscordUsers.GetTopOnePercentCurrency(_client.CurrentUser.Id);
+                planted = uow.PlantedCurrency.GetTotalPlanted();
+                waifus = uow.Waifus.GetTotalValue();
+                bot = uow.DiscordUsers.GetUserCurrency(_client.CurrentUser.Id);
+            }
+
+            var result = new EconomyResult
+            {
+                Cash = cash,
+                Planted = planted,
+                Bot = bot,
+                Waifus = waifus,
+                OnePercent = onePercent,
+            };
+
+            _cache.SetEconomy(JsonConvert.SerializeObject(result));
+            return result;
+        }
+
+        public Task<WheelOfFortuneGame.Result> WheelOfFortuneSpinAsync(ulong userId, long bet)
+        {
+            return new WheelOfFortuneGame(userId, bet, _cs).SpinAsync();
         }
     }
 }

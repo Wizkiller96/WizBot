@@ -80,7 +80,7 @@ namespace WizBot.Modules.Gambling.Services
                         var ids = JsonConvert.DeserializeObject<VoteModel[]>(resStr)
                             .Select(x => x.User)
                             .Distinct();
-                        await _cs.AddBulkAsync(ids, ids.Select(x => "Voted - <https://discordbots.org/bot/wizbot/vote>"), ids.Select(x => 10L), true).ConfigureAwait(false);
+                        await _cs.AddBulkAsync(ids, ids.Select(x => "Voted - <https://discordbots.org/bot/nadeko/vote>"), ids.Select(x => 10L), true).ConfigureAwait(false);
                     }
                 }
             }
@@ -104,10 +104,10 @@ namespace WizBot.Modules.Gambling.Services
             {
                 ce = new ReactionEvent(_client, _cs, _bc, g, ch, opts, embed);
             }
-            //else if (type == Event.Type.NotRaid)
-            //{
-            //    ce = new NotRaidEvent(_client, _cs, _bc, g, ch, opts, embed);
-            //}
+            else if (type == CurrencyEvent.Type.GameStatus)
+            {
+                ce = new GameStatusEvent(_client, _cs, _bc, g, ch, opts, embed);
+            }
             else
             {
                 return false;

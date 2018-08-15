@@ -1,4 +1,4 @@
-namespace WizBot.Modules.Games.Common.Acrophobia
+﻿namespace WizBot.Modules.Games.Common.Acrophobia
 {
     public class AcrophobiaUser
     {

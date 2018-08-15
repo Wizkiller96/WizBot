@@ -1,4 +1,4 @@
-namespace WizBot.Core.Services
+﻿namespace WizBot.Core.Services
 {
     public static class StandardConversions
     {

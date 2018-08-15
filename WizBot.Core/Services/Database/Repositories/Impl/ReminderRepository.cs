@@ -1,4 +1,4 @@
-using WizBot.Core.Services.Database.Models;
+﻿using WizBot.Core.Services.Database.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +20,7 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
         {
             return _set.Where(x => x.UserId == userId)
                 .OrderBy(x => x.DateAdded)
-                .Skip(page* 10)
+                .Skip(page * 10)
                 .Take(10);
         }
     }

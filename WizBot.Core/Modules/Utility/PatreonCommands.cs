@@ -24,7 +24,7 @@ namespace WizBot.Modules.Utility
                 _db = db;
                 _currency = currency;
             }
-
+            
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.DM)]
             [OwnerOnly]

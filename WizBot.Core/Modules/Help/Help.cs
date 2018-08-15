@@ -92,7 +92,7 @@ namespace WizBot.Modules.Help
 
             // check preconditions for all commands, but only if it's not 'all'
             // because all will show all commands anyway, no need to check
-            HashSet < CommandInfo > succ = new HashSet<CommandInfo>();
+            HashSet<CommandInfo> succ = new HashSet<CommandInfo>();
             if (opts.View != CommandsOptions.ViewType.All)
             {
                 succ = new HashSet<CommandInfo>((await Task.WhenAll(cmds.Select(async x =>
@@ -106,7 +106,7 @@ namespace WizBot.Modules.Help
                 if (opts.View == CommandsOptions.ViewType.Hide)
                 {
                     // if hidden is specified, completely remove these commands from the list
-                cmds = cmds.Where(x => succ.Contains(x));
+                    cmds = cmds.Where(x => succ.Contains(x));
                 }
             }
 
@@ -151,7 +151,7 @@ namespace WizBot.Modules.Help
                                     return $"{x.First()}";
                                 else
                                     return String.Concat(x);
-                            });                        
+                            });
                     }
                     embed.AddField(g.ElementAt(i).Key, "```css\n" + string.Join("\n", transformed) + "\n```", true);
                 }

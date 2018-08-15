@@ -1,4 +1,4 @@
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace WizBot.Core.Services
 {
@@ -7,7 +7,7 @@ namespace WizBot.Core.Services
     /// </summary>
     public interface INService
     {
-
+        
     }
 
     /// <summary>

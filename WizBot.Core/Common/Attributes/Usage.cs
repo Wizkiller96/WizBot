@@ -9,7 +9,7 @@ namespace WizBot.Common.Attributes
     [AttributeUsage(AttributeTargets.Method)]
     public sealed class UsageAttribute : RemarksAttribute
     {
-        public UsageAttribute([CallerMemberName] string memberName = "") : base(UsageAttribute.GetUsage(memberName))
+        public UsageAttribute([CallerMemberName] string memberName="") : base(UsageAttribute.GetUsage(memberName))
         {
 
         }

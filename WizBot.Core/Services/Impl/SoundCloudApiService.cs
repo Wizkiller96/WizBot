@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Linq;
 using System.Net.Http;
@@ -78,7 +78,6 @@ namespace WizBot.Core.Services.Impl
             using (var http = new HttpClient())
             {
                 var url = await http.GetStringAsync(new Uri($"http://scapi.nadekobot.me/stream/{Id}"));
-
                 return url;
             }
         }

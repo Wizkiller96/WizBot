@@ -1,4 +1,4 @@
-using WizBot.Common;
+﻿using WizBot.Common;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -148,7 +148,7 @@ namespace WizBot.Modules.Games.Common.Nunchi
             _killTimer.Change(_killTimeout, _killTimeout);
             CurrentNumber = new WizBotRandom().Next(0, 100); // reset the counter
             _passed.Clear(); // reset all users who passed (new round starts)
-            if (failure != null)
+            if(failure != null)
                 _participants.Remove(failure.Value); // remove the dude who failed from the list of players
 
             var __ = OnRoundEnded?.Invoke(this, failure);
@@ -166,7 +166,7 @@ namespace WizBot.Modules.Games.Common.Nunchi
                 CurrentPhase = Phase.Playing;
                 var ___ = OnRoundStarted?.Invoke(this, CurrentNumber);
             });
-
+            
         }
 
         public void Dispose()

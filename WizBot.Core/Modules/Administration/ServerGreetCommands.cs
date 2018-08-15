@@ -58,7 +58,7 @@ namespace WizBot.Modules.Administration
                 if (string.IsNullOrWhiteSpace(text))
                 {
                     await GreetMsg().ConfigureAwait(false);
-                    return;
+                    return;                    
                 }
 
                 var sendGreetEnabled = _service.SetGreetMessage(Context.Guild.Id, ref text);

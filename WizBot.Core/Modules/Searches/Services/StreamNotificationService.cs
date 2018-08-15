@@ -23,8 +23,9 @@ namespace WizBot.Modules.Searches.Services
 {
     public class StreamNotificationService : INService
     {
+#if !GLOBAL_WIZBOT && !DEBUG
         private bool _firstStreamNotifPass = true;
-
+#endif
         private readonly DbService _db;
         private readonly DiscordSocketClient _client;
         private readonly WizBotStrings _strings;
@@ -35,7 +36,8 @@ namespace WizBot.Modules.Searches.Services
         private readonly Random _rng = new WizBotRandom();
         private readonly ConcurrentDictionary<
             (FollowedStream.FType Type, string Username),
-            ConcurrentHashSet<(ulong GuildId, FollowedStream fs)>> _followedStreams;
+            ConcurrentHashSet<(ulong GuildId, FollowedStream fs)>> _followedStreams 
+                = new ConcurrentDictionary<(FollowedStream.FType Type, string Username), ConcurrentHashSet<(ulong GuildId, FollowedStream fs)>>();
         private readonly ConcurrentHashSet<ulong> _yesOffline = new ConcurrentHashSet<ulong>();
 
         public StreamNotificationService(WizBot bot, DbService db, DiscordSocketClient client,
@@ -50,6 +52,7 @@ namespace WizBot.Modules.Searches.Services
             _http.DefaultRequestHeaders.TryAddWithoutValidation("Client-ID", _creds.TwitchClientId);
             _log = LogManager.GetCurrentClassLogger();
 
+#if !GLOBAL_WIZBOT && !DEBUG
             _followedStreams = bot.AllGuildConfigs
                 .SelectMany(x => x.FollowedStreams)
                 .GroupBy(x => (x.Type, x.Username))
@@ -61,7 +64,6 @@ namespace WizBot.Modules.Searches.Services
                 .Select(x => x.GuildId));
 
             _cache.SubscribeToStreamUpdates(OnStreamsUpdated);
-
             if (_client.ShardId == 0)
             {
                 var _ = Task.Run(async () =>
@@ -124,6 +126,7 @@ namespace WizBot.Modules.Searches.Services
                     }
                 });
             }
+#endif
         }
 
         private async Task OnStreamsUpdated(StreamResponse[] updates)
@@ -234,7 +237,7 @@ namespace WizBot.Modules.Searches.Services
             }
             catch (Exception ex)
             {
-                _log.Warn(ex);
+                _log.Warn(ex.Message);
                 return null;
             }
         }

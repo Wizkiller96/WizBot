@@ -1,4 +1,4 @@
-namespace WizBot.Core.Modules.Searches.Common
+﻿namespace WizBot.Core.Modules.Searches.Common
 {
     public class UrbanResponse
     {

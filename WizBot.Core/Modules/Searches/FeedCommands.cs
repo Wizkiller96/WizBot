@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.SyndicationFeed.Rss;
@@ -43,8 +43,7 @@ namespace WizBot.Modules.Searches
                         }
                         catch (Exception ex)
                         {
-
-                            Console.WriteLine(ex);
+                            _log.Warn(ex);
                             success = false;
                         }
                     }

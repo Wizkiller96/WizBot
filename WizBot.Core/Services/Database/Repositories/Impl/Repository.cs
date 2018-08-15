@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using WizBot.Core.Services.Database.Models;
 using System.Collections.Generic;
 using System.Linq;

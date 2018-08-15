@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
@@ -131,7 +131,7 @@ namespace WizBot.Core.Services.Impl
                                 : dbSection["ConnectionString"]);
 
                 TwitchClientId = data[nameof(TwitchClientId)];
-                if (string.IsNullOrWhiteSpace(TwitchClientId))
+                if(string.IsNullOrWhiteSpace(TwitchClientId))
                 {
                     TwitchClientId = "67w6z9i09xv2uoojdm9l0wsyph4hxo6";
                 }

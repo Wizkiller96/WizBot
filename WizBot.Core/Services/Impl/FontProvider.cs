@@ -1,4 +1,4 @@
-using SixLabors.Fonts;
+﻿using SixLabors.Fonts;
 using System.IO;
 
 namespace WizBot.Core.Services.Impl

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace WizBot.Core.Services.Database.Models
@@ -12,7 +12,7 @@ namespace WizBot.Core.Services.Database.Models
         public string ImageUrl { get; set; } = "";
         public int MinimumLevelReq { get; set; } = 5;
         public int Xp { get; set; } = 0;
-
+        
         public int OwnerId { get; set; }
         public DiscordUser Owner { get; set; }
 

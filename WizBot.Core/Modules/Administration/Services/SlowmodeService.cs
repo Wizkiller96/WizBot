@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +23,7 @@ namespace WizBot.Modules.Administration.Services
         public class Options : IWizBotCommandOptions
         {
             [Option('m', "message-count", Required = false, Default = 1, HelpText = "Number of messages user can send.")]
-            public uint MessageCount { get; set; } = 1;
+            public int MessageCount { get; set; } = 1;
 
             [Option('s', "seconds", Required = false, Default = 5, HelpText = "Interval in which the user can send the specified number of messages.")]
             public int PerSec { get; set; } = 5;
@@ -47,7 +47,7 @@ namespace WizBot.Modules.Administration.Services
         private readonly Logger _log;
         private readonly DiscordSocketClient _client;
 
-        private Timer _deleteTimer;
+        private readonly Timer _deleteTimer;
         // channels with a queue of messages scheduled for deletion
         public ConcurrentDictionary<(ulong GuildId, ulong ChannelId), ConcurrentQueue<ulong>> SlowmodeToDelete { get; }
             = new ConcurrentDictionary<(ulong, ulong), ConcurrentQueue<ulong>>();
@@ -238,9 +238,17 @@ namespace WizBot.Modules.Administration.Services
                 usrs = uow.GuildConfigs.ForId(guildId, set => set.Include(x => x.SlowmodeIgnoredUsers))
                     .SlowmodeIgnoredUsers;
 
+                var toDelete = usrs.FirstOrDefault(x => x == siu);
+                removed = toDelete != null;
                 // try removing - if remove is unsuccessful, add
-                if (!(removed = usrs.Remove(siu)))
+                if (removed)
+                {
+                    uow._context.Remove(toDelete);
+                }
+                else
+                {
                     usrs.Add(siu);
+                }
 
                 uow.Complete();
             }
@@ -275,9 +283,16 @@ namespace WizBot.Modules.Administration.Services
             {
                 roles = uow.GuildConfigs.ForId(guildId, set => set.Include(x => x.SlowmodeIgnoredRoles))
                     .SlowmodeIgnoredRoles;
-                // try removing the role - if it's not removed, add it
-                if (!(removed = roles.Remove(sir)))
+                var toDelete = roles.FirstOrDefault(x => x == sir);
+                removed = toDelete != null;
+                if (removed)
+                {
+                    uow._context.Remove(toDelete);
+                }
+                else
+                {
                     roles.Add(sir);
+                }
 
                 uow.Complete();
             }
@@ -297,12 +312,14 @@ namespace WizBot.Modules.Administration.Services
             return !removed;
         }
 
-        public bool StartSlowmode(ulong id, uint msgCount, int perSec)
+        public bool StartSlowmode(ulong id, int msgCount, int perSec)
         {
+            if (msgCount < 0)
+                return false;
             // create a new ratelimiter object which holds the settings
             var rl = new Slowmoder
             {
-                MaxMessages = msgCount,
+                MaxMessages = (uint)msgCount,
                 PerSeconds = perSec,
             };
             // return whether it's added. If it's not added, the new settings are not applied

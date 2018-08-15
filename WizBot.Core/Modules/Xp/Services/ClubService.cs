@@ -1,4 +1,4 @@
-using WizBot.Core.Services;
+﻿using WizBot.Core.Services;
 using System;
 using WizBot.Core.Services.Database.Models;
 using Discord;

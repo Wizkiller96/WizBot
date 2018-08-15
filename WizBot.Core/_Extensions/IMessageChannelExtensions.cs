@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using System;
@@ -12,7 +12,7 @@ namespace WizBot.Extensions
     {
         public static Task<IUserMessage> EmbedAsync(this IMessageChannel ch, EmbedBuilder embed, string msg = "")
             => ch.SendMessageAsync(msg, embed: embed.Build(),
-                options: new RequestOptions() { RetryMode = RetryMode.AlwaysRetry });
+                options: new RequestOptions() { RetryMode  = RetryMode.AlwaysRetry });
 
         public static Task<IUserMessage> SendErrorAsync(this IMessageChannel ch, string title, string error, string url = null, string footer = null)
         {
@@ -53,7 +53,7 @@ namespace WizBot.Extensions
 
         public static Task<IUserMessage> SendTableAsync<T>(this IMessageChannel ch, IEnumerable<T> items, Func<T, string> howToPrint, int columns = 3) =>
             ch.SendTableAsync("", items, howToPrint, columns);
-
+        
         private static readonly IEmote arrow_left = new Emoji("⬅");
         private static readonly IEmote arrow_right = new Emoji("➡");
 
@@ -65,7 +65,7 @@ namespace WizBot.Extensions
         /// <summary>
         /// danny kamisama
         /// </summary>
-        public static async Task SendPaginatedConfirmAsync(this ICommandContext ctx, int currentPage,
+        public static async Task SendPaginatedConfirmAsync(this ICommandContext ctx, int currentPage, 
             Func<int, Task<EmbedBuilder>> pageFunc, int totalElements, int itemsPerPage, bool addPaginatedFooter = true)
         {
             var embed = await pageFunc(currentPage).ConfigureAwait(false);
@@ -130,7 +130,7 @@ namespace WizBot.Extensions
 
             try
             {
-                if (msg.Channel is ITextChannel && ((SocketGuild)ctx.Guild).CurrentUser.GuildPermissions.ManageMessages)
+                if(msg.Channel is ITextChannel && ((SocketGuild)ctx.Guild).CurrentUser.GuildPermissions.ManageMessages)
                 {
                     await msg.RemoveAllReactionsAsync().ConfigureAwait(false);
                 }

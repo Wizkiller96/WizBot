@@ -16,7 +16,7 @@ namespace WizBot.Modules.Searches.Common
         {
             using (var http = factory.CreateClient())
             {
-                var res = await http.GetStringAsync(String.Format(queryUrl, name.Trim().Replace(' ', '+'))).ConfigureAwait(false);
+                var res = await http.GetStringAsync(String.Format(queryUrl,name.Trim().Replace(' ','+'))).ConfigureAwait(false);
                 var movie = JsonConvert.DeserializeObject<OmdbMovie>(res);
                 if (movie?.Title == null)
                     return null;

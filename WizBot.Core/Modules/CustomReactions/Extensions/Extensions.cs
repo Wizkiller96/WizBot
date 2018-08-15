@@ -49,7 +49,7 @@ namespace WizBot.Modules.CustomReactions.Extensions
         {
             var rep = new ReplacementBuilder()
                 .WithUser(ctx.Author)
-                .WithClient(client)
+                .WithMention(client)
                 .Build();
 
             str = rep.Replace(str.ToLowerInvariant());
@@ -94,8 +94,6 @@ namespace WizBot.Modules.CustomReactions.Extensions
         public static async Task<IUserMessage> Send(this CustomReaction cr, IUserMessage ctx, DiscordSocketClient client, CustomReactionsService crs)
         {
             var channel = cr.DmResponse ? await ctx.Author.GetOrCreateDMChannelAsync().ConfigureAwait(false) : ctx.Channel;
-
-            crs.ReactionStats.AddOrUpdate(cr.Trigger, 1, (k, old) => ++old);
 
             if (CREmbed.TryParse(cr.Response, out CREmbed crembed))
             {

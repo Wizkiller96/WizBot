@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace WizBot.Modules.Games.Common.Hangman.Exceptions
 {

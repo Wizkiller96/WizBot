@@ -275,16 +275,19 @@ namespace WizBot.Modules.Searches
                     Type = type
                 };
 
-                bool removed;
+                FollowedStream removed;
                 using (var uow = _db.UnitOfWork)
                 {
                     var config = uow.GuildConfigs.ForId(Context.Guild.Id, set => set.Include(gc => gc.FollowedStreams));
-                    removed = config.FollowedStreams.Remove(fs);
-                    if (removed)
-                        await uow.CompleteAsync();
+                    removed = config.FollowedStreams.FirstOrDefault(x => x.Equals(fs));
+                    if (removed != null)
+                    {
+                        uow._context.Remove(removed);
+                    }
+                    await uow.CompleteAsync();
                 }
                 _service.UntrackStream(fs);
-                if (!removed)
+                if (removed == null)
                 {
                     await ReplyErrorLocalized("stream_no").ConfigureAwait(false);
                     return;

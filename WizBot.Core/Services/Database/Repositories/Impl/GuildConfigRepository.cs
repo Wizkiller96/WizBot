@@ -1,4 +1,4 @@
-using WizBot.Core.Services.Database.Models;
+﻿using WizBot.Core.Services.Database.Models;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
@@ -205,6 +205,20 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
                 gc.XpSettings = new XpSettings();
 
             return gc.XpSettings;
+        }
+
+        public IEnumerable<GeneratingChannel> GetGeneratingChannels()
+        {
+            return _set
+                .Include(x => x.GenerateCurrencyChannelIds)
+                .Where(x => x.GenerateCurrencyChannelIds.Any())
+                .SelectMany(x => x.GenerateCurrencyChannelIds)
+                .Select(x => new GeneratingChannel()
+                {
+                    ChannelId = x.ChannelId,
+                    GuildId = x.GuildConfig.GuildId
+                })
+                .ToArray();
         }
     }
 }

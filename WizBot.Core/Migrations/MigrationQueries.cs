@@ -1,4 +1,4 @@
-namespace WizBot.Migrations
+﻿namespace WizBot.Migrations
 {
     internal class MigrationQueries
     {

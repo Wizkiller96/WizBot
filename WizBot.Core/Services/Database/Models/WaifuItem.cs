@@ -1,9 +1,10 @@
-using System;
+﻿using System;
 
 namespace WizBot.Core.Services.Database.Models
 {
     public class WaifuItem : DbEntity
     {
+        public int? WaifuInfoId { get; set; }
         public string ItemEmoji { get; set; }
         public int Price { get; set; }
         public ItemName Item { get; set; }
@@ -22,7 +23,6 @@ namespace WizBot.Core.Services.Database.Models
             Violin,
             Ring,
             Helicopter,
-            Airplane,
             Iphone, //4000
             Cat, //2000
             Dog, //2001
@@ -167,9 +167,6 @@ namespace WizBot.Core.Services.Database.Models
                     break;
                 case ItemName.Helicopter:
                     wi = new WaifuItem("🚁", 20000, itemName);
-                    break;
-                case ItemName.Airplane:
-                    wi = new WaifuItem("✈", 25000, itemName);
                     break;
                 case ItemName.Spaceship:
                     wi = new WaifuItem("🚀", 30000, itemName);

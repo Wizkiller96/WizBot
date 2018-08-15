@@ -1,4 +1,4 @@
-using WizBot.Core.Services.Database.Models;
+﻿using WizBot.Core.Services.Database.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
@@ -48,8 +48,7 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
                         x.Forgiven = true;
                         x.ForgivenBy = mod;
                     }
-                })
-                .ConfigureAwait(false);
+                });
         }
 
         public Warning[] GetForGuild(ulong id)

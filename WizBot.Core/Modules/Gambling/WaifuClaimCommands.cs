@@ -1,74 +1,22 @@
 ﻿using Discord;
 using Discord.Commands;
 using WizBot.Extensions;
-using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WizBot.Common;
 using WizBot.Common.Attributes;
 using WizBot.Modules.Gambling.Services;
-using Discord.WebSocket;
+using WizBot.Core.Modules.Gambling.Common.Waifu;
+using System.Diagnostics;
 
 namespace WizBot.Modules.Gambling
 {
     public partial class Gambling
     {
-        public enum ClaimTitles
-        {
-            Lonely,
-            Devoted,
-            Rookie,
-            Schemer,
-            Dilettante,
-            Intermediate,
-            Seducer,
-            Expert,
-            Veteran,
-            Incubis,
-            Harem_King,
-            Harem_God,
-        }
-
-        public enum AffinityTitles
-        {
-            Pure,
-            Faithful,
-            Defiled,
-            Cheater,
-            Tainted,
-            Corrupted,
-            Lewd,
-            Sloot,
-            Depraved,
-            Harlot
-        }
-
         [Group]
         public class WaifuClaimCommands : WizBotSubmodule<WaifuService>
         {
-            enum WaifuClaimResult
-            {
-                Success,
-                NotEnoughFunds,
-                InsufficientAmount
-            }
-
-            private readonly ICurrencyService _cs;
-            private readonly DbService _db;
-            private readonly IDataCache _cache;
-            private readonly DiscordSocketClient _client;
-
-            public WaifuClaimCommands(IDataCache cache, ICurrencyService cs, DbService db, DiscordSocketClient client)
-            {
-                _cs = cs;
-                _db = db;
-                _cache = cache;
-                _client = client;
-            }
-
             [WizBotCommand, Usage, Description, Aliases]
             public async Task WaifuReset()
             {
@@ -77,15 +25,15 @@ namespace WizBot.Modules.Gambling
                         .WithTitle(GetText("waifu_reset_confirm"))
                         .WithDescription(GetText("cost", Format.Bold(price + Bc.BotConfig.CurrencySign)));
 
-                if (!await PromptUserConfirmAsync(embed).ConfigureAwait(false))
+                if (!await PromptUserConfirmAsync(embed))
                     return;
 
-                if (await _service.TryReset(Context.User).ConfigureAwait(false))
+                if (await _service.TryReset(Context.User))
                 {
-                    await ReplyConfirmLocalized("waifu_reset").ConfigureAwait(false);
+                    await ReplyConfirmLocalized("waifu_reset");
                     return;
                 }
-                await ReplyErrorLocalized("waifu_reset_fail").ConfigureAwait(false);
+                await ReplyErrorLocalized("waifu_reset_fail");
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -94,109 +42,26 @@ namespace WizBot.Modules.Gambling
             {
                 if (amount < Bc.BotConfig.MinWaifuPrice)
                 {
-                    await ReplyErrorLocalized("waifu_isnt_cheap", Bc.BotConfig.MinWaifuPrice + Bc.BotConfig.CurrencySign).ConfigureAwait(false);
+                    await ReplyErrorLocalized("waifu_isnt_cheap", Bc.BotConfig.MinWaifuPrice + Bc.BotConfig.CurrencySign);
                     return;
                 }
 
                 if (target.Id == Context.User.Id)
                 {
-                    await ReplyErrorLocalized("waifu_not_yourself").ConfigureAwait(false);
+                    await ReplyErrorLocalized("waifu_not_yourself");
                     return;
                 }
 
-                WaifuClaimResult result;
-                WaifuInfo w;
-                bool isAffinity;
-                using (var uow = _db.UnitOfWork)
-                {
-                    w = uow.Waifus.ByWaifuUserId(target.Id);
-                    isAffinity = (w?.Affinity?.UserId == Context.User.Id);
-                    if (w == null)
-                    {
-                        var claimer = uow.DiscordUsers.GetOrCreate(Context.User);
-                        var waifu = uow.DiscordUsers.GetOrCreate(target);
-                        if (!await _cs.RemoveAsync(Context.User.Id, "Claimed Waifu", amount, gamble: true).ConfigureAwait(false))
-                        {
-                            result = WaifuClaimResult.NotEnoughFunds;
-                        }
-                        else
-                        {
-                            uow.Waifus.Add(w = new WaifuInfo()
-                            {
-                                Waifu = waifu,
-                                Claimer = claimer,
-                                Affinity = null,
-                                Price = amount
-                            });
-                            uow._context.WaifuUpdates.Add(new WaifuUpdate()
-                            {
-                                User = waifu,
-                                Old = null,
-                                New = claimer,
-                                UpdateType = WaifuUpdateType.Claimed
-                            });
-                            result = WaifuClaimResult.Success;
-                        }
-                    }
-                    else if (isAffinity && amount > w.Price * 0.88f)
-                    {
-                        if (!await _cs.RemoveAsync(Context.User.Id, "Claimed Waifu", amount, gamble: true).ConfigureAwait(false))
-                        {
-                            result = WaifuClaimResult.NotEnoughFunds;
-                        }
-                        else
-                        {
-                            var oldClaimer = w.Claimer;
-                            w.Claimer = uow.DiscordUsers.GetOrCreate(Context.User);
-                            w.Price = amount + (amount / 4);
-                            result = WaifuClaimResult.Success;
-
-                            uow._context.WaifuUpdates.Add(new WaifuUpdate()
-                            {
-                                User = w.Waifu,
-                                Old = oldClaimer,
-                                New = w.Claimer,
-                                UpdateType = WaifuUpdateType.Claimed
-                            });
-                        }
-                    }
-                    else if (amount >= w.Price * 1.1f) // if no affinity
-                    {
-                        if (!await _cs.RemoveAsync(Context.User.Id, "Claimed Waifu", amount, gamble: true).ConfigureAwait(false))
-                        {
-                            result = WaifuClaimResult.NotEnoughFunds;
-                        }
-                        else
-                        {
-                            var oldClaimer = w.Claimer;
-                            w.Claimer = uow.DiscordUsers.GetOrCreate(Context.User);
-                            w.Price = amount;
-                            result = WaifuClaimResult.Success;
-
-                            uow._context.WaifuUpdates.Add(new WaifuUpdate()
-                            {
-                                User = w.Waifu,
-                                Old = oldClaimer,
-                                New = w.Claimer,
-                                UpdateType = WaifuUpdateType.Claimed
-                            });
-                        }
-                    }
-                    else
-                        result = WaifuClaimResult.InsufficientAmount;
-
-
-                    await uow.CompleteAsync();
-                }
+                var (w, isAffinity, result) = await _service.ClaimWaifuAsync(Context.User, target, amount);
 
                 if (result == WaifuClaimResult.InsufficientAmount)
                 {
-                    await ReplyErrorLocalized("waifu_not_enough", Math.Ceiling(w.Price * (isAffinity ? 0.88f : 1.1f))).ConfigureAwait(false);
+                    await ReplyErrorLocalized("waifu_not_enough", Math.Ceiling(w.Price * (isAffinity ? 0.88f : 1.1f)));
                     return;
                 }
                 if (result == WaifuClaimResult.NotEnoughFunds)
                 {
-                    await ReplyErrorLocalized("not_enough", Bc.BotConfig.CurrencySign).ConfigureAwait(false);
+                    await ReplyErrorLocalized("not_enough", Bc.BotConfig.CurrencySign);
                     return;
                 }
                 var msg = GetText("waifu_claimed",
@@ -206,7 +71,7 @@ namespace WizBot.Modules.Gambling
                     msg += "\n" + GetText("waifu_fulfilled", target, w.Price + Bc.BotConfig.CurrencySign);
                 else
                     msg = " " + msg;
-                await Context.Channel.SendConfirmAsync(Context.User.Mention + msg).ConfigureAwait(false);
+                await Context.Channel.SendConfirmAsync(Context.User.Mention + msg);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -214,24 +79,16 @@ namespace WizBot.Modules.Gambling
             public async Task WaifuTransfer(IUser waifu, IUser newOwner)
             {
                 if (!await _service.WaifuTransfer(Context.User, waifu.Id, newOwner)
-                    .ConfigureAwait(false))
+                    )
                 {
-                    await ReplyErrorLocalized("waifu_transfer_fail").ConfigureAwait(false);
+                    await ReplyErrorLocalized("waifu_transfer_fail");
                     return;
                 }
 
                 await ReplyConfirmLocalized("waifu_transfer_success",
                     Format.Bold(waifu.ToString()),
                     Format.Bold(Context.User.ToString()),
-                    Format.Bold(newOwner.ToString())).ConfigureAwait(false);
-            }
-
-            public enum DivorceResult
-            {
-                Success,
-                SucessWithPenalty,
-                NotYourWife,
-                Cooldown
+                    Format.Bold(newOwner.ToString()));
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -247,68 +104,25 @@ namespace WizBot.Modules.Gambling
                 if (targetId == Context.User.Id)
                     return;
 
-                DivorceResult result;
-                TimeSpan? remaining = null;
-                var amount = 0;
-                WaifuInfo w = null;
-                using (var uow = _db.UnitOfWork)
-                {
-                    w = uow.Waifus.ByWaifuUserId(targetId);
-                    var now = DateTime.UtcNow;
-                    if (w?.Claimer == null || w.Claimer.UserId != Context.User.Id)
-                        result = DivorceResult.NotYourWife;
-                    else if (!_cache.TryAddDivorceCooldown(Context.User.Id, out remaining))
-                    {
-                        result = DivorceResult.Cooldown;
-                    }
-                    else
-                    {
-                        amount = w.Price / 2;
-
-                        if (w.Affinity?.UserId == Context.User.Id)
-                        {
-                            await _cs.AddAsync(w.Waifu.UserId, "Waifu Compensation", amount, gamble: true).ConfigureAwait(false);
-                            w.Price = (int)Math.Floor(w.Price * 0.75f);
-                            result = DivorceResult.SucessWithPenalty;
-                        }
-                        else
-                        {
-                            await _cs.AddAsync(Context.User.Id, "Waifu Refund", amount, gamble: true).ConfigureAwait(false);
-
-                            result = DivorceResult.Success;
-                        }
-                        var oldClaimer = w.Claimer;
-                        w.Claimer = null;
-
-                        uow._context.WaifuUpdates.Add(new WaifuUpdate()
-                        {
-                            User = w.Waifu,
-                            Old = oldClaimer,
-                            New = null,
-                            UpdateType = WaifuUpdateType.Claimed
-                        });
-                    }
-
-                    await uow.CompleteAsync();
-                }
+                var (w, result, amount, remaining) = await _service.DivorceWaifuAsync(Context.User, targetId);
 
                 if (result == DivorceResult.SucessWithPenalty)
                 {
-                    await ReplyConfirmLocalized("waifu_divorced_like", Format.Bold(w.Waifu.ToString()), amount + Bc.BotConfig.CurrencySign).ConfigureAwait(false);
+                    await ReplyConfirmLocalized("waifu_divorced_like", Format.Bold(w.Waifu.ToString()), amount + Bc.BotConfig.CurrencySign);
                 }
                 else if (result == DivorceResult.Success)
                 {
-                    await ReplyConfirmLocalized("waifu_divorced_notlike", amount + Bc.BotConfig.CurrencySign).ConfigureAwait(false);
+                    await ReplyConfirmLocalized("waifu_divorced_notlike", amount + Bc.BotConfig.CurrencySign);
                 }
                 else if (result == DivorceResult.NotYourWife)
                 {
-                    await ReplyErrorLocalized("waifu_not_yours").ConfigureAwait(false);
+                    await ReplyErrorLocalized("waifu_not_yours");
                 }
                 else
                 {
                     await ReplyErrorLocalized("waifu_recent_divorce",
                         Format.Bold(((int)remaining?.TotalHours).ToString()),
-                        Format.Bold(remaining?.Minutes.ToString())).ConfigureAwait(false);
+                        Format.Bold(remaining?.Minutes.ToString()));
                 }
             }
 
@@ -318,87 +132,35 @@ namespace WizBot.Modules.Gambling
             {
                 if (u?.Id == Context.User.Id)
                 {
-                    await ReplyErrorLocalized("waifu_egomaniac").ConfigureAwait(false);
+                    await ReplyErrorLocalized("waifu_egomaniac");
                     return;
                 }
-                DiscordUser oldAff = null;
-                var sucess = false;
-                TimeSpan? remaining = null;
-                using (var uow = _db.UnitOfWork)
-                {
-                    var w = uow.Waifus.ByWaifuUserId(Context.User.Id);
-                    var newAff = u == null ? null : uow.DiscordUsers.GetOrCreate(u);
-                    var now = DateTime.UtcNow;
-                    if (w?.Affinity?.UserId == u?.Id)
-                    {
-
-                    }
-                    else if (!_cache.TryAddAffinityCooldown(Context.User.Id, out remaining))
-                    {
-                    }
-                    else if (w == null)
-                    {
-                        var thisUser = uow.DiscordUsers.GetOrCreate(Context.User);
-                        uow.Waifus.Add(new WaifuInfo()
-                        {
-                            Affinity = newAff,
-                            Waifu = thisUser,
-                            Price = 1,
-                            Claimer = null
-                        });
-                        sucess = true;
-
-                        uow._context.WaifuUpdates.Add(new WaifuUpdate()
-                        {
-                            User = thisUser,
-                            Old = null,
-                            New = newAff,
-                            UpdateType = WaifuUpdateType.AffinityChanged
-                        });
-                    }
-                    else
-                    {
-                        if (w.Affinity != null)
-                            oldAff = w.Affinity;
-                        w.Affinity = newAff;
-                        sucess = true;
-
-                        uow._context.WaifuUpdates.Add(new WaifuUpdate()
-                        {
-                            User = w.Waifu,
-                            Old = oldAff,
-                            New = newAff,
-                            UpdateType = WaifuUpdateType.AffinityChanged
-                        });
-                    }
-
-                    await uow.CompleteAsync();
-                }
+                var (oldAff, sucess, remaining) = await _service.ChangeAffinityAsync(Context.User, u);
                 if (!sucess)
                 {
                     if (remaining != null)
                     {
                         await ReplyErrorLocalized("waifu_affinity_cooldown",
                             Format.Bold(((int)remaining?.TotalHours).ToString()),
-                            Format.Bold(remaining?.Minutes.ToString())).ConfigureAwait(false);
+                            Format.Bold(remaining?.Minutes.ToString()));
                     }
                     else
                     {
-                        await ReplyErrorLocalized("waifu_affinity_already").ConfigureAwait(false);
+                        await ReplyErrorLocalized("waifu_affinity_already");
                     }
                     return;
                 }
                 if (u == null)
                 {
-                    await ReplyConfirmLocalized("waifu_affinity_reset").ConfigureAwait(false);
+                    await ReplyConfirmLocalized("waifu_affinity_reset");
                 }
                 else if (oldAff == null)
                 {
-                    await ReplyConfirmLocalized("waifu_affinity_set", Format.Bold(u.ToString())).ConfigureAwait(false);
+                    await ReplyConfirmLocalized("waifu_affinity_set", Format.Bold(u.ToString()));
                 }
                 else
                 {
-                    await ReplyConfirmLocalized("waifu_affinity_changed", Format.Bold(oldAff.ToString()), Format.Bold(u.ToString())).ConfigureAwait(false);
+                    await ReplyConfirmLocalized("waifu_affinity_changed", Format.Bold(oldAff.ToString()), Format.Bold(u.ToString()));
                 }
             }
 
@@ -411,15 +173,14 @@ namespace WizBot.Modules.Gambling
                 if (page < 0)
                     return;
 
-                IList<WaifuInfo> waifus;
-                using (var uow = _db.UnitOfWork)
-                {
-                    waifus = uow.Waifus.GetTop(9, page * 9);
-                }
+                if (page > 100)
+                    page = 100;
+                
+                var waifus = _service.GetTopWaifusAtPage(page);
 
-                if (waifus.Count == 0)
+                if (waifus.Count() == 0)
                 {
-                    await ReplyConfirmLocalized("waifus_none").ConfigureAwait(false);
+                    await ReplyConfirmLocalized("waifus_none");
                     return;
                 }
 
@@ -427,15 +188,14 @@ namespace WizBot.Modules.Gambling
                     .WithTitle(GetText("waifus_top_waifus"))
                     .WithOkColor();
 
-                for (var i = 0; i < waifus.Count; i++)
+                var i = 0;
+                foreach (var w in waifus)
                 {
-                    var w = waifus[i];
-
-                    var j = i;
+                    var j = i++;
                     embed.AddField(efb => efb.WithName("#" + ((page * 9) + j + 1) + " - " + w.Price + Bc.BotConfig.CurrencySign).WithValue(w.ToString()).WithIsInline(false));
                 }
 
-                await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
+                await Context.Channel.EmbedAsync(embed);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -444,60 +204,30 @@ namespace WizBot.Modules.Gambling
             {
                 if (target == null)
                     target = (IGuildUser)Context.User;
-                WaifuInfo w;
-                IList<WaifuInfo> claims;
-                int divorces;
-                using (var uow = _db.UnitOfWork)
-                {
-                    w = uow.Waifus.ByWaifuUserId(target.Id);
-                    claims = uow.Waifus.ByClaimerUserId(target.Id);
-                    divorces = uow._context.WaifuUpdates.Count(x => x.Old != null &&
-                        x.Old.UserId == target.Id &&
-                        x.UpdateType == WaifuUpdateType.Claimed &&
-                        x.New == null);
-                    if (w == null)
-                    {
-                        uow.Waifus.Add(w = new WaifuInfo()
-                        {
-                            Affinity = null,
-                            Claimer = null,
-                            Price = 1,
-                            Waifu = uow.DiscordUsers.GetOrCreate(target),
-                        });
-                    }
-
-                    w.Waifu.Username = target.Username;
-                    w.Waifu.Discriminator = target.Discriminator;
-                    await uow.CompleteAsync();
-                }
-
-                var claimInfo = GetClaimTitle(target.Id);
-                var affInfo = GetAffinityTitle(target.Id);
-
-                var rng = new WizBotRandom();
+                var wi = _service.GetFullWaifuInfoAsync(target);
+                var affInfo = _service.GetAffinityTitle(wi.AffinityCount);
 
                 var nobody = GetText("nobody");
                 var i = 0;
-                var itemsStr = !w.Items.Any()
+                var itemsStr = !wi.Items.Any()
                     ? "-"
-                    : string.Join("\n", w.Items
+                    : string.Join("\n", wi.Items
                         .OrderBy(x => x.Price)
                         .GroupBy(x => x.ItemEmoji)
                         .Select(x => $"{x.Key} x{x.Count(),-3}")
                         .GroupBy(x => i++ / 2)
                         .Select(x => string.Join(" ", x)));
 
-
                 var embed = new EmbedBuilder()
                     .WithOkColor()
-                    .WithTitle(GetText("waifu") + " " + w.Waifu + " - \"the " + claimInfo.Title + "\"")
-                    .AddField(efb => efb.WithName(GetText("price")).WithValue(w.Price.ToString()).WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("claimed_by")).WithValue(w.Claimer?.ToString() ?? nobody).WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("likes")).WithValue(w.Affinity?.ToString() ?? nobody).WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("changes_of_heart")).WithValue($"{affInfo.Count} - \"the {affInfo.Title}\"").WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("divorces")).WithValue(divorces.ToString()).WithIsInline(true))
+                    .WithTitle(GetText("waifu") + " " + wi.FullName + " - \"the " + _service.GetClaimTitle(wi.ClaimCount) + "\"")
+                    .AddField(efb => efb.WithName(GetText("price")).WithValue(wi.Price.ToString()).WithIsInline(true))
+                    .AddField(efb => efb.WithName(GetText("claimed_by")).WithValue(wi.ClaimerName ?? nobody).WithIsInline(true))
+                    .AddField(efb => efb.WithName(GetText("likes")).WithValue(wi.AffinityName ?? nobody).WithIsInline(true))
+                    .AddField(efb => efb.WithName(GetText("changes_of_heart")).WithValue($"{wi.AffinityCount} - \"the {affInfo}\"").WithIsInline(true))
+                    .AddField(efb => efb.WithName(GetText("divorces")).WithValue(wi.DivorceCount.ToString()).WithIsInline(true))
                     .AddField(efb => efb.WithName(GetText("gifts")).WithValue(itemsStr).WithIsInline(false))
-                    .AddField(efb => efb.WithName($"Waifus ({claims.Count})").WithValue(claims.Count == 0 ? nobody : string.Join("\n", claims.OrderBy(x => rng.Next()).Take(30).Select(x => x.Waifu))).WithIsInline(false));
+                    .AddField(efb => efb.WithName($"Waifus ({wi.ClaimCount})").WithValue(wi.ClaimCount == 0 ? nobody : string.Join("\n", wi.Claims30)).WithIsInline(false));
 
                 await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
@@ -525,7 +255,7 @@ namespace WizBot.Modules.Gambling
                                         .ForEach(x => embed.AddField(f => f.WithName(x.ItemEmoji + " " + x.Item).WithValue(x.Price).WithIsInline(true)));
 
                     return embed;
-                }, Enum.GetValues(typeof(WaifuItem.ItemName)).Length, 9).ConfigureAwait(false);
+                }, Enum.GetValues(typeof(WaifuItem.ItemName)).Length, 9);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -537,129 +267,16 @@ namespace WizBot.Modules.Gambling
                     return;
 
                 var itemObj = WaifuItem.GetItemObject(item, Bc.BotConfig.WaifuGiftMultiplier);
+                bool sucess = await _service.GiftWaifuAsync(Context.User.Id, waifu, itemObj);
 
-                using (var uow = _db.UnitOfWork)
+                if (sucess)
                 {
-                    var w = uow.Waifus.ByWaifuUserId(waifu.Id);
-
-                    //try to buy the item first
-
-                    if (!await _cs.RemoveAsync(Context.User.Id, "Bought waifu item", itemObj.Price, gamble: true).ConfigureAwait(false))
-                    {
-                        await ReplyErrorLocalized("not_enough", Bc.BotConfig.CurrencySign).ConfigureAwait(false);
-                        return;
-                    }
-                    if (w == null)
-                    {
-                        uow.Waifus.Add(w = new WaifuInfo()
-                        {
-                            Affinity = null,
-                            Claimer = null,
-                            Price = 1,
-                            Waifu = uow.DiscordUsers.GetOrCreate(waifu),
-                        });
-
-                        w.Waifu.Username = waifu.Username;
-                        w.Waifu.Discriminator = waifu.Discriminator;
-                    }
-                    w.Items.Add(itemObj);
-                    if (w.Claimer?.UserId == Context.User.Id)
-                    {
-                        w.Price += (int)(itemObj.Price * 0.95);
-                    }
-                    else
-                        w.Price += itemObj.Price / 2;
-
-                    await uow.CompleteAsync();
+                    await ReplyConfirmLocalized("waifu_gift", Format.Bold(item.ToString() + " " + itemObj.ItemEmoji), Format.Bold(waifu.ToString()));
                 }
-
-                await ReplyConfirmLocalized("waifu_gift", Format.Bold(item.ToString() + " " + itemObj.ItemEmoji), Format.Bold(waifu.ToString())).ConfigureAwait(false);
-            }
-
-
-            public struct WaifuProfileTitle
-            {
-                public int Count { get; }
-                public string Title { get; }
-
-                public WaifuProfileTitle(int count, string title)
-                {
-                    Count = count;
-                    Title = title;
-                }
-            }
-
-            private WaifuProfileTitle GetClaimTitle(ulong userId)
-            {
-                int count;
-                using (var uow = _db.UnitOfWork)
-                {
-                    count = uow.Waifus.ByClaimerUserId(userId).Count;
-                }
-
-                ClaimTitles title;
-                if (count == 0)
-                    title = ClaimTitles.Lonely;
-                else if (count == 1)
-                    title = ClaimTitles.Devoted;
-                else if (count < 3)
-                    title = ClaimTitles.Rookie;
-                else if (count < 6)
-                    title = ClaimTitles.Schemer;
-                else if (count < 10)
-                    title = ClaimTitles.Dilettante;
-                else if (count < 17)
-                    title = ClaimTitles.Intermediate;
-                else if (count < 25)
-                    title = ClaimTitles.Seducer;
-                else if (count < 35)
-                    title = ClaimTitles.Expert;
-                else if (count < 50)
-                    title = ClaimTitles.Veteran;
-                else if (count < 75)
-                    title = ClaimTitles.Incubis;
-                else if (count < 100)
-                    title = ClaimTitles.Harem_King;
                 else
-                    title = ClaimTitles.Harem_God;
-
-                return new WaifuProfileTitle(count, title.ToString().Replace('_', ' '));
-            }
-
-            private WaifuProfileTitle GetAffinityTitle(ulong userId)
-            {
-                int count;
-                using (var uow = _db.UnitOfWork)
                 {
-                    count = uow._context.WaifuUpdates
-                        .Where(w => w.User.UserId == userId && w.UpdateType == WaifuUpdateType.AffinityChanged && w.New != null)
-                        .GroupBy(x => x.New)
-                        .Count();
+                    await ReplyErrorLocalized("not_enough", Bc.BotConfig.CurrencySign);
                 }
-
-                AffinityTitles title;
-                if (count < 1)
-                    title = AffinityTitles.Pure;
-                else if (count < 2)
-                    title = AffinityTitles.Faithful;
-                else if (count < 4)
-                    title = AffinityTitles.Defiled;
-                else if (count < 9)
-                    title = AffinityTitles.Cheater;
-                else if (count < 12)
-                    title = AffinityTitles.Tainted;
-                else if (count < 16)
-                    title = AffinityTitles.Corrupted;
-                else if (count < 20)
-                    title = AffinityTitles.Lewd;
-                else if (count < 25)
-                    title = AffinityTitles.Sloot;
-                else if (count < 35)
-                    title = AffinityTitles.Depraved;
-                else
-                    title = AffinityTitles.Harlot;
-
-                return new WaifuProfileTitle(count, title.ToString().Replace('_', ' '));
             }
         }
     }

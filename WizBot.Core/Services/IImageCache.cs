@@ -1,4 +1,4 @@
-using WizBot.Core.Common;
+﻿using WizBot.Core.Common;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -16,7 +16,7 @@ namespace WizBot.Core.Services
         IReadOnlyList<byte[]> SlotEmojis { get; }
         IReadOnlyList<byte[]> SlotNumbers { get; }
         IReadOnlyList<byte[]> Currency { get; }
-        
+
         byte[] SlotBackground { get; }
 
         byte[] RategirlMatrix { get; }

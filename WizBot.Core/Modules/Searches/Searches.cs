@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -42,56 +42,6 @@ namespace WizBot.Modules.Searches
             _creds = creds;
             _google = google;
             _httpFactory = factory;
-        }
-
-        [WizBotCommand, Usage, Description, Aliases]
-        [RequireContext(ContextType.Guild)]
-        public async Task Crypto(string name)
-        {
-            name = name?.ToUpperInvariant();
-
-            if (string.IsNullOrWhiteSpace(name))
-                return;
-            var cryptos = (await _service.CryptoData().ConfigureAwait(false));
-            var crypto = cryptos
-                ?.FirstOrDefault(x => x.Id.ToUpperInvariant() == name || x.Name.ToUpperInvariant() == name
-                    || x.Symbol.ToUpperInvariant() == name);
-
-            (CryptoData Elem, int Distance)? nearest = null;
-            if (crypto == null)
-            {
-                nearest = cryptos.Select(x => (x, Distance: x.Name.ToUpperInvariant().LevenshteinDistance(name)))
-                    .OrderBy(x => x.Distance)
-                    .Where(x => x.Distance <= 2)
-                    .FirstOrDefault();
-
-                crypto = nearest?.Elem;
-            }
-
-            if (crypto == null)
-            {
-                await ReplyErrorLocalized("crypto_not_found").ConfigureAwait(false);
-                return;
-            }
-
-            if (nearest != null)
-            {
-                var embed = new EmbedBuilder()
-                        .WithTitle(GetText("crypto_not_found"))
-                        .WithDescription(GetText("did_you_mean", Format.Bold($"{crypto.Name} ({crypto.Symbol})")));
-
-                if (!await PromptUserConfirmAsync(embed).ConfigureAwait(false))
-                    return;
-            }
-
-            await Context.Channel.EmbedAsync(new EmbedBuilder()
-                .WithOkColor()
-                .WithTitle($"{crypto.Name} ({crypto.Symbol})")
-                .WithThumbnailUrl($"https://files.coinmarketcap.com/static/img/coins/32x32/{crypto.Id}.png")
-                .AddField(GetText("market_cap"), $"${crypto.Market_Cap_Usd:n0}", true)
-                .AddField(GetText("price"), $"${crypto.Price_Usd}", true)
-                .AddField(GetText("volume_24h"), $"${crypto._24h_Volume_Usd:n0}", true)
-                .AddField(GetText("change_7d_24h"), $"{crypto.Percent_Change_7d}% / {crypto.Percent_Change_24h}%", true)).ConfigureAwait(false);
         }
 
         //for anonymasen :^)
@@ -744,7 +694,7 @@ namespace WizBot.Modules.Searches
             {
                 var result = await http.GetStringAsync("https://en.wikipedia.org//w/api.php?action=query&format=json&prop=info&redirects=1&formatversion=2&inprop=url&titles=" + Uri.EscapeDataString(query)).ConfigureAwait(false);
                 var data = JsonConvert.DeserializeObject<WikipediaApiModel>(result);
-                if (data.Query.Pages[0].Missing)
+                if (data.Query.Pages[0].Missing || string.IsNullOrWhiteSpace(data.Query.Pages[0].FullUrl))
                     await ReplyErrorLocalized("wiki_page_not_found").ConfigureAwait(false);
                 else
                     await Context.Channel.SendMessageAsync(data.Query.Pages[0].FullUrl).ConfigureAwait(false);
@@ -801,6 +751,13 @@ namespace WizBot.Modules.Searches
                 usr = (IGuildUser)Context.User;
 
             var avatarUrl = usr.RealAvatarUrl();
+
+            if (avatarUrl == null)
+            {
+                await ReplyErrorLocalized("avatar_none", usr.ToString()).ConfigureAwait(false);
+                return;
+            }
+
             var shortenedAvatarUrl = await _google.ShortenUrl(avatarUrl).ConfigureAwait(false);
             await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                 .AddField(efb => efb.WithName("Username").WithValue(usr.ToString()).WithIsInline(false))

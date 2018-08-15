@@ -72,7 +72,7 @@ namespace WizBot.Modules.Music.Common
             song.ThrowIfNull(nameof(song));
             lock (locker)
             {
-                if (MaxQueueSize != 0 && Songs.Count >= MaxQueueSize)
+                if(MaxQueueSize != 0 && Songs.Count >= MaxQueueSize)
                     throw new QueueFullException();
                 Songs.AddLast(song);
             }
@@ -101,7 +101,7 @@ namespace WizBot.Modules.Music.Common
 
         public void Next(int skipCount = 1)
         {
-            lock (locker)
+            lock(locker)
                 CurrentIndex += skipCount;
         }
 
@@ -152,6 +152,14 @@ namespace WizBot.Modules.Music.Common
             lock (locker)
             {
                 return (CurrentIndex, Songs.ToArray());
+            }
+        }
+
+        public List<SongInfo> ToList()
+        {
+            lock (locker)
+            {
+                return Songs.ToList();
             }
         }
 

@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Common.Collections;
@@ -78,7 +78,7 @@ namespace WizBot.Modules.Administration.Services
                                             continue;
                                         try { await dl.RemoveReactionAsync(r.Key, gusr).ConfigureAwait(false); } catch { }
                                         await Task.Delay(100).ConfigureAwait(false);
-                                    }
+                                    }                                        
                                 }
                                 catch { }
                             });
@@ -161,8 +161,8 @@ namespace WizBot.Modules.Administration.Services
                 if (gc.ReactionRoleMessages.Count >= 5)
                     return false;
                 gc.ReactionRoleMessages.Add(rrm);
-                _models.AddOrUpdate(id,
-                    gc.ReactionRoleMessages,
+                _models.AddOrUpdate(id, 
+                    gc.ReactionRoleMessages, 
                     delegate { return gc.ReactionRoleMessages; });
                 uow.Complete();
             }
@@ -173,7 +173,7 @@ namespace WizBot.Modules.Administration.Services
         {
             using (var uow = _db.UnitOfWork)
             {
-                var gc = uow.GuildConfigs.ForId(id,
+                var gc = uow.GuildConfigs.ForId(id, 
                     set => set.Include(x => x.ReactionRoleMessages)
                         .ThenInclude(x => x.ReactionRoles));
                 uow._context.Set<ReactionRole>()

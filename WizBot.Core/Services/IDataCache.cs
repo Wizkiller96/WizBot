@@ -1,4 +1,4 @@
-using WizBot.Modules.Searches.Common;
+﻿using WizBot.Modules.Searches.Common;
 using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
@@ -29,5 +29,7 @@ namespace WizBot.Core.Services
         Task<StreamResponse[]> GetAllStreamDataAsync();
         Task ClearAllStreamData();
         Task PublishStreamUpdates(List<StreamResponse> toPublish);
+        bool TryGetEconomy(out string data);
+        void SetEconomy(string data);
     }
 }

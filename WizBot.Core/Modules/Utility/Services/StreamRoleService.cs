@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
@@ -80,7 +80,7 @@ namespace WizBot.Modules.Utility.Services
         {
             userName.ThrowIfNull(nameof(userName));
 
-            bool success;
+            bool success = false;
             using (var uow = _db.UnitOfWork)
             {
                 var streamRoleSettings = uow.GuildConfigs.GetStreamRoleSettings(guild.Id);
@@ -94,7 +94,14 @@ namespace WizBot.Modules.Utility.Services
                     };
 
                     if (action == AddRemove.Rem)
-                        success = streamRoleSettings.Whitelist.Remove(userObj);
+                    {
+                        var toDelete = streamRoleSettings.Whitelist.FirstOrDefault(x => x.Equals(userObj));
+                        if (toDelete != null)
+                        {
+                            uow._context.Remove(toDelete);
+                            success = true;
+                        }
+                    }
                     else
                         success = streamRoleSettings.Whitelist.Add(userObj);
                 }
@@ -107,7 +114,14 @@ namespace WizBot.Modules.Utility.Services
                     };
 
                     if (action == AddRemove.Rem)
-                        success = streamRoleSettings.Blacklist.Remove(userObj);
+                    {
+                        var toRemove = streamRoleSettings.Blacklist.FirstOrDefault(x => x.Equals(userObj));
+                        if (toRemove != null)
+                        {
+                            success = true;
+                            success = streamRoleSettings.Blacklist.Remove(toRemove);
+                        }
+                    }
                     else
                         success = streamRoleSettings.Blacklist.Add(userObj);
                 }

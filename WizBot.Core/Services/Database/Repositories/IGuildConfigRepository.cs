@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using WizBot.Core.Services.Database.Models;
 using System;
 using System.Collections.Generic;
@@ -17,5 +17,12 @@ namespace WizBot.Core.Services.Database.Repositories
         IEnumerable<GuildConfig> Permissionsv2ForAll(List<ulong> include);
         GuildConfig GcWithPermissionsv2For(ulong guildId);
         XpSettings XpSettingsFor(ulong guildId);
+        IEnumerable<GeneratingChannel> GetGeneratingChannels();
+    }
+
+    public class GeneratingChannel
+    {
+        public ulong GuildId { get; set; }
+        public ulong ChannelId { get; set; }
     }
 }

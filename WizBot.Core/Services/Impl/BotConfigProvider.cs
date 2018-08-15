@@ -180,12 +180,12 @@ namespace WizBot.Core.Services.Impl
                             var c = new Color(Convert.ToUInt32(newValue, 16));
                             WizBot.OkColor = c;
                             bc.OkColor = newValue;
-                            return true;
                         }
                         catch
                         {
+                            return false;
                         }
-                        return false;
+                        break;
                     case BotConfigEditType.ErrorColor:
                         try
                         {
@@ -193,12 +193,12 @@ namespace WizBot.Core.Services.Impl
                             var c = new Color(Convert.ToUInt32(newValue, 16));
                             WizBot.ErrorColor = c;
                             bc.ErrorColor = newValue;
-                            return true;
                         }
                         catch
                         {
+                            return false;
                         }
-                        return false;
+                        break;
                     case BotConfigEditType.ConsoleOutputType:
                         if (!Enum.TryParse<ConsoleOutputType>(newValue, true, out var val))
                             return false;

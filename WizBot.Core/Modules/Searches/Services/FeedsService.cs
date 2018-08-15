@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using Microsoft.SyndicationFeed;
 using Microsoft.SyndicationFeed.Rss;
 using WizBot.Extensions;
@@ -21,7 +21,7 @@ namespace WizBot.Modules.Searches.Services
         private readonly DbService _db;
         private readonly ConcurrentDictionary<string, HashSet<FeedSub>> _subs;
         private readonly DiscordSocketClient _client;
-        private readonly ConcurrentDictionary<string, DateTime> _lastPosts =
+        private readonly ConcurrentDictionary<string, DateTime> _lastPosts = 
             new ConcurrentDictionary<string, DateTime>();
 
         public FeedsService(WizBot bot, DbService db, DiscordSocketClient client)
@@ -45,7 +45,7 @@ namespace WizBot.Modules.Searches.Services
             }
             var _ = Task.Run(TrackFeeds);
         }
-
+        
         public async Task<EmbedBuilder> TrackFeeds()
         {
             while (true)

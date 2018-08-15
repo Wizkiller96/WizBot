@@ -92,7 +92,7 @@ namespace WizBot.Modules.Administration
             }
 
             [WizBotCommand, Usage, Description, Aliases]
-            [AdminOnly]
+            [OwnerOnly]
             public async Task LanguageSetDefault(string name)
             {
                 try
@@ -122,7 +122,7 @@ namespace WizBot.Modules.Administration
                 await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                     .WithTitle(GetText("lang_list"))
                     .WithDescription(string.Join("\n",
-                        supportedLocales.Select(x => $"{Format.Code(x.Key),-10} => {x.Value}")))).ConfigureAwait(false);
+                        supportedLocales.Select(x => $"{Format.Code(x.Key), -10} => {x.Value}")))).ConfigureAwait(false);
             }
         }
     }

@@ -1,4 +1,4 @@
-using WizBot.Core.Services.Database.Models;
+﻿using WizBot.Core.Services.Database.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +23,7 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
                 .ToList();
         }
 
-        public MusicPlaylist GetWithSongs(int id) =>
+        public MusicPlaylist GetWithSongs(int id) => 
             _set.Include(mpl => mpl.Songs)
                 .FirstOrDefault(mpl => mpl.Id == id);
     }

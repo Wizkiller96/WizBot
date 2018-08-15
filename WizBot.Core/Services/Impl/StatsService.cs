@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using Discord.WebSocket;
 using WizBot.Extensions;
 using System;
@@ -23,7 +23,7 @@ namespace WizBot.Core.Services.Impl
         private readonly IBotCredentials _creds;
         private readonly DateTime _started;
 
-        public const string BotVersion = "2.26.3";
+        public const string BotVersion = "2.27.7";
         public string Author => "🛠️ Kwoth#2560\n🛠️ Wizkiller96#0151";
         public string Library => "Discord.Net";
 

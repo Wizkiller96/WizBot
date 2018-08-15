@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using WizBot.Common.Attributes;
@@ -53,7 +53,7 @@ namespace WizBot.Modules.Games
                 nunchi.OnUserGuessed += Nunchi_OnUserGuessed;
                 nunchi.OnRoundStarted += Nunchi_OnRoundStarted;
                 _client.MessageReceived += _client_MessageReceived;
-
+                
                 var success = await nunchi.Initialize().ConfigureAwait(false);
                 if (!success)
                 {
@@ -75,9 +75,8 @@ namespace WizBot.Modules.Games
                         {
                             await nunchi.Input(arg.Author.Id, arg.Author.ToString(), number).ConfigureAwait(false);
                         }
-                        catch (Exception ex)
+                        catch
                         {
-                            Console.WriteLine(ex);
                         }
                     });
                     return Task.CompletedTask;
@@ -100,8 +99,8 @@ namespace WizBot.Modules.Games
 
             private Task Nunchi_OnRoundStarted(NunchiGame arg, int cur)
             {
-                return ConfirmLocalized("nunchi_round_started",
-                    Format.Bold(arg.ParticipantCount.ToString()),
+                return ConfirmLocalized("nunchi_round_started", 
+                    Format.Bold(arg.ParticipantCount.ToString()), 
                     Format.Bold(cur.ToString()));
             }
 
@@ -112,7 +111,7 @@ namespace WizBot.Modules.Games
 
             private Task Nunchi_OnRoundEnded(NunchiGame arg1, (ulong Id, string Name)? arg2)
             {
-                if (arg2.HasValue)
+                if(arg2.HasValue)
                     return ConfirmLocalized("nunchi_round_ended", Format.Bold(arg2.Value.Name));
                 else
                     return ConfirmLocalized("nunchi_round_ended_boot",

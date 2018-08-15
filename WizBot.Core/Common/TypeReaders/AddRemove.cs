@@ -1,4 +1,4 @@
-namespace WizBot.Common.TypeReaders
+﻿namespace WizBot.Common.TypeReaders
 {
     public enum AddRemove
     {

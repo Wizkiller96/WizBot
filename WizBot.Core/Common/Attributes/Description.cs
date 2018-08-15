@@ -8,7 +8,7 @@ namespace WizBot.Common.Attributes
     [AttributeUsage(AttributeTargets.Method)]
     public sealed class DescriptionAttribute : SummaryAttribute
     {
-        public DescriptionAttribute([CallerMemberName] string memberName = "") : base(Localization.LoadCommand(memberName.ToLowerInvariant()).Desc)
+        public DescriptionAttribute([CallerMemberName] string memberName="") : base(Localization.LoadCommand(memberName.ToLowerInvariant()).Desc)
         {
 
         }

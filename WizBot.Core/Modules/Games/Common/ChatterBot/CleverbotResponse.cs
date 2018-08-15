@@ -1,4 +1,4 @@
-namespace WizBot.Modules.Games.Common.ChatterBot
+﻿namespace WizBot.Modules.Games.Common.ChatterBot
 {
     public class CleverbotResponse
     {

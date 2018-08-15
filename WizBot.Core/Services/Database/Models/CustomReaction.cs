@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
 
@@ -23,6 +23,7 @@ namespace WizBot.Core.Services.Database.Models
         public bool IsGlobal => !GuildId.HasValue;
 
         public bool ContainsAnywhere { get; set; }
+        public ulong UseCount { get; set; }
     }
 
     public class ReactionResponse : DbEntity

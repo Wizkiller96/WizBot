@@ -12,7 +12,7 @@ namespace WizBot.Modules.Searches
         [Group]
         public class PlaceCommands : WizBotSubmodule
         {
-            private static readonly string _typesStr =
+            private static readonly string _typesStr = 
                 string.Join(", ", Enum.GetNames(typeof(PlaceType)));
 
             public enum PlaceType

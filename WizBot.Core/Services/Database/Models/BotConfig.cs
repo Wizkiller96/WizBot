@@ -71,7 +71,6 @@ WizNet's Community Server: https://discord.gg/0YNaDOYuD5QOpeNI";
         public bool CustomReactionsStartWith { get; set; } = false;
         public int XpPerMessage { get; set; } = 3;
         public int XpMinutesTimeout { get; set; } = 5;
-        public HashSet<LoadedPackage> LoadedPackages { get; set; } = new HashSet<LoadedPackage>();
         public int DivorcePriceMultiplier { get; set; } = 150;
         public float PatreonCurrencyPerCent { get; set; } = 1.0f;
         public int WaifuGiftMultiplier { get; set; } = 1;

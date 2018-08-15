@@ -1,4 +1,4 @@
-using Discord.Commands;
+﻿using Discord.Commands;
 using WizBot.Extensions;
 using System;
 using System.Threading.Tasks;
@@ -7,6 +7,7 @@ using Discord.WebSocket;
 using WizBot.Common.Attributes;
 using WizBot.Modules.Games.Common.Hangman;
 using WizBot.Modules.Games.Services;
+using WizBot.Modules.Games.Common.Hangman.Exceptions;
 
 namespace WizBot.Modules.Games
 {
@@ -33,7 +34,15 @@ namespace WizBot.Modules.Games
             [RequireContext(ContextType.Guild)]
             public async Task Hangman([Remainder]string type = "random")
             {
-                var hm = new Hangman(type, _service.TermPool);
+                Hangman hm;
+                try
+                {
+                    hm = new Hangman(type, _service.TermPool);
+                }
+                catch (TermNotFoundException)
+                {
+                    return;
+                }
 
                 if (!_service.HangmanGames.TryAdd(Context.Channel.Id, hm))
                 {
@@ -80,7 +89,7 @@ namespace WizBot.Modules.Games
                 {
                     var loseEmbed = new EmbedBuilder().WithTitle($"Hangman Game ({game.TermType}) - Ended")
                                              .WithDescription(Format.Bold("You lose."))
-                                             .AddField(efb => efb.WithName("It was").WithValue(game.Term.Word.ToTitleCase()))
+                                             .AddField(efb => efb.WithName("It was").WithValue(game.Term.GetWord()))
                                              .WithFooter(efb => efb.WithText(string.Join(" ", game.PreviousGuesses)))
                                              .WithErrorColor();
 
@@ -92,7 +101,7 @@ namespace WizBot.Modules.Games
 
                 var winEmbed = new EmbedBuilder().WithTitle($"Hangman Game ({game.TermType}) - Ended")
                                              .WithDescription(Format.Bold($"{winner} Won."))
-                                             .AddField(efb => efb.WithName("It was").WithValue(game.Term.Word.ToTitleCase()))
+                                             .AddField(efb => efb.WithName("It was").WithValue(game.Term.GetWord()))
                                              .WithFooter(efb => efb.WithText(string.Join(" ", game.PreviousGuesses)))
                                              .WithOkColor();
 

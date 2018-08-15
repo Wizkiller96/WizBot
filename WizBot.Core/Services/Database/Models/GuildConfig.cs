@@ -1,6 +1,7 @@
-using WizBot.Common.Collections;
+﻿using WizBot.Common.Collections;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WizBot.Core.Services.Database.Models
 {
@@ -68,7 +69,7 @@ namespace WizBot.Core.Services.Database.Models
 
         public string MuteRoleName { get; set; }
         public bool CleverbotEnabled { get; set; }
-        public HashSet<Repeater> GuildRepeaters { get; set; } = new HashSet<Repeater>();
+        public List<Repeater> GuildRepeaters { get; set; } = new List<Repeater>();
 
         public AntiRaidSetting AntiRaidSetting { get; set; }
         public AntiSpamSetting AntiSpamSetting { get; set; }
@@ -98,6 +99,16 @@ namespace WizBot.Core.Services.Database.Models
         public MusicSettings MusicSettings { get; set; } = new MusicSettings();
         public IndexedCollection<ReactionRoleMessage> ReactionRoleMessages { get; set; } = new IndexedCollection<ReactionRoleMessage>();
         public bool NotifyStreamOffline { get; set; }
+        public List<GroupName> SelfAssignableRoleGroupNames { get; set; }
+    }
+
+    public class GroupName : DbEntity
+    {
+        public int GuildConfigId { get; set; }
+        public GuildConfig GuildConfig { get; set; }
+
+        public int Number { get; set; }
+        public string Name { get; set; }
     }
 
     public class DelMsgOnCmdChannel : DbEntity
@@ -249,6 +260,18 @@ namespace WizBot.Core.Services.Database.Models
     public class FilterChannelId : DbEntity
     {
         public ulong ChannelId { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            return obj is FilterChannelId f
+                ? f.ChannelId == ChannelId
+                : false;
+        }
+
+        public override int GetHashCode()
+        {
+            return ChannelId.GetHashCode();
+        }
     }
 
     public class FilterLinksChannelId : DbEntity
@@ -292,6 +315,7 @@ namespace WizBot.Core.Services.Database.Models
 
     public class GCChannelId : DbEntity
     {
+        public GuildConfig GuildConfig { get; set; }
         public ulong ChannelId { get; set; }
 
         public override bool Equals(object obj)

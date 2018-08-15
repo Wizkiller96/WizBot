@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace WizBot.Core.Services.Database.Models
 {
@@ -8,7 +8,7 @@ namespace WizBot.Core.Services.Database.Models
         public string Username { get; set; }
         public string Discriminator { get; set; }
         public string AvatarId { get; set; }
-
+        
         public ClubInfo Club { get; set; }
         public bool IsClubAdmin { get; set; }
 
@@ -31,7 +31,7 @@ namespace WizBot.Core.Services.Database.Models
             return UserId.GetHashCode();
         }
 
-        public override string ToString() =>
+        public override string ToString() => 
             Username + "#" + Discriminator;
     }
 }

@@ -1,4 +1,4 @@
-using WizBot.Common;
+﻿using WizBot.Common;
 using WizBot.Core.Services.Database.Models;
 
 namespace WizBot.Core.Services

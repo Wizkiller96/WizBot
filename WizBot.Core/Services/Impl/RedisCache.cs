@@ -6,7 +6,6 @@ using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace WizBot.Core.Services.Impl
@@ -61,7 +60,7 @@ namespace WizBot.Core.Services.Impl
         public Task SetAnimeDataAsync(string key, string data)
         {
             var _db = Redis.GetDatabase();
-            return _db.StringSetAsync("anime_" + key, data);
+            return _db.StringSetAsync("anime_" + key, data, expiry: TimeSpan.FromHours(3));
         }
 
         public async Task<(bool Success, string Data)> TryGetNovelDataAsync(string key)
@@ -74,7 +73,7 @@ namespace WizBot.Core.Services.Impl
         public Task SetNovelDataAsync(string key, string data)
         {
             var _db = Redis.GetDatabase();
-            return _db.StringSetAsync("novel_" + key, data);
+            return _db.StringSetAsync("novel_" + key, data, expiry: TimeSpan.FromHours(3));
         }
 
         private readonly object timelyLock = new object();
@@ -134,7 +133,7 @@ namespace WizBot.Core.Services.Impl
         public Task SetStreamDataAsync(string url, string data)
         {
             var _db = Redis.GetDatabase();
-            return _db.StringSetAsync($"{_redisKey}_stream_{url}", data);
+            return _db.StringSetAsync($"{_redisKey}_stream_{url}", data, expiry: TimeSpan.FromHours(6));
         }
 
         public bool TryGetStreamData(string url, out string dataStr)
@@ -197,6 +196,25 @@ namespace WizBot.Core.Services.Impl
             }
 
             return _db.KeyTimeToLive($"{_redisKey}_ratelimit_{id}_{name}");
+        }
+
+        public bool TryGetEconomy(out string data)
+        {
+            var _db = Redis.GetDatabase();
+            if ((data = _db.StringGet($"{_redisKey}_economy")) != null)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public void SetEconomy(string data)
+        {
+            var _db = Redis.GetDatabase();
+            _db.StringSetAsync($"{_redisKey}_economy",
+                data,
+                expiry: TimeSpan.FromMinutes(3));
         }
     }
 }

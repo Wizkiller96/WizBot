@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using WizBot.Core.Services.Database.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -9,7 +9,7 @@ namespace WizBot.Core.Services.Database.Repositories
     {
         DiscordUser GetOrCreate(ulong userId, string username, string discrim, string avatarId);
         DiscordUser GetOrCreate(IUser original);
-        Task<int> GetUserGlobalRankingAsync(ulong id);
+        int GetUserGlobalRank(ulong id);
         DiscordUser[] GetUsersXpLeaderboardFor(int page);
 
         long GetUserCurrency(ulong userId);
@@ -18,5 +18,7 @@ namespace WizBot.Core.Services.Database.Repositories
         void RemoveFromMany(List<ulong> ids);
         void CurrencyDecay(float decay, ulong botId);
         long GetCurrencyDecayAmount(float decay);
+        decimal GetTotalCurrency(ulong botId);
+        decimal GetTopOnePercentCurrency(ulong botId);
     }
 }

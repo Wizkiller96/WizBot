@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
@@ -348,7 +348,9 @@ namespace WizBot.Modules.Administration.Services
                 {
                     spam.IgnoredChannels.Remove(obj);
                     if (_antiSpamGuilds.TryGetValue(guildId, out var temp))
-                        temp.AntiSpamSettings.IgnoredChannels.Remove(obj);
+                    {
+                        uow._context.Set<AntiSpamIgnore>().Remove(obj);
+                    }
                     added = false;
                 }
 

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
@@ -8,11 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Modules\Administration\ModuleCommands.cs" /> 
-  </ItemGroup> 
+    <Compile Remove="Modules\Administration\ModuleCommands.cs" />
+  </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AngleSharp" Version="0.9.9.2" />
+    <PackageReference Include="AngleSharp" Version="0.9.10" />
     <PackageReference Include="CommandLineParser" Version="2.2.1" />
     <PackageReference Include="Discord.Net" Version="2.0.0-beta2-00937" />
     <PackageReference Include="CoreCLR-NCalc" Version="2.2.34" />
@@ -28,21 +28,22 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.1.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.1.1" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.1.1" />
     <PackageReference Include="Microsoft.SyndicationFeed.ReaderWriter" Version="1.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="NLog" Version="5.0.0-beta11" />
+    <PackageReference Include="NLog" Version="4.5.8" />
     <PackageReference Include="Octokit" Version="0.30.0" />
     <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0004" />
     <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0004" />
     <PackageReference Include="StackExchange.Redis" Version="1.2.7-alpha-00002" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
-    <PackageReference Include="YoutubeExplode" Version="4.2.8" />   
+    <PackageReference Include="YoutubeExplode" Version="4.2.8" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Modules\Pokemon\Common\" />
+    <Folder Include="Modules\Gambling\Common\CurrencyEvents\" />
   </ItemGroup>
-  
+
   <PropertyGroup Condition=" '$(Configuration)' == 'GlobalWizBot' ">
     <DefineConstants>$(DefineConstants);GLOBAL_WIZBOT</DefineConstants>
     <NoWarn>$(NoWarn);CS1573;CS1591</NoWarn>
@@ -51,9 +52,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <CodeAnalysisRuleSet>WizBot.Core.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  
+
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <CodeAnalysisRuleSet>WizBot.Core.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  
+
 </Project>

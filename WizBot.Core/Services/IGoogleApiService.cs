@@ -1,4 +1,4 @@
-using Google.Apis.Customsearch.v1.Data;
+﻿using Google.Apis.Customsearch.v1.Data;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

@@ -1,9 +1,7 @@
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using Microsoft.EntityFrameworkCore;
 using WizBot.Extensions;
-using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
 using System.Linq;
 using System.Threading.Tasks;
@@ -49,7 +47,18 @@ namespace WizBot.Modules.Administration
                 {
 
                 }
-                var punishment = await _service.Warn(Context.Guild, user.Id, Context.User, reason).ConfigureAwait(false);
+
+                PunishmentAction? punishment;
+                try
+                {
+                    punishment = await _service.Warn(Context.Guild, user.Id, Context.User, reason).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    _log.Warn(ex.Message);
+                    await ReplyErrorLocalized("cant_apply_punishment").ConfigureAwait(false);
+                    return;
+                }
 
                 if (punishment == null)
                 {

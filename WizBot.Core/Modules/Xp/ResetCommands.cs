@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using WizBot.Common.Attributes;
 using WizBot.Core.Services;

@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using WizBot.Core.Services.Database.Models;
@@ -15,6 +15,7 @@ namespace WizBot.Core.Services.Database
         public WizBotContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<WizBotContext>();
+
             var builder = new SqliteConnectionStringBuilder("Data Source=data/WizBot.db");
             builder.DataSource = Path.Combine(AppContext.BaseDirectory, builder.DataSource);
             optionsBuilder.UseSqlite(builder.ToString());
@@ -34,12 +35,10 @@ namespace WizBot.Core.Services.Database
         public DbSet<MusicPlaylist> MusicPlaylists { get; set; }
         public DbSet<CustomReaction> CustomReactions { get; set; }
         public DbSet<CurrencyTransaction> CurrencyTransactions { get; set; }
-        public DbSet<UserPokeTypes> PokeGame { get; set; }
         public DbSet<WaifuUpdate> WaifuUpdates { get; set; }
         public DbSet<Warning> Warnings { get; set; }
         public DbSet<UserXpStats> UserXpStats { get; set; }
         public DbSet<ClubInfo> Clubs { get; set; }
-        public DbSet<LoadedPackage> LoadedPackages { get; set; }
 
         //logging
         public DbSet<LogSetting> LogSettings { get; set; }
@@ -124,9 +123,6 @@ namespace WizBot.Core.Services.Database
                 .HasIndex(c => c.GuildId)
                 .IsUnique();
 
-            //configEntity.Property(x => x.PermissionRole)
-            //    .HasDefaultValue(null);
-
             modelBuilder.Entity<AntiSpamSetting>()
                 .HasOne(x => x.GuildConfig)
                 .WithOne(x => x.AntiSpamSetting);
@@ -177,14 +173,6 @@ namespace WizBot.Core.Services.Database
             botConfigEntity.Property(x => x.LastUpdate)
                 .HasDefaultValue(new DateTime(2018, 5, 5, 0, 0, 0, 0, DateTimeKind.Utc));
 
-            //botConfigEntity.Property(x => x.PermissionVersion)
-            //    .HasDefaultValue(2);
-
-            //botConfigEntity
-            //    .HasMany(c => c.ModulePrefixes)
-            //    .WithOne(mp => mp.BotConfig)
-            //    .HasForeignKey(mp => mp.BotConfigId);
-
             #endregion
 
             #region Self Assignable Roles
@@ -220,16 +208,6 @@ namespace WizBot.Core.Services.Database
 
             #endregion
 
-            #region PokeGame
-            var pokeGameEntity = modelBuilder.Entity<UserPokeTypes>();
-
-            pokeGameEntity
-                .HasIndex(pt => pt.UserId)
-                .IsUnique();
-
-
-            #endregion
-
             #region Waifus
 
             var wi = modelBuilder.Entity<WaifuInfo>();
@@ -238,6 +216,8 @@ namespace WizBot.Core.Services.Database
 
             wi.HasIndex(x => x.Price);
             wi.HasIndex(x => x.ClaimerId);
+
+            var wu = modelBuilder.Entity<WaifuUpdate>();
             #endregion
 
             #region DiscordUser
@@ -254,6 +234,7 @@ namespace WizBot.Core.Services.Database
             du.HasIndex(x => x.TotalXp);
             du.HasIndex(x => x.CurrencyAmount);
             du.HasIndex(x => x.UserId);
+
 
             #endregion
 
@@ -339,20 +320,27 @@ namespace WizBot.Core.Services.Database
             modelBuilder.Entity<Poll>()
                 .HasIndex(x => x.GuildId)
                 .IsUnique();
-
             #endregion
 
             #region CurrencyTransactions
             modelBuilder.Entity<CurrencyTransaction>()
                 .HasIndex(x => x.DateAdded);
-            
             #endregion
 
-            
             #region Reminders
             modelBuilder.Entity<Reminder>()
                 .HasIndex(x => x.DateAdded);
-            
+            #endregion
+
+            #region  GroupName
+            modelBuilder.Entity<GroupName>()
+                .HasIndex(x => new { x.GuildConfigId, x.Number })
+                .IsUnique();
+
+            modelBuilder.Entity<GroupName>()
+                .HasOne(x => x.GuildConfig)
+                .WithMany(x => x.SelfAssignableRoleGroupNames)
+                .IsRequired();
             #endregion
         }
     }

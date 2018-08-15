@@ -1,3 +1,3 @@
-namespace WizBot.Modules.NSFW.Exceptions
+﻿namespace WizBot.Modules.NSFW.Exceptions
 {
 }

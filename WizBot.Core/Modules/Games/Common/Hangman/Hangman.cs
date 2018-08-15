@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -164,7 +164,7 @@ namespace WizBot.Modules.Games.Common.Hangman
             OnLetterAlreadyUsed = null;
             _previousGuesses.Clear();
             _recentUsers.Clear();
-            _locker.Dispose();
+            // _locker.Dispose();
         }
     }
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
@@ -173,10 +173,15 @@ namespace WizBot.Modules.Administration.Services
                 {
                     var config = uow.GuildConfigs.ForId(guildId, set => set.Include(gc => gc.MutedUsers)
                         .Include(gc => gc.UnmuteTimers));
-                    config.MutedUsers.Remove(new MutedUserId()
+                    var match = new MutedUserId()
                     {
                         UserId = usrId
-                    });
+                    };
+                    var toRemove = config.MutedUsers.FirstOrDefault(x => x.Equals(match));
+                    if (toRemove != null)
+                    {
+                        uow._context.Remove(toRemove);
+                    }
                     if (MutedUsers.TryGetValue(guildId, out ConcurrentHashSet<ulong> muted))
                         muted.TryRemove(usrId);
 
@@ -350,15 +355,20 @@ namespace WizBot.Modules.Administration.Services
         {
             using (var uow = _db.UnitOfWork)
             {
+                object toDelete;
                 if (type == TimerType.Mute)
                 {
                     var config = uow.GuildConfigs.ForId(guildId, set => set.Include(x => x.UnmuteTimers));
-                    config.UnmuteTimers.RemoveWhere(x => x.UserId == userId);
+                    toDelete = config.UnmuteTimers.FirstOrDefault(x => x.UserId == userId);
                 }
                 else
                 {
                     var config = uow.GuildConfigs.ForId(guildId, set => set.Include(x => x.UnbanTimer));
-                    config.UnbanTimer.RemoveWhere(x => x.UserId == userId);
+                    toDelete = config.UnbanTimer.FirstOrDefault(x => x.UserId == userId);
+                }
+                if (toDelete != null)
+                {
+                    uow._context.Remove(toDelete);
                 }
                 uow.Complete();
             }

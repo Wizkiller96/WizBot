@@ -1,4 +1,4 @@
-namespace WizBot.Core.Services.Database.Models
+﻿namespace WizBot.Core.Services.Database.Models
 {
     public class FollowedStream : DbEntity
     {
@@ -14,9 +14,9 @@ namespace WizBot.Core.Services.Database.Models
             Picarto
         }
 
-        public override int GetHashCode() =>
-            ChannelId.GetHashCode() ^
-            Username.ToUpperInvariant().GetHashCode(System.StringComparison.InvariantCulture) ^
+        public override int GetHashCode() => 
+            ChannelId.GetHashCode() ^ 
+            Username.ToUpperInvariant().GetHashCode(System.StringComparison.InvariantCulture) ^ 
             Type.GetHashCode();
 
         public override bool Equals(object obj)
@@ -24,7 +24,7 @@ namespace WizBot.Core.Services.Database.Models
             if (!(obj is FollowedStream fs))
                 return false;
 
-            return fs.ChannelId == ChannelId &&
+            return fs.ChannelId == ChannelId && 
                    fs.Username.ToUpperInvariant().Trim() == Username.ToUpperInvariant().Trim() &&
                    fs.Type == Type;
         }

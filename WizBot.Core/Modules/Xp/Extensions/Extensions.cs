@@ -1,4 +1,4 @@
-using WizBot.Modules.Xp.Services;
+﻿using WizBot.Modules.Xp.Services;
 using WizBot.Core.Services.Database.Models;
 
 namespace WizBot.Modules.Xp.Extensions
@@ -8,7 +8,7 @@ namespace WizBot.Modules.Xp.Extensions
         public static (int Level, int LevelXp, int LevelRequiredXp) GetLevelData(this UserXpStats stats)
         {
             var baseXp = XpService.XP_REQUIRED_LVL_1;
-
+            
             var required = baseXp;
             var totalXp = 0;
             var lvl = 1;
