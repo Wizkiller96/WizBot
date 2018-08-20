@@ -6,7 +6,7 @@ using WizBot.Extensions;
 using WizBot.Modules;
 using System.Threading.Tasks;
 
-namespace WizBot.Core.Modules.Searches
+namespace NadekoBot.Modules.Searches
 {
     public partial class Searches
     {
