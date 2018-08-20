@@ -7,7 +7,6 @@ using WizBot.Core.Services.Database.Models;
 using System.Collections.Generic;
 using WizBot.Core.Modules.Gambling.Common.Waifu;
 using NLog;
-using System.Diagnostics;
 using WizBot.Core.Services.Database.Repositories;
 using Microsoft.EntityFrameworkCore;
 
