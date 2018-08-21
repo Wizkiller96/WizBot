@@ -1,7 +1,7 @@
-using System;
 using Discord;
 using WizBot.Extensions;
 using Newtonsoft.Json;
+using System;
 
 namespace WizBot.Common
 {
@@ -73,7 +73,7 @@ namespace WizBot.Common
         public static bool TryParse(string input, out CREmbed embed)
         {
             embed = null;
-            if (string.IsNullOrWhiteSpace(input))
+            if (string.IsNullOrWhiteSpace(input) || !input.Trim().StartsWith('{'))
                 return false;
 
             try
