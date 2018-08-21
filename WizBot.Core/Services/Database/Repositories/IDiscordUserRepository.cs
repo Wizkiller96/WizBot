@@ -18,7 +18,7 @@ namespace WizBot.Core.Services.Database.Repositories
         void RemoveFromMany(List<ulong> ids);
         void CurrencyDecay(float decay, ulong botId);
         long GetCurrencyDecayAmount(float decay);
-        decimal GetTotalCurrency(ulong botId);
+        decimal GetTotalCurrency();
         decimal GetTopOnePercentCurrency(ulong botId);
     }
 }

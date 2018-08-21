@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
 using WizBot.Common;
 using WizBot.Extensions;
@@ -10,7 +9,6 @@ using SixLabors.Primitives;
 using Image = SixLabors.ImageSharp.Image;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
-using SixLabors.ImageSharp.Processing.Drawing;
 
 namespace WizBot.Modules.Games.Common
 {

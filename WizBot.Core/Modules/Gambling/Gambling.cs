@@ -1,18 +1,19 @@
 ﻿using Discord;
 using Discord.Commands;
-using WizBot.Extensions;
-using System.Linq;
-using System.Threading.Tasks;
-using WizBot.Core.Services;
-using WizBot.Core.Services.Database.Models;
-using System.Collections.Generic;
+using Discord.WebSocket;
 using WizBot.Common;
 using WizBot.Common.Attributes;
-using System;
-using WizBot.Modules.Gambling.Services;
-using WizBot.Core.Modules.Gambling.Common;
-using Discord.WebSocket;
 using WizBot.Core.Common;
+using WizBot.Core.Modules.Gambling.Common;
+using WizBot.Core.Services;
+using WizBot.Core.Services.Database.Models;
+using WizBot.Extensions;
+using WizBot.Modules.Gambling.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
+using System.Threading.Tasks;
 
 namespace WizBot.Modules.Gambling
 {
@@ -50,14 +51,19 @@ namespace WizBot.Modules.Gambling
         public async Task Economy()
         {
             var ec = _service.GetEconomy();
+            decimal onePercent = 0;
+            if (ec.Cash > 0)
+            {
+                onePercent = ec.OnePercent / ec.Cash;
+            }
             var embed = new EmbedBuilder()
                 .WithTitle(GetText("economy_state"))
-                .AddField(GetText("currency_owned"), ((ulong)ec.Cash) + _bc.BotConfig.CurrencySign)
-                .AddField(GetText("currency_one_percent"), ((ec.OnePercent / ec.Cash) * 100).ToString("F2") + "%")
-                .AddField(GetText("currency_planted"), ((ulong)ec.Planted) + _bc.BotConfig.CurrencySign)
-                .AddField(GetText("owned_waifus_total"), ((ulong)ec.Waifus) + _bc.BotConfig.CurrencySign)
+                .AddField(GetText("currency_owned"), ((BigInteger)ec.Cash) + _bc.BotConfig.CurrencySign)
+                .AddField(GetText("currency_one_percent"), (onePercent * 100).ToString("F2") + "%")
+                .AddField(GetText("currency_planted"), ((BigInteger)ec.Planted) + _bc.BotConfig.CurrencySign)
+                .AddField(GetText("owned_waifus_total"), ((BigInteger)ec.Waifus) + _bc.BotConfig.CurrencySign)
                 .AddField(GetText("bot_currency"), ec.Bot + _bc.BotConfig.CurrencySign)
-                .AddField(GetText("total"), ((ulong)(ec.Cash + ec.Bot + ec.Planted + ec.Waifus)) + _bc.BotConfig.CurrencySign)
+                .AddField(GetText("total"), ((BigInteger)(ec.Cash + ec.Bot + ec.Planted + ec.Waifus)) + _bc.BotConfig.CurrencySign)
                 .WithOkColor();
 
             await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);

@@ -16,7 +16,6 @@ using WizBot.Core.Modules.Gambling.Common;
 using WizBot.Core.Common;
 using Image = SixLabors.ImageSharp.Image;
 using SixLabors.ImageSharp.Processing;
-using SixLabors.ImageSharp.Processing.Drawing;
 using SixLabors.ImageSharp;
 
 namespace WizBot.Modules.Gambling
