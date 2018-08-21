@@ -7,6 +7,7 @@ using System;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Data.Sqlite;
 using System.IO;
+using WizBot.Core.Services.Impl;
 
 namespace WizBot.Core.Services.Database
 {
@@ -16,7 +17,8 @@ namespace WizBot.Core.Services.Database
         {
             var optionsBuilder = new DbContextOptionsBuilder<WizBotContext>();
 
-            var builder = new SqliteConnectionStringBuilder("Data Source=data/WizBot.db");
+            IBotCredentials creds = new BotCredentials();
+            var builder = new SqliteConnectionStringBuilder(creds.Db.ConnectionString);
             builder.DataSource = Path.Combine(AppContext.BaseDirectory, builder.DataSource);
             optionsBuilder.UseSqlite(builder.ToString());
             var ctx = new WizBotContext(optionsBuilder.Options);
