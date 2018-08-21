@@ -34,7 +34,7 @@ function GitHub-Release($versionNumber) {
 
     # sz 'a' '-mx3' $target $source
 
-    .\rcedit-x64.exe "src\WizBot\bin\Release\netcoreapp2.0\win7-x64\wizbot.exe" --set-icon "src\WizBot\bin\Release\netcoreapp2.0\win7-x64\wizbot_icon.ico"
+    .\rcedit-x64.exe "src\WizBot\bin\Release\netcoreapp2.1\win7-x64\wizbot.exe" --set-icon "src\WizBot\bin\Release\netcoreapp2.1\win7-x64\wizbot_icon.ico"
 
     & "C:\Program Files (x86)\Inno Setup 5\iscc.exe" "/O+" ".\WizBot.iss"
 
