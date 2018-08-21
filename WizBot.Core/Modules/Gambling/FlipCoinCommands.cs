@@ -1,18 +1,18 @@
 using Discord;
 using Discord.Commands;
-using WizBot.Extensions;
-using WizBot.Core.Services;
-using System.Threading.Tasks;
 using WizBot.Common;
 using WizBot.Common.Attributes;
-using Image = SixLabors.ImageSharp.Image;
-using WizBot.Core.Modules.Gambling.Common;
-using WizBot.Modules.Gambling.Services;
 using WizBot.Core.Common;
-using System;
+using WizBot.Core.Modules.Gambling.Common;
+using WizBot.Core.Services;
+using WizBot.Extensions;
+using WizBot.Modules.Gambling.Services;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+using System;
 using System.Linq;
+using System.Threading.Tasks;
+using Image = SixLabors.ImageSharp.Image;
 
 namespace WizBot.Modules.Gambling
 {
@@ -100,7 +100,7 @@ namespace WizBot.Modules.Gambling
                 BetFlipGuess result;
                 Uri imageToSend;
                 var coins = _images.ImageUrls.Coins;
-                if (rng.Next(0, 2) == 1)
+                if (rng.Next(0, 1000) <= 499)
                 {
                     imageToSend = coins.Heads[rng.Next(0, coins.Heads.Length)];
                     result = BetFlipGuess.Heads;
