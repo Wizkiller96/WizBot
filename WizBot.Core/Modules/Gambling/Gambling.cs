@@ -46,17 +46,6 @@ namespace WizBot.Modules.Gambling
             }
         }
 
-        public long GetCurrency(IUser user)
-        {
-            long amount;
-            using (var uow = _db.UnitOfWork)
-            {
-                amount = uow.DiscordUsers.GetOrCreate(user).CurrencyAmount;
-                uow.Complete();
-            }
-            return amount;
-        }
-
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Economy()
         {
@@ -160,10 +149,8 @@ namespace WizBot.Modules.Gambling
         [Priority(1)]
         public async Task Cash([Remainder] IUser user = null)
         {
-            if (user == null)
-                await ConfirmLocalized("has", Format.Bold(Context.User.ToString()), $"{GetCurrency(Context.User)} {CurrencySign}").ConfigureAwait(false);
-            else
-                await ReplyConfirmLocalized("has", Format.Bold(user.ToString()), $"{GetCurrency(user)} {CurrencySign}").ConfigureAwait(false);
+            user = user ?? Context.User;
+            await ReplyConfirmLocalized("has", Format.Bold(user.ToString()), $"{GetCurrency(user.Id)} {CurrencySign}").ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]

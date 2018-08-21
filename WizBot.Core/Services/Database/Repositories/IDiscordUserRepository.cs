@@ -1,12 +1,12 @@
 ﻿using Discord;
 using WizBot.Core.Services.Database.Models;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace WizBot.Core.Services.Database.Repositories
 {
     public interface IDiscordUserRepository : IRepository<DiscordUser>
     {
+        void EnsureCreated(ulong userId, string username, string discrim, string avatarId);
         DiscordUser GetOrCreate(ulong userId, string username, string discrim, string avatarId);
         DiscordUser GetOrCreate(IUser original);
         int GetUserGlobalRank(ulong id);

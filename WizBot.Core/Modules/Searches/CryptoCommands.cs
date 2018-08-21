@@ -3,7 +3,6 @@ using Discord.Commands;
 using WizBot.Common.Attributes;
 using WizBot.Core.Modules.Searches.Services;
 using WizBot.Extensions;
-using WizBot.Modules;
 using System.Threading.Tasks;
 
 namespace WizBot.Modules.Searches
