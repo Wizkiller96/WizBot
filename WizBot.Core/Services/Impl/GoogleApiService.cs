@@ -13,6 +13,7 @@ using System.Net.Http;
 using System.Net;
 using Newtonsoft.Json.Linq;
 using WizBot.Extensions;
+using Google;
 
 namespace WizBot.Core.Services.Impl
 {
@@ -132,6 +133,10 @@ namespace WizBot.Core.Services.Impl
             {
                 var response = await sh.Url.Insert(new Url { LongUrl = url }).ExecuteAsync().ConfigureAwait(false);
                 return response.Id;
+            }
+            catch (GoogleApiException ex) when (ex.HttpStatusCode == HttpStatusCode.Forbidden)
+            {
+                return url;
             }
             catch (Exception ex)
             {
