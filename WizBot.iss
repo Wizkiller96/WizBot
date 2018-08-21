@@ -1,12 +1,13 @@
 #define sysfolder "system"
 #define version GetEnv("WIZBOT_INSTALL_VERSION")
 #define target "win7-x64"
+#define platform "netcoreapp2.1"
 
 [Setup]
 AppName=WizBot
 AppVersion={#version}
 AppPublisher=WizNet
-AppCopyright=WizNet
+AppCopyright=© 2017-2018 WizNet - All Rights Reserved
 DefaultDirName={pf}\WizBot
 DefaultGroupName=WizBot
 UninstallDisplayIcon={app}\{#sysfolder}\wizbot_icon.ico
@@ -15,22 +16,22 @@ Compression=lzma2
 SolidCompression=yes
 OutputDir=userdocs:projekti/WizBotInstallerOutput
 OutputBaseFilename=WizBot-setup-{#version}
-AppReadmeFile=http://wizbot.readthedocs.io/en/latest/Commands%20List/
+AppReadmeFile=http://wizbot.readthedocs.io/en/latest/
 ArchitecturesInstallIn64BitMode=x64
 UsePreviousSetupType=no
 DisableWelcomePage=no
 
 [Files]
 ;install 
-Source: "src\WizBot\bin\Release\netcoreapp2.0\{#target}\publish\*"; DestDir: "{app}\{#sysfolder}"; Permissions: users-full; Flags: recursesubdirs onlyifdoesntexist ignoreversion createallsubdirs; Excludes: "*.pdb, *.db"
-Source: "src\WizBot\bin\Release\netcoreapp2.0\{#target}\publish\data\command_strings.json"; DestDir: "{app}\{#sysfolder}\data"; DestName: "command_strings.json"; Permissions: users-full; Flags: skipifsourcedoesntexist ignoreversion createallsubdirs recursesubdirs;
+Source: "src\WizBot\bin\Release\{#platform}\{#target}\publish\*"; DestDir: "{app}\{#sysfolder}"; Permissions: users-full; Flags: recursesubdirs onlyifdoesntexist ignoreversion createallsubdirs; Excludes: "*.pdb, *.db"
+Source: "src\WizBot\bin\Release\{#platform}\{#target}\publish\data\command_strings.json"; DestDir: "{app}\{#sysfolder}\data"; DestName: "command_strings.json"; Permissions: users-full; Flags: skipifsourcedoesntexist ignoreversion createallsubdirs recursesubdirs;
 ;rename credentials example to credentials, but don't overwrite if it exists
-;Source: "src\WizBot\bin\Release\netcoreapp2.0\{#target}\publish\credentials_example.json"; DestName: "credentials.json"; DestDir: "{app}\{#sysfolder}"; Permissions: users-full; Flags: skipifsourcedoesntexist onlyifdoesntexist;
+;Source: "src\WizBot\bin\Release\{#platform}\{#target}\publish\credentials_example.json"; DestName: "credentials.json"; DestDir: "{app}\{#sysfolder}"; Permissions: users-full; Flags: skipifsourcedoesntexist onlyifdoesntexist;
 
 ;reinstall - i want to copy all files, but i don't want to overwrite any data files because users will lose their customization if they don't have a backup, 
 ;            and i don't want them to have to backup and then copy-merge into data folder themselves, or lose their currency images due to overwrite.
-Source: "src\WizBot\bin\Release\netcoreapp2.0\{#target}\publish\*"; DestDir: "{app}\{#sysfolder}"; Permissions: users-full; Flags: recursesubdirs ignoreversion onlyifdestfileexists createallsubdirs; Excludes: "*.pdb, *.db, data\*, credentials.json";
-Source: "src\WizBot\bin\Release\netcoreapp2.0\{#target}\publish\data\*"; DestDir: "{app}\{#sysfolder}\data"; Permissions: users-full; Flags: recursesubdirs onlyifdoesntexist createallsubdirs;
+Source: "src\WizBot\bin\Release\{#platform}\{#target}\publish\*"; DestDir: "{app}\{#sysfolder}"; Permissions: users-full; Flags: recursesubdirs ignoreversion onlyifdestfileexists createallsubdirs; Excludes: "*.pdb, *.db, data\*, credentials.json";
+Source: "src\WizBot\bin\Release\{#platform}\{#target}\publish\data\*"; DestDir: "{app}\{#sysfolder}\data"; Permissions: users-full; Flags: recursesubdirs onlyifdoesntexist createallsubdirs;
 
 ;readme   
 ;Source: "readme"; DestDir: "{app}"; Flags: isreadme
@@ -42,7 +43,7 @@ Name:"{app}\{#sysfolder}"; Permissions: everyone-modify
 [Run]
 Filename: "http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/"; Flags: postinstall shellexec runasoriginaluser; Description: "Open setup guide"
 Filename: "{app}\{#sysfolder}\credentials.json"; Flags: postinstall shellexec runasoriginaluser; Description: "Open credentials file"
-Filename: "http://wizbot.xyz/"; Flags: postinstall shellexec runasoriginaluser; Description: "Visit WizBot's Website"
+Filename: "http://wizbot.cf/"; Flags: postinstall shellexec runasoriginaluser; Description: "Visit WizBot's Website"
 
 [Icons]
 ; for pretty install directory

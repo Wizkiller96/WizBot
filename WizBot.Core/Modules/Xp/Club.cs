@@ -1,11 +1,10 @@
 ﻿using Discord;
 using Discord.Commands;
-using Discord.WebSocket;
 using WizBot.Common.Attributes;
+using WizBot.Core.Services.Database.Models;
 using WizBot.Extensions;
 using WizBot.Modules.Xp.Common;
 using WizBot.Modules.Xp.Services;
-using WizBot.Core.Services.Database.Models;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,12 +17,10 @@ namespace WizBot.Modules.Xp
         public class Club : WizBotSubmodule<ClubService>
         {
             private readonly XpService _xps;
-            private readonly DiscordSocketClient _client;
 
-            public Club(XpService xps, DiscordSocketClient client)
+            public Club(XpService xps)
             {
                 _xps = xps;
-                _client = client;
             }
 
             [WizBotCommand, Usage, Description, Aliases]
