@@ -1,19 +1,18 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Microsoft.EntityFrameworkCore;
+using WizBot.Common;
 using WizBot.Common.Collections;
+using WizBot.Common.Replacements;
 using WizBot.Core.Services;
+using WizBot.Core.Services.Database.Models;
+using WizBot.Extensions;
 using NLog;
 using System.Collections.Concurrent;
-using WizBot.Extensions;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using WizBot.Core.Services.Database.Models;
-using WizBot.Common.Replacements;
-using WizBot.Common;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace WizBot.Modules.Administration.Services
 {
@@ -59,28 +58,21 @@ namespace WizBot.Modules.Administration.Services
         {
             var _ = Task.Run(async () =>
             {
-                try
-                {
-                    if (!(msg.Channel is SocketTextChannel channel))
-                        return;
+                if (!(msg.Channel is SocketTextChannel channel))
+                    return;
 
-                    if (DeleteMessagesOnCommandChannels.TryGetValue(channel.Id, out var state))
-                    {
-                        if (state)
-                        {
-                            await msg.DeleteAsync().ConfigureAwait(false);
-                        }
-                        //if state is false, that means do not do it
-                    }
-                    else if (DeleteMessagesOnCommand.Contains(channel.Guild.Id) && cmd.Name != "prune" && cmd.Name != "pick")
+                //wat ?!
+                if (DeleteMessagesOnCommandChannels.TryGetValue(channel.Id, out var state))
+                {
+                    if (state && cmd.Name != "prune" && cmd.Name != "pick")
                     {
                         try { await msg.DeleteAsync().ConfigureAwait(false); } catch { }
                     }
+                    //if state is false, that means do not do it
                 }
-                catch (Exception ex)
+                else if (DeleteMessagesOnCommand.Contains(channel.Guild.Id) && cmd.Name != "prune" && cmd.Name != "pick")
                 {
-                    _log.Warn("Delmsgoncmd errored...");
-                    _log.Warn(ex);
+                    try { await msg.DeleteAsync().ConfigureAwait(false); } catch { }
                 }
             });
             return Task.CompletedTask;

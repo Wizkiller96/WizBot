@@ -102,7 +102,7 @@ namespace WizBot.Modules.Utility
                         };
                         var toRemove = config.CommandAliases.Where(x => x.Trigger == trigger);
                         if (toRemove.Any())
-                            uow._context.Remove(toRemove.ToArray());
+                            uow._context.RemoveRange(toRemove.ToArray());
                         config.CommandAliases.Add(toAdd);
                         uow.Complete();
                     }
