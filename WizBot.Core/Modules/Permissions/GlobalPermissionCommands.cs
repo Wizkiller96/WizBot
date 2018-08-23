@@ -1,14 +1,14 @@
 ﻿using Discord;
 using Discord.Commands;
-using WizBot.Extensions;
-using WizBot.Core.Services;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using WizBot.Common.Attributes;
 using WizBot.Common.TypeReaders;
-using WizBot.Modules.Permissions.Services;
+using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
-using Microsoft.EntityFrameworkCore;
+using WizBot.Extensions;
+using WizBot.Modules.Permissions.Services;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace WizBot.Modules.Permissions
 {
@@ -73,7 +73,7 @@ namespace WizBot.Modules.Permissions
                         var bc = uow.BotConfig.GetOrCreate(set => set.Include(x => x.BlockedModules));
                         var mdls = bc.BlockedModules.Where(x => x.Name == moduleName);
                         if (mdls.Any())
-                            uow._context.Remove(mdls);
+                            uow._context.Remove(mdls.ToArray());
                         uow.Complete();
                     }
                     await ReplyConfirmLocalized("gmod_remove", Format.Bold(module.Name)).ConfigureAwait(false);
@@ -107,7 +107,7 @@ namespace WizBot.Modules.Permissions
                         var bc = uow.BotConfig.GetOrCreate(set => set.Include(x => x.BlockedCommands));
                         var objs = bc.BlockedCommands.Where(x => x.Name == commandName);
                         if (objs.Any())
-                            uow._context.Remove(objs);
+                            uow._context.Remove(objs.ToArray());
                         uow.Complete();
                     }
                     await ReplyConfirmLocalized("gcmd_remove", Format.Bold(cmd.Name)).ConfigureAwait(false);
