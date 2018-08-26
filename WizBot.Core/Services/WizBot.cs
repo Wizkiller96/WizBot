@@ -366,7 +366,8 @@ namespace WizBot
             catch
             {
                 _log.Error("You must run the application as an ADMINISTRATOR.");
-                Console.ReadKey();
+                if (!Console.IsInputRedirected)
+                    Console.ReadKey();
                 Environment.Exit(2);
             }
         }
