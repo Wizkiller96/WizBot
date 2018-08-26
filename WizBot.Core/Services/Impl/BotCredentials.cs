@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Immutable;
-using System.IO;
-using System.Linq;
-using Discord;
+﻿using Discord;
 using Microsoft.Extensions.Configuration;
 using WizBot.Common;
 using Newtonsoft.Json;
 using NLog;
+using System;
+using System.Collections.Immutable;
+using System.IO;
+using System.Linq;
 
 namespace WizBot.Core.Services.Impl
 {
@@ -45,6 +45,7 @@ namespace WizBot.Core.Services.Impl
         public string VotesUrl { get; }
         public string VotesToken { get; }
         public string BotListToken { get; }
+        public string RedisOptions { get; }
 
         public BotCredentials()
         {
@@ -131,7 +132,7 @@ namespace WizBot.Core.Services.Impl
                                 : dbSection["ConnectionString"]);
 
                 TwitchClientId = data[nameof(TwitchClientId)];
-                if(string.IsNullOrWhiteSpace(TwitchClientId))
+                if (string.IsNullOrWhiteSpace(TwitchClientId))
                 {
                     TwitchClientId = "67w6z9i09xv2uoojdm9l0wsyph4hxo6";
                 }
@@ -174,6 +175,7 @@ namespace WizBot.Core.Services.Impl
             public string TwitchClientId { get; set; }
             public string VotesToken { get; set; }
             public string VotesUrl { get; set; }
+            public string RedisOptions { get; set; }
         }
 
         public bool IsOwner(IUser u) => OwnerIds.Contains(u.Id);

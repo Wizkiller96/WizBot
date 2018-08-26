@@ -156,7 +156,7 @@ namespace WizBot.Modules.Gambling
         public async Task Cash([Remainder] IUser user = null)
         {
             user = user ?? Context.User;
-            await ReplyConfirmLocalized("has", Format.Bold(user.ToString()), $"{GetCurrency(user.Id)} {CurrencySign}").ConfigureAwait(false);
+            await ConfirmLocalized("has", Format.Bold(user.ToString()), $"{GetCurrency(user.Id)} {CurrencySign}").ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
