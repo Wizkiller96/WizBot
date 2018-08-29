@@ -411,7 +411,7 @@ namespace WizBot.Modules.Administration
             }
 
             [WizBotCommand, Usage, Description, Aliases]
-            [AdminOnly]
+            [OwnerOnly]
             public async Task Send(string where, [Remainder] string msg = null)
             {
                 if (string.IsNullOrWhiteSpace(msg))
