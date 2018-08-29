@@ -45,7 +45,7 @@ namespace WizBot.Core.Services.Impl
         public string VotesUrl { get; }
         public string VotesToken { get; }
         public string BotListToken { get; }
-        public string RedisOptions { get; } = "127.0.0.1,syncTimeout=3000";
+        public string RedisOptions { get; }
 
         public BotCredentials()
         {
@@ -85,6 +85,8 @@ namespace WizBot.Core.Services.Impl
                 MiningProxyCreds = data[nameof(MiningProxyCreds)];
                 if (!string.IsNullOrWhiteSpace(data[nameof(RedisOptions)]))
                     RedisOptions = data[nameof(RedisOptions)];
+                else
+                    RedisOptions = "127.0.0.1,syncTimeout=3000";
 
                 VotesToken = data[nameof(VotesToken)];
                 VotesUrl = data[nameof(VotesUrl)];
