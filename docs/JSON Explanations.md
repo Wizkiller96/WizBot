@@ -11,6 +11,11 @@ If you do not see `credentials.json` you will need to rename `credentials_exampl
 	105635123566156544,
 	105635123666156544
   ],
+  "AdminIds": [
+	105635123666156544,
+	105635123666156544,
+	105635123666156544
+  ],
   "LoLApiKey": "6e99ecf36f0000095b0a3ccfe35df45f",
   "GoogleApiKey": "AIzaSyDSci1sdlWQOWNVj1vlXxxxxxbk0oWMEzM",
   "MashapeKey": "4UrKpcWXc2mshS8RKi00000y8Kf5p1Q8kI6jsn32bmd8oVWiY7",
@@ -25,6 +30,7 @@ If you do not see `credentials.json` you will need to rename `credentials_exampl
   "ShardRunArguments": "",
   "ShardRunPort": null,
   "TwitchClientId": null,
+  "RedisOptions": "127.0.0.1,name=wizbot" 
 }
 ```
 -----
@@ -115,6 +121,41 @@ For multiple owners it should look like:
 ``` 
 -----
 
+##### Getting Admin ID*(s)*:		
+
+- Go to your Discord server and attempt to mention yourself, but put a backslash at the start like shown below: 			
+*(to make it slightly easier, add the backslash after you type the mention out)*
+- So the message `\@fearnlj01#3535` will appear as `<@145521851676884992>` after you send the message. 
+- The message will appear as a mention if done correctly, copy the numbers from the message **`145521851676884992`** and replace the ID (By default, the ID is `105635576866156544`) on the `AdminIds` section with your user ID shown earlier.
+- Save `credentials.json`
+- If done correctly, you successfully now made that user a bot admin. You can add multiple bot admins by seperating each admin ID with a comma within the square brackets.
+- Do note that bot admins have almost the same abilities as a bot owner bot are a bit more restricted. For example a bot admin isn't allowed to use any dangerious commands that edit the bot database etc. But can use the blacklist commands to blacklist a user, server, or channel from using the bot.
+
+
+```
+For single bot admin it should look like:
+```
+
+	
+```json
+	"AdminIds": [
+		105635576866156544
+	],
+``` 		
+
+```
+For multiple bot admins it should look like:
+```
+	
+```json
+	"AdminIds": [
+		105635123466156544,
+		105635123566156544,
+		105635123666156544
+	],
+``` 
+-----
+
 ## Setting up your API keys
 
 This part is completely optional, **However it is necessary for music and few other features to work properly**			
@@ -172,6 +213,9 @@ It should look like:
 - **TotalShards** 
 	- Required if the bot will be connected to more than 1500 servers. 
 	- Most likely unnecessary to change until your bot is added to more than 1500 servers.
+- **RedisOptions**
+	- Required if the Redis instance is not on localhost or on non-default port. 
+	- You can find all available options [here](https://stackexchange.github.io/StackExchange.Redis/Configuration.html). 
 - **RestartCommand**
 	- Required if you want to be able to use `.restart` command
 	- It requires command, and arguments to the command which to execute right before bot stops
