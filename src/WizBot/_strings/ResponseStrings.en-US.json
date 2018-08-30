@@ -964,7 +964,7 @@
     "searches_stream_message_set": "Announcement message when {0} stream goes online has been set.",
     "searches_stream_not_following": "You're not following that stream on this server.",
     "utility_documentation": "Documentation",
-    "utility_documentation_text": "📓 type `.help`",
+    "utility_documentation_text": "ℹ type `.help`",
     "utility_latency": "Latency",
     "utility_remind_too_long": "Remind time has exceeded maximum.",
     "administration_interval": "Interval",
