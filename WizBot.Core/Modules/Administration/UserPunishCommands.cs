@@ -280,6 +280,7 @@ namespace WizBot.Modules.Administration
                         .WithTitle("⛔️ " + GetText("banned_user"))
                         .AddField(efb => efb.WithName(GetText("username")).WithValue(user.ToString()).WithIsInline(true))
                         .AddField(efb => efb.WithName("ID").WithValue(user.Id.ToString()).WithIsInline(true))
+                        .AddField(efb => efb.WithName(GetText("moderator")).WithValue(Context.User.ToString()))
                         .WithFooter($"{time.Time.Days}d {time.Time.Hours}h {time.Time.Minutes}m"))
                     .ConfigureAwait(false);
             }
@@ -312,7 +313,8 @@ namespace WizBot.Modules.Administration
                 await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                         .WithTitle("⛔️ " + GetText("banned_user"))
                         .AddField(efb => efb.WithName(GetText("username")).WithValue(user.ToString()).WithIsInline(true))
-                        .AddField(efb => efb.WithName("ID").WithValue(user.Id.ToString()).WithIsInline(true)))
+                        .AddField(efb => efb.WithName("ID").WithValue(user.Id.ToString()).WithIsInline(true))
+                        .AddField(efb => efb.WithName(GetText("moderator")).WithValue(Context.User.ToString())))
                     .ConfigureAwait(false);
             }
 
@@ -393,7 +395,8 @@ namespace WizBot.Modules.Administration
                 await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                         .WithTitle("☣ " + GetText("sb_user"))
                         .AddField(efb => efb.WithName(GetText("username")).WithValue(user.ToString()).WithIsInline(true))
-                        .AddField(efb => efb.WithName("ID").WithValue(user.Id.ToString()).WithIsInline(true)))
+                        .AddField(efb => efb.WithName("ID").WithValue(user.Id.ToString()).WithIsInline(true))
+                        .AddField(efb => efb.WithName(GetText("moderator")).WithValue(Context.User.ToString())))
                     .ConfigureAwait(false);
             }
 
@@ -421,7 +424,8 @@ namespace WizBot.Modules.Administration
                 await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                         .WithTitle(GetText("kicked_user"))
                         .AddField(efb => efb.WithName(GetText("username")).WithValue(user.ToString()).WithIsInline(true))
-                        .AddField(efb => efb.WithName("ID").WithValue(user.Id.ToString()).WithIsInline(true)))
+                        .AddField(efb => efb.WithName("ID").WithValue(user.Id.ToString()).WithIsInline(true))
+                        .AddField(efb => efb.WithName(GetText("moderator")).WithValue(Context.User.ToString())))
                     .ConfigureAwait(false);
             }
 
