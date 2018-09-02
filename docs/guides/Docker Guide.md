@@ -30,11 +30,11 @@ cd ~
 docker pull wizkiller96/wizdecker:latest
 docker stop wizbot
 docker cp wizbot:/root/wizbot/credentials.json credentials.json
-docker cp wizbot:/opt/WizBot/src/WizBot/bin/Release/netcoreapp2.0/data/WizBot.db WizBot.db
+docker cp wizbot:/opt/WizBot/src/WizBot/bin/Release/netcoreapp2.1/data/WizBot.db WizBot.db
 docker rm wizbot
-docker create --name=wizbot -v /wizbot/conf:/root/wizbot -v /wizbot/data/:/opt/WizBot/src/WizBot/bin/Release/netcoreapp2.0/data wizkiller96/wizdecker:latest
+docker create --name=wizbot -v /wizbot/conf:/root/wizbot -v /wizbot/data/:/opt/WizBot/src/WizBot/bin/Release/netcoreapp2.1/data wizkiller96/wizdecker:latest
 docker cp credentials.json wizbot:/root/wizbot
-docker cp WizBot.db wizbot:/opt/WizBot/src/WizBot/bin/Release/netcoreapp2.0/data/WizBot.db
+docker cp WizBot.db wizbot:/opt/WizBot/src/WizBot/bin/Release/netcoreapp2.1/data/WizBot.db
 docker start -a wizbot
 ```
 
@@ -68,7 +68,7 @@ Technically speaking, you do not need to run this. But for the sake of fool-proo
 
 ### 4. Backup your WizBot.db file
 
-**Command:** `docker cp wizbot:/opt/WizBot/src/WizBot/bin/Release/netcoreapp2.0/data/WizBot.db WizBot.db`
+**Command:** `docker cp wizbot:/opt/WizBot/src/WizBot/bin/Release/netcoreapp2.1/data/WizBot.db WizBot.db`
 
 Again, you most likely do not need to run this. But for the sake of fool-proof, this would make a copy of the WizBot.db from the docker container and put it to your home folder.
 
@@ -80,7 +80,7 @@ This will delete the bot container, along with any of its settings inside. (That
 
 ### 6. Creating a new WizBot container with updated files
 
-**Command:** `docker create --name=wizbot -v /wizbot/conf:/root/wizbot -v /wizbot/data/:/opt/WizBot/src/WizBot/bin/Release/netcoreapp2.0/data wizkiller96/wizdecker:latest`
+**Command:** `docker create --name=wizbot -v /wizbot/conf:/root/wizbot -v /wizbot/data/:/opt/WizBot/src/WizBot/bin/Release/netcoreapp2.1/data wizkiller96/wizdecker:latest`
 
 This command will build a new wizbot container based on the files we've pulled from **__Step 1__**.
 
@@ -96,7 +96,7 @@ Technically speaking, if the file exists in /wizbot/conf, then you do not need t
 
 ### 8. Copy WizBot.db database back into the container
 
-**Command:** `docker cp WizBot.db wizbot:/opt/WizBot/src/WizBot/bin/Release/netcoreapp2.0/data/WizBot.db`
+**Command:** `docker cp WizBot.db wizbot:/opt/WizBot/src/WizBot/bin/Release/netcoreapp2.1/data/WizBot.db`
 
 As I've been saying, this is yet another redundent step, just to make the whole thing fool-proof. This command copies the database with all the user info (such as the currency, experience, level, waifus, etc) and put it into the container.
 
