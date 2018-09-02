@@ -336,7 +336,8 @@ namespace WizBot.Modules.Gambling.Services
 
             using (var uow = _db.UnitOfWork)
             {
-                var w = uow.Waifus.ByWaifuUserId(giftedWaifu.Id, set => set.Include(x => x.Items));
+                var w = uow.Waifus.ByWaifuUserId(giftedWaifu.Id, set => set.Include(x => x.Items)
+                    .Include(x => x.Claimer));
                 if (w == null)
                 {
                     uow.Waifus.Add(w = new WaifuInfo()
