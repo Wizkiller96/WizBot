@@ -1,12 +1,12 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using WizBot.Common.Attributes;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Extensions;
 using WizBot.Modules.Administration.Common;
 using WizBot.Modules.Administration.Services;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace WizBot.Modules.Administration
 {
@@ -20,7 +20,7 @@ namespace WizBot.Modules.Administration
             [RequireUserPermission(GuildPermission.Administrator)]
             public Task AntiRaid()
             {
-                if(_service.TryStopAntiRaid(Context.Guild.Id))
+                if (_service.TryStopAntiRaid(Context.Guild.Id))
                 {
                     return ReplyConfirmLocalized("prot_disable", "Anti-Raid");
                 }
@@ -59,7 +59,7 @@ namespace WizBot.Modules.Administration
             [Priority(1)]
             public Task AntiSpam()
             {
-                if(_service.TryStopAntiSpam(Context.Guild.Id))
+                if (_service.TryStopAntiSpam(Context.Guild.Id))
                 {
                     return ReplyConfirmLocalized("prot_disable", "Anti-Spam");
                 }
@@ -78,7 +78,7 @@ namespace WizBot.Modules.Administration
                 if (messageCount < 2 || messageCount > 10)
                     return;
 
-                if (time < 0 || time > 60 * 12)
+                if (time < 0 || time > 60 * 60 * 12)
                     return;
 
                 var stats = await _service.StartAntiSpamAsync(Context.Guild.Id, messageCount, time, action).ConfigureAwait(false);
