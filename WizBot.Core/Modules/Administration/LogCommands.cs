@@ -1,14 +1,14 @@
 ﻿using Discord;
 using Discord.Commands;
-using WizBot.Extensions;
-using WizBot.Core.Services.Database.Models;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using WizBot.Common;
 using WizBot.Common.Attributes;
 using WizBot.Common.TypeReaders.Models;
+using WizBot.Core.Services.Database.Models;
+using WizBot.Extensions;
 using WizBot.Modules.Administration.Services;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using static WizBot.Modules.Administration.Services.LogCommandService;
 
 namespace WizBot.Modules.Administration
@@ -47,7 +47,7 @@ namespace WizBot.Modules.Administration
 
                 var removed = _service.LogIgnore(Context.Guild.Id, Context.Channel.Id);
 
-                if (removed)
+                if (!removed)
                     await ReplyConfirmLocalized("log_ignore", Format.Bold(channel.Mention + "(" + channel.Id + ")")).ConfigureAwait(false);
                 else
                     await ReplyConfirmLocalized("log_not_ignore", Format.Bold(channel.Mention + "(" + channel.Id + ")")).ConfigureAwait(false);
