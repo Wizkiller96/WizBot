@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 namespace WizBot.Common.Replacements
@@ -21,7 +19,7 @@ namespace WizBot.Common.Replacements
         {
             if (string.IsNullOrWhiteSpace(input))
                 return input;
-            
+
             foreach (var (Key, Text) in _replacements)
             {
                 if (input.Contains(Key))
@@ -57,8 +55,10 @@ namespace WizBot.Common.Replacements
                 }
 
             if (embedData.Footer != null)
+            {
                 embedData.Footer.Text = Replace(embedData.Footer.Text);
                 embedData.Footer.IconUrl = Replace(embedData.Footer.IconUrl);
+            }
         }
     }
 }
