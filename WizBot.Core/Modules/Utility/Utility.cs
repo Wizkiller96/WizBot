@@ -1,19 +1,19 @@
 using Discord;
 using Discord.Commands;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Text;
-using WizBot.Extensions;
-using WizBot.Core.Services.Impl;
-using System.Net.Http;
-using System.Collections.Generic;
-using Newtonsoft.Json;
 using Discord.WebSocket;
-using System.Diagnostics;
 using WizBot.Common;
 using WizBot.Common.Attributes;
 using WizBot.Core.Services;
+using WizBot.Core.Services.Impl;
+using WizBot.Extensions;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace WizBot.Modules.Utility
 {
@@ -287,7 +287,7 @@ namespace WizBot.Modules.Utility
             await Context.Channel.EmbedAsync(guilds.Aggregate(new EmbedBuilder().WithOkColor(),
                                      (embed, g) => embed.AddField(efb => efb.WithName(g.Name)
                                                                            .WithValue(
-                                             GetText("listservers", g.Id, g.Users.Count,
+                                             GetText("listservers", g.Id, g.MemberCount,
                                                  g.OwnerId))
                                                                            .WithIsInline(false))))
                          .ConfigureAwait(false);
