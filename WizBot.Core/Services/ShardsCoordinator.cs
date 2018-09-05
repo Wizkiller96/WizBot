@@ -118,7 +118,7 @@ namespace WizBot.Core.Services
                 else
                     _shardProcesses[id] = Process.GetCurrentProcess();
 #else
-                _shardStartQueue.Enqueue(i);
+                _shardStartQueue.Enqueue(id);
 #endif
                 //set the shard's initial state in redis cache
                 var msg = _defaultShardState.Clone();
