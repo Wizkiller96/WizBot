@@ -6631,5 +6631,20 @@
         "Administrator Server Permission"
       ]
     }
+  ],
+  "Vulpine": [
+    {
+      "Aliases": [
+        ".rinfo"
+      ],
+      "Description": "Display a Roblox User profile information from the Vulpine API.",
+      "Usage": [
+        ".rinfo Rich151"
+      ],
+      "Submodule": "Vulpine",
+      "Module": "Vulpine",
+      "Options": null,
+      "Requirements": []
+    }
   ]
 }

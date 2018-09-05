@@ -3468,5 +3468,12 @@
     "usage": [
       "{0}economy"
     ]
+  },
+  "rinfo": {
+    "cmd": "rinfo",
+    "desc": "Display a Roblox User profile information from the Vulpine API.",
+    "usage": [
+      "{0}rinfo Rich151"
+    ]
   }
 }
