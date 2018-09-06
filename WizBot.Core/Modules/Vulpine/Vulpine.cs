@@ -1,3 +1,4 @@
+#if GLOBAL_WIZBOT
 using Discord;
 using Discord.Commands;
 using Newtonsoft.Json.Linq;
@@ -46,7 +47,6 @@ namespace WizBot.Modules.Vulpine
                     .WithThumbnailUrl($"http://www.roblox.com:80/Thumbs/Avatar.ashx?x=100&y=100&Format=Png&username={RInfo["username"]}")
                     .AddField(fb => fb.WithName("Username").WithValue($"{RInfo["username"]}").WithIsInline(false))
                     .AddField(fb => fb.WithName("Status").WithValue($"{RInfo["status"]}").WithIsInline(false))
-                    .AddField(fb => fb.WithName("Blurb").WithValue($"{RInfo["blurb"]}").WithIsInline(false))
                     .AddField(fb => fb.WithName("Account Age").WithValue($"{RInfo["age"]}").WithIsInline(false))
                     .AddField(fb => fb.WithName("Join Date").WithValue($"{RInfo["joinDate"]:MM.dd.yyyy HH:mm}").WithIsInline(false))
                     .WithFooter("© Vulpine Utility"))
@@ -59,3 +59,4 @@ namespace WizBot.Modules.Vulpine
         }
     }
 }
+#endif
