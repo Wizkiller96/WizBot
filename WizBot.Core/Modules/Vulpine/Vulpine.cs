@@ -1,4 +1,4 @@
-//#if GLOBAL_WIZBOT
+#if GLOBAL_WIZBOT
 using Discord;
 using Discord.Commands;
 using Newtonsoft.Json.Linq;
@@ -87,4 +87,4 @@ namespace WizBot.Modules.Vulpine
         }
     }
 }
-//#endif
+#endif
