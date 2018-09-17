@@ -392,13 +392,13 @@ namespace WizBot.Modules.NSFW
                 await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                     .WithAuthor(eab => eab.WithUrl("http://nekos.life/")
                         .WithIconUrl("https://i.imgur.com/a36AMkG.png")
-                        .WithName($"Nekos Life - Database {nekotitle["cat"]}"))
+                        .WithName($"Nekos Life - NSFW Database {nekotitle["cat"]}"))
                     .WithImageUrl($"{nekoimg["url"]}")).ConfigureAwait(false);
                 else
                     await Context.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
                     .WithAuthor(eab => eab.WithUrl("http://nekos.life/")
                         .WithIconUrl("https://i.imgur.com/a36AMkG.png")
-                        .WithName($"Nekos Life - Invalid Category"))
+                        .WithName($"Nekos Life - Invalid NSFW Category"))
                     .WithDescription("Seems the category you was looking for could not be found. Please use the category listed below.")
                     .AddField(fb => fb.WithName("NSFW Categories").WithValue("`Random_hentai_gif`,`pussy`,`nsfw_neko_gif`,`lewd`,`les`,`kuni`,`cum`,`classic`,`boobs`,`bj`,`anal`,`yuri`,`trap`,`tits`,`smallboobs`,`pussy_jpg`,`hentai`,`cum_jpg`,`solo`,`futanari`,`hololewd`,`lewdk`,`spank`,`erokemo`,`ero`,`erofeet`,`blowjob`,`erok`,`keta`,`eroyuri`,`eron`,`holoero`,`solog`,`feetg`,`nsfw_avatar`,`feet`,`holo`,`femdom`,`pwankg`,`lewdkemo`").WithIsInline(false))).ConfigureAwait(false);
             }

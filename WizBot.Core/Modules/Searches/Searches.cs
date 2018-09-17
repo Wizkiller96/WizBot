@@ -700,13 +700,13 @@ namespace WizBot.Modules.Searches
                     await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                         .WithAuthor(eab => eab.WithUrl("http://nekos.life/")
                             .WithIconUrl("https://i.imgur.com/a36AMkG.png")
-                            .WithName($"Nekos Life - Database {nyatitle["cat"]}"))
+                            .WithName($"Nekos Life - SFW Database {nyatitle["cat"]}"))
                         .WithImageUrl($"{nyaimg["url"]}")).ConfigureAwait(false);
                 else
                     await Context.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
                     .WithAuthor(eab => eab.WithUrl("http://nekos.life/")
                         .WithIconUrl("https://i.imgur.com/a36AMkG.png")
-                        .WithName($"Nekos Life - Invalid Category"))
+                        .WithName($"Nekos Life - Invalid SFW Category"))
                     .WithDescription("Seems the category you was looking for could not be found. Please use the category listed below.")
                     .AddField(fb => fb.WithName("SFW Categories").WithValue("`wallpaper`,`ngif`,`meow`,`tickle`,`feed`,`gecg`,`kemonomimi`,`gasm`,`poke`,`slap`,`avatar`,`lizard`,`waifu`,`pat`,`kiss`,`neko`,`cuddle`,`fox_girl`,`hug`,`baka`,`smug`").WithIsInline(false))).ConfigureAwait(false);
             }
