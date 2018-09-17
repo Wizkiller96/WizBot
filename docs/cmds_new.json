@@ -3874,7 +3874,7 @@
       "Aliases": [
         ".neko"
       ],
-      "Description": "Pulls a random lewd neko image unless a category from http://nekos.life is picked. Categories: cum, les, meow, tickle, lewd, feed, bj, nsfw_neko_gif, poke, anal, slap, pussy, lizard, classic, kuni, pat, kiss, neko, cuddle, fox_girl, boobs, Random_hentai_gif, hug",
+      "Description": "Pulls a random lewd neko image unless a category from http://nekos.life is picked. Categories: Random_hentai_gif, pussy, nsfw_neko_gif, lewd, les, kuni, cum, classic, boobs, bj, anal, yuri, trap, tits, smallboobs, pussy_jpg, hentai, cum_jpg, solo, futanari, hololewd, lewdk, spank, erokemo, ero, erofeet, blowjob, erok, keta, eroyuri, eron, holoero, solog, feetg, nsfw_avatar, feet, holo, femdom, pwankg, lewdkemo",
       "Usage": [
         ".neko",
         ".neko Random_hentai_gif",
@@ -5434,6 +5434,21 @@
         ".xkcd latest"
       ],
       "Submodule": "XkcdCommands",
+      "Module": "Searches",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
+        ".nya"
+      ],
+      "Description": "Pulls a random neko image unless a category from http://nekos.life is picked. Categories: wallpaper, ngif, meow, tickle, feed, gecg, kemonomimi, gasm, poke, slap, avatar, lizard, waifu, pat, kiss, neko, cuddle, fox_girl, hug, baka, smug",
+      "Usage": [
+        ".nya",
+        ".nya poke",
+        ".nya ngif"
+      ],
+      "Submodule": "Searches",
       "Module": "Searches",
       "Options": null,
       "Requirements": []

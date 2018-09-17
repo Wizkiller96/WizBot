@@ -681,6 +681,42 @@ namespace WizBot.Modules.Searches
         }
 
         [WizBotCommand, Usage, Description, Aliases]
+        public async Task Nya([Remainder] string category = "neko")
+        {
+            string[] cat = { "wallpaper", "ngif", "meow", "tickle", "feed", "gecg", "kemonomimi", "gasm", "poke", "slap", "avatar", "lizard", "waifu", "pat", "kiss", "neko", "cuddle", "fox_girl", "hug", "baka", "smug" };
+            if (string.IsNullOrWhiteSpace(category))
+                return;
+
+            try
+            {
+                JToken nyatitle;
+                JToken nyaimg;
+                using (var http = _httpFactory.CreateClient())
+                {
+                    nyatitle = JObject.Parse(await http.GetStringAsync($"https://nekos.life/api/v2/cat").ConfigureAwait(false));
+                    nyaimg = JObject.Parse(await http.GetStringAsync($"https://nekos.life/api/v2/img/{category}").ConfigureAwait(false));
+                }
+                if (cat.Contains(category))
+                    await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
+                        .WithAuthor(eab => eab.WithUrl("http://nekos.life/")
+                            .WithIconUrl("https://i.imgur.com/a36AMkG.png")
+                            .WithName($"Nekos Life - Database {nyatitle["cat"]}"))
+                        .WithImageUrl($"{nyaimg["url"]}")).ConfigureAwait(false);
+                else
+                    await Context.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
+                    .WithAuthor(eab => eab.WithUrl("http://nekos.life/")
+                        .WithIconUrl("https://i.imgur.com/a36AMkG.png")
+                        .WithName($"Nekos Life - Invalid Category"))
+                    .WithDescription("Seems the category you was looking for could not be found. Please use the category listed below.")
+                    .AddField(fb => fb.WithName("SFW Categories").WithValue("`wallpaper`,`ngif`,`meow`,`tickle`,`feed`,`gecg`,`kemonomimi`,`gasm`,`poke`,`slap`,`avatar`,`lizard`,`waifu`,`pat`,`kiss`,`neko`,`cuddle`,`fox_girl`,`hug`,`baka`,`smug`").WithIsInline(false))).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                await Context.Channel.SendErrorAsync(ex.Message).ConfigureAwait(false);
+            }
+        }
+
+        [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task Bible(string book, string chapterAndVerse)
         {

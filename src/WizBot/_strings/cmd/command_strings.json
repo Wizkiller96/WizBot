@@ -3412,11 +3412,20 @@
   },
   "neko": {
     "cmd": "neko",
-    "desc": "Pulls a random lewd neko image unless a category from http://nekos.life is picked. ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬ **Categories:** feet, yuri, trap, futanari, hololewd, lewdkemo, solog, feetg, cum, erokemo, les, lewdk, ngif, meow, tickle, lewd, feed, eroyuri, eron, cum_jpg, bj, nsfw_neko_gif, solo, kemonomimi, nsfw_avatar, poke, anal, slap, hentai, avatar, erofeet, holo, keta, blowjob, pussy, tits, holoero, lizard, pussy_jpg, pwankg, classic, kuni, pat, 8ball, kiss, femdom, neko, cuddle, erok, fox_girl, boobs, Random_hentai_gif, smallboobs, hug, ero",
+    "desc": "Pulls a random lewd neko image unless a category from http://nekos.life is picked. ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬ **Categories:**\n `Random_hentai_gif`,`pussy`,`nsfw_neko_gif`,`lewd`,`les`,`kuni`,`cum`,`classic`,`boobs`,`bj`,`anal`,`yuri`,`trap`,`tits`,`smallboobs`,`pussy_jpg`,`hentai`,`cum_jpg`,`solo`,`futanari`,`hololewd`,`lewdk`,`spank`,`erokemo`,`ero`,`erofeet`,`blowjob`,`erok`,`keta`,`eroyuri`,`eron`,`holoero`,`solog`,`feetg`,`nsfw_avatar`,`feet`,`holo`,`femdom`,`pwankg`,`lewdkemo`",
     "usage": [
       "{0}neko",
       "{0}neko Random_hentai_gif",
       "{0}neko nsfw_neko_gif"
+    ]
+  },
+  "nya": {
+    "cmd": "nya",
+    "desc": "Pulls a random neko image unless a category from http://nekos.life is picked. ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬ **Categories:**\n `wallpaper`,`ngif`,`meow`,`tickle`,`feed`,`gecg`,`kemonomimi`,`gasm`,`poke`,`slap`,`avatar`,`lizard`,`waifu`,`pat`,`kiss`,`neko`,`cuddle`,`fox_girl`,`hug`,`baka`,`smug`",
+    "usage": [
+      "{0}nya",
+      "{0}nya poke",
+      "{0}neko ngif"
     ]
   },
   "bible": {
