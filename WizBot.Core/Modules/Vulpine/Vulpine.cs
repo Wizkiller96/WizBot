@@ -27,7 +27,7 @@ namespace WizBot.Modules.Vulpine
             _httpFactory = factory;
         }
 
-        // Code is a bit messy as this was a temp solution to fix the nulled issue temp.
+        // Code is a bit messy as this was a temp solution to fix the nulled issue.
         [WizBotCommand, Usage, Description, Aliases]
         public async Task RInfo([Remainder] string username = null)
         {
