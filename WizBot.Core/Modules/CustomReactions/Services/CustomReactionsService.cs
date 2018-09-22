@@ -1,23 +1,22 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using WizBot.Core.Services.Database.Models;
-using NLog;
-using System.Collections.Concurrent;
-using System.Linq;
-using System;
-using System.Threading.Tasks;
 using WizBot.Common;
 using WizBot.Common.ModuleBehaviors;
-using WizBot.Extensions;
-using WizBot.Core.Services.Database;
 using WizBot.Core.Services;
-using WizBot.Modules.CustomReactions.Extensions;
-using WizBot.Modules.Permissions.Services;
+using WizBot.Core.Services.Database;
+using WizBot.Core.Services.Database.Models;
 using WizBot.Core.Services.Impl;
-using Newtonsoft.Json;
-using System.Collections.Generic;
+using WizBot.Extensions;
+using WizBot.Modules.CustomReactions.Extensions;
 using WizBot.Modules.Permissions.Common;
-using System.Diagnostics;
+using WizBot.Modules.Permissions.Services;
+using Newtonsoft.Json;
+using NLog;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace WizBot.Modules.CustomReactions.Services
 {
@@ -379,6 +378,9 @@ namespace WizBot.Modules.CustomReactions.Services
             using (var uow = _db.UnitOfWork)
             {
                 cr = uow.CustomReactions.GetById(id);
+
+                if (cr.GuildId != guildId)
+                    return null;
 
                 if (cr != null)
                 {
