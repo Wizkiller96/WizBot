@@ -375,7 +375,7 @@ namespace WizBot.Modules.NSFW
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
         public async Task Neko([Remainder] string category = "lewd")
         {
-            string[] cat = { "Random_hentai_gif", "pussy", "nsfw_neko_gif", "lewd", "les", "kuni", "cum", "classic", "boobs", "bj", "anal", "yuri", "trap", "tits", "smallboobs", "pussy_jpg", "hentai", "cum_jpg", "solo", "futanari", "hololewd", "lewdk", "spank", "erokemo", "ero", "erofeet", "blowjob", "erok", "keta", "eroyuri", "eron", "holoero", "solog", "feetg", "nsfw_avatar", "feet", "holo", "femdom", "pwankg", "lewdkemo" };
+            string[] cat = { "Random_hentai_gif", "pussy", "nsfw_neko_gif", "lewd", "les", "kuni", "cum", "classic", "boobs", "bj", "anal", "yuri", "trap", "tits", "pussy_jpg", "hentai", "cum_jpg", "solo", "futanari", "hololewd", "lewdk", "spank", "erokemo", "ero", "erofeet", "blowjob", "erok", "keta", "eroyuri", "eron", "holoero", "solog", "feetg", "nsfw_avatar", "feet", "holo", "femdom", "pwankg", "lewdkemo" };
             if (string.IsNullOrWhiteSpace(category))
                 return;
 
@@ -400,7 +400,7 @@ namespace WizBot.Modules.NSFW
                         .WithIconUrl("https://i.imgur.com/a36AMkG.png")
                         .WithName($"Nekos Life - Invalid NSFW Category"))
                     .WithDescription("Seems the category you was looking for could not be found. Please use the category listed below.")
-                    .AddField(fb => fb.WithName("NSFW Categories").WithValue("`Random_hentai_gif`,`pussy`,`nsfw_neko_gif`,`lewd`,`les`,`kuni`,`cum`,`classic`,`boobs`,`bj`,`anal`,`yuri`,`trap`,`tits`,`smallboobs`,`pussy_jpg`,`hentai`,`cum_jpg`,`solo`,`futanari`,`hololewd`,`lewdk`,`spank`,`erokemo`,`ero`,`erofeet`,`blowjob`,`erok`,`keta`,`eroyuri`,`eron`,`holoero`,`solog`,`feetg`,`nsfw_avatar`,`feet`,`holo`,`femdom`,`pwankg`,`lewdkemo`").WithIsInline(false))).ConfigureAwait(false);
+                    .AddField(fb => fb.WithName("NSFW Categories").WithValue("`Random_hentai_gif`,`pussy`,`nsfw_neko_gif`,`lewd`,`les`,`kuni`,`cum`,`classic`,`boobs`,`bj`,`anal`,`yuri`,`trap`,`tits`,`pussy_jpg`,`hentai`,`cum_jpg`,`solo`,`futanari`,`hololewd`,`lewdk`,`spank`,`erokemo`,`ero`,`erofeet`,`blowjob`,`erok`,`keta`,`eroyuri`,`eron`,`holoero`,`solog`,`feetg`,`nsfw_avatar`,`feet`,`holo`,`femdom`,`pwankg`,`lewdkemo`").WithIsInline(false))).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
