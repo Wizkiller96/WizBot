@@ -1,14 +1,14 @@
 using Discord;
 using Discord.Commands;
-using WizBot.Extensions;
-using WizBot.Core.Services;
-using WizBot.Core.Services.Database.Models;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using WizBot.Common;
 using WizBot.Common.Attributes;
 using WizBot.Common.Replacements;
+using WizBot.Core.Services;
+using WizBot.Core.Services.Database.Models;
+using WizBot.Extensions;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace WizBot.Modules.Utility
 {
@@ -128,14 +128,19 @@ namespace WizBot.Modules.Utility
                 using (var uow = _db.UnitOfWork)
                 {
                     quote = uow.Quotes.GetById(id);
+                    if (quote.GuildId != Context.Guild.Id)
+                        quote = null;
                 }
 
-                var infoText = $"`#{quote.Id} added by {quote.AuthorName.SanitizeMentions()}` 🗯️ " + quote.Keyword.ToLowerInvariant().SanitizeMentions() + ":\n";
                 if (quote == null)
                 {
                     await Context.Channel.SendErrorAsync(GetText("quotes_notfound")).ConfigureAwait(false);
+                    return;
                 }
-                else if (CREmbed.TryParse(quote.Text, out var crembed))
+
+                var infoText = $"`#{quote.Id} added by {quote.AuthorName.SanitizeMentions()}` 🗯️ " + quote.Keyword.ToLowerInvariant().SanitizeMentions() + ":\n";
+                
+                if (CREmbed.TryParse(quote.Text, out var crembed))
                 {
                     rep.Replace(crembed);
 
