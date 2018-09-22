@@ -1,19 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Google.Apis.YouTube.v3;
+﻿using Google;
+using Google.Apis.Customsearch.v1;
 using Google.Apis.Services;
-using System.Text.RegularExpressions;
 using Google.Apis.Urlshortener.v1;
 using Google.Apis.Urlshortener.v1.Data;
-using NLog;
-using Google.Apis.Customsearch.v1;
-using System.Net.Http;
-using System.Net;
-using Newtonsoft.Json.Linq;
+using Google.Apis.YouTube.v3;
+using WizBot.Common;
 using WizBot.Extensions;
-using Google;
+using Newtonsoft.Json.Linq;
+using NLog;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace WizBot.Core.Services.Impl
 {
@@ -209,7 +210,7 @@ namespace WizBot.Core.Services.Impl
             return toReturn;
         }
 
-        public async Task<ImageResult> GetImageAsync(string query, int start = 1)
+        public async Task<ImageResult> GetImageAsync(string query)
         {
             await Task.Yield();
             if (string.IsNullOrWhiteSpace(query))
@@ -220,7 +221,7 @@ namespace WizBot.Core.Services.Impl
             req.Num = 1;
             req.Fields = "items(image(contextLink,thumbnailLink),link)";
             req.SearchType = CseResource.ListRequest.SearchTypeEnum.Image;
-            req.Start = start;
+            req.Start = new WizBotRandom().Next(0, 20);
 
             var search = await req.ExecuteAsync().ConfigureAwait(false);
 

@@ -1,12 +1,12 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using Discord;
 using Discord.Commands;
-using WizBot.Core.Services;
-using Discord;
-using WizBot.Extensions;
 using Discord.WebSocket;
 using WizBot.Common.Attributes;
+using WizBot.Core.Services;
+using WizBot.Extensions;
 using WizBot.Modules.CustomReactions.Services;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace WizBot.Modules.CustomReactions
 {
@@ -245,6 +245,7 @@ namespace WizBot.Modules.CustomReactions
 
         private async Task InternalCrEdit(int id, CustomReactionsService.CrField option)
         {
+            var cr = _service.GetCustomReaction(Context.Guild?.Id, id);
             if (!AdminInGuildOrOwnerInDm())
             {
                 await ReplyErrorLocalized("insuff_perms").ConfigureAwait(false);
