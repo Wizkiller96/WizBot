@@ -41,8 +41,19 @@ namespace WizBot.Modules.Vulpine
                 {
                     RInfo = JObject.Parse(await http.GetStringAsync($"https://vulpineutility.net/api/v1/getPlayerInfo/username/{username}").ConfigureAwait(false));
                 }
-
-                if (string.IsNullOrEmpty($"{RInfo["blurb"]}"))
+                if((string.IsNullOrEmpty($"{RInfo["blurb"]}")) && (string.IsNullOrEmpty($"{RInfo["status"]}")))
+                    await Context.Channel.EmbedAsync(new EmbedBuilder().WithColor(Color.Blue)
+                        .WithAuthor(eab => eab.WithUrl("https://vulpineutility.net/")
+                            .WithIconUrl("https://i.imgur.com/cqx791R.jpg")
+                            .WithName($"Vulpine - Roblox Info"))
+                        .WithThumbnailUrl($"http://www.roblox.com:80/Thumbs/Avatar.ashx?x=100&y=100&Format=Png&username={RInfo["username"]}")
+                        .AddField(fb => fb.WithName("Username").WithValue($"[{RInfo["username"]}](https://www.roblox.com/users/{RInfo["userid"]}/profile)").WithIsInline(true))
+                        .AddField(fb => fb.WithName("User ID").WithValue($"{RInfo["userid"]}").WithIsInline(true))
+                        .AddField(fb => fb.WithName("Account Age").WithValue($"{RInfo["age"]}").WithIsInline(true))
+                        .AddField(fb => fb.WithName("Join Date").WithValue($"{RInfo["joinDate"]:MM.dd.yyyy HH:mm}").WithIsInline(true))
+                        .WithFooter("© Vulpine Utility"))
+                        .ConfigureAwait(false);
+                else if (string.IsNullOrEmpty($"{RInfo["blurb"]}"))
                     await Context.Channel.EmbedAsync(new EmbedBuilder().WithColor(Color.Blue)
                         .WithAuthor(eab => eab.WithUrl("https://vulpineutility.net/")
                             .WithIconUrl("https://i.imgur.com/cqx791R.jpg")
