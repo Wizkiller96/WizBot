@@ -1,20 +1,20 @@
-﻿using Discord.Commands;
-using WizBot.Extensions;
-using System.Linq;
-using Discord;
-using WizBot.Core.Services;
-using System.Threading.Tasks;
-using System;
-using System.IO;
-using System.Collections.Generic;
-using WizBot.Common.Attributes;
-using WizBot.Modules.Help.Services;
-using WizBot.Modules.Permissions.Services;
+﻿using Discord;
+using Discord.Commands;
 using WizBot.Common;
+using WizBot.Common.Attributes;
 using WizBot.Common.Replacements;
-using Newtonsoft.Json;
 using WizBot.Core.Common;
 using WizBot.Core.Modules.Help.Common;
+using WizBot.Core.Services;
+using WizBot.Extensions;
+using WizBot.Modules.Help.Services;
+using WizBot.Modules.Permissions.Services;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace WizBot.Modules.Help
 {
@@ -164,7 +164,7 @@ namespace WizBot.Modules.Help
         [Priority(0)]
         public async Task H([Remainder] string fail)
         {
-            var prefixless = _cmds.Commands.FirstOrDefault(x => x.Name.ToLowerInvariant() == fail);
+            var prefixless = _cmds.Commands.FirstOrDefault(x => x.Aliases.Any(cmdName => cmdName.ToLowerInvariant() == fail));
             if (prefixless != null)
             {
                 await H(prefixless).ConfigureAwait(false);
