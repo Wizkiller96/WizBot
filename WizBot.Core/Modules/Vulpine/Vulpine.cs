@@ -1,4 +1,4 @@
-//#if GLOBAL_WIZBOT
+#if GLOBAL_WIZBOT
 using Discord;
 using Discord.Commands;
 using Newtonsoft.Json.Linq;
@@ -36,9 +36,12 @@ namespace WizBot.Modules.Vulpine
 
             try
             {
+                // Todo make a checker to see if a Roblox account exist before showing info.
+                //JToken RChecker;
                 JToken RInfo;
                 using (var http = _httpFactory.CreateClient())
                 {
+                    //RChecker = JObject.Parse(await http.GetStringAsync($"https://www.roblox.com/UserCheck/doesusernameexist?username={username}"));
                     RInfo = JObject.Parse(await http.GetStringAsync($"https://vulpineutility.net/api/v1/getPlayerInfo/username/{username}").ConfigureAwait(false));
                 }
                 if((string.IsNullOrEmpty($"{RInfo["blurb"]}")) && (string.IsNullOrEmpty($"{RInfo["status"]}")))
@@ -101,4 +104,4 @@ namespace WizBot.Modules.Vulpine
         }
     }
 }
-//#endif
+#endif
