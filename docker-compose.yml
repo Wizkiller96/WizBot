@@ -2,6 +2,8 @@ version: "3.5"
 services:
   wizbot:
     build: .
+    #image: wizkiller96/wizbot
+    restart: unless-stopped
     depends_on:
       - redis
     volumes:
