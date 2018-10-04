@@ -1372,7 +1372,7 @@
       "Module": "Administration",
       "Options": null,
       "Requirements": [
-        "Bot Owner Only"
+        "Bot Owner & Admin Only"
       ]
     },
     {
