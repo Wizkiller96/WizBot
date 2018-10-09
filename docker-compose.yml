@@ -9,6 +9,10 @@ services:
     volumes:
       - ./credentials.json:/app/credentials.json:ro
       - ./data:/app/data
+    environment:
+      WizBot_RedisOptions: redis,name=wizbot
+      WizBot_ShardRunCommand: dotnet
+      WizBot_ShardRunArguments: WizBot.dll {0} {1}
     labels:
       "com.centurylinklabs.watchtower.enable": "true"
   redis:
