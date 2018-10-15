@@ -1,5 +1,5 @@
 # Setting up WizBot on Docker
-WizBot is written in C# and Discord.Net. For more information visit <https://github.com/Kwoth/WizBot>
+WizBot is written in C# and Discord.Net. For more information visit <https://github.com/Wizkiller96/WizBot>
 
 ## Before you start
 
