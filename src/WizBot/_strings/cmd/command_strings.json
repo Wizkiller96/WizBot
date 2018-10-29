@@ -505,9 +505,9 @@
       "{0}prune",
       "{0}prune -s",
       "{0}prune 5",
-      "{0}prune 5 -safe",
+      "{0}prune 5 --safe",
       "{0}prune @Someone",
-      "{0}prune @Someone -safe",
+      "{0}prune @Someone --safe",
       "{0}prune @Someone X",
       "{0}prune @Someone X -s"
     ]
