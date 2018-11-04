@@ -139,6 +139,7 @@ namespace WizBot.Modules.Searches
 
         // done in 3.0
         [WizBotCommand, Usage, Description, Aliases]
+        [NoPublicBot]
         public async Task Time([Remainder] string query)
         {
             if (!await ValidateQuery(Context.Channel, query).ConfigureAwait(false))
