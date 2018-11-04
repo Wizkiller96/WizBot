@@ -5083,20 +5083,6 @@
     },
     {
       "Aliases": [
-        ".pathofexileitem",
-        ".poei"
-      ],
-      "Description": "Searches for a Path of Exile item from the Path of Exile GamePedia.",
-      "Usage": [
-        ".poei \"Quill Rain\""
-      ],
-      "Submodule": "PathOfExileCommands",
-      "Module": "Searches",
-      "Options": null,
-      "Requirements": []
-    },
-    {
-      "Aliases": [
         ".placelist"
       ],
       "Description": "Shows the list of available tags for the `.place` command.",
