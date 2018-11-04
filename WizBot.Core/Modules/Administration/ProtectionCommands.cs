@@ -94,7 +94,12 @@ namespace WizBot.Modules.Administration
             {
                 var added = await _service.AntiSpamIgnoreAsync(Context.Guild.Id, Context.Channel.Id).ConfigureAwait(false);
 
-                await ReplyConfirmLocalized(added ? "spam_ignore" : "spam_not_ignore", "Anti-Spam").ConfigureAwait(false);
+                if (added is null)
+                {
+                    await ReplyErrorLocalized("anti_spam_not_running").ConfigureAwait(false);
+                    return;
+                }
+                await ReplyConfirmLocalized(added.Value ? "spam_ignore" : "spam_not_ignore", "Anti-Spam").ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
