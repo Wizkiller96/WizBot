@@ -748,7 +748,6 @@
     "music_song_skips_after": "Songs will skip after {0}",
     "customreactions_redacted_too_long": "Redacted because it's too long.",
     "nsfw_blacklisted_tag_list": "List of blacklisted tags:",
-    "nsfw_blacklisted_tag": "One or more tags you've used are blacklisted",
     "nsfw_blacklisted_tag_add": "Nsfw tag {0} is now blacklisted.",
     "nsfw_blacklisted_tag_remove": "Nsfw tag {0} is no longer blacklisted.",
     "utility_stream_role_enabled": "When a user from {0} role starts streaming, I will give them {1} role.",
