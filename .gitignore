@@ -6,6 +6,10 @@ command_errors*.txt
 src/WizBot/Command Errors*.txt
 
 src/WizBot/credentials.json
+# these 2 are used for migrations
+WizBot.Core/credentials.json
+WizBot.Core/credentials_example.json
+
 src/WizBot/data/WizBot.db
 src/WizBot/data/musicdata
 
