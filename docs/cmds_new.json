@@ -1534,38 +1534,6 @@
     },
     {
       "Aliases": [
-        ".slowmode"
-      ],
-      "Description": "Toggles slowmode. Slowmode deletes any excess messages users type over the specified limit of messages per X seconds. To enable, specify a number of messages (-m) each user can send, and an interval in seconds (-s).  Disable by specifying no parameters.",
-      "Usage": [
-        ".slowmode -m 1 -s 5",
-        ".slowmode"
-      ],
-      "Submodule": "SlowmodeCommands",
-      "Module": "Administration",
-      "Options": "`--message-count` (`-m`)   Number of messages user can send.  \n`--seconds` (`-s`)   Interval in which the user can send the specified number of messages.  ",
-      "Requirements": [
-        "ManageMessages Server Permission"
-      ]
-    },
-    {
-      "Aliases": [
-        ".slowmodewl"
-      ],
-      "Description": "Ignores a role or a user from the slowmode feature.",
-      "Usage": [
-        ".slowmodewl SomeRole",
-        ".slowmodewl AdminDude"
-      ],
-      "Submodule": "SlowmodeCommands",
-      "Module": "Administration",
-      "Options": null,
-      "Requirements": [
-        "ManageMessages Server Permission"
-      ]
-    },
-    {
-      "Aliases": [
         ".timezones"
       ],
       "Description": "Lists all timezones available on the system to be used with `.timezone`.",
@@ -5073,21 +5041,6 @@
     },
     {
       "Aliases": [
-        ".overwatch",
-        ".ow"
-      ],
-      "Description": "Show's basic stats on a player (competitive rank, playtime, level etc) Region codes are: `eu` `us` `cn` `kr`",
-      "Usage": [
-        ".ow us Battletag#1337",
-        ".overwatch eu Battletag#2016"
-      ],
-      "Submodule": "OverwatchCommands",
-      "Module": "Searches",
-      "Options": null,
-      "Requirements": []
-    },
-    {
-      "Aliases": [
         ".pathofexile",
         ".poe"
       ],
@@ -5840,7 +5793,7 @@
       ],
       "Description": "Creates a new invite which has infinite max uses and never expires.",
       "Usage": [
-        ".crinv"
+        ".invcr"
       ],
       "Submodule": "InviteCommands",
       "Module": "Utility",
