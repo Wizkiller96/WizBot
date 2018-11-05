@@ -23,7 +23,7 @@ namespace WizBot.Modules.Searches.Services
 {
     public class StreamNotificationService : INService
     {
-#if !GLOBAL_WIZBOT && !DEBUG
+#if !GLOBAL_WIZBOT
         private bool _firstStreamNotifPass = true;
 #endif
         private readonly DbService _db;
@@ -52,7 +52,7 @@ namespace WizBot.Modules.Searches.Services
             _http.DefaultRequestHeaders.TryAddWithoutValidation("Client-ID", _creds.TwitchClientId);
             _log = LogManager.GetCurrentClassLogger();
 
-#if !GLOBAL_WIZBOT && !DEBUG
+#if !GLOBAL_WIZBOT
             _followedStreams = bot.AllGuildConfigs
                 .SelectMany(x => x.FollowedStreams)
                 .GroupBy(x => (x.Type, x.Username))

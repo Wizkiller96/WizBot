@@ -26,7 +26,6 @@ DisableWelcomePage=no
 Source: "src\WizBot\bin\Release\{#platform}\{#target}\publish\*"; DestDir: "{app}\{#sysfolder}"; Permissions: users-full; Flags: recursesubdirs onlyifdoesntexist ignoreversion createallsubdirs; Excludes: "*.pdb, *.db"
 Source: "src\WizBot\bin\Release\{#platform}\{#target}\publish\data\command_strings.json"; DestDir: "{app}\{#sysfolder}\data"; DestName: "command_strings.json"; Permissions: users-full; Flags: skipifsourcedoesntexist ignoreversion createallsubdirs recursesubdirs;
 Source: "src\WizBot\bin\Release\{#platform}\{#target}\publish\data\hangman.json"; DestDir: "{app}\{#sysfolder}\data"; DestName: "hangman.json"; Permissions: users-full; Flags: skipifsourcedoesntexist ignoreversion createallsubdirs recursesubdirs;
-Source: "src\WizBot\bin\Release\{#platform}\{#target}\publish\data\hangman.json"; DestDir: "{app}\{#sysfolder}\data"; DestName: "hangman.json"; Permissions: users-full; Flags: skipifsourcedoesntexist ignoreversion createallsubdirs recursesubdirs;
 ;rename credentials example to credentials, but don't overwrite if it exists
 ;Source: "src\WizBot\bin\Release\{#platform}\{#target}\publish\credentials_example.json"; DestName: "credentials.json"; DestDir: "{app}\{#sysfolder}"; Permissions: users-full; Flags: skipifsourcedoesntexist onlyifdoesntexist;
 
@@ -35,7 +34,7 @@ Source: "src\WizBot\bin\Release\{#platform}\{#target}\publish\data\hangman.json"
 Source: "src\WizBot\bin\Release\{#platform}\{#target}\publish\*"; DestDir: "{app}\{#sysfolder}"; Permissions: users-full; Flags: recursesubdirs ignoreversion onlyifdestfileexists createallsubdirs; Excludes: "*.pdb, *.db, data\*, credentials.json";
 Source: "src\WizBot\bin\Release\{#platform}\{#target}\publish\data\*"; DestDir: "{app}\{#sysfolder}\data"; Permissions: users-full; Flags: recursesubdirs onlyifdoesntexist createallsubdirs;
 ;overwrite pokemon folder always
-Source: "src\WizBot\bin\Release\{#platform}\{#target}\publish\data\pokemon"; DestDir: "{app}\{#sysfolder}\data\pokemon"; DestDir: "{app}\{#sysfolder}\data\pokemon"; Permissions: users-full; Flags: skipifsourcedoesntexist ignoreversion createallsubdirs recursesubdirs;
+Source: "src\WizBot\bin\Release\{#platform}\{#target}\publish\data\pokemon"; DestDir: "{app}\{#sysfolder}\data\pokemon"; Permissions: users-full; Flags: skipifsourcedoesntexist ignoreversion createallsubdirs recursesubdirs;
 ;readme   
 ;Source: "readme"; DestDir: "{app}"; Flags: isreadme
 
