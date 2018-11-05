@@ -12,7 +12,6 @@ using WizBot.Common.Attributes;
 using WizBot.Common.Collections;
 using WizBot.Modules.Searches.Common;
 using WizBot.Modules.Searches.Services;
-using WizBot.Modules.Searches.Exceptions;
 using System.Net.Http;
 
 namespace WizBot.Modules.Vulpine
