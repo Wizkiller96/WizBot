@@ -22,6 +22,13 @@ namespace WizBot.Modules.Searches.Common
         private readonly Logger _log;
         private readonly IHttpClientFactory _httpFactory;
 
+        private static List<string> defaultTagBlacklist = new List<string>() {
+            "loli",
+            "lolicon",
+            "shota"
+        };
+
+
         public SearchImageCacher(IHttpClientFactory factory)
         {
             _log = LogManager.GetCurrentClassLogger();
@@ -36,6 +43,9 @@ namespace WizBot.Modules.Searches.Common
             tags = tags.Select(tag => tag?.ToLowerInvariant()).ToArray();
 
             blacklistedTags = blacklistedTags ?? new HashSet<string>();
+
+            blacklistedTags.AddRange(defaultTagBlacklist);
+            blacklistedTags = blacklistedTags.Select(t => t.ToLowerInvariant()).ToHashSet();
 
             if (tags.Any(x => blacklistedTags.Contains(x)))
             {
@@ -59,7 +69,7 @@ namespace WizBot.Modules.Searches.Common
                 {
                     imgs = _cache.Where(x => x.SearchType == type).ToArray();
                 }
-                imgs = imgs.Where(x => x.Tags.All(t => !blacklistedTags.Contains(t))).ToArray();
+                imgs = imgs.Where(x => x.Tags.All(t => !blacklistedTags.Contains(t.ToLowerInvariant()))).ToArray();
                 ImageCacherObject img;
                 if (imgs.Length == 0)
                     img = null;
@@ -75,7 +85,7 @@ namespace WizBot.Modules.Searches.Common
                 {
                     var images = await DownloadImages(tags, forceExplicit, type).ConfigureAwait(false);
                     images = images
-                        .Where(x => x.Tags.All(t => !blacklistedTags.Contains(t)))
+                        .Where(x => x.Tags.All(t => !blacklistedTags.Contains(t.ToLowerInvariant())))
                         .ToArray();
                     if (images.Length == 0)
                         return null;
