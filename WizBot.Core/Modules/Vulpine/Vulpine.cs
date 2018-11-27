@@ -43,10 +43,14 @@ namespace WizBot.Modules.Vulpine
                 // Todo make a checker to see if a Roblox account exist before showing info.
                 JToken RChecker;
                 JToken RInfo;
+                JToken RUID;
+                JToken RStatus;
                 using (var http = _httpFactory.CreateClient())
                 {
-                    RChecker = JObject.Parse(await http.GetStringAsync($"https://www.roblox.com/UserCheck/doesusernameexist?username={username}"));
+                    RChecker = JObject.Parse(await http.GetStringAsync($"https://www.roblox.com/UserCheck/doesusernameexist?username={username}").ConfigureAwait(false));
                     RInfo = JObject.Parse(await http.GetStringAsync($"https://vulpineutility.net/api/v1/getPlayerInfo/username/{username}").ConfigureAwait(false));
+                    RUID = JObject.Parse(await http.GetStringAsync($"http://api.roblox.com/users/get-by-username?username={username}").ConfigureAwait(false));
+                    RStatus = JObject.Parse(await http.GetStringAsync($"http://api.roblox.com/users/{RUID["Id"]}/onlinestatus").ConfigureAwait(false));
                 }
                 // Currently doesn't work at this time. If you know a sulotion feel free to try.
                 if (($"{RChecker["success"]}").Equals("false"))
@@ -68,8 +72,9 @@ namespace WizBot.Modules.Vulpine
                                 .WithIconUrl("https://i.imgur.com/cqx791R.jpg")
                                 .WithName($"Vulpine - Roblox Info"))
                             .WithThumbnailUrl($"http://www.roblox.com:80/Thumbs/Avatar.ashx?x=100&y=100&Format=Png&username={RInfo["username"]}")
-                            .AddField(fb => fb.WithName("Username").WithValue($"[{RInfo["username"]}](https://www.roblox.com/users/{RInfo["userid"]}/profile)").WithIsInline(true))
-                            .AddField(fb => fb.WithName("User ID").WithValue($"{RInfo["userid"]}").WithIsInline(true))
+                            .AddField(fb => fb.WithName("Username").WithValue($"[{RInfo["username"]}](https://www.roblox.com/users/{RUID["Id"]}/profile)").WithIsInline(true))
+                            .AddField(fb => fb.WithName("User ID").WithValue($"{RUID["Id"]}").WithIsInline(true))
+                            .AddField(fb => fb.WithName("Status").WithValue($"{RStatus["LastLocation"]}").WithIsInline(true))
                             .AddField(fb => fb.WithName("Account Age").WithValue($"{RInfo["age"]}").WithIsInline(true))
                             .AddField(fb => fb.WithName("Join Date").WithValue($"{RInfo["joinDate"]:MM.dd.yyyy HH:mm}").WithIsInline(true))
                             .WithFooter("© Vulpine Utility"))
@@ -83,6 +88,7 @@ namespace WizBot.Modules.Vulpine
                             .WithThumbnailUrl($"http://www.roblox.com:80/Thumbs/Avatar.ashx?x=100&y=100&Format=Png&username={RInfo["username"]}")
                             .AddField(fb => fb.WithName("Username").WithValue($"[{RInfo["username"]}](https://www.roblox.com/users/{RInfo["userid"]}/profile)").WithIsInline(true))
                             .AddField(fb => fb.WithName("User ID").WithValue($"{RInfo["userid"]}").WithIsInline(true))
+                            .AddField(fb => fb.WithName("Status").WithValue($"{RStatus["LastLocation"]}").WithIsInline(true))
                             .AddField(fb => fb.WithName("Account Age").WithValue($"{RInfo["age"]}").WithIsInline(true))
                             .AddField(fb => fb.WithName("Join Date").WithValue($"{RInfo["joinDate"]:MM.dd.yyyy HH:mm}").WithIsInline(true))
                             .AddField(fb => fb.WithName("Status").WithValue($"{RInfo["status"]}").WithIsInline(false))
@@ -95,8 +101,9 @@ namespace WizBot.Modules.Vulpine
                                 .WithIconUrl("https://i.imgur.com/cqx791R.jpg")
                                 .WithName($"Vulpine - Roblox Info"))
                             .WithThumbnailUrl($"http://www.roblox.com:80/Thumbs/Avatar.ashx?x=100&y=100&Format=Png&username={RInfo["username"]}")
-                            .AddField(fb => fb.WithName("Username").WithValue($"[{RInfo["username"]}](https://www.roblox.com/users/{RInfo["userid"]}/profile)").WithIsInline(true))
-                            .AddField(fb => fb.WithName("User ID").WithValue($"{RInfo["userid"]}").WithIsInline(true))
+                            .AddField(fb => fb.WithName("Username").WithValue($"[{RInfo["username"]}](https://www.roblox.com/users/{RUID["Id"]}/profile)").WithIsInline(true))
+                            .AddField(fb => fb.WithName("User ID").WithValue($"{RUID["Id"]}").WithIsInline(true))
+                            .AddField(fb => fb.WithName("Status").WithValue($"{RStatus["LastLocation"]}").WithIsInline(true))
                             .AddField(fb => fb.WithName("Account Age").WithValue($"{RInfo["age"]}").WithIsInline(true))
                             .AddField(fb => fb.WithName("Join Date").WithValue($"{RInfo["joinDate"]:MM.dd.yyyy HH:mm}").WithIsInline(true))
                             .AddField(fb => fb.WithName("Blurb").WithValue($"{RInfo["blurb"]}").WithIsInline(false))
@@ -109,8 +116,9 @@ namespace WizBot.Modules.Vulpine
                                 .WithIconUrl("https://i.imgur.com/cqx791R.jpg")
                                 .WithName($"Vulpine - Roblox Info"))
                             .WithThumbnailUrl($"http://www.roblox.com:80/Thumbs/Avatar.ashx?x=100&y=100&Format=Png&username={RInfo["username"]}")
-                            .AddField(fb => fb.WithName("Username").WithValue($"[{RInfo["username"]}](https://www.roblox.com/users/{RInfo["userid"]}/profile)").WithIsInline(true))
-                            .AddField(fb => fb.WithName("User ID").WithValue($"{RInfo["userid"]}").WithIsInline(true))
+                            .AddField(fb => fb.WithName("Username").WithValue($"[{RInfo["username"]}](https://www.roblox.com/users/{RUID["Id"]}/profile)").WithIsInline(true))
+                            .AddField(fb => fb.WithName("User ID").WithValue($"{RUID["Id"]}").WithIsInline(true))
+                            .AddField(fb => fb.WithName("Status").WithValue($"{RStatus["LastLocation"]}".TrimTo(50)).WithIsInline(true))
                             .AddField(fb => fb.WithName("Account Age").WithValue($"{RInfo["age"]}").WithIsInline(true))
                             .AddField(fb => fb.WithName("Join Date").WithValue($"{RInfo["joinDate"]:MM.dd.yyyy HH:mm}").WithIsInline(true))
                             .AddField(fb => fb.WithName("Status").WithValue($"{RInfo["status"]}").WithIsInline(true))
