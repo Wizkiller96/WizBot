@@ -92,6 +92,20 @@ namespace WizBot.Modules.Gambling
                     return;
                 }
 
+                // Vulpine Bot
+
+                if (target.Id == 516835941579751425)
+                {
+                    var embed = new EmbedBuilder()
+                    .WithAuthor(eab => eab.WithUrl("https://vulpineutility.net/")
+                        .WithIconUrl("https://i.imgur.com/cqx791R.jpg")
+                        .WithName($"Vulpine Utility"))
+                    .WithDescription("Sorry but Vulpine is claim by it Creator JamesBlossom.")
+                    .WithColor(Color.Blue);
+                    await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
+                    return;
+                }
+
                 var (w, isAffinity, result) = await _service.ClaimWaifuAsync(Context.User, target, amount);
 
                 if (result == WaifuClaimResult.InsufficientAmount)
