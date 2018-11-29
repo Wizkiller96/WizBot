@@ -100,7 +100,7 @@ namespace WizBot.Modules.Gambling
                     .WithAuthor(eab => eab.WithUrl("https://vulpineutility.net/")
                         .WithIconUrl("https://i.imgur.com/cqx791R.jpg")
                         .WithName($"Vulpine Utility"))
-                    .WithDescription("Sorry but Vulpine is claim by it Creator JamesBlossom.")
+                    .WithDescription("Sorry, but Vulpine Utility is claimed by its owner, JamesBlossom")
                     .WithColor(Color.Blue);
                     await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
                     return;
