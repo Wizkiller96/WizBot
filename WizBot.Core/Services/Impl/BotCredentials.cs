@@ -77,7 +77,7 @@ namespace WizBot.Core.Services.Impl
                 MashapeKey = data[nameof(MashapeKey)];
                 OsuApiKey = data[nameof(OsuApiKey)];
                 PatreonAccessToken = data[nameof(PatreonAccessToken)];
-                PatreonCampaignId = data[nameof(PatreonCampaignId)] ?? "334038";
+                PatreonCampaignId = data[nameof(PatreonCampaignId)] ?? "834469";
                 ShardRunCommand = data[nameof(ShardRunCommand)];
                 ShardRunArguments = data[nameof(ShardRunArguments)];
                 CleverbotApiKey = data[nameof(CleverbotApiKey)];
