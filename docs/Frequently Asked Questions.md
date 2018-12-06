@@ -15,7 +15,7 @@
 
 ###Question 4: How do I get Cherry Blossom/Currency?
 ----
-**Answer:** You can get Cherry Blossom by picking them up after they have been generated with `.gc`, which you can then either plant (give away to a channel so that someone can pick it), or gamble with for potentinal profit with `.betflip`, `.betroll` and `.jr`. You can get flowers on the public bot by reacting on reaction events or by donating on [Patreon](https://patreon.com/nadekobot) or [PayPal](https://paypal.me/Kwoth). 
+**Answer:** You can get Cherry Blossom by picking them up after they have been generated with `.gc`, which you can then either plant (give away to a channel so that someone can pick it), or gamble with for potentinal profit with `.betflip`, `.betroll` and `.jr`. You can get flowers on the public bot by reacting on reaction events or by donating on [Patreon](https://patreon.com/wiznet) or [PayPal](https://paypal.me/wizkiller96network). 
 
 ###Question 5: I have an issue/bug/suggestion, where do I put it so it gets noticed?
 -----------

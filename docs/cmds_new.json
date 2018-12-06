@@ -5687,7 +5687,7 @@
         ".alias",
         ".cmdmap"
       ],
-      "Description": "Create a custom alias for a certain Nadeko command. Provide no alias to remove the existing one.",
+      "Description": "Create a custom alias for a certain WizBot command. Provide no alias to remove the existing one.",
       "Usage": [
         ".alias allin .bf all h",
         ".alias \"linux thingy\" >loonix Spyware Windows"

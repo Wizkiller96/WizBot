@@ -80,7 +80,7 @@ namespace WizBot.Modules.Gambling.Services
                         var ids = JsonConvert.DeserializeObject<VoteModel[]>(resStr)
                             .Select(x => x.User)
                             .Distinct();
-                        await _cs.AddBulkAsync(ids, ids.Select(x => "Voted - <https://discordbots.org/bot/nadeko/vote>"), ids.Select(x => 10L), true).ConfigureAwait(false);
+                        await _cs.AddBulkAsync(ids, ids.Select(x => "Voted - <https://discordbots.org/bot/wizbot/vote>"), ids.Select(x => 10L), true).ConfigureAwait(false);
                     }
                 }
             }
