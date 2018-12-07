@@ -50,7 +50,7 @@ namespace WizBot.Modules.Vulpine
                     RChecker = JObject.Parse(await http.GetStringAsync($"https://www.roblox.com/UserCheck/doesusernameexist?username={username}").ConfigureAwait(false));
                     RInfo = JObject.Parse(await http.GetStringAsync($"https://vulpineutility.net/api/v1/getPlayerInfo/username/{username}").ConfigureAwait(false));
                     //RUID = JObject.Parse(await http.GetStringAsync($"http://api.roblox.com/users/get-by-username?username={username}").ConfigureAwait(false));
-                    RStatus = JObject.Parse(await http.GetStringAsync($"http://api.roblox.com/users/{RUID["Id"]}/onlinestatus").ConfigureAwait(false));
+                    RStatus = JObject.Parse(await http.GetStringAsync($"http://api.roblox.com/users/{RInfo["userId"]}/onlinestatus").ConfigureAwait(false));
                 }
                 // Currently doesn't work at this time. If you know a sulotion feel free to try.
                 if (($"{RChecker["success"]}").Equals("false"))
