@@ -32,6 +32,7 @@
 - When installation is finished, make sure the **`Open credentials.json`** option is checked.
 
 *If you happen to close the wizard with that option unchecked, you can easily find the credentials file in `C:\Program Files\WizBot\system`.*
+
 - [Set up the credentials.json](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/#setting-up-credentialsjson-file) file.
 
 #### Starting the bot
@@ -47,8 +48,10 @@
 
 #### If the updater fails to install the prerequisites for any reason
 You can still install them manually:
+
 - [Redis Installer](https://github.com/MicrosoftArchive/redis/releases/tag/win-3.0.504) - Download and run the **`.msi`** file
-- [ffmpeg] - Download the Release build and move the file to **`C:\ffmpeg`**, extract its contents and rename the folder to `nightly`. If that still fails, move the `ffmpeg.exe` file to **`C:\Program Files\WizBot\system`**.
+- [ffmpeg] - Download the Release build and move the file to **`C:\ffmpeg`**, extract its contents and rename the folder to `nightly`.
+    - If that still fails, move the `ffmpeg.exe` file to **`C:\Program Files\WizBot\system`**.
 - [youtube-dl] - Click on `Windows.exe` (on the top left corner) and download the file. Then move it to **`C:\Program Files\WizBot\system`**.
 
 [Updater]: https://dl.wizbot.cf/
