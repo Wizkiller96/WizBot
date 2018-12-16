@@ -1,5 +1,6 @@
 # Table of contents
 
+* [Readme](docs/Readme.md)
 * [About](docs/about.md)
 
 ## Guides
@@ -13,7 +14,6 @@
 
 ## Commands
 
-  * [Readme](docs/Readme.md)
   * [Commands List](docs/commands-list.md)
 
 ## Features Explained
