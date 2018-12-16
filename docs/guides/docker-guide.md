@@ -1,21 +1,21 @@
 # Setting up WizBot on Docker
 
-WizBot is written in C# and Discord.Net. For more information visit <https://github.com/Wizkiller96/WizBot>
+WizBot is written in C\# and Discord.Net. For more information visit [https://github.com/Wizkiller96/WizBot](https://github.com/Wizkiller96/WizBot)
 
 ## Before you start
 
 If your PC falls under any of the following cases, please grab Docker Toolbox instead.
 
-For Windows [[Download Link](https://download.docker.com/win/stable/DockerToolbox.exe)]
+For Windows \[[Download Link](https://download.docker.com/win/stable/DockerToolbox.exe)\]
 
-- Any Windows version without Hyper-V support
-- You have Hyper-V but it must be disabled
-- Windows 10 Home Edition
-- Windows 8 and earlier
+* Any Windows version without Hyper-V support
+* You have Hyper-V but it must be disabled
+* Windows 10 Home Edition
+* Windows 8 and earlier
 
-For Mac [[Download Link](https://download.docker.com/mac/stable/DockerToolbox.pkg)]
+For Mac \[[Download Link](https://download.docker.com/mac/stable/DockerToolbox.pkg)\]
 
-- Any version between 10.8 “Mountain Lion” and 10.10.2 "Yosemite"
+* Any version between 10.8 “Mountain Lion” and 10.10.2 "Yosemite"
 
 ## Prerequisites
 
@@ -29,10 +29,10 @@ You can use this section to get a blank credentials.json. You then just have to 
 
 ### Windows
 
-- Open a command prompt by opening the Start menu, typing cmd then selecting Command Prompt
-- Copy/paste the following commands
+* Open a command prompt by opening the Start menu, typing cmd then selecting Command Prompt
+* Copy/paste the following commands
 
-```batch
+```text
 cd %TEMP%
 docker run --name temp_wizbot --entrypoint sh wizkiller96/wizbot
 docker stop temp_wizbot
@@ -41,10 +41,10 @@ docker rm temp_wizbot
 echo Your blank credentials.json has been downloaded here: %TEMP%\credentials.json
 ```
 
-### Linux and other *NIX systems
+### Linux and other \*NIX systems
 
-- Open your favorite terminal
-- Copy/paste the following commands
+* Open your favorite terminal
+* Copy/paste the following commands
 
 ```bash
 cd /tmp
@@ -57,16 +57,16 @@ echo Your blank credentials.json has been downloaded here: /tmp/credentials.json
 
 ## Start the bot
 
-- Creates an empty folder. It will contain all WizBot's datas, including the credentials.json.
+* Creates an empty folder. It will contain all WizBot's datas, including the credentials.json.
 
 ### Windows
 
 This step-by-step will assume you choose %LOCALAPPDATA%\WizBot to store the WizBot's data but you can choose another location.
 
-- Copy your modified credentials.json into this folder
-- Copy/paste the following commands
+* Copy your modified credentials.json into this folder
+* Copy/paste the following commands
 
-```powershell
+```text
 # you can modify thoses variables
 $workdir="$env:LOCALAPPDATA\WizBot"
 $url_dc="https://raw.githubusercontent.com/Wizkiller96/WizBot/1.9/docker-compose.yml"
@@ -97,8 +97,8 @@ docker-compose up -d wizbot
 
 This step-by-step will assume you choose $HOME/wizbot to store the WizBot's data but you can choose another location.
 
-- Copy your modified credentials.json into this folder
-- Copy/paste the following commands
+* Copy your modified credentials.json into this folder
+* Copy/paste the following commands
 
 ```bash
 # you can modify thoses variables
@@ -123,11 +123,11 @@ cd "$workdir"
 
 The script will:
 
-- create the wizbot's directory
-- download the [docker-compose.yml](https://raw.githubusercontent.com/Wizkiller96/WizBot/1.9/docker-compose.yml) that describe how to run the containers
-- convert the docker-compose.yml from developer configuration to end-user configuration
-- edit the docker-compose.yml to specify full path instead of relative path
-- create and start the containers
+* create the wizbot's directory
+* download the [docker-compose.yml](https://raw.githubusercontent.com/Wizkiller96/WizBot/1.9/docker-compose.yml) that describe how to run the containers
+* convert the docker-compose.yml from developer configuration to end-user configuration
+* edit the docker-compose.yml to specify full path instead of relative path
+* create and start the containers
 
 By default, the bot will automatically restart with the Docker daemon with the instruction `restart: unless-stopped`.
 
@@ -149,6 +149,7 @@ WARNING: as the docker.sock is mount into this container, this means in fact tha
 
 ## Additional informations
 
-If you have any issues with the docker setup, you can request some assistance in the in #help channel on our [Discord server](https://discord.gg/0YNaDOYuD5QOpeNI), but indicate you are using the docker.
+If you have any issues with the docker setup, you can request some assistance in the in \#help channel on our [Discord server](https://discord.gg/0YNaDOYuD5QOpeNI), but indicate you are using the docker.
 
 For information about configuring your bot or its functionality, please check the [documentation](http://wizbot.readthedocs.io/en/latest).
+
