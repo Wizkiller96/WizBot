@@ -2,11 +2,11 @@
 
 | Table of Contents |
 | :--- |
-| [Prerequisites](https://wizbot.readthedocs.io/en/latest/guides/Windows%20Guide/#prerequisites) |
-| [Setup](https://wizbot.readthedocs.io/en/latest/guides/Windows%20Guide/#setup) |
-| [Starting the Bot](https://wizbot.readthedocs.io/en/latest/guides/Windows%20Guide/#starting-the-bot) |
-| [Updating WizBot](https://wizbot.readthedocs.io/en/latest/guides/Windows%20Guide/#updating-wizbot) |
-| [Manually Installing the Prerequisites from the Updater](https://wizbot.readthedocs.io/en/latest/guides/Windows%20Guide/#if-the-updater-fails-to-install-the-prerequisites-for-any-reason) |
+| [Prerequisites](#prerequisites) |
+| [Setup](#setup) |
+| [Starting the Bot](#starting-the-bot) |
+| [Updating WizBot](#updating-wizbot) |
+| [Manually Installing the Prerequisites from the Updater](#if-the-updater-fails-to-install-the-prerequisites-for-any-reason) |
 
 _Note: If you want to make changes to WizBot's source code, please follow the_ [_From Source_](https://wizbot.readthedocs.io/en/latest/guides/From%20Source/) _guide instead._
 

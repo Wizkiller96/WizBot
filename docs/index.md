@@ -23,7 +23,7 @@ If you want to contribute, be sure to PR on the current [**default**](https://gi
   * [From Source](https://github.com/Wizkiller96/WizBot/tree/95541a4e33d5a378d09bd69f40a91bfb7ff6e290/docs/guides/From%20Source.md)
 * Commands
   * [Readme](docs.md)
-  * [Commands List](https://wizbot.cf/commands.html)
+  * [Commands List](https://commands.wizbot.cf/)
 * Features Explained
   * [JSON Explanations](https://github.com/Wizkiller96/WizBot/tree/95541a4e33d5a378d09bd69f40a91bfb7ff6e290/docs/JSON%20Explanations.md)
   * [Permissions System](https://github.com/Wizkiller96/WizBot/tree/95541a4e33d5a378d09bd69f40a91bfb7ff6e290/docs/Permissions%20System.md)

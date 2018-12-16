@@ -12,7 +12,7 @@
 
 ## Installing with the CLI Installer
 
-This is the recommended way of installing WizBot from source. If you don't want to use the installer, skip to [Installing WizBot Manually](https://wizbot.readthedocs.io/en/latest/guides/From%20Source/#installing-wizbot-manually).
+This is the recommended way of installing WizBot from source. If you don't want to use the installer, skip to [Installing WizBot Manually](#installing-wizbot-manually).
 
 ### Prerequisites \(CLI\)
 

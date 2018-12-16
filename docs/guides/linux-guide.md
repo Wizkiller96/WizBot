@@ -2,14 +2,14 @@
 
 | Table of Contents |
 | :--- |
-| [Getting Started](https://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#getting-started) |
-| [Downloading and Installing the Prerequisites](https://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#downloading-and-installing-the-prerequisites) |
-| [Installing WizBot](https://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#installing-wizbot) |
-| [Setting up, Running and Updating WizBot with pm2](https://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#setting-up-running-and-updating-wizbot-with-pm2-strongly-recommended) |
-| [Running WizBot on tmux](https://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#running-wizbot-on-tmux-if-you-dont-want-to-use-pm2) |
-| [Making WizBot persist upon system restarts \(tmux\)](https://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#making-wizbot-persist-upon-system-restarts-tmux-for-advanced-users) |
-| [Setting up WizBot on a VPS \(Digital Ocean\)](https://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#setting-up-wizbot-on-a-linux-vps-digital-ocean-droplet) |
-| [Setting up WinSCP](https://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#setting-up-winscp) |
+| [Getting Started](#getting-started) |
+| [Downloading and Installing the Prerequisites](#downloading-and-installing-the-prerequisites) |
+| [Installing WizBot](#installing-wizbot) |
+| [Setting up, Running and Updating WizBot with pm2](#setting-up-running-and-updating-wizbot-with-pm2-strongly-recommended) |
+| [Running WizBot on tmux](#running-wizbot-on-tmux-if-you-dont-want-to-use-pm2) |
+| [Making WizBot persist upon system restarts \(tmux\)](#making-wizbot-persist-upon-system-restarts-tmux-for-advanced-users) |
+| [Setting up WizBot on a VPS \(Digital Ocean\)](#setting-up-wizbot-on-a-linux-vps-digital-ocean-droplet) |
+| [Setting up WinSCP](#setting-up-winscp) |
 
 ### Operating System Compatibility
 
