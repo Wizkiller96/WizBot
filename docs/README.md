@@ -6,6 +6,12 @@
 * _Bot Owner Only_ commands do **not** refer to the owner of the **server**, just the owner of the **bot**.
 * _Owner of the bot_ is a person who is **hosting** their own bot, and their **ID** is inside of **credentials.json** file.
 
+## Bot Owner & Bot Admin Only
+
+* _Bot Owner & Bot Admin Only_ commands refer to the commands only the **owner & admin** of the bot can use.
+* _Bot Owner & Bot Admin Only_ commands do **not** refer to the owner or admins of the **server**, just the owner & admin of the **bot**.
+* _Admin of the bot_ is a person who is has been given permission by the Bot Owner, to use certain commands a regular user can't. Bot Admins have the power to blacklist a user or unblacklist a user from using the bot.
+
 ## Cherry Blossoms
 
 * Cherry Blossoms is the **currency** of the public WizBot.
