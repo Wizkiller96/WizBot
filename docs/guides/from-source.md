@@ -2,13 +2,13 @@
 
 | Table of Contents |
 | :--- |
-| [Installing with the CLI Installer](https://wizbot.readthedocs.io/en/latest/guides/From%20Source/#installing-with-the-cli-installer) |
-| [Setup \(CLI\)](https://wizbot.readthedocs.io/en/latest/guides/From%20Source/#setup-cli) |
-| [Launching WizBot \(CLI\)](https://wizbot.readthedocs.io/en/latest/guides/From%20Source/#launching-wizbot-cli) |
-| [Installing WizBot Manually](https://wizbot.readthedocs.io/en/latest/guides/From%20Source/#installing-wizbot-manually) |
-| [Setup](https://wizbot.readthedocs.io/en/latest/guides/From%20Source/#setup) |
-| [Launching WizBot](https://wizbot.readthedocs.io/en/latest/guides/From%20Source/#launching-wizbot) |
-| [Updating WizBot](https://wizbot.readthedocs.io/en/latest/guides/From%20Source/#updating-wizbot) |
+| [Installing with the CLI Installer](#installing-with-the-cli-installer) |
+| [Setup \(CLI\)](#setup-cli) |
+| [Launching WizBot \(CLI\)](#launching-wizbot-cli) |
+| [Installing WizBot Manually](#installing-wizbot-manually) |
+| [Setup](#setup) |
+| [Launching WizBot](#launching-wizbot) |
+| [Updating WizBot](#updating-wizbot) |
 
 ## Installing with the CLI Installer
 
