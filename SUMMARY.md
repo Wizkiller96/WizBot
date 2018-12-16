@@ -25,7 +25,9 @@
   * [Placeholders](docs/placeholders.md)
   * [Frequently Asked Questions](docs/frequently-asked-questions.md)
   * [Bot Config](docs/bce-guide.md)
-  
+
+## Other
+
 * [Frequently Asked Questions](docs/frequently-asked-questions.md)
 * [Contribution Guide](docs/contribution-guide.md)
 * [❤ Donate ❤](docs/donate.md)
