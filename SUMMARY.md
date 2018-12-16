@@ -1,6 +1,5 @@
 # Table of contents
 
-* [Readme](docs/Readme.md)
 * [About](docs/about.md)
 
 ## Guides
