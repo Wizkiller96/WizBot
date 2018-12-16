@@ -15,6 +15,11 @@ If you don't see a `credentials.json` file, you will need to rename `credentials
     105635123566156544,
     105635123666156544
   ],
+  "AdminIds": [
+    105635123466156544,
+    105635123566156544,
+    105635123666156544
+  ],
   "LoLApiKey": "6e99ecf36f0000095b0a3ccfe35df45f",
   "GoogleApiKey": "AIzaSyDSci1sdlWQOWNVj1vlXxxxxxbk0oWMEzM",
   "MashapeKey": "4UrKpcWXc2mshS8RKi00000y8Kf5p1Q8kI6jsn32bmd8oVWiY7",
@@ -91,7 +96,7 @@ It should look like this:
 "Token": "MTc5MzcyXXX2MDI1ODY3MjY0.ChKs4g.I8J_R9XX0t-QY-0PzXXXiN0-7vo",
 ```
 
-#### Getting Owner ID_\(s\)_:
+#### Getting Owner ID_\(s\)_ & Admin ID_\(s\)_:
 
 * Go to your Discord server and attempt to mention yourself, but put a backslash at the start:             
 
@@ -100,20 +105,28 @@ It should look like this:
 * For example, the message `\@fearnlj01#3535` will appear as `<@145521851676884992>` after you send the message. 
 * The message will appear as a mention if done correctly. Copy the numbers from it `145521851676884992` and replace the 0 on the `OwnerIds` section with your user ID.
 * Save the `credentials.json` file.
-* If done correctly, you should now be the bot owner. You can add multiple owners by seperating each owner ID with a comma within the square brackets.
+* If done correctly, you should now be the bot owner. You can add multiple owners or admins by seperating each owner ID or admin ID with a comma within the square brackets.
 
-For single owner, it should look like this:
+For single owner or admin, it should look like this:
 
 ```javascript
     "OwnerIds": [
         105635576866156544
     ],
+    "AdminIds": [
+        105635576866156544
+    ],
 ```
 
-For multiple owners, it should look like this \(pay attention to the commas, the last ID should **never** have a comma next to it\):
+For multiple owners or admins, it should look like this \(pay attention to the commas, the last ID should **never** have a comma next to it\):
 
 ```javascript
     "OwnerIds": [
+        105635123466156544,
+        145521851676884992,
+        341420590009417729
+    ],
+    "AdminIds": [
         105635123466156544,
         145521851676884992,
         341420590009417729
