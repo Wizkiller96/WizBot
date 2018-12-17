@@ -39,4 +39,4 @@ If you want to contribute, be sure to PR on the current **[default][repo]** bran
 [GitLab]: https://gitlab.com/WizNet/WizBot
 [Issues]: https://github.com/Wizkiller96/WizBot/issues
 [repo]: https://github.com/Wizkiller96/WizBot/tree/1.9
-[cmd_list]: https://commands.wizbot.cf/
+[cmd_list]: https://commands.wizbot.cf
