@@ -22,7 +22,7 @@ If you want to contribute, be sure to PR on the current [**default**](https://gi
   * [Docker Guide](https://github.com/Wizkiller96/WizBot/tree/95541a4e33d5a378d09bd69f40a91bfb7ff6e290/docs/guides/Docker%20Guide.md)
   * [From Source](https://github.com/Wizkiller96/WizBot/tree/95541a4e33d5a378d09bd69f40a91bfb7ff6e290/docs/guides/From%20Source.md)
 * Commands
-  * [Readme](docs.md)
+  * [Readme](Readme.md)
   * [Commands List](https://commands.wizbot.cf/)
 * Features Explained
   * [JSON Explanations](https://github.com/Wizkiller96/WizBot/tree/95541a4e33d5a378d09bd69f40a91bfb7ff6e290/docs/JSON%20Explanations.md)
