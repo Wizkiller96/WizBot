@@ -2,14 +2,14 @@
 
 | Table of Contents |
 | :--- |
-| [Getting Started](linux-guide.md#getting-started) |
-| [Downloading and Installing the Prerequisites](linux-guide.md#downloading-and-installing-the-prerequisites) |
-| [Installing WizBot](linux-guide.md#installing-wizbot) |
-| [Setting up, Running and Updating WizBot with pm2](linux-guide.md#setting-up-running-and-updating-wizbot-with-pm2-strongly-recommended) |
-| [Running WizBot on tmux](linux-guide.md#running-wizbot-on-tmux-if-you-dont-want-to-use-pm2) |
-| [Making WizBot persist upon system restarts \(tmux\)](linux-guide.md#making-wizbot-persist-upon-system-restarts-tmux-for-advanced-users) |
-| [Setting up WizBot on a VPS \(Digital Ocean\)](linux-guide.md#setting-up-wizbot-on-a-linux-vps-digital-ocean-droplet) |
-| [Setting up WinSCP](linux-guide.md#setting-up-winscp) |
+| [Getting Started](#getting-started) |
+| [Downloading and Installing the Prerequisites](#downloading-and-installing-the-prerequisites) |
+| [Installing WizBot](#installing-wizbot) |
+| [Setting up, Running and Updating WizBot with pm2](#setting-up-running-and-updating-wizbot-with-pm2-strongly-recommended) |
+| [Running WizBot on tmux](#running-wizbot-on-tmux-if-you-dont-want-to-use-pm2) |
+| [Making WizBot persist upon system restarts \(tmux\)](#making-wizbot-persist-upon-system-restarts-tmux-for-advanced-users) |
+| [Setting up WizBot on a VPS \(Digital Ocean\)](#setting-up-wizbot-on-a-linux-vps-digital-ocean-droplet) |
+| [Setting up WinSCP](#setting-up-winscp) |
 
 ### Operating System Compatibility
 
@@ -51,7 +51,7 @@ You should see the main menu with the following options:
   Would you like to continue?
   ```
 
-* That will install all prerequisites your system needs in order to run WizBot.
+* That will install all prerequisites your system needs in order to run WizBot.            
   * \(Optional\) **If** you prefer to install them manually, you can try finding them [here](https://github.com/Wizkiller96/WizBot-BashScript/blob/1.9/wizbotautoinstaller.sh).
 
 Once it finishes, the installer should automatically take you back to the main menu.
@@ -179,7 +179,7 @@ This procedure is completely optional. We'll be using [_systemd_](https://en.wik
 
      \[Unit\]
 
-     Description=WizBot
+     Description=WizBot 
 
 \[Service\] WorkingDirectory=/root User=root Type=forking ExecStart=/usr/bin/tmux new-session -s WizBot -d '/bin/sh WizBotARN.sh' ExecStop=/bin/sleep 2
 

@@ -55,11 +55,11 @@ If you don't see a `credentials.json` file, you will need to rename `credentials
 ![img4](https://i.imgur.com/6beUSa5.gif)
 
 * On the **General Information** tab, copy your `Client ID` from your [applications page](https://discordapp.com/developers/applications/me).
-* Replace the `12345678` in this link:
+* Replace the `12345678` in this link:             
 
   `https://discordapp.com/oauth2/authorize?client_id=12345678&scope=bot&permissions=66186303` with your `Client ID`.
 
-* The link should now look like this:
+* The link should now look like this:             
 
   `https://discordapp.com/oauth2/authorize?client_id=YOUR_CLIENT_ID_HERE&scope=bot&permissions=66186303`
 
@@ -98,11 +98,11 @@ It should look like this:
 
 #### Getting Owner ID_\(s\)_ & Admin ID_\(s\)_:
 
-* Go to your Discord server and attempt to mention yourself, but put a backslash at the start:
+* Go to your Discord server and attempt to mention yourself, but put a backslash at the start:             
 
   _\(to make it slightly easier, add the backslash after you type the mention out\)_
 
-* For example, the message `\@fearnlj01#3535` will appear as `<@145521851676884992>` after you send the message.
+* For example, the message `\@fearnlj01#3535` will appear as `<@145521851676884992>` after you send the message. 
 * The message will appear as a mention if done correctly. Copy the numbers from it `145521851676884992` and replace the 0 on the `OwnerIds` section with your user ID.
 * Save the `credentials.json` file.
 * If done correctly, you should now be the bot owner. You can add multiple owners or admins by seperating each owner ID or admin ID with a comma within the square brackets.
@@ -149,11 +149,11 @@ This part is completely optional, **however it's necessary for music and a few o
     * On the left tab, access `Credentials`,
       * Click `Create Credentials` button, 
       * Click on `API Key` 
-      * A new window will appear with your `Google API key`
+      * A new window will appear with your `Google API key`             
 
-        _NOTE: You don't really need to click on_ `RESTRICT KEY`_, just click on_ `CLOSE` _when you are done._
+        _NOTE: You don't really need to click on_ `RESTRICT KEY`_, just click on_ `CLOSE` _when you are done._            
 
-      * Copy the key.
+      * Copy the key. 
     * Open up `credentials.json` and look for `"GoogleAPIKey"`, paste your API key inbetween the quotation marks.
 
 It should look like this:
