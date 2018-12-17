@@ -1,5 +1,6 @@
 # Table of contents
 
+* [Readme](docs/readme.md)
 * [About](docs/about.md)
 
 ## Guides
@@ -29,4 +30,3 @@
 * [Frequently Asked Questions](docs/frequently-asked-questions.md)
 * [Contribution Guide](docs/contribution-guide.md)
 * [❤ Donate ❤](docs/donate.md)
-

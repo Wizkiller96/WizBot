@@ -4,22 +4,22 @@ pages:
 - Home: index.md
 - About: about.md
 - Guides:
-    - Windows Guide: guides/Windows Guide.md
-    - Linux Guide: guides/Linux Guide.md
-    - OSX Guide: guides/OSX Guide.md
-    - Docker Guide: guides/Docker Guide.md
-    - From Source: guides/From Source.md
+    - Windows Guide: guides/windows-guide.md
+    - Linux Guide: guides/linux-guide.md
+    - OSX Guide: guides/osx-guide.md
+    - Docker Guide: guides/docker-guide.md
+    - From Source: guides/from-source.md
 - Commands:
-    - Readme: Readme.md
-    - Commands List: Commands List.md
+    - Readme: readme.md
+    - Commands List: commands-list.md
 - Features Explained:
-    - JSON Explanations: JSON Explanations.md
-    - Permissions System: Permissions System.md
-    - Custom Reactions: Custom Reactions.md
-    - Placeholders: Placeholders.md
-    - Bot Config: Bce Guide.md
-- Frequently Asked Questions: Frequently Asked Questions.md
-- Contribution Guide: Contribution Guide.md
-- ❤ Donate ❤: Donate.md
+    - JSON Explanations: json-explanations.md
+    - Permissions System: permissions-system.md
+    - Custom Reactions: custom-reactions.md
+    - Placeholders: placeholders.md
+    - Bot Config: bce-guide.md
+- Frequently Asked Questions: frequently-asked-questions.md
+- Contribution Guide: contribution-guide.md
+- ❤ Donate ❤: donate.md
 
 theme: readthedocs

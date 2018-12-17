@@ -16,21 +16,21 @@ If you want to contribute, be sure to PR on the current [**default**](https://gi
 
 * [About](about.md)
 * Guides
-  * [Windows Guide](https://github.com/Wizkiller96/WizBot/tree/95541a4e33d5a378d09bd69f40a91bfb7ff6e290/docs/guides/Windows%20Guide.md)
-  * [Linux Guide](https://github.com/Wizkiller96/WizBot/tree/95541a4e33d5a378d09bd69f40a91bfb7ff6e290/docs/guides/Linux%20Guide.md)
-  * [OSX Guide](https://github.com/Wizkiller96/WizBot/tree/95541a4e33d5a378d09bd69f40a91bfb7ff6e290/docs/guides/OSX%20Guide.md)
-  * [Docker Guide](https://github.com/Wizkiller96/WizBot/tree/95541a4e33d5a378d09bd69f40a91bfb7ff6e290/docs/guides/Docker%20Guide.md)
-  * [From Source](https://github.com/Wizkiller96/WizBot/tree/95541a4e33d5a378d09bd69f40a91bfb7ff6e290/docs/guides/From%20Source.md)
+  * [Windows Guide](/guides/windows-guide.md)
+  * [Linux Guide](/guides/linux-guide.md)
+  * [OSX Guide](/guides/osx-guide.md)
+  * [Docker Guide](/guides/docker-guide.md)
+  * [From Source](/guides/from-source.md)
 * Commands
-  * [Readme](Readme.md)
+  * [Readme](readme.md)
   * [Commands List](https://commands.wizbot.cf/)
 * Features Explained
-  * [JSON Explanations](https://github.com/Wizkiller96/WizBot/tree/95541a4e33d5a378d09bd69f40a91bfb7ff6e290/docs/JSON%20Explanations.md)
-  * [Permissions System](https://github.com/Wizkiller96/WizBot/tree/95541a4e33d5a378d09bd69f40a91bfb7ff6e290/docs/Permissions%20System.md)
-  * [Custom Reactions](https://github.com/Wizkiller96/WizBot/tree/95541a4e33d5a378d09bd69f40a91bfb7ff6e290/docs/Custom%20Reactions.md)
+  * [JSON Explanations](json-explanations.md)
+  * [Permissions System](permissions-system.md)
+  * [Custom Reactions](custom-reactions.md)
   * [Placeholders](placeholders.md)
-  * [Bot Config](https://github.com/Wizkiller96/WizBot/tree/95541a4e33d5a378d09bd69f40a91bfb7ff6e290/docs/Bce%20Guide.md)
-* [Frequently Asked Questions](https://github.com/Wizkiller96/WizBot/tree/95541a4e33d5a378d09bd69f40a91bfb7ff6e290/docs/Frequently%20Asked%20Questions.md)
-* [Contribution Guide](https://github.com/Wizkiller96/WizBot/tree/95541a4e33d5a378d09bd69f40a91bfb7ff6e290/docs/Contribution%20Guide.md)
+  * [Bot Config](bce-guide.md)
+* [Frequently Asked Questions](frequently-asked-questions.md)
+* [Contribution Guide](contribution-guide.md)
 * [Donate](donate.md)
 
