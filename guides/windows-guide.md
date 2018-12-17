@@ -2,11 +2,11 @@
 
 | Table of Contents |
 | :--- |
-| [Prerequisites](#prerequisites) |
-| [Setup](#setup) |
-| [Starting the Bot](#starting-the-bot) |
-| [Updating WizBot](#updating-wizbot) |
-| [Manually Installing the Prerequisites from the Updater](#if-the-updater-fails-to-install-the-prerequisites-for-any-reason) |
+| [Prerequisites](windows-guide.md#prerequisites) |
+| [Setup](windows-guide.md#setup) |
+| [Starting the Bot](windows-guide.md#starting-the-bot) |
+| [Updating WizBot](windows-guide.md#updating-wizbot) |
+| [Manually Installing the Prerequisites from the Updater](windows-guide.md#if-the-updater-fails-to-install-the-prerequisites-for-any-reason) |
 
 _Note: If you want to make changes to WizBot's source code, please follow the_ [_From Source_](https://wizbot.readthedocs.io/en/latest/guides/From%20Source/) _guide instead._
 
@@ -44,7 +44,7 @@ _If you happen to close the wizard with that option unchecked, you can easily fi
 
 ## Updating WizBot
 
-* Make sure WizBot is closed and not running              
+* Make sure WizBot is closed and not running
 
   \(Run `.die` in a connected server to ensure it's not running\).
 

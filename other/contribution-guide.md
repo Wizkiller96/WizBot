@@ -1,4 +1,4 @@
-# How to contribute
+# Contribution Guide
 
 1. Make Merge Requests to the [**1.9 branch**](https://github.com/Wizkiller96/WizBot/tree/1.9).
 2. Keep 1 Merge Request to a single feature.
