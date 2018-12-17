@@ -36,25 +36,23 @@ This is the recommended way of installing WizBot from source. If you don't want 
 * Right click the `WizBotInstaller.bat` file and open it as Administrator
 * After the admin check, you should see main menu with the options below:
 
-  \`\`\`
-
-* Download Latest Build
-* Run WizBot \(normally\)
-* Run WizBot with Auto Restart \(check "if" WizBot is working properly, before using this\)
-* Setup credentials.json
-* Install ffmpeg \(for music\)
-* Redis Installation \(Opens Website\) \(64bit\)
-* Run Redis \(if its not running\) \(64bit\)
-* Install Youtube-dl. \(Opens Website\)
-* Add Youtube-dl to PATH.
-* Add Redis to PATH. \(Advanced Users Only\) \("Run Redis" is enough for Normal Users.\) \(64bit\)
-* Install .NET Core SDK \(Opens Website\)
-* Install Git. \(Opens Website\)
-* Copy libsodium and opus dll files for 32bit users. \(Required for 32bit, Music\)
-* Download and run redis-server for 32bit users. \(32bit\)
-* To exit
-
-  \`\`\`
+```
+1. Download Latest Build
+2. Run WizBot (normally)
+3. Run WizBot with Auto Restart (check "if" WizBot is working properly, before using this)
+4. Setup credentials.json
+5. Install ffmpeg (for music)
+6. Redis Installation (Opens Website) (64bit)
+7. Run Redis (if its not running) (64bit)
+8. Install Youtube-dl. (Opens Website)
+9. Add Youtube-dl to PATH.
+10. Add Redis to PATH. (Advanced Users Only) ("Run Redis" is enough for Normal Users.) (64bit)
+11. Install .NET Core SDK (Opens Website)
+12. Install Git. (Opens Website)
+13. Copy libsodium and opus dll files for 32bit users. (Required for 32bit, Music)
+14. Download and run redis-server for 32bit users. (32bit)
+15. To exit
+```
 
 * Run Option `1` to download WizBot \(type 1 and press Enter\). Once it's done, it should take you back to the main menu.
 * Run Option `4` to [set up your credentials](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/). Paste the info as requested.
