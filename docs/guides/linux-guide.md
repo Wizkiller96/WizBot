@@ -175,17 +175,20 @@ This procedure is completely optional. We'll be using [_systemd_](https://en.wik
    * Let's edit the script _systemd_ is going to use to start WizBot: `nano wizbot.service`
    * You should see the following:
 
-     \`\`\`css
+```css
+[Unit]
+Description=WizBot 
 
-     \[Unit\]
+[Service]
+WorkingDirectory=/root
+User=root
+Type=forking
+ExecStart=/usr/bin/tmux new-session -s WizBot -d '/bin/sh WizBotARN.sh'
+ExecStop=/bin/sleep 2
 
-     Description=WizBot 
-
-\[Service\] WorkingDirectory=/root User=root Type=forking ExecStart=/usr/bin/tmux new-session -s WizBot -d '/bin/sh WizBotARN.sh' ExecStop=/bin/sleep 2
-
-\[Install\] WantedBy=multi-user.target
-
-\`\`\`
+[Install]
+WantedBy=multi-user.target
+```
 
 * Change `/root` from _"WorkingDirectory"_ to the directory that contains your WizBot folder.
   * For example, if your  bot is located in `/home/username/WizBot`, you should change `/root` to `/home/username`.
