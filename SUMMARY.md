@@ -1,6 +1,5 @@
 # Table of contents
 
-* [Home](docs/index.md)
 * [About](docs/about.md)
 
 ## Guides
