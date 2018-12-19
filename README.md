@@ -1,6 +1,6 @@
 # README
 
-![img](https://ci.appveyor.com/api/projects/status/uuewoyb3t5f7ye4q?svg=true) [![Documentation Status](https://readthedocs.org/projects/wizbot/badge/?version=latest)](http://wizbot.readthedocs.io/en/latest/?badge=latest)
+![img](https://ci.appveyor.com/api/projects/status/uuewoyb3t5f7ye4q?svg=true) [![pipeline status](https://gitlab.com/WizNet/WizBot/badges/1.9/pipeline.svg)](https://gitlab.com/WizNet/WizBot/commits/1.9) [![Documentation Status](https://readthedocs.org/projects/wizbot/badge/?version=latest)](http://wizbot.readthedocs.io/en/latest/?badge=latest)
 
 ## For Updates, Help and Guidelines
 
