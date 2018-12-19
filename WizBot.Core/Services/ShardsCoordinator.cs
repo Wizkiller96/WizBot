@@ -1,15 +1,15 @@
-﻿using WizBot.Core.Services.Impl;
-using NLog;
-using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
+﻿using WizBot.Common.Collections;
 using WizBot.Common.ShardCom;
-using StackExchange.Redis;
-using Newtonsoft.Json;
+using WizBot.Core.Services.Impl;
 using WizBot.Extensions;
-using WizBot.Common.Collections;
-using System.Linq;
+using Newtonsoft.Json;
+using NLog;
+using StackExchange.Redis;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace WizBot.Core.Services
 {
@@ -104,9 +104,16 @@ namespace WizBot.Core.Services
             db.KeyDelete(_key + "_shardstats");
 
             _shardProcesses = new Process[_creds.TotalShards];
-            var shardIds = Enumerable.Range(1, _creds.TotalShards - 1)
+
+            var shardIdsEnum = Enumerable.Range(1, _creds.TotalShards - 1)
                 .Shuffle()
                 .Prepend(0)
+#if GLOBAL_WIZBOT
+                .Prepend(64)
+#endif
+                ;
+            var shardIds = shardIdsEnum
+
                 .ToArray();
             for (var i = 0; i < shardIds.Length; i++)
             {
