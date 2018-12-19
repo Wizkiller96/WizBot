@@ -1,12 +1,13 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using WizBot.Common.Attributes;
+using WizBot.Core.Common;
+using WizBot.Modules.Games.Common;
+using WizBot.Modules.Games.Services;
 using System.Threading;
 using System.Threading.Tasks;
-using WizBot.Common.Attributes;
-using WizBot.Modules.Games.Services;
-using WizBot.Modules.Games.Common;
-using WizBot.Core.Common;
+
 
 namespace WizBot.Modules.Games
 {
@@ -25,7 +26,7 @@ namespace WizBot.Modules.Games
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            [WizBotOptionsAttribute(typeof(TicTacToe.Options))]
+            [WizBotOptions(typeof(TicTacToe.Options))]
             public async Task TicTacToe(params string[] args)
             {
                 var (options, _) = OptionsParser.ParseFrom(new TicTacToe.Options(), args);

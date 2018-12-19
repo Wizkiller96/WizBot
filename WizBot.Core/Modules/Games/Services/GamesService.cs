@@ -1,4 +1,16 @@
-﻿using System;
+﻿using Discord;
+using WizBot.Common;
+using WizBot.Core.Services;
+using WizBot.Core.Services.Impl;
+using WizBot.Extensions;
+using WizBot.Modules.Games.Common;
+using WizBot.Modules.Games.Common.Acrophobia;
+using WizBot.Modules.Games.Common.Hangman;
+using WizBot.Modules.Games.Common.Nunchi;
+using WizBot.Modules.Games.Common.Trivia;
+using Newtonsoft.Json;
+using NLog;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -6,19 +18,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Discord;
-using WizBot.Common;
-using WizBot.Common.Collections;
-using WizBot.Extensions;
-using WizBot.Modules.Games.Common;
-using WizBot.Core.Services;
-using WizBot.Core.Services.Impl;
-using Newtonsoft.Json;
-using NLog;
-using WizBot.Modules.Games.Common.Acrophobia;
-using WizBot.Modules.Games.Common.Hangman;
-using WizBot.Modules.Games.Common.Trivia;
-using WizBot.Modules.Games.Common.Nunchi;
 
 namespace WizBot.Modules.Games.Services
 {
