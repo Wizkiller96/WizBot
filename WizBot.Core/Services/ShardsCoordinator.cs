@@ -106,17 +106,18 @@ namespace WizBot.Core.Services
             _shardProcesses = new Process[_creds.TotalShards];
 
 #if GLOBAL_WIZBOT
-            var shardIdsEnum = Enumerable.Range(1, _creds.TotalShards - 1)
+            var shardIdsEnum = Enumerable.Range(1, 63)
                 .Concat(Enumerable.Range(65, _creds.TotalShards - 65))
                 .Shuffle()
+                .Prepend(64)
                 .Prepend(0);
 #else
             var shardIdsEnum = Enumerable.Range(1, _creds.TotalShards - 1)
                 .Shuffle()
                 .Prepend(0);
 #endif
-            var shardIds = shardIdsEnum
 
+            var shardIds = shardIdsEnum
                 .ToArray();
             for (var i = 0; i < shardIds.Length; i++)
             {
