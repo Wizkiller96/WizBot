@@ -2,11 +2,10 @@
 
 ## Repo Status
 
-![img](https://ci.appveyor.com/api/projects/status/uuewoyb3t5f7ye4q?svg=true) [![pipeline status](https://gitlab.com/WizNet/WizBot/badges/1.9/pipeline.svg)](https://gitlab.com/WizNet/WizBot/commits/1.9) [![Documentation Status](https://readthedocs.org/projects/wizbot/badge/?version=latest)](http://wizbot.readthedocs.io/en/latest/?badge=latest)
+![img](https://ci.appveyor.com/api/projects/status/uuewoyb3t5f7ye4q?svg=true) [![pipeline status](https://gitlab.com/WizNet/WizBot/badges/1.9/pipeline.svg)](https://gitlab.com/WizNet/WizBot/commits/1.9) [![Documentation Status](https://readthedocs.org/projects/wizbot/badge/?version=latest)](http://wizbot.readthedocs.io/en/latest/?badge=latest) ![](https://img.shields.io/website-up-down-green-red/https/wizbot.cf.svg?label=wizbot.cf) [![Discord](https://img.shields.io/discord/99273784988557312.svg)](https://discord.gg/0YNaDOYuD5QOpeNI)
 
 ## For Updates, Help and Guidelines
 
 | [![twitter](https://cdn.discordapp.com/attachments/155726317222887425/252192520094613504/twiter_banner.JPG)](https://twitter.com/WizBot_Dev) | [![Wiki](https://cdn.discordapp.com/attachments/266240393639755778/281920793330581506/datcord.png)](http://wizbot.readthedocs.io/en/latest/) |
 | :--- | :--- |
 | **Follow me on Twitter.** | **Read the Docs for self-hosting.** |
-
