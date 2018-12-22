@@ -41,6 +41,7 @@ namespace WizBot.Modules.Gambling.Services
         public readonly ConcurrentHashSet<ulong> _generationChannels = new ConcurrentHashSet<ulong>();
         //channelId/last generation
         public ConcurrentDictionary<ulong, DateTime> LastGenerations { get; } = new ConcurrentDictionary<ulong, DateTime>();
+        private readonly object pickLock = new object();
 
         public PlantPickService(DbService db, CommandHandler cmd, WizBot bot, WizBotStrings strings,
             IDataCache cache, FontProvider fonts, IBotConfigProvider bc, ICurrencyService cs,
@@ -256,7 +257,11 @@ namespace WizBot.Modules.Gambling.Services
             {
                 // this method will sum all plants with that password, 
                 // remove them, and get messageids of the removed plants
-                (amount, ids) = uow.PlantedCurrency.RemoveSumAndGetMessageIdsFor(ch.Id, pass);
+                lock (pickLock)
+                {
+                    (amount, ids) = uow.PlantedCurrency.RemoveSumAndGetMessageIdsFor(ch.Id, pass);
+                }
+
                 if (amount > 0)
                 {
                     // give the picked currency to the user

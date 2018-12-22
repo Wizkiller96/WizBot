@@ -1,11 +1,11 @@
 using Discord;
 using Discord.Commands;
-using WizBot.Extensions;
-using System.Threading.Tasks;
-using WizBot.Common.Attributes;
-using WizBot.Modules.Gambling.Services;
 using Discord.WebSocket;
+using WizBot.Common.Attributes;
+using WizBot.Extensions;
+using WizBot.Modules.Gambling.Services;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace WizBot.Modules.Games
 {
@@ -14,7 +14,6 @@ namespace WizBot.Modules.Games
         [Group]
         public class PlantPickCommands : WizBotSubmodule<PlantPickService>
         {
-
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task Pick(string pass = null)
