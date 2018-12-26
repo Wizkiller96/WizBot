@@ -15,7 +15,7 @@ _If you have Windows 7 or a 32-bit system, please refer to the_ [_From Source_](
 ## Prerequisites
 
 * Windows 8 or later \(64-bit\)
-* [dotNET Core 2.1 SDK](https://www.microsoft.com/net/download/) \(restart Windows after installation\)
+* [dotNET Core 2.1 SDK](https://www.microsoft.com/net/download/dotnet-core/2.1) \(restart Windows after installation\)
 * [Redis](https://github.com/MicrosoftArchive/redis/releases/download/win-3.0.504/Redis-x64-3.0.504.msi) \(supplied with the updater\)
 * [Create a Discord Bot application](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/#creating-discord-bot-application) and [invite the bot to your server](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/#inviting-your-bot-to-your-server).
 

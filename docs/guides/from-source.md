@@ -16,8 +16,8 @@ This is the recommended way of installing WizBot from source. If you don't want 
 
 ### Prerequisites \(CLI\)
 
-* Windows 7 or later
-* [dotNET core 2.1 SDK](https://www.microsoft.com/net/download/) \(restart Windows after installation\)
+* Windows 8 or later
+* [dotNET core 2.1 SDK](https://www.microsoft.com/net/download/dotnet-core/2.1) \(restart Windows after installation\)
 * [Git](https://git-scm.com/downloads) \(select [this option](https://i.imgur.com/zlWVTsi.png) during the installation process\)
 * Redis
   * Windows 64 bit: Download and install the [latest msi](https://github.com/MicrosoftArchive/redis/releases/tag/win-3.0.504). Don't forget to [add it to the path environment variable](https://i.imgur.com/uUby6Xw.png) during the installation process.
