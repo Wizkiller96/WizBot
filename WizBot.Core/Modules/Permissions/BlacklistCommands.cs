@@ -57,7 +57,7 @@ namespace WizBot.Modules.Permissions
 
             private async Task Blacklist(AddRemove action, ulong id, BlacklistType type)
             {
-                if (action == AddRemove.Add && _creds.AdminIds.Contains(id) && _creds.OwnerIds.Contains(id))
+                if (action == AddRemove.Add && _creds.OwnerIds.Contains(id))
                     return;
 
                 using (var uow = _db.UnitOfWork)
