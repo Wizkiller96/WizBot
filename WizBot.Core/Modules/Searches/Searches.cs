@@ -348,7 +348,7 @@ namespace WizBot.Modules.Searches
                     {
                         var aTag = elem.QuerySelector("a") as IHtmlAnchorElement; // <h3> -> <a>
                         var href = aTag?.Href;
-                        var name = aTag?.TextContent;
+                        var name = aTag?.Children.FirstOrDefault()?.TextContent;
                         if (href == null || name == null)
                             return null;
 
