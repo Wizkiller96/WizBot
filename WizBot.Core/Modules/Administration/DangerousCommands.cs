@@ -101,10 +101,10 @@ namespace WizBot.Modules.Administration
             public Task DeleteExp() =>
                 SqlExec(DangerousCommandsService.XpDeleteSql);
 
-            [WizBotCommand, Usage, Description, Aliases]
-            [OwnerOnly]
-            public Task DeleteUnusedCrnQ() =>
-                SqlExec(DangerousCommandsService.DeleteUnusedCustomReactionsAndQuotes);
+            //[WizBotCommand, Usage, Description, Aliases]
+            //[OwnerOnly]
+            //public Task DeleteUnusedCrnQ() =>
+            //    SqlExec(DangerousCommandsService.DeleteUnusedCustomReactionsAndQuotes);
         }
     }
 }

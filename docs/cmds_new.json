@@ -287,21 +287,6 @@
     },
     {
       "Aliases": [
-        ".deleteunusedcrnq"
-      ],
-      "Description": "Deletes all quotes and custom reactions which are older than a week and haven't been used a single time.",
-      "Usage": [
-        ".deleteunusedcrnq"
-      ],
-      "Submodule": "DangerousCommands",
-      "Module": "Administration",
-      "Options": null,
-      "Requirements": [
-        "Bot Owner Only"
-      ]
-    },
-    {
-      "Aliases": [
         ".gvc"
       ],
       "Description": "Toggles game voice channel feature in the voice channel you're currently in. Users who join the game voice channel will get automatically redirected to the voice channel with the name of their current game, if it exists. Can't move users to channels that the bot has no connect permission for. One per server.",
@@ -5783,7 +5768,7 @@
       ],
       "Submodule": "InviteCommands",
       "Module": "Utility",
-      "Options": "`--max-uses` (`-m`)   Maximum number of times the invite can be used. Default 0 (never).  \n`--unique` (`-u`)   Not setting this flag will result in bot getting the existing invite with the same settings if it exists, instead of creating a new one.  \n`--temporary` (`-t`)   Setting this flag will make the link expire after 24h.  ",
+      "Options": "`--max-uses` (`-m`)   Maximum number of times the invite can be used. Default 0 (never).  \n`--unique` (`-u`)   Not setting this flag will result in bot getting the existing invite with the same settings if it exists, instead of creating a new one.  \n`--temporary` (`-t`)   If this flag is set, the user will be kicked from the guild once they close their client.  \n`--expire` (`-e`)   Time in seconds to expire the invite. Default 0 (no expiry).  ",
       "Requirements": [
         "CreateInstantInvite Channel Permission"
       ]
