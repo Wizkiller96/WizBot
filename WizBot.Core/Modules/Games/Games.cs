@@ -51,10 +51,8 @@ namespace WizBot.Modules.Games
                 .AddField(efb => efb.WithName("❓ " + GetText("question")).WithValue(question).WithIsInline(false))
                 .AddField(efb => efb.WithName("🎱 " + GetText("8ball")).WithValue(_service.EightBallResponses[new WizBotRandom().Next(0, _service.EightBallResponses.Length)]).WithIsInline(false))).ConfigureAwait(false);
         }
-
-        /* In the process of removing this command as people find it offensive. */
         
-        /* [WizBotCommand, Usage, Description, Aliases]
+        [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task RateGirl(IGuildUser usr)
         {
@@ -62,7 +60,7 @@ namespace WizBot.Modules.Games
             var img = await gr.Url;
             if (img == null)
             {
-                await ReplyErrorLocalized("something_went_wrong").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync("something_went_wrong").ConfigureAwait(false);
                 return;
             }
             await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
@@ -144,7 +142,7 @@ namespace WizBot.Modules.Games
             }
 
             return new GirlRating(_images, _httpFactory, crazy, hot, roll, advice);
-        } */
+        }
 
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Linux(string guhnoo, string loonix)
