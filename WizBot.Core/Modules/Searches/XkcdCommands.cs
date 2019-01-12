@@ -49,7 +49,7 @@ namespace WizBot.Modules.Searches
                     }
                     catch (HttpRequestException)
                     {
-                        await ReplyErrorLocalized("comic_not_found").ConfigureAwait(false);
+                        await ReplyErrorLocalizedAsync("comic_not_found").ConfigureAwait(false);
                     }
                     return;
                 }
@@ -84,7 +84,7 @@ namespace WizBot.Modules.Searches
                 }
                 catch (HttpRequestException)
                 {
-                    await ReplyErrorLocalized("comic_not_found").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync("comic_not_found").ConfigureAwait(false);
                 }
             }
         }

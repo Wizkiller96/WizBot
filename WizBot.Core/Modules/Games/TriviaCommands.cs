@@ -76,7 +76,7 @@ namespace WizBot.Modules.Games
                     return;
                 }
 
-                await ReplyErrorLocalized("trivia_none").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync("trivia_none").ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -91,7 +91,7 @@ namespace WizBot.Modules.Games
                     return;
                 }
 
-                await ReplyErrorLocalized("trivia_none").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync("trivia_none").ConfigureAwait(false);
             }
         }
     }

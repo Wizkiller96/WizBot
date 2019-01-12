@@ -108,7 +108,7 @@ namespace WizBot.Modules.Searches
                     }
                 }
 
-                await ReplyErrorLocalized("stream_not_exist").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync("stream_not_exist").ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -135,7 +135,7 @@ namespace WizBot.Modules.Searches
                     }
                 }
 
-                await ReplyErrorLocalized("stream_not_exist").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync("stream_not_exist").ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -144,7 +144,7 @@ namespace WizBot.Modules.Searches
             public async Task StreamsClear()
             {
                 var count = _service.ClearAllStreams(Context.Guild.Id);
-                await ReplyConfirmLocalized("streams_cleared", count).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync("streams_cleared", count).ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -209,11 +209,11 @@ namespace WizBot.Modules.Searches
                 var newValue = _service.ToggleStreamOffline(Context.Guild.Id);
                 if (newValue)
                 {
-                    await ReplyConfirmLocalized("stream_off_enabled").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync("stream_off_enabled").ConfigureAwait(false);
                 }
                 else
                 {
-                    await ReplyConfirmLocalized("stream_off_disabled").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync("stream_off_disabled").ConfigureAwait(false);
                 }
             }
 
@@ -224,22 +224,22 @@ namespace WizBot.Modules.Searches
             {
                 if (!GetNameAndType(url, out var info))
                 {
-                    await ReplyErrorLocalized("stream_not_exist").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync("stream_not_exist").ConfigureAwait(false);
                     return;
                 }
                 if (!_service.SetStreamMessage(Context.Guild.Id, info.Value.Item1, info.Value.Item2, message))
                 {
-                    await ReplyConfirmLocalized("stream_not_following").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync("stream_not_following").ConfigureAwait(false);
                     return;
                 }
 
                 if (string.IsNullOrWhiteSpace(message))
                 {
-                    await ReplyConfirmLocalized("stream_message_reset", url).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync("stream_message_reset", url).ConfigureAwait(false);
                 }
                 else
                 {
-                    await ReplyConfirmLocalized("stream_message_set", url).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync("stream_message_set", url).ConfigureAwait(false);
                 }
             }
             //todo default message
@@ -289,11 +289,11 @@ namespace WizBot.Modules.Searches
                 _service.UntrackStream(fs);
                 if (removed == null)
                 {
-                    await ReplyErrorLocalized("stream_no").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync("stream_no").ConfigureAwait(false);
                     return;
                 }
 
-                await ReplyConfirmLocalized("stream_removed",
+                await ReplyConfirmLocalizedAsync("stream_removed",
                     Format.Code(username),
                     type).ConfigureAwait(false);
             }
@@ -310,25 +310,25 @@ namespace WizBot.Modules.Searches
                     var streamStatus = await _service.GetStreamStatus(platform, username).ConfigureAwait(false);
                     if (streamStatus == null)
                     {
-                        await ReplyErrorLocalized("no_channel_found").ConfigureAwait(false);
+                        await ReplyErrorLocalizedAsync("no_channel_found").ConfigureAwait(false);
                         return;
                     }
                     if (streamStatus.Live)
                     {
-                        await ReplyConfirmLocalized("streamer_online",
+                        await ReplyConfirmLocalizedAsync("streamer_online",
                                 Format.Bold(username),
                                 Format.Bold(streamStatus.Viewers.ToString()))
                             .ConfigureAwait(false);
                     }
                     else
                     {
-                        await ReplyConfirmLocalized("streamer_offline",
+                        await ReplyConfirmLocalizedAsync("streamer_offline",
                             username).ConfigureAwait(false);
                     }
                 }
                 catch
                 {
-                    await ReplyErrorLocalized("no_channel_found").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync("no_channel_found").ConfigureAwait(false);
                 }
             }
 
@@ -350,13 +350,13 @@ namespace WizBot.Modules.Searches
                 }
                 catch
                 {
-                    await ReplyErrorLocalized("stream_not_exist").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync("stream_not_exist").ConfigureAwait(false);
                     return;
                 }
 
                 if (status == null)
                 {
-                    await ReplyErrorLocalized("stream_not_exist").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync("stream_not_exist").ConfigureAwait(false);
                     return;
                 }
 

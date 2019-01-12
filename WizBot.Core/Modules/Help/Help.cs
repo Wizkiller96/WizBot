@@ -116,9 +116,9 @@ namespace WizBot.Modules.Help
             if (!cmds.Any())
             {
                 if (opts.View != CommandsOptions.ViewType.Hide)
-                    await ReplyErrorLocalized("module_not_found").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync("module_not_found").ConfigureAwait(false);
                 else
-                    await ReplyErrorLocalized("module_not_found_or_cant_exec").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync("module_not_found_or_cant_exec").ConfigureAwait(false);
                 return;
             }
             var i = 0;
@@ -171,7 +171,7 @@ namespace WizBot.Modules.Help
                 return;
             }
 
-            await ReplyErrorLocalized("command_not_found").ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync("command_not_found").ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -227,13 +227,13 @@ namespace WizBot.Modules.Help
                     });
             }
             File.WriteAllText("../../docs/cmds_new.json", JsonConvert.SerializeObject(cmdData, Formatting.Indented));
-            await ReplyConfirmLocalized("commandlist_regen").ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync("commandlist_regen").ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Guide()
         {
-            await ConfirmLocalized("guide",
+            await ConfirmLocalizedAsync("guide",
                 "http://wizbot.cf/commands.html",
                 "http://wizbot.readthedocs.io/en/latest/").ConfigureAwait(false);
         }
@@ -241,7 +241,7 @@ namespace WizBot.Modules.Help
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Donate()
         {
-            await ReplyConfirmLocalized("donate", PatreonUrl, PaypalUrl).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync("donate", PatreonUrl, PaypalUrl).ConfigureAwait(false);
         }
 
         private string GetRemarks(string[] arr)

@@ -49,7 +49,7 @@ namespace WizBot.Modules.Searches
                         return;
                     }
                 }
-                await ReplyErrorLocalized("pokemon_none").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync("pokemon_none").ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -73,7 +73,7 @@ namespace WizBot.Modules.Searches
                         return;
                     }
                 }
-                await ReplyErrorLocalized("pokemon_ability_none").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync("pokemon_ability_none").ConfigureAwait(false);
             }
         }
     }

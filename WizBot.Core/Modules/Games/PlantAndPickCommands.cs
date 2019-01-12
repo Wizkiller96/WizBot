@@ -27,7 +27,7 @@ namespace WizBot.Modules.Games
 
                 if (picked > 0)
                 {
-                    var msg = await ReplyConfirmLocalized("picked", picked + Bc.BotConfig.CurrencySign)
+                    var msg = await ReplyConfirmLocalizedAsync("picked", picked + Bc.BotConfig.CurrencySign)
                        .ConfigureAwait(false);
                     msg.DeleteAfter(10);
                 }
@@ -53,7 +53,7 @@ namespace WizBot.Modules.Games
                 var success = await _service.PlantAsync(Context.Guild.Id, Context.Channel, Context.User.Id, Context.User.ToString(), amount, pass);
                 if (!success)
                 {
-                    await ReplyErrorLocalized("not_enough", Bc.BotConfig.CurrencySign).ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync("not_enough", Bc.BotConfig.CurrencySign).ConfigureAwait(false);
                     return;
                 }
 
@@ -72,11 +72,11 @@ namespace WizBot.Modules.Games
                 bool enabled = _service.ToggleCurrencyGeneration(Context.Guild.Id, Context.Channel.Id);
                 if (enabled)
                 {
-                    await ReplyConfirmLocalized("curgen_enabled").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync("curgen_enabled").ConfigureAwait(false);
                 }
                 else
                 {
-                    await ReplyConfirmLocalized("curgen_disabled").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync("curgen_disabled").ConfigureAwait(false);
                 }
             }
 

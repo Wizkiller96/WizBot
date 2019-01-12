@@ -45,7 +45,7 @@ namespace WizBot.Modules.Games
                     }
                     game = new TicTacToe(base.Strings, this._client, channel, (IGuildUser)Context.User, options);
                     _service.TicTacToeGames.Add(channel.Id, game);
-                    await ReplyConfirmLocalized("ttt_created").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync("ttt_created").ConfigureAwait(false);
 
                     game.OnEnded += (g) =>
                     {

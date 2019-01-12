@@ -50,7 +50,7 @@ namespace WizBot.Modules.Utility
                             string.Join("\n", quotes.Select(q => $"`#{q.Id}` {Format.Bold(q.Keyword.SanitizeMentions()),-20} by {q.AuthorName.SanitizeMentions()}")))
                         .ConfigureAwait(false);
                 else
-                    await ReplyErrorLocalized("quotes_page_none").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync("quotes_page_none").ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -175,7 +175,7 @@ namespace WizBot.Modules.Utility
                     });
                     await uow.CompleteAsync();
                 }
-                await ReplyConfirmLocalized("quote_added").ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync("quote_added").ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -225,7 +225,7 @@ namespace WizBot.Modules.Utility
                     await uow.CompleteAsync();
                 }
 
-                await ReplyConfirmLocalized("quotes_deleted", Format.Bold(keyword.SanitizeMentions())).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync("quotes_deleted", Format.Bold(keyword.SanitizeMentions())).ConfigureAwait(false);
             }
         }
     }

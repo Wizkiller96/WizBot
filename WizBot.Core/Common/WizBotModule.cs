@@ -1,12 +1,12 @@
 ﻿using Discord;
 using Discord.Commands;
-using WizBot.Extensions;
+using Discord.WebSocket;
 using WizBot.Core.Services;
+using WizBot.Core.Services.Impl;
+using WizBot.Extensions;
 using NLog;
 using System.Globalization;
 using System.Threading.Tasks;
-using Discord.WebSocket;
-using WizBot.Core.Services.Impl;
 
 namespace WizBot.Modules
 {
@@ -64,25 +64,25 @@ namespace WizBot.Modules
         protected string GetText(string key, params object[] replacements) =>
             Strings.GetText(key, _cultureInfo, LowerModuleTypeName, replacements);
 
-        public Task<IUserMessage> ErrorLocalized(string textKey, params object[] replacements)
+        public Task<IUserMessage> ErrorLocalizedAsync(string textKey, params object[] replacements)
         {
             var text = GetText(textKey, replacements);
             return Context.Channel.SendErrorAsync(text);
         }
 
-        public Task<IUserMessage> ReplyErrorLocalized(string textKey, params object[] replacements)
+        public Task<IUserMessage> ReplyErrorLocalizedAsync(string textKey, params object[] replacements)
         {
             var text = GetText(textKey, replacements);
             return Context.Channel.SendErrorAsync(Format.Bold(Context.User.ToString()) + " " + text);
         }
 
-        public Task<IUserMessage> ConfirmLocalized(string textKey, params object[] replacements)
+        public Task<IUserMessage> ConfirmLocalizedAsync(string textKey, params object[] replacements)
         {
             var text = GetText(textKey, replacements);
             return Context.Channel.SendConfirmAsync(text);
         }
 
-        public Task<IUserMessage> ReplyConfirmLocalized(string textKey, params object[] replacements)
+        public Task<IUserMessage> ReplyConfirmLocalizedAsync(string textKey, params object[] replacements)
         {
             var text = GetText(textKey, replacements);
             return Context.Channel.SendConfirmAsync(Format.Bold(Context.User.ToString()) + " " + text);
@@ -111,7 +111,7 @@ namespace WizBot.Modules
                 var _ = Task.Run(() => msg.DeleteAsync());
             }
         }
-        
+
         // TypeConverter typeConverter = TypeDescriptor.GetConverter(propType); ?
         public async Task<string> GetUserInputAsync(ulong userId, ulong channelId)
         {
@@ -155,7 +155,7 @@ namespace WizBot.Modules
             }
         }
     }
-    
+
     public abstract class WizBotTopLevelModule<TService> : WizBotTopLevelModule where TService : INService
     {
         public TService _service { get; set; }

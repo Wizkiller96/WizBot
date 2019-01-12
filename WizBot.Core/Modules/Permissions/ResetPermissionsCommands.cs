@@ -24,7 +24,7 @@ namespace WizBot.Modules.Permissions
             public async Task ResetPermissions()
             {
                 await _service.ResetPermissions(Context.Guild.Id).ConfigureAwait(false);
-                await ReplyConfirmLocalized("perms_reset").ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync("perms_reset").ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -32,7 +32,7 @@ namespace WizBot.Modules.Permissions
             public async Task ResetGlobalPermissions()
             {
                 await _service.ResetGlobalPermissions().ConfigureAwait(false);
-                await ReplyConfirmLocalized("global_perms_reset").ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync("global_perms_reset").ConfigureAwait(false);
             }
         }
     }

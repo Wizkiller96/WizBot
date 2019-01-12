@@ -54,7 +54,7 @@ namespace WizBot.Modules.Games
                 }
                 else
                 {
-                    await ReplyErrorLocalized("acro_running").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync("acro_running").ConfigureAwait(false);
                 }
 
                 Task _client_MessageReceived(SocketMessage msg)

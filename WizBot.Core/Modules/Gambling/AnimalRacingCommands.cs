@@ -129,7 +129,7 @@ namespace WizBot.Modules.Gambling
             private Task Ar_OnStartingFailed(AnimalRace race)
             {
                 _service.AnimalRaces.TryRemove(Context.Guild.Id, out _);
-                return ReplyErrorLocalized("animal_race_failed");
+                return ReplyErrorLocalizedAsync("animal_race_failed");
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -141,7 +141,7 @@ namespace WizBot.Modules.Gambling
 
                 if (!_service.AnimalRaces.TryGetValue(Context.Guild.Id, out var ar))
                 {
-                    await ReplyErrorLocalized("race_not_exist").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync("race_not_exist").ConfigureAwait(false);
                     return;
                 }
                 try

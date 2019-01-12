@@ -32,7 +32,7 @@ namespace WizBot.Modules.Administration
                 if (Context.User.Id != user.Guild.OwnerId
                     && (user.GetRoles().Select(r => r.Position).Max() >= ((IGuildUser)Context.User).GetRoles().Select(r => r.Position).Max()))
                 {
-                    await ReplyErrorLocalized("hierarchy").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync("hierarchy").ConfigureAwait(false);
                     return;
                 }
                 try
@@ -56,17 +56,17 @@ namespace WizBot.Modules.Administration
                 catch (Exception ex)
                 {
                     _log.Warn(ex.Message);
-                    await ReplyErrorLocalized("cant_apply_punishment").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync("cant_apply_punishment").ConfigureAwait(false);
                     return;
                 }
 
                 if (punishment == null)
                 {
-                    await ReplyConfirmLocalized("user_warned", Format.Bold(user.ToString())).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync("user_warned", Format.Bold(user.ToString())).ConfigureAwait(false);
                 }
                 else
                 {
-                    await ReplyConfirmLocalized("user_warned_and_punished", Format.Bold(user.ToString()), Format.Bold(punishment.ToString())).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync("user_warned_and_punished", Format.Bold(user.ToString()), Format.Bold(punishment.ToString())).ConfigureAwait(false);
                 }
             }
 
@@ -184,18 +184,18 @@ namespace WizBot.Modules.Administration
                 var userStr = Format.Bold((Context.Guild as SocketGuild)?.GetUser(userId)?.ToString() ?? userId.ToString());
                 if (index == 0)
                 {
-                    await ReplyConfirmLocalized("warnings_cleared", userStr).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync("warnings_cleared", userStr).ConfigureAwait(false);
                 }
                 else
                 {
                     if (success)
                     {
-                        await ReplyConfirmLocalized("warning_cleared", Format.Bold(index.ToString()), userStr)
+                        await ReplyConfirmLocalizedAsync("warning_cleared", Format.Bold(index.ToString()), userStr)
                             .ConfigureAwait(false);
                     }
                     else
                     {
-                        await ReplyErrorLocalized("warning_clear_fail").ConfigureAwait(false);
+                        await ReplyErrorLocalizedAsync("warning_clear_fail").ConfigureAwait(false);
                     }
                 }
             }
@@ -210,7 +210,7 @@ namespace WizBot.Modules.Administration
                 if (!success)
                     return;
 
-                await ReplyConfirmLocalized("warn_punish_set",
+                await ReplyConfirmLocalizedAsync("warn_punish_set",
                     Format.Bold(punish.ToString()),
                     Format.Bold(number.ToString())).ConfigureAwait(false);
             }
@@ -225,7 +225,7 @@ namespace WizBot.Modules.Administration
                     return;
                 }
 
-                await ReplyConfirmLocalized("warn_punish_rem",
+                await ReplyConfirmLocalizedAsync("warn_punish_rem",
                     Format.Bold(number.ToString())).ConfigureAwait(false);
             }
 
@@ -260,7 +260,7 @@ namespace WizBot.Modules.Administration
                     return;
                 if (Context.User.Id != user.Guild.OwnerId && (user.GetRoles().Select(r => r.Position).Max() >= ((IGuildUser)Context.User).GetRoles().Select(r => r.Position).Max()))
                 {
-                    await ReplyErrorLocalized("hierarchy").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync("hierarchy").ConfigureAwait(false);
                     return;
                 }
                 if (!string.IsNullOrWhiteSpace(msg))
@@ -294,7 +294,7 @@ namespace WizBot.Modules.Administration
             {
                 if (Context.User.Id != user.Guild.OwnerId && (user.GetRoles().Select(r => r.Position).Max() >= ((IGuildUser)Context.User).GetRoles().Select(r => r.Position).Max()))
                 {
-                    await ReplyErrorLocalized("hierarchy").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync("hierarchy").ConfigureAwait(false);
                     return;
                 }
                 if (!string.IsNullOrWhiteSpace(msg))
@@ -330,7 +330,7 @@ namespace WizBot.Modules.Administration
 
                 if (bun == null)
                 {
-                    await ReplyErrorLocalized("user_not_found").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync("user_not_found").ConfigureAwait(false);
                     return;
                 }
 
@@ -349,7 +349,7 @@ namespace WizBot.Modules.Administration
 
                 if (bun == null)
                 {
-                    await ReplyErrorLocalized("user_not_found").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync("user_not_found").ConfigureAwait(false);
                     return;
                 }
 
@@ -360,7 +360,7 @@ namespace WizBot.Modules.Administration
             {
                 await Context.Guild.RemoveBanAsync(user).ConfigureAwait(false);
 
-                await ReplyConfirmLocalized("unbanned_user", Format.Bold(user.ToString())).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync("unbanned_user", Format.Bold(user.ToString())).ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -372,7 +372,7 @@ namespace WizBot.Modules.Administration
             {
                 if (Context.User.Id != user.Guild.OwnerId && user.GetRoles().Select(r => r.Position).Max() >= ((IGuildUser)Context.User).GetRoles().Select(r => r.Position).Max())
                 {
-                    await ReplyErrorLocalized("hierarchy").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync("hierarchy").ConfigureAwait(false);
                     return;
                 }
 
@@ -408,7 +408,7 @@ namespace WizBot.Modules.Administration
             {
                 if (Context.Message.Author.Id != user.Guild.OwnerId && user.GetRoles().Select(r => r.Position).Max() >= ((IGuildUser)Context.User).GetRoles().Select(r => r.Position).Max())
                 {
-                    await ReplyErrorLocalized("hierarchy").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync("hierarchy").ConfigureAwait(false);
                     return;
                 }
                 if (!string.IsNullOrWhiteSpace(msg))
