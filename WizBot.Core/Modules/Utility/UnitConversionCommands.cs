@@ -1,12 +1,12 @@
 ﻿using Discord;
 using Discord.Commands;
+using WizBot.Common.Attributes;
+using WizBot.Core.Common;
 using WizBot.Extensions;
+using WizBot.Modules.Utility.Services;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using WizBot.Common.Attributes;
-using WizBot.Modules.Utility.Services;
-using WizBot.Core.Common;
 
 namespace WizBot.Modules.Utility
 {
@@ -90,7 +90,7 @@ namespace WizBot.Modules.Utility
                 }
                 res = Math.Round(res, 4);
 
-                await Context.Channel.SendConfirmAsync(GetText("convert", value, (originUnit.Triggers.First()).SnPl(value.IsInteger() ? (int)value : 2), res, (targetUnit.Triggers.First() + "s").SnPl(res.IsInteger() ? (int)res : 2))).ConfigureAwait(false);
+                await Context.Channel.SendConfirmAsync(GetText("convert", value, originUnit.Triggers.Last(), res, targetUnit.Triggers.Last())).ConfigureAwait(false);
             }
         }
     }
