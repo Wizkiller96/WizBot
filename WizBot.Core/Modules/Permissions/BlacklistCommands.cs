@@ -1,14 +1,13 @@
 ﻿using Discord;
 using Discord.Commands;
+using Microsoft.EntityFrameworkCore;
+using WizBot.Common.Attributes;
+using WizBot.Common.TypeReaders;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
-using System.Threading.Tasks;
-using WizBot.Common.Attributes;
-using WizBot.Common.Collections;
 using WizBot.Modules.Permissions.Services;
-using WizBot.Common.TypeReaders;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace WizBot.Modules.Permissions
 {
@@ -19,10 +18,6 @@ namespace WizBot.Modules.Permissions
         {
             private readonly DbService _db;
             private readonly IBotCredentials _creds;
-
-            private ConcurrentHashSet<ulong> BlacklistedUsers => _service.BlacklistedUsers;
-            private ConcurrentHashSet<ulong> BlacklistedGuilds => _service.BlacklistedGuilds;
-            private ConcurrentHashSet<ulong> BlacklistedChannels => _service.BlacklistedChannels;
 
             public BlacklistCommands(DbService db, IBotCredentials creds)
             {
@@ -66,18 +61,6 @@ namespace WizBot.Modules.Permissions
                     {
                         var item = new BlacklistItem { ItemId = id, Type = type };
                         uow.BotConfig.GetOrCreate().Blacklist.Add(item);
-                        if (type == BlacklistType.Server)
-                        {
-                            BlacklistedGuilds.Add(id);
-                        }
-                        else if (type == BlacklistType.Channel)
-                        {
-                            BlacklistedChannels.Add(id);
-                        }
-                        else if (type == BlacklistType.User)
-                        {
-                            BlacklistedUsers.Add(id);
-                        }
                     }
                     else
                     {
@@ -88,19 +71,6 @@ namespace WizBot.Modules.Permissions
 
                         if (objs.Any())
                             uow._context.Set<BlacklistItem>().RemoveRange(objs);
-
-                        if (type == BlacklistType.Server)
-                        {
-                            BlacklistedGuilds.TryRemove(id);
-                        }
-                        else if (type == BlacklistType.Channel)
-                        {
-                            BlacklistedChannels.TryRemove(id);
-                        }
-                        else if (type == BlacklistType.User)
-                        {
-                            BlacklistedUsers.TryRemove(id);
-                        }
                     }
                     await uow.CompleteAsync();
                 }
