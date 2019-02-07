@@ -1,14 +1,14 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using WizBot.Extensions;
+using WizBot.Common.Attributes;
+using WizBot.Core.Common.TypeReaders.Models;
 using WizBot.Core.Services.Database.Models;
+using WizBot.Extensions;
+using WizBot.Modules.Administration.Services;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using WizBot.Common.Attributes;
-using WizBot.Modules.Administration.Services;
-using WizBot.Core.Common.TypeReaders.Models;
-using System;
 
 namespace WizBot.Modules.Administration
 {
@@ -283,6 +283,38 @@ namespace WizBot.Modules.Administration
                         .AddField(efb => efb.WithName(GetText("moderator")).WithValue(Context.User.ToString()))
                         .WithFooter($"{time.Time.Days}d {time.Time.Hours}h {time.Time.Minutes}m"))
                     .ConfigureAwait(false);
+            }
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [RequireUserPermission(GuildPermission.BanMembers)]
+            [RequireBotPermission(GuildPermission.BanMembers)]
+            [Priority(2)]
+            public async Task Ban(ulong userId, [Remainder] string msg = null)
+            {
+                var user = await Context.Guild.GetUserAsync(userId);
+                if (user is null)
+                {
+                    await Context.Guild.AddBanAsync(userId, 7, msg);
+
+                    if (!string.IsNullOrWhiteSpace(msg))
+                    {
+                        try
+                        {
+                            await user.SendErrorAsync(GetText("bandm", Format.Bold(Context.Guild.Name), msg)).ConfigureAwait(false);
+                        }
+                        catch { }
+                    }
+
+                    await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
+                            .WithTitle("⛔️ " + GetText("banned_user"))
+                            .AddField(efb => efb.WithName("ID").WithValue(user.Id.ToString()).WithIsInline(true)))
+                        .ConfigureAwait(false);
+                }
+                else
+                {
+                    await Ban(user, msg);
+                }
             }
 
             [WizBotCommand, Usage, Description, Aliases]

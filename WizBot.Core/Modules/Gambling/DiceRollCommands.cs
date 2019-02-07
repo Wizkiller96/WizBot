@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using WizBot.Common;
@@ -12,6 +6,11 @@ using WizBot.Core.Services;
 using WizBot.Extensions;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Image = SixLabors.ImageSharp.Image;
 
 namespace WizBot.Modules.Gambling
@@ -50,12 +49,6 @@ namespace WizBot.Modules.Gambling
                         $"dice.{format.FileExtensions.First()}",
                         Format.Bold(Context.User.ToString()) + " " + GetText("dice_rolled", Format.Code(gen.ToString()))).ConfigureAwait(false);
                 }
-            }
-
-            public enum RollOrderType
-            {
-                Ordered,
-                Unordered
             }
 
             [WizBotCommand, Usage, Description, Aliases]
