@@ -295,7 +295,7 @@ namespace WizBot.Modules.Administration
                 var user = await Context.Guild.GetUserAsync(userId);
                 if (user is null)
                 {
-                    await Context.Guild.AddBanAsync(userId, 7, msg);
+                    await Context.Guild.AddBanAsync(userId, 7, Context.User.ToString() + " | " + msg);
 
                     if (!string.IsNullOrWhiteSpace(msg))
                     {
