@@ -37,4 +37,6 @@ RUN set -ex; \
 
 VOLUME [ "/app/data" ]
 USER wizbot
-CMD ["dotnet", "/app/WizBot.dll"]
+
+COPY docker-entrypoint.sh /
+CMD ["/docker-entrypoint.sh"]
