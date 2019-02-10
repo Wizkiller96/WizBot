@@ -1,11 +1,12 @@
-﻿using System;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Discord.Commands;
+﻿using Discord.Commands;
 using Discord.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
 using WizBot.Core.Services;
 using NLog;
-using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+
 
 namespace WizBot.Core.Common.TypeReaders
 {
@@ -24,6 +25,10 @@ namespace WizBot.Core.Common.TypeReaders
                 return TypeReaderResult.FromError(CommandError.ParseFailed, "Input is empty.");
 
             var i = input.Trim().ToUpperInvariant();
+
+            i = i.Replace("K", "000");
+
+            //can't add m because it will conflict with max atm
 
             if (TryHandlePercentage(services, context, i, out var num))
                 return TypeReaderResult.FromSuccess(new ShmartNumber(num, i));
@@ -66,7 +71,7 @@ namespace WizBot.Core.Common.TypeReaders
             }
         }
 
-        private static readonly Regex percentRegex = new Regex(@"^((?<num>100|\d{1,2})%)$");
+        private static readonly Regex percentRegex = new Regex(@"^((?<num>100|\d{1,2})%)$", RegexOptions.Compiled);
 
         private static long Cur(IServiceProvider services, ICommandContext ctx)
         {

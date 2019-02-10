@@ -1,6 +1,3 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.Net;
@@ -11,6 +8,9 @@ using WizBot.Common.Replacements;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Extensions;
 using WizBot.Modules.Administration.Services;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace WizBot.Modules.Administration
 {
@@ -39,6 +39,7 @@ namespace WizBot.Modules.Administration
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
+            [RequireUserPermission(GuildPermission.Administrator)]
             [OwnerOnly]
             public async Task StartupCommandAdd([Remainder] string cmdText)
             {
@@ -71,6 +72,7 @@ namespace WizBot.Modules.Administration
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
+            [RequireUserPermission(GuildPermission.Administrator)]
             [OwnerOnly]
             public async Task AutoCommandAdd(int interval, [Remainder] string cmdText)
             {
@@ -185,6 +187,7 @@ namespace WizBot.Modules.Administration
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
+            [RequireUserPermission(GuildPermission.Administrator)]
             [OwnerOnly]
             public async Task StartupCommandRemove([Remainder] int index)
             {
@@ -196,6 +199,7 @@ namespace WizBot.Modules.Administration
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
+            [RequireUserPermission(GuildPermission.Administrator)]
             [OwnerOnly]
             public async Task StartupCommandsClear()
             {
