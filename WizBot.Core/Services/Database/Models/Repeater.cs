@@ -30,6 +30,9 @@ namespace WizBot.Core.Services.Database.Models
             {
                 if (Interval < 1)
                     Interval = 5;
+
+                if (Interval >= 25001)
+                    Interval = 25001;
             }
         }
 
