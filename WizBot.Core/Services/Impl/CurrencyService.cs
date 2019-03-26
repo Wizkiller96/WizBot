@@ -1,12 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
-using Discord;
+﻿using Discord;
 using Discord.WebSocket;
-using System.Collections.Generic;
-using WizBot.Core.Services.Database.Models;
 using WizBot.Core.Services.Database;
+using WizBot.Core.Services.Database.Models;
 using WizBot.Extensions;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace WizBot.Core.Services
 {

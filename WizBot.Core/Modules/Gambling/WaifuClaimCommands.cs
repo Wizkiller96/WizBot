@@ -1,14 +1,13 @@
 ﻿using Discord;
 using Discord.Commands;
-using WizBot.Extensions;
+using WizBot.Common.Attributes;
+using WizBot.Core.Modules.Gambling.Common.Waifu;
 using WizBot.Core.Services.Database.Models;
+using WizBot.Extensions;
+using WizBot.Modules.Gambling.Services;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using WizBot.Common.Attributes;
-using WizBot.Modules.Gambling.Services;
-using WizBot.Core.Modules.Gambling.Common.Waifu;
-using System.Diagnostics;
 
 namespace WizBot.Modules.Gambling
 {
