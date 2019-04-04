@@ -401,6 +401,7 @@ namespace WizBot.Modules.NSFW
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
+        [RequireUserPermission(GuildPermission.ManageMessages)]
         public async Task NsfwTagBlacklist([Remainder] string tag = null)
         {
             if (string.IsNullOrWhiteSpace(tag))
