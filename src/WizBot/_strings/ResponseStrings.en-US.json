@@ -530,6 +530,7 @@
     "utility_activity_page": "Activity page #{0}",
     "utility_activity_users_total": "{0} users total.",
     "utility_author": "Author",
+    "utility_library": "Library",
     "utility_botid": "Bot ID",
     "utility_calcops": "List of functions in {0}calc command",
     "utility_channelid": "{0} of this channel is {1}",

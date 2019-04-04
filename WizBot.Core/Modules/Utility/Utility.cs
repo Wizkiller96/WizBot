@@ -239,6 +239,7 @@ namespace WizBot.Modules.Utility
                                           .WithIconUrl("http://i.imgur.com/fObUYFS.jpg"))
                                           .WithImageUrl("https://i.imgur.com/hT2UCqu.jpg")
                     .AddField(efb => efb.WithName(GetText("author")).WithValue(_stats.Author).WithIsInline(true))
+                    .AddField(efb => efb.WithName(GetText("library")).WithValue(_stats.Library).WithIsInline(true))
                     .AddField(efb => efb.WithName(GetText("botid")).WithValue($"🤖 {_client.CurrentUser.Id.ToString()}").WithIsInline(true))
                     .AddField(efb => efb.WithName(GetText("shard")).WithValue($"🔷 #{_client.ShardId} / {_creds.TotalShards}").WithIsInline(true))
                     .AddField(efb => efb.WithName(GetText("documentation")).WithValue(GetText("documentation_text")).WithIsInline(true))
