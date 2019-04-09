@@ -790,7 +790,7 @@ namespace WizBot.Modules.Searches
                         .WithIconUrl("https://i.imgur.com/a36AMkG.png")
                         .WithName($"Nekos Life - Invalid SFW GIF Category"))
                     .WithDescription("Seems the gif category you was looking for could not be found. Please use the categories listed below.")
-                    .AddField(fb => fb.WithName("NSFW GIF Categories").WithValue("`tickle`, `poke`, `kiss`, `slap`, `cuddle`, `hug`, `pat`, `smug`, `baka`, `feed`, `neko`").WithIsInline(false))).ConfigureAwait(false);
+                    .AddField(fb => fb.WithName("SFW GIF Categories").WithValue("`tickle`, `poke`, `kiss`, `slap`, `cuddle`, `hug`, `pat`, `smug`, `baka`, `feed`, `neko`").WithIsInline(false))).ConfigureAwait(false);
                 else
                     await Context.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
                     .WithAuthor(eab => eab.WithUrl("http://nekos.life/")
