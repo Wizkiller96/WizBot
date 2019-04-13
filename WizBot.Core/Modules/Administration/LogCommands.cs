@@ -27,7 +27,6 @@ namespace WizBot.Modules.Administration
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.Administrator)]
-            [AdminOnly]
             public async Task LogServer(PermissionAction action)
             {
                 await _service.LogServer(Context.Guild.Id, Context.Channel.Id, action.Value).ConfigureAwait(false);
@@ -40,7 +39,6 @@ namespace WizBot.Modules.Administration
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.Administrator)]
-            [AdminOnly]
             public async Task LogIgnore()
             {
                 var channel = (ITextChannel)Context.Channel;
@@ -56,7 +54,6 @@ namespace WizBot.Modules.Administration
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.Administrator)]
-            [AdminOnly]
             public async Task LogEvents()
             {
                 _service.GuildLogSettings.TryGetValue(Context.Guild.Id, out LogSetting l);
@@ -116,7 +113,6 @@ namespace WizBot.Modules.Administration
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [RequireUserPermission(GuildPermission.Administrator)]
-            [AdminOnly]
             public async Task Log(LogType type)
             {
                 var val = _service.Log(Context.Guild.Id, Context.Channel.Id, type);

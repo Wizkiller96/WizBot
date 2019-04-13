@@ -357,8 +357,7 @@
       "Module": "Administration",
       "Options": null,
       "Requirements": [
-        "Administrator Server Permission",
-        "Bot Owner & Admin Only"
+        "Administrator Server Permission"
       ]
     },
     {
@@ -373,8 +372,7 @@
       "Module": "Administration",
       "Options": null,
       "Requirements": [
-        "Administrator Server Permission",
-        "Bot Owner & Admin Only"
+        "Administrator Server Permission"
       ]
     },
     {
@@ -389,8 +387,7 @@
       "Module": "Administration",
       "Options": null,
       "Requirements": [
-        "Administrator Server Permission",
-        "Bot Owner & Admin Only"
+        "Administrator Server Permission"
       ]
     },
     {
@@ -406,8 +403,7 @@
       "Module": "Administration",
       "Options": null,
       "Requirements": [
-        "Administrator Server Permission",
-        "Bot Owner & Admin Only"
+        "Administrator Server Permission"
       ]
     },
     {
