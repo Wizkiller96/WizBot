@@ -305,7 +305,7 @@ namespace WizBot.Modules.Administration.Services
                 .ToImmutableDictionary();
 
             if (!ownerChannels.Any())
-                _log.Warn("No owner channels created! Make sure you've specified correct OwnerId in the credentials.json file.");
+                _log.Warn("No owner channels created! Make sure you've specified the correct OwnerId in the credentials.json file and invited the bot to a Discord server.");
             else
                 _log.Info($"Created {ownerChannels.Count} out of {_creds.OwnerIds.Length} owner message channels.");
         }
@@ -326,7 +326,7 @@ namespace WizBot.Modules.Administration.Services
                 .ToImmutableDictionary();
 
             if (!adminChannels.Any())
-                _log.Warn("No admin channels created! Make sure you've specified correct AdminId in the credentials.json file.");
+                _log.Warn("No admin channels created! Make sure you've specified the correct AdminId in the credentials.json file and invited the bot to a Discord server.");
             else
                 _log.Info($"Created {adminChannels.Count} out of {_creds.AdminIds.Length} admin message channels.");
         }
