@@ -3084,6 +3084,20 @@
     },
     {
       "Aliases": [
+        ".report"
+      ],
+      "Description": "Send bug/feedback report to WizBot's Devs.",
+      "Usage": [
+        ".report bug I found a bug",
+        ".report feedback I suggestion for the bot."
+      ],
+      "Submodule": "Help",
+      "Module": "Help",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
         ".donate"
       ],
       "Description": "Instructions for helping the project financially.",
