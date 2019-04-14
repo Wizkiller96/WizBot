@@ -3089,7 +3089,7 @@
       "Description": "Send bug/feedback report to WizBot's Devs.",
       "Usage": [
         ".report bug I found a bug",
-        ".report feedback I suggestion for the bot."
+        ".report feedback I have a suggestion for the bot."
       ],
       "Submodule": "Help",
       "Module": "Help",

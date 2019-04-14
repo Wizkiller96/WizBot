@@ -19,7 +19,7 @@
     "Desc": "Send bug/feedback report to WizBot's Devs.",
     "Usage": [
       "{0}report bug I found a bug",
-      "{0}report feedback I suggestion for the bot."
+      "{0}report feedback I have a suggestion for the bot."
     ]
   },
   "donate": {
