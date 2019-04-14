@@ -1048,6 +1048,7 @@
       "Module": "Administration",
       "Options": null,
       "Requirements": [
+        "Administrator Server Permission",
         "Bot Owner Only"
       ]
     },
@@ -1063,6 +1064,7 @@
       "Module": "Administration",
       "Options": null,
       "Requirements": [
+        "Administrator Server Permission",
         "Bot Owner Only"
       ]
     },
@@ -1127,6 +1129,7 @@
       "Module": "Administration",
       "Options": null,
       "Requirements": [
+        "Administrator Server Permission",
         "Bot Owner Only"
       ]
     },
@@ -1142,6 +1145,7 @@
       "Module": "Administration",
       "Options": null,
       "Requirements": [
+        "Administrator Server Permission",
         "Bot Owner Only"
       ]
     },
@@ -3850,7 +3854,9 @@
       "Submodule": "NSFW",
       "Module": "NSFW",
       "Options": null,
-      "Requirements": []
+      "Requirements": [
+        "ManageMessages Server Permission"
+      ]
     },
     {
       "Aliases": [
@@ -4394,9 +4400,10 @@
       "Aliases": [
         ".say"
       ],
-      "Description": "Bot will send the message you typed in this channel. Supports embeds.",
+      "Description": "Bot will send the message you typed in the specified channel. If you commit the channel name, it will send the message in the current channel. Supports embeds.",
       "Usage": [
-        ".say hi"
+        ".say hi",
+        ".say #chat hi"
       ],
       "Submodule": "Searches",
       "Module": "Searches",

@@ -36,7 +36,5 @@ namespace WizBot.Modules.Xp.Common
             LevelXp = xp - totalXp;
             RequiredXp = required;
         }
-
-        public static LevelStats FromXp(int xp) => new LevelStats(xp);
     }
 }

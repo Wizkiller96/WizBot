@@ -2,11 +2,11 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using WizBot.Common.Attributes;
+using WizBot.Core.Services;
+using WizBot.Core.Services.Database.Models;
 using WizBot.Extensions;
 using WizBot.Modules.Xp.Common;
 using WizBot.Modules.Xp.Services;
-using WizBot.Core.Services;
-using WizBot.Core.Services.Database.Models;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -116,7 +116,7 @@ namespace WizBot.Modules.Xp
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        public async Task XpNotify(NotifyPlace place = NotifyPlace.Guild, XpNotificationType type = XpNotificationType.Channel)
+        public async Task XpNotify(NotifyPlace place = NotifyPlace.Guild, XpNotificationLocation type = XpNotificationLocation.Channel)
         {
             if (place == NotifyPlace.Guild)
                 await _service.ChangeNotificationType(Context.User.Id, Context.Guild.Id, type).ConfigureAwait(false);
@@ -210,7 +210,7 @@ namespace WizBot.Modules.Xp
                 {
                     for (int i = 0; i < users.Length; i++)
                     {
-                        var levelStats = LevelStats.FromXp(users[i].Xp + users[i].AwardedXp);
+                        var levelStats = new LevelStats(users[i].Xp + users[i].AwardedXp);
                         var user = ((SocketGuild)Context.Guild).GetUser(users[i].UserId);
 
                         var userXpData = users[i];
@@ -251,7 +251,7 @@ namespace WizBot.Modules.Xp
                     var user = users[i];
                     embed.AddField(
                         $"#{(i + 1 + page * 9)} {(user.ToString())}",
-                        $"{GetText("level_x", LevelStats.FromXp(users[i].TotalXp).Level)} - {users[i].TotalXp}xp");
+                        $"{GetText("level_x", new LevelStats(users[i].TotalXp).Level)} - {users[i].TotalXp}xp");
                 }
             }
 

@@ -21,7 +21,7 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
                 {
                     Xp = 0,
                     UserId = userId,
-                    NotifyOnLevelUp = XpNotificationType.None,
+                    NotifyOnLevelUp = XpNotificationLocation.None,
                     GuildId = guildId,
                 });
             }
