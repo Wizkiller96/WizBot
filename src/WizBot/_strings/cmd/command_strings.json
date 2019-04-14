@@ -14,6 +14,14 @@
       "{0}hgit"
     ]
   },
+  "report": {
+    "Cmd": "report",
+    "Desc": "Send bug/feedback report to WizBot's Devs.",
+    "Usage": [
+      "{0}report bug I found a bug",
+      "{0}report feedback I suggestion for the bot."
+    ]
+  },
   "donate": {
     "Cmd": "donate",
     "Desc": "Instructions for helping the project financially.",

@@ -3,6 +3,7 @@ using Discord.Commands;
 using WizBot.Common;
 using WizBot.Common.Attributes;
 using WizBot.Common.Replacements;
+using Discord.WebSocket;
 using WizBot.Core.Common;
 using WizBot.Core.Modules.Help.Common;
 using WizBot.Core.Services;
@@ -26,6 +27,7 @@ namespace WizBot.Modules.Help
         private readonly CommandService _cmds;
         private readonly GlobalPermissionService _perms;
         private readonly IServiceProvider _services;
+        private readonly DiscordSocketClient _client;
 
         public EmbedBuilder GetHelpStringEmbed()
         {
@@ -45,9 +47,10 @@ namespace WizBot.Modules.Help
             return embed.ToEmbed();
         }
 
-        public Help(IBotCredentials creds, GlobalPermissionService perms, CommandService cmds,
+        public Help(DiscordSocketClient client, IBotCredentials creds, GlobalPermissionService perms, CommandService cmds,
             IServiceProvider services)
         {
+            _client = client;
             _creds = creds;
             _cmds = cmds;
             _perms = perms;
@@ -236,6 +239,35 @@ namespace WizBot.Modules.Help
             await ConfirmLocalizedAsync("guide",
                 "http://wizbot.cf/commands.html",
                 "http://wizbot.readthedocs.io/en/latest/").ConfigureAwait(false);
+        }
+
+        [WizBotCommand, Usage, Description, Aliases]
+        public async Task Report(string type, [Remainder] string message)
+        {
+            string[] rtypes = { "Bug", "Feedback", "bug", "feedback" };
+
+            if (string.IsNullOrWhiteSpace(type))
+                return;
+
+            if (string.IsNullOrWhiteSpace(message))
+                return;
+            
+            if (rtypes.Contains(type))
+            {
+                await _client.GetGuild(99273784988557312).GetTextChannel(566998481177280512).EmbedAsync(new EmbedBuilder().WithOkColor()
+                    .WithTitle($"New Bug/Feedback Report")
+                    .WithThumbnailUrl($"{Context.User.GetAvatarUrl()}")
+                    .AddField(fb => fb.WithName("Reporter:").WithValue($"{Context.User}").WithIsInline(false))
+                    .AddField(fb => fb.WithName("Report Type:").WithValue(type).WithIsInline(false))
+                    .AddField(fb => fb.WithName("Message:").WithValue(message))).ConfigureAwait(false);
+
+                await Context.Channel.SendConfirmAsync("🆗").ConfigureAwait(false);
+            }
+            else
+                await Context.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
+                    .WithTitle($"Error: Report not sent.")
+                    .WithDescription("Please make sure you used the correct report types listed below.")
+                    .AddField(fb => fb.WithName("Report Types:").WithValue("`Bug`, `Feedback`"))).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
