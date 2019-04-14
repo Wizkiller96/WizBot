@@ -257,7 +257,8 @@ namespace WizBot.Modules.Help
                 await _client.GetGuild(99273784988557312).GetTextChannel(566998481177280512).EmbedAsync(new EmbedBuilder().WithOkColor()
                     .WithTitle($"New Bug/Feedback Report")
                     .WithThumbnailUrl($"{Context.User.GetAvatarUrl()}")
-                    .AddField(fb => fb.WithName("Reporter:").WithValue($"{Context.User}").WithIsInline(false))
+                    .AddField(fb => fb.WithName("Reporter:").WithValue($"{Context.User}").WithIsInline(true))
+                    .AddField(fb => fb.WithName("Reporter ID:").WithValue($"{Context.User.Id}").WithIsInline(true))
                     .AddField(fb => fb.WithName("Report Type:").WithValue(type).WithIsInline(false))
                     .AddField(fb => fb.WithName("Message:").WithValue(message))).ConfigureAwait(false);
 
