@@ -1,6 +1,6 @@
-# Setting up WizBot on Docker
+# Setting up WizBot on Docker Legacy
 
-WizBot is written in C\# and Discord.Net for more information visit [https://github.com/Kwoth/WizBot](https://github.com/Kwoth/WizBot)
+WizBot is written in C\# and Discord.Net for more information visit [https://github.com/Wizkiller96/WizBot](https://github.com/Wizkiller96/WizBot)
 
 ## Before you start ...
 
