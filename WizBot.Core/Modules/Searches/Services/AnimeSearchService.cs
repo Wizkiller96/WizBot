@@ -1,13 +1,13 @@
-﻿using WizBot.Core.Services;
+﻿using AngleSharp;
+using AngleSharp.Dom.Html;
+using WizBot.Core.Services;
+using WizBot.Modules.Searches.Common;
 using Newtonsoft.Json;
 using NLog;
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using WizBot.Modules.Searches.Common;
-using AngleSharp;
-using AngleSharp.Dom.Html;
-using System.Linq;
 
 namespace WizBot.Modules.Searches.Services
 {
@@ -31,7 +31,7 @@ namespace WizBot.Modules.Searches.Services
             try
             {
 
-                var link = "https://aniapi.nadekobot.me/anime/" + Uri.EscapeDataString(query.Replace("/", " ", StringComparison.InvariantCulture));
+                var link = "https://aniapi.nadeko.bot/anime/" + Uri.EscapeDataString(query.Replace("/", " ", StringComparison.InvariantCulture));
                 link = link.ToLowerInvariant();
                 var (ok, data) = await _cache.TryGetAnimeDataAsync(link).ConfigureAwait(false);
                 if (!ok)
@@ -137,7 +137,7 @@ namespace WizBot.Modules.Searches.Services
             try
             {
 
-                var link = "https://aniapi.nadekobot.me/manga/" + Uri.EscapeDataString(query.Replace("/", " ", StringComparison.InvariantCulture));
+                var link = "https://aniapi.nadeko.bot/manga/" + Uri.EscapeDataString(query.Replace("/", " ", StringComparison.InvariantCulture));
                 link = link.ToLowerInvariant();
                 var (ok, data) = await _cache.TryGetAnimeDataAsync(link).ConfigureAwait(false);
                 if (!ok)

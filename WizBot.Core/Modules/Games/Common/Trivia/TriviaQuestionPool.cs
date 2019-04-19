@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using WizBot.Common;
-using WizBot.Extensions;
+﻿using WizBot.Common;
 using WizBot.Core.Services;
+using WizBot.Extensions;
+using System.Collections.Generic;
 
 namespace WizBot.Modules.Games.Common.Trivia
 {

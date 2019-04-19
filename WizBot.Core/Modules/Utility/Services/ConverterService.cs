@@ -1,16 +1,16 @@
-﻿using System;
+﻿using Discord.WebSocket;
+using WizBot.Core.Services;
+using WizBot.Extensions;
+using WizBot.Modules.Utility.Common;
+using Newtonsoft.Json;
+using NLog;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Discord.WebSocket;
-using WizBot.Core.Services;
-using Newtonsoft.Json;
-using NLog;
-using WizBot.Modules.Utility.Common;
-using WizBot.Extensions;
 
 namespace WizBot.Modules.Utility.Services
 {
@@ -50,7 +50,7 @@ namespace WizBot.Modules.Utility.Services
         {
             using (var http = _httpFactory.CreateClient())
             {
-                var res = await http.GetStringAsync("https://convertapi.nadekobot.me/latest").ConfigureAwait(false);
+                var res = await http.GetStringAsync("https://convertapi.nadeko.bot/latest").ConfigureAwait(false);
                 return JsonConvert.DeserializeObject<Rates>(res);
             }
         }
