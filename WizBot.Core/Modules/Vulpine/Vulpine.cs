@@ -41,19 +41,19 @@ namespace WizBot.Modules.Vulpine
             try
             {
                 // Todo make a checker to see if a Roblox account exist before showing info.
-                JToken RChecker;
+                //JToken RChecker;
                 JToken RInfo;
                 JToken RUID; // Backup incase Vulpine one breaks
                 JToken RStatus;
                 using (var http = _httpFactory.CreateClient())
                 {
-                    RChecker = JObject.Parse(await http.GetStringAsync($"https://www.roblox.com/UserCheck/doesusernameexist?username={username}").ConfigureAwait(false));
+                    //RChecker = JObject.Parse(await http.GetStringAsync($"https://www.roblox.com/UserCheck/doesusernameexist?username={username}").ConfigureAwait(false));
                     RInfo = JObject.Parse(await http.GetStringAsync($"https://wizbot.cf/api/v1/roblox/getPlayerInfo/{username}").ConfigureAwait(false));
                     RUID = JObject.Parse(await http.GetStringAsync($"http://api.roblox.com/users/get-by-username?username={username}").ConfigureAwait(false));
                     RStatus = JObject.Parse(await http.GetStringAsync($"http://api.roblox.com/users/{RUID["Id"]}/onlinestatus").ConfigureAwait(false));
                 }
                 // Currently doesn't work at this time. If you know a sulotion feel free to try.
-                if (($"{RChecker["success"]}").Equals("false"))
+                /* if (($"{RChecker["success"]}").Equals("false"))
                 {
                     await Context.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
                     .WithAuthor(eab => eab.WithUrl("https://vulpineutility.net/")
@@ -64,7 +64,7 @@ namespace WizBot.Modules.Vulpine
                     .ConfigureAwait(false);
                 }
                 else
-                {
+                { */
                     // If Roblox User Blurb and Status is nulled.
                     if ((string.IsNullOrEmpty($"{RInfo["blurb"]}")) && (string.IsNullOrEmpty($"{RInfo["status"]}")))
                         await Context.Channel.EmbedAsync(new EmbedBuilder().WithColor(Color.Blue)
@@ -125,7 +125,7 @@ namespace WizBot.Modules.Vulpine
                             .AddField(fb => fb.WithName("Blurb").WithValue($"{RInfo["blurb"]}").WithIsInline(false))
                             .WithFooter("© Vulpine Utility"))
                             .ConfigureAwait(false);
-                }
+                // }
             }
             catch (Exception ex)
             {
