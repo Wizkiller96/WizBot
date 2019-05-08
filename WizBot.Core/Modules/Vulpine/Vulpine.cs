@@ -55,7 +55,7 @@ namespace WizBot.Modules.Vulpine
                 // Currently doesn't work at this time. If you know a sulotion feel free to try.
                 /* if (($"{RChecker["success"]}").Equals("false"))
                 {
-                    await Context.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
+                    await ctx.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
                     .WithAuthor(eab => eab.WithUrl("https://vulpineutility.net/")
                         .WithIconUrl("https://i.imgur.com/cqx791R.jpg")
                         .WithName($"Vulpine Utility - Roblox Info Error"))
@@ -67,7 +67,7 @@ namespace WizBot.Modules.Vulpine
                 { */
                     // If Roblox User Blurb and Status is nulled.
                     if ((string.IsNullOrEmpty($"{RInfo["blurb"]}")) && (string.IsNullOrEmpty($"{RInfo["status"]}")))
-                        await Context.Channel.EmbedAsync(new EmbedBuilder().WithColor(Color.Blue)
+                        await ctx.Channel.EmbedAsync(new EmbedBuilder().WithColor(Color.Blue)
                             .WithAuthor(eab => eab.WithUrl("https://vulpineutility.net/")
                                 .WithIconUrl("https://i.imgur.com/cqx791R.jpg")
                                 .WithName($"Vulpine - Roblox Info"))
@@ -81,7 +81,7 @@ namespace WizBot.Modules.Vulpine
                             .ConfigureAwait(false);
                     // If Roblox User Blurb is nulled.
                     else if (string.IsNullOrEmpty($"{RInfo["blurb"]}"))
-                        await Context.Channel.EmbedAsync(new EmbedBuilder().WithColor(Color.Blue)
+                        await ctx.Channel.EmbedAsync(new EmbedBuilder().WithColor(Color.Blue)
                             .WithAuthor(eab => eab.WithUrl("https://vulpineutility.net/")
                                 .WithIconUrl("https://i.imgur.com/cqx791R.jpg")
                                 .WithName($"Vulpine - Roblox Info"))
@@ -96,7 +96,7 @@ namespace WizBot.Modules.Vulpine
                             .ConfigureAwait(false);
                     // If Roblox User Status is nulled.
                     else if (string.IsNullOrEmpty($"{RInfo["status"]}"))
-                        await Context.Channel.EmbedAsync(new EmbedBuilder().WithColor(Color.Blue)
+                        await ctx.Channel.EmbedAsync(new EmbedBuilder().WithColor(Color.Blue)
                             .WithAuthor(eab => eab.WithUrl("https://vulpineutility.net/")
                                 .WithIconUrl("https://i.imgur.com/cqx791R.jpg")
                                 .WithName($"Vulpine - Roblox Info"))
@@ -111,7 +111,7 @@ namespace WizBot.Modules.Vulpine
                             .ConfigureAwait(false);
                     // If Roblox User Blurb and Status isn't nulled.
                     else
-                        await Context.Channel.EmbedAsync(new EmbedBuilder().WithColor(Color.Blue)
+                        await ctx.Channel.EmbedAsync(new EmbedBuilder().WithColor(Color.Blue)
                             .WithAuthor(eab => eab.WithUrl("https://vulpineutility.net/")
                                 .WithIconUrl("https://i.imgur.com/cqx791R.jpg")
                                 .WithName($"Vulpine - Roblox Info"))
@@ -129,7 +129,7 @@ namespace WizBot.Modules.Vulpine
             }
             catch (Exception ex)
             {
-                await Context.Channel.SendErrorAsync(ex.Message).ConfigureAwait(false);
+                await ctx.Channel.SendErrorAsync(ex.Message).ConfigureAwait(false);
             }
         }
     }
