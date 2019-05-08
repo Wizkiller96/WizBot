@@ -30,7 +30,7 @@ namespace WizBot.Modules.Searches
             [WizBotCommand, Usage, Description, Aliases]
             public async Task Placelist()
             {
-                await Context.Channel.SendConfirmAsync(GetText("list_of_place_tags", Prefix), 
+                await ctx.Channel.SendConfirmAsync(GetText("list_of_place_tags", Prefix), 
                     _typesStr)
                              .ConfigureAwait(false);
             }
@@ -75,7 +75,7 @@ namespace WizBot.Modules.Searches
 
                 url += $"/{width}/{height}";
 
-                await Context.Channel.SendMessageAsync(url).ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync(url).ConfigureAwait(false);
             }
         }
     }

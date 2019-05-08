@@ -48,22 +48,22 @@ namespace WizBot.Modules.Utility
                 target = res.RequestMessage.RequestUri;
             }
 
-            await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
+            await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                 .WithAuthor(eab => eab.WithIconUrl("https://togethertube.com/assets/img/favicons/favicon-32x32.png")
                 .WithName("Together Tube")
                 .WithUrl("https://togethertube.com/"))
-                .WithDescription(Context.User.Mention + " " + GetText("togtub_room_link") + "\n" + target)).ConfigureAwait(false);
+                .WithDescription(ctx.User.Mention + " " + GetText("togtub_room_link") + "\n" + target)).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        public async Task WhosPlaying([Remainder] string game)
+        public async Task WhosPlaying([Leftover] string game)
         {
             game = game?.Trim().ToUpperInvariant();
             if (string.IsNullOrWhiteSpace(game))
                 return;
 
-            if (!(Context.Guild is SocketGuild socketGuild))
+            if (!(ctx.Guild is SocketGuild socketGuild))
             {
                 _log.Warn("Can't cast guild to socket guild.");
                 return;
@@ -81,7 +81,7 @@ namespace WizBot.Modules.Utility
                 await ReplyErrorLocalizedAsync("nobody_playing_game").ConfigureAwait(false);
             else
             {
-                await Context.Channel.SendConfirmAsync("```css\n" + string.Join("\n", arr.GroupBy(item => (i++) / 2)
+                await ctx.Channel.SendConfirmAsync("```css\n" + string.Join("\n", arr.GroupBy(item => (i++) / 2)
                                                                                  .Select(ig => string.Concat(ig.Select(el => $"• {el,-27}")))) + "\n```")
                                                                                  .ConfigureAwait(false);
             }
@@ -89,16 +89,16 @@ namespace WizBot.Modules.Utility
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        public async Task InRole([Remainder] IRole role)
+        public async Task InRole([Leftover] IRole role)
         {
             var rng = new WizBotRandom();
-            var usrs = (await Context.Guild.GetUsersAsync().ConfigureAwait(false)).ToArray();
+            var usrs = (await ctx.Guild.GetUsersAsync().ConfigureAwait(false)).ToArray();
             var roleUsers = usrs
                 .Where(u => u.RoleIds.Contains(role.Id))
                 .Select(u => u.ToString())
                 .ToArray();
 
-            await Context.SendPaginatedConfirmAsync(0, (cur) =>
+            await ctx.SendPaginatedConfirmAsync(0, (cur) =>
             {
                 return new EmbedBuilder().WithOkColor()
                     .WithTitle(Format.Bold(GetText("inrole_list", Format.Bold(role.Name))) + $" - {roleUsers.Length}")
@@ -114,28 +114,28 @@ namespace WizBot.Modules.Utility
         {
             StringBuilder builder = new StringBuilder();
             var user = who == MeOrBot.Me
-                ? (IGuildUser)Context.User
-                : ((SocketGuild)Context.Guild).CurrentUser;
-            var perms = user.GetPermissions((ITextChannel)Context.Channel);
+                ? (IGuildUser)ctx.User
+                : ((SocketGuild)ctx.Guild).CurrentUser;
+            var perms = user.GetPermissions((ITextChannel)ctx.Channel);
             foreach (var p in perms.GetType().GetProperties().Where(p => !p.GetGetMethod().GetParameters().Any()))
             {
                 builder.AppendLine($"{p.Name} : {p.GetValue(perms, null)}");
             }
-            await Context.Channel.SendConfirmAsync(builder.ToString()).ConfigureAwait(false);
+            await ctx.Channel.SendConfirmAsync(builder.ToString()).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        public async Task UserId([Remainder] IGuildUser target = null)
+        public async Task UserId([Leftover] IGuildUser target = null)
         {
-            var usr = target ?? Context.User;
+            var usr = target ?? ctx.User;
             await ReplyConfirmLocalizedAsync("userid", "🆔", Format.Bold(usr.ToString()),
                 Format.Code(usr.Id.ToString())).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        public async Task RoleId([Remainder] IRole role)
+        public async Task RoleId([Leftover] IRole role)
         {
             await ReplyConfirmLocalizedAsync("roleid", "🆔", Format.Bold(role.ToString()),
                 Format.Code(role.Id.ToString())).ConfigureAwait(false);
@@ -144,7 +144,7 @@ namespace WizBot.Modules.Utility
         [WizBotCommand, Usage, Description, Aliases]
         public async Task ChannelId()
         {
-            await ReplyConfirmLocalizedAsync("channelid", "🆔", Format.Code(Context.Channel.Id.ToString()))
+            await ReplyConfirmLocalizedAsync("channelid", "🆔", Format.Code(ctx.Channel.Id.ToString()))
                 .ConfigureAwait(false);
         }
 
@@ -152,7 +152,7 @@ namespace WizBot.Modules.Utility
         [RequireContext(ContextType.Guild)]
         public async Task ServerId()
         {
-            await ReplyConfirmLocalizedAsync("serverid", "🆔", Format.Code(Context.Guild.Id.ToString()))
+            await ReplyConfirmLocalizedAsync("serverid", "🆔", Format.Code(ctx.Guild.Id.ToString()))
                 .ConfigureAwait(false);
         }
 
@@ -160,7 +160,7 @@ namespace WizBot.Modules.Utility
         [RequireContext(ContextType.Guild)]
         public async Task Roles(IGuildUser target, int page = 1)
         {
-            var channel = (ITextChannel)Context.Channel;
+            var channel = (ITextChannel)ctx.Channel;
             var guild = channel.Guild;
 
             const int rolesPerPage = 20;
@@ -204,23 +204,23 @@ namespace WizBot.Modules.Utility
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        public async Task ChannelTopic([Remainder]ITextChannel channel = null)
+        public async Task ChannelTopic([Leftover]ITextChannel channel = null)
         {
             if (channel == null)
-                channel = (ITextChannel)Context.Channel;
+                channel = (ITextChannel)ctx.Channel;
 
             var topic = channel.Topic;
             if (string.IsNullOrWhiteSpace(topic))
                 await ReplyErrorLocalizedAsync("no_topic_set").ConfigureAwait(false);
             else
-                await Context.Channel.SendConfirmAsync(GetText("channel_topic"), topic).ConfigureAwait(false);
+                await ctx.Channel.SendConfirmAsync(GetText("channel_topic"), topic).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Stats()
         {
             var sw = Stopwatch.StartNew();
-            var msg = await Context.Channel.SendMessageAsync("Getting Ping...").ConfigureAwait(false);
+            var msg = await ctx.Channel.SendMessageAsync("Getting Ping...").ConfigureAwait(false);
             sw.Stop();
             msg.DeleteAfter(0);
 
@@ -231,11 +231,11 @@ namespace WizBot.Modules.Utility
             var adminIds = string.Join("\n", _creds.AdminIds);
             if (string.IsNullOrWhiteSpace(adminIds))
                 adminIds = "-";
-                
-            await Context.Channel.EmbedAsync(
+
+            await ctx.Channel.EmbedAsync(
                 new EmbedBuilder().WithOkColor()
                     .WithAuthor(eab => eab.WithName($"WizBot v{StatsService.BotVersion}")
-                                          .WithUrl("http://wizbot.readthedocs.io/en/latest/")
+                                          .WithUrl("http://ndocs.wizbot.cf/")
                                           .WithIconUrl("http://i.imgur.com/fObUYFS.jpg"))
                                           .WithImageUrl("https://i.imgur.com/hT2UCqu.jpg")
                     .AddField(efb => efb.WithName(GetText("author")).WithValue(_stats.Author).WithIsInline(true))
@@ -256,16 +256,16 @@ namespace WizBot.Modules.Utility
         }
 
         [WizBotCommand, Usage, Description, Aliases]
-        public async Task Showemojis([Remainder] string _) // need to have the parameter so that the message.tags gets populated
+        public async Task Showemojis([Leftover] string _) // need to have the parameter so that the message.tags gets populated
         {
-            var tags = Context.Message.Tags.Where(t => t.Type == TagType.Emoji).Select(t => (Emote)t.Value);
+            var tags = ctx.Message.Tags.Where(t => t.Type == TagType.Emoji).Select(t => (Emote)t.Value);
 
             var result = string.Join("\n", tags.Select(m => GetText("showemojis", m, m.Url)));
 
             if (string.IsNullOrWhiteSpace(result))
                 await ReplyErrorLocalizedAsync("showemojis_none").ConfigureAwait(false);
             else
-                await Context.Channel.SendMessageAsync(result.TrimTo(2000)).ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync(result.TrimTo(2000)).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -285,7 +285,7 @@ namespace WizBot.Modules.Utility
                 return;
             }
 
-            await Context.Channel.EmbedAsync(guilds.Aggregate(new EmbedBuilder().WithOkColor(),
+            await ctx.Channel.EmbedAsync(guilds.Aggregate(new EmbedBuilder().WithOkColor(),
                                      (embed, g) => embed.AddField(efb => efb.WithName(g.Name)
                                                                            .WithValue(
                                              GetText("listservers", g.Id, g.MemberCount,
@@ -301,9 +301,9 @@ namespace WizBot.Modules.Utility
         public async Task SaveChat(int cnt)
         {
             var msgs = new List<IMessage>(cnt);
-            await Context.Channel.GetMessagesAsync(cnt).ForEachAsync(dled => msgs.AddRange(dled)).ConfigureAwait(false);
+            await ctx.Channel.GetMessagesAsync(cnt).ForEachAsync(dled => msgs.AddRange(dled)).ConfigureAwait(false);
 
-            var title = $"Chatlog-{Context.Guild.Name}/#{Context.Channel.Name}-{DateTime.Now}.txt";
+            var title = $"Chatlog-{ctx.Guild.Name}/#{ctx.Channel.Name}-{DateTime.Now}.txt";
             var grouping = msgs.GroupBy(x => $"{x.CreatedAt.Date:MM.dd.yyyy}")
                 .Select(g => new
                 {
@@ -331,23 +331,25 @@ namespace WizBot.Modules.Utility
                 });
             using (var stream = await JsonConvert.SerializeObject(grouping, Formatting.Indented).ToStream().ConfigureAwait(false))
             {
-                await Context.User.SendFileAsync(stream, title, title, false).ConfigureAwait(false);
+                await ctx.User.SendFileAsync(stream, title, title, false).ConfigureAwait(false);
             }
         }
+
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Ping()
         {
             var sw = Stopwatch.StartNew();
-            var msg = await Context.Channel.SendMessageAsync("🏓").ConfigureAwait(false);
+            var msg = await ctx.Channel.SendMessageAsync("🏓").ConfigureAwait(false);
             sw.Stop();
             msg.DeleteAfter(0);
 
-            await Context.Channel.SendConfirmAsync($"{Format.Bold(Context.User.ToString())} 🏓 {(int)sw.Elapsed.TotalMilliseconds}ms").ConfigureAwait(false);
+            await ctx.Channel.SendConfirmAsync($"{Format.Bold(ctx.User.ToString())} 🏓 {(int)sw.Elapsed.TotalMilliseconds}ms").ConfigureAwait(false);
         }
+        
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Updates()
         {
-            await Context.Channel.EmbedAsync(
+            await ctx.Channel.EmbedAsync(
                 new EmbedBuilder().WithOkColor()
                     .WithAuthor(eab => eab.WithName(GetText($"changelog_title_date"))
                                           .WithUrl("https://github.com/Wizkiller96/WizBot/commits/dev")

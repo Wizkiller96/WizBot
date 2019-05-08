@@ -58,7 +58,7 @@ namespace WizBot.Modules.Help.Services
             if (alias != null)
                 str += string.Format(" **/ `{0}`**", prefix + alias);
             var em = new EmbedBuilder()
-                .WithAuthor(eab => eab.WithName("WizBot - Command Helper")
+            .WithAuthor(eab => eab.WithName("WizBot - Command Helper")
                                           .WithUrl("http://wizbot.readthedocs.io/en/latest/")
                                           .WithIconUrl("http://i.imgur.com/fObUYFS.jpg"))
                 .AddField(fb => fb.WithName(str)
@@ -124,7 +124,7 @@ namespace WizBot.Modules.Help.Services
                       {
                           return "Bot Owner & Admin Only";
                       }
-
+                      
                       var cau = (RequireUserPermissionAttribute)ca;
                       if (cau.GuildPermission != null)
                       {

@@ -41,7 +41,7 @@ namespace WizBot.Modules.Searches
                 }
 
 
-                await Context.Channel.EmbedAsync(new EmbedBuilder()
+                await ctx.Channel.EmbedAsync(new EmbedBuilder()
                     .WithOkColor()
                     .WithTitle($"{crypto.Name} ({crypto.Symbol})")
                     .WithUrl($"https://coinmarketcap.com/currencies/{crypto.Website_Slug}/")

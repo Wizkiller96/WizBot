@@ -26,17 +26,17 @@ namespace WizBot.Modules.Games
             [RequireContext(ContextType.Guild)]
             public async Task Nunchi()
             {
-                var newNunchi = new NunchiGame(Context.User.Id, Context.User.ToString());
+                var newNunchi = new NunchiGame(ctx.User.Id, ctx.User.ToString());
                 NunchiGame nunchi;
 
                 //if a game was already active
-                if ((nunchi = _service.NunchiGames.GetOrAdd(Context.Guild.Id, newNunchi)) != newNunchi)
+                if ((nunchi = _service.NunchiGames.GetOrAdd(ctx.Guild.Id, newNunchi)) != newNunchi)
                 {
                     // join it
-                    if (!await nunchi.Join(Context.User.Id, Context.User.ToString()).ConfigureAwait(false))
+                    if (!await nunchi.Join(ctx.User.Id, ctx.User.ToString()).ConfigureAwait(false))
                     {
                         // if you failed joining, that means game is running or just ended
-                        // await ReplyErrorLocalizedAsync("nunchi_already_started").ConfigureAwait(false);
+                        // await ReplyErrorLocalized("nunchi_already_started").ConfigureAwait(false);
                         return;
                     }
 
@@ -57,7 +57,7 @@ namespace WizBot.Modules.Games
                 var success = await nunchi.Initialize().ConfigureAwait(false);
                 if (!success)
                 {
-                    if (_service.NunchiGames.TryRemove(Context.Guild.Id, out var game))
+                    if (_service.NunchiGames.TryRemove(ctx.Guild.Id, out var game))
                         game.Dispose();
                     await ConfirmLocalizedAsync("nunchi_failed_to_start").ConfigureAwait(false);
                 }
@@ -66,7 +66,7 @@ namespace WizBot.Modules.Games
                 {
                     var _ = Task.Run(async () =>
                     {
-                        if (arg.Channel.Id != Context.Channel.Id)
+                        if (arg.Channel.Id != ctx.Channel.Id)
                             return;
 
                         if (!int.TryParse(arg.Content, out var number))
@@ -84,7 +84,7 @@ namespace WizBot.Modules.Games
 
                 Task Nunchi_OnGameEnded(NunchiGame arg1, string arg2)
                 {
-                    if (_service.NunchiGames.TryRemove(Context.Guild.Id, out var game))
+                    if (_service.NunchiGames.TryRemove(ctx.Guild.Id, out var game))
                     {
                         _client.MessageReceived -= _client_MessageReceived;
                         game.Dispose();

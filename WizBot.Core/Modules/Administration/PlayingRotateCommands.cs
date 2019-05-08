@@ -25,7 +25,7 @@ namespace WizBot.Modules.Administration
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
-            public async Task AddPlaying(ActivityType t, [Remainder] string status)
+            public async Task AddPlaying(ActivityType t, [Leftover] string status)
             {
                 await _service.AddPlaying(t, status).ConfigureAwait(false);
 

@@ -1,7 +1,8 @@
-﻿using Discord.Commands;
-using System.Threading.Tasks;
+﻿using Discord;
+using Discord.Commands;
 using WizBot.Common.Attributes;
 using WizBot.Modules.Utility.Services;
+using System.Threading.Tasks;
 
 namespace WizBot.Modules.Utility
 {
@@ -12,10 +13,10 @@ namespace WizBot.Modules.Utility
         {
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            [RequireUserPermission(Discord.GuildPermission.ManageMessages)]
+            [UserPerm(GuildPerm.ManageMessages)]
             public async Task VerboseError()
             {
-                var state = _service.ToggleVerboseErrors(Context.Guild.Id);
+                var state = _service.ToggleVerboseErrors(ctx.Guild.Id);
 
                 if (state)
                     await ReplyConfirmLocalizedAsync("verbose_errors_enabled").ConfigureAwait(false);

@@ -8,7 +8,6 @@ using WizBot.Modules.Games.Services;
 using System.Threading;
 using System.Threading.Tasks;
 
-
 namespace WizBot.Modules.Games
 {
     public partial class Games
@@ -30,7 +29,7 @@ namespace WizBot.Modules.Games
             public async Task TicTacToe(params string[] args)
             {
                 var (options, _) = OptionsParser.ParseFrom(new TicTacToe.Options(), args);
-                var channel = (ITextChannel)Context.Channel;
+                var channel = (ITextChannel)ctx.Channel;
 
                 await _sem.WaitAsync(1000).ConfigureAwait(false);
                 try
@@ -39,11 +38,11 @@ namespace WizBot.Modules.Games
                     {
                         var _ = Task.Run(async () =>
                         {
-                            await game.Start((IGuildUser)Context.User).ConfigureAwait(false);
+                            await game.Start((IGuildUser)ctx.User).ConfigureAwait(false);
                         });
                         return;
                     }
-                    game = new TicTacToe(base.Strings, this._client, channel, (IGuildUser)Context.User, options);
+                    game = new TicTacToe(base.Strings, this._client, channel, (IGuildUser)ctx.User, options);
                     _service.TicTacToeGames.Add(channel.Id, game);
                     await ReplyConfirmLocalizedAsync("ttt_created").ConfigureAwait(false);
 

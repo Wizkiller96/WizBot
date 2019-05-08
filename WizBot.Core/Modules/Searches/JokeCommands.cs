@@ -17,20 +17,20 @@ namespace WizBot.Modules.Searches
             [WizBotCommand, Usage, Description, Aliases]
             public async Task Yomama()
             {
-                await Context.Channel.SendConfirmAsync(await _service.GetYomamaJoke().ConfigureAwait(false)).ConfigureAwait(false);
+                await ctx.Channel.SendConfirmAsync(await _service.GetYomamaJoke().ConfigureAwait(false)).ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
             public async Task Randjoke()
             {
                 var (Text, BaseUri) = await SearchesService.GetRandomJoke().ConfigureAwait(false);
-                await Context.Channel.SendConfirmAsync("", Text, footer: BaseUri).ConfigureAwait(false);
+                await ctx.Channel.SendConfirmAsync("", Text, footer: BaseUri).ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
             public async Task ChuckNorris()
             {
-                await Context.Channel.SendConfirmAsync(await _service.GetChuckNorrisJoke().ConfigureAwait(false)).ConfigureAwait(false);
+                await ctx.Channel.SendConfirmAsync(await _service.GetChuckNorrisJoke().ConfigureAwait(false)).ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -42,7 +42,7 @@ namespace WizBot.Modules.Searches
                     return;
                 }
                 var joke = _service.WowJokes[new WizBotRandom().Next(0, _service.WowJokes.Count)];
-                await Context.Channel.SendConfirmAsync(joke.Question, joke.Answer).ConfigureAwait(false);
+                await ctx.Channel.SendConfirmAsync(joke.Question, joke.Answer).ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -55,7 +55,7 @@ namespace WizBot.Modules.Searches
                 }
                 var item = _service.MagicItems[new WizBotRandom().Next(0, _service.MagicItems.Count)];
 
-                await Context.Channel.SendConfirmAsync("✨" + item.Name, item.Description).ConfigureAwait(false);
+                await ctx.Channel.SendConfirmAsync("✨" + item.Name, item.Description).ConfigureAwait(false);
             }
         }
     }

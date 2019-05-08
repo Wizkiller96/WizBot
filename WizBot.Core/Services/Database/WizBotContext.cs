@@ -16,7 +16,6 @@ namespace WizBot.Core.Services.Database
         public WizBotContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<WizBotContext>();
-
             IBotCredentials creds = new BotCredentials();
             var builder = new SqliteConnectionStringBuilder(creds.Db.ConnectionString);
             builder.DataSource = Path.Combine(AppContext.BaseDirectory, builder.DataSource);

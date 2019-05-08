@@ -43,7 +43,6 @@ namespace WizBot.Modules.Utility.Services
             var repeaters = new Dictionary<ulong, ConcurrentDictionary<int, RepeatRunner>>();
             var toDelete = new List<Repeater>();
             foreach (var gc in _bot.AllGuildConfigs)
-
             {
                 try
                 {
@@ -60,6 +59,7 @@ namespace WizBot.Modules.Utility.Services
                         .ToDictionary(x => x.Key, y => y.Value)
                         .ToConcurrent();
 
+
                     repeaters.TryAdd(gc.GuildId, idToRepeater);
                 }
                 catch (Exception ex)
@@ -69,26 +69,25 @@ namespace WizBot.Modules.Utility.Services
                 }
             }
 
-
             Repeaters = repeaters.ToConcurrent();
             RepeaterReady = true;
         }
 
         public async Task RemoveRepeater(Repeater r)
         {
-            using (var uow = _db.UnitOfWork)
+            using (var uow = _db.GetDbContext())
             {
                 var gr = uow.GuildConfigs.ForId(r.GuildId, x => x.Include(y => y.GuildRepeaters)).GuildRepeaters;
                 var toDelete = gr.FirstOrDefault(x => x.Id == r.Id);
                 if (toDelete != null)
                     uow._context.Set<Repeater>().Remove(toDelete);
-                await uow.CompleteAsync();
+                await uow.SaveChangesAsync();
             }
         }
 
         public void SetRepeaterLastMessage(int repeaterId, ulong lastMsgId)
         {
-            using (var uow = _db.UnitOfWork)
+            using (var uow = _db.GetDbContext())
             {
                 uow._context.Database.ExecuteSqlCommand($@"UPDATE GuildRepeater SET 
                     LastMessageId={lastMsgId} WHERE Id={repeaterId}");

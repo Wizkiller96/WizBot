@@ -24,7 +24,7 @@ namespace WizBot.Core.Services.Database
         IPollsRepository Polls { get; }
         IPlantedCurrencyRepository PlantedCurrency { get; }
 
-        int Complete();
-        Task<int> CompleteAsync();
+        int SaveChanges();
+        Task<int> SaveChangesAsync();
     }
 }

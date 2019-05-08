@@ -18,7 +18,7 @@
 
 //        public void ReloadAvailablePackages()
 //        {
-//            Packages = Directory.GetDirectories(Path.Combine(AppContext.BaseDirectory, "modules\\"), "WizBot.Modules.*", SearchOption.AllDirectories)
+//            Packages = Directory.GetDirectories(Path.Combine(Appctx.BaseDirectory, "modules\\"), "WizBot.Modules.*", SearchOption.AllDirectories)
 //                   .SelectMany(x => Directory.GetFiles(x, "WizBot.Modules.*.dll"))
 //                   .Select(x => Path.GetFileNameWithoutExtension(x))
 //                   .Select(x =>

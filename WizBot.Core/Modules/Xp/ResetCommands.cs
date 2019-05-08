@@ -14,13 +14,13 @@ namespace WizBot.Modules.Xp
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            [RequireUserPermission(GuildPermission.Administrator)]
+            [UserPerm(GuildPerm.Administrator)]
             public Task XpReset(IGuildUser user)
                 => XpReset(user.Id);
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            [RequireUserPermission(GuildPermission.Administrator)]
+            [UserPerm(GuildPerm.Administrator)]
             public async Task XpReset(ulong userId)
             {
                 var embed = new EmbedBuilder()
@@ -30,14 +30,14 @@ namespace WizBot.Modules.Xp
                 if (!await PromptUserConfirmAsync(embed).ConfigureAwait(false))
                     return;
 
-                _service.XpReset(Context.Guild.Id, userId);
+                _service.XpReset(ctx.Guild.Id, userId);
 
                 await ReplyConfirmLocalizedAsync("reset_user", userId).ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            [RequireUserPermission(GuildPermission.Administrator)]
+            [UserPerm(GuildPerm.Administrator)]
             public async Task XpReset()
             {
                 var embed = new EmbedBuilder()
@@ -47,7 +47,7 @@ namespace WizBot.Modules.Xp
                 if (!await PromptUserConfirmAsync(embed).ConfigureAwait(false))
                     return;
 
-                _service.XpReset(Context.Guild.Id);
+                _service.XpReset(ctx.Guild.Id);
 
                 await ReplyConfirmLocalizedAsync("reset_server").ConfigureAwait(false);
             }

@@ -7,7 +7,6 @@ using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-
 namespace WizBot.Core.Common.TypeReaders
 {
     public class ShmartNumberTypeReader : WizBotTypeReader<ShmartNumber>
@@ -77,10 +76,10 @@ namespace WizBot.Core.Common.TypeReaders
         {
             var _db = services.GetService<DbService>();
             long cur;
-            using (var uow = _db.UnitOfWork)
+            using (var uow = _db.GetDbContext())
             {
                 cur = uow.DiscordUsers.GetUserCurrency(ctx.User.Id);
-                uow.Complete();
+                uow.SaveChanges();
             }
             return cur;
         }

@@ -77,7 +77,6 @@ namespace WizBot.Modules.CustomReactions.Extensions
                 .Build();
 
             str = rep.Replace(str);
-
             foreach (var ph in regexPlaceholders)
             {
                 str = await ph.Key.ReplaceAsync(str, ph.Value).ConfigureAwait(false);

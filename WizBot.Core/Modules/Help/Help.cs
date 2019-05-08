@@ -69,14 +69,14 @@ namespace WizBot.Modules.Help
                                          .Where(m => !_perms.BlockedModules.Contains(m.Key.Name.ToLowerInvariant()))
                                          .Select(m => "• " + m.Key.Name)
                                          .OrderBy(s => s)));
-            await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
+            await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
         [WizBotOptionsAttribute(typeof(CommandsOptions))]
         public async Task Commands(string module = null, params string[] args)
         {
-            var channel = Context.Channel;
+            var channel = ctx.Channel;
 
             var (opts, _) = OptionsParser.ParseFrom(new CommandsOptions(), args);
 
@@ -160,12 +160,12 @@ namespace WizBot.Modules.Help
                 }
             }
             embed.WithFooter(GetText("commands_instr", Prefix));
-            await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
+            await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
         [Priority(0)]
-        public async Task H([Remainder] string fail)
+        public async Task H([Leftover] string fail)
         {
             var prefixless = _cmds.Commands.FirstOrDefault(x => x.Aliases.Any(cmdName => cmdName.ToLowerInvariant() == fail));
             if (prefixless != null)
@@ -179,20 +179,20 @@ namespace WizBot.Modules.Help
 
         [WizBotCommand, Usage, Description, Aliases]
         [Priority(1)]
-        public async Task H([Remainder] CommandInfo com = null)
+        public async Task H([Leftover] CommandInfo com = null)
         {
-            var channel = Context.Channel;
+            var channel = ctx.Channel;
 
             if (com == null)
             {
                 IMessageChannel ch = channel is ITextChannel
-                    ? await ((IGuildUser)Context.User).GetOrCreateDMChannelAsync().ConfigureAwait(false)
+                    ? await ((IGuildUser)ctx.User).GetOrCreateDMChannelAsync().ConfigureAwait(false)
                     : channel;
                 await ch.EmbedAsync(GetHelpStringEmbed()).ConfigureAwait(false);
                 return;
             }
 
-            var embed = _service.GetCommandHelp(com, Context.Guild);
+            var embed = _service.GetCommandHelp(com, ctx.Guild);
             await channel.EmbedAsync(embed).ConfigureAwait(false);
         }
 
@@ -237,8 +237,8 @@ namespace WizBot.Modules.Help
         public async Task Guide()
         {
             await ConfirmLocalizedAsync("guide",
-                "http://wizbot.cf/commands.html",
-                "http://wizbot.readthedocs.io/en/latest/").ConfigureAwait(false);
+                "https://commands.wizbot.cf/",
+                "http://ndocs.wizbot.cf/").ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -251,21 +251,21 @@ namespace WizBot.Modules.Help
 
             if (string.IsNullOrWhiteSpace(message))
                 return;
-            
+
             if (rtypes.Contains(type))
             {
                 await _client.GetGuild(99273784988557312).GetTextChannel(566998481177280512).EmbedAsync(new EmbedBuilder().WithOkColor()
                     .WithTitle($"New Bug/Feedback Report")
-                    .WithThumbnailUrl($"{Context.User.GetAvatarUrl()}")
-                    .AddField(fb => fb.WithName("Reporter:").WithValue($"{Context.User}").WithIsInline(true))
-                    .AddField(fb => fb.WithName("Reporter ID:").WithValue($"{Context.User.Id}").WithIsInline(true))
+                    .WithThumbnailUrl($"{ctx.User.GetAvatarUrl()}")
+                    .AddField(fb => fb.WithName("Reporter:").WithValue($"{ctx.User}").WithIsInline(true))
+                    .AddField(fb => fb.WithName("Reporter ID:").WithValue($"{ctx.User.Id}").WithIsInline(true))
                     .AddField(fb => fb.WithName("Report Type:").WithValue(type).WithIsInline(false))
                     .AddField(fb => fb.WithName("Message:").WithValue(message))).ConfigureAwait(false);
 
-                await Context.Channel.SendConfirmAsync("🆗").ConfigureAwait(false);
+                await ctx.Channel.SendConfirmAsync("🆗").ConfigureAwait(false);
             }
             else
-                await Context.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
+                await ctx.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
                     .WithTitle($"Error: Report not sent.")
                     .WithDescription("Please make sure you used the correct report types listed below.")
                     .AddField(fb => fb.WithName("Report Types:").WithValue("`Bug`, `Feedback`"))).ConfigureAwait(false);

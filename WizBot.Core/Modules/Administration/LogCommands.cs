@@ -26,10 +26,10 @@ namespace WizBot.Modules.Administration
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            [RequireUserPermission(GuildPermission.Administrator)]
+            [UserPerm(GuildPerm.Administrator)]
             public async Task LogServer(PermissionAction action)
             {
-                await _service.LogServer(Context.Guild.Id, Context.Channel.Id, action.Value).ConfigureAwait(false);
+                await _service.LogServer(ctx.Guild.Id, ctx.Channel.Id, action.Value).ConfigureAwait(false);
                 if (action.Value)
                     await ReplyConfirmLocalizedAsync("log_all").ConfigureAwait(false);
                 else
@@ -38,12 +38,12 @@ namespace WizBot.Modules.Administration
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            [RequireUserPermission(GuildPermission.Administrator)]
+            [UserPerm(GuildPerm.Administrator)]
             public async Task LogIgnore()
             {
-                var channel = (ITextChannel)Context.Channel;
+                var channel = (ITextChannel)ctx.Channel;
 
-                var removed = _service.LogIgnore(Context.Guild.Id, Context.Channel.Id);
+                var removed = _service.LogIgnore(ctx.Guild.Id, ctx.Channel.Id);
 
                 if (!removed)
                     await ReplyConfirmLocalizedAsync("log_ignore", Format.Bold(channel.Mention + "(" + channel.Id + ")")).ConfigureAwait(false);
@@ -53,10 +53,10 @@ namespace WizBot.Modules.Administration
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            [RequireUserPermission(GuildPermission.Administrator)]
+            [UserPerm(GuildPerm.Administrator)]
             public async Task LogEvents()
             {
-                _service.GuildLogSettings.TryGetValue(Context.Guild.Id, out LogSetting l);
+                _service.GuildLogSettings.TryGetValue(ctx.Guild.Id, out LogSetting l);
                 var str = string.Join("\n", Enum.GetNames(typeof(LogType))
                     .Select(x =>
                     {
@@ -66,7 +66,7 @@ namespace WizBot.Modules.Administration
                         return Format.Bold(x);
                     }));
 
-                await Context.Channel.SendConfirmAsync(Format.Bold(GetText("log_events")) + "\n" +
+                await ctx.Channel.SendConfirmAsync(Format.Bold(GetText("log_events")) + "\n" +
                     str)
                     .ConfigureAwait(false);
             }
@@ -112,10 +112,10 @@ namespace WizBot.Modules.Administration
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            [RequireUserPermission(GuildPermission.Administrator)]
+            [UserPerm(GuildPerm.Administrator)]
             public async Task Log(LogType type)
             {
-                var val = _service.Log(Context.Guild.Id, Context.Channel.Id, type);
+                var val = _service.Log(ctx.Guild.Id, ctx.Channel.Id, type);
 
                 if (val)
                     await ReplyConfirmLocalizedAsync("log", Format.Bold(type.ToString())).ConfigureAwait(false);

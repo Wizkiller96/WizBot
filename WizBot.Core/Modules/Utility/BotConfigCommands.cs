@@ -21,7 +21,7 @@ namespace WizBot.Modules.Utility
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
-            public async Task BotConfigEdit(BotConfigEditType type, [Remainder]string newValue = null)
+            public async Task BotConfigEdit(BotConfigEditType type, [Leftover]string newValue = null)
             {
                 if (string.IsNullOrWhiteSpace(newValue))
                     newValue = null;

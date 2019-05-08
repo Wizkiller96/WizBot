@@ -51,7 +51,7 @@ namespace WizBot.Modules.NSFW
                 // remove it 
                 listOfProviders.RemoveAt(num);
                 // get the image
-                img = await _service.DapiSearch(tag, type, Context.Guild?.Id, true).ConfigureAwait(false);
+                img = await _service.DapiSearch(tag, type, ctx.Guild?.Id, true).ConfigureAwait(false);
                 // if i can't find the image, ran out of providers, or tag is blacklisted
                 // return the error
                 if (img == null && !listOfProviders.Any())
@@ -67,6 +67,7 @@ namespace WizBot.Modules.NSFW
                 .WithDescription($"[{GetText("tag")}: {tag}]({img})"))
                 .ConfigureAwait(false);
         }
+
         private async Task InternalBoobs(IMessageChannel Channel)
         {
             try
@@ -76,8 +77,7 @@ namespace WizBot.Modules.NSFW
                 {
                     obj = JArray.Parse(await http.GetStringAsync($"http://api.oboobs.ru/boobs/{new WizBotRandom().Next(0, 10330)}").ConfigureAwait(false))[0];
                 }
-                await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                    .WithImageUrl($"http://media.oboobs.ru/{obj["preview"]}")).ConfigureAwait(false);
+                await Channel.SendMessageAsync($"http://media.oboobs.ru/{obj["preview"]}").ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -93,14 +93,14 @@ namespace WizBot.Modules.NSFW
                 {
                     obj = JArray.Parse(await http.GetStringAsync($"http://api.obutts.ru/butts/{new WizBotRandom().Next(0, 4335)}").ConfigureAwait(false))[0];
                 }
-                await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                    .WithImageUrl($"http://media.obutts.ru/{obj["preview"]}")).ConfigureAwait(false);
+                await Channel.SendMessageAsync($"http://media.obutts.ru/{obj["preview"]}").ConfigureAwait(false);
             }
             catch (Exception ex)
             {
                 await Channel.SendErrorAsync(ex.Message).ConfigureAwait(false);
             }
         }
+
 
         /* private async Task InternalNeko(IMessageChannel Channel, string category)
         {
@@ -113,7 +113,7 @@ namespace WizBot.Modules.NSFW
                     nekotitle = JObject.Parse(await http.GetStringAsync($"https://nekos.life/api/v2/cat").ConfigureAwait(false));
                     nekoimg = JObject.Parse(await http.GetStringAsync($"https://nekos.life/api/v2/img/{category}").ConfigureAwait(false));
                 }
-                await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
+                await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                     .WithAuthor(eab => eab.WithUrl("http://nekos.life/")
                         .WithIconUrl("https://i.imgur.com/a36AMkG.png")
                         .WithName($"Nekos Life - Database {nekotitle["cat"]}"))
@@ -151,33 +151,33 @@ namespace WizBot.Modules.NSFW
                     nekoimg = JObject.Parse(await http.GetStringAsync($"https://api.nekos.dev/api/v3/images/nsfw/{format}/{category}/").ConfigureAwait(false));
                 }
                 if (img_format.Contains("img") && img_cat.Contains(category))
-                    await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
+                    await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                         .WithAuthor(eab => eab.WithUrl("http://nekos.life/")
                             .WithIconUrl("https://i.imgur.com/a36AMkG.png")
                             .WithName($"Nekos Life - NSFW IMG Database {nekotitle["data"]["response"]["text"]}"))
                         .WithImageUrl($"{nekoimg["data"]["response"]["url"]}")).ConfigureAwait(false);
                 else if (img_format.Contains("gif") && gif_cat.Contains(category))
-                    await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
+                    await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                         .WithAuthor(eab => eab.WithUrl("http://nekos.life/")
                             .WithIconUrl("https://i.imgur.com/a36AMkG.png")
                             .WithName($"Nekos Life - NSFW GIF Database {nekotitle["data"]["response"]["text"]}"))
                         .WithImageUrl($"{nekoimg["data"]["response"]["url"]}")).ConfigureAwait(false);
                 else if (img_format.Contains("img") && gif_cat.Contains(category))
-                    await Context.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
+                    await ctx.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
                     .WithAuthor(eab => eab.WithUrl("http://nekos.life/")
                         .WithIconUrl("https://i.imgur.com/a36AMkG.png")
                         .WithName($"Nekos Life - Invalid NSFW IMG Category"))
                     .WithDescription("Seems the image category you was looking for could not be found. Please use the categories listed below.")
                     .AddField(fb => fb.WithName("NSFW IMG Categories").WithValue("`classic_lewd`, `piersing_lewd`, `shinobu_lewd`, `feet_lewd`, `keta_avatar`, `piersing_ero`, `yuri_ero`, `solo_lewd`, `pantyhose_lewd`, `kemonomimi_lewd`, `cosplay_lewd`, `peeing_lewd`, `ahegao_avatar`, `wallpaper_lewd`, `ero_wallpaper_ero`, `blowjob_lewd`, `holo_avatar`, `neko_lewd`, `futanari_lewd`, `kitsune_ero`, `trap_lewd`, `keta_lewd`, `neko_ero`, `pantyhose_ero`, `cum_lewd`, `anal_lewd`, `smallboobs_lewd`, `all_tags_lewd`, `yuri_lewd`, `kemonomimi_ero`, `anus_lewd`, `holo_ero`, `all_tags_ero`, `kitsune_lewd`, `pussy_lewd`, `feet_ero`, `yiff_lewd`, `hplay_ero`, `bdsm_lewd`, `femdom_lewd`, `holo_lewd`, `shinobu_ero`, `tits_lewd`").WithIsInline(false))).ConfigureAwait(false);
                 else if (img_format.Contains("gif") && img_cat.Contains(category))
-                    await Context.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
+                    await ctx.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
                     .WithAuthor(eab => eab.WithUrl("http://nekos.life/")
                         .WithIconUrl("https://i.imgur.com/a36AMkG.png")
                         .WithName($"Nekos Life - Invalid NSFW GIF Category"))
                     .WithDescription("Seems the gif category you was looking for could not be found. Please use the categories listed below.")
                     .AddField(fb => fb.WithName("NSFW GIF Categories").WithValue("`blow_job`, `pussy_wank`, `classic`, `kuni`, `tits`, `pussy`, `cum`, `spank`, `feet`, `all_tags`, `yuri`, `anal`, `neko`, `girls_solo`, `yiff`").WithIsInline(false))).ConfigureAwait(false);
                 else
-                    await Context.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
+                    await ctx.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
                     .WithAuthor(eab => eab.WithUrl("http://nekos.life/")
                         .WithIconUrl("https://i.imgur.com/a36AMkG.png")
                         .WithName($"Nekos Life - Invalid NSFW Image Type or Category"))
@@ -188,21 +188,21 @@ namespace WizBot.Modules.NSFW
             }
             catch (Exception ex)
             {
-                await Context.Channel.SendErrorAsync(ex.Message).ConfigureAwait(false);
+                await ctx.Channel.SendErrorAsync(ex.Message).ConfigureAwait(false);
             }
         }
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireNsfw]
         [RequireContext(ContextType.Guild)]
-        [RequireUserPermission(ChannelPermission.ManageMessages)]
+        [UserPerm(ChannelPerm.ManageMessages)]
         public async Task AutoHentai(int interval = 0, string tags = null)
         {
             Timer t;
 
             if (interval == 0)
             {
-                if (!_service.AutoHentaiTimers.TryRemove(Context.Channel.Id, out t)) return;
+                if (!_service.AutoHentaiTimers.TryRemove(ctx.Channel.Id, out t)) return;
 
                 t.Change(Timeout.Infinite, Timeout.Infinite); //proper way to disable the timer
                 await ReplyConfirmLocalizedAsync("stopped").ConfigureAwait(false);
@@ -219,9 +219,9 @@ namespace WizBot.Modules.NSFW
                 try
                 {
                     if (tagsArr == null || tagsArr.Length == 0)
-                        await InternalHentai(Context.Channel, null).ConfigureAwait(false);
+                        await InternalHentai(ctx.Channel, null).ConfigureAwait(false);
                     else
-                        await InternalHentai(Context.Channel, tagsArr[new WizBotRandom().Next(0, tagsArr.Length)]).ConfigureAwait(false);
+                        await InternalHentai(ctx.Channel, tagsArr[new WizBotRandom().Next(0, tagsArr.Length)]).ConfigureAwait(false);
                 }
                 catch
                 {
@@ -229,7 +229,7 @@ namespace WizBot.Modules.NSFW
                 }
             }, null, interval * 1000, interval * 1000);
 
-            _service.AutoHentaiTimers.AddOrUpdate(Context.Channel.Id, t, (key, old) =>
+            _service.AutoHentaiTimers.AddOrUpdate(ctx.Channel.Id, t, (key, old) =>
             {
                 old.Change(Timeout.Infinite, Timeout.Infinite);
                 return t;
@@ -243,14 +243,14 @@ namespace WizBot.Modules.NSFW
         [WizBotCommand, Usage, Description, Aliases]
         [RequireNsfw]
         [RequireContext(ContextType.Guild)]
-        [RequireUserPermission(ChannelPermission.ManageMessages)]
+        [UserPerm(ChannelPerm.ManageMessages)]
         public async Task AutoBoobs(int interval = 0)
         {
             Timer t;
 
             if (interval == 0)
             {
-                if (!_service.AutoBoobTimers.TryRemove(Context.Channel.Id, out t)) return;
+                if (!_service.AutoBoobTimers.TryRemove(ctx.Channel.Id, out t)) return;
 
                 t.Change(Timeout.Infinite, Timeout.Infinite); //proper way to disable the timer
                 await ReplyConfirmLocalizedAsync("stopped").ConfigureAwait(false);
@@ -264,7 +264,7 @@ namespace WizBot.Modules.NSFW
             {
                 try
                 {
-                    await InternalBoobs(Context.Channel).ConfigureAwait(false);
+                    await InternalBoobs(ctx.Channel).ConfigureAwait(false);
                 }
                 catch
                 {
@@ -272,7 +272,7 @@ namespace WizBot.Modules.NSFW
                 }
             }, null, interval * 1000, interval * 1000);
 
-            _service.AutoBoobTimers.AddOrUpdate(Context.Channel.Id, t, (key, old) =>
+            _service.AutoBoobTimers.AddOrUpdate(ctx.Channel.Id, t, (key, old) =>
             {
                 old.Change(Timeout.Infinite, Timeout.Infinite);
                 return t;
@@ -283,14 +283,14 @@ namespace WizBot.Modules.NSFW
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
-        [RequireUserPermission(ChannelPermission.ManageMessages)]
+        [UserPerm(ChannelPerm.ManageMessages)]
         public async Task AutoButts(int interval = 0)
         {
             Timer t;
 
             if (interval == 0)
             {
-                if (!_service.AutoButtTimers.TryRemove(Context.Channel.Id, out t)) return;
+                if (!_service.AutoButtTimers.TryRemove(ctx.Channel.Id, out t)) return;
 
                 t.Change(Timeout.Infinite, Timeout.Infinite); //proper way to disable the timer
                 await ReplyConfirmLocalizedAsync("stopped").ConfigureAwait(false);
@@ -304,7 +304,7 @@ namespace WizBot.Modules.NSFW
             {
                 try
                 {
-                    await InternalButts(Context.Channel).ConfigureAwait(false);
+                    await InternalButts(ctx.Channel).ConfigureAwait(false);
                 }
                 catch
                 {
@@ -312,7 +312,7 @@ namespace WizBot.Modules.NSFW
                 }
             }, null, interval * 1000, interval * 1000);
 
-            _service.AutoButtTimers.AddOrUpdate(Context.Channel.Id, t, (key, old) =>
+            _service.AutoButtTimers.AddOrUpdate(ctx.Channel.Id, t, (key, old) =>
             {
                 old.Change(Timeout.Infinite, Timeout.Infinite);
                 return t;
@@ -323,21 +323,21 @@ namespace WizBot.Modules.NSFW
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
-        public Task Hentai([Remainder] string tag = null) =>
-            InternalHentai(Context.Channel, tag);
+        public Task Hentai([Leftover] string tag = null) =>
+            InternalHentai(ctx.Channel, tag);
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
-        public async Task HentaiBomb([Remainder] string tag = null)
+        public async Task HentaiBomb([Leftover] string tag = null)
         {
-            if (!_hentaiBombBlacklist.Add(Context.Guild?.Id ?? Context.User.Id))
+            if (!_hentaiBombBlacklist.Add(ctx.Guild?.Id ?? ctx.User.Id))
                 return;
             try
             {
-                var images = await Task.WhenAll(_service.DapiSearch(tag, DapiSearchType.Gelbooru, Context.Guild?.Id, true),
-                                                _service.DapiSearch(tag, DapiSearchType.Danbooru, Context.Guild?.Id, true),
-                                                _service.DapiSearch(tag, DapiSearchType.Konachan, Context.Guild?.Id, true),
-                                                _service.DapiSearch(tag, DapiSearchType.Yandere, Context.Guild?.Id, true)).ConfigureAwait(false);
+                var images = await Task.WhenAll(_service.DapiSearch(tag, DapiSearchType.Gelbooru, ctx.Guild?.Id, true),
+                                                _service.DapiSearch(tag, DapiSearchType.Danbooru, ctx.Guild?.Id, true),
+                                                _service.DapiSearch(tag, DapiSearchType.Konachan, ctx.Guild?.Id, true),
+                                                _service.DapiSearch(tag, DapiSearchType.Yandere, ctx.Guild?.Id, true)).ConfigureAwait(false);
 
                 var linksEnum = images?.Where(l => l != null).ToArray();
                 if (images == null || !linksEnum.Any())
@@ -346,47 +346,47 @@ namespace WizBot.Modules.NSFW
                     return;
                 }
 
-                await Context.Channel.SendMessageAsync(string.Join("\n\n", linksEnum.Select(x => x.FileUrl))).ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync(string.Join("\n\n", linksEnum.Select(x => x.FileUrl))).ConfigureAwait(false);
             }
             finally
             {
-                _hentaiBombBlacklist.TryRemove(Context.Guild?.Id ?? Context.User.Id);
+                _hentaiBombBlacklist.TryRemove(ctx.Guild?.Id ?? ctx.User.Id);
             }
         }
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
-        public Task Yandere([Remainder] string tag = null)
+        public Task Yandere([Leftover] string tag = null)
             => InternalDapiCommand(tag, DapiSearchType.Yandere, false);
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
-        public Task Konachan([Remainder] string tag = null)
+        public Task Konachan([Leftover] string tag = null)
             => InternalDapiCommand(tag, DapiSearchType.Konachan, false);
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
-        public Task E621([Remainder] string tag = null)
+        public Task E621([Leftover] string tag = null)
             => InternalDapiCommand(tag, DapiSearchType.E621, false);
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
-        public Task Rule34([Remainder] string tag = null)
+        public Task Rule34([Leftover] string tag = null)
             => InternalDapiCommand(tag, DapiSearchType.Rule34, false);
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
-        public Task Danbooru([Remainder] string tag = null)
+        public Task Danbooru([Leftover] string tag = null)
             => InternalDapiCommand(tag, DapiSearchType.Danbooru, false);
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
-        public Task Gelbooru([Remainder] string tag = null)
+        public Task Gelbooru([Leftover] string tag = null)
             => InternalDapiCommand(tag, DapiSearchType.Gelbooru, false);
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
-        public Task Derpibooru([Remainder] string tag = null)
+        public Task Derpibooru([Leftover] string tag = null)
             => InternalDapiCommand(tag, DapiSearchType.Derpibooru, false);
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -398,14 +398,13 @@ namespace WizBot.Modules.NSFW
                 JToken obj;
                 using (var http = _httpFactory.CreateClient())
                 {
-                    obj = JArray.Parse(await http.GetStringAsync($"http://api.oboobs.ru/boobs/{new WizBotRandom().Next(0, 10330)}").ConfigureAwait(false))[0];
+                    obj = JArray.Parse(await http.GetStringAsync($"http://api.oboobs.ru/boobs/{new WizBotRandom().Next(0, 12000)}").ConfigureAwait(false))[0];
                 }
-                await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                    .WithImageUrl($"http://media.oboobs.ru/{obj["preview"]}")).ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync($"http://media.oboobs.ru/{obj["preview"]}").ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                await Context.Channel.SendErrorAsync(ex.Message).ConfigureAwait(false);
+                await ctx.Channel.SendErrorAsync(ex.Message).ConfigureAwait(false);
             }
         }
 
@@ -418,14 +417,13 @@ namespace WizBot.Modules.NSFW
                 JToken obj;
                 using (var http = _httpFactory.CreateClient())
                 {
-                    obj = JArray.Parse(await http.GetStringAsync($"http://api.obutts.ru/butts/{new WizBotRandom().Next(0, 4335)}").ConfigureAwait(false))[0];
+                    obj = JArray.Parse(await http.GetStringAsync($"http://api.obutts.ru/butts/{new WizBotRandom().Next(0, 6100)}").ConfigureAwait(false))[0];
                 }
-                await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                    .WithImageUrl($"http://media.obutts.ru/{obj["preview"]}")).ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync($"http://media.obutts.ru/{obj["preview"]}").ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                await Context.Channel.SendErrorAsync(ex.Message).ConfigureAwait(false);
+                await ctx.Channel.SendErrorAsync(ex.Message).ConfigureAwait(false);
             }
         }
 
@@ -447,13 +445,13 @@ namespace WizBot.Modules.NSFW
                     nekoimg = JObject.Parse(await http.GetStringAsync($"https://nekos.life/api/v2/img/{category}").ConfigureAwait(false));
                 }
                 if (cat.Contains(category))
-                await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
+                await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                     .WithAuthor(eab => eab.WithUrl("http://nekos.life/")
                         .WithIconUrl("https://i.imgur.com/a36AMkG.png")
                         .WithName($"Nekos Life - NSFW Database {nekotitle["cat"]}"))
                     .WithImageUrl($"{nekoimg["url"]}")).ConfigureAwait(false);
                 else
-                    await Context.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
+                    await ctxChannel.EmbedAsync(new EmbedBuilder().WithErrorColor()
                     .WithAuthor(eab => eab.WithUrl("http://nekos.life/")
                         .WithIconUrl("https://i.imgur.com/a36AMkG.png")
                         .WithName($"Nekos Life - Invalid NSFW Category"))
@@ -462,7 +460,7 @@ namespace WizBot.Modules.NSFW
             }
             catch (Exception ex)
             {
-                await Context.Channel.SendErrorAsync(ex.Message).ConfigureAwait(false);
+                await ctx.Channel.SendErrorAsync(ex.Message).ConfigureAwait(false);
             }
         } */
 
@@ -494,33 +492,33 @@ namespace WizBot.Modules.NSFW
                     nekoimg = JObject.Parse(await http.GetStringAsync($"https://api.nekos.dev/api/v3/images/nsfw/{format}/{category}/").ConfigureAwait(false));
                 }
                 if (img_format.Contains("img") && img_cat.Contains(category))
-                    await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
+                    await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                         .WithAuthor(eab => eab.WithUrl("http://nekos.life/")
                             .WithIconUrl("https://i.imgur.com/a36AMkG.png")
                             .WithName($"Nekos Life - NSFW IMG Database {nekotitle["data"]["response"]["text"]}"))
                         .WithImageUrl($"{nekoimg["data"]["response"]["url"]}")).ConfigureAwait(false);
                 else if (img_format.Contains("gif") && gif_cat.Contains(category))
-                    await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
+                    await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                         .WithAuthor(eab => eab.WithUrl("http://nekos.life/")
                             .WithIconUrl("https://i.imgur.com/a36AMkG.png")
                             .WithName($"Nekos Life - NSFW GIF Database {nekotitle["data"]["response"]["text"]}"))
                         .WithImageUrl($"{nekoimg["data"]["response"]["url"]}")).ConfigureAwait(false);
                 else if (img_format.Contains("img") && gif_cat.Contains(category))
-                    await Context.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
+                    await ctx.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
                     .WithAuthor(eab => eab.WithUrl("http://nekos.life/")
                         .WithIconUrl("https://i.imgur.com/a36AMkG.png")
                         .WithName($"Nekos Life - Invalid NSFW IMG Category"))
                     .WithDescription("Seems the image category you was looking for could not be found. Please use the categories listed below.")
                     .AddField(fb => fb.WithName("NSFW IMG Categories").WithValue("`classic_lewd`, `piersing_lewd`, `shinobu_lewd`, `feet_lewd`, `keta_avatar`, `piersing_ero`, `yuri_ero`, `solo_lewd`, `pantyhose_lewd`, `kemonomimi_lewd`, `cosplay_lewd`, `peeing_lewd`, `ahegao_avatar`, `wallpaper_lewd`, `ero_wallpaper_ero`, `blowjob_lewd`, `holo_avatar`, `neko_lewd`, `futanari_lewd`, `kitsune_ero`, `trap_lewd`, `keta_lewd`, `neko_ero`, `pantyhose_ero`, `cum_lewd`, `anal_lewd`, `smallboobs_lewd`, `all_tags_lewd`, `yuri_lewd`, `kemonomimi_ero`, `anus_lewd`, `holo_ero`, `all_tags_ero`, `kitsune_lewd`, `pussy_lewd`, `feet_ero`, `yiff_lewd`, `hplay_ero`, `bdsm_lewd`, `femdom_lewd`, `holo_lewd`, `shinobu_ero`, `tits_lewd`").WithIsInline(false))).ConfigureAwait(false);
                 else if (img_format.Contains("gif") && img_cat.Contains(category))
-                    await Context.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
+                    await ctx.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
                     .WithAuthor(eab => eab.WithUrl("http://nekos.life/")
                         .WithIconUrl("https://i.imgur.com/a36AMkG.png")
                         .WithName($"Nekos Life - Invalid NSFW GIF Category"))
                     .WithDescription("Seems the gif category you was looking for could not be found. Please use the categories listed below.")
                     .AddField(fb => fb.WithName("NSFW GIF Categories").WithValue("`blow_job`, `pussy_wank`, `classic`, `kuni`, `tits`, `pussy`, `cum`, `spank`, `feet`, `all_tags`, `yuri`, `anal`, `neko`, `girls_solo`, `yiff`").WithIsInline(false))).ConfigureAwait(false);
                 else
-                    await Context.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
+                    await ctx.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
                     .WithAuthor(eab => eab.WithUrl("http://nekos.life/")
                         .WithIconUrl("https://i.imgur.com/a36AMkG.png")
                         .WithName($"Nekos Life - Invalid NSFW Image Type or Category"))
@@ -531,19 +529,19 @@ namespace WizBot.Modules.NSFW
             }
             catch (Exception ex)
             {
-                await Context.Channel.SendErrorAsync(ex.Message).ConfigureAwait(false);
+                await ctx.Channel.SendErrorAsync(ex.Message).ConfigureAwait(false);
             }
         }
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        [RequireUserPermission(GuildPermission.ManageMessages)]
-        public async Task NsfwTagBlacklist([Remainder] string tag = null)
+        [UserPerm(GuildPerm.ManageMessages)]
+        public async Task NsfwTagBlacklist([Leftover] string tag = null)
         {
             if (string.IsNullOrWhiteSpace(tag))
             {
-                var blTags = _service.GetBlacklistedTags(Context.Guild.Id);
-                await Context.Channel.SendConfirmAsync(GetText("blacklisted_tag_list"),
+                var blTags = _service.GetBlacklistedTags(ctx.Guild.Id);
+                await ctx.Channel.SendConfirmAsync(GetText("blacklisted_tag_list"),
                     blTags.Any()
                     ? string.Join(", ", blTags)
                     : "-").ConfigureAwait(false);
@@ -551,7 +549,7 @@ namespace WizBot.Modules.NSFW
             else
             {
                 tag = tag.Trim().ToLowerInvariant();
-                var added = _service.ToggleBlacklistedTag(Context.Guild.Id, tag);
+                var added = _service.ToggleBlacklistedTag(ctx.Guild.Id, tag);
 
                 if (added)
                     await ReplyConfirmLocalizedAsync("blacklisted_tag_add", tag).ConfigureAwait(false);
@@ -566,21 +564,21 @@ namespace WizBot.Modules.NSFW
         public Task NsfwClearCache()
         {
             _service.ClearCache();
-            return Context.Channel.SendConfirmAsync("👌");
+            return ctx.Channel.SendConfirmAsync("👌");
         }
 
         public async Task InternalDapiCommand(string tag, DapiSearchType type, bool forceExplicit)
         {
             ImageCacherObject imgObj;
-            
-            imgObj = await _service.DapiSearch(tag, type, Context.Guild?.Id, forceExplicit).ConfigureAwait(false);
+
+            imgObj = await _service.DapiSearch(tag, type, ctx.Guild?.Id, forceExplicit).ConfigureAwait(false);
 
             if (imgObj == null)
                 await ReplyErrorLocalizedAsync("not_found").ConfigureAwait(false);
             else
             {
                 var embed = new EmbedBuilder().WithOkColor()
-                    .WithDescription($"{Context.User} [{tag ?? "url"}]({imgObj}) ")
+                    .WithDescription($"{ctx.User} [{tag ?? "url"}]({imgObj}) ")
                     .WithFooter(efb => efb.WithText(type.ToString()));
 
                 if (Uri.IsWellFormedUriString(imgObj.FileUrl, UriKind.Absolute))
@@ -588,7 +586,7 @@ namespace WizBot.Modules.NSFW
                 else
                     _log.Error($"Image link from {type} is not a proper Url: {imgObj.FileUrl}");
 
-                await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
+                await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
         }
     }

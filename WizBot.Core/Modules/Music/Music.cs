@@ -142,7 +142,7 @@ namespace WizBot.Modules.Music
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        public async Task Play([Remainder] string query = null)
+        public async Task Play([Leftover] string query = null)
         {
             var mp = await _service.GetOrCreatePlayer(Context).ConfigureAwait(false);
             if (string.IsNullOrWhiteSpace(query))
@@ -166,36 +166,36 @@ namespace WizBot.Modules.Music
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        public Task Queue([Remainder] string query)
+        public Task Queue([Leftover] string query)
             => InternalPlay(query, forceplay: false);
 
         private async Task InternalPlay(string query, bool forceplay)
         {
             var mp = await _service.GetOrCreatePlayer(Context).ConfigureAwait(false);
-            var songInfo = await _service.ResolveSong(query, Context.User.ToString()).ConfigureAwait(false);
+            var songInfo = await _service.ResolveSong(query, ctx.User.ToString()).ConfigureAwait(false);
             try { await InternalQueue(mp, songInfo, false, forcePlay: forceplay).ConfigureAwait(false); } catch (QueueFullException) { return; }
-            if ((await Context.Guild.GetCurrentUserAsync().ConfigureAwait(false)).GetPermissions((IGuildChannel)Context.Channel).ManageMessages)
+            if ((await ctx.Guild.GetCurrentUserAsync().ConfigureAwait(false)).GetPermissions((IGuildChannel)ctx.Channel).ManageMessages)
             {
-                Context.Message.DeleteAfter(10);
+                ctx.Message.DeleteAfter(10);
             }
         }
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        public async Task QueueNext([Remainder] string query)
+        public async Task QueueNext([Leftover] string query)
         {
             var mp = await _service.GetOrCreatePlayer(Context).ConfigureAwait(false);
-            var songInfo = await _service.ResolveSong(query, Context.User.ToString()).ConfigureAwait(false);
+            var songInfo = await _service.ResolveSong(query, ctx.User.ToString()).ConfigureAwait(false);
             try { await InternalQueue(mp, songInfo, false, true).ConfigureAwait(false); } catch (QueueFullException) { return; }
-            if ((await Context.Guild.GetCurrentUserAsync().ConfigureAwait(false)).GetPermissions((IGuildChannel)Context.Channel).ManageMessages)
+            if ((await ctx.Guild.GetCurrentUserAsync().ConfigureAwait(false)).GetPermissions((IGuildChannel)ctx.Channel).ManageMessages)
             {
-                Context.Message.DeleteAfter(10);
+                ctx.Message.DeleteAfter(10);
             }
         }
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        public async Task QueueSearch([Remainder] string query)
+        public async Task QueueSearch([Leftover] string query)
         {
             var videos = (await _google.GetVideoInfosByKeywordAsync(query, 5).ConfigureAwait(false))
                 .ToArray();
@@ -206,11 +206,11 @@ namespace WizBot.Modules.Music
                 return;
             }
 
-            var msg = await Context.Channel.SendConfirmAsync(string.Join("\n", videos.Select((x, i) => $"`{i + 1}.`\n\t{Format.Bold(x.Name)}\n\t{x.Url}"))).ConfigureAwait(false);
+            var msg = await ctx.Channel.SendConfirmAsync(string.Join("\n", videos.Select((x, i) => $"`{i + 1}.`\n\t{Format.Bold(x.Name)}\n\t{x.Url}"))).ConfigureAwait(false);
 
             try
             {
-                var input = await GetUserInputAsync(Context.User.Id, Context.Channel.Id).ConfigureAwait(false);
+                var input = await GetUserInputAsync(ctx.User.Id, ctx.Channel.Id).ConfigureAwait(false);
                 if (input == null
                     || !int.TryParse(input, out var index)
                     || (index -= 1) < 0
@@ -312,7 +312,7 @@ namespace WizBot.Modules.Music
                 return embed;
             }
 
-            await Context.SendPaginatedConfirmAsync(page, printAction, songs.Length,
+            await ctx.SendPaginatedConfirmAsync(page, printAction, songs.Length,
                 itemsPerPage, false).ConfigureAwait(false);
         }
 
@@ -340,7 +340,7 @@ namespace WizBot.Modules.Music
         [RequireContext(ContextType.Guild)]
         public async Task AutoDisconnect()
         {
-            var newVal = _service.ToggleAutoDc(Context.Guild.Id);
+            var newVal = _service.ToggleAutoDc(ctx.Guild.Id);
 
             if (newVal)
                 await ReplyConfirmLocalizedAsync("autodc_enable").ConfigureAwait(false);
@@ -352,7 +352,7 @@ namespace WizBot.Modules.Music
         [RequireContext(ContextType.Guild)]
         public async Task Destroy()
         {
-            await _service.DestroyPlayer(Context.Guild.Id).ConfigureAwait(false);
+            await _service.DestroyPlayer(ctx.Guild.Id).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -379,17 +379,17 @@ namespace WizBot.Modules.Music
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        public async Task Defvol([Remainder] int val)
+        public async Task Defvol([Leftover] int val)
         {
             if (val < 0 || val > 100)
             {
                 await ReplyErrorLocalizedAsync("volume_input_invalid").ConfigureAwait(false);
                 return;
             }
-            using (var uow = _db.UnitOfWork)
+            using (var uow = _db.GetDbContext())
             {
-                uow.GuildConfigs.ForId(Context.Guild.Id, set => set).DefaultMusicVolume = val / 100.0f;
-                uow.Complete();
+                uow.GuildConfigs.ForId(ctx.Guild.Id, set => set).DefaultMusicVolume = val / 100.0f;
+                uow.SaveChanges();
             }
             await ReplyConfirmLocalizedAsync("defvol_set", val).ConfigureAwait(false);
         }
@@ -428,7 +428,7 @@ namespace WizBot.Modules.Music
         [Priority(0)]
         public async Task SongRemove(All _)
         {
-            var mp = _service.GetPlayerOrDefault(Context.Guild.Id);
+            var mp = _service.GetPlayerOrDefault(ctx.Guild.Id);
             if (mp == null)
                 return;
             mp.Stop(true);
@@ -437,14 +437,14 @@ namespace WizBot.Modules.Music
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        public async Task Playlists([Remainder] int num = 1)
+        public async Task Playlists([Leftover] int num = 1)
         {
             if (num <= 0)
                 return;
 
             List<MusicPlaylist> playlists;
 
-            using (var uow = _db.UnitOfWork)
+            using (var uow = _db.GetDbContext())
             {
                 playlists = uow.MusicPlaylists.GetPlaylistsOnPage(num);
             }
@@ -454,26 +454,26 @@ namespace WizBot.Modules.Music
                 .WithDescription(string.Join("\n", playlists.Select(r =>
                     GetText("playlists", r.Id, r.Name, r.Author, r.Songs.Count))))
                 .WithOkColor();
-            await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
+            await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        public async Task DeletePlaylist([Remainder] int id)
+        public async Task DeletePlaylist([Leftover] int id)
         {
             var success = false;
             try
             {
-                using (var uow = _db.UnitOfWork)
+                using (var uow = _db.GetDbContext())
                 {
                     var pl = uow.MusicPlaylists.GetById(id);
 
                     if (pl != null)
                     {
-                        if (_creds.IsOwner(Context.User) || pl.AuthorId == Context.User.Id)
+                        if (_creds.IsOwner(ctx.User) || pl.AuthorId == ctx.User.Id)
                         {
                             uow.MusicPlaylists.Remove(pl);
-                            await uow.CompleteAsync();
+                            await uow.SaveChangesAsync();
                             success = true;
                         }
                     }
@@ -498,12 +498,12 @@ namespace WizBot.Modules.Music
                 return;
 
             MusicPlaylist mpl;
-            using (var uow = _db.UnitOfWork)
+            using (var uow = _db.GetDbContext())
             {
                 mpl = uow.MusicPlaylists.GetWithSongs(id);
             }
 
-            await Context.SendPaginatedConfirmAsync(page, (cur) =>
+            await ctx.SendPaginatedConfirmAsync(page, (cur) =>
             {
                 var i = 0;
                 var str = string.Join("\n", mpl.Songs
@@ -519,7 +519,7 @@ namespace WizBot.Modules.Music
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        public async Task Save([Remainder] string name)
+        public async Task Save([Leftover] string name)
         {
             var mp = await _service.GetOrCreatePlayer(Context).ConfigureAwait(false);
 
@@ -533,20 +533,20 @@ namespace WizBot.Modules.Music
                 }).ToList();
 
             MusicPlaylist playlist;
-            using (var uow = _db.UnitOfWork)
+            using (var uow = _db.GetDbContext())
             {
                 playlist = new MusicPlaylist
                 {
                     Name = name,
-                    Author = Context.User.Username,
-                    AuthorId = Context.User.Id,
+                    Author = ctx.User.Username,
+                    AuthorId = ctx.User.Id,
                     Songs = songs.ToList(),
                 };
                 uow.MusicPlaylists.Add(playlist);
-                await uow.CompleteAsync();
+                await uow.SaveChangesAsync();
             }
 
-            await Context.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
+            await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                 .WithTitle(GetText("playlist_saved"))
                 .AddField(efb => efb.WithName(GetText("name")).WithValue(name))
                 .AddField(efb => efb.WithName(GetText("id")).WithValue(playlist.Id.ToString()))).ConfigureAwait(false);
@@ -556,15 +556,15 @@ namespace WizBot.Modules.Music
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        public async Task Load([Remainder] int id)
+        public async Task Load([Leftover] int id)
         {
-            if (!PlaylistLoadBlacklist.Add(Context.Guild.Id))
+            if (!PlaylistLoadBlacklist.Add(ctx.Guild.Id))
                 return;
             try
             {
                 var mp = await _service.GetOrCreatePlayer(Context).ConfigureAwait(false);
                 MusicPlaylist mpl;
-                using (var uow = _db.UnitOfWork)
+                using (var uow = _db.GetDbContext())
                 {
                     mpl = uow.MusicPlaylists.GetWithSongs(id);
                 }
@@ -575,14 +575,14 @@ namespace WizBot.Modules.Music
                     return;
                 }
                 IUserMessage msg = null;
-                try { msg = await Context.Channel.SendMessageAsync(GetText("attempting_to_queue", Format.Bold(mpl.Songs.Count.ToString()))).ConfigureAwait(false); } catch (Exception ex) { _log.Warn(ex); }
+                try { msg = await ctx.Channel.SendMessageAsync(GetText("attempting_to_queue", Format.Bold(mpl.Songs.Count.ToString()))).ConfigureAwait(false); } catch (Exception ex) { _log.Warn(ex); }
                 foreach (var item in mpl.Songs)
                 {
                     try
                     {
                         await Task.Yield();
                         var song = await _service.ResolveSong(item.Query,
-                            Context.User.ToString(),
+                            ctx.User.ToString(),
                             item.ProviderType).ConfigureAwait(false);
                         var queueTask = InternalQueue(mp, song, true);
                         await Task.WhenAll(Task.Delay(1000), queueTask).ConfigureAwait(false);
@@ -595,7 +595,7 @@ namespace WizBot.Modules.Music
             }
             finally
             {
-                PlaylistLoadBlacklist.TryRemove(Context.Guild.Id);
+                PlaylistLoadBlacklist.TryRemove(ctx.Guild.Id);
             }
         }
 
@@ -623,7 +623,7 @@ namespace WizBot.Modules.Music
             var mp = await _service.GetOrCreatePlayer(Context).ConfigureAwait(false);
             var val = mp.AutoDelete = !mp.AutoDelete;
 
-            _service.SetSongAutoDelete(Context.Guild.Id, val);
+            _service.SetSongAutoDelete(ctx.Guild.Id, val);
             if (val)
             {
                 await ReplyConfirmLocalizedAsync("sad_enabled").ConfigureAwait(false);
@@ -636,16 +636,16 @@ namespace WizBot.Modules.Music
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        public async Task SoundCloudQueue([Remainder] string query)
+        public async Task SoundCloudQueue([Leftover] string query)
         {
             var mp = await _service.GetOrCreatePlayer(Context).ConfigureAwait(false);
-            var song = await _service.ResolveSong(query, Context.User.ToString(), MusicType.Soundcloud).ConfigureAwait(false);
+            var song = await _service.ResolveSong(query, ctx.User.ToString(), MusicType.Soundcloud).ConfigureAwait(false);
             await InternalQueue(mp, song, false).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        public async Task SoundCloudPl([Remainder] string pl)
+        public async Task SoundCloudPl([Leftover] string pl)
         {
             pl = pl?.Trim();
 
@@ -658,14 +658,14 @@ namespace WizBot.Modules.Music
             {
                 var scvids = JObject.Parse(await http.GetStringAsync($"https://scapi.nadeko.bot/resolve?url={pl}").ConfigureAwait(false))["tracks"].ToObject<SoundCloudVideo[]>();
                 IUserMessage msg = null;
-                try { msg = await Context.Channel.SendMessageAsync(GetText("attempting_to_queue", Format.Bold(scvids.Length.ToString()))).ConfigureAwait(false); } catch { }
+                try { msg = await ctx.Channel.SendMessageAsync(GetText("attempting_to_queue", Format.Bold(scvids.Length.ToString()))).ConfigureAwait(false); } catch { }
                 foreach (var svideo in scvids)
                 {
                     try
                     {
                         await Task.Yield();
                         var sinfo = await svideo.GetSongInfo().ConfigureAwait(false);
-                        sinfo.QueuerName = Context.User.ToString();
+                        sinfo.QueuerName = ctx.User.ToString();
                         await InternalQueue(mp, sinfo, true).ConfigureAwait(false);
                     }
                     catch (Exception ex)
@@ -695,7 +695,7 @@ namespace WizBot.Modules.Music
                             .WithThumbnailUrl(currentSong.Thumbnail)
                             .WithFooter(ef => ef.WithText(mp.PrettyVolume + " | " + mp.PrettyFullTime + $" | {currentSong.PrettyProvider} | {currentSong.QueuerName}"));
 
-            await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
+            await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -712,7 +712,7 @@ namespace WizBot.Modules.Music
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        public async Task Playlist([Remainder] string playlist)
+        public async Task Playlist([Leftover] string playlist)
         {
             if (string.IsNullOrWhiteSpace(playlist))
                 return;
@@ -741,7 +741,7 @@ namespace WizBot.Modules.Music
                 return;
             }
             var count = ids.Count();
-            var msg = await Context.Channel.SendMessageAsync("🎵 " + GetText("attempting_to_queue",
+            var msg = await ctx.Channel.SendMessageAsync("🎵 " + GetText("attempting_to_queue",
                 Format.Bold(count.ToString()))).ConfigureAwait(false);
 
             foreach (var song in ids)
@@ -751,7 +751,7 @@ namespace WizBot.Modules.Music
                     if (mp.Exited)
                         return;
 
-                    await Task.WhenAll(Task.Delay(150), InternalQueue(mp, await _service.ResolveSong(song, Context.User.ToString(), MusicType.YouTube).ConfigureAwait(false), true)).ConfigureAwait(false);
+                    await Task.WhenAll(Task.Delay(150), InternalQueue(mp, await _service.ResolveSong(song, ctx.User.ToString(), MusicType.YouTube).ConfigureAwait(false), true)).ConfigureAwait(false);
                 }
                 catch (SongNotFoundException) { }
                 catch { break; }
@@ -765,24 +765,24 @@ namespace WizBot.Modules.Music
         public async Task Radio(string radioLink)
         {
             var mp = await _service.GetOrCreatePlayer(Context).ConfigureAwait(false);
-            var song = await _service.ResolveSong(radioLink, Context.User.ToString(), MusicType.Radio).ConfigureAwait(false);
+            var song = await _service.ResolveSong(radioLink, ctx.User.ToString(), MusicType.Radio).ConfigureAwait(false);
             await InternalQueue(mp, song, false).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         [OwnerOnly]
-        public async Task Local([Remainder] string path)
+        public async Task Local([Leftover] string path)
         {
             var mp = await _service.GetOrCreatePlayer(Context).ConfigureAwait(false);
-            var song = await _service.ResolveSong(path, Context.User.ToString(), MusicType.Local).ConfigureAwait(false);
+            var song = await _service.ResolveSong(path, ctx.User.ToString(), MusicType.Local).ConfigureAwait(false);
             await InternalQueue(mp, song, false).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         [OwnerOnly]
-        public async Task LocalPl([Remainder] string dirPath)
+        public async Task LocalPl([Leftover] string dirPath)
         {
             if (string.IsNullOrWhiteSpace(dirPath))
                 return;
@@ -798,7 +798,7 @@ namespace WizBot.Modules.Music
                 try
                 {
                     await Task.Yield();
-                    var song = await _service.ResolveSong(file.FullName, Context.User.ToString(), MusicType.Local).ConfigureAwait(false);
+                    var song = await _service.ResolveSong(file.FullName, ctx.User.ToString(), MusicType.Local).ConfigureAwait(false);
                     await InternalQueue(mp, song, true).ConfigureAwait(false);
                 }
                 catch (QueueFullException)
@@ -818,12 +818,12 @@ namespace WizBot.Modules.Music
         [RequireContext(ContextType.Guild)]
         public async Task Move()
         {
-            var vch = ((IGuildUser)Context.User).VoiceChannel;
+            var vch = ((IGuildUser)ctx.User).VoiceChannel;
 
             if (vch == null)
                 return;
 
-            var mp = _service.GetPlayerOrDefault(Context.Guild.Id);
+            var mp = _service.GetPlayerOrDefault(ctx.Guild.Id);
 
             if (mp == null)
                 return;
@@ -833,12 +833,12 @@ namespace WizBot.Modules.Music
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        public async Task MoveSong([Remainder] string fromto)
+        public async Task MoveSong([Leftover] string fromto)
         {
             if (string.IsNullOrWhiteSpace(fromto))
                 return;
 
-            MusicPlayer mp = _service.GetPlayerOrDefault(Context.Guild.Id);
+            MusicPlayer mp = _service.GetPlayerOrDefault(ctx.Guild.Id);
             if (mp == null)
                 return;
 
@@ -862,7 +862,7 @@ namespace WizBot.Modules.Music
                 .AddField(fb => fb.WithName(GetText("to_position")).WithValue($"#{n2 + 1}").WithIsInline(true))
                 .WithColor(WizBot.OkColor);
 
-            await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
+            await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -907,13 +907,13 @@ namespace WizBot.Modules.Music
             var currentValue = mp.ToggleRepeatSong();
 
             if (currentValue)
-                await Context.Channel.EmbedAsync(new EmbedBuilder()
+                await ctx.Channel.EmbedAsync(new EmbedBuilder()
                     .WithOkColor()
                     .WithAuthor(eab => eab.WithMusicIcon().WithName("🔂 " + GetText("repeating_track")))
                     .WithDescription(currentSong.PrettyName)
                     .WithFooter(ef => ef.WithText(currentSong.PrettyInfo))).ConfigureAwait(false);
             else
-                await Context.Channel.SendConfirmAsync("🔂 " + GetText("repeating_track_stopped"))
+                await ctx.Channel.SendConfirmAsync("🔂 " + GetText("repeating_track_stopped"))
                                             .ConfigureAwait(false);
         }
 
@@ -943,26 +943,26 @@ namespace WizBot.Modules.Music
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        [RequireUserPermission(GuildPermission.ManageMessages)]
+        [UserPerm(GuildPerm.ManageMessages)]
         public async Task SetMusicChannel()
         {
             var mp = await _service.GetOrCreatePlayer(Context).ConfigureAwait(false);
 
-            mp.OutputTextChannel = (ITextChannel)Context.Channel;
-            _service.SetMusicChannel(Context.Guild.Id, Context.Channel.Id);
+            mp.OutputTextChannel = (ITextChannel)ctx.Channel;
+            _service.SetMusicChannel(ctx.Guild.Id, ctx.Channel.Id);
 
             await ReplyConfirmLocalizedAsync("set_music_channel").ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        [RequireUserPermission(GuildPermission.ManageMessages)]
+        [UserPerm(GuildPerm.ManageMessages)]
         public async Task UnsetMusicChannel()
         {
             var mp = await _service.GetOrCreatePlayer(Context).ConfigureAwait(false);
 
             mp.OutputTextChannel = mp.OriginalTextChannel;
-            _service.SetMusicChannel(Context.Guild.Id, null);
+            _service.SetMusicChannel(ctx.Guild.Id, null);
 
             await ReplyConfirmLocalizedAsync("unset_music_channel").ConfigureAwait(false);
         }

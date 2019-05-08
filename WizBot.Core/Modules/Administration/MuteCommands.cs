@@ -1,10 +1,10 @@
 ﻿using Discord;
 using Discord.Commands;
+using WizBot.Common.Attributes;
+using WizBot.Core.Common.TypeReaders.Models;
+using WizBot.Modules.Administration.Services;
 using System;
 using System.Threading.Tasks;
-using WizBot.Common.Attributes;
-using WizBot.Modules.Administration.Services;
-using WizBot.Core.Common.TypeReaders.Models;
 
 namespace WizBot.Modules.Administration
 {
@@ -15,48 +15,49 @@ namespace WizBot.Modules.Administration
         {
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            [RequireUserPermission(GuildPermission.ManageRoles)]
+            [UserPerm(GuildPerm.ManageRoles)]
             [Priority(0)]
-            public async Task SetMuteRole([Remainder] string name)
+            public async Task SetMuteRole([Leftover] string name)
             {
                 name = name.Trim();
                 if (string.IsNullOrWhiteSpace(name))
                     return;
 
-                await _service.SetMuteRoleAsync(Context.Guild.Id, name).ConfigureAwait(false);
+                await _service.SetMuteRoleAsync(ctx.Guild.Id, name).ConfigureAwait(false);
 
                 await ReplyConfirmLocalizedAsync("mute_role_set").ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            [RequireUserPermission(GuildPermission.ManageRoles)]
+            [UserPerm(GuildPerm.ManageRoles)]
             [Priority(1)]
-            public Task SetMuteRole([Remainder] IRole role)
+            public Task SetMuteRole([Leftover] IRole role)
                 => SetMuteRole(role.Name);
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            [RequireUserPermission(GuildPermission.ManageRoles)]
-            [RequireUserPermission(GuildPermission.MuteMembers)]
+            [UserPerm(GuildPerm.ManageRoles)]
+            [UserPerm(GuildPerm.MuteMembers)]
             [Priority(0)]
             public async Task Mute(IGuildUser user)
             {
                 try
                 {
-                    await _service.MuteUser(user, Context.User).ConfigureAwait(false);
+                    await _service.MuteUser(user, ctx.User).ConfigureAwait(false);
                     await ReplyConfirmLocalizedAsync("user_muted", Format.Bold(user.ToString())).ConfigureAwait(false);
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Console.WriteLine(ex.ToString());
                     await ReplyErrorLocalizedAsync("mute_error").ConfigureAwait(false);
                 }
             }
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            [RequireUserPermission(GuildPermission.ManageRoles)]
-            [RequireUserPermission(GuildPermission.MuteMembers)]
+            [UserPerm(GuildPerm.ManageRoles)]
+            [UserPerm(GuildPerm.MuteMembers)]
             [Priority(1)]
             public async Task Mute(StoopidTime time, IGuildUser user)
             {
@@ -64,7 +65,7 @@ namespace WizBot.Modules.Administration
                     return;
                 try
                 {
-                    await _service.TimedMute(user, Context.User, time.Time).ConfigureAwait(false);
+                    await _service.TimedMute(user, ctx.User, time.Time).ConfigureAwait(false);
                     await ReplyConfirmLocalizedAsync("user_muted_time", Format.Bold(user.ToString()), (int)time.Time.TotalMinutes).ConfigureAwait(false);
                 }
                 catch (Exception ex)
@@ -76,13 +77,13 @@ namespace WizBot.Modules.Administration
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            [RequireUserPermission(GuildPermission.ManageRoles)]
-            [RequireUserPermission(GuildPermission.MuteMembers)]
+            [UserPerm(GuildPerm.ManageRoles)]
+            [UserPerm(GuildPerm.MuteMembers)]
             public async Task Unmute(IGuildUser user)
             {
                 try
                 {
-                    await _service.UnmuteUser(user.GuildId, user.Id, Context.User).ConfigureAwait(false);
+                    await _service.UnmuteUser(user.GuildId, user.Id, ctx.User).ConfigureAwait(false);
                     await ReplyConfirmLocalizedAsync("user_unmuted", Format.Bold(user.ToString())).ConfigureAwait(false);
                 }
                 catch
@@ -93,28 +94,29 @@ namespace WizBot.Modules.Administration
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            [RequireUserPermission(GuildPermission.ManageRoles)]
+            [UserPerm(GuildPerm.ManageRoles)]
             public async Task ChatMute(IGuildUser user)
             {
                 try
                 {
-                    await _service.MuteUser(user, Context.User, MuteType.Chat).ConfigureAwait(false);
+                    await _service.MuteUser(user, ctx.User, MuteType.Chat).ConfigureAwait(false);
                     await ReplyConfirmLocalizedAsync("user_chat_mute", Format.Bold(user.ToString())).ConfigureAwait(false);
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Console.WriteLine(ex.ToString());
                     await ReplyErrorLocalizedAsync("mute_error").ConfigureAwait(false);
                 }
             }
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            [RequireUserPermission(GuildPermission.ManageRoles)]
+            [UserPerm(GuildPerm.ManageRoles)]
             public async Task ChatUnmute(IGuildUser user)
             {
                 try
                 {
-                    await _service.UnmuteUser(user.Guild.Id, user.Id, Context.User, MuteType.Chat).ConfigureAwait(false);
+                    await _service.UnmuteUser(user.Guild.Id, user.Id, ctx.User, MuteType.Chat).ConfigureAwait(false);
                     await ReplyConfirmLocalizedAsync("user_chat_unmute", Format.Bold(user.ToString())).ConfigureAwait(false);
                 }
                 catch
@@ -125,12 +127,12 @@ namespace WizBot.Modules.Administration
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            [RequireUserPermission(GuildPermission.MuteMembers)]
-            public async Task VoiceMute([Remainder] IGuildUser user)
+            [UserPerm(GuildPerm.MuteMembers)]
+            public async Task VoiceMute([Leftover] IGuildUser user)
             {
                 try
                 {
-                    await _service.MuteUser(user, Context.User, MuteType.Voice).ConfigureAwait(false);
+                    await _service.MuteUser(user, ctx.User, MuteType.Voice).ConfigureAwait(false);
                     await ReplyConfirmLocalizedAsync("user_voice_mute", Format.Bold(user.ToString())).ConfigureAwait(false);
                 }
                 catch
@@ -141,12 +143,12 @@ namespace WizBot.Modules.Administration
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            [RequireUserPermission(GuildPermission.MuteMembers)]
-            public async Task VoiceUnmute([Remainder] IGuildUser user)
+            [UserPerm(GuildPerm.MuteMembers)]
+            public async Task VoiceUnmute([Leftover] IGuildUser user)
             {
                 try
                 {
-                    await _service.UnmuteUser(user.GuildId, user.Id, Context.User, MuteType.Voice).ConfigureAwait(false);
+                    await _service.UnmuteUser(user.GuildId, user.Id, ctx.User, MuteType.Voice).ConfigureAwait(false);
                     await ReplyConfirmLocalizedAsync("user_voice_unmute", Format.Bold(user.ToString())).ConfigureAwait(false);
                 }
                 catch

@@ -8,18 +8,19 @@ AppName=WizBot
 AppVersion={#version}
 AppPublisher=WizNet
 AppCopyright=© 2017-2018 WizNet - All Rights Reserved
-DefaultDirName={pf}\WizBot
+DefaultDirName={commonpf}\WizBot
 DefaultGroupName=WizBot
 UninstallDisplayIcon={app}\{#sysfolder}\wizbot_icon.ico
 WizardImageFile=wizbot_installer.bmp
 Compression=lzma2
 SolidCompression=yes
-OutputDir=userdocs:projekti/WizBotInstallerOutput
+OutputDir=userdocs:_projekti/WizBotInstallerOutput
 OutputBaseFilename=WizBot-setup-{#version}
 AppReadmeFile=http://wizbot.readthedocs.io/en/latest/
 ArchitecturesInstallIn64BitMode=x64
 UsePreviousSetupType=no
 DisableWelcomePage=no
+WizardStyle=modern
 
 [Files]
 ;install 
@@ -75,7 +76,7 @@ Root: "HKLM"; Subkey: "SOFTWARE\WizBot"; \
     Flags: deletevalue uninsdeletekeyifempty uninsdeletevalue;
 
 [Messages]
-WelcomeLabel2=IMPORTANT! READ BELOW!%n%nIt is recommended that you CLOSE any ANTI VIRUS before continuing.%n%nYou can only update v1.4 or newer.%n%nDo not select your old WizBot folder as an install path if it's not 1.4 or newer.
+WelcomeLabel2=Hello, if you have any issues, join https://wizbot.cf/discord and ask for help in #help channel.%n%nIt is recommended that you CLOSE any ANTI VIRUS before continuing.
 
 ;ask the user if they want to delete all settings
 [Code]

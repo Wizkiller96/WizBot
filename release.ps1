@@ -23,11 +23,11 @@ function Build-Installer($versionNumber)
     dotnet publish -c Release --runtime win7-x64
     .\rcedit-x64.exe "src\WizBot\bin\Release\netcoreapp2.1\win7-x64\wizbot.exe" --set-icon "src\WizBot\bin\Release\netcoreapp2.1\win7-x64\wizbot_icon.ico"
 
-    & "C:\Program Files (x86)\Inno Setup 5\iscc.exe" "/O+" ".\WizBot.iss"
+    & "iscc.exe" "/O+" ".\WizBot.iss"
 
-    $path = [Environment]::GetFolderPath('MyDocuments') + "\projekti\WizBotInstallerOutput\WizBot-setup-$versionNumber.exe";
-    $dest = [Environment]::GetFolderPath('MyDocuments') + "\projekti\WizBotInstallerOutput\wizbot-setup.exe";
-    Move-Item -Path $path -Destination $dest -Force
+    $path = [Environment]::GetFolderPath('MyDocuments') + "\_projekti\WizBotInstallerOutput\WizBot-setup-$versionNumber.exe";
+    $dest = [Environment]::GetFolderPath('MyDocuments') + "\_projekti\WizBotInstallerOutput\wizbot-setup.exe";
+    Copy-Item -Path $path -Destination $dest -Force
 }
 
 function GitHub-Release($versionNumber) {

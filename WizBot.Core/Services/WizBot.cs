@@ -1,26 +1,26 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using WizBot.Core.Services;
-using WizBot.Core.Services.Impl;
-using NLog;
-using System;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using System.Collections.Immutable;
-using System.Diagnostics;
-using WizBot.Core.Services.Database.Models;
-using System.Threading;
-using System.IO;
-using WizBot.Extensions;
-using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
 using WizBot.Common;
 using WizBot.Common.ShardCom;
-using StackExchange.Redis;
+using WizBot.Core.Services;
+using WizBot.Core.Services.Database.Models;
+using WizBot.Core.Services.Impl;
+using WizBot.Extensions;
 using Newtonsoft.Json;
-using Microsoft.Extensions.DependencyInjection;
+using NLog;
+using StackExchange.Redis;
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Net.Http;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace WizBot
 {
@@ -86,18 +86,19 @@ namespace WizBot
                 ShardId = shardId,
                 AlwaysDownloadUsers = false,
             });
+
             CommandService = new CommandService(new CommandServiceConfig()
             {
                 CaseSensitiveCommands = false,
                 DefaultRunMode = RunMode.Sync,
             });
 
-            using (var uow = _db.UnitOfWork)
+            using (var uow = _db.GetDbContext())
             {
                 _botConfig = uow.BotConfig.GetOrCreate();
                 OkColor = new Color(Convert.ToUInt32(_botConfig.OkColor, 16));
                 ErrorColor = new Color(Convert.ToUInt32(_botConfig.ErrorColor, 16));
-                uow.Complete();
+                uow.SaveChanges();
             }
 
             SetupShard(parentProcessId);
@@ -137,7 +138,7 @@ namespace WizBot
 
         public IEnumerable<GuildConfig> GetCurrentGuildConfigs()
         {
-            using (var uow = _db.UnitOfWork)
+            using (var uow = _db.GetDbContext())
             {
                 return uow.GuildConfigs.GetAllGuildConfigs(GetCurrentGuildIds()).ToImmutableArray();
             }
@@ -148,12 +149,12 @@ namespace WizBot
             var startingGuildIdList = GetCurrentGuildIds();
 
             //this unit of work will be used for initialization of all modules too, to prevent multiple queries from running
-            using (var uow = _db.UnitOfWork)
+            using (var uow = _db.GetDbContext())
             {
                 var sw = Stopwatch.StartNew();
 
                 var _bot = Client.CurrentUser;
-                
+
                 uow.DiscordUsers.EnsureCreated(_bot.Id, _bot.Username, _bot.Discriminator, _bot.AvatarId);
 
                 AllGuildConfigs = uow.GuildConfigs.GetAllGuildConfigs(startingGuildIdList).ToImmutableArray();
@@ -280,7 +281,7 @@ namespace WizBot
             var _ = Task.Run(async () =>
             {
                 GuildConfig gc;
-                using (var uow = _db.UnitOfWork)
+                using (var uow = _db.GetDbContext())
                 {
                     gc = uow.GuildConfigs.ForId(arg.Id);
                 }

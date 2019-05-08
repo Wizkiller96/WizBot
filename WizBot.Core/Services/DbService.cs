@@ -53,7 +53,7 @@ namespace WizBot.Core.Services
             }
         }
 
-        public WizBotContext GetDbContext()
+        private WizBotContext GetDbContextInternal()
         {
             var context = new WizBotContext(options);
             context.Database.SetCommandTimeout(60);
@@ -67,7 +67,6 @@ namespace WizBot.Core.Services
             return context;
         }
 
-        public IUnitOfWork UnitOfWork =>
-            new UnitOfWork(GetDbContext());
+        public IUnitOfWork GetDbContext() => new UnitOfWork(GetDbContextInternal());
     }
 }
