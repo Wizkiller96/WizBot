@@ -2815,7 +2815,8 @@
       "Module": "Games",
       "Options": null,
       "Requirements": [
-        "ManageMessages Server Permission"
+        "ManageMessages Server Permission",
+        "Bot Owner Only"
       ]
     },
     {
@@ -2832,7 +2833,7 @@
       "Options": null,
       "Requirements": [
         "ManageMessages Server Permission",
-        "Bot Owner Only"
+        "Bot Owner & Admin Only"
       ]
     },
     {
