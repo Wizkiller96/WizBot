@@ -2816,7 +2816,7 @@
       "Options": null,
       "Requirements": [
         "ManageMessages Server Permission",
-        "Bot Owner Only"
+        "Bot Owner & Admin Only"
       ]
     },
     {

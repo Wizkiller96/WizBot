@@ -83,7 +83,7 @@ namespace WizBot.Modules.Games
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageMessages)]
-            [OwnerOnly]
+            [AdminOnly]
             public Task GenCurList(int page = 1)
             {
                 if (--page < 0)
