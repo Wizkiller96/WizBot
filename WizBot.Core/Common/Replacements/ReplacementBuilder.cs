@@ -113,7 +113,7 @@ namespace WizBot.Common.Replacements
             _reps.TryAdd("%channel.mention%", () => (ch as ITextChannel)?.Mention ?? "#" + ch.Name);
             _reps.TryAdd("%channel.name%", () => ch.Name);
             _reps.TryAdd("%channel.id%", () => ch.Id.ToString());
-            _reps.TryAdd("%channel.created%", () => ch.CreatedAt.ToString("HH:mm dd.MM.yyyy"));
+            _reps.TryAdd("%channel.created%", () => ch.CreatedAt.ToString("HH:mm MM.dd.yyyy"));
             _reps.TryAdd("%channel.nsfw%", () => (ch as ITextChannel)?.IsNsfw.ToString() ?? "-");
             _reps.TryAdd("%channel.topic%", () => (ch as ITextChannel)?.Topic ?? "-");
             return this;
@@ -137,9 +137,9 @@ namespace WizBot.Common.Replacements
             _reps.TryAdd("%user.avatar%", () => user.RealAvatarUrl()?.ToString());
             _reps.TryAdd("%user.id%", () => user.Id.ToString());
             _reps.TryAdd("%user.created_time%", () => user.CreatedAt.ToString("HH:mm"));
-            _reps.TryAdd("%user.created_date%", () => user.CreatedAt.ToString("dd.MM.yyyy"));
+            _reps.TryAdd("%user.created_date%", () => user.CreatedAt.ToString("MM.dd.yyyy"));
             _reps.TryAdd("%user.joined_time%", () => (user as IGuildUser)?.JoinedAt?.ToString("HH:mm") ?? "-");
-            _reps.TryAdd("%user.joined_date%", () => (user as IGuildUser)?.JoinedAt?.ToString("dd.MM.yyyy") ?? "-");
+            _reps.TryAdd("%user.joined_date%", () => (user as IGuildUser)?.JoinedAt?.ToString("MM.dd.yyyy") ?? "-");
             return this;
         }
 

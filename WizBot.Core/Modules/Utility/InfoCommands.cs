@@ -87,7 +87,7 @@ namespace WizBot.Modules.Utility
                     .WithTitle(ch.Name)
                     .WithDescription(ch.Topic?.SanitizeMentions())
                     .AddField(fb => fb.WithName(GetText("id")).WithValue(ch.Id.ToString()).WithIsInline(true))
-                    .AddField(fb => fb.WithName(GetText("created_at")).WithValue($"{createdAt:dd.MM.yyyy HH:mm}").WithIsInline(true))
+                    .AddField(fb => fb.WithName(GetText("created_at")).WithValue($"{createdAt:MM.dd.yyyy HH:mm}").WithIsInline(true))
                     .AddField(fb => fb.WithName(GetText("users")).WithValue(usercount.ToString()).WithIsInline(true))
                     .WithColor(WizBot.OkColor);
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
@@ -109,8 +109,8 @@ namespace WizBot.Modules.Utility
                     embed.AddField(fb => fb.WithName(GetText("nickname")).WithValue(user.Nickname).WithIsInline(true));
                 }
                 embed.AddField(fb => fb.WithName(GetText("id")).WithValue(user.Id.ToString()).WithIsInline(true))
-                    .AddField(fb => fb.WithName(GetText("joined_server")).WithValue($"{user.JoinedAt?.ToString("dd.MM.yyyy HH:mm") ?? "?"}").WithIsInline(true))
-                    .AddField(fb => fb.WithName(GetText("joined_discord")).WithValue($"{user.CreatedAt:dd.MM.yyyy HH:mm}").WithIsInline(true))
+                    .AddField(fb => fb.WithName(GetText("joined_server")).WithValue($"{user.JoinedAt?.ToString("MM.dd.yyyy HH:mm") ?? "?"}").WithIsInline(true))
+                    .AddField(fb => fb.WithName(GetText("joined_discord")).WithValue($"{user.CreatedAt:MM.dd.yyyy HH:mm}").WithIsInline(true))
                     .AddField(fb => fb.WithName(GetText("roles")).WithValue($"**({user.RoleIds.Count - 1})** - {string.Join("\n", user.GetRoles().Take(10).Where(r => r.Id != r.Guild.EveryoneRole.Id).Select(r => r.Name)).SanitizeMentions()}").WithIsInline(true))
                     .WithColor(WizBot.OkColor);
 
