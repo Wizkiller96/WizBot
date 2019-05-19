@@ -254,13 +254,18 @@ namespace WizBot.Modules.Help
 
             if (rtypes.Contains(type))
             {
+                await _client.GetGuild(99273784988557312).GetTextChannel(566998481177280512).SendMessageAsync("<@&263409601402241027>");
                 await _client.GetGuild(99273784988557312).GetTextChannel(566998481177280512).EmbedAsync(new EmbedBuilder().WithOkColor()
                     .WithTitle($"New Bug/Feedback Report")
                     .WithThumbnailUrl($"{ctx.User.GetAvatarUrl()}")
                     .AddField(fb => fb.WithName("Reporter:").WithValue($"{ctx.User}").WithIsInline(true))
                     .AddField(fb => fb.WithName("Reporter ID:").WithValue($"{ctx.User.Id}").WithIsInline(true))
+                    .AddField(fb => fb.WithName("Server Name:").WithValue($"{ctx.Guild.Name}").WithIsInline(true))
+                    .AddField(fb => fb.WithName("Server ID:").WithValue($"{ctx.Guild.Id}").WithIsInline(true))
+                    .AddField(fb => fb.WithName("Channel Name:").WithValue($"{ctx.Channel.Name}").WithIsInline(true))
+                    .AddField(fb => fb.WithName("Channel ID:").WithValue($"{ctx.Channel.Id}").WithIsInline(true))
                     .AddField(fb => fb.WithName("Report Type:").WithValue(type).WithIsInline(false))
-                    .AddField(fb => fb.WithName("Message:").WithValue(message))).ConfigureAwait(false);
+                    .AddField(fb => fb.WithName("Message:").WithValue($"{message}"))).ConfigureAwait(false);
 
                 await ctx.Channel.SendConfirmAsync("🆗").ConfigureAwait(false);
             }
