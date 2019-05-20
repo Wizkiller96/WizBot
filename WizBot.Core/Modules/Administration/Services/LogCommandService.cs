@@ -115,8 +115,6 @@ namespace WizBot.Modules.Administration.Services
         private string GetText(IGuild guild, string key, params object[] replacements) =>
             _strings.GetText(key, guild.Id, "Administration".ToLowerInvariant(), replacements);
 
-
-
         private string PrettyCurrentTime(IGuild g)
         {
             var time = DateTime.UtcNow;

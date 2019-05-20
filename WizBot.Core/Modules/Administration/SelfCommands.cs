@@ -296,7 +296,6 @@ namespace WizBot.Modules.Administration
                 await ctx.Channel.SendConfirmAsync("Left server:", guildStr).ConfigureAwait(false);
             }
 
-
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
             public async Task Die()
