@@ -290,9 +290,10 @@ namespace WizBot.Modules.Administration
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
-            public Task Leave([Leftover] string guildStr)
+            public async Task Leave([Leftover] string guildStr)
             {
-                return _service.LeaveGuild(guildStr);
+                await _service.LeaveGuild(guildStr);
+                await ctx.Channel.SendConfirmAsync("Left server:", guildStr).ConfigureAwait(false);
             }
 
 

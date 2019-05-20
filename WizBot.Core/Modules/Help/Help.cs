@@ -254,7 +254,7 @@ namespace WizBot.Modules.Help
 
             if (rtypes.Contains(type))
             {
-                await _client.GetGuild(99273784988557312).GetTextChannel(566998481177280512).SendMessageAsync("<@&263409601402241027>");
+                await _client.GetGuild(99273784988557312).GetTextChannel(566998481177280512).SendMessageAsync("<@99272781513920512>");
                 await _client.GetGuild(99273784988557312).GetTextChannel(566998481177280512).EmbedAsync(new EmbedBuilder().WithOkColor()
                     .WithTitle($"New Bug/Feedback Report")
                     .WithThumbnailUrl($"{ctx.User.GetAvatarUrl()}")
