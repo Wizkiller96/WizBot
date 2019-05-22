@@ -71,6 +71,16 @@ namespace WizBot.Modules.Gambling
                     return;
                 }
 
+                // Steven & Sophia
+                if (target.Id == 216898612867629057 || target.Id == 330596075406753793)
+                {
+                    var embed = new EmbedBuilder()
+                    .WithDescription("You can't claim this user.")
+                    .WithErrorColor();
+                    await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
+                    return;
+                }
+
                 // Main Bot
                 if (target.Id == 170849991357628416)
                 {
