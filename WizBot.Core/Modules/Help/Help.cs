@@ -73,7 +73,7 @@ namespace WizBot.Modules.Help
         }
 
         [WizBotCommand, Usage, Description, Aliases]
-        [WizBotOptionsAttribute(typeof(CommandsOptions))]
+        [WizBotOptions(typeof(CommandsOptions))]
         public async Task Commands(string module = null, params string[] args)
         {
             var channel = ctx.Channel;
