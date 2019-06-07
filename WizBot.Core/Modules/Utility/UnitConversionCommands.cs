@@ -21,7 +21,7 @@ namespace WizBot.Modules.Utility
                 var units = _service.Units;
                 var res = units.GroupBy(x => x.UnitType)
                                .Aggregate(new EmbedBuilder().WithTitle(GetText("convertlist"))
-                                                            .WithColor(WizBot.OkColor),
+                                                            .WithOkColor(),
                                           (embed, g) => embed.AddField(efb =>
                                                                          efb.WithName(g.Key.ToTitleCase())
                                                                          .WithValue(String.Join(", ", g.Select(x => x.Triggers.FirstOrDefault())
