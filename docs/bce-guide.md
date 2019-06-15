@@ -76,7 +76,7 @@ Minimum price the users can pay to claim a waifu with `.claim`. **Default is 50*
 
 ## WaifuGiftMultiplier
 
-The multiplier applied to the gift price before it's added to the waifu's value. For example, if a waifu is worth 100 currency, and you give her a gift which is worth 10 currency, her new value will be `(10 * WaifuGiftMultiplier) + 100`. **Default is 1**
+The multiplier applied to the price of waifu gifts, making them more or less expensive.. **Default is 1**
 
 ## MinimumTriviaWinReq
 
