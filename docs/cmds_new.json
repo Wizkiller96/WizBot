@@ -3104,7 +3104,7 @@
       ],
       "Description": "Allows you to report a user who abuse the bot to Bot Staff.",
       "Usage": [
-        "{0}areport @User Abused bet flip command."
+        ".areport @User Abused bet flip command."
       ],
       "Submodule": "Help",
       "Module": "Help",
