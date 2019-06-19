@@ -3099,6 +3099,20 @@
     },
     {
       "Aliases": [
+        ".abusereport",
+        ".areport"
+      ],
+      "Description": "Allows you to report a user who abuse the bot to Bot Staff.",
+      "Usage": [
+        "{0}areport @User Abused bet flip command."
+      ],
+      "Submodule": "Help",
+      "Module": "Help",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
         ".donate"
       ],
       "Description": "Instructions for helping the project financially.",

@@ -241,6 +241,8 @@ namespace WizBot.Modules.Help
                 "http://ndocs.wizbot.cf/").ConfigureAwait(false);
         }
 
+#if GLOBAL_WIZBOT
+
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Report(string type, [Remainder] string message)
         {
@@ -275,6 +277,48 @@ namespace WizBot.Modules.Help
                     .WithDescription("Please make sure you used the correct report types listed below.")
                     .AddField(fb => fb.WithName("Report Types:").WithValue("`Bug`, `Feedback`"))).ConfigureAwait(false);
         }
+
+        [WizBotCommand, Usage, Description, Aliases]
+        public async Task AbuseReport(IGuildUser ruser, [Remainder] string rexplaination)
+        {
+            var user = ruser ?? ctx.User as IGuildUser;
+
+            if (((user == null)) && (string.IsNullOrEmpty(rexplaination)))
+            {
+                await ctx.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
+                    .WithTitle($"Error: Abuse report not sent.")
+                    .WithDescription("Please make sure you filled out all the fields correctly.")).ConfigureAwait(false);
+            }
+            else if (user == null)
+            {
+                await ctx.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
+                    .WithTitle($"Error: Abuse report not sent.")
+                    .WithDescription("Please make sure you provided the username of the person you are reporting.")).ConfigureAwait(false);
+            }
+            else if (string.IsNullOrEmpty(rexplaination))
+            {
+                await ctx.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
+                    .WithTitle($"Error: Abuse report not sent.")
+                    .WithDescription("Please make sure you provided and explaination in your report.")).ConfigureAwait(false);
+            }
+            else
+                await _client.GetGuild(99273784988557312).GetTextChannel(590829242690961408).SendMessageAsync("<@&367646195889471499>");
+                await _client.GetGuild(99273784988557312).GetTextChannel(590829242690961408).EmbedAsync(new EmbedBuilder().WithOkColor()
+                    .WithTitle($"Abuse Report")
+                    .WithThumbnailUrl($"{ctx.User.GetAvatarUrl()}")
+                    .AddField(fb => fb.WithName("Reporter:").WithValue($"{ctx.User}").WithIsInline(true))
+                    .AddField(fb => fb.WithName("Reporter ID:").WithValue($"{ctx.User.Id}").WithIsInline(true))
+                    .AddField(fb => fb.WithName("Server Name:").WithValue($"{ctx.Guild.Name}").WithIsInline(true))
+                    .AddField(fb => fb.WithName("Server ID:").WithValue($"{ctx.Guild.Id}").WithIsInline(true))
+                    .AddField(fb => fb.WithName("Channel Name:").WithValue($"{ctx.Channel.Name}").WithIsInline(true))
+                    .AddField(fb => fb.WithName("Channel ID:").WithValue($"{ctx.Channel.Id}").WithIsInline(true))
+                    .AddField(fb => fb.WithName("Reported User:").WithValue($"**{user.Username}**#{user.Discriminator} | {user.Id.ToString()}").WithIsInline(false))
+                    .AddField(fb => fb.WithName("Explaination/Proof:").WithValue($"{rexplaination}"))).ConfigureAwait(false);
+
+                await ctx.Channel.SendConfirmAsync("Report sent to WizBot's Staff.").ConfigureAwait(false);
+        }
+
+#endif
 
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Donate()
