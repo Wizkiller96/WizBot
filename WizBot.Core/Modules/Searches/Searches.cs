@@ -807,6 +807,29 @@ namespace WizBot.Modules.Searches
             }
         }
 
+        // Waifu Gen Command
+
+        [WizBotCommand, Usage, Description, Aliases]
+        public async Task GWaifu()
+        {
+            try 
+            {
+                using (var http = _httpFactory.CreateClient())
+                {
+                    var waifutxt = await http.GetStringAsync($"https://www.thiswaifudoesnotexist.net/snippet-{new WizBotRandom().Next(0, 100000)}.txt").ConfigureAwait(false);
+                    await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
+                        .WithAuthor(eab => eab.WithUrl("https://www.thiswaifudoesnotexist.net")
+                            .WithName($"This Waifu Does Not Exist"))
+                        .WithThumbnailUrl($"https://www.thiswaifudoesnotexist.net/example-{new WizBotRandom().Next(0, 100000)}.jpg")
+                        .WithDescription($"{waifutxt}".TrimTo(1000))).ConfigureAwait(false);
+                }
+            }
+            catch (Exception ex)
+            {
+                await ctx.Channel.SendErrorAsync(ex.Message).ConfigureAwait(false);
+            }
+        }
+
         // done in 3.0
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]

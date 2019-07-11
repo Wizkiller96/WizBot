@@ -5412,6 +5412,20 @@
       "Module": "Searches",
       "Options": null,
       "Requirements": []
+    },
+    {
+      "Aliases": [
+        ".gwaifu",
+        ".genwaifu"
+      ],
+      "Description": "Responds with a randomly generated waifu and backstory.",
+      "Usage": [
+        ".gwaifu"
+      ],
+      "Submodule": "Searches",
+      "Module": "Searches",
+      "Options": null,
+      "Requirements": []
     }
   ],
   "Utility": [

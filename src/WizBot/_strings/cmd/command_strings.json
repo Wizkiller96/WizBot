@@ -3410,6 +3410,14 @@
       "{0}nya gif baka"
     ]
   },
+  "gwaifu": {
+    "cmd": "gwaifu genwaifu",
+    "desc": "Responds with a randomly generated waifu and backstory.",
+    "usage": [
+      "{0}gwaifu",
+      "{0}genwaifu"
+    ]
+  },
   "bible": {
     "cmd": "bible",
     "desc": "Shows bible verse. You need to supply book name and chapter:verse",
