@@ -7,6 +7,7 @@ using WizBot.Core.Services;
 using WizBot.Core.Services.Impl;
 using WizBot.Extensions;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -345,8 +346,10 @@ namespace WizBot.Modules.Utility
 
             await ctx.Channel.SendConfirmAsync($"{Format.Bold(ctx.User.ToString())} 🏓 {(int)sw.Elapsed.TotalMilliseconds}ms").ConfigureAwait(false);
         }
-        
-        [WizBotCommand, Usage, Description, Aliases]
+
+        // Old Update Command
+
+        /* [WizBotCommand, Usage, Description, Aliases]
         public async Task Updates()
         {
             await ctx.Channel.EmbedAsync(
@@ -359,6 +362,50 @@ namespace WizBot.Modules.Utility
                     .AddField(efb => efb.WithName(Format.Bold(GetText("changelog_removals"))).WithValue(GetText("changelog_removals_msg")).WithIsInline(false))
                     .WithFooter(efb => efb.WithText(GetText($"changelog_footer")))
                     );
+        } */
+
+        // New Update Command (W.I.P.)
+
+        [WizBotCommand, Usage, Description, Aliases]
+        public async Task Updates()
+        {
+            try
+            {
+                JToken obj;
+                using (var http = _httpFactory.CreateClient())
+                {
+                    http.DefaultRequestHeaders.Add("User-Agent", "WizBot");
+                    obj = JArray.Parse(await http.GetStringAsync($"https://api.github.com/repos/Wizkiller96/WizBot/commits").ConfigureAwait(false));
+                }
+
+                // Only temp solution for now as I had no time to clean up the mess.
+
+                var newCommits = (
+                    $"[" + $"{obj[0]["sha"]}".TrimTo(6, true) + $"]({obj[0]["html_url"]})" + $" {obj[0]["commit"]["message"]}".TrimTo(50) + $"\n- {obj[0]["author"]["login"]}" + "\n\n" +
+                    $"[" + $"{obj[1]["sha"]}".TrimTo(6, true) + $"]({obj[1]["html_url"]})" + $" {obj[1]["commit"]["message"]}".TrimTo(50) + $"\n- {obj[1]["author"]["login"]}" + "\n\n" +
+                    $"[" + $"{obj[2]["sha"]}".TrimTo(6, true) + $"]({obj[2]["html_url"]})" + $" {obj[2]["commit"]["message"]}".TrimTo(50) + $"\n- {obj[2]["author"]["login"]}" + "\n\n" +
+                    $"[" + $"{obj[3]["sha"]}".TrimTo(6, true) + $"]({obj[3]["html_url"]})" + $" {obj[3]["commit"]["message"]}".TrimTo(50) + $"\n- {obj[3]["author"]["login"]}" + "\n\n" +
+                    $"[" + $"{obj[4]["sha"]}".TrimTo(6, true) + $"]({obj[4]["html_url"]})" + $" {obj[4]["commit"]["message"]}".TrimTo(50) + $"\n- {obj[4]["author"]["login"]}" + "\n\n" +
+                    $"[" + $"{obj[5]["sha"]}".TrimTo(6, true) + $"]({obj[5]["html_url"]})" + $" {obj[5]["commit"]["message"]}".TrimTo(50) + $"\n- {obj[5]["author"]["login"]}" + "\n\n" +
+                    $"[" + $"{obj[6]["sha"]}".TrimTo(6, true) + $"]({obj[6]["html_url"]})" + $" {obj[6]["commit"]["message"]}".TrimTo(50) + $"\n- {obj[6]["author"]["login"]}" + "\n\n" +
+                    $"[" + $"{obj[7]["sha"]}".TrimTo(6, true) + $"]({obj[7]["html_url"]})" + $" {obj[7]["commit"]["message"]}".TrimTo(50) + $"\n- {obj[7]["author"]["login"]}" + "\n\n" +
+                    $"[" + $"{obj[8]["sha"]}".TrimTo(6, true) + $"]({obj[8]["html_url"]})" + $" {obj[8]["commit"]["message"]}".TrimTo(50) + $"\n- {obj[8]["author"]["login"]}" + "\n\n" +
+                    $"[" + $"{obj[9]["sha"]}".TrimTo(6, true) + $"]({obj[9]["html_url"]})" + $" {obj[9]["commit"]["message"]}".TrimTo(50) + $"\n- {obj[9]["author"]["login"]}"
+                );
+
+                await ctx.Channel.EmbedAsync(
+                new EmbedBuilder().WithOkColor()
+                    .WithAuthor(eab => eab.WithName("WizBot - Latest 10 commits")
+                                          .WithUrl("https://github.com/Wizkiller96/WizBot/commits/1.9")
+                                          .WithIconUrl("http://i.imgur.com/fObUYFS.jpg"))
+                    .WithDescription(newCommits)
+                    .WithFooter(efb => efb.WithText(GetText($"changelog_footer")))
+                    );
+            }
+            catch (Exception ex)
+            {
+                await ctx.Channel.SendErrorAsync(ex.Message).ConfigureAwait(false);
+            }
         }
     }
 }
