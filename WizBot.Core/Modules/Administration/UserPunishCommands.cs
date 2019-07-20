@@ -161,7 +161,7 @@ namespace WizBot.Modules.Administration
                             return (usr?.ToString() ?? x.Key.ToString()) + $" | {total} ({all} - {forgiven})";
                         });
 
-                    return new EmbedBuilder()
+                    return new EmbedBuilder().WithOkColor()
                         .WithTitle(GetText("warnings_list"))
                         .WithDescription(string.Join("\n", ws));
                 }, warnings.Length, 15).ConfigureAwait(false);
