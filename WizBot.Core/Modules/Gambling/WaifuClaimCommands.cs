@@ -109,7 +109,21 @@ namespace WizBot.Modules.Gambling
                     .WithAuthor(eab => eab.WithUrl("https://vulpineutility.net/")
                         .WithIconUrl("https://i.imgur.com/cqx791R.jpg")
                         .WithName($"Vulpine Utility"))
-                    .WithDescription("Sorry, but Vulpine Utility is claimed by its owner, JamesBlossom")
+                    .WithDescription("Sorry, but this Vulpine Utility is claimed by its owner, JamesBlossom")
+                    .WithColor(Color.Blue);
+                    await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
+                    return;
+                }
+
+                // Vulpine Bot Revamp
+
+                if (target.Id == 585501068067340297)
+                {
+                    var embed = new EmbedBuilder()
+                    .WithAuthor(eab => eab.WithUrl("https://vulpineutility.co.uk/")
+                        .WithIconUrl("https://i.imgur.com/0lriwRJ.png")
+                        .WithName($"Vulpine Utility"))
+                    .WithDescription("Sorry, but this Vulpine Utility is claimed by its owner, aj2958")
                     .WithColor(Color.Blue);
                     await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
                     return;

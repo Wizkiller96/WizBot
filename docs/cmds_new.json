@@ -6621,17 +6621,17 @@
       ]
     }
   ],
-  "Vulpine": [
+  "Roblox": [
     {
       "Aliases": [
         ".rinfo"
       ],
-      "Description": "Display a Roblox User profile information from the Vulpine API.",
+      "Description": "Display a Roblox User profile information from the Roblox API.",
       "Usage": [
         ".rinfo Rich151"
       ],
-      "Submodule": "Vulpine",
-      "Module": "Vulpine",
+      "Submodule": "Roblox",
+      "Module": "Roblox",
       "Options": null,
       "Requirements": []
     }

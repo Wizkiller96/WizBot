@@ -14,18 +14,17 @@ using WizBot.Modules.Searches.Common;
 using WizBot.Modules.Searches.Services;
 using System.Net.Http;
 
-namespace WizBot.Modules.Vulpine
+namespace WizBot.Modules.Roblox
 {
-    // Basic Roblox command using Vulpine API.
-    // For Vulpine API Related issue please contact JamesBlossom#4657 on discord.
-    // Vulpine Discord: https://vulpineutility.net/discord
+    // Basic Roblox command using Roblox API.
     // Official Roblox API can be found at: http://api.roblox.com/docs
+    // More Roblox API info at: https://api.roblox.com/docs?useConsolidatedPage=true
 
-    public class Vulpine : WizBotTopLevelModule<SearchesService>
+    public class Roblox : WizBotTopLevelModule<SearchesService>
     {
         private readonly IHttpClientFactory _httpFactory;
 
-        public Vulpine(IHttpClientFactory factory)
+        public Roblox(IHttpClientFactory factory)
         {
             _httpFactory = factory;
         }
@@ -43,7 +42,7 @@ namespace WizBot.Modules.Vulpine
                 // Todo make a checker to see if a Roblox account exist before showing info.
                 //JToken RChecker;
                 JToken RInfo;
-                JToken RUID; // Backup incase Vulpine one breaks
+                JToken RUID;
                 JToken RStatus;
                 using (var http = _httpFactory.CreateClient())
                 {
@@ -56,11 +55,10 @@ namespace WizBot.Modules.Vulpine
                 /* if (($"{RChecker["success"]}").Equals("false"))
                 {
                     await ctx.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
-                    .WithAuthor(eab => eab.WithUrl("https://vulpineutility.net/")
-                        .WithIconUrl("https://i.imgur.com/cqx791R.jpg")
-                        .WithName($"Vulpine Utility - Roblox Info Error"))
-                    .WithDescription("The user you are trying to find doesn't exist or is banned. Please try again.")
-                    .WithFooter("© Vulpine Utility"))
+                    .WithAuthor(eab => eab.WithUrl("https://roblox.com/")
+                        .WithIconUrl("https://i.imgur.com/jDcWXPD.png")
+                        .WithName($"Roblox Info Error"))
+                    .WithDescription("The user you are trying to find doesn't exist or is banned. Please try again."))
                     .ConfigureAwait(false);
                 }
                 else
@@ -68,53 +66,50 @@ namespace WizBot.Modules.Vulpine
                     // If Roblox User Blurb and Status is nulled.
                     if ((string.IsNullOrEmpty($"{RInfo["blurb"]}")) && (string.IsNullOrEmpty($"{RInfo["status"]}")))
                         await ctx.Channel.EmbedAsync(new EmbedBuilder().WithColor(Color.Blue)
-                            .WithAuthor(eab => eab.WithUrl("https://vulpineutility.net/")
-                                .WithIconUrl("https://i.imgur.com/cqx791R.jpg")
-                                .WithName($"Vulpine - Roblox Info"))
+                            .WithAuthor(eab => eab.WithUrl("https://roblox.com/")
+                                .WithIconUrl("https://i.imgur.com/jDcWXPD.png")
+                                .WithName($"[{RInfo["username"]}]'s Roblox Info"))
                             .WithThumbnailUrl($"http://www.roblox.com:80/Thumbs/Avatar.ashx?x=100&y=100&Format=Png&username={RInfo["username"]}")
                             .AddField(fb => fb.WithName("Username").WithValue($"[{RInfo["username"]}](https://www.roblox.com/users/{RUID["Id"]}/profile)").WithIsInline(true))
                             .AddField(fb => fb.WithName("User ID").WithValue($"{RUID["Id"]}").WithIsInline(true))
                             .AddField(fb => fb.WithName("Presence").WithValue($"{RStatus["LastLocation"]}").WithIsInline(true))
                             .AddField(fb => fb.WithName("Account Age").WithValue($"{RInfo["age"]}").WithIsInline(true))
-                            .AddField(fb => fb.WithName("Join Date").WithValue($"{RInfo["joinDate"]:MM.dd.yyyy HH:mm}").WithIsInline(true))
-                            .WithFooter("© Vulpine Utility"))
+                            .AddField(fb => fb.WithName("Join Date").WithValue($"{RInfo["joinDate"]:MM.dd.yyyy HH:mm}").WithIsInline(true)))
                             .ConfigureAwait(false);
                     // If Roblox User Blurb is nulled.
                     else if (string.IsNullOrEmpty($"{RInfo["blurb"]}"))
                         await ctx.Channel.EmbedAsync(new EmbedBuilder().WithColor(Color.Blue)
-                            .WithAuthor(eab => eab.WithUrl("https://vulpineutility.net/")
-                                .WithIconUrl("https://i.imgur.com/cqx791R.jpg")
-                                .WithName($"Vulpine - Roblox Info"))
+                            .WithAuthor(eab => eab.WithUrl("https://roblox.com/")
+                                .WithIconUrl("https://i.imgur.com/jDcWXPD.png")
+                                .WithName($"[{RInfo["username"]}]'s Roblox Info"))
                             .WithThumbnailUrl($"http://www.roblox.com:80/Thumbs/Avatar.ashx?x=100&y=100&Format=Png&username={RInfo["username"]}")
                             .AddField(fb => fb.WithName("Username").WithValue($"[{RInfo["username"]}](https://www.roblox.com/users/{RUID["Id"]}/profile)").WithIsInline(true))
                             .AddField(fb => fb.WithName("User ID").WithValue($"{RUID["Id"]}").WithIsInline(true))
                             .AddField(fb => fb.WithName("Presence").WithValue($"{RStatus["LastLocation"]}").WithIsInline(true))
                             .AddField(fb => fb.WithName("Account Age").WithValue($"{RInfo["age"]}").WithIsInline(true))
                             .AddField(fb => fb.WithName("Join Date").WithValue($"{RInfo["joinDate"]:MM.dd.yyyy HH:mm}").WithIsInline(true))
-                            .AddField(fb => fb.WithName("Status").WithValue($"{RInfo["status"]}").WithIsInline(false))
-                            .WithFooter("© Vulpine Utility"))
+                            .AddField(fb => fb.WithName("Status").WithValue($"{RInfo["status"]}").WithIsInline(false)))
                             .ConfigureAwait(false);
                     // If Roblox User Status is nulled.
                     else if (string.IsNullOrEmpty($"{RInfo["status"]}"))
                         await ctx.Channel.EmbedAsync(new EmbedBuilder().WithColor(Color.Blue)
-                            .WithAuthor(eab => eab.WithUrl("https://vulpineutility.net/")
-                                .WithIconUrl("https://i.imgur.com/cqx791R.jpg")
-                                .WithName($"Vulpine - Roblox Info"))
+                            .WithAuthor(eab => eab.WithUrl("https://roblox.com/")
+                                .WithIconUrl("https://i.imgur.com/jDcWXPD.png")
+                                .WithName($"[{RInfo["username"]}]'s Roblox Info"))
                             .WithThumbnailUrl($"http://www.roblox.com:80/Thumbs/Avatar.ashx?x=100&y=100&Format=Png&username={RInfo["username"]}")
                             .AddField(fb => fb.WithName("Username").WithValue($"[{RInfo["username"]}](https://www.roblox.com/users/{RUID["Id"]}/profile)").WithIsInline(true))
                             .AddField(fb => fb.WithName("User ID").WithValue($"{RUID["Id"]}").WithIsInline(true))
                             .AddField(fb => fb.WithName("Presence").WithValue($"{RStatus["LastLocation"]}").WithIsInline(true))
                             .AddField(fb => fb.WithName("Account Age").WithValue($"{RInfo["age"]}").WithIsInline(true))
                             .AddField(fb => fb.WithName("Join Date").WithValue($"{RInfo["joinDate"]:MM.dd.yyyy HH:mm}").WithIsInline(true))
-                            .AddField(fb => fb.WithName("Blurb").WithValue($"{RInfo["blurb"]}").WithIsInline(false))
-                            .WithFooter("© Vulpine Utility"))
+                            .AddField(fb => fb.WithName("Blurb").WithValue($"{RInfo["blurb"]}").WithIsInline(false)))
                             .ConfigureAwait(false);
                     // If Roblox User Blurb and Status isn't nulled.
                     else
                         await ctx.Channel.EmbedAsync(new EmbedBuilder().WithColor(Color.Blue)
-                            .WithAuthor(eab => eab.WithUrl("https://vulpineutility.net/")
-                                .WithIconUrl("https://i.imgur.com/cqx791R.jpg")
-                                .WithName($"Vulpine - Roblox Info"))
+                            .WithAuthor(eab => eab.WithUrl("https://roblox.com/")
+                                .WithIconUrl("https://i.imgur.com/jDcWXPD.png")
+                                .WithName($"[{RInfo["username"]}]'s Roblox Info"))
                             .WithThumbnailUrl($"http://www.roblox.com:80/Thumbs/Avatar.ashx?x=100&y=100&Format=Png&username={RInfo["username"]}")
                             .AddField(fb => fb.WithName("Username").WithValue($"[{RInfo["username"]}](https://www.roblox.com/users/{RUID["Id"]}/profile)").WithIsInline(true))
                             .AddField(fb => fb.WithName("User ID").WithValue($"{RUID["Id"]}").WithIsInline(true))
@@ -122,8 +117,7 @@ namespace WizBot.Modules.Vulpine
                             .AddField(fb => fb.WithName("Account Age").WithValue($"{RInfo["age"]}").WithIsInline(true))
                             .AddField(fb => fb.WithName("Join Date").WithValue($"{RInfo["joinDate"]:MM.dd.yyyy HH:mm}").WithIsInline(true))
                             .AddField(fb => fb.WithName("Status").WithValue($"{RInfo["status"]}").WithIsInline(true))
-                            .AddField(fb => fb.WithName("Blurb").WithValue($"{RInfo["blurb"]}").WithIsInline(false))
-                            .WithFooter("© Vulpine Utility"))
+                            .AddField(fb => fb.WithName("Blurb").WithValue($"{RInfo["blurb"]}").WithIsInline(false)))
                             .ConfigureAwait(false);
                 // }
             }

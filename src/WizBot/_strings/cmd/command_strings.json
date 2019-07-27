@@ -3470,7 +3470,7 @@
   },
   "rinfo": {
     "cmd": "rinfo",
-    "desc": "Display a Roblox User profile information from the Vulpine API.",
+    "desc": "Display a Roblox User profile information from the Roblox API.",
     "usage": [
       "{0}rinfo Rich151"
     ]
