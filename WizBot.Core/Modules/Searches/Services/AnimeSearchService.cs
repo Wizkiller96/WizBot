@@ -1,5 +1,5 @@
 ﻿using AngleSharp;
-using AngleSharp.Dom.Html;
+using AngleSharp.Html.Dom;
 using WizBot.Core.Services;
 using WizBot.Modules.Searches.Common;
 using Newtonsoft.Json;

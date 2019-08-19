@@ -1,5 +1,4 @@
 ﻿using AngleSharp;
-using AngleSharp.Dom.Html;
 using Discord;
 using Discord.Commands;
 using WizBot.Extensions;
@@ -8,6 +7,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using WizBot.Common.Attributes;
+using AngleSharp.Html.Dom;
 
 namespace WizBot.Modules.Searches
 {
