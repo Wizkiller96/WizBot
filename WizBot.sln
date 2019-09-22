@@ -18,8 +18,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WizBot", "src\WizBot\WizBot
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WizBot.Core", "WizBot.Core\WizBot.Core.csproj", "{A6CCEFBD-DCF2-482C-9643-47664683548F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WizBot.Tests", "WizBot.Tests\WizBot.Tests.csproj", "{97121653-8571-4CD4-8529-9FFE9C9AABAA}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,12 +37,6 @@ Global
 		{A6CCEFBD-DCF2-482C-9643-47664683548F}.GlobalWizBot|Any CPU.Build.0 = Release|Any CPU
 		{A6CCEFBD-DCF2-482C-9643-47664683548F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6CCEFBD-DCF2-482C-9643-47664683548F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{97121653-8571-4CD4-8529-9FFE9C9AABAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{97121653-8571-4CD4-8529-9FFE9C9AABAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{97121653-8571-4CD4-8529-9FFE9C9AABAA}.GlobalWizBot|Any CPU.ActiveCfg = Debug|Any CPU
-		{97121653-8571-4CD4-8529-9FFE9C9AABAA}.GlobalWizBot|Any CPU.Build.0 = Debug|Any CPU
-		{97121653-8571-4CD4-8529-9FFE9C9AABAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{97121653-8571-4CD4-8529-9FFE9C9AABAA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
