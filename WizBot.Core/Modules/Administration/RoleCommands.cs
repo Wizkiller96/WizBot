@@ -17,7 +17,7 @@ namespace WizBot.Modules.Administration
     {
         public class RoleCommands : WizBotSubmodule<RoleCommandsService>
         {
-            public enum Excl { Excl }
+            public enum Exclude { Excl }
 
             public async Task InternalReactionRoles(bool exclusive, params string[] input)
             {
@@ -104,7 +104,7 @@ namespace WizBot.Modules.Administration
             [UserPerm(GuildPerm.ManageRoles)]
             [BotPerm(GuildPerm.ManageRoles)]
             [Priority(1)]
-            public Task ReactionRoles(Excl _, params string[] input) =>
+            public Task ReactionRoles(Exclude _, params string[] input) =>
                 InternalReactionRoles(true, input);
 
             [WizBotCommand, Usage, Description, Aliases]

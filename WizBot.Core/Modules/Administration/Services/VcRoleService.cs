@@ -146,7 +146,7 @@ namespace WizBot.Modules.Administration.Services
             if (!VcRoles.TryGetValue(guildId, out var guildVcRoles))
                 return false;
 
-            if (!guildVcRoles.TryGetValue(vcId, out _))
+            if (!guildVcRoles.TryRemove(vcId, out _))
                 return false;
 
             using (var uow = _db.GetDbContext())
