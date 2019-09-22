@@ -242,7 +242,6 @@ namespace WizBot.Modules.Searches
                     await ReplyConfirmLocalizedAsync("stream_message_set", url).ConfigureAwait(false);
                 }
             }
-            //todo default message
 
             private static bool GetNameAndType(string url, out (string, FollowedStream.FType)? nameAndType)
             {

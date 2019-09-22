@@ -49,7 +49,6 @@ namespace WizBot.Modules.Searches.Common
 
             if (tags.Any(x => blacklistedTags.Contains(x)))
             {
-                // todo localize blacklisted_tag (already exists)
                 throw new Exception("One of the specified tags is blacklisted");
             }
 
