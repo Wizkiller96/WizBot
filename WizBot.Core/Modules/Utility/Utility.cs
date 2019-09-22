@@ -381,16 +381,16 @@ namespace WizBot.Modules.Utility
                 // Only temp solution for now as I had no time to clean up the mess.
 
                 var newCommits = (
-                    $"[" + $"{obj[0]["sha"]}".TrimTo(6, true) + $"]({obj[0]["html_url"]})" + $" {obj[0]["commit"]["message"]}".TrimTo(50) + $"\n- {obj[0]["author"]["login"]}" + "\n\n" +
-                    $"[" + $"{obj[1]["sha"]}".TrimTo(6, true) + $"]({obj[1]["html_url"]})" + $" {obj[1]["commit"]["message"]}".TrimTo(50) + $"\n- {obj[1]["author"]["login"]}" + "\n\n" +
-                    $"[" + $"{obj[2]["sha"]}".TrimTo(6, true) + $"]({obj[2]["html_url"]})" + $" {obj[2]["commit"]["message"]}".TrimTo(50) + $"\n- {obj[2]["author"]["login"]}" + "\n\n" +
-                    $"[" + $"{obj[3]["sha"]}".TrimTo(6, true) + $"]({obj[3]["html_url"]})" + $" {obj[3]["commit"]["message"]}".TrimTo(50) + $"\n- {obj[3]["author"]["login"]}" + "\n\n" +
-                    $"[" + $"{obj[4]["sha"]}".TrimTo(6, true) + $"]({obj[4]["html_url"]})" + $" {obj[4]["commit"]["message"]}".TrimTo(50) + $"\n- {obj[4]["author"]["login"]}" + "\n\n" +
-                    $"[" + $"{obj[5]["sha"]}".TrimTo(6, true) + $"]({obj[5]["html_url"]})" + $" {obj[5]["commit"]["message"]}".TrimTo(50) + $"\n- {obj[5]["author"]["login"]}" + "\n\n" +
-                    $"[" + $"{obj[6]["sha"]}".TrimTo(6, true) + $"]({obj[6]["html_url"]})" + $" {obj[6]["commit"]["message"]}".TrimTo(50) + $"\n- {obj[6]["author"]["login"]}" + "\n\n" +
-                    $"[" + $"{obj[7]["sha"]}".TrimTo(6, true) + $"]({obj[7]["html_url"]})" + $" {obj[7]["commit"]["message"]}".TrimTo(50) + $"\n- {obj[7]["author"]["login"]}" + "\n\n" +
-                    $"[" + $"{obj[8]["sha"]}".TrimTo(6, true) + $"]({obj[8]["html_url"]})" + $" {obj[8]["commit"]["message"]}".TrimTo(50) + $"\n- {obj[8]["author"]["login"]}" + "\n\n" +
-                    $"[" + $"{obj[9]["sha"]}".TrimTo(6, true) + $"]({obj[9]["html_url"]})" + $" {obj[9]["commit"]["message"]}".TrimTo(50) + $"\n- {obj[9]["author"]["login"]}"
+                    $"[" + $"{obj[0]["sha"]}".TrimTo(6, true) + $"]({obj[0]["html_url"]})" + $" {obj[0]["commit"]["message"]}".TrimTo(50) + $"\n- {obj[0]["author"]["login"]}" + " | " + $"`{obj[0]["commit"]["author"]["date"].ToString()}`" + "\n\n" +
+                    $"[" + $"{obj[1]["sha"]}".TrimTo(6, true) + $"]({obj[1]["html_url"]})" + $" {obj[1]["commit"]["message"]}".TrimTo(50) + $"\n- {obj[1]["author"]["login"]}" + " | " + $"`{obj[1]["commit"]["author"]["date"].ToString()}`" + "\n\n" +
+                    $"[" + $"{obj[2]["sha"]}".TrimTo(6, true) + $"]({obj[2]["html_url"]})" + $" {obj[2]["commit"]["message"]}".TrimTo(50) + $"\n- {obj[2]["author"]["login"]}" + " | " + $"`{obj[2]["commit"]["author"]["date"].ToString()}`" + "\n\n" +
+                    $"[" + $"{obj[3]["sha"]}".TrimTo(6, true) + $"]({obj[3]["html_url"]})" + $" {obj[3]["commit"]["message"]}".TrimTo(50) + $"\n- {obj[3]["author"]["login"]}" + " | " + $"`{obj[3]["commit"]["author"]["date"].ToString()}`" + "\n\n" +
+                    $"[" + $"{obj[4]["sha"]}".TrimTo(6, true) + $"]({obj[4]["html_url"]})" + $" {obj[4]["commit"]["message"]}".TrimTo(50) + $"\n- {obj[4]["author"]["login"]}" + " | " + $"`{obj[4]["commit"]["author"]["date"].ToString()}`" + "\n\n" +
+                    $"[" + $"{obj[5]["sha"]}".TrimTo(6, true) + $"]({obj[5]["html_url"]})" + $" {obj[5]["commit"]["message"]}".TrimTo(50) + $"\n- {obj[5]["author"]["login"]}" + " | " + $"`{obj[5]["commit"]["author"]["date"].ToString()}`" + "\n\n" +
+                    $"[" + $"{obj[6]["sha"]}".TrimTo(6, true) + $"]({obj[6]["html_url"]})" + $" {obj[6]["commit"]["message"]}".TrimTo(50) + $"\n- {obj[6]["author"]["login"]}" + " | " + $"`{obj[6]["commit"]["author"]["date"].ToString()}`" + "\n\n" +
+                    $"[" + $"{obj[7]["sha"]}".TrimTo(6, true) + $"]({obj[7]["html_url"]})" + $" {obj[7]["commit"]["message"]}".TrimTo(50) + $"\n- {obj[7]["author"]["login"]}" + " | " + $"`{obj[7]["commit"]["author"]["date"].ToString()}`" + "\n\n" +
+                    $"[" + $"{obj[8]["sha"]}".TrimTo(6, true) + $"]({obj[8]["html_url"]})" + $" {obj[8]["commit"]["message"]}".TrimTo(50) + $"\n- {obj[8]["author"]["login"]}" + " | " + $"`{obj[8]["commit"]["author"]["date"].ToString()}`" + "\n\n" +
+                    $"[" + $"{obj[9]["sha"]}".TrimTo(6, true) + $"]({obj[9]["html_url"]})" + $" {obj[9]["commit"]["message"]}".TrimTo(50) + $"\n- {obj[9]["author"]["login"]}" + " | " + $"`{obj[9]["commit"]["author"]["date"].ToString()}`"
                 );
 
                 await ctx.Channel.EmbedAsync(
