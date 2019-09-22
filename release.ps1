@@ -1,5 +1,4 @@
-function Get-Changelog()
-{
+function Get-Changelog() {
     $lastTag = git describe --tags --abbrev=0
     $tag = "$lastTag..HEAD"
 
@@ -16,8 +15,7 @@ function Get-Changelog()
     }
 }
 
-function Build-Installer($versionNumber)
-{
+function Build-Installer($versionNumber) {
     $env:WIZBOT_INSTALL_VERSION = $versionNumber
 
     dotnet publish -c Release --runtime win7-x64
@@ -25,90 +23,29 @@ function Build-Installer($versionNumber)
 
     & "iscc.exe" "/O+" ".\WizBot.iss"
 
-    $path = [Environment]::GetFolderPath('MyDocuments') + "\_projekti\WizBotInstallerOutput\WizBot-setup-$versionNumber.exe";
-    $dest = [Environment]::GetFolderPath('MyDocuments') + "\_projekti\WizBotInstallerOutput\wizbot-setup.exe";
-    Copy-Item -Path $path -Destination $dest -Force
+    $path = [Environment]::GetFolderPath('MyDocuments') + "\_projekti\WizBotInstallerOutput\$versionNumber\wizbot-setup-$versionNumber.exe";
+    Copy-Item -Path $path -Destination $dest -Force -ErrorAction Stop
+
+    return $path
 }
 
-function GitHub-Release($versionNumber) {
-    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
-    $ErrorActionPreference = "Stop"
+function DigitaloceanRelease($versionNumber) {	
 
+    # pull the changes if they exist
     git pull
-    git push #making sure commit id exists on remote
+    # attempt to build teh installer
+    # $path = Build-Installer $versionNumber
 
-    $nl = [Environment]::NewLine
-    $env:WIZBOT_INSTALL_VERSION = $versionNumber
-    $gitHubApiKey = $env:GITHUB_API_KEY
-    
-    $commitId = git rev-parse HEAD
-
+    # get changelog before tagging
     $changelog = Get-Changelog
+    # tag the release
+    & (git tag, g$tag)
 
-    Write-Host $changelog 
+    # print out the changelog to the console
+    Write-Host $changelog 	
 
+    $jsonReleaseFile = "[{""VersionName"": ""$versionNumber"", ""DownloadLink"": ""https://wizbot.nyc3.digitaloceanspaces.com/releases/wizbot-setup-$versionNumber.exe"", ""Changelog"": ""$changelog""}]"
 
-    # set-alias sz "$env:ProgramFiles\7-Zip\7z.exe" 
-    # $source = "src\WizBot\bin\Release\PublishOutput\win7-x64" 
-    # $target = "src\WizBot\bin\Release\PublishOutput\WizBot.7z"
-
-    # sz 'a' '-mx3' $target $source
-
-    Build-Installer
-    $artifact = "wizbot-setup.exe";
-    $auth = 'Basic ' + [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes($gitHubApiKey + ":x-oauth-basic"));
-    Write-Host $changelog
-    $result = GitHubMake-Release $versionNumber $commitId $TRUE $gitHubApiKey $auth "" "$changelog"
-    $releaseId = $result | Select-Object -ExpandProperty id
-    $uploadUri = $result | Select-Object -ExpandProperty upload_url
-    $uploadUri = $uploadUri -creplace '\{\?name,label\}', "?name=$artifact"
-    Write-Host $releaseId $uploadUri
-    $uploadFile = [Environment]::GetFolderPath('MyDocuments') + "\projekti\WizBotInstallerOutput\$artifact"
-
-    $uploadParams = @{
-        Uri         = $uploadUri;
-        Method      = 'POST';
-        Headers     = @{
-            Authorization = $auth;
-        }
-        ContentType = 'application/x-msdownload';
-        InFile      = $uploadFile
-    }
-
-    Write-Host 'Uploading artifact'
-    $result = Invoke-RestMethod @uploadParams
-    Write-Host 'Artifact upload finished.'
-    $result = GitHubMake-Release $versionNumber $commitId $FALSE $gitHubApiKey $auth "$releaseId"
-    git pull
-    Write-Host 'Done 🎉'
-}
-
-function GitHubMake-Release($versionNumber, $commitId, $draft, $gitHubApiKey, $auth, $releaseId, $body) {
-    $releaseId = If ($releaseId -eq "") {""} Else {"/" + $releaseId};
-
-    Write-Host $versionNumber
-    Write-Host $commitId
-    Write-Host $draft
-    Write-Host $releaseId
-    Write-Host $body
-
-    $releaseData = @{
-        tag_name         = $versionNumber;
-        target_commitish = $commitId;
-        name             = [string]::Format("WizBot v{0}", $versionNumber);
-        body             = $body;
-        draft            = $draft;
-        prerelease       = $releaseId -ne "";
-    }
-
-    $releaseParams = @{
-        Uri         = "https://api.github.com/repos/Wizkiller96/WizBot/releases" + $releaseId;
-        Method      = 'POST';
-        Headers     = @{
-            Authorization = $auth;
-        }
-        ContentType = 'application/json';
-        Body        = (ConvertTo-Json $releaseData -Compress)
-    }
-    return Invoke-RestMethod @releaseParams
+    $releaseJsonOutPath = [Environment]::GetFolderPath('MyDocuments') + "\_projekti\WizBotInstallerOutput\$versionNumber\"
+    New-Item -Path $releaseJsonOutPath -Value $jsonReleaseFile -Name "releases.json" -Force
 }
