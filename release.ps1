@@ -15,9 +15,11 @@ function Get-Changelog() {
     }
 }
 
-function Build-Installer($versionNumber) {
+function Build-Installer($versionNumber) 
+{
     $env:WIZBOT_INSTALL_VERSION = $versionNumber
 
+    dotnet clean
     dotnet publish -c Release --runtime win7-x64
     .\rcedit-x64.exe "src\WizBot\bin\Release\netcoreapp2.1\win7-x64\wizbot.exe" --set-icon "src\WizBot\bin\Release\netcoreapp2.1\win7-x64\wizbot_icon.ico"
 
