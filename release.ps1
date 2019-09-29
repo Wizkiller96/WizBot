@@ -41,7 +41,7 @@ function DigitaloceanRelease($versionNumber) {
     # get changelog before tagging
     $changelog = Get-Changelog
     # tag the release
-    & (git tag, g$tag)
+    # & (git tag, g$tag)
 
     # print out the changelog to the console
     Write-Host $changelog 	
