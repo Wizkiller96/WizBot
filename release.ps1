@@ -36,12 +36,12 @@ function DigitaloceanRelease($versionNumber) {
     # pull the changes if they exist
     git pull
     # attempt to build teh installer
-    # $path = Build-Installer $versionNumber
+    $path = Build-Installer $versionNumber
 
     # get changelog before tagging
     $changelog = Get-Changelog
     # tag the release
-    # & (git tag, g$tag)
+    # & (git tag, $tag)
 
     # print out the changelog to the console
     Write-Host $changelog 	
