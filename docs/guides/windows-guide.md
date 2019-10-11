@@ -26,7 +26,7 @@ _If you have Windows 7 or a 32-bit system, please refer to the_ [_From Source_](
 
 ## Setup
 
-* Download and run the [WizBot Updater](https://dl.wizbot.cf/). **Currently not avaliable.**
+* Download and run the [WizBot Updater](https://dl.wizbot.cc/). **Currently not avaliable.**
 * Click on `Install Redis` to install Redis.
 * Select this option during the Redis installation:
 * ![Redis PATH](https://i.imgur.com/uUby6Xw.png)

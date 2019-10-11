@@ -46,7 +46,7 @@ Name:"{app}\{#sysfolder}"; Permissions: everyone-modify
 [Run]
 Filename: "http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/"; Flags: postinstall shellexec runasoriginaluser; Description: "Open setup guide"
 Filename: "{app}\{#sysfolder}\credentials.json"; Flags: postinstall shellexec runasoriginaluser; Description: "Open credentials file"
-Filename: "http://wizbot.cf/"; Flags: postinstall shellexec runasoriginaluser; Description: "Visit WizBot's Website"
+Filename: "http://wizbot.cc/"; Flags: postinstall shellexec runasoriginaluser; Description: "Visit WizBot's Website"
 
 [Icons]
 ; for pretty install directory
@@ -76,7 +76,7 @@ Root: "HKLM"; Subkey: "SOFTWARE\WizBot"; \
     Flags: deletevalue uninsdeletekeyifempty uninsdeletevalue;
 
 [Messages]
-WelcomeLabel2=Hello, if you have any issues, join https://wizbot.cf/discord and ask for help in #help channel.%n%nIt is recommended that you CLOSE any ANTI VIRUS before continuing.
+WelcomeLabel2=Hello, if you have any issues, join https://wizbot.cc/discord and ask for help in #help channel.%n%nIt is recommended that you CLOSE any ANTI VIRUS before continuing.
 
 ;ask the user if they want to delete all settings
 [Code]

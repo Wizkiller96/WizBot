@@ -50,7 +50,7 @@ The whole list of commands can be found [here](http://wizbot.readthedocs.io/en/l
 
 **Answer:** You need to use oauth link to add it to you server, just copy your **CLIENT ID** \(that's in the same [Developer page](https://discordapp.com/developers/applications/me) where you brought your token\) and replace `12345678` in the link below: [https://discordapp.com/oauth2/authorize?client\_id=\`12345678\`&scope=bot&permissions=66186303](https://discordapp.com/oauth2/authorize?client_id=`12345678`&scope=bot&permissions=66186303)
 
-Follow this Detailed [Guide](http://wizbot.cf/invite-guide.html).
+Follow this Detailed [Guide](http://wizbot.cc/invite-guide.html).
 
 ## Question 12:  I'm building WizBot from source, but I get hundreds of \(namespace\) errors without changing anything!?
 

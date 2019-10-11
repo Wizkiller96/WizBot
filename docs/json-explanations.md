@@ -258,5 +258,5 @@ _NOTE: You don't have to worry if you don't have the_ `WizBot.db` _file, it gets
 * **ShardRunPort**
   * Bot uses a random UDP port in \[5000, 6000\] range for communication between shards
 
-[Invite Guide]: [https://wizbot.cf/invite-guide.html](https://wizbot.cf/invite-guide.html)
+[Invite Guide]: [https://wizbot.cc/invite-guide.html](https://wizbot.cc/invite-guide.html)
 

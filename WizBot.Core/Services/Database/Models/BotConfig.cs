@@ -53,7 +53,7 @@ For a specific command help, use `{1}h CommandName` (for example {1}h {1}q)
 
 
 **LIST OF COMMANDS CAN BE FOUND ON THIS LINK**
-<https://commands.wizbot.cf/>
+<https://commands.wizbot.cc/>
 
 
 WizNet's Community Server: https://discord.gg/0YNaDOYuD5QOpeNI";

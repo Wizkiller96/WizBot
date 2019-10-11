@@ -47,7 +47,7 @@ namespace WizBot.Modules.Roblox
                 using (var http = _httpFactory.CreateClient())
                 {
                     //RChecker = JObject.Parse(await http.GetStringAsync($"https://auth.roblox.com/v2/usernames/validate?request.birthday=01%2F01%2F1990&request.username={username}").ConfigureAwait(false));
-                    RInfo = JObject.Parse(await http.GetStringAsync($"https://wizbot.cf/api/v1/roblox/getPlayerInfo/{username}").ConfigureAwait(false));
+                    RInfo = JObject.Parse(await http.GetStringAsync($"https://wizbot.cc/api/v1/roblox/getPlayerInfo/{username}").ConfigureAwait(false));
                     RUID = JObject.Parse(await http.GetStringAsync($"http://api.roblox.com/users/get-by-username?username={username}").ConfigureAwait(false));
                     RStatus = JObject.Parse(await http.GetStringAsync($"http://api.roblox.com/users/{RUID["Id"]}/onlinestatus").ConfigureAwait(false));
                 }

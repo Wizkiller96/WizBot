@@ -1,6 +1,6 @@
 # Permissions Overview
 
-Have you ever felt confused or even overwhelmed when trying to set WizBot's permissions? In this guide we will be explaining how to use the permission commands correctly and even cover a few common questions! Every command we discuss here can be found in the [Commands List](https://commands.wizbot.cf).
+Have you ever felt confused or even overwhelmed when trying to set WizBot's permissions? In this guide we will be explaining how to use the permission commands correctly and even cover a few common questions! Every command we discuss here can be found in the [Commands List](https://commands.wizbot.cc).
 
 ## Why do we use the Permissions Commands?
 
@@ -20,7 +20,7 @@ To change permissions you **must** meet the following requirements:
 
 ## Basics & Hierarchy
 
-The [Commands List](https://commands.wizbot.cf) is a great tool which lists **all** available commands, however we'll go over a few of them here.
+The [Commands List](https://commands.wizbot.cc) is a great tool which lists **all** available commands, however we'll go over a few of them here.
 
 First, let's explain how the permissions system works - It's simple once you figure out how each command works! The permissions system works as a chain. Everytime a command is used, the permissions chain is checked. Starting from the top of it, the command is compared to a rule, if it isn't either allowed or disallowed by that rule it proceeds to check the next rule all the way till it reaches the bottom rule, which allows all commands.
 

@@ -237,8 +237,8 @@ namespace WizBot.Modules.Help
         public async Task Guide()
         {
             await ConfirmLocalizedAsync("guide",
-                "https://commands.wizbot.cf/",
-                "http://ndocs.wizbot.cf/").ConfigureAwait(false);
+                "https://commands.wizbot.cc/",
+                "http://ndocs.wizbot.cc/").ConfigureAwait(false);
         }
 
 #if GLOBAL_WIZBOT

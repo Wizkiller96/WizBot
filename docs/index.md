@@ -22,7 +22,7 @@ If you want to contribute, be sure to PR on the current **[default](https://gith
 	- [From Source](guides/From Source.md)
 - Commands
 	- [Readme](Readme.md)
-	- [Commands List](https://commands.wizbot.cf)
+	- [Commands List](https://commands.wizbot.cc)
 - Features Explained
 	- [Permissions System](Permissions System.md)
 	- [JSON Explanations](JSON Explanations.md)

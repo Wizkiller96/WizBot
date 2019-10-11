@@ -236,7 +236,7 @@ namespace WizBot.Modules.Utility
             await ctx.Channel.EmbedAsync(
                 new EmbedBuilder().WithOkColor()
                     .WithAuthor(eab => eab.WithName($"WizBot v{StatsService.BotVersion}")
-                                          .WithUrl("http://ndocs.wizbot.cf/")
+                                          .WithUrl("http://ndocs.wizbot.cc/")
                                           .WithIconUrl("http://i.imgur.com/fObUYFS.jpg"))
                                           .WithImageUrl("https://i.imgur.com/hT2UCqu.jpg")
                     .AddField(efb => efb.WithName(GetText("author")).WithValue(_stats.Author).WithIsInline(true))

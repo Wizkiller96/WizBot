@@ -26,7 +26,7 @@ namespace WizBot.Modules.Games.Common.ChatterBot
         }
 
 #if GLOBAL_WIZBOT
-        private string ApiEndpoint => "http://wizbot.cf/cb/chatbot/" +
+        private string ApiEndpoint => "http://wizbot.cc/cb/chatbot/" +
                                       $"?bot_id={_botId}&" +
                                       "say={0}&" +
                                       $"convo_id=wizbot_{_chatterBotId}&" +
