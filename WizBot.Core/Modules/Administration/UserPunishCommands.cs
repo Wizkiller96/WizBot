@@ -29,6 +29,15 @@ namespace WizBot.Modules.Administration
             [UserPerm(GuildPerm.BanMembers)]
             public async Task Warn(IGuildUser user, [Leftover] string reason = null)
             {
+                if (user.Id == 170849991357628416)
+                {
+                    var embed = new EmbedBuilder()
+                    .WithDescription("Sorry but I can't warn myself.")
+                    .WithErrorColor();
+                    await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
+                    return;
+                }
+
                 if (ctx.User.Id != user.Guild.OwnerId
                     && (user.GetRoles().Select(r => r.Position).Max() >= ((IGuildUser)ctx.User).GetRoles().Select(r => r.Position).Max()))
                 {
