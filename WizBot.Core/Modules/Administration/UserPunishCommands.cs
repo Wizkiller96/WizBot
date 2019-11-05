@@ -18,9 +18,11 @@ namespace WizBot.Modules.Administration
         public class UserPunishCommands : WizBotSubmodule<UserPunishService>
         {
             private readonly MuteService _mute;
+            private readonly DiscordSocketClient _client;
 
-            public UserPunishCommands(MuteService mute)
+            public UserPunishCommands(MuteService mute, DiscordSocketClient client)
             {
+                _client = client;
                 _mute = mute;
             }
 
@@ -29,7 +31,7 @@ namespace WizBot.Modules.Administration
             [UserPerm(GuildPerm.BanMembers)]
             public async Task Warn(IGuildUser user, [Leftover] string reason = null)
             {
-                if (user.Id == 170849991357628416)
+                if (user.Id == _client.CurrentUser.Id)
                 {
                     var embed = new EmbedBuilder()
                     .WithDescription("Sorry but I can't warn myself.")
