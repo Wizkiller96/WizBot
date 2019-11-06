@@ -8,9 +8,9 @@
 | [Updating WizBot](#updating-wizbot) |
 | [Manually Installing the Prerequisites from the Updater](#if-the-updater-fails-to-install-the-prerequisites-for-any-reason) |
 
-_Note: If you want to make changes to WizBot's source code, please follow the_ [_From Source_](https://wizbot.readthedocs.io/en/latest/guides/From%20Source/) _guide instead._
+*Note: If you want to make changes to WizBot's source code, please follow the [From Source](https://wizbot.readthedocs.io/en/latest/guides/From%20Source/) guide instead.*
 
-_If you have Windows 7 or a 32-bit system, please refer to the_ [_From Source_](https://wizbot.readthedocs.io/en/latest/guides/From%20Source/) _or_ [_Docker_](https://wizbot.readthedocs.io/en/latest/guides/Docker%20Guide/) _guides._
+*If you have Windows 7 or a 32-bit system, please refer to the [From Source](https://wizbot.readthedocs.io/en/latest/guides/From%20Source/) guide.*
 
 ## Prerequisites
 

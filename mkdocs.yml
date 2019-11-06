@@ -7,11 +7,10 @@ pages:
     - Windows Guide: guides/windows-guide.md
     - Linux Guide: guides/linux-guide.md
     - OSX Guide: guides/osx-guide.md
-    - Docker Guide: guides/docker-guide.md
     - From Source: guides/from-source.md
 - Commands:
     - Readme: readme.md
-    - Commands List: commands-list.md
+    - Commands List: https://commands.wizbot.cc/
 - Features Explained:
     - JSON Explanations: json-explanations.md
     - Permissions System: permissions-system.md
