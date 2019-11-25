@@ -5790,6 +5790,19 @@
     },
     {
       "Aliases": [
+        ".donators"
+      ],
+      "Description": "List of WizBot Donators.",
+      "Usage": [
+        ".donators"
+      ],
+      "Submodule": "InfoCommands",
+      "Module": "Utility",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
         ".activity"
       ],
       "Description": "Checks for spammers.",

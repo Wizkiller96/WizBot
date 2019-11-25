@@ -650,6 +650,13 @@
       "{0}uinfo @SomeUser"
     ]
   },
+  "donators": {
+    "Cmd": "donators",
+    "Desc": "List of WizBot Donators.",
+    "Usage": [
+      "{0}donators"
+    ]
+  },
   "whosplaying": {
     "Cmd": "whosplaying whpl",
     "Desc": "Shows a list of users who are playing the specified game.",
