@@ -231,7 +231,7 @@
       ],
       "Description": "Deletes everything from WaifuUpdates, WaifuItem and WaifuInfo tables for the specified user. Also makes specified user's waifus free.",
       "Usage": [
-        ".deletewaifus"
+        ".deletewaifu @user"
       ],
       "Submodule": "DangerousCommands",
       "Module": "Administration",
@@ -5900,11 +5900,12 @@
     },
     {
       "Aliases": [
-        "..."
+        ".rq",
+        ".rquote"
       ],
       "Description": "Shows a random quote with a specified name.",
       "Usage": [
-        "... abc"
+        ".rq abc"
       ],
       "Submodule": "QuoteCommands",
       "Module": "Utility",
