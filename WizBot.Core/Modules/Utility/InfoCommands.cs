@@ -161,14 +161,6 @@ namespace WizBot.Modules.Utility
                         CmdHandler.UserMessagesSent.Count)))
                     .WithDescription(str.ToString())).ConfigureAwait(false);
             }
-            [WizBotCommand, Usage, Description, Aliases]
-            public async Task Donators()
-            {
-                await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                    .WithTitle($"WizBot - Donators")
-                    .WithDescription("List of users who have donated to WizBot.")
-                    .AddField(fb => fb.WithName("Donators:").WithValue(string.Join("\n", _client.GetGuild(99273784988557312).GetRole(280182841114099722).Members)))).ConfigureAwait(false);
-            }
         }
     }
 }

@@ -407,5 +407,19 @@ namespace WizBot.Modules.Utility
                 await ctx.Channel.SendErrorAsync(ex.Message).ConfigureAwait(false);
             }
         }
+        [WizBotCommand, Usage, Description, Aliases]
+        public async Task Donators()
+        {
+#if GLOBAL_WIZBOT
+            await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
+                .WithTitle($"WizBot - Donators")
+                .WithDescription("List of users who have donated to WizBot.")
+                .AddField(fb => fb.WithName("Donators:").WithValue(string.Join("\n", _client.GetGuild(99273784988557312).GetRole(280182841114099722).Members)))).ConfigureAwait(false);
+#else
+            await ctx.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
+                .WithTitle($"WizBot - Donators")
+                .WithDescription("This command is disabled on self-host bots.")).ConfigureAwait(false);
+#endif
+        }
     }
 }
