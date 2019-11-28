@@ -5655,6 +5655,19 @@
     },
     {
       "Aliases": [
+        ".donators"
+      ],
+      "Description": "List of WizBot Donators.",
+      "Usage": [
+        ".donators"
+      ],
+      "Submodule": "Utility",
+      "Module": "Utility",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
         ".botconfigedit",
         ".bce"
       ],
@@ -5782,19 +5795,6 @@
       "Description": "Shows info about the user. If no user is supplied, it defaults a user running the command.",
       "Usage": [
         ".uinfo @SomeUser"
-      ],
-      "Submodule": "InfoCommands",
-      "Module": "Utility",
-      "Options": null,
-      "Requirements": []
-    },
-    {
-      "Aliases": [
-        ".donators"
-      ],
-      "Description": "List of WizBot Donators.",
-      "Usage": [
-        ".donators"
       ],
       "Submodule": "InfoCommands",
       "Module": "Utility",
