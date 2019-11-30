@@ -410,15 +410,26 @@ namespace WizBot.Modules.Utility
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Donators()
         {
+
 #if GLOBAL_WIZBOT
+
+            // Make it so it wont error when no users are found.
+            var dusers = _client.GetGuild(99273784988557312).GetRole(280182841114099722).Members;
+            var pusers = _client.GetGuild(99273784988557312).GetRole(299174013597646868).Members;
+
             await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                 .WithTitle($"WizBot - Donators")
                 .WithDescription("List of users who have donated to WizBot.")
-                .AddField(fb => fb.WithName("Donators:").WithValue(string.Join("\n", _client.GetGuild(99273784988557312).GetRole(280182841114099722).Members)))).ConfigureAwait(false);
+                .AddField(fb => fb.WithName("Donators:").WithValue(string.Join("\n", dusers)))).ConfigureAwait(false);
+
+            await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
+                .WithTitle($"WizBot - Patreon Donators")
+                .WithDescription("List of users who have donated through WizNet's Patreon.")
+                .AddField(fb => fb.WithName("Patreon Donators:").WithValue(string.Join("\n", pusers)))).ConfigureAwait(false);
 #else
             await ctx.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
-                .WithTitle($"WizBot - Donators")
-                .WithDescription("This command is disabled on self-host bots.")).ConfigureAwait(false);
+            .WithTitle($"WizBot - Donators")
+            .WithDescription("This command is disabled on self-host bots.")).ConfigureAwait(false);
 #endif
         }
     }
