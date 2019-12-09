@@ -117,7 +117,7 @@ namespace WizBot.Modules.Gambling
 
                 // Vulpine Bot Revamp
 
-                if (target.Id == 585501068067340297)
+                if (target.Id == 644341690823344140)
                 {
                     var embed = new EmbedBuilder()
                     .WithAuthor(eab => eab.WithUrl("https://vulpineutility.co.uk/")
