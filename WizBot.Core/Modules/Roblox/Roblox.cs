@@ -64,23 +64,7 @@ namespace WizBot.Modules.Roblox
                 else
                 { */
                     // If Roblox User Blurb and Status is nulled.
-                    if ((string.IsNullOrEmpty($"{RInfo["blurb"]}")) && (string.IsNullOrEmpty($"{RInfo["status"]}")))
-                        await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                            .WithAuthor(eab => eab.WithUrl("https://roblox.com/")
-                                .WithIconUrl("https://i.imgur.com/jDcWXPD.png")
-                                .WithName($"{RInfo["username"]}'s Roblox Info"))
-                            .WithThumbnailUrl($"http://www.roblox.com:80/Thumbs/Avatar.ashx?x=100&y=100&Format=Png&username={RInfo["username"]}")
-                            .AddField(fb => fb.WithName("Username").WithValue($"[{RInfo["username"]}](https://www.roblox.com/users/{RInfo["userid"]}/profile)").WithIsInline(true))
-                            .AddField(fb => fb.WithName("User ID").WithValue($"{RInfo["userid"]}").WithIsInline(true))
-                            .AddField(fb => fb.WithName("Friends").WithValue($"{RInfo["friends"]}").WithIsInline(true))
-                            .AddField(fb => fb.WithName("Followers").WithValue($"{RInfo["followers"]}").WithIsInline(true))
-                            .AddField(fb => fb.WithName("Following").WithValue($"{RInfo["following"]}").WithIsInline(true))
-                            .AddField(fb => fb.WithName("Presence").WithValue($"{RStatus["LastLocation"]}").WithIsInline(true))
-                            .AddField(fb => fb.WithName("Account Age").WithValue($"{RInfo["age"]}").WithIsInline(true))
-                            .AddField(fb => fb.WithName("Join Date").WithValue($"{RInfo["joinDate"]:MM.dd.yyyy HH:mm}").WithIsInline(true)))
-                            .ConfigureAwait(false);
-                    // If Roblox User Blurb is nulled.
-                    else if (string.IsNullOrEmpty($"{RInfo["blurb"]}"))
+                     var none = "N/A";
                         await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                             .WithAuthor(eab => eab.WithUrl("https://roblox.com/")
                                 .WithIconUrl("https://i.imgur.com/jDcWXPD.png")
@@ -94,43 +78,9 @@ namespace WizBot.Modules.Roblox
                             .AddField(fb => fb.WithName("Presence").WithValue($"{RStatus["LastLocation"]}").WithIsInline(true))
                             .AddField(fb => fb.WithName("Account Age").WithValue($"{RInfo["age"]}").WithIsInline(true))
                             .AddField(fb => fb.WithName("Join Date").WithValue($"{RInfo["joinDate"]:MM.dd.yyyy HH:mm}").WithIsInline(true))
-                            .AddField(fb => fb.WithName("Status").WithValue($"{RInfo["status"]}").WithIsInline(false)))
-                            .ConfigureAwait(false);
-                    // If Roblox User Status is nulled.
-                    else if (string.IsNullOrEmpty($"{RInfo["status"]}"))
-                        await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                            .WithAuthor(eab => eab.WithUrl("https://roblox.com/")
-                                .WithIconUrl("https://i.imgur.com/jDcWXPD.png")
-                                .WithName($"{RInfo["username"]}'s Roblox Info"))
-                            .WithThumbnailUrl($"http://www.roblox.com:80/Thumbs/Avatar.ashx?x=100&y=100&Format=Png&username={RInfo["username"]}")
-                            .AddField(fb => fb.WithName("Username").WithValue($"[{RInfo["username"]}](https://www.roblox.com/users/{RInfo["userid"]}/profile)").WithIsInline(true))
-                            .AddField(fb => fb.WithName("User ID").WithValue($"{RInfo["userid"]}").WithIsInline(true))
-                            .AddField(fb => fb.WithName("Friends").WithValue($"{RInfo["friends"]}").WithIsInline(true))
-                            .AddField(fb => fb.WithName("Followers").WithValue($"{RInfo["followers"]}").WithIsInline(true))
-                            .AddField(fb => fb.WithName("Following").WithValue($"{RInfo["following"]}").WithIsInline(true))
-                            .AddField(fb => fb.WithName("Presence").WithValue($"{RStatus["LastLocation"]}").WithIsInline(true))
-                            .AddField(fb => fb.WithName("Account Age").WithValue($"{RInfo["age"]}").WithIsInline(true))
-                            .AddField(fb => fb.WithName("Join Date").WithValue($"{RInfo["joinDate"]:MM.dd.yyyy HH:mm}").WithIsInline(true))
-                            .AddField(fb => fb.WithName("Blurb").WithValue($"{RInfo["blurb"]}".TrimTo(170)).WithIsInline(false)))
-                            .ConfigureAwait(false);
-                    // If Roblox User Blurb and Status isn't nulled.
-                    else
-                        await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                            .WithAuthor(eab => eab.WithUrl("https://roblox.com/")
-                                .WithIconUrl("https://i.imgur.com/jDcWXPD.png")
-                                .WithName($"{RInfo["username"]}'s Roblox Info"))
-                            .WithThumbnailUrl($"http://www.roblox.com:80/Thumbs/Avatar.ashx?x=100&y=100&Format=Png&username={RInfo["username"]}")
-                            .AddField(fb => fb.WithName("Username").WithValue($"[{RInfo["username"]}](https://www.roblox.com/users/{RInfo["userid"]}/profile)").WithIsInline(true))
-                            .AddField(fb => fb.WithName("User ID").WithValue($"{RInfo["userid"]}").WithIsInline(true))
-                            .AddField(fb => fb.WithName("Friends").WithValue($"{RInfo["friends"]}").WithIsInline(true))
-                            .AddField(fb => fb.WithName("Followers").WithValue($"{RInfo["followers"]}").WithIsInline(true))
-                            .AddField(fb => fb.WithName("Following").WithValue($"{RInfo["following"]}").WithIsInline(true))
-                            .AddField(fb => fb.WithName("Presence").WithValue($"{RStatus["LastLocation"]}").WithIsInline(true))
-                            .AddField(fb => fb.WithName("Account Age").WithValue($"{RInfo["age"]}").WithIsInline(true))
-                            .AddField(fb => fb.WithName("Join Date").WithValue($"{RInfo["joinDate"]:MM.dd.yyyy HH:mm}").WithIsInline(true))
-                            .AddField(fb => fb.WithName("Status").WithValue($"{RInfo["status"]}").WithIsInline(false))
-                            .AddField(fb => fb.WithName("Blurb").WithValue($"{RInfo["blurb"]}".TrimTo(170)).WithIsInline(false)))
-                            .ConfigureAwait(false);
+                            .AddField(fb => fb.WithName("Status").WithValue(string.IsNullOrEmpty($"{RInfo["status"]}") ? none : ($"{RInfo["status"]}")).WithIsInline(false))
+                            .AddField(fb => fb.WithName("Blurb").WithValue(string.IsNullOrEmpty($"{RInfo["blurb"]}") ? none : ($"{RInfo["blurb"]}".TrimTo(170))).WithIsInline(false)))
+                        .ConfigureAwait(false);
                 //}
             }
             catch (Exception ex)
