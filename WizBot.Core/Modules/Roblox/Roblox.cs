@@ -1,4 +1,4 @@
-#if GLOBAL_WIZBOT
+//#if GLOBAL_WIZBOT
 using Discord;
 using Discord.Commands;
 using Newtonsoft.Json.Linq;
@@ -44,12 +44,15 @@ namespace WizBot.Modules.Roblox
                 JToken RInfo;
                 //JToken RUID;
                 JToken RStatus;
+                JToken RMT;
                 using (var http = _httpFactory.CreateClient())
                 {
                     //RChecker = JObject.Parse(await http.GetStringAsync($"https://auth.roblox.com/v2/usernames/validate?request.birthday=01%2F01%2F1990&request.username={username}").ConfigureAwait(false));
                     RInfo = JObject.Parse(await http.GetStringAsync($"https://wizbot.cc/api/v1/roblox/getPlayerInfo/{username}").ConfigureAwait(false));
                     // RUID = JObject.Parse(await http.GetStringAsync($"http://api.roblox.com/users/get-by-username?username={username}").ConfigureAwait(false)); // Backup UserId
                     RStatus = JObject.Parse(await http.GetStringAsync($"http://api.roblox.com/users/{RInfo["userid"]}/onlinestatus").ConfigureAwait(false));
+                    // Roblox Membership Type Checker
+                    RMT = JObject.Parse(await http.GetStringAsync($"https://groups.roblox.com/v1/users/{RInfo["userid"]}/group-membership-status").ConfigureAwait(false));
                 }
                 // Currently doesn't work at this time. If you know a sulotion feel free to try.
                 /* if ((bool) RChecker["code"] != false)
@@ -63,24 +66,33 @@ namespace WizBot.Modules.Roblox
                 }
                 else
                 { */
-                    // If Roblox User Blurb and Status is nulled.
-                     var none = "N/A";
-                        await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                            .WithAuthor(eab => eab.WithUrl("https://roblox.com/")
-                                .WithIconUrl("https://i.imgur.com/jDcWXPD.png")
-                                .WithName($"{RInfo["username"]}'s Roblox Info"))
-                            .WithThumbnailUrl($"http://www.roblox.com:80/Thumbs/Avatar.ashx?x=100&y=100&Format=Png&username={RInfo["username"]}")
-                            .AddField(fb => fb.WithName("Username").WithValue($"[{RInfo["username"]}](https://www.roblox.com/users/{RInfo["userid"]}/profile)").WithIsInline(true))
-                            .AddField(fb => fb.WithName("User ID").WithValue($"{RInfo["userid"]}").WithIsInline(true))
-                            .AddField(fb => fb.WithName("Friends").WithValue($"{RInfo["friends"]}").WithIsInline(true))
-                            .AddField(fb => fb.WithName("Followers").WithValue($"{RInfo["followers"]}").WithIsInline(true))
-                            .AddField(fb => fb.WithName("Following").WithValue($"{RInfo["following"]}").WithIsInline(true))
-                            .AddField(fb => fb.WithName("Presence").WithValue($"{RStatus["LastLocation"]}").WithIsInline(true))
-                            .AddField(fb => fb.WithName("Account Age").WithValue($"{RInfo["age"]}").WithIsInline(true))
-                            .AddField(fb => fb.WithName("Join Date").WithValue($"{RInfo["joinDate"]:MM.dd.yyyy HH:mm}").WithIsInline(true))
-                            .AddField(fb => fb.WithName("Status").WithValue(string.IsNullOrEmpty($"{RInfo["status"]}") ? none : ($"{RInfo["status"]}")).WithIsInline(false))
-                            .AddField(fb => fb.WithName("Blurb").WithValue(string.IsNullOrEmpty($"{RInfo["blurb"]}") ? none : ($"{RInfo["blurb"]}".TrimTo(170))).WithIsInline(false)))
-                        .ConfigureAwait(false);
+                // If Roblox User Blurb and Status is nulled.
+                var none = "N/A";
+                if ((int)RMT["membershipType"] == 4)
+                {
+                    RMT["membershipType"] = "Premium";
+                }
+                else
+                {
+                    RMT["membershipType"] = "None";
+                }
+                await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
+                    .WithAuthor(eab => eab.WithUrl("https://roblox.com/")
+                        .WithIconUrl("https://i.imgur.com/jDcWXPD.png")
+                        .WithName($"{RInfo["username"]}'s Roblox Info"))
+                    .WithThumbnailUrl($"http://www.roblox.com:80/Thumbs/Avatar.ashx?x=100&y=100&Format=Png&username={RInfo["username"]}")
+                    .AddField(fb => fb.WithName("Username").WithValue($"[{RInfo["username"]}](https://www.roblox.com/users/{RInfo["userid"]}/profile)").WithIsInline(true))
+                    .AddField(fb => fb.WithName("User ID").WithValue($"{RInfo["userid"]}").WithIsInline(true))
+                    .AddField(fb => fb.WithName("Friends").WithValue($"{RInfo["friends"]}").WithIsInline(true))
+                    .AddField(fb => fb.WithName("Followers").WithValue($"{RInfo["followers"]}").WithIsInline(true))
+                    .AddField(fb => fb.WithName("Following").WithValue($"{RInfo["following"]}").WithIsInline(true))
+                    .AddField(fb => fb.WithName("Membership").WithValue($"{RMT["membershipType"]}").WithIsInline(true))
+                    .AddField(fb => fb.WithName("Presence").WithValue($"{RStatus["LastLocation"]}").WithIsInline(true))
+                    .AddField(fb => fb.WithName("Account Age").WithValue($"{RInfo["age"]}").WithIsInline(true))
+                    .AddField(fb => fb.WithName("Join Date").WithValue($"{RInfo["joinDate"]:MM.dd.yyyy HH:mm}").WithIsInline(true))
+                    .AddField(fb => fb.WithName("Status").WithValue(string.IsNullOrEmpty($"{RInfo["status"]}") ? none : ($"{RInfo["status"]}")).WithIsInline(false))
+                    .AddField(fb => fb.WithName("Blurb").WithValue(string.IsNullOrEmpty($"{RInfo["blurb"]}") ? none : ($"{RInfo["blurb"]}".TrimTo(170))).WithIsInline(false)))
+                .ConfigureAwait(false);
                 //}
             }
             catch (Exception ex)
@@ -90,4 +102,4 @@ namespace WizBot.Modules.Roblox
         }
     }
 }
-#endif
+//#endif
