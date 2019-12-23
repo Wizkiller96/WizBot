@@ -55,19 +55,20 @@ namespace WizBot.Modules.Roblox
                     RMT = JObject.Parse(await http.GetStringAsync($"https://groups.roblox.com/v1/users/{RInfo["userid"]}/group-membership-status").ConfigureAwait(false));
                 }
                 // Currently doesn't work at this time. If you know a sulotion feel free to try.
-                /* if ((bool) RChecker["code"] != false)
-                {
-                    await ctx.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
-                    .WithAuthor(eab => eab.WithUrl("https://roblox.com/")
-                        .WithIconUrl("https://i.imgur.com/jDcWXPD.png")
-                        .WithName($"Roblox Info Error"))
-                    .WithDescription("The user you are trying to find doesn't exist or is banned. Please try again."))
-                    .ConfigureAwait(false);
-                }
-                else
-                { */
+                // if ((string)RInfo == "User does not exist")
+                // {
+                //     await ctx.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
+                //     .WithAuthor(eab => eab.WithUrl("https://roblox.com/")
+                //         .WithIconUrl("https://i.imgur.com/jDcWXPD.png")
+                //         .WithName($"Roblox Info Error"))
+                //     .WithDescription("The user you are trying to find doesn't exist or is banned. Please try again."))
+                //     .ConfigureAwait(false);
+                // }
+                // else
+                // {
                 // If Roblox User Blurb and Status is nulled.
                 var none = "N/A";
+                // Roblox Membership Type Checker
                 if ((int)RMT["membershipType"] == 4)
                 {
                     RMT["membershipType"] = "Premium";
