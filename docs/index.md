@@ -1,4 +1,4 @@
-# WizBot Documentation
+# Introduction
 
 To invite public WizBot to your server, click on the image bellow:
 
@@ -10,24 +10,26 @@ WizBot is an open source project, and it can be found on our [GitHub](https://gi
 
 Here you can read current [Issues](https://github.com/Wizkiller96/WizBot/issues).
 
-If you want to contribute, be sure to PR on the current **[default](https://github.com/Wizkiller96/WizBot/tree/1.9)** branch.
+If you want to contribute, be sure to PR on the current [**default**](https://github.com/Wizkiller96/WizBot/tree/1.9) branch.
 
-##Content
-- [About](about.md)
-- Guides
-	- [Windows Guide](guides/Windows Guide.md)
-	- [Linux Guide](guides/Linux Guide.md)
-	- [OSX Guide](guides/OSX Guide.md)
-	- [From Source](guides/From Source.md)
-- Commands
-	- [Readme](Readme.md)
-	- [Commands List](https://commands.wizbot.cc)
-- Features Explained
-	- [Permissions System](Permissions System.md)
-	- [JSON Explanations](JSON Explanations.md)
-	- [Custom Reactions](Custom Reactions.md)
-	- [Placeholders](Placeholders.md)
-	- [Bot Config](Bce Guide.md)
-- [Frequently Asked Questions](Frequently Asked Questions.md)
-- [Contribution Guide](Contribution Guide.md)
-- [Donate](Donate.md)
+## Content
+
+* [About](../about.md)
+* Guides
+  * [Windows Guide](https://github.com/Wizkiller96/WizBot/tree/d94a2e3060037139f33bad24aed51ca809473e48/docs/guides/Windows%20Guide.md)
+  * [Linux Guide](https://github.com/Wizkiller96/WizBot/tree/d94a2e3060037139f33bad24aed51ca809473e48/docs/guides/Linux%20Guide.md)
+  * [OSX Guide](https://github.com/Wizkiller96/WizBot/tree/d94a2e3060037139f33bad24aed51ca809473e48/docs/guides/OSX%20Guide.md)
+  * [From Source](https://github.com/Wizkiller96/WizBot/tree/d94a2e3060037139f33bad24aed51ca809473e48/docs/guides/From%20Source.md)
+* Commands
+  * [Readme](https://github.com/Wizkiller96/WizBot/tree/d94a2e3060037139f33bad24aed51ca809473e48/docs/Readme.md)
+  * [Commands List](https://commands.wizbot.cc)
+* Features Explained
+  * [Permissions System](https://github.com/Wizkiller96/WizBot/tree/d94a2e3060037139f33bad24aed51ca809473e48/docs/Permissions%20System.md)
+  * [JSON Explanations](https://github.com/Wizkiller96/WizBot/tree/d94a2e3060037139f33bad24aed51ca809473e48/docs/JSON%20Explanations.md)
+  * [Custom Reactions](https://github.com/Wizkiller96/WizBot/tree/d94a2e3060037139f33bad24aed51ca809473e48/docs/Custom%20Reactions.md)
+  * [Placeholders](https://github.com/Wizkiller96/WizBot/tree/d94a2e3060037139f33bad24aed51ca809473e48/docs/Placeholders.md)
+  * [Bot Config](https://github.com/Wizkiller96/WizBot/tree/d94a2e3060037139f33bad24aed51ca809473e48/docs/Bce%20Guide.md)
+* [Frequently Asked Questions](https://github.com/Wizkiller96/WizBot/tree/d94a2e3060037139f33bad24aed51ca809473e48/docs/Frequently%20Asked%20Questions.md)
+* [Contribution Guide](https://github.com/Wizkiller96/WizBot/tree/d94a2e3060037139f33bad24aed51ca809473e48/docs/Contribution%20Guide.md)
+* [Donate](https://github.com/Wizkiller96/WizBot/tree/d94a2e3060037139f33bad24aed51ca809473e48/docs/Donate.md)
+
