@@ -2,17 +2,17 @@
 
 | Table of Contents |
 | :--- |
-| [Installing with the CLI Installer](from-source.md#installing-with-the-cli-installer) |
-| [Setup \(CLI\)](from-source.md#setup-cli) |
-| [Launching WizBot \(CLI\)](from-source.md#launching-wizbot-cli) |
-| [Installing WizBot Manually](from-source.md#installing-wizbot-manually) |
-| [Setup](from-source.md#setup) |
-| [Launching WizBot](from-source.md#launching-wizbot) |
-| [Updating WizBot](from-source.md#updating-wizbot) |
+| [Installing with the CLI Installer](#installing-with-the-cli-installer) |
+| [Setup \(CLI\)](#setup-cli) |
+| [Launching WizBot \(CLI\)](#launching-wizbot-cli) |
+| [Installing WizBot Manually](#installing-wizbot-manually) |
+| [Setup](#setup) |
+| [Launching WizBot](#launching-wizbot) |
+| [Updating WizBot](#updating-wizbot) |
 
 ## Installing with the CLI Installer
 
-This is the recommended way of installing WizBot from source. If you don't want to use the installer, skip to [Installing WizBot Manually](from-source.md#installing-wizbot-manually).
+This is the recommended way of installing WizBot from source. If you don't want to use the installer, skip to [Installing WizBot Manually](#installing-wizbot-manually).
 
 ### Prerequisites \(CLI\)
 
@@ -36,7 +36,7 @@ This is the recommended way of installing WizBot from source. If you don't want 
 * Right click the `WizBotInstaller.bat` file and open it as Administrator
 * After the admin check, you should see main menu with the options below:
 
-```text
+```
 1. Download Latest Build
 2. Run WizBot (normally)
 3. Run WizBot with Auto Restart (check "if" WizBot is working properly, before using this)
@@ -106,7 +106,7 @@ If you want WizBot to play music, do the following:
     "ShardRunArguments": "run -c Release --no-build -- {0} {1}",
   ```
 
-* Move `youtube-dl.exe` and `ffmpeg.exe` into `wizBot/src/wizBot` \(or add them to your PATH environment variable, if you know how\)
+* Move `youtube-dl.exe` and `ffmpeg.exe` into `wizBot/src/wizBot` \(or add them to your PATH environment variable, if you know how\) 
 * **For 32-bit Windows**, replace `libsodium.dll` and `opus.dll` in `wizBot/src/wizBot` with the ones you've downloaded.
 
 ### Launching WizBot

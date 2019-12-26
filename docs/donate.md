@@ -1,4 +1,4 @@
-# ❤ Donate ❤
+# Donate to WizBot
 
 If you want to help WizBot and WizBot's team by donating, you can do that in the two of the following ways:
 
