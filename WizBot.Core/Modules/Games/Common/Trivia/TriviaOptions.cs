@@ -13,7 +13,7 @@ namespace WizBot.Core.Modules.Games.Common.Trivia
         public int WinRequirement { get; set; } = 10;
         [Option('q', "question-timer", Required = false, Default = 30, HelpText = "How long until the question ends. Default 30.")]
         public int QuestionTimer { get; set; } = 30;
-        [Option('t', "timeout", Required = false, Default = 0, HelpText = "Number of questions of inactivity in order stop. Set 0 for never. Default 10.")]
+        [Option('t', "timeout", Required = false, Default = 10, HelpText = "Number of questions of inactivity in order stop. Set 0 for never. Default 10.")]
         public int Timeout { get; set; } = 10;
 
         public void NormalizeOptions()
