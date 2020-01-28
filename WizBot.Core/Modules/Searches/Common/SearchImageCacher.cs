@@ -14,7 +14,7 @@ namespace WizBot.Modules.Searches.Common
     public class SearchImageCacher
     {
         private readonly SemaphoreSlim _lock = new SemaphoreSlim(1, 1);
-        private readonly HttpClient _http;
+        private readonly IHttpClientFactory _httpFactory;
         private readonly Random _rng;
         private readonly SortedSet<ImageCacherObject> _cache;
         private readonly Logger _log;
@@ -26,8 +26,7 @@ namespace WizBot.Modules.Searches.Common
 
         public SearchImageCacher(IHttpClientFactory http)
         {
-            _http = http.CreateClient();
-            _http.AddFakeHeaders();
+            _httpFactory = http;
             _rng = new Random();
             _cache = new SortedSet<ImageCacherObject>();
             _log = LogManager.GetCurrentClassLogger();
@@ -143,36 +142,40 @@ namespace WizBot.Modules.Searches.Common
 
             try
             {
-                if (type == DapiSearchType.Konachan || type == DapiSearchType.Yandere ||
-                    type == DapiSearchType.E621 || type == DapiSearchType.Danbooru)
+                using (var _http = _httpFactory.CreateClient())
                 {
-                    var data = await _http.GetStringAsync(website).ConfigureAwait(false);
-                    return JsonConvert.DeserializeObject<DapiImageObject[]>(data)
-                        .Where(x => x.FileUrl != null)
-                        .Select(x => new ImageCacherObject(x, type))
-                        .ToArray();
-                }
+                    _http.AddFakeHeaders();
+                    if (type == DapiSearchType.Konachan || type == DapiSearchType.Yandere ||
+                        type == DapiSearchType.E621 || type == DapiSearchType.Danbooru)
+                    {
+                        var data = await _http.GetStringAsync(website).ConfigureAwait(false);
+                        return JsonConvert.DeserializeObject<DapiImageObject[]>(data)
+                            .Where(x => x.FileUrl != null)
+                            .Select(x => new ImageCacherObject(x, type))
+                            .ToArray();
+                    }
 
-                if (type == DapiSearchType.Derpibooru)
-                {
-                    var data = await _http.GetStringAsync(website).ConfigureAwait(false);
-                    return JsonConvert.DeserializeObject<DerpiContainer>(data)
-                        .Search
-                        .Where(x => !string.IsNullOrWhiteSpace(x.Image))
-                        .Select(x => new ImageCacherObject("https:" + x.Image,
-                            type, x.Tags, x.Score))
-                        .ToArray();
-                }
+                    if (type == DapiSearchType.Derpibooru)
+                    {
+                        var data = await _http.GetStringAsync(website).ConfigureAwait(false);
+                        return JsonConvert.DeserializeObject<DerpiContainer>(data)
+                            .Search
+                            .Where(x => !string.IsNullOrWhiteSpace(x.Image))
+                            .Select(x => new ImageCacherObject("https:" + x.Image,
+                                type, x.Tags, x.Score))
+                            .ToArray();
+                    }
 
-                if (type == DapiSearchType.Safebooru)
-                {
-                    var data = await _http.GetStringAsync(website).ConfigureAwait(false);
-                    return JsonConvert.DeserializeObject<SafebooruElement[]>(data)
-                        .Select(x => new ImageCacherObject(x.FileUrl, type, x.Tags, x.Rating))
-                        .ToArray();
-                }
+                    if (type == DapiSearchType.Safebooru)
+                    {
+                        var data = await _http.GetStringAsync(website).ConfigureAwait(false);
+                        return JsonConvert.DeserializeObject<SafebooruElement[]>(data)
+                            .Select(x => new ImageCacherObject(x.FileUrl, type, x.Tags, x.Rating))
+                            .ToArray();
+                    }
 
-                return (await LoadXmlAsync(website, type).ConfigureAwait(false)).ToArray();
+                    return (await LoadXmlAsync(website, type).ConfigureAwait(false)).ToArray();
+                }
             }
             catch (Exception ex)
             {
@@ -185,7 +188,8 @@ namespace WizBot.Modules.Searches.Common
         private async Task<ImageCacherObject[]> LoadXmlAsync(string website, DapiSearchType type)
         {
             var list = new List<ImageCacherObject>();
-            using (var stream = await _http.GetStreamAsync(website).ConfigureAwait(false))
+            using (var http = _httpFactory.CreateClient())
+            using (var stream = await http.GetStreamAsync(website).ConfigureAwait(false))
             using (var reader = XmlReader.Create(stream, new XmlReaderSettings()
             {
                 Async = true,

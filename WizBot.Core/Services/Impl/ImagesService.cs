@@ -20,6 +20,7 @@ namespace WizBot.Core.Services.Impl
         private readonly ConnectionMultiplexer _con;
         private readonly IBotCredentials _creds;
         private readonly Logger _log;
+        private readonly HttpClient _http;
 
         private IDatabase _db => _con.GetDatabase();
 
@@ -79,6 +80,7 @@ namespace WizBot.Core.Services.Impl
             _con = con;
             _creds = creds;
             _log = LogManager.GetCurrentClassLogger();
+            _http = new HttpClient();
 
             Migrate();
             ImageUrls = JsonConvert.DeserializeObject<ImageUrls>(
@@ -210,23 +212,20 @@ namespace WizBot.Core.Services.Impl
                     File.ReadAllText(Path.Combine(_basePath, "images.json")));
 
                 ImageUrls = obj.ToObject<ImageUrls>();
-                using (var http = new HttpClient())
+                var t = new ImageLoader(_http, _con, GetKey)
+                    .LoadAsync(obj);
+
+                var loadCards = Task.Run(async () =>
                 {
-                    var t = new ImageLoader(http, _con, GetKey)
-                        .LoadAsync(obj);
+                    await _db.StringSetAsync(Directory.GetFiles(_cardsPath)
+                        .ToDictionary(
+                            x => GetKey("card_" + Path.GetFileNameWithoutExtension(x)),
+                            x => (RedisValue)File.ReadAllBytes(x)) // loads them and creates <name, bytes> pairs to store in redis
+                        .ToArray())
+                        .ConfigureAwait(false);
+                });
 
-                    var loadCards = Task.Run(async () =>
-                    {
-                        await _db.StringSetAsync(Directory.GetFiles(_cardsPath)
-                            .ToDictionary(
-                                x => GetKey("card_" + Path.GetFileNameWithoutExtension(x)),
-                                x => (RedisValue)File.ReadAllBytes(x)) // loads them and creates <name, bytes> pairs to store in redis
-                            .ToArray())
-                            .ConfigureAwait(false);
-                    });
-
-                    await Task.WhenAll(t, loadCards).ConfigureAwait(false);
-                }
+                await Task.WhenAll(t, loadCards).ConfigureAwait(false);
 
                 sw.Stop();
                 _log.Info($"Images reloaded in {sw.Elapsed.TotalSeconds:F2}s");
