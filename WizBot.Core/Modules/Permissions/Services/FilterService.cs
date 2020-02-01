@@ -129,6 +129,12 @@ namespace WizBot.Modules.Permissions.Services
                         try
                         {
                             await usrMsg.DeleteAsync().ConfigureAwait(false);
+                            await usrMsg.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
+                                .WithAuthor(eab => eab.WithName($"WizBot | Filter Service"))
+                                .WithThumbnailUrl("https://i.imgur.com/3CiCBiW.png")
+                                .AddField(fb => fb.WithName("Moderator Action").WithValue("Message Deleted").WithIsInline(false))
+                                .AddField(fb => fb.WithName("Filtered Word").WithValue($"{word}").WithIsInline(false)))
+                            .ConfigureAwait(false);
                         }
                         catch (HttpException ex)
                         {

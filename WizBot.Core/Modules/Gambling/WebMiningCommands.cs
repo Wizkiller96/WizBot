@@ -1,4 +1,4 @@
-#if GLOBAL_WIZBOT
+﻿/* #if GLOBAL_WIZBOT
 using WizBot.Core.Modules.Gambling.Services;
 
 namespace WizBot.Modules.Gambling
@@ -11,4 +11,4 @@ namespace WizBot.Modules.Gambling
         }
     }
 }
-#endif
+#endif */
