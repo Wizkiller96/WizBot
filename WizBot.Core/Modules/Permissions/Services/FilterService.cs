@@ -133,7 +133,8 @@ namespace WizBot.Modules.Permissions.Services
                                 .WithAuthor(eab => eab.WithName($"WizBot | Filter Service"))
                                 .WithThumbnailUrl("https://i.imgur.com/3CiCBiW.png")
                                 .AddField(fb => fb.WithName("Moderator Action").WithValue("Message Deleted").WithIsInline(false))
-                                .AddField(fb => fb.WithName("Filtered Word").WithValue($"{word}").WithIsInline(false)))
+                                //.AddField(fb => fb.WithName("Filtered Word").WithValue($"{word}").WithIsInline(false))
+                                .AddField(fb => fb.WithName("Reason").WithValue("You're message was deleted because it contain a filtered word. Please note bypassing filters will result in moderate action being taken on you by the servers administration.").WithIsInline(false)))
                             .ConfigureAwait(false);
                         }
                         catch (HttpException ex)
