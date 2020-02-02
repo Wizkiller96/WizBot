@@ -129,13 +129,16 @@ namespace WizBot.Modules.Permissions.Services
                         try
                         {
                             await usrMsg.DeleteAsync().ConfigureAwait(false);
+                            var DeleteMention = await usrMsg.Channel.SendMessageAsync(usrMsg.Author.Mention);
                             var toDelete = await usrMsg.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
                                 .WithAuthor(eab => eab.WithName($"WizBot | Filter Service"))
                                 .WithThumbnailUrl("https://i.imgur.com/3CiCBiW.png")
-                                .AddField(fb => fb.WithName("Moderator Action").WithValue("Message Deleted").WithIsInline(false))
+                                //.AddField(fb => fb.WithName("Offender").WithValue($"{usrMsg.Author.Mention}").WithIsInline(true))
+                                .AddField(fb => fb.WithName("Moderator Action").WithValue("Message Deleted").WithIsInline(true))
                                 //.AddField(fb => fb.WithName("Filtered Word").WithValue($"{word}").WithIsInline(false))
                                 .AddField(fb => fb.WithName("Reason").WithValue("Your message was deleted because it contains a filtered word. Please note bypassing filters will result in moderate action being taken on you by the server's administration.").WithIsInline(false)))
                             .ConfigureAwait(false);
+                            DeleteMention.DeleteAfter(10);
                             toDelete.DeleteAfter(10);
                         }
                         catch (HttpException ex)
