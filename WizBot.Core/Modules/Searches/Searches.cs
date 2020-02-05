@@ -816,12 +816,13 @@ namespace WizBot.Modules.Searches
             {
                 using (var http = _httpFactory.CreateClient())
                 {
-                    var waifutxt = await http.GetStringAsync($"https://www.thiswaifudoesnotexist.net/snippet-{new WizBotRandom().Next(0, 100000)}.txt").ConfigureAwait(false);
+                    //var waifutxt = await http.GetStringAsync($"https://www.thiswaifudoesnotexist.net/snippet-{new WizBotRandom().Next(0, 100000)}.txt").ConfigureAwait(false);
                     await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                         .WithAuthor(eab => eab.WithUrl("https://www.thiswaifudoesnotexist.net")
                             .WithName($"This Waifu Does Not Exist"))
-                        .WithThumbnailUrl($"https://www.thiswaifudoesnotexist.net/example-{new WizBotRandom().Next(0, 100000)}.jpg")
-                        .WithDescription($"{waifutxt}".TrimTo(1000))).ConfigureAwait(false);
+                        .WithImageUrl($"https://www.thiswaifudoesnotexist.net/example-{new WizBotRandom().Next(0, 100000)}.jpg"))
+                        //.WithDescription($"{waifutxt}".TrimTo(1000)))
+                        .ConfigureAwait(false);
                 }
             }
             catch (Exception ex)
