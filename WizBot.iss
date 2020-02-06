@@ -7,7 +7,7 @@
 AppName=WizBot
 AppVersion={#version}
 AppPublisher=WizNet
-AppCopyright=© 2017-2018 WizNet - All Rights Reserved
+AppCopyright=© 2017-2020 WizNet - All Rights Reserved
 DefaultDirName={commonpf}\WizBot
 DefaultGroupName=WizBot
 UninstallDisplayIcon={app}\{#sysfolder}\wizbot_icon.ico
