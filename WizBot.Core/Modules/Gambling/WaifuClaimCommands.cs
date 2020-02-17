@@ -71,8 +71,8 @@ namespace WizBot.Modules.Gambling
                     return;
                 }
 
-                // Steven & Sophia
-                if (target.Id == 216898612867629057 || target.Id == 330596075406753793)
+                // Steven's Protection
+                if (target.Id == 216898612867629057 || target.Id == 222540445316546560)
                 {
                     var embed = new EmbedBuilder()
                     .WithDescription("You can't claim this user.")
