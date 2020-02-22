@@ -3417,6 +3417,13 @@
       "{0}nya gif baka"
     ]
   },
+  "nudes": {
+    "cmd": "nudes",
+    "desc": "Pulls a random lewd image of Wiz from Konosuba.",
+    "usage": [
+      "{0}nudes"
+    ]
+  },
   "gwaifu": {
     "cmd": "gwaifu genwaifu",
     "desc": "Responds with a randomly generated waifu and backstory.",

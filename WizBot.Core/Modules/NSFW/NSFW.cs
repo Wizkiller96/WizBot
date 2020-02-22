@@ -534,6 +534,21 @@ namespace WizBot.Modules.NSFW
         }
 
         [WizBotCommand, Usage, Description, Aliases]
+        [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
+        public async Task Nudes()
+        {
+            try
+            {
+                await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
+                        .WithImageUrl($"http://wizbot.cc/assets/wizbot/nsfw/wiz_{new WizBotRandom().Next(1, 14)}.jpg")).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                await ctx.Channel.SendErrorAsync(ex.Message).ConfigureAwait(false);
+            }
+        }
+
+        [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         public async Task NsfwTagBlacklist([Leftover] string tag = null)

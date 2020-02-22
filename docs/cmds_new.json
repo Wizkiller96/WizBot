@@ -3873,6 +3873,19 @@
     },
     {
       "Aliases": [
+        ".nudes"
+      ],
+      "Description": "Pulls a random lewd image of Wiz from Konosuba.",
+      "Usage": [
+        ".nudes"
+      ],
+      "Submodule": "NSFW",
+      "Module": "NSFW",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
         ".nsfwtagbl",
         ".nsfwtbl"
       ],
