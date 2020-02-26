@@ -17,13 +17,6 @@ namespace WizBot.Modules.Searches
         [Group]
         public class FeedCommands : WizBotSubmodule<FeedsService>
         {
-            private readonly DiscordSocketClient _client;
-
-            public FeedCommands(DiscordSocketClient client)
-            {
-                _client = client;
-            }
-
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageMessages)]

@@ -123,7 +123,7 @@ namespace WizBot.Modules.Utility
 
                 var (opts, _) = OptionsParser.ParseFrom(new Repeater.Options(), options);
 
-                if (string.IsNullOrWhiteSpace(opts.Message) || opts.Interval == 25001)
+                if (string.IsNullOrWhiteSpace(opts.Message) || opts.Interval >= 50001)
                     return;
 
                 var toAdd = new Repeater()
