@@ -152,6 +152,7 @@ namespace WizBot.Modules.Administration.Services
             using (var uow = _db.GetDbContext())
             {
                 var conf = uow.GuildConfigs.ForId(guildId, set => set.Include(x => x.VcRoleInfos));
+                // todo this doesn't remove properly
                 conf.VcRoleInfos.RemoveWhere(x => x.VoiceChannelId == vcId);
                 uow.SaveChanges();
             }
