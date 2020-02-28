@@ -10,7 +10,7 @@ pages:
     - From Source: guides/from-source.md
 - Commands:
     - Readme: readme.md
-    - Commands List: https://commands.wizbot.cc/
+    - Commands List: commands-list.md
 - Features Explained:
     - JSON Explanations: json-explanations.md
     - Permissions System: permissions-system.md
