@@ -44,13 +44,32 @@ namespace WizBot.Modules.Searches
                         {
                             m = ResolveGameMode(mode);
                         }
-                        http.AddFakeHeaders();
-                        using (var res = await http.GetStreamAsync(new Uri($"http://lemmmy.pw/osusig/sig.php?uname={ usr }&flagshadow&xpbar&xpbarhex&pp=2&mode={m}")).ConfigureAwait(false))
-                        {
-                            await ctx.Channel.SendFileAsync(res, $"{usr}.png", $"🎧 **{GetText("profile_link")}** " +
-                                $"<https://new.ppy.sh/u/{Uri.EscapeDataString(usr)}>\n" +
-                                $"`Image provided by https://lemmmy.pw/osusig`").ConfigureAwait(false);
-                        }
+                        var reqString = $"https://osu.ppy.sh/api/get_user?k={_creds.OsuApiKey}&u={usr}&m={m}";
+                        var result = await http.GetStringAsync(reqString);
+                        var obj = JArray.Parse(result);
+                        var user_id = double.Parse($"{obj[0]["user_id"]}", CultureInfo.InvariantCulture);
+                        var country = ($"{obj[0]["country"]}");
+                        var jdate = ($"{obj[0]["join_date"]}");
+                        var perfp = Math.Round(double.Parse($"{obj[0]["pp_raw"]}", CultureInfo.InvariantCulture));
+                        var acc = Math.Round(double.Parse($"{obj[0]["accuracy"]}", CultureInfo.InvariantCulture), 2);
+                        var pc = double.Parse($"{obj[0]["playcount"]}", CultureInfo.InvariantCulture);
+                        var offrank = double.Parse($"{obj[0]["pp_rank"]}", CultureInfo.InvariantCulture);
+                        var crank = double.Parse($"{obj[0]["pp_country_rank"]}", CultureInfo.InvariantCulture);
+                        var level = Math.Round(double.Parse($"{obj[0]["level"]}", CultureInfo.InvariantCulture));
+                        await ctx.Channel.EmbedAsync(new EmbedBuilder().WithColor(15431131).WithAuthor(eab => eab.WithUrl("https://osu.ppy.sh/u/" + user_id)
+                            .WithName("osu! Profile for " + usr))
+                            .WithThumbnailUrl($"https://a.ppy.sh/{user_id}")
+                            .WithDescription("URL: https://osu.ppy.sh/u/" + user_id)
+                            .AddField("Country", country, false)
+                            .AddField("Join Date", jdate, false)
+                            .AddField("Official Rank", "#" + offrank, true)
+                            .AddField("Country Rank", "#" + crank, true)
+                            .AddField("Total PP", perfp, true)
+                            .AddField("Accuracy", acc + "%", true)
+                            .AddField("Playcount", pc, true)
+                            .AddField("Level", level, true)
+                        );
+
                     }
                     catch (Exception ex)
                     {
