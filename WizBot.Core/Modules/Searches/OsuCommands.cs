@@ -44,20 +44,22 @@ namespace WizBot.Modules.Searches
                         {
                             m = ResolveGameMode(mode);
                         }
+                        var stmdx = ProfMode(m);
                         var reqString = $"https://osu.ppy.sh/api/get_user?k={_creds.OsuApiKey}&u={usr}&m={m}";
                         var result = await http.GetStringAsync(reqString);
-                        var obj = JArray.Parse(result);
-                        var user_id = double.Parse($"{obj[0]["user_id"]}", CultureInfo.InvariantCulture);
-                        var country = ($"{obj[0]["country"]}");
-                        var jdate = ($"{obj[0]["join_date"]}");
-                        var perfp = Math.Round(double.Parse($"{obj[0]["pp_raw"]}", CultureInfo.InvariantCulture));
-                        var acc = Math.Round(double.Parse($"{obj[0]["accuracy"]}", CultureInfo.InvariantCulture), 2);
-                        var pc = double.Parse($"{obj[0]["playcount"]}", CultureInfo.InvariantCulture);
-                        var offrank = double.Parse($"{obj[0]["pp_rank"]}", CultureInfo.InvariantCulture);
-                        var crank = double.Parse($"{obj[0]["pp_country_rank"]}", CultureInfo.InvariantCulture);
-                        var level = Math.Round(double.Parse($"{obj[0]["level"]}", CultureInfo.InvariantCulture));
+                        var obj = JArray.Parse(result)[0];
+                        var user_id = double.Parse($"{obj["user_id"]}", CultureInfo.InvariantCulture);
+                        var country = ($"{obj["country"]}");
+                        var jdate = ($"{obj["join_date"]}");
+                        var perfp = Math.Round(double.Parse($"{obj["pp_raw"]}", CultureInfo.InvariantCulture));
+                        var acc = Math.Round(double.Parse($"{obj["accuracy"]}", CultureInfo.InvariantCulture), 2);
+                        var pc = double.Parse($"{obj["playcount"]}", CultureInfo.InvariantCulture);
+                        var offrank = double.Parse($"{obj["pp_rank"]}", CultureInfo.InvariantCulture);
+                        var crank = double.Parse($"{obj["pp_country_rank"]}", CultureInfo.InvariantCulture);
+                        var level = Math.Round(double.Parse($"{obj["level"]}", CultureInfo.InvariantCulture));
                         await ctx.Channel.EmbedAsync(new EmbedBuilder().WithColor(15431131).WithAuthor(eab => eab.WithUrl("https://osu.ppy.sh/u/" + user_id)
-                            .WithName("osu! Profile for " + usr))
+                            .WithName("osu! " + stmdx + " profile for " + usr)
+                            .WithIconUrl("https://github.com/ppy/osu/raw/master/assets/lazer.png"))
                             .WithThumbnailUrl($"https://a.ppy.sh/{user_id}")
                             .WithDescription("URL: https://osu.ppy.sh/u/" + user_id)
                             .AddField("Country", country, false)
@@ -246,6 +248,20 @@ namespace WizBot.Modules.Searches
                     default:
                         return 0;
                 }
+            }
+
+            private static string ProfMode(int stmdx)
+            {
+                var stmd = "";
+                if (stmdx == 0)
+                    stmd = "Standard";
+                if (stmdx == 1)
+                    stmd = "Taiko";
+                if (stmdx == 2)
+                    stmd = "CTB";
+                if (stmdx == 3)
+                    stmd = "Mania";
+                return stmd;
             }
 
             //https://github.com/ppy/osu-api/wiki#mods
