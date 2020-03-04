@@ -81,6 +81,16 @@ namespace WizBot.Modules.Gambling
                     return;
                 }
 
+                // Byte's Bot
+                if (target.Id == 684775009050558495)
+                {
+                    var embed = new EmbedBuilder()
+                    .WithDescription("no")
+                    .WithErrorColor();
+                    await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
+                    return;
+                }
+
                 // Main Bot
                 if (target.Id == 170849991357628416)
                 {
