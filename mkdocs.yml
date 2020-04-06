@@ -22,4 +22,5 @@ nav:
 - ❤ Donate ❤: donate.md
 - License: license.md
 
-theme: 'material'
+theme: 
+    name: 'material'
