@@ -13,7 +13,7 @@ nav:
     - Readme: commands-readme.md
     - Commands List: https://commands.wizbot.cc/
 - Features Explained:
-    - JSON Explanations: json-explanations.md
+    - JSON Explanations: json-explained.md
     - Permissions System: permissions-system.md
     - Custom Reactions: custom-reactions.md
     - Placeholders: placeholders.md
