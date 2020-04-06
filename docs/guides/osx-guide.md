@@ -14,7 +14,7 @@
 
 - OSX 10.12 (Sierra) or higher (needed for .NET Core 2.x).
 - [Homebrew](http://brew.sh/). 
-- [Create a Discord Bot application](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/#creating-discord-bot-application) and [invite the bot to your server](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/#inviting-your-bot-to-your-server).  
+- [Create a Discord Bot application](../jsons-explained.md/#creating-discord-bot-application) and [invite the bot to your server](../jsons-explained.md/#inviting-your-bot-to-your-server).
   
 #### Installing Homebrew
 
@@ -50,7 +50,7 @@ ln -s /usr/local/opt/openssl/lib/libssl.1.0.0.dylib /usr/local/lib/
 - Use the following command to download and run the installer. (PS: **Do not** rename the **`linuxAIO.sh`** file)  
 `cd ~ && wget -N https://github.com/Wizkiller96/WizBot-BashScript/raw/1.9/linuxAIO.sh && bash linuxAIO.sh`  
 - Choose Option `1` to download WizBot. Once installation is completed you should see the options again.  
-- Choose Option `5` to set up your credentials according to this [guide](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/#setting-up-credentialsjson-file), or find and edit the `credentials.json` file manually.  
+- Choose Option `5` to set up your credentials according to this [guide](../jsons-explained.md/#setting-up-credentialsjson-file), or find and edit the `credentials.json` file manually. 
 - Choose Option `2` to **Run WizBot (Normally)**.  
 - Check in your Discord server if your new bot is working properly. Once you're done testing, type `.die` on Discord to shut it down. The Terminal should automatically return to the main menu.
 
@@ -147,7 +147,7 @@ Now check your Discord server, the bot should be online.
 
 #### Help! My music isn't working!
 
-Make sure you have the [Google API Key](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/#setting-up-your-api-keys) in your `credentials.json`
+Make sure you have the [Google API Key](../jsons-explained.md/#setting-up-your-api-keys) in your `credentials.json`
 If music still isn't working, try reinstalling ffmpeg:
 
 - `brew update && brew upgrade` (Update formulae and Homebrew itself && Install newer versions of outdated packages)

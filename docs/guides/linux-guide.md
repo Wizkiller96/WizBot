@@ -54,7 +54,7 @@ Once it finishes, the installer should automatically take you back to the main m
 #### Installing WizBot
 - Choose Option `1` to get the **most updated build of WizBot**. When installation is complete, you will see the options again.
 
-- If you haven't [set up your Discord bot application](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/#creating-discord-bot-application) and [invited the bot to your server](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/#inviting-your-bot-to-your-server) yet, do it now.
+If you haven't [set up your Discord bot application](../jsons-explained.md/#creating-discord-bot-application) and [invited the bot to your server](../jsons-explained.md/#inviting-your-bot-to-your-server) yet, do it now.
     - Only the ClientID, Bot Token and OwnerID are required. Everything else is optional.
     - The Google API Key is required if you want WizBot to play music.
 
@@ -233,7 +233,7 @@ Assuming you have followed the link above to setup an account and a Droplet with
 #### Prerequisites
 - Download [PuTTY](http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html)
 - Download [WinSCP](https://winscp.net/eng/download.php) *(optional)*
-- [Create and invite the bot](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/#creating-discord-bot-application).
+- [Create and invite the bot](../jsons-explained.md/#creating-discord-bot-application).
 	
 #### Starting up
 
