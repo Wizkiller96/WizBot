@@ -14,7 +14,7 @@
 
 - OSX 10.12 (Sierra) or higher (needed for .NET Core 2.x).
 - [Homebrew](http://brew.sh/). 
-- [Create a Discord Bot application](../jsons-explained.md/#creating-discord-bot-application) and [invite the bot to your server](../jsons-explained.md/#inviting-your-bot-to-your-server).
+- [Create a Discord Bot application](../../jsons-explained/#creating-discord-bot-application) and [invite the bot to your server](../../jsons-explained/#inviting-your-bot-to-your-server).
   
 #### Installing Homebrew
 
@@ -38,6 +38,7 @@ npm install pm2@3.1.3 -g
 - Download [dotNET Core SDK 2.1](https://dotnet.microsoft.com/download/thank-you/dotnet-sdk-2.1.801-macos-x64-installer)
 - Open the `.pkg` file you've downloaded and install it.
 - Run this command in Terminal. There won't be any output. (copy-paste the entire block):
+
 ``` bash
 ln -s /usr/local/share/dotnet/dotnet /usr/local/bin \
 ln -s /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib /usr/local/lib/ \
@@ -50,7 +51,7 @@ ln -s /usr/local/opt/openssl/lib/libssl.1.0.0.dylib /usr/local/lib/
 - Use the following command to download and run the installer. (PS: **Do not** rename the **`linuxAIO.sh`** file)  
 `cd ~ && wget -N https://github.com/Wizkiller96/WizBot-BashScript/raw/1.9/linuxAIO.sh && bash linuxAIO.sh`  
 - Choose Option `1` to download WizBot. Once installation is completed you should see the options again.  
-- Choose Option `5` to set up your credentials according to this [guide](../jsons-explained.md/#setting-up-credentialsjson-file), or find and edit the `credentials.json` file manually. 
+- Choose Option `5` to set up your credentials according to this [guide](../../jsons-explained/#setting-up-credentialsjson-file), or find and edit the `credentials.json` file manually.
 - Choose Option `2` to **Run WizBot (Normally)**.  
 - Check in your Discord server if your new bot is working properly. Once you're done testing, type `.die` on Discord to shut it down. The Terminal should automatically return to the main menu.
 
@@ -147,7 +148,7 @@ Now check your Discord server, the bot should be online.
 
 #### Help! My music isn't working!
 
-Make sure you have the [Google API Key](../jsons-explained.md/#setting-up-your-api-keys) in your `credentials.json`
+Make sure you have the [Google API Key](../../jsons-explained/#setting-up-your-api-keys) in your `credentials.json`
 If music still isn't working, try reinstalling ffmpeg:
 
 - `brew update && brew upgrade` (Update formulae and Homebrew itself && Install newer versions of outdated packages)

@@ -12,24 +12,26 @@
 | [Setting up WinSCP](#setting-up-winscp) |
 
 #### Operating System Compatibility
+
 It is recommended that you use **Ubuntu 16.04**, as there have been nearly no problems with it. Music features are currently not working on CentOS. Also, **32-bit systems are incompatible**.
 
-##### Compatible operating systems:
+##### Compatible operating systems
+
 - Ubuntu: 14.04, 16.04, 16.10, 17.04, 17.10, 18.04
 - Mint: 17, 18
 - Debian: 8, 9
 - CentOS: 7
 
-
 #### Getting Started
-- Use the following command to get and run the **`linuxAIO.sh`** installer		
+
+- Use the following command to get and run the **`linuxAIO.sh`** installer
   - (PS: **Do Not** rename the **`linuxAIO.sh`** file)
 
 `cd ~ && wget -N https://github.com/Wizkiller96/WizBot-BashScript/raw/1.9/linuxAIO.sh && bash linuxAIO.sh`
 
 You should see the main menu with the following options:
 
-```
+```bash
 1. Download WizBot
 2. Run WizBot (Normally)
 3. Run WizBot with Auto Restart (Run WizBot normally before using this.)
@@ -39,35 +41,40 @@ You should see the main menu with the following options:
 7. Start WizBot in pm2 (complete option 6 first)
 8. Exit
 ```
+
 #### Downloading and Installing the Prerequisites
 
 - **If** you are running WizBot for the first time on your system and never had any *prerequisites* installed, press `4` and `enter` key, then `y` once you see the following:
-```
+
+```bash
 Welcome to WizBot Auto Prerequisites Installer.
 Would you like to continue?
 ```
-- That will install all prerequisites your system needs in order to run WizBot.			
+
+- That will install all prerequisites your system needs in order to run WizBot.
   - (Optional) **If** you prefer to install them manually, you can try finding them [here](https://github.com/Wizkiller96/WizBot-BashScript/blob/1.9/wizbotautoinstaller.sh).
 
 Once it finishes, the installer should automatically take you back to the main menu.
 
 #### Installing WizBot
+
 - Choose Option `1` to get the **most updated build of WizBot**. When installation is complete, you will see the options again.
 
-If you haven't [set up your Discord bot application](../jsons-explained.md/#creating-discord-bot-application) and [invited the bot to your server](../jsons-explained.md/#inviting-your-bot-to-your-server) yet, do it now.
-    - Only the ClientID, Bot Token and OwnerID are required. Everything else is optional.
-    - The Google API Key is required if you want WizBot to play music.
+- If you haven't [set up your Discord bot application](../../jsons-explained/#creating-discord-bot-application) and [invited the bot to your server](../../jsons-explained/#inviting-your-bot-to-your-server) yet, do it now.
+  - Only the ClientID, Bot Token and OwnerID are required. Everything else is optional.
+  - The Google API Key is required if you want WizBot to play music.
 
 - Once you have acquired them, choose Option `5` to set up your credentials.
   - You will be asked to enter your credentials. Just follow the on-screen instructions and enter them as requested. (*i.e.* If you are asked to insert the **Bot's Token**, then just copy and paste the **Bot's Token** and hit `Enter`. Rinse and repeat until it's over.)
   - If you want to skip any optional information, just press `Enter` without typing/pasting anything.
-	
+
 Once you're done with the credentials, you should be taken back to the main menu.
 
 ##### Checking if WizBot is working
+
 - Choose Option `2` to **Run WizBot (Normally)**.
 - Check in your Discord server if your new bot is working properly. Once you're done testing, type `.die` to shut it down and return to the main menu.
-	
+
 You can now choose Option `3` and have WizBot run with auto restart. It will work just fine, however it's strongly advised that you use WizBot with a process manager like pm2 or tmux, as they will keep WizBot running in the background, freeing up your terminal for other tasks.
 
 ---
@@ -77,19 +84,22 @@ You can now choose Option `3` and have WizBot run with auto restart. It will wor
 WizBot can be run using [pm2](https://github.com/Unitech/pm2), a process manager that seamlessly handles keeping your bot up. Besides, it handles disconnections and shutdowns gracefully, ensuring any leftover processes are properly killed. It also persists on server restart, so you can restart your server or computer and pm2 will manage the startup of your bot. Lastly, there is proper error logging and overall logging. These are just a few features of pm2, and it is a great way to run WizBot with stability.
 
 ##### Setting up pm2/NodeJS for WizBot
-**Before proceeding, make sure your bot is not running by either running `.die` in your Discord server or exiting the process with `Ctrl+C`.** 
+
+**Before proceeding, make sure your bot is not running by either running `.die` in your Discord server or exiting the process with `Ctrl+C`.**
 
 You may be presented with the installer main menu once you shut your bot down. If not, simply run `bash linuxAIO.sh`.
 
 - Run Option `6` to install NodeJS and pm2.
   - If you already have NodeJS and pm2 installed on your system, you can skip this step (which is a one-time thing).
 
-- There is an automated script built in the installer so installation and startup is a breeze. Just select Option `7` to bring you to a menu of choices. These are the normal choices you have for running WizBot. 
-```
+- There is an automated script built in the installer so installation and startup is a breeze. Just select Option `7` to bring you to a menu of choices. These are the normal choices you have for running WizBot.
+
+```bash
 [1] Start with auto-restart with .die and no auto-update.
 [2] Start with auto-restart with .die and auto-update on restart as well.
 [3] Run normally without any auto-restart or auto-update functionality.
 ```
+
 - Simply choose one of these and WizBot will start in pm2! If you did everything correctly, you can run the following to check your WizBot setup:
 
 `sudo pm2 status` to see all pm2 processes
@@ -97,10 +107,11 @@ You may be presented with the installer main menu once you shut your bot down. I
 `sudo pm2 info WizBot` information about WizBot 
 
 `sudo pm2 logs WizBot` to view real-time logs of WizBot, or
-		
+
 `sudo pm2 logs WizBot --lines number` (**number** = how many lines you wish to output) to see a specific amount of lines of the log. The logfile is also stored and presented at the top of these commands
 
 ##### Updating WizBot with pm2
+
 - If you have set up WizBot with auto-update, simply run `.die` on your Discord server. That's it!
 - If you have set up WizBot with **no** auto-update:
   - Shut your bot down with `sudo pm2 stop WizBot`
@@ -111,6 +122,7 @@ You may be presented with the installer main menu once you shut your bot down. I
 ---
 
 #### Running WizBot on tmux [if you don't want to use pm2]
+
 **Before proceeding, make sure your bot is not running by either running `.die` in your Discord server or exiting the process with `Ctrl+C`.** 
 If you are presented with the installer main menu, exit it by choosing Option `8`.
 
@@ -126,8 +138,9 @@ The above command will create a new session named **WizBot** *(you can replace â
 - Choose `3` to **Run WizBot with Auto Restart.**
   - **NOTE**: With this option, the bot will auto run if you use `.die`, making it to function as restart.
 
-You will be shown the following options: 
-```
+You will be shown the following options:
+
+```bash
 1. Run Auto Restart normally without Updating.
 2. Run Auto Restart and update WizBot.
 3. Exit
@@ -141,6 +154,7 @@ You will be shown the following options:
 - To move the bot to the background, press **Ctrl+B**, release the keys then hit **D**. That will detach the session, allowing you to finally close the terminal window and not worry about having your bot shut down in the process.
 
 #### Updating WizBot
+
 - If you're running WizBot with auto-update, just type `.die` in your Discord server. That's it!
 - If you're running WizBot with **no** auto-update:
   - Kill your previous session.
@@ -160,6 +174,7 @@ You will be shown the following options:
 - If you want **create** a new session, run `tmux new -s WizBot`. If you want to **kill it**, run `tmux kill-session -t WizBot`
 
 #### Making WizBot persist upon system restarts (tmux - For Advanced Users)
+
 This procedure is completely optional. We'll be using [*systemd*](https://en.wikipedia.org/wiki/Systemd) to handle WizBot during system shutdowns and reboots.
 
 **1.** Start off by downloading the necessary scripts:
@@ -173,10 +188,11 @@ This procedure is completely optional. We'll be using [*systemd*](https://en.wik
 ---
 
 - Let's edit the script *systemd* is going to use to start WizBot: `nano wizbot.service`
-	- You should see the following:
+  - You should see the following:
+
 ```css
 [Unit]
-Description=WizBot 
+Description=WizBot
 
 [Service]
 WorkingDirectory=/root
@@ -187,9 +203,10 @@ ExecStop=/bin/sleep 2
 
 [Install]
 WantedBy=multi-user.target
-```
+
+```bash
 - Change `/root` from *"WorkingDirectory"* to the directory that contains your WizBot folder.
-	- For example, if your  bot is located in `/home/username/WizBot`, you should change `/root` to `/home/username`.
+  - For example, if your  bot is located in `/home/username/WizBot`, you should change `/root` to `/home/username`.
 - Change `root` from *"User"* to whatever username you're using.
 - **Optional:** If you want WizBot to auto-update upon restarts, change `WizBotARN.sh` to `WizBotARU_Latest.sh`.
 - Once you're done, press `Ctrl+X` to exit nano, type `y` to confirm the changes and `Enter` to go back to the terminal.
@@ -222,10 +239,10 @@ Here is a list of useful commands if you intend on managing WizBot with *systemd
 
 ---
 
-### Setting up WizBot on a Linux VPS (Digital Ocean Droplet)			
+### Setting up WizBot on a Linux VPS (Digital Ocean Droplet)
 If you want WizBot to play music for you 24/7 without having to hosting it on your PC and want to keep it cheap, reliable and convenient as possible, you can try WizBot on Linux Digital Ocean Droplet using the link [DigitalOcean](http://m.do.co/c/7290047d0c84/) (by using this link, you will get **$10 credit** and also support WizBot)
 
-**Setting up WizBotBot**			
+**Setting up WizBotBot**
 Assuming you have followed the link above to setup an account and a Droplet with a 64-bit operational system on Digital Ocean and got the `IP address and root password (in your e-mail)` to login, it's time to get started.
 
 **Go through this whole guide before setting up WizBot**
@@ -233,8 +250,8 @@ Assuming you have followed the link above to setup an account and a Droplet with
 #### Prerequisites
 - Download [PuTTY](http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html)
 - Download [WinSCP](https://winscp.net/eng/download.php) *(optional)*
-- [Create and invite the bot](../jsons-explained.md/#creating-discord-bot-application).
-	
+- [Create and invite the bot](../../jsons-explained.md/#creating-discord-bot-application).
+
 #### Starting up
 
 - **Open PuTTY** and paste or enter your `IP address` and then click **Open**.
@@ -249,7 +266,7 @@ If you entered your Droplets IP address correctly, it should show **login as:** 
 - Type a **new password** somewhere, copy and paste it on PuTTY. Press Enter then paste it again.
 **Save the new password somewhere safe.**
 
-After that, your droplet should be ready for use. [Follow the guide from the beginning](https://wizbot.readthedocs.io/en/latest/guides/Linux%20Guide/#getting-started) to set WizBot up on your newly created VPS.
+After that, your droplet should be ready for use. [Follow the guide from the beginning](../../linux-guide.md/#getting-started) to set WizBot up on your newly created VPS.
 
 ##### Setting up WinSCP
 WinSCP is useful for transfering files between a local system (your computer) and a remote system (your VPS). To set it up:

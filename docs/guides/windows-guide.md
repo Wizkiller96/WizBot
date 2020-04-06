@@ -17,7 +17,7 @@
 * Windows 8 or later \(64-bit\)
 * [dotNET Core 2.1 SDK](https://www.microsoft.com/net/download/dotnet-core/2.1) \(restart Windows after installation\)
 * [Redis](https://github.com/MicrosoftArchive/redis/releases/download/win-3.0.504/Redis-x64-3.0.504.msi) \(supplied with the updater\)
-* [Create a Discord Bot application](../jsons-explained.md#creating-discord-bot-application) and [invite the bot to your server](../jsons-explained.md/#inviting-your-bot-to-your-server).
+* [Create a Discord Bot application](../../jsons-explained#creating-discord-bot-application) and [invite the bot to your server](../../jsons-explained/#inviting-your-bot-to-your-server).
 
 **Optional**
 
@@ -36,7 +36,7 @@
 
 _If you happen to close the wizard with that option unchecked, you can easily find the credentials file in_ `C:\Program Files\WizBot\system`_._
 
-* [Set up the credentials.json](../jsons-explained.md) file.
+* [Set up the credentials.json](../../jsons-explained) file.
 
 ## Starting the bot
 

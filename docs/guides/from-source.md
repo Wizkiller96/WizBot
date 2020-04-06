@@ -22,7 +22,7 @@ This is the recommended way of installing WizBot from source. If you don't want 
 - Redis
   - Windows 64 bit: Download and install the [latest msi](https://github.com/MicrosoftArchive/redis/releases/tag/win-3.0.504). Don't forget to [add it to the path environment variable](https://i.imgur.com/uUby6Xw.png) during the installation process.
   - Windows 32 bit: Skip this step 
-- [Create a Discord Bot application](../jsons-explained.md/#creating-discord-bot-application) and [invite the bot to your server](../jsons-explained.md/#inviting-your-bot-to-your-server).
+- [Create a Discord Bot application](../../jsons-explained/#creating-discord-bot-application) and [invite the bot to your server](../../jsons-explained/#inviting-your-bot-to-your-server).
 
 **Optional** If you want WizBot to play music, do the following:
 
@@ -55,7 +55,7 @@ This is the recommended way of installing WizBot from source. If you don't want 
 ```
 
 - Run Option `1` to download WizBot \(type 1 and press Enter\). Once it's done, it should take you back to the main menu.
-- Run Option `4` to [set up your credentials](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/). Paste the info as requested.
+- Run Option `4` to [set up your credentials](../../jsons-explained). Paste the info as requested.
   - **If your Windows is 32-bit**, run Option `14` now. Otherwise, ignore this step.
 - WizBot should be ready to launch. Run Option `2` to test it out. If everything goes well, WizBot should appear as online on your Discord server and respond to commands. Once you're done with testing, type `.die` to shut it down and return to the installer's main menu.
 
@@ -83,7 +83,7 @@ This is the _"hard"_ way of installing WizBot. If you're here, we are assuming y
 - Redis
   - Windows 64 bit: Download and install the [latest msi](https://github.com/MicrosoftArchive/redis/releases/tag/win-3.0.504). Don't forget to [add it to the path environment variable](https://i.imgur.com/uUby6Xw.png) during the installation process.
   - Windows 32 bit: Download [redis-server.exe](https://github.com/Wizkiller96/WizBotFiles/blob/master/x86%20Prereqs/redis-server.exe?raw=true) and store it somewhere accessible.
-- [Create a Discord Bot application](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/#creating-discord-bot-application) and [invite the bot to your server](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/#inviting-your-bot-to-your-server).
+- [Create a Discord Bot application](../../jsons-explained/#creating-discord-bot-application) and [invite the bot to your server](../../jsons-explained/#inviting-your-bot-to-your-server).
 
 **Optional**  
 If you want WizBot to play music, do the following:
@@ -98,7 +98,7 @@ If you want WizBot to play music, do the following:
 
 - Open command prompt \(`cmd.exe`\) and run the following command to download the source:
 - `git clone -b 1.9 https://gitlab.com/Wizkiller96/WizBot`  
-- On Windows Explorer, go to `WizBot/src/WizBot` and edit the `credentials.json` file according to this [guide](http://wizbot.readthedocs.io/en/latest/JSON%20Explanations/#setting-up-credentialsjson-file).
+- On Windows Explorer, go to `WizBot/src/WizBot` and edit the `credentials.json` file according to this [guide](../../jsons-explained/#setting-up-credentialsjson-file).
 - Add these 2 arguments to your credentials file:
 
   ```javascript
