@@ -1,16 +1,15 @@
 site_name: WizBot
 repo_url: https://github.com/Wizkiller96/WizBot
-pages:
-- Home: index.md
+nav:
 - About: about.md
 - Guides:
-    - Windows Guide: guides/windows-guide.md
-    - Linux Guide: guides/linux-guide.md
+    - 'Windows Guide': 'guides/windows-guide.md'
+    - 'Linux Guide': 'guides/linux-guide.md'
     - OSX Guide: guides/osx-guide.md
     - From Source: guides/from-source.md
 - Commands:
-    - Readme: readme.md
-    - Commands List: commands-list.md
+    - Readme: cmds_readme.md
+    - Commands List: 'commands-list.md'
 - Features Explained:
     - JSON Explanations: json-explanations.md
     - Permissions System: permissions-system.md
