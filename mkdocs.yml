@@ -1,5 +1,7 @@
-site_name: WizBot
-repo_url: https://github.com/Wizkiller96/WizBot
+site_name: 'WizBot'
+site_url: 'https://wizbot.cc'
+repo_url: 'https://github.com/Wizkiller96/WizBot'
+site_author: 'Kwoth & Wizkiller96'
 nav:
 - About: about.md
 - Guides:
@@ -20,4 +22,4 @@ nav:
 - Contribution Guide: contribution-guide.md
 - ❤ Donate ❤: donate.md
 
-theme: readthedocs
+theme: 'material'
