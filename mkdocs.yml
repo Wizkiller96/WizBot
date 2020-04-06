@@ -3,23 +3,23 @@ site_url: 'https://wizbot.cc'
 repo_url: 'https://github.com/Wizkiller96/WizBot'
 site_author: 'Kwoth & Wizkiller96'
 nav:
-- About: about.md
+- Home: index.md
 - Guides:
-    - 'Windows Guide': 'guides/windows-guide.md'
-    - 'Linux Guide': 'guides/linux-guide.md'
+    - Windows Guide: guides/windows-guide.md
+    - Linux Guide: guides/linux-guide.md
     - OSX Guide: guides/osx-guide.md
     - From Source: guides/from-source.md
 - Commands:
-    - Readme: cmds_readme.md
-    - Commands List: 'commands-list.md'
+    - Readme: commands-readme.md
+    - Commands List: https://commands.wizbot.cc/
 - Features Explained:
     - JSON Explanations: json-explanations.md
     - Permissions System: permissions-system.md
     - Custom Reactions: custom-reactions.md
     - Placeholders: placeholders.md
     - Bot Config: bce-guide.md
-- Frequently Asked Questions: frequently-asked-questions.md
 - Contribution Guide: contribution-guide.md
 - ❤ Donate ❤: donate.md
+- License: license.md
 
 theme: 'material'
