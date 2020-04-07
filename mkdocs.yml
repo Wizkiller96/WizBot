@@ -1,7 +1,11 @@
 site_name: 'WizBot'
 site_url: 'https://wizbot.cc'
+repo_name: Wizkiller96/WizBot
 repo_url: 'https://github.com/Wizkiller96/WizBot'
 site_author: 'Kwoth & Wizkiller96'
+
+copyright: Copyright &copy; 2020 WizNet
+
 nav:
 - Home: index.md
 - Guides:
@@ -24,3 +28,8 @@ nav:
 
 theme: 
     name: 'material'
+    palette:
+        primary: 'deep purple'
+        accent: 'deep purple'
+    logo: https://wizbot.cc/assets/img/wizbot-logo.svg
+    favicon: https://wizbot.cc/assets/img/wizbot-icon-887x889.png
