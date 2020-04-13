@@ -24,7 +24,7 @@ namespace WizBot.Core.Services.Impl
         private readonly DateTime _started;
 
         public const string BotVersion = "2.29.13";
-        public string Author => "🛠️ Kwoth#2452\n🛠️ Wizkiller96#0151";
+        public string Author => "🛠️ Kwoth#2452\n🛠️ Wizkiller96#5074";
         public string Library => "Discord.Net";
 
         public string Heap => Math.Round((double)GC.GetTotalMemory(false) / 1.MiB(), 2)
