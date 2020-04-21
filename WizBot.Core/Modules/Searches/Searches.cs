@@ -327,24 +327,29 @@ namespace WizBot.Modules.Searches
             {
                 try
                 {
-                    using var _http = _httpFactory.CreateClient();
-                    using var req = new HttpRequestMessage(HttpMethod.Post, "https://goolnk.com/api/v1/shorten");
-                    var formData = new MultipartFormDataContent
+                    using (var _http = _httpFactory.CreateClient())
+                    using (var req = new HttpRequestMessage(HttpMethod.Post, "https://goolnk.com/api/v1/shorten"))
+                    {
+                        var formData = new MultipartFormDataContent
+
                     {
                         { new StringContent(query), "url" }
                     };
-                    req.Content = formData;
+                        req.Content = formData;
 
-                    using var res = await _http.SendAsync(req).ConfigureAwait(false);
-                    var content = await res.Content.ReadAsStringAsync();
-                    var data = JsonConvert.DeserializeObject<ShortenData>(content);
+                        using (var res = await _http.SendAsync(req).ConfigureAwait(false))
+                        {
+                            var content = await res.Content.ReadAsStringAsync();
+                            var data = JsonConvert.DeserializeObject<ShortenData>(content);
 
-                    if (!string.IsNullOrWhiteSpace(data?.ResultUrl))
-                        cachedShortenedLinks.TryAdd(query, data.ResultUrl);
-                    else
-                        return;
+                            if (!string.IsNullOrWhiteSpace(data?.ResultUrl))
+                                cachedShortenedLinks.TryAdd(query, data.ResultUrl);
+                            else
+                                return;
 
-                    shortLink = data.ResultUrl;
+                            shortLink = data.ResultUrl;
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -533,61 +538,62 @@ namespace WizBot.Modules.Searches
             if (!await ValidateQuery(ctx.Channel, word).ConfigureAwait(false))
                 return;
 
-            using var _http = _httpFactory.CreateClient();
-            string res;
-            try
+            using (var _http = _httpFactory.CreateClient())
             {
-                res = await _cache.GetOrCreateAsync($"define_{word}", e =>
-                 {
-                     e.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(12);
-                     return _http.GetStringAsync("https://api.pearson.com/v2/dictionaries/entries?headword=" + WebUtility.UrlEncode(word));
-                 }).ConfigureAwait(false);
-
-                var data = JsonConvert.DeserializeObject<DefineModel>(res);
-
-                var datas = data.Results
-                    .Where(x => !(x.Senses is null) && x.Senses.Count > 0 && !(x.Senses[0].Definition is null))
-                    .Select(x => (Sense: x.Senses[0], x.PartOfSpeech));
-
-                if (!datas.Any())
+                string res;
+                try
                 {
-                    _log.Warn("Definition not found: {Word}", word);
-                    await ReplyErrorLocalizedAsync("define_unknown").ConfigureAwait(false);
+                    res = await _cache.GetOrCreateAsync($"define_{word}", e =>
+                     {
+                         e.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(12);
+                         return _http.GetStringAsync("https://api.pearson.com/v2/dictionaries/entries?headword=" + WebUtility.UrlEncode(word));
+                     }).ConfigureAwait(false);
+
+                        var data = JsonConvert.DeserializeObject<DefineModel>(res);
+
+                    var datas = data.Results
+                        .Where(x => !(x.Senses is null) && x.Senses.Count > 0 && !(x.Senses[0].Definition is null))
+                        .Select(x => (Sense: x.Senses[0], x.PartOfSpeech));
+
+                    if (!datas.Any())
+                    {
+                        _log.Warn("Definition not found: {Word}", word);
+                        await ReplyErrorLocalizedAsync("define_unknown").ConfigureAwait(false);
+                    }
+
+                    var col = datas.Select(data => (
+                        Definition: data.Sense.Definition is string
+                            ? data.Sense.Definition.ToString()
+                            : ((JArray)JToken.Parse(data.Sense.Definition.ToString())).First.ToString(),
+                        Example: data.Sense.Examples is null || data.Sense.Examples.Count == 0
+                            ? string.Empty
+                            : data.Sense.Examples[0].Text,
+                        Word: word,
+                        WordType: data.PartOfSpeech
+                    )).ToList();
+
+                    _log.Info($"Sending {col.Count} definition for: {word}");
+
+                    await ctx.SendPaginatedConfirmAsync(0, page =>
+                        {
+                            var data = col.Skip(page).First();
+                            var embed = new EmbedBuilder()
+                                .WithDescription(ctx.User.Mention)
+                                .AddField(GetText("word"), data.Word, inline: true)
+                                .AddField(GetText("class"), data.WordType, inline: true)
+                                .AddField(GetText("definition"), data.Definition)
+                                .WithOkColor();
+
+                            if (!string.IsNullOrWhiteSpace(data.Example))
+                                embed.AddField(efb => efb.WithName(GetText("example")).WithValue(data.Example));
+
+                            return embed;
+                        }, col.Count, 1);
                 }
-
-                var col = datas.Select(data => (
-                    Definition: data.Sense.Definition is string
-                        ? data.Sense.Definition.ToString()
-                        : ((JArray)JToken.Parse(data.Sense.Definition.ToString())).First.ToString(),
-                    Example: data.Sense.Examples is null || data.Sense.Examples.Count == 0
-                        ? string.Empty
-                        : data.Sense.Examples[0].Text,
-                    Word: word,
-                    WordType: data.PartOfSpeech
-                )).ToList();
-
-                _log.Info($"Sending {col.Count} definition for: {word}");
-
-                await ctx.SendPaginatedConfirmAsync(0, page =>
+                catch (Exception ex)
                 {
-                    var data = col.Skip(page).First();
-                    var embed = new EmbedBuilder()
-                        .WithDescription(ctx.User.Mention)
-                        .AddField(GetText("word"), data.Word, inline: true)
-                        .AddField(GetText("class"), data.WordType, inline: true)
-                        .AddField(GetText("definition"), data.Definition)
-                        .WithOkColor();
-
-                    if (!string.IsNullOrWhiteSpace(data.Example))
-                        embed.AddField(efb => efb.WithName(GetText("example")).WithValue(data.Example));
-
-                    return embed;
-                }, col.Count, 1);
-            }
-            catch (Exception ex)
-            {
-                _log.Error(ex, "Error retrieving definition data for: {Word}", word);
-
+                    _log.Error(ex, "Error retrieving definition data for: {Word}", word);
+                }
             }
         }
 

@@ -263,42 +263,48 @@ namespace WizBot.Modules.Searches.Services
 
             try
             {
-                using var _http = _httpFactory.CreateClient();
-                var res = await _cache.GetOrAddCachedDataAsync($"geo_{query}", _ =>
+                using (var _http = _httpFactory.CreateClient())
                 {
-                    var url = "https://eu1.locationiq.com/v1/search.php?" +
-                        (string.IsNullOrWhiteSpace(_creds.LocationIqApiKey) ? "key=" : $"key={_creds.LocationIqApiKey}&") +
-                        $"q={Uri.EscapeDataString(query)}&" +
-                        $"format=json";
+                    var res = await _cache.GetOrAddCachedDataAsync($"geo_{query}", _ =>
+                    {
+                        var url = "https://eu1.locationiq.com/v1/search.php?" +
+                            (string.IsNullOrWhiteSpace(_creds.LocationIqApiKey) ? "key=" : $"key={_creds.LocationIqApiKey}&") +
+                            $"q={Uri.EscapeDataString(query)}&" +
+                            $"format=json";
 
-                    var res = _http.GetStringAsync(url);
-                    return res;
-                }, "", TimeSpan.FromHours(1));
+                        var res = _http.GetStringAsync(url);
+                        return res;
+                    }, "", TimeSpan.FromHours(1));
 
-                var responses = JsonConvert.DeserializeObject<LocationIqResponse[]>(res);
-                if (responses is null || responses.Length == 0)
-                {
-                    _log.Warn("Geocode lookup failed for: {Query}", query);
-                    return (default, TimeErrors.NotFound);
+                    var responses = JsonConvert.DeserializeObject<LocationIqResponse[]>(res);
+                    if (responses is null || responses.Length == 0)
+                    {
+                        _log.Warn("Geocode lookup failed for: {Query}", query);
+                        return (default, TimeErrors.NotFound);
+                    }
+
+                    var geoData = responses[0];
+
+                    using (var req = new HttpRequestMessage(HttpMethod.Get, "http://api.timezonedb.com/v2.1/get-time-zone?" +
+                        $"key={_creds.TimezoneDbApiKey}&format=json&" +
+                        "by=position&" +
+                        $"lat={geoData.Lat}&lng={geoData.Lon}"))
+                    {
+
+                        using (var geoRes = await _http.SendAsync(req))
+                        {
+                            var timeObj = JsonConvert.DeserializeObject<TimeZoneResult>(await geoRes.Content.ReadAsStringAsync());
+
+                            var time = new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).AddSeconds(timeObj.Timestamp);
+
+                            return ((
+                                Address: responses[0].DisplayName,
+                                Time: time,
+                                TimeZoneName: timeObj.TimezoneName
+                                ), default);
+                        }
+                    }
                 }
-
-                var geoData = responses[0];
-
-                using var req = new HttpRequestMessage(HttpMethod.Get, "http://api.timezonedb.com/v2.1/get-time-zone?" +
-                    $"key={_creds.TimezoneDbApiKey}&format=json&" +
-                    "by=position&" +
-                    $"lat={geoData.Lat}&lng={geoData.Lon}");
-
-                using var geoRes = await _http.SendAsync(req);
-                var timeObj = JsonConvert.DeserializeObject<TimeZoneResult>(await geoRes.Content.ReadAsStringAsync());
-
-                var time = new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).AddSeconds(timeObj.Timestamp);
-
-                return ((
-                    Address: responses[0].DisplayName,
-                    Time: time,
-                    TimeZoneName: timeObj.TimezoneName
-                    ), default);
             }
             catch (Exception ex)
             {
