@@ -13,6 +13,7 @@ nav:
     - Linux Guide: guides/linux-guide.md
     - OSX Guide: guides/osx-guide.md
     - From Source: guides/from-source.md
+    - Docker Guide (unsupported): guides/docker-guide.md
 - Commands:
     - Readme: commands-readme.md
     - Commands List: https://commands.wizbot.cc/
