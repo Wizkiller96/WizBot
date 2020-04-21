@@ -44,12 +44,12 @@ namespace WizBot.Modules.Searches
                 await ctx.Channel.EmbedAsync(new EmbedBuilder()
                     .WithOkColor()
                     .WithTitle($"{crypto.Name} ({crypto.Symbol})")
-                    .WithUrl($"https://coinmarketcap.com/currencies/{crypto.Website_Slug}/")
+                    .WithUrl($"https://coinmarketcap.com/currencies/{crypto.Slug}/")
                     .WithThumbnailUrl($"https://s2.coinmarketcap.com/static/img/coins/128x128/{crypto.Id}.png")
-                    .AddField(GetText("market_cap"), $"${crypto.Quotes["USD"].Market_Cap:n0}", true)
-                    .AddField(GetText("price"), $"${crypto.Quotes["USD"].Price}", true)
-                    .AddField(GetText("volume_24h"), $"${crypto.Quotes["USD"].Volume_24h:n0}", true)
-                    .AddField(GetText("change_7d_24h"), $"{crypto.Quotes["USD"].Percent_Change_7d}% / {crypto.Quotes["USD"].Percent_Change_24h}%", true)
+                    .AddField(GetText("market_cap"), $"${crypto.Quote.Usd.Market_Cap:n0}", true)
+                    .AddField(GetText("price"), $"${crypto.Quote.Usd.Price}", true)
+                    .AddField(GetText("volume_24h"), $"${crypto.Quote.Usd.Volume_24h:n0}", true)
+                    .AddField(GetText("change_7d_24h"), $"{crypto.Quote.Usd.Percent_Change_7d}% / {crypto.Quote.Usd.Percent_Change_24h}%", true)
                     .WithImageUrl($"https://s2.coinmarketcap.com/generated/sparklines/web/7d/usd/{crypto.Id}.png")).ConfigureAwait(false);
             }
         }

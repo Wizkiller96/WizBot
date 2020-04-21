@@ -1,29 +1,37 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace WizBot.Core.Modules.Searches.Common
 {
     public class CryptoResponse
     {
-        public Dictionary<string, CryptoData> Data { get; set; }
+        public List<CryptoResponseData> Data { get; set; }
     }
 
-    public class CryptoData
+    public class CryptoResponseData
     {
         public string Id { get; set; }
         public string Name { get; set; }
         public string Symbol { get; set; }
-        public string Website_Slug { get; set; }
+        public string Slug { get; set; }
+
+        [JsonProperty("cmc_rank")]
         public int Rank { get; set; }
-        public Dictionary<string, Quote> Quotes { get; set; }
+        public CurrencyQuotes Quote { get; set; }
+    }
+
+    public class CurrencyQuotes
+    {
+        public Quote Usd { get; set; }
     }
 
     public class Quote
     {
-        public decimal Price { get; set; }
-        public decimal Market_Cap { get; set; }
+        public double Price { get; set; }
+        public double Market_Cap { get; set; }
         public string Percent_Change_1h { get; set; }
         public string Percent_Change_24h { get; set; }
         public string Percent_Change_7d { get; set; }
-        public decimal Volume_24h { get; set; }
+        public double Volume_24h { get; set; }
     }
 }

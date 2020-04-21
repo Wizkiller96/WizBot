@@ -3,6 +3,7 @@ using WizBot.Core.Modules.Searches.Common;
 using WizBot.Core.Services;
 using WizBot.Extensions;
 using Newtonsoft.Json;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,17 +15,18 @@ namespace WizBot.Core.Modules.Searches.Services
 {
     public class CryptoService : INService
     {
-        private readonly SemaphoreSlim _cryptoLock = new SemaphoreSlim(1, 1);
         private readonly IDataCache _cache;
         private readonly IHttpClientFactory _httpFactory;
+        private readonly Logger _log;
 
         public CryptoService(IDataCache cache, IHttpClientFactory httpFactory)
         {
             _cache = cache;
             _httpFactory = httpFactory;
+            _log = NLog.LogManager.GetCurrentClassLogger();
         }
 
-        public async Task<(CryptoData Data, CryptoData Nearest)> GetCryptoData(string name)
+        public async Task<(CryptoResponseData Data, CryptoResponseData Nearest)> GetCryptoData(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -38,7 +40,7 @@ namespace WizBot.Core.Modules.Searches.Services
                 ?.FirstOrDefault(x => x.Id.ToUpperInvariant() == name || x.Name.ToUpperInvariant() == name
                     || x.Symbol.ToUpperInvariant() == name);
 
-            (CryptoData Elem, int Distance)? nearest = null;
+            (CryptoResponseData Elem, int Distance)? nearest = null;
             if (crypto == null)
             {
                 nearest = cryptos.Select(x => (x, Distance: x.Name.ToUpperInvariant().LevenshteinDistance(name)))
@@ -57,45 +59,46 @@ namespace WizBot.Core.Modules.Searches.Services
             return (crypto, null);
         }
 
-        public async Task<CryptoData[]> CryptoData()
+        private readonly SemaphoreSlim getCryptoLock = new SemaphoreSlim(1, 1);
+        public async Task<List<CryptoResponseData>> CryptoData()
         {
-            string data = null;
-            var r = _cache.Redis.GetDatabase();
-            await _cryptoLock.WaitAsync().ConfigureAwait(false);
+            await getCryptoLock.WaitAsync();
             try
             {
-                var ver = await r.StringGetAsync("crypto_data_version").ConfigureAwait(false);
-                if (ver != "2")
+                var fullStrData = await _cache.GetOrAddCachedDataAsync("wizbot:crypto_data", async _ =>
                 {
-                    await r.KeyDeleteAsync("crypto_data").ConfigureAwait(false);
-                    await r.StringSetAsync("crypto_data_version", "2").ConfigureAwait(false);
-                }
-
-                data = await r.StringGetAsync("crypto_data").ConfigureAwait(false);
-
-                if (data == null)
-                {
-                    var allData = new List<CryptoData>();
-                    using (var http = _httpFactory.CreateClient())
+                    try
                     {
-                        for (int start = 0; start <= 400; start += 100)
-                        {
-                            data = await http.GetStringAsync(new Uri($"https://api.coinmarketcap.com/v2/ticker/?convert=BTC&start={start}"))
-                                .ConfigureAwait(false);
+                        using var _http = _httpFactory.CreateClient();
+                        var strData = await _http.GetStringAsync(new Uri($"https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?" +
+                            $"CMC_PRO_API_KEY=e79ec505-0913-439d-ae07-069e296a6079" +
+                            $"&start=1" +
+                            $"&limit=500" +
+                            $"&convert=USD"));
 
-                            allData.AddRange(JsonConvert.DeserializeObject<CryptoResponse>(data).Data.Select(x => x.Value).ToArray());
-                        }
+                        JsonConvert.DeserializeObject<CryptoResponse>(strData); // just to see if its' valid
+
+                        return strData;
                     }
-                    data = JsonConvert.SerializeObject(allData);
-                    await r.StringSetAsync("crypto_data", data, TimeSpan.FromHours(1)).ConfigureAwait(false);
-                }
+                    catch (Exception ex)
+                    {
+                        _log.Error(ex, "Error getting crypto data: {Message}", ex.Message);
+                        return default;
+                    }
+
+                }, "", TimeSpan.FromHours(1));
+
+                return JsonConvert.DeserializeObject<CryptoResponse>(fullStrData).Data;
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex, "Error retreiving crypto data: {Message}", ex.Message);
+                return default;
             }
             finally
             {
-                _cryptoLock.Release();
+                getCryptoLock.Release();
             }
-
-            return JsonConvert.DeserializeObject<CryptoData[]>(data);
         }
     }
 }
