@@ -34,7 +34,9 @@ If you don't see a `credentials.json` file, you will need to rename `credentials
   "ShardRunArguments": "",
   "ShardRunPort": null,
   "TwitchClientId": null,
-  "RedisOptions": null
+  "RedisOptions": null,
+  "LocationIqApiKey": null,
+  "TimezoneDbApiKey": null
 }
 ```
 
