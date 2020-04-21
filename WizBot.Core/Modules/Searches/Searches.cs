@@ -153,17 +153,17 @@ namespace WizBot.Modules.Searches
             await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
 
             var (data, err) = await _service.GetTimeDataAsync(query).ConfigureAwait(false);
-            if (!(err is null))
+            if (!(err == null))
             {
-                var errorKey = err switch
-                {
-                    TimeErrors.ApiKeyMissing => "api_key_missing",
-                    TimeErrors.InvalidInput => "invalid_input",
-                    TimeErrors.NotFound => "not_found",
-                    TimeErrors.Unknown => "error_occured",
-                    _ => "error_occured",
-                };
-                await ReplyErrorLocalizedAsync(errorKey).ConfigureAwait(false);
+                //var errorKey = err switch
+                //{
+                //    TimeErrors.ApiKeyMissing => "api_key_missing",
+                //    TimeErrors.InvalidInput => "invalid_input",
+                //    TimeErrors.NotFound => "not_found",
+                //    TimeErrors.Unknown => "error_occured",
+                //    _ => "error_occured",
+                //};
+                await ReplyErrorLocalizedAsync("error_occured").ConfigureAwait(false);
                 return;
             }
 
