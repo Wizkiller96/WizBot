@@ -5,6 +5,7 @@ using AngleSharp.Html.Parser;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Microsoft.Extensions.Caching.Memory;
 using WizBot.Common;
 using WizBot.Common.Attributes;
 using WizBot.Common.Replacements;
@@ -34,13 +35,15 @@ namespace WizBot.Modules.Searches
         private readonly IBotCredentials _creds;
         private readonly IGoogleApiService _google;
         private readonly IHttpClientFactory _httpFactory;
+        private readonly IMemoryCache _cache;
         private static readonly WizBotRandom _rng = new WizBotRandom();
 
-        public Searches(IBotCredentials creds, IGoogleApiService google, IHttpClientFactory factory)
+        public Searches(IBotCredentials creds, IGoogleApiService google, IHttpClientFactory factory, IMemoryCache cache)
         {
             _creds = creds;
             _google = google;
             _httpFactory = factory;
+            _cache = cache;
         }
 
         //for anonymasen :^)
@@ -484,33 +487,61 @@ namespace WizBot.Modules.Searches
             if (!await ValidateQuery(ctx.Channel, word).ConfigureAwait(false))
                 return;
 
-            using (var http = _httpFactory.CreateClient())
+            using var _http = _httpFactory.CreateClient();
+            string res;
+            try
             {
-                var res = await http.GetStringAsync("http://api.pearson.com/v2/dictionaries/entries?headword=" + WebUtility.UrlEncode(word.Trim())).ConfigureAwait(false);
+                res = await _cache.GetOrCreateAsync($"define_{word}", e =>
+                 {
+                     e.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(12);
+                     return _http.GetStringAsync("https://api.pearson.com/v2/dictionaries/entries?headword=" + WebUtility.UrlEncode(word));
+                 }).ConfigureAwait(false);
 
                 var data = JsonConvert.DeserializeObject<DefineModel>(res);
 
-                var sense = data.Results.FirstOrDefault(x => x.Senses?[0].Definition != null)?.Senses[0];
+                var datas = data.Results
+                    .Where(x => !(x.Senses is null) && x.Senses.Count > 0 && !(x.Senses[0].Definition is null))
+                    .Select(x => (Sense: x.Senses[0], x.PartOfSpeech));
 
-                if (sense?.Definition == null)
+                if (!datas.Any())
                 {
+                    _log.Warn("Definition not found: {Word}", word);
                     await ReplyErrorLocalizedAsync("define_unknown").ConfigureAwait(false);
-                    return;
                 }
 
-                var definition = sense.Definition.ToString();
-                if (!(sense.Definition is string))
-                    definition = ((JArray)JToken.Parse(sense.Definition.ToString())).First.ToString();
+                var col = datas.Select(data => (
+                    Definition: data.Sense.Definition is string
+                        ? data.Sense.Definition.ToString()
+                        : ((JArray)JToken.Parse(data.Sense.Definition.ToString())).First.ToString(),
+                    Example: data.Sense.Examples is null || data.Sense.Examples.Count == 0
+                        ? string.Empty
+                        : data.Sense.Examples[0].Text,
+                    Word: word,
+                    WordType: data.PartOfSpeech
+                )).ToList();
 
-                var embed = new EmbedBuilder().WithOkColor()
-                    .WithTitle(GetText("define") + " " + word)
-                    .WithDescription(definition)
-                    .WithFooter(efb => efb.WithText(sense.Gramatical_info?.Type));
+                _log.Info($"Sending {col.Count} definition for: {word}");
 
-                if (sense.Examples != null)
-                    embed.AddField(efb => efb.WithName(GetText("example")).WithValue(sense.Examples.First().Text));
+                await ctx.SendPaginatedConfirmAsync(0, page =>
+                {
+                    var data = col.Skip(page).First();
+                    var embed = new EmbedBuilder()
+                        .WithDescription(ctx.User.Mention)
+                        .AddField(GetText("word"), data.Word, inline: true)
+                        .AddField(GetText("class"), data.WordType, inline: true)
+                        .AddField(GetText("definition"), data.Definition)
+                        .WithOkColor();
 
-                await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+                    if (!string.IsNullOrWhiteSpace(data.Example))
+                        embed.AddField(efb => efb.WithName(GetText("example")).WithValue(data.Example));
+
+                    return embed;
+                }, col.Count, 1);
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex, "Error retrieving definition data for: {Word}", word);
+
             }
         }
 

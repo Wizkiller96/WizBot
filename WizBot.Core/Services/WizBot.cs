@@ -38,7 +38,7 @@ namespace WizBot
         /* I don't know how to make this not be static
          * and keep the convenience of .WithOkColor
          * and .WithErrorColor extensions methods.
-         * I don't want to pass botconfig every time I 
+         * I don't want to pass botconfig every time I
          * want to send a confirm or error message, so
          * I'll keep this for now */
         public static Color OkColor { get; set; }
@@ -169,7 +169,8 @@ namespace WizBot
                     .AddSingleton(botConfigProvider)
                     .AddSingleton(this)
                     .AddSingleton(uow)
-                    .AddSingleton(Cache);
+                    .AddSingleton(Cache)
+                    .AddMemoryCache();
 
                 s.AddHttpClient();
                 s.AddHttpClient("memelist").ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
