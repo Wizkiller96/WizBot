@@ -29,8 +29,8 @@ Run this command in Terminal (copy-paste the entire block):
 
 ``` bash
 brew install wget git ffmpeg openssl opus opus-tools opusfile libffi libsodium tmux python youtube-dl redis npm \
-brew services start redis \
-npm install pm2@3.1.3 -g 
+brew services start redis &&
+sudo npm install pm2 -g
 ```
 
 **Installing dotNET Core SDK**
@@ -40,8 +40,8 @@ npm install pm2@3.1.3 -g
 - Run this command in Terminal. There won't be any output. (copy-paste the entire block):
 
 ``` bash
-ln -s /usr/local/share/dotnet/dotnet /usr/local/bin \
-ln -s /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib /usr/local/lib/ \
+ln -s /usr/local/share/dotnet/dotnet /usr/local/bin &&
+ln -s /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib /usr/local/lib/ &&
 ln -s /usr/local/opt/openssl/lib/libssl.1.0.0.dylib /usr/local/lib/
 ```
 
@@ -152,7 +152,7 @@ Make sure you have the [Google API Key](../../jsons-explained/#setting-up-your-a
 If music still isn't working, try reinstalling ffmpeg:
 
 - `brew update && brew upgrade` (Update formulae and Homebrew itself && Install newer versions of outdated packages)
-- `brew prune` (Remove dead symlinks from Homebrewâ€™s prefix)
+- `brew prune` (Remove dead symlinks from Homebrew's prefix)
 - `brew doctor` (Check your Homebrew installation for common issues)
 - Then try `brew install ffmpeg` again.
  
