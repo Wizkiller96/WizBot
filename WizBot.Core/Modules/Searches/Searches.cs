@@ -22,6 +22,7 @@ using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Processing.Drawing;
 using SixLabors.Primitives;
 using System;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -293,26 +294,57 @@ namespace WizBot.Modules.Searches
                            .ConfigureAwait(false);
         }
 
-        // done in 3.0
+        public class ShortenData
+        {
+            [JsonProperty("result_url")]
+            public string ResultUrl { get; set; }
+        }
+
+        private static readonly ConcurrentDictionary<string, string> cachedShortenedLinks = new ConcurrentDictionary<string, string>();
+
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Shorten([Leftover] string query)
         {
             if (!await ValidateQuery(ctx.Channel, query).ConfigureAwait(false))
                 return;
 
-            var shortened = await _google.ShortenUrl(query).ConfigureAwait(false);
-
-            if (shortened == query)
+            query = query.Trim();
+            if (!cachedShortenedLinks.TryGetValue(query, out var shortLink))
             {
-                await ReplyErrorLocalizedAsync("shorten_fail").ConfigureAwait(false);
-                return;
+                try
+                {
+                    using var _http = _httpFactory.CreateClient();
+                    using var req = new HttpRequestMessage(HttpMethod.Post, "https://goolnk.com/api/v1/shorten");
+                    var formData = new MultipartFormDataContent
+                    {
+                        { new StringContent(query), "url" }
+                    };
+                    req.Content = formData;
+
+                    using var res = await _http.SendAsync(req).ConfigureAwait(false);
+                    var content = await res.Content.ReadAsStringAsync();
+                    var data = JsonConvert.DeserializeObject<ShortenData>(content);
+
+                    if (!string.IsNullOrWhiteSpace(data?.ResultUrl))
+                        cachedShortenedLinks.TryAdd(query, data.ResultUrl);
+                    else
+                        return;
+
+                    shortLink = data.ResultUrl;
+                }
+                catch (Exception ex)
+                {
+                    _log.Error(ex, "Error shortening a link: {Message}", ex.Message);
+                    return;
+                }
             }
 
-            await ctx.Channel.EmbedAsync(new EmbedBuilder().WithColor(WizBot.OkColor)
+            await ctx.Channel.EmbedAsync(new EmbedBuilder()
+                .WithColor(WizBot.OkColor)
                 .AddField(efb => efb.WithName(GetText("original_url"))
                                     .WithValue($"<{query}>"))
                 .AddField(efb => efb.WithName(GetText("short_url"))
-                                    .WithValue($"<{shortened}>")))
+                                    .WithValue($"<{shortLink}>")))
                 .ConfigureAwait(false);
         }
 
@@ -542,48 +574,6 @@ namespace WizBot.Modules.Searches
             {
                 _log.Error(ex, "Error retrieving definition data for: {Word}", word);
 
-            }
-        }
-
-        // done in 3.0
-        [WizBotCommand, Usage, Description, Aliases]
-        public async Task Hashtag([Leftover] string query)
-        {
-            if (!await ValidateQuery(ctx.Channel, query).ConfigureAwait(false))
-                return;
-
-            if (string.IsNullOrWhiteSpace(_creds.MashapeKey))
-            {
-                await ReplyErrorLocalizedAsync("mashape_api_missing").ConfigureAwait(false);
-                return;
-            }
-
-            try
-            {
-                await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
-                string res;
-                using (var http = _httpFactory.CreateClient())
-                {
-                    http.DefaultRequestHeaders.Clear();
-                    http.DefaultRequestHeaders.Add("X-Mashape-Key", _creds.MashapeKey);
-                    res = await http.GetStringAsync($"https://tagdef.p.mashape.com/one.{Uri.EscapeUriString(query)}.json").ConfigureAwait(false);
-                }
-
-                var items = JObject.Parse(res);
-                var item = items["defs"]["def"];
-                //var hashtag = item["hashtag"].ToString();
-                var link = item["uri"].ToString();
-                var desc = item["text"].ToString();
-                await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                                                                 .WithAuthor(eab => eab.WithUrl(link)
-                                                                                       .WithIconUrl("http://res.cloudinary.com/urbandictionary/image/upload/a_exif,c_fit,h_200,w_200/v1394975045/b8oszuu3tbq7ebyo7vo1.jpg")
-                                                                                       .WithName(query))
-                                                                 .WithDescription(desc))
-                                                                 .ConfigureAwait(false);
-            }
-            catch
-            {
-                await ReplyErrorLocalizedAsync("hashtag_error").ConfigureAwait(false);
             }
         }
 
