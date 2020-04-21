@@ -31,7 +31,7 @@ namespace WizBot.Core.Common.Attributes
             if(rem == null)
                 return Task.FromResult(PreconditionResult.FromSuccess());
 
-            var msgContent = $"You can use this command again in {rem.Value.TotalSeconds:F2} seconds.";
+            var msgContent = $"You can use this command again in {rem.Value.TotalSeconds:F1}s.";
 
             return Task.FromResult(PreconditionResult.FromError(msgContent));
         }

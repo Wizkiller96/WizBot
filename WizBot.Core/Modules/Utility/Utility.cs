@@ -3,6 +3,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using WizBot.Common;
 using WizBot.Common.Attributes;
+using WizBot.Core.Common.Attributes;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Impl;
 using WizBot.Extensions;
@@ -14,6 +15,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace WizBot.Modules.Utility
@@ -335,16 +337,29 @@ namespace WizBot.Modules.Utility
                 await ctx.User.SendFileAsync(stream, title, title, false).ConfigureAwait(false);
             }
         }
+        private static SemaphoreSlim sem = new SemaphoreSlim(1, 1);
 
         [WizBotCommand, Usage, Description, Aliases]
+#if GLOBAL_WIZBOT
+        [Ratelimit(30)]
+#endif
+
         public async Task Ping()
         {
-            var sw = Stopwatch.StartNew();
-            var msg = await ctx.Channel.SendMessageAsync("🏓").ConfigureAwait(false);
-            sw.Stop();
-            msg.DeleteAfter(0);
+            await sem.WaitAsync(5000).ConfigureAwait(false);
+            try
+            {
+                var sw = Stopwatch.StartNew();
+                var msg = await ctx.Channel.SendMessageAsync("🏓").ConfigureAwait(false);
+                sw.Stop();
+                msg.DeleteAfter(0);
 
-            await ctx.Channel.SendConfirmAsync($"{Format.Bold(ctx.User.ToString())} 🏓 {(int)sw.Elapsed.TotalMilliseconds}ms").ConfigureAwait(false);
+                await ctx.Channel.SendConfirmAsync($"{Format.Bold(ctx.User.ToString())} 🏓 {(int)sw.Elapsed.TotalMilliseconds}ms").ConfigureAwait(false);
+            }
+            finally
+            {
+                sem.Release();
+            }
         }
 
         // Old Update Command
