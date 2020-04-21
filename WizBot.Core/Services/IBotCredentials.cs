@@ -34,6 +34,8 @@ namespace WizBot.Core.Services
         string BotListToken { get; }
         string TwitchClientId { get; }
         string RedisOptions { get; }
+        string LocationIqApiKey { get; }
+        string TimezoneDbApiKey { get; }
     }
 
     public class RestartConfig

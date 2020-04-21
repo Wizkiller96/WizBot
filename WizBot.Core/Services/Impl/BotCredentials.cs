@@ -46,6 +46,8 @@ namespace WizBot.Core.Services.Impl
         public string VotesToken { get; }
         public string BotListToken { get; }
         public string RedisOptions { get; }
+        public string LocationIqApiKey { get; }
+        public string TimezoneDbApiKey { get; }
 
         public BotCredentials()
         {
@@ -83,6 +85,8 @@ namespace WizBot.Core.Services.Impl
                 CleverbotApiKey = data[nameof(CleverbotApiKey)];
                 MiningProxyUrl = data[nameof(MiningProxyUrl)];
                 MiningProxyCreds = data[nameof(MiningProxyCreds)];
+                LocationIqApiKey = data[nameof(LocationIqApiKey)];
+                TimezoneDbApiKey = data[nameof(TimezoneDbApiKey)];
                 if (!string.IsNullOrWhiteSpace(data[nameof(RedisOptions)]))
                     RedisOptions = data[nameof(RedisOptions)];
                 else
@@ -181,6 +185,8 @@ namespace WizBot.Core.Services.Impl
             public string VotesToken { get; set; }
             public string VotesUrl { get; set; }
             public string RedisOptions { get; set; }
+            public string LocationIqApiKey { get; }
+            public string TimezoneDbApiKey { get; }
         }
 
         public bool IsOwner(IUser u) => OwnerIds.Contains(u.Id);

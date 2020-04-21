@@ -720,7 +720,7 @@
     "administration_prefix_new": "Le préfixe sur ce serveur a changé de {0} à {1}",
     "administration_defprefix_current": "Le préfixe par défaut du bot est {0}",
     "administration_defprefix_new": "Le préfixe par défaut du bot a changé de {0} à {1}",
-    "administration_bot_nick": "Le surnom du bot est maintenant {1}.",
+    "administration_bot_nick": "Le surnom du bot est maintenant {0}.",
     "administration_user_nick": "Le surnom de l’utilisateur {0} est maintenant {1}.",
     "utility_verbose_errors_enabled": "Les commandes utilisées incorrectement afficheront les erreurs.",
     "utility_verbose_errors_disabled": "Les commandes utilisées incorrectement n'afficheront plus d'erreurs.",

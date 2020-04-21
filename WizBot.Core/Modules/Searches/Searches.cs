@@ -1,4 +1,5 @@
 ﻿using AngleSharp;
+using AngleSharp.Browser;
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
@@ -149,18 +150,31 @@ namespace WizBot.Modules.Searches
             if (!await ValidateQuery(ctx.Channel, query).ConfigureAwait(false))
                 return;
 
-            if (string.IsNullOrWhiteSpace(_creds.GoogleApiKey))
+            await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
+
+            var (data, err) = await _service.GetTimeDataAsync(query).ConfigureAwait(false);
+            if (!(err is null))
             {
-                await ReplyErrorLocalizedAsync("google_api_key_missing").ConfigureAwait(false);
+                var errorKey = err switch
+                {
+                    TimeErrors.ApiKeyMissing => "api_key_missing",
+                    TimeErrors.InvalidInput => "invalid_input",
+                    TimeErrors.NotFound => "not_found",
+                    TimeErrors.Unknown => "error_occured",
+                    _ => "error_occured",
+                };
+                await ReplyErrorLocalizedAsync(errorKey).ConfigureAwait(false);
                 return;
             }
 
-            var data = await _service.GetTimeDataAsync(query).ConfigureAwait(false);
+            var eb = new EmbedBuilder()
+                .WithOkColor()
+                .WithTitle(GetText("time_new"))
+                .WithDescription(Format.Code(data.Time.ToString()))
+                .AddField(GetText("location"), string.Join('\n', data.Address.Split(", ")), inline: true)
+                .AddField(GetText("timezone"), data.TimeZoneName, inline: true);
 
-            await ReplyConfirmLocalizedAsync("time",
-                Format.Bold(data.Address),
-                Format.Code(data.Time.ToString("HH:mm")),
-                data.TimeZoneName).ConfigureAwait(false);
+            await ctx.Channel.SendMessageAsync(embed: eb.Build()).ConfigureAwait(false);
         }
 
         // done in 3.0

@@ -94,11 +94,11 @@ namespace WizBot.Core.Services.Impl
 
             if (string.IsNullOrWhiteSpace(text))
             {
-                LogManager.GetCurrentClassLogger().Warn(lowerModuleTypeName + "_" + key + " key is missing from " + cultureInfo + " response strings. PLEASE REPORT THIS.");
+                LogManager.GetCurrentClassLogger().Warn(lowerModuleTypeName + "_" + key + " key is missing from " + cultureInfo + " response strings. You may ignore this message.");
                 text = GetString(lowerModuleTypeName + "_" + key, _usCultureInfo) ?? $"Error: dkey {lowerModuleTypeName + "_" + key} not found!";
                 if (string.IsNullOrWhiteSpace(text))
                     return "I can't tell you if the command is executed, because there was an error printing out the response. Key '" +
-                        lowerModuleTypeName + "_" + key + "' " + "is missing from resources. Please report this.";
+                        lowerModuleTypeName + "_" + key + "' " + "is missing from resources. You may ignore this message.";
             }
             return text;
         }

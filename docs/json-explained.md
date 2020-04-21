@@ -138,7 +138,7 @@ For multiple owners or admins, it should look like this \(pay attention to the c
 This part is completely optional, **however it's necessary for music and a few other features to work properly**.
 
 * **GoogleAPIKey**
-  * Required for Youtube Song Search, Playlist queuing, URL Shortener and lot more.
+  * Required for Youtube Song Search, Playlist queuing, and a few more things.
   * Follow these steps on how to setup Google API keys:
     * Go to [Google Console](https://console.developers.google.com) and log in.
     * Create a new project \(name does not matter\). 
@@ -163,8 +163,8 @@ It should look like this:
 ```
 
 * **MashapeKey** 
-  * Required for Urban Disctionary, Hashtag search, and Hearthstone cards.
-  * You need to create an account on their [api marketplace](https://market.mashape.com/), after that go to `market.mashape.com/YOURNAMEHERE/applications/default-application` and press **Get the keys** in the top right corner.
+  * Required for Urban Dictionary, and Hearthstone cards.
+  * Api key obtained on https://rapidapi.com (register -> go to MyApps -> Add New App -> Enter Name -> Application key)
   * Copy the key and paste it into `credentials.json`
 * **LoLApiKey** 
   * Required for all League of Legends commands. 
@@ -185,6 +185,11 @@ It should look like this:
     * Go to [connections page](https://www.twitch.tv/settings/connections) on twitch and register you applicaiton.
     * Once registered, find your application under Other Connections on the Connections page. Click Edit
     * You will see your Client ID on the edit page.
+* **LocationIqApiKey**
+  * Optional. Used only for the `.time` command. https://locationiq.com api key (register and you will receive the token in the email).
+* **TimezoneDbApiKey**
+  * Optional. Used only for the `.time` command. https://timezonedb.com api key (register and you will receive the token in the email).
+
 
 #### Additional Settings
 

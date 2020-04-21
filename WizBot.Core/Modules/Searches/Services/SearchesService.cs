@@ -238,48 +238,72 @@ namespace WizBot.Modules.Searches.Services
             }
         }
 
-        public Task<TimeData> GetTimeDataAsync(string arg)
+        public Task<((string Address, DateTime Time, string TimeZoneName), TimeErrors?)> GetTimeDataAsync(string arg)
         {
-            return _cache.GetOrAddCachedDataAsync($"wizbot_time_{arg}",
-                GetTimeDataFactory,
-                arg,
-                TimeSpan.FromMinutes(5));
+            return GetTimeDataFactory(arg);
+            //return _cache.GetOrAddCachedDataAsync($"wizbot_time_{arg}",
+            //    GetTimeDataFactory,
+            //    arg,
+            //    TimeSpan.FromMinutes(1));
         }
-
-        private async Task<TimeData> GetTimeDataFactory(string arg)
+        private async Task<((string Address, DateTime Time, string TimeZoneName), TimeErrors?)> GetTimeDataFactory(string query)
         {
+            query = query.Trim();
+
+            if (string.IsNullOrEmpty(query))
+            {
+                return (default, TimeErrors.InvalidInput);
+            }
+
+            if (string.IsNullOrWhiteSpace(_creds.LocationIqApiKey)
+                || string.IsNullOrWhiteSpace(_creds.TimezoneDbApiKey))
+            {
+                return (default, TimeErrors.ApiKeyMissing);
+            }
+
             try
             {
-                using (var http = _httpFactory.CreateClient())
+                using var _http = _httpFactory.CreateClient();
+                var res = await _cache.GetOrAddCachedDataAsync($"geo_{query}", _ =>
                 {
-                    var res = await http.GetStringAsync($"https://maps.googleapis.com/maps/api/geocode/json?address={arg}&key={_creds.GoogleApiKey}").ConfigureAwait(false);
-                    var obj = JsonConvert.DeserializeObject<GeolocationResult>(res);
-                    if (obj?.Results == null || obj.Results.Length == 0)
-                    {
-                        _log.Warn("Geocode lookup failed for {0}", arg);
-                        return null;
-                    }
-                    var currentSeconds = DateTime.UtcNow.UnixTimestamp();
-                    var timeRes = await http.GetStringAsync($"https://maps.googleapis.com/maps/api/timezone/json?location={obj.Results[0].Geometry.Location.Lat},{obj.Results[0].Geometry.Location.Lng}&timestamp={currentSeconds}&key={_creds.GoogleApiKey}").ConfigureAwait(false);
+                    var url = "https://eu1.locationiq.com/v1/search.php?" +
+                        (string.IsNullOrWhiteSpace(_creds.LocationIqApiKey) ? "key=" : $"key={_creds.LocationIqApiKey}&") +
+                        $"q={Uri.EscapeDataString(query)}&" +
+                        $"format=json";
 
-                    var timeObj = JsonConvert.DeserializeObject<TimeZoneResult>(timeRes);
+                    var res = _http.GetStringAsync(url);
+                    return res;
+                }, "", TimeSpan.FromHours(1));
 
-                    var time = DateTime.UtcNow.AddSeconds(timeObj.DstOffset + timeObj.RawOffset);
-
-                    var toReturn = new TimeData
-                    {
-                        Address = obj.Results[0].FormattedAddress,
-                        Time = time,
-                        TimeZoneName = timeObj.TimeZoneName,
-                    };
-
-                    return toReturn;
+                var responses = JsonConvert.DeserializeObject<LocationIqResponse[]>(res);
+                if (responses is null || responses.Length == 0)
+                {
+                    _log.Warn("Geocode lookup failed for: {Query}", query);
+                    return (default, TimeErrors.NotFound);
                 }
+
+                var geoData = responses[0];
+
+                using var req = new HttpRequestMessage(HttpMethod.Get, "http://api.timezonedb.com/v2.1/get-time-zone?" +
+                    $"key={_creds.TimezoneDbApiKey}&format=json&" +
+                    "by=position&" +
+                    $"lat={geoData.Lat}&lng={geoData.Lon}");
+
+                using var geoRes = await _http.SendAsync(req);
+                var timeObj = JsonConvert.DeserializeObject<TimeZoneResult>(await geoRes.Content.ReadAsStringAsync());
+
+                var time = new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).AddSeconds(timeObj.Timestamp);
+
+                return ((
+                    Address: responses[0].DisplayName,
+                    Time: time,
+                    TimeZoneName: timeObj.TimezoneName
+                    ), default);
             }
             catch (Exception ex)
             {
-                _log.Warn(ex);
-                return null;
+                _log.Error(ex, "Weather error: {Message}", ex.Message);
+                return (default, TimeErrors.NotFound);
             }
         }
 
@@ -585,5 +609,14 @@ namespace WizBot.Modules.Searches.Services
                 return movie;
             }
         }
+    }
+
+
+    public enum TimeErrors
+    {
+        InvalidInput,
+        ApiKeyMissing,
+        NotFound,
+        Unknown
     }
 }
