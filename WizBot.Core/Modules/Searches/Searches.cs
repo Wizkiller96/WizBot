@@ -569,7 +569,7 @@ namespace WizBot.Modules.Searches
                             ? string.Empty
                             : data.Sense.Examples[0].Text,
                         Word: word,
-                        WordType: data.PartOfSpeech
+                        WordType: string.IsNullOrWhiteSpace(data.PartOfSpeech) ? "-" : data.PartOfSpeech
                     )).ToList();
 
                     _log.Info($"Sending {col.Count} definition for: {word}");
