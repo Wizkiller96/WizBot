@@ -186,7 +186,7 @@ It should look like this:
 - **LocationIqApiKey**
   - Optional. Used only for the `.time` command. https://locationiq.com api key (register and you will receive the token in the email).
 - **TimezoneDbApiKey**
-  - Optional. Used only for the `.time` command. https://timezonedb.com api key (register and you will receive the token in the email).
+  - Optional. Used only for the `.time` command. https://timezonedb.com api key (register and you will receive the token in the email **YOU HAVE TO ACTIVEATE IT AFTER YOU GET IT**).
 
 
 #### Additional Settings
