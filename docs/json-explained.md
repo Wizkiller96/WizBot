@@ -154,11 +154,10 @@ This part is completely optional, **however it's necessary for music and a few o
       - Copy the key. 
     - Open up `credentials.json` and look for `"GoogleAPIKey"`, paste your API key inbetween the quotation marks.
 
-It should look like this:
-
-```json
-"GoogleApiKey": "AIzaSyDSci1sdlWQOWNVj1vlXxxxxxbk0oWMEzM",
-```
+    - It should look like this:
+        ```json
+        "GoogleApiKey": "AIzaSyDSci1sdlWQOWNVj1vlXxxxxxbk0oWMEzM",
+        ```
 
 - **MashapeKey** 
   - Required for Urban Dictionary, and Hearthstone cards.
@@ -178,11 +177,17 @@ It should look like this:
 - **PatreonCampaignId**
   - For Patreon creators only. Id of your campaign.
 - **TwitchClientId**
-  - Optional. In order to avoid ratelimits that may happen if you use .twitch/.stadd function extensively.
-  - [How to get it](https://blog.twitch.tv/client-id-required-for-kraken-api-calls-afbb8e95f843)
-    - Go to [connections page](https://www.twitch.tv/settings/connections) on twitch and register you applicaiton.
-    - Once registered, find your application under Other Connections on the Connections page. Click Edit
-    - You will see your Client ID on the edit page.
+  - Mandatory for following twitch streams with `.twitch` (or `.stadd` with twitch link)
+    - Go to [apps page](https://dev.twitch.tv/console/apps/create) on twitch and register your application.
+    - You need 2FA enabled on twitch in order to create an application
+    - You can set `http://localhost` as the OAuth Redirect URL (and press Add button)
+    - Select `Chat Bot` from the Category dropdown
+    - Once created, clicking on your application will show a new Client ID field
+    - Copy it to your credentials.json as shown below
+    - *(if you're adding it as the last key inside your credentials.json, remove the trailling comma from the example below)*
+    ```json
+        "TwitchClientId": "516tr61tr1qweqwe86trg3g",
+    ```
 - **LocationIqApiKey**
   - Optional. Used only for the `.time` command. https://locationiq.com api key (register and you will receive the token in the email).
 - **TimezoneDbApiKey**
