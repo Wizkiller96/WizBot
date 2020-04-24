@@ -19,7 +19,7 @@
 * [Redis](https://github.com/MicrosoftArchive/redis/releases/download/win-3.0.504/Redis-x64-3.0.504.msi) \(supplied with the updater\)
 * [Create a Discord Bot application](../../jsons-explained/#creating-discord-bot-application) and [invite the bot to your server](../../jsons-explained/#inviting-your-bot-to-your-server).
 
-**Optional**
+### **Optional**
 
 * [Notepad++](https://notepad-plus-plus.org/) \(makes it easier to edit your credentials\)
 * [Visual C++ 2010 \(x86\)](https://download.microsoft.com/download/1/6/5/165255E7-1014-4D0A-B094-B6A430A6BFFC/vcredist_x86.exe) and [Visual C++ 2017 \(x64\)](https://aka.ms/vs/15/release/vc_redist.x64.exe) \(both are required if you want WizBot to play music - restart Windows after installation\)
@@ -44,7 +44,7 @@ _If you happen to close the wizard with that option unchecked, you can easily fi
 
 ## Updating WizBot
 
-* Make sure WizBot is closed and not running              
+* Make sure WizBot is closed and not running
 
   \(Run `.die` in a connected server to ensure it's not running\).
 
@@ -61,4 +61,3 @@ You can still install them manually:
 * [ffmpeg](https://ffmpeg.zeranoe.com/builds/) - Download the Release build and move the file to `C:\ffmpeg`, extract its contents and rename the folder to `nightly`.
   * If that still fails, move the `ffmpeg.exe` file to `C:\Program Files\WizBot\system`.
 * [youtube-dl](https://rg3.github.io/youtube-dl/download.html) - Click on `Windows.exe` \(on the top left corner\) and download the file. Then move it to `C:\Program Files\WizBot\system`.
-

@@ -25,4 +25,3 @@
 ## Manage Permissions
 
 **These permissions refer to the permissions you can set in Discord settings for individual users or roles.**
-

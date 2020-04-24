@@ -2,7 +2,7 @@
 
 Have you ever felt confused or even overwhelmed when trying to set WizBot's permissions? In this guide we will be explaining how to use the permission commands correctly and even cover a few common questions! Every command we discuss here can be found in the [Commands List](https://commands.wizbot.cc).
 
-## Why do we use the Permissions Commands?
+## Why do we use the Permissions Commands
 
 Permissions are very handy at setting who can use what commands in a server. All commands and modules are enabled by default. If something is a bot owner only command, it can only be ran by the bot owner, the person who is running the bot, or has their ID in the [credentials.json](jsons-explained.md) file.
 
@@ -32,7 +32,7 @@ If you want the bot to notify users why they can't use a command or module, use 
 
 ## Commonly Asked Questions
 
-### How do I restrict all commands to a single channel?
+### How do I restrict all commands to a single channel
 
 To allow users to only use commands in a specific text channel, follow these steps:
 
@@ -41,7 +41,7 @@ To allow users to only use commands in a specific text channel, follow these ste
 2. `.acm enable #bot-spammerino`
    * Enables all modules in the \#bot-spammerino channel
 
-### How do I allow only one module to be used in a specific channel?
+### How do I allow only one module to be used in a specific channel
 
 To allow users to only use commands from a certain module, let's say **gambling**, in a specific text channel, follow these steps:
 
@@ -50,7 +50,7 @@ To allow users to only use commands from a certain module, let's say **gambling*
 2. `.cm Gambling enable #gamblers-den`
    * Enables usage of the Gambling module in the \#gamblers-den channel
 
-### How do I create a music DJ?
+### How do I create a music DJ
 
 To allow users to only see the current song and have a DJ role for queuing follow these steps:
 
@@ -63,7 +63,7 @@ To allow users to only see the current song and have a DJ role for queuing follo
 4. `.rm Music enable DJ`
    * Enables all music commands only for the DJ role
 
-### How do I create a NSFW role?
+### How do I create a NSFW role
 
 Say you want to only enable NSFW commands for a specific role, just do the following two steps.
 
@@ -72,7 +72,7 @@ Say you want to only enable NSFW commands for a specific role, just do the follo
 2. `.rm NSFW enable Lewd`
    * Enables usage of the NSFW module for the Lewd role
 
-### How do I disable custom reactions from triggering?
+### How do I disable custom reactions from triggering
 
 If you don't want server or global custom reactions, just block the module that controls their usage:
 
@@ -81,12 +81,10 @@ If you don't want server or global custom reactions, just block the module that 
 
 **Note**: The `ActualCustomReactions` module controls the usage of custom reactions. The `CustomReactions` module controls commands related to custom reactions \(such as `.acr`, `.lcr`, `.crca`, etc\).
 
-### I've broken permissions and am stuck, can I reset permissions?
+### I've broken permissions and am stuck, can I reset permissions
 
 Yes, there is a way, in one easy command!
 
 1. `.resetperms`
    * This resets the permission chain back to default
-
 _-- Thanks to @applemac for providing the template for this guide_
-

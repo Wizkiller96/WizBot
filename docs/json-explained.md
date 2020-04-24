@@ -57,11 +57,11 @@ If you don't see a `credentials.json` file, you will need to rename `credentials
 ![img4](https://i.imgur.com/6beUSa5.gif)
 
 - On the **General Information** tab, copy your `Client ID` from your [applications page](https://discordapp.com/developers/applications/me).
-- Replace the `12345678` in this link:             
+- Replace the `12345678` in this link:
 
   `https://discordapp.com/oauth2/authorize?client_id=12345678&scope=bot&permissions=66186303` with your `Client ID`.
 
-- The link should now look like this:             
+- The link should now look like this:
 
   `https://discordapp.com/oauth2/authorize?client_id=YOUR_CLIENT_ID_HERE&scope=bot&permissions=66186303`
 
@@ -71,10 +71,10 @@ If you don't see a `credentials.json` file, you will need to rename `credentials
 ### Setting up credentials.json file
 
 - **For Windows \(Updater\)**: the `credentials.json` file is located in the `C:\Program Files\WizBot\system` folder.
-  - Note: there is a shortcut as well in `C:\Program Files\WizBot`, for easier access.        
+  - Note: there is a shortcut as well in `C:\Program Files\WizBot`, for easier access.
 - **For Windows \(Source\), Linux and OSX**: the `credentials.json` file is located in the `WizBot/src/WizBot` folder.
 
-#### Getting Client ID:
+#### Getting Client ID
 
 - On the **General Information** tab of your [applications page](https://discordapp.com/developers/applications/me), copy your `Client ID`.
 - Open your `credentials.json` file and replace the `12312123` part of the `"ClientId"` line with it.
@@ -86,9 +86,9 @@ It should look like this:
 "ClientId": 179372110000358912,
 ```
 
-#### Getting the Bot's Token:
+#### Getting the Bot's Token
 
-* On the **Bot** tab of your [applications page](https://discordapp.com/developers/applications/me), copy your `Token`.         
+- On the **Bot** tab of your [applications page](https://discordapp.com/developers/applications/me), copy your `Token`.
   - _Note: Your bot Token **is not** the Client Secret! We won't need the Client Secret for anything._
 - Paste your bot token **between** the quotation marks on the `"Token"` line of your `credentials.json`.
 
@@ -98,11 +98,11 @@ It should look like this:
 "Token": "MTc5MzcyXXX2MDI1ODY3MjY0.ChKs4g.I8J_R9XX0t-QY-0PzXXXiN0-7vo",
 ```
 
-#### Getting Owner ID_\(s\)_ & Admin ID_\(s\)_:
+#### Getting Owner ID_\(s\)_ & Admin ID_\(s\)_
 
-- Go to your Discord server and attempt to mention yourself, but put a backslash at the start:             
+- Go to your Discord server and attempt to mention yourself, but put a backslash at the start:
   *\(to make it slightly easier, add the backslash after you type the mention out\)*
-- For example, the message `\@fearnlj01#3535` will appear as `<@145521851676884992>` after you send the message. 
+- For example, the message `\@fearnlj01#3535` will appear as `<@145521851676884992>` after you send the message.
 - The message will appear as a mention if done correctly. Copy the numbers from it `145521851676884992` and replace the 0 on the `OwnerIds` section with your user ID.
 - Save the `credentials.json` file.
 - If done correctly, you should now be the bot owner. You can add multiple owners or admins by seperating each owner ID or admin ID with a comma within the square brackets.
@@ -141,34 +141,34 @@ This part is completely optional, **however it's necessary for music and a few o
   - Required for Youtube Song Search, Playlist queuing, and a few more things.
   - Follow these steps on how to setup Google API keys:
     - Go to [Google Console](https://console.developers.google.com) and log in.
-    - Create a new project \(name does not matter\). 
+    - Create a new project \(name does not matter\).
     - Once the project is created, go into `Library`
-    - Under the `Other Popular APIs` section, enable `URL Shortener API` and `Custom Search API` 
+    - Under the `Other Popular APIs` section, enable `URL Shortener API` and `Custom Search API`
     - Under the `YouTube APIs` section, enable `YouTube Data API`
     - Under the `Google Maps APIs` section, enable `Google Maps Geocoding API` and `Google Maps Time Zone API`
     - On the left tab, access `Credentials`,
-      - Click `Create Credentials` button, 
-      - Click on `API Key` 
-      - A new window will appear with your `Google API key`             
+      - Click `Create Credentials` button,
+      - Click on `API Key`
+      - A new window will appear with your `Google API key`
         *NOTE: You don't really need to click on_ `RESTRICT KEY`_, just click on_ `CLOSE` _when you are done.*
-      - Copy the key. 
+      - Copy the key.
     - Open up `credentials.json` and look for `"GoogleAPIKey"`, paste your API key inbetween the quotation marks.
-
     - It should look like this:
+
         ```json
         "GoogleApiKey": "AIzaSyDSci1sdlWQOWNVj1vlXxxxxxbk0oWMEzM",
         ```
 
-- **MashapeKey** 
+- **MashapeKey**
   - Required for Urban Dictionary, and Hearthstone cards.
-  - Api key obtained on https://rapidapi.com (register -> go to MyApps -> Add New App -> Enter Name -> Application key)
+  - Api key obtained on <https://rapidapi.com> (register -> go to MyApps -> Add New App -> Enter Name -> Application key)
   - Copy the key and paste it into `credentials.json`
-- **LoLApiKey** 
-  - Required for all League of Legends commands. 
+- **LoLApiKey**
+  - Required for all League of Legends commands.
   - You can get this key [here](http://api.champion.gg/).
-- **OsuApiKey** 
+- **OsuApiKey**
   - Required for Osu commands
-  - You can get this key [here](https://osu.ppy.sh/p/api). 
+  - You can get this key [here](https://osu.ppy.sh/p/api).
 - **CleverbotApiKey**
   - Required if you want to use Cleverobot. It's currently a paid service.
   - You can get this key [here](http://www.cleverbot.com/api/).
@@ -185,19 +185,20 @@ This part is completely optional, **however it's necessary for music and a few o
     - Once created, clicking on your application will show a new Client ID field
     - Copy it to your credentials.json as shown below
     - *(if you're adding it as the last key inside your credentials.json, remove the trailling comma from the example below)*
+
     ```json
         "TwitchClientId": "516tr61tr1qweqwe86trg3g",
     ```
+
 - **LocationIqApiKey**
-  - Optional. Used only for the `.time` command. https://locationiq.com api key (register and you will receive the token in the email).
+  - Optional. Used only for the `.time` command. <https://locationiq.com> api key (register and you will receive the token in the email).
 - **TimezoneDbApiKey**
-  - Optional. Used only for the `.time` command. https://timezonedb.com api key (register and you will receive the token in the email **YOU HAVE TO ACTIVEATE IT AFTER YOU GET IT**).
+  - Optional. Used only for the `.time` command. <https://timezonedb.com> api key (register and you will receive the token in the email **YOU HAVE TO ACTIVEATE IT AFTER YOU GET IT**).
 
+### Additional Settings
 
-#### Additional Settings
-
-- **TotalShards** 
-  - Required if the bot will be connected to more than 2500 servers. 
+- **TotalShards**
+  - Required if the bot will be connected to more than 2500 servers.
   - Most likely unnecessary to change until your bot is added to more than 2500 servers.
 - **RedisOptions**
   - Required if the Redis instance is not on localhost or on non-default port.
@@ -236,7 +237,7 @@ In order to open it you will need [SQLite Browser](http://sqlitebrowser.org/).
 
 **To make changes:**
 
-- Shut your bot down. 
+- Shut your bot down.
 - Copy the `WizBot.db` file to someplace safe. \(Back up\)
 - Open it with SQLite Browser.
 - Go to the **Browse Data** tab.
@@ -258,7 +259,7 @@ In order to open it you will need [SQLite Browser](http://sqlitebrowser.org/).
   - For example, if you want to shard your WizBot which you installed using windows installer, you would want to set it to something like this: `C:\Program Files\WizBot\system\WizBot.exe`
 - **ShardRunArguments**
   - Arguments to the shard run command
-  - Required if you're sharding your bot on windows using .exe, or in a custom way. 
+  - Required if you're sharding your bot on windows using .exe, or in a custom way.
   - This internally defaults to `run -c Release --no-build -- {0} {1} {2}` which will be enough to run linux and other 'from source' setups
   - {0} will be replaced by the `shard ID` of the shard being ran, {1} by the shard 0's process id, and {2} by the port shard communication is happening on
   - If shard0 \(main window\) is closed, all other shards will close too
@@ -267,4 +268,3 @@ In order to open it you will need [SQLite Browser](http://sqlitebrowser.org/).
   - Bot uses a random UDP port in \[5000, 6000\] range for communication between shards
 
 [Invite Guide]: [https://wizbot.cc/invite-guide.html](https://wizbot.cc/invite-guide.html)
-

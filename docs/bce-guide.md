@@ -113,10 +113,8 @@ Whether the bot will see if there are updates available. The patch notes will be
 * None: The bot will not check for updates
 * Commit: This is useful for linux self-hosters - the bot will check for any new commit on the WizBot repository.
 * Release: This is useful for windows self-hosters - the bot will check for any new releases published on the WizBot repository. This setting is also useful for linux self-hosters who only want to update when it's pretty safe to do so :\)
-
 **Default is Release**
 
 ## PatreonCurrencyPerCent
 
 You need this only if you have a patreon page, and you've specified the PatreonCampaignId and PatreonAccessToken in credentials.json. This value is the amount of currency the users will get with `.clparew` for each cent they've pledged. Also make sure your patreon is set to charge upfront, otherwise people will be able to pledge, claim reward and unpledge without getting charged. **Default is 1**
-

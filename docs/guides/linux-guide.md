@@ -1,4 +1,4 @@
-## Setting up WizBot on Linux
+# Setting up WizBot on Linux
 
 | Table of Contents |
 | :--- |
@@ -11,11 +11,11 @@
 | [Setting up WizBot on a VPS \(Digital Ocean\)](#setting-up-wizbot-on-a-linux-vps-digital-ocean-droplet) |
 | [Setting up WinSCP](#setting-up-winscp) |
 
-#### Operating System Compatibility
+## Operating System Compatibility
 
 It is recommended that you use **Ubuntu 16.04**, as there have been nearly no problems with it. Music features are currently not working on CentOS. Also, **32-bit systems are incompatible**.
 
-##### Compatible operating systems
+### Compatible operating systems
 
 - Ubuntu: 14.04, 16.04, 16.10, 17.04, 17.10, 18.04
 - Mint: 17, 18
@@ -104,7 +104,7 @@ You may be presented with the installer main menu once you shut your bot down. I
 
 `sudo pm2 status` to see all pm2 processes
 
-`sudo pm2 info WizBot` information about WizBot 
+`sudo pm2 info WizBot` information about WizBot
 
 `sudo pm2 logs WizBot` to view real-time logs of WizBot, or
 
@@ -123,7 +123,7 @@ You may be presented with the installer main menu once you shut your bot down. I
 
 #### Running WizBot on tmux [if you don't want to use pm2]
 
-**Before proceeding, make sure your bot is not running by either running `.die` in your Discord server or exiting the process with `Ctrl+C`.** 
+**Before proceeding, make sure your bot is not running by either running `.die` in your Discord server or exiting the process with `Ctrl+C`.**
 If you are presented with the installer main menu, exit it by choosing Option `8`.
 
 - Create a new session: `tmux new -s WizBot`  
@@ -148,9 +148,7 @@ You will be shown the following options:
 
 - With option `1. Run Auto Restart normally without Updating`, the bot will restart on `.die` command and will not download the latest build available.
 - With option `2. Run Auto Restart and update WizBot`, the bot will restart and download the latest build available everytime the `.die` command is used.
-
 **Now check your Discord server, the bot should be online**
-
 - To move the bot to the background, press **Ctrl+B**, release the keys then hit **D**. That will detach the session, allowing you to finally close the terminal window and not worry about having your bot shut down in the process.
 
 #### Updating WizBot
@@ -234,7 +232,7 @@ Here is a list of useful commands if you intend on managing WizBot with *systemd
 - `sudo systemctl restart WizBot` - restarts WizBot. Can be used while the bot is being run.
 - `sudo systemctl stop WizBot` - completely shuts WizBot down.
 - `sudo systemctl enable WizBot` - makes WizBot start automatically upon system reboots.
-- `sudo systemctl disable WizBot` - stops WizBot from starting automatically upon system reboots. 
+- `sudo systemctl disable WizBot` - stops WizBot from starting automatically upon system reboots.
 - `sudo systemctl status WizBot` - shows some information about your bot (press `Ctrl+C` to exit).
 
 ---

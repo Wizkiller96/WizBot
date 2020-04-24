@@ -21,7 +21,7 @@ This is the recommended way of installing WizBot from source. If you don't want 
 - [Git](https://git-scm.com/downloads) \(select [this option](https://i.imgur.com/zlWVTsi.png) during the installation process\)
 - Redis
   - Windows 64 bit: Download and install the [latest msi](https://github.com/MicrosoftArchive/redis/releases/tag/win-3.0.504). Don't forget to [add it to the path environment variable](https://i.imgur.com/uUby6Xw.png) during the installation process.
-  - Windows 32 bit: Skip this step 
+  - Windows 32 bit: Skip this step
 - [Create a Discord Bot application](../../jsons-explained/#creating-discord-bot-application) and [invite the bot to your server](../../jsons-explained/#inviting-your-bot-to-your-server).
 
 **Optional** If you want WizBot to play music, do the following:
@@ -36,7 +36,7 @@ This is the recommended way of installing WizBot from source. If you don't want 
 - Right click the `WizBotInstaller.bat` file and open it as Administrator
 - After the admin check, you should see main menu with the options below:
 
-```
+```bash
 1. Download Latest Build
 2. Run WizBot (normally)
 3. Run WizBot with Auto Restart (check "if" WizBot is working properly, before using this)
@@ -106,7 +106,7 @@ If you want WizBot to play music, do the following:
     "ShardRunArguments": "run -c Release --no-build -- {0} {1}",
   ```
 
-- Move `youtube-dl.exe` and `ffmpeg.exe` into `wizBot/src/wizBot` \(or add them to your PATH environment variable, if you know how\) 
+- Move `youtube-dl.exe` and `ffmpeg.exe` into `wizBot/src/wizBot` \(or add them to your PATH environment variable, if you know how\)
 - **For 32-bit Windows**, replace `libsodium.dll` and `opus.dll` in `wizBot/src/wizBot` with the ones you've downloaded.
 
 ### Launching WizBot
@@ -127,7 +127,7 @@ If you want WizBot to play music, do the following:
 - Move to WizBot's root folder:  
 - `cd WizBot`  
 - Update WizBot:  
-- `git pull`   
+- `git pull`
 
 **If you have made custom edits to the source code.**
 
@@ -147,4 +147,3 @@ Other useful commands:
 - `git stash list` to see the list of saved stashes and their corresponding ID  
 - `git stash drop stash@{n}` to delete a specific stash  
 - `git stash pop stash@{n}` to apply and delete a specific stash
-
