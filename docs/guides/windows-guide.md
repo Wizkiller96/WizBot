@@ -8,16 +8,16 @@
 | [Updating WizBot](#updating-wizbot) |
 | [Manually Installing the Prerequisites from the Updater](#if-the-updater-fails-to-install-the-prerequisites-for-any-reason) |
 
-*Note: If you want to make changes to WizBot's source code, please follow the [From Source](https://wizbot.readthedocs.io/en/latest/guides/From%20Source/) guide instead.*
+*Note: If you want to make changes to WizBot's source code, please follow the [From Source](../guides/from-source/) guide instead.*
 
-*If you have Windows 7 or a 32-bit system, please refer to the [From Source](https://wizbot.readthedocs.io/en/latest/guides/From%20Source/) guide.*
+*If you have Windows 7 or a 32-bit system, please refer to the [From Source](../guides/from-Source/) guide.*
 
 ## Prerequisites
 
 * Windows 8 or later \(64-bit\)
 * [dotNET Core 2.1 SDK](https://www.microsoft.com/net/download/dotnet-core/2.1) \(restart Windows after installation\)
 * [Redis](https://github.com/MicrosoftArchive/redis/releases/download/win-3.0.504/Redis-x64-3.0.504.msi) \(supplied with the updater\)
-* [Create a Discord Bot application](../../jsons-explained#creating-discord-bot-application) and [invite the bot to your server](../../jsons-explained/#inviting-your-bot-to-your-server).
+* [Create a Discord Bot application](../../jsons-explained/#creating-discord-bot-application) and [invite the bot to your server](../../jsons-explained/#inviting-your-bot-to-your-server).
 
 **Optional**
 
