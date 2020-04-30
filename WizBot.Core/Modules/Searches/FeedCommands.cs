@@ -1,14 +1,11 @@
 ﻿using Discord;
 using Discord.Commands;
-using Discord.WebSocket;
-using Microsoft.SyndicationFeed.Rss;
 using WizBot.Common.Attributes;
 using WizBot.Extensions;
 using WizBot.Modules.Searches.Services;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Xml;
 
 namespace WizBot.Modules.Searches
 {
@@ -27,28 +24,25 @@ namespace WizBot.Modules.Searches
                 if (success)
                 {
                     channel = channel ?? (ITextChannel)ctx.Channel;
-                    using (var xmlReader = XmlReader.Create(url, new XmlReaderSettings() { Async = true }))
+                    try
                     {
-                        var reader = new RssFeedReader(xmlReader);
-                        try
-                        {
-                            await reader.Read().ConfigureAwait(false);
-                        }
-                        catch (Exception ex)
-                        {
-                            _log.Warn(ex);
-                            success = false;
-                        }
+                        var feeds = await CodeHollow.FeedReader.FeedReader.ReadAsync(url).ConfigureAwait(false);
                     }
+                    catch (Exception ex)
+                    {
+                        _log.Warn(ex);
+                        success = false;
+                    }
+                }
+
+                if (success)
+                {
+                    success = _service.AddFeed(ctx.Guild.Id, channel.Id, url);
 
                     if (success)
                     {
-                        success = _service.AddFeed(ctx.Guild.Id, channel.Id, url);
-                        if (success)
-                        {
-                            await ReplyConfirmLocalizedAsync("feed_added").ConfigureAwait(false);
-                            return;
-                        }
+                        await ReplyConfirmLocalizedAsync("feed_added").ConfigureAwait(false);
+                        return;
                     }
                 }
 

@@ -1,18 +1,15 @@
-﻿using Discord;
-using Microsoft.SyndicationFeed;
-using Microsoft.SyndicationFeed.Rss;
-using WizBot.Extensions;
-using WizBot.Core.Services;
-using System;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Xml;
-using System.Collections.Generic;
-using WizBot.Core.Services.Database.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Concurrent;
+﻿using CodeHollow.FeedReader.Feeds;
+using Discord;
 using Discord.WebSocket;
+using Microsoft.EntityFrameworkCore;
+using WizBot.Core.Services;
+using WizBot.Core.Services.Database.Models;
+using WizBot.Extensions;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace WizBot.Modules.Searches.Services
 {
@@ -21,7 +18,7 @@ namespace WizBot.Modules.Searches.Services
         private readonly DbService _db;
         private readonly ConcurrentDictionary<string, HashSet<FeedSub>> _subs;
         private readonly DiscordSocketClient _client;
-        private readonly ConcurrentDictionary<string, DateTime> _lastPosts = 
+        private readonly ConcurrentDictionary<string, DateTime> _lastPosts =
             new ConcurrentDictionary<string, DateTime>();
 
         public FeedsService(WizBot bot, DbService db, DiscordSocketClient client)
@@ -39,13 +36,15 @@ namespace WizBot.Modules.Searches.Services
 
             foreach (var kvp in _subs)
             {
-                // to make sure rss feeds don't post right away, but 
+                // to make sure rss feeds don't post right away, but
                 // only the updates from after the bot has started
                 _lastPosts.AddOrUpdate(kvp.Key, DateTime.UtcNow, (k, old) => DateTime.UtcNow);
             }
+
             var _ = Task.Run(TrackFeeds);
+
         }
-        
+
         public async Task<EmbedBuilder> TrackFeeds()
         {
             while (true)
@@ -61,57 +60,57 @@ namespace WizBot.Modules.Searches.Services
                     var rssUrl = kvp.Key;
                     try
                     {
-                        using (var xmlReader = XmlReader.Create(rssUrl, new XmlReaderSettings() { Async = true }))
+                        var feed = await CodeHollow.FeedReader.FeedReader.ReadAsync(rssUrl).ConfigureAwait(false);
+                        //Log.Information(rssUrl);
+                        //Log.Information("Last updated: {Last} {Str}", feed.LastUpdatedDate, feed.LastUpdatedDateString);
+
+                        var embed = new EmbedBuilder()
+                            .WithFooter(rssUrl);
+
+                        foreach (var item in feed.Items.Take(1))
                         {
-                            var feedReader = new RssFeedReader(xmlReader);
 
-                            var embed = new EmbedBuilder()
-                                .WithAuthor(kvp.Key)
-                                .WithOkColor();
-
-                            while (await feedReader.Read().ConfigureAwait(false) && feedReader.ElementType != SyndicationElementType.Item)
+                            //Log.Information("{Title} - {Link}", i.Title, i.Link);
+                            var maybePub = item.PublishingDate
+                                ?? (item.SpecificItem as AtomFeedItem)?.UpdatedDate;
+                            //Log.Warning(maybePub?.ToString() ?? "-");
+                            if (!(maybePub is DateTime pub) || pub <= lastTime)
                             {
-                                switch (feedReader.ElementType)
+                                continue;
+                            }
+
+                            var desc = item.Description?.StripHTML();
+                            if (!string.IsNullOrWhiteSpace(item.Description))
+                                embed.WithDescription(desc);
+
+                            var link = item.SpecificItem.Link;
+                            if (!string.IsNullOrWhiteSpace(link) && Uri.IsWellFormedUriString(link, UriKind.Absolute))
+                                embed.WithUrl(link);
+
+                            var title = string.IsNullOrWhiteSpace(item.Title)
+                                ? "-"
+                                : item.Title;
+
+                            if (item.SpecificItem is MediaRssFeedItem mrfi && (mrfi.Enclosure?.MediaType.StartsWith("image/") ?? false))
+                            {
+                                var imgUrl = mrfi.Enclosure.Url;
+                                if (!string.IsNullOrWhiteSpace(imgUrl) && Uri.IsWellFormedUriString(imgUrl, UriKind.Absolute))
                                 {
-                                    case SyndicationElementType.Link:
-                                        var uri = await feedReader.ReadLink().ConfigureAwait(false);
-                                        embed.WithAuthor(kvp.Key, url: uri.Uri.AbsoluteUri);
-                                        break;
-                                    case SyndicationElementType.Content:
-                                        var content = await feedReader.ReadContent().ConfigureAwait(false);
-                                        break;
-                                    case SyndicationElementType.Category:
-                                        break;
-                                    case SyndicationElementType.Image:
-                                        ISyndicationImage image = await feedReader.ReadImage().ConfigureAwait(false);
-                                        embed.WithThumbnailUrl(image.Url.AbsoluteUri);
-                                        break;
-                                    default:
-                                        break;
+                                    embed.WithImageUrl(imgUrl);
                                 }
                             }
 
-                            ISyndicationItem item = await feedReader.ReadItem().ConfigureAwait(false);
-                            if (item.Published.UtcDateTime <= lastTime)
-                                continue;
+                            //// old image retreiving code
+                            //var img = (item as Rss20Feed).Items.FirstOrDefault(x => x.Element.Name == "enclosure") ...FirstOrDefault(x => x.RelationshipType == "enclosure")?.Uri.AbsoluteUri
+                            //    ?? Regex.Match(item.Description, @"src=""(?<src>.*?)""").Groups["src"].ToString();
 
-                            var desc = item.Description.StripHTML();
+                            //if (!string.IsNullOrWhiteSpace(img) && Uri.IsWellFormedUriString(img, UriKind.Absolute))
+                            //    embed.WithImageUrl(img);
 
-                            lastTime = item.Published.UtcDateTime;
-                            var title = string.IsNullOrWhiteSpace(item.Title) ? "-" : item.Title;
-                            desc = Format.Code(item.Published.ToString()) + Environment.NewLine + desc;
-                            var link = item.Links.FirstOrDefault();
-                            if (link != null)
-                                desc = $"[link]({link.Uri}) " + desc;
+                            embed.WithTitle(title)
+                                .WithDescription(desc);
 
-                            var img = item.Links.FirstOrDefault(x => x.RelationshipType == "enclosure")?.Uri.AbsoluteUri
-                                ?? Regex.Match(item.Description, @"src=""(?<src>.*?)""").Groups["src"].ToString();
-
-                            if (!string.IsNullOrWhiteSpace(img) && Uri.IsWellFormedUriString(img, UriKind.Absolute))
-                                embed.WithImageUrl(img);
-
-                            embed.AddField(title, desc);
-
+                            _lastPosts.AddOrUpdate(rssUrl, pub, (k, old) => pub);
                             //send the created embed to all subscribed channels
                             var sendTasks = kvp.Value
                                 .Where(x => x.GuildConfig != null)
@@ -119,8 +118,6 @@ namespace WizBot.Modules.Searches.Services
                                     ?.GetTextChannel(x.ChannelId))
                                 .Where(x => x != null)
                                 .Select(x => x.EmbedAsync(embed));
-
-                            _lastPosts.AddOrUpdate(kvp.Key, item.Published.UtcDateTime, (k, old) => item.Published.UtcDateTime);
 
                             await Task.WhenAll(sendTasks).ConfigureAwait(false);
                         }
@@ -161,7 +158,7 @@ namespace WizBot.Modules.Searches.Services
                 {
                     return false;
                 }
-                else if (gc.FeedSubs.Count >= 10)
+                else if (gc.FeedSubs.Count >= 5)
                 {
                     return false;
                 }
