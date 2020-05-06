@@ -5681,6 +5681,19 @@
     },
     {
       "Aliases": [
+        ".wiznet"
+      ],
+      "Description": "List information about WizNet and provides a list of current active WizNet Staff.",
+      "Usage": [
+        ".wiznet"
+      ],
+      "Submodule": "Utility",
+      "Module": "Utility",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
         ".botconfigedit",
         ".bce"
       ],

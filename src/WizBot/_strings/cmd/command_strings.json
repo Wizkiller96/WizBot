@@ -579,20 +579,6 @@
       "{0}unstuck"
     ]
   },
-  "donators": {
-    "Cmd": "donators",
-    "Desc": "List of the lovely people who donated to keep this project alive.",
-    "Usage": [
-      "{0}donators"
-    ]
-  },
-  "donadd": {
-    "Cmd": "donadd",
-    "Desc": "Add a donator to the database.",
-    "Usage": [
-      "{0}donadd Donate Amount"
-    ]
-  },
   "savechat": {
     "Cmd": "savechat",
     "Desc": "Saves a number of messages to a text file and sends it to you.",
@@ -655,6 +641,13 @@
     "Desc": "List of WizBot Donators.",
     "Usage": [
       "{0}donators"
+    ]
+  },
+  "wiznet": {
+    "Cmd": "wiznet",
+    "Desc": "List information about WizNet and provides a list of current active WizNet Staff.",
+    "Usage": [
+      "{0}wiznet"
     ]
   },
   "whosplaying": {

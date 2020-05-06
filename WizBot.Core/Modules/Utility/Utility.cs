@@ -447,5 +447,29 @@ namespace WizBot.Modules.Utility
             .WithDescription("This command is disabled on self-host bots.")).ConfigureAwait(false);
 #endif
         }
+
+#if GLOBAL_WIZBOT
+
+        [WizBotCommand, Usage, Description, Aliases]
+        public async Task WizNet()
+        {
+
+            // Make it so it wont error when no users are found.
+            var wnstaff = _client.GetGuild(99273784988557312).GetRole(348560594045108245).Members; // WizNet Staff
+            var wbstaff = _client.GetGuild(99273784988557312).GetRole(367646195889471499).Members; // WizBot Staff
+
+            await ctx.Channel.EmbedAsync(new EmbedBuilder().WithColor(431075)
+                .WithTitle("WizNet's Info")
+                .WithThumbnailUrl("https://i.imgur.com/Go5ZymW.png")
+                .WithDescription("WizNet is a small internet company that was made by Wizkiller96. The site first started off more as a social platform for his friends to have a place to hangout and chat with each other and share their work. Since then the site has gone through many changes and reforms. It now sits as a small hub for all the services and work WizNet provides to the public.")
+                .AddField(fb => fb.WithName("Websites").WithValue("[WizNet](http://wiznet.ga/)\n[Wiz VPS](http://wiz-vps.com/)\n[WizBot](http://wizbot.cc)").WithIsInline(true))
+                .AddField(fb => fb.WithName("Social Media").WithValue("[Facebook](http://facebook.com/Wizkiller96Network)\n[WizBot's Twitter](http://twitter.com/WizBot_Dev)").WithIsInline(true))
+                .AddField(fb => fb.WithName("WizNet Staff").WithValue(string.Join("\n", wnstaff)).WithIsInline(false))
+                .AddField(fb => fb.WithName("WizBot Staff").WithValue(string.Join("\n", wbstaff)).WithIsInline(false))
+                .WithFooter("Note: Not all staff are listed here.")).ConfigureAwait(false);
+
+        }
+
+#endif
     }
 }
