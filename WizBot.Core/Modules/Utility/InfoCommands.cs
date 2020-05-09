@@ -108,16 +108,27 @@ namespace WizBot.Modules.Utility
                 {
                     embed.AddField(fb => fb.WithName(GetText("nickname")).WithValue(user.Nickname).WithIsInline(true));
                 }
+                // Custom WizBot Titles - Will find a better way to do this in the future for WizNet and WizBot Staff
                 if (usr.Id == 99272781513920512)
                 {
-                    embed.AddField(fb => fb.WithName("WizBot Title").WithValue("🛠️ Owner/Developer").WithIsInline(true));
+                    embed.AddField(fb => fb.WithName("WizBot Title").WithValue("🛠️ Developer").WithIsInline(true));
+                }
+                if (usr.Id == 105635576866156544)
+                {
+                    embed.AddField(fb => fb.WithName("WizBot Title").WithValue("🛠️ Nadeko Creator").WithIsInline(true));
                 }
                 else if (usr.Id == _client.CurrentUser.Id || usr.Id == 170849991357628416)
                 {
                     embed.AddField(fb => fb.WithName("WizBot Title").WithValue("🤖 Bot").WithIsInline(true));
                 }
 #if GLOBAL_WIZBOT
+                // WizBot Staff ID(s)
                 else if (usr.Id == 474972711798702090 || usr.Id == 216898612867629057 || usr.Id == 111566184448589824 || usr.Id == 169177230717616128 || usr.Id == 213817345334968330 || usr.Id == 313317616439525386)
+                {
+                    embed.AddField(fb => fb.WithName("WizBot Title").WithValue("<:WizBot:708689390934687787> WizBot Staff").WithIsInline(true));
+                }
+                // WizNet Staff ID(s)
+                else if (usr.Id == 110535921782247424)
                 {
                     embed.AddField(fb => fb.WithName("WizBot Title").WithValue("<:WizNet:705993965073334382> WizNet Staff").WithIsInline(true));
                 }
