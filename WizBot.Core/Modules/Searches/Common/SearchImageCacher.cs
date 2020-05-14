@@ -136,6 +136,7 @@ namespace WizBot.Modules.Searches.Common
                     website = $"https://yande.re/post.json?limit=100&tags={tag}";
                     break;
                 case DapiSearchType.Derpibooru:
+                    tag = string.IsNullOrWhiteSpace(tag) ? "safe" : tag;
                     website = $"https://www.derpibooru.org/api/v1/json/search/images?q={tag?.Replace('+', ',')}&per_page=49";
                     break;
             }
