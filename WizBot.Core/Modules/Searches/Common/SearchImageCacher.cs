@@ -118,7 +118,7 @@ namespace WizBot.Modules.Searches.Common
                     website = $"https://safebooru.org/index.php?page=dapi&s=post&q=index&limit=1000&tags={tag}&json=1";
                     break;
                 case DapiSearchType.E621:
-                    website = $"https://e621.net/post/index.json?limit=1000&tags={tag}";
+                    website = $"https://e621.net/posts.json?limit=200&tags={tag}";
                     break;
                 case DapiSearchType.Danbooru:
                     website = $"http://danbooru.donmai.us/posts.json?limit=100&tags={tag}";
@@ -145,13 +145,23 @@ namespace WizBot.Modules.Searches.Common
                 using (var _http = _httpFactory.CreateClient())
                 {
                     _http.AddFakeHeaders();
-                    if (type == DapiSearchType.Konachan || type == DapiSearchType.Yandere ||
-                        type == DapiSearchType.E621 || type == DapiSearchType.Danbooru)
+                    if (type == DapiSearchType.Konachan || type == DapiSearchType.Yandere || type == DapiSearchType.Danbooru)
                     {
                         var data = await _http.GetStringAsync(website).ConfigureAwait(false);
                         return JsonConvert.DeserializeObject<DapiImageObject[]>(data)
                             .Where(x => x.FileUrl != null)
                             .Select(x => new ImageCacherObject(x, type))
+                            .ToArray();
+                    }
+
+                    if (type == DapiSearchType.E621)
+                    {
+                        var data = await _http.GetStringAsync(website).ConfigureAwait(false);
+                        return JsonConvert.DeserializeAnonymousType(data, new { posts = new List<E621Object>() })
+                            .posts
+                            .Where(x => !string.IsNullOrWhiteSpace(x.File?.Url))
+                            .Select(x => new ImageCacherObject(x.File.Url,
+                                type, string.Join(' ', x.Tags.General), x.Score.Total))
                             .ToArray();
                     }
 
