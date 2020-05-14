@@ -540,7 +540,7 @@ namespace WizBot.Modules.NSFW
             try
             {
                 await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                        .WithImageUrl($"http://wizbot.cc/assets/wizbot/nsfw/wiz_{new WizBotRandom().Next(1, 14)}.jpg")).ConfigureAwait(false);
+                        .WithImageUrl($"http://wizbot.cc/assets/wizbot/nsfw/wiz_{new WizBotRandom().Next(1, 18)}.jpg")).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
