@@ -136,7 +136,7 @@ namespace WizBot.Modules.Searches.Common
                     website = $"https://yande.re/post.json?limit=100&tags={tag}";
                     break;
                 case DapiSearchType.Derpibooru:
-                    website = $"https://derpibooru.org/search.json?q={tag?.Replace('+', ',')}&perpage=49";
+                    website = $"https://www.derpibooru.org/api/v1/json/search/images?q={tag?.Replace('+', ',')}&per_page=49";
                     break;
             }
 
@@ -169,10 +169,10 @@ namespace WizBot.Modules.Searches.Common
                     {
                         var data = await _http.GetStringAsync(website).ConfigureAwait(false);
                         return JsonConvert.DeserializeObject<DerpiContainer>(data)
-                            .Search
-                            .Where(x => !string.IsNullOrWhiteSpace(x.Image))
-                            .Select(x => new ImageCacherObject("https:" + x.Image,
-                                type, x.Tags, x.Score))
+                            .Images
+                            .Where(x => !string.IsNullOrWhiteSpace(x.ViewUrl))
+                            .Select(x => new ImageCacherObject(x.ViewUrl,
+                                type, string.Join("\n", x.Tags), x.Score))
                             .ToArray();
                     }
 
@@ -242,13 +242,14 @@ namespace WizBot.Modules.Searches.Common
 
     public class DerpiContainer
     {
-        public DerpiImageObject[] Search { get; set; }
+        public DerpiImageObject[] Images { get; set; }
     }
 
     public class DerpiImageObject
     {
-        public string Image { get; set; }
-        public string Tags { get; set; }
+        [JsonProperty("view_url")]
+        public string ViewUrl { get; set; }
+        public string[] Tags { get; set; }
         public string Score { get; set; }
     }
 
