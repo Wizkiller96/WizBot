@@ -12,6 +12,7 @@ using WizBot.Core.Services.Impl;
 using WizBot.Common;
 using NLog;
 using CommandLine;
+using System.Collections.Generic;
 
 namespace WizBot.Modules.Help.Services
 {
@@ -92,22 +93,30 @@ namespace WizBot.Modules.Help.Services
 
         public static string GetCommandOptionHelp(Type opt)
         {
-            var strs = opt.GetProperties()
-                .Select(x => x.GetCustomAttributes(true).FirstOrDefault(a => a is OptionAttribute))
-                .Where(x => x != null)
-                .Cast<OptionAttribute>()
-                .Select(x =>
-                {
-                    var toReturn = $"`--{x.LongName}`";
-
-                    if (!string.IsNullOrWhiteSpace(x.ShortName))
-                        toReturn += $" (`-{x.ShortName}`)";
-
-                    toReturn += $"   {x.HelpText}  ";
-                    return toReturn;
-                });
+            var strs = GetCommandOptionHelpList(opt);
 
             return string.Join("\n", strs);
+        }
+
+        public static List<string> GetCommandOptionHelpList(Type opt)
+        {
+            var strs = opt.GetProperties()
+                   .Select(x => x.GetCustomAttributes(true).FirstOrDefault(a => a is OptionAttribute))
+                   .Where(x => x != null)
+                   .Cast<OptionAttribute>()
+                   .Select(x =>
+                   {
+                       var toReturn = $"`--{x.LongName}`";
+
+                       if (!string.IsNullOrWhiteSpace(x.ShortName))
+                           toReturn += $" (`-{x.ShortName}`)";
+
+                       toReturn += $"   {x.HelpText}  ";
+                       return toReturn;
+                   })
+                   .ToList();
+
+            return strs;
         }
 
         public static string[] GetCommandRequirements(CommandInfo cmd) =>
