@@ -427,43 +427,6 @@ namespace WizBot.Modules.NSFW
             }
         }
 
-        /* [WizBotCommand, Usage, Description, Aliases]
-        [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
-        public async Task Neko([Remainder] string category = "lewd")
-        {
-            string[] cat = { "Random_hentai_gif", "pussy", "nsfw_neko_gif", "lewd", "les", "kuni", "cum", "classic", "boobs", "bj", "anal", "yuri", "trap", "tits", "pussy_jpg", "hentai", "cum_jpg", "solo", "futanari", "hololewd", "lewdk", "spank", "erokemo", "ero", "erofeet", "blowjob", "erok", "keta", "eroyuri", "eron", "holoero", "solog", "feetg", "nsfw_avatar", "feet", "holo", "femdom", "pwankg", "lewdkemo" };
-            if (string.IsNullOrWhiteSpace(category))
-                return;
-
-            try
-            {
-                JToken nekotitle;
-                JToken nekoimg;
-                using (var http = _httpFactory.CreateClient())
-                {
-                    nekotitle = JObject.Parse(await http.GetStringAsync($"https://nekos.life/api/v2/cat").ConfigureAwait(false));
-                    nekoimg = JObject.Parse(await http.GetStringAsync($"https://nekos.life/api/v2/img/{category}").ConfigureAwait(false));
-                }
-                if (cat.Contains(category))
-                await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                    .WithAuthor(eab => eab.WithUrl("http://nekos.life/")
-                        .WithIconUrl("https://i.imgur.com/a36AMkG.png")
-                        .WithName($"Nekos Life - NSFW Database {nekotitle["cat"]}"))
-                    .WithImageUrl($"{nekoimg["url"]}")).ConfigureAwait(false);
-                else
-                    await ctxChannel.EmbedAsync(new EmbedBuilder().WithErrorColor()
-                    .WithAuthor(eab => eab.WithUrl("http://nekos.life/")
-                        .WithIconUrl("https://i.imgur.com/a36AMkG.png")
-                        .WithName($"Nekos Life - Invalid NSFW Category"))
-                    .WithDescription("Seems the category you was looking for could not be found. Please use the category listed below.")
-                    .AddField(fb => fb.WithName("NSFW Categories").WithValue("`Random_hentai_gif`,`pussy`,`nsfw_neko_gif`,`lewd`,`les`,`kuni`,`cum`,`classic`,`boobs`,`bj`,`anal`,`yuri`,`trap`,`tits`,`pussy_jpg`,`hentai`,`cum_jpg`,`solo`,`futanari`,`hololewd`,`lewdk`,`spank`,`erokemo`,`ero`,`erofeet`,`blowjob`,`erok`,`keta`,`eroyuri`,`eron`,`holoero`,`solog`,`feetg`,`nsfw_avatar`,`feet`,`holo`,`femdom`,`pwankg`,`lewdkemo`").WithIsInline(false))).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                await ctx.Channel.SendErrorAsync(ex.Message).ConfigureAwait(false);
-            }
-        } */
-
         [WizBotCommand, Usage, Description, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
         public async Task Neko(string format = "img", [Remainder] string category = "neko_lewd")
