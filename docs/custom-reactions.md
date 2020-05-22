@@ -1,4 +1,4 @@
-# Custom Reactions
+# Custom Reactions / Expressions
 
 ## Important
 
@@ -35,11 +35,11 @@ Now, if that command was ran in a server, anyone on that server can make the bot
 
 ## Block global Custom Reactions
 
-If you want to disable some global custom reactions which you do not like, and you do not want to remove them or you are not the bot owner you can do so by adding a new Custom Reaction with the same trigger on your server, and set the response to `-`.
+If you want to disable a global custom reaction which you do not like, and you do not want to remove it, or you are not the bot owner, you can do so by adding a new Custom Reaction with the same trigger on your server, and set the response to `-`.
 
 For example: `.acr /o/ -`
 
-Now if you try to trigger `/o/`, it won't print anything.
+Now if you try to trigger `/o/`, it won't print anything even if there is a global custom reaction with the same name.
 
 ## Placeholders
 
