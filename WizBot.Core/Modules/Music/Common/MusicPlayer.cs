@@ -210,7 +210,7 @@ namespace WizBot.Modules.Music.Common
                         }
                         b.StartBuffering();
                         await Task.WhenAny(Task.Delay(10000), b.PrebufferingCompleted.Task).ConfigureAwait(false);
-                        pcm = ac.CreatePCMStream(AudioApplication.Music, bufferMillis: 1);
+                        pcm = ac.CreatePCMStream(AudioApplication.Music, bufferMillis: 1, packetLoss: 5);
                         _log.Info("Created pcm stream");
                         OnStarted?.Invoke(this, data);
 
