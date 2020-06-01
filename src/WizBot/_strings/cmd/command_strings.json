@@ -361,31 +361,39 @@
     ]
   },
   "setrole": {
-    "Cmd": "setrole sr",
-    "Desc": "Sets a role for a given user.",
+    "Cmd": "setrole sr giverole",
+    "Desc": "Gives a role to a user. The role you specify has to be lower in the role hierarchy than your highest role.",
     "Usage": [
       "{0}sr @User Guest"
     ]
   },
   "removerole": {
     "Cmd": "removerole rr",
-    "Desc": "Removes a role from a given user.",
+    "Desc": "Removes a role from a user. The role you specify has to be lower in the role hierarchy than your highest role.",
     "Usage": [
       "{0}rr @User Admin"
     ]
   },
   "renamerole": {
     "Cmd": "renamerole renr",
-    "Desc": "Renames a role. The role you are renaming must be lower than bot's highest role.",
+    "Desc": "Renames a role. The role you specify has to be lower in the role hierarchy than your highest role.",
     "Usage": [
       "{0}renr \"First role\" SecondRole"
     ]
   },
   "removeallroles": {
     "Cmd": "removeallroles rar",
-    "Desc": "Removes all roles from a mentioned user.",
+    "Desc": "Removes all roles which are lower than your highest role in the role hierarchy from the user you specify.",
     "Usage": [
       "{0}rar @User"
+    ]
+  },
+  "rolehoist": {
+    "Cmd": "rolehoist rh",
+    "Desc": "Toggles whether this role is displayed in the sidebar or not. The role you specify has to be lower in the role hierarchy than your highest role.",
+    "Usage": [
+      "{0}rh Guests",
+      "{0}rh \"Space Wizards\""
     ]
   },
   "createrole": {
@@ -404,7 +412,7 @@
   },
   "rolecolor": {
     "Cmd": "rolecolor roleclr",
-    "Desc": "Set a role's color using its hex value. Provide no color in order to see the hex value of the color of the specified role.",
+    "Desc": "Set a role's color using its hex value. Provide no color in order to see the hex value of the color of the specified role. The role you specify has to be lower in the role hierarchy than your highest role.",
     "Usage": [
       "{0}roleclr Admin",
       "{0}roleclr Admin ffba55"
@@ -718,21 +726,21 @@
   },
   "chnlfilterinv": {
     "Cmd": "chnlfilterinv cfi",
-    "Desc": "Toggles automatic deletion of invites posted in the channel. Does not negate the `{0}srvrfilterinv` enabled setting. Does not affect the Bot Owner.",
+    "Desc": "Toggles automatic deletion of invites posted in the channel. Does not negate the `{0}srvrfilterinv` enabled setting. Does not affect the users with the Administrator permission.",
     "Usage": [
       "{0}cfi"
     ]
   },
   "srvrfilterinv": {
     "Cmd": "srvrfilterinv sfi",
-    "Desc": "Toggles automatic deletion of invites posted in the server. Does not affect the Bot Owner.",
+    "Desc": "Toggles automatic deletion of invites posted in the server. Does not affect the users with the Administrator permission.",
     "Usage": [
       "{0}sfi"
     ]
   },
   "chnlfilterwords": {
     "Cmd": "chnlfilterwords cfw",
-    "Desc": "Toggles automatic deletion of messages containing filtered words on the channel. Does not negate the `{0}srvrfilterwords` enabled setting. Does not affect the Bot Owner.",
+    "Desc": "Toggles automatic deletion of messages containing filtered words on the channel. Does not negate the `{0}srvrfilterwords` enabled setting. Does not affect the users with the Administrator permission.",
     "Usage": [
       "{0}cfw"
     ]
@@ -744,6 +752,13 @@
       "{0}fw poop"
     ]
   },
+  "srvrfilterwords": {
+    "Cmd": "srvrfilterwords sfw",
+    "Desc": "Toggles automatic deletion of messages containing filtered words on the server. Does not affect the users with the Administrator permission.",
+    "Usage": [
+      "{0}sfw"
+    ]
+  },
   "lstfilterwords": {
     "Cmd": "lstfilterwords lfw",
     "Desc": "Shows a list of filtered words.",
@@ -751,16 +766,9 @@
       "{0}lfw"
     ]
   },
-  "srvrfilterwords": {
-    "Cmd": "srvrfilterwords sfw",
-    "Desc": "Toggles automatic deletion of messages containing filtered words on the server. Does not affect the Bot Owner.",
-    "Usage": [
-      "{0}sfw"
-    ]
-  },
   "permrole": {
     "Cmd": "permrole pr",
-    "Desc": "Sets a role which can change permissions. Supply no parameters to see the current one. Type 'reset' instead of the role name to reset the currently set permission role. Users with Administrator server permissions can use permission commands regardless of whether they have the specified role. There is no default permission role.",
+    "Desc": "Sets a role which can change permissions. Supply no parameters to see the current one. Type 'reset' instead of the role name to reset the currently set permission role. Users with the Administrator server permissions can use permission commands regardless of whether they have the specified role. There is no default permission role.",
     "Usage": [
       "{0}pr Some Role",
       "{0}pr reset"
@@ -2799,14 +2807,6 @@
     "Usage": [
       "{0}shop",
       "{0}shop 2"
-    ]
-  },
-  "rolehoist": {
-    "Cmd": "rolehoist rh",
-    "Desc": "Toggles whether this role is displayed in the sidebar or not.",
-    "Usage": [
-      "{0}rh Guests",
-      "{0}rh \"Space Wizards\""
     ]
   },
   "buy": {
