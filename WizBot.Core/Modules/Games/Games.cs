@@ -7,6 +7,7 @@ using WizBot.Extensions;
 using WizBot.Modules.Games.Common;
 using WizBot.Modules.Games.Services;
 using System;
+using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -57,18 +58,31 @@ namespace WizBot.Modules.Games
         public async Task RateGirl(IGuildUser usr)
         {
             var gr = _service.GirlRatings.GetOrAdd(usr.Id, GetGirl);
-            var img = await gr.Url;
-            if (img == null)
+            var originalStream = await gr.Stream;
+
+            if (originalStream == null)
             {
                 await ReplyErrorLocalizedAsync("something_went_wrong").ConfigureAwait(false);
                 return;
             }
-            await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                .WithTitle("Girl Rating For " + usr)
-                .AddField(efb => efb.WithName("Hot").WithValue(gr.Hot.ToString("F2")).WithIsInline(true))
-                .AddField(efb => efb.WithName("Crazy").WithValue(gr.Crazy.ToString("F2")).WithIsInline(true))
-                .AddField(efb => efb.WithName("Advice").WithValue(gr.Advice).WithIsInline(false))
-                .WithImageUrl(img)).ConfigureAwait(false);
+            using (var imgStream = new MemoryStream())
+            {
+                lock (gr)
+                {
+                    originalStream.Position = 0;
+                    originalStream.CopyTo(imgStream);
+                }
+                imgStream.Position = 0;
+                await ctx.Channel.SendFileAsync(stream: imgStream,
+                    filename: $"girl_{usr}.png",
+                    text: Format.Bold($"{ctx.User.Mention} Girl Rating For {usr}"),
+                    embed: new EmbedBuilder()
+                        .WithOkColor()
+                        .AddField(efb => efb.WithName("Hot").WithValue(gr.Hot.ToString("F2")).WithIsInline(true))
+                        .AddField(efb => efb.WithName("Crazy").WithValue(gr.Crazy.ToString("F2")).WithIsInline(true))
+                        .AddField(efb => efb.WithName("Advice").WithValue(gr.Advice).WithIsInline(false))
+                        .Build()).ConfigureAwait(false);
+            }
         }
 
         private double NextDouble(double x, double y)

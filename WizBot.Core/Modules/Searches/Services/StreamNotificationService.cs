@@ -19,6 +19,7 @@ using WizBot.Modules.Searches.Common.Exceptions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog;
+using NLog.Fluent;
 
 namespace WizBot.Modules.Searches.Services
 {
@@ -195,6 +196,7 @@ namespace WizBot.Modules.Searches.Services
                 {
                     case FollowedStream.FType.Twitch:
 
+                        type = typeof(TwitchResponse);
                         http.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "application/vnd.twitchtv.v5");
                         http.DefaultRequestHeaders.TryAddWithoutValidation("Client-ID", _creds.TwitchClientId);
 
@@ -204,12 +206,12 @@ namespace WizBot.Modules.Searches.Services
                         var data = fullData["users"].ToArray().FirstOrDefault();
                         if (data is default(JToken))
                         {
-                            throw new StreamNotFoundException($"Stream Not Found: {username} [{type.Name}]");
+                            Log.Warn($"Stream Not Found: {username} [{type.Name}]");
+                            return null;
                         }
 
 
                         url = $"https://api.twitch.tv/kraken/streams/{ data["_id"] }";
-                        type = typeof(TwitchResponse);
                         break;
                     case FollowedStream.FType.Smashcast:
                         url = $"https://api.smashcast.tv/user/{username}";

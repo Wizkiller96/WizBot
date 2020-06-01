@@ -25,7 +25,7 @@ namespace WizBot.Modules.Games.Common
 
         private readonly IHttpClientFactory _httpFactory;
 
-        public AsyncLazy<string> Url { get; }
+        public AsyncLazy<Stream> Stream { get; }
 
         public GirlRating(IImageCache images, IHttpClientFactory factory, double crazy, double hot, int roll, string advice)
         {
@@ -36,7 +36,7 @@ namespace WizBot.Modules.Games.Common
             Advice = advice; // convenient to have it here, even though atm there are only few different ones.
             _httpFactory = factory;
 
-            Url = new AsyncLazy<string>(async () =>
+            Stream = new AsyncLazy<Stream>(async () =>
             {
                 try
                 {
@@ -54,22 +54,20 @@ namespace WizBot.Modules.Games.Common
                             img.Mutate(x => x.DrawImage(GraphicsOptions.Default, pointImg, new Point(pointx - 10, pointy - 10)));
                         }
 
-                        string url;
-                        using (var http = _httpFactory.CreateClient())
-                        using (var imgStream = new MemoryStream())
-                        {
-                            img.SaveAsPng(imgStream);
-                            using (var byteContent = new ByteArrayContent(imgStream.ToArray()))
-                            {
-                                http.AddFakeHeaders();
+                        var imgStream = new MemoryStream();
+                        img.SaveAsPng(imgStream);
+                        return imgStream;
+                        
+                        //using (var byteContent = new ByteArrayContent(imgStream.ToArray()))
+                        //{
+                        //    http.AddFakeHeaders();
 
-                                using (var reponse = await http.PutAsync("https://transfer.sh/img.png", byteContent).ConfigureAwait(false))
-                                {
-                                    url = await reponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                                }
-                            }
-                        }
-                        return url;
+
+                        //    using (var reponse = await http.PutAsync("https://transfer.sh/img.png", byteContent).ConfigureAwait(false))
+                        //    {
+                        //        url = await reponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                        //    }
+                        //}
                     }
                 }
                 catch (Exception ex)
