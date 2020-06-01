@@ -49,6 +49,7 @@ namespace WizBot.Modules.Searches.Services
         {
             while (true)
             {
+                var allSendTasks = new List<Task>(_subs.Count);
                 foreach (var kvp in _subs)
                 {
                     if (kvp.Value.Count == 0)
@@ -61,27 +62,18 @@ namespace WizBot.Modules.Searches.Services
                     try
                     {
                         var feed = await CodeHollow.FeedReader.FeedReader.ReadAsync(rssUrl).ConfigureAwait(false);
-                        //Log.Information(rssUrl);
-                        //Log.Information("Last updated: {Last} {Str}", feed.LastUpdatedDate, feed.LastUpdatedDateString);
 
                         var embed = new EmbedBuilder()
                             .WithFooter(rssUrl);
 
                         foreach (var item in feed.Items.Take(1))
                         {
-
-                            //Log.Information("{Title} - {Link}", i.Title, i.Link);
                             var maybePub = item.PublishingDate
                                 ?? (item.SpecificItem as AtomFeedItem)?.UpdatedDate;
-                            //Log.Warning(maybePub?.ToString() ?? "-");
                             if (!(maybePub is DateTime pub) || pub <= lastTime)
                             {
                                 continue;
                             }
-
-                            var desc = item.Description?.StripHTML();
-                            if (!string.IsNullOrWhiteSpace(item.Description))
-                                embed.WithDescription(desc);
 
                             var link = item.SpecificItem.Link;
                             if (!string.IsNullOrWhiteSpace(link) && Uri.IsWellFormedUriString(link, UriKind.Absolute))
@@ -104,28 +96,28 @@ namespace WizBot.Modules.Searches.Services
                             //var img = (item as Rss20Feed).Items.FirstOrDefault(x => x.Element.Name == "enclosure") ...FirstOrDefault(x => x.RelationshipType == "enclosure")?.Uri.AbsoluteUri
                             //    ?? Regex.Match(item.Description, @"src=""(?<src>.*?)""").Groups["src"].ToString();
 
-                            //if (!string.IsNullOrWhiteSpace(img) && Uri.IsWellFormedUriString(img, UriKind.Absolute))
-                            //    embed.WithImageUrl(img);
+                            embed.WithTitle(title.TrimTo(256));
 
-                            embed.WithTitle(title)
-                                .WithDescription(desc);
+                            var desc = item.Description?.StripHTML();
+                            if (!string.IsNullOrWhiteSpace(item.Description))
+                                embed.WithDescription(desc.TrimTo(2048));
 
                             _lastPosts.AddOrUpdate(rssUrl, pub, (k, old) => pub);
                             //send the created embed to all subscribed channels
-                            var sendTasks = kvp.Value
+                            var feedSendTasks = kvp.Value
                                 .Where(x => x.GuildConfig != null)
                                 .Select(x => _client.GetGuild(x.GuildConfig.GuildId)
                                     ?.GetTextChannel(x.ChannelId))
                                 .Where(x => x != null)
                                 .Select(x => x.EmbedAsync(embed));
 
-                            await Task.WhenAll(sendTasks).ConfigureAwait(false);
+                            allSendTasks.Add(Task.WhenAll(feedSendTasks));
                         }
                     }
                     catch { }
                 }
 
-                await Task.Delay(10000).ConfigureAwait(false);
+                await Task.WhenAll(Task.WhenAll(allSendTasks), Task.Delay(10000)).ConfigureAwait(false);
             }
         }
 
@@ -164,7 +156,6 @@ namespace WizBot.Modules.Searches.Services
                 }
 
                 gc.FeedSubs.Add(fs);
-
                 uow.SaveChanges();
                 //adding all, in case bot wasn't on this guild when it started
                 foreach (var f in gc.FeedSubs)
