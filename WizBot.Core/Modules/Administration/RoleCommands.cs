@@ -114,7 +114,7 @@ namespace WizBot.Modules.Administration
             {
                 var embed = new EmbedBuilder()
                     .WithOkColor();
-                if(!_service.Get(ctx.Guild.Id, out var rrs) || 
+                if(!_service.Get(ctx.Guild.Id, out var rrs) ||
                     !rrs.Any())
                 {
                     embed.WithDescription(GetText("no_reaction_roles"));
@@ -126,8 +126,8 @@ namespace WizBot.Modules.Administration
                     {
                         var ch = g.GetTextChannel(rr.ChannelId);
                         var msg = (await (ch?.GetMessageAsync(rr.MessageId)).ConfigureAwait(false)) as IUserMessage;
-                        var content = msg?.Content.TrimTo(30) ?? "DELETED!"; 
-                        embed.AddField($"**{rr.Index + 1}.** {(ch?.Name ?? "DELETED!")}", 
+                        var content = msg?.Content.TrimTo(30) ?? "DELETED!";
+                        embed.AddField($"**{rr.Index + 1}.** {(ch?.Name ?? "DELETED!")}",
                             GetText("reaction_roles_message", rr.ReactionRoles?.Count ?? 0, content));
                     }
                 }
@@ -139,7 +139,7 @@ namespace WizBot.Modules.Administration
             [UserPerm(GuildPerm.ManageRoles)]
             public async Task ReactionRolesRemove(int index)
             {
-                if(index < 1 || index > 5 || 
+                if(index < 1 || index > 5 ||
                     !_service.Get(ctx.Guild.Id, out var rrs) ||
                     !rrs.Any() || rrs.Count < index)
                 {
@@ -155,17 +155,17 @@ namespace WizBot.Modules.Administration
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageRoles)]
             [BotPerm(GuildPerm.ManageRoles)]
-            public async Task Setrole(IGuildUser usr, [Leftover] IRole role)
+            public async Task SetRole(IGuildUser targetUser, [Leftover] IRole roleToAdd)
             {
-                var guser = (IGuildUser)ctx.User;
-                var maxRole = guser.GetRoles().Max(x => x.Position);
-                if ((ctx.User.Id != ctx.Guild.OwnerId) && (maxRole <= role.Position || maxRole <= usr.GetRoles().Max(x => x.Position)))
+                var runnerUser = (IGuildUser)ctx.User;
+                var runnerMaxRolePosition = runnerUser.GetRoles().Max(x => x.Position);
+                if ((ctx.User.Id != ctx.Guild.OwnerId) && runnerMaxRolePosition <= roleToAdd.Position)
                     return;
                 try
                 {
-                    await usr.AddRoleAsync(role).ConfigureAwait(false);
-                           
-                    await ReplyConfirmLocalizedAsync("setrole", Format.Bold(role.Name), Format.Bold(usr.ToString()))
+                    await targetUser.AddRoleAsync(roleToAdd).ConfigureAwait(false);
+
+                    await ReplyConfirmLocalizedAsync("setrole", Format.Bold(roleToAdd.Name), Format.Bold(targetUser.ToString()))
                         .ConfigureAwait(false);
                 }
                 catch (Exception ex)
@@ -179,15 +179,15 @@ namespace WizBot.Modules.Administration
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageRoles)]
             [BotPerm(GuildPerm.ManageRoles)]
-            public async Task Removerole(IGuildUser usr, [Leftover] IRole role)
+            public async Task RemoveRole(IGuildUser targetUser, [Leftover] IRole roleToRemove)
             {
-                var guser = (IGuildUser)ctx.User;
-                if (ctx.User.Id != guser.Guild.OwnerId && guser.GetRoles().Max(x => x.Position) <= usr.GetRoles().Max(x => x.Position))
+                var runnerUser = (IGuildUser)ctx.User;
+                if (ctx.User.Id != runnerUser.Guild.OwnerId && runnerUser.GetRoles().Max(x => x.Position) <= roleToRemove.Position)
                     return;
                 try
                 {
-                    await usr.RemoveRoleAsync(role).ConfigureAwait(false);
-                    await ReplyConfirmLocalizedAsync("remrole", Format.Bold(role.Name), Format.Bold(usr.ToString())).ConfigureAwait(false);
+                    await targetUser.RemoveRoleAsync(roleToRemove).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync("remrole", Format.Bold(roleToRemove.Name), Format.Bold(targetUser.ToString())).ConfigureAwait(false);
                 }
                 catch
                 {
@@ -262,7 +262,7 @@ namespace WizBot.Modules.Administration
             public async Task DeleteRole([Leftover] IRole role)
             {
                 var guser = (IGuildUser)ctx.User;
-                if (ctx.User.Id != guser.Guild.OwnerId 
+                if (ctx.User.Id != guser.Guild.OwnerId
                     && guser.GetRoles().Max(x => x.Position) <= role.Position)
                     return;
 
