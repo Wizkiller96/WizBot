@@ -72,7 +72,7 @@ namespace WizBot.Modules.Gambling
                 }
 
                 // Steven's Protection
-                if (target.Id == 216898612867629057 || target.Id == 222540445316546560)
+                if (target.Id == 216898612867629057 || target.Id == 722948845503381555) // Steven UserId | Other UserId
                 {
                     var embed = new EmbedBuilder()
                     .WithDescription("You can't claim this user.")
