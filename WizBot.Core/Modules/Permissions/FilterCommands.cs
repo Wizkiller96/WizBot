@@ -100,6 +100,71 @@ namespace WizBot.Modules.Permissions
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
+            public async Task SrvrFilterLin()
+            {
+                var channel = (ITextChannel)ctx.Channel;
+
+                bool enabled;
+                using (var uow = _db.GetDbContext())
+                {
+                    var config = uow.GuildConfigs.ForId(channel.Guild.Id, set => set);
+                    enabled = config.FilterLinks = !config.FilterLinks;
+                    await uow.SaveChangesAsync();
+                }
+
+                if (enabled)
+                {
+                    _service.LinkFilteringServers.Add(channel.Guild.Id);
+                    await ReplyConfirmLocalizedAsync("link_filter_server_on").ConfigureAwait(false);
+                }
+                else
+                {
+                    _service.LinkFilteringServers.TryRemove(channel.Guild.Id);
+                    await ReplyConfirmLocalizedAsync("link_filter_server_off").ConfigureAwait(false);
+                }
+            }
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            public async Task ChnlFilterLin()
+            {
+                var channel = (ITextChannel)ctx.Channel;
+
+                FilterLinksChannelId removed;
+                using (var uow = _db.GetDbContext())
+                {
+                    var config = uow.GuildConfigs.ForId(channel.Guild.Id, set => set.Include(gc => gc.FilterLinksChannelIds));
+                    var match = new FilterLinksChannelId()
+                    {
+                        ChannelId = channel.Id
+                    };
+                    removed = config.FilterLinksChannelIds.FirstOrDefault(fc => fc.Equals(match));
+
+                    if (removed == null)
+                    {
+                        config.FilterLinksChannelIds.Add(match);
+                    }
+                    else
+                    {
+                        uow._context.Remove(removed);
+                    }
+                    await uow.SaveChangesAsync();
+                }
+
+                if (removed == null)
+                {
+                    _service.LinkFilteringChannels.Add(channel.Id);
+                    await ReplyConfirmLocalizedAsync("link_filter_channel_on").ConfigureAwait(false);
+                }
+                else
+                {
+                    _service.LinkFilteringChannels.TryRemove(channel.Id);
+                    await ReplyConfirmLocalizedAsync("link_filter_channel_off").ConfigureAwait(false);
+                }
+            }
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
             public async Task SrvrFilterWords()
             {
                 var channel = (ITextChannel)ctx.Channel;

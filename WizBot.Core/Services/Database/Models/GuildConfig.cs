@@ -56,7 +56,9 @@ namespace WizBot.Core.Services.Database.Models
 
         //filtering
         public bool FilterInvites { get; set; }
+        public bool FilterLinks { get; set; }
         public HashSet<FilterChannelId> FilterInvitesChannelIds { get; set; } = new HashSet<FilterChannelId>();
+        public HashSet<FilterLinksChannelId> FilterLinksChannelIds { get; set; } = new HashSet<FilterLinksChannelId>();
 
         //public bool FilterLinks { get; set; }
         //public HashSet<FilterLinksChannelId> FilterLinksChannels { get; set; } = new HashSet<FilterLinksChannelId>();

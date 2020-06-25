@@ -4270,7 +4270,7 @@
         ".srvrfilterinv",
         ".sfi"
       ],
-      "Description": "Toggles automatic deletion of invites posted in the server. Does not affect the Bot Owner.",
+      "Description": "Toggles automatic deletion of invites posted in the server. Does not affect users with the Administrator permission.",
       "Usage": [
         ".sfi"
       ],
@@ -4284,7 +4284,7 @@
         ".chnlfilterinv",
         ".cfi"
       ],
-      "Description": "Toggles automatic deletion of invites posted in the channel. Does not negate the `.srvrfilterinv` enabled setting. Does not affect the Bot Owner.",
+      "Description": "Toggles automatic deletion of invites posted in the channel. Does not negate the `{0}srvrfilterinv` enabled setting. Does not affect users with the Administrator permission.",
       "Usage": [
         ".cfi"
       ],
@@ -4298,9 +4298,37 @@
         ".srvrfilterwords",
         ".sfw"
       ],
-      "Description": "Toggles automatic deletion of messages containing filtered words on the server. Does not affect the Bot Owner.",
+      "Description": "Toggles automatic deletion of messages containing filtered words on the server. Does not affect users with the Administrator permission.",
       "Usage": [
         ".sfw"
+      ],
+      "Submodule": "FilterCommands",
+      "Module": "Permissions",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
+        ".chnlfilterlin",
+        ".cfl"
+      ],
+      "Description": "Toggles automatic deletion of links posted in the channel. Does not negate the `{0}srvrfilterlin` enabled setting. Does not affect users with the Administrator permission.",
+      "Usage": [
+        ".cfl"
+      ],
+      "Submodule": "FilterCommands",
+      "Module": "Permissions",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
+        ".srvrfilterlin",
+        ".sfl"
+      ],
+      "Description": "Toggles automatic deletion of links posted in the server. Does not affect users with the Administrator permission.",
+      "Usage": [
+        ".sfl"
       ],
       "Submodule": "FilterCommands",
       "Module": "Permissions",
@@ -4312,7 +4340,7 @@
         ".chnlfilterwords",
         ".cfw"
       ],
-      "Description": "Toggles automatic deletion of messages containing filtered words on the channel. Does not negate the `.srvrfilterwords` enabled setting. Does not affect the Bot Owner.",
+      "Description": "TToggles automatic deletion of messages containing filtered words on the channel. Does not negate the `{0}srvrfilterwords` enabled setting. Does not affect users with the Administrator permission.",
       "Usage": [
         ".cfw"
       ],

@@ -27,6 +27,9 @@ namespace WizBot.Modules.Permissions.Services
         public ConcurrentHashSet<ulong> WordFilteringChannels { get; }
         public ConcurrentHashSet<ulong> WordFilteringServers { get; }
 
+        public ConcurrentHashSet<ulong> LinkFilteringChannels { get; }
+        public ConcurrentHashSet<ulong> LinkFilteringServers { get; }
+
         public int Priority => -50;
         public ModuleBehaviorType BehaviorType => ModuleBehaviorType.Blocker;
 
@@ -78,6 +81,9 @@ namespace WizBot.Modules.Permissions.Services
             InviteFilteringServers = new ConcurrentHashSet<ulong>(bot.AllGuildConfigs.Where(gc => gc.FilterInvites).Select(gc => gc.GuildId));
             InviteFilteringChannels = new ConcurrentHashSet<ulong>(bot.AllGuildConfigs.SelectMany(gc => gc.FilterInvitesChannelIds.Select(fci => fci.ChannelId)));
 
+            LinkFilteringServers = new ConcurrentHashSet<ulong>(bot.AllGuildConfigs.Where(gc => gc.FilterLinks).Select(gc => gc.GuildId));
+            LinkFilteringChannels = new ConcurrentHashSet<ulong>(bot.AllGuildConfigs.SelectMany(gc => gc.FilterLinksChannelIds.Select(fci => fci.ChannelId)));
+
             var dict = bot.AllGuildConfigs.ToDictionary(gc => gc.GuildId, gc => new ConcurrentHashSet<string>(gc.FilteredWords.Select(fw => fw.Word)));
 
             ServerFilteredWords = new ConcurrentDictionary<ulong, ConcurrentHashSet<string>>(dict);
@@ -107,7 +113,10 @@ namespace WizBot.Modules.Permissions.Services
         public async Task<bool> RunBehavior(DiscordSocketClient _, IGuild guild, IUserMessage msg)
             => !(msg.Author is IGuildUser gu) //it's never filtered outside of guilds, and never block administrators
                 ? false
-                : !gu.GuildPermissions.Administrator && (await FilterInvites(guild, msg).ConfigureAwait(false) || await FilterWords(guild, msg).ConfigureAwait(false));
+                : !gu.GuildPermissions.Administrator &&
+                    (await FilterInvites(guild, msg).ConfigureAwait(false)
+                    || await FilterWords(guild, msg).ConfigureAwait(false)
+                    || await FilterLinks(guild, msg).ConfigureAwait(false));
 
         public async Task<bool> FilterWords(IGuild guild, IUserMessage usrMsg)
         {
@@ -171,6 +180,31 @@ namespace WizBot.Modules.Permissions.Services
                 catch (HttpException ex)
                 {
                     _log.Warn("I do not have permission to filter invites in channel with id " + usrMsg.Channel.Id, ex);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public async Task<bool> FilterLinks(IGuild guild, IUserMessage usrMsg)
+        {
+            if (guild is null)
+                return false;
+            if (usrMsg is null)
+                return false;
+
+            if ((LinkFilteringChannels.Contains(usrMsg.Channel.Id)
+                || LinkFilteringServers.Contains(guild.Id))
+                && usrMsg.Content.TryGetUrlPath(out _))
+            {
+                try
+                {
+                    await usrMsg.DeleteAsync().ConfigureAwait(false);
+                    return true;
+                }
+                catch (HttpException ex)
+                {
+                    _log.Warn("I do not have permission to filter links in channel with id " + usrMsg.Channel.Id, ex);
                     return true;
                 }
             }

@@ -738,6 +738,20 @@
       "{0}sfi"
     ]
   },
+  "chnlfilterlin": {
+    "Cmd": "chnlfilterlin cfl",
+    "Desc": "Toggles automatic deletion of links posted in the channel. Does not negate the `{0}srvrfilterlin` enabled setting. Does not affect users with the Administrator permission.",
+    "Usage": [
+      "{0}cfl"
+    ]
+  },
+  "srvrfilterlin": {
+    "Cmd": "srvrfilterlin sfl",
+    "Desc": "Toggles automatic deletion of links posted in the server. Does not affect users with the Administrator permission.",
+    "Usage": [
+      "{0}sfl"
+    ]
+  },
   "chnlfilterwords": {
     "Cmd": "chnlfilterwords cfw",
     "Desc": "Toggles automatic deletion of messages containing filtered words on the channel. Does not negate the `{0}srvrfilterwords` enabled setting. Does not affect the users with the Administrator permission.",

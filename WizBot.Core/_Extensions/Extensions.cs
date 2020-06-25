@@ -36,6 +36,20 @@ namespace WizBot.Extensions
     {
         private static Logger _log = LogManager.GetCurrentClassLogger();
 
+        public static Regex UrlRegex = new Regex(@"^(https?|ftp)://(?<path>[^\s/$.?#].[^\s]*)$", RegexOptions.Compiled);
+
+        public static bool TryGetUrlPath(this string input, out string path)
+        {
+            var match = UrlRegex.Match(input);
+            if (match.Success)
+            {
+                path = match.Groups["path"].Value;
+                return true;
+            }
+            path = string.Empty;
+            return false;
+        }
+
         public static IEmote ToIEmote(this string emojiStr)
             => Emote.TryParse(emojiStr, out var maybeEmote)
                     ? (IEmote)maybeEmote
