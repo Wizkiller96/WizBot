@@ -14,7 +14,8 @@ namespace WizBot.Core.Services.Database.Repositories
 
         long GetUserCurrency(ulong userId);
         bool TryUpdateCurrencyState(ulong userId, string name, string discrim, string avatar, long change, bool allowNegative = false);
-        IEnumerable<DiscordUser> GetTopRichest(ulong botId, int count, int skip);
+        List<DiscordUser> GetTopRichest(ulong botId, int count, int page);
+        List<DiscordUser> GetTopRichest(ulong botId, int count);
         void RemoveFromMany(List<ulong> ids);
         void CurrencyDecay(float decay, ulong botId);
         long GetCurrencyDecayAmount(float decay);

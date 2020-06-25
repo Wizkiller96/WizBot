@@ -1,13 +1,19 @@
-﻿using Discord;
+﻿using CommandLine;
+using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Microsoft.Extensions.Caching.Memory;
 using WizBot.Common.Attributes;
+using WizBot.Core.Common;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Extensions;
 using WizBot.Modules.Xp.Common;
 using WizBot.Modules.Xp.Services;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 
 namespace WizBot.Modules.Xp
@@ -16,16 +22,18 @@ namespace WizBot.Modules.Xp
     {
         private readonly DiscordSocketClient _client;
         private readonly DbService _db;
+        private readonly DownloadTracker _tracker;
 
-        public Xp(DiscordSocketClient client, DbService db)
+        public Xp(DiscordSocketClient client, DbService db, DownloadTracker tracker)
         {
             _client = client;
             _db = db;
+            _tracker = tracker;
         }
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        public async Task Experience([Leftover]IUser user = null)
+        public async Task Experience([Leftover] IUser user = null)
         {
             user = user ?? ctx.User;
             await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
@@ -190,25 +198,61 @@ namespace WizBot.Modules.Xp
         }
 
         [WizBotCommand, Usage, Description, Aliases]
+        [WizBotOptions(typeof(LbOpts))]
+        [Priority(0)]
         [RequireContext(ContextType.Guild)]
-        public Task XpLeaderboard(int page = 1)
+        public Task XpLeaderboard(params string[] args)
+            => XpLeaderboard(1, args);
+
+        [WizBotCommand, Usage, Description, Aliases]
+        [WizBotOptions(typeof(LbOpts))]
+        [Priority(1)]
+        [RequireContext(ContextType.Guild)]
+        public async Task XpLeaderboard(int page = 1, params string[] args)
         {
             if (--page < 0 || page > 100)
-                return Task.CompletedTask;
+                return;
 
-            return ctx.SendPaginatedConfirmAsync(page, (curPage) =>
+            var (opts, _) = OptionsParser.ParseFrom(new LbOpts(), args);
+
+            await Context.Channel.TriggerTypingAsync();
+
+            var socketGuild = ((SocketGuild)ctx.Guild);
+            List<UserXpStats> allUsers = new List<UserXpStats>();
+            if (opts.Clean)
             {
-                var users = _service.GetUserXps(ctx.Guild.Id, curPage);
+                var now = DateTime.UtcNow;
+                var res = _tracker.LastDownloads.AddOrUpdate(Context.Guild.Id, now, (key, old) => (now - old) > TimeSpan.FromHours(1) ? now : old);
+                if (res == now)
+                {
+                    await ctx.Guild.DownloadUsersAsync().ConfigureAwait(false);
+                }
+                allUsers = _service.GetTopUserXps(ctx.Guild.Id, 1000)
+                    .Where(user => !(socketGuild.GetUser(user.UserId) is null))
+                    .ToList();
+            }
 
+            await ctx.SendPaginatedConfirmAsync(page, (curPage) =>
+            {
                 var embed = new EmbedBuilder()
                     .WithTitle(GetText("server_leaderboard"))
                     .WithOkColor();
+
+                List<UserXpStats> users;
+                if (opts.Clean)
+                {
+                    users = allUsers.Skip(curPage * 9).Take(9).ToList();
+                }
+                else
+                {
+                    users = _service.GetUserXps(ctx.Guild.Id, curPage);
+                }
 
                 if (!users.Any())
                     return embed.WithDescription("-");
                 else
                 {
-                    for (int i = 0; i < users.Length; i++)
+                    for (int i = 0; i < users.Count; i++)
                     {
                         var levelStats = new LevelStats(users[i].Xp + users[i].AwardedXp);
                         var user = ((SocketGuild)ctx.Guild).GetUser(users[i].UserId);
@@ -219,7 +263,7 @@ namespace WizBot.Modules.Xp
                         if (userXpData.AwardedXp > 0)
                             awardStr = $"(+{userXpData.AwardedXp})";
                         else if (userXpData.AwardedXp < 0)
-                            awardStr = $"({userXpData.AwardedXp.ToString()})";
+                            awardStr = $"({userXpData.AwardedXp})";
 
                         embed.AddField(
                             $"#{(i + 1 + curPage * 9)} {(user?.ToString() ?? users[i].UserId.ToString())}",
@@ -227,7 +271,7 @@ namespace WizBot.Modules.Xp
                     }
                     return embed;
                 }
-            }, 1000, 10, addPaginatedFooter: false);
+            }, 900, 9, addPaginatedFooter: false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]

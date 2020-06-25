@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace WizBot.Core.Services.Database.Repositories.Impl
 {
@@ -29,13 +30,21 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
             return usr;
         }
 
-        public UserXpStats[] GetUsersFor(ulong guildId, int page)
+        public List<UserXpStats> GetUsersFor(ulong guildId, int page)
         {
             return _set.Where(x => x.GuildId == guildId)
                 .OrderByDescending(x => x.Xp + x.AwardedXp)
                 .Skip(page * 9)
                 .Take(9)
-                .ToArray();
+                .ToList();
+        }
+
+        public List<UserXpStats> GetTopUserXps(ulong guildId, int count)
+        {
+            return _set.Where(x => x.GuildId == guildId)
+                .OrderByDescending(x => x.Xp + x.AwardedXp)
+                .Take(count)
+                .ToList();
         }
 
         public int GetUserGuildRanking(ulong userId, ulong guildId)

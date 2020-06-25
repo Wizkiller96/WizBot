@@ -372,11 +372,19 @@ namespace WizBot.Modules.Xp.Services
             }
         }
 
-        public UserXpStats[] GetUserXps(ulong guildId, int page)
+        public List<UserXpStats> GetUserXps(ulong guildId, int page)
         {
             using (var uow = _db.GetDbContext())
             {
                 return uow.Xp.GetUsersFor(guildId, page);
+            }
+        }
+
+        public List<UserXpStats> GetTopUserXps(ulong guildId, int count)
+        {
+            using (var uow = _db.GetDbContext())
+            {
+                return uow.Xp.GetTopUserXps(guildId, count);
             }
         }
 

@@ -64,11 +64,19 @@ VALUES ({userId}, {username}, {discrim}, {avatarId});
                 .ToArray();
         }
 
-        public IEnumerable<DiscordUser> GetTopRichest(ulong botId, int count, int skip = 0)
+        public List<DiscordUser> GetTopRichest(ulong botId, int count, int page = 0)
         {
             return _set.Where(c => c.CurrencyAmount > 0 && botId != c.UserId)
                 .OrderByDescending(c => c.CurrencyAmount)
-                .Skip(skip)
+                .Skip(page * 9)
+                .Take(count)
+                .ToList();
+        }
+
+        public List<DiscordUser> GetTopRichest(ulong botId, int count)
+        {
+            return _set.Where(c => c.CurrencyAmount > 0 && botId != c.UserId)
+                .OrderByDescending(c => c.CurrencyAmount)
                 .Take(count)
                 .ToList();
         }
