@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
 
@@ -24,6 +25,12 @@ namespace WizBot.Core.Services.Database.Models
 
         public bool ContainsAnywhere { get; set; }
         public ulong UseCount { get; set; }
+        public string Reactions { get; set; }
+
+        public string[] GetReactions() =>
+            string.IsNullOrWhiteSpace(Reactions)
+                ? Array.Empty<string>()
+                : Reactions.Split("@@@");
     }
 
     public class ReactionResponse : DbEntity

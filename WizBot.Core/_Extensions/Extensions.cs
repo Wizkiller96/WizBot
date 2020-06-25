@@ -36,6 +36,11 @@ namespace WizBot.Extensions
     {
         private static Logger _log = LogManager.GetCurrentClassLogger();
 
+        public static IEmote ToIEmote(this string emojiStr)
+            => Emote.TryParse(emojiStr, out var maybeEmote)
+                    ? (IEmote)maybeEmote
+                    : new Emoji(emojiStr);
+
         // https://github.com/SixLabors/ImageSharp/tree/master/samples/AvatarWithRoundedCorner
         public static void ApplyRoundedCorners(this Image<Rgba32> img, float cornerRadius)
         {

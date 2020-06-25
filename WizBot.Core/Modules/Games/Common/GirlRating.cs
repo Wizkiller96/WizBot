@@ -10,6 +10,7 @@ using Image = SixLabors.ImageSharp.Image;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Processing.Drawing;
+using System.Threading.Tasks;
 
 namespace WizBot.Modules.Games.Common
 {
@@ -36,7 +37,7 @@ namespace WizBot.Modules.Games.Common
             Advice = advice; // convenient to have it here, even though atm there are only few different ones.
             _httpFactory = factory;
 
-            Stream = new AsyncLazy<Stream>(async () =>
+            Stream = new AsyncLazy<Stream>(() =>
             {
                 try
                 {

@@ -78,7 +78,7 @@ namespace WizBot.Modules.CustomReactions.Services
             }, StackExchange.Redis.CommandFlags.FireAndForget);
             sub.Subscribe(_client.CurrentUser.Id + "_gcr.edited", (ch, msg) =>
             {
-                var obj = new { Id = 0, Res = "", Ad = false, Dm = false, Ca = false };
+                var obj = new { Id = 0, Res = "", Ad = false, Dm = false, Ca = false, Re = "" };
                 obj = JsonConvert.DeserializeAnonymousType(msg, obj);
                 if (_globalReactions.TryGetValue(obj.Id, out var gcr))
                 {
@@ -86,6 +86,7 @@ namespace WizBot.Modules.CustomReactions.Services
                     gcr.AutoDeleteTrigger = obj.Ad;
                     gcr.DmResponse = obj.Dm;
                     gcr.ContainsAnywhere = obj.Ca;
+                    gcr.Reactions = obj.Re;
                 }
             }, StackExchange.Redis.CommandFlags.FireAndForget);
 
@@ -248,7 +249,25 @@ namespace WizBot.Modules.CustomReactions.Services
                             return true;
                         }
                     }
-                    await cr.Send(msg, _client, this).ConfigureAwait(false);
+                    var sentMsg = await cr.Send(msg, _client, this).ConfigureAwait(false);
+
+
+                    var reactions = cr.GetReactions();
+                    foreach (var reaction in reactions)
+                    {
+                        try
+                        {
+                            await sentMsg.AddReactionAsync(reaction.ToIEmote());
+                        }
+                        catch
+                        {
+                            _log.Warn($"Unable to add reactions to message {0} in server {1}");
+                        }
+                        finally
+                        {
+                            await Task.Delay(100);
+                        }
+                    }
 
                     if (cr.AutoDeleteTrigger)
                     {
@@ -262,6 +281,62 @@ namespace WizBot.Modules.CustomReactions.Services
                 }
             }
             return false;
+        }
+
+        public async Task ResetCRReactions(ulong? guildId, int id)
+        {
+            CustomReaction cr;
+            using (var uow = _db.GetDbContext())
+            {
+                cr = uow.CustomReactions.GetById(id);
+                if (cr is null)
+                    return;
+
+                cr.Reactions = string.Empty;
+
+                await uow.SaveChangesAsync();
+            }
+
+            if (guildId is null)
+            {
+                await PublishEditedGcr(cr).ConfigureAwait(false);
+            }
+            else
+            {
+                if (_guildReactions.TryGetValue(guildId.Value, out var crs)
+                    && crs.TryGetValue(cr.Id, out var oldCr))
+                {
+                    oldCr.Reactions = cr.Reactions;
+                }
+            }
+        }
+
+        public async Task SetCrReactions(ulong? guildId, int id, IEnumerable<string> emojis)
+        {
+            CustomReaction cr;
+            using (var uow = _db.GetDbContext())
+            {
+                cr = uow.CustomReactions.GetById(id);
+                if (cr is null)
+                    return;
+
+                cr.Reactions = string.Join("@@@", emojis);
+
+                await uow.SaveChangesAsync();
+            }
+
+            if (guildId is null)
+            {
+                await PublishEditedGcr(cr).ConfigureAwait(false);
+            }
+            else
+            {
+                if (_guildReactions.TryGetValue(guildId.Value, out var crs)
+                    && crs.TryGetValue(cr.Id, out var oldCr))
+                {
+                    oldCr.Reactions = cr.Reactions;
+                }
+            }
         }
 
         public void TriggerReloadCustomReactions()
@@ -324,7 +399,8 @@ namespace WizBot.Modules.CustomReactions.Services
                 Res = cr.Response,
                 Ad = cr.AutoDeleteTrigger,
                 Dm = cr.DmResponse,
-                Ca = cr.ContainsAnywhere
+                Ca = cr.ContainsAnywhere,
+                Re = cr.Reactions
             };
             return sub.PublishAsync(_client.CurrentUser.Id + "_gcr.edited", JsonConvert.SerializeObject(data));
         }

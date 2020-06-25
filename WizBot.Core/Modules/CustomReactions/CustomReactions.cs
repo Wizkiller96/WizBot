@@ -5,6 +5,7 @@ using WizBot.Common.Attributes;
 using WizBot.Core.Services;
 using WizBot.Extensions;
 using WizBot.Modules.CustomReactions.Services;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -111,6 +112,12 @@ namespace WizBot.Modules.CustomReactions
                                                         {
                                                             str = "📪" + str;
                                                         }
+                                                        var reactions = cr.GetReactions();
+                                                        if (reactions.Any())
+                                                        {
+                                                            str = str + " // " + string.Join(" ", reactions);
+                                                        }
+
                                                         return str;
                                                     }))), customReactions.Count(), 20)
                                 .ConfigureAwait(false);
@@ -220,6 +227,61 @@ namespace WizBot.Modules.CustomReactions
             {
                 await ReplyErrorLocalizedAsync("no_found_id").ConfigureAwait(false);
             }
+        }
+
+        [WizBotCommand, Usage, Description, Aliases]
+        public async Task CrReact(int id, params string[] emojiStrs)
+        {
+            if (!AdminInGuildOrOwnerInDm())
+            {
+                await ReplyErrorLocalizedAsync("insuff_perms").ConfigureAwait(false);
+                return;
+            }
+
+            var cr = _service.GetCustomReaction(Context.Guild?.Id, id);
+            if (cr is null)
+            {
+                await ReplyErrorLocalizedAsync("not_found").ConfigureAwait(false);
+                return;
+            }
+
+            if (emojiStrs.Length == 0)
+            {
+                await _service.ResetCRReactions(ctx.Guild?.Id, id);
+                await ReplyConfirmLocalizedAsync("crr_reset", Format.Bold(id.ToString())).ConfigureAwait(false);
+                return;
+            }
+
+            List<string> succ = new List<string>();
+            foreach (var emojiStr in emojiStrs)
+            {
+
+                var emote = emojiStr.ToIEmote();
+
+                // i should try adding these emojis right away to the message, to make sure the bot can react with these emojis. If it fails, skip that emoji
+                try
+                {
+                    await Context.Message.AddReactionAsync(emote).ConfigureAwait(false);
+                    await Task.Delay(100).ConfigureAwait(false);
+                    succ.Add(emojiStr);
+
+                    if (succ.Count >= 3)
+                        break;
+                }
+                catch { }
+            }
+
+            if (succ.Count == 0)
+            {
+                await ReplyErrorLocalizedAsync("invalid_emojis").ConfigureAwait(false);
+                return;
+            }
+
+            await _service.SetCrReactions(ctx.Guild?.Id, id, succ);
+
+
+            await ReplyConfirmLocalizedAsync("crr_set", Format.Bold(id.ToString()), string.Join(", ", succ.Select(x => x.ToString()))).ConfigureAwait(false);
+
         }
 
         [WizBotCommand, Usage, Description, Aliases]

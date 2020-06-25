@@ -1865,6 +1865,22 @@
     },
     {
       "Aliases": [
+        ".crreact",
+        ".crr"
+      ],
+      "Description": "Sets or resets reactions (up to 3) which will be added to the response message of the CustomReaction with the specified ID. Provide no emojis to reset.",
+      "Usage": [
+        "{0}crr 59 👍 👎 ",
+        "{0}crr 59 <a:nFlower:408963839191941120>",
+        "{0}crr 59"
+      ],
+      "Submodule": "CustomReactions",
+      "Module": "CustomReactions",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
         ".crad"
       ],
       "Description": "Toggles whether the message triggering the custom reaction will be automatically deleted.",
