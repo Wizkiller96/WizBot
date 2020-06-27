@@ -102,6 +102,22 @@ namespace WizBot.Modules.Administration.Services
                     }
                     StartUn_Timer(conf.GuildId, x.UserId, after, TimerType.Ban);
                 }
+
+                foreach (var x in conf.UnroleTimer)
+                {
+                    TimeSpan after;
+                    if (x.UnbanAt - TimeSpan.FromMinutes(2) <= DateTime.UtcNow)
+                    {
+                        after = TimeSpan.FromMinutes(2);
+                    }
+                    else
+                    {
+                        var unban = x.UnbanAt - DateTime.UtcNow;
+                        after = unban > max ?
+                            max : unban;
+                    }
+                    StartUn_Timer(conf.GuildId, x.UserId, after, TimerType.AddRole, x.RoleId);
+                }
             }
 
             _client.UserJoined += Client_UserJoined;
@@ -265,9 +281,9 @@ namespace WizBot.Modules.Administration.Services
             return muteRole;
         }
 
-        public async Task TimedMute(IGuildUser user, IUser mod, TimeSpan after)
+        public async Task TimedMute(IGuildUser user, IUser mod, TimeSpan after, MuteType muteType = MuteType.All)
         {
-            await MuteUser(user, mod).ConfigureAwait(false); // mute the user. This will also remove any previous unmute timers
+            await MuteUser(user, mod, muteType).ConfigureAwait(false); // mute the user. This will also remove any previous unmute timers
             using (var uow = _db.GetDbContext())
             {
                 var config = uow.GuildConfigs.ForId(user.GuildId, set => set.Include(x => x.UnmuteTimers));
@@ -297,11 +313,28 @@ namespace WizBot.Modules.Administration.Services
             StartUn_Timer(user.GuildId, user.Id, after, TimerType.Ban); // start the timer
         }
 
-        public enum TimerType { Mute, Ban }
-        public void StartUn_Timer(ulong guildId, ulong userId, TimeSpan after, TimerType type)
+        public async Task TimedRole(IGuildUser user, TimeSpan after, string reason, IRole role)
+        {
+            await user.AddRoleAsync(role).ConfigureAwait(false);
+            using (var uow = _db.GetDbContext())
+            {
+                var config = uow.GuildConfigs.ForId(user.GuildId, set => set.Include(x => x.UnroleTimer));
+                config.UnroleTimer.Add(new UnroleTimer()
+                {
+                    UserId = user.Id,
+                    UnbanAt = DateTime.UtcNow + after,
+                    RoleId = role.Id
+                }); // add teh unmute timer to the database
+                uow.SaveChanges();
+            }
+            StartUn_Timer(user.GuildId, user.Id, after, TimerType.AddRole, role.Id); // start the timer
+        }
+
+        public enum TimerType { Mute, Ban, AddRole }
+        public void StartUn_Timer(ulong guildId, ulong userId, TimeSpan after, TimerType type, ulong? roleId = null)
         {
             //load the unmute timers for this guild
-            var userUnmuteTimers = Un_Timers.GetOrAdd(guildId, new ConcurrentDictionary<(ulong, TimerType), Timer>());
+            var userUnTimers = Un_Timers.GetOrAdd(guildId, new ConcurrentDictionary<(ulong, TimerType), Timer>());
 
             //unmute timer to be added
             var toAdd = new Timer(async _ =>
@@ -311,7 +344,7 @@ namespace WizBot.Modules.Administration.Services
                     try
                     {
                         RemoveTimerFromDb(guildId, userId, type);
-                        // unmute the user, this will also remove the timer from the db
+                        StopTimer(guildId, userId, type);
                         var guild = _client.GetGuild(guildId); // load the guild
                         if (guild != null)
                         {
@@ -321,6 +354,26 @@ namespace WizBot.Modules.Administration.Services
                     catch (Exception ex)
                     {
                         _log.Warn("Couldn't unban user {0} in guild {1}", userId, guildId);
+                        _log.Warn(ex);
+                    }
+                }
+                else if (type == TimerType.AddRole)
+                {
+                    try
+                    {
+                        RemoveTimerFromDb(guildId, userId, type);
+                        StopTimer(guildId, userId, type);
+                        var guild = _client.GetGuild(guildId);
+                        var user = guild?.GetUser(userId);
+                        var role = guild.GetRole(roleId.Value);
+                        if (guild != null && user != null && user.Roles.Contains(role))
+                        {
+                            await user.RemoveRoleAsync(role).ConfigureAwait(false);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _log.Warn("Couldn't remove role from user {0} in guild {1}", userId, guildId);
                         _log.Warn(ex);
                     }
                 }
@@ -341,7 +394,7 @@ namespace WizBot.Modules.Administration.Services
             }, null, after, Timeout.InfiniteTimeSpan);
 
             //add it, or stop the old one and add this one
-            userUnmuteTimers.AddOrUpdate((userId, type), (key) => toAdd, (key, old) =>
+            userUnTimers.AddOrUpdate((userId, type), (key) => toAdd, (key, old) =>
             {
                 old.Change(Timeout.Infinite, Timeout.Infinite);
                 return toAdd;

@@ -2775,11 +2775,12 @@
   },
   "warnpunish": {
     "Cmd": "warnpunish warnp",
-    "Desc": "Sets a punishment for a certain number of warnings. You can specify a time string after 'Ban' or 'Mute' punishment to make it a temporary mute/ban. Provide no punishment to remove.",
+    "Desc": "Sets a punishment for a certain number of warnings. You can specify a time string after 'Ban' or *'Mute' punishments to make it a temporary mute/ban. Provide no punishment to remove. Available punishments: Ban, Kick, Softban, Mute, VoiceMute, ChatMute, AddRole, RemoveRoles",
     "Usage": [
-      "{0}warnp 5 Ban",
       "{0}warnp 3",
-      "{0}warnp 5 Mute 2d12h"
+      "{0}warnp 5 Ban",
+      "{0}warnp 5 Mute 2d12h",
+      "{0}warnp 4 AddRole toxic 1h"
     ]
   },
   "claimpatreonrewards": {

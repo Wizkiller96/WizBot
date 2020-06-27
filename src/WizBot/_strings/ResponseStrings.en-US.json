@@ -662,6 +662,7 @@
     "administration_warn_punish_list": "Warning punishment list",
     "administration_warn_punish_rem": "Having {0} warnings will no longer trigger a punishment.",
     "administration_warn_punish_set": "I will apply {0} punishment to users with {1} warnings.",
+    "administration_warn_punish_set_timed": "I will apply {0} punishment for {2} to users with {1} warnings.",
     "administration_unbanned_user": "User {0} has been unbanned.",
     "administration_user_not_found": "User not found.",
     "administration_user_warned_and_punished": "User {0} has been warned and {1} punishment has been applied.",

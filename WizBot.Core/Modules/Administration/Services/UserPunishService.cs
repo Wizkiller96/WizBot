@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Net;
 using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Core.Common.TypeReaders.Models;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Extensions;
+using NLog;
 
 namespace WizBot.Modules.Administration.Services
 {
@@ -17,14 +17,16 @@ namespace WizBot.Modules.Administration.Services
     {
         private readonly MuteService _mute;
         private readonly DbService _db;
+        private readonly Logger _log;
 
         public UserPunishService(MuteService mute, DbService db)
         {
             _mute = mute;
             _db = db;
+            _log = LogManager.GetCurrentClassLogger();
         }
 
-        public async Task<PunishmentAction?> Warn(IGuild guild, ulong userId, IUser mod, string reason)
+        public async Task<WarningPunishment?> Warn(IGuild guild, ulong userId, IUser mod, string reason)
         {
             var modName = mod.ToString();
 
@@ -74,6 +76,18 @@ namespace WizBot.Modules.Administration.Services
                         else
                             await _mute.TimedMute(user, mod, TimeSpan.FromMinutes(p.Time)).ConfigureAwait(false);
                         break;
+                    case PunishmentAction.VoiceMute:
+                        if (p.Time == 0)
+                            await _mute.MuteUser(user, mod, MuteType.Voice).ConfigureAwait(false);
+                        else
+                            await _mute.TimedMute(user, mod, TimeSpan.FromMinutes(p.Time), MuteType.Voice).ConfigureAwait(false);
+                        break;
+                    case PunishmentAction.ChatMute:
+                        if (p.Time == 0)
+                            await _mute.MuteUser(user, mod, MuteType.Chat).ConfigureAwait(false);
+                        else
+                            await _mute.TimedMute(user, mod, TimeSpan.FromMinutes(p.Time), MuteType.Chat).ConfigureAwait(false);
+                        break;
                     case PunishmentAction.Kick:
                         await user.KickAsync("Warned too many times.").ConfigureAwait(false);
                         break;
@@ -97,10 +111,24 @@ namespace WizBot.Modules.Administration.Services
                     case PunishmentAction.RemoveRoles:
                         await user.RemoveRolesAsync(user.GetRoles().Where(x => x.Id != guild.EveryoneRole.Id)).ConfigureAwait(false);
                         break;
+                    case PunishmentAction.AddRole:
+                        var role = guild.GetRole(p.RoleId.Value);
+                        if (!(role is null))
+                        {
+                            if (p.Time == 0)
+                                await user.AddRoleAsync(role).ConfigureAwait(false);
+                            else
+                                await _mute.TimedRole(user, TimeSpan.FromMinutes(p.Time), "Warned too many times.", role).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            _log.Warn($"Warnpunish can't find role {p.RoleId.Value} on server {guild.Id}");
+                        }
+                        break;
                     default:
                         break;
                 }
-                return p.Punishment;
+                return p;
             }
 
             return null;
@@ -140,9 +168,10 @@ namespace WizBot.Modules.Administration.Services
             return toReturn;
         }
 
-        public bool WarnPunish(ulong guildId, int number, PunishmentAction punish, StoopidTime time)
+        public bool WarnPunish(ulong guildId, int number, PunishmentAction punish, StoopidTime time, IRole role = null)
         {
-            if ((punish != PunishmentAction.Ban && punish != PunishmentAction.Mute) && time != null)
+            // these 3 don't make sense with time
+            if ((punish == PunishmentAction.Softban || punish == PunishmentAction.Kick || punish == PunishmentAction.RemoveRoles) && time != null)
                 return false;
             if (number <= 0 || (time != null && time.Time > TimeSpan.FromDays(49)))
                 return false;
@@ -159,13 +188,14 @@ namespace WizBot.Modules.Administration.Services
                     Count = number,
                     Punishment = punish,
                     Time = (int?)(time?.Time.TotalMinutes) ?? 0,
+                    RoleId = punish == PunishmentAction.AddRole ? role.Id : default(ulong?),
                 });
                 uow.SaveChanges();
             }
             return true;
         }
 
-        public bool WarnPunish(ulong guildId, int number)
+        public bool WarnPunishRemove(ulong guildId, int number)
         {
             if (number <= 0)
                 return false;
