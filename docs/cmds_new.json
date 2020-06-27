@@ -3125,12 +3125,13 @@
     },
     {
       "Aliases": [
-        ".report"
+        ".feedback",
+        ".fb"
       ],
       "Description": "Send bug/feedback report to WizBot's Devs.",
       "Usage": [
-        ".report bug I found a bug",
-        ".report feedback I have a suggestion for the bot."
+        ".fb Bug I found a bug",
+        ".fb Suggestion I have a suggestion for the bot."
       ],
       "Submodule": "Help",
       "Module": "Help",
@@ -3139,12 +3140,11 @@
     },
     {
       "Aliases": [
-        ".abusereport",
-        ".areport"
+        ".report"
       ],
       "Description": "Allows you to report a user who abuse the bot to Bot Staff.",
       "Usage": [
-        ".areport @User Abused bet flip command."
+        ".report @User Abused bet flip command."
       ],
       "Submodule": "Help",
       "Module": "Help",

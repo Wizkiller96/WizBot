@@ -251,9 +251,9 @@ namespace WizBot.Modules.Help
 #if GLOBAL_WIZBOT
 
         [WizBotCommand, Usage, Description, Aliases]
-        public async Task Report(string type, [Remainder] string message)
+        public async Task Feedback(string type, [Remainder] string message)
         {
-            string[] rtypes = { "Bug", "Feedback", "bug", "feedback" };
+            string[] rtypes = { "Bug", "Suggestion", "bug", "suggestion" };
 
             if (string.IsNullOrWhiteSpace(type))
                 return;
@@ -265,7 +265,7 @@ namespace WizBot.Modules.Help
             {
                 await _client.GetGuild(99273784988557312).GetTextChannel(566998481177280512).SendMessageAsync("<@99272781513920512>");
                 await _client.GetGuild(99273784988557312).GetTextChannel(566998481177280512).EmbedAsync(new EmbedBuilder().WithOkColor()
-                    .WithTitle($"New Bug/Feedback Report")
+                    .WithTitle($"New Bug/Suggestion Report")
                     .WithThumbnailUrl($"{ctx.User.GetAvatarUrl()}")
                     .AddField(fb => fb.WithName("Reporter:").WithValue($"{ctx.User}").WithIsInline(true))
                     .AddField(fb => fb.WithName("Reporter ID:").WithValue($"{ctx.User.Id}").WithIsInline(true))
@@ -282,11 +282,11 @@ namespace WizBot.Modules.Help
                 await ctx.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
                     .WithTitle($"Error: Report not sent.")
                     .WithDescription("Please make sure you used the correct report types listed below.")
-                    .AddField(fb => fb.WithName("Report Types:").WithValue("`Bug`, `Feedback`"))).ConfigureAwait(false);
+                    .AddField(fb => fb.WithName("Report Types:").WithValue("`Bug`, `Suggestion`"))).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
-        public async Task AbuseReport(IGuildUser ruser, [Remainder] string rexplaination)
+        public async Task Report(IGuildUser ruser, [Remainder] string rexplaination)
         {
             var user = ruser ?? ctx.User as IGuildUser;
 

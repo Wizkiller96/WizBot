@@ -14,19 +14,19 @@
       "{0}hgit"
     ]
   },
-  "report": {
-    "Cmd": "report",
+  "feedback": {
+    "Cmd": "feedback fb",
     "Desc": "Send bug/feedback report to WizBot's Devs.",
     "Usage": [
-      "{0}report bug I found a bug",
-      "{0}report feedback I have a suggestion for the bot."
+      "{0}fb bug I found a bug",
+      "{0}fb suggestion I have a suggestion for the bot."
     ]
   },
-  "abusereport": {
-    "Cmd": "abusereport areport",
+  "report": {
+    "Cmd": "report",
     "Desc": "Allows you to report a user who abuse the bot to Bot Staff.",
     "Usage": [
-      "{0}areport @User Abused bet flip command."
+      "{0}report @User Abused bet flip command."
     ]
   },
   "donate": {
