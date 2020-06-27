@@ -1622,6 +1622,13 @@
       "{0}ani aquarion evol"
     ]
   },
+  "steam": {
+    "Cmd": "steam",
+    "Desc": "Returns a store link for a steam game with the specified name. It doesn't work very well because bundles.",
+    "Usage": [
+      "{0}steam Sakura Agent"
+    ]
+  },
   "movie": {
     "Cmd": "movie omdb imdb",
     "Desc": "Queries omdb for movies or series, show first result.",

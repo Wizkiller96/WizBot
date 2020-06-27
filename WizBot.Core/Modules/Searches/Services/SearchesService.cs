@@ -2,6 +2,7 @@
 using Discord;
 using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using WizBot.Common;
 using WizBot.Core.Modules.Searches.Common;
 using WizBot.Core.Services;
@@ -20,9 +21,11 @@ using SixLabors.ImageSharp.Processing.Drawing;
 using SixLabors.ImageSharp.Processing.Text;
 using SixLabors.ImageSharp.Processing.Transforms;
 using SixLabors.Primitives;
+using StackExchange.Redis;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -615,6 +618,118 @@ namespace WizBot.Modules.Searches.Services
                 movie.Poster = await _google.ShortenUrl(movie.Poster).ConfigureAwait(false);
                 return movie;
             }
+        }
+
+        public async Task<int> GetSteamAppIdByName(string query)
+        {
+            var redis = _cache.Redis;
+            var db = redis.GetDatabase();
+            const string STEAM_GAME_IDS_KEY = "steam_names_to_appid";
+            var exists = await db.KeyExistsAsync(STEAM_GAME_IDS_KEY).ConfigureAwait(false);
+
+            // if we didn't get steam name to id map already, get it
+            //if (!exists)
+            //{
+            //    using (var http = _httpFactory.CreateClient())
+            //    {
+            //        // https://api.steampowered.com/ISteamApps/GetAppList/v2/
+            //        var gamesStr = await http.GetStringAsync("https://api.steampowered.com/ISteamApps/GetAppList/v2/").ConfigureAwait(false);
+            //        var apps = JsonConvert.DeserializeAnonymousType(gamesStr, new { applist = new { apps = new List<SteamGameId>() } }).applist.apps;
+
+            //        //await db.HashSetAsync("steam_game_ids", apps.Select(app => new HashEntry(app.Name.Trim().ToLowerInvariant(), app.AppId)).ToArray()).ConfigureAwait(false);
+            //        await db.StringSetAsync("steam_game_ids", gamesStr, TimeSpan.FromHours(24));
+            //        //await db.KeyExpireAsync("steam_game_ids", TimeSpan.FromHours(24), CommandFlags.FireAndForget).ConfigureAwait(false);
+            //    }
+            //}
+
+            var gamesMap = await _cache.GetOrAddCachedDataAsync(STEAM_GAME_IDS_KEY, async _ =>
+            {
+                using (var http = _httpFactory.CreateClient())
+                {
+                    // https://api.steampowered.com/ISteamApps/GetAppList/v2/
+                    var gamesStr = await http.GetStringAsync("https://api.steampowered.com/ISteamApps/GetAppList/v2/").ConfigureAwait(false);
+                    var apps = JsonConvert.DeserializeAnonymousType(gamesStr, new { applist = new { apps = new List<SteamGameId>() } }).applist.apps;
+
+                    return apps
+                        .OrderBy(x => x.Name, StringComparer.OrdinalIgnoreCase)
+                        .GroupBy(x => x.Name)
+                        .ToDictionary(x => x.Key, x => x.First().AppId);
+                    //await db.HashSetAsync("steam_game_ids", apps.Select(app => new HashEntry(app.Name.Trim().ToLowerInvariant(), app.AppId)).ToArray()).ConfigureAwait(false);
+                    //await db.StringSetAsync("steam_game_ids", gamesStr, TimeSpan.FromHours(24));
+                    //await db.KeyExpireAsync("steam_game_ids", TimeSpan.FromHours(24), CommandFlags.FireAndForget).ConfigureAwait(false);
+                }
+            }, default(string), TimeSpan.FromHours(24));
+
+            if (gamesMap == null)
+                return -1;
+
+
+
+            query = query.Trim();
+
+            var keyList = gamesMap.Keys.ToList();
+
+            var key = keyList.FirstOrDefault(x => x.Equals(query, StringComparison.OrdinalIgnoreCase));
+
+            if (key == default)
+            {
+                key = keyList.FirstOrDefault(x => x.StartsWith(query, StringComparison.OrdinalIgnoreCase));
+                if (key == default)
+                    return -1;
+            }
+
+            return gamesMap[key];
+
+
+            //// try finding the game id
+            //var val = db.HashGet(STEAM_GAME_IDS_KEY, query);
+            //if (val == default)
+            //    return -1; // not found
+
+            //var appid = (int)val;
+            //return appid;
+
+            // now that we have appid, get the game info with that appid
+            //var gameData = await _cache.GetOrAddCachedDataAsync($"steam_game:{appid}", SteamGameDataFactory, appid, TimeSpan.FromHours(12))
+            //    .ConfigureAwait(false);
+
+            //return gameData;
+        }
+
+        //private async Task<SteamGameData> SteamGameDataFactory(int appid)
+        //{
+        //    using (var http = _httpFactory.CreateClient())
+        //    {
+        //        //  https://store.steampowered.com/api/appdetails?appids=
+        //        var responseStr = await http.GetStringAsync($"https://store.steampowered.com/api/appdetails?appids={appid}").ConfigureAwait(false);
+        //        var data = JsonConvert.DeserializeObject<Dictionary<int, SteamGameData.Container>>(responseStr);
+        //        if (!data.ContainsKey(appid) || !data[appid].Success)
+        //            return null; // for some reason we can't get the game with valid appid. SHould never happen
+
+        //        return data[appid].Data;
+        //    }
+        //}
+    }
+
+    public class SteamGameId
+    {
+        [JsonProperty("name")]
+        public string Name { get; set; }
+        [JsonProperty("appid")]
+        public int AppId { get; set; }
+    }
+
+    public class SteamGameData
+    {
+        public string ShortDescription { get; set; }
+
+        public class Container
+        {
+            [JsonProperty("success")]
+            public bool Success { get; set; }
+
+            [JsonProperty("data")]
+            public SteamGameData Data { get; set; }
         }
     }
 

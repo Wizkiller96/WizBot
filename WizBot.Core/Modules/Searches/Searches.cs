@@ -50,7 +50,7 @@ namespace WizBot.Modules.Searches
 
         //for anonymasen :^)
         [WizBotCommand, Usage, Description, Aliases]
-        public async Task Rip([Leftover]IGuildUser usr)
+        public async Task Rip([Leftover] IGuildUser usr)
         {
             var av = usr.RealAvatarUrl();
             if (av == null)
@@ -70,7 +70,7 @@ namespace WizBot.Modules.Searches
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         [Priority(1)]
-        public async Task Say(ITextChannel channel, [Leftover]string message)
+        public async Task Say(ITextChannel channel, [Leftover] string message)
         {
             if (string.IsNullOrWhiteSpace(message))
                 return;
@@ -105,7 +105,7 @@ namespace WizBot.Modules.Searches
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         [Priority(0)]
-        public Task Say([Leftover]string message) =>
+        public Task Say([Leftover] string message) =>
             Say((ITextChannel)ctx.Channel, message);
 
         // done in 3.0
@@ -755,6 +755,34 @@ namespace WizBot.Modules.Searches
                     await ReplyErrorLocalizedAsync("wikia_error").ConfigureAwait(false);
                 }
             }
+        }
+
+        [WizBotCommand, Usage, Description, Aliases]
+        public async Task Steam([Leftover] string query)
+        {
+            if (string.IsNullOrWhiteSpace(query))
+                return;
+
+            await Context.Channel.TriggerTypingAsync().ConfigureAwait(false);
+
+            var appId = await _service.GetSteamAppIdByName(query).ConfigureAwait(false);
+            if (appId == -1)
+            {
+                await ReplyErrorLocalizedAsync("not_found").ConfigureAwait(false);
+                return;
+            }
+
+            //var embed = new EmbedBuilder()
+            //    .WithOkColor()
+            //    .WithDescription(gameData.ShortDescription)
+            //    .WithTitle(gameData.Name)
+            //    .WithUrl(gameData.Link)
+            //    .WithImageUrl(gameData.HeaderImage)
+            //    .AddField(efb => efb.WithName(GetText("genres")).WithValue(gameData.TotalEpisodes.ToString()).WithIsInline(true))
+            //    .AddField(efb => efb.WithName(GetText("price")).WithValue(gameData.IsFree ? GetText("FREE") : game).WithIsInline(true))
+            //    .AddField(efb => efb.WithName(GetText("links")).WithValue(gameData.GetGenresString()).WithIsInline(true))
+            //    .WithFooter(efb => efb.WithText(GetText("recommendations", gameData.TotalRecommendations)));
+            await ctx.Channel.SendMessageAsync($"https://store.steampowered.com/app/{appId}").ConfigureAwait(false);
         }
 
         /* [WizBotCommand, Usage, Description, Aliases]
