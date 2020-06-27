@@ -225,6 +225,7 @@
     "help_commands_instr": "Type `{0}h CommandName` to see the help for that specified command. e.g. `{0}h {0}8ball`",
     "help_command_not_found": "I can't find that command. Please verify that the command exists before trying again.",
     "help_desc": "Description",
+    "help_cant_dm": "I can't dm you. Make sure your DMs are open. Go to **options (cog button) -> Privacy & Safety -> Allow direct messages from server members**",
     "help_donate": "You can support the WizBot project on \nPatreon <{0}> or\nPaypal <{1}>\nDon't forget to leave your discord name or id in the message.\n\n**Thank you** ♥️",
     "help_guide": "**List of commands**: <{0}>\n**Hosting guides and docs can be found here**: <{1}>",
     "help_list_of_commands": "List of commands",

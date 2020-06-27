@@ -188,7 +188,14 @@ namespace WizBot.Modules.Help
                 IMessageChannel ch = channel is ITextChannel
                     ? await ((IGuildUser)ctx.User).GetOrCreateDMChannelAsync().ConfigureAwait(false)
                     : channel;
-                await ch.EmbedAsync(GetHelpStringEmbed()).ConfigureAwait(false);
+                try
+                {
+                    await ch.EmbedAsync(GetHelpStringEmbed()).ConfigureAwait(false);
+                }
+                catch (Exception)
+                {
+                    await ReplyErrorLocalizedAsync("cant_dm").ConfigureAwait(false);
+                }
                 return;
             }
 
