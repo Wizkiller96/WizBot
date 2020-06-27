@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -10,6 +11,7 @@ using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Extensions;
 using NLog;
+using NLog.Fluent;
 
 namespace WizBot.Modules.Administration.Services
 {
@@ -18,15 +20,21 @@ namespace WizBot.Modules.Administration.Services
         private readonly MuteService _mute;
         private readonly DbService _db;
         private readonly Logger _log;
+        private readonly Timer _warnExpiryTimer;
 
         public UserPunishService(MuteService mute, DbService db)
         {
             _mute = mute;
             _db = db;
             _log = LogManager.GetCurrentClassLogger();
+
+            _warnExpiryTimer = new Timer(async _ =>
+            {
+                await CheckAllWarnExpiresAsync();
+            }, null, TimeSpan.FromSeconds(0), TimeSpan.FromHours(12));
         }
 
-        public async Task<WarningPunishment?> Warn(IGuild guild, ulong userId, IUser mod, string reason)
+        public async Task<WarningPunishment> Warn(IGuild guild, ulong userId, IUser mod, string reason)
         {
             var modName = mod.ToString();
 
@@ -132,6 +140,76 @@ namespace WizBot.Modules.Administration.Services
             }
 
             return null;
+        }
+
+        public async Task CheckAllWarnExpiresAsync()
+        {
+            using (var uow = _db.GetDbContext())
+            {
+                var cleared = await uow._context.Database.ExecuteSqlCommandAsync($@"UPDATE Warnings
+SET Forgiven = 1,
+    ForgivenBy = 'Expiry'
+WHERE GuildId in (SELECT GuildId FROM GuildConfigs WHERE WarnExpireHours > 0 AND WarnExpireAction = 0)
+	AND Forgiven = 0
+	AND DateAdded < datetime('now', (SELECT '-' || WarnExpireHours || ' hours' FROM GuildConfigs as gc WHERE gc.GuildId = GuildId));");
+
+                var deleted = await uow._context.Database.ExecuteSqlCommandAsync($@"DELETE FROM Warnings
+WHERE GuildId in (SELECT GuildId FROM GuildConfigs WHERE WarnExpireHours > 0 AND WarnExpireAction = 1)
+	AND DateAdded < datetime('now', (SELECT '-' || WarnExpireHours || ' hours' FROM GuildConfigs as gc WHERE gc.GuildId = GuildId));");
+
+                if (cleared > 0 || deleted > 0)
+                {
+                    _log.Info($"Cleared {cleared} warnings and deleted {deleted} warnings due to expiry.");
+                }
+            }
+        }
+
+        public async Task CheckWarnExpiresAsync(ulong guildId)
+        {
+            using (var uow = _db.GetDbContext())
+            {
+                var config = uow.GuildConfigs.ForId(guildId, inc => inc);
+
+                if (config.WarnExpireHours == 0)
+                    return;
+
+                var hours = $"{-config.WarnExpireHours} hours";
+                if (config.WarnExpireAction == WarnExpireAction.Clear)
+                {
+                    await uow._context.Database.ExecuteSqlCommandAsync($@"UPDATE warnings
+SET Forgiven = 1,
+    ForgivenBy = 'Expiry'
+WHERE GuildId={guildId}
+    AND Forgiven = 0
+    AND DateAdded < datetime('now', {hours})");
+                }
+                else if (config.WarnExpireAction == WarnExpireAction.Delete)
+                {
+                    await uow._context.Database.ExecuteSqlCommandAsync($@"DELETE FROM warnings
+WHERE GuildId={guildId}
+    AND DateAdded < datetime('now', {hours})");
+                }
+
+                await uow.SaveChangesAsync();
+            }
+        }
+
+        public async Task WarnExpireAsync(ulong guildId, int days, bool delete)
+        {
+            using (var uow = _db.GetDbContext())
+            {
+                var config = uow.GuildConfigs.ForId(guildId, inc => inc);
+
+                config.WarnExpireHours = days * 24;
+                config.WarnExpireAction = delete ? WarnExpireAction.Delete : WarnExpireAction.Clear;
+                await uow.SaveChangesAsync();
+
+                // no need to check for warn expires
+                if (config.WarnExpireHours == 0)
+                    return;
+            }
+
+            await CheckWarnExpiresAsync(guildId);
         }
 
         public IGrouping<ulong, Warning>[] WarnlogAll(ulong gid)

@@ -2758,6 +2758,14 @@
       "{0}wait 3000"
     ]
   },
+  "warnexpire": {
+    "Cmd": "warnexpire warne",
+    "Desc": "Sets the number of days after which the warnings will be cleared automatically. This setting works retroactively. If you want to delete the warnings instead of clearing them, you can set the `--delete` optional parameter.",
+    "Usage": [
+      "{0}warne 3",
+      "{0}warne 6 --delete"
+    ]
+  },
   "warnclear": {
     "Cmd": "warnclear warnc",
     "Desc": "Clears all warnings from a certain user. You can specify a number to clear a specific one.",

@@ -1,7 +1,9 @@
-﻿using Discord;
+﻿using CommandLine;
+using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using WizBot.Common.Attributes;
+using WizBot.Core.Common;
 using WizBot.Core.Common.TypeReaders.Models;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Extensions;
@@ -78,6 +80,47 @@ namespace WizBot.Modules.Administration
                 else
                 {
                     await ReplyConfirmLocalizedAsync("user_warned_and_punished", Format.Bold(user.ToString()), Format.Bold(punishment.ToString())).ConfigureAwait(false);
+                }
+            }
+
+            public class WarnExpireOptions : IWizBotCommandOptions
+            {
+                [Option('d', "delete", Default = false, HelpText = "Delete warnings instead of clearing them.")]
+                public bool Delete { get; set; } = false;
+                public void NormalizeOptions()
+                {
+
+                }
+            }
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [UserPerm(GuildPerm.Administrator)]
+            [WizBotOptions(typeof(WarnExpireOptions))]
+            [Priority(2)]
+            public async Task WarnExpire(int days, params string[] args)
+            {
+                if (days < 0 || days > 366)
+                    return;
+
+                var opts = OptionsParser.ParseFrom<WarnExpireOptions>(args);
+
+                await Context.Channel.TriggerTypingAsync().ConfigureAwait(false);
+
+                await _service.WarnExpireAsync(ctx.Guild.Id, days, opts.Delete).ConfigureAwait(false);
+                if (days == 0)
+                {
+                    await ReplyConfirmLocalizedAsync("warn_expire_reset").ConfigureAwait(false);
+                    return;
+                }
+
+                if (opts.Delete)
+                {
+                    await ReplyConfirmLocalizedAsync("warn_expire_set_delete", Format.Bold(days.ToString())).ConfigureAwait(false);
+                }
+                else
+                {
+                    await ReplyConfirmLocalizedAsync("warn_expire_set_clear", Format.Bold(days.ToString())).ConfigureAwait(false);
                 }
             }
 

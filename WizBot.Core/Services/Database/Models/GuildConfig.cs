@@ -104,6 +104,14 @@ namespace WizBot.Core.Services.Database.Models
         public IndexedCollection<ReactionRoleMessage> ReactionRoleMessages { get; set; } = new IndexedCollection<ReactionRoleMessage>();
         public bool NotifyStreamOffline { get; set; }
         public List<GroupName> SelfAssignableRoleGroupNames { get; set; }
+        public int WarnExpireHours { get; set; } = 0;
+        public WarnExpireAction WarnExpireAction { get; set; } = WarnExpireAction.Clear;
+    }
+
+    public enum WarnExpireAction
+    {
+        Clear,
+        Delete
     }
 
     public class GroupName : DbEntity
