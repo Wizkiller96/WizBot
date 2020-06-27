@@ -550,16 +550,16 @@ namespace WizBot.Modules.Gambling
                     }
                 }
 
-                var toSend = richest.Skip(curPage * 9).Take(9);
-                if (!richest.Any())
+                var toSend = richest.Skip(curPage * 9).Take(9).ToList();
+                if (!toSend.Any())
                 {
                     embed.WithDescription(GetText("no_users_found"));
                     return embed;
                 }
 
-                for (var i = 0; i < richest.Count; i++)
+                for (var i = 0; i < toSend.Count; i++)
                 {
-                    var x = richest[i];
+                    var x = toSend[i];
                     var usrStr = x.ToString().TrimTo(20, true);
 
                     var j = i;
