@@ -743,9 +743,10 @@
     {
       "Aliases": [
         ".setrole",
-        ".sr"
+        ".sr",
+        ".giverole"
       ],
-      "Description": "Sets a role for a given user.",
+      "Description": "Gives a role to a user. The role you specify has to be lower in the role hierarchy than your highest role.",
       "Usage": [
         ".sr @User Guest"
       ],
@@ -761,7 +762,7 @@
         ".removerole",
         ".rr"
       ],
-      "Description": "Removes a role from a given user.",
+      "Description": "Removes a role from a user. The role you specify has to be lower in the role hierarchy than your highest role.",
       "Usage": [
         ".rr @User Admin"
       ],
@@ -777,7 +778,7 @@
         ".renamerole",
         ".renr"
       ],
-      "Description": "Renames a role. The role you are renaming must be lower than bot's highest role.",
+      "Description": "Renames a role. The role you specify has to be lower in the role hierarchy than your highest role.",
       "Usage": [
         ".renr \"First role\" SecondRole"
       ],
@@ -793,7 +794,7 @@
         ".removeallroles",
         ".rar"
       ],
-      "Description": "Removes all roles from a mentioned user.",
+      "Description": "Removes all roles which are lower than your highest role in the role hierarchy from the user you specify.",
       "Usage": [
         ".rar @User"
       ],
@@ -841,7 +842,7 @@
         ".rolehoist",
         ".rh"
       ],
-      "Description": "Toggles whether this role is displayed in the sidebar or not.",
+      "Description": "Toggles whether this role is displayed in the sidebar or not. The role you specify has to be lower in the role hierarchy than your highest role.",
       "Usage": [
         ".rh Guests",
         ".rh \"Space Wizards\""
@@ -858,7 +859,7 @@
         ".rolecolor",
         ".roleclr"
       ],
-      "Description": "Set a role's color using its hex value. Provide no color in order to see the hex value of the color of the specified role.",
+      "Description": "Set a role's color using its hex value. Provide no color in order to see the hex value of the color of the specified role. The role you specify has to be lower in the role hierarchy than your highest role.",
       "Usage": [
         ".roleclr Admin",
         ".roleclr Admin ffba55"
@@ -1561,6 +1562,25 @@
     },
     {
       "Aliases": [
+        ".warnexpire",
+        ".warne"
+      ],
+      "Description": "Sets the number of days after which the warnings will be cleared automatically. This setting works retroactively. If you want to delete the warnings instead of clearing them, you can set the `--delete` optional parameter.",
+      "Usage": [
+        ".warne 3",
+        ".warne 6 --delete"
+      ],
+      "Submodule": "UserPunishCommands",
+      "Module": "Administration",
+      "Options": [
+        "`--delete` (`-d`)   Delete warnings instead of clearing them.  "
+      ],
+      "Requirements": [
+        "Administrator Server Permission"
+      ]
+    },
+    {
+      "Aliases": [
         ".warnlog"
       ],
       "Description": "See a list of warnings of a certain user.",
@@ -1612,11 +1632,12 @@
         ".warnpunish",
         ".warnp"
       ],
-      "Description": "Sets a punishment for a certain number of warnings. You can specify a time string after 'Ban' or 'Mute' punishment to make it a temporary mute/ban. Provide no punishment to remove.",
+      "Description": "Sets a punishment for a certain number of warnings. You can specify a time string after 'Ban' or *'Mute' punishments to make it a temporary mute/ban. Provide no punishment to remove. Available punishments: Ban, Kick, Softban, Mute, VoiceMute, ChatMute, AddRole, RemoveRoles",
       "Usage": [
-        ".warnp 5 Ban",
         ".warnp 3",
-        ".warnp 5 Mute 2d12h"
+        ".warnp 5 Ban",
+        ".warnp 5 Mute 2d12h",
+        ".warnp 4 AddRole toxic 1h"
       ],
       "Submodule": "UserPunishCommands",
       "Module": "Administration",
@@ -1839,6 +1860,23 @@
     },
     {
       "Aliases": [
+        ".crreact",
+        ".crr"
+      ],
+      "Description": "Sets or resets reactions (up to 3) which will be added to the response message of the CustomReaction with the specified ID. Provide no emojis to reset.",
+      "Usage": [
+        ".crr 59 👍 👎 ",
+        ".crr 59 <a:nFlower:408963839191941120>",
+        ".crr 59"
+      ],
+      "Submodule": "CustomReactions",
+      "Module": "CustomReactions",
+      "Options": null,
+      "Requirements": []
+    },
+  
+    {
+      "Aliases": [
         ".crca"
       ],
       "Description": "Toggles whether the custom reaction will trigger if the triggering message contains the keyword (instead of only starting with it).",
@@ -1857,22 +1895,6 @@
       "Description": "Toggles whether the response message of the custom reaction will be sent as a direct message.",
       "Usage": [
         ".crdm 44"
-      ],
-      "Submodule": "CustomReactions",
-      "Module": "CustomReactions",
-      "Options": null,
-      "Requirements": []
-    },
-    {
-      "Aliases": [
-        ".crreact",
-        ".crr"
-      ],
-      "Description": "Sets or resets reactions (up to 3) which will be added to the response message of the CustomReaction with the specified ID. Provide no emojis to reset.",
-      "Usage": [
-        ".crr 59 👍 👎 ",
-        ".crr 59 <a:nFlower:408963839191941120>",
-        ".crr 59"
       ],
       "Submodule": "CustomReactions",
       "Module": "CustomReactions",
@@ -2126,7 +2148,9 @@
       ],
       "Submodule": "Gambling",
       "Module": "Gambling",
-      "Options": null,
+      "Options": [
+        "`--clean` (`-c`)   Only show users who are on the server.  "
+      ],
       "Requirements": []
     },
     {
@@ -3952,7 +3976,7 @@
         ".permrole",
         ".pr"
       ],
-      "Description": "Sets a role which can change permissions. Supply no parameters to see the current one. Type 'reset' instead of the role name to reset the currently set permission role. Users with Administrator server permissions can use permission commands regardless of whether they have the specified role. There is no default permission role.",
+      "Description": "Sets a role which can change permissions. Supply no parameters to see the current one. Type 'reset' instead of the role name to reset the currently set permission role. Users with the Administrator server permissions can use permission commands regardless of whether they have the specified role. There is no default permission role.",
       "Usage": [
         ".pr Some Role",
         ".pr reset"
@@ -4458,19 +4482,6 @@
   "Searches": [
     {
       "Aliases": [
-        ".lolban"
-      ],
-      "Description": "Shows top banned champions ordered by ban rate.",
-      "Usage": [
-        ".lolban"
-      ],
-      "Submodule": "Searches",
-      "Module": "Searches",
-      "Options": null,
-      "Requirements": []
-    },
-    {
-      "Aliases": [
         ".rip"
       ],
       "Description": "rip",
@@ -4852,6 +4863,19 @@
       "Description": "Shows bible verse. You need to supply book name and chapter:verse",
       "Usage": [
         ".bible genesis 3:19"
+      ],
+      "Submodule": "Searches",
+      "Module": "Searches",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
+        ".steam"
+      ],
+      "Description": "Returns a store link for a steam game with the specified name. It doesn't work very well because bundles.",
+      "Usage": [
+        ".steam Sakura Agent"
       ],
       "Submodule": "Searches",
       "Module": "Searches",
@@ -6419,7 +6443,9 @@
       ],
       "Submodule": "Xp",
       "Module": "Xp",
-      "Options": null,
+      "Options": [
+        "`--clean` (`-c`)   Only show users who are on the server.  "
+      ],
       "Requirements": []
     },
     {
