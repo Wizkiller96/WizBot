@@ -146,16 +146,16 @@ namespace WizBot.Modules.Administration.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var cleared = await uow._context.Database.ExecuteSqlCommandAsync($@"UPDATE Warnings
+                var cleared = await uow._context.Database.ExecuteSqlCommandAsync($@"UPDATE Warnings as w
 SET Forgiven = 1,
     ForgivenBy = 'Expiry'
-WHERE GuildId in (SELECT GuildId FROM GuildConfigs WHERE WarnExpireHours > 0 AND WarnExpireAction = 0)
+WHERE w.GuildId in (SELECT GuildId FROM GuildConfigs WHERE WarnExpireHours > 0 AND WarnExpireAction = 0)
 	AND Forgiven = 0
-	AND DateAdded < datetime('now', (SELECT '-' || WarnExpireHours || ' hours' FROM GuildConfigs as gc WHERE gc.GuildId = GuildId));");
+	AND DateAdded < datetime('now', (SELECT '-' || WarnExpireHours || ' hours' FROM GuildConfigs as gc WHERE gc.GuildId = w.GuildId));");
 
-                var deleted = await uow._context.Database.ExecuteSqlCommandAsync($@"DELETE FROM Warnings
-WHERE GuildId in (SELECT GuildId FROM GuildConfigs WHERE WarnExpireHours > 0 AND WarnExpireAction = 1)
-	AND DateAdded < datetime('now', (SELECT '-' || WarnExpireHours || ' hours' FROM GuildConfigs as gc WHERE gc.GuildId = GuildId));");
+                var deleted = await uow._context.Database.ExecuteSqlCommandAsync($@"DELETE FROM Warnings as w
+WHERE w.GuildId in (SELECT GuildId FROM GuildConfigs WHERE WarnExpireHours > 0 AND WarnExpireAction = 1)
+	AND DateAdded < datetime('now', (SELECT '-' || WarnExpireHours || ' hours' FROM GuildConfigs as gc WHERE gc.GuildId = w.GuildId));");
 
                 if (cleared > 0 || deleted > 0)
                 {
