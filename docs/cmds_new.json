@@ -535,7 +535,7 @@
         ".addplaying",
         ".adpl"
       ],
-      "Description": "Adds a specified string to the list of playing strings to rotate. You have to pick either 'Playing', 'Watching' or 'Listening' as the first parameter. Supported placeholders: `%servers%`, `%users%`, `%playing%`, `%queued%`, `%time%`, `%shardid%`, `%shardcount%`, `%shardguilds%`.",
+      "Description": "Adds a specified string to the list of playing strings to rotate. You have to pick either 'Playing', 'Watching' or 'Listening' as the first parameter.",
       "Usage": [
         ".adpl Playing with you",
         ".adpl Watching you sleep"
@@ -675,7 +675,7 @@
         ".prune",
         ".clear"
       ],
-      "Description": "`.prune` removes all WizBot's messages in the last 100 messages. `.prune X` removes last `X` number of messages from the channel (up to 100). `.prune @Someone` removes all Someone's messages in the last 100 messages. `.prune @Someone X` removes last `X` number of 'Someone's' messages in the channel. You can use the `-s` / `--safe` parameter at the end to only prune messages that are not pinned.",
+      "Description": "`.prune` removes all WizBot's messages in the last 100 messages. `.prune X` removes last `X` number of messages from the channel (up to 100). `.prune @Someone` removes all Someone's messages in the last 100 messages. `.prune @Someone X` removes last `X` number of 'Someone's' messages in the channel. You can use the `-s` / `-safe` parameter at the end to only prune messages that are not pinned.",
       "Usage": [
         ".prune",
         ".prune -s",
@@ -1431,9 +1431,9 @@
       "Aliases": [
         ".greetmsg"
       ],
-      "Description": "Sets a new join announcement message which will be shown in the server's channel. Type `%user%` if you want to mention the new member. Using it with no message will show the current greet message. You can use embed json from <http://wizbot.cc/embedbuilder/> instead of a regular text, if you want the message to be embedded.",
+      "Description": "Sets a new join announcement message which will be shown in the server's channel. Type `%user.mention%` if you want to mention the new member. Using it with no message will show the current greet message. You can use embed json from <http://wizbot.cc/embedbuilder/> instead of a regular text, if you want the message to be embedded.",
       "Usage": [
-        ".greetmsg Welcome, %user%."
+        ".greetmsg Welcome, %user.mention%."
       ],
       "Submodule": "ServerGreetCommands",
       "Module": "Administration",
@@ -1461,9 +1461,9 @@
       "Aliases": [
         ".greetdmmsg"
       ],
-      "Description": "Sets a new join announcement message which will be sent to the user who joined. Type `%user%` if you want to mention the new member. Using it with no message will show the current DM greet message. You can use embed json from <http://wizbot.cc/embedbuilder/> instead of a regular text, if you want the message to be embedded.",
+      "Description": "Sets a new join announcement message which will be sent to the user who joined. Type `%user.mention%` if you want to mention the new member. Using it with no message will show the current DM greet message. You can use embed json from <http://wizbot.cc/embedbuilder/> instead of a regular text, if you want the message to be embedded.",
       "Usage": [
-        ".greetdmmsg Welcome to the server, %user%"
+        ".greetdmmsg Welcome to the server, %user.mention%"
       ],
       "Submodule": "ServerGreetCommands",
       "Module": "Administration",
@@ -1491,9 +1491,9 @@
       "Aliases": [
         ".byemsg"
       ],
-      "Description": "Sets a new leave announcement message. Type `%user%` if you want to show the name the user who left. Type `%id%` to show id. Using this command with no message will show the current bye message. You can use embed json from <http://wizbot.cc/embedbuilder/> instead of a regular text, if you want the message to be embedded.",
+      "Description": "Sets a new leave announcement message. Type `%user.mention%` if you want to show the name the user who left. Type `%id%` to show id. Using this command with no message will show the current bye message. You can use embed json from <http://wizbot.cc/embedbuilder/> instead of a regular text, if you want the message to be embedded.",
       "Usage": [
-        ".byemsg %user% has left."
+        ".byemsg %user.mention% has left."
       ],
       "Submodule": "ServerGreetCommands",
       "Module": "Administration",
@@ -1780,7 +1780,7 @@
       ],
       "Description": "Add a custom reaction with a trigger and a response. Running this command in server requires the Administration permission. Running this command in DM is Bot Owner only and adds a new global custom reaction. Guide here: <http://wizbot.readthedocs.io/en/latest/custom-reactions/>",
       "Usage": [
-        ".acr \"hello\" Hi there %user%"
+        ".acr \"hello\" Hi there %user.mention%"
       ],
       "Submodule": "CustomReactions",
       "Module": "CustomReactions",
@@ -1874,7 +1874,6 @@
       "Options": null,
       "Requirements": []
     },
-  
     {
       "Aliases": [
         ".crca"
@@ -2177,7 +2176,9 @@
       ],
       "Submodule": "AnimalRacingCommands",
       "Module": "Gambling",
-      "Options": "`--start-time` (`-s`)     ",
+      "Options": [
+        "`--start-time` (`-s`)     "
+      ],
       "Requirements": []
     },
     {
@@ -2259,7 +2260,10 @@
       ],
       "Submodule": "Connect4Commands",
       "Module": "Gambling",
-      "Options": "`--turn-timer` (`-t`)   Turn time in seconds. It has to be between 5 and 60. Default 15.  \n`--bet` (`-b`)   Amount you bet. Default 0.  ",
+      "Options": [
+        "`--turn-timer` (`-t`)   Turn time in seconds. It has to be between 5 and 60. Default 15.  ",
+        "`--bet` (`-b`)   Amount you bet. Default 0.  "
+      ],
       "Requirements": []
     },
     {
@@ -2273,7 +2277,11 @@
       ],
       "Submodule": "CurrencyEventsCommands",
       "Module": "Gambling",
-      "Options": "`--amount` (`-a`)   Amount of currency each user receives.  \n`--pot-size` (`-p`)   The maximum amount of currency that can be rewarded. 0 means no limit.  \n`--duration` (`-d`)   Number of hours the event should run for. Default 24.  ",
+      "Options": [
+        "`--amount` (`-a`)   Amount of currency each user receives.  ",
+        "`--pot-size` (`-p`)   The maximum amount of currency that can be rewarded. 0 means no limit.  ",
+        "`--duration` (`-d`)   Number of hours the event should run for. Default 24.  "
+      ],
       "Requirements": [
         "Bot Owner & Admin Only"
       ]
@@ -2650,19 +2658,6 @@
       "Module": "Gambling",
       "Options": null,
       "Requirements": []
-    },
-    {
-      "Aliases": [
-        ".wheeltest"
-      ],
-      "Description": "wheeltest",
-      "Usage": [
-        "wheeltest"
-      ],
-      "Submodule": "WheelOfFortuneCommands",
-      "Module": "Gambling",
-      "Options": null,
-      "Requirements": []
     }
   ],
   "Games": [
@@ -2730,7 +2725,10 @@
       ],
       "Submodule": "AcropobiaCommands",
       "Module": "Games",
-      "Options": "`--submission-time` (`-s`)   Time after which the submissions are closed and voting starts.  \n`--vote-time` (`-v`)   Time after which the voting is closed and the winner is declared.  ",
+      "Options": [
+        "`--submission-time` (`-s`)   Time after which the submissions are closed and voting starts.  ",
+        "`--vote-time` (`-v`)   Time after which the voting is closed and the winner is declared.  "
+      ],
       "Requirements": []
     },
     {
@@ -2784,19 +2782,6 @@
         ".hangmanstop"
       ],
       "Submodule": "HangmanCommands",
-      "Module": "Games",
-      "Options": null,
-      "Requirements": []
-    },
-    {
-      "Aliases": [
-        ".leet"
-      ],
-      "Description": "Converts a text to leetspeak with 6 (1-6) severity levels",
-      "Usage": [
-        ".leet 3 Hello"
-      ],
-      "Submodule": "LeetCommands",
       "Module": "Games",
       "Options": null,
       "Requirements": []
@@ -2932,7 +2917,9 @@
       ],
       "Submodule": "SpeedTypingCommands",
       "Module": "Games",
-      "Options": "`--start-time` (`-s`)   How long does it take for the race to start. Default 5.  ",
+      "Options": [
+        "`--start-time` (`-s`)   How long does it take for the race to start. Default 5.  "
+      ],
       "Requirements": []
     },
     {
@@ -3003,7 +2990,9 @@
       ],
       "Submodule": "TicTacToeCommands",
       "Module": "Games",
-      "Options": "`--turn-timer` (`-t`)   Turn time in seconds. Default 15.  ",
+      "Options": [
+        "`--turn-timer` (`-t`)   Turn time in seconds. Default 15.  "
+      ],
       "Requirements": []
     },
     {
@@ -3018,7 +3007,13 @@
       ],
       "Submodule": "TriviaCommands",
       "Module": "Games",
-      "Options": "`--pokemon` (`-p`)   Whether it's 'Who's that pokemon?' trivia.  \n`--nohint`   Don't show any hints.  \n`--win-req` (`-w`)   Winning requirement. Set 0 for an infinite game. Default 10.  \n`--question-timer` (`-q`)   How long until the question ends. Default 30.  \n`--timeout` (`-t`)   Number of questions of inactivity in order stop. Set 0 for never. Default 10.  ",
+      "Options": [
+        "`--pokemon` (`-p`)   Whether it's 'Who's that pokemon?' trivia.  ",
+        "`--nohint`   Don't show any hints.  ",
+        "`--win-req` (`-w`)   Winning requirement. Set 0 for an infinite game. Default 10.  ",
+        "`--question-timer` (`-q`)   How long until the question ends. Default 30.  ",
+        "`--timeout` (`-t`)   Number of questions of inactivity in order stop. Set 0 for never. Default 10.  "
+      ],
       "Requirements": []
     },
     {
@@ -3075,7 +3070,9 @@
       ],
       "Submodule": "Help",
       "Module": "Help",
-      "Options": "`--view` (`-v`)   Specifies how to output the list of commands. 0 - Hide commands which you can't use, 1 - Cross out commands which you can't use, 2 - Show all.  ",
+      "Options": [
+        "`--view` (`-v`)   Specifies how to output the list of commands. 0 - Hide commands which you can't use, 1 - Cross out commands which you can't use, 2 - Show all.  "
+      ],
       "Requirements": []
     },
     {
@@ -3130,8 +3127,8 @@
       ],
       "Description": "Send bug/feedback report to WizBot's Devs.",
       "Usage": [
-        ".fb Bug I found a bug",
-        ".fb Suggestion I have a suggestion for the bot."
+        ".fb bug I found a bug",
+        ".fb suggestion I have a suggestion for the bot."
       ],
       "Submodule": "Help",
       "Module": "Help",
@@ -3753,7 +3750,7 @@
       "Aliases": [
         ".hentai"
       ],
-      "Description": "Shows a hentai image from a random website (gelbooru or danbooru or konachan or atfbooru or yandere) with a given tag. Tag is optional but preferred. Only 1 tag allowed.",
+      "Description": "Shows a hentai image from a random website (gelbooru, danbooru, konachan or yandere) with a given tag. Tag is optional but preferred. Only 1 tag allowed.",
       "Usage": [
         ".hentai yuri"
       ],
@@ -3900,7 +3897,7 @@
       "Aliases": [
         ".neko"
       ],
-      "Description": "Pulls a random lewd neko image unless a category from http://nekos.life is picked. || IMG Categories: classic_lewd, piersing_lewd, shinobu_lewd, feet_lewd, keta_avatar, piersing_ero, yuri_ero, solo_lewd, pantyhose_lewd, kemonomimi_lewd, cosplay_lewd, peeing_lewd, ahegao_avatar, wallpaper_lewd, ero_wallpaper_ero, blowjob_lewd, holo_avatar, neko_lewd, futanari_lewd, kitsune_ero, trap_lewd, keta_lewd, neko_ero, pantyhose_ero, cum_lewd, anal_lewd, smallboobs_lewd, all_tags_lewd, yuri_lewd, kemonomimi_ero, anus_lewd, holo_ero, all_tags_ero, kitsune_lewd, pussy_lewd, feet_ero, yiff_lewd, hplay_ero, bdsm_lewd, femdom_lewd, holo_lewd, shinobu_ero, tits_lewd || GIF Categories: blow_job, pussy_wank, classic, kuni, tits, pussy, cum, spank, feet, all_tags, yuri, anal, neko, girls_solo, yiff",
+      "Description": "Pulls a random lewd neko image unless a category from http://nekos.life is picked. ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬ **IMG Categories:**\n`classic_lewd`, `piersing_lewd`, `shinobu_lewd`, `feet_lewd`, `keta_avatar`, `piersing_ero`, `yuri_ero`, `solo_lewd`, `pantyhose_lewd`, `kemonomimi_lewd`, `cosplay_lewd`, `peeing_lewd`, `ahegao_avatar`, `wallpaper_lewd`, `ero_wallpaper_ero`, `blowjob_lewd`, `holo_avatar`, `neko_lewd`, `futanari_lewd`, `kitsune_ero`, `trap_lewd`, `keta_lewd`, `neko_ero`, `pantyhose_ero`, `cum_lewd`, `anal_lewd`, `smallboobs_lewd`, `all_tags_lewd`, `yuri_lewd`, `kemonomimi_ero`, `anus_lewd`, `holo_ero`, `all_tags_ero`, `kitsune_lewd`, `pussy_lewd`, `feet_ero`, `yiff_lewd`, `hplay_ero`, `bdsm_lewd`, `femdom_lewd`, `holo_lewd`, `shinobu_ero`, `tits_lewd` ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬ **GIF Categories:**\n`blow_job`, `pussy_wank`, `classic`, `kuni`, `tits`, `pussy`, `cum`, `spank`, `feet`, `all_tags`, `yuri`, `anal`, `neko`, `girls_solo`, `yiff`",
       "Usage": [
         ".neko",
         ".neko img neko_lewd",
@@ -3952,7 +3949,7 @@
       "Module": "NSFW",
       "Options": null,
       "Requirements": [
-        "Bot Owner Only"
+        "Bot Owner & Admin Only"
       ]
     }
   ],
@@ -4294,7 +4291,7 @@
         ".srvrfilterinv",
         ".sfi"
       ],
-      "Description": "Toggles automatic deletion of invites posted in the server. Does not affect users with the Administrator permission.",
+      "Description": "Toggles automatic deletion of invites posted in the server. Does not affect the users with the Administrator permission.",
       "Usage": [
         ".sfi"
       ],
@@ -4308,37 +4305,9 @@
         ".chnlfilterinv",
         ".cfi"
       ],
-      "Description": "Toggles automatic deletion of invites posted in the channel. Does not negate the `{0}srvrfilterinv` enabled setting. Does not affect users with the Administrator permission.",
+      "Description": "Toggles automatic deletion of invites posted in the channel. Does not negate the `.srvrfilterinv` enabled setting. Does not affect the users with the Administrator permission.",
       "Usage": [
         ".cfi"
-      ],
-      "Submodule": "FilterCommands",
-      "Module": "Permissions",
-      "Options": null,
-      "Requirements": []
-    },
-    {
-      "Aliases": [
-        ".srvrfilterwords",
-        ".sfw"
-      ],
-      "Description": "Toggles automatic deletion of messages containing filtered words on the server. Does not affect users with the Administrator permission.",
-      "Usage": [
-        ".sfw"
-      ],
-      "Submodule": "FilterCommands",
-      "Module": "Permissions",
-      "Options": null,
-      "Requirements": []
-    },
-    {
-      "Aliases": [
-        ".chnlfilterlin",
-        ".cfl"
-      ],
-      "Description": "Toggles automatic deletion of links posted in the channel. Does not negate the `{0}srvrfilterlin` enabled setting. Does not affect users with the Administrator permission.",
-      "Usage": [
-        ".cfl"
       ],
       "Submodule": "FilterCommands",
       "Module": "Permissions",
@@ -4361,10 +4330,38 @@
     },
     {
       "Aliases": [
+        ".chnlfilterlin",
+        ".cfl"
+      ],
+      "Description": "Toggles automatic deletion of links posted in the channel. Does not negate the `.srvrfilterlin` enabled setting. Does not affect users with the Administrator permission.",
+      "Usage": [
+        ".cfl"
+      ],
+      "Submodule": "FilterCommands",
+      "Module": "Permissions",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
+        ".srvrfilterwords",
+        ".sfw"
+      ],
+      "Description": "Toggles automatic deletion of messages containing filtered words on the server. Does not affect the users with the Administrator permission.",
+      "Usage": [
+        ".sfw"
+      ],
+      "Submodule": "FilterCommands",
+      "Module": "Permissions",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
         ".chnlfilterwords",
         ".cfw"
       ],
-      "Description": "TToggles automatic deletion of messages containing filtered words on the channel. Does not negate the `{0}srvrfilterwords` enabled setting. Does not affect users with the Administrator permission.",
+      "Description": "Toggles automatic deletion of messages containing filtered words on the channel. Does not negate the `.srvrfilterwords` enabled setting. Does not affect the users with the Administrator permission.",
       "Usage": [
         ".cfw"
       ],
@@ -4477,6 +4474,21 @@
       "Requirements": [
         "Bot Owner Only"
       ]
+    }
+  ],
+  "Roblox": [
+    {
+      "Aliases": [
+        ".rinfo"
+      ],
+      "Description": "Display a Roblox User profile information from the Roblox API.",
+      "Usage": [
+        ".rinfo Rich151"
+      ],
+      "Submodule": "Roblox",
+      "Module": "Roblox",
+      "Options": null,
+      "Requirements": []
     }
   ],
   "Searches": [
@@ -4736,19 +4748,6 @@
     },
     {
       "Aliases": [
-        ".#"
-      ],
-      "Description": "Searches Tagdef.com for a hashtag.",
-      "Usage": [
-        ".# ff"
-      ],
-      "Submodule": "Searches",
-      "Module": "Searches",
-      "Options": null,
-      "Requirements": []
-    },
-    {
-      "Aliases": [
         ".catfact"
       ],
       "Description": "Shows a random catfact from <http://catfacts-api.appspot.com/api/facts>",
@@ -4858,11 +4857,11 @@
     },
     {
       "Aliases": [
-        ".bible"
+        ".steam"
       ],
-      "Description": "Shows bible verse. You need to supply book name and chapter:verse",
+      "Description": "Returns a store link for a steam game with the specified name. It doesn't work very well because bundles.",
       "Usage": [
-        ".bible genesis 3:19"
+        ".steam Sakura Agent"
       ],
       "Submodule": "Searches",
       "Module": "Searches",
@@ -4871,11 +4870,41 @@
     },
     {
       "Aliases": [
-        ".steam"
+        ".nya"
       ],
-      "Description": "Returns a store link for a steam game with the specified name. It doesn't work very well because bundles.",
+      "Description": "Pulls a random neko image unless a category from http://nekos.life is picked. ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬ **IMG Categories:**\n`kitsune`, `keta_avatar`, `no_tag_avatar`, `holo_avatar`, `neko_avatars_avatar`, `lizard`, `cat`, `gecg`, `smug`, `holo`, `wallpaper`, `kiminonawa`, `shinobu`, `neko`, `waifu` ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬ **GIF Categories:**\n`tickle`, `poke`, `kiss`, `slap`, `cuddle`, `hug`, `pat`, `smug`, `baka`, `feed`, `neko`",
       "Usage": [
-        ".steam Sakura Agent"
+        ".nya",
+        ".nya img neko",
+        ".nya gif baka"
+      ],
+      "Submodule": "Searches",
+      "Module": "Searches",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
+        ".gwaifu",
+        ".genwaifu"
+      ],
+      "Description": "Responds with a randomly generated waifu and backstory.",
+      "Usage": [
+        ".gwaifu",
+        ".genwaifu"
+      ],
+      "Submodule": "Searches",
+      "Module": "Searches",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
+        ".bible"
+      ],
+      "Description": "Shows bible verse. You need to supply book name and chapter:verse",
+      "Usage": [
+        ".bible genesis 3:19"
       ],
       "Submodule": "Searches",
       "Module": "Searches",
@@ -5434,7 +5463,7 @@
       "Options": null,
       "Requirements": [
         "Administrator Server Permission",
-        "Bot Owner & Admin Only"
+        "Bot Owner Only"
       ]
     },
     {
@@ -5475,35 +5504,6 @@
         ".xkcd latest"
       ],
       "Submodule": "XkcdCommands",
-      "Module": "Searches",
-      "Options": null,
-      "Requirements": []
-    },
-    {
-      "Aliases": [
-        ".nya"
-      ],
-      "Description": "Pulls a random neko image unless a category from http://nekos.life is picked. IMG Categories: kitsune, keta_avatar, no_tag_avatar, holo_avatar, neko_avatars_avatar, lizard, cat, gecg, smug, holo, wallpaper, kiminonawa, shinobu, neko, waifu || GIF Categories: tickle, poke, kiss, slap, cuddle, hug, pat, smug, baka, feed, neko",
-      "Usage": [
-        ".nya",
-        ".nya img neko",
-        ".nya gif baka"
-      ],
-      "Submodule": "Searches",
-      "Module": "Searches",
-      "Options": null,
-      "Requirements": []
-    },
-    {
-      "Aliases": [
-        ".gwaifu",
-        ".genwaifu"
-      ],
-      "Description": "Responds with a randomly generated waifu and backstory.",
-      "Usage": [
-        ".gwaifu"
-      ],
-      "Submodule": "Searches",
       "Module": "Searches",
       "Options": null,
       "Requirements": []
@@ -5907,7 +5907,7 @@
       "Module": "Utility",
       "Options": null,
       "Requirements": [
-        "Bot Owner & Admin Only"
+        "Bot Owner Only"
       ]
     },
     {
@@ -5921,7 +5921,12 @@
       ],
       "Submodule": "InviteCommands",
       "Module": "Utility",
-      "Options": "`--max-uses` (`-m`)   Maximum number of times the invite can be used. Default 0 (never).  \n`--unique` (`-u`)   Not setting this flag will result in bot getting the existing invite with the same settings if it exists, instead of creating a new one.  \n`--temporary` (`-t`)   If this flag is set, the user will be kicked from the guild once they close their client.  \n`--expire` (`-e`)   Time in seconds to expire the invite. Default 0 (no expiry).  ",
+      "Options": [
+        "`--max-uses` (`-m`)   Maximum number of times the invite can be used. Default 0 (never).  ",
+        "`--unique` (`-u`)   Not setting this flag will result in bot getting the existing invite with the same settings if it exists, instead of creating a new one.  ",
+        "`--temporary` (`-t`)   If this flag is set, the user will be kicked from the guild once they close their client.  ",
+        "`--expire` (`-e`)   Time in seconds to expire the invite. Default 0 (no expiry).  "
+      ],
       "Requirements": [
         "CreateInstantInvite Channel Permission"
       ]
@@ -6136,9 +6141,9 @@
       "Aliases": [
         ".remindtemplate"
       ],
-      "Description": "Sets message for when the remind is triggered.  Available placeholders are `%user%` - user who ran the command, `%message%` - Message specified in the remind, `%target%` - target channel of the remind.",
+      "Description": "Sets message for when the remind is triggered.",
       "Usage": [
-        ".remindtemplate %user%, do %message%!"
+        ".remindtemplate %user.mention%, do %message%!"
       ],
       "Submodule": "RemindCommands",
       "Module": "Utility",
@@ -6190,7 +6195,11 @@
       ],
       "Submodule": "RepeatCommands",
       "Module": "Utility",
-      "Options": "`--message` (`-m`)   Message to be repeated  \n`--no-redundant` (`-n`)   Whether the message should be reposted if the last message in the channel is this same message.  \n`--interval` (`-i`)   How frequently the repeating message is posted, in minutes.  ",
+      "Options": [
+        "`--message` (`-m`)   Message to be repeated  ",
+        "`--no-redundant` (`-n`)   Whether the message should be reposted if the last message in the channel is this same message.  ",
+        "`--interval` (`-i`)   How frequently the repeating message is posted, in minutes.  "
+      ],
       "Requirements": [
         "ManageMessages Server Permission"
       ]
@@ -6383,7 +6392,7 @@
       "Module": "Xp",
       "Options": null,
       "Requirements": [
-        "Bot Owner & Admin Only"
+        "Bot Owner Only"
       ]
     },
     {
@@ -6729,21 +6738,6 @@
       "Requirements": [
         "Administrator Server Permission"
       ]
-    }
-  ],
-  "Roblox": [
-    {
-      "Aliases": [
-        ".rinfo"
-      ],
-      "Description": "Display a Roblox User profile information from the Roblox API.",
-      "Usage": [
-        ".rinfo Rich151"
-      ],
-      "Submodule": "Roblox",
-      "Module": "Roblox",
-      "Options": null,
-      "Requirements": []
     }
   ]
 }
