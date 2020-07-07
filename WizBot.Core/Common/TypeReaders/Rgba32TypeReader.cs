@@ -2,11 +2,11 @@
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
-using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp;
 
 namespace WizBot.Core.Common.TypeReaders
 {
-    public class Rgba32TypeReader : WizBotTypeReader<Rgba32>
+    public class Rgba32TypeReader : WizBotTypeReader<Color>
     {
         public Rgba32TypeReader(DiscordSocketClient client, CommandService cmds) : base(client, cmds)
         {
@@ -19,7 +19,7 @@ namespace WizBot.Core.Common.TypeReaders
             input = input.Replace("#", "", StringComparison.InvariantCulture);
             try
             {
-                return TypeReaderResult.FromSuccess(Rgba32.FromHex(input));
+                return TypeReaderResult.FromSuccess(Color.ParseHex(input));
             }
             catch
             {

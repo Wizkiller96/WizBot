@@ -1,5 +1,4 @@
 ﻿using AngleSharp;
-using AngleSharp.Browser;
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
@@ -18,10 +17,9 @@ using WizBot.Modules.Searches.Services;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using SixLabors.ImageSharp.Processing.Drawing;
-using SixLabors.Primitives;
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
@@ -52,7 +50,7 @@ namespace WizBot.Modules.Searches
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Rip([Leftover] IGuildUser usr)
         {
-            var av = usr.RealAvatarUrl();
+            var av = usr.RealAvatarUrl(128);
             if (av == null)
                 return;
             using (var picStream = await _service.GetRipPictureAsync(usr.Nickname ?? usr.Username, av).ConfigureAwait(false))
@@ -676,7 +674,7 @@ namespace WizBot.Modules.Searches
         }
 
         [WizBotCommand, Usage, Description, Aliases]
-        public async Task Color(params Rgba32[] colors)
+        public async Task Color(params SixLabors.ImageSharp.Color[] colors)
         {
             if (!colors.Any())
                 return;

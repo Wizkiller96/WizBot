@@ -2,7 +2,6 @@
 using Discord;
 using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using WizBot.Common;
 using WizBot.Core.Modules.Searches.Common;
 using WizBot.Core.Services;
@@ -15,17 +14,13 @@ using Newtonsoft.Json.Linq;
 using NLog;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using SixLabors.ImageSharp.Processing.Drawing;
-using SixLabors.ImageSharp.Processing.Text;
-using SixLabors.ImageSharp.Processing.Transforms;
-using SixLabors.Primitives;
 using StackExchange.Redis;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -140,67 +135,58 @@ namespace WizBot.Modules.Searches.Services
             return data.ToStream();
         }
 
-        public async Task<byte[]> GetRipPictureFactory((string text, Uri imgUrl) arg)
+        private void DrawAvatar(Image bg, Image avatarImage)
+            => bg.Mutate(x => x.Grayscale().DrawImage(avatarImage, new Point(83, 139), new GraphicsOptions()));
+
+        public async Task<byte[]> GetRipPictureFactory((string text, Uri avatarUrl) arg)
         {
-            var (text, imgUrl) = arg;
-            var (succ, data) = await _cache.TryGetImageDataAsync(imgUrl).ConfigureAwait(false);
-            if (!succ)
+            var (text, avatarUrl) = arg;
+            using (var bg = Image.Load<Rgba32>(_imgs.Rip.ToArray()))
             {
-                using (var http = _httpFactory.CreateClient())
-                using (var temp = await http.GetAsync(imgUrl, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false))
+                var (succ, data) = (false, (byte[])null); //await _cache.TryGetImageDataAsync(avatarUrl);
+                if (!succ)
                 {
-                    if (!temp.IsImage())
+                    using (var http = _httpFactory.CreateClient())
                     {
-                        data = null;
-                    }
-                    else
-                    {
-                        var imgData = await temp.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
-                        using (var tempDraw = Image.Load(imgData))
+                        data = await http.GetByteArrayAsync(avatarUrl);
+                        using (var avatarImg = Image.Load<Rgba32>(data))
+
                         {
-                            tempDraw.Mutate(x => x.Resize(69, 70));
-                            tempDraw.ApplyRoundedCorners(35);
-                            using (var tds = tempDraw.ToStream())
-                            {
-                                data = tds.ToArray();
-                            }
+                            avatarImg.Mutate(x => x
+                                .Resize(85, 85)
+                                .ApplyRoundedCorners(42));
+                            data = avatarImg.ToStream().ToArray();
+                            DrawAvatar(bg, avatarImg);
                         }
+                        await _cache.SetImageDataAsync(avatarUrl, data);
                     }
                 }
-                await _cache.SetImageDataAsync(imgUrl, data).ConfigureAwait(false);
-            }
-            using (var bg = Image.Load(_imgs.Rip.ToArray()))
-            {
-                //avatar 82, 139
-                if (data != null)
+                else
                 {
-                    using (var avatar = Image.Load(data))
+                    using (var avatarImg = Image.Load<Rgba32>(data))
                     {
-                        avatar.Mutate(x => x.Resize(85, 85));
-                        bg.Mutate(x => x
-                            .DrawImage(GraphicsOptions.Default,
-                                avatar,
-                                new Point(82, 139)));
+                        DrawAvatar(bg, avatarImg);
                     }
                 }
-                //text 63, 241
+
                 bg.Mutate(x => x.DrawText(
                     new TextGraphicsOptions()
                     {
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        WrapTextWidth = 190,
+                        TextOptions = new TextOptions
+                        {
+                            HorizontalAlignment = HorizontalAlignment.Center,
+                            WrapTextWidth = 190,
+                        }.WithFallbackFonts(_fonts.FallBackFonts)
                     },
                     text,
-                    _fonts.NotoSans.CreateFont(20, FontStyle.Bold),
-                    Rgba32.Black,
+                    _fonts.RipFont,
+                    SixLabors.ImageSharp.Color.Black,
                     new PointF(25, 225)));
 
                 //flowa
                 using (var flowers = Image.Load(_imgs.RipOverlay.ToArray()))
                 {
-                    bg.Mutate(x => x.DrawImage(GraphicsOptions.Default,
-                        flowers,
-                        new Point(0, 0)));
+                    bg.Mutate(x => x.DrawImage(flowers, new Point(0, 0), new GraphicsOptions()));
                 }
 
                 return bg.ToStream().ToArray();

@@ -12,15 +12,10 @@ using Newtonsoft.Json;
 using NLog;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using SixLabors.ImageSharp.Processing.Drawing;
-using SixLabors.ImageSharp.Processing.Drawing.Brushes;
-using SixLabors.ImageSharp.Processing.Drawing.Pens;
-using SixLabors.ImageSharp.Processing.Text;
-using SixLabors.ImageSharp.Processing.Transforms;
-using SixLabors.Primitives;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -79,6 +74,7 @@ namespace WizBot.Modules.Xp.Services
             _creds = creds;
             _cs = cs;
             _httpFactory = http;
+
             InternalReloadXpTemplate();
 
             if (client.ShardId == 0)
@@ -637,7 +633,8 @@ namespace WizBot.Modules.Xp.Services
 
         public Task<(Stream Image, IImageFormat Format)> GenerateXpImageAsync(FullUserStats stats) => Task.Run(async () =>
         {
-            using (var img = Image.Load(_images.XpBackground, out var imageFormat))
+            var textOptions = new TextGraphicsOptions().WithFallbackFonts(_fonts.FallBackFonts);
+            using (var img = Image.Load<Rgba32>(_images.XpBackground, out var imageFormat))
             {
                 if (_template.User.Name.Show)
                 {
@@ -649,7 +646,8 @@ namespace WizBot.Modules.Xp.Services
 
                     img.Mutate(x =>
                     {
-                        x.DrawText("@" + username, usernameFont,
+                        x.DrawText(textOptions,
+                            "@" + username, usernameFont,
                             _template.User.Name.Color,
                             new PointF(_template.User.Name.Pos.X, _template.User.Name.Pos.Y));
                     });
@@ -659,10 +657,12 @@ namespace WizBot.Modules.Xp.Services
                 {
                     img.Mutate(x =>
                     {
-                        x.DrawText(stats.Global.Level.ToString(),
+                        x.DrawText(
+                            stats.Global.Level.ToString(),
                             _fonts.NotoSans.CreateFont(_template.User.GlobalLevel.FontSize, FontStyle.Bold),
                             _template.User.GlobalLevel.Color,
-                            new PointF(_template.User.GlobalLevel.Pos.X, _template.User.GlobalLevel.Pos.Y)); //level
+                            new PointF(_template.User.GlobalLevel.Pos.X, _template.User.GlobalLevel.Pos.Y)
+                        ); //level
                     });
                 }
 
@@ -670,10 +670,12 @@ namespace WizBot.Modules.Xp.Services
                 {
                     img.Mutate(x =>
                     {
-                        x.DrawText(stats.Guild.Level.ToString(),
+                        x.DrawText(
+                            stats.Guild.Level.ToString(),
                             _fonts.NotoSans.CreateFont(_template.User.GuildLevel.FontSize, FontStyle.Bold),
                             _template.User.GuildLevel.Color,
-                            new PointF(_template.User.GuildLevel.Pos.X, _template.User.GuildLevel.Pos.Y));
+                            new PointF(_template.User.GuildLevel.Pos.X, _template.User.GuildLevel.Pos.Y)
+                        );
                     });
                 }
 
@@ -688,13 +690,16 @@ namespace WizBot.Modules.Xp.Services
                             ? _template.Club.Name.FontSize
                             : _template.Club.Name.FontSize - (clubName.Length / 2), FontStyle.Bold);
 
-                    img.Mutate(x => x.DrawText(clubName, clubFont,
+                    img.Mutate(x => x.DrawText(textOptions,
+                        clubName,
+                        clubFont,
                         _template.Club.Name.Color,
-                        new PointF(_template.Club.Name.Pos.X - clubName.Length * 10, _template.Club.Name.Pos.Y)));
+                        new PointF(_template.Club.Name.Pos.X - clubName.Length * 10, _template.Club.Name.Pos.Y))
+                    );
                 }
 
 
-                var pen = new Pen<Rgba32>(Rgba32.Black, 1);
+                var pen = new Pen(SixLabors.ImageSharp.Color.Black, 1);
 
                 var global = stats.Global;
                 var guild = stats.Guild;
@@ -742,7 +747,7 @@ namespace WizBot.Modules.Xp.Services
                 if (_template.User.GlobalRank.Show)
                 {
                     img.Mutate(x => x.DrawText(stats.GlobalRanking.ToString(),
-                        _fonts.RankFontFamily.CreateFont(_template.User.GlobalRank.FontSize, FontStyle.Bold),
+                        _fonts.UniSans.CreateFont(_template.User.GlobalRank.FontSize, FontStyle.Bold),
                         _template.User.GlobalRank.Color,
                         new PointF(_template.User.GlobalRank.Pos.X, _template.User.GlobalRank.Pos.Y)));
                 }
@@ -750,7 +755,7 @@ namespace WizBot.Modules.Xp.Services
                 if (_template.User.GuildRank.Show)
                 {
                     img.Mutate(x => x.DrawText(stats.GuildRanking.ToString(),
-                        _fonts.RankFontFamily.CreateFont(_template.User.GuildRank.FontSize, FontStyle.Bold),
+                        _fonts.UniSans.CreateFont(_template.User.GuildRank.FontSize, FontStyle.Bold),
                         _template.User.GuildRank.Color,
                         new PointF(_template.User.GuildRank.Pos.X, _template.User.GuildRank.Pos.Y)));
                 }
@@ -794,8 +799,9 @@ namespace WizBot.Modules.Xp.Services
                                 var avatarData = await http.GetByteArrayAsync(avatarUrl);
                                 using (var tempDraw = Image.Load(avatarData))
                                 {
-                                    tempDraw.Mutate(x => x.Resize(_template.User.Icon.Size.X, _template.User.Icon.Size.Y));
-                                    tempDraw.ApplyRoundedCorners(Math.Max(_template.User.Icon.Size.X, _template.User.Icon.Size.Y) / 2);
+                                    tempDraw.Mutate(x => x
+                                        .Resize(_template.User.Icon.Size.X, _template.User.Icon.Size.Y)
+                                        .ApplyRoundedCorners(Math.Max(_template.User.Icon.Size.X, _template.User.Icon.Size.Y) / 2));
                                     using (var stream = tempDraw.ToStream())
                                     {
                                         data = stream.ToArray();
@@ -810,9 +816,7 @@ namespace WizBot.Modules.Xp.Services
                             {
                                 toDraw.Mutate(x => x.Resize(_template.User.Icon.Size.X, _template.User.Icon.Size.Y));
                             }
-                            img.Mutate(x => x.DrawImage(GraphicsOptions.Default,
-                                toDraw,
-                                new Point(_template.User.Icon.Pos.X, _template.User.Icon.Pos.Y)));
+                            img.Mutate(x => x.DrawImage(toDraw, new Point(_template.User.Icon.Pos.X, _template.User.Icon.Pos.Y), 1));
                         }
                     }
                     catch (Exception ex)
@@ -899,8 +903,9 @@ namespace WizBot.Modules.Xp.Services
                             var imgData = await temp.Content.ReadAsByteArrayAsync();
                             using (var tempDraw = Image.Load(imgData))
                             {
-                                tempDraw.Mutate(x => x.Resize(_template.Club.Icon.Size.X, _template.Club.Icon.Size.Y));
-                                tempDraw.ApplyRoundedCorners(Math.Max(_template.Club.Icon.Size.X, _template.Club.Icon.Size.Y) / 2.0f);
+                                tempDraw.Mutate(x => x
+                                    .Resize(_template.Club.Icon.Size.X, _template.Club.Icon.Size.Y)
+                                    .ApplyRoundedCorners(Math.Max(_template.Club.Icon.Size.X, _template.Club.Icon.Size.Y) / 2.0f)); ;
                                 using (var tds = tempDraw.ToStream())
                                 {
                                     data = tds.ToArray();
@@ -916,9 +921,10 @@ namespace WizBot.Modules.Xp.Services
                         {
                             toDraw.Mutate(x => x.Resize(_template.Club.Icon.Size.X, _template.Club.Icon.Size.Y));
                         }
-                        img.Mutate(x => x.DrawImage(GraphicsOptions.Default,
+                        img.Mutate(x => x.DrawImage(
                             toDraw,
-                            new Point(_template.Club.Icon.Pos.X, _template.Club.Icon.Pos.Y)));
+                            new Point(_template.Club.Icon.Pos.X, _template.Club.Icon.Pos.Y),
+                            1));
                     }
                 }
                 catch (Exception ex)

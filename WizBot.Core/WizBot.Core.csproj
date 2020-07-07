@@ -34,8 +34,8 @@
     <PackageReference Include="Microsoft.SyndicationFeed.ReaderWriter" Version="1.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="NLog" Version="4.6.7" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0004" />
-    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0004" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-rc0003" />
+    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0010" />
     <PackageReference Include="StackExchange.Redis" Version="1.2.7-alpha-00002" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
     <PackageReference Include="YoutubeExplode" Version="4.7.9" />

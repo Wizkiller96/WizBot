@@ -2,15 +2,11 @@
 using System.IO;
 using System.Net.Http;
 using WizBot.Common;
-using WizBot.Extensions;
 using WizBot.Core.Services;
 using NLog;
-using SixLabors.Primitives;
 using Image = SixLabors.ImageSharp.Image;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
-using SixLabors.ImageSharp.Processing.Drawing;
-using System.Threading.Tasks;
 
 namespace WizBot.Modules.Games.Common
 {
@@ -52,7 +48,7 @@ namespace WizBot.Modules.Games.Common
 
                         using (var pointImg = Image.Load(_images.RategirlDot))
                         {
-                            img.Mutate(x => x.DrawImage(GraphicsOptions.Default, pointImg, new Point(pointx - 10, pointy - 10)));
+                            img.Mutate(x => x.DrawImage(pointImg, new Point(pointx - 10, pointy - 10), new GraphicsOptions()));
                         }
 
                         var imgStream = new MemoryStream();

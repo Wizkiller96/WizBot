@@ -7,14 +7,15 @@ using WizBot.Common.Collections;
 using WizBot.Core.Services;
 using Newtonsoft.Json;
 using NLog;
+using SixLabors.Fonts;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Drawing;
+using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp.Formats.Gif;
 using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using SixLabors.ImageSharp.Processing.Drawing;
-using SixLabors.Primitives;
-using SixLabors.Shapes;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -55,39 +56,45 @@ namespace WizBot.Extensions
                     ? (IEmote)maybeEmote
                     : new Emoji(emojiStr);
 
-        // https://github.com/SixLabors/ImageSharp/tree/master/samples/AvatarWithRoundedCorner
-        public static void ApplyRoundedCorners(this Image<Rgba32> img, float cornerRadius)
+        // https://github.com/SixLabors/Samples/blob/master/ImageSharp/AvatarWithRoundedCorner/Program.cs
+        public static IImageProcessingContext ApplyRoundedCorners(this IImageProcessingContext ctx, float cornerRadius)
         {
-            var corners = BuildCorners(img.Width, img.Height, cornerRadius);
-            // now we have our corners time to draw them
-            img.Mutate(x => x.Fill(new GraphicsOptions(true)
+            Size size = ctx.GetCurrentSize();
+            IPathCollection corners = BuildCorners(size.Width, size.Height, cornerRadius);
+
+            ctx.SetGraphicsOptions(new GraphicsOptions()
             {
-                BlenderMode = PixelBlenderMode.Src // enforces that any part of this shape that has color is punched out of the background
-            },
-            Rgba32.Transparent, corners));
+                Antialias = true,
+                AlphaCompositionMode = PixelAlphaCompositionMode.DestOut // enforces that any part of this shape that has color is punched out of the background
+            });
+
+            foreach (var c in corners)
+            {
+                ctx = ctx.Fill(SixLabors.ImageSharp.Color.Red, c);
+            }
+            return ctx;
         }
 
-        public static IPathCollection BuildCorners(int imageWidth, int imageHeight, float cornerRadius)
+        private static IPathCollection BuildCorners(int imageWidth, int imageHeight, float cornerRadius)
         {
             // first create a square
             var rect = new RectangularPolygon(-0.5f, -0.5f, cornerRadius, cornerRadius);
 
             // then cut out of the square a circle so we are left with a corner
-            var cornerToptLeft = rect.Clip(new EllipsePolygon(cornerRadius - 0.5f, cornerRadius - 0.5f, cornerRadius));
+            IPath cornerTopLeft = rect.Clip(new EllipsePolygon(cornerRadius - 0.5f, cornerRadius - 0.5f, cornerRadius));
 
             // corner is now a corner shape positions top left
-            //lets make 3 more positioned correctly, we can do that by translating the orgional around the center of the image
-            var center = new Vector2(imageWidth / 2, imageHeight / 2);
+            //lets make 3 more positioned correctly, we can do that by translating the original around the center of the image
 
-            float rightPos = imageWidth - cornerToptLeft.Bounds.Width + 1;
-            float bottomPos = imageHeight - cornerToptLeft.Bounds.Height + 1;
+            float rightPos = imageWidth - cornerTopLeft.Bounds.Width + 1;
+            float bottomPos = imageHeight - cornerTopLeft.Bounds.Height + 1;
 
             // move it across the width of the image - the width of the shape
-            var cornerTopRight = cornerToptLeft.RotateDegree(90).Translate(rightPos, 0);
-            var cornerBottomLeft = cornerToptLeft.RotateDegree(-90).Translate(0, bottomPos);
-            var cornerBottomRight = cornerToptLeft.RotateDegree(180).Translate(rightPos, bottomPos);
+            IPath cornerTopRight = cornerTopLeft.RotateDegree(90).Translate(rightPos, 0);
+            IPath cornerBottomLeft = cornerTopLeft.RotateDegree(-90).Translate(0, bottomPos);
+            IPath cornerBottomRight = cornerTopLeft.RotateDegree(180).Translate(rightPos, bottomPos);
 
-            return new PathCollection(cornerToptLeft, cornerBottomLeft, cornerTopRight, cornerBottomRight);
+            return new PathCollection(cornerTopLeft, cornerBottomLeft, cornerTopRight, cornerBottomRight);
         }
 
         /// <summary>
@@ -212,6 +219,33 @@ namespace WizBot.Extensions
         public static string ToJson<T>(this T any, Formatting formatting = Formatting.Indented) =>
             JsonConvert.SerializeObject(any, formatting);
 
+        /// <summary>
+        /// Adds fallback fonts to <see cref="TextOptions"/>
+        /// </summary>
+        /// <param name="opts"><see cref="TextOptions"/> to which fallback fonts will be added to</param>
+        /// <param name="fallback">List of fallback Font Families to add</param>
+        /// <returns>The same <see cref="TextOptions"/> to allow chaining</returns>
+        public static TextOptions WithFallbackFonts(this TextOptions opts, List<FontFamily> fallback)
+        {
+            foreach (var ff in fallback)
+            {
+                opts.FallbackFonts.Add(ff);
+            }
+            return opts;
+        }
+
+        /// <summary>
+        /// Adds fallback fonts to <see cref="TextGraphicsOptions"/>
+        /// </summary>
+        /// <param name="opts"><see cref="TextGraphicsOptions"/> to which fallback fonts will be added to</param>
+        /// <param name="fallback">List of fallback Font Families to add</param>
+        /// <returns>The same <see cref="TextGraphicsOptions"/> to allow chaining</returns>
+        public static TextGraphicsOptions WithFallbackFonts(this TextGraphicsOptions opts, List<FontFamily> fallback)
+        {
+            opts.TextOptions.WithFallbackFonts(fallback);
+            return opts;
+        }
+
         public static MemoryStream ToStream(this Image<Rgba32> img, IImageFormat format = null)
         {
             var imageStream = new MemoryStream();
@@ -221,7 +255,11 @@ namespace WizBot.Extensions
             }
             else
             {
-                img.SaveAsPng(imageStream, new PngEncoder() { CompressionLevel = 9 });
+                img.SaveAsPng(imageStream, new PngEncoder()
+                {
+                    ColorType = PngColorType.RgbWithAlpha,
+                    CompressionLevel = PngCompressionLevel.BestCompression
+                });
             }
             imageStream.Position = 0;
             return imageStream;
@@ -292,14 +330,14 @@ namespace WizBot.Extensions
         }
         public static Image<Rgba32> Merge(this IEnumerable<Image<Rgba32>> images, out IImageFormat format)
         {
-            format = ImageFormats.Png;
+            format = PngFormat.Instance;
             void DrawFrame(Image<Rgba32>[] imgArray, Image<Rgba32> imgFrame, int frameNumber)
             {
                 var xOffset = 0;
                 for (int i = 0; i < imgArray.Length; i++)
                 {
                     var frame = imgArray[i].Frames.CloneFrame(frameNumber % imgArray[i].Frames.Count);
-                    imgFrame.Mutate(x => x.DrawImage(GraphicsOptions.Default, frame, new Point(xOffset, 0)));
+                    imgFrame.Mutate(x => x.DrawImage(frame, new Point(xOffset, 0), new GraphicsOptions()));
                     xOffset += imgArray[i].Bounds().Width;
                 }
             }
@@ -316,15 +354,15 @@ namespace WizBot.Extensions
                 return canvas;
             }
 
-            format = ImageFormats.Gif;
+            format = GifFormat.Instance;
             for (int j = 0; j < frames; j++)
             {
                 using (var imgFrame = new Image<Rgba32>(width, height))
                 {
                     DrawFrame(imgs, imgFrame, j);
 
-                    var frameToAdd = imgFrame.Frames.First();
-                    frameToAdd.MetaData.DisposalMethod = SixLabors.ImageSharp.Formats.Gif.DisposalMethod.RestoreToBackground;
+                    var frameToAdd = imgFrame.Frames[0];
+                    frameToAdd.Metadata.GetGifMetadata().DisposalMethod = GifDisposalMethod.RestoreToBackground;
                     canvas.Frames.AddFrame(frameToAdd);
                 }
             }
@@ -410,7 +448,7 @@ namespace WizBot.Extensions
                 if (collection.FirstOrDefault(x => x.ServiceType == serviceType) != null) // if that type is already added, skip
                     continue;
 
-                //also add the same type 
+                //also add the same type
                 var interfaceType = interfaces.FirstOrDefault(x => serviceType.GetInterfaces().Contains(x));
                 if (interfaceType != null)
                 {

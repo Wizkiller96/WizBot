@@ -10,12 +10,10 @@ using WizBot.Core.Services.Impl;
 using WizBot.Extensions;
 using NLog;
 using SixLabors.Fonts;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using SixLabors.ImageSharp.Processing.Drawing;
-using SixLabors.ImageSharp.Processing.Drawing.Brushes;
-using SixLabors.ImageSharp.Processing.Text;
-using SixLabors.Primitives;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -24,6 +22,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Image = SixLabors.ImageSharp.Image;
+using Color = SixLabors.ImageSharp.Color;
 
 namespace WizBot.Modules.Gambling.Services
 {
@@ -147,7 +146,7 @@ namespace WizBot.Modules.Gambling.Services
         {
             // draw lower, it looks better
             pass = pass.TrimTo(10, true).ToLowerInvariant();
-            using (var img = Image.Load(curImg, out var format))
+            using (var img = Image.Load<Rgba32>(curImg, out var format))
             {
                 // choose font size based on the image height, so that it's visible
                 var font = _fonts.NotoSans.CreateFont(img.Height / 12, FontStyle.Bold);
@@ -157,7 +156,7 @@ namespace WizBot.Modules.Gambling.Services
                     var size = TextMeasurer.Measure(pass, new RendererOptions(font, new PointF(0, 0)));
 
                     // fill the background with black, add 5 pixels on each side to make it look better
-                    x.FillPolygon(Rgba32.FromHex("00000080"),
+                    x.FillPolygon(Color.ParseHex("00000080"),
                         new PointF(0, 0),
                         new PointF(size.Width + 5, 0),
                         new PointF(size.Width + 5, size.Height + 10),
@@ -166,7 +165,7 @@ namespace WizBot.Modules.Gambling.Services
                     // draw the password over the background
                     x.DrawText(pass,
                         font,
-                        Brushes.Solid(Rgba32.White),
+                        SixLabors.ImageSharp.Color.White,
                         new PointF(0, 0));
                 });
                 // return image as a stream for easy sending
@@ -259,7 +258,7 @@ namespace WizBot.Modules.Gambling.Services
                 ulong[] ids;
                 using (var uow = _db.GetDbContext())
                 {
-                    // this method will sum all plants with that password, 
+                    // this method will sum all plants with that password,
                     // remove them, and get messageids of the removed plants
 
                     (amount, ids) = uow.PlantedCurrency.RemoveSumAndGetMessageIdsFor(ch.Id, pass);
@@ -324,7 +323,7 @@ namespace WizBot.Modules.Gambling.Services
 
         public async Task<bool> PlantAsync(ulong gid, IMessageChannel ch, ulong uid, string user, long amount, string pass)
         {
-            // normalize it - no more than 10 chars, uppercase 
+            // normalize it - no more than 10 chars, uppercase
             pass = pass?.Trim().TrimTo(10, hideDots: true).ToUpperInvariant();
             // has to be either null or alphanumeric
             if (!string.IsNullOrWhiteSpace(pass) && !pass.IsAlphaNumeric())

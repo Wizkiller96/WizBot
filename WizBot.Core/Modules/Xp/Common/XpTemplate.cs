@@ -1,5 +1,6 @@
 ﻿using System;
 using Newtonsoft.Json;
+using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
 namespace WizBot.Core.Modules.Xp.Common
@@ -242,7 +243,7 @@ namespace WizBot.Core.Modules.Xp.Common
     public class XpTemplateText
     {
         [JsonConverter(typeof(XpRgba32Converter))]
-        public Rgba32 Color { get; set; } = Rgba32.White;
+        public Rgba32 Color { get; set; } = SixLabors.ImageSharp.Color.White;
         public bool Show { get; set; }
         public int FontSize { get; set; }
         public XpTemplatePos Pos { get; set; }
@@ -285,7 +286,7 @@ namespace WizBot.Core.Modules.Xp.Common
     {
         public override Rgba32 ReadJson(JsonReader reader, Type objectType, Rgba32 existingValue, bool hasExistingValue, JsonSerializer serializer)
         {
-            return Rgba32.FromHex(reader.Value.ToString());
+            return Color.ParseHex(reader.Value.ToString());
         }
 
         public override void WriteJson(JsonWriter writer, Rgba32 value, JsonSerializer serializer)
