@@ -190,6 +190,13 @@
       "{0}vcrole"
     ]
   },
+  "vcrolerm": {
+    "Cmd": "vcrolerm",
+    "Desc": "Removes vcrole associated with the specified voice channel ID. This is useful if your vcrole has been enabled on a VC which has been deleted.",
+    "Usage": [
+      "{0}vcrolerm 123123123123123"
+    ]
+  },
   "scsc": {
     "Cmd": "scsc",
     "Desc": "Starts an instance of cross server channel. You will get a token as a DM that other people will use to tune in to the same instance.",

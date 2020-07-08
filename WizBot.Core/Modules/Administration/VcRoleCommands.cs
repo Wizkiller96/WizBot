@@ -19,7 +19,23 @@ namespace WizBot.Modules.Administration
             [UserPerm(GuildPerm.ManageRoles)]
             [BotPerm(GuildPerm.ManageRoles)]
             [RequireContext(ContextType.Guild)]
-            public async Task VcRole([Leftover]IRole role = null)
+            public async Task VcRoleRm(ulong vcId)
+            {
+                if (_service.RemoveVcRole(ctx.Guild.Id, vcId))
+                {
+                    await ReplyConfirmLocalizedAsync("vcrole_removed", Format.Bold(vcId.ToString())).ConfigureAwait(false);
+                }
+                else
+                {
+                    await ReplyErrorLocalizedAsync("not_found").ConfigureAwait(false);
+                }
+            }
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [UserPerm(GuildPerm.ManageRoles)]
+            [BotPerm(GuildPerm.ManageRoles)]
+            [RequireContext(ContextType.Guild)]
+            public async Task VcRole([Leftover] IRole role = null)
             {
                 var user = (IGuildUser)ctx.User;
 
