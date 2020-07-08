@@ -32,6 +32,6 @@ namespace WizBot.Core.Modules.Searches.Common
         public string Percent_Change_1h { get; set; }
         public string Percent_Change_24h { get; set; }
         public string Percent_Change_7d { get; set; }
-        public double Volume_24h { get; set; }
+        public double? Volume_24h { get; set; }
     }
 }

@@ -194,6 +194,8 @@ This part is completely optional, **however it's necessary for music and a few o
   - Optional. Used only for the `.time` command. <https://locationiq.com> api key (register and you will receive the token in the email).
 - **TimezoneDbApiKey**
   - Optional. Used only for the `.time` command. <https://timezonedb.com> api key (register and you will receive the token in the email **YOU HAVE TO ACTIVEATE IT AFTER YOU GET IT**).
+- **CoinmarketcapApiKey**
+  - Optional. Used only for the `.crypto` command. You can use crypto command without it, but you might get ratelimited from time to time, as all self-hosters share the default api key. https://pro.coinmarketcap.com/
 
 ### Additional Settings
 

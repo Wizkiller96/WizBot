@@ -17,12 +17,14 @@ namespace WizBot.Core.Modules.Searches.Services
     {
         private readonly IDataCache _cache;
         private readonly IHttpClientFactory _httpFactory;
+        private readonly IBotCredentials _creds;
         private readonly Logger _log;
 
-        public CryptoService(IDataCache cache, IHttpClientFactory httpFactory)
+        public CryptoService(IDataCache cache, IHttpClientFactory httpFactory, IBotCredentials creds)
         {
             _cache = cache;
             _httpFactory = httpFactory;
+            _creds = creds;
             _log = NLog.LogManager.GetCurrentClassLogger();
         }
 
@@ -72,7 +74,7 @@ namespace WizBot.Core.Modules.Searches.Services
                         using (var _http = _httpFactory.CreateClient())
                         {
                             var strData = await _http.GetStringAsync(new Uri($"https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?" +
-                                $"CMC_PRO_API_KEY=e79ec505-0913-439d-ae07-069e296a6079" +
+                                $"CMC_PRO_API_KEY={_creds.CoinmarketcapApiKey}" +
                                 $"&start=1" +
                                 $"&limit=500" +
                                 $"&convert=USD"));
