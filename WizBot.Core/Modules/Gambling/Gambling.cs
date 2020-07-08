@@ -487,13 +487,13 @@ namespace WizBot.Modules.Gambling
 
         [WizBotCommand, Usage, Description, Aliases]
         [WizBotOptions(typeof(LbOpts))]
-        [Priority(1)]
+        [Priority(0)]
         public Task Leaderboard(params string[] args)
             => Leaderboard(1, args);
 
         [WizBotCommand, Usage, Description, Aliases]
         [WizBotOptions(typeof(LbOpts))]
-        [Priority(0)]
+        [Priority(1)]
         public async Task Leaderboard(int page = 1, params string[] args)
         {
             if (--page < 0)
@@ -501,7 +501,7 @@ namespace WizBot.Modules.Gambling
 
             var (opts, _) = OptionsParser.ParseFrom(new LbOpts(), args);
 
-            List<DiscordUser> richest = new List<DiscordUser>();
+            List<DiscordUser> cleanRichest = new List<DiscordUser>();
 
             // it's pointless to have clean on dm context
             if (Context.Guild is null)
@@ -515,45 +515,49 @@ namespace WizBot.Modules.Gambling
 
                 using (var uow = _db.GetDbContext())
                 {
-                    richest = uow.DiscordUsers.GetTopRichest(_client.CurrentUser.Id, 10_000);
+                    cleanRichest = uow.DiscordUsers.GetTopRichest(_client.CurrentUser.Id, 10_000);
                 }
                 var res = _tracker.LastDownloads.AddOrUpdate(Context.Guild.Id, now, (key, old) => (now - old) > TimeSpan.FromHours(1) ? now : old);
                 if (res == now)
                 {
+                    await Context.Channel.TriggerTypingAsync().ConfigureAwait(false);
                     await Context.Guild.DownloadUsersAsync().ConfigureAwait(false);
                 }
 
                 var sg = (SocketGuild)Context.Guild;
-                richest = richest.Where(x => sg.GetUser(x.UserId) != null)
+                cleanRichest = cleanRichest.Where(x => sg.GetUser(x.UserId) != null)
                     .ToList();
             }
             else
             {
                 using (var uow = _db.GetDbContext())
                 {
-                    richest = uow.DiscordUsers.GetTopRichest(_client.CurrentUser.Id, 9, page).ToList();
+                    cleanRichest = uow.DiscordUsers.GetTopRichest(_client.CurrentUser.Id, 9, page).ToList();
                 }
             }
 
             await Context.SendPaginatedConfirmAsync(page, curPage =>
             {
                 var embed = new EmbedBuilder()
-                    .WithOkColor()
-                    .WithTitle(CurrencySign + " " + GetText("leaderboard"))
-                    .WithFooter(efb => efb.WithText(GetText("page", curPage)));
+                   .WithOkColor()
+                   .WithTitle(CurrencySign + " " + GetText("leaderboard"));
 
+                List<DiscordUser> toSend;
                 if (!opts.Clean)
                 {
                     using (var uow = _db.GetDbContext())
                     {
-                        richest = uow.DiscordUsers.GetTopRichest(_client.CurrentUser.Id, 9, curPage).ToList();
+                        toSend = uow.DiscordUsers.GetTopRichest(_client.CurrentUser.Id, 9, curPage);
                     }
                 }
 
-                var toSend = richest.Skip(curPage * 9).Take(9).ToList();
+                else
+                {
+                    toSend = cleanRichest.Skip(curPage * 9).Take(9).ToList();
+                }
                 if (!toSend.Any())
                 {
-                    embed.WithDescription(GetText("no_users_found"));
+                    embed.WithDescription(GetText("no_user_on_this_page"));
                     return embed;
                 }
 
@@ -569,7 +573,7 @@ namespace WizBot.Modules.Gambling
                 }
 
                 return embed;
-            }, 10_000, 9);
+            }, opts.Clean ? cleanRichest.Count() : 9000, 9, opts.Clean);
         }
 
 
