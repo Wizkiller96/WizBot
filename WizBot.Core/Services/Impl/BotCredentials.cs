@@ -161,7 +161,10 @@ namespace WizBot.Core.Services.Impl
 
         }
 
-        private class CredentialsModel
+        /// <summary>
+        /// No idea why this thing exists
+        /// </summary>
+        private class CredentialsModel : IBotCredentials
         {
             public ulong ClientId { get; set; } = 123123123;
             public string Token { get; set; } = "";
@@ -191,8 +194,26 @@ namespace WizBot.Core.Services.Impl
             public string VotesToken { get; set; }
             public string VotesUrl { get; set; }
             public string RedisOptions { get; set; }
-            public string LocationIqApiKey { get; }
-            public string TimezoneDbApiKey { get; }
+            public string LocationIqApiKey { get; set; }
+            public string TimezoneDbApiKey { get; set; }
+            public string CoinmarketcapApiKey { get; set; }
+
+            [JsonIgnore]
+            ImmutableArray<ulong> IBotCredentials.OwnerIds => throw new NotImplementedException();
+            ImmutableArray<ulong> IBotCredentials.AdminIds => throw new NotImplementedException();
+
+            [JsonIgnore]
+            RestartConfig IBotCredentials.RestartCommand => throw new NotImplementedException();
+
+            public bool IsOwner(IUser u)
+            {
+                throw new NotImplementedException();
+            }
+
+            public bool IsAdmin(IUser u)
+            {
+                throw new NotImplementedException();
+            }
         }
 
         public bool IsOwner(IUser u) => OwnerIds.Contains(u.Id);
