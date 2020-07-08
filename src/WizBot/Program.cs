@@ -8,6 +8,7 @@ namespace WizBot
     {
         public static async Task Main(string[] args)
         {
+            System.Console.WriteLine($"Pid: {Process.GetCurrentProcess().Id}");
             if (args.Length == 2
                 && int.TryParse(args[0], out int shardId)
                 && int.TryParse(args[1], out int parentProcessId))

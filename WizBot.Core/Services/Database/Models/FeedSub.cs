@@ -18,8 +18,8 @@ namespace WizBot.Core.Services.Database.Models
         public override bool Equals(object obj)
         {
             return obj is FeedSub s
-                ? s.Url == Url && s.GuildConfigId == GuildConfigId
-                : false;
+                && s.Url.ToLower() == Url.ToLower()
+                && s.GuildConfigId == GuildConfigId;
         }
     }
 }

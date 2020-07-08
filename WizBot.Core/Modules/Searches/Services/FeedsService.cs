@@ -28,7 +28,7 @@ namespace WizBot.Modules.Searches.Services
             _subs = bot
                 .AllGuildConfigs
                 .SelectMany(x => x.FeedSubs)
-                .GroupBy(x => x.Url)
+                .GroupBy(x => x.Url.ToLower())
                 .ToDictionary(x => x.Key, x => x.ToHashSet())
                 .ToConcurrent();
 
@@ -142,14 +142,14 @@ namespace WizBot.Modules.Searches.Services
             var fs = new FeedSub()
             {
                 ChannelId = channelId,
-                Url = rssFeed.Trim().ToLowerInvariant(),
+                Url = rssFeed.Trim(),
             };
 
             using (var uow = _db.GetDbContext())
             {
                 var gc = uow.GuildConfigs.ForId(guildId, set => set.Include(x => x.FeedSubs));
 
-                if (gc.FeedSubs.Contains(fs))
+                if (gc.FeedSubs.Any(x => x.Url.ToLower() == fs.Url.ToLower()))
                 {
                     return false;
                 }
@@ -163,7 +163,7 @@ namespace WizBot.Modules.Searches.Services
                 //adding all, in case bot wasn't on this guild when it started
                 foreach (var feed in gc.FeedSubs)
                 {
-                    _subs.AddOrUpdate(feed.Url, new HashSet<FeedSub>() { feed }, (k, old) =>
+                    _subs.AddOrUpdate(feed.Url.ToLower(), new HashSet<FeedSub>() { feed }, (k, old) =>
                     {
                         old.Add(feed);
                         return old;
@@ -190,7 +190,7 @@ namespace WizBot.Modules.Searches.Services
                 if (items.Count <= index)
                     return false;
                 var toRemove = items[index];
-                _subs.AddOrUpdate(toRemove.Url, new HashSet<FeedSub>(), (key, old) =>
+                _subs.AddOrUpdate(toRemove.Url.ToLower(), new HashSet<FeedSub>(), (key, old) =>
                 {
                     old.Remove(toRemove);
                     return old;
