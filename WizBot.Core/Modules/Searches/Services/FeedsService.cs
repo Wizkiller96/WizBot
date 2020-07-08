@@ -153,7 +153,7 @@ namespace WizBot.Modules.Searches.Services
                 {
                     return false;
                 }
-                else if (gc.FeedSubs.Count >= 5)
+                else if (gc.FeedSubs.Count >= 10)
                 {
                     return false;
                 }
