@@ -551,10 +551,10 @@ namespace WizBot.Modules.Searches.Services
             using (var http = _httpFactory.CreateClient())
             {
                 http.DefaultRequestHeaders.Clear();
-                http.DefaultRequestHeaders.Add("X-Mashape-Key", _creds.MashapeKey);
+                http.DefaultRequestHeaders.Add("x-rapidapi-key", _creds.MashapeKey);
                 try
                 {
-                    var response = await http.GetStringAsync($"https://omgvamp-hearthstone-v1.p.mashape.com/" +
+                    var response = await http.GetStringAsync($"https://omgvamp-hearthstone-v1.p.rapidapi.com/" +
                         $"cards/search/{Uri.EscapeUriString(name)}").ConfigureAwait(false);
                     var objs = JsonConvert.DeserializeObject<HearthstoneCardData[]>(response);
                     if (objs == null || objs.Length == 0)
