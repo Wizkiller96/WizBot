@@ -507,12 +507,6 @@ namespace WizBot.Modules.Searches
             if (!await ValidateQuery(ctx.Channel, query).ConfigureAwait(false))
                 return;
 
-            if (string.IsNullOrWhiteSpace(_creds.MashapeKey))
-            {
-                await ReplyErrorLocalizedAsync("mashape_api_missing").ConfigureAwait(false);
-                return;
-            }
-
             await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
             using (var http = _httpFactory.CreateClient())
             {
