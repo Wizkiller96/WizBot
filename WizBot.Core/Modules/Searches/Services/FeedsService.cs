@@ -34,15 +34,7 @@ namespace WizBot.Modules.Searches.Services
 
             _client = client;
 
-            foreach (var kvp in _subs)
-            {
-                // to make sure rss feeds don't post right away, but
-                // only the updates from after the bot has started
-                _lastPosts.AddOrUpdate(kvp.Key, DateTime.UtcNow, (k, old) => DateTime.UtcNow);
-            }
-
             var _ = Task.Run(TrackFeeds);
-
         }
 
         public async Task<EmbedBuilder> TrackFeeds()
@@ -55,9 +47,6 @@ namespace WizBot.Modules.Searches.Services
                     if (kvp.Value.Count == 0)
                         continue;
 
-                    if (!_lastPosts.TryGetValue(kvp.Key, out DateTime lastTime))
-                        lastTime = _lastPosts.AddOrUpdate(kvp.Key, DateTime.UtcNow, (k, old) => DateTime.UtcNow);
-
                     var rssUrl = kvp.Key;
                     try
                     {
@@ -66,24 +55,39 @@ namespace WizBot.Modules.Searches.Services
                         var embed = new EmbedBuilder()
                             .WithFooter(rssUrl);
 
-                        foreach (var item in feed.Items.Take(1))
+                        var items = feed
+                            .Items
+                            .Select(item => (Item: item, LastUpdate: item.PublishingDate?.ToUniversalTime()
+                                                                  ?? (item.SpecificItem as AtomFeedItem)?.UpdatedDate?.ToUniversalTime()))
+                            .Where(data => !(data.LastUpdate is null))
+                            .Select(data => (data.Item, LastUpdate: (DateTime)data.LastUpdate))
+                            .OrderByDescending(data => data.LastUpdate)
+                            .Reverse() // start from the oldest
+                            .ToList();
+
+                        if (!_lastPosts.TryGetValue(kvp.Key, out DateTime lastFeedUpdate))
                         {
-                            var maybePub = item.PublishingDate
-                                ?? (item.SpecificItem as AtomFeedItem)?.UpdatedDate;
-                            if (!(maybePub is DateTime pub) || pub <= lastTime)
+                            lastFeedUpdate = _lastPosts[kvp.Key] = items.Any() ? items[items.Count - 1].LastUpdate : DateTime.UtcNow;
+                        }
+
+                        foreach (var (feedItem, itemUpdateDate) in items)
+                        {
+                            if (itemUpdateDate <= lastFeedUpdate)
                             {
                                 continue;
                             }
 
-                            var link = item.SpecificItem.Link;
+                            _lastPosts[kvp.Key] = itemUpdateDate;
+
+                            var link = feedItem.SpecificItem.Link;
                             if (!string.IsNullOrWhiteSpace(link) && Uri.IsWellFormedUriString(link, UriKind.Absolute))
                                 embed.WithUrl(link);
 
-                            var title = string.IsNullOrWhiteSpace(item.Title)
+                            var title = string.IsNullOrWhiteSpace(feedItem.Title)
                                 ? "-"
-                                : item.Title;
+                                : feedItem.Title;
 
-                            if (item.SpecificItem is MediaRssFeedItem mrfi && (mrfi.Enclosure?.MediaType.StartsWith("image/") ?? false))
+                            if (feedItem.SpecificItem is MediaRssFeedItem mrfi && (mrfi.Enclosure?.MediaType.StartsWith("image/") ?? false))
                             {
                                 var imgUrl = mrfi.Enclosure.Url;
                                 if (!string.IsNullOrWhiteSpace(imgUrl) && Uri.IsWellFormedUriString(imgUrl, UriKind.Absolute))
@@ -98,11 +102,10 @@ namespace WizBot.Modules.Searches.Services
 
                             embed.WithTitle(title.TrimTo(256));
 
-                            var desc = item.Description?.StripHTML();
-                            if (!string.IsNullOrWhiteSpace(item.Description))
+                            var desc = feedItem.Description?.StripHTML();
+                            if (!string.IsNullOrWhiteSpace(feedItem.Description))
                                 embed.WithDescription(desc.TrimTo(2048));
 
-                            _lastPosts.AddOrUpdate(rssUrl, pub, (k, old) => pub);
                             //send the created embed to all subscribed channels
                             var feedSendTasks = kvp.Value
                                 .Where(x => x.GuildConfig != null)
@@ -158,11 +161,11 @@ namespace WizBot.Modules.Searches.Services
                 gc.FeedSubs.Add(fs);
                 uow.SaveChanges();
                 //adding all, in case bot wasn't on this guild when it started
-                foreach (var f in gc.FeedSubs)
+                foreach (var feed in gc.FeedSubs)
                 {
-                    _subs.AddOrUpdate(f.Url, new HashSet<FeedSub>(), (k, old) =>
+                    _subs.AddOrUpdate(feed.Url, new HashSet<FeedSub>() { feed }, (k, old) =>
                     {
-                        old.Add(f);
+                        old.Add(feed);
                         return old;
                     });
                 }
