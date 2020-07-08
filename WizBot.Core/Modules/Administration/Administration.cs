@@ -65,7 +65,7 @@ namespace WizBot.Modules.Administration
             }
         }
 
-        public enum Channel { Channel }
+        public enum Channel { Channel, Ch, Chnl, Chan }
         public enum State { Enable, Disable, Inherit }
 
         [WizBotCommand, Usage, Description, Aliases]

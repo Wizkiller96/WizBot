@@ -91,39 +91,43 @@ namespace WizBot.Modules.Administration.Services
             return enabled;
         }
 
-        public async Task SetDelMsgOnCmdState(ulong guildId, ulong chId, Administration.State s)
+        public async Task SetDelMsgOnCmdState(ulong guildId, ulong chId, Administration.State newState)
         {
             using (var uow = _db.GetDbContext())
             {
                 var conf = uow.GuildConfigs.ForId(guildId,
                     set => set.Include(x => x.DelMsgOnCmdChannels));
 
-                var obj = new DelMsgOnCmdChannel()
+                var old = conf.DelMsgOnCmdChannels.FirstOrDefault(x => x.ChannelId == chId);
+                if (newState == Administration.State.Inherit)
                 {
-                    ChannelId = chId,
-                    State = s == Administration.State.Enable,
-                };
-                var del = conf.DelMsgOnCmdChannels.FirstOrDefault(x => x.Equals(obj));
-                if (s != Administration.State.Inherit)
-                    conf.DelMsgOnCmdChannels.Add(obj);
+                    if (!(old is null))
+                    {
+                        conf.DelMsgOnCmdChannels.Remove(old);
+                        uow._context.Remove(old);
+                    }
+                }
                 else
                 {
-                    if (del != null)
+                    if (old is null)
                     {
-                        uow._context.Remove(del);
+                        old = new DelMsgOnCmdChannel { ChannelId = chId };
+                        conf.DelMsgOnCmdChannels.Add(old);
                     }
+
+                    old.State = newState == Administration.State.Enable;
+                    DeleteMessagesOnCommandChannels[chId] = newState == Administration.State.Enable;
                 }
 
                 await uow.SaveChangesAsync();
             }
 
-            if (s == Administration.State.Disable)
+            if (newState == Administration.State.Disable)
             {
-                DeleteMessagesOnCommandChannels.AddOrUpdate(chId, false, delegate { return false; });
             }
-            else if (s == Administration.State.Enable)
+            else if (newState == Administration.State.Enable)
             {
-                DeleteMessagesOnCommandChannels.AddOrUpdate(chId, true, delegate { return true; });
+                DeleteMessagesOnCommandChannels[chId] = true;
             }
             else
             {
