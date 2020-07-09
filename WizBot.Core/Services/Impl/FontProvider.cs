@@ -19,7 +19,7 @@ namespace WizBot.Core.Services.Impl
 
             FallBackFonts = new List<FontFamily>();
 
-            FallBackFonts.Add(_fonts.Install("data/fonts/OpenSansEmoji.ttf"));
+            //FallBackFonts.Add(_fonts.Install("data/fonts/OpenSansEmoji.ttf"));
 
             // try loading some emoji and jap fonts on windows as fallback fonts
             if (Environment.OSVersion.Platform == PlatformID.Win32NT)
