@@ -81,6 +81,7 @@ namespace WizBot.Modules.Gambling.Services
                 var affs = uow._context.WaifuUpdates
                         .AsQueryable()
                         .Where(w => w.User.UserId == user.Id && w.UpdateType == WaifuUpdateType.AffinityChanged && w.New != null)
+                        .ToList()
                         .GroupBy(x => x.New)
                         .Count();
 
