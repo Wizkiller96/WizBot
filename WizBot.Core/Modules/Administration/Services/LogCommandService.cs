@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using Microsoft.EntityFrameworkCore;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Core.Services.Impl;
@@ -22,7 +23,9 @@ namespace WizBot.Modules.Administration.Services
 
         public ConcurrentDictionary<ulong, LogSetting> GuildLogSettings { get; }
 
-        private ConcurrentDictionary<ITextChannel, List<string>> PresenceUpdates { get; } = new ConcurrentDictionary<ITextChannel, List<string>>();
+        private ConcurrentDictionary<ITextChannel, List<string>> PresenceUpdates { get; } =
+            new ConcurrentDictionary<ITextChannel, List<string>>();
+
         private readonly Timer _timerReference;
         private readonly WizBotStrings _strings;
         private readonly DbService _db;
@@ -31,7 +34,7 @@ namespace WizBot.Modules.Administration.Services
         private readonly GuildTimezoneService _tz;
 
         public LogCommandService(DiscordSocketClient client, WizBotStrings strings,
-            WizBot bot, DbService db, MuteService mute, ProtectionService prot, GuildTimezoneService tz)
+            DbService db, MuteService mute, ProtectionService prot, GuildTimezoneService tz)
         {
             _client = client;
             _log = LogManager.GetCurrentClassLogger();
@@ -41,9 +44,21 @@ namespace WizBot.Modules.Administration.Services
             _prot = prot;
             _tz = tz;
 
-            GuildLogSettings = bot.AllGuildConfigs
-                .ToDictionary(g => g.GuildId, g => g.LogSetting)
-                .ToConcurrent();
+            using (var uow = db.GetDbContext())
+            {
+                var guildIds = client.Guilds.Select(x => x.Id).ToList();
+                var configs = uow._context
+                    .Set<GuildConfig>()
+                    .AsQueryable()
+                    .Include(gc => gc.LogSetting)
+                    .ThenInclude(ls => ls.IgnoredChannels)
+                    .Where(x => guildIds.Contains(x.GuildId))
+                    .ToList();
+
+                GuildLogSettings = configs
+                    .ToDictionary(g => g.GuildId, g => g.LogSetting)
+                    .ToConcurrent();
+            }
 
             _timerReference = new Timer(async (state) =>
             {
@@ -66,6 +81,7 @@ namespace WizBot.Modules.Administration.Services
                             _log.Warn(ex);
                         }
                     }
+
                     return Task.CompletedTask;
                 })).ConfigureAwait(false);
             }, null, TimeSpan.FromSeconds(15), TimeSpan.FromSeconds(15));
@@ -107,13 +123,16 @@ namespace WizBot.Modules.Administration.Services
                     logSetting.IgnoredChannels.Add(toAdd);
                     config.LogSetting.IgnoredChannels.Add(toAdd);
                 }
+
                 uow.SaveChanges();
             }
+
             return removed > 0;
         }
 
         private string GetText(IGuild guild, string key, params object[] replacements) =>
             _strings.GetText(key, guild.Id, "Administration".ToLowerInvariant(), replacements);
+
 
         private string PrettyCurrentTime(IGuild g)
         {
@@ -122,6 +141,7 @@ namespace WizBot.Modules.Administration.Services
                 time = TimeZoneInfo.ConvertTime(time, _tz.GetTimeZoneOrUtc(g.Id));
             return $"【{time:HH:mm:ss}】";
         }
+
         private string CurrentTime(IGuild g)
         {
             DateTime time = DateTime.UtcNow;
@@ -152,7 +172,8 @@ namespace WizBot.Modules.Administration.Services
                 logSetting.LogUserPresenceId =
                 logSetting.LogVoicePresenceId =
                 logSetting.UserMutedId =
-                logSetting.LogVoicePresenceTTSId = (value ? channelId : (ulong?)null);
+                logSetting.LogVoicePresenceTTSId =
+                    (value ? channelId : (ulong?)null);
 
                 await uow.SaveChangesAsync();
             }
@@ -174,7 +195,8 @@ namespace WizBot.Modules.Administration.Services
                         return;
 
                     ITextChannel logChannel;
-                    if ((logChannel = await TryGetLogChannel(g, logSetting, LogType.UserUpdated).ConfigureAwait(false)) == null)
+                    if ((logChannel =
+                        await TryGetLogChannel(g, logSetting, LogType.UserUpdated).ConfigureAwait(false)) == null)
                         return;
 
                     var embed = new EmbedBuilder();
@@ -258,19 +280,23 @@ namespace WizBot.Modules.Administration.Services
                         channelId = logSetting.ChannelCreatedId = (logSetting.ChannelCreatedId == null ? cid : default);
                         break;
                     case LogType.ChannelDestroyed:
-                        channelId = logSetting.ChannelDestroyedId = (logSetting.ChannelDestroyedId == null ? cid : default);
+                        channelId = logSetting.ChannelDestroyedId =
+                            (logSetting.ChannelDestroyedId == null ? cid : default);
                         break;
                     case LogType.ChannelUpdated:
                         channelId = logSetting.ChannelUpdatedId = (logSetting.ChannelUpdatedId == null ? cid : default);
                         break;
                     case LogType.UserPresence:
-                        channelId = logSetting.LogUserPresenceId = (logSetting.LogUserPresenceId == null ? cid : default);
+                        channelId = logSetting.LogUserPresenceId =
+                            (logSetting.LogUserPresenceId == null ? cid : default);
                         break;
                     case LogType.VoicePresence:
-                        channelId = logSetting.LogVoicePresenceId = (logSetting.LogVoicePresenceId == null ? cid : default);
+                        channelId = logSetting.LogVoicePresenceId =
+                            (logSetting.LogVoicePresenceId == null ? cid : default);
                         break;
                     case LogType.VoicePresenceTTS:
-                        channelId = logSetting.LogVoicePresenceTTSId = (logSetting.LogVoicePresenceTTSId == null ? cid : default);
+                        channelId = logSetting.LogVoicePresenceTTSId =
+                            (logSetting.LogVoicePresenceTTSId == null ? cid : default);
                         break;
                 }
 
@@ -300,7 +326,8 @@ namespace WizBot.Modules.Administration.Services
                         return;
 
                     ITextChannel logChannel;
-                    if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.VoicePresenceTTS).ConfigureAwait(false)) == null)
+                    if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.VoicePresenceTTS)
+                        .ConfigureAwait(false)) == null)
                         return;
 
                     var str = "";
@@ -316,6 +343,7 @@ namespace WizBot.Modules.Administration.Services
                     {
                         str = GetText(logChannel.Guild, "left", usr.Username, beforeVch.Name);
                     }
+
                     var toDelete = await logChannel.SendMessageAsync(str, true).ConfigureAwait(false);
                     toDelete.DeleteAfter(5);
                 }
@@ -338,7 +366,8 @@ namespace WizBot.Modules.Administration.Services
                         return;
 
                     ITextChannel logChannel;
-                    if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.UserMuted).ConfigureAwait(false)) == null)
+                    if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.UserMuted)
+                        .ConfigureAwait(false)) == null)
                         return;
                     var mutes = "";
                     var mutedLocalized = GetText(logChannel.Guild, "muted_sn");
@@ -351,14 +380,15 @@ namespace WizBot.Modules.Administration.Services
                             mutes = "🔇 " + GetText(logChannel.Guild, "xmuted_text", mutedLocalized, mod.ToString());
                             break;
                         case MuteType.All:
-                            mutes = "🔇 " + GetText(logChannel.Guild, "xmuted_text_and_voice", mutedLocalized, mod.ToString());
+                            mutes = "🔇 " + GetText(logChannel.Guild, "xmuted_text_and_voice", mutedLocalized,
+                                mod.ToString());
                             break;
                     }
 
                     var embed = new EmbedBuilder().WithAuthor(eab => eab.WithName(mutes))
-                            .WithTitle($"{usr.Username}#{usr.Discriminator} | {usr.Id}")
-                            .WithFooter(fb => fb.WithText(CurrentTime(usr.Guild)))
-                            .WithOkColor();
+                        .WithTitle($"{usr.Username}#{usr.Discriminator} | {usr.Id}")
+                        .WithFooter(fb => fb.WithText(CurrentTime(usr.Guild)))
+                        .WithOkColor();
 
                     await logChannel.EmbedAsync(embed).ConfigureAwait(false);
                 }
@@ -380,7 +410,8 @@ namespace WizBot.Modules.Administration.Services
                         return;
 
                     ITextChannel logChannel;
-                    if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.UserMuted).ConfigureAwait(false)) == null)
+                    if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.UserMuted)
+                        .ConfigureAwait(false)) == null)
                         return;
 
                     var mutes = "";
@@ -394,14 +425,15 @@ namespace WizBot.Modules.Administration.Services
                             mutes = "🔊 " + GetText(logChannel.Guild, "xmuted_text", unmutedLocalized, mod.ToString());
                             break;
                         case MuteType.All:
-                            mutes = "🔊 " + GetText(logChannel.Guild, "xmuted_text_and_voice", unmutedLocalized, mod.ToString());
+                            mutes = "🔊 " + GetText(logChannel.Guild, "xmuted_text_and_voice", unmutedLocalized,
+                                mod.ToString());
                             break;
                     }
 
                     var embed = new EmbedBuilder().WithAuthor(eab => eab.WithName(mutes))
-                            .WithTitle($"{usr.Username}#{usr.Discriminator} | {usr.Id}")
-                            .WithFooter(fb => fb.WithText($"{CurrentTime(usr.Guild)}"))
-                            .WithOkColor();
+                        .WithTitle($"{usr.Username}#{usr.Discriminator} | {usr.Id}")
+                        .WithFooter(fb => fb.WithText($"{CurrentTime(usr.Guild)}"))
+                        .WithOkColor();
 
                     await logChannel.EmbedAsync(embed).ConfigureAwait(false);
                 }
@@ -412,7 +444,8 @@ namespace WizBot.Modules.Administration.Services
             });
         }
 
-        public Task TriggeredAntiProtection(PunishmentAction action, ProtectionType protection, params IGuildUser[] users)
+        public Task TriggeredAntiProtection(PunishmentAction action, ProtectionType protection,
+            params IGuildUser[] users)
         {
             var _ = Task.Run(async () =>
             {
@@ -425,7 +458,8 @@ namespace WizBot.Modules.Administration.Services
                         || (logSetting.LogOtherId == null))
                         return;
                     ITextChannel logChannel;
-                    if ((logChannel = await TryGetLogChannel(users.First().Guild, logSetting, LogType.Other).ConfigureAwait(false)) == null)
+                    if ((logChannel = await TryGetLogChannel(users.First().Guild, logSetting, LogType.Other)
+                        .ConfigureAwait(false)) == null)
                         return;
 
                     var punishment = "";
@@ -449,10 +483,10 @@ namespace WizBot.Modules.Administration.Services
                     }
 
                     var embed = new EmbedBuilder().WithAuthor(eab => eab.WithName($"🛡 Anti-{protection}"))
-                            .WithTitle(GetText(logChannel.Guild, "users") + " " + punishment)
-                            .WithDescription(string.Join("\n", users.Select(u => u.ToString())))
-                            .WithFooter(fb => fb.WithText(CurrentTime(logChannel.Guild)))
-                            .WithOkColor();
+                        .WithTitle(GetText(logChannel.Guild, "users") + " " + punishment)
+                        .WithDescription(string.Join("\n", users.Select(u => u.ToString())))
+                        .WithFooter(fb => fb.WithText(CurrentTime(logChannel.Guild)))
+                        .WithOkColor();
 
                     await logChannel.EmbedAsync(embed).ConfigureAwait(false);
                 }
@@ -474,15 +508,22 @@ namespace WizBot.Modules.Administration.Services
                         return;
 
                     ITextChannel logChannel;
-                    if (logSetting.UserUpdatedId != null && (logChannel = await TryGetLogChannel(before.Guild, logSetting, LogType.UserUpdated).ConfigureAwait(false)) != null)
+                    if (logSetting.UserUpdatedId != null &&
+                        (logChannel = await TryGetLogChannel(before.Guild, logSetting, LogType.UserUpdated)
+                            .ConfigureAwait(false)) != null)
                     {
-                        var embed = new EmbedBuilder().WithOkColor().WithFooter(efb => efb.WithText(CurrentTime(before.Guild)))
+                        var embed = new EmbedBuilder().WithOkColor()
+                            .WithFooter(efb => efb.WithText(CurrentTime(before.Guild)))
                             .WithTitle($"{before.Username}#{before.Discriminator} | {before.Id}");
                         if (before.Nickname != after.Nickname)
                         {
                             embed.WithAuthor(eab => eab.WithName("👥 " + GetText(logChannel.Guild, "nick_change")))
-                                .AddField(efb => efb.WithName(GetText(logChannel.Guild, "old_nick")).WithValue($"{before.Nickname}#{before.Discriminator}"))
-                                .AddField(efb => efb.WithName(GetText(logChannel.Guild, "new_nick")).WithValue($"{after.Nickname}#{after.Discriminator}"));
+                                .AddField(efb =>
+                                    efb.WithName(GetText(logChannel.Guild, "old_nick"))
+                                        .WithValue($"{before.Nickname}#{before.Discriminator}"))
+                                .AddField(efb =>
+                                    efb.WithName(GetText(logChannel.Guild, "new_nick"))
+                                        .WithValue($"{after.Nickname}#{after.Discriminator}"));
 
                             await logChannel.EmbedAsync(embed).ConfigureAwait(false);
                         }
@@ -493,34 +534,48 @@ namespace WizBot.Modules.Administration.Services
                                 var diffRoles = after.Roles.Where(r => !before.Roles.Contains(r)).Select(r => r.Name);
                                 embed.WithAuthor(eab => eab.WithName("⚔ " + GetText(logChannel.Guild, "user_role_add")))
                                     .WithDescription(string.Join(", ", diffRoles).SanitizeMentions());
+
+                                await logChannel.EmbedAsync(embed).ConfigureAwait(false);
                             }
                             else if (before.Roles.Count > after.Roles.Count)
                             {
                                 var diffRoles = before.Roles.Where(r => !after.Roles.Contains(r)).Select(r => r.Name);
                                 embed.WithAuthor(eab => eab.WithName("⚔ " + GetText(logChannel.Guild, "user_role_rem")))
                                     .WithDescription(string.Join(", ", diffRoles).SanitizeMentions());
+
+                                await logChannel.EmbedAsync(embed).ConfigureAwait(false);
                             }
-                            await logChannel.EmbedAsync(embed).ConfigureAwait(false);
                         }
                     }
 
                     logChannel = null;
-                    if (!before.IsBot && logSetting.LogUserPresenceId != null && (logChannel = await TryGetLogChannel(before.Guild, logSetting, LogType.UserPresence).ConfigureAwait(false)) != null)
+                    if (!before.IsBot && logSetting.LogUserPresenceId != null && (logChannel =
+                        await TryGetLogChannel(before.Guild, logSetting, LogType.UserPresence)
+                            .ConfigureAwait(false)) != null)
                     {
                         if (before.Status != after.Status)
                         {
                             var str = "🎭" + Format.Code(PrettyCurrentTime(after.Guild)) +
-                                  GetText(logChannel.Guild, "user_status_change",
-                                        "👤" + Format.Bold(after.Username),
-                                        Format.Bold(after.Status.ToString()));
+                                      GetText(logChannel.Guild, "user_status_change",
+                                          "👤" + Format.Bold(after.Username),
+                                          Format.Bold(after.Status.ToString()));
                             PresenceUpdates.AddOrUpdate(logChannel,
-                                new List<string>() { str }, (id, list) => { list.Add(str); return list; });
+                                new List<string>() { str }, (id, list) =>
+                                  {
+                                      list.Add(str);
+                                      return list;
+                                  });
                         }
                         else if (before.Activity?.Name != after.Activity?.Name)
                         {
-                            var str = $"👾`{PrettyCurrentTime(after.Guild)}`👤__**{after.Username}**__ is now playing **{after.Activity?.Name ?? "-"}**.";
+                            var str =
+                                $"👾`{PrettyCurrentTime(after.Guild)}`👤__**{after.Username}**__ is now playing **{after.Activity?.Name ?? "-"}**.";
                             PresenceUpdates.AddOrUpdate(logChannel,
-                                new List<string>() { str }, (id, list) => { list.Add(str); return list; });
+                                new List<string>() { str }, (id, list) =>
+                                  {
+                                      list.Add(str);
+                                      return list;
+                                  });
                         }
                     }
                 }
@@ -549,10 +604,12 @@ namespace WizBot.Modules.Administration.Services
                         return;
 
                     ITextChannel logChannel;
-                    if ((logChannel = await TryGetLogChannel(before.Guild, logSetting, LogType.ChannelUpdated).ConfigureAwait(false)) == null)
+                    if ((logChannel = await TryGetLogChannel(before.Guild, logSetting, LogType.ChannelUpdated)
+                        .ConfigureAwait(false)) == null)
                         return;
 
-                    var embed = new EmbedBuilder().WithOkColor().WithFooter(efb => efb.WithText(CurrentTime(before.Guild)));
+                    var embed = new EmbedBuilder().WithOkColor()
+                        .WithFooter(efb => efb.WithText(CurrentTime(before.Guild)));
 
                     var beforeTextChannel = cbefore as ITextChannel;
                     var afterTextChannel = cafter as ITextChannel;
@@ -561,14 +618,19 @@ namespace WizBot.Modules.Administration.Services
                     {
                         embed.WithTitle("ℹ️ " + GetText(logChannel.Guild, "ch_name_change"))
                             .WithDescription($"{after} | {after.Id}")
-                            .AddField(efb => efb.WithName(GetText(logChannel.Guild, "ch_old_name")).WithValue(before.Name));
+                            .AddField(efb =>
+                                efb.WithName(GetText(logChannel.Guild, "ch_old_name")).WithValue(before.Name));
                     }
                     else if (beforeTextChannel?.Topic != afterTextChannel?.Topic)
                     {
                         embed.WithTitle("ℹ️ " + GetText(logChannel.Guild, "ch_topic_change"))
                             .WithDescription($"{after} | {after.Id}")
-                            .AddField(efb => efb.WithName(GetText(logChannel.Guild, "old_topic")).WithValue(beforeTextChannel?.Topic ?? "-"))
-                            .AddField(efb => efb.WithName(GetText(logChannel.Guild, "new_topic")).WithValue(afterTextChannel?.Topic ?? "-"));
+                            .AddField(efb =>
+                                efb.WithName(GetText(logChannel.Guild, "old_topic"))
+                                    .WithValue(beforeTextChannel?.Topic ?? "-"))
+                            .AddField(efb =>
+                                efb.WithName(GetText(logChannel.Guild, "new_topic"))
+                                    .WithValue(afterTextChannel?.Topic ?? "-"));
                     }
                     else
                         return;
@@ -598,7 +660,8 @@ namespace WizBot.Modules.Administration.Services
                         return;
 
                     ITextChannel logChannel;
-                    if ((logChannel = await TryGetLogChannel(ch.Guild, logSetting, LogType.ChannelDestroyed).ConfigureAwait(false)) == null)
+                    if ((logChannel = await TryGetLogChannel(ch.Guild, logSetting, LogType.ChannelDestroyed)
+                        .ConfigureAwait(false)) == null)
                         return;
                     string title;
                     if (ch is IVoiceChannel)
@@ -607,6 +670,7 @@ namespace WizBot.Modules.Administration.Services
                     }
                     else
                         title = GetText(logChannel.Guild, "text_chan_destroyed");
+
                     await logChannel.EmbedAsync(new EmbedBuilder()
                         .WithOkColor()
                         .WithTitle("🆕 " + title)
@@ -635,7 +699,8 @@ namespace WizBot.Modules.Administration.Services
                         return;
 
                     ITextChannel logChannel;
-                    if ((logChannel = await TryGetLogChannel(ch.Guild, logSetting, LogType.ChannelCreated).ConfigureAwait(false)) == null)
+                    if ((logChannel = await TryGetLogChannel(ch.Guild, logSetting, LogType.ChannelCreated)
+                        .ConfigureAwait(false)) == null)
                         return;
                     string title;
                     if (ch is IVoiceChannel)
@@ -644,13 +709,17 @@ namespace WizBot.Modules.Administration.Services
                     }
                     else
                         title = GetText(logChannel.Guild, "text_chan_created");
+
                     await logChannel.EmbedAsync(new EmbedBuilder()
                         .WithOkColor()
                         .WithTitle("🆕 " + title)
                         .WithDescription($"{ch.Name} | {ch.Id}")
                         .WithFooter(efb => efb.WithText(CurrentTime(ch.Guild)))).ConfigureAwait(false);
                 }
-                catch (Exception ex) { _log.Warn(ex); }
+                catch (Exception ex)
+                {
+                    _log.Warn(ex);
+                }
             });
             return Task.CompletedTask;
         }
@@ -675,30 +744,38 @@ namespace WizBot.Modules.Administration.Services
                         return;
 
                     ITextChannel logChannel;
-                    if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.VoicePresence).ConfigureAwait(false)) == null)
+                    if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.VoicePresence)
+                        .ConfigureAwait(false)) == null)
                         return;
 
                     string str = null;
                     if (beforeVch?.Guild == afterVch?.Guild)
                     {
-                        str = "🎙" + Format.Code(PrettyCurrentTime(usr.Guild)) + GetText(logChannel.Guild, "user_vmoved",
-                                "👤" + Format.Bold(usr.Username + "#" + usr.Discriminator),
-                                Format.Bold(beforeVch?.Name ?? ""), Format.Bold(afterVch?.Name ?? ""));
+                        str = "🎙" + Format.Code(PrettyCurrentTime(usr.Guild)) + GetText(logChannel.Guild,
+                            "user_vmoved",
+                            "👤" + Format.Bold(usr.Username + "#" + usr.Discriminator),
+                            Format.Bold(beforeVch?.Name ?? ""), Format.Bold(afterVch?.Name ?? ""));
                     }
                     else if (beforeVch == null)
                     {
-                        str = "🎙" + Format.Code(PrettyCurrentTime(usr.Guild)) + GetText(logChannel.Guild, "user_vjoined",
-                                "👤" + Format.Bold(usr.Username + "#" + usr.Discriminator),
-                                Format.Bold(afterVch.Name ?? ""));
+                        str = "🎙" + Format.Code(PrettyCurrentTime(usr.Guild)) + GetText(logChannel.Guild,
+                            "user_vjoined",
+                            "👤" + Format.Bold(usr.Username + "#" + usr.Discriminator),
+                            Format.Bold(afterVch.Name ?? ""));
                     }
                     else if (afterVch == null)
                     {
                         str = "🎙" + Format.Code(PrettyCurrentTime(usr.Guild)) + GetText(logChannel.Guild, "user_vleft",
-                                "👤" + Format.Bold(usr.Username + "#" + usr.Discriminator),
-                                Format.Bold(beforeVch.Name ?? ""));
+                            "👤" + Format.Bold(usr.Username + "#" + usr.Discriminator),
+                            Format.Bold(beforeVch.Name ?? ""));
                     }
+
                     if (!string.IsNullOrWhiteSpace(str))
-                        PresenceUpdates.AddOrUpdate(logChannel, new List<string>() { str }, (id, list) => { list.Add(str); return list; });
+                        PresenceUpdates.AddOrUpdate(logChannel, new List<string>() { str }, (id, list) =>
+                          {
+                              list.Add(str);
+                              return list;
+                          });
                 }
                 catch
                 {
@@ -762,7 +839,8 @@ namespace WizBot.Modules.Administration.Services
                         return;
 
                     ITextChannel logChannel;
-                    if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.UserLeft).ConfigureAwait(false)) == null)
+                    if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.UserLeft)
+                        .ConfigureAwait(false)) == null)
                         return;
                     var embed = new EmbedBuilder()
                         .WithOkColor()
@@ -795,7 +873,8 @@ namespace WizBot.Modules.Administration.Services
                         return;
 
                     ITextChannel logChannel;
-                    if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.UserJoined).ConfigureAwait(false)) == null)
+                    if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.UserJoined)
+                        .ConfigureAwait(false)) == null)
                         return;
 
                     var embed = new EmbedBuilder()
@@ -803,8 +882,12 @@ namespace WizBot.Modules.Administration.Services
                         .WithTitle("✅ " + GetText(logChannel.Guild, "user_joined"))
                         .WithDescription($"{usr.Mention} `{usr}`")
                         .AddField(efb => efb.WithName("Id").WithValue(usr.Id.ToString()))
-                        .AddField(fb => fb.WithName(GetText(logChannel.Guild, "joined_server")).WithValue($"{usr.JoinedAt?.ToString("dd.MM.yyyy HH:mm") ?? "?"}").WithIsInline(true))
-                        .AddField(fb => fb.WithName(GetText(logChannel.Guild, "joined_discord")).WithValue($"{usr.CreatedAt:dd.MM.yyyy HH:mm}").WithIsInline(true))
+                        .AddField(fb =>
+                            fb.WithName(GetText(logChannel.Guild, "joined_server"))
+                                .WithValue($"{usr.JoinedAt?.ToString("dd.MM.yyyy HH:mm") ?? "?"}").WithIsInline(true))
+                        .AddField(fb =>
+                            fb.WithName(GetText(logChannel.Guild, "joined_discord"))
+                                .WithValue($"{usr.CreatedAt:dd.MM.yyyy HH:mm}").WithIsInline(true))
                         .WithFooter(efb => efb.WithText(CurrentTime(usr.Guild)));
 
                     if (Uri.IsWellFormedUriString(usr.GetAvatarUrl(), UriKind.Absolute))
@@ -812,7 +895,10 @@ namespace WizBot.Modules.Administration.Services
 
                     await logChannel.EmbedAsync(embed).ConfigureAwait(false);
                 }
-                catch (Exception ex) { _log.Warn(ex); }
+                catch (Exception ex)
+                {
+                    _log.Warn(ex);
+                }
             });
             return Task.CompletedTask;
         }
@@ -828,7 +914,8 @@ namespace WizBot.Modules.Administration.Services
                         return;
 
                     ITextChannel logChannel;
-                    if ((logChannel = await TryGetLogChannel(guild, logSetting, LogType.UserUnbanned).ConfigureAwait(false)) == null)
+                    if ((logChannel = await TryGetLogChannel(guild, logSetting, LogType.UserUnbanned)
+                        .ConfigureAwait(false)) == null)
                         return;
                     var embed = new EmbedBuilder()
                         .WithOkColor()
@@ -842,7 +929,10 @@ namespace WizBot.Modules.Administration.Services
 
                     await logChannel.EmbedAsync(embed).ConfigureAwait(false);
                 }
-                catch (Exception ex) { _log.Warn(ex); }
+                catch (Exception ex)
+                {
+                    _log.Warn(ex);
+                }
             });
             return Task.CompletedTask;
         }
@@ -858,7 +948,9 @@ namespace WizBot.Modules.Administration.Services
                         return;
 
                     ITextChannel logChannel;
-                    if ((logChannel = await TryGetLogChannel(guild, logSetting, LogType.UserBanned).ConfigureAwait(false)) == null)
+                    if ((logChannel =
+                            await TryGetLogChannel(guild, logSetting, LogType.UserBanned).ConfigureAwait(false)) ==
+                        null)
                         return;
                     var embed = new EmbedBuilder()
                         .WithOkColor()
@@ -874,7 +966,10 @@ namespace WizBot.Modules.Administration.Services
 
                     await logChannel.EmbedAsync(embed).ConfigureAwait(false);
                 }
-                catch (Exception ex) { _log.Warn(ex); }
+                catch (Exception ex)
+                {
+                    _log.Warn(ex);
+                }
             });
             return Task.CompletedTask;
         }
@@ -898,7 +993,8 @@ namespace WizBot.Modules.Administration.Services
                         return;
 
                     ITextChannel logChannel;
-                    if ((logChannel = await TryGetLogChannel(channel.Guild, logSetting, LogType.MessageDeleted).ConfigureAwait(false)) == null || logChannel.Id == msg.Id)
+                    if ((logChannel = await TryGetLogChannel(channel.Guild, logSetting, LogType.MessageDeleted)
+                        .ConfigureAwait(false)) == null || logChannel.Id == msg.Id)
                         return;
 
                     var resolvedMessage = msg.Resolve(userHandling: TagHandling.FullName);
@@ -906,11 +1002,16 @@ namespace WizBot.Modules.Administration.Services
                         .WithOkColor()
                         .WithTitle("🗑 " + GetText(logChannel.Guild, "msg_del", ((ITextChannel)msg.Channel).Name))
                         .WithDescription(msg.Author.ToString())
-                        .AddField(efb => efb.WithName(GetText(logChannel.Guild, "content")).WithValue(string.IsNullOrWhiteSpace(resolvedMessage) ? "-" : resolvedMessage).WithIsInline(false))
+                        .AddField(efb =>
+                            efb.WithName(GetText(logChannel.Guild, "content"))
+                                .WithValue(string.IsNullOrWhiteSpace(resolvedMessage) ? "-" : resolvedMessage)
+                                .WithIsInline(false))
                         .AddField(efb => efb.WithName("Id").WithValue(msg.Id.ToString()).WithIsInline(false))
                         .WithFooter(efb => efb.WithText(CurrentTime(channel.Guild)));
                     if (msg.Attachments.Any())
-                        embed.AddField(efb => efb.WithName(GetText(logChannel.Guild, "attachments")).WithValue(string.Join(", ", msg.Attachments.Select(a => a.Url))).WithIsInline(false));
+                        embed.AddField(efb =>
+                            efb.WithName(GetText(logChannel.Guild, "attachments"))
+                                .WithValue(string.Join(", ", msg.Attachments.Select(a => a.Url))).WithIsInline(false));
 
                     await logChannel.EmbedAsync(embed).ConfigureAwait(false);
                 }
@@ -923,7 +1024,8 @@ namespace WizBot.Modules.Administration.Services
             return Task.CompletedTask;
         }
 
-        private Task _client_MessageUpdated(Cacheable<IMessage, ulong> optmsg, SocketMessage imsg2, ISocketMessageChannel ch)
+        private Task _client_MessageUpdated(Cacheable<IMessage, ulong> optmsg, SocketMessage imsg2,
+            ISocketMessageChannel ch)
         {
             var _ = Task.Run(async () =>
             {
@@ -948,15 +1050,24 @@ namespace WizBot.Modules.Administration.Services
                         return;
 
                     ITextChannel logChannel;
-                    if ((logChannel = await TryGetLogChannel(channel.Guild, logSetting, LogType.MessageUpdated).ConfigureAwait(false)) == null || logChannel.Id == after.Channel.Id)
+                    if ((logChannel = await TryGetLogChannel(channel.Guild, logSetting, LogType.MessageUpdated)
+                        .ConfigureAwait(false)) == null || logChannel.Id == after.Channel.Id)
                         return;
 
                     var embed = new EmbedBuilder()
                         .WithOkColor()
                         .WithTitle("📝 " + GetText(logChannel.Guild, "msg_update", ((ITextChannel)after.Channel).Name))
                         .WithDescription(after.Author.ToString())
-                        .AddField(efb => efb.WithName(GetText(logChannel.Guild, "old_msg")).WithValue(string.IsNullOrWhiteSpace(before.Content) ? "-" : before.Resolve(userHandling: TagHandling.FullName)).WithIsInline(false))
-                        .AddField(efb => efb.WithName(GetText(logChannel.Guild, "new_msg")).WithValue(string.IsNullOrWhiteSpace(after.Content) ? "-" : after.Resolve(userHandling: TagHandling.FullName)).WithIsInline(false))
+                        .AddField(efb =>
+                            efb.WithName(GetText(logChannel.Guild, "old_msg"))
+                                .WithValue(string.IsNullOrWhiteSpace(before.Content)
+                                    ? "-"
+                                    : before.Resolve(userHandling: TagHandling.FullName)).WithIsInline(false))
+                        .AddField(efb =>
+                            efb.WithName(GetText(logChannel.Guild, "new_msg"))
+                                .WithValue(string.IsNullOrWhiteSpace(after.Content)
+                                    ? "-"
+                                    : after.Resolve(userHandling: TagHandling.FullName)).WithIsInline(false))
                         .AddField(efb => efb.WithName("Id").WithValue(after.Id.ToString()).WithIsInline(false))
                         .WithFooter(efb => efb.WithText(CurrentTime(channel.Guild)));
 
@@ -1046,6 +1157,7 @@ namespace WizBot.Modules.Administration.Services
                 UnsetLogSetting(guild.Id, logChannelType);
                 return null;
             }
+
             var channel = await guild.GetTextChannelAsync(id.Value).ConfigureAwait(false);
 
             if (channel == null)
@@ -1110,6 +1222,7 @@ namespace WizBot.Modules.Administration.Services
                         newLogSetting.LogVoicePresenceTTSId = null;
                         break;
                 }
+
                 GuildLogSettings.AddOrUpdate(guildId, newLogSetting, (gid, old) => newLogSetting);
                 uow.SaveChanges();
             }

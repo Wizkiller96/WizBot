@@ -32,13 +32,6 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
         private IQueryable<GuildConfig> IncludeEverything()
         {
             return _set
-                .Include(gc => gc.LogSetting)
-                    .ThenInclude(ls => ls.IgnoredChannels)
-                .Include(gc => gc.MutedUsers)
-                .Include(gc => gc.CommandAliases)
-                .Include(gc => gc.UnmuteTimers)
-                .Include(gc => gc.UnroleTimer)
-                .Include(gc => gc.UnbanTimer)
                 .Include(gc => gc.VcRoleInfos)
                 .Include(gc => gc.GenerateCurrencyChannelIds)
                 .Include(gc => gc.FilterInvitesChannelIds)
