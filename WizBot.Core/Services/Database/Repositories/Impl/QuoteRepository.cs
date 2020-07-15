@@ -26,12 +26,14 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
             return q.Skip(15 * page).Take(15).ToArray();
         }
 
-        public Task<Quote> GetRandomQuoteByKeywordAsync(ulong guildId, string keyword)
+        public async Task<Quote> GetRandomQuoteByKeywordAsync(ulong guildId, string keyword)
         {
             var rng = new WizBotRandom();
-            return _set.AsQueryable()
-                .Where(q => q.GuildId == guildId && q.Keyword == keyword).OrderBy(q => rng.Next())
-                .FirstOrDefaultAsync();
+            return (await _set.AsQueryable()
+                .Where(q => q.GuildId == guildId && q.Keyword == keyword)
+                .ToListAsync())
+                .OrderBy(q => rng.Next())
+                .FirstOrDefault();
         }
 
         public async Task<Quote> SearchQuoteKeywordTextAsync(ulong guildId, string keyword, string text)

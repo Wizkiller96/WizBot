@@ -111,7 +111,7 @@ WHERE UserId = (SELECT Id from DiscordUser WHERE UserId={userId}) AND
 INSERT OR IGNORE INTO WaifuInfo (AffinityId, ClaimerId, Price, WaifuId)
 VALUES ({null}, {null}, {1}, (SELECT Id FROM DiscordUser WHERE UserId={userId}));");
 
-            return _set.AsQueryable()
+            var toReturn = _set.AsQueryable()
                 .Where(w => w.WaifuId == _context.Set<DiscordUser>()
                     .AsQueryable()
                     .Where(u => u.UserId == userId)
@@ -160,8 +160,6 @@ VALUES ({null}, {null}, {1}, (SELECT Id FROM DiscordUser WHERE UserId={userId}))
                         .Include(x => x.Waifu)
                         .Where(x => x.ClaimerId == w.WaifuId)
                         .Select(x => x.Waifu.Username + "#" + x.Waifu.Discriminator)
-                        .OrderBy(x => Guid.NewGuid())
-                        .Take(30)
                         .ToList(),
 
                     Items = _context.Set<WaifuItem>()
@@ -170,6 +168,15 @@ VALUES ({null}, {null}, {1}, (SELECT Id FROM DiscordUser WHERE UserId={userId}))
                         .ToList(),
                 })
             .FirstOrDefault();
+
+            if (toReturn is null)
+                return null;
+
+            toReturn.Claims30 = toReturn.Claims30 is null
+                ? new List<string>()
+                : toReturn.Claims30.Take(30).ToList();
+
+            return toReturn;
         }
     }
 }
