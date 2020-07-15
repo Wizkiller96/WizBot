@@ -29,7 +29,11 @@ namespace WizBot.Modules.Xp.Services
 {
     public class XpService : INService, IUnloadableService
     {
-        private enum NotifOf { Server, Global } // is it a server level-up or global level-up notification
+        private enum NotifOf
+        {
+            Server,
+            Global
+        } // is it a server level-up or global level-up notification
 
         private readonly DbService _db;
         private readonly CommandHandler _cmd;
@@ -83,174 +87,163 @@ namespace WizBot.Modules.Xp.Services
                 sub.Subscribe(_creds.RedisKey() + "_reload_xp_template",
                     (ch, val) => InternalReloadXpTemplate());
             }
+
             //load settings
             var allGuildConfigs = bot.AllGuildConfigs.Where(x => x.XpSettings != null);
             _excludedChannels = allGuildConfigs
                 .ToDictionary(
                     x => x.GuildId,
                     x => new ConcurrentHashSet<ulong>(x.XpSettings
-                            .ExclusionList
-                            .Where(ex => ex.ItemType == ExcludedItemType.Channel)
-                            .Select(ex => ex.ItemId)
-                            .Distinct()))
+                        .ExclusionList
+                        .Where(ex => ex.ItemType == ExcludedItemType.Channel)
+                        .Select(ex => ex.ItemId)
+                        .Distinct()))
                 .ToConcurrent();
 
             _excludedRoles = allGuildConfigs
                 .ToDictionary(
                     x => x.GuildId,
                     x => new ConcurrentHashSet<ulong>(x.XpSettings
-                            .ExclusionList
-                            .Where(ex => ex.ItemType == ExcludedItemType.Role)
-                            .Select(ex => ex.ItemId)
-                            .Distinct()))
+                        .ExclusionList
+                        .Where(ex => ex.ItemType == ExcludedItemType.Role)
+                        .Select(ex => ex.ItemId)
+                        .Distinct()))
                 .ToConcurrent();
 
             _excludedServers = new ConcurrentHashSet<ulong>(
                 allGuildConfigs.Where(x => x.XpSettings.ServerExcluded)
-                               .Select(x => x.GuildId));
+                    .Select(x => x.GuildId));
 
             _cmd.OnMessageNoTrigger += _cmd_OnMessageNoTrigger;
 
-            updateXpTask = Task.Run(async () =>
+            updateXpTask = Task.Run(UpdateLoop);
+        }
+
+        private async Task UpdateLoop()
+        {
+            while (true)
             {
-                while (true)
+                await Task.Delay(TimeSpan.FromSeconds(5));
+                try
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(5));
-                    try
+                    var toNotify = new List<(IMessageChannel MessageChannel, IUser User, int Level, XpNotificationLocation NotifyType, NotifOf NotifOf)>();
+                    var roleRewards = new Dictionary<ulong, List<XpRoleReward>>();
+                    var curRewards = new Dictionary<ulong, List<XpCurrencyReward>>();
+
+                    var toAddTo = new List<UserCacheItem>();
+                    while (_addMessageXp.TryDequeue(out var usr)) toAddTo.Add(usr);
+
+                    var group = toAddTo.GroupBy(x => (GuildId: x.Guild.Id, x.User));
+                    if (toAddTo.Count == 0) continue;
+
+                    using (var uow = _db.GetDbContext())
                     {
-                        var toNotify = new List<(IMessageChannel MessageChannel, IUser User, int Level, XpNotificationLocation NotifyType, NotifOf NotifOf)>();
-                        var roleRewards = new Dictionary<ulong, List<XpRoleReward>>();
-                        var curRewards = new Dictionary<ulong, List<XpCurrencyReward>>();
-
-                        var toAddTo = new List<UserCacheItem>();
-                        while (_addMessageXp.TryDequeue(out var usr))
-                            toAddTo.Add(usr);
-
-                        var group = toAddTo.GroupBy(x => (GuildId: x.Guild.Id, x.User));
-                        if (toAddTo.Count == 0)
-                            continue;
-
-                        using (var uow = _db.GetDbContext())
+                        foreach (var item in group)
                         {
-                            foreach (var item in group)
+                            var xp = item.Sum(x => x.XpAmount);
+
+                            //1. Mass query discord users and userxpstats and get them from local dict
+                            //2. (better but much harder) Move everything to the database, and get old and new xp
+                            // amounts for every user (in order to give rewards)
+
+                            var usr = uow.Xp.GetOrCreateUser(item.Key.GuildId, item.Key.User.Id);
+                            var du = uow.DiscordUsers.GetOrCreate(item.Key.User);
+
+                            var globalXp = du.TotalXp;
+                            var oldGlobalLevelData = new LevelStats(globalXp);
+                            var newGlobalLevelData = new LevelStats(globalXp + xp);
+
+                            var oldGuildLevelData = new LevelStats(usr.Xp + usr.AwardedXp);
+                            usr.Xp += xp;
+                            du.TotalXp += xp;
+                            if (du.Club != null) du.Club.Xp += xp;
+                            var newGuildLevelData = new LevelStats(usr.Xp + usr.AwardedXp);
+
+                            if (oldGlobalLevelData.Level < newGlobalLevelData.Level)
                             {
-                                var xp = item.Select(x => bc.BotConfig.XpPerMessage).Sum();
-
-                                //1. Mass query discord users and userxpstats and get them from local dict
-                                //2. (better but much harder) Move everything to the database, and get old and new xp
-                                // amounts for every user (in order to give rewards)
-
-                                var usr = uow.Xp.GetOrCreateUser(item.Key.GuildId, item.Key.User.Id);
-                                var du = uow.DiscordUsers.GetOrCreate(item.Key.User);
-
-                                var globalXp = du.TotalXp;
-                                var oldGlobalLevelData = new LevelStats(globalXp);
-                                var newGlobalLevelData = new LevelStats(globalXp + xp);
-
-                                var oldGuildLevelData = new LevelStats(usr.Xp + usr.AwardedXp);
-                                usr.Xp += xp;
-                                du.TotalXp += xp;
-                                if (du.Club != null)
-                                    du.Club.Xp += xp;
-                                var newGuildLevelData = new LevelStats(usr.Xp + usr.AwardedXp);
-
-                                if (oldGlobalLevelData.Level < newGlobalLevelData.Level)
-                                {
-                                    du.LastLevelUp = DateTime.UtcNow;
-                                    var first = item.First();
-                                    if (du.NotifyOnLevelUp != XpNotificationLocation.None)
-                                        toNotify.Add((first.Channel, first.User, newGlobalLevelData.Level, du.NotifyOnLevelUp, NotifOf.Global));
-                                }
-
-                                if (oldGuildLevelData.Level < newGuildLevelData.Level)
-                                {
-                                    usr.LastLevelUp = DateTime.UtcNow;
-                                    //send level up notification
-                                    var first = item.First();
-                                    if (usr.NotifyOnLevelUp != XpNotificationLocation.None)
-                                        toNotify.Add((first.Channel, first.User, newGuildLevelData.Level, usr.NotifyOnLevelUp, NotifOf.Server));
-
-                                    //give role
-                                    if (!roleRewards.TryGetValue(usr.GuildId, out var rrews))
-                                    {
-                                        rrews = uow.GuildConfigs.XpSettingsFor(usr.GuildId).RoleRewards.ToList();
-                                        roleRewards.Add(usr.GuildId, rrews);
-                                    }
-
-                                    if (!curRewards.TryGetValue(usr.GuildId, out var crews))
-                                    {
-                                        crews = uow.GuildConfigs.XpSettingsFor(usr.GuildId).CurrencyRewards.ToList();
-                                        curRewards.Add(usr.GuildId, crews);
-                                    }
-
-                                    var rrew = rrews.FirstOrDefault(x => x.Level == newGuildLevelData.Level);
-                                    if (rrew != null)
-                                    {
-                                        var role = first.User.Guild.GetRole(rrew.RoleId);
-                                        if (role != null)
-                                        {
-                                            var __ = first.User.AddRoleAsync(role);
-                                        }
-                                    }
-                                    //get currency reward for this level
-                                    var crew = crews.FirstOrDefault(x => x.Level == newGuildLevelData.Level);
-                                    if (crew != null)
-                                    {
-                                        //give the user the reward if it exists
-                                        await _cs.AddAsync(item.Key.User.Id, "Level-up Reward", crew.Amount);
-                                    }
-                                }
+                                du.LastLevelUp = DateTime.UtcNow;
+                                var first = item.First();
+                                if (du.NotifyOnLevelUp != XpNotificationLocation.None) toNotify.Add((first.Channel, first.User, newGlobalLevelData.Level, du.NotifyOnLevelUp, NotifOf.Global));
                             }
 
-                            uow.SaveChanges();
+                            if (oldGuildLevelData.Level < newGuildLevelData.Level)
+                            {
+                                usr.LastLevelUp = DateTime.UtcNow;
+                                //send level up notification
+                                var first = item.First();
+                                if (usr.NotifyOnLevelUp != XpNotificationLocation.None) toNotify.Add((first.Channel, first.User, newGuildLevelData.Level, usr.NotifyOnLevelUp, NotifOf.Server));
+
+                                //give role
+                                if (!roleRewards.TryGetValue(usr.GuildId, out var rrews))
+                                {
+                                    rrews = uow.GuildConfigs.XpSettingsFor(usr.GuildId).RoleRewards.ToList();
+                                    roleRewards.Add(usr.GuildId, rrews);
+                                }
+
+                                if (!curRewards.TryGetValue(usr.GuildId, out var crews))
+                                {
+                                    crews = uow.GuildConfigs.XpSettingsFor(usr.GuildId).CurrencyRewards.ToList();
+                                    curRewards.Add(usr.GuildId, crews);
+                                }
+
+                                var rrew = rrews.FirstOrDefault(x => x.Level == newGuildLevelData.Level);
+                                if (rrew != null)
+                                {
+                                    var role = first.User.Guild.GetRole(rrew.RoleId);
+                                    if (role != null)
+                                    {
+                                        var __ = first.User.AddRoleAsync(role);
+                                    }
+                                }
+
+                                //get currency reward for this level
+                                var crew = crews.FirstOrDefault(x => x.Level == newGuildLevelData.Level);
+                                if (crew != null)
+                                {
+                                    //give the user the reward if it exists
+                                    await _cs.AddAsync(item.Key.User.Id, "Level-up Reward", crew.Amount);
+                                }
+                            }
                         }
 
-                        await Task.WhenAll(toNotify.Select(async x =>
-                        {
-                            if (x.NotifOf == NotifOf.Server)
-                            {
-                                if (x.NotifyType == XpNotificationLocation.Dm)
-                                {
-                                    var chan = await x.User.GetOrCreateDMChannelAsync();
-                                    if (chan != null)
-                                        await chan.SendConfirmAsync(_strings.GetText("level_up_dm",
-                                            (x.MessageChannel as ITextChannel)?.GuildId,
-                                            "xp",
-                                            x.User.Mention, Format.Bold(x.Level.ToString()),
-                                            Format.Bold((x.MessageChannel as ITextChannel)?.Guild.ToString() ?? "-")));
-                                }
-                                else // channel
-                                {
-                                    await x.MessageChannel.SendConfirmAsync(_strings.GetText("level_up_channel",
-                                              (x.MessageChannel as ITextChannel)?.GuildId,
-                                              "xp",
-                                              x.User.Mention, Format.Bold(x.Level.ToString())));
-                                }
-                            }
-                            else
-                            {
-                                IMessageChannel chan;
-                                if (x.NotifyType == XpNotificationLocation.Dm)
-                                {
-                                    chan = await x.User.GetOrCreateDMChannelAsync();
-                                }
-                                else // channel
-                                {
-                                    chan = x.MessageChannel;
-                                }
-                                await chan.SendConfirmAsync(_strings.GetText("level_up_global",
-                                              (x.MessageChannel as ITextChannel)?.GuildId,
-                                              "xp",
-                                              x.User.Mention, Format.Bold(x.Level.ToString())));
-                            }
-                        }));
+                        uow.SaveChanges();
                     }
-                    catch (Exception ex)
+
+                    await Task.WhenAll(toNotify.Select(async x =>
                     {
-                        _log.Warn(ex);
-                    }
+                        if (x.NotifOf == NotifOf.Server)
+                        {
+                            if (x.NotifyType == XpNotificationLocation.Dm)
+                            {
+                                var chan = await x.User.GetOrCreateDMChannelAsync();
+                                if (chan != null) await chan.SendConfirmAsync(_strings.GetText("level_up_dm", (x.MessageChannel as ITextChannel)?.GuildId, "xp", x.User.Mention, Format.Bold(x.Level.ToString()), Format.Bold((x.MessageChannel as ITextChannel)?.Guild.ToString() ?? "-")));
+                            }
+                            else // channel
+                            {
+                                await x.MessageChannel.SendConfirmAsync(_strings.GetText("level_up_channel", (x.MessageChannel as ITextChannel)?.GuildId, "xp", x.User.Mention, Format.Bold(x.Level.ToString())));
+                            }
+                        }
+                        else
+                        {
+                            IMessageChannel chan;
+                            if (x.NotifyType == XpNotificationLocation.Dm)
+                            {
+                                chan = await x.User.GetOrCreateDMChannelAsync();
+                            }
+                            else // channel
+                            {
+                                chan = x.MessageChannel;
+                            }
+
+                            await chan.SendConfirmAsync(_strings.GetText("level_up_global", (x.MessageChannel as ITextChannel)?.GuildId, "xp", x.User.Mention, Format.Bold(x.Level.ToString())));
+                        }
+                    }));
                 }
-            });
+                catch (Exception ex)
+                {
+                    _log.Warn(ex);
+                }
+            }
         }
 
         private void InternalReloadXpTemplate()
@@ -297,7 +290,6 @@ namespace WizBot.Modules.Xp.Services
                 }
                 else
                 {
-
                     var rew = settings.CurrencyRewards.FirstOrDefault(x => x.Level == level);
 
                     if (rew != null)
@@ -351,7 +343,6 @@ namespace WizBot.Modules.Xp.Services
                 }
                 else
                 {
-
                     var rew = settings.RoleRewards.FirstOrDefault(x => x.Level == level);
 
                     if (rew != null)
@@ -436,9 +427,28 @@ namespace WizBot.Modules.Xp.Services
                 if (!SetUserRewarded(user.Id))
                     return;
 
-                _addMessageXp.Enqueue(new UserCacheItem { Guild = user.Guild, Channel = arg.Channel, User = user });
+                _addMessageXp.Enqueue(new UserCacheItem
+                {
+                    Guild = user.Guild,
+                    Channel = arg.Channel,
+                    User = user,
+                    XpAmount = _bc.BotConfig.XpPerMessage
+                });
             });
             return Task.CompletedTask;
+        }
+
+        public void AddXpDirectly(IGuildUser user, IMessageChannel channel, int amount)
+        {
+            if (amount <= 0) throw new ArgumentOutOfRangeException(nameof(amount));
+
+            _addMessageXp.Enqueue(new UserCacheItem
+            {
+                Guild = user.Guild,
+                Channel = channel,
+                User = user,
+                XpAmount = amount
+            });
         }
 
         public void AddXp(ulong userId, ulong guildId, int amount)
@@ -564,7 +574,6 @@ namespace WizBot.Modules.Xp.Services
 
                 if (roles.Add(rId))
                 {
-
                     if (xpSetting.ExclusionList.Add(excludeObj))
                     {
                         uow.SaveChanges();
@@ -602,7 +611,6 @@ namespace WizBot.Modules.Xp.Services
 
                 if (channels.Add(chId))
                 {
-
                     if (xpSetting.ExclusionList.Add(excludeObj))
                     {
                         uow.SaveChanges();
@@ -631,209 +639,225 @@ namespace WizBot.Modules.Xp.Services
         }
 
 
-        public Task<(Stream Image, IImageFormat Format)> GenerateXpImageAsync(FullUserStats stats) => Task.Run(async () =>
-        {
-            var textOptions = new TextGraphicsOptions().WithFallbackFonts(_fonts.FallBackFonts);
-            using (var img = Image.Load<Rgba32>(_images.XpBackground, out var imageFormat))
+        public Task<(Stream Image, IImageFormat Format)> GenerateXpImageAsync(FullUserStats stats) => Task.Run(
+            async () =>
             {
-                if (_template.User.Name.Show)
+                var textOptions = new TextGraphicsOptions().WithFallbackFonts(_fonts.FallBackFonts);
+                using (var img = Image.Load<Rgba32>(_images.XpBackground, out var imageFormat))
                 {
-                    var username = stats.User.ToString();
-                    var usernameFont = _fonts.NotoSans
-                        .CreateFont(username.Length <= 6
-                            ? _template.User.Name.FontSize
-                            : _template.User.Name.FontSize - username.Length, FontStyle.Bold);
-
-                    img.Mutate(x =>
+                    if (_template.User.Name.Show)
                     {
-                        x.DrawText(textOptions,
-                            "@" + username, usernameFont,
-                            _template.User.Name.Color,
-                            new PointF(_template.User.Name.Pos.X, _template.User.Name.Pos.Y));
-                    });
-                }
+                        var username = stats.User.ToString();
+                        var usernameFont = _fonts.NotoSans
+                            .CreateFont(username.Length <= 6
+                                ? _template.User.Name.FontSize
+                                : _template.User.Name.FontSize - username.Length, FontStyle.Bold);
 
-                if (_template.User.GlobalLevel.Show)
-                {
-                    img.Mutate(x =>
-                    {
-                        x.DrawText(
-                            stats.Global.Level.ToString(),
-                            _fonts.NotoSans.CreateFont(_template.User.GlobalLevel.FontSize, FontStyle.Bold),
-                            _template.User.GlobalLevel.Color,
-                            new PointF(_template.User.GlobalLevel.Pos.X, _template.User.GlobalLevel.Pos.Y)
-                        ); //level
-                    });
-                }
-
-                if (_template.User.GuildLevel.Show)
-                {
-                    img.Mutate(x =>
-                    {
-                        x.DrawText(
-                            stats.Guild.Level.ToString(),
-                            _fonts.NotoSans.CreateFont(_template.User.GuildLevel.FontSize, FontStyle.Bold),
-                            _template.User.GuildLevel.Color,
-                            new PointF(_template.User.GuildLevel.Pos.X, _template.User.GuildLevel.Pos.Y)
-                        );
-                    });
-                }
-
-                //club name
-
-                if (_template.Club.Name.Show)
-                {
-                    var clubName = stats.User.Club?.ToString() ?? "-";
-
-                    var clubFont = _fonts.NotoSans
-                        .CreateFont(clubName.Length <= 8
-                            ? _template.Club.Name.FontSize
-                            : _template.Club.Name.FontSize - (clubName.Length / 2), FontStyle.Bold);
-
-                    img.Mutate(x => x.DrawText(textOptions,
-                        clubName,
-                        clubFont,
-                        _template.Club.Name.Color,
-                        new PointF(_template.Club.Name.Pos.X - clubName.Length * 10, _template.Club.Name.Pos.Y))
-                    );
-                }
-
-
-                var pen = new Pen(SixLabors.ImageSharp.Color.Black, 1);
-
-                var global = stats.Global;
-                var guild = stats.Guild;
-
-                //xp bar
-                if (_template.User.Xp.Bar.Show)
-                {
-                    var xpPercent = (global.LevelXp / (float)global.RequiredXp);
-                    DrawXpBar(xpPercent, _template.User.Xp.Bar.Global, img);
-                    xpPercent = (guild.LevelXp / (float)guild.RequiredXp);
-                    DrawXpBar(xpPercent, _template.User.Xp.Bar.Guild, img);
-                }
-
-                if (_template.User.Xp.Global.Show)
-                {
-                    img.Mutate(x => x.DrawText($"{global.LevelXp}/{global.RequiredXp}",
-                        _fonts.NotoSans.CreateFont(_template.User.Xp.Global.FontSize, FontStyle.Bold),
-                        Brushes.Solid(_template.User.Xp.Global.Color),
-                        pen,
-                        new PointF(_template.User.Xp.Global.Pos.X, _template.User.Xp.Global.Pos.Y)));
-                }
-                if (_template.User.Xp.Guild.Show)
-                {
-                    img.Mutate(x => x.DrawText($"{guild.LevelXp}/{guild.RequiredXp}",
-                        _fonts.NotoSans.CreateFont(_template.User.Xp.Guild.FontSize, FontStyle.Bold),
-                        Brushes.Solid(_template.User.Xp.Guild.Color),
-                        pen,
-                        new PointF(_template.User.Xp.Guild.Pos.X, _template.User.Xp.Guild.Pos.Y)));
-                }
-                if (stats.FullGuildStats.AwardedXp != 0 && _template.User.Xp.Awarded.Show)
-                {
-                    var sign = stats.FullGuildStats.AwardedXp > 0
-                        ? "+ "
-                        : "";
-                    var awX = _template.User.Xp.Awarded.Pos.X - (Math.Max(0, (stats.FullGuildStats.AwardedXp.ToString().Length - 2)) * 5);
-                    var awY = _template.User.Xp.Awarded.Pos.Y;
-                    img.Mutate(x => x.DrawText($"({sign}{stats.FullGuildStats.AwardedXp})",
-                        _fonts.NotoSans.CreateFont(_template.User.Xp.Awarded.FontSize, FontStyle.Bold),
-                        Brushes.Solid(_template.User.Xp.Awarded.Color),
-                        pen,
-                        new PointF(awX, awY)));
-                }
-
-                //ranking
-                if (_template.User.GlobalRank.Show)
-                {
-                    img.Mutate(x => x.DrawText(stats.GlobalRanking.ToString(),
-                        _fonts.UniSans.CreateFont(_template.User.GlobalRank.FontSize, FontStyle.Bold),
-                        _template.User.GlobalRank.Color,
-                        new PointF(_template.User.GlobalRank.Pos.X, _template.User.GlobalRank.Pos.Y)));
-                }
-
-                if (_template.User.GuildRank.Show)
-                {
-                    img.Mutate(x => x.DrawText(stats.GuildRanking.ToString(),
-                        _fonts.UniSans.CreateFont(_template.User.GuildRank.FontSize, FontStyle.Bold),
-                        _template.User.GuildRank.Color,
-                        new PointF(_template.User.GuildRank.Pos.X, _template.User.GuildRank.Pos.Y)));
-                }
-
-                //time on this level
-
-                string GetTimeSpent(DateTime time, string format)
-                {
-                    var offset = DateTime.UtcNow - time;
-                    return string.Format(format, offset.Days, offset.Hours, offset.Minutes);
-                }
-
-                if (_template.User.TimeOnLevel.Global.Show)
-                {
-                    img.Mutate(x => x.DrawText(GetTimeSpent(stats.User.LastLevelUp, _template.User.TimeOnLevel.Format),
-                        _fonts.NotoSans.CreateFont(_template.User.TimeOnLevel.Global.FontSize, FontStyle.Bold),
-                        _template.User.TimeOnLevel.Global.Color,
-                        new PointF(_template.User.TimeOnLevel.Global.Pos.X, _template.User.TimeOnLevel.Global.Pos.Y)));
-                }
-
-                if (_template.User.TimeOnLevel.Guild.Show)
-                {
-                    img.Mutate(x => x.DrawText(GetTimeSpent(stats.FullGuildStats.LastLevelUp, _template.User.TimeOnLevel.Format),
-                        _fonts.NotoSans.CreateFont(_template.User.TimeOnLevel.Guild.FontSize, FontStyle.Bold),
-                        _template.User.TimeOnLevel.Guild.Color,
-                        new PointF(_template.User.TimeOnLevel.Guild.Pos.X, _template.User.TimeOnLevel.Guild.Pos.Y)));
-                }
-                //avatar
-
-                if (stats.User.AvatarId != null && _template.User.Icon.Show)
-                {
-                    try
-                    {
-                        var avatarUrl = stats.User.RealAvatarUrl(128);
-
-                        var (succ, data) = await _cache.TryGetImageDataAsync(avatarUrl);
-                        if (!succ)
+                        img.Mutate(x =>
                         {
-                            using (var http = _httpFactory.CreateClient())
+                            x.DrawText(textOptions,
+                                "@" + username, usernameFont,
+                                _template.User.Name.Color,
+                                new PointF(_template.User.Name.Pos.X, _template.User.Name.Pos.Y));
+                        });
+                    }
+
+                    if (_template.User.GlobalLevel.Show)
+                    {
+                        img.Mutate(x =>
+                        {
+                            x.DrawText(
+                                stats.Global.Level.ToString(),
+                                _fonts.NotoSans.CreateFont(_template.User.GlobalLevel.FontSize, FontStyle.Bold),
+                                _template.User.GlobalLevel.Color,
+                                new PointF(_template.User.GlobalLevel.Pos.X, _template.User.GlobalLevel.Pos.Y)
+                            ); //level
+                        });
+                    }
+
+                    if (_template.User.GuildLevel.Show)
+                    {
+                        img.Mutate(x =>
+                        {
+                            x.DrawText(
+                                stats.Guild.Level.ToString(),
+                                _fonts.NotoSans.CreateFont(_template.User.GuildLevel.FontSize, FontStyle.Bold),
+                                _template.User.GuildLevel.Color,
+                                new PointF(_template.User.GuildLevel.Pos.X, _template.User.GuildLevel.Pos.Y)
+                            );
+                        });
+                    }
+
+                    //club name
+
+                    if (_template.Club.Name.Show)
+                    {
+                        var clubName = stats.User.Club?.ToString() ?? "-";
+
+                        var clubFont = _fonts.NotoSans
+                            .CreateFont(clubName.Length <= 8
+                                ? _template.Club.Name.FontSize
+                                : _template.Club.Name.FontSize - (clubName.Length / 2), FontStyle.Bold);
+
+                        img.Mutate(x => x.DrawText(textOptions,
+                            clubName,
+                            clubFont,
+                            _template.Club.Name.Color,
+                            new PointF(_template.Club.Name.Pos.X - clubName.Length * 10, _template.Club.Name.Pos.Y))
+                        );
+                    }
+
+
+                    var pen = new Pen(SixLabors.ImageSharp.Color.Black, 1);
+
+                    var global = stats.Global;
+                    var guild = stats.Guild;
+
+                    //xp bar
+                    if (_template.User.Xp.Bar.Show)
+                    {
+                        var xpPercent = (global.LevelXp / (float)global.RequiredXp);
+                        DrawXpBar(xpPercent, _template.User.Xp.Bar.Global, img);
+                        xpPercent = (guild.LevelXp / (float)guild.RequiredXp);
+                        DrawXpBar(xpPercent, _template.User.Xp.Bar.Guild, img);
+                    }
+
+                    if (_template.User.Xp.Global.Show)
+                    {
+                        img.Mutate(x => x.DrawText($"{global.LevelXp}/{global.RequiredXp}",
+                            _fonts.NotoSans.CreateFont(_template.User.Xp.Global.FontSize, FontStyle.Bold),
+                            Brushes.Solid(_template.User.Xp.Global.Color),
+                            pen,
+                            new PointF(_template.User.Xp.Global.Pos.X, _template.User.Xp.Global.Pos.Y)));
+                    }
+
+                    if (_template.User.Xp.Guild.Show)
+                    {
+                        img.Mutate(x => x.DrawText($"{guild.LevelXp}/{guild.RequiredXp}",
+                            _fonts.NotoSans.CreateFont(_template.User.Xp.Guild.FontSize, FontStyle.Bold),
+                            Brushes.Solid(_template.User.Xp.Guild.Color),
+                            pen,
+                            new PointF(_template.User.Xp.Guild.Pos.X, _template.User.Xp.Guild.Pos.Y)));
+                    }
+
+                    if (stats.FullGuildStats.AwardedXp != 0 && _template.User.Xp.Awarded.Show)
+                    {
+                        var sign = stats.FullGuildStats.AwardedXp > 0
+                            ? "+ "
+                            : "";
+                        var awX = _template.User.Xp.Awarded.Pos.X -
+                                  (Math.Max(0, (stats.FullGuildStats.AwardedXp.ToString().Length - 2)) * 5);
+                        var awY = _template.User.Xp.Awarded.Pos.Y;
+                        img.Mutate(x => x.DrawText($"({sign}{stats.FullGuildStats.AwardedXp})",
+                            _fonts.NotoSans.CreateFont(_template.User.Xp.Awarded.FontSize, FontStyle.Bold),
+                            Brushes.Solid(_template.User.Xp.Awarded.Color),
+                            pen,
+                            new PointF(awX, awY)));
+                    }
+
+                    //ranking
+                    if (_template.User.GlobalRank.Show)
+                    {
+                        img.Mutate(x => x.DrawText(stats.GlobalRanking.ToString(),
+                            _fonts.UniSans.CreateFont(_template.User.GlobalRank.FontSize, FontStyle.Bold),
+                            _template.User.GlobalRank.Color,
+                            new PointF(_template.User.GlobalRank.Pos.X, _template.User.GlobalRank.Pos.Y)));
+                    }
+
+                    if (_template.User.GuildRank.Show)
+                    {
+                        img.Mutate(x => x.DrawText(stats.GuildRanking.ToString(),
+                            _fonts.UniSans.CreateFont(_template.User.GuildRank.FontSize, FontStyle.Bold),
+                            _template.User.GuildRank.Color,
+                            new PointF(_template.User.GuildRank.Pos.X, _template.User.GuildRank.Pos.Y)));
+                    }
+
+                    //time on this level
+
+                    string GetTimeSpent(DateTime time, string format)
+                    {
+                        var offset = DateTime.UtcNow - time;
+                        return string.Format(format, offset.Days, offset.Hours, offset.Minutes);
+                    }
+
+                    if (_template.User.TimeOnLevel.Global.Show)
+                    {
+                        img.Mutate(x =>
+                            x.DrawText(GetTimeSpent(stats.User.LastLevelUp, _template.User.TimeOnLevel.Format),
+                                _fonts.NotoSans.CreateFont(_template.User.TimeOnLevel.Global.FontSize, FontStyle.Bold),
+                                _template.User.TimeOnLevel.Global.Color,
+                                new PointF(_template.User.TimeOnLevel.Global.Pos.X,
+                                    _template.User.TimeOnLevel.Global.Pos.Y)));
+                    }
+
+                    if (_template.User.TimeOnLevel.Guild.Show)
+                    {
+                        img.Mutate(x =>
+                            x.DrawText(
+                                GetTimeSpent(stats.FullGuildStats.LastLevelUp, _template.User.TimeOnLevel.Format),
+                                _fonts.NotoSans.CreateFont(_template.User.TimeOnLevel.Guild.FontSize, FontStyle.Bold),
+                                _template.User.TimeOnLevel.Guild.Color,
+                                new PointF(_template.User.TimeOnLevel.Guild.Pos.X,
+                                    _template.User.TimeOnLevel.Guild.Pos.Y)));
+                    }
+                    //avatar
+
+                    if (stats.User.AvatarId != null && _template.User.Icon.Show)
+                    {
+                        try
+                        {
+                            var avatarUrl = stats.User.RealAvatarUrl(128);
+
+                            var (succ, data) = await _cache.TryGetImageDataAsync(avatarUrl);
+                            if (!succ)
                             {
-                                var avatarData = await http.GetByteArrayAsync(avatarUrl);
-                                using (var tempDraw = Image.Load(avatarData))
+                                using (var http = _httpFactory.CreateClient())
                                 {
-                                    tempDraw.Mutate(x => x
-                                        .Resize(_template.User.Icon.Size.X, _template.User.Icon.Size.Y)
-                                        .ApplyRoundedCorners(Math.Max(_template.User.Icon.Size.X, _template.User.Icon.Size.Y) / 2));
-                                    using (var stream = tempDraw.ToStream())
+                                    var avatarData = await http.GetByteArrayAsync(avatarUrl);
+                                    using (var tempDraw = Image.Load(avatarData))
                                     {
-                                        data = stream.ToArray();
+                                        tempDraw.Mutate(x => x
+                                            .Resize(_template.User.Icon.Size.X, _template.User.Icon.Size.Y)
+                                            .ApplyRoundedCorners(
+                                                Math.Max(_template.User.Icon.Size.X, _template.User.Icon.Size.Y) / 2));
+                                        using (var stream = tempDraw.ToStream())
+                                        {
+                                            data = stream.ToArray();
+                                        }
                                     }
                                 }
-                            }
-                            await _cache.SetImageDataAsync(avatarUrl, data);
-                        }
-                        using (var toDraw = Image.Load(data))
-                        {
-                            if (toDraw.Size() != new Size(_template.User.Icon.Size.X, _template.User.Icon.Size.Y))
-                            {
-                                toDraw.Mutate(x => x.Resize(_template.User.Icon.Size.X, _template.User.Icon.Size.Y));
-                            }
-                            img.Mutate(x => x.DrawImage(toDraw, new Point(_template.User.Icon.Pos.X, _template.User.Icon.Pos.Y), 1));
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        _log.Warn(ex);
-                    }
-                }
 
-                //club image
-                if (_template.Club.Icon.Show)
-                {
-                    await DrawClubImage(img, stats);
+                                await _cache.SetImageDataAsync(avatarUrl, data);
+                            }
+
+                            using (var toDraw = Image.Load(data))
+                            {
+                                if (toDraw.Size() != new Size(_template.User.Icon.Size.X, _template.User.Icon.Size.Y))
+                                {
+                                    toDraw.Mutate(x =>
+                                        x.Resize(_template.User.Icon.Size.X, _template.User.Icon.Size.Y));
+                                }
+
+                                img.Mutate(x => x.DrawImage(toDraw,
+                                    new Point(_template.User.Icon.Pos.X, _template.User.Icon.Pos.Y), 1));
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            _log.Warn(ex);
+                        }
+                    }
+
+                    //club image
+                    if (_template.Club.Icon.Show)
+                    {
+                        await DrawClubImage(img, stats);
+                    }
+
+                    img.Mutate(x => x.Resize(_template.OutputSize.X, _template.OutputSize.Y));
+                    return ((Stream)img.ToStream(imageFormat), imageFormat);
                 }
-                img.Mutate(x => x.Resize(_template.OutputSize.X, _template.OutputSize.Y));
-                return ((Stream)img.ToStream(imageFormat), imageFormat);
-            }
-        });
+            });
 
         void DrawXpBar(float percent, XpBar info, Image<Rgba32> img)
         {
@@ -877,7 +901,8 @@ namespace WizBot.Modules.Xp.Services
             }
 
             img.Mutate(x => x.FillPolygon(info.Color,
-                new[] {
+                new[]
+                {
                     new PointF(x1, y1),
                     new PointF(x3, y3),
                     new PointF(x4, y4),
@@ -905,7 +930,9 @@ namespace WizBot.Modules.Xp.Services
                             {
                                 tempDraw.Mutate(x => x
                                     .Resize(_template.Club.Icon.Size.X, _template.Club.Icon.Size.Y)
-                                    .ApplyRoundedCorners(Math.Max(_template.Club.Icon.Size.X, _template.Club.Icon.Size.Y) / 2.0f)); ;
+                                    .ApplyRoundedCorners(
+                                        Math.Max(_template.Club.Icon.Size.X, _template.Club.Icon.Size.Y) / 2.0f));
+                                ;
                                 using (var tds = tempDraw.ToStream())
                                 {
                                     data = tds.ToArray();
@@ -915,12 +942,14 @@ namespace WizBot.Modules.Xp.Services
 
                         await _cache.SetImageDataAsync(imgUrl, data);
                     }
+
                     using (var toDraw = Image.Load(data))
                     {
                         if (toDraw.Size() != new Size(_template.Club.Icon.Size.X, _template.Club.Icon.Size.Y))
                         {
                             toDraw.Mutate(x => x.Resize(_template.Club.Icon.Size.X, _template.Club.Icon.Size.Y));
                         }
+
                         img.Mutate(x => x.DrawImage(
                             toDraw,
                             new Point(_template.Club.Icon.Pos.X, _template.Club.Icon.Pos.Y),
