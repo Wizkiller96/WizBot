@@ -14,6 +14,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -68,14 +69,13 @@ namespace WizBot.Modules.Utility
             {
                 if (!_service.RepeaterReady)
                     return;
-                if (index < 1)
-                    return;
-                index -= 1;
-
-                if (!_service.Repeaters.TryGetValue(ctx.Guild.Id, out var rep))
+                if (--index < 0)
                     return;
 
-                var repeaterList = rep.ToList();
+                if (!_service.Repeaters.TryGetValue(ctx.Guild.Id, out var guildRepeaters))
+                    return;
+
+                var repeaterList = guildRepeaters.ToList();
 
                 if (index >= repeaterList.Count)
                 {
@@ -84,8 +84,14 @@ namespace WizBot.Modules.Utility
                 }
 
                 var repeater = repeaterList[index];
-                if (rep.TryRemove(repeater.Value.Repeater.Id, out var runner))
-                    runner.Stop();
+
+                // wat
+                if (!guildRepeaters.TryRemove(repeater.Value.Repeater.Id, out var runner))
+                    return;
+
+                // take description before stopping just in case
+                var description = GetRepeaterInfoString(runner);
+                runner.Stop();
 
                 using (var uow = _db.GetDbContext())
                 {
@@ -99,8 +105,11 @@ namespace WizBot.Modules.Utility
                     }
                     await uow.SaveChangesAsync();
                 }
-                await ctx.Channel.SendConfirmAsync(GetText("message_repeater"),
-                    GetText("repeater_stopped", index + 1) + $"\n\n{repeater.Value}").ConfigureAwait(false);
+
+                await ctx.Channel.EmbedAsync(new EmbedBuilder()
+                    .WithOkColor()
+                    .WithTitle(GetText("repeater_removed", index + 1))
+                    .WithDescription(description));
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -126,14 +135,23 @@ namespace WizBot.Modules.Utility
                 if (string.IsNullOrWhiteSpace(opts.Message) || opts.Interval >= 50001)
                     return;
 
+                var startTimeOfDay = dt?.InputTimeUtc.TimeOfDay;
+
+                // if interval not null, that means user specified it (don't change it)
+
+                // if interval is null set the default to:
+                // if time of day is specified: 24 * 60 (24h)
+                // else 5 
+                var realInterval = opts.Interval ?? (startTimeOfDay is null ? 5 : 24 * 60);
+
                 var toAdd = new Repeater()
                 {
                     ChannelId = ctx.Channel.Id,
                     GuildId = ctx.Guild.Id,
-                    Interval = TimeSpan.FromMinutes(opts.Interval),
+                    Interval = TimeSpan.FromMinutes(realInterval),
                     Message = opts.Message,
                     NoRedundant = opts.NoRedundant,
-                    StartTimeOfDay = dt?.InputTimeUtc.TimeOfDay,
+                    StartTimeOfDay = startTimeOfDay,
                 };
 
                 using (var uow = _db.GetDbContext())
@@ -147,29 +165,20 @@ namespace WizBot.Modules.Utility
                     await uow.SaveChangesAsync();
                 }
 
-                var rep = new RepeatRunner((SocketGuild)ctx.Guild, toAdd, _service);
+                var runner = new RepeatRunner((SocketGuild)ctx.Guild, toAdd, _service);
 
                 _service.Repeaters.AddOrUpdate(ctx.Guild.Id,
-                    new ConcurrentDictionary<int, RepeatRunner>(new[] { new KeyValuePair<int, RepeatRunner>(toAdd.Id, rep) }), (key, old) =>
+                    new ConcurrentDictionary<int, RepeatRunner>(new[] { new KeyValuePair<int, RepeatRunner>(toAdd.Id, runner) }), (key, old) =>
                   {
-                      old.TryAdd(rep.Repeater.Id, rep);
+                      old.TryAdd(runner.Repeater.Id, runner);
                       return old;
                   });
 
-                string secondPart = "";
-                if (dt != null)
-                {
-                    secondPart = GetText("repeater_initial",
-                        Format.Bold(rep.InitialInterval.Hours.ToString()),
-                        Format.Bold(rep.InitialInterval.Minutes.ToString()));
-                }
-
-                await ctx.Channel.SendConfirmAsync(
-                    "🔁 " + GetText("repeater",
-                        Format.Bold(((IGuildUser)ctx.User).GuildPermissions.MentionEveryone ? rep.Repeater.Message : rep.Repeater.Message.SanitizeMentions()),
-                        Format.Bold(rep.Repeater.Interval.Days.ToString()),
-                        Format.Bold(rep.Repeater.Interval.Hours.ToString()),
-                        Format.Bold(rep.Repeater.Interval.Minutes.ToString())) + " " + secondPart).ConfigureAwait(false);
+                var description = GetRepeaterInfoString(runner);
+                await ctx.Channel.EmbedAsync(new EmbedBuilder()
+                    .WithOkColor()
+                    .WithTitle(GetText("repeater_created"))
+                    .WithDescription(description));
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -186,23 +195,50 @@ namespace WizBot.Modules.Utility
                 }
 
                 var replist = repRunners.ToList();
-                var sb = new StringBuilder();
+
+                var embed = new EmbedBuilder()
+                    .WithTitle(GetText("list_of_repeaters"))
+                    .WithOkColor();
+
+                if (replist.Count == 0)
+                {
+                    embed.WithDescription(GetText("no_active_repeaters"));
+                }
 
                 for (var i = 0; i < replist.Count; i++)
                 {
-                    var rep = replist[i];
+                    var (_, runner) = replist[i];
 
-                    sb.AppendLine($"`{i + 1}.` {rep.Value}");
+                    var description = GetRepeaterInfoString(runner);
+                    var name = $"#{Format.Code((i + 1).ToString())}";
+                    embed.AddField(
+                        name,
+                        description
+                    );
                 }
-                var desc = sb.ToString();
 
-                if (string.IsNullOrWhiteSpace(desc))
-                    desc = GetText("no_active_repeaters");
+                await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
+            }
 
-                await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                        .WithTitle(GetText("list_of_repeaters"))
-                        .WithDescription(desc))
-                    .ConfigureAwait(false);
+            private string GetRepeaterInfoString(RepeatRunner runner)
+            {
+                var intervalString = Format.Bold(runner.Repeater.Interval.ToPrettyStringHM());
+                var executesIn = runner.NextDateTime - DateTime.UtcNow;
+                var executesInString = Format.Bold(executesIn.ToPrettyStringHM());
+                var message = Format.Sanitize(runner.Repeater.Message.TrimTo(50));
+
+                string description = "";
+                if (runner.Repeater.NoRedundant)
+                {
+                    description = Format.Underline(Format.Bold(GetText("no_redundant:"))) + "\n\n";
+                }
+
+                description += $"<#{runner.Repeater.ChannelId}>\n" +
+                                  $"`{GetText("interval:")}` {intervalString}\n" +
+                                  $"`{GetText("executes_in:")}` {executesInString}\n" +
+                                  $"`{GetText("message:")}` {message}";
+
+                return description;
             }
         }
     }

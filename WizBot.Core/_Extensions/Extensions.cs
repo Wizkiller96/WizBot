@@ -39,6 +39,19 @@ namespace WizBot.Extensions
 
         public static Regex UrlRegex = new Regex(@"^(https?|ftp)://(?<path>[^\s/$.?#].[^\s]*)$", RegexOptions.Compiled);
 
+        /// <summary>
+        /// Generates a string in the format HHH:mm if timespan is <= 2m.
+        /// Generates a string in the format 00:mm:ss if timespan is less than 2m.
+        /// </summary>
+        /// <param name="span">Timespan to convert to string</param>
+        /// <returns>Formatted duration string</returns>
+        public static string ToPrettyStringHM(this TimeSpan span)
+        {
+            if (span < TimeSpan.FromMinutes(2))
+                return $"{span:mm}m {span:ss}s";
+            return $"{(int)span.TotalHours:D2}h {span:mm}m";
+        }
+        
         public static bool TryGetUrlPath(this string input, out string path)
         {
             var match = UrlRegex.Match(input);

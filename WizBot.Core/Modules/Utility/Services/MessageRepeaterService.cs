@@ -16,6 +16,7 @@ namespace WizBot.Modules.Utility.Services
     public class MessageRepeaterService : INService
     {
         private readonly DbService _db;
+        private readonly IBotCredentials _creds;
         private readonly Logger _log;
         private readonly WizBot _bot;
         private readonly DiscordSocketClient _client;
@@ -23,9 +24,10 @@ namespace WizBot.Modules.Utility.Services
         public ConcurrentDictionary<ulong, ConcurrentDictionary<int, RepeatRunner>> Repeaters { get; set; }
         public bool RepeaterReady { get; private set; }
 
-        public MessageRepeaterService(WizBot bot, DiscordSocketClient client, DbService db)
+        public MessageRepeaterService(WizBot bot, DiscordSocketClient client, DbService db, IBotCredentials creds)
         {
             _db = db;
+            _creds = creds;
             _log = LogManager.GetCurrentClassLogger();
             _bot = bot;
             _client = client;
@@ -41,20 +43,23 @@ namespace WizBot.Modules.Utility.Services
             _log.Info("Loading message repeaters on shard {ShardId}.", _client.ShardId);
 
             var repeaters = new Dictionary<ulong, ConcurrentDictionary<int, RepeatRunner>>();
-            var toDelete = new List<Repeater>();
             foreach (var gc in _bot.AllGuildConfigs)
             {
+                // don't load repeaters which don't belong on this shard
+                if ((gc.GuildId >> 22) % (ulong)_creds.TotalShards != (ulong)_client.ShardId)
+                    continue;
+
                 try
                 {
                     var guild = _client.GetGuild(gc.GuildId);
                     if (guild is null)
                     {
-                        _log.Info("Unable to find guild {GuildId} for message repeaters. Removing.", gc.GuildId);
-                        toDelete.AddRange(gc.GuildRepeaters);
+                        _log.Info("Unable to find guild {GuildId} for message repeaters.", gc.GuildId);
                         continue;
                     }
 
                     var idToRepeater = gc.GuildRepeaters
+                        .Where(gr => !(gr.DateAdded is null))
                         .Select(gr => new KeyValuePair<int, RepeatRunner>(gr.Id, new RepeatRunner(guild, gr, this)))
                         .ToDictionary(x => x.Key, y => y.Value)
                         .ToConcurrent();

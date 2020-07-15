@@ -18,9 +18,9 @@ namespace WizBot.Core.Services.Database.Models
                 HelpText = "Whether the message should be reposted if the last message in the channel is this same message.")]
             public bool NoRedundant { get; set; } = false;
 
-            [Option('i', "interval", Required = false, Default = 5,
+            [Option('i', "interval", Required = false, Default = null,
                 HelpText = "How frequently the repeating message is posted, in minutes.")]
-            public int Interval { get; set; } = 5;
+            public int? Interval { get; set; } = null;
             //[Option('s', "start-time", Required = false, Default = null,
             //    HelpText = "At what time will the repeater first run.")]
             //public string StrStartTimeOfDay { get; set; } = null;
@@ -29,7 +29,7 @@ namespace WizBot.Core.Services.Database.Models
             public void NormalizeOptions()
             {
                 if (Interval < 1)
-                    Interval = 5;
+                    Interval = null;
 
                 if (Interval >= 25001)
                     Interval = 25001;

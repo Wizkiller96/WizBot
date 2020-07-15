@@ -140,7 +140,7 @@
   },
   "repeat": {
     "Cmd": "repeat",
-    "Desc": "Repeat a message every specified number of minutes in the current channel. You can instead specify time of day for the message to be repeated at daily (make sure you've set your server's timezone). You can have up to 5 repeating messages on the server in total.",
+    "Desc": "Repeat a message once every `-i` number of minutes in the current channel. You can instead specify time of day for the message to be repeated daily (make sure you've set your server's timezone). If you've specified time of day, you can still override the default daily interval with your own -i. For example `17:30 -i 180 -m \"hi there\"` will post at 17:30 and then every 3 hours after. You can have up to 5 repeating messages on the server in total.",
     "Usage": [
       "{0}repeat -i 5 -m \"Hello there\" -n",
       "{0}repeat 17:30 -m \"tea time\""
@@ -2383,7 +2383,7 @@
     ]
   },
   "repeatlist": {
-    "Cmd": "repeatlist replst",
+    "Cmd": "repeatlist replst replist repli",
     "Desc": "Shows currently repeating messages and their indexes.",
     "Usage": [
       "{0}repeatlist"
