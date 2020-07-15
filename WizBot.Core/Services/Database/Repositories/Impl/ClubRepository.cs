@@ -67,6 +67,7 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
             return _set.AsQueryable()
                 .Where(x => x.Name.ToUpper() == clubName.ToUpper())
                 .Select(x => x.Discrim)
+                .ToList()
                 .DefaultIfEmpty()
                 .Max() + 1;
         }
