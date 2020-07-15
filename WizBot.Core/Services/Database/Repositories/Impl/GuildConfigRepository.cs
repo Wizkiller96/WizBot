@@ -132,7 +132,7 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
 
         public IEnumerable<GuildConfig> Permissionsv2ForAll(List<ulong> include)
         {
-            var query = _set
+            var query = _set.AsQueryable()
                 .Where(x => include.Contains(x.GuildId))
                 .Include(gc => gc.Permissions);
 
@@ -141,7 +141,7 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
 
         public GuildConfig GcWithPermissionsv2For(ulong guildId)
         {
-            var config = _set
+            var config = _set.AsQueryable()
                 .Where(gc => gc.GuildId == guildId)
                 .Include(gc => gc.Permissions)
                 .FirstOrDefault();
@@ -174,7 +174,7 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
 
         public IEnumerable<FollowedStream> GetFollowedStreams(List<ulong> included)
         {
-            return _set
+            return _set.AsQueryable()
                 .Where(gc => included.Contains(gc.GuildId))
                 .Include(gc => gc.FollowedStreams)
                 .SelectMany(gc => gc.FollowedStreams)

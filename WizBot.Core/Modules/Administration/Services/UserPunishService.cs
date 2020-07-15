@@ -146,14 +146,14 @@ namespace WizBot.Modules.Administration.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var cleared = await uow._context.Database.ExecuteSqlCommandAsync($@"UPDATE Warnings
+                var cleared = await uow._context.Database.ExecuteSqlRawAsync($@"UPDATE Warnings
 SET Forgiven = 1,
     ForgivenBy = 'Expiry'
 WHERE GuildId in (SELECT GuildId FROM GuildConfigs WHERE WarnExpireHours > 0 AND WarnExpireAction = 0)
 	AND Forgiven = 0
 	AND DateAdded < datetime('now', (SELECT '-' || WarnExpireHours || ' hours' FROM GuildConfigs as gc WHERE gc.GuildId = Warnings.GuildId));");
 
-                var deleted = await uow._context.Database.ExecuteSqlCommandAsync($@"DELETE FROM Warnings
+                var deleted = await uow._context.Database.ExecuteSqlRawAsync($@"DELETE FROM Warnings
 WHERE GuildId in (SELECT GuildId FROM GuildConfigs WHERE WarnExpireHours > 0 AND WarnExpireAction = 1)
 	AND DateAdded < datetime('now', (SELECT '-' || WarnExpireHours || ' hours' FROM GuildConfigs as gc WHERE gc.GuildId = Warnings.GuildId));");
 
@@ -176,7 +176,7 @@ WHERE GuildId in (SELECT GuildId FROM GuildConfigs WHERE WarnExpireHours > 0 AND
                 var hours = $"{-config.WarnExpireHours} hours";
                 if (config.WarnExpireAction == WarnExpireAction.Clear)
                 {
-                    await uow._context.Database.ExecuteSqlCommandAsync($@"UPDATE warnings
+                    await uow._context.Database.ExecuteSqlInterpolatedAsync($@"UPDATE warnings
 SET Forgiven = 1,
     ForgivenBy = 'Expiry'
 WHERE GuildId={guildId}
@@ -185,7 +185,7 @@ WHERE GuildId={guildId}
                 }
                 else if (config.WarnExpireAction == WarnExpireAction.Delete)
                 {
-                    await uow._context.Database.ExecuteSqlCommandAsync($@"DELETE FROM warnings
+                    await uow._context.Database.ExecuteSqlInterpolatedAsync($@"DELETE FROM warnings
 WHERE GuildId={guildId}
     AND DateAdded < datetime('now', {hours})");
                 }

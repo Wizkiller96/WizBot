@@ -89,7 +89,7 @@ namespace WizBot.Modules.Utility.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                uow._context.Database.ExecuteSqlCommand($@"UPDATE GuildRepeater SET 
+                uow._context.Database.ExecuteSqlInterpolated($@"UPDATE GuildRepeater SET 
                     LastMessageId={lastMsgId} WHERE Id={repeaterId}");
             }
         }

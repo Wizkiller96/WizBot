@@ -17,7 +17,7 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
 
         public IEnumerable<Quote> GetGroup(ulong guildId, int page, OrderType order)
         {
-            var q = _set.Where(x => x.GuildId == guildId);
+            var q = _set.AsQueryable().Where(x => x.GuildId == guildId);
             if (order == OrderType.Keyword)
                 q = q.OrderBy(x => x.Keyword);
             else
@@ -29,22 +29,24 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
         public Task<Quote> GetRandomQuoteByKeywordAsync(ulong guildId, string keyword)
         {
             var rng = new WizBotRandom();
-            return _set.Where(q => q.GuildId == guildId && q.Keyword == keyword).OrderBy(q => rng.Next())
+            return _set.AsQueryable()
+                .Where(q => q.GuildId == guildId && q.Keyword == keyword).OrderBy(q => rng.Next())
                 .FirstOrDefaultAsync();
         }
 
         public Task<Quote> SearchQuoteKeywordTextAsync(ulong guildId, string keyword, string text)
         {
             var rngk = new WizBotRandom();
-            return _set.Where(q => q.Text.ContainsNoCase(text, StringComparison.OrdinalIgnoreCase)
-                && q.GuildId == guildId && q.Keyword == keyword)
+            return _set.AsQueryable()
+                .Where(q => q.Text.ContainsNoCase(text, StringComparison.OrdinalIgnoreCase)
+                    && q.GuildId == guildId && q.Keyword == keyword)
                 .OrderBy(q => rngk.Next())
                 .FirstOrDefaultAsync();
         }
 
         public void RemoveAllByKeyword(ulong guildId, string keyword)
         {
-            _set.RemoveRange(_set.Where(x => x.GuildId == guildId && x.Keyword.ToUpperInvariant() == keyword));
+            _set.RemoveRange(_set.AsQueryable().Where(x => x.GuildId == guildId && x.Keyword.ToUpperInvariant() == keyword));
         }
 
     }

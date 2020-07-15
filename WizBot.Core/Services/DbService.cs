@@ -1,7 +1,5 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
 using WizBot.Core.Services.Database;
 using System;
 using System.IO;
@@ -14,11 +12,11 @@ namespace WizBot.Core.Services
         private readonly DbContextOptions<WizBotContext> options;
         private readonly DbContextOptions<WizBotContext> migrateOptions;
 
-        private static readonly ILoggerFactory _loggerFactory = new LoggerFactory(new[] {
-            new ConsoleLoggerProvider((category, level)
-                => category == DbLoggerCategory.Database.Command.Name
-                   && level >= LogLevel.Information, true)
-            });
+        // private static readonly ILoggerFactory _loggerFactory = new LoggerFactory(new[] {
+        //     new ConsoleLoggerProvider((category, level)
+        //         => category == DbLoggerCategory.Database.Command.Name
+        //            && level >= LogLevel.Information, true)
+        //     });
 
         public DbService(IBotCredentials creds)
         {
@@ -32,7 +30,7 @@ namespace WizBot.Core.Services
             options = optionsBuilder.Options;
 
             optionsBuilder = new DbContextOptionsBuilder<WizBotContext>();
-            optionsBuilder.UseSqlite(builder.ToString(), x => x.SuppressForeignKeyEnforcement());
+            optionsBuilder.UseSqlite(builder.ToString());
             migrateOptions = optionsBuilder.Options;
         }
 
@@ -47,7 +45,7 @@ namespace WizBot.Core.Services
                     mContext.SaveChanges();
                     mContext.Dispose();
                 }
-                context.Database.ExecuteSqlCommand("PRAGMA journal_mode=WAL");
+                context.Database.ExecuteSqlRaw("PRAGMA journal_mode=WAL");
                 context.EnsureSeedData();
                 context.SaveChanges();
             }

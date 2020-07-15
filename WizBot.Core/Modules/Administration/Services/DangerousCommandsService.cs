@@ -43,7 +43,7 @@ DELETE FROM Clubs;";
             int res;
             using (var uow = _db.GetDbContext())
             {
-                res = await uow._context.Database.ExecuteSqlCommandAsync(sql);
+                res = await uow._context.Database.ExecuteSqlRawAsync(sql);
             }
             return res;
         }

@@ -20,7 +20,7 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
         {
             pass = pass?.Trim().TrimTo(10, hideDots: true).ToUpperInvariant();
             // gets all plants in this channel with the same password
-            var entries = _set.Where(x => x.ChannelId == cid && pass == x.Password).ToArray();
+            var entries = _set.AsQueryable().Where(x => x.ChannelId == cid && pass == x.Password).ToArray();
             // sum how much currency that is, and get all of the message ids (so that i can delete them)
             var toReturn = (entries.Sum(x => x.Amount), entries.Select(x => x.MessageId).ToArray());
             // remove them from the database

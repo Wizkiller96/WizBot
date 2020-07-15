@@ -13,7 +13,8 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
 
         public List<CurrencyTransaction> GetPageFor(ulong userId, int page)
         {
-            return _set.Where(x => x.UserId == userId)
+            return _set.AsQueryable()
+                .Where(x => x.UserId == userId)
                 .OrderByDescending(x => x.DateAdded)
                 .Skip(15 * page)
                 .Take(15)

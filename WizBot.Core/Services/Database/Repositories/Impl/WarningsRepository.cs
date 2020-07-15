@@ -14,7 +14,7 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
 
         public Warning[] ForId(ulong guildId, ulong userId)
         {
-            var query = _set.Where(x => x.GuildId == guildId && x.UserId == userId)
+            var query = _set.AsQueryable().Where(x => x.GuildId == guildId && x.UserId == userId)
                 .OrderByDescending(x => x.DateAdded);
 
             return query.ToArray();
@@ -25,7 +25,7 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
             if (index < 0)
                 throw new ArgumentOutOfRangeException(nameof(index));
 
-            var warn = _set.Where(x => x.GuildId == guildId && x.UserId == userId)
+            var warn = _set.AsQueryable().Where(x => x.GuildId == guildId && x.UserId == userId)
                 .OrderByDescending(x => x.DateAdded)
                 .Skip(index)
                 .FirstOrDefault();
@@ -40,7 +40,7 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
 
         public async Task ForgiveAll(ulong guildId, ulong userId, string mod)
         {
-            await _set.Where(x => x.GuildId == guildId && x.UserId == userId)
+            await _set.AsQueryable().Where(x => x.GuildId == guildId && x.UserId == userId)
                 .ForEachAsync(x =>
                 {
                     if (x.Forgiven != true)
@@ -53,7 +53,7 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
 
         public Warning[] GetForGuild(ulong id)
         {
-            return _set.Where(x => x.GuildId == id).ToArray();
+            return _set.AsQueryable().Where(x => x.GuildId == id).ToArray();
         }
     }
 }

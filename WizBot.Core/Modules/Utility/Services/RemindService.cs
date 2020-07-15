@@ -102,7 +102,7 @@ namespace WizBot.Modules.Utility.Services
             {
                 using (var uow = _db.GetDbContext())
                 {
-                    uow._context.Database.ExecuteSqlCommand($"DELETE FROM Reminders WHERE Id={r.Id};");
+                    uow._context.Database.ExecuteSqlInterpolated($"DELETE FROM Reminders WHERE Id={r.Id};");
                     uow.SaveChanges();
                 }
                 RemoveReminder(r.Id);

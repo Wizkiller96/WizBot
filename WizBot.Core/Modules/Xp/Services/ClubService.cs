@@ -48,7 +48,9 @@ namespace WizBot.Modules.Xp.Services
                     return false;
 
                 uow._context.Set<ClubApplicants>()
-                    .RemoveRange(uow._context.Set<ClubApplicants>().Where(x => x.UserId == du.Id));
+                    .RemoveRange(uow._context.Set<ClubApplicants>()
+                        .AsQueryable()
+                        .Where(x => x.UserId == du.Id));
                 club = du.Club;
                 uow.SaveChanges();
             }
@@ -204,7 +206,9 @@ namespace WizBot.Modules.Xp.Services
 
                 //remove that user's all other applications
                 uow._context.Set<ClubApplicants>()
-                    .RemoveRange(uow._context.Set<ClubApplicants>().Where(x => x.UserId == applicant.User.Id));
+                    .RemoveRange(uow._context.Set<ClubApplicants>()
+                        .AsQueryable()
+                        .Where(x => x.UserId == applicant.User.Id));
 
                 discordUser = applicant.User;
                 uow.SaveChanges();

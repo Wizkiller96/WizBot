@@ -79,6 +79,7 @@ namespace WizBot.Modules.Gambling.Services
                         x.UpdateType == WaifuUpdateType.Claimed &&
                         x.New == null);
                 var affs = uow._context.WaifuUpdates
+                        .AsQueryable()
                         .Where(w => w.User.UserId == user.Id && w.UpdateType == WaifuUpdateType.AffinityChanged && w.New != null)
                         .GroupBy(x => x.New)
                         .Count();
@@ -96,11 +97,14 @@ namespace WizBot.Modules.Gambling.Services
                     return false;
 
                 var affs = uow._context.WaifuUpdates
+                    .AsQueryable()
                     .Where(w => w.User.UserId == user.Id
                         && w.UpdateType == WaifuUpdateType.AffinityChanged
                         && w.New != null);
 
-                var divorces = uow._context.WaifuUpdates.Where(x => x.Old != null &&
+                var divorces = uow._context.WaifuUpdates
+                    .AsQueryable()
+                    .Where(x => x.Old != null &&
                         x.Old.UserId == user.Id &&
                         x.UpdateType == WaifuUpdateType.Claimed &&
                         x.New == null);

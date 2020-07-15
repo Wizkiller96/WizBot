@@ -17,7 +17,8 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
             if (num < 1)
                 throw new IndexOutOfRangeException();
 
-            return _set.Skip((num - 1) * 20)
+            return _set.AsQueryable()
+                .Skip((num - 1) * 20)
                 .Take(20)
                 .Include(pl => pl.Songs)
                 .ToList();

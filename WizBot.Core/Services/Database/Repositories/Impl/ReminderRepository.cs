@@ -13,12 +13,13 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
 
         public IEnumerable<Reminder> GetIncludedReminders(IEnumerable<ulong> guildIds)
         {
-            return _set.Where(x => guildIds.Contains(x.ServerId) || x.ServerId == 0).ToList();
+            return _set.AsQueryable().Where(x => guildIds.Contains(x.ServerId) || x.ServerId == 0).ToList();
         }
 
         public IEnumerable<Reminder> RemindersFor(ulong userId, int page)
         {
-            return _set.Where(x => x.UserId == userId)
+            return _set.AsQueryable()
+                .Where(x => x.UserId == userId)
                 .OrderBy(x => x.DateAdded)
                 .Skip(page * 10)
                 .Take(10);

@@ -6,6 +6,7 @@ using WizBot.Core.Services.Database.Models;
 using WizBot.Core.Services.Impl;
 using NLog;
 using YoutubeExplode;
+using YoutubeExplode.Videos;
 
 namespace WizBot.Modules.Music.Common.SongResolver.Strategies
 {
@@ -20,39 +21,32 @@ namespace WizBot.Modules.Music.Common.SongResolver.Strategies
 
         public async Task<SongInfo> ResolveSong(string query)
         {
-            try
-            {
-                SongInfo s = await ResolveWithYtExplode(query).ConfigureAwait(false);
-                if (s != null)
-                    return s;
-            }
-            catch { }
+            // try
+            // {
+            //     var s = await ResolveWithYtExplode(query).ConfigureAwait(false);
+            //     if (s != null)
+            //         return s;
+            // }
+            // catch { }
             return await ResolveWithYtDl(query).ConfigureAwait(false);
         }
 
         private async Task<SongInfo> ResolveWithYtExplode(string query)
         {
-            YoutubeExplode.Models.Video video;
             var client = new YoutubeClient();
-            if (!YoutubeClient.TryParseVideoId(query, out var id))
-            {
-                _log.Info("Searching for video");
-                var videos = await client.SearchVideosAsync(query, 1).ConfigureAwait(false);
 
-                video = videos.FirstOrDefault();
-            }
-            else
-            {
-                _log.Info("Getting video with id");
-                video = await client.GetVideoAsync(id).ConfigureAwait(false);
-            }
+            _log.Info("Searching for video");
+            var videos = await client.Search.GetVideosAsync(query);
+
+            var video = videos.FirstOrDefault();
 
             if (video == null)
                 return null;
 
             _log.Info("Video found");
-            var streamInfo = await client.GetVideoMediaStreamInfosAsync(video.Id).ConfigureAwait(false);
-            var stream = streamInfo.Audio
+            var streamInfo = await client.Videos.Streams.GetManifestAsync(video.Id).ConfigureAwait(false);
+            var stream = streamInfo
+                .GetAudio()
                 .OrderByDescending(x => x.Bitrate)
                 .FirstOrDefault();
 
@@ -92,7 +86,9 @@ namespace WizBot.Modules.Music.Common.SongResolver.Strategies
                     return null;
                 }
 
-                if (!TimeSpan.TryParseExact(data[4], new[] { "ss", "m\\:ss", "mm\\:ss", "h\\:mm\\:ss", "hh\\:mm\\:ss", "hhh\\:mm\\:ss" }, CultureInfo.InvariantCulture, out var time))
+                if (!TimeSpan.TryParseExact(data[4],
+                    new[] { "ss", "m\\:ss", "mm\\:ss", "h\\:mm\\:ss", "hh\\:mm\\:ss", "hhh\\:mm\\:ss" },
+                    CultureInfo.InvariantCulture, out var time))
                     time = TimeSpan.FromHours(24);
 
                 return new SongInfo()
@@ -108,6 +104,7 @@ namespace WizBot.Modules.Music.Common.SongResolver.Strategies
                             _log.Info("No song found. Data less than 6");
                             return null;
                         }
+
                         return data[2];
                     },
                     Thumbnail = data[3],
@@ -122,7 +119,6 @@ namespace WizBot.Modules.Music.Common.SongResolver.Strategies
                 _log.Warn(ex);
                 return null;
             }
-
         }
     }
 }

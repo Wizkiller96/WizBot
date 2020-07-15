@@ -250,12 +250,12 @@ namespace WizBot.Modules.Administration.Services
             {
 
                 //if it doesn't exist, create it 
-                try { muteRole = await guild.CreateRoleAsync(muteRoleName, GuildPermissions.None).ConfigureAwait(false); }
+                try { muteRole = await guild.CreateRoleAsync(muteRoleName, isMentionable: false).ConfigureAwait(false); }
                 catch
                 {
                     //if creations fails,  maybe the name is not correct, find default one, if doesn't work, create default one
                     muteRole = guild.Roles.FirstOrDefault(r => r.Name == muteRoleName) ??
-                        await guild.CreateRoleAsync(defaultMuteRoleName, GuildPermissions.None).ConfigureAwait(false);
+                        await guild.CreateRoleAsync(defaultMuteRoleName, isMentionable: false).ConfigureAwait(false);
                 }
             }
 
