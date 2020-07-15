@@ -34,14 +34,15 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
                 .FirstOrDefaultAsync();
         }
 
-        public Task<Quote> SearchQuoteKeywordTextAsync(ulong guildId, string keyword, string text)
+        public async Task<Quote> SearchQuoteKeywordTextAsync(ulong guildId, string keyword, string text)
         {
             var rngk = new WizBotRandom();
-            return _set.AsQueryable()
+            return (await _set.AsQueryable()
                 .Where(q => q.Text.ContainsNoCase(text, StringComparison.OrdinalIgnoreCase)
                     && q.GuildId == guildId && q.Keyword == keyword)
+                .ToListAsync())
                 .OrderBy(q => rngk.Next())
-                .FirstOrDefaultAsync();
+                .FirstOrDefault();
         }
 
         public void RemoveAllByKeyword(ulong guildId, string keyword)
