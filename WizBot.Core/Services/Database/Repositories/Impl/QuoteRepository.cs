@@ -49,7 +49,7 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
 
         public void RemoveAllByKeyword(ulong guildId, string keyword)
         {
-            _set.RemoveRange(_set.AsQueryable().Where(x => x.GuildId == guildId && x.Keyword.ToUpperInvariant() == keyword));
+            _set.RemoveRange(_set.AsQueryable().Where(x => x.GuildId == guildId && x.Keyword.ToUpper() == keyword));
         }
 
     }

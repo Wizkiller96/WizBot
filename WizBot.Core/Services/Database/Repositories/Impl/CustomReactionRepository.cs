@@ -25,7 +25,7 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
 
         public CustomReaction GetByGuildIdAndInput(ulong? guildId, string input)
         {
-            return _set.FirstOrDefault(x => x.GuildId == guildId && x.Trigger.ToUpperInvariant() == input);
+            return _set.FirstOrDefault(x => x.GuildId == guildId && x.Trigger.ToUpper() == input);
         }
 
         /// <summary>

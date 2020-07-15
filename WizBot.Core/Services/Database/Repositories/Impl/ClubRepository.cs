@@ -65,7 +65,7 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
         public int GetNextDiscrim(string clubName)
         {
             return _set.AsQueryable()
-                .Where(x => x.Name.ToUpperInvariant() == clubName.ToUpperInvariant())
+                .Where(x => x.Name.ToUpper() == clubName.ToUpper())
                 .Select(x => x.Discrim)
                 .DefaultIfEmpty()
                 .Max() + 1;
