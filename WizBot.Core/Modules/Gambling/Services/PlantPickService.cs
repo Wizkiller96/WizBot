@@ -60,9 +60,18 @@ namespace WizBot.Modules.Gambling.Services
 
             cmd.OnMessageNoTrigger += PotentialFlowerGeneration;
 
-            _generationChannels = new ConcurrentHashSet<ulong>(bot
-                .AllGuildConfigs
-                .SelectMany(c => c.GenerateCurrencyChannelIds.Select(obj => obj.ChannelId)));
+            using (var uow = db.GetDbContext())
+            {
+                var guildIds = client.Guilds.Select(x => x.Id).ToList();
+                var configs = uow._context.Set<GuildConfig>()
+                    .AsQueryable()
+                    .Include(x => x.GenerateCurrencyChannelIds)
+                    .Where(x => guildIds.Contains(x.GuildId))
+                    .ToList();
+
+                _generationChannels = new ConcurrentHashSet<ulong>(configs
+                    .SelectMany(c => c.GenerateCurrencyChannelIds.Select(obj => obj.ChannelId)));
+            }
         }
 
         private string GetText(ulong gid, string key, params object[] rep)

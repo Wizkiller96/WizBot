@@ -32,8 +32,7 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
         private IQueryable<GuildConfig> IncludeEverything()
         {
             return _set
-                .Include(gc => gc.VcRoleInfos)
-                .Include(gc => gc.GenerateCurrencyChannelIds)
+                .AsQueryable()
                 .Include(gc => gc.FilterInvitesChannelIds)
                 .Include(gc => gc.FilterWordsChannelIds)
                 .Include(gc => gc.FilteredWords)
@@ -99,9 +98,11 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
 
         public GuildConfig LogSettingsFor(ulong guildId)
         {
-            var config = _set.Include(gc => gc.LogSetting)
-                            .ThenInclude(gc => gc.IgnoredChannels)
-               .FirstOrDefault(x => x.GuildId == guildId);
+            var config = _set
+                .AsQueryable()
+                .Include(gc => gc.LogSetting)
+                    .ThenInclude(gc => gc.IgnoredChannels)
+                .FirstOrDefault(x => x.GuildId == guildId);
 
             if (config == null)
             {
@@ -160,6 +161,7 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
         public IEnumerable<FollowedStream> GetFollowedStreams()
         {
             return _set
+                .AsQueryable()
                 .Include(x => x.FollowedStreams)
                 .SelectMany(gc => gc.FollowedStreams)
                 .ToArray();
@@ -203,6 +205,7 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
         public IEnumerable<GeneratingChannel> GetGeneratingChannels()
         {
             return _set
+                .AsQueryable()
                 .Include(x => x.GenerateCurrencyChannelIds)
                 .Where(x => x.GenerateCurrencyChannelIds.Any())
                 .SelectMany(x => x.GenerateCurrencyChannelIds)

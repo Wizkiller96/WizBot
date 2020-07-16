@@ -32,7 +32,17 @@ namespace WizBot.Modules.Administration.Services
             ToAssign = new ConcurrentDictionary<ulong, ConcurrentQueue<(bool, IGuildUser, IRole)>>();
             var missingRoles = new ConcurrentBag<VcRoleInfo>();
 
-            Task.WhenAll(bot.AllGuildConfigs.Select(InitializeVcRole));
+            using (var uow = db.GetDbContext())
+            {
+                var guildIds = client.Guilds.Select(x => x.Id).ToList();
+                var configs = uow._context.Set<GuildConfig>()
+                    .AsQueryable()
+                    .Include(x => x.VcRoleInfos)
+                    .Where(x => guildIds.Contains(x.GuildId))
+                    .ToList();
+
+                Task.WhenAll(configs.Select(InitializeVcRole));
+            }
 
             Task.Run(async () =>
             {
@@ -72,7 +82,17 @@ namespace WizBot.Modules.Administration.Services
 
         private Task Bot_JoinedGuild(GuildConfig arg)
         {
-            var _ = InitializeVcRole(arg);
+            // includeall no longer loads vcrole
+            // need to load new guildconfig with vc role included 
+            using (var uow = _db.GetDbContext())
+            {
+                var configWithVcRole = uow.GuildConfigs.ForId(
+                    arg.GuildId,
+                    set => set.Include(x => x.VcRoleInfos)
+                );
+                var _ = InitializeVcRole(configWithVcRole);
+            }
+
             return Task.CompletedTask;
         }
 
