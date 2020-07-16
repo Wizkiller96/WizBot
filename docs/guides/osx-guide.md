@@ -12,7 +12,7 @@
 
 ## Prerequisites
 
-- OSX 10.12 (Sierra) or higher (needed for .NET Core 2.x).
+- OSX 10.12 (Sierra) or higher (needed for .NET Core 3.x).
 - [Homebrew](http://brew.sh/).
 - [Create a Discord Bot application](../../jsons-explained/#creating-discord-bot-application) and [invite the bot to your server](../../jsons-explained/#inviting-your-bot-to-your-server).
   
@@ -34,7 +34,7 @@ npm install pm2@3.1.3 -g
 
 ##### **Installing dotNET Core SDK**
 
-- Download [dotNET Core SDK 2.1](https://dotnet.microsoft.com/download/thank-you/dotnet-sdk-2.1.801-macos-x64-installer)
+- Download [dotNET Core SDK 3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1)
 - Open the `.pkg` file you've downloaded and install it.
 - Run this command in Terminal. There won't be any output. (copy-paste the entire block):
 
