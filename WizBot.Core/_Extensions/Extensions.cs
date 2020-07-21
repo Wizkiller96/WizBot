@@ -39,6 +39,9 @@ namespace WizBot.Extensions
 
         public static Regex UrlRegex = new Regex(@"^(https?|ftp)://(?<path>[^\s/$.?#].[^\s]*)$", RegexOptions.Compiled);
 
+        public static List<ulong> GetGuildIds(this DiscordSocketClient client)
+            => client.Guilds.Select(x => x.Id).ToList();
+
         /// <summary>
         /// Generates a string in the format HHH:mm if timespan is <= 2m.
         /// Generates a string in the format 00:mm:ss if timespan is less than 2m.

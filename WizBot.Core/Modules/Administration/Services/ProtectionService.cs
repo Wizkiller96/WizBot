@@ -27,7 +27,6 @@ namespace WizBot.Modules.Administration.Services
         private readonly DiscordSocketClient _client;
         private readonly MuteService _mute;
         private readonly DbService _db;
-        private readonly WizBot _bot;
 
         public ProtectionService(DiscordSocketClient client, WizBot bot, MuteService mute, DbService db)
         {
@@ -35,14 +34,28 @@ namespace WizBot.Modules.Administration.Services
             _client = client;
             _mute = mute;
             _db = db;
-            _bot = bot;
 
-            Initialize();
+            var ids = client.GetGuildIds();
+            using (var uow = db.GetDbContext())
+            {
+                var configs = uow._context.Set<GuildConfig>()
+                    .AsQueryable()
+                    .Include(x => x.AntiRaidSetting)
+                    .Include(x => x.AntiSpamSetting)
+                    .ThenInclude(x => x.IgnoredChannels)
+                    .Where(x => ids.Contains(x.GuildId))
+                    .ToList();
+
+                foreach (var gc in configs)
+                {
+                    Initialize(gc);
+                }
+            }
 
             _client.MessageReceived += HandleAntiSpam;
             _client.UserJoined += HandleAntiRaid;
 
-            _bot.JoinedGuild += _bot_JoinedGuild;
+            bot.JoinedGuild += _bot_JoinedGuild;
             _client.LeftGuild += _client_LeftGuild;
         }
 
@@ -58,16 +71,17 @@ namespace WizBot.Modules.Administration.Services
 
         private Task _bot_JoinedGuild(GuildConfig gc)
         {
-            var _ = Task.Run(() => Initialize(gc));
-            return Task.CompletedTask;
-        }
-
-        private void Initialize()
-        {
-            foreach (var gc in _bot.AllGuildConfigs)
+            using (var uow = _db.GetDbContext())
             {
-                Initialize(gc);
+                var gcWithData = uow.GuildConfigs.ForId(gc.GuildId,
+                    x => x
+                        .Include(x => x.AntiRaidSetting)
+                        .Include(x => x.AntiSpamSetting)
+                        .ThenInclude(x => x.IgnoredChannels));
+
+                Initialize(gcWithData);
             }
+            return Task.CompletedTask;
         }
 
         private void Initialize(GuildConfig gc)

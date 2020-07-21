@@ -10,6 +10,7 @@ using WizBot.Extensions;
 using WizBot.Core.Services;
 using NLog;
 using Microsoft.EntityFrameworkCore;
+using WizBot.Core.Services.Database.Models;
 
 namespace WizBot.Modules.Permissions.Services
 {
@@ -73,28 +74,39 @@ namespace WizBot.Modules.Permissions.Services
             return words;
         }
 
-        public FilterService(DiscordSocketClient _client, WizBot bot, DbService db)
+        public FilterService(DiscordSocketClient client, WizBot bot, DbService db)
         {
             _log = LogManager.GetCurrentClassLogger();
             _db = db;
 
-            InviteFilteringServers = new ConcurrentHashSet<ulong>(bot.AllGuildConfigs.Where(gc => gc.FilterInvites).Select(gc => gc.GuildId));
-            InviteFilteringChannels = new ConcurrentHashSet<ulong>(bot.AllGuildConfigs.SelectMany(gc => gc.FilterInvitesChannelIds.Select(fci => fci.ChannelId)));
+            using (var uow = db.GetDbContext())
+            {
+                var ids = client.GetGuildIds();
+                var configs = uow._context.Set<GuildConfig>()
+                    .AsQueryable()
+                    .Include(x => x.FilteredWords)
+                    .Include(x => x.FilterLinksChannelIds)
+                    .Include(x => x.FilterWordsChannelIds)
+                    .Include(x => x.FilterInvitesChannelIds)
+                    .Where(gc => ids.Contains(gc.GuildId))
+                    .ToList();
 
-            LinkFilteringServers = new ConcurrentHashSet<ulong>(bot.AllGuildConfigs.Where(gc => gc.FilterLinks).Select(gc => gc.GuildId));
-            LinkFilteringChannels = new ConcurrentHashSet<ulong>(bot.AllGuildConfigs.SelectMany(gc => gc.FilterLinksChannelIds.Select(fci => fci.ChannelId)));
+                InviteFilteringServers = new ConcurrentHashSet<ulong>(configs.Where(gc => gc.FilterInvites).Select(gc => gc.GuildId));
+                InviteFilteringChannels = new ConcurrentHashSet<ulong>(configs.SelectMany(gc => gc.FilterInvitesChannelIds.Select(fci => fci.ChannelId)));
 
-            var dict = bot.AllGuildConfigs.ToDictionary(gc => gc.GuildId, gc => new ConcurrentHashSet<string>(gc.FilteredWords.Select(fw => fw.Word)));
+                LinkFilteringServers = new ConcurrentHashSet<ulong>(configs.Where(gc => gc.FilterLinks).Select(gc => gc.GuildId));
+                LinkFilteringChannels = new ConcurrentHashSet<ulong>(configs.SelectMany(gc => gc.FilterLinksChannelIds.Select(fci => fci.ChannelId)));
 
-            ServerFilteredWords = new ConcurrentDictionary<ulong, ConcurrentHashSet<string>>(dict);
+                var dict = configs.ToDictionary(gc => gc.GuildId, gc => new ConcurrentHashSet<string>(gc.FilteredWords.Select(fw => fw.Word)));
 
-            var serverFiltering = bot.AllGuildConfigs.Where(gc => gc.FilterWords);
-            WordFilteringServers = new ConcurrentHashSet<ulong>(serverFiltering.Select(gc => gc.GuildId));
-            WordFilteringChannels = new ConcurrentHashSet<ulong>(bot.AllGuildConfigs.SelectMany(gc => gc.FilterWordsChannelIds.Select(fwci => fwci.ChannelId)));
+                ServerFilteredWords = new ConcurrentDictionary<ulong, ConcurrentHashSet<string>>(dict);
 
-            //LinkFilteringServers = new ConcurrentHashSet<ulong>(bot.AllGuildConfigs.Where(gc => gc.FilterLinks).Select(x => x.GuildId));
+                var serverFiltering = configs.Where(gc => gc.FilterWords);
+                WordFilteringServers = new ConcurrentHashSet<ulong>(serverFiltering.Select(gc => gc.GuildId));
+                WordFilteringChannels = new ConcurrentHashSet<ulong>(configs.SelectMany(gc => gc.FilterWordsChannelIds.Select(fwci => fwci.ChannelId)));
+            }
 
-            _client.MessageUpdated += (oldData, newMsg, channel) =>
+            client.MessageUpdated += (oldData, newMsg, channel) =>
             {
                 var _ = Task.Run(() =>
                 {

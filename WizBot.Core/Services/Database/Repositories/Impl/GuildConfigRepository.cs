@@ -33,14 +33,8 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
         {
             return _set
                 .AsQueryable()
-                .Include(gc => gc.FilterInvitesChannelIds)
-                .Include(gc => gc.FilterWordsChannelIds)
-                .Include(gc => gc.FilteredWords)
                 .Include(gc => gc.CommandCooldowns)
                 .Include(gc => gc.GuildRepeaters)
-                .Include(gc => gc.AntiRaidSetting)
-                .Include(gc => gc.AntiSpamSetting)
-                    .ThenInclude(x => x.IgnoredChannels)
                 .Include(gc => gc.FeedSubs)
                     .ThenInclude(x => x.GuildConfig)
                 .Include(gc => gc.FollowedStreams)
@@ -51,7 +45,8 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
                 .Include(gc => gc.MusicSettings)
                 .Include(gc => gc.DelMsgOnCmdChannels)
                 .Include(gc => gc.ReactionRoleMessages)
-                    .ThenInclude(x => x.ReactionRoles);
+                    .ThenInclude(x => x.ReactionRoles)
+                ;
         }
 
         /// <summary>
