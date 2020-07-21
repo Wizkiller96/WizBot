@@ -221,12 +221,9 @@ namespace WizBot.Modules.Xp
             List<UserXpStats> allUsers = new List<UserXpStats>();
             if (opts.Clean)
             {
-                var now = DateTime.UtcNow;
-                var res = _tracker.LastDownloads.AddOrUpdate(Context.Guild.Id, now, (key, old) => (now - old) > TimeSpan.FromHours(1) ? now : old);
-                if (res == now)
-                {
-                    await ctx.Guild.DownloadUsersAsync().ConfigureAwait(false);
-                }
+                await Context.Channel.TriggerTypingAsync().ConfigureAwait(false);
+                await _tracker.EnsureUsersDownloadedAsync(ctx.Guild).ConfigureAwait(false);
+
                 allUsers = _service.GetTopUserXps(ctx.Guild.Id, 1000)
                     .Where(user => !(socketGuild.GetUser(user.UserId) is null))
                     .ToList();

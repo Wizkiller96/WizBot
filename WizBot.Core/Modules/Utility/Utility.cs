@@ -17,6 +17,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using WizBot.Core.Common;
 
 namespace WizBot.Modules.Utility
 {
@@ -28,10 +29,11 @@ namespace WizBot.Modules.Utility
         private readonly WizBot _bot;
         private readonly DbService _db;
         private readonly IHttpClientFactory _httpFactory;
+        private readonly DownloadTracker _tracker;
 
         public Utility(WizBot wizbot, DiscordSocketClient client,
             IStatsService stats, IBotCredentials creds,
-            DbService db, IHttpClientFactory factory)
+            DbService db, IHttpClientFactory factory, DownloadTracker tracker)
         {
             _client = client;
             _stats = stats;
@@ -39,6 +41,7 @@ namespace WizBot.Modules.Utility
             _bot = wizbot;
             _db = db;
             _httpFactory = factory;
+            _tracker = tracker;
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -94,9 +97,11 @@ namespace WizBot.Modules.Utility
         [RequireContext(ContextType.Guild)]
         public async Task InRole([Leftover] IRole role)
         {
-            var rng = new WizBotRandom();
-            var usrs = (await ctx.Guild.GetUsersAsync().ConfigureAwait(false)).ToArray();
-            var roleUsers = usrs
+            await Context.Channel.TriggerTypingAsync().ConfigureAwait(false);
+            await _tracker.EnsureUsersDownloadedAsync(ctx.Guild).ConfigureAwait(false);
+
+            var users = await ctx.Guild.GetUsersAsync();
+            var roleUsers = users
                 .Where(u => u.RoleIds.Contains(role.Id))
                 .Select(u => u.ToString())
                 .ToArray();

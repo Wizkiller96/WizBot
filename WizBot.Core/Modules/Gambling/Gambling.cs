@@ -517,12 +517,9 @@ namespace WizBot.Modules.Gambling
                 {
                     cleanRichest = uow.DiscordUsers.GetTopRichest(_client.CurrentUser.Id, 10_000);
                 }
-                var res = _tracker.LastDownloads.AddOrUpdate(Context.Guild.Id, now, (key, old) => (now - old) > TimeSpan.FromHours(1) ? now : old);
-                if (res == now)
-                {
-                    await Context.Channel.TriggerTypingAsync().ConfigureAwait(false);
-                    await Context.Guild.DownloadUsersAsync().ConfigureAwait(false);
-                }
+                
+                await Context.Channel.TriggerTypingAsync().ConfigureAwait(false);
+                await _tracker.EnsureUsersDownloadedAsync(ctx.Guild).ConfigureAwait(false);
 
                 var sg = (SocketGuild)Context.Guild;
                 cleanRichest = cleanRichest.Where(x => sg.GetUser(x.UserId) != null)
