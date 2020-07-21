@@ -6,6 +6,7 @@
     <ApplicationIcon>wizbot_icon.ico</ApplicationIcon>
     <LangVersion>preview</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RollForward>Major</RollForward>
     <RunWorkingDirectory>$(MSBuildProjectDirectory)</RunWorkingDirectory>
   </PropertyGroup>
 
@@ -48,7 +49,7 @@
 
   <PropertyGroup Condition=" '$(Configuration)' == 'GlobalWizBot' ">
     <DefineConstants>$(DefineConstants);GLOBAL_WIZBOT</DefineConstants>
-    <NoWarn>$(NoWarn);CS1573;CS1591</NoWarn>
+    <NoWarn>$(NoWarn);CS1573;CS1591;CS8032</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\WizBot.Core\WizBot.Core.csproj" />
