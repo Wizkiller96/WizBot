@@ -40,8 +40,11 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
         {
             var rngk = new WizBotRandom();
             return (await _set.AsQueryable()
-                .Where(q => q.Text.ContainsNoCase(text, StringComparison.OrdinalIgnoreCase)
-                    && q.GuildId == guildId && q.Keyword == keyword)
+                .Where(q => q.GuildId == guildId
+                            && q.Keyword == keyword
+                            && EF.Functions.Like(q.Text.ToUpper(), $"%{text.ToUpper()}%")
+                            // && q.Text.Contains(text, StringComparison.OrdinalIgnoreCase)
+                            )
                 .ToListAsync())
                 .OrderBy(q => rngk.Next())
                 .FirstOrDefault();

@@ -24,15 +24,6 @@ namespace WizBot.Extensions
             return Regex.Replace(input, "<.*?>", String.Empty);
         }
 
-        /// <summary>
-        /// Easy use of fast, efficient case-insensitive Contains check with StringComparison Member Types 
-        /// CurrentCulture, CurrentCultureIgnoreCase, InvariantCulture, InvariantCultureIgnoreCase, Ordinal, OrdinalIgnoreCase
-        /// </summary>    
-        public static bool ContainsNoCase(this string str, string contains, StringComparison compare)
-        {
-            return str.IndexOf(contains, compare) >= 0;
-        }
-
         public static string TrimTo(this string str, int maxLength, bool hideDots = false)
         {
             if (maxLength < 0)
