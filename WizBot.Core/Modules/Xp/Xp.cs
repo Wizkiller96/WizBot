@@ -162,10 +162,10 @@ namespace WizBot.Modules.Xp
         [WizBotCommand, Usage, Description, Aliases]
         [UserPerm(GuildPerm.ManageChannels)]
         [RequireContext(ContextType.Guild)]
-        public async Task XpExclude(Channel _, [Leftover] ITextChannel channel = null)
+        public async Task XpExclude(Channel _, [Leftover] IChannel channel = null)
         {
             if (channel == null)
-                channel = (ITextChannel)ctx.Channel;
+                channel = ctx.Channel;
 
             var ex = _service.ToggleExcludeChannel(ctx.Guild.Id, channel.Id);
 

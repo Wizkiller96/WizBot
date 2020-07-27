@@ -23,6 +23,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using StackExchange.Redis;
 using Image = SixLabors.ImageSharp.Image;
 
 namespace WizBot.Modules.Xp.Services
@@ -62,6 +63,7 @@ namespace WizBot.Modules.Xp.Services
         private readonly Task updateXpTask;
         private readonly IHttpClientFactory _httpFactory;
         private XpTemplate _template;
+        private readonly DiscordSocketClient _client;
 
         public XpService(DiscordSocketClient client, CommandHandler cmd, IBotConfigProvider bc,
             WizBot bot, DbService db, WizBotStrings strings, IDataCache cache,
@@ -78,6 +80,7 @@ namespace WizBot.Modules.Xp.Services
             _creds = creds;
             _cs = cs;
             _httpFactory = http;
+            _client = client;
 
             InternalReloadXpTemplate();
 
@@ -115,6 +118,14 @@ namespace WizBot.Modules.Xp.Services
                     .Select(x => x.GuildId));
 
             _cmd.OnMessageNoTrigger += _cmd_OnMessageNoTrigger;
+            _client.UserVoiceStateUpdated += _client_OnUserVoiceStateUpdated;
+
+            // Scan guilds on startup.
+            _client.GuildAvailable += _client_OnGuildAvailable;
+            foreach (var guild in _client.Guilds)
+            {
+                _client_OnGuildAvailable(guild);
+            }
 
             updateXpTask = Task.Run(UpdateLoop);
         }
@@ -126,7 +137,9 @@ namespace WizBot.Modules.Xp.Services
                 await Task.Delay(TimeSpan.FromSeconds(5));
                 try
                 {
-                    var toNotify = new List<(IMessageChannel MessageChannel, IUser User, int Level, XpNotificationLocation NotifyType, NotifOf NotifOf)>();
+                    var toNotify =
+                        new List<(IGuild Guild, IMessageChannel MessageChannel, IUser User, int Level,
+                            XpNotificationLocation NotifyType, NotifOf NotifOf)>();
                     var roleRewards = new Dictionary<ulong, List<XpRoleReward>>();
                     var curRewards = new Dictionary<ulong, List<XpCurrencyReward>>();
 
@@ -163,7 +176,9 @@ namespace WizBot.Modules.Xp.Services
                             {
                                 du.LastLevelUp = DateTime.UtcNow;
                                 var first = item.First();
-                                if (du.NotifyOnLevelUp != XpNotificationLocation.None) toNotify.Add((first.Channel, first.User, newGlobalLevelData.Level, du.NotifyOnLevelUp, NotifOf.Global));
+                                if (du.NotifyOnLevelUp != XpNotificationLocation.None)
+                                    toNotify.Add((first.Guild, first.Channel, first.User, newGlobalLevelData.Level,
+                                        du.NotifyOnLevelUp, NotifOf.Global));
                             }
 
                             if (oldGuildLevelData.Level < newGuildLevelData.Level)
@@ -171,7 +186,9 @@ namespace WizBot.Modules.Xp.Services
                                 usr.LastLevelUp = DateTime.UtcNow;
                                 //send level up notification
                                 var first = item.First();
-                                if (usr.NotifyOnLevelUp != XpNotificationLocation.None) toNotify.Add((first.Channel, first.User, newGuildLevelData.Level, usr.NotifyOnLevelUp, NotifOf.Server));
+                                if (usr.NotifyOnLevelUp != XpNotificationLocation.None)
+                                    toNotify.Add((first.Guild, first.Channel, first.User, newGuildLevelData.Level,
+                                        usr.NotifyOnLevelUp, NotifOf.Server));
 
                                 //give role
                                 if (!roleRewards.TryGetValue(usr.GuildId, out var rrews))
@@ -216,11 +233,19 @@ namespace WizBot.Modules.Xp.Services
                             if (x.NotifyType == XpNotificationLocation.Dm)
                             {
                                 var chan = await x.User.GetOrCreateDMChannelAsync();
-                                if (chan != null) await chan.SendConfirmAsync(_strings.GetText("level_up_dm", (x.MessageChannel as ITextChannel)?.GuildId, "xp", x.User.Mention, Format.Bold(x.Level.ToString()), Format.Bold((x.MessageChannel as ITextChannel)?.Guild.ToString() ?? "-")));
+                                if (chan != null)
+                                    await chan.SendConfirmAsync(_strings.GetText("level_up_dm",
+                                        x.Guild.Id,
+                                        "xp",
+                                        x.User.Mention, Format.Bold(x.Level.ToString()),
+                                        Format.Bold(x.Guild.ToString() ?? "-")));
                             }
-                            else // channel
+                            else if (x.MessageChannel != null) // channel
                             {
-                                await x.MessageChannel.SendConfirmAsync(_strings.GetText("level_up_channel", (x.MessageChannel as ITextChannel)?.GuildId, "xp", x.User.Mention, Format.Bold(x.Level.ToString())));
+                                await x.MessageChannel.SendConfirmAsync(_strings.GetText("level_up_channel",
+                                    x.Guild.Id,
+                                    "xp",
+                                    x.User.Mention, Format.Bold(x.Level.ToString())));
                             }
                         }
                         else
@@ -235,7 +260,10 @@ namespace WizBot.Modules.Xp.Services
                                 chan = x.MessageChannel;
                             }
 
-                            await chan.SendConfirmAsync(_strings.GetText("level_up_global", (x.MessageChannel as ITextChannel)?.GuildId, "xp", x.User.Mention, Format.Bold(x.Level.ToString())));
+                            await chan.SendConfirmAsync(_strings.GetText("level_up_global",
+                                x.Guild.Id,
+                                "xp",
+                                x.User.Mention, Format.Bold(x.Level.ToString())));
                         }
                     }));
                 }
@@ -403,6 +431,142 @@ namespace WizBot.Modules.Xp.Services
             }
         }
 
+        private Task _client_OnGuildAvailable(SocketGuild guild)
+        {
+            Task.Run(() =>
+            {
+                foreach (var channel in guild.VoiceChannels)
+                {
+                    ScanChannelForVoiceXp(channel);
+                }
+            });
+
+            return Task.CompletedTask;
+        }
+
+        private Task _client_OnUserVoiceStateUpdated(SocketUser socketUser, SocketVoiceState before, SocketVoiceState after)
+        {
+            if (!(socketUser is SocketGuildUser user) || user.IsBot)
+                return Task.CompletedTask;
+
+            var _ = Task.Run(() =>
+            {
+                if (before.VoiceChannel != null)
+                {
+                    ScanChannelForVoiceXp(before.VoiceChannel);
+                }
+
+                if (after.VoiceChannel != null && after.VoiceChannel != before.VoiceChannel)
+                {
+                    ScanChannelForVoiceXp(after.VoiceChannel);
+                }
+                else if (after.VoiceChannel == null)
+                {
+                    // In this case, the user left the channel and the previous for loops didn't catch
+                    // it because it wasn't in any new channel. So we need to get rid of it.
+                    UserLeftVoiceChannel(user, before.VoiceChannel);
+                }
+            });
+
+            return Task.CompletedTask;
+        }
+
+        private void ScanChannelForVoiceXp(SocketVoiceChannel channel)
+        {
+            if (ShouldTrackVoiceChannel(channel))
+            {
+                foreach (var user in channel.Users)
+                {
+                    ScanUserForVoiceXp(user, channel);
+                }
+            }
+            else
+            {
+                foreach (var user in channel.Users)
+                {
+                    UserLeftVoiceChannel(user, channel);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Assumes that the channel itself is valid and adding xp.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="channel"></param>
+        private void ScanUserForVoiceXp(SocketGuildUser user, SocketVoiceChannel channel)
+        {
+            if (UserParticipatingInVoiceChannel(user) && ShouldTrackXp(user, channel.Id))
+            {
+                UserJoinedVoiceChannel(user);
+            }
+            else
+            {
+                UserLeftVoiceChannel(user, channel);
+            }
+        }
+
+        private bool ShouldTrackVoiceChannel(SocketVoiceChannel channel)
+        {
+            return channel.Users.Where(UserParticipatingInVoiceChannel).Take(2).Count() >= 2;
+        }
+
+        private bool UserParticipatingInVoiceChannel(SocketGuildUser user)
+        {
+            return !user.IsDeafened && !user.IsMuted && !user.IsSelfDeafened && !user.IsSelfMuted;
+        }
+
+        private void UserJoinedVoiceChannel(SocketGuildUser user)
+        {
+            var key = $"{_creds.RedisKey()}_user_xp_vc_join_{user.Id}";
+            var value = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
+            _cache.Redis.GetDatabase().StringSet(key, value, TimeSpan.FromMinutes(_bc.BotConfig.MaxXpMinutes), When.NotExists);
+        }
+
+        private void UserLeftVoiceChannel(SocketGuildUser user, SocketVoiceChannel channel)
+        {
+            var key = $"{_creds.RedisKey()}_user_xp_vc_join_{user.Id}";
+            var value = _cache.Redis.GetDatabase().StringGet(key);
+            _cache.Redis.GetDatabase().KeyDelete(key);
+
+            // Allow for if this function gets called multiple times when a user leaves a channel.
+            if (value.IsNull) return;
+
+            if (!value.TryParse(out long startUnixTime))
+                return;
+
+            var dateStart = DateTimeOffset.FromUnixTimeSeconds(startUnixTime);
+            var dateEnd = DateTimeOffset.UtcNow;
+            var minutes = (dateEnd - dateStart).TotalMinutes;
+            var xp = _bc.BotConfig.VoiceXpPerMinute * minutes;
+            var actualXp = (int)Math.Floor(xp);
+
+            if (actualXp > 0)
+            {
+                _addMessageXp.Enqueue(new UserCacheItem
+                {
+                    Guild = channel.Guild,
+                    User = user,
+                    XpAmount = actualXp
+                });
+            }
+        }
+
+        private bool ShouldTrackXp(SocketGuildUser user, ulong channelId)
+        {
+            if (_excludedChannels.TryGetValue(user.Guild.Id, out var chans) &&
+                chans.Contains(channelId)) return false;
+
+            if (_excludedServers.Contains(user.Guild.Id)) return false;
+
+            if (_excludedRoles.TryGetValue(user.Guild.Id, out var roles) &&
+                user.Roles.Any(x => roles.Contains(x.Id)))
+                return false;
+
+            return true;
+        }
+
         private Task _cmd_OnMessageNoTrigger(IUserMessage arg)
         {
             if (!(arg.Author is SocketGuildUser user) || user.IsBot)
@@ -410,15 +574,7 @@ namespace WizBot.Modules.Xp.Services
 
             var _ = Task.Run(() =>
             {
-                if (_excludedChannels.TryGetValue(user.Guild.Id, out var chans) &&
-                    chans.Contains(arg.Channel.Id))
-                    return;
-
-                if (_excludedServers.Contains(user.Guild.Id))
-                    return;
-
-                if (_excludedRoles.TryGetValue(user.Guild.Id, out var roles) &&
-                    user.Roles.Any(x => roles.Contains(x.Id)))
+                if (!ShouldTrackXp(user, arg.Channel.Id))
                     return;
 
                 if (!arg.Content.Contains(' ') && arg.Content.Length < 5)
@@ -966,6 +1122,8 @@ namespace WizBot.Modules.Xp.Services
         public Task Unload()
         {
             _cmd.OnMessageNoTrigger -= _cmd_OnMessageNoTrigger;
+            _client.UserVoiceStateUpdated -= _client_OnUserVoiceStateUpdated;
+            _client.GuildAvailable -= _client_OnGuildAvailable;
             return Task.CompletedTask;
         }
 

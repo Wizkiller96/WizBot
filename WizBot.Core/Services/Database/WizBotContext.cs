@@ -163,6 +163,12 @@ namespace WizBot.Core.Services.Database
             botConfigEntity.Property(x => x.XpPerMessage)
                 .HasDefaultValue(3);
 
+            botConfigEntity.Property(x => x.VoiceXpPerMinute)
+                .HasDefaultValue(0);
+
+            botConfigEntity.Property(x => x.MaxXpMinutes)
+                .HasDefaultValue(720);
+
             botConfigEntity.Property(x => x.PatreonCurrencyPerCent)
                 .HasDefaultValue(1.0f);
 

@@ -103,6 +103,14 @@
         /// </summary>
         XpMinutesTimeout,
         /// <summary>
+        /// This value represents the average amount of xp earned per minute in VC.
+        /// </summary>
+        VoiceXpPerMinute,
+        /// <summary>
+        /// This value represents the maximum amount of minutes the bot will keep track of a user in a voice channel.
+        /// </summary>
+        MaxXpMinutes,
+        /// <summary>
         /// Minimum price the users can pay to claim a waifu with `.claim`.
         /// Default is 50.
         /// </summary>

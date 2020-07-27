@@ -137,6 +137,18 @@ namespace WizBot.Core.Services.Impl
                         else
                             return false;
                         break;
+                    case BotConfigEditType.VoiceXpPerMinute:
+                        if (double.TryParse(newValue, out var rate) && rate >= 0)
+                            bc.VoiceXpPerMinute = rate;
+                        else
+                            return false;
+                        break;
+                    case BotConfigEditType.MaxXpMinutes:
+                        if (int.TryParse(newValue, out var minutes) && minutes > 0)
+                            bc.MaxXpMinutes = minutes;
+                        else
+                            return false;
+                        break;
                     case BotConfigEditType.PatreonCurrencyPerCent:
                         if (float.TryParse(newValue, out var cents) && cents > 0)
                             bc.PatreonCurrencyPerCent = cents;
