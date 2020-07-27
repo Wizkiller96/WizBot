@@ -16,17 +16,25 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
             BotConfig config;
 
             if (includes == null)
+            {
                 config = _set.Include(bc => bc.RotatingStatusMessages)
                              .Include(bc => bc.RaceAnimals)
-                             .Include(bc => bc.Blacklist)
-                             .Include(bc => bc.EightBallResponses)
-                             .Include(bc => bc.StartupCommands)
-                             .Include(bc => bc.BlockedCommands)
-                             .Include(bc => bc.BlockedModules)
-                             //.Include(bc => bc.CommandCosts)
-                             .FirstOrDefault();
+                    .FirstOrDefault();
+
+                config = _set
+                    .Include(bc => bc.Blacklist)
+                    .Include(bc => bc.EightBallResponses)
+                    .Include(bc => bc.StartupCommands)
+                    .FirstOrDefault();
+
+                config = _set.Include(bc => bc.BlockedCommands)
+                    .Include(bc => bc.BlockedModules)
+                    .FirstOrDefault();
+            }
             else
+            {
                 config = includes(_set).FirstOrDefault();
+            }
 
             if (config == null)
             {
