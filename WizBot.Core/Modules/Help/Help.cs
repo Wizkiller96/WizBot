@@ -29,7 +29,7 @@ namespace WizBot.Modules.Help
         private readonly IServiceProvider _services;
         private readonly DiscordSocketClient _client;
 
-        public EmbedBuilder GetHelpStringEmbed()
+        public (string plainText, EmbedBuilder embed) GetHelpStringEmbed()
         {
             var r = new ReplacementBuilder()
                 .WithDefault(Context)
@@ -39,12 +39,12 @@ namespace WizBot.Modules.Help
 
 
             if (!CREmbed.TryParse(Bc.BotConfig.HelpString, out var embed))
-                return new EmbedBuilder().WithOkColor()
-                    .WithDescription(String.Format(Bc.BotConfig.HelpString, _creds.ClientId, Prefix));
+                return ("", new EmbedBuilder().WithOkColor()
+                    .WithDescription(String.Format(Bc.BotConfig.HelpString, _creds.ClientId, Prefix)));
 
             r.Replace(embed);
 
-            return embed.ToEmbed();
+            return (embed.PlainText, embed.ToEmbed());
         }
 
         public Help(DiscordSocketClient client, IBotCredentials creds, GlobalPermissionService perms, CommandService cmds,
@@ -190,7 +190,8 @@ namespace WizBot.Modules.Help
                     : channel;
                 try
                 {
-                    await ch.EmbedAsync(GetHelpStringEmbed()).ConfigureAwait(false);
+                    var (plainText, helpEmbed) = GetHelpStringEmbed();
+                    await ch.EmbedAsync(helpEmbed, msg: plainText ?? "").ConfigureAwait(false);
                 }
                 catch (Exception)
                 {
