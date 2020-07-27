@@ -288,7 +288,6 @@ namespace WizBot.Extensions
         /// <param name="list"></param>
         public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> items)
         {
-            // Thanks to @Joe4Evr for finding a bug in the old version of the shuffle
             using (var provider = RandomNumberGenerator.Create())
             {
                 var list = items.ToList();

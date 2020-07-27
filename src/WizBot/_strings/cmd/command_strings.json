@@ -1473,61 +1473,46 @@
       "{0}lolchamp Annie sup"
     ]
   },
-  "lolban": {
-    "Cmd": "lolban",
-    "Desc": "Shows top banned champions ordered by ban rate.",
+  "streamadd": {
+    "Cmd": "streamadd sta stadd",
+    "Desc": "Notifies this channel when the stream on the specified URL goes online or offline. Offline notifications will only show if you enable `{0}streamoff`. Maximum 10 per server.",
     "Usage": [
-      "{0}lolban"
-    ]
-  },
-  "smashcast": {
-    "Cmd": "smashcast hb",
-    "Desc": "Notifies this channel when the specified user starts streaming.",
-    "Usage": [
-      "{0}smashcast SomeStreamer"
-    ]
-  },
-  "twitch": {
-    "Cmd": "twitch tw",
-    "Desc": "Notifies this channel when the specified user starts streaming.",
-    "Usage": [
-      "{0}twitch SomeStreamer"
-    ]
-  },
-  "picarto": {
-    "Cmd": "picarto pa",
-    "Desc": "Notifies this channel when the specified user starts streaming.",
-    "Usage": [
-      "{0}picarto SomeStreamer"
-    ]
-  },
-  "mixer": {
-    "Cmd": "mixer bm",
-    "Desc": "Notifies this channel when the specified user starts streaming.",
-    "Usage": [
-      "{0}mixer SomeStreamer"
+      "{0}sta twitch.tv/someguy"
     ]
   },
   "streamremove": {
-    "Cmd": "streamremove strm",
-    "Desc": "Removes notifications of a specified stream on the specified platform on this channel. You can also just specify an url.",
+    "Cmd": "streamrm strm",
+    "Desc": "Stops following the stream on the specified index. (use `{0}stl` to see indexes)",
     "Usage": [
-      "{0}strm Twitch SomeGuy",
-      "{0}strm twitch.tv/someguy"
+      "{0}strm 2"
     ]
   },
-  "streamadd": {
-    "Cmd": "streamadd stadd",
-    "Desc": "Notifies this channel when the user's stream on the specified URL goes online or offline.",
+  "streamlist": {
+    "Cmd": "streamlist stl streamslist",
+    "Desc": "Lists all streams you are following on this server and their respective indexes.",
     "Usage": [
-      "{0}stadd twitch.tv/someguy"
+      "{0}stl"
     ]
   },
-  "liststreams": {
-    "Cmd": "liststreams ls",
-    "Desc": "Lists all streams you are following on this server.",
+  "streamoffline": {
+    "cmd": "streamoff sto stoff",
+    "desc": "Toggles whether the bot will also notify when added streams go offline.",
+    "usage": [
+      "{0}sto"
+    ]
+  },
+  "streammessage": {
+    "cmd": "streammsg stm stmsg",
+    "desc": "Sets the message which will show when the stream on the specified index comes online.",
+    "usage": [
+      "{0}stm 1 Hey @erryone i'm back online!1!!"
+    ]
+  },
+  "streamcheck": {
+    "Cmd": "streamcheck stc",
+    "Desc": "Retrieves information about a stream.",
     "Usage": [
-      "{0}ls"
+      "{0}cs https://twitch.tv/somedude"
     ]
   },
   "convert": {
@@ -1955,13 +1940,6 @@
     "Desc": "Migrate data from old bot configuration",
     "Usage": [
       "{0}migratedata"
-    ]
-  },
-  "checkstream": {
-    "Cmd": "checkstream cs",
-    "Desc": "Checks if a user is online on a certain streaming platform.",
-    "Usage": [
-      "{0}cs twitch MyFavStreamer"
     ]
   },
   "showemojis": {
@@ -3490,20 +3468,6 @@
     "desc": "Shows the id of the specified role.",
     "usage": [
       "{0}rid Some Role"
-    ]
-  },
-  "streamoffline": {
-    "cmd": "streamoff stoff",
-    "desc": "Toggles whether the bot will notify about streams going offline.",
-    "usage": [
-      "{0}stoff"
-    ]
-  },
-  "streammessage": {
-    "cmd": "streammsg",
-    "desc": "Specify an url of a stream you're already following, and a message in order to set a stream notification message which will show up every time stream comes online.",
-    "usage": [
-      "{0}streammsg https://www.twitch.tv/trolhamonas/ Hello world"
     ]
   },
   "updatescheck": {

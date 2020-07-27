@@ -9,9 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using WizBot.Common.Attributes;
 using WizBot.Extensions;
 using WizBot.Modules.Searches.Services;
-using WizBot.Modules.Searches.Common;
-using System.Text.RegularExpressions;
-using System;
 using Discord.WebSocket;
 
 namespace WizBot.Modules.Searches
@@ -28,177 +25,114 @@ namespace WizBot.Modules.Searches
                 _db = db;
             }
 
-            [WizBotCommand, Usage, Description, Aliases]
-            [RequireContext(ContextType.Guild)]
-            [UserPerm(GuildPerm.ManageMessages)]
-            public Task Smashcast([Leftover] string username) =>
-                smashcastRegex.IsMatch(username)
-                ? StreamAdd(username)
-                : TrackStream((ITextChannel)ctx.Channel,
-                    username,
-                    FollowedStream.FType.Smashcast);
-
-            [WizBotCommand, Usage, Description, Aliases]
-            [RequireContext(ContextType.Guild)]
-            [UserPerm(GuildPerm.ManageMessages)]
-            public Task Twitch([Leftover] string username) =>
-                twitchRegex.IsMatch(username)
-                ? StreamAdd(username)
-                : TrackStream((ITextChannel)ctx.Channel,
-                    username,
-                    FollowedStream.FType.Twitch);
-
-            [WizBotCommand, Usage, Description, Aliases]
-            [RequireContext(ContextType.Guild)]
-            [UserPerm(GuildPerm.ManageMessages)]
-            public Task Picarto([Leftover] string username) =>
-                picartoRegex.IsMatch(username)
-                ? StreamAdd(username)
-                : TrackStream((ITextChannel)ctx.Channel,
-                    username,
-                    FollowedStream.FType.Picarto);
-
-            [WizBotCommand, Usage, Description, Aliases]
-            [RequireContext(ContextType.Guild)]
-            [UserPerm(GuildPerm.ManageMessages)]
-            public Task Mixer([Leftover] string username) =>
-                mixerRegex.IsMatch(username)
-                ? StreamAdd(username)
-                : TrackStream((ITextChannel)ctx.Channel,
-                    username,
-                    FollowedStream.FType.Mixer);
-
-            private static readonly Regex twitchRegex = new Regex(@"twitch.tv/(?<name>.+[^/])/?",
-                RegexOptions.Compiled | RegexOptions.IgnoreCase);
-            private static readonly Regex mixerRegex = new Regex(@"mixer.com/(?<name>.+[^/])/?",
-                RegexOptions.Compiled | RegexOptions.IgnoreCase);
-            private static readonly Regex smashcastRegex = new Regex(@"smashcast.tv/(?<name>.+[^/])/?",
-                RegexOptions.Compiled | RegexOptions.IgnoreCase);
-            private static readonly Regex picartoRegex = new Regex(@"picarto.tv/(?<name>.+[^/])/?",
-                RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-            private static readonly Dictionary<FollowedStream.FType, Regex> typesWithRegex = new Dictionary<FollowedStream.FType, Regex>()
-            {
-                { FollowedStream.FType.Mixer, mixerRegex },
-                { FollowedStream.FType.Picarto, picartoRegex },
-                { FollowedStream.FType.Smashcast, smashcastRegex },
-                { FollowedStream.FType.Twitch, twitchRegex },
-            };
+            // private static readonly Regex picartoRegex = new Regex(@"picarto.tv/(?<name>.+[^/])/?",
+            //     RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageMessages)]
             public async Task StreamAdd(string link)
             {
-                var streamRegexes = new(Func<string, Task> Func, Regex Regex)[]
+                var data = await _service.FollowStream(ctx.Guild.Id, ctx.Channel.Id, link);
+                if (data is null)
                 {
-                    (Twitch, twitchRegex),
-                    (Mixer, mixerRegex),
-                    (Smashcast, smashcastRegex),
-                    (Picarto, picartoRegex)
-                };
-
-                foreach (var s in streamRegexes)
-                {
-                    var m = s.Regex.Match(link);
-                    if (m.Captures.Count != 0)
-                    {
-                        await s.Func(m.Groups["name"].ToString()).ConfigureAwait(false);
-                        return;
-                    }
+                    await ReplyErrorLocalizedAsync("stream_not_added").ConfigureAwait(false);
+                    return;
                 }
 
-                await ReplyErrorLocalizedAsync("stream_not_exist").ConfigureAwait(false);
+                var embed = _service.GetEmbed(ctx.Guild.Id, data);
+                await ctx.Channel.EmbedAsync(embed, GetText("stream_tracked")).ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageMessages)]
-            [Priority(0)]
-            public async Task StreamRemove(string link)
+            [Priority(1)]
+            public async Task StreamRemove(int index)
             {
-                var streamRegexes = new(Func<string, Task> Func, Regex Regex)[]
-                {
-                    ((u) => StreamRemove(FollowedStream.FType.Twitch, u), twitchRegex),
-                    ((u) => StreamRemove(FollowedStream.FType.Mixer, u), mixerRegex),
-                    ((u) => StreamRemove(FollowedStream.FType.Smashcast, u), smashcastRegex),
-                    ((u) => StreamRemove(FollowedStream.FType.Picarto, u), picartoRegex),
-                };
+                if (--index < 0)
+                    return;
 
-                foreach (var s in streamRegexes)
+                var fs = await _service.UnfollowStreamAsync(ctx.Guild.Id, index);
+                if (fs is null)
                 {
-                    var m = s.Regex.Match(link);
-                    if (m.Captures.Count != 0)
-                    {
-                        await s.Func(m.Groups["name"].ToString()).ConfigureAwait(false);
-                        return;
-                    }
+                    await ReplyErrorLocalizedAsync("stream_no").ConfigureAwait(false);
+                    return;
                 }
 
-                await ReplyErrorLocalizedAsync("stream_not_exist").ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(
+                    "stream_removed",
+                    Format.Bold(fs.Username),
+                    fs.Type).ConfigureAwait(false);
             }
+
+            // [WizBotCommand, Usage, Description, Aliases]
+            // [RequireContext(ContextType.Guild)]
+            // [UserPerm(GuildPerm.Administrator)]
+            // public async Task StreamsClear()
+            // {
+            //     var count = _service.ClearAllStreams(ctx.Guild.Id);
+            //     await ReplyConfirmLocalizedAsync("streams_cleared", count).ConfigureAwait(false);
+            // }
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            [UserPerm(GuildPerm.Administrator)]
-            public async Task StreamsClear()
-            {
-                var count = _service.ClearAllStreams(ctx.Guild.Id);
-                await ReplyConfirmLocalizedAsync("streams_cleared", count).ConfigureAwait(false);
-            }
-
-            [WizBotCommand, Usage, Description, Aliases]
-            [RequireContext(ContextType.Guild)]
-            public async Task ListStreams(int page = 1)
+            public async Task StreamList(int page = 1)
             {
                 if (page-- < 1)
                 {
                     return;
                 }
 
-                IEnumerable<FollowedStream> streams;
+                List<FollowedStream> streams = new List<FollowedStream>();
                 using (var uow = _db.GetDbContext())
                 {
                     var all = uow.GuildConfigs
-                                 .ForId(ctx.Guild.Id,
-                                      set => set.Include(gc => gc.FollowedStreams))
-                                 .FollowedStreams;
+                        .ForId(ctx.Guild.Id, set => set.Include(gc => gc.FollowedStreams))
+                        .FollowedStreams
+                        .OrderBy(x => x.Id)
+                        .ToList();
 
-                    var toRemove = all.Where(x => ((SocketGuild)ctx.Guild).GetTextChannel(x.ChannelId) == null);
-                    streams = all.Except(toRemove);
-                    if (toRemove.Any())
+                    for (var index = all.Count - 1; index >= 0; index--)
                     {
-                        foreach (var r in toRemove)
+                        var fs = all[index];
+                        if (((SocketGuild)ctx.Guild).GetTextChannel(fs.ChannelId) is null)
                         {
-                            _service.UntrackStream(r);
+                            await _service.UnfollowStreamAsync(fs.GuildId, index);
                         }
-                        uow._context.RemoveRange(toRemove);
-                        uow.SaveChanges();
+                        else
+                        {
+                            streams.Insert(0, fs);
+                        }
                     }
                 }
-                await ctx.SendPaginatedConfirmAsync(page, async (cur) =>
+
+                await ctx.SendPaginatedConfirmAsync(page, (cur) =>
                 {
-                    var thisPage = streams.Skip(cur * 15).Take(15);
-                    if (!thisPage.Any())
+                    var elements = streams.Skip(cur * 12).Take(12)
+                        .ToList();
+
+                    if (elements.Count == 0)
                     {
                         return new EmbedBuilder()
                             .WithDescription(GetText("streams_none"))
                             .WithErrorColor();
                     }
 
-                    var text = string.Join("\n", await Task.WhenAll(thisPage.Select(async snc =>
-                    {
-                        var ch = await ctx.Guild.GetTextChannelAsync(snc.ChannelId).ConfigureAwait(false);
-                        return string.Format("{0}'s stream on {1} channel. 【{2}】",
-                            Format.Code(snc.Username),
-                            Format.Bold(ch?.Name ?? "deleted-channel"),
-                            Format.Code(snc.Type.ToString()));
-                    })).ConfigureAwait(false));
-
-                    return new EmbedBuilder()
-                        .WithDescription(GetText("streams_following", thisPage.Count()) + "\n\n" + text)
+                    var eb = new EmbedBuilder()
+                        .WithTitle(GetText("streams_follow_title"))
                         .WithOkColor();
-                }, streams.Count(), 15).ConfigureAwait(false);
+                    for (var index = 0; index < elements.Count; index++)
+                    {
+                        var elem = elements[index];
+                        eb.AddField(
+                            $"**#{(index + 1) + (12 * cur)}** {elem.Username.ToLower()}",
+                            $"【{elem.Type}】\n<#{elem.ChannelId}>\n{elem.Message?.TrimTo(50)}",
+                            true);
+                    }
+
+                    return eb;
+                }, streams.Count, 12).ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -220,14 +154,12 @@ namespace WizBot.Modules.Searches
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageMessages)]
-            public async Task StreamMessage(string url, [Leftover] string message)
+            public async Task StreamMessage(int index, [Leftover] string message)
             {
-                if (!GetNameAndType(url, out var info))
-                {
-                    await ReplyErrorLocalizedAsync("stream_not_exist").ConfigureAwait(false);
+                if (--index < 0)
                     return;
-                }
-                if (!_service.SetStreamMessage(ctx.Guild.Id, info.Value.Item1, info.Value.Item2, message))
+
+                if (!_service.SetStreamMessage(ctx.Guild.Id, index, message, out var fs))
                 {
                     await ReplyConfirmLocalizedAsync("stream_not_following").ConfigureAwait(false);
                     return;
@@ -235,140 +167,46 @@ namespace WizBot.Modules.Searches
 
                 if (string.IsNullOrWhiteSpace(message))
                 {
-                    await ReplyConfirmLocalizedAsync("stream_message_reset", url).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync("stream_message_reset", Format.Bold(fs.Username))
+                        .ConfigureAwait(false);
                 }
                 else
                 {
-                    await ReplyConfirmLocalizedAsync("stream_message_set", url).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync("stream_message_set", Format.Bold(fs.Username))
+                        .ConfigureAwait(false);
                 }
-            }
-
-            private static bool GetNameAndType(string url, out (string, FollowedStream.FType)? nameAndType)
-            {
-                nameAndType = null;
-                foreach (var kvp in typesWithRegex)
-                {
-                    var m = kvp.Value.Match(url);
-                    if (m.Captures.Count > 0)
-                    {
-                        nameAndType = (m.Groups["name"].ToString(), kvp.Key);
-                        return true;
-                    }
-                }
-                return false;
             }
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            [UserPerm(GuildPerm.ManageMessages)]
-            [Priority(1)]
-            public async Task StreamRemove(FollowedStream.FType type, [Leftover] string username)
+            public async Task StreamCheck(string url)
             {
-                username = username.ToLowerInvariant().Trim();
-
-                var fs = new FollowedStream()
-                {
-                    GuildId = ctx.Guild.Id,
-                    ChannelId = ctx.Channel.Id,
-                    Username = username,
-                    Type = type
-                };
-
-                FollowedStream removed;
-                using (var uow = _db.GetDbContext())
-                {
-                    var config = uow.GuildConfigs.ForId(ctx.Guild.Id, set => set.Include(gc => gc.FollowedStreams));
-                    removed = config.FollowedStreams.FirstOrDefault(x => x.Equals(fs));
-                    if (removed != null)
-                    {
-                        uow._context.Remove(removed);
-                    }
-                    await uow.SaveChangesAsync();
-                }
-                _service.UntrackStream(fs);
-                if (removed == null)
-                {
-                    await ReplyErrorLocalizedAsync("stream_no").ConfigureAwait(false);
-                    return;
-                }
-
-                await ReplyConfirmLocalizedAsync("stream_removed",
-                    Format.Code(username),
-                    type).ConfigureAwait(false);
-            }
-
-            [WizBotCommand, Usage, Description, Aliases]
-            [RequireContext(ContextType.Guild)]
-            public async Task CheckStream(FollowedStream.FType platform, [Leftover] string username)
-            {
-                var stream = username?.Trim();
-                if (string.IsNullOrWhiteSpace(stream))
-                    return;
                 try
                 {
-                    var streamStatus = await _service.GetStreamStatus(platform, username).ConfigureAwait(false);
-                    if (streamStatus == null)
+                    var data = await _service.GetStreamDataAsync(url).ConfigureAwait(false);
+                    if (data is null)
                     {
                         await ReplyErrorLocalizedAsync("no_channel_found").ConfigureAwait(false);
                         return;
                     }
-                    if (streamStatus.Live)
+
+                    if (data.IsLive)
                     {
                         await ReplyConfirmLocalizedAsync("streamer_online",
-                                Format.Bold(username),
-                                Format.Bold(streamStatus.Viewers.ToString()))
+                                Format.Bold(data.Name),
+                                Format.Bold(data.Viewers.ToString()))
                             .ConfigureAwait(false);
                     }
                     else
                     {
-                        await ReplyConfirmLocalizedAsync("streamer_offline",
-                            username).ConfigureAwait(false);
+                        await ReplyConfirmLocalizedAsync("streamer_offline", data.Name)
+                            .ConfigureAwait(false);
                     }
                 }
                 catch
                 {
                     await ReplyErrorLocalizedAsync("no_channel_found").ConfigureAwait(false);
                 }
-            }
-
-            private async Task TrackStream(ITextChannel channel, string username, FollowedStream.FType type)
-            {
-                username = username.ToLowerInvariant().Trim();
-                var fs = new FollowedStream
-                {
-                    GuildId = channel.Guild.Id,
-                    ChannelId = channel.Id,
-                    Username = username,
-                    Type = type,
-                };
-
-                IStreamResponse status;
-                try
-                {
-                    status = await _service.GetStreamStatus(fs.Type, fs.Username).ConfigureAwait(false);
-                }
-                catch
-                {
-                    await ReplyErrorLocalizedAsync("stream_not_exist").ConfigureAwait(false);
-                    return;
-                }
-
-                if (status == null)
-                {
-                    await ReplyErrorLocalizedAsync("stream_not_exist").ConfigureAwait(false);
-                    return;
-                }
-
-                using (var uow = _db.GetDbContext())
-                {
-                    uow.GuildConfigs.ForId(channel.Guild.Id, set => set.Include(gc => gc.FollowedStreams))
-                                    .FollowedStreams
-                                    .Add(fs);
-                    await uow.SaveChangesAsync();
-                }
-
-                _service.TrackStream(fs);
-                await channel.EmbedAsync(_service.GetEmbed(fs, status), GetText("stream_tracked")).ConfigureAwait(false);
             }
         }
     }

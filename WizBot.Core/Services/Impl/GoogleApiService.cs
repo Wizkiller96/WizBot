@@ -20,13 +20,13 @@ namespace WizBot.Core.Services.Impl
 {
     public class GoogleApiService : IGoogleApiService
     {
-        const string search_engine_id = "018084019232060951019:hs5piey28-e";
+        private const string SearchEngineId = "018084019232060951019:hs5piey28-e";
 
         private YouTubeService yt;
         private UrlshortenerService sh;
         private CustomsearchService cs;
 
-        private Logger _log { get; }
+        private readonly Logger _log;
 
         public GoogleApiService(IBotCredentials creds, IHttpClientFactory factory)
         {
@@ -72,6 +72,7 @@ namespace WizBot.Core.Services.Impl
         private readonly IBotCredentials _creds;
         private readonly IHttpClientFactory _httpFactory;
 
+        // todo add quota users
         public async Task<IEnumerable<string>> GetRelatedVideosAsync(string id, int count = 1)
         {
             await Task.Yield();
@@ -188,12 +189,11 @@ namespace WizBot.Core.Services.Impl
 
             if (!videoIdsList.Any())
                 return toReturn;
-            var toGet = 0;
             var remaining = videoIdsList.Count;
 
             do
             {
-                toGet = remaining > 50 ? 50 : remaining;
+                var toGet = remaining > 50 ? 50 : remaining;
                 remaining -= toGet;
 
                 var q = yt.Videos.List("contentDetails");
@@ -218,7 +218,7 @@ namespace WizBot.Core.Services.Impl
 
             var req = cs.Cse.List();
             req.Q = query;
-            req.Cx = search_engine_id;
+            req.Cx = SearchEngineId;
             req.Num = 1;
             req.Fields = "items(image(contextLink,thumbnailLink),link)";
             req.SearchType = CseResource.ListRequest.SearchTypeEnum.Image;

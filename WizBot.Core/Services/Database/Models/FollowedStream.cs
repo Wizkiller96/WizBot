@@ -1,32 +1,49 @@
-﻿namespace WizBot.Core.Services.Database.Models
+﻿using System;
+using WizBot.Core.Modules.Searches.Common;
+
+namespace WizBot.Core.Services.Database.Models
 {
     public class FollowedStream : DbEntity
     {
+        public ulong GuildId { get; set; }
         public ulong ChannelId { get; set; }
         public string Username { get; set; }
         public FType Type { get; set; }
-        public ulong GuildId { get; set; }
         public string Message { get; set; }
 
         public enum FType
         {
-            Twitch, Smashcast, Mixer,
-            Picarto
+            Twitch = 0,
+            [Obsolete("No longer supported.")]
+            Smashcast = 1,
+            [Obsolete("No longer supported.")]
+            Mixer = 2,
+            Picarto = 3,
+            Youtube = 4,
+            Facebook = 5,
         }
 
-        public override int GetHashCode() => 
-            ChannelId.GetHashCode() ^ 
-            Username.ToUpperInvariant().GetHashCode(System.StringComparison.InvariantCulture) ^ 
-            Type.GetHashCode();
+        protected bool Equals(FollowedStream other)
+        {
+            return ChannelId == other.ChannelId
+                   && Username.Trim().ToUpperInvariant() == other.Username.Trim().ToUpperInvariant()
+                   && Type == other.Type;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(ChannelId, Username, (int)Type);
+        }
 
         public override bool Equals(object obj)
         {
-            if (!(obj is FollowedStream fs))
-                return false;
-
-            return fs.ChannelId == ChannelId && 
-                   fs.Username.ToUpperInvariant().Trim() == Username.ToUpperInvariant().Trim() &&
-                   fs.Type == Type;
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((FollowedStream)obj);
         }
+
+        public StreamDataKey CreateKey() =>
+            new StreamDataKey(Type, Username.ToLower());
     }
 }

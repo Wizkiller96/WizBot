@@ -23,12 +23,6 @@ namespace WizBot.Core.Services
         void RemoveAllTimelyClaims();
         bool TryAddAffinityCooldown(ulong userId, out TimeSpan? time);
         bool TryAddDivorceCooldown(ulong userId, out TimeSpan? time);
-        Task SetStreamDataAsync(string url, string data);
-        bool TryGetStreamData(string url, out string dataStr);
-        void SubscribeToStreamUpdates(Func<StreamResponse[], Task> onStreamsUpdated);
-        Task<StreamResponse[]> GetAllStreamDataAsync();
-        Task ClearAllStreamData();
-        Task PublishStreamUpdates(List<StreamResponse> toPublish);
         bool TryGetEconomy(out string data);
         void SetEconomy(string data);
 

@@ -1,179 +1,284 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Discord;
-using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Common;
-using WizBot.Common.Collections;
+using WizBot.Core.Modules.Searches.Common;
+using WizBot.Core.Modules.Searches.Common.StreamNotifications;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Core.Services.Impl;
 using WizBot.Extensions;
-using WizBot.Modules.Searches.Common;
-using WizBot.Modules.Searches.Common.Exceptions;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using NLog;
-using NLog.Fluent;
+using StackExchange.Redis;
+using Discord;
+using Discord.WebSocket;
+using WizBot.Common.Collections;
 
+#nullable enable
 namespace WizBot.Modules.Searches.Services
 {
     public class StreamNotificationService : INService
     {
-#if !GLOBAL_WIZBOT
-        private bool _firstStreamNotifPass = true;
-#endif
         private readonly DbService _db;
-        private readonly DiscordSocketClient _client;
         private readonly WizBotStrings _strings;
-        private readonly IDataCache _cache;
-        private readonly Logger _log;
-        private readonly IHttpClientFactory _httpFactory;
-        private readonly IBotCredentials _creds;
         private readonly Random _rng = new WizBotRandom();
-        private readonly ConcurrentDictionary<
-            (FollowedStream.FType Type, string Username),
-            ConcurrentHashSet<(ulong GuildId, FollowedStream fs)>> _followedStreams
-                = new ConcurrentDictionary<(FollowedStream.FType Type, string Username), ConcurrentHashSet<(ulong GuildId, FollowedStream fs)>>();
-        private readonly ConcurrentHashSet<ulong> _yesOffline = new ConcurrentHashSet<ulong>();
+        private readonly DiscordSocketClient _client;
+        private readonly NotifChecker _streamTracker;
 
-        public StreamNotificationService(WizBot bot, DbService db, DiscordSocketClient client,
-            WizBotStrings strings, IDataCache cache, IBotCredentials creds, IHttpClientFactory factory)
+        private readonly object _shardLock = new object();
+
+        private readonly Dictionary<StreamDataKey, HashSet<ulong>> _trackCounter =
+            new Dictionary<StreamDataKey, HashSet<ulong>>();
+
+        private readonly Dictionary<StreamDataKey, Dictionary<ulong, HashSet<FollowedStream>>> _shardTrackedStreams;
+        private readonly ConcurrentHashSet<ulong> _offlineNotificationServers;
+
+        private readonly ConnectionMultiplexer _multi;
+        private readonly IBotCredentials _creds;
+
+        public StreamNotificationService(DbService db, DiscordSocketClient client,
+            WizBotStrings strings, IDataCache cache, IBotCredentials creds, IHttpClientFactory httpFactory)
         {
             _db = db;
             _client = client;
             _strings = strings;
-            _cache = cache;
+            _multi = cache.Redis;
             _creds = creds;
-            _log = LogManager.GetCurrentClassLogger();
-            _httpFactory = factory;
+            _streamTracker = new NotifChecker(httpFactory, cache.Redis, creds.RedisKey(), client.ShardId == 0);
 
-            if (string.IsNullOrWhiteSpace(_creds.TwitchClientId))
+            using (var uow = db.GetDbContext())
             {
-                _log.Warn($"You don't have {nameof(_creds.TwitchClientId)} specified in credentials.json\n" +
-                    $"You won't be able to follow twitch streams unless you set it and restart the bot.\n" +
-                    $"Guide: https://wizbot.readthedocs.io/en/latest/jsons-explained/#setting-up-your-api-keys");
-            }
+                var ids = client.GetGuildIds();
+                var guildConfigs = uow._context.Set<GuildConfig>()
+                    .AsQueryable()
+                    .Include(x => x.FollowedStreams)
+                    .Where(x => ids.Contains(x.GuildId))
+                    .ToList();
 
-#if !GLOBAL_WIZBOT
-            _followedStreams = bot.AllGuildConfigs
-                .SelectMany(x => x.FollowedStreams)
-                .GroupBy(x => (x.Type, x.Username))
-                .ToDictionary(x => x.Key, x => new ConcurrentHashSet<(ulong, FollowedStream)>(x.Select(y => (y.GuildId, y))))
-                .ToConcurrent();
+                _offlineNotificationServers = new ConcurrentHashSet<ulong>(guildConfigs
+                    .Where(gc => gc.NotifyStreamOffline)
+                    .Select(x => x.GuildId)
+                    .ToList());
 
-            _yesOffline = new ConcurrentHashSet<ulong>(bot.AllGuildConfigs
-                .Where(x => x.NotifyStreamOffline)
-                .Select(x => x.GuildId));
+                var followedStreams = guildConfigs
+                    .SelectMany(x => x.FollowedStreams)
+                    .ToList();
 
-            _cache.SubscribeToStreamUpdates(OnStreamsUpdated);
-            if (_client.ShardId == 0)
-            {
-                var _ = Task.Run(async () =>
+                _shardTrackedStreams = followedStreams
+                    .GroupBy(x => new { Type = x.Type, Name = x.Username.ToLower() })
+                    .ToList()
+                    .ToDictionary(
+                        x => new StreamDataKey(x.Key.Type, x.Key.Name.ToLower()),
+                        x => x.GroupBy(y => y.GuildId)
+                            .ToDictionary(y => y.Key, y => y.AsEnumerable().ToHashSet()));
+
+                // shard 0 will keep track of when there are no more guilds which track a stream
+                if (client.ShardId == 0)
                 {
-                    await Task.Delay(20000).ConfigureAwait(false);
-                    var sw = Stopwatch.StartNew();
-                    while (true)
-                    {
-                        sw.Restart();
-                        try
-                        {
-                            // get old statuses' live data
-                            var oldStreamStatuses = (await _cache.GetAllStreamDataAsync().ConfigureAwait(false))
-                                .ToDictionary(x => x.ApiUrl, x => x.Live);
-                            // clear old statuses
-                            await _cache.ClearAllStreamData().ConfigureAwait(false);
-                            // get a list of streams which are followed right now.
-                            IEnumerable<FollowedStream> fss;
-                            using (var uow = _db.GetDbContext())
-                            {
-                                fss = uow.GuildConfigs.GetFollowedStreams()
-                                    .Distinct(fs => (fs.Type, fs.Username.ToLowerInvariant()));
-                                uow.SaveChanges();
-                            }
-                            // get new statuses for those streams
-                            var newStatuses = (await Task.WhenAll(fss.Select(f => GetStreamStatus(f.Type, f.Username, false))).ConfigureAwait(false))
-                                .Where(x => x != null);
-                            if (_firstStreamNotifPass)
-                            {
-                                _firstStreamNotifPass = false;
-                                continue;
-                            }
+                    var allFollowedStreams = uow._context.Set<FollowedStream>()
+                        .AsQueryable()
+                        .ToList();
 
-                            // for each new one, if there is an old one with a different status, add it to the list
-                            List<StreamResponse> toPublish = new List<StreamResponse>();
-                            foreach (var s in newStatuses)
-                            {
-                                if (oldStreamStatuses.TryGetValue(s.ApiUrl, out var live) &&
-                                    live != s.Live)
-                                {
-                                    toPublish.Add(s);
-                                }
-                            }
-                            // publish the list
-                            if (toPublish.Any())
-                            {
-                                await _cache.PublishStreamUpdates(toPublish).ConfigureAwait(false);
-                                sw.Stop();
-                                _log.Info("Retreived and published stream statuses in {0:F2}s", sw.Elapsed.TotalSeconds);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            _log.Warn(ex);
-                        }
-                        finally
-                        {
-                            await Task.Delay(30000).ConfigureAwait(false);
-                        }
+                    foreach (var fs in allFollowedStreams)
+                    {
+                        _streamTracker.CacheAddData(fs.CreateKey(), null, replace: false);
                     }
-                });
-            }
-#endif
-        }
 
-        private async Task OnStreamsUpdated(StreamResponse[] updates)
-        {
-            List<Task> sendTasks = new List<Task>();
-            //going through all of the updates
-            foreach (var u in updates)
-            {
-                // get the list of channels which need to be notified for this stream
-                if (_followedStreams.TryGetValue((u.StreamType, u.Name.Trim().ToLowerInvariant()), out var locs))
-                {
-                    // notify them all
-                    var tasks = locs
-                        .Where(x => u.Live || _yesOffline.Contains(x.GuildId))
-                        .Select(x =>
-                    {
-                        string msg;
-                        if (!u.Live || string.IsNullOrWhiteSpace(x.fs.Message))
-                        {
-                            msg = "";
-                        }
-                        else
-                        {
-                            msg = x.fs.Message;
-                        }
-                        return _client.GetGuild(x.GuildId)
-                            ?.GetTextChannel(x.fs.ChannelId)
-                            ?.EmbedAsync(GetEmbed(x.fs, u), msg: msg);
-                    }).Where(x => x != null);
-
-                    sendTasks.AddRange(tasks);
+                    _trackCounter = allFollowedStreams
+                        .GroupBy(x => new { Type = x.Type, Name = x.Username.ToLower() })
+                        .ToDictionary(
+                            x => new StreamDataKey(x.Key.Type, x.Key.Name),
+                            x => x.Select(fs => fs.GuildId).ToHashSet());
                 }
             }
-            // wait for all messages to be sent out
-            await Task.WhenAll(sendTasks).ConfigureAwait(false);
+
+            var sub = _multi.GetSubscriber();
+            sub.Subscribe($"{_creds.RedisKey()}_streams_offline", HandleStreamsOffline);
+            sub.Subscribe($"{_creds.RedisKey()}_streams_online", HandleStreamsOnline);
+
+            if (client.ShardId == 0)
+            {
+                // only shard 0 will run the tracker,
+                // and then publish updates with redis to other shards 
+                _streamTracker.OnStreamsOffline += OnStreamsOffline;
+                _streamTracker.OnStreamsOnline += OnStreamsOnline;
+                _ = _streamTracker.RunAsync();
+
+                sub.Subscribe($"{_creds.RedisKey()}_follow_stream", HandleFollowStream);
+                sub.Subscribe($"{_creds.RedisKey()}_unfollow_stream", HandleUnfollowStream);
+            }
+
+            client.JoinedGuild += ClientOnJoinedGuild;
+            client.LeftGuild += ClientOnLeftGuild;
+        }
+
+        /// <summary>
+        /// Handles follow_stream pubs to keep the counter up to date.
+        /// When counter reaches 0, stream is removed from tracking because
+        /// that means no guilds are subscribed to that stream anymore 
+        /// </summary>
+        private void HandleFollowStream(RedisChannel ch, RedisValue val)
+            => Task.Run(() =>
+            {
+                var info = JsonConvert.DeserializeAnonymousType(
+                    val.ToString(),
+                    new { Key = default(StreamDataKey), GuildId = 0ul });
+
+                _streamTracker.CacheAddData(info.Key, null, replace: false);
+                lock (_shardLock)
+                {
+                    var key = info.Key;
+                    if (_trackCounter.ContainsKey(key))
+                    {
+                        _trackCounter[key].Add(info.GuildId);
+                    }
+                    else
+                    {
+                        _trackCounter[key] = new HashSet<ulong>()
+                        {
+                            info.GuildId
+                        };
+                    }
+                }
+            });
+
+        /// <summary>
+        /// Handles unfollow_stream pubs to keep the counter up to date.
+        /// When counter reaches 0, stream is removed from tracking because
+        /// that means no guilds are subscribed to that stream anymore 
+        /// </summary>
+        private void HandleUnfollowStream(RedisChannel ch, RedisValue val)
+            => Task.Run(() =>
+            {
+                var info = JsonConvert.DeserializeAnonymousType(val.ToString(),
+                    new { Key = default(StreamDataKey), GuildId = 0ul });
+
+                lock (_shardLock)
+                {
+                    var key = info.Key;
+                    if (!_trackCounter.TryGetValue(key, out var set))
+                    {
+                        // it should've been removed already?
+                        _streamTracker.UntrackStreamByKey(in key);
+                        return;
+                    }
+
+                    set.Remove(info.GuildId);
+                    if (set.Count != 0)
+                        return;
+
+                    _trackCounter.Remove(key);
+                    // if no other guilds are following this stream
+                    // untrack the stream
+                    _streamTracker.UntrackStreamByKey(in key);
+                }
+            });
+
+        private void HandleStreamsOffline(RedisChannel arg1, RedisValue val) => Task.Run(async () =>
+        {
+            var offlineStreams = JsonConvert.DeserializeObject<List<StreamData>>(val.ToString());
+            foreach (var stream in offlineStreams)
+            {
+                var key = stream.CreateKey();
+                if (_shardTrackedStreams.TryGetValue(key, out var fss))
+                {
+                    var sendTasks = fss
+                        // send offline stream notifications only to guilds which enable it with .stoff
+                        .SelectMany(x => x.Value)
+                        .Where(x => _offlineNotificationServers.Contains(x.GuildId))
+                        .Select(fs => _client.GetGuild(fs.GuildId)
+                            ?.GetTextChannel(fs.ChannelId)
+                            ?.EmbedAsync(GetEmbed(fs.GuildId, stream)));
+
+                    await Task.WhenAll(sendTasks);
+                }
+            }
+        });
+
+        private void HandleStreamsOnline(RedisChannel arg1, RedisValue val) => Task.Run(async () =>
+        {
+            var onlineStreams = JsonConvert.DeserializeObject<List<StreamData>>(val.ToString());
+            foreach (var stream in onlineStreams)
+            {
+                var key = stream.CreateKey();
+                if (_shardTrackedStreams.TryGetValue(key, out var fss))
+                {
+                    var sendTasks = fss
+                        .SelectMany(x => x.Value)
+                        .Select(fs =>
+                        {
+                            var textChannel = _client.GetGuild(fs.GuildId)?.GetTextChannel(fs.ChannelId);
+                            if (textChannel is null)
+                                return Task.CompletedTask;
+                            return textChannel.EmbedAsync(
+                                GetEmbed(fs.GuildId, stream),
+                                msg: string.IsNullOrWhiteSpace(fs.Message) ? "" : fs.Message);
+                        });
+
+                    await Task.WhenAll(sendTasks);
+                }
+            }
+        });
+
+        private Task OnStreamsOffline(List<StreamData> data)
+        {
+            var sub = _multi.GetSubscriber();
+            return sub.PublishAsync($"{_creds.RedisKey()}_streams_offline", JsonConvert.SerializeObject(data));
+        }
+
+        private Task OnStreamsOnline(List<StreamData> data)
+        {
+            var sub = _multi.GetSubscriber();
+            return sub.PublishAsync($"{_creds.RedisKey()}_streams_online", JsonConvert.SerializeObject(data));
+        }
+
+        private Task ClientOnJoinedGuild(SocketGuild guild)
+        {
+            using (var uow = _db.GetDbContext())
+            {
+                var gc = uow.GuildConfigs.ForId(guild.Id, set => set.Include(x => x.FollowedStreams));
+
+                if (gc.NotifyStreamOffline)
+                    _offlineNotificationServers.Add(gc.GuildId);
+
+                foreach (var followedStream in gc.FollowedStreams)
+                {
+                    var key = followedStream.CreateKey();
+                    var streams = GetLocalGuildStreams(key, guild.Id);
+                    streams.Add(followedStream);
+                    PublishFollowStream(followedStream);
+                }
+            }
+
+            return Task.CompletedTask;
+        }
+
+        private Task ClientOnLeftGuild(SocketGuild guild)
+        {
+            using (var uow = _db.GetDbContext())
+            {
+                var gc = uow.GuildConfigs.ForId(guild.Id, set => set.Include(x => x.FollowedStreams));
+
+                _offlineNotificationServers.TryRemove(gc.GuildId);
+
+                foreach (var followedStream in gc.FollowedStreams)
+                {
+                    var streams = GetLocalGuildStreams(followedStream.CreateKey(), guild.Id);
+                    streams.Remove(followedStream);
+
+                    PublishUnfollowStream(followedStream);
+                }
+            }
+
+            return Task.CompletedTask;
         }
 
         public int ClearAllStreams(ulong guildId)
         {
+            // todo clear streams
             int count;
             using (var uow = _db.GetDbContext())
             {
@@ -182,175 +287,125 @@ namespace WizBot.Modules.Searches.Services
                 gc.FollowedStreams.Clear();
                 uow.SaveChanges();
             }
+
             return count;
         }
 
-        public async Task<StreamResponse> GetStreamStatus(FollowedStream.FType t, string username, bool checkCache = true)
+        public async Task<FollowedStream?> UnfollowStreamAsync(ulong guildId, int index)
         {
-            string url = string.Empty;
-            Type type = null;
-            username = username.ToLowerInvariant();
-            using (var http = _httpFactory.CreateClient())
-            {
-                switch (t)
-                {
-                    case FollowedStream.FType.Twitch:
-
-                        type = typeof(TwitchResponse);
-                        http.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "application/vnd.twitchtv.v5");
-                        http.DefaultRequestHeaders.TryAddWithoutValidation("Client-ID", _creds.TwitchClientId);
-
-                        var twitchurl = $"https://api.twitch.tv/kraken/users?login={Uri.EscapeUriString(username)}";
-                        var fullUseridData = await http.GetStringAsync(twitchurl);
-                        var fullData = JObject.Parse(fullUseridData);
-                        var data = fullData["users"].ToArray().FirstOrDefault();
-                        if (data is default(JToken))
-                        {
-                            Log.Warn($"Stream Not Found: {username} [{type.Name}]");
-                            return null;
-                        }
-
-
-                        url = $"https://api.twitch.tv/kraken/streams/{ data["_id"] }";
-                        break;
-                    case FollowedStream.FType.Smashcast:
-                        url = $"https://api.smashcast.tv/user/{username}";
-                        type = typeof(SmashcastResponse);
-                        break;
-                    case FollowedStream.FType.Mixer:
-                        url = $"https://mixer.com/api/v1/channels/{username}";
-                        type = typeof(MixerResponse);
-                        break;
-                    case FollowedStream.FType.Picarto:
-                        url = $"https://api.picarto.tv/v1/channel/name/{username}";
-                        type = typeof(PicartoResponse);
-                        break;
-                    default:
-                        break;
-                }
-                try
-                {
-                    if (checkCache && _cache.TryGetStreamData(url, out string dataStr))
-                        return JsonConvert.DeserializeObject<StreamResponse>(dataStr);
-
-                    var response = await http.GetAsync(url).ConfigureAwait(false);
-                    if (!response.IsSuccessStatusCode)
-                        throw new StreamNotFoundException($"Stream Not Found: {username} [{type.Name}]");
-                    var responseStr = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    var data = JsonConvert.DeserializeObject(responseStr, type) as IStreamResponse;
-                    data.ApiUrl = url;
-                    var sr = new StreamResponse
-                    {
-                        ApiUrl = data.ApiUrl,
-                        Followers = data.Followers,
-                        Game = data.Game,
-                        Icon = data.Icon,
-                        Live = data.Live,
-                        Name = data.Name ?? username.ToLowerInvariant(),
-                        StreamType = data.StreamType,
-                        Title = data.Title,
-                        Viewers = data.Viewers,
-                        Preview = data.Preview,
-                    };
-                    await _cache.SetStreamDataAsync(url, JsonConvert.SerializeObject(sr)).ConfigureAwait(false);
-                    return sr;
-                }
-                catch (StreamNotFoundException ex)
-                {
-                    _log.Warn(ex.Message);
-                    return null;
-                }
-                catch (Exception ex)
-                {
-                    _log.Warn(ex.Message);
-                    return null;
-                }
-            }
-        }
-
-        public bool SetStreamMessage(ulong guildId, string name, FollowedStream.FType type, string message)
-        {
-            name = name.ToLowerInvariant();
-            IEnumerable<FollowedStream> streams;
+            FollowedStream fs;
             using (var uow = _db.GetDbContext())
             {
-                streams = uow.GuildConfigs
-                    .ForId(guildId, set => set.Include(x => x.FollowedStreams))
-                    .FollowedStreams;
+                var fss = uow._context.Set<FollowedStream>()
+                    .AsQueryable()
+                    .Where(x => x.GuildId == guildId)
+                    .OrderBy(x => x.Id)
+                    .ToList();
 
-                var stream = streams.FirstOrDefault(x => x.Username.Trim().ToLowerInvariant() == name.Trim().ToLowerInvariant() && x.Type == type);
-                if (stream == null)
-                    return false;
+                // out of range
+                if (fss.Count <= index)
+                    return null;
 
-                stream.Message = message;
+                fs = fss[index];
+                uow._context.Remove(fs);
 
-                uow.SaveChanges();
+                await uow.SaveChangesAsync();
+
+                // remove from local cache
+                lock (_shardLock)
+                {
+                    var key = fs.CreateKey();
+                    var streams = GetLocalGuildStreams(key, guildId);
+                    streams.Remove(fs);
+                }
             }
-            var newVal = new ConcurrentHashSet<(ulong GuildId, FollowedStream fs)>(streams.Select(x => (x.GuildId, x)));
-            _followedStreams.AddOrUpdate((type, name),
-                newVal,
-                (key, old) => newVal);
-            return true;
+
+            PublishUnfollowStream(fs);
+
+            return fs;
         }
 
-        public bool ToggleStreamOffline(ulong guildId)
+        private void PublishUnfollowStream(FollowedStream fs)
         {
-            bool val;
+            var sub = _multi.GetSubscriber();
+            sub.Publish($"{_creds.RedisKey()}_unfollow_stream",
+                JsonConvert.SerializeObject(new { Key = fs.CreateKey(), GuildId = fs.GuildId }));
+        }
+
+        private void PublishFollowStream(FollowedStream fs)
+        {
+            var sub = _multi.GetSubscriber();
+            sub.Publish($"{_creds.RedisKey()}_follow_stream",
+                JsonConvert.SerializeObject(new { Key = fs.CreateKey(), GuildId = fs.GuildId }),
+                CommandFlags.FireAndForget);
+        }
+
+        public async Task<StreamData?> FollowStream(ulong guildId, ulong channelId, string url)
+        {
+            // this will 
+            var data = await _streamTracker.GetStreamDataByUrlAsync(url);
+
+            if (data is null)
+                return null;
+
+            FollowedStream fs;
             using (var uow = _db.GetDbContext())
             {
-                var config = uow.GuildConfigs
-                    .ForId(guildId, set => set);
+                var gc = uow.GuildConfigs.ForId(guildId, set => set.Include(x => x.FollowedStreams));
 
-                val = config.NotifyStreamOffline = !config.NotifyStreamOffline;
-                uow.SaveChanges();
+                // add it to the database
+                fs = new FollowedStream()
+                {
+                    Type = data.StreamType,
+                    Username = data.UniqueName,
+                    ChannelId = channelId,
+                    GuildId = guildId,
+                };
+
+                if (gc.FollowedStreams.Count >= 10)
+                    return null;
+
+                gc.FollowedStreams.Add(fs);
+                await uow.SaveChangesAsync();
+
+                // add it to the local cache of tracked streams
+                // this way this shard will know it needs to post a message to discord
+                // when shard 0 publishes stream status changes for this stream 
+                lock (_shardLock)
+                {
+                    var key = data.CreateKey();
+                    var streams = GetLocalGuildStreams(key, guildId);
+                    streams.Add(fs);
+                }
             }
-            if (val)
-            {
-                _yesOffline.Add(guildId);
-            }
-            else
-            {
-                _yesOffline.TryRemove(guildId);
-            }
-            return val;
+
+            PublishFollowStream(fs);
+
+            return data;
         }
 
-        public void UntrackStream(FollowedStream fs)
-        {
-            if (_followedStreams.TryGetValue((fs.Type, fs.Username), out var data))
-            {
-                data.TryRemove((fs.GuildId, fs));
-            }
-        }
-
-        public EmbedBuilder GetEmbed(FollowedStream fs, IStreamResponse status)
+        public EmbedBuilder GetEmbed(ulong guildId, StreamData status)
         {
             var embed = new EmbedBuilder()
-                .WithTitle(fs.Username)
-                .WithUrl(GetLink(fs))
-                .WithDescription(GetLink(fs))
-                .AddField(efb => efb.WithName(GetText(fs, "status"))
-                                .WithValue(status.Live ? "Online" : "Offline")
-                                .WithIsInline(true))
-                .AddField(efb => efb.WithName(GetText(fs, "viewers"))
-                                .WithValue(status.Live ? status.Viewers.ToString() : "-")
-                                .WithIsInline(true))
-                .WithColor(status.Live ? WizBot.OkColor : WizBot.ErrorColor);
+                .WithTitle(status.Name)
+                .WithUrl(status.StreamUrl)
+                .WithDescription(status.StreamUrl)
+                .AddField(efb => efb.WithName(GetText(guildId, "status"))
+                    .WithValue(status.IsLive ? "🟢 Online" : "🔴 Offline")
+                    .WithIsInline(true))
+                .AddField(efb => efb.WithName(GetText(guildId, "viewers"))
+                    .WithValue(status.IsLive ? status.Viewers.ToString() : "-")
+                    .WithIsInline(true))
+                .WithColor(status.IsLive ? WizBot.OkColor : WizBot.ErrorColor);
 
             if (!string.IsNullOrWhiteSpace(status.Title))
                 embed.WithAuthor(status.Title);
 
             if (!string.IsNullOrWhiteSpace(status.Game))
-                embed.AddField(GetText(fs, "streaming"),
-                                status.Game,
-                                true);
+                embed.AddField(GetText(guildId, "streaming"), status.Game, true);
 
-            embed.AddField(GetText(fs, "followers"),
-                            status.Followers.ToString(),
-                            true);
-
-            if (!string.IsNullOrWhiteSpace(status.Icon))
-                embed.WithThumbnailUrl(status.Icon);
+            if (!string.IsNullOrWhiteSpace(status.AvatarUrl))
+                embed.WithThumbnailUrl(status.AvatarUrl);
 
             if (!string.IsNullOrWhiteSpace(status.Preview))
                 embed.WithImageUrl(status.Preview + "?dv=" + _rng.Next());
@@ -358,34 +413,94 @@ namespace WizBot.Modules.Searches.Services
             return embed;
         }
 
-        public void TrackStream(FollowedStream fs)
-        {
-            _followedStreams.AddOrUpdate((fs.Type, fs.Username),
-                (k) => new ConcurrentHashSet<(ulong, FollowedStream)>(new[] { (fs.GuildId, fs) }),
-                (k, old) =>
-                {
-                    old.Add((fs.GuildId, fs));
-                    return old;
-                });
-        }
-
-        public string GetText(FollowedStream fs, string key, params object[] replacements) =>
+        private string GetText(ulong guildId, string key, params object[] replacements) =>
             _strings.GetText(key,
-                fs.GuildId,
+                guildId,
                 "Searches".ToLowerInvariant(),
                 replacements);
 
-        public string GetLink(FollowedStream fs)
+        public bool ToggleStreamOffline(ulong guildId)
         {
-            if (fs.Type == FollowedStream.FType.Smashcast)
-                return $"https://www.smashcast.tv/{fs.Username}/";
-            if (fs.Type == FollowedStream.FType.Twitch)
-                return $"https://www.twitch.tv/{fs.Username}/";
-            if (fs.Type == FollowedStream.FType.Mixer)
-                return $"https://www.mixer.com/{fs.Username}/";
-            if (fs.Type == FollowedStream.FType.Picarto)
-                return $"https://www.picarto.tv/{fs.Username}";
-            return "??";
+            bool newValue;
+            using (var uow = _db.GetDbContext())
+            {
+                var gc = uow.GuildConfigs.ForId(guildId, set => set);
+                newValue = gc.NotifyStreamOffline = !gc.NotifyStreamOffline;
+                uow.SaveChanges();
+
+                if (newValue)
+                {
+                    _offlineNotificationServers.Add(guildId);
+                }
+                else
+                {
+                    _offlineNotificationServers.TryRemove(guildId);
+                }
+            }
+
+            return newValue;
+        }
+
+        public Task<StreamData?> GetStreamDataAsync(string url)
+        {
+            return _streamTracker.GetStreamDataByUrlAsync(url);
+        }
+
+        private HashSet<FollowedStream> GetLocalGuildStreams(in StreamDataKey key, ulong guildId)
+        {
+            if (_shardTrackedStreams.TryGetValue(key, out var map))
+            {
+                if (map.TryGetValue(guildId, out var set))
+                {
+                    return set;
+                }
+                else
+                {
+                    return map[guildId] = new HashSet<FollowedStream>();
+                }
+            }
+            else
+            {
+                _shardTrackedStreams[key] = new Dictionary<ulong, HashSet<FollowedStream>>()
+                {
+                    {guildId, new HashSet<FollowedStream>()}
+                };
+                return _shardTrackedStreams[key][guildId];
+            }
+        }
+
+        public bool SetStreamMessage(ulong guildId, int index, string message, out FollowedStream? fs)
+        {
+            using (var uow = _db.GetDbContext())
+            {
+                var fss = uow._context.Set<FollowedStream>()
+                    .AsQueryable()
+                    .Where(x => x.GuildId == guildId)
+                    .OrderBy(x => x.Id)
+                    .ToList();
+
+                if (fss.Count <= index)
+                {
+                    fs = null;
+                    return false;
+                }
+
+                fs = fss[index];
+                fs.Message = message;
+                lock (_shardLock)
+                {
+                    var streams = GetLocalGuildStreams(fs.CreateKey(), guildId);
+
+                    // message doesn't participate in equality checking
+                    // removing and adding = update
+                    streams.Remove(fs);
+                    streams.Add(fs);
+                }
+
+                uow.SaveChanges();
+            }
+
+            return true;
         }
     }
 }

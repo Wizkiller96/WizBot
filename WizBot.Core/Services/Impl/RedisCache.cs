@@ -148,46 +148,6 @@ namespace WizBot.Core.Services.Impl
             return !string.IsNullOrWhiteSpace(dataStr);
         }
 
-        public void SubscribeToStreamUpdates(Func<StreamResponse[], Task> onStreamsUpdated)
-        {
-            var _sub = Redis.GetSubscriber();
-            _sub.Subscribe($"{_redisKey}_stream_updates", (ch, msg) =>
-            {
-                onStreamsUpdated(JsonConvert.DeserializeObject<StreamResponse[]>(msg));
-            });
-        }
-
-        public Task PublishStreamUpdates(List<StreamResponse> newStatuses)
-        {
-            var _sub = Redis.GetSubscriber();
-            return _sub.PublishAsync($"{_redisKey}_stream_updates", JsonConvert.SerializeObject(newStatuses));
-        }
-
-        public async Task<StreamResponse[]> GetAllStreamDataAsync()
-        {
-            await Task.Yield();
-            var server = Redis.GetServer(_redisEndpoint);
-            var _db = Redis.GetDatabase();
-            List<RedisValue> dataStrs = new List<RedisValue>();
-            foreach (var k in server.Keys(pattern: $"{_redisKey}_stream_*"))
-            {
-                dataStrs.Add(_db.StringGet(k));
-            }
-
-            return dataStrs
-                .Select(x => JsonConvert.DeserializeObject<StreamResponse>(x))
-                .Where(x => !string.IsNullOrWhiteSpace(x.ApiUrl))
-                .ToArray();
-        }
-
-        public Task ClearAllStreamData()
-        {
-            var server = Redis.GetServer(_redisEndpoint);
-            var _db = Redis.GetDatabase();
-            return Task.WhenAll(server.Keys(pattern: $"{_redisKey}_stream_*")
-                .Select(x => _db.KeyDeleteAsync(x, CommandFlags.FireAndForget)));
-        }
-
         public TimeSpan? TryAddRatelimit(ulong id, string name, int expireIn)
         {
             var _db = Redis.GetDatabase();
