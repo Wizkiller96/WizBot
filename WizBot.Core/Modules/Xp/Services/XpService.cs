@@ -92,7 +92,10 @@ namespace WizBot.Modules.Xp.Services
             }
 
             //load settings
-            var allGuildConfigs = bot.AllGuildConfigs.Where(x => x.XpSettings != null);
+            var allGuildConfigs = bot.AllGuildConfigs
+                .Where(x => x.XpSettings != null)
+                .ToList();
+
             _excludedChannels = allGuildConfigs
                 .ToDictionary(
                     x => x.GuildId,
@@ -118,6 +121,8 @@ namespace WizBot.Modules.Xp.Services
                     .Select(x => x.GuildId));
 
             _cmd.OnMessageNoTrigger += _cmd_OnMessageNoTrigger;
+
+//#if !GLOBAL_WIZBOT
             _client.UserVoiceStateUpdated += _client_OnUserVoiceStateUpdated;
 
             // Scan guilds on startup.
@@ -126,7 +131,7 @@ namespace WizBot.Modules.Xp.Services
             {
                 _client_OnGuildAvailable(guild);
             }
-
+//#endif
             updateXpTask = Task.Run(UpdateLoop);
         }
 
