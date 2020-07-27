@@ -29,48 +29,79 @@ namespace WizBot.Modules.Searches
             }
 
             [WizBotCommand, Usage, Description, Aliases]
-            public async Task Osu(string usr, [Leftover] string mode = null)
+            public async Task Osu(string user, [Leftover] string mode = null)
             {
-                if (string.IsNullOrWhiteSpace(usr))
+                if (string.IsNullOrWhiteSpace(user))
                     return;
-
                 using (var http = _httpFactory.CreateClient())
                 {
+                    int m = 0;
+                    if (!string.IsNullOrWhiteSpace(mode))
+                        m = ResolveGameMode(mode);
                     try
                     {
-                        var m = 0;
-                        if (!string.IsNullOrWhiteSpace(mode))
+                        if (string.IsNullOrWhiteSpace(_creds.OsuApiKey))
                         {
-                            m = ResolveGameMode(mode);
+                            await ReplyErrorLocalizedAsync("osu_api_key").ConfigureAwait(false);
+                            return;
                         }
-                        var stmdx = ProfMode(m);
-                        var reqString = $"https://osu.ppy.sh/api/get_user?k={_creds.OsuApiKey}&u={usr}&m={m}";
-                        var result = await http.GetStringAsync(reqString);
-                        var obj = JArray.Parse(result)[0];
-                        var user_id = double.Parse($"{obj["user_id"]}", CultureInfo.InvariantCulture);
-                        var country = ($"{obj["country"]}");
-                        var jdate = ($"{obj["join_date"]}");
-                        var perfp = Math.Round(double.Parse($"{obj["pp_raw"]}", CultureInfo.InvariantCulture));
-                        var acc = Math.Round(double.Parse($"{obj["accuracy"]}", CultureInfo.InvariantCulture), 2);
-                        var pc = double.Parse($"{obj["playcount"]}", CultureInfo.InvariantCulture);
-                        var offrank = double.Parse($"{obj["pp_rank"]}", CultureInfo.InvariantCulture);
-                        var crank = double.Parse($"{obj["pp_country_rank"]}", CultureInfo.InvariantCulture);
-                        var level = Math.Round(double.Parse($"{obj["level"]}", CultureInfo.InvariantCulture));
-                        await ctx.Channel.EmbedAsync(new EmbedBuilder().WithColor(15431131).WithAuthor(eab => eab.WithUrl("https://osu.ppy.sh/u/" + user_id)
-                            .WithName("osu! " + stmdx + " profile for " + usr)
-                            .WithIconUrl("https://github.com/ppy/osu/raw/master/assets/lazer.png"))
+                        string smode = ResolveGameMode(m);
+                        string result = await http.GetStringAsync($"https://osu.ppy.sh/api/get_user?k={_creds.OsuApiKey}&u={user}&m={m}").ConfigureAwait(false);
+                        JToken obj = JArray.Parse(result)[0];
+                        string user_id = $"{obj["user_id"]}";
+                        await ctx.Channel.EmbedAsync(new EmbedBuilder().WithColor(15930310).WithTitle($"osu! {smode} profile for {user}")
                             .WithThumbnailUrl($"https://a.ppy.sh/{user_id}")
-                            .WithDescription("URL: https://osu.ppy.sh/u/" + user_id)
-                            .AddField("Country", country, false)
-                            .AddField("Join Date", jdate, false)
-                            .AddField("Official Rank", "#" + offrank, true)
-                            .AddField("Country Rank", "#" + crank, true)
-                            .AddField("Total PP", perfp, true)
-                            .AddField("Accuracy", acc + "%", true)
-                            .AddField("Playcount", pc, true)
-                            .AddField("Level", level, true)
-                        );
+                            .WithDescription($"URL: https://osu.ppy.sh/u/{user_id}")
+                            .AddField("Official Rank", $"#{obj["pp_rank"]}", true)
+                            .AddField("Country Rank", $"#{obj["pp_country_rank"]}", true)
+                            .AddField("Total PP", Math.Round(double.Parse($"{obj["pp_raw"]}", CultureInfo.InvariantCulture)), true)
+                            .AddField("Accuracy", Math.Round(double.Parse($"{obj["accuracy"]}", CultureInfo.InvariantCulture), 2) + "%", true)
+                            .AddField("Playcount", $"{obj["playcount"]}", true)
+                            .AddField("Level", Math.Floor(double.Parse($"{obj["level"]}", CultureInfo.InvariantCulture)), true)
+                                );
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        await ReplyErrorLocalizedAsync("osu_user_not_found").ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        await ReplyErrorLocalizedAsync("osu_failed").ConfigureAwait(false);
+                        _log.Warn(ex);
+                    }
+                }
+            }
 
+            [WizBotCommand, Usage, Description, Aliases]
+            public async Task Gatari(string user, [Leftover] string mode = null)
+            {
+                using (var http = _httpFactory.CreateClient())
+                {
+                    int m = 0;
+                    if (!string.IsNullOrWhiteSpace(mode))
+                        m = ResolveGameMode(mode);
+                    try
+                    {
+                        string smode = ResolveGameMode(m);
+                        string result = await http.GetStringAsync($"https://api.gatari.pw/user/stats?u={user}&mode={m}").ConfigureAwait(false);
+                        JToken obj = JToken.Parse(result)["stats"];
+                        string user_id = $"{obj["id"]}";
+                        string result2 = await http.GetStringAsync($"https://api.gatari.pw/users/get?u={user}");
+                        JToken obj2 = JToken.Parse(result2);
+                        await ctx.Channel.EmbedAsync(new EmbedBuilder().WithColor(7605814).WithTitle($"osu!Gatari {smode} profile for {user}")
+                            .WithThumbnailUrl($"https://a.gatari.pw/{user_id}")
+                            .WithDescription($"URL: https://osu.gatari.pw/u/{user_id}")
+                            .AddField("Official Rank", $"#{obj["rank"]}", true)
+                            .AddField("Country Rank", $"#{obj["country_rank"]} ({obj2["users"][0]["country"]})", true)
+                            .AddField("Total PP", $"{obj["pp"]}", true)
+                            .AddField("Accuracy", Math.Round(Math.Round(double.Parse($"{obj["avg_accuracy"]}", CultureInfo.InvariantCulture), 2) / 1000000000000, 2) + "%", true)
+                            .AddField("Playcount", $"{obj["playcount"]}", true)
+                            .AddField("Level", $"{obj["level"]}", true)
+                                );
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        await ReplyErrorLocalizedAsync("osu_user_not_found").ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {
@@ -249,18 +280,21 @@ namespace WizBot.Modules.Searches
                 }
             }
 
-            private static string ProfMode(int stmdx)
+            private static string ResolveGameMode(int mode)
             {
-                var stmd = "";
-                if (stmdx == 0)
-                    stmd = "Standard";
-                if (stmdx == 1)
-                    stmd = "Taiko";
-                if (stmdx == 2)
-                    stmd = "CTB";
-                if (stmdx == 3)
-                    stmd = "Mania";
-                return stmd;
+                switch (mode)
+                {
+                    case 0:
+                        return "Standard";
+                    case 1:
+                        return "Taiko";
+                    case 2:
+                        return "Catch";
+                    case 3:
+                        return "Mania";
+                    default:
+                        return "Standard";
+                }
             }
 
             //https://github.com/ppy/osu-api/wiki#mods

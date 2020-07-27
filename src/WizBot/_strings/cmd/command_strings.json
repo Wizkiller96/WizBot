@@ -1545,15 +1545,23 @@
   },
   "osu": {
     "Cmd": "osu",
-    "Desc": "Shows osu stats for a player.",
+    "Desc": "Shows osu! stats for a player.",
     "Usage": [
       "{0}osu Name",
       "{0}osu Name taiko"
     ]
   },
+  "gatari": {
+    "Cmd": "gatari",
+    "Desc": "Shows osu!gatari stats for a player.",
+    "Usage": [
+      "{0}gatari Name",
+      "{0}gatari Name ctb"
+    ]
+  },
   "osub": {
     "Cmd": "osub",
-    "Desc": "Shows information about an osu beatmap.",
+    "Desc": "Shows information about an osu! beatmap.",
     "Usage": [
       "{0}osub https://osu.ppy.sh/s/127712"
     ]
