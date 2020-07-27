@@ -3,7 +3,6 @@ using Discord.Commands;
 using WizBot.Common;
 using WizBot.Common.Attributes;
 using WizBot.Common.Replacements;
-using Discord.WebSocket;
 using WizBot.Core.Common;
 using WizBot.Core.Modules.Help.Common;
 using WizBot.Core.Services;
@@ -16,6 +15,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Discord.WebSocket;
 
 namespace WizBot.Modules.Help
 {
@@ -29,32 +29,39 @@ namespace WizBot.Modules.Help
         private readonly IServiceProvider _services;
         private readonly DiscordSocketClient _client;
 
-        public (string plainText, EmbedBuilder embed) GetHelpStringEmbed()
+        private readonly AsyncLazy<ulong> _lazyClientId;
+
+        public Help(IBotCredentials creds, GlobalPermissionService perms, CommandService cmds,
+            IServiceProvider services, DiscordSocketClient client)
         {
-            var r = new ReplacementBuilder()
-                .WithDefault(Context)
-                .WithOverride("{0}", () => _creds.ClientId.ToString())
-                .WithOverride("{1}", () => Prefix)
-                .Build();
-
-
-            if (!CREmbed.TryParse(Bc.BotConfig.HelpString, out var embed))
-                return ("", new EmbedBuilder().WithOkColor()
-                    .WithDescription(String.Format(Bc.BotConfig.HelpString, _creds.ClientId, Prefix)));
-
-            r.Replace(embed);
-
-            return (embed.PlainText, embed.ToEmbed());
-        }
-
-        public Help(DiscordSocketClient client, IBotCredentials creds, GlobalPermissionService perms, CommandService cmds,
-            IServiceProvider services)
-        {
-            _client = client;
             _creds = creds;
             _cmds = cmds;
             _perms = perms;
             _services = services;
+            _client = client;
+
+            _lazyClientId = new AsyncLazy<ulong>(async () => (await _client.GetApplicationInfoAsync()).Id);
+        }
+
+        public async Task<(string plainText, EmbedBuilder embed)> GetHelpStringEmbed()
+        {
+            var clientId = await _lazyClientId.Value;
+            var r = new ReplacementBuilder()
+                .WithDefault(Context)
+                .WithOverride("{0}", () => clientId.ToString())
+                .WithOverride("{1}", () => Prefix)
+                .Build();
+
+            var app = await _client.GetApplicationInfoAsync();
+
+
+            if (!CREmbed.TryParse(Bc.BotConfig.HelpString, out var embed))
+                return ("", new EmbedBuilder().WithOkColor()
+                    .WithDescription(String.Format(Bc.BotConfig.HelpString, clientId, Prefix)));
+
+            r.Replace(embed);
+
+            return (embed.PlainText, embed.ToEmbed());
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -190,7 +197,7 @@ namespace WizBot.Modules.Help
                     : channel;
                 try
                 {
-                    var (plainText, helpEmbed) = GetHelpStringEmbed();
+                    var (plainText, helpEmbed) = await GetHelpStringEmbed();
                     await ch.EmbedAsync(helpEmbed, msg: plainText ?? "").ConfigureAwait(false);
                 }
                 catch (Exception)

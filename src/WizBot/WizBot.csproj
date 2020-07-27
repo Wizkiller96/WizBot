@@ -21,9 +21,6 @@
 
   <ItemGroup>
     <Compile Remove="credentials.json" />
-    <None Update="credentials_example.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="data\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -44,6 +41,9 @@
     </None>
     <None Update="wizbot_icon.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="credentials_example.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
