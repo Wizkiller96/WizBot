@@ -27,8 +27,10 @@
 Run this command in Terminal (copy-paste the entire block):
 
 ``` bash
-brew install wget git ffmpeg openssl opus opus-tools opusfile libffi libsodium tmux python youtube-dl redis npm \
-brew services start redis \
+brew install wget git ffmpeg openssl opus opus-tools opusfile libffi libsodium tmux python youtube-dl redis npm
+
+brew services start redis
+
 npm install pm2@3.1.3 -g
 ```
 
@@ -39,8 +41,10 @@ npm install pm2@3.1.3 -g
 - Run this command in Terminal. There won't be any output. (copy-paste the entire block):
 
 ``` bash
-ln -s /usr/local/share/dotnet/dotnet /usr/local/bin \
-ln -s /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib /usr/local/lib/ \
+ln -s /usr/local/share/dotnet/dotnet /usr/local/bin
+
+ln -s /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib /usr/local/lib/
+
 ln -s /usr/local/opt/openssl/lib/libssl.1.0.0.dylib /usr/local/lib/
 ```
 

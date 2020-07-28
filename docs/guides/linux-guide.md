@@ -243,7 +243,7 @@ If you want WizBot to play music for you 24/7 without having to hosting it on yo
 **Setting up WizBotBot**
 Assuming you have followed the link above to setup an account and a Droplet with a 64-bit operational system on Digital Ocean and got the `IP address and root password (in your e-mail)` to login, it's time to get started.
 
-**Go through this whole guide before setting up WizBot**
+**This section is only relevant to those who want to host WizBot on DigitalOcean. Go through this whole section before setting the bot up.**
 
 #### Prerequisites
 - Download [PuTTY](http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html)
