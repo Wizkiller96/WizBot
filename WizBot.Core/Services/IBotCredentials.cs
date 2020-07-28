@@ -10,7 +10,6 @@ namespace WizBot.Core.Services
         ImmutableArray<ulong> OwnerIds { get; }
         ImmutableArray<ulong> AdminIds { get; }
         string MashapeKey { get; }
-        string LoLApiKey { get; }
         string PatreonAccessToken { get; }
         string CarbonKey { get; }
 

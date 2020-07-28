@@ -21,7 +21,6 @@ namespace WizBot.Core.Services.Impl
         public ImmutableArray<ulong> OwnerIds { get; }
         public ImmutableArray<ulong> AdminIds { get; }
 
-        public string LoLApiKey { get; }
         public string OsuApiKey { get; }
         public string CleverbotApiKey { get; }
         public RestartConfig RestartCommand { get; }
@@ -72,7 +71,6 @@ namespace WizBot.Core.Services.Impl
                 }
                 OwnerIds = data.GetSection("OwnerIds").GetChildren().Select(c => ulong.Parse(c.Value)).ToImmutableArray();
                 AdminIds = data.GetSection("AdminIds").GetChildren().Select(c => ulong.Parse(c.Value)).ToImmutableArray();
-                LoLApiKey = data[nameof(LoLApiKey)];
                 GoogleApiKey = data[nameof(GoogleApiKey)];
                 MashapeKey = data[nameof(MashapeKey)];
                 OsuApiKey = data[nameof(OsuApiKey)];
@@ -163,7 +161,6 @@ namespace WizBot.Core.Services.Impl
                 105635576866156544
             };
             public ulong[] AdminIds { get; set; } = new ulong[1];
-            public string LoLApiKey { get; set; } = "";
             public string GoogleApiKey { get; set; } = "";
             public string MashapeKey { get; set; } = "";
             public string OsuApiKey { get; set; } = "";
