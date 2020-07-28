@@ -2,14 +2,15 @@
 using Discord.Commands;
 using WizBot.Extensions;
 using WizBot.Core.Services;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Globalization;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using WizBot.Common.Attributes;
+using WizBot.Core.Common;
+using WizBot.Core.Modules.Searches.Common;
+using Newtonsoft.Json;
 
 namespace WizBot.Modules.Searches
 {
@@ -48,29 +49,32 @@ namespace WizBot.Modules.Searches
                         }
 
                         var smode = ResolveGameMode(modeNumber);
-                        var result = await http
-                            .GetStringAsync($"https://osu.ppy.sh/api/get_user?k={_creds.OsuApiKey}&u={user}&m={modeNumber}")
+                        var userReq = $"https://osu.ppy.sh/api/get_user?k={_creds.OsuApiKey}&u={user}&m={modeNumber}";
+                        var userResString = await http.GetStringAsync(userReq)
                             .ConfigureAwait(false);
-                        var obj = JArray.Parse(result)[0];
-                        var userId = $"{obj["user_id"]}";
+                        var objs = JsonConvert.DeserializeObject<List<OsuUserData>>(userResString);
+
+                        if (objs.Count == 0)
+                        {
+                            await ReplyErrorLocalizedAsync("osu_user_not_found").ConfigureAwait(false);
+                            return;
+                        }
+
+                        var obj = objs[0];
+                        var userId = obj.UserId;
 
                         await ctx.Channel.EmbedAsync(new EmbedBuilder()
                             .WithOkColor()
                             .WithTitle($"osu! {smode} profile for {user}")
                             .WithThumbnailUrl($"https://a.ppy.sh/{userId}")
-                            .WithDescription($"URL: https://osu.ppy.sh/u/{userId}")
-                            .AddField("Official Rank", $"#{obj["pp_rank"]}", true)
-                            .AddField("Country Rank", $"#{obj["pp_country_rank"]}", true)
-                            .AddField("Total PP",
-                                Math.Round(double.Parse($"{obj["pp_raw"]}", CultureInfo.InvariantCulture)), true)
-                            .AddField("Accuracy",
-                                Math.Round(double.Parse($"{obj["accuracy"]}", CultureInfo.InvariantCulture), 2) + "%",
-                                true)
-                            .AddField("Playcount", $"{obj["playcount"]}", true)
-                            .AddField("Level",
-                                Math.Floor(double.Parse($"{obj["level"]}", CultureInfo.InvariantCulture)), true)
+                            .WithDescription($"https://osu.ppy.sh/u/{userId}")
+                            .AddField("Official Rank", $"#{obj.PpRank}", true)
+                            .AddField("Country Rank", $"#{obj.PpCountryRank} :flag_{obj.Country.ToLower()}:", true)
+                            .AddField("Total PP", Math.Round(obj.PpRaw, 2), true)
+                            .AddField("Accuracy", Math.Round(obj.Accuracy, 2) + "%", true)
+                            .AddField("Playcount", obj.Playcount, true)
+                            .AddField("Level", Math.Round(obj.Level), true)
                         );
-
                     }
                     catch (ArgumentOutOfRangeException)
                     {
@@ -94,72 +98,36 @@ namespace WizBot.Modules.Searches
                         : ResolveGameMode(mode);
 
                     var modeStr = ResolveGameMode(modeNumber);
-                    var resString = await http.GetStringAsync($"https://api.gatari.pw/user/stats?u={user}&mode={modeNumber}")
+                    var resString = await http
+                        .GetStringAsync($"https://api.gatari.pw/user/stats?u={user}&mode={modeNumber}")
                         .ConfigureAwait(false);
-                    var userStats = JToken.Parse(resString)["stats"];
-                    var userId = userStats?["id"]?.ToString();
-                    if (string.IsNullOrWhiteSpace(userId))
+
+                    var statsResponse = JsonConvert.DeserializeObject<GatariUserStatsResponse>(resString);
+                    if (statsResponse.Code != 200 || statsResponse.Stats.Id == 0)
                     {
                         await ReplyErrorLocalizedAsync("osu_user_not_found").ConfigureAwait(false);
                         return;
                     }
 
-                    resString = await http.GetStringAsync($"https://api.gatari.pw/users/get?u={user}")
+                    var usrResString = await http.GetStringAsync($"https://api.gatari.pw/users/get?u={user}")
                         .ConfigureAwait(false);
-                    var userData = JToken.Parse(resString);
+
+                    var userData = JsonConvert.DeserializeObject<GatariUserResponse>(usrResString).Users[0];
+                    var userStats = statsResponse.Stats;
+
                     var embed = new EmbedBuilder()
                         .WithOkColor()
                         .WithTitle($"osu!Gatari {modeStr} profile for {user}")
-                        .WithThumbnailUrl($"https://a.gatari.pw/{userId}")
-                        .WithDescription($"URL: https://osu.gatari.pw/u/{userId}")
-                        .AddField("Official Rank", $"#{userStats["rank"]}", true)
-                        .AddField("Country Rank", $"#{userStats["country_rank"]} ({userData["users"][0]["country"]})", true)
-                        .AddField("Total PP", $"{userStats["pp"]}", true)
-                        .AddField("Accuracy",
-                            Math.Round(
-                                Math.Round(double.Parse($"{userStats["avg_accuracy"]}", CultureInfo.InvariantCulture), 2) /
-                                1000000000000, 2) + "%", true)
-                        .AddField("Playcount", $"{userStats["playcount"]}", true)
-                        .AddField("Level", $"{userStats["level"]}", true);
+                        .WithThumbnailUrl($"https://a.gatari.pw/{userStats.Id}")
+                        .WithDescription($"https://osu.gatari.pw/u/{userStats.Id}")
+                        .AddField("Official Rank", $"#{userStats.Rank}", true)
+                        .AddField("Country Rank", $"#{userStats.CountryRank} :flag_{userData.Country.ToLower()}:", true)
+                        .AddField("Total PP", userStats.Pp, true)
+                        .AddField("Accuracy", $"{Math.Round(userStats.AvgAccuracy, 2)}%", true)
+                        .AddField("Playcount", userStats.Playcount, true)
+                        .AddField("Level", userStats.Level, true);
 
                     await ctx.Channel.EmbedAsync(embed);
-                }
-            }
-
-            [WizBotCommand, Usage, Description, Aliases]
-            public async Task Osub([Leftover] string map)
-            {
-                if (string.IsNullOrWhiteSpace(_creds.OsuApiKey))
-                {
-                    await ReplyErrorLocalizedAsync("osu_api_key").ConfigureAwait(false);
-                    return;
-                }
-
-                if (string.IsNullOrWhiteSpace(map))
-                    return;
-
-                try
-                {
-                    using (var http = _httpFactory.CreateClient())
-                    {
-                        var mapId = ResolveMap(map);
-                        var reqString = $"https://osu.ppy.sh/api/get_beatmaps?k={_creds.OsuApiKey}&{mapId}";
-                        var obj = JArray.Parse(await http.GetStringAsync(reqString).ConfigureAwait(false))[0];
-                        var sb = new System.Text.StringBuilder();
-                        var starRating =
-                            Math.Round(double.Parse($"{obj["difficultyrating"]}", CultureInfo.InvariantCulture), 2);
-                        var time = TimeSpan.FromSeconds(double.Parse($"{obj["total_length"]}")).ToString(@"mm\:ss");
-                        sb.AppendLine(
-                            $"{obj["artist"]} - {obj["title"]}, mapped by {obj["creator"]}. https://osu.ppy.sh/s/{obj["beatmapset_id"]}");
-                        sb.AppendLine(
-                            $"{starRating} stars, {obj["bpm"]} BPM | AR{obj["diff_approach"]}, CS{obj["diff_size"]}, OD{obj["diff_overall"]} | Length: {time}");
-                        await ctx.Channel.SendMessageAsync(sb.ToString()).ConfigureAwait(false);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    await ReplyErrorLocalizedAsync("something_went_wrong").ConfigureAwait(false);
-                    _log.Warn(ex);
                 }
             }
 
@@ -181,126 +149,101 @@ namespace WizBot.Modules.Searches
 
                 using (var http = _httpFactory.CreateClient())
                 {
-                    try
+                    var m = 0;
+                    if (!string.IsNullOrWhiteSpace(mode))
                     {
-                        var m = 0;
-                        if (!string.IsNullOrWhiteSpace(mode))
+                        m = ResolveGameMode(mode);
+                    }
+
+                    var reqString = $"https://osu.ppy.sh/api/get_user_best" +
+                                    $"?k={_creds.OsuApiKey}" +
+                                    $"&u={Uri.EscapeDataString(user)}" +
+                                    $"&type=string" +
+                                    $"&limit=5" +
+                                    $"&m={m}";
+
+                    var resString = await http.GetStringAsync(reqString).ConfigureAwait(false);
+                    var obj = JsonConvert.DeserializeObject<List<OsuUserBests>>(resString);
+
+                    var mapTasks = obj.Select(async item =>
+                    {
+                        var mapReqString = $"https://osu.ppy.sh/api/get_beatmaps" +
+                                           $"?k={_creds.OsuApiKey}" +
+                                           $"&b={item.BeatmapId}";
+
+                        var mapResString = await http.GetStringAsync(mapReqString).ConfigureAwait(false);
+                        var map = JsonConvert.DeserializeObject<List<OsuMapData>>(mapResString).FirstOrDefault();
+                        if (map is null)
+                            return default;
+                        var pp = Math.Round(item.Pp, 2);
+                        var acc = CalculateAcc(item, m);
+                        var mods = ResolveMods(item.EnabledMods);
+
+                        var title = $"{map.Artist}-{map.Title} ({map.Version})";
+                        var desc = $@"[/b/{item.BeatmapId}](https://osu.ppy.sh/b/{item.BeatmapId})
+{pp + "pp",-7} | {acc + "%",-7}
+";
+                        if (mods != "+")
                         {
-                            m = ResolveGameMode(mode);
+                            desc += Format.Bold(mods);
                         }
 
-                        var reqString = $"https://osu.ppy.sh/api/get_user_best" +
-                                        $"?k={_creds.OsuApiKey}" +
-                                        $"&u={Uri.EscapeDataString(user)}" +
-                                        $"&type=string" +
-                                        $"&limit=5" +
-                                        $"&m={m}";
+                        return (title, desc);
+                    });
 
-                        var obj = JArray.Parse(await http.GetStringAsync(reqString).ConfigureAwait(false));
-                        var sb = new StringBuilder($"`Top 5 plays for {user}:`\n```xl" + Environment.NewLine);
-                        foreach (var item in obj)
-                        {
-                            var mapReqString = $"https://osu.ppy.sh/api/get_beatmaps" +
-                                               $"?k={_creds.OsuApiKey}" +
-                                               $"&b={item["beatmap_id"]}";
+                    var eb = new EmbedBuilder()
+                        .WithOkColor()
+                        .WithTitle($"Top 5 plays for {user}");
 
-                            var map = JArray.Parse(await http.GetStringAsync(mapReqString).ConfigureAwait(false))[0];
-                            var pp = Math.Round(double.Parse($"{item["pp"]}", CultureInfo.InvariantCulture), 2);
-                            var acc = CalculateAcc(item, m);
-                            var mods = ResolveMods(int.Parse($"{item["enabled_mods"]}"));
-                            sb.AppendLine(mods != "+"
-                                ? $"{pp + "pp",-7} | {acc + "%",-7} | {map["artist"] + "-" + map["title"] + " (" + map["version"] + ")",-40} | **{mods,-10}** | /b/{item["beatmap_id"]}"
-                                : $"{pp + "pp",-7} | {acc + "%",-7} | {map["artist"] + "-" + map["title"] + " (" + map["version"] + ")",-40}  | /b/{item["beatmap_id"]}");
-                        }
-
-                        sb.Append("```");
-                        await channel.SendMessageAsync(sb.ToString()).ConfigureAwait(false);
-                    }
-                    catch (Exception ex)
+                    var mapData = await Task.WhenAll(mapTasks);
+                    foreach (var (title, desc) in mapData.Where(x => x != default))
                     {
-                        await ReplyErrorLocalizedAsync("something_went_wrong").ConfigureAwait(false);
-                        _log.Warn(ex);
+                        eb.AddField(title, desc, inline: false);
                     }
+
+                    await channel.EmbedAsync(eb).ConfigureAwait(false);
                 }
             }
 
             //https://osu.ppy.sh/wiki/Accuracy
-            private static double CalculateAcc(JToken play, int mode)
+            private static double CalculateAcc(OsuUserBests play, int mode)
             {
+                double hitPoints;
+                double totalHits;
                 if (mode == 0)
                 {
-                    var hitPoints = double.Parse($"{play["count50"]}") * 50 +
-                                    double.Parse($"{play["count100"]}") * 100 +
-                                    double.Parse($"{play["count300"]}") * 300;
-                    var totalHits = double.Parse($"{play["count50"]}") + double.Parse($"{play["count100"]}") +
-                                    double.Parse($"{play["count300"]}") + double.Parse($"{play["countmiss"]}");
+                    hitPoints = play.Count50 * 50 +
+                                play.Count100 * 100 +
+                                play.Count300 * 300;
+                    totalHits = play.Count50 + play.Count100 +
+                                play.Count300 + play.Countmiss;
                     totalHits *= 300;
-                    return Math.Round(hitPoints / totalHits * 100, 2);
                 }
                 else if (mode == 1)
                 {
-                    var hitPoints = double.Parse($"{play["countmiss"]}") * 0 +
-                                    double.Parse($"{play["count100"]}") * 0.5 + double.Parse($"{play["count300"]}") * 1;
-                    var totalHits = double.Parse($"{play["countmiss"]}") + double.Parse($"{play["count100"]}") +
-                                    double.Parse($"{play["count300"]}");
+                    hitPoints = play.Countmiss * 0 + play.Count100 * 0.5 + play.Count300;
+                    totalHits = (play.Countmiss + play.Count100 + play.Count300) * 300;
                     hitPoints *= 300;
-                    totalHits *= 300;
-                    return Math.Round(hitPoints / totalHits * 100, 2);
                 }
                 else if (mode == 2)
                 {
-                    var fruitsCaught = double.Parse($"{play["count50"]}") + double.Parse($"{play["count100"]}") +
-                                       double.Parse($"{play["count300"]}");
-                    var totalFruits = double.Parse($"{play["countmiss"]}") + double.Parse($"{play["count50"]}") +
-                                      double.Parse($"{play["count100"]}") + double.Parse($"{play["count300"]}") +
-                                      double.Parse($"{play["countkatu"]}");
-                    return Math.Round(fruitsCaught / totalFruits * 100, 2);
+                    hitPoints = play.Count50 + play.Count100 + play.Count300;
+                    totalHits = play.Countmiss + play.Count50 + play.Count100 + play.Count300 +
+                                play.Countkatu;
                 }
                 else
                 {
-                    var hitPoints = double.Parse($"{play["count50"]}") * 50 +
-                                    double.Parse($"{play["count100"]}") * 100 +
-                                    double.Parse($"{play["countkatu"]}") * 200 + (double.Parse($"{play["count300"]}") +
-                                        double.Parse($"{play["countgeki"]}")) * 300;
-                    var totalHits = double.Parse($"{play["countmiss"]}") + double.Parse($"{play["count50"]}") +
-                                    double.Parse($"{play["count100"]}") + double.Parse($"{play["countkatu"]}") +
-                                    double.Parse($"{play["count300"]}") + double.Parse($"{play["countgeki"]}");
-                    totalHits *= 300;
-                    return Math.Round(hitPoints / totalHits * 100, 2);
-                }
-            }
+                    hitPoints = play.Count50 * 50 +
+                                play.Count100 * 100 +
+                                play.Countkatu * 200 +
+                                (play.Count300 + play.Countgeki) * 300;
 
-            private static string ResolveMap(string mapLink)
-            {
-                var s = new Regex(@"osu.ppy.sh\/s\/", RegexOptions.IgnoreCase).Match(mapLink);
-                var b = new Regex(@"osu.ppy.sh\/b\/", RegexOptions.IgnoreCase).Match(mapLink);
-                var p = new Regex(@"osu.ppy.sh\/p\/", RegexOptions.IgnoreCase).Match(mapLink);
-                var m = new Regex(@"&m=", RegexOptions.IgnoreCase).Match(mapLink);
-                if (s.Success)
-                {
-                    var mapId = mapLink.Substring(mapLink.IndexOf("/s/", StringComparison.InvariantCulture) + 3);
-                    return $"s={mapId}";
+                    totalHits = (play.Countmiss + play.Count50 + play.Count100 +
+                                 play.Countkatu + play.Count300 + play.Countgeki) * 300;
                 }
-                else if (b.Success)
-                {
-                    if (m.Success)
-                        return
-                            $"b={mapLink.Substring(mapLink.IndexOf("/b/", StringComparison.InvariantCulture) + 3, mapLink.IndexOf("&m", StringComparison.InvariantCulture) - (mapLink.IndexOf("/b/", StringComparison.InvariantCulture + 3)))}";
-                    else
-                        return $"b={mapLink.Substring(mapLink.IndexOf("/b/", StringComparison.InvariantCulture) + 3)}";
-                }
-                else if (p.Success)
-                {
-                    if (m.Success)
-                        return
-                            $"b={mapLink.Substring(mapLink.IndexOf("?b=", StringComparison.InvariantCulture) + 3, mapLink.IndexOf("&m", StringComparison.InvariantCulture) - (mapLink.IndexOf("?b=", StringComparison.InvariantCulture) + 3))}";
-                    else
-                        return $"b={mapLink.Substring(mapLink.IndexOf("?b=", StringComparison.InvariantCulture) + 3)}";
-                }
-                else
-                {
-                    return $"s={mapLink}"; //just a default incase an ID number was provided by itself (non-url)?
-                }
+
+
+                return Math.Round(hitPoints / totalHits * 100, 2);
             }
 
             private static int ResolveGameMode(string mode)

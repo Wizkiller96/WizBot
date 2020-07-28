@@ -1559,13 +1559,6 @@
       "{0}gatari Name ctb"
     ]
   },
-  "osub": {
-    "Cmd": "osub",
-    "Desc": "Shows information about an osu! beatmap.",
-    "Usage": [
-      "{0}osub https://osu.ppy.sh/s/127712"
-    ]
-  },
   "osu5": {
     "Cmd": "osu5",
     "Desc": "Displays a user's top 5 plays.",
