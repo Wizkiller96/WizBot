@@ -255,7 +255,7 @@ namespace WizBot.Modules.Gambling.Services
             // generate a number from 1000 to ffff
             var num = _rng.Next(4096, 65536);
             // convert it to hexadecimal
-            return num.ToString("X");
+            return num.ToString("x4");
         }
 
         public async Task<long> PickAsync(ulong gid, ITextChannel ch, ulong uid, string pass)

@@ -295,7 +295,7 @@ namespace WizBot.Modules.Administration
             [Priority(1)]
             public async Task RoleColor([Leftover] IRole role)
             {
-                await ctx.Channel.SendConfirmAsync("Role Color", role.Color.RawValue.ToString("X")).ConfigureAwait(false);
+                await ctx.Channel.SendConfirmAsync("Role Color", role.Color.RawValue.ToString("x6")).ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
