@@ -65,7 +65,7 @@ For a single owner or admin, it should look like this:
     "AdminIds": [
         105635576866156544
     ],
-    ```
+```
 
 For multiple owners or admins, it should look like this (pay attention to the commas, the last ID should **never** have a comma next to it):
 
