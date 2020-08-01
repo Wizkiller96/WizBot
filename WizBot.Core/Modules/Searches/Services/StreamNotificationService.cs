@@ -40,7 +40,8 @@ namespace WizBot.Modules.Searches.Services
         private readonly IBotCredentials _creds;
 
         public StreamNotificationService(DbService db, DiscordSocketClient client,
-            WizBotStrings strings, IDataCache cache, IBotCredentials creds, IHttpClientFactory httpFactory)
+            WizBotStrings strings, IDataCache cache, IBotCredentials creds, IHttpClientFactory httpFactory,
+            WizBot bot)
         {
             _db = db;
             _client = client;
@@ -111,7 +112,7 @@ namespace WizBot.Modules.Searches.Services
                 sub.Subscribe($"{_creds.RedisKey()}_unfollow_stream", HandleUnfollowStream);
             }
 
-            client.JoinedGuild += ClientOnJoinedGuild;
+            bot.JoinedGuild += ClientOnJoinedGuild;
             client.LeftGuild += ClientOnLeftGuild;
         }
 
@@ -235,11 +236,14 @@ namespace WizBot.Modules.Searches.Services
             return sub.PublishAsync($"{_creds.RedisKey()}_streams_online", JsonConvert.SerializeObject(data));
         }
 
-        private Task ClientOnJoinedGuild(SocketGuild guild)
+        private Task ClientOnJoinedGuild(GuildConfig _)
         {
             using (var uow = _db.GetDbContext())
             {
-                var gc = uow.GuildConfigs.ForId(guild.Id, set => set.Include(x => x.FollowedStreams));
+                var gc = uow._context.GuildConfigs
+                    .AsQueryable()
+                    .Include(x => x.FollowedStreams)
+                    .FirstOrDefault();
 
                 if (gc.NotifyStreamOffline)
                     _offlineNotificationServers.Add(gc.GuildId);
@@ -247,7 +251,7 @@ namespace WizBot.Modules.Searches.Services
                 foreach (var followedStream in gc.FollowedStreams)
                 {
                     var key = followedStream.CreateKey();
-                    var streams = GetLocalGuildStreams(key, guild.Id);
+                    var streams = GetLocalGuildStreams(key, gc.GuildId);
                     streams.Add(followedStream);
                     PublishFollowStream(followedStream);
                 }
