@@ -80,7 +80,7 @@ namespace WizBot.Core.Modules.Searches.Common.StreamNotifications
                         CacheAddData(key, newData, replace: true);
 
                         // compare old data with new data
-                        var oldData = oldStreamDataDict[newData.StreamType][newData.UniqueName];
+                        var oldData = oldStreamDataDict[key.Type][key.Name];
 
                         // this is the first pass
                         if (oldData is null)
