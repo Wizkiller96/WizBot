@@ -96,7 +96,7 @@ namespace WizBot.Core.Modules.Searches.Common.StreamNotifications.Providers
         {
             return new StreamData()
             {
-                StreamType = FollowedStream.FType.Twitch,
+                StreamType = FollowedStream.FType.Picarto,
                 Name = stream.Name,
                 UniqueName = stream.Name,
                 Viewers = stream.Viewers,
