@@ -65,7 +65,8 @@ namespace WizBot.Modules.Gambling
             decimal onePercent = 0;
             if (ec.Cash > 0)
             {
-                onePercent = ec.OnePercent / ec.Cash;
+                onePercent = ec.OnePercent / (ec.Cash - ec.Bot); // This stops the top 1% from owning more than 100% of the money
+                // [21:03] Bob Page: Kinda remids me of US economy
             }
             var embed = new EmbedBuilder()
                 .WithTitle(GetText("economy_state"))
