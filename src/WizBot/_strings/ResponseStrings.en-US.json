@@ -115,7 +115,7 @@
     "administration_remrole_err": "Failed to remove role. I have insufficient permissions.",
     "administration_renrole": "Role renamed.",
     "administration_renrole_err": "Failed to rename role. I have insufficient permissions.",
-    "administration_renrole_perms": "You can't edit roles higher than your highest role.",
+    "administration_renrole_perms": "You can't edit roles higher than either your, or my highest role.",
     "administration_reprm": "Removed the playing message: {0}",
     "administration_role_added": "Role {0} has been added to the list in group {1}.",
     "administration_role_clean": "{0} not found.Cleaned up.",
