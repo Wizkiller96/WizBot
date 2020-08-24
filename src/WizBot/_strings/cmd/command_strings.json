@@ -2136,7 +2136,7 @@
   },
   "hentaibomb": {
     "Cmd": "hentaibomb",
-    "Desc": "Shows a total 5 images (from gelbooru, danbooru, konachan, yandere and atfbooru). Tag is optional but preferred.",
+    "Desc": "Shows a total 5 images (from gelbooru, danbooru, konachan and yandere). Tag is optional but preferred.",
     "Usage": [
       "{0}hentaibomb yuri"
     ]
@@ -3270,6 +3270,13 @@
     "usage": [
       "{0}rafflecur 20",
       "{0}rafflecur mixed 15"
+    ]
+  },
+  "rip": {
+    "cmd": "rip",
+    "desc": "Shows the inevitable fate of someone.",
+    "usage": [
+      "{0}rip @Someone"
     ]
   },
   "autodisconnect": {
