@@ -26,11 +26,12 @@ namespace WizBot.Modules.Permissions
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        public async Task Verbose(PermissionAction action)
+        public async Task Verbose(PermissionAction action = null)
         {
             using (var uow = _db.GetDbContext())
             {
                 var config = uow.GuildConfigs.GcWithPermissionsv2For(ctx.Guild.Id);
+                if (action == null) action = new PermissionAction(!config.VerbosePermissions); // New behaviour, can toggle.
                 config.VerbosePermissions = action.Value;
                 await uow.SaveChangesAsync();
                 _service.UpdateCache(config);

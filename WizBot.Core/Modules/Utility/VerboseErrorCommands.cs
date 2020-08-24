@@ -14,9 +14,9 @@ namespace WizBot.Modules.Utility
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageMessages)]
-            public async Task VerboseError()
+            public async Task VerboseError(bool? newstate = null)
             {
-                var state = _service.ToggleVerboseErrors(ctx.Guild.Id);
+                var state = _service.ToggleVerboseErrors(ctx.Guild.Id, newstate);
 
                 if (state)
                     await ReplyConfirmLocalizedAsync("verbose_errors_enabled").ConfigureAwait(false);

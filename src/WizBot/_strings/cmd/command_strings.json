@@ -797,8 +797,9 @@
   },
   "verbose": {
     "Cmd": "verbose v",
-    "Desc": "Sets whether to show when a command/module is blocked.",
+    "Desc": "Toggles or sets whether to show when a command/module is blocked.",
     "Usage": [
+      "{0}v",
       "{0}verbose true"
     ]
   },
@@ -2899,9 +2900,10 @@
   },
   "verboseerror": {
     "Cmd": "verboseerror ve",
-    "Desc": "Toggles whether the bot should print command errors when a command is incorrectly used.",
+    "Desc": "Toggles or sets whether the bot should print command errors when a command is incorrectly used.",
     "Usage": [
-      "{0}ve"
+      "{0}ve",
+      "{0}ve false"
     ]
   },
   "streamrolekeyword": {
