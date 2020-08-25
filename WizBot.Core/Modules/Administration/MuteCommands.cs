@@ -4,7 +4,9 @@ using WizBot.Common.Attributes;
 using WizBot.Core.Common.TypeReaders.Models;
 using WizBot.Modules.Administration.Services;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
+using WizBot.Extensions;
 
 namespace WizBot.Modules.Administration
 {
@@ -40,12 +42,15 @@ namespace WizBot.Modules.Administration
             [UserPerm(GuildPerm.ManageRoles)]
             [UserPerm(GuildPerm.MuteMembers)]
             [Priority(0)]
-            public async Task Mute(IGuildUser user)
+            public async Task Mute(IGuildUser target)
             {
                 try
                 {
-                    await _service.MuteUser(user, ctx.User).ConfigureAwait(false);
-                    await ReplyConfirmLocalizedAsync("user_muted", Format.Bold(user.ToString())).ConfigureAwait(false);
+                    var runnerUser = (IGuildUser)ctx.User;
+                    if ((ctx.User.Id != ctx.Guild.OwnerId) && runnerUser.GetRoles().Max(x => x.Position) > target.GetRoles().Max(x => x.Position))
+                        return;
+                    await _service.MuteUser(target, ctx.User).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync("user_muted", Format.Bold(target.ToString())).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
