@@ -2429,8 +2429,8 @@
     ]
   },
   "slot": {
-    "Cmd": "slot",
-    "Desc": "Play WizBot slots. Max bet is 9999. 1.5 second cooldown per user.",
+    "Cmd": "slot slots",
+    "Desc": "Play WizBot slots. 1 second cooldown per user.",
     "Usage": [
       "{0}slot 5"
     ]
