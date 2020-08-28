@@ -279,6 +279,7 @@ namespace WizBot.Modules.Xp.Services
             }
         }
 
+
         private void InternalReloadXpTemplate()
         {
             try
@@ -803,24 +804,66 @@ namespace WizBot.Modules.Xp.Services
         public Task<(Stream Image, IImageFormat Format)> GenerateXpImageAsync(FullUserStats stats) => Task.Run(
             async () =>
             {
-                var textOptions = new TextGraphicsOptions().WithFallbackFonts(_fonts.FallBackFonts);
+                var usernameTextOptions = new TextGraphicsOptions()
+                {
+                    TextOptions = new TextOptions()
+                    {
+                        HorizontalAlignment = HorizontalAlignment.Left,
+                        VerticalAlignment = VerticalAlignment.Center,
+                    }
+                }.WithFallbackFonts(_fonts.FallBackFonts);
+
+                var clubTextOptions = new TextGraphicsOptions()
+                {
+                    TextOptions = new TextOptions()
+                    {
+                        HorizontalAlignment = HorizontalAlignment.Right,
+                        VerticalAlignment = VerticalAlignment.Top,
+                    }
+                }.WithFallbackFonts(_fonts.FallBackFonts);
+
                 using (var img = Image.Load<Rgba32>(_images.XpBackground, out var imageFormat))
                 {
                     if (_template.User.Name.Show)
                     {
+                        var fontSize = (int)(_template.User.Name.FontSize * 0.9);
                         var username = stats.User.ToString();
                         var usernameFont = _fonts.NotoSans
-                            .CreateFont(username.Length <= 6
-                                ? _template.User.Name.FontSize
-                                : _template.User.Name.FontSize - username.Length, FontStyle.Bold);
+                            .CreateFont(fontSize, FontStyle.Bold);
+
+                        var size = TextMeasurer.Measure($"@{username}", new RendererOptions(usernameFont));
+                        var scale = 400f / size.Width;
+                        if (scale < 1)
+                        {
+                            usernameFont = _fonts.NotoSans
+                                .CreateFont(_template.User.Name.FontSize * scale, FontStyle.Bold);
+                        }
 
                         img.Mutate(x =>
                         {
-                            x.DrawText(textOptions,
-                                "@" + username, usernameFont,
+                            x.DrawText(usernameTextOptions,
+                                "@" + username,
+                                usernameFont,
                                 _template.User.Name.Color,
-                                new PointF(_template.User.Name.Pos.X, _template.User.Name.Pos.Y));
+                                new PointF(_template.User.Name.Pos.X, _template.User.Name.Pos.Y + 8));
                         });
+                    }
+
+                    //club name
+
+                    if (_template.Club.Name.Show)
+                    {
+                        var clubName = stats.User.Club?.ToString() ?? "-";
+
+                        var clubFont = _fonts.NotoSans
+                            .CreateFont(_template.Club.Name.FontSize, FontStyle.Regular);
+
+                        img.Mutate(x => x.DrawText(clubTextOptions,
+                            clubName,
+                            clubFont,
+                            _template.Club.Name.Color,
+                            new PointF(_template.Club.Name.Pos.X + 50, _template.Club.Name.Pos.Y - 8))
+                        );
                     }
 
                     if (_template.User.GlobalLevel.Show)
@@ -847,25 +890,6 @@ namespace WizBot.Modules.Xp.Services
                                 new PointF(_template.User.GuildLevel.Pos.X, _template.User.GuildLevel.Pos.Y)
                             );
                         });
-                    }
-
-                    //club name
-
-                    if (_template.Club.Name.Show)
-                    {
-                        var clubName = stats.User.Club?.ToString() ?? "-";
-
-                        var clubFont = _fonts.NotoSans
-                            .CreateFont(clubName.Length <= 8
-                                ? _template.Club.Name.FontSize
-                                : _template.Club.Name.FontSize - (clubName.Length / 2), FontStyle.Bold);
-
-                        img.Mutate(x => x.DrawText(textOptions,
-                            clubName,
-                            clubFont,
-                            _template.Club.Name.Color,
-                            new PointF(_template.Club.Name.Pos.X - clubName.Length * 10, _template.Club.Name.Pos.Y))
-                        );
                     }
 
 
@@ -1151,3 +1175,4 @@ namespace WizBot.Modules.Xp.Services
         }
     }
 }
+
