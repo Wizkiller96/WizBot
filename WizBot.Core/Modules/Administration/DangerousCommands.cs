@@ -98,7 +98,7 @@ namespace WizBot.Modules.Administration
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
-            public Task DeleteExp() =>
+            public Task DeleteXp() =>
                 SqlExec(DangerousCommandsService.XpDeleteSql);
 
             //[WizBotCommand, Usage, Description, Aliases]
