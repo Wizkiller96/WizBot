@@ -45,7 +45,11 @@ namespace WizBot.Modules.Searches
 
                 using (var http = _httpFactory.CreateClient("memelist"))
                 {
-                    var rawJson = await http.GetStringAsync("https://memegen.link/api/templates/").ConfigureAwait(false);
+                    var res = await http.GetAsync("https://memegen.link/api/templates/")
+                        .ConfigureAwait(false);
+
+                    var rawJson = await res.Content.ReadAsStringAsync();
+
                     var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(rawJson)
                         .Select(kvp => Path.GetFileName(kvp.Value))
                         .ToList();
