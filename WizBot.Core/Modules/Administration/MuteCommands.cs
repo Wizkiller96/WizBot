@@ -15,6 +15,20 @@ namespace WizBot.Modules.Administration
         [Group]
         public class MuteCommands : WizBotSubmodule<MuteService>
         {
+            private async Task<bool> VerifyMutePermissions(IGuildUser runnerUser, IGuildUser targetUser)
+            {
+                var runnerUserRoles = runnerUser.GetRoles();
+                var targetUserRoles = targetUser.GetRoles();
+                if (runnerUser.Id != ctx.Guild.OwnerId &&
+                    runnerUserRoles.Max(x => x.Position) <= targetUserRoles.Max(x => x.Position))
+                {
+                    await ReplyErrorLocalizedAsync("mute_perms").ConfigureAwait(false);
+                    return false;
+                }
+
+                return true;
+            }
+
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageRoles)]
@@ -46,9 +60,9 @@ namespace WizBot.Modules.Administration
             {
                 try
                 {
-                    var runnerUser = (IGuildUser)ctx.User;
-                    if ((ctx.User.Id != ctx.Guild.OwnerId) && runnerUser.GetRoles().Max(x => x.Position) > target.GetRoles().Max(x => x.Position))
+                    if (!await VerifyMutePermissions((IGuildUser)ctx.User, target))
                         return;
+
                     await _service.MuteUser(target, ctx.User).ConfigureAwait(false);
                     await ReplyConfirmLocalizedAsync("user_muted", Format.Bold(target.ToString())).ConfigureAwait(false);
                 }
@@ -70,6 +84,9 @@ namespace WizBot.Modules.Administration
                     return;
                 try
                 {
+                    if (!await VerifyMutePermissions((IGuildUser)ctx.User, user))
+                        return;
+
                     await _service.TimedMute(user, ctx.User, time.Time).ConfigureAwait(false);
                     await ReplyConfirmLocalizedAsync("user_muted_time", Format.Bold(user.ToString()), (int)time.Time.TotalMinutes).ConfigureAwait(false);
                 }
@@ -104,6 +121,9 @@ namespace WizBot.Modules.Administration
             {
                 try
                 {
+                    if (!await VerifyMutePermissions((IGuildUser)ctx.User, user))
+                        return;
+
                     await _service.MuteUser(user, ctx.User, MuteType.Chat).ConfigureAwait(false);
                     await ReplyConfirmLocalizedAsync("user_chat_mute", Format.Bold(user.ToString())).ConfigureAwait(false);
                 }
@@ -137,6 +157,9 @@ namespace WizBot.Modules.Administration
             {
                 try
                 {
+                    if (!await VerifyMutePermissions((IGuildUser)ctx.User, user))
+                        return;
+
                     await _service.MuteUser(user, ctx.User, MuteType.Voice).ConfigureAwait(false);
                     await ReplyConfirmLocalizedAsync("user_voice_mute", Format.Bold(user.ToString())).ConfigureAwait(false);
                 }
