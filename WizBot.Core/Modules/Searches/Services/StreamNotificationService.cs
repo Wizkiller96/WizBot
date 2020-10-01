@@ -236,14 +236,17 @@ namespace WizBot.Modules.Searches.Services
             return sub.PublishAsync($"{_creds.RedisKey()}_streams_online", JsonConvert.SerializeObject(data));
         }
 
-        private Task ClientOnJoinedGuild(GuildConfig _)
+        private Task ClientOnJoinedGuild(GuildConfig guildConfig)
         {
             using (var uow = _db.GetDbContext())
             {
                 var gc = uow._context.GuildConfigs
                     .AsQueryable()
                     .Include(x => x.FollowedStreams)
-                    .FirstOrDefault();
+                    .FirstOrDefault(x => x.GuildId == guildConfig.GuildId);
+
+                if (gc is null)
+                    return Task.CompletedTask;
 
                 if (gc.NotifyStreamOffline)
                     _offlineNotificationServers.Add(gc.GuildId);
