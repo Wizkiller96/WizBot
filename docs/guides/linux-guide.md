@@ -9,7 +9,6 @@
 | [Running WizBot on tmux](#running-wizbot-on-tmux-if-you-dont-want-to-use-pm2) |
 | [Making WizBot persist upon system restarts \(tmux\)](#making-wizbot-persist-upon-system-restarts-tmux-for-advanced-users) |
 | [Setting up WizBot on a VPS \(Digital Ocean\)](#setting-up-wizbot-on-a-linux-vps-digital-ocean-droplet) |
-| [Setting up WinSCP](#setting-up-winscp) |
 
 ## Operating System Compatibility
 
@@ -265,16 +264,3 @@ If you entered your Droplets IP address correctly, it should show **login as:** 
 **Save the new password somewhere safe.**
 
 After that, your droplet should be ready for use. [Follow the guide from the beginning](../../linux-guide.md/#getting-started) to set WizBot up on your newly created VPS.
-
-##### Setting up WinSCP
-WinSCP is useful for transfering files between a local system (your computer) and a remote system (your VPS). To set it up:
-
-- Open **WinSCP**
-- Click on **New Site** (top-left corner).
-- On the right-hand side, you should see **File Protocol** above a drop-down selection menu.
-- Select **SFTP** *(SSH File Transfer Protocol)* if its not already selected.
-- Now, in **Host name:** paste or type in your `Digital Ocean Droplets IP address` and leave `Port: 22` (no need to change it).
-- In **Username:** type `root`
-- In **Password:** type `the new root password (you changed at the start)`
-- Click on **Login**, it should connect.
-- If everything goes well, you should see the WizBot folder which was created by Git earlier on the right-hand side window. You should now be able to download and upload files to your VPS.
