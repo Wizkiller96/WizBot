@@ -90,7 +90,7 @@ namespace WizBot.Modules.Utility
                     {
                         var when = rem.When;
                         var diff = when - DateTime.UtcNow;
-                        embed.AddField($"#{++i} {rem.When:HH:mm yyyy-MM-dd} UTC (in {(int)diff.TotalHours}h {(int)diff.Minutes}m)", $@"`Target:` {(rem.IsPrivate ? "DM" : "Channel")}
+                        embed.AddField($"#{++i + (page * 10)} {rem.When:HH:mm yyyy-MM-dd} UTC (in {(int)diff.TotalHours}h {(int)diff.Minutes}m)", $@"`Target:` {(rem.IsPrivate ? "DM" : "Channel")}
 `TargetId:` {rem.ChannelId}
 `Message:` {rem.Message}", false);
                     }
@@ -119,9 +119,10 @@ namespace WizBot.Modules.Utility
                     var rems = uow.Reminders.RemindersFor(ctx.User.Id, index / 10)
                         .ToList();
 
-                    if (rems.Count > index)
+                    var pageIndex = index % 10;
+                    if (rems.Count > pageIndex)
                     {
-                        rem = rems[index];
+                        rem = rems[pageIndex];
                         uow.Reminders.Remove(rem);
                         uow.SaveChanges();
                     }
