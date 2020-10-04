@@ -59,7 +59,7 @@ Once it finishes, the installer should automatically take you back to the main m
 
 - Choose Option `1` to get the **most updated build of WizBot**. When installation is complete, you will see the options again.
 
-- If you haven't [set up your Discord bot application](../../jsons-explained/#creating-discord-bot-application) and [invited the bot to your server](../../jsons-explained/#inviting-your-bot-to-your-server) yet, do it now.
+- If you haven't [set up your Discord bot application](../../create-invite/#creating-discord-bot-application) and [invited the bot to your server](../../create-invite/#inviting-your-bot-to-your-server) yet, do it now.
   - Only the ClientID, Bot Token and OwnerID are required. Everything else is optional.
   - The Google API Key is required if you want WizBot to play music.
 

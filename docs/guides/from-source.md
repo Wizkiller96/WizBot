@@ -22,7 +22,7 @@ This is the recommended way of installing WizBot from source. If you don't want 
 - Redis
   - Windows 64 bit: Download and install the [latest msi](https://github.com/MicrosoftArchive/redis/releases/tag/win-3.0.504). Don't forget to [add it to the path environment variable](https://i.imgur.com/uUby6Xw.png) during the installation process.
   - Windows 32 bit: Skip this step
-- [Create a Discord Bot application](../../jsons-explained/#creating-discord-bot-application) and [invite the bot to your server](../../jsons-explained/#inviting-your-bot-to-your-server).
+- [Create a Discord Bot application](../../create-invite/#creating-discord-bot-application) and [invite the bot to your server](../../create-invite/#inviting-your-bot-to-your-server).
 
 **Optional** If you want WizBot to play music, do the following:
 
