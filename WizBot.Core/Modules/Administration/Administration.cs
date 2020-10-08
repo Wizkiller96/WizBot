@@ -185,6 +185,23 @@ namespace WizBot.Modules.Administration
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.ManageChannels)]
+        [BotPerm(GuildPerm.ManageChannels)]
+        public async Task NsfwToggle()
+        {
+            var channel = (ITextChannel)ctx.Channel;
+            var isEnabled = channel.IsNsfw;
+
+            await channel.ModifyAsync(c => c.IsNsfw = !isEnabled).ConfigureAwait(false);
+
+            if (isEnabled)
+                await ReplyConfirmLocalizedAsync("nsfw_set_false").ConfigureAwait(false);
+            else
+                await ReplyConfirmLocalizedAsync("nsfw_set_true").ConfigureAwait(false);
+        }
+
+        [WizBotCommand, Usage, Description, Aliases]
+        [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         public async Task Edit(ulong messageId, [Leftover] string text)
         {

@@ -96,6 +96,8 @@
     "administration_new_topic": "New topic",
     "administration_nick_change": "Nickname changed",
     "administration_no_shard_id": "No shard with that ID found.",
+    "administration_nsfw_set_true": "NSFW has been enabled on this channel.",
+    "administration_nsfw_set_false": "NSFW has been disabled on this channel.",
     "administration_old_msg": "Old message",
     "administration_old_nick": "Old nickname",
     "administration_old_topic": "Old topic",
