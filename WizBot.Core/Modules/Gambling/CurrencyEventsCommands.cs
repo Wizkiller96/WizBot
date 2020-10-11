@@ -37,7 +37,7 @@ namespace WizBot.Modules.Gambling
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [WizBotOptionsAttribute(typeof(EventOptions))]
-            [AdminOnly]
+            [OwnerOnly]
             public async Task EventStart(CurrencyEvent.Type ev, params string[] options)
             {
                 var (opts, _) = OptionsParser.ParseFrom(new EventOptions(), options);

@@ -250,20 +250,20 @@ namespace WizBot.Modules.Gambling
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        [AdminOnly]
+        [OwnerOnly]
         [Priority(0)]
         public Task Award(ShmartNumber amount, IGuildUser usr, [Leftover] string msg) =>
             Award(amount, usr.Id, msg);
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        [AdminOnly]
+        [OwnerOnly]
         [Priority(1)]
         public Task Award(ShmartNumber amount, [Leftover] IGuildUser usr) =>
             Award(amount, usr.Id);
 
         [WizBotCommand, Usage, Description, Aliases]
-        [AdminOnly]
+        [OwnerOnly]
         [Priority(2)]
         public async Task Award(ShmartNumber amount, ulong usrId, [Leftover] string msg = null)
         {
@@ -279,7 +279,7 @@ namespace WizBot.Modules.Gambling
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        [AdminOnly]
+        [OwnerOnly]
         [Priority(2)]
         public async Task Award(ShmartNumber amount, [Leftover] IRole role)
         {
@@ -301,7 +301,7 @@ namespace WizBot.Modules.Gambling
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        [AdminOnly]
+        [OwnerOnly]
         public async Task Take(ShmartNumber amount, [Leftover] IGuildUser user)
         {
             if (amount <= 0)
@@ -316,7 +316,7 @@ namespace WizBot.Modules.Gambling
 
 
         [WizBotCommand, Usage, Description, Aliases]
-        [AdminOnly]
+        [OwnerOnly]
         public async Task Take(ShmartNumber amount, [Leftover] ulong usrId)
         {
             if (amount <= 0)
