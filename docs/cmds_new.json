@@ -2,14 +2,15 @@
   "Administration": [
     {
       "Aliases": [
-        ".delmsgoncmd"
+        ".delmsgoncmd",
+        ".dmc"
       ],
       "Description": "Toggles the automatic deletion of the user's successful command message to prevent chat flood. You can use it either as a server toggle, channel whitelist, or channel blacklist, as channel option has 3 settings: Enable (always do it on this channel), Disable (never do it on this channel), and Inherit (respect server setting). Use `list` parameter to see the current states.",
       "Usage": [
-        ".delmsgoncmd",
-        ".delmsgoncmd channel enable",
-        ".delmsgoncmd channel inherit",
-        ".delmsgoncmd list"
+        ".dmc",
+        ".dmc channel enable",
+        ".dmc ch inherit",
+        ".dmc list"
       ],
       "Submodule": "Administration",
       "Module": "Administration",
@@ -150,6 +151,23 @@
     },
     {
       "Aliases": [
+        ".nsfwtoggle",
+        ".nsfw",
+        ".nsfwtgl"
+      ],
+      "Description": "Toggles the NSFW parameter of the current text channel.",
+      "Usage": [
+        ".nsfwtoggle"
+      ],
+      "Submodule": "Administration",
+      "Module": "Administration",
+      "Options": null,
+      "Requirements": [
+        "ManageChannels Server Permission"
+      ]
+    },
+    {
+      "Aliases": [
         ".edit"
       ],
       "Description": "Edits bot's message, you have to specify message ID and new text. Supports embeds.",
@@ -272,11 +290,11 @@
     },
     {
       "Aliases": [
-        ".deleteexp"
+        ".deletexp"
       ],
-      "Description": "deleteexp",
+      "Description": "Deletes everything from UserXpStats, Clubs and sets users' TotalXP to 0.",
       "Usage": [
-        "deleteexp"
+        ".deletexp"
       ],
       "Submodule": "DangerousCommands",
       "Module": "Administration",
@@ -1744,6 +1762,21 @@
     },
     {
       "Aliases": [
+        ".vcrolerm"
+      ],
+      "Description": "Removes vcrole associated with the specified voice channel ID. This is useful if your vcrole has been enabled on a VC which has been deleted.",
+      "Usage": [
+        ".vcrolerm 123123123123123"
+      ],
+      "Submodule": "VcRoleCommands",
+      "Module": "Administration",
+      "Options": null,
+      "Requirements": [
+        "ManageRoles Server Permission"
+      ]
+    },
+    {
+      "Aliases": [
         ".vcrole"
       ],
       "Description": "Sets or resets a role which will be given to users who join the voice channel you're in when you run this command. Provide no role name to disable. You must be in a voice channel to run this command.",
@@ -2090,7 +2123,7 @@
       "Module": "Gambling",
       "Options": null,
       "Requirements": [
-        "Bot Owner & Admin Only"
+        "Bot Owner Only"
       ]
     },
     {
@@ -2105,7 +2138,7 @@
       "Module": "Gambling",
       "Options": null,
       "Requirements": [
-        "Bot Owner & Admin Only"
+        "Bot Owner Only"
       ]
     },
     {
@@ -2283,7 +2316,7 @@
         "`--duration` (`-d`)   Number of hours the event should run for. Default 24.  "
       ],
       "Requirements": [
-        "Bot Owner & Admin Only"
+        "Bot Owner Only"
       ]
     },
     {
@@ -2521,9 +2554,10 @@
     },
     {
       "Aliases": [
-        ".slot"
+        ".slot",
+        ".slots"
       ],
-      "Description": "Play WizBot slots. Max bet is 9999. 1.5 second cooldown per user.",
+      "Description": "Play WizBot slots. 1 second cooldown per user.",
       "Usage": [
         ".slot 5"
       ],
@@ -3763,7 +3797,7 @@
       "Aliases": [
         ".hentaibomb"
       ],
-      "Description": "Shows a total 5 images (from gelbooru, danbooru, konachan, yandere and atfbooru). Tag is optional but preferred.",
+      "Description": "Shows a total 5 images (from gelbooru, danbooru, konachan and yandere). Tag is optional but preferred.",
       "Usage": [
         ".hentaibomb yuri"
       ],
@@ -3959,8 +3993,9 @@
         ".verbose",
         ".v"
       ],
-      "Description": "Sets whether to show when a command/module is blocked.",
+      "Description": "Toggles or sets whether to show when a command/module is blocked.",
       "Usage": [
+        ".v",
         ".verbose true"
       ],
       "Submodule": "Permissions",
@@ -4496,9 +4531,9 @@
       "Aliases": [
         ".rip"
       ],
-      "Description": "rip",
+      "Description": "Shows the inevitable fate of someone.",
       "Usage": [
-        "rip"
+        ".rip @Someone"
       ],
       "Submodule": "Searches",
       "Module": "Searches",
@@ -5130,7 +5165,7 @@
       "Aliases": [
         ".osu"
       ],
-      "Description": "Shows osu stats for a player.",
+      "Description": "Shows osu! stats for a player.",
       "Usage": [
         ".osu Name",
         ".osu Name taiko"
@@ -5142,11 +5177,12 @@
     },
     {
       "Aliases": [
-        ".osub"
+        ".gatari"
       ],
-      "Description": "Shows information about an osu beatmap.",
+      "Description": "Shows osu!gatari stats for a player.",
       "Usage": [
-        ".osub https://osu.ppy.sh/s/127712"
+        ".gatari Name",
+        ".gatari Name ctb"
       ],
       "Submodule": "OsuCommands",
       "Module": "Searches",
@@ -5265,76 +5301,13 @@
     },
     {
       "Aliases": [
-        ".smashcast",
-        ".hb"
-      ],
-      "Description": "Notifies this channel when the specified user starts streaming.",
-      "Usage": [
-        ".smashcast SomeStreamer"
-      ],
-      "Submodule": "StreamNotificationCommands",
-      "Module": "Searches",
-      "Options": null,
-      "Requirements": [
-        "ManageMessages Server Permission"
-      ]
-    },
-    {
-      "Aliases": [
-        ".twitch",
-        ".tw"
-      ],
-      "Description": "Notifies this channel when the specified user starts streaming.",
-      "Usage": [
-        ".twitch SomeStreamer"
-      ],
-      "Submodule": "StreamNotificationCommands",
-      "Module": "Searches",
-      "Options": null,
-      "Requirements": [
-        "ManageMessages Server Permission"
-      ]
-    },
-    {
-      "Aliases": [
-        ".picarto",
-        ".pa"
-      ],
-      "Description": "Notifies this channel when the specified user starts streaming.",
-      "Usage": [
-        ".picarto SomeStreamer"
-      ],
-      "Submodule": "StreamNotificationCommands",
-      "Module": "Searches",
-      "Options": null,
-      "Requirements": [
-        "ManageMessages Server Permission"
-      ]
-    },
-    {
-      "Aliases": [
-        ".mixer",
-        ".bm"
-      ],
-      "Description": "Notifies this channel when the specified user starts streaming.",
-      "Usage": [
-        ".mixer SomeStreamer"
-      ],
-      "Submodule": "StreamNotificationCommands",
-      "Module": "Searches",
-      "Options": null,
-      "Requirements": [
-        "ManageMessages Server Permission"
-      ]
-    },
-    {
-      "Aliases": [
         ".streamadd",
+        ".sta",
         ".stadd"
       ],
-      "Description": "Notifies this channel when the user's stream on the specified URL goes online or offline.",
+      "Description": "Notifies this channel when the stream on the specified URL goes online or offline. Offline notifications will only show if you enable `.streamoff`. Maximum 10 per server.",
       "Usage": [
-        ".stadd twitch.tv/someguy"
+        ".sta twitch.tv/someguy"
       ],
       "Submodule": "StreamNotificationCommands",
       "Module": "Searches",
@@ -5345,13 +5318,12 @@
     },
     {
       "Aliases": [
-        ".streamremove",
+        ".streamrm",
         ".strm"
       ],
-      "Description": "Removes notifications of a specified stream on the specified platform on this channel. You can also just specify an url.",
+      "Description": "Stops following the stream on the specified index. (use `.stl` to see indexes)",
       "Usage": [
-        ".strm Twitch SomeGuy",
-        ".strm twitch.tv/someguy"
+        ".strm 2"
       ],
       "Submodule": "StreamNotificationCommands",
       "Module": "Searches",
@@ -5362,27 +5334,13 @@
     },
     {
       "Aliases": [
-        ".streamsclear"
+        ".streamlist",
+        ".stl",
+        ".streamslist"
       ],
-      "Description": "Deletes all followed streams on this server.",
+      "Description": "Lists all streams you are following on this server and their respective indexes.",
       "Usage": [
-        ".streamsclear"
-      ],
-      "Submodule": "StreamNotificationCommands",
-      "Module": "Searches",
-      "Options": null,
-      "Requirements": [
-        "Administrator Server Permission"
-      ]
-    },
-    {
-      "Aliases": [
-        ".liststreams",
-        ".ls"
-      ],
-      "Description": "Lists all streams you are following on this server.",
-      "Usage": [
-        ".ls"
+        ".stl"
       ],
       "Submodule": "StreamNotificationCommands",
       "Module": "Searches",
@@ -5392,11 +5350,12 @@
     {
       "Aliases": [
         ".streamoff",
+        ".sto",
         ".stoff"
       ],
-      "Description": "Toggles whether the bot will notify about streams going offline.",
+      "Description": "Toggles whether the bot will also notify when added streams go offline.",
       "Usage": [
-        ".stoff"
+        ".sto"
       ],
       "Submodule": "StreamNotificationCommands",
       "Module": "Searches",
@@ -5407,11 +5366,13 @@
     },
     {
       "Aliases": [
-        ".streammsg"
+        ".streammsg",
+        ".stm",
+        ".stmsg"
       ],
-      "Description": "Specify an url of a stream you're already following, and a message in order to set a stream notification message which will show up every time stream comes online.",
+      "Description": "Sets the message which will show when the stream on the specified index comes online.",
       "Usage": [
-        ".streammsg https://www.twitch.tv/trolhamonas/ Hello world"
+        ".stm 1 Hey @erryone i'm back online!1!!"
       ],
       "Submodule": "StreamNotificationCommands",
       "Module": "Searches",
@@ -5422,12 +5383,12 @@
     },
     {
       "Aliases": [
-        ".checkstream",
-        ".cs"
+        ".streamcheck",
+        ".stc"
       ],
-      "Description": "Checks if a user is online on a certain streaming platform.",
+      "Description": "Retrieves information about a stream.",
       "Usage": [
-        ".cs twitch MyFavStreamer"
+        ".cs https://twitch.tv/somedude"
       ],
       "Submodule": "StreamNotificationCommands",
       "Module": "Searches",
@@ -6188,7 +6149,7 @@
       "Aliases": [
         ".repeat"
       ],
-      "Description": "Repeat a message every specified number of minutes in the current channel. You can instead specify time of day for the message to be repeated at daily (make sure you've set your server's timezone). You can have up to 5 repeating messages on the server in total.",
+      "Description": "Repeat a message once every `-i` number of minutes in the current channel. You can instead specify time of day for the message to be repeated daily (make sure you've set your server's timezone). If you've specified time of day, you can still override the default daily interval with your own -i. For example `17:30 -i 180 -m \"hi there\"` will post at 17:30 and then every 3 hours after. You can have up to 5 repeating messages on the server in total.",
       "Usage": [
         ".repeat -i 5 -m \"Hello there\" -n",
         ".repeat 17:30 -m \"tea time\""
@@ -6207,7 +6168,9 @@
     {
       "Aliases": [
         ".repeatlist",
-        ".replst"
+        ".replst",
+        ".replist",
+        ".repli"
       ],
       "Description": "Shows currently repeating messages and their indexes.",
       "Usage": [
@@ -6317,9 +6280,10 @@
         ".verboseerror",
         ".ve"
       ],
-      "Description": "Toggles whether the bot should print command errors when a command is incorrectly used.",
+      "Description": "Toggles or sets whether the bot should print command errors when a command is incorrectly used.",
       "Usage": [
-        ".ve"
+        ".ve",
+        ".ve false"
       ],
       "Submodule": "VerboseErrorCommands",
       "Module": "Utility",
