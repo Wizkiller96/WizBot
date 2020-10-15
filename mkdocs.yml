@@ -7,6 +7,7 @@ site_author: 'Kwoth & Wizkiller96'
 copyright: © Copyright 2020 WizNet - All Rights Reserved.
 
 nav:
+- Main Site: https://wizbot.cc/
 - Home: index.md
 - Guides:
     - Windows Guide: guides/windows-guide.md
