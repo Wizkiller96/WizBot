@@ -31,22 +31,8 @@ nav:
 theme: 
     name: 'material'
     palette:
-        scheme: slate
+        scheme: 'slate'
         primary: 'deep purple'
         accent: 'deep purple'
     logo: https://wizbot.cc/assets/img/wizbot-icon-887x889.png
     favicon: https://wizbot.cc/assets/img/wizbot-icon-887x889.png
-
-extra_javascript:
-    - https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js
-extra_css:
-    - https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css
-
-markdown_extensions:
-    - pymdownx.highlight:
-        linenums: true
-        linenums_style: pymdownx.inline
-    - pymdownx.inlinehilite
-    - pymdownx.keys
-    - pymdownx.superfences
-    - pymdownx.snippets
