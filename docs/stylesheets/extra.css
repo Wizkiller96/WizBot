@@ -5,15 +5,15 @@
     --md-primary-fg-color--dark: #590074;
     --md-default-bg-color: #0b0b0b;
     --md-default-fg-color: hsla(0, 75%, 95%, 1);
-    --md-default-fg-color--light: hsla(0, 75%, 90%, 0.62);
-    --md-default-fg-color--lighter: hsla(0, 75%, 90%, 0.32);
-    --md-default-fg-color--lightest: hsla(0, 75%, 90%, 0.12);
+    --md-default-fg-color--light: hsla(0, 0%, 100%, 0.849);
+    --md-default-fg-color--lighter: hsla(0, 0%, 100%, 0.32);
+    --md-default-fg-color--lightest: hsla(0, 0%, 100%, 0.12);
 
     /* Code Color Shade */
-    --md-code-fg-color: hsla(0, 18%, 86%, 1);
-    --md-code-bg-color: hsla(0, 15%, 15%, 1);
+    --md-code-fg-color: rgb(255, 255, 255);
+    --md-code-bg-color: rgb(39, 39, 39);
 
     /* Footer color shades */
-    --md-footer-bg-color: rgb(43, 44, 46);
-    --md-footer-bg-color--dark: rgb(25, 26, 27);
+    --md-footer-bg-color: rgb(43, 44, 46) !important;
+    --md-footer-bg-color--dark: rgb(25, 26, 27) !important;
 }

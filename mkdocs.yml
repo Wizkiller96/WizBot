@@ -30,6 +30,8 @@ nav:
 
 theme: 
     name: 'material'
+    features:
+    - navigation.tabs
     palette:
         scheme: 'wizbot'
     logo: https://wizbot.cc/assets/img/wizbot-icon-887x889.png
