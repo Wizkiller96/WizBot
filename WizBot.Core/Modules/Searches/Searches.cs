@@ -702,7 +702,7 @@ namespace WizBot.Modules.Searches
             if (usr == null)
                 usr = (IGuildUser)ctx.User;
 
-            var avatarUrl = usr.RealAvatarUrl();
+            var avatarUrl = usr.RealAvatarUrl(2048);
 
             if (avatarUrl == null)
             {
@@ -714,8 +714,7 @@ namespace WizBot.Modules.Searches
             await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                 .AddField(efb => efb.WithName("Username").WithValue(usr.ToString()).WithIsInline(false))
                 .AddField(efb => efb.WithName("Avatar Url").WithValue(shortenedAvatarUrl).WithIsInline(false))
-                .WithThumbnailUrl(avatarUrl.ToString())
-                .WithImageUrl(avatarUrl.ToString()), ctx.User.Mention).ConfigureAwait(false);
+                .WithThumbnailUrl(avatarUrl.ToString()), ctx.User.Mention).ConfigureAwait(false);
         }
 
         // done in 3.0

@@ -991,7 +991,7 @@ namespace WizBot.Modules.Xp.Services
                     {
                         try
                         {
-                            var avatarUrl = stats.User.RealAvatarUrl(128);
+                            var avatarUrl = stats.User.RealAvatarUrl();
 
                             var (succ, data) = await _cache.TryGetImageDataAsync(avatarUrl);
                             if (!succ)
