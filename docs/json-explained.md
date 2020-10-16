@@ -35,27 +35,27 @@ It should look like this:
 For a single owner or admin, it should look like this:
 
 ```json
-    "OwnerIds": [
-        105635576866156544
-    ],
-    "AdminIds": [
-        105635576866156544
-    ],
+"OwnerIds": [
+    105635576866156544
+],
+"AdminIds": [
+    105635576866156544
+],
 ```
 
 For multiple owners or admins, it should look like this (pay attention to the commas, the last ID should **never** have a comma next to it):
 
 ```json
-    "OwnerIds": [
-        105635123466156544,
-        145521851676884992,
-        341420590009417729
-    ],
-    "AdminIds": [
-        105635123466156544,
-        145521851676884992,
-        341420590009417729
-    ],
+"OwnerIds": [
+    105635123466156544,
+    145521851676884992,
+    341420590009417729
+],
+"AdminIds": [
+    105635123466156544,
+    145521851676884992,
+    341420590009417729
+],
 ```
 
 ---
@@ -106,7 +106,7 @@ This part is completely optional, **however it's necessary for music and a few o
     - Copy it to your credentials.json as shown below
     - *(if you're adding it as the last key inside your credentials.json, remove the trailling comma from the example below)*
     ```json
-        "TwitchClientId": "516tr61tr1qweqwe86trg3g",
+    "TwitchClientId": "516tr61tr1qweqwe86trg3g",
     ```
 - **LocationIqApiKey**
     - Optional. Used only for the `.time` command. https://locationiq.com api key (register and you will receive the token in the email). 

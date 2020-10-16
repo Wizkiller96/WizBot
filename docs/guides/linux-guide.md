@@ -200,8 +200,8 @@ ExecStop=/bin/sleep 2
 
 [Install]
 WantedBy=multi-user.target
+```
 
-```bash
 - Change `/root` from *"WorkingDirectory"* to the directory that contains your WizBot folder.
   - For example, if your  bot is located in `/home/username/WizBot`, you should change `/root` to `/home/username`.
 - Change `root` from *"User"* to whatever username you're using.
@@ -223,6 +223,7 @@ WantedBy=multi-user.target
 And that's it. Every time your system restarts, *systemd* should automatically startup your bot with tmux. If everything has gone well, you should be able to see WizBot on the list of processes being handled by tmux by running the `tmux ls` command.
 
 #### Managing WizBot on tmux with systemd
+
 Here is a list of useful commands if you intend on managing WizBot with *systemd*.  
 
 - `tmux ls` - lists all processes managed by tmux.
@@ -237,6 +238,7 @@ Here is a list of useful commands if you intend on managing WizBot with *systemd
 ---
 
 ### Setting up WizBot on a Linux VPS (Digital Ocean Droplet)
+
 If you want WizBot to play music for you 24/7 without having to hosting it on your PC and want to keep it cheap, reliable and convenient as possible, you can try WizBot on Linux Digital Ocean Droplet using the link [DigitalOcean](http://m.do.co/c/7290047d0c84/) (by using this link, you will get **$10 credit** and also support WizBot)
 
 **Setting up WizBot**
@@ -245,6 +247,7 @@ Assuming you have followed the link above to setup an account and a Droplet with
 **This section is only relevant to those who want to host WizBot on DigitalOcean. Go through this whole section before setting the bot up.**
 
 #### Prerequisites
+
 - Download [PuTTY](http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html)
 - Download [WinSCP](https://winscp.net/eng/download.php) *(optional)*
 - [Create and invite the bot](../../jsons-explained.md/#creating-discord-bot-application).
@@ -256,9 +259,9 @@ If you entered your Droplets IP address correctly, it should show **login as:** 
 - Now for **login as:**, type `root` and press enter.
 - It should then ask for a password. Type the `root password` you have received in your e-mail address, then press Enter.
 
-   If you are running your droplet for the first time, it will most likely ask you to change your root password. To do that, copy the **password you've received by e-mail** and paste it on PuTTY.
+If you are running your droplet for the first time, it will most likely ask you to change your root password. To do that, copy the **password you've received by e-mail** and paste it on PuTTY.
 
-   - To paste, just right-click the window (it won't show any changes on the screen), then press Enter.
+- To paste, just right-click the window (it won't show any changes on the screen), then press Enter.
 
 - Type a **new password** somewhere, copy and paste it on PuTTY. Press Enter then paste it again.
 **Save the new password somewhere safe.**
