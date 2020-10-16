@@ -8,7 +8,7 @@ copyright: © Copyright 2020 WizNet - All Rights Reserved.
 
 nav:
 - Main Site: https://wizbot.cc/
-- Home: index.md
+- Introduction: index.md
 - Guides:
     - Windows Guide: guides/windows-guide.md
     - Linux Guide: guides/linux-guide.md

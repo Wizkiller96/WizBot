@@ -8,7 +8,8 @@
     --md-default-fg-color--light: hsla(0, 0%, 100%, 0.849);
     --md-default-fg-color--lighter: hsla(0, 0%, 100%, 0.32);
     --md-default-fg-color--lightest: hsla(0, 0%, 100%, 0.12);
-
+    --md-accent-fg-color: #590074 !important;
+    --md-typeset-a-color: #964aad !important;
     /* Code Color Shade */
     --md-code-fg-color: rgb(255, 255, 255);
     --md-code-bg-color: rgb(39, 39, 39);
