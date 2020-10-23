@@ -5,6 +5,7 @@ using WizBot.Common.Attributes;
 using WizBot.Common.TypeReaders;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
+using WizBot.Extensions;
 using WizBot.Modules.Permissions.Services;
 using System.Linq;
 using System.Threading.Tasks;
@@ -52,7 +53,16 @@ namespace WizBot.Modules.Permissions
 
             private async Task Blacklist(AddRemove action, ulong id, BlacklistType type)
             {
-                if (action == AddRemove.Add && _creds.OwnerIds.Contains(id))
+                if (action == AddRemove.Add && _creds.OwnerIds.Contains(id)) 
+                {
+                    var embed = new EmbedBuilder()
+                    .WithDescription("You are not allowed to blacklist a **Bot Owner**.")
+                    .WithErrorColor();
+                    await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
+                    return;
+                }
+
+                if (action == AddRemove.Rem && _creds.OwnerIds.Contains(id))
                     return;
 
                 using (var uow = _db.GetDbContext())
