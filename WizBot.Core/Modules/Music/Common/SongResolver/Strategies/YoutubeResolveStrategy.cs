@@ -6,7 +6,6 @@ using WizBot.Core.Services.Database.Models;
 using WizBot.Core.Services.Impl;
 using NLog;
 using YoutubeExplode;
-using YoutubeExplode.Videos;
 
 namespace WizBot.Modules.Music.Common.SongResolver.Strategies
 {
@@ -21,13 +20,13 @@ namespace WizBot.Modules.Music.Common.SongResolver.Strategies
 
         public async Task<SongInfo> ResolveSong(string query)
         {
-            // try
-            // {
-            //     var s = await ResolveWithYtExplode(query).ConfigureAwait(false);
-            //     if (s != null)
-            //         return s;
-            // }
-            // catch { }
+            try
+            {
+                var s = await ResolveWithYtExplode(query).ConfigureAwait(false);
+                if (s != null)
+                    return s;
+            }
+            catch (Exception ex) { Console.WriteLine(ex.ToString()); }
             return await ResolveWithYtDl(query).ConfigureAwait(false);
         }
 
