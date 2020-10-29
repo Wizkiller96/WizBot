@@ -12,7 +12,7 @@ This document aims to guide you through the process of creating a Discord accoun
 - Go to the **Bot** tab on the left sidebar.
 - Click on the `Add a Bot` button and confirm that you do want to add a bot to this app.
 - Scroll down to the `Privileged Gateway Intents` section and enable both intents. 
-These are required for a number of features to funtion properly, and should both be on.
+These are required for a number of features to function properly, and should both be on.
 
 ![img3](https://i.imgur.com/iuq2901.gif)
 
