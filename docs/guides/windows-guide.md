@@ -58,6 +58,9 @@ _If you happen to close the wizard with that option unchecked, you can easily fi
 You can still install them manually:
 
 * [Redis Installer](https://github.com/MicrosoftArchive/redis/releases/tag/win-3.0.504) - Download and run the `.msi` file
-* [ffmpeg](https://ffmpeg.zeranoe.com/builds/) - Download the Release build and move the file to `C:\ffmpeg`, extract its contents and rename the folder to `nightly`.
-  * If that still fails, move the `ffmpeg.exe` file to `C:\Program Files\WizBot\system`.
-* [youtube-dl](https://rg3.github.io/youtube-dl/download.html) - Click on `Windows.exe` \(on the top left corner\) and download the file. Then move it to `C:\Program Files\WizBot\system`.
+* [ffmpeg-32bit] | [ffmpeg-64bit] - Download the **appropriate version** for your system (32 bit if you're running a 32 bit OS, or 64 if you're running a 64bit OS). Unzip it, and move `ffmpeg.exe` to a path that's in your PATH environment variable.
+* [youtube-dl] - Click to download the file. Then put `youtube-dl.exe` in a path that's in your PATH environment variable.
+
+[ffmpeg-32bit]: https://cdn.nadeko.bot/dl/ffmpeg-32.zip
+[ffmpeg-64bit]: https://cdn.nadeko.bot/dl/ffmpeg-64.zip
+[youtube-dl]: https://yt-dl.org/downloads/latest/youtube-dl.exe
