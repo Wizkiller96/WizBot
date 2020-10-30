@@ -2,10 +2,8 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using WizBot.Common.Attributes;
-using WizBot.Core.Common.TypeReaders.Models;
 using WizBot.Extensions;
 using WizBot.Modules.Administration.Services;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -211,62 +209,6 @@ namespace WizBot.Modules.Administration
                 return;
 
             await _service.EditMessage(Context, messageId, text).ConfigureAwait(false);
-        }
-
-        [WizBotCommand, Usage, Description, Aliases]
-        [RequireContext(ContextType.Guild)]
-        [UserPerm(GuildPerm.ManageMessages)]
-        [BotPerm(GuildPerm.ManageMessages)]
-        public Task Delete(ulong messageId, StoopidTime time = null)
-            => Delete((ITextChannel)ctx.Channel, messageId, time);
-
-        [WizBotCommand, Usage, Description, Aliases]
-        [RequireContext(ContextType.Guild)]
-        [UserPerm(GuildPerm.ManageMessages)]
-        [BotPerm(GuildPerm.ManageMessages)]
-        public async Task Delete(ITextChannel channel, ulong messageId, StoopidTime time = null)
-        {
-            var userPerms = ((SocketGuildUser)ctx.User).GetPermissions(channel);
-            var botPerms = ((SocketGuild)ctx.Guild).CurrentUser.GetPermissions(channel);
-            if (!userPerms.Has(ChannelPermission.ManageMessages))
-            {
-                await ReplyErrorLocalizedAsync("insuf_perms_u").ConfigureAwait(false);
-                return;
-            }
-
-            if (!botPerms.Has(ChannelPermission.ManageMessages))
-            {
-                await ReplyErrorLocalizedAsync("insuf_perms_i").ConfigureAwait(false);
-                return;
-            }
-
-
-            var msg = await channel.GetMessageAsync(messageId).ConfigureAwait(false);
-            if (msg == null)
-            {
-                await ReplyErrorLocalizedAsync("msg_not_found").ConfigureAwait(false);
-                return;
-            }
-
-            if (time == null)
-            {
-                await msg.DeleteAsync().ConfigureAwait(false);
-            }
-            else if (time.Time <= TimeSpan.FromDays(7))
-            {
-                var _ = Task.Run(async () =>
-                {
-                    await Task.Delay(time.Time).ConfigureAwait(false);
-                    await msg.DeleteAsync().ConfigureAwait(false);
-                });
-            }
-            else
-            {
-                await ReplyErrorLocalizedAsync("time_too_long").ConfigureAwait(false);
-                return;
-            }
-            var conf = await ReplyAsync("👌").ConfigureAwait(false);
-            conf.DeleteAfter(3);
         }
     }
 }
