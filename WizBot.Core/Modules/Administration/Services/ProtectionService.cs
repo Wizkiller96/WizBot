@@ -187,10 +187,11 @@ namespace WizBot.Modules.Administration.Services
                     case PunishmentAction.Mute:
                         try
                         {
+                            var muteReason = $"{pt} Protection";
                             if (muteTime <= 0)
-                                await _mute.MuteUser(gu, _client.CurrentUser).ConfigureAwait(false);
+                                await _mute.MuteUser(gu, _client.CurrentUser, reason: muteReason).ConfigureAwait(false);
                             else
-                                await _mute.TimedMute(gu, _client.CurrentUser, TimeSpan.FromSeconds(muteTime)).ConfigureAwait(false);
+                                await _mute.TimedMute(gu, _client.CurrentUser, TimeSpan.FromSeconds(muteTime), reason: muteReason).ConfigureAwait(false);
                         }
                         catch (Exception ex) { _log.Warn(ex, "I can't apply punishement"); }
                         break;
