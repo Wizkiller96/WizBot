@@ -735,7 +735,7 @@ namespace WizBot.Modules.Searches
                     var res = await http.GetStringAsync($"http://www.{Uri.EscapeUriString(target)}.wikia.com/api/v1/Search/List?query={Uri.EscapeUriString(query)}&limit=25&minArticleQuality=10&batch=1&namespaces=0%2C14").ConfigureAwait(false);
                     var items = JObject.Parse(res);
                     var found = items["items"][0];
-                    var response = $@"`{GetText("title")}` {found["title"]}
+                    var response = $@"`{GetText("title")}` {found["title"]?.ToString().SanitizeMentions()}
 `{GetText("quality")}` {found["quality"]}
 `{GetText("url")}:` {await _google.ShortenUrl(found["url"].ToString()).ConfigureAwait(false)}";
                     await ctx.Channel.SendMessageAsync(response).ConfigureAwait(false);
