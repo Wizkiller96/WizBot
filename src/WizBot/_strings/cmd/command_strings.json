@@ -3473,6 +3473,15 @@
       "{0}edit 7479498384 Hi :^)"
     ]
   },
+  "delete": {
+    "cmd": "delete del",
+    "desc": "Deletes a single message given the channel and message ID. If channel is ommited, message will be searched for in the current channel. You can also specify time parameter after which the message will be deleted (up to 7 days). This timer won't persist through bot restarts.",
+    "usage": [
+      "{0}del #chat 771562360594628608",
+      "{0}del 771562360594628608",
+      "{0}del 771562360594628608 5m"
+    ]
+  },
   "roleid": {
     "cmd": "roleid rid",
     "desc": "Shows the id of the specified role.",
