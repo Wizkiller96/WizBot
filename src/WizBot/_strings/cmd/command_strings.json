@@ -449,10 +449,12 @@
   },
   "mute": {
     "Cmd": "mute",
-    "Desc": "Mutes a mentioned user both from speaking and chatting. You can also specify time string for how long the user should be muted.",
+    "Desc": "Mutes a mentioned user both from speaking and chatting. You can also specify time string for how long the user should be muted. You can optionally specify a reason.",
     "Usage": [
       "{0}mute @Someone",
-      "{0}mute 1h30m @Someone"
+      "{0}mute @Someone too noisy",
+      "{0}mute 1h30m @Someone",
+      "{0}mute 1h30m @Someone too noisy"
     ]
   },
   "voiceunmute": {
@@ -1998,16 +2000,18 @@
   },
   "chatmute": {
     "Cmd": "chatmute",
-    "Desc": "Prevents a mentioned user from chatting in text channels.",
+    "Desc": "Prevents a mentioned user from chatting in text channels. You can optionally specify a reason.",
     "Usage": [
-      "{0}chatmute @Someone"
+      "{0}chatmute @Someone",
+      "{0}chatmute @Someone stop writing"
     ]
   },
   "voicemute": {
     "Cmd": "voicemute",
-    "Desc": "Prevents a mentioned user from speaking in voice channels.",
+    "Desc": "Prevents a mentioned user from speaking in voice channels. User has to be in a voice channel in order for the command to have an effect. You can optionally specify a reason.",
     "Usage": [
-      "{0}voicemute @Someone"
+      "{0}voicemute @Someone",
+      "{0}voicemute @Someone stop talking"
     ]
   },
   "konachan": {
