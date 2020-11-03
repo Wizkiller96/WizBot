@@ -22,12 +22,18 @@ namespace WizBot.Modules.Music.Common.SongResolver.Strategies
         {
             try
             {
-                var s = await ResolveWithYtExplode(query).ConfigureAwait(false);
+                var s = await ResolveWithYtDl(query).ConfigureAwait(false);
                 if (s != null)
                     return s;
             }
-            catch (Exception ex) { Console.WriteLine(ex.ToString()); }
-            return await ResolveWithYtDl(query).ConfigureAwait(false);
+            catch (Exception ex) { _log.Warn(ex.ToString()); }
+
+            try
+            {
+                return await ResolveWithYtExplode(query).ConfigureAwait(false);
+            }
+            catch (Exception ex) { _log.Warn(ex.ToString()); }
+            return null;
         }
 
         private async Task<SongInfo> ResolveWithYtExplode(string query)
