@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using WizBot.Common;
 using WizBot.Common.Collections;
 using WizBot.Core.Services;
+using WizBot.Modules.Administration.Services;
 using Newtonsoft.Json;
 using NLog;
 using SixLabors.Fonts;
@@ -191,11 +192,15 @@ namespace WizBot.Extensions
             dict.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/14.0.835.202 Safari/535.1");
         }
 
-        public static IMessage DeleteAfter(this IUserMessage msg, int seconds)
+        public static IMessage DeleteAfter(this IUserMessage msg, int seconds, LogCommandService logService = null)
         {
             Task.Run(async () =>
             {
                 await Task.Delay(seconds * 1000).ConfigureAwait(false);
+                if (logService != null)
+                {
+                    logService.AddDeleteIgnore(msg.Id);
+                }
                 try { await msg.DeleteAsync().ConfigureAwait(false); }
                 catch { }
             });

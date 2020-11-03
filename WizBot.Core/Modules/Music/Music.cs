@@ -8,6 +8,7 @@ using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Core.Services.Impl;
 using WizBot.Extensions;
+using WizBot.Modules.Administration.Services;
 using WizBot.Modules.Music.Common;
 using WizBot.Modules.Music.Common.Exceptions;
 using WizBot.Modules.Music.Extensions;
@@ -28,16 +29,19 @@ namespace WizBot.Modules.Music
         private readonly IBotCredentials _creds;
         private readonly IGoogleApiService _google;
         private readonly DbService _db;
+        private readonly LogCommandService _logService;
 
         public Music(DiscordSocketClient client,
             IBotCredentials creds,
             IGoogleApiService google,
-            DbService db)
+            DbService db,
+            LogCommandService logService)
         {
             _client = client;
             _creds = creds;
             _google = google;
             _db = db;
+            _logService = logService;
         }
 
         //private Task Client_UserVoiceStateUpdated(SocketUser iusr, SocketVoiceState oldState, SocketVoiceState newState)
@@ -127,9 +131,9 @@ namespace WizBot.Modules.Music
                         var queuedMessage = await mp.OutputTextChannel.EmbedAsync(embed).ConfigureAwait(false);
                         if (mp.Stopped)
                         {
-                            (await ReplyErrorLocalizedAsync("queue_stopped", Format.Code(Prefix + "play")).ConfigureAwait(false)).DeleteAfter(10);
+                            (await ReplyErrorLocalizedAsync("queue_stopped", Format.Code(Prefix + "play")).ConfigureAwait(false)).DeleteAfter(10, _logService);
                         }
-                        queuedMessage?.DeleteAfter(10);
+                        queuedMessage?.DeleteAfter(10, _logService);
                     }
                     catch
                     {
@@ -175,7 +179,7 @@ namespace WizBot.Modules.Music
             try { await InternalQueue(mp, songInfo, false, forcePlay: forceplay).ConfigureAwait(false); } catch (QueueFullException) { return; }
             if ((await ctx.Guild.GetCurrentUserAsync().ConfigureAwait(false)).GetPermissions((IGuildChannel)ctx.Channel).ManageMessages)
             {
-                ctx.Message.DeleteAfter(10);
+                ctx.Message.DeleteAfter(10, _logService);
             }
         }
 
@@ -188,7 +192,7 @@ namespace WizBot.Modules.Music
             try { await InternalQueue(mp, songInfo, false, true).ConfigureAwait(false); } catch (QueueFullException) { return; }
             if ((await ctx.Guild.GetCurrentUserAsync().ConfigureAwait(false)).GetPermissions((IGuildChannel)ctx.Channel).ManageMessages)
             {
-                ctx.Message.DeleteAfter(10);
+                ctx.Message.DeleteAfter(10, _logService);
             }
         }
 
@@ -215,6 +219,7 @@ namespace WizBot.Modules.Music
                     || (index -= 1) < 0
                     || index >= videos.Length)
                 {
+                    _logService.AddDeleteIgnore(msg.Id);
                     try { await msg.DeleteAsync().ConfigureAwait(false); } catch { }
                     return;
                 }
@@ -225,6 +230,7 @@ namespace WizBot.Modules.Music
             }
             finally
             {
+                _logService.AddDeleteIgnore(msg.Id);
                 try { await msg.DeleteAsync().ConfigureAwait(false); } catch { }
             }
         }

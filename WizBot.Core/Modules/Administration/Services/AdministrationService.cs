@@ -24,12 +24,14 @@ namespace WizBot.Modules.Administration.Services
         private readonly Logger _log;
         private readonly WizBot _bot;
         private readonly DbService _db;
+        private readonly LogCommandService _logService;
 
-        public AdministrationService(WizBot bot, CommandHandler cmdHandler, DbService db)
+        public AdministrationService(WizBot bot, CommandHandler cmdHandler, DbService db, LogCommandService logService)
         {
             _log = LogManager.GetCurrentClassLogger();
             _bot = bot;
             _db = db;
+            _logService = logService;
 
             DeleteMessagesOnCommand = new ConcurrentHashSet<ulong>(bot.AllGuildConfigs
                 .Where(g => g.DeleteMessageOnCommand)
@@ -66,12 +68,14 @@ namespace WizBot.Modules.Administration.Services
                 {
                     if (state && cmd.Name != "prune" && cmd.Name != "pick")
                     {
+                        _logService.AddDeleteIgnore(msg.Id);
                         try { await msg.DeleteAsync().ConfigureAwait(false); } catch { }
                     }
                     //if state is false, that means do not do it
                 }
                 else if (DeleteMessagesOnCommand.Contains(channel.Guild.Id) && cmd.Name != "prune" && cmd.Name != "pick")
                 {
+                    _logService.AddDeleteIgnore(msg.Id);
                     try { await msg.DeleteAsync().ConfigureAwait(false); } catch { }
                 }
             });

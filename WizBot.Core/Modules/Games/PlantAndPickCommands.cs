@@ -3,6 +3,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using WizBot.Common.Attributes;
 using WizBot.Extensions;
+using WizBot.Modules.Administration.Services;
 using WizBot.Modules.Gambling.Services;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,6 +15,13 @@ namespace WizBot.Modules.Games
         [Group]
         public class PlantPickCommands : WizBotSubmodule<PlantPickService>
         {
+            private readonly LogCommandService logService;
+
+            public PlantPickCommands(LogCommandService logService)
+            {
+                this.logService = logService;
+            }
+
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task Pick(string pass = null)
@@ -28,13 +36,18 @@ namespace WizBot.Modules.Games
                 if (picked > 0)
                 {
                     var msg = await ReplyConfirmLocalizedAsync("picked", picked + Bc.BotConfig.CurrencySign)
-                       .ConfigureAwait(false);
+                    .ConfigureAwait(false);
                     msg.DeleteAfter(10);
                 }
 
                 if (((SocketGuild)ctx.Guild).CurrentUser.GuildPermissions.ManageMessages)
                 {
-                    try { await ctx.Message.DeleteAsync().ConfigureAwait(false); } catch { }
+                    try
+                    {
+                        logService.AddDeleteIgnore(ctx.Message.Id);
+                        await ctx.Message.DeleteAsync().ConfigureAwait(false);
+                    }
+                    catch { }
                 }
             }
 
@@ -59,6 +72,7 @@ namespace WizBot.Modules.Games
 
                 if (((SocketGuild)ctx.Guild).CurrentUser.GuildPermissions.ManageMessages)
                 {
+                    logService.AddDeleteIgnore(ctx.Message.Id);
                     await ctx.Message.DeleteAsync().ConfigureAwait(false);
                 }
             }
