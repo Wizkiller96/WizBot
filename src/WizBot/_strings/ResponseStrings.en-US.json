@@ -592,7 +592,7 @@
     "utility_quotes_page": "Page {0} of quotes",
     "utility_quotes_page_none": "No quotes found on that page.",
     "utility_quotes_remove_none": "No quotes found which you can remove.",
-    "utility_quote_added": "Quote Added",
+    "utility_quote_added_new": "Quote #{0} added.",
     "utility_quote_deleted": "Quote #{0} deleted.",
     "utility_region": "Region",
     "utility_registered_on": "Registered on",

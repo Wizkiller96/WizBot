@@ -163,9 +163,10 @@ namespace WizBot.Modules.Utility
 
                 keyword = keyword.ToUpperInvariant();
 
+                Quote q;
                 using (var uow = _db.GetDbContext())
                 {
-                    uow.Quotes.Add(new Quote
+                    uow.Quotes.Add(q = new Quote
                     {
                         AuthorId = ctx.Message.Author.Id,
                         AuthorName = ctx.Message.Author.Username,
@@ -175,7 +176,7 @@ namespace WizBot.Modules.Utility
                     });
                     await uow.SaveChangesAsync();
                 }
-                await ReplyConfirmLocalizedAsync("quote_added").ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync("quote_added_new", Format.Code(q.Id.ToString())).ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
