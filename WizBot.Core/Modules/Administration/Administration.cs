@@ -204,27 +204,48 @@ namespace WizBot.Modules.Administration
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        [UserPerm(GuildPerm.ManageMessages)]
-        public async Task Edit(ulong messageId, [Leftover] string text)
-        {
-            if (string.IsNullOrWhiteSpace(text))
-                return;
+        [UserPerm(ChannelPerm.ManageMessages)]
+        [Priority(0)]
+        public Task Edit(ulong messageId, [Leftover] string text)
+            => Edit((ITextChannel)ctx.Channel, messageId, text);
 
-            await _service.EditMessage(Context, messageId, text).ConfigureAwait(false);
+        [WizBotCommand, Usage, Description, Aliases]
+        [RequireContext(ContextType.Guild)]
+        [Priority(1)]
+        public async Task Edit(ITextChannel channel, ulong messageId, [Leftover] string text)
+        {
+            var userPerms = ((SocketGuildUser)ctx.User).GetPermissions(channel);
+            var botPerms = ((SocketGuild)ctx.Guild).CurrentUser.GetPermissions(channel);
+            if (!userPerms.Has(ChannelPermission.ManageMessages))
+            {
+                await ReplyErrorLocalizedAsync("insuf_perms_u").ConfigureAwait(false);
+                return;
+            }
+
+            if (!botPerms.Has(ChannelPermission.ViewChannel))
+            {
+                await ReplyErrorLocalizedAsync("insuf_perms_i").ConfigureAwait(false);
+                return;
+            }
+
+            await _service.EditMessage(ctx, channel, messageId, text);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        [UserPerm(GuildPerm.ManageMessages)]
-        [BotPerm(GuildPerm.ManageMessages)]
+        [UserPerm(ChannelPerm.ManageMessages)]
+        [BotPerm(ChannelPerm.ManageMessages)]
         public Task Delete(ulong messageId, StoopidTime time = null)
             => Delete((ITextChannel)ctx.Channel, messageId, time);
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        [UserPerm(GuildPerm.ManageMessages)]
-        [BotPerm(GuildPerm.ManageMessages)]
         public async Task Delete(ITextChannel channel, ulong messageId, StoopidTime time = null)
+        {
+            await InternalMessageAction(channel, messageId, time, (msg) => msg.DeleteAsync());
+        }
+
+        private async Task InternalMessageAction(ITextChannel channel, ulong messageId, StoopidTime time, Func<IMessage, Task> func)
         {
             var userPerms = ((SocketGuildUser)ctx.User).GetPermissions(channel);
             var botPerms = ((SocketGuild)ctx.Guild).CurrentUser.GetPermissions(channel);

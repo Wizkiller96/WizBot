@@ -152,9 +152,9 @@ namespace WizBot.Modules.Administration.Services
             }
         }
 
-        public async Task EditMessage(ICommandContext context, ulong messageId, string text)
+        public async Task EditMessage(ICommandContext context, ITextChannel chanl, ulong messageId, string text)
         {
-            var msg = await context.Channel.GetMessageAsync(messageId);
+            var msg = await chanl.GetMessageAsync(messageId);
 
             if (!(msg is IUserMessage umsg) || msg.Author.Id != context.Client.CurrentUser.Id)
                 return;
@@ -174,8 +174,11 @@ namespace WizBot.Modules.Administration.Services
             }
             else
             {
-                await umsg.ModifyAsync(x => x.Content = text.SanitizeMentions())
-                    .ConfigureAwait(false);
+                await umsg.ModifyAsync(x =>
+                {
+                    x.Content = text.SanitizeMentions();
+                    x.Embed = null;
+                }).ConfigureAwait(false);
             }
         }
     }
