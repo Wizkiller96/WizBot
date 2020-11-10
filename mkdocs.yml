@@ -33,11 +33,20 @@ nav:
 theme: 
     name: 'material'
     features:
+    - navigation.instant
     - navigation.tabs
     palette:
         scheme: 'wizbot'
     logo: https://wizbot.cc/assets/img/wizbot-icon-887x889.png
     favicon: https://wizbot.cc/assets/img/wizbot-icon-887x889.png
+    font: false
+
+plugins:
+    - minify:
+        minify_html: true
+    - git-revision-date-localized:
+        type: date
+    - search
 
 extra_javascript:
     - https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js
@@ -47,10 +56,23 @@ extra_css:
     - stylesheets/extra.css
 
 markdown_extensions:
+    - codehilite:
+        guess_lang: false
+    - toc:
+        permalink: true
+    - pymdownx.tasklist:
+        custom_checkbox: true
+    - pymdownx.betterem:
+        smart_enable: all
+    - admonition
+    - meta
+    - footnotes
+    - pymdownx.details
     - pymdownx.highlight:
         linenums: true
         linenums_style: pymdownx.inline
     - pymdownx.inlinehilite
     - pymdownx.keys
     - pymdownx.superfences
+    - pymdownx.tabbed
     - pymdownx.snippets
