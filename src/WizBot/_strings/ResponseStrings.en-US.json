@@ -162,6 +162,7 @@
     "administration_text_chan_destroyed": "Text channel destroyed.",
     "administration_undeafen": "Undeafen successful.",
     "administration_unmuted_sn": "Unmuted",
+    "administration_unable_to_dm_user": "DMing user failed.",
     "administration_username": "Username",
     "administration_username_changed": "Username changed",
     "administration_users": "Users",

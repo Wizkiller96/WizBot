@@ -363,6 +363,8 @@ namespace WizBot.Modules.Administration
                     await ReplyErrorLocalizedAsync("hierarchy").ConfigureAwait(false);
                     return;
                 }
+
+                var dmFailed = false;
                 if (!string.IsNullOrWhiteSpace(msg))
                 {
                     try
@@ -371,17 +373,23 @@ namespace WizBot.Modules.Administration
                     }
                     catch
                     {
-                        // ignored
+                        dmFailed = true;
                     }
                 }
 
                 await _mute.TimedBan(user, time.Time, ctx.User.ToString() + " | " + msg).ConfigureAwait(false);
-                await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                        .WithTitle("⛔️ " + GetText("banned_user"))
-                        .AddField(efb => efb.WithName(GetText("username")).WithValue(user.ToString()).WithIsInline(true))
-                        .AddField(efb => efb.WithName("ID").WithValue(user.Id.ToString()).WithIsInline(true))
-                        .AddField(efb => efb.WithName(GetText("moderator")).WithValue(ctx.User.ToString()))
-                        .WithFooter($"{time.Time.Days}d {time.Time.Hours}h {time.Time.Minutes}m"))
+                var toSend = new EmbedBuilder().WithOkColor()
+                    .WithTitle("⛔️ " + GetText("banned_user"))
+                    .AddField(efb => efb.WithName(GetText("username")).WithValue(user.ToString()).WithIsInline(true))
+                    .AddField(efb => efb.WithName("ID").WithValue(user.Id.ToString()).WithIsInline(true))
+                    .WithFooter($"{time.Time.Days}d {time.Time.Hours}h {time.Time.Minutes}m");
+
+                if (dmFailed)
+                {
+                    toSend.WithFooter("⚠️ " + GetText("unable_to_dm_user"));
+                }
+
+                await ctx.Channel.EmbedAsync(toSend)
                     .ConfigureAwait(false);
             }
 
@@ -420,6 +428,8 @@ namespace WizBot.Modules.Administration
                     await ReplyErrorLocalizedAsync("hierarchy").ConfigureAwait(false);
                     return;
                 }
+                
+                var dmFailed = false;
                 if (!string.IsNullOrWhiteSpace(msg))
                 {
                     try
@@ -428,16 +438,22 @@ namespace WizBot.Modules.Administration
                     }
                     catch
                     {
-                        // ignored
+                        dmFailed = true;
                     }
                 }
 
                 await ctx.Guild.AddBanAsync(user, 7, ctx.User.ToString() + " | " + msg).ConfigureAwait(false);
-                await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                        .WithTitle("⛔️ " + GetText("banned_user"))
-                        .AddField(efb => efb.WithName(GetText("username")).WithValue(user.ToString()).WithIsInline(true))
-                        .AddField(efb => efb.WithName("ID").WithValue(user.Id.ToString()).WithIsInline(true))
-                        .AddField(efb => efb.WithName(GetText("moderator")).WithValue(ctx.User.ToString())))
+                var toSend = new EmbedBuilder().WithOkColor()
+                    .WithTitle("⛔️ " + GetText("banned_user"))
+                    .AddField(efb => efb.WithName(GetText("username")).WithValue(user.ToString()).WithIsInline(true))
+                    .AddField(efb => efb.WithName("ID").WithValue(user.Id.ToString()).WithIsInline(true));
+
+                if (dmFailed)
+                {
+                    toSend.WithFooter("⚠️ " + GetText("unable_to_dm_user"));
+                }
+
+                await ctx.Channel.EmbedAsync(toSend)
                     .ConfigureAwait(false);
             }
 
@@ -499,6 +515,7 @@ namespace WizBot.Modules.Administration
                     return;
                 }
 
+                var dmFailed = false;
                 if (!string.IsNullOrWhiteSpace(msg))
                 {
                     try
@@ -507,7 +524,7 @@ namespace WizBot.Modules.Administration
                     }
                     catch
                     {
-                        // ignored
+                        dmFailed = true;
                     }
                 }
 
@@ -515,11 +532,17 @@ namespace WizBot.Modules.Administration
                 try { await ctx.Guild.RemoveBanAsync(user).ConfigureAwait(false); }
                 catch { await ctx.Guild.RemoveBanAsync(user).ConfigureAwait(false); }
 
-                await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                        .WithTitle("☣ " + GetText("sb_user"))
-                        .AddField(efb => efb.WithName(GetText("username")).WithValue(user.ToString()).WithIsInline(true))
-                        .AddField(efb => efb.WithName("ID").WithValue(user.Id.ToString()).WithIsInline(true))
-                        .AddField(efb => efb.WithName(GetText("moderator")).WithValue(ctx.User.ToString())))
+                var toSend = new EmbedBuilder().WithOkColor()
+                    .WithTitle("☣ " + GetText("sb_user"))
+                    .AddField(efb => efb.WithName(GetText("username")).WithValue(user.ToString()).WithIsInline(true))
+                    .AddField(efb => efb.WithName("ID").WithValue(user.Id.ToString()).WithIsInline(true));
+
+                if (dmFailed)
+                {
+                    toSend.WithFooter("⚠️ " + GetText("unable_to_dm_user"));
+                }
+
+                await ctx.Channel.EmbedAsync(toSend)
                     .ConfigureAwait(false);
             }
 
@@ -534,21 +557,34 @@ namespace WizBot.Modules.Administration
                     await ReplyErrorLocalizedAsync("hierarchy").ConfigureAwait(false);
                     return;
                 }
+
+                var dmFailed = false;
                 if (!string.IsNullOrWhiteSpace(msg))
                 {
                     try
                     {
-                        await user.SendErrorAsync(GetText("kickdm", Format.Bold(ctx.Guild.Name), msg)).ConfigureAwait(false);
+                        await user.SendErrorAsync(GetText("kickdm", Format.Bold(ctx.Guild.Name), msg))
+                            .ConfigureAwait(false);
                     }
-                    catch { }
+                    catch
+                    {
+
+                        dmFailed = true;
+                    }
                 }
 
                 await user.KickAsync(ctx.User.ToString() + " | " + msg).ConfigureAwait(false);
-                await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                        .WithTitle(GetText("kicked_user"))
-                        .AddField(efb => efb.WithName(GetText("username")).WithValue(user.ToString()).WithIsInline(true))
-                        .AddField(efb => efb.WithName("ID").WithValue(user.Id.ToString()).WithIsInline(true))
-                        .AddField(efb => efb.WithName(GetText("moderator")).WithValue(ctx.User.ToString())))
+                var toSend = new EmbedBuilder().WithOkColor()
+                    .WithTitle(GetText("kicked_user"))
+                    .AddField(efb => efb.WithName(GetText("username")).WithValue(user.ToString()).WithIsInline(true))
+                    .AddField(efb => efb.WithName("ID").WithValue(user.Id.ToString()).WithIsInline(true));
+
+                if (dmFailed)
+                {
+                    toSend.WithFooter("⚠️ " + GetText("unable_to_dm_user"));
+                }
+
+                await ctx.Channel.EmbedAsync(toSend)
                     .ConfigureAwait(false);
             }
 
