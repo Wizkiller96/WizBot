@@ -1585,16 +1585,17 @@
   },
   "memelist": {
     "Cmd": "memelist",
-    "Desc": "Pulls a list of memes you can use with `{0}memegen` from http://memegen.link/templates/",
+    "Desc": "Shows a list of template keys (and their repspective names) used for `{0}memegen`.",
     "Usage": [
       "{0}memelist"
     ]
   },
   "memegen": {
     "Cmd": "memegen",
-    "Desc": "Generates a meme from memelist with top and bottom text.",
+    "Desc": "Generates a meme from memelist with specified text. Separate multiple text values with semicolons. Provide no meme text to see an example meme with that template.",
     "Usage": [
-      "{0}memegen biw \"gets iced coffee\" \"in the winter\""
+      "{0}memegen biw gets iced coffee;in the winter",
+      "{0}memegen ntot"
     ]
   },
   "weather": {
