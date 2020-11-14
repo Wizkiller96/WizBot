@@ -83,14 +83,14 @@ This part is completely optional, **however it's necessary for music and a few o
         "GoogleApiKey": "AIzaSyDSci1sdlWQOWNVj1vlXxxxxxbk0oWMEzM",
         ```
 - **MashapeKey**
-    - Required for Urban Dictionary, and Hearthstone cards.
+    - Required for Hearthstone cards.
     - Api key obtained on https://rapidapi.com (register -> go to MyApps -> Add New App -> Enter Name -> Application key)
     - Copy the key and paste it into `credentials.json`
 - **OsuApiKey**
     - Required for Osu commands
     - You can get this key [here](https://osu.ppy.sh/p/api).
 - **CleverbotApiKey**
-    - Required if you want to use Cleverobot. It's currently a paid service.
+    - Required if you want to use Cleverbot. It's currently a paid service.
     - You can get this key [here](http://www.cleverbot.com/api/).
 - **PatreonAccessToken**
     - For Patreon creators only.
