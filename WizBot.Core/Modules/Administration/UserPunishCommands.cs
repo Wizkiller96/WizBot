@@ -528,7 +528,7 @@ namespace WizBot.Modules.Administration
                     }
                 }
 
-                await ctx.Guild.AddBanAsync(user, 7, ctx.User.ToString() + " | " + msg).ConfigureAwait(false);
+                await ctx.Guild.AddBanAsync(user, 7, "Softban | " + ctx.User.ToString() + " | " + msg).ConfigureAwait(false);
                 try { await ctx.Guild.RemoveBanAsync(user).ConfigureAwait(false); }
                 catch { await ctx.Guild.RemoveBanAsync(user).ConfigureAwait(false); }
 
