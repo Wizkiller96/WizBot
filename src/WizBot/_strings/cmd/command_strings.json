@@ -3152,7 +3152,7 @@
     "Cmd": "clubadmin",
     "Desc": "Assigns (or unassigns) staff role to the member of the club. Admins can ban, kick and accept applications.",
     "Usage": [
-      "{0}clubadmin"
+      "{0}clubadmin @b1nzy"
     ]
   },
   "autoboobs": {
