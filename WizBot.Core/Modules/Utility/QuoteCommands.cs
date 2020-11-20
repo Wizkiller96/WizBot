@@ -47,7 +47,7 @@ namespace WizBot.Modules.Utility
 
                 if (quotes.Any())
                     await ctx.Channel.SendConfirmAsync(GetText("quotes_page", page + 1),
-                            string.Join("\n", quotes.Select(q => $"`#{q.Id}` {Format.Bold(q.Keyword.SanitizeMentions()),-20} by {q.AuthorName.SanitizeMentions()}")))
+                            string.Join("\n", quotes.Select(q => $"`#{q.Id}` {Format.Bold(q.Keyword.SanitizeAllMentions()),-20} by {q.AuthorName.SanitizeAllMentions()}")))
                         .ConfigureAwait(false);
                 else
                     await ReplyErrorLocalizedAsync("quotes_page_none").ConfigureAwait(false);
@@ -83,11 +83,11 @@ namespace WizBot.Modules.Utility
                 if (CREmbed.TryParse(quote.Text, out var crembed))
                 {
                     rep.Replace(crembed);
-                    await ctx.Channel.EmbedAsync(crembed.ToEmbed(), $"`#{quote.Id}` 📣 " + crembed.PlainText?.SanitizeMentions() ?? "")
+                    await ctx.Channel.EmbedAsync(crembed.ToEmbed(), $"`#{quote.Id}` 📣 " + crembed.PlainText?.SanitizeAllMentions() ?? "")
                         .ConfigureAwait(false);
                     return;
                 }
-                await ctx.Channel.SendMessageAsync($"`#{quote.Id}` 📣 " + rep.Replace(quote.Text)?.SanitizeMentions()).ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync($"`#{quote.Id}` 📣 " + rep.Replace(quote.Text)?.SanitizeAllMentions()).ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -109,7 +109,7 @@ namespace WizBot.Modules.Utility
                     return;
 
                 await ctx.Channel.SendMessageAsync($"`#{keywordquote.Id}` 💬 " + keyword.ToLowerInvariant() + ":  " +
-                                                       keywordquote.Text.SanitizeMentions()).ConfigureAwait(false);
+                                                       keywordquote.Text.SanitizeAllMentions()).ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -138,18 +138,18 @@ namespace WizBot.Modules.Utility
                     return;
                 }
 
-                var infoText = $"`#{quote.Id} added by {quote.AuthorName.SanitizeMentions()}` 🗯️ " + quote.Keyword.ToLowerInvariant().SanitizeMentions() + ":\n";
+                var infoText = $"`#{quote.Id} added by {quote.AuthorName.SanitizeAllMentions()}` 🗯️ " + quote.Keyword.ToLowerInvariant().SanitizeAllMentions() + ":\n";
 
                 if (CREmbed.TryParse(quote.Text, out var crembed))
                 {
                     rep.Replace(crembed);
 
-                    await ctx.Channel.EmbedAsync(crembed.ToEmbed(), infoText + crembed.PlainText?.SanitizeMentions())
+                    await ctx.Channel.EmbedAsync(crembed.ToEmbed(), infoText + crembed.PlainText?.SanitizeAllMentions())
                         .ConfigureAwait(false);
                 }
                 else
                 {
-                    await ctx.Channel.SendMessageAsync(infoText + rep.Replace(quote.Text)?.SanitizeMentions())
+                    await ctx.Channel.SendMessageAsync(infoText + rep.Replace(quote.Text)?.SanitizeAllMentions())
                         .ConfigureAwait(false);
                 }
             }
@@ -226,7 +226,7 @@ namespace WizBot.Modules.Utility
                     await uow.SaveChangesAsync();
                 }
 
-                await ReplyConfirmLocalizedAsync("quotes_deleted", Format.Bold(keyword.SanitizeMentions())).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync("quotes_deleted", Format.Bold(keyword.SanitizeAllMentions())).ConfigureAwait(false);
             }
         }
     }

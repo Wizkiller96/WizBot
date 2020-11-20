@@ -139,9 +139,13 @@ namespace WizBot.Extensions
 
         public static string SanitizeMentions(this string str) =>
             str.Replace("@everyone", "@everyοne", StringComparison.InvariantCultureIgnoreCase)
-               .Replace("@here", "@һere", StringComparison.InvariantCultureIgnoreCase)
-               .Replace("<@&", "<ම&", StringComparison.InvariantCultureIgnoreCase);
+               .Replace("@here", "@һere", StringComparison.InvariantCultureIgnoreCase);
 
+        public static string SanitizeRoleMentions(this string str) =>
+            str.Replace("<@&", "<ම&", StringComparison.InvariantCultureIgnoreCase);
+
+        public static string SanitizeAllMentions(this string str) =>
+            str.SanitizeMentions().SanitizeRoleMentions();
 
         public static string ToBase64(this string plainText)
         {
