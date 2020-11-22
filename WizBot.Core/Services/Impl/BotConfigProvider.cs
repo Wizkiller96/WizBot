@@ -2,6 +2,7 @@
 using WizBot.Common;
 using WizBot.Core.Services.Database.Models;
 using System;
+using System.Reflection;
 
 namespace WizBot.Core.Services.Impl
 {
@@ -234,6 +235,14 @@ namespace WizBot.Core.Services.Impl
                 uow.SaveChanges();
             }
             return true;
+        }
+
+        public string GetValue(string name)
+        {
+            var value = typeof(BotConfig)
+                .GetProperty(name, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance)
+                .GetValue(BotConfig);
+            return value?.ToString() ?? "-";
         }
     }
 }

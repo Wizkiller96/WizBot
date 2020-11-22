@@ -2,7 +2,9 @@
 using Discord.Commands;
 using WizBot.Common;
 using WizBot.Common.Attributes;
+using WizBot.Extensions;
 using System;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace WizBot.Modules.Utility
@@ -16,7 +18,21 @@ namespace WizBot.Modules.Utility
             public async Task BotConfigEdit()
             {
                 var names = Enum.GetNames(typeof(BotConfigEditType));
-                await ReplyAsync(string.Join(", ", names)).ConfigureAwait(false);
+                var valuesSb = new StringBuilder();
+                foreach (var name in names)
+                {
+                    var value = Bc.GetValue(name);
+                    if (name != "CurrencySign")
+                        value = value.TrimTo(30);
+                    valuesSb.AppendLine(value.Replace("\n", ""));
+                }
+
+                var embed = new EmbedBuilder()
+                    .WithTitle("Bot Config")
+                    .WithOkColor()
+                    .AddField(fb => fb.WithName("Names").WithValue(string.Join("\n", names)).WithIsInline(true))
+                    .AddField(fb => fb.WithName("Values").WithValue(valuesSb.ToString()).WithIsInline(true));
+                await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]

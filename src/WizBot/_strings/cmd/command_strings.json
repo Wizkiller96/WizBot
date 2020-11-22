@@ -2937,7 +2937,7 @@
   },
   "botconfigedit": {
     "Cmd": "botconfigedit bce",
-    "Desc": "Sets one of available bot config settings to a specified value. Use the command without any parameters to get a list of available settings.",
+    "Desc": "Sets one of available bot config settings to a specified value. Use the command without any parameters to get a list of available settings, and their current values.",
     "Usage": [
       "{0}bce CurrencyName b1nzy",
       "{0}bce"
