@@ -12,7 +12,6 @@ namespace WizBot.Modules.Searches
         public class CryptoCommands : WizBotSubmodule<CryptoService>
         {
             [WizBotCommand, Usage, Description, Aliases]
-            [RequireContext(ContextType.Guild)]
             public async Task Crypto(string name)
             {
                 name = name?.ToUpperInvariant();
@@ -40,6 +39,13 @@ namespace WizBot.Modules.Searches
                     return;
                 }
 
+                var sevenDay = decimal.TryParse(crypto.Quote.Usd.Percent_Change_7d, out var sd)
+                        ? sd.ToString("F2")
+                        : crypto.Quote.Usd.Percent_Change_7d;
+
+                var lastDay = decimal.TryParse(crypto.Quote.Usd.Percent_Change_24h, out var ld)
+                        ? ld.ToString("F2")
+                        : crypto.Quote.Usd.Percent_Change_24h;
 
                 await ctx.Channel.EmbedAsync(new EmbedBuilder()
                     .WithOkColor()
@@ -49,7 +55,7 @@ namespace WizBot.Modules.Searches
                     .AddField(GetText("market_cap"), $"${crypto.Quote.Usd.Market_Cap:n0}", true)
                     .AddField(GetText("price"), $"${crypto.Quote.Usd.Price}", true)
                     .AddField(GetText("volume_24h"), $"${crypto.Quote.Usd.Volume_24h:n0}", true)
-                    .AddField(GetText("change_7d_24h"), $"{crypto.Quote.Usd.Percent_Change_7d}% / {crypto.Quote.Usd.Percent_Change_24h}%", true)
+                    .AddField(GetText("change_7d_24h"), $"{sevenDay}% / {lastDay}%", true)
                     .WithImageUrl($"https://s3.coinmarketcap.com/generated/sparklines/web/7d/usd/{crypto.Id}.png")).ConfigureAwait(false);
             }
         }
