@@ -3477,7 +3477,7 @@
     "usage": [
       "{0}edit 7479498384 Hi :^)",
       "{0}edit #other-channel 771562360594628608 New message!",
-      "{0}edit #other-channel 771562360594628608 {\"description\":\"hello\"}"
+      "{0}edit #other-channel 771562360594628608 {{\"description\":\"hello\"}}"
     ]
   },
   "delete": {
