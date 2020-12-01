@@ -40,14 +40,12 @@ namespace WizBot.Modules.Roblox
             try
             {
                 // Todo make a checker to see if a Roblox account exist before showing info.
-                //JToken RChecker;
                 JToken RInfo;
                 //JToken RUID;
                 JToken RStatus;
                 JToken RMT;
                 using (var http = _httpFactory.CreateClient())
                 {
-                    //RChecker = JObject.Parse(await http.GetStringAsync($"https://auth.roblox.com/v2/usernames/validate?request.birthday=01%2F01%2F1990&request.username={username}").ConfigureAwait(false));
                     RInfo = JObject.Parse(await http.GetStringAsync($"https://wizbot.cc/api/v1/roblox/getPlayerInfo/{username}").ConfigureAwait(false));
                     // RUID = JObject.Parse(await http.GetStringAsync($"http://api.roblox.com/users/get-by-username?username={username}").ConfigureAwait(false)); // Backup UserId
                     RStatus = JObject.Parse(await http.GetStringAsync($"http://api.roblox.com/users/{RInfo["userid"]}/onlinestatus").ConfigureAwait(false));
@@ -55,7 +53,7 @@ namespace WizBot.Modules.Roblox
                     RMT = JObject.Parse(await http.GetStringAsync($"https://groups.roblox.com/v1/users/{RInfo["userid"]}/group-membership-status").ConfigureAwait(false));
                 }
                 // Currently doesn't work at this time. If you know a sulotion feel free to try.
-                // if ((string)RInfo == "User does not exist")
+                // if ((int)RInfo["ErrorCode"] == 404)
                 // {
                 //     await ctx.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
                 //     .WithAuthor(eab => eab.WithUrl("https://roblox.com/")
@@ -77,6 +75,11 @@ namespace WizBot.Modules.Roblox
                 {
                     RMT["membershipType"] = "None";
                 }
+                var pastNames = string.Join("\n", RInfo["oldNames"].Take(5));
+                if (string.IsNullOrEmpty(pastNames))
+                {
+                    pastNames = "N/A";
+                }
                 await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                     .WithAuthor(eab => eab.WithUrl("https://roblox.com/")
                         .WithIconUrl("https://i.imgur.com/jDcWXPD.png")
@@ -92,7 +95,8 @@ namespace WizBot.Modules.Roblox
                     .AddField(fb => fb.WithName("Account Age").WithValue($"{RInfo["age"]}").WithIsInline(true))
                     .AddField(fb => fb.WithName("Join Date").WithValue($"{RInfo["joinDate"]:MM.dd.yyyy HH:mm}").WithIsInline(true))
                     .AddField(fb => fb.WithName("Status").WithValue(string.IsNullOrEmpty($"{RInfo["status"]}") ? none : ($"{RInfo["status"]}")).WithIsInline(false))
-                    .AddField(fb => fb.WithName("Blurb").WithValue(string.IsNullOrEmpty($"{RInfo["blurb"]}") ? none : ($"{RInfo["blurb"]}".TrimTo(170))).WithIsInline(false)))
+                    .AddField(fb => fb.WithName("Blurb").WithValue(string.IsNullOrEmpty($"{RInfo["blurb"]}") ? none : ($"{RInfo["blurb"]}".TrimTo(170))).WithIsInline(false))
+                    .AddField(fb => fb.WithName($"Past Names (" + RInfo["oldNames"].Count() + ")").WithValue(pastNames).WithIsInline(false)))
                 .ConfigureAwait(false);
                 //}
             }
