@@ -160,7 +160,7 @@
   "administration_spam_stats": "If a user posts {0} same messages in a row, I will {1} them.\n    __IgnoredChannels__: {2}",
   "administration_text_chan_created": "Text channel created.",
   "administration_text_chan_destroyed": "Text channel destroyed.",
-  "administration_time": "Time",
+  "administration_duration": "Duration",
   "administration_undeafen": "Undeafen successful.",
   "administration_unmuted_sn": "Unmuted",
   "administration_unable_to_dm_user": "DMing user failed.",
