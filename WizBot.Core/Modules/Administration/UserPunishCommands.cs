@@ -51,9 +51,9 @@ namespace WizBot.Modules.Administration
                 try
                 {
                     await (await user.GetOrCreateDMChannelAsync().ConfigureAwait(false)).EmbedAsync(new EmbedBuilder().WithErrorColor()
-                                     .WithDescription(GetText("warned_on", ctx.Guild.ToString()))
-                                     .AddField(efb => efb.WithName(GetText("moderator")).WithValue(ctx.User.ToString()))
-                                     .AddField(efb => efb.WithName(GetText("reason")).WithValue(reason ?? "-")))
+                        .WithDescription(GetText("warned_on", ctx.Guild.ToString()))
+                        .AddField(efb => efb.WithName(GetText("moderator")).WithValue(ctx.User.ToString()))
+                        .AddField(efb => efb.WithName(GetText("reason")).WithValue(reason ?? "-")))
                         .ConfigureAwait(false);
                 }
                 catch
@@ -338,6 +338,7 @@ namespace WizBot.Modules.Administration
                 string list;
                 if (ps.Any())
                 {
+
                     list = string.Join("\n", ps.Select(x => $"{x.Count} -> {x.Punishment} {(x.Punishment == PunishmentAction.AddRole ? $"<@&{x.RoleId}>" : "")} {(x.Time <= 0 ? "" : x.Time.ToString() + "m")} "));
                 }
                 else
@@ -365,24 +366,23 @@ namespace WizBot.Modules.Administration
                 }
 
                 var dmFailed = false;
-                if (!string.IsNullOrWhiteSpace(msg))
+
+                try
                 {
-                    try
-                    {
-                        await user.SendErrorAsync(GetText("bandm", Format.Bold(ctx.Guild.Name), msg)).ConfigureAwait(false);
-                    }
-                    catch
-                    {
-                        dmFailed = true;
-                    }
+                    await user.SendErrorAsync(GetText("bandm", Format.Bold(ctx.Guild.Name), msg)).ConfigureAwait(false);
                 }
+                catch
+                {
+                    dmFailed = true;
+                }
+
 
                 await _mute.TimedBan(user, time.Time, ctx.User.ToString() + " | " + msg).ConfigureAwait(false);
                 var toSend = new EmbedBuilder().WithOkColor()
                     .WithTitle("⛔️ " + GetText("banned_user"))
                     .AddField(efb => efb.WithName(GetText("username")).WithValue(user.ToString()).WithIsInline(true))
                     .AddField(efb => efb.WithName("ID").WithValue(user.Id.ToString()).WithIsInline(true))
-                    .WithFooter($"{time.Time.Days}d {time.Time.Hours}h {time.Time.Minutes}m");
+                    .AddField(efb => efb.WithName(GetText("time")).WithValue($"{time.Time.Days}d {time.Time.Hours}h {time.Time.Minutes}m").WithIsInline(true));
 
                 if (dmFailed)
                 {
@@ -428,21 +428,20 @@ namespace WizBot.Modules.Administration
                     await ReplyErrorLocalizedAsync("hierarchy").ConfigureAwait(false);
                     return;
                 }
-                
+
                 var dmFailed = false;
-                if (!string.IsNullOrWhiteSpace(msg))
+
+                try
                 {
-                    try
-                    {
-                        await user.SendErrorAsync(GetText("bandm", Format.Bold(ctx.Guild.Name), msg)).ConfigureAwait(false);
-                    }
-                    catch
-                    {
-                        dmFailed = true;
-                    }
+                    await user.SendErrorAsync(GetText("bandm", Format.Bold(ctx.Guild.Name), msg)).ConfigureAwait(false);
+                }
+                catch
+                {
+                    dmFailed = true;
                 }
 
                 await ctx.Guild.AddBanAsync(user, 7, ctx.User.ToString() + " | " + msg).ConfigureAwait(false);
+
                 var toSend = new EmbedBuilder().WithOkColor()
                     .WithTitle("⛔️ " + GetText("banned_user"))
                     .AddField(efb => efb.WithName(GetText("username")).WithValue(user.ToString()).WithIsInline(true))
@@ -516,16 +515,14 @@ namespace WizBot.Modules.Administration
                 }
 
                 var dmFailed = false;
-                if (!string.IsNullOrWhiteSpace(msg))
+
+                try
                 {
-                    try
-                    {
-                        await user.SendErrorAsync(GetText("sbdm", Format.Bold(ctx.Guild.Name), msg)).ConfigureAwait(false);
-                    }
-                    catch
-                    {
-                        dmFailed = true;
-                    }
+                    await user.SendErrorAsync(GetText("sbdm", Format.Bold(ctx.Guild.Name), msg)).ConfigureAwait(false);
+                }
+                catch
+                {
+                    dmFailed = true;
                 }
 
                 await ctx.Guild.AddBanAsync(user, 7, "Softban | " + ctx.User.ToString() + " | " + msg).ConfigureAwait(false);
@@ -559,21 +556,19 @@ namespace WizBot.Modules.Administration
                 }
 
                 var dmFailed = false;
-                if (!string.IsNullOrWhiteSpace(msg))
-                {
-                    try
-                    {
-                        await user.SendErrorAsync(GetText("kickdm", Format.Bold(ctx.Guild.Name), msg))
-                            .ConfigureAwait(false);
-                    }
-                    catch
-                    {
 
-                        dmFailed = true;
-                    }
+                try
+                {
+                    await user.SendErrorAsync(GetText("kickdm", Format.Bold(ctx.Guild.Name), msg))
+                        .ConfigureAwait(false);
+                }
+                catch
+                {
+                    dmFailed = true;
                 }
 
                 await user.KickAsync(ctx.User.ToString() + " | " + msg).ConfigureAwait(false);
+
                 var toSend = new EmbedBuilder().WithOkColor()
                     .WithTitle(GetText("kicked_user"))
                     .AddField(efb => efb.WithName(GetText("username")).WithValue(user.ToString()).WithIsInline(true))
