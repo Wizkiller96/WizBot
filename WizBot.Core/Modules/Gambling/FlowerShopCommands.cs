@@ -109,6 +109,12 @@ namespace WizBot.Modules.Gambling
                         return;
                     }
 
+                    if (guser.RoleIds.Any(id => id == role.Id))
+                    {
+                        await ReplyErrorLocalizedAsync("shop_role_already_bought").ConfigureAwait(false);
+                        return;
+                    }
+
                     if (await _cs.RemoveAsync(ctx.User.Id, $"Shop purchase - {entry.Type}", entry.Price).ConfigureAwait(false))
                     {
                         try
