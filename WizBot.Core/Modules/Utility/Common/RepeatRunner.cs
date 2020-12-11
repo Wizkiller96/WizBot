@@ -9,6 +9,7 @@ using WizBot.Core.Services.Database.Models;
 using NLog;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using WizBot.Common.Replacements;
 using WizBot.Modules.Utility.Services;
 
 namespace WizBot.Modules.Utility.Common
@@ -44,13 +45,15 @@ namespace WizBot.Modules.Utility.Common
         public DateTime NextDateTime { get; set; }
 
         private Timer _t;
+        private readonly DiscordSocketClient _client;
 
-        public RepeatRunner(SocketGuild guild, Repeater repeater, MessageRepeaterService mrs)
+        public RepeatRunner(DiscordSocketClient client, SocketGuild guild, Repeater repeater, MessageRepeaterService mrs)
         {
             _log = LogManager.GetCurrentClassLogger();
             Repeater = repeater;
             Guild = guild;
             _mrs = mrs;
+            _client = client;
 
             InitialInterval = Repeater.Interval;
 
@@ -199,7 +202,11 @@ namespace WizBot.Modules.Utility.Common
                     // ignored
                 }
 
-                var newMsg = await Channel.SendMessageAsync(toSend.SanitizeMentions()).ConfigureAwait(false);
+                var rep = new ReplacementBuilder()
+                    .WithDefault(Guild.CurrentUser, Channel, Guild, _client)
+                    .Build();
+
+                var newMsg = await Channel.SendMessageAsync(rep.Replace(toSend).SanitizeMentions()).ConfigureAwait(false);
 
                 if (Repeater.NoRedundant)
                 {

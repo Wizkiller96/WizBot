@@ -60,7 +60,7 @@ namespace WizBot.Modules.Utility.Services
 
                     var idToRepeater = gc.GuildRepeaters
                         .Where(gr => !(gr.DateAdded is null))
-                        .Select(gr => new KeyValuePair<int, RepeatRunner>(gr.Id, new RepeatRunner(guild, gr, this)))
+                        .Select(gr => new KeyValuePair<int, RepeatRunner>(gr.Id, new RepeatRunner(_client, guild, gr, this)))
                         .ToDictionary(x => x.Key, y => y.Value)
                         .ToConcurrent();
 
