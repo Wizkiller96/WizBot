@@ -75,6 +75,15 @@ namespace WizBot.Modules.Roblox
                 {
                     RMT["membershipType"] = "None";
                 }
+                // Roblox Ban Check
+                /* if ((bool)RInfo["isBanned"] == true)
+                {
+                    RInfo["isBanned"] = "Yes";
+                }
+                else
+                {
+                    RInfo["isBanned"] = "No";
+                } */
                 var pastNames = string.Join("\n", RInfo["oldNames"].Take(5));
                 if (string.IsNullOrEmpty(pastNames))
                 {
@@ -87,6 +96,7 @@ namespace WizBot.Modules.Roblox
                     .WithThumbnailUrl($"https://assetgame.roblox.com/Thumbs/Avatar.ashx?username={RInfo["username"]}")
                     .AddField(fb => fb.WithName("Username").WithValue($"[{RInfo["username"]}](https://www.roblox.com/users/{RInfo["userid"]}/profile)").WithIsInline(true))
                     .AddField(fb => fb.WithName("User ID").WithValue($"{RInfo["userid"]}").WithIsInline(true))
+                    //.AddField(fb => fb.WithName("Banned").WithValue($"{RInfo["isBanned"]}").WithIsInline(true))
                     .AddField(fb => fb.WithName("Friends").WithValue($"{RInfo["friendCount"]}").WithIsInline(true))
                     .AddField(fb => fb.WithName("Followers").WithValue($"{RInfo["followerCount"]}").WithIsInline(true))
                     .AddField(fb => fb.WithName("Following").WithValue($"{RInfo["followingCount"]}").WithIsInline(true))
