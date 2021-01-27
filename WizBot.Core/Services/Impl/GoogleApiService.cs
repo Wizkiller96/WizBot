@@ -101,6 +101,7 @@ namespace WizBot.Core.Services.Impl
             query.MaxResults = count;
             query.Q = keywords;
             query.Type = "video";
+            query.SafeSearch = SearchResource.ListRequest.SafeSearchEnum.Strict;
             return (await query.ExecuteAsync().ConfigureAwait(false)).Items.Select(i => "http://www.youtube.com/watch?v=" + i.Id.VideoId);
         }
 
