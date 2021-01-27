@@ -178,23 +178,36 @@ namespace WizBot.Modules.Xp
         {
             var serverExcluded = _service.IsServerExcluded(ctx.Guild.Id);
             var roles = _service.GetExcludedRoles(ctx.Guild.Id)
-                .Select(x => ctx.Guild.GetRole(x)?.Name)
-                .Where(x => x != null);
+                .Select(x => ctx.Guild.GetRole(x))
+                .Where(x => x != null)
+                .Select(x => $"`role`   {x.Mention}")
+                .ToList();
 
             var chans = (await Task.WhenAll(_service.GetExcludedChannels(ctx.Guild.Id)
                 .Select(x => ctx.Guild.GetChannelAsync(x)))
                 .ConfigureAwait(false))
                     .Where(x => x != null)
-                    .Select(x => x.Name);
+                    .Select(x => $"`channel` <#{x.Id}>")
+                    .ToList();
 
-            var embed = new EmbedBuilder()
-                .WithTitle(GetText("exclusion_list"))
-                .WithDescription((serverExcluded ? GetText("server_is_excluded") : GetText("server_is_not_excluded")))
-                .AddField(GetText("excluded_roles"), roles.Any() ? string.Join("\n", roles) : "-", false)
-                .AddField(GetText("excluded_channels"), chans.Any() ? string.Join("\n", chans) : "-", false)
-                .WithOkColor();
+            var rolesStr = roles.Any() ? string.Join("\n", roles) + "\n" : string.Empty;
+            var chansStr = chans.Count > 0 ? string.Join("\n", chans) + "\n" : string.Empty;
+            var desc = Format.Code(serverExcluded
+                ? GetText("server_is_excluded")
+                : GetText("server_is_not_excluded"));
 
-            await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+            desc += "\n\n" + rolesStr + chansStr;
+
+            var lines = desc.Split('\n');
+            await ctx.SendPaginatedConfirmAsync(0, curpage =>
+            {
+                var embed = new EmbedBuilder()
+                    .WithTitle(GetText("exclusion_list"))
+                    .WithDescription(string.Join('\n', lines.Skip(15 * curpage).Take(15)))
+                    .WithOkColor();
+
+                return embed;
+            }, lines.Length, 15);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
