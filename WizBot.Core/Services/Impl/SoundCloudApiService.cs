@@ -8,12 +8,10 @@ namespace WizBot.Core.Services.Impl
 {
     public class SoundCloudApiService : INService
     {
-        private readonly IBotCredentials _creds;
         private readonly IHttpClientFactory _httpFactory;
 
-        public SoundCloudApiService(IBotCredentials creds, IHttpClientFactory factory)
+        public SoundCloudApiService(IHttpClientFactory factory)
         {
-            _creds = creds;
             _httpFactory = factory;
         }
 

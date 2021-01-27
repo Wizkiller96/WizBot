@@ -833,6 +833,7 @@
   "xp_global_leaderboard": "Global XP Leaderboard",
   "xp_modified": "Modified server XP of the user {0} by {1}",
   "xp_club_create_error": "Failed creating the club. Make sure you're above level 5 and not a member of a club already.",
+  "xp_club_create_too_long": "Club name is too long.",
   "xp_club_created": "Club {0} successfully created!",
   "xp_club_not_exists": "That club doesn't exist.",
   "xp_club_not_exists_owner": "You are not the owner or the admin of the club.",

@@ -13,7 +13,11 @@ namespace WizBot.Modules.Administration
 {
     public partial class Administration : WizBotTopLevelModule<AdministrationService>
     {
-        public enum List { List = 0, Ls = 0 }
+        public enum List
+        {
+            List = 0,
+            Ls = 0
+        }
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
@@ -22,7 +26,7 @@ namespace WizBot.Modules.Administration
         [Priority(2)]
         public async Task Delmsgoncmd(List _)
         {
-            var guild = (SocketGuild)ctx.Guild;
+            var guild = (SocketGuild) ctx.Guild;
             var (enabled, channels) = _service.GetDelMsgOnCmdData(ctx.Guild.Id);
 
             var embed = new EmbedBuilder()
@@ -34,7 +38,7 @@ namespace WizBot.Modules.Administration
                 .Select(x =>
                 {
                     var ch = guild.GetChannel(x.ChannelId)?.ToString()
-                        ?? x.ChannelId.ToString();
+                            ?? x.ChannelId.ToString();
                     var prefix = x.State ? "✅ " : "❌ ";
                     return prefix + ch;
                 }));
@@ -47,7 +51,11 @@ namespace WizBot.Modules.Administration
             await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
         }
 
-        public enum Server { Server }
+        public enum Server
+        {
+            Server
+        }
+
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
@@ -67,8 +75,20 @@ namespace WizBot.Modules.Administration
             }
         }
 
-        public enum Channel { Channel, Ch, Chnl, Chan }
-        public enum State { Enable, Disable, Inherit }
+        public enum Channel
+        {
+            Channel,
+            Ch,
+            Chnl,
+            Chan
+        }
+
+        public enum State
+        {
+            Enable,
+            Disable,
+            Inherit
+        }
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
@@ -168,19 +188,20 @@ namespace WizBot.Modules.Administration
         [BotPerm(GuildPerm.ManageChannels)]
         public async Task SetTopic([Leftover] string topic = null)
         {
-            var channel = (ITextChannel)ctx.Channel;
+            var channel = (ITextChannel) ctx.Channel;
             topic = topic ?? "";
             await channel.ModifyAsync(c => c.Topic = topic).ConfigureAwait(false);
             await ReplyConfirmLocalizedAsync("set_topic").ConfigureAwait(false);
 
         }
+
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageChannels)]
         [BotPerm(GuildPerm.ManageChannels)]
         public async Task SetChanlName([Leftover] string name)
         {
-            var channel = (ITextChannel)ctx.Channel;
+            var channel = (ITextChannel) ctx.Channel;
             await channel.ModifyAsync(c => c.Name = name).ConfigureAwait(false);
             await ReplyConfirmLocalizedAsync("set_channel_name").ConfigureAwait(false);
         }
@@ -191,7 +212,7 @@ namespace WizBot.Modules.Administration
         [BotPerm(GuildPerm.ManageChannels)]
         public async Task NsfwToggle()
         {
-            var channel = (ITextChannel)ctx.Channel;
+            var channel = (ITextChannel) ctx.Channel;
             var isEnabled = channel.IsNsfw;
 
             await channel.ModifyAsync(c => c.IsNsfw = !isEnabled).ConfigureAwait(false);
@@ -207,15 +228,15 @@ namespace WizBot.Modules.Administration
         [UserPerm(ChannelPerm.ManageMessages)]
         [Priority(0)]
         public Task Edit(ulong messageId, [Leftover] string text)
-            => Edit((ITextChannel)ctx.Channel, messageId, text);
+            => Edit((ITextChannel) ctx.Channel, messageId, text);
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
         public async Task Edit(ITextChannel channel, ulong messageId, [Leftover] string text)
         {
-            var userPerms = ((SocketGuildUser)ctx.User).GetPermissions(channel);
-            var botPerms = ((SocketGuild)ctx.Guild).CurrentUser.GetPermissions(channel);
+            var userPerms = ((SocketGuildUser) ctx.User).GetPermissions(channel);
+            var botPerms = ((SocketGuild) ctx.Guild).CurrentUser.GetPermissions(channel);
             if (!userPerms.Has(ChannelPermission.ManageMessages))
             {
                 await ReplyErrorLocalizedAsync("insuf_perms_u").ConfigureAwait(false);
@@ -236,7 +257,7 @@ namespace WizBot.Modules.Administration
         [UserPerm(ChannelPerm.ManageMessages)]
         [BotPerm(ChannelPerm.ManageMessages)]
         public Task Delete(ulong messageId, StoopidTime time = null)
-            => Delete((ITextChannel)ctx.Channel, messageId, time);
+            => Delete((ITextChannel) ctx.Channel, messageId, time);
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
@@ -245,10 +266,11 @@ namespace WizBot.Modules.Administration
             await InternalMessageAction(channel, messageId, time, (msg) => msg.DeleteAsync());
         }
 
-        private async Task InternalMessageAction(ITextChannel channel, ulong messageId, StoopidTime time, Func<IMessage, Task> func)
+        private async Task InternalMessageAction(ITextChannel channel, ulong messageId, StoopidTime time,
+            Func<IMessage, Task> func)
         {
-            var userPerms = ((SocketGuildUser)ctx.User).GetPermissions(channel);
-            var botPerms = ((SocketGuild)ctx.Guild).CurrentUser.GetPermissions(channel);
+            var userPerms = ((SocketGuildUser) ctx.User).GetPermissions(channel);
+            var botPerms = ((SocketGuild) ctx.Guild).CurrentUser.GetPermissions(channel);
             if (!userPerms.Has(ChannelPermission.ManageMessages))
             {
                 await ReplyErrorLocalizedAsync("insuf_perms_u").ConfigureAwait(false);
@@ -286,6 +308,7 @@ namespace WizBot.Modules.Administration
                 await ReplyErrorLocalizedAsync("time_too_long").ConfigureAwait(false);
                 return;
             }
+            
             var conf = await ReplyAsync("👌").ConfigureAwait(false);
             conf.DeleteAfter(3);
         }

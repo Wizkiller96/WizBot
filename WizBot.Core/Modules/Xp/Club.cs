@@ -24,7 +24,7 @@ namespace WizBot.Modules.Xp
             }
 
             [WizBotCommand, Usage, Description, Aliases]
-            public async Task ClubTransfer([Leftover]IUser newOwner)
+            public async Task ClubTransfer([Leftover] IUser newOwner)
             {
                 var club = _service.TransferClub(ctx.User, newOwner);
 
@@ -37,7 +37,7 @@ namespace WizBot.Modules.Xp
             }
 
             [WizBotCommand, Usage, Description, Aliases]
-            public async Task ClubAdmin([Leftover]IUser toAdmin)
+            public async Task ClubAdmin([Leftover] IUser toAdmin)
             {
                 bool admin;
                 try
@@ -51,17 +51,21 @@ namespace WizBot.Modules.Xp
                 }
 
                 if (admin)
-                    await ReplyConfirmLocalizedAsync("club_admin_add", Format.Bold(toAdmin.ToString())).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync("club_admin_add", Format.Bold(toAdmin.ToString()))
+                        .ConfigureAwait(false);
                 else
-                    await ReplyConfirmLocalizedAsync("club_admin_remove", Format.Bold(toAdmin.ToString())).ConfigureAwait(false);
-
+                    await ReplyConfirmLocalizedAsync("club_admin_remove", Format.Bold(toAdmin.ToString()))
+                        .ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
-            public async Task ClubCreate([Leftover]string clubName)
+            public async Task ClubCreate([Leftover] string clubName)
             {
                 if (string.IsNullOrWhiteSpace(clubName) || clubName.Length > 20)
+                {
+                    await ReplyErrorLocalizedAsync("club_name_too_long").ConfigureAwait(false);
                     return;
+                }
 
                 if (!_service.CreateClub(ctx.User, clubName, out ClubInfo club))
                 {
@@ -73,7 +77,7 @@ namespace WizBot.Modules.Xp
             }
 
             [WizBotCommand, Usage, Description, Aliases]
-            public async Task ClubIcon([Leftover]string url = null)
+            public async Task ClubIcon([Leftover] string url = null)
             {
                 if ((!Uri.IsWellFormedUriString(url, UriKind.Absolute) && url != null)
                     || !await _service.SetClubIcon(ctx.User.Id, url == null ? null : new Uri(url)))
@@ -135,7 +139,8 @@ namespace WizBot.Modules.Xp
                         .WithOkColor()
                         .WithTitle($"{club.ToString()}")
                         .WithDescription(GetText("level_x", lvl.Level) + $" ({club.Xp} xp)")
-                        .AddField("Description", string.IsNullOrWhiteSpace(club.Description) ? "-" : club.Description, false)
+                        .AddField("Description", string.IsNullOrWhiteSpace(club.Description) ? "-" : club.Description,
+                            false)
                         .AddField("Owner", club.Owner.ToString(), true)
                         .AddField("Level Req.", club.MinimumLevelReq.ToString(), true)
                         .AddField("Members", string.Join("\n", users
@@ -186,7 +191,6 @@ namespace WizBot.Modules.Xp
                             .WithTitle(GetText("club_bans_for", club.ToString()))
                             .WithDescription(toShow)
                             .WithOkColor();
-
                     }, bans.Length, 10);
             }
 
@@ -223,7 +227,7 @@ namespace WizBot.Modules.Xp
             }
 
             [WizBotCommand, Usage, Description, Aliases]
-            public async Task ClubApply([Leftover]string clubName)
+            public async Task ClubApply([Leftover] string clubName)
             {
                 if (string.IsNullOrWhiteSpace(clubName))
                     return;
@@ -236,7 +240,8 @@ namespace WizBot.Modules.Xp
 
                 if (_service.ApplyToClub(ctx.User, club))
                 {
-                    await ReplyConfirmLocalizedAsync("club_applied", Format.Bold(club.ToString())).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync("club_applied", Format.Bold(club.ToString()))
+                        .ConfigureAwait(false);
                 }
                 else
                 {
@@ -251,11 +256,12 @@ namespace WizBot.Modules.Xp
 
             [WizBotCommand, Usage, Description, Aliases]
             [Priority(0)]
-            public async Task ClubAccept([Leftover]string userName)
+            public async Task ClubAccept([Leftover] string userName)
             {
                 if (_service.AcceptApplication(ctx.User.Id, userName, out var discordUser))
                 {
-                    await ReplyConfirmLocalizedAsync("club_accepted", Format.Bold(discordUser.ToString())).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync("club_accepted", Format.Bold(discordUser.ToString()))
+                        .ConfigureAwait(false);
                 }
                 else
                     await ReplyErrorLocalizedAsync("club_accept_error").ConfigureAwait(false);
@@ -272,37 +278,39 @@ namespace WizBot.Modules.Xp
 
             [WizBotCommand, Usage, Description, Aliases]
             [Priority(1)]
-            public Task ClubKick([Leftover]IUser user)
+            public Task ClubKick([Leftover] IUser user)
                 => ClubKick(user.ToString());
 
             [WizBotCommand, Usage, Description, Aliases]
             [Priority(0)]
-            public Task ClubKick([Leftover]string userName)
+            public Task ClubKick([Leftover] string userName)
             {
                 if (_service.Kick(ctx.User.Id, userName, out var club))
-                    return ReplyConfirmLocalizedAsync("club_user_kick", Format.Bold(userName), Format.Bold(club.ToString()));
+                    return ReplyConfirmLocalizedAsync("club_user_kick", Format.Bold(userName),
+                        Format.Bold(club.ToString()));
                 else
                     return ReplyErrorLocalizedAsync("club_user_kick_fail");
             }
 
             [WizBotCommand, Usage, Description, Aliases]
             [Priority(1)]
-            public Task ClubBan([Leftover]IUser user)
+            public Task ClubBan([Leftover] IUser user)
                 => ClubBan(user.ToString());
 
             [WizBotCommand, Usage, Description, Aliases]
             [Priority(0)]
-            public Task ClubBan([Leftover]string userName)
+            public Task ClubBan([Leftover] string userName)
             {
                 if (_service.Ban(ctx.User.Id, userName, out var club))
-                    return ReplyConfirmLocalizedAsync("club_user_banned", Format.Bold(userName), Format.Bold(club.ToString()));
+                    return ReplyConfirmLocalizedAsync("club_user_banned", Format.Bold(userName),
+                        Format.Bold(club.ToString()));
                 else
                     return ReplyErrorLocalizedAsync("club_user_ban_fail");
             }
 
             [WizBotCommand, Usage, Description, Aliases]
             [Priority(1)]
-            public Task ClubUnBan([Leftover]IUser user)
+            public Task ClubUnBan([Leftover] IUser user)
                 => ClubUnBan(user.ToString());
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -310,7 +318,8 @@ namespace WizBot.Modules.Xp
             public Task ClubUnBan([Leftover]string userName)
             {
                 if (_service.UnBan(ctx.User.Id, userName, out var club))
-                    return ReplyConfirmLocalizedAsync("club_user_unbanned", Format.Bold(userName), Format.Bold(club.ToString()));
+                    return ReplyConfirmLocalizedAsync("club_user_unbanned", Format.Bold(userName),
+                        Format.Bold(club.ToString()));
                 else
                     return ReplyErrorLocalizedAsync("club_user_unban_fail");
             }
@@ -320,7 +329,8 @@ namespace WizBot.Modules.Xp
             {
                 if (_service.ChangeClubLevelReq(ctx.User.Id, level))
                 {
-                    await ReplyConfirmLocalizedAsync("club_level_req_changed", Format.Bold(level.ToString())).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync("club_level_req_changed", Format.Bold(level.ToString()))
+                        .ConfigureAwait(false);
                 }
                 else
                 {
@@ -333,7 +343,8 @@ namespace WizBot.Modules.Xp
             {
                 if (_service.ChangeClubDescription(ctx.User.Id, desc))
                 {
-                    await ReplyConfirmLocalizedAsync("club_desc_updated", Format.Bold(desc ?? "-")).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync("club_desc_updated", Format.Bold(desc ?? "-"))
+                        .ConfigureAwait(false);
                 }
                 else
                 {
@@ -346,7 +357,8 @@ namespace WizBot.Modules.Xp
             {
                 if (_service.Disband(ctx.User.Id, out ClubInfo club))
                 {
-                    await ReplyConfirmLocalizedAsync("club_disbanded", Format.Bold(club.ToString())).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync("club_disbanded", Format.Bold(club.ToString()))
+                        .ConfigureAwait(false);
                 }
                 else
                 {

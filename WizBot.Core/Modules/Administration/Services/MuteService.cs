@@ -339,12 +339,12 @@ namespace WizBot.Modules.Administration.Services
             StartUn_Timer(user.GuildId, user.Id, after, TimerType.Mute); // start the timer
         }
 
-        public async Task TimedBan(IGuildUser user, TimeSpan after, string reason)
+        public async Task TimedBan(IGuild guild, IUser user, TimeSpan after, string reason)
         {
-            await user.Guild.AddBanAsync(user.Id, 0, reason).ConfigureAwait(false);
+            await guild.AddBanAsync(user.Id, 0, reason).ConfigureAwait(false);
             using (var uow = _db.GetDbContext())
             {
-                var config = uow.GuildConfigs.ForId(user.GuildId, set => set.Include(x => x.UnbanTimer));
+                var config = uow.GuildConfigs.ForId(guild.Id, set => set.Include(x => x.UnbanTimer));
                 config.UnbanTimer.Add(new UnbanTimer()
                 {
                     UserId = user.Id,
@@ -353,7 +353,7 @@ namespace WizBot.Modules.Administration.Services
                 uow.SaveChanges();
             }
 
-            StartUn_Timer(user.GuildId, user.Id, after, TimerType.Ban); // start the timer
+            StartUn_Timer(guild.Id, user.Id, after, TimerType.Ban); // start the timer
         }
 
         public async Task TimedRole(IGuildUser user, TimeSpan after, string reason, IRole role)

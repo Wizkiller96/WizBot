@@ -1,7 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
 using WizBot.Extensions;
-using WizBot.Core.Services;
 using System.Linq;
 using System.Threading.Tasks;
 using WizBot.Common.Attributes;
@@ -14,13 +13,12 @@ namespace WizBot.Modules.Administration
         [Group]
         public class AutoAssignRoleCommands : WizBotSubmodule<AutoAssignRoleService>
         {
-
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageRoles)]
             public async Task AutoAssignRole([Leftover] IRole role = null)
             {
-                var guser = (IGuildUser)ctx.User;
+                var guser = (IGuildUser) ctx.User;
                 if (role != null)
                 {
                     if (role.Id == ctx.Guild.EveryoneRole.Id)

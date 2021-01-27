@@ -1,6 +1,5 @@
 ﻿using Discord;
 using Discord.Commands;
-using WizBot.Core.Services;
 using System.Threading.Tasks;
 using WizBot.Common.Attributes;
 using WizBot.Modules.Administration.Services;

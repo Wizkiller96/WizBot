@@ -355,11 +355,14 @@ namespace WizBot.Modules.Administration
             [UserPerm(GuildPerm.BanMembers)]
             [BotPerm(GuildPerm.BanMembers)]
             [Priority(0)]
-            public async Task Ban(StoopidTime time, IGuildUser user, [Leftover] string msg = null)
+            public async Task Ban(StoopidTime time, IUser user, [Leftover] string msg = null)
             {
                 if (time.Time > TimeSpan.FromDays(49))
                     return;
-                if (ctx.User.Id != user.Guild.OwnerId && (user.GetRoles().Select(r => r.Position).Max() >= ((IGuildUser)ctx.User).GetRoles().Select(r => r.Position).Max()))
+                // if guild user is null, then that means that user is not in the guild
+                var guildUser = await Context.Guild.GetUserAsync(user.Id).ConfigureAwait(false);
+
+                if (ctx.User.Id != Context.Guild.OwnerId && (guildUser != null && guildUser.GetRoles().Select(r => r.Position).Max() >= ((IGuildUser)ctx.User).GetRoles().Select(r => r.Position).Max()))
                 {
                     await ReplyErrorLocalizedAsync("hierarchy").ConfigureAwait(false);
                     return;
@@ -377,7 +380,7 @@ namespace WizBot.Modules.Administration
                 }
 
 
-                await _mute.TimedBan(user, time.Time, ctx.User.ToString() + " | " + msg).ConfigureAwait(false);
+                await _mute.TimedBan(Context.Guild, user, time.Time, ctx.User.ToString() + " | " + msg).ConfigureAwait(false);
                 var toSend = new EmbedBuilder().WithOkColor()
                     .WithTitle("⛔️ " + GetText("banned_user"))
                     .AddField(efb => efb.WithName(GetText("username")).WithValue(user.ToString()).WithIsInline(true))

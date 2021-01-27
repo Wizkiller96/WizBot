@@ -105,7 +105,7 @@ namespace WizBot.Modules.Administration.Services
                         if (p.Time == 0)
                             await guild.AddBanAsync(user, reason: "Warned too many times.").ConfigureAwait(false);
                         else
-                            await _mute.TimedBan(user, TimeSpan.FromMinutes(p.Time), "Warned too many times.").ConfigureAwait(false);
+                            await _mute.TimedBan(user.Guild, user, TimeSpan.FromMinutes(p.Time), "Warned too many times.").ConfigureAwait(false);
                         break;
                     case PunishmentAction.Softban:
                         await guild.AddBanAsync(user, 7, reason: "Softban | Warned too many times").ConfigureAwait(false);
