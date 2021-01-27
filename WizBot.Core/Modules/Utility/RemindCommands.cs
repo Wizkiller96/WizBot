@@ -105,7 +105,6 @@ namespace WizBot.Modules.Utility
             }
 
             [WizBotCommand, Usage, Description, Aliases]
-            [RequireContext(ContextType.Guild)]
             public async Task RemindDelete(int index)
             {
                 if (--index < 0)
