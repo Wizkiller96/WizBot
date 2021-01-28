@@ -50,7 +50,7 @@ namespace WizBot.Modules.Roblox
                     // RUID = JObject.Parse(await http.GetStringAsync($"http://api.roblox.com/users/get-by-username?username={username}").ConfigureAwait(false)); // Backup UserId
                     RStatus = JObject.Parse(await http.GetStringAsync($"http://api.roblox.com/users/{RInfo["userid"]}/onlinestatus").ConfigureAwait(false));
                     // Roblox Membership Type Checker
-                    RMT = JObject.Parse(await http.GetStringAsync($"https://groups.roblox.com/v1/users/{RInfo["userid"]}/group-membership-status").ConfigureAwait(false));
+                    // RMT = JObject.Parse(await http.GetStringAsync($"https://groups.roblox.com/v1/users/{RInfo["userid"]}/group-membership-status").ConfigureAwait(false));
                 }
                 // Currently doesn't work at this time. If you know a sulotion feel free to try.
                 // if ((int)RInfo["ErrorCode"] == 404)
@@ -67,14 +67,14 @@ namespace WizBot.Modules.Roblox
                 // If Roblox User Blurb and Status is nulled.
                 var none = "N/A";
                 // Roblox Membership Type Checker
-                if ((int)RMT["membershipType"] == 4)
+                /* if ((int)RMT["membershipType"] == 4)
                 {
                     RMT["membershipType"] = "Premium";
                 }
                 else
                 {
                     RMT["membershipType"] = "None";
-                }
+                } */
                 // Roblox Ban Check
                 /* if ((bool)RInfo["isBanned"] == true)
                 {
@@ -96,11 +96,11 @@ namespace WizBot.Modules.Roblox
                     .WithThumbnailUrl($"https://assetgame.roblox.com/Thumbs/Avatar.ashx?username={RInfo["username"]}")
                     .AddField(fb => fb.WithName("Username").WithValue($"[{RInfo["username"]}](https://www.roblox.com/users/{RInfo["userid"]}/profile)").WithIsInline(true))
                     .AddField(fb => fb.WithName("User ID").WithValue($"{RInfo["userid"]}").WithIsInline(true))
-                    //.AddField(fb => fb.WithName("Banned").WithValue($"{RInfo["isBanned"]}").WithIsInline(true))
+                    // .AddField(fb => fb.WithName("Banned").WithValue($"{RInfo["isBanned"]}").WithIsInline(true))
                     .AddField(fb => fb.WithName("Friends").WithValue($"{RInfo["friendCount"]}").WithIsInline(true))
                     .AddField(fb => fb.WithName("Followers").WithValue($"{RInfo["followerCount"]}").WithIsInline(true))
                     .AddField(fb => fb.WithName("Following").WithValue($"{RInfo["followingCount"]}").WithIsInline(true))
-                    .AddField(fb => fb.WithName("Membership").WithValue($"{RMT["membershipType"]}").WithIsInline(true))
+                    // .AddField(fb => fb.WithName("Membership").WithValue($"{RMT["membershipType"]}").WithIsInline(true))
                     .AddField(fb => fb.WithName("Presence").WithValue($"{RStatus["LastLocation"]}").WithIsInline(true))
                     .AddField(fb => fb.WithName("Account Age").WithValue(string.IsNullOrEmpty($"{RInfo["age"]}") ? none : ($"{RInfo["age"]}")).WithIsInline(true))
                     .AddField(fb => fb.WithName("Join Date").WithValue(string.IsNullOrEmpty($"{RInfo["joinDate"]}") ? none : ($"{RInfo["joinDate"]:MM.dd.yyyy HH:mm}")).WithIsInline(true))
