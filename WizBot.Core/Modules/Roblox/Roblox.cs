@@ -93,7 +93,7 @@ namespace WizBot.Modules.Roblox
                     .WithAuthor(eab => eab.WithUrl("https://roblox.com/")
                         .WithIconUrl("https://i.imgur.com/jDcWXPD.png")
                         .WithName($"{RInfo["username"]}'s Roblox Info"))
-                    .WithThumbnailUrl($"https://assetgame.roblox.com/Thumbs/Avatar.ashx?username={RInfo["username"]}")
+                    .WithThumbnailUrl($"https://thumbnails.roblox.com/v1/users/avatar?userIds={RInfo["userid"]}&size=720x720&format=png&isCircular=false")
                     .AddField(fb => fb.WithName("Username").WithValue($"[{RInfo["username"]}](https://www.roblox.com/users/{RInfo["userid"]}/profile)").WithIsInline(true))
                     .AddField(fb => fb.WithName("User ID").WithValue($"{RInfo["userid"]}").WithIsInline(true))
                     // .AddField(fb => fb.WithName("Banned").WithValue($"{RInfo["isBanned"]}").WithIsInline(true))
