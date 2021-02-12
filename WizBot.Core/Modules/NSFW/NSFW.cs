@@ -128,9 +128,9 @@ namespace WizBot.Modules.NSFW
         public async Task InternalNeko(IMessageChannel Channel, string format = "img", string category = "all_tags_lewd")
         {
             // List if category to pull an image from.
-            string[] img_cat = { "classic_lewd", "piersing_lewd", "shinobu_lewd", "feet_lewd", "keta_avatar", "piersing_ero", "yuri_ero", "solo_lewd", "pantyhose_lewd", "kemonomimi_lewd", "cosplay_lewd", "peeing_lewd", "ahegao_avatar", "wallpaper_lewd", "ero_wallpaper_ero", "blowjob_lewd", "holo_avatar", "neko_lewd", "futanari_lewd", "kitsune_ero", "trap_lewd", "keta_lewd", "neko_ero", "pantyhose_ero", "cum_lewd", "anal_lewd", "smallboobs_lewd", "all_tags_lewd", "yuri_lewd", "kemonomimi_ero", "anus_lewd", "holo_ero", "all_tags_ero", "kitsune_lewd", "pussy_lewd", "feet_ero", "yiff_lewd", "hplay_ero", "bdsm_lewd", "femdom_lewd", "holo_lewd", "shinobu_ero", "tits_lewd" };
+            string[] img_cat = { "pantyhose_lewd", "holo_lewd", "anus_lewd", "kemonomimi_lewd", "peeing_lewd", "cosplay_lewd", "futanari_lewd", "blowjob_lewd", "shinobu_ero", "shinobu_lewd", "kitsune_lewd", "all_tags_lewd", "kemonomimi_ero", "wallpaper_lewd", "feet_ero", "anal_lewd", "femdom_lewd", "kitsune_ero", "solo_lewd", "holo_ero", "yuri_lewd", "feet_lewd", "classic_lewd", "keta_lewd", "neko_lewd", "piersing_lewd", "trap_lewd", "pantyhose_ero", "yiff_lewd", "hplay_ero", "smallboobs_lewd", "neko_ero", "pussy_lewd", "cum_lewd", "keta_avatar", "ero_wallpaper_ero", "ahegao_avatar", "piersing_ero", "bdsm_lewd", "holo_avatar", "all_tags_ero", "tits_lewd", "yuri_ero" };
 
-            string[] gif_cat = { "blow_job", "pussy_wank", "classic", "kuni", "tits", "pussy", "cum", "spank", "feet", "all_tags", "yuri", "anal", "neko", "girls_solo", "yiff" };
+            string[] gif_cat = { "yiff", "pussy_wank", "neko", "kuni", "blow_job", "pussy", "girls_solo", "yuri", "anal", "tits", "classic", "feet", "spank", "cum", "all_tags" };
 
             // Check to see if the command is calling for a normal image or a gif.
             string[] img_format = { "img", "gif" };

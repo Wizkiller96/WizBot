@@ -775,49 +775,13 @@ namespace WizBot.Modules.Searches
             await ctx.Channel.SendMessageAsync($"https://store.steampowered.com/app/{appId}").ConfigureAwait(false);
         }
 
-        /* [WizBotCommand, Usage, Description, Aliases]
-        public async Task Nya([Remainder] string category = "neko")
-        {
-            string[] cat = { "wallpaper", "ngif", "meow", "tickle", "feed", "gecg", "kemonomimi", "gasm", "poke", "slap", "avatar", "lizard", "waifu", "pat", "kiss", "neko", "cuddle", "fox_girl", "hug", "baka", "smug" };
-            if (string.IsNullOrWhiteSpace(category))
-                return;
-
-            try
-            {
-                JToken nyatitle;
-                JToken nyaimg;
-                using (var http = _httpFactory.CreateClient())
-                {
-                    nyatitle = JObject.Parse(await http.GetStringAsync($"https://nekos.life/api/v2/cat").ConfigureAwait(false));
-                    nyaimg = JObject.Parse(await http.GetStringAsync($"https://nekos.life/api/v2/img/{category}").ConfigureAwait(false));
-                }
-                if (cat.Contains(category))
-                    await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                        .WithAuthor(eab => eab.WithUrl("http://nekos.life/")
-                            .WithIconUrl("https://i.imgur.com/a36AMkG.png")
-                            .WithName($"Nekos Life - SFW Database {nyatitle["cat"]}"))
-                        .WithImageUrl($"{nyaimg["url"]}")).ConfigureAwait(false);
-                else
-                    await ctx.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
-                    .WithAuthor(eab => eab.WithUrl("http://nekos.life/")
-                        .WithIconUrl("https://i.imgur.com/a36AMkG.png")
-                        .WithName($"Nekos Life - Invalid SFW Category"))
-                    .WithDescription("Seems the category you was looking for could not be found. Please use the category listed below.")
-                    .AddField(fb => fb.WithName("SFW Categories").WithValue("`wallpaper`,`ngif`,`meow`,`tickle`,`feed`,`gecg`,`kemonomimi`,`gasm`,`poke`,`slap`,`avatar`,`lizard`,`waifu`,`pat`,`kiss`,`neko`,`cuddle`,`fox_girl`,`hug`,`baka`,`smug`").WithIsInline(false))).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                await ctx.Channel.SendErrorAsync(ex.Message).ConfigureAwait(false);
-            }
-        } */
-
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Nya(string format = "img", [Remainder] string category = "neko")
         {
             // List if category to pull an image from.
-            string[] img_cat = { "kitsune", "keta_avatar", "no_tag_avatar", "holo_avatar", "neko_avatars_avatar", "lizard", "cat", "gecg", "smug", "holo", "wallpaper", "kiminonawa", "shinobu", "neko", "waifu" };
+            string[] img_cat = { "lizard", "cat", "neko", "no_tag_avatar", "neko_avatars_avatar", "wallpaper", "kitsune", "kiminonawa", "waifu", "keta_avatar", "gecg", "holo_avatar", "smug", "holo" };
 
-            string[] gif_cat = { "tickle", "poke", "kiss", "slap", "cuddle", "hug", "pat", "smug", "baka", "feed", "neko" };
+            string[] gif_cat = { "baka", "tickle", "feed", "neko", "poke", "pat", "kiss", "hug", "cuddle", "slap", "smug" };
 
             // Check to see if the command is calling for a normal image or a gif.
             string[] img_format = { "img", "gif" };
