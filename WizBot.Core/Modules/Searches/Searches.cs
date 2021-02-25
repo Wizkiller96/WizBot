@@ -732,12 +732,24 @@ namespace WizBot.Modules.Searches
                 http.DefaultRequestHeaders.Clear();
                 try
                 {
-                    var res = await http.GetStringAsync($"http://www.{Uri.EscapeUriString(target)}.wikia.com/api/v1/Search/List?query={Uri.EscapeUriString(query)}&limit=25&minArticleQuality=10&batch=1&namespaces=0%2C14").ConfigureAwait(false);
+                    var res = await http.GetStringAsync($"https://{Uri.EscapeUriString(target)}.fandom.com/api.php" +
+                                                        $"?action=query" +
+                                                        $"&format=json" +
+                                                        $"&list=search" +
+                                                        $"&srsearch={Uri.EscapeUriString(query)}" +
+                                                        $"&srlimit=1").ConfigureAwait(false);
                     var items = JObject.Parse(res);
-                    var found = items["items"][0];
-                    var response = $@"`{GetText("title")}` {found["title"]?.ToString().SanitizeMentions()}
-`{GetText("quality")}` {found["quality"]}
-`{GetText("url")}:` {await _google.ShortenUrl(found["url"].ToString()).ConfigureAwait(false)}";
+                    var title = items["query"]?["search"]?.FirstOrDefault()?["title"]?.ToString();
+
+                    if (string.IsNullOrWhiteSpace(title))
+                    {
+                        await ReplyErrorLocalizedAsync("wikia_error").ConfigureAwait(false);
+                        return;
+                    }
+
+                    var url = Uri.EscapeUriString($"https://{target}.fandom.com/wiki/{title}");
+                    var response = $@"`{GetText("title")}` {title?.SanitizeMentions()}
+`{GetText("url")}:` {url}";
                     await ctx.Channel.SendMessageAsync(response).ConfigureAwait(false);
                 }
                 catch

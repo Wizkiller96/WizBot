@@ -2176,8 +2176,8 @@
     ]
   },
   "wikia": {
-    "Cmd": "wikia",
-    "Desc": "Gives you back a wikia link",
+    "Cmd": "wikia fandom",
+    "Desc": "Gives you back a fandom link",
     "Usage": [
       "{0}wikia mtg Vigilance",
       "{0}wikia mlp Dashy"
