@@ -13,6 +13,7 @@ using WizBot.Common;
 using NLog;
 using CommandLine;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace WizBot.Modules.Help.Services
 {
@@ -67,10 +68,21 @@ namespace WizBot.Modules.Help.Services
                     .WithIsInline(true));
 
             var reqs = GetCommandRequirements(com);
+            var botReqs = GetBotCommandRequirements(com);
             if(reqs.Any())
             {
-                em.AddField(GetText("requires", guild),
-                    string.Join("\n", reqs));
+                em.AddField(fb => fb.WithName(GetText("requires", guild))
+                    .WithValue(string.Join("\n", reqs))
+                    .WithIsInline(false)
+                );
+            }
+
+            if (botReqs.Any())
+            {
+                em.AddField(fb => fb.WithName(GetText("bot_requires", guild))
+                    .WithValue(string.Join("\n", botReqs))
+                    .WithIsInline(false)
+                );
             }
 
             em
@@ -101,50 +113,70 @@ namespace WizBot.Modules.Help.Services
         public static List<string> GetCommandOptionHelpList(Type opt)
         {
             var strs = opt.GetProperties()
-                   .Select(x => x.GetCustomAttributes(true).FirstOrDefault(a => a is OptionAttribute))
-                   .Where(x => x != null)
-                   .Cast<OptionAttribute>()
-                   .Select(x =>
-                   {
-                       var toReturn = $"`--{x.LongName}`";
+                .Select(x => x.GetCustomAttributes(true).FirstOrDefault(a => a is OptionAttribute))
+                .Where(x => x != null)
+                .Cast<OptionAttribute>()
+                .Select(x =>
+                {
+                    var toReturn = $"`--{x.LongName}`";
 
-                       if (!string.IsNullOrWhiteSpace(x.ShortName))
-                           toReturn += $" (`-{x.ShortName}`)";
+                    if (!string.IsNullOrWhiteSpace(x.ShortName))
+                        toReturn += $" (`-{x.ShortName}`)";
 
-                       toReturn += $"   {x.HelpText}  ";
-                       return toReturn;
-                   })
-                   .ToList();
+                    toReturn += $"   {x.HelpText}  ";
+                    return toReturn;
+                })
+                .ToList();
 
             return strs;
         }
 
         public static string[] GetCommandRequirements(CommandInfo cmd) =>
             cmd.Preconditions
-                  .Where(ca => ca is OwnerOnlyAttribute || ca is AdminOnlyAttribute || ca is RequireUserPermissionAttribute)
-                  .Select(ca =>
-                  {
-                      if (ca is OwnerOnlyAttribute)
-                      {
-                          return "Bot Owner Only";
-                      }
+                .Where(ca => ca is OwnerOnlyAttribute || ca is AdminOnlyAttribute || ca is RequireUserPermissionAttribute)
+                .Select(ca =>
+                {
+                    if (ca is OwnerOnlyAttribute)
+                    {
+                        return "Bot Owner Only";
+                    }
 
-                      if (ca is AdminOnlyAttribute)
-                      {
-                          return "Bot Owner & Admin Only";
-                      }
-                      
-                      var cau = (RequireUserPermissionAttribute)ca;
-                      if (cau.GuildPermission != null)
-                      {
-                          return (cau.GuildPermission.ToString() + " Server Permission")
-                                       .Replace("Guild", "Server", StringComparison.InvariantCulture);
-                      }
+                    if (ca is AdminOnlyAttribute)
+                    {
+                        return "Bot Owner & Admin Only";
+                    }
 
-                      return (cau.ChannelPermission + " Channel Permission")
-                                       .Replace("Guild", "Server", StringComparison.InvariantCulture);
-                  })
+                    var cau = (RequireUserPermissionAttribute)ca;
+                    if (cau.GuildPermission != null)
+                    {
+                        return cau.GuildPermission.ToString()
+                            .Replace("Guild", "Server", StringComparison.InvariantCulture);
+                    }
+
+                    return cau.ChannelPermission.ToString()
+                        .Replace("Guild", "Server", StringComparison.InvariantCulture);
+                })
+                .Select(s => Regex.Replace(s, "[a-z][A-Z]", m => $"{m.Value[0]} {m.Value[1]}"))
                 .ToArray();
+
+        public static string[] GetBotCommandRequirements(CommandInfo cmd) =>
+            cmd.Preconditions
+                .Where(ca => ca is RequireBotPermissionAttribute)
+                .Select(ca =>
+                {
+                    var cab = (RequireBotPermissionAttribute)ca;
+                    if (cab.GuildPermission != null)
+                    {
+                        return cab.GuildPermission.ToString()
+                            .Replace("Guild", "Server", StringComparison.InvariantCulture);
+                    }
+
+                    return cab.ChannelPermission.ToString()
+                        .Replace("Guild", "Server", StringComparison.InvariantCulture);
+                })
+                .Select(s => Regex.Replace(s, "[a-z][A-Z]", m => $"{m.Value[0]} {m.Value[1]}"))
+                .ToArray();
+                
 
         private string GetText(string text, IGuild guild, params object[] replacements) =>
             _strings.GetText(text, guild?.Id, "Help".ToLowerInvariant(), replacements);
