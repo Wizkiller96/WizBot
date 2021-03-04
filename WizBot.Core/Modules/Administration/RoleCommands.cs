@@ -210,7 +210,7 @@ namespace WizBot.Modules.Administration
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageRoles)]
             [BotPerm(GuildPerm.ManageRoles)]
-            public async Task RenameRole(IRole roleToEdit, string newname)
+            public async Task RenameRole(IRole roleToEdit, [Leftover] string newname)
             {
                 var guser = (IGuildUser)ctx.User;
                 if (ctx.User.Id != guser.Guild.OwnerId && guser.GetRoles().Max(x => x.Position) <= roleToEdit.Position)
