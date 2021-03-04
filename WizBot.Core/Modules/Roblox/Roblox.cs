@@ -43,7 +43,7 @@ namespace WizBot.Modules.Roblox
                 JToken RInfo;
                 //JToken RUID;
                 JToken RStatus;
-                JToken RMT;
+                //JToken RMT;
                 using (var http = _httpFactory.CreateClient())
                 {
                     RInfo = JObject.Parse(await http.GetStringAsync($"https://wizbot.cc/api/v1/roblox/getPlayerInfo/{username}").ConfigureAwait(false));
