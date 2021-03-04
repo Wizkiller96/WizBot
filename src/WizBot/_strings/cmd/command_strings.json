@@ -2031,7 +2031,7 @@
   },
   "adsarm": {
     "Cmd": "adsarm",
-    "Desc": "Toggles the automatic deletion of confirmations for `{0}iam` and `{0}iamn` commands.",
+    "Desc": "Toggles the automatic deletion of the user's message and WizBot's confirmations for `{0}iam` and `{0}iamn` commands.",
     "Usage": [
       "{0}adsarm"
     ]
