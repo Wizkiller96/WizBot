@@ -94,7 +94,15 @@ namespace WizBot.Modules.Searches
                 var msg = rep.Replace(message);
                 if (!string.IsNullOrWhiteSpace(msg))
                 {
-                    await channel.SendConfirmAsync(msg).ConfigureAwait(false);
+                    try
+                    {
+                        var perms = ((IGuildUser)ctx.User).GetPermissions((IGuildChannel)ctx.Channel);
+                        await channel.SendMessageAsync(msg, allowedMentions: perms.MentionEveryone ? AllowedMentions.All : AllowedMentions.None);
+                    }
+                    catch (Exception ex)
+                    {
+                        _log.Warn(ex);
+                    }
                 }
             }
         }
