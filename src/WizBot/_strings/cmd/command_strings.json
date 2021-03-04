@@ -2029,6 +2029,13 @@
       "{0}setmuterole Silenced"
     ]
   },
+  "muterole": {
+    "Cmd": "muterole getmuterole",
+    "Desc": "Gets a name of the role which will be assigned to people who should be muted. Default is wizbot-mute.",
+    "Usage": [
+      "{0}getmuterole"
+    ]
+  },
   "adsarm": {
     "Cmd": "adsarm",
     "Desc": "Toggles the automatic deletion of the user's message and WizBot's confirmations for `{0}iam` and `{0}iamn` commands.",

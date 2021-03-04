@@ -116,6 +116,7 @@
     "administration_muted_sn": "Shutted them up.",
     "administration_mute_error": "Uhh, I probably don't have the perms for that, seriously?",
     "administration_mute_role_set": "New duct-tape role set.",
+    "administration_mute_role_get": "Duct-tape role set to {0}",
     "administration_need_admin": "Um. I need **Administration** for that one first, dumbhead...",
     "administration_new_msg": "New Message",
     "administration_new_nick": "New Nickname",

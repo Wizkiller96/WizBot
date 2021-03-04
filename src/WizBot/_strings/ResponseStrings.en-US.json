@@ -91,6 +91,7 @@
   "administration_muted_sn": "Muted",
   "administration_mute_error": "I don't have the permission necessary for that most likely.",
   "administration_mute_role_set": "New mute role set.",
+  "administration_mute_role_get": "Mute role is set to {0}",
   "administration_mute_perms": "You can't mute a user who has a role higher than your highest role in the role hierarchy unless you're the owner of the server.",
   "administration_need_admin": "I need **Administration** permission to do that.",
   "administration_new_msg": "New message",
