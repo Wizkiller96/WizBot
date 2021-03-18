@@ -409,8 +409,9 @@ namespace WizBot.Modules.Music.Common
                     _log.Info("Connecting");
                     _audioClient = await VoiceChannel.ConnectAsync().ConfigureAwait(false);
                 }
-                catch
+                catch (Exception ex)
                 {
+                    _log.Warn(ex, "Error while getting audio client: {0}", ex.Message);
                     return null;
                 }
             return _audioClient;
