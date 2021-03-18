@@ -74,7 +74,7 @@ namespace WizBot.Modules.Games
                 {
                     var _ = Task.Run(() =>
                     {
-                        if (ctx.Channel.Id == msg.Channel.Id)
+                        if (ctx.Channel.Id == msg.Channel.Id && !msg.Author.IsBot)
                             return hm.Input(msg.Author.Id, msg.Author.ToString(), msg.Content);
                         else
                             return Task.CompletedTask;
