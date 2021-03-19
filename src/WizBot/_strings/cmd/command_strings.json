@@ -2022,18 +2022,12 @@
       "{0}konachan yuri"
     ]
   },
-  "setmuterole": {
-    "Cmd": "setmuterole",
-    "Desc": "Sets a name of the role which will be assigned to people who should be muted. Default is wizbot-mute.",
-    "Usage": [
-      "{0}setmuterole Silenced"
-    ]
-  },
   "muterole": {
-    "Cmd": "muterole getmuterole",
-    "Desc": "Gets a name of the role which will be assigned to people who should be muted. Default is wizbot-mute.",
+    "Cmd": "muterole setmuterole",
+    "Desc": "Sets a name of the role which will be assigned to people who should be muted. Provide no arguments to see currently set mute role. Default is wizbot-mute.",
     "Usage": [
-      "{0}getmuterole"
+      "{0}muterole",
+      "{0}muterole Silenced"
     ]
   },
   "adsarm": {
