@@ -89,9 +89,18 @@ namespace WizBot.Core.Services.Impl
 
         private void Migrate()
         {
-            Migrate1();
-            Migrate2();
-            Migrate3();
+            try
+            {
+                Migrate1();
+                Migrate2();
+                Migrate3();
+            }
+            catch (Exception ex)
+            {
+                _log.Warn(ex.Message);
+                _log.Error("Something has been incorrectly formatted in your 'images.json' file.\n" +
+                           "Use the 'images_example.json' file as reference to fix it and restart the bot.");
+            }
         }
 
         private void Migrate1()
@@ -115,15 +124,15 @@ namespace WizBot.Core.Services.Impl
             newUrls.Xp = oldUrls.Xp;
             newUrls.Version = 1;
 
-            File.WriteAllText(Path.Combine(_basePath, "images.json"), JsonConvert.SerializeObject(newUrls, Formatting.Indented));
-            File.Delete((Path.Combine(_oldBasePath, "images.json")));
+            File.WriteAllText(Path.Combine(_basePath, "images.json"),
+                JsonConvert.SerializeObject(newUrls, Formatting.Indented));
+            File.Delete(Path.Combine(_oldBasePath, "images.json"));
         }
 
         private void Migrate2()
         {
             // load new images
-            var urls = JsonConvert.DeserializeObject<ImageUrls>(
-                    File.ReadAllText(Path.Combine(_basePath, "images.json")));
+            var urls = JsonConvert.DeserializeObject<ImageUrls>(File.ReadAllText(Path.Combine(_basePath, "images.json")));
 
             if (urls.Version >= 2)
                 return;

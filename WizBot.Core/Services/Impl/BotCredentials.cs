@@ -7,6 +7,7 @@ using System;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
+using WizBot.Core.Common;
 
 namespace WizBot.Core.Services.Impl
 {
@@ -74,10 +75,8 @@ namespace WizBot.Core.Services.Impl
                 if (string.IsNullOrWhiteSpace(Token))
                 {
                     _log.Error(
-                        "Token is missing from credentials.json or Environment varibles. Add it and restart the program.");
-                    if (!Console.IsInputRedirected)
-                        Console.ReadKey();
-                    Environment.Exit(3);
+                        "Token is missing from credentials.json or Environment variables. Add it and restart the program.");
+                    Helpers.ReadErrorAndExit(5);
                 }
                 OwnerIds = data.GetSection("OwnerIds").GetChildren().Select(c => ulong.Parse(c.Value))
                     .ToImmutableArray();
@@ -156,9 +155,9 @@ namespace WizBot.Core.Services.Impl
             }
             catch (Exception ex)
             {
-                _log.Fatal(ex.Message);
-                _log.Fatal(ex);
-                throw;
+                _log.Error("JSON serialization has failed. Fix your credentials file and restart the bot.");
+                _log.Fatal(ex.ToString());
+                Helpers.ReadErrorAndExit(6);
             }
         }
 
