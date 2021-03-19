@@ -40,6 +40,10 @@ namespace WizBot.Extensions
 
         public static Regex UrlRegex = new Regex(@"^(https?|ftp)://(?<path>[^\s/$.?#].[^\s]*)$", RegexOptions.Compiled);
 
+
+        public static Task<IUserMessage> EmbedAsync(this IMessageChannel channel, CREmbed crEmbed)
+            => channel.EmbedAsync(crEmbed.ToEmbed(), crEmbed.PlainText?.SanitizeMentions() ?? "");
+
         public static List<ulong> GetGuildIds(this DiscordSocketClient client)
             => client.Guilds.Select(x => x.Id).ToList();
 

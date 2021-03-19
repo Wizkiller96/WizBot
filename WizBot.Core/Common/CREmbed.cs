@@ -19,6 +19,7 @@ namespace WizBot.Common
         public uint Color { get; set; } = 7458112;
 
         public bool IsValid =>
+            !string.IsNullOrWhiteSpace(PlainText) ||
             !string.IsNullOrWhiteSpace(Title) ||
             !string.IsNullOrWhiteSpace(Description) ||
             !string.IsNullOrWhiteSpace(Url) ||

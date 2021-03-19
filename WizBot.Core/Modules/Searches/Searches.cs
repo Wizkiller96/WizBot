@@ -82,7 +82,7 @@ namespace WizBot.Modules.Searches
                 rep.Replace(embedData);
                 try
                 {
-                    await channel.EmbedAsync(embedData.ToEmbed(), embedData.PlainText?.SanitizeMentions() ?? "").ConfigureAwait(false);
+                    await channel.EmbedAsync(embedData).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -94,15 +94,7 @@ namespace WizBot.Modules.Searches
                 var msg = rep.Replace(message);
                 if (!string.IsNullOrWhiteSpace(msg))
                 {
-                    try
-                    {
-                        var perms = ((IGuildUser)ctx.User).GetPermissions((IGuildChannel)ctx.Channel);
-                        await channel.SendMessageAsync(msg, allowedMentions: perms.MentionEveryone ? AllowedMentions.All : AllowedMentions.None);
-                    }
-                    catch (Exception ex)
-                    {
-                        _log.Warn(ex);
-                    }
+                    await channel.SendConfirmAsync(msg).ConfigureAwait(false);
                 }
             }
         }

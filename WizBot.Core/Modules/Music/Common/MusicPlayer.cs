@@ -411,7 +411,7 @@ namespace WizBot.Modules.Music.Common
                 }
                 catch (Exception ex)
                 {
-                    _log.Warn(ex, "Error while getting audio client: {0}", ex.Message);
+                    _log.Warn("Error while getting audio client: {0}", ex.ToString());
                     return null;
                 }
             return _audioClient;

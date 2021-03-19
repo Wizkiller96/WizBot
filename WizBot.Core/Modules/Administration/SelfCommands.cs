@@ -446,8 +446,7 @@ namespace WizBot.Modules.Administration
                     if (CREmbed.TryParse(msg, out var crembed))
                     {
                         rep.Replace(crembed);
-                        await ch.EmbedAsync(crembed.ToEmbed(), crembed.PlainText?.SanitizeMentions() ?? "")
-                            .ConfigureAwait(false);
+                        await ch.EmbedAsync(crembed).ConfigureAwait(false);
                         await ReplyConfirmLocalizedAsync("message_sent").ConfigureAwait(false);
                         return;
                     }
@@ -465,7 +464,7 @@ namespace WizBot.Modules.Administration
                     if (CREmbed.TryParse(msg, out var crembed))
                     {
                         rep.Replace(crembed);
-                        await (await user.GetOrCreateDMChannelAsync().ConfigureAwait(false)).EmbedAsync(crembed.ToEmbed(), crembed.PlainText?.SanitizeMentions() ?? "")
+                        await (await user.GetOrCreateDMChannelAsync().ConfigureAwait(false)).EmbedAsync(crembed)
                             .ConfigureAwait(false);
                         await ReplyConfirmLocalizedAsync("message_sent").ConfigureAwait(false);
                         return;

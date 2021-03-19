@@ -74,7 +74,7 @@ namespace WizBot.Core.Services
                         rep.Replace(embedData);
                         try
                         {
-                            var toDelete = await channel.EmbedAsync(embedData.ToEmbed(), embedData.PlainText?.SanitizeMentions() ?? "").ConfigureAwait(false);
+                            var toDelete = await channel.EmbedAsync(embedData).ConfigureAwait(false);
                             if (conf.AutoDeleteByeMessagesTimer > 0)
                             {
                                 toDelete.DeleteAfter(conf.AutoDeleteByeMessagesTimer);
@@ -144,7 +144,7 @@ namespace WizBot.Core.Services
                                 rep.Replace(embedData);
                                 try
                                 {
-                                    var toDelete = await channel.EmbedAsync(embedData.ToEmbed(), embedData.PlainText?.SanitizeMentions() ?? "").ConfigureAwait(false);
+                                    var toDelete = await channel.EmbedAsync(embedData).ConfigureAwait(false);
                                     if (conf.AutoDeleteGreetMessagesTimer > 0)
                                     {
                                         toDelete.DeleteAfter(conf.AutoDeleteGreetMessagesTimer);
@@ -182,11 +182,10 @@ namespace WizBot.Core.Services
                                 .Build();
                             if (CREmbed.TryParse(conf.DmGreetMessageText, out var embedData))
                             {
-
                                 rep.Replace(embedData);
                                 try
                                 {
-                                    await channel.EmbedAsync(embedData.ToEmbed(), embedData.PlainText?.SanitizeMentions() ?? "").ConfigureAwait(false);
+                                    await channel.EmbedAsync(embedData).ConfigureAwait(false);
                                 }
                                 catch (Exception ex)
                                 {
