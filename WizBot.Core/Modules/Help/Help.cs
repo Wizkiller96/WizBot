@@ -45,6 +45,9 @@ namespace WizBot.Modules.Help
 
         public async Task<(string plainText, EmbedBuilder embed)> GetHelpStringEmbed()
         {
+            if (string.IsNullOrWhiteSpace(Bc.BotConfig.HelpString) || Bc.BotConfig.HelpString == "-")
+                return default;
+
             var clientId = await _lazyClientId.Value;
             var r = new ReplacementBuilder()
                 .WithDefault(Context)
@@ -54,10 +57,12 @@ namespace WizBot.Modules.Help
 
             var app = await _client.GetApplicationInfoAsync();
 
-
             if (!CREmbed.TryParse(Bc.BotConfig.HelpString, out var embed))
-                return ("", new EmbedBuilder().WithOkColor()
-                    .WithDescription(String.Format(Bc.BotConfig.HelpString, clientId, Prefix)));
+            {
+                var eb = new EmbedBuilder().WithOkColor()
+                    .WithDescription(String.Format(Bc.BotConfig.HelpString, clientId, Prefix));
+                return ("", eb);
+            }
 
             r.Replace(embed);
 
@@ -197,7 +202,10 @@ namespace WizBot.Modules.Help
                     : channel;
                 try
                 {
-                    var (plainText, helpEmbed) = await GetHelpStringEmbed();
+                    var data = await GetHelpStringEmbed();
+                    if (data == default)
+                        return;
+                    var (plainText, helpEmbed) = data;
                     await ch.EmbedAsync(helpEmbed, msg: plainText ?? "").ConfigureAwait(false);
                 }
                 catch (Exception)

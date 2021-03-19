@@ -38,6 +38,9 @@ namespace WizBot.Modules.Help.Services
             {
                 if (guild == null)
                 {
+                    if (string.IsNullOrWhiteSpace(_bc.BotConfig.DMHelpString) || _bc.BotConfig.DMHelpString == "-")
+                        return Task.CompletedTask;
+
                     if (CREmbed.TryParse(_bc.BotConfig.DMHelpString, out var embed))
                         return msg.Channel.EmbedAsync(embed);
 
