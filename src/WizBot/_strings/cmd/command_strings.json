@@ -2465,7 +2465,7 @@
   },
   "waifutransfer": {
     "cmd": "waifutransfer",
-    "desc": "Transfer the ownership of one of your waifus to another user. You must pay 10% of your waifu's value.",
+    "desc": "Transfer the ownership of one of your waifus to another user. You must pay 10%  of your waifu's value unless that waifu has affinity towards you, in which case you must pay 60% fee. Transferred waifu's price will be reduced by the fee amount.",
     "usage": [
       "{0}waifutransfer @ExWaifu @NewOwner"
     ]
@@ -2488,7 +2488,7 @@
   },
   "divorce": {
     "Cmd": "divorce",
-    "Desc": "Releases your claim on a specific waifu. You will get some of the money you've spent back unless that waifu has an affinity towards you. 6 hours cooldown.",
+    "Desc": "Releases your claim on a specific waifu. You will get 50% of that waifu's value back, unless that waifu has an affinity towards you, in which case they will be reimbursed instead. 6 hours cooldown.",
     "Usage": [
       "{0}divorce @CheatingSloot"
     ]
