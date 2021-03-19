@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using WizBot.Core.Common;
 
 namespace WizBot.Core.Services
 {
@@ -80,7 +81,16 @@ namespace WizBot.Core.Services
             _key = _creds.RedisKey();
 
             var conf = ConfigurationOptions.Parse(_creds.RedisOptions);
-            _redis = ConnectionMultiplexer.Connect(conf);
+            try
+            {
+                _redis = ConnectionMultiplexer.Connect(conf);
+            }
+            catch (RedisConnectionException ex)
+            {
+                _log.Error("Redis error. Make sure Redis is installed and running as a service.");
+                _log.Fatal(ex.ToString());
+                Helpers.ReadErrorAndExit(11);
+            }
 
             var imgCache = new RedisImagesCache(_redis, _creds); //reload images into redis
             if (!imgCache.AllKeysExist().GetAwaiter().GetResult()) // but only if the keys don't exist. If images exist, you have to reload them manually
