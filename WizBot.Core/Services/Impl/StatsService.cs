@@ -8,9 +8,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,7 +20,7 @@ namespace WizBot.Core.Services.Impl
         private readonly IBotCredentials _creds;
         private readonly DateTime _started;
 
-        public const string BotVersion = "2.36.0";
+        public const string BotVersion = "2.36.1";
         public string Author => "Kwoth#2452\nWizkiller96#5074";
         public string Library => "Discord.Net";
 
