@@ -288,7 +288,7 @@ namespace WizBot.Modules.Xp
         [RequireContext(ContextType.Guild)]
         public async Task XpGlobalLeaderboard(int page = 1)
         {
-            if (--page < 0 || page > 100)
+            if (--page < 0 || page > 99)
                 return;
             var users = _service.GetUserXps(page);
 
