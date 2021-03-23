@@ -397,12 +397,11 @@ namespace WizBot.Modules.Gambling.Services
             return true;
         }
 
-        public WaifuInfoStats GetFullWaifuInfoAsync(IGuildUser target)
+        public WaifuInfoStats GetFullWaifuInfoAsync(ulong targetId)
         {
             using (var uow = _db.GetDbContext())
             {
-                var du = uow.DiscordUsers.GetOrCreate(target);
-                var wi = uow.Waifus.GetWaifuInfo(target.Id);
+                var wi = uow.Waifus.GetWaifuInfo(targetId);
                 if (wi == null)
                 {
                     wi = new WaifuInfoStats
@@ -413,13 +412,22 @@ namespace WizBot.Modules.Gambling.Services
                         ClaimerName = null,
                         Claims30 = new List<string>(),
                         DivorceCount = 0,
-                        FullName = target.ToString(),
+                        FullName = null,
                         Items = new List<WaifuItem>(),
                         Price = 1
                     };
                 }
 
                 return wi;
+            }
+        }
+        public WaifuInfoStats GetFullWaifuInfoAsync(IGuildUser target)
+        {
+            using (var uow = _db.GetDbContext())
+            {
+                var du = uow.DiscordUsers.GetOrCreate(target);
+
+                return GetFullWaifuInfoAsync(target.Id);
             }
         }
 

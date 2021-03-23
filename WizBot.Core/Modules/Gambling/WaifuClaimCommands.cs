@@ -8,6 +8,7 @@ using WizBot.Modules.Gambling.Services;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 
 namespace WizBot.Modules.Gambling
 {
@@ -306,11 +307,24 @@ namespace WizBot.Modules.Gambling
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            public async Task WaifuInfo([Leftover]IGuildUser target = null)
+            [Priority(1)]
+            public Task WaifuInfo([Leftover] IUser target = null)
             {
                 if (target == null)
-                    target = (IGuildUser)ctx.User;
-                var wi = _service.GetFullWaifuInfoAsync(target);
+                    target = ctx.User;
+
+                return InternalWaifuInfo(target.Id, target.ToString());
+            }
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [Priority(0)]
+            public Task WaifuInfo(ulong targetId)
+                => InternalWaifuInfo(targetId);
+
+            private Task InternalWaifuInfo(ulong targetId, string name = null)
+            {
+                var wi = _service.GetFullWaifuInfoAsync(targetId);
                 var affInfo = _service.GetAffinityTitle(wi.AffinityCount);
 
                 var nobody = GetText("nobody");
@@ -326,7 +340,7 @@ namespace WizBot.Modules.Gambling
 
                 var embed = new EmbedBuilder()
                     .WithOkColor()
-                    .WithTitle(GetText("waifu") + " " + wi.FullName + " - \"the " + _service.GetClaimTitle(wi.ClaimCount) + "\"")
+                    .WithTitle(GetText("waifu") + " " + (wi.FullName ?? name ?? targetId.ToString()) + " - \"the " + _service.GetClaimTitle(wi.ClaimCount) + "\"")
                     .AddField(efb => efb.WithName(GetText("price")).WithValue(wi.Price.ToString()).WithIsInline(true))
                     .AddField(efb => efb.WithName(GetText("claimed_by")).WithValue(wi.ClaimerName ?? nobody).WithIsInline(true))
                     .AddField(efb => efb.WithName(GetText("likes")).WithValue(wi.AffinityName ?? nobody).WithIsInline(true))
@@ -335,7 +349,7 @@ namespace WizBot.Modules.Gambling
                     .AddField(efb => efb.WithName(GetText("gifts")).WithValue(itemsStr).WithIsInline(false))
                     .AddField(efb => efb.WithName($"Waifus ({wi.ClaimCount})").WithValue(wi.ClaimCount == 0 ? nobody : string.Join("\n", wi.Claims30)).WithIsInline(false));
 
-                await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+                return ctx.Channel.EmbedAsync(embed);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
