@@ -42,7 +42,7 @@ namespace WizBot.Extensions
 
 
         public static Task<IUserMessage> EmbedAsync(this IMessageChannel channel, CREmbed crEmbed)
-            => channel.EmbedAsync(crEmbed.ToEmbed(), crEmbed.PlainText?.SanitizeMentions() ?? "");
+            => channel.EmbedAsync(crEmbed.ToEmbed(), crEmbed.PlainText); // crEmbed.PlainText?.SanitizeMentions() ?? "" - Just incase you want to remove mentions from being pingable.
 
         public static List<ulong> GetGuildIds(this DiscordSocketClient client)
             => client.Guilds.Select(x => x.Id).ToList();
