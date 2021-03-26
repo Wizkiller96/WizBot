@@ -7,17 +7,17 @@ using Discord.WebSocket;
 using WizBot.Extensions;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
-using WizBot.Core.Services.Impl;
 using NLog;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 namespace WizBot.Modules.Utility.Services
 {
     public class RemindService : INService
     {
-        public Regex Regex { get; } = new Regex(@"^(?:(?<months>\d)mo)?(?:(?<weeks>\d)w)?(?:(?<days>\d{1,2})d)?(?:(?<hours>\d{1,2})h)?(?:(?<minutes>\d{1,2})m)?$",
+        private readonly Regex _regex = new Regex(@"^(?:in\s?)?\s*(?:(?<mo>\d+)(?:\s?(?:months?|mos?),?))?(?:(?:\sand\s|\s*)?(?<w>\d+)(?:\s?(?:weeks?|w),?))?(?:(?:\sand\s|\s*)?(?<d>\d+)(?:\s?(?:days?|d),?))?(?:(?:\sand\s|\s*)?(?<h>\d+)(?:\s?(?:hours?|h),?))?(?:(?:\sand\s|\s*)?(?<m>\d+)(?:\s?(?:minutes?|mins?|m),?))?\s+(?:to:?\s+)?(?<what>.*)$",
                                 RegexOptions.Compiled | RegexOptions.Multiline);
 
         public string RemindMessageFormat { get; }
@@ -26,53 +26,145 @@ namespace WizBot.Modules.Utility.Services
         private readonly IBotConfigProvider _config;
         private readonly DiscordSocketClient _client;
         private readonly DbService _db;
-
-        public ConcurrentDictionary<int, Timer> Reminders { get; } = new ConcurrentDictionary<int, Timer>();
+        private readonly IBotCredentials _creds;
 
         public RemindService(DiscordSocketClient client,
             IBotConfigProvider config,
             DbService db,
-            StartingGuildsService guilds)
+            IBotCredentials creds)
         {
             _config = config;
             _client = client;
             _log = LogManager.GetCurrentClassLogger();
             _db = db;
+            _creds = creds;
 
-            List<Reminder> reminders;
+            RemindMessageFormat = _config.BotConfig.RemindMessageFormat;
+            _ = StartReminderLoop();
+        }
+
+        private async Task StartReminderLoop()
+        {
+            while (true)
+            {
+                await Task.Delay(15000);
+                try
+                {
+                    var now = DateTime.UtcNow;
+                    var reminders = await GetRemindersBeforeAsync(now);
+                    if (reminders.Count == 0)
+                        continue;
+
+                    _log.Info($"Executing {reminders.Count} reminders.");
+
+                    // make groups of 5, with 1.5 second inbetween each one to ensure against ratelimits
+                    var i = 0;
+                    foreach (var group in reminders
+                        .GroupBy(_ => ++i / (reminders.Count / 5 + 1)))
+                    {
+                        var executedReminders = group.ToList();
+                        await Task.WhenAll(executedReminders.Select(ReminderTimerAction));
+                        await RemoveReminders(executedReminders);
+                        await Task.Delay(1500);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _log.Warn($"Error in reminder loop: {ex.Message}");
+                    _log.Warn(ex.ToString());
+                }
+            }
+        }
+
+        private async Task RemoveReminders(List<Reminder> reminders)
+        {
             using (var uow = _db.GetDbContext())
             {
-                reminders = uow.Reminders.GetIncludedReminders(guilds).ToList();
-            }
-            RemindMessageFormat = _config.BotConfig.RemindMessageFormat;
+                uow._context.Set<Reminder>()
+                    .RemoveRange(reminders);
 
-            foreach (var r in reminders)
-            {
-                StartReminder(r);
+                await uow.SaveChangesAsync();
             }
         }
 
-        public void StartReminder(Reminder r)
+        private Task<List<Reminder>> GetRemindersBeforeAsync(DateTime now)
         {
-            var time = r.When - DateTime.UtcNow;
-
-            if (time.TotalMilliseconds > int.MaxValue)
-                return;
-
-            if (time.TotalMilliseconds < 0)
-                time = TimeSpan.FromSeconds(5);
-
-            var remT = new Timer(ReminderTimerAction, r, (int)time.TotalMilliseconds, Timeout.Infinite);
-            if (!Reminders.TryAdd(r.Id, remT))
+            using (var uow = _db.GetDbContext())
             {
-                remT.Change(Timeout.Infinite, Timeout.Infinite);
+                return uow._context.Reminders
+                    .FromSqlInterpolated($"select * from reminders where ((serverid >> 22) % {_creds.TotalShards}) == {_client.ShardId} and \"when\" < {now};")
+                    .ToListAsync();
             }
         }
 
-        private async void ReminderTimerAction(object rObj)
+        public struct RemindObject
         {
-            var r = (Reminder)rObj;
+            public string What { get; set; }
+            public TimeSpan Time { get; set; }
+        }
 
+        public bool TryParseRemindMessage(string input, out RemindObject obj)
+        {
+            var m = _regex.Match(input);
+
+            obj = default;
+            if (m.Length == 0)
+            {
+                return false;
+            }
+
+            var values = new Dictionary<string, int>();
+
+            var what = m.Groups["what"].Value;
+
+            if (string.IsNullOrWhiteSpace(what))
+            {
+                _log.Warn("No message provided for the reminder.");
+                return false;
+            }
+
+            foreach (var groupName in _regex.GetGroupNames())
+            {
+                if (groupName == "0" || groupName == "what") continue;
+                if (string.IsNullOrWhiteSpace(m.Groups[groupName].Value))
+                {
+                    values[groupName] = 0;
+                    continue;
+                }
+                if (!int.TryParse(m.Groups[groupName].Value, out var value))
+                {
+                    _log.Warn($"Reminder regex group {groupName} has invalid value.");
+                    return false;
+                }
+
+                if (value < 1)
+                {
+                    _log.Warn("Reminder time value has to be an integer greater than 0.");
+                    return false;
+                }
+
+                values[groupName] = value;
+            }
+
+            var ts = new TimeSpan
+            (
+            30 * values["mo"] + 7 * values["w"] + values["d"],
+                values["h"],
+                values["m"],
+                0
+            );
+
+            obj = new RemindObject()
+            {
+                Time = ts,
+                What = what
+            };
+
+            return true;
+        }
+
+        private async Task ReminderTimerAction(Reminder r)
+        {
             try
             {
                 IMessageChannel ch;
@@ -98,23 +190,6 @@ namespace WizBot.Modules.Utility.Services
                     msg: r.Message.SanitizeMentions()).ConfigureAwait(false);
             }
             catch (Exception ex) { _log.Info(ex.Message + $"({r.Id})"); }
-            finally
-            {
-                using (var uow = _db.GetDbContext())
-                {
-                    uow._context.Database.ExecuteSqlInterpolated($"DELETE FROM Reminders WHERE Id={r.Id};");
-                    uow.SaveChanges();
-                }
-                RemoveReminder(r.Id);
-            }
-        }
-
-        public void RemoveReminder(int id)
-        {
-            if (Reminders.TryRemove(id, out var t))
-            {
-                t.Change(Timeout.Infinite, Timeout.Infinite);
-            }
         }
     }
 }

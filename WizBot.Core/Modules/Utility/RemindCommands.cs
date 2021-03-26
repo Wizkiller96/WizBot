@@ -30,16 +30,24 @@ namespace WizBot.Modules.Utility
 
             public enum MeOrHere
             {
-                Me, Here
+                Me,
+                Here
             }
 
             [WizBotCommand, Usage, Description, Aliases]
             [Priority(1)]
-            public async Task Remind(MeOrHere meorhere, StoopidTime time, [Leftover] string message)
+            public async Task Remind(MeOrHere meorhere, [Leftover] string remindString)
             {
+                if (!_service.TryParseRemindMessage(remindString, out var remindData))
+                {
+                    // todo invalid remind string
+                    return;
+                }
+
                 ulong target;
                 target = meorhere == MeOrHere.Me ? ctx.User.Id : ctx.Channel.Id;
-                if (!await RemindInternal(target, meorhere == MeOrHere.Me || ctx.Guild == null, time.Time, message).ConfigureAwait(false))
+                if (!await RemindInternal(target, meorhere == MeOrHere.Me || ctx.Guild == null, remindData.Time, remindData.What)
+                    .ConfigureAwait(false))
                 {
                     await ReplyErrorLocalizedAsync("remind_too_long").ConfigureAwait(false);
                 }
@@ -49,20 +57,26 @@ namespace WizBot.Modules.Utility
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageMessages)]
             [Priority(0)]
-            public async Task Remind(ITextChannel channel, StoopidTime time, [Leftover] string message)
+            public async Task Remind(ITextChannel channel, [Leftover] string remindString)
             {
-                var perms = ((IGuildUser)ctx.User).GetPermissions((ITextChannel)channel);
+                var perms = ((IGuildUser)ctx.User).GetPermissions(channel);
                 if (!perms.SendMessages || !perms.ViewChannel)
                 {
                     await ReplyErrorLocalizedAsync("cant_read_or_send").ConfigureAwait(false);
                     return;
                 }
-                else
+
+                if (!_service.TryParseRemindMessage(remindString, out var remindData))
                 {
-                    if (!await RemindInternal(channel.Id, false, time.Time, message).ConfigureAwait(false))
-                    {
-                        await ReplyErrorLocalizedAsync("remind_too_long").ConfigureAwait(false);
-                    }
+                    // todo invalid remind string
+                    return;
+                }
+
+
+                if (!await RemindInternal(channel.Id, false, remindData.Time, remindData.What)
+                    .ConfigureAwait(false))
+                {
+                    await ReplyErrorLocalizedAsync("remind_too_long").ConfigureAwait(false);
                 }
             }
 
@@ -90,7 +104,9 @@ namespace WizBot.Modules.Utility
                     {
                         var when = rem.When;
                         var diff = when - DateTime.UtcNow;
-                        embed.AddField($"#{++i + (page * 10)} {rem.When:HH:mm yyyy-MM-dd} UTC (in {(int)diff.TotalHours}h {(int)diff.Minutes}m)", $@"`Target:` {(rem.IsPrivate ? "DM" : "Channel")}
+                        embed.AddField(
+                            $"#{++i + (page * 10)} {rem.When:HH:mm yyyy-MM-dd} UTC (in {(int)diff.TotalHours}h {(int)diff.Minutes}m)",
+                            $@"`Target:` {(rem.IsPrivate ? "DM" : "Channel")}
 `TargetId:` {rem.ChannelId}
 `Message:` {rem.Message?.TrimTo(50)}", false);
                     }
@@ -117,7 +133,6 @@ namespace WizBot.Modules.Utility
                 {
                     var rems = uow.Reminders.RemindersFor(ctx.User.Id, index / 10)
                         .ToList();
-
                     var pageIndex = index % 10;
                     if (rems.Count > pageIndex)
                     {
@@ -133,12 +148,11 @@ namespace WizBot.Modules.Utility
                 }
                 else
                 {
-                    _service.RemoveReminder(rem.Id);
                     await ReplyErrorLocalizedAsync("reminder_deleted", index + 1).ConfigureAwait(false);
                 }
             }
 
-            public async Task<bool> RemindInternal(ulong targetId, bool isPrivate, TimeSpan ts, [Leftover] string message)
+            private async Task<bool> RemindInternal(ulong targetId, bool isPrivate, TimeSpan ts, string message)
             {
                 var time = DateTime.UtcNow + ts;
 
@@ -170,9 +184,9 @@ namespace WizBot.Modules.Utility
                     await uow.SaveChangesAsync();
                 }
 
-                var gTime = ctx.Guild == null ?
-                    time :
-                    TimeZoneInfo.ConvertTime(time, _tz.GetTimeZoneOrUtc(ctx.Guild.Id));
+                var gTime = ctx.Guild == null
+                    ? time
+                    : TimeZoneInfo.ConvertTime(time, _tz.GetTimeZoneOrUtc(ctx.Guild.Id));
                 try
                 {
                     await ctx.Channel.SendConfirmAsync(
@@ -184,9 +198,8 @@ namespace WizBot.Modules.Utility
                 }
                 catch
                 {
-
                 }
-                _service.StartReminder(rem);
+
                 return true;
             }
 
