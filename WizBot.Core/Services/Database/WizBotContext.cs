@@ -341,7 +341,7 @@ namespace WizBot.Core.Services.Database
 
             #region Reminders
             modelBuilder.Entity<Reminder>()
-                .HasIndex(x => x.DateAdded);
+                .HasIndex(x => x.When);
             #endregion
 
             #region  GroupName

@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using WizBot.Extensions;
 
 namespace WizBot.Modules.Utility.Services
 {
@@ -29,6 +30,7 @@ namespace WizBot.Modules.Utility.Services
         private readonly ICurrencyService _currency;
         private readonly IBotConfigProvider _bc;
         private readonly IHttpClientFactory _httpFactory;
+        private readonly DiscordSocketClient _client;
 
         public DateTime LastUpdate { get; private set; } = DateTime.UtcNow;
 
@@ -42,6 +44,7 @@ namespace WizBot.Modules.Utility.Services
             _currency = currency;
             _bc = bc;
             _httpFactory = factory;
+            _client = client;
 
             if (client.ShardId == 0)
                 _updater = new Timer(async _ => await RefreshPledges().ConfigureAwait(false),
@@ -52,6 +55,9 @@ namespace WizBot.Modules.Utility.Services
         {
             if (string.IsNullOrWhiteSpace(_creds.PatreonAccessToken)
                 || string.IsNullOrWhiteSpace(_creds.PatreonAccessToken))
+                return;
+
+            if (DateTime.UtcNow.Day < 5)
                 return;
 
             LastUpdate = DateTime.UtcNow;
@@ -94,6 +100,15 @@ namespace WizBot.Modules.Utility.Services
                 }).ToArray();
 
                 _pledges = toSet;
+
+                foreach (var pledge in _pledges)
+                {
+                    var userIdStr = pledge.User.attributes?.social_connections?.discord?.user_id;
+                    if (userIdStr != null && ulong.TryParse(userIdStr, out var userId))
+                    {
+                        await ClaimReward(userId);
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -138,6 +153,10 @@ namespace WizBot.Modules.Utility.Services
 
                             await _currency.AddAsync(userId, "Patreon reward - new", amount, gamble: true);
                             totalAmount += amount;
+
+                            _log.Info($"Sending new currency reward to {userId}");
+                            await SendMessageToUser(userId, $"Thank you for your pledge! " +
+                                                            $"You've been awarded **{amount}**{_bc.BotConfig.CurrencySign} !");
                             continue;
                         }
 
@@ -150,6 +169,9 @@ namespace WizBot.Modules.Utility.Services
 
                             await _currency.AddAsync(userId, "Patreon reward - recurring", amount, gamble: true);
                             totalAmount += amount;
+                            _log.Info($"Sending recurring currency reward to {userId}");
+                            await SendMessageToUser(userId, $"Thank you for your continued support! " +
+                                                            $"You've been awarded **{amount}**{_bc.BotConfig.CurrencySign} for this month's support!");
                             continue;
                         }
 
@@ -163,6 +185,9 @@ namespace WizBot.Modules.Utility.Services
 
                             await _currency.AddAsync(userId, "Patreon reward - update", toAward, gamble: true);
                             totalAmount += toAward;
+                            _log.Info($"Sending updated currency reward to {userId}");
+                            await SendMessageToUser(userId, $"Thank you for increasing your pledge! " +
+                                                            $"You've been awarded an additional **{toAward}**{_bc.BotConfig.CurrencySign} !");
                             continue;
                         }
                     }
@@ -173,6 +198,23 @@ namespace WizBot.Modules.Utility.Services
             finally
             {
                 claimLockJustInCase.Release();
+            }
+        }
+
+        private async Task SendMessageToUser(ulong userId, string message)
+        {
+            try
+            {
+                var user = _client.GetUser(userId);
+                if (user is null)
+                    return;
+
+                var channel = await user.GetOrCreateDMChannelAsync();
+                await channel.SendConfirmAsync(message);
+            }
+            catch
+            {
+                // ignored
             }
         }
 
