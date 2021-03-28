@@ -243,13 +243,27 @@ namespace WizBot.Modules.CustomReactions.Services
                                     index + 1,
                                     Format.Bold(pc.Permissions[index].GetCommand(_cmd.GetPrefix(guild),
                                     (SocketGuild)guild)));
-                                try { await msg.Channel.SendErrorAsync(returnMsg).ConfigureAwait(false); } catch { }
+                                try
+                                {
+                                    await msg.Channel.SendErrorAsync(returnMsg).ConfigureAwait(false);
+                                }
+                                catch
+                                {
+                                }
+
                                 _log.Info(returnMsg);
                             }
+
                             return true;
                         }
                     }
-                    var sentMsg = await cr.Send(msg, _client, this).ConfigureAwait(false);
+                    
+                    var user = msg.Author as IGuildUser;
+                    var sanitize = true;
+                    if (user == null || user.GuildPermissions.MentionEveryone)
+                        sanitize = false;
+
+                    var sentMsg = await cr.Send(msg, _client, sanitize).ConfigureAwait(false);
 
 
                     var reactions = cr.GetReactions();

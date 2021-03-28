@@ -149,7 +149,7 @@ namespace WizBot.Modules.Utility
                     ChannelId = ctx.Channel.Id,
                     GuildId = ctx.Guild.Id,
                     Interval = TimeSpan.FromMinutes(realInterval),
-                    Message = opts.Message,
+                    Message = ((IGuildUser)ctx.User).GuildPermissions.MentionEveryone ? opts.Message : opts.Message.SanitizeMentions(true),
                     NoRedundant = opts.NoRedundant,
                     StartTimeOfDay = startTimeOfDay,
                 };
