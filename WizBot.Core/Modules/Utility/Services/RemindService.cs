@@ -187,7 +187,7 @@ namespace WizBot.Modules.Utility.Services
                     .WithTitle("Reminder")
                     .AddField("Created At", r.DateAdded.HasValue ? r.DateAdded.Value.ToLongDateString() : "?")
                     .AddField("By", (await ch.GetUserAsync(r.UserId).ConfigureAwait(false))?.ToString() ?? r.UserId.ToString()),
-                    msg: r.Message.SanitizeMentions()).ConfigureAwait(false);
+                    msg: r.Message.SanitizeMentions(true)).ConfigureAwait(false);
             }
             catch (Exception ex) { _log.Info(ex.Message + $"({r.Id})"); }
         }

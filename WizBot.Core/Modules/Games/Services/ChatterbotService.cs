@@ -97,11 +97,11 @@ namespace WizBot.Modules.Games.Services
             var response = await cleverbot.Think(message).ConfigureAwait(false);
             try
             {
-                await channel.SendConfirmAsync(response.SanitizeMentions()).ConfigureAwait(false);
+                await channel.SendConfirmAsync(response.SanitizeMentions(true)).ConfigureAwait(false);
             }
             catch
             {
-                await channel.SendConfirmAsync(response.SanitizeMentions()).ConfigureAwait(false); // try twice :\
+                await channel.SendConfirmAsync(response.SanitizeMentions(true)).ConfigureAwait(false); // try twice :\
             }
             return true;
         }

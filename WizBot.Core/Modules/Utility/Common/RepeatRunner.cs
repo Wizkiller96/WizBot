@@ -206,7 +206,7 @@ namespace WizBot.Modules.Utility.Common
                     .WithDefault(Guild.CurrentUser, Channel, Guild, _client)
                     .Build();
 
-                var newMsg = await Channel.SendMessageAsync(rep.Replace(toSend).SanitizeMentions()).ConfigureAwait(false);
+                var newMsg = await Channel.SendMessageAsync(rep.Replace(toSend).SanitizeMentions(true)).ConfigureAwait(false);
 
                 if (Repeater.NoRedundant)
                 {

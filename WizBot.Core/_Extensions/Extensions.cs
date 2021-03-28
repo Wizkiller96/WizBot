@@ -41,8 +41,14 @@ namespace WizBot.Extensions
         public static Regex UrlRegex = new Regex(@"^(https?|ftp)://(?<path>[^\s/$.?#].[^\s]*)$", RegexOptions.Compiled);
 
 
-        public static Task<IUserMessage> EmbedAsync(this IMessageChannel channel, CREmbed crEmbed)
-            => channel.EmbedAsync(crEmbed.ToEmbed(), crEmbed.PlainText); // crEmbed.PlainText?.SanitizeMentions() ?? "" - Just incase you want to remove mentions from being pingable.
+        public static Task<IUserMessage> EmbedAsync(this IMessageChannel channel, CREmbed crEmbed, bool sanitizeAll = false)
+        {
+            var plainText = sanitizeAll
+                ? crEmbed.PlainText?.SanitizeAllMentions() ?? ""
+                : crEmbed.PlainText?.SanitizeMentions() ?? "";
+
+            return channel.EmbedAsync(crEmbed.ToEmbed(), plainText);
+        }
 
         public static List<ulong> GetGuildIds(this DiscordSocketClient client)
             => client.Guilds.Select(x => x.Id).ToList();

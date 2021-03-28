@@ -161,7 +161,7 @@ namespace WizBot.Modules.Games.Common
                         if (finishedUserIds.Count % 4 == 0)
                         {
                             await this.Channel.SendConfirmAsync($":exclamation: A lot of people finished, here is the text for those still typing:" +
-                                $"\n\n**{Format.Sanitize(CurrentSentence.Replace(" ", " \x200B", StringComparison.InvariantCulture)).SanitizeMentions()}**").ConfigureAwait(false);
+                                $"\n\n**{Format.Sanitize(CurrentSentence.Replace(" ", " \x200B", StringComparison.InvariantCulture)).SanitizeMentions(true)}**").ConfigureAwait(false);
                         }
                     }
                 }

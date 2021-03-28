@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Discord;
 
 namespace WizBot.Extensions
 {
@@ -137,9 +138,15 @@ namespace WizBot.Extensions
 
         public static string Unmention(this string str) => str.Replace("@", "ම", StringComparison.InvariantCulture);
 
-        public static string SanitizeMentions(this string str) =>
-            str.Replace("@everyone", "@everyοne", StringComparison.InvariantCultureIgnoreCase)
-               .Replace("@here", "@һere", StringComparison.InvariantCultureIgnoreCase);
+        public static string SanitizeMentions(this string str, bool sanitizeRoleMentions = false)
+        {
+            str = str.Replace("@everyone", "@everyοne", StringComparison.InvariantCultureIgnoreCase)
+                     .Replace("@here", "@һere", StringComparison.InvariantCultureIgnoreCase);
+            if (sanitizeRoleMentions)
+                str = str.SanitizeRoleMentions();
+
+            return str;
+        }
 
         public static string SanitizeRoleMentions(this string str) =>
             str.Replace("<@&", "<ම&", StringComparison.InvariantCultureIgnoreCase);
