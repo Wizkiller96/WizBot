@@ -244,6 +244,12 @@ namespace WizBot.Modules.Administration.Services
         {
             try
             {
+                if (cmd.GuildId is null)
+                    return;
+
+                var guildShard = (int)((cmd.GuildId.Value >> 22) % (ulong)_creds.TotalShards);
+                if (guildShard != _client.ShardId)
+                    return;
                 var prefix = _cmdHandler.GetPrefix(cmd.GuildId);
                 //if someone already has .die as their startup command, ignore it
                 if (cmd.CommandText.StartsWith(prefix + "die", StringComparison.InvariantCulture))
