@@ -107,8 +107,15 @@ namespace WizBot.Modules.Searches.Services
 
                             if (!gotImage && feedItem.SpecificItem is AtomFeedItem afi)
                             {
-                                var previewElement = afi.Element.Elements().Where(x => x.Name.LocalName == "preview")
-                                    .FirstOrDefault();
+                                var previewElement = afi.Element.Elements()
+                                    .FirstOrDefault(x => x.Name.LocalName == "preview");
+
+                                if (previewElement == null)
+                                {
+                                    previewElement = afi.Element.Elements()
+                                        .FirstOrDefault(x => x.Name.LocalName == "thumbnail");
+                                }
+
                                 if (previewElement != null)
                                 {
                                     var urlAttribute = previewElement.Attribute("url");
