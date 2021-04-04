@@ -12,17 +12,28 @@ namespace WizBot.Modules.Administration
         {
             [WizBotCommand, Usage, Description, Aliases]
             [Priority(1)]
-            public new async Task Prefix()
+            public async Task Prefix()
             {
                 await ReplyConfirmLocalizedAsync("prefix_current", Format.Code(CmdHandler.GetPrefix(ctx.Guild))).ConfigureAwait(false);
-                return;
+            }
+
+            public enum Set
+            {
+                Set
             }
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             [Priority(0)]
-            public new async Task Prefix([Leftover]string prefix)
+            public Task Prefix(Set _, [Leftover] string prefix)
+                => Prefix(prefix);
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [UserPerm(GuildPerm.Administrator)]
+            [Priority(0)]
+            public async Task Prefix([Leftover]string prefix)
             {
                 if (string.IsNullOrWhiteSpace(prefix))
                     return;
