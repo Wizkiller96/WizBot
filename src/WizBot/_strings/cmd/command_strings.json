@@ -2751,6 +2751,29 @@
       "{0}unban 123123123"
     ]
   },
+  "banmessage": {
+    "Cmd": "banmessage banmsg bantemplate bantemp",
+    "Desc": "Sets a ban message template which will be used when a user is banned from this server. You can use embed strings and ban-specific placeholders: %ban.mod%, %ban.user%, %ban.duration% and %ban.reason%. You can disable ban message with `{0}banmsg -`",
+    "Usage": [
+      "{0}banmsg %ban.user%, you've been banned from %server.name%. Reason: %ban.reason%",
+      "{0}banmsg {{ \"description\": \"%ban.user% you have been banned from %server.name% by %ban.mod%\" }}"
+    ]
+  },
+  "banmessagetest": {
+    "Cmd": "banmsgtest",
+    "Desc": "If ban message is not disabled, bot will send you the message as if you were banned by yourself. Used for testing the ban message.",
+    "Usage": [
+      "{0}banmsgtest No reason",
+      "{0}banmsgtest 1h Test 1 hour ban message"
+    ]
+  },
+  "banmsgreset": {
+    "Cmd": "banmsgreset",
+    "Desc": "Resets ban message to default. If you want to completely disable ban messages, use `{0}banmsg -`",
+    "Usage": [
+      "{0}banmsgreset"
+    ]
+  },
   "wait": {
     "Cmd": "wait",
     "Desc": "Used only as a startup command. Waits a certain number of miliseconds before continuing the execution of the following startup commands.",

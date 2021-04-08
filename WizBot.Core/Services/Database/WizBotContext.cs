@@ -54,6 +54,7 @@ namespace WizBot.Core.Services.Database
         public DbSet<RewardedUser> RewardedUsers { get; set; }
         public DbSet<Stake> Stakes { get; set; }
         public DbSet<PlantedCurrency> PlantedCurrency { get; set; }
+        public DbSet<BanTemplate> BanTemplates { get; set; }
 
         public WizBotContext(DbContextOptions<WizBotContext> options) : base(options)
         {
@@ -353,6 +354,14 @@ namespace WizBot.Core.Services.Database
                 .HasOne(x => x.GuildConfig)
                 .WithMany(x => x.SelfAssignableRoleGroupNames)
                 .IsRequired();
+            #endregion
+
+            #region BanTemplate
+
+            modelBuilder.Entity<BanTemplate>()
+                .HasIndex(x => x.GuildId)
+                .IsUnique();
+
             #endregion
         }
     }

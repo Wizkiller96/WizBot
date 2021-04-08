@@ -18,6 +18,8 @@
   "administration_attachments": "Attachments",
   "administration_avatar_changed": "Avatar Changed",
   "administration_bandm": "You have been banned from {0} server.\nReason: {1}",
+  "administration_banmsg_disabled": "Ban messages are disabled. You can enable them by setting a banmsg to something other than '-'.",
+  "administration_banmsg_default": "No ban message set. Default behavior will be used.",
   "administration_banned_pl": "banned",
   "administration_banned_user": "User Banned",
   "administration_bot_name": "Bot's name changed to {0}",
