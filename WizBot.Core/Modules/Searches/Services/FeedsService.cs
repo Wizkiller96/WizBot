@@ -28,12 +28,20 @@ namespace WizBot.Modules.Searches.Services
         {
             _db = db;
 
-            _subs = bot
-                .AllGuildConfigs
-                .SelectMany(x => x.FeedSubs)
-                .GroupBy(x => x.Url.ToLower())
-                .ToDictionary(x => x.Key, x => x.ToHashSet())
-                .ToConcurrent();
+            using (var uow = db.GetDbContext())
+            {
+                var guildConfigIds = bot.AllGuildConfigs.Select(x => x.Id).ToList();
+                _subs = uow._context.GuildConfigs
+                    .AsQueryable()
+                    .Where(x => guildConfigIds.Contains(x.Id))
+                    .Include(x => x.FeedSubs)
+                        .ThenInclude(x => x.GuildConfig)
+                    .ToList()
+                    .SelectMany(x => x.FeedSubs)
+                    .GroupBy(x => x.Url.ToLower())
+                    .ToDictionary(x => x.Key, x => x.ToHashSet())
+                    .ToConcurrent();
+            }
 
             _client = client;
 
@@ -160,7 +168,9 @@ namespace WizBot.Modules.Searches.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                return uow.GuildConfigs.ForId(guildId, set => set.Include(x => x.FeedSubs))
+                return uow.GuildConfigs.ForId(guildId,
+                        set => set.Include(x => x.FeedSubs)
+                                        .ThenInclude(x => x.GuildConfig))
                     .FeedSubs
                     .OrderBy(x => x.Id)
                     .ToList();
@@ -179,7 +189,9 @@ namespace WizBot.Modules.Searches.Services
 
             using (var uow = _db.GetDbContext())
             {
-                var gc = uow.GuildConfigs.ForId(guildId, set => set.Include(x => x.FeedSubs));
+                var gc = uow.GuildConfigs.ForId(guildId,
+                    set => set.Include(x => x.FeedSubs)
+                                    .ThenInclude(x => x.GuildConfig));
 
                 if (gc.FeedSubs.Any(x => x.Url.ToLower() == fs.Url.ToLower()))
                 {

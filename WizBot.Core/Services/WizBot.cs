@@ -149,49 +149,44 @@ namespace WizBot
         private void AddServices()
         {
             var startingGuildIdList = GetCurrentGuildIds();
+            var sw = Stopwatch.StartNew();
+            var _bot = Client.CurrentUser;
 
-            //this unit of work will be used for initialization of all modules too, to prevent multiple queries from running
             using (var uow = _db.GetDbContext())
             {
-                var sw = Stopwatch.StartNew();
-
-                var _bot = Client.CurrentUser;
-
                 uow.DiscordUsers.EnsureCreated(_bot.Id, _bot.Username, _bot.Discriminator, _bot.AvatarId);
-
                 AllGuildConfigs = uow.GuildConfigs.GetAllGuildConfigs(startingGuildIdList).ToImmutableArray();
-
-                IBotConfigProvider botConfigProvider = new BotConfigProvider(_db, _botConfig, Cache);
-
-                var s = new ServiceCollection()
-                    .AddSingleton<IBotCredentials>(Credentials)
-                    .AddSingleton(_db)
-                    .AddSingleton(Client)
-                    .AddSingleton(CommandService)
-                    .AddSingleton(botConfigProvider)
-                    .AddSingleton(this)
-                    .AddSingleton(uow)
-                    .AddSingleton(Cache)
-                    .AddMemoryCache();
-
-                s.AddHttpClient();
-                s.AddHttpClient("memelist").ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
-                {
-                    AllowAutoRedirect = false
-                });
-
-                s.LoadFrom(Assembly.GetAssembly(typeof(CommandHandler)));
-
-                //initialize Services
-                Services = s.BuildServiceProvider();
-                var commandHandler = Services.GetService<CommandHandler>();
-                //what the fluff
-                commandHandler.AddServices(s);
-                _ = LoadTypeReaders(typeof(WizBot).Assembly);
-
-                sw.Stop();
-                _log.Info($"All services loaded in {sw.Elapsed.TotalSeconds:F2}s");
             }
+
+            IBotConfigProvider botConfigProvider = new BotConfigProvider(_db, _botConfig, Cache);
+
+            var s = new ServiceCollection()
+            .AddSingleton<IBotCredentials>(Credentials)
+            .AddSingleton(_db)
+            .AddSingleton(Client)
+            .AddSingleton(CommandService)
+            .AddSingleton(botConfigProvider)
+            .AddSingleton(this)
+            .AddSingleton(Cache)
+            .AddMemoryCache();
+
+            s.AddHttpClient();
+            s.AddHttpClient("memelist").ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+            {
+                AllowAutoRedirect = false
+            });
+
+            s.LoadFrom(Assembly.GetAssembly(typeof(CommandHandler)));
+
+            //initialize Services
+            Services = s.BuildServiceProvider();
+            var commandHandler = Services.GetService<CommandHandler>();
+            //what the fluff
+            commandHandler.AddServices(s);
+            _ = LoadTypeReaders(typeof(WizBot).Assembly);
+
+            sw.Stop();
+            _log.Info($"All services loaded in {sw.Elapsed.TotalSeconds:F2}s");
         }
 
         private IEnumerable<object> LoadTypeReaders(Assembly assembly)

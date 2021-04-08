@@ -30,7 +30,7 @@ namespace WizBot.Modules.Games.Services
         private readonly WizBotStrings _strs;
 
         public PollService(DiscordSocketClient client, WizBotStrings strings, DbService db,
-            WizBotStrings strs, IUnitOfWork uow)
+            WizBotStrings strs)
         {
             _log = LogManager.GetCurrentClassLogger();
             _client = client;
@@ -38,14 +38,17 @@ namespace WizBot.Modules.Games.Services
             _db = db;
             _strs = strs;
 
-            ActivePolls = uow.Polls.GetAllPolls()
-                .ToDictionary(x => x.GuildId, x =>
-                {
-                    var pr = new PollRunner(db, x);
-                    pr.OnVoted += Pr_OnVoted;
-                    return pr;
-                })
-                .ToConcurrent();
+            using (var uow = db.GetDbContext())
+            {
+                ActivePolls = uow.Polls.GetAllPolls()
+                    .ToDictionary(x => x.GuildId, x =>
+                    {
+                        var pr = new PollRunner(db, x);
+                        pr.OnVoted += Pr_OnVoted;
+                        return pr;
+                    })
+                    .ToConcurrent();
+            }
         }
 
         public Poll CreatePoll(ulong guildId, ulong channelId, string input)

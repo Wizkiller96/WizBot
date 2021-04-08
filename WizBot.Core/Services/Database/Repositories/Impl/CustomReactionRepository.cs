@@ -18,7 +18,9 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
 
         public IEnumerable<CustomReaction> ForId(ulong id)
         {
-            return _set.AsQueryable()
+            return _set
+                .AsNoTracking()
+                .AsQueryable()
                 .Where(x => x.GuildId == id)
                 .ToArray();
         }
@@ -35,14 +37,18 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
         /// <returns></returns>
         public IEnumerable<CustomReaction> GetFor(IEnumerable<ulong> ids)
         {
-            return _set.AsQueryable()
+            return _set
+                .AsNoTracking()
+                .AsQueryable()
                 .Where(x => ids.Contains(x.GuildId.Value))
                 .ToArray();
         }
 
         public IEnumerable<CustomReaction> GetGlobal()
         {
-            return _set.AsQueryable()
+            return _set
+                .AsNoTracking()
+                .AsQueryable()
                 .Where(x => x.GuildId == null)
                 .ToArray();
         }
