@@ -239,7 +239,10 @@ namespace WizBot.Modules.Administration
             {
                 var guser = (IGuildUser)ctx.User;
 
-                var userRoles = user.GetRoles().Except(new[] { guser.Guild.EveryoneRole });
+                var userRoles = user.GetRoles()
+                    .Where(x => !x.IsManaged && x != x.Guild.EveryoneRole)
+                    .ToList();
+
                 if (user.Id == ctx.Guild.OwnerId || (ctx.User.Id != ctx.Guild.OwnerId && guser.GetRoles().Max(x => x.Position) <= userRoles.Max(x => x.Position)))
                     return;
                 try
