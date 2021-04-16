@@ -21,6 +21,7 @@ namespace WizBot.Core.Modules.Searches.Common.StreamNotifications
         public event Func<List<StreamData>, Task> OnStreamsOnline = _ => Task.CompletedTask;
 
         private readonly Dictionary<FollowedStream.FType, Provider> _streamProviders;
+        private readonly HashSet<(FollowedStream.FType, string)> _offlineBuffer;
 
         private readonly Logger _log;
 
@@ -35,10 +36,31 @@ namespace WizBot.Core.Modules.Searches.Common.StreamNotifications
                 {FollowedStream.FType.Twitch, new TwitchProvider(httpClientFactory)},
                 {FollowedStream.FType.Picarto, new PicartoProvider(httpClientFactory)}
             };
+            _offlineBuffer = new HashSet<(FollowedStream.FType, string)>();
             if (isMaster)
             {
                 CacheClearAllData();
             }
+        }
+
+        // gets all streams which have been failing for more than the provided timespan
+        public IEnumerable<StreamDataKey> GetFailingStreams(TimeSpan duration, bool remove = false)
+        {
+            var toReturn = _streamProviders.SelectMany(prov => prov.Value
+                .FailingStreams
+                .Where(fs => DateTime.UtcNow - fs.ErroringSince > duration)
+                .Select(fs => new StreamDataKey(prov.Value.Platform, fs.Item1)))
+                .ToList();
+
+            if (remove)
+            {
+                foreach (var toBeRemoved in toReturn)
+                {
+                    _streamProviders[toBeRemoved.Type].ClearErrorsFor(toBeRemoved.Name);
+                }
+            }
+
+            return toReturn;
         }
 
         public Task RunAsync() => Task.Run(async () =>
@@ -86,15 +108,31 @@ namespace WizBot.Core.Modules.Searches.Common.StreamNotifications
                         if (oldData is null)
                             continue;
 
-                        if (newData.IsLive != oldData.IsLive)
+                        // if the stream is offline, we need to check if it was
+                        // marked as offline once previously
+                        // if it was, that means this is second time we're getting offline
+                        // status for that stream -> notify subscribers
+                        // Note: This is done because twitch api will sometimes return an offline status
+                        //       shortly after the stream is already online, which causes duplicate notifications.
+                        //       (stream is online -> stream is offline -> stream is online again (and stays online))
+                        //       This offlineBuffer will make it so that the stream has to be marked as offline TWICE
+                        //       before it sends an offline notification to the subscribers.
+                        var streamId = (key.Type, key.Name);
+                        if (!newData.IsLive && _offlineBuffer.Remove(streamId))
+                        {
+                            newlyOffline.Add(newData);
+                        }
+                        else if (newData.IsLive != oldData.IsLive)
                         {
                             if (newData.IsLive)
                             {
+                                _offlineBuffer.Remove(streamId);
                                 newlyOnline.Add(newData);
                             }
                             else
                             {
-                                newlyOffline.Add(newData);
+                                _offlineBuffer.Add(streamId);
+                                // newlyOffline.Add(newData);
                             }
                         }
                     }

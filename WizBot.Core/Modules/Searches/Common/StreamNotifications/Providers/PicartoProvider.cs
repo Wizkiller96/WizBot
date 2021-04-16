@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -79,12 +80,12 @@ namespace WizBot.Core.Modules.Searches.Common.StreamNotifications.Providers
                         var userData = JsonConvert.DeserializeObject<PicartoChannelResponse>(await res.Content.ReadAsStringAsync());
 
                         toReturn.Add(ToStreamData(userData));
+                        _failingStreams.TryRemove(login, out _);
                     }
                     catch (Exception ex)
                     {
-                        _log.Warn($"Something went wrong retreiving {Platform} streams.");
-                        _log.Warn(ex.ToString());
-                        return new List<StreamData>();
+                        _log.Warn($"Something went wrong retreiving {Platform} stream data for {login}: {ex.Message}");
+                        _failingStreams.TryAdd(login, DateTime.UtcNow);
                     }
                 }
 

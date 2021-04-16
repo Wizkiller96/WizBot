@@ -107,12 +107,12 @@ namespace WizBot.Core.Modules.Searches.Common.StreamNotifications.Providers
                         }
 
                         toReturn.Add(ToStreamData(resObj.Stream));
+                        _failingStreams.TryRemove(login, out _);
                     }
                     catch (Exception ex)
                     {
-                        _log.Warn($"Something went wrong retreiving {Platform} streams.");
-                        _log.Warn(ex.ToString());
-                        return new List<StreamData>();
+                        _log.Warn($"Something went wrong retreiving {Platform} stream data for {login}: {ex.Message}");
+                        _failingStreams.TryAdd(login, DateTime.UtcNow);
                     }
                 }
 

@@ -1,5 +1,9 @@
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using WizBot.Common.Collections;
 using WizBot.Core.Services.Database.Models;
 
 #nullable enable
@@ -42,5 +46,21 @@ namespace WizBot.Core.Modules.Searches.Common.StreamNotifications.Providers
         /// <param name="usernames">List of ids/usernames</param>
         /// <returns><see cref="StreamData"/> of all users, in the same order. Null for every id/user not found.</returns>
         public abstract Task<List<StreamData>> GetStreamDataAsync(List<string> usernames);
+
+        /// <summary>
+        /// Gets the stream usernames which fail to execute due to an error, and when they started throwing errors.
+        /// This can happen if stream name is invalid, or if the stream doesn't exist anymore.
+        /// </summary>
+        public IEnumerable<(string Login, DateTime ErroringSince)> FailingStreams =>
+            _failingStreams.Select(entry => (entry.Key, entry.Value)).ToList();
+
+        /// <summary>
+        /// When was the first time the stream continually had errors while being retrieved 
+        /// </summary>
+        protected readonly ConcurrentDictionary<string, DateTime> _failingStreams =
+            new ConcurrentDictionary<string, DateTime>();
+
+        public void ClearErrorsFor(string login)
+            => _failingStreams.TryRemove(login, out _);
     }
 }
