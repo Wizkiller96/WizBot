@@ -337,7 +337,7 @@
   },
   "autoassignrole": {
     "Cmd": "autoassignrole aar",
-    "Desc": "Automaticaly assigns a specified role to every user who joins the server. Provide no parameters to disable.",
+    "Desc": "Automaticaly assigns a specified role to every user who joins the server. Only one role per server. Provide no parameters to disable.",
     "Usage": [
       "{0}aar",
       "{0}aar RoleName"
@@ -1421,7 +1421,7 @@
   },
   "streamrole": {
     "Cmd": "streamrole",
-    "Desc": "Sets a role which is monitored for streamers (FromRole), and a role to add if a user from 'FromRole' is streaming (AddRole). When a user from 'FromRole' starts streaming, they will receive an 'AddRole'. Provide no parameters to disable",
+    "Desc": "Sets a role which is monitored for streamers (FromRole), and a role to add if a user from 'FromRole' is streaming (AddRole). When a user from 'FromRole' starts streaming, they will receive an 'AddRole'. You can only have 1 Stream Role per server. Provide no parameters to disable",
     "Usage": [
       "{0}streamrole \"Eligible Streamers\" \"Featured Streams\""
     ]
@@ -3006,7 +3006,7 @@
   },
   "xpnotify": {
     "Cmd": "xpnotify xpn",
-    "Desc": "Sets how the bot should notify you when you get a `server` or `global` level. You can set `dm` (for the bot to send a direct message), `channel` (to get notified in the channel you sent the last message in) or `none` to disable.",
+    "Desc": "Sets how the bot should notify you when you get a `server` or `global` level. This is a personal setting and affects only how you receive Global or Server level-up notifications. You can set `dm` (for the bot to send you a direct message), `channel` (to get notified in the channel you sent the last message in) or `none` to disable.",
     "Usage": [
       "{0}xpn global dm",
       "{0}xpn server channel"
