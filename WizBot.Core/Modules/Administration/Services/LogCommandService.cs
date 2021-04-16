@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using WizBot.Common.Collections;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
@@ -35,9 +36,11 @@ namespace WizBot.Modules.Administration.Services
         private readonly GuildTimezoneService _tz;
 
         public LogCommandService(DiscordSocketClient client, WizBotStrings strings,
-            DbService db, MuteService mute, ProtectionService prot, GuildTimezoneService tz)
+            DbService db, MuteService mute, ProtectionService prot, GuildTimezoneService tz,
+                IMemoryCache memoryCache)
         {
             _client = client;
+            _memoryCache = memoryCache;
             _log = LogManager.GetCurrentClassLogger();
             _strings = strings;
             _db = db;
@@ -102,6 +105,7 @@ namespace WizBot.Modules.Administration.Services
             _client.ChannelCreated += _client_ChannelCreated;
             _client.ChannelDestroyed += _client_ChannelDestroyed;
             _client.ChannelUpdated += _client_ChannelUpdated;
+            _client.RoleDeleted += _client_RoleDeleted;
 
             _mute.UserMuted += MuteCommands_UserMuted;
             _mute.UserUnmuted += MuteCommands_UserUnmuted;
@@ -116,6 +120,8 @@ namespace WizBot.Modules.Administration.Services
 
         private readonly Timer _clearTimer;
         private readonly ConcurrentHashSet<ulong> _ignoreMessageIds = new ConcurrentHashSet<ulong>();
+        private readonly IMemoryCache _memoryCache;
+
         public void AddDeleteIgnore(ulong messageId)
         {
             _ignoreMessageIds.Add(messageId);
@@ -515,6 +521,24 @@ namespace WizBot.Modules.Administration.Services
             return Task.CompletedTask;
         }
 
+        private string GetRoleDeletedKey(ulong roleId)
+            => $"role_deleted_{roleId}";
+
+        private Task _client_RoleDeleted(SocketRole socketRole)
+        {
+            _log.Info("Role deleted " + socketRole.Id);
+            _memoryCache.Set(GetRoleDeletedKey(socketRole.Id),
+                true,
+                TimeSpan.FromMinutes(5));
+            return Task.CompletedTask;
+        }
+
+        private bool IsRoleDeleted(ulong roleId)
+        {
+            var isDeleted = _memoryCache.TryGetValue(GetRoleDeletedKey(roleId), out var _);
+            return isDeleted;
+        }
+
         private Task _client_GuildUserUpdated(SocketGuildUser before, SocketGuildUser after)
         {
             var _ = Task.Run(async () =>
@@ -556,11 +580,20 @@ namespace WizBot.Modules.Administration.Services
                             }
                             else if (before.Roles.Count > after.Roles.Count)
                             {
-                                var diffRoles = before.Roles.Where(r => !after.Roles.Contains(r)).Select(r => r.Name);
-                                embed.WithAuthor(eab => eab.WithName("⚔ " + GetText(logChannel.Guild, "user_role_rem")))
-                                    .WithDescription(string.Join(", ", diffRoles).SanitizeMentions());
+                                await Task.Delay(1000);
+                                var diffRoles = before.Roles
+                                    .Where(r => !after.Roles.Contains(r) && !IsRoleDeleted(r.Id))
+                                    .Select(r => r.Name)
+                                    .ToList();
 
-                                await logChannel.EmbedAsync(embed).ConfigureAwait(false);
+                                if (diffRoles.Any())
+                                {
+                                    embed.WithAuthor(eab =>
+                                            eab.WithName("⚔ " + GetText(logChannel.Guild, "user_role_rem")))
+                                        .WithDescription(string.Join(", ", diffRoles).SanitizeMentions());
+
+                                    await logChannel.EmbedAsync(embed).ConfigureAwait(false);
+                                }
                             }
                         }
                     }
