@@ -13,6 +13,7 @@ using WizBot.Core.Common.TypeReaders.Models;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Extensions;
+using Newtonsoft.Json;
 using NLog;
 using NLog.Fluent;
 
@@ -402,7 +403,7 @@ WHERE GuildId={guildId}
             }
         }
 
-        public EmbedBuilder GetBanUserDmEmbed(ICommandContext context, IGuildUser target, string defaultMessage,
+        public CREmbed GetBanUserDmEmbed(ICommandContext context, IGuildUser target, string defaultMessage,
             string banReason, TimeSpan? duration)
         {
             return GetBanUserDmEmbed(
@@ -415,11 +416,12 @@ WHERE GuildId={guildId}
                 duration);
         }
 
-        public EmbedBuilder GetBanUserDmEmbed(DiscordSocketClient client, SocketGuild guild,
+        public CREmbed GetBanUserDmEmbed(DiscordSocketClient client, SocketGuild guild,
             IGuildUser moderator, IGuildUser target, string defaultMessage, string banReason, TimeSpan? duration)
         {
             EmbedBuilder embed;
             var template = GetBanTemplate(guild.Id);
+            var plainText = string.Empty;
 
             banReason = string.IsNullOrWhiteSpace(banReason)
                 ? "-"
@@ -440,33 +442,41 @@ WHERE GuildId={guildId}
                 .WithOverride("%ban.duration%", () => duration?.ToString(@"d\.hh\:mm") ?? "perma")
                 .Build();
 
+            CREmbed crEmbed = null;
             // if template isn't set, use the old message style
             if (string.IsNullOrWhiteSpace(template))
             {
-                embed = new EmbedBuilder()
-                    .WithErrorColor()
-                    .WithDescription(defaultMessage);
+                template = JsonConvert.SerializeObject(new
+                {
+                    color = WizBot.ErrorColor.RawValue,
+                    description = defaultMessage
+                });
+
+                CREmbed.TryParse(template, out crEmbed);
             }
             // if template is set to "-" do not dm the user
             else if (template == "-")
             {
-                return null;
+                return default;
             }
             // if template is an embed, send that embed with replacements
-            else if (CREmbed.TryParse(template, out var crEmbed))
+            else if (CREmbed.TryParse(template, out crEmbed))
             {
                 replacer.Replace(crEmbed);
-                embed = crEmbed.ToEmbed();
             }
             // otherwise, treat template as a regular string with replacements
             else
             {
-                embed = new EmbedBuilder()
-                    .WithErrorColor()
-                    .WithDescription(replacer.Replace(template));
+                template = JsonConvert.SerializeObject(new
+                {
+                    color = WizBot.ErrorColor.RawValue,
+                    description = replacer.Replace(template)
+                });
+
+                CREmbed.TryParse(template, out crEmbed);
             }
 
-            return embed;
+            return crEmbed;
         }
     }
 }

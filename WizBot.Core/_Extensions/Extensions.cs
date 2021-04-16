@@ -47,7 +47,7 @@ namespace WizBot.Extensions
                 ? crEmbed.PlainText?.SanitizeAllMentions() ?? ""
                 : crEmbed.PlainText?.SanitizeMentions() ?? "";
 
-            return channel.EmbedAsync(crEmbed.ToEmbed(), plainText);
+            return channel.SendMessageAsync(plainText, embed: crEmbed.IsEmbedValid ? crEmbed.ToEmbed().Build() : null);
         }
 
         public static List<ulong> GetGuildIds(this DiscordSocketClient client)
