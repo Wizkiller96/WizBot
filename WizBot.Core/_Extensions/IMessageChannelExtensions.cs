@@ -145,5 +145,8 @@ namespace WizBot.Extensions
                 // ignored
             }
         }
+
+        public static Task OkAsync(this ICommandContext ctx)
+            => ctx.Message.AddReactionAsync(new Emoji("✅"));
     }
 }

@@ -507,7 +507,7 @@ namespace WizBot.Modules.Administration
                 }
 
                 _service.SetBanTemplate(Context.Guild.Id, message);
-                await ctx.Channel.SendConfirmAsync("👌");
+                await ctx.OkAsync();
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -517,7 +517,7 @@ namespace WizBot.Modules.Administration
             public async Task BanMsgReset()
             {
                 _service.SetBanTemplate(Context.Guild.Id, null);
-                await ctx.Channel.SendConfirmAsync("👌");
+                await ctx.OkAsync();
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -561,8 +561,8 @@ namespace WizBot.Modules.Administration
                         await ReplyErrorLocalizedAsync("unable_to_dm_user");
                         return;
                     }
-                    var confirmMessage = await Context.Channel.SendConfirmAsync("👌");
-                    confirmMessage.DeleteAfter(3);
+                    
+                    await Context.OkAsync();
                 }
             }
 

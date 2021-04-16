@@ -30,7 +30,7 @@ namespace WizBot.Modules.Utility
                     return;
                 await _service.RefreshPledges().ConfigureAwait(false);
 
-                await ctx.Channel.SendConfirmAsync("👌").ConfigureAwait(false);
+                await ctx.OkAsync();
             }
 
             [WizBotCommand, Usage, Description, Aliases]

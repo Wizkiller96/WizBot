@@ -308,9 +308,8 @@ namespace WizBot.Modules.Administration
                 await ReplyErrorLocalizedAsync("time_too_long").ConfigureAwait(false);
                 return;
             }
-            
-            var conf = await ReplyAsync("👌").ConfigureAwait(false);
-            conf.DeleteAfter(3);
+
+            await ctx.OkAsync();
         }
     }
 }

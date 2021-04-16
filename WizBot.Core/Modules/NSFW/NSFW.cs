@@ -542,7 +542,7 @@ namespace WizBot.Modules.NSFW
         public Task NsfwClearCache()
         {
             _service.ClearCache();
-            return ctx.Channel.SendConfirmAsync("👌");
+            return Context.OkAsync();
         }
 
         public async Task InternalDapiCommand(string tag, DapiSearchType type, bool forceExplicit)

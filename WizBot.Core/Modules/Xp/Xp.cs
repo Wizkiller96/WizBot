@@ -124,13 +124,13 @@ namespace WizBot.Modules.Xp
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        public async Task XpNotify(NotifyPlace place = NotifyPlace.Guild, XpNotificationLocation type = XpNotificationLocation.Channel)
+        public async Task XpNotify(NotifyPlace place, XpNotificationLocation type)
         {
             if (place == NotifyPlace.Guild)
                 await _service.ChangeNotificationType(ctx.User.Id, ctx.Guild.Id, type).ConfigureAwait(false);
             else
                 await _service.ChangeNotificationType(ctx.User, type).ConfigureAwait(false);
-            await ctx.Channel.SendConfirmAsync("👌").ConfigureAwait(false);
+            await ctx.OkAsync().ConfigureAwait(false);
         }
 
         public enum Server { Server };

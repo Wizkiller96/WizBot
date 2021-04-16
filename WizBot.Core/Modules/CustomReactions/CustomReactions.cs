@@ -302,7 +302,7 @@ namespace WizBot.Modules.CustomReactions
         {
             _service.TriggerReloadCustomReactions();
 
-            return ctx.Channel.SendConfirmAsync("👌");
+            return ctx.OkAsync();
         }
 
         private async Task InternalCrEdit(int id, CustomReactionsService.CrField option)
