@@ -605,7 +605,7 @@
     "utility_quote_deleted": "Kutipan #{0} dihapus.",
     "utility_region": "Wilayah",
     "utility_registered_on": "Terdaftar pada",
-    "utility_remind": "Saya akan mengigatakn {0} untuk {1} dalam {2} '({3:d:M.yyyy.} saat {4:HH:mm}",
+    "utility_remind": "Saya akan mengingatkan {0} untuk {1} dalam {2} '({3:d:M.yyyy.} pada pukul {4:HH:mm}",
     "utility_remind_invalid_format": "Bukan format waktu yang benar. Silakan periksa daftar perintah.",
     "utility_remind_template": "Template mengingatkan baru disetel.",
     "utility_repeater": "Mengulang {0} setiap {1} hari, {2} jam dan {3} menit.",
