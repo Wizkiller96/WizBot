@@ -234,14 +234,16 @@ namespace WizBot.Modules.Utility.Services
 
         private async Task RescanUser(IGuildUser user, StreamRoleSettings setting, IRole addRole = null)
         {
-            if (user.Activity is StreamingGame g
-                && g != null
+            var g = (StreamingGame)user.Activities
+                .FirstOrDefault(a => a is StreamingGame &&
+                       (string.IsNullOrWhiteSpace(setting.Keyword)
+                        || a.Name.ToUpperInvariant().Contains(setting.Keyword.ToUpperInvariant())
+                        || setting.Whitelist.Any(x => x.UserId == user.Id)));
+
+            if (!(g is null)
                 && setting.Enabled
-                && !setting.Blacklist.Any(x => x.UserId == user.Id)
-                && user.RoleIds.Contains(setting.FromRoleId)
-                && (string.IsNullOrWhiteSpace(setting.Keyword)
-                    || g.Name.ToUpperInvariant().Contains(setting.Keyword.ToUpperInvariant())
-                    || setting.Whitelist.Any(x => x.UserId == user.Id)))
+                && setting.Blacklist.All(x => x.UserId != user.Id)
+                && user.RoleIds.Contains(setting.FromRoleId))
             {
                 try
                 {
