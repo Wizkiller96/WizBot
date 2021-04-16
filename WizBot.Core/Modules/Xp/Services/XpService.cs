@@ -427,6 +427,23 @@ namespace WizBot.Modules.Xp.Services
             }
         }
 
+        public XpNotificationLocation GetNotificationType(ulong userId, ulong guildId)
+        {
+            using (var uow = _db.GetDbContext())
+            {
+                var user = uow.Xp.GetOrCreateUser(guildId, userId);
+                return user.NotifyOnLevelUp;
+            }
+        }
+
+        public XpNotificationLocation GetNotificationType(IUser user)
+        {
+            using (var uow = _db.GetDbContext())
+            {
+                return uow.DiscordUsers.GetOrCreate(user).NotifyOnLevelUp;
+            }
+        }
+
         public async Task ChangeNotificationType(IUser user, XpNotificationLocation type)
         {
             using (var uow = _db.GetDbContext())
