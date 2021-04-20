@@ -607,6 +607,8 @@
   "utility_remind_template": "New remind template set.",
   "utility_repeater": "Repeating {0} every {1} day(s), {2} hour(s) and {3} minute(s).",
   "utility_repeaters_list": "List of repeaters",
+  "utility_repeater_redundant_no": "Repeater **#{0}** won't post redundant messages anymore.",
+  "utility_repeater_redundant_yes": "Repeater **#{0}** will post redundant messages from now on.",
   "utility_repeaters_none": "No repeaters running on this server.",
   "utility_repeater_stopped": "#{0} stopped.",
   "utility_repeat_invoke_none": "No repeating messages found on this server.",

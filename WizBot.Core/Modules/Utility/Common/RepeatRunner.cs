@@ -9,6 +9,7 @@ using WizBot.Core.Services.Database.Models;
 using NLog;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using WizBot.Common;
 using WizBot.Common.Replacements;
 using WizBot.Modules.Utility.Services;
 
@@ -163,7 +164,7 @@ namespace WizBot.Modules.Utility.Common
             // next execution is interval amount of time after now
             NextDateTime = DateTime.UtcNow + Repeater.Interval;
 
-            var toSend = "🔄 " + Repeater.Message;
+            var toSend = Repeater.Message;
             try
             {
                 Channel = Channel ?? Guild.GetTextChannel(Repeater.ChannelId);
@@ -206,7 +207,17 @@ namespace WizBot.Modules.Utility.Common
                     .WithDefault(Guild.CurrentUser, Channel, Guild, _client)
                     .Build();
 
-                var newMsg = await Channel.SendMessageAsync(rep.Replace(toSend)).ConfigureAwait(false);
+                IMessage newMsg;
+                if (CREmbed.TryParse(toSend, out var crEmbed))
+                {
+                    rep.Replace(crEmbed);
+                    newMsg = await Channel.EmbedAsync(crEmbed);
+                }
+                else
+                {
+                    newMsg = await Channel.SendMessageAsync(rep.Replace(toSend));
+                }
+                _ = newMsg.AddReactionAsync(new Emoji("🔄"));
 
                 if (Repeater.NoRedundant)
                 {
