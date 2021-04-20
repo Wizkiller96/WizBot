@@ -14,7 +14,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using Amazon.S3;
+using Amazon.S3.Model;
 using Discord.WebSocket;
 
 namespace WizBot.Modules.Help
@@ -77,10 +80,10 @@ namespace WizBot.Modules.Help
                 .WithFooter(efb => efb.WithText("ℹ️" + GetText("modules_footer", Prefix)))
                 .WithTitle(GetText("list_of_modules"))
                 .WithDescription(string.Join("\n",
-                                     _cmds.Modules.GroupBy(m => m.GetTopLevelModule())
-                                         .Where(m => !_perms.BlockedModules.Contains(m.Key.Name.ToLowerInvariant()))
-                                         .Select(m => "• " + m.Key.Name)
-                                         .OrderBy(s => s)));
+                                    _cmds.Modules.GroupBy(m => m.GetTopLevelModule())
+                                        .Where(m => !_perms.BlockedModules.Contains(m.Key.Name.ToLowerInvariant()))
+                                        .Select(m => "• " + m.Key.Name)
+                                        .OrderBy(s => s)));
             await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
         }
 
@@ -101,13 +104,13 @@ namespace WizBot.Modules.Help
             // order by name
             var cmds = _cmds.Commands.Where(c => c.Module.GetTopLevelModule().Name.ToUpperInvariant().StartsWith(module, StringComparison.InvariantCulture))
                                                 .Where(c => !_perms.BlockedCommands.Contains(c.Aliases[0].ToLowerInvariant()))
-                                                  .OrderBy(c => c.Aliases[0])
-                                                  .Distinct(new CommandTextEqualityComparer());
+                                                .OrderBy(c => c.Aliases[0])
+                                                .Distinct(new CommandTextEqualityComparer());
 
 
             // check preconditions for all commands, but only if it's not 'all'
             // because all will show all commands anyway, no need to check
-            HashSet<CommandInfo> succ = new HashSet<CommandInfo>();
+            var succ = new HashSet<CommandInfo>();
             if (opts.View != CommandsOptions.ViewType.All)
             {
                 succ = new HashSet<CommandInfo>((await Task.WhenAll(cmds.Select(async x =>
@@ -225,7 +228,10 @@ namespace WizBot.Modules.Help
         public async Task Hgit()
         {
             Dictionary<string, List<object>> cmdData = new Dictionary<string, List<object>>();
-            foreach (var com in _cmds.Commands.OrderBy(com => com.Module.GetTopLevelModule().Name).GroupBy(c => c.Aliases.First()).Select(g => g.First()))
+            foreach (var com in _cmds.Commands
+                .OrderBy(com => com.Module.GetTopLevelModule().Name)
+                .GroupBy(c => c.Aliases.First())
+                .Select(g => g.First()))
             {
                 var module = com.Module.GetTopLevelModule();
                 List<string> optHelpStr = null;
@@ -257,11 +263,79 @@ namespace WizBot.Modules.Help
         }
 
         [WizBotCommand, Usage, Description, Aliases]
-        public async Task Guide()
+        [OwnerOnly]
+        public async Task GenCmdList([Leftover] string? path = null)
         {
-            await ConfirmLocalizedAsync("guide",
-                "https://commands.wizbot.cc/",
-                "http://ndocs.wizbot.cc/").ConfigureAwait(false);
+            _ = ctx.Channel.TriggerTypingAsync();
+
+            // order commands by top level module name
+            // and make a dictionary of <ModuleName, Array<JsonCommandData>>
+            var cmdData = _cmds
+                .Commands
+                .GroupBy(x => x.Module.GetTopLevelModule().Name)
+                .OrderBy(x => x.Key)
+                .ToDictionary(
+                    x => x.Key,
+                    x => x.Distinct(x => x.Aliases.First())
+                        .Select(com =>
+                        {
+                            var module = com.Module.GetTopLevelModule();
+                            List<string> optHelpStr = null;
+                            var opt = ((WizBotOptionsAttribute)com.Attributes.FirstOrDefault(x => x is WizBotOptionsAttribute))?.OptionType;
+                            if (opt != null)
+                            {
+                                optHelpStr = HelpService.GetCommandOptionHelpList(opt);
+                            }
+
+                            return new CommandJsonObject
+                            {
+                                Aliases = com.Aliases.Select(x => Prefix + x).ToArray(),
+                                Description = string.Format(com.Summary, Prefix),
+                                Usage = JsonConvert.DeserializeObject<string[]>(com.Remarks)
+                                    .Select(x => string.Format(x, Prefix)).ToArray(),
+                                Submodule = com.Module.Name,
+                                Module = com.Module.GetTopLevelModule().Name,
+                                Options = optHelpStr,
+                                Requirements = HelpService.GetCommandRequirements(com),
+                            };
+                        })
+                        .ToList()
+                );
+
+            var readableData = JsonConvert.SerializeObject(cmdData, Formatting.Indented);
+            var uploadData = JsonConvert.SerializeObject(cmdData, Formatting.None);
+
+            // for example https://nyc.digitaloceanspaces.com (without your space name)
+            var serviceUrl = Environment.GetEnvironmentVariable("do_spaces_address");
+
+            // generate spaces access key on https://cloud.digitalocean.com/account/api/tokens
+            // you will get 2 keys, first, shorter one is id, longer one is secret
+            var accessKey = Environment.GetEnvironmentVariable("do_access_key_id");
+            var secretAcccessKey = Environment.GetEnvironmentVariable("do_access_key_secret");
+
+            // if all env vars are set, upload the unindented file (to save space) there
+            if (!(serviceUrl is null || accessKey is null || secretAcccessKey is null))
+            {
+                var config = new AmazonS3Config { ServiceURL = serviceUrl };
+                using (var client = new AmazonS3Client(accessKey, secretAcccessKey, config))
+                {
+                    var res = await client.PutObjectAsync(new PutObjectRequest()
+                    {
+                        BucketName = "wizbot-pictures",
+                        ContentType = "application/json",
+                        ContentBody = uploadData,
+                        // either use a path provided in the argument or the default one for public nadeko, other/cmds.json
+                        Key = path ?? "other/cmds.json",
+                        CannedACL = S3CannedACL.PublicRead
+                    });
+                }
+            }
+
+            // also send the file, but indented one, to chat
+            using (var rDataStream = new MemoryStream(Encoding.ASCII.GetBytes(readableData)))
+            {
+                await ctx.Channel.SendFileAsync(rDataStream, "cmds.json", GetText("commandlist_regen")).ConfigureAwait(false);
+            }
         }
 
 #if GLOBAL_WIZBOT
@@ -344,14 +418,17 @@ namespace WizBot.Modules.Help
 #endif
 
         [WizBotCommand, Usage, Description, Aliases]
+        public async Task Guide()
+        {
+            await ConfirmLocalizedAsync("guide",
+                "https://commands.wizbot.cc/",
+                "http://wizbot.readthedocs.io/en/latest/").ConfigureAwait(false);
+        }
+
+        [WizBotCommand, Usage, Description, Aliases]
         public async Task Donate()
         {
             await ReplyConfirmLocalizedAsync("donate", PatreonUrl, PaypalUrl).ConfigureAwait(false);
-        }
-
-        private string GetRemarks(string[] arr)
-        {
-            return string.Join(" or ", arr.Select(x => Format.Code(x)));
         }
     }
 
@@ -363,10 +440,15 @@ namespace WizBot.Modules.Help
 
     }
 
-    public class JsonCommandData
+    // todo 3.3 / 3.4 add versions to the cmds.json
+    internal class CommandJsonObject
     {
         public string[] Aliases { get; set; }
         public string Description { get; set; }
-        public string Usage { get; set; }
+        public string[] Usage { get; set; }
+        public string Submodule { get; set; }
+        public string Module { get; set; }
+        public List<string> Options { get; set; }
+        public string[] Requirements { get; set; }
     }
 }
