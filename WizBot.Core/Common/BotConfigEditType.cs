@@ -182,5 +182,18 @@
         /// Default is 1.
         /// </summary>
         PatreonCurrencyPerCent,
+
+        /// <summary>
+        /// Whether .greet and .bye messages will group up people who join within 5 seconds of each other into groups of 5.
+        /// For example, if 10 people join at the same time to the server
+        /// 1 person will get greeted right away
+        /// 5 people will be greeted as a group 5 seconds after
+        /// after another 5 seconds, the last 4 people will be greeted
+        ///
+        /// This setting is primarily used if you're afraid of raids, or you're running medium/large bots where some
+        /// servers might get hundreds of people join at once. This is used to prevent the bot from getting ratelimited,
+        /// and (slightly) reduce the greet spam in those servers.
+        /// </summary>
+        GroupGreets,
     }
 }

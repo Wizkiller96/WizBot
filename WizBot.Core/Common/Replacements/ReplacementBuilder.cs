@@ -6,6 +6,7 @@ using WizBot.Modules.Administration.Services;
 using WizBot.Modules.Music.Services;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -121,25 +122,50 @@ namespace WizBot.Common.Replacements
 
         public ReplacementBuilder WithUser(IUser user)
         {
+            // /*OBSOLETE*/
+            // _reps.TryAdd("%user%", () => user.Mention);
+            // _reps.TryAdd("%userfull%", () => user.ToString());
+            // _reps.TryAdd("%username%", () => user.Username);
+            // _reps.TryAdd("%userdiscrim%", () => user.Discriminator);
+            // _reps.TryAdd("%useravatar%", () => user.RealAvatarUrl()?.ToString());
+            // _reps.TryAdd("%id%", () => user.Id.ToString());
+            // _reps.TryAdd("%uid%", () => user.Id.ToString());
+            // /*NEW*/
+            // _reps.TryAdd("%user.mention%", () => user.Mention);
+            // _reps.TryAdd("%user.fullname%", () => user.ToString());
+            // _reps.TryAdd("%user.name%", () => user.Username);
+            // _reps.TryAdd("%user.discrim%", () => user.Discriminator);
+            // _reps.TryAdd("%user.avatar%", () => user.RealAvatarUrl()?.ToString());
+            // _reps.TryAdd("%user.id%", () => user.Id.ToString());
+            // _reps.TryAdd("%user.created_time%", () => user.CreatedAt.ToString("HH:mm"));
+            // _reps.TryAdd("%user.created_date%", () => user.CreatedAt.ToString("dd.MM.yyyy"));
+            // _reps.TryAdd("%user.joined_time%", () => (user as IGuildUser)?.JoinedAt?.ToString("HH:mm") ?? "-");
+            // _reps.TryAdd("%user.joined_date%", () => (user as IGuildUser)?.JoinedAt?.ToString("dd.MM.yyyy") ?? "-");
+            WithManyUsers(new[] { user });
+            return this;
+        }
+
+        public ReplacementBuilder WithManyUsers(IEnumerable<IUser> users)
+        {
             /*OBSOLETE*/
-            _reps.TryAdd("%user%", () => user.Mention);
-            _reps.TryAdd("%userfull%", () => user.ToString());
-            _reps.TryAdd("%username%", () => user.Username);
-            _reps.TryAdd("%userdiscrim%", () => user.Discriminator);
-            _reps.TryAdd("%useravatar%", () => user.RealAvatarUrl()?.ToString());
-            _reps.TryAdd("%id%", () => user.Id.ToString());
-            _reps.TryAdd("%uid%", () => user.Id.ToString());
+            _reps.TryAdd("%user%", () => string.Join(" ", users.Select(user => user.Mention)));
+            _reps.TryAdd("%userfull%", () => string.Join(" ", users.Select(user => user.ToString())));
+            _reps.TryAdd("%username%", () => string.Join(" ", users.Select(user => user.Username)));
+            _reps.TryAdd("%userdiscrim%", () => string.Join(" ", users.Select(user => user.Discriminator)));
+            _reps.TryAdd("%useravatar%", () => string.Join(" ", users.Select(user => user.RealAvatarUrl()?.ToString())));
+            _reps.TryAdd("%id%", () => string.Join(" ", users.Select(user => user.Id.ToString())));
+            _reps.TryAdd("%uid%", () => string.Join(" ", users.Select(user => user.Id.ToString())));
             /*NEW*/
-            _reps.TryAdd("%user.mention%", () => user.Mention);
-            _reps.TryAdd("%user.fullname%", () => user.ToString());
-            _reps.TryAdd("%user.name%", () => user.Username);
-            _reps.TryAdd("%user.discrim%", () => user.Discriminator);
-            _reps.TryAdd("%user.avatar%", () => user.RealAvatarUrl()?.ToString());
-            _reps.TryAdd("%user.id%", () => user.Id.ToString());
-            _reps.TryAdd("%user.created_time%", () => user.CreatedAt.ToString("HH:mm"));
-            _reps.TryAdd("%user.created_date%", () => user.CreatedAt.ToString("MM.dd.yyyy"));
-            _reps.TryAdd("%user.joined_time%", () => (user as IGuildUser)?.JoinedAt?.ToString("HH:mm") ?? "-");
-            _reps.TryAdd("%user.joined_date%", () => (user as IGuildUser)?.JoinedAt?.ToString("MM.dd.yyyy") ?? "-");
+            _reps.TryAdd("%user.mention%", () => string.Join(" ", users.Select(user => user.Mention)));
+            _reps.TryAdd("%user.fullname%", () => string.Join(" ", users.Select(user => user.ToString())));
+            _reps.TryAdd("%user.name%", () => string.Join(" ", users.Select(user => user.Username)));
+            _reps.TryAdd("%user.discrim%", () => string.Join(" ", users.Select(user => user.Discriminator)));
+            _reps.TryAdd("%user.avatar%", () => string.Join(" ", users.Select(user => user.RealAvatarUrl()?.ToString())));
+            _reps.TryAdd("%user.id%", () => string.Join(" ", users.Select(user => user.Id.ToString())));
+            _reps.TryAdd("%user.created_time%", () => string.Join(" ", users.Select(user => user.CreatedAt.ToString("HH:mm"))));
+            _reps.TryAdd("%user.created_date%", () => string.Join(" ", users.Select(user => user.CreatedAt.ToString("dd.MM.yyyy"))));
+            _reps.TryAdd("%user.joined_time%", () => string.Join(" ", users.Select(user => (user as IGuildUser)?.JoinedAt?.ToString("HH:mm") ?? "-")));
+            _reps.TryAdd("%user.joined_date%", () => string.Join(" ", users.Select(user => (user as IGuildUser)?.JoinedAt?.ToString("dd.MM.yyyy") ?? "-")));
             return this;
         }
 

@@ -227,6 +227,11 @@ namespace WizBot.Core.Services.Impl
                             return false;
                         bc.CurrencyGenerationPassword = pw;
                         break;
+                    case BotConfigEditType.GroupGreets:
+                        if (!bool.TryParse(newValue, out var groupGreets))
+                            return false;
+                        bc.GroupGreets = groupGreets;
+                        break;
                     default:
                         return false;
                 }
@@ -241,7 +246,7 @@ namespace WizBot.Core.Services.Impl
         {
             var value = typeof(BotConfig)
                 .GetProperty(name, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance)
-                .GetValue(BotConfig);
+                ?.GetValue(BotConfig);
             return value?.ToString() ?? "-";
         }
     }

@@ -7,6 +7,7 @@ using WizBot.Extensions;
 using NLog;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,11 +21,17 @@ namespace WizBot.Core.Services
         private readonly DiscordSocketClient _client;
         private readonly Logger _log;
 
-        public GreetSettingsService(DiscordSocketClient client, WizBot bot, DbService db)
+        private GreetGrouper<IGuildUser> greets = new GreetGrouper<IGuildUser>();
+        private GreetGrouper<IGuildUser> byes = new GreetGrouper<IGuildUser>();
+        private readonly IBotConfigProvider _bcp;
+        public bool GroupGreets => _bcp.BotConfig.GroupGreets;
+
+        public GreetSettingsService(DiscordSocketClient client, WizBot bot, DbService db, IBotConfigProvider bcp)
         {
             _db = db;
             _client = client;
             _log = LogManager.GetCurrentClassLogger();
+            _bcp = bcp;
 
             GuildConfigsCache = new ConcurrentDictionary<ulong, GreetSettings>(
                 bot.AllGuildConfigs
@@ -65,37 +72,27 @@ namespace WizBot.Core.Services
                     if (channel == null) //maybe warn the server owner that the channel is missing
                         return;
 
-                    var rep = new ReplacementBuilder()
-                        .WithDefault(user, channel, (SocketGuild)user.Guild, _client)
-                        .Build();
-
-                    if (CREmbed.TryParse(conf.ChannelByeMessageText, out var embedData))
+                    if (GroupGreets)
                     {
-                        rep.Replace(embedData);
-                        try
+                        // if group is newly created, greet that user right away,
+                        // but any user which joins in the next 5 seconds will
+                        // be greeted in a group greet
+                        if (byes.CreateOrAdd(user.GuildId, user))
                         {
-                            var toDelete = await channel.EmbedAsync(embedData).ConfigureAwait(false);
-                            if (conf.AutoDeleteByeMessagesTimer > 0)
+                            // greet single user
+                            await ByeUsers(conf, channel, new[] { user });
+                            var groupClear = false;
+                            while (!groupClear)
                             {
-                                toDelete.DeleteAfter(conf.AutoDeleteByeMessagesTimer);
+                                await Task.Delay(5000).ConfigureAwait(false);
+                                groupClear = byes.ClearGroup(user.GuildId, 5, out var toBye);
+                                await ByeUsers(conf, channel, toBye);
                             }
                         }
-                        catch (Exception ex) { _log.Warn(ex); }
                     }
                     else
                     {
-                        var msg = rep.Replace(conf.ChannelByeMessageText);
-                        if (string.IsNullOrWhiteSpace(msg))
-                            return;
-                        try
-                        {
-                            var toDelete = await channel.SendMessageAsync(msg.SanitizeMentions()).ConfigureAwait(false);
-                            if (conf.AutoDeleteByeMessagesTimer > 0)
-                            {
-                                toDelete.DeleteAfter(conf.AutoDeleteByeMessagesTimer);
-                            }
-                        }
-                        catch (Exception ex) { _log.Warn(ex); }
+                        await ByeUsers(conf, channel, new[] { user });
                     }
                 }
                 catch
@@ -122,6 +119,94 @@ namespace WizBot.Core.Services
             }
         }
 
+        private async Task ByeUsers(GreetSettings conf, ITextChannel channel, IEnumerable<IUser> users)
+        {
+            if (!users.Any())
+                return;
+
+            var rep = new ReplacementBuilder()
+                .WithChannel(channel)
+                .WithServer(_client, (SocketGuild)channel.Guild)
+                .WithManyUsers(users)
+                .Build();
+
+            if (CREmbed.TryParse(conf.ChannelByeMessageText, out var embedData))
+            {
+                rep.Replace(embedData);
+                try
+                {
+                    var toDelete = await channel.EmbedAsync(embedData).ConfigureAwait(false);
+                    if (conf.AutoDeleteByeMessagesTimer > 0)
+                    {
+                        toDelete.DeleteAfter(conf.AutoDeleteByeMessagesTimer);
+                    }
+                }
+                catch (Exception ex) { _log.Warn(ex); }
+            }
+            else
+            {
+                var msg = rep.Replace(conf.ChannelByeMessageText);
+                if (string.IsNullOrWhiteSpace(msg))
+                    return;
+                try
+                {
+                    var toDelete = await channel.SendMessageAsync(msg.SanitizeMentions()).ConfigureAwait(false);
+                    if (conf.AutoDeleteByeMessagesTimer > 0)
+                    {
+                        toDelete.DeleteAfter(conf.AutoDeleteByeMessagesTimer);
+                    }
+                }
+                catch (Exception ex) { _log.Warn(ex); }
+            }
+        }
+        private async Task GreetUsers(GreetSettings conf, ITextChannel channel, IEnumerable<IGuildUser> users)
+        {
+            if (!users.Any())
+                return;
+
+            var rep = new ReplacementBuilder()
+                .WithChannel(channel)
+                .WithServer(_client, (SocketGuild)channel.Guild)
+                .WithManyUsers(users)
+                .Build();
+
+            if (CREmbed.TryParse(conf.ChannelGreetMessageText, out var embedData))
+            {
+                rep.Replace(embedData);
+                try
+                {
+                    var toDelete = await channel.EmbedAsync(embedData).ConfigureAwait(false);
+                    if (conf.AutoDeleteGreetMessagesTimer > 0)
+                    {
+                        toDelete.DeleteAfter(conf.AutoDeleteGreetMessagesTimer);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _log.Warn(ex);
+                }
+            }
+            else
+            {
+                var msg = rep.Replace(conf.ChannelGreetMessageText);
+                if (!string.IsNullOrWhiteSpace(msg))
+                {
+                    try
+                    {
+                        var toDelete = await channel.SendMessageAsync(msg.SanitizeMentions()).ConfigureAwait(false);
+                        if (conf.AutoDeleteGreetMessagesTimer > 0)
+                        {
+                            toDelete.DeleteAfter(conf.AutoDeleteGreetMessagesTimer);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _log.Warn(ex);
+                    }
+                }
+            }
+        }
+
         private Task UserJoined(IGuildUser user)
         {
             var _ = Task.Run(async () =>
@@ -132,43 +217,33 @@ namespace WizBot.Core.Services
 
                     if (conf.SendChannelGreetMessage)
                     {
-                        var channel = (await user.Guild.GetTextChannelsAsync().ConfigureAwait(false)).SingleOrDefault(c => c.Id == conf.GreetMessageChannelId);
-                        if (channel != null) //maybe warn the server owner that the channel is missing
+                        var channel = await user.Guild.GetTextChannelAsync(conf.GreetMessageChannelId);
+                        if (channel != null)
                         {
-                            var rep = new ReplacementBuilder()
-                                .WithDefault(user, channel, (SocketGuild)user.Guild, _client)
-                                .Build();
-
-                            if (CREmbed.TryParse(conf.ChannelGreetMessageText, out var embedData))
+                            if (GroupGreets)
                             {
-                                rep.Replace(embedData);
-                                try
+                                // if group is newly created, greet that user right away,
+                                // but any user which joins in the next 5 seconds will
+                                // be greeted in a group greet
+                                if (greets.CreateOrAdd(user.GuildId, user))
                                 {
-                                    var toDelete = await channel.EmbedAsync(embedData).ConfigureAwait(false);
-                                    if (conf.AutoDeleteGreetMessagesTimer > 0)
+                                    // greet single user
+                                    await GreetUsers(conf, channel, new[] { user });
+                                    var groupClear = false;
+                                    while (!groupClear)
                                     {
-                                        toDelete.DeleteAfter(conf.AutoDeleteGreetMessagesTimer);
+                                        await Task.Delay(5000).ConfigureAwait(false);
+                                        groupClear = greets.ClearGroup(user.GuildId, 5, out var toGreet);
+                                        await GreetUsers(conf, channel, toGreet);
                                     }
                                 }
-                                catch (Exception ex) { _log.Warn(ex); }
                             }
                             else
                             {
-                                var msg = rep.Replace(conf.ChannelGreetMessageText);
-                                if (!string.IsNullOrWhiteSpace(msg))
-                                {
-                                    try
-                                    {
-                                        var toDelete = await channel.SendMessageAsync(msg.SanitizeMentions()).ConfigureAwait(false);
-                                        if (conf.AutoDeleteGreetMessagesTimer > 0)
-                                        {
-                                            toDelete.DeleteAfter(conf.AutoDeleteGreetMessagesTimer);
-                                        }
-                                    }
-                                    catch (Exception ex) { _log.Warn(ex); }
-                                }
+                                await GreetUsers(conf, channel, new[] { user });
                             }
                         }
+                        
                     }
 
                     if (conf.SendDmGreetMessage)

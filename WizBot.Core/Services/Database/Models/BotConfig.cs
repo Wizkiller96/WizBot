@@ -85,6 +85,7 @@ WizNet's Community Server: https://discord.gg/0YNaDOYuD5QOpeNI";
         public UpdateCheckType CheckForUpdates { get; set; } = UpdateCheckType.Release;
         public DateTime LastUpdate { get; set; } = new DateTime(2018, 5, 5, 0, 0, 0, DateTimeKind.Utc);
         public bool CurrencyGenerationPassword { get; set; }
+        public bool GroupGreets { get; set; }
     }
 
     public enum UpdateCheckType
