@@ -120,7 +120,7 @@ namespace WizBot.Modules.Gambling
                 }
                 else
                 {
-                    str = ctx.User.Mention + " " + GetText("better_luck");
+                    str = ctx.User.ToString() + " " + GetText("better_luck");
                 }
 
                 await ctx.Channel.EmbedAsync(new EmbedBuilder()
