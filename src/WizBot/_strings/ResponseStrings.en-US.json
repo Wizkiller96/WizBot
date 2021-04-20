@@ -328,6 +328,7 @@
   "games_trivia_stopping": "Stopping after this question.",
   "games_trivia_times_up": "Time's up! The correct answer was {0}",
   "games_trivia_win": "{0} guessed it and WON the game! The answer was: {1}",
+  "games_trivia_quit": "You can stop trivia by typing {0}",
   "games_ttt_against_yourself": "You can't play against yourself.",
   "games_ttt_already_running": "TicTacToe Game is already running in this channel.",
   "games_ttt_a_draw": "A draw!",
