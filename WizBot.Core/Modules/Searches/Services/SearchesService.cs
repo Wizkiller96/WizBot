@@ -466,17 +466,13 @@ namespace WizBot.Modules.Searches.Services
             // }
         }
 
-        public static async Task<(string Text, string BaseUri)> GetRandomJoke()
+        public async Task<(string Setup, string Punchline)> GetRandomJoke()
         {
-            var config = AngleSharp.Configuration.Default.WithDefaultLoader();
-            using (var document = await BrowsingContext.New(config).OpenAsync("http://www.goodbadjokes.com/random").ConfigureAwait(false))
+            using (var http = _httpFactory.CreateClient())
             {
-                var html = document.QuerySelector(".post > .joke-body-wrap > .joke-content");
-
-                var part1 = html.QuerySelector("dt")?.TextContent;
-                var part2 = html.QuerySelector("dd")?.TextContent;
-
-                return (part1 + "\n\n" + part2, document.BaseUri);
+                var res = await http.GetStringAsync("https://official-joke-api.appspot.com/random_joke");
+                var resObj = JsonConvert.DeserializeAnonymousType(res, new { setup = "", punchline = "" });
+                return (resObj.setup, resObj.punchline);
             }
         }
 

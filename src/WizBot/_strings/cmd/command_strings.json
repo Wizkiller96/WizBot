@@ -1719,14 +1719,14 @@
   },
   "randjoke": {
     "Cmd": "randjoke rj",
-    "Desc": "Shows a random joke from <http://tambal.azurewebsites.net/joke/random>",
+    "Desc": "Shows a random joke.",
     "Usage": [
       "{0}rj"
     ]
   },
   "chucknorris": {
     "Cmd": "chucknorris cn",
-    "Desc": "Shows a random Chuck Norris joke from <http://api.icndb.com/jokes/random/>",
+    "Desc": "Shows a random Chuck Norris joke.",
     "Usage": [
       "{0}cn"
     ]
