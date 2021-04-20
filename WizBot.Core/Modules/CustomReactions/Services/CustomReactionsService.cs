@@ -468,29 +468,23 @@ namespace WizBot.Modules.CustomReactions.Services
             {
                 cr = uow.CustomReactions.GetById(id);
 
-                if (cr.GuildId != guildId)
+                if (cr == null || cr.GuildId != guildId)
                     return null;
 
-                if (cr != null)
-                {
-                    cr.Response = message;
-                    await uow.SaveChangesAsync();
-                }
+                cr.Response = message;
+                await uow.SaveChangesAsync();
             }
 
-            if (cr != null)
+            if (guildId == null)
             {
-                if (guildId == null)
+                await PublishEditedGcr(cr).ConfigureAwait(false);
+            }
+            else
+            {
+                if (_guildReactions.TryGetValue(guildId.Value, out var crs)
+                    && crs.TryGetValue(cr.Id, out var oldCr))
                 {
-                    await PublishEditedGcr(cr).ConfigureAwait(false);
-                }
-                else
-                {
-                    if (_guildReactions.TryGetValue(guildId.Value, out var crs)
-                        && crs.TryGetValue(cr.Id, out var oldCr))
-                    {
-                        oldCr.Response = message;
-                    }
+                    oldCr.Response = message;
                 }
             }
 
