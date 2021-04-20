@@ -61,7 +61,7 @@
   "administration_greetmsg_new": "New greet message set.",
   "administration_greet_off": "Greet announcements disabled.",
   "administration_greet_on": "Greet announcements enabled on this channel.",
-  "administration_hierarchy": "You can't use this command on users with a role higher or equal to yours in the role hierarchy.",
+  "administration_hierarchy": "You can't use this command on users with a role higher or equal than yours (or mine) in the role hierarchy.",
   "administration_invalid_format": "Invalid input format.",
   "administration_invalid_params": "Invalid parameters.",
   "administration_joined": "{0} has joined {1}",

@@ -28,6 +28,25 @@ namespace WizBot.Modules.Administration
                 _mute = mute;
             }
 
+            private async Task<bool> CheckRoleHierarchy(IGuildUser target)
+            {
+                var curUser = ((SocketGuild)ctx.Guild).CurrentUser;
+                var ownerId = Context.Guild.OwnerId;
+                var modMaxRole = ((IGuildUser)ctx.User).GetRoles().Max(r => r.Position);
+                var targetMaxRole = target.GetRoles().Max(r => r.Position);
+                var botMaxRole = curUser.GetRoles().Max(r => r.Position);
+                // bot can't punish a user who is higher in the hierarchy. Discord will return 403
+                // moderator can be owner, in which case role hierarchy doesn't matter
+                // otherwise, moderator has to have a higher role
+                if (botMaxRole <= targetMaxRole || (Context.User.Id != ownerId && targetMaxRole >= modMaxRole))
+                {
+                    await ReplyErrorLocalizedAsync("hierarchy");
+                    return false;
+                }
+
+                return true;
+            }
+
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.BanMembers)]
@@ -41,12 +60,8 @@ namespace WizBot.Modules.Administration
                     return;
                 }
 
-                if (ctx.User.Id != user.Guild.OwnerId
-                    && (user.GetRoles().Select(r => r.Position).Max() >= ((IGuildUser)ctx.User).GetRoles().Select(r => r.Position).Max()))
-                {
-                    await ReplyErrorLocalizedAsync("hierarchy").ConfigureAwait(false);
+                if (!await CheckRoleHierarchy(user))
                     return;
-                }
 
                 var dmFailed = false;
                 try
@@ -448,11 +463,8 @@ namespace WizBot.Modules.Administration
             [Priority(2)]
             public async Task Ban(IGuildUser user, [Leftover] string msg = null)
             {
-                if (ctx.User.Id != user.Guild.OwnerId && (user.GetRoles().Select(r => r.Position).Max() >= ((IGuildUser)ctx.User).GetRoles().Select(r => r.Position).Max()))
-                {
-                    await ReplyErrorLocalizedAsync("hierarchy").ConfigureAwait(false);
+                if (!await CheckRoleHierarchy(user))
                     return;
-                }
 
                 var dmFailed = false;
 
@@ -618,11 +630,8 @@ namespace WizBot.Modules.Administration
             [BotPerm(GuildPerm.BanMembers)]
             public async Task Softban(IGuildUser user, [Leftover] string msg = null)
             {
-                if (ctx.User.Id != user.Guild.OwnerId && user.GetRoles().Select(r => r.Position).Max() >= ((IGuildUser)ctx.User).GetRoles().Select(r => r.Position).Max())
-                {
-                    await ReplyErrorLocalizedAsync("hierarchy").ConfigureAwait(false);
+                if (!await CheckRoleHierarchy(user))
                     return;
-                }
 
                 var dmFailed = false;
 
@@ -659,11 +668,8 @@ namespace WizBot.Modules.Administration
             [BotPerm(GuildPerm.KickMembers)]
             public async Task Kick(IGuildUser user, [Leftover] string msg = null)
             {
-                if (ctx.Message.Author.Id != user.Guild.OwnerId && user.GetRoles().Select(r => r.Position).Max() >= ((IGuildUser)ctx.User).GetRoles().Select(r => r.Position).Max())
-                {
-                    await ReplyErrorLocalizedAsync("hierarchy").ConfigureAwait(false);
+                if (!await CheckRoleHierarchy(user))
                     return;
-                }
 
                 var dmFailed = false;
 
