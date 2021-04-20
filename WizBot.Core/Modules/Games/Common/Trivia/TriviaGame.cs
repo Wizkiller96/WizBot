@@ -42,10 +42,11 @@ namespace WizBot.Modules.Games.Common.Trivia
 
         private readonly TriviaQuestionPool _questionPool;
         private int _timeoutCount = 0;
+        private readonly string _quitCommand;
 
         public TriviaGame(WizBotStrings strings, DiscordSocketClient client, IBotConfigProvider bc,
             IDataCache cache, ICurrencyService cs, IGuild guild, ITextChannel channel,
-            TriviaOptions options)
+            TriviaOptions options, string quitCommand)
         {
             _log = LogManager.GetCurrentClassLogger();
             _cache = cache;
@@ -55,6 +56,7 @@ namespace WizBot.Modules.Games.Common.Trivia
             _bc = bc;
             _cs = cs;
             _options = options;
+            _quitCommand = quitCommand;
 
             Guild = guild;
             Channel = channel;
@@ -68,10 +70,12 @@ namespace WizBot.Modules.Games.Common.Trivia
 
         public async Task StartGame()
         {
+            var showHowToQuit = false;
             while (!ShouldStopGame)
             {
                 // reset the cancellation source    
                 _triviaCancelSource = new CancellationTokenSource();
+                showHowToQuit = !showHowToQuit;
 
                 // load question
                 CurrentQuestion = _questionPool.GetRandomQuestion(OldQuestions, _options.IsPokemon);
@@ -90,6 +94,10 @@ namespace WizBot.Modules.Games.Common.Trivia
                         .WithTitle(GetText("trivia_game"))
                         .AddField(eab => eab.WithName(GetText("category")).WithValue(CurrentQuestion.Category))
                         .AddField(eab => eab.WithName(GetText("question")).WithValue(CurrentQuestion.Question));
+
+                    if (showHowToQuit)
+                        questionEmbed.WithFooter(GetText("trivia_quit", _quitCommand));
+
                     if (Uri.IsWellFormedUriString(CurrentQuestion.ImageUrl, UriKind.Absolute))
                         questionEmbed.WithImageUrl(CurrentQuestion.ImageUrl);
 

@@ -45,7 +45,7 @@ namespace WizBot.Modules.Games
                 {
                     return;
                 }
-                var trivia = new TriviaGame(Strings, _client, Bc, _cache, _cs, channel.Guild, channel, opts);
+                var trivia = new TriviaGame(Strings, _client, Bc, _cache, _cs, channel.Guild, channel, opts, Prefix + "tq");
                 if (_service.RunningTrivias.TryAdd(channel.Guild.Id, trivia))
                 {
                     try
