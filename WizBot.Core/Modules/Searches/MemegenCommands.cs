@@ -22,7 +22,7 @@ namespace WizBot.Modules.Searches
             private class MemegenTemplate
             {
                 public string Name { get; set; }
-                public string Key { get; set; }
+                public string Id { get; set; }
             }
             private static readonly ImmutableDictionary<char, string> _map = new Dictionary<char, string>()
             {
@@ -63,15 +63,14 @@ namespace WizBot.Modules.Searches
                         var templates = "";
                         foreach (var template in data.Skip(curPage * 15).Take(15))
                         {
-                            templates += $"**{template.Name}:**\n key: `{template.Key}`\n";
+                            templates += $"**{template.Name}:**\n key: `{template.Id}`\n";
                         }
                         var embed = new EmbedBuilder()
                             .WithOkColor()
                             .WithDescription(templates);
 
                         return embed;
-                    }, data.Count, 15);
-                    //await ctx.Channel.SendTableAsync(data, x => $"{x,-15}", 3).ConfigureAwait(false);
+                    }, data.Count, 15).ConfigureAwait(false);
                 }
             }
 
