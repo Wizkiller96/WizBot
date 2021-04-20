@@ -102,6 +102,30 @@
       "{0}greetdm"
     ]
   },
+  "greettest": {
+    "Cmd": "greettest",
+    "Desc": "Sends the greet message in the current channel as if you just joined the server. You can optionally specify a different user.",
+    "Usage": [
+      "{0}greettest",
+      "{0}greettest @SomeoneElse"
+    ]
+  },
+  "greetdmtest": {
+    "Cmd": "greetdmtest",
+    "Desc": "Sends the greet direct message to you as if you just joined the server. You can optionally specify a different user.",
+    "Usage": [
+      "{0}greetdmtest",
+      "{0}greetdmtest @SomeoneElse"
+    ]
+  },
+  "byetest": {
+    "Cmd": "byetest",
+    "Desc": "Sends the bye message in the current channel as if you just left the server. You can optionally specify a different user.",
+    "Usage": [
+      "{0}byetest",
+      "{0}byetest @SomeoneElse"
+    ]
+  },
   "logserver": {
     "Cmd": "logserver",
     "Desc": "Enables or Disables ALL log events. If enabled, all log events will log to this channel.",

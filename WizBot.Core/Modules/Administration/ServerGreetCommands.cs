@@ -4,6 +4,7 @@ using WizBot.Extensions;
 using WizBot.Core.Services;
 using System.Threading.Tasks;
 using WizBot.Common.Attributes;
+using WizBot.Core.Common.Attributes;
 
 namespace WizBot.Modules.Administration
 {
@@ -161,6 +162,56 @@ namespace WizBot.Modules.Administration
                     await ReplyConfirmLocalizedAsync("byedel_off").ConfigureAwait(false);
             }
 
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [UserPerm(GuildPerm.ManageGuild)]
+            [Ratelimit(5)]
+            public async Task ByeTest([Leftover] IGuildUser user = null)
+            {
+                user = user ?? (IGuildUser)Context.User;
+
+                await _service.ByeTest((ITextChannel)Context.Channel, user);
+                var enabled = _service.GetByeEnabled(Context.Guild.Id);
+                if (!enabled)
+                {
+                    await ReplyConfirmLocalizedAsync("byemsg_enable", $"`{Prefix}bye`").ConfigureAwait(false);
+                }
+            }
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [UserPerm(GuildPerm.ManageGuild)]
+            [Ratelimit(5)]
+            public async Task GreetTest([Leftover] IGuildUser user = null)
+            {
+                user = user ?? (IGuildUser)Context.User;
+
+                await _service.GreetTest((ITextChannel)Context.Channel, user);
+                var enabled = _service.GetGreetEnabled(Context.Guild.Id);
+                if (!enabled)
+                {
+                    await ReplyConfirmLocalizedAsync("greetmsg_enable", $"`{Prefix}bye`").ConfigureAwait(false);
+                }
+            }
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [UserPerm(GuildPerm.ManageGuild)]
+            [Ratelimit(5)]
+            public async Task GreetDmTest([Leftover] IGuildUser user = null)
+            {
+                user = user ?? (IGuildUser)Context.User;
+
+                var channel = await user.GetOrCreateDMChannelAsync();
+                var success = await _service.GreetDmTest(channel, user);
+                if (success)
+                    await Context.OkAsync();
+                else
+                    await Context.WarningAsync();
+                var enabled = _service.GetGreetDmEnabled(Context.Guild.Id);
+                if (!enabled)
+                    await ReplyConfirmLocalizedAsync("greetdmmsg_enable", $"`{Prefix}greetdm`").ConfigureAwait(false);
+            }
         }
     }
 }

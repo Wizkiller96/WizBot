@@ -119,6 +119,8 @@ namespace WizBot.Core.Services
             }
         }
 
+        private Task ByeUsers(GreetSettings conf, ITextChannel channel, IUser user)
+            => ByeUsers(conf, channel, new[] { user });
         private async Task ByeUsers(GreetSettings conf, ITextChannel channel, IEnumerable<IUser> users)
         {
             if (!users.Any())
@@ -159,6 +161,10 @@ namespace WizBot.Core.Services
                 catch (Exception ex) { _log.Warn(ex); }
             }
         }
+
+        private Task GreetUsers(GreetSettings conf, ITextChannel channel, IGuildUser user)
+            => GreetUsers(conf, channel, new[] { user });
+
         private async Task GreetUsers(GreetSettings conf, ITextChannel channel, IEnumerable<IGuildUser> users)
         {
             if (!users.Any())
@@ -207,6 +213,43 @@ namespace WizBot.Core.Services
             }
         }
 
+        private async Task<bool> GreetDmUser(GreetSettings conf, IDMChannel channel, IGuildUser user)
+        {
+            var rep = new ReplacementBuilder()
+                .WithDefault(user, channel, (SocketGuild)user.Guild, _client)
+                .Build();
+
+            if (CREmbed.TryParse(conf.DmGreetMessageText, out var embedData))
+            {
+                rep.Replace(embedData);
+                try
+                {
+                    await channel.EmbedAsync(embedData).ConfigureAwait(false);
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                var msg = rep.Replace(conf.DmGreetMessageText);
+                if (!string.IsNullOrWhiteSpace(msg))
+                {
+                    try
+                    {
+                        await channel.SendConfirmAsync(msg).ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
         private Task UserJoined(IGuildUser user)
         {
             var _ = Task.Run(async () =>
@@ -243,7 +286,7 @@ namespace WizBot.Core.Services
                                 await GreetUsers(conf, channel, new[] { user });
                             }
                         }
-                        
+
                     }
 
                     if (conf.SendDmGreetMessage)
@@ -252,29 +295,7 @@ namespace WizBot.Core.Services
 
                         if (channel != null)
                         {
-                            var rep = new ReplacementBuilder()
-                                .WithDefault(user, channel, (SocketGuild)user.Guild, _client)
-                                .Build();
-                            if (CREmbed.TryParse(conf.DmGreetMessageText, out var embedData))
-                            {
-                                rep.Replace(embedData);
-                                try
-                                {
-                                    await channel.EmbedAsync(embedData).ConfigureAwait(false);
-                                }
-                                catch (Exception ex)
-                                {
-                                    _log.Warn(ex);
-                                }
-                            }
-                            else
-                            {
-                                var msg = rep.Replace(conf.DmGreetMessageText);
-                                if (!string.IsNullOrWhiteSpace(msg))
-                                {
-                                    await channel.SendConfirmAsync(msg).ConfigureAwait(false);
-                                }
-                            }
+                            await GreetDmUser(conf, channel, user);
                         }
                     }
                 }
@@ -402,6 +423,56 @@ namespace WizBot.Core.Services
             }
             return enabled;
         }
+
+        #region Get Enabled Status
+        public bool GetGreetDmEnabled(ulong guildId)
+        {
+            using (var uow = _db.GetDbContext())
+            {
+                var conf = uow.GuildConfigs.ForId(guildId, set => set);
+                return conf.SendDmGreetMessage;
+            }
+        }
+
+        public bool GetGreetEnabled(ulong guildId)
+        {
+            using (var uow = _db.GetDbContext())
+            {
+                var conf = uow.GuildConfigs.ForId(guildId, set => set);
+                return conf.SendChannelGreetMessage;
+            }
+        }
+
+        public bool GetByeEnabled(ulong guildId)
+        {
+            using (var uow = _db.GetDbContext())
+            {
+                var conf = uow.GuildConfigs.ForId(guildId, set => set);
+                return conf.SendChannelByeMessage;
+            }
+        }
+        #endregion
+
+        #region Test Messages
+
+        public Task ByeTest(ITextChannel channel, IGuildUser user)
+        {
+            var conf = GetOrAddSettingsForGuild(user.GuildId);
+            return ByeUsers(conf, channel, user);
+        }
+
+        public Task GreetTest(ITextChannel channel, IGuildUser user)
+        {
+            var conf = GetOrAddSettingsForGuild(user.GuildId);
+            return GreetUsers(conf, channel, user);
+        }
+
+        public Task<bool> GreetDmTest(IDMChannel channel, IGuildUser user)
+        {
+            var conf = GetOrAddSettingsForGuild(user.GuildId);
+            return GreetDmUser(conf, channel, user);
+        }
+        #endregion
 
         public bool SetGreetDmMessage(ulong guildId, ref string message)
         {
