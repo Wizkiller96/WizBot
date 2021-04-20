@@ -128,11 +128,9 @@ namespace WizBot.Modules.Utility
                 using (var uow = _db.GetDbContext())
                 {
                     quote = uow.Quotes.GetById(id);
-                    if (quote.GuildId != ctx.Guild.Id)
-                        quote = null;
                 }
 
-                if (quote == null)
+                if (quote is null || quote.GuildId != ctx.Guild.Id)
                 {
                     await ctx.Channel.SendErrorAsync(GetText("quotes_notfound")).ConfigureAwait(false);
                     return;
