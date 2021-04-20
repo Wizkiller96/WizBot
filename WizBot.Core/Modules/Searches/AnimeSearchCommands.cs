@@ -63,7 +63,7 @@ namespace WizBot.Modules.Searches
                     var favorites = document.QuerySelectorAll("div.user-favorites > div.di-tc");
 
                     var favAnime = GetText("anime_no_fav");
-                    if (favorites[0].QuerySelector("p") == null)
+                    if (favorites.Length > 0 && favorites[0].QuerySelector("p") == null)
                         favAnime = string.Join("\n", favorites[0].QuerySelectorAll("ul > li > div.di-tc.va-t > a")
                            .Shuffle()
                            .Take(3)
