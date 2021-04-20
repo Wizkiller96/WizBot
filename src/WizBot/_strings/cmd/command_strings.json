@@ -582,13 +582,6 @@
       "{0}send serverid|u:userid message"
     ]
   },
-  "mentionrole": {
-    "Cmd": "mentionrole menro",
-    "Desc": "Mentions a role. If the role is not mentionable, bot will make it mentionable for a moment.",
-    "Usage": [
-      "{0}menro RoleName"
-    ]
-  },
   "unstuck": {
     "Cmd": "unstuck",
     "Desc": "Clears the message queue.",

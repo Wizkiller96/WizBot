@@ -327,24 +327,6 @@ namespace WizBot.Modules.Administration
                     await ReplyErrorLocalizedAsync("rc_perms").ConfigureAwait(false);
                 }
             }
-
-            [WizBotCommand, Usage, Description, Aliases]
-            [RequireContext(ContextType.Guild)]
-            [UserPerm(GuildPerm.MentionEveryone)]
-            [BotPerm(GuildPerm.ManageRoles)]
-            public async Task MentionRole([Leftover] IRole role)
-            {
-                if (!role.IsMentionable)
-                {
-                    await role.ModifyAsync(x => x.Mentionable = true).ConfigureAwait(false);
-                    await ctx.Channel.SendMessageAsync(role.Mention).ConfigureAwait(false);
-                    await role.ModifyAsync(x => x.Mentionable = false).ConfigureAwait(false);
-                }
-                else
-                {
-                    await ctx.Channel.SendMessageAsync(role.Mention).ConfigureAwait(false);
-                }
-            }
         }
     }
 }
