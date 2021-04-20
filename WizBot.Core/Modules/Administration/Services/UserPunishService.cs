@@ -419,9 +419,7 @@ WHERE GuildId={guildId}
         public CREmbed GetBanUserDmEmbed(DiscordSocketClient client, SocketGuild guild,
             IGuildUser moderator, IGuildUser target, string defaultMessage, string banReason, TimeSpan? duration)
         {
-            EmbedBuilder embed;
             var template = GetBanTemplate(guild.Id);
-            var plainText = string.Empty;
 
             banReason = string.IsNullOrWhiteSpace(banReason)
                 ? "-"

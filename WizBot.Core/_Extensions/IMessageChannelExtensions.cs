@@ -72,12 +72,19 @@ namespace WizBot.Extensions
 
             var lastPage = (totalElements - 1) / itemsPerPage;
 
-            if (addPaginatedFooter)
+            var canPaginate = true;
+            var sg = ctx.Guild as SocketGuild;
+            if (!(sg is null) && !sg.CurrentUser.GetPermissions((IGuildChannel)ctx.Channel).AddReactions)
+                canPaginate = false;
+
+            if (!canPaginate)
+                embed.WithFooter("⚠️ AddReaction permission required for pagination.");
+            else if (addPaginatedFooter)
                 embed.AddPaginatedFooter(currentPage, lastPage);
 
             var msg = await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false) as IUserMessage;
 
-            if (lastPage == 0)
+            if (lastPage == 0 || !canPaginate)
                 return;
 
             await msg.AddReactionAsync(arrow_left).ConfigureAwait(false);
