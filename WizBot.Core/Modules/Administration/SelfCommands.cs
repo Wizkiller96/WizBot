@@ -347,6 +347,7 @@ namespace WizBot.Modules.Administration
 
             [WizBotCommand, Usage, Description, Aliases]
             [UserPerm(GuildPerm.ManageNicknames)]
+            [BotPerm(GuildPerm.ChangeNickname)]
             [Priority(0)]
             public async Task SetNick([Leftover] string newNick = null)
             {
@@ -364,6 +365,14 @@ namespace WizBot.Modules.Administration
             [Priority(1)]
             public async Task SetNick(IGuildUser gu, [Leftover] string newNick = null)
             {
+                var sg = (SocketGuild)Context.Guild;
+                if (sg.OwnerId == gu.Id ||
+                    gu.GetRoles().Max(r => r.Position) >= sg.CurrentUser.GetRoles().Max(r => r.Position))
+                {
+                    await ReplyErrorLocalizedAsync("insuf_perms_i");
+                    return;
+                }
+
                 await gu.ModifyAsync(u => u.Nickname = newNick).ConfigureAwait(false);
 
                 await ReplyConfirmLocalizedAsync("user_nick", Format.Bold(gu.ToString()), Format.Bold(newNick) ?? "-").ConfigureAwait(false);
