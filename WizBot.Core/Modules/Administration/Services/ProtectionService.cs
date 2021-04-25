@@ -227,7 +227,7 @@ namespace WizBot.Modules.Administration.Services
                         catch (Exception ex) { _log.Warn(ex, "I can't apply punishment"); }
                         break;
                     case PunishmentAction.RemoveRoles:
-                        await gu.RemoveRolesAsync(gu.GetRoles().Where(x => x.Id != gu.Guild.EveryoneRole.Id)).ConfigureAwait(false);
+                        await gu.RemoveRolesAsync(gu.GetRoles().Where(x => !x.IsManaged && x != x.Guild.EveryoneRole)).ConfigureAwait(false);
                         break;
                 }
             }

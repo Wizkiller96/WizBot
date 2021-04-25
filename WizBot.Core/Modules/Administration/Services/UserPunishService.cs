@@ -123,7 +123,7 @@ namespace WizBot.Modules.Administration.Services
                         }
                         break;
                     case PunishmentAction.RemoveRoles:
-                        await user.RemoveRolesAsync(user.GetRoles().Where(x => x.Id != guild.EveryoneRole.Id)).ConfigureAwait(false);
+                        await user.RemoveRolesAsync(user.GetRoles().Where(x => !x.IsManaged && x != x.Guild.EveryoneRole)).ConfigureAwait(false);
                         break;
                     case PunishmentAction.AddRole:
                         var role = guild.GetRole(p.RoleId.Value);
