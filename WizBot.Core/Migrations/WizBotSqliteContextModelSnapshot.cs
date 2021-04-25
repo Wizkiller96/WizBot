@@ -569,6 +569,32 @@ namespace WizBot.Migrations
                     b.ToTable("DelMsgOnCmdChannel");
                 });
 
+            modelBuilder.Entity("WizBot.Core.Services.Database.Models.DiscordPermOverride", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Command")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("TEXT");
+
+                    b.Property<ulong?>("GuildId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<ulong>("Perm")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GuildId", "Command")
+                        .IsUnique();
+
+                    b.ToTable("DiscordPermOverrides");
+                });
+
             modelBuilder.Entity("WizBot.Core.Services.Database.Models.DiscordUser", b =>
                 {
                     b.Property<int>("Id")

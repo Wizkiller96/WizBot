@@ -126,6 +126,7 @@ namespace WizBot.Core.Services
         {
             _lateBlockers = services.Where(x => x.ImplementationType?.GetInterfaces().Contains(typeof(ILateBlocker)) ?? false)
                 .Select(x => _services.GetService(x.ImplementationType) as ILateBlocker)
+                .OrderByDescending(x => x.Priority)
                 .ToArray();
 
             _lateExecutors = services.Where(x => x.ImplementationType?.GetInterfaces().Contains(typeof(ILateExecutor)) ?? false)

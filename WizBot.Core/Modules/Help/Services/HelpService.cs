@@ -13,7 +13,7 @@ using WizBot.Common;
 using NLog;
 using CommandLine;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
+using WizBot.Modules.Administration.Services;
 
 namespace WizBot.Modules.Help.Services
 {
@@ -23,12 +23,15 @@ namespace WizBot.Modules.Help.Services
         private readonly CommandHandler _ch;
         private readonly WizBotStrings _strings;
         private readonly Logger _log;
+        private readonly DiscordPermOverrideService _dpos;
 
-        public HelpService(IBotConfigProvider bc, CommandHandler ch, WizBotStrings strings)
+        public HelpService(IBotConfigProvider bc, CommandHandler ch, WizBotStrings strings,
+            DiscordPermOverrideService dpos)
         {
             _bc = bc;
             _ch = ch;
             _strings = strings;
+            _dpos = dpos;
             _log = LogManager.GetCurrentClassLogger();
         }
 
@@ -57,7 +60,7 @@ namespace WizBot.Modules.Help.Services
         public EmbedBuilder GetCommandHelp(CommandInfo com, IGuild guild)
         {
             var prefix = _ch.GetPrefix(guild);
-            
+
             var str = string.Format("**`{0}`**", prefix + com.Aliases.First());
             var alias = com.Aliases.Skip(1).FirstOrDefault();
             if (alias != null)
@@ -70,22 +73,12 @@ namespace WizBot.Modules.Help.Services
                     .WithValue($"{com.RealSummary(prefix)}")
                     .WithIsInline(true));
 
-            var reqs = GetCommandRequirements(com);
-            var botReqs = GetBotCommandRequirements(com);
-            if(reqs.Any())
+            _dpos.TryGetOverrides(guild?.Id ?? 0, com.Name, out var overrides);
+            var reqs = GetCommandRequirements(com, overrides);
+            if (reqs.Any())
             {
-                em.AddField(fb => fb.WithName(GetText("requires", guild))
-                    .WithValue(string.Join("\n", reqs))
-                    .WithIsInline(false)
-                );
-            }
-
-            if (botReqs.Any())
-            {
-                em.AddField(fb => fb.WithName(GetText("bot_requires", guild))
-                    .WithValue(string.Join("\n", botReqs))
-                    .WithIsInline(false)
-                );
+                em.AddField(GetText("requires", guild),
+                    string.Join("\n", reqs));
             }
 
             em
@@ -99,7 +92,7 @@ namespace WizBot.Modules.Help.Services
             if (opt != null)
             {
                 var hs = GetCommandOptionHelp(opt);
-                if(!string.IsNullOrWhiteSpace(hs))
+                if (!string.IsNullOrWhiteSpace(hs))
                     em.AddField(GetText("options", guild), hs, false);
             }
 
@@ -116,70 +109,72 @@ namespace WizBot.Modules.Help.Services
         public static List<string> GetCommandOptionHelpList(Type opt)
         {
             var strs = opt.GetProperties()
-                .Select(x => x.GetCustomAttributes(true).FirstOrDefault(a => a is OptionAttribute))
-                .Where(x => x != null)
-                .Cast<OptionAttribute>()
-                .Select(x =>
-                {
-                    var toReturn = $"`--{x.LongName}`";
+                   .Select(x => x.GetCustomAttributes(true).FirstOrDefault(a => a is OptionAttribute))
+                   .Where(x => x != null)
+                   .Cast<OptionAttribute>()
+                   .Select(x =>
+                   {
+                       var toReturn = $"`--{x.LongName}`";
 
-                    if (!string.IsNullOrWhiteSpace(x.ShortName))
-                        toReturn += $" (`-{x.ShortName}`)";
+                       if (!string.IsNullOrWhiteSpace(x.ShortName))
+                           toReturn += $" (`-{x.ShortName}`)";
 
-                    toReturn += $"   {x.HelpText}  ";
-                    return toReturn;
-                })
-                .ToList();
+                       toReturn += $"   {x.HelpText}  ";
+                       return toReturn;
+                   })
+                   .ToList();
 
             return strs;
         }
 
-        public static string[] GetCommandRequirements(CommandInfo cmd) =>
-            cmd.Preconditions
-                .Where(ca => ca is OwnerOnlyAttribute || ca is AdminOnlyAttribute || ca is RequireUserPermissionAttribute)
-                .Select(ca =>
-                {
-                    if (ca is OwnerOnlyAttribute)
-                    {
-                        return "Bot Owner Only";
-                    }
 
-                    if (ca is AdminOnlyAttribute)
-                    {
-                        return "Bot Owner & Admin Only";
-                    }
+        public static string[] GetCommandRequirements(CommandInfo cmd, ChannelPerm? overrides = null)
+        {
+            var toReturn = new List<string>();
 
-                    var cau = (RequireUserPermissionAttribute)ca;
-                    if (cau.GuildPermission != null)
-                    {
-                        return cau.GuildPermission.ToString()
-                            .Replace("Guild", "Server", StringComparison.InvariantCulture);
-                    }
+            if (cmd.Preconditions.Any(x => x is OwnerOnlyAttribute))
+                toReturn.Add("Bot Owner Only");
 
-                    return cau.ChannelPermission.ToString()
-                        .Replace("Guild", "Server", StringComparison.InvariantCulture);
-                })
-                .Select(s => Regex.Replace(s, "[a-z][A-Z]", m => $"{m.Value[0]} {m.Value[1]}"))
-                .ToArray();
+            if (cmd.Preconditions.Any(x => x is AdminOnlyAttribute))
+                toReturn.Add("Bot Owner & Admin Only");
 
-        public static string[] GetBotCommandRequirements(CommandInfo cmd) =>
-            cmd.Preconditions
-                .Where(ca => ca is RequireBotPermissionAttribute)
-                .Select(ca =>
-                {
-                    var cab = (RequireBotPermissionAttribute)ca;
-                    if (cab.GuildPermission != null)
-                    {
-                        return cab.GuildPermission.ToString()
-                            .Replace("Guild", "Server", StringComparison.InvariantCulture);
-                    }
+            var userPerm = (UserPermAttribute)cmd.Preconditions
+                .FirstOrDefault(ca => ca is UserPermAttribute);
 
-                    return cab.ChannelPermission.ToString()
-                        .Replace("Guild", "Server", StringComparison.InvariantCulture);
-                })
-                .Select(s => Regex.Replace(s, "[a-z][A-Z]", m => $"{m.Value[0]} {m.Value[1]}"))
-                .ToArray();
-                
+            string userPermString = string.Empty;
+            if (!(userPerm is null))
+            {
+                if (userPerm.UserPermissionAttribute.ChannelPermission is ChannelPermission cPerm)
+                    userPermString = GetPreconditionString((ChannelPerm)cPerm);
+                if (userPerm.UserPermissionAttribute.GuildPermission is GuildPermission gPerm)
+                    userPermString = GetPreconditionString((GuildPerm)gPerm);
+            }
+
+            if (overrides is null)
+            {
+                if (!string.IsNullOrWhiteSpace(userPermString))
+                    toReturn.Add(userPermString);
+            }
+            else
+            {
+                toReturn.Add(Format.Strikethrough(userPermString));
+                toReturn.Add(GetPreconditionString(overrides.Value));
+            }
+
+            return toReturn.ToArray();
+        }
+
+        public static string GetPreconditionString(ChannelPerm perm)
+        {
+            return (perm.ToString() + " Channel Permission")
+                .Replace("Guild", "Server", StringComparison.InvariantCulture);
+        }
+
+        public static string GetPreconditionString(GuildPerm perm)
+        {
+            return (perm.ToString() + " Server Permission")
+                .Replace("Guild", "Server", StringComparison.InvariantCulture);
+        }
 
         private string GetText(string text, IGuild guild, params object[] replacements) =>
             _strings.GetText(text, guild?.Id, "Help".ToLowerInvariant(), replacements);
