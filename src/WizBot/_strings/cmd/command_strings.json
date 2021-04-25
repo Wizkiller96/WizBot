@@ -3334,10 +3334,10 @@
   },
   "discordpermoverride": {
     "cmd": "dpo",
-    "desc": "Overrides required user permissions that the command has with the specified ones. You can only use channel permissions. This action will make the bot ignore permission requirements which command has by default. Provide no permissions to reset to default.",
+    "desc": "Overrides required user permissions that the command has with the specified ones. You can only use server-level permissions. This action will make the bot ignore user permission requirements which command has by default. Provide no permissions to reset to default.",
     "usage": [
-      "{0}dpo .prune ManageMessages ManageChannel",
-      "{0}dpo .prune"
+      "{0}dpo {0}prune ManageMessages BanMembers",
+      "{0}dpo {0}prune"
     ]
   },
   "discordpermoverridelist": {
@@ -3349,9 +3349,9 @@
   },
   "discordpermoverridereset": {
     "cmd": "dpor",
-    "desc": "Resets ALL currently set discord permission overrides on this server. This will make all commands have ",
+    "desc": "Resets ALL currently set discord permission overrides on this server. This will make all commands have default discord permission requirements.",
     "usage": [
-      "{0}dpoc"
+      "{0}dpor"
     ]
   },
   "rafflecur": {

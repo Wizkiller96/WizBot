@@ -13,6 +13,7 @@ using WizBot.Common;
 using NLog;
 using CommandLine;
 using System.Collections.Generic;
+using System.Net.Http.Headers;
 using WizBot.Modules.Administration.Services;
 
 namespace WizBot.Modules.Help.Services
@@ -128,7 +129,7 @@ namespace WizBot.Modules.Help.Services
         }
 
 
-        public static string[] GetCommandRequirements(CommandInfo cmd, ChannelPerm? overrides = null)
+        public static string[] GetCommandRequirements(CommandInfo cmd, GuildPerm? overrides = null)
         {
             var toReturn = new List<string>();
 
@@ -157,7 +158,9 @@ namespace WizBot.Modules.Help.Services
             }
             else
             {
-                toReturn.Add(Format.Strikethrough(userPermString));
+                if (!string.IsNullOrWhiteSpace(userPermString))
+                    toReturn.Add(Format.Strikethrough(userPermString));
+
                 toReturn.Add(GetPreconditionString(overrides.Value));
             }
 

@@ -19,17 +19,14 @@ namespace WizBot.Modules.Administration
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
-            public async Task DiscordPermOverride(CommandOrCrInfo cmd, params ChannelPerm[] perms)
+            public async Task DiscordPermOverride(CommandOrCrInfo cmd, params GuildPerm[] perms)
             {
-                if (perms is null)
+                if (perms is null || perms.Length == 0)
                 {
                     await _service.RemoveOverride(ctx.Guild.Id, cmd.Name);
                     await ReplyConfirmLocalizedAsync("perm_override_reset");
                     return;
                 }
-
-                if (perms.Length == 0)
-                    return;
 
                 var aggregatePerms = perms.Aggregate((acc, seed) => seed | acc);
                 await _service.AddOverride(Context.Guild.Id, cmd.Name, aggregatePerms);
@@ -46,7 +43,7 @@ namespace WizBot.Modules.Administration
             {
                 var result = await PromptUserConfirmAsync(new EmbedBuilder()
                     .WithOkColor()
-                    .WithDescription("perm_override_all_confirm"));
+                    .WithDescription(GetText("perm_override_all_confirm")));
 
                 if (!result)
                     return;

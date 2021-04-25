@@ -25,7 +25,7 @@ namespace WizBot.Modules.Administration.Services
             _services = services;
         }
 
-        public bool TryGetOverrides(ulong guildId, string commandName, out ChannelPerm? perm)
+        public bool TryGetOverrides(ulong guildId, string commandName, out GuildPerm? perm)
         {
             commandName = commandName.ToLowerInvariant();
             using (var uow = _db.GetDbContext())
@@ -45,13 +45,13 @@ namespace WizBot.Modules.Administration.Services
         }
 
         public Task<PreconditionResult> ExecuteOverrides(ICommandContext ctx, CommandInfo command,
-            ChannelPerm perms, IServiceProvider services)
+            GuildPerm perms, IServiceProvider services)
         {
-            var rupa = new RequireUserPermissionAttribute((ChannelPermission)perms);
+            var rupa = new RequireUserPermissionAttribute((GuildPermission)perms);
             return rupa.CheckPermissionsAsync(ctx, command, services);
         }
 
-        public async Task AddOverride(ulong guildId, string commandName, ChannelPerm perm)
+        public async Task AddOverride(ulong guildId, string commandName, GuildPerm perm)
         {
             commandName = commandName.ToLowerInvariant();
             using (var uow = _db.GetDbContext())
@@ -133,7 +133,7 @@ namespace WizBot.Modules.Administration.Services
         {
             if (TryGetOverrides(context.Guild?.Id ?? 0, command.Name, out var perm))
             {
-                var result = await new RequireUserPermissionAttribute((ChannelPermission)perm)
+                var result = await new RequireUserPermissionAttribute((GuildPermission)perm)
                     .CheckPermissionsAsync(context, command, _services);
 
                 return !result.IsSuccess;
