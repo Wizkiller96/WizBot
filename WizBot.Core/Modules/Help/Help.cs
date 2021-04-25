@@ -264,7 +264,7 @@ namespace WizBot.Modules.Help
 
         [WizBotCommand, Usage, Description, Aliases]
         [OwnerOnly]
-        public async Task GenCmdList([Leftover] string? path = null)
+        public async Task GenCmdList([Leftover] string path = null)
         {
             _ = ctx.Channel.TriggerTypingAsync();
 

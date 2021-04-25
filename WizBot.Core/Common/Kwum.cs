@@ -6,7 +6,7 @@ namespace WizBot.Core.Common
 {
     public readonly struct kwum
     {
-        private readonly char[]? _data;
+        private readonly char[] _data;
         private const string ValidCharacters = "23456789abcdefghijkmnpqrstuvwxyz";
         private static readonly HashSet<char> validCharacterSet = ValidCharacters.ToHashSet();
 

@@ -77,7 +77,7 @@ namespace WizBot.Modules.Administration
                         .ToList();
 
                     if (thisPageOverrides.Count == 0)
-                        eb.WithDescription("perm_override_page_none");
+                        eb.WithDescription(GetText("perm_override_page_none"));
                     else
                         eb.WithDescription(string.Join("\n",
                             thisPageOverrides.Select(ov => $"{ov.Command} => {ov.Perm.ToString()}")));

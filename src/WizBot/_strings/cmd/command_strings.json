@@ -2032,18 +2032,21 @@
   },
   "antiraid": {
     "Cmd": "antiraid",
-    "Desc": "Sets an anti-raid protection on the server. Provide no parameters to disable. First parameter is number of people which will trigger the protection. Second parameter is a time interval in which that number of people needs to join in order to trigger the protection, and third parameter is punishment for those people (Kick, Ban, Mute)",
+    "Desc": "Sets an anti-raid protection on the server. Provide no parameters to disable. First parameter is number of people which will trigger the protection. Second parameter is a time interval in which that number of people needs to join in order to trigger the protection, and third parameter is punishment for those people (Kick, Ban, Mute). You can specify an additional time argument to do a timed punishment for actions which support it (Ban, Mute, etc).",
     "Usage": [
       "{0}antiraid 5 20 Kick",
+      "{0}antiraid 7 9 Ban",
+      "{0}antiraid 10 10 Ban 1d6h30m",
       "{0}antiraid"
     ]
   },
   "antispam": {
     "Cmd": "antispam",
-    "Desc": "Stops people from repeating same message X times in a row. Provide no parameters to disable. You can specify to either mute, kick or ban the offenders. If you're using mute, you can add a number of seconds at the end to use a timed mute. Max message count is 10.",
+    "Desc": "Stops people from repeating same message X times in a row. Provide no parameters to disable. You can specify to either mute, kick or ban the offenders. You can specify an additional time argument to do a timed punishment for actions which support it (Ban, Mute, etc). Max message count is 10.",
     "Usage": [
       "{0}antispam 3 Mute",
-      "{0}antispam 4 Kick",
+      "{0}antispam 5 Ban",
+      "{0}antispam 5 Ban 3h30m",
       "{0}antispam"
     ]
   },
