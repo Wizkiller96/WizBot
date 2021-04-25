@@ -55,7 +55,7 @@ namespace WizBot.Modules.Utility
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            public async Task ShowQuote([Leftover] string keyword)
+            public async Task QuotePrint([Leftover] string keyword)
             {
                 if (string.IsNullOrWhiteSpace(keyword))
                     return;
@@ -88,6 +88,40 @@ namespace WizBot.Modules.Utility
                     return;
                 }
                 await ctx.Channel.SendMessageAsync($"`#{quote.Id}` 📣 " + rep.Replace(quote.Text)?.SanitizeAllMentions()).ConfigureAwait(false);
+            }
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            public async Task QuoteShow(int id)
+            {
+                Quote quote;
+                using (var uow = _db.GetDbContext())
+                {
+                    quote = uow.Quotes.GetById(id);
+                    if (quote.GuildId != Context.Guild.Id)
+                        quote = null;
+                }
+
+                if (quote is null)
+                {
+                    await ReplyErrorLocalizedAsync("quote_no_found_id");
+                    return;
+                }
+
+                await ShowQuoteData(quote);
+            }
+
+            private async Task ShowQuoteData(Quote data)
+            {
+                await ctx.Channel.EmbedAsync(new EmbedBuilder()
+                    .WithOkColor()
+                    .WithTitle(GetText("quote_id", $"#{data.Id}"))
+                    .AddField(efb => efb.WithName(GetText("trigger")).WithValue(data.Keyword))
+                    .AddField(efb => efb.WithName(GetText("response")).WithValue(data.Text.Length > 1000
+                        ? GetText("redacted_too_long")
+                        : Format.Sanitize(data.Text)))
+                    .WithFooter(GetText("created_by", $"{data.AuthorName} ({data.AuthorId})"))
+                ).ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]

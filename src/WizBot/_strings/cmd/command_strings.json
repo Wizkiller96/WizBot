@@ -974,6 +974,13 @@
       "{0}rq abc"
     ]
   },
+  "quoteshow": {
+    "Cmd": "qshow",
+    "Desc": "Shows information about a quote with the specified ID.",
+    "Usage": [
+      "{0}qshow 123"
+    ]
+  },
   "quotesearch": {
     "Cmd": "qsearch",
     "Desc": "Shows a random quote for a keyword that contains any text specified in the search.",
