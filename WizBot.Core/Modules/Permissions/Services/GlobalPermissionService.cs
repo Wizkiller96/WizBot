@@ -13,6 +13,7 @@ namespace WizBot.Modules.Permissions.Services
     {
         public ConcurrentHashSet<string> BlockedModules { get; }
         public ConcurrentHashSet<string> BlockedCommands { get; }
+        public int Priority { get; } = 0;
 
         public GlobalPermissionService(IBotConfigProvider bc)
         {

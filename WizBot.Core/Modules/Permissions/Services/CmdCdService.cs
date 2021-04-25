@@ -16,6 +16,8 @@ namespace WizBot.Modules.Permissions.Services
         public ConcurrentDictionary<ulong, ConcurrentHashSet<CommandCooldown>> CommandCooldowns { get; }
         public ConcurrentDictionary<ulong, ConcurrentHashSet<ActiveCooldown>> ActiveCooldowns { get; } = new ConcurrentDictionary<ulong, ConcurrentHashSet<ActiveCooldown>>();
 
+        public int Priority { get; } = 0;
+        
         public CmdCdService(WizBot bot)
         {
             CommandCooldowns = new ConcurrentDictionary<ulong, ConcurrentHashSet<CommandCooldown>>(

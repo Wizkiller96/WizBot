@@ -15,25 +15,29 @@ namespace WizBot.Modules.Administration.Services
 {
     public class ProtectionService : INService
     {
-        private readonly ConcurrentDictionary<ulong, AntiRaidStats> _antiRaidGuilds =
-                new ConcurrentDictionary<ulong, AntiRaidStats>();
+        private readonly ConcurrentDictionary<ulong, AntiRaidStats> _antiRaidGuilds
+            = new ConcurrentDictionary<ulong, AntiRaidStats>();
 
-        private readonly ConcurrentDictionary<ulong, AntiSpamStats> _antiSpamGuilds =
-                new ConcurrentDictionary<ulong, AntiSpamStats>();
+        private readonly ConcurrentDictionary<ulong, AntiSpamStats> _antiSpamGuilds
+            = new ConcurrentDictionary<ulong, AntiSpamStats>();
 
-        public event Func<PunishmentAction, ProtectionType, IGuildUser[], Task> OnAntiProtectionTriggered = delegate { return Task.CompletedTask; };
+        public event Func<PunishmentAction, ProtectionType, IGuildUser[], Task> OnAntiProtectionTriggered
+            = delegate { return Task.CompletedTask; };
 
         private readonly Logger _log;
         private readonly DiscordSocketClient _client;
         private readonly MuteService _mute;
         private readonly DbService _db;
+        private readonly UserPunishService _punishService;
 
-        public ProtectionService(DiscordSocketClient client, WizBot bot, MuteService mute, DbService db)
+        public ProtectionService(DiscordSocketClient client, WizBot bot,
+            MuteService mute, DbService db, UserPunishService punishService)
         {
             _log = LogManager.GetCurrentClassLogger();
             _client = client;
             _mute = mute;
             _db = db;
+            _punishService = punishService;
 
             var ids = client.GetGuildIds();
             using (var uow = db.GetDbContext())
@@ -74,7 +78,7 @@ namespace WizBot.Modules.Administration.Services
             using (var uow = _db.GetDbContext())
             {
                 var gcWithData = uow.GuildConfigs.ForId(gc.GuildId,
-                    x => x
+                    set => set
                         .Include(x => x.AntiRaidSetting)
                         .Include(x => x.AntiSpamSetting)
                         .ThenInclude(x => x.IgnoredChannels));
@@ -103,28 +107,30 @@ namespace WizBot.Modules.Administration.Services
         {
             if (usr.IsBot)
                 return Task.CompletedTask;
-            if (!_antiRaidGuilds.TryGetValue(usr.Guild.Id, out var settings))
+            if (!_antiRaidGuilds.TryGetValue(usr.Guild.Id, out var stats))
                 return Task.CompletedTask;
-            if (!settings.RaidUsers.Add(usr))
+            if (!stats.RaidUsers.Add(usr))
                 return Task.CompletedTask;
 
             var _ = Task.Run(async () =>
             {
                 try
                 {
-                    ++settings.UsersCount;
+                    ++stats.UsersCount;
 
-                    if (settings.UsersCount >= settings.AntiRaidSettings.UserThreshold)
+                    if (stats.UsersCount >= stats.AntiRaidSettings.UserThreshold)
                     {
-                        var users = settings.RaidUsers.ToArray();
-                        settings.RaidUsers.Clear();
+                        var users = stats.RaidUsers.ToArray();
+                        stats.RaidUsers.Clear();
+                        var settings = stats.AntiRaidSettings;
 
-                        await PunishUsers(settings.AntiRaidSettings.Action, ProtectionType.Raiding, 0, users).ConfigureAwait(false);
+                        await PunishUsers(settings.Action, ProtectionType.Raiding,
+                            settings.PunishDuration, null, users).ConfigureAwait(false);
                     }
-                    await Task.Delay(1000 * settings.AntiRaidSettings.Seconds).ConfigureAwait(false);
+                    await Task.Delay(1000 * stats.AntiRaidSettings.Seconds).ConfigureAwait(false);
 
-                    settings.RaidUsers.TryRemove(usr);
-                    --settings.UsersCount;
+                    stats.RaidUsers.TryRemove(usr);
+                    --stats.UsersCount;
 
                 }
                 catch
@@ -164,7 +170,9 @@ namespace WizBot.Modules.Administration.Services
                         if (spamSettings.UserStats.TryRemove(msg.Author.Id, out stats))
                         {
                             stats.Dispose();
-                            await PunishUsers(spamSettings.AntiSpamSettings.Action, ProtectionType.Spamming, spamSettings.AntiSpamSettings.MuteTime, (IGuildUser)msg.Author)
+                            var settings = spamSettings.AntiSpamSettings;
+                            await PunishUsers(settings.Action, ProtectionType.Spamming, settings.MuteTime,
+                                    settings.RoleId, (IGuildUser)msg.Author)
                                 .ConfigureAwait(false);
                         }
                     }
@@ -177,66 +185,22 @@ namespace WizBot.Modules.Administration.Services
             return Task.CompletedTask;
         }
 
-        private async Task PunishUsers(PunishmentAction action, ProtectionType pt, int muteTime, params IGuildUser[] gus)
+        private async Task PunishUsers(PunishmentAction action, ProtectionType pt, int muteTime, ulong? roleId,
+            params IGuildUser[] gus)
         {
             _log.Info($"[{pt}] - Punishing [{gus.Length}] users with [{action}] in {gus[0].Guild.Name} guild");
             foreach (var gu in gus)
             {
-                switch (action)
-                {
-                    case PunishmentAction.Mute:
-                        try
-                        {
-                            var muteReason = $"{pt} Protection";
-                            if (muteTime <= 0)
-                                await _mute.MuteUser(gu, _client.CurrentUser, reason: muteReason).ConfigureAwait(false);
-                            else
-                                await _mute.TimedMute(gu, _client.CurrentUser, TimeSpan.FromSeconds(muteTime), reason: muteReason).ConfigureAwait(false);
-                        }
-                        catch (Exception ex) { _log.Warn(ex, "I can't apply punishement"); }
-                        break;
-                    case PunishmentAction.Kick:
-                        try
-                        {
-                            await gu.KickAsync().ConfigureAwait(false);
-                        }
-                        catch (Exception ex) { _log.Warn(ex, "I can't apply punishement"); }
-                        break;
-                    case PunishmentAction.Softban:
-                        try
-                        {
-                            await gu.Guild.AddBanAsync(gu, 7).ConfigureAwait(false);
-                            try
-                            {
-                                await gu.Guild.RemoveBanAsync(gu).ConfigureAwait(false);
-                            }
-                            catch
-                            {
-                                await gu.Guild.RemoveBanAsync(gu).ConfigureAwait(false);
-                                // try it twice, really don't want to ban user if 
-                                // only kick has been specified as the punishement
-                            }
-                        }
-                        catch (Exception ex) { _log.Warn(ex, "I can't apply punishment"); }
-                        break;
-                    case PunishmentAction.Ban:
-                        try
-                        {
-                            await gu.Guild.AddBanAsync(gu, 7).ConfigureAwait(false);
-                        }
-                        catch (Exception ex) { _log.Warn(ex, "I can't apply punishment"); }
-                        break;
-                    case PunishmentAction.RemoveRoles:
-                        await gu.RemoveRolesAsync(gu.GetRoles().Where(x => !x.IsManaged && x != x.Guild.EveryoneRole)).ConfigureAwait(false);
-                        break;
-                }
+                await _punishService.ApplyPunishment(gu.Guild, gu, _client.CurrentUser,
+                    action, muteTime, roleId, $"{pt} Protection");
+                await Task.Delay(1000);
             }
             await OnAntiProtectionTriggered(action, pt, gus).ConfigureAwait(false);
         }
 
-        public async Task<AntiRaidStats> StartAntiRaidAsync(ulong guildId, int userThreshold, int seconds, PunishmentAction action)
+        public async Task<AntiRaidStats> StartAntiRaidAsync(ulong guildId, int userThreshold, int seconds,
+            PunishmentAction action, int minutesDuration)
         {
-
             var g = _client.GetGuild(guildId);
             await _mute.GetMuteRole(g).ConfigureAwait(false);
 
@@ -247,6 +211,7 @@ namespace WizBot.Modules.Administration.Services
                     Action = action,
                     Seconds = seconds,
                     UserThreshold = userThreshold,
+                    PunishDuration = minutesDuration
                 }
             };
 
@@ -297,7 +262,8 @@ namespace WizBot.Modules.Administration.Services
             return false;
         }
 
-        public async Task<AntiSpamStats> StartAntiSpamAsync(ulong guildId, int messageCount, int time, PunishmentAction action)
+        public async Task<AntiSpamStats> StartAntiSpamAsync(ulong guildId, int messageCount, PunishmentAction action,
+            int punishDurationMinutes, ulong? roleId)
         {
             var g = _client.GetGuild(guildId);
             await _mute.GetMuteRole(g).ConfigureAwait(false);
@@ -308,7 +274,8 @@ namespace WizBot.Modules.Administration.Services
                 {
                     Action = action,
                     MessageThreshold = messageCount,
-                    MuteTime = time,
+                    MuteTime = punishDurationMinutes,
+                    RoleId = roleId,
                 }
             };
 
@@ -327,6 +294,7 @@ namespace WizBot.Modules.Administration.Services
                     gc.AntiSpamSetting.Action = stats.AntiSpamSettings.Action;
                     gc.AntiSpamSetting.MessageThreshold = stats.AntiSpamSettings.MessageThreshold;
                     gc.AntiSpamSetting.MuteTime = stats.AntiSpamSettings.MuteTime;
+                    gc.AntiSpamSetting.RoleId = stats.AntiSpamSettings.RoleId;
                 }
                 else
                 {
