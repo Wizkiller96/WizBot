@@ -28,11 +28,35 @@ namespace WizBot.Modules.Administration
                     .ToArray();
                 var timezonesPerPage = 20;
 
+                var curTime = DateTimeOffset.UtcNow;
+
+                var i = 0;
+                var timezoneStrings = timezones
+                    .Select(x => (x, ++i % 2 == 0))
+                    .Select(data =>
+                    {
+                        var (tzInfo, flip) = data;
+                        var nameStr = $"{tzInfo.Id,-30}";
+                        var offset = curTime.ToOffset(tzInfo.GetUtcOffset(curTime)).ToString("zzz");
+                        if (flip)
+                        {
+                            return $"{offset} {Format.Code(nameStr)}";
+                        }
+                        else
+                        {
+                            return $"{Format.Code(offset)} {nameStr}";
+                        }
+                    });
+
+
+
                 await ctx.SendPaginatedConfirmAsync(page,
                     (curPage) => new EmbedBuilder()
                         .WithOkColor()
                         .WithTitle(GetText("timezones_available"))
-                        .WithDescription(string.Join("\n", timezones.Skip(curPage * timezonesPerPage).Take(timezonesPerPage).Select(x => $"`{x.Id,-25}` {(x.BaseUtcOffset < TimeSpan.Zero ? "-" : "+")}{x.BaseUtcOffset:hhmm}"))),
+                        .WithDescription(string.Join("\n", timezoneStrings
+                            .Skip(curPage * timezonesPerPage)
+                            .Take(timezonesPerPage))),
                     timezones.Length, timezonesPerPage).ConfigureAwait(false);
             }
 

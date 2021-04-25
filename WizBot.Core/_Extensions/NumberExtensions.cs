@@ -24,6 +24,7 @@ namespace WizBot.Extensions
 
         public static bool IsInteger(this decimal number) => number == Math.Truncate(number);
 
-        public static DateTime ToUnixTimestamp(this double number) => new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(number);
+        public static DateTimeOffset ToUnixTimestamp(this double number)
+            => new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero).AddSeconds(number);
     }
 }

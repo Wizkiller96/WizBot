@@ -26,6 +26,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using WizBot.Common.Collections;
+using WizBot.Modules.Administration.Services;
 using Configuration = AngleSharp.Configuration;
 
 namespace WizBot.Modules.Searches
@@ -37,13 +39,16 @@ namespace WizBot.Modules.Searches
         private readonly IHttpClientFactory _httpFactory;
         private readonly IMemoryCache _cache;
         private static readonly WizBotRandom _rng = new WizBotRandom();
+        private readonly GuildTimezoneService _tzSvc;
 
-        public Searches(IBotCredentials creds, IGoogleApiService google, IHttpClientFactory factory, IMemoryCache cache)
+        public Searches(IBotCredentials creds, IGoogleApiService google, IHttpClientFactory factory, IMemoryCache cache,
+            GuildTimezoneService tzSvc)
         {
             _creds = creds;
             _google = google;
             _httpFactory = factory;
             _cache = cache;
+            _tzSvc = tzSvc;
         }
 
         //for anonymasen :^)
@@ -125,6 +130,15 @@ namespace WizBot.Modules.Searches
             {
                 Func<double, double> f = StandardConversions.CelsiusToFahrenheit;
 
+                var tz = Context.Guild is null
+                    ? TimeZoneInfo.Utc
+                    : _tzSvc.GetTimeZoneOrUtc(Context.Guild.Id);
+                var sunrise = data.Sys.Sunrise.ToUnixTimestamp();
+                var sunset = data.Sys.Sunset.ToUnixTimestamp();
+                sunrise = sunrise.ToOffset(tz.GetUtcOffset(sunrise));
+                sunset = sunset.ToOffset(tz.GetUtcOffset(sunset));
+                var timezone = $"UTC{sunrise:zzz}";
+
                 embed.AddField(fb => fb.WithName("🌍 " + Format.Bold(GetText("location"))).WithValue($"[{data.Name + ", " + data.Sys.Country}](https://openweathermap.org/city/{data.Id})").WithIsInline(true))
                     .AddField(fb => fb.WithName("📏 " + Format.Bold(GetText("latlong"))).WithValue($"{data.Coord.Lat}, {data.Coord.Lon}").WithIsInline(true))
                     .AddField(fb => fb.WithName("☁ " + Format.Bold(GetText("condition"))).WithValue(string.Join(", ", data.Weather.Select(w => w.Main))).WithIsInline(true))
@@ -132,8 +146,8 @@ namespace WizBot.Modules.Searches
                     .AddField(fb => fb.WithName("💨 " + Format.Bold(GetText("wind_speed"))).WithValue(data.Wind.Speed + " m/s").WithIsInline(true))
                     .AddField(fb => fb.WithName("🌡 " + Format.Bold(GetText("temperature"))).WithValue($"{data.Main.Temp:F1}°C / {f(data.Main.Temp):F1}°F").WithIsInline(true))
                     .AddField(fb => fb.WithName("🔆 " + Format.Bold(GetText("min_max"))).WithValue($"{data.Main.TempMin:F1}°C - {data.Main.TempMax:F1}°C\n{f(data.Main.TempMin):F1}°F - {f(data.Main.TempMax):F1}°F").WithIsInline(true))
-                    .AddField(fb => fb.WithName("🌄 " + Format.Bold(GetText("sunrise"))).WithValue($"{data.Sys.Sunrise.ToUnixTimestamp():HH:mm} UTC").WithIsInline(true))
-                    .AddField(fb => fb.WithName("🌇 " + Format.Bold(GetText("sunset"))).WithValue($"{data.Sys.Sunset.ToUnixTimestamp():HH:mm} UTC").WithIsInline(true))
+                    .AddField(fb => fb.WithName("🌄 " + Format.Bold(GetText("sunrise"))).WithValue($"{sunrise:HH:mm} {timezone}").WithIsInline(true))
+                    .AddField(fb => fb.WithName("🌇 " + Format.Bold(GetText("sunset"))).WithValue($"{sunset:HH:mm} {timezone}").WithIsInline(true))
                     .WithOkColor()
                     .WithFooter(efb => efb.WithText("Powered by openweathermap.org").WithIconUrl($"http://openweathermap.org/img/w/{data.Weather[0].Icon}.png"));
             }
