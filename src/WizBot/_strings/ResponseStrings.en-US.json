@@ -112,6 +112,7 @@
   "administration_prot_enable": "{0} Enabled",
   "administration_prot_error": "Error. I need ManageRoles permission",
   "administration_prot_none": "No protection enabled.",
+  "administration_prot_cant_use_time": "You can't specify duration for this punishment action.",
   "administration_raid_cnt": "User threshold must be between {0} and {1}.",
   "administration_raid_stats": "If {0} or more users join within {1} seconds, I will {2} them.",
   "administration_raid_time": "Time must be between {0} and {1} seconds.",

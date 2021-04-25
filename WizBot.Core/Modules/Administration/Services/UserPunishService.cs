@@ -81,47 +81,51 @@ namespace WizBot.Modules.Administration.Services
                 if (user == null)
                     return null;
 
-                await ApplyPunishment(guild, user, mod, p.Punishment, p.Time, p.RoleId, reason);
+                await ApplyPunishment(guild, user, mod, p.Punishment, p.Time, p.RoleId, "Warned too many times.");
                 return p;
             }
 
             return null;
         }
 
-        public async Task ApplyPunishment(IGuild guild, IGuildUser user, IUser mod, PunishmentAction p, int minutes, ulong? roleId, string reason)
+        public async Task ApplyPunishment(IGuild guild, IGuildUser user, IUser mod, PunishmentAction p, int minutes,
+            ulong? roleId, string reason)
         {
-            var muteReason = "Warning punishment - " + reason;
             switch (p)
             {
                 case PunishmentAction.Mute:
                     if (minutes == 0)
-                        await _mute.MuteUser(user, mod, reason: muteReason).ConfigureAwait(false);
+                        await _mute.MuteUser(user, mod, reason: reason).ConfigureAwait(false);
                     else
-                        await _mute.TimedMute(user, mod, TimeSpan.FromMinutes(minutes), reason: muteReason).ConfigureAwait(false);
+                        await _mute.TimedMute(user, mod, TimeSpan.FromMinutes(minutes), reason: reason)
+                            .ConfigureAwait(false);
                     break;
                 case PunishmentAction.VoiceMute:
                     if (minutes == 0)
-                        await _mute.MuteUser(user, mod, MuteType.Voice, muteReason).ConfigureAwait(false);
+                        await _mute.MuteUser(user, mod, MuteType.Voice, reason).ConfigureAwait(false);
                     else
-                        await _mute.TimedMute(user, mod, TimeSpan.FromMinutes(minutes), MuteType.Voice, muteReason).ConfigureAwait(false);
+                        await _mute.TimedMute(user, mod, TimeSpan.FromMinutes(minutes), MuteType.Voice, reason)
+                            .ConfigureAwait(false);
                     break;
                 case PunishmentAction.ChatMute:
                     if (minutes == 0)
-                        await _mute.MuteUser(user, mod, MuteType.Chat, muteReason).ConfigureAwait(false);
+                        await _mute.MuteUser(user, mod, MuteType.Chat, reason).ConfigureAwait(false);
                     else
-                        await _mute.TimedMute(user, mod, TimeSpan.FromMinutes(minutes), MuteType.Chat, muteReason).ConfigureAwait(false);
+                        await _mute.TimedMute(user, mod, TimeSpan.FromMinutes(minutes), MuteType.Chat, reason)
+                            .ConfigureAwait(false);
                     break;
                 case PunishmentAction.Kick:
-                    await user.KickAsync("Warned too many times.").ConfigureAwait(false);
+                    await user.KickAsync(reason).ConfigureAwait(false);
                     break;
                 case PunishmentAction.Ban:
                     if (minutes == 0)
-                        await guild.AddBanAsync(user, reason: "Warned too many times.").ConfigureAwait(false);
+                        await guild.AddBanAsync(user, reason: reason).ConfigureAwait(false);
                     else
-                        await _mute.TimedBan(user.Guild, user, TimeSpan.FromMinutes(minutes), "Warned too many times.").ConfigureAwait(false);
+                        await _mute.TimedBan(user.Guild, user, TimeSpan.FromMinutes(minutes), reason)
+                            .ConfigureAwait(false);
                     break;
                 case PunishmentAction.Softban:
-                    await guild.AddBanAsync(user, 7, reason: "Softban | Warned too many times").ConfigureAwait(false);
+                    await guild.AddBanAsync(user, 7, reason: $"Softban | {reason}").ConfigureAwait(false);
                     try
                     {
                         await guild.RemoveBanAsync(user).ConfigureAwait(false);
@@ -130,9 +134,11 @@ namespace WizBot.Modules.Administration.Services
                     {
                         await guild.RemoveBanAsync(user).ConfigureAwait(false);
                     }
+
                     break;
                 case PunishmentAction.RemoveRoles:
-                    await user.RemoveRolesAsync(user.GetRoles().Where(x => !x.IsManaged && x != x.Guild.EveryoneRole)).ConfigureAwait(false);
+                    await user.RemoveRolesAsync(user.GetRoles().Where(x => !x.IsManaged && x != x.Guild.EveryoneRole))
+                        .ConfigureAwait(false);
                     break;
                 case PunishmentAction.AddRole:
                     if (roleId is null)
@@ -143,12 +149,14 @@ namespace WizBot.Modules.Administration.Services
                         if (minutes == 0)
                             await user.AddRoleAsync(role).ConfigureAwait(false);
                         else
-                            await _mute.TimedRole(user, TimeSpan.FromMinutes(minutes), "Warned too many times.", role).ConfigureAwait(false);
+                            await _mute.TimedRole(user, TimeSpan.FromMinutes(minutes), reason, role)
+                                .ConfigureAwait(false);
                     }
                     else
                     {
-                        _log.Warn($"Warnpunish can't find role {roleId.Value} on server {guild.Id}");
+                        _log.Warn($"Can't find role {roleId.Value} on server {guild.Id} to apply punishment.");
                     }
+
                     break;
                 default:
                     break;

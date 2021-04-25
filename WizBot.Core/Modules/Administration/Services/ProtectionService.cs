@@ -204,6 +204,12 @@ namespace WizBot.Modules.Administration.Services
             var g = _client.GetGuild(guildId);
             await _mute.GetMuteRole(g).ConfigureAwait(false);
 
+            if (action == PunishmentAction.AddRole)
+                return null;
+
+            if (!IsDurationAllowed(action))
+                minutesDuration = 0;
+
             var stats = new AntiRaidStats()
             {
                 AntiRaidSettings = new AntiRaidSetting()
@@ -267,6 +273,9 @@ namespace WizBot.Modules.Administration.Services
         {
             var g = _client.GetGuild(guildId);
             await _mute.GetMuteRole(g).ConfigureAwait(false);
+
+            if (!IsDurationAllowed(action))
+                punishDurationMinutes = 0;
 
             var stats = new AntiSpamStats
             {
@@ -349,6 +358,21 @@ namespace WizBot.Modules.Administration.Services
             _antiSpamGuilds.TryGetValue(guildId, out var antiSpamStats);
 
             return (antiSpamStats, antiRaidStats);
+        }
+
+        public bool IsDurationAllowed(PunishmentAction action)
+        {
+            switch (action)
+            {
+                case PunishmentAction.Ban:
+                case PunishmentAction.Mute:
+                case PunishmentAction.ChatMute:
+                case PunishmentAction.VoiceMute:
+                case PunishmentAction.AddRole:
+                    return true;
+                default:
+                    return false;
+            }
         }
     }
 }
