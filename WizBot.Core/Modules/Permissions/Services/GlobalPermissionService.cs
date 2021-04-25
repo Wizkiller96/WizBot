@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using WizBot.Common.Collections;
 using WizBot.Common.ModuleBehaviors;
@@ -19,10 +20,10 @@ namespace WizBot.Modules.Permissions.Services
             BlockedCommands = new ConcurrentHashSet<string>(bc.BotConfig.BlockedCommands.Select(x => x.Name));
         }
 
-        public async Task<bool> TryBlockLate(DiscordSocketClient client, IUserMessage msg, IGuild guild, IMessageChannel channel, IUser user, string moduleName, string commandName)
+        public async Task<bool> TryBlockLate(DiscordSocketClient client, ICommandContext ctx, string moduleName, CommandInfo command)
         {
             await Task.Yield();
-            commandName = commandName.ToLowerInvariant();
+            var commandName = command.Name.ToLowerInvariant();
 
             if (commandName != "resetglobalperms" &&
                 (BlockedCommands.Contains(commandName) ||

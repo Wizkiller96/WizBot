@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Common.ModuleBehaviors;
@@ -94,8 +95,15 @@ namespace WizBot.Modules.Permissions.Services
             });
         }
 
-        public async Task<bool> TryBlockLate(DiscordSocketClient client, IUserMessage msg, IGuild guild, IMessageChannel channel, IUser user, string moduleName, string commandName)
+        public async Task<bool> TryBlockLate(DiscordSocketClient client, ICommandContext ctx, string moduleName,
+            CommandInfo command)
         {
+            var guild = ctx.Guild;
+            var msg = ctx.Message;
+            var user = ctx.User;
+            var channel = ctx.Channel;
+            var commandName = command.Name.ToLowerInvariant();
+
             await Task.Yield();
             if (guild == null)
             {

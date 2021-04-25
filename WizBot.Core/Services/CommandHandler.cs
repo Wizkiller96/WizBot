@@ -424,7 +424,7 @@ namespace WizBot.Core.Services
             var commandName = cmd.Aliases.First();
             foreach (var exec in _lateBlockers)
             {
-                if (await exec.TryBlockLate(_client, context.Message, context.Guild, context.Channel, context.User, cmd.Module.GetTopLevelModule().Name, commandName).ConfigureAwait(false))
+                if (await exec.TryBlockLate(_client, context, cmd.Module.GetTopLevelModule().Name, cmd).ConfigureAwait(false))
                 {
                     _log.Info("Late blocking User [{0}] Command: [{1}] in [{2}]", context.User, commandName, exec.GetType().Name);
                     return (false, null, cmd);

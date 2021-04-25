@@ -49,7 +49,7 @@ namespace Discord
         // Remarks:
         //     This permission requires the owner account to use two-factor authentication when
         //     used on a guild that has server-wide 2FA enabled.
-        ManageChannels = 16,
+        ManageChannel = 16,
         //
         // Summary:
         //     Allows management and editing of the guild.

@@ -626,16 +626,14 @@ namespace WizBot.Modules.Administration
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            [UserPerm(GuildPerm.KickMembers)]
-            [UserPerm(GuildPerm.ManageMessages)]
+            [UserPerm(GuildPerm.KickMembers | GuildPerm.ManageMessages)]
             [BotPerm(GuildPerm.BanMembers)]
             public Task Softban(IGuildUser user, [Leftover] string msg = null)
                 => SoftbanInternal(user, msg);
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            [UserPerm(GuildPerm.KickMembers)]
-            [UserPerm(GuildPerm.ManageMessages)]
+            [UserPerm(GuildPerm.KickMembers | GuildPerm.ManageMessages)]
             [BotPerm(GuildPerm.BanMembers)]
             public async Task Softban(ulong userId, [Leftover] string msg = null)
             {
