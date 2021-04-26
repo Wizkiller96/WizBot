@@ -165,8 +165,10 @@ namespace WizBot
             .AddSingleton(CommandService)
             .AddSingleton(this)
             .AddSingleton(Cache)
-            .AddSingleton<IBotStrings, BotStrings>()
+            .AddSingleton(Cache.Redis)
+            .AddSingleton<IStringsSource, LocalFileStringsSource>()
             .AddSingleton<IBotStringsProvider, LocalBotStringsProvider>()
+            .AddSingleton<IBotStrings, BotStrings>()
             .AddSingleton<IBotConfigProvider, BotConfigProvider>()
             .AddMemoryCache();
 

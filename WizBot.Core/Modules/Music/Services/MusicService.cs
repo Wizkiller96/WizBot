@@ -99,7 +99,7 @@ namespace WizBot.Modules.Music.Services
         public async Task<MusicPlayer> GetOrCreatePlayer(ulong guildId, IVoiceChannel voiceCh, ITextChannel textCh)
         {
             string GetText(string text, params object[] replacements) =>
-                _strings.GetText(text, textCh.Guild.Id);
+                _strings.GetText(text, textCh.Guild.Id, replacements);
             
             if (voiceCh == null || voiceCh.Guild != textCh.Guild)
             {

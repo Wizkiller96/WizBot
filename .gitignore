@@ -2,6 +2,7 @@
 
 patreon_rewards.json
 command_errors*.txt
+_output/
 
 src/WizBot/Command Errors*.txt
 

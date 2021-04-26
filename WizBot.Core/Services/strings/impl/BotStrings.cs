@@ -4,7 +4,7 @@ using NLog;
 
 namespace WizBot.Core.Services
 {
-    public class BotStrings : IBotStrings, INService
+    public class BotStrings : IBotStrings
     {
         /// <summary>
         /// Used as failsafe in case response key doesn't exist in the selected or default language.
@@ -22,10 +22,10 @@ namespace WizBot.Core.Services
         }
 
         private string GetString(string key, CultureInfo cultureInfo)
-            => _stringsProvider.GetText(cultureInfo.Name.ToUpperInvariant(), key);
+            => _stringsProvider.GetText(cultureInfo.Name, key);
 
-        public string GetText(string key, ulong? guildId = null, params object[] data) =>
-            GetText(key, _localization.GetCultureInfo(guildId), data);
+        public string GetText(string key, ulong? guildId = null, params object[] data)
+            => GetText(key, _localization.GetCultureInfo(guildId), data);
 
         public string GetText(string key, CultureInfo cultureInfo)
         {
@@ -58,6 +58,9 @@ namespace WizBot.Core.Services
                     $" Key '{key}' is not properly formatted. Please report this.";
             }
         }
+
+        // public string[] GetUsages(string commandName, ulong guildId)
+        //     => GetUsages(commandName, _localization.GetCultureInfo(guildId));
 
         public void Reload()
         {
