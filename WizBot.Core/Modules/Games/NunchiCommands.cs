@@ -4,7 +4,6 @@ using Discord.WebSocket;
 using WizBot.Common.Attributes;
 using WizBot.Modules.Games.Common.Nunchi;
 using WizBot.Modules.Games.Services;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 

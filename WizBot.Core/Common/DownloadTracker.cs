@@ -4,7 +4,6 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
-using Discord.WebSocket;
 
 namespace WizBot.Core.Common
 {

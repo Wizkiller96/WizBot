@@ -10,7 +10,6 @@ using WizBot.Modules.Music.Services;
 using Discord;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using WizBot.Common;
 
 namespace WizBot.Modules.Administration.Services
 {

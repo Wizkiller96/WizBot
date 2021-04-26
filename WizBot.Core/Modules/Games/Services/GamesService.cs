@@ -32,7 +32,7 @@ namespace WizBot.Modules.Games.Services
 
         private readonly Timer _t;
         private readonly CommandHandler _cmd;
-        private readonly WizBotStrings _strings;
+        private readonly IBotStrings _strings;
         private readonly IImageCache _images;
         private readonly Logger _log;
         private readonly WizBotRandom _rng;
@@ -71,7 +71,7 @@ namespace WizBot.Modules.Games.Services
 
 
         public GamesService(CommandHandler cmd, IBotConfigProvider bc, WizBot bot,
-            WizBotStrings strings, IDataCache data, CommandHandler cmdHandler,
+            IBotStrings strings, IDataCache data, CommandHandler cmdHandler,
             ICurrencyService cs, FontProvider fonts, IHttpClientFactory httpFactory)
         {
             _bc = bc;
@@ -156,6 +156,6 @@ namespace WizBot.Modules.Games.Services
         private ConcurrentDictionary<ulong, object> _locks { get; } = new ConcurrentDictionary<ulong, object>();
 
         private string GetText(ITextChannel ch, string key, params object[] rep)
-            => _strings.GetText(key, ch.GuildId, "Games".ToLowerInvariant(), rep);
+            => _strings.GetText(key, ch.GuildId, rep);
     }
 }

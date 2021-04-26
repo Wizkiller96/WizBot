@@ -6,7 +6,6 @@ using WizBot.Common.Attributes;
 using WizBot.Core.Common;
 using WizBot.Core.Modules.Gambling.Common;
 using WizBot.Core.Services;
-using WizBot.Core.Services.Database;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Extensions;
 using WizBot.Modules.Gambling.Services;

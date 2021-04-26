@@ -97,7 +97,7 @@ namespace WizBot.Modules.CustomReactions
 
             await ctx.SendPaginatedConfirmAsync(page, curPage =>
                 new EmbedBuilder().WithOkColor()
-                    .WithTitle(GetText("name"))
+                    .WithTitle(GetText("custom_reactions"))
                     .WithDescription(string.Join("\n", customReactions.OrderBy(cr => cr.Trigger)
                                                     .Skip(curPage * 20)
                                                     .Take(20)

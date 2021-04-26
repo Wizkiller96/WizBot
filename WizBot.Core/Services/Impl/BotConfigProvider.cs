@@ -13,11 +13,11 @@ namespace WizBot.Core.Services.Impl
 
         public BotConfig BotConfig { get; private set; }
 
-        public BotConfigProvider(DbService db, BotConfig bc, IDataCache cache)
+        public BotConfigProvider(DbService db, IDataCache cache)
         {
             _db = db;
             _cache = cache;
-            BotConfig = bc;
+            Reload();
         }
 
         public void Reload()

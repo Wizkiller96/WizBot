@@ -158,16 +158,16 @@ namespace WizBot
                 AllGuildConfigs = uow.GuildConfigs.GetAllGuildConfigs(startingGuildIdList).ToImmutableArray();
             }
 
-            IBotConfigProvider botConfigProvider = new BotConfigProvider(_db, _botConfig, Cache);
-
             var s = new ServiceCollection()
             .AddSingleton<IBotCredentials>(Credentials)
             .AddSingleton(_db)
             .AddSingleton(Client)
             .AddSingleton(CommandService)
-            .AddSingleton(botConfigProvider)
             .AddSingleton(this)
             .AddSingleton(Cache)
+            .AddSingleton<IBotStrings, BotStrings>()
+            .AddSingleton<IBotStringsProvider, LocalBotStringsProvider>()
+            .AddSingleton<IBotConfigProvider, BotConfigProvider>()
             .AddMemoryCache();
 
             s.AddHttpClient();

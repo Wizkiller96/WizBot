@@ -8,7 +8,6 @@ using WizBot.Modules.Gambling.Services;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 
 namespace WizBot.Modules.Gambling
 {
@@ -23,7 +22,7 @@ namespace WizBot.Modules.Gambling
                 var price = _service.GetResetPrice(ctx.User);
                 var embed = new EmbedBuilder()
                         .WithTitle(GetText("waifu_reset_confirm"))
-                        .WithDescription(GetText("cost", Format.Bold(price + Bc.BotConfig.CurrencySign)));
+                        .WithDescription(GetText("waifu_reset_price", Format.Bold(price + Bc.BotConfig.CurrencySign)));
 
                 if (!await PromptUserConfirmAsync(embed))
                     return;

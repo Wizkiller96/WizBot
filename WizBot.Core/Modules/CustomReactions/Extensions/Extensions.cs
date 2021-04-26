@@ -6,7 +6,6 @@ using WizBot.Common;
 using WizBot.Common.Replacements;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Extensions;
-using WizBot.Modules.CustomReactions.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;

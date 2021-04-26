@@ -1,5 +1,4 @@
 ﻿using WizBot.Core.Services.Database.Models;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 
 namespace WizBot.Core.Services.Database.Repositories

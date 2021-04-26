@@ -1,8 +1,5 @@
 ﻿using WizBot.Common.Collections;
-using WizBot.Core.Common.TypeReaders.Models;
-using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WizBot.Core.Services.Database.Models
 {

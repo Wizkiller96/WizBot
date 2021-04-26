@@ -41,7 +41,7 @@ namespace WizBot.Modules.Xp.Services
         private readonly IBotConfigProvider _bc;
         private readonly IImageCache _images;
         private readonly Logger _log;
-        private readonly WizBotStrings _strings;
+        private readonly IBotStrings _strings;
         private readonly IDataCache _cache;
         private readonly FontProvider _fonts;
         private readonly IBotCredentials _creds;
@@ -66,7 +66,7 @@ namespace WizBot.Modules.Xp.Services
         private readonly DiscordSocketClient _client;
 
         public XpService(DiscordSocketClient client, CommandHandler cmd, IBotConfigProvider bc,
-            WizBot bot, DbService db, WizBotStrings strings, IDataCache cache,
+            WizBot bot, DbService db, IBotStrings strings, IDataCache cache,
             FontProvider fonts, IBotCredentials creds, ICurrencyService cs, IHttpClientFactory http)
         {
             _db = db;
@@ -241,7 +241,6 @@ namespace WizBot.Modules.Xp.Services
                                 if (chan != null)
                                     await chan.SendConfirmAsync(_strings.GetText("level_up_dm",
                                         x.Guild.Id,
-                                        "xp",
                                         x.User.Mention, Format.Bold(x.Level.ToString()),
                                         Format.Bold(x.Guild.ToString() ?? "-")));
                             }
@@ -249,7 +248,6 @@ namespace WizBot.Modules.Xp.Services
                             {
                                 await x.MessageChannel.SendConfirmAsync(_strings.GetText("level_up_channel",
                                     x.Guild.Id,
-                                    "xp",
                                     x.User.Mention, Format.Bold(x.Level.ToString())));
                             }
                         }
@@ -267,7 +265,6 @@ namespace WizBot.Modules.Xp.Services
 
                             await chan.SendConfirmAsync(_strings.GetText("level_up_global",
                                 x.Guild.Id,
-                                "xp",
                                 x.User.Mention, Format.Bold(x.Level.ToString())));
                         }
                     }));

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading;
 using Discord;
 using Discord.WebSocket;
 using WizBot.Extensions;
@@ -9,7 +8,6 @@ using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
 using NLog;
 using System.Collections.Generic;
-using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 

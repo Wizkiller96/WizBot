@@ -11,6 +11,7 @@ using WizBot.Modules.Administration.Services;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using WizBot.Core.Services;
 
 namespace WizBot.Modules.Administration
 {
@@ -21,11 +22,13 @@ namespace WizBot.Modules.Administration
         {
             private readonly DiscordSocketClient _client;
             private readonly WizBot _bot;
+            private readonly IBotStrings _strings;
 
-            public SelfCommands(DiscordSocketClient client, WizBot bot)
+            public SelfCommands(DiscordSocketClient client, WizBot bot, IBotStrings strings)
             {
                 _client = client;
                 _bot = bot;
+                _strings = strings;
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -503,6 +506,15 @@ namespace WizBot.Modules.Administration
             {
                 _service.ReloadBotConfig();
                 await ReplyConfirmLocalizedAsync("bot_config_reloaded").ConfigureAwait(false);
+            }
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [OwnerOnly]
+            public async Task StringsReload()
+            {
+                // todo add publisher to this. something like v3 eventpusher
+                _strings.Reload();
+                await ReplyConfirmLocalizedAsync("bot_strings_reloaded").ConfigureAwait(false);
             }
 
             private static UserStatus SettableUserStatusToUserStatus(SettableUserStatus sus)

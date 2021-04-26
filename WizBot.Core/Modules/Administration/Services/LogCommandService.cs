@@ -11,7 +11,6 @@ using Microsoft.Extensions.Caching.Memory;
 using WizBot.Common.Collections;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
-using WizBot.Core.Services.Impl;
 using WizBot.Extensions;
 using WizBot.Modules.Administration.Common;
 using NLog;
@@ -29,13 +28,13 @@ namespace WizBot.Modules.Administration.Services
             new ConcurrentDictionary<ITextChannel, List<string>>();
 
         private readonly Timer _timerReference;
-        private readonly WizBotStrings _strings;
+        private readonly IBotStrings _strings;
         private readonly DbService _db;
         private readonly MuteService _mute;
         private readonly ProtectionService _prot;
         private readonly GuildTimezoneService _tz;
 
-        public LogCommandService(DiscordSocketClient client, WizBotStrings strings,
+        public LogCommandService(DiscordSocketClient client, IBotStrings strings,
             DbService db, MuteService mute, ProtectionService prot, GuildTimezoneService tz,
                 IMemoryCache memoryCache)
         {
@@ -150,7 +149,7 @@ namespace WizBot.Modules.Administration.Services
         }
 
         private string GetText(IGuild guild, string key, params object[] replacements) =>
-            _strings.GetText(key, guild.Id, "Administration".ToLowerInvariant(), replacements);
+            _strings.GetText(key, guild.Id, replacements);
 
 
         private string PrettyCurrentTime(IGuild g)
@@ -353,15 +352,15 @@ namespace WizBot.Modules.Administration.Services
                     var str = "";
                     if (beforeVch?.Guild == afterVch?.Guild)
                     {
-                        str = GetText(logChannel.Guild, "moved", usr.Username, beforeVch?.Name, afterVch?.Name);
+                        str = GetText(logChannel.Guild, "log_vc_moved", usr.Username, beforeVch?.Name, afterVch?.Name);
                     }
                     else if (beforeVch == null)
                     {
-                        str = GetText(logChannel.Guild, "joined", usr.Username, afterVch.Name);
+                        str = GetText(logChannel.Guild, "log_vc_joined", usr.Username, afterVch.Name);
                     }
                     else if (afterVch == null)
                     {
-                        str = GetText(logChannel.Guild, "left", usr.Username, beforeVch.Name);
+                        str = GetText(logChannel.Guild, "log_vc_left", usr.Username, beforeVch.Name);
                     }
 
                     var toDelete = await logChannel.SendMessageAsync(str, true).ConfigureAwait(false);

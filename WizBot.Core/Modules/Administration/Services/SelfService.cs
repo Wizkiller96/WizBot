@@ -6,7 +6,6 @@ using Discord.WebSocket;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Extensions;
 using WizBot.Core.Services;
-using WizBot.Core.Services.Impl;
 using NLog;
 using StackExchange.Redis;
 using System.Collections.Generic;
@@ -28,12 +27,10 @@ namespace WizBot.Modules.Administration.Services
         public bool ForwardDMsToAllOwners => _bc.BotConfig.ForwardToAllOwners;
 
         private readonly ConnectionMultiplexer _redis;
-        private readonly WizBot _bot;
         private readonly CommandHandler _cmdHandler;
         private readonly DbService _db;
         private readonly Logger _log;
-        private readonly ILocalization _localization;
-        private readonly WizBotStrings _strings;
+        private readonly IBotStrings _strings;
         private readonly DiscordSocketClient _client;
 
         private readonly IBotCredentials _creds;
@@ -47,15 +44,13 @@ namespace WizBot.Modules.Administration.Services
         //private readonly Timer _updateTimer;
 
         public SelfService(DiscordSocketClient client, WizBot bot, CommandHandler cmdHandler, DbService db,
-            IBotConfigProvider bc, ILocalization localization, WizBotStrings strings, IBotCredentials creds,
+            IBotConfigProvider bc, IBotStrings strings, IBotCredentials creds,
             IDataCache cache, IHttpClientFactory factory)
         {
             _redis = cache.Redis;
-            _bot = bot;
             _cmdHandler = cmdHandler;
             _db = db;
             _log = LogManager.GetCurrentClassLogger();
-            _localization = localization;
             _strings = strings;
             _client = client;
             _creds = creds;
@@ -347,14 +342,10 @@ namespace WizBot.Modules.Administration.Services
         {
             if (msg.Channel is IDMChannel && ForwardDMs && ownerChannels.Any())
             {
-                var title = _strings.GetText("dm_from",
-                                _localization.DefaultCultureInfo,
-                                "Administration".ToLowerInvariant()) +
+                var title = _strings.GetText("dm_from") +
                             $" [{msg.Author}]({msg.Author.Id})";
 
-                var attachamentsTxt = _strings.GetText("attachments",
-                    _localization.DefaultCultureInfo,
-                    "Administration".ToLowerInvariant());
+                var attachamentsTxt = _strings.GetText("attachments");
 
                 var toSend = msg.Content;
 

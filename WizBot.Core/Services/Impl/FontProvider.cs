@@ -1,5 +1,4 @@
 ﻿using SixLabors.Fonts;
-using SixLabors.ImageSharp.PixelFormats;
 using System;
 using System.Collections.Generic;
 using System.IO;

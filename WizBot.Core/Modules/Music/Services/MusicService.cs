@@ -24,8 +24,7 @@ namespace WizBot.Modules.Music.Services
         public const string MusicDataPath = "data/musicdata";
 
         private readonly IGoogleApiService _google;
-        private readonly WizBotStrings _strings;
-        private readonly ILocalization _localization;
+        private readonly IBotStrings _strings;
         private readonly DbService _db;
         private readonly Logger _log;
         private readonly ConcurrentDictionary<ulong, MusicSettings> _musicSettings;
@@ -40,13 +39,12 @@ namespace WizBot.Modules.Music.Services
         public ConcurrentDictionary<ulong, MusicPlayer> MusicPlayers { get; } = new ConcurrentDictionary<ulong, MusicPlayer>();
 
         public MusicService(DiscordSocketClient client, IGoogleApiService google,
-            WizBotStrings strings, ILocalization localization, DbService db,
+            IBotStrings strings, DbService db,
             SoundCloudApiService sc, IBotCredentials creds, WizBot bot)
         {
             _client = client;
             _google = google;
             _strings = strings;
-            _localization = localization;
             _db = db;
             _sc = sc;
             _creds = creds;
@@ -101,7 +99,7 @@ namespace WizBot.Modules.Music.Services
         public async Task<MusicPlayer> GetOrCreatePlayer(ulong guildId, IVoiceChannel voiceCh, ITextChannel textCh)
         {
             string GetText(string text, params object[] replacements) =>
-                _strings.GetText(text, _localization.GetCultureInfo(textCh.Guild), "Music".ToLowerInvariant(), replacements);
+                _strings.GetText(text, textCh.Guild.Id);
             
             if (voiceCh == null || voiceCh.Guild != textCh.Guild)
             {

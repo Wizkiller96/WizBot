@@ -5,7 +5,6 @@ using WizBot.Common.ModuleBehaviors;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database;
 using WizBot.Core.Services.Database.Models;
-using WizBot.Core.Services.Impl;
 using WizBot.Extensions;
 using WizBot.Modules.CustomReactions.Extensions;
 using WizBot.Modules.Permissions.Common;
@@ -42,11 +41,11 @@ namespace WizBot.Modules.CustomReactions.Services
         private readonly PermissionService _perms;
         private readonly CommandHandler _cmd;
         private readonly IBotConfigProvider _bc;
-        private readonly WizBotStrings _strings;
+        private readonly IBotStrings _strings;
         private readonly IDataCache _cache;
         private readonly GlobalPermissionService _gperm;
 
-        public CustomReactionsService(PermissionService perms, DbService db, WizBotStrings strings,
+        public CustomReactionsService(PermissionService perms, DbService db, IBotStrings strings,
             DiscordSocketClient client, CommandHandler cmd, IBotConfigProvider bc,
             IDataCache cache, GlobalPermissionService gperm, WizBot bot)
         {
@@ -238,11 +237,9 @@ namespace WizBot.Modules.CustomReactions.Services
                         {
                             if (pc.Verbose)
                             {
-                                var returnMsg = _strings.GetText("trigger", guild.Id,
-                                    "Permissions".ToLowerInvariant(),
+                                var returnMsg = _strings.GetText("trigger", sg.Id,
                                     index + 1,
-                                    Format.Bold(pc.Permissions[index].GetCommand(_cmd.GetPrefix(guild),
-                                    (SocketGuild)guild)));
+                                    Format.Bold(pc.Permissions[index].GetCommand(_cmd.GetPrefix(guild), sg)));
                                 try
                                 {
                                     await msg.Channel.SendErrorAsync(returnMsg).ConfigureAwait(false);

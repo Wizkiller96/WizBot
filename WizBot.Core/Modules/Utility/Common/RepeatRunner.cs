@@ -8,7 +8,6 @@ using WizBot.Extensions;
 using WizBot.Core.Services.Database.Models;
 using NLog;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using WizBot.Common;
 using WizBot.Common.Replacements;
 using WizBot.Modules.Utility.Services;

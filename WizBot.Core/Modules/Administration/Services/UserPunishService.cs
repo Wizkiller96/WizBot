@@ -15,7 +15,6 @@ using WizBot.Core.Services.Database.Models;
 using WizBot.Extensions;
 using Newtonsoft.Json;
 using NLog;
-using NLog.Fluent;
 
 namespace WizBot.Modules.Administration.Services
 {

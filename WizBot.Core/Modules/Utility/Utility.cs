@@ -3,7 +3,6 @@ using Discord.Commands;
 using Discord.WebSocket;
 using WizBot.Common;
 using WizBot.Common.Attributes;
-using WizBot.Core.Common.Attributes;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Impl;
 using WizBot.Extensions;

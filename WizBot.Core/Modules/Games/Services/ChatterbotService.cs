@@ -9,7 +9,6 @@ using WizBot.Extensions;
 using WizBot.Modules.Permissions.Common;
 using WizBot.Modules.Permissions.Services;
 using WizBot.Core.Services;
-using WizBot.Core.Services.Impl;
 using NLog;
 using WizBot.Modules.Games.Common.ChatterBot;
 using System.Net.Http;
@@ -22,7 +21,7 @@ namespace WizBot.Modules.Games.Services
         private readonly Logger _log;
         private readonly PermissionService _perms;
         private readonly CommandHandler _cmd;
-        private readonly WizBotStrings _strings;
+        private readonly IBotStrings _strings;
         private readonly IBotCredentials _creds;
         private readonly IHttpClientFactory _httpFactory;
 
@@ -32,7 +31,7 @@ namespace WizBot.Modules.Games.Services
         public ModuleBehaviorType BehaviorType => ModuleBehaviorType.Executor;
 
         public ChatterBotService(DiscordSocketClient client, PermissionService perms,
-            WizBot bot, CommandHandler cmd, WizBotStrings strings, IHttpClientFactory factory,
+            WizBot bot, CommandHandler cmd, IBotStrings strings, IHttpClientFactory factory,
             IBotCredentials creds)
         {
             _client = client;
@@ -124,7 +123,7 @@ namespace WizBot.Modules.Games.Services
                 {
                     if (pc.Verbose)
                     {
-                        var returnMsg = _strings.GetText("trigger", guild.Id, "Permissions".ToLowerInvariant(), index + 1, Format.Bold(pc.Permissions[index].GetCommand(_cmd.GetPrefix(guild), (SocketGuild)guild)));
+                        var returnMsg = _strings.GetText("trigger", guild.Id, index + 1, Format.Bold(pc.Permissions[index].GetCommand(_cmd.GetPrefix(guild), (SocketGuild)guild)));
                         try { await usrMsg.Channel.SendErrorAsync(returnMsg).ConfigureAwait(false); } catch { }
                         _log.Info(returnMsg);
                     }

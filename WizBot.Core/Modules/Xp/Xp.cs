@@ -1,8 +1,6 @@
-﻿using CommandLine;
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using Microsoft.Extensions.Caching.Memory;
 using WizBot.Common.Attributes;
 using WizBot.Core.Common;
 using WizBot.Core.Services;
@@ -10,10 +8,8 @@ using WizBot.Core.Services.Database.Models;
 using WizBot.Extensions;
 using WizBot.Modules.Xp.Common;
 using WizBot.Modules.Xp.Services;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Sockets;
 using System.Threading.Tasks;
 
 namespace WizBot.Modules.Xp

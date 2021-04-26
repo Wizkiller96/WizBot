@@ -1,8 +1,3 @@
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using WizBot.Core.Services.Database.Models;
-using NLog;
-
 namespace WizBot.Core.Modules.Searches.Common.StreamNotifications.Providers
 {
     // public class TwitchProvider : IProvider

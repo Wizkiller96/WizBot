@@ -1,5 +1,4 @@
 ﻿using Discord;
-using Discord.Commands;
 using WizBot.Common.Attributes;
 using WizBot.Core.Modules.Searches.Services;
 using WizBot.Extensions;

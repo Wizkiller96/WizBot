@@ -2,7 +2,6 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using WizBot.Core.Services;
-using WizBot.Core.Services.Impl;
 using WizBot.Extensions;
 using NLog;
 using System.Globalization;
@@ -14,11 +13,7 @@ namespace WizBot.Modules
     {
         protected Logger _log { get; }
         protected CultureInfo _cultureInfo { get; set; }
-
-        public string ModuleTypeName { get; }
-        public string LowerModuleTypeName { get; }
-
-        public WizBotStrings Strings { get; set; }
+        public IBotStrings Strings { get; set; }
         public IBotConfigProvider Bc { get; set; }
         public CommandHandler CmdHandler { get; set; }
         public ILocalization Localization { get; set; }
@@ -30,8 +25,6 @@ namespace WizBot.Modules
         protected WizBotTopLevelModule(bool isTopLevelModule = true)
         {
             //if it's top level module
-            ModuleTypeName = isTopLevelModule ? this.GetType().Name : this.GetType().DeclaringType.Name;
-            LowerModuleTypeName = ModuleTypeName.ToLowerInvariant();
             _log = LogManager.GetCurrentClassLogger();
         }
 
@@ -61,10 +54,10 @@ namespace WizBot.Modules
         //}
 
         protected string GetText(string key) =>
-            Strings.GetText(key, _cultureInfo, LowerModuleTypeName);
+            Strings.GetText(key, _cultureInfo);
 
         protected string GetText(string key, params object[] replacements) =>
-            Strings.GetText(key, _cultureInfo, LowerModuleTypeName, replacements);
+            Strings.GetText(key, _cultureInfo, replacements);
 
         public Task<IUserMessage> ErrorLocalizedAsync(string textKey, params object[] replacements)
         {

@@ -1,6 +1,4 @@
-﻿using CommandLine;
-using WizBot.Core.Common;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WizBot.Core.Services.Database.Models

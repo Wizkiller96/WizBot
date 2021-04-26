@@ -26,7 +26,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using WizBot.Common.Collections;
 using WizBot.Modules.Administration.Services;
 using Configuration = AngleSharp.Configuration;
 

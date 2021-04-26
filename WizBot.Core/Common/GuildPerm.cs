@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Discord
 {
@@ -49,7 +45,7 @@ namespace Discord
         // Remarks:
         //     This permission requires the owner account to use two-factor authentication when
         //     used on a guild that has server-wide 2FA enabled.
-        ManageChannel = 16,
+        ManageChannels = 16,
         //
         // Summary:
         //     Allows management and editing of the guild.
@@ -174,7 +170,7 @@ namespace Discord
         //
         // Summary:
         //     Allows management and editing of channels.
-        ManageChannels = 16,
+        ManageChannel = 16,
         //
         // Summary:
         //     Allows for the addition of reactions to messages.

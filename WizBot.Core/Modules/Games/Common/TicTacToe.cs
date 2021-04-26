@@ -1,13 +1,13 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using WizBot.Extensions;
-using WizBot.Core.Services.Impl;
 using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CommandLine;
 using WizBot.Core.Common;
+using WizBot.Core.Services;
 
 namespace WizBot.Modules.Games.Common
 {
@@ -47,11 +47,11 @@ namespace WizBot.Modules.Games.Common
 
         private IUserMessage _previousMessage;
         private Timer _timeoutTimer;
-        private readonly WizBotStrings _strings;
+        private readonly IBotStrings _strings;
         private readonly DiscordSocketClient _client;
         private readonly Options _options;
 
-        public TicTacToe(WizBotStrings strings, DiscordSocketClient client, ITextChannel channel,
+        public TicTacToe(IBotStrings strings, DiscordSocketClient client, ITextChannel channel,
             IGuildUser firstUser, Options options)
         {
             _channel = channel;
@@ -70,11 +70,8 @@ namespace WizBot.Modules.Games.Common
             _moveLock = new SemaphoreSlim(1, 1);
         }
 
-        private string GetText(string key, params object[] replacements) =>
-            _strings.GetText(key,
-                _channel.GuildId,
-                typeof(Games).Name.ToLowerInvariant(),
-                replacements);
+        private string GetText(string key, params object[] replacements)
+            => _strings.GetText(key, _channel.GuildId, replacements);
 
         public string GetState()
         {

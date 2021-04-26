@@ -10,7 +10,6 @@ using Discord.Net;
 using Discord.WebSocket;
 using WizBot.Extensions;
 using WizBot.Core.Services;
-using WizBot.Core.Services.Impl;
 using NLog;
 using WizBot.Core.Modules.Games.Common.Trivia;
 
@@ -21,7 +20,7 @@ namespace WizBot.Modules.Games.Common.Trivia
         private readonly SemaphoreSlim _guessLock = new SemaphoreSlim(1, 1);
         private readonly Logger _log;
         private readonly IDataCache _cache;
-        private readonly WizBotStrings _strings;
+        private readonly IBotStrings _strings;
         private readonly DiscordSocketClient _client;
         private readonly IBotConfigProvider _bc;
         private readonly ICurrencyService _cs;
@@ -44,7 +43,7 @@ namespace WizBot.Modules.Games.Common.Trivia
         private int _timeoutCount = 0;
         private readonly string _quitCommand;
 
-        public TriviaGame(WizBotStrings strings, DiscordSocketClient client, IBotConfigProvider bc,
+        public TriviaGame(IBotStrings strings, DiscordSocketClient client, IBotConfigProvider bc,
             IDataCache cache, ICurrencyService cs, IGuild guild, ITextChannel channel,
             TriviaOptions options, string quitCommand)
         {
@@ -62,11 +61,8 @@ namespace WizBot.Modules.Games.Common.Trivia
             Channel = channel;
         }
 
-        private string GetText(string key, params object[] replacements) =>
-            _strings.GetText(key,
-                Channel.GuildId,
-                typeof(Games).Name.ToLowerInvariant(),
-                replacements);
+        private string GetText(string key, params object[] replacements)
+            => _strings.GetText(key, Channel.GuildId, replacements);
 
         public async Task StartGame()
         {

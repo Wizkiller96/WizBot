@@ -16,12 +16,11 @@ namespace WizBot.Core.Services.Impl
         private readonly DbService _db;
 
         public ConcurrentDictionary<ulong, CultureInfo> GuildCultureInfos { get; }
-        public CultureInfo DefaultCultureInfo { get; private set; } = CultureInfo.CurrentCulture;
+        public CultureInfo DefaultCultureInfo { get; private set; }
 
         private static readonly Dictionary<string, CommandData> _commandData = JsonConvert.DeserializeObject<Dictionary<string, CommandData>>(
-                File.ReadAllText("./_strings/cmd/command_strings.json"));
+                File.ReadAllText("./_strings/commands/commands.en-US.json"));
 
-        private Localization() { }
         public Localization(IBotConfigProvider bcp, WizBot bot, DbService db)
         {
             _log = LogManager.GetCurrentClassLogger();
@@ -116,10 +115,10 @@ namespace WizBot.Core.Services.Impl
 
         public CultureInfo GetCultureInfo(ulong? guildId)
         {
-            if (guildId == null)
+            if (guildId is null || !GuildCultureInfos.TryGetValue(guildId.Value, out var info) || info is null)
                 return DefaultCultureInfo;
-            GuildCultureInfos.TryGetValue(guildId.Value, out CultureInfo info);
-            return info ?? DefaultCultureInfo;
+
+            return info;
         }
 
         public static CommandData LoadCommand(string key)

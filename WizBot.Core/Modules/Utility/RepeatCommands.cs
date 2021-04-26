@@ -4,7 +4,6 @@ using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Common.Attributes;
 using WizBot.Common.TypeReaders;
-using WizBot.Core.Common;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Extensions;
@@ -14,8 +13,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
 using System.Threading.Tasks;
 using WizBot.Core.Common.TypeReaders.Models;
 

@@ -10,7 +10,6 @@ using WizBot.Core.Modules.Searches.Common;
 using WizBot.Core.Modules.Searches.Common.StreamNotifications;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
-using WizBot.Core.Services.Impl;
 using WizBot.Extensions;
 using Newtonsoft.Json;
 using StackExchange.Redis;
@@ -25,7 +24,7 @@ namespace WizBot.Modules.Searches.Services
     public class StreamNotificationService : INService
     {
         private readonly DbService _db;
-        private readonly WizBotStrings _strings;
+        private readonly IBotStrings _strings;
         private readonly Random _rng = new WizBotRandom();
         private readonly DiscordSocketClient _client;
         private readonly NotifChecker _streamTracker;
@@ -44,7 +43,7 @@ namespace WizBot.Modules.Searches.Services
         private readonly Timer _notifCleanupTimer;
 
         public StreamNotificationService(DbService db, DiscordSocketClient client,
-            WizBotStrings strings, IDataCache cache, IBotCredentials creds, IHttpClientFactory httpFactory,
+            IBotStrings strings, IDataCache cache, IBotCredentials creds, IHttpClientFactory httpFactory,
             WizBot bot)
         {
             _log = LogManager.GetCurrentClassLogger();
@@ -465,11 +464,8 @@ namespace WizBot.Modules.Searches.Services
             return embed;
         }
 
-        private string GetText(ulong guildId, string key, params object[] replacements) =>
-            _strings.GetText(key,
-                guildId,
-                "Searches".ToLowerInvariant(),
-                replacements);
+        private string GetText(ulong guildId, string key, params object[] replacements)
+            => _strings.GetText(key, guildId, replacements);
 
         public bool ToggleStreamOffline(ulong guildId)
         {

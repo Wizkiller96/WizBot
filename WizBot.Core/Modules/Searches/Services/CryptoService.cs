@@ -1,5 +1,4 @@
-﻿using Discord;
-using WizBot.Core.Modules.Searches.Common;
+﻿using WizBot.Core.Modules.Searches.Common;
 using WizBot.Core.Services;
 using WizBot.Extensions;
 using Newtonsoft.Json;

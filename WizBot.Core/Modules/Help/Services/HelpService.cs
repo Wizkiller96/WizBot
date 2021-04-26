@@ -8,12 +8,10 @@ using System.Linq;
 using WizBot.Common.Attributes;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Core.Services;
-using WizBot.Core.Services.Impl;
 using WizBot.Common;
 using NLog;
 using CommandLine;
 using System.Collections.Generic;
-using System.Net.Http.Headers;
 using WizBot.Modules.Administration.Services;
 
 namespace WizBot.Modules.Help.Services
@@ -22,11 +20,11 @@ namespace WizBot.Modules.Help.Services
     {
         private readonly IBotConfigProvider _bc;
         private readonly CommandHandler _ch;
-        private readonly WizBotStrings _strings;
+        private readonly IBotStrings _strings;
         private readonly Logger _log;
         private readonly DiscordPermOverrideService _dpos;
 
-        public HelpService(IBotConfigProvider bc, CommandHandler ch, WizBotStrings strings,
+        public HelpService(IBotConfigProvider bc, CommandHandler ch, IBotStrings strings,
             DiscordPermOverrideService dpos)
         {
             _bc = bc;
@@ -180,6 +178,6 @@ namespace WizBot.Modules.Help.Services
         }
 
         private string GetText(string text, IGuild guild, params object[] replacements) =>
-            _strings.GetText(text, guild?.Id, "Help".ToLowerInvariant(), replacements);
+            _strings.GetText(text, guild?.Id, replacements);
     }
 }

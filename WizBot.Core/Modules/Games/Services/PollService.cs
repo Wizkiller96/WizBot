@@ -7,12 +7,10 @@ using Discord.WebSocket;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Modules.Games.Common;
 using WizBot.Core.Services;
-using WizBot.Core.Services.Impl;
 using NLog;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Common.Collections;
 using WizBot.Extensions;
-using WizBot.Core.Services.Database;
 
 namespace WizBot.Modules.Games.Services
 {
@@ -25,12 +23,12 @@ namespace WizBot.Modules.Games.Services
 
         private readonly Logger _log;
         private readonly DiscordSocketClient _client;
-        private readonly WizBotStrings _strings;
+        private readonly IBotStrings _strings;
         private readonly DbService _db;
-        private readonly WizBotStrings _strs;
+        private readonly IBotStrings _strs;
 
-        public PollService(DiscordSocketClient client, WizBotStrings strings, DbService db,
-            WizBotStrings strs)
+        public PollService(DiscordSocketClient client, IBotStrings strings, DbService db,
+            IBotStrings strs)
         {
             _log = LogManager.GetCurrentClassLogger();
             _client = client;
@@ -106,7 +104,8 @@ namespace WizBot.Modules.Games.Services
 
         private async Task Pr_OnVoted(IUserMessage msg, IGuildUser usr)
         {
-            var toDelete = await msg.Channel.SendConfirmAsync(_strs.GetText("poll_voted", usr.Guild.Id, "Games".ToLowerInvariant(), Format.Bold(usr.ToString())))
+            var toDelete = await msg.Channel.SendConfirmAsync(_strs.GetText("poll_voted",
+                    usr.Guild.Id, Format.Bold(usr.ToString())))
                 .ConfigureAwait(false);
             toDelete.DeleteAfter(5);
             try { await msg.DeleteAsync().ConfigureAwait(false); } catch { }
