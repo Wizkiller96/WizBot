@@ -2,9 +2,9 @@
 
 To invite public WizBot to your server, click on the image bellow:
 
-[![WizNet Discord](https://i.imgur.com/veSbGZ2.png)](https://discordapp.com/oauth2/authorize?client_id=170849867508350977&scope=bot&permissions=66186303)
+[![WizNet Discord](https://i.imgur.com/veSbGZ2.png)](https://wizbot.cc/botinvite)
 
-In case you need any help, hop on the [WizNet Server](https://discord.gg/0ehQwTK2RBjAxzEY), where we can provide support.
+In case you need any help, hop on the [WizNet Server](https://wizbot.cc/discord), where we can provide support.
 
 WizBot is an open source project, and it can be found on our [GitHub](https://github.com/Wizkiller96/WizBot) or [GitLab](https://gitlab.com/WizNet/WizBot) page.
 
