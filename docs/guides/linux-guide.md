@@ -16,10 +16,10 @@ It is recommended that you use **Ubuntu 16.04**, as there have been nearly no pr
 
 ### Compatible operating systems
 
-- Ubuntu: 14.04, 16.04, 16.10, 17.04, 17.10, 18.04
+- Ubuntu: 16.04, 18.04, 20.04
 - Mint: 17, 18
-- Debian: 8, 9
-- CentOS: 7
+- Debian: 9, 10
+- CentOS: 7, 8
 
 #### Getting Started
 
