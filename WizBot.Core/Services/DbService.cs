@@ -12,20 +12,12 @@ namespace WizBot.Core.Services
         private readonly DbContextOptions<WizBotContext> options;
         private readonly DbContextOptions<WizBotContext> migrateOptions;
 
-        // private static readonly ILoggerFactory _loggerFactory = new LoggerFactory(new[] {
-        //     new ConsoleLoggerProvider((category, level)
-        //         => category == DbLoggerCategory.Database.Command.Name
-        //            && level >= LogLevel.Information, true)
-        //     });
-
         public DbService(IBotCredentials creds)
         {
             var builder = new SqliteConnectionStringBuilder(creds.Db.ConnectionString);
             builder.DataSource = Path.Combine(AppContext.BaseDirectory, builder.DataSource);
 
-            var optionsBuilder = new DbContextOptionsBuilder<WizBotContext>()
-                //.UseLoggerFactory(_loggerFactory)
-                ;
+            var optionsBuilder = new DbContextOptionsBuilder<WizBotContext>();
             optionsBuilder.UseSqlite(builder.ToString());
             options = optionsBuilder.Options;
 

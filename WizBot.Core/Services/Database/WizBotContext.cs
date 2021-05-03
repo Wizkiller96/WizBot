@@ -338,7 +338,8 @@ namespace WizBot.Core.Services.Database
 
             #region CurrencyTransactions
             modelBuilder.Entity<CurrencyTransaction>()
-                .HasIndex(x => x.DateAdded);
+                .HasIndex(x => x.UserId)
+                .IsUnique(false);
             #endregion
 
             #region Reminders

@@ -14,7 +14,6 @@ namespace WizBot.Core.Services.Database
         ISelfAssignedRolesRepository SelfAssignedRoles { get; }
         IBotConfigRepository BotConfig { get; }
         ICustomReactionRepository CustomReactions { get; }
-        ICurrencyTransactionsRepository CurrencyTransactions { get; }
         IMusicPlaylistRepository MusicPlaylists { get; }
         IWaifuRepository Waifus { get; }
         IDiscordUserRepository DiscordUsers { get; }
