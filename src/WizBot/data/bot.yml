@@ -1,0 +1,40 @@
+# DO NOT CHANGE
+version: 1
+# Most commands, when executed, have a small colored line
+# next to the response. The color depends whether the command
+# is completed, errored or in progress (pending)
+# Color settings below are for the color of those lines.
+color:
+  ok: ab40cd
+  error: ee281f
+  pending: faa61a
+# Default bot language. It has to be in the list of supported languages (.langli)
+defaultLocale: en-US
+# Style in which executed commands will show up in the console.
+# Allowed values: Simple, Normal, None
+consoleOutputType: Normal
+# Do you want any messages sent by users in Bot's DM to be forwarded to the owner(s)?
+forwardMessages: false
+# Do you want the message to be forwarded only to the first owner specified in the list of owners (in creds.yml),
+# or all owners? (this might cause the bot to lag if there's a lot of owners specified)
+forwardToAllOwners: true
+# When a user DMs the bot with a message which is not a command
+# he will receive this message. Leave empty for no response.
+dmHelpText: Type `.h` for help.
+# This is the response for the .h command
+helpText: "To add me to your server, use this link -> <https://discordapp.com/oauth2/authorize?client_id={0}&scope=bot&permissions=66186303>\r\nYou can use `{1}modules` command to see a list of all modules.\r\nYou can use `{1}commands ModuleName` to see a list of all of the commands in that module.\r\n(for example `{1}commands Admin`) \r\nFor a specific command help, use `{1}h CommandName` (for example {1}h {1}q)\r\n\r\n\r\n**LIST OF COMMANDS CAN BE FOUND ON THIS LINK**\r\n<https://commands.wizbot.cc>\r\n\r\n\r\nWizBot Support Server: https://wizbot.cc/discord"
+# List of modules and commands completely blocked on the bot
+blocked:
+  commands: []
+  modules: []
+# Which string will be used to recognize the commands
+prefix: "."
+# Whether the prefix will be a suffix, or prefix.
+# For example, if your prefix is ! you will run a command called 'cash' by typing either
+# '!cash @Someone' if your prefixIsSuffix: false or
+# 'cash @Someone!' if your prefixIsSuffix: true
+prefixIsSuffix: false
+# Whether the bot will rotate through all specified statuses. This setting can be changed via .rots command. See RotatingStatuses submodule in Administration.
+rotateStatuses: false
+# Amount of currency user will receive for every CENT pledged on patreon.
+patreonCurrencyPerCent: 100
