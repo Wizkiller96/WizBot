@@ -17,7 +17,7 @@ namespace WizBot.Modules.Permissions.Services
             _db = db;
         }
 
-        public async Task ResetPermissions(ulong guildId)
+        public async Task ResetPerms(ulong guildId)
         {
             using (var uow = _db.GetDbContext())
             {

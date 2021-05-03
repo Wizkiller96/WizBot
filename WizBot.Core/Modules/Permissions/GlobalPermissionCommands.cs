@@ -28,7 +28,7 @@ namespace WizBot.Modules.Permissions
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
-            public async Task Lgp()
+            public async Task GlobalPermList()
             {
                 if (!_service.BlockedModules.Any() && !_service.BlockedCommands.Any())
                 {
@@ -49,7 +49,7 @@ namespace WizBot.Modules.Permissions
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
-            public async Task Gmod(ModuleOrCrInfo module)
+            public async Task GlobalModule(ModuleOrCrInfo module)
             {
                 var moduleName = module.Name.ToLowerInvariant();
                 if (_service.BlockedModules.Add(moduleName))
@@ -83,7 +83,7 @@ namespace WizBot.Modules.Permissions
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
-            public async Task Gcmd(CommandOrCrInfo cmd)
+            public async Task GlobalCommand(CommandOrCrInfo cmd)
             {
                 var commandName = cmd.Name.ToLowerInvariant();
                 if (_service.BlockedCommands.Add(commandName))

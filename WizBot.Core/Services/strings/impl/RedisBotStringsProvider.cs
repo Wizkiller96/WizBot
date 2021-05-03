@@ -1,4 +1,6 @@
+using System;
 using System.Linq;
+using System.Web;
 using Discord.WebSocket;
 using StackExchange.Redis;
 
@@ -28,6 +30,24 @@ namespace WizBot.Core.Services
             return value;
         }
 
+        public CommandStrings GetCommandStrings(string localeName, string commandName)
+        {
+            string argsStr = _redis.GetDatabase().HashGet($"commands:{localeName}", $"{commandName}::args");
+            if (argsStr == default)
+                return null;
+
+            var descStr = _redis.GetDatabase().HashGet($"commands:{localeName}", $"{commandName}::desc");
+            if (descStr == default)
+                return null;
+
+            var args = Array.ConvertAll(argsStr.Split('&'), HttpUtility.UrlDecode);
+            return new CommandStrings()
+            {
+                Args = args,
+                Desc = descStr
+            };
+        }
+
         public void Reload()
         {
             var redisDb = _redis.GetDatabase();
@@ -38,6 +58,18 @@ namespace WizBot.Core.Services
                     .ToArray();
 
                 redisDb.HashSet($"responses:{localeName}", hashFields);
+            }
+
+            foreach (var (localeName, localeStrings) in _source.GetCommandStrings())
+            {
+                var hashFields = localeStrings
+                    .Select(x => new HashEntry($"{x.Key}::args",
+                            string.Join('&', Array.ConvertAll(x.Value.Args, HttpUtility.UrlEncode))))
+                    .Concat(localeStrings
+                        .Select(x => new HashEntry($"{x.Key}::desc", x.Value.Desc)))
+                    .ToArray();
+
+                redisDb.HashSet($"commands:{localeName}", hashFields);
             }
         }
     }

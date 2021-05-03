@@ -705,7 +705,7 @@ namespace WizBot.Modules.Music
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        public async Task ShufflePlaylist()
+        public async Task PlaylistShuffle()
         {
             var mp = await _service.GetOrCreatePlayer(Context).ConfigureAwait(false);
             var val = mp.ToggleShuffle();
@@ -787,7 +787,7 @@ namespace WizBot.Modules.Music
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         [OwnerOnly]
-        public async Task LocalPl([Leftover] string dirPath)
+        public async Task LocalPlaylist([Leftover] string dirPath)
         {
             if (string.IsNullOrWhiteSpace(dirPath))
                 return;
@@ -924,7 +924,7 @@ namespace WizBot.Modules.Music
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        public async Task RepeatPl()
+        public async Task PlaylistRepeat()
         {
             var mp = await _service.GetOrCreatePlayer(Context).ConfigureAwait(false);
             var currentValue = mp.ToggleRepeatPlaylist();

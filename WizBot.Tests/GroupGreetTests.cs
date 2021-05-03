@@ -7,7 +7,7 @@ using NUnit.Framework;
 
 namespace WizBot.Tests
 {
-    public class Tests
+    public class GroupGreetTests
     {
         private GreetGrouper<int> _grouper;
 

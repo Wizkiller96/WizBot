@@ -234,7 +234,7 @@ namespace WizBot.Modules.Gambling
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            public async Task WaifuClaimerAffinity([Leftover]IGuildUser u = null)
+            public async Task Affinity([Leftover] IGuildUser u = null)
             {
                 if (u?.Id == ctx.User.Id)
                 {
@@ -272,7 +272,7 @@ namespace WizBot.Modules.Gambling
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            public async Task WaifuLeaderboard(int page = 1)
+            public async Task WaifuLb(int page = 1)
             {
                 page--;
 

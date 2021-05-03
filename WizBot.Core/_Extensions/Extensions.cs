@@ -30,6 +30,8 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using AngleSharp.Attributes;
+using WizBot.Common.Attributes;
 
 namespace WizBot.Extensions
 {
@@ -160,11 +162,21 @@ namespace WizBot.Extensions
         public static bool IsAuthor(this IMessage msg, IDiscordClient client)
             => msg.Author?.Id == client.CurrentUser.Id;
 
-        public static string RealSummary(this CommandInfo cmd, string prefix)
-            => string.Format(cmd.Summary, prefix);
-        public static string RealRemarks(this CommandInfo cmd, string prefix)
-            => string.Join("\n", JsonConvert.DeserializeObject<string[]>(cmd.Remarks)
-                .Select(x => Format.Code(string.Format(x, prefix))));
+        public static string RealSummary(this CommandInfo cmd, IBotStrings strings, string prefix)
+            => string.Format(strings.GetCommandStrings(cmd.Name).Desc, prefix);
+
+        public static string[] RealRemarksArr(this CommandInfo cmd, IBotStrings strings, string prefix)
+            => Array.ConvertAll(strings.GetCommandStrings(cmd.MethodName()).Args,
+                arg => GetFullUsage(cmd.Name, arg, prefix));
+
+        public static string MethodName(this CommandInfo cmd)
+            => ((WizBotCommandAttribute)cmd.Attributes.FirstOrDefault(x => x is WizBotCommandAttribute))?.MethodName
+               ?? cmd.Name;
+        // public static string RealRemarks(this CommandInfo cmd, IBotStrings strings, string prefix)
+        //     => string.Join('\n', cmd.RealRemarksArr(strings, prefix));
+
+        public static string GetFullUsage(string commandName, string args, string prefix)
+            => $"{prefix}{commandName} {args}";
 
         public static EmbedBuilder AddPaginatedFooter(this EmbedBuilder embed, int curPage, int? lastPage)
         {

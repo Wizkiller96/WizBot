@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using System.IO;
-using Newtonsoft.Json;
 
 namespace WizBot.Core.Services
 {
@@ -8,6 +6,7 @@ namespace WizBot.Core.Services
     {
         private readonly IStringsSource _source;
         private IReadOnlyDictionary<string, Dictionary<string, string>> responseStrings;
+        private IReadOnlyDictionary<string, Dictionary<string, CommandStrings>> commandStrings;
 
         public LocalBotStringsProvider(IStringsSource source)
         {
@@ -29,6 +28,18 @@ namespace WizBot.Core.Services
         public void Reload()
         {
             responseStrings = _source.GetResponseStrings();
+            commandStrings = _source.GetCommandStrings();
+        }
+
+        public CommandStrings GetCommandStrings(string localeName, string commandName)
+        {
+            if (commandStrings.TryGetValue(localeName, out var langStrings)
+                && langStrings.TryGetValue(commandName, out var strings))
+            {
+                return strings;
+            }
+
+            return null;
         }
     }
 }

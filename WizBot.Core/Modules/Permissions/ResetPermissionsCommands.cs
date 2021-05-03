@@ -21,15 +21,15 @@ namespace WizBot.Modules.Permissions
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
-            public async Task ResetPermissions()
+            public async Task ResetPerms()
             {
-                await _service.ResetPermissions(ctx.Guild.Id).ConfigureAwait(false);
+                await _service.ResetPerms(ctx.Guild.Id).ConfigureAwait(false);
                 await ReplyConfirmLocalizedAsync("perms_reset").ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
-            public async Task ResetGlobalPermissions()
+            public async Task ResetGlobalPerms()
             {
                 await _service.ResetGlobalPermissions().ConfigureAwait(false);
                 await ReplyConfirmLocalizedAsync("global_perms_reset").ConfigureAwait(false);

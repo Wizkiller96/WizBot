@@ -11,6 +11,8 @@ namespace WizBot.Core.Services
         /// Gets all response strings
         /// </summary>
         /// <returns>Dictionary(localename, Dictionary(key, response))</returns>
-        public Dictionary<string, Dictionary<string, string>> GetResponseStrings();
+        Dictionary<string, Dictionary<string, string>> GetResponseStrings();
+
+        Dictionary<string, Dictionary<string, CommandStrings>> GetCommandStrings();
     }
 }

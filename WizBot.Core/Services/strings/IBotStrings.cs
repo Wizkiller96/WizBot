@@ -7,8 +7,10 @@ namespace WizBot.Core.Services
     /// </summary>
     public interface IBotStrings
     {
-        public string GetText(string key, ulong? guildId = null, params object[] data);
-        public string GetText(string key, CultureInfo locale, params object[] data);
+        string GetText(string key, ulong? guildId = null, params object[] data);
+        string GetText(string key, CultureInfo locale, params object[] data);
         void Reload();
+        CommandStrings GetCommandStrings(string commandName, ulong? guildId = null);
+        CommandStrings GetCommandStrings(string commandName, CultureInfo cultureInfo);
     }
 }

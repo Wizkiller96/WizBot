@@ -167,7 +167,7 @@ namespace WizBot.Modules.Administration
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageRoles)]
             [BotPerm(GuildPerm.ManageRoles)]
-            public async Task Tesar()
+            public async Task Togglexclsar()
             {
                 bool areExclusive = _service.ToggleEsar(ctx.Guild.Id);
                 if (areExclusive)

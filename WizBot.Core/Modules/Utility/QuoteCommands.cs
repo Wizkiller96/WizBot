@@ -188,7 +188,7 @@ namespace WizBot.Modules.Utility
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            public async Task AddQuote(string keyword, [Leftover] string text)
+            public async Task QuoteAdd(string keyword, [Leftover] string text)
             {
                 if (string.IsNullOrWhiteSpace(keyword) || string.IsNullOrWhiteSpace(text))
                     return;
