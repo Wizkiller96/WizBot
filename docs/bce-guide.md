@@ -23,6 +23,12 @@ The reward multiplier for rolling 67 or higher on `.br`.
 The reward multiplier for rolling 91 or higher on `.br`.  
 **Default is 4.0**
 
+## GroupGreets
+
+Toggles whether your bot will group greet/bye messages into a single message every 5 seconds.
+1st user who joins will get greeted immediately
+If more users join within the next 5 seconds, they will be greeted in groups of 5. This will cause %user.mention% and other placeholders to be replaced with multiple users. Keep in mind this might break some of your embeds - for example if you have %user.avatar% in the thumbnail, it will become invalid, as it will resolve to a list of avatars of grouped users.
+
 ## CurrencyGenerationPassword
 
 Either `true` or `false` value on whether the currency spawned with `.gc` command will have a random password associated with it in the top left corner. This helps prevent people who lurk in the chat and just spam `.pick` to gain flowers.  

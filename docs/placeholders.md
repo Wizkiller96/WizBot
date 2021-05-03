@@ -51,18 +51,18 @@ Some features have their own specific placeholders which are noted in that featu
 * `%user.joined_time%` - Account join time \(local time\)
 * `%user.joined_date%` - Account join date
 
-### **Ban message placeholders**
+### **Ban message placeholders**  
 
-* `%ban.mod%` - Full name of the moderator who performed the ban
-* `%ban.mod.fullname%` - Full name of the moderator who performed the ban
-* `%ban.mod.mention%` - Moderator's mention
-* `%ban.mod.name%` - Name of the moderator - Admin
-* `%ban.mod.discrim%` - Discriminator of the moderator - 1234
-* `%ban.user%` - Full name of the banned user
-* `%ban.user.fullname%` - Full name of the banned user
-* `%ban.user.name%` - Name of the banned user
-* `%ban.user.discrim%` - Discriminator of the banned user
-* `%ban.reason%` - Reason for the ban, if provided
+* `%ban.mod%` - Full name of the moderator who performed the ban  
+* `%ban.mod.fullname%` - Full name of the moderator who performed the ban  
+* `%ban.mod.mention%` - Moderator's mention  
+* `%ban.mod.name%` - Name of the moderator - Admin  
+* `%ban.mod.discrim%` - Discriminator of the moderator - 1234  
+* `%ban.user%` - Full name of the banned user  
+* `%ban.user.fullname%` - Full name of the banned user  
+* `%ban.user.name%` - Name of the banned user  
+* `%ban.user.discrim%` - Discriminator of the banned user  
+* `%ban.reason%` - Reason for the ban, if provided  
 * `%ban.duration%` - Duration of the ban in the form Days.Hours:Minutes (6.05:04)
 
 ### **Bot stats placeholders**
