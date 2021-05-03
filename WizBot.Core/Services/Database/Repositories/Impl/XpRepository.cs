@@ -34,6 +34,7 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
         {
             return _set
                 .AsQueryable()
+                .AsNoTracking()
                 .Where(x => x.GuildId == guildId)
                 .OrderByDescending(x => x.Xp + x.AwardedXp)
                 .Skip(page * 9)
@@ -45,6 +46,7 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
         {
             return _set
                 .AsQueryable()
+                .AsNoTracking()
                 .Where(x => x.GuildId == guildId)
                 .OrderByDescending(x => x.Xp + x.AwardedXp)
                 .Take(count)
@@ -62,6 +64,7 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
 
             return _set
                 .AsQueryable()
+                .AsNoTracking()
                 .Where(x => x.GuildId == guildId && ((x.Xp + x.AwardedXp) >
                     (_set.AsQueryable()
                         .Where(y => y.UserId == userId && y.GuildId == guildId)

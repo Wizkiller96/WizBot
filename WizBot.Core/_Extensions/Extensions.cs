@@ -41,6 +41,8 @@ namespace WizBot.Extensions
 
         public static Regex UrlRegex = new Regex(@"^(https?|ftp)://(?<path>[^\s/$.?#].[^\s]*)$", RegexOptions.Compiled);
 
+        public static TOut[] Map<TIn, TOut>(this TIn[] arr, Func<TIn, TOut> f)
+            => Array.ConvertAll(arr, x => f(x));
 
         public static Task<IUserMessage> EmbedAsync(this IMessageChannel channel, CREmbed crEmbed, bool sanitizeAll = false)
         {

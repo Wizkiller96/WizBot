@@ -86,7 +86,9 @@ VALUES ({userId}, {username}, {discrim}, {avatarId});
         }
 
         public long GetUserCurrency(ulong userId) =>
-            _set.FirstOrDefault(x => x.UserId == userId)?.CurrencyAmount ?? 0;
+            _set.AsNoTracking()
+                .FirstOrDefault(x => x.UserId == userId)
+                ?.CurrencyAmount ?? 0;
 
         public void RemoveFromMany(List<ulong> ids)
         {
