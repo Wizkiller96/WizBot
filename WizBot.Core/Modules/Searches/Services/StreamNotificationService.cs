@@ -18,7 +18,6 @@ using Discord.WebSocket;
 using WizBot.Common.Collections;
 using NLog;
 
-#nullable enable
 namespace WizBot.Modules.Searches.Services
 {
     public class StreamNotificationService : INService
@@ -342,7 +341,7 @@ namespace WizBot.Modules.Searches.Services
             return count;
         }
 
-        public async Task<FollowedStream?> UnfollowStreamAsync(ulong guildId, int index)
+        public async Task<FollowedStream> UnfollowStreamAsync(ulong guildId, int index)
         {
             FollowedStream fs;
             using (var uow = _db.GetDbContext())
@@ -391,7 +390,7 @@ namespace WizBot.Modules.Searches.Services
                 CommandFlags.FireAndForget);
         }
 
-        public async Task<StreamData?> FollowStream(ulong guildId, ulong channelId, string url)
+        public async Task<StreamData> FollowStream(ulong guildId, ulong channelId, string url)
         {
             // this will 
             var data = await _streamTracker.GetStreamDataByUrlAsync(url);
@@ -489,7 +488,7 @@ namespace WizBot.Modules.Searches.Services
             return newValue;
         }
 
-        public Task<StreamData?> GetStreamDataAsync(string url)
+        public Task<StreamData> GetStreamDataAsync(string url)
         {
             return _streamTracker.GetStreamDataByUrlAsync(url);
         }
@@ -517,7 +516,7 @@ namespace WizBot.Modules.Searches.Services
             }
         }
 
-        public bool SetStreamMessage(ulong guildId, int index, string message, out FollowedStream? fs)
+        public bool SetStreamMessage(ulong guildId, int index, string message, out FollowedStream fs)
         {
             using (var uow = _db.GetDbContext())
             {

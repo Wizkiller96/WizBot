@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <LangVersion>preview</LangVersion>
+    <LangVersion>8.0</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ApplicationIcon>wizbot_icon.ico</ApplicationIcon>
   </PropertyGroup>

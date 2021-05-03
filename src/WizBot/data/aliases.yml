@@ -986,7 +986,7 @@ globalpermlist:
 - listglobalperms
 resetglobalperms:
 - resetglobalperms
-prefix:
+prefixcommand:
 - prefix
 defprefix:
 - defprefix

@@ -22,19 +22,31 @@ forwardToAllOwners: true
 # he will receive this message. Leave empty for no response.
 dmHelpText: Type `.h` for help.
 # This is the response for the .h command
-helpText: "To add me to your server, use this link -> <https://discordapp.com/oauth2/authorize?client_id={0}&scope=bot&permissions=66186303>\r\nYou can use `{1}modules` command to see a list of all modules.\r\nYou can use `{1}commands ModuleName` to see a list of all of the commands in that module.\r\n(for example `{1}commands Admin`) \r\nFor a specific command help, use `{1}h CommandName` (for example {1}h {1}q)\r\n\r\n\r\n**LIST OF COMMANDS CAN BE FOUND ON THIS LINK**\r\n<https://commands.wizbot.cc>\r\n\r\n\r\nWizBot Support Server: https://wizbot.cc/discord"
+helpText: "To add me to your server, use this link -> <https://discordapp.com/oauth2/authorize?client_id={0}&scope=bot&permissions=66186303>
+  You can use `{1}modules` command to see a list of all modules.
+  You can use `{1}commands ModuleName` to see a list of all of the commands in that module.
+  (for example `{1}commands Admin`) 
+  For a specific command help, use `{1}h CommandName` (for example {1}h {1}q)
+
+
+  **LIST OF COMMANDS CAN BE FOUND ON THIS LINK**
+  <https://commands.wizbot.cc/>
+
+  WizBot Support Server: https://wizbot.cc/discord/"
 # List of modules and commands completely blocked on the bot
 blocked:
   commands: []
   modules: []
 # Which string will be used to recognize the commands
 prefix: "."
-# Whether the prefix will be a suffix, or prefix.
-# For example, if your prefix is ! you will run a command called 'cash' by typing either
-# '!cash @Someone' if your prefixIsSuffix: false or
-# 'cash @Someone!' if your prefixIsSuffix: true
-prefixIsSuffix: false
 # Whether the bot will rotate through all specified statuses. This setting can be changed via .rots command. See RotatingStatuses submodule in Administration.
 rotateStatuses: false
 # Amount of currency user will receive for every CENT pledged on patreon.
 patreonCurrencyPerCent: 100
+#Toggles whether your bot will group greet/bye messages into a single message every 5 seconds.
+#1st user who joins will get greeted immediately
+#If more users join within the next 5 seconds, they will be greeted in groups of 5.
+#This will cause %user.mention% and other placeholders to be replaced with multiple users. 
+#Keep in mind this might break some of your embeds - for example if you have %user.avatar% in the thumbnail,
+#it will become invalid, as it will resolve to a list of avatars of grouped users.
+groupGreets: false
