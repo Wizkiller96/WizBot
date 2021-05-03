@@ -41,7 +41,6 @@ namespace WizBot.Modules.Administration.Services
         private readonly IDataCache _cache;
         private readonly IImageCache _imgs;
         private readonly IHttpClientFactory _httpFactory;
-        //private readonly Timer _updateTimer;
 
         public SelfService(DiscordSocketClient client, WizBot bot, CommandHandler cmdHandler, DbService db,
             IBotConfigProvider bc, IBotStrings strings, IBotCredentials creds,
@@ -63,31 +62,6 @@ namespace WizBot.Modules.Administration.Services
             {
                 sub.Subscribe(_creds.RedisKey() + "_reload_images",
                     delegate { _imgs.Reload(); }, CommandFlags.FireAndForget);
-                // _updateTimer = new Timer(async _ =>
-                // {
-                //     try
-                //     {
-                //         var ch = ownerChannels?.Values.FirstOrDefault();
-
-                //         if (ch == null) // no owner channels
-                //             return;
-
-                //         var cfo = _bc.BotConfig.CheckForUpdates;
-                //         if (cfo == UpdateCheckType.None)
-                //             return;
-
-                //         string data;
-                //         if ((cfo == UpdateCheckType.Commit && (data = await GetNewCommit().ConfigureAwait(false)) != null)
-                //             || (cfo == UpdateCheckType.Release && (data = await GetNewRelease().ConfigureAwait(false)) != null))
-                //         {
-                //             await ch.SendConfirmAsync("New Bot Update", data).ConfigureAwait(false);
-                //         }
-                //     }
-                //     catch (Exception ex)
-                //     {
-                //         _log.Warn(ex);
-                //     }
-                // }, null, TimeSpan.FromHours(8), TimeSpan.FromHours(8));
             }
             sub.Subscribe(_creds.RedisKey() + "_reload_bot_config",
                 delegate { _bc.Reload(); }, CommandFlags.FireAndForget);
@@ -159,72 +133,6 @@ namespace WizBot.Modules.Administration.Services
                 if (client.ShardId == 0)
                     await LoadAdminChannels().ConfigureAwait(false);
             });
-
-        }
-
-        // private async Task<string> GetNewCommit()
-        // {
-        //     var client = new GitHubClient(new ProductHeaderValue("wizbot"));
-        //     var lu = _bc.BotConfig.LastUpdate;
-        //     var commits = await client.Repository.Commit.GetAll("Wizkiller96", "WizBot", new CommitRequest()
-        //     {
-        //         Since = lu,
-        //     }).ConfigureAwait(false);
-
-            // commits = commits.Where(x => x.Commit.Committer.Date.UtcDateTime > lu)
-            //     .Take(10)
-            //     .ToList();
-
-            // if (!commits.Any())
-            //     return null;
-
-            // SetNewLastUpdate(commits[0].Commit.Committer.Date.UtcDateTime);
-
-            // var newCommits = commits
-            //     .Select(x => $"[{x.Sha.TrimTo(6, true)}]({x.HtmlUrl})  {x.Commit.Message.TrimTo(50)}");
-
-        //     return string.Join('\n', newCommits);
-        // }
-
-        private void SetNewLastUpdate(DateTime dt)
-        {
-            using (var uow = _db.GetDbContext())
-            {
-                var bc = uow.BotConfig.GetOrCreate(set => set);
-                bc.LastUpdate = dt;
-                uow.SaveChanges();
-            }
-
-            _bc.BotConfig.LastUpdate = dt;
-        }
-
-        // private async Task<string> GetNewRelease()
-        // {
-        //     var client = new GitHubClient(new ProductHeaderValue("wizbot"));
-        //     var lu = _bc.BotConfig.LastUpdate;
-        //     var release = (await client.Repository.Release.GetAll("Wizkiller96", "WizBot").ConfigureAwait(false)).FirstOrDefault();
-
-            // if (release == null || release.CreatedAt.UtcDateTime <= lu)
-            //     return null;
-
-            // SetNewLastUpdate(release.CreatedAt.UtcDateTime);
-
-        //     return Format.Bold(release.Name) + "\n\n" + release.Body.TrimTo(1500);
-        // }
-
-        public void SetUpdateCheck(UpdateCheckType type)
-        {
-            using (var uow = _db.GetDbContext())
-            {
-                var bc = uow.BotConfig.GetOrCreate(set => set);
-                _bc.BotConfig.CheckForUpdates = bc.CheckForUpdates = type;
-                uow.SaveChanges();
-            }
-
-            // if (type == UpdateCheckType.None)
-            // {
-            //     _updateTimer.Change(Timeout.Infinite, Timeout.Infinite);
-            // }
         }
 
         private Timer TimerFromStartupCommand(StartupCommand x)

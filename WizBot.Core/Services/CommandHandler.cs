@@ -15,6 +15,8 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using WizBot.Core.Common.Configs;
+using WizBot.Core.Services.Impl;
 
 namespace WizBot.Core.Services
 {
@@ -175,7 +177,8 @@ namespace WizBot.Core.Services
 
         private Task LogSuccessfulExecution(IUserMessage usrMsg, ITextChannel channel, params int[] execPoints)
         {
-            if (_bcp.BotConfig.ConsoleOutputType == Database.Models.ConsoleOutputType.Normal)
+            var bss = _services.GetService<BotSettingsService>();
+            if (bss.Data.ConsoleOutputType == ConsoleOutputType.Normal)
             {
                 _log.Info($"Command Executed after " + string.Join("/", execPoints.Select(x => (x * _oneThousandth).ToString("F3"))) + "s\n\t" +
                         "User: {0}\n\t" +
@@ -201,7 +204,8 @@ namespace WizBot.Core.Services
 
         private void LogErroredExecution(string errorMessage, IUserMessage usrMsg, ITextChannel channel, params int[] execPoints)
         {
-            if (_bcp.BotConfig.ConsoleOutputType == Database.Models.ConsoleOutputType.Normal)
+            var bss = _services.GetService<BotSettingsService>();
+            if (bss.Data.ConsoleOutputType == ConsoleOutputType.Normal)
             {
                 _log.Warn($"Command Errored after " + string.Join("/", execPoints.Select(x => (x * _oneThousandth).ToString("F3"))) + "s\n\t" +
                             "User: {0}\n\t" +

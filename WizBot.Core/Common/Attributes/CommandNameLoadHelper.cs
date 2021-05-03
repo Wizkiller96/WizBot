@@ -13,7 +13,7 @@ namespace WizBot.Common.Attributes
 
         public static Lazy<Dictionary<string, string[]>> LazyCommandAliases
             = new Lazy<Dictionary<string, string[]>>(() => LoadCommandNames());
-        public static Dictionary<string, string[]> LoadCommandNames(string aliasesFilePath = "config/aliases.yml")
+        public static Dictionary<string, string[]> LoadCommandNames(string aliasesFilePath = "data/aliases.yml")
         {
             var text = File.ReadAllText(aliasesFilePath);
             return _deserializer.Deserialize<Dictionary<string, string[]>>(text);

@@ -1187,8 +1187,6 @@ delete:
 roleid:
 - roleid
 - rid
-updatescheck:
-- updatescheck
 nsfwtoggle:
 - nsfwtoggle
 - nsfw

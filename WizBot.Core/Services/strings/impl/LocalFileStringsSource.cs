@@ -10,11 +10,11 @@ namespace WizBot.Core.Services
     /// </summary>
     public class LocalFileStringsSource : IStringsSource
     {
-        private readonly string _responsesPath = "config/strings/responses";
-        private readonly string _commandsPath = "config/strings/commands";
+        private readonly string _responsesPath = "data/strings/responses";
+        private readonly string _commandsPath = "data/strings/commands";
 
-        public LocalFileStringsSource(string responsesPath = "config/strings/responses",
-            string commandsPath = "config/strings/commands")
+        public LocalFileStringsSource(string responsesPath = "data/strings/responses",
+            string commandsPath = "data/strings/commands")
         {
             _responsesPath = responsesPath;
             _commandsPath = commandsPath;

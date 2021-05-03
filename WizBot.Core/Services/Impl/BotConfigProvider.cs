@@ -2,10 +2,133 @@
 using WizBot.Common;
 using WizBot.Core.Services.Database.Models;
 using System;
+using System.Data.Common;
 using System.Reflection;
+using Microsoft.EntityFrameworkCore;
+using WizBot.Core.Common;
+using WizBot.Core.Common.Configs;
+using NLog;
+using NLog.Fluent;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 
 namespace WizBot.Core.Services.Impl
 {
+    public class BotSettingsMigrator
+    {
+        private readonly Logger _log;
+        private readonly DbService _db;
+        private readonly BotSettingsService _bss;
+
+        public BotSettingsMigrator(DbService dbService, BotSettingsService bss)
+        {
+            _log = LogManager.GetCurrentClassLogger();
+            _db = dbService;
+            _bss = bss;
+        }
+
+        public void EnsureMigrated()
+        {
+            using (var uow = _db.GetDbContext())
+            {
+                var conn = uow._context.Database.GetDbConnection();
+                MigrateBotConfig(conn);
+            }
+        }
+
+        private void MigrateBotConfig(DbConnection conn)
+        {
+            using var checkTableCommand = conn.CreateCommand();
+
+            // make sure table still exists
+            checkTableCommand.CommandText = "SELECT name FROM sqlite_master WHERE type='table' AND name='BotConfig';";
+            var checkReader = checkTableCommand.ExecuteReader();
+            if (!checkReader.HasRows)
+                return;
+
+            using var checkMigratedCommand = conn.CreateCommand();
+            checkMigratedCommand.CommandText = "UPDATE BotConfig SET HasMigratedBotSettings = 1 WHERE HasMigratedBotSettings = 0;";
+            var changedRows = (int)checkMigratedCommand.ExecuteNonQuery();
+            if (changedRows == 0)
+                return;
+
+            _log.Info("Migrating bot settings...");
+            using var com = conn.CreateCommand();
+            com.CommandText = $@"SELECT DefaultPrefix, ForwardMessages, ForwardToAllOwners,
+OkColor, ErrorColor, ConsoleOutputType, DMHelpString, HelpString, PatreonCurrencyPerCent, RotatingStatuses
+FROM BotConfig";
+
+            using var reader = com.ExecuteReader();
+            if (!reader.Read())
+                return;
+
+            Log.Info("Data written to data/bot.yml");
+
+            _bss.ModifyBotConfig((BotSettings x) =>
+            {
+                x.Prefix = reader.GetString(0);
+                x.ForwardMessages = reader.GetBoolean(1);
+                x.ForwardToAllOwners = reader.GetBoolean(2);
+                x.Color = new ColorConfig()
+                {
+                    Ok = reader.GetString(3),
+                    Error = reader.GetString(4),
+                };
+                x.ConsoleOutputType = (ConsoleOutputType)reader.GetInt32(5);
+                x.DmHelpText = reader.IsDBNull(7) ? string.Empty : reader.GetString(6);
+                x.HelpText = reader.IsDBNull(8) ? string.Empty : reader.GetString(7);
+                x.PatreonCurrencyPerCent = reader.GetFloat(8);
+                x.RotateStatuses = reader.GetBoolean(9);
+            });
+        }
+    }
+
+    public abstract class SettingsServiceBase<TSettings>
+    {
+        protected readonly string _filePath;
+        protected readonly ISeria _serializer;
+
+        protected TSettings _data;
+        public TSettings Data => CreateCopy();
+
+        protected SettingsServiceBase(string filePath, ISeria serializer)
+        {
+            _filePath = filePath;
+            _serializer = serializer;
+        }
+
+        private TSettings CreateCopy()
+        {
+            var serializedData = _serializer.Serialize(_data);
+            return _serializer.Deserialize<TSettings>(serializedData);
+        }
+
+        public void Reload()
+        {
+            var deserializer = new DeserializerBuilder()
+                .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                .Build();
+
+            _data = deserializer.Deserialize<TSettings>(_filePath);
+        }
+
+        public void ModifyBotConfig(Action<TSettings> action)
+        {
+            var copy = CreateCopy();
+            action(copy);
+            _data = copy;
+        }
+    }
+
+    public class BotSettingsService : SettingsServiceBase<BotSettings>
+    {
+        private const string FilePath = "config/bot.yml";
+        public BotSettingsService(ISeria serializer) : base(FilePath, serializer)
+        {
+
+        }
+    }
+
     public class BotConfigProvider : IBotConfigProvider
     {
         private readonly DbService _db;
@@ -59,9 +182,6 @@ namespace WizBot.Core.Services.Impl
                         break;
                     case BotConfigEditType.CurrencyName:
                         bc.CurrencyName = newValue ?? "-";
-                        break;
-                    case BotConfigEditType.CurrencyPluralName:
-                        bc.CurrencyPluralName = newValue ?? bc.CurrencyName + "s";
                         break;
                     case BotConfigEditType.CurrencySign:
                         bc.CurrencySign = newValue ?? "-";
@@ -211,16 +331,6 @@ namespace WizBot.Core.Services.Impl
                         {
                             return false;
                         }
-                        break;
-                    case BotConfigEditType.ConsoleOutputType:
-                        if (!Enum.TryParse<ConsoleOutputType>(newValue, true, out var val))
-                            return false;
-                        bc.ConsoleOutputType = val;
-                        break;
-                    case BotConfigEditType.CheckForUpdates:
-                        if (!Enum.TryParse<UpdateCheckType>(newValue, true, out var up))
-                            return false;
-                        bc.CheckForUpdates = up;
                         break;
                     case BotConfigEditType.CurrencyGenerationPassword:
                         if (!bool.TryParse(newValue, out var pw))

@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace WizBot.Core.Services.Database
 {
@@ -371,6 +372,14 @@ namespace WizBot.Core.Services.Database
             modelBuilder.Entity<DiscordPermOverride>()
                 .HasIndex(x => new { x.GuildId, x.Command })
                 .IsUnique();
+
+            #endregion
+
+            #region BotConfigMigrations
+
+            var bcEntity = modelBuilder.Entity<BotConfig>();
+            bcEntity.Property(bc => bc.HasMigratedBotSettings)
+                .HasDefaultValue(1);
 
             #endregion
         }

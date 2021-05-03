@@ -51,12 +51,6 @@
         /// </summary>
         CurrencyName,
         /// <summary>
-        /// Plural name of your currency (if you have currency name called "dollar" then put this to "dollars".
-        /// I'm not sure if this is even used anywhere in the bot anymore.
-        /// Default is Cherry Blossoms
-        /// </summary>
-        CurrencyPluralName,
-        /// <summary>
         /// Emoji of your currency. You can use server emojis only if your bot is only on your own server, or 
         /// if you have nitro/partner.
         /// Default is 🌸.
@@ -162,17 +156,6 @@
         /// Default is 0.
         /// </summary>
         DailyCurrencyDecay,
-        /// <summary>
-        /// Whether the bot will see if there are updates available. The patch notes will be
-        /// sent to Bot Owner's DM. The bot checks for updates once every 8 hours.
-        /// There are 3 available values:
-        /// None: The bot will not check for updates
-        /// Commit: This is useful for linux self-hosters - the bot will check for any new commit on the WizBot repository.
-        /// Release: This is useful for windows self-hosters - the bot will check for any new releases published on the WizBot repository.
-        ///     This setting is also useful for linux self-hosters who only want to update when it's pretty safe to do so :)
-        /// Default is Release.
-        /// </summary>
-        CheckForUpdates,
         /// <summary>
         /// You need this only if you have a patreon page, and you've specified the
         /// PatreonCampaignId and PatreonAccessToken in credentials.json. This value is the amount of 
