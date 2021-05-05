@@ -201,6 +201,12 @@ leave:
   desc: "Makes WizBot leave the server. Either server name or server ID is required."
   args:
   - "123123123331"
+slowmode:
+  desc: "Toggles slowmode on the current channel with the specified amount of time. Provide no parameters to disable."
+  args:
+  - ""
+  - "27s"
+  - "3h15m5s"
 delmsgoncmd:
   desc: "Toggles the automatic deletion of the user's successful command message to prevent chat flood. You can use it either as a server toggle, channel whitelist, or channel blacklist, as channel option has 3 settings: Enable (always do it on this channel), Disable (never do it on this channel), and Inherit (respect server setting). Use `list` parameter to see the current states."
   args:

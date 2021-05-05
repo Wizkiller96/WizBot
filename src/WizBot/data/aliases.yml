@@ -113,6 +113,8 @@ autoassignrole:
 - aar
 leave:
 - leave
+slowmode:
+- slowmode
 delmsgoncmd:
 - delmsgoncmd
 - dmc

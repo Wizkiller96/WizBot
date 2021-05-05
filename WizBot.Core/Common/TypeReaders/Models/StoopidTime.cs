@@ -9,7 +9,8 @@ namespace WizBot.Core.Common.TypeReaders.Models
         public string Input { get; set; }
         public TimeSpan Time { get; set; }
 
-        private static readonly Regex _regex = new Regex(@"^(?:(?<months>\d)mo)?(?:(?<weeks>\d{1,2})w)?(?:(?<days>\d{1,2})d)?(?:(?<hours>\d{1,4})h)?(?:(?<minutes>\d{1,5})m)?$",
+        private static readonly Regex _regex = new Regex(
+@"^(?:(?<months>\d)mo)?(?:(?<weeks>\d{1,2})w)?(?:(?<days>\d{1,2})d)?(?:(?<hours>\d{1,4})h)?(?:(?<minutes>\d{1,5})m)?(?:(?<seconds>\d{1,6})s)?$",
                                 RegexOptions.Compiled | RegexOptions.Multiline);
 
         private StoopidTime() { }
@@ -35,15 +36,11 @@ namespace WizBot.Core.Common.TypeReaders.Models
                     continue;
                 }
 
-                if (value < 1 ||
-                    (groupName == "months" && value > 3) ||
-                    (groupName == "weeks" && value > 15) ||
-                    (groupName == "days" && value >= 95) ||
-                    (groupName == "hours" && value > 3000) ||
-                    (groupName == "minutes" && value > 15000))
+                if (value < 1)
                 {
                     throw new ArgumentException($"Invalid {groupName} value.");
                 }
+
                 namesAndValues[groupName] = value;
                 output += m.Groups[groupName].Value + " " + groupName + " ";
             }
@@ -52,7 +49,7 @@ namespace WizBot.Core.Common.TypeReaders.Models
                                                     namesAndValues["days"],
                                                     namesAndValues["hours"],
                                                     namesAndValues["minutes"],
-                                                    0);
+                                                    namesAndValues["seconds"]);
             if (ts > TimeSpan.FromDays(90))
             {
                 throw new ArgumentException("Time is too long.");

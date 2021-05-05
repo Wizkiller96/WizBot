@@ -178,7 +178,7 @@ namespace WizBot.Extensions
         //     => string.Join('\n', cmd.RealRemarksArr(strings, prefix));
 
         public static string GetFullUsage(string commandName, string args, string prefix)
-            => $"{prefix}{commandName} {args}";
+            => $"{prefix}{commandName} {string.Format(args, prefix)}";
 
         public static EmbedBuilder AddPaginatedFooter(this EmbedBuilder embed, int curPage, int? lastPage)
         {

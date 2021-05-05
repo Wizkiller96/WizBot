@@ -58,6 +58,25 @@ namespace WizBot.Modules.Administration
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
+        [UserPerm(ChannelPerm.ManageChannel)]
+        [BotPerm(ChannelPerm.ManageChannel)]
+        public async Task Slowmode(StoopidTime time = null)
+        {
+            var seconds = (int?)time?.Time.TotalSeconds ?? 0;
+            if (!(time is null) && (time.Time < TimeSpan.FromSeconds(0) || time.Time > TimeSpan.FromHours(6)))
+                return;
+
+
+            await ((ITextChannel)Context.Channel).ModifyAsync(tcp =>
+            {
+                tcp.SlowModeInterval = seconds;
+            });
+
+            await Context.OkAsync();
+        }
+
+        [WizBotCommand, Usage, Description, Aliases]
+        [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [BotPerm(GuildPerm.ManageMessages)]
         [Priority(1)]
