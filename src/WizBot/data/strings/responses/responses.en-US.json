@@ -875,6 +875,7 @@
   "bot_strings_reloaded": "Bot strings have been reloaded.",
   "server_level": "Server Level",
   "level": "Level",
+  "level_req": "Level Req.",
   "club": "Club",
   "xp": "Experience",
   "xpn_setting_global": "Global Level-Up notifications",
