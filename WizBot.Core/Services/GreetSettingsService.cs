@@ -128,6 +128,7 @@ namespace WizBot.Core.Services
 
             var rep = new ReplacementBuilder()
                 .WithChannel(channel)
+                .WithClient(_client)
                 .WithServer(_client, (SocketGuild)channel.Guild)
                 .WithManyUsers(users)
                 .Build();
@@ -172,6 +173,7 @@ namespace WizBot.Core.Services
 
             var rep = new ReplacementBuilder()
                 .WithChannel(channel)
+                .WithClient(_client)
                 .WithServer(_client, (SocketGuild)channel.Guild)
                 .WithManyUsers(users)
                 .Build();

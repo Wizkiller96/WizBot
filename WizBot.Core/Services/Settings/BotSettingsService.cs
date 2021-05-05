@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using Discord;
 using WizBot.Core.Common;
 using WizBot.Core.Common.Configs;
@@ -10,7 +9,7 @@ namespace WizBot.Core.Services
     /// <summary>
     /// Settings service for bot-wide configuration.
     /// </summary>
-    public class BotSettingsService : SettingsServiceBase<BotSettings>
+    public sealed class BotSettingsService : SettingsServiceBase<BotSettings>
     {
         private const string FilePath = "data/bot.yml";
         private static TypedKey<BotSettings> changeKey = new TypedKey<BotSettings>("config.bot.updated");
