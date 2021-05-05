@@ -1,0 +1,58 @@
+
+Todo:
+  ✔ Strings rework continued @done(21-05-03 17:16)
+    ✔ Added config/aliases.yml which contains mapping of command method names to command names + aliases @done(21-05-03 17:16)
+    ✔ First alias is treated as a command name, while the following ones are treated as aliases @done(21-05-03 17:16)
+    ✔ Command strings' keys aren now using command name as keys (first entry in config/aliases.yml), and not command method name @done(21-05-03 17:16)
+    ✔ Command strings are now .yml files in config/strings/commands/commands.LANG.yml (actual localization is not yet implemented, but is trivial to add) @done(21-05-03 17:16)
+    ✔ Removed obsolete command strings and aliases for commands which no longer exist and added tests to check for them @done(21-05-03 17:16)
+    ✔ Added tests which will make sure commands.yml and aliases.yml files have entries for all commands @done(21-05-03 17:16)
+    ✔ Some commands are slightly renamed to be more consistent with other commands in their group/bot @done(21-05-03 17:16)
+    ✔ Removed (commented out) leftover yttrackmodule which had no commands @done(21-05-03 17:16)
+
+  ✔ Docs updated with .bce GroupGreets and placeholder formatting fix @done(21-05-03 17:23)
+
+  ✔ Currency transactions now have index on userid instead of dateadded(???) @done(21-05-03 17:36)
+
+  ✔ Moved strings and other .yml back to data, to avoid numerous problems that would arise in installers/scripts by having another 'data' folder @done(21-05-03 17:44)
+
+  ✔ Added initial version of the pubsub implementation which may be used to synchronize configs across shards, with local implementation for bots with a single shard. Experimental @done(21-05-03 17:52)
+
+  ✔ Updated docs with minor fixes, and linux guide now only has support for version which work with .net5 @done(21-05-03 17:58)
+
+  ✔ Small things @done(21-05-03 18:02)
+
+  ✔ Cleared up some compiler warnings @done(21-05-03 18:21)
+    ✔ Removed duplicated strings in Bot string tests @done(21-05-03 18:21)
+    ✔ Removed unused bce item from docs @done(21-05-03 18:21)
+    ✔ Set language version to 8.0 to avoid using newer features by mistake @done(21-05-03 18:21)
+    ✔ Added groupgreets to bot.yml @done(21-05-03 18:21)
+
+  ✔ Removed old obsolete code related to update notifications @done(21-05-03 18:53)
+    ✔ Removed `.bce PluralCurrencyName` from being used and edited @done(21-05-03 18:53)
+    ✔ Moved soon-to-be obsolete/unused botconfig settings around and reduced their usage as much as possible @done(21-05-03 18:53)
+    ✔ Added migration from botconfig -> botsettings which is stored in the new data/bot.yml @done(21-05-03 18:53)
+    ✔ Fixed path strings to point back to data/ instead of config/ @done(21-05-03 18:53)
+
+  ✔ Updated data/bot.yml @done(21-05-05 17:41)
+    ✔ OkColor, ErrorColor, Locale, ConsoleOutputType, ForwardMessages, ForwardmessagesToAllOwners, Prefix, GroupGreets, DmHelpString and HelpString have been moved to and are being loaded from data/bot.yml. They also had their names changed. Use `.bce` command to see the new names @done(21-05-05 17:41)
+    ✔ `.bce <name>` will now print the value of the config instead of setting it to null (if you want to stop help.dmtext or help.text from occuring, set them to '-') @done(21-05-05 17:41)
+    ✔ `.bce <name> <value>` will set the value, as before, but this time to either database or the file based on where the data is saved. @done(21-05-05 17:41)
+      ✔ Columns from the database aren't deleted, but they won't be used. Because version of efcore we're using doesn't support column drops. @done(21-05-05 17:41)
+      ✔ Using my own comments attribute for Yaml because official one doesn't support multiline comments (facepalm) @done(21-05-05 17:41)
+      ✔ `.bce` settings which are now in bot.yml will be migrated from the database automatically on the first run of the bot after the update @done(21-05-05 17:41)
+      ✔ Removed some leftover Console.WriteLines @done(21-05-05 17:41)
+      ✔ Global Permissions and Permissions commands refactored a bit to make sense. ResetPermissionsService removed @done(21-05-05 17:41)
+      ✔ Added Converters for Json ISeria @done(21-05-05 17:41)
+
+  ✔ Version upped to 2.39.1 @done(21-05-05 17:44)
+
+  ✔ `.slowmode` added. It allows for fine-grained control over discord's slowmode duration. @done(21-05-05 17:50)
+    ✔ StoopidTime now accepts seconds (3h30m3s) @done(21-05-05 17:50)
+    ✔ `.autocmdadd`, `.dpo` and other commands usages which had {0} in them have been fixed. @done(21-05-05 17:50)
+
+  ✔ Fixed %bot.*% placeholders in greet/bye messages @done(21-05-05 17:53)
+
+  ✔ `.clubinfo` is now properly localized @done(21-05-05 17:57)
+
+  ✔ Small docs update @done(21-05-05 18:04)
