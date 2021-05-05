@@ -13,18 +13,21 @@ namespace WizBot.Tests
 {
     public class CommandStringsTests
     {
+        private const string responsesPath = "../../../../src/WizBot/data/strings/responses";
+        private const string commandsPath = "../../../../src/WizBot/data/strings/commands";
+        private const string aliasesPath = "../../../../src/WizBot/data/aliases.yml";
         [Test]
         public void AllCommandNamesHaveStrings()
         {
             var stringsSource = new LocalFileStringsSource(
-                "../../../../src/WizBot/config/strings/responses",
-                "../../../../src/WizBot/config/strings/commands");
+                responsesPath,
+                commandsPath);
             var strings = new LocalBotStringsProvider(stringsSource);
 
             var culture = new CultureInfo("en-US");
 
             var isSuccess = true;
-            foreach (var entry in CommandNameLoadHelper.LoadCommandNames("../../../../src/WizBot/config/aliases.yml"))
+            foreach (var entry in CommandNameLoadHelper.LoadCommandNames(aliasesPath))
             {
                 var commandName = entry.Value[0];
 
@@ -45,7 +48,9 @@ namespace WizBot.Tests
                 .Where(type => type.IsClass && !type.IsAbstract)
                 .Where(type => typeof(WizBotTopLevelModule).IsAssignableFrom(type) // if its a top level module
                                || !(type.GetCustomAttribute<GroupAttribute>(true) is null)) // or a submodule
-                .SelectMany(x => x.GetMethods().Where(mi => mi.CustomAttributes.Any(ca => ca.AttributeType == typeof(WizBotCommandAttribute))))
+                .SelectMany(x => x.GetMethods()
+                        .Where(mi => mi.CustomAttributes
+                            .Any(ca => ca.AttributeType == typeof(WizBotCommandAttribute))))
                 .Select(x => x.Name.ToLowerInvariant())
                 .ToArray();
 
@@ -53,7 +58,7 @@ namespace WizBot.Tests
         public void AllCommandMethodsHaveNames()
         {
             var allAliases = CommandNameLoadHelper.LoadCommandNames(
-                "../../../../src/WizBot/config/aliases.yml");
+                aliasesPath);
 
             var methodNames = GetCommandMethodNames();
 
@@ -73,8 +78,7 @@ namespace WizBot.Tests
         [Test]
         public void NoObsoleteAliases()
         {
-            var allAliases = CommandNameLoadHelper.LoadCommandNames(
-                "../../../../src/WizBot/config/aliases.yml");
+            var allAliases = CommandNameLoadHelper.LoadCommandNames(aliasesPath);
 
             var methodNames = GetCommandMethodNames()
                 .ToHashSet();
@@ -98,14 +102,12 @@ namespace WizBot.Tests
         [Test]
         public void NoObsoleteCommandStrings()
         {
-            var stringsSource = new LocalFileStringsSource(
-                "../../../../src/WizBot/config/strings/responses",
-                "../../../../src/WizBot/config/strings/commands");
+            var stringsSource = new LocalFileStringsSource(responsesPath, commandsPath);
 
             var culture = new CultureInfo("en-US");
 
             var isSuccess = true;
-            var allCommandNames = CommandNameLoadHelper.LoadCommandNames("../../../../src/WizBot/config/aliases.yml");
+            var allCommandNames = CommandNameLoadHelper.LoadCommandNames(aliasesPath);
             var enUsCommandNames = allCommandNames
                 .Select(x => x.Value[0]) // first alias is command name
                 .ToHashSet();
