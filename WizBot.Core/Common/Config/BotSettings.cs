@@ -1,10 +1,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 using WizBot.Common.Yml;
-using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using YamlDotNet.Core;
-using YamlDotNet.Core.Tokens;
 using YamlDotNet.Serialization;
 
 namespace WizBot.Core.Common.Configs

@@ -34,9 +34,9 @@ brew services start redis
 npm install pm2@3.1.3 -g
 ```
 
-##### **Installing dotNET Core SDK**
+##### **Installing .net SDK**
 
-- Download [dotNET Core SDK 3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1)
+- Download [.net5 SDK](https://dotnet.microsoft.com/download/dotnet/5.0)
 - Open the `.pkg` file you've downloaded and install it.
 - Run this command in Terminal. There won't be any output. (copy-paste the entire block):
 

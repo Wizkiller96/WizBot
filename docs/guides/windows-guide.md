@@ -15,7 +15,7 @@
 ## Prerequisites
 
 * Windows 8 or later \(64-bit\)
-* [dotNET Core 3.1 SDK](https://www.microsoft.com/net/download/dotnet-core/3.1) \(restart Windows after installation\)
+* [.net5 SDK](https://dotnet.microsoft.com/download/dotnet/5.0) \(restart Windows after installation\)
 * [Redis](https://github.com/MicrosoftArchive/redis/releases/download/win-3.0.504/Redis-x64-3.0.504.msi) \(supplied with the updater\)
 * [Create a Discord Bot application](../../create-invite#creating-discord-bot-application) and [invite the bot to your server](../../create-invite/#inviting-your-bot-to-your-server).
 
