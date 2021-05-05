@@ -10,6 +10,7 @@ using WizBot.Modules.Music.Services;
 using Discord;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using WizBot.Core.Services.Impl;
 
 namespace WizBot.Modules.Administration.Services
 {
@@ -20,6 +21,7 @@ namespace WizBot.Modules.Administration.Services
         private readonly Logger _log;
         private readonly IDataCache _cache;
         private readonly SelfService _selfService;
+        private readonly BotSettingsService _bss;
         private readonly Replacer _rep;
         private readonly DbService _db;
         private readonly IBotConfigProvider _bcp;
@@ -32,7 +34,8 @@ namespace WizBot.Modules.Administration.Services
         }
 
         public PlayingRotateService(DiscordSocketClient client, IBotConfigProvider bcp,
-            DbService db, IDataCache cache, WizBot bot, MusicService music, SelfService selfService)
+            DbService db, IDataCache cache, WizBot bot, MusicService music, SelfService selfService,
+            BotSettingsService bss)
         {
             _client = client;
             _bcp = bcp;
@@ -40,6 +43,7 @@ namespace WizBot.Modules.Administration.Services
             _log = LogManager.GetCurrentClassLogger();
             _cache = cache;
             _selfService = selfService;
+            _bss = bss;
 
             if (client.ShardId == 0)
             {
@@ -55,7 +59,7 @@ namespace WizBot.Modules.Administration.Services
                     {
                         var state = (TimerState)objState;
 
-                        if (!BotConfig.RotatingStatuses)
+                        if (!_bss.Data.RotateStatuses)
                             return;
 
                         if (state.Index >= BotConfig.RotatingStatusMessages.Count)
@@ -123,15 +127,11 @@ namespace WizBot.Modules.Administration.Services
 
         public bool ToggleRotatePlaying()
         {
-            bool enabled;
-            using (var uow = _db.GetDbContext())
+            var enabled = false;
+            _bss.ModifyConfig(bs =>
             {
-                var config = uow.BotConfig.GetOrCreate(set => set);
-
-                enabled = config.RotatingStatuses = !config.RotatingStatuses;
-                uow.SaveChanges();
-            }
-            _selfService.ReloadBotConfig();
+                enabled = bs.RotateStatuses = !bs.RotateStatuses;
+            });
             return enabled;
         }
     }

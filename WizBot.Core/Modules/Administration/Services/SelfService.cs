@@ -18,14 +18,13 @@ using System.Threading;
 using System.Collections.Concurrent;
 using System;
 using System.Net.Http;
+using WizBot.Core.Common.Configs;
+using WizBot.Core.Services.Impl;
 
 namespace WizBot.Modules.Administration.Services
 {
     public class SelfService : ILateExecutor, INService
     {
-        public bool ForwardDMs => _bc.BotConfig.ForwardMessages;
-        public bool ForwardDMsToAllOwners => _bc.BotConfig.ForwardToAllOwners;
-
         private readonly ConnectionMultiplexer _redis;
         private readonly CommandHandler _cmdHandler;
         private readonly DbService _db;
@@ -41,10 +40,11 @@ namespace WizBot.Modules.Administration.Services
         private readonly IDataCache _cache;
         private readonly IImageCache _imgs;
         private readonly IHttpClientFactory _httpFactory;
+        private readonly BotSettingsService _bss;
 
         public SelfService(DiscordSocketClient client, WizBot bot, CommandHandler cmdHandler, DbService db,
             IBotConfigProvider bc, IBotStrings strings, IBotCredentials creds,
-            IDataCache cache, IHttpClientFactory factory)
+            IDataCache cache, IHttpClientFactory factory, BotSettingsService bss)
         {
             _redis = cache.Redis;
             _cmdHandler = cmdHandler;
@@ -57,6 +57,8 @@ namespace WizBot.Modules.Administration.Services
             _cache = cache;
             _imgs = cache.LocalImages;
             _httpFactory = factory;
+            _bss = bss;
+
             var sub = _redis.GetSubscriber();
             if (_client.ShardId == 0)
             {
@@ -248,7 +250,8 @@ namespace WizBot.Modules.Administration.Services
         // forwards dms
         public async Task LateExecute(DiscordSocketClient client, IGuild guild, IUserMessage msg)
         {
-            if (msg.Channel is IDMChannel && ForwardDMs && ownerChannels.Any())
+            var bs = _bss.Data;
+            if (msg.Channel is IDMChannel && _bss.Data.ForwardMessages && ownerChannels.Any())
             {
                 var title = _strings.GetText("dm_from") +
                             $" [{msg.Author}]({msg.Author.Id})";
@@ -263,7 +266,7 @@ namespace WizBot.Modules.Administration.Services
                               string.Join("\n", msg.Attachments.Select(a => a.ProxyUrl));
                 }
 
-                if (ForwardDMsToAllOwners)
+                if (bs.ForwardToAllOwners)
                 {
                     var allOwnerChannels = ownerChannels.Values;
 
@@ -391,16 +394,6 @@ namespace WizBot.Modules.Administration.Services
             sub.Publish(_creds.RedisKey() + "_die", "", CommandFlags.FireAndForget);
         }
 
-        public void ForwardMessages()
-        {
-            using (var uow = _db.GetDbContext())
-            {
-                var config = uow.BotConfig.GetOrCreate(set => set);
-                _bc.BotConfig.ForwardMessages = config.ForwardMessages = !config.ForwardMessages;
-                uow.SaveChanges();
-            }
-        }
-
         public void Restart()
         {
             Process.Start(_creds.RestartCommand.Cmd, _creds.RestartCommand.Args);
@@ -421,14 +414,25 @@ namespace WizBot.Modules.Administration.Services
             return true;
         }
 
-        public void ForwardToAll()
+        public bool ForwardMessages()
         {
-            using (var uow = _db.GetDbContext())
+            var isForwarding = false;
+            _bss.ModifyConfig(config =>
             {
-                var config = uow.BotConfig.GetOrCreate(set => set);
-                _bc.BotConfig.ForwardToAllOwners = config.ForwardToAllOwners = !config.ForwardToAllOwners;
-                uow.SaveChanges();
-            }
+                isForwarding = config.ForwardMessages = !config.ForwardMessages;
+            });
+
+            return isForwarding;
+        }
+
+        public bool ForwardToAll()
+        {
+            var isToAll = false;
+            _bss.ModifyConfig(config =>
+            {
+                isToAll = config.ForwardToAllOwners = !config.ForwardToAllOwners;
+            });
+            return isToAll;
         }
 
         public IEnumerable<ShardComMessage> GetAllShardStatuses()

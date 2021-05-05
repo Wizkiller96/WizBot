@@ -8,38 +8,10 @@ namespace WizBot.Core.Services.Database.Models
     public class BotConfig : DbEntity
     {
         public bool HasMigratedBotSettings { get; set; } = true;
-        #region  Obsolete, Moved to bot.yml
-
-        public string OkColor { get; set; } = "ab40cd";
-        public string ErrorColor { get; set; } = "ee281f";
-        public string Locale { get; set; } = null;
-        public OBSOLETE_ConsoleOutputType ConsoleOutputType { get; set; } = OBSOLETE_ConsoleOutputType.Normal;
-        public bool ForwardMessages { get; set; } = true;
-        public bool ForwardToAllOwners { get; set; } = true;
-        public HashSet<BlockedCmdOrMdl> BlockedCommands { get; set; }
-        public HashSet<BlockedCmdOrMdl> BlockedModules { get; set; }
-        public string DefaultPrefix { get; set; } = ".";
-        public float PatreonCurrencyPerCent { get; set; } = 1.0f;
-        public bool GroupGreets { get; set; }
-        public string DMHelpString { get; set; } = "Type `.h` for help.";
-        public string HelpString { get; set; } = @"To add me to your server, use this link -> <https://discordapp.com/oauth2/authorize?client_id={0}&scope=bot&permissions=66186303>
-You can use `{1}modules` command to see a list of all modules.
-You can use `{1}commands ModuleName` to see a list of all of the commands in that module.
-(for example `{1}commands Admin`) 
-For a specific command help, use `{1}h CommandName` (for example {1}h {1}q)
-
-
-**LIST OF COMMANDS CAN BE FOUND ON THIS LINK**
-<https://commands.wizbot.cc/>
-
-
-WizBot Support Server: https://wizbot.cc/discord";
-
-        public bool RotatingStatuses { get; set; } = false;
-        #endregion
 
         public HashSet<BlacklistItem> Blacklist { get; set; }
 
+        public float PatreonCurrencyPerCent { get; set; } = 1.0f;
         public float CurrencyGenerationChance { get; set; } = 0.02f;
         public int CurrencyGenerationCooldown { get; set; } = 10;
 
@@ -51,9 +23,6 @@ WizBot Support Server: https://wizbot.cc/discord";
         public string CurrencyName { get; set; } = "Cherry Blossom";
 
         public int TriviaCurrencyReward { get; set; } = 0;
-        /// <summary> UNUSED </summary>
-        [Obsolete("Use MinBet instead.")]
-        public int MinimumBetAmount { get; set; } = 2;
         public float BetflipMultiplier { get; set; } = 1.95f;
         public int CurrencyDropAmount { get; set; } = 1;
         public int? CurrencyDropAmountMax { get; set; } = null;
@@ -81,15 +50,48 @@ WizBot Support Server: https://wizbot.cc/discord";
         public int MaxBet { get; set; } = 0;
         public bool CurrencyGenerationPassword { get; set; }
 
+
+        /// <summary> UNUSED </summary>
+        [Obsolete("Use MinBet instead.")]
+        public int MinimumBetAmount { get; set; } = 2;
+
         #region  Obsolete/UNUSED
         public UpdateCheckType CheckForUpdates { get; set; } = UpdateCheckType.Release;
-        public string CurrencyPluralName { get; set; } = "Nadeko Flowers";
+        public string CurrencyPluralName { get; set; } = "Cherry Blossoms";
         public int MigrationVersion { get; set; }
         public int PermissionVersion { get; set; } = 2;
 
         public string UpdateString { get; set; } = "New update has been released.";
         public DateTime LastUpdate { get; set; } = new DateTime(2018, 5, 5, 0, 0, 0, DateTimeKind.Utc);
         public ulong BufferSize { get; set; } = 4000000;
+        #endregion
+
+        #region  Obsolete, Moved to bot.yml
+        public string OkColor { get; set; } = "ab40cd";
+        public string ErrorColor { get; set; } = "ee281f";
+        public string Locale { get; set; } = null;
+        public OBSOLETE_ConsoleOutputType ConsoleOutputType { get; set; } = OBSOLETE_ConsoleOutputType.Normal;
+        public bool ForwardMessages { get; set; } = true;
+        public bool ForwardToAllOwners { get; set; } = true;
+        public HashSet<BlockedCmdOrMdl> BlockedCommands { get; set; }
+        public HashSet<BlockedCmdOrMdl> BlockedModules { get; set; }
+        public string DefaultPrefix { get; set; } = ".";
+        public bool GroupGreets { get; set; }
+        public string DMHelpString { get; set; } = "Type `.h` for help.";
+        public string HelpString { get; set; } = @"To add me to your server, use this link -> <https://discordapp.com/oauth2/authorize?client_id={0}&scope=bot&permissions=66186303>
+You can use `{1}modules` command to see a list of all modules.
+You can use `{1}commands ModuleName` to see a list of all of the commands in that module.
+(for example `{1}commands Admin`) 
+For a specific command help, use `{1}h CommandName` (for example {1}h {1}q)
+
+
+**LIST OF COMMANDS CAN BE FOUND ON THIS LINK**
+<https://commands.wizbot.cc/>
+
+
+WizBot Support Server: https://wizbot.cc/discord";
+
+        public bool RotatingStatuses { get; set; } = false;
         #endregion
     }
 

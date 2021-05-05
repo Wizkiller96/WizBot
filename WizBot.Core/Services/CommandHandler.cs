@@ -33,8 +33,8 @@ namespace WizBot.Core.Services
 
         private readonly DiscordSocketClient _client;
         private readonly CommandService _commandService;
+        private readonly BotSettingsService _bss;
         private readonly Logger _log;
-        private readonly IBotCredentials _creds;
         private readonly WizBot _bot;
         private IServiceProvider _services;
         private IEnumerable<IEarlyBehavior> _earlyBehaviors;
@@ -42,7 +42,6 @@ namespace WizBot.Core.Services
         private IEnumerable<ILateBlocker> _lateBlockers;
         private IEnumerable<ILateExecutor> _lateExecutors;
 
-        public string DefaultPrefix { get; private set; }
         private ConcurrentDictionary<ulong, string> _prefixes { get; } = new ConcurrentDictionary<ulong, string>();
 
         public event Func<IUserMessage, CommandInfo, Task> CommandExecuted = delegate { return Task.CompletedTask; };
@@ -56,12 +55,12 @@ namespace WizBot.Core.Services
         private readonly Timer _clearUsersOnShortCooldown;
 
         public CommandHandler(DiscordSocketClient client, DbService db,
-            IBotConfigProvider bcp, CommandService commandService,
+            IBotConfigProvider bcp, CommandService commandService, BotSettingsService bss,
             IBotCredentials credentials, WizBot bot, IServiceProvider services)
         {
             _client = client;
             _commandService = commandService;
-            _creds = credentials;
+            _bss = bss;
             _bot = bot;
             _db = db;
             _bcp = bcp;
@@ -74,7 +73,6 @@ namespace WizBot.Core.Services
                 UsersOnShortCooldown.Clear();
             }, null, GlobalCommandsCooldown, GlobalCommandsCooldown);
 
-            DefaultPrefix = bcp.BotConfig.DefaultPrefix;
             _prefixes = bot.AllGuildConfigs
                 .Where(x => x.Prefix != null)
                 .ToDictionary(x => x.GuildId, x => x.Prefix)
@@ -83,10 +81,10 @@ namespace WizBot.Core.Services
 
         public string GetPrefix(IGuild guild) => GetPrefix(guild?.Id);
 
-        public string GetPrefix(ulong? id)
+        public string GetPrefix(ulong? id = null)
         {
-            if (id == null || !_prefixes.TryGetValue(id.Value, out var prefix))
-                return DefaultPrefix;
+            if (id is null || !_prefixes.TryGetValue(id.Value, out var prefix))
+                return _bss.Data.Prefix;
 
             return prefix;
         }
@@ -96,13 +94,12 @@ namespace WizBot.Core.Services
             if (string.IsNullOrWhiteSpace(prefix))
                 throw new ArgumentNullException(nameof(prefix));
 
-            using (var uow = _db.GetDbContext())
+            _bss.ModifyConfig(bs =>
             {
-                uow.BotConfig.GetOrCreate(set => set).DefaultPrefix = prefix;
-                uow.SaveChanges();
-            }
+                bs.Prefix = prefix;
+            });
 
-            return DefaultPrefix = prefix;
+            return prefix;
         }
         public string SetPrefix(IGuild guild, string prefix)
         {

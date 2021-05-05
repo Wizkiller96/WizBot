@@ -4,6 +4,8 @@ version: 1
 # next to the response. The color depends whether the command
 # is completed, errored or in progress (pending)
 # Color settings below are for the color of those lines.
+# To get color's hex, you can go here https://htmlcolorcodes.com/
+# and copy the hex code fo your selected color (marked as #)
 color:
   ok: ab40cd
   error: ee281f
@@ -17,36 +19,56 @@ consoleOutputType: Normal
 forwardMessages: false
 # Do you want the message to be forwarded only to the first owner specified in the list of owners (in creds.yml),
 # or all owners? (this might cause the bot to lag if there's a lot of owners specified)
-forwardToAllOwners: true
+forwardToAllOwners: false
 # When a user DMs the bot with a message which is not a command
-# he will receive this message. Leave empty for no response.
-dmHelpText: Type `.h` for help.
+# they will receive this message. Leave empty for no response. The string which will be sent whenever someone DMs the bot.
+# Supports embeds. How it looks: https://puu.sh/B0BLV.png
+dmHelpText: |-
+  {"description": "Type `%prefix%h` for help."}
 # This is the response for the .h command
-helpText: "To add me to your server, use this link -> <https://discordapp.com/oauth2/authorize?client_id={0}&scope=bot&permissions=66186303>
-  You can use `{1}modules` command to see a list of all modules.
-  You can use `{1}commands ModuleName` to see a list of all of the commands in that module.
-  (for example `{1}commands Admin`) 
-  For a specific command help, use `{1}h CommandName` (for example {1}h {1}q)
-
-
-  **LIST OF COMMANDS CAN BE FOUND ON THIS LINK**
-  <https://commands.wizbot.cc/>
-
-  WizBot Support Server: https://wizbot.cc/discord/"
+helpText: |-
+  {
+    "title": "To invite me to your server, use this link",
+    "description": "https://discordapp.com/oauth2/authorize?client_id={0}&scope=bot&permissions=66186303",
+    "color": 53380,
+    "thumbnail": "https://i.imgur.com/Q9PEzXv.png",
+    "fields": [
+      {
+        "name": "Useful help commands",
+        "value": "`%bot.prefix%modules` Lists all bot modules.
+  `%prefix%h CommandName` Shows some help about a specific command.
+  `%prefix%commands ModuleName` Lists all commands in a module.",
+        "inline": false
+      },
+      {
+        "name": "List of all Commands",
+        "value": "https://commands.wizbot.cc/",
+        "inline": false
+      },
+      {
+        "name": "WizBot Support Server",
+        "value": "https://wizbot.cc/discord ",
+        "inline": true
+      }
+    ]
+  }
 # List of modules and commands completely blocked on the bot
 blocked:
   commands: []
   modules: []
 # Which string will be used to recognize the commands
-prefix: "."
-# Whether the bot will rotate through all specified statuses. This setting can be changed via .rots command. See RotatingStatuses submodule in Administration.
-rotateStatuses: false
-# Amount of currency user will receive for every CENT pledged on patreon.
-patreonCurrencyPerCent: 100
-#Toggles whether your bot will group greet/bye messages into a single message every 5 seconds.
-#1st user who joins will get greeted immediately
-#If more users join within the next 5 seconds, they will be greeted in groups of 5.
-#This will cause %user.mention% and other placeholders to be replaced with multiple users. 
-#Keep in mind this might break some of your embeds - for example if you have %user.avatar% in the thumbnail,
-#it will become invalid, as it will resolve to a list of avatars of grouped users.
+prefix: .
+# Toggles whether your bot will group greet/bye messages into a single message every 5 seconds.
+# 1st user who joins will get greeted immediately
+# If more users join within the next 5 seconds, they will be greeted in groups of 5.
+# This will cause %user.mention% and other placeholders to be replaced with multiple users. 
+# Keep in mind this might break some of your embeds - for example if you have %user.avatar% in the thumbnail,
+# it will become invalid, as it will resolve to a list of avatars of grouped users.
+# note: This setting is primarily used if you're afraid of raids, or you're running medium/large bots where some
+#       servers might get hundreds of people join at once. This is used to prevent the bot from getting ratelimited,
+#       and (slightly) reduce the greet spam in those servers.
 groupGreets: false
+# Whether the bot will rotate through all specified statuses.
+# This setting can be changed via .rots command.
+# See RotatingStatuses submodule in Administration.
+rotateStatuses: false

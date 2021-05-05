@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace WizBot.Core.Common
 {
-    public class EventPubSub : ISub, IPub
+    public class EventPubSub : IPubSub
     {
         private readonly Dictionary<string, Dictionary<Delegate, List<Func<object, Task>>>> _actions
             = new Dictionary<string, Dictionary<Delegate, List<Func<object, Task>>>>();

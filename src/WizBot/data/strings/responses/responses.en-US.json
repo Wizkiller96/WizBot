@@ -647,7 +647,7 @@
   "region": "Region",
   "registered_on": "Registered on",
   "remind": "I will remind {0} to {1} in {2} `({3:d.M.yyyy.} at {4:HH:mm})`",
-  "remind_invalid_format": "Not a valid time format. Check the commandlist.",
+  "remind_invalid_format": "Not a valid remind format. Check the command list.",
   "remind_template": "New remind template set.",
   "remind_too_long": "Remind time has exceeded maximum.",
   "repeater": "Repeating {0} every {1} day(s), {2} hour(s) and {3} minute(s).",
@@ -1029,5 +1029,6 @@
   "quote_id": "Quote {0}",
   "trigger": "Trigger",
   "response": "Response",
-  "created_by": "Created by {0}"
+  "created_by": "Created by {0}",
+  "setting_not_found": "Invalid setting key."
 }

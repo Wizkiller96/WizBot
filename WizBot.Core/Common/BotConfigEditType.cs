@@ -1,5 +1,15 @@
 ﻿namespace WizBot.Common
 {
+    public enum BotSettingsEditType
+    {
+        DmHelpText,
+        HelpText,
+        OkColor,
+        ConsoleOutputType,
+        PendingColor,
+        ErrorColor,
+        GroupGreets
+    }
     public enum BotConfigEditType
     {
         /// <summary>
@@ -56,20 +66,6 @@
         /// Default is 🌸.
         /// </summary>
         CurrencySign,
-        /// <summary>
-        /// The string which will be sent whenever someone DMs the bot. Supports embeds.
-        /// How it looks: https://puu.sh/B0BLV.png
-        /// Default is "Use `.h` for help". 
-        /// </summary>
-        DmHelpString,
-        /// <summary>
-        /// The strings which will be sent whenever someone types `.h`. Supports embeds.
-        /// You can also use {0} placeholder which will be replaced with your bot's
-        /// client id, and {1} placeholder which will be replaced with your bot's prefix.
-        /// How it looks: https://puu.sh/B0BMa.png
-        /// Default is too long to type out.
-        /// </summary>
-        HelpString,
         /// <summary>
         /// The amount of currency which will drop when `.gc` spawn is triggered. Default is 1.
         /// This will be the minimum amount of currency to be spawned if CurrencyDropAmountMax is also specified.
@@ -132,24 +128,6 @@
         /// </summary>
         MaxBet,
         /// <summary>
-        /// Hex of the color which will show on the left side of the bot's response
-        /// when a command succesfully executes. Example: https://puu.sh/B0BXd.png
-        /// Default is 00e584.
-        /// </summary>
-        ErrorColor,
-        /// <summary>
-        /// Hex of the color which will show on the left side of the bot's response
-        /// when a command either errors, or you can't perform some action. Example: https://puu.sh/B0BXs.png
-        /// Default is ee281f.
-        /// </summary>
-        OkColor,
-        /// <summary>
-        /// 2 values, either 'Simple' or 'Normal'. Normal is the default type,
-        /// and the simple one shows only basic info about the executed commands
-        /// in the console. Here is a comparison: https://puu.sh/B0Chn.png
-        /// </summary>
-        ConsoleOutputType,
-        /// <summary>
         /// The percentage of currency all users will lose every 24 hours. 
         /// The value goes between 0 and 1.0 (0 being 0% to 1.0 being 100%).
         /// This is a useful tool to control the inflation :)
@@ -165,18 +143,5 @@
         /// Default is 1.
         /// </summary>
         PatreonCurrencyPerCent,
-
-        /// <summary>
-        /// Whether .greet and .bye messages will group up people who join within 5 seconds of each other into groups of 5.
-        /// For example, if 10 people join at the same time to the server
-        /// 1 person will get greeted right away
-        /// 5 people will be greeted as a group 5 seconds after
-        /// after another 5 seconds, the last 4 people will be greeted
-        ///
-        /// This setting is primarily used if you're afraid of raids, or you're running medium/large bots where some
-        /// servers might get hundreds of people join at once. This is used to prevent the bot from getting ratelimited,
-        /// and (slightly) reduce the greet spam in those servers.
-        /// </summary>
-        GroupGreets,
     }
 }

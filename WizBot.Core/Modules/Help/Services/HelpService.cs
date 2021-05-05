@@ -23,14 +23,16 @@ namespace WizBot.Modules.Help.Services
         private readonly IBotStrings _strings;
         private readonly Logger _log;
         private readonly DiscordPermOverrideService _dpos;
+        private readonly BotSettingsService _bss;
 
         public HelpService(IBotConfigProvider bc, CommandHandler ch, IBotStrings strings,
-            DiscordPermOverrideService dpos)
+            DiscordPermOverrideService dpos, BotSettingsService bss)
         {
             _bc = bc;
             _ch = ch;
             _strings = strings;
             _dpos = dpos;
+            _bss = bss;
             _log = LogManager.GetCurrentClassLogger();
         }
 
@@ -38,15 +40,16 @@ namespace WizBot.Modules.Help.Services
         {
             try
             {
+                var settings = _bss.Data;
                 if (guild == null)
                 {
-                    if (string.IsNullOrWhiteSpace(_bc.BotConfig.DMHelpString) || _bc.BotConfig.DMHelpString == "-")
+                    if (string.IsNullOrWhiteSpace(settings.DmHelpText) || settings.DmHelpText == "-")
                         return Task.CompletedTask;
 
-                    if (CREmbed.TryParse(_bc.BotConfig.DMHelpString, out var embed))
+                    if (CREmbed.TryParse(settings.DmHelpText, out var embed))
                         return msg.Channel.EmbedAsync(embed);
 
-                    return msg.Channel.SendMessageAsync(_bc.BotConfig.DMHelpString);
+                    return msg.Channel.SendMessageAsync(settings.DmHelpText);
                 }
             }
             catch (Exception ex)

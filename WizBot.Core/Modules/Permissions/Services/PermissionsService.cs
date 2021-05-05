@@ -168,5 +168,16 @@ namespace WizBot.Modules.Permissions.Services
 
             return false;
         }
+
+        public async Task Reset(ulong guildId)
+        {
+            using (var uow = _db.GetDbContext())
+            {
+                var config = uow.GuildConfigs.GcWithPermissionsv2For(guildId);
+                config.Permissions = Permissionv2.GetDefaultPermlist;
+                await uow.SaveChangesAsync();
+                UpdateCache(config);
+            }
+        }
     }
 }

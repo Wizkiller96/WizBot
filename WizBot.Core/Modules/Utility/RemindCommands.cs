@@ -39,7 +39,7 @@ namespace WizBot.Modules.Utility
             {
                 if (!_service.TryParseRemindMessage(remindString, out var remindData))
                 {
-                    // todo invalid remind string
+                    await ReplyErrorLocalizedAsync("remind_invalid");
                     return;
                 }
 
@@ -67,7 +67,7 @@ namespace WizBot.Modules.Utility
 
                 if (!_service.TryParseRemindMessage(remindString, out var remindData))
                 {
-                    // todo invalid remind string
+                    await ReplyErrorLocalizedAsync("remind_invalid");
                     return;
                 }
 

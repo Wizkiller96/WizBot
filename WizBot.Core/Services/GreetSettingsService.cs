@@ -23,15 +23,15 @@ namespace WizBot.Core.Services
 
         private GreetGrouper<IGuildUser> greets = new GreetGrouper<IGuildUser>();
         private GreetGrouper<IGuildUser> byes = new GreetGrouper<IGuildUser>();
-        private readonly IBotConfigProvider _bcp;
-        public bool GroupGreets => _bcp.BotConfig.GroupGreets;
+        private readonly BotSettingsService _bss;
+        public bool GroupGreets => _bss.Data.GroupGreets;
 
-        public GreetSettingsService(DiscordSocketClient client, WizBot bot, DbService db, IBotConfigProvider bcp)
+        public GreetSettingsService(DiscordSocketClient client, WizBot bot, DbService db, BotSettingsService bss)
         {
             _db = db;
             _client = client;
             _log = LogManager.GetCurrentClassLogger();
-            _bcp = bcp;
+            _bss = bss;
 
             GuildConfigsCache = new ConcurrentDictionary<ulong, GreetSettings>(
                 bot.AllGuildConfigs

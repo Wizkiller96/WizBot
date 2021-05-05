@@ -5,13 +5,13 @@ using StackExchange.Redis;
 
 namespace WizBot.Core.Common
 {
-    public class RedisPub : IPub
+    public class RedisPubSub : IPubSub
     {
         private readonly ConnectionMultiplexer _multi;
         private readonly ISeria _serializer;
         private readonly Logger _log;
 
-        public RedisPub(ConnectionMultiplexer multi, ISeria serializer)
+        public RedisPubSub(ConnectionMultiplexer multi, ISeria serializer)
         {
             _multi = multi;
             _serializer = serializer;

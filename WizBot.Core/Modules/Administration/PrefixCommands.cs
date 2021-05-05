@@ -50,11 +50,11 @@ namespace WizBot.Modules.Administration
             {
                 if (string.IsNullOrWhiteSpace(prefix))
                 {
-                    await ReplyConfirmLocalizedAsync("defprefix_current", CmdHandler.DefaultPrefix).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync("defprefix_current", CmdHandler.GetPrefix()).ConfigureAwait(false);
                     return;
                 }
 
-                var oldPrefix = CmdHandler.DefaultPrefix;
+                var oldPrefix = CmdHandler.GetPrefix();
                 var newPrefix = CmdHandler.SetDefaultPrefix(prefix);
 
                 await ReplyConfirmLocalizedAsync("defprefix_new", Format.Code(oldPrefix), Format.Code(newPrefix)).ConfigureAwait(false);

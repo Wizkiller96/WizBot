@@ -206,9 +206,9 @@ namespace WizBot.Modules.Administration
             [OwnerOnly]
             public async Task ForwardMessages()
             {
-                _service.ForwardMessages();
+                var enabled = _service.ForwardMessages();
 
-                if (_service.ForwardDMs)
+                if (enabled)
                     await ReplyConfirmLocalizedAsync("fwdm_start").ConfigureAwait(false);
                 else
                     await ReplyConfirmLocalizedAsync("fwdm_stop").ConfigureAwait(false);
@@ -218,9 +218,9 @@ namespace WizBot.Modules.Administration
             [OwnerOnly]
             public async Task ForwardToAll()
             {
-                _service.ForwardToAll();
+                var enabled = _service.ForwardToAll();
 
-                if (_service.ForwardDMsToAllOwners)
+                if (enabled)
                     await ReplyConfirmLocalizedAsync("fwall_start").ConfigureAwait(false);
                 else
                     await ReplyConfirmLocalizedAsync("fwall_stop").ConfigureAwait(false);
@@ -489,14 +489,6 @@ namespace WizBot.Modules.Administration
             {
                 _service.ReloadImages();
                 await ReplyConfirmLocalizedAsync("images_loading", 0).ConfigureAwait(false);
-            }
-
-            [WizBotCommand, Usage, Description, Aliases]
-            [OwnerOnly]
-            public async Task BotConfigReload()
-            {
-                _service.ReloadBotConfig();
-                await ReplyConfirmLocalizedAsync("bot_config_reloaded").ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]

@@ -26,10 +26,6 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
                     .Include(bc => bc.EightBallResponses)
                     .Include(bc => bc.StartupCommands)
                     .FirstOrDefault();
-
-                config = _set.Include(bc => bc.BlockedCommands)
-                    .Include(bc => bc.BlockedModules)
-                    .FirstOrDefault();
             }
             else
             {

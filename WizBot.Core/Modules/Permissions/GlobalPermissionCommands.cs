@@ -1,10 +1,8 @@
 ﻿using Discord;
 using Discord.Commands;
-using Microsoft.EntityFrameworkCore;
 using WizBot.Common.Attributes;
 using WizBot.Common.TypeReaders;
 using WizBot.Core.Services;
-using WizBot.Core.Services.Database.Models;
 using WizBot.Extensions;
 using WizBot.Modules.Permissions.Services;
 using System.Linq;
@@ -30,7 +28,9 @@ namespace WizBot.Modules.Permissions
             [OwnerOnly]
             public async Task GlobalPermList()
             {
-                if (!_service.BlockedModules.Any() && !_service.BlockedCommands.Any())
+                var blockedModule = _service.BlockedModules;
+                var blockedCommands = _service.BlockedCommands;
+                if (!blockedModule.Any() && !blockedCommands.Any())
                 {
                     await ReplyErrorLocalizedAsync("lgp_none").ConfigureAwait(false);
                     return;
@@ -38,11 +38,17 @@ namespace WizBot.Modules.Permissions
 
                 var embed = new EmbedBuilder().WithOkColor();
 
-                if (_service.BlockedModules.Any())
-                    embed.AddField(efb => efb.WithName(GetText("blocked_modules")).WithValue(string.Join("\n", _service.BlockedModules)).WithIsInline(false));
+                if (blockedModule.Any())
+                    embed.AddField(efb => efb
+                        .WithName(GetText("blocked_modules"))
+                        .WithValue(string.Join("\n", _service.BlockedModules))
+                        .WithIsInline(false));
 
-                if (_service.BlockedCommands.Any())
-                    embed.AddField(efb => efb.WithName(GetText("blocked_commands")).WithValue(string.Join("\n", _service.BlockedCommands)).WithIsInline(false));
+                if (blockedCommands.Any())
+                    embed.AddField(efb => efb
+                        .WithName(GetText("blocked_commands"))
+                        .WithValue(string.Join("\n", _service.BlockedCommands))
+                        .WithIsInline(false));
 
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
@@ -52,33 +58,16 @@ namespace WizBot.Modules.Permissions
             public async Task GlobalModule(ModuleOrCrInfo module)
             {
                 var moduleName = module.Name.ToLowerInvariant();
-                if (_service.BlockedModules.Add(moduleName))
+
+                var added = _service.ToggleModule(moduleName);
+
+                if (added)
                 {
-                    using (var uow = _db.GetDbContext())
-                    {
-                        var bc = uow.BotConfig.GetOrCreate(set => set.Include(x => x.BlockedModules));
-                        bc.BlockedModules.Add(new BlockedCmdOrMdl
-                        {
-                            Name = moduleName,
-                        });
-                        uow.SaveChanges();
-                    }
                     await ReplyConfirmLocalizedAsync("gmod_add", Format.Bold(module.Name)).ConfigureAwait(false);
                     return;
                 }
-                else if (_service.BlockedModules.TryRemove(moduleName))
-                {
-                    using (var uow = _db.GetDbContext())
-                    {
-                        var bc = uow.BotConfig.GetOrCreate(set => set.Include(x => x.BlockedModules));
-                        var mdls = bc.BlockedModules.Where(x => x.Name == moduleName);
-                        if (mdls.Any())
-                            uow._context.RemoveRange(mdls.ToArray());
-                        uow.SaveChanges();
-                    }
-                    await ReplyConfirmLocalizedAsync("gmod_remove", Format.Bold(module.Name)).ConfigureAwait(false);
-                    return;
-                }
+
+                await ReplyConfirmLocalizedAsync("gmod_remove", Format.Bold(module.Name)).ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -86,33 +75,15 @@ namespace WizBot.Modules.Permissions
             public async Task GlobalCommand(CommandOrCrInfo cmd)
             {
                 var commandName = cmd.Name.ToLowerInvariant();
-                if (_service.BlockedCommands.Add(commandName))
+                var added = _service.ToggleCommand(commandName);
+
+                if (added)
                 {
-                    using (var uow = _db.GetDbContext())
-                    {
-                        var bc = uow.BotConfig.GetOrCreate(set => set.Include(x => x.BlockedCommands));
-                        bc.BlockedCommands.Add(new BlockedCmdOrMdl
-                        {
-                            Name = commandName,
-                        });
-                        uow.SaveChanges();
-                    }
                     await ReplyConfirmLocalizedAsync("gcmd_add", Format.Bold(cmd.Name)).ConfigureAwait(false);
                     return;
                 }
-                else if (_service.BlockedCommands.TryRemove(commandName))
-                {
-                    using (var uow = _db.GetDbContext())
-                    {
-                        var bc = uow.BotConfig.GetOrCreate(set => set.Include(x => x.BlockedCommands));
-                        var objs = bc.BlockedCommands.Where(x => x.Name == commandName);
-                        if (objs.Any())
-                            uow._context.RemoveRange(objs.ToArray());
-                        uow.SaveChanges();
-                    }
-                    await ReplyConfirmLocalizedAsync("gcmd_remove", Format.Bold(cmd.Name)).ConfigureAwait(false);
-                    return;
-                }
+
+                await ReplyConfirmLocalizedAsync("gcmd_remove", Format.Bold(cmd.Name)).ConfigureAwait(false);
             }
         }
     }

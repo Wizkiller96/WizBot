@@ -1,8 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
-using WizBot.Common.Collections;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Core.Services;
 
@@ -10,29 +9,93 @@ namespace WizBot.Modules.Permissions.Services
 {
     public class GlobalPermissionService : ILateBlocker, INService
     {
-        public ConcurrentHashSet<string> BlockedModules { get; }
-        public ConcurrentHashSet<string> BlockedCommands { get; }
+        private readonly BotSettingsService _bss;
         public int Priority { get; } = 0;
 
-        public GlobalPermissionService(IBotConfigProvider bc)
+        public HashSet<string> BlockedCommands => _bss.Data.Blocked.Commands;
+        public HashSet<string> BlockedModules => _bss.Data.Blocked.Modules;
+
+        public GlobalPermissionService(BotSettingsService bss)
         {
-            BlockedModules = new ConcurrentHashSet<string>(bc.BotConfig.BlockedModules.Select(x => x.Name));
-            BlockedCommands = new ConcurrentHashSet<string>(bc.BotConfig.BlockedCommands.Select(x => x.Name));
+            _bss = bss;
         }
 
-        public async Task<bool> TryBlockLate(DiscordSocketClient client, ICommandContext ctx, string moduleName, CommandInfo command)
+
+        public Task<bool> TryBlockLate(DiscordSocketClient client, ICommandContext ctx, string moduleName, CommandInfo command)
         {
-            await Task.Yield();
+            var settings = _bss.Data;
             var commandName = command.Name.ToLowerInvariant();
 
             if (commandName != "resetglobalperms" &&
-                (BlockedCommands.Contains(commandName) ||
-                BlockedModules.Contains(moduleName.ToLowerInvariant())))
+                (settings.Blocked.Commands.Contains(commandName) ||
+                settings.Blocked.Modules.Contains(moduleName.ToLowerInvariant())))
             {
-                return true;
-                //return new ExecuteCommandResult(cmd, null, SearchResult.FromError(CommandError.Exception, $"Command or module is blocked globally by the bot owner."));
+                return Task.FromResult(true);
             }
-            return false;
+
+            return Task.FromResult(false);
+        }
+
+        /// <summary>
+        /// Toggles module blacklist
+        /// </summary>
+        /// <param name="moduleName">Lowercase module name</param>
+        /// <returns>Whether the module is added</returns>
+        public bool ToggleModule(string moduleName)
+        {
+            var added = false;
+            _bss.ModifyConfig(bs =>
+            {
+                if (bs.Blocked.Modules.Add(moduleName))
+                {
+                    added = true;
+                }
+                else
+                {
+                    bs.Blocked.Modules.Remove(moduleName);
+                    added = false;
+                }
+            });
+
+            return added;
+        }
+
+        /// <summary>
+        /// Toggles command blacklist
+        /// </summary>
+        /// <param name="commandName">Lowercase command name</param>
+        /// <returns>Whether the command is added</returns>
+        public bool ToggleCommand(string commandName)
+        {
+            var added = false;
+            _bss.ModifyConfig(bs =>
+            {
+                if (bs.Blocked.Commands.Add(commandName))
+                {
+                    added = true;
+                }
+                else
+                {
+                    bs.Blocked.Commands.Remove(commandName);
+                    added = false;
+                }
+            });
+
+            return added;
+        }
+
+        /// <summary>
+        /// Resets all global permissions
+        /// </summary>
+        public Task Reset()
+        {
+            _bss.ModifyConfig(bs =>
+            {
+                bs.Blocked.Commands.Clear();
+                bs.Blocked.Modules.Clear();
+            });
+
+            return Task.CompletedTask;
         }
     }
 }

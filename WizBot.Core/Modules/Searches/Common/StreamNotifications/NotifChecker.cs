@@ -140,7 +140,7 @@ namespace WizBot.Core.Modules.Searches.Common.StreamNotifications
                     // todo increase to 30?
                     var tasks = new List<Task>
                     {
-                        Task.Delay(15_000)
+                        Task.Delay(30_000)
                     };
 
                     if (newlyOnline.Count > 0)

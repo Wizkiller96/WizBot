@@ -11,11 +11,13 @@ namespace WizBot.Modules.Permissions
         [Group]
         public class ResetPermissionsCommands : WizBotSubmodule
         {
-            private readonly ResetPermissionsService _service;
+            private readonly GlobalPermissionService _gps;
+            private readonly PermissionService _perms;
 
-            public ResetPermissionsCommands(ResetPermissionsService service)
+            public ResetPermissionsCommands(GlobalPermissionService gps, PermissionService perms)
             {
-                _service = service;
+                _gps = gps;
+                _perms = perms;
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -23,7 +25,7 @@ namespace WizBot.Modules.Permissions
             [UserPerm(GuildPerm.Administrator)]
             public async Task ResetPerms()
             {
-                await _service.ResetPerms(ctx.Guild.Id).ConfigureAwait(false);
+                await _perms.Reset(ctx.Guild.Id).ConfigureAwait(false);
                 await ReplyConfirmLocalizedAsync("perms_reset").ConfigureAwait(false);
             }
 
@@ -31,7 +33,7 @@ namespace WizBot.Modules.Permissions
             [OwnerOnly]
             public async Task ResetGlobalPerms()
             {
-                await _service.ResetGlobalPermissions().ConfigureAwait(false);
+                await _gps.Reset();
                 await ReplyConfirmLocalizedAsync("global_perms_reset").ConfigureAwait(false);
             }
         }

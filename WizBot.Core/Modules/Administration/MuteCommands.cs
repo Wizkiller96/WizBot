@@ -71,7 +71,7 @@ namespace WizBot.Modules.Administration
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.ToString());
+                    _log.Warn(ex.ToString());
                     await ReplyErrorLocalizedAsync("mute_error").ConfigureAwait(false);
                 }
             }
@@ -130,7 +130,7 @@ namespace WizBot.Modules.Administration
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.ToString());
+                    _log.Warn(ex.ToString());
                     await ReplyErrorLocalizedAsync("mute_error").ConfigureAwait(false);
                 }
             }
