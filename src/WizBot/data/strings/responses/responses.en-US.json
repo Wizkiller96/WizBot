@@ -616,6 +616,7 @@
   "list_of_repeaters": "List of repeaters",
   "members": "Members",
   "memory": "Memory",
+  "latency": "Latency",
   "messages": "Messages",
   "repeater_created": "Repeater Created",
   "repeater_removed": "Repeater #{0} Removed",
