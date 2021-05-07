@@ -10,7 +10,6 @@ AppPublisher=WizNet
 DefaultDirName={param:installpath|{commonpf}\WizBot}
 DefaultGroupName=WizBot
 UninstallDisplayIcon={app}\{#sysfolder}\wizbot_icon.ico
-WizardImageFile=wizbot_installer.bmp
 Compression=lzma2
 SolidCompression=yes
 UsePreviousLanguage=no
