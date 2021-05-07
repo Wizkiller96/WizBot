@@ -39,6 +39,7 @@ namespace WizBot.Modules.Help
             IServiceProvider services, DiscordSocketClient client, IBotStrings strings)
         {
             _cmds = cmds;
+            _bss = bss;
             _perms = perms;
             _services = services;
             _client = client;
@@ -106,8 +107,8 @@ namespace WizBot.Modules.Help
             // order by name
             var cmds = _cmds.Commands.Where(c => c.Module.GetTopLevelModule().Name.ToUpperInvariant().StartsWith(module, StringComparison.InvariantCulture))
                                                 .Where(c => !_perms.BlockedCommands.Contains(c.Aliases[0].ToLowerInvariant()))
-                                                .OrderBy(c => c.Aliases[0])
-                                                .Distinct(new CommandTextEqualityComparer());
+                                                  .OrderBy(c => c.Aliases[0])
+                                                  .Distinct(new CommandTextEqualityComparer());
 
 
             // check preconditions for all commands, but only if it's not 'all'
