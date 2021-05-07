@@ -43,7 +43,7 @@ namespace WizBot.Tests
         }
 
         private static string[] GetCommandMethodNames()
-            => typeof(WizBot.WizBot).Assembly
+            => typeof(WizBot).Assembly
                 .GetExportedTypes()
                 .Where(type => type.IsClass && !type.IsAbstract)
                 .Where(type => typeof(WizBotTopLevelModule).IsAssignableFrom(type) // if its a top level module
