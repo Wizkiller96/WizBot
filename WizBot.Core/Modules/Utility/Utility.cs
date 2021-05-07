@@ -17,6 +17,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using WizBot.Core.Common;
+using WizBot.Core.Common.Attributes;
 
 namespace WizBot.Modules.Utility
 {
@@ -347,7 +348,6 @@ namespace WizBot.Modules.Utility
 #if GLOBAL_WIZBOT
         [Ratelimit(30)]
 #endif
-
         public async Task Ping()
         {
             await sem.WaitAsync(5000).ConfigureAwait(false);
