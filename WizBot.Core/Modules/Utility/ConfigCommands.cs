@@ -127,7 +127,7 @@ namespace WizBot.Modules.Utility
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
-            public async Task ConfigReload(string name = "")
+            public async Task ConfigReload(string name)
             {
                 var setting = _settingServices.FirstOrDefault(x =>
                     x.Name.StartsWith(name, StringComparison.InvariantCultureIgnoreCase));
