@@ -19,7 +19,7 @@ namespace WizBot.Core.Modules.Gambling.Common
         }
 
         [Comment(@"DO NOT CHANGE")]
-        public int Version { get; set; }
+        public int Version { get; set; } = 1;
 
         [Comment(@"Currency settings")]
         public CurrencyConfig Currency { get; set; }
