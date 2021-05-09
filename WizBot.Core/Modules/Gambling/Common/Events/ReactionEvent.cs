@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using WizBot.Core.Modules.Gambling.Services;
 
 namespace WizBot.Core.Modules.Gambling.Common.Events
 {
@@ -37,14 +38,13 @@ namespace WizBot.Core.Modules.Gambling.Common.Events
         private readonly Timer _t;
         private readonly Timer _timeout = null;
         private readonly bool _noRecentlyJoinedServer;
-        private readonly IBotConfigProvider _bc;
         private readonly EventOptions _opts;
+        private readonly GamblingConfig _config;
 
         public event Func<ulong, Task> OnEnded;
 
         public ReactionEvent(DiscordSocketClient client, ICurrencyService cs,
-            IBotConfigProvider bc, SocketGuild g, ITextChannel ch,
-            EventOptions opt,
+            SocketGuild g, ITextChannel ch, EventOptions opt, GamblingConfig config,
             Func<CurrencyEvent.Type, EventOptions, long, EmbedBuilder> embedFunc)
         {
             _log = LogManager.GetCurrentClassLogger();
@@ -57,8 +57,8 @@ namespace WizBot.Core.Modules.Gambling.Common.Events
             _isPotLimited = PotSize > 0;
             _channel = ch;
             _noRecentlyJoinedServer = false;
-            _bc = bc;
             _opts = opt;
+            _config = config;
 
             _t = new Timer(OnTimerTick, null, Timeout.InfiniteTimeSpan, TimeSpan.FromSeconds(2));
             if (_opts.Hours > 0)
@@ -118,13 +118,13 @@ namespace WizBot.Core.Modules.Gambling.Common.Events
 
         public async Task StartEvent()
         {
-            if (Emote.TryParse(_bc.BotConfig.CurrencySign, out var emote))
+            if (Emote.TryParse(_config.Currency.Sign, out var emote))
             {
                 _emote = emote;
             }
             else
             {
-                _emote = new Emoji(_bc.BotConfig.CurrencySign);
+                _emote = new Emoji(_config.Currency.Sign);
             }
             _msg = await _channel.EmbedAsync(GetEmbed(_opts.PotSize)).ConfigureAwait(false);
             await _msg.AddReactionAsync(_emote).ConfigureAwait(false);

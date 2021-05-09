@@ -1642,8 +1642,25 @@ streamrolewhitelist:
 botconfigedit:
   desc: "Sets one of available bot config settings to a specified value. Use the command without any parameters to get a list of available settings, and their current values."
   args:
-  - "CurrencyName coins"
+  - "color.ok 00ff00"
   - ""
+config:
+  desc: |- 
+    Gets or sets configuration values.
+    Provide no arguments to see the list of configs you can edit/view.
+    Provide config name to see all properties in that configuration and their values.
+    Provide config name and property name to see that property's description and value.
+    Provide config name, property name and value to set that property to the new value.
+  args:
+  - ""
+  - "bot"
+  - "bot color.ok"
+  - "bot color.ok ff0000"
+configreload:
+  desc: "Reloads specified configuration"
+  args:
+  - "bot"
+  - "gambling"
 nsfwtagbl:
   desc: "Toggles whether the tag is blacklisted or not in nsfw searches. Provide no parameters to see the list of blacklisted tags."
   args:

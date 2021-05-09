@@ -9,11 +9,13 @@ using System.Threading.Tasks;
 
 namespace WizBot.Modules
 {
-    public abstract class WizBotTopLevelModule : ModuleBase
+    public abstract class WizBotModule : ModuleBase
     {
         protected Logger _log { get; }
         protected CultureInfo _cultureInfo { get; set; }
         public IBotStrings Strings { get; set; }
+
+        public BotSettingsService BotSettings { get; set; }
         public IBotConfigProvider Bc { get; set; }
         public CommandHandler CmdHandler { get; set; }
         public ILocalization Localization { get; set; }
@@ -22,9 +24,8 @@ namespace WizBot.Modules
 
         protected ICommandContext ctx => Context;
 
-        protected WizBotTopLevelModule(bool isTopLevelModule = true)
+        protected WizBotModule(bool isTopLevelModule = true)
         {
-            //if it's top level module
             _log = LogManager.GetCurrentClassLogger();
         }
 
@@ -33,53 +34,33 @@ namespace WizBot.Modules
             _cultureInfo = Localization.GetCultureInfo(ctx.Guild?.Id);
         }
 
-        //public Task<IUserMessage> ReplyConfirmLocalized(string titleKey, string textKey, string url = null, string footer = null)
-        //{
-        //    var title = WizBot.ResponsesResourceManager.GetString(titleKey, cultureInfo);
-        //    var text = WizBot.ResponsesResourceManager.GetString(textKey, cultureInfo);
-        //    return ctx.Channel.SendConfirmAsync(title, text, url, footer);
-        //}
-
-        //public Task<IUserMessage> ReplyConfirmLocalized(string textKey)
-        //{
-        //    var text = WizBot.ResponsesResourceManager.GetString(textKey, cultureInfo);
-        //    return ctx.Channel.SendConfirmAsync(ctx.User.Mention + " " + textKey);
-        //}
-
-        //public Task<IUserMessage> ReplyErrorLocalized(string titleKey, string textKey, string url = null, string footer = null)
-        //{
-        //    var title = WizBot.ResponsesResourceManager.GetString(titleKey, cultureInfo);
-        //    var text = WizBot.ResponsesResourceManager.GetString(textKey, cultureInfo);
-        //    return ctx.Channel.SendErrorAsync(title, text, url, footer);
-        //}
-
         protected string GetText(string key) =>
             Strings.GetText(key, _cultureInfo);
 
         protected string GetText(string key, params object[] replacements) =>
             Strings.GetText(key, _cultureInfo, replacements);
 
-        public Task<IUserMessage> ErrorLocalizedAsync(string textKey, params object[] replacements)
+        public Task<IUserMessage> ErrorLocalizedAsync(string textKey, params object[] args)
         {
-            var text = GetText(textKey, replacements);
+            var text = GetText(textKey, args);
             return ctx.Channel.SendErrorAsync(text);
         }
 
-        public Task<IUserMessage> ReplyErrorLocalizedAsync(string textKey, params object[] replacements)
+        public Task<IUserMessage> ReplyErrorLocalizedAsync(string textKey, params object[] args)
         {
-            var text = GetText(textKey, replacements);
+            var text = GetText(textKey, args);
             return ctx.Channel.SendErrorAsync(Format.Bold(ctx.User.ToString()) + " " + text);
         }
 
-        public Task<IUserMessage> ConfirmLocalizedAsync(string textKey, params object[] replacements)
+        public Task<IUserMessage> ConfirmLocalizedAsync(string textKey, params object[] args)
         {
-            var text = GetText(textKey, replacements);
+            var text = GetText(textKey, args);
             return ctx.Channel.SendConfirmAsync(text);
         }
 
-        public Task<IUserMessage> ReplyConfirmLocalizedAsync(string textKey, params object[] replacements)
+        public Task<IUserMessage> ReplyConfirmLocalizedAsync(string textKey, params object[] args)
         {
-            var text = GetText(textKey, replacements);
+            var text = GetText(textKey, args);
             return ctx.Channel.SendConfirmAsync(Format.Bold(ctx.User.ToString()) + " " + text);
         }
 
@@ -151,21 +132,21 @@ namespace WizBot.Modules
         }
     }
 
-    public abstract class WizBotTopLevelModule<TService> : WizBotTopLevelModule where TService : INService
+    public abstract class WizBotModule<TService> : WizBotModule where TService : INService
     {
         public TService _service { get; set; }
 
-        protected WizBotTopLevelModule(bool isTopLevel = true) : base(isTopLevel)
+        protected WizBotModule(bool isTopLevel = true) : base(isTopLevel)
         {
         }
     }
 
-    public abstract class WizBotSubmodule : WizBotTopLevelModule
+    public abstract class WizBotSubmodule : WizBotModule
     {
         protected WizBotSubmodule() : base(false) { }
     }
 
-    public abstract class WizBotSubmodule<TService> : WizBotTopLevelModule<TService> where TService : INService
+    public abstract class WizBotSubmodule<TService> : WizBotModule<TService> where TService : INService
     {
         protected WizBotSubmodule() : base(false)
         {

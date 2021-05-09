@@ -12,6 +12,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using WizBot.Core.Modules.Gambling.Services;
 using Image = SixLabors.ImageSharp.Image;
 
 namespace WizBot.Modules.Gambling
@@ -26,7 +27,8 @@ namespace WizBot.Modules.Gambling
             private readonly DbService _db;
             private static readonly WizBotRandom rng = new WizBotRandom();
 
-            public FlipCoinCommands(IDataCache data, ICurrencyService cs, DbService db)
+            public FlipCoinCommands(IDataCache data, ICurrencyService cs, DbService db,
+                GamblingConfigService gss) : base(gss)
             {
                 _images = data.LocalImages;
                 _cs = cs;
@@ -94,7 +96,7 @@ namespace WizBot.Modules.Gambling
                 var removed = await _cs.RemoveAsync(ctx.User, "Betflip Gamble", amount, false, gamble: true).ConfigureAwait(false);
                 if (!removed)
                 {
-                    await ReplyErrorLocalizedAsync("not_enough", Bc.BotConfig.CurrencySign).ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync("not_enough", CurrencySign).ConfigureAwait(false);
                     return;
                 }
                 BetFlipGuess result;
@@ -114,8 +116,8 @@ namespace WizBot.Modules.Gambling
                 string str;
                 if (guess == result)
                 {
-                    var toWin = (long)(amount * Bc.BotConfig.BetflipMultiplier);
-                    str = Format.Bold(ctx.User.ToString()) + " " + GetText("flip_guess", toWin + Bc.BotConfig.CurrencySign);
+                    var toWin = (long)(amount * _config.BetFlip.Multiplier);
+                    str = Format.Bold(ctx.User.ToString()) + " " + GetText("flip_guess", toWin + CurrencySign);
                     await _cs.AddAsync(ctx.User, "Betflip Gamble", toWin, false, gamble: true).ConfigureAwait(false);
                 }
                 else

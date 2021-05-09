@@ -141,8 +141,13 @@ See RotatingStatuses submodule in Administration.")]
 
     public class ColorConfig
     {
+        [Comment(@"Color used for embed responses when command successfully executes")]
         public Rgba32 Ok { get; set; }
+
+        [Comment(@"Color used for embed responses when command has an error")]
         public Rgba32 Error { get; set; }
+
+        [Comment(@"Color used for embed responses while command is doing work or is in progress")]
         public Rgba32 Pending { get; set; }
 
         public ColorConfig()

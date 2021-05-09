@@ -7,17 +7,19 @@ using WizBot.Modules.Administration.Services;
 using WizBot.Modules.Gambling.Services;
 using System.Linq;
 using System.Threading.Tasks;
+using WizBot.Core.Modules.Gambling.Common;
+using WizBot.Core.Modules.Gambling.Services;
 
 namespace WizBot.Modules.Games
 {
     public partial class Games
     {
         [Group]
-        public class PlantPickCommands : WizBotSubmodule<PlantPickService>
+        public class PlantPickCommands : GamblingSubmodule<PlantPickService>
         {
             private readonly LogCommandService logService;
 
-            public PlantPickCommands(LogCommandService logService)
+            public PlantPickCommands(LogCommandService logService, GamblingConfigService gss) : base(gss)
             {
                 this.logService = logService;
             }
@@ -35,7 +37,7 @@ namespace WizBot.Modules.Games
 
                 if (picked > 0)
                 {
-                    var msg = await ReplyConfirmLocalizedAsync("picked", picked + Bc.BotConfig.CurrencySign)
+                    var msg = await ReplyConfirmLocalizedAsync("picked", picked + CurrencySign)
                     .ConfigureAwait(false);
                     msg.DeleteAfter(10);
                 }
@@ -66,7 +68,7 @@ namespace WizBot.Modules.Games
                 var success = await _service.PlantAsync(ctx.Guild.Id, ctx.Channel, ctx.User.Id, ctx.User.ToString(), amount, pass);
                 if (!success)
                 {
-                    await ReplyErrorLocalizedAsync("not_enough", Bc.BotConfig.CurrencySign).ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync("not_enough", CurrencySign).ConfigureAwait(false);
                     return;
                 }
 

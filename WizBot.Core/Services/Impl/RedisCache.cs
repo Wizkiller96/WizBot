@@ -198,5 +198,23 @@ namespace WizBot.Core.Services.Impl
             }
             return (TOut)JsonConvert.DeserializeObject(data, typeof(TOut));
         }
+        
+        public DateTime GetLastCurrencyDecay()
+        {
+            var db = Redis.GetDatabase();
+
+            var str = (string)db.StringGet($"{_redisKey}_last_currency_decay");
+            if (string.IsNullOrEmpty(str))
+                return DateTime.MinValue;
+
+            return JsonConvert.DeserializeObject<DateTime>(str);
+        }
+
+        public void SetLastCurrencyDecay()
+        {
+            var db = Redis.GetDatabase();
+
+            db.StringSet($"{_redisKey}_last_currency_decay", JsonConvert.SerializeObject(DateTime.UtcNow));
+        }
     }
 }

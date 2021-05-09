@@ -43,7 +43,7 @@ namespace WizBot.Core.Services
 
             using var checkMigratedCommand = conn.CreateCommand();
             checkMigratedCommand.CommandText = "UPDATE BotConfig SET HasMigratedBotSettings = 1 WHERE HasMigratedBotSettings = 0;";
-            var changedRows = (int)checkMigratedCommand.ExecuteNonQuery();
+            var changedRows = checkMigratedCommand.ExecuteNonQuery();
             if (changedRows == 0)
                 return;
 

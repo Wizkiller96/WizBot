@@ -17,7 +17,7 @@ namespace WizBot.Modules.Games
     - Shiritori
     - Simple RPG adventure
     */
-    public partial class Games : WizBotTopLevelModule<GamesService>
+    public partial class Games : WizBotModule<GamesService>
     {
         private readonly IImageCache _images;
         private readonly IHttpClientFactory _httpFactory;

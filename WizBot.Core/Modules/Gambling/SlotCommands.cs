@@ -13,6 +13,7 @@ using WizBot.Common.Attributes;
 using WizBot.Modules.Gambling.Services;
 using WizBot.Core.Modules.Gambling.Common;
 using WizBot.Core.Common;
+using WizBot.Core.Modules.Gambling.Services;
 using Image = SixLabors.ImageSharp.Image;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp;
@@ -36,7 +37,7 @@ namespace WizBot.Modules.Gambling
             private readonly IImageCache _images;
             private readonly ICurrencyService _cs;
 
-            public SlotCommands(IDataCache data, ICurrencyService cs)
+            public SlotCommands(IDataCache data, ICurrencyService cs, GamblingConfigService gamb) : base(gamb)
             {
                 _images = data.LocalImages;
                 _cs = cs;
@@ -150,13 +151,13 @@ namespace WizBot.Modules.Gambling
                     const int maxAmount = 9999;
                     if (amount > maxAmount)
                     {
-                        await ReplyErrorLocalizedAsync("max_bet_limit", maxAmount + Bc.BotConfig.CurrencySign).ConfigureAwait(false);
+                        await ReplyErrorLocalizedAsync("max_bet_limit", maxAmount + CurrencySign).ConfigureAwait(false);
                         return;
                     }
 
                     if (!await _cs.RemoveAsync(ctx.User, "Slot Machine", amount, false, gamble: true).ConfigureAwait(false))
                     {
-                        await ReplyErrorLocalizedAsync("not_enough", Bc.BotConfig.CurrencySign).ConfigureAwait(false);
+                        await ReplyErrorLocalizedAsync("not_enough", CurrencySign).ConfigureAwait(false);
                         return;
                     }
                     Interlocked.Add(ref _totalBet, amount.Value);
@@ -204,9 +205,9 @@ namespace WizBot.Modules.Gambling
                             await _cs.AddAsync(ctx.User, $"Slot Machine x{result.Multiplier}", amount * result.Multiplier, false, gamble: true).ConfigureAwait(false);
                             Interlocked.Add(ref _totalPaidOut, amount * result.Multiplier);
                             if (result.Multiplier == 1)
-                                msg = GetText("slot_single", Bc.BotConfig.CurrencySign, 1);
+                                msg = GetText("slot_single", CurrencySign, 1);
                             else if (result.Multiplier == 4)
-                                msg = GetText("slot_two", Bc.BotConfig.CurrencySign, 4);
+                                msg = GetText("slot_two", CurrencySign, 4);
                             else if (result.Multiplier == 10)
                                 msg = GetText("slot_three", 10);
                             else if (result.Multiplier == 30)
@@ -215,7 +216,7 @@ namespace WizBot.Modules.Gambling
 
                         using (var imgStream = bgImage.ToStream())
                         {
-                            await ctx.Channel.SendFileAsync(imgStream, "result.png", ctx.User.Mention + " " + msg + $"\n`{GetText("slot_bet")}:`{amount} `{GetText("won")}:` {amount * result.Multiplier}{Bc.BotConfig.CurrencySign}").ConfigureAwait(false);
+                            await ctx.Channel.SendFileAsync(imgStream, "result.png", ctx.User.Mention + " " + msg + $"\n`{GetText("slot_bet")}:`{amount} `{GetText("won")}:` {amount * result.Multiplier}{CurrencySign}").ConfigureAwait(false);
                         }
                     }
                 }

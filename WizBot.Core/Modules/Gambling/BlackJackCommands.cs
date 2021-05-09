@@ -27,7 +27,8 @@ namespace WizBot.Modules.Gambling
                 Double,
             }
 
-            public BlackJackCommands(ICurrencyService cs, DbService db)
+            public BlackJackCommands(ICurrencyService cs, DbService db,
+                GamblingConfigService config) : base(config)
             {
                 _cs = cs;
                 _db = db;
@@ -47,7 +48,7 @@ namespace WizBot.Modules.Gambling
                     if (!await bj.Join(ctx.User, amount).ConfigureAwait(false))
                     {
                         _service.Games.TryRemove(ctx.Channel.Id, out _);
-                        await ReplyErrorLocalizedAsync("not_enough", Bc.BotConfig.CurrencySign).ConfigureAwait(false);
+                        await ReplyErrorLocalizedAsync("not_enough", CurrencySign).ConfigureAwait(false);
                         return;
                     }
                     bj.StateUpdated += Bj_StateUpdated;
@@ -180,7 +181,7 @@ namespace WizBot.Modules.Gambling
                 {
                     if (!await bj.Double(ctx.User).ConfigureAwait(false))
                     {
-                        await ReplyErrorLocalizedAsync("not_enough", Bc.BotConfig.CurrencySign).ConfigureAwait(false);
+                        await ReplyErrorLocalizedAsync("not_enough", CurrencySign).ConfigureAwait(false);
                     }
                 }
 

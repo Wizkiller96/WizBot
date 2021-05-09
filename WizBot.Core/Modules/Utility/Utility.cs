@@ -21,7 +21,7 @@ using WizBot.Core.Common.Attributes;
 
 namespace WizBot.Modules.Utility
 {
-    public partial class Utility : WizBotTopLevelModule
+    public partial class Utility : WizBotModule
     {
         private readonly DiscordSocketClient _client;
         private readonly IStatsService _stats;

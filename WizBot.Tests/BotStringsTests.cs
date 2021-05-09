@@ -46,7 +46,7 @@ namespace WizBot.Tests
             => typeof(WizBot).Assembly
                 .GetExportedTypes()
                 .Where(type => type.IsClass && !type.IsAbstract)
-                .Where(type => typeof(WizBotTopLevelModule).IsAssignableFrom(type) // if its a top level module
+                .Where(type => typeof(WizBotModule).IsAssignableFrom(type) // if its a top level module
                                || !(type.GetCustomAttribute<GroupAttribute>(true) is null)) // or a submodule
                 .SelectMany(x => x.GetMethods()
                         .Where(mi => mi.CustomAttributes

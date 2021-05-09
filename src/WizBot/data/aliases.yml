@@ -1007,6 +1007,15 @@ streamrolewhitelist:
 botconfigedit:
 - botconfigedit
 - bce
+config:
+- config
+- c
+- conf
+configreload:
+- configreload 
+- creload
+- confreload
+- crel
 nsfwtagblacklist:
 - nsfwtagbl
 - nsfwtbl

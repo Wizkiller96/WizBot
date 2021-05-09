@@ -3,7 +3,6 @@ using Discord.Commands;
 using Discord.WebSocket;
 using WizBot.Common.Attributes;
 using WizBot.Core.Common;
-using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Extensions;
 using WizBot.Modules.Xp.Common;
@@ -11,20 +10,19 @@ using WizBot.Modules.Xp.Services;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WizBot.Core.Modules.Gambling.Services;
 
 namespace WizBot.Modules.Xp
 {
-    public partial class Xp : WizBotTopLevelModule<XpService>
+    public partial class Xp : WizBotModule<XpService>
     {
-        private readonly DiscordSocketClient _client;
-        private readonly DbService _db;
         private readonly DownloadTracker _tracker;
+        private readonly GamblingConfigService _gss;
 
-        public Xp(DiscordSocketClient client, DbService db, DownloadTracker tracker)
+        public Xp(DownloadTracker tracker, GamblingConfigService gss)
         {
-            _client = client;
-            _db = db;
             _tracker = tracker;
+            _gss = gss;
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -66,7 +64,7 @@ namespace WizBot.Modules.Xp
                 .Where(x => x.RoleStr != null)
                 .Concat(_service.GetCurrencyRewards(ctx.Guild.Id)
                     .OrderBy(x => x.Level)
-                    .Select(x => (x.Level, Format.Bold(x.Amount + Bc.BotConfig.CurrencySign))))
+                    .Select(x => (x.Level, Format.Bold(x.Amount + _gss.Data.Currency.Sign))))
                     .GroupBy(x => x.Level)
                     .OrderBy(x => x.Key)
                     .Skip(page * 9)
@@ -104,11 +102,15 @@ namespace WizBot.Modules.Xp
                 return;
 
             _service.SetCurrencyReward(ctx.Guild.Id, level, amount);
+            var config = _gss.Data;
 
             if (amount == 0)
-                await ReplyConfirmLocalizedAsync("cur_reward_cleared", level, Bc.BotConfig.CurrencySign).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync("cur_reward_cleared", level, config.Currency.Sign)
+                    .ConfigureAwait(false);
             else
-                await ReplyConfirmLocalizedAsync("cur_reward_added", level, Format.Bold(amount + Bc.BotConfig.CurrencySign)).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync("cur_reward_added",
+                    level, Format.Bold(amount + config.Currency.Sign))
+                    .ConfigureAwait(false);
         }
 
         public enum NotifyPlace

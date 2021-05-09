@@ -8,6 +8,7 @@ using WizBot.Common.Attributes;
 using WizBot.Core.Common;
 using WizBot.Core.Modules.Gambling.Common;
 using WizBot.Core.Modules.Gambling.Common.AnimalRacing;
+using WizBot.Core.Modules.Gambling.Services;
 using WizBot.Core.Services;
 using WizBot.Extensions;
 using WizBot.Modules.Gambling.Common.AnimalRacing;
@@ -24,7 +25,8 @@ namespace WizBot.Modules.Gambling
             private readonly ICurrencyService _cs;
             private readonly DiscordSocketClient _client;
 
-            public AnimalRacingCommands(ICurrencyService cs, DiscordSocketClient client)
+            public AnimalRacingCommands(ICurrencyService cs, DiscordSocketClient client,
+                GamblingConfigService config) : base(config)
             {
                 _cs = cs;
                 _client = client;
@@ -74,7 +76,7 @@ namespace WizBot.Modules.Gambling
                     {
                         return ctx.Channel.SendConfirmAsync(GetText("animal_race"),
                                             GetText("animal_race_won_money", Format.Bold(winner.Username),
-                                                winner.Animal.Icon, (race.FinishedUsers[0].Bet * (race.Users.Length - 1)) + Bc.BotConfig.CurrencySign));
+                                                winner.Animal.Icon, (race.FinishedUsers[0].Bet * (race.Users.Length - 1)) + CurrencySign));
                     }
                     else
                     {
@@ -149,7 +151,7 @@ namespace WizBot.Modules.Gambling
                     var user = await ar.JoinRace(ctx.User.Id, ctx.User.ToString(), amount)
                         .ConfigureAwait(false);
                     if (amount > 0)
-                        await ctx.Channel.SendConfirmAsync(GetText("animal_race_join_bet", ctx.User.Mention, user.Animal.Icon, amount + Bc.BotConfig.CurrencySign)).ConfigureAwait(false);
+                        await ctx.Channel.SendConfirmAsync(GetText("animal_race_join_bet", ctx.User.Mention, user.Animal.Icon, amount + CurrencySign)).ConfigureAwait(false);
                     else
                         await ctx.Channel.SendConfirmAsync(GetText("animal_race_join", ctx.User.Mention, user.Animal.Icon)).ConfigureAwait(false);
                 }
@@ -172,7 +174,7 @@ namespace WizBot.Modules.Gambling
                 }
                 catch (NotEnoughFundsException)
                 {
-                    await ctx.Channel.SendErrorAsync(GetText("not_enough", Bc.BotConfig.CurrencySign)).ConfigureAwait(false);
+                    await ctx.Channel.SendErrorAsync(GetText("not_enough", CurrencySign)).ConfigureAwait(false);
                 }
             }
         }

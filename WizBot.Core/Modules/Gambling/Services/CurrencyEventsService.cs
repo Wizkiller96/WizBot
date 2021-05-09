@@ -11,6 +11,7 @@ using WizBot.Core.Services.Database.Models;
 using System.Net.Http;
 using Newtonsoft.Json;
 using System.Linq;
+using WizBot.Core.Modules.Gambling.Services;
 
 namespace WizBot.Modules.Gambling.Services
 {
@@ -21,26 +22,24 @@ namespace WizBot.Modules.Gambling.Services
             public ulong User { get; set; }
             public long Date { get; set; }
         }
-        private readonly DbService _db;
         private readonly DiscordSocketClient _client;
         private readonly ICurrencyService _cs;
-        private readonly IBotConfigProvider _bc;
         private readonly IBotCredentials _creds;
         private readonly IHttpClientFactory _http;
+        private readonly GamblingConfigService _configService;
         private readonly Logger _log;
         private readonly ConcurrentDictionary<ulong, ICurrencyEvent> _events =
             new ConcurrentDictionary<ulong, ICurrencyEvent>();
 
-        public CurrencyEventsService(DbService db, DiscordSocketClient client,
-            IBotCredentials creds, ICurrencyService cs, IBotConfigProvider bc,
-            IHttpClientFactory http)
+        public CurrencyEventsService(DiscordSocketClient client,
+            IBotCredentials creds, ICurrencyService cs,
+            IHttpClientFactory http, GamblingConfigService configService)
         {
-            _db = db;
             _client = client;
             _cs = cs;
-            _bc = bc;
             _creds = creds;
             _http = http;
+            _configService = configService;
             _log = LogManager.GetCurrentClassLogger();
 
             if (_client.ShardId == 0)
@@ -102,11 +101,11 @@ namespace WizBot.Modules.Gambling.Services
 
             if (type == CurrencyEvent.Type.Reaction)
             {
-                ce = new ReactionEvent(_client, _cs, _bc, g, ch, opts, embed);
+                ce = new ReactionEvent(_client, _cs, g, ch, opts, _configService.Data, embed);
             }
             else if (type == CurrencyEvent.Type.GameStatus)
             {
-                ce = new GameStatusEvent(_client, _cs, _bc, g, ch, opts, embed);
+                ce = new GameStatusEvent(_client, _cs, g, ch, opts, embed);
             }
             else
             {

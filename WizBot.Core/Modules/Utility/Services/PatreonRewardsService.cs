@@ -11,6 +11,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
+using WizBot.Core.Modules.Gambling.Services;
 using WizBot.Extensions;
 
 namespace WizBot.Modules.Utility.Services
@@ -30,6 +31,7 @@ namespace WizBot.Modules.Utility.Services
         private readonly DbService _db;
         private readonly ICurrencyService _currency;
         private readonly IBotConfigProvider _bc;
+        private readonly GamblingConfigService _gamblingConfigService;
         private readonly IHttpClientFactory _httpFactory;
         private readonly DiscordSocketClient _client;
 
@@ -37,13 +39,14 @@ namespace WizBot.Modules.Utility.Services
 
         public PatreonRewardsService(IBotCredentials creds, DbService db,
             ICurrencyService currency, IHttpClientFactory factory,
-            DiscordSocketClient client, IBotConfigProvider bc)
+            DiscordSocketClient client, IBotConfigProvider bc, GamblingConfigService gamblingConfigService)
         {
             _log = LogManager.GetCurrentClassLogger();
             _creds = creds;
             _db = db;
             _currency = currency;
             _bc = bc;
+            _gamblingConfigService = gamblingConfigService;
             _httpFactory = factory;
             _client = client;
 
@@ -125,6 +128,7 @@ namespace WizBot.Modules.Utility.Services
         public async Task<int> ClaimReward(ulong userId)
         {
             await claimLockJustInCase.WaitAsync().ConfigureAwait(false);
+            var settings = _gamblingConfigService.Data;
             var now = DateTime.UtcNow;
             try
             {
@@ -134,7 +138,7 @@ namespace WizBot.Modules.Utility.Services
                 var totalAmount = 0;
                 foreach (var data in datas)
                 {
-                    var amount = (int)(data.Reward.attributes.amount_cents * _bc.BotConfig.PatreonCurrencyPerCent);
+                    var amount = (int)(data.Reward.attributes.amount_cents * settings.PatreonCurrencyPerCent);
 
                     using (var uow = _db.GetDbContext())
                     {
@@ -157,7 +161,7 @@ namespace WizBot.Modules.Utility.Services
 
                             _log.Info($"Sending new currency reward to {userId}");
                             await SendMessageToUser(userId, $"Thank you for your pledge! " +
-                                                            $"You've been awarded **{amount}**{_bc.BotConfig.CurrencySign} !");
+                                                            $"You've been awarded **{amount}**{settings.Currency.Sign} !");
                             continue;
                         }
 
@@ -172,7 +176,7 @@ namespace WizBot.Modules.Utility.Services
                             totalAmount += amount;
                             _log.Info($"Sending recurring currency reward to {userId}");
                             await SendMessageToUser(userId, $"Thank you for your continued support! " +
-                                                            $"You've been awarded **{amount}**{_bc.BotConfig.CurrencySign} for this month's support!");
+                                                            $"You've been awarded **{amount}**{settings.Currency.Sign} for this month's support!");
                             continue;
                         }
 
@@ -188,7 +192,7 @@ namespace WizBot.Modules.Utility.Services
                             totalAmount += toAward;
                             _log.Info($"Sending updated currency reward to {userId}");
                             await SendMessageToUser(userId, $"Thank you for increasing your pledge! " +
-                                                            $"You've been awarded an additional **{toAward}**{_bc.BotConfig.CurrencySign} !");
+                                                            $"You've been awarded an additional **{toAward}**{settings.Currency.Sign} !");
                             continue;
                         }
                     }

@@ -1,5 +1,6 @@
 ﻿using WizBot.Extensions;
 using System.Collections.Generic;
+using WizBot.Core.Modules.Gambling.Common;
 
 namespace WizBot.Core.Services.Database.Models
 {

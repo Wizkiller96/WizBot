@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using Discord.Net;
 using WizBot.Core.Common;
 using WizBot.Core.Common.Configs;
+using WizBot.Core.Modules.Gambling.Services;
 
 namespace WizBot
 {
@@ -160,7 +161,11 @@ namespace WizBot
             .AddSingleton<ISeria, JsonSeria>()
             .AddSingleton<ISettingsSeria, YamlSeria>()
             .AddSingleton<BotSettingsService>()
+            .AddSingleton<ISettingsService>(x => x.GetService<BotSettingsService>())
             .AddSingleton<BotSettingsMigrator>()
+            .AddSingleton<GamblingConfigService>()
+            .AddSingleton<ISettingsService>(x => x.GetService<GamblingConfigService>())
+            .AddSingleton<GamblingSettingsMigrator>()
             .AddSingleton<IPubSub, RedisPubSub>()
             .AddMemoryCache();
 
@@ -176,7 +181,9 @@ namespace WizBot
             Services = s.BuildServiceProvider();
             var commandHandler = Services.GetService<CommandHandler>();
             var bsMigrator = Services.GetService<BotSettingsMigrator>();
+            var gambMigrator = Services.GetService<GamblingSettingsMigrator>();
             bsMigrator.EnsureMigrated();
+            gambMigrator.EnsureMigrated();
 
             //what the fluff
             commandHandler.AddServices(s);

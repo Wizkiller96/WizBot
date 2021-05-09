@@ -6,6 +6,7 @@ using NLog;
 using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using WizBot.Core.Modules.Gambling.Services;
 
 namespace WizBot.Core.Common.TypeReaders
 {
@@ -86,8 +87,8 @@ namespace WizBot.Core.Common.TypeReaders
 
         private static long Max(IServiceProvider services, ICommandContext ctx)
         {
-            var _bc = services.GetService<IBotConfigProvider>();
-            var max = _bc.BotConfig.MaxBet;
+            var settings = services.GetService<GamblingConfigService>().Data;
+            var max = settings.MaxBet;
             return max == 0
                 ? Cur(services, ctx)
                 : max;

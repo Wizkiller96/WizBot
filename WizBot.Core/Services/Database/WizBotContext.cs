@@ -57,6 +57,7 @@ namespace WizBot.Core.Services.Database
         public DbSet<PlantedCurrency> PlantedCurrency { get; set; }
         public DbSet<BanTemplate> BanTemplates { get; set; }
         public DbSet<DiscordPermOverride> DiscordPermOverrides { get; set; }
+        public DbSet<DiscordUser> DiscordUser { get; set; }
 
         public WizBotContext(DbContextOptions<WizBotContext> options) : base(options)
         {
@@ -231,6 +232,9 @@ namespace WizBot.Core.Services.Database
 
             wi.HasIndex(x => x.Price);
             wi.HasIndex(x => x.ClaimerId);
+            // wi.HasMany(x => x.Items)
+            //     .WithOne()
+            //     .OnDelete(DeleteBehavior.Cascade);
 
             var wu = modelBuilder.Entity<WaifuUpdate>();
             #endregion
@@ -379,6 +383,8 @@ namespace WizBot.Core.Services.Database
 
             var bcEntity = modelBuilder.Entity<BotConfig>();
             bcEntity.Property(bc => bc.HasMigratedBotSettings)
+                .HasDefaultValue(1);
+            bcEntity.Property(bc => bc.HasMigratedGamblingSettings)
                 .HasDefaultValue(1);
 
             #endregion

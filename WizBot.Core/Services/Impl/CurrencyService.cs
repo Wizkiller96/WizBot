@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WizBot.Core.Modules.Gambling.Services;
 
 namespace WizBot.Core.Services
 {
@@ -14,12 +15,15 @@ namespace WizBot.Core.Services
     {
         private readonly IBotConfigProvider _config;
         private readonly DbService _db;
+        private readonly GamblingConfigService _gss;
         private readonly IUser _bot;
 
-        public CurrencyService(IBotConfigProvider config, DbService db, DiscordSocketClient c)
+        public CurrencyService(IBotConfigProvider config, DbService db, DiscordSocketClient c,
+            GamblingConfigService gss)
         {
             _config = config;
             _db = db;
+            _gss = gss;
             _bot = c.CurrentUser;
         }
 
@@ -76,11 +80,12 @@ namespace WizBot.Core.Services
             {
                 try
                 {
+                    var sign = _gss.Data.Currency.Sign;
                     await (await user.GetOrCreateDMChannelAsync())
                         .EmbedAsync(new EmbedBuilder()
                             .WithOkColor()
-                            .WithTitle($"Received {_config.BotConfig.CurrencySign}")
-                            .AddField("Amount", amount)
+                            .WithTitle($"Received Currency")
+                            .AddField("Amount", amount + _gss.Data.Currency.Sign)
                             .AddField("Reason", reason));
                 }
                 catch

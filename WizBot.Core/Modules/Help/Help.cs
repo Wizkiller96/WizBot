@@ -22,7 +22,7 @@ using Discord.WebSocket;
 
 namespace WizBot.Modules.Help
 {
-    public class Help : WizBotTopLevelModule<HelpService>
+    public class Help : WizBotModule<HelpService>
     {
         public const string PatreonUrl = "https://patreon.com/WizNet";
         public const string PaypalUrl = "https://paypal.me/Wizkiller96Network";

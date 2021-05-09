@@ -1,6 +1,9 @@
-﻿using Discord;
+﻿using System;
+using Discord;
 using WizBot.Core.Services.Database.Models;
 using System.Collections.Generic;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace WizBot.Core.Services.Database.Repositories
 {
@@ -17,8 +20,6 @@ namespace WizBot.Core.Services.Database.Repositories
         List<DiscordUser> GetTopRichest(ulong botId, int count, int page);
         List<DiscordUser> GetTopRichest(ulong botId, int count);
         void RemoveFromMany(List<ulong> ids);
-        void CurrencyDecay(float decay, ulong botId);
-        long GetCurrencyDecayAmount(float decay);
         decimal GetTotalCurrency();
         decimal GetTopOnePercentCurrency(ulong botId);
     }

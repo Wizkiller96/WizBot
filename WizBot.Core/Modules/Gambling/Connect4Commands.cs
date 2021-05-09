@@ -11,6 +11,7 @@ using WizBot.Modules.Gambling.Services;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WizBot.Core.Modules.Gambling.Services;
 
 namespace WizBot.Modules.Gambling
 {
@@ -23,7 +24,8 @@ namespace WizBot.Modules.Gambling
             private readonly ICurrencyService _cs;
             private static readonly string[] numbers = new string[] { ":one:", ":two:", ":three:", ":four:", ":five:", ":six:", ":seven:", ":eight:" };
 
-            public Connect4Commands(DiscordSocketClient client, ICurrencyService cs)
+            public Connect4Commands(DiscordSocketClient client, ICurrencyService cs, GamblingConfigService gamb)
+                : base(gamb)
             {
                 _client = client;
                 _cs = cs;
@@ -55,7 +57,7 @@ namespace WizBot.Modules.Gambling
                 {
                     if (!await _cs.RemoveAsync(ctx.User.Id, "Connect4-bet", options.Bet, true).ConfigureAwait(false))
                     {
-                        await ReplyErrorLocalizedAsync("not_enough", Bc.BotConfig.CurrencySign).ConfigureAwait(false);
+                        await ReplyErrorLocalizedAsync("not_enough", CurrencySign).ConfigureAwait(false);
                         _service.Connect4Games.TryRemove(ctx.Channel.Id, out _);
                         game.Dispose();
                         return;
@@ -74,7 +76,7 @@ namespace WizBot.Modules.Gambling
                 }
                 else
                 {
-                    await ReplyConfirmLocalizedAsync("connect4_created_bet", options.Bet + Bc.BotConfig.CurrencySign).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync("connect4_created_bet", options.Bet + CurrencySign).ConfigureAwait(false);
                 }
 
                 Task _client_MessageReceived(SocketMessage arg)

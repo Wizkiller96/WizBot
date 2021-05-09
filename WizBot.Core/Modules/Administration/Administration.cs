@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace WizBot.Modules.Administration
 {
-    public partial class Administration : WizBotTopLevelModule<AdministrationService>
+    public partial class Administration : WizBotModule<AdministrationService>
     {
         public enum List
         {

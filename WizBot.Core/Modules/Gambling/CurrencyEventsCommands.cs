@@ -1,37 +1,30 @@
 ﻿using Discord;
 using Discord.Commands;
 using WizBot.Extensions;
-using WizBot.Core.Services;
 using System.Threading.Tasks;
-using Discord.WebSocket;
 using WizBot.Common.Attributes;
 using WizBot.Modules.Gambling.Services;
 using WizBot.Core.Common;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Core.Modules.Gambling.Common.Events;
 using System;
+using WizBot.Core.Modules.Gambling.Common;
+using WizBot.Core.Modules.Gambling.Services;
 
 namespace WizBot.Modules.Gambling
 {
     public partial class Gambling
     {
         [Group]
-        public class CurrencyEventsCommands : WizBotSubmodule<CurrencyEventsService>
+        public class CurrencyEventsCommands : GamblingSubmodule<CurrencyEventsService>
         {
             public enum OtherEvent
             {
                 BotListUpvoters
             }
 
-            private readonly DiscordSocketClient _client;
-            private readonly IBotCredentials _creds;
-            private readonly ICurrencyService _cs;
-
-            public CurrencyEventsCommands(DiscordSocketClient client, ICurrencyService cs, IBotCredentials creds)
+            public CurrencyEventsCommands(GamblingConfigService config) : base(config)
             {
-                _client = client;
-                _creds = creds;
-                _cs = cs;
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -78,22 +71,22 @@ namespace WizBot.Modules.Gambling
             private string GetReactionDescription(long amount, long potSize)
             {
                 string potSizeStr = Format.Bold(potSize == 0
-                    ? "∞" + Bc.BotConfig.CurrencySign
-                    : potSize.ToString() + Bc.BotConfig.CurrencySign);
+                    ? "∞" + CurrencySign
+                    : potSize.ToString() + CurrencySign);
                 return GetText("new_reaction_event",
-                                   Bc.BotConfig.CurrencySign,
-                                   Format.Bold(amount + Bc.BotConfig.CurrencySign),
+                                   CurrencySign,
+                                   Format.Bold(amount + CurrencySign),
                                    potSizeStr);
             }
 
             private string GetGameStatusDescription(long amount, long potSize)
             {
                 string potSizeStr = Format.Bold(potSize == 0
-                    ? "∞" + Bc.BotConfig.CurrencySign
-                    : potSize.ToString() + Bc.BotConfig.CurrencySign);
+                    ? "∞" + CurrencySign
+                    : potSize.ToString() + CurrencySign);
                 return GetText("new_gamestatus_event",
-                                   Bc.BotConfig.CurrencySign,
-                                   Format.Bold(amount + Bc.BotConfig.CurrencySign),
+                                   CurrencySign,
+                                   Format.Bold(amount + CurrencySign),
                                    potSizeStr);
             }
         }

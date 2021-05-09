@@ -51,9 +51,8 @@ namespace WizBot.Modules.Administration
             [Priority(0)]
             public async Task LanguageSet()
             {
-                var cul = Localization.GetCultureInfo(ctx.Guild);
-                await ReplyConfirmLocalizedAsync("lang_set_show", Format.Bold(cul.ToString()),
-                        Format.Bold(cul.NativeName))
+                await ReplyConfirmLocalizedAsync("lang_set_show", Format.Bold(_cultureInfo.ToString()),
+                        Format.Bold(_cultureInfo.NativeName))
                     .ConfigureAwait(false);
             }
 

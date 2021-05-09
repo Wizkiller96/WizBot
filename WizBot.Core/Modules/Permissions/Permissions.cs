@@ -15,7 +15,7 @@ using WizBot.Modules.Permissions.Services;
 
 namespace WizBot.Modules.Permissions
 {
-    public partial class Permissions : WizBotTopLevelModule<PermissionService>
+    public partial class Permissions : WizBotModule<PermissionService>
     {
         private readonly DbService _db;
 

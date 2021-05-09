@@ -35,7 +35,6 @@ namespace WizBot.Core.Modules.Gambling.Common.Events
         private readonly ConcurrentQueue<ulong> _toAward = new ConcurrentQueue<ulong>();
         private readonly Timer _t;
         private readonly Timer _timeout = null;
-        private readonly IBotConfigProvider _bc;
         private readonly EventOptions _opts;
 
         private readonly string _code;
@@ -48,10 +47,8 @@ namespace WizBot.Core.Modules.Gambling.Common.Events
             .Select(x => (char)x)
             .ToArray();
 
-        public GameStatusEvent(DiscordSocketClient client, ICurrencyService cs,
-            IBotConfigProvider bc, SocketGuild g, ITextChannel ch,
-            EventOptions opt,
-            Func<CurrencyEvent.Type, EventOptions, long, EmbedBuilder> embedFunc)
+        public GameStatusEvent(DiscordSocketClient client, ICurrencyService cs, SocketGuild g, ITextChannel ch,
+            EventOptions opt, Func<CurrencyEvent.Type, EventOptions, long, EmbedBuilder> embedFunc)
         {
             _log = LogManager.GetCurrentClassLogger();
             _client = client;
@@ -62,7 +59,6 @@ namespace WizBot.Core.Modules.Gambling.Common.Events
             _embedFunc = embedFunc;
             _isPotLimited = PotSize > 0;
             _channel = ch;
-            _bc = bc;
             _opts = opt;
             // generate code
             _code = new string(_sneakyGameStatusChars.Shuffle().Take(5).ToArray());

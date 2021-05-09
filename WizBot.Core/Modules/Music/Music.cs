@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace WizBot.Modules.Music
 {
-    public class Music : WizBotTopLevelModule<MusicService>
+    public class Music : WizBotModule<MusicService>
     {
         private readonly DiscordSocketClient _client;
         private readonly IBotCredentials _creds;

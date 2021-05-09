@@ -31,7 +31,7 @@ using Configuration = AngleSharp.Configuration;
 
 namespace WizBot.Modules.Searches
 {
-    public partial class Searches : WizBotTopLevelModule<SearchesService>
+    public partial class Searches : WizBotModule<SearchesService>
     {
         private readonly IBotCredentials _creds;
         private readonly IGoogleApiService _google;

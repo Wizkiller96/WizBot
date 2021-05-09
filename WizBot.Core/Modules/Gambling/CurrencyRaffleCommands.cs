@@ -16,6 +16,10 @@ namespace WizBot.Modules.Gambling
         {
             public enum Mixed { Mixed }
 
+            public CurrencyRaffleCommands(GamblingConfigService configService) : base(configService)
+            {
+            }
+
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [Priority(0)]
@@ -31,7 +35,7 @@ namespace WizBot.Modules.Gambling
                     return;
                 async Task OnEnded(IUser arg, long won)
                 {
-                    await ctx.Channel.SendConfirmAsync(GetText("rafflecur_ended", Bc.BotConfig.CurrencyName, Format.Bold(arg.ToString()), won + Bc.BotConfig.CurrencySign)).ConfigureAwait(false);
+                    await ctx.Channel.SendConfirmAsync(GetText("rafflecur_ended", CurrencyName, Format.Bold(arg.ToString()), won + CurrencySign)).ConfigureAwait(false);
                 }
                 var res = await _service.JoinOrCreateGame(ctx.Channel.Id,
                     ctx.User, amount, mixed, OnEnded)
@@ -48,7 +52,7 @@ namespace WizBot.Modules.Gambling
                     if (res.Item2 == CurrencyRaffleService.JoinErrorType.AlreadyJoinedOrInvalidAmount)
                         await ReplyErrorLocalizedAsync("rafflecur_already_joined").ConfigureAwait(false);
                     else if (res.Item2 == CurrencyRaffleService.JoinErrorType.NotEnoughCurrency)
-                        await ReplyErrorLocalizedAsync("not_enough", Bc.BotConfig.CurrencySign).ConfigureAwait(false);
+                        await ReplyErrorLocalizedAsync("not_enough", CurrencySign).ConfigureAwait(false);
                 }
             }
         }

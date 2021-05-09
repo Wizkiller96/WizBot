@@ -15,34 +15,34 @@ using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
+using WizBot.Core.Modules.Gambling.Services;
 using WizBot.Core.Services.Database;
 
 namespace WizBot.Modules.Gambling
 {
-    public partial class Gambling : GamblingTopLevelModule<GamblingService>
+    public partial class Gambling : GamblingModule<GamblingService>
     {
         private readonly DbService _db;
         private readonly ICurrencyService _cs;
         private readonly IDataCache _cache;
         private readonly DiscordSocketClient _client;
-        private readonly IBotConfigProvider _bc;
         private readonly NumberFormatInfo _enUsCulture;
         private readonly DownloadTracker _tracker;
-        private string CurrencySign => Bc.BotConfig.CurrencySign;
+        private readonly GamblingConfigService _configService;
 
         public Gambling(DbService db, ICurrencyService currency,
-            IDataCache cache, DiscordSocketClient client, IBotConfigProvider bc,
-            DownloadTracker tracker)
+            IDataCache cache, DiscordSocketClient client,
+            DownloadTracker tracker, GamblingConfigService configService) : base(configService)
         {
             _db = db;
             _cs = currency;
             _cache = cache;
             _client = client;
-            _bc = bc;
             _enUsCulture = new CultureInfo("en-US", false).NumberFormat;
             _enUsCulture.NumberDecimalDigits = 0;
             _enUsCulture.NumberGroupSeparator = " ";
             _tracker = tracker;
+            _configService = configService;
         }
 
         private string n(long cur) => cur.ToString("N", _enUsCulture);
@@ -67,12 +67,12 @@ namespace WizBot.Modules.Gambling
             }
             var embed = new EmbedBuilder()
                 .WithTitle(GetText("economy_state"))
-                .AddField(GetText("currency_owned"), ((BigInteger)(ec.Cash - ec.Bot)) + _bc.BotConfig.CurrencySign)
+                .AddField(GetText("currency_owned"), ((BigInteger)(ec.Cash - ec.Bot)) + CurrencySign)
                 .AddField(GetText("currency_one_percent"), (onePercent * 100).ToString("F2") + "%")
-                .AddField(GetText("currency_planted"), ((BigInteger)ec.Planted) + _bc.BotConfig.CurrencySign)
-                .AddField(GetText("owned_waifus_total"), ((BigInteger)ec.Waifus) + _bc.BotConfig.CurrencySign)
-                .AddField(GetText("bot_currency"), ec.Bot + _bc.BotConfig.CurrencySign)
-                .AddField(GetText("total"), ((BigInteger)(ec.Cash + ec.Planted + ec.Waifus)).ToString("N", _enUsCulture) + _bc.BotConfig.CurrencySign)
+                .AddField(GetText("currency_planted"), ((BigInteger)ec.Planted) + CurrencySign)
+                .AddField(GetText("owned_waifus_total"), ((BigInteger)ec.Waifus) + CurrencySign)
+                .AddField(GetText("bot_currency"), ec.Bot + CurrencySign)
+                .AddField(GetText("total"), ((BigInteger)(ec.Cash + ec.Planted + ec.Waifus)).ToString("N", _enUsCulture) + CurrencySign)
                 .WithOkColor();
 
             await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
@@ -81,8 +81,8 @@ namespace WizBot.Modules.Gambling
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Timely()
         {
-            var val = Bc.BotConfig.TimelyCurrency;
-            var period = Bc.BotConfig.TimelyCurrencyPeriod;
+            var val = _config.Timely.Amount;
+            var period = _config.Timely.Cooldown;
             if (val <= 0 || period <= 0)
             {
                 await ReplyErrorLocalizedAsync("timely_none").ConfigureAwait(false);
@@ -98,7 +98,7 @@ namespace WizBot.Modules.Gambling
 
             await _cs.AddAsync(ctx.User.Id, "Timely claim", val).ConfigureAwait(false);
 
-            await ReplyConfirmLocalizedAsync("timely", n(val) + Bc.BotConfig.CurrencySign, period).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync("timely", n(val) + CurrencySign, period).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -111,21 +111,21 @@ namespace WizBot.Modules.Gambling
 
         [WizBotCommand, Usage, Description, Aliases]
         [OwnerOnly]
-        public async Task TimelySet(int num, int period = 24)
+        public async Task TimelySet(int amount, int period = 24)
         {
-            if (num < 0 || period < 0)
+            if (amount < 0 || period < 0)
                 return;
-            using (var uow = _db.GetDbContext())
+
+            _configService.ModifyConfig(gs =>
             {
-                var bc = uow.BotConfig.GetOrCreate(set => set);
-                _bc.BotConfig.TimelyCurrency = bc.TimelyCurrency = num;
-                _bc.BotConfig.TimelyCurrencyPeriod = bc.TimelyCurrencyPeriod = period;
-                uow.SaveChanges();
-            }
-            if (num == 0)
+                gs.Timely.Amount = amount;
+                gs.Timely.Cooldown = period;
+            });
+
+            if (amount == 0)
                 await ReplyConfirmLocalizedAsync("timely_set_none").ConfigureAwait(false);
             else
-                await ReplyConfirmLocalizedAsync("timely_set", Format.Bold(n(num) + Bc.BotConfig.CurrencySign), Format.Bold(period.ToString())).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync("timely_set", Format.Bold(n(amount) + CurrencySign), Format.Bold(period.ToString())).ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -445,37 +445,26 @@ namespace WizBot.Modules.Gambling
                 return;
             }
 
-            var rnd = new WizBotRandom().Next(0, 101);
-            var str = Format.Bold(ctx.User.ToString()) + Format.Code(GetText("roll", rnd));
-            if (rnd < 67)
+            var br = new Betroll(base._config.BetRoll);
+
+            var result = br.Roll();
+
+
+            var str = Format.Bold(ctx.User.ToString()) + Format.Code(GetText("roll", result.Roll));
+            if (result.Multiplier > 0)
             {
-                str += GetText("better_luck");
+                var win = (long)(amount * result.Multiplier);
+                str += GetText("br_win",
+                    n(win) + CurrencySign,
+                    result.Threshold + (result.Roll == 100 ? " 👑" : ""));
+                await _cs.AddAsync(ctx.User, "Betroll Gamble",
+                    win, false, gamble: true).ConfigureAwait(false);
             }
             else
             {
-                long win;
-                if (rnd < 91)
-                {
-                    win = (long)(amount * Bc.BotConfig.Betroll67Multiplier);
-                    str += GetText("br_win", n(win) + CurrencySign, 66);
-                    await _cs.AddAsync(ctx.User, "Betroll Gamble",
-                        win, false, gamble: true).ConfigureAwait(false);
-                }
-                else if (rnd < 100)
-                {
-                    win = (long)(amount * Bc.BotConfig.Betroll91Multiplier);
-                    str += GetText("br_win", n(win) + CurrencySign, 90);
-                    await _cs.AddAsync(ctx.User, "Betroll Gamble",
-                        win, false, gamble: true).ConfigureAwait(false);
-                }
-                else
-                {
-                    win = (long)(amount * Bc.BotConfig.Betroll100Multiplier);
-                    str += GetText("br_win", n(win) + CurrencySign, 99) + " 👑";
-                    await _cs.AddAsync(ctx.User, "Betroll Gamble",
-                        win, false, gamble: true).ConfigureAwait(false);
-                }
+                str += GetText("better_luck");
             }
+
             await ctx.Channel.SendConfirmAsync(str).ConfigureAwait(false);
         }
 
@@ -619,7 +608,7 @@ namespace WizBot.Modules.Gambling
                 if (!await _cs.RemoveAsync(ctx.User.Id,
                     "Rps-bet", amount, gamble: true).ConfigureAwait(false))
                 {
-                    await ReplyErrorLocalizedAsync("not_enough", Bc.BotConfig.CurrencySign).ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync("not_enough", CurrencySign).ConfigureAwait(false);
                     return;
                 }
             }
@@ -636,7 +625,7 @@ namespace WizBot.Modules.Gambling
                      (pick == RpsPick.Rock && wizbotPick == RpsPick.Scissors) ||
                      (pick == RpsPick.Scissors && wizbotPick == RpsPick.Paper))
             {
-                amount = (long)(amount * Bc.BotConfig.BetflipMultiplier);
+                amount = (long)(amount * base._config.BetFlip.Multiplier);
                 await _cs.AddAsync(ctx.User.Id,
                     "Rps-win", amount, gamble: true).ConfigureAwait(false);
                 embed.WithOkColor();

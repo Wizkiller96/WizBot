@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace WizBot.Modules.CustomReactions
 {
-    public class CustomReactions : WizBotTopLevelModule<CustomReactionsService>
+    public class CustomReactions : WizBotModule<CustomReactionsService>
     {
         private readonly IBotCredentials _creds;
         private readonly DbService _db;

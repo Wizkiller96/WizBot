@@ -8,21 +8,44 @@ namespace WizBot.Core.Services.Database.Models
     public class BotConfig : DbEntity
     {
         public bool HasMigratedBotSettings { get; set; } = true;
+        public bool HasMigratedGamblingSettings { get; set; } = true;
 
         public HashSet<BlacklistItem> Blacklist { get; set; }
-
-        public float PatreonCurrencyPerCent { get; set; } = 1.0f;
-        public float CurrencyGenerationChance { get; set; } = 0.02f;
-        public int CurrencyGenerationCooldown { get; set; } = 10;
 
         public List<PlayingStatus> RotatingStatusMessages { get; set; } = new List<PlayingStatus>();
         public string RemindMessageFormat { get; set; } = "❗⏰**I've been told to remind you to '%message%' now by %user%.**⏰❗";
 
-        //currency
+
+
+        public DateTime LastCurrencyDecay { get; set; } = DateTime.MinValue;
+        public HashSet<EightBallResponse> EightBallResponses { get; set; } = new HashSet<EightBallResponse>();
+        public HashSet<RaceAnimal> RaceAnimals { get; set; } = new HashSet<RaceAnimal>();
+        public IndexedCollection<StartupCommand> StartupCommands { get; set; }
+        public bool CustomReactionsStartWith { get; set; } = false;
+        public int XpPerMessage { get; set; } = 3;
+        public int XpMinutesTimeout { get; set; } = 5;
+        public double VoiceXpPerMinute { get; set; } = 0;
+        public int MaxXpMinutes { get; set; } = 720;
+        public int MinimumTriviaWinReq { get; set; }
+
+        #region  Obsolete, Moved to gambling.yml
+
+        // //currency
+        public int TriviaCurrencyReward { get; set; } = 0;
+        public float PatreonCurrencyPerCent { get; set; } = 1.0f;
+        public float CurrencyGenerationChance { get; set; } = 0.02f;
+        public int CurrencyGenerationCooldown { get; set; } = 10;
+
+
+        public int DivorcePriceMultiplier { get; set; } = 150;
+        public int WaifuGiftMultiplier { get; set; } = 1;
+        public int MinBet { get; set; } = 0;
+        public int MaxBet { get; set; } = 0;
+        public bool CurrencyGenerationPassword { get; set; }
+
         public string CurrencySign { get; set; } = "🌸";
         public string CurrencyName { get; set; } = "Cherry Blossom";
 
-        public int TriviaCurrencyReward { get; set; } = 0;
         public float BetflipMultiplier { get; set; } = 1.95f;
         public int CurrencyDropAmount { get; set; } = 1;
         public int? CurrencyDropAmountMax { get; set; } = null;
@@ -32,24 +55,9 @@ namespace WizBot.Core.Services.Database.Models
         public int TimelyCurrency { get; set; } = 0;
         public int TimelyCurrencyPeriod { get; set; } = 0;
         public float DailyCurrencyDecay { get; set; } = 0;
-        public DateTime LastCurrencyDecay { get; set; } = DateTime.MinValue;
         public int MinWaifuPrice { get; set; } = 50;
 
-        public HashSet<EightBallResponse> EightBallResponses { get; set; } = new HashSet<EightBallResponse>();
-        public HashSet<RaceAnimal> RaceAnimals { get; set; } = new HashSet<RaceAnimal>();
-        public IndexedCollection<StartupCommand> StartupCommands { get; set; }
-        public bool CustomReactionsStartWith { get; set; } = false;
-        public int XpPerMessage { get; set; } = 3;
-        public int XpMinutesTimeout { get; set; } = 5;
-        public double VoiceXpPerMinute { get; set; } = 0;
-        public int MaxXpMinutes { get; set; } = 720;
-        public int DivorcePriceMultiplier { get; set; } = 150;
-        public int WaifuGiftMultiplier { get; set; } = 1;
-        public int MinimumTriviaWinReq { get; set; }
-        public int MinBet { get; set; } = 0;
-        public int MaxBet { get; set; } = 0;
-        public bool CurrencyGenerationPassword { get; set; }
-
+        #endregion
 
         /// <summary> UNUSED </summary>
         [Obsolete("Use MinBet instead.")]

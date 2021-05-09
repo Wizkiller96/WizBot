@@ -20,7 +20,7 @@ namespace WizBot.Modules.Roblox
     // Official Roblox API can be found at: http://api.roblox.com/docs
     // More Roblox API info at: https://api.roblox.com/docs?useConsolidatedPage=true
 
-    public class Roblox : WizBotTopLevelModule<SearchesService>
+    public class Roblox : WizBotModule<SearchesService>
     {
         private readonly IHttpClientFactory _httpFactory;
 

@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 namespace WizBot.Modules.NSFW
 {
     // thanks to halitalf for adding autoboob and autobutt features :D
-    public class NSFW : WizBotTopLevelModule<SearchesService>
+    public class NSFW : WizBotModule<SearchesService>
     {
         private static readonly ConcurrentHashSet<ulong> _hentaiBombBlacklist = new ConcurrentHashSet<ulong>();
         private readonly IHttpClientFactory _httpFactory;

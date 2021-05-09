@@ -21,6 +21,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using WizBot.Core.Modules.Gambling.Services;
 using Image = SixLabors.ImageSharp.Image;
 using Color = SixLabors.ImageSharp.Color;
 
@@ -32,34 +33,34 @@ namespace WizBot.Modules.Gambling.Services
         private readonly IBotStrings _strings;
         private readonly IImageCache _images;
         private readonly FontProvider _fonts;
-        private readonly IBotConfigProvider _bc;
         private readonly Logger _log;
         private readonly ICurrencyService _cs;
         private readonly CommandHandler _cmdHandler;
         private readonly WizBotRandom _rng;
         private readonly DiscordSocketClient _client;
+        private readonly GamblingConfigService _gss;
+
         public readonly ConcurrentHashSet<ulong> _generationChannels = new ConcurrentHashSet<ulong>();
         //channelId/last generation
         public ConcurrentDictionary<ulong, DateTime> LastGenerations { get; } = new ConcurrentDictionary<ulong, DateTime>();
         private readonly SemaphoreSlim pickLock = new SemaphoreSlim(1, 1);
 
-        public PlantPickService(DbService db, CommandHandler cmd, WizBot bot, IBotStrings strings,
-            IDataCache cache, FontProvider fonts, IBotConfigProvider bc, ICurrencyService cs,
-            CommandHandler cmdHandler, DiscordSocketClient client)
+        public PlantPickService(DbService db, CommandHandler cmd, IBotStrings strings,
+            IDataCache cache, FontProvider fonts, ICurrencyService cs,
+            CommandHandler cmdHandler, DiscordSocketClient client, GamblingConfigService gss)
         {
             _db = db;
             _strings = strings;
             _images = cache.LocalImages;
             _fonts = fonts;
-            _bc = bc;
             _log = LogManager.GetCurrentClassLogger();
             _cs = cs;
             _cmdHandler = cmdHandler;
             _rng = new WizBotRandom();
             _client = client;
+            _gss = gss;
 
             cmd.OnMessageNoTrigger += PotentialFlowerGeneration;
-
             using (var uow = db.GetDbContext())
             {
                 var guildIds = client.Guilds.Select(x => x.Id).ToList();
@@ -198,31 +199,32 @@ namespace WizBot.Modules.Gambling.Services
             {
                 try
                 {
+                    var config = _gss.Data;
                     var lastGeneration = LastGenerations.GetOrAdd(channel.Id, DateTime.MinValue);
                     var rng = new WizBotRandom();
 
-                    if (DateTime.UtcNow - TimeSpan.FromSeconds(_bc.BotConfig.CurrencyGenerationCooldown) < lastGeneration) //recently generated in this channel, don't generate again
+                    if (DateTime.UtcNow - TimeSpan.FromSeconds(config.Generation.GenCooldown) < lastGeneration) //recently generated in this channel, don't generate again
                         return;
 
-                    var num = rng.Next(1, 101) + _bc.BotConfig.CurrencyGenerationChance * 100;
+                    var num = rng.Next(1, 101) + config.Generation.Chance * 100;
                     if (num > 100 && LastGenerations.TryUpdate(channel.Id, DateTime.UtcNow, lastGeneration))
                     {
-                        var dropAmount = _bc.BotConfig.CurrencyDropAmount;
-                        var dropAmountMax = _bc.BotConfig.CurrencyDropAmountMax;
+                        var dropAmount = config.Generation.MinAmount;
+                        var dropAmountMax = config.Generation.MaxAmount;
 
-                        if (dropAmountMax != null && dropAmountMax > dropAmount)
-                            dropAmount = new WizBotRandom().Next(dropAmount, dropAmountMax.Value + 1);
+                        if (dropAmountMax > dropAmount)
+                            dropAmount = new WizBotRandom().Next(dropAmount, dropAmountMax + 1);
 
                         if (dropAmount > 0)
                         {
                             var prefix = _cmdHandler.GetPrefix(channel.Guild.Id);
                             var toSend = dropAmount == 1
-                                ? GetText(channel.GuildId, "curgen_sn", _bc.BotConfig.CurrencySign)
+                                ? GetText(channel.GuildId, "curgen_sn", config.Currency.Sign)
                                     + " " + GetText(channel.GuildId, "pick_sn", prefix)
-                                : GetText(channel.GuildId, "curgen_pl", dropAmount, _bc.BotConfig.CurrencySign)
+                                : GetText(channel.GuildId, "curgen_pl", dropAmount, config.Currency.Sign)
                                     + " " + GetText(channel.GuildId, "pick_pl", prefix);
 
-                            var pw = _bc.BotConfig.CurrencyGenerationPassword ? GenerateCurrencyPassword().ToUpperInvariant() : null;
+                            var pw = config.Generation.HasPassword ? GenerateCurrencyPassword().ToUpperInvariant() : null;
 
                             IUserMessage sent;
                             using (var stream = GetRandomCurrencyImage(pw, out var ext))
@@ -306,7 +308,7 @@ namespace WizBot.Modules.Gambling.Services
                 var msgToSend = GetText(gid,
                     "planted",
                     Format.Bold(user),
-                    amount + _bc.BotConfig.CurrencySign,
+                    amount + _gss.Data.Currency.Sign,
                     prefix);
 
                 if (amount > 1)
