@@ -50,14 +50,15 @@ namespace WizBot.Modules.Gambling
 
                 var result = await _service.WheelOfFortuneSpinAsync(ctx.User.Id, amount).ConfigureAwait(false);
 
+                var wofMultipliers = _config.WheelOfFortune.Multipliers;
                 await ctx.Channel.SendConfirmAsync(
 Format.Bold($@"{ctx.User.ToString()} won: {result.Amount + CurrencySign}
 
-   『{Wof.Multipliers[1]}』   『{Wof.Multipliers[0]}』   『{Wof.Multipliers[7]}』
+   『{wofMultipliers[1]}』   『{wofMultipliers[0]}』   『{wofMultipliers[7]}』
 
-『{Wof.Multipliers[2]}』      {_emojis[result.Index]}      『{Wof.Multipliers[6]}』
+『{wofMultipliers[2]}』      {_emojis[result.Index]}      『{wofMultipliers[6]}』
 
-     『{Wof.Multipliers[3]}』   『{Wof.Multipliers[4]}』   『{Wof.Multipliers[5]}』")).ConfigureAwait(false);
+     『{wofMultipliers[3]}』   『{wofMultipliers[4]}』   『{wofMultipliers[5]}』")).ConfigureAwait(false);
             }
         }
     }
