@@ -20,7 +20,7 @@ namespace WizBot.Core.Services.Impl
         private readonly IBotCredentials _creds;
         private readonly DateTime _started;
 
-        public const string BotVersion = "2.39.1";
+        public const string BotVersion = "2.40.0";
         public string Author => "Kwoth#2452\nWizkiller96#5074";
         public string Library => "Discord.Net";
 
@@ -38,16 +38,14 @@ namespace WizBot.Core.Services.Impl
         public long CommandsRan => Interlocked.Read(ref _commandsRan);
 
         private readonly Timer _botlistTimer;
-        private readonly ConnectionMultiplexer _redis;
         private readonly IHttpClientFactory _httpFactory;
 
         public StatsService(DiscordSocketClient client, CommandHandler cmdHandler,
-            IBotCredentials creds, WizBot wizbot, IDataCache cache, IHttpClientFactory factory)
+            IBotCredentials creds, IHttpClientFactory factory)
         {
             _log = LogManager.GetCurrentClassLogger();
             _client = client;
             _creds = creds;
-            _redis = cache.Redis;
             _httpFactory = factory;
 
             _started = DateTime.UtcNow;

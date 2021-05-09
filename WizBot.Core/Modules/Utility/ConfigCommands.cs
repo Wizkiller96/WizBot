@@ -199,26 +199,26 @@ namespace WizBot.Modules.Utility
                     await ctx.Channel.EmbedAsync(embed);
                     return;
                 }
+                // if the prop is invalid -> print error and list of 
+
+                var exists = propNames.Any(x => x == prop);
+
+                if (!exists)
+                {
+                    var propStrings = GetPropsAndValuesString(setting, propNames);
+                    var propErrorEmbed = new EmbedBuilder()
+                        .WithErrorColor()
+                        .WithDescription(GetText("config_prop_not_found", Format.Code(prop), Format.Code(name)))
+                        .AddField($"⚙️ {setting.Name}", propStrings);
+
+                    await ctx.Channel.EmbedAsync(propErrorEmbed);
+                    return;
+                }
 
                 // if prop is sent, but value is not, then we have to check
-                // if the prop is invalid -> print error and list of props
                 // if prop is valid -> 
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    var exists = propNames.Any(x => x == prop);
-
-                    if (!exists)
-                    {
-                        var propStrings = GetPropsAndValuesString(setting, propNames);
-                        var propErrorEmbed = new EmbedBuilder()
-                            .WithErrorColor()
-                            .WithDescription(GetText("config_prop_not_found", Format.Code(prop), Format.Code(name)))
-                            .AddField($"⚙️ {setting.Name}", propStrings);
-
-                        await ctx.Channel.EmbedAsync(propErrorEmbed);
-                        return;
-                    }
-
                     value = setting.GetSetting(prop);
                     if (prop != "currency.sign")
                     {
