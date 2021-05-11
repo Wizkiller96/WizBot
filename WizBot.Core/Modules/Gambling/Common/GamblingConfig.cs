@@ -53,7 +53,7 @@ Set 0 for unlimited")]
 
         [Comment(@"Amount of currency selfhosters will get PER pledged dollar CENT.
 1 = 100 currency per $. Used almost exclusively on public wizbot.")]
-        public decimal PatreonCurrencyPerCent { get; set; } = 0;
+        public decimal PatreonCurrencyPerCent { get; set; } = 100;
 
         public class CurrencyConfig
         {

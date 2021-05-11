@@ -29,7 +29,7 @@ function Build-Installer($versionNumber)
 	dotnet clean
     # rm -r -fo "src\WizBot\bin"
     dotnet publish -c Release --runtime win7-x64 /p:Version=$versionNumber
-    .\rcedit-x64.exe "src\WizBot\bin\Release\netcoreapp2.1\win7-x64\wizbot.exe" --set-icon "src\WizBot\bin\Release\netcoreapp2.1\win7-x64\wizbot_icon.ico"
+    # .\rcedit-x64.exe "src\WizBot\bin\Release\netcoreapp2.1\win7-x64\wizbot.exe" --set-icon "src\WizBot\bin\Release\netcoreapp2.1\win7-x64\wizbot_icon.ico"
 
     & "iscc.exe" "/O+" ".\exe_builder.iss"
 
