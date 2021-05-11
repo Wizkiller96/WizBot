@@ -138,9 +138,9 @@ namespace WizBot.Modules.Help
                 case "nsfw":
                     return "😳";
                 case "permissions":
-                    return "🚓";
+                    return "🔐";
                 case "xp":
-                    return "📝";
+                    return "✨";
 #if GLOBAL_WIZBOT
                 case "roblox":
                     return "🟥";
@@ -274,6 +274,7 @@ namespace WizBot.Modules.Help
                         return;
                     var (plainText, helpEmbed) = data;
                     await ch.EmbedAsync(helpEmbed, msg: plainText ?? "").ConfigureAwait(false);
+                    await ctx.OkAsync();
                 }
                 catch (Exception)
                 {
