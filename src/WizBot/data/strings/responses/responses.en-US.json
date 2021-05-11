@@ -875,7 +875,7 @@
   "config_not_found": "Configuration {0} not found",
   "config_prop_not_found": "Property {0} not found on {1} configuration",
   "config_list": "Config list",
-  "bot_config_reloaded": "{0} configuration has been reloaded.",
+  "config_reloaded": "{0} configuration has been reloaded.",
   "server_level": "Server Level",
   "level": "Level",
   "level_req": "Level Req.",

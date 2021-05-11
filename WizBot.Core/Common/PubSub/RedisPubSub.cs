@@ -1,5 +1,7 @@
 using System;
 using System.Threading.Tasks;
+using WizBot.Core.Services;
+using WizBot.Extensions;
 using NLog;
 using StackExchange.Redis;
 
@@ -10,24 +12,26 @@ namespace WizBot.Core.Common
         private readonly ConnectionMultiplexer _multi;
         private readonly ISeria _serializer;
         private readonly Logger _log;
+        private readonly IBotCredentials _creds;
 
-        public RedisPubSub(ConnectionMultiplexer multi, ISeria serializer)
+        public RedisPubSub(ConnectionMultiplexer multi, ISeria serializer, IBotCredentials creds)
         {
             _multi = multi;
             _serializer = serializer;
+            _creds = creds;
             _log = LogManager.GetCurrentClassLogger();
         }
 
         public Task Pub<TData>(in TypedKey<TData> key, TData data)
         {
             var serialized = _serializer.Serialize(data);
-            return _multi.GetSubscriber().PublishAsync(key.Key, serialized, CommandFlags.FireAndForget);
+            return _multi.GetSubscriber().PublishAsync($"{_creds.RedisKey()}:{key.Key}", serialized, CommandFlags.FireAndForget);
         }
 
         public Task Sub<TData>(in TypedKey<TData> key, Func<TData, Task> action)
         {
             var eventName = key.Key;
-            return _multi.GetSubscriber().SubscribeAsync(eventName, async (ch, data) =>
+            return _multi.GetSubscriber().SubscribeAsync($"{_creds.RedisKey()}:{eventName}", async (ch, data) =>
             {
                 try
                 {

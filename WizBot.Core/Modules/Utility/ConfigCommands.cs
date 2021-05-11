@@ -73,9 +73,9 @@ namespace WizBot.Modules.Utility
                 var success = Bc.Edit(type, newValue);
 
                 if (!success)
-                    await ReplyErrorLocalizedAsync("bot_config_edit_fail", Format.Bold(type.ToString()), Format.Bold(newValue ?? "NULL")).ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync("config_edit_fail", Format.Bold(type.ToString()), Format.Bold(newValue ?? "NULL")).ConfigureAwait(false);
                 else
-                    await ReplyConfirmLocalizedAsync("bot_config_edit_success", Format.Bold(type.ToString()), Format.Bold(newValue ?? "NULL")).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync("config_edit_success", Format.Bold(type.ToString()), Format.Bold(newValue ?? "NULL")).ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -111,9 +111,9 @@ namespace WizBot.Modules.Utility
                 var success = _bss.SetSetting(key, newValue);
 
                 if (!success)
-                    await ReplyErrorLocalizedAsync("bot_config_edit_fail", Format.Bold(key.ToString()), Format.Bold(newValue ?? "NULL")).ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync("config_edit_fail", Format.Bold(key.ToString()), Format.Bold(newValue ?? "NULL")).ConfigureAwait(false);
                 else
-                    await ReplyConfirmLocalizedAsync("bot_config_edit_success", Format.Bold(key.ToString()), Format.Bold(newValue ?? "NULL")).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync("config_edit_success", Format.Bold(key.ToString()), Format.Bold(newValue ?? "NULL")).ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -122,7 +122,7 @@ namespace WizBot.Modules.Utility
             {
                 _bss.Reload();
                 _selfService.ReloadBotConfig();
-                await ReplyConfirmLocalizedAsync("bot_config_reloaded").ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync("config_reloaded", "Bot").ConfigureAwait(false);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
