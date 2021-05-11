@@ -369,6 +369,14 @@ namespace WizBot.Modules.Help
         {
             string[] rtypes = { "Bug", "Suggestion", "bug", "suggestion" };
 
+            if (type == "Bug" || type == "bug")
+            {
+                type = "Bug";
+            } else if (type == "Suggestion" || type == "suggestion")
+            {
+                type = "Suggestion";
+            }        
+
             if (string.IsNullOrWhiteSpace(type))
                 return;
 

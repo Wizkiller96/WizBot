@@ -2004,3 +2004,12 @@ updates:
   desc: "Shows a list of changes to WizBot."
   args:
   - ""
+feedback:
+  desc: "Send bug/feedback report to WizBot's Devs."
+  args:
+  - "Bug I found a bug"
+  - "Suggestion I have a suggestion for the bot."
+report:
+  desc: "Allows you to report a user who abuse the bot to Bot Staff."
+  args:
+  - "@User Abused bet flip command."
