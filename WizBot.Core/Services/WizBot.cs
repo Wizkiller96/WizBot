@@ -83,6 +83,7 @@ namespace WizBot
                 TotalShards = Credentials.TotalShards,
                 ShardId = shardId,
                 AlwaysDownloadUsers = false,
+                ExclusiveBulkDelete = true,
             });
 
             CommandService = new CommandService(new CommandServiceConfig()

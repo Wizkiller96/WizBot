@@ -37,8 +37,8 @@ namespace WizBot.Modules
         protected string GetText(string key) =>
             Strings.GetText(key, _cultureInfo);
 
-        protected string GetText(string key, params object[] replacements) =>
-            Strings.GetText(key, _cultureInfo, replacements);
+        protected string GetText(string key, params object[] args) =>
+            Strings.GetText(key, _cultureInfo, args);
 
         public Task<IUserMessage> ErrorLocalizedAsync(string textKey, params object[] args)
         {

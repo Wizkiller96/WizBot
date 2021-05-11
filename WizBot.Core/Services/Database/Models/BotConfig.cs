@@ -14,10 +14,6 @@ namespace WizBot.Core.Services.Database.Models
 
         public List<PlayingStatus> RotatingStatusMessages { get; set; } = new List<PlayingStatus>();
         public string RemindMessageFormat { get; set; } = "❗⏰**I've been told to remind you to '%message%' now by %user%.**⏰❗";
-
-
-
-        public DateTime LastCurrencyDecay { get; set; } = DateTime.MinValue;
         public HashSet<EightBallResponse> EightBallResponses { get; set; } = new HashSet<EightBallResponse>();
         public HashSet<RaceAnimal> RaceAnimals { get; set; } = new HashSet<RaceAnimal>();
         public IndexedCollection<StartupCommand> StartupCommands { get; set; }
@@ -31,6 +27,7 @@ namespace WizBot.Core.Services.Database.Models
         #region  Obsolete, Moved to gambling.yml
 
         // //currency
+        public DateTime LastCurrencyDecay { get; set; } = DateTime.MinValue;
         public int TriviaCurrencyReward { get; set; } = 0;
         public float PatreonCurrencyPerCent { get; set; } = 1.0f;
         public float CurrencyGenerationChance { get; set; } = 0.02f;
