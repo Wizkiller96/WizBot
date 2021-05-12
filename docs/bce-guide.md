@@ -1,3 +1,9 @@
+> ⚠️ `.bce` command is getting removed.  
+> ⚠️ Use `.config` command to set-up config  (`.h .config` for help)  (version `2.39.0` and up)  
+> ⚠️ Configs are now saved in human-readable format in `.yml` files in the data/ folder  
+> ⚠️ `data/bot.yml` and `data/gambling.yml` for example  
+> ⚠️ If you edit the files manually, you can reload configuration with `.configreload <config-name>`
+
 # BotConfigEdit Guide
 
 `.bce` allows you to conveniently set many of the bot-wide settings that WizBot has, such as what the currency looks like, what people get when they use `.help`, and so on.
