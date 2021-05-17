@@ -255,13 +255,7 @@ namespace WizBot.Modules.CustomReactions.Services
                         }
                     }
                     
-                    var user = msg.Author as IGuildUser;
-                    var sanitize = true;
-                    if (user == null || user.GuildPermissions.MentionEveryone)
-                        sanitize = false;
-
-                    var sentMsg = await cr.Send(msg, _client, sanitize).ConfigureAwait(false);
-
+                    var sentMsg = await cr.Send(msg, _client, false).ConfigureAwait(false);
 
                     var reactions = cr.GetReactions();
                     foreach (var reaction in reactions)
@@ -273,11 +267,9 @@ namespace WizBot.Modules.CustomReactions.Services
                         catch
                         {
                             _log.Warn($"Unable to add reactions to message {0} in server {1}");
+                            break;
                         }
-                        finally
-                        {
-                            await Task.Delay(100);
-                        }
+                        await Task.Delay(1000);
                     }
 
                     if (cr.AutoDeleteTrigger)

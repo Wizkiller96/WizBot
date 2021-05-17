@@ -108,9 +108,13 @@ namespace WizBot.Modules.CustomReactions.Extensions
                         substringIndex += ctx.Content.IndexOf(trigger, StringComparison.InvariantCulture);
                 }
 
+                var canMentionEveryone = (ctx.Author as IGuildUser)?.GuildPermissions.MentionEveryone ?? true;
+                
                 var rep = new ReplacementBuilder()
                     .WithDefault(ctx.Author, ctx.Channel, (ctx.Channel as ITextChannel)?.Guild as SocketGuild, client)
-                    .WithOverride("%target%", () => ctx.Content.Substring(substringIndex).Trim())
+                    .WithOverride("%target%", () => canMentionEveryone
+                        ? ctx.Content.Substring(substringIndex).Trim()
+                        : ctx.Content.Substring(substringIndex).Trim().SanitizeMentions())
                     .Build();
 
                 rep.Replace(crembed);
