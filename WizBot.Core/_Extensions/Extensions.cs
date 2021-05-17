@@ -313,11 +313,11 @@ namespace WizBot.Extensions
         }
 
         /// <summary>
-        /// returns an IEnumerable with randomized element order
+        /// Randomize element order by performing the Fisher-Yates shuffle
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="list"></param>
-        public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> items)
+        /// <typeparam name="T">Item type</typeparam>
+        /// <param name="items">Items to shuffle</param>
+        public static IReadOnlyList<T> Shuffle<T>(this IEnumerable<T> items)
         {
             using (var provider = RandomNumberGenerator.Create())
             {
