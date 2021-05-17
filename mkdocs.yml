@@ -34,7 +34,6 @@ theme:
     name: 'material'
     features:
     - navigation.instant
-    - navigation.tabs
     palette:
         scheme: 'wizbot'
     logo: https://wizbot.cc/assets/img/wizbot-icon-887x889.png
