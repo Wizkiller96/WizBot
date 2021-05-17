@@ -181,10 +181,14 @@ namespace WizBot
             //initialize Services
             Services = s.BuildServiceProvider();
             var commandHandler = Services.GetService<CommandHandler>();
-            var bsMigrator = Services.GetService<BotSettingsMigrator>();
-            var gambMigrator = Services.GetService<GamblingSettingsMigrator>();
-            bsMigrator.EnsureMigrated();
-            gambMigrator.EnsureMigrated();
+            
+            if (Client.ShardId == 0)
+            {
+                var bsMigrator = Services.GetService<BotSettingsMigrator>();
+                var gambMigrator = Services.GetService<GamblingSettingsMigrator>();
+                bsMigrator.EnsureMigrated();
+                gambMigrator.EnsureMigrated();
+            }
 
             //what the fluff
             commandHandler.AddServices(s);
