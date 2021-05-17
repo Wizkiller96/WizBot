@@ -2,12 +2,10 @@ using Discord;
 using Discord.WebSocket;
 using WizBot.Common;
 using WizBot.Common.Collections;
-using WizBot.Core.Modules.Xp.Common;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Core.Services.Impl;
 using WizBot.Extensions;
-using WizBot.Modules.Xp.Common;
 using Newtonsoft.Json;
 using NLog;
 using SixLabors.Fonts;
@@ -23,6 +21,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using WizBot.Core.Modules.Xp;
 using StackExchange.Redis;
 using Image = SixLabors.ImageSharp.Image;
 
@@ -38,7 +37,6 @@ namespace WizBot.Modules.Xp.Services
 
         private readonly DbService _db;
         private readonly CommandHandler _cmd;
-        private readonly IBotConfigProvider _bc;
         private readonly IImageCache _images;
         private readonly Logger _log;
         private readonly IBotStrings _strings;
@@ -46,32 +44,29 @@ namespace WizBot.Modules.Xp.Services
         private readonly FontProvider _fonts;
         private readonly IBotCredentials _creds;
         private readonly ICurrencyService _cs;
+        private readonly Task updateXpTask;
+        private readonly IHttpClientFactory _httpFactory;
+        private readonly XpConfigService _xpConfig;
+        
         public const int XP_REQUIRED_LVL_1 = 36;
 
-        private readonly ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>> _excludedRoles
-            = new ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>>();
+        private readonly ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>> _excludedRoles;
 
-        private readonly ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>> _excludedChannels
-            = new ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>>();
+        private readonly ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>> _excludedChannels;
 
-        private readonly ConcurrentHashSet<ulong> _excludedServers
-            = new ConcurrentHashSet<ulong>();
+        private readonly ConcurrentHashSet<ulong> _excludedServers;
 
         private readonly ConcurrentQueue<UserCacheItem> _addMessageXp
             = new ConcurrentQueue<UserCacheItem>();
-
-        private readonly Task updateXpTask;
-        private readonly IHttpClientFactory _httpFactory;
         private XpTemplate _template;
         private readonly DiscordSocketClient _client;
 
-        public XpService(DiscordSocketClient client, CommandHandler cmd, IBotConfigProvider bc,
-            WizBot bot, DbService db, IBotStrings strings, IDataCache cache,
-            FontProvider fonts, IBotCredentials creds, ICurrencyService cs, IHttpClientFactory http)
+        public XpService(DiscordSocketClient client, CommandHandler cmd, WizBot bot, DbService db,
+            IBotStrings strings, IDataCache cache, FontProvider fonts, IBotCredentials creds,
+            ICurrencyService cs, IHttpClientFactory http, XpConfigService xpConfig)
         {
             _db = db;
             _cmd = cmd;
-            _bc = bc;
             _images = cache.LocalImages;
             _log = LogManager.GetCurrentClassLogger();
             _strings = strings;
@@ -80,6 +75,9 @@ namespace WizBot.Modules.Xp.Services
             _creds = creds;
             _cs = cs;
             _httpFactory = http;
+            _xpConfig = xpConfig;
+            _excludedServers = new ConcurrentHashSet<ulong>();
+            _excludedChannels = new ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>>();
             _client = client;
 
             InternalReloadXpTemplate();
@@ -95,7 +93,7 @@ namespace WizBot.Modules.Xp.Services
             var allGuildConfigs = bot.AllGuildConfigs
                 .Where(x => x.XpSettings != null)
                 .ToList();
-
+            
             _excludedChannels = allGuildConfigs
                 .ToDictionary(
                     x => x.GuildId,
@@ -121,17 +119,15 @@ namespace WizBot.Modules.Xp.Services
                     .Select(x => x.GuildId));
 
             _cmd.OnMessageNoTrigger += _cmd_OnMessageNoTrigger;
-
-//#if !GLOBAL_WIZBOT
+            
             _client.UserVoiceStateUpdated += _client_OnUserVoiceStateUpdated;
-
+            
             // Scan guilds on startup.
             _client.GuildAvailable += _client_OnGuildAvailable;
             foreach (var guild in _client.Guilds)
             {
                 _client_OnGuildAvailable(guild);
             }
-//#endif
             updateXpTask = Task.Run(UpdateLoop);
         }
 
@@ -275,7 +271,7 @@ namespace WizBot.Modules.Xp.Services
                 }
             }
         }
-
+        
 
         private void InternalReloadXpTemplate()
         {
@@ -423,7 +419,7 @@ namespace WizBot.Modules.Xp.Services
                 await uow.SaveChangesAsync();
             }
         }
-
+        
         public XpNotificationLocation GetNotificationType(ulong userId, ulong guildId)
         {
             using (var uow = _db.GetDbContext())
@@ -460,10 +456,10 @@ namespace WizBot.Modules.Xp.Services
                     ScanChannelForVoiceXp(channel);
                 }
             });
-
+            
             return Task.CompletedTask;
         }
-
+        
         private Task _client_OnUserVoiceStateUpdated(SocketUser socketUser, SocketVoiceState before, SocketVoiceState after)
         {
             if (!(socketUser is SocketGuildUser user) || user.IsBot)
@@ -487,7 +483,7 @@ namespace WizBot.Modules.Xp.Services
                     UserLeftVoiceChannel(user, before.VoiceChannel);
                 }
             });
-
+            
             return Task.CompletedTask;
         }
 
@@ -541,7 +537,7 @@ namespace WizBot.Modules.Xp.Services
             var key = $"{_creds.RedisKey()}_user_xp_vc_join_{user.Id}";
             var value = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
-            _cache.Redis.GetDatabase().StringSet(key, value, TimeSpan.FromMinutes(_bc.BotConfig.MaxXpMinutes), When.NotExists);
+            _cache.Redis.GetDatabase().StringSet(key, value, TimeSpan.FromMinutes(_xpConfig.Data.VoiceMaxMinutes), When.NotExists);
         }
 
         private void UserLeftVoiceChannel(SocketGuildUser user, SocketVoiceChannel channel)
@@ -549,18 +545,18 @@ namespace WizBot.Modules.Xp.Services
             var key = $"{_creds.RedisKey()}_user_xp_vc_join_{user.Id}";
             var value = _cache.Redis.GetDatabase().StringGet(key);
             _cache.Redis.GetDatabase().KeyDelete(key);
-
+            
             // Allow for if this function gets called multiple times when a user leaves a channel.
             if (value.IsNull) return;
-
+            
             if (!value.TryParse(out long startUnixTime))
                 return;
-
+            
             var dateStart = DateTimeOffset.FromUnixTimeSeconds(startUnixTime);
             var dateEnd = DateTimeOffset.UtcNow;
             var minutes = (dateEnd - dateStart).TotalMinutes;
-            var xp = _bc.BotConfig.VoiceXpPerMinute * minutes;
-            var actualXp = (int)Math.Floor(xp);
+            var xp = _xpConfig.Data.VoiceXpPerMinute * minutes;
+            var actualXp = (int) Math.Floor(xp);
 
             if (actualXp > 0)
             {
@@ -577,16 +573,16 @@ namespace WizBot.Modules.Xp.Services
         {
             if (_excludedChannels.TryGetValue(user.Guild.Id, out var chans) &&
                 chans.Contains(channelId)) return false;
-
+            
             if (_excludedServers.Contains(user.Guild.Id)) return false;
-
+            
             if (_excludedRoles.TryGetValue(user.Guild.Id, out var roles) &&
                 user.Roles.Any(x => roles.Contains(x.Id)))
                 return false;
 
             return true;
         }
-
+        
         private Task _cmd_OnMessageNoTrigger(IUserMessage arg)
         {
             if (!(arg.Author is SocketGuildUser user) || user.IsBot)
@@ -608,7 +604,7 @@ namespace WizBot.Modules.Xp.Services
                     Guild = user.Guild,
                     Channel = arg.Channel,
                     User = user,
-                    XpAmount = _bc.BotConfig.XpPerMessage
+                    XpAmount = _xpConfig.Data.XpPerMessage
                 });
             });
             return Task.CompletedTask;
@@ -617,7 +613,7 @@ namespace WizBot.Modules.Xp.Services
         public void AddXpDirectly(IGuildUser user, IMessageChannel channel, int amount)
         {
             if (amount <= 0) throw new ArgumentOutOfRangeException(nameof(amount));
-
+            
             _addMessageXp.Enqueue(new UserCacheItem
             {
                 Guild = user.Guild,
@@ -626,7 +622,7 @@ namespace WizBot.Modules.Xp.Services
                 XpAmount = amount
             });
         }
-
+        
         public void AddXp(ulong userId, ulong guildId, int amount)
         {
             using (var uow = _db.GetDbContext())
@@ -667,7 +663,7 @@ namespace WizBot.Modules.Xp.Services
 
             return r.StringSet(key,
                 true,
-                TimeSpan.FromMinutes(_bc.BotConfig.XpMinutesTimeout),
+                TimeSpan.FromMinutes(_xpConfig.Data.MessageXpCooldown),
                 StackExchange.Redis.When.NotExists);
         }
 
@@ -705,7 +701,7 @@ namespace WizBot.Modules.Xp.Services
             var lvl = 1;
             while (true)
             {
-                required = (int)(baseXp + baseXp / 4.0 * (lvl - 1));
+                required = (int) (baseXp + baseXp / 4.0 * (lvl - 1));
 
                 if (required + totalXp > stats.Xp)
                     break;
@@ -826,7 +822,7 @@ namespace WizBot.Modules.Xp.Services
                         VerticalAlignment = VerticalAlignment.Center,
                     }
                 }.WithFallbackFonts(_fonts.FallBackFonts);
-
+                
                 var clubTextOptions = new TextGraphicsOptions()
                 {
                     TextOptions = new TextOptions()
@@ -835,7 +831,7 @@ namespace WizBot.Modules.Xp.Services
                         VerticalAlignment = VerticalAlignment.Top,
                     }
                 }.WithFallbackFonts(_fonts.FallBackFonts);
-
+                
                 using (var img = Image.Load<Rgba32>(_images.XpBackground, out var imageFormat))
                 {
                     if (_template.User.Name.Show)
@@ -871,7 +867,7 @@ namespace WizBot.Modules.Xp.Services
 
                         var clubFont = _fonts.NotoSans
                             .CreateFont(_template.Club.Name.FontSize, FontStyle.Regular);
-
+                        
                         img.Mutate(x => x.DrawText(clubTextOptions,
                             clubName,
                             clubFont,
@@ -915,9 +911,9 @@ namespace WizBot.Modules.Xp.Services
                     //xp bar
                     if (_template.User.Xp.Bar.Show)
                     {
-                        var xpPercent = (global.LevelXp / (float)global.RequiredXp);
+                        var xpPercent = (global.LevelXp / (float) global.RequiredXp);
                         DrawXpBar(xpPercent, _template.User.Xp.Bar.Global, img);
-                        xpPercent = (guild.LevelXp / (float)guild.RequiredXp);
+                        xpPercent = (guild.LevelXp / (float) guild.RequiredXp);
                         DrawXpBar(xpPercent, _template.User.Xp.Bar.Guild, img);
                     }
 
@@ -1054,7 +1050,7 @@ namespace WizBot.Modules.Xp.Services
                     }
 
                     img.Mutate(x => x.Resize(_template.OutputSize.X, _template.OutputSize.Y));
-                    return ((Stream)img.ToStream(imageFormat), imageFormat);
+                    return ((Stream) img.ToStream(imageFormat), imageFormat);
                 }
             });
 
@@ -1189,4 +1185,3 @@ namespace WizBot.Modules.Xp.Services
         }
     }
 }
-

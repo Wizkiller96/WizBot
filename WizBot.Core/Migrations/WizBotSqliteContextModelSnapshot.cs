@@ -247,9 +247,7 @@ namespace WizBot.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("ErrorColor")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT")
-                        .HasDefaultValue("ee281f");
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("ForwardMessages")
                         .HasColumnType("INTEGER");
@@ -270,6 +268,11 @@ namespace WizBot.Migrations
                         .HasColumnType("INTEGER")
                         .HasDefaultValue(true);
 
+                    b.Property<bool>("HasMigratedXpSettings")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(true);
+
                     b.Property<string>("HelpString")
                         .HasColumnType("TEXT");
 
@@ -277,9 +280,7 @@ namespace WizBot.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("LastUpdate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT")
-                        .HasDefaultValue(new DateTime(2018, 5, 5, 0, 0, 0, 0, DateTimeKind.Utc));
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Locale")
                         .HasColumnType("TEXT");
@@ -288,9 +289,7 @@ namespace WizBot.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("MaxXpMinutes")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasDefaultValue(720);
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("MigrationVersion")
                         .HasColumnType("INTEGER");
@@ -308,14 +307,10 @@ namespace WizBot.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("OkColor")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT")
-                        .HasDefaultValue("00e584");
+                        .HasColumnType("TEXT");
 
                     b.Property<float>("PatreonCurrencyPerCent")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("REAL")
-                        .HasDefaultValue(1f);
+                        .HasColumnType("REAL");
 
                     b.Property<int>("PermissionVersion")
                         .HasColumnType("INTEGER");
@@ -339,24 +334,16 @@ namespace WizBot.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<double>("VoiceXpPerMinute")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("REAL")
-                        .HasDefaultValue(0.0);
+                        .HasColumnType("REAL");
 
                     b.Property<int>("WaifuGiftMultiplier")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasDefaultValue(1);
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("XpMinutesTimeout")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasDefaultValue(5);
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("XpPerMessage")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasDefaultValue(3);
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 

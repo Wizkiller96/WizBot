@@ -201,22 +201,6 @@ namespace WizBot.Modules.Utility
 
                 return true;
             }
-
-            [WizBotCommand, Usage, Description, Aliases]
-            [OwnerOnly]
-            public async Task RemindTemplate([Leftover] string arg)
-            {
-                if (string.IsNullOrWhiteSpace(arg))
-                    return;
-
-                using (var uow = _db.GetDbContext())
-                {
-                    uow.BotConfig.GetOrCreate(set => set).RemindMessageFormat = arg.Trim();
-                    await uow.SaveChangesAsync();
-                }
-
-                await ReplyConfirmLocalizedAsync("remind_template").ConfigureAwait(false);
-            }
         }
     }
 }

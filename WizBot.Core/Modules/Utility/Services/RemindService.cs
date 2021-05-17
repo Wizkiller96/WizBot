@@ -17,9 +17,7 @@ namespace WizBot.Modules.Utility.Services
     {
         private readonly Regex _regex = new Regex(@"^(?:in\s?)?\s*(?:(?<mo>\d+)(?:\s?(?:months?|mos?),?))?(?:(?:\sand\s|\s*)?(?<w>\d+)(?:\s?(?:weeks?|w),?))?(?:(?:\sand\s|\s*)?(?<d>\d+)(?:\s?(?:days?|d),?))?(?:(?:\sand\s|\s*)?(?<h>\d+)(?:\s?(?:hours?|h),?))?(?:(?:\sand\s|\s*)?(?<m>\d+)(?:\s?(?:minutes?|mins?|m),?))?\s+(?:to:?\s+)?(?<what>(?:\r\n|[\r\n]|.)+)",
                                 RegexOptions.Compiled | RegexOptions.Multiline);
-
-        public string RemindMessageFormat { get; }
-
+        
         private readonly Logger _log;
         private readonly IBotConfigProvider _config;
         private readonly DiscordSocketClient _client;
@@ -36,8 +34,6 @@ namespace WizBot.Modules.Utility.Services
             _log = LogManager.GetCurrentClassLogger();
             _db = db;
             _creds = creds;
-
-            RemindMessageFormat = _config.BotConfig.RemindMessageFormat;
             _ = StartReminderLoop();
         }
 

@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
-namespace WizBot.Core.Modules.Xp.Common
+namespace WizBot.Core.Modules.Xp
 {
     public class XpTemplate
     {

@@ -2,7 +2,6 @@
 using System;
 using WizBot.Core.Services.Database.Models;
 using Discord;
-using WizBot.Modules.Xp.Common;
 using System.Linq;
 using WizBot.Extensions;
 using System.Net.Http;

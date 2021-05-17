@@ -9,7 +9,7 @@ namespace WizBot.Core.Services
     /// <summary>
     /// Settings service for bot-wide configuration.
     /// </summary>
-    public sealed class BotSettingsService : SettingsServiceBase<BotSettings>
+    public sealed class BotSettingsService : ConfigServiceBase<BotSettings>
     {
         public override string Name { get; } = "bot";
         

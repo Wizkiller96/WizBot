@@ -5,7 +5,7 @@ using WizBot.Core.Services;
 
 namespace WizBot.Core.Modules.Gambling.Services
 {
-    public class GamblingConfigService : SettingsServiceBase<GamblingConfig>
+    public sealed class GamblingConfigService : ConfigServiceBase<GamblingConfig>
     {
         public override string Name { get; } = "gambling";
         private const string FilePath = "data/gambling.yml";

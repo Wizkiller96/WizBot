@@ -171,7 +171,6 @@ namespace WizBot.Modules.CustomReactions.Services
                         return ((cr.ContainsAnywhere &&
                             (content.GetWordPosition(trigger) != WordPosition.None))
                             || (hasTarget && content.StartsWith(trigger + " ", StringComparison.InvariantCulture))
-                            || (_bc.BotConfig.CustomReactionsStartWith && content.StartsWith(trigger + " ", StringComparison.InvariantCulture))
                             || content == trigger);
                     }).ToArray();
 
@@ -206,7 +205,6 @@ namespace WizBot.Modules.CustomReactions.Services
                 return ((cr.ContainsAnywhere &&
                             (content.GetWordPosition(trigger) != WordPosition.None))
                         || (hasTarget && content.StartsWith(trigger + " ", StringComparison.InvariantCulture))
-                        || (_bc.BotConfig.CustomReactionsStartWith && content.StartsWith(trigger + " ", StringComparison.InvariantCulture))
                         || content == trigger);
             }).ToArray();
             if (grs.Length == 0)

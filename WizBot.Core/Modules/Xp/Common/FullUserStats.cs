@@ -1,6 +1,6 @@
 ﻿using WizBot.Core.Services.Database.Models;
 
-namespace WizBot.Modules.Xp.Common
+namespace WizBot.Modules.Xp
 {
     public class FullUserStats
     {
@@ -11,16 +11,15 @@ namespace WizBot.Modules.Xp.Common
         public int GlobalRanking { get; }
         public int GuildRanking { get; }
 
-        public FullUserStats(DiscordUser usr,
-            UserXpStats fullGuildStats, LevelStats global,
+        public FullUserStats(DiscordUser usr, UserXpStats fullGuildStats, LevelStats global,
             LevelStats guild, int globalRanking, int guildRanking)
         {
-            this.User = usr;
-            this.Global = global;
-            this.Guild = guild;
-            this.GlobalRanking = globalRanking;
-            this.GuildRanking = guildRanking;
-            this.FullGuildStats = fullGuildStats;
+            User = usr;
+            Global = global;
+            Guild = guild;
+            GlobalRanking = globalRanking;
+            GuildRanking = guildRanking;
+            FullGuildStats = fullGuildStats;
         }
     }
 }

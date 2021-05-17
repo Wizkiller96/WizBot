@@ -5,7 +5,6 @@ using WizBot.Common.Attributes;
 using WizBot.Core.Common;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Extensions;
-using WizBot.Modules.Xp.Common;
 using WizBot.Modules.Xp.Services;
 using System.Collections.Generic;
 using System.Linq;

@@ -33,30 +33,6 @@ namespace WizBot.Core.Services.Impl
                 var bc = uow.BotConfig.GetOrCreate();
                 switch (type)
                 {
-                    case BotConfigEditType.XpPerMessage:
-                        if (int.TryParse(newValue, out var xp) && xp > 0)
-                            bc.XpPerMessage = xp;
-                        else
-                            return false;
-                        break;
-                    case BotConfigEditType.XpMinutesTimeout:
-                        if (int.TryParse(newValue, out var min) && min > 0)
-                            bc.XpMinutesTimeout = min;
-                        else
-                            return false;
-                        break;
-                    case BotConfigEditType.VoiceXpPerMinute:
-                        if (double.TryParse(newValue, out var rate) && rate >= 0)
-                            bc.VoiceXpPerMinute = rate;
-                        else
-                            return false;
-                        break;
-                    case BotConfigEditType.MaxXpMinutes:
-                        if (int.TryParse(newValue, out var minutes) && minutes > 0)
-                            bc.MaxXpMinutes = minutes;
-                        else
-                            return false;
-                        break;
                     case BotConfigEditType.MinimumTriviaWinReq:
                         if (int.TryParse(newValue, out var req) && req >= 0)
                             bc.MinimumTriviaWinReq = req;

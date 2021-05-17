@@ -4,7 +4,7 @@ using WizBot.Common.Yml;
 
 namespace WizBot.Core.Modules.Gambling.Common
 {
-    public class GamblingConfig
+    public sealed class GamblingConfig
     {
         public GamblingConfig()
         {

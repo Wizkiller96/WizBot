@@ -9,20 +9,27 @@ namespace WizBot.Core.Services.Database.Models
     {
         public bool HasMigratedBotSettings { get; set; } = true;
         public bool HasMigratedGamblingSettings { get; set; } = true;
+        public bool HasMigratedXpSettings { get; set; } = true;
 
         public HashSet<BlacklistItem> Blacklist { get; set; }
 
+        public bool CustomReactionsStartWith { get; set; } = false;
         public List<PlayingStatus> RotatingStatusMessages { get; set; } = new List<PlayingStatus>();
         public string RemindMessageFormat { get; set; } = "❗⏰**I've been told to remind you to '%message%' now by %user%.**⏰❗";
         public HashSet<EightBallResponse> EightBallResponses { get; set; } = new HashSet<EightBallResponse>();
         public HashSet<RaceAnimal> RaceAnimals { get; set; } = new HashSet<RaceAnimal>();
         public IndexedCollection<StartupCommand> StartupCommands { get; set; }
-        public bool CustomReactionsStartWith { get; set; } = false;
+        
+        public int MinimumTriviaWinReq { get; set; }
+
+        #region Obsolete, moved to xp.yml
+
         public int XpPerMessage { get; set; } = 3;
         public int XpMinutesTimeout { get; set; } = 5;
         public double VoiceXpPerMinute { get; set; } = 0;
         public int MaxXpMinutes { get; set; } = 720;
-        public int MinimumTriviaWinReq { get; set; }
+        
+        #endregion
 
         #region  Obsolete, Moved to gambling.yml
 

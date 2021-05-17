@@ -1,6 +1,6 @@
 ﻿using WizBot.Modules.Xp.Services;
 
-namespace WizBot.Modules.Xp.Common
+namespace WizBot.Modules.Xp
 {
     public class LevelStats
     {

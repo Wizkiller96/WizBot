@@ -159,38 +159,6 @@ namespace WizBot.Core.Services.Database
                 .WithOne(x => x.StreamRole);
             #endregion
 
-            #region BotConfig
-            var botConfigEntity = modelBuilder.Entity<BotConfig>();
-
-            botConfigEntity.Property(x => x.XpMinutesTimeout)
-                .HasDefaultValue(5);
-
-            botConfigEntity.Property(x => x.XpPerMessage)
-                .HasDefaultValue(3);
-
-            botConfigEntity.Property(x => x.VoiceXpPerMinute)
-                .HasDefaultValue(0);
-
-            botConfigEntity.Property(x => x.MaxXpMinutes)
-                .HasDefaultValue(720);
-
-            botConfigEntity.Property(x => x.PatreonCurrencyPerCent)
-                .HasDefaultValue(1.0f);
-
-            botConfigEntity.Property(x => x.WaifuGiftMultiplier)
-                .HasDefaultValue(1);
-
-            botConfigEntity.Property(x => x.OkColor)
-                .HasDefaultValue("00e584");
-
-            botConfigEntity.Property(x => x.ErrorColor)
-                .HasDefaultValue("ee281f");
-
-            botConfigEntity.Property(x => x.LastUpdate)
-                .HasDefaultValue(new DateTime(2018, 5, 5, 0, 0, 0, 0, DateTimeKind.Utc));
-
-            #endregion
-
             #region Self Assignable Roles
 
             var selfassignableRolesEntity = modelBuilder.Entity<SelfAssignedRole>();
@@ -385,6 +353,8 @@ namespace WizBot.Core.Services.Database
             bcEntity.Property(bc => bc.HasMigratedBotSettings)
                 .HasDefaultValue(1);
             bcEntity.Property(bc => bc.HasMigratedGamblingSettings)
+                .HasDefaultValue(1);
+            bcEntity.Property(bc => bc.HasMigratedXpSettings)
                 .HasDefaultValue(1);
 
             #endregion

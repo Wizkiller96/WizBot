@@ -2,11 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
-using WizBot.Modules.Xp.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WizBot.Modules.Xp;
 
 namespace WizBot.Core.Modules.Administration.Services
 {
