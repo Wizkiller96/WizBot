@@ -60,6 +60,8 @@ namespace WizBot.Modules.Help
                 .WithDefault(Context)
                 .WithOverride("{0}", () => clientId.ToString())
                 .WithOverride("{1}", () => Prefix)
+                .WithOverride("%prefix%", () => Prefix)
+                .WithOverride("%bot.prefix%", () => Prefix)
                 .Build();
 
             var app = await _client.GetApplicationInfoAsync();
