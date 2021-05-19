@@ -14,9 +14,9 @@ namespace WizBot.Modules.Xp
         public int MessageXpCooldown { get; set; } = 5;
 
         [Comment(@"Average amount of xp earned per minute in VC")]
-        public double VoiceXpPerMinute { get; set; }
+        public double VoiceXpPerMinute { get; set; } = 0;
 
         [Comment(@"The maximum amount of minutes the bot will keep track of a user in a voice channel")]
-        public int VoiceMaxMinutes { get; set; }
+        public int VoiceMaxMinutes { get; set; } = 720;
     }
 }
