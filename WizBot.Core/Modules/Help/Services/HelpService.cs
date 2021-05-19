@@ -22,10 +22,10 @@ namespace WizBot.Modules.Help.Services
         private readonly IBotStrings _strings;
         private readonly Logger _log;
         private readonly DiscordPermOverrideService _dpos;
-        private readonly BotSettingsService _bss;
+        private readonly BotConfigService _bss;
 
         public HelpService(CommandHandler ch, IBotStrings strings,
-            DiscordPermOverrideService dpos, BotSettingsService bss)
+            DiscordPermOverrideService dpos, BotConfigService bss)
         {
             _ch = ch;
             _strings = strings;

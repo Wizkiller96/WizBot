@@ -13,7 +13,7 @@ namespace WizBot.Core.Services.Impl
     public class Localization : ILocalization
     {
         private readonly Logger _log;
-        private readonly BotSettingsService _bss;
+        private readonly BotConfigService _bss;
         private readonly DbService _db;
 
         public ConcurrentDictionary<ulong, CultureInfo> GuildCultureInfos { get; }
@@ -22,7 +22,7 @@ namespace WizBot.Core.Services.Impl
         private static readonly Dictionary<string, CommandData> _commandData = JsonConvert.DeserializeObject<Dictionary<string, CommandData>>(
                 File.ReadAllText("./data/strings/commands/commands.en-US.json"));
 
-        public Localization(BotSettingsService bss, WizBot bot, DbService db)
+        public Localization(BotConfigService bss, WizBot bot, DbService db)
         {
             _log = LogManager.GetCurrentClassLogger();
 

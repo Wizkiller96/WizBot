@@ -21,18 +21,6 @@ using System.Net.Http;
 
 namespace WizBot.Modules.Administration.Services
 {
-    /// <summary>
-    /// All services which need to execute something after
-    /// the bot is ready should implement this interface 
-    /// </summary>
-    public interface IReadyExecutor
-    {
-        /// <summary>
-        /// Executed when bot is ready
-        /// </summary>
-        public Task OnReadyAsync();
-    }
-
     public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
     {
         private readonly ConnectionMultiplexer _redis;
@@ -56,11 +44,11 @@ namespace WizBot.Modules.Administration.Services
         private readonly IDataCache _cache;
         private readonly IImageCache _imgs;
         private readonly IHttpClientFactory _httpFactory;
-        private readonly BotSettingsService _bss;
+        private readonly BotConfigService _bss;
 
         public SelfService(DiscordSocketClient client, CommandHandler cmdHandler, DbService db,
             IBotStrings strings, IBotCredentials creds, IDataCache cache, IHttpClientFactory factory,
-            BotSettingsService bss)
+            BotConfigService bss)
         {
             _redis = cache.Redis;
             _cmdHandler = cmdHandler;

@@ -9,13 +9,13 @@ namespace WizBot.Modules.Permissions.Services
 {
     public class GlobalPermissionService : ILateBlocker, INService
     {
-        private readonly BotSettingsService _bss;
+        private readonly BotConfigService _bss;
         public int Priority { get; } = 0;
 
         public HashSet<string> BlockedCommands => _bss.Data.Blocked.Commands;
         public HashSet<string> BlockedModules => _bss.Data.Blocked.Modules;
 
-        public GlobalPermissionService(BotSettingsService bss)
+        public GlobalPermissionService(BotConfigService bss)
         {
             _bss = bss;
         }

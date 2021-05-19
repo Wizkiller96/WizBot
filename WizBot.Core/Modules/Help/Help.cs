@@ -28,7 +28,7 @@ namespace WizBot.Modules.Help
         public const string PatreonUrl = "https://patreon.com/WizNet";
         public const string PaypalUrl = "https://paypal.me/Wizkiller96Network";
         private readonly CommandService _cmds;
-        private readonly BotSettingsService _bss;
+        private readonly BotConfigService _bss;
         private readonly GlobalPermissionService _perms;
         private readonly IServiceProvider _services;
         private readonly DiscordSocketClient _client;
@@ -36,7 +36,7 @@ namespace WizBot.Modules.Help
 
         private readonly AsyncLazy<ulong> _lazyClientId;
 
-        public Help(GlobalPermissionService perms, CommandService cmds, BotSettingsService bss,
+        public Help(GlobalPermissionService perms, CommandService cmds, BotConfigService bss,
             IServiceProvider services, DiscordSocketClient client, IBotStrings strings)
         {
             _cmds = cmds;

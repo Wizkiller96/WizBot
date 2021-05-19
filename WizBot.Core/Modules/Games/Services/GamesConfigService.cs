@@ -15,9 +15,9 @@ namespace WizBot.Modules.Games.Services
             : base(FilePath, serializer, pubSub, changeKey)
         {
             AddParsedProp("trivia.min_win_req", gs => gs.Trivia.MinimumWinReq, int.TryParse,
-                SettingPrinters.ToString, val => val > 0);
+                ConfigPrinters.ToString, val => val > 0);
             AddParsedProp("trivia.currency_reward", gs => gs.Trivia.CurrencyReward, long.TryParse,
-                SettingPrinters.ToString, val => val >= 0);
+                ConfigPrinters.ToString, val => val >= 0);
         }
     }
 

@@ -7,7 +7,7 @@ using YamlDotNet.Serialization;
 
 namespace WizBot.Core.Common.Configs
 {
-    public sealed class BotSettings
+    public sealed class BotConfig
     {
         [Comment(@"DO NOT CHANGE")]
         public int Version { get; set; }
@@ -84,7 +84,7 @@ See RotatingStatuses submodule in Administration.")]
         public string Prefixed(string text)
             => Prefix + text;
 
-        public BotSettings()
+        public BotConfig()
         {
             Version = 1;
             var color = new ColorConfig();

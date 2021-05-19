@@ -14,13 +14,13 @@ namespace WizBot.Modules.Xp.Services
             changeKey)
         {
             AddParsedProp("txt.cooldown", conf => conf.MessageXpCooldown, int.TryParse,
-                SettingPrinters.ToString, x => x > 0);
+                ConfigPrinters.ToString, x => x > 0);
             AddParsedProp("txt.per_msg", conf => conf.XpPerMessage, int.TryParse,
-                SettingPrinters.ToString, x => x >= 0);
+                ConfigPrinters.ToString, x => x >= 0);
             AddParsedProp("voice.per_minute", conf => conf.VoiceXpPerMinute, double.TryParse,
-                SettingPrinters.ToString, x => x >= 0);
+                ConfigPrinters.ToString, x => x >= 0);
             AddParsedProp("voice.max_minutes", conf => conf.VoiceMaxMinutes, int.TryParse,
-                SettingPrinters.ToString, x => x > 0);
+                ConfigPrinters.ToString, x => x > 0);
         }
     }
 }

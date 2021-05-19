@@ -13,9 +13,9 @@ namespace WizBot.Core.Services
     {
         private readonly Logger _log;
         private readonly DbService _db;
-        private readonly BotSettingsService _bss;
+        private readonly BotConfigService _bss;
 
-        public BotConfigMigrator(DbService dbService, BotSettingsService bss)
+        public BotConfigMigrator(DbService dbService, BotConfigService bss)
         {
             _log = LogManager.GetCurrentClassLogger();
             _db = dbService;

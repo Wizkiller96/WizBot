@@ -23,6 +23,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Discord.Net;
 using Microsoft.EntityFrameworkCore;
+using WizBot.Common.ModuleBehaviors;
 using WizBot.Core.Common;
 using WizBot.Core.Common.Configs;
 using WizBot.Modules.Administration.Services;

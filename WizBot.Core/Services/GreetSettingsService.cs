@@ -23,10 +23,10 @@ namespace WizBot.Core.Services
 
         private GreetGrouper<IGuildUser> greets = new GreetGrouper<IGuildUser>();
         private GreetGrouper<IGuildUser> byes = new GreetGrouper<IGuildUser>();
-        private readonly BotSettingsService _bss;
+        private readonly BotConfigService _bss;
         public bool GroupGreets => _bss.Data.GroupGreets;
 
-        public GreetSettingsService(DiscordSocketClient client, WizBot bot, DbService db, BotSettingsService bss)
+        public GreetSettingsService(DiscordSocketClient client, WizBot bot, DbService db, BotConfigService bss)
         {
             _db = db;
             _client = client;

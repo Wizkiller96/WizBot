@@ -33,7 +33,7 @@ namespace WizBot.Core.Services
 
         private readonly DiscordSocketClient _client;
         private readonly CommandService _commandService;
-        private readonly BotSettingsService _bss;
+        private readonly BotConfigService _bss;
         private readonly Logger _log;
         private readonly WizBot _bot;
         private IServiceProvider _services;
@@ -55,7 +55,7 @@ namespace WizBot.Core.Services
         private readonly Timer _clearUsersOnShortCooldown;
 
         public CommandHandler(DiscordSocketClient client, DbService db, CommandService commandService,
-            BotSettingsService bss, WizBot bot, IServiceProvider services)
+            BotConfigService bss, WizBot bot, IServiceProvider services)
         {
             _client = client;
             _commandService = commandService;
@@ -171,7 +171,7 @@ namespace WizBot.Core.Services
 
         private Task LogSuccessfulExecution(IUserMessage usrMsg, ITextChannel channel, params int[] execPoints)
         {
-            var bss = _services.GetService<BotSettingsService>();
+            var bss = _services.GetService<BotConfigService>();
             if (bss.Data.ConsoleOutputType == ConsoleOutputType.Normal)
             {
                 _log.Info($"Command Executed after " + string.Join("/", execPoints.Select(x => (x * _oneThousandth).ToString("F3"))) + "s\n\t" +
@@ -198,7 +198,7 @@ namespace WizBot.Core.Services
 
         private void LogErroredExecution(string errorMessage, IUserMessage usrMsg, ITextChannel channel, params int[] execPoints)
         {
-            var bss = _services.GetService<BotSettingsService>();
+            var bss = _services.GetService<BotConfigService>();
             if (bss.Data.ConsoleOutputType == ConsoleOutputType.Normal)
             {
                 _log.Warn($"Command Errored after " + string.Join("/", execPoints.Select(x => (x * _oneThousandth).ToString("F3"))) + "s\n\t" +
