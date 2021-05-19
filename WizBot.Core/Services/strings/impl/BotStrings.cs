@@ -54,6 +54,9 @@ namespace WizBot.Core.Services
             }
             catch (FormatException)
             {
+                _log.Warn($" Key '{key}' is not properly formatted in '{cultureInfo}' response strings. Please report this.");
+                if (cultureInfo.Name != _usCultureInfo.Name)
+                    return GetText(key, _usCultureInfo, data);
                 return
                     $"I can't tell you if the command is executed, because there was an error printing out the response." +
                     $" Key '{key}' is not properly formatted. Please report this.";

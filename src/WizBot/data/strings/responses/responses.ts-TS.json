@@ -64,7 +64,7 @@
   "invalid_params": "Not what you put there...",
   "kickdm": "I threw you out of {0} server because {1}",
   "kicked_user": "Thrown out",
-  "lang_list": "Languages\n{0}",
+  "lang_list": "List of Languages",
   "lang_set": "Changed your server\u0027s locale to {0} - {1}",
   "lang_set_bot": "Bot\u0027s default locale is now {0} - {1}",
   "lang_set_bot_show": "For now, this is my attitude. {0} - {1}",
