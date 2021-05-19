@@ -40,21 +40,18 @@ namespace WizBot.Modules.CustomReactions.Services
         private readonly DiscordSocketClient _client;
         private readonly PermissionService _perms;
         private readonly CommandHandler _cmd;
-        private readonly IBotConfigProvider _bc;
         private readonly IBotStrings _strings;
         private readonly IDataCache _cache;
         private readonly GlobalPermissionService _gperm;
 
-        public CustomReactionsService(PermissionService perms, DbService db, IBotStrings strings,
-            DiscordSocketClient client, CommandHandler cmd, IBotConfigProvider bc,
-            IDataCache cache, GlobalPermissionService gperm, WizBot bot)
+        public CustomReactionsService(PermissionService perms, DbService db, IBotStrings strings, WizBot bot,
+            DiscordSocketClient client, CommandHandler cmd, IDataCache cache, GlobalPermissionService gperm)
         {
             _log = LogManager.GetCurrentClassLogger();
             _db = db;
             _client = client;
             _perms = perms;
             _cmd = cmd;
-            _bc = bc;
             _strings = strings;
             _cache = cache;
             _gperm = gperm;

@@ -90,7 +90,7 @@ VALUES ({userId}, {username}, {discrim}, {avatarId});
                 .FirstOrDefault(x => x.UserId == userId)
                 ?.CurrencyAmount ?? 0;
 
-        public void RemoveFromMany(List<ulong> ids)
+        public void RemoveFromMany(IEnumerable<ulong> ids)
         {
             var items = _set.AsQueryable().Where(x => ids.Contains(x.UserId));
             foreach (var item in items)

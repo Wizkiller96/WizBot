@@ -18,12 +18,22 @@ using System.Threading;
 using System.Collections.Concurrent;
 using System;
 using System.Net.Http;
-using WizBot.Core.Common.Configs;
-using WizBot.Core.Services.Impl;
 
 namespace WizBot.Modules.Administration.Services
 {
-    public class SelfService : ILateExecutor, INService
+    /// <summary>
+    /// All services which need to execute something after
+    /// the bot is ready should implement this interface 
+    /// </summary>
+    public interface IReadyExecutor
+    {
+        /// <summary>
+        /// Executed when bot is ready
+        /// </summary>
+        public Task OnReadyAsync();
+    }
+
+    public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
     {
         private readonly ConnectionMultiplexer _redis;
         private readonly CommandHandler _cmdHandler;
@@ -33,18 +43,24 @@ namespace WizBot.Modules.Administration.Services
         private readonly DiscordSocketClient _client;
 
         private readonly IBotCredentials _creds;
-        private ImmutableDictionary<ulong, IDMChannel> ownerChannels = new Dictionary<ulong, IDMChannel>().ToImmutableDictionary();
-        private ImmutableDictionary<ulong, IDMChannel> adminChannels = new Dictionary<ulong, IDMChannel>().ToImmutableDictionary();
-        private ConcurrentDictionary<ulong?, ConcurrentDictionary<int, Timer>> _autoCommands = new ConcurrentDictionary<ulong?, ConcurrentDictionary<int, Timer>>();
-        private readonly IBotConfigProvider _bc;
+        
+        private ImmutableDictionary<ulong, IDMChannel> ownerChannels =
+            new Dictionary<ulong, IDMChannel>().ToImmutableDictionary();
+        
+        private ImmutableDictionary<ulong, IDMChannel> adminChannels =
+            new Dictionary<ulong, IDMChannel>().ToImmutableDictionary();
+
+        private ConcurrentDictionary<ulong?, ConcurrentDictionary<int, Timer>> _autoCommands =
+            new ConcurrentDictionary<ulong?, ConcurrentDictionary<int, Timer>>();
+
         private readonly IDataCache _cache;
         private readonly IImageCache _imgs;
         private readonly IHttpClientFactory _httpFactory;
         private readonly BotSettingsService _bss;
 
-        public SelfService(DiscordSocketClient client, WizBot bot, CommandHandler cmdHandler, DbService db,
-            IBotConfigProvider bc, IBotStrings strings, IBotCredentials creds,
-            IDataCache cache, IHttpClientFactory factory, BotSettingsService bss)
+        public SelfService(DiscordSocketClient client, CommandHandler cmdHandler, DbService db,
+            IBotStrings strings, IBotCredentials creds, IDataCache cache, IHttpClientFactory factory,
+            BotSettingsService bss)
         {
             _redis = cache.Redis;
             _cmdHandler = cmdHandler;
@@ -53,7 +69,6 @@ namespace WizBot.Modules.Administration.Services
             _strings = strings;
             _client = client;
             _creds = creds;
-            _bc = bc;
             _cache = cache;
             _imgs = cache.LocalImages;
             _httpFactory = factory;
@@ -65,8 +80,7 @@ namespace WizBot.Modules.Administration.Services
                 sub.Subscribe(_creds.RedisKey() + "_reload_images",
                     delegate { _imgs.Reload(); }, CommandFlags.FireAndForget);
             }
-            sub.Subscribe(_creds.RedisKey() + "_reload_bot_config",
-                delegate { _bc.Reload(); }, CommandFlags.FireAndForget);
+
             sub.Subscribe(_creds.RedisKey() + "_leave_guild", async (ch, v) =>
             {
                 try
@@ -75,12 +89,13 @@ namespace WizBot.Modules.Administration.Services
                     if (string.IsNullOrWhiteSpace(guildStr))
                         return;
                     var server = _client.Guilds.FirstOrDefault(g => g.Id.ToString() == guildStr) ??
-                        _client.Guilds.FirstOrDefault(g => g.Name.Trim().ToUpperInvariant() == guildStr);
+                                 _client.Guilds.FirstOrDefault(g => g.Name.Trim().ToUpperInvariant() == guildStr);
 
                     if (server == null)
                     {
                         return;
                     }
+
                     if (server.OwnerId != _client.CurrentUser.Id)
                     {
                         await server.LeaveAsync().ConfigureAwait(false);
@@ -92,67 +107,66 @@ namespace WizBot.Modules.Administration.Services
                         _log.Info($"Deleted server {server.Name} [{server.Id}]");
                     }
                 }
-                catch { }
-            }, CommandFlags.FireAndForget);
-
-            Task.Run(async () =>
-            {
-                await bot.Ready.Task.ConfigureAwait(false);
-
-                _autoCommands = bc.BotConfig
-                    .StartupCommands
-                    .Where(x => x.Interval >= 5)
-                    .GroupBy(x => x.GuildId)
-                    .ToDictionary(
-                        x => x.Key,
-                        y => y.ToDictionary(x => x.Id,
-                            x => TimerFromStartupCommand((StartupCommand)x))
-                    .ToConcurrent())
-                    .ToConcurrent();
-
-                foreach (var cmd in bc.BotConfig.StartupCommands.Where(x => x.Interval <= 0))
+                catch
                 {
-                    try { await ExecuteCommand(cmd).ConfigureAwait(false); } catch { }
                 }
-            });
-
-            Task.Run(async () =>
-            {
-                await bot.Ready.Task.ConfigureAwait(false);
-
-                await Task.Delay(5000).ConfigureAwait(false);
-
-                if (client.ShardId == 0)
-                    await LoadOwnerChannels().ConfigureAwait(false);
-            });
-
-            Task.Run(async () =>
-            {
-                await bot.Ready.Task.ConfigureAwait(false);
-
-                await Task.Delay(5000).ConfigureAwait(false);
-
-                if (client.ShardId == 0)
-                    await LoadAdminChannels().ConfigureAwait(false);
-            });
+            }, CommandFlags.FireAndForget);
         }
 
-        private Timer TimerFromStartupCommand(StartupCommand x)
+        public async Task OnReadyAsync()
         {
-            return new Timer(async (obj) => await ExecuteCommand((StartupCommand)obj).ConfigureAwait(false),
+            using var uow = _db.GetDbContext();
+
+            _autoCommands = uow._context
+                .AutoCommands
+                .AsNoTracking()
+                .Where(x => x.Interval >= 5)
+                .AsEnumerable()
+                .GroupBy(x => x.GuildId)
+                .ToDictionary(x => x.Key,
+                    y => y.ToDictionary(x => x.Id, TimerFromAutoCommand)
+                        .ToConcurrent())
+                .ToConcurrent();
+
+            var startupCommands = uow._context.AutoCommands.AsNoTracking().Where(x => x.Interval == 0);
+            foreach (var cmd in startupCommands)
+            {
+                try
+                {
+                    await ExecuteCommand(cmd).ConfigureAwait(false);
+                }
+                catch
+                {
+                }
+            }
+
+            if (_client.ShardId == 0)
+            {
+                await LoadOwnerChannels().ConfigureAwait(false);
+            }
+
+            if (_client.ShardId == 0)
+            {
+                await LoadAdminChannels().ConfigureAwait(false);
+            }
+        }
+
+        private Timer TimerFromAutoCommand(AutoCommand x)
+        {
+            return new Timer(async (obj) => await ExecuteCommand((AutoCommand) obj).ConfigureAwait(false),
                 x,
                 x.Interval * 1000,
                 x.Interval * 1000);
         }
 
-        private async Task ExecuteCommand(StartupCommand cmd)
+        private async Task ExecuteCommand(AutoCommand cmd)
         {
             try
             {
                 if (cmd.GuildId is null)
                     return;
 
-                var guildShard = (int)((cmd.GuildId.Value >> 22) % (ulong)_creds.TotalShards);
+                var guildShard = (int) ((cmd.GuildId.Value >> 22) % (ulong) _creds.TotalShards);
                 if (guildShard != _client.ShardId)
                     return;
                 var prefix = _cmdHandler.GetPrefix(cmd.GuildId);
@@ -160,7 +174,6 @@ namespace WizBot.Modules.Administration.Services
                 if (cmd.CommandText.StartsWith(prefix + "die", StringComparison.InvariantCulture))
                     return;
                 await _cmdHandler.ExecuteExternal(cmd.GuildId, cmd.ChannelId, cmd.CommandText).ConfigureAwait(false);
-                await Task.Delay(400).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -168,35 +181,45 @@ namespace WizBot.Modules.Administration.Services
             }
         }
 
-        public void AddNewAutoCommand(StartupCommand cmd)
+        public void AddNewAutoCommand(AutoCommand cmd)
         {
             using (var uow = _db.GetDbContext())
             {
-                uow.BotConfig
-                   .GetOrCreate(set => set.Include(x => x.StartupCommands))
-                   .StartupCommands
-                   .Add(cmd);
+                uow._context.AutoCommands.Add(cmd);
                 uow.SaveChanges();
             }
 
-            var autos = _autoCommands.GetOrAdd(cmd.GuildId, new ConcurrentDictionary<int, Timer>());
-            autos.AddOrUpdate(cmd.Id, key => TimerFromStartupCommand(cmd), (key, old) =>
+            if (cmd.Interval >= 5)
             {
-                old.Change(Timeout.Infinite, Timeout.Infinite);
-                return TimerFromStartupCommand(cmd);
-            });
+                var autos = _autoCommands.GetOrAdd(cmd.GuildId, new ConcurrentDictionary<int, Timer>());
+                autos.AddOrUpdate(cmd.Id, key => TimerFromAutoCommand(cmd), (key, old) =>
+                {
+                    old.Change(Timeout.Infinite, Timeout.Infinite);
+                    return TimerFromAutoCommand(cmd);
+                });
+            }
         }
 
-        public IEnumerable<StartupCommand> GetStartupCommands()
+        public IEnumerable<AutoCommand> GetStartupCommands()
         {
-            using (var uow = _db.GetDbContext())
-            {
-                return uow.BotConfig
-                   .GetOrCreate(set => set.Include(x => x.StartupCommands))
-                   .StartupCommands
-                   .OrderBy(x => x.Id)
-                   .ToArray();
-            }
+            using var uow = _db.GetDbContext();
+            return uow._context
+                .AutoCommands
+                .AsNoTracking()
+                .Where(x => x.Interval == 0)
+                .OrderBy(x => x.Id)
+                .ToList();
+        }
+        
+        public IEnumerable<AutoCommand> GetAutoCommands()
+        {
+            using var uow = _db.GetDbContext();
+            return uow._context
+                .AutoCommands
+                .AsNoTracking()
+                .Where(x => x.Interval >= 5)
+                .OrderBy(x => x.Id)
+                .ToList();
         }
 
         private async Task LoadOwnerChannels()
@@ -215,7 +238,8 @@ namespace WizBot.Modules.Administration.Services
                 .ToImmutableDictionary();
 
             if (!ownerChannels.Any())
-                _log.Warn("No owner channels created! Make sure you've specified the correct OwnerId in the credentials.json file and invited the bot to a Discord server.");
+                _log.Warn(
+                    "No owner channels created! Make sure you've specified the correct OwnerId in the credentials.json file and invited the bot to a Discord server.");
             else
                 _log.Info($"Created {ownerChannels.Count} out of {_creds.OwnerIds.Length} owner message channels.");
         }
@@ -236,7 +260,8 @@ namespace WizBot.Modules.Administration.Services
                 .ToImmutableDictionary();
 
             if (!adminChannels.Any())
-                _log.Warn("No admin channels created! Make sure you've specified the correct AdminId in the credentials.json file and invited the bot to a Discord server.");
+                _log.Warn(
+                    "No admin channels created! Make sure you've specified the correct AdminId in the credentials.json file and invited the bot to a Discord server.");
             else
                 _log.Info($"Created {adminChannels.Count} out of {_creds.AdminIds.Length} admin message channels.");
         }
@@ -312,15 +337,36 @@ namespace WizBot.Modules.Administration.Services
             return true;
         }
 
-        public bool RemoveStartupCommand(int index, out StartupCommand cmd)
+        public bool RemoveStartupCommand(int index, out AutoCommand cmd)
         {
             using (var uow = _db.GetDbContext())
             {
-                var cmds = uow.BotConfig
-                   .GetOrCreate(set => set.Include(x => x.StartupCommands))
-                   .StartupCommands;
-                cmd = cmds
-                   .FirstOrDefault(x => x.Index == index);
+                cmd = uow._context.AutoCommands
+                    .AsNoTracking()
+                    .Where(x => x.Interval == 0)
+                    .Skip(index)
+                    .FirstOrDefault();
+
+                if (cmd != null)
+                {
+                    uow._context.Remove(cmd);
+                    uow.SaveChanges();
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        
+        public bool RemoveAutoCommand(int index, out AutoCommand cmd)
+        {
+            using (var uow = _db.GetDbContext())
+            {
+                cmd = uow._context.AutoCommands
+                    .AsNoTracking()
+                    .Where(x => x.Interval >= 0)
+                    .Skip(index)
+                    .FirstOrDefault();
 
                 if (cmd != null)
                 {
@@ -328,11 +374,11 @@ namespace WizBot.Modules.Administration.Services
                     if (_autoCommands.TryGetValue(cmd.GuildId, out var autos))
                         if (autos.TryRemove(cmd.Id, out var timer))
                             timer.Change(Timeout.Infinite, Timeout.Infinite);
-
                     uow.SaveChanges();
                     return true;
                 }
             }
+            
             return false;
         }
 
@@ -359,6 +405,7 @@ namespace WizBot.Modules.Administration.Services
                     await _client.CurrentUser.ModifyAsync(u => u.Avatar = new Image(imgStream)).ConfigureAwait(false);
                 }
             }
+            
             return true;
         }
 
@@ -366,22 +413,16 @@ namespace WizBot.Modules.Administration.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                uow.BotConfig
-                   .GetOrCreate(set => set.Include(x => x.StartupCommands))
-                   .StartupCommands
-                   .Clear();
+                var toRemove = uow._context
+                    .AutoCommands
+                    .AsNoTracking()
+                    .Where(x => x.Interval == 0);
+
+                uow._context.AutoCommands.RemoveRange(toRemove);
                 uow.SaveChanges();
             }
         }
-
-        public void ReloadBotConfig()
-        {
-            var sub = _cache.Redis.GetSubscriber();
-            sub.Publish(_creds.RedisKey() + "_reload_bot_config",
-                "",
-                CommandFlags.FireAndForget);
-        }
-
+        
         public void ReloadImages()
         {
             var sub = _cache.Redis.GetSubscriber();
@@ -417,10 +458,7 @@ namespace WizBot.Modules.Administration.Services
         public bool ForwardMessages()
         {
             var isForwarding = false;
-            _bss.ModifyConfig(config =>
-            {
-                isForwarding = config.ForwardMessages = !config.ForwardMessages;
-            });
+            _bss.ModifyConfig(config => { isForwarding = config.ForwardMessages = !config.ForwardMessages; });
 
             return isForwarding;
         }
@@ -428,10 +466,7 @@ namespace WizBot.Modules.Administration.Services
         public bool ForwardToAll()
         {
             var isToAll = false;
-            _bss.ModifyConfig(config =>
-            {
-                isToAll = config.ForwardToAllOwners = !config.ForwardToAllOwners;
-            });
+            _bss.ModifyConfig(config => { isToAll = config.ForwardToAllOwners = !config.ForwardToAllOwners; });
             return isToAll;
         }
 

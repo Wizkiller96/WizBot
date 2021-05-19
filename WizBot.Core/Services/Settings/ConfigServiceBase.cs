@@ -15,17 +15,17 @@ namespace WizBot.Core.Services
     /// Base service for all settings services
     /// </summary>
     /// <typeparam name="TSettings">Type of the settings</typeparam>
-    public abstract class ConfigServiceBase<TSettings> : ISettingsService
+    public abstract class ConfigServiceBase<TSettings> : IConfigService 
         where TSettings : new()
     {
         protected readonly string _filePath;
-        protected readonly ISettingsSeria _serializer;
+        protected readonly IConfigSeria _serializer;
         protected readonly IPubSub _pubSub;
         private readonly TypedKey<TSettings> _changeKey;
 
         protected TSettings _data;
         public TSettings Data => CreateCopy();
-
+        
         public abstract string Name { get; }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace WizBot.Core.Services
         /// <param name="serializer">Serializer which will be used</param>
         /// <param name="pubSub">Pubsub implementation for signaling when settings are updated</param>
         /// <param name="changeKey">Key used to signal changed event</param>
-        protected ConfigServiceBase(string filePath, ISettingsSeria serializer, IPubSub pubSub,
+        protected ConfigServiceBase(string filePath, IConfigSeria serializer, IPubSub pubSub,
             TypedKey<TSettings> changeKey)
         {
             _filePath = filePath;
@@ -43,16 +43,15 @@ namespace WizBot.Core.Services
             _pubSub = pubSub;
             _changeKey = changeKey;
 
-            _pubSub.Sub(_changeKey, OnChangePublished);
-
             Load();
+            _pubSub.Sub(_changeKey, OnChangePublished);
         }
 
         private void PublishChange()
         {
             _pubSub.Pub(_changeKey, _data);
         }
-
+        
         private Task OnChangePublished(TSettings newData)
         {
             _data = newData;
@@ -63,7 +62,7 @@ namespace WizBot.Core.Services
         private TSettings CreateCopy()
         {
             var serializedData = _serializer.Serialize(_data);
-
+            
             return _serializer.Deserialize<TSettings>(serializedData);
         }
 
@@ -98,9 +97,9 @@ namespace WizBot.Core.Services
         /// </summary>
         protected virtual void OnStateUpdate()
         {
-
+            
         }
-
+        
         public void ModifyConfig(Action<TSettings> action)
         {
             var copy = CreateCopy();
@@ -114,12 +113,12 @@ namespace WizBot.Core.Services
             var strData = _serializer.Serialize(_data);
             File.WriteAllText(_filePath, strData);
         }
-
+        
         private readonly Dictionary<string, Func<TSettings, string, bool>> _propSetters = new Dictionary<string, Func<TSettings, string, bool>>();
         private readonly Dictionary<string, Func<object>> _propSelectors = new Dictionary<string, Func<object>>();
         private readonly Dictionary<string, Func<object, string>> _propPrinters = new Dictionary<string, Func<object, string>>();
         private readonly Dictionary<string, string> _propComments = new Dictionary<string, string>();
-
+        
         protected void AddParsedProp<TProp>(
             string key,
             Expression<Func<TSettings, TProp>> selector,
@@ -129,7 +128,7 @@ namespace WizBot.Core.Services
         {
             checker ??= _ => true;
             key = key.ToLowerInvariant();
-            _propPrinters[key] = obj => printer((TProp)obj);
+            _propPrinters[key] = obj => printer((TProp)obj); 
             _propSelectors[key] = () => selector.Compile()(_data);
             _propSetters[key] = Magic(selector, parser, checker);
             _propComments[key] = ((MemberExpression)selector.Body).Member.GetCustomAttribute<CommentAttribute>()?.Comment;
@@ -141,7 +140,7 @@ namespace WizBot.Core.Services
             {
                 if (!parser(input, out var value))
                     return false;
-
+                
                 if (!checker(value))
                     return false;
 
@@ -152,22 +151,22 @@ namespace WizBot.Core.Services
                 var expressions = new List<MemberExpression>()
                 {
                 };
-
+                
                 while (true)
                 {
                     expr = expr.Expression as MemberExpression;
                     if (expr is null)
                         break;
-
+                    
                     expressions.Add(expr);
                 }
-
+                
                 foreach (var memberExpression in expressions.AsEnumerable().Reverse())
                 {
-                    var localProp = (PropertyInfo)memberExpression.Member;
+                    var localProp = (PropertyInfo) memberExpression.Member;
                     targetObject = localProp.GetValue(targetObject);
                 }
-
+                
                 prop!.SetValue(targetObject, value, null);
                 return true;
             };
@@ -204,8 +203,8 @@ namespace WizBot.Core.Services
             {
                 success = SetProperty(bs, prop, newValue);
             });
-
-            if (success)
+            
+            if(success)
                 PublishChange();
 
             return success;

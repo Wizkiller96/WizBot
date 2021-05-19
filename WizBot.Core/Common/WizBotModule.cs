@@ -14,9 +14,6 @@ namespace WizBot.Modules
         protected Logger _log { get; }
         protected CultureInfo _cultureInfo { get; set; }
         public IBotStrings Strings { get; set; }
-
-        public BotSettingsService BotSettings { get; set; }
-        public IBotConfigProvider Bc { get; set; }
         public CommandHandler CmdHandler { get; set; }
         public ILocalization Localization { get; set; }
 
@@ -24,7 +21,7 @@ namespace WizBot.Modules
 
         protected ICommandContext ctx => Context;
 
-        protected WizBotModule(bool isTopLevelModule = true)
+        protected WizBotModule()
         {
             _log = LogManager.GetCurrentClassLogger();
         }
@@ -132,23 +129,23 @@ namespace WizBot.Modules
         }
     }
 
-    public abstract class WizBotModule<TService> : WizBotModule where TService : INService
+    public abstract class WizBotModule<TService> : WizBotModule
     {
         public TService _service { get; set; }
 
-        protected WizBotModule(bool isTopLevel = true) : base(isTopLevel)
+        protected WizBotModule() : base()
         {
         }
     }
 
     public abstract class WizBotSubmodule : WizBotModule
     {
-        protected WizBotSubmodule() : base(false) { }
+        protected WizBotSubmodule() : base() { }
     }
 
     public abstract class WizBotSubmodule<TService> : WizBotModule<TService> where TService : INService
     {
-        protected WizBotSubmodule() : base(false)
+        protected WizBotSubmodule() : base()
         {
         }
     }

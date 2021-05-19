@@ -12,7 +12,7 @@ namespace WizBot.Core.Modules.Gambling.Services
         private static TypedKey<GamblingConfig> changeKey = new TypedKey<GamblingConfig>("config.gambling.updated");
 
 
-        public GamblingConfigService(ISettingsSeria serializer, IPubSub pubSub)
+        public GamblingConfigService(IConfigSeria serializer, IPubSub pubSub)
             : base(FilePath, serializer, pubSub, changeKey)
         {
             AddParsedProp("currency.name", gs => gs.Currency.Name, SettingParsers.String, SettingPrinters.ToString);

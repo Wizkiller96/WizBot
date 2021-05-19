@@ -28,7 +28,7 @@ namespace WizBot.Modules.Gambling
             }
 
             public BlackJackCommands(ICurrencyService cs, DbService db,
-                GamblingConfigService config) : base(config)
+                GamblingConfigService gamblingConf) : base(gamblingConf) 
             {
                 _cs = cs;
                 _db = db;

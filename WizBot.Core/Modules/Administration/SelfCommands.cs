@@ -41,7 +41,7 @@ namespace WizBot.Modules.Administration
                     return;
 
                 var guser = (IGuildUser)ctx.User;
-                var cmd = new StartupCommand()
+                var cmd = new AutoCommand()
                 {
                     CommandText = cmdText,
                     ChannelId = ctx.Channel.Id,
@@ -77,7 +77,7 @@ namespace WizBot.Modules.Administration
                     return;
 
                 var guser = (IGuildUser)ctx.User;
-                var cmd = new StartupCommand()
+                var cmd = new AutoCommand()
                 {
                     CommandText = cmdText,
                     ChannelId = ctx.Channel.Id,
@@ -102,19 +102,21 @@ namespace WizBot.Modules.Administration
                     return;
 
                 var scmds = _service.GetStartupCommands()
-                    .Where(x => x.Interval <= 0)
                     .Skip(page * 5)
-                    .Take(5);
-                if (!scmds.Any())
+                    .Take(5)
+                    .ToList();
+                
+                if (scmds.Count == 0)
                 {
                     await ReplyErrorLocalizedAsync("startcmdlist_none").ConfigureAwait(false);
                 }
                 else
                 {
+                    var i = 0;
                     await ctx.Channel.SendConfirmAsync(
                         text: string.Join("\n", scmds
                         .Select(x => $@"```css
-#{x.Index}
+#{++i}
 [{GetText("server")}]: {(x.GuildId.HasValue ? $"{x.GuildName} #{x.GuildId}" : "-")}
 [{GetText("channel")}]: {x.ChannelName} #{x.ChannelId}
 [{GetText("command_text")}]: {x.CommandText}```")),
@@ -127,25 +129,26 @@ namespace WizBot.Modules.Administration
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [OwnerOnly]
-            public async Task AutoCommands(int page = 1)
+            public async Task AutoCommandsList(int page = 1)
             {
                 if (page-- < 1)
                     return;
 
-                var scmds = _service.GetStartupCommands()
-                    .Where(x => x.Interval >= 5)
+                var scmds = _service.GetAutoCommands()
                     .Skip(page * 5)
-                    .Take(5);
+                    .Take(5)
+                    .ToList();
                 if (!scmds.Any())
                 {
                     await ReplyErrorLocalizedAsync("autocmdlist_none").ConfigureAwait(false);
                 }
                 else
                 {
+                    var i = 0;
                     await ctx.Channel.SendConfirmAsync(
                         text: string.Join("\n", scmds
                         .Select(x => $@"```css
-#{x.Index}
+#{++i}
 [{GetText("server")}]: {(x.GuildId.HasValue ? $"{x.GuildName} #{x.GuildId}" : "-")}
 [{GetText("channel")}]: {x.ChannelName} #{x.ChannelId}
 {GetIntervalText(x.Interval)}
@@ -178,6 +181,21 @@ namespace WizBot.Modules.Administration
 
                 await Task.Delay(miliseconds).ConfigureAwait(false);
             }
+            
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [UserPerm(GuildPerm.Administrator)]
+            [OwnerOnly]
+            public async Task AutoCommandRemove([Leftover] int index)
+            {
+                if (!_service.RemoveAutoCommand(--index, out _))
+                {
+                    await ReplyErrorLocalizedAsync("acrm_fail").ConfigureAwait(false);
+                    return;
+                }
+                
+                await ctx.OkAsync();
+            }
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
@@ -185,7 +203,7 @@ namespace WizBot.Modules.Administration
             [OwnerOnly]
             public async Task StartupCommandRemove([Leftover] int index)
             {
-                if (!_service.RemoveStartupCommand(index, out _))
+                if (!_service.RemoveStartupCommand(--index, out _))
                     await ReplyErrorLocalizedAsync("scrm_fail").ConfigureAwait(false);
                 else
                     await ReplyConfirmLocalizedAsync("scrm").ConfigureAwait(false);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Discord.WebSocket;
@@ -10,84 +11,72 @@ using WizBot.Modules.Music.Services;
 using Discord;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using WizBot.Core.Services.Impl;
 
 namespace WizBot.Modules.Administration.Services
 {
     public class PlayingRotateService : INService
     {
         private readonly Timer _t;
-        private readonly DiscordSocketClient _client;
         private readonly Logger _log;
-        private readonly IDataCache _cache;
-        private readonly SelfService _selfService;
         private readonly BotSettingsService _bss;
         private readonly Replacer _rep;
         private readonly DbService _db;
-        private readonly IBotConfigProvider _bcp;
-
-        public BotConfig BotConfig => _bcp.BotConfig;
+        private readonly WizBot _bot;
 
         private class TimerState
         {
             public int Index { get; set; }
         }
 
-        public PlayingRotateService(DiscordSocketClient client, IBotConfigProvider bcp,
-            DbService db, IDataCache cache, WizBot bot, MusicService music, SelfService selfService,
-            BotSettingsService bss)
+        public PlayingRotateService(DiscordSocketClient client, DbService db, WizBot bot,
+            MusicService music, BotSettingsService bss)
         {
-            _client = client;
-            _bcp = bcp;
             _db = db;
+            _bot = bot;
             _log = LogManager.GetCurrentClassLogger();
-            _cache = cache;
-            _selfService = selfService;
             _bss = bss;
 
             if (client.ShardId == 0)
             {
-
                 _rep = new ReplacementBuilder()
                     .WithClient(client)
                     .WithMusic(music)
                     .Build();
 
-                _t = new Timer(async (objState) =>
+                _t = new Timer(RotatingStatuses, new TimerState(), TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1));
+            }
+        }
+
+        private async void RotatingStatuses(object objState)
+        {
+            try
+            {
+                var state = (TimerState) objState;
+
+                if (!_bss.Data.RotateStatuses) return;
+
+                IReadOnlyList<RotatingPlayingStatus> rotatingStatuses;
+                using (var uow = _db.GetDbContext())
                 {
-                    try
-                    {
-                        var state = (TimerState)objState;
+                    rotatingStatuses = uow._context.RotatingStatus
+                        .AsNoTracking()
+                        .OrderBy(x => x.Id)
+                        .ToList();
+                }
 
-                        if (!_bss.Data.RotateStatuses)
-                            return;
+                if (rotatingStatuses.Count == 0)
+                    return;
 
-                        if (state.Index >= BotConfig.RotatingStatusMessages.Count)
-                            state.Index = 0;
+                var playingStatus = state.Index >= rotatingStatuses.Count
+                    ? rotatingStatuses[state.Index = 0]
+                    : rotatingStatuses[state.Index++];
 
-                        if (!BotConfig.RotatingStatusMessages.Any())
-                            return;
-                        var msg = BotConfig.RotatingStatusMessages[state.Index++];
-                        var status = msg.Status;
-                        if (string.IsNullOrWhiteSpace(status))
-                            return;
-
-                        status = _rep.Replace(status);
-
-                        try
-                        {
-                            await bot.SetGameAsync(status, msg.Type).ConfigureAwait(false);
-                        }
-                        catch (Exception ex)
-                        {
-                            _log.Warn(ex);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        _log.Warn("Rotating playing status errored.\n" + ex);
-                    }
-                }, new TimerState(), TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1));
+                var statusText = _rep.Replace(playingStatus.Status);
+                await _bot.SetGameAsync(statusText, playingStatus.Type);
+            }
+            catch (Exception ex)
+            {
+                _log.Warn("Rotating playing status errored.\n" + ex);
             }
         }
 
@@ -96,43 +85,40 @@ namespace WizBot.Modules.Administration.Services
             if (index < 0)
                 throw new ArgumentOutOfRangeException(nameof(index));
 
-            string msg;
-            using (var uow = _db.GetDbContext())
-            {
-                var config = uow.BotConfig.GetOrCreate(set => set.Include(x => x.RotatingStatusMessages));
+            using var uow = _db.GetDbContext();
+            var toRemove = await uow._context.RotatingStatus
+                .AsQueryable()
+                .AsNoTracking()
+                .Skip(index)
+                .FirstOrDefaultAsync();
 
-                if (index >= config.RotatingStatusMessages.Count)
-                    return null;
-                msg = config.RotatingStatusMessages[index].Status;
-                var remove = config.RotatingStatusMessages[index];
-                uow._context.Remove(remove);
-                _bcp.BotConfig.RotatingStatusMessages = config.RotatingStatusMessages;
-                await uow.SaveChangesAsync();
-            }
+            if (toRemove is null)
+                return null;
 
-            return msg;
+            uow._context.Remove(toRemove);
+            await uow.SaveChangesAsync();
+            return toRemove.Status;
         }
 
         public async Task AddPlaying(ActivityType t, string status)
         {
-            using (var uow = _db.GetDbContext())
-            {
-                var config = uow.BotConfig.GetOrCreate(set => set.Include(x => x.RotatingStatusMessages));
-                var toAdd = new PlayingStatus { Status = status, Type = t };
-                config.RotatingStatusMessages.Add(toAdd);
-                _bcp.BotConfig.RotatingStatusMessages = config.RotatingStatusMessages;
-                await uow.SaveChangesAsync();
-            }
+            using var uow = _db.GetDbContext();
+            var toAdd = new RotatingPlayingStatus {Status = status, Type = t};
+            uow._context.Add(toAdd);
+            await uow.SaveChangesAsync();
         }
 
         public bool ToggleRotatePlaying()
         {
             var enabled = false;
-            _bss.ModifyConfig(bs =>
-            {
-                enabled = bs.RotateStatuses = !bs.RotateStatuses;
-            });
+            _bss.ModifyConfig(bs => { enabled = bs.RotateStatuses = !bs.RotateStatuses; });
             return enabled;
+        }
+
+        public IReadOnlyList<RotatingPlayingStatus> GetRotatingStatuses()
+        {
+            using var uow = _db.GetDbContext();
+            return uow._context.RotatingStatus.AsNoTracking().ToList();
         }
     }
 }

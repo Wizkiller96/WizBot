@@ -25,17 +25,15 @@ namespace WizBot.Modules.Gambling.Services
 
         private readonly DbService _db;
         private readonly ICurrencyService _cs;
-        private readonly IBotConfigProvider _bc;
         private readonly IDataCache _cache;
         private readonly GamblingConfigService _gss;
         private readonly Logger _log;
 
-        public WaifuService(DbService db, ICurrencyService cs, IBotConfigProvider bc, IDataCache cache,
+        public WaifuService(DbService db, ICurrencyService cs, IDataCache cache,
             GamblingConfigService gss)
         {
             _db = db;
             _cs = cs;
-            _bc = bc;
             _cache = cache;
             _gss = gss;
             _log = LogManager.GetCurrentClassLogger();

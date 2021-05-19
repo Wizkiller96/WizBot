@@ -19,17 +19,12 @@ namespace WizBot.Modules.Utility.Services
                                 RegexOptions.Compiled | RegexOptions.Multiline);
         
         private readonly Logger _log;
-        private readonly IBotConfigProvider _config;
         private readonly DiscordSocketClient _client;
         private readonly DbService _db;
         private readonly IBotCredentials _creds;
 
-        public RemindService(DiscordSocketClient client,
-            IBotConfigProvider config,
-            DbService db,
-            IBotCredentials creds)
+        public RemindService(DiscordSocketClient client, DbService db, IBotCredentials creds)
         {
-            _config = config;
             _client = client;
             _log = LogManager.GetCurrentClassLogger();
             _db = db;

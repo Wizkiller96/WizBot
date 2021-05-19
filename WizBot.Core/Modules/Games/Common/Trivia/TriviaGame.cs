@@ -12,6 +12,7 @@ using WizBot.Extensions;
 using WizBot.Core.Services;
 using NLog;
 using WizBot.Core.Modules.Games.Common.Trivia;
+using WizBot.Modules.Games.Services;
 
 namespace WizBot.Modules.Games.Common.Trivia
 {
@@ -22,7 +23,7 @@ namespace WizBot.Modules.Games.Common.Trivia
         private readonly IDataCache _cache;
         private readonly IBotStrings _strings;
         private readonly DiscordSocketClient _client;
-        private readonly IBotConfigProvider _bc;
+        private readonly GamesConfig _config;
         private readonly ICurrencyService _cs;
         private readonly TriviaOptions _options;
 
@@ -43,7 +44,7 @@ namespace WizBot.Modules.Games.Common.Trivia
         private int _timeoutCount = 0;
         private readonly string _quitCommand;
 
-        public TriviaGame(IBotStrings strings, DiscordSocketClient client, IBotConfigProvider bc,
+        public TriviaGame(IBotStrings strings, DiscordSocketClient client, GamesConfig config,
             IDataCache cache, ICurrencyService cs, IGuild guild, ITextChannel channel,
             TriviaOptions options, string quitCommand)
         {
@@ -52,7 +53,7 @@ namespace WizBot.Modules.Games.Common.Trivia
             _questionPool = new TriviaQuestionPool(_cache);
             _strings = strings;
             _client = client;
-            _bc = bc;
+            _config = config;
             _cs = cs;
             _options = options;
             _quitCommand = quitCommand;
@@ -93,7 +94,7 @@ namespace WizBot.Modules.Games.Common.Trivia
 
                     if (showHowToQuit)
                         questionEmbed.WithFooter(GetText("trivia_quit", _quitCommand));
-
+                    
                     if (Uri.IsWellFormedUriString(CurrentQuestion.ImageUrl, UriKind.Absolute))
                         questionEmbed.WithImageUrl(CurrentQuestion.ImageUrl);
 
@@ -238,7 +239,7 @@ namespace WizBot.Modules.Games.Common.Trivia
                         {
                             // ignored
                         }
-                        var reward = _bc.BotConfig.TriviaCurrencyReward;
+                        var reward = _config.Trivia.CurrencyReward;
                         if (reward > 0)
                             await _cs.AddAsync(guildUser, "Won trivia", reward, true).ConfigureAwait(false);
                         return;

@@ -11,6 +11,7 @@ using WizBot.Modules.Administration.Services;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using WizBot.Modules.Permissions.Services;
 
 namespace WizBot.Modules.Administration
 {
@@ -20,19 +21,19 @@ namespace WizBot.Modules.Administration
         public class UserPunishCommands : WizBotSubmodule<UserPunishService>
         {
             private readonly MuteService _mute;
-            private readonly DiscordSocketClient _client;
+            private readonly BlacklistService _blacklistService;
 
-            public UserPunishCommands(MuteService mute, DiscordSocketClient client)
+            public UserPunishCommands(MuteService mute, BlacklistService blacklistService)
             {
-                _client = client;
                 _mute = mute;
+                _blacklistService = blacklistService;
             }
 
             private async Task<bool> CheckRoleHierarchy(IGuildUser target)
             {
-                var curUser = ((SocketGuild)ctx.Guild).CurrentUser;
+                var curUser = ((SocketGuild) ctx.Guild).CurrentUser;
                 var ownerId = Context.Guild.OwnerId;
-                var modMaxRole = ((IGuildUser)ctx.User).GetRoles().Max(r => r.Position);
+                var modMaxRole = ((IGuildUser) ctx.User).GetRoles().Max(r => r.Position);
                 var targetMaxRole = target.GetRoles().Max(r => r.Position);
                 var botMaxRole = curUser.GetRoles().Max(r => r.Position);
                 // bot can't punish a user who is higher in the hierarchy. Discord will return 403
@@ -44,7 +45,7 @@ namespace WizBot.Modules.Administration
                     await ReplyErrorLocalizedAsync("hierarchy");
                     return false;
                 }
-
+                
                 return true;
             }
 
@@ -53,14 +54,6 @@ namespace WizBot.Modules.Administration
             [UserPerm(GuildPerm.BanMembers)]
             public async Task Warn(IGuildUser user, [Leftover] string reason = null)
             {
-                if (user.Id == _client.CurrentUser.Id)
-                {
-                    await Context.Channel.EmbedAsync(new EmbedBuilder()
-                    .WithDescription("Sorry but I can't warn myself.")
-                    .WithErrorColor()).ConfigureAwait(false);
-                    return;
-                }
-
                 if (!await CheckRoleHierarchy(user))
                     return;
 
@@ -68,9 +61,9 @@ namespace WizBot.Modules.Administration
                 try
                 {
                     await (await user.GetOrCreateDMChannelAsync().ConfigureAwait(false)).EmbedAsync(new EmbedBuilder().WithErrorColor()
-                        .WithDescription(GetText("warned_on", ctx.Guild.ToString()))
-                        .AddField(efb => efb.WithName(GetText("moderator")).WithValue(ctx.User.ToString()))
-                        .AddField(efb => efb.WithName(GetText("reason")).WithValue(reason ?? "-")))
+                                     .WithDescription(GetText("warned_on", ctx.Guild.ToString()))
+                                     .AddField(efb => efb.WithName(GetText("moderator")).WithValue(ctx.User.ToString()))
+                                     .AddField(efb => efb.WithName(GetText("reason")).WithValue(reason ?? "-")))
                         .ConfigureAwait(false);
                 }
                 catch
@@ -89,14 +82,13 @@ namespace WizBot.Modules.Administration
                     var errorEmbed = new EmbedBuilder()
                         .WithErrorColor()
                         .WithDescription(GetText("cant_apply_punishment"));
-
+                    
                     if (dmFailed)
                     {
                         errorEmbed.WithFooter("⚠️ " + GetText("unable_to_dm_user"));
                     }
-
+                    
                     await ctx.Channel.EmbedAsync(errorEmbed);
-
                     return;
                 }
 
@@ -146,7 +138,7 @@ namespace WizBot.Modules.Administration
                 await Context.Channel.TriggerTypingAsync().ConfigureAwait(false);
 
                 await _service.WarnExpireAsync(ctx.Guild.Id, days, opts.Delete).ConfigureAwait(false);
-                if (days == 0)
+                if(days == 0)
                 {
                     await ReplyConfirmLocalizedAsync("warn_expire_reset").ConfigureAwait(false);
                     return;
@@ -397,9 +389,10 @@ namespace WizBot.Modules.Administration
             {
                 if (time.Time > TimeSpan.FromDays(49))
                     return;
-                // if guild user is null, then that means that user is not in the guild
-                var guildUser = await Context.Guild.GetUserAsync(user.Id).ConfigureAwait(false);
 
+                // if guild user is null, then that means that user is not in the guild
+                var guildUser = await Context.Guild.GetUserAsync(user.Id).ConfigureAwait(false); 
+                
                 if (ctx.User.Id != Context.Guild.OwnerId && (guildUser != null && guildUser.GetRoles().Select(r => r.Position).Max() >= ((IGuildUser)ctx.User).GetRoles().Select(r => r.Position).Max()))
                 {
                     await ReplyErrorLocalizedAsync("hierarchy").ConfigureAwait(false);
@@ -445,7 +438,7 @@ namespace WizBot.Modules.Administration
                 if (user is null)
                 {
                     await ctx.Guild.AddBanAsync(userId, 7, ctx.User.ToString() + " | " + msg);
-
+                    
                     await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                             .WithTitle("⛔️ " + GetText("banned_user"))
                             .AddField(efb => efb.WithName("ID").WithValue(userId.ToString()).WithIsInline(true)))
@@ -495,7 +488,7 @@ namespace WizBot.Modules.Administration
                 {
                     toSend.WithFooter("⚠️ " + GetText("unable_to_dm_user"));
                 }
-
+                
                 await ctx.Channel.EmbedAsync(toSend)
                     .ConfigureAwait(false);
             }
@@ -518,7 +511,7 @@ namespace WizBot.Modules.Administration
                     await Context.Channel.SendConfirmAsync(template);
                     return;
                 }
-
+                
                 _service.SetBanTemplate(Context.Guild.Id, message);
                 await ctx.OkAsync();
             }
@@ -540,7 +533,7 @@ namespace WizBot.Modules.Administration
             [Priority(0)]
             public Task BanMessageTest([Leftover] string reason = null)
                 => InternalBanMessageTest(reason, null);
-
+            
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.BanMembers)]
@@ -548,7 +541,7 @@ namespace WizBot.Modules.Administration
             [Priority(1)]
             public Task BanMessageTest(StoopidTime duration, [Leftover] string reason = null)
                 => InternalBanMessageTest(reason, duration.Time);
-
+            
             private async Task InternalBanMessageTest(string reason, TimeSpan? duration)
             {
                 var dmChannel = await ctx.User.GetOrCreateDMChannelAsync();
@@ -574,7 +567,7 @@ namespace WizBot.Modules.Administration
                         await ReplyErrorLocalizedAsync("unable_to_dm_user");
                         return;
                     }
-                    
+
                     await Context.OkAsync();
                 }
             }
@@ -643,7 +636,7 @@ namespace WizBot.Modules.Administration
 
                 await SoftbanInternal(user);
             }
-
+            
             private async Task SoftbanInternal(IGuildUser user, [Leftover] string msg = null)
             {
                 if (!await CheckRoleHierarchy(user))
@@ -655,7 +648,7 @@ namespace WizBot.Modules.Administration
                 {
                     await user.SendErrorAsync(GetText("sbdm", Format.Bold(ctx.Guild.Name), msg)).ConfigureAwait(false);
                 }
-                catch
+                    catch
                 {
                     dmFailed = true;
                 }
@@ -668,12 +661,12 @@ namespace WizBot.Modules.Administration
                     .WithTitle("☣ " + GetText("sb_user"))
                     .AddField(efb => efb.WithName(GetText("username")).WithValue(user.ToString()).WithIsInline(true))
                     .AddField(efb => efb.WithName("ID").WithValue(user.Id.ToString()).WithIsInline(true));
-
+                
                 if (dmFailed)
                 {
                     toSend.WithFooter("⚠️ " + GetText("unable_to_dm_user"));
                 }
-
+                
                 await ctx.Channel.EmbedAsync(toSend)
                     .ConfigureAwait(false);
             }
@@ -696,7 +689,7 @@ namespace WizBot.Modules.Administration
                 var user = await ((DiscordSocketClient)Context.Client).Rest.GetGuildUserAsync(Context.Guild.Id, userId);
                 if (user is null)
                     return;
-
+                
                 await KickInternal(user, msg);
             }
 
@@ -713,12 +706,12 @@ namespace WizBot.Modules.Administration
                         .ConfigureAwait(false);
                 }
                 catch
-                {
+                {                        
                     dmFailed = true;
                 }
-
+            
                 await user.KickAsync(ctx.User.ToString() + " | " + msg).ConfigureAwait(false);
-
+                
                 var toSend = new EmbedBuilder().WithOkColor()
                     .WithTitle(GetText("kicked_user"))
                     .AddField(efb => efb.WithName(GetText("username")).WithValue(user.ToString()).WithIsInline(true))
@@ -728,7 +721,7 @@ namespace WizBot.Modules.Administration
                 {
                     toSend.WithFooter("⚠️ " + GetText("unable_to_dm_user"));
                 }
-
+                
                 await ctx.Channel.EmbedAsync(toSend)
                     .ConfigureAwait(false);
             }
@@ -754,8 +747,6 @@ namespace WizBot.Modules.Administration
                     .WithDescription(GetText("mass_kill_in_progress", bans.Count()))
                     .AddField(GetText("invalid", missing), missStr)
                     .WithOkColor());
-
-                Bc.Reload();
 
                 //do the banning
                 await Task.WhenAll(bans

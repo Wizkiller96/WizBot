@@ -69,10 +69,15 @@ namespace WizBot.Modules.CustomReactions.Extensions
                 else if (pos == WordPosition.Middle)
                     substringIndex += ctx.Content.IndexOf(resolvedTrigger, StringComparison.InvariantCulture);
             }
+            
+            var canMentionEveryone = (ctx.Author as IGuildUser)?.GuildPermissions.MentionEveryone ?? true;
 
             var rep = new ReplacementBuilder()
                 .WithDefault(ctx.Author, ctx.Channel, (ctx.Channel as ITextChannel)?.Guild as SocketGuild, client)
-                .WithOverride("%target%", () => ctx.Content.Substring(substringIndex).Trim())
+                .WithOverride("%target%", () =>
+                    canMentionEveryone
+                        ? ctx.Content.Substring(substringIndex).Trim()
+                        : ctx.Content.Substring(substringIndex).Trim().SanitizeMentions(true))
                 .Build();
 
             str = rep.Replace(str);
@@ -114,7 +119,7 @@ namespace WizBot.Modules.CustomReactions.Extensions
                     .WithDefault(ctx.Author, ctx.Channel, (ctx.Channel as ITextChannel)?.Guild as SocketGuild, client)
                     .WithOverride("%target%", () => canMentionEveryone
                         ? ctx.Content.Substring(substringIndex).Trim()
-                        : ctx.Content.Substring(substringIndex).Trim().SanitizeMentions())
+                        : ctx.Content.Substring(substringIndex).Trim().SanitizeMentions(true))
                     .Build();
 
                 rep.Replace(crembed);

@@ -12,7 +12,6 @@ namespace WizBot.Core.Services.Database
         IGuildConfigRepository GuildConfigs { get; }
         IReminderRepository Reminders { get; }
         ISelfAssignedRolesRepository SelfAssignedRoles { get; }
-        IBotConfigRepository BotConfig { get; }
         ICustomReactionRepository CustomReactions { get; }
         IMusicPlaylistRepository MusicPlaylists { get; }
         IWaifuRepository Waifus { get; }

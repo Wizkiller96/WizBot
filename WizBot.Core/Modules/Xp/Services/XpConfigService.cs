@@ -10,7 +10,7 @@ namespace WizBot.Modules.Xp.Services
         private const string FilePath = "data/xp.yml";
         private static TypedKey<XpConfig> changeKey = new TypedKey<XpConfig>("config.xp.updated");
 
-        public XpConfigService(ISettingsSeria serializer, IPubSub pubSub) : base(FilePath, serializer, pubSub,
+        public XpConfigService(IConfigSeria serializer, IPubSub pubSub) : base(FilePath, serializer, pubSub,
             changeKey)
         {
             AddParsedProp("txt.cooldown", conf => conf.MessageXpCooldown, int.TryParse,

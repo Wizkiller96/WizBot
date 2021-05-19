@@ -18,17 +18,15 @@ namespace WizBot.Modules.Help.Services
 {
     public class HelpService : ILateExecutor, INService
     {
-        private readonly IBotConfigProvider _bc;
         private readonly CommandHandler _ch;
         private readonly IBotStrings _strings;
         private readonly Logger _log;
         private readonly DiscordPermOverrideService _dpos;
         private readonly BotSettingsService _bss;
 
-        public HelpService(IBotConfigProvider bc, CommandHandler ch, IBotStrings strings,
+        public HelpService(CommandHandler ch, IBotStrings strings,
             DiscordPermOverrideService dpos, BotSettingsService bss)
         {
-            _bc = bc;
             _ch = ch;
             _strings = strings;
             _dpos = dpos;

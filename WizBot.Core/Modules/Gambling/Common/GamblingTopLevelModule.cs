@@ -14,7 +14,7 @@ namespace WizBot.Core.Modules.Gambling.Common
         protected string CurrencySign => _config.Currency.Sign;
         protected string CurrencyName => _config.Currency.Name;
 
-        protected GamblingModule(GamblingConfigService gambService, bool isTopLevel = true) : base(isTopLevel)
+        protected GamblingModule(GamblingConfigService gambService)
         {
             _lazyConfig = new Lazy<GamblingConfig>(() => gambService.Data);
         }
@@ -61,7 +61,7 @@ namespace WizBot.Core.Modules.Gambling.Common
 
     public abstract class GamblingSubmodule<TService> : GamblingModule<TService> where TService : INService
     {
-        protected GamblingSubmodule(GamblingConfigService configService) : base(configService, false)
+        protected GamblingSubmodule(GamblingConfigService gamblingConfService) : base(gamblingConfService)
         {
         }
     }

@@ -211,8 +211,6 @@ remindlist:
 - remindlist
 - remindl
 - remindlst
-remindtemplate:
-- remindtemplate
 serverinfo:
 - serverinfo
 - sinfo
@@ -860,8 +858,6 @@ unsetmusicchannel:
 - usmch
 imagesreload:
 - imagesreload
-botconfigreload:
-- botconfigreload
 stringsreload:
 - stringsreload
 shardstats:
@@ -912,21 +908,26 @@ warn:
 - warn
 startupcommandadd:
 - scadd
+- startcmdadd
 autocommandadd:
+- acadd
 - autocmdadd
 startupcommandremove:
 - scrm
+- startcmdrm
+autocommandremove:
+- acrm
 - autocmdrm
-- autorm
 startupcommandsclear:
 - scclear
 - scclr
 startupcommandslist:
 - sclist
-autocommands:
-- autocommands
-- autocmds
+- startcmdlist
+autocommandslist:
+- aclist
 - autolist
+- autocommands
 - autocmdlist
 unban:
 - unban

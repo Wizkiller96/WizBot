@@ -1,4 +1,4 @@
-﻿using WizBot.Core.Services.Database.Models;
+﻿using WizBot.Modules.Games.Common;
 
 namespace WizBot.Modules.Gambling.Common.AnimalRacing
 {

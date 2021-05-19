@@ -16,7 +16,7 @@ namespace WizBot.Modules.Gambling
         {
             public enum Mixed { Mixed }
 
-            public CurrencyRaffleCommands(GamblingConfigService configService) : base(configService)
+            public CurrencyRaffleCommands(GamblingConfigService gamblingConfService) : base(gamblingConfService)
             {
             }
 

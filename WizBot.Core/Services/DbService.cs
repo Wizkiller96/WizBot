@@ -38,7 +38,6 @@ namespace WizBot.Core.Services
                     mContext.Dispose();
                 }
                 context.Database.ExecuteSqlRaw("PRAGMA journal_mode=WAL");
-                context.EnsureSeedData();
                 context.SaveChanges();
             }
         }

@@ -13,15 +13,13 @@ namespace WizBot.Core.Services
 {
     public class CurrencyService : ICurrencyService
     {
-        private readonly IBotConfigProvider _config;
         private readonly DbService _db;
         private readonly GamblingConfigService _gss;
         private readonly IUser _bot;
 
-        public CurrencyService(IBotConfigProvider config, DbService db, DiscordSocketClient c,
+        public CurrencyService(DbService db, DiscordSocketClient c,
             GamblingConfigService gss)
         {
-            _config = config;
             _db = db;
             _gss = gss;
             _bot = c.CurrentUser;

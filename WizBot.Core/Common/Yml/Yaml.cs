@@ -9,6 +9,7 @@ namespace WizBot.Common.Yml
             .WithEmissionPhaseObjectGraphVisitor(args => new CommentsObjectGraphVisitor(args.InnerVisitor))
             .WithEventEmitter(args => new MultilineScalarFlowStyleEmitter(args))
             .WithNamingConvention(YamlDotNet.Serialization.NamingConventions.CamelCaseNamingConvention.Instance)
+            .WithIndentedSequences()
             .WithTypeConverter(new Rgba32Converter())
             .WithTypeConverter(new CultureInfoConverter())
             .WithTypeConverter(new UriConverter())

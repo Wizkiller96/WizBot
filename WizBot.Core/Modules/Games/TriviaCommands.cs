@@ -19,12 +19,15 @@ namespace WizBot.Modules.Games
         {
             private readonly IDataCache _cache;
             private readonly ICurrencyService _cs;
+            private readonly GamesConfigService _gamesConfig;
             private readonly DiscordSocketClient _client;
 
-            public TriviaCommands(DiscordSocketClient client, IDataCache cache, ICurrencyService cs)
+            public TriviaCommands(DiscordSocketClient client, IDataCache cache, ICurrencyService cs,
+                GamesConfigService gamesConfig)
             {
                 _cache = cache;
                 _cs = cs;
+                _gamesConfig = gamesConfig;
                 _client = client;
             }
 
@@ -41,11 +44,12 @@ namespace WizBot.Modules.Games
 
                 var (opts, _) = OptionsParser.ParseFrom(new TriviaOptions(), args);
 
-                if (Bc.BotConfig.MinimumTriviaWinReq > 0 && Bc.BotConfig.MinimumTriviaWinReq > opts.WinRequirement)
+                var config = _gamesConfig.Data;
+                if (config.Trivia.MinimumWinReq > 0 && config.Trivia.MinimumWinReq > opts.WinRequirement)
                 {
                     return;
                 }
-                var trivia = new TriviaGame(Strings, _client, Bc, _cache, _cs, channel.Guild, channel, opts, Prefix + "tq");
+                var trivia = new TriviaGame(Strings, _client, config, _cache, _cs, channel.Guild, channel, opts, Prefix + "tq");
                 if (_service.RunningTrivias.TryAdd(channel.Guild.Id, trivia))
                 {
                     try

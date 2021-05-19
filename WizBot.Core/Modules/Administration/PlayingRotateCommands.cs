@@ -35,13 +35,17 @@ namespace WizBot.Modules.Administration
             [OwnerOnly]
             public async Task ListPlaying()
             {
-                if (!_service.BotConfig.RotatingStatusMessages.Any())
+                var statuses = _service.GetRotatingStatuses();
+
+                if (!statuses.Any())
+                {
                     await ReplyErrorLocalizedAsync("ropl_not_set").ConfigureAwait(false);
+                }
                 else
                 {
                     var i = 1;
                     await ReplyConfirmLocalizedAsync("ropl_list",
-                            string.Join("\n\t", _service.BotConfig.RotatingStatusMessages.Select(rs => $"`{i++}.` *{rs.Type}* {rs.Status}")))
+                            string.Join("\n\t", statuses.Select(rs => $"`{i++}.` *{rs.Type}* {rs.Status}")))
                         .ConfigureAwait(false);
                 }
 

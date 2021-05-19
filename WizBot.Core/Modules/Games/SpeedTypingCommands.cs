@@ -104,19 +104,19 @@ namespace WizBot.Modules.Games
             [AdminOnly]
             public async Task Typedel(int index)
             {
-                var channel = (ITextChannel)ctx.Channel;
-
-                index -= 1;
-                if (index < 0 || index >= _games.TypingArticles.Count)
-                    return;
-
-                var removed = _games.TypingArticles[index];
-                _games.TypingArticles.RemoveAt(index);
+                var removed = _service.RemoveTypingArticle(--index);
                 
-                File.WriteAllText(_games.TypingArticlesPath, JsonConvert.SerializeObject(_games.TypingArticles));
+                if (removed is null)
+                {
+                    return;
+                }
 
-                await channel.SendConfirmAsync($"`Removed typing article:` #{index + 1} - {removed.Text.TrimTo(50)}")
-                             .ConfigureAwait(false);
+                var embed = new EmbedBuilder()
+                    .WithTitle($"Removed typing article #{index + 1}")
+                    .WithDescription(removed.Text.TrimTo(50))
+                    .WithOkColor();
+
+                await Context.Channel.EmbedAsync(embed);
             }
         }
     }

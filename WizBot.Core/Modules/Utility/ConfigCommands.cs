@@ -19,10 +19,10 @@ namespace WizBot.Modules.Utility
         {
             private readonly BotSettingsService _bss;
             private readonly SelfService _selfService;
+            
+            private readonly IEnumerable<IConfigService> _settingServices;
 
-            private readonly IEnumerable<ISettingsService> _settingServices;
-
-            public ConfigCommands(BotSettingsService bss, SelfService selfService, IEnumerable<ISettingsService> settingServices)
+            public ConfigCommands(BotSettingsService bss, SelfService selfService, IEnumerable<IConfigService> settingServices)
             {
                 _settingServices = settingServices;
                 _bss = bss;
@@ -31,99 +31,14 @@ namespace WizBot.Modules.Utility
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
-            public async Task BotConfigEdit()
-            {
-                var names = Enum.GetNames(typeof(BotConfigEditType))
-                    .ToList();
-                var valuesSb = new StringBuilder();
-                foreach (var name in names)
-                {
-                    var value = Bc.GetValue(name);
-                    if (name != "CurrencySign")
-                        value = value.TrimTo(30);
-                    valuesSb.AppendLine(value.Replace("\n", ""));
-                }
-
-                var propKeys = _bss.GetSettableProps();
-                names.AddRange(propKeys);
-
-                foreach (var key in propKeys)
-                {
-                    var value = _bss.GetSetting(key);
-                    valuesSb.AppendLine(value?.TrimTo(30).Replace("\n", "") ?? "-");
-                }
-
-                var embed = new EmbedBuilder()
-                    .WithTitle("Bot Config")
-                    .WithOkColor()
-                    .AddField(fb => fb.WithName("Names").WithValue(string.Join("\n", names)).WithIsInline(true))
-                    .AddField(fb => fb.WithName("Values").WithValue(valuesSb.ToString()).WithIsInline(true));
-
-                await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
-            }
-
-            [WizBotCommand, Usage, Description, Aliases]
-            [Priority(1)]
-            [OwnerOnly]
-            public async Task BotConfigEdit(BotConfigEditType type, [Leftover] string newValue = null)
-            {
-                if (string.IsNullOrWhiteSpace(newValue))
-                    newValue = null;
-
-                var success = Bc.Edit(type, newValue);
-
-                if (!success)
-                    await ReplyErrorLocalizedAsync("config_edit_fail", Format.Bold(type.ToString()), Format.Bold(newValue ?? "NULL")).ConfigureAwait(false);
-                else
-                    await ReplyConfirmLocalizedAsync("config_edit_success", Format.Bold(type.ToString()), Format.Bold(newValue ?? "NULL")).ConfigureAwait(false);
-            }
+            public Task BotConfigEdit()
+                => Config("bot");
 
             [WizBotCommand, Usage, Description, Aliases]
             [Priority(0)]
             [OwnerOnly]
-            public async Task BotConfigEdit(string key, [Leftover] string newValue = null)
-            {
-                key = key.ToLowerInvariant();
-                var props = _bss.GetSettableProps();
-                if (!props.Contains(key))
-                {
-                    await ReplyErrorLocalizedAsync("setting_not_found");
-                    return;
-                }
-
-                if (string.IsNullOrWhiteSpace(newValue))
-                {
-                    var val = _bss.GetSetting(key);
-                    val = string.IsNullOrWhiteSpace(val)
-                        ? "-"
-                        : val;
-
-                    var eb = new EmbedBuilder()
-                        .WithTitle($"⚙️ {key}")
-                        .WithDescription(Format.Sanitize(val))
-                        .WithOkColor();
-
-                    await Context.Channel.EmbedAsync(eb);
-                    // print the value
-                    return;
-                }
-
-                var success = _bss.SetSetting(key, newValue);
-
-                if (!success)
-                    await ReplyErrorLocalizedAsync("config_edit_fail", Format.Bold(key.ToString()), Format.Bold(newValue ?? "NULL")).ConfigureAwait(false);
-                else
-                    await ReplyConfirmLocalizedAsync("config_edit_success", Format.Bold(key.ToString()), Format.Bold(newValue ?? "NULL")).ConfigureAwait(false);
-            }
-
-            [WizBotCommand, Usage, Description, Aliases]
-            [OwnerOnly]
-            public async Task BotConfigReload()
-            {
-                _bss.Reload();
-                _selfService.ReloadBotConfig();
-                await ReplyConfirmLocalizedAsync("config_reloaded", "Bot").ConfigureAwait(false);
-            }
+            public Task BotConfigEdit(string prop, [Leftover] string newValue = null)
+                => Config("bot", prop, newValue);
 
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
@@ -147,13 +62,13 @@ namespace WizBot.Modules.Utility
                 setting.Reload();
                 await ctx.OkAsync();
             }
-
+            
             [WizBotCommand, Usage, Description, Aliases]
             [OwnerOnly]
             public async Task Config(string name = null, string prop = null, [Leftover] string value = null)
             {
                 var configNames = _settingServices.Select(x => x.Name);
-
+                
                 // if name is not provided, print available configs
                 name = name?.ToLowerInvariant();
                 if (string.IsNullOrWhiteSpace(name))
@@ -200,7 +115,7 @@ namespace WizBot.Modules.Utility
                     return;
                 }
                 // if the prop is invalid -> print error and list of 
-
+                
                 var exists = propNames.Any(x => x == prop);
 
                 if (!exists)
@@ -214,7 +129,7 @@ namespace WizBot.Modules.Utility
                     await ctx.Channel.EmbedAsync(propErrorEmbed);
                     return;
                 }
-
+                
                 // if prop is sent, but value is not, then we have to check
                 // if prop is valid -> 
                 if (string.IsNullOrWhiteSpace(value))
@@ -253,18 +168,18 @@ namespace WizBot.Modules.Utility
                 await ctx.OkAsync();
             }
 
-            private string GetPropsAndValuesString(ISettingsService setting, IEnumerable<string> names)
+            private string GetPropsAndValuesString(IConfigService config, IEnumerable<string> names)
             {
                 var propValues = names.Select(pr =>
                 {
-                    var val = setting.GetSetting(pr);
+                    var val = config.GetSetting(pr);
                     if (pr != "currency.sign")
                         val = val?.TrimTo(28);
                     return val?.Replace("\n", "") ?? "-";
                 });
-
+                
                 var strings = names.Zip(propValues, (name, value) =>
-                    $"{name,-25} = {value}\n");
+                    $"{name, -25} = {value}\n");
 
                 return Format.Code(string.Concat(strings), "hs");
             }

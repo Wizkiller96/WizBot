@@ -16,7 +16,7 @@ namespace WizBot.Core.Services
         private const string FilePath = "data/bot.yml";
         private static TypedKey<BotSettings> changeKey = new TypedKey<BotSettings>("config.bot.updated");
 
-        public BotSettingsService(ISettingsSeria serializer, IPubSub pubSub)
+        public BotSettingsService(IConfigSeria serializer, IPubSub pubSub)
             : base(FilePath, serializer, pubSub, changeKey)
         {
             AddParsedProp("color.ok", bs => bs.Color.Ok, Rgba32.TryParseHex, SettingPrinters.Color);

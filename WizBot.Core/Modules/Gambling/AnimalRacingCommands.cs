@@ -14,9 +14,11 @@ using WizBot.Extensions;
 using WizBot.Modules.Gambling.Common.AnimalRacing;
 using WizBot.Modules.Gambling.Common.AnimalRacing.Exceptions;
 using WizBot.Modules.Gambling.Services;
+using WizBot.Modules.Games.Services;
 
 namespace WizBot.Modules.Gambling
 {
+    // wth is this, needs full rewrite
     public partial class Gambling
     {
         [Group]
@@ -24,12 +26,14 @@ namespace WizBot.Modules.Gambling
         {
             private readonly ICurrencyService _cs;
             private readonly DiscordSocketClient _client;
+            private readonly GamesConfigService _gamesConf;
 
             public AnimalRacingCommands(ICurrencyService cs, DiscordSocketClient client,
-                GamblingConfigService config) : base(config)
+                GamblingConfigService gamblingConf, GamesConfigService gamesConf) : base(gamblingConf) 
             {
                 _cs = cs;
                 _client = client;
+                _gamesConf = gamesConf;
             }
 
             private IUserMessage raceMessage = null;
@@ -41,7 +45,7 @@ namespace WizBot.Modules.Gambling
             {
                 var (options, success) = OptionsParser.ParseFrom(new RaceOptions(), args);
 
-                var ar = new AnimalRace(options, _cs, Bc.BotConfig.RaceAnimals.Shuffle().ToArray());
+                var ar = new AnimalRace(options, _cs, _gamesConf.Data.RaceAnimals.Shuffle());
                 if (!_service.AnimalRaces.TryAdd(ctx.Guild.Id, ar))
                     return ctx.Channel.SendErrorAsync(GetText("animal_race"), GetText("animal_race_already_started"));
 
@@ -76,7 +80,7 @@ namespace WizBot.Modules.Gambling
                     {
                         return ctx.Channel.SendConfirmAsync(GetText("animal_race"),
                                             GetText("animal_race_won_money", Format.Bold(winner.Username),
-                                                winner.Animal.Icon, (race.FinishedUsers[0].Bet * (race.Users.Length - 1)) + CurrencySign));
+                                                winner.Animal.Icon, (race.FinishedUsers[0].Bet * (race.Users.Count - 1)) + CurrencySign));
                     }
                     else
                     {
@@ -97,10 +101,10 @@ namespace WizBot.Modules.Gambling
 
             private Task Ar_OnStarted(AnimalRace race)
             {
-                if (race.Users.Length == race.MaxUsers)
+                if (race.Users.Count == race.MaxUsers)
                     return ctx.Channel.SendConfirmAsync(GetText("animal_race"), GetText("animal_race_full"));
                 else
-                    return ctx.Channel.SendConfirmAsync(GetText("animal_race"), GetText("animal_race_starting_with_x", race.Users.Length));
+                    return ctx.Channel.SendConfirmAsync(GetText("animal_race"), GetText("animal_race_starting_with_x", race.Users.Count));
             }
 
             private async Task Ar_OnStateUpdate(AnimalRace race)

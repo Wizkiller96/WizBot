@@ -5,7 +5,6 @@ using WizBot.Common.Attributes;
 using WizBot.Common.TypeReaders;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
-using WizBot.Extensions;
 using WizBot.Modules.Permissions.Services;
 using System.Linq;
 using System.Threading.Tasks;
@@ -53,42 +52,24 @@ namespace WizBot.Modules.Permissions
 
             private async Task Blacklist(AddRemove action, ulong id, BlacklistType type)
             {
-                if (action == AddRemove.Add && _creds.OwnerIds.Contains(id)) 
-                {
-                    var embed = new EmbedBuilder()
-                    .WithDescription("You are not allowed to blacklist a **Bot Owner**.")
-                    .WithErrorColor();
-                    await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
+                if (action == AddRemove.Add && _creds.OwnerIds.Contains(id))
                     return;
+
+                if (action == AddRemove.Add)
+                {
+                    _service.Blacklist(type, id);
                 }
-
-                if (action == AddRemove.Rem && _creds.OwnerIds.Contains(id))
-                    return;
-
-                using (var uow = _db.GetDbContext())
+                else
                 {
-                    if (action == AddRemove.Add)
-                    {
-                        var item = new BlacklistItem { ItemId = id, Type = type };
-                        uow.BotConfig.GetOrCreate().Blacklist.Add(item);
-                    }
-                    else
-                    {
-                        var objs = uow.BotConfig
-                            .GetOrCreate(set => set.Include(x => x.Blacklist))
-                            .Blacklist
-                            .Where(bi => bi.ItemId == id && bi.Type == type);
-
-                        if (objs.Any())
-                            uow._context.Set<BlacklistItem>().RemoveRange(objs);
-                    }
-                    await uow.SaveChangesAsync();
+                    _service.UnBlacklist(type, id);
                 }
 
                 if (action == AddRemove.Add)
-                    await ReplyConfirmLocalizedAsync("blacklisted", Format.Code(type.ToString()), Format.Code(id.ToString())).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync("blacklisted", Format.Code(type.ToString()),
+                        Format.Code(id.ToString())).ConfigureAwait(false);
                 else
-                    await ReplyConfirmLocalizedAsync("unblacklisted", Format.Code(type.ToString()), Format.Code(id.ToString())).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync("unblacklisted", Format.Code(type.ToString()),
+                        Format.Code(id.ToString())).ConfigureAwait(false);
             }
         }
     }

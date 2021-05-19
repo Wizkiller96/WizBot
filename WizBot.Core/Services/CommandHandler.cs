@@ -54,16 +54,14 @@ namespace WizBot.Core.Services
         public ConcurrentHashSet<ulong> UsersOnShortCooldown { get; } = new ConcurrentHashSet<ulong>();
         private readonly Timer _clearUsersOnShortCooldown;
 
-        public CommandHandler(DiscordSocketClient client, DbService db,
-            IBotConfigProvider bcp, CommandService commandService, BotSettingsService bss,
-            IBotCredentials credentials, WizBot bot, IServiceProvider services)
+        public CommandHandler(DiscordSocketClient client, DbService db, CommandService commandService,
+            BotSettingsService bss, WizBot bot, IServiceProvider services)
         {
             _client = client;
             _commandService = commandService;
             _bss = bss;
             _bot = bot;
             _db = db;
-            _bcp = bcp;
             _services = services;
 
             _log = LogManager.GetCurrentClassLogger();
@@ -170,7 +168,6 @@ namespace WizBot.Core.Services
 
         private const float _oneThousandth = 1.0f / 1000;
         private readonly DbService _db;
-        private readonly IBotConfigProvider _bcp;
 
         private Task LogSuccessfulExecution(IUserMessage usrMsg, ITextChannel channel, params int[] execPoints)
         {

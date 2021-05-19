@@ -19,7 +19,7 @@ namespace WizBot.Core.Services.Database.Repositories
         bool TryUpdateCurrencyState(ulong userId, string name, string discrim, string avatar, long change, bool allowNegative = false);
         List<DiscordUser> GetTopRichest(ulong botId, int count, int page);
         List<DiscordUser> GetTopRichest(ulong botId, int count);
-        void RemoveFromMany(List<ulong> ids);
+        void RemoveFromMany(IEnumerable<ulong> ids);
         decimal GetTotalCurrency();
         decimal GetTopOnePercentCurrency(ulong botId);
     }

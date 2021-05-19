@@ -102,6 +102,44 @@ namespace WizBot.Migrations
                     b.ToTable("AntiSpamSetting");
                 });
 
+            modelBuilder.Entity("WizBot.Core.Services.Database.Models.AutoCommand", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ChannelName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CommandText")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("TEXT");
+
+                    b.Property<ulong?>("GuildId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("GuildName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Interval")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<ulong?>("VoiceChannelId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("VoiceChannelName")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AutoCommands");
+                });
+
             modelBuilder.Entity("WizBot.Core.Services.Database.Models.BanTemplate", b =>
                 {
                     b.Property<int>("Id")
@@ -125,13 +163,10 @@ namespace WizBot.Migrations
                     b.ToTable("BanTemplates");
                 });
 
-            modelBuilder.Entity("WizBot.Core.Services.Database.Models.BlacklistItem", b =>
+            modelBuilder.Entity("WizBot.Core.Services.Database.Models.BlacklistEntry", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("BotConfigId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("DateAdded")
@@ -145,209 +180,7 @@ namespace WizBot.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BotConfigId");
-
-                    b.ToTable("BlacklistItem");
-                });
-
-            modelBuilder.Entity("WizBot.Core.Services.Database.Models.BlockedCmdOrMdl", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("BotConfigId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("BotConfigId1")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BotConfigId");
-
-                    b.HasIndex("BotConfigId1");
-
-                    b.ToTable("BlockedCmdOrMdl");
-                });
-
-            modelBuilder.Entity("WizBot.Core.Services.Database.Models.BotConfig", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<float>("BetflipMultiplier")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Betroll100Multiplier")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Betroll67Multiplier")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Betroll91Multiplier")
-                        .HasColumnType("REAL");
-
-                    b.Property<ulong>("BufferSize")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("CheckForUpdates")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("ConsoleOutputType")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("CurrencyDropAmount")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("CurrencyDropAmountMax")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<float>("CurrencyGenerationChance")
-                        .HasColumnType("REAL");
-
-                    b.Property<int>("CurrencyGenerationCooldown")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("CurrencyGenerationPassword")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("CurrencyName")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("CurrencyPluralName")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("CurrencySign")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("CustomReactionsStartWith")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("DMHelpString")
-                        .HasColumnType("TEXT");
-
-                    b.Property<float>("DailyCurrencyDecay")
-                        .HasColumnType("REAL");
-
-                    b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("DefaultPrefix")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("DivorcePriceMultiplier")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("ErrorColor")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("ForwardMessages")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("ForwardToAllOwners")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("GroupGreets")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("HasMigratedBotSettings")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasDefaultValue(true);
-
-                    b.Property<bool>("HasMigratedGamblingSettings")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasDefaultValue(true);
-
-                    b.Property<bool>("HasMigratedXpSettings")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasDefaultValue(true);
-
-                    b.Property<string>("HelpString")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("LastCurrencyDecay")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("LastUpdate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Locale")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("MaxBet")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("MaxXpMinutes")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("MigrationVersion")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("MinBet")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("MinWaifuPrice")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("MinimumBetAmount")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("MinimumTriviaWinReq")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("OkColor")
-                        .HasColumnType("TEXT");
-
-                    b.Property<float>("PatreonCurrencyPerCent")
-                        .HasColumnType("REAL");
-
-                    b.Property<int>("PermissionVersion")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("RemindMessageFormat")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("RotatingStatuses")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("TimelyCurrency")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("TimelyCurrencyPeriod")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("TriviaCurrencyReward")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("UpdateString")
-                        .HasColumnType("TEXT");
-
-                    b.Property<double>("VoiceXpPerMinute")
-                        .HasColumnType("REAL");
-
-                    b.Property<int>("WaifuGiftMultiplier")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("XpMinutesTimeout")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("XpPerMessage")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("BotConfig");
+                    b.ToTable("Blacklist");
                 });
 
             modelBuilder.Entity("WizBot.Core.Services.Database.Models.ClubApplicants", b =>
@@ -649,28 +482,6 @@ namespace WizBot.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("DiscordUser");
-                });
-
-            modelBuilder.Entity("WizBot.Core.Services.Database.Models.EightBallResponse", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("BotConfigId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Text")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BotConfigId");
-
-                    b.ToTable("EightBallResponses");
                 });
 
             modelBuilder.Entity("WizBot.Core.Services.Database.Models.ExcludedItem", b =>
@@ -1370,31 +1181,6 @@ namespace WizBot.Migrations
                     b.ToTable("PlantedCurrency");
                 });
 
-            modelBuilder.Entity("WizBot.Core.Services.Database.Models.PlayingStatus", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("BotConfigId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BotConfigId");
-
-                    b.ToTable("PlayingStatus");
-                });
-
             modelBuilder.Entity("WizBot.Core.Services.Database.Models.PlaylistSong", b =>
                 {
                     b.Property<int>("Id")
@@ -1542,31 +1328,6 @@ namespace WizBot.Migrations
                     b.HasIndex("Keyword");
 
                     b.ToTable("Quotes");
-                });
-
-            modelBuilder.Entity("WizBot.Core.Services.Database.Models.RaceAnimal", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("BotConfigId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Icon")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BotConfigId");
-
-                    b.ToTable("RaceAnimals");
                 });
 
             modelBuilder.Entity("WizBot.Core.Services.Database.Models.ReactionRole", b =>
@@ -1728,6 +1489,26 @@ namespace WizBot.Migrations
                     b.ToTable("RewardedUsers");
                 });
 
+            modelBuilder.Entity("WizBot.Core.Services.Database.Models.RotatingPlayingStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RotatingStatus");
+                });
+
             modelBuilder.Entity("WizBot.Core.Services.Database.Models.SelfAssignedRole", b =>
                 {
                     b.Property<int>("Id")
@@ -1886,52 +1667,6 @@ namespace WizBot.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Stakes");
-                });
-
-            modelBuilder.Entity("WizBot.Core.Services.Database.Models.StartupCommand", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("BotConfigId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<ulong>("ChannelId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("ChannelName")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("CommandText")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("TEXT");
-
-                    b.Property<ulong?>("GuildId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("GuildName")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Index")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Interval")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<ulong?>("VoiceChannelId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("VoiceChannelName")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BotConfigId");
-
-                    b.ToTable("StartupCommand");
                 });
 
             modelBuilder.Entity("WizBot.Core.Services.Database.Models.StreamRoleBlacklistedUser", b =>
@@ -2436,24 +2171,6 @@ namespace WizBot.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("WizBot.Core.Services.Database.Models.BlacklistItem", b =>
-                {
-                    b.HasOne("WizBot.Core.Services.Database.Models.BotConfig", null)
-                        .WithMany("Blacklist")
-                        .HasForeignKey("BotConfigId");
-                });
-
-            modelBuilder.Entity("WizBot.Core.Services.Database.Models.BlockedCmdOrMdl", b =>
-                {
-                    b.HasOne("WizBot.Core.Services.Database.Models.BotConfig", null)
-                        .WithMany("BlockedCommands")
-                        .HasForeignKey("BotConfigId");
-
-                    b.HasOne("WizBot.Core.Services.Database.Models.BotConfig", null)
-                        .WithMany("BlockedModules")
-                        .HasForeignKey("BotConfigId1");
-                });
-
             modelBuilder.Entity("WizBot.Core.Services.Database.Models.ClubApplicants", b =>
                 {
                     b.HasOne("WizBot.Core.Services.Database.Models.ClubInfo", "Club")
@@ -2519,13 +2236,6 @@ namespace WizBot.Migrations
                     b.HasOne("WizBot.Core.Services.Database.Models.ClubInfo", "Club")
                         .WithMany("Users")
                         .HasForeignKey("ClubId");
-                });
-
-            modelBuilder.Entity("WizBot.Core.Services.Database.Models.EightBallResponse", b =>
-                {
-                    b.HasOne("WizBot.Core.Services.Database.Models.BotConfig", null)
-                        .WithMany("EightBallResponses")
-                        .HasForeignKey("BotConfigId");
                 });
 
             modelBuilder.Entity("WizBot.Core.Services.Database.Models.ExcludedItem", b =>
@@ -2654,13 +2364,6 @@ namespace WizBot.Migrations
                         .HasForeignKey("GuildConfigId");
                 });
 
-            modelBuilder.Entity("WizBot.Core.Services.Database.Models.PlayingStatus", b =>
-                {
-                    b.HasOne("WizBot.Core.Services.Database.Models.BotConfig", null)
-                        .WithMany("RotatingStatusMessages")
-                        .HasForeignKey("BotConfigId");
-                });
-
             modelBuilder.Entity("WizBot.Core.Services.Database.Models.PlaylistSong", b =>
                 {
                     b.HasOne("WizBot.Core.Services.Database.Models.MusicPlaylist", null)
@@ -2681,13 +2384,6 @@ namespace WizBot.Migrations
                     b.HasOne("WizBot.Core.Services.Database.Models.Poll", null)
                         .WithMany("Votes")
                         .HasForeignKey("PollId");
-                });
-
-            modelBuilder.Entity("WizBot.Core.Services.Database.Models.RaceAnimal", b =>
-                {
-                    b.HasOne("WizBot.Core.Services.Database.Models.BotConfig", null)
-                        .WithMany("RaceAnimals")
-                        .HasForeignKey("BotConfigId");
                 });
 
             modelBuilder.Entity("WizBot.Core.Services.Database.Models.ReactionRole", b =>
@@ -2739,13 +2435,6 @@ namespace WizBot.Migrations
                     b.HasOne("WizBot.Core.Services.Database.Models.GuildConfig", null)
                         .WithMany("SlowmodeIgnoredUsers")
                         .HasForeignKey("GuildConfigId");
-                });
-
-            modelBuilder.Entity("WizBot.Core.Services.Database.Models.StartupCommand", b =>
-                {
-                    b.HasOne("WizBot.Core.Services.Database.Models.BotConfig", null)
-                        .WithMany("StartupCommands")
-                        .HasForeignKey("BotConfigId");
                 });
 
             modelBuilder.Entity("WizBot.Core.Services.Database.Models.StreamRoleBlacklistedUser", b =>

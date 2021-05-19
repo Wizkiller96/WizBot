@@ -2,7 +2,6 @@
 using Discord.WebSocket;
 using WizBot.Extensions;
 using NLog;
-using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

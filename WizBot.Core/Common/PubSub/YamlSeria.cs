@@ -5,7 +5,7 @@ using YamlDotNet.Serialization;
 
 namespace WizBot.Core.Common
 {
-    public class YamlSeria : ISettingsSeria
+    public class YamlSeria : IConfigSeria
     {
         private readonly ISerializer _serializer;
         private readonly IDeserializer _deserializer;

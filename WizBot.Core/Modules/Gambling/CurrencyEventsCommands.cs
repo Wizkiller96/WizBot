@@ -23,7 +23,7 @@ namespace WizBot.Modules.Gambling
                 BotListUpvoters
             }
 
-            public CurrencyEventsCommands(GamblingConfigService config) : base(config)
+            public CurrencyEventsCommands(GamblingConfigService gamblingConf) : base(gamblingConf)
             {
             }
 

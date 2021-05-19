@@ -21,29 +21,31 @@ namespace WizBot.Modules.Xp.Services
 
         public void EnsureMigrated()
         {
-            using (var uow = _db.GetDbContext())
-            {
-                var conn = uow._context.Database.GetDbConnection();
-                Migrate(conn);
-            }
+            using var uow = _db.GetDbContext();
+            using var conn = uow._context.Database.GetDbConnection();
+            Migrate(conn);
         }
 
         private void Migrate(DbConnection conn)
         {
-            using var checkTableCommand = conn.CreateCommand();
+            using (var checkTableCommand = conn.CreateCommand())
+            {
+                // make sure table still exists
+                checkTableCommand.CommandText =
+                    "SELECT name FROM sqlite_master WHERE type='table' AND name='BotConfig';";
+                var checkReader = checkTableCommand.ExecuteReader();
+                if (!checkReader.HasRows)
+                    return;
+            }
 
-            // make sure table still exists
-            checkTableCommand.CommandText = "SELECT name FROM sqlite_master WHERE type='table' AND name='BotConfig';";
-            var checkReader = checkTableCommand.ExecuteReader();
-            if (!checkReader.HasRows)
-                return;
-
-            using var checkMigratedCommand = conn.CreateCommand();
-            checkMigratedCommand.CommandText =
-                "UPDATE BotConfig SET HasMigratedXpSettings = 1 WHERE HasMigratedXpSettings = 0;";
-            var changedRows = checkMigratedCommand.ExecuteNonQuery();
-            if (changedRows == 0)
-                return;
+            using (var checkMigratedCommand = conn.CreateCommand())
+            {
+                checkMigratedCommand.CommandText =
+                    "UPDATE BotConfig SET HasMigratedXpSettings = 1 WHERE HasMigratedXpSettings = 0;";
+                var changedRows = checkMigratedCommand.ExecuteNonQuery();
+                if (changedRows == 0)
+                    return;
+            }
 
             _log.Info("Migrating Xp settings...");
 
@@ -54,10 +56,10 @@ FROM BotConfig";
             using var reader = com.ExecuteReader();
             if (!reader.Read())
                 return;
-            
+
             _gss.ModifyConfig(ModifyAction(reader));
         }
-        
+
         private static Action<XpConfig> ModifyAction(DbDataReader reader)
             => config =>
             {

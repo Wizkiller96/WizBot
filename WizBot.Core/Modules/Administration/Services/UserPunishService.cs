@@ -13,6 +13,7 @@ using WizBot.Core.Common.TypeReaders.Models;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Extensions;
+using WizBot.Modules.Permissions.Services;
 using Newtonsoft.Json;
 using NLog;
 
@@ -22,13 +23,15 @@ namespace WizBot.Modules.Administration.Services
     {
         private readonly MuteService _mute;
         private readonly DbService _db;
+        private readonly BlacklistService _blacklistService;
         private readonly Logger _log;
         private readonly Timer _warnExpiryTimer;
 
-        public UserPunishService(MuteService mute, DbService db)
+        public UserPunishService(MuteService mute, DbService db, BlacklistService blacklistService)
         {
             _mute = mute;
             _db = db;
+            _blacklistService = blacklistService;
             _log = LogManager.GetCurrentClassLogger();
 
             _warnExpiryTimer = new Timer(async _ =>
@@ -177,7 +180,7 @@ WHERE GuildId in (SELECT GuildId FROM GuildConfigs WHERE WarnExpireHours > 0 AND
 WHERE GuildId in (SELECT GuildId FROM GuildConfigs WHERE WarnExpireHours > 0 AND WarnExpireAction = 1)
 	AND DateAdded < datetime('now', (SELECT '-' || WarnExpireHours || ' hours' FROM GuildConfigs as gc WHERE gc.GuildId = Warnings.GuildId));");
 
-                if (cleared > 0 || deleted > 0)
+                if(cleared > 0 || deleted > 0)
                 {
                     _log.Info($"Cleared {cleared} warnings and deleted {deleted} warnings due to expiry.");
                 }
@@ -347,29 +350,15 @@ WHERE GuildId={guildId}
 
             //if user is null, means that person couldn't be found
             var missing = bans
-                .Where(x => !x.Id.HasValue)
-                .Count();
+                .Count(x => !x.Id.HasValue);
 
             //get only data for found users
             var found = bans
                 .Where(x => x.Id.HasValue)
                 .Select(x => x.Id.Value)
-                .ToArray();
+                .ToList();
 
-            using (var uow = _db.GetDbContext())
-            {
-                var bc = uow.BotConfig.GetOrCreate(set => set.Include(x => x.Blacklist));
-                //blacklist the users
-                bc.Blacklist.AddRange(found.Select(x =>
-                    new BlacklistItem
-                    {
-                        ItemId = x,
-                        Type = BlacklistType.User,
-                    }));
-                //clear their currencies
-                uow.DiscordUsers.RemoveFromMany(found.Select(x => x).ToList());
-                uow.SaveChanges();
-            }
+            _blacklistService.BlacklistUsers(found);
 
             return (bans, missing);
         }
@@ -397,7 +386,7 @@ WHERE GuildId={guildId}
                 {
                     if (template is null)
                         return;
-
+                    
                     uow._context.Remove(template);
                 }
                 else if (template == null)
@@ -421,9 +410,9 @@ WHERE GuildId={guildId}
             string banReason, TimeSpan? duration)
         {
             return GetBanUserDmEmbed(
-                (DiscordSocketClient)context.Client,
-                (SocketGuild)context.Guild,
-                (IGuildUser)context.User,
+                (DiscordSocketClient) context.Client,
+                (SocketGuild) context.Guild,
+                (IGuildUser) context.User,
                 target,
                 defaultMessage,
                 banReason,
@@ -451,19 +440,19 @@ WHERE GuildId={guildId}
                 .WithOverride("%ban.user.discrim%", () => target.Discriminator)
                 .WithOverride("%reason%", () => banReason)
                 .WithOverride("%ban.reason%", () => banReason)
-                .WithOverride("%ban.duration%", () => duration?.ToString(@"d\.hh\:mm") ?? "perma")
+                .WithOverride("%ban.duration%", () => duration?.ToString(@"d\.hh\:mm")?? "perma")
                 .Build();
 
-            CREmbed crEmbed = null;
+            CREmbed crEmbed = null; 
             // if template isn't set, use the old message style
             if (string.IsNullOrWhiteSpace(template))
             {
                 template = JsonConvert.SerializeObject(new
                 {
                     color = WizBot.ErrorColor.RawValue,
-                    description = defaultMessage
+                    description = defaultMessage 
                 });
-
+                
                 CREmbed.TryParse(template, out crEmbed);
             }
             // if template is set to "-" do not dm the user
@@ -482,12 +471,12 @@ WHERE GuildId={guildId}
                 template = JsonConvert.SerializeObject(new
                 {
                     color = WizBot.ErrorColor.RawValue,
-                    description = replacer.Replace(template)
+                    description = replacer.Replace(template) 
                 });
 
                 CREmbed.TryParse(template, out crEmbed);
             }
-
+            
             return crEmbed;
         }
     }

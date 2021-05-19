@@ -30,7 +30,6 @@ namespace WizBot.Modules.Utility.Services
         private readonly IBotCredentials _creds;
         private readonly DbService _db;
         private readonly ICurrencyService _currency;
-        private readonly IBotConfigProvider _bc;
         private readonly GamblingConfigService _gamblingConfigService;
         private readonly IHttpClientFactory _httpFactory;
         private readonly DiscordSocketClient _client;
@@ -39,13 +38,12 @@ namespace WizBot.Modules.Utility.Services
 
         public PatreonRewardsService(IBotCredentials creds, DbService db,
             ICurrencyService currency, IHttpClientFactory factory,
-            DiscordSocketClient client, IBotConfigProvider bc, GamblingConfigService gamblingConfigService)
+            DiscordSocketClient client, GamblingConfigService gamblingConfigService)
         {
             _log = LogManager.GetCurrentClassLogger();
             _creds = creds;
             _db = db;
             _currency = currency;
-            _bc = bc;
             _gamblingConfigService = gamblingConfigService;
             _httpFactory = factory;
             _client = client;
