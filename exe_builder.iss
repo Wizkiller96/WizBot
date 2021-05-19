@@ -37,6 +37,9 @@ Source: "src\WizBot\bin\Release\{#platform}\{#target}\publish\*"; DestDir: "{app
 ;            and i don't want them to have to backup and then copy-merge into data folder themselves, or lose their currency images due to overwrite.
 Source: "src\WizBot\bin\Release\{#platform}\{#target}\publish\*"; DestDir: "{app}\{#sysfolder}"; Permissions: users-full; Flags: recursesubdirs ignoreversion onlyifdestfileexists createallsubdirs; Excludes: "*.pdb, *.db, data\*, credentials.json";
 Source: "src\WizBot\bin\Release\{#platform}\{#target}\publish\data\*"; DestDir: "{app}\{#sysfolder}\data"; Permissions: users-full; Flags: recursesubdirs onlyifdoesntexist createallsubdirs;
+; overwrite strings and aliases
+Source: "src\WizBot\bin\Release\{#platform}\{#target}\publish\data\aliases.yml"; DestDir: "{app}\{#sysfolder}\data\"; Permissions: users-full; Flags: ignoreversion onlyifdestfileexists createallsubdirs;
+Source: "src\WizBot\bin\Release\{#platform}\{#target}\publish\data\strings\*"; DestDir: "{app}\{#sysfolder}\data\strings"; Permissions: users-full; Flags: recursesubdirs ignoreversion onlyifdestfileexists createallsubdirs;
 
 [Dirs]
 Name:"{app}\{#sysfolder}\data"; Permissions: everyone-modify
