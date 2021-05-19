@@ -49,7 +49,7 @@ namespace WizBot.Extensions
             var plainText = sanitizeAll
                 ? crEmbed.PlainText?.SanitizeAllMentions() ?? ""
                 : crEmbed.PlainText?.SanitizeMentions() ?? "";
-
+            
             return channel.SendMessageAsync(plainText, embed: crEmbed.IsEmbedValid ? crEmbed.ToEmbed().Build() : null);
         }
 
@@ -66,9 +66,9 @@ namespace WizBot.Extensions
         {
             if (span < TimeSpan.FromMinutes(2))
                 return $"{span:mm}m {span:ss}s";
-            return $"{(int)span.TotalHours:D2}h {span:mm}m";
+            return $"{(int) span.TotalHours:D2}h {span:mm}m";
         }
-        
+
         public static bool TryGetUrlPath(this string input, out string path)
         {
             var match = UrlRegex.Match(input);
@@ -158,9 +158,6 @@ namespace WizBot.Extensions
                 throw new ArgumentNullException(nameof(name));
         }
 
-        public static ConcurrentDictionary<TKey, TValue> ToConcurrent<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> dict)
-            => new ConcurrentDictionary<TKey, TValue>(dict);
-
         public static bool IsAuthor(this IMessage msg, IDiscordClient client)
             => msg.Author?.Id == client.CurrentUser.Id;
 
@@ -172,7 +169,7 @@ namespace WizBot.Extensions
                 arg => GetFullUsage(cmd.Name, arg, prefix));
 
         public static string MethodName(this CommandInfo cmd)
-            => ((WizBotCommandAttribute)cmd.Attributes.FirstOrDefault(x => x is WizBotCommandAttribute))?.MethodName
+            => ((WizBotCommandAttribute) cmd.Attributes.FirstOrDefault(x => x is WizBotCommandAttribute))?.MethodName
                ?? cmd.Name;
         // public static string RealRemarks(this CommandInfo cmd, IBotStrings strings, string prefix)
         //     => string.Join('\n', cmd.RealRemarksArr(strings, prefix));
@@ -223,7 +220,7 @@ namespace WizBot.Extensions
             Task.Run(async () =>
             {
                 await Task.Delay(seconds * 1000).ConfigureAwait(false);
-                if (logService != null)
+                if(logService != null)
                 {
                     logService.AddDeleteIgnore(msg.Id);
                 }
@@ -312,46 +309,6 @@ namespace WizBot.Extensions
             return imageStream;
         }
 
-        /// <summary>
-        /// Randomize element order by performing the Fisher-Yates shuffle
-        /// </summary>
-        /// <typeparam name="T">Item type</typeparam>
-        /// <param name="items">Items to shuffle</param>
-        public static IReadOnlyList<T> Shuffle<T>(this IEnumerable<T> items)
-        {
-            using (var provider = RandomNumberGenerator.Create())
-            {
-                var list = items.ToList();
-                var n = list.Count;
-                while (n > 1)
-                {
-                    var box = new byte[(n / Byte.MaxValue) + 1];
-                    int boxSum;
-                    do
-                    {
-                        provider.GetBytes(box);
-                        boxSum = box.Sum(b => b);
-                    }
-                    while (!(boxSum < n * ((Byte.MaxValue * box.Length) / n)));
-                    var k = (boxSum % n);
-                    n--;
-                    var value = list[k];
-                    list[k] = list[n];
-                    list[n] = value;
-                }
-                return list;
-            }
-        }
-
-        public static IEnumerable<T> ForEach<T>(this IEnumerable<T> elems, Action<T> exec)
-        {
-            foreach (var elem in elems)
-            {
-                exec(elem);
-            }
-            return elems;
-        }
-
         public static Stream ToStream(this IEnumerable<byte> bytes, bool canWrite = false)
         {
             var ms = new MemoryStream(bytes as byte[] ?? bytes.ToArray(), canWrite);
@@ -368,52 +325,6 @@ namespace WizBot.Extensions
                                 .ConfigureAwait(false);
 
             return await ownerPrivate.SendMessageAsync(message).ConfigureAwait(false);
-        }
-
-        public static Image<Rgba32> Merge(this IEnumerable<Image<Rgba32>> images)
-        {
-            return images.Merge(out _);
-        }
-        public static Image<Rgba32> Merge(this IEnumerable<Image<Rgba32>> images, out IImageFormat format)
-        {
-            format = PngFormat.Instance;
-            void DrawFrame(Image<Rgba32>[] imgArray, Image<Rgba32> imgFrame, int frameNumber)
-            {
-                var xOffset = 0;
-                for (int i = 0; i < imgArray.Length; i++)
-                {
-                    var frame = imgArray[i].Frames.CloneFrame(frameNumber % imgArray[i].Frames.Count);
-                    imgFrame.Mutate(x => x.DrawImage(frame, new Point(xOffset, 0), new GraphicsOptions()));
-                    xOffset += imgArray[i].Bounds().Width;
-                }
-            }
-
-            var imgs = images.ToArray();
-            int frames = images.Max(x => x.Frames.Count);
-
-            var width = imgs.Sum(img => img.Width);
-            var height = imgs.Max(img => img.Height);
-            var canvas = new Image<Rgba32>(width, height);
-            if (frames == 1)
-            {
-                DrawFrame(imgs, canvas, 0);
-                return canvas;
-            }
-
-            format = GifFormat.Instance;
-            for (int j = 0; j < frames; j++)
-            {
-                using (var imgFrame = new Image<Rgba32>(width, height))
-                {
-                    DrawFrame(imgs, imgFrame, j);
-
-                    var frameToAdd = imgFrame.Frames[0];
-                    frameToAdd.Metadata.GetGifMetadata().DisposalMethod = GifDisposalMethod.RestoreToBackground;
-                    canvas.Frames.AddFrame(frameToAdd);
-                }
-            }
-            canvas.Frames.RemoveFrame(0);
-            return canvas;
         }
 
         public static void LogAndReset(this Stopwatch sw, string name = "")
