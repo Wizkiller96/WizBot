@@ -1012,7 +1012,6 @@ botconfigedit:
 - bce
 config:
 - config
-- c
 - conf
 configreload:
 - configreload 

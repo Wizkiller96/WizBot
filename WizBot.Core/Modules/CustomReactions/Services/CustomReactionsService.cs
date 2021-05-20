@@ -128,10 +128,10 @@ namespace WizBot.Modules.CustomReactions.Services
         public Task OnReadyAsync() 
             => ReloadInternal(_bot.GetCurrentGuildIds());
 
-        private Task OnCrsShouldReload(bool _)
-            => ReloadInternal(_bot.GetCurrentGuildIds());
+        private ValueTask OnCrsShouldReload(bool _)
+            => new ValueTask(ReloadInternal(_bot.GetCurrentGuildIds()));
         
-        private Task OnGcrAdded(CustomReaction c)
+        private ValueTask OnGcrAdded(CustomReaction c)
         {
             lock (_gcrWriteLock)
             {
@@ -141,10 +141,10 @@ namespace WizBot.Modules.CustomReactions.Services
                 _globalReactions = newGlobalReactions;
             }
 
-            return Task.CompletedTask;
+            return default;
         }
 
-        private Task OnGcrEdited(CustomReaction c)
+        private ValueTask OnGcrEdited(CustomReaction c)
         {
             lock (_gcrWriteLock)
             {
@@ -153,7 +153,7 @@ namespace WizBot.Modules.CustomReactions.Services
                     if (_globalReactions[i].Id == c.Id)
                     {
                         _globalReactions[i] = c;
-                        return Task.CompletedTask;
+                        return default;
                     }
                 }
 
@@ -162,10 +162,10 @@ namespace WizBot.Modules.CustomReactions.Services
                 OnGcrAdded(c);
             }
 
-            return Task.CompletedTask;
+            return default;
         }
 
-        private Task OnGcrDeleted(int id)
+        private ValueTask OnGcrDeleted(int id)
         {
             lock (_gcrWriteLock)
             {
@@ -173,7 +173,7 @@ namespace WizBot.Modules.CustomReactions.Services
                 _globalReactions = newGlobalReactions;
             }
 
-            return Task.CompletedTask;
+            return default;
         }
 
         public Task TriggerReloadCustomReactions()
@@ -378,17 +378,7 @@ namespace WizBot.Modules.CustomReactions.Services
         public async Task<bool> RunBehavior(DiscordSocketClient client, IGuild guild, IUserMessage msg)
         {
             // maybe this message is a custom reaction
-            CustomReaction cr;
-            var sw = Stopwatch.StartNew();
-            try
-            {
-                cr = TryGetCustomReaction(msg);
-            }
-            finally
-            {
-                sw.Stop();
-                _log.Info("Crs check in: {Ticks}", sw.ElapsedTicks);
-            }
+            var cr = TryGetCustomReaction(msg);
 
             if (cr is null)
                 return false;
