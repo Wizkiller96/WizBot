@@ -732,9 +732,6 @@ placelist:
 - placelist
 place:
 - place
-togethertube:
-- togethertube
-- totube
 poll:
 - poll
 - ppoll

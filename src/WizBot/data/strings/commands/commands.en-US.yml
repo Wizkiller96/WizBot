@@ -389,6 +389,7 @@ inrole:
   desc: "Lists every person from the specified role on this server. You can use role ID, role name."
   args:
     - "Some Role"
+    - "5 Some role"
 checkperms:
   desc: "Checks yours or bot's user-specific permissions on this channel."
   args:
@@ -1181,10 +1182,6 @@ place:
   args:
     - "Cage"
     - "steven 500 400"
-togethertube:
-  desc: "Creates a new room on <https://togethertube.com> and shows the link in the chat."
-  args:
-    - ""
 poll:
   desc: "Creates a public poll which requires users to type a number of the voting option in the channel command is ran in."
   args:
