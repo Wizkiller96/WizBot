@@ -7,26 +7,26 @@ namespace WizBot.Core.Common
 {
     public class EventPubSub : IPubSub
     {
-        private readonly Dictionary<string, Dictionary<Delegate, List<Func<object, Task>>>> _actions
-            = new Dictionary<string, Dictionary<Delegate, List<Func<object, Task>>>>();
+        private readonly Dictionary<string, Dictionary<Delegate, List<Func<object, ValueTask>>>> _actions
+            = new Dictionary<string, Dictionary<Delegate, List<Func<object, ValueTask>>>>();
         private readonly object locker = new object();
-
-        public Task Sub<TData>(in TypedKey<TData> key, Func<TData, Task> action)
+        
+        public Task Sub<TData>(in TypedKey<TData> key, Func<TData, ValueTask> action)
         {
-            Func<object, Task> localAction = obj => action((TData)obj);
-            lock (locker)
+            Func<object, ValueTask> localAction = obj => action((TData) obj);
+            lock(locker)
             {
-                Dictionary<Delegate, List<Func<object, Task>>> keyActions;
+                Dictionary<Delegate, List<Func<object, ValueTask>>> keyActions;
                 if (!_actions.TryGetValue(key.Key, out keyActions))
                 {
-                    keyActions = new Dictionary<Delegate, List<Func<object, Task>>>();
+                    keyActions = new Dictionary<Delegate, List<Func<object, ValueTask>>>();
                     _actions[key.Key] = keyActions;
                 }
 
-                List<Func<object, Task>> sameActions;
+                List<Func<object, ValueTask>> sameActions;
                 if (!keyActions.TryGetValue(action, out sameActions))
                 {
-                    sameActions = new List<Func<object, Task>>();
+                    sameActions = new List<Func<object, ValueTask>>();
                     keyActions[action] = sameActions;
                 }
 
@@ -35,23 +35,26 @@ namespace WizBot.Core.Common
                 return Task.CompletedTask;
             }
         }
-
+        
         public Task Pub<TData>(in TypedKey<TData> key, TData data)
         {
             lock (locker)
             {
-                if (_actions.TryGetValue(key.Key, out var actions))
+                if(_actions.TryGetValue(key.Key, out var actions))
                 {
+                    // if this class ever gets used, this needs to be properly implemented
+                    // 1. ignore all valuetasks which are completed
+                    // 2. return task.whenall all other tasks
                     return Task.WhenAll(actions
                         .SelectMany(kvp => kvp.Value)
-                        .Select(action => action(data)));
+                        .Select(action => action(data).AsTask()));
                 }
 
                 return Task.CompletedTask;
             }
         }
 
-        public Task Unsub<TData>(in TypedKey<TData> key, Func<TData, Task> action)
+        public Task Unsub<TData>(in TypedKey<TData> key, Func<TData, ValueTask> action)
         {
             lock (locker)
             {
@@ -66,13 +69,13 @@ namespace WizBot.Core.Common
                     {
                         // remove last subscription
                         sameActions.RemoveAt(sameActions.Count - 1);
-
+                        
                         // if the last subscription was the only subscription
                         // we can safely remove this action's dictionary entry
                         if (sameActions.Count == 0)
                         {
                             actions.Remove(action);
-
+                            
                             // if our dictionary has no more elements after 
                             // removing the entry
                             // it's safe to remove it from the key's subscriptions
@@ -88,4 +91,5 @@ namespace WizBot.Core.Common
             }
         }
     }
+    
 }

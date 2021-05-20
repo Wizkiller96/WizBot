@@ -30,10 +30,10 @@ namespace WizBot.Modules.Permissions.Services
             _pubSub.Sub(blPubKey, OnReload);
         }
 
-        private Task OnReload(BlacklistEntry[] blacklist)
+        private ValueTask OnReload(BlacklistEntry[] blacklist)
         {
             _blacklist = blacklist;
-            return Task.CompletedTask;
+            return default;
         }
 
         public async Task<bool> RunBehavior(DiscordSocketClient _, IGuild guild, IUserMessage usrMsg)

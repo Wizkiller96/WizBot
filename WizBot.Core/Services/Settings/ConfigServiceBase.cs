@@ -52,11 +52,11 @@ namespace WizBot.Core.Services
             _pubSub.Pub(_changeKey, _data);
         }
         
-        private Task OnChangePublished(TSettings newData)
+        private ValueTask OnChangePublished(TSettings newData)
         {
             _data = newData;
             OnStateUpdate();
-            return Task.CompletedTask;
+            return default;
         }
 
         private TSettings CreateCopy()
