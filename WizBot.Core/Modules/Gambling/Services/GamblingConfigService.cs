@@ -17,6 +17,10 @@ namespace WizBot.Core.Modules.Gambling.Services
         {
             AddParsedProp("currency.name", gs => gs.Currency.Name, ConfigParsers.String, ConfigPrinters.ToString);
             AddParsedProp("currency.sign", gs => gs.Currency.Sign, ConfigParsers.String, ConfigPrinters.ToString);
+            
+            AddParsedProp("minbet", gs => gs.MinBet, int.TryParse, ConfigPrinters.ToString, val => val >= 0);
+            AddParsedProp("maxbet", gs => gs.MaxBet, int.TryParse, ConfigPrinters.ToString, val => val >= 0);
+
             AddParsedProp("gen.min", gs => gs.Generation.MinAmount, int.TryParse, ConfigPrinters.ToString, val => val >= 1);
             AddParsedProp("gen.max", gs => gs.Generation.MaxAmount, int.TryParse, ConfigPrinters.ToString, val => val >= 1);
             AddParsedProp("gen.cd", gs => gs.Generation.GenCooldown, int.TryParse, ConfigPrinters.ToString, val => val > 0);
