@@ -25,6 +25,7 @@ nav:
     - Permissions System: permissions-system.md
     - Custom Reactions: custom-reactions.md
     - Placeholders: placeholders.md
+    - Config: config-guide.md
     - Bot Config: bce-guide.md
 - Contribution Guide: contribution-guide.md
 - ❤ Donate ❤: donate.md
