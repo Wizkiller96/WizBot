@@ -5,7 +5,6 @@
     <OutputType>exe</OutputType>
     <ApplicationIcon>wizbot_icon.ico</ApplicationIcon>
     <LangVersion>preview</LangVersion>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <RollForward>Major</RollForward>
     <RunWorkingDirectory>$(MSBuildProjectDirectory)</RunWorkingDirectory>
   </PropertyGroup>

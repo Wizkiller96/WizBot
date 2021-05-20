@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NLog;
 using System.Linq;
+using System.Runtime.InteropServices;
 using WizBot.Extensions;
 using WizBot.Common.Collections;
 using WizBot.Modules.Music.Services;
@@ -204,7 +205,7 @@ namespace WizBot.Modules.Music.Common
                         {
                             _log.Info("Can't join");
                             await Task.Delay(900, cancelToken).ConfigureAwait(false);
-                            // just wait some time, maybe bot doesn't even have perms to join that voice channel, 
+                            // just wait some time, maybe bot doesn't even have perms to join that voice channel,
                             // i don't want to spam connection attempts
                             continue;
                         }
@@ -239,7 +240,7 @@ namespace WizBot.Modules.Music.Common
                     {
                         if (pcm != null)
                         {
-                            // flush is known to get stuck from time to time, 
+                            // flush is known to get stuck from time to time,
                             // just skip flushing if it takes more than 1 second
                             var flushCancel = new CancellationTokenSource();
                             var flushToken = flushCancel.Token;
@@ -263,7 +264,7 @@ namespace WizBot.Modules.Music.Common
                     }
                     try
                     {
-                        //if repeating current song, just ignore other settings, 
+                        //if repeating current song, just ignore other settings,
                         // and play this song again (don't change the index)
                         // ignore rcs if song is manually skipped
 
@@ -482,7 +483,7 @@ namespace WizBot.Modules.Music.Common
                 if (Exited)
                     return;
                 manualSkip = true;
-                // if player is stopped, and user uses .n, it should play current song.  
+                // if player is stopped, and user uses .n, it should play current song.
                 // It's a bit weird, but that's the least annoying solution
                 if (!Stopped)
                     if (!RepeatPlaylist && Queue.IsLast() && !Autoplay) // if it's the last song in the queue, and repeat playlist is disabled
@@ -587,24 +588,37 @@ namespace WizBot.Modules.Music.Common
         }
 
         //aidiakapi ftw
-        public static unsafe byte[] AdjustVolume(byte[] audioSamples, float volume)
+        // public static unsafe byte[] AdjustVolume(byte[] audioSamples, float volume)
+        // {
+        //     if (Math.Abs(volume - 1f) < 0.0001f) return audioSamples;
+        //
+        //     // 16-bit precision for the multiplication
+        //     var volumeFixed = (int)Math.Round(volume * 65536d);
+        //
+        //     var count = audioSamples.Length / 2;
+        //
+        //     fixed (byte* srcBytes = audioSamples)
+        //     {
+        //         var src = (short*)srcBytes;
+        //
+        //         for (var i = count; i != 0; i--, src++)
+        //             *src = (short)(((*src) * volumeFixed) >> 16);
+        //     }
+        //
+        //     return audioSamples;
+        // }
+        
+        private static void AdjustVolume(byte[] audioSamples, float volume)
         {
-            if (Math.Abs(volume - 1f) < 0.0001f) return audioSamples;
+            if (Math.Abs(volume - 1f) < 0.0001f) return;
+            
+            var samples = MemoryMarshal.Cast<byte, short>(audioSamples);
 
-            // 16-bit precision for the multiplication
-            var volumeFixed = (int)Math.Round(volume * 65536d);
-
-            var count = audioSamples.Length / 2;
-
-            fixed (byte* srcBytes = audioSamples)
+            for (var i = 0; i < samples.Length; i++)
             {
-                var src = (short*)srcBytes;
-
-                for (var i = count; i != 0; i--, src++)
-                    *src = (short)(((*src) * volumeFixed) >> 16);
+                ref var sample = ref samples[i];
+                sample = (short) (sample * volume);
             }
-
-            return audioSamples;
         }
 
         public bool ToggleRepeatSong()
@@ -697,9 +711,9 @@ namespace WizBot.Modules.Music.Common
         }
 
         //// this should be written better
-        //public TimeSpan TotalPlaytime => 
-        //    _playlist.Any(s => s.TotalTime == TimeSpan.MaxValue) ? 
-        //    TimeSpan.MaxValue : 
-        //    new TimeSpan(_playlist.Sum(s => s.TotalTime.Ticks));        
+        //public TimeSpan TotalPlaytime =>
+        //    _playlist.Any(s => s.TotalTime == TimeSpan.MaxValue) ?
+        //    TimeSpan.MaxValue :
+        //    new TimeSpan(_playlist.Sum(s => s.TotalTime.Ticks));
     }
 }
