@@ -1,8 +1,5 @@
-> ⚠️ `.bce` command is getting removed.  
-> ⚠️ Use `.config` command to set-up config  (`.h .config` for help)  (version `2.39.0` and up)  
-> ⚠️ Configs are now saved in human-readable format in `.yml` files in the data/ folder  
-> ⚠️ `data/bot.yml` and `data/gambling.yml` for example  
-> ⚠️ If you edit the files manually, you can reload configuration with `.configreload <config-name>`
+# ⚠️ OBSOLETE
+- ⚠️ `.bce` command is removed in newer version.  If you're on version 2.39.0 or later, use [config guide][CONFIG GUIDE]
 
 # BotConfigEdit Guide
 
