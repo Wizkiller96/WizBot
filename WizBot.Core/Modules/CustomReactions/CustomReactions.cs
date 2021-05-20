@@ -298,11 +298,11 @@ namespace WizBot.Modules.CustomReactions
 
         [WizBotCommand, Usage, Description, Aliases]
         [OwnerOnly]
-        public Task CrsReload()
+        public async Task CrsReload()
         {
-            _service.TriggerReloadCustomReactions();
+            await _service.TriggerReloadCustomReactions();
 
-            return ctx.OkAsync();
+            await ctx.OkAsync();
         }
 
         private async Task InternalCrEdit(int id, CustomReactionsService.CrField option)

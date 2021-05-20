@@ -9,17 +9,18 @@ using WizBot.Extensions;
 using WizBot.Modules.CustomReactions.Extensions;
 using WizBot.Modules.Permissions.Common;
 using WizBot.Modules.Permissions.Services;
-using Newtonsoft.Json;
 using NLog;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Google.Apis.Auth.OAuth2;
+using WizBot.Core.Common;
 
 namespace WizBot.Modules.CustomReactions.Services
 {
-    public class CustomReactionsService : IEarlyBehavior, INService
+    public class CustomReactionsService : IEarlyBehavior, INService, IReadyExecutor
     {
         public enum CrField
         {
@@ -28,7 +29,15 @@ namespace WizBot.Modules.CustomReactions.Services
             ContainsAnywhere,
             Message,
         }
-        private ConcurrentDictionary<int, CustomReaction> _globalReactions;
+
+        private readonly object _grWriteLock = new object();
+        
+        private readonly TypedKey<CustomReaction> _gcrAddedKey = new TypedKey<CustomReaction>("gcr.added");
+        private readonly TypedKey<int> _gcrDeletedkey = new TypedKey<int>("gcr.deleted");
+        private readonly TypedKey<CustomReaction> _gcrEditedKey = new TypedKey<CustomReaction>("gcr.edited");
+        private readonly TypedKey<bool> _crsReloadedKey = new TypedKey<bool>("crs.reloaded");
+        
+        private CustomReaction[] _globalReactions;
         private ConcurrentDictionary<ulong, ConcurrentDictionary<int, CustomReaction>> _guildReactions;
 
         public int Priority => -1;
@@ -36,16 +45,18 @@ namespace WizBot.Modules.CustomReactions.Services
 
         private readonly Logger _log;
         private readonly DbService _db;
-
         private readonly DiscordSocketClient _client;
         private readonly PermissionService _perms;
         private readonly CommandHandler _cmd;
         private readonly IBotStrings _strings;
-        private readonly IDataCache _cache;
+        private readonly WizBot _bot;
         private readonly GlobalPermissionService _gperm;
+        private readonly IPubSub _pubSub;
+        private readonly Random _rng;
 
         public CustomReactionsService(PermissionService perms, DbService db, IBotStrings strings, WizBot bot,
-            DiscordSocketClient client, CommandHandler cmd, IDataCache cache, GlobalPermissionService gperm)
+            DiscordSocketClient client, CommandHandler cmd, GlobalPermissionService gperm,
+            IPubSub pubSub)
         {
             _log = LogManager.GetCurrentClassLogger();
             _db = db;
@@ -53,64 +64,101 @@ namespace WizBot.Modules.CustomReactions.Services
             _perms = perms;
             _cmd = cmd;
             _strings = strings;
-            _cache = cache;
+            _bot = bot;
             _gperm = gperm;
+            _pubSub = pubSub;
+            _rng = new WizBotRandom();
 
-            var sub = _cache.Redis.GetSubscriber();
-            sub.Subscribe(_client.CurrentUser.Id + "_crs.reload", (ch, msg) =>
-            {
-                ReloadInternal(bot.GetCurrentGuildConfigs());
-            }, StackExchange.Redis.CommandFlags.FireAndForget);
-            sub.Subscribe(_client.CurrentUser.Id + "_gcr.added", (ch, msg) =>
-            {
-                var cr = JsonConvert.DeserializeObject<CustomReaction>(msg);
-                _globalReactions.TryAdd(cr.Id, cr);
-            }, StackExchange.Redis.CommandFlags.FireAndForget);
-            sub.Subscribe(_client.CurrentUser.Id + "_gcr.deleted", (ch, msg) =>
-            {
-                var id = int.Parse(msg);
-                _globalReactions.TryRemove(id, out _);
-
-            }, StackExchange.Redis.CommandFlags.FireAndForget);
-            sub.Subscribe(_client.CurrentUser.Id + "_gcr.edited", (ch, msg) =>
-            {
-                var obj = new { Id = 0, Res = "", Ad = false, Dm = false, Ca = false, Re = "" };
-                obj = JsonConvert.DeserializeAnonymousType(msg, obj);
-                if (_globalReactions.TryGetValue(obj.Id, out var gcr))
-                {
-                    gcr.Response = obj.Res;
-                    gcr.AutoDeleteTrigger = obj.Ad;
-                    gcr.DmResponse = obj.Dm;
-                    gcr.ContainsAnywhere = obj.Ca;
-                    gcr.Reactions = obj.Re;
-                }
-            }, StackExchange.Redis.CommandFlags.FireAndForget);
-
-            ReloadInternal(bot.AllGuildConfigs);
+            _pubSub.Sub(_crsReloadedKey, OnCrsShouldReload);
+            pubSub.Sub(_gcrAddedKey, OnGcrAdded);
+            pubSub.Sub(_gcrDeletedkey, OnGcrDeleted);
+            pubSub.Sub(_gcrEditedKey, OnGcrEdited);
 
             bot.JoinedGuild += Bot_JoinedGuild;
             _client.LeftGuild += _client_LeftGuild;
         }
 
-        private void ReloadInternal(IEnumerable<GuildConfig> allGuildConfigs)
+        private Task OnCrsShouldReload(bool _) 
+            => ReloadInternal(_bot.GetCurrentGuildIds());
+
+        // it is perfectly fine to have global customreactions as an array
+        // 1. global custom reactions are almost never added (compared to how many times they are being looped through)
+        // 2. only need write locks for this
+        // 3. there's never many of them (at most a thousand, usually < 100)
+        private Task OnGcrAdded(CustomReaction c)
         {
-            using (var uow = _db.GetDbContext())
+            lock (_grWriteLock)
             {
-                ReloadInternal(allGuildConfigs, uow);
+                var newGlobalReactions = new CustomReaction[_globalReactions.Length + 1];
+                Array.Copy(_globalReactions, newGlobalReactions, _globalReactions.Length);
+                newGlobalReactions[_globalReactions.Length] = c;
+                _globalReactions = newGlobalReactions;
             }
+
+            return Task.CompletedTask;
         }
 
-        private void ReloadInternal(IEnumerable<GuildConfig> allGuildConfigs, IUnitOfWork uow)
+        private Task OnGcrDeleted(int id)
         {
-            var guildItems = uow.CustomReactions.GetFor(allGuildConfigs.Select(x => x.GuildId)).ToList();
+            lock (_grWriteLock)
+            {
+                var newGlobalReactions = new CustomReaction[_globalReactions.Length - 1];
+                for (int i = 0, k = 0; i < _globalReactions.Length; i++, k++)
+                {
+                    if (_globalReactions[i].Id == id)
+                    {
+                        k--;
+                        continue;
+                    }
+
+                    newGlobalReactions[k] = _globalReactions[i];
+                }
+
+                _globalReactions = newGlobalReactions;
+            }
+
+            return Task.CompletedTask;
+        }
+        
+        private Task OnGcrEdited(CustomReaction c)
+        {
+            lock (_grWriteLock)
+            {
+                for (var i = 0; i < _globalReactions.Length; i++)
+                {
+                    if (_globalReactions[i].Id == c.Id)
+                    {
+                        _globalReactions[i] = c;
+                        return Task.CompletedTask;
+                    }
+                }
+
+                // if edited cr is not found?!
+                // add it
+                OnGcrAdded(c);
+            }
+
+            return Task.CompletedTask;
+        }
+
+        private Task ReloadInternal(IEnumerable<ulong> allGuilds)
+        {
+            using var uow = _db.GetDbContext();
+            return ReloadInternal(allGuilds, uow);
+        }
+
+        private async Task ReloadInternal(IEnumerable<ulong> allGuildIds, IUnitOfWork uow)
+        {
+            var guildItems = await uow.CustomReactions.GetFor(allGuildIds);
             _guildReactions = new ConcurrentDictionary<ulong, ConcurrentDictionary<int, CustomReaction>>(guildItems
-                .GroupBy(k => k.GuildId.Value)
+                .GroupBy(k => k.GuildId!.Value)
                 .ToDictionary(g => g.Key, g => g.ToDictionary(x => x.Id, x => x).ToConcurrent()));
 
             var globalItems = uow.CustomReactions.GetGlobal();
-            _globalReactions = globalItems
-                .ToDictionary(x => x.Id, x => x)
-                .ToConcurrent();
+            lock (_grWriteLock)
+            {
+                _globalReactions = globalItems.ToArray();
+            }
         }
 
         private Task _client_LeftGuild(SocketGuild arg)
@@ -123,27 +171,23 @@ namespace WizBot.Modules.CustomReactions.Services
         {
             var _ = Task.Run(() =>
             {
-                using (var uow = _db.GetDbContext())
-                {
-                    var crs = uow.CustomReactions.ForId(gc.GuildId)
-                        .ToDictionary(x => x.Id, x => x)
-                        .ToConcurrent();
-                    _guildReactions.AddOrUpdate(gc.GuildId, crs, (key, old) => crs);
-                }
+                using var uow = _db.GetDbContext();
+                var crs = uow.CustomReactions.ForId(gc.GuildId)
+                    .ToDictionary(x => x.Id, x => x)
+                    .ToConcurrent();
+                _guildReactions.AddOrUpdate(gc.GuildId, crs, (key, old) => crs);
             });
             return Task.CompletedTask;
         }
 
         public Task AddGcr(CustomReaction cr)
         {
-            var sub = _cache.Redis.GetSubscriber();
-            return sub.PublishAsync(_client.CurrentUser.Id + "_gcr.added", JsonConvert.SerializeObject(cr));
+            return _pubSub.Pub(_gcrAddedKey, cr);
         }
 
         public Task DelGcr(int id)
         {
-            var sub = _cache.Redis.GetSubscriber();
-            return sub.PublishAsync(_client.CurrentUser.Id + "_gcr.deleted", id);
+            return _pubSub.Pub(_gcrDeletedkey, id);
         }
 
         public CustomReaction TryGetCustomReaction(IUserMessage umsg)
@@ -193,20 +237,27 @@ namespace WizBot.Modules.CustomReactions.Services
                 }
             }
 
-            var grs = _globalReactions.Values.Where(cr =>
+            var localGrs = _globalReactions;
+
+            var result = new List<CustomReaction>(1);
+            for (var i = 0; i < localGrs.Length; i++)
             {
-                if (cr == null)
-                    return false;
+                var cr = localGrs[i];
                 var hasTarget = cr.Response.ToLowerInvariant().Contains("%target%");
                 var trigger = cr.TriggerWithContext(umsg, _client).Trim().ToLowerInvariant();
-                return ((cr.ContainsAnywhere &&
-                            (content.GetWordPosition(trigger) != WordPosition.None))
-                        || (hasTarget && content.StartsWith(trigger + " ", StringComparison.InvariantCulture))
-                        || content == trigger);
-            }).ToArray();
-            if (grs.Length == 0)
+                if ((cr.ContainsAnywhere &&
+                     (content.GetWordPosition(trigger) != WordPosition.None))
+                    || (hasTarget && content.StartsWith(trigger + " ", StringComparison.InvariantCulture))
+                    || content == trigger)
+                {
+                    result.Add(cr);
+                }
+            }
+            
+            if (result.Count == 0)
                 return null;
-            var greaction = grs[new WizBotRandom().Next(0, grs.Length)];
+            
+            var greaction = result[_rng.Next(0, result.Count)];
 
             return greaction;
         }
@@ -253,7 +304,7 @@ namespace WizBot.Modules.CustomReactions.Services
                     var sentMsg = await cr.Send(msg, _client, false).ConfigureAwait(false);
 
                     var reactions = cr.GetReactions();
-                    foreach (var reaction in reactions)
+                    foreach(var reaction in reactions)
                     {
                         try
                         {
@@ -261,7 +312,7 @@ namespace WizBot.Modules.CustomReactions.Services
                         }
                         catch
                         {
-                            _log.Warn($"Unable to add reactions to message {0} in server {1}");
+                            _log.Warn("Unable to add reactions to message {Message} in server {GuildId}", sentMsg.Id, cr.GuildId);
                             break;
                         }
                         await Task.Delay(1000);
@@ -337,11 +388,8 @@ namespace WizBot.Modules.CustomReactions.Services
             }
         }
 
-        public void TriggerReloadCustomReactions()
-        {
-            var sub = _cache.Redis.GetSubscriber();
-            sub.Publish(_client.CurrentUser.Id + "_crs.reload", "");
-        }
+        public Task TriggerReloadCustomReactions() 
+            => _pubSub.Pub(_crsReloadedKey, true);
 
         public async Task<(bool Sucess, bool NewValue)> ToggleCrOptionAsync(int id, CrField field)
         {
@@ -383,35 +431,22 @@ namespace WizBot.Modules.CustomReactions.Services
             return (true, newVal);
         }
 
-        public Task PublishEditedGcr(CustomReaction cr)
+        private Task PublishEditedGcr(CustomReaction cr)
         {
-            // don't publish changes of server-specific crs
-            // as other shards no longer have them, nor need them
+            // only publish global cr changes
             if (cr.GuildId != 0 && cr.GuildId != null)
                 return Task.CompletedTask;
 
-            var sub = _cache.Redis.GetSubscriber();
-            var data = new
-            {
-                Id = cr.Id,
-                Res = cr.Response,
-                Ad = cr.AutoDeleteTrigger,
-                Dm = cr.DmResponse,
-                Ca = cr.ContainsAnywhere,
-                Re = cr.Reactions
-            };
-            return sub.PublishAsync(_client.CurrentUser.Id + "_gcr.edited", JsonConvert.SerializeObject(data));
+            return _pubSub.Pub(_gcrEditedKey, cr);
         }
 
         public int ClearCustomReactions(ulong id)
         {
-            using (var uow = _db.GetDbContext())
-            {
-                var count = uow.CustomReactions.ClearFromGuild(id);
-                _guildReactions.TryRemove(id, out _);
-                uow.SaveChanges();
-                return count;
-            }
+            using var uow = _db.GetDbContext();
+            var count = uow.CustomReactions.ClearFromGuild(id);
+            _guildReactions.TryRemove(id, out _);
+            uow.SaveChanges();
+            return count;
         }
 
         public async Task<CustomReaction> AddCustomReaction(ulong? guildId, string key, string message)
@@ -454,11 +489,11 @@ namespace WizBot.Modules.CustomReactions.Services
 
                 if (cr == null || cr.GuildId != guildId)
                     return null;
-
+                
                 cr.Response = message;
                 await uow.SaveChangesAsync();
             }
-
+            
             if (guildId == null)
             {
                 await PublishEditedGcr(cr).ConfigureAwait(false);
@@ -478,63 +513,59 @@ namespace WizBot.Modules.CustomReactions.Services
         public IEnumerable<CustomReaction> GetCustomReactions(ulong? guildId)
         {
             if (guildId == null)
-                return _globalReactions.Values;
-            else
-                return _guildReactions.GetOrAdd(guildId.Value, new ConcurrentDictionary<int, CustomReaction>()).Values;
+                return _globalReactions.ToList();
+            
+            return _guildReactions.GetOrAdd(guildId.Value, new ConcurrentDictionary<int, CustomReaction>()).Values;
         }
 
         public CustomReaction GetCustomReaction(ulong? guildId, int id)
         {
-            using (var uow = _db.GetDbContext())
-            {
-                var cr = uow.CustomReactions.GetById(id);
-                if (cr == null || cr.GuildId != guildId)
-                    return null;
-                else
-                    return cr;
-            }
+            using var uow = _db.GetDbContext();
+            var cr = uow.CustomReactions.GetById(id);
+            if (cr == null || cr.GuildId != guildId)
+                return null;
+                
+            return cr;
         }
 
         public async Task<CustomReaction> DeleteCustomReactionAsync(ulong? guildId, int id)
         {
-            bool success = false;
-            CustomReaction toDelete;
-            using (var uow = _db.GetDbContext())
+            var success = false;
+            using var uow = _db.GetDbContext();
+            var toDelete = uow.CustomReactions.GetById(id);
+            if(toDelete != null)
             {
-                toDelete = uow.CustomReactions.GetById(id);
-                if (toDelete == null) //not found
-                    success = false;
-                else
+                if ((toDelete.GuildId == null || toDelete.GuildId == 0) && guildId == null)
                 {
-                    if ((toDelete.GuildId == null || toDelete.GuildId == 0) && guildId == null)
-                    {
-                        uow.CustomReactions.Remove(toDelete);
-                        await DelGcr(toDelete.Id);
-                        success = true;
-                    }
-                    else if (toDelete.GuildId != null && toDelete.GuildId != 0 && guildId == toDelete.GuildId)
-                    {
-                        uow.CustomReactions.Remove(toDelete);
-                        var grs = _guildReactions.GetOrAdd(guildId.Value, new ConcurrentDictionary<int, CustomReaction>());
-                        success = grs.TryRemove(toDelete.Id, out _);
-                    }
-                    if (success)
-                        await uow.SaveChangesAsync();
+                    uow.CustomReactions.Remove(toDelete);
+                    await DelGcr(toDelete.Id);
+                    success = true;
                 }
-
-                return success
-                    ? toDelete
-                    : null;
+                else if (toDelete.GuildId is ulong gid && toDelete.GuildId != 0 && guildId == toDelete.GuildId)
+                {
+                    uow.CustomReactions.Remove(toDelete);
+                    var grs = _guildReactions.GetOrAdd(gid, new ConcurrentDictionary<int, CustomReaction>());
+                    success = grs.TryRemove(toDelete.Id, out _);
+                }
+                if (success)
+                    await uow.SaveChangesAsync();
             }
+
+            return success
+                ? toDelete
+                : null;
         }
 
         public bool ReactionExists(ulong? guildId, string input)
         {
-            using (var uow = _db.GetDbContext())
-            {
-                var cr = uow.CustomReactions.GetByGuildIdAndInput(guildId, input);
-                return cr != null;
-            }
+            using var uow = _db.GetDbContext();
+            var cr = uow.CustomReactions.GetByGuildIdAndInput(guildId, input);
+            return cr != null;
+        }
+
+        public Task OnReadyAsync()
+        {
+            return ReloadInternal(_bot.GetCurrentGuildIds());
         }
     }
 }

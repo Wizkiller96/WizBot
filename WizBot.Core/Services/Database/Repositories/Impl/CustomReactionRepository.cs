@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace WizBot.Core.Services.Database.Repositories.Impl
 {
@@ -35,13 +36,13 @@ namespace WizBot.Core.Services.Database.Repositories.Impl
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
-        public IEnumerable<CustomReaction> GetFor(IEnumerable<ulong> ids)
+        public Task<List<CustomReaction>> GetFor(IEnumerable<ulong> ids)
         {
             return _set
                 .AsNoTracking()
                 .AsQueryable()
                 .Where(x => ids.Contains(x.GuildId.Value))
-                .ToArray();
+                .ToListAsync();
         }
 
         public IEnumerable<CustomReaction> GetGlobal()

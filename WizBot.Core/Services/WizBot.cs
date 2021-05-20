@@ -22,12 +22,11 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord.Net;
-using Microsoft.EntityFrameworkCore;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Core.Common;
 using WizBot.Core.Common.Configs;
 using WizBot.Modules.Administration.Services;
-using NLog.Fluent;
+using WizBot.Modules.CustomReactions.Services;
 
 namespace WizBot
 {
@@ -125,17 +124,15 @@ namespace WizBot
             });
         }
 
-        private List<ulong> GetCurrentGuildIds()
+        public List<ulong> GetCurrentGuildIds()
         {
             return Client.Guilds.Select(x => x.Id).ToList();
         }
 
         public IEnumerable<GuildConfig> GetCurrentGuildConfigs()
         {
-            using (var uow = _db.GetDbContext())
-            {
-                return uow.GuildConfigs.GetAllGuildConfigs(GetCurrentGuildIds()).ToImmutableArray();
-            }
+            using var uow = _db.GetDbContext();
+            return uow.GuildConfigs.GetAllGuildConfigs(GetCurrentGuildIds()).ToImmutableArray();
         }
 
         private void AddServices()
@@ -175,6 +172,7 @@ namespace WizBot
             s.LoadFrom(Assembly.GetAssembly(typeof(CommandHandler)));
 
             s.AddSingleton<IReadyExecutor>(x => x.GetService<SelfService>());
+            s.AddSingleton<IReadyExecutor>(x => x.GetService<CustomReactionsService>());
             //initialize Services
             Services = s.BuildServiceProvider();
             var commandHandler = Services.GetService<CommandHandler>();

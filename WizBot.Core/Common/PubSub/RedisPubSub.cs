@@ -7,7 +7,7 @@ using StackExchange.Redis;
 
 namespace WizBot.Core.Common
 {
-    public class RedisPubSub : IPubSub
+    public sealed class RedisPubSub : IPubSub
     {
         private readonly ConnectionMultiplexer _multi;
         private readonly ISeria _serializer;
