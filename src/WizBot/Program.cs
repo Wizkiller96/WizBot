@@ -8,12 +8,13 @@ namespace WizBot
     {
         public static async Task Main(string[] args)
         {
-            System.Console.WriteLine($"Pid: {Process.GetCurrentProcess().Id}");
+            var pid = Process.GetCurrentProcess().Id;
+            System.Console.WriteLine($"Pid: {pid}");
             if (args.Length == 2
                 && int.TryParse(args[0], out int shardId)
                 && int.TryParse(args[1], out int parentProcessId))
             {
-                await new WizBot(shardId, parentProcessId)
+                await new WizBot(shardId, parentProcessId == 0 ? pid : parentProcessId)
                     .RunAndBlockAsync();
             }
             else
@@ -22,7 +23,7 @@ namespace WizBot
                     .RunAsync()
                     .ConfigureAwait(false);
 #if DEBUG
-                await new WizBot(0, Process.GetCurrentProcess().Id)
+                await new WizBot(0, pid)
                     .RunAndBlockAsync();
 #else
                 await Task.Delay(-1);

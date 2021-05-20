@@ -335,6 +335,9 @@ namespace WizBot.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+                    
+                    b.Property<bool>("AllowTarget")
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("AutoDeleteTrigger")
                         .HasColumnType("INTEGER");

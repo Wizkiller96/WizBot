@@ -41,7 +41,7 @@ namespace WizBot.Modules.CustomReactions
                 return;
             }
 
-            var cr = await _service.AddCustomReaction(ctx.Guild?.Id, key, message);
+            var cr = await _service.AddAsync(ctx.Guild?.Id, key, message);
 
             await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                 .WithTitle(GetText("new_cust_react"))
@@ -64,7 +64,7 @@ namespace WizBot.Modules.CustomReactions
                 return;
             }
 
-            var cr = await _service.EditCustomReaction(ctx.Guild?.Id, id, message).ConfigureAwait(false);
+            var cr = await _service.EditAsync(ctx.Guild?.Id, id, message).ConfigureAwait(false);
             if (cr != null)
             {
                 await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
@@ -87,7 +87,7 @@ namespace WizBot.Modules.CustomReactions
             if (--page < 0 || page > 999)
                 return;
 
-            var customReactions = _service.GetCustomReactions(ctx.Guild?.Id);
+            var customReactions = _service.GetCustomReactionsFor(ctx.Guild?.Id);
 
             if (customReactions == null || !customReactions.Any())
             {
@@ -132,7 +132,7 @@ namespace WizBot.Modules.CustomReactions
         [Priority(0)]
         public async Task ListCustReact(All _)
         {
-            var customReactions = _service.GetCustomReactions(ctx.Guild?.Id);
+            var customReactions = _service.GetCustomReactionsFor(ctx.Guild?.Id);
 
             if (customReactions == null || !customReactions.Any())
             {
@@ -160,7 +160,7 @@ namespace WizBot.Modules.CustomReactions
         {
             if (--page < 0 || page > 9999)
                 return;
-            var customReactions = _service.GetCustomReactions(ctx.Guild?.Id);
+            var customReactions = _service.GetCustomReactionsFor(ctx.Guild?.Id);
 
             if (customReactions == null || !customReactions.Any())
             {
@@ -213,7 +213,7 @@ namespace WizBot.Modules.CustomReactions
                 return;
             }
 
-            var cr = await _service.DeleteCustomReactionAsync(ctx.Guild?.Id, id);
+            var cr = await _service.DeleteAsync(ctx.Guild?.Id, id);
 
             if (cr != null)
             {
@@ -247,7 +247,7 @@ namespace WizBot.Modules.CustomReactions
 
             if (emojiStrs.Length == 0)
             {
-                await _service.ResetCRReactions(ctx.Guild?.Id, id);
+                await _service.ResetCrReactions(ctx.Guild?.Id, id);
                 await ReplyConfirmLocalizedAsync("crr_reset", Format.Bold(id.ToString())).ConfigureAwait(false);
                 return;
             }
@@ -295,6 +295,10 @@ namespace WizBot.Modules.CustomReactions
         [WizBotCommand, Usage, Description, Aliases]
         public Task CrAd(int id)
             => InternalCrEdit(id, CustomReactionsService.CrField.AutoDelete);
+        
+        [WizBotCommand, Usage, Description, Aliases]
+        public Task CrAt(int id)
+            => InternalCrEdit(id, CustomReactionsService.CrField.AllowTarget);
 
         [WizBotCommand, Usage, Description, Aliases]
         [OwnerOnly]
@@ -339,7 +343,7 @@ namespace WizBot.Modules.CustomReactions
                 .WithTitle("Custom reaction clear")
                 .WithDescription("This will delete all custom reactions on this server.")).ConfigureAwait(false))
             {
-                var count = _service.ClearCustomReactions(ctx.Guild.Id);
+                var count = _service.DeleteAllCustomReactions(ctx.Guild.Id);
                 await ReplyConfirmLocalizedAsync("cleared", count).ConfigureAwait(false);
             }
         }

@@ -56,6 +56,8 @@ namespace WizBot
                 .ListRange(Credentials.RedisKey() + "_shardstats")
                 .Select(x => JsonConvert.DeserializeObject<ShardComMessage>(x))
                 .Sum(x => x.Guilds);
+        
+        public string Mention { get; set; }
 
         public event Func<GuildConfig, Task> JoinedGuild = delegate { return Task.CompletedTask; };
 
@@ -318,6 +320,7 @@ namespace WizBot
 
             await LoginAsync(Credentials.Token).ConfigureAwait(false);
 
+            Mention = Client.CurrentUser.Mention;
             _log.Info($"Shard {Client.ShardId} loading services...");
             try
             {
@@ -348,12 +351,13 @@ namespace WizBot
             StartSendingData();
             Ready.TrySetResult(true);
             _ = Task.Run(ExecuteReadySubscriptions);
+            _log.Info($"Shard {Client.ShardId} ready.");
         }
 
-        private async Task ExecuteReadySubscriptions()
+        private Task ExecuteReadySubscriptions()
         {
             var readyExecutors = Services.GetServices<IReadyExecutor>();
-            foreach (var toExec in readyExecutors)
+            var tasks = readyExecutors.Select(async toExec => 
             {
                 try
                 {
@@ -364,8 +368,9 @@ namespace WizBot
                     _log.Error(ex, "Failed running OnReadyAsync method on {Type} type: {Message}",
                         toExec.GetType().Name, ex.Message);
                 }
-            }
-            _log.Info($"Shard {Client.ShardId} ready.");
+            });
+
+            return Task.WhenAll(tasks);
         }
 
         private Task Client_Log(LogMessage arg)

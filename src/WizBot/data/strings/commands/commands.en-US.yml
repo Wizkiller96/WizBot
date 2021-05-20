@@ -1221,7 +1221,7 @@ hentaibomb:
   args:
     - "yuri"
 cleverbot:
-  desc: "Toggles cleverbot session. When enabled, the bot will reply to messages starting with bot mention in the server. Custom reactions starting with %mention% won't work if cleverbot is enabled."
+  desc: "Toggles cleverbot session. When enabled, the bot will reply to messages starting with bot mention in the server. Custom reactions starting with %bot.mention% won't work if cleverbot is enabled."
   args:
     - ""
 shorten:
@@ -1445,6 +1445,10 @@ crreact:
     - "59"
 crad:
   desc: "Toggles whether the message triggering the custom reaction will be automatically deleted."
+  args:
+    - "59"
+crat:
+  desc: "Toggles whether the custom reaction will allow extra input after the trigger. For example, with this feature enabled, custom reaction with trigger 'hi' will also be invoked when a user types 'hi there'. This feature is automatically enabled on custom reactions which have '%target%' in their response."
   args:
     - "59"
 crdm:
