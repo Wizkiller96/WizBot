@@ -92,9 +92,16 @@ namespace WizBot.Modules.Utility
 
             await ctx.SendPaginatedConfirmAsync(page, (cur) =>
             {
+                var pageUsers = roleUsers.Skip(cur * 20)
+                    .Take(20)
+                    .ToList();
+
+                if (pageUsers.Count == 0)
+                    return new EmbedBuilder().WithOkColor().WithDescription(GetText("no_user_on_this_page"));
+
                 return new EmbedBuilder().WithOkColor()
                     .WithTitle(Format.Bold(GetText("inrole_list", Format.Bold(role.Name))) + $" - {roleUsers.Length}")
-                    .WithDescription(string.Join("\n", roleUsers.Skip(cur * 20).Take(20)));
+                    .WithDescription(string.Join("\n", pageUsers));
             }, roleUsers.Length, 20).ConfigureAwait(false);
         }
         
@@ -102,7 +109,7 @@ namespace WizBot.Modules.Utility
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
         public Task InRole([Leftover] IRole role)
-            => InRole(0, role);
+            => InRole(1, role);
 
         public enum MeOrBot { Me, Bot }
 
