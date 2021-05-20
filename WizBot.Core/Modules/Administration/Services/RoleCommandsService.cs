@@ -159,7 +159,7 @@ namespace WizBot.Modules.Administration.Services
                 var gc = uow.GuildConfigs.ForId(id, set => set
                     .Include(x => x.ReactionRoleMessages)
                     .ThenInclude(x => x.ReactionRoles));
-                if (gc.ReactionRoleMessages.Count >= 5)
+                if (gc.ReactionRoleMessages.Count >= 10)
                     return false;
                 gc.ReactionRoleMessages.Add(rrm);
                 _models.AddOrUpdate(id, 
