@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
+using NLog;
 using YamlDotNet.Serialization;
 
 namespace WizBot.Core.Services
@@ -12,10 +14,12 @@ namespace WizBot.Core.Services
     {
         private readonly string _responsesPath = "data/strings/responses";
         private readonly string _commandsPath = "data/strings/commands";
+        private readonly Logger _log;
 
         public LocalFileStringsSource(string responsesPath = "data/strings/responses",
             string commandsPath = "data/strings/commands")
         {
+            _log = LogManager.GetCurrentClassLogger();
             _responsesPath = responsesPath;
             _commandsPath = commandsPath;
         }
@@ -25,9 +29,16 @@ namespace WizBot.Core.Services
             var outputDict = new Dictionary<string, Dictionary<string, string>>();
             foreach (var file in Directory.GetFiles(_responsesPath))
             {
-                var langDict = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(file));
-                var localeName = GetLocaleName(file);
-                outputDict[localeName] = langDict;
+                try
+                {
+                    var langDict = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(file));
+                    var localeName = GetLocaleName(file);
+                    outputDict[localeName] = langDict;
+                }
+                catch (Exception ex)
+                {
+                    _log.Error(ex, "Error loading {FileName} response strings: {ErrorMessage}", file, ex.Message);
+                }
             }
 
             return outputDict;
@@ -41,10 +52,17 @@ namespace WizBot.Core.Services
             var outputDict = new Dictionary<string, Dictionary<string, CommandStrings>>();
             foreach (var file in Directory.GetFiles(_commandsPath))
             {
-                var text = File.ReadAllText(file);
-                var langDict = deserializer.Deserialize<Dictionary<string, CommandStrings>>(text);
-                var localeName = GetLocaleName(file);
-                outputDict[localeName] = langDict;
+                try
+                {
+                    var text = File.ReadAllText(file);
+                    var langDict = deserializer.Deserialize<Dictionary<string, CommandStrings>>(text);
+                    var localeName = GetLocaleName(file);
+                    outputDict[localeName] = langDict;
+                }
+                catch (Exception ex)
+                {
+                    _log.Error(ex, "Error loading {FileName} command strings: {ErrorMessage}", file, ex.Message);
+                }
             }
 
             return outputDict;
