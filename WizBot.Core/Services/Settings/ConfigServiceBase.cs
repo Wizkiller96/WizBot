@@ -4,10 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text.Json;
 using System.Threading.Tasks;
 using WizBot.Common.Yml;
 using WizBot.Core.Common;
 using WizBot.Core.Common.Configs;
+using WizBot.Core.Common.JsonConverters;
+using Rgba32Converter = WizBot.Core.Common.JsonConverters.Rgba32Converter;
+using CultureInfoConverter = WizBot.Core.Common.JsonConverters.CultureInfoConverter;
 
 namespace WizBot.Core.Services
 {
@@ -59,11 +63,19 @@ namespace WizBot.Core.Services
             return default;
         }
 
+        private static readonly JsonSerializerOptions serializerOptions = new JsonSerializerOptions()
+        {
+            MaxDepth = 0,
+            Converters = { new Rgba32Converter(), new CultureInfoConverter() }
+        };
         private TSettings CreateCopy()
         {
-            var serializedData = _serializer.Serialize(_data);
-            
-            return _serializer.Deserialize<TSettings>(serializedData);
+            var serializedData = JsonSerializer.Serialize(_data, serializerOptions);
+            return JsonSerializer.Deserialize<TSettings>(serializedData, serializerOptions);
+
+            // var serializedData = _serializer.Serialize(_data);
+            //
+            // return _serializer.Deserialize<TSettings>(serializedData);
         }
 
         /// <summary>
