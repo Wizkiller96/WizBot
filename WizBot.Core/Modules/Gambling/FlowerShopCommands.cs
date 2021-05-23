@@ -42,9 +42,7 @@ namespace WizBot.Modules.Gambling
                 _cs = cs;
             }
 
-            [WizBotCommand, Usage, Description, Aliases]
-            [RequireContext(ContextType.Guild)]
-            public Task ShopInternalAsync(int page = 0)
+            private Task ShopInternalAsync(int page = 0)
             {
                 if (page < 0)
                     throw new ArgumentOutOfRangeException(nameof(page));

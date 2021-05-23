@@ -1567,6 +1567,11 @@ time:
   desc: "Shows the current time and timezone in the specified location."
   args:
     - "London, UK"
+shop:
+  desc: "Lists this server's administrators' shop. Paginated."
+  args:
+    - ""
+    - "2"
 shopadd:
   desc: "Adds an item to the shop by specifying type price and name. Available types are role and list. 90% of currency from each purchase will be received by the user who added the item to the shop."
   args:
@@ -1575,10 +1580,10 @@ shopchangename:
   desc: "Change the name of a shop entry at the specified index. Only works for non-role items"
   args:
     - "1"
-shop:
-  desc: "Lists this server's administrators' shop. Paginated."
+shopremove:
+  desc: "Removes an item from the shop by its ID."
   args:
-    - "3 Cool stuff"
+    - "1"
 shopchangeprice:
   desc: "Change the price of a shop entry at the specified index. Specify the index of the entry, followed by the price"
   args:
