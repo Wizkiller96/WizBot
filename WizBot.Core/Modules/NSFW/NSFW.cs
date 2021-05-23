@@ -12,6 +12,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace WizBot.Modules.NSFW
 {
@@ -562,7 +563,7 @@ namespace WizBot.Modules.NSFW
                 if (Uri.IsWellFormedUriString(imgObj.FileUrl, UriKind.Absolute))
                     embed.WithImageUrl(imgObj.FileUrl);
                 else
-                    _log.Error($"Image link from {type} is not a proper Url: {imgObj.FileUrl}");
+                    Log.Error($"Image link from {type} is not a proper Url: {imgObj.FileUrl}");
 
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
