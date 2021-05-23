@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Discord;
 using WizBot.Extensions;
 using WizBot.Core.Services.Database.Models;
-using NLog;
 using System.IO;
 using Discord.Commands;
 using Discord.WebSocket;
@@ -16,6 +15,7 @@ using WizBot.Modules.Music.Common.Exceptions;
 using WizBot.Modules.Music.Common.SongResolver;
 using WizBot.Common.Collections;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace WizBot.Modules.Music.Services
 {
@@ -26,7 +26,6 @@ namespace WizBot.Modules.Music.Services
         private readonly IGoogleApiService _google;
         private readonly IBotStrings _strings;
         private readonly DbService _db;
-        private readonly Logger _log;
         private readonly ConcurrentDictionary<ulong, MusicSettings> _musicSettings;
         private readonly SoundCloudApiService _sc;
         private readonly IBotCredentials _creds;
@@ -48,7 +47,6 @@ namespace WizBot.Modules.Music.Services
             _db = db;
             _sc = sc;
             _creds = creds;
-            _log = LogManager.GetCurrentClassLogger();
             _musicSettings = bot.AllGuildConfigs.ToDictionary(x => x.GuildId, x => x.MusicSettings)
                 .ToConcurrent();
 
@@ -196,7 +194,7 @@ namespace WizBot.Modules.Music.Services
                         // ignored
                     }
                 };
-                _log.Info("Done creating");
+                Log.Information("Done creating");
                 return mp;
             });
         }

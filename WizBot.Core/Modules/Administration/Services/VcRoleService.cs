@@ -8,13 +8,12 @@ using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
-using NLog;
+using Serilog;
 
 namespace WizBot.Modules.Administration.Services
 {
     public class VcRoleService : INService
     {
-        private readonly Logger _log;
         private readonly DbService _db;
         private readonly DiscordSocketClient _client;
 
@@ -23,7 +22,6 @@ namespace WizBot.Modules.Administration.Services
 
         public VcRoleService(DiscordSocketClient client, WizBot bot, DbService db)
         {
-            _log = LogManager.GetCurrentClassLogger();
             _db = db;
             _client = client;
 
@@ -129,7 +127,7 @@ namespace WizBot.Modules.Administration.Services
             {
                 using (var uow = _db.GetDbContext())
                 {
-                    _log.Warn($"Removing {missingRoles.Count} missing roles from {nameof(VcRoleService)}");
+                    Log.Warning($"Removing {missingRoles.Count} missing roles from {nameof(VcRoleService)}");
                     uow._context.RemoveRange(missingRoles);
                     await uow.SaveChangesAsync();
                 }
@@ -217,7 +215,7 @@ namespace WizBot.Modules.Administration.Services
                 }
                 catch (Exception ex)
                 {
-                    _log.Warn(ex);
+                    Log.Warning(ex, "Error in VcRoleService VoiceStateUpdate");
                 }
             });
             return Task.CompletedTask;

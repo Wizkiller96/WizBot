@@ -4,14 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord.WebSocket;
 using WizBot.Core.Services;
-using NLog;
 using System.Collections.Generic;
+using Serilog;
 
 namespace WizBot.Modules.Administration.Services
 {
     public class AutoAssignRoleService : INService
     {
-        private readonly Logger _log;
         private readonly DiscordSocketClient _client;
         private readonly DbService _db;
 
@@ -22,7 +21,6 @@ namespace WizBot.Modules.Administration.Services
 
         public AutoAssignRoleService(DiscordSocketClient client, WizBot bot, DbService db)
         {
-            _log = LogManager.GetCurrentClassLogger();
             _client = client;
             _db = db;
 
@@ -66,20 +64,20 @@ namespace WizBot.Modules.Administration.Services
                                 }
                                 else
                                 {
-                                    _log.Warn($"Disabled 'Auto assign role' feature on {0} server the role doesn't exist.",
+                                    Log.Warning($"Disabled 'Auto assign role' feature on {0} server the role doesn't exist.",
                                        roleId);
                                     DisableAar(user.Guild.Id);
                                 }
                             }
                             catch (Discord.Net.HttpException ex) when (ex.HttpCode == System.Net.HttpStatusCode.Forbidden)
                             {
-                                _log.Warn($"Disabled 'Auto assign role' feature on {0} server because I don't have role management permissions.",
+                                Log.Warning($"Disabled 'Auto assign role' feature on {0} server because I don't have role management permissions.",
                                     roleId);
                                 DisableAar(user.Guild.Id);
                             }
                             catch (Exception ex)
                             {
-                                _log.Warn(ex);
+                                Log.Warning(ex, "Error in aar");
                             }
                         }
                     })).Append(Task.Delay(3000))).ConfigureAwait(false);

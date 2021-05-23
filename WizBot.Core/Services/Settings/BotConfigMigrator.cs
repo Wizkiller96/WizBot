@@ -3,21 +3,18 @@ using System.Data.Common;
 using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Core.Common.Configs;
-using NLog;
-using NLog.Fluent;
+using Serilog;
 using SixLabors.ImageSharp.PixelFormats;
 
 namespace WizBot.Core.Services
 {
     public sealed class BotConfigMigrator : IConfigMigrator
     {
-        private readonly Logger _log;
         private readonly DbService _db;
         private readonly BotConfigService _bss;
 
         public BotConfigMigrator(DbService dbService, BotConfigService bss)
         {
-            _log = LogManager.GetCurrentClassLogger();
             _db = dbService;
             _bss = bss;
         }
@@ -58,7 +55,7 @@ namespace WizBot.Core.Services
                     return;
             }
 
-            _log.Info("Migrating bot settings...");
+            Log.Information("Migrating bot settings...");
 
             var blockedCommands = new HashSet<string>();
             using (var cmdCom = conn.CreateCommand())
@@ -119,7 +116,7 @@ FROM BotConfig";
                 x.Blocked.Modules = blockedModules;
             });
 
-            Log.Info("Data written to data/bot.yml");
+            Log.Information("Data written to data/bot.yml");
         }
     }
 }

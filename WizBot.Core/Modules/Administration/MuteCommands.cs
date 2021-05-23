@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord.WebSocket;
 using WizBot.Extensions;
+using Serilog;
 
 namespace WizBot.Modules.Administration
 {
@@ -71,7 +72,7 @@ namespace WizBot.Modules.Administration
                 }
                 catch (Exception ex)
                 {
-                    _log.Warn(ex.ToString());
+                    Log.Warning(ex.ToString());
                     await ReplyErrorLocalizedAsync("mute_error").ConfigureAwait(false);
                 }
             }
@@ -94,7 +95,7 @@ namespace WizBot.Modules.Administration
                 }
                 catch (Exception ex)
                 {
-                    _log.Warn(ex);
+                    Log.Warning(ex, "Error in mute command");
                     await ReplyErrorLocalizedAsync("mute_error").ConfigureAwait(false);
                 }
             }
@@ -130,7 +131,7 @@ namespace WizBot.Modules.Administration
                 }
                 catch (Exception ex)
                 {
-                    _log.Warn(ex.ToString());
+                    Log.Warning(ex.ToString());
                     await ReplyErrorLocalizedAsync("mute_error").ConfigureAwait(false);
                 }
             }

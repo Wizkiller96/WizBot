@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using WizBot.Core.Services.Database.Models;
 using Newtonsoft.Json;
-using NLog;
+using Serilog;
 
 #nullable enable
 namespace WizBot.Core.Modules.Searches.Common.StreamNotifications.Providers
@@ -14,7 +14,6 @@ namespace WizBot.Core.Modules.Searches.Common.StreamNotifications.Providers
     public class TwitchProvider : Provider
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly Logger _log;
 
         private static Regex Regex { get; } = new Regex(@"twitch.tv/(?<name>.+[^/])/?",
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -24,7 +23,6 @@ namespace WizBot.Core.Modules.Searches.Common.StreamNotifications.Providers
         public TwitchProvider(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
-            _log = LogManager.GetCurrentClassLogger();
         }
 
         public override Task<bool> IsValidUrl(string url)
@@ -111,7 +109,7 @@ namespace WizBot.Core.Modules.Searches.Common.StreamNotifications.Providers
                     }
                     catch (Exception ex)
                     {
-                        _log.Warn($"Something went wrong retreiving {Platform} stream data for {login}: {ex.Message}");
+                        Log.Warning($"Something went wrong retreiving {Platform} stream data for {login}: {ex.Message}");
                         _failingStreams.TryAdd(login, DateTime.UtcNow);
                     }
                 }

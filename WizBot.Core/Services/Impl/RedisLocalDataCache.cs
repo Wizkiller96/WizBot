@@ -2,12 +2,12 @@
 using WizBot.Extensions;
 using WizBot.Modules.Games.Common.Trivia;
 using Newtonsoft.Json;
-using NLog;
 using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Serilog;
 
 namespace WizBot.Core.Services.Impl
 {
@@ -15,7 +15,6 @@ namespace WizBot.Core.Services.Impl
     {
         private readonly ConnectionMultiplexer _con;
         private readonly IBotCredentials _creds;
-        private readonly Logger _log;
 
         private IDatabase _db => _con.GetDatabase();
 
@@ -76,13 +75,12 @@ namespace WizBot.Core.Services.Impl
         {
             _con = con;
             _creds = creds;
-            _log = LogManager.GetCurrentClassLogger();
 
             if (shardId == 0)
             {
                 if (!File.Exists(pokemonListFile))
                 {
-                    _log.Warn(pokemonListFile + " is missing. Pokemon abilities not loaded.");
+                    Log.Warning($"{pokemonListFile} is missing. Pokemon abilities not loaded");
                 }
                 else
                 {
@@ -91,7 +89,7 @@ namespace WizBot.Core.Services.Impl
 
                 if (!File.Exists(pokemonAbilitiesFile))
                 {
-                    _log.Warn(pokemonAbilitiesFile + " is missing. Pokemon abilities not loaded.");
+                    Log.Warning($"{pokemonAbilitiesFile} is missing. Pokemon abilities not loaded.");
                 }
                 else
                 {
@@ -106,7 +104,7 @@ namespace WizBot.Core.Services.Impl
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex);
+                    Log.Error(ex, "Error loading local data");
                     throw;
                 }
             }

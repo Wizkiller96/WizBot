@@ -9,6 +9,7 @@ using WizBot.Core.Services;
 using WizBot.Extensions;
 using System.Linq;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace WizBot.Modules.Gambling
 {
@@ -63,7 +64,7 @@ namespace WizBot.Modules.Gambling
                         await ReplyConfirmLocalizedAsync("bj_joined").ConfigureAwait(false);
                     else
                     {
-                        _log.Info($"{ctx.User} can't join a blackjack game as it's in " + bj.State.ToString() + " state already.");
+                        Log.Information($"{ctx.User} can't join a blackjack game as it's in " + bj.State.ToString() + " state already.");
                     }
                 }
 

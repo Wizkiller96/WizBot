@@ -8,7 +8,6 @@ using WizBot.Modules.Games.Common.Hangman;
 using WizBot.Modules.Games.Common.Nunchi;
 using WizBot.Modules.Games.Common.Trivia;
 using Newtonsoft.Json;
-using NLog;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -17,6 +16,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace WizBot.Modules.Games.Services
 {
@@ -29,7 +29,6 @@ namespace WizBot.Modules.Games.Services
         public IReadOnlyList<string> EightBallResponses => _gamesConfig.Data.EightBallResponses;
 
         private readonly Timer _t;
-        private readonly Logger _log;
         private readonly IHttpClientFactory _httpFactory;
         private readonly Random _rng;
 
@@ -64,7 +63,6 @@ namespace WizBot.Modules.Games.Services
         public GamesService(GamesConfigService gamesConfig, IHttpClientFactory httpFactory)
         {
             _gamesConfig = gamesConfig;
-            _log = LogManager.GetCurrentClassLogger();
             _httpFactory = httpFactory;
 
             Ratings = new AsyncLazy<RatingTexts>(GetRatingTexts);
@@ -83,7 +81,7 @@ namespace WizBot.Modules.Games.Services
             }
             catch (Exception ex)
             {
-                _log.Warn("Error while loading typing articles {0}", ex.ToString());
+                Log.Warning("Error while loading typing articles {0}", ex.ToString());
                 TypingArticles = new List<TypingArticle>();
             }
         }

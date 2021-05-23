@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace WizBot.Modules.Music
 {
@@ -74,7 +75,7 @@ namespace WizBot.Modules.Music
         //            }
 
         //            ////if some other user moved
-        //            //if ((player.VoiceChannel == newState.VoiceChannel && //if joined first, and player paused, unpause 
+        //            //if ((player.VoiceChannel == newState.VoiceChannel && //if joined first, and player paused, unpause
         //            //        player.Paused &&
         //            //        newState.VoiceChannel.Users.Count >= 2) ||  // keep in mind bot is in the channel (+1)
         //            //    (player.VoiceChannel == oldState.VoiceChannel && // if left last, and player unpaused, pause
@@ -483,16 +484,16 @@ namespace WizBot.Modules.Music
                         }
                     }
                 }
-
-                if (!success)
-                    await ReplyErrorLocalizedAsync("playlist_delete_fail").ConfigureAwait(false);
-                else
-                    await ReplyConfirmLocalizedAsync("playlist_deleted").ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                _log.Warn(ex);
+                Log.Warning(ex, "Error deleting playlist");
             }
+
+            if (!success)
+                await ReplyErrorLocalizedAsync("playlist_delete_fail").ConfigureAwait(false);
+            else
+                await ReplyConfirmLocalizedAsync("playlist_deleted").ConfigureAwait(false);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -580,7 +581,16 @@ namespace WizBot.Modules.Music
                     return;
                 }
                 IUserMessage msg = null;
-                try { msg = await ctx.Channel.SendMessageAsync(GetText("attempting_to_queue", Format.Bold(mpl.Songs.Count.ToString()))).ConfigureAwait(false); } catch (Exception ex) { _log.Warn(ex); }
+                try
+                {
+                    msg = await ctx.Channel
+                        .SendMessageAsync(GetText("attempting_to_queue", Format.Bold(mpl.Songs.Count.ToString())))
+                        .ConfigureAwait(false);
+                }
+                catch (Exception)
+                {
+                }
+
                 foreach (var item in mpl.Songs)
                 {
                     try
@@ -668,14 +678,13 @@ namespace WizBot.Modules.Music
                 {
                     try
                     {
-                        await Task.Yield();
                         var sinfo = await svideo.GetSongInfo().ConfigureAwait(false);
                         sinfo.QueuerName = ctx.User.ToString();
                         await InternalQueue(mp, sinfo, true).ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {
-                        _log.Warn(ex);
+                        Log.Warning(ex, "Error queueing soundcloud song: {Title}", svideo.Title);
                         break;
                     }
                 }
@@ -731,7 +740,7 @@ namespace WizBot.Modules.Music
             }
             catch (Exception ex)
             {
-                _log.Warn(ex.Message);
+                Log.Warning(ex.Message);
             }
 
             if (plId == null)
@@ -802,7 +811,6 @@ namespace WizBot.Modules.Music
             {
                 try
                 {
-                    await Task.Yield();
                     var song = await _service.ResolveSong(file.FullName, ctx.User.ToString(), MusicType.Local).ConfigureAwait(false);
                     await InternalQueue(mp, song, true).ConfigureAwait(false);
                 }
@@ -812,7 +820,7 @@ namespace WizBot.Modules.Music
                 }
                 catch (Exception ex)
                 {
-                    _log.Warn(ex);
+                    Log.Warning(ex, "Error resolving local song {FileName}", file);
                     break;
                 }
             }

@@ -3,23 +3,21 @@ using AngleSharp.Html.Dom;
 using WizBot.Core.Services;
 using WizBot.Modules.Searches.Common;
 using Newtonsoft.Json;
-using NLog;
 using System;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace WizBot.Modules.Searches.Services
 {
     public class AnimeSearchService : INService
     {
-        private readonly Logger _log;
         private readonly IDataCache _cache;
         private readonly IHttpClientFactory _httpFactory;
 
         public AnimeSearchService(IDataCache cache, IHttpClientFactory httpFactory)
         {
-            _log = LogManager.GetCurrentClassLogger();
             _cache = cache;
             _httpFactory = httpFactory;
         }
@@ -60,7 +58,6 @@ namespace WizBot.Modules.Searches.Services
             query = query.Replace(" ", "-", StringComparison.InvariantCulture);
             try
             {
-
                 var link = "http://www.novelupdates.com/series/" + Uri.EscapeDataString(query.Replace("/", " ", StringComparison.InvariantCulture));
                 link = link.ToLowerInvariant();
                 var (ok, data) = await _cache.TryGetNovelDataAsync(link).ConfigureAwait(false);
@@ -125,7 +122,7 @@ namespace WizBot.Modules.Searches.Services
             }
             catch (Exception ex)
             {
-                _log.Error(ex);
+                Log.Error(ex, "Error getting novel data");
                 return null;
             }
         }

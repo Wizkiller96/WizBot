@@ -3,7 +3,7 @@ using System.IO;
 using System.Net.Http;
 using WizBot.Common;
 using WizBot.Core.Services;
-using NLog;
+using Serilog;
 using Image = SixLabors.ImageSharp.Image;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
@@ -12,7 +12,6 @@ namespace WizBot.Modules.Games.Common
 {
     public class GirlRating
     {
-        private static readonly Logger _log = LogManager.GetCurrentClassLogger();
         private readonly IImageCache _images;
 
         public double Crazy { get; }
@@ -69,7 +68,7 @@ namespace WizBot.Modules.Games.Common
                 }
                 catch (Exception ex)
                 {
-                    _log.Warn(ex);
+                    Log.Warning(ex, "Error getting RateGirl image");
                     return null;
                 }
             });

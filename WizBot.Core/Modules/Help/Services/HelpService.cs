@@ -9,10 +9,10 @@ using WizBot.Common.Attributes;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Core.Services;
 using WizBot.Common;
-using NLog;
 using CommandLine;
 using System.Collections.Generic;
 using WizBot.Modules.Administration.Services;
+using Serilog;
 
 namespace WizBot.Modules.Help.Services
 {
@@ -20,7 +20,6 @@ namespace WizBot.Modules.Help.Services
     {
         private readonly CommandHandler _ch;
         private readonly IBotStrings _strings;
-        private readonly Logger _log;
         private readonly DiscordPermOverrideService _dpos;
         private readonly BotConfigService _bss;
 
@@ -31,28 +30,20 @@ namespace WizBot.Modules.Help.Services
             _strings = strings;
             _dpos = dpos;
             _bss = bss;
-            _log = LogManager.GetCurrentClassLogger();
         }
 
         public Task LateExecute(DiscordSocketClient client, IGuild guild, IUserMessage msg)
         {
-            try
+            var settings = _bss.Data;
+            if (guild == null)
             {
-                var settings = _bss.Data;
-                if (guild == null)
-                {
-                    if (string.IsNullOrWhiteSpace(settings.DmHelpText) || settings.DmHelpText == "-")
-                        return Task.CompletedTask;
-
-                    if (CREmbed.TryParse(settings.DmHelpText, out var embed))
-                        return msg.Channel.EmbedAsync(embed);
-
-                    return msg.Channel.SendMessageAsync(settings.DmHelpText);
-                }
-            }
-            catch (Exception ex)
-            {
-                _log.Warn(ex);
+                if (string.IsNullOrWhiteSpace(settings.DmHelpText) || settings.DmHelpText == "-")
+                    return Task.CompletedTask;
+                
+                if (CREmbed.TryParse(settings.DmHelpText, out var embed))
+                    return msg.Channel.EmbedAsync(embed);
+                
+                return msg.Channel.SendMessageAsync(settings.DmHelpText);
             }
             return Task.CompletedTask;
         }

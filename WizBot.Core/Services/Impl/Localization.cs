@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Discord;
-using NLog;
 using WizBot.Common;
 using Newtonsoft.Json;
 using System.IO;
@@ -12,7 +11,6 @@ namespace WizBot.Core.Services.Impl
 {
     public class Localization : ILocalization
     {
-        private readonly Logger _log;
         private readonly BotConfigService _bss;
         private readonly DbService _db;
 
@@ -24,8 +22,6 @@ namespace WizBot.Core.Services.Impl
 
         public Localization(BotConfigService bss, WizBot bot, DbService db)
         {
-            _log = LogManager.GetCurrentClassLogger();
-
             _bss = bss;
             _db = db;
 

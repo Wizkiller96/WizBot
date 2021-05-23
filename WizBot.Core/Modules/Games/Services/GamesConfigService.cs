@@ -23,8 +23,7 @@ namespace WizBot.Modules.Games.Services
 
     // public sealed class GamesConfigMigrator : IConfigMigrator
     // {
-    //     private readonly Logger _log;
-    //     private readonly DbService _db;
+    //         //     private readonly DbService _db;
     //     private readonly GamesConfigService _gss;
     //
     //     public GamesConfigMigrator(DbService dbService, GamesConfigService gss)
@@ -54,7 +53,7 @@ namespace WizBot.Modules.Games.Services
     //                 return;
     //         }
     //
-    //         _log.Info("Migrating trivia...");
+    //         Log.Information("Migrating trivia...");
     //
     //         using var com = conn.CreateCommand();
     //         com.CommandText = $@"SELECT MinimumTriviaWinReq, TriviaCurrencyReward FROM BotConfig";
@@ -65,7 +64,7 @@ namespace WizBot.Modules.Games.Services
     //         
     //         _gss.ModifyConfig(ModifyTriviaAction(reader));
     //
-    //         _log.Info("Trivia config migrated to data/games.yml");
+    //         Log.Information("Trivia config migrated to data/games.yml");
     //     }
     //     
     //     private static Action<GamesConfig> ModifyTriviaAction(DbDataReader reader)
@@ -98,11 +97,11 @@ namespace WizBot.Modules.Games.Services
     //                 if (!reader.Read())
     //                     return;
     //
-    //                 _log.Info("Migrating eightball...");
+    //                 Log.Information("Migrating eightball...");
     //                 _gss.ModifyConfig(Modify8ballAction(reader));
     //             }
     //
-    //             _log.Info("Eightball migrated to data/games.yml");
+    //             Log.Information("Eightball migrated to data/games.yml");
     //             MigrateTrivia(conn);
     //         }
     //         finally
@@ -145,11 +144,11 @@ namespace WizBot.Modules.Games.Services
     //             if (!reader.Read())
     //                 return;
     //             
-    //             _log.Info("Migrating race animals...");
+    //             Log.Information("Migrating race animals...");
     //             _gss.ModifyConfig(ModifyRaceAnimalsAction(reader));
     //         }
     //
-    //         _log.Info("Race animals migrated to data/games.yml");
+    //         Log.Information("Race animals migrated to data/games.yml");
     //
     //         using var deleteRaceAnimalsCommand = conn.CreateCommand();
     //         deleteRaceAnimalsCommand.CommandText = "DROP TABLE IF EXISTS RaceAnimals";

@@ -18,6 +18,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using WizBot.Core.Common;
 using WizBot.Core.Common.Attributes;
+using Serilog;
 
 namespace WizBot.Modules.Utility
 {
@@ -51,7 +52,7 @@ namespace WizBot.Modules.Utility
 
             if (!(ctx.Guild is SocketGuild socketGuild))
             {
-                _log.Warn("Can't cast guild to socket guild.");
+                Log.Warning("Can't cast guild to socket guild.");
                 return;
             }
             var rng = new WizBotRandom();

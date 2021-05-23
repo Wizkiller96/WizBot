@@ -10,16 +10,15 @@ using Discord.Net;
 using Discord.WebSocket;
 using WizBot.Extensions;
 using WizBot.Core.Services;
-using NLog;
 using WizBot.Core.Modules.Games.Common.Trivia;
 using WizBot.Modules.Games.Services;
+using Serilog;
 
 namespace WizBot.Modules.Games.Common.Trivia
 {
     public class TriviaGame
     {
         private readonly SemaphoreSlim _guessLock = new SemaphoreSlim(1, 1);
-        private readonly Logger _log;
         private readonly IDataCache _cache;
         private readonly IBotStrings _strings;
         private readonly DiscordSocketClient _client;
@@ -48,7 +47,6 @@ namespace WizBot.Modules.Games.Common.Trivia
             IDataCache cache, ICurrencyService cs, IGuild guild, ITextChannel channel,
             TriviaOptions options, string quitCommand)
         {
-            _log = LogManager.GetCurrentClassLogger();
             _cache = cache;
             _questionPool = new TriviaQuestionPool(_cache);
             _strings = strings;
@@ -108,7 +106,7 @@ namespace WizBot.Modules.Games.Common.Trivia
                 }
                 catch (Exception ex)
                 {
-                    _log.Warn(ex);
+                    Log.Warning(ex, "Error sending trivia embed");
                     await Task.Delay(2000).ConfigureAwait(false);
                     continue;
                 }
@@ -134,7 +132,7 @@ namespace WizBot.Modules.Games.Common.Trivia
                             {
                                 break;
                             }
-                            catch (Exception ex) { _log.Warn(ex); }
+                            catch (Exception ex) { Log.Warning(ex, "Error editing triva message"); }
 
                         //timeout
                         await Task.Delay(_options.QuestionTimer * 1000 / 2, _triviaCancelSource.Token).ConfigureAwait(false);
@@ -164,7 +162,7 @@ namespace WizBot.Modules.Games.Common.Trivia
                     }
                     catch (Exception ex)
                     {
-                        _log.Warn(ex);
+                        Log.Warning(ex, "Error sending trivia time's up message");
                     }
                 }
                 await Task.Delay(5000).ConfigureAwait(false);
@@ -186,7 +184,18 @@ namespace WizBot.Modules.Games.Common.Trivia
             var old = ShouldStopGame;
             ShouldStopGame = true;
             if (!old)
-                try { await Channel.SendConfirmAsync(GetText("trivia_game"), GetText("trivia_stopping")).ConfigureAwait(false); } catch (Exception ex) { _log.Warn(ex); }
+            {
+                try
+                {
+                    await Channel.SendConfirmAsync(GetText("trivia_game"), GetText("trivia_stopping"))
+                        .ConfigureAwait(false);
+
+                }
+                catch (Exception ex)
+                {
+                    Log.Warning(ex, "Error sending trivia stopping message");
+                }
+            }
         }
 
         private Task PotentialGuess(SocketMessage imsg)
@@ -251,7 +260,7 @@ namespace WizBot.Modules.Games.Common.Trivia
                         embed.WithImageUrl(CurrentQuestion.AnswerImageUrl);
                     await Channel.EmbedAsync(embed).ConfigureAwait(false);
                 }
-                catch (Exception ex) { _log.Warn(ex); }
+                catch (Exception ex) { Log.Warning(ex.ToString()); }
             });
             return Task.CompletedTask;
         }

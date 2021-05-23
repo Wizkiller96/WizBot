@@ -1,10 +1,10 @@
 ﻿using WizBot.Common;
 using Newtonsoft.Json;
-using NLog;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace WizBot.Modules.Games.Common.ChatterBot
 {
@@ -12,7 +12,6 @@ namespace WizBot.Modules.Games.Common.ChatterBot
     {
         private readonly string _apiKey;
         private readonly IHttpClientFactory _httpFactory;
-        private readonly Logger _log;
         private string _cs = null;
 
         private string QueryString => $"https://www.cleverbot.com/getreply?key={_apiKey}" +
@@ -24,7 +23,6 @@ namespace WizBot.Modules.Games.Common.ChatterBot
         {
             this._apiKey = apiKey;
             this._httpFactory = factory;
-            this._log = LogManager.GetCurrentClassLogger();
         }
 
         public async Task<string> Think(string input)
@@ -41,8 +39,8 @@ namespace WizBot.Modules.Games.Common.ChatterBot
                 }
                 catch
                 {
-                    _log.Warn("Unexpected cleverbot response received: ");
-                    _log.Warn(dataString);
+                    Log.Warning("Unexpected cleverbot response received: ");
+                    Log.Warning(dataString);
                     return null;
                 }
             }

@@ -4,18 +4,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Core.Services.Impl;
-using NLog;
+using Serilog;
 using YoutubeExplode;
 
 namespace WizBot.Modules.Music.Common.SongResolver.Strategies
 {
     public class YoutubeResolveStrategy : IResolveStrategy
     {
-        private readonly Logger _log;
 
         public YoutubeResolveStrategy()
         {
-            _log = LogManager.GetCurrentClassLogger();
         }
 
         public async Task<SongInfo> ResolveSong(string query)
@@ -26,13 +24,13 @@ namespace WizBot.Modules.Music.Common.SongResolver.Strategies
                 if (s != null)
                     return s;
             }
-            catch (Exception ex) { _log.Warn(ex.ToString()); }
+            catch (Exception ex) { Log.Warning(ex.ToString()); }
 
             try
             {
                 return await ResolveWithYtExplode(query).ConfigureAwait(false);
             }
-            catch (Exception ex) { _log.Warn(ex.ToString()); }
+            catch (Exception ex) { Log.Warning(ex.ToString()); }
             return null;
         }
 
@@ -40,7 +38,7 @@ namespace WizBot.Modules.Music.Common.SongResolver.Strategies
         {
             var client = new YoutubeClient();
 
-            _log.Info("Searching for video");
+            Log.Information("Searching for video");
             var videos = await client.Search.GetVideosAsync(query);
 
             var video = videos.FirstOrDefault();
@@ -48,14 +46,14 @@ namespace WizBot.Modules.Music.Common.SongResolver.Strategies
             if (video == null)
                 return null;
 
-            _log.Info("Video found");
+            Log.Information("Video found");
             var streamInfo = await client.Videos.Streams.GetManifestAsync(video.Id).ConfigureAwait(false);
             var stream = streamInfo
                 .GetAudio()
                 .OrderByDescending(x => x.Bitrate)
                 .FirstOrDefault();
 
-            _log.Info("Got stream info");
+            Log.Information("Got stream info");
 
             if (stream == null)
                 return null;
@@ -87,7 +85,7 @@ namespace WizBot.Modules.Music.Common.SongResolver.Strategies
 
                 if (data.Length < 6)
                 {
-                    _log.Info("No song found. Data less than 6");
+                    Log.Information("No song found. Data less than 6");
                     return null;
                 }
 
@@ -106,7 +104,7 @@ namespace WizBot.Modules.Music.Common.SongResolver.Strategies
                         data = (await ytdlo.GetDataAsync(query).ConfigureAwait(false)).Split('\n');
                         if (data.Length < 6)
                         {
-                            _log.Info("No song found. Data less than 6");
+                            Log.Information("No song found. Data less than 6");
                             return null;
                         }
 
@@ -121,7 +119,7 @@ namespace WizBot.Modules.Music.Common.SongResolver.Strategies
             }
             catch (Exception ex)
             {
-                _log.Warn(ex);
+                Log.Warning(ex, "Error resolving with ytdl");
                 return null;
             }
         }

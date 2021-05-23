@@ -13,14 +13,12 @@ using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Extensions;
 using WizBot.Modules.Administration.Common;
-using NLog;
 
 namespace WizBot.Modules.Administration.Services
 {
     public class LogCommandService : INService
     {
         private readonly DiscordSocketClient _client;
-        private readonly Logger _log;
 
         public ConcurrentDictionary<ulong, LogSetting> GuildLogSettings { get; }
 
@@ -35,12 +33,11 @@ namespace WizBot.Modules.Administration.Services
         private readonly GuildTimezoneService _tz;
 
         public LogCommandService(DiscordSocketClient client, IBotStrings strings,
-            DbService db, MuteService mute, ProtectionService prot, GuildTimezoneService tz,
-                IMemoryCache memoryCache)
+            DbService db, MuteService mute, ProtectionService prot, GuildTimezoneService tz, 
+            IMemoryCache memoryCache)
         {
             _client = client;
             _memoryCache = memoryCache;
-            _log = LogManager.GetCurrentClassLogger();
             _strings = strings;
             _db = db;
             _mute = mute;
@@ -75,14 +72,7 @@ namespace WizBot.Modules.Administration.Services
                     {
                         var title = GetText(key.Guild, "presence_updates");
                         var desc = string.Join(Environment.NewLine, msgs);
-                        try
-                        {
-                            return key.SendConfirmAsync(title, desc.TrimTo(2048));
-                        }
-                        catch (Exception ex)
-                        {
-                            _log.Warn(ex);
-                        }
+                        return key.SendConfirmAsync(title, desc.TrimTo(2048));
                     }
 
                     return Task.CompletedTask;
@@ -525,7 +515,7 @@ namespace WizBot.Modules.Administration.Services
 
         private Task _client_RoleDeleted(SocketRole socketRole)
         {
-            _log.Info("Role deleted " + socketRole.Id);
+            Serilog.Log.Information("Role deleted {RoleId}", socketRole.Id);
             _memoryCache.Set(GetRoleDeletedKey(socketRole.Id),
                 true,
                 TimeSpan.FromMinutes(5));
@@ -765,9 +755,9 @@ namespace WizBot.Modules.Administration.Services
                         .WithDescription($"{ch.Name} | {ch.Id}")
                         .WithFooter(efb => efb.WithText(CurrentTime(ch.Guild)))).ConfigureAwait(false);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    _log.Warn(ex);
+                    // ignored
                 }
             });
             return Task.CompletedTask;
@@ -944,9 +934,9 @@ namespace WizBot.Modules.Administration.Services
 
                     await logChannel.EmbedAsync(embed).ConfigureAwait(false);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    _log.Warn(ex);
+                    // ignored
                 }
             });
             return Task.CompletedTask;
@@ -980,7 +970,7 @@ namespace WizBot.Modules.Administration.Services
                 }
                 catch (Exception ex)
                 {
-                    _log.Warn(ex);
+                    // ignored
                 }
             });
             return Task.CompletedTask;
@@ -1015,9 +1005,9 @@ namespace WizBot.Modules.Administration.Services
 
                     await logChannel.EmbedAsync(embed).ConfigureAwait(false);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    _log.Warn(ex);
+                    // ignored
                 }
             });
             return Task.CompletedTask;
@@ -1067,9 +1057,8 @@ namespace WizBot.Modules.Administration.Services
 
                     await logChannel.EmbedAsync(embed).ConfigureAwait(false);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    _log.Warn(ex);
                     // ignored
                 }
             });

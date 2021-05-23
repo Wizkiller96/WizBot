@@ -4,7 +4,6 @@ using WizBot.Core.Modules.Gambling.Common.Waifu;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Core.Services.Database.Repositories;
-using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +26,6 @@ namespace WizBot.Modules.Gambling.Services
         private readonly ICurrencyService _cs;
         private readonly IDataCache _cache;
         private readonly GamblingConfigService _gss;
-        private readonly Logger _log;
 
         public WaifuService(DbService db, ICurrencyService cs, IDataCache cache,
             GamblingConfigService gss)
@@ -36,7 +34,6 @@ namespace WizBot.Modules.Gambling.Services
             _cs = cs;
             _cache = cache;
             _gss = gss;
-            _log = LogManager.GetCurrentClassLogger();
         }
 
         public async Task<bool> WaifuTransfer(IUser owner, ulong waifuId, IUser newOwner)

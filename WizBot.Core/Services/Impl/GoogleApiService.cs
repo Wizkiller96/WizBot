@@ -7,7 +7,6 @@ using Google.Apis.YouTube.v3;
 using WizBot.Common;
 using WizBot.Extensions;
 using Newtonsoft.Json.Linq;
-using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +14,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace WizBot.Core.Services.Impl
 {
@@ -26,8 +26,6 @@ namespace WizBot.Core.Services.Impl
         private UrlshortenerService sh;
         private CustomsearchService cs;
 
-        private readonly Logger _log;
-
         public GoogleApiService(IBotCredentials creds, IHttpClientFactory factory)
         {
             _creds = creds;
@@ -38,8 +36,6 @@ namespace WizBot.Core.Services.Impl
                 ApplicationName = "Wiz Bot",
                 ApiKey = _creds.GoogleApiKey,
             };
-
-            _log = LogManager.GetCurrentClassLogger();
 
             yt = new YouTubeService(bcs);
             sh = new UrlshortenerService(bcs);
@@ -143,7 +139,7 @@ namespace WizBot.Core.Services.Impl
             }
             catch (Exception ex)
             {
-                _log.Warn(ex);
+                Log.Warning(ex, "Error shortening URL");
                 return url;
             }
         }

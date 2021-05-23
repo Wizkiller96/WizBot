@@ -1,18 +1,11 @@
-using NLog;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace WizBot.Core.Services.Impl
 {
     public class YtdlOperation
     {
-        private readonly Logger _log;
-
-        public YtdlOperation()
-        {
-            _log = LogManager.GetCurrentClassLogger();
-        }
-
         public async Task<string> GetDataAsync(string url)
         {
             // escape the minus on the video argument 
@@ -33,13 +26,13 @@ namespace WizBot.Core.Services.Impl
                 },
             })
             {
-                _log.Debug($"Executing {process.StartInfo.FileName} {process.StartInfo.Arguments}");
+                Log.Debug($"Executing {process.StartInfo.FileName} {process.StartInfo.Arguments}");
                 
                 process.Start();
                 var str = await process.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
                 var err = await process.StandardError.ReadToEndAsync().ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(err))
-                    _log.Warn(err);
+                    Log.Warning(err);
                 return str;
             }
         }

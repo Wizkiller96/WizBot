@@ -4,12 +4,12 @@ using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Extensions;
 using WizBot.Modules.Utility.Common;
-using NLog;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace WizBot.Modules.Utility.Services
 {
@@ -17,7 +17,6 @@ namespace WizBot.Modules.Utility.Services
     {
         private readonly DbService _db;
         private readonly IBotCredentials _creds;
-        private readonly Logger _log;
         private readonly WizBot _bot;
         private readonly DiscordSocketClient _client;
 
@@ -28,7 +27,6 @@ namespace WizBot.Modules.Utility.Services
         {
             _db = db;
             _creds = creds;
-            _log = LogManager.GetCurrentClassLogger();
             _bot = bot;
             _client = client;
             var _ = LoadRepeaters();
@@ -40,7 +38,7 @@ namespace WizBot.Modules.Utility.Services
 #if GLOBAL_WIZBOT
             await Task.Delay(30000);
 #endif
-            _log.Info("Loading message repeaters on shard {ShardId}.", _client.ShardId);
+            Log.Information("Loading message repeaters on shard {ShardId}.", _client.ShardId);
 
             var repeaters = new Dictionary<ulong, ConcurrentDictionary<int, RepeatRunner>>();
             foreach (var gc in _bot.AllGuildConfigs)
@@ -54,7 +52,7 @@ namespace WizBot.Modules.Utility.Services
                     var guild = _client.GetGuild(gc.GuildId);
                     if (guild is null)
                     {
-                        _log.Info("Unable to find guild {GuildId} for message repeaters.", gc.GuildId);
+                        Log.Information("Unable to find guild {GuildId} for message repeaters.", gc.GuildId);
                         continue;
                     }
 
@@ -69,8 +67,7 @@ namespace WizBot.Modules.Utility.Services
                 }
                 catch (Exception ex)
                 {
-                    _log.Error("Failed to load repeaters on Guild {0}.", gc.GuildId);
-                    _log.Error(ex);
+                    Log.Error(ex, "Failed to load repeaters on Guild {0}.", gc.GuildId);
                 }
             }
 

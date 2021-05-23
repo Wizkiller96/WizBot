@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json.Linq;
-using NLog;
 using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
@@ -7,12 +6,12 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace WizBot.Core.Services.Common
 {
     public class ImageLoader
     {
-        private readonly Logger _log;
         private readonly HttpClient _http;
         private readonly ConnectionMultiplexer _con;
 
@@ -24,7 +23,6 @@ namespace WizBot.Core.Services.Common
 
         public ImageLoader(HttpClient http, ConnectionMultiplexer con, Func<string, RedisKey> getKey)
         {
-            _log = LogManager.GetCurrentClassLogger();
             _http = http;
             _con = con;
             GetKey = getKey;
@@ -41,7 +39,7 @@ namespace WizBot.Core.Services.Common
                 }
                 catch (Exception ex)
                 {
-                    _log.Warn(ex);
+                    Log.Warning(ex, "Failed reading image bytes");
                     return null;
                 }
             }
@@ -62,7 +60,7 @@ namespace WizBot.Core.Services.Common
                     }
                     catch
                     {
-                        _log.Error("Error retreiving image for key {0}: {1}", key, x);
+                        Log.Error("Error retreiving image for key {Key}: {Data}", key, x);
                         return null;
                     }
                 });
@@ -80,7 +78,7 @@ namespace WizBot.Core.Services.Common
 
             if (arr.Count != vals.Length)
             {
-                _log.Info("{2}/{1} URIs for the key '{0}' have been loaded. Some of the supplied URIs are either unavailable or invalid.", key, arr.Count, vals.Count());
+                Log.Information("{2}/{1} URIs for the key '{0}' have been loaded. Some of the supplied URIs are either unavailable or invalid.", key, arr.Count, vals.Count());
             }
         }
 
@@ -93,7 +91,7 @@ namespace WizBot.Core.Services.Common
             }
             catch
             {
-                _log.Info("Setting '{0}' image failed. The URI you provided is either unavailable or invalid.", key.ToLowerInvariant());
+                Log.Information("Setting '{0}' image failed. The URI you provided is either unavailable or invalid.", key.ToLowerInvariant());
                 return new KeyValuePair<RedisKey, RedisValue>("", "");
             }
         }

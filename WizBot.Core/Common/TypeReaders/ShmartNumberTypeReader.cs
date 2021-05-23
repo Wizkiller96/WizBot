@@ -2,7 +2,6 @@
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using WizBot.Core.Services;
-using NLog;
 using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -12,7 +11,6 @@ namespace WizBot.Core.Common.TypeReaders
 {
     public class ShmartNumberTypeReader : WizBotTypeReader<ShmartNumber>
     {
-        private static readonly Logger _log = LogManager.GetCurrentClassLogger();
         public ShmartNumberTypeReader(DiscordSocketClient client, CommandService cmds) : base(client, cmds)
         {
         }
@@ -39,10 +37,9 @@ namespace WizBot.Core.Common.TypeReaders
                 var lon = (long)(decimal.Parse(expr.Evaluate().ToString()));
                 return TypeReaderResult.FromSuccess(new ShmartNumber(lon, input));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                _log.Info(ex);
-                return TypeReaderResult.FromError(CommandError.ParseFailed, "Invalid input");
+                return TypeReaderResult.FromError(CommandError.ParseFailed, $"Invalid input: {input}");
             }
         }
 

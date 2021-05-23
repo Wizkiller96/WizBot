@@ -1,7 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using WizBot.Extensions;
-using NLog;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -9,12 +8,12 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace WizBot.Core.Services.Impl
 {
     public class StatsService : IStatsService
     {
-        private readonly Logger _log;
         private readonly DiscordSocketClient _client;
         private readonly IBotCredentials _creds;
         private readonly DateTime _started;
@@ -42,7 +41,6 @@ namespace WizBot.Core.Services.Impl
         public StatsService(DiscordSocketClient client, CommandHandler cmdHandler,
             IBotCredentials creds, IHttpClientFactory factory)
         {
-            _log = LogManager.GetCurrentClassLogger();
             _client = client;
             _creds = creds;
             _httpFactory = factory;
@@ -152,7 +150,7 @@ namespace WizBot.Core.Services.Impl
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex);
+                    Log.Error(ex, "Error ");
                     // ignored
                 }
             }, null, TimeSpan.FromMinutes(5), TimeSpan.FromHours(1));

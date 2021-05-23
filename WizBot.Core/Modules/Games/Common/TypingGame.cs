@@ -8,9 +8,9 @@ using Discord.WebSocket;
 using WizBot.Common;
 using WizBot.Extensions;
 using WizBot.Modules.Games.Services;
-using NLog;
 using CommandLine;
 using WizBot.Core.Common;
+using Serilog;
 
 namespace WizBot.Modules.Games.Common
 {
@@ -38,13 +38,10 @@ namespace WizBot.Modules.Games.Common
         private readonly GamesService _games;
         private readonly string _prefix;
         private readonly Options _options;
-
-        private Logger _log { get; }
-
+        
         public TypingGame(GamesService games, DiscordSocketClient client, ITextChannel channel, 
-            string prefix, Options options) //kek@prefix
+            string prefix, Options options)
         {
-            _log = LogManager.GetCurrentClassLogger();
             _games = games;
             _client = client;
             _prefix = prefix;
@@ -64,7 +61,14 @@ namespace WizBot.Modules.Games.Common
             IsActive = false;
             sw.Stop();
             sw.Reset();
-            try { await Channel.SendConfirmAsync("Typing contest stopped.").ConfigureAwait(false); } catch (Exception ex) { _log.Warn(ex); }
+            try
+            {
+                await Channel.SendConfirmAsync("Typing contest stopped.").ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Log.Warning(ex.ToString());
+            }
             return true;
         }
 
@@ -153,19 +157,28 @@ namespace WizBot.Modules.Games.Common
                         var wpm = CurrentSentence.Length / WORD_VALUE / elapsed.TotalSeconds * 60;
                         finishedUserIds.Add(msg.Author.Id);
                         await this.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                            .WithTitle($"{msg.Author} finished the race!")
-                            .AddField(efb => efb.WithName("Place").WithValue($"#{finishedUserIds.Count}").WithIsInline(true))
-                            .AddField(efb => efb.WithName("WPM").WithValue($"{wpm:F1} *[{elapsed.TotalSeconds:F2}sec]*").WithIsInline(true))
-                            .AddField(efb => efb.WithName("Errors").WithValue(distance.ToString()).WithIsInline(true)))
-                                .ConfigureAwait(false);
+                                .WithTitle($"{msg.Author} finished the race!")
+                                .AddField(efb =>
+                                    efb.WithName("Place").WithValue($"#{finishedUserIds.Count}").WithIsInline(true))
+                                .AddField(efb =>
+                                    efb.WithName("WPM").WithValue($"{wpm:F1} *[{elapsed.TotalSeconds:F2}sec]*")
+                                        .WithIsInline(true))
+                                .AddField(efb =>
+                                    efb.WithName("Errors").WithValue(distance.ToString()).WithIsInline(true)))
+                            .ConfigureAwait(false);
                         if (finishedUserIds.Count % 4 == 0)
                         {
-                            await this.Channel.SendConfirmAsync($":exclamation: A lot of people finished, here is the text for those still typing:" +
-                                $"\n\n**{Format.Sanitize(CurrentSentence.Replace(" ", " \x200B", StringComparison.InvariantCulture)).SanitizeMentions(true)}**").ConfigureAwait(false);
+                            await this.Channel.SendConfirmAsync(
+                                    $":exclamation: A lot of people finished, here is the text for those still typing:" +
+                                    $"\n\n**{Format.Sanitize(CurrentSentence.Replace(" ", " \x200B", StringComparison.InvariantCulture)).SanitizeMentions(true)}**")
+                                .ConfigureAwait(false);
                         }
                     }
                 }
-                catch (Exception ex) { _log.Warn(ex); }
+                catch (Exception ex)
+                {
+                    Log.Warning(ex.ToString());
+                }
             });
             return Task.CompletedTask;
         }

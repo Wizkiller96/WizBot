@@ -10,7 +10,7 @@ using WizBot.Common.Collections;
 using WizBot.Extensions;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
-using NLog;
+using Serilog;
 
 namespace WizBot.Modules.Administration.Services
 {
@@ -35,8 +35,7 @@ namespace WizBot.Modules.Administration.Services
         private static readonly OverwritePermissions denyOverwrite =
             new OverwritePermissions(addReactions: PermValue.Deny, sendMessages: PermValue.Deny,
                 attachFiles: PermValue.Deny);
-
-        private readonly Logger _log = LogManager.GetCurrentClassLogger();
+        
         private readonly DiscordSocketClient _client;
         private readonly DbService _db;
 
@@ -165,7 +164,7 @@ namespace WizBot.Modules.Administration.Services
             }
             catch (Exception ex)
             {
-                _log.Warn(ex);
+                Log.Warning(ex, "Error in MuteService UserJoined event");
             }
             return Task.CompletedTask;
         }
@@ -396,8 +395,7 @@ namespace WizBot.Modules.Administration.Services
                     }
                     catch (Exception ex)
                     {
-                        _log.Warn("Couldn't unban user {0} in guild {1}", userId, guildId);
-                        _log.Warn(ex);
+                        Log.Warning(ex, "Couldn't unban user {0} in guild {1}", userId, guildId);
                     }
                 }
                 else if (type == TimerType.AddRole)
@@ -416,8 +414,7 @@ namespace WizBot.Modules.Administration.Services
                     }
                     catch (Exception ex)
                     {
-                        _log.Warn("Couldn't remove role from user {0} in guild {1}", userId, guildId);
-                        _log.Warn(ex);
+                        Log.Warning(ex, "Couldn't remove role from user {0} in guild {1}", userId, guildId);
                     }
                 }
                 else
@@ -430,8 +427,7 @@ namespace WizBot.Modules.Administration.Services
                     catch (Exception ex)
                     {
                         RemoveTimerFromDb(guildId, userId, type); // if unmute errored, just remove unmute from db
-                        _log.Warn("Couldn't unmute user {0} in guild {1}", userId, guildId);
-                        _log.Warn(ex);
+                        Log.Warning(ex, "Couldn't unmute user {0} in guild {1}", userId, guildId);
                     }
                 }
             }, null, after, Timeout.InfiniteTimeSpan);

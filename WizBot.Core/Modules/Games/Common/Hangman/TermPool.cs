@@ -5,19 +5,17 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using NLog;
+using Serilog;
 
 namespace WizBot.Modules.Games.Common.Hangman
 {
     public class TermPool
     {
         const string termsPath = "data/hangman.json";
-        private readonly Logger _log;
 
         public IReadOnlyDictionary<string, HangmanObject[]> Data { get; } = new Dictionary<string, HangmanObject[]>();
         public TermPool()
         {
-            _log = LogManager.GetCurrentClassLogger();
             try
             {
                 Data = JsonConvert.DeserializeObject<Dictionary<string, HangmanObject[]>>(File.ReadAllText(termsPath));
@@ -27,7 +25,7 @@ namespace WizBot.Modules.Games.Common.Hangman
             }
             catch (Exception ex)
             {
-                _log.Warn(ex);
+                Log.Warning(ex, "Error loading Hangman Term pool");
             }
         }
 

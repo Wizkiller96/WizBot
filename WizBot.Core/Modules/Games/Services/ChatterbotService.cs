@@ -9,16 +9,15 @@ using WizBot.Extensions;
 using WizBot.Modules.Permissions.Common;
 using WizBot.Modules.Permissions.Services;
 using WizBot.Core.Services;
-using NLog;
 using WizBot.Modules.Games.Common.ChatterBot;
 using System.Net.Http;
+using Serilog;
 
 namespace WizBot.Modules.Games.Services
 {
     public class ChatterBotService : IEarlyBehavior, INService
     {
         private readonly DiscordSocketClient _client;
-        private readonly Logger _log;
         private readonly PermissionService _perms;
         private readonly CommandHandler _cmd;
         private readonly IBotStrings _strings;
@@ -35,7 +34,6 @@ namespace WizBot.Modules.Games.Services
             IBotCredentials creds)
         {
             _client = client;
-            _log = LogManager.GetCurrentClassLogger();
             _perms = perms;
             _cmd = cmd;
             _strings = strings;
@@ -125,7 +123,7 @@ namespace WizBot.Modules.Games.Services
                     {
                         var returnMsg = _strings.GetText("trigger", guild.Id, index + 1, Format.Bold(pc.Permissions[index].GetCommand(_cmd.GetPrefix(guild), (SocketGuild)guild)));
                         try { await usrMsg.Channel.SendErrorAsync(returnMsg).ConfigureAwait(false); } catch { }
-                        _log.Info(returnMsg);
+                        Log.Information(returnMsg);
                     }
                     return true;
                 }
@@ -133,7 +131,7 @@ namespace WizBot.Modules.Games.Services
                 var cleverbotExecuted = await TryAsk(cbs, (ITextChannel)usrMsg.Channel, message).ConfigureAwait(false);
                 if (cleverbotExecuted)
                 {
-                    _log.Info($@"CleverBot Executed
+                    Log.Information($@"CleverBot Executed
 Server: {guild.Name} [{guild.Id}]
 Channel: {usrMsg.Channel?.Name} [{usrMsg.Channel?.Id}]
 UserId: {usrMsg.Author} [{usrMsg.Author.Id}]
@@ -143,8 +141,7 @@ Message: {usrMsg.Content}");
             }
             catch (Exception ex)
             {
-                _log.Warn("Error in cleverbot");
-                _log.Warn(ex.Message);
+                Log.Warning(ex,"Error in cleverbot");
             }
             return false;
         }

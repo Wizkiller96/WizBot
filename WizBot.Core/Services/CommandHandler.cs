@@ -6,17 +6,18 @@ using Microsoft.Extensions.DependencyInjection;
 using WizBot.Common.Collections;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Extensions;
-using NLog;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using WizBot.Core.Common.Configs;
 using WizBot.Core.Services.Impl;
+using Serilog;
 
 namespace WizBot.Core.Services
 {
@@ -34,7 +35,6 @@ namespace WizBot.Core.Services
         private readonly DiscordSocketClient _client;
         private readonly CommandService _commandService;
         private readonly BotConfigService _bss;
-        private readonly Logger _log;
         private readonly WizBot _bot;
         private IServiceProvider _services;
         private IEnumerable<IEarlyBehavior> _earlyBehaviors;
@@ -63,8 +63,7 @@ namespace WizBot.Core.Services
             _bot = bot;
             _db = db;
             _services = services;
-
-            _log = LogManager.GetCurrentClassLogger();
+            
 
             _clearUsersOnShortCooldown = new Timer(_ =>
             {
@@ -145,7 +144,7 @@ namespace WizBot.Core.Services
                 var guild = _client.GetGuild(guildId.Value);
                 if (!(guild?.GetChannel(channelId) is SocketTextChannel channel))
                 {
-                    _log.Warn("Channel for external execution not found.");
+                    Log.Warning("Channel for external execution not found.");
                     return;
                 }
 
@@ -174,11 +173,11 @@ namespace WizBot.Core.Services
             var bss = _services.GetService<BotConfigService>();
             if (bss.Data.ConsoleOutputType == ConsoleOutputType.Normal)
             {
-                _log.Info($"Command Executed after " + string.Join("/", execPoints.Select(x => (x * _oneThousandth).ToString("F3"))) + "s\n\t" +
-                        "User: {0}\n\t" +
-                        "Server: {1}\n\t" +
-                        "Channel: {2}\n\t" +
-                        "Message: {3}",
+                Log.Information($"Command Executed after " + string.Join("/", execPoints.Select(x => (x * _oneThousandth).ToString("F3"))) + "s\n\t" +
+                                "User: {0}\n\t" +
+                                "Server: {1}\n\t" +
+                                "Channel: {2}\n\t" +
+                                "Message: {3}",
                         usrMsg.Author + " [" + usrMsg.Author.Id + "]", // {0}
                         (channel == null ? "PRIVATE" : channel.Guild.Name + " [" + channel.Guild.Id + "]"), // {1}
                         (channel == null ? "PRIVATE" : channel.Name + " [" + channel.Id + "]"), // {2}
@@ -187,7 +186,7 @@ namespace WizBot.Core.Services
             }
             else
             {
-                _log.Info("Succ | g:{0} | c: {1} | u: {2} | msg: {3}",
+                Log.Information("Succ | g:{0} | c: {1} | u: {2} | msg: {3}",
                     channel?.Guild.Id.ToString() ?? "-",
                     channel?.Id.ToString() ?? "-",
                     usrMsg.Author.Id,
@@ -201,7 +200,7 @@ namespace WizBot.Core.Services
             var bss = _services.GetService<BotConfigService>();
             if (bss.Data.ConsoleOutputType == ConsoleOutputType.Normal)
             {
-                _log.Warn($"Command Errored after " + string.Join("/", execPoints.Select(x => (x * _oneThousandth).ToString("F3"))) + "s\n\t" +
+                Log.Warning($"Command Errored after " + string.Join("/", execPoints.Select(x => (x * _oneThousandth).ToString("F3"))) + "s\n\t" +
                             "User: {0}\n\t" +
                             "Server: {1}\n\t" +
                             "Channel: {2}\n\t" +
@@ -217,7 +216,7 @@ namespace WizBot.Core.Services
             }
             else
             {
-                _log.Warn("Err | g:{0} | c: {1} | u: {2} | msg: {3}\n\tErr: {4}",
+                Log.Warning("Err | g:{0} | c: {1} | u: {2} | msg: {3}\n\tErr: {4}",
                     channel?.Guild.Id.ToString() ?? "-",
                     channel?.Id.ToString() ?? "-",
                     usrMsg.Author.Id,
@@ -247,12 +246,10 @@ namespace WizBot.Core.Services
             }
             catch (Exception ex)
             {
-                _log.Warn("Error in CommandHandler");
-                _log.Warn(ex);
+                Log.Warning(ex, "Error in CommandHandler");
                 if (ex.InnerException != null)
                 {
-                    _log.Warn("Inner Exception of the error in CommandHandler");
-                    _log.Warn(ex.InnerException);
+                    Log.Warning(ex.InnerException, "Inner Exception of the error in CommandHandler");
                 }
             }
         }
@@ -270,24 +267,29 @@ namespace WizBot.Core.Services
                 {
                     if (beh.BehaviorType == ModuleBehaviorType.Blocker)
                     {
-                        _log.Info("Blocked User: [{0}] Message: [{1}] Service: [{2}]", usrMsg.Author, usrMsg.Content, beh.GetType().Name);
+                        Log.Information("Blocked User: [{0}] Message: [{1}] Service: [{2}]", usrMsg.Author,
+                            usrMsg.Content, beh.GetType().Name);
                     }
                     else if (beh.BehaviorType == ModuleBehaviorType.Executor)
                     {
-                        _log.Info("User [{0}] executed [{1}] in [{2}]", usrMsg.Author, usrMsg.Content, beh.GetType().Name);
+                        Log.Information("User [{0}] executed [{1}] in [{2}]", usrMsg.Author, usrMsg.Content,
+                            beh.GetType().Name);
 
                     }
+                    
                     return;
                 }
             }
 
             var exec2 = Environment.TickCount - execTime;
+            
 
             string messageContent = usrMsg.Content;
             foreach (var exec in _inputTransformers)
             {
                 string newContent;
-                if ((newContent = await exec.TransformInput(guild, usrMsg.Channel, usrMsg.Author, messageContent).ConfigureAwait(false)) != messageContent.ToLowerInvariant())
+                if ((newContent = await exec.TransformInput(guild, usrMsg.Channel, usrMsg.Author, messageContent)
+                    .ConfigureAwait(false)) != messageContent.ToLowerInvariant())
                 {
                     messageContent = newContent;
                     break;
@@ -422,9 +424,11 @@ namespace WizBot.Core.Services
             var commandName = cmd.Aliases.First();
             foreach (var exec in _lateBlockers)
             {
-                if (await exec.TryBlockLate(_client, context, cmd.Module.GetTopLevelModule().Name, cmd).ConfigureAwait(false))
+                if (await exec.TryBlockLate(_client, context, cmd.Module.GetTopLevelModule().Name, cmd)
+                    .ConfigureAwait(false))
                 {
-                    _log.Info("Late blocking User [{0}] Command: [{1}] in [{2}]", context.User, commandName, exec.GetType().Name);
+                    Log.Information("Late blocking User [{0}] Command: [{1}] in [{2}]", context.User, commandName,
+                        exec.GetType().Name);
                     return (false, null, cmd);
                 }
             }
@@ -435,20 +439,10 @@ namespace WizBot.Core.Services
 
             if (execResult.Exception != null && (!(execResult.Exception is HttpException he) || he.DiscordCode != 50013))
             {
-                lock (errorLogLock)
-                {
-                    var now = DateTime.Now;
-                    File.AppendAllText($"./command_errors_{now:yyyy-MM-dd}.txt",
-                        $"[{now:HH:mm-yyyy-MM-dd}]" + Environment.NewLine
-                        + execResult.Exception.ToString() + Environment.NewLine
-                        + "------" + Environment.NewLine);
-                    _log.Warn(execResult.Exception);
-                }
+                Log.Warning(execResult.Exception, "Command Error");
             }
 
             return (true, null, cmd);
         }
-
-        private readonly object errorLogLock = new object();
     }
 }

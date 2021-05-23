@@ -6,7 +6,6 @@ using Discord.WebSocket;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Extensions;
 using WizBot.Core.Services;
-using NLog;
 using StackExchange.Redis;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -18,6 +17,7 @@ using System.Threading;
 using System.Collections.Concurrent;
 using System;
 using System.Net.Http;
+using Serilog;
 
 namespace WizBot.Modules.Administration.Services
 {
@@ -26,7 +26,6 @@ namespace WizBot.Modules.Administration.Services
         private readonly ConnectionMultiplexer _redis;
         private readonly CommandHandler _cmdHandler;
         private readonly DbService _db;
-        private readonly Logger _log;
         private readonly IBotStrings _strings;
         private readonly DiscordSocketClient _client;
 
@@ -53,7 +52,6 @@ namespace WizBot.Modules.Administration.Services
             _redis = cache.Redis;
             _cmdHandler = cmdHandler;
             _db = db;
-            _log = LogManager.GetCurrentClassLogger();
             _strings = strings;
             _client = client;
             _creds = creds;
@@ -87,12 +85,12 @@ namespace WizBot.Modules.Administration.Services
                     if (server.OwnerId != _client.CurrentUser.Id)
                     {
                         await server.LeaveAsync().ConfigureAwait(false);
-                        _log.Info($"Left server {server.Name} [{server.Id}]");
+                        Log.Information($"Left server {server.Name} [{server.Id}]");
                     }
                     else
                     {
                         await server.DeleteAsync().ConfigureAwait(false);
-                        _log.Info($"Deleted server {server.Name} [{server.Id}]");
+                        Log.Information($"Deleted server {server.Name} [{server.Id}]");
                     }
                 }
                 catch
@@ -165,7 +163,7 @@ namespace WizBot.Modules.Administration.Services
             }
             catch (Exception ex)
             {
-                _log.Warn(ex);
+                Log.Warning(ex, "Error in SelfService ExecuteCommand");
             }
         }
 
@@ -226,10 +224,10 @@ namespace WizBot.Modules.Administration.Services
                 .ToImmutableDictionary();
 
             if (!ownerChannels.Any())
-                _log.Warn(
+                Log.Warning(
                     "No owner channels created! Make sure you've specified the correct OwnerId in the credentials.json file and invited the bot to a Discord server.");
             else
-                _log.Info($"Created {ownerChannels.Count} out of {_creds.OwnerIds.Length} owner message channels.");
+                Log.Information($"Created {ownerChannels.Count} out of {_creds.OwnerIds.Length} owner message channels.");
         }
 
         private async Task LoadAdminChannels()
@@ -248,10 +246,10 @@ namespace WizBot.Modules.Administration.Services
                 .ToImmutableDictionary();
 
             if (!adminChannels.Any())
-                _log.Warn(
+                Log.Warning(
                     "No admin channels created! Make sure you've specified the correct AdminId in the credentials.json file and invited the bot to a Discord server.");
             else
-                _log.Info($"Created {adminChannels.Count} out of {_creds.AdminIds.Length} admin message channels.");
+                Log.Information($"Created {adminChannels.Count} out of {_creds.AdminIds.Length} owner message channels.");
         }
 
         public Task LeaveGuild(string guildStr)
@@ -291,7 +289,7 @@ namespace WizBot.Modules.Administration.Services
                         }
                         catch
                         {
-                            _log.Warn("Can't contact owner with id {0}", ownerCh.Recipient.Id);
+                            Log.Warning("Can't contact owner with id {0}", ownerCh.Recipient.Id);
                         }
                     }
                 }

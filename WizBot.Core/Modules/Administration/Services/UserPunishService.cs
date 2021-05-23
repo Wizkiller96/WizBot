@@ -15,7 +15,7 @@ using WizBot.Core.Services.Database.Models;
 using WizBot.Extensions;
 using WizBot.Modules.Permissions.Services;
 using Newtonsoft.Json;
-using NLog;
+using Serilog;
 
 namespace WizBot.Modules.Administration.Services
 {
@@ -24,7 +24,6 @@ namespace WizBot.Modules.Administration.Services
         private readonly MuteService _mute;
         private readonly DbService _db;
         private readonly BlacklistService _blacklistService;
-        private readonly Logger _log;
         private readonly Timer _warnExpiryTimer;
 
         public UserPunishService(MuteService mute, DbService db, BlacklistService blacklistService)
@@ -32,7 +31,6 @@ namespace WizBot.Modules.Administration.Services
             _mute = mute;
             _db = db;
             _blacklistService = blacklistService;
-            _log = LogManager.GetCurrentClassLogger();
 
             _warnExpiryTimer = new Timer(async _ =>
             {
@@ -156,7 +154,7 @@ namespace WizBot.Modules.Administration.Services
                     }
                     else
                     {
-                        _log.Warn($"Can't find role {roleId.Value} on server {guild.Id} to apply punishment.");
+                        Log.Warning($"Can't find role {roleId.Value} on server {guild.Id} to apply punishment.");
                     }
 
                     break;
@@ -182,7 +180,7 @@ WHERE GuildId in (SELECT GuildId FROM GuildConfigs WHERE WarnExpireHours > 0 AND
 
                 if(cleared > 0 || deleted > 0)
                 {
-                    _log.Info($"Cleared {cleared} warnings and deleted {deleted} warnings due to expiry.");
+                    Log.Information($"Cleared {cleared} warnings and deleted {deleted} warnings due to expiry.");
                 }
             }
         }

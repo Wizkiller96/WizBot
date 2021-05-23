@@ -6,12 +6,12 @@ using Discord;
 using Discord.WebSocket;
 using System.Threading.Tasks;
 using System;
-using NLog;
 using WizBot.Core.Services.Database.Models;
 using System.Net.Http;
 using Newtonsoft.Json;
 using System.Linq;
 using WizBot.Core.Modules.Gambling.Services;
+using Serilog;
 
 namespace WizBot.Modules.Gambling.Services
 {
@@ -27,7 +27,6 @@ namespace WizBot.Modules.Gambling.Services
         private readonly IBotCredentials _creds;
         private readonly IHttpClientFactory _http;
         private readonly GamblingConfigService _configService;
-        private readonly Logger _log;
         private readonly ConcurrentDictionary<ulong, ICurrencyEvent> _events =
             new ConcurrentDictionary<ulong, ICurrencyEvent>();
 
@@ -40,7 +39,6 @@ namespace WizBot.Modules.Gambling.Services
             _creds = creds;
             _http = http;
             _configService = configService;
-            _log = LogManager.GetCurrentClassLogger();
 
             if (_client.ShardId == 0)
             {
@@ -72,7 +70,7 @@ namespace WizBot.Modules.Gambling.Services
                     {
                         if (!res.IsSuccessStatusCode)
                         {
-                            _log.Warn("Botlist API not reached.");
+                            Log.Warning("Botlist API not reached.");
                             return;
                         }
                         var resStr = await res.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -85,7 +83,7 @@ namespace WizBot.Modules.Gambling.Services
             }
             catch (Exception ex)
             {
-                _log.Warn(ex);
+                Log.Warning(ex, "Error in TriggerVoteCheck");
             }
         }
 
@@ -122,7 +120,7 @@ namespace WizBot.Modules.Gambling.Services
                 }
                 catch (Exception ex)
                 {
-                    _log.Warn(ex);
+                    Log.Warning(ex, "Error starting event");
                     _events.TryRemove(guildId, out ce);
                     return false;
                 }

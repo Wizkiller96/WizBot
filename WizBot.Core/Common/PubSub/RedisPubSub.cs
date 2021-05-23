@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using WizBot.Core.Services;
 using WizBot.Extensions;
-using NLog;
+using Serilog;
 using StackExchange.Redis;
 
 namespace WizBot.Core.Common
@@ -11,7 +11,6 @@ namespace WizBot.Core.Common
     {
         private readonly ConnectionMultiplexer _multi;
         private readonly ISeria _serializer;
-        private readonly Logger _log;
         private readonly IBotCredentials _creds;
 
         public RedisPubSub(ConnectionMultiplexer multi, ISeria serializer, IBotCredentials creds)
@@ -19,7 +18,6 @@ namespace WizBot.Core.Common
             _multi = multi;
             _serializer = serializer;
             _creds = creds;
-            _log = LogManager.GetCurrentClassLogger();
         }
 
         public Task Pub<TData>(in TypedKey<TData> key, TData data)
@@ -40,7 +38,7 @@ namespace WizBot.Core.Common
                 }
                 catch (Exception ex)
                 {
-                    _log.Error($"Error handling the event {eventName}: {ex.Message}");
+                    Log.Error($"Error handling the event {eventName}: {ex.Message}");
                 }
             });
         }

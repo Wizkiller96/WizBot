@@ -7,12 +7,12 @@ using Discord.WebSocket;
 using WizBot.Extensions;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
-using NLog;
 using WizBot.Modules.Utility.Extensions;
 using WizBot.Common.TypeReaders;
 using WizBot.Modules.Utility.Common;
 using WizBot.Modules.Utility.Common.Exceptions;
 using Discord.Net;
+using Serilog;
 
 namespace WizBot.Modules.Utility.Services
 {
@@ -21,13 +21,11 @@ namespace WizBot.Modules.Utility.Services
         private readonly DbService _db;
         private readonly DiscordSocketClient _client;
         private readonly ConcurrentDictionary<ulong, StreamRoleSettings> guildSettings;
-        private readonly Logger _log;
 
         public StreamRoleService(DiscordSocketClient client, DbService db, WizBot bot)
         {
-            this._log = LogManager.GetCurrentClassLogger();
-            this._db = db;
-            this._client = client;
+            _db = db;
+            _client = client;
 
             guildSettings = bot.AllGuildConfigs
                 .ToDictionary(x => x.GuildId, x => x.StreamRole)
@@ -251,26 +249,24 @@ namespace WizBot.Modules.Utility.Services
                     if (addRole == null)
                     {
                         await StopStreamRole(user.Guild).ConfigureAwait(false);
-                        _log.Warn("Stream role in server {0} no longer exists. Stopping.", setting.AddRoleId);
+                        Log.Warning("Stream role in server {0} no longer exists. Stopping.", setting.AddRoleId);
                         return;
                     }
 
                     //check if he doesn't have addrole already, to avoid errors
                     if (!user.RoleIds.Contains(setting.AddRoleId))
                         await user.AddRoleAsync(addRole).ConfigureAwait(false);
-                    _log.Info("Added stream role to user {0} in {1} server", user.ToString(), user.Guild.ToString());
+                    Log.Information("Added stream role to user {0} in {1} server", user.ToString(), user.Guild.ToString());
                 }
                 catch (HttpException ex) when (ex.HttpCode == System.Net.HttpStatusCode.Forbidden)
                 {
                     await StopStreamRole(user.Guild).ConfigureAwait(false);
-                    _log.Warn("Error adding stream role(s). Forcibly disabling stream role feature.");
-                    _log.Error(ex);
+                    Log.Warning(ex, "Error adding stream role(s). Forcibly disabling stream role feature");
                     throw new StreamRolePermissionException();
                 }
                 catch (Exception ex)
                 {
-                    _log.Warn("Failed adding stream role.");
-                    _log.Error(ex);
+                    Log.Warning(ex, "Failed adding stream role");
                 }
             }
             else
@@ -285,13 +281,12 @@ namespace WizBot.Modules.Utility.Services
                             throw new StreamRoleNotFoundException();
 
                         await user.RemoveRoleAsync(addRole).ConfigureAwait(false);
-                        _log.Info("Removed stream role from the user {0} in {1} server", user.ToString(), user.Guild.ToString());
+                        Log.Information("Removed stream role from the user {0} in {1} server", user.ToString(), user.Guild.ToString());
                     }
                     catch (HttpException ex) when (ex.HttpCode == System.Net.HttpStatusCode.Forbidden)
                     {
                         await StopStreamRole(user.Guild).ConfigureAwait(false);
-                        _log.Warn("Error removing stream role(s). Forcibly disabling stream role feature.");
-                        _log.Error(ex);
+                        Log.Warning(ex, "Error removing stream role(s). Forcibly disabling stream role feature");
                         throw new StreamRolePermissionException();
                     }
                 }

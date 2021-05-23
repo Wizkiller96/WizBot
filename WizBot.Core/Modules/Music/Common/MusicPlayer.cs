@@ -3,7 +3,6 @@ using Discord.Audio;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using NLog;
 using System.Linq;
 using System.Runtime.InteropServices;
 using WizBot.Extensions;
@@ -12,6 +11,7 @@ using WizBot.Modules.Music.Services;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
 using Discord.WebSocket;
+using Serilog;
 
 namespace WizBot.Modules.Music.Common
 {
@@ -28,7 +28,6 @@ namespace WizBot.Modules.Music.Common
         public IVoiceChannel VoiceChannel { get; private set; }
 
         public ITextChannel OriginalTextChannel { get; set; }
-        private readonly Logger _log;
 
         private MusicQueue Queue { get; } = new MusicQueue();
 
@@ -136,7 +135,6 @@ namespace WizBot.Modules.Music.Common
         public MusicPlayer(MusicService musicService, MusicSettings ms, IGoogleApiService google,
             IVoiceChannel vch, ITextChannel original, float volume)
         {
-            _log = LogManager.GetCurrentClassLogger();
             this.Volume = volume;
             this.VoiceChannel = vch;
             this.OriginalTextChannel = original;
@@ -177,33 +175,33 @@ namespace WizBot.Modules.Music.Common
                 }
                 if (data.Song != null)
                 {
-                    _log.Info("Starting");
+                    Log.Information("Starting");
                     AudioOutStream pcm = null;
                     SongBuffer b = null;
                     try
                     {
                         var streamUrl = await data.Song.Uri().ConfigureAwait(false);
                         b = new SongBuffer(streamUrl, data.Song.ProviderType == MusicType.Local);
-                        //_log.Info("Created buffer, buffering...");
+                        //Log.Information("Created buffer, buffering...");
 
                         //var bufferTask = b.StartBuffering(cancelToken);
                         //var timeout = Task.Delay(10000);
                         //if (Task.WhenAny(bufferTask, timeout) == timeout)
                         //{
-                        //    _log.Info("Buffering failed due to a timeout.");
+                        //    Log.Information("Buffering failed due to a timeout.");
                         //    continue;
                         //}
                         //else if (!bufferTask.Result)
                         //{
-                        //    _log.Info("Buffering failed due to a cancel or error.");
+                        //    Log.Information("Buffering failed due to a cancel or error.");
                         //    continue;
                         //}
-                        //_log.Info("Buffered. Getting audio client...");
+                        //Log.Information("Buffered. Getting audio client...");
                         var ac = await GetAudioClient().ConfigureAwait(false);
-                        _log.Info("Got Audio client");
+                        Log.Information("Got Audio client");
                         if (ac == null)
                         {
-                            _log.Info("Can't join");
+                            Log.Information("Can't join");
                             await Task.Delay(900, cancelToken).ConfigureAwait(false);
                             // just wait some time, maybe bot doesn't even have perms to join that voice channel,
                             // i don't want to spam connection attempts
@@ -212,7 +210,7 @@ namespace WizBot.Modules.Music.Common
                         b.StartBuffering();
                         await Task.WhenAny(Task.Delay(10000), b.PrebufferingCompleted.Task).ConfigureAwait(false);
                         pcm = ac.CreatePCMStream(AudioApplication.Music, bufferMillis: 1, packetLoss: 5);
-                        _log.Info("Created pcm stream");
+                        Log.Information("Created pcm stream");
                         OnStarted?.Invoke(this, data);
 
                         while (MaxPlaytimeSeconds <= 0 || MaxPlaytimeSeconds >= CurrentTime.TotalSeconds)
@@ -224,17 +222,17 @@ namespace WizBot.Modules.Music.Common
                             await pcm.WriteAsync(buffer, 0, buffer.Length, cancelToken).ConfigureAwait(false);
                             unchecked { _bytesSent += buffer.Length; }
 
-                            await ((PauseTaskSource?.Task ?? Task.CompletedTask).ConfigureAwait(false));
+                            await (PauseTaskSource?.Task ?? Task.CompletedTask).ConfigureAwait(false);
                         }
                     }
                     catch (OperationCanceledException)
                     {
-                        _log.Info("Song Canceled");
+                        Log.Information("Song Canceled");
                         cancel = true;
                     }
                     catch (Exception ex)
                     {
-                        _log.Warn(ex);
+                        Log.Warning(ex, "Error sending song data");
                     }
                     finally
                     {
@@ -259,7 +257,7 @@ namespace WizBot.Modules.Music.Common
                         {
                             lock (locker)
                                 Queue.RemoveSong(data.Song);
-                            _log.Info("Song removed because it can't play");
+                            Log.Information("Song removed because it can't play");
                         }
                     }
                     try
@@ -287,7 +285,7 @@ namespace WizBot.Modules.Music.Common
                         {
                             if (Shuffle)
                             {
-                                _log.Info("Random song");
+                                Log.Information("Random song");
                                 Queue.Random(); //if shuffle is set, set current song index to a random number
                             }
                             else
@@ -298,21 +296,21 @@ namespace WizBot.Modules.Music.Common
                                 {
                                     try
                                     {
-                                        _log.Info("Loading related song");
+                                        Log.Information("Loading related song");
                                         await _musicService.TryQueueRelatedSongAsync(data.Song, OutputTextChannel, VoiceChannel).ConfigureAwait(false);
                                         if (!AutoDelete)
                                             Queue.Next();
                                     }
                                     catch
                                     {
-                                        _log.Info("Loading related song failed.");
+                                        Log.Information("Loading related song failed");
                                     }
                                 }
                                 else if (FairPlay)
                                 {
                                     lock (locker)
                                     {
-                                        _log.Info("Next fair song");
+                                        Log.Information("Next fair song");
                                         var queueList = Queue.ToList();
                                         var q = queueList.Shuffle().ToArray();
 
@@ -339,7 +337,7 @@ namespace WizBot.Modules.Music.Common
                                 }
                                 else if (queueCount - 1 == data.Index && !RepeatPlaylist && !manualSkip)
                                 {
-                                    _log.Info("Stopping because repeatplaylist is disabled");
+                                    Log.Information("Stopping because repeatplaylist is disabled");
                                     lock (locker)
                                     {
                                         Stop();
@@ -347,7 +345,7 @@ namespace WizBot.Modules.Music.Common
                                 }
                                 else
                                 {
-                                    _log.Info("Next song");
+                                    Log.Information("Next song");
                                     lock (locker)
                                     {
                                         if (!Stopped)
@@ -360,7 +358,7 @@ namespace WizBot.Modules.Music.Common
                     }
                     catch (Exception ex)
                     {
-                        _log.Error(ex);
+                        Log.Error(ex, "Error in queue");
                     }
                 }
                 do
@@ -385,10 +383,10 @@ namespace WizBot.Modules.Music.Common
                         if (t != null)
                         {
 
-                            _log.Info("Stopping audio client");
+                            Log.Information("Stopping audio client");
                             await t.ConfigureAwait(false);
 
-                            _log.Info("Disposing audio client");
+                            Log.Information("Disposing audio client");
                             _audioClient.Dispose();
                         }
                     }
@@ -400,19 +398,19 @@ namespace WizBot.Modules.Music.Common
                     var curUser = await VoiceChannel.Guild.GetCurrentUserAsync().ConfigureAwait(false);
                     if (curUser.VoiceChannel != null)
                     {
-                        _log.Info("Connecting");
+                        Log.Information("Connecting");
                         var ac = await VoiceChannel.ConnectAsync().ConfigureAwait(false);
-                        _log.Info("Connected, stopping");
+                        Log.Information("Connected, stopping");
                         await ac.StopAsync().ConfigureAwait(false);
-                        _log.Info("Disconnected");
+                        Log.Information("Disconnected");
                         await Task.Delay(1000).ConfigureAwait(false);
                     }
-                    _log.Info("Connecting");
+                    Log.Information("Connecting");
                     _audioClient = await VoiceChannel.ConnectAsync().ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
-                    _log.Warn("Error while getting audio client: {0}", ex.ToString());
+                    Log.Warning("Error while getting audio client: {0}", ex.ToString());
                     return null;
                 }
             return _audioClient;
@@ -631,7 +629,7 @@ namespace WizBot.Modules.Music.Common
 
         public async Task Destroy()
         {
-            _log.Info("Destroying");
+            Log.Information("Destroying");
             lock (locker)
             {
                 Stop();

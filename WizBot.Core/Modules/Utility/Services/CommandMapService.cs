@@ -7,7 +7,6 @@ using WizBot.Common.ModuleBehaviors;
 using WizBot.Extensions;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
-using NLog;
 using System;
 using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +15,6 @@ namespace WizBot.Modules.Utility.Services
 {
     public class CommandMapService : IInputTransformer, INService
     {
-        private readonly Logger _log;
 
         public ConcurrentDictionary<ulong, ConcurrentDictionary<string, string>> AliasMaps { get; } = new ConcurrentDictionary<ulong, ConcurrentDictionary<string, string>>();
 
@@ -25,7 +23,6 @@ namespace WizBot.Modules.Utility.Services
         //commandmap
         public CommandMapService(DiscordSocketClient client, DbService db)
         {
-            _log = LogManager.GetCurrentClassLogger();
 
             using (var uow = db.GetDbContext())
             {

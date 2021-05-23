@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
-using NLog;
+using Serilog;
 using YamlDotNet.Serialization;
 
 namespace WizBot.Core.Services
@@ -14,12 +14,10 @@ namespace WizBot.Core.Services
     {
         private readonly string _responsesPath = "data/strings/responses";
         private readonly string _commandsPath = "data/strings/commands";
-        private readonly Logger _log;
 
         public LocalFileStringsSource(string responsesPath = "data/strings/responses",
             string commandsPath = "data/strings/commands")
         {
-            _log = LogManager.GetCurrentClassLogger();
             _responsesPath = responsesPath;
             _commandsPath = commandsPath;
         }
@@ -37,7 +35,7 @@ namespace WizBot.Core.Services
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex, "Error loading {FileName} response strings: {ErrorMessage}", file, ex.Message);
+                    Log.Error(ex, "Error loading {FileName} response strings: {ErrorMessage}", file, ex.Message);
                 }
             }
 
@@ -61,7 +59,7 @@ namespace WizBot.Core.Services
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex, "Error loading {FileName} command strings: {ErrorMessage}", file, ex.Message);
+                    Log.Error(ex, "Error loading {FileName} command strings: {ErrorMessage}", file, ex.Message);
                 }
             }
 

@@ -2,19 +2,17 @@
 using System.Data.Common;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Core.Services;
-using NLog;
+using Serilog;
 
 namespace WizBot.Modules.Xp.Services
 {
     public sealed class XpConfigMigrator : IConfigMigrator
     {
-        private readonly Logger _log;
         private readonly DbService _db;
         private readonly XpConfigService _gss;
 
         public XpConfigMigrator(DbService dbService, XpConfigService gss)
         {
-            _log = LogManager.GetCurrentClassLogger();
             _db = dbService;
             _gss = gss;
         }
@@ -47,7 +45,7 @@ namespace WizBot.Modules.Xp.Services
                     return;
             }
 
-            _log.Info("Migrating Xp settings...");
+            Log.Information("Migrating Xp settings...");
 
             using var com = conn.CreateCommand();
             com.CommandText = $@"SELECT XpPerMessage, XpMinutesTimeout, VoiceXpPerMinute, MaxXpMinutes 

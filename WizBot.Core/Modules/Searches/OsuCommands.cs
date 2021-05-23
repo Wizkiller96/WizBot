@@ -11,6 +11,7 @@ using WizBot.Common.Attributes;
 using WizBot.Core.Common;
 using WizBot.Core.Modules.Searches.Common;
 using Newtonsoft.Json;
+using Serilog;
 
 namespace WizBot.Modules.Searches
 {
@@ -83,7 +84,7 @@ namespace WizBot.Modules.Searches
                     catch (Exception ex)
                     {
                         await ReplyErrorLocalizedAsync("osu_failed").ConfigureAwait(false);
-                        _log.Warn(ex);
+                        Log.Warning(ex, "Osu command failed");
                     }
                 }
             }

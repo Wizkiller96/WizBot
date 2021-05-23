@@ -8,15 +8,14 @@ using WizBot.Common.Collections;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Extensions;
 using WizBot.Core.Services;
-using NLog;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Core.Services.Database.Models;
+using Serilog;
 
 namespace WizBot.Modules.Permissions.Services
 {
     public class FilterService : IEarlyBehavior, INService
     {
-        private readonly Logger _log;
         private readonly DbService _db;
 
         public ConcurrentHashSet<ulong> InviteFilteringChannels { get; }
@@ -74,9 +73,8 @@ namespace WizBot.Modules.Permissions.Services
             return words;
         }
 
-        public FilterService(DiscordSocketClient client, WizBot bot, DbService db)
+        public FilterService(DiscordSocketClient client, DbService db)
         {
-            _log = LogManager.GetCurrentClassLogger();
             _db = db;
 
             using (var uow = db.GetDbContext())
@@ -164,7 +162,7 @@ namespace WizBot.Modules.Permissions.Services
                         }
                         catch (HttpException ex)
                         {
-                            _log.Warn("I do not have permission to filter words in channel with id " + usrMsg.Channel.Id, ex);
+                            Log.Warning("I do not have permission to filter words in channel with id " + usrMsg.Channel.Id, ex);
                         }
                         return true;
                     }
@@ -191,7 +189,7 @@ namespace WizBot.Modules.Permissions.Services
                 }
                 catch (HttpException ex)
                 {
-                    _log.Warn("I do not have permission to filter invites in channel with id " + usrMsg.Channel.Id, ex);
+                    Log.Warning("I do not have permission to filter invites in channel with id " + usrMsg.Channel.Id, ex);
                     return true;
                 }
             }
@@ -216,7 +214,7 @@ namespace WizBot.Modules.Permissions.Services
                 }
                 catch (HttpException ex)
                 {
-                    _log.Warn("I do not have permission to filter links in channel with id " + usrMsg.Channel.Id, ex);
+                    Log.Warning("I do not have permission to filter links in channel with id " + usrMsg.Channel.Id, ex);
                     return true;
                 }
             }

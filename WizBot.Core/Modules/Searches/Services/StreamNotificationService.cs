@@ -16,7 +16,7 @@ using StackExchange.Redis;
 using Discord;
 using Discord.WebSocket;
 using WizBot.Common.Collections;
-using NLog;
+using Serilog;
 
 namespace WizBot.Modules.Searches.Services
 {
@@ -38,14 +38,12 @@ namespace WizBot.Modules.Searches.Services
 
         private readonly ConnectionMultiplexer _multi;
         private readonly IBotCredentials _creds;
-        private readonly Logger _log;
         private readonly Timer _notifCleanupTimer;
 
         public StreamNotificationService(DbService db, DiscordSocketClient client,
             IBotStrings strings, IDataCache cache, IBotCredentials creds, IHttpClientFactory httpFactory,
             WizBot bot)
         {
-            _log = LogManager.GetCurrentClassLogger();
             _db = db;
             _client = client;
             _strings = strings;
@@ -128,8 +126,8 @@ namespace WizBot.Modules.Searches.Services
                         {
                             foreach (var kvp in deleteGroups)
                             {
-                                _log.Info($"Deleting {kvp.Value.Count} {kvp.Key} streams because " +
-                                          $"they've been erroring for more than {errorLimit}: {string.Join(", ", kvp.Value)}");
+                                Log.Information($"Deleting {kvp.Value.Count} {kvp.Key} streams because " +
+                                                $"they've been erroring for more than {errorLimit}: {string.Join(", ", kvp.Value)}");
 
                                 var toDelete = uow._context.Set<FollowedStream>()
                                     .AsQueryable()
@@ -146,8 +144,8 @@ namespace WizBot.Modules.Searches.Services
                     }
                     catch (Exception ex)
                     {
-                        _log.Error("Error cleaning up FollowedStreams");
-                        _log.Error(ex.ToString());
+                        Log.Error("Error cleaning up FollowedStreams");
+                        Log.Error(ex.ToString());
                     }
                 }, null, TimeSpan.FromMinutes(30), TimeSpan.FromMinutes(30));
 

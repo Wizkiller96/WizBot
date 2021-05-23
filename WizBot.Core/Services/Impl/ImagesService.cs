@@ -3,7 +3,6 @@ using WizBot.Core.Services.Common;
 using WizBot.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using NLog;
 using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
@@ -12,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace WizBot.Core.Services.Impl
 {
@@ -19,7 +19,6 @@ namespace WizBot.Core.Services.Impl
     {
         private readonly ConnectionMultiplexer _con;
         private readonly IBotCredentials _creds;
-        private readonly Logger _log;
         private readonly HttpClient _http;
 
         private IDatabase _db => _con.GetDatabase();
@@ -79,7 +78,6 @@ namespace WizBot.Core.Services.Impl
         {
             _con = con;
             _creds = creds;
-            _log = LogManager.GetCurrentClassLogger();
             _http = new HttpClient();
 
             Migrate();
@@ -97,9 +95,9 @@ namespace WizBot.Core.Services.Impl
             }
             catch (Exception ex)
             {
-                _log.Warn(ex.Message);
-                _log.Error("Something has been incorrectly formatted in your 'images.json' file.\n" +
-                           "Use the 'images_example.json' file as reference to fix it and restart the bot.");
+                Log.Warning(ex.Message);
+                Log.Error("Something has been incorrectly formatted in your 'images.json' file.\n" +
+                          "Use the 'images_example.json' file as reference to fix it and restart the bot.");
             }
         }
 
@@ -107,7 +105,7 @@ namespace WizBot.Core.Services.Impl
         {
             if (!File.Exists(Path.Combine(_oldBasePath, "images.json")))
                 return;
-            _log.Info("Migrating images v0 to images v1.");
+            Log.Information("Migrating images v0 to images v1.");
             // load old images
             var oldUrls = JsonConvert.DeserializeObject<ImageUrls>(
                     File.ReadAllText(Path.Combine(_oldBasePath, "images.json")));
@@ -136,7 +134,7 @@ namespace WizBot.Core.Services.Impl
 
             if (urls.Version >= 2)
                 return;
-            _log.Info("Migrating images v1 to images v2.");
+            Log.Information("Migrating images v1 to images v2.");
             urls.Version = 2;
 
             var prefix = $"{_creds.RedisKey()}_localimg_";
@@ -165,7 +163,7 @@ namespace WizBot.Core.Services.Impl
             if (urls.Version >= 3)
                 return;
             urls.Version = 3;
-            _log.Info("Migrating images v2 to images v3.");
+            Log.Information("Migrating images v2 to images v3.");
 
             var baseStr = "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/currency/";
 
@@ -207,7 +205,7 @@ namespace WizBot.Core.Services.Impl
             }
             catch (Exception ex)
             {
-                _log.Warn(ex);
+                Log.Warning(ex, "Error checking for Image keys");
                 return false;
             }
         }
@@ -237,11 +235,11 @@ namespace WizBot.Core.Services.Impl
                 await Task.WhenAll(t, loadCards).ConfigureAwait(false);
 
                 sw.Stop();
-                _log.Info($"Images reloaded in {sw.Elapsed.TotalSeconds:F2}s");
+                Log.Information($"Images reloaded in {sw.Elapsed.TotalSeconds:F2}s");
             }
             catch (Exception ex)
             {
-                _log.Error(ex);
+                Log.Error(ex, "Error reloading image service");
                 throw;
             }
         }

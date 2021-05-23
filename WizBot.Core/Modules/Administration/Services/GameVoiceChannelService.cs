@@ -5,21 +5,19 @@ using Discord.WebSocket;
 using WizBot.Common.Collections;
 using WizBot.Extensions;
 using WizBot.Core.Services;
-using NLog;
+using Serilog;
 
 namespace WizBot.Modules.Administration.Services
 {
     public class GameVoiceChannelService : INService
     {
         public ConcurrentHashSet<ulong> GameVoiceChannels { get; } = new ConcurrentHashSet<ulong>();
-
-        private readonly Logger _log;
+        
         private readonly DbService _db;
         private readonly DiscordSocketClient _client;
 
         public GameVoiceChannelService(DiscordSocketClient client, DbService db, WizBot bot)
         {
-            _log = LogManager.GetCurrentClassLogger();
             _db = db;
             _client = client;
 
@@ -54,7 +52,7 @@ namespace WizBot.Modules.Administration.Services
                 }
                 catch (Exception ex)
                 {
-                    _log.Warn(ex);
+                    Log.Warning(ex, "Error running GuildMemberUpdated in gvc");
                 }
             });
             return Task.CompletedTask;
@@ -108,7 +106,7 @@ namespace WizBot.Modules.Administration.Services
                 }
                 catch (Exception ex)
                 {
-                    _log.Warn(ex);
+                    Log.Warning(ex, "Error running VoiceStateUpdate in gvc");
                 }
             });
 

@@ -10,7 +10,6 @@ using WizBot.Extensions;
 using WizBot.Modules.Searches.Common;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using NLog;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
@@ -24,6 +23,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Serilog;
 using Image = SixLabors.ImageSharp.Image;
 
 namespace WizBot.Modules.Searches.Services
@@ -34,7 +34,6 @@ namespace WizBot.Modules.Searches.Services
         private readonly DiscordSocketClient _client;
         private readonly IGoogleApiService _google;
         private readonly DbService _db;
-        private readonly Logger _log;
         private readonly IImageCache _imgs;
         private readonly IDataCache _cache;
         private readonly FontProvider _fonts;
@@ -65,7 +64,6 @@ namespace WizBot.Modules.Searches.Services
             _client = client;
             _google = google;
             _db = db;
-            _log = LogManager.GetCurrentClassLogger();
             _imgs = cache.LocalImages;
             _cache = cache;
             _fonts = fonts;
@@ -114,14 +112,14 @@ namespace WizBot.Modules.Searches.Services
                 WowJokes = JsonConvert.DeserializeObject<List<WoWJoke>>(File.ReadAllText("data/wowjokes.json"));
             }
             else
-                _log.Warn("data/wowjokes.json is missing. WOW Jokes are not loaded.");
+                Log.Warning("data/wowjokes.json is missing. WOW Jokes are not loaded.");
 
             if (File.Exists("data/magicitems.json"))
             {
                 MagicItems = JsonConvert.DeserializeObject<List<MagicItem>>(File.ReadAllText("data/magicitems.json"));
             }
             else
-                _log.Warn("data/magicitems.json is missing. Magic items are not loaded.");
+                Log.Warning("data/magicitems.json is missing. Magic items are not loaded.");
 
             if (File.Exists("data/yomama.txt"))
             {
@@ -132,7 +130,7 @@ namespace WizBot.Modules.Searches.Services
             else
             {
                 _yomamaJokes = new List<string>();
-                _log.Warn("data/yomama.txt is missing. .yomama command won't work");
+                Log.Warning("data/yomama.txt is missing. .yomama command won't work");
             }
 
         }
@@ -233,7 +231,7 @@ namespace WizBot.Modules.Searches.Services
                 }
                 catch (Exception ex)
                 {
-                    _log.Warn(ex.Message);
+                    Log.Warning(ex.Message);
                     return null;
                 }
             }
@@ -280,7 +278,7 @@ namespace WizBot.Modules.Searches.Services
                     var responses = JsonConvert.DeserializeObject<LocationIqResponse[]>(res);
                     if (responses is null || responses.Length == 0)
                     {
-                        _log.Warn("Geocode lookup failed for: {Query}", query);
+                        Log.Warning("Geocode lookup failed for: {Query}", query);
                         return (default, TimeErrors.NotFound);
                     }
 
@@ -310,7 +308,7 @@ namespace WizBot.Modules.Searches.Services
             }
             catch (Exception ex)
             {
-                _log.Error(ex, "Weather error: {Message}", ex.Message);
+                Log.Error(ex, "Weather error: {Message}", ex.Message);
                 return (default, TimeErrors.NotFound);
             }
         }
@@ -602,7 +600,7 @@ namespace WizBot.Modules.Searches.Services
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message);
+                    Log.Error(ex.Message);
                     return null;
                 }
             }

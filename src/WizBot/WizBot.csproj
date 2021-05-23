@@ -14,9 +14,6 @@
     <Version Condition=" '$(VersionSuffix)' != '' ">$(VersionPrefix).$(VersionSuffix)</Version>
     <Version Condition=" '$(Version)' == '' ">$(VersionPrefix)</Version>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="NLog" Version="4.7.2" />
-  </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="credentials.json" />

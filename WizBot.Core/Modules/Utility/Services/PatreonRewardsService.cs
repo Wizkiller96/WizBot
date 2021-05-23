@@ -3,7 +3,6 @@ using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Modules.Utility.Common.Patreon;
 using Newtonsoft.Json;
-using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +12,7 @@ using System.Threading.Tasks;
 using Discord;
 using WizBot.Core.Modules.Gambling.Services;
 using WizBot.Extensions;
+using Serilog;
 
 namespace WizBot.Modules.Utility.Services
 {
@@ -24,7 +24,6 @@ namespace WizBot.Modules.Utility.Services
 
         private readonly Timer _updater;
         private readonly SemaphoreSlim claimLockJustInCase = new SemaphoreSlim(1, 1);
-        private readonly Logger _log;
 
         public TimeSpan Interval { get; } = TimeSpan.FromMinutes(3);
         private readonly IBotCredentials _creds;
@@ -40,7 +39,6 @@ namespace WizBot.Modules.Utility.Services
             ICurrencyService currency, IHttpClientFactory factory,
             DiscordSocketClient client, GamblingConfigService gamblingConfigService)
         {
-            _log = LogManager.GetCurrentClassLogger();
             _creds = creds;
             _db = db;
             _currency = currency;
@@ -114,7 +112,7 @@ namespace WizBot.Modules.Utility.Services
             }
             catch (Exception ex)
             {
-                _log.Warn(ex);
+                Log.Warning(ex, "Error refreshing patreon pledges");
             }
             finally
             {
@@ -157,7 +155,7 @@ namespace WizBot.Modules.Utility.Services
                             await _currency.AddAsync(userId, "Patreon reward - new", amount, gamble: true);
                             totalAmount += amount;
 
-                            _log.Info($"Sending new currency reward to {userId}");
+                            Log.Information($"Sending new currency reward to {userId}");
                             await SendMessageToUser(userId, $"Thank you for your pledge! " +
                                                             $"You've been awarded **{amount}**{settings.Currency.Sign} !");
                             continue;
@@ -172,7 +170,7 @@ namespace WizBot.Modules.Utility.Services
 
                             await _currency.AddAsync(userId, "Patreon reward - recurring", amount, gamble: true);
                             totalAmount += amount;
-                            _log.Info($"Sending recurring currency reward to {userId}");
+                            Log.Information($"Sending recurring currency reward to {userId}");
                             await SendMessageToUser(userId, $"Thank you for your continued support! " +
                                                             $"You've been awarded **{amount}**{settings.Currency.Sign} for this month's support!");
                             continue;
@@ -188,7 +186,7 @@ namespace WizBot.Modules.Utility.Services
 
                             await _currency.AddAsync(userId, "Patreon reward - update", toAward, gamble: true);
                             totalAmount += toAward;
-                            _log.Info($"Sending updated currency reward to {userId}");
+                            Log.Information($"Sending updated currency reward to {userId}");
                             await SendMessageToUser(userId, $"Thank you for increasing your pledge! " +
                                                             $"You've been awarded an additional **{toAward}**{settings.Currency.Sign} !");
                             continue;

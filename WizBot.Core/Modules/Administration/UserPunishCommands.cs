@@ -12,6 +12,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using WizBot.Modules.Permissions.Services;
+using Serilog;
 
 namespace WizBot.Modules.Administration
 {
@@ -78,7 +79,7 @@ namespace WizBot.Modules.Administration
                 }
                 catch (Exception ex)
                 {
-                    _log.Warn(ex.Message);
+                    Log.Warning(ex.Message);
                     var errorEmbed = new EmbedBuilder()
                         .WithErrorColor()
                         .WithDescription(GetText("cant_apply_punishment"));

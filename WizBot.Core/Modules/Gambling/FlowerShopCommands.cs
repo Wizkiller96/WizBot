@@ -14,6 +14,7 @@ using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Extensions;
 using WizBot.Modules.Gambling.Services;
+using Serilog;
 
 namespace WizBot.Modules.Gambling
 {
@@ -124,7 +125,7 @@ namespace WizBot.Modules.Gambling
                         }
                         catch (Exception ex)
                         {
-                            _log.Warn(ex);
+                            Log.Warning(ex, "Error adding shop role");
                             await _cs.AddAsync(ctx.User.Id, $"Shop error refund", entry.Price).ConfigureAwait(false);
                             await ReplyErrorLocalizedAsync("shop_role_purchase_error").ConfigureAwait(false);
                             return;

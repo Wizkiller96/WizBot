@@ -3,7 +3,6 @@ using Discord.Commands;
 using Discord.WebSocket;
 using WizBot.Core.Services;
 using WizBot.Extensions;
-using NLog;
 using System.Globalization;
 using System.Threading.Tasks;
 
@@ -11,7 +10,6 @@ namespace WizBot.Modules
 {
     public abstract class WizBotModule : ModuleBase
     {
-        protected Logger _log { get; }
         protected CultureInfo _cultureInfo { get; set; }
         public IBotStrings Strings { get; set; }
         public CommandHandler CmdHandler { get; set; }
@@ -23,7 +21,6 @@ namespace WizBot.Modules
 
         protected WizBotModule()
         {
-            _log = LogManager.GetCurrentClassLogger();
         }
 
         protected override void BeforeExecute(CommandInfo cmd)

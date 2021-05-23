@@ -10,6 +10,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace WizBot.Modules.Administration
 {
@@ -46,7 +47,7 @@ namespace WizBot.Modules.Administration
                         var roleResult = await roleReader.ReadAsync(ctx, inputRoleStr, _services);
                         if (!roleResult.IsSuccess)
                         {
-                            _log.Warn("Role {0} not found.", inputRoleStr);
+                            Log.Warning("Role {0} not found.", inputRoleStr);
                             return null;
                         }
                         var role = (IRole)roleResult.BestMatch;
@@ -178,8 +179,8 @@ namespace WizBot.Modules.Administration
                 }
                 catch (Exception ex)
                 {
+                    Log.Warning(ex, "Error in setrole command");
                     await ReplyErrorLocalizedAsync("setrole_err").ConfigureAwait(false);
-                    _log.Info(ex);
                 }
             }
 

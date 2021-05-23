@@ -3,7 +3,6 @@ using WizBot.Common.ShardCom;
 using WizBot.Core.Services.Impl;
 using WizBot.Extensions;
 using Newtonsoft.Json;
-using NLog;
 using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
@@ -11,6 +10,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using WizBot.Core.Common;
+using Serilog;
 
 namespace WizBot.Core.Services
 {
@@ -57,8 +57,7 @@ namespace WizBot.Core.Services
         private readonly BotCredentials _creds;
         private readonly string _key;
         private readonly Process[] _shardProcesses;
-
-        private readonly Logger _log;
+        
         private readonly int _curProcessId;
         private readonly ConnectionMultiplexer _redis;
         private ShardComMessage _defaultShardState;
@@ -72,11 +71,10 @@ namespace WizBot.Core.Services
         public ShardsCoordinator()
         {
             //load main stuff
-            LogSetup.SetupLogger(-1);
-            _log = LogManager.GetCurrentClassLogger();
+            LogSetup.SetupLogger("coord");
             _creds = new BotCredentials();
 
-            _log.Info("Starting WizBot v" + StatsService.BotVersion);
+            Log.Information("Starting WizBot v" + StatsService.BotVersion);
 
             _key = _creds.RedisKey();
 
@@ -87,8 +85,7 @@ namespace WizBot.Core.Services
             }
             catch (RedisConnectionException ex)
             {
-                _log.Error("Redis error. Make sure Redis is installed and running as a service.");
-                _log.Fatal(ex.ToString());
+                Log.Error(ex, "Redis error. Make sure Redis is installed and running as a service");
                 Helpers.ReadErrorAndExit(11);
             }
 
@@ -99,7 +96,7 @@ namespace WizBot.Core.Services
             }
             else
             {
-                _log.Info("Images are already present in redis. Use .imagesreload to force update if needed.");
+                Log.Information("Images are already present in redis. Use .imagesreload to force update if needed");
             }
 
             //setup initial shard statuses
@@ -210,7 +207,7 @@ namespace WizBot.Core.Services
             if (msg.ConnectionState == Discord.ConnectionState.Disconnected
                 || msg.ConnectionState == Discord.ConnectionState.Disconnecting)
             {
-                _log.Error("!!! SHARD {0} IS IN {1} STATE !!!", msg.ShardId, msg.ConnectionState.ToString());
+                Log.Error("!!! SHARD {0} IS IN {1} STATE !!!", msg.ShardId, msg.ConnectionState.ToString());
 
                 OnShardUnavailable(msg.ShardId);
             }
@@ -260,11 +257,11 @@ namespace WizBot.Core.Services
                         //and this is an auto-restart
                         if (tsc.Task.IsCompleted)
                         {
-                            _log.Warn("Auto-restarting shard {0}, {1} more in queue.", id, _shardStartQueue.Count);
+                            Log.Warning("Auto-restarting shard {0}, {1} more in queue.", id, _shardStartQueue.Count);
                         }
                         else
                         {
-                            _log.Warn("Starting shard {0}, {1} more in queue.", id, _shardStartQueue.Count - 1);
+                            Log.Warning("Starting shard {0}, {1} more in queue.", id, _shardStartQueue.Count - 1);
                         }
                         var rem = _shardProcesses[id];
                         if (rem != null)
@@ -313,7 +310,7 @@ namespace WizBot.Core.Services
                                 var p = _shardProcesses[i];
                                 if (p == null || p.HasExited)
                                 {
-                                    _log.Warn("Scheduling shard {0} for restart because it's process is stopped.", i);
+                                    Log.Warning("Scheduling shard {0} for restart because it's process is stopped.", i);
                                     _shardStartQueue.Enqueue(i);
                                 }
                             }
@@ -331,11 +328,11 @@ namespace WizBot.Core.Services
                                 s.Time = DateTime.UtcNow + TimeSpan.FromSeconds(60 * _shardStartQueue.Count);
                                 db.ListSetByIndex(_key + "_shardstats", s.ShardId,
                                     JsonConvert.SerializeObject(s), CommandFlags.FireAndForget);
-                                _log.Warn("Shard {0} is scheduled for a restart because it's unresponsive.", s.ShardId);
+                                Log.Warning("Shard {0} is scheduled for a restart because it's unresponsive.", s.ShardId);
                             }
                         }
                     }
-                    catch (Exception ex) { _log.Error(ex); throw; }
+                    catch (Exception ex) { Log.Error(ex, "Error in RunAsync"); throw; }
                 }
             });
 
@@ -362,7 +359,7 @@ namespace WizBot.Core.Services
             }
             catch (Exception ex)
             {
-                _log.Error(ex);
+                Log.Error(ex, "Unhandled exception in RunAsync");
                 foreach (var p in _shardProcesses)
                 {
                     if (p == null)

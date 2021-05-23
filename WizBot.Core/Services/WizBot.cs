@@ -9,7 +9,6 @@ using WizBot.Core.Services.Database.Models;
 using WizBot.Core.Services.Impl;
 using WizBot.Extensions;
 using Newtonsoft.Json;
-using NLog;
 using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
@@ -27,13 +26,12 @@ using WizBot.Core.Common;
 using WizBot.Core.Common.Configs;
 using WizBot.Modules.Administration.Services;
 using WizBot.Modules.CustomReactions.Services;
+using Serilog;
 
 namespace WizBot
 {
     public class WizBot
     {
-        private Logger _log;
-
         public BotCredentials Credentials { get; }
         public DiscordSocketClient Client { get; }
         public CommandService CommandService { get; }
@@ -67,7 +65,6 @@ namespace WizBot
                 throw new ArgumentOutOfRangeException(nameof(shardId));
 
             LogSetup.SetupLogger(shardId);
-            _log = LogManager.GetCurrentClassLogger();
             TerribleElevatedPermissionCheck();
 
             Credentials = new BotCredentials();
@@ -189,7 +186,7 @@ namespace WizBot
             _ = LoadTypeReaders(typeof(WizBot).Assembly);
 
             sw.Stop();
-            _log.Info($"All services loaded in {sw.Elapsed.TotalSeconds:F2}s");
+            Log.Information($"All services loaded in {sw.Elapsed.TotalSeconds:F2}s");
         }
         
         private void ApplyConfigMigrations()
@@ -218,7 +215,7 @@ namespace WizBot
             }
             catch (ReflectionTypeLoadException ex)
             {
-                _log.Warn(ex.LoaderExceptions[0]);
+                Log.Warning(ex.LoaderExceptions[0], "Error getting types");
                 return Enumerable.Empty<object>();
             }
             var filteredTypes = allTypes
@@ -268,7 +265,7 @@ namespace WizBot
             }
 
             //connect
-            _log.Info("Shard {0} logging in ...", Client.ShardId);
+            Log.Information("Shard {0} logging in ...", Client.ShardId);
             try
             {
                 await Client.LoginAsync(TokenType.Bot, token).ConfigureAwait(false);
@@ -276,12 +273,12 @@ namespace WizBot
             }
             catch (HttpException ex)
             {
-                LoginErrorHandler.Handle(_log, ex);
+                LoginErrorHandler.Handle(ex);
                 Helpers.ReadErrorAndExit(3);
             }
             catch (Exception ex)
             {
-                LoginErrorHandler.Handle(_log, ex);
+                LoginErrorHandler.Handle(ex);
                 Helpers.ReadErrorAndExit(4);
             }
 
@@ -290,18 +287,18 @@ namespace WizBot
             Client.Ready -= SetClientReady;
             Client.JoinedGuild += Client_JoinedGuild;
             Client.LeftGuild += Client_LeftGuild;
-            _log.Info("Shard {0} logged in.", Client.ShardId);
+            Log.Information("Shard {0} logged in.", Client.ShardId);
         }
 
         private Task Client_LeftGuild(SocketGuild arg)
         {
-            _log.Info("Left server: {0} [{1}]", arg?.Name, arg?.Id);
+            Log.Information("Left server: {0} [{1}]", arg?.Name, arg?.Id);
             return Task.CompletedTask;
         }
 
         private Task Client_JoinedGuild(SocketGuild arg)
         {
-            _log.Info($"Joined server: {0} [{1}]", arg?.Name, arg?.Id);
+            Log.Information($"Joined server: {0} [{1}]", arg?.Name, arg?.Id);
             var _ = Task.Run(async () =>
             {
                 GuildConfig gc;
@@ -321,20 +318,19 @@ namespace WizBot
             await LoginAsync(Credentials.Token).ConfigureAwait(false);
 
             Mention = Client.CurrentUser.Mention;
-            _log.Info($"Shard {Client.ShardId} loading services...");
+            Log.Information("Shard {ShardId} loading services...", Client.ShardId);
             try
             {
                 AddServices();
             }
             catch (Exception ex)
             {
-                _log.Error(ex);
-                _log.Error(ex.ToString());
+                Log.Error(ex, "Error adding services");
                 Helpers.ReadErrorAndExit(9);
             }
 
             sw.Stop();
-            _log.Info($"Shard {Client.ShardId} connected in {sw.Elapsed.TotalSeconds:F2}s");
+            Log.Information("Shard {ShardId} connected in {Elapsed:F2}s", Client.ShardId, sw.Elapsed.TotalSeconds);
 
             var stats = Services.GetService<IStatsService>();
             stats.Initialize();
@@ -351,7 +347,7 @@ namespace WizBot
             StartSendingData();
             Ready.TrySetResult(true);
             _ = Task.Run(ExecuteReadySubscriptions);
-            _log.Info($"Shard {Client.ShardId} ready.");
+            Log.Information("Shard {ShardId} ready", Client.ShardId);
         }
 
         private Task ExecuteReadySubscriptions()
@@ -365,7 +361,7 @@ namespace WizBot
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex, "Failed running OnReadyAsync method on {Type} type: {Message}",
+                    Log.Error(ex, "Failed running OnReadyAsync method on {Type} type: {Message}",
                         toExec.GetType().Name, ex.Message);
                 }
             });
@@ -375,9 +371,10 @@ namespace WizBot
 
         private Task Client_Log(LogMessage arg)
         {
-            _log.Warn(arg.Source + " | " + arg.Message);
             if (arg.Exception != null)
-                _log.Warn(arg.Exception);
+                Log.Warning(arg.Exception, arg.Source + " | " + arg.Message);
+            else
+                Log.Warning(arg.Source + " | " + arg.Message);
 
             return Task.CompletedTask;
         }
@@ -399,7 +396,7 @@ namespace WizBot
             }
             catch
             {
-                _log.Error("You must run the application as an ADMINISTRATOR.");
+                Log.Error("You must run the application as an ADMINISTRATOR");
                 Helpers.ReadErrorAndExit(2);
             }
         }
@@ -433,7 +430,7 @@ namespace WizBot
                 }
                 catch (Exception ex)
                 {
-                    _log.Warn(ex);
+                    Log.Warning(ex, "Error setting game");
                 }
             }, CommandFlags.FireAndForget);
 
@@ -447,7 +444,7 @@ namespace WizBot
                 }
                 catch (Exception ex)
                 {
-                    _log.Warn(ex);
+                    Log.Warning(ex, "Error setting stream");
                 }
             }, CommandFlags.FireAndForget);
         }

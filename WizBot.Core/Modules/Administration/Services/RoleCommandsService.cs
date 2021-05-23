@@ -5,16 +5,15 @@ using WizBot.Common.Collections;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Extensions;
-using NLog;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace WizBot.Modules.Administration.Services
 {
     public class RoleCommandsService : INService
     {
-        private readonly Logger _log;
         private readonly DbService _db;
         private readonly DiscordSocketClient _client;
         private readonly ConcurrentDictionary<ulong, IndexedCollection<ReactionRoleMessage>> _models;
@@ -22,7 +21,6 @@ namespace WizBot.Modules.Administration.Services
         public RoleCommandsService(DiscordSocketClient client, DbService db,
             WizBot bot)
         {
-            _log = LogManager.GetCurrentClassLogger();
             _db = db;
             _client = client;
             _models = bot.AllGuildConfigs.ToDictionary(x => x.GuildId,
@@ -100,7 +98,7 @@ namespace WizBot.Modules.Administration.Services
                             {
                                 RetryMode = RetryMode.RetryRatelimit | RetryMode.Retry502
                             }).ConfigureAwait(false);
-                        _log.Warn("User {0} is adding unrelated reactions to the reaction roles message.", dl.Author);
+                        Log.Warning("User {0} is adding unrelated reactions to the reaction roles message.", dl.Author);
                     }
                 }
                 catch { }

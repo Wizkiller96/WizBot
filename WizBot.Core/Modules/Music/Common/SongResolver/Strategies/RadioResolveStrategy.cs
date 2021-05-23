@@ -1,9 +1,9 @@
 ﻿using WizBot.Core.Services.Database.Models;
-using NLog;
 using System;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace WizBot.Modules.Music.Common.SongResolver.Strategies
 {
@@ -13,11 +13,9 @@ namespace WizBot.Modules.Music.Common.SongResolver.Strategies
         private readonly Regex m3uRegex = new Regex("(?<url>^[^#].*)", RegexOptions.Compiled | RegexOptions.Multiline);
         private readonly Regex asxRegex = new Regex("<ref href=\"(?<url>.*?)\"", RegexOptions.Compiled);
         private readonly Regex xspfRegex = new Regex("<location>(?<url>.*?)</location>", RegexOptions.Compiled);
-        private readonly Logger _log;
 
         public RadioResolveStrategy()
         {
-            _log = LogManager.GetCurrentClassLogger();
         }
 
         public async Task<SongInfo> ResolveSong(string query)
@@ -72,7 +70,7 @@ namespace WizBot.Modules.Music.Common.SongResolver.Strategies
                 }
                 catch
                 {
-                    _log.Warn($"Failed reading .pls:\n{file}");
+                    Log.Warning($"Failed reading .pls:\n{file}");
                     return null;
                 }
             }
@@ -91,7 +89,7 @@ namespace WizBot.Modules.Music.Common.SongResolver.Strategies
                 }
                 catch
                 {
-                    _log.Warn($"Failed reading .m3u:\n{file}");
+                    Log.Warning($"Failed reading .m3u:\n{file}");
                     return null;
                 }
 
@@ -107,7 +105,7 @@ namespace WizBot.Modules.Music.Common.SongResolver.Strategies
                 }
                 catch
                 {
-                    _log.Warn($"Failed reading .asx:\n{file}");
+                    Log.Warning($"Failed reading .asx:\n{file}");
                     return null;
                 }
             }
@@ -127,7 +125,7 @@ namespace WizBot.Modules.Music.Common.SongResolver.Strategies
                 }
                 catch
                 {
-                    _log.Warn($"Failed reading .xspf:\n{file}");
+                    Log.Warning($"Failed reading .xspf:\n{file}");
                     return null;
                 }
             }

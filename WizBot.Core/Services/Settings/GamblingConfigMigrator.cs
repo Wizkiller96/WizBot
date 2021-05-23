@@ -3,19 +3,17 @@ using System.Data.Common;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Core.Modules.Gambling.Common;
 using WizBot.Core.Modules.Gambling.Services;
-using NLog;
+using Serilog;
 
 namespace WizBot.Core.Services
 {
     public sealed class GamblingConfigMigrator : IConfigMigrator
     {
-        private readonly Logger _log;
         private readonly DbService _db;
         private readonly GamblingConfigService _gss;
 
         public GamblingConfigMigrator(DbService dbService, GamblingConfigService gss)
         {
-            _log = LogManager.GetCurrentClassLogger();
             _db = dbService;
             _gss = gss;
         }
@@ -48,7 +46,7 @@ namespace WizBot.Core.Services
                     return;
             }
 
-            _log.Info("Migrating gambling settings...");
+            Log.Information("Migrating gambling settings...");
 
             using var com = conn.CreateCommand();
             com.CommandText = $@"SELECT CurrencyGenerationChance, CurrencyGenerationCooldown,
@@ -71,7 +69,7 @@ FROM BotConfig";
 
             _gss.ModifyConfig(ModifyAction(reader));
 
-            _log.Info("Data written to data/gambling.yml");
+            Log.Information("Data written to data/gambling.yml");
         }
 
         private static Action<GamblingConfig> ModifyAction(DbDataReader reader)

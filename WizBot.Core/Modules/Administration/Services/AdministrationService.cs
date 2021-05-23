@@ -8,7 +8,6 @@ using WizBot.Common.Replacements;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Extensions;
-using NLog;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,16 +19,13 @@ namespace WizBot.Modules.Administration.Services
     {
         public ConcurrentHashSet<ulong> DeleteMessagesOnCommand { get; }
         public ConcurrentDictionary<ulong, bool> DeleteMessagesOnCommandChannels { get; }
-
-        private readonly Logger _log;
-        private readonly WizBot _bot;
+        
         private readonly DbService _db;
         private readonly LogCommandService _logService;
 
-        public AdministrationService(WizBot bot, CommandHandler cmdHandler, DbService db, LogCommandService logService)
+        public AdministrationService(WizBot bot, CommandHandler cmdHandler, DbService db,
+            LogCommandService logService)
         {
-            _log = LogManager.GetCurrentClassLogger();
-            _bot = bot;
             _db = db;
             _logService = logService;
 

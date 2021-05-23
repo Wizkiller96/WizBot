@@ -6,18 +6,17 @@ using Discord.Net;
 using Discord.WebSocket;
 using WizBot.Extensions;
 using WizBot.Core.Services.Database.Models;
-using NLog;
 using System.Linq;
 using WizBot.Common;
 using WizBot.Common.Replacements;
 using WizBot.Modules.Utility.Services;
+using Serilog;
 
 namespace WizBot.Modules.Utility.Common
 {
     public class RepeatRunner
     {
-        private readonly Logger _log;
-
+        
         public Repeater Repeater { get; }
         public SocketGuild Guild { get; }
 
@@ -49,7 +48,6 @@ namespace WizBot.Modules.Utility.Common
 
         public RepeatRunner(DiscordSocketClient client, SocketGuild guild, Repeater repeater, MessageRepeaterService mrs)
         {
-            _log = LogManager.GetCurrentClassLogger();
             Repeater = repeater;
             Guild = guild;
             _mrs = mrs;
@@ -154,7 +152,7 @@ namespace WizBot.Modules.Utility.Common
         {
             async Task ChannelMissingError()
             {
-                _log.Warn("Channel not found or insufficient permissions. Repeater stopped. ChannelId : {0}",
+                Log.Warning("Channel not found or insufficient permissions. Repeater stopped. ChannelId : {0}",
                     Channel?.Id);
                 Stop();
                 await _mrs.RemoveRepeater(Repeater);
@@ -226,13 +224,13 @@ namespace WizBot.Modules.Utility.Common
             }
             catch (HttpException ex)
             {
-                _log.Warn(ex.Message);
+                Log.Warning(ex, "Http Exception in repeat trigger");
                 await ChannelMissingError().ConfigureAwait(false);
                 return;
             }
             catch (Exception ex)
             {
-                _log.Warn(ex);
+                Log.Warning(ex, "Exception in repeat trigger");
                 Stop();
                 await _mrs.RemoveRepeater(Repeater).ConfigureAwait(false);
             }

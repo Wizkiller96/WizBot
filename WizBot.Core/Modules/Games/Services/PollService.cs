@@ -7,10 +7,10 @@ using Discord.WebSocket;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Modules.Games.Common;
 using WizBot.Core.Services;
-using NLog;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Common.Collections;
 using WizBot.Extensions;
+using Serilog;
 
 namespace WizBot.Modules.Games.Services
 {
@@ -20,8 +20,7 @@ namespace WizBot.Modules.Games.Services
 
         public int Priority => -5;
         public ModuleBehaviorType BehaviorType => ModuleBehaviorType.Executor;
-
-        private readonly Logger _log;
+        
         private readonly DiscordSocketClient _client;
         private readonly IBotStrings _strings;
         private readonly DbService _db;
@@ -30,7 +29,6 @@ namespace WizBot.Modules.Games.Services
         public PollService(DiscordSocketClient client, IBotStrings strings, DbService db,
             IBotStrings strs)
         {
-            _log = LogManager.GetCurrentClassLogger();
             _client = client;
             _strings = strings;
             _db = db;
@@ -125,7 +123,7 @@ namespace WizBot.Modules.Games.Services
             }
             catch (Exception ex)
             {
-                _log.Warn(ex);
+                Log.Warning(ex, "Error voting");
             }
 
             return false;

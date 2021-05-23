@@ -7,7 +7,6 @@ using WizBot.Core.Services.Database.Models;
 using WizBot.Core.Services.Impl;
 using WizBot.Extensions;
 using Newtonsoft.Json;
-using NLog;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
@@ -22,6 +21,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using WizBot.Core.Modules.Xp;
+using Serilog;
 using StackExchange.Redis;
 using Image = SixLabors.ImageSharp.Image;
 
@@ -38,7 +38,6 @@ namespace WizBot.Modules.Xp.Services
         private readonly DbService _db;
         private readonly CommandHandler _cmd;
         private readonly IImageCache _images;
-        private readonly Logger _log;
         private readonly IBotStrings _strings;
         private readonly IDataCache _cache;
         private readonly FontProvider _fonts;
@@ -68,7 +67,6 @@ namespace WizBot.Modules.Xp.Services
             _db = db;
             _cmd = cmd;
             _images = cache.LocalImages;
-            _log = LogManager.GetCurrentClassLogger();
             _strings = strings;
             _cache = cache;
             _fonts = fonts;
@@ -267,7 +265,7 @@ namespace WizBot.Modules.Xp.Services
                 }
                 catch (Exception ex)
                 {
-                    _log.Warn(ex);
+                    Log.Error(ex, "Error In the XP update loop");
                 }
             }
         }
@@ -286,8 +284,7 @@ namespace WizBot.Modules.Xp.Services
             }
             catch (Exception ex)
             {
-                _log.Warn(ex);
-                _log.Error("Xp template is invalid. Loaded default values.");
+                Log.Error(ex, "Xp template is invalid. Loaded default values");
                 _template = new XpTemplate();
                 File.WriteAllText("./data/xp_template_backup.json",
                     JsonConvert.SerializeObject(_template, Formatting.Indented));
@@ -1039,7 +1036,7 @@ namespace WizBot.Modules.Xp.Services
                         }
                         catch (Exception ex)
                         {
-                            _log.Warn(ex);
+                            Log.Warning(ex, "Error drawing avatar image");
                         }
                     }
 
@@ -1153,7 +1150,7 @@ namespace WizBot.Modules.Xp.Services
                 }
                 catch (Exception ex)
                 {
-                    _log.Warn(ex);
+                    Log.Warning(ex, "Error drawing club image");
                 }
             }
         }

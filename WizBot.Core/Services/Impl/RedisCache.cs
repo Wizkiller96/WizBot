@@ -1,6 +1,5 @@
 ﻿using WizBot.Extensions;
 using Newtonsoft.Json;
-using NLog;
 using StackExchange.Redis;
 using System;
 using System.Linq;
@@ -11,8 +10,6 @@ namespace WizBot.Core.Services.Impl
 {
     public class RedisCache : IDataCache
     {
-        private readonly Logger _log;
-
         public ConnectionMultiplexer Redis { get; }
 
         public IImageCache LocalImages { get; }
@@ -23,8 +20,6 @@ namespace WizBot.Core.Services.Impl
 
         public RedisCache(IBotCredentials creds, int shardId)
         {
-            _log = LogManager.GetCurrentClassLogger();
-
             var conf = ConfigurationOptions.Parse(creds.RedisOptions);
 
             Redis = ConnectionMultiplexer.Connect(conf);

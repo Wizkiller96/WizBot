@@ -6,18 +6,17 @@ using Discord.WebSocket;
 using WizBot.Common.Replacements;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
-using NLog;
 using WizBot.Modules.Music.Services;
 using Discord;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace WizBot.Modules.Administration.Services
 {
     public class PlayingRotateService : INService
     {
         private readonly Timer _t;
-        private readonly Logger _log;
         private readonly BotConfigService _bss;
         private readonly Replacer _rep;
         private readonly DbService _db;
@@ -33,7 +32,6 @@ namespace WizBot.Modules.Administration.Services
         {
             _db = db;
             _bot = bot;
-            _log = LogManager.GetCurrentClassLogger();
             _bss = bss;
 
             if (client.ShardId == 0)
@@ -76,7 +74,7 @@ namespace WizBot.Modules.Administration.Services
             }
             catch (Exception ex)
             {
-                _log.Warn("Rotating playing status errored.\n" + ex);
+                Log.Warning("Rotating playing status errored.\n" + ex);
             }
         }
 

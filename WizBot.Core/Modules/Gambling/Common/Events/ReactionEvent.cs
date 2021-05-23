@@ -5,7 +5,6 @@ using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Extensions;
 using WizBot.Modules.Gambling.Common;
-using NLog;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -13,12 +12,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using WizBot.Core.Modules.Gambling.Services;
+using Serilog;
 
 namespace WizBot.Core.Modules.Gambling.Common.Events
 {
     public class ReactionEvent : ICurrencyEvent
     {
-        private readonly Logger _log;
         private readonly DiscordSocketClient _client;
         private readonly IGuild _guild;
         private IUserMessage _msg;
@@ -47,7 +46,6 @@ namespace WizBot.Core.Modules.Gambling.Common.Events
             SocketGuild g, ITextChannel ch, EventOptions opt, GamblingConfig config,
             Func<CurrencyEvent.Type, EventOptions, long, EmbedBuilder> embedFunc)
         {
-            _log = LogManager.GetCurrentClassLogger();
             _client = client;
             _guild = g;
             _cs = cs;
@@ -99,7 +97,7 @@ namespace WizBot.Core.Modules.Gambling.Common.Events
                     }, new RequestOptions() { RetryMode = RetryMode.AlwaysRetry }).ConfigureAwait(false);
                 }
 
-                _log.Info("Awarded {0} users {1} currency.{2}",
+                Log.Information("Awarded {0} users {1} currency.{2}",
                     toAward.Count,
                     _amount,
                     _isPotLimited ? $" {PotSize} left." : "");
@@ -108,11 +106,10 @@ namespace WizBot.Core.Modules.Gambling.Common.Events
                 {
                     var _ = StopEvent();
                 }
-
             }
             catch (Exception ex)
             {
-                _log.Warn(ex);
+                Log.Warning(ex, "Error adding bulk currency to users");
             }
         }
 

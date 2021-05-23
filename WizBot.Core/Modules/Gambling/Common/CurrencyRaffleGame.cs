@@ -1,6 +1,5 @@
 ﻿using Discord;
 using WizBot.Common;
-using NLog;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -34,12 +33,10 @@ namespace WizBot.Core.Modules.Gambling.Common
         private readonly HashSet<User> _users = new HashSet<User>();
         public IEnumerable<User> Users => _users;
         public Type GameType { get; }
-        private readonly Logger _log;
 
         public CurrencyRaffleGame(Type type)
         {
             GameType = type;
-            _log = LogManager.GetCurrentClassLogger();
         }
 
         public bool AddUser(IUser usr, long amount)
@@ -75,7 +72,6 @@ namespace WizBot.Core.Modules.Gambling.Common
                     if (sum > num)
                         return u;
                 }
-                _log.Error("Woah. Report this.\nRoll: {0}\nAmounts: {1}", num, string.Join(",", Users.Select(x => x.Amount)));
             }
 
             var usrs = _users.ToArray();

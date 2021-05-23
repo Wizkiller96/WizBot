@@ -3,7 +3,6 @@ using WizBot.Core.Services;
 using WizBot.Extensions;
 using WizBot.Modules.Utility.Common;
 using Newtonsoft.Json;
-using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,8 +20,7 @@ namespace WizBot.Modules.Utility.Services
                 .StringGet("converter_units")
                 .ToString()
                 .MapJson<ConvertUnit[]>();
-
-        private readonly Logger _log;
+        
         private readonly Timer _currencyUpdater;
         private readonly TimeSpan _updateInterval = new TimeSpan(12, 0, 0);
         private readonly DbService _db;
@@ -32,7 +30,6 @@ namespace WizBot.Modules.Utility.Services
         public ConverterService(DiscordSocketClient client, DbService db,
             IDataCache cache, IHttpClientFactory factory)
         {
-            _log = LogManager.GetCurrentClassLogger();
             _db = db;
             _cache = cache;
             _httpFactory = factory;
