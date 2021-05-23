@@ -968,7 +968,7 @@ namespace WizBot.Modules.Administration.Services
 
                     await logChannel.EmbedAsync(embed).ConfigureAwait(false);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     // ignored
                 }
