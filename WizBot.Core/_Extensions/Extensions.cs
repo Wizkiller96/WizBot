@@ -159,11 +159,11 @@ namespace WizBot.Extensions
         public static bool IsAuthor(this IMessage msg, IDiscordClient client)
             => msg.Author?.Id == client.CurrentUser.Id;
 
-        public static string RealSummary(this CommandInfo cmd, IBotStrings strings, string prefix)
-            => string.Format(strings.GetCommandStrings(cmd.Name).Desc, prefix);
+        public static string RealSummary(this CommandInfo cmd, IBotStrings strings, ulong? guildId, string prefix)
+            => string.Format(strings.GetCommandStrings(cmd.Name, guildId).Desc, prefix);
 
-        public static string[] RealRemarksArr(this CommandInfo cmd, IBotStrings strings, string prefix)
-            => Array.ConvertAll(strings.GetCommandStrings(cmd.MethodName()).Args,
+        public static string[] RealRemarksArr(this CommandInfo cmd, IBotStrings strings, ulong? guildId, string prefix)
+            => Array.ConvertAll(strings.GetCommandStrings(cmd.MethodName(), guildId).Args,
                 arg => GetFullUsage(cmd.Name, arg, prefix));
 
         public static string MethodName(this CommandInfo cmd)

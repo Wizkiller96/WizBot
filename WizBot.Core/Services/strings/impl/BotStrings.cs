@@ -32,7 +32,7 @@ namespace WizBot.Core.Services
 
             if (string.IsNullOrWhiteSpace(text))
             {
-                Log.Warning($"{key} key is missing from {cultureInfo} response strings. You may ignore this message.");
+                Log.Warning("'{Key}' key is missing from '{LanguageName}' response strings. You may ignore this message", key, cultureInfo.Name);
                 text = GetString(key, _usCultureInfo) ?? $"Error: dkey {key} not found!";
                 if (string.IsNullOrWhiteSpace(text))
                 {
@@ -52,12 +52,12 @@ namespace WizBot.Core.Services
             }
             catch (FormatException)
             {
-                Log.Warning($" Key '{key}' is not properly formatted in '{cultureInfo}' response strings. Please report this.");
+                Log.Warning(" Key '{Key}' is not properly formatted in '{LanguageName}' response strings. Please report this", key, cultureInfo.Name);
                 if (cultureInfo.Name != _usCultureInfo.Name)
                     return GetText(key, _usCultureInfo, data);
                 return
-                    $"I can't tell you if the command is executed, because there was an error printing out the response." +
-                    $" Key '{key}' is not properly formatted. Please report this.";
+                    $"I can't tell you if the command is executed, because there was an error printing out the response.\n" +
+                    $"Key '{key}' is not properly formatted. Please report this.";
             }
         }
 
@@ -69,21 +69,22 @@ namespace WizBot.Core.Services
             var cmdStrings = _stringsProvider.GetCommandStrings(cultureInfo.Name, commandName);
             if (cmdStrings is null)
             {
-                if (cultureInfo.Name == _usCultureInfo.Name
-                    || (cmdStrings = _stringsProvider.GetCommandStrings(_usCultureInfo.Name, commandName)) == null)
+                if (cultureInfo.Name == _usCultureInfo.Name)
                 {
-                    Log.Warning($"'{commandName}' doesn't exist in 'en-US' command strings. Please report this.");
+                    Log.Warning("'{CommandName}' doesn't exist in 'en-US' command strings. Please report this",
+                        commandName);
+
                     return new CommandStrings()
                     {
                         Args = new[] { "" },
                         Desc = "?"
                     };
                 }
-
-                // Log.Warning($"'{commandName}' command strings don't exist in {cultureInfo.Name} culture." +
-                //           $"This message is safe to ignore, however you can ask in WizBot support server how you can" +
-                //           $" contribute command translations");
-                return cmdStrings;
+//                 Log.Warning(@"'{CommandName}' command strings don't exist in '{LanguageName}' culture.
+// This message is safe to ignore, however you can ask in WizNet support server how you can contribute command translations",
+//                     commandName, cultureInfo.Name);
+                
+                return GetCommandStrings(commandName, _usCultureInfo);
             }
 
             return cmdStrings;

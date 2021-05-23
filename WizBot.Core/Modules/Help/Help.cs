@@ -317,8 +317,8 @@ namespace WizBot.Modules.Help
                             return new CommandJsonObject
                             {
                                 Aliases = com.Aliases.Select(alias => Prefix + alias).ToArray(),
-                                Description = com.RealSummary(_strings, Prefix),
-                                Usage = com.RealRemarksArr(_strings, Prefix),
+                                Description = com.RealSummary(_strings, ctx.Guild?.Id, Prefix),
+                                Usage = com.RealRemarksArr(_strings, ctx.Guild?.Id, Prefix),
                                 Submodule = com.Module.Name,
                                 Module = com.Module.GetTopLevelModule().Name,
                                 Options = optHelpStr,

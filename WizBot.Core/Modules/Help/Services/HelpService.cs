@@ -61,8 +61,8 @@ namespace WizBot.Modules.Help.Services
                                           .WithUrl("http://wizbot.readthedocs.io/en/latest/")
                                           .WithIconUrl("http://i.imgur.com/fObUYFS.jpg"))
                 .AddField(fb => fb.WithName(str)
-                    .WithValue($"{com.RealSummary(_strings, prefix)}")
-                    .WithIsInline(true));
+                .WithValue($"{com.RealSummary(_strings, guild?.Id, prefix)}")
+                .WithIsInline(true));
 
             _dpos.TryGetOverrides(guild?.Id ?? 0, com.Name, out var overrides);
             var reqs = GetCommandRequirements(com, overrides);
@@ -74,7 +74,7 @@ namespace WizBot.Modules.Help.Services
 
             em
                 .AddField(fb => fb.WithName(GetText("usage", guild))
-                    .WithValue(string.Join("\n", Array.ConvertAll(com.RealRemarksArr(_strings, prefix),
+                    .WithValue(string.Join("\n", Array.ConvertAll(com.RealRemarksArr(_strings, guild?.Id, prefix),
                         arg => Format.Code(arg))))
                     .WithIsInline(false))
                 .WithFooter(efb => efb.WithText(GetText("module", guild, com.Module.GetTopLevelModule().Name)))
