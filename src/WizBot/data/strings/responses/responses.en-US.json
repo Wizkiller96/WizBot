@@ -635,6 +635,7 @@
   "admin_ids": "Admin IDs",
   "library": "Library",
   "documentation": "Documentation",
+  "documentation_text": ":information_source: type .help",
   "presence": "Presence",
   "presence_txt": "{0} Servers\n{1} Text Channels\n{2} Voice Channels",
   "changelog_footer": "More info at: http://github.com/Wizkiller96/WizBot",
