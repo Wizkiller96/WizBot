@@ -1571,15 +1571,26 @@ shopadd:
   desc: "Adds an item to the shop by specifying type price and name. Available types are role and list. 90% of currency from each purchase will be received by the user who added the item to the shop."
   args:
     - "role 1000 Rich"
-shopremove:
-  desc: "Removes an item from the shop by its ID."
+shopchangename:
+  desc: "Change the name of a shop entry at the specified index. Only works for non-role items"
   args:
     - "1"
 shop:
   desc: "Lists this server's administrators' shop. Paginated."
   args:
-    - ""
-    - "2"
+    - "3 Cool stuff"
+shopchangeprice:
+  desc: "Change the price of a shop entry at the specified index. Specify the index of the entry, followed by the price"
+  args:
+    - "1 500"
+shopswap:
+  desc: "Swap the index of two shop entries"
+  args:
+    - "1 5"
+shopmove:
+  desc: "Moves the shop entry from the current index to a new one"
+  args:
+    - "2 4"
 buy:
   desc: "Buys an item from the shop on a given index. If buying items, make sure that the bot can DM you."
   args:

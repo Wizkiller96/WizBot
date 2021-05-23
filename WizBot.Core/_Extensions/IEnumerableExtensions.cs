@@ -3,6 +3,9 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
+using Microsoft.EntityFrameworkCore.Metadata;
+using WizBot.Common.Collections;
+using WizBot.Core.Services.Database.Models;
 
 namespace WizBot.Extensions
 {
@@ -55,5 +58,9 @@ namespace WizBot.Extensions
         
         public static ConcurrentDictionary<TKey, TValue> ToConcurrent<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> dict)
             => new ConcurrentDictionary<TKey, TValue>(dict);
+        
+        public static IndexedCollection<T> ToIndexed<T>(this IEnumerable<T> enumerable)
+            where T : class, IIndexed
+            => new IndexedCollection<T>(enumerable);
     }
 }

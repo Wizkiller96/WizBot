@@ -965,8 +965,16 @@ shopadd:
 shopremove:
 - shopremove
 - shoprm
-shop:
-- shop
+shopchangeprice:
+- shopchangeprice
+- shopprice
+shopchangename:
+- shopchangename
+- shopname
+shopswap:
+- shopswap
+shopmove:
+- shopmove
 buy:
 - buy
 gamevoicechannel:

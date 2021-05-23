@@ -24,6 +24,7 @@ using Discord.Net;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Core.Common;
 using WizBot.Core.Common.Configs;
+using WizBot.Core.Modules.Gambling.Services;
 using WizBot.Modules.Administration.Services;
 using WizBot.Modules.CustomReactions.Services;
 using Serilog;
@@ -160,7 +161,9 @@ namespace WizBot
             .AddBotStringsServices()
             .AddConfigServices()
             .AddConfigMigrators()
-            .AddMemoryCache();
+            .AddMemoryCache()
+            .AddSingleton<IShopService, ShopService>()
+            ;
 
             s.AddHttpClient();
             s.AddHttpClient("memelist").ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler

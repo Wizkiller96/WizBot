@@ -10,15 +10,28 @@ namespace WizBot.Common.Collections
         public List<T> Source { get; }
         private readonly object _locker = new object();
 
+        public int Count => Source.Count;
+        public bool IsReadOnly => false;
+        public int IndexOf(T item) => item.Index;
+
         public IndexedCollection()
         {
             Source = new List<T>();
         }
+        
         public IndexedCollection(IEnumerable<T> source)
         {
             lock (_locker)
             {
                 Source = source.OrderBy(x => x.Index).ToList();
+                UpdateIndexes();
+            }
+        }
+
+        public void UpdateIndexes()
+        {
+            lock (_locker)
+            {
                 for (var i = 0; i < Source.Count; i++)
                 {
                     if (Source[i].Index != i)
@@ -80,9 +93,6 @@ namespace WizBot.Common.Collections
                 {
                     for (int i = 0; i < Source.Count; i++)
                     {
-                        // hm, no idea how ef works, so I don't want to set if it's not changed, 
-                        // maybe it will try to update db? 
-                        // But most likely it just compares old to new values, meh.
                         if (Source[i].Index != i)
                             Source[i].Index = i;
                     }
@@ -90,10 +100,6 @@ namespace WizBot.Common.Collections
             }
             return removed;
         }
-
-        public int Count => Source.Count;
-        public bool IsReadOnly => false;
-        public int IndexOf(T item) => item.Index;
 
         public virtual void Insert(int index, T item)
         {
@@ -132,5 +138,4 @@ namespace WizBot.Common.Collections
             }
         }
     }
-
 }

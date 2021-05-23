@@ -7,7 +7,7 @@ using WizBot.Core.Modules.Gambling.Services;
 
 namespace WizBot.Core.Modules.Gambling.Common
 {
-    public abstract class GamblingModule<TService> : WizBotModule<TService> where TService : INService
+    public abstract class GamblingModule<TService> : WizBotModule<TService>
     {
         private readonly Lazy<GamblingConfig> _lazyConfig;
         protected GamblingConfig _config => _lazyConfig.Value;
@@ -59,7 +59,7 @@ namespace WizBot.Core.Modules.Gambling.Common
         }
     }
 
-    public abstract class GamblingSubmodule<TService> : GamblingModule<TService> where TService : INService
+    public abstract class GamblingSubmodule<TService> : GamblingModule<TService>
     {
         protected GamblingSubmodule(GamblingConfigService gamblingConfService) : base(gamblingConfService)
         {

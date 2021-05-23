@@ -13,7 +13,6 @@ using WizBot.Core.Modules.Gambling.Services;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Extensions;
-using WizBot.Modules.Gambling.Services;
 using Serilog;
 
 namespace WizBot.Modules.Gambling
@@ -21,7 +20,7 @@ namespace WizBot.Modules.Gambling
     public partial class Gambling
     {
         [Group]
-        public class FlowerShopCommands : GamblingSubmodule<GamblingService>
+        public class FlowerShopCommands : GamblingSubmodule<IShopService>
         {
             private readonly DbService _db;
             private readonly ICurrencyService _cs;
@@ -37,7 +36,7 @@ namespace WizBot.Modules.Gambling
             }
 
             public FlowerShopCommands(DbService db, ICurrencyService cs, GamblingConfigService gamblingConf)
-                : base(gamblingConf)
+                : base(gamblingConf) 
             {
                 _db = db;
                 _cs = cs;
@@ -45,19 +44,17 @@ namespace WizBot.Modules.Gambling
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            public async Task Shop(int page = 1)
+            public Task ShopInternalAsync(int page = 0)
             {
-                if (--page < 0)
-                    return;
-                List<ShopEntry> entries;
-                using (var uow = _db.GetDbContext())
-                {
-                    entries = new IndexedCollection<ShopEntry>(uow.GuildConfigs.ForId(ctx.Guild.Id,
+                if (page < 0)
+                    throw new ArgumentOutOfRangeException(nameof(page));
+                
+                using var uow = _db.GetDbContext();
+                var entries = uow.GuildConfigs.ForId(ctx.Guild.Id,
                         set => set.Include(x => x.ShopEntries)
-                                  .ThenInclude(x => x.Items)).ShopEntries);
-                }
-
-                await ctx.SendPaginatedConfirmAsync(page, (curPage) =>
+                            .ThenInclude(x => x.Items)).ShopEntries
+                        .ToIndexed();
+                return ctx.SendPaginatedConfirmAsync(page, (curPage) =>
                 {
                     var theseEntries = entries.Skip(curPage * 9).Take(9).ToArray();
 
@@ -70,10 +67,23 @@ namespace WizBot.Modules.Gambling
                     for (int i = 0; i < theseEntries.Length; i++)
                     {
                         var entry = theseEntries[i];
-                        embed.AddField(efb => efb.WithName($"#{curPage * 9 + i + 1} - {entry.Price}{CurrencySign}").WithValue(EntryToString(entry)).WithIsInline(true));
+                        embed.AddField(
+                            $"#{curPage * 9 + i + 1} - {entry.Price}{CurrencySign}",
+                            EntryToString(entry),
+                            true);
                     }
                     return embed;
-                }, entries.Count, 9, true).ConfigureAwait(false);
+                }, entries.Count, 9, true);
+            }
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            public Task Shop(int page = 1)
+            {
+                if (--page < 0)
+                    return Task.CompletedTask;
+                
+                return ShopInternalAsync(page);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
@@ -110,7 +120,7 @@ namespace WizBot.Modules.Gambling
                         await ReplyErrorLocalizedAsync("shop_role_not_found").ConfigureAwait(false);
                         return;
                     }
-
+                    
                     if (guser.RoleIds.Any(id => id == role.Id))
                     {
                         await ReplyErrorLocalizedAsync("shop_role_already_bought").ConfigureAwait(false);
@@ -242,7 +252,7 @@ namespace WizBot.Modules.Gambling
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
-            public async Task ShopAdd(List _, int price, [Leftover] string name)
+            public async Task ShopAdd(List _, int price, [Leftover]string name)
             {
                 var entry = new ShopEntry()
                 {
@@ -338,6 +348,86 @@ namespace WizBot.Modules.Gambling
                         .WithTitle(GetText("shop_item_rm"))).ConfigureAwait(false);
             }
 
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [UserPerm(GuildPerm.Administrator)]
+            public async Task ShopChangePrice(int index, int price)
+            {
+                if (--index < 0 || price <= 0)
+                    return;
+
+                var succ = await _service.ChangeEntryPriceAsync(Context.Guild.Id, index, price);
+                if (succ)
+                {
+                    await ShopInternalAsync(index / 9);
+                    await ctx.OkAsync();
+                }
+                else
+                {
+                    await ctx.ErrorAsync();
+                }
+            }
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [UserPerm(GuildPerm.Administrator)]
+            public async Task ShopChangeName(int index, [Leftover] string newName)
+            {
+                if (--index < 0 || string.IsNullOrWhiteSpace(newName))
+                    return;
+                
+                var succ = await _service.ChangeEntryNameAsync(Context.Guild.Id, index, newName);
+                if (succ)
+                {
+                    await ShopInternalAsync(index / 9);
+                    await ctx.OkAsync();
+                }
+                else
+                {
+                    await ctx.ErrorAsync();
+                }
+            }
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [UserPerm(GuildPerm.Administrator)]
+            public async Task ShopSwap(int index1, int index2)
+            {
+                if (--index1 < 0 || --index2 < 0 || index1 == index2)
+                    return;
+                
+                var succ = await _service.SwapEntriesAsync(Context.Guild.Id, index1, index2);
+                if (succ)
+                {
+                    await ShopInternalAsync(index1 / 9);
+                    await ctx.OkAsync();
+                }
+                else
+                {
+                    await ctx.ErrorAsync();
+                }
+            }
+            
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [UserPerm(GuildPerm.Administrator)]
+            public async Task ShopMove(int fromIndex, int toIndex)
+            {
+                if (--fromIndex < 0 || --toIndex < 0 || fromIndex == toIndex)
+                    return;
+
+                var succ = await _service.MoveEntryAsync(Context.Guild.Id, fromIndex, toIndex);
+                if (succ)
+                {
+                    await ShopInternalAsync(toIndex / 9);
+                    await ctx.OkAsync();
+                }
+                else
+                {
+                    await ctx.ErrorAsync();
+                }
+            }
+            
             public EmbedBuilder EntryToEmbed(ShopEntry entry)
             {
                 var embed = new EmbedBuilder().WithOkColor();
