@@ -131,7 +131,7 @@ namespace WizBot.Extensions
             return ms;
         }
 
-        private static readonly Regex filterRegex = new Regex(@"(?:discord(?:\.gg|.me|app\.com\/invite)\/(?<id>([\w]{16}|(?:[\w]+-?){3})))", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex filterRegex = new Regex(@"discord(?:\.gg|\.io|\.me|\.li|(?:app)?\.com\/invite)\/(\w+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         public static bool IsDiscordInvite(this string str)
             => filterRegex.IsMatch(str);
 
