@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using System;
+using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
 
@@ -14,10 +15,20 @@ namespace WizBot.Core.Services
                 .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
                 .Enrich.FromLogContext()
                 .WriteTo.Console(LogEventLevel.Information,
-                    theme: AnsiConsoleTheme.Code,
+                    theme: GetTheme(),
                     outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] | #{LogSource} | {Message:lj}{NewLine}{Exception}")
                 .Enrich.WithProperty("LogSource", source)
                 .CreateLogger();
+        }
+        
+        private static ConsoleTheme GetTheme()
+        {
+            if(Environment.OSVersion.Platform == PlatformID.Unix)
+                return AnsiConsoleTheme.Code;
+#if DEBUG
+            return AnsiConsoleTheme.Code;
+#endif
+            return ConsoleTheme.None;
         }
     }
 }
