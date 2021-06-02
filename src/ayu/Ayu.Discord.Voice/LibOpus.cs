@@ -5,7 +5,7 @@ namespace Ayu.Discord.Voice
 {
     internal static unsafe class LibOpus
     {
-        public const string OPUS = "external/opus";
+        public const string OPUS = "opus";
 
         [DllImport(OPUS, EntryPoint = "opus_encoder_create", CallingConvention = CallingConvention.Cdecl)]
         internal static extern IntPtr CreateEncoder(int Fs, int channels, int application, out OpusError error);

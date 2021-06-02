@@ -5,7 +5,7 @@ namespace Ayu.Discord.Voice
 {
     internal static unsafe class Sodium
     {
-        private const string SODIUM = "external/libsodium";
+        private const string SODIUM = "libsodium";
 
         [DllImport(SODIUM, EntryPoint = "crypto_secretbox_easy", CallingConvention = CallingConvention.Cdecl)]
         private static extern int SecretBoxEasy(byte* output, byte* input, long inputLength, byte* nonce, byte* secret);
