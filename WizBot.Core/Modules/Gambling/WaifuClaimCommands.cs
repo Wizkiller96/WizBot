@@ -389,7 +389,7 @@ namespace WizBot.Modules.Gambling
                 var item = allItems.FirstOrDefault(x => x.Name.ToLowerInvariant() == itemName.ToLowerInvariant());
                 if (item is null)
                 {
-                    await ReplyErrorLocalizedAsync("item_not_exist");
+                    await ReplyErrorLocalizedAsync("waifu_gift_not_exist");
                     return;
                 }
                 var sucess = await _service.GiftWaifuAsync(ctx.User, waifu, item);
