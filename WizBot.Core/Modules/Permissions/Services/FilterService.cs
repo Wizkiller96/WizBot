@@ -9,6 +9,7 @@ using WizBot.Common.ModuleBehaviors;
 using WizBot.Extensions;
 using WizBot.Core.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using WizBot.Core.Services.Database.Models;
 using Serilog;
 
@@ -121,12 +122,17 @@ namespace WizBot.Modules.Permissions.Services
         }
 
         public async Task<bool> RunBehavior(DiscordSocketClient _, IGuild guild, IUserMessage msg)
-            => !(msg.Author is IGuildUser gu) //it's never filtered outside of guilds, and never block administrators
-                ? false
-                : !gu.GuildPermissions.Administrator &&
-                    (await FilterInvites(guild, msg).ConfigureAwait(false)
-                    || await FilterWords(guild, msg).ConfigureAwait(false)
-                    || await FilterLinks(guild, msg).ConfigureAwait(false));
+        {
+            if (!(msg.Author is IGuildUser gu) || gu.GuildPermissions.Administrator)
+                return false;
+
+            var results = await Task.WhenAll(
+                FilterInvites(guild, msg),
+                FilterWords(guild, msg),
+                FilterLinks(guild, msg));
+            
+            return results.Any(x => x);
+        }
 
         public async Task<bool> FilterWords(IGuild guild, IUserMessage usrMsg)
         {
