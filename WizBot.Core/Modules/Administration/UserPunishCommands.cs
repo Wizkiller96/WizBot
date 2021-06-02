@@ -40,9 +40,8 @@ namespace WizBot.Modules.Administration
                 // bot can't punish a user who is higher in the hierarchy. Discord will return 403
                 // moderator can be owner, in which case role hierarchy doesn't matter
                 // otherwise, moderator has to have a higher role
-                if (botMaxRole <= targetMaxRole || (Context.User.Id != ownerId && targetMaxRole >= modMaxRole))
+                if ((botMaxRole <= targetMaxRole || (Context.User.Id != ownerId && targetMaxRole >= modMaxRole)) || target.Id == ownerId)
                 {
-                    //  not working properly if target is owner
                     await ReplyErrorLocalizedAsync("hierarchy");
                     return false;
                 }
@@ -391,27 +390,31 @@ namespace WizBot.Modules.Administration
                 if (time.Time > TimeSpan.FromDays(49))
                     return;
 
-                // if guild user is null, then that means that user is not in the guild
-                var guildUser = await Context.Guild.GetUserAsync(user.Id).ConfigureAwait(false); 
-                
-                if (ctx.User.Id != Context.Guild.OwnerId && (guildUser != null && guildUser.GetRoles().Select(r => r.Position).Max() >= ((IGuildUser)ctx.User).GetRoles().Select(r => r.Position).Max()))
-                {
-                    await ReplyErrorLocalizedAsync("hierarchy").ConfigureAwait(false);
+                var guildUser = await ((DiscordSocketClient)Context.Client).Rest.GetGuildUserAsync(Context.Guild.Id, user.Id);
+
+                if (guildUser != null && !await CheckRoleHierarchy(guildUser))
                     return;
-                }
 
                 var dmFailed = false;
 
-                try
+                if (guildUser != null)
                 {
-                    await user.SendErrorAsync(GetText("bandm", Format.Bold(ctx.Guild.Name), msg)).ConfigureAwait(false);
+                    try
+                    {
+                        var defaultMessage = GetText("bandm", Format.Bold(ctx.Guild.Name), msg);
+                        var embed = _service.GetBanUserDmEmbed(Context, guildUser, defaultMessage, msg, time.Time);
+                        if (!(embed is null))
+                        {
+                            var userChannel = await guildUser.GetOrCreateDMChannelAsync();
+                            await userChannel.EmbedAsync(embed);
+                        }
+                    }
+                    catch
+                    {
+                        dmFailed = true;
+                    }
                 }
-                catch
-                {
-                    dmFailed = true;
-                }
-
-
+                
                 await _mute.TimedBan(Context.Guild, user, time.Time, ctx.User.ToString() + " | " + msg).ConfigureAwait(false);
                 var toSend = new EmbedBuilder().WithOkColor()
                     .WithTitle("⛔️ " + GetText("banned_user"))
