@@ -17,7 +17,7 @@ namespace WizBot.Core.Modules.Music
 {
     public sealed class MusicPlayer : IMusicPlayer
     {
-        private static readonly VoiceClient _vc = new VoiceClient(frameDelay: FrameDelay.Delay20);
+        private readonly VoiceClient _vc = new VoiceClient(frameDelay: FrameDelay.Delay20);
 
         public bool IsKilled { get; set; }
         public bool IsStopped { get; set; }
