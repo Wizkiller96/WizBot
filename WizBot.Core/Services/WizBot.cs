@@ -25,11 +25,8 @@ using WizBot.Common.ModuleBehaviors;
 using WizBot.Core.Common;
 using WizBot.Core.Common.Configs;
 using WizBot.Core.Modules.Gambling.Services;
-using WizBot.Core.Modules.Music;
 using WizBot.Modules.Administration.Services;
 using WizBot.Modules.CustomReactions.Services;
-using WizBot.Modules.Music.Resolvers;
-using WizBot.Modules.Music.Services;
 using Serilog;
 
 namespace WizBot
@@ -273,7 +270,7 @@ namespace WizBot
             }
 
             //connect
-            Log.Information("Shard {0} logging in ...", Client.ShardId);
+            Log.Information("Shard {ShardId} logging in ...", Client.ShardId);
             try
             {
                 await Client.LoginAsync(TokenType.Bot, token).ConfigureAwait(false);

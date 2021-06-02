@@ -1088,6 +1088,7 @@ clubbans:
 - clubbans
 clubleaderboard:
 - clublb
+- clubs
 nsfwclearcache:
 - nsfwcc
 clubadmin:
