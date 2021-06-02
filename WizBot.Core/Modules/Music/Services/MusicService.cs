@@ -253,15 +253,15 @@ namespace WizBot.Modules.Music.Services
 
             if (mp.IsStopped)
             {
-                if (!_voiceStateService.TryGetProxy(guildId, out var proxy) || proxy.State == VoiceProxy.VoiceProxyState.Stopped)
+                if (!_voiceStateService.TryGetProxy(guildId, out var proxy) 
+                    || proxy.State == VoiceProxy.VoiceProxyState.Stopped)
                 {
                     await JoinVoiceChannelAsync(guildId, voiceChannelId);
-                    mp.Next();
-                    return true;
                 }
             }
 
-            return false;
+            mp.Next();
+            return true;
         }
 
         private string GetText(ulong guildId, string key, params object[] args)
