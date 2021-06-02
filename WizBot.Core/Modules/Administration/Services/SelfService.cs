@@ -329,7 +329,7 @@ namespace WizBot.Modules.Administration.Services
             {
                 cmd = uow._context.AutoCommands
                     .AsNoTracking()
-                    .Where(x => x.Interval == 0)
+                    .Where(x => x.Interval == 5)
                     .Skip(index)
                     .FirstOrDefault();
 
