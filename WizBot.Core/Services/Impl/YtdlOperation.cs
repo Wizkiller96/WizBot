@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using WizBot.Extensions;
@@ -38,17 +39,31 @@ namespace WizBot.Core.Services.Impl
         
         public async Task<string> GetDataAsync(params string[] args)
         {
-            using var process = CreateProcess(args);
-            
-            Log.Debug($"Executing {process.StartInfo.FileName} {process.StartInfo.Arguments}");
-            process.Start();
-            
-            var str = await process.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
-            var err = await process.StandardError.ReadToEndAsync().ConfigureAwait(false);
-            if (!string.IsNullOrEmpty(err))
-                Log.Warning("YTDL warning: {YtdlWarning}", err);
-            
-            return str;
+            try
+            {
+                using var process = CreateProcess(args);
+
+                Log.Debug($"Executing {process.StartInfo.FileName} {process.StartInfo.Arguments}");
+                process.Start();
+
+                var str = await process.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
+                var err = await process.StandardError.ReadToEndAsync().ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(err))
+                    Log.Warning("YTDL warning: {YtdlWarning}", err);
+
+                return str;
+            }
+            catch (Win32Exception)
+            {
+                Log.Error("youtube-dl is likely not installed. " +
+                          "Please install it before running the command again");
+                return default;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex , "Exception running youtube-dl: {ErrorMessage}", ex.Message);
+                return default;
+            }
         }
 
         public async IAsyncEnumerable<string> EnumerateDataAsync(params string[] args)

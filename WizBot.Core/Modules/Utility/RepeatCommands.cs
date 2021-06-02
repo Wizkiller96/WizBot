@@ -245,6 +245,7 @@ namespace WizBot.Modules.Utility
             {
                 if (!_service.RepeaterReady)
                     return;
+                
                 if (!_service.Repeaters.TryGetValue(ctx.Guild.Id, out var repRunners))
                 {
                     await ReplyConfirmLocalizedAsync("repeaters_none").ConfigureAwait(false);
