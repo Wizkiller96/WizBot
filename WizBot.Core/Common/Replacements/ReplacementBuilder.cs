@@ -182,43 +182,43 @@ namespace WizBot.Common.Replacements
             return this;
         }
 
-        public ReplacementBuilder WithMusic(MusicService ms)
-        {
-            _reps.TryAdd("%playing%", () =>
-            {
-                var cnt = ms.MusicPlayers.Count(kvp => kvp.Value.Current.Current != null);
-                if (cnt != 1) return cnt.ToString();
-                try
-                {
-                    var mp = ms.MusicPlayers.FirstOrDefault();
-                    var title = mp.Value?.Current.Current?.Title;
-                    return title ?? "No songs";
-                }
-                catch
-                {
-                    return "error";
-                }
-            });
-            _reps.TryAdd("%queued%", () => ms.MusicPlayers.Sum(kvp => kvp.Value.QueueArray().Songs.Length).ToString());
-
-            _reps.TryAdd("%music.queued%", () => ms.MusicPlayers.Sum(kvp => kvp.Value.QueueArray().Songs.Length).ToString());
-            _reps.TryAdd("%music.playing%", () =>
-            {
-                var cnt = ms.MusicPlayers.Count(kvp => kvp.Value.Current.Current != null);
-                if (cnt != 1) return cnt.ToString();
-                try
-                {
-                    var mp = ms.MusicPlayers.FirstOrDefault();
-                    var title = mp.Value?.Current.Current?.Title;
-                    return title ?? "No songs";
-                }
-                catch
-                {
-                    return "error";
-                }
-            });
-            return this;
-        }
+        // public ReplacementBuilder WithMusic(MusicService ms)
+        // {
+        //     _reps.TryAdd("%playing%", () =>
+        //     {
+        //         var cnt = ms.MusicPlayers.Count(kvp => kvp.Value.Current.Current != null);
+        //         if (cnt != 1) return cnt.ToString();
+        //         try
+        //         {
+        //             var mp = ms.MusicPlayers.FirstOrDefault();
+        //             var title = mp.Value?.Current.Current?.Title;
+        //             return title ?? "No songs";
+        //         }
+        //         catch
+        //         {
+        //             return "error";
+        //         }
+        //     });
+        //     _reps.TryAdd("%queued%", () => ms.MusicPlayers.Sum(kvp => kvp.Value.QueueArray().Songs.Length).ToString());
+        //
+        //     _reps.TryAdd("%music.queued%", () => ms.MusicPlayers.Sum(kvp => kvp.Value.QueueArray().Songs.Length).ToString());
+        //     _reps.TryAdd("%music.playing%", () =>
+        //     {
+        //         var cnt = ms.MusicPlayers.Count(kvp => kvp.Value.Current.Current != null);
+        //         if (cnt != 1) return cnt.ToString();
+        //         try
+        //         {
+        //             var mp = ms.MusicPlayers.FirstOrDefault();
+        //             var title = mp.Value?.Current.Current?.Title;
+        //             return title ?? "No songs";
+        //         }
+        //         catch
+        //         {
+        //             return "error";
+        //         }
+        //     });
+        //     return this;
+        // }
 
         public ReplacementBuilder WithRngRegex()
         {

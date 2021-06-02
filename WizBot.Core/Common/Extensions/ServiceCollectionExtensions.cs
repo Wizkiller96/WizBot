@@ -2,8 +2,11 @@
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using WizBot.Core.Modules.Music;
 using WizBot.Core.Services;
 using WizBot.Modules.Administration.Services;
+using WizBot.Modules.Music.Resolvers;
+using WizBot.Modules.Music.Services;
 
 namespace WizBot.Extensions
 {
@@ -33,6 +36,16 @@ namespace WizBot.Extensions
 
         public static IServiceCollection AddConfigMigrators(this IServiceCollection services)
             => services.AddSealedSubclassesOf(typeof(IConfigMigrator));
+
+        public static IServiceCollection AddMusic(this IServiceCollection services)
+            => services
+                .AddSingleton<IMusicService, MusicService>()
+                .AddSingleton<ITrackResolveProvider, TrackResolveProvider>()
+                .AddSingleton<IYoutubeResolver, YtdlYoutubeResolver>()
+                .AddSingleton<ISoundcloudResolver, SoundcloudResolver>()
+                .AddSingleton<ILocalTrackResolver, LocalTrackResolver>()
+                .AddSingleton<IRadioResolver, RadioResolver>()
+                .AddSingleton<ITrackCacher, RedisTrackCacher>();
         
         // consider using scrutor, because slightly different versions
         // of this might be needed in several different places

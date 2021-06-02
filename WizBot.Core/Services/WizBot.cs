@@ -25,8 +25,11 @@ using WizBot.Common.ModuleBehaviors;
 using WizBot.Core.Common;
 using WizBot.Core.Common.Configs;
 using WizBot.Core.Modules.Gambling.Services;
+using WizBot.Core.Modules.Music;
 using WizBot.Modules.Administration.Services;
 using WizBot.Modules.CustomReactions.Services;
+using WizBot.Modules.Music.Resolvers;
+using WizBot.Modules.Music.Services;
 using Serilog;
 
 namespace WizBot
@@ -163,6 +166,8 @@ namespace WizBot
             .AddConfigMigrators()
             .AddMemoryCache()
             .AddSingleton<IShopService, ShopService>()
+            // Music
+            .AddMusic()
             ;
 
             s.AddHttpClient();

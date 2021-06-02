@@ -32,7 +32,7 @@
     <None Update="data\xp_template_backup.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="libsodium.dll;opus.dll;libsodium.so;libopus.so">
+    <None Update="external\libsodium.dll;external\opus.dll;external\libsodium.so;external\libopus.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="wizbot_icon.ico">

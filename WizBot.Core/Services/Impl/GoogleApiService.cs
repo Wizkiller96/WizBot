@@ -68,7 +68,7 @@ namespace WizBot.Core.Services.Impl
         private readonly IBotCredentials _creds;
         private readonly IHttpClientFactory _httpFactory;
 
-        // todo add quota users
+        // todo future add quota users
         public async Task<IEnumerable<string>> GetRelatedVideosAsync(string id, int count = 1)
         {
             await Task.Yield();

@@ -784,18 +784,20 @@ local:
   desc: "Queues a local file by specifying a full path."
   args:
     - "C:/music/mysong.mp3"
-move:
-  desc: "Moves the bot to your voice channel. (works only if music is already playing)"
+join:
+  desc: "Makes the bot join your voice channel."
   args:
     - ""
 songremove:
-  desc: "Remove a song by its # in the queue, or 'all' to remove all songs from the queue and reset the song index."
+  desc: "Remove a song by its # in the queue, or 'all' (or provide no parameter) to remove all songs from the queue."
   args:
     - "5"
+    - "all"
+    - ""
 movesong:
   desc: "Moves a song from one position to another."
   args:
-    - "5>3"
+    - "5 3"
 setmaxqueue:
   desc: "Sets a maximum queue size. Specify no parameters to have no limit."
   args:

@@ -424,6 +424,7 @@ next:
 - n
 play:
 - play
+- p
 - start
 stop:
 - stop
@@ -433,11 +434,11 @@ destroy:
 - d
 pause:
 - pause
-- p
 queue:
 - queue
 - q
 - yq
+- enqueue
 queuenext:
 - queuenext
 - qn
@@ -475,7 +476,9 @@ radio:
 local:
 - local
 - lo
-move:
+join:
+- join
+- j
 - move
 - mv
 songremove:
@@ -490,8 +493,9 @@ setmaxqueue:
 reptcursong:
 - reptcursong
 - rcs
-playlistrepeat:
-- playlistrepeat
+queuerepeat:
+- queuerepeat
+- qrp
 - rpl
 save:
 - save

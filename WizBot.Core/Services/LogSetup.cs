@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
@@ -19,6 +20,8 @@ namespace WizBot.Core.Services
                     outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] | #{LogSource} | {Message:lj}{NewLine}{Exception}")
                 .Enrich.WithProperty("LogSource", source)
                 .CreateLogger();
+            
+            System.Console.OutputEncoding = Encoding.UTF8;
         }
         
         private static ConsoleTheme GetTheme()

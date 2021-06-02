@@ -215,6 +215,9 @@ namespace WizBot.Extensions
 
         public static IMessage DeleteAfter(this IUserMessage msg, int seconds, LogCommandService logService = null)
         {
+            if (msg is null)
+                return null;
+
             Task.Run(async () =>
             {
                 await Task.Delay(seconds * 1000).ConfigureAwait(false);
@@ -253,7 +256,8 @@ namespace WizBot.Extensions
             }
         }
 
-        public static double UnixTimestamp(this DateTime dt) => dt.ToUniversalTime().Subtract(new DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds;
+        public static double UnixTimestamp(this DateTime dt) 
+            => dt.ToUniversalTime().Subtract(new DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds;
 
         public static async Task<IEnumerable<IGuildUser>> GetMembersAsync(this IRole role) =>
             (await role.Guild.GetUsersAsync(CacheMode.CacheOnly).ConfigureAwait(false)).Where(u => u.RoleIds.Contains(role.Id)) ?? Enumerable.Empty<IGuildUser>();

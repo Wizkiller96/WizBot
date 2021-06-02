@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <LangVersion>8.0</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -46,6 +47,10 @@
 
   <ItemGroup>
     <Folder Include="Modules\Gambling\Common\CurrencyEvents\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\src\ayu\Ayu.Discord.Voice\Ayu.Discord.Voice.csproj" />
   </ItemGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'GlobalWizBot' ">
