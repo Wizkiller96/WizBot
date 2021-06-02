@@ -1814,9 +1814,10 @@ eightball:
   args:
     - "Is b1nzy a nice guy?"
 feed:
-  desc: "Subscribes to a feed. Bot will post an update up to once every 10 seconds. You can have up to 10 feeds on one server. All feeds must have unique URLs."
+  desc: "Subscribes to a feed. Bot will post an update up to once every 10 seconds. You can have up to 10 feeds on one server. All feeds must have unique URLs. Set a channel as a second optional parameter to specify where to send the updates."
   args:
     - "https://www.rt.com/rss/"
+    - "https://www.rt.com/rss/ #updates"
 feedremove:
   desc: "Stops tracking a feed on the given index. Use `{0}feeds` command to see a list of feeds and their indexes."
   args:
