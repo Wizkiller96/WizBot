@@ -96,7 +96,7 @@ namespace WizBot.Modules.Xp
                 var club = _service.GetClubByMember(user);
                 if (club == null)
                 {
-                    await ReplyErrorLocalizedAsync("club_not_exists").ConfigureAwait(false);
+                    await ErrorLocalizedAsync("club_user_not_in_club", Format.Bold(user.ToString()));
                     return;
                 }
 

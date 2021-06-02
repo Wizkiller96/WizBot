@@ -918,6 +918,7 @@
   "club_left": "You've left the club.",
   "club_not_in_club": "You are not in a club, or you're trying to leave the club you're the owner of.",
   "club_user_kick": "User {0} kicked from {1} club.",
+  "club_user_not_in_club": "{0} is not in a club.",
   "club_user_kick_fail": "Error kicking. You're either not the club owner, or that user is not in your club.",
   "club_user_banned": "Banned user {0} from {1} club.",
   "club_user_ban_fail": "Failed to ban. You're either not the club owner, or that user is not in your club or applied to it.",
