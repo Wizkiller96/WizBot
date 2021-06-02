@@ -44,7 +44,7 @@ namespace WizBot.Modules.Gambling.Services
                 {
                     var config = _gss.Data;
                     var maxDecay = config.Decay.MaxDecay;
-                    if (config.Decay.Percent > 1 || maxDecay < 0)
+                    if (config.Decay.Percent <= 0 || config.Decay.Percent > 1 || maxDecay < 0)
                         return;
 
                     using (var uow = _db.GetDbContext())
