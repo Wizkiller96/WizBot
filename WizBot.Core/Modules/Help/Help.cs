@@ -473,8 +473,7 @@ namespace WizBot.Modules.Help
         public int GetHashCode(CommandInfo obj) => obj.Aliases[0].GetHashCode(StringComparison.InvariantCulture);
 
     }
-
-    // todo 3.3 / 3.4 add versions to the cmds.json
+    
     internal class CommandJsonObject
     {
         public string[] Aliases { get; set; }
