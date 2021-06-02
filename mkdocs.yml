@@ -8,7 +8,6 @@ edit_uri: 'edit/1.9/docs/'
 copyright: © Copyright 2020 WizNet - All Rights Reserved.
 
 nav:
-- Main Site: https://wizbot.cc/
 - Introduction: index.md
 - Guides:
     - Windows Guide: guides/windows-guide.md
@@ -28,18 +27,26 @@ nav:
     - Config: config-guide.md
     - Bot Config: bce-guide.md
 - Contribution Guide: contribution-guide.md
-- ❤ Donate ❤: donate.md
+- Donate: donate.md
 - License: license.md
 
-theme: 
-    name: 'material'
+theme:
+    name: material
+    custom_dir: docs/overrides
     features:
     - navigation.instant
+    - navigation.expand
+    - navigation.top
     palette:
         scheme: 'wizbot'
     logo: https://wizbot.cc/assets/img/wizbot-icon-887x889.png
     favicon: https://wizbot.cc/assets/img/wizbot-icon-887x889.png
-    font: false
+    font:
+        text: Source Sans Pro
+        code: Source Code Pro
+
+extra:
+    homepage: https://wizbot.cc
 
 plugins:
     - minify:
@@ -53,9 +60,11 @@ extra_javascript:
     - javascripts/config.js
 extra_css:
     - https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/atom-one-dark.min.css
-    - stylesheets/extra.css
+    - stylesheets/styling-overrides.css
+    - stylesheets/theme.css
 
 markdown_extensions:
+    - attr_list
     - codehilite:
         guess_lang: false
     - toc:
@@ -75,4 +84,10 @@ markdown_extensions:
     - pymdownx.keys
     - pymdownx.superfences
     - pymdownx.tabbed
+    - pymdownx.emoji:
+        emoji_index: !!python/name:materialx.emoji.twemoji
+        emoji_generator: !!python/name:materialx.emoji.to_svg
+        options:
+            custom_icons:
+                - docs/overrides/.icons
     - pymdownx.snippets
