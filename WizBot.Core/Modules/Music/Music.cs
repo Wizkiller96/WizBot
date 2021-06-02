@@ -791,5 +791,15 @@ namespace WizBot.Core.Modules.Music
 
              await ReplyConfirmLocalizedAsync("set_music_channel");
          }
+         
+         [WizBotCommand, Usage, Description, Aliases]
+         [RequireContext(ContextType.Guild)]
+         [UserPerm(GuildPerm.ManageMessages)]
+         public async Task UnsetMusicChannel()
+         {
+             _service.UnsetMusicChannel(ctx.Guild.Id);
+
+             await ReplyConfirmLocalizedAsync("unset_music_channel");
+         }
     }
 }

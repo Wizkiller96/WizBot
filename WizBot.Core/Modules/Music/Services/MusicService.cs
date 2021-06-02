@@ -234,6 +234,14 @@ namespace WizBot.Modules.Music.Services
             _outputChannels[guildId] = channel;
             return true;
         }
+        
+        public void UnsetMusicChannel(ulong guildId)
+        {
+            using var uow = _db.GetDbContext();
+            var ms = uow.GuildConfigs.ForId(guildId, set => set.Include(x => x.MusicSettings)).MusicSettings;
+            ms.MusicChannelId = null;
+            uow.SaveChanges();
+        }
 
         // this has to be done because dragging bot to another vc isn't supported yet
         public async Task<bool> PlayAsync(ulong guildId, ulong voiceChannelId)

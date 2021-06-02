@@ -415,7 +415,7 @@
   "rpl_disabled": "Repeat playlist disabled.",
   "rpl_enabled": "Repeat playlist enabled.",
   "set_music_channel": "I will now output playing, finished, paused and removed songs in this channel.",
-  "unset_music_channel": "I will now output playing, finished, paused and removed songs in the channel music was started from.",
+  "unset_music_channel": "I will now output playing, finished, paused and removed songs of the newly created music players in the channel music was started from.",
   "skipped_to": "Skipped to `{0}:{1}`",
   "song_moved": "Song moved",
   "to_position": "To position",

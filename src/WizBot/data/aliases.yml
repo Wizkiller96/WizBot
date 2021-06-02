@@ -487,9 +487,6 @@ songremove:
 movesong:
 - movesong
 - ms
-setmaxqueue:
-- setmaxqueue
-- smq
 reptcursong:
 - reptcursong
 - rcs
@@ -512,9 +509,6 @@ playlistshow:
 deleteplaylist:
 - deleteplaylist
 - delpls
-autoplay:
-- autoplay
-- ap
 streamadd:
 - streamadd
 - sta
@@ -782,18 +776,12 @@ logevents:
 - logevents
 log:
 - log
-fairplay:
-- fairplay
-- fp
 songautodelete:
 - songautodelete
 - sad
 define:
 - define
 - def
-setmaxplaytime:
-- setmaxplaytime
-- smp
 activity:
 - activity
 autohentai:
@@ -1151,9 +1139,6 @@ rafflecur:
 - rafflecur
 rip:
 - rip
-autodisconnect:
-- autodisconnect
-- autodc
 timelyset:
 - timelyset
 timely:

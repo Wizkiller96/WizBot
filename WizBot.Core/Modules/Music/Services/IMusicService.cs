@@ -27,6 +27,7 @@ namespace WizBot.Modules.Music.Services
         Task<int> EnqueueSoundcloudPlaylistAsync(IMusicPlayer mp, string playlist, string queuer);
         Task<IUserMessage> SendToOutputAsync(ulong guildId, EmbedBuilder embed);
         bool SetMusicChannel(ulong guildId, ulong channelId);
+        void UnsetMusicChannel(ulong guildId);
         Task<bool> PlayAsync(ulong guildId, ulong voiceChannelId);
     }
 }

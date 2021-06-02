@@ -807,7 +807,7 @@ reptcursong:
   desc: "Toggles repeat of current song."
   args:
     - ""
-playlistrepeat:
+queuerepeat:
   desc: "Toggles repeat of all songs in the queue (every song that finishes is added to the end of the queue)."
   args:
     - ""
