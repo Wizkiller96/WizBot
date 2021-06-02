@@ -17,12 +17,3 @@ build:
   script:
     - "cd $build_path"
     - "dotnet build -c Release"
-
-test:
-  image: mcr.microsoft.com/dotnet/core/sdk:2.1
-  stage: test
-  variables:
-    tests_path: "WizBot.Tests"
-  script:
-    - "cd $tests_path"
-    - "dotnet test"
