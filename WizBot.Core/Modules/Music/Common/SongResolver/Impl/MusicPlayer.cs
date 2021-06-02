@@ -410,7 +410,7 @@ namespace WizBot.Core.Modules.Music
             OnStarted = null;
             _queue.Clear();
             _songBuffer.Dispose();
-            try { _thread.Abort(); } catch { }
+            _vc.Dispose();
         }
 
         public event Func<IMusicPlayer, IQueuedTrackInfo, Task>? OnCompleted;
