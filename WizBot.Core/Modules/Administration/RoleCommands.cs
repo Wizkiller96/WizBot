@@ -9,6 +9,7 @@ using WizBot.Modules.Administration.Services;
 using SixLabors.ImageSharp.PixelFormats;
 using System;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Serilog;
 
@@ -66,10 +67,19 @@ namespace WizBot.Modules.Administration
 
                 foreach (var x in all)
                 {
-                    await prev.AddReactionAsync(x.emote, new RequestOptions()
+                    try
                     {
-                        RetryMode = RetryMode.Retry502 | RetryMode.RetryRatelimit
-                    }).ConfigureAwait(false);
+                        await prev.AddReactionAsync(x.emote, new RequestOptions()
+                        {
+                            RetryMode = RetryMode.Retry502 | RetryMode.RetryRatelimit
+                        }).ConfigureAwait(false);
+                    }
+                    catch (Discord.Net.HttpException ex) when(ex.HttpCode == HttpStatusCode.BadRequest)
+                    {
+                        await ReplyErrorLocalizedAsync("reaction_cant_access", Format.Code(x.emote.ToString()));
+                        return;
+                    }
+
                     await Task.Delay(500).ConfigureAwait(false);
                 }
 

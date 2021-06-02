@@ -45,9 +45,7 @@ namespace WizBot.Modules.Utility.Services
                     Log.Information($"Executing {reminders.Count} reminders.");
 
                     // make groups of 5, with 1.5 second inbetween each one to ensure against ratelimits
-                    var i = 0;
-                    foreach (var group in reminders
-                        .GroupBy(_ => ++i / (reminders.Count / 5 + 1)))
+                    foreach (var group in reminders.Chunk(5))
                     {
                         var executedReminders = group.ToList();
                         await Task.WhenAll(executedReminders.Select(ReminderTimerAction));

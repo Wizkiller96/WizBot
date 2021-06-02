@@ -999,6 +999,7 @@
   "pog_not_found": "Unable to retrieve data from Path of Exile Wiki or invalid unique item.",
   "reaction_roles_message": "**Roles:** {0}\n**Content:** {1}",
   "no_reaction_roles": "There are no ReactionRole features enabled on this server.",
+  "reaction_cant_access": "I can't access {0} reaction. You can only use emotes from servers I'm in.",
   "reaction_role_removed": "Removed ReactionRole message #{0}",
   "reaction_roles_full": "You've reached the limit on ReactionRole messages. You have to delete some.",
   "reminder_list": "List of reminders",
