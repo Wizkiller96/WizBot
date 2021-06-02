@@ -16,6 +16,7 @@ using StackExchange.Redis;
 using Discord;
 using Discord.WebSocket;
 using WizBot.Common.Collections;
+using WizBot.Common.Replacements;
 using Serilog;
 
 namespace WizBot.Modules.Searches.Services
@@ -253,11 +254,20 @@ namespace WizBot.Modules.Searches.Services
                         .Select(fs =>
                         {
                             var textChannel = _client.GetGuild(fs.GuildId)?.GetTextChannel(fs.ChannelId);
+                            
                             if (textChannel is null)
                                 return Task.CompletedTask;
-                            return textChannel.EmbedAsync(
-                                GetEmbed(fs.GuildId, stream),
-                                msg: string.IsNullOrWhiteSpace(fs.Message) ? "" : fs.Message);
+                            
+                            var rep = new ReplacementBuilder()
+                                .WithOverride("%user%", () => fs.Username)
+                                .WithOverride("%platform%", () => fs.Type.ToString())
+                                .Build();
+                            
+                            var message = string.IsNullOrWhiteSpace(fs.Message)
+                                ? ""
+                                : rep.Replace(fs.Message);
+
+                            return textChannel.EmbedAsync(GetEmbed(fs.GuildId, stream), message);
                         });
 
                     await Task.WhenAll(sendTasks);
@@ -546,6 +556,23 @@ namespace WizBot.Modules.Searches.Services
             }
 
             return true;
+        }
+        
+        public int SetStreamMessageForAll(ulong guildId, string message)
+        {
+            using var uow = _db.GetDbContext();
+
+            var all = uow._context.Set<FollowedStream>()
+                .ToList();
+
+            if (all.Count == 0)
+                return 0;
+
+            all.ForEach(x => x.Message = message);
+
+            uow.SaveChanges();
+
+            return all.Count;
         }
     }
 }

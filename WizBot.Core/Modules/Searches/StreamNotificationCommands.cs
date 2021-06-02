@@ -176,6 +176,22 @@ namespace WizBot.Modules.Searches
                         .ConfigureAwait(false);
                 }
             }
+            
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [UserPerm(GuildPerm.ManageMessages)]
+            public async Task StreamMessageAll([Leftover] string message)
+            {
+                var count = _service.SetStreamMessageForAll(ctx.Guild.Id, message);
+
+                if (count == 0)
+                {
+                    await ReplyConfirmLocalizedAsync("stream_not_following_any");
+                    return;
+                }
+
+                await ReplyConfirmLocalizedAsync("stream_message_set_all", count);
+            }
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]

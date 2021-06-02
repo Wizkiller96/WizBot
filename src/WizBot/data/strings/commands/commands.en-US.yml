@@ -855,10 +855,14 @@ streamoffline:
   desc: "Toggles whether the bot will also notify when added streams go offline."
   args:
     - ""
-streammessage:
-  desc: "Sets the message which will show when the stream on the specified index comes online."
+streammsg:
+  desc: "Sets the message which will show when the stream on the specified index comes online. You can use %user% and %platform% placeholders."
   args:
-    - "1 Hey @erryone i'm back online!1!!"
+    - "1 Hey @erryone %user% is back online on %platform%!1!!"
+streammsgall:
+  desc: "Sets the message which will show when any of the currently followed streams comes online. This does not apply to the streams which get added afterwards. You can use %user% and %platform% placeholders."
+  args:
+    - "Hey @erryone %user% is back online!1!!"
 streamcheck:
   desc: "Retrieves information about a stream."
   args:

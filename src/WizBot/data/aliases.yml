@@ -525,9 +525,13 @@ streamoffline:
 - sto
 - stoff
 streammessage:
-- streammessage
+- streammsg
 - stm
 - stmsg
+streammessageall:
+- streammsgall
+- stma
+- stmsga
 streamcheck:
 - streamcheck
 - stc
