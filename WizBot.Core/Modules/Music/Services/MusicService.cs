@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -21,13 +23,15 @@ namespace WizBot.Modules.Music.Services
         private readonly ISoundcloudResolver _scResolver;
         private readonly DiscordSocketClient _client;
         private readonly IBotStrings _strings;
+        private readonly IGoogleApiService _googleApiService;
+        private readonly YtLoader _ytLoader;
 
         private readonly ConcurrentDictionary<ulong, IMusicPlayer> _players;
         private readonly ConcurrentDictionary<ulong, ITextChannel> _outputChannels;
 
         public MusicService(AyuVoiceStateService voiceStateService, ITrackResolveProvider trackResolveProvider,
             DbService db, IYoutubeResolver ytResolver, ILocalTrackResolver localResolver, ISoundcloudResolver scResolver,
-            DiscordSocketClient client, IBotStrings strings)
+            DiscordSocketClient client, IBotStrings strings, IGoogleApiService googleApiService, YtLoader ytLoader)
         {
             _voiceStateService = voiceStateService;
             _trackResolveProvider = trackResolveProvider;
@@ -37,7 +41,9 @@ namespace WizBot.Modules.Music.Services
             _scResolver = scResolver;
             _client = client;
             _strings = strings;
-            
+            _googleApiService = googleApiService;
+            _ytLoader = ytLoader;
+
             _players = new ConcurrentDictionary<ulong, IMusicPlayer>();
             _outputChannels = new ConcurrentDictionary<ulong, ITextChannel>();
             
@@ -234,7 +240,7 @@ namespace WizBot.Modules.Music.Services
             _outputChannels[guildId] = channel;
             return true;
         }
-        
+
         public void UnsetMusicChannel(ulong guildId)
         {
             using var uow = _db.GetDbContext();
@@ -262,6 +268,46 @@ namespace WizBot.Modules.Music.Services
 
             mp.Next();
             return true;
+        }
+
+        private async Task<IList<(string Title, string Url)>> SearchYtLoaderVideosAsync(string query)
+        {
+            var result = await _ytLoader.LoadResultsAsync(query);
+            return result.Select(x => (x.Title, x.Url)).ToList();
+        }
+        
+        private async Task<IList<(string Title, string Url)>> SearchGoogleApiVideosAsync(string query)
+        {
+            var result = await _googleApiService.GetVideoInfosByKeywordAsync(query, 5);
+            return result.Select(x => (x.Name, x.Url)).ToList();
+        }
+        
+        public async Task<IList<(string Title, string Url)>> SearchVideosAsync(string query)
+        {
+            try
+            {
+                IList<(string, string)> videos = await SearchYtLoaderVideosAsync(query);
+                if (!(videos is null))
+                {
+                    return videos;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Warning("Failed geting videos with YtLoader: {ErrorMessage}", ex.Message);
+            }
+
+            try
+            {
+                return await SearchGoogleApiVideosAsync(query);
+            }
+            catch (Exception ex)
+            {
+                Log.Warning("Failed getting video results with Google Api. " +
+                            "Probably google api key missing: {ErrorMessage}", ex.Message);
+            }
+            
+            return default;
         }
 
         private string GetText(ulong guildId, string key, params object[] args)

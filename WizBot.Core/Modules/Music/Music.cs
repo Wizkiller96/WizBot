@@ -15,14 +15,13 @@ using WizBot.Modules.Music.Services;
 
 namespace WizBot.Core.Modules.Music
 {
+    [NoPublicBot]
     public sealed partial class Music : WizBotModule<IMusicService>
     {
-        private readonly IGoogleApiService _google;
         private readonly LogCommandService _logService;
 
-        public Music(IGoogleApiService google, LogCommandService _logService)
+        public Music(LogCommandService _logService)
         {
-            _google = google;
             this._logService = _logService;
         }
         
@@ -357,18 +356,17 @@ namespace WizBot.Core.Modules.Music
         public async Task QueueSearch([Leftover] string query)
         {
             _ = ctx.Channel.TriggerTypingAsync();
-            
-            var videos = (await _google.GetVideoInfosByKeywordAsync(query, 5).ConfigureAwait(false))
-                .ToArray();
 
-            if (!videos.Any())
+            var videos = await _service.SearchVideosAsync(query);
+
+            if (videos is null || videos.Count == 0)
             {
                 await ReplyErrorLocalizedAsync("song_not_found").ConfigureAwait(false);
                 return;
             }
 
             var resultsString = videos
-                .Select((x, i) => $"`{i + 1}.`\n\t{Format.Bold(x.Name)}\n\t{x.Url}")
+                .Select((x, i) => $"`{i + 1}.`\n\t{Format.Bold(x.Title)}\n\t{x.Url}")
                 .JoinWith('\n');
             
             var msg = await ctx.Channel.SendConfirmAsync(resultsString);
@@ -379,7 +377,7 @@ namespace WizBot.Core.Modules.Music
                 if (input == null
                     || !int.TryParse(input, out var index)
                     || (index -= 1) < 0
-                    || index >= videos.Length)
+                    || index >= videos.Count)
                 {
                     _logService.AddDeleteIgnore(msg.Id);
                     try
@@ -668,7 +666,7 @@ namespace WizBot.Core.Modules.Music
              
              var embed = new EmbedBuilder()
                  .WithTitle(track.Title.TrimTo(65))
-                 .WithAuthor(eab => eab.WithName(GetText("song_moved")).WithIconUrl("https://i.imgur.com/zahHq68.png"))
+                 .WithAuthor(eab => eab.WithName(GetText("song_moved")).WithIconUrl("https://cdn.discordapp.com/attachments/155726317222887425/258605269972549642/music1.png"))
                  .AddField(fb => fb.WithName(GetText("from_position")).WithValue($"#{from + 1}").WithIsInline(true))
                  .AddField(fb => fb.WithName(GetText("to_position")).WithValue($"#{to + 1}").WithIsInline(true))
                  .WithColor(WizBot.OkColor);
