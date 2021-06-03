@@ -1,14 +1,13 @@
 version: 1.4.{build}
+image: Visual Studio 2019
 before_build:
 - cmd: >-
-    git submodule update --init --recursive
-
     dotnet restore
 
     cd src/WizBot/
 build_script:
 - cmd: >-
-    dotnet build
+    dotnet build -c Release
 on_success:
   - ps: Invoke-RestMethod https://raw.githubusercontent.com/DiscordHooks/appveyor-discord-webhook/master/send.ps1 -o send.ps1
   - ps: ./send.ps1 success $env:WEBHOOK_URL
