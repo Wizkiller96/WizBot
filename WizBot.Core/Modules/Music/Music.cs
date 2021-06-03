@@ -15,7 +15,6 @@ using WizBot.Modules.Music.Services;
 
 namespace WizBot.Core.Modules.Music
 {
-    [NoPublicBot]
     public sealed partial class Music : WizBotModule<IMusicService>
     {
         private readonly LogCommandService _logService;
