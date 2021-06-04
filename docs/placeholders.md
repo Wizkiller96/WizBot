@@ -2,15 +2,16 @@
 
 Placeholders are used in Quotes, Custom Reactions, Greet/Bye messages, playing statuses, and a few other places.
 
-They can be used to make the message more user friendly, generate random numbers or pictures, etc...
+They can be used to make the message more user friendly, generate random numbers or pictures, etc.
 
 Some features have their own specific placeholders which are noted in that feature's command help. Some placeholders are not available in certain features because they don't make sense there.
 
-## Here is a list of the usual placeholders
+## Usual placeholders
 
-**If you're using placeholders in embeds, don't use %user.mention% and %bot.mention% in titles, footers and field names. They will not show properly.**
+!!! Note
+If you're using placeholders in embeds, don't use %user.mention% and %bot.mention% in titles, footers and field names. They will not show properly.
 
-### **Bot placeholders**
+### Bot placeholders
 
 * `%bot.status%` - Bot's status \(Online, Idle, DoNotDisturb, Invisible\)
 * `%bot.latency%` - Bot latency
@@ -22,14 +23,14 @@ Some features have their own specific placeholders which are noted in that featu
 * `%bot.id%` - Bot's user ID
 * `%bot.avatar%` - Bot's avatar url
 
-### **Server placeholders**
+### Server placeholders
 
 * `%server.id%` - Server ID
 * `%server.name%` - Server name
 * `%server.members%` - Member count
 * `%server.time%` -  Server time \(requires `.timezone` to be set\)
 
-### **Channel placeholders**
+### Channel placeholders
 
 * `%channel.mention%` - Channel mention \(clickable\)
 * `%channel.name%` - Channel name
@@ -38,7 +39,7 @@ Some features have their own specific placeholders which are noted in that featu
 * `%channel.nsfw%` - Returns either `True` or `False`, depending on if the channel is designated as NSFW using discord
 * `%channel.topic%` - Channel topic
 
-### **User placeholders**
+### User placeholders
 
 * `%user.mention%` - User mention
 * `%user.fullname%` - Username\#discriminator
@@ -51,7 +52,7 @@ Some features have their own specific placeholders which are noted in that featu
 * `%user.joined_time%` - Account join time \(local time\)
 * `%user.joined_date%` - Account join date
 
-### **Ban message placeholders**  
+### Ban message placeholders
 
 * `%ban.mod%` - Full name of the moderator who performed the ban  
 * `%ban.mod.fullname%` - Full name of the moderator who performed the ban  
@@ -65,28 +66,29 @@ Some features have their own specific placeholders which are noted in that featu
 * `%ban.reason%` - Reason for the ban, if provided  
 * `%ban.duration%` - Duration of the ban in the form Days.Hours:Minutes (6.05:04)
 
-### **Bot stats placeholders**
+### Bot stats placeholders
 
 * `%servers%` - Server count bot has joined
 * `%users%` - Combined user count on servers the bot has joined
 
-### **Shard stats placeholders**
+### Shard stats placeholders
 
 * `%shard.servercount%` - Server count on current shard
 * `%shard.usercount%` - Combined user count on current shard
 * `%shard.id%` - Shard ID
 
-### **Music placeholders**
+### Music placeholders
 
-_Note: These placeholders will only work in rotating playing statuses._
+!!! Note
+These placeholders will only work in rotating playing statuses
 
 * `%music.queued%` - Amount of songs currently queued
 * `%music.playing%` - Current song name
 
-### **Miscellaneous placeholders**
+### Miscellaneous placeholders
 
 * `%rngX-Y%` - Returns a random number between X and Y
-* `%target%` - Returns anything the user has written after the trigger **\(only works on custom reactions\)**
-* `%img:stuff%` - Returns an `imgur.com` search for "stuff" **\(only works on custom reactions\)**
+* `%target%` - Returns anything the user has written after the trigger (only works on custom reactions)
+* `%img:stuff%` - Returns an `imgur.com` search for "stuff" (only works on custom reactions)
 
 ![img](https://i.imgur.com/yp0RORk.jpg)

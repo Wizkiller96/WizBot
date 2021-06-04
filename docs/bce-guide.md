@@ -1,7 +1,7 @@
-# ⚠️ OBSOLETE
-- ⚠️ `.bce` command is removed in newer version.  If you're on version 2.39.0 or later, use [config guide][CONFIG GUIDE]
-
 # BotConfigEdit Guide
+
+!!! missing "Obsolete"
+`.bce` command is removed in newer versions.  If you're on version 2.39.0 or later, use [config guide][CONFIG GUIDE]
 
 `.bce` allows you to conveniently set many of the bot-wide settings that WizBot has, such as what the currency looks like, what people get when they use `.help`, and so on.
 Below is a list of all the settings that can be set, with a quick instruction on how to use them, and their default value.
@@ -144,7 +144,6 @@ Whether the bot will see if there are updates available. The patch notes will be
 - None: The bot will not check for updates
 - Commit: This is useful for linux self-hosters - the bot will check for any new commit on the WizBot repository.
 - Release: This is useful for windows self-hosters - the bot will check for any new releases published on the WizBot repository. This setting is also useful for linux self-hosters who only want to update when it's pretty safe to do so :)
-
 **Default is Release**
 
 ## PatreonCurrencyPerCent
@@ -153,9 +152,13 @@ You need this only if you have a patreon page, and you've specified the PatreonC
 **Default is 1**
 
 ## VoiceXpPerMinute
+
 The average amount of xp added every minute to a user connected to a voice channel.  
 **Default is 3**
 
 ## MaxXpMinutes
+
 The maximum amount of time, in minutes, a user can earn xp in a voice channel. This exists mainly to clear entries out of Redis.  
 **Default is 720**
+
+[CONFIG GUIDE]: config-guide.md

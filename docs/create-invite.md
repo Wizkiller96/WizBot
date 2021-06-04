@@ -1,4 +1,6 @@
-#### Creating the Discord Bot application
+# Creating and inviting your bot
+
+## Creating a Discord application
 
 This document aims to guide you through the process of creating a Discord account for your bot (the Discord Bot application), and inviting that account into your Discord server.
 
@@ -16,7 +18,7 @@ These are required for a number of features to function properly, and should bot
 
 ![img3](https://i.imgur.com/iuq2901.gif)
 
-#### Inviting your bot to your server
+## Inviting your bot to your server
 
 ![img4](https://i.imgur.com/6beUSa5.gif)
 

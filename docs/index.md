@@ -33,11 +33,11 @@ If you're unsure whether something is an issue, ask in our support server first.
 
 [invite]: https://wizbot.cc/botinvite
 [commands]: https://commands.wizbot.cc/
-[windows-guide]: /guides/windows-guide/
-[linux-guide]: /guides/linux-guide/
-[macos-guide]: /guides/osx-guide/
-[from-source-guide]: /guides/from-source/
+[windows-guide]: ./guides/windows-guide.md
+[linux-guide]: ./guides/linux-guide.md
+[macos-guide]: ./guides/osx-guide.md
+[from-source-guide]: ./guides/from-source.md
 [discord-server]: https://wizbot.cc/discord
 [github]: https://github.com/Wizkiller96/WizBot
 [issues]: https://github.com/Wizkiller96/WizBot/issues
-[donate]: /donate/
+[donate]: ./donate.md

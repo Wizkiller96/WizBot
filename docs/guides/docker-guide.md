@@ -1,5 +1,7 @@
-# Setting up WizBot with docker
+# Setting up WizBot with Docker
 
-## Hosting WizBot with docker is not officially supported until the next major version (3.0)
+Hosting WizBot with Docker is not officially supported until the next major version (3.0)
+If you've been previously hosting with Docker, please move to one of the other hosting options.
+You may ask for guidance on our [discord server.][discord-server]
 
-### If you've been previously hosting with docker, please move to one of the other hosting options
+[discord-server]: https://wizbot.cc/discord
