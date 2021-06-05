@@ -1,7 +1,7 @@
 # BotConfigEdit Guide
 
 !!! missing "Obsolete"
-`.bce` command is removed in newer versions.  If you're on version 2.39.0 or later, use [config guide][CONFIG GUIDE]
+    `.bce` command is removed in newer versions.  If you're on version 2.39.0 or later, use [config guide][CONFIG GUIDE]
 
 `.bce` allows you to conveniently set many of the bot-wide settings that WizBot has, such as what the currency looks like, what people get when they use `.help`, and so on.
 Below is a list of all the settings that can be set, with a quick instruction on how to use them, and their default value.

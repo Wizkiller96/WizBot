@@ -9,7 +9,7 @@ Some features have their own specific placeholders which are noted in that featu
 ## Usual placeholders
 
 !!! Note
-If you're using placeholders in embeds, don't use %user.mention% and %bot.mention% in titles, footers and field names. They will not show properly.
+    If you're using placeholders in embeds, don't use %user.mention% and %bot.mention% in titles, footers and field names. They will not show properly.
 
 ### Bot placeholders
 
@@ -80,7 +80,7 @@ If you're using placeholders in embeds, don't use %user.mention% and %bot.mentio
 ### Music placeholders
 
 !!! Note
-These placeholders will only work in rotating playing statuses
+    These placeholders will only work in rotating playing statuses
 
 * `%music.queued%` - Amount of songs currently queued
 * `%music.playing%` - Current song name
