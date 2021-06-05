@@ -234,7 +234,7 @@ namespace WizBot.Core.Modules.Music
             {
                 // if this is the last song,
                 // stop the queue
-                if (_queue.Index < _queue.Count - 1)
+                if (_queue.IsLast())
                 {
                     IsStopped = true;
                     return;
