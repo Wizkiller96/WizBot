@@ -16,7 +16,7 @@ Donating to us also gives you the following benefits:
 You can set up a monthly pledge on [Patreon][patreon] and support the project's growth, and also get flower rewards for every month you donate!
 
 !!! Note
-Connect your Discord account on Patreon and then use the `.clparew` command after pledging to receive flower rewards.
+    Connect your Discord account on Patreon and then use the `.clparew` command after pledging to receive flower rewards.
 
 [![img][patreon-button]][patreon]
 
@@ -25,7 +25,7 @@ Connect your Discord account on Patreon and then use the `.clparew` command afte
 You can also donate to us through [PayPal][paypal] for one-time donations using the button below.
 
 !!! Note
-Mention your Discord tag (Username#1234) in the payment note to receive flower rewards.
+    Mention your Discord tag (Username#1234) in the payment note to receive flower rewards.
 
 [![img][paypal-button]][paypal]
 
