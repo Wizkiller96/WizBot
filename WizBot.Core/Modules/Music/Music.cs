@@ -7,7 +7,6 @@ using Discord;
 using Discord.Commands;
 using WizBot.Common;
 using WizBot.Common.Attributes;
-using WizBot.Core.Services;
 using WizBot.Extensions;
 using WizBot.Modules;
 using WizBot.Modules.Administration.Services;

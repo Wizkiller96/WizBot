@@ -2,6 +2,23 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format.
 
+## [Unreleased]
+
+### Added
+
+- Re-added `%music.playing%` and `%music.queued%`
+- Added `%music.servers%` which shows how many servers have a song queued up to play
+
+ℹ️ ^ Only available to `.ropl` / `.adpl` feature atm
+
+### Changed
+
+- Using `.commands` / `.cmds` without a module will now list modules
+
+### Fixed
+
+- Fixed `.google` / `.g` command
+
 ## [2.44.3] - 05.06.2021
 
 ### Changed
@@ -25,7 +42,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - Higher quality audio (no stuttering too!)
 - Local tracks will now have durations if you have ffprobe installed (comes with ffmpeg)
 - Bot supports joining a different vc without skipping the song if you use `.j`
-    - ⚠️ **DO NOT DRAG THE BOT** to another vc, as it's not properly supported atm, and you will have to do `.play` after dragging it)
+  - ⚠️ **DO NOT DRAG THE BOT** to another vc, as it's not properly supported atm, and you will have to do `.play` after dragging it)
 - `.j` makes the bot join your voice channel
 - `.p` is now alias of play, pause is `.pause`
 - `.qs` should work without google api key now for most users as it is using a custom loader

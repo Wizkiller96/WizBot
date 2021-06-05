@@ -388,64 +388,35 @@ namespace WizBot.Modules.Searches
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Google([Leftover] string query = null)
         {
-            var oterms = query?.Trim();
+            query = query?.Trim();
             if (!await ValidateQuery(ctx.Channel, query).ConfigureAwait(false))
                 return;
 
-            query = WebUtility.UrlEncode(oterms).Replace(' ', '+');
-
-            var fullQueryLink = $"https://www.google.ca/search?q={ query }&safe=on&lr=lang_eng&hl=en&ie=utf-8&oe=utf-8";
-
-            using (var msg = new HttpRequestMessage(HttpMethod.Get, fullQueryLink))
+            _ = ctx.Channel.TriggerTypingAsync();
+            
+            var data = await _service.GoogleSearchAsync(query);
+            if (data is null)
             {
-                msg.Headers.AddFakeHeaders();
-                var config = Configuration.Default.WithDefaultLoader();
-                var parser = new HtmlParser();
-                var test = "";
-                using (var http = _httpFactory.CreateClient())
-                using (var response = await http.SendAsync(msg).ConfigureAwait(false))
-                using (var document = await parser.ParseDocumentAsync(test = await response.Content.ReadAsStringAsync().ConfigureAwait(false)).ConfigureAwait(false))
-                {
-                    var elems = document.QuerySelectorAll("div.g");
-
-                    var resultsElem = document.QuerySelectorAll("#resultStats").FirstOrDefault();
-                    var totalResults = resultsElem?.TextContent;
-                    //var time = resultsElem.Children.FirstOrDefault()?.TextContent
-                    //^ this doesn't work for some reason, <nobr> is completely missing in parsed collection
-                    if (!elems.Any())
-                        return;
-
-                    var results = elems.Select<IElement, GoogleSearchResult?>(elem =>
-                    {
-                        var aTag = elem.QuerySelector("a") as IHtmlAnchorElement; // <h3> -> <a>
-                        var href = aTag?.Href;
-                        var name = aTag?.QuerySelector("h3")?.TextContent;
-                        if (href == null || name == null)
-                            return null;
-
-                        var txt = elem.QuerySelectorAll(".st").FirstOrDefault()?.TextContent;
-
-                        if (txt == null)
-                            return null;
-
-                        return new GoogleSearchResult(name, href, txt);
-                    }).Where(x => x != null).Take(5);
-
-                    var embed = new EmbedBuilder()
-                        .WithOkColor()
-                        .WithAuthor(eab => eab.WithName(GetText("search_for") + " " + oterms.TrimTo(50))
-                            .WithUrl(fullQueryLink)
-                            .WithIconUrl("http://i.imgur.com/G46fm8J.png"))
-                        .WithTitle(ctx.User.ToString())
-                        .WithFooter(efb => efb.WithText(totalResults));
-
-                    var desc = await Task.WhenAll(results.Select(async res =>
-                            $"[{Format.Bold(res?.Title)}]({(await _google.ShortenUrl(res?.Link).ConfigureAwait(false))})\n{res?.Text?.TrimTo(400 - res.Value.Title.Length - res.Value.Link.Length)}\n\n"))
-                        .ConfigureAwait(false);
-                    var descStr = string.Concat(desc);
-                    await ctx.Channel.EmbedAsync(embed.WithDescription(descStr)).ConfigureAwait(false);
-                }
+                await ReplyErrorLocalizedAsync("no_results");
+                return;
             }
+            
+            var desc = data.Results.Take(5).Select(res =>
+                $@"[**{(res.Title)}**]({res.Link})
+{res.Text.TrimTo(400 - res.Title.Length - res.Link.Length)}");
+
+            var descStr = string.Join("\n\n", desc);
+
+            var embed = new EmbedBuilder()
+                .WithAuthor(eab => eab.WithName(GetText("search_for") + " " + query.TrimTo(50))
+                    .WithUrl(data.FullQueryLink)
+                    .WithIconUrl("http://i.imgur.com/G46fm8J.png"))
+                .WithTitle(ctx.User.ToString())
+                .WithFooter(efb => efb.WithText(data.TotalResults))
+                .WithDescription(descStr)
+                .WithOkColor();
+
+            await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
         }
 
         // done in 3.0
