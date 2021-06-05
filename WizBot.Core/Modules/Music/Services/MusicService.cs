@@ -312,5 +312,41 @@ namespace WizBot.Modules.Music.Services
 
         private string GetText(ulong guildId, string key, params object[] args)
             => _strings.GetText(key, guildId, args);
+        
+        public IEnumerable<(string Name, Func<string> Func)> GetPlaceholders()
+        {
+            // random song that's playing
+            yield return ("%music.playing%", () =>
+            {
+                var randomPlayingTrack = _players
+                    .Select(x => x.Value.GetCurrentTrack(out _))
+                    .Where(x => !(x is null))
+                    .Shuffle()
+                    .FirstOrDefault();
+
+                if (randomPlayingTrack is null)
+                    return "-";
+
+                return randomPlayingTrack.Title;
+            });
+
+            // number of servers currently listening to music
+            yield return ("%music.servers%", () =>
+            {
+                var count = _players
+                    .Select(x => x.Value.GetCurrentTrack(out _))
+                    .Count(x => !(x is null));
+
+                return count.ToString();
+            });
+            
+            yield return ("%music.queued%", () =>
+            {
+                var count = _players
+                    .Sum(x => x.Value.GetQueuedTracks().Count);
+
+                return count.ToString();
+            });
+        }
     }
 }

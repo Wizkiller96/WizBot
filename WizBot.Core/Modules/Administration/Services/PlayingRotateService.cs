@@ -6,15 +6,15 @@ using Discord.WebSocket;
 using WizBot.Common.Replacements;
 using WizBot.Core.Services;
 using WizBot.Core.Services.Database.Models;
-using WizBot.Modules.Music.Services;
 using Discord;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using WizBot.Core.Common;
 using Serilog;
 
 namespace WizBot.Modules.Administration.Services
 {
-    public class PlayingRotateService : INService
+    public sealed class PlayingRotateService : INService
     {
         private readonly Timer _t;
         private readonly BotConfigService _bss;
@@ -28,7 +28,7 @@ namespace WizBot.Modules.Administration.Services
         }
 
         public PlayingRotateService(DiscordSocketClient client, DbService db, WizBot bot,
-            BotConfigService bss, IMusicService music)
+            BotConfigService bss, IEnumerable<IPlaceholderProvider> phProviders)
         {
             _db = db;
             _bot = bot;
@@ -38,7 +38,7 @@ namespace WizBot.Modules.Administration.Services
             {
                 _rep = new ReplacementBuilder()
                     .WithClient(client)
-                    // .WithMusic(music)
+                    .WithProviders(phProviders)
                     .Build();
 
                 _t = new Timer(RotatingStatuses, new TimerState(), TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1));

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using WizBot.Core.Common;
 using WizBot.Core.Modules.Music;
 using WizBot.Core.Services;
 using WizBot.Modules.Administration.Services;
@@ -46,7 +47,8 @@ namespace WizBot.Extensions
                 .AddSingleton<ILocalTrackResolver, LocalTrackResolver>()
                 .AddSingleton<IRadioResolver, RadioResolver>()
                 .AddSingleton<ITrackCacher, RedisTrackCacher>()
-                .AddSingleton<YtLoader>();
+                .AddSingleton<YtLoader>()
+                .AddSingleton<IPlaceholderProvider>(svc => svc.GetService<IMusicService>());
 
         // consider using scrutor, because slightly different versions
         // of this might be needed in several different places
