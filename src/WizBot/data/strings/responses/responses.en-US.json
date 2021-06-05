@@ -724,6 +724,7 @@
   "scadd": "New startup command added.",
   "scrm": "Startup command successfully removed.",
   "scrm_fail": "Startup command not found.",
+  "acrm_fail": "Auto command not found on the specified index.",
   "autocmd_add": "The command {0} will execute every {1}s in this channel.",
   "server": "Server",
   "startcmdlist_none": "No startup commands on this page.",

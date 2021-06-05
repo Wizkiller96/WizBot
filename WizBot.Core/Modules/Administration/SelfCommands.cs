@@ -117,7 +117,7 @@ namespace WizBot.Modules.Administration
                     await ctx.Channel.SendConfirmAsync(
                         text: string.Join("\n", scmds
                         .Select(x => $@"```css
-#{++i}
+#{++i + page * 5}
 [{GetText("server")}]: {(x.GuildId.HasValue ? $"{x.GuildName} #{x.GuildId}" : "-")}
 [{GetText("channel")}]: {x.ChannelName} #{x.ChannelId}
 [{GetText("command_text")}]: {x.CommandText}```")),
@@ -149,7 +149,7 @@ namespace WizBot.Modules.Administration
                     await ctx.Channel.SendConfirmAsync(
                         text: string.Join("\n", scmds
                         .Select(x => $@"```css
-#{++i}
+#{++i + page * 5}
 [{GetText("server")}]: {(x.GuildId.HasValue ? $"{x.GuildName} #{x.GuildId}" : "-")}
 [{GetText("channel")}]: {x.ChannelName} #{x.ChannelId}
 {GetIntervalText(x.Interval)}
