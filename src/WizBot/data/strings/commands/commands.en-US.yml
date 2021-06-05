@@ -16,10 +16,11 @@ modules:
   args:
     - ""
 commands:
-  desc: "List all of the bot's commands from a certain module. You can either specify the full name or only the first few letters of the module name."
+  desc: "List all of the bot's commands from the specified module. You can either specify the full name or only the first few letters of the module name. Specifying no module will show the list of modules instead."
   args:
     - "Admin"
     - "Admin --view 1"
+    - ""
 greetdel:
   desc: "Sets the time it takes (in seconds) for greet messages to be auto-deleted. Set it to 0 to disable automatic deletion."
   args:
