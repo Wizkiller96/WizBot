@@ -1,13 +1,15 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
-using Microsoft.EntityFrameworkCore;
 using WizBot.Core.Modules.Music;
 using WizBot.Core.Services;
+using WizBot.Core.Services.Database.Models;
+using WizBot.Core.Services.Database.Repositories.Impl;
 using WizBot.Extensions;
 using Serilog;
 
@@ -27,7 +29,8 @@ namespace WizBot.Modules.Music.Services
         private readonly YtLoader _ytLoader;
 
         private readonly ConcurrentDictionary<ulong, IMusicPlayer> _players;
-        private readonly ConcurrentDictionary<ulong, ITextChannel> _outputChannels;
+        private readonly ConcurrentDictionary<ulong, (ITextChannel Default, ITextChannel? Override)> _outputChannels;
+        private readonly ConcurrentDictionary<ulong, MusicPlayerSettings> _settings;
 
         public MusicService(AyuVoiceStateService voiceStateService, ITrackResolveProvider trackResolveProvider,
             DbService db, IYoutubeResolver ytResolver, ILocalTrackResolver localResolver, ISoundcloudResolver scResolver,
@@ -45,7 +48,8 @@ namespace WizBot.Modules.Music.Services
             _ytLoader = ytLoader;
 
             _players = new ConcurrentDictionary<ulong, IMusicPlayer>();
-            _outputChannels = new ConcurrentDictionary<ulong, ITextChannel>();
+            _outputChannels = new ConcurrentDictionary<ulong, (ITextChannel, ITextChannel?)>();
+            _settings = new ConcurrentDictionary<ulong, MusicPlayerSettings>();
             
             _client.LeftGuild += ClientOnLeftGuild;
         }
@@ -80,9 +84,9 @@ namespace WizBot.Modules.Music.Services
         public Task JoinVoiceChannelAsync(ulong guildId, ulong voiceChannelId) 
             => _voiceStateService.JoinVoiceChannel(guildId, voiceChannelId);
 
-        public IMusicPlayer GetOrCreateMusicPlayer(ITextChannel contextChannel)
+        public async Task<IMusicPlayer?> GetOrCreateMusicPlayerAsync(ITextChannel contextChannel)
         {
-            var newPLayer = CreateMusicPlayerInternal(contextChannel.GuildId, contextChannel);
+            var newPLayer = await CreateMusicPlayerInternalAsync(contextChannel.GuildId, contextChannel);
             if (newPLayer is null)
                 return null;
             
@@ -91,13 +95,6 @@ namespace WizBot.Modules.Music.Services
 
         public bool TryGetMusicPlayer(ulong guildId, out IMusicPlayer musicPlayer)
             => _players.TryGetValue(guildId, out musicPlayer);
-
-        public void SetDefaultVolume(ulong guildId, int val)
-        {
-            using var uow = _db.GetDbContext();
-            uow.GuildConfigs.ForId(guildId, set => set).DefaultMusicVolume = val / 100.0f;
-            uow.SaveChanges();
-        }
 
         public async Task<int> EnqueueYoutubePlaylistAsync(IMusicPlayer mp, string query, string queuer)
         {
@@ -140,7 +137,7 @@ namespace WizBot.Modules.Music.Services
             return i;
         }
 
-        private IMusicPlayer CreateMusicPlayerInternal(ulong guildId, ITextChannel currentOutputChannel)
+        private async Task<IMusicPlayer?> CreateMusicPlayerInternalAsync(ulong guildId, ITextChannel defaultChannel)
         {
             var queue = new MusicQueue();
             var resolver = _trackResolveProvider;
@@ -150,46 +147,56 @@ namespace WizBot.Modules.Music.Services
                 return null;
             }
 
-            using var uow = _db.GetDbContext();
-            var gc = uow.GuildConfigs.ForId(guildId, set => set.Include(x => x.MusicSettings));
+            var settings = await GetSettingsInternalAsync(guildId);
 
-            var outputChannel = currentOutputChannel;
-            if (gc.MusicSettings.MusicChannelId is ulong channelId)
+            ITextChannel? overrideChannel = null;
+            if (settings.MusicChannelId is ulong channelId)
             {
-                var savedChannel = _client.GetGuild(guildId)?.GetTextChannel(channelId);
+                overrideChannel = _client.GetGuild(guildId)?.GetTextChannel(channelId);
 
-                if (savedChannel is null)
+                if (overrideChannel is null)
                 {
                     Log.Warning("Saved music output channel doesn't exist, falling back to current channel");
                 }
             }
             
-            _outputChannels[guildId] = outputChannel ?? currentOutputChannel;
+            _outputChannels[guildId] = (defaultChannel, overrideChannel);
 
             var mp = new MusicPlayer(
                 queue,
                 resolver,
                 proxy
             );
+            
+            mp.SetRepeat(settings.PlayerRepeat);
 
-            mp.OnCompleted += OnTrackCompleted(guildId);
-            mp.OnStarted += OnTrackStarted(guildId);
-
-            if (gc.DefaultMusicVolume >= 0 && gc.DefaultMusicVolume <= 1)
+            if (settings.Volume >= 0 && settings.Volume <= 100)
             {
-                mp.SetVolume((int)(gc.DefaultMusicVolume * 100));
+                mp.SetVolume(settings.Volume);
             }
             else
             {
-                Log.Error("DefaultMusicVolume is outside of valid range >= 0 && <=1 ({DefaultMusicVolume})", gc.DefaultMusicVolume);
+                Log.Error("Saved Volume is outside of valid range >= 0 && <=100 ({Volume})", settings.Volume);
             }
+
+            mp.OnCompleted += OnTrackCompleted(guildId);
+            mp.OnStarted += OnTrackStarted(guildId);
+            mp.OnQueueStopped += OnQueueStopped(guildId);
 
             return mp;
         }
 
-        public Func<IMusicPlayer, IQueuedTrackInfo, Task> OnTrackCompleted(ulong guildId)
+        public Task<IUserMessage?> SendToOutputAsync(ulong guildId, EmbedBuilder embed)
         {
-            IUserMessage lastFinishedMessage = null;
+            if (_outputChannels.TryGetValue(guildId, out var chan))
+                return (chan.Default ?? chan.Override).EmbedAsync(embed);
+
+            return Task.FromResult<IUserMessage?>(null);
+        }
+
+        private Func<IMusicPlayer, IQueuedTrackInfo, Task> OnTrackCompleted(ulong guildId)
+        {
+            IUserMessage? lastFinishedMessage = null;
             return async (mp, trackInfo) =>
             {
                 _ = lastFinishedMessage?.DeleteAsync();
@@ -202,10 +209,10 @@ namespace WizBot.Modules.Music.Services
                 lastFinishedMessage = await SendToOutputAsync(guildId, embed);
             };
         }
-        
-        public Func<IMusicPlayer, IQueuedTrackInfo, int, Task> OnTrackStarted(ulong guildId)
+
+        private Func<IMusicPlayer, IQueuedTrackInfo, int, Task> OnTrackStarted(ulong guildId)
         {
-            IUserMessage lastPlayingMessage = null;
+            IUserMessage? lastPlayingMessage = null;
             return async (mp, trackInfo, index) =>
             {
                 _ = lastPlayingMessage?.DeleteAsync();
@@ -218,36 +225,19 @@ namespace WizBot.Modules.Music.Services
             };
         }
 
-        public Task<IUserMessage> SendToOutputAsync(ulong guildId, EmbedBuilder embed)
-        {
-            if (_outputChannels.TryGetValue(guildId, out var textChannel))
-                return textChannel.EmbedAsync(embed);
+        private Func<IMusicPlayer, Task> OnQueueStopped(ulong guildId)
+            => (mp) =>
+            {
+                if (_settings.TryGetValue(guildId, out var settings))
+                {
+                    if (settings.AutoDisconnect)
+                    {
+                        return LeaveVoiceChannelAsync(guildId);
+                    }
+                }
 
-            return Task.FromResult<IUserMessage>(null);
-        }
-
-        public bool SetMusicChannel(ulong guildId, ulong channelId)
-        {
-            var channel = _client.GetGuild(guildId)?.GetTextChannel(channelId);
-            if (channel is null)
-                return false;
-            
-            using var uow = _db.GetDbContext();
-            var ms = uow.GuildConfigs.ForId(guildId, set => set.Include(x => x.MusicSettings)).MusicSettings;
-            ms.MusicChannelId = channelId;
-            uow.SaveChanges();
-            
-            _outputChannels[guildId] = channel;
-            return true;
-        }
-
-        public void UnsetMusicChannel(ulong guildId)
-        {
-            using var uow = _db.GetDbContext();
-            var ms = uow.GuildConfigs.ForId(guildId, set => set.Include(x => x.MusicSettings)).MusicSettings;
-            ms.MusicChannelId = null;
-            uow.SaveChanges();
-        }
+                return Task.CompletedTask;
+            };
 
         // this has to be done because dragging bot to another vc isn't supported yet
         public async Task<bool> PlayAsync(ulong guildId, ulong voiceChannelId)
@@ -287,7 +277,7 @@ namespace WizBot.Modules.Music.Services
             try
             {
                 IList<(string, string)> videos = await SearchYtLoaderVideosAsync(query);
-                if (!(videos is null))
+                if (videos.Count > 0)
                 {
                     return videos;
                 }
@@ -307,12 +297,12 @@ namespace WizBot.Modules.Music.Services
                             "Probably google api key missing: {ErrorMessage}", ex.Message);
             }
             
-            return default;
+            return Array.Empty<(string, string)>();
         }
 
         private string GetText(ulong guildId, string key, params object[] args)
             => _strings.GetText(key, guildId, args);
-        
+
         public IEnumerable<(string Name, Func<string> Func)> GetPlaceholders()
         {
             // random song that's playing
@@ -348,5 +338,104 @@ namespace WizBot.Modules.Music.Services
                 return count.ToString();
             });
         }
+
+        #region Settings
+
+        private async Task<MusicPlayerSettings> GetSettingsInternalAsync(ulong guildId)
+        {
+            if (_settings.TryGetValue(guildId, out var settings))
+                return settings;
+            
+            using var uow = _db.GetDbContext();
+            var toReturn = _settings[guildId] = await uow._context.MusicPlayerSettings.ForGuildAsync(guildId);
+            await uow.SaveChangesAsync();
+
+            return toReturn;
+        }
+        
+        private async Task ModifySettingsInternalAsync<TState>(
+            ulong guildId,
+            Action<MusicPlayerSettings, TState> action,
+            TState state)
+        {
+            using var uow = _db.GetDbContext();
+            var ms = await uow._context.MusicPlayerSettings.ForGuildAsync(guildId);
+            action(ms, state);
+            await uow.SaveChangesAsync();
+            _settings[guildId] = ms;
+        }
+        
+        public async Task<bool> SetMusicChannelAsync(ulong guildId, ulong? channelId)
+        {
+            if (channelId is null)
+            {
+                await UnsetMusicChannelAsync(guildId);
+                return true;
+            }
+            
+            var channel = _client.GetGuild(guildId)?.GetTextChannel(channelId.Value);
+            if (channel is null)
+                return false;
+
+            await ModifySettingsInternalAsync(guildId, (settings, chId) =>
+            {
+                settings.MusicChannelId = chId;
+            }, channelId);
+
+            _outputChannels.AddOrUpdate(guildId,
+                (channel, channel),
+                (key, old) => (old.Default, channel));
+            
+            return true;
+        }
+
+        public async Task UnsetMusicChannelAsync(ulong guildId)
+        {
+            await ModifySettingsInternalAsync(guildId, (settings, _) =>
+            {
+                settings.MusicChannelId = null;
+            }, (ulong?)null);
+
+            if (_outputChannels.TryGetValue(guildId, out var old))
+                _outputChannels[guildId] = (old.Default, null);
+        }
+
+        public async Task SetRepeatAsync(ulong guildId, PlayerRepeatType repeatType)
+        {
+            await ModifySettingsInternalAsync(guildId, (settings, type) =>
+            {
+                settings.PlayerRepeat = type;
+            }, repeatType);
+
+            if (TryGetMusicPlayer(guildId, out var mp))
+                mp.SetRepeat(repeatType);
+        }
+
+        public async Task SetVolumeAsync(ulong guildId, int value)
+        {
+            if (value < 0 || value > 100)
+                throw new ArgumentOutOfRangeException(nameof(value));
+            
+            await ModifySettingsInternalAsync(guildId, (settings, newValue) =>
+            {
+                settings.Volume = newValue;
+            }, value);
+            
+            if (TryGetMusicPlayer(guildId, out var mp))
+                mp.SetVolume(value);
+        }
+
+        public async Task<bool> ToggleAutoDisconnectAsync(ulong guildId)
+        {
+            var newState = false;
+            await ModifySettingsInternalAsync(guildId, (settings, _) =>
+            {
+                newState = settings.AutoDisconnect = !settings.AutoDisconnect;
+            }, default(object));
+
+            return newState;
+        }
+
+        #endregion
     }
 }

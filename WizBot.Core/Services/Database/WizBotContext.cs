@@ -59,6 +59,8 @@ namespace WizBot.Core.Services.Database
         public DbSet<DiscordPermOverride> DiscordPermOverrides { get; set; }
         public DbSet<DiscordUser> DiscordUser { get; set; }
 
+        public DbSet<MusicPlayerSettings> MusicPlayerSettings { get; set; }
+        
         public WizBotContext(DbContextOptions<WizBotContext> options) : base(options)
         {
         }
@@ -294,6 +296,18 @@ namespace WizBot.Core.Services.Database
             modelBuilder.Entity<DiscordPermOverride>()
                 .HasIndex(x => new {x.GuildId, x.Command})
                 .IsUnique();
+
+            #endregion
+            
+            #region Music
+
+            modelBuilder.Entity<MusicPlayerSettings>()
+                .HasIndex(x => x.GuildId)
+                .IsUnique();
+
+            modelBuilder.Entity<MusicPlayerSettings>()
+                .Property(x => x.Volume)
+                .HasDefaultValue(100);
 
             #endregion
         }

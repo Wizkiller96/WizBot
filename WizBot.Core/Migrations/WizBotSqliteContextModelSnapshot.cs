@@ -979,7 +979,38 @@ namespace WizBot.Migrations
                     b.ToTable("LogSettings");
                 });
 
-            modelBuilder.Entity("WizBot.Core.Services.Database.Models.MusicPlaylist", b =>
+            modelBuilder.Entity("WizBot.Core.Services.Database.Models.MusicPlayerSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("AutoDisconnect")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<ulong?>("MusicChannelId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PlayerRepeat")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Volume")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(100);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GuildId")
+                        .IsUnique();
+
+                    b.ToTable("MusicPlayerSettings");
+                });
+
+            modelBuilder.Entity("NadekoBot.Core.Services.Database.Models.MusicPlaylist", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1000,32 +1031,6 @@ namespace WizBot.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("MusicPlaylists");
-                });
-
-            modelBuilder.Entity("WizBot.Core.Services.Database.Models.MusicSettings", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("GuildConfigId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<ulong?>("MusicChannelId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("SongAutoDelete")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GuildConfigId")
-                        .IsUnique();
-
-                    b.ToTable("MusicSettings");
                 });
 
             modelBuilder.Entity("WizBot.Core.Services.Database.Models.MutedUserId", b =>
@@ -2328,15 +2333,6 @@ namespace WizBot.Migrations
                     b.HasOne("WizBot.Core.Services.Database.Models.LogSetting", "LogSetting")
                         .WithMany("IgnoredVoicePresenceChannelIds")
                         .HasForeignKey("LogSettingId");
-                });
-
-            modelBuilder.Entity("WizBot.Core.Services.Database.Models.MusicSettings", b =>
-                {
-                    b.HasOne("WizBot.Core.Services.Database.Models.GuildConfig", "GuildConfig")
-                        .WithOne("MusicSettings")
-                        .HasForeignKey("WizBot.Core.Services.Database.Models.MusicSettings", "GuildConfigId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("WizBot.Core.Services.Database.Models.MutedUserId", b =>

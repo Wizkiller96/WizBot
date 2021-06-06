@@ -2,24 +2,39 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format.
 
-## [Unreleased]
+## [2.44.4] - 06.06.2021
 
 ### Added
 
 - Re-added `%music.playing%` and `%music.queued%`
-- Added `%music.servers%` which shows how many servers have a song queued up to play
-
-ℹ️ ^ Only available to `.ropl` / `.adpl` feature atm
+- Added `%music.servers%` which shows how many servers have a song queued up to play  
+  ℹ️ ^ Only available to `.ropl` / `.adpl` feature atm
+- `.autodc` re-added
+- `.qrp`, `.vol`, `.smch` `.autodc` will now persist
 
 ### Changed
 
 - Using `.commands` / `.cmds` without a module will now list modules
+- `.qrp` / `.queuerepeat` will now accept one of 3 values
+  - `none` - don't repeat queue
+  - `track` - repeat single track
+  - `queue` (or ommit) - repeat entire queue
+- your old `.defvol` and `.smch` settings will be reset
 
 ### Fixed
 
 - Fixed `.google` / `.g` command
 - Removing last song in the queue will no longer reset queue index
 - Having `.rpl` disabled will now correctly stop after the last song
+
+### Removed
+
+- `.sad` removed. It's more or less useless. Use `.qrp` and `.autodc` now for similar effect
+
+### Obsolete
+
+- `.rcs` is obsolete, use `.qrp s` or `.qrp song`
+- `.defvol` is obsolete, use `.vol`
 
 ## [2.44.3] - 05.06.2021
 

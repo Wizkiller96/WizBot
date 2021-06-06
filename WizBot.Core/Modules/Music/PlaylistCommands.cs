@@ -197,7 +197,7 @@ namespace WizBot.Core.Modules.Music
                         return;
                     }
             
-                    var mp = _service.GetOrCreateMusicPlayer((ITextChannel) Context.Channel);
+                    var mp = await _service.GetOrCreateMusicPlayerAsync((ITextChannel) Context.Channel);
                     if (mp is null)
                     {
                         await ReplyErrorLocalizedAsync("no_player");

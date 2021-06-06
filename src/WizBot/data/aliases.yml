@@ -458,9 +458,6 @@ nowplaying:
 volume:
 - volume
 - vol
-defvol:
-- defvol
-- dv
 playlist:
 - playlist
 - pl
@@ -481,7 +478,7 @@ join:
 - j
 - move
 - mv
-songremove:
+trackremove:
 - songremove
 - srm
 movesong:
@@ -780,9 +777,9 @@ logevents:
 - logevents
 log:
 - log
-songautodelete:
-- songautodelete
-- sad
+autodisconnect:
+- autodisconnect
+- autodc
 define:
 - define
 - def

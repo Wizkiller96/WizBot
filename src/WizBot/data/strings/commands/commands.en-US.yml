@@ -758,13 +758,9 @@ nowplaying:
   args:
     - ""
 volume:
-  desc: "Sets the music playback volume (0-100%)"
+  desc: "Sets the music playback volume (0-100%). Persistent server setting. Default 100"
   args:
     - "50"
-defvol:
-  desc: "Sets the default music volume when music playback is started (0-100). Persists through restarts."
-  args:
-    - "80"
 playlist:
   desc: "Queues up to 500 songs from a youtube playlist specified by a link, or keywords."
   args:
@@ -772,7 +768,8 @@ playlist:
 soundcloudpl:
   desc: "Queue a Soundcloud playlist using a link."
   args:
-    - "soundcloudseturl"
+    - "https://soundcloud.com/classical-music-playlist/sets/classical-music-essential-collection"
+    - "<soundcloud_set_link>"
 localplaylist:
   desc: "Queues all songs from a directory."
   args:
@@ -805,13 +802,15 @@ setmaxqueue:
     - "50"
     - ""
 reptcursong:
-  desc: "Toggles repeat of current song."
+  desc: "Obsolete. Use `{0}queuerepeat`"
   args:
     - ""
 queuerepeat:
-  desc: "Toggles repeat of all songs in the queue (every song that finishes is added to the end of the queue)."
+  desc: "Sets music player repeat strategy for this server.\n- `n` / `no` - player will stop once it reaches the end of the queue\n- `s` / `song` - player will repeat current song\n- `q` / `queue` or empty - player will repeat entire music queue"
   args:
     - ""
+    - "n"
+    - "song"
 save:
   desc: "Saves a playlist under a certain name. Playlist name must be no longer than 20 characters and must not contain dashes."
   args:
@@ -1277,10 +1276,6 @@ fairplay:
   desc: "Toggles fairplay. While enabled, the bot will prioritize songs from users who didn't have their song recently played instead of the song's position in the queue."
   args:
     - ""
-songautodelete:
-  desc: "Toggles whether the song should be automatically removed from the music queue when it finishes playing."
-  args:
-    - ""
 define:
   desc: "Finds a definition of a word."
   args:
@@ -1386,11 +1381,11 @@ mal:
   args:
     - "straysocks"
 setmusicchannel:
-  desc: "Sets the current channel as the default music output channel. This will output playing, finished, paused and removed songs to that channel instead of the channel where the first song was queued in."
+  desc: "Sets the current channel as the default music output channel. This will output playing, finished, paused and removed songs to that channel instead of the channel where the first song was queued in. Persistent server setting."
   args:
     - ""
 unsetmusicchannel:
-  desc: "Bot will output playing, finished, paused and removed songs to the channel where the first song was queued in."
+  desc: "Bot will output playing, finished, paused and removed songs to the channel where the first song was queued in. Persistent server setting."
   args:
     - ""
 imagesreload:
@@ -1891,7 +1886,7 @@ rip:
   args:
     - "@Someone"
 autodisconnect:
-  desc: "Toggles whether the bot should disconnect from the voice channel once it's done playing all of the songs."
+  desc: "Toggles whether the bot should disconnect from the voice channel once it's done playing all of the songs and queue repeat option is set to `none`."
   args:
     - ""
 timelyset:

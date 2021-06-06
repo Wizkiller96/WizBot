@@ -407,10 +407,9 @@
   "queue_cleared": "Music queue cleared.",
   "queue_full": "Queue is full at {0}/{0}.",
   "removed_song": "Removed song",
-  "repeating_cur_song": "Repeating current song",
-  "repeating_playlist": "Repeating playlist",
-  "repeating_track": "Repeating track",
-  "repeating_track_stopped": "Current track repeat stopped.",
+  "repeating_none": "Player will stop once the end of queue is reached.",
+  "repeating_queue": "Player will repeat the queue.",
+  "repeating_track": "Player will keep repeating the same track.",
   "resumed": "Music playback resumed.",
   "rpl_disabled": "Repeat playlist disabled.",
   "rpl_enabled": "Repeat playlist enabled.",
@@ -858,8 +857,6 @@
   "nunchi_next_number": "Number registered. Last number was {0}.",
   "nunchi_failed_to_start": "Nunchi failed to start because there were not enough participants.",
   "nunchi_created": "Nunchi game created. Waiting for users to join.",
-  "sad_enabled": "Songs will be deleted from the music queue when they finish playing.",
-  "sad_disabled": "Songs will no longer be deleted from the music queue when they finish playing.",
   "stream_role_enabled": "When a user from {0} role starts streaming, I will give them {1} role.",
   "stream_role_disabled": "Stream role feature has been disabled.",
   "stream_role_kw_set": "Streamers now require {0} keyword in order to receive the role.",
@@ -1053,5 +1050,6 @@
   "module_description_permissions": "Setup perms for commands, filter words and set up command cooldowns",
   "module_description_searches": "Search for jokes, images of animals, anime and manga",
   "module_description_xp": "Gain xp based on chat activity, check users' xp cards",
-  "module_description_roblox": "Search up Roblox user information and more"
+  "module_description_roblox": "Search up Roblox user information and more",
+  "obsolete": "⚠ Obsolete, use {0} instead."
 }
