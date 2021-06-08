@@ -12,6 +12,7 @@ namespace Ayu.Discord.Voice
         private readonly byte[] _buffer;
         private readonly byte[] _outputArray;
         private CancellationToken _cancellationToken;
+        private bool _isStopped;
 
         public int ReadPosition { get; private set; }
         public int WritePosition { get; private set; }
@@ -22,7 +23,7 @@ namespace Ayu.Discord.Voice
 
         public int FreeSpace => _buffer.Length - ContentLength;
 
-        public bool Stopped => _cancellationToken.IsCancellationRequested;
+        public bool Stopped => _cancellationToken.IsCancellationRequested || _isStopped;
 
         public PoopyBufferImmortalized(int frameSize)
         {
@@ -32,6 +33,11 @@ namespace Ayu.Discord.Voice
 
             ReadPosition = 0;
             WritePosition = 0;
+        }
+        
+        public void Stop()
+        {
+            _isStopped = true;
         }
 
         // this method needs a rewrite

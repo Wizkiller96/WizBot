@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Ayu.Discord.Voice;
 using WizBot.Common;
+using WizBot.Core.Modules.Music.Common;
 using WizBot.Core.Services.Database.Models;
 using WizBot.Extensions;
 using WizBot.Modules.Music;
@@ -19,6 +20,9 @@ namespace WizBot.Core.Modules.Music
 {
     public sealed class MusicPlayer : IMusicPlayer
     {
+        private delegate void AdjustVolumeDelegate(Span<byte> data, float volume);
+
+        private AdjustVolumeDelegate AdjustVolume;
         private readonly VoiceClient _vc;
 
         public bool IsKilled { get; private set; }
@@ -53,6 +57,10 @@ namespace WizBot.Core.Modules.Music
             _rng = new WizBotRandom();
 
             _vc = GetVoiceClient(qualityPreset);
+            if (_vc.BitDepth == 16)
+                AdjustVolume = AdjustVolumeInt16;
+            else
+                AdjustVolume = AdjustVolumeFloat32;
             
             _songBuffer = new PoopyBufferImmortalized(_vc.InputLength);
 
@@ -120,8 +128,8 @@ namespace WizBot.Core.Modules.Music
                     continue;
                 }
 
-                var trackCancellationSource = new CancellationTokenSource();
-                var cancellationToken = trackCancellationSource.Token;
+                using var cancellationTokenSource = new CancellationTokenSource();
+                var token = cancellationTokenSource.Token;
                 try
                 {
                     // light up green in vc
@@ -134,19 +142,70 @@ namespace WizBot.Core.Modules.Music
 
                     var streamUrl = await track.GetStreamUrl();
                     // start up the data source
-                    var source = FfmpegTrackDataSource.CreateAsync(
+                    using var source = FfmpegTrackDataSource.CreateAsync(
                         _vc.BitDepth,
                         streamUrl,
                         track.Platform == MusicPlatform.Local
                     );
-
+                    
                     // start moving data from the source into the buffer
                     // this method will return once the sufficient prebuffering is done
-                    await _songBuffer.BufferAsync(source, cancellationToken);
+                    await _songBuffer.BufferAsync(source, token);
 
+                    // // Implemenation with multimedia timer. Works but a hassle because no support for switching
+                    // // vcs, as any error in copying will cancel the song. Also no idea how to use this as an option
+                    // // for selfhosters.
+                    // if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    // {
+                    //     var cancelSource = new CancellationTokenSource();
+                    //     var cancelToken = cancelSource.Token;
+                    //     using var timer = new MultimediaTimer(_ =>
+                    //     {
+                    //         if (IsStopped || IsKilled)
+                    //         {
+                    //             cancelSource.Cancel();
+                    //             return;
+                    //         }
+                    //         
+                    //         if (_skipped)
+                    //         {
+                    //             _skipped = false;
+                    //             cancelSource.Cancel();
+                    //             return;
+                    //         }
+                    //
+                    //         if (IsPaused)
+                    //             return;
+                    //
+                    //         try
+                    //         {
+                    //             // this should tolerate certain number of errors
+                    //             var result = CopyChunkToOutput(_songBuffer, _vc);
+                    //             if (!result)
+                    //                 cancelSource.Cancel();
+                    //               
+                    //         }
+                    //         catch (Exception ex)
+                    //         {
+                    //             Log.Warning(ex, "Something went wrong sending voice data: {ErrorMessage}", ex.Message);
+                    //             cancelSource.Cancel();
+                    //         }
+                    //
+                    //     }, null, 20);
+                    //     
+                    //     while(true)
+                    //         await Task.Delay(1000, cancelToken);
+                    // }
 
                     // start sending data
                     var ticksPerMs = 1000f / Stopwatch.Frequency;
+                    sw.Start();
+                    Thread.Sleep(2);
+
+                    var delay = sw.ElapsedTicks * ticksPerMs > 3f
+                        ? _vc.Delay - 16
+                        : _vc.Delay - 3;
+                    
                     var errorCount = 0;
                     while (!IsStopped && !IsKilled)
                     {
@@ -157,23 +216,23 @@ namespace WizBot.Core.Modules.Music
                             _skipped = false;
                             break;
                         }
-
+                        
                         if (IsPaused)
                         {
-                            await Task.Delay(200, cancellationToken);
+                            await Task.Delay(200);
                             continue;
                         }
-
+                        
                         sw.Restart();
                         var ticks = sw.ElapsedTicks;
                         try
                         {
                             var result = CopyChunkToOutput(_songBuffer, _vc);
-
+                        
                             // if song is finished
                             if (result is null)
                                 break;
-
+                        
                             if (result is true)
                             {
                                 if (errorCount > 0)
@@ -181,13 +240,12 @@ namespace WizBot.Core.Modules.Music
                                     _ = _proxy.StartSpeakingAsync();
                                     errorCount = 0;
                                 }
-                                
+                                    
                                 // todo future windows multimedia api
-                                
+                                    
                                 // wait for slightly less than the latency
-                                // sleep precision is around 15.5ms
-                                Thread.Sleep(_vc.Delay - 16);
-                                
+                                Thread.Sleep(delay);
+                                    
                                 // and then spin out the rest
                                 while ((sw.ElapsedTicks - ticks) * ticksPerMs <= _vc.Delay - 0.1f)
                                     Thread.SpinWait(100);
@@ -196,16 +254,16 @@ namespace WizBot.Core.Modules.Music
                             {
                                 // result is false is either when the gateway is being swapped 
                                 // or if the bot is reconnecting, or just disconnected for whatever reason
-
+                        
                                 // tolerate up to 15x200ms of failures (3 seconds)
                                 if (++errorCount <= 15)
                                 {
-                                    await Task.Delay(200, cancellationToken);
+                                    await Task.Delay(200);
                                     continue;
                                 }
-
+                        
                                 Log.Warning("Can't send data to voice channel");
-
+                        
                                 IsStopped = true;
                                 // if errors are happening for more than 3 seconds
                                 // Stop the player
@@ -234,9 +292,8 @@ namespace WizBot.Core.Modules.Music
                 }
                 finally
                 {
+                    cancellationTokenSource.Cancel();
                     // turn off green in vc
-                    trackCancellationSource.Cancel();
-
                     _ = OnCompleted?.Invoke(this, track);
                     
                     HandleQueuePostTrack();
@@ -248,7 +305,7 @@ namespace WizBot.Core.Modules.Music
                 }
             }
         }
-        
+
         private bool? CopyChunkToOutput(ISongBuffer sb, VoiceClient vc)
         {
             var data = sb.Read(vc.InputLength, out var length);
@@ -299,7 +356,7 @@ namespace WizBot.Core.Modules.Music
         
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void AdjustVolume(Span<byte> audioSamples, float volume)
+        private static void AdjustVolumeInt16(Span<byte> audioSamples, float volume)
         {
             if (Math.Abs(volume - 1f) < 0.0001f) return;
         
@@ -309,6 +366,20 @@ namespace WizBot.Core.Modules.Music
             {
                 ref var sample = ref samples[i];
                 sample = (short) (sample * volume);
+            }
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void AdjustVolumeFloat32(Span<byte> audioSamples, float volume)
+        {
+            if (Math.Abs(volume - 1f) < 0.0001f) return;
+        
+            var samples = MemoryMarshal.Cast<byte, float>(audioSamples);
+        
+            for (var i = 0; i < samples.Length; i++)
+            {
+                ref var sample = ref samples[i];
+                sample = (float) (sample * volume);
             }
         }
 
