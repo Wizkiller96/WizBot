@@ -768,5 +768,23 @@ namespace WizBot.Core.Modules.Music
              else
                 await ReplyConfirmLocalizedAsync("autodc_disable");
          }
+         
+         [WizBotCommand, Usage, Description, Aliases]
+         [RequireContext(ContextType.Guild)]
+         [RequireUserPermission(GuildPermission.Administrator)]
+         public async Task MusicQuality()
+         {
+             var quality = await _service.GetMusicQualityAsync(ctx.Guild.Id);
+             await ReplyConfirmLocalizedAsync("current_music_quality", Format.Bold(quality.ToString()));
+         }
+         
+         [WizBotCommand, Usage, Description, Aliases]
+         [RequireContext(ContextType.Guild)]
+         [RequireUserPermission(GuildPermission.Administrator)]
+         public async Task MusicQuality(QualityPreset preset)
+         {
+             await _service.SetMusicQualityAsync(ctx.Guild.Id, preset);
+             await ReplyConfirmLocalizedAsync("music_quality_set", Format.Bold(preset.ToString()));
+         }
     }
 }

@@ -1388,6 +1388,12 @@ unsetmusicchannel:
   desc: "Bot will output playing, finished, paused and removed songs to the channel where the first song was queued in. Persistent server setting."
   args:
     - ""
+musicquality:
+  desc: "Gets or sets the default music player quality. Available settings: Highest, High, Medium, Low. Default is **Highest**. Provide no argument to see current setting."
+  args:
+    - ""
+    - "High"
+    - "Low"
 imagesreload:
   desc: "Reloads images bot is using. Safe to use even when bot is being used heavily."
   args:

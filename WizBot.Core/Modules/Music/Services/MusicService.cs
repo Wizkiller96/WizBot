@@ -165,7 +165,8 @@ namespace WizBot.Modules.Music.Services
             var mp = new MusicPlayer(
                 queue,
                 resolver,
-                proxy
+                proxy,
+                settings.QualityPreset
             );
             
             mp.SetRepeat(settings.PlayerRepeat);
@@ -434,6 +435,21 @@ namespace WizBot.Modules.Music.Services
             }, default(object));
 
             return newState;
+        }
+        
+        public async Task<QualityPreset> GetMusicQualityAsync(ulong guildId)
+        {
+            using var uow = _db.GetDbContext();
+            var settings = await uow._context.MusicPlayerSettings.ForGuildAsync(guildId);
+            return settings.QualityPreset;
+        }
+
+        public Task SetMusicQualityAsync(ulong guildId, QualityPreset preset)
+        {
+            return ModifySettingsInternalAsync(guildId, (settings, _) =>
+            {
+                settings.QualityPreset = preset;
+            }, preset);
         }
 
         #endregion

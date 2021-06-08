@@ -996,6 +996,9 @@ namespace WizBot.Migrations
 
                     b.Property<int>("PlayerRepeat")
                         .HasColumnType("INTEGER");
+                    
+                    b.Property<int>("QualityPreset")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Volume")
                         .ValueGeneratedOnAdd()

@@ -846,6 +846,9 @@ setmusicchannel:
 unsetmusicchannel:
 - unsetmusicchannel
 - usmch
+musicquality:
+- musicquality
+- mquality
 imagesreload:
 - imagesreload
 stringsreload:

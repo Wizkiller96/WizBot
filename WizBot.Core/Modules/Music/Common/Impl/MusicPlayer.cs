@@ -19,7 +19,7 @@ namespace WizBot.Core.Modules.Music
 {
     public sealed class MusicPlayer : IMusicPlayer
     {
-        private readonly VoiceClient _vc = new VoiceClient(frameDelay: FrameDelay.Delay20);
+        private readonly VoiceClient _vc;
 
         public bool IsKilled { get; private set; }
         public bool IsStopped { get; private set; }
@@ -41,13 +41,20 @@ namespace WizBot.Core.Modules.Music
         private readonly Thread _thread;
         private readonly Random _rng;
 
-        public MusicPlayer(IMusicQueue queue, ITrackResolveProvider trackResolveProvider, IVoiceProxy proxy)
+        public MusicPlayer(
+            IMusicQueue queue,
+            ITrackResolveProvider trackResolveProvider,
+            IVoiceProxy proxy,
+            QualityPreset qualityPreset)
         {
             _queue = queue;
             _trackResolveProvider = trackResolveProvider;
             _proxy = proxy;
-            _songBuffer = new PoopyBufferImmortalized();
             _rng = new WizBotRandom();
+
+            _vc = GetVoiceClient(qualityPreset);
+            
+            _songBuffer = new PoopyBufferImmortalized(_vc.InputLength);
 
             _thread = new Thread(async () =>
             {
@@ -55,6 +62,40 @@ namespace WizBot.Core.Modules.Music
             });
             _thread.Start();
         }
+
+        private static VoiceClient GetVoiceClient(QualityPreset qualityPreset)
+            => qualityPreset switch
+            {
+                QualityPreset.Highest => new VoiceClient(
+                    SampleRate._48k,
+                    Bitrate._192k,
+                    Channels.Two,
+                    FrameDelay.Delay20,
+                    BitDepthEnum.Float32
+                ),
+                QualityPreset.High => new VoiceClient(
+                    SampleRate._48k,
+                    Bitrate._128k,
+                    Channels.Two,
+                    FrameDelay.Delay40,
+                    BitDepthEnum.Float32
+                ),
+                QualityPreset.Medium => new VoiceClient(
+                    SampleRate._48k,
+                    Bitrate._96k,
+                    Channels.Two,
+                    FrameDelay.Delay40,
+                    BitDepthEnum.UInt16
+                ),
+                QualityPreset.Low => new VoiceClient(
+                    SampleRate._48k,
+                    Bitrate._64k,
+                    Channels.Two,
+                    FrameDelay.Delay40,
+                    BitDepthEnum.UInt16
+                ),
+                _ => throw new ArgumentOutOfRangeException(nameof(qualityPreset), qualityPreset, null)
+            };
 
         private async Task PlayLoop()
         {
@@ -94,6 +135,7 @@ namespace WizBot.Core.Modules.Music
                     var streamUrl = await track.GetStreamUrl();
                     // start up the data source
                     var source = FfmpegTrackDataSource.CreateAsync(
+                        _vc.BitDepth,
                         streamUrl,
                         track.Platform == MusicPlatform.Local
                     );
@@ -134,20 +176,21 @@ namespace WizBot.Core.Modules.Music
 
                             if (result is true)
                             {
-                                // wait for slightly less than the latency
-                                Thread.Sleep(_vc.Delay - 2);
-
-                                // and then spin out the rest
-                                // subjectively this seemed to work better
-                                // due to apparent imprecision of sleep
-                                while ((sw.ElapsedTicks - ticks) * ticksPerMs < _vc.Delay)
-                                    Thread.SpinWait(50);
-
                                 if (errorCount > 0)
                                 {
                                     _ = _proxy.StartSpeakingAsync();
                                     errorCount = 0;
                                 }
+                                
+                                // todo future windows multimedia api
+                                
+                                // wait for slightly less than the latency
+                                // sleep precision is around 15.5ms
+                                Thread.Sleep(_vc.Delay - 16);
+                                
+                                // and then spin out the rest
+                                while ((sw.ElapsedTicks - ticks) * ticksPerMs <= _vc.Delay - 0.1f)
+                                    Thread.SpinWait(100);
                             }
                             else
                             {
@@ -208,7 +251,7 @@ namespace WizBot.Core.Modules.Music
         
         private bool? CopyChunkToOutput(ISongBuffer sb, VoiceClient vc)
         {
-            var data = sb.Read(vc.FrameSize, out var length);
+            var data = sb.Read(vc.InputLength, out var length);
 
             // if nothing is read from the buffer, song is finished
             if (data.Length == 0)

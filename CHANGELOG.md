@@ -2,6 +2,17 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format.
 
+## [Unreleased]
+
+### Added
+
+- Added `.mquality` / `.musicquality` - Set encoding quality. Has 4 presets - Low, Medium, High, Highest. Default is Highest
+
+### Changed
+
+- `.warne` with no args will now show current state
+- Modified music code temporarily in a way which will increase cpu usage but reduce stuttering on some cases
+
 ## [2.44.4] - 06.06.2021
 
 ### Added

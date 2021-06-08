@@ -1,14 +1,5 @@
 ﻿namespace WizBot.Core.Services.Database.Models
 {
-    public class MusicSettings : DbEntity
-    {
-        public int GuildConfigId { get; set; }
-        public GuildConfig GuildConfig { get; set; }
-
-        public bool SongAutoDelete { get; set; } = false;
-        public ulong? MusicChannelId { get; set; } = null;
-    }
-
     public class MusicPlayerSettings
     {
         /// <summary>
@@ -41,6 +32,19 @@
         /// This only has effect if 
         /// </summary>
         public bool AutoDisconnect { get; set; } = false;
+        
+        /// <summary>
+        /// Selected quality preset for the music player 
+        /// </summary>
+        public QualityPreset QualityPreset { get; set; }
+    }
+    
+    public enum QualityPreset
+    {
+        Highest,
+        High,
+        Medium,
+        Low
     }
 
     public enum PlayerRepeatType

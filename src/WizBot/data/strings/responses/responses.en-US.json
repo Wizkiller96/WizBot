@@ -415,6 +415,8 @@
   "rpl_enabled": "Repeat playlist enabled.",
   "set_music_channel": "I will now output playing, finished, paused and removed songs in this channel.",
   "unset_music_channel": "I will now output playing, finished, paused and removed songs of the newly created music players in the channel music was started from.",
+  "current_music_quality": "Currently set music quality is: {0}",
+  "music_quality_set": "Music quality has been set to {0}. You will have to destroy and restart music player for the change to take effect.",
   "skipped_to": "Skipped to `{0}:{1}`",
   "song_moved": "Song moved",
   "to_position": "To position",
