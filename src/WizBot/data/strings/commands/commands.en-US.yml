@@ -1537,8 +1537,9 @@ wait:
   args:
     - "3000"
 warnexpire:
-  desc: "Sets the number of days after which the warnings will be cleared automatically. This setting works retroactively. If you want to delete the warnings instead of clearing them, you can set the `--delete` optional parameter."
+  desc: "Gets or sets the number of days after which the warnings will be cleared automatically. This setting works retroactively. If you want to delete the warnings instead of clearing them, you can set the `--delete` optional parameter. Provide no parameter to see currently set expiry"
   args:
+    - ""
     - "3"
     - "6 --delete"
 warnclear:

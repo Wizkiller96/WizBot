@@ -215,6 +215,13 @@ WHERE GuildId={guildId}
             }
         }
 
+        public async Task<int> GetWarnExpire(ulong guildId)
+        {
+            using var uow = _db.GetDbContext();
+            var config = uow.GuildConfigs.ForId(guildId);
+            return config.WarnExpireHours / 24;
+        }
+
         public async Task WarnExpireAsync(ulong guildId, int days, bool delete)
         {
             using (var uow = _db.GetDbContext())

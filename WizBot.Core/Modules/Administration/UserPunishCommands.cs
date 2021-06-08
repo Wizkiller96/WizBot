@@ -122,6 +122,21 @@ namespace WizBot.Modules.Administration
 
                 }
             }
+            
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [UserPerm(GuildPerm.Administrator)]
+            [WizBotOptions(typeof(WarnExpireOptions))]
+            [Priority(1)]
+            public async Task WarnExpire()
+            {
+                var expireDays = await _service.GetWarnExpire(ctx.Guild.Id);
+
+                if (expireDays == 0)
+                    await ReplyConfirmLocalizedAsync("warns_dont_expire");
+                else
+                    await ReplyConfirmLocalizedAsync("warns_expire_in", expireDays);
+            }
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]

@@ -744,6 +744,8 @@
   "warn_expire_set_delete": "Warnings will be deleted after {0} days.",
   "warn_expire_set_clear": "Warnings will be cleared after {0} days.",
   "warn_expire_reset": "Warnings will no longer expire.",
+  "warns_dont_expire": "Warnings have no expiry set.",
+  "warns_expire_in": "Warnings will expire in {0} days.",
   "warn_cleared_by": "cleared by {0}",
   "warn_punish_list": "Warning punishment list",
   "warn_punish_rem": "Having {0} warnings will no longer trigger a punishment.",
