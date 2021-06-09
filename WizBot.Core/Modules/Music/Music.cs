@@ -463,7 +463,7 @@ namespace WizBot.Core.Modules.Music
          [RequireContext(ContextType.Guild)]
          public async Task Defvol(int val)
          {
-             await ReplyErrorLocalizedAsync("obsolete", $"`{Prefix}vol`");
+             await ReplyErrorLocalizedAsync("obsolete_use", $"`{Prefix}vol`");
              await Volume(val);
          }
          

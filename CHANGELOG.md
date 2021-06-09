@@ -11,7 +11,8 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 ### Changed
 
 - `.warne` with no args will now show current state
-- Modified music code temporarily in a way which will increase cpu usage but reduce stuttering on some cases
+- .inrole` will now lists users with no roles if no role is provided
+- Music suttering fixed on some systems
 
 ## [2.44.4] - 06.06.2021
 
