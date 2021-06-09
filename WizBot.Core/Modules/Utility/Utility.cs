@@ -77,7 +77,7 @@ namespace WizBot.Modules.Utility
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         [Priority(0)]
-        public async Task InRole(int page, [Leftover] IRole role)
+        public async Task InRole(int page, [Leftover] IRole role = null)
         {
             if (--page < 0)
                 return;
@@ -87,7 +87,7 @@ namespace WizBot.Modules.Utility
 
             var users = await ctx.Guild.GetUsersAsync();
             var roleUsers = users
-                .Where(u => u.RoleIds.Contains(role.Id))
+                .Where(u => role is null ? u.RoleIds.Count == 1 : u.RoleIds.Contains(role.Id))
                 .Select(u => u.ToString())
                 .ToArray();
 
@@ -101,7 +101,7 @@ namespace WizBot.Modules.Utility
                     return new EmbedBuilder().WithOkColor().WithDescription(GetText("no_user_on_this_page"));
 
                 return new EmbedBuilder().WithOkColor()
-                    .WithTitle(Format.Bold(GetText("inrole_list", Format.Bold(role.Name))) + $" - {roleUsers.Length}")
+                    .WithTitle(GetText("inrole_list", Format.Bold(role?.Name ?? "No Role")) + $" - {roleUsers.Length}")
                     .WithDescription(string.Join("\n", pageUsers));
             }, roleUsers.Length, 20).ConfigureAwait(false);
         }
@@ -109,7 +109,7 @@ namespace WizBot.Modules.Utility
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
-        public Task InRole([Leftover] IRole role)
+        public Task InRole([Leftover] IRole role = null)
             => InRole(1, role);
 
         public enum MeOrBot { Me, Bot }
