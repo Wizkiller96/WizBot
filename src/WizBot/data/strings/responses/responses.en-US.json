@@ -234,6 +234,7 @@
   "has": "{0} has {1}",
   "heads": "Head",
   "mass_award": "Awarded {0} to {1} users from {2} role.",
+  "mass_take": "Taken {0} from {1} users in {2} role.",
   "max_bet_limit": "You can't bet more than {0}",
   "min_bet_limit": "You can't bet less than {0}",
   "not_enough": "You don't have enough {0}",

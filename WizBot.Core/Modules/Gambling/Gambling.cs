@@ -295,10 +295,31 @@ namespace WizBot.Modules.Gambling
                 Format.Bold(users.Count.ToString()),
                 Format.Bold(role.Name)).ConfigureAwait(false);
         }
+        
+        [WizBotCommand, Usage, Description, Aliases]
+        [RequireContext(ContextType.Guild)]
+        [OwnerOnly]
+        [Priority(0)]
+        public async Task Take(ShmartNumber amount, [Leftover] IRole role)
+        {
+            var users = (await role.GetMembersAsync()).ToList();
+
+            await _cs.RemoveBulkAsync(users.Select(x => x.Id),
+                    users.Select(x => $"Taken by bot owner from **{role.Name}** role. ({ctx.User.Username}/{ctx.User.Id})"),
+                    users.Select(x => amount.Value),
+                    gamble: true)
+                .ConfigureAwait(false);
+
+            await ReplyConfirmLocalizedAsync("mass_take",
+                n(amount) + CurrencySign,
+                Format.Bold(users.Count.ToString()),
+                Format.Bold(role.Name)).ConfigureAwait(false);
+        }
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         [OwnerOnly]
+        [Priority(1)]
         public async Task Take(ShmartNumber amount, [Leftover] IGuildUser user)
         {
             if (amount <= 0)

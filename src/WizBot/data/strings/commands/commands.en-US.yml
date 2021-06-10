@@ -635,9 +635,10 @@ award:
     - "100 @person"
     - "5 Role Of Gamblers"
 take:
-  desc: "Takes a certain amount of currency from someone."
+  desc: "Takes the specified amount of currency from someone. You can specify a role instead to take the specified amount of currency from all users in the role."
   args:
     - "1 @Someone"
+    - "50 SomeRole"
 betroll:
   desc: "Bets a certain amount of currency and rolls a dice. Rolling over 66 yields x2 of your currency, over 90 - x4 and 100 x10."
   args:

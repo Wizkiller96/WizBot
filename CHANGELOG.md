@@ -10,6 +10,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - Added `.xprewsreset` which resets all currently set xp level up rewards
 - Added `.purgeuser @User` which will remove the specified from the database completely. Removed settings include: Xp, clubs, waifu, currency, etc...
 - Added `.config xp txt.per_image` and xpFromImage to xp.yml - Change this config to allow xp gain from posting images. Images must be 128x128 or greater in size
+- Added `.take <amount> <role>` to complement `.award <amount> role`
 
 ### Changed
 

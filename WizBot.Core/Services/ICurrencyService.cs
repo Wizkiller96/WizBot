@@ -11,5 +11,6 @@ namespace WizBot.Core.Services
         Task AddBulkAsync(IEnumerable<ulong> userIds, IEnumerable<string> reasons, IEnumerable<long> amounts,  bool gamble = false);
         Task<bool> RemoveAsync(ulong userId, string reason, long amount, bool gamble = false);
         Task<bool> RemoveAsync(IUser userId, string reason, long amount, bool sendMessage = false, bool gamble = false);
+        Task RemoveBulkAsync(IEnumerable<ulong> userIds, IEnumerable<string> reasons, IEnumerable<long> amounts, bool gamble = false);
     }
 }
