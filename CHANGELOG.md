@@ -19,6 +19,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - `.say` moved to utility module
 - Re-created GuildRepeaters table and renamed to Repeaters
 - confirmation prompts will now use pending color from bot config, instead of okcolor
+- `.mute` can now have up to 49 days mute to match .warnp
 
 ### Fixed
 
