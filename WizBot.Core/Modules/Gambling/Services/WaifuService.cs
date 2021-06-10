@@ -414,7 +414,7 @@ namespace WizBot.Modules.Gambling.Services
             using (var uow = _db.GetDbContext())
             {
                 var wi = uow.Waifus.GetWaifuInfo(targetId);
-                if (wi == null)
+                if (wi is null)
                 {
                     wi = new WaifuInfoStats
                     {
@@ -422,7 +422,8 @@ namespace WizBot.Modules.Gambling.Services
                         AffinityName = null,
                         ClaimCount = 0,
                         ClaimerName = null,
-                        Claims30 = new List<string>(),
+                        Claims = new List<string>(),
+                        Fans = new List<string>(),
                         DivorceCount = 0,
                         FullName = null,
                         Items = new List<WaifuItem>(),

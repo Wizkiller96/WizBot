@@ -847,6 +847,7 @@
   "waifu_gift_not_exist": "That waifu item doesn't exist",
   "waifu_gift_shop": "Waifu gift shop",
   "gifts": "Gifts",
+  "fans": "Fans ({0})",
   "connect4_created": "Created a Connect4 game. Waiting for a player to join.",
   "connect4_created_bet": "Created a Connect4 game and bet {0}. Waiting for a player to join with the same bet.",
   "connect4_player_to_move": "Player to move: {0}",

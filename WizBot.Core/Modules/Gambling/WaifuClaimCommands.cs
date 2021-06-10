@@ -7,6 +7,7 @@ using WizBot.Modules.Gambling.Services;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Internal;
 using WizBot.Core.Modules.Gambling.Common;
 using WizBot.Core.Modules.Gambling.Services;
 using WizBot.Core.Services.Database.Models;
@@ -336,17 +337,32 @@ namespace WizBot.Modules.Gambling
                         .Select(x => $"{x.Key} x{x.Count(),-3}")
                         .Chunk(2)
                         .Select(x => string.Join(" ", x)));
+                
+                var fansStr = wi
+                    .Fans
+                    .Shuffle()
+                    .Take(30)
+                    .Select(x => wi.Claims.Contains(x) ? $"{x} 💞" : x)
+                    .JoinWith('\n');
+                
+                if (string.IsNullOrWhiteSpace(fansStr))
+                    fansStr = "-";
 
                 var embed = new EmbedBuilder()
                     .WithOkColor()
-                    .WithTitle(GetText("waifu") + " " + (wi.FullName ?? name ?? targetId.ToString()) + " - \"the " + _service.GetClaimTitle(wi.ClaimCount) + "\"")
-                    .AddField(efb => efb.WithName(GetText("price")).WithValue(wi.Price.ToString()).WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("claimed_by")).WithValue(wi.ClaimerName ?? nobody).WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("likes")).WithValue(wi.AffinityName ?? nobody).WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("changes_of_heart")).WithValue($"{wi.AffinityCount} - \"the {affInfo}\"").WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("divorces")).WithValue(wi.DivorceCount.ToString()).WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("gifts")).WithValue(itemsStr).WithIsInline(false))
-                    .AddField(efb => efb.WithName($"Waifus ({wi.ClaimCount})").WithValue(wi.ClaimCount == 0 ? nobody : string.Join("\n", wi.Claims30)).WithIsInline(false));
+                    .WithTitle(GetText("waifu") + " " + (wi.FullName ?? name ?? targetId.ToString()) + " - \"the " +
+                               _service.GetClaimTitle(wi.ClaimCount) + "\"")
+                    .AddField(GetText("price"), wi.Price.ToString(), true)
+                    .AddField(GetText("claimed_by"), wi.ClaimerName ?? nobody, true)
+                    .AddField(GetText("likes"), wi.AffinityName ?? nobody, true)
+                    .AddField(GetText("changes_of_heart"), $"{wi.AffinityCount} - \"the {affInfo}\"", true)
+                    .AddField(GetText("divorces"), wi.DivorceCount.ToString(), true)
+                    .AddField("\u200B", "\u200B", true)
+                    .AddField(GetText("fans", wi.Fans.Count), fansStr, true)
+                    .AddField($"Waifus ({wi.ClaimCount})", wi.ClaimCount == 0 
+                        ? nobody 
+                        : string.Join("\n", wi.Claims.Shuffle().Take(30)), true)
+                    .AddField(GetText("gifts"), itemsStr, true);
 
                 return ctx.Channel.EmbedAsync(embed);
             }
