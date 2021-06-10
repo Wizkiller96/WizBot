@@ -5,13 +5,16 @@ namespace WizBot.Modules.Xp
     public sealed class XpConfig
     {
         [Comment(@"DO NOT CHANGE")] 
-        public int Version { get; set; } = 1;
+        public int Version { get; set; } = 2;
 
         [Comment(@"How much XP will the users receive per message")]
         public int XpPerMessage { get; set; } = 3;
 
         [Comment(@"How often can the users receive XP in minutes")]
         public int MessageXpCooldown { get; set; } = 5;
+        
+        [Comment(@"Amount of xp users gain from posting an image")]
+        public int XpFromImage { get; set; } = 0;
 
         [Comment(@"Average amount of xp earned per minute in VC")]
         public double VoiceXpPerMinute { get; set; } = 0;

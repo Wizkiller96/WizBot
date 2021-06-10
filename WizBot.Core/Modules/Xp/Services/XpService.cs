@@ -21,6 +21,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using WizBot.Core.Modules.Xp;
 using Serilog;
 using StackExchange.Redis;
@@ -591,7 +592,18 @@ namespace WizBot.Modules.Xp.Services
                 if (!ShouldTrackXp(user, arg.Channel.Id))
                     return;
 
-                if (!arg.Content.Contains(' ') && arg.Content.Length < 5)
+                var xp = 0;
+                if (arg.Attachments.Any(a => a.Height >= 128 && a.Width >= 128))
+                {
+                    xp = _xpConfig.GetRawData().XpFromImage;
+                }
+                
+                if (arg.Content.Contains(' ') || arg.Content.Length >= 5)
+                {
+                    xp = Math.Max(xp, _xpConfig.GetRawData().XpPerMessage);
+                }
+
+                if (xp <= 0)
                     return;
 
                 if (!SetUserRewarded(user.Id))
@@ -602,7 +614,7 @@ namespace WizBot.Modules.Xp.Services
                     Guild = user.Guild,
                     Channel = arg.Channel,
                     User = user,
-                    XpAmount = _xpConfig.Data.XpPerMessage
+                    XpAmount = xp 
                 });
             });
             return Task.CompletedTask;

@@ -81,7 +81,7 @@ namespace WizBot.Core.Services
         /// <summary>
         /// Loads data from disk. If file doesn't exist, it will be created with default values
         /// </summary>
-        private void Load()
+        protected void Load()
         {
             // if file is deleted, regenerate it with default values
             if (!File.Exists(_filePath))
@@ -221,5 +221,7 @@ namespace WizBot.Core.Services
 
             return success;
         }
+        
+        public TSettings GetRawData() => _data;
     }
 }

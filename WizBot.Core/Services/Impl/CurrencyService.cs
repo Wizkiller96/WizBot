@@ -17,8 +17,7 @@ namespace WizBot.Core.Services
         private readonly GamblingConfigService _gss;
         private readonly IUser _bot;
 
-        public CurrencyService(DbService db, DiscordSocketClient c,
-            GamblingConfigService gss)
+        public CurrencyService(DbService db, DiscordSocketClient c, GamblingConfigService gss)
         {
             _db = db;
             _gss = gss;

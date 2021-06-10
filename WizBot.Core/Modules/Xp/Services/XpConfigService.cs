@@ -1,4 +1,5 @@
-﻿using WizBot.Core.Common;
+﻿using System;
+using WizBot.Core.Common;
 using WizBot.Core.Common.Configs;
 using WizBot.Core.Services;
 
@@ -10,17 +11,35 @@ namespace WizBot.Modules.Xp.Services
         private const string FilePath = "data/xp.yml";
         private static TypedKey<XpConfig> changeKey = new TypedKey<XpConfig>("config.xp.updated");
 
-        public XpConfigService(IConfigSeria serializer, IPubSub pubSub) : base(FilePath, serializer, pubSub,
-            changeKey)
+        public XpConfigService(IConfigSeria serializer, IPubSub pubSub) 
+            : base(FilePath, serializer, pubSub, changeKey)
         {
             AddParsedProp("txt.cooldown", conf => conf.MessageXpCooldown, int.TryParse,
                 ConfigPrinters.ToString, x => x > 0);
             AddParsedProp("txt.per_msg", conf => conf.XpPerMessage, int.TryParse,
                 ConfigPrinters.ToString, x => x >= 0);
+            AddParsedProp("txt.per_image", conf => conf.XpFromImage, int.TryParse,
+                ConfigPrinters.ToString, x => x > 0);
+
             AddParsedProp("voice.per_minute", conf => conf.VoiceXpPerMinute, double.TryParse,
                 ConfigPrinters.ToString, x => x >= 0);
             AddParsedProp("voice.max_minutes", conf => conf.VoiceMaxMinutes, int.TryParse,
                 ConfigPrinters.ToString, x => x > 0);
+            
+            Migrate();
+        }
+
+        private void Migrate()
+        {
+            Console.WriteLine("Migrating");
+            if (_data.Version <= 1)
+            {
+                ModifyConfig(c =>
+                {
+                    c.Version = 2;
+                    c.XpFromImage = 0;
+                });
+            }
         }
     }
 }
