@@ -20,6 +20,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - Re-created GuildRepeaters table and renamed to Repeaters
 - confirmation prompts will now use pending color from bot config, instead of okcolor
 - `.mute` can now have up to 49 days mute to match .warnp
+- `.warnlog` now has proper pagination (with reactions) and checking your own warnings past page 1 works correctly now with `.warnlog 2`
 
 ### Fixed
 

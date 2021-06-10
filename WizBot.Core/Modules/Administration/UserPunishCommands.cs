@@ -173,16 +173,20 @@ namespace WizBot.Modules.Administration
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.BanMembers)]
             [Priority(2)]
-            public Task Warnlog(int page, IGuildUser user)
-                => Warnlog(page, user.Id);
+            public Task Warnlog(int page, [Leftover] IGuildUser user = null)
+            {
+                user ??= (IGuildUser) ctx.User;
+
+                return Warnlog(page, user.Id);
+            }
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [Priority(3)]
             public Task Warnlog(IGuildUser user = null)
             {
-                if (user == null)
-                    user = (IGuildUser)ctx.User;
+                user ??= (IGuildUser) ctx.User;
+                
                 return ctx.User.Id == user.Id || ((IGuildUser)ctx.User).GuildPermissions.BanMembers ? Warnlog(user.Id) : Task.CompletedTask;
             }
 
@@ -200,41 +204,49 @@ namespace WizBot.Modules.Administration
             public Task Warnlog(ulong userId)
                 => InternalWarnlog(userId, 0);
 
-            private async Task InternalWarnlog(ulong userId, int page)
+            private async Task InternalWarnlog(ulong userId, int inputPage)
             {
-                if (page < 0)
+                if (inputPage < 0)
                     return;
-                var warnings = _service.UserWarnings(ctx.Guild.Id, userId);
+                
+                var allWarnings = _service.UserWarnings(ctx.Guild.Id, userId);
 
-                warnings = warnings.Skip(page * 9)
-                    .Take(9)
-                    .ToArray();
-
-                var embed = new EmbedBuilder().WithOkColor()
-                    .WithTitle(GetText("warnlog_for", (ctx.Guild as SocketGuild)?.GetUser(userId)?.ToString() ?? userId.ToString()))
-                    .WithFooter(efb => efb.WithText(GetText("page", page + 1)));
-
-                if (!warnings.Any())
-                {
-                    embed.WithDescription(GetText("warnings_none"));
-                }
-                else
-                {
-                    var i = page * 9;
-                    foreach (var w in warnings)
+                await ctx.SendPaginatedConfirmAsync(inputPage, page =>
                     {
-                        i++;
-                        var name = GetText("warned_on_by", w.DateAdded.Value.ToString("dd.MM.yyy"), w.DateAdded.Value.ToString("HH:mm"), w.Moderator);
-                        if (w.Forgiven)
-                            name = Format.Strikethrough(name) + " " + GetText("warn_cleared_by", w.ForgivenBy);
+                        var warnings = allWarnings
+                            .Skip(page * 9)
+                            .Take(9)
+                            .ToArray();
 
-                        embed.AddField(x => x
-                            .WithName($"#`{i}` " + name)
-                            .WithValue(w.Reason.TrimTo(1020)));
-                    }
-                }
+                        var user = (ctx.Guild as SocketGuild)?.GetUser(userId)?.ToString() ?? userId.ToString();
+                        var embed = new EmbedBuilder()
+                            .WithOkColor()
+                            .WithTitle(GetText("warnlog_for", user));
 
-                await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+                        if (!warnings.Any())
+                    {
+                            embed.WithDescription(GetText("warnings_none"));
+                        }
+                        else
+                        {
+                            var i = page * 9;
+                            foreach (var w in warnings)
+                            {
+                                i++;
+                                var name = GetText("warned_on_by",
+                                    w.DateAdded.Value.ToString("dd.MM.yyy"),
+                                    w.DateAdded.Value.ToString("HH:mm"),
+                                    w.Moderator);
+                            
+                                if (w.Forgiven)
+                                    name = $"{Format.Strikethrough(name)} {GetText("warn_cleared_by", w.ForgivenBy)}";
+
+                                embed.AddField($"#`{i}` " + name, w.Reason.TrimTo(1020));
+                            }
+                        }
+
+                        return embed;
+                }, allWarnings.Length, 9);
             }
 
             [WizBotCommand, Usage, Description, Aliases]
