@@ -8,6 +8,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 - Added `.mquality` / `.musicquality` - Set encoding quality. Has 4 presets - Low, Medium, High, Highest. Default is Highest
 - Added `.xprewsreset` which resets all currently set xp level up rewards
+- Added `.purgeuser @User` which will remove the specified from the database completely. Removed settings include: Xp, clubs, waifu, currency, etc...
 
 ### Changed
 
@@ -15,6 +16,8 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - .inrole` will now lists users with no roles if no role is provided
 - Music suttering fixed on some systems
 - `.say` moved to utility module
+- Re-created GuildRepeaters table and renamed to Repeaters
+- confirmation prompts will now use pending color from bot config, instead of okcolor
 
 ### Fixed
 

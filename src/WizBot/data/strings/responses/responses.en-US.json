@@ -1057,5 +1057,6 @@
   "module_description_searches": "Search for jokes, images of animals, anime and manga",
   "module_description_xp": "Gain xp based on chat activity, check users' xp cards",
   "module_description_roblox": "Search up Roblox user information and more",
-  "obsolete_use": "⚠ Obsolete, use {0} instead."
+  "obsolete_use": "⚠ Obsolete, use {0} instead.",
+  "purge_user_confirm": "Are you sure that you want to purge {0} from the database?"
 }

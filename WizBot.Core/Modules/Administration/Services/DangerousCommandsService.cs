@@ -3,6 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Core.Services;
+using LinqToDB;
+using LinqToDB.EntityFrameworkCore;
+using WizBot.Core.Services.Database.Models;
 
 namespace WizBot.Core.Modules.Administration.Services
 {
@@ -87,6 +90,56 @@ DELETE FROM Clubs;";
                 }
             }
             return result;
+        }
+        
+        public async Task PurgeUserAsync(ulong userId)
+        {
+            using var uow = _db.GetDbContext();
+            
+            // get waifu info
+            var wi = await uow._context.Set<WaifuInfo>()
+                .FirstOrDefaultAsyncEF(x => x.Waifu.UserId == userId);
+
+            // if it exists, delete waifu related things
+            if (!(wi is null))
+            {
+                // remove updates which have new or old as this waifu
+                await uow._context
+                    .WaifuUpdates
+                    .DeleteAsync(wu => wu.New.UserId == userId || wu.Old.UserId == userId);
+
+                // delete all items this waifu owns
+                await uow._context
+                    .Set<WaifuItem>()
+                    .DeleteAsync(x => x.WaifuInfoId == wi.Id);
+
+                // all waifus this waifu claims are released
+                await uow._context
+                    .Set<WaifuInfo>()
+                    .AsQueryable()
+                    .Where(x => x.Claimer.UserId == userId)
+                    .UpdateAsync(x => new WaifuInfo() {ClaimerId = null});
+                
+                // all affinities set to this waifu are reset
+                await uow._context
+                    .Set<WaifuInfo>()
+                    .AsQueryable()
+                    .Where(x => x.Affinity.UserId == userId)
+                    .UpdateAsync(x => new WaifuInfo() {AffinityId = null});
+            }
+
+            // delete guild xp
+            await uow._context
+                .UserXpStats
+                .DeleteAsync(x => x.UserId == userId);
+            
+            // delete currency transactions
+            await uow._context.Set<CurrencyTransaction>()
+                .DeleteAsync(x => x.UserId == userId);
+            
+            // delete user, currency, and clubs go away with it
+            await uow._context.DiscordUser
+                .DeleteAsync(u => u.UserId == userId);
         }
     }
 }

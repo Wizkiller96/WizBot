@@ -100,6 +100,27 @@ namespace WizBot.Modules.Administration
             [OwnerOnly]
             public Task DeleteXp() =>
                 SqlExec(DangerousCommandsService.XpDeleteSql);
+            
+            [WizBotCommand, Usage, Description, Aliases]
+            [OwnerOnly]
+            public async Task PurgeUser(ulong userId)
+            {
+                var embed = new EmbedBuilder()
+                    .WithDescription(GetText("purge_user_confirm", Format.Bold(userId.ToString())));
+
+                if (!await PromptUserConfirmAsync(embed).ConfigureAwait(false))
+                {
+                    return;
+                }
+                
+                await _service.PurgeUserAsync(userId);
+                await ctx.OkAsync();
+            }
+
+            [WizBotCommand, Usage, Description, Aliases]
+            [OwnerOnly]
+            public Task PurgeUser([Leftover]IUser user)
+                => PurgeUser(user.Id);
 
             //[WizBotCommand, Usage, Description, Aliases]
             //[OwnerOnly]

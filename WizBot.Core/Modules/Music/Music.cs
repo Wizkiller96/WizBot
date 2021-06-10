@@ -458,15 +458,7 @@ namespace WizBot.Core.Modules.Music
              mp.Clear();
              await ReplyConfirmLocalizedAsync("queue_cleared").ConfigureAwait(false);
          }
-         
-         [WizBotCommand, Usage, Description, Aliases]
-         [RequireContext(ContextType.Guild)]
-         public async Task Defvol(int val)
-         {
-             await ReplyErrorLocalizedAsync("obsolete_use", $"`{Prefix}vol`");
-             await Volume(val);
-         }
-         
+
          [WizBotCommand, Usage, Description, Aliases]
          [RequireContext(ContextType.Guild)]
          public async Task Stop()

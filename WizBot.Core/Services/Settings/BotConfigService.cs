@@ -35,7 +35,7 @@ namespace WizBot.Core.Services
         {
             var ok = _data.Color.Ok;
             var error = _data.Color.Error;
-            var pend = _data.Color.Error;
+            var pend = _data.Color.Pending;
             // todo future remove these static props once cleanup is done
             WizBot.OkColor = new Color(ok.R, ok.G, ok.B);
             WizBot.ErrorColor = new Color(error.R, error.G, error.B);
