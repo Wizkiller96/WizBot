@@ -1,12 +1,12 @@
 ﻿using Discord;
 using Discord.Commands;
-using Discord.WebSocket;
 using WizBot.Common.Attributes;
 using WizBot.Core.Services;
 using WizBot.Extensions;
 using WizBot.Modules.CustomReactions.Services;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace WizBot.Modules.CustomReactions
@@ -14,19 +14,16 @@ namespace WizBot.Modules.CustomReactions
     public class CustomReactions : WizBotModule<CustomReactionsService>
     {
         private readonly IBotCredentials _creds;
-        private readonly DbService _db;
-        private readonly DiscordSocketClient _client;
+        private readonly IHttpClientFactory _clientFactory;
 
-        public CustomReactions(IBotCredentials creds, DbService db,
-            DiscordSocketClient client)
+        public CustomReactions(IBotCredentials creds, IHttpClientFactory clientFactory)
         {
             _creds = creds;
-            _db = db;
-            _client = client;
+            _clientFactory = clientFactory;
         }
 
         private bool AdminInGuildOrOwnerInDm() => (ctx.Guild == null && _creds.IsOwner(ctx.User))
-                || (ctx.Guild != null && ((IGuildUser)ctx.User).GuildPermissions.Administrator);
+                                                  || (ctx.Guild != null && ((IGuildUser)ctx.User).GuildPermissions.Administrator);
 
         [WizBotCommand, Usage, Description, Aliases]
         public async Task AddCustReact(string key, [Leftover] string message)
@@ -113,7 +110,7 @@ namespace WizBot.Modules.CustomReactions
                                                             str = "📪" + str;
                                                         }
                                                         var reactions = cr.GetReactions();
-                                                        if (reactions.Any())
+                                                        if(reactions.Any())
                                                         {
                                                             str = str + " // " + string.Join(" ", reactions);
                                                         }
@@ -241,7 +238,7 @@ namespace WizBot.Modules.CustomReactions
             var cr = _service.GetCustomReaction(Context.Guild?.Id, id);
             if (cr is null)
             {
-                await ReplyErrorLocalizedAsync("not_found").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync("no_found").ConfigureAwait(false);
                 return;
             }
 
@@ -271,7 +268,7 @@ namespace WizBot.Modules.CustomReactions
                 catch { }
             }
 
-            if (succ.Count == 0)
+            if(succ.Count == 0)
             {
                 await ReplyErrorLocalizedAsync("invalid_emojis").ConfigureAwait(false);
                 return;
@@ -346,6 +343,67 @@ namespace WizBot.Modules.CustomReactions
                 var count = _service.DeleteAllCustomReactions(ctx.Guild.Id);
                 await ReplyConfirmLocalizedAsync("cleared", count).ConfigureAwait(false);
             }
+        }
+
+        [WizBotCommand, Usage, Description, Aliases]
+        public async Task CrsExport()
+        {
+            if (!AdminInGuildOrOwnerInDm())
+            {
+                await ReplyErrorLocalizedAsync("insuff_perms").ConfigureAwait(false);
+                return;
+            }
+            
+            _ = ctx.Channel.TriggerTypingAsync();
+
+            var serialized = _service.ExportCrs(ctx.Guild?.Id);
+            using var stream = await serialized.ToStream();
+            await ctx.Channel.SendFileAsync(stream, "crs-export.yml", text: null);
+        }
+
+        [WizBotCommand, Usage, Description, Aliases]
+#if GLOBAL_WIZBOT
+        [OwnerOnly]
+#endif
+        public async Task CrsImport([Leftover]string input = null)
+        {
+            if (!AdminInGuildOrOwnerInDm())
+            {
+                await ReplyErrorLocalizedAsync("insuff_perms").ConfigureAwait(false);
+                return;
+            }
+
+            input = input?.Trim();
+
+            _ = ctx.Channel.TriggerTypingAsync();
+
+            if (input is null)
+            {
+                var attachment = ctx.Message.Attachments.FirstOrDefault();
+                if (attachment is null)
+                {
+                    await ReplyErrorLocalizedAsync("expr_import_no_input");
+                    return;
+                }
+
+                using var client = _clientFactory.CreateClient();
+                input = await client.GetStringAsync(attachment.Url);
+
+                if (string.IsNullOrWhiteSpace(input))
+                {
+                    await ReplyErrorLocalizedAsync("expr_import_no_input");
+                    return;
+                }
+            }
+
+            var succ = await _service.ImportCrsAsync(ctx.Guild?.Id, input);
+            if (!succ)
+            {
+                await ReplyErrorLocalizedAsync("expr_import_invalid_data");
+                return;
+            }
+            
+            await ctx.OkAsync();
         }
     }
 }

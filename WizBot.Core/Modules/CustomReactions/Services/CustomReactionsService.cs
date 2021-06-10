@@ -11,14 +11,14 @@ using WizBot.Modules.Permissions.Services;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
+using WizBot.Common.Yml;
 using WizBot.Core.Common;
 using Serilog;
+using YamlDotNet.Serialization;
 
 namespace WizBot.Modules.CustomReactions.Services
 {
@@ -50,7 +50,7 @@ namespace WizBot.Modules.CustomReactions.Services
 
         public int Priority => -1;
         public ModuleBehaviorType BehaviorType => ModuleBehaviorType.Executor;
-        
+
         private readonly DbService _db;
         private readonly DiscordSocketClient _client;
         private readonly PermissionService _perms;
@@ -370,11 +370,11 @@ namespace WizBot.Modules.CustomReactions.Services
 
             if (result.Count == 0)
                 return null;
-            
+
             var cancelled = result.FirstOrDefault(x => x.Response == "-");
             if (!(cancelled is null))
                 return cancelled;
-
+            
             return result[_rng.Next(0, result.Count)];
         }
 
@@ -645,6 +645,78 @@ namespace WizBot.Modules.CustomReactions.Services
             using var uow = _db.GetDbContext();
             var cr = uow.CustomReactions.GetByGuildIdAndInput(guildId, input);
             return cr != null;
+        }
+
+        private static readonly ISerializer _exportSerializer = new SerializerBuilder()
+            .WithEventEmitter(args => new MultilineScalarFlowStyleEmitter(args))
+            .WithNamingConvention(YamlDotNet.Serialization.NamingConventions.CamelCaseNamingConvention.Instance)
+            .WithIndentedSequences()
+            .ConfigureDefaultValuesHandling(DefaultValuesHandling.OmitDefaults)
+            .DisableAliases()
+            .Build();
+
+        private const string _prependExport =
+            @"# Keys are triggers, Each key has a LIST of custom reactions in the following format:
+# - res: Response string
+#   react: 
+#     - <List
+#     -  of
+#     - reactions>
+#   at: Whether custom reaction allows targets (see .h .crat) 
+#   ca: Whether custom reaction expects trigger anywhere (see .h .crca) 
+#   dm: Whether custom reaction DMs the response (see .h .crdm) 
+#   ad: Whether custom reaction automatically deletes triggering message (see .h .crad) 
+
+";
+        public string ExportCrs(ulong? guildId)
+        {
+            var crs = GetCustomReactionsFor(guildId);
+
+            var crsDict = crs
+                .GroupBy(x => x.Trigger)
+                .ToDictionary(x => x.Key, x => x.Select(ExportedExpr.FromModel));
+            
+            return _prependExport + _exportSerializer
+                .Serialize(crsDict)
+                .UnescapeUnicodeCodePoints();
+        }
+
+        public async Task<bool> ImportCrsAsync(ulong? guildId, string input)
+        {
+            Dictionary<string, List<ExportedExpr>> data;
+            try
+            {
+                data = Yaml.Deserializer.Deserialize<Dictionary<string, List<ExportedExpr>>>(input);
+                if (data.Sum(x => x.Value.Count) == 0)
+                    return false;
+            }
+            catch
+            {
+                return false;
+            }
+
+            using var uow = _db.GetDbContext();
+            foreach (var entry in data)
+            {
+                var trigger = entry.Key;
+                await uow._context.CustomReactions.AddRangeAsync(entry.Value
+                    .Where(cr => !string.IsNullOrWhiteSpace(cr.Res))
+                    .Select(cr => new CustomReaction()
+                    {
+                        GuildId = guildId,
+                        Response = cr.Res,
+                        Reactions = cr.React?.JoinWith("@@@"),
+                        Trigger = trigger,
+                        AllowTarget = cr.At,
+                        ContainsAnywhere = cr.Ca,
+                        DmResponse = cr.Dm,
+                        AutoDeleteTrigger = cr.Ad,
+                    }));
+            }
+
+            await uow.SaveChangesAsync();
+            await TriggerReloadCustomReactions();
+            return true;
         }
     }
 }

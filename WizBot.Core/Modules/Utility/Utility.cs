@@ -399,23 +399,6 @@ namespace WizBot.Modules.Utility
             }
         }
 
-        // Old Update Command
-
-        /* [WizBotCommand, Usage, Description, Aliases]
-        public async Task Updates()
-        {
-            await ctx.Channel.EmbedAsync(
-                new EmbedBuilder().WithOkColor()
-                    .WithAuthor(eab => eab.WithName(GetText($"changelog_title_date"))
-                                          .WithUrl("https://github.com/Wizkiller96/WizBot/commits/dev")
-                                          .WithIconUrl("http://i.imgur.com/fObUYFS.jpg"))
-                    .AddField(efb => efb.WithName(Format.Bold(GetText("changelog_fixes"))).WithValue(GetText("changelog_fixes_msg")).WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold(GetText("changelog_additions"))).WithValue(GetText("changelog_additions_msg")).WithIsInline(false))
-                    .AddField(efb => efb.WithName(Format.Bold(GetText("changelog_removals"))).WithValue(GetText("changelog_removals_msg")).WithIsInline(false))
-                    .WithFooter(efb => efb.WithText(GetText($"changelog_footer")))
-                    );
-        } */
-
         // New Update Command (W.I.P.)
 
         [WizBotCommand, Usage, Description, Aliases]
@@ -459,12 +442,11 @@ namespace WizBot.Modules.Utility
                 await ctx.Channel.SendErrorAsync(ex.Message).ConfigureAwait(false);
             }
         }
+
+#if GLOBAL_WIZBOT
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Donators()
         {
-
-#if GLOBAL_WIZBOT
-
             // Make it so it wont error when no users are found.
             var dusers = _client.GetGuild(99273784988557312).GetRole(280182841114099722).Members;
             var pusers = _client.GetGuild(99273784988557312).GetRole(299174013597646868).Members;
@@ -478,14 +460,7 @@ namespace WizBot.Modules.Utility
                 .WithTitle($"WizBot - Patreon Donators")
                 .WithDescription("List of users who have donated through WizNet's Patreon.")
                 .AddField(fb => fb.WithName("Patreon Donators:").WithValue(string.Join("\n", pusers)))).ConfigureAwait(false);
-#else
-            await ctx.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
-            .WithTitle($"WizBot - Donators")
-            .WithDescription("This command is disabled on self-host bots.")).ConfigureAwait(false);
-#endif
         }
-
-#if GLOBAL_WIZBOT
 
         [WizBotCommand, Usage, Description, Aliases]
         public async Task WizNet()
@@ -506,7 +481,51 @@ namespace WizBot.Modules.Utility
                 .WithFooter("Note: Not all staff are listed here.")).ConfigureAwait(false);
 
         }
-
 #endif
+        
+        public enum CreateInviteType
+        {
+            Any,
+            New
+        }
+        
+        // [WizBotCommand, Usage, Description, Aliases]
+        // [RequireContext(ContextType.Guild)]
+        // public async Task CreateMyInvite(CreateInviteType type = CreateInviteType.Any)
+        // {
+        //     if (type == CreateInviteType.Any)
+        //     {
+        //         if (_inviteService.TryGetInvite(type, out var code))
+        //         {
+        //             await ReplyConfirmLocalizedAsync("your_invite", $"https://discord.gg/{code}");
+        //             return;
+        //         }
+        //     }
+        //     
+        //     var invite = await ((ITextChannel) ctx.Channel).CreateInviteAsync(isUnique: true);
+        // }
+        //
+        // [WizBotCommand, Usage, Description, Aliases]
+        // [RequireContext(ContextType.Guild)]
+        // public async Task InviteLb(int page = 1)
+        // {
+        //     if (--page < 0)
+        //         return;
+        //
+        //     var inviteUsers = await _inviteService.GetInviteUsersAsync(ctx.Guild.Id);
+        //     
+        //     var embed = new EmbedBuilder()
+        //         .WithOkColor();
+        //
+        //     await ctx.SendPaginatedConfirmAsync(page, (curPage) =>
+        //     {
+        //         var items = inviteUsers.Skip(curPage * 9).Take(9);
+        //         var i = 0;
+        //         foreach (var item in items)
+        //             embed.AddField($"#{curPage * 9 + ++i} {item.UserName} [{item.User.Id}]", item.InvitedUsers);
+        //
+        //         return embed;
+        //     }, inviteUsers.Count, 9);
+        // }
     }
 }

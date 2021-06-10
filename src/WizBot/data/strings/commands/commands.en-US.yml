@@ -1475,6 +1475,14 @@ crsreload:
   desc: "Reloads all custom reactions on all shards. Use this if you've made changes to the database while the bot is running, or used `{0}deleteunusedcrnq`"
   args:
     - ""
+crsimport:
+  desc: "Upload the file or send the raw .yml data with this command to import all custom reactions from the specified string or file into the current server (or as global custom reactions in dm)"
+  args:
+    - "<upload .yml file>"
+crsexport:
+  desc: "Exports custom reactions from the current server (or global custom reactions in DMs) into a .yml file"
+  args:
+    - ""
 aliaslist:
   desc: "Shows the list of currently set aliases. Paginated."
   args:

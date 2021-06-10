@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using WizBot.Common.Yml;
 
 namespace WizBot.Extensions
 {
@@ -164,5 +165,19 @@ namespace WizBot.Extensions
 
         public static bool IsAlphaNumeric(this string txt) =>
             txt.All(c => lettersAndDigits.Contains(c));
+        
+        private static readonly Regex CodePointRegex
+            = new Regex(@"(\\U(?<code>[a-zA-Z0-9]{8})|\\u(?<code>[a-zA-Z0-9]{4})|\\x(?<code>[a-zA-Z0-9]{2}))",
+                RegexOptions.Compiled);
+        
+        public static string UnescapeUnicodeCodePoints(this string input)
+        { 
+            return CodePointRegex.Replace(input, me =>
+            {
+                var str = me.Groups["code"].Value;
+                var newString = YamlHelper.UnescapeUnicodeCodePoint(str);
+                return newString;
+            });
+        }
     }
 }

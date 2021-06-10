@@ -6,6 +6,10 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ### Added
 
+- Added `.crsexport` and `.crsimport`
+  - Allows for quick export/import of server or global custom reactions
+  - Requires admin permissions for server crs, and owner for global crs
+  - Explanation of the fields is in the comment at the top of the `.crsexport` .yml file
 - Added `.mquality` / `.musicquality` - Set encoding quality. Has 4 presets - Low, Medium, High, Highest. Default is Highest
 - Added `.xprewsreset` which resets all currently set xp level up rewards
 - Added `.purgeuser @User` which will remove the specified from the database completely. Removed settings include: Xp, clubs, waifu, currency, etc...
@@ -28,6 +32,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 ### Fixed
 
 - obsolete_use string fixed
+- Fixed `.crreact`
 
 ## [2.44.4] - 06.06.2021
 
