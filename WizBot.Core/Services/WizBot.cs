@@ -43,6 +43,7 @@ namespace WizBot
         /* Will have to be removed soon, it's been way too long */
         public static Color OkColor { get; set; }
         public static Color ErrorColor { get; set; }
+        public static Color PendingColor { get; set; }
 
         public TaskCompletionSource<bool> Ready { get; private set; } = new TaskCompletionSource<bool>();
 

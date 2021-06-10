@@ -1715,6 +1715,10 @@ xplvluprewards:
   desc: "Shows currently set level up rewards."
   args:
     - ""
+xprewsreset:
+  desc: "Resets all currently set xp level up rewards."
+  args:
+    - ""
 xprolereward:
   desc: "Sets a role reward on a specified level. Provide no role name in order to remove the role reward."
   args:

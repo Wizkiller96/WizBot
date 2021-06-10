@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using WizBot.Core.Modules.Xp;
 using Serilog;
 using StackExchange.Redis;
@@ -1179,6 +1180,21 @@ namespace WizBot.Modules.Xp.Services
                 uow.Xp.ResetGuildXp(guildId);
                 uow.SaveChanges();
             }
+        }
+        
+        public async Task ResetXpRewards(ulong guildId)
+        {
+            using var uow = _db.GetDbContext();
+            var guildConfig = uow.GuildConfigs.ForId(guildId, 
+                set => set
+                    .Include(x => x.XpSettings)
+                    .ThenInclude(x => x.CurrencyRewards)
+                    .Include(x => x.XpSettings)
+                    .ThenInclude(x => x.RoleRewards));
+            
+            uow._context.RemoveRange(guildConfig.XpSettings.RoleRewards);
+            uow._context.RemoveRange(guildConfig.XpSettings.CurrencyRewards);
+            await uow.SaveChangesAsync();
         }
     }
 }

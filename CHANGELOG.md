@@ -1,6 +1,6 @@
 ﻿# Changelog
 
-Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format.
+Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
 ## [Unreleased]
 
@@ -13,6 +13,10 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - `.warne` with no args will now show current state
 - .inrole` will now lists users with no roles if no role is provided
 - Music suttering fixed on some systems
+
+### Fixed
+
+- obsolete_use string fixed
 
 ## [2.44.4] - 06.06.2021
 

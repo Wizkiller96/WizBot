@@ -185,6 +185,9 @@ namespace WizBot.Extensions
 
         public static EmbedBuilder WithOkColor(this EmbedBuilder eb) =>
             eb.WithColor(WizBot.OkColor);
+        
+        public static EmbedBuilder WithPendingColor(this EmbedBuilder eb) =>
+            eb.WithColor(WizBot.PendingColor);
 
         public static EmbedBuilder WithErrorColor(this EmbedBuilder eb) =>
             eb.WithColor(WizBot.ErrorColor);

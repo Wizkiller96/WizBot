@@ -37,6 +37,20 @@ namespace WizBot.Modules.Xp
                     .ConfigureAwait(false);
             }
         }
+        
+        [WizBotCommand, Usage, Description, Aliases]
+        public async Task XpRewsReset()
+        {
+            var reply = await PromptUserConfirmAsync(new EmbedBuilder()
+                .WithPendingColor()
+                .WithDescription(GetText("xprewsreset_confirm")));
+
+            if (!reply)
+                return;
+
+            _service.ResetXpRewards(ctx.Guild.Id);
+            await ctx.OkAsync();
+        }
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]

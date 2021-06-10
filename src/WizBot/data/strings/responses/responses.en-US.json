@@ -890,6 +890,7 @@
   "xpn_notif_channel": "In the channel where you sent the last message.",
   "xpn_notif_dm": "In a direct message channel.",
   "xpn_notif_disabled": "Nowhere.",
+  "xprewsreset_confirm": "Are you sure you want to delete ALL xp level up rewards from this server? This action is irreversible.",
   "excluded": "{0} has been excluded from the XP system on this server.",
   "not_excluded": "{0} is no longer excluded from the XP system on this server.",
   "exclusion_list": "Exclusion List",

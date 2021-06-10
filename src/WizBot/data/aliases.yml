@@ -1046,6 +1046,8 @@ xpleveluprewards:
 - xprrs
 - xprolerewards
 - xpcurrewards
+xprewsreset:
+- xprewsreset
 xprolereward:
 - xprolereward
 - xprr
