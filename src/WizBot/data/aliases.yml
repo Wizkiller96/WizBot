@@ -709,6 +709,8 @@ antiraid:
 - antiraid
 antispam:
 - antispam
+antialt:
+- antialt
 chatmute:
 - chatmute
 voicemute:

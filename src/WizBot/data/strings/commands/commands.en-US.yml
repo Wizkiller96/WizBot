@@ -1140,6 +1140,11 @@ antispam:
     - "5 Ban"
     - "5 Ban 3h30m"
     - ""
+antialt:
+  desc: "Applies a punishment action to any user whose account is younger than the specified threshold. Specify time after the punishment to have a timed punishment (not all punishments support timers)."
+  args:
+    - "1h Ban"
+    - "3d Mute 1h"
 chatmute:
   desc: "Prevents a mentioned user from chatting in text channels. You can optionally specify a reason."
   args:

@@ -12,6 +12,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - Added `.config xp txt.per_image` and xpFromImage to xp.yml - Change this config to allow xp gain from posting images. Images must be 128x128 or greater in size
 - Added `.take <amount> <role>` to complement `.award <amount> role`
 - Added **Fans** list to `.waifuinfo` which shows how many people have their affinity set to you
+- Added `.antialt` which will punish any user whose account is younger than specified threshold
 
 ### Changed
 

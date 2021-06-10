@@ -15,6 +15,35 @@ namespace WizBot.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.15");
+            
+            modelBuilder.Entity("WizBot.Core.Services.Database.Models.AntiAltSetting", b =>
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("INTEGER");
+
+                b.Property<int>("Action")
+                    .HasColumnType("INTEGER");
+
+                b.Property<int>("ActionDurationMinutes")
+                    .HasColumnType("INTEGER");
+
+                b.Property<int>("GuildConfigId")
+                    .HasColumnType("INTEGER");
+
+                b.Property<TimeSpan>("MinAge")
+                    .HasColumnType("TEXT");
+
+                b.Property<ulong?>("RoleId")
+                    .HasColumnType("INTEGER");
+
+                b.HasKey("Id");
+
+                b.HasIndex("GuildConfigId")
+                    .IsUnique();
+
+                b.ToTable("AntiAltSetting");
+            });
 
             modelBuilder.Entity("WizBot.Core.Services.Database.Models.AntiRaidSetting", b =>
                 {
@@ -1057,41 +1086,6 @@ namespace WizBot.Migrations
 
                     b.ToTable("MutedUserId");
                 });
-            
-            modelBuilder.Entity("WizBot.Core.Services.Database.Models.NewRepeater", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<ulong>("ChannelId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("DateAdded")
-                        .HasColumnType("TEXT");
-
-                    b.Property<ulong>("GuildId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<TimeSpan>("Interval")
-                        .HasColumnType("TEXT");
-
-                    b.Property<ulong?>("LastMessageId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Message")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("NoRedundant")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<TimeSpan?>("StartTimeOfDay")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Repeaters");
-                });
 
             modelBuilder.Entity("WizBot.Core.Services.Database.Models.NsfwBlacklitedTag", b =>
                 {
@@ -1465,6 +1459,41 @@ namespace WizBot.Migrations
 
                     b.ToTable("Reminders");
                 });
+            
+            modelBuilder.Entity("WizBot.Core.Services.Database.Models.Repeater", b =>
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("INTEGER");
+
+                b.Property<ulong>("ChannelId")
+                    .HasColumnType("INTEGER");
+
+                b.Property<DateTime>("DateAdded")
+                    .HasColumnType("TEXT");
+
+                b.Property<ulong>("GuildId")
+                    .HasColumnType("INTEGER");
+
+                b.Property<TimeSpan>("Interval")
+                    .HasColumnType("TEXT");
+
+                b.Property<ulong?>("LastMessageId")
+                    .HasColumnType("INTEGER");
+
+                b.Property<string>("Message")
+                    .HasColumnType("TEXT");
+
+                b.Property<bool>("NoRedundant")
+                    .HasColumnType("INTEGER");
+
+                b.Property<TimeSpan?>("StartTimeOfDay")
+                    .HasColumnType("TEXT");
+
+                b.HasKey("Id");
+
+                b.ToTable("Repeaters");
+            });
 
             modelBuilder.Entity("WizBot.Core.Services.Database.Models.RewardedUser", b =>
                 {
@@ -2151,6 +2180,15 @@ namespace WizBot.Migrations
 
                     b.ToTable("XpSettings");
                 });
+            
+            modelBuilder.Entity("WizBot.Core.Services.Database.Models.AntiAltSetting", b =>
+            {
+                b.HasOne("WizBot.Core.Services.Database.Models.GuildConfig", null)
+                    .WithOne("AntiAltSetting")
+                    .HasForeignKey("WizBot.Core.Services.Database.Models.AntiAltSetting", "GuildConfigId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+            });
 
             modelBuilder.Entity("WizBot.Core.Services.Database.Models.AntiRaidSetting", b =>
                 {
