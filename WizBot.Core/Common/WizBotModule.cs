@@ -60,7 +60,8 @@ namespace WizBot.Modules
 
         public async Task<bool> PromptUserConfirmAsync(EmbedBuilder embed)
         {
-            embed.WithOkColor()
+            embed
+                .WithPendingColor()
                 .WithFooter("yes/no");
 
             var msg = await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
