@@ -16,8 +16,8 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using WizBot.Common.Replacements;
 using WizBot.Core.Common;
-using WizBot.Core.Common.Attributes;
 using Serilog;
 
 namespace WizBot.Modules.Utility
@@ -41,6 +41,41 @@ namespace WizBot.Modules.Utility
             _httpFactory = factory;
             _tracker = tracker;
         }
+        
+        [WizBotCommand, Usage, Description, Aliases]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.ManageMessages)]
+        [Priority(1)]
+        public async Task Say(ITextChannel channel, [Leftover] string message)
+        {
+            if (string.IsNullOrWhiteSpace(message))
+                return;
+
+            var rep = new ReplacementBuilder()
+                .WithDefault(ctx.User, channel, (SocketGuild)ctx.Guild, (DiscordSocketClient)ctx.Client)
+                .Build();
+
+            if (CREmbed.TryParse(message, out var embedData))
+            {
+                rep.Replace(embedData);
+                await channel.EmbedAsync(embedData, sanitizeAll: !((IGuildUser)Context.User).GuildPermissions.MentionEveryone).ConfigureAwait(false);
+            }
+            else
+            {
+                var msg = rep.Replace(message);
+                if (!string.IsNullOrWhiteSpace(msg))
+                {
+                    await channel.SendConfirmAsync(msg).ConfigureAwait(false);
+                }
+            }
+        }
+
+        [WizBotCommand, Usage, Description, Aliases]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.ManageMessages)]
+        [Priority(0)]
+        public Task Say([Leftover] string message) =>
+            Say((ITextChannel)ctx.Channel, message);
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
