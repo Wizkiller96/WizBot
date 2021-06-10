@@ -69,7 +69,6 @@ namespace WizBot.Core.Services.Database.Models
 
         public string MuteRoleName { get; set; }
         public bool CleverbotEnabled { get; set; }
-        public List<Repeater> GuildRepeaters { get; set; } = new List<Repeater>();
 
         public AntiRaidSetting AntiRaidSetting { get; set; }
         public AntiSpamSetting AntiSpamSetting { get; set; }

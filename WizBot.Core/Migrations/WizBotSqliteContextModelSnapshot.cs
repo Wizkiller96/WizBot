@@ -14,7 +14,7 @@ namespace WizBot.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.5");
+                .HasAnnotation("ProductVersion", "3.1.15");
 
             modelBuilder.Entity("WizBot.Core.Services.Database.Models.AntiRaidSetting", b =>
                 {
@@ -1057,6 +1057,41 @@ namespace WizBot.Migrations
 
                     b.ToTable("MutedUserId");
                 });
+            
+            modelBuilder.Entity("WizBot.Core.Services.Database.Models.NewRepeater", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("DateAdded")
+                        .HasColumnType("TEXT");
+
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<TimeSpan>("Interval")
+                        .HasColumnType("TEXT");
+
+                    b.Property<ulong?>("LastMessageId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("NoRedundant")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<TimeSpan?>("StartTimeOfDay")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Repeaters");
+                });
 
             modelBuilder.Entity("WizBot.Core.Services.Database.Models.NsfwBlacklitedTag", b =>
                 {
@@ -1429,46 +1464,6 @@ namespace WizBot.Migrations
                     b.HasIndex("When");
 
                     b.ToTable("Reminders");
-                });
-
-            modelBuilder.Entity("WizBot.Core.Services.Database.Models.Repeater", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<ulong>("ChannelId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("GuildConfigId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<ulong>("GuildId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<TimeSpan>("Interval")
-                        .HasColumnType("TEXT");
-
-                    b.Property<ulong?>("LastMessageId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Message")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("NoRedundant")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<TimeSpan?>("StartTimeOfDay")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GuildConfigId");
-
-                    b.ToTable("GuildRepeater");
                 });
 
             modelBuilder.Entity("WizBot.Core.Services.Database.Models.RewardedUser", b =>
@@ -2402,13 +2397,6 @@ namespace WizBot.Migrations
                         .HasForeignKey("GuildConfigId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("WizBot.Core.Services.Database.Models.Repeater", b =>
-                {
-                    b.HasOne("WizBot.Core.Services.Database.Models.GuildConfig", null)
-                        .WithMany("GuildRepeaters")
-                        .HasForeignKey("GuildConfigId");
                 });
 
             modelBuilder.Entity("WizBot.Core.Services.Database.Models.ShopEntry", b =>

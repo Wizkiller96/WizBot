@@ -21,12 +21,14 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord.Net;
+using LinqToDB.EntityFrameworkCore;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Core.Common;
 using WizBot.Core.Common.Configs;
 using WizBot.Core.Modules.Gambling.Services;
 using WizBot.Modules.Administration.Services;
 using WizBot.Modules.CustomReactions.Services;
+using WizBot.Modules.Utility.Services;
 using Serilog;
 
 namespace WizBot
@@ -71,6 +73,7 @@ namespace WizBot
 
             Credentials = new BotCredentials();
             Cache = new RedisCache(Credentials, shardId);
+            LinqToDBForEFTools.Initialize();
             _db = new DbService(Credentials);
 
             if (shardId == 0)
@@ -178,6 +181,7 @@ namespace WizBot
 
             s.AddSingleton<IReadyExecutor>(x => x.GetService<SelfService>());
             s.AddSingleton<IReadyExecutor>(x => x.GetService<CustomReactionsService>());
+            s.AddSingleton<IReadyExecutor>(x => x.GetService<RepeaterService>());
             //initialize Services
             Services = s.BuildServiceProvider();
             var commandHandler = Services.GetService<CommandHandler>();
