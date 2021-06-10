@@ -2,7 +2,9 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
-## [Unreleased]
+## Unreleased
+
+## [2.45.0] - 10.06.2021
 
 ### Added
 
