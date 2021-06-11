@@ -4,6 +4,10 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+### Fixed
+
+- Fixed `.config <conf> <prop>` exceeding embed field character limit
+
 ## [2.45.0] - 10.06.2021
 
 ### Added
