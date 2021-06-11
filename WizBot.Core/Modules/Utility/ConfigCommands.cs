@@ -135,13 +135,14 @@ namespace WizBot.Modules.Utility
                 if (string.IsNullOrWhiteSpace(value))
                 {
                     value = setting.GetSetting(prop);
-                    if (prop != "currency.sign")
-                    {
-                        Format.Code(Format.Sanitize(value?.TrimTo(1000)), "json");
-                    }
 
                     if (string.IsNullOrWhiteSpace(value))
                         value = "-";
+                    
+                    if (prop != "currency.sign")
+                    {
+                        value = Format.Code(Format.Sanitize(value?.TrimTo(1000)), "json");
+                    }
 
                     var embed = new EmbedBuilder()
                         .WithOkColor()
