@@ -1146,15 +1146,21 @@ antialt:
     - "1h Ban"
     - "3d Mute 1h"
 chatmute:
-  desc: "Prevents a mentioned user from chatting in text channels. You can optionally specify a reason."
+  desc: "Prevents a mentioned user from chatting in text channels. You can also specify time string for how long the user should be muted. You can optionally specify a reason."
   args:
     - "@Someone"
     - "@Someone stop writing"
+    - "15m @Someone"
+    - "1h30m @Someone"
+    - "1h @Someone chill"
 voicemute:
-  desc: "Prevents a mentioned user from speaking in voice channels. User has to be in a voice channel in order for the command to have an effect. You can optionally specify a reason."
+  desc: "Prevents a mentioned user from speaking in voice channels. User has to be in a voice channel in order for the command to have an effect. You can also specify time string for how long the user should be muted. You can optionally specify a reason."
   args:
     - "@Someone"
     - "@Someone stop talking"
+    - "15m @Someone"
+    - "1h30m @Someone"
+    - "1h @Someone silence"
 konachan:
   desc: "Shows a random hentai image from konachan with a given tag. Tag is optional but preferred."
   args:
