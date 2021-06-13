@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using System;
+using Discord;
 using Discord.Commands;
 using WizBot.Common.Attributes;
 using WizBot.Core.Common;
@@ -46,18 +47,37 @@ namespace WizBot.Modules.Utility
                 await ctx.SendPaginatedConfirmAsync(page, (cur) =>
                 {
                     var i = 1;
-                    var invs = invites.Skip(cur * 9).Take(9);
+                    var invs = invites
+                        .Skip(cur * 9)
+                        .Take(9)
+                        .ToList();
+                    
                     if (!invs.Any())
                     {
                         return new EmbedBuilder()
                             .WithErrorColor()
                             .WithDescription(GetText("no_invites"));
                     }
-                    return invs.Aggregate(new EmbedBuilder().WithOkColor(),
-                        (acc, inv) => acc.AddField(
-                            $"#{i++} {inv.Inviter.ToString().TrimTo(15)} " +
-                            $"({inv.Uses} / {(inv.MaxUses == 0 ? "∞" : inv.MaxUses?.ToString())})",
-                            inv.Url));
+
+                    var embed = new EmbedBuilder().WithOkColor();
+                    foreach (var inv in invites)
+                    {
+                        var expiryString = (inv.MaxAge is null || inv.MaxAge == 0 || inv.CreatedAt is null)
+                            ? "∞"
+                            : (inv.CreatedAt.Value.AddSeconds(inv.MaxAge.Value).UtcDateTime - DateTime.UtcNow)
+                            .ToString(@"d\.hh\:mm\:ss");
+                        var creator = inv.Inviter.ToString().TrimTo(25);
+                        var usesString = $"{inv.Uses} / {(inv.MaxUses == 0 ? "∞" : inv.MaxUses?.ToString())}";
+                        
+                        var desc = $@"`{GetText("inv_uses")}` **{usesString}**
+`{GetText("inv_expire")}` **{expiryString}**
+
+{inv.Url} ";
+                        embed.AddField($"#{i++} {creator}", desc);
+                    }
+
+                    return embed;
+                    
                 }, invites.Count, 9).ConfigureAwait(false);
             }
 
@@ -69,6 +89,7 @@ namespace WizBot.Modules.Utility
             {
                 if (--index < 0)
                     return;
+                
                 var ch = (ITextChannel)ctx.Channel;
 
                 var invites = await ch.GetInvitesAsync().ConfigureAwait(false);

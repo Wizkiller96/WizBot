@@ -1064,5 +1064,7 @@
   "obsolete_use": "⚠ Obsolete, use {0} instead.",
   "purge_user_confirm": "Are you sure that you want to purge {0} from the database?",
   "expr_import_no_input": "Invalid input. No valid file upload or input text found.",
-  "expr_import_invalid_data": "Unable to parse the file. Make sure it's a valid .yml file"
+  "expr_import_invalid_data": "Unable to parse the file. Make sure it's a valid .yml file",
+  "inv_expire": "Expires in:",
+  "inv_uses": "Uses:"
 }

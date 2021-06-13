@@ -2,6 +2,12 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## Unreleased
+
+### Changed
+
+- `.invlist` shows expire time and is slightly prettier
+
 ## [2.45.1] - 12.06.2021
 
 ### Added
