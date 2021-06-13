@@ -18,6 +18,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using WizBot.Common.Replacements;
 using WizBot.Core.Common;
+using WizBot.Core.Common.Attributes;
 using Serilog;
 
 namespace WizBot.Modules.Utility
