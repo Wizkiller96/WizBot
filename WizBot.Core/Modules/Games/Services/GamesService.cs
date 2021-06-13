@@ -133,12 +133,12 @@ namespace WizBot.Modules.Games.Services
             File.WriteAllText(TypingArticlesPath, JsonConvert.SerializeObject(TypingArticles));
         }
 
-        public string GetEightballResponse(string question)
+        public string GetEightballResponse(ulong userId, string question)
         {
-            return _8BallCache.GetOrCreate(question, e =>
+            return _8BallCache.GetOrCreate($"8ball:{userId}:{question}", e =>
             {
                 e.Size = question.Length;
-                e.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1);
+                e.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(12);
                 return EightBallResponses[_rng.Next(0, EightBallResponses.Count)];;
             });
         }
