@@ -1,3 +1,4 @@
+using System.Linq;
 using WizBot.Core.Common;
 using NUnit.Framework;
 
@@ -12,7 +13,7 @@ namespace WizBot.Tests
 
             Assert.AreEqual(0, num.GetHashCode());
         }
-
+        
         [Test]
         public void TestEqualGetHashCode()
         {
@@ -21,7 +22,7 @@ namespace WizBot.Tests
 
             Assert.AreEqual(num1.GetHashCode(), num2.GetHashCode());
         }
-
+        
         [Test]
         public void TestNotEqualGetHashCode()
         {
@@ -30,7 +31,7 @@ namespace WizBot.Tests
 
             Assert.AreNotEqual(num1.GetHashCode(), num2.GetHashCode());
         }
-
+        
         [Test]
         public void TestLongEqualGetHashCode()
         {
@@ -39,7 +40,7 @@ namespace WizBot.Tests
 
             Assert.AreEqual(num1.GetHashCode(), num2.GetHashCode());
         }
-
+        
         [Test]
         public void TestLongEqual()
         {
@@ -48,7 +49,7 @@ namespace WizBot.Tests
 
             Assert.AreEqual(num1, num2);
         }
-
+        
         [Test]
         public void TestLongNotEqual()
         {
@@ -57,11 +58,11 @@ namespace WizBot.Tests
 
             Assert.AreNotEqual(num1, num2);
         }
-
+        
         [Test]
         public void TestParseValidValue()
         {
-            var validValue = "234";
+            var validValue = "234e";
             Assert.True(kwum.TryParse(validValue, out _));
         }
 
@@ -71,23 +72,50 @@ namespace WizBot.Tests
             var invalidValue = "1234";
             Assert.False(kwum.TryParse(invalidValue, out _));
         }
-
+        
         [Test]
         public void TestCorrectParseValue()
         {
-            var validValue = "qwerf4bmkjbvg673vghhjjmb4xcxszz2349896544645adfvbjkmjkj";
+            var validValue = "qwerf4bmkjbvg67";
             kwum.TryParse(validValue, out var parsedValue);
-
+            
             Assert.AreEqual(parsedValue, new kwum(validValue));
         }
-
+        
         [Test]
         public void TestToString()
         {
-            var validValue = "qwerf4bmkjbvg673vghhjjmb4xcxszz2349896544645adfvbjkmjkj";
+            var validValue = "46g5yhhff254";
             kwum.TryParse(validValue, out var parsedValue);
-
+            
             Assert.AreEqual(validValue, parsedValue.ToString());
+        }
+
+        [Test]
+        public void TestConversionsToFromLong()
+        {
+            var num = new kwum(10);
+            
+            Assert.AreEqual(10, (long)num);
+            Assert.AreEqual(num, (kwum)10);
+        }
+
+        [Test]
+        public void TestConverstionsToString()
+        {
+            var num = new kwum(10);
+            Assert.AreEqual("c", num.ToString());
+            num = new kwum(123);
+            Assert.AreEqual("5v", num.ToString());
+            
+            // leading zeros have no meaning
+            Assert.AreEqual(new kwum("22225v"), num);
+        }
+
+        [Test]
+        public void TestTooLong()
+        {
+            Assert.AreEqual((long)new kwum("zzzzzzzzzzz"), 5);
         }
     }
 }

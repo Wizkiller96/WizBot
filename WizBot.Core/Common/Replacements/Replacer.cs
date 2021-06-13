@@ -34,7 +34,7 @@ namespace WizBot.Common.Replacements
             return input;
         }
 
-        public void Replace(CREmbed embedData)
+        public CREmbed Replace(CREmbed embedData)
         {
             embedData.PlainText = Replace(embedData.PlainText);
             embedData.Description = Replace(embedData.Description);
@@ -59,6 +59,8 @@ namespace WizBot.Common.Replacements
                 embedData.Footer.Text = Replace(embedData.Footer.Text);
                 embedData.Footer.IconUrl = Replace(embedData.Footer.IconUrl);
             }
+            
+            return embedData;
         }
     }
 }

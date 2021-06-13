@@ -4,6 +4,11 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+### Changed
+
+- DmHelpText should now have %prefix% and %bot.prefix% placeholders available
+- Added squares which show enabled features for each cr in `.lcr`
+
 ### Fixed
 
 - Fixed `.config <conf> <prop>` exceeding embed field character limit

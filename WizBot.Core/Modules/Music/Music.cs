@@ -513,7 +513,7 @@ namespace WizBot.Core.Modules.Music
          [RequireContext(ContextType.Guild)]
          public async Task ReptCurSong()
          {
-             await ReplyErrorLocalizedAsync("obsolete_use", $"`{Prefix}qrp song`");
+             await ReplyPendingLocalizedAsync("obsolete_use", $"`{Prefix}qrp song`");
              await QueueRepeat(InputRepeatType.Song);
          }
          

@@ -11,6 +11,7 @@ using WizBot.Core.Services;
 using WizBot.Common;
 using CommandLine;
 using System.Collections.Generic;
+using WizBot.Common.Replacements;
 using WizBot.Modules.Administration.Services;
 using Serilog;
 
@@ -22,6 +23,7 @@ namespace WizBot.Modules.Help.Services
         private readonly IBotStrings _strings;
         private readonly DiscordPermOverrideService _dpos;
         private readonly BotConfigService _bss;
+        private readonly Replacer _rep;
 
         public HelpService(CommandHandler ch, IBotStrings strings,
             DiscordPermOverrideService dpos, BotConfigService bss)
@@ -30,6 +32,11 @@ namespace WizBot.Modules.Help.Services
             _strings = strings;
             _dpos = dpos;
             _bss = bss;
+            
+            _rep = new ReplacementBuilder()
+                .WithOverride("%prefix%", () => _bss.GetRawData().Prefix)
+                .WithOverride("%bot.prefix%", () => _bss.GetRawData().Prefix)
+                .Build();
         }
 
         public Task LateExecute(DiscordSocketClient client, IGuild guild, IUserMessage msg)
@@ -41,9 +48,9 @@ namespace WizBot.Modules.Help.Services
                     return Task.CompletedTask;
                 
                 if (CREmbed.TryParse(settings.DmHelpText, out var embed))
-                    return msg.Channel.EmbedAsync(embed);
+                    return msg.Channel.EmbedAsync(_rep.Replace(embed));
                 
-                return msg.Channel.SendMessageAsync(settings.DmHelpText);
+                return msg.Channel.SendMessageAsync(_rep.Replace(settings.DmHelpText));
             }
             return Task.CompletedTask;
         }
@@ -52,10 +59,10 @@ namespace WizBot.Modules.Help.Services
         {
             var prefix = _ch.GetPrefix(guild);
 
-            var str = string.Format("**`{0}`**", prefix + com.Aliases.First());
+            var str = $"**`{prefix + com.Aliases.First()}`**";
             var alias = com.Aliases.Skip(1).FirstOrDefault();
             if (alias != null)
-                str += string.Format(" **/ `{0}`**", prefix + alias);
+                str += $" **/ `{prefix + alias}`**";
             var em = new EmbedBuilder()
             .WithAuthor(eab => eab.WithName("WizBot - Command Helper")
                                           .WithUrl("http://wizbot.readthedocs.io/en/latest/")

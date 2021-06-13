@@ -28,6 +28,9 @@ namespace WizBot.Extensions
         public static Task<IUserMessage> SendErrorAsync(this IMessageChannel ch, string error)
              => ch.SendMessageAsync("", embed: new EmbedBuilder().WithErrorColor().WithDescription(error).Build());
 
+        public static Task<IUserMessage> SendPendingAsync(this IMessageChannel ch, string message)
+            => ch.SendMessageAsync("", embed: new EmbedBuilder().WithPendingColor().WithDescription(message).Build());
+
         public static Task<IUserMessage> SendConfirmAsync(this IMessageChannel ch, string title, string text, string url = null, string footer = null)
         {
             var eb = new EmbedBuilder().WithOkColor().WithDescription(text)

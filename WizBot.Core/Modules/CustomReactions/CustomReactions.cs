@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using WizBot.Core.Common;
 
 namespace WizBot.Modules.CustomReactions
 {
@@ -100,15 +101,32 @@ namespace WizBot.Modules.CustomReactions
                                                     .Take(20)
                                                     .Select(cr =>
                                                     {
-                                                        var str = $"`#{cr.Id}` {cr.Trigger}";
+                                                        var str = $"`{cr.Id}` {cr.Trigger}";
                                                         if (cr.AutoDeleteTrigger)
                                                         {
-                                                            str = "🗑" + str;
+                                                            str = " \\✗ " + str;
+                                                        }
+                                                        else
+                                                        {
+                                                            str = "◾" + str;
                                                         }
                                                         if (cr.DmResponse)
                                                         {
-                                                            str = "📪" + str;
+                                                            str = "\\✉ " + str;
                                                         }
+                                                        else
+                                                        {
+                                                            str = "◾" + str;
+                                                        }
+                                                        if (cr.ContainsAnywhere)
+                                                        {
+                                                            str = "\\🗯 " + str;
+                                                        }
+                                                        else
+                                                        {
+                                                            str = "◾" + str;
+                                                        }
+                                                        
                                                         var reactions = cr.GetReactions();
                                                         if(reactions.Any())
                                                         {
@@ -129,56 +147,15 @@ namespace WizBot.Modules.CustomReactions
         [Priority(0)]
         public async Task ListCustReact(All _)
         {
-            var customReactions = _service.GetCustomReactionsFor(ctx.Guild?.Id);
-
-            if (customReactions == null || !customReactions.Any())
-            {
-                await ReplyErrorLocalizedAsync("no_found").ConfigureAwait(false);
-                return;
-            }
-
-            using (var txtStream = await customReactions.GroupBy(cr => cr.Trigger)
-                                                        .OrderBy(cr => cr.Key)
-                                                        .Select(cr => new { Trigger = cr.Key, Responses = cr.Select(y => new { id = y.Id, text = y.Response }).ToList() })
-                                                        .ToJson()
-                                                        .ToStream()
-                                                        .ConfigureAwait(false))
-            {
-
-                if (ctx.Guild == null) // its a private one, just send back
-                    await ctx.Channel.SendFileAsync(txtStream, "customreactions.txt", GetText("list_all")).ConfigureAwait(false);
-                else
-                    await ((IGuildUser)ctx.User).SendFileAsync(txtStream, "customreactions.txt", GetText("list_all"), false).ConfigureAwait(false);
-            }
+            await ReplyPendingLocalizedAsync("obsolete_use", Format.Code($"{Prefix}crsexport"));
+            await CrsExport();
         }
 
         [WizBotCommand, Usage, Description, Aliases]
         public async Task ListCustReactG(int page = 1)
         {
-            if (--page < 0 || page > 9999)
-                return;
-            var customReactions = _service.GetCustomReactionsFor(ctx.Guild?.Id);
-
-            if (customReactions == null || !customReactions.Any())
-            {
-                await ReplyErrorLocalizedAsync("no_found").ConfigureAwait(false);
-            }
-            else
-            {
-                var ordered = customReactions
-                    .GroupBy(cr => cr.Trigger)
-                    .OrderBy(cr => cr.Key)
-                    .ToList();
-
-                await ctx.SendPaginatedConfirmAsync(page, (curPage) =>
-                    new EmbedBuilder().WithOkColor()
-                        .WithTitle(GetText("name"))
-                        .WithDescription(string.Join("\r\n", ordered
-                                                         .Skip(curPage * 20)
-                                                         .Take(20)
-                                                         .Select(cr => $"**{cr.Key.Trim().ToLowerInvariant()}** `x{cr.Count()}`"))),
-                    ordered.Count, 20).ConfigureAwait(false);
-            }
+            await ReplyPendingLocalizedAsync("obsolete_use", Format.Code($"{Prefix}crsexport"));
+            await CrsExport();
         }
 
         [WizBotCommand, Usage, Description, Aliases]

@@ -1,99 +1,95 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Runtime.CompilerServices;
+
 
 namespace WizBot.Core.Common
 {
-    public readonly struct kwum
+    public readonly struct kwum : IEquatable<kwum>
     {
-        private readonly char[] _data;
+        private readonly long _value;
         private const string ValidCharacters = "23456789abcdefghijkmnpqrstuvwxyz";
-        private static readonly HashSet<char> validCharacterSet = ValidCharacters.ToHashSet();
 
+        public kwum(long num)
+            => _value = num;
+        
         public kwum(in char c)
         {
             if (!IsValidChar(c))
                 throw new ArgumentException("Character needs to be a valid kwum character.", nameof(c));
-            _data = new[] { c };
+
+            _value = InternalCharToValue(c);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static int InternalCharToValue(in char c) 
+            => ValidCharacters.IndexOf(c);
 
         public kwum(in ReadOnlySpan<char> input)
-        {
-            foreach (var c in input)
+        {;
+            _value = 0;
+            for (var index = 0; index < input.Length; index++)
+            {
+                var c = input[index];
                 if (!IsValidChar(c))
-                    throw new ArgumentException("All characters need to be a valid kwum characters.", nameof(c));
+                    throw new ArgumentException("All characters need to be a valid kwum characters.", nameof(input));
 
-            _data = input.ToArray();
+                _value += ValidCharacters.IndexOf(c) * (long)Math.Pow(ValidCharacters.Length, input.Length - index - 1);
+            }
         }
-
-        /// <summary>
-        /// Unsafe, used only internally
-        /// </summary>
-        /// <param name="data">Array of characters</param>
-        private kwum(char[] data)
-            => _data = data;
-
 
         public static bool TryParse(in ReadOnlySpan<char> input, out kwum value)
         {
             value = default;
-            foreach (var c in input)
+            foreach(var c in input)
                 if (!IsValidChar(c))
                     return false;
 
-            value = new kwum(input.ToArray());
+            value = new kwum(input);
             return true;
         }
 
         public static kwum operator +(kwum left, kwum right)
-        {
-            throw new NotImplementedException();
-        }
+            => left._value + right._value;
 
         public static bool operator ==(kwum left, kwum right)
-        {
-            if (left._data is null)
-                return right._data is null;
-
-            if (right._data is null)
-                return false;
-
-            if (left._data.Length != right._data.Length)
-                return false;
-
-            for (var i = 0; i < left._data.Length; i++)
-            {
-                if (left._data[i] != right._data[i])
-                    return false;
-            }
-
-            return true;
-        }
+            => left._value == right._value;
 
         public static bool operator !=(kwum left, kwum right)
             => !(left == right);
 
+        public static implicit operator kwum(long num)
+            => new kwum(num);
+
+        public static implicit operator long(kwum kwum)
+            => kwum._value;
+
         public static bool IsValidChar(char c)
-            => validCharacterSet.Contains(c);
+            => ValidCharacters.Contains(c);
 
         public override string ToString()
-            => new string(_data);
+        {
+            var count = ValidCharacters.Length;
+            var localValue = _value;
+            var arrSize = (int)Math.Log(localValue, count) + 1;
+            Span<char> chars = new char[arrSize];
+            while (localValue > 0)
+            {
+                localValue = Math.DivRem(localValue, count, out var rem);
+                chars[--arrSize] = ValidCharacters[(int)rem];
+            }
+
+            return new string(chars);
+        }
 
         public override bool Equals(object obj)
             => obj is kwum kw && kw == this;
 
+        public bool Equals(kwum other)
+            => other == this;
+
         public override int GetHashCode()
         {
-            HashCode hashCode = default;
-            if (_data is null)
-                return 0;
-
-            for (var i = _data.Length >= 8 ? _data.Length - 8 : 0; i < _data.Length; i++)
-            {
-                hashCode.Add(_data[i].GetHashCode());
-            }
-
-            return hashCode.ToHashCode();
+            return _value.GetHashCode();
         }
     }
 }

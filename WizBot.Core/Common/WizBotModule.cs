@@ -45,6 +45,11 @@ namespace WizBot.Modules
             var text = GetText(textKey, args);
             return ctx.Channel.SendErrorAsync(Format.Bold(ctx.User.ToString()) + " " + text);
         }
+        public Task<IUserMessage> ReplyPendingLocalizedAsync(string textKey, params object[] args)
+        {
+            var text = GetText(textKey, args);
+            return ctx.Channel.SendPendingAsync(Format.Bold(ctx.User.ToString()) + " " + text);
+        }
 
         public Task<IUserMessage> ConfirmLocalizedAsync(string textKey, params object[] args)
         {
