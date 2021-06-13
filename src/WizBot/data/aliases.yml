@@ -895,12 +895,16 @@ crreact:
 - crr
 crad:
 - crad
+- exad
 crat:
 - crat
+- exat
 crdm:
 - crdm
+- exdm
 crca:
 - crca
+- exca
 crsreload:
 - crsreload
 - expreload
