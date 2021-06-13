@@ -93,49 +93,25 @@ namespace WizBot.Modules.CustomReactions
                 return;
             }
 
-            await ctx.SendPaginatedConfirmAsync(page, curPage =>
-                new EmbedBuilder().WithOkColor()
-                    .WithTitle(GetText("custom_reactions"))
-                    .WithDescription(string.Join("\n", customReactions.OrderBy(cr => cr.Trigger)
-                                                    .Skip(curPage * 20)
-                                                    .Take(20)
-                                                    .Select(cr =>
-                                                    {
-                                                        var str = $"`{(kwum)cr.Id}` {cr.Trigger}";
-                                                        if (cr.AutoDeleteTrigger)
-                                                        {
-                                                            str = "❌" + str;
-                                                        }
-                                                        else
-                                                        {
-                                                            str = "◾" + str;
-                                                        }
-                                                        if (cr.DmResponse)
-                                                        {
-                                                            str = "✉" + str;
-                                                        }
-                                                        else
-                                                        {
-                                                            str = "◾" + str;
-                                                        }
-                                                        if (cr.ContainsAnywhere)
-                                                        {
-                                                            str = "🗯" + str;
-                                                        }
-                                                        else
-                                                        {
-                                                            str = "◾" + str;
-                                                        }
-                                                        
-                                                        var reactions = cr.GetReactions();
-                                                        if(reactions.Any())
-                                                        {
-                                                            str = str + " // " + string.Join(" ", reactions);
-                                                        }
+            await ctx.SendPaginatedConfirmAsync(page, pageFunc: curPage =>
+            {
+                var desc = customReactions.OrderBy(cr => cr.Trigger)
+                    .Skip(curPage * 20)
+                    .Take(20)
+                    .Select(cr => $"{(cr.ContainsAnywhere ? "🗯" : "◾")}" +
+                                  $"{(cr.DmResponse ? "✉" : "◾")}" +
+                                  $"{(cr.AutoDeleteTrigger ? "❌" : "◾")}" +
+                                  $"`{(kwum) cr.Id}` {cr.Trigger}"
+                                  + (string.IsNullOrWhiteSpace(cr.Reactions)
+                                      ? string.Empty
+                                      : " // " + string.Join(" ", cr.GetReactions())))
+                    .JoinWith('\n');
 
-                                                        return str;
-                                                    }))), customReactions.Count(), 20)
-                                .ConfigureAwait(false);
+                return new EmbedBuilder().WithOkColor()
+                    .WithTitle(GetText("custom_reactions"))
+                    .WithDescription(desc);
+
+            }, customReactions.Length, 20);
         }
 
         public enum All
