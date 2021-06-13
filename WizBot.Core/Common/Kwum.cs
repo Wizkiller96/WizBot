@@ -6,10 +6,10 @@ namespace WizBot.Core.Common
 {
     public readonly struct kwum : IEquatable<kwum>
     {
-        private readonly long _value;
+        private readonly int _value;
         private const string ValidCharacters = "23456789abcdefghijkmnpqrstuvwxyz";
 
-        public kwum(long num)
+        public kwum(int num)
             => _value = num;
         
         public kwum(in char c)
@@ -33,7 +33,7 @@ namespace WizBot.Core.Common
                 if (!IsValidChar(c))
                     throw new ArgumentException("All characters need to be a valid kwum characters.", nameof(input));
 
-                _value += ValidCharacters.IndexOf(c) * (long)Math.Pow(ValidCharacters.Length, input.Length - index - 1);
+                _value += ValidCharacters.IndexOf(c) * (int)Math.Pow(ValidCharacters.Length, input.Length - index - 1);
             }
         }
 
@@ -49,7 +49,7 @@ namespace WizBot.Core.Common
         }
 
         public static kwum operator +(kwum left, kwum right)
-            => left._value + right._value;
+            => new kwum(left._value + right._value);
 
         public static bool operator ==(kwum left, kwum right)
             => left._value == right._value;
@@ -57,14 +57,13 @@ namespace WizBot.Core.Common
         public static bool operator !=(kwum left, kwum right)
             => !(left == right);
 
-        public static implicit operator kwum(long num)
-            => new kwum(num);
-
         public static implicit operator long(kwum kwum)
             => kwum._value;
         
         public static implicit operator int(kwum kwum)
-            => (int)kwum._value;
+            => kwum._value;
+        public static implicit operator kwum(int num)
+            => new kwum(num);
 
         public static bool IsValidChar(char c)
             => ValidCharacters.Contains(c);

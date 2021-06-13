@@ -4,10 +4,16 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+### Added
+
+- Added many new aliases to custom reaction commands in the format ex + "action" to prepare for the future rename from CustomReactions to Expressions
+
 ### Changed
 
 - DmHelpText should now have %prefix% and %bot.prefix% placeholders available
 - Added squares which show enabled features for each cr in `.lcr`
+- Changed CustomReactions' IDs to show, and accept base 32 unambigous characters instead of the normal database IDs (this will result in much shorter cr IDs in case you have a lot of them)
+- Improved `.lcr` helptext to explain what's shown in the output
 
 ### Fixed
 

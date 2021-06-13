@@ -35,26 +35,26 @@ namespace WizBot.Tests
         [Test]
         public void TestLongEqualGetHashCode()
         {
-            var num1 = new kwum("hgbkhdbkhrbkrdhgbrdry664646464");
-            var num2 = new kwum("hgbkhdbkhrbkrdhgbrdry664646464");
+            var num1 = new kwum("hgbkhdbk");
+            var num2 = new kwum("hgbkhdbk");
 
             Assert.AreEqual(num1.GetHashCode(), num2.GetHashCode());
         }
         
         [Test]
-        public void TestLongEqual()
+        public void TestEqual()
         {
-            var num1 = new kwum("hgbkhdbkhrbkrdhgbrdry664646464");
-            var num2 = new kwum("hgbkhdbkhrbkrdhgbrdry664646464");
+            var num1 = new kwum("hgbkhd");
+            var num2 = new kwum("hgbkhd");
 
             Assert.AreEqual(num1, num2);
         }
         
         [Test]
-        public void TestLongNotEqual()
+        public void TestNotEqual()
         {
-            var num1 = new kwum("hgbkhdbkhrbkrdhgbrdry664646464");
-            var num2 = new kwum("hgbkhdbkhrbkrdhgbrdry664647464");
+            var num1 = new kwum("hgbk5d");
+            var num2 = new kwum("hgbk4d");
 
             Assert.AreNotEqual(num1, num2);
         }
@@ -76,7 +76,7 @@ namespace WizBot.Tests
         [Test]
         public void TestCorrectParseValue()
         {
-            var validValue = "qwerf4bmkjbvg67";
+            var validValue = "qwerf4bm";
             kwum.TryParse(validValue, out var parsedValue);
             
             Assert.AreEqual(parsedValue, new kwum(validValue));
@@ -85,18 +85,18 @@ namespace WizBot.Tests
         [Test]
         public void TestToString()
         {
-            var validValue = "46g5yhhff254";
+            var validValue = "46g5yh";
             kwum.TryParse(validValue, out var parsedValue);
             
             Assert.AreEqual(validValue, parsedValue.ToString());
         }
 
         [Test]
-        public void TestConversionsToFromLong()
+        public void TestConversionsToFromInt()
         {
             var num = new kwum(10);
             
-            Assert.AreEqual(10, (long)num);
+            Assert.AreEqual(10, (int)num);
             Assert.AreEqual(num, (kwum)10);
         }
 
@@ -110,12 +110,6 @@ namespace WizBot.Tests
             
             // leading zeros have no meaning
             Assert.AreEqual(new kwum("22225v"), num);
-        }
-
-        [Test]
-        public void TestTooLong()
-        {
-            Assert.AreEqual((long)new kwum("zzzzzzzzzzz"), 5);
         }
     }
 }
