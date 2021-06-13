@@ -181,8 +181,7 @@ namespace WizBot.Modules.Gambling
             [Priority(1)]
             public async Task WaifuTransfer(IUser waifu, IUser newOwner)
             {
-                if (!await _service.WaifuTransfer(ctx.User, waifu.Id, newOwner)
-                    )
+                if (!await _service.WaifuTransfer(ctx.User, waifu.Id, newOwner))
                 {
                     await ReplyErrorLocalizedAsync("waifu_transfer_fail");
                     return;
@@ -193,11 +192,26 @@ namespace WizBot.Modules.Gambling
                     Format.Bold(ctx.User.ToString()),
                     Format.Bold(newOwner.ToString()));
             }
+            
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [Priority(-1)]
+            public Task Divorce([Leftover] string target)
+            {
+                var waifuUserId = _service.GetWaifuUserId(ctx.User.Id, target);
+                if (waifuUserId == default)
+                {
+                    return ReplyErrorLocalizedAsync("waifu_not_yours");
+                }
+
+                return Divorce(waifuUserId);
+            }
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [Priority(0)]
-            public Task Divorce([Leftover] IGuildUser target) => Divorce(target.Id);
+            public Task Divorce([Leftover]IGuildUser target) 
+                => Divorce(target.Id);
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]

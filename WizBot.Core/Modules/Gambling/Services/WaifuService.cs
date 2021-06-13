@@ -313,6 +313,12 @@ namespace WizBot.Modules.Gambling.Services
                 return uow.Waifus.GetTop(9, page * 9);
             }
         }
+        
+        public ulong GetWaifuUserId(ulong ownerId, string name)
+        {
+            using var uow = _db.GetDbContext();
+            return uow.Waifus.GetWaifuUserId(ownerId, name);
+        }
 
         public async Task<(WaifuInfo, DivorceResult, long, TimeSpan?)> DivorceWaifuAsync(IUser user, ulong targetId)
         {

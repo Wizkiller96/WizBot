@@ -7,6 +7,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 ### Added
 
 - Added many new aliases to custom reaction commands in the format ex + "action" to prepare for the future rename from CustomReactions to Expressions
+- You can now `.divorce` via username#discrim even if the user no longer exists
 
 ### Changed
 

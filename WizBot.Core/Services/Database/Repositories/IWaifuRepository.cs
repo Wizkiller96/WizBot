@@ -14,6 +14,7 @@ namespace WizBot.Core.Services.Database.Repositories
         decimal GetTotalValue();
         int AffinityCount(ulong userId);
         WaifuInfoStats GetWaifuInfo(ulong id);
+        public ulong GetWaifuUserId(ulong ownerId, string name);
     }
 
     public class WaifuInfoStats

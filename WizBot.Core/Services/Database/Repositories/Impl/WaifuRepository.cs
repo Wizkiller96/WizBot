@@ -104,6 +104,17 @@ WHERE UserId = (SELECT Id from DiscordUser WHERE UserId={userId}) AND
     NewId IS NOT NULL")
                 .Count();
         }
+        
+        public ulong GetWaifuUserId(ulong ownerId, string name)
+        {
+            return _set
+                .AsQueryable()
+                .AsNoTracking()
+                .Where(x => x.Claimer.UserId == ownerId
+                            && x.Waifu.Username + "#" + x.Waifu.Discriminator == name)
+                .Select(x => x.Waifu.UserId)
+                .FirstOrDefault();
+        }
 
         public WaifuInfoStats GetWaifuInfo(ulong userId)
         {
