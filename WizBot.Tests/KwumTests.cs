@@ -111,5 +111,15 @@ namespace WizBot.Tests
             // leading zeros have no meaning
             Assert.AreEqual(new kwum("22225v"), num);
         }
+        
+        [Test]
+        public void TestMaxValue()
+        {
+            var num = new kwum(int.MaxValue - 1);
+            Assert.AreEqual("3zzzzzy", num.ToString());
+            
+            num = new kwum(int.MaxValue);
+            Assert.AreEqual("3zzzzzz", num.ToString());
+        }
     }
 }

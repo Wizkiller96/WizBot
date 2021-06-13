@@ -1,9 +1,10 @@
 using System;
 using System.Runtime.CompilerServices;
 
-
 namespace WizBot.Core.Common
 {
+    // needs proper invalid input check (character array input out of range)
+    // needs negative number support
     public readonly struct kwum : IEquatable<kwum>
     {
         private readonly int _value;
