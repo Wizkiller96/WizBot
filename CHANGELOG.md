@@ -16,7 +16,8 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - Changed CustomReactions' IDs to show, and accept base 32 unambigous characters instead of the normal database IDs (this will result in much shorter cr IDs in case you have a lot of them)
 - Improved `.lcr` helptext to explain what's shown in the output
 - `.rolecolor <color> <role>` changed to take color, then the role, to make it easier to set color for roles with multiple words without mentioning the role
-- `.acmdcds` renamed to `.cmdcds`
+- `.acmdcds` alias chanaged to `.cmdcds`
+- `.8ball` will now cache results for a day
 
 ### Fixed
 

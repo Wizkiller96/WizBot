@@ -16,6 +16,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
 using Serilog;
 
 namespace WizBot.Modules.Games.Services
@@ -30,6 +31,7 @@ namespace WizBot.Modules.Games.Services
 
         private readonly Timer _t;
         private readonly IHttpClientFactory _httpFactory;
+        private readonly IMemoryCache _8BallCache;
         private readonly Random _rng;
 
         private const string TypingArticlesPath = "data/typing_articles3.json";
@@ -64,6 +66,10 @@ namespace WizBot.Modules.Games.Services
         {
             _gamesConfig = gamesConfig;
             _httpFactory = httpFactory;
+            _8BallCache = new MemoryCache(new MemoryCacheOptions()
+            {
+                SizeLimit = 500_000
+            });
 
             Ratings = new AsyncLazy<RatingTexts>(GetRatingTexts);
             _rng = new WizBotRandom();
@@ -127,9 +133,14 @@ namespace WizBot.Modules.Games.Services
             File.WriteAllText(TypingArticlesPath, JsonConvert.SerializeObject(TypingArticles));
         }
 
-        public string GetEightballResponse(string _)
+        public string GetEightballResponse(string question)
         {
-            return EightBallResponses[_rng.Next(0, EightBallResponses.Count)];
+            return _8BallCache.GetOrCreate(question, e =>
+            {
+                e.Size = question.Length;
+                e.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1);
+                return EightBallResponses[_rng.Next(0, EightBallResponses.Count)];;
+            });
         }
 
         public TypingArticle RemoveTypingArticle(int index)
