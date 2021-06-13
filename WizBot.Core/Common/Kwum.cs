@@ -62,6 +62,9 @@ namespace WizBot.Core.Common
 
         public static implicit operator long(kwum kwum)
             => kwum._value;
+        
+        public static implicit operator int(kwum kwum)
+            => (int)kwum._value;
 
         public static bool IsValidChar(char c)
             => ValidCharacters.Contains(c);

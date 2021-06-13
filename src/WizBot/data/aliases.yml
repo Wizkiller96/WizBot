@@ -89,20 +89,32 @@ iamnot:
 addcustreact:
 - addcustreact
 - acr
+- expradd
+- exadd
+- exa
 listcustreact:
 - listcustreact
 - lcr
+- exprli
+- exl
 listcustreactg:
 - listcustreactg
 - lcrg
+- exprlg
+- exlg
 showcustreact:
 - showcustreact
 - scr
+- exs
 delcustreact:
 - delcustreact
 - dcr
+- exprdel
+- exd
+- exd
 crclear:
 - crclear
+- exclear
 fwclear:
 - fwclear
 aliasesclear:
@@ -891,6 +903,8 @@ crca:
 - crca
 crsreload:
 - crsreload
+- expreload
+- exrel
 aliaslist:
 - aliaslist
 - cmdmaplist
@@ -1122,6 +1136,7 @@ feedlist:
 editcustreact:
 - editcustreact
 - ecr
+- exe
 say:
 - say
 sqlexec:
@@ -1216,8 +1231,10 @@ purgeuser:
 - purgeuser
 crsimport:
 - crsimport
+- eximport
 crsexport:
 - crsexport
+- exexport
 neko:
 - neko
 nya:
