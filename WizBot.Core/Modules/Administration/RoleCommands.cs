@@ -323,7 +323,7 @@ namespace WizBot.Modules.Administration
             [UserPerm(GuildPerm.ManageRoles)]
             [BotPerm(GuildPerm.ManageRoles)]
             [Priority(0)]
-            public async Task RoleColor(IRole role, SixLabors.ImageSharp.Color color)
+            public async Task RoleColor(SixLabors.ImageSharp.Color color, [Leftover]IRole role)
             {
                 try
                 {

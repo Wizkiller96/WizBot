@@ -259,7 +259,7 @@ rolecolor:
   desc: "Set a role's color using its hex value. Provide no color in order to see the hex value of the color of the specified role. The role you specify has to be lower in the role hierarchy than your highest role."
   args:
     - "Admin"
-    - "Admin ffba55"
+    - "ffba55 Admin"
 ban:
   desc: "Bans a user by ID or name with an optional message. You can specify a time string before the user name to ban the user temporarily."
   args:
