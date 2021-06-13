@@ -222,12 +222,18 @@ namespace WizBot.Modules.Help
                 {
                     var transformed = g.ElementAt(i).Select(x =>
                     {
+                        var commandName = Prefix + x.Aliases.First();
+                        var alias = x.Aliases.Skip(1).FirstOrDefault();
+                        if (!(alias is null))
+                            commandName = commandName + " / " + Prefix + alias;
+
                         //if cross is specified, and the command doesn't satisfy the requirements, cross it out
                         if (opts.View == CommandsOptions.ViewType.Cross)
                         {
-                            return $"{(succ.Contains(x) ? "✅" : "❌")}{Prefix + x.Aliases.First(),-15} {"[" + x.Aliases.Skip(1).FirstOrDefault() + "]",-8}";
+                            commandName = $"{(succ.Contains(x) ? "" : "❌")}" + commandName;
                         }
-                        return $"{Prefix + x.Aliases.First(),-15} {"[" + x.Aliases.Skip(1).FirstOrDefault() + "]",-8}";
+                        
+                        return $"{commandName,-30}";
                     });
 
                     if (i == last - 1 && (i + 1) % 2 != 0)
@@ -244,7 +250,7 @@ namespace WizBot.Modules.Help
                                     return String.Concat(x);
                             });
                     }
-                    embed.AddField(g.ElementAt(i).Key, "```css\n" + string.Join("\n", transformed) + "\n```", true);
+                    embed.AddField(g.ElementAt(i).Key, string.Join("\n", transformed), true);
                 }
             }
             embed.WithFooter(GetText("commands_instr", Prefix));
