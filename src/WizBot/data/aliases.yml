@@ -332,7 +332,7 @@ cmdcooldown:
 - cmdcd
 allcmdcooldowns:
 - allcmdcooldowns
-- acmdcds
+- cmdcds
 quoteadd:
 - quoteadd
 - .
