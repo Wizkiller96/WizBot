@@ -4,6 +4,9 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+
+## [2.45.2] - 14.06.2021
+
 ### Added
 
 - Added `.duckduckgo / .ddg` search
