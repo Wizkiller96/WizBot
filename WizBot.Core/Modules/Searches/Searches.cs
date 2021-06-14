@@ -69,7 +69,6 @@ namespace WizBot.Modules.Searches
             }
         }
 
-        // done in 3.0
         [WizBotCommand, Usage, Description, Aliases]
         public async Task Weather([Leftover] string query)
         {
@@ -367,18 +366,48 @@ namespace WizBot.Modules.Searches
             }
             
             var desc = data.Results.Take(5).Select(res =>
-                $@"[**{(res.Title)}**]({res.Link})
+                $@"[**{res.Title}**]({res.Link})
 {res.Text.TrimTo(400 - res.Title.Length - res.Link.Length)}");
 
             var descStr = string.Join("\n\n", desc);
 
             var embed = new EmbedBuilder()
-                .WithAuthor(eab => eab.WithName(GetText("search_for") + " " + query.TrimTo(50))
-                    .WithUrl(data.FullQueryLink)
-                    .WithIconUrl("http://i.imgur.com/G46fm8J.png"))
+                .WithAuthor(ctx.User.ToString(),
+                    iconUrl: "http://i.imgur.com/G46fm8J.png")
                 .WithTitle(ctx.User.ToString())
                 .WithFooter(efb => efb.WithText(data.TotalResults))
-                .WithDescription(descStr)
+                .WithDescription($"{GetText("search_for")} **{query}**\n\n" +descStr)
+                .WithOkColor();
+
+            await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+        }
+        
+        [WizBotCommand, Usage, Description, Aliases]
+        public async Task DuckDuckGo([Leftover] string query = null)
+        {
+            query = query?.Trim();
+            if (!await ValidateQuery(ctx.Channel, query).ConfigureAwait(false))
+                return;
+
+            _ = ctx.Channel.TriggerTypingAsync();
+            
+            var data = await _service.DuckDuckGoSearchAsync(query);
+            if (data is null)
+            {
+                await ReplyErrorLocalizedAsync("no_results");
+                return;
+            }
+            
+            var desc = data.Results.Take(5).Select(res =>
+                $@"[**{res.Title}**]({res.Link})
+{res.Text.TrimTo(380 - res.Title.Length - res.Link.Length)}");
+
+            var descStr = string.Join("\n\n", desc);
+            
+            var embed = new EmbedBuilder()
+                .WithAuthor(ctx.User.ToString(),
+                    iconUrl: "https://upload.wikimedia.org/wikipedia/en/9/90/The_DuckDuckGo_Duck.png")
+                .WithDescription($"{GetText("search_for")} **{query}**\n\n" + descStr)
                 .WithOkColor();
 
             await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);

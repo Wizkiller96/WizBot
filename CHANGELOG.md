@@ -4,9 +4,17 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+### Added
+
+- Added `.duckduckgo / .ddg` search
+
 ### Changed
 
 - `.invlist` shows expire time and is slightly prettier
+
+### Fixed
+
+- `.antialt` will be properly cleaned up when the bot leaves the server
 
 ## [2.45.1] - 12.06.2021
 

@@ -975,6 +975,10 @@ google:
   desc: "Get a Google search link for some terms."
   args:
     - "query"
+duckduckgo:
+  desc: "Get duckduckgo search results."
+  args:
+    - "cat pictures"
 hearthstone:
   desc: "Searches for a Hearthstone card and shows its image. Takes a while to complete."
   args:

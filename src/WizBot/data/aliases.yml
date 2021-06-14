@@ -612,6 +612,9 @@ lmgtfy:
 google:
 - google
 - g
+duckduckgo:
+- duckduckgo
+- ddg
 hearthstone:
 - hearthstone
 - hs
