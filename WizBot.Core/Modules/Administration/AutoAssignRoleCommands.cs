@@ -16,27 +16,56 @@ namespace WizBot.Modules.Administration
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageRoles)]
-            public async Task AutoAssignRole([Leftover] IRole role = null)
+            public async Task AutoAssignRole([Leftover] IRole role)
             {
                 var guser = (IGuildUser) ctx.User;
-                if (role != null)
+                if (role.Id == ctx.Guild.EveryoneRole.Id)
+                    return;
+
+                // the user can't aar the role which is higher or equal to his highest role
+                if (ctx.User.Id != guser.Guild.OwnerId && guser.GetRoles().Max(x => x.Position) <= role.Position)
                 {
-                    if (role.Id == ctx.Guild.EveryoneRole.Id)
-                        return;
+                    await ReplyErrorLocalizedAsync("hierarchy");
+                    return;
+                }
 
-                    // the user can't aar the role which is higher or equal to his highest role
-                    if (ctx.User.Id != guser.Guild.OwnerId && guser.GetRoles().Max(x => x.Position) <= role.Position)
-                        return;
-
-                    _service.EnableAar(ctx.Guild.Id, role.Id);
-                    await ReplyConfirmLocalizedAsync("aar_enabled").ConfigureAwait(false);
+                var roles = await _service.ToggleAarAsync(ctx.Guild.Id, role.Id);
+                if (roles.Count == 0)
+                {
+                    await ReplyConfirmLocalizedAsync("aar_disabled");
+                }
+                else if (roles.Contains(role.Id))
+                {
+                    await AutoAssignRole();
                 }
                 else
                 {
-                    _service.DisableAar(ctx.Guild.Id);
-                    await ReplyConfirmLocalizedAsync("aar_disabled").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync("aar_role_removed", Format.Bold(role.ToString()));
+                }
+            }
+            
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [UserPerm(GuildPerm.ManageRoles)]
+            public async Task AutoAssignRole()
+            {
+                if (!_service.TryGetRoles(ctx.Guild.Id, out var roles))
+                {
+                    await ReplyConfirmLocalizedAsync("aar_none");
                     return;
                 }
+                
+                var existing = roles.Select(rid => ctx.Guild.GetRole(rid)).Where(r => !(r is null))
+                    .ToList();
+
+                if (existing.Count != roles.Count)
+                {
+                    await _service.SetAarRolesAsync(ctx.Guild.Id, existing.Select(x => x.Id));
+                }
+
+                await ReplyConfirmLocalizedAsync("aar_roles",
+                    '\n' + existing.Select(x => Format.Bold(x.ToString()))
+                        .JoinWith(",\n"));
             }
         }
     }

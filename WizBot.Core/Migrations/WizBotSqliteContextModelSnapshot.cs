@@ -728,6 +728,9 @@ namespace WizBot.Migrations
 
                     b.Property<ulong>("AutoAssignRoleId")
                         .HasColumnType("INTEGER");
+                    
+                    b.Property<string>("AutoAssignRoleIds")
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("AutoDcFromVc")
                         .HasColumnType("INTEGER");
