@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using AngleSharp.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using WizBot.Core.Modules.Xp;
@@ -208,9 +209,16 @@ namespace WizBot.Modules.Xp.Services
                                 if (rrew != null)
                                 {
                                     var role = first.User.Guild.GetRole(rrew.RoleId);
-                                    if (role != null)
+                                    if (!(role is null))
                                     {
-                                        var __ = first.User.AddRoleAsync(role);
+                                        if (rrew.Remove)
+                                        {
+                                            _ = first.User.RemoveRoleAsync(role);
+                                        }
+                                        else
+                                        {
+                                            _ = first.User.AddRoleAsync(role);
+                                        }
                                     }
                                 }
 
@@ -344,45 +352,51 @@ namespace WizBot.Modules.Xp.Services
 
         public IEnumerable<XpRoleReward> GetRoleRewards(ulong id)
         {
-            using (var uow = _db.GetDbContext())
-            {
-                return uow.GuildConfigs.XpSettingsFor(id)
-                    .RoleRewards
-                    .ToArray();
-            }
+            using var uow = _db.GetDbContext();
+            return uow.GuildConfigs.XpSettingsFor(id)
+                .RoleRewards
+                .ToArray();
         }
 
-        public void SetRoleReward(ulong guildId, int level, ulong? roleId)
+        public void ResetRoleReward(ulong guildId, int level)
         {
-            using (var uow = _db.GetDbContext())
+            using var uow = _db.GetDbContext();
+            var settings = uow.GuildConfigs.XpSettingsFor(guildId);
+            
+            var toRemove = settings.RoleRewards.FirstOrDefault(x => x.Level == level);
+            if (toRemove != null)
             {
-                var settings = uow.GuildConfigs.XpSettingsFor(guildId);
-
-                if (roleId == null)
-                {
-                    var toRemove = settings.RoleRewards.FirstOrDefault(x => x.Level == level);
-                    if (toRemove != null)
-                    {
-                        uow._context.Remove(toRemove);
-                        settings.RoleRewards.Remove(toRemove);
-                    }
-                }
-                else
-                {
-                    var rew = settings.RoleRewards.FirstOrDefault(x => x.Level == level);
-
-                    if (rew != null)
-                        rew.RoleId = roleId.Value;
-                    else
-                        settings.RoleRewards.Add(new XpRoleReward()
-                        {
-                            Level = level,
-                            RoleId = roleId.Value,
-                        });
-                }
-
-                uow.SaveChanges();
+                uow._context.Remove(toRemove);
+                settings.RoleRewards.Remove(toRemove);
             }
+
+            uow.SaveChanges();
+        }
+        
+        public void SetRoleReward(ulong guildId, int level, ulong roleId, bool remove)
+        {
+            using var uow = _db.GetDbContext();
+            var settings = uow.GuildConfigs.XpSettingsFor(guildId);
+
+            
+            var rew = settings.RoleRewards.FirstOrDefault(x => x.Level == level);
+
+            if (rew != null)
+            {
+                rew.RoleId = roleId;
+                rew.Remove = remove;
+            }
+            else
+            {
+                settings.RoleRewards.Add(new XpRoleReward()
+                {
+                    Level = level,
+                    RoleId = roleId,
+                    Remove = remove,
+                });
+            }
+
+            uow.SaveChanges();
         }
 
         public List<UserXpStats> GetUserXps(ulong guildId, int page)
@@ -1193,7 +1207,7 @@ namespace WizBot.Modules.Xp.Services
                 uow.SaveChanges();
             }
         }
-        
+
         public async Task ResetXpRewards(ulong guildId)
         {
             using var uow = _db.GetDbContext();

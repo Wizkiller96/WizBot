@@ -24,6 +24,11 @@ namespace WizBot.Core.Services.Database.Models
 
         public int Level { get; set; }
         public ulong RoleId { get; set; }
+        
+        /// <summary>
+        /// Whether the role should be removed (true) or added (false)
+        /// </summary>
+        public bool Remove { get; set; }
 
         public override int GetHashCode()
         {

@@ -17,6 +17,8 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - `.inrole` now also shows user ids
 - Blacklist commands (Bot Owner & Bot Admin only) `.ubl` `.sbl` and `.cbl` will now list blacklisted items when no argument (or a page number) is provided
 - `.cmdcd` now works with customreactions too
+- `.xprr` usage changed. It now takes add/rm parameter to add/remove a role ex. You can only take or remove a single role, adding and removing a role at the same level doesn't work (yet?)
+  - example: `.xprr 5 add Member` or `.xprr 1 rm Newbie`
 
 ## [2.45.2] - 14.06.2021
 

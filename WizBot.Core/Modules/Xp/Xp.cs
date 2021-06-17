@@ -37,7 +37,7 @@ namespace WizBot.Modules.Xp
                     .ConfigureAwait(false);
             }
         }
-        
+
         [WizBotCommand, Usage, Description, Aliases]
         public async Task XpRewsReset()
         {
@@ -51,7 +51,7 @@ namespace WizBot.Modules.Xp
             await _service.ResetXpRewards(ctx.Guild.Id);
             await ctx.OkAsync();
         }
-
+        
         [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         public Task XpLevelUpRewards(int page = 1)
@@ -65,12 +65,23 @@ namespace WizBot.Modules.Xp
                 .OrderBy(x => x.Level)
                 .Select(x =>
                 {
+                    var sign = !x.Remove
+                        ? @"✅ "
+                        : @"❌ ";
+                    
                     var str = ctx.Guild.GetRole(x.RoleId)?.ToString();
-                    if (str != null)
-                        str = GetText("role_reward", Format.Bold(str));
-                    return (x.Level, RoleStr: str);
+                    
+                    if (str is null)
+                        str = GetText("role_not_found", Format.Code(x.RoleId.ToString()));
+                    else
+                    {
+                        if (!x.Remove)
+                            str = GetText("xp_receive_role", Format.Bold(str));
+                        else
+                            str = GetText("xp_lose_role", Format.Bold(str));
+                    }
+                    return (x.Level, Text: sign + str);
                 })
-                .Where(x => x.RoleStr != null)
                 .Concat(_service.GetCurrencyRewards(ctx.Guild.Id)
                     .OrderBy(x => x.Level)
                     .Select(x => (x.Level, Format.Bold(x.Amount + _gss.Data.Currency.Sign))))
@@ -102,20 +113,42 @@ namespace WizBot.Modules.Xp
             }, allRewards.Count, 9);
         }
 
+        public enum AddRemove
+        {
+            Add = 0,
+            Remove = 1,
+            Rm = 1,
+            Rem = 1,
+        }
+
         [WizBotCommand, Usage, Description, Aliases]
         [UserPerm(GuildPerm.Administrator)]
         [RequireContext(ContextType.Guild)]
-        public async Task XpRoleReward(int level, [Leftover] IRole role = null)
+        [Priority(2)]
+        public async Task XpRoleReward(int level)
+        {
+            _service.ResetRoleReward(ctx.Guild.Id, level);
+            await ReplyConfirmLocalizedAsync("xp_role_reward_cleared", level).ConfigureAwait(false);
+        }
+        
+        [WizBotCommand, Usage, Description, Aliases]
+        [UserPerm(GuildPerm.Administrator)]
+        [RequireContext(ContextType.Guild)]
+        [Priority(1)]
+        public async Task XpRoleReward(int level, AddRemove action, [Leftover] IRole role)
         {
             if (level < 1)
                 return;
 
-            _service.SetRoleReward(ctx.Guild.Id, level, role?.Id);
-
-            if (role == null)
-                await ReplyConfirmLocalizedAsync("role_reward_cleared", level).ConfigureAwait(false);
+            _service.SetRoleReward(ctx.Guild.Id, level, role.Id, action == AddRemove.Remove);
+            if (action == AddRemove.Add)
+                await ReplyConfirmLocalizedAsync("xp_role_reward_add_role", 
+                    level,
+                    Format.Bold(role.ToString()));
             else
-                await ReplyConfirmLocalizedAsync("role_reward_added", level, Format.Bold(role.ToString())).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync("xp_role_reward_remove_role",
+                    Format.Bold(level.ToString()),
+                    Format.Bold(role.ToString()));
         }
 
         [WizBotCommand, Usage, Description, Aliases]

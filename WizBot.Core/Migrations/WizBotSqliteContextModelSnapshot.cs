@@ -2140,6 +2140,9 @@ namespace WizBot.Migrations
 
                     b.Property<int>("Level")
                         .HasColumnType("INTEGER");
+                    
+                    b.Property<bool>("Remove")
+                        .HasColumnType("INTEGER");
 
                     b.Property<ulong>("RoleId")
                         .HasColumnType("INTEGER");
