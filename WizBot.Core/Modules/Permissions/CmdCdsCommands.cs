@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WizBot.Common.Attributes;
 using WizBot.Common.Collections;
+using WizBot.Common.TypeReaders;
 using WizBot.Modules.Permissions.Services;
 
 namespace WizBot.Modules.Permissions
@@ -34,7 +35,7 @@ namespace WizBot.Modules.Permissions
 
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            public async Task CmdCooldown(CommandInfo command, int secs)
+            public async Task CmdCooldown(CommandOrCrInfo command, int secs)
             {
                 var channel = (ITextChannel)ctx.Channel;
                 if (secs < 0 || secs > 3600)
@@ -43,20 +44,21 @@ namespace WizBot.Modules.Permissions
                     return;
                 }
 
+                var name = command.Name.ToLowerInvariant();
                 using (var uow = _db.GetDbContext())
                 {
                     var config = uow.GuildConfigs.ForId(channel.Guild.Id, set => set.Include(gc => gc.CommandCooldowns));
                     var localSet = CommandCooldowns.GetOrAdd(channel.Guild.Id, new ConcurrentHashSet<CommandCooldown>());
 
-                    var toDelete = config.CommandCooldowns.FirstOrDefault(cc => cc.CommandName == command.Aliases.First().ToLowerInvariant());
+                    var toDelete = config.CommandCooldowns.FirstOrDefault(cc => cc.CommandName == name);
                     if (toDelete != null)
                         uow._context.Set<CommandCooldown>().Remove(toDelete);
-                    localSet.RemoveWhere(cc => cc.CommandName == command.Aliases.First().ToLowerInvariant());
+                    localSet.RemoveWhere(cc => cc.CommandName == name);
                     if (secs != 0)
                     {
                         var cc = new CommandCooldown()
                         {
-                            CommandName = command.Aliases.First().ToLowerInvariant(),
+                            CommandName = name,
                             Seconds = secs,
                         };
                         config.CommandCooldowns.Add(cc);
@@ -67,14 +69,14 @@ namespace WizBot.Modules.Permissions
                 if (secs == 0)
                 {
                     var activeCds = ActiveCooldowns.GetOrAdd(channel.Guild.Id, new ConcurrentHashSet<ActiveCooldown>());
-                    activeCds.RemoveWhere(ac => ac.Command == command.Aliases.First().ToLowerInvariant());
+                    activeCds.RemoveWhere(ac => ac.Command == name);
                     await ReplyConfirmLocalizedAsync("cmdcd_cleared",
-                        Format.Bold(command.Aliases.First())).ConfigureAwait(false);
+                        Format.Bold(name)).ConfigureAwait(false);
                 }
                 else
                 {
                     await ReplyConfirmLocalizedAsync("cmdcd_add",
-                        Format.Bold(command.Aliases.First()),
+                        Format.Bold(name),
                         Format.Bold(secs.ToString())).ConfigureAwait(false);
                 }
             }

@@ -549,9 +549,10 @@ serverblacklist:
     - ""
     - "2"
 cmdcooldown:
-  desc: "Sets a cooldown per user for a command. Set it to 0 to remove the cooldown."
+  desc: "Sets a cooldown per user for a command or a custom reaction. Set it to 0 to remove the cooldown."
   args:
-    - "\"some cmd\" 5"
+    - ".h 5"
+    - ".pat 30"
 allcmdcooldowns:
   desc: "Shows a list of all commands and their respective cooldowns."
   args:

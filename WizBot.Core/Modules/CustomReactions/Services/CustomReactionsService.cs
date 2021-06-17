@@ -58,11 +58,12 @@ namespace WizBot.Modules.CustomReactions.Services
         private readonly IBotStrings _strings;
         private readonly WizBot _bot;
         private readonly GlobalPermissionService _gperm;
+        private readonly CmdCdService _cmdCds;
         private readonly IPubSub _pubSub;
         private readonly Random _rng;
 
         public CustomReactionsService(PermissionService perms, DbService db, IBotStrings strings, WizBot bot,
-            DiscordSocketClient client, CommandHandler cmd, GlobalPermissionService gperm,
+            DiscordSocketClient client, CommandHandler cmd, GlobalPermissionService gperm, CmdCdService cmdCds,
             IPubSub pubSub)
         {
             _db = db;
@@ -72,6 +73,7 @@ namespace WizBot.Modules.CustomReactions.Services
             _strings = strings;
             _bot = bot;
             _gperm = gperm;
+            _cmdCds = cmdCds;
             _pubSub = pubSub;
             _rng = new WizBotRandom();
 
@@ -386,6 +388,9 @@ namespace WizBot.Modules.CustomReactions.Services
             if (cr is null || cr.Response == "-")
                 return false;
             
+            if(await _cmdCds.TryBlock(guild, msg.Author, cr.Trigger))
+                return false;
+
             try
             {
                 if (_gperm.BlockedModules.Contains("ActualCustomReactions"))
