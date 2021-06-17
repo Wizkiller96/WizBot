@@ -52,17 +52,17 @@ namespace WizBot.Modules.Searches
             {
                 if (--index < 0)
                     return;
-
+                
                 var fs = await _service.UnfollowStreamAsync(ctx.Guild.Id, index);
                 if (fs is null)
                 {
                     await ReplyErrorLocalizedAsync("stream_no").ConfigureAwait(false);
                     return;
                 }
-
+            
                 await ReplyConfirmLocalizedAsync(
-                    "stream_removed",
-                    Format.Bold(fs.Username),
+                    "stream_removed", 
+                    Format.Bold(fs.Username), 
                     fs.Type).ConfigureAwait(false);
             }
 
@@ -96,7 +96,7 @@ namespace WizBot.Modules.Searches
                     for (var index = all.Count - 1; index >= 0; index--)
                     {
                         var fs = all[index];
-                        if (((SocketGuild)ctx.Guild).GetTextChannel(fs.ChannelId) is null)
+                        if (((SocketGuild) ctx.Guild).GetTextChannel(fs.ChannelId) is null)
                         {
                             await _service.UnfollowStreamAsync(fs.GuildId, index);
                         }
@@ -158,13 +158,13 @@ namespace WizBot.Modules.Searches
             {
                 if (--index < 0)
                     return;
-
+                
                 if (!_service.SetStreamMessage(ctx.Guild.Id, index, message, out var fs))
                 {
                     await ReplyConfirmLocalizedAsync("stream_not_following").ConfigureAwait(false);
                     return;
                 }
-
+            
                 if (string.IsNullOrWhiteSpace(message))
                 {
                     await ReplyConfirmLocalizedAsync("stream_message_reset", Format.Bold(fs.Username))
@@ -192,7 +192,7 @@ namespace WizBot.Modules.Searches
 
                 await ReplyConfirmLocalizedAsync("stream_message_set_all", count);
             }
-
+            
             [WizBotCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task StreamCheck(string url)
@@ -205,7 +205,7 @@ namespace WizBot.Modules.Searches
                         await ReplyErrorLocalizedAsync("no_channel_found").ConfigureAwait(false);
                         return;
                     }
-
+                    
                     if (data.IsLive)
                     {
                         await ReplyConfirmLocalizedAsync("streamer_online",

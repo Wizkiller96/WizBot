@@ -71,7 +71,7 @@ namespace WizBot.Modules.Searches.Services
                     .ToList();
 
                 _shardTrackedStreams = followedStreams
-                    .GroupBy(x => new { Type = x.Type, Name = x.Username.ToLower() })
+                    .GroupBy(x => new {Type = x.Type, Name = x.Username.ToLower()})
                     .ToList()
                     .ToDictionary(
                         x => new StreamDataKey(x.Key.Type, x.Key.Name.ToLower()),
@@ -91,7 +91,7 @@ namespace WizBot.Modules.Searches.Services
                     }
 
                     _trackCounter = allFollowedStreams
-                        .GroupBy(x => new { Type = x.Type, Name = x.Username.ToLower() })
+                        .GroupBy(x => new {Type = x.Type, Name = x.Username.ToLower()})
                         .ToDictionary(
                             x => new StreamDataKey(x.Key.Type, x.Key.Name),
                             x => x.Select(fs => fs.GuildId).ToHashSet());
@@ -128,7 +128,7 @@ namespace WizBot.Modules.Searches.Services
                             foreach (var kvp in deleteGroups)
                             {
                                 Log.Information($"Deleting {kvp.Value.Count} {kvp.Key} streams because " +
-                                                $"they've been erroring for more than {errorLimit}: {string.Join(", ", kvp.Value)}");
+                                          $"they've been erroring for more than {errorLimit}: {string.Join(", ", kvp.Value)}");
 
                                 var toDelete = uow._context.Set<FollowedStream>()
                                     .AsQueryable()
@@ -137,8 +137,8 @@ namespace WizBot.Modules.Searches.Services
 
                                 uow._context.RemoveRange(toDelete);
                                 uow.SaveChanges();
-
-                                foreach (var loginToDelete in kvp.Value)
+                                
+                                foreach(var loginToDelete in kvp.Value)
                                     _streamTracker.UntrackStreamByKey(new StreamDataKey(kvp.Key, loginToDelete));
                             }
                         }
@@ -168,7 +168,7 @@ namespace WizBot.Modules.Searches.Services
             {
                 var info = JsonConvert.DeserializeAnonymousType(
                     val.ToString(),
-                    new { Key = default(StreamDataKey), GuildId = 0ul });
+                    new {Key = default(StreamDataKey), GuildId = 0ul});
 
                 _streamTracker.CacheAddData(info.Key, null, replace: false);
                 lock (_shardLock)
@@ -197,7 +197,7 @@ namespace WizBot.Modules.Searches.Services
             => Task.Run(() =>
             {
                 var info = JsonConvert.DeserializeAnonymousType(val.ToString(),
-                    new { Key = default(StreamDataKey), GuildId = 0ul });
+                    new {Key = default(StreamDataKey), GuildId = 0ul});
 
                 lock (_shardLock)
                 {
@@ -298,7 +298,7 @@ namespace WizBot.Modules.Searches.Services
 
                 if (gc is null)
                     return Task.CompletedTask;
-
+                
                 if (gc.NotifyStreamOffline)
                     _offlineNotificationServers.Add(gc.GuildId);
 
@@ -387,14 +387,14 @@ namespace WizBot.Modules.Searches.Services
         {
             var sub = _multi.GetSubscriber();
             sub.Publish($"{_creds.RedisKey()}_unfollow_stream",
-                JsonConvert.SerializeObject(new { Key = fs.CreateKey(), GuildId = fs.GuildId }));
+                JsonConvert.SerializeObject(new {Key = fs.CreateKey(), GuildId = fs.GuildId}));
         }
 
         private void PublishFollowStream(FollowedStream fs)
         {
             var sub = _multi.GetSubscriber();
             sub.Publish($"{_creds.RedisKey()}_follow_stream",
-                JsonConvert.SerializeObject(new { Key = fs.CreateKey(), GuildId = fs.GuildId }),
+                JsonConvert.SerializeObject(new {Key = fs.CreateKey(), GuildId = fs.GuildId}),
                 CommandFlags.FireAndForget);
         }
 
@@ -422,7 +422,7 @@ namespace WizBot.Modules.Searches.Services
 
                 if (gc.FollowedStreams.Count >= 10)
                     return null;
-
+                
                 gc.FollowedStreams.Add(fs);
                 await uow.SaveChangesAsync();
 
@@ -557,7 +557,7 @@ namespace WizBot.Modules.Searches.Services
 
             return true;
         }
-        
+
         public int SetStreamMessageForAll(ulong guildId, string message)
         {
             using var uow = _db.GetDbContext();

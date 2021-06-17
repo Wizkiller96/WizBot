@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace WizBot.Core.Modules.Searches.Common
@@ -11,7 +11,7 @@ namespace WizBot.Core.Modules.Searches.Common
         {
 
             [JsonProperty("_id")]
-            public string Id { get; set; }
+            public string Id { get; set; } 
 
             // [JsonProperty("bio")]
             // public string Bio { get; set; } 

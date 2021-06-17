@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -50,7 +50,7 @@ namespace WizBot.Core.Modules.Searches.Common.StreamNotifications.Providers
 
         public override async Task<StreamData?> GetStreamDataAsync(string id)
         {
-            var data = await GetStreamDataAsync(new List<string> { id });
+            var data = await GetStreamDataAsync(new List<string> {id});
 
             return data.FirstOrDefault();
         }
@@ -70,10 +70,10 @@ namespace WizBot.Core.Modules.Searches.Common.StreamNotifications.Providers
                         http.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                         // get id based on the username
                         var res = await http.GetAsync($"https://api.picarto.tv/v1/channel/name/{login}");
-
+                        
                         if (!res.IsSuccessStatusCode)
                             continue;
-
+                        
                         var userData = JsonConvert.DeserializeObject<PicartoChannelResponse>(await res.Content.ReadAsStringAsync());
 
                         toReturn.Add(ToStreamData(userData));

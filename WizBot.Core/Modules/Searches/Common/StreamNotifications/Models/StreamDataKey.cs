@@ -1,4 +1,4 @@
-using WizBot.Core.Services.Database.Models;
+﻿using WizBot.Core.Services.Database.Models;
 
 namespace WizBot.Core.Modules.Searches.Common
 {
@@ -6,7 +6,7 @@ namespace WizBot.Core.Modules.Searches.Common
     {
         public FollowedStream.FType Type { get; }
         public string Name { get; }
-
+        
         public StreamDataKey(FollowedStream.FType type, string name)
         {
             Type = type;

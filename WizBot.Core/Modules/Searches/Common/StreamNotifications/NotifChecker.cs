@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -133,8 +133,7 @@ namespace WizBot.Core.Modules.Searches.Common.StreamNotifications
                             }
                         }
                     }
-
-                    // todo increase to 30?
+                    
                     var tasks = new List<Task>
                     {
                         Task.Delay(30_000)

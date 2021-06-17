@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,14 +24,14 @@ namespace WizBot.Core.Modules.Searches.Common.StreamNotifications.Providers
         /// <param name="url">Url to check</param>
         /// <returns>True if valid, otherwise false</returns>
         public abstract Task<bool> IsValidUrl(string url);
-
+        
         /// <summary>
         /// Gets stream data of the stream on the specified url on this <see cref="Platform"/>
         /// </summary>
         /// <param name="url">Url of the stream</param>
         /// <returns><see cref="StreamData"/> of the specified stream. Null if none found</returns>
         public abstract Task<StreamData?> GetStreamDataByUrlAsync(string url);
-
+            
         /// <summary>
         /// Gets stream data of the specified id/username on this <see cref="Platform"/>
         /// </summary>
@@ -59,7 +59,7 @@ namespace WizBot.Core.Modules.Searches.Common.StreamNotifications.Providers
         protected readonly ConcurrentDictionary<string, DateTime> _failingStreams =
             new ConcurrentDictionary<string, DateTime>();
 
-        public void ClearErrorsFor(string login)
+        public void ClearErrorsFor(string login) 
             => _failingStreams.TryRemove(login, out _);
     }
 }

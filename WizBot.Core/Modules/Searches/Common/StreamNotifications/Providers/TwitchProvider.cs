@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -49,7 +49,7 @@ namespace WizBot.Core.Modules.Searches.Common.StreamNotifications.Providers
 
         public override async Task<StreamData?> GetStreamDataAsync(string id)
         {
-            var data = await GetStreamDataAsync(new List<string> { id });
+            var data = await GetStreamDataAsync(new List<string> {id});
 
             return data.FirstOrDefault();
         }
@@ -81,7 +81,7 @@ namespace WizBot.Core.Modules.Searches.Common.StreamNotifications.Providers
                         // get stream data
                         var str = await http.GetStringAsync($"https://api.twitch.tv/kraken/streams/{user.Id}");
                         var resObj =
-                            JsonConvert.DeserializeAnonymousType(str, new { Stream = new TwitchResponseV5.Stream() });
+                            JsonConvert.DeserializeAnonymousType(str, new {Stream = new TwitchResponseV5.Stream()});
 
                         // if stream is null, user is not streaming
                         if (resObj.Stream is null)
@@ -89,7 +89,7 @@ namespace WizBot.Core.Modules.Searches.Common.StreamNotifications.Providers
                             // if user is not streaming, get his offline banner
                             var chStr = await http.GetStringAsync($"https://api.twitch.tv/kraken/channels/{user.Id}");
                             var ch = JsonConvert.DeserializeObject<TwitchResponseV5.Channel>(chStr);
-
+                            
                             toReturn.Add(new StreamData
                             {
                                 StreamType = FollowedStream.FType.Twitch,
