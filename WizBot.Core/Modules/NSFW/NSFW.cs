@@ -12,6 +12,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using WizBot.Core.Modules.Searches.Common;
 using Serilog;
 
 namespace WizBot.Modules.NSFW
@@ -535,6 +536,61 @@ namespace WizBot.Modules.NSFW
                 else
                     await ReplyConfirmLocalizedAsync("blacklisted_tag_remove", tag).ConfigureAwait(false);
             }
+        }
+        
+        [NadekoCommand, Usage, Description, Aliases]
+        [RequireContext(ContextType.Guild)]
+        [Priority(1)]
+        public async Task Nhentai(uint id)
+        {
+            var g = await _service.GetNhentaiByIdAsync(id);
+
+            if (g is null)
+            {
+                await ReplyErrorLocalizedAsync("not_found");
+                return;
+            }
+
+            await SendNhentaiGalleryInternalAsync(g);
+        }
+        
+        [WizBotCommand, Usage, Description, Aliases]
+        [RequireContext(ContextType.Guild)]
+        [Priority(0)]
+        public async Task Nhentai([Leftover]string query)
+        {
+            var g = await _service.GetNhentaiBySearchAsync(query);
+
+            if (g is null)
+            {
+                await ReplyErrorLocalizedAsync("not_found");
+                return;
+            }
+
+            await SendNhentaiGalleryInternalAsync(g);
+        }
+
+        private async Task SendNhentaiGalleryInternalAsync(Gallery g)
+        {
+            var count = 0;
+            var tagString = g.Tags
+                .Shuffle()
+                .Select(tag => $"[{tag.Name}]({tag.Url})")
+                .TakeWhile(tag => (count += tag.Length) < 1000)
+                .JoinWith(" ");
+            
+            var embed = new EmbedBuilder()
+                .WithTitle(g.Title)
+                .WithDescription(g.FullTitle)
+                .WithImageUrl(g.Thumbnail)
+                .WithUrl(g.Url)
+                .AddField(GetText("favorites"), g.Likes, true)
+                .AddField(GetText("pages"), g.PageCount, true)
+                .AddField(GetText("tags"), tagString, true)
+                .WithFooter(g.UploadedAt.ToString("f"))
+                .WithOkColor();
+
+            await ctx.Channel.EmbedAsync(embed);
         }
 
         [WizBotCommand, Usage, Description, Aliases]

@@ -1073,5 +1073,8 @@
   "expr_import_invalid_data": "Unable to parse the file. Make sure it's a valid .yml file",
   "inv_expire": "Expires in:",
   "inv_uses": "Uses:",
-  "empty_page": "This page is empty."
+  "empty_page": "This page is empty.",
+  "pages": "Pages",
+  "favorites": "Favorites",
+  "tags": "Tags"
 }

@@ -1,14 +1,10 @@
 ﻿using AngleSharp;
-using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
-using AngleSharp.Html.Parser;
 using Discord;
 using Discord.Commands;
-using Discord.WebSocket;
 using Microsoft.Extensions.Caching.Memory;
 using WizBot.Common;
 using WizBot.Common.Attributes;
-using WizBot.Common.Replacements;
 using WizBot.Core.Modules.Searches.Common;
 using WizBot.Core.Services;
 using WizBot.Extensions;

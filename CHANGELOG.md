@@ -4,6 +4,10 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+### Added
+
+- Added `.nhentai`, supports ids or search queries
+
 ### Changed
 
 - `.aar` reworked. Now supports multiple roles, up to 3.
