@@ -521,19 +521,33 @@ allrolemdls:
   args:
     - "[enable/disable] MyRole"
 userblacklist:
-  desc: "Either [add]s or [rem]oves a user specified by a Mention or an ID from a blacklist."
+  desc: |-
+    Either [add]s or [rem]oves a user or users specified by a Mention or an ID from a blacklist.
+    Specify no argument or a page number to list blacklisted users.
   args:
+    - "add @SomeUser @SomeUser2 @SomeUser3"
     - "add @SomeUser"
     - "rem 12312312313"
+    - ""
+    - "4"
 channelblacklist:
-  desc: "Either [add]s or [rem]oves a channel specified by an ID from a blacklist."
+  desc: |-
+    Either [add]s or [rem]oves a channel or channels specified an ID from a blacklist.
+    Specify no argument or a page number to list blacklisted channels.
   args:
+    - "add 12312312312 66666666666"
     - "rem 12312312312"
+    - ""
+    - "3"
 serverblacklist:
-  desc: "Either [add]s or [rem]oves a server specified by a Name or an ID from a blacklist."
+  desc: |-
+    Either [add]s or [rem]oves a server, or servers specified by an ID from a blacklist.
+    Specify no argument or a page number to list blacklisted servers.
   args:
     - "add 12312321312"
-    - "rem SomeTrashServer"
+    - "rem 12312321312"
+    - ""
+    - "2"
 cmdcooldown:
   desc: "Sets a cooldown per user for a command. Set it to 0 to remove the cooldown."
   args:

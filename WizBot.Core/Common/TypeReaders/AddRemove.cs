@@ -2,8 +2,8 @@
 {
     public enum AddRemove
     {
-        Add = 0,
-        Rem = 1,
-        Rm = 1,
+        Add = int.MinValue,
+        Rem = int.MinValue + 1,
+        Rm = int.MinValue + 1,
     }
 }

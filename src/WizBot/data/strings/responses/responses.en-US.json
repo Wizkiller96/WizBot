@@ -437,6 +437,9 @@
   "aum_disable": "Disabled usage of ALL MODULES for user {0}.",
   "aum_enable": "Enabled usage of ALL MODULES for user {0}.",
   "blacklisted": "Blacklisted {0} with ID {1}",
+  "blacklisted_users": "Blacklisted Users",
+  "blacklisted_channels": "Blacklisted Channels",
+  "blacklisted_servers": "Blacklisted Servers",
   "cmdcd_add": "Command {0} now has a {1}s cooldown.",
   "cmdcd_cleared": "Command {0} has no cooldown now and all existing cooldowns have been cleared.",
   "cmdcd_none": "No command cooldowns set.",
@@ -1069,5 +1072,6 @@
   "expr_import_no_input": "Invalid input. No valid file upload or input text found.",
   "expr_import_invalid_data": "Unable to parse the file. Make sure it's a valid .yml file",
   "inv_expire": "Expires in:",
-  "inv_uses": "Uses:"
+  "inv_uses": "Uses:",
+  "empty_page": "This page is empty."
 }

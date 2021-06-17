@@ -11,6 +11,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
   - Use `.aar` to list roles which will be added
   - Roles which are deleted are automatically cleaned up from `.aar`
 - `.inrole` now also shows user ids
+- Blacklist commands (Bot Owner & Bot Admin only) `.ubl` `.sbl` and `.cbl` will now list blacklisted items when no argument (or a page number) is provided
 
 ## [2.45.2] - 14.06.2021
 

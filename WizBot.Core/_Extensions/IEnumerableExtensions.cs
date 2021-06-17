@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 using WizBot.Common.Collections;
 using WizBot.Core.Services.Database.Models;
 
@@ -143,5 +144,8 @@ namespace WizBot.Extensions
                 yield return chunk;
             }
         }
+        
+        public static Task<TData[]> WhenAll<TData>(this IEnumerable<Task<TData>> items)
+            => Task.WhenAll(items);
     }
 }
