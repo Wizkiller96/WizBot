@@ -4,6 +4,13 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+### Changed
+
+- `.aar` reworked. Now supports multiple roles, up to 3.
+  - Toggle roles that are added to newly joined users with `.aar RoleName`
+  - Use `.aar` to list roles which will be added
+  - Roles which are deleted are automatically cleaned up from `.aar`
+- `.inrole` now also shows user ids
 
 ## [2.45.2] - 14.06.2021
 

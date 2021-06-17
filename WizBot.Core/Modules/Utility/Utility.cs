@@ -124,7 +124,7 @@ namespace WizBot.Modules.Utility
             var users = await ctx.Guild.GetUsersAsync();
             var roleUsers = users
                 .Where(u => role is null ? u.RoleIds.Count == 1 : u.RoleIds.Contains(role.Id))
-                .Select(u => u.ToString())
+                .Select(u => $"`{u.Id, 18}` {u}")
                 .ToArray();
 
             await ctx.SendPaginatedConfirmAsync(page, (cur) =>
