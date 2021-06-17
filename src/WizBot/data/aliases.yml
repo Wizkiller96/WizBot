@@ -652,6 +652,8 @@ avatar:
 - av
 hentai:
 - hentai
+nhentai:
+- nhentai
 danbooru:
 - danbooru
 derpibooru:
@@ -732,6 +734,8 @@ voicemute:
 - voicemute
 konachan:
 - konachan
+sankaku:
+- sankaku
 muterole:
 - muterole
 - setmuterole

@@ -365,6 +365,11 @@ namespace WizBot.Modules.NSFW
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
         public Task Konachan([Leftover] string tag = null)
             => InternalDapiCommand(tag, DapiSearchType.Konachan, false);
+        
+        [WizBotCommand, Usage, Description, Aliases]
+        [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
+        public Task Sankaku([Leftover] string tag = null)
+            => InternalDapiCommand(tag, DapiSearchType.Sankaku, false);
 
         [WizBotCommand, Usage, Description, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
@@ -538,7 +543,7 @@ namespace WizBot.Modules.NSFW
             }
         }
         
-        [NadekoCommand, Usage, Description, Aliases]
+        [WizBotCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
         public async Task Nhentai(uint id)

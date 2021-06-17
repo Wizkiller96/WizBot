@@ -1066,6 +1066,10 @@ gelbooru:
   desc: "Shows a random hentai image from gelbooru with a given tag. Tag is optional but preferred. (multiple tags are appended with +)"
   args:
     - "yuri+kissing"
+sankaku:
+  desc: "Shows a random hentai image from chan.sankakucomplex.com with a given tag. Tag is optional but preferred. (multiple tags are appended with +)"
+  args:
+    - "yuri+kiss"
 rule34:
   desc: "Shows a random image from rule34.xx with a given tag. Tag is optional but preferred. (multiple tags are appended with +)"
   args:

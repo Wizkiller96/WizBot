@@ -6,7 +6,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ### Added
 
-- Added `.nhentai`, supports ids or search queries
+- Added some nsfw commands
 
 ### Changed
 

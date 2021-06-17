@@ -11,6 +11,7 @@ using Serilog;
 
 namespace WizBot.Modules.Searches.Common
 {
+    // note: this is not the code that public wizbot is using
     public class SearchImageCacher
     {
         private readonly SemaphoreSlim _lock = new SemaphoreSlim(1, 1);
@@ -137,6 +138,9 @@ namespace WizBot.Modules.Searches.Common
                     tag = string.IsNullOrWhiteSpace(tag) ? "safe" : tag;
                     website = $"https://www.derpibooru.org/api/v1/json/search/images?q={tag?.Replace('+', ',')}&per_page=49";
                     break;
+                case DapiSearchType.Sankaku:
+                    website = $"https://capi-v2.sankakucomplex.com/posts?tags={tag}&limit=50";
+                    break;
             }
 
             try
@@ -150,6 +154,19 @@ namespace WizBot.Modules.Searches.Common
                         return JsonConvert.DeserializeObject<DapiImageObject[]>(data)
                             .Where(x => x.FileUrl != null)
                             .Select(x => new ImageCacherObject(x, type))
+                            .ToArray();
+                    }
+                    
+                    if (type == DapiSearchType.Sankaku)
+                    {
+                        var data = await _http.GetStringAsync(website).ConfigureAwait(false);
+                        return JsonConvert.DeserializeObject<SankakuImageObject[]>(data)
+                            .Where(x => !string.IsNullOrWhiteSpace(x.FileUrl) && x.FileType.StartsWith("image"))
+                            .Select(x => new ImageCacherObject(
+                                x.FileUrl,
+                                DapiSearchType.Sankaku,
+                                x.Tags.Select(x => x.Name).JoinWith(','),
+                                x.Score))
                             .ToArray();
                     }
 
@@ -250,6 +267,25 @@ namespace WizBot.Modules.Searches.Common
         public string[] Tags { get; set; }
         public string Score { get; set; }
     }
+    
+    public class SankakuImageObject
+    {
+        public class Tag
+        {
+            public string Name { get; set; }
+        }
+        
+        [JsonProperty("file_url")]
+        public string FileUrl { get; set; }
+        
+        [JsonProperty("file_type")]
+        public string FileType { get; set; }
+        
+        public Tag[] Tags { get; set; }
+        
+        [JsonProperty("total_score")]
+        public string Score { get; set; }
+    }
 
     public enum DapiSearchType
     {
@@ -261,6 +297,7 @@ namespace WizBot.Modules.Searches.Common
         Rule34,
         Yandere,
         Danbooru,
+        Sankaku,
     }
     public class SafebooruElement
     {
