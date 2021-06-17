@@ -13,9 +13,9 @@ namespace Nadeko.Tests
 {
     public class CommandStringsTests
     {
-        private const string responsesPath = "../../../../src/NadekoBot/data/strings/responses";
-        private const string commandsPath = "../../../../src/NadekoBot/data/strings/commands";
-        private const string aliasesPath = "../../../../src/NadekoBot/data/aliases.yml";
+        private const string responsesPath = "../../../../NadekoBot/data/strings/responses";
+        private const string commandsPath = "../../../../NadekoBot/data/strings/commands";
+        private const string aliasesPath = "../../../../NadekoBot/data/aliases.yml";
         [Test]
         public void AllCommandNamesHaveStrings()
         {
