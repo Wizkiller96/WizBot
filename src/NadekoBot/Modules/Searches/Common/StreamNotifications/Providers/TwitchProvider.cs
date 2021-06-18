@@ -72,7 +72,7 @@ namespace NadekoBot.Core.Modules.Searches.Common.StreamNotifications.Providers
                         // get id based on the username
                         var idsStr = await http.GetStringAsync($"https://api.twitch.tv/kraken/users?login={login}");
                         var userData = JsonConvert.DeserializeObject<TwitchUsersResponseV5>(idsStr);
-                        var user = userData.Users.FirstOrDefault();
+                        var user = userData?.Users.FirstOrDefault();
 
                         // if user can't be found, skip, it means there is no such user
                         if (user is null)
@@ -84,11 +84,11 @@ namespace NadekoBot.Core.Modules.Searches.Common.StreamNotifications.Providers
                             JsonConvert.DeserializeAnonymousType(str, new {Stream = new TwitchResponseV5.Stream()});
 
                         // if stream is null, user is not streaming
-                        if (resObj.Stream is null)
+                        if (resObj?.Stream is null)
                         {
                             // if user is not streaming, get his offline banner
                             var chStr = await http.GetStringAsync($"https://api.twitch.tv/kraken/channels/{user.Id}");
-                            var ch = JsonConvert.DeserializeObject<TwitchResponseV5.Channel>(chStr);
+                            var ch = JsonConvert.DeserializeObject<TwitchResponseV5.Channel>(chStr)!;
                             
                             toReturn.Add(new StreamData
                             {

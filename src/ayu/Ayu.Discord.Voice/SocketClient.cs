@@ -1,9 +1,9 @@
 ﻿using Serilog;
 using System;
+using System.Buffers;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
-using Ayu.Discord.Voice;
 
 namespace Ayu.Discord.Gateway
 {

@@ -74,7 +74,7 @@ namespace NadekoBot.Core.Modules.Searches.Common.StreamNotifications.Providers
                         if (!res.IsSuccessStatusCode)
                             continue;
                         
-                        var userData = JsonConvert.DeserializeObject<PicartoChannelResponse>(await res.Content.ReadAsStringAsync());
+                        var userData = JsonConvert.DeserializeObject<PicartoChannelResponse>(await res.Content.ReadAsStringAsync())!;
 
                         toReturn.Add(ToStreamData(userData));
                         _failingStreams.TryRemove(login, out _);
