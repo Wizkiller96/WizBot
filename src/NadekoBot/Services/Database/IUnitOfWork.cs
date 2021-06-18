@@ -10,7 +10,6 @@ namespace NadekoBot.Core.Services.Database
 
         IQuoteRepository Quotes { get; }
         IGuildConfigRepository GuildConfigs { get; }
-        IReminderRepository Reminders { get; }
         ICustomReactionRepository CustomReactions { get; }
         IMusicPlaylistRepository MusicPlaylists { get; }
         IWaifuRepository Waifus { get; }

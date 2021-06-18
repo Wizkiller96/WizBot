@@ -15,9 +15,6 @@ namespace NadekoBot.Core.Services.Database
         private IGuildConfigRepository _guildConfigs;
         public IGuildConfigRepository GuildConfigs => _guildConfigs ?? (_guildConfigs = new GuildConfigRepository(_context));
 
-        private IReminderRepository _reminders;
-        public IReminderRepository Reminders => _reminders ?? (_reminders = new ReminderRepository(_context));
-
         private IMusicPlaylistRepository _musicPlaylists;
         public IMusicPlaylistRepository MusicPlaylists => _musicPlaylists ?? (_musicPlaylists = new MusicPlaylistRepository(_context));
 

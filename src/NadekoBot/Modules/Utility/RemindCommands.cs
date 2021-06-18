@@ -9,6 +9,7 @@ using NadekoBot.Core.Services;
 using NadekoBot.Core.Services.Database.Models;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Administration.Services;
+using NadekoBot.Modules.Utility.Common;
 using NadekoBot.Modules.Utility.Services;
 
 namespace NadekoBot.Modules.Utility
@@ -92,7 +93,7 @@ namespace NadekoBot.Modules.Utility
                 List<Reminder> rems;
                 using (var uow = _db.GetDbContext())
                 {
-                    rems = uow.Reminders.RemindersFor(ctx.User.Id, page)
+                    rems = uow._context.Reminders.RemindersFor(ctx.User.Id, page)
                         .ToList();
                 }
 
@@ -130,13 +131,13 @@ namespace NadekoBot.Modules.Utility
                 Reminder rem = null;
                 using (var uow = _db.GetDbContext())
                 {
-                    var rems = uow.Reminders.RemindersFor(ctx.User.Id, index / 10)
+                    var rems = uow._context.Reminders.RemindersFor(ctx.User.Id, index / 10)
                         .ToList();
                     var pageIndex = index % 10;
                     if (rems.Count > pageIndex)
                     {
                         rem = rems[pageIndex];
-                        uow.Reminders.Remove(rem);
+                        uow._context.Reminders.Remove(rem);
                         uow.SaveChanges();
                     }
                 }
@@ -179,7 +180,7 @@ namespace NadekoBot.Modules.Utility
 
                 using (var uow = _db.GetDbContext())
                 {
-                    uow.Reminders.Add(rem);
+                    uow._context.Reminders.Add(rem);
                     await uow.SaveChangesAsync();
                 }
 
