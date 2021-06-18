@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.Yml;
 using NadekoBot.Core.Common;
+using NadekoBot.Db;
 using Serilog;
 using YamlDotNet.Serialization;
 
@@ -222,7 +223,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
 
             using (var uow = _db.GetDbContext())
             {
-                uow.CustomReactions.Add(cr);
+                uow._context.CustomReactions.Add(cr);
                 await uow.SaveChangesAsync();
             }
 
@@ -234,7 +235,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
         public async Task<CustomReaction> EditAsync(ulong? guildId, int id, string message)
         {
             using var uow = _db.GetDbContext();
-            var cr = uow.CustomReactions.GetById(id);
+            var cr = uow._context.CustomReactions.GetById(id);
 
             if (cr == null || cr.GuildId != guildId)
                 return null;
@@ -262,14 +263,14 @@ namespace NadekoBot.Modules.CustomReactions.Services
         public async Task<CustomReaction> DeleteAsync(ulong? guildId, int id)
         {
             using var uow = _db.GetDbContext();
-            var toDelete = uow.CustomReactions.GetById(id);
+            var toDelete = uow._context.CustomReactions.GetById(id);
             
             if (toDelete is null)
                 return null;
             
             if ((toDelete.IsGlobal() && guildId == null) || (guildId == toDelete.GuildId))
             {
-                uow.CustomReactions.Remove(toDelete);
+                uow._context.CustomReactions.Remove(toDelete);
                 await uow.SaveChangesAsync();
                 await DeleteInternalAsync(guildId, id);
                 return toDelete;
@@ -468,7 +469,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
         {
             CustomReaction cr;
             using var uow = _db.GetDbContext();
-            cr = uow.CustomReactions.GetById(id);
+            cr = uow._context.CustomReactions.GetById(id);
             if (cr is null)
                 return;
 
@@ -586,7 +587,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
             CustomReaction cr;
             using (var uow = _db.GetDbContext())
             {
-                cr = uow.CustomReactions.GetById(id);
+                cr = uow._context.CustomReactions.GetById(id);
                 if (cr is null)
                     return;
 
@@ -604,7 +605,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
             CustomReaction cr;
             using (var uow = _db.GetDbContext())
             {
-                cr = uow.CustomReactions.GetById(id);
+                cr = uow._context.CustomReactions.GetById(id);
                 if (cr is null)
                     return (false, false);
                 if (field == CrField.AutoDelete)
@@ -627,7 +628,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
         public CustomReaction GetCustomReaction(ulong? guildId, int id)
         {
             using var uow = _db.GetDbContext();
-            var cr = uow.CustomReactions.GetById(id);
+            var cr = uow._context.CustomReactions.GetById(id);
             if (cr == null || cr.GuildId != guildId)
                 return null;
 
@@ -637,7 +638,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
         public int DeleteAllCustomReactions(ulong guildId)
         {
             using var uow = _db.GetDbContext();
-            var count = uow.CustomReactions.ClearFromGuild(guildId);
+            var count = uow._context.CustomReactions.ClearFromGuild(guildId);
             uow.SaveChanges();
             
             _newGuildReactions.TryRemove(guildId, out _);
@@ -648,7 +649,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
         public bool ReactionExists(ulong? guildId, string input)
         {
             using var uow = _db.GetDbContext();
-            var cr = uow.CustomReactions.GetByGuildIdAndInput(guildId, input);
+            var cr = uow._context.CustomReactions.GetByGuildIdAndInput(guildId, input);
             return cr != null;
         }
 

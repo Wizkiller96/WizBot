@@ -15,9 +15,6 @@ namespace NadekoBot.Core.Services.Database
         private IGuildConfigRepository _guildConfigs;
         public IGuildConfigRepository GuildConfigs => _guildConfigs ?? (_guildConfigs = new GuildConfigRepository(_context));
 
-        private ICustomReactionRepository _customReactions;
-        public ICustomReactionRepository CustomReactions => _customReactions ?? (_customReactions = new CustomReactionsRepository(_context));
-
         private IWaifuRepository _waifus;
         public IWaifuRepository Waifus => _waifus ?? (_waifus = new WaifuRepository(_context));
 
