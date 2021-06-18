@@ -1,11 +1,13 @@
 ﻿using NadekoBot.Core.Services;
 using System;
+using System.Collections.Generic;
 using NadekoBot.Core.Services.Database.Models;
 using Discord;
 using System.Linq;
 using NadekoBot.Extensions;
 using System.Net.Http;
 using System.Threading.Tasks;
+using NadekoBot.Modules.Xp.Common;
 
 namespace NadekoBot.Modules.Xp.Services
 {
@@ -25,34 +27,32 @@ namespace NadekoBot.Modules.Xp.Services
             //must be lvl 5 and must not be in a club already
 
             club = null;
-            using (var uow = _db.GetDbContext())
+            using var uow = _db.GetDbContext();
+            var du = uow.DiscordUsers.GetOrCreate(user);
+            uow._context.SaveChanges();
+            var xp = new LevelStats(du.TotalXp);
+
+            if (xp.Level >= 5 && du.Club == null)
             {
-                var du = uow.DiscordUsers.GetOrCreate(user);
-                uow._context.SaveChanges();
-                var xp = new LevelStats(du.TotalXp);
-
-                if (xp.Level >= 5 && du.Club == null)
+                du.IsClubAdmin = true;
+                du.Club = new ClubInfo()
                 {
-                    du.IsClubAdmin = true;
-                    du.Club = new ClubInfo()
-                    {
-                        Name = clubName,
-                        Discrim = uow.Clubs.GetNextDiscrim(clubName),
-                        Owner = du,
-                    };
-                    uow.Clubs.Add(du.Club);
-                    uow._context.SaveChanges();
-                }
-                else
-                    return false;
-
-                uow._context.Set<ClubApplicants>()
-                    .RemoveRange(uow._context.Set<ClubApplicants>()
-                        .AsQueryable()
-                        .Where(x => x.UserId == du.Id));
-                club = du.Club;
-                uow.SaveChanges();
+                    Name = clubName,
+                    Discrim = uow._context.Clubs.GetNextDiscrim(clubName),
+                    Owner = du,
+                };
+                uow._context.Clubs.Add(du.Club);
+                uow._context.SaveChanges();
             }
+            else
+                return false;
+
+            uow._context.Set<ClubApplicants>()
+                .RemoveRange(uow._context.Set<ClubApplicants>()
+                    .AsQueryable()
+                    .Where(x => x.UserId == du.Id));
+            club = du.Club;
+            uow.SaveChanges();
 
             return true;
         }
@@ -62,7 +62,7 @@ namespace NadekoBot.Modules.Xp.Services
             ClubInfo club;
             using (var uow = _db.GetDbContext())
             {
-                club = uow.Clubs.GetByOwner(from.Id);
+                club = uow._context.Clubs.GetByOwner(from.Id);
                 var newOwnerUser = uow.DiscordUsers.GetOrCreate(newOwner);
 
                 if (club == null ||
@@ -83,7 +83,7 @@ namespace NadekoBot.Modules.Xp.Services
             bool newState;
             using (var uow = _db.GetDbContext())
             {
-                var club = uow.Clubs.GetByOwner(owner.Id);
+                var club = uow._context.Clubs.GetByOwner(owner.Id);
                 var adminUser = uow.DiscordUsers.GetOrCreate(toAdmin);
 
                 if (club == null || club.Owner.UserId != owner.Id ||
@@ -101,10 +101,9 @@ namespace NadekoBot.Modules.Xp.Services
 
         public ClubInfo GetClubByMember(IUser user)
         {
-            using (var uow = _db.GetDbContext())
-            {
-                return uow.Clubs.GetByMember(user.Id);
-            }
+            using var uow = _db.GetDbContext();
+            var member = uow._context.Clubs.GetByMember(user.Id);
+            return member;
         }
 
         public async Task<bool> SetClubIcon(ulong ownerUserId, Uri url)
@@ -121,7 +120,7 @@ namespace NadekoBot.Modules.Xp.Services
 
             using (var uow = _db.GetDbContext())
             {
-                var club = uow.Clubs.GetByOwner(ownerUserId, set => set);
+                var club = uow._context.Clubs.GetByOwner(ownerUserId);
 
                 if (club == null)
                     return false;
@@ -148,7 +147,7 @@ namespace NadekoBot.Modules.Xp.Services
 
             using (var uow = _db.GetDbContext())
             {
-                club = uow.Clubs.GetByName(name, discrim);
+                club = uow._context.Clubs.GetByName(name, discrim);
                 if (club == null)
                     return false;
                 else
@@ -191,7 +190,7 @@ namespace NadekoBot.Modules.Xp.Services
             discordUser = null;
             using (var uow = _db.GetDbContext())
             {
-                var club = uow.Clubs.GetByOwnerOrAdmin(clubOwnerUserId);
+                var club = uow._context.Clubs.GetByOwnerOrAdmin(clubOwnerUserId);
                 if (club == null)
                     return false;
 
@@ -219,7 +218,7 @@ namespace NadekoBot.Modules.Xp.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                return uow.Clubs.GetByOwnerOrAdmin(ownerUserId);
+                return uow._context.Clubs.GetByOwnerOrAdmin(ownerUserId);
             }
         }
 
@@ -245,7 +244,7 @@ namespace NadekoBot.Modules.Xp.Services
 
             using (var uow = _db.GetDbContext())
             {
-                var club = uow.Clubs.GetByOwner(userId);
+                var club = uow._context.Clubs.GetByOwner(userId);
                 if (club == null)
                     return false;
 
@@ -260,7 +259,7 @@ namespace NadekoBot.Modules.Xp.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var club = uow.Clubs.GetByOwner(userId);
+                var club = uow._context.Clubs.GetByOwner(userId);
                 if (club == null)
                     return false;
 
@@ -275,11 +274,11 @@ namespace NadekoBot.Modules.Xp.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                club = uow.Clubs.GetByOwner(userId);
+                club = uow._context.Clubs.GetByOwner(userId);
                 if (club == null)
                     return false;
 
-                uow.Clubs.Remove(club);
+                uow._context.Clubs.Remove(club);
                 uow.SaveChanges();
             }
             return true;
@@ -289,7 +288,7 @@ namespace NadekoBot.Modules.Xp.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                club = uow.Clubs.GetByOwnerOrAdmin(bannerId);
+                club = uow._context.Clubs.GetByOwnerOrAdmin(bannerId);
                 if (club == null)
                     return false;
 
@@ -322,7 +321,7 @@ namespace NadekoBot.Modules.Xp.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                club = uow.Clubs.GetByOwnerOrAdmin(ownerUserId);
+                club = uow._context.Clubs.GetByOwnerOrAdmin(ownerUserId);
                 if (club == null)
                     return false;
 
@@ -341,7 +340,7 @@ namespace NadekoBot.Modules.Xp.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                club = uow.Clubs.GetByOwnerOrAdmin(kickerId);
+                club = uow._context.Clubs.GetByOwnerOrAdmin(kickerId);
                 if (club == null)
                     return false;
 
@@ -362,15 +361,13 @@ namespace NadekoBot.Modules.Xp.Services
             return true;
         }
 
-        public ClubInfo[] GetClubLeaderboardPage(int page)
+        public List<ClubInfo> GetClubLeaderboardPage(int page)
         {
             if (page < 0)
                 throw new ArgumentOutOfRangeException(nameof(page));
 
-            using (var uow = _db.GetDbContext())
-            {
-                return uow.Clubs.GetClubLeaderboardPage(page);
-            }
+            using var uow = _db.GetDbContext();
+            return uow._context.Clubs.GetClubLeaderboardPage(page);
         }
     }
 }

@@ -39,9 +39,6 @@ namespace NadekoBot.Core.Services.Database
         private IXpRepository _xp;
         public IXpRepository Xp => _xp ?? (_xp = new XpRepository(_context));
 
-        private IClubRepository _clubs;
-        public IClubRepository Clubs => _clubs ?? (_clubs = new ClubRepository(_context));
-
         private IPollsRepository _polls;
         public IPollsRepository Polls => _polls ?? (_polls = new PollsRepository(_context));
 
