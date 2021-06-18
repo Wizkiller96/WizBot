@@ -18,9 +18,6 @@ namespace NadekoBot.Core.Services.Database
         private IReminderRepository _reminders;
         public IReminderRepository Reminders => _reminders ?? (_reminders = new ReminderRepository(_context));
 
-        private ISelfAssignedRolesRepository _selfAssignedRoles;
-        public ISelfAssignedRolesRepository SelfAssignedRoles => _selfAssignedRoles ?? (_selfAssignedRoles = new SelfAssignedRolesRepository(_context));
-
         private IMusicPlaylistRepository _musicPlaylists;
         public IMusicPlaylistRepository MusicPlaylists => _musicPlaylists ?? (_musicPlaylists = new MusicPlaylistRepository(_context));
 
