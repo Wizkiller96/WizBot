@@ -6,9 +6,7 @@ namespace NadekoBot.Core.Services.Database
 {
     public interface IUnitOfWork : IDisposable
     {
-        NadekoContext _context { get; }
-
-        IQuoteRepository Quotes { get; }
+        NadekoContext _context { get; } 
         IGuildConfigRepository GuildConfigs { get; }
         IWaifuRepository Waifus { get; }
         IDiscordUserRepository DiscordUsers { get; }

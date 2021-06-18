@@ -9,9 +9,6 @@ namespace NadekoBot.Core.Services.Database
     {
         public NadekoContext _context { get; }
 
-        private IQuoteRepository _quotes;
-        public IQuoteRepository Quotes => _quotes ?? (_quotes = new QuoteRepository(_context));
-
         private IGuildConfigRepository _guildConfigs;
         public IGuildConfigRepository GuildConfigs => _guildConfigs ?? (_guildConfigs = new GuildConfigRepository(_context));
 

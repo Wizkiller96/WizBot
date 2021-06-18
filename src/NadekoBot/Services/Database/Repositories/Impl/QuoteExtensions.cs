@@ -7,15 +7,11 @@ using NadekoBot.Common;
 
 namespace NadekoBot.Core.Services.Database.Repositories.Impl
 {
-    public class QuoteRepository : Repository<Quote>, IQuoteRepository
+    public static class QuoteExtensions
     {
-        public QuoteRepository(DbContext context) : base(context)
+        public static IEnumerable<Quote> GetGroup(this DbSet<Quote> quotes, ulong guildId, int page, OrderType order)
         {
-        }
-
-        public IEnumerable<Quote> GetGroup(ulong guildId, int page, OrderType order)
-        {
-            var q = _set.AsQueryable().Where(x => x.GuildId == guildId);
+            var q = quotes.AsQueryable().Where(x => x.GuildId == guildId);
             if (order == OrderType.Keyword)
                 q = q.OrderBy(x => x.Keyword);
             else
@@ -24,20 +20,20 @@ namespace NadekoBot.Core.Services.Database.Repositories.Impl
             return q.Skip(15 * page).Take(15).ToArray();
         }
 
-        public async Task<Quote> GetRandomQuoteByKeywordAsync(ulong guildId, string keyword)
+        public static async Task<Quote> GetRandomQuoteByKeywordAsync(this DbSet<Quote> quotes, ulong guildId, string keyword)
         {
             var rng = new NadekoRandom();
-            return (await _set.AsQueryable()
+            return (await quotes.AsQueryable()
                 .Where(q => q.GuildId == guildId && q.Keyword == keyword)
                 .ToListAsync())
                 .OrderBy(q => rng.Next())
                 .FirstOrDefault();
         }
 
-        public async Task<Quote> SearchQuoteKeywordTextAsync(ulong guildId, string keyword, string text)
+        public static async Task<Quote> SearchQuoteKeywordTextAsync(this DbSet<Quote> quotes, ulong guildId, string keyword, string text)
         {
             var rngk = new NadekoRandom();
-            return (await _set.AsQueryable()
+            return (await quotes.AsQueryable()
                 .Where(q => q.GuildId == guildId
                             && q.Keyword == keyword
                             && EF.Functions.Like(q.Text.ToUpper(), $"%{text.ToUpper()}%")
@@ -48,9 +44,9 @@ namespace NadekoBot.Core.Services.Database.Repositories.Impl
                 .FirstOrDefault();
         }
 
-        public void RemoveAllByKeyword(ulong guildId, string keyword)
+        public static void RemoveAllByKeyword(this DbSet<Quote> quotes, ulong guildId, string keyword)
         {
-            _set.RemoveRange(_set.AsQueryable().Where(x => x.GuildId == guildId && x.Keyword.ToUpper() == keyword));
+            quotes.RemoveRange(quotes.AsQueryable().Where(x => x.GuildId == guildId && x.Keyword.ToUpper() == keyword));
         }
 
     }
