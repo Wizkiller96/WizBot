@@ -10,6 +10,7 @@ using NadekoBot.Core.Services;
 using NadekoBot.Core.Services.Database.Models;
 using NadekoBot.Extensions;
 using NadekoBot.Modules;
+using NadekoBot.Modules.Music;
 using NadekoBot.Modules.Music.Services;
 using Serilog;
 
@@ -55,7 +56,7 @@ namespace NadekoBot.Core.Modules.Music
 
                 using (var uow = _db.GetDbContext())
                 {
-                    playlists = uow.MusicPlaylists.GetPlaylistsOnPage(num);
+                    playlists = uow._context.MusicPlaylists.GetPlaylistsOnPage(num);
                 }
 
                 var embed = new EmbedBuilder()
@@ -75,13 +76,13 @@ namespace NadekoBot.Core.Modules.Music
                 {
                     using (var uow = _db.GetDbContext())
                     {
-                        var pl = uow.MusicPlaylists.GetById(id);
+                        var pl = uow._context.MusicPlaylists.FirstOrDefault(x => x.Id == id);
 
                         if (pl != null)
                         {
                             if (_creds.IsOwner(ctx.User) || pl.AuthorId == ctx.User.Id)
                             {
-                                uow.MusicPlaylists.Remove(pl);
+                                uow._context.MusicPlaylists.Remove(pl);
                                 await uow.SaveChangesAsync();
                                 success = true;
                             }
@@ -109,7 +110,7 @@ namespace NadekoBot.Core.Modules.Music
                 MusicPlaylist mpl;
                 using (var uow = _db.GetDbContext())
                 {
-                    mpl = uow.MusicPlaylists.GetWithSongs(id);
+                    mpl = uow._context.MusicPlaylists.GetWithSongs(id);
                 }
 
                 await ctx.SendPaginatedConfirmAsync(page, (cur) =>
@@ -155,7 +156,7 @@ namespace NadekoBot.Core.Modules.Music
                         AuthorId = ctx.User.Id,
                         Songs = songs.ToList(),
                     };
-                    uow.MusicPlaylists.Add(playlist);
+                    uow._context.MusicPlaylists.Add(playlist);
                     await uow.SaveChangesAsync();
                 }
 
@@ -207,7 +208,7 @@ namespace NadekoBot.Core.Modules.Music
                     MusicPlaylist mpl;
                     using (var uow = _db.GetDbContext())
                     {
-                        mpl = uow.MusicPlaylists.GetWithSongs(id);
+                        mpl = uow._context.MusicPlaylists.GetWithSongs(id);
                     }
 
                     if (mpl == null)

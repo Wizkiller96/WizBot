@@ -4,28 +4,25 @@ using System.Linq;
 using System.Threading.Tasks;
 using System;
 
-namespace NadekoBot.Core.Services.Database.Repositories.Impl
+namespace NadekoBot.Modules.Administration.Common
 {
-    public class WarningsRepository : Repository<Warning>, IWarningsRepository
+    public static class WarningExtensions
     {
-        public WarningsRepository(DbContext context) : base(context)
+        public static Warning[] ForId(this DbSet<Warning> warnings, ulong guildId, ulong userId)
         {
-        }
-
-        public Warning[] ForId(ulong guildId, ulong userId)
-        {
-            var query = _set.AsQueryable().Where(x => x.GuildId == guildId && x.UserId == userId)
+            var query = warnings.AsQueryable()
+                .Where(x => x.GuildId == guildId && x.UserId == userId)
                 .OrderByDescending(x => x.DateAdded);
 
             return query.ToArray();
         }
 
-        public bool Forgive(ulong guildId, ulong userId, string mod, int index)
+        public static bool Forgive(this DbSet<Warning> warnings, ulong guildId, ulong userId, string mod, int index)
         {
             if (index < 0)
                 throw new ArgumentOutOfRangeException(nameof(index));
 
-            var warn = _set.AsQueryable().Where(x => x.GuildId == guildId && x.UserId == userId)
+            var warn = warnings.AsQueryable().Where(x => x.GuildId == guildId && x.UserId == userId)
                 .OrderByDescending(x => x.DateAdded)
                 .Skip(index)
                 .FirstOrDefault();
@@ -38,9 +35,9 @@ namespace NadekoBot.Core.Services.Database.Repositories.Impl
             return true;
         }
 
-        public async Task ForgiveAll(ulong guildId, ulong userId, string mod)
+        public static async Task ForgiveAll(this DbSet<Warning> warnings, ulong guildId, ulong userId, string mod)
         {
-            await _set.AsQueryable().Where(x => x.GuildId == guildId && x.UserId == userId)
+            await warnings.AsQueryable().Where(x => x.GuildId == guildId && x.UserId == userId)
                 .ForEachAsync(x =>
                 {
                     if (x.Forgiven != true)
@@ -51,9 +48,9 @@ namespace NadekoBot.Core.Services.Database.Repositories.Impl
                 });
         }
 
-        public Warning[] GetForGuild(ulong id)
+        public static Warning[] GetForGuild(this DbSet<Warning> warnings, ulong id)
         {
-            return _set.AsQueryable().Where(x => x.GuildId == id).ToArray();
+            return warnings.AsQueryable().Where(x => x.GuildId == id).ToArray();
         }
     }
 }

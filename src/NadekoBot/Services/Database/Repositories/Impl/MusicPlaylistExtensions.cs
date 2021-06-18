@@ -4,28 +4,26 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
-namespace NadekoBot.Core.Services.Database.Repositories.Impl
+namespace NadekoBot.Modules.Music
 {
-    public class MusicPlaylistRepository : Repository<MusicPlaylist>, IMusicPlaylistRepository
+    public static class MusicPlaylistExtensions
     {
-        public MusicPlaylistRepository(DbContext context) : base(context)
-        {
-        }
-
-        public List<MusicPlaylist> GetPlaylistsOnPage(int num)
+        public static List<MusicPlaylist> GetPlaylistsOnPage(this DbSet<MusicPlaylist> playlists, int num)
         {
             if (num < 1)
                 throw new IndexOutOfRangeException();
 
-            return _set.AsQueryable()
+            return playlists
+                .AsQueryable()
                 .Skip((num - 1) * 20)
                 .Take(20)
                 .Include(pl => pl.Songs)
                 .ToList();
         }
 
-        public MusicPlaylist GetWithSongs(int id) => 
-            _set.Include(mpl => mpl.Songs)
+        public static MusicPlaylist GetWithSongs(this DbSet<MusicPlaylist> playlists, int id) => 
+            playlists
+                .Include(mpl => mpl.Songs)
                 .FirstOrDefault(mpl => mpl.Id == id);
     }
 }

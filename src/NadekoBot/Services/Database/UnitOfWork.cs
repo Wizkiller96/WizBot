@@ -15,9 +15,6 @@ namespace NadekoBot.Core.Services.Database
         private IGuildConfigRepository _guildConfigs;
         public IGuildConfigRepository GuildConfigs => _guildConfigs ?? (_guildConfigs = new GuildConfigRepository(_context));
 
-        private IMusicPlaylistRepository _musicPlaylists;
-        public IMusicPlaylistRepository MusicPlaylists => _musicPlaylists ?? (_musicPlaylists = new MusicPlaylistRepository(_context));
-
         private ICustomReactionRepository _customReactions;
         public ICustomReactionRepository CustomReactions => _customReactions ?? (_customReactions = new CustomReactionsRepository(_context));
 
@@ -26,9 +23,6 @@ namespace NadekoBot.Core.Services.Database
 
         private IDiscordUserRepository _discordUsers;
         public IDiscordUserRepository DiscordUsers => _discordUsers ?? (_discordUsers = new DiscordUserRepository(_context));
-
-        private IWarningsRepository _warnings;
-        public IWarningsRepository Warnings => _warnings ?? (_warnings = new WarningsRepository(_context));
 
         private IXpRepository _xp;
         public IXpRepository Xp => _xp ?? (_xp = new XpRepository(_context));

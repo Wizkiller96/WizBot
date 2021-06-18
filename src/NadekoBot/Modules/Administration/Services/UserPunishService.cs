@@ -13,6 +13,7 @@ using NadekoBot.Core.Common.TypeReaders.Models;
 using NadekoBot.Core.Services;
 using NadekoBot.Core.Services.Database.Models;
 using NadekoBot.Extensions;
+using NadekoBot.Modules.Administration.Common;
 using NadekoBot.Modules.Permissions.Services;
 using Newtonsoft.Json;
 using Serilog;
@@ -63,12 +64,13 @@ namespace NadekoBot.Modules.Administration.Services
                 ps = uow.GuildConfigs.ForId(guildId, set => set.Include(x => x.WarnPunishments))
                     .WarnPunishments;
 
-                warnings += uow.Warnings
+                warnings += uow._context
+                    .Warnings
                     .ForId(guildId, userId)
                     .Where(w => !w.Forgiven && w.UserId == userId)
                     .Count();
 
-                uow.Warnings.Add(warn);
+                uow._context.Warnings.Add(warn);
 
                 uow.SaveChanges();
             }
@@ -244,7 +246,7 @@ WHERE GuildId={guildId}
         {
             using (var uow = _db.GetDbContext())
             {
-                return uow.Warnings.GetForGuild(gid).GroupBy(x => x.UserId).ToArray();
+                return uow._context.Warnings.GetForGuild(gid).GroupBy(x => x.UserId).ToArray();
             }
         }
 
@@ -252,7 +254,7 @@ WHERE GuildId={guildId}
         {
             using (var uow = _db.GetDbContext())
             {
-                return uow.Warnings.ForId(gid, userId);
+                return uow._context.Warnings.ForId(gid, userId);
             }
         }
 
@@ -263,11 +265,11 @@ WHERE GuildId={guildId}
             {
                 if (index == 0)
                 {
-                    await uow.Warnings.ForgiveAll(guildId, userId, moderator);
+                    await uow._context.Warnings.ForgiveAll(guildId, userId, moderator);
                 }
                 else
                 {
-                    toReturn = uow.Warnings.Forgive(guildId, userId, moderator, index - 1);
+                    toReturn = uow._context.Warnings.Forgive(guildId, userId, moderator, index - 1);
                 }
                 uow.SaveChanges();
             }

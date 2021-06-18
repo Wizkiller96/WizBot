@@ -25,7 +25,7 @@ namespace NadekoBot.Modules.Xp.Common
         public static ClubInfo GetByMember(this DbSet<ClubInfo> clubs, ulong userId)
             => Include(clubs).FirstOrDefault(c => c.Users.Any(u => u.UserId == userId));
 
-        public static ClubInfo? GetByName(this DbSet<ClubInfo> clubs, string name, int discrim)
+        public static ClubInfo GetByName(this DbSet<ClubInfo> clubs, string name, int discrim)
             => Include(clubs).FirstOrDefault(c => c.Name.ToUpper() == name.ToUpper() && c.Discrim == discrim);
 
         public static int GetNextDiscrim(this DbSet<ClubInfo> clubs, string name)
