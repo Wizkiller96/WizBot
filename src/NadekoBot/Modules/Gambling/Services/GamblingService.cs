@@ -6,6 +6,7 @@ using NadekoBot.Modules.Gambling.Common.WheelOfFortune;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -136,7 +137,7 @@ WHERE CurrencyAmount > {config.Decay.MinThreshold} AND UserId!={_client.CurrentU
             {
                 cash = uow.DiscordUsers.GetTotalCurrency();
                 onePercent = uow.DiscordUsers.GetTopOnePercentCurrency(_client.CurrentUser.Id);
-                planted = uow.PlantedCurrency.GetTotalPlanted();
+                planted = uow._context.PlantedCurrency.AsQueryable().Sum(x => x.Amount);
                 waifus = uow.Waifus.GetTotalValue();
                 bot = uow.DiscordUsers.GetUserCurrency(_client.CurrentUser.Id);
             }

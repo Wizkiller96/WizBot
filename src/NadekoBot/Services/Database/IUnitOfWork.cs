@@ -16,7 +16,6 @@ namespace NadekoBot.Core.Services.Database
         IDiscordUserRepository DiscordUsers { get; }
         IWarningsRepository Warnings { get; }
         IXpRepository Xp { get; }
-        IPlantedCurrencyRepository PlantedCurrency { get; }
 
         int SaveChanges();
         Task<int> SaveChangesAsync();

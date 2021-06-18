@@ -269,7 +269,17 @@ namespace NadekoBot.Modules.Gambling.Services
                     // this method will sum all plants with that password,
                     // remove them, and get messageids of the removed plants
 
-                    (amount, ids) = uow.PlantedCurrency.RemoveSumAndGetMessageIdsFor(ch.Id, pass);
+                    pass = pass?.Trim().TrimTo(10, hideDots: true).ToUpperInvariant();
+                    // gets all plants in this channel with the same password
+                    var entries = uow._context.PlantedCurrency
+                        .AsQueryable()
+                        .Where(x => x.ChannelId == ch.Id && pass == x.Password)
+                        .ToList();
+                    // sum how much currency that is, and get all of the message ids (so that i can delete them)
+                    amount = entries.Sum(x => x.Amount);
+                    ids = entries.Select(x => x.MessageId).ToArray();
+                    // remove them from the database
+                    uow._context.RemoveRange(entries);
 
 
                     if (amount > 0)
@@ -360,7 +370,7 @@ namespace NadekoBot.Modules.Gambling.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                uow.PlantedCurrency.Add(new PlantedCurrency
+                uow._context.PlantedCurrency.Add(new PlantedCurrency
                 {
                     Amount = amount,
                     GuildId = gid,

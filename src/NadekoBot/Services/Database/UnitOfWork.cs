@@ -33,9 +33,6 @@ namespace NadekoBot.Core.Services.Database
         private IXpRepository _xp;
         public IXpRepository Xp => _xp ?? (_xp = new XpRepository(_context));
 
-        private IPlantedCurrencyRepository _planted;
-        public IPlantedCurrencyRepository PlantedCurrency => _planted ?? (_planted = new PlantedCurrencyRepository(_context));
-
         public UnitOfWork(NadekoContext context)
         {
             _context = context;
