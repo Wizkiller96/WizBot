@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Discord;
 using NadekoBot.Core.Common;
@@ -24,7 +25,7 @@ namespace NadekoBot.Modules.Music.Services
         public Task JoinVoiceChannelAsync(ulong guildId, ulong voiceChannelId);
         
         Task<IMusicPlayer?> GetOrCreateMusicPlayerAsync(ITextChannel contextChannel);
-        bool TryGetMusicPlayer(ulong guildId, out IMusicPlayer musicPlayer);
+        bool TryGetMusicPlayer(ulong guildId, [MaybeNullWhen(false)] out IMusicPlayer musicPlayer);
         Task<int> EnqueueYoutubePlaylistAsync(IMusicPlayer mp, string playlistId, string queuer);
         Task EnqueueDirectoryAsync(IMusicPlayer mp, string dirPath, string queuer);
         Task<int> EnqueueSoundcloudPlaylistAsync(IMusicPlayer mp, string playlist, string queuer);

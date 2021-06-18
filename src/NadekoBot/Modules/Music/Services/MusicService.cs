@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
@@ -93,7 +94,7 @@ namespace NadekoBot.Modules.Music.Services
             return _players.GetOrAdd(contextChannel.GuildId, newPLayer);
         }
 
-        public bool TryGetMusicPlayer(ulong guildId, out IMusicPlayer musicPlayer)
+        public bool TryGetMusicPlayer(ulong guildId, [MaybeNullWhen(false)] out IMusicPlayer musicPlayer)
             => _players.TryGetValue(guildId, out musicPlayer);
 
         public async Task<int> EnqueueYoutubePlaylistAsync(IMusicPlayer mp, string query, string queuer)

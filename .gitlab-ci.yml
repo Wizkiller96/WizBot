@@ -6,7 +6,7 @@ stages:
 
 variables:
   project: "NadekoBot"
-  tests: "Nadeko.Tests"
+  tests: "NadekoBot.Tests"
 
 before_script:
   - "dotnet restore"
