@@ -3,6 +3,7 @@ using Discord;
 using NadekoBot.Core.Services.Database.Models;
 using NadekoBot.Core.Services;
 using System;
+using System.Linq;
 using System.Threading;
 
 namespace NadekoBot.Modules.Games.Common
@@ -57,7 +58,7 @@ namespace NadekoBot.Modules.Games.Common
             finally { _locker.Release(); }
             using (var uow = _db.GetDbContext())
             {
-                var trackedPoll = uow.Polls.GetById(Poll.Id);
+                var trackedPoll = uow._context.Poll.FirstOrDefault(x => x.Id == Poll.Id);
                 trackedPoll.Votes.Add(voteObj);
                 uow.SaveChanges();
             }

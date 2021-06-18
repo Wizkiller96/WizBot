@@ -2,25 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using NadekoBot.Core.Services.Database;
 
-namespace NadekoBot.Core.Services.Database.Repositories.Impl
+namespace NadekoBot.Modules.Games.Common
 {
-    public class PollsRepository : Repository<Poll>, IPollsRepository
+    public static class PollExtensions
     {
-        public PollsRepository(DbContext context) : base(context)
+        public static IEnumerable<Poll> GetAllPolls(this DbSet<Poll> polls)
         {
-        }
-
-        public IEnumerable<Poll> GetAllPolls()
-        {
-            return _set.Include(x => x.Answers)
+            return polls.Include(x => x.Answers)
                 .Include(x => x.Votes)
                 .ToArray();
         }
 
-        public void RemovePoll(int id)
+        public static void RemovePoll(this NadekoContext ctx, int id)
         {
-            var p = _set
+            var p = ctx
+                .Poll
                 .Include(x => x.Answers)
                 .Include(x => x.Votes)
                 .FirstOrDefault(x => x.Id == id);
@@ -30,17 +28,17 @@ namespace NadekoBot.Core.Services.Database.Repositories.Impl
             
             if (p.Votes != null)
             {
-                _context.Set<PollVote>().RemoveRange(p.Votes);
+                ctx.RemoveRange(p.Votes);
                 p.Votes.Clear();
             }
             
             if (p.Answers != null)
             {
-                _context.Set<PollAnswer>().RemoveRange(p.Answers);
+                ctx.RemoveRange(p.Answers);
                 p.Answers.Clear();
             }
             
-            _set.Remove(p);
+            ctx.Poll.Remove(p);
         }
     }
 }
