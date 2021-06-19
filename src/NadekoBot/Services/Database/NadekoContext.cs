@@ -59,6 +59,7 @@ namespace NadekoBot.Core.Services.Database
         public DbSet<MusicPlayerSettings> MusicPlayerSettings { get; set; }
         public DbSet<Repeater> Repeaters { get; set; }
         public DbSet<Poll> Poll { get; set; }
+        public DbSet<WaifuInfo> WaifuInfo { get; set; }
 
         public NadekoContext(DbContextOptions<NadekoContext> options) : base(options)
         {

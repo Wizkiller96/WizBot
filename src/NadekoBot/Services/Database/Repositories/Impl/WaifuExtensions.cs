@@ -1,69 +1,55 @@
-﻿using Microsoft.EntityFrameworkCore;
-using NadekoBot.Services.Database.Models;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using NadekoBot.Core.Services.Database;
 using NadekoBot.Core.Services.Database.Models;
-using NadekoBot.Core.Services.Database.Repositories;
+using NadekoBot.Migrations;
+using NadekoBot.Services.Database.Models;
 
-namespace NadekoBot.Services.Database.Repositories.Impl
+namespace NadekoBot.Modules.Gambling
 {
-    public class WaifuRepository : Repository<WaifuInfo>, IWaifuRepository
+    public class WaifuInfoStats
     {
-        public WaifuRepository(DbContext context) : base(context)
-        {
-        }
-
-        public WaifuInfo ByWaifuUserId(ulong userId, Func<DbSet<WaifuInfo>, IQueryable<WaifuInfo>> includes = null)
+        public string FullName { get; set; }
+        public int Price { get; set; }
+        public string ClaimerName { get; set; }
+        public string AffinityName { get; set; }
+        public int AffinityCount { get; set; }
+        public int DivorceCount { get; set; }
+        public int ClaimCount { get; set; }
+        public List<WaifuItem> Items { get; set; }
+        public List<string> Claims { get; set; }
+        public List<string> Fans { get; set; }
+    }
+    
+    public static class WaifuExtensions
+    {
+        public static WaifuInfo ByWaifuUserId(this DbSet<WaifuInfo> waifus, ulong userId, Func<DbSet<WaifuInfo>, IQueryable<WaifuInfo>> includes = null)
         {
             if (includes == null)
             {
-                return _set.Include(wi => wi.Waifu)
+                return waifus.Include(wi => wi.Waifu)
                             .Include(wi => wi.Affinity)
                             .Include(wi => wi.Claimer)
                             .Include(wi => wi.Items)
-                            .FirstOrDefault(wi => wi.WaifuId == _context.Set<DiscordUser>()
-                                .AsQueryable()
-                                .Where(x => x.UserId == userId)
-                                .Select(x => x.Id)
-                                .FirstOrDefault());
+                            .FirstOrDefault(wi => wi.Waifu.UserId == userId);
             }
 
-            return includes(_set)
+            return includes(waifus)
                 .AsQueryable()
-                .FirstOrDefault(wi => wi.WaifuId == _context.Set<DiscordUser>()
-                    .AsQueryable()
-                    .Where(x => x.UserId == userId)
-                    .Select(x => x.Id)
-                    .FirstOrDefault());
+                .FirstOrDefault(wi => wi.Waifu.UserId == userId);
         }
 
-        public IEnumerable<string> GetWaifuNames(ulong userId)
-        {
-            var waifus = _set.AsQueryable().Where(x => x.ClaimerId != null &&
-                x.ClaimerId == _context.Set<DiscordUser>()
-                    .AsQueryable()
-                    .Where(y => y.UserId == userId)
-                    .Select(y => y.Id)
-                    .FirstOrDefault())
-                .Select(x => x.WaifuId);
-
-            return _context.Set<DiscordUser>()
-                .AsQueryable()
-                .Where(x => waifus.Contains(x.Id))
-                .Select(x => x.Username + "#" + x.Discriminator)
-                .ToList();
-
-        }
-
-        public IEnumerable<WaifuLbResult> GetTop(int count, int skip = 0)
+        public static IEnumerable<WaifuLbResult> GetTop(this DbSet<WaifuInfo> waifus, int count, int skip = 0)
         {
             if (count < 0)
                 throw new ArgumentOutOfRangeException(nameof(count));
             if (count == 0)
                 return new List<WaifuLbResult>();
 
-            return _set.Include(wi => wi.Waifu)
+            return waifus.Include(wi => wi.Waifu)
                         .Include(wi => wi.Affinity)
                         .Include(wi => wi.Claimer)
                     .OrderByDescending(wi => wi.Price)
@@ -83,22 +69,17 @@ namespace NadekoBot.Services.Database.Repositories.Impl
 
         }
 
-        public decimal GetTotalValue()
+        public static decimal GetTotalValue(this DbSet<WaifuInfo> waifus)
         {
-            return _set
+            return waifus
                 .AsQueryable()
                 .Where(x => x.ClaimerId != null)
                 .Sum(x => x.Price);
         }
 
-        public int AffinityCount(ulong userId)
+        public static int AffinityCount(this DbSet<WaifuUpdate> updates, ulong userId)
         {
-            //return _context.Set<WaifuUpdate>()
-            //           .Count(w => w.User.UserId == userId &&
-            //               w.UpdateType == WaifuUpdateType.AffinityChanged &&
-            //               w.New != null));
-
-            return _context.Set<WaifuUpdate>()
+            return updates
                 .FromSqlInterpolated($@"SELECT 1 
 FROM WaifuUpdates
 WHERE UserId = (SELECT Id from DiscordUser WHERE UserId={userId}) AND 
@@ -107,9 +88,9 @@ WHERE UserId = (SELECT Id from DiscordUser WHERE UserId={userId}) AND
                 .Count();
         }
 
-        public ulong GetWaifuUserId(ulong ownerId, string name)
+        public static ulong GetWaifuUserId(this DbSet<WaifuInfo> waifus, ulong ownerId, string name)
         {
-            return _set
+            return waifus
                 .AsQueryable()
                 .AsNoTracking()
                 .Where(x => x.Claimer.UserId == ownerId
@@ -118,48 +99,49 @@ WHERE UserId = (SELECT Id from DiscordUser WHERE UserId={userId}) AND
                 .FirstOrDefault();
         }
         
-        public WaifuInfoStats GetWaifuInfo(ulong userId)
+        public static WaifuInfoStats GetWaifuInfo(this NadekoContext ctx, ulong userId)
         {
-            _context.Database.ExecuteSqlInterpolated($@"
+            ctx.Database.ExecuteSqlInterpolated($@"
 INSERT OR IGNORE INTO WaifuInfo (AffinityId, ClaimerId, Price, WaifuId)
 VALUES ({null}, {null}, {1}, (SELECT Id FROM DiscordUser WHERE UserId={userId}));");
 
-            var toReturn = _set.AsQueryable()
-                .Where(w => w.WaifuId == _context.Set<DiscordUser>()
+            var toReturn = ctx.WaifuInfo
+                .AsQueryable()
+                .Where(w => w.WaifuId == ctx.Set<DiscordUser>()
                     .AsQueryable()
                     .Where(u => u.UserId == userId)
                     .Select(u => u.Id).FirstOrDefault())
                 .Select(w => new WaifuInfoStats
                 {
-                    FullName = _context.Set<DiscordUser>()
+                    FullName = ctx.Set<DiscordUser>()
                         .AsQueryable()
                         .Where(u => u.UserId == userId)
                         .Select(u => u.Username + "#" + u.Discriminator)
                         .FirstOrDefault(),
 
-                    AffinityCount = _context.Set<WaifuUpdate>()
+                    AffinityCount = ctx.Set<WaifuUpdate>()
                         .AsQueryable()
                         .Count(x => x.UserId == w.WaifuId &&
                             x.UpdateType == WaifuUpdateType.AffinityChanged &&
                             x.NewId != null),
 
-                    AffinityName = _context.Set<DiscordUser>()
+                    AffinityName = ctx.Set<DiscordUser>()
                         .AsQueryable()
                         .Where(u => u.Id == w.AffinityId)
                         .Select(u => u.Username + "#" + u.Discriminator)
                         .FirstOrDefault(),
 
-                    ClaimCount = _set
+                    ClaimCount = ctx.WaifuInfo
                         .AsQueryable()
                         .Count(x => x.ClaimerId == w.WaifuId),
 
-                    ClaimerName = _context.Set<DiscordUser>()
+                    ClaimerName = ctx.Set<DiscordUser>()
                         .AsQueryable()
                         .Where(u => u.Id == w.ClaimerId)
                         .Select(u => u.Username + "#" + u.Discriminator)
                         .FirstOrDefault(),
 
-                    DivorceCount = _context
+                    DivorceCount = ctx
                         .Set<WaifuUpdate>()
                         .AsQueryable()
                         .Count(x => x.OldId == w.WaifuId &&
@@ -168,14 +150,14 @@ VALUES ({null}, {null}, {1}, (SELECT Id FROM DiscordUser WHERE UserId={userId}))
 
                     Price = w.Price,
 
-                    Claims = _set
+                    Claims = ctx.WaifuInfo
                         .AsQueryable()
                         .Include(x => x.Waifu)
                         .Where(x => x.ClaimerId == w.WaifuId)
                         .Select(x => x.Waifu.Username + "#" + x.Waifu.Discriminator)
                         .ToList(),
 
-                    Fans = _set
+                    Fans = ctx.WaifuInfo
                         .AsQueryable()
                         .Include(x => x.Waifu)
                         .Where(x => x.AffinityId == w.WaifuId)

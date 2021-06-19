@@ -138,7 +138,7 @@ WHERE CurrencyAmount > {config.Decay.MinThreshold} AND UserId!={_client.CurrentU
                 cash = uow.DiscordUsers.GetTotalCurrency();
                 onePercent = uow.DiscordUsers.GetTopOnePercentCurrency(_client.CurrentUser.Id);
                 planted = uow._context.PlantedCurrency.AsQueryable().Sum(x => x.Amount);
-                waifus = uow.Waifus.GetTotalValue();
+                waifus = uow._context.WaifuInfo.GetTotalValue();
                 bot = uow.DiscordUsers.GetUserCurrency(_client.CurrentUser.Id);
             }
 

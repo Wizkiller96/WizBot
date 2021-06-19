@@ -11,9 +11,6 @@ namespace NadekoBot.Services.Database
     {
         public NadekoContext _context { get; }
 
-        private IWaifuRepository _waifus;
-        public IWaifuRepository Waifus => _waifus ?? (_waifus = new WaifuRepository(_context));
-
         private IDiscordUserRepository _discordUsers;
         public IDiscordUserRepository DiscordUsers => _discordUsers ?? (_discordUsers = new DiscordUserRepository(_context));
 
