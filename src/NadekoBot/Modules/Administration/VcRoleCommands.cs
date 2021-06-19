@@ -41,13 +41,13 @@ namespace NadekoBot.Modules.Administration
 
                 var vc = user.VoiceChannel;
 
-                if (vc == null || vc.GuildId != user.GuildId)
+                if (vc is null || vc.GuildId != user.GuildId)
                 {
                     await ReplyErrorLocalizedAsync("must_be_in_voice").ConfigureAwait(false);
                     return;
                 }
 
-                if (role == null)
+                if (role is null)
                 {
                     if (_service.RemoveVcRole(ctx.Guild.Id, vc.Id))
                     {

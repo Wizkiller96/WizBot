@@ -74,7 +74,7 @@ namespace NadekoBot.Modules.Administration.Services
                     var server = _client.Guilds.FirstOrDefault(g => g.Id.ToString() == guildStr) ??
                                  _client.Guilds.FirstOrDefault(g => g.Name.Trim().ToUpperInvariant() == guildStr);
 
-                    if (server == null)
+                    if (server is null)
                     {
                         return;
                     }
@@ -205,7 +205,7 @@ namespace NadekoBot.Modules.Administration.Services
             var channels = await Task.WhenAll(_creds.OwnerIds.Select(id =>
             {
                 var user = _client.GetUser(id);
-                if (user == null)
+                if (user is null)
                     return Task.FromResult<IDMChannel>(null);
 
                 return user.GetOrCreateDMChannelAsync();

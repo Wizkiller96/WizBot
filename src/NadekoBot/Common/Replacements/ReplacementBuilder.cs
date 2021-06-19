@@ -69,8 +69,8 @@ namespace NadekoBot.Common.Replacements
         public ReplacementBuilder WithServer(DiscordSocketClient client, SocketGuild g)
         {
             /*OBSOLETE*/
-            _reps.TryAdd("%sid%", () => g == null ? "DM" : g.Id.ToString());
-            _reps.TryAdd("%server%", () => g == null ? "DM" : g.Name);
+            _reps.TryAdd("%sid%", () => g is null ? "DM" : g.Id.ToString());
+            _reps.TryAdd("%server%", () => g is null ? "DM" : g.Name);
             _reps.TryAdd("%members%", () => g != null && g is SocketGuild sg ? sg.MemberCount.ToString() : "?");
             _reps.TryAdd("%server_time%", () =>
             {
@@ -86,8 +86,8 @@ namespace NadekoBot.Common.Replacements
                     to).ToString("HH:mm ") + to.StandardName.GetInitials();
             });
             /*NEW*/
-            _reps.TryAdd("%server.id%", () => g == null ? "DM" : g.Id.ToString());
-            _reps.TryAdd("%server.name%", () => g == null ? "DM" : g.Name);
+            _reps.TryAdd("%server.id%", () => g is null ? "DM" : g.Id.ToString());
+            _reps.TryAdd("%server.name%", () => g is null ? "DM" : g.Name);
             _reps.TryAdd("%server.members%", () => g != null && g is SocketGuild sg ? sg.MemberCount.ToString() : "?");
             _reps.TryAdd("%server.time%", () =>
             {

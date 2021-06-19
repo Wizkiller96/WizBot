@@ -19,7 +19,7 @@ namespace NadekoBot.Modules.Permissions.Common
 
                 var result = perm.CheckPermission(message, commandName, moduleName);
 
-                if (result == null)
+                if (result is null)
                 {
                     continue;
                 }
@@ -55,13 +55,13 @@ namespace NadekoBot.Modules.Permissions.Common
                         return perm.State;
                     break;
                 case PrimaryPermissionType.Role:        
-                    if (guildUser == null)
+                    if (guildUser is null)
                         break;
                     if (guildUser.RoleIds.Contains(perm.PrimaryTargetId))
                         return perm.State;
                     break;
                 case PrimaryPermissionType.Server:
-                    if (guildUser == null)
+                    if (guildUser is null)
                         break;
                     return perm.State;
             }

@@ -345,7 +345,7 @@ namespace NadekoBot.Modules.Gambling.Common.Blackjack
 
         public Task PrintState()
         {
-            if (StateUpdated == null)
+            if (StateUpdated is null)
                 return Task.CompletedTask;
             return StateUpdated.Invoke(this);
         }

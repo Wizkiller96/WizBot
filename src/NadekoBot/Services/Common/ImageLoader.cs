@@ -67,7 +67,7 @@ namespace NadekoBot.Core.Services.Common
 
             byte[][] vals = Array.Empty<byte[]>();
             vals = await Task.WhenAll(tasks).ConfigureAwait(false);
-            if (vals.Any(x => x == null))
+            if (vals.Any(x => x is null))
                 vals = vals.Where(x => x != null).ToArray();
 
             await _db.KeyDeleteAsync(GetKey(key)).ConfigureAwait(false);

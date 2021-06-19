@@ -113,7 +113,7 @@ namespace NadekoBot.Modules.Administration
                     return;
                 }
                 
-                if (!(punishTime is null))
+                if (punishTime is not null)
                 {
                     if (!_service.IsDurationAllowed(action))
                     {
@@ -128,7 +128,7 @@ namespace NadekoBot.Modules.Administration
                 var stats = await _service.StartAntiRaidAsync(ctx.Guild.Id, userThreshold, seconds,
                     action, time).ConfigureAwait(false);
 
-                if (stats == null)
+                if (stats is null)
                 {
                     return;
                 }
@@ -185,7 +185,7 @@ namespace NadekoBot.Modules.Administration
                 if (messageCount < 2 || messageCount > 10)
                     return;
 
-                if (!(timeData is null))
+                if (timeData is not null)
                 {
                     if (!_service.IsDurationAllowed(action))
                     {
@@ -244,7 +244,7 @@ namespace NadekoBot.Modules.Administration
                         .WithValue(GetAntiRaidString(raid).TrimTo(1024))
                         .WithIsInline(true));
 
-                if (!(alt is null))
+                if (alt is not null)
                     embed.AddField("Anti-Alt", GetAntiAltString(alt), true);
 
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);

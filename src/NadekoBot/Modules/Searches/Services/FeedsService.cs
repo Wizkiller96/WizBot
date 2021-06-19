@@ -118,7 +118,7 @@ namespace NadekoBot.Modules.Searches.Services
                                 var previewElement = afi.Element.Elements()
                                     .FirstOrDefault(x => x.Name.LocalName == "preview");
 
-                                if (previewElement == null)
+                                if (previewElement is null)
                                 {
                                     previewElement = afi.Element.Elements()
                                         .FirstOrDefault(x => x.Name.LocalName == "thumbnail");

@@ -210,7 +210,7 @@ namespace NadekoBot.Modules.Games.Common.Trivia
                     var umsg = imsg as SocketUserMessage;
 
                     var textChannel = umsg?.Channel as ITextChannel;
-                    if (textChannel == null || textChannel.Guild != Guild)
+                    if (textChannel is null || textChannel.Guild != Guild)
                         return;
 
                     var guildUser = (IGuildUser)umsg.Author;

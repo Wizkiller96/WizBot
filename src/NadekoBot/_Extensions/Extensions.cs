@@ -152,7 +152,7 @@ namespace NadekoBot.Extensions
 
         public static void ThrowIfNull<T>(this T o, string name) where T : class
         {
-            if (o == null)
+            if (o is null)
                 throw new ArgumentNullException(nameof(name));
         }
 
@@ -194,7 +194,7 @@ namespace NadekoBot.Extensions
 
         public static ReactionEventWrapper OnReaction(this IUserMessage msg, DiscordSocketClient client, Func<SocketReaction, Task> reactionAdded, Func<SocketReaction, Task> reactionRemoved = null)
         {
-            if (reactionRemoved == null)
+            if (reactionRemoved is null)
                 reactionRemoved = _ => Task.CompletedTask;
 
             var wrap = new ReactionEventWrapper(client, msg);
@@ -348,7 +348,7 @@ namespace NadekoBot.Extensions
 
         public static long? GetImageSize(this HttpResponseMessage msg)
         {
-            if (msg.Content.Headers.ContentLength == null)
+            if (msg.Content.Headers.ContentLength is null)
             {
                 return null;
             }
@@ -381,7 +381,7 @@ namespace NadekoBot.Extensions
                     .Where(x => x.GetInterfaces().Contains(typeof(INService))
                         && !x.GetTypeInfo().IsInterface && !x.GetTypeInfo().IsAbstract
 #if GLOBAL_NADEKO
-                        && x.GetTypeInfo().GetCustomAttribute<NoPublicBotAttribute>() == null
+                        && x.GetTypeInfo().GetCustomAttribute<NoPublicBotAttribute>() is null
 #endif
                             )
                     .ToArray());

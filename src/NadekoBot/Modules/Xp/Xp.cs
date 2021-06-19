@@ -251,7 +251,7 @@ namespace NadekoBot.Modules.Xp
         [RequireContext(ContextType.Guild)]
         public async Task XpExclude(Channel _, [Leftover] IChannel channel = null)
         {
-            if (channel == null)
+            if (channel is null)
                 channel = ctx.Channel;
 
             var ex = _service.ToggleExcludeChannel(ctx.Guild.Id, channel.Id);

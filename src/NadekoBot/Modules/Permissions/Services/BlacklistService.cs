@@ -89,7 +89,7 @@ namespace NadekoBot.Modules.Permissions.Services
             var toRemove = uow.Blacklist
                 .FirstOrDefault(bi => bi.ItemId == id && bi.Type == type);
             
-            if (!(toRemove is null))
+            if (toRemove is not null)
                 uow.Blacklist.Remove(toRemove);
             
             uow.SaveChanges();

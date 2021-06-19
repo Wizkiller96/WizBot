@@ -32,7 +32,7 @@ namespace NadekoBot.Modules.Games.Common
             {
                 // has to be a user message
                 // channel must be the same the poll started in
-                if (msg == null || msg.Author.IsBot || msg.Channel.Id != Poll.ChannelId)
+                if (msg is null || msg.Author.IsBot || msg.Channel.Id != Poll.ChannelId)
                     return false;
 
                 // has to be an integer
@@ -43,7 +43,7 @@ namespace NadekoBot.Modules.Games.Common
                     return false;
 
                 var usr = msg.Author as IGuildUser;
-                if (usr == null)
+                if (usr is null)
                     return false;
 
                 voteObj = new PollVote()

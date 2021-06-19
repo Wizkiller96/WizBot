@@ -55,13 +55,13 @@ namespace NadekoBot.Modules.NSFW
                 img = await _service.DapiSearch(tag, type, ctx.Guild?.Id, true).ConfigureAwait(false);
                 // if i can't find the image, ran out of providers, or tag is blacklisted
                 // return the error
-                if (img == null && !listOfProviders.Any())
+                if (img is null && !listOfProviders.Any())
                 {
                     await ReplyErrorLocalizedAsync("no_results").ConfigureAwait(false);
                     return;
                 }
 
-            } while (img == null);
+            } while (img is null);
 
             await channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                 .WithImageUrl(img.FileUrl)
@@ -129,7 +129,7 @@ namespace NadekoBot.Modules.NSFW
             {
                 try
                 {
-                    if (tagsArr == null || tagsArr.Length == 0)
+                    if (tagsArr is null || tagsArr.Length == 0)
                         await InternalHentai(ctx.Channel, null).ConfigureAwait(false);
                     else
                         await InternalHentai(ctx.Channel, tagsArr[new NadekoRandom().Next(0, tagsArr.Length)]).ConfigureAwait(false);
@@ -252,7 +252,7 @@ namespace NadekoBot.Modules.NSFW
                                                 _service.DapiSearch(tag, DapiSearchType.Yandere, ctx.Guild?.Id, true)).ConfigureAwait(false);
 
                 var linksEnum = images?.Where(l => l != null).ToArray();
-                if (images == null || !linksEnum.Any())
+                if (images is null || !linksEnum.Any())
                 {
                     await ReplyErrorLocalizedAsync("no_results").ConfigureAwait(false);
                     return;
@@ -439,7 +439,7 @@ namespace NadekoBot.Modules.NSFW
 
             imgObj = await _service.DapiSearch(tag, type, ctx.Guild?.Id, forceExplicit).ConfigureAwait(false);
 
-            if (imgObj == null)
+            if (imgObj is null)
                 await ReplyErrorLocalizedAsync("no_results").ConfigureAwait(false);
             else
             {

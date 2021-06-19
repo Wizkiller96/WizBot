@@ -28,7 +28,7 @@ namespace NadekoBot.Modules.Administration
         public async Task Slowmode(StoopidTime time = null)
         {
             var seconds = (int?)time?.Time.TotalSeconds ?? 0;
-            if (!(time is null) && (time.Time < TimeSpan.FromSeconds(0) || time.Time > TimeSpan.FromHours(6)))
+            if (time is not null && (time.Time < TimeSpan.FromSeconds(0) || time.Time > TimeSpan.FromHours(6)))
                 return;
             
 
@@ -305,13 +305,13 @@ namespace NadekoBot.Modules.Administration
 
 
             var msg = await channel.GetMessageAsync(messageId).ConfigureAwait(false);
-            if (msg == null)
+            if (msg is null)
             {
                 await ReplyErrorLocalizedAsync("msg_not_found").ConfigureAwait(false);
                 return;
             }
 
-            if (time == null)
+            if (time is null)
             {
                 await msg.DeleteAsync().ConfigureAwait(false);
             }

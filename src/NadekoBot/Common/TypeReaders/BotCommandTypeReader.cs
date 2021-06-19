@@ -29,7 +29,7 @@ namespace NadekoBot.Common.TypeReaders
 
             var cmd = _cmds.Commands.FirstOrDefault(c =>
                 c.Aliases.Select(a => a.ToUpperInvariant()).Contains(input));
-            if (cmd == null)
+            if (cmd is null)
                 return Task.FromResult(TypeReaderResult.FromError(CommandError.ParseFailed, "No such command found."));
 
             return Task.FromResult(TypeReaderResult.FromSuccess(cmd));

@@ -19,14 +19,14 @@ namespace NadekoBot.Modules.Administration
             {
                 var vch = ((IGuildUser)ctx.User).VoiceChannel;
 
-                if (vch == null)
+                if (vch is null)
                 {
                     await ReplyErrorLocalizedAsync("not_in_voice").ConfigureAwait(false);
                     return;
                 }
                 var id = _service.ToggleGameVoiceChannel(ctx.Guild.Id, vch.Id);
 
-                if (id == null)
+                if (id is null)
                 {
                     await ReplyConfirmLocalizedAsync("gvc_disabled").ConfigureAwait(false);
                 }

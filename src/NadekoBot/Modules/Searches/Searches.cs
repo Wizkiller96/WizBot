@@ -51,7 +51,7 @@ namespace NadekoBot.Modules.Searches
         public async Task Rip([Leftover] IGuildUser usr)
         {
             var av = usr.RealAvatarUrl(128);
-            if (av == null)
+            if (av is null)
                 return;
             using (var picStream = await _service.GetRipPictureAsync(usr.Nickname ?? usr.Username, av).ConfigureAwait(false))
             {
@@ -73,7 +73,7 @@ namespace NadekoBot.Modules.Searches
             var embed = new EmbedBuilder();
             var data = await _service.GetWeatherDataAsync(query).ConfigureAwait(false);
 
-            if (data == null)
+            if (data is null)
             {
                 embed.WithDescription(GetText("city_not_found"))
                     .WithErrorColor();
@@ -115,7 +115,7 @@ namespace NadekoBot.Modules.Searches
             await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
 
             var (data, err) = await _service.GetTimeDataAsync(query).ConfigureAwait(false);
-            if (!(err is null))
+            if (err is not null)
             {
                 string errorKey;
                 switch (err)
@@ -177,7 +177,7 @@ namespace NadekoBot.Modules.Searches
             await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
 
             var movie = await _service.GetMovieDataAsync(query).ConfigureAwait(false);
-            if (movie == null)
+            if (movie is null)
             {
                 await ReplyErrorLocalizedAsync("imdb_fail").ConfigureAwait(false);
                 return;
@@ -247,7 +247,7 @@ namespace NadekoBot.Modules.Searches
 
                     var img = (elems.ElementAtOrDefault(new NadekoRandom().Next(0, elems.Count))?.Children?.FirstOrDefault() as IHtmlImageElement);
 
-                    if (img?.Source == null)
+                    if (img?.Source is null)
                         return;
 
                     var source = img.Source.Replace("b.", ".", StringComparison.InvariantCulture);
@@ -406,7 +406,7 @@ namespace NadekoBot.Modules.Searches
             await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
             var card = await _service.GetMtgCardAsync(search).ConfigureAwait(false);
 
-            if (card == null)
+            if (card is null)
             {
                 await ReplyErrorLocalizedAsync("card_not_found").ConfigureAwait(false);
                 return;
@@ -439,7 +439,7 @@ namespace NadekoBot.Modules.Searches
             await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
             var card = await _service.GetHearthstoneCardDataAsync(name).ConfigureAwait(false);
 
-            if (card == null)
+            if (card is null)
             {
                 await ReplyErrorLocalizedAsync("card_not_found").ConfigureAwait(false);
                 return;
@@ -560,7 +560,7 @@ namespace NadekoBot.Modules.Searches
             using (var http = _httpFactory.CreateClient())
             {
                 var response = await http.GetStringAsync("https://catfact.ninja/fact").ConfigureAwait(false);
-                if (response == null)
+                if (response is null)
                     return;
 
                 var fact = JObject.Parse(response)["fact"].ToString();
@@ -573,11 +573,11 @@ namespace NadekoBot.Modules.Searches
         [RequireContext(ContextType.Guild)]
         public async Task Revav([Leftover] IGuildUser usr = null)
         {
-            if (usr == null)
+            if (usr is null)
                 usr = (IGuildUser)ctx.User;
 
             var av = usr.RealAvatarUrl();
-            if (av == null)
+            if (av is null)
                 return;
 
             await ctx.Channel.SendConfirmAsync($"https://images.google.com/searchbyimage?image_url={av}").ConfigureAwait(false);
@@ -649,12 +649,12 @@ namespace NadekoBot.Modules.Searches
         [RequireContext(ContextType.Guild)]
         public async Task Avatar([Leftover] IGuildUser usr = null)
         {
-            if (usr == null)
+            if (usr is null)
                 usr = (IGuildUser)ctx.User;
 
             var avatarUrl = usr.RealAvatarUrl(2048);
 
-            if (avatarUrl == null)
+            if (avatarUrl is null)
             {
                 await ReplyErrorLocalizedAsync("avatar_none", usr.ToString()).ConfigureAwait(false);
                 return;
@@ -725,7 +725,7 @@ namespace NadekoBot.Modules.Searches
             catch
             {
             }
-            if (obj.Error != null || obj.Verses == null || obj.Verses.Length == 0)
+            if (obj.Error != null || obj.Verses is null || obj.Verses.Length == 0)
                 await ctx.Channel.SendErrorAsync(obj.Error ?? "No verse found.").ConfigureAwait(false);
             else
             {
@@ -773,7 +773,7 @@ namespace NadekoBot.Modules.Searches
 
             var imgObj = await _service.DapiSearch(tag, type, ctx.Guild?.Id).ConfigureAwait(false);
 
-            if (imgObj == null)
+            if (imgObj is null)
                 await channel.SendErrorAsync(umsg.Author.Mention + " " + GetText("no_results")).ConfigureAwait(false);
             else
                 await channel.EmbedAsync(new EmbedBuilder().WithOkColor()

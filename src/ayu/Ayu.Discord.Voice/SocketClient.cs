@@ -44,7 +44,7 @@ namespace Ayu.Discord.Gateway
                             var data = bufferWriter.WrittenMemory.ToArray();
                             bufferWriter.Clear();
 
-                            if (!(pr is null))
+                            if (pr is not null)
                             {
                                 await pr.Invoke(data);
                             }

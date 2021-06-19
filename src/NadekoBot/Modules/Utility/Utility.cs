@@ -244,7 +244,7 @@ namespace NadekoBot.Modules.Utility
         [RequireContext(ContextType.Guild)]
         public async Task ChannelTopic([Leftover]ITextChannel channel = null)
         {
-            if (channel == null)
+            if (channel is null)
                 channel = (ITextChannel)ctx.Channel;
 
             var topic = channel.Topic;

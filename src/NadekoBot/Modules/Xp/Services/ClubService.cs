@@ -32,7 +32,7 @@ namespace NadekoBot.Modules.Xp.Services
             uow.SaveChanges();
             var xp = new LevelStats(du.TotalXp);
 
-            if (xp.Level >= 5 && du.Club == null)
+            if (xp.Level >= 5 && du.Club is null)
             {
                 du.IsClubAdmin = true;
                 du.Club = new ClubInfo()
@@ -65,7 +65,7 @@ namespace NadekoBot.Modules.Xp.Services
                 club = uow.Clubs.GetByOwner(from.Id);
                 var newOwnerUser = uow.GetOrCreateUser(newOwner);
 
-                if (club == null ||
+                if (club is null ||
                     club.Owner.UserId != from.Id ||
                     !club.Users.Contains(newOwnerUser))
                     return null;
@@ -86,7 +86,7 @@ namespace NadekoBot.Modules.Xp.Services
                 var club = uow.Clubs.GetByOwner(owner.Id);
                 var adminUser = uow.GetOrCreateUser(toAdmin);
 
-                if (club == null || club.Owner.UserId != owner.Id ||
+                if (club is null || club.Owner.UserId != owner.Id ||
                     !club.Users.Contains(adminUser))
                     throw new InvalidOperationException();
 
@@ -122,7 +122,7 @@ namespace NadekoBot.Modules.Xp.Services
             {
                 var club = uow.Clubs.GetByOwner(ownerUserId);
 
-                if (club == null)
+                if (club is null)
                     return false;
 
                 club.ImageUrl = url.ToString();
@@ -148,7 +148,7 @@ namespace NadekoBot.Modules.Xp.Services
             using (var uow = _db.GetDbContext())
             {
                 club = uow.Clubs.GetByName(name, discrim);
-                if (club == null)
+                if (club is null)
                     return false;
                 else
                     return true;
@@ -191,11 +191,11 @@ namespace NadekoBot.Modules.Xp.Services
             using (var uow = _db.GetDbContext())
             {
                 var club = uow.Clubs.GetByOwnerOrAdmin(clubOwnerUserId);
-                if (club == null)
+                if (club is null)
                     return false;
 
                 var applicant = club.Applicants.FirstOrDefault(x => x.User.ToString().ToUpperInvariant() == userName.ToUpperInvariant());
-                if (applicant == null)
+                if (applicant is null)
                     return false;
 
                 applicant.User.Club = club;
@@ -227,7 +227,7 @@ namespace NadekoBot.Modules.Xp.Services
             using (var uow = _db.GetDbContext())
             {
                 var du = uow.GetOrCreateUser(user);
-                if (du.Club == null || du.Club.OwnerId == du.Id)
+                if (du.Club is null || du.Club.OwnerId == du.Id)
                     return false;
 
                 du.Club = null;
@@ -245,7 +245,7 @@ namespace NadekoBot.Modules.Xp.Services
             using (var uow = _db.GetDbContext())
             {
                 var club = uow.Clubs.GetByOwner(userId);
-                if (club == null)
+                if (club is null)
                     return false;
 
                 club.MinimumLevelReq = level;
@@ -260,7 +260,7 @@ namespace NadekoBot.Modules.Xp.Services
             using (var uow = _db.GetDbContext())
             {
                 var club = uow.Clubs.GetByOwner(userId);
-                if (club == null)
+                if (club is null)
                     return false;
 
                 club.Description = desc?.TrimTo(150, true);
@@ -275,7 +275,7 @@ namespace NadekoBot.Modules.Xp.Services
             using (var uow = _db.GetDbContext())
             {
                 club = uow.Clubs.GetByOwner(userId);
-                if (club == null)
+                if (club is null)
                     return false;
 
                 uow.Clubs.Remove(club);
@@ -289,12 +289,12 @@ namespace NadekoBot.Modules.Xp.Services
             using (var uow = _db.GetDbContext())
             {
                 club = uow.Clubs.GetByOwnerOrAdmin(bannerId);
-                if (club == null)
+                if (club is null)
                     return false;
 
                 var usr = club.Users.FirstOrDefault(x => x.ToString().ToUpperInvariant() == userName.ToUpperInvariant())
                     ?? club.Applicants.FirstOrDefault(x => x.User.ToString().ToUpperInvariant() == userName.ToUpperInvariant())?.User;
-                if (usr == null)
+                if (usr is null)
                     return false;
 
                 if (club.OwnerId == usr.Id || (usr.IsClubAdmin && club.Owner.UserId != bannerId)) // can't ban the owner kek, whew
@@ -322,11 +322,11 @@ namespace NadekoBot.Modules.Xp.Services
             using (var uow = _db.GetDbContext())
             {
                 club = uow.Clubs.GetByOwnerOrAdmin(ownerUserId);
-                if (club == null)
+                if (club is null)
                     return false;
 
                 var ban = club.Bans.FirstOrDefault(x => x.User.ToString().ToUpperInvariant() == userName.ToUpperInvariant());
-                if (ban == null)
+                if (ban is null)
                     return false;
 
                 club.Bans.Remove(ban);
@@ -341,11 +341,11 @@ namespace NadekoBot.Modules.Xp.Services
             using (var uow = _db.GetDbContext())
             {
                 club = uow.Clubs.GetByOwnerOrAdmin(kickerId);
-                if (club == null)
+                if (club is null)
                     return false;
 
                 var usr = club.Users.FirstOrDefault(x => x.ToString().ToUpperInvariant() == userName.ToUpperInvariant());
-                if (usr == null)
+                if (usr is null)
                     return false;
 
                 if (club.OwnerId == usr.Id || (usr.IsClubAdmin && club.Owner.UserId != kickerId))

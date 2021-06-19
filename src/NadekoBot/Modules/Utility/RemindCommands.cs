@@ -48,7 +48,7 @@ namespace NadekoBot.Modules.Utility
                 
                 ulong target;
                 target = meorhere == MeOrHere.Me ? ctx.User.Id : ctx.Channel.Id;
-                if (!await RemindInternal(target, meorhere == MeOrHere.Me || ctx.Guild == null, remindData.Time, remindData.What)
+                if (!await RemindInternal(target, meorhere == MeOrHere.Me || ctx.Guild is null, remindData.Time, remindData.What)
                     .ConfigureAwait(false))
                 {
                     await ReplyErrorLocalizedAsync("remind_too_long").ConfigureAwait(false);
@@ -144,7 +144,7 @@ namespace NadekoBot.Modules.Utility
                     }
                 }
 
-                if (rem == null)
+                if (rem is null)
                 {
                     await ReplyErrorLocalizedAsync("reminder_not_exist").ConfigureAwait(false);
                 }
@@ -186,7 +186,7 @@ namespace NadekoBot.Modules.Utility
                     await uow.SaveChangesAsync();
                 }
 
-                var gTime = ctx.Guild == null
+                var gTime = ctx.Guild is null
                     ? time
                     : TimeZoneInfo.ConvertTime(time, _tz.GetTimeZoneOrUtc(ctx.Guild.Id));
                 try

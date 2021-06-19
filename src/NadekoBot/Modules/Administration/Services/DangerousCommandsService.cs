@@ -101,7 +101,7 @@ DELETE FROM Clubs;";
                 .FirstOrDefaultAsyncEF(x => x.Waifu.UserId == userId);
 
             // if it exists, delete waifu related things
-            if (!(wi is null))
+            if (wi is not null)
             {
                 // remove updates which have new or old as this waifu
                 await uow

@@ -27,7 +27,7 @@ namespace NadekoBot.Core.Common.Attributes
             var cache = services.GetService<IDataCache>();
             var rem = cache.TryAddRatelimit(context.User.Id, command.Name, Seconds);
 
-            if(rem == null)
+            if(rem is null)
                 return Task.FromResult(PreconditionResult.FromSuccess());
 
             var msgContent = $"You can use this command again in {rem.Value.TotalSeconds:F1}s.";

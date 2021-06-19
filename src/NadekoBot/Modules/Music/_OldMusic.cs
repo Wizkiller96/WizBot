@@ -51,13 +51,13 @@
 //         //    var t = Task.Run(() =>
 //         //    {
 //         //        var usr = iusr as SocketGuildUser;
-//         //        if (usr == null ||
+//         //        if (usr is null ||
 //         //            oldState.VoiceChannel == newState.VoiceChannel)
 //         //            return;
 //
 //         //        var player = _music.GetPlayerOrDefault(usr.Guild.Id);
 //
-//         //        if (player == null)
+//         //        if (player is null)
 //         //            return;
 //
 //         //        try
@@ -97,7 +97,7 @@
 //
 //         private async Task InternalQueue(MusicPlayer mp, SongInfo songInfo, bool silent, bool queueFirst = false, bool forcePlay = false)
 //         {
-//             if (songInfo == null)
+//             if (songInfo is null)
 //             {
 //                 if (!silent)
 //                     await ReplyErrorLocalizedAsync("song_not_found").ConfigureAwait(false);
@@ -216,7 +216,7 @@
 //             try
 //             {
 //                 var input = await GetUserInputAsync(ctx.User.Id, ctx.Channel.Id).ConfigureAwait(false);
-//                 if (input == null
+//                 if (input is null
 //                     || !int.TryParse(input, out var index)
 //                     || (index -= 1) < 0
 //                     || index >= videos.Length)
@@ -436,7 +436,7 @@
 //         public async Task SongRemove(All _)
 //         {
 //             var mp = _service.GetPlayerOrDefault(ctx.Guild.Id);
-//             if (mp == null)
+//             if (mp is null)
 //                 return;
 //             mp.Stop(true);
 //             await ReplyConfirmLocalizedAsync("queue_cleared").ConfigureAwait(false);
@@ -576,7 +576,7 @@
 //                     mpl = uow.MusicPlaylists.GetWithSongs(id);
 //                 }
 //
-//                 if (mpl == null)
+//                 if (mpl is null)
 //                 {
 //                     await ReplyErrorLocalizedAsync("playlist_id_not_found").ConfigureAwait(false);
 //                     return;
@@ -700,7 +700,7 @@
 //         {
 //             var mp = await _service.GetOrCreatePlayer(Context).ConfigureAwait(false);
 //             var (_, currentSong) = mp.Current;
-//             if (currentSong == null)
+//             if (currentSong is null)
 //                 return;
 //             try { await mp.UpdateSongDurationsAsync().ConfigureAwait(false); } catch { }
 //
@@ -744,7 +744,7 @@
 //                 Log.Warning(ex.Message);
 //             }
 //
-//             if (plId == null)
+//             if (plId is null)
 //             {
 //                 await ReplyErrorLocalizedAsync("no_search_results").ConfigureAwait(false);
 //                 return;
@@ -834,12 +834,12 @@
 //         {
 //             var vch = ((IGuildUser)ctx.User).VoiceChannel;
 //
-//             if (vch == null)
+//             if (vch is null)
 //                 return;
 //
 //             var mp = _service.GetPlayerOrDefault(ctx.Guild.Id);
 //
-//             if (mp == null)
+//             if (mp is null)
 //                 return;
 //
 //             await mp.SetVoiceChannel(vch).ConfigureAwait(false);
@@ -853,7 +853,7 @@
 //                 return;
 //
 //             MusicPlayer mp = _service.GetPlayerOrDefault(ctx.Guild.Id);
-//             if (mp == null)
+//             if (mp is null)
 //                 return;
 //
 //             fromto = fromto?.Trim();
@@ -862,7 +862,7 @@
 //             SongInfo s;
 //             if (fromtoArr.Length != 2 || !int.TryParse(fromtoArr[0], out var n1) ||
 //                 !int.TryParse(fromtoArr[1], out var n2) || n1 < 1 || n2 < 1 || n1 == n2
-//                 || (s = mp.MoveSong(--n1, --n2)) == null)
+//                 || (s = mp.MoveSong(--n1, --n2)) is null)
 //             {
 //                 await ReplyConfirmLocalizedAsync("invalid_input").ConfigureAwait(false);
 //                 return;
@@ -916,7 +916,7 @@
 //         {
 //             var mp = await _service.GetOrCreatePlayer(Context).ConfigureAwait(false);
 //             var (_, currentSong) = mp.Current;
-//             if (currentSong == null)
+//             if (currentSong is null)
 //                 return;
 //             var currentValue = mp.ToggleRepeatSong();
 //

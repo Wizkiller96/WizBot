@@ -285,7 +285,7 @@ namespace NadekoBot.Modules.Music
             {
                 string desc = string.Empty;
                 var current = mp.GetCurrentTrack(out var currentIndex);
-                if (!(current is null))
+                if (current is not null)
                 {
                     desc = $"`🔊` {current.PrettyFullName()}\n\n" + desc;
                 }
@@ -371,7 +371,7 @@ namespace NadekoBot.Modules.Music
             try
             {
                 var input = await GetUserInputAsync(ctx.User.Id, ctx.Channel.Id).ConfigureAwait(false);
-                if (input == null
+                if (input is null
                     || !int.TryParse(input, out var index)
                     || (index -= 1) < 0
                     || index >= videos.Count)
@@ -699,7 +699,7 @@ namespace NadekoBot.Modules.Music
              }
 
              var currentTrack = mp.GetCurrentTrack(out _);
-             if (currentTrack == null)
+             if (currentTrack is null)
                  return;
 
              var embed = new EmbedBuilder().WithOkColor()

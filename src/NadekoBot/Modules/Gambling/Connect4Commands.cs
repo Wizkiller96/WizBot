@@ -168,7 +168,7 @@ namespace NadekoBot.Modules.Gambling
                     .WithOkColor();
 
 
-                if (msg == null)
+                if (msg is null)
                     msg = await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
                 else
                     await msg.ModifyAsync(x => x.Embed = embed.Build()).ConfigureAwait(false);

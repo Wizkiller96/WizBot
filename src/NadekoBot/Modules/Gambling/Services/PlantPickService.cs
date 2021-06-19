@@ -182,7 +182,7 @@ namespace NadekoBot.Modules.Gambling.Services
         private Task PotentialFlowerGeneration(IUserMessage imsg)
         {
             var msg = imsg as SocketUserMessage;
-            if (msg == null || msg.Author.IsBot)
+            if (msg is null || msg.Author.IsBot)
                 return Task.CompletedTask;
 
             if (!(imsg.Channel is ITextChannel channel))
@@ -351,7 +351,7 @@ namespace NadekoBot.Modules.Gambling.Services
             {
                 // try to send the message with the currency image
                 var msgId = await SendPlantMessageAsync(gid, ch, user, amount, pass).ConfigureAwait(false);
-                if (msgId == null)
+                if (msgId is null)
                 {
                     // if it fails it will return null, if it returns null, refund
                     await _cs.AddAsync(uid, "Planted currency refund", amount, gamble: false);

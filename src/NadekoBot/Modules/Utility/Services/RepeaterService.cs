@@ -165,7 +165,7 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
                     return;
                 }
 
-                while (!(current is null) && current.Value.NextTime < rep.NextTime)
+                while (current is not null && current.Value.NextTime < rep.NextTime)
                     current = current.Next;
 
                 if (current is null)

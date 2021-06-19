@@ -187,11 +187,11 @@ namespace NadekoBot.Modules.Gambling
                     }
                     return;
                 }
-                if (u == null)
+                if (u is null)
                 {
                     await ReplyConfirmLocalizedAsync("waifu_affinity_reset");
                 }
-                else if (oldAff == null)
+                else if (oldAff is null)
                 {
                     await ReplyConfirmLocalizedAsync("waifu_affinity_set", Format.Bold(u.ToString()));
                 }
@@ -240,7 +240,7 @@ namespace NadekoBot.Modules.Gambling
             [Priority(1)]
             public Task WaifuInfo([Leftover]IUser target = null)
             {
-                if (target == null)
+                if (target is null)
                     target = ctx.User;
 
                 return InternalWaifuInfo(target.Id, target.ToString());

@@ -40,7 +40,7 @@ namespace NadekoBot.Modules.Searches.Services
                     || x.Symbol.ToUpperInvariant() == name);
 
             (CryptoResponseData Elem, int Distance)? nearest = null;
-            if (crypto == null)
+            if (crypto is null)
             {
                 nearest = cryptos.Select(x => (x, Distance: x.Name.ToUpperInvariant().LevenshteinDistance(name)))
                     .OrderBy(x => x.Distance)

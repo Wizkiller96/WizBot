@@ -84,7 +84,7 @@ namespace NadekoBot.Modules.Utility.Services
                         data = JsonConvert.DeserializeObject<PatreonData>(res);
                         var pledgers = data.Data.Where(x => x["type"].ToString() == "pledge");
                         rewards.AddRange(pledgers.Select(x => JsonConvert.DeserializeObject<PatreonPledge>(x.ToString()))
-                            .Where(x => x.attributes.declined_since == null));
+                            .Where(x => x.attributes.declined_since is null));
                         if (data.Included != null)
                         {
                             users.AddRange(data.Included
@@ -141,7 +141,7 @@ namespace NadekoBot.Modules.Utility.Services
                         var users = uow.Set<RewardedUser>();
                         var usr = users.FirstOrDefault(x => x.PatreonUserId == data.User.id);
 
-                        if (usr == null)
+                        if (usr is null)
                         {
                             users.Add(new RewardedUser()
                             {

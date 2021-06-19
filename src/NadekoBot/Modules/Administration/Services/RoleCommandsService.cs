@@ -53,7 +53,7 @@ namespace NadekoBot.Modules.Administration.Services
 
                     var conf = confs.FirstOrDefault(x => x.MessageId == msg.Id);
 
-                    if (conf == null)
+                    if (conf is null)
                         return;
 
                     // compare emote names for backwards compatibility :facepalm:
@@ -129,7 +129,7 @@ namespace NadekoBot.Modules.Administration.Services
 
                     var conf = confs.FirstOrDefault(x => x.MessageId == msg.Id);
 
-                    if (conf == null)
+                    if (conf is null)
                         return;
 
                     var reactionRole = conf.ReactionRoles.FirstOrDefault(x => x.EmoteName == reaction.Emote.Name || x.EmoteName == reaction.Emote.ToString());
@@ -137,7 +137,7 @@ namespace NadekoBot.Modules.Administration.Services
                     if (reactionRole != null)
                     {
                         var role = gusr.Guild.GetRole(reactionRole.RoleId);
-                        if (role == null)
+                        if (role is null)
                             return;
                         await gusr.RemoveRoleAsync(role).ConfigureAwait(false);
                     }

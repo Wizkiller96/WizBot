@@ -82,7 +82,7 @@ namespace NadekoBot.Modules.Administration.Services
             var (autoDelete, exclusive, roles) = GetAdAndRoles(guildUser.Guild.Id);
 
             var theRoleYouWant = roles.FirstOrDefault(r => r.RoleId == role.Id);
-            if (theRoleYouWant == null)
+            if (theRoleYouWant is null)
             {
                 return (AssignResult.Err_Not_Assignable, autoDelete, null);
             }
@@ -145,7 +145,7 @@ namespace NadekoBot.Modules.Administration.Services
                     if (toUpdate != null)
                         gc.SelfAssignableRoleGroupNames.Remove(toUpdate);
                 }
-                else if (toUpdate == null)
+                else if (toUpdate is null)
                 {
                     gc.SelfAssignableRoleGroupNames.Add(new GroupName
                     {
@@ -170,7 +170,7 @@ namespace NadekoBot.Modules.Administration.Services
         {
             var (autoDelete, _, roles) = GetAdAndRoles(guildUser.Guild.Id);
 
-            if (roles.FirstOrDefault(r => r.RoleId == role.Id) == null)
+            if (roles.FirstOrDefault(r => r.RoleId == role.Id) is null)
             {
                 return (RemoveResult.Err_Not_Assignable, autoDelete);
             }
@@ -261,7 +261,7 @@ namespace NadekoBot.Modules.Administration.Services
                 var roleModels = uow.SelfAssignableRoles.GetFromGuild(guild.Id);
                 roles = roleModels
                     .Select(x => (Model: x, Role: guild.GetRole(x.RoleId)));
-                uow.SelfAssignableRoles.RemoveRange(roles.Where(x => x.Role == null).Select(x => x.Model).ToArray());
+                uow.SelfAssignableRoles.RemoveRange(roles.Where(x => x.Role is null).Select(x => x.Model).ToArray());
                 uow.SaveChanges();
             }
 

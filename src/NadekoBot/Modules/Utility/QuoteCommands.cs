@@ -75,7 +75,7 @@ namespace NadekoBot.Modules.Utility
                     //}
                 }
 
-                if (quote == null)
+                if (quote is null)
                     return;
 
                 var rep = new ReplacementBuilder()
@@ -141,7 +141,7 @@ namespace NadekoBot.Modules.Utility
                     keywordquote = await uow.Quotes.SearchQuoteKeywordTextAsync(ctx.Guild.Id, keyword, text);
                 }
 
-                if (keywordquote == null)
+                if (keywordquote is null)
                     return;
 
                 await ctx.Channel.SendMessageAsync($"`#{keywordquote.Id}` 💬 " + keyword.ToLowerInvariant() + ":  " +

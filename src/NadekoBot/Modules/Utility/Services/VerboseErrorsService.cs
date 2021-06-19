@@ -40,7 +40,7 @@ namespace NadekoBot.Modules.Utility.Services
 
         private async Task LogVerboseError(CommandInfo cmd, ITextChannel channel, string reason)
         {
-            if (channel == null || !guildsEnabled.Contains(channel.GuildId))
+            if (channel is null || !guildsEnabled.Contains(channel.GuildId))
                 return;
 
             try

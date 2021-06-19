@@ -199,7 +199,7 @@
 //                         //Log.Information("Buffered. Getting audio client...");
 //                         var ac = await GetAudioClient().ConfigureAwait(false);
 //                         Log.Information("Got Audio client");
-//                         if (ac == null)
+//                         if (ac is null)
 //                         {
 //                             Log.Information("Can't join");
 //                             await Task.Delay(900, cancelToken).ConfigureAwait(false);
@@ -371,7 +371,7 @@
 //
 //         private async Task<IAudioClient> GetAudioClient(bool reconnect = false)
 //         {
-//             if (_audioClient == null ||
+//             if (_audioClient is null ||
 //                 _audioClient.ConnectionState != ConnectionState.Connected ||
 //                 reconnect ||
 //                 newVoiceChannel)
@@ -529,7 +529,7 @@
 //         {
 //             lock (locker)
 //             {
-//                 if (PauseTaskSource == null)
+//                 if (PauseTaskSource is null)
 //                     PauseTaskSource = new TaskCompletionSource<bool>();
 //                 else
 //                 {

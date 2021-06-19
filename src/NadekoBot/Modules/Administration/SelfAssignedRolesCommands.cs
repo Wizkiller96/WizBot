@@ -138,7 +138,7 @@ namespace NadekoBot.Modules.Administration
                         rolesStr.AppendLine("\t\t\t\t ⟪" + groupNameText + "⟫");
                         foreach (var (Model, Role) in kvp.AsEnumerable())
                         {
-                            if (Role == null)
+                            if (Role is null)
                             {
                                 continue;
                             }

@@ -35,7 +35,7 @@ namespace NadekoBot.Modules.Utility
             {
                 var originUnit = _service.Units.FirstOrDefault(x => x.Triggers.Select(y => y.ToUpperInvariant()).Contains(origin.ToUpperInvariant()));
                 var targetUnit = _service.Units.FirstOrDefault(x => x.Triggers.Select(y => y.ToUpperInvariant()).Contains(target.ToUpperInvariant()));
-                if (originUnit == null || targetUnit == null)
+                if (originUnit is null || targetUnit is null)
                 {
                     await ReplyErrorLocalizedAsync("convert_not_found", Format.Bold(origin), Format.Bold(target)).ConfigureAwait(false);
                     return;

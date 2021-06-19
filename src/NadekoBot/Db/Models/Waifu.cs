@@ -31,7 +31,7 @@ namespace NadekoBot.Core.Services.Database.Models
             {
                 claimer = $"{ claimerUsername }#{Claimer.Discriminator}";
             }
-            if (AffinityId == null)
+            if (AffinityId is null)
             {
                 status = $"... but {waifuUsername}'s heart is empty";
             }
@@ -72,7 +72,7 @@ namespace NadekoBot.Core.Services.Database.Models
             {
                 claimer = $"{ claimerUsername }#{ClaimerDiscrim}";
             }
-            if (Affinity == null)
+            if (Affinity is null)
             {
                 status = $"... but {waifuUsername}'s heart is empty";
             }

@@ -13,7 +13,7 @@ namespace NadekoBot.Db
         {
             var usr = ctx.UserXpStats.FirstOrDefault(x => x.UserId == userId && x.GuildId == guildId);
 
-            if (usr == null)
+            if (usr is null)
             {
                 ctx.Add(usr = new UserXpStats()
                 {

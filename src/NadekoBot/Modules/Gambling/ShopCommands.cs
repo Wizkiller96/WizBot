@@ -104,7 +104,7 @@ namespace NadekoBot.Modules.Gambling
                     uow.SaveChanges();
                 }
 
-                if (entry == null)
+                if (entry is null)
                 {
                     await ReplyErrorLocalizedAsync("shop_item_not_found").ConfigureAwait(false);
                     return;
@@ -115,7 +115,7 @@ namespace NadekoBot.Modules.Gambling
                     var guser = (IGuildUser)ctx.User;
                     var role = ctx.Guild.GetRole(entry.RoleId);
 
-                    if (role == null)
+                    if (role is null)
                     {
                         await ReplyErrorLocalizedAsync("shop_role_not_found").ConfigureAwait(false);
                         return;
@@ -306,7 +306,7 @@ namespace NadekoBot.Modules.Gambling
                         }
                     }
                 }
-                if (entry == null)
+                if (entry is null)
                     await ReplyErrorLocalizedAsync("shop_item_not_found").ConfigureAwait(false);
                 else if (!rightType)
                     await ReplyErrorLocalizedAsync("shop_item_wrong_type").ConfigureAwait(false);
@@ -341,7 +341,7 @@ namespace NadekoBot.Modules.Gambling
                     }
                 }
 
-                if (removed == null)
+                if (removed is null)
                     await ReplyErrorLocalizedAsync("shop_item_not_found").ConfigureAwait(false);
                 else
                     await ctx.Channel.EmbedAsync(EntryToEmbed(removed)

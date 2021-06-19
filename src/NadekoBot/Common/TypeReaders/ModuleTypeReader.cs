@@ -21,7 +21,7 @@ namespace NadekoBot.Common.TypeReaders
         {
             input = input.ToUpperInvariant();
             var module = _cmds.Modules.GroupBy(m => m.GetTopLevelModule()).FirstOrDefault(m => m.Key.Name.ToUpperInvariant() == input)?.Key;
-            if (module == null)
+            if (module is null)
                 return Task.FromResult(TypeReaderResult.FromError(CommandError.ParseFailed, "No such module found."));
 
             return Task.FromResult(TypeReaderResult.FromSuccess(module));
@@ -41,7 +41,7 @@ namespace NadekoBot.Common.TypeReaders
         {
             input = input.ToUpperInvariant();
             var module = _cmds.Modules.GroupBy(m => m.GetTopLevelModule()).FirstOrDefault(m => m.Key.Name.ToUpperInvariant() == input)?.Key;
-            if (module == null && input != "ACTUALCUSTOMREACTIONS")
+            if (module is null && input != "ACTUALCUSTOMREACTIONS")
                 return Task.FromResult(TypeReaderResult.FromError(CommandError.ParseFailed, "No such module found."));
 
             return Task.FromResult(TypeReaderResult.FromSuccess(new ModuleOrCrInfo

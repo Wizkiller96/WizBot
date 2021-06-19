@@ -94,7 +94,7 @@ namespace NadekoBot.Modules.Administration
 
                 var embed = new EmbedBuilder()
                     .WithOkColor();
-                if (punishment == null)
+                if (punishment is null)
                 {
                     embed.WithDescription(GetText("user_warned",
                         Format.Bold(user.ToString())));
@@ -430,7 +430,7 @@ namespace NadekoBot.Modules.Administration
                     {
                         var defaultMessage = GetText("bandm", Format.Bold(ctx.Guild.Name), msg);
                         var embed = _service.GetBanUserDmEmbed(Context, guildUser, defaultMessage, msg, time.Time);
-                        if (!(embed is null))
+                        if (embed is not null)
                         {
                             var userChannel = await guildUser.GetOrCreateDMChannelAsync();
                             await userChannel.EmbedAsync(embed);
@@ -497,7 +497,7 @@ namespace NadekoBot.Modules.Administration
                 {
                     var defaultMessage = GetText("bandm", Format.Bold(ctx.Guild.Name), msg);
                     var embed = _service.GetBanUserDmEmbed(Context, user, defaultMessage, msg, null);
-                    if (!(embed is null))
+                    if (embed is not null)
                     {
                         var userChannel = await user.GetOrCreateDMChannelAsync();
                         await userChannel.EmbedAsync(embed);
@@ -613,7 +613,7 @@ namespace NadekoBot.Modules.Administration
 
                 var bun = bans.FirstOrDefault(x => x.User.ToString().ToLowerInvariant() == user.ToLowerInvariant());
 
-                if (bun == null)
+                if (bun is null)
                 {
                     await ReplyErrorLocalizedAsync("user_not_found").ConfigureAwait(false);
                     return;
@@ -632,7 +632,7 @@ namespace NadekoBot.Modules.Administration
 
                 var bun = bans.FirstOrDefault(x => x.User.Id == userId);
 
-                if (bun == null)
+                if (bun is null)
                 {
                     await ReplyErrorLocalizedAsync("user_not_found").ConfigureAwait(false);
                     return;

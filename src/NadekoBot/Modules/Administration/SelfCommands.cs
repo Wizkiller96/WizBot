@@ -58,7 +58,7 @@ namespace NadekoBot.Modules.Administration
                 await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                     .WithTitle(GetText("scadd"))
                     .AddField(efb => efb.WithName(GetText("server"))
-                        .WithValue(cmd.GuildId == null ? $"-" : $"{cmd.GuildName}/{cmd.GuildId}").WithIsInline(true))
+                        .WithValue(cmd.GuildId is null ? $"-" : $"{cmd.GuildName}/{cmd.GuildId}").WithIsInline(true))
                     .AddField(efb => efb.WithName(GetText("channel"))
                         .WithValue($"{cmd.ChannelName}/{cmd.ChannelId}").WithIsInline(true))
                     .AddField(efb => efb.WithName(GetText("command_text"))
@@ -419,7 +419,7 @@ namespace NadekoBot.Modules.Administration
                     .WithDefault(Context)
                     .Build();
 
-                await _bot.SetGameAsync(game == null ? game : rep.Replace(game), type).ConfigureAwait(false);
+                await _bot.SetGameAsync(game is null ? game : rep.Replace(game), type).ConfigureAwait(false);
 
                 await ReplyConfirmLocalizedAsync("set_game").ConfigureAwait(false);
             }
@@ -448,7 +448,7 @@ namespace NadekoBot.Modules.Administration
                 var sid = ulong.Parse(ids[0]);
                 var server = _client.Guilds.FirstOrDefault(s => s.Id == sid);
 
-                if (server == null)
+                if (server is null)
                     return;
 
                 var rep = new ReplacementBuilder()
@@ -459,7 +459,7 @@ namespace NadekoBot.Modules.Administration
                 {
                     var cid = ulong.Parse(ids[1].Substring(2));
                     var ch = server.TextChannels.FirstOrDefault(c => c.Id == cid);
-                    if (ch == null)
+                    if (ch is null)
                     {
                         return;
                     }
@@ -477,7 +477,7 @@ namespace NadekoBot.Modules.Administration
                 {
                     var uid = ulong.Parse(ids[1].Substring(2));
                     var user = server.Users.FirstOrDefault(u => u.Id == uid);
-                    if (user == null)
+                    if (user is null)
                     {
                         return;
                     }

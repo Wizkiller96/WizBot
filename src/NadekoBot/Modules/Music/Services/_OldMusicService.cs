@@ -100,7 +100,7 @@
 //             string GetText(string text, params object[] replacements) =>
 //                 _strings.GetText(text, textCh.Guild.Id, replacements);
 //             
-//             if (voiceCh == null || voiceCh.Guild != textCh.Guild)
+//             if (voiceCh is null || voiceCh.Guild != textCh.Guild)
 //             {
 //                 if (textCh != null)
 //                 {
@@ -139,7 +139,7 @@
 //                         }
 //
 //                         var (Index, Current) = mp.Current;
-//                         if (Current == null
+//                         if (Current is null
 //                             && !mp.RepeatCurrentSong
 //                             && !mp.RepeatPlaylist
 //                             && !mp.FairPlay
@@ -161,7 +161,7 @@
 //                     //    // ignored
 //                     //}
 //                     var sender = player;
-//                     if (sender == null)
+//                     if (sender is null)
 //                         return;
 //                     try
 //                     {
@@ -215,7 +215,7 @@
 //                 return;
 //
 //             var si = await ResolveSong(related[new NadekoRandom().Next(related.Length)], _client.CurrentUser.ToString(), MusicType.YouTube).ConfigureAwait(false);
-//             if (si == null)
+//             if (si is null)
 //                 throw new SongNotFoundException();
 //             var mp = await GetOrCreatePlayer(txtCh.GuildId, vch, txtCh).ConfigureAwait(false);
 //             mp.Enqueue(si);
@@ -229,7 +229,7 @@
 //             var strategy = await resolverFactory.GetResolveStrategy(query, musicType).ConfigureAwait(false);
 //             var sinfo = await strategy.ResolveSong(query).ConfigureAwait(false);
 //
-//             if (sinfo == null)
+//             if (sinfo is null)
 //                 return null;
 //
 //             sinfo.QueuerName = queuerName;

@@ -89,7 +89,7 @@ namespace NadekoBot.Modules.Games
                         game.Dispose();
                     }
 
-                    if (arg2 == null)
+                    if (arg2 is null)
                         return ConfirmLocalizedAsync("nunchi_ended_no_winner", Format.Bold(arg2));
                     else
                         return ConfirmLocalizedAsync("nunchi_ended", Format.Bold(arg2));

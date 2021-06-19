@@ -70,7 +70,7 @@ namespace NadekoBot.Core.Services
                     if (!conf.SendChannelByeMessage) return;
                     var channel = (await user.Guild.GetTextChannelsAsync().ConfigureAwait(false)).SingleOrDefault(c => c.Id == conf.ByeMessageChannelId);
 
-                    if (channel == null) //maybe warn the server owner that the channel is missing
+                    if (channel is null) //maybe warn the server owner that the channel is missing
                         return;
                     
                     if (GroupGreets)

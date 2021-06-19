@@ -86,7 +86,7 @@
 //                 if (MaxQueueSize != 0 && Songs.Count >= MaxQueueSize)
 //                     throw new QueueFullException();
 //                 var curSong = Current.Song;
-//                 if (curSong == null)
+//                 if (curSong is null)
 //                 {
 //                     Songs.AddLast(song);
 //                     return Songs.Count;

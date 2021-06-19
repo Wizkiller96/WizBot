@@ -94,7 +94,7 @@ namespace NadekoBot.Modules.Searches.Services
         //         var oldObj = gc.YtFollowedChannels
         //             .FirstOrDefault(x => x.ChannelId == channelId && x.YtChannelId == ytChannelId);
         //
-        //         if(!(oldObj is null))
+        //         if(oldObj is not null)
         //         {
         //             return false;
         //         }

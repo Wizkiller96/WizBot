@@ -53,7 +53,7 @@ namespace NadekoBot.Modules.Administration.Services
                     {
                         var roleIds = savedRoleIds
                             .Select(roleId => user.Guild.GetRole(roleId))
-                            .Where(x => !(x is null))
+                            .Where(x => x is not null)
                             .ToList();
                         
                         if (roleIds.Any())

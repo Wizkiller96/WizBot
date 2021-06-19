@@ -190,7 +190,7 @@ namespace NadekoBot.Core.Services
                     JsonConvert.SerializeObject(msg),
                     CommandFlags.FireAndForget);
             var p = _shardProcesses[shardId];
-            if (p == null)
+            if (p is null)
                 return; // ignore
             _shardProcesses[shardId] = null;
             try
@@ -204,7 +204,7 @@ namespace NadekoBot.Core.Services
         private void OnDataReceived(RedisChannel ch, RedisValue data)
         {
             var msg = JsonConvert.DeserializeObject<ShardComMessage>(data);
-            if (msg == null)
+            if (msg is null)
                 return;
             var db = _redis.GetDatabase();
             //sets the shard state
@@ -316,7 +316,7 @@ namespace NadekoBot.Core.Services
                             for (var i = 0; i < _shardProcesses.Length; i++)
                             {
                                 var p = _shardProcesses[i];
-                                if (p == null || p.HasExited)
+                                if (p is null || p.HasExited)
                                 {
                                     Log.Warning("Scheduling shard {0} for restart because it's process is stopped.", i);
                                     _shardStartQueue.Enqueue(i);
@@ -370,7 +370,7 @@ namespace NadekoBot.Core.Services
                 Log.Error(ex, "Unhandled exception in RunAsync");
                 foreach (var p in _shardProcesses)
                 {
-                    if (p == null)
+                    if (p is null)
                         continue;
                     try
                     {

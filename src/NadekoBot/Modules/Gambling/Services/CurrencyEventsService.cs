@@ -92,7 +92,7 @@ namespace NadekoBot.Modules.Gambling.Services
         {
             SocketGuild g = _client.GetGuild(guildId);
             SocketTextChannel ch = g?.GetChannel(channelId) as SocketTextChannel;
-            if (ch == null)
+            if (ch is null)
                 return false;
 
             ICurrencyEvent ce;

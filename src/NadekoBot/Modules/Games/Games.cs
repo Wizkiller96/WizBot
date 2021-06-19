@@ -61,7 +61,7 @@ namespace NadekoBot.Modules.Games
             var gr = _service.GirlRatings.GetOrAdd(usr.Id, GetGirl);
             var originalStream = await gr.Stream;
 
-            if (originalStream == null)
+            if (originalStream is null)
             {
                 await ReplyErrorLocalizedAsync("something_went_wrong").ConfigureAwait(false);
                 return;

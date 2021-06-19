@@ -45,7 +45,7 @@ namespace NadekoBot.Modules.Administration.Services
             TimeZoneInfo tz;
             try
             {
-                if (x.TimeZoneId == null)
+                if (x.TimeZoneId is null)
                     tz = null;
                 else
                     tz = TimeZoneInfo.FindSystemTimeZoneById(x.TimeZoneId);
@@ -73,7 +73,7 @@ namespace NadekoBot.Modules.Administration.Services
                 gc.TimeZoneId = tz?.Id;
                 uow.SaveChanges();
 
-                if (tz == null)
+                if (tz is null)
                     _timezones.TryRemove(guildId, out tz);
                 else
                     _timezones.AddOrUpdate(guildId, tz, (key, old) => tz);

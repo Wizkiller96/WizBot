@@ -76,7 +76,7 @@ namespace NadekoBot.Modules.Administration
                 try { tz = TimeZoneInfo.FindSystemTimeZoneById(id); } catch { tz = null; }
 
 
-                if (tz == null)
+                if (tz is null)
                 {
                     await ReplyErrorLocalizedAsync("timezone_not_found").ConfigureAwait(false);
                     return;

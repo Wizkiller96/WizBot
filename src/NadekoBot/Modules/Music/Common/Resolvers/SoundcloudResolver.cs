@@ -81,7 +81,7 @@ namespace NadekoBot.Modules.Music.Resolvers
         public async Task<ITrackInfo?> ResolveByQueryAsync(string query)
         {
             var cached = await _trackCacher.GetCachedDataByQueryAsync(query, MusicPlatform.SoundCloud);
-            if (!(cached is null))
+            if (cached is not null)
                 return CachableDataToTrackInfo(cached);
             
             var svideo = !IsSoundCloudLink(query)

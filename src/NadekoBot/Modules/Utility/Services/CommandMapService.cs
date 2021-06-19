@@ -65,7 +65,7 @@ namespace NadekoBot.Modules.Utility.Services
         {
             await Task.Yield();
 
-            if (guild == null || string.IsNullOrWhiteSpace(input))
+            if (guild is null || string.IsNullOrWhiteSpace(input))
                 return input;
 
             if (guild != null)

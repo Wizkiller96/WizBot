@@ -213,7 +213,7 @@ namespace NadekoBot.Modules.Music
                         mpl = uow.MusicPlaylists.GetWithSongs(id);
                     }
 
-                    if (mpl == null)
+                    if (mpl is null)
                     {
                         await ReplyErrorLocalizedAsync("playlist_id_not_found").ConfigureAwait(false);
                         return;

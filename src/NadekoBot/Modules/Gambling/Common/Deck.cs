@@ -300,7 +300,7 @@ namespace NadekoBot.Modules.Gambling.Common
 
         public static string GetHandValue(List<Card> cards)
         {
-            if (handValues == null)
+            if (handValues is null)
                 InitHandValues();
             foreach (var kvp in handValues.Where(x => x.Value(cards)))
             {

@@ -23,7 +23,7 @@ namespace NadekoBot.Modules.CustomReactions
             _clientFactory = clientFactory;
         }
 
-        private bool AdminInGuildOrOwnerInDm() => (ctx.Guild == null && _creds.IsOwner(ctx.User))
+        private bool AdminInGuildOrOwnerInDm() => (ctx.Guild is null && _creds.IsOwner(ctx.User))
                                                   || (ctx.Guild != null && ((IGuildUser)ctx.User).GuildPermissions.Administrator);
 
         [NadekoCommand, Usage, Description, Aliases]
@@ -56,7 +56,7 @@ namespace NadekoBot.Modules.CustomReactions
             if (string.IsNullOrWhiteSpace(message) || id < 0)
                 return;
 
-            if ((channel == null && !_creds.IsOwner(ctx.User)) || (channel != null && !((IGuildUser)ctx.User).GuildPermissions.Administrator))
+            if ((channel is null && !_creds.IsOwner(ctx.User)) || (channel != null && !((IGuildUser)ctx.User).GuildPermissions.Administrator))
             {
                 await ReplyErrorLocalizedAsync("insuff_perms").ConfigureAwait(false);
                 return;
@@ -87,7 +87,7 @@ namespace NadekoBot.Modules.CustomReactions
 
             var customReactions = _service.GetCustomReactionsFor(ctx.Guild?.Id);
 
-            if (customReactions == null || !customReactions.Any())
+            if (customReactions is null || !customReactions.Any())
             {
                 await ReplyErrorLocalizedAsync("no_found").ConfigureAwait(false);
                 return;
@@ -139,7 +139,7 @@ namespace NadekoBot.Modules.CustomReactions
         {
             var found = _service.GetCustomReaction(ctx.Guild?.Id, (int)id);
 
-            if (found == null)
+            if (found is null)
             {
                 await ReplyErrorLocalizedAsync("no_found_id").ConfigureAwait(false);
                 return;

@@ -98,7 +98,7 @@ namespace NadekoBot.Modules.Gambling.Common.Connect4
                 await _locker.WaitAsync().ConfigureAwait(false);
                 try
                 {
-                    if (_players[1] == null)
+                    if (_players[1] is null)
                     {
                         var __ = OnGameFailedToStart?.Invoke(this);
                         CurrentPhase = Phase.Ended;

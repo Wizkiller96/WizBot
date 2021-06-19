@@ -239,7 +239,7 @@ namespace NadekoBot.Modules.Utility.Services
                         || a.Name.ToUpperInvariant().Contains(setting.Keyword.ToUpperInvariant())
                         || setting.Whitelist.Any(x => x.UserId == user.Id)));
             
-            if (!(g is null)
+            if (g is not null
                 && setting.Enabled
                 && setting.Blacklist.All(x => x.UserId != user.Id)
                 && user.RoleIds.Contains(setting.FromRoleId))
@@ -247,7 +247,7 @@ namespace NadekoBot.Modules.Utility.Services
                 try
                 {
                     addRole = addRole ?? user.Guild.GetRole(setting.AddRoleId);
-                    if (addRole == null)
+                    if (addRole is null)
                     {
                         await StopStreamRole(user.Guild).ConfigureAwait(false);
                         Log.Warning("Stream role in server {0} no longer exists. Stopping.", setting.AddRoleId);
@@ -278,7 +278,7 @@ namespace NadekoBot.Modules.Utility.Services
                     try
                     {
                         addRole = addRole ?? user.Guild.GetRole(setting.AddRoleId);
-                        if (addRole == null)
+                        if (addRole is null)
                             throw new StreamRoleNotFoundException();
 
                         await user.RemoveRoleAsync(addRole).ConfigureAwait(false);
@@ -300,7 +300,7 @@ namespace NadekoBot.Modules.Utility.Services
                 return;
 
             var addRole = guild.GetRole(setting.AddRoleId);
-            if (addRole == null)
+            if (addRole is null)
                 return;
 
             if (setting.Enabled)

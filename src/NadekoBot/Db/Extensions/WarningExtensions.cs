@@ -27,7 +27,7 @@ namespace NadekoBot.Db
                 .Skip(index)
                 .FirstOrDefault();
 
-            if (warn == null || warn.Forgiven)
+            if (warn is null || warn.Forgiven)
                 return false;
 
             warn.Forgiven = true;

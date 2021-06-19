@@ -80,7 +80,7 @@ namespace NadekoBot.Modules.Xp
             public async Task ClubIcon([Leftover] string url = null)
             {
                 if ((!Uri.IsWellFormedUriString(url, UriKind.Absolute) && url != null)
-                    || !await _service.SetClubIcon(ctx.User.Id, url == null ? null : new Uri(url)))
+                    || !await _service.SetClubIcon(ctx.User.Id, url is null ? null : new Uri(url)))
                 {
                     await ReplyErrorLocalizedAsync("club_icon_error").ConfigureAwait(false);
                     return;
@@ -95,7 +95,7 @@ namespace NadekoBot.Modules.Xp
             {
                 user = user ?? ctx.User;
                 var club = _service.GetClubByMember(user);
-                if (club == null)
+                if (club is null)
                 {
                     await ErrorLocalizedAsync("club_user_not_in_club", Format.Bold(user.ToString()));
                     return;
@@ -171,7 +171,7 @@ namespace NadekoBot.Modules.Xp
                     return Task.CompletedTask;
 
                 var club = _service.GetClubWithBansAndApplications(ctx.User.Id);
-                if (club == null)
+                if (club is null)
                     return ReplyErrorLocalizedAsync("club_not_exists_owner");
 
                 var bans = club
@@ -202,7 +202,7 @@ namespace NadekoBot.Modules.Xp
                     return Task.CompletedTask;
 
                 var club = _service.GetClubWithBansAndApplications(ctx.User.Id);
-                if (club == null)
+                if (club is null)
                     return ReplyErrorLocalizedAsync("club_not_exists_owner");
 
                 var apps = club

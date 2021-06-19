@@ -59,7 +59,7 @@ namespace NadekoBot.Modules.Games.Services
             var channel = msg.Channel as ITextChannel;
             cleverbot = null;
 
-            if (channel == null)
+            if (channel is null)
                 return null;
 
             if (!ChatterBotGuilds.TryGetValue(channel.Guild.Id, out Lazy<IChatterBotSession> lazyCleverbot))
@@ -110,7 +110,7 @@ namespace NadekoBot.Modules.Games.Services
             try
             {
                 var message = PrepareMessage(usrMsg, out IChatterBotSession cbs);
-                if (message == null || cbs == null)
+                if (message is null || cbs is null)
                     return false;
 
                 var pc = _perms.GetCacheFor(guild.Id);

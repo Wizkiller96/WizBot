@@ -268,7 +268,7 @@ namespace NadekoBot.Modules.Help
         {
             var channel = ctx.Channel;
 
-            if (com == null)
+            if (com is null)
             {
                 IMessageChannel ch = channel is ITextChannel
                     ? await ((IGuildUser)ctx.User).GetOrCreateDMChannelAsync().ConfigureAwait(false)

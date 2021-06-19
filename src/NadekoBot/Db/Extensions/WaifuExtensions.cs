@@ -28,7 +28,7 @@ namespace NadekoBot.Db
     {
         public static WaifuInfo ByWaifuUserId(this DbSet<WaifuInfo> waifus, ulong userId, Func<DbSet<WaifuInfo>, IQueryable<WaifuInfo>> includes = null)
         {
-            if (includes == null)
+            if (includes is null)
             {
                 return waifus.Include(wi => wi.Waifu)
                             .Include(wi => wi.Affinity)

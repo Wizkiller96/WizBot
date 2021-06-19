@@ -237,7 +237,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
             using var uow = _db.GetDbContext();
             var cr = uow.CustomReactions.GetById(id);
 
-            if (cr == null || cr.GuildId != guildId)
+            if (cr is null || cr.GuildId != guildId)
                 return null;
 
             // disable allowtarget if message had target, but it was removed from it
@@ -268,7 +268,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
             if (toDelete is null)
                 return null;
             
-            if ((toDelete.IsGlobal() && guildId == null) || (guildId == toDelete.GuildId))
+            if ((toDelete.IsGlobal() && guildId is null) || (guildId == toDelete.GuildId))
             {
                 uow.CustomReactions.Remove(toDelete);
                 await uow.SaveChangesAsync();
@@ -309,7 +309,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
             if (_newGuildReactions.TryGetValue(channel.Guild.Id, out var reactions) && reactions.Length > 0)
             {
                 var cr = MatchCustomReactions(content, reactions);
-                if (!(cr is null))
+                if (cr is not null)
                     return cr;
             }
 
@@ -375,7 +375,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
                 return null;
 
             var cancelled = result.FirstOrDefault(x => x.Response == "-");
-            if (!(cancelled is null))
+            if (cancelled is not null)
                 return cancelled;
             
             return result[_rng.Next(0, result.Count)];
@@ -551,7 +551,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
             lock (_gcrWriteLock)
             {
                 var cr = Array.Find(_globalReactions, item => item.Id == id);
-                if (!(cr is null))
+                if (cr is not null)
                 {
                     return _pubSub.Pub(_gcrDeletedkey, cr.Id);
                 }
@@ -629,7 +629,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
         {
             using var uow = _db.GetDbContext();
             var cr = uow.CustomReactions.GetById(id);
-            if (cr == null || cr.GuildId != guildId)
+            if (cr is null || cr.GuildId != guildId)
                 return null;
 
             return cr;

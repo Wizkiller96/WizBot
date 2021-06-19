@@ -159,7 +159,7 @@ namespace NadekoBot.Modules.Administration.Services
             {
                 MutedUsers.TryGetValue(usr.Guild.Id, out ConcurrentHashSet<ulong> muted);
 
-                if (muted == null || !muted.Contains(usr.Id))
+                if (muted is null || !muted.Contains(usr.Id))
                     return Task.CompletedTask;
                 var _ = Task.Run(() => MuteUser(usr, _client.CurrentUser, reason: "Sticky mute").ConfigureAwait(false));
             }
@@ -259,7 +259,7 @@ namespace NadekoBot.Modules.Administration.Services
             }
             else if (type == MuteType.Voice)
             {
-                if (usr == null)
+                if (usr is null)
                     return;
                 try
                 {
@@ -270,7 +270,7 @@ namespace NadekoBot.Modules.Administration.Services
             }
             else if (type == MuteType.Chat)
             {
-                if (usr == null)
+                if (usr is null)
                     return;
                 await usr.RemoveRoleAsync(await GetMuteRole(usr.Guild).ConfigureAwait(false)).ConfigureAwait(false);
                 UserUnmuted(usr, mod, MuteType.Chat, reason);
@@ -279,7 +279,7 @@ namespace NadekoBot.Modules.Administration.Services
 
         public async Task<IRole> GetMuteRole(IGuild guild)
         {
-            if (guild == null)
+            if (guild is null)
                 throw new ArgumentNullException(nameof(guild));
 
             const string defaultMuteRoleName = "nadeko-mute";
@@ -287,7 +287,7 @@ namespace NadekoBot.Modules.Administration.Services
             var muteRoleName = GuildMuteRoles.GetOrAdd(guild.Id, defaultMuteRoleName);
 
             var muteRole = guild.Roles.FirstOrDefault(r => r.Name == muteRoleName);
-            if (muteRole == null)
+            if (muteRole is null)
             {
 
                 //if it doesn't exist, create it

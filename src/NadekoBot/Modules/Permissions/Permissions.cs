@@ -33,7 +33,7 @@ namespace NadekoBot.Modules.Permissions
             using (var uow = _db.GetDbContext())
             {
                 var config = uow.GcWithPermissionsv2For(ctx.Guild.Id);
-                if (action == null) action = new PermissionAction(!config.VerbosePermissions); // New behaviour, can toggle.
+                if (action is null) action = new PermissionAction(!config.VerbosePermissions); // New behaviour, can toggle.
                 config.VerbosePermissions = action.Value;
                 await uow.SaveChangesAsync();
                 _service.UpdateCache(config);
@@ -57,11 +57,11 @@ namespace NadekoBot.Modules.Permissions
             if (role != null && role == role.Guild.EveryoneRole)
                 return;
             
-            if (role == null)
+            if (role is null)
             {
                 var cache = _service.GetCacheFor(ctx.Guild.Id);
                 if (!ulong.TryParse(cache.PermRole, out var roleId) ||
-                    (role = ((SocketGuild)ctx.Guild).GetRole(roleId)) == null)
+                    (role = ((SocketGuild)ctx.Guild).GetRole(roleId)) is null)
                 {
                     await ReplyConfirmLocalizedAsync("permrole_not_set", Format.Bold(cache.PermRole)).ConfigureAwait(false);
                 }

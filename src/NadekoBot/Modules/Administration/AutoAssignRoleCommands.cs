@@ -55,7 +55,7 @@ namespace NadekoBot.Modules.Administration
                     return;
                 }
                 
-                var existing = roles.Select(rid => ctx.Guild.GetRole(rid)).Where(r => !(r is null))
+                var existing = roles.Select(rid => ctx.Guild.GetRole(rid)).Where(r => r is not null)
                     .ToList();
 
                 if (existing.Count != roles.Count)

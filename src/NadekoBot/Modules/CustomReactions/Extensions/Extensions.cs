@@ -37,7 +37,7 @@ namespace NadekoBot.Modules.CustomReactions.Extensions
 
                     var img = (elems.ElementAtOrDefault(new NadekoRandom().Next(0, elems.Length))?.Children?.FirstOrDefault() as IHtmlImageElement);
 
-                    if (img?.Source == null)
+                    if (img?.Source is null)
                         return "";
 
                     return " " + img.Source.Replace("b.", ".", StringComparison.InvariantCulture) + " ";

@@ -38,7 +38,7 @@ namespace NadekoBot.Modules.Administration.Services
                 {
                     //if the user is in the voice channel and that voice channel is gvc
                     var vc = after.VoiceChannel;
-                    if (vc == null || !GameVoiceChannels.Contains(vc.Id))
+                    if (vc is null || !GameVoiceChannels.Contains(vc.Id))
                         return;
 
                     //if the activity has changed, and is a playing activity
@@ -96,7 +96,7 @@ namespace NadekoBot.Modules.Administration.Services
                     var game = gUser.Activity?.Name;
 
                     if (oldState.VoiceChannel == newState.VoiceChannel ||
-                        newState.VoiceChannel == null)
+                        newState.VoiceChannel is null)
                         return;
 
                     if (!GameVoiceChannels.Contains(newState.VoiceChannel.Id) ||
@@ -123,7 +123,7 @@ namespace NadekoBot.Modules.Administration.Services
             var vch = gUser.Guild.VoiceChannels
                 .FirstOrDefault(x => x.Name.ToLowerInvariant() == game);
 
-            if (vch == null)
+            if (vch is null)
                 return;
 
             await Task.Delay(1000).ConfigureAwait(false);

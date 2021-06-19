@@ -32,7 +32,7 @@ namespace NadekoBot.Modules.Administration
                 var msgs = await ((SocketTextChannel)ctx.Channel).GetMessagesAsync().FlattenAsync().ConfigureAwait(false);
                 var prev = (IUserMessage)msgs.FirstOrDefault(x => x is IUserMessage && x.Id != ctx.Message.Id);
 
-                if (prev == null)
+                if (prev is null)
                     return;
 
                 if (input.Length % 2 != 0)
@@ -144,7 +144,7 @@ namespace NadekoBot.Modules.Administration
                     {
                         var ch = g.GetTextChannel(rr.ChannelId);
                         IUserMessage msg = null;
-                        if (!(ch is null))
+                        if (ch is not null)
                         {
                             msg = await ch.GetMessageAsync(rr.MessageId).ConfigureAwait(false) as IUserMessage;
                         }

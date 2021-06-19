@@ -81,7 +81,7 @@ namespace NadekoBot.Modules.Games.Common
             {
                 for (var j = 0; j < _state.GetLength(1); j++)
                 {
-                    sb.Append(_state[i, j] == null ? _numbers[i * 3 + j] : GetIcon(_state[i, j]));
+                    sb.Append(_state[i, j] is null ? _numbers[i * 3 + j] : GetIcon(_state[i, j]));
                     if (j < _state.GetLength(1) - 1)
                         sb.Append("┃");
                 }
@@ -102,7 +102,7 @@ namespace NadekoBot.Modules.Games.Common
             if (!string.IsNullOrWhiteSpace(title))
                 embed.WithTitle(title);
 
-            if (_winner == null)
+            if (_winner is null)
             {
                 if (_phase == Phase.Ended)
                     embed.WithFooter(efb => efb.WithText(GetText("ttt_no_moves")));
@@ -192,7 +192,7 @@ namespace NadekoBot.Modules.Games.Common
             {
                 for (var j = 0; j < 3; j++)
                 {
-                    if (_state[i, j] == null)
+                    if (_state[i, j] is null)
                         return false;
                 }
             }
@@ -213,7 +213,7 @@ namespace NadekoBot.Modules.Games.Common
                     if (int.TryParse(msg.Content, out var index) &&
                         --index >= 0 &&
                         index <= 9 &&
-                        _state[index / 3, index % 3] == null)
+                        _state[index / 3, index % 3] is null)
                     {
                         _state[index / 3, index % 3] = _curUserIndex;
 

@@ -203,12 +203,12 @@ namespace NadekoBot.Modules.Administration.Services
                     var g = after.Guild;
 
                     if (!GuildLogSettings.TryGetValue(g.Id, out LogSetting logSetting)
-                        || (logSetting.UserUpdatedId == null))
+                        || (logSetting.UserUpdatedId is null))
                         return;
 
                     ITextChannel logChannel;
                     if ((logChannel =
-                        await TryGetLogChannel(g, logSetting, LogType.UserUpdated).ConfigureAwait(false)) == null)
+                        await TryGetLogChannel(g, logSetting, LogType.UserUpdated).ConfigureAwait(false)) is null)
                         return;
 
                     var embed = new EmbedBuilder();
@@ -262,54 +262,54 @@ namespace NadekoBot.Modules.Administration.Services
                 switch (type)
                 {
                     case LogType.Other:
-                        channelId = logSetting.LogOtherId = (logSetting.LogOtherId == null ? cid : default);
+                        channelId = logSetting.LogOtherId = (logSetting.LogOtherId is null ? cid : default);
                         break;
                     case LogType.MessageUpdated:
-                        channelId = logSetting.MessageUpdatedId = (logSetting.MessageUpdatedId == null ? cid : default);
+                        channelId = logSetting.MessageUpdatedId = (logSetting.MessageUpdatedId is null ? cid : default);
                         break;
                     case LogType.MessageDeleted:
-                        channelId = logSetting.MessageDeletedId = (logSetting.MessageDeletedId == null ? cid : default);
+                        channelId = logSetting.MessageDeletedId = (logSetting.MessageDeletedId is null ? cid : default);
                         //logSetting.DontLogBotMessageDeleted = (options == "nobot");
                         break;
                     case LogType.UserJoined:
-                        channelId = logSetting.UserJoinedId = (logSetting.UserJoinedId == null ? cid : default);
+                        channelId = logSetting.UserJoinedId = (logSetting.UserJoinedId is null ? cid : default);
                         break;
                     case LogType.UserLeft:
-                        channelId = logSetting.UserLeftId = (logSetting.UserLeftId == null ? cid : default);
+                        channelId = logSetting.UserLeftId = (logSetting.UserLeftId is null ? cid : default);
                         break;
                     case LogType.UserBanned:
-                        channelId = logSetting.UserBannedId = (logSetting.UserBannedId == null ? cid : default);
+                        channelId = logSetting.UserBannedId = (logSetting.UserBannedId is null ? cid : default);
                         break;
                     case LogType.UserUnbanned:
-                        channelId = logSetting.UserUnbannedId = (logSetting.UserUnbannedId == null ? cid : default);
+                        channelId = logSetting.UserUnbannedId = (logSetting.UserUnbannedId is null ? cid : default);
                         break;
                     case LogType.UserUpdated:
-                        channelId = logSetting.UserUpdatedId = (logSetting.UserUpdatedId == null ? cid : default);
+                        channelId = logSetting.UserUpdatedId = (logSetting.UserUpdatedId is null ? cid : default);
                         break;
                     case LogType.UserMuted:
-                        channelId = logSetting.UserMutedId = (logSetting.UserMutedId == null ? cid : default);
+                        channelId = logSetting.UserMutedId = (logSetting.UserMutedId is null ? cid : default);
                         break;
                     case LogType.ChannelCreated:
-                        channelId = logSetting.ChannelCreatedId = (logSetting.ChannelCreatedId == null ? cid : default);
+                        channelId = logSetting.ChannelCreatedId = (logSetting.ChannelCreatedId is null ? cid : default);
                         break;
                     case LogType.ChannelDestroyed:
                         channelId = logSetting.ChannelDestroyedId =
-                            (logSetting.ChannelDestroyedId == null ? cid : default);
+                            (logSetting.ChannelDestroyedId is null ? cid : default);
                         break;
                     case LogType.ChannelUpdated:
-                        channelId = logSetting.ChannelUpdatedId = (logSetting.ChannelUpdatedId == null ? cid : default);
+                        channelId = logSetting.ChannelUpdatedId = (logSetting.ChannelUpdatedId is null ? cid : default);
                         break;
                     case LogType.UserPresence:
                         channelId = logSetting.LogUserPresenceId =
-                            (logSetting.LogUserPresenceId == null ? cid : default);
+                            (logSetting.LogUserPresenceId is null ? cid : default);
                         break;
                     case LogType.VoicePresence:
                         channelId = logSetting.LogVoicePresenceId =
-                            (logSetting.LogVoicePresenceId == null ? cid : default);
+                            (logSetting.LogVoicePresenceId is null ? cid : default);
                         break;
                     case LogType.VoicePresenceTTS:
                         channelId = logSetting.LogVoicePresenceTTSId =
-                            (logSetting.LogVoicePresenceTTSId == null ? cid : default);
+                            (logSetting.LogVoicePresenceTTSId is null ? cid : default);
                         break;
                 }
 
@@ -335,12 +335,12 @@ namespace NadekoBot.Modules.Administration.Services
                         return;
 
                     if (!GuildLogSettings.TryGetValue(usr.Guild.Id, out LogSetting logSetting)
-                        || (logSetting.LogVoicePresenceTTSId == null))
+                        || (logSetting.LogVoicePresenceTTSId is null))
                         return;
 
                     ITextChannel logChannel;
                     if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.VoicePresenceTTS)
-                        .ConfigureAwait(false)) == null)
+                        .ConfigureAwait(false)) is null)
                         return;
 
                     var str = "";
@@ -348,11 +348,11 @@ namespace NadekoBot.Modules.Administration.Services
                     {
                         str = GetText(logChannel.Guild, "log_vc_moved", usr.Username, beforeVch?.Name, afterVch?.Name);
                     }
-                    else if (beforeVch == null)
+                    else if (beforeVch is null)
                     {
                         str = GetText(logChannel.Guild, "log_vc_joined", usr.Username, afterVch.Name);
                     }
-                    else if (afterVch == null)
+                    else if (afterVch is null)
                     {
                         str = GetText(logChannel.Guild, "log_vc_left", usr.Username, beforeVch.Name);
                     }
@@ -375,12 +375,12 @@ namespace NadekoBot.Modules.Administration.Services
                 try
                 {
                     if (!GuildLogSettings.TryGetValue(usr.Guild.Id, out LogSetting logSetting)
-                        || (logSetting.UserMutedId == null))
+                        || (logSetting.UserMutedId is null))
                         return;
 
                     ITextChannel logChannel;
                     if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.UserMuted)
-                        .ConfigureAwait(false)) == null)
+                        .ConfigureAwait(false)) is null)
                         return;
                     var mutes = "";
                     var mutedLocalized = GetText(logChannel.Guild, "muted_sn");
@@ -419,12 +419,12 @@ namespace NadekoBot.Modules.Administration.Services
                 try
                 {
                     if (!GuildLogSettings.TryGetValue(usr.Guild.Id, out LogSetting logSetting)
-                        || (logSetting.UserMutedId == null))
+                        || (logSetting.UserMutedId is null))
                         return;
 
                     ITextChannel logChannel;
                     if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.UserMuted)
-                        .ConfigureAwait(false)) == null)
+                        .ConfigureAwait(false)) is null)
                         return;
 
                     var mutes = "";
@@ -471,11 +471,11 @@ namespace NadekoBot.Modules.Administration.Services
                         return;
 
                     if (!GuildLogSettings.TryGetValue(users.First().Guild.Id, out LogSetting logSetting)
-                        || (logSetting.LogOtherId == null))
+                        || (logSetting.LogOtherId is null))
                         return;
                     ITextChannel logChannel;
                     if ((logChannel = await TryGetLogChannel(users.First().Guild, logSetting, LogType.Other)
-                        .ConfigureAwait(false)) == null)
+                        .ConfigureAwait(false)) is null)
                         return;
 
                     var punishment = "";
@@ -642,13 +642,13 @@ namespace NadekoBot.Modules.Administration.Services
                     var after = (IGuildChannel) cafter;
 
                     if (!GuildLogSettings.TryGetValue(before.Guild.Id, out LogSetting logSetting)
-                        || (logSetting.ChannelUpdatedId == null)
+                        || (logSetting.ChannelUpdatedId is null)
                         || logSetting.IgnoredChannels.Any(ilc => ilc.ChannelId == after.Id))
                         return;
 
                     ITextChannel logChannel;
                     if ((logChannel = await TryGetLogChannel(before.Guild, logSetting, LogType.ChannelUpdated)
-                        .ConfigureAwait(false)) == null)
+                        .ConfigureAwait(false)) is null)
                         return;
 
                     var embed = new EmbedBuilder().WithOkColor()
@@ -698,13 +698,13 @@ namespace NadekoBot.Modules.Administration.Services
                         return;
 
                     if (!GuildLogSettings.TryGetValue(ch.Guild.Id, out LogSetting logSetting)
-                        || (logSetting.ChannelDestroyedId == null)
+                        || (logSetting.ChannelDestroyedId is null)
                         || logSetting.IgnoredChannels.Any(ilc => ilc.ChannelId == ch.Id))
                         return;
 
                     ITextChannel logChannel;
                     if ((logChannel = await TryGetLogChannel(ch.Guild, logSetting, LogType.ChannelDestroyed)
-                        .ConfigureAwait(false)) == null)
+                        .ConfigureAwait(false)) is null)
                         return;
                     string title;
                     if (ch is IVoiceChannel)
@@ -738,12 +738,12 @@ namespace NadekoBot.Modules.Administration.Services
                         return;
 
                     if (!GuildLogSettings.TryGetValue(ch.Guild.Id, out LogSetting logSetting)
-                        || (logSetting.ChannelCreatedId == null))
+                        || (logSetting.ChannelCreatedId is null))
                         return;
 
                     ITextChannel logChannel;
                     if ((logChannel = await TryGetLogChannel(ch.Guild, logSetting, LogType.ChannelCreated)
-                        .ConfigureAwait(false)) == null)
+                        .ConfigureAwait(false)) is null)
                         return;
                     string title;
                     if (ch is IVoiceChannel)
@@ -783,12 +783,12 @@ namespace NadekoBot.Modules.Administration.Services
                         return;
 
                     if (!GuildLogSettings.TryGetValue(usr.Guild.Id, out LogSetting logSetting)
-                        || (logSetting.LogVoicePresenceId == null))
+                        || (logSetting.LogVoicePresenceId is null))
                         return;
 
                     ITextChannel logChannel;
                     if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.VoicePresence)
-                        .ConfigureAwait(false)) == null)
+                        .ConfigureAwait(false)) is null)
                         return;
 
                     string str = null;
@@ -799,14 +799,14 @@ namespace NadekoBot.Modules.Administration.Services
                             "👤" + Format.Bold(usr.Username + "#" + usr.Discriminator),
                             Format.Bold(beforeVch?.Name ?? ""), Format.Bold(afterVch?.Name ?? ""));
                     }
-                    else if (beforeVch == null)
+                    else if (beforeVch is null)
                     {
                         str = "🎙" + Format.Code(PrettyCurrentTime(usr.Guild)) + GetText(logChannel.Guild,
                             "user_vjoined",
                             "👤" + Format.Bold(usr.Username + "#" + usr.Discriminator),
                             Format.Bold(afterVch.Name ?? ""));
                     }
-                    else if (afterVch == null)
+                    else if (afterVch is null)
                     {
                         str = "🎙" + Format.Code(PrettyCurrentTime(usr.Guild)) + GetText(logChannel.Guild, "user_vleft",
                             "👤" + Format.Bold(usr.Username + "#" + usr.Discriminator),
@@ -836,16 +836,16 @@ namespace NadekoBot.Modules.Administration.Services
         //        {
         //            var guild = optGuild.GetValueOrDefault() ?? (usr as SocketGuildUser)?.Guild;
 
-        //            if (guild == null)
+        //            if (guild is null)
         //                return;
 
         //            if (!GuildLogSettings.TryGetValue(guild.Id, out LogSetting logSetting)
-        //                || (logSetting.LogUserPresenceId == null)
+        //                || (logSetting.LogUserPresenceId is null)
         //                || before.Status == after.Status)
         //                return;
 
         //            ITextChannel logChannel;
-        //            if ((logChannel = await TryGetLogChannel(guild, logSetting, LogType.UserPresence)) == null)
+        //            if ((logChannel = await TryGetLogChannel(guild, logSetting, LogType.UserPresence)) is null)
         //                return;
         //            string str = "";
         //            if (before.Status != after.Status)
@@ -878,12 +878,12 @@ namespace NadekoBot.Modules.Administration.Services
                 try
                 {
                     if (!GuildLogSettings.TryGetValue(usr.Guild.Id, out LogSetting logSetting)
-                        || (logSetting.UserLeftId == null))
+                        || (logSetting.UserLeftId is null))
                         return;
 
                     ITextChannel logChannel;
                     if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.UserLeft)
-                        .ConfigureAwait(false)) == null)
+                        .ConfigureAwait(false)) is null)
                         return;
                     var embed = new EmbedBuilder()
                         .WithOkColor()
@@ -912,12 +912,12 @@ namespace NadekoBot.Modules.Administration.Services
                 try
                 {
                     if (!GuildLogSettings.TryGetValue(usr.Guild.Id, out LogSetting logSetting)
-                        || (logSetting.UserJoinedId == null))
+                        || (logSetting.UserJoinedId is null))
                         return;
 
                     ITextChannel logChannel;
                     if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.UserJoined)
-                        .ConfigureAwait(false)) == null)
+                        .ConfigureAwait(false)) is null)
                         return;
 
                     var embed = new EmbedBuilder()
@@ -953,12 +953,12 @@ namespace NadekoBot.Modules.Administration.Services
                 try
                 {
                     if (!GuildLogSettings.TryGetValue(guild.Id, out LogSetting logSetting)
-                        || (logSetting.UserUnbannedId == null))
+                        || (logSetting.UserUnbannedId is null))
                         return;
 
                     ITextChannel logChannel;
                     if ((logChannel = await TryGetLogChannel(guild, logSetting, LogType.UserUnbanned)
-                        .ConfigureAwait(false)) == null)
+                        .ConfigureAwait(false)) is null)
                         return;
                     var embed = new EmbedBuilder()
                         .WithOkColor()
@@ -987,7 +987,7 @@ namespace NadekoBot.Modules.Administration.Services
                 try
                 {
                     if (!GuildLogSettings.TryGetValue(guild.Id, out LogSetting logSetting)
-                        || (logSetting.UserBannedId == null))
+                        || (logSetting.UserBannedId is null))
                         return;
 
                     ITextChannel logChannel;
@@ -1024,7 +1024,7 @@ namespace NadekoBot.Modules.Administration.Services
                 try
                 {
                     var msg = (optMsg.HasValue ? optMsg.Value : null) as IUserMessage;
-                    if (msg == null || msg.IsAuthor(_client))
+                    if (msg is null || msg.IsAuthor(_client))
                         return;
 
                     if (_ignoreMessageIds.Contains(msg.Id))
@@ -1034,13 +1034,13 @@ namespace NadekoBot.Modules.Administration.Services
                         return;
 
                     if (!GuildLogSettings.TryGetValue(channel.Guild.Id, out LogSetting logSetting)
-                        || (logSetting.MessageDeletedId == null)
+                        || (logSetting.MessageDeletedId is null)
                         || logSetting.IgnoredChannels.Any(ilc => ilc.ChannelId == channel.Id))
                         return;
 
                     ITextChannel logChannel;
                     if ((logChannel = await TryGetLogChannel(channel.Guild, logSetting, LogType.MessageDeleted)
-                        .ConfigureAwait(false)) == null || logChannel.Id == msg.Id)
+                        .ConfigureAwait(false)) is null || logChannel.Id == msg.Id)
                         return;
 
                     var resolvedMessage = msg.Resolve(userHandling: TagHandling.FullName);
@@ -1080,7 +1080,7 @@ namespace NadekoBot.Modules.Administration.Services
                         return;
 
                     var before = (optmsg.HasValue ? optmsg.Value : null) as IUserMessage;
-                    if (before == null)
+                    if (before is null)
                         return;
 
                     if (!(ch is ITextChannel channel))
@@ -1093,13 +1093,13 @@ namespace NadekoBot.Modules.Administration.Services
                         return;
 
                     if (!GuildLogSettings.TryGetValue(channel.Guild.Id, out LogSetting logSetting)
-                        || (logSetting.MessageUpdatedId == null)
+                        || (logSetting.MessageUpdatedId is null)
                         || logSetting.IgnoredChannels.Any(ilc => ilc.ChannelId == channel.Id))
                         return;
 
                     ITextChannel logChannel;
                     if ((logChannel = await TryGetLogChannel(channel.Guild, logSetting, LogType.MessageUpdated)
-                        .ConfigureAwait(false)) == null || logChannel.Id == after.Channel.Id)
+                        .ConfigureAwait(false)) is null || logChannel.Id == after.Channel.Id)
                         return;
 
                     var embed = new EmbedBuilder()
@@ -1208,7 +1208,7 @@ namespace NadekoBot.Modules.Administration.Services
 
             var channel = await guild.GetTextChannelAsync(id.Value).ConfigureAwait(false);
 
-            if (channel == null)
+            if (channel is null)
             {
                 UnsetLogSetting(guild.Id, logChannelType);
                 return null;

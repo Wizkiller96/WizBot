@@ -76,7 +76,7 @@ namespace NadekoBot.Extensions
             
             var canPaginate = true;
             var sg = ctx.Guild as SocketGuild;
-            if (!(sg is null) && !sg.CurrentUser.GetPermissions((IGuildChannel) ctx.Channel).AddReactions)
+            if (sg is not null && !sg.CurrentUser.GetPermissions((IGuildChannel) ctx.Channel).AddReactions)
                 canPaginate = false;
             
             if (!canPaginate)

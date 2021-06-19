@@ -141,7 +141,7 @@ namespace NadekoBot.Modules.Administration.Services
                 _antiSpamGuilds[gc.GuildId] = new AntiSpamStats() { AntiSpamSettings = spam };
 
             var alt = gc.AntiAltSetting;
-            if (!(alt is null))
+            if (alt is not null)
                 _antiAltGuilds[gc.GuildId] = new AntiAltStats(alt);
         }
 

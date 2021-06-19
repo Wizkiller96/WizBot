@@ -69,9 +69,9 @@ namespace NadekoBot.Extensions
         /// <returns>String with the correct singular/plural form</returns>
         public static string SnPl(this string str, int? num, bool es = false)
         {
-            if (str == null)
+            if (str is null)
                 throw new ArgumentNullException(nameof(str));
-            if (num == null)
+            if (num is null)
                 throw new ArgumentNullException(nameof(num));
             return num == 1 ? str.Remove(str.Length - 1, es ? 2 : 1) : str;
         }

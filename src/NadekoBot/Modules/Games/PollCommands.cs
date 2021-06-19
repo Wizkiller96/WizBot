@@ -33,7 +33,7 @@ namespace NadekoBot.Modules.Games
 
                 var poll = _service.CreatePoll(ctx.Guild.Id,
                     ctx.Channel.Id, arg);
-                if(poll == null)
+                if(poll is null)
                 {
                     await ReplyErrorLocalizedAsync("poll_invalid_input").ConfigureAwait(false);
                     return;
@@ -75,7 +75,7 @@ namespace NadekoBot.Modules.Games
                 var channel = (ITextChannel)ctx.Channel;
 
                 Poll p;
-                if ((p = _service.StopPoll(ctx.Guild.Id)) == null)
+                if ((p = _service.StopPoll(ctx.Guild.Id)) is null)
                     return;
 
                 var embed = GetStats(p, GetText("poll_closed"));

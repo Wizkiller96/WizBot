@@ -156,7 +156,7 @@ namespace NadekoBot.Modules.Utility.Services
                 if (r.IsPrivate)
                 {
                     var user = _client.GetUser(r.ChannelId);
-                    if (user == null)
+                    if (user is null)
                         return;
                     ch = await user.GetOrCreateDMChannelAsync().ConfigureAwait(false);
                 }
@@ -164,7 +164,7 @@ namespace NadekoBot.Modules.Utility.Services
                 {
                     ch = _client.GetGuild(r.ServerId)?.GetTextChannel(r.ChannelId);
                 }
-                if (ch == null)
+                if (ch is null)
                     return;
 
                 await ch.EmbedAsync(new EmbedBuilder()

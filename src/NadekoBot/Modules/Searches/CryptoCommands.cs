@@ -32,7 +32,7 @@ namespace NadekoBot.Modules.Searches
                     }
                 }
 
-                if (crypto == null)
+                if (crypto is null)
                 {
                     await ReplyErrorLocalizedAsync("crypto_not_found").ConfigureAwait(false);
                     return;

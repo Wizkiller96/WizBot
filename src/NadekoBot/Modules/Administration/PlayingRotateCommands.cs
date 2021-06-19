@@ -59,7 +59,7 @@ namespace NadekoBot.Modules.Administration
 
                 var msg = await _service.RemovePlayingAsync(index).ConfigureAwait(false);
 
-                if (msg == null)
+                if (msg is null)
                     return;
 
                 await ReplyConfirmLocalizedAsync("reprm", msg).ConfigureAwait(false);

@@ -46,7 +46,7 @@ namespace NadekoBot.Extensions
         // This method is used by everything that fetches the avatar from a user
         public static Uri RealAvatarUrl(this IUser usr, ushort size = 128)
         {
-            return usr.AvatarId == null
+            return usr.AvatarId is null
                 ? new Uri(usr.GetDefaultAvatarUrl())
                 : new Uri(usr.GetAvatarUrl(ImageFormat.Auto, size));
         }
@@ -54,7 +54,7 @@ namespace NadekoBot.Extensions
         // This method is only used for the xp card
         public static Uri RealAvatarUrl(this DiscordUser usr)
         {
-            return usr.AvatarId == null
+            return usr.AvatarId is null
                 ? null
                 : new Uri(usr.AvatarId.StartsWith("a_", StringComparison.InvariantCulture)
                     ? $"{DiscordConfig.CDNUrl}avatars/{usr.UserId}/{usr.AvatarId}.gif"

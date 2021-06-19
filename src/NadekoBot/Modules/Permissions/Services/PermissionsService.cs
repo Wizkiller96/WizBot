@@ -59,7 +59,7 @@ namespace NadekoBot.Modules.Permissions.Services
                     UpdateCache(config);
                 }
                 Cache.TryGetValue(guildId, out pc);
-                if (pc == null)
+                if (pc is null)
                     throw new Exception("Cache is null.");
             }
             return pc;
@@ -108,7 +108,7 @@ namespace NadekoBot.Modules.Permissions.Services
             var commandName = command.Name.ToLowerInvariant();
             
             await Task.Yield();
-            if (guild == null)
+            if (guild is null)
             {
                 return false;
             }
@@ -149,7 +149,7 @@ namespace NadekoBot.Modules.Permissions.Services
                         rid = 0;
                     string returnMsg;
                     IRole role;
-                    if (string.IsNullOrWhiteSpace(permRole) || (role = guild.GetRole(rid)) == null)
+                    if (string.IsNullOrWhiteSpace(permRole) || (role = guild.GetRole(rid)) is null)
                     {
                         returnMsg = $"You need Admin permissions in order to use permission commands.";
                         if (pc.Verbose)

@@ -81,7 +81,7 @@ namespace NadekoBot.Core.Services.Impl
             {
                 var time = TimeSpan.FromHours(period);
                 var _db = Redis.GetDatabase();
-                if ((bool?)_db.StringGet($"{_redisKey}_timelyclaim_{id}") == null)
+                if ((bool?)_db.StringGet($"{_redisKey}_timelyclaim_{id}") is null)
                 {
                     _db.StringSet($"{_redisKey}_timelyclaim_{id}", true, time);
                     return null;
@@ -104,7 +104,7 @@ namespace NadekoBot.Core.Services.Impl
         {
             var _db = Redis.GetDatabase();
             time = _db.KeyTimeToLive($"{_redisKey}_affinity_{userId}");
-            if (time == null)
+            if (time is null)
             {
                 time = TimeSpan.FromMinutes(30);
                 _db.StringSet($"{_redisKey}_affinity_{userId}", true, time);
@@ -117,7 +117,7 @@ namespace NadekoBot.Core.Services.Impl
         {
             var _db = Redis.GetDatabase();
             time = _db.KeyTimeToLive($"{_redisKey}_divorce_{userId}");
-            if (time == null)
+            if (time is null)
             {
                 time = TimeSpan.FromHours(6);
                 _db.StringSet($"{_redisKey}_divorce_{userId}", true, time);
@@ -182,7 +182,7 @@ namespace NadekoBot.Core.Services.Impl
             {
                 var obj = await factory(param).ConfigureAwait(false);
 
-                if (obj == null)
+                if (obj is null)
                     return default(TOut);
 
                 await _db.StringSetAsync(key, JsonConvert.SerializeObject(obj),

@@ -118,7 +118,7 @@ namespace NadekoBot.Modules.Gambling
 
                 var msg = raceMessage;
 
-                if (msg == null)
+                if (msg is null)
                     raceMessage = await ctx.Channel.SendConfirmAsync(text)
                         .ConfigureAwait(false);
                 else

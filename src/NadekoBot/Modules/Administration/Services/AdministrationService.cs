@@ -102,7 +102,7 @@ namespace NadekoBot.Modules.Administration.Services
                 var old = conf.DelMsgOnCmdChannels.FirstOrDefault(x => x.ChannelId == chId);
                 if (newState == Administration.State.Inherit)
                 {
-                    if (!(old is null))
+                    if (old is not null)
                     {
                         conf.DelMsgOnCmdChannels.Remove(old);
                         uow.Remove(old);

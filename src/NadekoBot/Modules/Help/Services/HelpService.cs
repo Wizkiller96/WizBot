@@ -43,7 +43,7 @@ namespace NadekoBot.Modules.Help.Services
         public Task LateExecute(DiscordSocketClient client, IGuild guild, IUserMessage msg)
         {
             var settings = _bss.Data;
-            if (guild == null)
+            if (guild is null)
             {
                 if (string.IsNullOrWhiteSpace(settings.DmHelpText) || settings.DmHelpText == "-")
                     return Task.CompletedTask;
@@ -136,7 +136,7 @@ namespace NadekoBot.Modules.Help.Services
                 .FirstOrDefault(ca => ca is UserPermAttribute);
 
             string userPermString = string.Empty;
-            if (!(userPerm is null))
+            if (userPerm is not null)
             {
                 if (userPerm.UserPermissionAttribute.ChannelPermission is ChannelPermission cPerm)
                     userPermString = GetPreconditionString((ChannelPerm) cPerm);

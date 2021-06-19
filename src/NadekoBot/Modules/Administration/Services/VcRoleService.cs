@@ -106,7 +106,7 @@ namespace NadekoBot.Modules.Administration.Services
         {
             await Task.Yield();
             var g = _client.GetGuild(gconf.GuildId);
-            if (g == null)
+            if (g is null)
                 return;
 
             var infos = new ConcurrentDictionary<ulong, IRole>();
@@ -115,7 +115,7 @@ namespace NadekoBot.Modules.Administration.Services
             foreach (var ri in gconf.VcRoleInfos)
             {
                 var role = g.GetRole(ri.RoleId);
-                if (role == null)
+                if (role is null)
                 {
                     missingRoles.Add(ri);
                     continue;
@@ -137,7 +137,7 @@ namespace NadekoBot.Modules.Administration.Services
 
         public void AddVcRole(ulong guildId, IRole role, ulong vcId)
         {
-            if (role == null)
+            if (role is null)
                 throw new ArgumentNullException(nameof(role));
 
             var guildVcRoles = VcRoles.GetOrAdd(guildId, new ConcurrentDictionary<ulong, IRole>());
@@ -184,7 +184,7 @@ namespace NadekoBot.Modules.Administration.Services
         {
 
             var gusr = usr as SocketGuildUser;
-            if (gusr == null)
+            if (gusr is null)
                 return Task.CompletedTask;
 
             var oldVc = oldState.VoiceChannel;

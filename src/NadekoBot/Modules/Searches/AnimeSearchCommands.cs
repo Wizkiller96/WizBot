@@ -24,7 +24,7 @@ namespace NadekoBot.Modules.Searches
 
                 var novelData = await _service.GetNovelData(query).ConfigureAwait(false);
 
-                if (novelData == null)
+                if (novelData is null)
                 {
                     await ReplyErrorLocalizedAsync("failed_finding_novel").ConfigureAwait(false);
                     return;
@@ -63,7 +63,7 @@ namespace NadekoBot.Modules.Searches
                     var favorites = document.QuerySelectorAll("div.user-favorites > div.di-tc");
 
                     var favAnime = GetText("anime_no_fav");
-                    if (favorites.Length > 0 && favorites[0].QuerySelector("p") == null)
+                    if (favorites.Length > 0 && favorites[0].QuerySelector("p") is null)
                         favAnime = string.Join("\n", favorites[0].QuerySelectorAll("ul > li > div.di-tc.va-t > a")
                            .Shuffle()
                            .Take(3)
@@ -144,7 +144,7 @@ namespace NadekoBot.Modules.Searches
 
                 var animeData = await _service.GetAnimeData(query).ConfigureAwait(false);
 
-                if (animeData == null)
+                if (animeData is null)
                 {
                     await ReplyErrorLocalizedAsync("failed_finding_anime").ConfigureAwait(false);
                     return;
@@ -172,7 +172,7 @@ namespace NadekoBot.Modules.Searches
 
                 var mangaData = await _service.GetMangaData(query).ConfigureAwait(false);
 
-                if (mangaData == null)
+                if (mangaData is null)
                 {
                     await ReplyErrorLocalizedAsync("failed_finding_manga").ConfigureAwait(false);
                     return;

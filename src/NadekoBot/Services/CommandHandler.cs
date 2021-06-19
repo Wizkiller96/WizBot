@@ -104,7 +104,7 @@ namespace NadekoBot.Core.Services
         {
             if (string.IsNullOrWhiteSpace(prefix))
                 throw new ArgumentNullException(nameof(prefix));
-            if (guild == null)
+            if (guild is null)
                 throw new ArgumentNullException(nameof(guild));
 
             using (var uow = _db.GetDbContext())
@@ -181,8 +181,8 @@ namespace NadekoBot.Core.Services
                         "Channel: {2}\n\t" +
                         "Message: {3}",
                         usrMsg.Author + " [" + usrMsg.Author.Id + "]", // {0}
-                        (channel == null ? "PRIVATE" : channel.Guild.Name + " [" + channel.Guild.Id + "]"), // {1}
-                        (channel == null ? "PRIVATE" : channel.Name + " [" + channel.Id + "]"), // {2}
+                        (channel is null ? "PRIVATE" : channel.Guild.Name + " [" + channel.Guild.Id + "]"), // {1}
+                        (channel is null ? "PRIVATE" : channel.Name + " [" + channel.Id + "]"), // {2}
                         usrMsg.Content // {3}
                         );
             }
@@ -209,8 +209,8 @@ namespace NadekoBot.Core.Services
                             "Message: {3}\n\t" +
                             "Error: {4}",
                             usrMsg.Author + " [" + usrMsg.Author.Id + "]", // {0}
-                            (channel == null ? "PRIVATE" : channel.Guild.Name + " [" + channel.Guild.Id + "]"), // {1}
-                            (channel == null ? "PRIVATE" : channel.Name + " [" + channel.Id + "]"), // {2}
+                            (channel is null ? "PRIVATE" : channel.Guild.Name + " [" + channel.Guild.Id + "]"), // {1}
+                            (channel is null ? "PRIVATE" : channel.Name + " [" + channel.Id + "]"), // {2}
                             usrMsg.Content,// {3}
                             errorMessage
                             //exec.Result.ErrorReason // {4}

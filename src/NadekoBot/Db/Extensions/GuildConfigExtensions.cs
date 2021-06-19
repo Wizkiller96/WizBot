@@ -28,7 +28,7 @@ namespace NadekoBot.Db
                 .Include(y => y.StreamRole.Whitelist)
                 .Include(y => y.StreamRole.Blacklist));
 
-            if (conf.StreamRole == null)
+            if (conf.StreamRole is null)
                 conf.StreamRole = new StreamRoleSettings();
 
             return conf.StreamRole;
@@ -79,7 +79,7 @@ namespace NadekoBot.Db
         {
             GuildConfig config;
 
-            if (includes == null)
+            if (includes is null)
             {
                 config = ctx
                     .GuildConfigs
@@ -92,7 +92,7 @@ namespace NadekoBot.Db
                 config = set.FirstOrDefault(c => c.GuildId == guildId);
             }
 
-            if (config == null)
+            if (config is null)
             {
                 ctx.GuildConfigs.Add((config = new GuildConfig
                 {
@@ -122,7 +122,7 @@ namespace NadekoBot.Db
                     .ThenInclude(gc => gc.IgnoredChannels)
                 .FirstOrDefault(x => x.GuildId == guildId);
 
-            if (config == null)
+            if (config is null)
             {
                 ctx.GuildConfigs.Add((config = new GuildConfig
                 {
@@ -160,7 +160,7 @@ namespace NadekoBot.Db
                 .Include(gc => gc.Permissions)
                 .FirstOrDefault();
 
-            if (config == null) // if there is no guildconfig, create new one
+            if (config is null) // if there is no guildconfig, create new one
             {
                 ctx.GuildConfigs.Add((config = new GuildConfig
                 {
@@ -169,7 +169,7 @@ namespace NadekoBot.Db
                 }));
                 ctx.SaveChanges();
             }
-            else if (config.Permissions == null || !config.Permissions.Any()) // if no perms, add default ones
+            else if (config.Permissions is null || !config.Permissions.Any()) // if no perms, add default ones
             {
                 config.Permissions = Permissionv2.GetDefaultPermlist;
                 ctx.SaveChanges();
@@ -200,7 +200,7 @@ namespace NadekoBot.Db
         {
             var conf = configs.FirstOrDefault(gc => gc.GuildId == id);
 
-            if (conf == null)
+            if (conf is null)
                 return;
 
             conf.CleverbotEnabled = cleverbotEnabled;
@@ -216,7 +216,7 @@ namespace NadekoBot.Db
                           .Include(x => x.XpSettings)
                           .ThenInclude(x => x.ExclusionList));
 
-            if (gc.XpSettings == null)
+            if (gc.XpSettings is null)
                 gc.XpSettings = new XpSettings();
 
             return gc.XpSettings;

@@ -85,7 +85,7 @@ namespace NadekoBot.Modules.Games
 
             Task Hm_OnGameEnded(Hangman game, string winner)
             {
-                if (winner == null)
+                if (winner is null)
                 {
                     var loseEmbed = new EmbedBuilder().WithTitle($"Hangman Game ({game.TermType}) - Ended")
                                              .WithDescription(Format.Bold("You lose."))

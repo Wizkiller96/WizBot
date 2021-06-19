@@ -313,7 +313,7 @@ namespace NadekoBot.Modules.Music.Services
             {
                 var randomPlayingTrack = _players
                     .Select(x => x.Value.GetCurrentTrack(out _))
-                    .Where(x => !(x is null))
+                    .Where(x => x is not null)
                     .Shuffle()
                     .FirstOrDefault();
 
@@ -328,7 +328,7 @@ namespace NadekoBot.Modules.Music.Services
             {
                 var count = _players
                     .Select(x => x.Value.GetCurrentTrack(out _))
-                    .Count(x => !(x is null));
+                    .Count(x => x is not null);
 
                 return count.ToString();
             });

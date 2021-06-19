@@ -108,7 +108,7 @@ namespace NadekoBot.Modules.Games.Services
 
         public async Task<bool> RunBehavior(DiscordSocketClient client, IGuild guild, IUserMessage msg)
         {
-            if (guild == null)
+            if (guild is null)
                 return false;
 
             if (!ActivePolls.TryGetValue(guild.Id, out var poll))

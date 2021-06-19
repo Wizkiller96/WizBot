@@ -77,7 +77,7 @@ namespace NadekoBot.Modules.Permissions
                     };
                     removed = config.FilterInvitesChannelIds.FirstOrDefault(fc => fc.Equals(match));
 
-                    if (removed == null)
+                    if (removed is null)
                     {
                         config.FilterInvitesChannelIds.Add(match);
                     }
@@ -88,7 +88,7 @@ namespace NadekoBot.Modules.Permissions
                     await uow.SaveChangesAsync();
                 }
 
-                if (removed == null)
+                if (removed is null)
                 {
                     _service.InviteFilteringChannels.Add(channel.Id);
                     await ReplyConfirmLocalizedAsync("invite_filter_channel_on").ConfigureAwait(false);
@@ -142,7 +142,7 @@ namespace NadekoBot.Modules.Permissions
                     };
                     removed = config.FilterLinksChannelIds.FirstOrDefault(fc => fc.Equals(match));
 
-                    if (removed == null)
+                    if (removed is null)
                     {
                         config.FilterLinksChannelIds.Add(match);
                     }
@@ -153,7 +153,7 @@ namespace NadekoBot.Modules.Permissions
                     await uow.SaveChangesAsync();
                 }
 
-                if (removed == null)
+                if (removed is null)
                 {
                     _service.LinkFilteringChannels.Add(channel.Id);
                     await ReplyConfirmLocalizedAsync("link_filter_channel_on").ConfigureAwait(false);
@@ -207,7 +207,7 @@ namespace NadekoBot.Modules.Permissions
                         ChannelId = channel.Id
                     };
                     removed = config.FilterWordsChannelIds.FirstOrDefault(fc => fc.Equals(match));
-                    if (removed == null)
+                    if (removed is null)
                     {
                         config.FilterWordsChannelIds.Add(match);
                     }
@@ -218,7 +218,7 @@ namespace NadekoBot.Modules.Permissions
                     await uow.SaveChangesAsync();
                 }
 
-                if (removed == null)
+                if (removed is null)
                 {
                     _service.WordFilteringChannels.Add(channel.Id);
                     await ReplyConfirmLocalizedAsync("word_filter_channel_on").ConfigureAwait(false);
@@ -248,7 +248,7 @@ namespace NadekoBot.Modules.Permissions
 
                     removed = config.FilteredWords.FirstOrDefault(fw => fw.Word.Trim().ToLowerInvariant() == word);
 
-                    if (removed == null)
+                    if (removed is null)
                         config.FilteredWords.Add(new FilteredWord() { Word = word });
                     else
                     {
@@ -260,7 +260,7 @@ namespace NadekoBot.Modules.Permissions
 
                 var filteredWords = _service.ServerFilteredWords.GetOrAdd(channel.Guild.Id, new ConcurrentHashSet<string>());
 
-                if (removed == null)
+                if (removed is null)
                 {
                     filteredWords.Add(word);
                     await ReplyConfirmLocalizedAsync("filter_word_add", Format.Code(word)).ConfigureAwait(false);

@@ -36,7 +36,7 @@ namespace NadekoBot.Modules.Utility
                     guild = (SocketGuild)channel.Guild;
                 else
                     guild = _client.Guilds.FirstOrDefault(g => g.Name.ToUpperInvariant() == guildName.ToUpperInvariant());
-                if (guild == null)
+                if (guild is null)
                     return;
                 var ownername = guild.GetUser(guild.OwnerId);
                 var textchn = guild.TextChannels.Count();
@@ -79,7 +79,7 @@ namespace NadekoBot.Modules.Utility
             public async Task ChannelInfo(ITextChannel channel = null)
             {
                 var ch = channel ?? (ITextChannel)ctx.Channel;
-                if (ch == null)
+                if (ch is null)
                     return;
                 var createdAt = new DateTime(2015, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(ch.Id >> 22);
                 var usercount = (await ch.GetUsersAsync().FlattenAsync().ConfigureAwait(false)).Count();
@@ -99,7 +99,7 @@ namespace NadekoBot.Modules.Utility
             {
                 var user = usr ?? ctx.User as IGuildUser;
 
-                if (user == null)
+                if (user is null)
                     return;
 
                 var embed = new EmbedBuilder()

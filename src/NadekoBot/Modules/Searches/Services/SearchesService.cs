@@ -226,7 +226,7 @@ namespace NadekoBot.Modules.Searches.Services
                         $"appid=42cd627dd60debf25a5739e50a217d74&" +
                         $"units=metric").ConfigureAwait(false);
 
-                    if (data == null)
+                    if (data is null)
                         return null;
 
                     return JsonConvert.DeserializeObject<WeatherData>(data);
@@ -504,7 +504,7 @@ namespace NadekoBot.Modules.Searches.Services
                 search,
                 TimeSpan.FromDays(1)).ConfigureAwait(false);
 
-            if (data == null || data.Length == 0)
+            if (data is null || data.Length == 0)
                 return null;
 
             return data[_rng.Next(0, data.Length)];
@@ -543,7 +543,7 @@ namespace NadekoBot.Modules.Searches.Services
                     .ConfigureAwait(false);
 
                 var responseObject = JsonConvert.DeserializeObject<MtgResponse>(response);
-                if (responseObject == null)
+                if (responseObject is null)
                     return new MtgData[0];
 
                 var cards = responseObject.Cards.Take(5).ToArray();
@@ -582,12 +582,12 @@ namespace NadekoBot.Modules.Searches.Services
                     var response = await http.GetStringAsync($"https://omgvamp-hearthstone-v1.p.rapidapi.com/" +
                         $"cards/search/{Uri.EscapeUriString(name)}").ConfigureAwait(false);
                     var objs = JsonConvert.DeserializeObject<HearthstoneCardData[]>(response);
-                    if (objs == null || objs.Length == 0)
+                    if (objs is null || objs.Length == 0)
                         return null;
                     var data = objs.FirstOrDefault(x => x.Collectible)
                         ?? objs.FirstOrDefault(x => !string.IsNullOrEmpty(x.PlayerClass))
                         ?? objs.FirstOrDefault();
-                    if (data == null)
+                    if (data is null)
                         return null;
                     if (!string.IsNullOrWhiteSpace(data.Img))
                     {
@@ -624,7 +624,7 @@ namespace NadekoBot.Modules.Searches.Services
                 var res = await http.GetStringAsync(string.Format("https://omdbapi.nadeko.bot/?t={0}&y=&plot=full&r=json",
                     name.Trim().Replace(' ', '+'))).ConfigureAwait(false);
                 var movie = JsonConvert.DeserializeObject<OmdbMovie>(res);
-                if (movie?.Title == null)
+                if (movie?.Title is null)
                     return null;
                 movie.Poster = await _google.ShortenUrl(movie.Poster).ConfigureAwait(false);
                 return movie;
@@ -671,7 +671,7 @@ namespace NadekoBot.Modules.Searches.Services
                 }
             }, default(string), TimeSpan.FromHours(24));
 
-            if (gamesMap == null)
+            if (gamesMap is null)
                 return -1;
 
 
@@ -780,7 +780,7 @@ namespace NadekoBot.Modules.Searches.Services
                     var href = (children[0].QuerySelector("a") as IHtmlAnchorElement)?.Href;
                     var name = children[0].QuerySelector("h3")?.TextContent;
                     
-                    if (href == null || name == null)
+                    if (href is null || name is null)
                         return null;
 
                     var txt = children[1].TextContent;

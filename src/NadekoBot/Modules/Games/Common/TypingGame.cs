@@ -143,10 +143,10 @@ namespace NadekoBot.Modules.Games.Common
                     if (imsg.Author.IsBot)
                         return;
                     var msg = imsg as SocketUserMessage;
-                    if (msg == null)
+                    if (msg is null)
                         return;
 
-                    if (this.Channel == null || this.Channel.Id != msg.Channel.Id) return;
+                    if (this.Channel is null || this.Channel.Id != msg.Channel.Id) return;
 
                     var guess = msg.Content;
 

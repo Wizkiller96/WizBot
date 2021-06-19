@@ -80,7 +80,7 @@ namespace NadekoBot.Modules.Administration.Services
             if (p != null)
             {
                 var user = await guild.GetUserAsync(userId).ConfigureAwait(false);
-                if (user == null)
+                if (user is null)
                     return null;
 
                 await ApplyPunishment(guild, user, mod, p.Punishment, p.Time, p.RoleId, "Warned too many times.");
@@ -146,7 +146,7 @@ namespace NadekoBot.Modules.Administration.Services
                     if (roleId is null)
                         return;
                     var role = guild.GetRole(roleId.Value);
-                    if (!(role is null))
+                    if (role is not null)
                     {
                         if (minutes == 0)
                             await user.AddRoleAsync(role).ConfigureAwait(false);
@@ -389,14 +389,14 @@ WHERE GuildId={guildId}
                     .AsQueryable()
                     .FirstOrDefault(x => x.GuildId == guildId);
 
-                if (text == null)
+                if (text is null)
                 {
                     if (template is null)
                         return;
                     
                     uow.Remove(template);
                 }
-                else if (template == null)
+                else if (template is null)
                 {
                     uow.BanTemplates.Add(new BanTemplate()
                     {

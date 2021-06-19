@@ -210,7 +210,7 @@ namespace NadekoBot.Modules.Xp.Services
                                 if (rrew != null)
                                 {
                                     var role = first.User.Guild.GetRole(rrew.RoleId);
-                                    if (!(role is null))
+                                    if (role is not null)
                                     {
                                         if (rrew.Remove)
                                         {
@@ -490,7 +490,7 @@ namespace NadekoBot.Modules.Xp.Services
                 {
                     ScanChannelForVoiceXp(after.VoiceChannel);
                 }
-                else if (after.VoiceChannel == null)
+                else if (after.VoiceChannel is null)
                 {
                     // In this case, the user left the channel and the previous for loops didn't catch
                     // it because it wasn't in any new channel. So we need to get rid of it.

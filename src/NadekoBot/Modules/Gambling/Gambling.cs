@@ -413,7 +413,7 @@ namespace NadekoBot.Modules.Gambling
 --
 ";
 
-                if (rdMsg == null)
+                if (rdMsg is null)
                 {
                     rdMsg = await ctx.Channel.EmbedAsync(embed)
                         .ConfigureAwait(false);

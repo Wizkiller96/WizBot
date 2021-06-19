@@ -35,7 +35,7 @@ namespace NadekoBot.Core.Services.Impl
                   CultureInfo cultureInfo = null;
                   try
                   {
-                      if (x.Value == null)
+                      if (x.Value is null)
                           return null;
                       cultureInfo = new CultureInfo(x.Value);
                   }
@@ -108,7 +108,7 @@ namespace NadekoBot.Core.Services.Impl
         {
             _commandData.TryGetValue(key, out var toReturn);
 
-            if (toReturn == null)
+            if (toReturn is null)
                 return new CommandData
                 {
                     Cmd = key,

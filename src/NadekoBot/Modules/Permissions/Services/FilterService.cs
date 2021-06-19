@@ -114,7 +114,7 @@ namespace NadekoBot.Modules.Permissions.Services
                     var guild = (channel as ITextChannel)?.Guild;
                     var usrMsg = newMsg as IUserMessage;
 
-                    if (guild == null || usrMsg == null)
+                    if (guild is null || usrMsg is null)
                         return Task.CompletedTask;
 
                     return RunBehavior(null, guild, usrMsg);

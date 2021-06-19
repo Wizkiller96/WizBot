@@ -65,7 +65,7 @@ namespace NadekoBot.Modules.Administration
                 var str = string.Join("\n", Enum.GetNames(typeof(LogType))
                     .Select(x =>
                     {
-                        var val = l == null ? null : GetLogProperty(l, Enum.Parse<LogType>(x));
+                        var val = l is null ? null : GetLogProperty(l, Enum.Parse<LogType>(x));
                         if (val != null)
                             return $"{Format.Bold(x)} <#{val}>";
                         return Format.Bold(x);
