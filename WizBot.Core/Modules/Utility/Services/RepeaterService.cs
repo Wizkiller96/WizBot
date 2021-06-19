@@ -343,7 +343,7 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
 
             using var uow = _db.GetDbContext();
 
-            if (await uow._context.Repeaters.AsNoTracking().CountAsyncEF() < MAX_REPEATERS)
+            if (await uow._context.Repeaters.CountAsyncEF(x => x.GuildId == guildId) < MAX_REPEATERS)
                 uow._context.Repeaters.Add(rep);
             else
                 return null;
