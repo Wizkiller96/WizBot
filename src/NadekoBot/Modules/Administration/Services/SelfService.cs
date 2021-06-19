@@ -100,7 +100,7 @@ namespace NadekoBot.Modules.Administration.Services
         {
             using var uow = _db.GetDbContext();
 
-            _autoCommands = uow._context
+            _autoCommands = uow
                 .AutoCommands
                 .AsNoTracking()
                 .Where(x => x.Interval >= 5)
@@ -111,7 +111,7 @@ namespace NadekoBot.Modules.Administration.Services
                         .ToConcurrent())
                 .ToConcurrent();
 
-            var startupCommands = uow._context.AutoCommands.AsNoTracking().Where(x => x.Interval == 0);
+            var startupCommands = uow.AutoCommands.AsNoTracking().Where(x => x.Interval == 0);
             foreach (var cmd in startupCommands)
             {
                 try
@@ -163,7 +163,7 @@ namespace NadekoBot.Modules.Administration.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                uow._context.AutoCommands.Add(cmd);
+                uow.AutoCommands.Add(cmd);
                 uow.SaveChanges();
             }
 
@@ -181,7 +181,7 @@ namespace NadekoBot.Modules.Administration.Services
         public IEnumerable<AutoCommand> GetStartupCommands()
         {
             using var uow = _db.GetDbContext();
-            return uow._context
+            return uow
                 .AutoCommands
                 .AsNoTracking()
                 .Where(x => x.Interval == 0)
@@ -192,7 +192,7 @@ namespace NadekoBot.Modules.Administration.Services
         public IEnumerable<AutoCommand> GetAutoCommands()
         {
             using var uow = _db.GetDbContext();
-            return uow._context
+            return uow
                 .AutoCommands
                 .AsNoTracking()
                 .Where(x => x.Interval >= 5)
@@ -297,7 +297,7 @@ namespace NadekoBot.Modules.Administration.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                cmd = uow._context.AutoCommands
+                cmd = uow.AutoCommands
                     .AsNoTracking()
                     .Where(x => x.Interval == 0)
                     .Skip(index)
@@ -305,7 +305,7 @@ namespace NadekoBot.Modules.Administration.Services
 
                 if (cmd != null)
                 {
-                    uow._context.Remove(cmd);
+                    uow.Remove(cmd);
                     uow.SaveChanges();
                     return true;
                 }
@@ -318,7 +318,7 @@ namespace NadekoBot.Modules.Administration.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                cmd = uow._context.AutoCommands
+                cmd = uow.AutoCommands
                     .AsNoTracking()
                     .Where(x => x.Interval >= 5)
                     .Skip(index)
@@ -326,7 +326,7 @@ namespace NadekoBot.Modules.Administration.Services
 
                 if (cmd != null)
                 {
-                    uow._context.Remove(cmd);
+                    uow.Remove(cmd);
                     if (_autoCommands.TryGetValue(cmd.GuildId, out var autos))
                         if (autos.TryRemove(cmd.Id, out var timer))
                             timer.Change(Timeout.Infinite, Timeout.Infinite);
@@ -369,12 +369,12 @@ namespace NadekoBot.Modules.Administration.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var toRemove = uow._context
+                var toRemove = uow
                     .AutoCommands
                     .AsNoTracking()
                     .Where(x => x.Interval == 0);
 
-                uow._context.AutoCommands.RemoveRange(toRemove);
+                uow.AutoCommands.RemoveRange(toRemove);
                 uow.SaveChanges();
             }
         }

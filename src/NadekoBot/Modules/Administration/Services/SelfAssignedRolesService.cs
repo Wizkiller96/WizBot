@@ -43,13 +43,13 @@ namespace NadekoBot.Modules.Administration.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var roles = uow._context.SelfAssignableRoles.GetFromGuild(guildId);
+                var roles = uow.SelfAssignableRoles.GetFromGuild(guildId);
                 if (roles.Any(s => s.RoleId == role.Id && s.GuildId == role.Guild.Id))
                 {
                     return false;
                 }
 
-                uow._context.SelfAssignableRoles.Add(new SelfAssignedRole
+                uow.SelfAssignableRoles.Add(new SelfAssignedRole
                 {
                     Group = group,
                     RoleId = role.Id,
@@ -65,7 +65,7 @@ namespace NadekoBot.Modules.Administration.Services
             bool newval;
             using (var uow = _db.GetDbContext())
             {
-                var config = uow._context.GuildConfigsForId(guildId, set => set);
+                var config = uow.GuildConfigsForId(guildId, set => set);
                 newval = config.AutoDeleteSelfAssignedRoleMessages = !config.AutoDeleteSelfAssignedRoleMessages;
                 uow.SaveChanges();
             }
@@ -77,7 +77,7 @@ namespace NadekoBot.Modules.Administration.Services
             LevelStats userLevelData;
             using (var uow = _db.GetDbContext())
             {
-                var stats = uow._context.GetOrCreateUserXpStats(guildUser.Guild.Id, guildUser.Id);
+                var stats = uow.GetOrCreateUserXpStats(guildUser.Guild.Id, guildUser.Id);
                 userLevelData = new LevelStats(stats.Xp + stats.AwardedXp);
             }
 
@@ -139,7 +139,7 @@ namespace NadekoBot.Modules.Administration.Services
             bool set = false;
             using (var uow = _db.GetDbContext())
             {
-                var gc = uow._context.GuildConfigsForId(guildId, y => y.Include(x => x.SelfAssignableRoleGroupNames));
+                var gc = uow.GuildConfigsForId(guildId, y => y.Include(x => x.SelfAssignableRoleGroupNames));
                 var toUpdate = gc.SelfAssignableRoleGroupNames.FirstOrDefault(x => x.Number == group);
 
                 if (string.IsNullOrWhiteSpace(name))
@@ -197,7 +197,7 @@ namespace NadekoBot.Modules.Administration.Services
             bool success;
             using (var uow = _db.GetDbContext())
             {
-                success = uow._context.SelfAssignableRoles.DeleteByGuildAndRoleId(guildId, roleId);
+                success = uow.SelfAssignableRoles.DeleteByGuildAndRoleId(guildId, roleId);
                 uow.SaveChanges();
             }
             return success;
@@ -207,10 +207,10 @@ namespace NadekoBot.Modules.Administration.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var gc = uow._context.GuildConfigsForId(guildId, set => set);
+                var gc = uow.GuildConfigsForId(guildId, set => set);
                 var autoDelete = gc.AutoDeleteSelfAssignedRoleMessages;
                 var exclusive = gc.ExclusiveSelfAssignedRoles;
-                var roles = uow._context.SelfAssignableRoles.GetFromGuild(guildId);
+                var roles = uow.SelfAssignableRoles.GetFromGuild(guildId);
 
                 return (autoDelete, exclusive, roles);
             }
@@ -220,7 +220,7 @@ namespace NadekoBot.Modules.Administration.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var roles = uow._context.SelfAssignableRoles.GetFromGuild(guildId);
+                var roles = uow.SelfAssignableRoles.GetFromGuild(guildId);
                 var sar = roles.FirstOrDefault(x => x.RoleId == role.Id);
                 if (sar != null)
                 {
@@ -241,7 +241,7 @@ namespace NadekoBot.Modules.Administration.Services
             bool areExclusive;
             using (var uow = _db.GetDbContext())
             {
-                var config = uow._context.GuildConfigsForId(guildId, set => set);
+                var config = uow.GuildConfigsForId(guildId, set => set);
 
                 areExclusive = config.ExclusiveSelfAssignedRoles = !config.ExclusiveSelfAssignedRoles;
                 uow.SaveChanges();
@@ -257,13 +257,13 @@ namespace NadekoBot.Modules.Administration.Services
             IDictionary<int, string> groupNames;
             using (var uow = _db.GetDbContext())
             {
-                var gc = uow._context.GuildConfigsForId(guild.Id, set => set.Include(x => x.SelfAssignableRoleGroupNames));
+                var gc = uow.GuildConfigsForId(guild.Id, set => set.Include(x => x.SelfAssignableRoleGroupNames));
                 exclusive = gc.ExclusiveSelfAssignedRoles;
                 groupNames = gc.SelfAssignableRoleGroupNames.ToDictionary(x => x.Number, x => x.Name);
-                var roleModels = uow._context.SelfAssignableRoles.GetFromGuild(guild.Id);
+                var roleModels = uow.SelfAssignableRoles.GetFromGuild(guild.Id);
                 roles = roleModels
                     .Select(x => (Model: x, Role: guild.GetRole(x.RoleId)));
-                uow._context.SelfAssignableRoles.RemoveRange(roles.Where(x => x.Role == null).Select(x => x.Model).ToArray());
+                uow.SelfAssignableRoles.RemoveRange(roles.Where(x => x.Role == null).Select(x => x.Model).ToArray());
                 uow.SaveChanges();
             }
 

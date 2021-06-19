@@ -20,7 +20,7 @@ namespace NadekoBot.Modules.Xp.Services
         public void EnsureMigrated()
         {
             using var uow = _db.GetDbContext();
-            using var conn = uow._context.Database.GetDbConnection();
+            using var conn = uow.Database.GetDbConnection();
             Migrate(conn);
         }
 

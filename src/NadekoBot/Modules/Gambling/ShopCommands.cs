@@ -49,7 +49,7 @@ namespace NadekoBot.Modules.Gambling
                     throw new ArgumentOutOfRangeException(nameof(page));
                 
                 using var uow = _db.GetDbContext();
-                var entries = uow._context.GuildConfigsForId(ctx.Guild.Id,
+                var entries = uow.GuildConfigsForId(ctx.Guild.Id,
                         set => set.Include(x => x.ShopEntries)
                             .ThenInclude(x => x.Items)).ShopEntries
                         .ToIndexed();
@@ -95,7 +95,7 @@ namespace NadekoBot.Modules.Gambling
                 ShopEntry entry;
                 using (var uow = _db.GetDbContext())
                 {
-                    var config = uow._context.GuildConfigsForId(ctx.Guild.Id, set => set
+                    var config = uow.GuildConfigsForId(ctx.Guild.Id, set => set
                         .Include(x => x.ShopEntries)
                         .ThenInclude(x => x.Items));
                     var entries = new IndexedCollection<ShopEntry>(config.ShopEntries);
@@ -165,7 +165,7 @@ namespace NadekoBot.Modules.Gambling
                     {
                         using (var uow = _db.GetDbContext())
                         {
-                            var x = uow._context.Set<ShopEntryItem>().Remove(item);
+                            var x = uow.Set<ShopEntryItem>().Remove(item);
                             uow.SaveChanges();
                         }
                         try
@@ -189,7 +189,7 @@ namespace NadekoBot.Modules.Gambling
                                 entry.Price).ConfigureAwait(false);
                             using (var uow = _db.GetDbContext())
                             {
-                                var entries = new IndexedCollection<ShopEntry>(uow._context.GuildConfigsForId(ctx.Guild.Id,
+                                var entries = new IndexedCollection<ShopEntry>(uow.GuildConfigsForId(ctx.Guild.Id,
                                     set => set.Include(x => x.ShopEntries)
                                               .ThenInclude(x => x.Items)).ShopEntries);
                                 entry = entries.ElementAtOrDefault(index);
@@ -235,13 +235,13 @@ namespace NadekoBot.Modules.Gambling
                 };
                 using (var uow = _db.GetDbContext())
                 {
-                    var entries = new IndexedCollection<ShopEntry>(uow._context.GuildConfigsForId(ctx.Guild.Id,
+                    var entries = new IndexedCollection<ShopEntry>(uow.GuildConfigsForId(ctx.Guild.Id,
                         set => set.Include(x => x.ShopEntries)
                                   .ThenInclude(x => x.Items)).ShopEntries)
                     {
                         entry
                     };
-                    uow._context.GuildConfigsForId(ctx.Guild.Id, set => set).ShopEntries = entries;
+                    uow.GuildConfigsForId(ctx.Guild.Id, set => set).ShopEntries = entries;
                     uow.SaveChanges();
                 }
                 await ctx.Channel.EmbedAsync(EntryToEmbed(entry)
@@ -263,13 +263,13 @@ namespace NadekoBot.Modules.Gambling
                 };
                 using (var uow = _db.GetDbContext())
                 {
-                    var entries = new IndexedCollection<ShopEntry>(uow._context.GuildConfigsForId(ctx.Guild.Id,
+                    var entries = new IndexedCollection<ShopEntry>(uow.GuildConfigsForId(ctx.Guild.Id,
                         set => set.Include(x => x.ShopEntries)
                                   .ThenInclude(x => x.Items)).ShopEntries)
                     {
                         entry
                     };
-                    uow._context.GuildConfigsForId(ctx.Guild.Id, set => set).ShopEntries = entries;
+                    uow.GuildConfigsForId(ctx.Guild.Id, set => set).ShopEntries = entries;
                     uow.SaveChanges();
                 }
                 await ctx.Channel.EmbedAsync(EntryToEmbed(entry)
@@ -293,7 +293,7 @@ namespace NadekoBot.Modules.Gambling
                 bool added = false;
                 using (var uow = _db.GetDbContext())
                 {
-                    var entries = new IndexedCollection<ShopEntry>(uow._context.GuildConfigsForId(ctx.Guild.Id,
+                    var entries = new IndexedCollection<ShopEntry>(uow.GuildConfigsForId(ctx.Guild.Id,
                         set => set.Include(x => x.ShopEntries)
                                   .ThenInclude(x => x.Items)).ShopEntries);
                     entry = entries.ElementAtOrDefault(index);
@@ -326,7 +326,7 @@ namespace NadekoBot.Modules.Gambling
                 ShopEntry removed;
                 using (var uow = _db.GetDbContext())
                 {
-                    var config = uow._context.GuildConfigsForId(ctx.Guild.Id, set => set
+                    var config = uow.GuildConfigsForId(ctx.Guild.Id, set => set
                         .Include(x => x.ShopEntries)
                         .ThenInclude(x => x.Items));
 
@@ -334,8 +334,8 @@ namespace NadekoBot.Modules.Gambling
                     removed = entries.ElementAtOrDefault(index);
                     if (removed != null)
                     {
-                        uow._context.RemoveRange(removed.Items);
-                        uow._context.Remove(removed);
+                        uow.RemoveRange(removed.Items);
+                        uow.Remove(removed);
                         uow.SaveChanges();
                     }
                 }

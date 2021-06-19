@@ -46,7 +46,7 @@ namespace NadekoBot.Modules.Administration.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var conf = uow._context.GuildConfigsForId(guildId,
+                var conf = uow.GuildConfigsForId(guildId,
                     set => set.Include(x => x.DelMsgOnCmdChannels));
 
                 return (conf.DeleteMessageOnCommand, conf.DelMsgOnCmdChannels);
@@ -84,7 +84,7 @@ namespace NadekoBot.Modules.Administration.Services
             bool enabled;
             using (var uow = _db.GetDbContext())
             {
-                var conf = uow._context.GuildConfigsForId(guildId, set => set);
+                var conf = uow.GuildConfigsForId(guildId, set => set);
                 enabled = conf.DeleteMessageOnCommand = !conf.DeleteMessageOnCommand;
 
                 uow.SaveChanges();
@@ -96,7 +96,7 @@ namespace NadekoBot.Modules.Administration.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var conf = uow._context.GuildConfigsForId(guildId,
+                var conf = uow.GuildConfigsForId(guildId,
                     set => set.Include(x => x.DelMsgOnCmdChannels));
 
                 var old = conf.DelMsgOnCmdChannels.FirstOrDefault(x => x.ChannelId == chId);
@@ -105,7 +105,7 @@ namespace NadekoBot.Modules.Administration.Services
                     if (!(old is null))
                     {
                         conf.DelMsgOnCmdChannels.Remove(old);
-                        uow._context.Remove(old);
+                        uow.Remove(old);
                     }
                 }
                 else

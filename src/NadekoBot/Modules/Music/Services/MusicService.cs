@@ -13,7 +13,6 @@ using NadekoBot.Core.Services.Database.Repositories.Impl;
 using NadekoBot.Modules.Music;
 using NadekoBot.Services;
 using NadekoBot.Services.Database.Models;
-using NadekoBot.Services.Database.Repositories.Impl;
 using NadekoBot.Extensions;
 using Serilog;
 
@@ -352,7 +351,7 @@ namespace NadekoBot.Modules.Music.Services
                 return settings;
             
             using var uow = _db.GetDbContext();
-            var toReturn = _settings[guildId] = await uow._context.MusicPlayerSettings.ForGuildAsync(guildId);
+            var toReturn = _settings[guildId] = await uow.MusicPlayerSettings.ForGuildAsync(guildId);
             await uow.SaveChangesAsync();
 
             return toReturn;
@@ -364,7 +363,7 @@ namespace NadekoBot.Modules.Music.Services
             TState state)
         {
             using var uow = _db.GetDbContext();
-            var ms = await uow._context.MusicPlayerSettings.ForGuildAsync(guildId);
+            var ms = await uow.MusicPlayerSettings.ForGuildAsync(guildId);
             action(ms, state);
             await uow.SaveChangesAsync();
             _settings[guildId] = ms;
@@ -444,7 +443,7 @@ namespace NadekoBot.Modules.Music.Services
         public async Task<QualityPreset> GetMusicQualityAsync(ulong guildId)
         {
             using var uow = _db.GetDbContext();
-            var settings = await uow._context.MusicPlayerSettings.ForGuildAsync(guildId);
+            var settings = await uow.MusicPlayerSettings.ForGuildAsync(guildId);
             return settings.QualityPreset;
         }
 

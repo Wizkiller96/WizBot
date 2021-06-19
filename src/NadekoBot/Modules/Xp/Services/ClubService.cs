@@ -29,8 +29,8 @@ namespace NadekoBot.Modules.Xp.Services
 
             club = null;
             using var uow = _db.GetDbContext();
-            var du = uow._context.GetOrCreateUser(user);
-            uow._context.SaveChanges();
+            var du = uow.GetOrCreateUser(user);
+            uow.SaveChanges();
             var xp = new LevelStats(du.TotalXp);
 
             if (xp.Level >= 5 && du.Club == null)
@@ -39,17 +39,17 @@ namespace NadekoBot.Modules.Xp.Services
                 du.Club = new ClubInfo()
                 {
                     Name = clubName,
-                    Discrim = uow._context.Clubs.GetNextDiscrim(clubName),
+                    Discrim = uow.Clubs.GetNextDiscrim(clubName),
                     Owner = du,
                 };
-                uow._context.Clubs.Add(du.Club);
-                uow._context.SaveChanges();
+                uow.Clubs.Add(du.Club);
+                uow.SaveChanges();
             }
             else
                 return false;
 
-            uow._context.Set<ClubApplicants>()
-                .RemoveRange(uow._context.Set<ClubApplicants>()
+            uow.Set<ClubApplicants>()
+                .RemoveRange(uow.Set<ClubApplicants>()
                     .AsQueryable()
                     .Where(x => x.UserId == du.Id));
             club = du.Club;
@@ -63,8 +63,8 @@ namespace NadekoBot.Modules.Xp.Services
             ClubInfo club;
             using (var uow = _db.GetDbContext())
             {
-                club = uow._context.Clubs.GetByOwner(from.Id);
-                var newOwnerUser = uow._context.GetOrCreateUser(newOwner);
+                club = uow.Clubs.GetByOwner(from.Id);
+                var newOwnerUser = uow.GetOrCreateUser(newOwner);
 
                 if (club == null ||
                     club.Owner.UserId != from.Id ||
@@ -84,8 +84,8 @@ namespace NadekoBot.Modules.Xp.Services
             bool newState;
             using (var uow = _db.GetDbContext())
             {
-                var club = uow._context.Clubs.GetByOwner(owner.Id);
-                var adminUser = uow._context.GetOrCreateUser(toAdmin);
+                var club = uow.Clubs.GetByOwner(owner.Id);
+                var adminUser = uow.GetOrCreateUser(toAdmin);
 
                 if (club == null || club.Owner.UserId != owner.Id ||
                     !club.Users.Contains(adminUser))
@@ -103,7 +103,7 @@ namespace NadekoBot.Modules.Xp.Services
         public ClubInfo GetClubByMember(IUser user)
         {
             using var uow = _db.GetDbContext();
-            var member = uow._context.Clubs.GetByMember(user.Id);
+            var member = uow.Clubs.GetByMember(user.Id);
             return member;
         }
 
@@ -121,7 +121,7 @@ namespace NadekoBot.Modules.Xp.Services
 
             using (var uow = _db.GetDbContext())
             {
-                var club = uow._context.Clubs.GetByOwner(ownerUserId);
+                var club = uow.Clubs.GetByOwner(ownerUserId);
 
                 if (club == null)
                     return false;
@@ -148,7 +148,7 @@ namespace NadekoBot.Modules.Xp.Services
 
             using (var uow = _db.GetDbContext())
             {
-                club = uow._context.Clubs.GetByName(name, discrim);
+                club = uow.Clubs.GetByName(name, discrim);
                 if (club == null)
                     return false;
                 else
@@ -160,8 +160,8 @@ namespace NadekoBot.Modules.Xp.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var du = uow._context.GetOrCreateUser(user);
-                uow._context.SaveChanges();
+                var du = uow.GetOrCreateUser(user);
+                uow.SaveChanges();
 
                 if (du.Club != null
                     || new LevelStats(du.TotalXp).Level < club.MinimumLevelReq
@@ -179,7 +179,7 @@ namespace NadekoBot.Modules.Xp.Services
                     UserId = du.Id,
                 };
 
-                uow._context.Set<ClubApplicants>().Add(app);
+                uow.Set<ClubApplicants>().Add(app);
 
                 uow.SaveChanges();
             }
@@ -191,7 +191,7 @@ namespace NadekoBot.Modules.Xp.Services
             discordUser = null;
             using (var uow = _db.GetDbContext())
             {
-                var club = uow._context.Clubs.GetByOwnerOrAdmin(clubOwnerUserId);
+                var club = uow.Clubs.GetByOwnerOrAdmin(clubOwnerUserId);
                 if (club == null)
                     return false;
 
@@ -204,8 +204,8 @@ namespace NadekoBot.Modules.Xp.Services
                 club.Applicants.Remove(applicant);
 
                 //remove that user's all other applications
-                uow._context.Set<ClubApplicants>()
-                    .RemoveRange(uow._context.Set<ClubApplicants>()
+                uow.Set<ClubApplicants>()
+                    .RemoveRange(uow.Set<ClubApplicants>()
                         .AsQueryable()
                         .Where(x => x.UserId == applicant.User.Id));
 
@@ -219,7 +219,7 @@ namespace NadekoBot.Modules.Xp.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                return uow._context.Clubs.GetByOwnerOrAdmin(ownerUserId);
+                return uow.Clubs.GetByOwnerOrAdmin(ownerUserId);
             }
         }
 
@@ -227,7 +227,7 @@ namespace NadekoBot.Modules.Xp.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var du = uow._context.GetOrCreateUser(user);
+                var du = uow.GetOrCreateUser(user);
                 if (du.Club == null || du.Club.OwnerId == du.Id)
                     return false;
 
@@ -245,7 +245,7 @@ namespace NadekoBot.Modules.Xp.Services
 
             using (var uow = _db.GetDbContext())
             {
-                var club = uow._context.Clubs.GetByOwner(userId);
+                var club = uow.Clubs.GetByOwner(userId);
                 if (club == null)
                     return false;
 
@@ -260,7 +260,7 @@ namespace NadekoBot.Modules.Xp.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var club = uow._context.Clubs.GetByOwner(userId);
+                var club = uow.Clubs.GetByOwner(userId);
                 if (club == null)
                     return false;
 
@@ -275,11 +275,11 @@ namespace NadekoBot.Modules.Xp.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                club = uow._context.Clubs.GetByOwner(userId);
+                club = uow.Clubs.GetByOwner(userId);
                 if (club == null)
                     return false;
 
-                uow._context.Clubs.Remove(club);
+                uow.Clubs.Remove(club);
                 uow.SaveChanges();
             }
             return true;
@@ -289,7 +289,7 @@ namespace NadekoBot.Modules.Xp.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                club = uow._context.Clubs.GetByOwnerOrAdmin(bannerId);
+                club = uow.Clubs.GetByOwnerOrAdmin(bannerId);
                 if (club == null)
                     return false;
 
@@ -322,7 +322,7 @@ namespace NadekoBot.Modules.Xp.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                club = uow._context.Clubs.GetByOwnerOrAdmin(ownerUserId);
+                club = uow.Clubs.GetByOwnerOrAdmin(ownerUserId);
                 if (club == null)
                     return false;
 
@@ -341,7 +341,7 @@ namespace NadekoBot.Modules.Xp.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                club = uow._context.Clubs.GetByOwnerOrAdmin(kickerId);
+                club = uow.Clubs.GetByOwnerOrAdmin(kickerId);
                 if (club == null)
                     return false;
 
@@ -368,7 +368,7 @@ namespace NadekoBot.Modules.Xp.Services
                 throw new ArgumentOutOfRangeException(nameof(page));
 
             using var uow = _db.GetDbContext();
-            return uow._context.Clubs.GetClubLeaderboardPage(page);
+            return uow.Clubs.GetClubLeaderboardPage(page);
         }
     }
 }

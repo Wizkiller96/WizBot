@@ -90,7 +90,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
         private async Task ReloadInternal(IReadOnlyList<ulong> allGuildIds)
         {
             using var uow = _db.GetDbContext();
-            var guildItems = await uow._context.CustomReactions
+            var guildItems = await uow.CustomReactions
                 .AsNoTracking()
                 .Where(x => allGuildIds.Contains(x.GuildId.Value))
                 .ToListAsync();
@@ -107,7 +107,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
 
             lock (_gcrWriteLock)
             {
-                var globalItems = uow._context
+                var globalItems = uow
                     .CustomReactions
                     .AsNoTracking()
                     .Where(x => x.GuildId == null || x.GuildId == 0)
@@ -195,7 +195,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
         private async Task OnJoinedGuild(GuildConfig gc)
         {
             using var uow = _db.GetDbContext();
-            var crs = await uow._context
+            var crs = await uow
                 .CustomReactions
                 .AsNoTracking()
                 .Where(x => x.GuildId == gc.GuildId)
@@ -223,7 +223,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
 
             using (var uow = _db.GetDbContext())
             {
-                uow._context.CustomReactions.Add(cr);
+                uow.CustomReactions.Add(cr);
                 await uow.SaveChangesAsync();
             }
 
@@ -235,7 +235,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
         public async Task<CustomReaction> EditAsync(ulong? guildId, int id, string message)
         {
             using var uow = _db.GetDbContext();
-            var cr = uow._context.CustomReactions.GetById(id);
+            var cr = uow.CustomReactions.GetById(id);
 
             if (cr == null || cr.GuildId != guildId)
                 return null;
@@ -263,14 +263,14 @@ namespace NadekoBot.Modules.CustomReactions.Services
         public async Task<CustomReaction> DeleteAsync(ulong? guildId, int id)
         {
             using var uow = _db.GetDbContext();
-            var toDelete = uow._context.CustomReactions.GetById(id);
+            var toDelete = uow.CustomReactions.GetById(id);
             
             if (toDelete is null)
                 return null;
             
             if ((toDelete.IsGlobal() && guildId == null) || (guildId == toDelete.GuildId))
             {
-                uow._context.CustomReactions.Remove(toDelete);
+                uow.CustomReactions.Remove(toDelete);
                 await uow.SaveChangesAsync();
                 await DeleteInternalAsync(guildId, id);
                 return toDelete;
@@ -469,7 +469,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
         {
             CustomReaction cr;
             using var uow = _db.GetDbContext();
-            cr = uow._context.CustomReactions.GetById(id);
+            cr = uow.CustomReactions.GetById(id);
             if (cr is null)
                 return;
 
@@ -587,7 +587,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
             CustomReaction cr;
             using (var uow = _db.GetDbContext())
             {
-                cr = uow._context.CustomReactions.GetById(id);
+                cr = uow.CustomReactions.GetById(id);
                 if (cr is null)
                     return;
 
@@ -605,7 +605,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
             CustomReaction cr;
             using (var uow = _db.GetDbContext())
             {
-                cr = uow._context.CustomReactions.GetById(id);
+                cr = uow.CustomReactions.GetById(id);
                 if (cr is null)
                     return (false, false);
                 if (field == CrField.AutoDelete)
@@ -628,7 +628,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
         public CustomReaction GetCustomReaction(ulong? guildId, int id)
         {
             using var uow = _db.GetDbContext();
-            var cr = uow._context.CustomReactions.GetById(id);
+            var cr = uow.CustomReactions.GetById(id);
             if (cr == null || cr.GuildId != guildId)
                 return null;
 
@@ -638,7 +638,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
         public int DeleteAllCustomReactions(ulong guildId)
         {
             using var uow = _db.GetDbContext();
-            var count = uow._context.CustomReactions.ClearFromGuild(guildId);
+            var count = uow.CustomReactions.ClearFromGuild(guildId);
             uow.SaveChanges();
             
             _newGuildReactions.TryRemove(guildId, out _);
@@ -649,7 +649,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
         public bool ReactionExists(ulong? guildId, string input)
         {
             using var uow = _db.GetDbContext();
-            var cr = uow._context.CustomReactions.GetByGuildIdAndInput(guildId, input);
+            var cr = uow.CustomReactions.GetByGuildIdAndInput(guildId, input);
             return cr != null;
         }
 
@@ -705,7 +705,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
             foreach (var entry in data)
             {
                 var trigger = entry.Key;
-                await uow._context.CustomReactions.AddRangeAsync(entry.Value
+                await uow.CustomReactions.AddRangeAsync(entry.Value
                     .Where(cr => !string.IsNullOrWhiteSpace(cr.Res))
                     .Select(cr => new CustomReaction()
                     {

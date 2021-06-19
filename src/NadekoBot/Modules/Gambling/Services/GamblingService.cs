@@ -63,7 +63,7 @@ namespace NadekoBot.Modules.Gambling.Services
                          if (maxDecay == 0)
                              maxDecay = int.MaxValue;
                          
-                        uow._context.Database.ExecuteSqlInterpolated($@"
+                        uow.Database.ExecuteSqlInterpolated($@"
 UPDATE DiscordUser
 SET CurrencyAmount=
     CASE WHEN
@@ -80,32 +80,6 @@ WHERE CurrencyAmount > {config.Decay.MinThreshold} AND UserId!={_client.CurrentU
                     }
                 }, null, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(5));
             }
-
-            //using (var uow = _db.UnitOfWork)
-            //{
-            //    //refund all of the currency users had at stake in gambling games
-            //    //at the time bot was restarted
-
-            //    var stakes = uow._context.Set<Stake>()
-            //        .ToArray();
-
-            //    var userIds = stakes.Select(x => x.UserId).ToArray();
-            //    var reasons = stakes.Select(x => "Stake-" + x.Source).ToArray();
-            //    var amounts = stakes.Select(x => x.Amount).ToArray();
-
-            //    _cs.AddBulkAsync(userIds, reasons, amounts, gamble: true).ConfigureAwait(false);
-
-            //    foreach (var s in stakes)
-            //    {
-            //        _cs.AddAsync(s.UserId, "Stake-" + s.Source, s.Amount, gamble: true)
-            //            .GetAwaiter()
-            //            .GetResult();
-            //    }
-
-            //    uow._context.Set<Stake>().RemoveRange(stakes);
-            //    uow.Complete();
-            //    Log.Information("Refunded {0} users' stakes.", stakes.Length);
-            //}
         }
 
         public struct EconomyResult
@@ -136,11 +110,11 @@ WHERE CurrencyAmount > {config.Decay.MinThreshold} AND UserId!={_client.CurrentU
 
             using (var uow = _db.GetDbContext())
             {
-                cash = uow._context.DiscordUser.GetTotalCurrency();
-                onePercent = uow._context.DiscordUser.GetTopOnePercentCurrency(_client.CurrentUser.Id);
-                planted = uow._context.PlantedCurrency.AsQueryable().Sum(x => x.Amount);
-                waifus = uow._context.WaifuInfo.GetTotalValue();
-                bot = uow._context.DiscordUser.GetUserCurrency(_client.CurrentUser.Id);
+                cash = uow.DiscordUser.GetTotalCurrency();
+                onePercent = uow.DiscordUser.GetTopOnePercentCurrency(_client.CurrentUser.Id);
+                planted = uow.PlantedCurrency.AsQueryable().Sum(x => x.Amount);
+                waifus = uow.WaifuInfo.GetTotalValue();
+                bot = uow.DiscordUser.GetUserCurrency(_client.CurrentUser.Id);
             }
 
             var result = new EconomyResult

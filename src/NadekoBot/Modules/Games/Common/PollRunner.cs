@@ -60,7 +60,7 @@ namespace NadekoBot.Modules.Games.Common
             finally { _locker.Release(); }
             using (var uow = _db.GetDbContext())
             {
-                var trackedPoll = uow._context.Poll.FirstOrDefault(x => x.Id == Poll.Id);
+                var trackedPoll = uow.Poll.FirstOrDefault(x => x.Id == Poll.Id);
                 trackedPoll.Votes.Add(voteObj);
                 uow.SaveChanges();
             }

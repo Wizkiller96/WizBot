@@ -57,6 +57,6 @@ namespace NadekoBot.Core.Services
             return context;
         }
 
-        public IUnitOfWork GetDbContext() => new UnitOfWork(GetDbContextInternal());
+        public NadekoContext GetDbContext() => GetDbContextInternal();
     }
 }

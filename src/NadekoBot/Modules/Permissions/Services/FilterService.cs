@@ -47,7 +47,7 @@ namespace NadekoBot.Modules.Permissions.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var gc = uow._context.GuildConfigsForId(guildId,
+                var gc = uow.GuildConfigsForId(guildId,
                     set => set.Include(x => x.FilteredWords)
                         .Include(x => x.FilterWordsChannelIds));
 
@@ -82,7 +82,7 @@ namespace NadekoBot.Modules.Permissions.Services
             using(var uow = db.GetDbContext())
             {
                 var ids = client.GetGuildIds();
-                var configs = uow._context.Set<GuildConfig>()
+                var configs = uow.Set<GuildConfig>()
                     .AsQueryable()
                     .Include(x => x.FilteredWords)
                     .Include(x => x.FilterLinksChannelIds)

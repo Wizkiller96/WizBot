@@ -63,7 +63,7 @@ namespace NadekoBot.Modules.Utility
 
                     using (var uow = _db.GetDbContext())
                     {
-                        var config = uow._context.GuildConfigsForId(ctx.Guild.Id, set => set.Include(x => x.CommandAliases));
+                        var config = uow.GuildConfigsForId(ctx.Guild.Id, set => set.Include(x => x.CommandAliases));
                         var toAdd = new CommandAlias()
                         {
                             Mapping = mapping,
@@ -71,7 +71,7 @@ namespace NadekoBot.Modules.Utility
                         };
                         var tr = config.CommandAliases.FirstOrDefault(x => x.Trigger == trigger);
                         if (tr != null)
-                            uow._context.Set<CommandAlias>().Remove(tr);
+                            uow.Set<CommandAlias>().Remove(tr);
                         uow.SaveChanges();
                     }
 
@@ -82,7 +82,7 @@ namespace NadekoBot.Modules.Utility
                 {
                     using (var uow = _db.GetDbContext())
                     {
-                        var config = uow._context.GuildConfigsForId(ctx.Guild.Id, set => set.Include(x => x.CommandAliases));
+                        var config = uow.GuildConfigsForId(ctx.Guild.Id, set => set.Include(x => x.CommandAliases));
                         config.CommandAliases.Add(new CommandAlias()
                         {
                             Mapping = mapping,
@@ -97,7 +97,7 @@ namespace NadekoBot.Modules.Utility
                 {
                     using (var uow = _db.GetDbContext())
                     {
-                        var config = uow._context.GuildConfigsForId(ctx.Guild.Id, set => set.Include(x => x.CommandAliases));
+                        var config = uow.GuildConfigsForId(ctx.Guild.Id, set => set.Include(x => x.CommandAliases));
                         var toAdd = new CommandAlias()
                         {
                             Mapping = mapping,
@@ -105,7 +105,7 @@ namespace NadekoBot.Modules.Utility
                         };
                         var toRemove = config.CommandAliases.Where(x => x.Trigger == trigger);
                         if (toRemove.Any())
-                            uow._context.RemoveRange(toRemove.ToArray());
+                            uow.RemoveRange(toRemove.ToArray());
                         config.CommandAliases.Add(toAdd);
                         uow.SaveChanges();
                     }

@@ -30,7 +30,7 @@ namespace NadekoBot.Modules.Searches.Services
             using (var uow = db.GetDbContext())
             {
                 var guildConfigIds = bot.AllGuildConfigs.Select(x => x.Id).ToList();
-                _subs = uow._context.GuildConfigs
+                _subs = uow.GuildConfigs
                     .AsQueryable()
                     .Where(x => guildConfigIds.Contains(x.Id))
                     .Include(x => x.FeedSubs)
@@ -167,7 +167,7 @@ namespace NadekoBot.Modules.Searches.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                return uow._context.GuildConfigsForId(guildId, 
+                return uow.GuildConfigsForId(guildId, 
                         set => set.Include(x => x.FeedSubs)
                                         .ThenInclude(x => x.GuildConfig))
                     .FeedSubs
@@ -188,7 +188,7 @@ namespace NadekoBot.Modules.Searches.Services
 
             using (var uow = _db.GetDbContext())
             {
-                var gc = uow._context.GuildConfigsForId(guildId,
+                var gc = uow.GuildConfigsForId(guildId,
                     set => set.Include(x => x.FeedSubs)
                                     .ThenInclude(x => x.GuildConfig));
 
@@ -224,7 +224,7 @@ namespace NadekoBot.Modules.Searches.Services
 
             using (var uow = _db.GetDbContext())
             {
-                var items = uow._context.GuildConfigsForId(guildId, set => set.Include(x => x.FeedSubs))
+                var items = uow.GuildConfigsForId(guildId, set => set.Include(x => x.FeedSubs))
                     .FeedSubs
                     .OrderBy(x => x.Id)
                     .ToList();
@@ -237,7 +237,7 @@ namespace NadekoBot.Modules.Searches.Services
                     old.Remove(toRemove);
                     return old;
                 });
-                uow._context.Remove(toRemove);
+                uow.Remove(toRemove);
                 uow.SaveChanges();
             }
 

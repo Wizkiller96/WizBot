@@ -33,7 +33,7 @@ namespace NadekoBot.Modules.Administration.Services
             using (var uow = db.GetDbContext())
             {
                 var guildIds = client.Guilds.Select(x => x.Id).ToList();
-                var configs = uow._context.Set<GuildConfig>()
+                var configs = uow.Set<GuildConfig>()
                     .AsQueryable()
                     .Include(x => x.VcRoleInfos)
                     .Where(x => guildIds.Contains(x.GuildId))
@@ -84,7 +84,7 @@ namespace NadekoBot.Modules.Administration.Services
             // need to load new guildconfig with vc role included 
             using (var uow = _db.GetDbContext())
             {
-                var configWithVcRole = uow._context.GuildConfigsForId(
+                var configWithVcRole = uow.GuildConfigsForId(
                     arg.GuildId,
                     set => set.Include(x => x.VcRoleInfos)
                 );
@@ -128,7 +128,7 @@ namespace NadekoBot.Modules.Administration.Services
                 using (var uow = _db.GetDbContext())
                 {
                     Log.Warning($"Removing {missingRoles.Count} missing roles from {nameof(VcRoleService)}");
-                    uow._context.RemoveRange(missingRoles);
+                    uow.RemoveRange(missingRoles);
                     await uow.SaveChangesAsync();
                 }
             }
@@ -144,11 +144,11 @@ namespace NadekoBot.Modules.Administration.Services
             guildVcRoles.AddOrUpdate(vcId, role, (key, old) => role);
             using (var uow = _db.GetDbContext())
             {
-                var conf = uow._context.GuildConfigsForId(guildId, set => set.Include(x => x.VcRoleInfos));
+                var conf = uow.GuildConfigsForId(guildId, set => set.Include(x => x.VcRoleInfos));
                 var toDelete = conf.VcRoleInfos.FirstOrDefault(x => x.VoiceChannelId == vcId); // remove old one
                 if(toDelete != null)
                 {
-                    uow._context.Remove(toDelete);
+                    uow.Remove(toDelete);
                 }
                 conf.VcRoleInfos.Add(new VcRoleInfo()
                 {
@@ -169,9 +169,9 @@ namespace NadekoBot.Modules.Administration.Services
 
             using (var uow = _db.GetDbContext())
             {
-                var conf = uow._context.GuildConfigsForId(guildId, set => set.Include(x => x.VcRoleInfos));
+                var conf = uow.GuildConfigsForId(guildId, set => set.Include(x => x.VcRoleInfos));
                 var toRemove = conf.VcRoleInfos.Where(x => x.VoiceChannelId == vcId).ToList();
-                uow._context.RemoveRange(toRemove);
+                uow.RemoveRange(toRemove);
                 uow.SaveChanges();
             }
 

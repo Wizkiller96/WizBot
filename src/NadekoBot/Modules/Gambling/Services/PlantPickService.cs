@@ -60,7 +60,7 @@ namespace NadekoBot.Modules.Gambling.Services
             using (var uow = db.GetDbContext())
             {
                 var guildIds = client.Guilds.Select(x => x.Id).ToList();
-                var configs = uow._context.Set<GuildConfig>()
+                var configs = uow.Set<GuildConfig>()
                     .AsQueryable()
                     .Include(x => x.GenerateCurrencyChannelIds)
                     .Where(x => guildIds.Contains(x.GuildId))
@@ -79,7 +79,7 @@ namespace NadekoBot.Modules.Gambling.Services
             bool enabled;
             using (var uow = _db.GetDbContext())
             {
-                var guildConfig = uow._context.GuildConfigsForId(gid, set => set.Include(gc => gc.GenerateCurrencyChannelIds));
+                var guildConfig = uow.GuildConfigsForId(gid, set => set.Include(gc => gc.GenerateCurrencyChannelIds));
 
                 var toAdd = new GCChannelId() { ChannelId = cid };
                 if (!guildConfig.GenerateCurrencyChannelIds.Contains(toAdd))
@@ -93,7 +93,7 @@ namespace NadekoBot.Modules.Gambling.Services
                     var toDelete = guildConfig.GenerateCurrencyChannelIds.FirstOrDefault(x => x.Equals(toAdd));
                     if (toDelete != null)
                     {
-                        uow._context.Remove(toDelete);
+                        uow.Remove(toDelete);
                     }
                     _generationChannels.TryRemove(cid);
                     enabled = false;
@@ -107,7 +107,7 @@ namespace NadekoBot.Modules.Gambling.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var chs = uow._context.GuildConfigs.GetGeneratingChannels();
+                var chs = uow.GuildConfigs.GetGeneratingChannels();
                 return chs;
             }
         }
@@ -270,7 +270,7 @@ namespace NadekoBot.Modules.Gambling.Services
 
                     pass = pass?.Trim().TrimTo(10, hideDots: true).ToUpperInvariant();
                     // gets all plants in this channel with the same password
-                    var entries = uow._context.PlantedCurrency
+                    var entries = uow.PlantedCurrency
                         .AsQueryable()
                         .Where(x => x.ChannelId == ch.Id && pass == x.Password)
                         .ToList();
@@ -278,7 +278,7 @@ namespace NadekoBot.Modules.Gambling.Services
                     amount = entries.Sum(x => x.Amount);
                     ids = entries.Select(x => x.MessageId).ToArray();
                     // remove them from the database
-                    uow._context.RemoveRange(entries);
+                    uow.RemoveRange(entries);
 
 
                     if (amount > 0)
@@ -369,7 +369,7 @@ namespace NadekoBot.Modules.Gambling.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                uow._context.PlantedCurrency.Add(new PlantedCurrency
+                uow.PlantedCurrency.Add(new PlantedCurrency
                 {
                     Amount = amount,
                     GuildId = gid,

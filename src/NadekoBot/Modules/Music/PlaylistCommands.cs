@@ -58,7 +58,7 @@ namespace NadekoBot.Modules.Music
 
                 using (var uow = _db.GetDbContext())
                 {
-                    playlists = uow._context.MusicPlaylists.GetPlaylistsOnPage(num);
+                    playlists = uow.MusicPlaylists.GetPlaylistsOnPage(num);
                 }
 
                 var embed = new EmbedBuilder()
@@ -78,13 +78,13 @@ namespace NadekoBot.Modules.Music
                 {
                     using (var uow = _db.GetDbContext())
                     {
-                        var pl = uow._context.MusicPlaylists.FirstOrDefault(x => x.Id == id);
+                        var pl = uow.MusicPlaylists.FirstOrDefault(x => x.Id == id);
 
                         if (pl != null)
                         {
                             if (_creds.IsOwner(ctx.User) || pl.AuthorId == ctx.User.Id)
                             {
-                                uow._context.MusicPlaylists.Remove(pl);
+                                uow.MusicPlaylists.Remove(pl);
                                 await uow.SaveChangesAsync();
                                 success = true;
                             }
@@ -112,7 +112,7 @@ namespace NadekoBot.Modules.Music
                 MusicPlaylist mpl;
                 using (var uow = _db.GetDbContext())
                 {
-                    mpl = uow._context.MusicPlaylists.GetWithSongs(id);
+                    mpl = uow.MusicPlaylists.GetWithSongs(id);
                 }
 
                 await ctx.SendPaginatedConfirmAsync(page, (cur) =>
@@ -158,7 +158,7 @@ namespace NadekoBot.Modules.Music
                         AuthorId = ctx.User.Id,
                         Songs = songs.ToList(),
                     };
-                    uow._context.MusicPlaylists.Add(playlist);
+                    uow.MusicPlaylists.Add(playlist);
                     await uow.SaveChangesAsync();
                 }
 
@@ -210,7 +210,7 @@ namespace NadekoBot.Modules.Music
                     MusicPlaylist mpl;
                     using (var uow = _db.GetDbContext())
                     {
-                        mpl = uow._context.MusicPlaylists.GetWithSongs(id);
+                        mpl = uow.MusicPlaylists.GetWithSongs(id);
                     }
 
                     if (mpl == null)

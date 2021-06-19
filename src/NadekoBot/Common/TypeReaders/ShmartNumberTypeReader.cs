@@ -76,7 +76,7 @@ namespace NadekoBot.Core.Common.TypeReaders
             long cur;
             using (var uow = _db.GetDbContext())
             {
-                cur = uow._context.DiscordUser.GetUserCurrency(ctx.User.Id);
+                cur = uow.DiscordUser.GetUserCurrency(ctx.User.Id);
                 uow.SaveChanges();
             }
             return cur;

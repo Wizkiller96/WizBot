@@ -48,7 +48,7 @@ namespace NadekoBot.Modules.Administration.Services
             using (var uow = db.GetDbContext())
             {
                 var guildIds = client.Guilds.Select(x => x.Id).ToList();
-                var configs = uow._context
+                var configs = uow
                     .Set<GuildConfig>()
                     .AsQueryable()
                     .Include(gc => gc.LogSetting)
@@ -124,7 +124,7 @@ namespace NadekoBot.Modules.Administration.Services
             int removed = 0;
             using (var uow = _db.GetDbContext())
             {
-                var config = uow._context.LogSettingsFor(gid);
+                var config = uow.LogSettingsFor(gid);
                 LogSetting logSetting = GuildLogSettings.GetOrAdd(gid, (id) => config.LogSetting);
                 removed = logSetting.IgnoredChannels.RemoveWhere(ilc => ilc.ChannelId == cid);
                 config.LogSetting.IgnoredChannels.RemoveWhere(ilc => ilc.ChannelId == cid);
@@ -167,7 +167,7 @@ namespace NadekoBot.Modules.Administration.Services
             LogSetting logSetting;
             using (var uow = _db.GetDbContext())
             {
-                logSetting = uow._context.LogSettingsFor(guildId).LogSetting;
+                logSetting = uow.LogSettingsFor(guildId).LogSetting;
                 GuildLogSettings.AddOrUpdate(guildId, (id) => logSetting, (id, old) => logSetting);
                 logSetting.LogOtherId =
                 logSetting.MessageUpdatedId =
@@ -256,7 +256,7 @@ namespace NadekoBot.Modules.Administration.Services
             ulong? channelId = null;
             using (var uow = _db.GetDbContext())
             {
-                var logSetting = uow._context.LogSettingsFor(gid).LogSetting;
+                var logSetting = uow.LogSettingsFor(gid).LogSetting;
                 GuildLogSettings.AddOrUpdate(gid, (id) => logSetting, (id, old) => logSetting);
                 switch (type)
                 {
@@ -1220,7 +1220,7 @@ namespace NadekoBot.Modules.Administration.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var newLogSetting = uow._context.LogSettingsFor(guildId).LogSetting;
+                var newLogSetting = uow.LogSettingsFor(guildId).LogSetting;
                 switch (logChannelType)
                 {
                     case LogType.Other:

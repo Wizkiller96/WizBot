@@ -108,7 +108,7 @@ namespace NadekoBot.Modules.Administration.Services
         public async Task<IReadOnlyList<ulong>> ToggleAarAsync(ulong guildId, ulong roleId)
         {
             using var uow = _db.GetDbContext();
-            var gc = uow._context.GuildConfigsForId(guildId, set => set);
+            var gc = uow.GuildConfigsForId(guildId, set => set);
             var roles = gc.GetAutoAssignableRoles();
             if(!roles.Remove(roleId) && roles.Count < 3)
                 roles.Add(roleId);
@@ -128,7 +128,7 @@ namespace NadekoBot.Modules.Administration.Services
         {
             using var uow = _db.GetDbContext();
             
-            await uow._context
+            await uow
                 .GuildConfigs
                 .AsNoTracking()
                 .Where(x => x.GuildId == guildId)
@@ -143,7 +143,7 @@ namespace NadekoBot.Modules.Administration.Services
         {
             using var uow = _db.GetDbContext();
             
-            var gc = uow._context.GuildConfigsForId(guildId, set => set);
+            var gc = uow.GuildConfigsForId(guildId, set => set);
             gc.SetAutoAssignableRoles(newRoles);
             
             await uow.SaveChangesAsync();

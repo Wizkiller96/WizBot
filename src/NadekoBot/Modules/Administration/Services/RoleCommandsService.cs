@@ -156,7 +156,7 @@ namespace NadekoBot.Modules.Administration.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var gc = uow._context.GuildConfigsForId(id, set => set
+                var gc = uow.GuildConfigsForId(id, set => set
                     .Include(x => x.ReactionRoleMessages)
                     .ThenInclude(x => x.ReactionRoles));
                 if (gc.ReactionRoleMessages.Count >= 10)
@@ -174,10 +174,10 @@ namespace NadekoBot.Modules.Administration.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var gc = uow._context.GuildConfigsForId(id,
+                var gc = uow.GuildConfigsForId(id,
                     set => set.Include(x => x.ReactionRoleMessages)
                         .ThenInclude(x => x.ReactionRoles));
-                uow._context.Set<ReactionRole>()
+                uow.Set<ReactionRole>()
                     .RemoveRange(gc.ReactionRoleMessages[index].ReactionRoles);
                 gc.ReactionRoleMessages.RemoveAt(index);
                 _models.AddOrUpdate(id,

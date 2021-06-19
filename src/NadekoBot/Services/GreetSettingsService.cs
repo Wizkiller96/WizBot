@@ -107,7 +107,7 @@ namespace NadekoBot.Core.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                return uow._context.GuildConfigsForId(id, set => set)?.DmGreetMessageText;
+                return uow.GuildConfigsForId(id, set => set)?.DmGreetMessageText;
             }
         }
 
@@ -115,7 +115,7 @@ namespace NadekoBot.Core.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                return uow._context.GuildConfigsForId(gid, set => set).ChannelGreetMessageText;
+                return uow.GuildConfigsForId(gid, set => set).ChannelGreetMessageText;
             }
         }
 
@@ -319,7 +319,7 @@ namespace NadekoBot.Core.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                return uow._context.GuildConfigsForId(gid, set => set).ChannelByeMessageText;
+                return uow.GuildConfigsForId(gid, set => set).ChannelByeMessageText;
             }
         }
 
@@ -331,7 +331,7 @@ namespace NadekoBot.Core.Services
 
             using (var uow = _db.GetDbContext())
             {
-                var gc = uow._context.GuildConfigsForId(guildId, set => set);
+                var gc = uow.GuildConfigsForId(guildId, set => set);
                 settings = GreetSettings.Create(gc);
             }
 
@@ -351,7 +351,7 @@ namespace NadekoBot.Core.Services
 
             using (var uow = _db.GetDbContext())
             {
-                var conf = uow._context.GuildConfigsForId(guildId, set => set);
+                var conf = uow.GuildConfigsForId(guildId, set => set);
                 conf.DmGreetMessageText = settings.DmGreetMessageText?.SanitizeMentions();
                 conf.ChannelGreetMessageText = settings.ChannelGreetMessageText?.SanitizeMentions();
                 conf.ChannelByeMessageText = settings.ChannelByeMessageText?.SanitizeMentions();
@@ -382,7 +382,7 @@ namespace NadekoBot.Core.Services
             bool enabled;
             using (var uow = _db.GetDbContext())
             {
-                var conf = uow._context.GuildConfigsForId(guildId, set => set);
+                var conf = uow.GuildConfigsForId(guildId, set => set);
                 enabled = conf.SendChannelGreetMessage = value ?? !conf.SendChannelGreetMessage;
                 conf.GreetMessageChannelId = channelId;
 
@@ -404,7 +404,7 @@ namespace NadekoBot.Core.Services
             bool greetMsgEnabled;
             using (var uow = _db.GetDbContext())
             {
-                var conf = uow._context.GuildConfigsForId(guildId, set => set);
+                var conf = uow.GuildConfigsForId(guildId, set => set);
                 conf.ChannelGreetMessageText = message;
                 greetMsgEnabled = conf.SendChannelGreetMessage;
 
@@ -421,7 +421,7 @@ namespace NadekoBot.Core.Services
             bool enabled;
             using (var uow = _db.GetDbContext())
             {
-                var conf = uow._context.GuildConfigsForId(guildId, set => set);
+                var conf = uow.GuildConfigsForId(guildId, set => set);
                 enabled = conf.SendDmGreetMessage = value ?? !conf.SendDmGreetMessage;
 
                 var toAdd = GreetSettings.Create(conf);
@@ -437,7 +437,7 @@ namespace NadekoBot.Core.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var conf = uow._context.GuildConfigsForId(guildId, set => set);
+                var conf = uow.GuildConfigsForId(guildId, set => set);
                 return conf.SendDmGreetMessage;
             }
         }
@@ -446,7 +446,7 @@ namespace NadekoBot.Core.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var conf = uow._context.GuildConfigsForId(guildId, set => set);
+                var conf = uow.GuildConfigsForId(guildId, set => set);
                 return conf.SendChannelGreetMessage;
             }
         }
@@ -455,7 +455,7 @@ namespace NadekoBot.Core.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var conf = uow._context.GuildConfigsForId(guildId, set => set);
+                var conf = uow.GuildConfigsForId(guildId, set => set);
                 return conf.SendChannelByeMessage;
             }
         }
@@ -492,7 +492,7 @@ namespace NadekoBot.Core.Services
             bool greetMsgEnabled;
             using (var uow = _db.GetDbContext())
             {
-                var conf = uow._context.GuildConfigsForId(guildId, set => set);
+                var conf = uow.GuildConfigsForId(guildId, set => set);
                 conf.DmGreetMessageText = message;
                 greetMsgEnabled = conf.SendDmGreetMessage;
 
@@ -509,7 +509,7 @@ namespace NadekoBot.Core.Services
             bool enabled;
             using (var uow = _db.GetDbContext())
             {
-                var conf = uow._context.GuildConfigsForId(guildId, set => set);
+                var conf = uow.GuildConfigsForId(guildId, set => set);
                 enabled = conf.SendChannelByeMessage = value ?? !conf.SendChannelByeMessage;
                 conf.ByeMessageChannelId = channelId;
 
@@ -531,7 +531,7 @@ namespace NadekoBot.Core.Services
             bool byeMsgEnabled;
             using (var uow = _db.GetDbContext())
             {
-                var conf = uow._context.GuildConfigsForId(guildId, set => set);
+                var conf = uow.GuildConfigsForId(guildId, set => set);
                 conf.ChannelByeMessageText = message;
                 byeMsgEnabled = conf.SendChannelByeMessage;
 
@@ -550,7 +550,7 @@ namespace NadekoBot.Core.Services
 
             using (var uow = _db.GetDbContext())
             {
-                var conf = uow._context.GuildConfigsForId(guildId, set => set);
+                var conf = uow.GuildConfigsForId(guildId, set => set);
                 conf.AutoDeleteByeMessagesTimer = timer;
 
                 var toAdd = GreetSettings.Create(conf);
@@ -567,7 +567,7 @@ namespace NadekoBot.Core.Services
 
             using (var uow = _db.GetDbContext())
             {
-                var conf = uow._context.GuildConfigsForId(id, set => set);
+                var conf = uow.GuildConfigsForId(id, set => set);
                 conf.AutoDeleteGreetMessagesTimer = timer;
 
                 var toAdd = GreetSettings.Create(conf);

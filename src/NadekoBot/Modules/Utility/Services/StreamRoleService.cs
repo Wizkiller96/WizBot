@@ -81,7 +81,7 @@ namespace NadekoBot.Modules.Utility.Services
             bool success = false;
             using (var uow = _db.GetDbContext())
             {
-                var streamRoleSettings = uow._context.GetStreamRoleSettings(guild.Id);
+                var streamRoleSettings = uow.GetStreamRoleSettings(guild.Id);
 
                 if (listType == StreamRoleListType.Whitelist)
                 {
@@ -96,7 +96,7 @@ namespace NadekoBot.Modules.Utility.Services
                         var toDelete = streamRoleSettings.Whitelist.FirstOrDefault(x => x.Equals(userObj));
                         if (toDelete != null)
                         {
-                            uow._context.Remove(toDelete);
+                            uow.Remove(toDelete);
                             success = true;
                         }
                     }
@@ -146,7 +146,7 @@ namespace NadekoBot.Modules.Utility.Services
 
             using (var uow = _db.GetDbContext())
             {
-                var streamRoleSettings = uow._context.GetStreamRoleSettings(guild.Id);
+                var streamRoleSettings = uow.GetStreamRoleSettings(guild.Id);
 
                 streamRoleSettings.Keyword = keyword;
                 UpdateCache(guild.Id, streamRoleSettings);
@@ -170,7 +170,7 @@ namespace NadekoBot.Modules.Utility.Services
             StreamRoleSettings setting;
             using (var uow = _db.GetDbContext())
             {
-                setting = uow._context.GetStreamRoleSettings(guildId);
+                setting = uow.GetStreamRoleSettings(guildId);
             }
 
             UpdateCache(guildId, setting);
@@ -192,7 +192,7 @@ namespace NadekoBot.Modules.Utility.Services
             StreamRoleSettings setting;
             using (var uow = _db.GetDbContext())
             {
-                var streamRoleSettings = uow._context.GetStreamRoleSettings(fromRole.Guild.Id);
+                var streamRoleSettings = uow.GetStreamRoleSettings(fromRole.Guild.Id);
 
                 streamRoleSettings.Enabled = true;
                 streamRoleSettings.AddRoleId = addRole.Id;
@@ -219,7 +219,7 @@ namespace NadekoBot.Modules.Utility.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var streamRoleSettings = uow._context.GetStreamRoleSettings(guild.Id);
+                var streamRoleSettings = uow.GetStreamRoleSettings(guild.Id);
                 streamRoleSettings.Enabled = false;
                 streamRoleSettings.AddRoleId = 0;
                 streamRoleSettings.FromRoleId = 0;

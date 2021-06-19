@@ -89,7 +89,7 @@ namespace NadekoBot.Modules.Searches
                 List<FollowedStream> streams = new List<FollowedStream>();
                 using (var uow = _db.GetDbContext())
                 {
-                    var all = uow._context
+                    var all = uow
                         .GuildConfigsForId(ctx.Guild.Id, set => set.Include(gc => gc.FollowedStreams))
                         .FollowedStreams
                         .OrderBy(x => x.Id)

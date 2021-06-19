@@ -108,7 +108,7 @@ namespace NadekoBot.Core.Services
 
             using (var uow = _db.GetDbContext())
             {
-                var gc = uow._context.GuildConfigsForId(guild.Id, set => set);
+                var gc = uow.GuildConfigsForId(guild.Id, set => set);
                 gc.Prefix = prefix;
                 uow.SaveChanges();
             }

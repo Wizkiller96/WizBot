@@ -30,7 +30,7 @@ namespace NadekoBot.Modules.Utility.Services
             using (var uow = db.GetDbContext())
             {
                 var guildIds = client.Guilds.Select(x => x.Id).ToList();
-                var configs = uow._context.Set<GuildConfig>()
+                var configs = uow.Set<GuildConfig>()
                     .Include(gc => gc.CommandAliases)
                     .Where(x => guildIds.Contains(x.GuildId))
                     .ToList();
@@ -53,7 +53,7 @@ namespace NadekoBot.Modules.Utility.Services
             int count;
             using (var uow = _db.GetDbContext())
             {
-                var gc = uow._context.GuildConfigsForId(guildId, set => set.Include(x => x.CommandAliases));
+                var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.CommandAliases));
                 count = gc.CommandAliases.Count;
                 gc.CommandAliases.Clear();
                 uow.SaveChanges();

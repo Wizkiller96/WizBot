@@ -33,7 +33,7 @@ namespace NadekoBot.Modules.Games.Services
 
             using (var uow = db.GetDbContext())
             {
-                ActivePolls = uow._context.Poll.GetAllPolls()
+                ActivePolls = uow.Poll.GetAllPolls()
                     .ToDictionary(x => x.GuildId, x =>
                     {
                         var pr = new PollRunner(db, x);
@@ -72,7 +72,7 @@ namespace NadekoBot.Modules.Games.Services
             {
                 using (var uow = _db.GetDbContext())
                 {
-                    uow._context.Poll.Add(p);
+                    uow.Poll.Add(p);
                     uow.SaveChanges();
                 }
 
@@ -89,7 +89,7 @@ namespace NadekoBot.Modules.Games.Services
                 pr.OnVoted -= Pr_OnVoted;
                 
                 using var uow = _db.GetDbContext();
-                uow._context.RemovePoll(pr.Poll.Id);
+                uow.RemovePoll(pr.Poll.Id);
                 uow.SaveChanges();
                 
                 return pr.Poll;

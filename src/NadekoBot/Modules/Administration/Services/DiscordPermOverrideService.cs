@@ -28,7 +28,7 @@ namespace NadekoBot.Modules.Administration.Services
             _db = db;
             _services = services;
             using var uow = _db.GetDbContext();
-            _overrides = uow._context.DiscordPermOverrides
+            _overrides = uow.DiscordPermOverrides
                 .AsNoTracking()
                 .AsEnumerable()
                 .ToDictionary(o => (o.GuildId ?? 0, o.Command), o => o)
@@ -60,14 +60,14 @@ namespace NadekoBot.Modules.Administration.Services
             commandName = commandName.ToLowerInvariant();
             using (var uow = _db.GetDbContext())
             {
-                var over = await uow._context
+                var over = await uow
                     .Set<DiscordPermOverride>()
                     .AsQueryable()
                     .FirstOrDefaultAsync(x => x.GuildId == guildId && commandName == x.Command);
 
                 if (over is null)
                 {
-                    uow._context.Set<DiscordPermOverride>()
+                    uow.Set<DiscordPermOverride>()
                         .Add(over = new DiscordPermOverride()
                         {
                             Command = commandName,
@@ -90,14 +90,14 @@ namespace NadekoBot.Modules.Administration.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var overrides = await uow._context
+                var overrides = await uow
                     .Set<DiscordPermOverride>()
                     .AsQueryable()
                     .AsNoTracking()
                     .Where(x => x.GuildId == guildId)
                     .ToListAsync();
                 
-                uow._context.RemoveRange(overrides);
+                uow.RemoveRange(overrides);
                 await uow.SaveChangesAsync();
 
                 foreach (var over in overrides)
@@ -113,7 +113,7 @@ namespace NadekoBot.Modules.Administration.Services
             
             using (var uow = _db.GetDbContext())
             {
-                var over = await uow._context
+                var over = await uow
                     .Set<DiscordPermOverride>()
                     .AsQueryable()
                     .AsNoTracking()
@@ -122,7 +122,7 @@ namespace NadekoBot.Modules.Administration.Services
                 if (over is null)
                     return;
                 
-                uow._context.Remove(over);
+                uow.Remove(over);
                 await uow.SaveChangesAsync();
 
                 _overrides.TryRemove((guildId, commandName), out _);
@@ -133,7 +133,7 @@ namespace NadekoBot.Modules.Administration.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                return uow._context
+                return uow
                     .Set<DiscordPermOverride>()
                     .AsQueryable()
                     .AsNoTracking()

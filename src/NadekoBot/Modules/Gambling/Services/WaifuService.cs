@@ -46,8 +46,8 @@ namespace NadekoBot.Modules.Gambling.Services
             
             using (var uow = _db.GetDbContext())
             {
-                var waifu = uow._context.WaifuInfo.ByWaifuUserId(waifuId);
-                var ownerUser = uow._context.GetOrCreateUser(owner);
+                var waifu = uow.WaifuInfo.ByWaifuUserId(waifuId);
+                var ownerUser = uow.GetOrCreateUser(owner);
 
                 // owner has to be the owner of the waifu
                 if (waifu == null || waifu.ClaimerId != ownerUser.Id)
@@ -82,7 +82,7 @@ namespace NadekoBot.Modules.Gambling.Services
                 }
 
                 //new claimerId is the id of the new owner
-                var newOwnerUser = uow._context.GetOrCreateUser(newOwner);
+                var newOwnerUser = uow.GetOrCreateUser(newOwner);
                 waifu.ClaimerId = newOwnerUser.Id;
 
                 await uow.SaveChangesAsync();
@@ -96,16 +96,16 @@ namespace NadekoBot.Modules.Gambling.Services
             var settings = _gss.Data;
             using (var uow = _db.GetDbContext())
             {
-                var waifu = uow._context.WaifuInfo.ByWaifuUserId(user.Id);
+                var waifu = uow.WaifuInfo.ByWaifuUserId(user.Id);
 
                 if (waifu == null)
                     return settings.Waifu.MinPrice;
 
-                var divorces = uow._context.WaifuUpdates.Count(x => x.Old != null &&
+                var divorces = uow.WaifuUpdates.Count(x => x.Old != null &&
                                                                     x.Old.UserId == user.Id &&
                                                                     x.UpdateType == WaifuUpdateType.Claimed &&
                                                                     x.New == null);
-                var affs = uow._context.WaifuUpdates
+                var affs = uow.WaifuUpdates
                     .AsQueryable()
                     .Where(w => w.User.UserId == user.Id && w.UpdateType == WaifuUpdateType.AffinityChanged &&
                                 w.New != null)
@@ -126,13 +126,13 @@ namespace NadekoBot.Modules.Gambling.Services
                 if (!await _cs.RemoveAsync(user.Id, "Waifu Reset", price, gamble: true))
                     return false;
 
-                var affs = uow._context.WaifuUpdates
+                var affs = uow.WaifuUpdates
                     .AsQueryable()
                     .Where(w => w.User.UserId == user.Id
                                 && w.UpdateType == WaifuUpdateType.AffinityChanged
                                 && w.New != null);
 
-                var divorces = uow._context.WaifuUpdates
+                var divorces = uow.WaifuUpdates
                     .AsQueryable()
                     .Where(x => x.Old != null &&
                                 x.Old.UserId == user.Id &&
@@ -140,10 +140,10 @@ namespace NadekoBot.Modules.Gambling.Services
                                 x.New == null);
 
                 //reset changes of heart to 0
-                uow._context.WaifuUpdates.RemoveRange(affs);
+                uow.WaifuUpdates.RemoveRange(affs);
                 //reset divorces to 0
-                uow._context.WaifuUpdates.RemoveRange(divorces);
-                var waifu = uow._context.WaifuInfo.ByWaifuUserId(user.Id);
+                uow.WaifuUpdates.RemoveRange(divorces);
+                var waifu = uow.WaifuInfo.ByWaifuUserId(user.Id);
                 //reset price, remove items
                 //remove owner, remove affinity
                 waifu.Price = 50;
@@ -167,26 +167,26 @@ namespace NadekoBot.Modules.Gambling.Services
             bool isAffinity;
             using (var uow = _db.GetDbContext())
             {
-                w = uow._context.WaifuInfo.ByWaifuUserId(target.Id);
+                w = uow.WaifuInfo.ByWaifuUserId(target.Id);
                 isAffinity = (w?.Affinity?.UserId == user.Id);
                 if (w == null)
                 {
-                    var claimer = uow._context.GetOrCreateUser(user);
-                    var waifu = uow._context.GetOrCreateUser(target);
+                    var claimer = uow.GetOrCreateUser(user);
+                    var waifu = uow.GetOrCreateUser(target);
                     if (!await _cs.RemoveAsync(user.Id, "Claimed Waifu", amount, gamble: true))
                     {
                         result = WaifuClaimResult.NotEnoughFunds;
                     }
                     else
                     {
-                        uow._context.WaifuInfo.Add(w = new WaifuInfo()
+                        uow.WaifuInfo.Add(w = new WaifuInfo()
                         {
                             Waifu = waifu,
                             Claimer = claimer,
                             Affinity = null,
                             Price = amount
                         });
-                        uow._context.WaifuUpdates.Add(new WaifuUpdate()
+                        uow.WaifuUpdates.Add(new WaifuUpdate()
                         {
                             User = waifu,
                             Old = null,
@@ -205,11 +205,11 @@ namespace NadekoBot.Modules.Gambling.Services
                     else
                     {
                         var oldClaimer = w.Claimer;
-                        w.Claimer = uow._context.GetOrCreateUser(user);
+                        w.Claimer = uow.GetOrCreateUser(user);
                         w.Price = amount + (amount / 4);
                         result = WaifuClaimResult.Success;
 
-                        uow._context.WaifuUpdates.Add(new WaifuUpdate()
+                        uow.WaifuUpdates.Add(new WaifuUpdate()
                         {
                             User = w.Waifu,
                             Old = oldClaimer,
@@ -227,11 +227,11 @@ namespace NadekoBot.Modules.Gambling.Services
                     else
                     {
                         var oldClaimer = w.Claimer;
-                        w.Claimer = uow._context.GetOrCreateUser(user);
+                        w.Claimer = uow.GetOrCreateUser(user);
                         w.Price = amount;
                         result = WaifuClaimResult.Success;
 
-                        uow._context.WaifuUpdates.Add(new WaifuUpdate()
+                        uow.WaifuUpdates.Add(new WaifuUpdate()
                         {
                             User = w.Waifu,
                             Old = oldClaimer,
@@ -257,8 +257,8 @@ namespace NadekoBot.Modules.Gambling.Services
             TimeSpan? remaining = null;
             using (var uow = _db.GetDbContext())
             {
-                var w = uow._context.WaifuInfo.ByWaifuUserId(user.Id);
-                var newAff = target == null ? null : uow._context.GetOrCreateUser(target);
+                var w = uow.WaifuInfo.ByWaifuUserId(user.Id);
+                var newAff = target == null ? null : uow.GetOrCreateUser(target);
                 if (w?.Affinity?.UserId == target?.Id)
                 {
                 }
@@ -267,8 +267,8 @@ namespace NadekoBot.Modules.Gambling.Services
                 }
                 else if (w == null)
                 {
-                    var thisUser = uow._context.GetOrCreateUser(user);
-                    uow._context.WaifuInfo.Add(new WaifuInfo()
+                    var thisUser = uow.GetOrCreateUser(user);
+                    uow.WaifuInfo.Add(new WaifuInfo()
                     {
                         Affinity = newAff,
                         Waifu = thisUser,
@@ -277,7 +277,7 @@ namespace NadekoBot.Modules.Gambling.Services
                     });
                     success = true;
 
-                    uow._context.WaifuUpdates.Add(new WaifuUpdate()
+                    uow.WaifuUpdates.Add(new WaifuUpdate()
                     {
                         User = thisUser,
                         Old = null,
@@ -292,7 +292,7 @@ namespace NadekoBot.Modules.Gambling.Services
                     w.Affinity = newAff;
                     success = true;
 
-                    uow._context.WaifuUpdates.Add(new WaifuUpdate()
+                    uow.WaifuUpdates.Add(new WaifuUpdate()
                     {
                         User = w.Waifu,
                         Old = oldAff,
@@ -311,14 +311,14 @@ namespace NadekoBot.Modules.Gambling.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                return uow._context.WaifuInfo.GetTop(9, page * 9);
+                return uow.WaifuInfo.GetTop(9, page * 9);
             }
         }
 
         public ulong GetWaifuUserId(ulong ownerId, string name)
         {
             using var uow = _db.GetDbContext();
-            return uow._context.WaifuInfo.GetWaifuUserId(ownerId, name);
+            return uow.WaifuInfo.GetWaifuUserId(ownerId, name);
         }
 
         public async Task<(WaifuInfo, DivorceResult, long, TimeSpan?)> DivorceWaifuAsync(IUser user, ulong targetId)
@@ -329,7 +329,7 @@ namespace NadekoBot.Modules.Gambling.Services
             WaifuInfo w = null;
             using (var uow = _db.GetDbContext())
             {
-                w = uow._context.WaifuInfo.ByWaifuUserId(targetId);
+                w = uow.WaifuInfo.ByWaifuUserId(targetId);
                 var now = DateTime.UtcNow;
                 if (w?.Claimer == null || w.Claimer.UserId != user.Id)
                     result = DivorceResult.NotYourWife;
@@ -357,7 +357,7 @@ namespace NadekoBot.Modules.Gambling.Services
                     var oldClaimer = w.Claimer;
                     w.Claimer = null;
 
-                    uow._context.WaifuUpdates.Add(new WaifuUpdate()
+                    uow.WaifuUpdates.Add(new WaifuUpdate()
                     {
                         User = w.Waifu,
                         Old = oldClaimer,
@@ -381,17 +381,17 @@ namespace NadekoBot.Modules.Gambling.Services
 
             using (var uow = _db.GetDbContext())
             {
-                var w = uow._context.WaifuInfo.ByWaifuUserId(giftedWaifu.Id, 
+                var w = uow.WaifuInfo.ByWaifuUserId(giftedWaifu.Id, 
                     set => set.Include(x => x.Items)
                         .Include(x => x.Claimer));
                 if (w == null)
                 {
-                    uow._context.WaifuInfo.Add(w = new WaifuInfo()
+                    uow.WaifuInfo.Add(w = new WaifuInfo()
                     {
                         Affinity = null,
                         Claimer = null,
                         Price = 1,
-                        Waifu = uow._context.GetOrCreateUser(giftedWaifu),
+                        Waifu = uow.GetOrCreateUser(giftedWaifu),
                     });
                 }
 
@@ -420,7 +420,7 @@ namespace NadekoBot.Modules.Gambling.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var wi = uow._context.GetWaifuInfo(targetId);
+                var wi = uow.GetWaifuInfo(targetId);
                 if (wi is null)
                 {
                     wi = new WaifuInfoStats
@@ -445,7 +445,7 @@ namespace NadekoBot.Modules.Gambling.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var du = uow._context.GetOrCreateUser(target);
+                var du = uow.GetOrCreateUser(target);
                 
                 return GetFullWaifuInfoAsync(target.Id);
             }

@@ -56,7 +56,7 @@ namespace NadekoBot.Core.Services.Impl
 
             using (var uow = _db.GetDbContext())
             {
-                var gc = uow._context.GuildConfigsForId(guildId, set => set);
+                var gc = uow.GuildConfigsForId(guildId, set => set);
                 gc.Locale = ci.Name;
                 uow.SaveChanges();
             }
@@ -74,7 +74,7 @@ namespace NadekoBot.Core.Services.Impl
             {
                 using (var uow = _db.GetDbContext())
                 {
-                    var gc = uow._context.GuildConfigsForId(guildId, set => set);
+                    var gc = uow.GuildConfigsForId(guildId, set => set);
                     gc.Locale = null;
                     uow.SaveChanges();
                 }

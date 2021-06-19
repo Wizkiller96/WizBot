@@ -19,8 +19,8 @@ namespace NadekoBot.Modules.Gambling.Services
             _db = db;
         }
 
-        private IndexedCollection<ShopEntry> GetEntriesInternal(IUnitOfWork uow, ulong guildId) =>
-            uow._context.GuildConfigsForId(
+        private IndexedCollection<ShopEntry> GetEntriesInternal(NadekoContext uow, ulong guildId) =>
+            uow.GuildConfigsForId(
                     guildId,
                     set => set.Include(x => x.ShopEntries).ThenInclude(x => x.Items)
                 )

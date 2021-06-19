@@ -410,7 +410,7 @@ namespace NadekoBot.Modules.Searches.Services
             bool added;
             using (var uow = _db.GetDbContext())
             {
-                var gc = uow._context.GuildConfigsForId(guildId, set => set.Include(y => y.NsfwBlacklistedTags));
+                var gc = uow.GuildConfigsForId(guildId, set => set.Include(y => y.NsfwBlacklistedTags));
                 if (gc.NsfwBlacklistedTags.Add(tagObj))
                     added = true;
                 else
@@ -418,7 +418,7 @@ namespace NadekoBot.Modules.Searches.Services
                     gc.NsfwBlacklistedTags.Remove(tagObj);
                     var toRemove = gc.NsfwBlacklistedTags.FirstOrDefault(x => x.Equals(tagObj));
                     if (toRemove != null)
-                        uow._context.Remove(toRemove);
+                        uow.Remove(toRemove);
                     added = false;
                 }
                 var newTags = new HashSet<string>(gc.NsfwBlacklistedTags.Select(x => x.Tag));

@@ -136,7 +136,7 @@ namespace NadekoBot
         public IEnumerable<GuildConfig> GetCurrentGuildConfigs()
         {
             using var uow = _db.GetDbContext();
-            return uow._context.GuildConfigs.GetAllGuildConfigs(GetCurrentGuildIds()).ToImmutableArray();
+            return uow.GuildConfigs.GetAllGuildConfigs(GetCurrentGuildIds()).ToImmutableArray();
         }
 
         private void AddServices()
@@ -147,8 +147,8 @@ namespace NadekoBot
 
             using (var uow = _db.GetDbContext())
             {
-                uow._context.EnsureUserCreated(_bot.Id, _bot.Username, _bot.Discriminator, _bot.AvatarId);
-                AllGuildConfigs = uow._context.GuildConfigs.GetAllGuildConfigs(startingGuildIdList).ToImmutableArray();
+                uow.EnsureUserCreated(_bot.Id, _bot.Username, _bot.Discriminator, _bot.AvatarId);
+                AllGuildConfigs = uow.GuildConfigs.GetAllGuildConfigs(startingGuildIdList).ToImmutableArray();
             }
 
             var s = new ServiceCollection()
@@ -314,7 +314,7 @@ namespace NadekoBot
                 GuildConfig gc;
                 using (var uow = _db.GetDbContext())
                 {
-                    gc = uow._context.GuildConfigsForId(arg.Id);
+                    gc = uow.GuildConfigsForId(arg.Id);
                 }
                 await JoinedGuild.Invoke(gc).ConfigureAwait(false);
             });

@@ -61,7 +61,7 @@ namespace NadekoBot.Modules.Permissions.Services
         public void Reload(bool publish = true)
         {
             using var uow = _db.GetDbContext();
-            var toPublish = uow._context.Blacklist.AsNoTracking().ToArray();
+            var toPublish = uow.Blacklist.AsNoTracking().ToArray();
             _blacklist = toPublish;
             if (publish)
             {
@@ -76,7 +76,7 @@ namespace NadekoBot.Modules.Permissions.Services
             
             using var uow = _db.GetDbContext();
             var item = new BlacklistEntry { ItemId = id, Type = type };
-            uow._context.Blacklist.Add(item);
+            uow.Blacklist.Add(item);
             uow.SaveChanges();
             
             Reload(true);
@@ -85,11 +85,11 @@ namespace NadekoBot.Modules.Permissions.Services
         public void UnBlacklist(BlacklistType type, ulong id)
         {
             using var uow = _db.GetDbContext();
-            var toRemove = uow._context.Blacklist
+            var toRemove = uow.Blacklist
                 .FirstOrDefault(bi => bi.ItemId == id && bi.Type == type);
             
             if (!(toRemove is null))
-                uow._context.Blacklist.Remove(toRemove);
+                uow.Blacklist.Remove(toRemove);
             
             uow.SaveChanges();
             
@@ -100,7 +100,7 @@ namespace NadekoBot.Modules.Permissions.Services
         {
             using (var uow = _db.GetDbContext()) 
             {
-                var bc = uow._context.Blacklist;
+                var bc = uow.Blacklist;
                 //blacklist the users
                 bc.AddRange(toBlacklist.Select(x =>
                     new BlacklistEntry
@@ -110,7 +110,7 @@ namespace NadekoBot.Modules.Permissions.Services
                     }));
                 
                 //clear their currencies
-                uow._context.DiscordUser.RemoveFromMany(toBlacklist);
+                uow.DiscordUser.RemoveFromMany(toBlacklist);
                 uow.SaveChanges();
             }
             

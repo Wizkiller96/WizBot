@@ -36,7 +36,7 @@ namespace NadekoBot.Modules.Games.Services
     //     public void EnsureMigrated()
     //     {
     //         using var uow = _db.GetDbContext();
-    //         using var conn = uow._context.Database.GetDbConnection();
+    //         using var conn = uow.Database.GetDbConnection();
     //         MigrateRaceAnimals(conn);
     //         MigrateEightBall(conn);
     //     }

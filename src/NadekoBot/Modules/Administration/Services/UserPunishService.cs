@@ -61,16 +61,16 @@ namespace NadekoBot.Modules.Administration.Services
             List<WarningPunishment> ps;
             using (var uow = _db.GetDbContext())
             {
-                ps = uow._context.GuildConfigsForId(guildId, set => set.Include(x => x.WarnPunishments))
+                ps = uow.GuildConfigsForId(guildId, set => set.Include(x => x.WarnPunishments))
                     .WarnPunishments;
 
-                warnings += uow._context
+                warnings += uow
                     .Warnings
                     .ForId(guildId, userId)
                     .Where(w => !w.Forgiven && w.UserId == userId)
                     .Count();
 
-                uow._context.Warnings.Add(warn);
+                uow.Warnings.Add(warn);
 
                 uow.SaveChanges();
             }
@@ -169,14 +169,14 @@ namespace NadekoBot.Modules.Administration.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var cleared = await uow._context.Database.ExecuteSqlRawAsync($@"UPDATE Warnings
+                var cleared = await uow.Database.ExecuteSqlRawAsync($@"UPDATE Warnings
 SET Forgiven = 1,
     ForgivenBy = 'Expiry'
 WHERE GuildId in (SELECT GuildId FROM GuildConfigs WHERE WarnExpireHours > 0 AND WarnExpireAction = 0)
 	AND Forgiven = 0
 	AND DateAdded < datetime('now', (SELECT '-' || WarnExpireHours || ' hours' FROM GuildConfigs as gc WHERE gc.GuildId = Warnings.GuildId));");
 
-                var deleted = await uow._context.Database.ExecuteSqlRawAsync($@"DELETE FROM Warnings
+                var deleted = await uow.Database.ExecuteSqlRawAsync($@"DELETE FROM Warnings
 WHERE GuildId in (SELECT GuildId FROM GuildConfigs WHERE WarnExpireHours > 0 AND WarnExpireAction = 1)
 	AND DateAdded < datetime('now', (SELECT '-' || WarnExpireHours || ' hours' FROM GuildConfigs as gc WHERE gc.GuildId = Warnings.GuildId));");
 
@@ -191,7 +191,7 @@ WHERE GuildId in (SELECT GuildId FROM GuildConfigs WHERE WarnExpireHours > 0 AND
         {
             using (var uow = _db.GetDbContext())
             {
-                var config = uow._context.GuildConfigsForId(guildId, inc => inc);
+                var config = uow.GuildConfigsForId(guildId, inc => inc);
 
                 if (config.WarnExpireHours == 0)
                     return;
@@ -199,7 +199,7 @@ WHERE GuildId in (SELECT GuildId FROM GuildConfigs WHERE WarnExpireHours > 0 AND
                 var hours = $"{-config.WarnExpireHours} hours";
                 if (config.WarnExpireAction == WarnExpireAction.Clear)
                 {
-                    await uow._context.Database.ExecuteSqlInterpolatedAsync($@"UPDATE warnings
+                    await uow.Database.ExecuteSqlInterpolatedAsync($@"UPDATE warnings
 SET Forgiven = 1,
     ForgivenBy = 'Expiry'
 WHERE GuildId={guildId}
@@ -208,7 +208,7 @@ WHERE GuildId={guildId}
                 }
                 else if (config.WarnExpireAction == WarnExpireAction.Delete)
                 {
-                    await uow._context.Database.ExecuteSqlInterpolatedAsync($@"DELETE FROM warnings
+                    await uow.Database.ExecuteSqlInterpolatedAsync($@"DELETE FROM warnings
 WHERE GuildId={guildId}
     AND DateAdded < datetime('now', {hours})");
                 }
@@ -220,7 +220,7 @@ WHERE GuildId={guildId}
         public Task<int> GetWarnExpire(ulong guildId)
         {
             using var uow = _db.GetDbContext();
-            var config = uow._context.GuildConfigsForId(guildId, set => set);
+            var config = uow.GuildConfigsForId(guildId, set => set);
             return Task.FromResult(config.WarnExpireHours / 24);
         }
         
@@ -228,7 +228,7 @@ WHERE GuildId={guildId}
         {
             using (var uow = _db.GetDbContext())
             {
-                var config = uow._context.GuildConfigsForId(guildId, inc => inc);
+                var config = uow.GuildConfigsForId(guildId, inc => inc);
 
                 config.WarnExpireHours = days * 24;
                 config.WarnExpireAction = delete ? WarnExpireAction.Delete : WarnExpireAction.Clear;
@@ -246,7 +246,7 @@ WHERE GuildId={guildId}
         {
             using (var uow = _db.GetDbContext())
             {
-                return uow._context.Warnings.GetForGuild(gid).GroupBy(x => x.UserId).ToArray();
+                return uow.Warnings.GetForGuild(gid).GroupBy(x => x.UserId).ToArray();
             }
         }
 
@@ -254,7 +254,7 @@ WHERE GuildId={guildId}
         {
             using (var uow = _db.GetDbContext())
             {
-                return uow._context.Warnings.ForId(gid, userId);
+                return uow.Warnings.ForId(gid, userId);
             }
         }
 
@@ -265,11 +265,11 @@ WHERE GuildId={guildId}
             {
                 if (index == 0)
                 {
-                    await uow._context.Warnings.ForgiveAll(guildId, userId, moderator);
+                    await uow.Warnings.ForgiveAll(guildId, userId, moderator);
                 }
                 else
                 {
-                    toReturn = uow._context.Warnings.Forgive(guildId, userId, moderator, index - 1);
+                    toReturn = uow.Warnings.Forgive(guildId, userId, moderator, index - 1);
                 }
                 uow.SaveChanges();
             }
@@ -286,10 +286,10 @@ WHERE GuildId={guildId}
 
             using (var uow = _db.GetDbContext())
             {
-                var ps = uow._context.GuildConfigsForId(guildId, set => set.Include(x => x.WarnPunishments)).WarnPunishments;
+                var ps = uow.GuildConfigsForId(guildId, set => set.Include(x => x.WarnPunishments)).WarnPunishments;
                 var toDelete = ps.Where(x => x.Count == number);
 
-                uow._context.RemoveRange(toDelete);
+                uow.RemoveRange(toDelete);
 
                 ps.Add(new WarningPunishment()
                 {
@@ -310,12 +310,12 @@ WHERE GuildId={guildId}
 
             using (var uow = _db.GetDbContext())
             {
-                var ps = uow._context.GuildConfigsForId(guildId, set => set.Include(x => x.WarnPunishments)).WarnPunishments;
+                var ps = uow.GuildConfigsForId(guildId, set => set.Include(x => x.WarnPunishments)).WarnPunishments;
                 var p = ps.FirstOrDefault(x => x.Count == number);
 
                 if (p != null)
                 {
-                    uow._context.Remove(p);
+                    uow.Remove(p);
                     uow.SaveChanges();
                 }
             }
@@ -326,7 +326,7 @@ WHERE GuildId={guildId}
         {
             using (var uow = _db.GetDbContext())
             {
-                return uow._context.GuildConfigsForId(guildId, gc => gc.Include(x => x.WarnPunishments))
+                return uow.GuildConfigsForId(guildId, gc => gc.Include(x => x.WarnPunishments))
                     .WarnPunishments
                     .OrderBy(x => x.Count)
                     .ToArray();
@@ -374,7 +374,7 @@ WHERE GuildId={guildId}
         {
             using (var uow = _db.GetDbContext())
             {
-                var template = uow._context.BanTemplates
+                var template = uow.BanTemplates
                     .AsQueryable()
                     .FirstOrDefault(x => x.GuildId == guildId);
                 return template?.Text;
@@ -385,7 +385,7 @@ WHERE GuildId={guildId}
         {
             using (var uow = _db.GetDbContext())
             {
-                var template = uow._context.BanTemplates
+                var template = uow.BanTemplates
                     .AsQueryable()
                     .FirstOrDefault(x => x.GuildId == guildId);
 
@@ -394,11 +394,11 @@ WHERE GuildId={guildId}
                     if (template is null)
                         return;
                     
-                    uow._context.Remove(template);
+                    uow.Remove(template);
                 }
                 else if (template == null)
                 {
-                    uow._context.BanTemplates.Add(new BanTemplate()
+                    uow.BanTemplates.Add(new BanTemplate()
                     {
                         GuildId = guildId,
                         Text = text,

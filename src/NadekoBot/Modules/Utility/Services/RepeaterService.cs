@@ -40,8 +40,7 @@ namespace NadekoBot.Modules.Utility.Services
             _client = client;
             
             var uow = _db.GetDbContext();
-            var shardRepeaters = uow
-                ._context
+            var shardRepeaters = uow                
                 .Set<Repeater>()
                 .FromSqlInterpolated($@"select * from repeaters 
 where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
@@ -133,7 +132,7 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
         {
             using var uow = _db.GetDbContext();
             
-            var toTrigger = await uow._context.Repeaters
+            var toTrigger = await uow.Repeaters
                 .AsNoTracking()
                 .Skip(index)
                 .FirstOrDefaultAsyncEF(x => x.GuildId == guildId);
@@ -290,7 +289,7 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
             _noRedundant.TryRemove(r.Id);
             
             using var uow = _db.GetDbContext();
-            await uow._context
+            await uow
                 .Repeaters
                 .DeleteAsync(x => x.Id == r.Id);
             
@@ -313,7 +312,7 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
         private async Task SetRepeaterLastMessageInternal(int repeaterId, ulong lastMsgId)
         {
             using var uow = _db.GetDbContext();
-            await uow._context.Repeaters
+            await uow.Repeaters
                 .AsQueryable()
                 .Where(x => x.Id == repeaterId)
                 .UpdateAsync(rep => new Repeater()
@@ -345,8 +344,8 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
 
             using var uow = _db.GetDbContext();
 
-            if (await uow._context.Repeaters.AsNoTracking().CountAsyncEF() < MAX_REPEATERS)
-                uow._context.Repeaters.Add(rep);
+            if (await uow.Repeaters.AsNoTracking().CountAsyncEF() < MAX_REPEATERS)
+                uow.Repeaters.Add(rep);
             else
                 return null;
 
@@ -365,7 +364,7 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
                 throw new ArgumentOutOfRangeException(nameof(index));
             
             using var uow = _db.GetDbContext();
-            var toRemove = await uow._context.Repeaters
+            var toRemove = await uow.Repeaters
                 .AsNoTracking()
                 .Skip(index)
                 .FirstOrDefaultAsyncEF(x => x.GuildId == guildId);
@@ -380,7 +379,7 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
                 return null;
 
             _noRedundant.TryRemove(toRemove.Id);
-            uow._context.Repeaters.Remove(toRemove);
+            uow.Repeaters.Remove(toRemove);
             await uow.SaveChangesAsync();
             return removed;
         }
@@ -396,7 +395,7 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
         public async Task<bool?> ToggleRedundantAsync(ulong guildId, int index)
         {
             using var uow = _db.GetDbContext();
-            var toToggle = await uow._context
+            var toToggle = await uow
                 .Repeaters
                 .AsQueryable()
                 .Skip(index)

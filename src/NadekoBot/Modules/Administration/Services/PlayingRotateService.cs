@@ -56,7 +56,7 @@ namespace NadekoBot.Modules.Administration.Services
                 IReadOnlyList<RotatingPlayingStatus> rotatingStatuses;
                 using (var uow = _db.GetDbContext())
                 {
-                    rotatingStatuses = uow._context.RotatingStatus
+                    rotatingStatuses = uow.RotatingStatus
                         .AsNoTracking()
                         .OrderBy(x => x.Id)
                         .ToList();
@@ -84,7 +84,7 @@ namespace NadekoBot.Modules.Administration.Services
                 throw new ArgumentOutOfRangeException(nameof(index));
 
             using var uow = _db.GetDbContext();
-            var toRemove = await uow._context.RotatingStatus
+            var toRemove = await uow.RotatingStatus
                 .AsQueryable()
                 .AsNoTracking()
                 .Skip(index)
@@ -93,7 +93,7 @@ namespace NadekoBot.Modules.Administration.Services
             if (toRemove is null)
                 return null;
 
-            uow._context.Remove(toRemove);
+            uow.Remove(toRemove);
             await uow.SaveChangesAsync();
             return toRemove.Status;
         }
@@ -102,7 +102,7 @@ namespace NadekoBot.Modules.Administration.Services
         {
             using var uow = _db.GetDbContext();
             var toAdd = new RotatingPlayingStatus {Status = status, Type = t};
-            uow._context.Add(toAdd);
+            uow.Add(toAdd);
             await uow.SaveChangesAsync();
         }
 
@@ -116,7 +116,7 @@ namespace NadekoBot.Modules.Administration.Services
         public IReadOnlyList<RotatingPlayingStatus> GetRotatingStatuses()
         {
             using var uow = _db.GetDbContext();
-            return uow._context.RotatingStatus.AsNoTracking().ToList();
+            return uow.RotatingStatus.AsNoTracking().ToList();
         }
     }
 }

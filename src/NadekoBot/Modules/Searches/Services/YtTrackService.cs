@@ -88,7 +88,7 @@ namespace NadekoBot.Modules.Searches.Services
         //
         //     using(var uow = _db.GetDbContext())
         //     {
-        //         var gc = uow._context.GuildConfigsForId(guildId, set => set.Include(x => x.YtFollowedChannels));
+        //         var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.YtFollowedChannels));
         //
         //         // see if this yt channel was already followed on this discord channel
         //         var oldObj = gc.YtFollowedChannels

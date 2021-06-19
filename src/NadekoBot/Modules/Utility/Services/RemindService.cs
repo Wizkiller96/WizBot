@@ -65,7 +65,7 @@ namespace NadekoBot.Modules.Utility.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                uow._context.Set<Reminder>()
+                uow.Set<Reminder>()
                     .RemoveRange(reminders);
 
                 await uow.SaveChangesAsync();
@@ -76,7 +76,7 @@ namespace NadekoBot.Modules.Utility.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                return uow._context.Reminders
+                return uow.Reminders
                     .FromSqlInterpolated($"select * from reminders where ((serverid >> 22) % {_creds.TotalShards}) == {_client.ShardId} and \"when\" < {now};")
                     .ToListAsync();
             }

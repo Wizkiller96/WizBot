@@ -138,7 +138,7 @@ namespace NadekoBot.Modules.Utility.Services
 
                     using (var uow = _db.GetDbContext())
                     {
-                        var users = uow._context.Set<RewardedUser>();
+                        var users = uow.Set<RewardedUser>();
                         var usr = users.FirstOrDefault(x => x.PatreonUserId == data.User.id);
 
                         if (usr == null)
