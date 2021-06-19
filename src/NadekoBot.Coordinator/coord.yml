@@ -1,0 +1,5 @@
+TotalShards: 1
+RecheckIntervalMs: 5000
+ShardStartCommand: dotnet
+ShardStartArgs: run -p "<absolute path to NadekoBot.csproj>" --no-build -- {0}
+UnresponsiveSec: 30

@@ -30,7 +30,7 @@ namespace NadekoBot.Modules.Games.Services
         public ModuleBehaviorType BehaviorType => ModuleBehaviorType.Executor;
 
         public ChatterBotService(DiscordSocketClient client, PermissionService perms,
-            NadekoBot bot, CommandHandler cmd, IBotStrings strings, IHttpClientFactory factory,
+            Bot bot, CommandHandler cmd, IBotStrings strings, IHttpClientFactory factory,
             IBotCredentials creds)
         {
             _client = client;

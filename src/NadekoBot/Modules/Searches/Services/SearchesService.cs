@@ -61,7 +61,7 @@ namespace NadekoBot.Modules.Searches.Services
         private readonly List<string> _yomamaJokes;
 
         public SearchesService(DiscordSocketClient client, IGoogleApiService google,
-            DbService db, NadekoBot bot, IDataCache cache, IHttpClientFactory factory,
+            DbService db, Bot bot, IDataCache cache, IHttpClientFactory factory,
             FontProvider fonts, IBotCredentials creds)
         {
             _httpFactory = factory;

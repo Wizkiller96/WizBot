@@ -42,7 +42,7 @@ namespace NadekoBot.Modules.Administration.Services
                 SingleWriter = false
             });
 
-        public ProtectionService(DiscordSocketClient client, NadekoBot bot,
+        public ProtectionService(DiscordSocketClient client, Bot bot,
             MuteService mute, DbService db, UserPunishService punishService)
         { 
             _client = client;

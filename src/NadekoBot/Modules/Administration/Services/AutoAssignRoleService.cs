@@ -31,7 +31,7 @@ namespace NadekoBot.Modules.Administration.Services
                 SingleWriter = false,
             });
 
-        public AutoAssignRoleService(DiscordSocketClient client, NadekoBot bot, DbService db)
+        public AutoAssignRoleService(DiscordSocketClient client, Bot bot, DbService db)
         {
             _client = client;
             _db = db;

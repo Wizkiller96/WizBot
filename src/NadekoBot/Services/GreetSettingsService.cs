@@ -27,7 +27,7 @@ namespace NadekoBot.Core.Services
         private readonly BotConfigService _bss;
         public bool GroupGreets => _bss.Data.GroupGreets;
 
-        public GreetSettingsService(DiscordSocketClient client, NadekoBot bot, DbService db,
+        public GreetSettingsService(DiscordSocketClient client, Bot bot, DbService db,
             BotConfigService bss)
         {
             _db = db;

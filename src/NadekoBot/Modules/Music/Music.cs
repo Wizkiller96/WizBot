@@ -619,7 +619,7 @@ namespace NadekoBot.Modules.Music
                  .WithAuthor(eab => eab.WithName(GetText("song_moved")).WithIconUrl("https://cdn.discordapp.com/attachments/155726317222887425/258605269972549642/music1.png"))
                  .AddField(fb => fb.WithName(GetText("from_position")).WithValue($"#{from + 1}").WithIsInline(true))
                  .AddField(fb => fb.WithName(GetText("to_position")).WithValue($"#{to + 1}").WithIsInline(true))
-                 .WithColor(NadekoBot.OkColor);
+                 .WithColor(Bot.OkColor);
 
              if (Uri.IsWellFormedUriString(track.Url, UriKind.Absolute))
                  embed.WithUrl(track.Url);

@@ -37,7 +37,7 @@ namespace NadekoBot.Core.Services
         private readonly DiscordSocketClient _client;
         private readonly CommandService _commandService;
         private readonly BotConfigService _bss;
-        private readonly NadekoBot _bot;
+        private readonly Bot _bot;
         private IServiceProvider _services;
         private IEnumerable<IEarlyBehavior> _earlyBehaviors;
         private IEnumerable<IInputTransformer> _inputTransformers;
@@ -57,7 +57,7 @@ namespace NadekoBot.Core.Services
         private readonly Timer _clearUsersOnShortCooldown;
 
         public CommandHandler(DiscordSocketClient client, DbService db, CommandService commandService,
-            BotConfigService bss, NadekoBot bot, IServiceProvider services)
+            BotConfigService bss, Bot bot, IServiceProvider services)
         {
             _client = client;
             _commandService = commandService;

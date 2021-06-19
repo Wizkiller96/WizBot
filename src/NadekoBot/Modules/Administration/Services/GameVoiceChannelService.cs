@@ -17,7 +17,7 @@ namespace NadekoBot.Modules.Administration.Services
         private readonly DbService _db;
         private readonly DiscordSocketClient _client;
 
-        public GameVoiceChannelService(DiscordSocketClient client, DbService db, NadekoBot bot)
+        public GameVoiceChannelService(DiscordSocketClient client, DbService db, Bot bot)
         {
             _db = db;
             _client = client;

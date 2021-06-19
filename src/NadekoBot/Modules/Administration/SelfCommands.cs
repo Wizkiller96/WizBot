@@ -12,6 +12,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using Serilog;
 
 namespace NadekoBot.Modules.Administration
@@ -22,14 +23,16 @@ namespace NadekoBot.Modules.Administration
         public class SelfCommands : NadekoSubmodule<SelfService>
         {
             private readonly DiscordSocketClient _client;
-            private readonly NadekoBot _bot;
+            private readonly Bot _bot;
             private readonly IBotStrings _strings;
+            private readonly ICoordinator _coord;
 
-            public SelfCommands(DiscordSocketClient client, NadekoBot bot, IBotStrings strings)
+            public SelfCommands(DiscordSocketClient client, Bot bot, IBotStrings strings, ICoordinator coord)
             {
                 _client = client;
                 _bot = bot;
                 _strings = strings;
+                _coord = coord;
             }
 
             [NadekoCommand, Usage, Description, Aliases]
@@ -251,7 +254,7 @@ namespace NadekoBot.Modules.Administration
                 if (--page < 0)
                     return;
 
-                var statuses = _service.GetAllShardStatuses();
+                var statuses = _coord.GetAllShardStatuses();
 
                 var status = string.Join(", ", statuses
                     .GroupBy(x => x.ConnectionState)
@@ -289,7 +292,7 @@ namespace NadekoBot.Modules.Administration
             [OwnerOnly]
             public async Task RestartShard(int shardId)
             {
-                var success = _service.RestartShard(shardId);
+                var success = _coord.RestartShard(shardId);
                 if (success)
                 {
                     await ReplyConfirmLocalizedAsync("shard_reconnecting", Format.Bold("#" + shardId)).ConfigureAwait(false);
@@ -321,14 +324,14 @@ namespace NadekoBot.Modules.Administration
                     // ignored
                 }
                 await Task.Delay(2000).ConfigureAwait(false);
-                _service.Die();
+                _coord.Die();
             }
 
             [NadekoCommand, Usage, Description, Aliases]
             [OwnerOnly]
             public async Task Restart()
             {
-                bool success = _service.RestartBot();
+                bool success = _coord.RestartBot();
                 if (!success)
                 {
                     await ReplyErrorLocalizedAsync("restart_fail").ConfigureAwait(false);

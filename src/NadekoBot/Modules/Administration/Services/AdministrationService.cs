@@ -24,7 +24,7 @@ namespace NadekoBot.Modules.Administration.Services
         private readonly DbService _db;
         private readonly LogCommandService _logService;
 
-        public AdministrationService(NadekoBot bot, CommandHandler cmdHandler, DbService db,
+        public AdministrationService(Bot bot, CommandHandler cmdHandler, DbService db,
             LogCommandService logService)
         {
             _db = db;

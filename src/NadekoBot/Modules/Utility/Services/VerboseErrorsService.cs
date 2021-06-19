@@ -18,7 +18,7 @@ namespace NadekoBot.Modules.Utility.Services
         private readonly CommandHandler _ch;
         private readonly HelpService _hs;
 
-        public VerboseErrorsService(NadekoBot bot, DbService db, CommandHandler ch, HelpService hs)
+        public VerboseErrorsService(Bot bot, DbService db, CommandHandler ch, HelpService hs)
         {
             _db = db;
             _ch = ch;

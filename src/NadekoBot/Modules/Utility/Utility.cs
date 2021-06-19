@@ -16,6 +16,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NadekoBot.Common.Replacements;
 using NadekoBot.Core.Common;
+using NadekoBot.Services;
 using Serilog;
 
 namespace NadekoBot.Modules.Utility
@@ -23,18 +24,18 @@ namespace NadekoBot.Modules.Utility
     public partial class Utility : NadekoModule
     {
         private readonly DiscordSocketClient _client;
+        private readonly ICoordinator _coord;
         private readonly IStatsService _stats;
         private readonly IBotCredentials _creds;
-        private readonly NadekoBot _bot;
         private readonly DownloadTracker _tracker;
 
-        public Utility(NadekoBot nadeko, DiscordSocketClient client,
+        public Utility(DiscordSocketClient client, ICoordinator coord,
             IStatsService stats, IBotCredentials creds, DownloadTracker tracker)
         {
             _client = client;
+            _coord = coord;
             _stats = stats;
             _creds = creds;
-            _bot = nadeko;
             _tracker = tracker;
         }
         
@@ -276,7 +277,7 @@ namespace NadekoBot.Modules.Utility
                     .AddField(efb => efb.WithName(GetText("uptime")).WithValue(_stats.GetUptimeString("\n")).WithIsInline(true))
                     .AddField(efb => efb.WithName(GetText("presence")).WithValue(
                         GetText("presence_txt",
-                            _bot.GuildCount, _stats.TextChannels, _stats.VoiceChannels)).WithIsInline(true))).ConfigureAwait(false);
+                            _coord.GetGuildCount(), _stats.TextChannels, _stats.VoiceChannels)).WithIsInline(true))).ConfigureAwait(false);
         }
 
         [NadekoCommand, Usage, Description, Aliases]

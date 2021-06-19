@@ -62,7 +62,7 @@ namespace NadekoBot.Modules.Xp.Services
         private XpTemplate _template;
         private readonly DiscordSocketClient _client;
 
-        public XpService(DiscordSocketClient client, CommandHandler cmd, NadekoBot bot, DbService db,
+        public XpService(DiscordSocketClient client, CommandHandler cmd, Bot bot, DbService db,
             IBotStrings strings, IDataCache cache, FontProvider fonts, IBotCredentials creds,
             ICurrencyService cs, IHttpClientFactory http, XpConfigService xpConfig)
         {

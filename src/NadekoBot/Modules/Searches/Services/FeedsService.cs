@@ -24,7 +24,7 @@ namespace NadekoBot.Modules.Searches.Services
         private readonly ConcurrentDictionary<string, DateTime> _lastPosts =
             new ConcurrentDictionary<string, DateTime>();
 
-        public FeedsService(NadekoBot bot, DbService db, DiscordSocketClient client)
+        public FeedsService(Bot bot, DbService db, DiscordSocketClient client)
         {
             _db = db;
 

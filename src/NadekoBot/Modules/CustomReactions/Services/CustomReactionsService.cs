@@ -57,13 +57,13 @@ namespace NadekoBot.Modules.CustomReactions.Services
         private readonly PermissionService _perms;
         private readonly CommandHandler _cmd;
         private readonly IBotStrings _strings;
-        private readonly NadekoBot _bot;
+        private readonly Bot _bot;
         private readonly GlobalPermissionService _gperm;
         private readonly CmdCdService _cmdCds;
         private readonly IPubSub _pubSub;
         private readonly Random _rng;
 
-        public CustomReactionsService(PermissionService perms, DbService db, IBotStrings strings, NadekoBot bot,
+        public CustomReactionsService(PermissionService perms, DbService db, IBotStrings strings, Bot bot,
             DiscordSocketClient client, CommandHandler cmd, GlobalPermissionService gperm, CmdCdService cmdCds,
             IPubSub pubSub)
         {

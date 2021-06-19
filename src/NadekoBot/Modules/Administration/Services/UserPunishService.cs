@@ -456,7 +456,7 @@ WHERE GuildId={guildId}
             {
                 template = JsonConvert.SerializeObject(new
                 {
-                    color = NadekoBot.ErrorColor.RawValue,
+                    color = Bot.ErrorColor.RawValue,
                     description = defaultMessage 
                 });
                 
@@ -477,7 +477,7 @@ WHERE GuildId={guildId}
             {
                 template = JsonConvert.SerializeObject(new
                 {
-                    color = NadekoBot.ErrorColor.RawValue,
+                    color = Bot.ErrorColor.RawValue,
                     description = replacer.Replace(template) 
                 });
 

@@ -58,7 +58,7 @@ namespace NadekoBot.Modules.Utility
                     .AddField(fb => fb.WithName(GetText("region")).WithValue(guild.VoiceRegionId.ToString()).WithIsInline(true))
                     .AddField(fb => fb.WithName(GetText("roles")).WithValue((guild.Roles.Count - 1).ToString()).WithIsInline(true))
                     .AddField(fb => fb.WithName(GetText("features")).WithValue(features).WithIsInline(true))
-                    .WithColor(NadekoBot.OkColor);
+                    .WithColor(Bot.OkColor);
                 if (Uri.IsWellFormedUriString(guild.IconUrl, UriKind.Absolute))
                     embed.WithThumbnailUrl(guild.IconUrl);
                 if (guild.Emotes.Any())
@@ -89,7 +89,7 @@ namespace NadekoBot.Modules.Utility
                     .AddField(fb => fb.WithName(GetText("id")).WithValue(ch.Id.ToString()).WithIsInline(true))
                     .AddField(fb => fb.WithName(GetText("created_at")).WithValue($"{createdAt:dd.MM.yyyy HH:mm}").WithIsInline(true))
                     .AddField(fb => fb.WithName(GetText("users")).WithValue(usercount.ToString()).WithIsInline(true))
-                    .WithColor(NadekoBot.OkColor);
+                    .WithColor(Bot.OkColor);
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
 
@@ -112,7 +112,7 @@ namespace NadekoBot.Modules.Utility
                     .AddField(fb => fb.WithName(GetText("joined_server")).WithValue($"{user.JoinedAt?.ToString("dd.MM.yyyy HH:mm") ?? "?"}").WithIsInline(true))
                     .AddField(fb => fb.WithName(GetText("joined_discord")).WithValue($"{user.CreatedAt:dd.MM.yyyy HH:mm}").WithIsInline(true))
                     .AddField(fb => fb.WithName(GetText("roles")).WithValue($"**({user.RoleIds.Count - 1})** - {string.Join("\n", user.GetRoles().Take(10).Where(r => r.Id != r.Guild.EveryoneRole.Id).Select(r => r.Name)).SanitizeMentions(true)}").WithIsInline(true))
-                    .WithColor(NadekoBot.OkColor);
+                    .WithColor(Bot.OkColor);
 
                 var av = user.RealAvatarUrl();
                 if (av != null && av.IsAbsoluteUri)

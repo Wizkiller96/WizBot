@@ -16,7 +16,7 @@ namespace NadekoBot.Modules.Administration.Services
         private readonly ConcurrentDictionary<ulong, TimeZoneInfo> _timezones;
         private readonly DbService _db;
 
-        public GuildTimezoneService(DiscordSocketClient client, NadekoBot bot, DbService db)
+        public GuildTimezoneService(DiscordSocketClient client, Bot bot, DbService db)
         {
             _timezones = bot.AllGuildConfigs
                 .Select(GetTimzezoneTuple)

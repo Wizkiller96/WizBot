@@ -325,7 +325,7 @@ namespace NadekoBot.Modules.Searches
             }
 
             await ctx.Channel.EmbedAsync(new EmbedBuilder()
-                .WithColor(NadekoBot.OkColor)
+                .WithColor(Bot.OkColor)
                 .AddField(efb => efb.WithName(GetText("original_url"))
                                     .WithValue($"<{query}>"))
                 .AddField(efb => efb.WithName(GetText("short_url"))

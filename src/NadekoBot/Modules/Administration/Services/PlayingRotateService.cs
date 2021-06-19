@@ -20,14 +20,14 @@ namespace NadekoBot.Modules.Administration.Services
         private readonly BotConfigService _bss;
         private readonly Replacer _rep;
         private readonly DbService _db;
-        private readonly NadekoBot _bot;
+        private readonly Bot _bot;
 
         private class TimerState
         {
             public int Index { get; set; }
         }
 
-        public PlayingRotateService(DiscordSocketClient client, DbService db, NadekoBot bot,
+        public PlayingRotateService(DiscordSocketClient client, DbService db, Bot bot,
             BotConfigService bss, IEnumerable<IPlaceholderProvider> phProviders)
         {
             _db = db;

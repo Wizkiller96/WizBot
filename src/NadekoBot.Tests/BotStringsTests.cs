@@ -43,7 +43,7 @@ namespace Nadeko.Tests
         }
 
         private static string[] GetCommandMethodNames()
-            => typeof(NadekoBot.NadekoBot).Assembly
+            => typeof(NadekoBot.Bot).Assembly
                 .GetExportedTypes()
                 .Where(type => type.IsClass && !type.IsAbstract)
                 .Where(type => typeof(NadekoModule).IsAssignableFrom(type) // if its a top level module

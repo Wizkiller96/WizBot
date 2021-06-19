@@ -83,7 +83,7 @@ namespace NadekoBot.Modules.Help.Services
                         arg => Format.Code(arg))))
                     .WithIsInline(false))
                 .WithFooter(efb => efb.WithText(GetText("module", guild, com.Module.GetTopLevelModule().Name)))
-                .WithColor(NadekoBot.OkColor);
+                .WithColor(Bot.OkColor);
 
             var opt = ((NadekoOptionsAttribute)com.Attributes.FirstOrDefault(x => x is NadekoOptionsAttribute))?.OptionType;
             if (opt != null)

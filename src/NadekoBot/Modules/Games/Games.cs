@@ -48,7 +48,7 @@ namespace NadekoBot.Modules.Games
                 return;
 
             var res = _service.GetEightballResponse(ctx.User.Id, question);
-            await ctx.Channel.EmbedAsync(new EmbedBuilder().WithColor(NadekoBot.OkColor)
+            await ctx.Channel.EmbedAsync(new EmbedBuilder().WithColor(Bot.OkColor)
                 .WithDescription(ctx.User.ToString())
                 .AddField(efb => efb.WithName("❓ " + GetText("question")).WithValue(question).WithIsInline(false))
                 .AddField("🎱 " + GetText("8ball"), res, false));

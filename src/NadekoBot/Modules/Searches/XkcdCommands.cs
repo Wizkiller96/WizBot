@@ -34,7 +34,7 @@ namespace NadekoBot.Modules.Searches
                         {
                             var res = await http.GetStringAsync($"{_xkcdUrl}/info.0.json").ConfigureAwait(false);
                             var comic = JsonConvert.DeserializeObject<XkcdComic>(res);
-                            var embed = new EmbedBuilder().WithColor(NadekoBot.OkColor)
+                            var embed = new EmbedBuilder().WithColor(Bot.OkColor)
                                                       .WithImageUrl(comic.ImageLink)
                                                       .WithAuthor(eab => eab.WithName(comic.Title).WithUrl($"{_xkcdUrl}/{comic.Num}").WithIconUrl("https://xkcd.com/s/919f27.ico"))
                                                       .AddField(efb => efb.WithName(GetText("comic_number")).WithValue(comic.Num.ToString()).WithIsInline(true))
@@ -69,7 +69,7 @@ namespace NadekoBot.Modules.Searches
                         var res = await http.GetStringAsync($"{_xkcdUrl}/{num}/info.0.json").ConfigureAwait(false);
 
                         var comic = JsonConvert.DeserializeObject<XkcdComic>(res);
-                        var embed = new EmbedBuilder().WithColor(NadekoBot.OkColor)
+                        var embed = new EmbedBuilder().WithColor(Bot.OkColor)
                                                       .WithImageUrl(comic.ImageLink)
                                                       .WithAuthor(eab => eab.WithName(comic.Title).WithUrl($"{_xkcdUrl}/{num}").WithIconUrl("https://xkcd.com/s/919f27.ico"))
                                                       .AddField(efb => efb.WithName(GetText("comic_number")).WithValue(comic.Num.ToString()).WithIsInline(true))

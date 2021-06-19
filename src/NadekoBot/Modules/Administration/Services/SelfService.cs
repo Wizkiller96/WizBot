@@ -9,14 +9,13 @@ using NadekoBot.Core.Services;
 using StackExchange.Redis;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Newtonsoft.Json;
-using NadekoBot.Common.ShardCom;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Core.Services.Database.Models;
 using System.Threading;
 using System.Collections.Concurrent;
 using System;
 using System.Net.Http;
+using NadekoBot.Services;
 using Serilog;
 
 namespace NadekoBot.Modules.Administration.Services
@@ -41,10 +40,11 @@ namespace NadekoBot.Modules.Administration.Services
         private readonly IImageCache _imgs;
         private readonly IHttpClientFactory _httpFactory;
         private readonly BotConfigService _bss;
+        private readonly ICoordinator _coord;
 
         public SelfService(DiscordSocketClient client, CommandHandler cmdHandler, DbService db,
             IBotStrings strings, IBotCredentials creds, IDataCache cache, IHttpClientFactory factory,
-            BotConfigService bss)
+            BotConfigService bss, ICoordinator coord)
         {
             _redis = cache.Redis;
             _cmdHandler = cmdHandler;
@@ -56,6 +56,7 @@ namespace NadekoBot.Modules.Administration.Services
             _imgs = cache.LocalImages;
             _httpFactory = factory;
             _bss = bss;
+            _coord = coord;
 
             var sub = _redis.GetSubscriber();
             if (_client.ShardId == 0)
@@ -281,18 +282,6 @@ namespace NadekoBot.Modules.Administration.Services
             }
         }
 
-        public bool RestartBot()
-        {
-            var cmd = _creds.RestartCommand;
-            if (string.IsNullOrWhiteSpace(cmd?.Cmd))
-            {
-                return false;
-            }
-
-            Restart();
-            return true;
-        }
-
         public bool RemoveStartupCommand(int index, out AutoCommand cmd)
         {
             using (var uow = _db.GetDbContext())
@@ -385,32 +374,6 @@ namespace NadekoBot.Modules.Administration.Services
             sub.Publish(_creds.RedisKey() + "_reload_images", "");
         }
 
-        public void Die()
-        {
-            var sub = _cache.Redis.GetSubscriber();
-            sub.Publish(_creds.RedisKey() + "_die", "", CommandFlags.FireAndForget);
-        }
-
-        public void Restart()
-        {
-            Process.Start(_creds.RestartCommand.Cmd, _creds.RestartCommand.Args);
-            var sub = _cache.Redis.GetSubscriber();
-            sub.Publish(_creds.RedisKey() + "_die", "", CommandFlags.FireAndForget);
-        }
-
-        public bool RestartShard(int shardId)
-        {
-            if (shardId < 0 || shardId >= _creds.TotalShards)
-                return false;
-
-            var pub = _cache.Redis.GetSubscriber();
-            pub.Publish(_creds.RedisKey() + "_shardcoord_stop",
-                JsonConvert.SerializeObject(shardId),
-                CommandFlags.FireAndForget);
-
-            return true;
-        }
-
         public bool ForwardMessages()
         {
             var isForwarding = false;
@@ -424,13 +387,6 @@ namespace NadekoBot.Modules.Administration.Services
             var isToAll = false;
             _bss.ModifyConfig(config => { isToAll = config.ForwardToAllOwners = !config.ForwardToAllOwners; });
             return isToAll;
-        }
-
-        public IEnumerable<ShardComMessage> GetAllShardStatuses()
-        {
-            var db = _cache.Redis.GetDatabase();
-            return db.ListRange(_creds.RedisKey() + "_shardstats")
-                .Select(x => JsonConvert.DeserializeObject<ShardComMessage>(x));
         }
     }
 }

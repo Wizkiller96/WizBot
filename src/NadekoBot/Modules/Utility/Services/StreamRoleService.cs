@@ -23,7 +23,7 @@ namespace NadekoBot.Modules.Utility.Services
         private readonly DiscordSocketClient _client;
         private readonly ConcurrentDictionary<ulong, StreamRoleSettings> guildSettings;
         
-        public StreamRoleService(DiscordSocketClient client, DbService db, NadekoBot bot)
+        public StreamRoleService(DiscordSocketClient client, DbService db, Bot bot)
         {
             _db = db;
             _client = client;

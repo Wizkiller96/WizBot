@@ -1,0 +1,13 @@
+﻿{
+  "profiles": {
+    "Nadeko.Coordinator": {
+      "commandName": "Project",
+      "dotnetRunMessages": "true",
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:3442;https://localhost:3443",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

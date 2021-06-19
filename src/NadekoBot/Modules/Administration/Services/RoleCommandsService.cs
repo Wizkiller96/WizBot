@@ -20,7 +20,7 @@ namespace NadekoBot.Modules.Administration.Services
         private readonly ConcurrentDictionary<ulong, IndexedCollection<ReactionRoleMessage>> _models;
 
         public RoleCommandsService(DiscordSocketClient client, DbService db,
-            NadekoBot bot)
+            Bot bot)
         {
             _db = db;
             _client = client;

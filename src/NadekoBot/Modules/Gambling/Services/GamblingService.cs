@@ -21,7 +21,7 @@ namespace NadekoBot.Modules.Gambling.Services
     {
         private readonly DbService _db;
         private readonly ICurrencyService _cs;
-        private readonly NadekoBot _bot;
+        private readonly Bot _bot;
         private readonly DiscordSocketClient _client;
         private readonly IDataCache _cache;
         private readonly GamblingConfigService _gss;
@@ -31,7 +31,7 @@ namespace NadekoBot.Modules.Gambling.Services
 
         private readonly Timer _decayTimer;
 
-        public GamblingService(DbService db, NadekoBot bot, ICurrencyService cs,
+        public GamblingService(DbService db, Bot bot, ICurrencyService cs,
             DiscordSocketClient client, IDataCache cache, GamblingConfigService gss)
         {
             _db = db;

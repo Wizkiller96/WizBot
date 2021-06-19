@@ -3,7 +3,6 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using NadekoBot.Common;
-using NadekoBot.Common.ShardCom;
 using NadekoBot.Core.Services;
 using NadekoBot.Core.Services.Database.Models;
 using NadekoBot.Core.Services.Impl;
@@ -26,16 +25,16 @@ using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Core.Common;
 using NadekoBot.Core.Common.Configs;
 using NadekoBot.Db;
-using NadekoBot.Modules.Administration;
 using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Modules.Administration.Services;
 using NadekoBot.Modules.CustomReactions.Services;
 using NadekoBot.Modules.Utility.Services;
 using Serilog;
+using NadekoBot.Services;
 
 namespace NadekoBot
 {
-    public class NadekoBot
+    public class Bot
     {
         public BotCredentials Credentials { get; }
         public DiscordSocketClient Client { get; }
@@ -54,22 +53,15 @@ namespace NadekoBot
         public IServiceProvider Services { get; private set; }
         public IDataCache Cache { get; private set; }
 
-        public int GuildCount =>
-            Cache.Redis.GetDatabase()
-                .ListRange(Credentials.RedisKey() + "_shardstats")
-                .Select(x => JsonConvert.DeserializeObject<ShardComMessage>(x))
-                .Sum(x => x.Guilds);
-
         public string Mention { get; set; }
 
         public event Func<GuildConfig, Task> JoinedGuild = delegate { return Task.CompletedTask; };
 
-        public NadekoBot(int shardId, int parentProcessId)
+        public Bot(int shardId)
         {
             if (shardId < 0)
                 throw new ArgumentOutOfRangeException(nameof(shardId));
-
-            LogSetup.SetupLogger(shardId);
+            
             TerribleElevatedPermissionCheck();
 
             Credentials = new BotCredentials();
@@ -99,34 +91,9 @@ namespace NadekoBot
                 DefaultRunMode = RunMode.Sync,
             });
 
-            SetupShard(parentProcessId);
-
 #if GLOBAL_NADEKO || DEBUG
             Client.Log += Client_Log;
 #endif
-        }
-
-        private void StartSendingData()
-        {
-            Task.Run(async () =>
-            {
-                while (true)
-                {
-                    var data = new ShardComMessage()
-                    {
-                        ConnectionState = Client.ConnectionState,
-                        Guilds = Client.ConnectionState == ConnectionState.Connected ? Client.Guilds.Count : 0,
-                        ShardId = Client.ShardId,
-                        Time = DateTime.UtcNow,
-                    };
-
-                    var sub = Cache.Redis.GetSubscriber();
-                    var msg = JsonConvert.SerializeObject(data);
-
-                    await sub.PublishAsync(Credentials.RedisKey() + "_shardcoord_send", msg).ConfigureAwait(false);
-                    await Task.Delay(7500).ConfigureAwait(false);
-                }
-            });
         }
 
         public List<ulong> GetCurrentGuildIds()
@@ -180,9 +147,15 @@ namespace NadekoBot
 
             s.LoadFrom(Assembly.GetAssembly(typeof(CommandHandler)));
 
+            // todo if sharded
+            s
+             .AddSingleton<ICoordinator, RemoteGrpcCoordinator>()
+             .AddSingleton<IReadyExecutor>(x => (IReadyExecutor)x.GetRequiredService<ICoordinator>());
+
             s.AddSingleton<IReadyExecutor>(x => x.GetService<SelfService>());
             s.AddSingleton<IReadyExecutor>(x => x.GetService<CustomReactionsService>());
             s.AddSingleton<IReadyExecutor>(x => x.GetService<RepeaterService>());
+
             //initialize Services
             Services = s.BuildServiceProvider();
             var commandHandler = Services.GetService<CommandHandler>();
@@ -194,7 +167,7 @@ namespace NadekoBot
 
             //what the fluff
             commandHandler.AddServices(s);
-            _ = LoadTypeReaders(typeof(NadekoBot).Assembly);
+            _ = LoadTypeReaders(typeof(Bot).Assembly);
 
             sw.Stop();
             Log.Information($"All services loaded in {sw.Elapsed.TotalSeconds:F2}s");
@@ -355,7 +328,6 @@ namespace NadekoBot
                 .ConfigureAwait(false);
 
             HandleStatusChanges();
-            StartSendingData();
             Ready.TrySetResult(true);
             _ = Task.Run(ExecuteReadySubscriptions);
             Log.Information("Shard {ShardId} ready", Client.ShardId);
@@ -410,22 +382,6 @@ namespace NadekoBot
                 Log.Error("You must run the application as an ADMINISTRATOR");
                 Helpers.ReadErrorAndExit(2);
             }
-        }
-
-        private static void SetupShard(int parentProcessId)
-        {
-            new Thread(new ThreadStart(() =>
-            {
-                try
-                {
-                    var p = Process.GetProcessById(parentProcessId);
-                    p.WaitForExit();
-                }
-                finally
-                {
-                    Environment.Exit(7);
-                }
-            })).Start();
         }
 
         private void HandleStatusChanges()

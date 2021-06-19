@@ -37,9 +37,9 @@ namespace NadekoBot.Core.Services
             var error = _data.Color.Error;
             var pend = _data.Color.Pending;
             // todo future remove these static props once cleanup is done
-            NadekoBot.OkColor = new Color(ok.R, ok.G, ok.B);
-            NadekoBot.ErrorColor = new Color(error.R, error.G, error.B);
-            NadekoBot.PendingColor = new Color(pend.R, pend.G, pend.B);
+            Bot.OkColor = new Color(ok.R, ok.G, ok.B);
+            Bot.ErrorColor = new Color(error.R, error.G, error.B);
+            Bot.PendingColor = new Color(pend.R, pend.G, pend.B);
         }
         
         protected override void OnStateUpdate()

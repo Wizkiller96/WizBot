@@ -22,7 +22,7 @@ namespace NadekoBot.Core.Services.Impl
         private static readonly Dictionary<string, CommandData> _commandData = JsonConvert.DeserializeObject<Dictionary<string, CommandData>>(
                 File.ReadAllText("./data/strings/commands/commands.en-US.json"));
 
-        public Localization(BotConfigService bss, NadekoBot bot, DbService db)
+        public Localization(BotConfigService bss, Bot bot, DbService db)
         {
             _bss = bss;
             _db = db;

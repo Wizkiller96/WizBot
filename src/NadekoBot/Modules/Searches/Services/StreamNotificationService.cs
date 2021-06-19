@@ -46,7 +46,7 @@ namespace NadekoBot.Modules.Searches.Services
 
         public StreamNotificationService(DbService db, DiscordSocketClient client,
             IBotStrings strings, IDataCache cache, IBotCredentials creds, IHttpClientFactory httpFactory,
-            NadekoBot bot)
+            Bot bot)
         {
             _db = db;
             _client = client;
@@ -457,7 +457,7 @@ namespace NadekoBot.Modules.Searches.Services
                 .AddField(efb => efb.WithName(GetText(guildId, "viewers"))
                     .WithValue(status.IsLive ? status.Viewers.ToString() : "-")
                     .WithIsInline(true))
-                .WithColor(status.IsLive ? NadekoBot.OkColor : NadekoBot.ErrorColor);
+                .WithColor(status.IsLive ? Bot.OkColor : Bot.ErrorColor);
 
             if (!string.IsNullOrWhiteSpace(status.Title))
                 embed.WithAuthor(status.Title);

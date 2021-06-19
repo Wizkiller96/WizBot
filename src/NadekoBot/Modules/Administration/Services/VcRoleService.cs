@@ -21,7 +21,7 @@ namespace NadekoBot.Modules.Administration.Services
         public ConcurrentDictionary<ulong, ConcurrentDictionary<ulong, IRole>> VcRoles { get; }
         public ConcurrentDictionary<ulong, ConcurrentQueue<(bool, IGuildUser, IRole)>> ToAssign { get; }
 
-        public VcRoleService(DiscordSocketClient client, NadekoBot bot, DbService db)
+        public VcRoleService(DiscordSocketClient client, Bot bot, DbService db)
         {
             _db = db;
             _client = client;
