@@ -147,7 +147,7 @@ namespace NadekoBot
 
             using (var uow = _db.GetDbContext())
             {
-                uow.DiscordUsers.EnsureCreated(_bot.Id, _bot.Username, _bot.Discriminator, _bot.AvatarId);
+                uow._context.EnsureUserCreated(_bot.Id, _bot.Username, _bot.Discriminator, _bot.AvatarId);
                 AllGuildConfigs = uow._context.GuildConfigs.GetAllGuildConfigs(startingGuildIdList).ToImmutableArray();
             }
 

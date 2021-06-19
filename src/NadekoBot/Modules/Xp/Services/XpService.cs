@@ -168,7 +168,7 @@ namespace NadekoBot.Modules.Xp.Services
                             // amounts for every user (in order to give rewards)
 
                             var usr = uow._context.GetOrCreateUserXpStats(item.Key.GuildId, item.Key.User.Id);
-                            var du = uow.DiscordUsers.GetOrCreate(item.Key.User);
+                            var du = uow._context.GetOrCreateUser(item.Key.User);
 
                             var globalXp = du.TotalXp;
                             var oldGlobalLevelData = new LevelStats(globalXp);
@@ -425,7 +425,7 @@ namespace NadekoBot.Modules.Xp.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                return uow.DiscordUsers.GetUsersXpLeaderboardFor(page);
+                return uow._context.DiscordUser.GetUsersXpLeaderboardFor(page);
             }
         }
 
@@ -452,7 +452,7 @@ namespace NadekoBot.Modules.Xp.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                return uow.DiscordUsers.GetOrCreate(user).NotifyOnLevelUp;
+                return uow._context.GetOrCreateUser(user).NotifyOnLevelUp;
             }
         }
 
@@ -460,7 +460,7 @@ namespace NadekoBot.Modules.Xp.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var du = uow.DiscordUsers.GetOrCreate(user);
+                var du = uow._context.GetOrCreateUser(user);
                 du.NotifyOnLevelUp = type;
                 await uow.SaveChangesAsync();
             }
@@ -706,9 +706,9 @@ namespace NadekoBot.Modules.Xp.Services
             int guildRank;
             using (var uow = _db.GetDbContext())
             {
-                du = uow.DiscordUsers.GetOrCreate(user);
+                du = uow._context.GetOrCreateUser(user);
                 totalXp = du.TotalXp;
-                globalRank = uow.DiscordUsers.GetUserGlobalRank(user.Id);
+                globalRank = uow._context.DiscordUser.GetUserGlobalRank(user.Id);
                 guildRank = uow._context.UserXpStats.GetUserGuildRanking(user.Id, user.GuildId);
                 stats = uow._context.GetOrCreateUserXpStats(user.GuildId, user.Id);
                 await uow.SaveChangesAsync();

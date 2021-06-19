@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using NadekoBot.Common;
 using NadekoBot.Modules.Gambling.Services;
 using Serilog;
 
@@ -135,11 +136,11 @@ WHERE CurrencyAmount > {config.Decay.MinThreshold} AND UserId!={_client.CurrentU
 
             using (var uow = _db.GetDbContext())
             {
-                cash = uow.DiscordUsers.GetTotalCurrency();
-                onePercent = uow.DiscordUsers.GetTopOnePercentCurrency(_client.CurrentUser.Id);
+                cash = uow._context.DiscordUser.GetTotalCurrency();
+                onePercent = uow._context.DiscordUser.GetTopOnePercentCurrency(_client.CurrentUser.Id);
                 planted = uow._context.PlantedCurrency.AsQueryable().Sum(x => x.Amount);
                 waifus = uow._context.WaifuInfo.GetTotalValue();
-                bot = uow.DiscordUsers.GetUserCurrency(_client.CurrentUser.Id);
+                bot = uow._context.DiscordUser.GetUserCurrency(_client.CurrentUser.Id);
             }
 
             var result = new EconomyResult

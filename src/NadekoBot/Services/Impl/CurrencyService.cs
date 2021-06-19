@@ -35,7 +35,7 @@ namespace NadekoBot.Core.Services
         private bool InternalChange(ulong userId, string userName, string discrim, string avatar,
             string reason, long amount, bool gamble, IUnitOfWork uow)
         {
-            var result = uow.DiscordUsers.TryUpdateCurrencyState(userId, userName, discrim, avatar, amount);
+            var result = uow._context.TryUpdateCurrencyState(userId, userName, discrim, avatar, amount);
             if (result)
             {
                 var t = GetCurrencyTransaction(userId, reason, amount);
@@ -45,7 +45,7 @@ namespace NadekoBot.Core.Services
                 {
                     var t2 = GetCurrencyTransaction(_bot.Id, reason, -amount);
                     uow._context.CurrencyTransactions.Add(t2);
-                    uow.DiscordUsers.TryUpdateCurrencyState(_bot.Id, _bot.Username, _bot.Discriminator, _bot.AvatarId, -amount, true);
+                    uow._context.TryUpdateCurrencyState(_bot.Id, _bot.Username, _bot.Discriminator, _bot.AvatarId, -amount, true);
                 }
             }
             return result;

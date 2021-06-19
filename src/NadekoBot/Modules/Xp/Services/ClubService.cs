@@ -29,7 +29,7 @@ namespace NadekoBot.Modules.Xp.Services
 
             club = null;
             using var uow = _db.GetDbContext();
-            var du = uow.DiscordUsers.GetOrCreate(user);
+            var du = uow._context.GetOrCreateUser(user);
             uow._context.SaveChanges();
             var xp = new LevelStats(du.TotalXp);
 
@@ -64,7 +64,7 @@ namespace NadekoBot.Modules.Xp.Services
             using (var uow = _db.GetDbContext())
             {
                 club = uow._context.Clubs.GetByOwner(from.Id);
-                var newOwnerUser = uow.DiscordUsers.GetOrCreate(newOwner);
+                var newOwnerUser = uow._context.GetOrCreateUser(newOwner);
 
                 if (club == null ||
                     club.Owner.UserId != from.Id ||
@@ -85,7 +85,7 @@ namespace NadekoBot.Modules.Xp.Services
             using (var uow = _db.GetDbContext())
             {
                 var club = uow._context.Clubs.GetByOwner(owner.Id);
-                var adminUser = uow.DiscordUsers.GetOrCreate(toAdmin);
+                var adminUser = uow._context.GetOrCreateUser(toAdmin);
 
                 if (club == null || club.Owner.UserId != owner.Id ||
                     !club.Users.Contains(adminUser))
@@ -160,7 +160,7 @@ namespace NadekoBot.Modules.Xp.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var du = uow.DiscordUsers.GetOrCreate(user);
+                var du = uow._context.GetOrCreateUser(user);
                 uow._context.SaveChanges();
 
                 if (du.Club != null
@@ -227,7 +227,7 @@ namespace NadekoBot.Modules.Xp.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var du = uow.DiscordUsers.GetOrCreate(user);
+                var du = uow._context.GetOrCreateUser(user);
                 if (du.Club == null || du.Club.OwnerId == du.Id)
                     return false;
 

@@ -11,9 +11,6 @@ namespace NadekoBot.Services.Database
     {
         public NadekoContext _context { get; }
 
-        private IDiscordUserRepository _discordUsers;
-        public IDiscordUserRepository DiscordUsers => _discordUsers ?? (_discordUsers = new DiscordUserRepository(_context));
-
         public UnitOfWork(NadekoContext context)
         {
             _context = context;

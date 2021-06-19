@@ -51,7 +51,7 @@ namespace NadekoBot.Modules.Gambling
         {
             using (var uow = _db.GetDbContext())
             {
-                return n(uow.DiscordUsers.GetUserCurrency(id));
+                return n(uow._context.DiscordUser.GetUserCurrency(id));
             }
         }
 
@@ -522,7 +522,7 @@ namespace NadekoBot.Modules.Gambling
 
                 using (var uow = _db.GetDbContext())
                 {
-                    cleanRichest = uow.DiscordUsers.GetTopRichest(_client.CurrentUser.Id, 10_000);
+                    cleanRichest = uow._context.DiscordUser.GetTopRichest(_client.CurrentUser.Id, 10_000);
                 }
                 
                 await Context.Channel.TriggerTypingAsync().ConfigureAwait(false);
@@ -536,7 +536,7 @@ namespace NadekoBot.Modules.Gambling
             {
                 using (var uow = _db.GetDbContext())
                 {
-                    cleanRichest = uow.DiscordUsers.GetTopRichest(_client.CurrentUser.Id, 9, page).ToList();
+                    cleanRichest = uow._context.DiscordUser.GetTopRichest(_client.CurrentUser.Id, 9, page).ToList();
                 }
             }
 
@@ -551,7 +551,7 @@ namespace NadekoBot.Modules.Gambling
                 {
                     using (var uow = _db.GetDbContext())
                     {
-                        toSend = uow.DiscordUsers.GetTopRichest(_client.CurrentUser.Id, 9, curPage);
+                        toSend = uow._context.DiscordUser.GetTopRichest(_client.CurrentUser.Id, 9, curPage);
                     }
                 }
                 else

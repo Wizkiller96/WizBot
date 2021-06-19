@@ -110,7 +110,7 @@ namespace NadekoBot.Modules.Permissions.Services
                     }));
                 
                 //clear their currencies
-                uow.DiscordUsers.RemoveFromMany(toBlacklist);
+                uow._context.DiscordUser.RemoveFromMany(toBlacklist);
                 uow.SaveChanges();
             }
             

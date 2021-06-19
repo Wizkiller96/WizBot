@@ -4,19 +4,16 @@ using Microsoft.EntityFrameworkCore;
 using Discord;
 using System.Collections.Generic;
 using System;
+using NadekoBot.Core.Services.Database;
 using NadekoBot.Core.Services.Database.Repositories;
 
-namespace NadekoBot.Services.Database.Repositories.Impl
+namespace NadekoBot.Core.Services
 {
-    public class DiscordUserRepository : Repository<DiscordUser>, IDiscordUserRepository
+    public static class DiscordUserExtensions
     {
-        public DiscordUserRepository(DbContext context) : base(context)
+        public static void EnsureUserCreated(this NadekoContext ctx, ulong userId, string username, string discrim, string avatarId)
         {
-        }
-
-        public void EnsureCreated(ulong userId, string username, string discrim, string avatarId)
-        {
-            _context.Database.ExecuteSqlInterpolated($@"
+            ctx.Database.ExecuteSqlInterpolated($@"
 UPDATE OR IGNORE DiscordUser
 SET Username={username},
     Discriminator={discrim},
@@ -29,27 +26,21 @@ VALUES ({userId}, {username}, {discrim}, {avatarId});
         }
 
         //temp is only used in updatecurrencystate, so that i don't overwrite real usernames/discrims with Unknown
-        public DiscordUser GetOrCreate(ulong userId, string username, string discrim, string avatarId)
+        public static DiscordUser GetOrCreateUser(this NadekoContext ctx, ulong userId, string username, string discrim, string avatarId)
         {
-            EnsureCreated(userId, username, discrim, avatarId);
-            return _set
+            ctx.EnsureUserCreated(userId, username, discrim, avatarId);
+            return ctx.DiscordUser
                 .Include(x => x.Club)
                 .First(u => u.UserId == userId);
         }
 
-        public DiscordUser GetOrCreate(IUser original)
-            => GetOrCreate(original.Id, original.Username, original.Discriminator, original.AvatarId);
+        public static DiscordUser GetOrCreateUser(this NadekoContext ctx, IUser original)
+            => ctx.GetOrCreateUser(original.Id, original.Username, original.Discriminator, original.AvatarId);
 
-        public int GetUserGlobalRank(ulong id)
+        public static int GetUserGlobalRank(this DbSet<DiscordUser> users, ulong id)
         {
-            //            @"SELECT COUNT(*) + 1
-            //FROM DiscordUser
-            //WHERE TotalXp > COALESCE((SELECT TotalXp
-            //    FROM DiscordUser
-            //    WHERE UserId = @p1
-            //    LIMIT 1), 0);"
-            return _set.AsQueryable()
-                .Where(x => x.TotalXp > (_set
+            return users.AsQueryable()
+                .Where(x => x.TotalXp > (users
                     .AsQueryable()
                     .Where(y => y.UserId == id)
                     .Select(y => y.TotalXp)
@@ -57,9 +48,9 @@ VALUES ({userId}, {username}, {discrim}, {avatarId});
                 .Count() + 1;
         }
 
-        public DiscordUser[] GetUsersXpLeaderboardFor(int page)
+        public static DiscordUser[] GetUsersXpLeaderboardFor(this DbSet<DiscordUser> users, int page)
         {
-            return _set.AsQueryable()
+            return users.AsQueryable()
                 .OrderByDescending(x => x.TotalXp)
                 .Skip(page * 9)
                 .Take(9)
@@ -67,9 +58,9 @@ VALUES ({userId}, {username}, {discrim}, {avatarId});
                 .ToArray();
         }
 
-        public List<DiscordUser> GetTopRichest(ulong botId, int count, int page = 0)
+        public static List<DiscordUser> GetTopRichest(this DbSet<DiscordUser> users, ulong botId, int count, int page = 0)
         {
-            return _set.AsQueryable()
+            return users.AsQueryable()
                 .Where(c => c.CurrencyAmount > 0 && botId != c.UserId)
                 .OrderByDescending(c => c.CurrencyAmount)
                 .Skip(page * 9)
@@ -77,30 +68,30 @@ VALUES ({userId}, {username}, {discrim}, {avatarId});
                 .ToList();
         }
 
-        public List<DiscordUser> GetTopRichest(ulong botId, int count)
+        public static List<DiscordUser> GetTopRichest(this DbSet<DiscordUser> users, ulong botId, int count)
         {
-            return _set.AsQueryable()
+            return users.AsQueryable()
                 .Where(c => c.CurrencyAmount > 0 && botId != c.UserId)
                 .OrderByDescending(c => c.CurrencyAmount)
                 .Take(count)
                 .ToList();
         }
 
-        public long GetUserCurrency(ulong userId) =>
-            _set.AsNoTracking()
+        public static long GetUserCurrency(this DbSet<DiscordUser> users, ulong userId) =>
+            users.AsNoTracking()
                 .FirstOrDefault(x => x.UserId == userId)
                 ?.CurrencyAmount ?? 0;
 
-        public void RemoveFromMany(IEnumerable<ulong> ids)
+        public static void RemoveFromMany(this DbSet<DiscordUser> users, IEnumerable<ulong> ids)
         {
-            var items = _set.AsQueryable().Where(x => ids.Contains(x.UserId));
+            var items = users.AsQueryable().Where(x => ids.Contains(x.UserId));
             foreach (var item in items)
             {
                 item.CurrencyAmount = 0;
             }
         }
 
-        public bool TryUpdateCurrencyState(ulong userId, string name, string discrim, string avatarId, long amount, bool allowNegative = false)
+        public static bool TryUpdateCurrencyState(this NadekoContext ctx, ulong userId, string name, string discrim, string avatarId, long amount, bool allowNegative = false)
         {
             if (amount == 0)
                 return true;
@@ -109,7 +100,7 @@ VALUES ({userId}, {username}, {discrim}, {avatarId});
             // and return number of rows > 0 (was there a change)
             if (amount < 0 && !allowNegative)
             {
-                var rows = _context.Database.ExecuteSqlInterpolated($@"
+                var rows = ctx.Database.ExecuteSqlInterpolated($@"
 UPDATE DiscordUser
 SET CurrencyAmount=CurrencyAmount+{amount}
 WHERE UserId={userId} AND CurrencyAmount>={-amount};");
@@ -119,7 +110,7 @@ WHERE UserId={userId} AND CurrencyAmount>={-amount};");
             // if remove and negative is allowed, just remove without any condition
             if (amount < 0 && allowNegative)
             {
-                var rows = _context.Database.ExecuteSqlInterpolated($@"
+                var rows = ctx.Database.ExecuteSqlInterpolated($@"
 UPDATE DiscordUser
 SET CurrencyAmount=CurrencyAmount+{amount}
 WHERE UserId={userId};");
@@ -137,7 +128,7 @@ WHERE UserId={userId};");
             // just update the amount, there is no new user data
             if (!updatedUserData)
             {
-                _context.Database.ExecuteSqlInterpolated($@"
+                ctx.Database.ExecuteSqlInterpolated($@"
 UPDATE OR IGNORE DiscordUser
 SET CurrencyAmount=CurrencyAmount+{amount}
 WHERE UserId={userId};
@@ -148,7 +139,7 @@ VALUES ({userId}, {name}, {discrim}, {avatarId}, {amount});
             }
             else
             {
-                _context.Database.ExecuteSqlInterpolated($@"
+                ctx.Database.ExecuteSqlInterpolated($@"
 UPDATE OR IGNORE DiscordUser
 SET CurrencyAmount=CurrencyAmount+{amount},
     Username={name},
@@ -163,18 +154,18 @@ VALUES ({userId}, {name}, {discrim}, {avatarId}, {amount});
             return true;
         }
 
-        public decimal GetTotalCurrency()
+        public static decimal GetTotalCurrency(this DbSet<DiscordUser> users)
         {
-            return _set
+            return users
                 .Sum(x => x.CurrencyAmount);
         }
 
-        public decimal GetTopOnePercentCurrency(ulong botId)
+        public static decimal GetTopOnePercentCurrency(this DbSet<DiscordUser> users, ulong botId)
         {
-            return _set.AsQueryable()
+            return users.AsQueryable()
                 .Where(x => x.UserId != botId)
                 .OrderByDescending(x => x.CurrencyAmount)
-                .Take(_set.Count() / 100 == 0 ? 1 : _set.Count() / 100)
+                .Take(users.Count() / 100 == 0 ? 1 : users.Count() / 100)
                 .Sum(x => x.CurrencyAmount);
         }
     }
