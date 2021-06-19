@@ -6,6 +6,7 @@ using NadekoBot.Common.Collections;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Help.Services;
 using NadekoBot.Core.Services;
+using NadekoBot.Db;
 using NadekoBot.Modules.Administration;
 
 namespace NadekoBot.Modules.Utility.Services

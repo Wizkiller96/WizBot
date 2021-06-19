@@ -1,5 +1,4 @@
-﻿using System;
-using NadekoBot.Core.Common;
+﻿using NadekoBot.Core.Common;
 using NadekoBot.Core.Common.Configs;
 using NadekoBot.Core.Services;
 

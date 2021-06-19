@@ -6,6 +6,7 @@ using Discord;
 using NadekoBot.Common;
 using Newtonsoft.Json;
 using System.IO;
+using NadekoBot.Db;
 using NadekoBot.Modules.Administration;
 
 namespace NadekoBot.Core.Services.Impl

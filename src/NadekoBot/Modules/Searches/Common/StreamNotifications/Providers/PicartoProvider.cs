@@ -6,7 +6,7 @@ using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NadekoBot.Core.Services.Database.Models;
-using NadekoBot.Services.Database.Models;
+using NadekoBot.Db.Models;
 using Newtonsoft.Json;
 using Serilog;
 

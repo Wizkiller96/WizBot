@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Discord;
-using NadekoBot.Services.Database.Models;
-using NadekoBot.Services;
+using NadekoBot.Db.Models;
 using System;
 using System.Linq;
 using System.Threading;

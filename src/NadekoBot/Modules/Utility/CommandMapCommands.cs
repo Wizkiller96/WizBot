@@ -3,8 +3,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Extensions;
-using NadekoBot.Services;
-using NadekoBot.Services.Database.Models;
+using NadekoBot.Db.Models;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +11,7 @@ using System.Threading.Tasks;
 using NadekoBot.Common.Attributes;
 using NadekoBot.Core.Services;
 using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Db;
 using NadekoBot.Modules.Administration;
 using NadekoBot.Modules.Utility.Services;
 

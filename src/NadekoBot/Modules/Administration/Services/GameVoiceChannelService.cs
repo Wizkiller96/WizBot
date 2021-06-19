@@ -5,7 +5,7 @@ using Discord.WebSocket;
 using NadekoBot.Common.Collections;
 using NadekoBot.Extensions;
 using NadekoBot.Core.Services;
-using NadekoBot.Core.Services.Database.Repositories.Impl;
+using NadekoBot.Db;
 using Serilog;
 
 namespace NadekoBot.Modules.Administration.Services

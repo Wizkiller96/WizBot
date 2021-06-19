@@ -3,7 +3,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Core.Services.Database.Models;
 
-namespace NadekoBot.Core.Services.Database
+namespace NadekoBot.Db
 {
     public static class CurrencyTransactionExtensions
     {

@@ -10,6 +10,7 @@ using Discord.WebSocket;
 using NadekoBot.Common.Attributes;
 using NadekoBot.Common.TypeReaders;
 using NadekoBot.Common.TypeReaders.Models;
+using NadekoBot.Db;
 using NadekoBot.Modules.Administration;
 using NadekoBot.Modules.Permissions.Common;
 using NadekoBot.Modules.Permissions.Services;

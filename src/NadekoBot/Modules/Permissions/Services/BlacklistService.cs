@@ -8,6 +8,7 @@ using NadekoBot.Core.Services.Database.Models;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Core.Common;
+using NadekoBot.Db;
 
 namespace NadekoBot.Modules.Permissions.Services
 {

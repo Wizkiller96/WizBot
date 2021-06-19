@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common;
+using NadekoBot.Db;
 using NadekoBot.Modules.Gambling.Services;
 using Serilog;
 

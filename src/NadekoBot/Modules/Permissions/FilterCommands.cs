@@ -9,6 +9,7 @@ using NadekoBot.Common.Attributes;
 using NadekoBot.Common.Collections;
 using NadekoBot.Modules.Permissions.Services;
 using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Db;
 using NadekoBot.Modules.Administration;
 
 namespace NadekoBot.Modules.Permissions

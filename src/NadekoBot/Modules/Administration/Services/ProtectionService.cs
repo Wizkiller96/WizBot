@@ -11,6 +11,7 @@ using NadekoBot.Core.Services.Database.Models;
 using NadekoBot.Extensions;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Core.Common.TypeReaders.Models;
+using NadekoBot.Db;
 using Serilog;
 
 namespace NadekoBot.Modules.Administration.Services

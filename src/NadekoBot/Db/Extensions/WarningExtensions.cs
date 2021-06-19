@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System;
 
-namespace NadekoBot.Modules.Administration.Common
+namespace NadekoBot.Db
 {
     public static class WarningExtensions
     {

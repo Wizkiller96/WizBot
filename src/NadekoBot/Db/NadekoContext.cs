@@ -6,7 +6,7 @@ using NadekoBot.Core.Services.Impl;
 using System;
 using System.IO;
 using Microsoft.Extensions.Logging;
-using NadekoBot.Services.Database.Models;
+using NadekoBot.Db.Models;
 
 namespace NadekoBot.Core.Services.Database
 {

@@ -17,8 +17,9 @@ using Discord;
 using Discord.WebSocket;
 using NadekoBot.Common.Collections;
 using NadekoBot.Common.Replacements;
+using NadekoBot.Db;
 using NadekoBot.Modules.Administration;
-using NadekoBot.Services.Database.Models;
+using NadekoBot.Db.Models;
 using Serilog;
 
 namespace NadekoBot.Modules.Searches.Services

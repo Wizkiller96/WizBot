@@ -5,6 +5,7 @@ using NadekoBot.Core.Services;
 using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using NadekoBot.Db;
 using NadekoBot.Modules.Gambling.Services;
 
 namespace NadekoBot.Core.Common.TypeReaders

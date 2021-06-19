@@ -24,6 +24,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
+using NadekoBot.Db;
 using NadekoBot.Modules.Administration;
 using Serilog;
 using HorizontalAlignment = SixLabors.Fonts.HorizontalAlignment;

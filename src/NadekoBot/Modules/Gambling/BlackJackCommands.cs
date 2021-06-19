@@ -5,7 +5,6 @@ using NadekoBot.Common;
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Common.Blackjack;
 using NadekoBot.Modules.Gambling.Services;
-using NadekoBot.Services;
 using NadekoBot.Extensions;
 using System.Linq;
 using System.Threading.Tasks;

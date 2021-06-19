@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NadekoBot.Db;
 using NadekoBot.Modules.Gambling.Services;
 
 namespace NadekoBot.Core.Services

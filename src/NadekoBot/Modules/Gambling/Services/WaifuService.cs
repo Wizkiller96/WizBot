@@ -1,16 +1,15 @@
 ﻿using Discord;
-using Microsoft.EntityFrameworkCore;
 using NadekoBot.Modules.Gambling.Common.Waifu;
 using NadekoBot.Core.Services;
 using NadekoBot.Core.Services.Database.Models;
-using NadekoBot.Core.Services.Database.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using NadekoBot.Db;
 using NadekoBot.Modules.Gambling.Common;
-using NadekoBot.Modules.Gambling.Services;
-using NadekoBot.Services.Database.Models;
+using NadekoBot.Db.Models;
 
 namespace NadekoBot.Modules.Gambling.Services
 {

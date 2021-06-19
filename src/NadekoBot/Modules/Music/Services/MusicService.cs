@@ -9,10 +9,9 @@ using Discord;
 using Discord.WebSocket;
 using NadekoBot.Core.Services;
 using NadekoBot.Core.Services.Database.Models;
-using NadekoBot.Core.Services.Database.Repositories.Impl;
+using NadekoBot.Db;
 using NadekoBot.Modules.Music;
-using NadekoBot.Services;
-using NadekoBot.Services.Database.Models;
+using NadekoBot.Db.Models;
 using NadekoBot.Extensions;
 using Serilog;
 

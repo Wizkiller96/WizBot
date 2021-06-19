@@ -6,11 +6,11 @@ using Discord;
 using Discord.WebSocket;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Modules.Games.Common;
-using NadekoBot.Services;
-using NadekoBot.Services.Database.Models;
+using NadekoBot.Db.Models;
 using NadekoBot.Common.Collections;
 using NadekoBot.Core.Services;
 using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Db;
 using NadekoBot.Extensions;
 using Serilog;
 

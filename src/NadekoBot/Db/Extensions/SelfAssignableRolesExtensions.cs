@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
-namespace NadekoBot.Modules.Administration.Common
+namespace NadekoBot.Db
 {
     public static class SelfAssignableRolesExtensions
     {

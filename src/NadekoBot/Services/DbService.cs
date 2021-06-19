@@ -4,7 +4,7 @@ using NadekoBot.Core.Services.Database;
 using System;
 using System.IO;
 using System.Linq;
-using NadekoBot.Services.Database;
+using NadekoBot.Db;
 
 namespace NadekoBot.Core.Services
 {

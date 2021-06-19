@@ -1,7 +1,7 @@
 ﻿using NadekoBot.Extensions;
 using System.Collections.Generic;
 using NadekoBot.Modules.Gambling.Common;
-using NadekoBot.Services.Database.Models;
+using NadekoBot.Db.Models;
 
 namespace NadekoBot.Core.Services.Database.Models
 {

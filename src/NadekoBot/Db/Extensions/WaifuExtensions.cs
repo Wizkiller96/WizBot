@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 using NadekoBot.Core.Services.Database;
 using NadekoBot.Core.Services.Database.Models;
 using NadekoBot.Migrations;
-using NadekoBot.Services.Database.Models;
+using NadekoBot.Db.Models;
 
-namespace NadekoBot.Modules.Gambling
+namespace NadekoBot.Db
 {
     public class WaifuInfoStats
     {

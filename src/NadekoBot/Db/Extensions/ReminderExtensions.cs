@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace NadekoBot.Modules.Utility.Common
+namespace NadekoBot.Db
 {
     public static class ReminderExtensions
     {

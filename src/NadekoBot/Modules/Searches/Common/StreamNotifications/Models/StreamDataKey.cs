@@ -1,5 +1,5 @@
 ﻿using NadekoBot.Core.Services.Database.Models;
-using NadekoBot.Services.Database.Models;
+using NadekoBot.Db.Models;
 
 namespace NadekoBot.Modules.Searches.Common
 {

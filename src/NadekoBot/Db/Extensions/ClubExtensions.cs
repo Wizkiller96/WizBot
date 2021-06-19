@@ -1,10 +1,9 @@
-﻿using NadekoBot.Core.Services.Database.Models;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using NadekoBot.Services.Database.Models;
+using NadekoBot.Db.Models;
 
-namespace NadekoBot.Modules.Xp.Common
+namespace NadekoBot.Db
 {
     public static class ClubExtensions
     {

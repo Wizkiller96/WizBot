@@ -10,6 +10,7 @@ using NadekoBot.Common.Collections;
 using NadekoBot.Extensions;
 using NadekoBot.Core.Services;
 using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Db;
 using Serilog;
 
 namespace NadekoBot.Modules.Administration.Services

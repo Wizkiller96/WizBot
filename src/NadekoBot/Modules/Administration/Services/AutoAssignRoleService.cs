@@ -9,7 +9,7 @@ using System.Threading.Channels;
 using LinqToDB;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Core.Services.Database.Models;
-using NadekoBot.Core.Services.Database.Repositories.Impl;
+using NadekoBot.Db;
 using NadekoBot.Extensions;
 using Serilog;
 

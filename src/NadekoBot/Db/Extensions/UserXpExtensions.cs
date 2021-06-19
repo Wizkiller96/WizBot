@@ -1,13 +1,11 @@
-﻿using NadekoBot.Services.Database.Models;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using LinqToDB;
 using NadekoBot.Core.Services.Database;
 using NadekoBot.Core.Services.Database.Models;
-using NadekoBot.Services.Database;
 
-namespace NadekoBot.Modules.Xp.Common
+namespace NadekoBot.Db
 {
     public static class UserXpExtensions
     {

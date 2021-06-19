@@ -6,6 +6,7 @@ using NadekoBot.Extensions;
 using NadekoBot.Core.Services;
 using NadekoBot.Core.Services.Database.Models;
 using System.Threading.Tasks;
+using NadekoBot.Db;
 
 namespace NadekoBot.Modules.Administration.Services
 {

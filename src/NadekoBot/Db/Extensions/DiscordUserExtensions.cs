@@ -1,13 +1,11 @@
-﻿using NadekoBot.Services.Database.Models;
+﻿using NadekoBot.Db.Models;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Discord;
 using System.Collections.Generic;
-using System;
 using NadekoBot.Core.Services.Database;
-using NadekoBot.Core.Services.Database.Repositories;
 
-namespace NadekoBot.Core.Services
+namespace NadekoBot.Db
 {
     public static class DiscordUserExtensions
     {

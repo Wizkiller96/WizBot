@@ -1,12 +1,12 @@
-﻿using NadekoBot.Services.Database.Models;
+﻿using NadekoBot.Db.Models;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Core.Services.Database;
 using NadekoBot.Core.Services.Database.Models;
-using NadekoBot.Services.Database;
+using NadekoBot.Db;
 
-namespace NadekoBot.Modules.Games.Common
+namespace NadekoBot.Db
 {
     public static class PollExtensions
     {

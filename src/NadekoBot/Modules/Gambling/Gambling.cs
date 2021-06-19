@@ -4,7 +4,7 @@ using Discord.WebSocket;
 using NadekoBot.Common;
 using NadekoBot.Common.Attributes;
 using NadekoBot.Modules.Gambling.Common;
-using NadekoBot.Services.Database.Models;
+using NadekoBot.Db.Models;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Gambling.Services;
 using System;
@@ -17,6 +17,7 @@ using NadekoBot.Core.Common;
 using NadekoBot.Core.Services;
 using NadekoBot.Core.Services.Database;
 using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Db;
 
 namespace NadekoBot.Modules.Gambling
 {

@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 using Discord;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Extensions;
-using NadekoBot.Services;
-using NadekoBot.Services.Database.Models;
+using NadekoBot.Db.Models;
 using System;
 using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Core.Services;
 using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Db;
 using NadekoBot.Modules.Administration;
 
 namespace NadekoBot.Modules.Utility.Services

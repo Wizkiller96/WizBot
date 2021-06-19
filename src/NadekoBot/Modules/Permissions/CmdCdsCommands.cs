@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using NadekoBot.Common.Attributes;
 using NadekoBot.Common.Collections;
 using NadekoBot.Common.TypeReaders;
+using NadekoBot.Db;
 using NadekoBot.Modules.Administration;
 using NadekoBot.Modules.Permissions.Services;
 

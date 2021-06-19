@@ -17,6 +17,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NadekoBot.Core.Common.Configs;
 using NadekoBot.Core.Services.Impl;
+using NadekoBot.Db;
 using NadekoBot.Modules.Administration;
 using Serilog;
 

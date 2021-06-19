@@ -4,9 +4,9 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System;
 using NadekoBot.Core.Services.Database;
-using NadekoBot.Services.Database.Models;
+using NadekoBot.Db.Models;
 
-namespace NadekoBot.Modules.Administration
+namespace NadekoBot.Db
 {
     public static class GuildConfigExtensions
     {

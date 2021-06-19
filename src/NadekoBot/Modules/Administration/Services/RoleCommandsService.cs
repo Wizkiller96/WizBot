@@ -8,6 +8,7 @@ using NadekoBot.Extensions;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
+using NadekoBot.Db;
 using Serilog;
 
 namespace NadekoBot.Modules.Administration.Services

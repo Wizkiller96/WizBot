@@ -10,8 +10,9 @@ using NadekoBot.Common.Attributes;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Searches.Services;
 using Discord.WebSocket;
+using NadekoBot.Db;
 using NadekoBot.Modules.Administration;
-using NadekoBot.Services.Database.Models;
+using NadekoBot.Db.Models;
 
 namespace NadekoBot.Modules.Searches
 {

@@ -12,6 +12,7 @@ using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Core.Services;
 using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Db;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Administration;
 using Serilog;

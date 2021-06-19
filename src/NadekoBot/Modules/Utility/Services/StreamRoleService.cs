@@ -11,6 +11,7 @@ using NadekoBot.Common.TypeReaders;
 using NadekoBot.Modules.Utility.Common;
 using NadekoBot.Modules.Utility.Common.Exceptions;
 using Discord.Net;
+using NadekoBot.Db;
 using NadekoBot.Modules.Administration;
 using Serilog;
 

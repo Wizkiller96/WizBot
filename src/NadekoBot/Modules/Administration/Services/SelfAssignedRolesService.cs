@@ -1,15 +1,13 @@
 ﻿using Discord;
-using Microsoft.EntityFrameworkCore;
 using NadekoBot.Core.Services;
 using NadekoBot.Core.Services.Database.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NadekoBot.Modules.Administration;
+using Microsoft.EntityFrameworkCore;
+using NadekoBot.Db;
 using NadekoBot.Modules.Xp;
-using NadekoBot.Modules.Administration.Common;
-using NadekoBot.Modules.Xp.Common;
 
 namespace NadekoBot.Modules.Administration.Services
 {

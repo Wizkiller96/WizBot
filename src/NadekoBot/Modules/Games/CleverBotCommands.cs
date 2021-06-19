@@ -1,10 +1,10 @@
 ﻿using Discord;
 using Discord.Commands;
-using NadekoBot.Services;
 using System;
 using System.Threading.Tasks;
 using NadekoBot.Common.Attributes;
 using NadekoBot.Core.Services;
+using NadekoBot.Db;
 using NadekoBot.Modules.Administration;
 using NadekoBot.Modules.Games.Services;
 using NadekoBot.Modules.Games.Common.ChatterBot;
