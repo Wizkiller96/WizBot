@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace NadekoBot.Core.Modules.Gambling.Common
+namespace NadekoBot.Modules.Gambling.Common
 {
     public class Betroll
     {

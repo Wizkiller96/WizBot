@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace NadekoBot.Core.Modules.Music
+namespace NadekoBot.Modules.Music
 {
     public interface IYoutubeResolver : IPlatformQueryResolver
     {

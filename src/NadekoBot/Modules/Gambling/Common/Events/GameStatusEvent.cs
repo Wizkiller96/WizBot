@@ -13,7 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Serilog;
 
-namespace NadekoBot.Core.Modules.Gambling.Common.Events
+namespace NadekoBot.Modules.Gambling.Common.Events
 {
     public class GameStatusEvent : ICurrencyEvent
     {

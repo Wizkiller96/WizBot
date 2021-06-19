@@ -5,7 +5,6 @@ using NadekoBot.Common;
 using NadekoBot.Common.Collections;
 using NadekoBot.Core.Services;
 using NadekoBot.Core.Services.Database.Models;
-using NadekoBot.Core.Services.Database.Repositories;
 using NadekoBot.Core.Services.Impl;
 using NadekoBot.Extensions;
 using SixLabors.Fonts;
@@ -20,7 +19,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NadekoBot.Core.Modules.Gambling.Services;
+using NadekoBot.Modules.Administration;
 using Image = SixLabors.ImageSharp.Image;
 using Color = SixLabors.ImageSharp.Color;
 
@@ -80,7 +79,7 @@ namespace NadekoBot.Modules.Gambling.Services
             bool enabled;
             using (var uow = _db.GetDbContext())
             {
-                var guildConfig = uow.GuildConfigs.ForId(gid, set => set.Include(gc => gc.GenerateCurrencyChannelIds));
+                var guildConfig = uow._context.GuildConfigsForId(gid, set => set.Include(gc => gc.GenerateCurrencyChannelIds));
 
                 var toAdd = new GCChannelId() { ChannelId = cid };
                 if (!guildConfig.GenerateCurrencyChannelIds.Contains(toAdd))
@@ -104,11 +103,11 @@ namespace NadekoBot.Modules.Gambling.Services
             return enabled;
         }
 
-        public IEnumerable<GeneratingChannel> GetAllGeneratingChannels()
+        public IEnumerable<GuildConfigExtensions.GeneratingChannel> GetAllGeneratingChannels()
         {
             using (var uow = _db.GetDbContext())
             {
-                var chs = uow.GuildConfigs.GetGeneratingChannels();
+                var chs = uow._context.GuildConfigs.GetGeneratingChannels();
                 return chs;
             }
         }

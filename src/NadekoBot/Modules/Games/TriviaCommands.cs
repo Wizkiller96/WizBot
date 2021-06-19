@@ -8,7 +8,6 @@ using NadekoBot.Common.Attributes;
 using NadekoBot.Modules.Games.Common.Trivia;
 using NadekoBot.Modules.Games.Services;
 using NadekoBot.Core.Common;
-using NadekoBot.Core.Modules.Games.Common.Trivia;
 
 namespace NadekoBot.Modules.Games
 {

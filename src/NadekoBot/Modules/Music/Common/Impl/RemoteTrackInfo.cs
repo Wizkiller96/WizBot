@@ -2,7 +2,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace NadekoBot.Core.Modules.Music
+namespace NadekoBot.Modules.Music
 {
     public sealed class RemoteTrackInfo : ITrackInfo
     {

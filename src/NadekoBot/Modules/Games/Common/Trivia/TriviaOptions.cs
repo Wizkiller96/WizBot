@@ -1,7 +1,7 @@
 ﻿using CommandLine;
 using NadekoBot.Core.Common;
 
-namespace NadekoBot.Core.Modules.Games.Common.Trivia
+namespace NadekoBot.Modules.Games.Common.Trivia
 {
     public class TriviaOptions : INadekoCommandOptions
     {

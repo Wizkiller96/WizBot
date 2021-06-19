@@ -3,13 +3,16 @@ using Discord.Commands;
 using NadekoBot.Common;
 using NadekoBot.Common.Attributes;
 using NadekoBot.Common.Replacements;
-using NadekoBot.Core.Services;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services;
+using NadekoBot.Services.Database.Models;
 using NadekoBot.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NadekoBot.Core.Services;
+using NadekoBot.Core.Services.Database.Models;
 using NadekoBot.Core.Services.Database.Repositories.Impl;
+using NadekoBot.Services.Database.Repositories.Impl;
 using NadekoBot.Db;
 
 namespace NadekoBot.Modules.Utility

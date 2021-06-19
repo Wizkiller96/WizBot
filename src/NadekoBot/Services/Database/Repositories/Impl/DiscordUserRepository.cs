@@ -1,11 +1,12 @@
-﻿using NadekoBot.Core.Services.Database.Models;
+﻿using NadekoBot.Services.Database.Models;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Discord;
 using System.Collections.Generic;
 using System;
+using NadekoBot.Core.Services.Database.Repositories;
 
-namespace NadekoBot.Core.Services.Database.Repositories.Impl
+namespace NadekoBot.Services.Database.Repositories.Impl
 {
     public class DiscordUserRepository : Repository<DiscordUser>, IDiscordUserRepository
     {

@@ -3,41 +3,38 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Threading.Tasks;
+using NadekoBot.Core.Services.Database;
+using NadekoBot.Services.Database.Models;
 
-namespace NadekoBot.Core.Services.Database.Repositories.Impl
+namespace NadekoBot.Modules.Administration
 {
-    public static class MusicPlayerSettingsExtensions
+    public static class GuildConfigExtensions
     {
-        public static async Task<MusicPlayerSettings> ForGuildAsync(this DbSet<MusicPlayerSettings> settings, ulong guildId)
+        public class GeneratingChannel
         {
-            var toReturn = await settings
-                .AsQueryable()
-                .FirstOrDefaultAsync(x => x.GuildId == guildId);
-
-            if (toReturn is null)
-            {
-                var newSettings = new MusicPlayerSettings()
-                {
-                    GuildId = guildId,
-                    PlayerRepeat = PlayerRepeatType.Queue
-                };
-
-                await settings.AddAsync(newSettings);
-                return newSettings;
-            }
-
-            return toReturn;
+            public ulong GuildId { get; set; }
+            public ulong ChannelId { get; set; }
         }
-    }
-    
-    public class GuildConfigRepository : Repository<GuildConfig>, IGuildConfigRepository
-    {
-        public GuildConfigRepository(DbContext context) : base(context)
+        
+        /// <summary>
+        /// Gets full stream role settings for the guild with the specified id.
+        /// </summary>
+        /// <param name="ctx">Db Context</param>
+        /// <param name="guildId">Id of the guild to get stream role settings for.</param>
+        /// <returns>Guild'p stream role settings</returns>
+        public static StreamRoleSettings GetStreamRoleSettings(this NadekoContext ctx, ulong guildId)
         {
-        }
+            var conf = ctx.GuildConfigsForId(guildId, set => set.Include(y => y.StreamRole)
+                .Include(y => y.StreamRole.Whitelist)
+                .Include(y => y.StreamRole.Blacklist));
 
-        private List<WarningPunishment> DefaultWarnPunishments =>
+            if (conf.StreamRole == null)
+                conf.StreamRole = new StreamRoleSettings();
+
+            return conf.StreamRole;
+        }
+        
+        private static List<WarningPunishment> DefaultWarnPunishments =>
             new List<WarningPunishment>() {
                 new WarningPunishment() {
                     Count = 3,
@@ -49,27 +46,28 @@ namespace NadekoBot.Core.Services.Database.Repositories.Impl
                 }
             };
 
-        public IEnumerable<GuildConfig> GetAllGuildConfigs(List<ulong> availableGuilds) =>
-            IncludeEverything()
-                .AsNoTracking()
-                .Where(x => availableGuilds.Contains(x.GuildId))
-                .ToList();
-
-        private IQueryable<GuildConfig> IncludeEverything()
+        private static IQueryable<GuildConfig> IncludeEverything(this DbSet<GuildConfig> configs)
         {
-            return _set
-                .AsQueryable()
-                .Include(gc => gc.CommandCooldowns)
-                .Include(gc => gc.FollowedStreams)
-                .Include(gc => gc.StreamRole)
-                .Include(gc => gc.NsfwBlacklistedTags)
-                .Include(gc => gc.XpSettings)
+            return configs
+                    .AsQueryable()
+                    .Include(gc => gc.CommandCooldowns)
+                    .Include(gc => gc.FollowedStreams)
+                    .Include(gc => gc.StreamRole)
+                    .Include(gc => gc.NsfwBlacklistedTags)
+                    .Include(gc => gc.XpSettings)
                     .ThenInclude(x => x.ExclusionList)
-                .Include(gc => gc.DelMsgOnCmdChannels)
-                .Include(gc => gc.ReactionRoleMessages)
+                    .Include(gc => gc.DelMsgOnCmdChannels)
+                    .Include(gc => gc.ReactionRoleMessages)
                     .ThenInclude(x => x.ReactionRoles)
                 ;
         }
+
+        public static IEnumerable<GuildConfig> GetAllGuildConfigs(this DbSet<GuildConfig> configs, List<ulong> availableGuilds)
+            => configs
+                .IncludeEverything()
+                .AsNoTracking()
+                .Where(x => availableGuilds.Contains(x.GuildId))
+                .ToList();
 
         /// <summary>
         /// Gets and creates if it doesn't exist a config for a guild.
@@ -77,31 +75,33 @@ namespace NadekoBot.Core.Services.Database.Repositories.Impl
         /// <param name="guildId">For which guild</param>
         /// <param name="includes">Use to manipulate the set however you want</param>
         /// <returns>Config for the guild</returns>
-        public GuildConfig ForId(ulong guildId, Func<DbSet<GuildConfig>, IQueryable<GuildConfig>> includes)
+        public static GuildConfig GuildConfigsForId(this NadekoContext ctx, ulong guildId, Func<DbSet<GuildConfig>, IQueryable<GuildConfig>> includes = null)
         {
             GuildConfig config;
 
             if (includes == null)
             {
-                config = IncludeEverything()
+                config = ctx
+                    .GuildConfigs
+                    .IncludeEverything()
                     .FirstOrDefault(c => c.GuildId == guildId);
             }
             else
             {
-                var set = includes(_set);
+                var set = includes(ctx.GuildConfigs);
                 config = set.FirstOrDefault(c => c.GuildId == guildId);
             }
 
             if (config == null)
             {
-                _set.Add((config = new GuildConfig
+                ctx.GuildConfigs.Add((config = new GuildConfig
                 {
                     GuildId = guildId,
                     Permissions = Permissionv2.GetDefaultPermlist,
                     WarningsInitialized = true,
                     WarnPunishments = DefaultWarnPunishments,
                 }));
-                _context.SaveChanges();
+                ctx.SaveChanges();
             }
 
             if (!config.WarningsInitialized)
@@ -113,9 +113,10 @@ namespace NadekoBot.Core.Services.Database.Repositories.Impl
             return config;
         }
 
-        public GuildConfig LogSettingsFor(ulong guildId)
+        public static GuildConfig LogSettingsFor(this NadekoContext ctx, ulong guildId)
         {
-            var config = _set
+            var config = ctx
+                .GuildConfigs
                 .AsQueryable()
                 .Include(gc => gc.LogSetting)
                     .ThenInclude(gc => gc.IgnoredChannels)
@@ -123,14 +124,14 @@ namespace NadekoBot.Core.Services.Database.Repositories.Impl
 
             if (config == null)
             {
-                _set.Add((config = new GuildConfig
+                ctx.GuildConfigs.Add((config = new GuildConfig
                 {
                     GuildId = guildId,
                     Permissions = Permissionv2.GetDefaultPermlist,
                     WarningsInitialized = true,
                     WarnPunishments = DefaultWarnPunishments,
                 }));
-                _context.SaveChanges();
+                ctx.SaveChanges();
             }
 
             if (!config.WarningsInitialized)
@@ -141,61 +142,63 @@ namespace NadekoBot.Core.Services.Database.Repositories.Impl
             return config;
         }
 
-        public IEnumerable<GuildConfig> Permissionsv2ForAll(List<ulong> include)
+        public static IEnumerable<GuildConfig> Permissionsv2ForAll(this DbSet<GuildConfig> configs, List<ulong> include)
         {
-            var query = _set.AsQueryable()
+            var query = configs.AsQueryable()
                 .Where(x => include.Contains(x.GuildId))
                 .Include(gc => gc.Permissions);
 
             return query.ToList();
         }
 
-        public GuildConfig GcWithPermissionsv2For(ulong guildId)
+        public static GuildConfig GcWithPermissionsv2For(this NadekoContext ctx, ulong guildId)
         {
-            var config = _set.AsQueryable()
+            var config = ctx
+                .GuildConfigs
+                .AsQueryable()
                 .Where(gc => gc.GuildId == guildId)
                 .Include(gc => gc.Permissions)
                 .FirstOrDefault();
 
             if (config == null) // if there is no guildconfig, create new one
             {
-                _set.Add((config = new GuildConfig
+                ctx.GuildConfigs.Add((config = new GuildConfig
                 {
                     GuildId = guildId,
                     Permissions = Permissionv2.GetDefaultPermlist
                 }));
-                _context.SaveChanges();
+                ctx.SaveChanges();
             }
             else if (config.Permissions == null || !config.Permissions.Any()) // if no perms, add default ones
             {
                 config.Permissions = Permissionv2.GetDefaultPermlist;
-                _context.SaveChanges();
+                ctx.SaveChanges();
             }
 
             return config;
         }
 
-        public IEnumerable<FollowedStream> GetFollowedStreams()
+        public static IEnumerable<FollowedStream> GetFollowedStreams(this DbSet<GuildConfig> configs)
         {
-            return _set
+            return configs
                 .AsQueryable()
                 .Include(x => x.FollowedStreams)
                 .SelectMany(gc => gc.FollowedStreams)
                 .ToArray();
         }
 
-        public IEnumerable<FollowedStream> GetFollowedStreams(List<ulong> included)
+        public static IEnumerable<FollowedStream> GetFollowedStreams(this DbSet<GuildConfig> configs, List<ulong> included)
         {
-            return _set.AsQueryable()
+            return configs.AsQueryable()
                 .Where(gc => included.Contains(gc.GuildId))
                 .Include(gc => gc.FollowedStreams)
                 .SelectMany(gc => gc.FollowedStreams)
                 .ToList();
         }
 
-        public void SetCleverbotEnabled(ulong id, bool cleverbotEnabled)
+        public static void SetCleverbotEnabled(this DbSet<GuildConfig> configs, ulong id, bool cleverbotEnabled)
         {
-            var conf = _set.FirstOrDefault(gc => gc.GuildId == id);
+            var conf = configs.FirstOrDefault(gc => gc.GuildId == id);
 
             if (conf == null)
                 return;
@@ -203,9 +206,9 @@ namespace NadekoBot.Core.Services.Database.Repositories.Impl
             conf.CleverbotEnabled = cleverbotEnabled;
         }
 
-        public XpSettings XpSettingsFor(ulong guildId)
+        public static XpSettings XpSettingsFor(this NadekoContext ctx, ulong guildId)
         {
-            var gc = ForId(guildId,
+            var gc = ctx.GuildConfigsForId(guildId,
                 set => set.Include(x => x.XpSettings)
                           .ThenInclude(x => x.RoleRewards)
                           .Include(x => x.XpSettings)
@@ -219,9 +222,9 @@ namespace NadekoBot.Core.Services.Database.Repositories.Impl
             return gc.XpSettings;
         }
 
-        public IEnumerable<GeneratingChannel> GetGeneratingChannels()
+        public static IEnumerable<GeneratingChannel> GetGeneratingChannels(this DbSet<GuildConfig> configs)
         {
-            return _set
+            return configs
                 .AsQueryable()
                 .Include(x => x.GenerateCurrencyChannelIds)
                 .Where(x => x.GenerateCurrencyChannelIds.Any())

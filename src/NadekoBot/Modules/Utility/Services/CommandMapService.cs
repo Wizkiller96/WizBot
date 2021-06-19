@@ -5,11 +5,14 @@ using System.Threading.Tasks;
 using Discord;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Extensions;
-using NadekoBot.Core.Services;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services;
+using NadekoBot.Services.Database.Models;
 using System;
 using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
+using NadekoBot.Core.Services;
+using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Modules.Administration;
 
 namespace NadekoBot.Modules.Utility.Services
 {
@@ -50,7 +53,7 @@ namespace NadekoBot.Modules.Utility.Services
             int count;
             using (var uow = _db.GetDbContext())
             {
-                var gc = uow.GuildConfigs.ForId(guildId, set => set.Include(x => x.CommandAliases));
+                var gc = uow._context.GuildConfigsForId(guildId, set => set.Include(x => x.CommandAliases));
                 count = gc.CommandAliases.Count;
                 gc.CommandAliases.Clear();
                 uow.SaveChanges();

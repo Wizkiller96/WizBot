@@ -2,7 +2,7 @@
 using Discord;
 using NadekoBot.Extensions;
 
-namespace NadekoBot.Core.Modules.Music
+namespace NadekoBot.Modules.Music
 {
     public static class MusicExtensions
     {

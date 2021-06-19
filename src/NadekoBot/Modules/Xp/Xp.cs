@@ -9,7 +9,7 @@ using NadekoBot.Modules.Xp.Services;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NadekoBot.Core.Modules.Gambling.Services;
+using NadekoBot.Modules.Gambling.Services;
 
 namespace NadekoBot.Modules.Xp
 {

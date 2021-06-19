@@ -1,9 +1,11 @@
 ﻿using Discord;
 using Discord.Commands;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using System;
 using System.Threading.Tasks;
 using NadekoBot.Common.Attributes;
+using NadekoBot.Core.Services;
+using NadekoBot.Modules.Administration;
 using NadekoBot.Modules.Games.Services;
 using NadekoBot.Modules.Games.Common.ChatterBot;
 
@@ -32,7 +34,7 @@ namespace NadekoBot.Modules.Games
                 {
                     using (var uow = _db.GetDbContext())
                     {
-                        uow.GuildConfigs.SetCleverbotEnabled(ctx.Guild.Id, false);
+                        uow._context.GuildConfigs.SetCleverbotEnabled(ctx.Guild.Id, false);
                         await uow.SaveChangesAsync();
                     }
                     await ReplyConfirmLocalizedAsync("cleverbot_disabled").ConfigureAwait(false);
@@ -43,7 +45,7 @@ namespace NadekoBot.Modules.Games
 
                 using (var uow = _db.GetDbContext())
                 {
-                    uow.GuildConfigs.SetCleverbotEnabled(ctx.Guild.Id, true);
+                    uow._context.GuildConfigs.SetCleverbotEnabled(ctx.Guild.Id, true);
                     await uow.SaveChangesAsync();
                 }
 

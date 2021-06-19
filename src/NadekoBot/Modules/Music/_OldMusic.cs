@@ -395,7 +395,7 @@
 //             }
 //             using (var uow = _db.GetDbContext())
 //             {
-//                 uow.GuildConfigs.ForId(ctx.Guild.Id, set => set).DefaultMusicVolume = val / 100.0f;
+//                 uow._context.GuildConfigsForId(ctx.Guild.Id, set => set).DefaultMusicVolume = val / 100.0f;
 //                 uow.SaveChanges();
 //             }
 //             await ReplyConfirmLocalizedAsync("defvol_set", val).ConfigureAwait(false);

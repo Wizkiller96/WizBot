@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
-namespace NadekoBot.Core.Modules.Xp
+namespace NadekoBot.Modules.Xp
 {
     public class XpTemplate
     {

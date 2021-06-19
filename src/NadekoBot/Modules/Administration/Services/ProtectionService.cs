@@ -114,7 +114,7 @@ namespace NadekoBot.Modules.Administration.Services
         private Task _bot_JoinedGuild(GuildConfig gc)
         {
             using var uow = _db.GetDbContext();
-            var gcWithData = uow.GuildConfigs.ForId(gc.GuildId,
+            var gcWithData = uow._context.GuildConfigsForId(gc.GuildId,
                 set => set
                     .Include(x => x.AntiRaidSetting)
                     .Include(x => x.AntiAltSetting)
@@ -304,7 +304,7 @@ namespace NadekoBot.Modules.Administration.Services
 
             using (var uow = _db.GetDbContext())
             {
-                var gc = uow.GuildConfigs.ForId(guildId, set => set.Include(x => x.AntiRaidSetting));
+                var gc = uow._context.GuildConfigsForId(guildId, set => set.Include(x => x.AntiRaidSetting));
 
                 gc.AntiRaidSetting = stats.AntiRaidSettings;
                 await uow.SaveChangesAsync();
@@ -319,7 +319,7 @@ namespace NadekoBot.Modules.Administration.Services
             {
                 using (var uow = _db.GetDbContext())
                 {
-                    var gc = uow.GuildConfigs.ForId(guildId, set => set.Include(x => x.AntiRaidSetting));
+                    var gc = uow._context.GuildConfigsForId(guildId, set => set.Include(x => x.AntiRaidSetting));
 
                     gc.AntiRaidSetting = null;
                     uow.SaveChanges();
@@ -336,7 +336,7 @@ namespace NadekoBot.Modules.Administration.Services
                 removed.UserStats.ForEach(x => x.Value.Dispose());
                 using (var uow = _db.GetDbContext())
                 {
-                    var gc = uow.GuildConfigs.ForId(guildId, set => set.Include(x => x.AntiSpamSetting)
+                    var gc = uow._context.GuildConfigsForId(guildId, set => set.Include(x => x.AntiSpamSetting)
                         .ThenInclude(x => x.IgnoredChannels));
 
                     gc.AntiSpamSetting = null;
@@ -375,7 +375,7 @@ namespace NadekoBot.Modules.Administration.Services
 
             using (var uow = _db.GetDbContext())
             {
-                var gc = uow.GuildConfigs.ForId(guildId, set => set.Include(x => x.AntiSpamSetting));
+                var gc = uow._context.GuildConfigsForId(guildId, set => set.Include(x => x.AntiSpamSetting));
 
                 if (gc.AntiSpamSetting != null)
                 {
@@ -402,7 +402,7 @@ namespace NadekoBot.Modules.Administration.Services
             bool added;
             using (var uow = _db.GetDbContext())
             {
-                var gc = uow.GuildConfigs.ForId(guildId, set => set.Include(x => x.AntiSpamSetting).ThenInclude(x => x.IgnoredChannels));
+                var gc = uow._context.GuildConfigsForId(guildId, set => set.Include(x => x.AntiSpamSetting).ThenInclude(x => x.IgnoredChannels));
                 var spam = gc.AntiSpamSetting;
                 if (spam is null)
                 {
@@ -459,7 +459,7 @@ namespace NadekoBot.Modules.Administration.Services
             int actionDurationMinutes = 0, ulong? roleId = null)
         {
             using var uow = _db.GetDbContext();
-            var gc = uow.GuildConfigs.ForId(guildId, set => set.Include(x => x.AntiAltSetting));
+            var gc = uow._context.GuildConfigsForId(guildId, set => set.Include(x => x.AntiAltSetting));
             gc.AntiAltSetting = new AntiAltSetting()
             {
                 Action = action,
@@ -478,7 +478,7 @@ namespace NadekoBot.Modules.Administration.Services
                 return false;
             
             using var uow = _db.GetDbContext();
-            var gc = uow.GuildConfigs.ForId(guildId, set => set.Include(x => x.AntiAltSetting));
+            var gc = uow._context.GuildConfigsForId(guildId, set => set.Include(x => x.AntiAltSetting));
             gc.AntiAltSetting = null;
             await uow.SaveChangesAsync();
             return true;

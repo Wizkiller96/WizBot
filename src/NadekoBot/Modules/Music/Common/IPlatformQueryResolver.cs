@@ -1,7 +1,7 @@
 ﻿#nullable enable
 using System.Threading.Tasks;
 
-namespace NadekoBot.Core.Modules.Music
+namespace NadekoBot.Modules.Music
 {
     public interface IPlatformQueryResolver
     {

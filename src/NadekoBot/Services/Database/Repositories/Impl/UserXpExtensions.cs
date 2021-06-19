@@ -1,23 +1,23 @@
-﻿using NadekoBot.Core.Services.Database.Models;
+﻿using NadekoBot.Services.Database.Models;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using LinqToDB;
+using NadekoBot.Core.Services.Database;
+using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services.Database;
 
-namespace NadekoBot.Core.Services.Database.Repositories.Impl
+namespace NadekoBot.Modules.Xp.Common
 {
-    public class XpRepository : Repository<UserXpStats>, IXpRepository
+    public static class UserXpExtensions
     {
-        public XpRepository(DbContext context) : base(context)
+        public static UserXpStats GetOrCreateUserXpStats(this NadekoContext ctx, ulong guildId, ulong userId)
         {
-        }
-
-        public UserXpStats GetOrCreateUser(ulong guildId, ulong userId)
-        {
-            var usr = _set.FirstOrDefault(x => x.UserId == userId && x.GuildId == guildId);
+            var usr = ctx.UserXpStats.FirstOrDefault(x => x.UserId == userId && x.GuildId == guildId);
 
             if (usr == null)
             {
-                _context.Add(usr = new UserXpStats()
+                ctx.Add(usr = new UserXpStats()
                 {
                     Xp = 0,
                     UserId = userId,
@@ -29,9 +29,9 @@ namespace NadekoBot.Core.Services.Database.Repositories.Impl
             return usr;
         }
 
-        public List<UserXpStats> GetUsersFor(ulong guildId, int page)
+        public static List<UserXpStats> GetUsersFor(this DbSet<UserXpStats> xps, ulong guildId, int page)
         {
-            return _set
+            return xps
                 .AsQueryable()
                 .AsNoTracking()
                 .Where(x => x.GuildId == guildId)
@@ -41,9 +41,9 @@ namespace NadekoBot.Core.Services.Database.Repositories.Impl
                 .ToList();
         }
 
-        public List<UserXpStats> GetTopUserXps(ulong guildId, int count)
+        public static List<UserXpStats> GetTopUserXps(this DbSet<UserXpStats> xps, ulong guildId, int count)
         {
-            return _set
+            return xps
                 .AsQueryable()
                 .AsNoTracking()
                 .Where(x => x.GuildId == guildId)
@@ -52,7 +52,7 @@ namespace NadekoBot.Core.Services.Database.Repositories.Impl
                 .ToList();
         }
 
-        public int GetUserGuildRanking(ulong userId, ulong guildId)
+        public static int GetUserGuildRanking(this DbSet<UserXpStats> xps, ulong userId, ulong guildId)
         {
             //            @"SELECT COUNT(*) + 1
             //FROM UserXpStats
@@ -61,11 +61,11 @@ namespace NadekoBot.Core.Services.Database.Repositories.Impl
             //	WHERE UserId = @p2 AND GuildId = @p1
             //	LIMIT 1));";
 
-            return _set
+            return xps
                 .AsQueryable()
                 .AsNoTracking()
                 .Where(x => x.GuildId == guildId && ((x.Xp + x.AwardedXp) >
-                    (_set.AsQueryable()
+                    (xps.AsQueryable()
                         .Where(y => y.UserId == userId && y.GuildId == guildId)
                         .Select(y => y.Xp + y.AwardedXp)
                         .FirstOrDefault())
@@ -73,14 +73,14 @@ namespace NadekoBot.Core.Services.Database.Repositories.Impl
                 .Count() + 1;
         }
 
-        public void ResetGuildUserXp(ulong userId, ulong guildId)
+        public static void ResetGuildUserXp(this DbSet<UserXpStats> xps, ulong userId, ulong guildId)
         {
-            _context.Database.ExecuteSqlInterpolated($"DELETE FROM UserXpStats WHERE UserId={userId} AND GuildId={guildId};");
+            xps.Delete(x => x.UserId == userId && x.GuildId == guildId);
         }
 
-        public void ResetGuildXp(ulong guildId)
+        public static void ResetGuildXp(this DbSet<UserXpStats> xps, ulong guildId)
         {
-            _context.Database.ExecuteSqlInterpolated($"DELETE FROM UserXpStats WHERE GuildId={guildId};");
+            xps.Delete(x => x.GuildId == guildId);
         }
     }
 }

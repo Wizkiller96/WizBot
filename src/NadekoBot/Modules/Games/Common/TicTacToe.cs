@@ -6,8 +6,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CommandLine;
+using NadekoBot.Common;
 using NadekoBot.Core.Common;
 using NadekoBot.Core.Services;
+using NadekoBot.Services;
 
 namespace NadekoBot.Modules.Games.Common
 {

@@ -25,7 +25,8 @@ using LinqToDB.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Core.Common;
 using NadekoBot.Core.Common.Configs;
-using NadekoBot.Core.Modules.Gambling.Services;
+using NadekoBot.Modules.Administration;
+using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Modules.Administration.Services;
 using NadekoBot.Modules.CustomReactions.Services;
 using NadekoBot.Modules.Utility.Services;
@@ -135,7 +136,7 @@ namespace NadekoBot
         public IEnumerable<GuildConfig> GetCurrentGuildConfigs()
         {
             using var uow = _db.GetDbContext();
-            return uow.GuildConfigs.GetAllGuildConfigs(GetCurrentGuildIds()).ToImmutableArray();
+            return uow._context.GuildConfigs.GetAllGuildConfigs(GetCurrentGuildIds()).ToImmutableArray();
         }
 
         private void AddServices()
@@ -147,7 +148,7 @@ namespace NadekoBot
             using (var uow = _db.GetDbContext())
             {
                 uow.DiscordUsers.EnsureCreated(_bot.Id, _bot.Username, _bot.Discriminator, _bot.AvatarId);
-                AllGuildConfigs = uow.GuildConfigs.GetAllGuildConfigs(startingGuildIdList).ToImmutableArray();
+                AllGuildConfigs = uow._context.GuildConfigs.GetAllGuildConfigs(startingGuildIdList).ToImmutableArray();
             }
 
             var s = new ServiceCollection()
@@ -307,13 +308,13 @@ namespace NadekoBot
 
         private Task Client_JoinedGuild(SocketGuild arg)
         {
-            Log.Information($"Joined server: {0} [{1}]", arg?.Name, arg?.Id);
+            Log.Information($"Joined server: {0} [{1}]", arg.Name, arg.Id);
             var _ = Task.Run(async () =>
             {
                 GuildConfig gc;
                 using (var uow = _db.GetDbContext())
                 {
-                    gc = uow.GuildConfigs.ForId(arg.Id);
+                    gc = uow._context.GuildConfigsForId(arg.Id);
                 }
                 await JoinedGuild.Invoke(gc).ConfigureAwait(false);
             });

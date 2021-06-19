@@ -1,8 +1,8 @@
 ﻿#nullable enable
 using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
-using NadekoBot.Core.Services;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services;
+using NadekoBot.Services.Database.Models;
 using NadekoBot.Extensions;
 using System;
 using System.Collections.Generic;
@@ -15,6 +15,8 @@ using NadekoBot.Common;
 using NadekoBot.Common.Collections;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Common.Replacements;
+using NadekoBot.Core.Services;
+using NadekoBot.Core.Services.Database.Models;
 using Serilog;
 
 namespace NadekoBot.Modules.Utility.Services

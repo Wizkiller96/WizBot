@@ -1,11 +1,11 @@
 ﻿using NadekoBot.Common.Attributes;
-using NadekoBot.Core.Modules.Gambling.Services;
+using NadekoBot.Modules.Gambling.Services;
 using System.Threading.Tasks;
 using Discord;
 using NadekoBot.Extensions;
 using System.Linq;
 using Discord.Commands;
-using NadekoBot.Core.Modules.Gambling.Common;
+using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Core.Common;
 
 namespace NadekoBot.Modules.Gambling

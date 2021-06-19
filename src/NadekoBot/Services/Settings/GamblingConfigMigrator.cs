@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Data.Common;
 using Microsoft.EntityFrameworkCore;
-using NadekoBot.Core.Modules.Gambling.Common;
-using NadekoBot.Core.Modules.Gambling.Services;
+using NadekoBot.Modules.Gambling.Common;
+using NadekoBot.Modules.Gambling.Services;
 using Serilog;
 
 namespace NadekoBot.Core.Services

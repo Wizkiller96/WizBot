@@ -3,7 +3,7 @@ using System;
 using System.Threading.Tasks;
 using Serilog;
 
-namespace NadekoBot.Core.Modules.Music
+namespace NadekoBot.Modules.Music
 {
     public sealed class TrackResolveProvider : ITrackResolveProvider
     {

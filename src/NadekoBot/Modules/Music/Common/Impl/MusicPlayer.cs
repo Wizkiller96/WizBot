@@ -10,13 +10,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using Ayu.Discord.Voice;
 using NadekoBot.Common;
-using NadekoBot.Core.Modules.Music.Common;
+using NadekoBot.Modules.Music.Common;
 using NadekoBot.Core.Services.Database.Models;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Music;
 using Serilog;
 
-namespace NadekoBot.Core.Modules.Music
+namespace NadekoBot.Modules.Music
 {
     public sealed class MusicPlayer : IMusicPlayer
     {

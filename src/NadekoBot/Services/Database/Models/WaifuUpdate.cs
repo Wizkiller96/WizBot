@@ -1,4 +1,6 @@
-﻿namespace NadekoBot.Core.Services.Database.Models
+﻿using NadekoBot.Services.Database.Models;
+
+namespace NadekoBot.Core.Services.Database.Models
 {
     public class WaifuUpdate : DbEntity
     {

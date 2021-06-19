@@ -1,4 +1,4 @@
-﻿namespace NadekoBot.Core.Modules.Music
+﻿namespace NadekoBot.Modules.Music
 {
     public enum MusicPlatform
     {

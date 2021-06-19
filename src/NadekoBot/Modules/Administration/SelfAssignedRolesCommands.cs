@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using NadekoBot.Common.Attributes;
-using NadekoBot.Core.Modules.Administration.Services;
+using NadekoBot.Modules.Administration.Services;
 using NadekoBot.Extensions;
 
 namespace NadekoBot.Modules.Administration

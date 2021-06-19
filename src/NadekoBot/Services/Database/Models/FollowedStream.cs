@@ -1,7 +1,8 @@
 ﻿using System;
-using NadekoBot.Core.Modules.Searches.Common;
+using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Modules.Searches.Common;
 
-namespace NadekoBot.Core.Services.Database.Models
+namespace NadekoBot.Services.Database.Models
 {
     public class FollowedStream : DbEntity
     {

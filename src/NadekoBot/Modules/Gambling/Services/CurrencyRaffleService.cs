@@ -1,13 +1,13 @@
 ﻿using System.Threading.Tasks;
 using NadekoBot.Core.Services;
-using NadekoBot.Core.Modules.Gambling.Common;
+using NadekoBot.Modules.Gambling.Common;
 using System.Threading;
 using System.Linq;
 using System.Collections.Generic;
 using Discord;
 using System;
 
-namespace NadekoBot.Core.Modules.Gambling.Services
+namespace NadekoBot.Modules.Gambling.Services
 {
     public class CurrencyRaffleService : INService
     {

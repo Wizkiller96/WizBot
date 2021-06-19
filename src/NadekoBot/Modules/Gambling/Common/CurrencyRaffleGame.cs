@@ -3,7 +3,7 @@ using NadekoBot.Common;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace NadekoBot.Core.Modules.Gambling.Common
+namespace NadekoBot.Modules.Gambling.Common
 {
     public class CurrencyRaffleGame
     {

@@ -10,7 +10,7 @@ using Discord.Net;
 using Discord.WebSocket;
 using NadekoBot.Extensions;
 using NadekoBot.Core.Services;
-using NadekoBot.Core.Modules.Games.Common.Trivia;
+using NadekoBot.Modules.Games.Common.Trivia;
 using NadekoBot.Modules.Games.Services;
 using Serilog;
 

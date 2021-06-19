@@ -6,11 +6,12 @@ using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services.Database.Models;
 using Newtonsoft.Json;
 using Serilog;
 
 #nullable enable
-namespace NadekoBot.Core.Modules.Searches.Common.StreamNotifications.Providers
+namespace NadekoBot.Modules.Searches.Common.StreamNotifications.Providers
 {
     public class PicartoProvider : Provider
     {

@@ -6,6 +6,7 @@ using NadekoBot.Common.Collections;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Help.Services;
 using NadekoBot.Core.Services;
+using NadekoBot.Modules.Administration;
 
 namespace NadekoBot.Modules.Utility.Services
 {
@@ -60,7 +61,7 @@ namespace NadekoBot.Modules.Utility.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var gc = uow.GuildConfigs.ForId(guildId, set => set);
+                var gc = uow._context.GuildConfigsForId(guildId, set => set);
 
                 if (enabled==null) enabled = gc.VerboseErrors = !gc.VerboseErrors; // Old behaviour, now behind a condition
                 else gc.VerboseErrors = (bool)enabled; // New behaviour, just set it.

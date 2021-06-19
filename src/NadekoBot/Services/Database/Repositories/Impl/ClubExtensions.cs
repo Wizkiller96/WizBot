@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Xp.Common
 {

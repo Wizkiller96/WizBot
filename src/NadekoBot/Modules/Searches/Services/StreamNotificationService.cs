@@ -6,8 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common;
-using NadekoBot.Core.Modules.Searches.Common;
-using NadekoBot.Core.Modules.Searches.Common.StreamNotifications;
+using NadekoBot.Modules.Searches.Common;
+using NadekoBot.Modules.Searches.Common.StreamNotifications;
 using NadekoBot.Core.Services;
 using NadekoBot.Core.Services.Database.Models;
 using NadekoBot.Extensions;
@@ -17,6 +17,8 @@ using Discord;
 using Discord.WebSocket;
 using NadekoBot.Common.Collections;
 using NadekoBot.Common.Replacements;
+using NadekoBot.Modules.Administration;
+using NadekoBot.Services.Database.Models;
 using Serilog;
 
 namespace NadekoBot.Modules.Searches.Services
@@ -318,7 +320,7 @@ namespace NadekoBot.Modules.Searches.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var gc = uow.GuildConfigs.ForId(guild.Id, set => set.Include(x => x.FollowedStreams));
+                var gc = uow._context.GuildConfigsForId(guild.Id, set => set.Include(x => x.FollowedStreams));
 
                 _offlineNotificationServers.TryRemove(gc.GuildId);
 
@@ -340,7 +342,7 @@ namespace NadekoBot.Modules.Searches.Services
             int count;
             using (var uow = _db.GetDbContext())
             {
-                var gc = uow.GuildConfigs.ForId(guildId, set => set.Include(x => x.FollowedStreams));
+                var gc = uow._context.GuildConfigsForId(guildId, set => set.Include(x => x.FollowedStreams));
                 count = gc.FollowedStreams.Count;
                 gc.FollowedStreams.Clear();
                 uow.SaveChanges();
@@ -409,7 +411,7 @@ namespace NadekoBot.Modules.Searches.Services
             FollowedStream fs;
             using (var uow = _db.GetDbContext())
             {
-                var gc = uow.GuildConfigs.ForId(guildId, set => set.Include(x => x.FollowedStreams));
+                var gc = uow._context.GuildConfigsForId(guildId, set => set.Include(x => x.FollowedStreams));
 
                 // add it to the database
                 fs = new FollowedStream()
@@ -479,7 +481,7 @@ namespace NadekoBot.Modules.Searches.Services
             bool newValue;
             using (var uow = _db.GetDbContext())
             {
-                var gc = uow.GuildConfigs.ForId(guildId, set => set);
+                var gc = uow._context.GuildConfigsForId(guildId, set => set);
                 newValue = gc.NotifyStreamOffline = !gc.NotifyStreamOffline;
                 uow.SaveChanges();
 

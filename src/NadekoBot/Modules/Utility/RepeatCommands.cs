@@ -49,7 +49,7 @@ namespace NadekoBot.Modules.Utility
                 var removed =  await _service.RemoveByIndexAsync(ctx.Guild.Id, index);
                 if (removed is null)
                 {
-                    await ReplyErrorLocalizedAsync("repeater_remove_failed").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync("repeater_remove_fail").ConfigureAwait(false);
                     return;
                 }
                 

@@ -2,7 +2,7 @@
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using NadekoBot.Core.Modules.Music;
+using NadekoBot.Modules.Music;
 using NadekoBot.Extensions;
 using Serilog;
 

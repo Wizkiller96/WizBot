@@ -1,5 +1,5 @@
 ﻿using NadekoBot.Core.Services;
-using NadekoBot.Core.Modules.Gambling.Common.Events;
+using NadekoBot.Modules.Gambling.Common.Events;
 using System.Collections.Concurrent;
 using NadekoBot.Modules.Gambling.Common;
 using Discord;
@@ -10,7 +10,7 @@ using NadekoBot.Core.Services.Database.Models;
 using System.Net.Http;
 using Newtonsoft.Json;
 using System.Linq;
-using NadekoBot.Core.Modules.Gambling.Services;
+using NadekoBot.Modules.Gambling.Services;
 using Serilog;
 
 namespace NadekoBot.Modules.Gambling.Services

@@ -7,8 +7,7 @@ using NadekoBot.Modules.Administration.Services;
 using NadekoBot.Modules.Gambling.Services;
 using System.Linq;
 using System.Threading.Tasks;
-using NadekoBot.Core.Modules.Gambling.Common;
-using NadekoBot.Core.Modules.Gambling.Services;
+using NadekoBot.Modules.Gambling.Common;
 
 namespace NadekoBot.Modules.Games
 {

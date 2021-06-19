@@ -5,6 +5,7 @@ using Discord.WebSocket;
 using NadekoBot.Common.Collections;
 using NadekoBot.Extensions;
 using NadekoBot.Core.Services;
+using NadekoBot.Core.Services.Database.Repositories.Impl;
 using Serilog;
 
 namespace NadekoBot.Modules.Administration.Services
@@ -63,7 +64,7 @@ namespace NadekoBot.Modules.Administration.Services
             ulong? id;
             using (var uow = _db.GetDbContext())
             {
-                var gc = uow.GuildConfigs.ForId(guildId, set => set);
+                var gc = uow._context.GuildConfigsForId(guildId, set => set);
 
                 if (gc.GameVoiceChannel == vchId)
                 {

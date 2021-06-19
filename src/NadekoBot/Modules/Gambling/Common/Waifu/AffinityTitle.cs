@@ -1,4 +1,4 @@
-﻿namespace NadekoBot.Core.Modules.Gambling.Common.Waifu
+﻿namespace NadekoBot.Modules.Gambling.Common.Waifu
 {
     public enum AffinityTitle
     {

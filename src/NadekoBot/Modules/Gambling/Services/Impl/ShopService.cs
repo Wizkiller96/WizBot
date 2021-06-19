@@ -6,8 +6,9 @@ using NadekoBot.Core.Services;
 using NadekoBot.Core.Services.Database;
 using NadekoBot.Core.Services.Database.Models;
 using NadekoBot.Extensions;
+using NadekoBot.Modules.Administration;
 
-namespace NadekoBot.Core.Modules.Gambling.Services
+namespace NadekoBot.Modules.Gambling.Services
 {
     public class ShopService : IShopService
     {
@@ -19,7 +20,7 @@ namespace NadekoBot.Core.Modules.Gambling.Services
         }
 
         private IndexedCollection<ShopEntry> GetEntriesInternal(IUnitOfWork uow, ulong guildId) =>
-            uow.GuildConfigs.ForId(
+            uow._context.GuildConfigsForId(
                     guildId,
                     set => set.Include(x => x.ShopEntries).ThenInclude(x => x.Items)
                 )

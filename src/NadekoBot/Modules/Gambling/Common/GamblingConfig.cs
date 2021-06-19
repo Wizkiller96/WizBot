@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using NadekoBot.Common.Yml;
 
-namespace NadekoBot.Core.Modules.Gambling.Common
+namespace NadekoBot.Modules.Gambling.Common
 {
     public sealed class GamblingConfig
     {

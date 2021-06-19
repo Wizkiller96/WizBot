@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NadekoBot.Core.Modules.Music
+namespace NadekoBot.Modules.Music
 {
     public interface ICachableTrackData
     {

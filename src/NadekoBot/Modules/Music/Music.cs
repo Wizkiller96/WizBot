@@ -13,7 +13,7 @@ using NadekoBot.Modules;
 using NadekoBot.Modules.Administration.Services;
 using NadekoBot.Modules.Music.Services;
 
-namespace NadekoBot.Core.Modules.Music
+namespace NadekoBot.Modules.Music
 {
     [NoPublicBot]
     public sealed partial class Music : NadekoModule<IMusicService>

@@ -10,6 +10,7 @@ using Discord.WebSocket;
 using NadekoBot.Common.Attributes;
 using NadekoBot.Common.TypeReaders;
 using NadekoBot.Common.TypeReaders.Models;
+using NadekoBot.Modules.Administration;
 using NadekoBot.Modules.Permissions.Common;
 using NadekoBot.Modules.Permissions.Services;
 
@@ -30,7 +31,7 @@ namespace NadekoBot.Modules.Permissions
         {
             using (var uow = _db.GetDbContext())
             {
-                var config = uow.GuildConfigs.GcWithPermissionsv2For(ctx.Guild.Id);
+                var config = uow._context.GcWithPermissionsv2For(ctx.Guild.Id);
                 if (action == null) action = new PermissionAction(!config.VerbosePermissions); // New behaviour, can toggle.
                 config.VerbosePermissions = action.Value;
                 await uow.SaveChangesAsync();
@@ -72,7 +73,7 @@ namespace NadekoBot.Modules.Permissions
 
             using (var uow = _db.GetDbContext())
             {
-                var config = uow.GuildConfigs.GcWithPermissionsv2For(ctx.Guild.Id);
+                var config = uow._context.GcWithPermissionsv2For(ctx.Guild.Id);
                 config.PermissionRole = role.Id.ToString();
                 uow.SaveChanges();
                 _service.UpdateCache(config);
@@ -91,7 +92,7 @@ namespace NadekoBot.Modules.Permissions
         {
             using (var uow = _db.GetDbContext())
             {
-                var config = uow.GuildConfigs.GcWithPermissionsv2For(ctx.Guild.Id);
+                var config = uow._context.GcWithPermissionsv2For(ctx.Guild.Id);
                 config.PermissionRole = null;
                 await uow.SaveChangesAsync();
                 _service.UpdateCache(config);
@@ -147,7 +148,7 @@ namespace NadekoBot.Modules.Permissions
                 Permissionv2 p;
                 using (var uow = _db.GetDbContext())
                 {
-                    var config = uow.GuildConfigs.GcWithPermissionsv2For(ctx.Guild.Id);
+                    var config = uow._context.GcWithPermissionsv2For(ctx.Guild.Id);
                     var permsCol = new PermissionsCollection<Permissionv2>(config.Permissions);
                     p = permsCol[index];
                     permsCol.RemoveAt(index);
@@ -178,7 +179,7 @@ namespace NadekoBot.Modules.Permissions
                     Permissionv2 fromPerm;
                     using (var uow = _db.GetDbContext())
                     {
-                        var config = uow.GuildConfigs.GcWithPermissionsv2For(ctx.Guild.Id);
+                        var config = uow._context.GcWithPermissionsv2For(ctx.Guild.Id);
                         var permsCol = new PermissionsCollection<Permissionv2>(config.Permissions);
 
                         var fromFound = from < permsCol.Count;

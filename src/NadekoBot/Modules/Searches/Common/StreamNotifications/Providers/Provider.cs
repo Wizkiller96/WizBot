@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services.Database.Models;
 
 #nullable enable
-namespace NadekoBot.Core.Modules.Searches.Common.StreamNotifications.Providers
+namespace NadekoBot.Modules.Searches.Common.StreamNotifications.Providers
 {
     /// <summary>
     /// Abstract class implemented by providers of all supported platforms

@@ -1,8 +1,8 @@
 ﻿using Discord.Commands;
-using NadekoBot.Core.Modules.Searches.Services;
+using NadekoBot.Modules.Searches.Services;
 using NadekoBot.Modules;
 
-namespace NadekoBot.Core.Modules.Searches
+namespace NadekoBot.Modules.Searches
 {
     public partial class Searches
     {

@@ -1,12 +1,13 @@
-﻿using NadekoBot.Core.Services;
+﻿using NadekoBot.Services;
 using System;
 using System.Collections.Generic;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services.Database.Models;
 using Discord;
 using System.Linq;
 using NadekoBot.Extensions;
 using System.Net.Http;
 using System.Threading.Tasks;
+using NadekoBot.Core.Services;
 using NadekoBot.Modules.Xp.Common;
 
 namespace NadekoBot.Modules.Xp.Services

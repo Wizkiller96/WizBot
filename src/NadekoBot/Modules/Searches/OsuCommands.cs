@@ -9,7 +9,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using NadekoBot.Common.Attributes;
 using NadekoBot.Core.Common;
-using NadekoBot.Core.Modules.Searches.Common;
+using NadekoBot.Modules.Searches.Common;
 using Newtonsoft.Json;
 using Serilog;
 

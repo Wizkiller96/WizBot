@@ -9,6 +9,7 @@ using NadekoBot.Common.Attributes;
 using NadekoBot.Common.Collections;
 using NadekoBot.Modules.Permissions.Services;
 using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Modules.Administration;
 
 namespace NadekoBot.Modules.Permissions
 {
@@ -42,7 +43,7 @@ namespace NadekoBot.Modules.Permissions
                 bool enabled;
                 using (var uow = _db.GetDbContext())
                 {
-                    var config = uow.GuildConfigs.ForId(channel.Guild.Id, set => set);
+                    var config = uow._context.GuildConfigsForId(channel.Guild.Id, set => set);
                     enabled = config.FilterInvites = !config.FilterInvites;
                     await uow.SaveChangesAsync();
                 }
@@ -68,7 +69,7 @@ namespace NadekoBot.Modules.Permissions
                 FilterChannelId removed;
                 using (var uow = _db.GetDbContext())
                 {
-                    var config = uow.GuildConfigs.ForId(channel.Guild.Id, set => set.Include(gc => gc.FilterInvitesChannelIds));
+                    var config = uow._context.GuildConfigsForId(channel.Guild.Id, set => set.Include(gc => gc.FilterInvitesChannelIds));
                     var match = new FilterChannelId()
                     {
                         ChannelId = channel.Id
@@ -107,7 +108,7 @@ namespace NadekoBot.Modules.Permissions
                 bool enabled;
                 using (var uow = _db.GetDbContext())
                 {
-                    var config = uow.GuildConfigs.ForId(channel.Guild.Id, set => set);
+                    var config = uow._context.GuildConfigsForId(channel.Guild.Id, set => set);
                     enabled = config.FilterLinks = !config.FilterLinks;
                     await uow.SaveChangesAsync();
                 }
@@ -133,7 +134,7 @@ namespace NadekoBot.Modules.Permissions
                 FilterLinksChannelId removed;
                 using (var uow = _db.GetDbContext())
                 {
-                    var config = uow.GuildConfigs.ForId(channel.Guild.Id, set => set.Include(gc => gc.FilterLinksChannelIds));
+                    var config = uow._context.GuildConfigsForId(channel.Guild.Id, set => set.Include(gc => gc.FilterLinksChannelIds));
                     var match = new FilterLinksChannelId()
                     {
                         ChannelId = channel.Id
@@ -172,7 +173,7 @@ namespace NadekoBot.Modules.Permissions
                 bool enabled;
                 using (var uow = _db.GetDbContext())
                 {
-                    var config = uow.GuildConfigs.ForId(channel.Guild.Id, set => set);
+                    var config = uow._context.GuildConfigsForId(channel.Guild.Id, set => set);
                     enabled = config.FilterWords = !config.FilterWords;
                     await uow.SaveChangesAsync();
                 }
@@ -198,7 +199,7 @@ namespace NadekoBot.Modules.Permissions
                 FilterChannelId removed;
                 using (var uow = _db.GetDbContext())
                 {
-                    var config = uow.GuildConfigs.ForId(channel.Guild.Id, set => set.Include(gc => gc.FilterWordsChannelIds));
+                    var config = uow._context.GuildConfigsForId(channel.Guild.Id, set => set.Include(gc => gc.FilterWordsChannelIds));
 
                     var match = new FilterChannelId()
                     {
@@ -242,7 +243,7 @@ namespace NadekoBot.Modules.Permissions
                 FilteredWord removed;
                 using (var uow = _db.GetDbContext())
                 {
-                    var config = uow.GuildConfigs.ForId(channel.Guild.Id, set => set.Include(gc => gc.FilteredWords));
+                    var config = uow._context.GuildConfigsForId(channel.Guild.Id, set => set.Include(gc => gc.FilteredWords));
 
                     removed = config.FilteredWords.FirstOrDefault(fw => fw.Word.Trim().ToLowerInvariant() == word);
 

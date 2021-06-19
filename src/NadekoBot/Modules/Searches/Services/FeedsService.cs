@@ -10,6 +10,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NadekoBot.Modules.Administration;
 
 namespace NadekoBot.Modules.Searches.Services
 {
@@ -166,7 +167,7 @@ namespace NadekoBot.Modules.Searches.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                return uow.GuildConfigs.ForId(guildId, 
+                return uow._context.GuildConfigsForId(guildId, 
                         set => set.Include(x => x.FeedSubs)
                                         .ThenInclude(x => x.GuildConfig))
                     .FeedSubs
@@ -187,7 +188,7 @@ namespace NadekoBot.Modules.Searches.Services
 
             using (var uow = _db.GetDbContext())
             {
-                var gc = uow.GuildConfigs.ForId(guildId,
+                var gc = uow._context.GuildConfigsForId(guildId,
                     set => set.Include(x => x.FeedSubs)
                                     .ThenInclude(x => x.GuildConfig));
 
@@ -223,7 +224,7 @@ namespace NadekoBot.Modules.Searches.Services
 
             using (var uow = _db.GetDbContext())
             {
-                var items = uow.GuildConfigs.ForId(guildId, set => set.Include(x => x.FeedSubs))
+                var items = uow._context.GuildConfigsForId(guildId, set => set.Include(x => x.FeedSubs))
                     .FeedSubs
                     .OrderBy(x => x.Id)
                     .ToList();

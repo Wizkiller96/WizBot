@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using NadekoBot.Core.Modules.Searches.Common.StreamNotifications.Providers;
+using NadekoBot.Modules.Searches.Common.StreamNotifications.Providers;
 using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services.Database.Models;
 using Newtonsoft.Json;
 using Serilog;
 using StackExchange.Redis;
 
 #nullable enable
-namespace NadekoBot.Core.Modules.Searches.Common.StreamNotifications
+namespace NadekoBot.Modules.Searches.Common.StreamNotifications
 {
     public class NotifChecker
     {

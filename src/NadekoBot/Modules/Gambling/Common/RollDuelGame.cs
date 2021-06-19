@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace NadekoBot.Core.Modules.Gambling.Common
+namespace NadekoBot.Modules.Gambling.Common
 {
     public class RollDuelGame
     {

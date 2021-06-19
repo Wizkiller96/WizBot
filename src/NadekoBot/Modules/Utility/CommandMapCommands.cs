@@ -3,13 +3,16 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Extensions;
-using NadekoBot.Core.Services;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services;
+using NadekoBot.Services.Database.Models;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NadekoBot.Common.Attributes;
+using NadekoBot.Core.Services;
+using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Modules.Administration;
 using NadekoBot.Modules.Utility.Services;
 
 namespace NadekoBot.Modules.Utility
@@ -60,7 +63,7 @@ namespace NadekoBot.Modules.Utility
 
                     using (var uow = _db.GetDbContext())
                     {
-                        var config = uow.GuildConfigs.ForId(ctx.Guild.Id, set => set.Include(x => x.CommandAliases));
+                        var config = uow._context.GuildConfigsForId(ctx.Guild.Id, set => set.Include(x => x.CommandAliases));
                         var toAdd = new CommandAlias()
                         {
                             Mapping = mapping,
@@ -79,7 +82,7 @@ namespace NadekoBot.Modules.Utility
                 {
                     using (var uow = _db.GetDbContext())
                     {
-                        var config = uow.GuildConfigs.ForId(ctx.Guild.Id, set => set.Include(x => x.CommandAliases));
+                        var config = uow._context.GuildConfigsForId(ctx.Guild.Id, set => set.Include(x => x.CommandAliases));
                         config.CommandAliases.Add(new CommandAlias()
                         {
                             Mapping = mapping,
@@ -94,7 +97,7 @@ namespace NadekoBot.Modules.Utility
                 {
                     using (var uow = _db.GetDbContext())
                     {
-                        var config = uow.GuildConfigs.ForId(ctx.Guild.Id, set => set.Include(x => x.CommandAliases));
+                        var config = uow._context.GuildConfigsForId(ctx.Guild.Id, set => set.Include(x => x.CommandAliases));
                         var toAdd = new CommandAlias()
                         {
                             Mapping = mapping,

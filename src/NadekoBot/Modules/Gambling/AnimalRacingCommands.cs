@@ -6,14 +6,12 @@ using Discord.Commands;
 using Discord.WebSocket;
 using NadekoBot.Common.Attributes;
 using NadekoBot.Core.Common;
-using NadekoBot.Core.Modules.Gambling.Common;
-using NadekoBot.Core.Modules.Gambling.Common.AnimalRacing;
-using NadekoBot.Core.Modules.Gambling.Services;
 using NadekoBot.Core.Services;
-using NadekoBot.Extensions;
+using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Common.AnimalRacing;
-using NadekoBot.Modules.Gambling.Common.AnimalRacing.Exceptions;
 using NadekoBot.Modules.Gambling.Services;
+using NadekoBot.Extensions;
+using NadekoBot.Modules.Gambling.Common.AnimalRacing.Exceptions;
 using NadekoBot.Modules.Games.Services;
 
 namespace NadekoBot.Modules.Gambling

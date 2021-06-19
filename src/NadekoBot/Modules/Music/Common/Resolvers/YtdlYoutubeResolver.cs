@@ -10,7 +10,7 @@ using NadekoBot.Core.Services.Impl;
 using NadekoBot.Extensions;
 using Serilog;
 
-namespace NadekoBot.Core.Modules.Music
+namespace NadekoBot.Modules.Music
 {
     public sealed class YtdlYoutubeResolver : IYoutubeResolver
     {

@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NadekoBot.Core.Modules.Music;
+using NadekoBot.Modules.Music;
 using NadekoBot.Extensions;
 using Serilog;
 

@@ -4,7 +4,7 @@ using NadekoBot.Extensions;
 using System;
 using System.Threading.Tasks;
 using Discord;
-using NadekoBot.Core.Modules.Administration.Services;
+using NadekoBot.Modules.Administration.Services;
 using System.Linq;
 
 #if !GLOBAL_NADEKO

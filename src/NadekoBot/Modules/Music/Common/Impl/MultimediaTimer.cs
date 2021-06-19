@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using Serilog;
 
-namespace NadekoBot.Core.Modules.Music.Common
+namespace NadekoBot.Modules.Music.Common
 {
     public sealed class MultimediaTimer : IDisposable
     {

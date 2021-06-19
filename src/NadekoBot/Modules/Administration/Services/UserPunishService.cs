@@ -61,7 +61,7 @@ namespace NadekoBot.Modules.Administration.Services
             List<WarningPunishment> ps;
             using (var uow = _db.GetDbContext())
             {
-                ps = uow.GuildConfigs.ForId(guildId, set => set.Include(x => x.WarnPunishments))
+                ps = uow._context.GuildConfigsForId(guildId, set => set.Include(x => x.WarnPunishments))
                     .WarnPunishments;
 
                 warnings += uow._context
@@ -191,7 +191,7 @@ WHERE GuildId in (SELECT GuildId FROM GuildConfigs WHERE WarnExpireHours > 0 AND
         {
             using (var uow = _db.GetDbContext())
             {
-                var config = uow.GuildConfigs.ForId(guildId, inc => inc);
+                var config = uow._context.GuildConfigsForId(guildId, inc => inc);
 
                 if (config.WarnExpireHours == 0)
                     return;
@@ -220,7 +220,7 @@ WHERE GuildId={guildId}
         public Task<int> GetWarnExpire(ulong guildId)
         {
             using var uow = _db.GetDbContext();
-            var config = uow.GuildConfigs.ForId(guildId);
+            var config = uow._context.GuildConfigsForId(guildId, set => set);
             return Task.FromResult(config.WarnExpireHours / 24);
         }
         
@@ -228,7 +228,7 @@ WHERE GuildId={guildId}
         {
             using (var uow = _db.GetDbContext())
             {
-                var config = uow.GuildConfigs.ForId(guildId, inc => inc);
+                var config = uow._context.GuildConfigsForId(guildId, inc => inc);
 
                 config.WarnExpireHours = days * 24;
                 config.WarnExpireAction = delete ? WarnExpireAction.Delete : WarnExpireAction.Clear;
@@ -286,7 +286,7 @@ WHERE GuildId={guildId}
 
             using (var uow = _db.GetDbContext())
             {
-                var ps = uow.GuildConfigs.ForId(guildId, set => set.Include(x => x.WarnPunishments)).WarnPunishments;
+                var ps = uow._context.GuildConfigsForId(guildId, set => set.Include(x => x.WarnPunishments)).WarnPunishments;
                 var toDelete = ps.Where(x => x.Count == number);
 
                 uow._context.RemoveRange(toDelete);
@@ -310,7 +310,7 @@ WHERE GuildId={guildId}
 
             using (var uow = _db.GetDbContext())
             {
-                var ps = uow.GuildConfigs.ForId(guildId, set => set.Include(x => x.WarnPunishments)).WarnPunishments;
+                var ps = uow._context.GuildConfigsForId(guildId, set => set.Include(x => x.WarnPunishments)).WarnPunishments;
                 var p = ps.FirstOrDefault(x => x.Count == number);
 
                 if (p != null)
@@ -326,7 +326,7 @@ WHERE GuildId={guildId}
         {
             using (var uow = _db.GetDbContext())
             {
-                return uow.GuildConfigs.ForId(guildId, gc => gc.Include(x => x.WarnPunishments))
+                return uow._context.GuildConfigsForId(guildId, gc => gc.Include(x => x.WarnPunishments))
                     .WarnPunishments
                     .OrderBy(x => x.Count)
                     .ToArray();

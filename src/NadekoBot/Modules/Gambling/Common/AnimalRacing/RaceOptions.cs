@@ -1,7 +1,7 @@
 ﻿using CommandLine;
 using NadekoBot.Core.Common;
 
-namespace NadekoBot.Core.Modules.Gambling.Common.AnimalRacing
+namespace NadekoBot.Modules.Gambling.Common.AnimalRacing
 {
     public class RaceOptions : INadekoCommandOptions
     {

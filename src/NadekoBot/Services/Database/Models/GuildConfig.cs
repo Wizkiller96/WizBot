@@ -1,6 +1,7 @@
 ﻿using System;
 using NadekoBot.Common.Collections;
 using System.Collections.Generic;
+using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Core.Services.Database.Models
 {

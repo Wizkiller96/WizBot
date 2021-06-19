@@ -2,7 +2,7 @@
 using NadekoBot.Core.Common;
 using NadekoBot.Core.Services;
 
-namespace NadekoBot.Core.Modules.Utility.Services
+namespace NadekoBot.Modules.Utility.Services
 {
     public class InviteService : INService
     {

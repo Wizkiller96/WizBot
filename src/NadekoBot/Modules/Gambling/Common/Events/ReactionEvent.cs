@@ -11,10 +11,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NadekoBot.Core.Modules.Gambling.Services;
+using NadekoBot.Modules.Gambling.Services;
 using Serilog;
 
-namespace NadekoBot.Core.Modules.Gambling.Common.Events
+namespace NadekoBot.Modules.Gambling.Common.Events
 {
     public class ReactionEvent : ICurrencyEvent
     {

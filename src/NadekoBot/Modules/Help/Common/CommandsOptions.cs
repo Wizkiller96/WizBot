@@ -1,7 +1,7 @@
 ﻿using CommandLine;
 using NadekoBot.Core.Common;
 
-namespace NadekoBot.Core.Modules.Help.Common
+namespace NadekoBot.Modules.Help.Common
 {
     public class CommandsOptions : INadekoCommandOptions
     {

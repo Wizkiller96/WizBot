@@ -7,7 +7,7 @@ using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using NadekoBot.Core.Services.Database.Models;
 
-namespace NadekoBot.Core.Modules.Administration.Services
+namespace NadekoBot.Modules.Administration.Services
 {
     public class DangerousCommandsService : INService
     {

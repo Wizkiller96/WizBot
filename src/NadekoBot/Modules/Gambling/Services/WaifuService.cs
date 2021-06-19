@@ -1,6 +1,6 @@
 ﻿using Discord;
 using Microsoft.EntityFrameworkCore;
-using NadekoBot.Core.Modules.Gambling.Common.Waifu;
+using NadekoBot.Modules.Gambling.Common.Waifu;
 using NadekoBot.Core.Services;
 using NadekoBot.Core.Services.Database.Models;
 using NadekoBot.Core.Services.Database.Repositories;
@@ -8,8 +8,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NadekoBot.Core.Modules.Gambling.Common;
-using NadekoBot.Core.Modules.Gambling.Services;
+using NadekoBot.Modules.Gambling.Common;
+using NadekoBot.Modules.Gambling.Services;
+using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Gambling.Services
 {

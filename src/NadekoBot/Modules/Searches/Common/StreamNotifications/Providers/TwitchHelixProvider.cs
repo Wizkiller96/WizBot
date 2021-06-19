@@ -11,7 +11,7 @@
 // using Serilog;
 // using JsonSerializer = System.Text.Json.JsonSerializer;
 //
-// namespace NadekoBot.Core.Modules.Searches.Common.StreamNotifications.Providers
+// namespace NadekoBot.Modules.Searches.Common.StreamNotifications.Providers
 // {
 //     public sealed class TwitchHelixProvider : Provider
 //     {

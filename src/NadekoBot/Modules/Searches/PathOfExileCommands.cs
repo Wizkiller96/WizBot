@@ -2,7 +2,7 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using NadekoBot.Common.Attributes;
-using NadekoBot.Core.Modules.Searches.Common;
+using NadekoBot.Modules.Searches.Common;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Searches.Services;
 using Newtonsoft.Json;

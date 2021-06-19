@@ -12,7 +12,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using NadekoBot.Core.Modules.Searches.Common;
 using Serilog;
 
 namespace NadekoBot.Modules.NSFW

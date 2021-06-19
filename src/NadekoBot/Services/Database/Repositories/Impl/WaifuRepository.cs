@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services.Database.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Core.Services.Database.Repositories;
 
-namespace NadekoBot.Core.Services.Database.Repositories.Impl
+namespace NadekoBot.Services.Database.Repositories.Impl
 {
     public class WaifuRepository : Repository<WaifuInfo>, IWaifuRepository
     {

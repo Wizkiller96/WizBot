@@ -12,6 +12,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NadekoBot.Core.Services.Database.Repositories.Impl;
 
 namespace NadekoBot.Modules.Administration.Services
 {
@@ -45,7 +46,7 @@ namespace NadekoBot.Modules.Administration.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var conf = uow.GuildConfigs.ForId(guildId,
+                var conf = uow._context.GuildConfigsForId(guildId,
                     set => set.Include(x => x.DelMsgOnCmdChannels));
 
                 return (conf.DeleteMessageOnCommand, conf.DelMsgOnCmdChannels);
@@ -83,7 +84,7 @@ namespace NadekoBot.Modules.Administration.Services
             bool enabled;
             using (var uow = _db.GetDbContext())
             {
-                var conf = uow.GuildConfigs.ForId(guildId, set => set);
+                var conf = uow._context.GuildConfigsForId(guildId, set => set);
                 enabled = conf.DeleteMessageOnCommand = !conf.DeleteMessageOnCommand;
 
                 uow.SaveChanges();
@@ -95,7 +96,7 @@ namespace NadekoBot.Modules.Administration.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var conf = uow.GuildConfigs.ForId(guildId,
+                var conf = uow._context.GuildConfigsForId(guildId,
                     set => set.Include(x => x.DelMsgOnCmdChannels));
 
                 var old = conf.DelMsgOnCmdChannels.FirstOrDefault(x => x.ChannelId == chId);

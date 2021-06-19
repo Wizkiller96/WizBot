@@ -11,6 +11,7 @@ using NadekoBot.Extensions;
 using NadekoBot.Modules.Permissions.Common;
 using NadekoBot.Core.Services;
 using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Modules.Administration;
 
 namespace NadekoBot.Modules.Permissions.Services
 {
@@ -34,7 +35,7 @@ namespace NadekoBot.Modules.Permissions.Services
 
             using (var uow = _db.GetDbContext())
             {
-                foreach (var x in uow.GuildConfigs.Permissionsv2ForAll(client.Guilds.ToArray().Select(x => x.Id).ToList()))
+                foreach (var x in uow._context.GuildConfigs.Permissionsv2ForAll(client.Guilds.ToArray().Select(x => x.Id).ToList()))
                 {
                     Cache.TryAdd(x.GuildId, new PermissionCache()
                     {
@@ -52,7 +53,7 @@ namespace NadekoBot.Modules.Permissions.Services
             {
                 using (var uow = _db.GetDbContext())
                 {
-                    var config = uow.GuildConfigs.ForId(guildId,
+                    var config = uow._context.GuildConfigsForId(guildId,
                         set => set.Include(x => x.Permissions));
                     UpdateCache(config);
                 }
@@ -67,7 +68,7 @@ namespace NadekoBot.Modules.Permissions.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var config = uow.GuildConfigs.GcWithPermissionsv2For(guildId);
+                var config = uow._context.GcWithPermissionsv2For(guildId);
                 //var orderedPerms = new PermissionsCollection<Permissionv2>(config.Permissions);
                 var max = config.Permissions.Max(x => x.Index); //have to set its index to be the highest
                 foreach (var perm in perms)
@@ -174,7 +175,7 @@ namespace NadekoBot.Modules.Permissions.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var config = uow.GuildConfigs.GcWithPermissionsv2For(guildId);
+                var config = uow._context.GcWithPermissionsv2For(guildId);
                 config.Permissions = Permissionv2.GetDefaultPermlist;
                 await uow.SaveChangesAsync();
                 UpdateCache(config);

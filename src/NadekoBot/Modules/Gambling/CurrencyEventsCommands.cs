@@ -4,12 +4,11 @@ using NadekoBot.Extensions;
 using System.Threading.Tasks;
 using NadekoBot.Common.Attributes;
 using NadekoBot.Modules.Gambling.Services;
+using NadekoBot.Modules.Gambling.Common.Events;
+using System;
 using NadekoBot.Core.Common;
 using NadekoBot.Core.Services.Database.Models;
-using NadekoBot.Core.Modules.Gambling.Common.Events;
-using System;
-using NadekoBot.Core.Modules.Gambling.Common;
-using NadekoBot.Core.Modules.Gambling.Services;
+using NadekoBot.Modules.Gambling.Common;
 
 namespace NadekoBot.Modules.Gambling
 {

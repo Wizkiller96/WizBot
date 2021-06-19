@@ -8,13 +8,15 @@ using Discord.Commands;
 using NadekoBot.Common.Attributes;
 using NadekoBot.Core.Services;
 using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services;
+using NadekoBot.Services.Database.Models;
 using NadekoBot.Extensions;
 using NadekoBot.Modules;
 using NadekoBot.Modules.Music;
 using NadekoBot.Modules.Music.Services;
 using Serilog;
 
-namespace NadekoBot.Core.Modules.Music
+namespace NadekoBot.Modules.Music
 {
     public sealed partial class Music
     {

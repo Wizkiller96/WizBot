@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
-using NadekoBot.Core.Services.Impl;
 using System.Threading.Tasks;
-using NadekoBot.Core.Modules.Music;
+using NadekoBot.Core.Services.Impl;
 using NadekoBot.Extensions;
 using Newtonsoft.Json.Linq;
 

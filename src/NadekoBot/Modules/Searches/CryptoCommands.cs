@@ -1,6 +1,6 @@
 ﻿using Discord;
 using NadekoBot.Common.Attributes;
-using NadekoBot.Core.Modules.Searches.Services;
+using NadekoBot.Modules.Searches.Services;
 using NadekoBot.Extensions;
 using System.Threading.Tasks;
 

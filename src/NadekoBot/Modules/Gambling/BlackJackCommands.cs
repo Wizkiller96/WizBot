@@ -1,14 +1,16 @@
 ﻿using Discord;
 using Discord.Commands;
 using NadekoBot.Common.Attributes;
-using NadekoBot.Core.Common;
-using NadekoBot.Core.Modules.Gambling.Common;
-using NadekoBot.Core.Modules.Gambling.Common.Blackjack;
-using NadekoBot.Core.Modules.Gambling.Services;
-using NadekoBot.Core.Services;
+using NadekoBot.Common;
+using NadekoBot.Modules.Gambling.Common;
+using NadekoBot.Modules.Gambling.Common.Blackjack;
+using NadekoBot.Modules.Gambling.Services;
+using NadekoBot.Services;
 using NadekoBot.Extensions;
 using System.Linq;
 using System.Threading.Tasks;
+using NadekoBot.Core.Common;
+using NadekoBot.Core.Services;
 using Serilog;
 
 namespace NadekoBot.Modules.Gambling

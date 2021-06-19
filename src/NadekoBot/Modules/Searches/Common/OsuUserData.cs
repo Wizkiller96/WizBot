@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace NadekoBot.Core.Modules.Searches.Common
+namespace NadekoBot.Modules.Searches.Common
 {
     public class OsuUserData
     {

@@ -8,11 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common;
 using NadekoBot.Common.Attributes;
 using NadekoBot.Common.Collections;
-using NadekoBot.Core.Modules.Gambling.Common;
-using NadekoBot.Core.Modules.Gambling.Services;
+using NadekoBot.Modules.Gambling.Common;
+using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Core.Services;
 using NadekoBot.Core.Services.Database.Models;
 using NadekoBot.Extensions;
+using NadekoBot.Modules.Administration;
 using Serilog;
 
 namespace NadekoBot.Modules.Gambling
@@ -48,7 +49,7 @@ namespace NadekoBot.Modules.Gambling
                     throw new ArgumentOutOfRangeException(nameof(page));
                 
                 using var uow = _db.GetDbContext();
-                var entries = uow.GuildConfigs.ForId(ctx.Guild.Id,
+                var entries = uow._context.GuildConfigsForId(ctx.Guild.Id,
                         set => set.Include(x => x.ShopEntries)
                             .ThenInclude(x => x.Items)).ShopEntries
                         .ToIndexed();
@@ -94,7 +95,7 @@ namespace NadekoBot.Modules.Gambling
                 ShopEntry entry;
                 using (var uow = _db.GetDbContext())
                 {
-                    var config = uow.GuildConfigs.ForId(ctx.Guild.Id, set => set
+                    var config = uow._context.GuildConfigsForId(ctx.Guild.Id, set => set
                         .Include(x => x.ShopEntries)
                         .ThenInclude(x => x.Items));
                     var entries = new IndexedCollection<ShopEntry>(config.ShopEntries);
@@ -188,7 +189,7 @@ namespace NadekoBot.Modules.Gambling
                                 entry.Price).ConfigureAwait(false);
                             using (var uow = _db.GetDbContext())
                             {
-                                var entries = new IndexedCollection<ShopEntry>(uow.GuildConfigs.ForId(ctx.Guild.Id,
+                                var entries = new IndexedCollection<ShopEntry>(uow._context.GuildConfigsForId(ctx.Guild.Id,
                                     set => set.Include(x => x.ShopEntries)
                                               .ThenInclude(x => x.Items)).ShopEntries);
                                 entry = entries.ElementAtOrDefault(index);
@@ -234,13 +235,13 @@ namespace NadekoBot.Modules.Gambling
                 };
                 using (var uow = _db.GetDbContext())
                 {
-                    var entries = new IndexedCollection<ShopEntry>(uow.GuildConfigs.ForId(ctx.Guild.Id,
+                    var entries = new IndexedCollection<ShopEntry>(uow._context.GuildConfigsForId(ctx.Guild.Id,
                         set => set.Include(x => x.ShopEntries)
                                   .ThenInclude(x => x.Items)).ShopEntries)
                     {
                         entry
                     };
-                    uow.GuildConfigs.ForId(ctx.Guild.Id, set => set).ShopEntries = entries;
+                    uow._context.GuildConfigsForId(ctx.Guild.Id, set => set).ShopEntries = entries;
                     uow.SaveChanges();
                 }
                 await ctx.Channel.EmbedAsync(EntryToEmbed(entry)
@@ -262,13 +263,13 @@ namespace NadekoBot.Modules.Gambling
                 };
                 using (var uow = _db.GetDbContext())
                 {
-                    var entries = new IndexedCollection<ShopEntry>(uow.GuildConfigs.ForId(ctx.Guild.Id,
+                    var entries = new IndexedCollection<ShopEntry>(uow._context.GuildConfigsForId(ctx.Guild.Id,
                         set => set.Include(x => x.ShopEntries)
                                   .ThenInclude(x => x.Items)).ShopEntries)
                     {
                         entry
                     };
-                    uow.GuildConfigs.ForId(ctx.Guild.Id, set => set).ShopEntries = entries;
+                    uow._context.GuildConfigsForId(ctx.Guild.Id, set => set).ShopEntries = entries;
                     uow.SaveChanges();
                 }
                 await ctx.Channel.EmbedAsync(EntryToEmbed(entry)
@@ -292,7 +293,7 @@ namespace NadekoBot.Modules.Gambling
                 bool added = false;
                 using (var uow = _db.GetDbContext())
                 {
-                    var entries = new IndexedCollection<ShopEntry>(uow.GuildConfigs.ForId(ctx.Guild.Id,
+                    var entries = new IndexedCollection<ShopEntry>(uow._context.GuildConfigsForId(ctx.Guild.Id,
                         set => set.Include(x => x.ShopEntries)
                                   .ThenInclude(x => x.Items)).ShopEntries);
                     entry = entries.ElementAtOrDefault(index);
@@ -325,7 +326,7 @@ namespace NadekoBot.Modules.Gambling
                 ShopEntry removed;
                 using (var uow = _db.GetDbContext())
                 {
-                    var config = uow.GuildConfigs.ForId(ctx.Guild.Id, set => set
+                    var config = uow._context.GuildConfigsForId(ctx.Guild.Id, set => set
                         .Include(x => x.ShopEntries)
                         .ThenInclude(x => x.Items));
 

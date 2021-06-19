@@ -9,6 +9,7 @@ using System.Threading.Channels;
 using LinqToDB;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Core.Services.Database.Repositories.Impl;
 using NadekoBot.Extensions;
 using Serilog;
 
@@ -107,7 +108,7 @@ namespace NadekoBot.Modules.Administration.Services
         public async Task<IReadOnlyList<ulong>> ToggleAarAsync(ulong guildId, ulong roleId)
         {
             using var uow = _db.GetDbContext();
-            var gc = uow.GuildConfigs.ForId(guildId, set => set);
+            var gc = uow._context.GuildConfigsForId(guildId, set => set);
             var roles = gc.GetAutoAssignableRoles();
             if(!roles.Remove(roleId) && roles.Count < 3)
                 roles.Add(roleId);
@@ -142,7 +143,7 @@ namespace NadekoBot.Modules.Administration.Services
         {
             using var uow = _db.GetDbContext();
             
-            var gc = uow.GuildConfigs.ForId(guildId, set => set);
+            var gc = uow._context.GuildConfigsForId(guildId, set => set);
             gc.SetAutoAssignableRoles(newRoles);
             
             await uow.SaveChangesAsync();

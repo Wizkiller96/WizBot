@@ -1,5 +1,5 @@
 ﻿using Discord.WebSocket;
-using NadekoBot.Core.Modules.Gambling.Common;
+using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Core.Services;
 using NadekoBot.Modules.Gambling.Common.Connect4;
 using NadekoBot.Modules.Gambling.Common.WheelOfFortune;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using NadekoBot.Core.Modules.Gambling.Services;
+using NadekoBot.Modules.Gambling.Services;
 using Serilog;
 
 namespace NadekoBot.Modules.Gambling.Services

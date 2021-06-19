@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace NadekoBot.Core.Modules.Music
+namespace NadekoBot.Modules.Music
 {
     public interface IMusicQueue
     {

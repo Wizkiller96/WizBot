@@ -1,25 +1,21 @@
-﻿using NadekoBot.Core.Services.Database.Repositories;
-using NadekoBot.Core.Services.Database.Repositories.Impl;
+﻿using NadekoBot.Services.Database.Repositories;
+using NadekoBot.Services.Database.Repositories.Impl;
 using System;
 using System.Threading.Tasks;
+using NadekoBot.Core.Services.Database;
+using NadekoBot.Core.Services.Database.Repositories;
 
-namespace NadekoBot.Core.Services.Database
+namespace NadekoBot.Services.Database
 {
     public sealed class UnitOfWork : IUnitOfWork
     {
         public NadekoContext _context { get; }
-
-        private IGuildConfigRepository _guildConfigs;
-        public IGuildConfigRepository GuildConfigs => _guildConfigs ?? (_guildConfigs = new GuildConfigRepository(_context));
 
         private IWaifuRepository _waifus;
         public IWaifuRepository Waifus => _waifus ?? (_waifus = new WaifuRepository(_context));
 
         private IDiscordUserRepository _discordUsers;
         public IDiscordUserRepository DiscordUsers => _discordUsers ?? (_discordUsers = new DiscordUserRepository(_context));
-
-        private IXpRepository _xp;
-        public IXpRepository Xp => _xp ?? (_xp = new XpRepository(_context));
 
         public UnitOfWork(NadekoContext context)
         {

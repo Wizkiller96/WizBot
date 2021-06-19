@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NadekoBot.Core.Modules.Searches.Common
+namespace NadekoBot.Modules.Searches.Common
 {
     public sealed class Tag
     {

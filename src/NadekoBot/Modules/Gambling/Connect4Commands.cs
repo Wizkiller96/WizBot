@@ -2,16 +2,15 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using NadekoBot.Common.Attributes;
-using NadekoBot.Core.Common;
-using NadekoBot.Core.Modules.Gambling.Common;
-using NadekoBot.Core.Services;
+using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Gambling.Common.Connect4;
 using NadekoBot.Modules.Gambling.Services;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NadekoBot.Core.Modules.Gambling.Services;
+using NadekoBot.Core.Common;
+using NadekoBot.Core.Services;
 
 namespace NadekoBot.Modules.Gambling
 {

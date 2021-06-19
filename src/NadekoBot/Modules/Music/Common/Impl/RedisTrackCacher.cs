@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Serilog;
 using StackExchange.Redis;
 
-namespace NadekoBot.Core.Modules.Music
+namespace NadekoBot.Modules.Music
 {
     public sealed class RedisTrackCacher : ITrackCacher
     {

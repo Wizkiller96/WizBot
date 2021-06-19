@@ -82,7 +82,7 @@
 //             {
 //                 using (var uow = _db.GetDbContext())
 //                 {
-//                     return uow.GuildConfigs.ForId(guildId, set => set).DefaultMusicVolume;
+//                     return uow._context.GuildConfigsForId(guildId, set => set).DefaultMusicVolume;
 //                 }
 //             });
 //         }
@@ -256,7 +256,7 @@
 //             bool val;
 //             using (var uow = _db.GetDbContext())
 //             {
-//                 var gc = uow.GuildConfigs.ForId(id, set => set);
+//                 var gc = uow._context.GuildConfigsForId(id, set => set);
 //                 val = gc.AutoDcFromVc = !gc.AutoDcFromVc;
 //                 uow.SaveChanges();
 //             }
@@ -278,7 +278,7 @@
 //         {
 //             using (var uow = _db.GetDbContext())
 //             {
-//                 var ms = uow.GuildConfigs.ForId(guildId, set => set.Include(x => x.MusicSettings)).MusicSettings;
+//                 var ms = uow._context.GuildConfigsForId(guildId, set => set.Include(x => x.MusicSettings)).MusicSettings;
 //                 ms.MusicChannelId = cid;
 //                 uow.SaveChanges();
 //             }
@@ -288,7 +288,7 @@
 //         {
 //             using (var uow = _db.GetDbContext())
 //             {
-//                 var ms = uow.GuildConfigs.ForId(guildId, set => set.Include(x => x.MusicSettings)).MusicSettings;
+//                 var ms = uow._context.GuildConfigsForId(guildId, set => set.Include(x => x.MusicSettings)).MusicSettings;
 //                 ms.SongAutoDelete = val;
 //                 uow.SaveChanges();
 //             }

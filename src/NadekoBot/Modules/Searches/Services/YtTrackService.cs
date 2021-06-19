@@ -1,6 +1,6 @@
 ﻿using NadekoBot.Core.Services;
 
-namespace NadekoBot.Core.Modules.Searches.Services
+namespace NadekoBot.Modules.Searches.Services
 {
     // public class YtTrackService : INService
     // {
@@ -88,7 +88,7 @@ namespace NadekoBot.Core.Modules.Searches.Services
         //
         //     using(var uow = _db.GetDbContext())
         //     {
-        //         var gc = uow.GuildConfigs.ForId(guildId, set => set.Include(x => x.YtFollowedChannels));
+        //         var gc = uow._context.GuildConfigsForId(guildId, set => set.Include(x => x.YtFollowedChannels));
         //
         //         // see if this yt channel was already followed on this discord channel
         //         var oldObj = gc.YtFollowedChannels

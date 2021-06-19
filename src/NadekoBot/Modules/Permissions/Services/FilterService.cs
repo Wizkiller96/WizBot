@@ -11,6 +11,7 @@ using NadekoBot.Core.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Modules.Administration;
 using Serilog;
 
 namespace NadekoBot.Modules.Permissions.Services
@@ -46,7 +47,7 @@ namespace NadekoBot.Modules.Permissions.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var gc = uow.GuildConfigs.ForId(guildId,
+                var gc = uow._context.GuildConfigsForId(guildId,
                     set => set.Include(x => x.FilteredWords)
                         .Include(x => x.FilterWordsChannelIds));
 

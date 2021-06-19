@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NadekoBot.Common;
-using NadekoBot.Core.Modules.Gambling.Common.AnimalRacing;
+using NadekoBot.Modules.Gambling.Common.AnimalRacing;
 using NadekoBot.Core.Services;
 using NadekoBot.Core.Services.Database.Models;
 using NadekoBot.Extensions;

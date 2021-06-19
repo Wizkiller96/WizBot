@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using NadekoBot.Core.Common;
-using NadekoBot.Core.Modules.Music;
+using NadekoBot.Modules.Music;
 using NadekoBot.Core.Services;
 using NadekoBot.Modules.Administration.Services;
 using NadekoBot.Modules.Music.Resolvers;

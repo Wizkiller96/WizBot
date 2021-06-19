@@ -1,9 +1,9 @@
 ﻿using NadekoBot.Core.Common;
 using NadekoBot.Core.Common.Configs;
-using NadekoBot.Core.Modules.Gambling.Common;
+using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Core.Services;
 
-namespace NadekoBot.Core.Modules.Gambling.Services
+namespace NadekoBot.Modules.Gambling.Services
 {
     public sealed class GamblingConfigService : ConfigServiceBase<GamblingConfig>
     {

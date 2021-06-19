@@ -1,4 +1,4 @@
-﻿using NadekoBot.Core.Modules.Searches.Common;
+﻿using NadekoBot.Modules.Searches.Common;
 using NadekoBot.Core.Services;
 using NadekoBot.Extensions;
 using Newtonsoft.Json;
@@ -10,7 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Serilog;
 
-namespace NadekoBot.Core.Modules.Searches.Services
+namespace NadekoBot.Modules.Searches.Services
 {
     public class CryptoService : INService
     {

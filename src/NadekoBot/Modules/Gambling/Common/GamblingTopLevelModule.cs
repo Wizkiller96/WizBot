@@ -3,9 +3,9 @@ using Discord;
 using NadekoBot.Core.Services;
 using NadekoBot.Modules;
 using System.Threading.Tasks;
-using NadekoBot.Core.Modules.Gambling.Services;
+using NadekoBot.Modules.Gambling.Services;
 
-namespace NadekoBot.Core.Modules.Gambling.Common
+namespace NadekoBot.Modules.Gambling.Common
 {
     public abstract class GamblingModule<TService> : NadekoModule<TService>
     {

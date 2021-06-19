@@ -17,6 +17,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NadekoBot.Core.Common.Configs;
 using NadekoBot.Core.Services.Impl;
+using NadekoBot.Modules.Administration;
 using Serilog;
 
 namespace NadekoBot.Core.Services
@@ -107,7 +108,7 @@ namespace NadekoBot.Core.Services
 
             using (var uow = _db.GetDbContext())
             {
-                var gc = uow.GuildConfigs.ForId(guild.Id, set => set);
+                var gc = uow._context.GuildConfigsForId(guild.Id, set => set);
                 gc.Prefix = prefix;
                 uow.SaveChanges();
             }

@@ -1,6 +1,7 @@
 ﻿using System;
+using NadekoBot.Core.Services.Database.Models;
 
-namespace NadekoBot.Core.Services.Database.Models
+namespace NadekoBot.Services.Database.Models
 {
     public class DiscordUser : DbEntity
     {

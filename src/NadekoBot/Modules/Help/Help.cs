@@ -4,7 +4,7 @@ using NadekoBot.Common;
 using NadekoBot.Common.Attributes;
 using NadekoBot.Common.Replacements;
 using NadekoBot.Core.Common;
-using NadekoBot.Core.Modules.Help.Common;
+using NadekoBot.Modules.Help.Common;
 using NadekoBot.Core.Services;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Help.Services;

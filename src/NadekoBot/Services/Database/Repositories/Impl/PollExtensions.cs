@@ -1,8 +1,10 @@
-﻿using NadekoBot.Core.Services.Database.Models;
+﻿using NadekoBot.Services.Database.Models;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Core.Services.Database;
+using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services.Database;
 
 namespace NadekoBot.Modules.Games.Common
 {

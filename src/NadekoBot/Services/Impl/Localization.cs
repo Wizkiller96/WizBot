@@ -6,6 +6,7 @@ using Discord;
 using NadekoBot.Common;
 using Newtonsoft.Json;
 using System.IO;
+using NadekoBot.Modules.Administration;
 
 namespace NadekoBot.Core.Services.Impl
 {
@@ -55,7 +56,7 @@ namespace NadekoBot.Core.Services.Impl
 
             using (var uow = _db.GetDbContext())
             {
-                var gc = uow.GuildConfigs.ForId(guildId, set => set);
+                var gc = uow._context.GuildConfigsForId(guildId, set => set);
                 gc.Locale = ci.Name;
                 uow.SaveChanges();
             }
@@ -73,7 +74,7 @@ namespace NadekoBot.Core.Services.Impl
             {
                 using (var uow = _db.GetDbContext())
                 {
-                    var gc = uow.GuildConfigs.ForId(guildId, set => set);
+                    var gc = uow._context.GuildConfigsForId(guildId, set => set);
                     gc.Locale = null;
                     uow.SaveChanges();
                 }

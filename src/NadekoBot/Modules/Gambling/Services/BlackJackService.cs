@@ -1,8 +1,8 @@
-﻿using NadekoBot.Core.Modules.Gambling.Common.Blackjack;
+﻿using NadekoBot.Modules.Gambling.Common.Blackjack;
 using NadekoBot.Core.Services;
 using System.Collections.Concurrent;
 
-namespace NadekoBot.Core.Modules.Gambling.Services
+namespace NadekoBot.Modules.Gambling.Services
 {
     public class BlackJackService : INService
     {

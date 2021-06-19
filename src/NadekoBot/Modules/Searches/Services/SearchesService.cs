@@ -2,12 +2,11 @@
 using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common;
-using NadekoBot.Core.Modules.Searches.Common;
+using NadekoBot.Modules.Searches.Common;
 using NadekoBot.Core.Services;
 using NadekoBot.Core.Services.Database.Models;
 using NadekoBot.Core.Services.Impl;
 using NadekoBot.Extensions;
-using NadekoBot.Modules.Searches.Common;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SixLabors.ImageSharp;
@@ -21,16 +20,14 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
-using Microsoft.EntityFrameworkCore.Internal;
+using NadekoBot.Modules.Administration;
 using Serilog;
 using HorizontalAlignment = SixLabors.Fonts.HorizontalAlignment;
 using Image = SixLabors.ImageSharp.Image;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace NadekoBot.Modules.Searches.Services
 {
@@ -413,7 +410,7 @@ namespace NadekoBot.Modules.Searches.Services
             bool added;
             using (var uow = _db.GetDbContext())
             {
-                var gc = uow.GuildConfigs.ForId(guildId, set => set.Include(y => y.NsfwBlacklistedTags));
+                var gc = uow._context.GuildConfigsForId(guildId, set => set.Include(y => y.NsfwBlacklistedTags));
                 if (gc.NsfwBlacklistedTags.Add(tagObj))
                     added = true;
                 else

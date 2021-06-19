@@ -8,7 +8,7 @@ using NadekoBot.Core.Services;
 using NadekoBot.Modules.Gambling.Common;
 using Serilog;
 
-namespace NadekoBot.Core.Modules.Gambling.Common.Blackjack
+namespace NadekoBot.Modules.Gambling.Common.Blackjack
 {
     public class Blackjack
     {

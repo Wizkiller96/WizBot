@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Discord;
 using NadekoBot.Core.Common;
-using NadekoBot.Core.Modules.Music;
+using NadekoBot.Modules.Music;
 using NadekoBot.Core.Services.Database.Models;
 
 namespace NadekoBot.Modules.Music.Services

@@ -1,7 +1,7 @@
 ﻿using CommandLine;
 using NadekoBot.Core.Common;
 
-namespace NadekoBot.Core.Modules.Gambling.Common.Events
+namespace NadekoBot.Modules.Gambling.Common.Events
 {
     public class EventOptions : INadekoCommandOptions
     {

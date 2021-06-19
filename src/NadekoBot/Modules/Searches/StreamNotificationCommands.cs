@@ -10,6 +10,8 @@ using NadekoBot.Common.Attributes;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Searches.Services;
 using Discord.WebSocket;
+using NadekoBot.Modules.Administration;
+using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Searches
 {
@@ -87,8 +89,8 @@ namespace NadekoBot.Modules.Searches
                 List<FollowedStream> streams = new List<FollowedStream>();
                 using (var uow = _db.GetDbContext())
                 {
-                    var all = uow.GuildConfigs
-                        .ForId(ctx.Guild.Id, set => set.Include(gc => gc.FollowedStreams))
+                    var all = uow._context
+                        .GuildConfigsForId(ctx.Guild.Id, set => set.Include(gc => gc.FollowedStreams))
                         .FollowedStreams
                         .OrderBy(x => x.Id)
                         .ToList();

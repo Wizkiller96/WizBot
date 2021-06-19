@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using NadekoBot.Common.Attributes;
 using NadekoBot.Common.Collections;
 using NadekoBot.Common.TypeReaders;
+using NadekoBot.Modules.Administration;
 using NadekoBot.Modules.Permissions.Services;
 
 namespace NadekoBot.Modules.Permissions
@@ -47,7 +48,7 @@ namespace NadekoBot.Modules.Permissions
                 var name = command.Name.ToLowerInvariant();
                 using (var uow = _db.GetDbContext())
                 {
-                    var config = uow.GuildConfigs.ForId(channel.Guild.Id, set => set.Include(gc => gc.CommandCooldowns));
+                    var config = uow._context.GuildConfigsForId(channel.Guild.Id, set => set.Include(gc => gc.CommandCooldowns));
                     var localSet = CommandCooldowns.GetOrAdd(channel.Guild.Id, new ConcurrentHashSet<CommandCooldown>());
 
                     var toDelete = config.CommandCooldowns.FirstOrDefault(cc => cc.CommandName == name);

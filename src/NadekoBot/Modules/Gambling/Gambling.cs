@@ -3,10 +3,8 @@ using Discord.Commands;
 using Discord.WebSocket;
 using NadekoBot.Common;
 using NadekoBot.Common.Attributes;
-using NadekoBot.Core.Common;
-using NadekoBot.Core.Modules.Gambling.Common;
-using NadekoBot.Core.Services;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Modules.Gambling.Common;
+using NadekoBot.Services.Database.Models;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Gambling.Services;
 using System;
@@ -15,8 +13,10 @@ using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
-using NadekoBot.Core.Modules.Gambling.Services;
+using NadekoBot.Core.Common;
+using NadekoBot.Core.Services;
 using NadekoBot.Core.Services.Database;
+using NadekoBot.Core.Services.Database.Models;
 
 namespace NadekoBot.Modules.Gambling
 {

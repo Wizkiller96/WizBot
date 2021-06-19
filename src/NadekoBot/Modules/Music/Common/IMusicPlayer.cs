@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using NadekoBot.Core.Services.Database.Models;
 
 #nullable enable
-namespace NadekoBot.Core.Modules.Music
+namespace NadekoBot.Modules.Music
 {
     public interface IMusicPlayer : IDisposable
     {
