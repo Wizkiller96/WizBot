@@ -77,17 +77,6 @@ namespace NadekoBot.Db
                 .Sum(x => x.Price);
         }
 
-        public static int AffinityCount(this DbSet<WaifuUpdate> updates, ulong userId)
-        {
-            return updates
-                .FromSqlInterpolated($@"SELECT 1 
-FROM WaifuUpdates
-WHERE UserId = (SELECT Id from DiscordUser WHERE UserId={userId}) AND 
-    UpdateType = 0 AND 
-    NewId IS NOT NULL")
-                .Count();
-        }
-
         public static ulong GetWaifuUserId(this DbSet<WaifuInfo> waifus, ulong ownerId, string name)
         {
             return waifus

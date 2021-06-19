@@ -626,6 +626,7 @@
   "messages": "Messages",
   "repeater_created": "Repeater Created",
   "repeater_removed": "Repeater #{0} Removed",
+  "repeater_exceed_limit": "You cannot have more than {0} repeaters per server.",
   "repeater_remove_fail": "Failed removing repeater on that index. Either you've specified invalid index, or repeater was in executing state at that time, in which case, try again in a few seconds.",
   "interval:": "Interval:",
   "executes_in:": "Executes in:",
