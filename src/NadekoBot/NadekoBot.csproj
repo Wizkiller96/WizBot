@@ -40,8 +40,6 @@
     <PackageReference Include="SixLabors.ImageSharp" Version="1.0.3" />
     <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0010" />
     <PackageReference Include="StackExchange.Redis" Version="2.2.4" />
-    <PackageReference Include="System.Threading.Channels" Version="5.0.0" />
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
     <PackageReference Include="VideoLibrary" Version="3.1.2" />
     <PackageReference Include="YamlDotNet" Version="11.2.0" />
     <PackageReference Include="YoutubeExplode" Version="6.0.2" />
