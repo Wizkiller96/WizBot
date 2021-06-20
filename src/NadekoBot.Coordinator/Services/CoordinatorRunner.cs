@@ -193,6 +193,10 @@ namespace NadekoBot.Coordinator
                 Arguments = string.Format(_config.ShardStartArgs,
                     shardId,
                     Environment.ProcessId),
+                EnvironmentVariables =
+                {
+                    {"NADEKOBOT_IS_COORDINATED", "1"}
+                }
                 // CreateNoWindow = true,
                 // UseShellExecute = false,
             });

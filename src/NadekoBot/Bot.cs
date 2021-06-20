@@ -119,7 +119,7 @@ namespace NadekoBot
                 AllGuildConfigs = uow.GuildConfigs.GetAllGuildConfigs(startingGuildIdList).ToImmutableArray();
             }
 
-            var s = new ServiceCollection()
+            var svcs = new ServiceCollection()
                 .AddSingleton<IBotCredentials>(Credentials)
                 .AddSingleton(_db)
                 .AddSingleton(Client)
@@ -139,25 +139,30 @@ namespace NadekoBot
                 .AddMusic()
                 ;
 
-            s.AddHttpClient();
-            s.AddHttpClient("memelist").ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+            svcs.AddHttpClient();
+            svcs.AddHttpClient("memelist").ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
             {
                 AllowAutoRedirect = false
             });
 
-            s.LoadFrom(Assembly.GetAssembly(typeof(CommandHandler)));
+            svcs.LoadFrom(Assembly.GetAssembly(typeof(CommandHandler)));
 
-            // todo if sharded
-            s
-             .AddSingleton<ICoordinator, RemoteGrpcCoordinator>()
-             .AddSingleton<IReadyExecutor>(x => (IReadyExecutor)x.GetRequiredService<ICoordinator>());
+            if (Environment.GetEnvironmentVariable("NADEKOBOT_IS_COORDINATED") != "1")
+            {
+                svcs.AddSingleton<ICoordinator, SingleProcessCoordinator>();
+            }
+            else
+            {
+                svcs.AddSingleton<ICoordinator, RemoteGrpcCoordinator>()
+                    .AddSingleton<IReadyExecutor>(x => (IReadyExecutor)x.GetRequiredService<ICoordinator>());
+            }
 
-            s.AddSingleton<IReadyExecutor>(x => x.GetService<SelfService>());
-            s.AddSingleton<IReadyExecutor>(x => x.GetService<CustomReactionsService>());
-            s.AddSingleton<IReadyExecutor>(x => x.GetService<RepeaterService>());
+            svcs.AddSingleton<IReadyExecutor>(x => x.GetService<SelfService>());
+            svcs.AddSingleton<IReadyExecutor>(x => x.GetService<CustomReactionsService>());
+            svcs.AddSingleton<IReadyExecutor>(x => x.GetService<RepeaterService>());
 
             //initialize Services
-            Services = s.BuildServiceProvider();
+            Services = svcs.BuildServiceProvider();
             var commandHandler = Services.GetService<CommandHandler>();
 
             if (Client.ShardId == 0)
@@ -166,7 +171,7 @@ namespace NadekoBot
             }
 
             //what the fluff
-            commandHandler.AddServices(s);
+            commandHandler.AddServices(svcs);
             _ = LoadTypeReaders(typeof(Bot).Assembly);
 
             sw.Stop();
