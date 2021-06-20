@@ -12,6 +12,13 @@ namespace NadekoBot.Extensions
 {
     public static class StringExtensions
     {
+        public static string PadBoth(this string str, int length)
+        {
+            int spaces = length - str.Length;
+            int padLeft = spaces / 2 + str.Length;
+            return str.PadLeft(padLeft).PadRight(length);
+        }
+        
         public static T MapJson<T>(this string str)
             => JsonConvert.DeserializeObject<T>(str);
 

@@ -126,7 +126,7 @@ namespace NadekoBot.Modules.Music.Services
             var responseSpan = response.AsSpan().Slice(140_000);
             var startIndex = responseSpan.IndexOf(YT_RESULT_INITIAL_DATA);
             if (startIndex == -1)
-                return null; // todo try selecting html
+                return null; // todo future try selecting html
             startIndex += YT_RESULT_INITIAL_DATA.Length;
 
             var endIndex = 140_000 + startIndex + responseSpan.Slice(startIndex + 20_000).IndexOf(YT_RESULT_JSON_END) + 20_000;

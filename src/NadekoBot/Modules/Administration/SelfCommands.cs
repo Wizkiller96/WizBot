@@ -256,36 +256,47 @@ namespace NadekoBot.Modules.Administration
 
                 var statuses = _coord.GetAllShardStatuses();
 
-                var status = string.Join(", ", statuses
-                    .GroupBy(x => x.ConnectionState)
-                    .Select(x => $"{x.Count()} {x.Key}")
+                var status = string.Join(" : ", statuses
+                    .Select(x => (ConnectionStateToEmoji(x), x))
+                    .GroupBy(x => x.Item1)
+                    .Select(x => $"`{x.Count()} {x.Key}`")
                     .ToArray());
 
                 var allShardStrings = statuses
-                    .Select(x =>
+                    .Select(st =>
                     {
-                        var timeDiff = DateTime.UtcNow - x.Time;
-                        if (timeDiff >= TimeSpan.FromSeconds(30))
-                            return $"Shard #{Format.Bold(x.ShardId.ToString())} **UNRESPONSIVE** for {timeDiff.ToString(@"hh\:mm\:ss")}";
-                        return GetText("shard_stats_txt", x.ShardId.ToString(),
-                            Format.Bold(x.ConnectionState.ToString()), Format.Bold(x.Guilds.ToString()), timeDiff.ToString(@"hh\:mm\:ss"));
+                        var stateStr = ConnectionStateToEmoji(st);
+                        var timeDiff = DateTime.UtcNow - st.LastUpdate;
+                        var maxGuildCountLength = statuses.Max(x => x.GuildCount).ToString().Length;
+                        return $"`{stateStr} " +
+                               $"| #{st.ShardId.ToString().PadBoth(3)} " +
+                               $"| {timeDiff:mm\\:ss} " +
+                               $"| {st.GuildCount.ToString().PadBoth(maxGuildCountLength)} `";
                     })
                     .ToArray();
-
                 await ctx.SendPaginatedConfirmAsync(page, (curPage) =>
                 {
-
                     var str = string.Join("\n", allShardStrings.Skip(25 * curPage).Take(25));
 
                     if (string.IsNullOrWhiteSpace(str))
                         str = GetText("no_shards_on_page");
 
                     return new EmbedBuilder()
-                        .WithAuthor(a => a.WithName(GetText("shard_stats")))
-                        .WithTitle(status)
                         .WithOkColor()
-                        .WithDescription(str);
+                        .WithDescription($"{status}\n\n{str}");
                 }, allShardStrings.Length, 25).ConfigureAwait(false);
+            }
+
+            private static string ConnectionStateToEmoji(ShardStatus status)
+            {
+                var timeDiff = DateTime.UtcNow - status.LastUpdate;
+                return status.ConnectionState switch
+                {
+                    ConnectionState.Connected => "✅",
+                    ConnectionState.Disconnected => "🔻",
+                    _ when timeDiff > TimeSpan.FromSeconds(30) => " ❗ ",
+                    _ => " ⏳"
+                };
             }
 
             [NadekoCommand, Usage, Description, Aliases]

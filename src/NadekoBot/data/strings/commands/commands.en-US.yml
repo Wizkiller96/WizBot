@@ -1446,7 +1446,9 @@ stringsreload:
   args:
     - ""
 shardstats:
-  desc: "Stats for shards. Paginated with 25 shards per page."
+  desc: |-
+    Stats for shards. Paginated with 25 shards per page.
+    Format: `[status] | # [shard_id] | [last_heartbeat] | [server_count]`
   args:
     - ""
     - "2"

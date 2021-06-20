@@ -54,7 +54,7 @@ namespace NadekoBot.Services
             return true;
         }
 
-        public IEnumerable<ShardStatus> GetAllShardStatuses()
+        public IList<ShardStatus> GetAllShardStatuses()
         {
             var res = _coordClient.GetAllStatuses(new GetAllStatusesRequest());
 
@@ -63,9 +63,9 @@ namespace NadekoBot.Services
                 .Map(s => new ShardStatus()
                 {
                     ConnectionState = FromCoordConnState(s.State),
-                    Guilds = s.GuildCount,
+                    GuildCount = s.GuildCount,
                     ShardId = s.ShardId,
-                    Time = s.LastUpdate.ToDateTime(),
+                    LastUpdate = s.LastUpdate.ToDateTime(),
                 });
         }
 
@@ -88,7 +88,7 @@ namespace NadekoBot.Services
                         var reply = await _coordClient.HeartbeatAsync(new HeartbeatRequest
                         {
                             State = ToCoordConnState(_client.ConnectionState),
-                            GuildCount = _client.ConnectionState == Discord.ConnectionState.Connected ? _client.Guilds.Count : 0,
+                            GuildCount = _client.ConnectionState == ConnectionState.Connected ? _client.Guilds.Count : 0,
                             ShardId = _client.ShardId,
                         }, deadline: DateTime.UtcNow + TimeSpan.FromSeconds(10));
                         gracefulImminent = reply.GracefulImminent;
@@ -119,20 +119,20 @@ namespace NadekoBot.Services
             return Task.CompletedTask;
         }
 
-        private ConnState ToCoordConnState(Discord.ConnectionState state)
+        private ConnState ToCoordConnState(ConnectionState state)
             => state switch
             {
-                Discord.ConnectionState.Connecting => ConnState.Connecting,
-                Discord.ConnectionState.Connected => ConnState.Connected,
+                ConnectionState.Connecting => ConnState.Connecting,
+                ConnectionState.Connected => ConnState.Connected,
                 _ => ConnState.Disconnected
             };
 
-        private Discord.ConnectionState FromCoordConnState(ConnState state)
+        private ConnectionState FromCoordConnState(ConnState state)
             => state switch
             {
-                ConnState.Connecting => Discord.ConnectionState.Connecting,
-                ConnState.Connected => Discord.ConnectionState.Connected,
-                _ => Discord.ConnectionState.Disconnected
+                ConnState.Connecting => ConnectionState.Connecting,
+                ConnState.Connected => ConnectionState.Connected,
+                _ => ConnectionState.Disconnected
             };
     }
 }
