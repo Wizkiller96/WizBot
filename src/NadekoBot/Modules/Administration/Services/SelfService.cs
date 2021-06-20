@@ -5,17 +5,15 @@ using Discord;
 using Discord.WebSocket;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Extensions;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using StackExchange.Redis;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services.Database.Models;
 using System.Threading;
 using System.Collections.Concurrent;
 using System;
 using System.Net.Http;
-using NadekoBot.Services;
 using Serilog;
 
 namespace NadekoBot.Modules.Administration.Services

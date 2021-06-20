@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using NadekoBot.Common.Attributes;
 using NadekoBot.Modules.Games.Common.Acrophobia;
 using NadekoBot.Modules.Games.Services;
-using NadekoBot.Core.Common;
+using NadekoBot.Common;
 
 namespace NadekoBot.Modules.Games
 {

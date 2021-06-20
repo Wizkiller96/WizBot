@@ -1,7 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using NadekoBot.Extensions;
 using System.Globalization;
 using System.Threading.Tasks;

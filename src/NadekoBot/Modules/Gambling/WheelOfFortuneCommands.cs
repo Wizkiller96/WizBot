@@ -6,8 +6,8 @@ using Wof = NadekoBot.Modules.Gambling.Common.WheelOfFortune.WheelOfFortuneGame;
 using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Modules.Gambling.Common;
 using System.Collections.Immutable;
-using NadekoBot.Core.Common;
-using NadekoBot.Core.Services;
+using NadekoBot.Common;
+using NadekoBot.Services;
 
 namespace NadekoBot.Modules.Gambling
 {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using NadekoBot.Modules.Gambling.Common;
 using Serilog;
 

@@ -5,7 +5,7 @@ using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Services;
 using Serilog;
 
-namespace NadekoBot.Core.Services
+namespace NadekoBot.Services
 {
     public sealed class GamblingConfigMigrator : IConfigMigrator
     {

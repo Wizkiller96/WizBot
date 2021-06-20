@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NadekoBot.Core.Services
+namespace NadekoBot.Services
 {
     public interface IStatsService : INService
     {

@@ -1,7 +1,7 @@
-﻿using NadekoBot.Core.Common;
-using NadekoBot.Core.Common.Configs;
+﻿using NadekoBot.Common;
+using NadekoBot.Common.Configs;
 using NadekoBot.Modules.Gambling.Common;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 
 namespace NadekoBot.Modules.Gambling.Services
 {

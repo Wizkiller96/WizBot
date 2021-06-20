@@ -1,5 +1,5 @@
 ﻿using CommandLine;
-using NadekoBot.Core.Common;
+using NadekoBot.Common;
 
 namespace NadekoBot.Modules.Help.Common
 {

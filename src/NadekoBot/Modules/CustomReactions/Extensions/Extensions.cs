@@ -4,7 +4,7 @@ using Discord;
 using Discord.WebSocket;
 using NadekoBot.Common;
 using NadekoBot.Common.Replacements;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services.Database.Models;
 using NadekoBot.Extensions;
 using System;
 using System.Collections.Generic;

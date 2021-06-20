@@ -1,14 +1,14 @@
 ﻿using Discord;
 using Discord.Commands;
 using NadekoBot.Common.Attributes;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.CustomReactions.Services;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using NadekoBot.Core.Common;
+using NadekoBot.Common;
 
 namespace NadekoBot.Modules.CustomReactions
 {

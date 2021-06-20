@@ -1,5 +1,5 @@
 ﻿using NadekoBot.Modules.Gambling.Common.Blackjack;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using System.Collections.Concurrent;
 
 namespace NadekoBot.Modules.Gambling.Services

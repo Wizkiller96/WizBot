@@ -5,13 +5,12 @@ using Discord.WebSocket;
 using NadekoBot.Common;
 using NadekoBot.Common.Attributes;
 using NadekoBot.Common.Replacements;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services.Database.Models;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Administration.Services;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using NadekoBot.Core.Services;
 using NadekoBot.Services;
 using Serilog;
 

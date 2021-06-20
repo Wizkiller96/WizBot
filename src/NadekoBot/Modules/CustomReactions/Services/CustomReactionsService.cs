@@ -2,8 +2,8 @@
 using Discord.WebSocket;
 using NadekoBot.Common;
 using NadekoBot.Common.ModuleBehaviors;
-using NadekoBot.Core.Services;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services;
+using NadekoBot.Services.Database.Models;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.CustomReactions.Extensions;
 using NadekoBot.Modules.Permissions.Common;
@@ -16,7 +16,6 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.Yml;
-using NadekoBot.Core.Common;
 using NadekoBot.Db;
 using Serilog;
 using YamlDotNet.Serialization;

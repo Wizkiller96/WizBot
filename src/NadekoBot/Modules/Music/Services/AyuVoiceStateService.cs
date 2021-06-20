@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Ayu.Discord.Voice;
 using Discord.WebSocket;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 
 namespace NadekoBot.Modules.Music.Services
 {

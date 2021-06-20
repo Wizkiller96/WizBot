@@ -8,8 +8,8 @@
 // using NadekoBot.Extensions;
 // using NadekoBot.Common.Collections;
 // using NadekoBot.Modules.Music.Services;
-// using NadekoBot.Core.Services;
-// using NadekoBot.Core.Services.Database.Models;
+// using NadekoBot.Services;
+// using NadekoBot.Services.Database.Models;
 // using Discord.WebSocket;
 // using Serilog;
 //

@@ -1,6 +1,6 @@
 ﻿using Discord.WebSocket;
 using NadekoBot.Modules.Gambling.Common;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using NadekoBot.Modules.Gambling.Common.Connect4;
 using NadekoBot.Modules.Gambling.Common.WheelOfFortune;
 using Newtonsoft.Json;

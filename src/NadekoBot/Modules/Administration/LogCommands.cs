@@ -4,7 +4,7 @@ using Discord.Commands;
 using NadekoBot.Common;
 using NadekoBot.Common.Attributes;
 using NadekoBot.Common.TypeReaders.Models;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services.Database.Models;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Administration.Services;
 using System;

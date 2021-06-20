@@ -3,9 +3,8 @@ using Discord.Commands;
 using NadekoBot.Common;
 using NadekoBot.Common.Attributes;
 using NadekoBot.Common.Replacements;
-using NadekoBot.Core.Common;
 using NadekoBot.Modules.Help.Common;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Help.Services;
 using NadekoBot.Modules.Permissions.Services;
@@ -14,15 +13,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Amazon.S3;
 using Amazon.S3.Model;
 using Discord.WebSocket;
-using NadekoBot.Core.Common.Attributes;
-using NadekoBot.Core.Services.Impl;
 using Serilog;
 
 namespace NadekoBot.Modules.Help

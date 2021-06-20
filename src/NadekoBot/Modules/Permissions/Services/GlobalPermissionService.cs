@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
 using NadekoBot.Common.ModuleBehaviors;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 
 namespace NadekoBot.Modules.Permissions.Services
 {

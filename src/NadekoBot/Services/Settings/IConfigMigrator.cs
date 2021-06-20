@@ -1,4 +1,4 @@
-﻿namespace NadekoBot.Core.Services
+﻿namespace NadekoBot.Services
 {
     public interface IConfigMigrator
     {

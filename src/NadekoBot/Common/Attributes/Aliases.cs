@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Discord.Commands;
-using NadekoBot.Core.Services.Impl;
+using NadekoBot.Services;
 namespace NadekoBot.Common.Attributes
 {
     [AttributeUsage(AttributeTargets.Method)]

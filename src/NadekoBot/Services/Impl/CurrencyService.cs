@@ -1,7 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using NadekoBot.Core.Services.Database;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services.Database;
+using NadekoBot.Services.Database.Models;
 using NadekoBot.Extensions;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using NadekoBot.Db;
 using NadekoBot.Modules.Gambling.Services;
 
-namespace NadekoBot.Core.Services
+namespace NadekoBot.Services
 {
     public class CurrencyService : ICurrencyService
     {

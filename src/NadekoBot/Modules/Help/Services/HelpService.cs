@@ -7,7 +7,7 @@ using NadekoBot.Extensions;
 using System.Linq;
 using NadekoBot.Common.Attributes;
 using NadekoBot.Common.ModuleBehaviors;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using NadekoBot.Common;
 using CommandLine;
 using System.Collections.Generic;

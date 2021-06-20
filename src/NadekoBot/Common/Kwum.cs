@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace NadekoBot.Core.Common
+namespace NadekoBot.Common
 {
     // needs proper invalid input check (character array input out of range)
     // needs negative number support

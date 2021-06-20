@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace NadekoBot.Core.Common
+namespace NadekoBot.Common
 {
     public interface IPlaceholderProvider
     {

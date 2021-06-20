@@ -1,6 +1,6 @@
 ﻿using AngleSharp;
 using AngleSharp.Html.Dom;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using NadekoBot.Modules.Searches.Common;
 using Newtonsoft.Json;
 using System;

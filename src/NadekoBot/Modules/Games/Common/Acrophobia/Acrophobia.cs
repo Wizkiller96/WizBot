@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using CommandLine;
 using NadekoBot.Common;
-using NadekoBot.Core.Common;
 using NadekoBot.Extensions;
 
 namespace NadekoBot.Modules.Games.Common.Acrophobia

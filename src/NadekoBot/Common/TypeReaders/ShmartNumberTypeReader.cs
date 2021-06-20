@@ -1,14 +1,14 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NadekoBot.Db;
 using NadekoBot.Modules.Gambling.Services;
 
-namespace NadekoBot.Core.Common.TypeReaders
+namespace NadekoBot.Common.TypeReaders
 {
     public class ShmartNumberTypeReader : NadekoTypeReader<ShmartNumber>
     {

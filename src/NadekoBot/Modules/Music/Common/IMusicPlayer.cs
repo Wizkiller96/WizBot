@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services.Database.Models;
 
 #nullable enable
 namespace NadekoBot.Modules.Music

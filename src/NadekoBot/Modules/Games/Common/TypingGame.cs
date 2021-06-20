@@ -9,7 +9,6 @@ using NadekoBot.Common;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Games.Services;
 using CommandLine;
-using NadekoBot.Core.Common;
 using Serilog;
 
 namespace NadekoBot.Modules.Games.Common

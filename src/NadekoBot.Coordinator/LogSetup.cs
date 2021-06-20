@@ -4,7 +4,7 @@ using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
 
-namespace NadekoBot.Core.Services
+namespace NadekoBot.Services
 {
     public static class LogSetup
     {
@@ -28,10 +28,13 @@ namespace NadekoBot.Core.Services
         {
             if(Environment.OSVersion.Platform == PlatformID.Unix)
                 return AnsiConsoleTheme.Code;
+            
+            
 #if DEBUG
             return AnsiConsoleTheme.Code;
-#endif
+#else
             return ConsoleTheme.None;
+#endif
         }
     }
 }

@@ -1,8 +1,8 @@
-﻿using NadekoBot.Core.Common.Pokemon;
+﻿using NadekoBot.Common.Pokemon;
 using NadekoBot.Modules.Games.Common.Trivia;
 using System.Collections.Generic;
 
-namespace NadekoBot.Core.Services
+namespace NadekoBot.Services
 {
     public interface ILocalDataCache
     {

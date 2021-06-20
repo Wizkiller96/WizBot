@@ -1,9 +1,9 @@
 using System.Text.RegularExpressions;
 using NadekoBot.Common.Yml;
-using NadekoBot.Core.Common.Configs;
+using NadekoBot.Common.Configs;
 using YamlDotNet.Serialization;
 
-namespace NadekoBot.Core.Common
+namespace NadekoBot.Common
 {
     public class YamlSeria : IConfigSeria
     {

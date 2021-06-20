@@ -6,7 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace NadekoBot.Core.Services.Impl
+namespace NadekoBot.Services
 {
     public class RedisCache : IDataCache
     {

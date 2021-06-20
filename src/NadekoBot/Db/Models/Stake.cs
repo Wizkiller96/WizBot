@@ -1,4 +1,4 @@
-﻿namespace NadekoBot.Core.Services.Database.Models
+﻿namespace NadekoBot.Services.Database.Models
 {
     /// <summary>
     /// Used to set stakes for gambling games which don't reward right away -

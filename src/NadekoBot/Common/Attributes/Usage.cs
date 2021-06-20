@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using Discord.Commands;
-using NadekoBot.Core.Services.Impl;
+using NadekoBot.Services;
 using Newtonsoft.Json;
 
 namespace NadekoBot.Common.Attributes

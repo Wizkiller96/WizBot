@@ -5,8 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using NadekoBot.Core.Services;
-using NadekoBot.Core.Services.Impl;
+using NadekoBot.Services;
 using NadekoBot.Extensions;
 using Serilog;
 

@@ -8,8 +8,7 @@ using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Extensions;
 using System.Linq;
 using System.Threading.Tasks;
-using NadekoBot.Core.Common;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using Serilog;
 
 namespace NadekoBot.Modules.Gambling

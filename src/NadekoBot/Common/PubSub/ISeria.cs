@@ -1,4 +1,4 @@
-﻿namespace NadekoBot.Core.Common
+﻿namespace NadekoBot.Common
 {
     public interface ISeria
     {

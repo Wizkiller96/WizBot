@@ -1,7 +1,7 @@
 ﻿using Discord;
 using System.Collections.Immutable;
 
-namespace NadekoBot.Core.Services
+namespace NadekoBot.Services
 {
     public interface IBotCredentials
     {

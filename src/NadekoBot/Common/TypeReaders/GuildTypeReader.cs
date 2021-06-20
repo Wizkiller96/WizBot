@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
-using NadekoBot.Core.Common.TypeReaders;
+using NadekoBot.Common.TypeReaders;
 using Discord;
 
 namespace NadekoBot.Common.TypeReaders

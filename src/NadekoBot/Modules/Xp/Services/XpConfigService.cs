@@ -1,6 +1,6 @@
-﻿using NadekoBot.Core.Common;
-using NadekoBot.Core.Common.Configs;
-using NadekoBot.Core.Services;
+﻿using NadekoBot.Common;
+using NadekoBot.Common.Configs;
+using NadekoBot.Services;
 
 namespace NadekoBot.Modules.Xp.Services
 {

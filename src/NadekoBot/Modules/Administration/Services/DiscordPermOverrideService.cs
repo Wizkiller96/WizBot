@@ -8,8 +8,8 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
-using NadekoBot.Core.Services;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services;
+using NadekoBot.Services.Database.Models;
 using NadekoBot.Extensions;
 
 namespace NadekoBot.Modules.Administration.Services

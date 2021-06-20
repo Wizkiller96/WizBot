@@ -2,7 +2,7 @@
 using Discord.WebSocket;
 using NadekoBot.Common;
 using NadekoBot.Common.Replacements;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services.Database.Models;
 using NadekoBot.Extensions;
 using System;
 using System.Collections.Concurrent;
@@ -13,7 +13,7 @@ using NadekoBot.Db;
 using NadekoBot.Modules.Administration;
 using Serilog;
 
-namespace NadekoBot.Core.Services
+namespace NadekoBot.Services
 {
     public class GreetSettingsService : INService
     {

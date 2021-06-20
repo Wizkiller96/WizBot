@@ -2,7 +2,7 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using NadekoBot.Common.Attributes;
-using NadekoBot.Core.Common;
+using NadekoBot.Common;
 using NadekoBot.Modules.Games.Common;
 using NadekoBot.Modules.Games.Services;
 using System.Threading;

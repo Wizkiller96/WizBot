@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using NadekoBot.Modules.Administration.Common;
-using NadekoBot.Core.Services;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services;
+using NadekoBot.Services.Database.Models;
 using NadekoBot.Extensions;
 using Microsoft.EntityFrameworkCore;
-using NadekoBot.Core.Common.TypeReaders.Models;
+using NadekoBot.Common.TypeReaders.Models;
 using NadekoBot.Db;
 using Serilog;
 

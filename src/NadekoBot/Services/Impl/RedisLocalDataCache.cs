@@ -1,4 +1,4 @@
-﻿using NadekoBot.Core.Common.Pokemon;
+﻿using NadekoBot.Common.Pokemon;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Games.Common.Trivia;
 using Newtonsoft.Json;
@@ -9,7 +9,7 @@ using System.IO;
 using System.Linq;
 using Serilog;
 
-namespace NadekoBot.Core.Services.Impl
+namespace NadekoBot.Services
 {
     public class RedisLocalDataCache : ILocalDataCache
     {

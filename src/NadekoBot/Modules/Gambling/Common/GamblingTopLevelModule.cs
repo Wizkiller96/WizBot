@@ -1,6 +1,6 @@
 ﻿using System;
 using Discord;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using NadekoBot.Modules;
 using System.Threading.Tasks;
 using NadekoBot.Modules.Gambling.Services;

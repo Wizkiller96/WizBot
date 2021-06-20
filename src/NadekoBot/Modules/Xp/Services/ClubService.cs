@@ -6,7 +6,7 @@ using System.Linq;
 using NadekoBot.Extensions;
 using System.Net.Http;
 using System.Threading.Tasks;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using NadekoBot.Db;
 
 namespace NadekoBot.Modules.Xp.Services

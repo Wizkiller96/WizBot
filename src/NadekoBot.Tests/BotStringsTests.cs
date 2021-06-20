@@ -5,7 +5,7 @@ using System.Reflection;
 using AngleSharp.Common;
 using Discord.Commands;
 using NadekoBot.Common.Attributes;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using NadekoBot.Modules;
 using YamlDotNet.Serialization;
 

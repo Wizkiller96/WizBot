@@ -1,4 +1,4 @@
-﻿namespace NadekoBot.Core.Common.Configs
+﻿namespace NadekoBot.Common.Configs
 {
     /// <summary>
     /// Base interface for available config serializers

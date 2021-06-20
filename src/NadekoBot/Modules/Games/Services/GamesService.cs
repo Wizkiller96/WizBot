@@ -1,6 +1,6 @@
 ﻿using Discord;
 using NadekoBot.Common;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Games.Common;
 using NadekoBot.Modules.Games.Common.Acrophobia;

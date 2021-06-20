@@ -8,8 +8,8 @@ using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.Collections;
 using NadekoBot.Extensions;
-using NadekoBot.Core.Services;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services;
+using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
 using Serilog;
 

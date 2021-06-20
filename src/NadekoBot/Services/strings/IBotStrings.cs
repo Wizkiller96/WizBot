@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace NadekoBot.Core.Services
+namespace NadekoBot.Services
 {
     /// <summary>
     /// Defines methods to retrieve and reload bot strings 

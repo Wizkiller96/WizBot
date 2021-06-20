@@ -9,7 +9,7 @@ using System.IO;
 using NadekoBot.Db;
 using NadekoBot.Modules.Administration;
 
-namespace NadekoBot.Core.Services.Impl
+namespace NadekoBot.Services
 {
     public class Localization : ILocalization
     {

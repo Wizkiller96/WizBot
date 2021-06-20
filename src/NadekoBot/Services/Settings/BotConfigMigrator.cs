@@ -2,11 +2,11 @@
 using System.Data.Common;
 using System.Globalization;
 using Microsoft.EntityFrameworkCore;
-using NadekoBot.Core.Common.Configs;
+using NadekoBot.Common.Configs;
 using Serilog;
 using SixLabors.ImageSharp.PixelFormats;
 
-namespace NadekoBot.Core.Services
+namespace NadekoBot.Services
 {
     public sealed class BotConfigMigrator : IConfigMigrator
     {

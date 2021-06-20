@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using NadekoBot.Core.Common;
+using NadekoBot.Common;
 using NUnit.Framework;
 
 namespace Nadeko.Tests

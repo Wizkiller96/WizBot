@@ -1,5 +1,5 @@
-﻿using NadekoBot.Core.Common;
-using NadekoBot.Core.Services.Common;
+﻿using NadekoBot.Common;
+using NadekoBot.Services.Common;
 using NadekoBot.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -13,7 +13,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Serilog;
 
-namespace NadekoBot.Core.Services.Impl
+namespace NadekoBot.Services
 {
     public sealed class RedisImagesCache : IImageCache
     {

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using NadekoBot.Common.Collections;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Extensions
 {

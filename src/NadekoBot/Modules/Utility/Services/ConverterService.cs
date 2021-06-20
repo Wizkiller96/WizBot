@@ -1,5 +1,5 @@
 ﻿using Discord.WebSocket;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Utility.Common;
 using Newtonsoft.Json;

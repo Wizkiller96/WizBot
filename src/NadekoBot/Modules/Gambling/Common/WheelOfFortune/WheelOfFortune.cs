@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using NadekoBot.Common;
 using NadekoBot.Modules.Gambling.Common;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 
 namespace NadekoBot.Modules.Gambling.Common.WheelOfFortune
 {

@@ -3,7 +3,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Discord;
 using System.Collections.Generic;
-using NadekoBot.Core.Services.Database;
+using NadekoBot.Services.Database;
 
 namespace NadekoBot.Db
 {

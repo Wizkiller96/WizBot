@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data.Common;
 using Microsoft.EntityFrameworkCore;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using Serilog;
 
 namespace NadekoBot.Modules.Xp.Services

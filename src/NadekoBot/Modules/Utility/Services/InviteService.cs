@@ -1,6 +1,6 @@
 ﻿using CommandLine;
-using NadekoBot.Core.Common;
-using NadekoBot.Core.Services;
+using NadekoBot.Common;
+using NadekoBot.Services;
 
 namespace NadekoBot.Modules.Utility.Services
 {

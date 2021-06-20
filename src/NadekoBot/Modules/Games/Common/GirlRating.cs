@@ -2,7 +2,7 @@
 using System.IO;
 using System.Net.Http;
 using NadekoBot.Common;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using Serilog;
 using Image = SixLabors.ImageSharp.Image;
 using SixLabors.ImageSharp;

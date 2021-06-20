@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
-using NadekoBot.Core.Common.JsonConverters;
+using NadekoBot.Common.JsonConverters;
 
-namespace NadekoBot.Core.Common
+namespace NadekoBot.Common
 {
     public class JsonSeria : ISeria
     {

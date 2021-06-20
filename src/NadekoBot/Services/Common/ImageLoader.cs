@@ -8,7 +8,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Serilog;
 
-namespace NadekoBot.Core.Services.Common
+namespace NadekoBot.Services.Common
 {
     public class ImageLoader
     {

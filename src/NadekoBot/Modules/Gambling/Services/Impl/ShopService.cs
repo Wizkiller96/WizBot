@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.Collections;
-using NadekoBot.Core.Services;
-using NadekoBot.Core.Services.Database;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services;
+using NadekoBot.Services.Database;
+using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Administration;

@@ -4,12 +4,12 @@ using System.Linq;
 using System.Threading;
 using Discord.WebSocket;
 using NadekoBot.Common.Replacements;
-using NadekoBot.Core.Services;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services;
+using NadekoBot.Services.Database.Models;
 using Discord;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using NadekoBot.Core.Common;
+using NadekoBot.Common;
 using Serilog;
 
 namespace NadekoBot.Modules.Administration.Services

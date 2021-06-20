@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace NadekoBot.Core.Services
+namespace NadekoBot.Services
 {
     public interface ICurrencyService : INService
     {

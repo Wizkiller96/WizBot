@@ -8,7 +8,7 @@ using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Permissions.Common;
 using NadekoBot.Modules.Permissions.Services;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using NadekoBot.Modules.Games.Common.ChatterBot;
 using System.Net.Http;
 using Serilog;

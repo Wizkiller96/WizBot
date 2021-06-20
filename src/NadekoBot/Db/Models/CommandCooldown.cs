@@ -1,4 +1,4 @@
-﻿namespace NadekoBot.Core.Services.Database.Models
+﻿namespace NadekoBot.Services.Database.Models
 {
     public class CommandCooldown : DbEntity
     {

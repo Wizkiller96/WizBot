@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace NadekoBot.Core.Common
+namespace NadekoBot.Common
 {
     public interface IPubSub
     {

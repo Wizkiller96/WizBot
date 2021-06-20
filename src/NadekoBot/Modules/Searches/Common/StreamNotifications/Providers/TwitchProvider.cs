@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services.Database.Models;
 using NadekoBot.Db.Models;
 using Newtonsoft.Json;
 using Serilog;

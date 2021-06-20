@@ -1,6 +1,6 @@
 ﻿using NadekoBot.Db.Models;
 
-namespace NadekoBot.Core.Services.Database.Models
+namespace NadekoBot.Services.Database.Models
 {
     public class WaifuUpdate : DbEntity
     {

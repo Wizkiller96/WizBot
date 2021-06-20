@@ -1,5 +1,5 @@
 ﻿using NadekoBot;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using Serilog;
 
 var pid = System.Environment.ProcessId;

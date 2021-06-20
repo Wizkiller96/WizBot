@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace NadekoBot.Core.Services
+namespace NadekoBot.Services
 {
     /// <summary>
     /// Interface that all services which deal with configs should implement

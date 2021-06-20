@@ -3,9 +3,8 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using NadekoBot.Common;
-using NadekoBot.Core.Services;
-using NadekoBot.Core.Services.Database.Models;
-using NadekoBot.Core.Services.Impl;
+using NadekoBot.Services;
+using NadekoBot.Services.Database.Models;
 using NadekoBot.Extensions;
 using Newtonsoft.Json;
 using StackExchange.Redis;
@@ -17,20 +16,17 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 using Discord.Net;
 using LinqToDB.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
-using NadekoBot.Core.Common;
-using NadekoBot.Core.Common.Configs;
+using NadekoBot.Common.Configs;
 using NadekoBot.Db;
 using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Modules.Administration.Services;
 using NadekoBot.Modules.CustomReactions.Services;
 using NadekoBot.Modules.Utility.Services;
 using Serilog;
-using NadekoBot.Services;
 
 namespace NadekoBot
 {

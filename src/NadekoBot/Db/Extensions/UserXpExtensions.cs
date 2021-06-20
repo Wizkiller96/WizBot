@@ -2,8 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using LinqToDB;
-using NadekoBot.Core.Services.Database;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services.Database;
+using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Db
 {

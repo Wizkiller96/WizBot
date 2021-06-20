@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using NadekoBot.Extensions;
 using Serilog;
 
-namespace NadekoBot.Core.Services.Impl
+namespace NadekoBot.Services
 {
     public class YtdlOperation
     {

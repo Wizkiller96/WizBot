@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Db.Models
 {

@@ -1,4 +1,4 @@
-﻿using NadekoBot.Core.Services;
+﻿using NadekoBot.Services;
 
 namespace NadekoBot.Modules.Searches.Services
 {

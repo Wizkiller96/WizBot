@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using Ayu.Discord.Voice;
 using NadekoBot.Common;
 using NadekoBot.Modules.Music.Common;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services.Database.Models;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Music;
 using Serilog;

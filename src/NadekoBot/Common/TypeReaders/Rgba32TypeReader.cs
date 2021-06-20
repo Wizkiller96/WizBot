@@ -4,7 +4,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using SixLabors.ImageSharp;
 
-namespace NadekoBot.Core.Common.TypeReaders
+namespace NadekoBot.Common.TypeReaders
 {
     public class Rgba32TypeReader : NadekoTypeReader<Color>
     {

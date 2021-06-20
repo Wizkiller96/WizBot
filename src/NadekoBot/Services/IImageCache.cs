@@ -1,8 +1,8 @@
-﻿using NadekoBot.Core.Common;
+﻿using NadekoBot.Common;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace NadekoBot.Core.Services
+namespace NadekoBot.Services
 {
     public interface IImageCache
     {

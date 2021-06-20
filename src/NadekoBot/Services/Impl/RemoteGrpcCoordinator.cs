@@ -7,7 +7,7 @@ using Discord.WebSocket;
 using Grpc.Core;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Coordinator;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using NadekoBot.Extensions;
 using Serilog;
 

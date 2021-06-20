@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using NadekoBot.Extensions;
 using Serilog;
 using StackExchange.Redis;
 
-namespace NadekoBot.Core.Common
+namespace NadekoBot.Common
 {
     public sealed class RedisPubSub : IPubSub
     {

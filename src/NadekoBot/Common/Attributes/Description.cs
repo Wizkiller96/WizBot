@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using Discord.Commands;
-using NadekoBot.Core.Services.Impl;
+using NadekoBot.Services;
 
 namespace NadekoBot.Common.Attributes
 {

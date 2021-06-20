@@ -3,7 +3,7 @@ using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
 
-namespace NadekoBot.Core.Services.Database.Models
+namespace NadekoBot.Services.Database.Models
 {
     public class CustomReaction : DbEntity
     {

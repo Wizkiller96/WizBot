@@ -4,7 +4,7 @@ using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using NadekoBot.Common;
 using NadekoBot.Common.Collections;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using NadekoBot.Modules.Administration.Services;
 using Newtonsoft.Json;
 using SixLabors.Fonts;

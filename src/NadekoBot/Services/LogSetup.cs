@@ -4,7 +4,7 @@ using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
 
-namespace NadekoBot.Core.Services
+namespace NadekoBot.Services
 {
     public static class LogSetup
     {

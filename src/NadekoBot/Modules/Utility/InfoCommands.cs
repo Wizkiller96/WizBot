@@ -2,7 +2,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using NadekoBot.Extensions;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using System;
 using System.Linq;
 using System.Text;

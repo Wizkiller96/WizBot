@@ -10,8 +10,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using NadekoBot.Core.Common;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using Image = SixLabors.ImageSharp.Image;
 
 namespace NadekoBot.Modules.Gambling

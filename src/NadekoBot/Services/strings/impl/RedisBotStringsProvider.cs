@@ -5,7 +5,7 @@ using Discord.WebSocket;
 using NadekoBot.Extensions;
 using StackExchange.Redis;
 
-namespace NadekoBot.Core.Services
+namespace NadekoBot.Services
 {
     /// <summary>
     /// Uses <see cref="IStringsSource"/> to load strings into redis hash (only on Shard 0)

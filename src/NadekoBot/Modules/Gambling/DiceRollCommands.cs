@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using Image = SixLabors.ImageSharp.Image;
 
 namespace NadekoBot.Modules.Gambling

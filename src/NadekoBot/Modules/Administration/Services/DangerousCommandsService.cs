@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Administration.Services
 {

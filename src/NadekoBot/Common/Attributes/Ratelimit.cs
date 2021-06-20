@@ -1,10 +1,10 @@
 ﻿using Discord.Commands;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace NadekoBot.Core.Common.Attributes
+namespace NadekoBot.Common.Attributes
 {
     [AttributeUsage(AttributeTargets.Method)]
     public sealed class RatelimitAttribute : PreconditionAttribute

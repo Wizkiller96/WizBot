@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Db.Models;
 
-namespace NadekoBot.Core.Services.Database.Models
+namespace NadekoBot.Services.Database.Models
 {
     public class WaifuInfo : DbEntity
     {

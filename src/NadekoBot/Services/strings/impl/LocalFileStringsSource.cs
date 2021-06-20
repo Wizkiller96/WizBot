@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using Serilog;
 using YamlDotNet.Serialization;
 
-namespace NadekoBot.Core.Services
+namespace NadekoBot.Services
 {
     /// <summary>
     /// Loads strings from the local default filepath <see cref="_responsesPath"/>

@@ -6,8 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NadekoBot.Common.Attributes;
-using NadekoBot.Core.Common.Pokemon;
-using NadekoBot.Core.Services;
+using NadekoBot.Common.Pokemon;
+using NadekoBot.Services;
 using System;
 
 namespace NadekoBot.Modules.Searches

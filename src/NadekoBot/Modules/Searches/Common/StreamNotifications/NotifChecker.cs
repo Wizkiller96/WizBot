@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using NadekoBot.Modules.Searches.Common.StreamNotifications.Providers;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services.Database.Models;
 using NadekoBot.Db.Models;
 using Newtonsoft.Json;
 using Serilog;

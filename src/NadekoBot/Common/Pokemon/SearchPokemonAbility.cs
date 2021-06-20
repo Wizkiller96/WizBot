@@ -1,4 +1,4 @@
-﻿namespace NadekoBot.Core.Common.Pokemon
+﻿namespace NadekoBot.Common.Pokemon
 {
     public class SearchPokemonAbility
     {

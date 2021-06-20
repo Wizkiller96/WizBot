@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace NadekoBot.Core.Services.Common
+namespace NadekoBot.Services.Common
 {
     public sealed class RedisImageArray : IReadOnlyList<byte[]>
     {

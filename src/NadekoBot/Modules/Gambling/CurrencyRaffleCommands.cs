@@ -6,7 +6,7 @@ using NadekoBot.Extensions;
 using System.Linq;
 using Discord.Commands;
 using NadekoBot.Modules.Gambling.Common;
-using NadekoBot.Core.Common;
+using NadekoBot.Common;
 
 namespace NadekoBot.Modules.Gambling
 {

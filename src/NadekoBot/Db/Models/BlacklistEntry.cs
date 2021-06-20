@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace NadekoBot.Core.Services.Database.Models
+namespace NadekoBot.Services.Database.Models
 {
     public class BlacklistEntry : DbEntity
     {

@@ -3,8 +3,6 @@ using Discord.Commands;
 using Discord.WebSocket;
 using NadekoBot.Common;
 using NadekoBot.Common.Attributes;
-using NadekoBot.Core.Services;
-using NadekoBot.Core.Services.Impl;
 using NadekoBot.Extensions;
 using Newtonsoft.Json;
 using System;
@@ -15,7 +13,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NadekoBot.Common.Replacements;
-using NadekoBot.Core.Common;
 using NadekoBot.Services;
 using Serilog;
 

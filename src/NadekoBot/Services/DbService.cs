@@ -1,12 +1,12 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using NadekoBot.Core.Services.Database;
+using NadekoBot.Services.Database;
 using System;
 using System.IO;
 using System.Linq;
 using NadekoBot.Db;
 
-namespace NadekoBot.Core.Services
+namespace NadekoBot.Services
 {
     public class DbService
     {

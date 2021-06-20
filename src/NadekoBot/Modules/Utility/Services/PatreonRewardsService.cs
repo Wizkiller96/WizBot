@@ -1,6 +1,6 @@
 ﻿using Discord.WebSocket;
-using NadekoBot.Core.Services;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services;
+using NadekoBot.Services.Database.Models;
 using NadekoBot.Modules.Utility.Common.Patreon;
 using Newtonsoft.Json;
 using System;

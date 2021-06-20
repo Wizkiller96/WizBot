@@ -3,11 +3,11 @@ using System.Linq;
 using Discord;
 using Discord.WebSocket;
 using NadekoBot.Common.ModuleBehaviors;
-using NadekoBot.Core.Services;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services;
+using NadekoBot.Services.Database.Models;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using NadekoBot.Core.Common;
+using NadekoBot.Common;
 using NadekoBot.Db;
 
 namespace NadekoBot.Modules.Permissions.Services

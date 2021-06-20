@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NadekoBot.Core.Common
+namespace NadekoBot.Common
 {
     public struct ShmartNumber : IEquatable<ShmartNumber>
     {

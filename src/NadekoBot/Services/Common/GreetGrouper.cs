@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace NadekoBot.Core.Services
+namespace NadekoBot.Services
 {
     public class GreetGrouper<T>
     {

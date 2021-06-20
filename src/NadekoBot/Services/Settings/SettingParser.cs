@@ -1,4 +1,4 @@
-﻿namespace NadekoBot.Core.Services
+﻿namespace NadekoBot.Services
 {
     /// <summary>
     /// Delegate which describes a parser which can convert string input into given data type

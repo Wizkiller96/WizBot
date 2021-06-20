@@ -2,12 +2,12 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using NadekoBot.Extensions;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using System.Threading.Tasks;
 using NadekoBot.Common.Attributes;
 using NadekoBot.Modules.Games.Common.Trivia;
 using NadekoBot.Modules.Games.Services;
-using NadekoBot.Core.Common;
+using NadekoBot.Common;
 
 namespace NadekoBot.Modules.Games
 {

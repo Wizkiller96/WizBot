@@ -1,7 +1,7 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
 
-namespace NadekoBot.Core.Common.TypeReaders
+namespace NadekoBot.Common.TypeReaders
 {
     public abstract class NadekoTypeReader<T> : TypeReader
     {

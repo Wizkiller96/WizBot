@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace NadekoBot.Core.Services.Impl
+namespace NadekoBot.Services
 {
     public class FontProvider : INService
     {

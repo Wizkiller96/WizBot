@@ -1,10 +1,10 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
-using NadekoBot.Core.Common.TypeReaders.Models;
+using NadekoBot.Common.TypeReaders.Models;
 using System;
 using System.Threading.Tasks;
 
-namespace NadekoBot.Core.Common.TypeReaders
+namespace NadekoBot.Common.TypeReaders
 {
     public class StoopidTimeTypeReader : NadekoTypeReader<StoopidTime>
     {

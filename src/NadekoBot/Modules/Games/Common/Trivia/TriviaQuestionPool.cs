@@ -1,5 +1,5 @@
 ﻿using NadekoBot.Common;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using NadekoBot.Extensions;
 using System.Collections.Generic;
 

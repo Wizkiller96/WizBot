@@ -6,10 +6,9 @@ using System;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
-using NadekoBot.Core.Common;
 using Serilog;
 
-namespace NadekoBot.Core.Services.Impl
+namespace NadekoBot.Services
 {
     public class BotCredentials : IBotCredentials
     {

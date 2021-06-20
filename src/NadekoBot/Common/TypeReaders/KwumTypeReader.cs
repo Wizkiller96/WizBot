@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
 
-namespace NadekoBot.Core.Common.TypeReaders
+namespace NadekoBot.Common.TypeReaders
 {
     public class KwumTypeReader : NadekoTypeReader<kwum>
     {

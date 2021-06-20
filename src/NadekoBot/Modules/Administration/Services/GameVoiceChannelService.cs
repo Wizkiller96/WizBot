@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Discord.WebSocket;
 using NadekoBot.Common.Collections;
 using NadekoBot.Extensions;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using NadekoBot.Db;
 using Serilog;
 

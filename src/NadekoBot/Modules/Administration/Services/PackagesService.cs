@@ -1,4 +1,4 @@
-﻿//using NadekoBot.Core.Services;
+﻿//using NadekoBot.Services;
 //using System;
 //using System.Collections.Generic;
 //using System.IO;

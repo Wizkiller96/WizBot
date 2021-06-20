@@ -8,7 +8,7 @@ using NadekoBot.Modules.Utility.Services;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using NadekoBot.Core.Common.TypeReaders.Models;
+using NadekoBot.Common.TypeReaders.Models;
 
 namespace NadekoBot.Modules.Utility
 {

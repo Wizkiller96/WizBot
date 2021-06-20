@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Discord.WebSocket;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using Serilog;
 
 namespace NadekoBot.Services

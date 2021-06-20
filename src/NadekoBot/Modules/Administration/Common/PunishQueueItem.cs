@@ -1,5 +1,5 @@
 ﻿using Discord;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Administration.Common
 {

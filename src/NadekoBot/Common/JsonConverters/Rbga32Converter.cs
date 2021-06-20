@@ -4,7 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using SixLabors.ImageSharp.PixelFormats;
 
-namespace NadekoBot.Core.Common.JsonConverters
+namespace NadekoBot.Common.JsonConverters
 {
     public class Rgba32Converter : JsonConverter<Rgba32>
     {

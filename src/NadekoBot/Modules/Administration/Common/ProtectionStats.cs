@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using Discord;
 using NadekoBot.Common.Collections;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Administration.Common
 {

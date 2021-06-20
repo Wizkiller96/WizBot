@@ -6,7 +6,7 @@ using Microsoft.Extensions.Caching.Memory;
 using NadekoBot.Common;
 using NadekoBot.Common.Attributes;
 using NadekoBot.Modules.Searches.Common;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Searches.Services;
 using Newtonsoft.Json;

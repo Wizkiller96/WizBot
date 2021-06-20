@@ -1,10 +1,10 @@
 ﻿using System;
 using Discord;
-using NadekoBot.Core.Common;
-using NadekoBot.Core.Common.Configs;
+using NadekoBot.Common;
+using NadekoBot.Common.Configs;
 using SixLabors.ImageSharp.PixelFormats;
 
-namespace NadekoBot.Core.Services
+namespace NadekoBot.Services
 {
     /// <summary>
     /// Settings service for bot-wide configuration.

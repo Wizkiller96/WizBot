@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using Discord.Net;
 using Serilog;
 
-namespace NadekoBot.Core.Common
+namespace NadekoBot.Common
 {
     public class LoginErrorHandler
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace NadekoBot.Core.Services
+namespace NadekoBot.Services
 {
     public class LocalBotStringsProvider : IBotStringsProvider
     {

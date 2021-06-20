@@ -6,8 +6,8 @@ using NadekoBot.Common.Attributes;
 using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Modules.Gambling.Common.Events;
 using System;
-using NadekoBot.Core.Common;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Common;
+using NadekoBot.Services.Database.Models;
 using NadekoBot.Modules.Gambling.Common;
 
 namespace NadekoBot.Modules.Gambling

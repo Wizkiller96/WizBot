@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using SixLabors.ImageSharp.PixelFormats;
 
-namespace NadekoBot.Core.Services
+namespace NadekoBot.Services
 {
     /// <summary>
     /// Custom setting value parsers for types which don't have them by default

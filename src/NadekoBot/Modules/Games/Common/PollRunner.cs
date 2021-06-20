@@ -4,8 +4,8 @@ using NadekoBot.Db.Models;
 using System;
 using System.Linq;
 using System.Threading;
-using NadekoBot.Core.Services;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services;
+using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Games.Common
 {

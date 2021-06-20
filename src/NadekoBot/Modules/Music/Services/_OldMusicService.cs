@@ -3,13 +3,13 @@
 // using System.Threading.Tasks;
 // using Discord;
 // using NadekoBot.Extensions;
-// using NadekoBot.Core.Services.Database.Models;
+// using NadekoBot.Services.Database.Models;
 // using System.IO;
 // using Discord.Commands;
 // using Discord.WebSocket;
 // using NadekoBot.Common;
-// using NadekoBot.Core.Services.Impl;
-// using NadekoBot.Core.Services;
+// using NadekoBot.Services;
+// using NadekoBot.Services;
 // using NadekoBot.Modules.Music.Common;
 // using NadekoBot.Modules.Music.Common.Exceptions;
 // using NadekoBot.Modules.Music.Common.SongResolver;

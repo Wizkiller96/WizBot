@@ -7,13 +7,13 @@ using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 using NadekoBot.Common.Yml;
-using NadekoBot.Core.Common;
-using NadekoBot.Core.Common.Configs;
-using NadekoBot.Core.Common.JsonConverters;
-using Rgba32Converter = NadekoBot.Core.Common.JsonConverters.Rgba32Converter;
-using CultureInfoConverter = NadekoBot.Core.Common.JsonConverters.CultureInfoConverter;
+using NadekoBot.Common;
+using NadekoBot.Common.Configs;
+using NadekoBot.Common.JsonConverters;
+using Rgba32Converter = NadekoBot.Common.JsonConverters.Rgba32Converter;
+using CultureInfoConverter = NadekoBot.Common.JsonConverters.CultureInfoConverter;
 
-namespace NadekoBot.Core.Services
+namespace NadekoBot.Services
 {
     /// <summary>
     /// Base service for all settings services

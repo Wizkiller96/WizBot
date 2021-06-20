@@ -15,13 +15,13 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NadekoBot.Core.Common.Configs;
-using NadekoBot.Core.Services.Impl;
+using NadekoBot.Common.Configs;
+using NadekoBot.Services;
 using NadekoBot.Db;
 using NadekoBot.Modules.Administration;
 using Serilog;
 
-namespace NadekoBot.Core.Services
+namespace NadekoBot.Services
 {
     public class GuildUserComparer : IEqualityComparer<IGuildUser>
     {

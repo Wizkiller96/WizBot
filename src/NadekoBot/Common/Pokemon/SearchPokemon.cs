@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace NadekoBot.Core.Common.Pokemon
+namespace NadekoBot.Common.Pokemon
 {
     public class SearchPokemon
     {

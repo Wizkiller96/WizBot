@@ -6,7 +6,7 @@
 // using System.Text.Json.Serialization;
 // using System.Text.RegularExpressions;
 // using System.Threading.Tasks;
-// using NadekoBot.Core.Services.Database.Models;
+// using NadekoBot.Services.Database.Models;
 // using NadekoBot.Extensions;
 // using Serilog;
 // using JsonSerializer = System.Text.Json.JsonSerializer;

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using NadekoBot.Common.Attributes;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using NadekoBot.Modules.Gambling.Common;
 using Image = SixLabors.ImageSharp.Image;
 using SixLabors.ImageSharp;

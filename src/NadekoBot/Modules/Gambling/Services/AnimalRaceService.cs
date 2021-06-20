@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using System.Collections.Concurrent;
 using NadekoBot.Modules.Gambling.Common.AnimalRacing;
 

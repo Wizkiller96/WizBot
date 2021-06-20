@@ -3,7 +3,7 @@ using NadekoBot.Common.Collections;
 using System.Collections.Generic;
 using NadekoBot.Db.Models;
 
-namespace NadekoBot.Core.Services.Database.Models
+namespace NadekoBot.Services.Database.Models
 {
     public class GuildConfig : DbEntity
     {

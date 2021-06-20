@@ -2,7 +2,7 @@ using System;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using NadekoBot.Coordinator;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using Serilog;
 
 // Additional configuration is required to successfully run gRPC on macOS.

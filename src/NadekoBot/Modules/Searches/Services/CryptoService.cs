@@ -1,5 +1,5 @@
 ﻿using NadekoBot.Modules.Searches.Common;
-using NadekoBot.Core.Services;
+using NadekoBot.Services;
 using NadekoBot.Extensions;
 using Newtonsoft.Json;
 using System;

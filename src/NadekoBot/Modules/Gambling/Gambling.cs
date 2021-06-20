@@ -13,10 +13,8 @@ using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
-using NadekoBot.Core.Common;
-using NadekoBot.Core.Services;
-using NadekoBot.Core.Services.Database;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services;
+using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
 
 namespace NadekoBot.Modules.Gambling

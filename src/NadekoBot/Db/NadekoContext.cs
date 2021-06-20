@@ -1,14 +1,14 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using NadekoBot.Core.Services.Database.Models;
-using NadekoBot.Core.Services.Impl;
+using NadekoBot.Services.Database.Models;
+using NadekoBot.Services;
 using System;
 using System.IO;
 using Microsoft.Extensions.Logging;
 using NadekoBot.Db.Models;
 
-namespace NadekoBot.Core.Services.Database
+namespace NadekoBot.Services.Database
 {
     public class NadekoContextFactory : IDesignTimeDbContextFactory<NadekoContext>
     {

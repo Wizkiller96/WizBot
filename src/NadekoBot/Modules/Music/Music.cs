@@ -7,7 +7,7 @@ using Discord;
 using Discord.Commands;
 using NadekoBot.Common;
 using NadekoBot.Common.Attributes;
-using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Services.Database.Models;
 using NadekoBot.Extensions;
 using NadekoBot.Modules;
 using NadekoBot.Modules.Administration.Services;
