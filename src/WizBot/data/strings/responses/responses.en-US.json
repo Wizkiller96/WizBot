@@ -929,7 +929,7 @@
   "global_leaderboard": "Global XP Leaderboard",
   "modified": "Modified server XP of the user {0} by {1}",
   "club_create_error": "Failed creating the club. Make sure you're above level 5 and not a member of a club already.",
-  "club_create_too_long": "Club name is too long.",
+  "club_name_too_long": "Club name is too long.",
   "club_created": "Club {0} successfully created!",
   "club_not_exists": "That club doesn't exist.",
   "club_applied": "You've applied for membership in {0} club.",
