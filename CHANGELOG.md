@@ -2,6 +2,13 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [2.46.1] - 21.06.2021
+
+### Fixed
+
+- Fixed some response strings (thx Ala)
+- Fixed repeaters having 5 global limit, instead of 5 server limit (thx cata)
+
 ## [2.46.0] - 17.06.2021
 
 ### Added
