@@ -26,7 +26,7 @@ namespace NadekoBot.Modules.Gambling
             {
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [NadekoOptionsAttribute(typeof(EventOptions))]
             [OwnerOnly]

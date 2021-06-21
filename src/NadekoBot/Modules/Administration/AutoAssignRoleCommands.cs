@@ -13,7 +13,7 @@ namespace NadekoBot.Modules.Administration
         [Group]
         public class AutoAssignRoleCommands : NadekoSubmodule<AutoAssignRoleService>
         {
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageRoles)]
             public async Task AutoAssignRole([Leftover] IRole role)
@@ -44,7 +44,7 @@ namespace NadekoBot.Modules.Administration
                 }
             }
             
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageRoles)]
             public async Task AutoAssignRole()

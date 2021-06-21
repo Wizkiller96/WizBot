@@ -47,7 +47,7 @@ namespace NadekoBot.Modules.Searches
         }
 
         //for anonymasen :^)
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public async Task Rip([Leftover] IGuildUser usr)
         {
             var av = usr.RealAvatarUrl(128);
@@ -64,7 +64,7 @@ namespace NadekoBot.Modules.Searches
             }
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public async Task Weather([Leftover] string query)
         {
             if (!await ValidateQuery(ctx.Channel, query).ConfigureAwait(false))
@@ -106,7 +106,7 @@ namespace NadekoBot.Modules.Searches
             await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public async Task Time([Leftover] string query)
         {
             if (!await ValidateQuery(ctx.Channel, query).ConfigureAwait(false))
@@ -152,7 +152,7 @@ namespace NadekoBot.Modules.Searches
             await ctx.Channel.SendMessageAsync(embed: eb.Build()).ConfigureAwait(false);
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public async Task Youtube([Leftover] string query = null)
         {
             if (!await ValidateQuery(ctx.Channel, query).ConfigureAwait(false))
@@ -168,7 +168,7 @@ namespace NadekoBot.Modules.Searches
             await ctx.Channel.SendMessageAsync(result).ConfigureAwait(false);
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public async Task Movie([Leftover] string query = null)
         {
             if (!await ValidateQuery(ctx.Channel, query).ConfigureAwait(false))
@@ -192,16 +192,16 @@ namespace NadekoBot.Modules.Searches
                 .WithImageUrl(movie.Poster)).ConfigureAwait(false);
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public Task RandomCat() => InternalRandomImage(SearchesService.ImageTag.Cats);
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public Task RandomDog() => InternalRandomImage(SearchesService.ImageTag.Dogs);
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public Task RandomFood() => InternalRandomImage(SearchesService.ImageTag.Food);
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public Task RandomBird() => InternalRandomImage(SearchesService.ImageTag.Birds);
 
         private Task InternalRandomImage(SearchesService.ImageTag tag)
@@ -212,7 +212,7 @@ namespace NadekoBot.Modules.Searches
                 .WithImageUrl(url));
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public async Task Image([Leftover] string query = null)
         {
             var oterms = query?.Trim();
@@ -265,7 +265,7 @@ namespace NadekoBot.Modules.Searches
             }
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public async Task Lmgtfy([Leftover] string ffs = null)
         {
             if (!await ValidateQuery(ctx.Channel, ffs).ConfigureAwait(false))
@@ -283,7 +283,7 @@ namespace NadekoBot.Modules.Searches
 
         private static readonly ConcurrentDictionary<string, string> cachedShortenedLinks = new ConcurrentDictionary<string, string>();
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public async Task Shorten([Leftover] string query)
         {
             if (!await ValidateQuery(ctx.Channel, query).ConfigureAwait(false))
@@ -333,7 +333,7 @@ namespace NadekoBot.Modules.Searches
                 .ConfigureAwait(false);
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public async Task Google([Leftover] string query = null)
         {
             query = query?.Trim();
@@ -366,7 +366,7 @@ namespace NadekoBot.Modules.Searches
             await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
         }
         
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public async Task DuckDuckGo([Leftover] string query = null)
         {
             query = query?.Trim();
@@ -397,7 +397,7 @@ namespace NadekoBot.Modules.Searches
             await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public async Task MagicTheGathering([Leftover] string search)
         {
             if (!await ValidateQuery(ctx.Channel, search))
@@ -423,7 +423,7 @@ namespace NadekoBot.Modules.Searches
             await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public async Task Hearthstone([Leftover] string name)
         {
             var arg = name;
@@ -453,7 +453,7 @@ namespace NadekoBot.Modules.Searches
             await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public async Task UrbanDict([Leftover] string query = null)
         {
             if (!await ValidateQuery(ctx.Channel, query).ConfigureAwait(false))
@@ -488,7 +488,7 @@ namespace NadekoBot.Modules.Searches
 
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public async Task Define([Leftover] string word)
         {
             if (!await ValidateQuery(ctx.Channel, word).ConfigureAwait(false))
@@ -554,7 +554,7 @@ namespace NadekoBot.Modules.Searches
             }
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public async Task Catfact()
         {
             using (var http = _httpFactory.CreateClient())
@@ -569,7 +569,7 @@ namespace NadekoBot.Modules.Searches
         }
 
         //done in 3.0
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task Revav([Leftover] IGuildUser usr = null)
         {
@@ -584,7 +584,7 @@ namespace NadekoBot.Modules.Searches
         }
 
         //done in 3.0
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public async Task Revimg([Leftover] string imageLink = null)
         {
             imageLink = imageLink?.Trim() ?? "";
@@ -594,11 +594,11 @@ namespace NadekoBot.Modules.Searches
             await ctx.Channel.SendConfirmAsync($"https://images.google.com/searchbyimage?image_url={imageLink}").ConfigureAwait(false);
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public Task Safebooru([Leftover] string tag = null)
             => InternalDapiCommand(ctx.Message, tag, DapiSearchType.Safebooru);
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public async Task Wiki([Leftover] string query = null)
         {
             query = query?.Trim();
@@ -617,7 +617,7 @@ namespace NadekoBot.Modules.Searches
             }
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public async Task Color(params SixLabors.ImageSharp.Color[] colors)
         {
             if (!colors.Any())
@@ -645,7 +645,7 @@ namespace NadekoBot.Modules.Searches
             }
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task Avatar([Leftover] IGuildUser usr = null)
         {
@@ -666,7 +666,7 @@ namespace NadekoBot.Modules.Searches
                 .WithThumbnailUrl(avatarUrl.ToString()), ctx.User.Mention).ConfigureAwait(false);
         }
         
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public async Task Wikia(string target, [Leftover] string query)
         {
             if (string.IsNullOrWhiteSpace(target) || string.IsNullOrWhiteSpace(query))
@@ -707,7 +707,7 @@ namespace NadekoBot.Modules.Searches
             }
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task Bible(string book, string chapterAndVerse)
         {
@@ -737,7 +737,7 @@ namespace NadekoBot.Modules.Searches
             }
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public async Task Steam([Leftover] string query)
         {
             if (string.IsNullOrWhiteSpace(query))

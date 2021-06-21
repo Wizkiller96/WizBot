@@ -14,7 +14,7 @@ namespace NadekoBot.Modules.Administration
         [Group]
         public class SelfAssignedRolesCommands : NadekoSubmodule<SelfAssignedRolesService>
         {
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageMessages)]
             [BotPerm(GuildPerm.ManageMessages)]
@@ -32,7 +32,7 @@ namespace NadekoBot.Modules.Administration
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageRoles)]
             [BotPerm(GuildPerm.ManageRoles)]
@@ -40,7 +40,7 @@ namespace NadekoBot.Modules.Administration
             public Task Asar([Leftover] IRole role) =>
                 Asar(0, role);
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageRoles)]
             [BotPerm(GuildPerm.ManageRoles)]
@@ -63,7 +63,7 @@ namespace NadekoBot.Modules.Administration
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageRoles)]
             [BotPerm(GuildPerm.ManageRoles)]
@@ -84,7 +84,7 @@ namespace NadekoBot.Modules.Administration
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageRoles)]
             public async Task Rsar([Leftover] IRole role)
@@ -104,7 +104,7 @@ namespace NadekoBot.Modules.Administration
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task Lsar(int page = 1)
             {
@@ -163,7 +163,7 @@ namespace NadekoBot.Modules.Administration
                 }, roles.Count(), 20).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageRoles)]
             [BotPerm(GuildPerm.ManageRoles)]
@@ -176,7 +176,7 @@ namespace NadekoBot.Modules.Administration
                     await ReplyConfirmLocalizedAsync("self_assign_no_excl").ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageRoles)]
             [BotPerm(GuildPerm.ManageRoles)]
@@ -198,7 +198,7 @@ namespace NadekoBot.Modules.Administration
                     Format.Bold(level.ToString())).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task Iam([Leftover] IRole role)
             {
@@ -235,7 +235,7 @@ namespace NadekoBot.Modules.Administration
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task Iamnot([Leftover] IRole role)
             {

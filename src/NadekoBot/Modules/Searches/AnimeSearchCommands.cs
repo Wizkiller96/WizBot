@@ -16,7 +16,7 @@ namespace NadekoBot.Modules.Searches
         [Group]
         public class AnimeSearchCommands : NadekoSubmodule<AnimeSearchService>
         {
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task Novel([Leftover] string query)
             {
                 if (string.IsNullOrWhiteSpace(query))
@@ -43,7 +43,7 @@ namespace NadekoBot.Modules.Searches
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [Priority(0)]
             public async Task Mal([Leftover] string name)
             {
@@ -131,12 +131,12 @@ namespace NadekoBot.Modules.Searches
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [Priority(1)]
             public Task Mal(IGuildUser usr) => Mal(usr.Username);
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task Anime([Leftover] string query)
             {
                 if (string.IsNullOrWhiteSpace(query))
@@ -163,7 +163,7 @@ namespace NadekoBot.Modules.Searches
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task Manga([Leftover] string query)
             {

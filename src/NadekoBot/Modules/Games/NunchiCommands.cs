@@ -21,7 +21,7 @@ namespace NadekoBot.Modules.Games
                 _client = client;
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task Nunchi()
             {

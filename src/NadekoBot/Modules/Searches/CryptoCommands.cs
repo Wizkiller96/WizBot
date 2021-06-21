@@ -10,7 +10,7 @@ namespace NadekoBot.Modules.Searches
     {
         public class CryptoCommands : NadekoSubmodule<CryptoService>
         {
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task Crypto(string name)
             {
                 name = name?.ToUpperInvariant();

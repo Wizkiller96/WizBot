@@ -40,7 +40,7 @@ namespace NadekoBot.Modules.Administration
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public Task SqlSelect([Leftover]string sql)
             {
@@ -67,42 +67,42 @@ namespace NadekoBot.Modules.Administration
                 }, result.Results.Count, 20);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public Task SqlExec([Leftover]string sql) =>
                 InternalExecSql(sql);
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public Task DeleteWaifus() =>
                 SqlExec(DangerousCommandsService.WaifusDeleteSql);
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public Task DeleteWaifu(IUser user) =>
                 DeleteWaifu(user.Id);
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public Task DeleteWaifu(ulong userId) =>
                 InternalExecSql(DangerousCommandsService.WaifuDeleteSql, userId);
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public Task DeleteCurrency() =>
                 SqlExec(DangerousCommandsService.CurrencyDeleteSql);
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public Task DeletePlaylists() =>
                 SqlExec(DangerousCommandsService.MusicPlaylistDeleteSql);
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public Task DeleteXp() =>
                 SqlExec(DangerousCommandsService.XpDeleteSql);
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public async Task PurgeUser(ulong userId)
             {
@@ -118,7 +118,7 @@ namespace NadekoBot.Modules.Administration
                 await ctx.OkAsync();
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public Task PurgeUser([Leftover]IUser user)
                 => PurgeUser(user.Id);

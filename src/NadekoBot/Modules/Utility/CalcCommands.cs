@@ -14,7 +14,7 @@ namespace NadekoBot.Modules.Utility
         [Group]
         public class CalcCommands : NadekoSubmodule
         {
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task Calculate([Leftover] string expression)
             {
                 var expr = new NCalc.Expression(expression, NCalc.EvaluateOptions.IgnoreCase | NCalc.EvaluateOptions.NoCache);
@@ -41,7 +41,7 @@ namespace NadekoBot.Modules.Utility
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task CalcOps()
             {
                 var selection = typeof(Math).GetTypeInfo()

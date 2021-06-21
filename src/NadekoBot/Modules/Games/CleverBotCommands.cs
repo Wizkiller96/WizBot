@@ -23,7 +23,7 @@ namespace NadekoBot.Modules.Games
                 _db = db;
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageMessages)]
             public async Task Cleverbot()

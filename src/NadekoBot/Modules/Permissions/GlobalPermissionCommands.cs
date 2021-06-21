@@ -24,7 +24,7 @@ namespace NadekoBot.Modules.Permissions
                 _db = db;
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public async Task GlobalPermList()
             {
@@ -53,7 +53,7 @@ namespace NadekoBot.Modules.Permissions
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public async Task GlobalModule(ModuleOrCrInfo module)
             {
@@ -70,7 +70,7 @@ namespace NadekoBot.Modules.Permissions
                 await ReplyConfirmLocalizedAsync("gmod_remove", Format.Bold(module.Name)).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public async Task GlobalCommand(CommandOrCrInfo cmd)
             {

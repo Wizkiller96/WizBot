@@ -33,7 +33,7 @@ namespace NadekoBot.Modules.Gambling
                 _db = db;
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task Flip(int count = 1)
             {
                 if (count > 10 || count < 1)
@@ -85,7 +85,7 @@ namespace NadekoBot.Modules.Gambling
                 Tails = 2
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task Betflip(ShmartNumber amount, BetFlipGuess guess)
             {
                 if (!await CheckBetMandatory(amount).ConfigureAwait(false) || amount == 1)

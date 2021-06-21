@@ -35,7 +35,7 @@ namespace NadekoBot.Modules.Gambling
                 _db = db;
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task WheelOfFortune(ShmartNumber amount)
             {
                 if (!await CheckBetMandatory(amount).ConfigureAwait(false))

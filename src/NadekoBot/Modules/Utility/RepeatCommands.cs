@@ -17,13 +17,7 @@ namespace NadekoBot.Modules.Utility
         [Group]
         public class RepeatCommands : NadekoSubmodule<RepeaterService>
         {
-            // public override string RunningRepeaterToString() =>
-            //     $"{Channel?.Mention ?? $"⚠<#{Repeater.ChannelId}>"} " +
-            //     (this.Repeater.NoRedundant ? "| ✍" : "") +
-            //     $"| {(int) Repeater.Interval.TotalHours}:{Repeater.Interval:mm} " +
-            //     $"| {Repeater.Message.TrimTo(33)}";
-
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageMessages)]
             public async Task RepeatInvoke(int index)
@@ -38,7 +32,7 @@ namespace NadekoBot.Modules.Utility
                 }
             }
             
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageMessages)]
             public async Task RepeatRemove(int index)
@@ -60,7 +54,7 @@ namespace NadekoBot.Modules.Utility
                     .WithDescription(description));
             }
             
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageMessages)]
             public async Task RepeatRedundant(int index)
@@ -86,28 +80,28 @@ namespace NadekoBot.Modules.Utility
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageMessages)]
             [Priority(-1)]
             public Task Repeat([Leftover]string message)
                 => Repeat(null, null, message);
             
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageMessages)]
             [Priority(0)]
             public Task Repeat(StoopidTime interval, [Leftover]string message)
                 => Repeat(null, interval, message);
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageMessages)]
             [Priority(1)]
             public Task Repeat(GuildDateTime dt, [Leftover] string message)
                 => Repeat(dt, null, message);
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageMessages)]
             [Priority(2)]
@@ -156,7 +150,7 @@ namespace NadekoBot.Modules.Utility
                     .WithDescription(description));
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageMessages)]
             public async Task RepeatList()

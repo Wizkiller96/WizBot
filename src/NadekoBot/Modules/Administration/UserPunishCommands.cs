@@ -49,7 +49,7 @@ namespace NadekoBot.Modules.Administration
                 return true;
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.BanMembers)]
             public async Task Warn(IGuildUser user, [Leftover] string reason = null)
@@ -123,7 +123,7 @@ namespace NadekoBot.Modules.Administration
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             [NadekoOptions(typeof(WarnExpireOptions))]
@@ -138,7 +138,7 @@ namespace NadekoBot.Modules.Administration
                     await ReplyConfirmLocalizedAsync("warns_expire_in", expireDays);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             [NadekoOptions(typeof(WarnExpireOptions))]
@@ -169,7 +169,7 @@ namespace NadekoBot.Modules.Administration
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.BanMembers)]
             [Priority(2)]
@@ -180,7 +180,7 @@ namespace NadekoBot.Modules.Administration
                 return Warnlog(page, user.Id);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [Priority(3)]
             public Task Warnlog(IGuildUser user = null)
@@ -190,14 +190,14 @@ namespace NadekoBot.Modules.Administration
                 return ctx.User.Id == user.Id || ((IGuildUser)ctx.User).GuildPermissions.BanMembers ? Warnlog(user.Id) : Task.CompletedTask;
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.BanMembers)]
             [Priority(0)]
             public Task Warnlog(int page, ulong userId)
                 => InternalWarnlog(userId, page - 1);
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.BanMembers)]
             [Priority(1)]
@@ -249,7 +249,7 @@ namespace NadekoBot.Modules.Administration
                 }, allWarnings.Length, 9);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.BanMembers)]
             public async Task WarnlogAll(int page = 1)
@@ -278,13 +278,13 @@ namespace NadekoBot.Modules.Administration
                 }, warnings.Length, 15).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.BanMembers)]
             public Task Warnclear(IGuildUser user, int index = 0)
                 => Warnclear(user.Id, index);
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.BanMembers)]
             public async Task Warnclear(ulong userId, int index = 0)
@@ -316,7 +316,7 @@ namespace NadekoBot.Modules.Administration
                 AddRole
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.BanMembers)]
             [Priority(1)]
@@ -343,7 +343,7 @@ namespace NadekoBot.Modules.Administration
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.BanMembers)]
             public async Task WarnPunish(int number, PunishmentAction punish, StoopidTime time = null)
@@ -372,7 +372,7 @@ namespace NadekoBot.Modules.Administration
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.BanMembers)]
             public async Task WarnPunish(int number)
@@ -386,7 +386,7 @@ namespace NadekoBot.Modules.Administration
                     Format.Bold(number.ToString())).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task WarnPunishList()
             {
@@ -407,7 +407,7 @@ namespace NadekoBot.Modules.Administration
                     list).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.BanMembers)]
             [BotPerm(GuildPerm.BanMembers)]
@@ -458,7 +458,7 @@ namespace NadekoBot.Modules.Administration
                     .ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.BanMembers)]
             [BotPerm(GuildPerm.BanMembers)]
@@ -481,7 +481,7 @@ namespace NadekoBot.Modules.Administration
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.BanMembers)]
             [BotPerm(GuildPerm.BanMembers)]
@@ -524,7 +524,7 @@ namespace NadekoBot.Modules.Administration
                     .ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.BanMembers)]
             [BotPerm(GuildPerm.BanMembers)]
@@ -547,7 +547,7 @@ namespace NadekoBot.Modules.Administration
                 await ctx.OkAsync();
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.BanMembers)]
             [BotPerm(GuildPerm.BanMembers)]
@@ -557,7 +557,7 @@ namespace NadekoBot.Modules.Administration
                 await ctx.OkAsync();
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.BanMembers)]
             [BotPerm(GuildPerm.BanMembers)]
@@ -565,7 +565,7 @@ namespace NadekoBot.Modules.Administration
             public Task BanMessageTest([Leftover] string reason = null)
                 => InternalBanMessageTest(reason, null);
             
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.BanMembers)]
             [BotPerm(GuildPerm.BanMembers)]
@@ -603,7 +603,7 @@ namespace NadekoBot.Modules.Administration
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.BanMembers)]
             [BotPerm(GuildPerm.BanMembers)]
@@ -622,7 +622,7 @@ namespace NadekoBot.Modules.Administration
                 await UnbanInternal(bun.User).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.BanMembers)]
             [BotPerm(GuildPerm.BanMembers)]
@@ -648,14 +648,14 @@ namespace NadekoBot.Modules.Administration
                 await ReplyConfirmLocalizedAsync("unbanned_user", Format.Bold(user.ToString())).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.KickMembers | GuildPerm.ManageMessages)]
             [BotPerm(GuildPerm.BanMembers)]
             public Task Softban(IGuildUser user, [Leftover] string msg = null)
                 => SoftbanInternal(user, msg);
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.KickMembers | GuildPerm.ManageMessages)]
             [BotPerm(GuildPerm.BanMembers)]
@@ -702,7 +702,7 @@ namespace NadekoBot.Modules.Administration
                     .ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.KickMembers)]
             [BotPerm(GuildPerm.KickMembers)]
@@ -710,7 +710,7 @@ namespace NadekoBot.Modules.Administration
             public Task Kick(IGuildUser user, [Leftover] string msg = null)
                 => KickInternal(user, msg);
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.KickMembers)]
             [BotPerm(GuildPerm.KickMembers)]
@@ -757,7 +757,7 @@ namespace NadekoBot.Modules.Administration
                     .ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.BanMembers)]
             [BotPerm(GuildPerm.BanMembers)]

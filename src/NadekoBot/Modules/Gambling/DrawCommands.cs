@@ -72,7 +72,7 @@ namespace NadekoBot.Modules.Gambling
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task Draw(int num = 1)
             {
@@ -88,7 +88,7 @@ namespace NadekoBot.Modules.Gambling
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task DrawNew(int num = 1)
             {
                 if (num < 1)
@@ -103,7 +103,7 @@ namespace NadekoBot.Modules.Gambling
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task DeckShuffle()
             {

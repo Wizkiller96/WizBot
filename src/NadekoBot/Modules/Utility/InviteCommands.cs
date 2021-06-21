@@ -15,7 +15,7 @@ namespace NadekoBot.Modules.Utility
         [Group]
         public class InviteCommands : NadekoSubmodule<InviteService>
         {
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [BotPerm(ChannelPerm.CreateInstantInvite)]
             [UserPerm(ChannelPerm.CreateInstantInvite)]
@@ -32,7 +32,7 @@ namespace NadekoBot.Modules.Utility
                 await ctx.Channel.SendConfirmAsync($"{ctx.User.Mention} https://discord.gg/{invite.Code}").ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [BotPerm(ChannelPerm.ManageChannel)]
             [UserPerm(ChannelPerm.ManageChannel)]
@@ -81,7 +81,7 @@ namespace NadekoBot.Modules.Utility
                 }, invites.Count, 9).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [BotPerm(ChannelPerm.ManageChannel)]
             [UserPerm(ChannelPerm.ManageChannel)]

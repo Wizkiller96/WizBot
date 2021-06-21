@@ -26,13 +26,13 @@ namespace NadekoBot.Modules.Utility
                 _db = db;
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [Priority(1)]
             public Task ListQuotes(OrderType order = OrderType.Keyword)
                 => ListQuotes(1, order);
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [Priority(0)]
             public async Task ListQuotes(int page = 1, OrderType order = OrderType.Keyword)
@@ -55,7 +55,7 @@ namespace NadekoBot.Modules.Utility
                     await ReplyErrorLocalizedAsync("quotes_page_none").ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task QuotePrint([Leftover] string keyword)
             {
@@ -92,7 +92,7 @@ namespace NadekoBot.Modules.Utility
                 await ctx.Channel.SendMessageAsync($"`#{quote.Id}` 📣 " + rep.Replace(quote.Text)?.SanitizeAllMentions()).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task QuoteShow(int id)
             {
@@ -126,7 +126,7 @@ namespace NadekoBot.Modules.Utility
                 ).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task QuoteSearch(string keyword, [Leftover] string text)
             {
@@ -148,7 +148,7 @@ namespace NadekoBot.Modules.Utility
                                                        keywordquote.Text.SanitizeAllMentions()).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task QuoteId(int id)
             {
@@ -188,7 +188,7 @@ namespace NadekoBot.Modules.Utility
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task QuoteAdd(string keyword, [Leftover] string text)
             {
@@ -213,7 +213,7 @@ namespace NadekoBot.Modules.Utility
                 await ReplyConfirmLocalizedAsync("quote_added_new", Format.Code(q.Id.ToString())).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task QuoteDelete(int id)
             {
@@ -243,7 +243,7 @@ namespace NadekoBot.Modules.Utility
                     await ctx.Channel.SendErrorAsync(response).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             public async Task DelAllQuotes([Leftover] string keyword)

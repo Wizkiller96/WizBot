@@ -26,7 +26,7 @@ namespace NadekoBot.Modules.Permissions
                 _db = db;
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             public async Task FwClear()
@@ -35,7 +35,7 @@ namespace NadekoBot.Modules.Permissions
                 await ReplyConfirmLocalizedAsync("fw_cleared").ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task SrvrFilterInv()
             {
@@ -61,7 +61,7 @@ namespace NadekoBot.Modules.Permissions
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task ChnlFilterInv()
             {
@@ -100,7 +100,7 @@ namespace NadekoBot.Modules.Permissions
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task SrvrFilterLin()
             {
@@ -126,7 +126,7 @@ namespace NadekoBot.Modules.Permissions
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task ChnlFilterLin()
             {
@@ -165,7 +165,7 @@ namespace NadekoBot.Modules.Permissions
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task SrvrFilterWords()
             {
@@ -191,7 +191,7 @@ namespace NadekoBot.Modules.Permissions
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task ChnlFilterWords()
             {
@@ -230,7 +230,7 @@ namespace NadekoBot.Modules.Permissions
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task FilterWord([Leftover] string word)
             {
@@ -272,7 +272,7 @@ namespace NadekoBot.Modules.Permissions
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task LstFilterWords(int page = 1)
             {

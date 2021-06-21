@@ -14,7 +14,7 @@ namespace NadekoBot.Modules.Administration
         [Group]
         public class TimeZoneCommands : NadekoSubmodule<GuildTimezoneService>
         {
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task Timezones(int page = 1)
             {
@@ -60,14 +60,14 @@ namespace NadekoBot.Modules.Administration
                     timezones.Length, timezonesPerPage).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task Timezone()
             {
                 await ReplyConfirmLocalizedAsync("timezone_guild", _service.GetTimeZoneOrUtc(ctx.Guild.Id)).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             public async Task Timezone([Leftover] string id)

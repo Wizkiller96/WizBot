@@ -30,7 +30,7 @@ namespace NadekoBot.Modules.Gambling
                 _cs = cs;
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [NadekoOptionsAttribute(typeof(Connect4Game.Options))]
             public async Task Connect4(params string[] args)

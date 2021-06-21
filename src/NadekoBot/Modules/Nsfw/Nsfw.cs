@@ -103,7 +103,7 @@ namespace NadekoBot.Modules.NSFW
         }
 
 #if !GLOBAL_NADEKO
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireNsfw]
         [RequireContext(ContextType.Guild)]
         [UserPerm(ChannelPerm.ManageMessages)]
@@ -151,7 +151,7 @@ namespace NadekoBot.Modules.NSFW
                 string.Join(", ", tagsArr)).ConfigureAwait(false);
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireNsfw]
         [RequireContext(ContextType.Guild)]
         [UserPerm(ChannelPerm.ManageMessages)]
@@ -192,7 +192,7 @@ namespace NadekoBot.Modules.NSFW
             await ReplyConfirmLocalizedAsync("started", interval).ConfigureAwait(false);
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
         [UserPerm(ChannelPerm.ManageMessages)]
         public async Task AutoButts(int interval = 0)
@@ -233,12 +233,12 @@ namespace NadekoBot.Modules.NSFW
         }
 #endif
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
         public Task Hentai([Leftover] string tag = null) =>
             InternalHentai(ctx.Channel, tag);
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
         public async Task HentaiBomb([Leftover] string tag = null)
         {
@@ -266,47 +266,47 @@ namespace NadekoBot.Modules.NSFW
             }
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
         public Task Yandere([Leftover] string tag = null)
             => InternalDapiCommand(tag, DapiSearchType.Yandere, false);
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
         public Task Konachan([Leftover] string tag = null)
             => InternalDapiCommand(tag, DapiSearchType.Konachan, false);
         
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
         public Task Sankaku([Leftover] string tag = null)
             => InternalDapiCommand(tag, DapiSearchType.Sankaku, false);
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
         public Task E621([Leftover] string tag = null)
             => InternalDapiCommand(tag, DapiSearchType.E621, false);
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
         public Task Rule34([Leftover] string tag = null)
             => InternalDapiCommand(tag, DapiSearchType.Rule34, false);
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
         public Task Danbooru([Leftover] string tag = null)
             => InternalDapiCommand(tag, DapiSearchType.Danbooru, false);
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
         public Task Gelbooru([Leftover] string tag = null)
             => InternalDapiCommand(tag, DapiSearchType.Gelbooru, false);
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
         public Task Derpibooru([Leftover] string tag = null)
             => InternalDapiCommand(tag, DapiSearchType.Derpibooru, false);
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
         public async Task Boobs()
         {
@@ -325,7 +325,7 @@ namespace NadekoBot.Modules.NSFW
             }
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
         public async Task Butts()
         {
@@ -344,7 +344,7 @@ namespace NadekoBot.Modules.NSFW
             }
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         public async Task NsfwTagBlacklist([Leftover] string tag = null)
@@ -369,7 +369,7 @@ namespace NadekoBot.Modules.NSFW
             }
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         [OwnerOnly]
         public Task NsfwClearCache()
@@ -378,7 +378,7 @@ namespace NadekoBot.Modules.NSFW
             return Context.OkAsync();
         }
         
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
         public async Task Nhentai(uint id)
@@ -394,7 +394,7 @@ namespace NadekoBot.Modules.NSFW
             await SendNhentaiGalleryInternalAsync(g);
         }
         
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         [Priority(0)]
         public async Task Nhentai([Leftover]string query)

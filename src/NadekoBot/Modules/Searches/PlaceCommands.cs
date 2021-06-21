@@ -27,7 +27,7 @@ namespace NadekoBot.Modules.Searches
                 Xoart, //http://xoart.link
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task Placelist()
             {
                 await ctx.Channel.SendConfirmAsync(GetText("list_of_place_tags", Prefix), 
@@ -35,7 +35,7 @@ namespace NadekoBot.Modules.Searches
                              .ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task Place(PlaceType placeType, uint width = 0, uint height = 0)
             {
                 var url = "";

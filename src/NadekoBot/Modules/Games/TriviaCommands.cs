@@ -30,7 +30,7 @@ namespace NadekoBot.Modules.Games
                 _client = client;
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [Priority(0)]
             [NadekoOptionsAttribute(typeof(TriviaOptions))]
@@ -67,7 +67,7 @@ namespace NadekoBot.Modules.Games
                     .ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task Tl()
             {
@@ -82,7 +82,7 @@ namespace NadekoBot.Modules.Games
                 await ReplyErrorLocalizedAsync("trivia_none").ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task Tq()
             {

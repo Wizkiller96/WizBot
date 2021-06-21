@@ -10,7 +10,7 @@ namespace NadekoBot.Modules.Administration
         [Group]
         public class PrefixCommands : NadekoSubmodule
         {
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [Priority(1)]
             public async Task PrefixCommand()
             {
@@ -22,14 +22,14 @@ namespace NadekoBot.Modules.Administration
                 Set
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             [Priority(0)]
             public Task PrefixCommand(Set _, [Leftover] string prefix)
                 => PrefixCommand(prefix);
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             [Priority(0)]
@@ -44,7 +44,7 @@ namespace NadekoBot.Modules.Administration
                 await ReplyConfirmLocalizedAsync("prefix_new", Format.Code(oldPrefix), Format.Code(newPrefix)).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public async Task DefPrefix([Leftover]string prefix = null)
             {

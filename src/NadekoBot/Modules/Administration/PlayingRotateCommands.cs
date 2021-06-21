@@ -12,7 +12,7 @@ namespace NadekoBot.Modules.Administration
         [Group]
         public class PlayingRotateCommands : NadekoSubmodule<PlayingRotateService>
         {
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public async Task RotatePlaying()
             {
@@ -22,7 +22,7 @@ namespace NadekoBot.Modules.Administration
                     await ReplyConfirmLocalizedAsync("ropl_disabled").ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public async Task AddPlaying(ActivityType t, [Leftover] string status)
             {
@@ -31,7 +31,7 @@ namespace NadekoBot.Modules.Administration
                 await ReplyConfirmLocalizedAsync("ropl_added").ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public async Task ListPlaying()
             {
@@ -51,7 +51,7 @@ namespace NadekoBot.Modules.Administration
 
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public async Task RemovePlaying(int index)
             {

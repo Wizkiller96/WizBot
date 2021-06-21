@@ -23,7 +23,7 @@ namespace NadekoBot.Modules.Xp
                 _xps = xps;
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task ClubTransfer([Leftover] IUser newOwner)
             {
                 var club = _service.TransferClub(ctx.User, newOwner);
@@ -36,7 +36,7 @@ namespace NadekoBot.Modules.Xp
                     await ReplyErrorLocalizedAsync("club_transfer_failed").ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task ClubAdmin([Leftover] IUser toAdmin)
             {
                 bool admin;
@@ -58,7 +58,7 @@ namespace NadekoBot.Modules.Xp
                         .ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task ClubCreate([Leftover] string clubName)
             {
                 if (string.IsNullOrWhiteSpace(clubName) || clubName.Length > 20)
@@ -76,7 +76,7 @@ namespace NadekoBot.Modules.Xp
                 await ReplyConfirmLocalizedAsync("club_created", Format.Bold(club.ToString())).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task ClubIcon([Leftover] string url = null)
             {
                 if ((!Uri.IsWellFormedUriString(url, UriKind.Absolute) && url != null)
@@ -89,7 +89,7 @@ namespace NadekoBot.Modules.Xp
                 await ReplyConfirmLocalizedAsync("club_icon_set").ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [Priority(1)]
             public async Task ClubInformation(IUser user = null)
             {
@@ -104,7 +104,7 @@ namespace NadekoBot.Modules.Xp
                 await ClubInformation(club.ToString()).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [Priority(0)]
             public async Task ClubInformation([Leftover] string clubName = null)
             {
@@ -164,7 +164,7 @@ namespace NadekoBot.Modules.Xp
                 }, club.Users.Count, 10).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public Task ClubBans(int page = 1)
             {
                 if (--page < 0)
@@ -195,7 +195,7 @@ namespace NadekoBot.Modules.Xp
             }
 
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public Task ClubApps(int page = 1)
             {
                 if (--page < 0)
@@ -225,7 +225,7 @@ namespace NadekoBot.Modules.Xp
                     }, apps.Length, 10);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task ClubApply([Leftover] string clubName)
             {
                 if (string.IsNullOrWhiteSpace(clubName))
@@ -248,12 +248,12 @@ namespace NadekoBot.Modules.Xp
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [Priority(1)]
             public Task ClubAccept(IUser user)
                 => ClubAccept(user.ToString());
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [Priority(0)]
             public async Task ClubAccept([Leftover] string userName)
             {
@@ -266,7 +266,7 @@ namespace NadekoBot.Modules.Xp
                     await ReplyErrorLocalizedAsync("club_accept_error").ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task Clubleave()
             {
                 if (_service.LeaveClub(ctx.User))
@@ -275,12 +275,12 @@ namespace NadekoBot.Modules.Xp
                     await ReplyErrorLocalizedAsync("club_not_in_club").ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [Priority(1)]
             public Task ClubKick([Leftover] IUser user)
                 => ClubKick(user.ToString());
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [Priority(0)]
             public Task ClubKick([Leftover] string userName)
             {
@@ -291,12 +291,12 @@ namespace NadekoBot.Modules.Xp
                     return ReplyErrorLocalizedAsync("club_user_kick_fail");
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [Priority(1)]
             public Task ClubBan([Leftover] IUser user)
                 => ClubBan(user.ToString());
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [Priority(0)]
             public Task ClubBan([Leftover] string userName)
             {
@@ -307,12 +307,12 @@ namespace NadekoBot.Modules.Xp
                     return ReplyErrorLocalizedAsync("club_user_ban_fail");
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [Priority(1)]
             public Task ClubUnBan([Leftover] IUser user)
                 => ClubUnBan(user.ToString());
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [Priority(0)]
             public Task ClubUnBan([Leftover] string userName)
             {
@@ -323,7 +323,7 @@ namespace NadekoBot.Modules.Xp
                     return ReplyErrorLocalizedAsync("club_user_unban_fail");
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task ClubLevelReq(int level)
             {
                 if (_service.ChangeClubLevelReq(ctx.User.Id, level))
@@ -337,7 +337,7 @@ namespace NadekoBot.Modules.Xp
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task ClubDescription([Leftover] string desc = null)
             {
                 if (_service.ChangeClubDescription(ctx.User.Id, desc))
@@ -351,7 +351,7 @@ namespace NadekoBot.Modules.Xp
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task ClubDisband()
             {
                 if (_service.Disband(ctx.User.Id, out ClubInfo club))
@@ -365,7 +365,7 @@ namespace NadekoBot.Modules.Xp
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public Task ClubLeaderboard(int page = 1)
             {
                 if (--page < 0)

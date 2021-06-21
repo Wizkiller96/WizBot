@@ -25,7 +25,7 @@ namespace NadekoBot.Modules.Games
                 _client = client;
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [NadekoOptions(typeof(AcrophobiaGame.Options))]
             public async Task Acrophobia(params string[] args)

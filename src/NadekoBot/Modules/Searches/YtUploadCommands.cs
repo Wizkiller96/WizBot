@@ -9,7 +9,7 @@ namespace NadekoBot.Modules.Searches
         // [Group]
         // public class YtTrackCommands : NadekoSubmodule<YtTrackService>
         // {
-        //     [NadekoCommand, Usage, Description, Aliases]
+        //     ;
         //     [RequireContext(ContextType.Guild)]
         //     public async Task YtFollow(string ytChannelId, [Leftover] string uploadMessage = null)
         //     {

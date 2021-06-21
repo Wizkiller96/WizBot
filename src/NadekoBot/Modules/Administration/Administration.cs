@@ -21,7 +21,7 @@ namespace NadekoBot.Modules.Administration
 
 
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(ChannelPerm.ManageChannel)]
         [BotPerm(ChannelPerm.ManageChannel)]
@@ -40,7 +40,7 @@ namespace NadekoBot.Modules.Administration
             await Context.OkAsync();
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [BotPerm(GuildPerm.ManageMessages)]
@@ -77,7 +77,7 @@ namespace NadekoBot.Modules.Administration
             Server
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [BotPerm(GuildPerm.ManageMessages)]
@@ -111,7 +111,7 @@ namespace NadekoBot.Modules.Administration
             Inherit
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [BotPerm(GuildPerm.ManageMessages)]
@@ -119,7 +119,7 @@ namespace NadekoBot.Modules.Administration
         public Task Delmsgoncmd(Channel _, State s, ITextChannel ch)
             => Delmsgoncmd(_, s, ch.Id);
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [BotPerm(GuildPerm.ManageMessages)]
@@ -143,7 +143,7 @@ namespace NadekoBot.Modules.Administration
             }
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.DeafenMembers)]
         [BotPerm(GuildPerm.DeafenMembers)]
@@ -153,7 +153,7 @@ namespace NadekoBot.Modules.Administration
             await ReplyConfirmLocalizedAsync("deafen").ConfigureAwait(false);
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.DeafenMembers)]
         [BotPerm(GuildPerm.DeafenMembers)]
@@ -163,7 +163,7 @@ namespace NadekoBot.Modules.Administration
             await ReplyConfirmLocalizedAsync("undeafen").ConfigureAwait(false);
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageChannels)]
         [BotPerm(GuildPerm.ManageChannels)]
@@ -173,7 +173,7 @@ namespace NadekoBot.Modules.Administration
             await ReplyConfirmLocalizedAsync("delvoich", Format.Bold(voiceChannel.Name)).ConfigureAwait(false);
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageChannels)]
         [BotPerm(GuildPerm.ManageChannels)]
@@ -183,7 +183,7 @@ namespace NadekoBot.Modules.Administration
             await ReplyConfirmLocalizedAsync("createvoich", Format.Bold(ch.Name)).ConfigureAwait(false);
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageChannels)]
         [BotPerm(GuildPerm.ManageChannels)]
@@ -193,7 +193,7 @@ namespace NadekoBot.Modules.Administration
             await ReplyConfirmLocalizedAsync("deltextchan", Format.Bold(toDelete.Name)).ConfigureAwait(false);
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageChannels)]
         [BotPerm(GuildPerm.ManageChannels)]
@@ -203,7 +203,7 @@ namespace NadekoBot.Modules.Administration
             await ReplyConfirmLocalizedAsync("createtextchan", Format.Bold(txtCh.Name)).ConfigureAwait(false);
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageChannels)]
         [BotPerm(GuildPerm.ManageChannels)]
@@ -215,7 +215,7 @@ namespace NadekoBot.Modules.Administration
             await ReplyConfirmLocalizedAsync("set_topic").ConfigureAwait(false);
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageChannels)]
         [BotPerm(GuildPerm.ManageChannels)]
@@ -226,7 +226,7 @@ namespace NadekoBot.Modules.Administration
             await ReplyConfirmLocalizedAsync("set_channel_name").ConfigureAwait(false);
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageChannels)]
         [BotPerm(GuildPerm.ManageChannels)]
@@ -243,14 +243,14 @@ namespace NadekoBot.Modules.Administration
                 await ReplyConfirmLocalizedAsync("nsfw_set_true").ConfigureAwait(false);
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(ChannelPerm.ManageMessages)]
         [Priority(0)]
         public Task Edit(ulong messageId, [Leftover] string text)
             => Edit((ITextChannel) ctx.Channel, messageId, text);
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
         public async Task Edit(ITextChannel channel, ulong messageId, [Leftover] string text)
@@ -272,14 +272,14 @@ namespace NadekoBot.Modules.Administration
             await _service.EditMessage(ctx, channel, messageId, text);
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(ChannelPerm.ManageMessages)]
         [BotPerm(ChannelPerm.ManageMessages)]
         public Task Delete(ulong messageId, StoopidTime time = null)
             => Delete((ITextChannel) ctx.Channel, messageId, time);
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task Delete(ITextChannel channel, ulong messageId, StoopidTime time = null)
         {

@@ -27,7 +27,7 @@ namespace NadekoBot.Modules.Games
                 _client = client;
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [NadekoOptionsAttribute(typeof(TypingGame.Options))]
             public async Task TypeStart(params string[] args)
@@ -50,7 +50,7 @@ namespace NadekoBot.Modules.Games
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task TypeStop()
             {
@@ -64,7 +64,7 @@ namespace NadekoBot.Modules.Games
             }
 
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [OwnerOnly]
             public async Task Typeadd([Leftover] string text)
@@ -78,7 +78,7 @@ namespace NadekoBot.Modules.Games
                 await channel.SendConfirmAsync("Added new article for typing game.").ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task Typelist(int page = 1)
             {
@@ -99,7 +99,7 @@ namespace NadekoBot.Modules.Games
                              .ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [OwnerOnly]
             public async Task Typedel(int index)

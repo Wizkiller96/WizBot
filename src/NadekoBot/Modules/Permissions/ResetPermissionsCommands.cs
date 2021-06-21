@@ -20,7 +20,7 @@ namespace NadekoBot.Modules.Permissions
                 _perms = perms;
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             public async Task ResetPerms()
@@ -29,7 +29,7 @@ namespace NadekoBot.Modules.Permissions
                 await ReplyConfirmLocalizedAsync("perms_reset").ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public async Task ResetGlobalPerms()
             {

@@ -46,7 +46,7 @@ namespace NadekoBot.Modules.Administration
                     {"uk-UA", "Українська, Україна"}
                 };
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [Priority(0)]
             public async Task LanguageSet()
@@ -56,7 +56,7 @@ namespace NadekoBot.Modules.Administration
                     .ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             [Priority(1)]
@@ -85,14 +85,14 @@ namespace NadekoBot.Modules.Administration
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task LanguageSetDefault()
             {
                 var cul = Localization.DefaultCultureInfo;
                 await ReplyConfirmLocalizedAsync("lang_set_bot_show", cul, cul.NativeName).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public async Task LanguageSetDefault(string name)
             {
@@ -119,7 +119,7 @@ namespace NadekoBot.Modules.Administration
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task LanguagesList()
             {
                 await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()

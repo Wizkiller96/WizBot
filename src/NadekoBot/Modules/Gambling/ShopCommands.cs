@@ -76,7 +76,7 @@ namespace NadekoBot.Modules.Gambling
                 }, entries.Count, 9, true);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public Task Shop(int page = 1)
             {
@@ -86,7 +86,7 @@ namespace NadekoBot.Modules.Gambling
                 return ShopInternalAsync(page);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task Buy(int index)
             {
@@ -219,7 +219,7 @@ namespace NadekoBot.Modules.Gambling
             private static long GetProfitAmount(int price) =>
                 (int)(Math.Ceiling(0.90 * price));
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             [BotPerm(GuildPerm.ManageRoles)]
@@ -249,7 +249,7 @@ namespace NadekoBot.Modules.Gambling
                     .WithTitle(GetText("shop_item_add"))).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             public async Task ShopAdd(List _, int price, [Leftover]string name)
@@ -277,7 +277,7 @@ namespace NadekoBot.Modules.Gambling
                     .WithTitle(GetText("shop_item_add"))).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             public async Task ShopListAdd(int index, [Leftover] string itemText)
@@ -316,7 +316,7 @@ namespace NadekoBot.Modules.Gambling
                     await ReplyConfirmLocalizedAsync("shop_list_item_added").ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             public async Task ShopRemove(int index)
@@ -348,7 +348,7 @@ namespace NadekoBot.Modules.Gambling
                         .WithTitle(GetText("shop_item_rm"))).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             public async Task ShopChangePrice(int index, int price)
@@ -368,7 +368,7 @@ namespace NadekoBot.Modules.Gambling
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             public async Task ShopChangeName(int index, [Leftover] string newName)
@@ -388,7 +388,7 @@ namespace NadekoBot.Modules.Gambling
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             public async Task ShopSwap(int index1, int index2)
@@ -408,7 +408,7 @@ namespace NadekoBot.Modules.Gambling
                 }
             }
             
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             public async Task ShopMove(int fromIndex, int toIndex)

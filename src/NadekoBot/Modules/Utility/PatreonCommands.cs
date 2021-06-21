@@ -21,7 +21,7 @@ namespace NadekoBot.Modules.Utility
                 _creds = creds;
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.DM)]
             public async Task ClaimPatreonRewards()
             {

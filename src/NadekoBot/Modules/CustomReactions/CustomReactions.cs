@@ -26,7 +26,7 @@ namespace NadekoBot.Modules.CustomReactions
         private bool AdminInGuildOrOwnerInDm() => (ctx.Guild is null && _creds.IsOwner(ctx.User))
                                                   || (ctx.Guild != null && ((IGuildUser)ctx.User).GuildPermissions.Administrator);
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public async Task AddCustReact(string key, [Leftover] string message)
         {
             var channel = ctx.Channel as ITextChannel;
@@ -49,7 +49,7 @@ namespace NadekoBot.Modules.CustomReactions
                 ).ConfigureAwait(false);
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public async Task EditCustReact(kwum id, [Leftover] string message)
         {
             var channel = ctx.Channel as ITextChannel;
@@ -78,7 +78,7 @@ namespace NadekoBot.Modules.CustomReactions
             }
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [Priority(1)]
         public async Task ListCustReact(int page = 1)
         {
@@ -119,7 +119,7 @@ namespace NadekoBot.Modules.CustomReactions
             All
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [Priority(0)]
         public async Task ListCustReact(All _)
         {
@@ -127,14 +127,14 @@ namespace NadekoBot.Modules.CustomReactions
             await CrsExport();
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public async Task ListCustReactG(int page = 1)
         {
             await ReplyPendingLocalizedAsync("obsolete_use", Format.Code($"{Prefix}crsexport"));
             await CrsExport();
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public async Task ShowCustReact(kwum id)
         {
             var found = _service.GetCustomReaction(ctx.Guild?.Id, (int)id);
@@ -154,7 +154,7 @@ namespace NadekoBot.Modules.CustomReactions
             }
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public async Task DelCustReact(kwum id)
         {
             if (!AdminInGuildOrOwnerInDm())
@@ -179,7 +179,7 @@ namespace NadekoBot.Modules.CustomReactions
             }
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public async Task CrReact(kwum id, params string[] emojiStrs)
         {
             if (!AdminInGuildOrOwnerInDm())
@@ -234,23 +234,23 @@ namespace NadekoBot.Modules.CustomReactions
 
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public Task CrCa(kwum id)
             => InternalCrEdit(id, CustomReactionsService.CrField.ContainsAnywhere);
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public Task CrDm(kwum id)
             => InternalCrEdit(id, CustomReactionsService.CrField.DmResponse);
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public Task CrAd(kwum id)
             => InternalCrEdit(id, CustomReactionsService.CrField.AutoDelete);
         
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public Task CrAt(kwum id)
             => InternalCrEdit(id, CustomReactionsService.CrField.AllowTarget);
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [OwnerOnly]
         public async Task CrsReload()
         {
@@ -284,7 +284,7 @@ namespace NadekoBot.Modules.CustomReactions
             }
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         public async Task CrClear()
@@ -298,7 +298,7 @@ namespace NadekoBot.Modules.CustomReactions
             }
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public async Task CrsExport()
         {
             if (!AdminInGuildOrOwnerInDm())
@@ -314,7 +314,7 @@ namespace NadekoBot.Modules.CustomReactions
             await ctx.Channel.SendFileAsync(stream, "crs-export.yml", text: null);
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
 #if GLOBAL_NADEKO
         [OwnerOnly]
 #endif

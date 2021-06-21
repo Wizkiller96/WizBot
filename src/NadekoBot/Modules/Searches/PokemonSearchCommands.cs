@@ -27,7 +27,7 @@ namespace NadekoBot.Modules.Searches
                 _cache = cache;
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task Pokemon([Leftover] string pokemon = null)
             {
                 pokemon = pokemon?.Trim().ToUpperInvariant();
@@ -52,7 +52,7 @@ namespace NadekoBot.Modules.Searches
                 await ReplyErrorLocalizedAsync("pokemon_none").ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task PokemonAbility([Leftover] string ability = null)
             {
                 ability = ability?.Trim().ToUpperInvariant().Replace(" ", "", StringComparison.InvariantCulture);

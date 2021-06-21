@@ -34,7 +34,7 @@ namespace NadekoBot.Modules.Administration
                 _coord = coord;
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             [OwnerOnly]
@@ -67,7 +67,7 @@ namespace NadekoBot.Modules.Administration
                         .WithValue(cmdText).WithIsInline(false))).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             [OwnerOnly]
@@ -96,7 +96,7 @@ namespace NadekoBot.Modules.Administration
                 await ReplyConfirmLocalizedAsync("autocmd_add", Format.Code(Format.Sanitize(cmdText)), cmd.Interval).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [OwnerOnly]
             public async Task StartupCommandsList(int page = 1)
@@ -129,7 +129,7 @@ namespace NadekoBot.Modules.Administration
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [OwnerOnly]
             public async Task AutoCommandsList(int page = 1)
@@ -167,7 +167,7 @@ namespace NadekoBot.Modules.Administration
                 return $"[{GetText("interval")}]: {interval}";
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public async Task Wait(int miliseconds)
             {
@@ -185,7 +185,7 @@ namespace NadekoBot.Modules.Administration
                 await Task.Delay(miliseconds).ConfigureAwait(false);
             }
             
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             [OwnerOnly]
@@ -200,7 +200,7 @@ namespace NadekoBot.Modules.Administration
                 await ctx.OkAsync();
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [OwnerOnly]
             public async Task StartupCommandRemove([Leftover] int index)
@@ -211,7 +211,7 @@ namespace NadekoBot.Modules.Administration
                     await ReplyConfirmLocalizedAsync("scrm").ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             [OwnerOnly]
@@ -222,7 +222,7 @@ namespace NadekoBot.Modules.Administration
                 await ReplyConfirmLocalizedAsync("startcmds_cleared").ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public async Task ForwardMessages()
             {
@@ -234,7 +234,7 @@ namespace NadekoBot.Modules.Administration
                     await ReplyConfirmLocalizedAsync("fwdm_stop").ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public async Task ForwardToAll()
             {
@@ -247,7 +247,7 @@ namespace NadekoBot.Modules.Administration
 
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task ShardStats(int page = 1)
             {
                 if (--page < 0)
@@ -298,7 +298,7 @@ namespace NadekoBot.Modules.Administration
                 };
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public async Task RestartShard(int shardId)
             {
@@ -313,7 +313,7 @@ namespace NadekoBot.Modules.Administration
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public Task Leave([Leftover] string guildStr)
             {
@@ -321,7 +321,7 @@ namespace NadekoBot.Modules.Administration
             }
 
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public async Task Die()
             {
@@ -337,7 +337,7 @@ namespace NadekoBot.Modules.Administration
                 _coord.Die();
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public async Task Restart()
             {
@@ -351,7 +351,7 @@ namespace NadekoBot.Modules.Administration
                 try { await ReplyConfirmLocalizedAsync("restarting").ConfigureAwait(false); } catch { }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public async Task SetName([Leftover] string newName)
             {
@@ -370,7 +370,7 @@ namespace NadekoBot.Modules.Administration
                 await ReplyConfirmLocalizedAsync("bot_name", Format.Bold(newName)).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [UserPerm(GuildPerm.ManageNicknames)]
             [BotPerm(GuildPerm.ChangeNickname)]
             [Priority(0)]
@@ -384,7 +384,7 @@ namespace NadekoBot.Modules.Administration
                 await ReplyConfirmLocalizedAsync("bot_nick", Format.Bold(newNick) ?? "-").ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [BotPerm(GuildPerm.ManageNicknames)]
             [UserPerm(GuildPerm.ManageNicknames)]
             [Priority(1)]
@@ -403,7 +403,7 @@ namespace NadekoBot.Modules.Administration
                 await ReplyConfirmLocalizedAsync("user_nick", Format.Bold(gu.ToString()), Format.Bold(newNick) ?? "-").ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public async Task SetStatus([Leftover] SettableUserStatus status)
             {
@@ -412,7 +412,7 @@ namespace NadekoBot.Modules.Administration
                 await ReplyConfirmLocalizedAsync("bot_status", Format.Bold(status.ToString())).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public async Task SetAvatar([Leftover] string img = null)
             {
@@ -424,7 +424,7 @@ namespace NadekoBot.Modules.Administration
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public async Task SetGame(ActivityType type, [Leftover] string game = null)
             {
@@ -437,7 +437,7 @@ namespace NadekoBot.Modules.Administration
                 await ReplyConfirmLocalizedAsync("set_game").ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public async Task SetStream(string url, [Leftover] string name = null)
             {
@@ -448,7 +448,7 @@ namespace NadekoBot.Modules.Administration
                 await ReplyConfirmLocalizedAsync("set_stream").ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public async Task Send(string where, [Leftover] string msg = null)
             {
@@ -514,7 +514,7 @@ namespace NadekoBot.Modules.Administration
                 await ReplyConfirmLocalizedAsync("message_sent").ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public async Task ImagesReload()
             {
@@ -522,7 +522,7 @@ namespace NadekoBot.Modules.Administration
                 await ReplyConfirmLocalizedAsync("images_loading", 0).ConfigureAwait(false);
             }
             
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public async Task StringsReload()
             {

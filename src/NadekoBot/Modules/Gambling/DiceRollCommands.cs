@@ -31,7 +31,7 @@ namespace NadekoBot.Modules.Gambling
                 _images = data.LocalImages;
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task Roll()
             {
                 var rng = new NadekoRandom();
@@ -51,7 +51,7 @@ namespace NadekoBot.Modules.Gambling
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [Priority(1)]
             public async Task Roll(int num)
             {
@@ -59,21 +59,21 @@ namespace NadekoBot.Modules.Gambling
             }
 
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [Priority(1)]
             public async Task Rolluo(int num = 1)
             {
                 await InternalRoll(num, false).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [Priority(0)]
             public async Task Roll(string arg)
             {
                 await InternallDndRoll(arg, true).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [Priority(0)]
             public async Task Rolluo(string arg)
             {
@@ -184,7 +184,7 @@ namespace NadekoBot.Modules.Gambling
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task NRoll([Leftover] string range)
             {
                 int rolled;

@@ -16,7 +16,7 @@ namespace NadekoBot.Modules.Administration
         {
             // override stats, it should require that the user has managessages guild permission
             // .po 'stats' add user guild managemessages
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             public async Task DiscordPermOverride(CommandOrCrInfo cmd, params GuildPerm[] perms)
@@ -36,7 +36,7 @@ namespace NadekoBot.Modules.Administration
                     Format.Code(cmd.Name));
             }
             
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             public async Task DiscordPermOverrideReset()
@@ -52,7 +52,7 @@ namespace NadekoBot.Modules.Administration
                 await ReplyConfirmLocalizedAsync("perm_override_all");
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             public async Task DiscordPermOverrideList(int page = 1)

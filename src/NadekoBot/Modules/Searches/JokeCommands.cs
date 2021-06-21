@@ -14,26 +14,26 @@ namespace NadekoBot.Modules.Searches
         public class JokeCommands : NadekoSubmodule<SearchesService>
         {
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task Yomama()
             {
                 await ctx.Channel.SendConfirmAsync(await _service.GetYomamaJoke().ConfigureAwait(false)).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task Randjoke()
             {
                 var (setup, punchline) = await _service.GetRandomJoke().ConfigureAwait(false);
                 await ctx.Channel.SendConfirmAsync(setup, punchline).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task ChuckNorris()
             {
                 await ctx.Channel.SendConfirmAsync(await _service.GetChuckNorrisJoke().ConfigureAwait(false)).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task WowJoke()
             {
                 if (!_service.WowJokes.Any())
@@ -45,7 +45,7 @@ namespace NadekoBot.Modules.Searches
                 await ctx.Channel.SendConfirmAsync(joke.Question, joke.Answer).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task MagicItem()
             {
                 if (!_service.WowJokes.Any())

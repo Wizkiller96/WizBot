@@ -47,7 +47,7 @@ namespace NadekoBot.Modules.Music
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task Playlists([Leftover] int num = 1)
             {
@@ -69,7 +69,7 @@ namespace NadekoBot.Modules.Music
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task DeletePlaylist([Leftover] int id)
             {
@@ -102,7 +102,7 @@ namespace NadekoBot.Modules.Music
                     await ReplyConfirmLocalizedAsync("playlist_deleted").ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task PlaylistShow(int id, int page = 1)
             {
@@ -129,7 +129,7 @@ namespace NadekoBot.Modules.Music
                 }, mpl.Songs.Count, 20).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task Save([Leftover] string name)
             {
@@ -172,7 +172,7 @@ namespace NadekoBot.Modules.Music
 
             private static readonly SemaphoreSlim _playlistLock = new SemaphoreSlim(1, 1);
             
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task Load([Leftover] int id)
             {

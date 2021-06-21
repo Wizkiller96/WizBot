@@ -25,7 +25,7 @@ namespace NadekoBot.Modules.Utility
                 _stats = stats;
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task ServerInfo(string guildName = null)
             {
@@ -74,7 +74,7 @@ namespace NadekoBot.Modules.Utility
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task ChannelInfo(ITextChannel channel = null)
             {
@@ -93,7 +93,7 @@ namespace NadekoBot.Modules.Utility
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task UserInfo(IGuildUser usr = null)
             {
@@ -120,7 +120,7 @@ namespace NadekoBot.Modules.Utility
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [OwnerOnly]
             public async Task Activity(int page = 1)

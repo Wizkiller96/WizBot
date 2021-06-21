@@ -29,18 +29,18 @@ namespace NadekoBot.Modules.Utility
                 _selfService = selfService;
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public Task BotConfigEdit()
                 => Config("bot");
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [Priority(0)]
             [OwnerOnly]
             public Task BotConfigEdit(string prop, [Leftover] string newValue = null)
                 => Config("bot", prop, newValue);
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public async Task ConfigReload(string name)
             {
@@ -63,7 +63,7 @@ namespace NadekoBot.Modules.Utility
                 await ctx.OkAsync();
             }
             
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public async Task Config(string name = null, string prop = null, [Leftover] string value = null)
             {

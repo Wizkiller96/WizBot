@@ -79,7 +79,7 @@ namespace NadekoBot.Modules.Permissions
                 }, items.Length, 10);
             }
             
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public Task UserBlacklist(int page = 1)
             {
@@ -89,7 +89,7 @@ namespace NadekoBot.Modules.Permissions
                 return ListBlacklistInternal(GetText("blacklisted_users"), BlacklistType.User, page);
             }
             
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public Task ChannelBlacklist(int page = 1)
             {
@@ -99,7 +99,7 @@ namespace NadekoBot.Modules.Permissions
                 return ListBlacklistInternal(GetText("blacklisted_channels"), BlacklistType.Channel, page);
             }
             
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public Task ServerBlacklist(int page = 1)
             {
@@ -109,27 +109,27 @@ namespace NadekoBot.Modules.Permissions
                 return ListBlacklistInternal(GetText("blacklisted_servers"), BlacklistType.Server, page);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public Task UserBlacklist(AddRemove action, ulong id)
                 => Blacklist(action, id, BlacklistType.User);
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public Task UserBlacklist(AddRemove action, IUser usr)
                 => Blacklist(action, usr.Id, BlacklistType.User);
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public Task ChannelBlacklist(AddRemove action, ulong id)
                 => Blacklist(action, id, BlacklistType.Channel);
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public Task ServerBlacklist(AddRemove action, ulong id)
                 => Blacklist(action, id, BlacklistType.Server);
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public Task ServerBlacklist(AddRemove action, IGuild guild)
                 => Blacklist(action, guild.Id, BlacklistType.Server);

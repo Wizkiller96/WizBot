@@ -17,7 +17,7 @@ namespace NadekoBot.Modules.Administration
             private static readonly TimeSpan twoWeeks = TimeSpan.FromDays(14);
 
             //delets her own messages, no perm required
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task Prune(string parameter = null)
             {
@@ -30,7 +30,7 @@ namespace NadekoBot.Modules.Administration
                 ctx.Message.DeleteAfter(3);
             }
             // prune x
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(ChannelPerm.ManageMessages)]
             [BotPerm(ChannelPerm.ManageMessages)]
@@ -50,7 +50,7 @@ namespace NadekoBot.Modules.Administration
             }
 
             //prune @user [x]
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(ChannelPerm.ManageMessages)]
             [BotPerm(ChannelPerm.ManageMessages)]
@@ -59,7 +59,7 @@ namespace NadekoBot.Modules.Administration
                 => Prune(user.Id, count, parameter);
 
             //prune userid [x]
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(ChannelPerm.ManageMessages)]
             [BotPerm(ChannelPerm.ManageMessages)]

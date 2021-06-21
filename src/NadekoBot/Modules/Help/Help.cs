@@ -78,7 +78,7 @@ namespace NadekoBot.Modules.Help
             return (embed.PlainText, embed.ToEmbed());
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public async Task Modules(int page = 1)
         {
             if (--page < 0)
@@ -149,7 +149,7 @@ namespace NadekoBot.Modules.Help
             }
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [NadekoOptions(typeof(CommandsOptions))]
         public async Task Commands(string module = null, params string[] args)
         {
@@ -244,7 +244,7 @@ namespace NadekoBot.Modules.Help
             await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [Priority(0)]
         public async Task H([Leftover] string fail)
         {
@@ -258,7 +258,7 @@ namespace NadekoBot.Modules.Help
             await ReplyErrorLocalizedAsync("command_not_found").ConfigureAwait(false);
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [Priority(1)]
         public async Task H([Leftover] CommandInfo com = null)
         {
@@ -289,7 +289,7 @@ namespace NadekoBot.Modules.Help
             await channel.EmbedAsync(embed).ConfigureAwait(false);
         }
         
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [OwnerOnly]
         public async Task GenCmdList()
         {
@@ -397,7 +397,7 @@ namespace NadekoBot.Modules.Help
             await ctx.Channel.SendFileAsync(rDataStream, "cmds.json", GetText("commandlist_regen")).ConfigureAwait(false);
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public async Task Guide()
         {
             await ConfirmLocalizedAsync("guide",
@@ -405,7 +405,7 @@ namespace NadekoBot.Modules.Help
                 "http://nadekobot.readthedocs.io/en/latest/").ConfigureAwait(false);
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public async Task Donate()
         {
             await ReplyConfirmLocalizedAsync("donate", PatreonUrl, PaypalUrl).ConfigureAwait(false);

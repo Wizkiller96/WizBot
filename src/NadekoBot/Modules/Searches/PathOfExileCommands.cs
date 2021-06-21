@@ -37,7 +37,7 @@ namespace NadekoBot.Modules.Searches
                 _httpFactory = httpFactory;
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task PathOfExile(string usr, string league = "", int page = 1)
             {
                 if (--page < 0)
@@ -107,7 +107,7 @@ namespace NadekoBot.Modules.Searches
                 }, characters.Count, 9, true).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task PathOfExileLeagues()
             {
                 var leagues = new List<Leagues>();
@@ -151,7 +151,7 @@ namespace NadekoBot.Modules.Searches
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task PathOfExileCurrency(string leagueName, string currencyName, string convertName = "Chaos Orb")
             {
                 if (string.IsNullOrWhiteSpace(leagueName))

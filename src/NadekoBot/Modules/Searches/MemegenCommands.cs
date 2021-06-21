@@ -41,7 +41,7 @@ namespace NadekoBot.Modules.Searches
                 _httpFactory = factory;
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task Memelist(int page = 1)
             {
                 if (--page < 0)
@@ -72,7 +72,7 @@ namespace NadekoBot.Modules.Searches
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task Memegen(string meme, [Leftover] string memeText = null)
             {
                 var memeUrl = $"http://api.memegen.link/{meme}";

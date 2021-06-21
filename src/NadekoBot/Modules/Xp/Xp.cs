@@ -24,7 +24,7 @@ namespace NadekoBot.Modules.Xp
             _gss = gss;
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task Experience([Leftover] IUser user = null)
         {
@@ -38,7 +38,7 @@ namespace NadekoBot.Modules.Xp
             }
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         public async Task XpRewsReset()
         {
             var reply = await PromptUserConfirmAsync(new EmbedBuilder()
@@ -52,7 +52,7 @@ namespace NadekoBot.Modules.Xp
             await ctx.OkAsync();
         }
         
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         public Task XpLevelUpRewards(int page = 1)
         {
@@ -121,7 +121,7 @@ namespace NadekoBot.Modules.Xp
             Rem = 1,
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [UserPerm(GuildPerm.Administrator)]
         [RequireContext(ContextType.Guild)]
         [Priority(2)]
@@ -131,7 +131,7 @@ namespace NadekoBot.Modules.Xp
             await ReplyConfirmLocalizedAsync("xp_role_reward_cleared", level).ConfigureAwait(false);
         }
         
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [UserPerm(GuildPerm.Administrator)]
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
@@ -151,7 +151,7 @@ namespace NadekoBot.Modules.Xp
                     Format.Bold(role.ToString()));
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         [OwnerOnly]
         public async Task XpCurrencyReward(int level, int amount = 0)
@@ -193,7 +193,7 @@ namespace NadekoBot.Modules.Xp
             return GetText("xpn_notif_disabled");
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task XpNotify()
         {
@@ -208,7 +208,7 @@ namespace NadekoBot.Modules.Xp
             await Context.Channel.EmbedAsync(embed);
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task XpNotify(NotifyPlace place, XpNotificationLocation type)
         {
@@ -222,7 +222,7 @@ namespace NadekoBot.Modules.Xp
 
         public enum Server { Server };
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         public async Task XpExclude(Server _)
@@ -234,7 +234,7 @@ namespace NadekoBot.Modules.Xp
 
         public enum Role { Role };
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [UserPerm(GuildPerm.ManageRoles)]
         [RequireContext(ContextType.Guild)]
         public async Task XpExclude(Role _, [Leftover] IRole role)
@@ -246,7 +246,7 @@ namespace NadekoBot.Modules.Xp
 
         public enum Channel { Channel };
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [UserPerm(GuildPerm.ManageChannels)]
         [RequireContext(ContextType.Guild)]
         public async Task XpExclude(Channel _, [Leftover] IChannel channel = null)
@@ -259,7 +259,7 @@ namespace NadekoBot.Modules.Xp
             await ReplyConfirmLocalizedAsync((ex ? "excluded" : "not_excluded"), Format.Bold(channel.ToString())).ConfigureAwait(false);
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task XpExclusionList()
         {
@@ -297,14 +297,14 @@ namespace NadekoBot.Modules.Xp
             }, lines.Length, 15);
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [NadekoOptions(typeof(LbOpts))]
         [Priority(0)]
         [RequireContext(ContextType.Guild)]
         public Task XpLeaderboard(params string[] args)
             => XpLeaderboard(1, args);
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [NadekoOptions(typeof(LbOpts))]
         [Priority(1)]
         [RequireContext(ContextType.Guild)]
@@ -371,7 +371,7 @@ namespace NadekoBot.Modules.Xp
             }, 900, 9, addPaginatedFooter: false);
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task XpGlobalLeaderboard(int page = 1)
         {
@@ -399,7 +399,7 @@ namespace NadekoBot.Modules.Xp
             await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         public async Task XpAdd(int amount, ulong userId)
@@ -413,13 +413,13 @@ namespace NadekoBot.Modules.Xp
             await ReplyConfirmLocalizedAsync("modified", Format.Bold(usr), Format.Bold(amount.ToString())).ConfigureAwait(false);
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         public Task XpAdd(int amount, [Leftover] IGuildUser user)
             => XpAdd(amount, user.Id);
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         [OwnerOnly]
         public async Task XpTemplateReload()

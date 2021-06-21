@@ -23,14 +23,14 @@ namespace NadekoBot.Modules.Games
                 _client = client;
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task Hangmanlist()
             {
                 await ctx.Channel.SendConfirmAsync(Format.Code(GetText("hangman_types", Prefix)) + "\n" + string.Join("\n", _service.TermPool.Data.Keys)).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task Hangman([Leftover]string type = "random")
             {
@@ -129,7 +129,7 @@ namespace NadekoBot.Modules.Games
                                     footer: string.Join(" ", game.PreviousGuesses));
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task HangmanStop()
             {

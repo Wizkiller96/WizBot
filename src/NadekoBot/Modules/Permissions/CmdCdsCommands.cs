@@ -35,7 +35,7 @@ namespace NadekoBot.Modules.Permissions
                 _db = db;
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task CmdCooldown(CommandOrCrInfo command, int secs)
             {
@@ -83,7 +83,7 @@ namespace NadekoBot.Modules.Permissions
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task AllCmdCooldowns()
             {

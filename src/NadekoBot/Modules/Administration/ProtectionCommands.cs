@@ -17,7 +17,7 @@ namespace NadekoBot.Modules.Administration
         [Group]
         public class ProtectionCommands : NadekoSubmodule<ProtectionService>
         {
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             public async Task AntiAlt()
@@ -31,7 +31,7 @@ namespace NadekoBot.Modules.Administration
                 await ReplyErrorLocalizedAsync("protection_not_running", "Anti-Alt");
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             public async Task AntiAlt(StoopidTime minAge, PunishmentAction action, [Leftover] StoopidTime punishTime = null)
@@ -47,7 +47,7 @@ namespace NadekoBot.Modules.Administration
                 await ctx.OkAsync();
             }
             
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             public async Task AntiAlt(StoopidTime minAge, PunishmentAction action, [Leftover]IRole role)
@@ -62,7 +62,7 @@ namespace NadekoBot.Modules.Administration
                 await ctx.OkAsync();
             }
             
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             public Task AntiRaid()
@@ -77,7 +77,7 @@ namespace NadekoBot.Modules.Administration
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             [Priority(1)]
@@ -85,7 +85,7 @@ namespace NadekoBot.Modules.Administration
                 PunishmentAction action, [Leftover] StoopidTime punishTime)
                 => InternalAntiRaid(userThreshold, seconds, action, punishTime: punishTime);
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             [Priority(2)]
@@ -138,7 +138,7 @@ namespace NadekoBot.Modules.Administration
                         .ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             public Task AntiSpam()
@@ -153,7 +153,7 @@ namespace NadekoBot.Modules.Administration
                 }
             }
             
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             [Priority(0)]
@@ -165,14 +165,14 @@ namespace NadekoBot.Modules.Administration
                 return InternalAntiSpam(messageCount, action, null, role);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             [Priority(1)]
             public Task AntiSpam(int messageCount, PunishmentAction action, [Leftover] StoopidTime punishTime)
                 => InternalAntiSpam(messageCount, action, punishTime, null);
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             [Priority(2)]
@@ -203,7 +203,7 @@ namespace NadekoBot.Modules.Administration
                     $"{ctx.User.Mention} {GetAntiSpamString(stats)}").ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
             public async Task AntispamIgnore()
@@ -219,7 +219,7 @@ namespace NadekoBot.Modules.Administration
                 await ReplyConfirmLocalizedAsync(added.Value ? "spam_ignore" : "spam_not_ignore", "Anti-Spam").ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task AntiList()
             {

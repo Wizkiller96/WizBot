@@ -23,7 +23,7 @@ namespace NadekoBot.Modules.Games
                 this.logService = logService;
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task Pick(string pass = null)
             {
@@ -52,7 +52,7 @@ namespace NadekoBot.Modules.Games
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task Plant(int amount = 1, string pass = null)
             {
@@ -78,7 +78,7 @@ namespace NadekoBot.Modules.Games
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageMessages)]
 #if GLOBAL_NADEKO
@@ -97,7 +97,7 @@ namespace NadekoBot.Modules.Games
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageMessages)]
             [OwnerOnly]

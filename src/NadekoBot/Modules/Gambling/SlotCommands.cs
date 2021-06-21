@@ -87,7 +87,7 @@ namespace NadekoBot.Modules.Gambling
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public async Task SlotStats()
             {
@@ -108,7 +108,7 @@ namespace NadekoBot.Modules.Gambling
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             [OwnerOnly]
             public async Task SlotTest(int tests = 1000)
             {
@@ -137,7 +137,7 @@ namespace NadekoBot.Modules.Gambling
                     footer: $"Total Bet: {tests * bet} | Payout: {payout * bet} | {payout * 1.0f / tests * 100}%").ConfigureAwait(false);
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task Slot(ShmartNumber amount)
             {
                 if (!_runningUsers.Add(ctx.User.Id))

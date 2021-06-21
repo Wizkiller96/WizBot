@@ -29,7 +29,7 @@ namespace NadekoBot.Modules.Searches
                 _httpFactory = factory;
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task Osu(string user, [Leftover] string mode = null)
             {
                 if (string.IsNullOrWhiteSpace(user))
@@ -89,7 +89,7 @@ namespace NadekoBot.Modules.Searches
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task Gatari(string user, [Leftover] string mode = null)
             {
                 using (var http = _httpFactory.CreateClient())
@@ -132,7 +132,7 @@ namespace NadekoBot.Modules.Searches
                 }
             }
 
-            [NadekoCommand, Usage, Description, Aliases]
+            [NadekoCommand, Aliases]
             public async Task Osu5(string user, [Leftover] string mode = null)
             {
                 var channel = (ITextChannel) ctx.Channel;
