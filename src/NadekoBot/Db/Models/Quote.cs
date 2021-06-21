@@ -12,7 +12,6 @@ namespace NadekoBot.Services.Database.Models
         public ulong AuthorId { get; set; }
         [Required]
         public string Text { get; set; }
-        public ulong UseCount { get; set; }
     }
 
 

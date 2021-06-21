@@ -9,8 +9,6 @@ namespace NadekoBot.Services.Database.Models
 
         public HashSet<XpRoleReward> RoleRewards { get; set; } = new HashSet<XpRoleReward>();
         public HashSet<XpCurrencyReward> CurrencyRewards { get; set; } = new HashSet<XpCurrencyReward>();
-        public bool XpRoleRewardExclusive { get; set; }
-        public string NotifyMessage { get; set; } = "Congratulations {0}! You have reached level {1}!";
         public HashSet<ExcludedItem> ExclusionList { get; set; } = new HashSet<ExcludedItem>();
         public bool ServerExcluded { get; set; }
     }

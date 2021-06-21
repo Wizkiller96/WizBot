@@ -7,11 +7,5 @@ namespace NadekoBot.Services.Database.Models
         public int? WaifuInfoId { get; set; }
         public string ItemEmoji { get; set; }
         public string Name { get; set; }
-        
-        
-        [Obsolete]
-        public int Price { get; set; }
-        [Obsolete]
-        public int Item { get; set; }
     }
 }

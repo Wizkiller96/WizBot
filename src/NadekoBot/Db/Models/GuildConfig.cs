@@ -13,8 +13,6 @@ namespace NadekoBot.Services.Database.Models
 
         public bool DeleteMessageOnCommand { get; set; }
         public HashSet<DelMsgOnCmdChannel> DelMsgOnCmdChannels { get; set; } = new HashSet<DelMsgOnCmdChannel>();
-        [Obsolete("Use autoassignroleids")]
-        public ulong AutoAssignRoleId { get; set; }
         public string AutoAssignRoleIds { get; set; }
         //greet stuff
         public bool AutoDeleteGreetMessages { get; set; } //unused
@@ -39,8 +37,6 @@ namespace NadekoBot.Services.Database.Models
         //self assignable roles
         public bool ExclusiveSelfAssignedRoles { get; set; }
         public bool AutoDeleteSelfAssignedRoleMessages { get; set; }
-        public float DefaultMusicVolume { get; set; } = 1.0f;
-        public bool VoicePlusTextEnabled { get; set; }
 
         //stream notifications
         public HashSet<FollowedStream> FollowedStreams { get; set; } = new HashSet<FollowedStream>();
@@ -48,8 +44,6 @@ namespace NadekoBot.Services.Database.Models
         //currencyGeneration
         public HashSet<GCChannelId> GenerateCurrencyChannelIds { get; set; } = new HashSet<GCChannelId>();
 
-        //permissions
-        public Permission RootPermission { get; set; } = null;
         public List<Permissionv2> Permissions { get; set; }
         public bool VerbosePermissions { get; set; } = true;
         public string PermissionRole { get; set; } = null;
@@ -100,7 +94,6 @@ namespace NadekoBot.Services.Database.Models
 
         public XpSettings XpSettings { get; set; }
         public List<FeedSub> FeedSubs { get; set; } = new List<FeedSub>();
-        public bool AutoDcFromVc { get; set; }
         public IndexedCollection<ReactionRoleMessage> ReactionRoleMessages { get; set; } = new IndexedCollection<ReactionRoleMessage>();
         public bool NotifyStreamOffline { get; set; }
         public List<GroupName> SelfAssignableRoleGroupNames { get; set; }

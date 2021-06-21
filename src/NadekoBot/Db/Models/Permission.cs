@@ -4,31 +4,6 @@ using System.Diagnostics;
 
 namespace NadekoBot.Services.Database.Models
 {
-    [DebuggerDisplay("{global::NadekoBot.Modules.Permissions.PermissionExtensions.GetCommand(this)}", Target = typeof(Permission))]
-    public class Permission : DbEntity
-    {
-        public Permission Previous { get; set; } = null;
-        public Permission Next { get; set; } = null;
-
-        public PrimaryPermissionType PrimaryTarget { get; set; }
-        public ulong PrimaryTargetId { get; set; }
-
-        public SecondaryPermissionType SecondaryTarget { get; set; }
-        public string SecondaryTargetName { get; set; }
-
-        public bool State { get; set; }
-
-        public Permissionv2 Tov2() =>
-            new Permissionv2()
-            {
-                PrimaryTarget = PrimaryTarget,
-                PrimaryTargetId = PrimaryTargetId,
-                SecondaryTarget = SecondaryTarget,
-                SecondaryTargetName = SecondaryTargetName,
-                State = State,
-            };
-    }
-
     public interface IIndexed
     {
         int Index { get; set; }

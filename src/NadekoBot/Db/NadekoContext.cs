@@ -51,7 +51,6 @@ namespace NadekoBot.Services.Database
         public DbSet<AutoCommand> AutoCommands { get; set; }
         
         public DbSet<RewardedUser> RewardedUsers { get; set; }
-        public DbSet<Stake> Stakes { get; set; }
         public DbSet<PlantedCurrency> PlantedCurrency { get; set; }
         public DbSet<BanTemplate> BanTemplates { get; set; }
         public DbSet<DiscordPermOverride> DiscordPermOverrides { get; set; }
@@ -140,14 +139,6 @@ namespace NadekoBot.Services.Database
                 .Property(x => x.Group)
                 .HasDefaultValue(0);
 
-            #endregion
-
-            #region Permission
-            var permissionEntity = modelBuilder.Entity<Permission>();
-            permissionEntity
-                .HasOne(p => p.Next)
-                .WithOne(p => p.Previous)
-                .IsRequired(false);
             #endregion
 
             #region MusicPlaylists
