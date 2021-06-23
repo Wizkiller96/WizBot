@@ -2,6 +2,10 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [3.0.0] - 01.07.2021
+
+WIP
+
 ## [2.46.0] - 17.06.2021
 
 ### Added

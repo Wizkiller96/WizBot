@@ -34,6 +34,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
+    <PackageReference Include="NetEscapades.Configuration.Yaml" Version="2.1.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
@@ -56,8 +57,13 @@
     <ProjectReference Include="..\ayu\Ayu.Discord.Voice\Ayu.Discord.Voice.csproj" />
   </ItemGroup>
 
+  <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <None Update="creds.yml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  
   <ItemGroup>
-    <Compile Remove="credentials.json" />
     <Protobuf Include="..\NadekoBot.Coordinator\Protos\coordinator.proto" GrpcServices="Client">
       <Link>Protos\coordinator.proto</Link>
     </Protobuf>
@@ -73,7 +79,7 @@
     <None Update="data\xp_template_backup.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="credentials_example.json">
+    <None Update="creds_example.yml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

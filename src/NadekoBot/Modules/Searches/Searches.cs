@@ -430,7 +430,7 @@ namespace NadekoBot.Modules.Searches
             if (!await ValidateQuery(ctx.Channel, name).ConfigureAwait(false))
                 return;
 
-            if (string.IsNullOrWhiteSpace(_creds.MashapeKey))
+            if (string.IsNullOrWhiteSpace(_creds.RapidApiKey))
             {
                 await ReplyErrorLocalizedAsync("mashape_api_missing").ConfigureAwait(false);
                 return;

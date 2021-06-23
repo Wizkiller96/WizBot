@@ -575,7 +575,7 @@ namespace NadekoBot.Modules.Searches.Services
             using (var http = _httpFactory.CreateClient())
             {
                 http.DefaultRequestHeaders.Clear();
-                http.DefaultRequestHeaders.Add("x-rapidapi-key", _creds.MashapeKey);
+                http.DefaultRequestHeaders.Add("x-rapidapi-key", _creds.RapidApiKey);
                 try
                 {
                     var response = await http.GetStringAsync($"https://omgvamp-hearthstone-v1.p.rapidapi.com/" +

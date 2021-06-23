@@ -18,7 +18,6 @@ using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 using Discord.Net;
-using LinqToDB.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Common.Configs;
 using NadekoBot.Db;
@@ -32,14 +31,14 @@ namespace NadekoBot
 {
     public class Bot
     {
-        public BotCredentials Credentials { get; }
+        private readonly IBotCredentials _creds;
         public DiscordSocketClient Client { get; }
         public CommandService CommandService { get; }
 
         private readonly DbService _db;
         public ImmutableArray<GuildConfig> AllGuildConfigs { get; private set; }
 
-        /* Will have to be removed soon, it's been way too long */
+        // todo remove colors from here
         public static Color OkColor { get; set; }
         public static Color ErrorColor { get; set; }
         public static Color PendingColor { get; set; }
@@ -60,10 +59,12 @@ namespace NadekoBot
             
             TerribleElevatedPermissionCheck();
 
-            Credentials = new BotCredentials();
-            Cache = new RedisCache(Credentials, shardId);
-            LinqToDBForEFTools.Initialize();
-            _db = new DbService(Credentials);
+            _creds = BotCredentialsProvider.CreateBotCredentials();
+            
+            // todo no need for cache prop
+            Cache = new RedisCache(_creds, shardId);
+            
+            _db = new DbService(_creds);
 
             if (shardId == 0)
             {
@@ -75,7 +76,7 @@ namespace NadekoBot
                 MessageCacheSize = 50,
                 LogLevel = LogSeverity.Warning,
                 ConnectionTimeout = int.MaxValue,
-                TotalShards = Credentials.TotalShards,
+                TotalShards = _creds.TotalShards,
                 ShardId = shardId,
                 AlwaysDownloadUsers = false,
                 ExclusiveBulkDelete = true,
@@ -116,7 +117,7 @@ namespace NadekoBot
             }
 
             var svcs = new ServiceCollection()
-                .AddSingleton<IBotCredentials>(Credentials)
+                .AddSingleton<IBotCredentials>(_creds)
                 .AddSingleton(_db)
                 .AddSingleton(Client)
                 .AddSingleton(CommandService)
@@ -300,7 +301,7 @@ namespace NadekoBot
         {
             var sw = Stopwatch.StartNew();
 
-            await LoginAsync(Credentials.Token).ConfigureAwait(false);
+            await LoginAsync(_creds.Token).ConfigureAwait(false);
 
             Mention = Client.CurrentUser.Mention;
             Log.Information("Shard {ShardId} loading services...", Client.ShardId);

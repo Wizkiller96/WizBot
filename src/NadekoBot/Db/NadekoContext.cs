@@ -6,6 +6,7 @@ using NadekoBot.Services;
 using System;
 using System.IO;
 using Microsoft.Extensions.Logging;
+using Nadeko.Common;
 using NadekoBot.Db.Models;
 
 namespace NadekoBot.Services.Database
@@ -16,7 +17,7 @@ namespace NadekoBot.Services.Database
         {
             LogSetup.SetupLogger(-2);
             var optionsBuilder = new DbContextOptionsBuilder<NadekoContext>();
-            IBotCredentials creds = new BotCredentials();
+            IBotCredentials creds = BotCredentialsProvider.CreateBotCredentials();
             var builder = new SqliteConnectionStringBuilder(creds.Db.ConnectionString);
             builder.DataSource = Path.Combine(AppContext.BaseDirectory, builder.DataSource);
             optionsBuilder.UseSqlite(builder.ToString());

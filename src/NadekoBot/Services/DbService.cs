@@ -4,7 +4,7 @@ using NadekoBot.Services.Database;
 using System;
 using System.IO;
 using System.Linq;
-using NadekoBot.Db;
+using LinqToDB.EntityFrameworkCore;
 
 namespace NadekoBot.Services
 {
@@ -15,6 +15,8 @@ namespace NadekoBot.Services
 
         public DbService(IBotCredentials creds)
         {
+            LinqToDBForEFTools.Initialize();
+            
             var builder = new SqliteConnectionStringBuilder(creds.Db.ConnectionString);
             builder.DataSource = Path.Combine(AppContext.BaseDirectory, builder.DataSource);
 
