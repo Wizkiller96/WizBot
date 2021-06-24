@@ -8,6 +8,7 @@ using NadekoBot.Services;
 using NadekoBot.Modules.Administration.Services;
 using NadekoBot.Modules.Music.Resolvers;
 using NadekoBot.Modules.Music.Services;
+using StackExchange.Redis;
 
 namespace NadekoBot.Extensions
 {
@@ -63,6 +64,13 @@ namespace NadekoBot.Extensions
                 services.AddSingleton(baseType, subType);
             }
 
+            return services;
+        }
+
+        public static IServiceCollection AddRedis(this IServiceCollection services, string redisOptions)
+        {
+            var conf = ConfigurationOptions.Parse(redisOptions);
+            services.AddSingleton(ConnectionMultiplexer.Connect(conf));
             return services;
         }
     }

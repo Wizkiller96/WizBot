@@ -51,16 +51,11 @@
     <PackageReference Include="YamlDotNet" Version="11.2.0" />
     <PackageReference Include="YoutubeExplode" Version="6.0.2" />
     <PackageReference Include="linq2db.EntityFrameworkCore" Version="5.3.1" />
+    <PackageReference Include="Microsoft.Extensions.Primitives" Version="5.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ayu\Ayu.Discord.Voice\Ayu.Discord.Voice.csproj" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <None Update="creds.yml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   
   <ItemGroup>
@@ -73,13 +68,7 @@
     <None Update="nadeko_icon.ico;libopus.so;libsodium.so;libsodium.dll;opus.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="data\images_backup.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="data\xp_template_backup.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="creds_example.yml">
+    <None Update="creds_example.yml;data\images_backup.json;data\xp_template_backup.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

@@ -12,7 +12,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
@@ -43,26 +42,23 @@ namespace NadekoBot
         public static Color ErrorColor { get; set; }
         public static Color PendingColor { get; set; }
 
+        // todo remove ready prop
         public TaskCompletionSource<bool> Ready { get; private set; } = new TaskCompletionSource<bool>();
 
         public IServiceProvider Services { get; private set; }
-        public IDataCache Cache { get; private set; }
-
+        
         public string Mention { get; set; }
 
         public event Func<GuildConfig, Task> JoinedGuild = delegate { return Task.CompletedTask; };
 
+        private readonly BotCredsProvider _credsProvider;
         public Bot(int shardId)
         {
             if (shardId < 0)
                 throw new ArgumentOutOfRangeException(nameof(shardId));
-            
-            TerribleElevatedPermissionCheck();
 
-            _creds = BotCredentialsProvider.CreateBotCredentials();
-            
-            // todo no need for cache prop
-            Cache = new RedisCache(_creds, shardId);
+            _credsProvider = new BotCredsProvider();
+            _creds = _credsProvider.GetCreds();
             
             _db = new DbService(_creds);
 
@@ -115,21 +111,21 @@ namespace NadekoBot
                 uow.EnsureUserCreated(_bot.Id, _bot.Username, _bot.Discriminator, _bot.AvatarId);
                 AllGuildConfigs = uow.GuildConfigs.GetAllGuildConfigs(startingGuildIdList).ToImmutableArray();
             }
-
+            
             var svcs = new ServiceCollection()
-                .AddSingleton<IBotCredentials>(_creds)
-                .AddSingleton(_db)
-                .AddSingleton(Client)
+                .AddTransient<IBotCredentials>(_ => _creds) // bot creds
+                .AddSingleton(_db) // database
+                .AddRedis(_creds.RedisOptions) // redis
+                .AddSingleton(Client) // discord socket client
                 .AddSingleton(CommandService)
-                .AddSingleton(this)
-                .AddSingleton(Cache)
-                .AddSingleton(Cache.Redis)
+                .AddSingleton(this) // pepega
+                .AddSingleton<IDataCache, RedisCache>()
                 .AddSingleton<ISeria, JsonSeria>()
                 .AddSingleton<IPubSub, RedisPubSub>()
                 .AddSingleton<IConfigSeria, YamlSeria>()
                 .AddBotStringsServices()
                 .AddConfigServices()
-                .AddConfigMigrators()
+                .AddConfigMigrators() // todo remove config migrators
                 .AddMemoryCache()
                 .AddSingleton<IShopService, ShopService>()
                 // music
@@ -175,6 +171,7 @@ namespace NadekoBot
             Log.Information($"All services loaded in {sw.Elapsed.TotalSeconds:F2}s");
         }
 
+        // todo remove config migrations
         private void ApplyConfigMigrations()
         {
             // execute all migrators
@@ -192,6 +189,7 @@ namespace NadekoBot
             // deleteBotConfig.ExecuteNonQuery();
         }
 
+        // todo isn't there a built in for loading type readers?
         private IEnumerable<object> LoadTypeReaders(Assembly assembly)
         {
             Type[] allTypes;
@@ -271,8 +269,10 @@ namespace NadekoBot
             Client.Ready += SetClientReady;
             await clientReady.Task.ConfigureAwait(false);
             Client.Ready -= SetClientReady;
+            
             Client.JoinedGuild += Client_JoinedGuild;
             Client.LeftGuild += Client_LeftGuild;
+            
             Log.Information("Shard {0} logged in.", Client.ShardId);
         }
 
@@ -297,6 +297,7 @@ namespace NadekoBot
             return Task.CompletedTask;
         }
 
+        // todo cleanup
         public async Task RunAsync()
         {
             var sw = Stopwatch.StartNew();
@@ -346,8 +347,10 @@ namespace NadekoBot
                 }
                 catch (Exception ex)
                 {
-                    Log.Error(ex, "Failed running OnReadyAsync method on {Type} type: {Message}",
-                        toExec.GetType().Name, ex.Message);
+                    Log.Error(ex,
+                        "Failed running OnReadyAsync method on {Type} type: {Message}",
+                        toExec.GetType().Name,
+                        ex.Message);
                 }
             });
 
@@ -370,22 +373,8 @@ namespace NadekoBot
             await Task.Delay(-1).ConfigureAwait(false);
         }
 
-        private void TerribleElevatedPermissionCheck()
-        {
-            try
-            {
-                var rng = new NadekoRandom().Next(100000, 1000000);
-                var str = rng.ToString();
-                File.WriteAllText(str, str);
-                File.Delete(str);
-            }
-            catch
-            {
-                Log.Error("You must run the application as an ADMINISTRATOR");
-                Helpers.ReadErrorAndExit(2);
-            }
-        }
-
+        
+        // todo status changes don't belong here
         private void HandleStatusChanges()
         {
             var sub = Services.GetService<IDataCache>().Redis.GetSubscriber();

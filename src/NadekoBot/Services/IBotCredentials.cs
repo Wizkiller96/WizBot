@@ -10,7 +10,7 @@ namespace NadekoBot.Services
     {
         string Token { get; }
         string GoogleApiKey { get; }
-        List<ulong> OwnerIds { get; }
+        ICollection<ulong> OwnerIds { get; }
         string RapidApiKey { get; }
         string PatreonAccessToken { get; }
 

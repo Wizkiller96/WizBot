@@ -1,18 +1,14 @@
 #Manually added files
 
-patreon_rewards.json
 command_errors*.txt
 _output/
 
 src/NadekoBot/Command Errors*.txt
 
-src/NadekoBot/credentials.json
-# these 2 are used for migrations
-NadekoBot.Core/credentials.json
-NadekoBot.Core/credentials_example.json
-
+src/NadekoBot/creds.yml
+# credentials file after migrations
+src/NadekoBot/old_credentials.json 
 src/NadekoBot/data/NadekoBot.db
-src/NadekoBot/data/musicdata
 
 # Created by https://www.gitignore.io/api/visualstudio,visualstudiocode,windows,linux,macos
 

@@ -1,0 +1,57 @@
+# DO NOT CHANGE
+version: 1
+# Bot token. Do not share with anyone ever -> https://discordapp.com/developers/applications/
+token: 
+# List of Ids of the users who have bot owner permissions
+# **DO NOT ADD PEOPLE YOU DON'T TRUST**
+ownerIds: 
+# The number of shards that the bot will running on.
+# Leave at 1 if you don't know what you're doing.
+totalShards: 1
+# Login to https://console.cloud.google.com, create a new project, go to APIs & Services -> Library -> YouTube Data API and enable it.
+# Then, go to APIs and Services -> Credentials and click Create credentials -> API key.
+# Used only for Youtube Data Api (at the moment).
+googleApiKey: ''
+# Settings for voting system for discordbots. Meant for use on global Nadeko.
+votes:
+  url: ''
+  key: ''
+# Patreon auto reward system settings.
+# go to https://www.patreon.com/portal -> my clients -> create client
+patreon:
+# Access token. You have to manually update this 1st of each month by refreshing the token on https://patreon.com/portal
+  accessToken: ''
+  # Unused atm
+  refreshToken: ''
+  # Unused atm
+  clientSecret: ''
+  # Campaign ID of your patreon page. Go to your patreon page (make sure you're logged in) and type "prompt('Campaign ID', window.patreon.bootstrap.creator.data.id);" in the console. (ctrl + shift + i)
+  campaignId: ''
+# Api key for sending stats to DiscordBotList.
+botListToken: ''
+# Official cleverbot api key.
+cleverbotApiKey: ''
+# Redis connection string. Don't change if you don't know what you're doing.
+redisOptions: localhost:6379,syncTimeout=30000,responseTimeout=30000,allowAdmin=true,password=
+# Database options. Don't change if you don't know what you're doing. Leave null for default values
+db:
+# Database type. Only sqlite supported atm
+  type: sqlite
+  # Connection string. Will default to "Data Source=data/NadekoBot.db"
+  connectionString: Data Source=data/NadekoBot.db
+restartCommand: 
+votesUrl: 
+votesToken: 
+# Api key obtained on https://rapidapi.com (go to MyApps -> Add New App -> Enter Name -> Application key)
+rapidApiKey: 
+# https://locationiq.com api key (register and you will receive the token in the email).
+# Used only for .time command.
+locationIqApiKey: 
+# https://timezonedb.com api key (register and you will receive the token in the email).
+# Used only for .time command
+timezoneDbApiKey: 
+# https://pro.coinmarketcap.com/account/ api key. There is a free plan for personal use.
+# Used for cryptocurrency related commands.
+coinmarketcapApiKey: 
+# Api key used for Osu related commands. Obtain this key at https://osu.ppy.sh/p/api
+osuApiKey: 

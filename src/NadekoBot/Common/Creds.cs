@@ -9,8 +9,9 @@ namespace Nadeko.Common
     {
         public Creds()
         {
+            Version = 1;
             Token = string.Empty;
-            OwnerIds = new();
+            OwnerIds = new List<ulong>();
             TotalShards = 1;
             GoogleApiKey = string.Empty;
             Votes = new(string.Empty, string.Empty);
@@ -23,15 +24,17 @@ namespace Nadeko.Common
                 Type = "sqlite",
                 ConnectionString = "Data Source=data/NadekoBot.db"
             };
-            Version = 1;
         }
 
+        [Comment(@"DO NOT CHANGE")]
+        public int Version { get; set; }
+        
         [Comment(@"Bot token. Do not share with anyone ever -> https://discordapp.com/developers/applications/")]
         public string Token { get; set; }
 
         [Comment(@"List of Ids of the users who have bot owner permissions
 **DO NOT ADD PEOPLE YOU DON'T TRUST**")]
-        public List<ulong> OwnerIds { get; set; }
+        public ICollection<ulong> OwnerIds { get; set; }
         
         // todo update total shards on startup
         [Comment(@"The number of shards that the bot will running on.
@@ -61,9 +64,6 @@ go to https://www.patreon.com/portal -> my clients -> create client")]
         
         [Comment(@"Database options. Don't change if you don't know what you're doing. Leave null for default values")]
         public DbOptions Db { get; set; }
-        
-        [Comment(@"DO NOT CHANGE")]
-        public int Version { get; set; }
 
 
         public RestartConfig RestartCommand { get; set; }
@@ -153,7 +153,7 @@ Used for cryptocurrency related commands.")]
             public int TotalShards { get; set; } = 1;
             public string PatreonAccessToken { get; set; } = string.Empty;
             public string PatreonCampaignId { get; set; } = "334038";
-            public RestartConfig? RestartCommand { get; set; } = null;
+            public RestartConfig RestartCommand { get; set; } = null;
 
             public string ShardRunCommand { get; set; } = string.Empty;
             public string ShardRunArguments { get; set; } = string.Empty;

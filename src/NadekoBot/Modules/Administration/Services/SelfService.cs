@@ -38,11 +38,10 @@ namespace NadekoBot.Modules.Administration.Services
         private readonly IImageCache _imgs;
         private readonly IHttpClientFactory _httpFactory;
         private readonly BotConfigService _bss;
-        private readonly ICoordinator _coord;
 
         public SelfService(DiscordSocketClient client, CommandHandler cmdHandler, DbService db,
             IBotStrings strings, IBotCredentials creds, IDataCache cache, IHttpClientFactory factory,
-            BotConfigService bss, ICoordinator coord)
+            BotConfigService bss)
         {
             _redis = cache.Redis;
             _cmdHandler = cmdHandler;
@@ -54,7 +53,6 @@ namespace NadekoBot.Modules.Administration.Services
             _imgs = cache.LocalImages;
             _httpFactory = factory;
             _bss = bss;
-            _coord = coord;
 
             var sub = _redis.GetSubscriber();
             if (_client.ShardId == 0)
