@@ -406,7 +406,7 @@ namespace WizBot.Modules.CustomReactions.Services
                     {
                         if (pc.Verbose)
                         {
-                            var returnMsg = _strings.GetText("trigger", sg.Id,
+                            var returnMsg = _strings.GetText("perm_prevent", sg.Id,
                                 index + 1,
                                 Format.Bold(pc.Permissions[index].GetCommand(_cmd.GetPrefix(guild), sg)));
                             try

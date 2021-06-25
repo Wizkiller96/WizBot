@@ -121,7 +121,7 @@ namespace WizBot.Modules.Games.Services
                 {
                     if (pc.Verbose)
                     {
-                        var returnMsg = _strings.GetText("trigger", guild.Id, index + 1, Format.Bold(pc.Permissions[index].GetCommand(_cmd.GetPrefix(guild), (SocketGuild)guild)));
+                        var returnMsg = _strings.GetText("perm_prevent", guild.Id, index + 1, Format.Bold(pc.Permissions[index].GetCommand(_cmd.GetPrefix(guild), (SocketGuild)guild)));
                         try { await usrMsg.Channel.SendErrorAsync(returnMsg).ConfigureAwait(false); } catch { }
                         Log.Information(returnMsg);
                     }
