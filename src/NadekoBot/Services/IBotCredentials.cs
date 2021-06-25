@@ -27,6 +27,7 @@ namespace NadekoBot.Services
         string LocationIqApiKey { get; }
         string TimezoneDbApiKey { get; }
         string CoinmarketcapApiKey { get; }
+        string CoordinatorUrl { get; set; }
     }
     
     // todo move somewhere else
@@ -38,13 +39,7 @@ namespace NadekoBot.Services
 
     public class RestartConfig
     {
-        public RestartConfig(string cmd, string args)
-        {
-            this.Cmd = cmd;
-            this.Args = args;
-        }
-
-        public string Cmd { get; }
-        public string Args { get; }
+        public string Cmd { get; set; }
+        public string Args { get; set; }
     }
 }

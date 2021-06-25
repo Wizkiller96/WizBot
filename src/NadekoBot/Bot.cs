@@ -52,12 +52,12 @@ namespace NadekoBot
         public event Func<GuildConfig, Task> JoinedGuild = delegate { return Task.CompletedTask; };
 
         private readonly BotCredsProvider _credsProvider;
-        public Bot(int shardId)
+        public Bot(int shardId, int? totalShards)
         {
             if (shardId < 0)
                 throw new ArgumentOutOfRangeException(nameof(shardId));
 
-            _credsProvider = new BotCredsProvider();
+            _credsProvider = new BotCredsProvider(totalShards);
             _creds = _credsProvider.GetCreds();
             
             _db = new DbService(_creds);
@@ -171,7 +171,6 @@ namespace NadekoBot
             Log.Information($"All services loaded in {sw.Elapsed.TotalSeconds:F2}s");
         }
 
-        // todo remove config migrations
         private void ApplyConfigMigrations()
         {
             // execute all migrators
@@ -180,13 +179,6 @@ namespace NadekoBot
             {
                 migrator.EnsureMigrated();
             }
-            
-            // and then drop the bot config table
-            
-            // var conn = _db.GetDbContext()._context.Database.GetDbConnection();
-            // using var deleteBotConfig = conn.CreateCommand();
-            // deleteBotConfig.CommandText = "DROP TABLE IF EXISTS BotConfig;";
-            // deleteBotConfig.ExecuteNonQuery();
         }
 
         // todo isn't there a built in for loading type readers?

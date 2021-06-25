@@ -1,5 +1,5 @@
-TotalShards: 1
+TotalShards: 3
 RecheckIntervalMs: 5000
 ShardStartCommand: dotnet
-ShardStartArgs: run -p "..\NadekoBot\NadekoBot.csproj" --no-build -- {0}
+ShardStartArgs: run -p "..\NadekoBot\NadekoBot.csproj" --no-build -- {0} {1}
 UnresponsiveSec: 30

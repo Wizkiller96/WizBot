@@ -20,8 +20,11 @@ namespace NadekoBot.Services
 
         public RemoteGrpcCoordinator(IBotCredentials creds, DiscordSocketClient client)
         {
-            // todo should use credentials
-            var channel = Grpc.Net.Client.GrpcChannel.ForAddress("https://localhost:3443");
+            var coordUrl = string.IsNullOrWhiteSpace(creds.CoordinatorUrl)
+                ? "http://localhost:3442"
+                : creds.CoordinatorUrl;
+            
+            var channel = Grpc.Net.Client.GrpcChannel.ForAddress(coordUrl);
             _coordClient = new(channel);
             _client = client;
         }
@@ -29,8 +32,8 @@ namespace NadekoBot.Services
         public bool RestartBot()
         {
             _coordClient.RestartAllShards(new RestartAllRequest
-            { 
-
+            {
+                
             });
 
             return true;

@@ -4,7 +4,7 @@ version: 1
 token: ''
 # List of Ids of the users who have bot owner permissions
 # **DO NOT ADD PEOPLE YOU DON'T TRUST**
-ownerIds: 
+ownerIds: []
 # The number of shards that the bot will running on.
 # Leave at 1 if you don't know what you're doing.
 totalShards: 1
@@ -39,7 +39,9 @@ db:
   type: sqlite
   # Connection string. Will default to "Data Source=data/NadekoBot.db"
   connectionString: Data Source=data/NadekoBot.db
-restartCommand: 
+# Address and port of the coordinator endpoint. Leave empty for default.
+# Change only if you've changed the coordinator address or port.
+coordinatorUrl: http://localhost:3442
 votesUrl: 
 votesToken: 
 # Api key obtained on https://rapidapi.com (go to MyApps -> Add New App -> Enter Name -> Application key)
@@ -55,3 +57,17 @@ timezoneDbApiKey:
 coinmarketcapApiKey: 
 # Api key used for Osu related commands. Obtain this key at https://osu.ppy.sh/p/api
 osuApiKey: 
+# Command and args which will be used to restart the bot.
+# Only used if bot is executed directly (NOT through the coordinator)
+# placeholders: 
+#     {0} -> shard id 
+#     {1} -> total shards
+# Linux default
+#     cmd: dotnet
+#     args: "NadekoBot.dll -- {0}"
+# Windows default
+#     cmd: NadekoBot.exe
+#     args: {0}
+restartCommand:
+  cmd: 
+  args: 

@@ -79,7 +79,7 @@ namespace NadekoBot.Coordinator
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            Log.Information("Executing");
+            // Log.Information("Executing");
 
             bool first = true;
             while (!stoppingToken.IsCancellationRequested)
@@ -98,7 +98,7 @@ namespace NadekoBot.Coordinator
                         
                         if (first)
                         {
-                            Log.Information("Startup order: {StartupOrder}",string.Join(' ', shardIds));
+                            // Log.Information("Startup order: {StartupOrder}",string.Join(' ', shardIds));
                             first = false;
                         }
                         
@@ -192,7 +192,7 @@ namespace NadekoBot.Coordinator
                 FileName = _config.ShardStartCommand,
                 Arguments = string.Format(_config.ShardStartArgs,
                     shardId,
-                    Environment.ProcessId),
+                    _config.TotalShards),
                 EnvironmentVariables =
                 {
                     {"NADEKOBOT_IS_COORDINATED", "1"}

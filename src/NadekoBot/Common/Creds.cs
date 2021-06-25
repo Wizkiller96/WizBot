@@ -24,6 +24,12 @@ namespace Nadeko.Common
                 Type = "sqlite",
                 ConnectionString = "Data Source=data/NadekoBot.db"
             };
+
+            CoordinatorUrl = "http://localhost:3442";
+
+            RestartCommand = new()
+            {
+            };
         }
 
         [Comment(@"DO NOT CHANGE")]
@@ -36,7 +42,6 @@ namespace Nadeko.Common
 **DO NOT ADD PEOPLE YOU DON'T TRUST**")]
         public ICollection<ulong> OwnerIds { get; set; }
         
-        // todo update total shards on startup
         [Comment(@"The number of shards that the bot will running on.
 Leave at 1 if you don't know what you're doing.")]
         public int TotalShards { get; set; }
@@ -65,8 +70,9 @@ go to https://www.patreon.com/portal -> my clients -> create client")]
         [Comment(@"Database options. Don't change if you don't know what you're doing. Leave null for default values")]
         public DbOptions Db { get; set; }
 
-
-        public RestartConfig RestartCommand { get; set; }
+        [Comment(@"Address and port of the coordinator endpoint. Leave empty for default.
+Change only if you've changed the coordinator address or port.")]
+        public string CoordinatorUrl { get; set; }
         
         [YamlIgnore]
         public string PatreonCampaignId => Patreon?.CampaignId;
@@ -93,6 +99,19 @@ Used for cryptocurrency related commands.")]
         
         [Comment(@"Api key used for Osu related commands. Obtain this key at https://osu.ppy.sh/p/api")]
         public string OsuApiKey { get; set; }
+
+        [Comment(@"Command and args which will be used to restart the bot.
+Only used if bot is executed directly (NOT through the coordinator)
+placeholders: 
+    {0} -> shard id 
+    {1} -> total shards
+Linux default
+    cmd: dotnet
+    args: ""NadekoBot.dll -- {0}""
+Windows default
+    cmd: NadekoBot.exe
+    args: {0}")]
+        public RestartConfig RestartCommand { get; set; }
 
 
         public class DbOptions
