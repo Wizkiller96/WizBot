@@ -28,6 +28,8 @@ using Serilog;
 
 namespace NadekoBot
 {
+    // todo remove all migration code from 
+    // todo read prev commit
     public class Bot
     {
         private readonly IBotCredentials _creds;

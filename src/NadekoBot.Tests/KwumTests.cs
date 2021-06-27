@@ -2,7 +2,7 @@
 using NadekoBot.Common;
 using NUnit.Framework;
 
-namespace Nadeko.Tests
+namespace NadekoBot.Tests
 {
     public class KwumTests
     {

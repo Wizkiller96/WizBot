@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using NadekoBot.Services;
 using NUnit.Framework;
 
-namespace Nadeko.Tests
+namespace NadekoBot.Tests
 {
     public class GroupGreetTests
     {

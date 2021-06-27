@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Nadeko.Tests
+namespace NadekoBot.Tests
 {
     public class IndexedCollectionTests
     {

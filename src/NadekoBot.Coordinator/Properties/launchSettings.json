@@ -1,6 +1,6 @@
 ﻿{
   "profiles": {
-    "Nadeko.Coordinator": {
+    "NadekoBot.Coordinator": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": false,

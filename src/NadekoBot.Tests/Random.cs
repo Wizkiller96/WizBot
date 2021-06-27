@@ -3,7 +3,7 @@ using System.Text;
 using NadekoBot.Common.Yml;
 using NUnit.Framework;
 
-namespace Nadeko.Tests
+namespace NadekoBot.Tests
 {
     public class RandomTests
     {

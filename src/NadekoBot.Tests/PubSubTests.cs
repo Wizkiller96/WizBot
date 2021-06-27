@@ -3,7 +3,7 @@ using NadekoBot.Common;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
 
-namespace Nadeko.Tests
+namespace NadekoBot.Tests
 {
     public class PubSubTests
     {

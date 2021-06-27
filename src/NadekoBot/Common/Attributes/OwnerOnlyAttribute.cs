@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Discord.Commands;
-using NadekoBot.Services;
 using Microsoft.Extensions.DependencyInjection;
+using NadekoBot.Extensions;
 
 namespace NadekoBot.Common.Attributes
 {

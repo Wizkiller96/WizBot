@@ -9,7 +9,7 @@ using NadekoBot.Services;
 using NadekoBot.Modules;
 using YamlDotNet.Serialization;
 
-namespace Nadeko.Tests
+namespace NadekoBot.Tests
 {
     public class CommandStringsTests
     {

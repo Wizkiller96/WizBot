@@ -2,9 +2,9 @@
 using Discord;
 using System.Collections.Immutable;
 using System.Linq;
-using Nadeko.Common;
+using NadekoBot.Common;
 
-namespace NadekoBot.Services
+namespace NadekoBot
 {
     public interface IBotCredentials
     {
@@ -30,13 +30,6 @@ namespace NadekoBot.Services
         string CoordinatorUrl { get; set; }
     }
     
-    // todo move somewhere else
-    public static class IBotCredentialsExtensions
-    {
-        public static bool IsOwner(this IBotCredentials creds, IUser user)
-            => creds.OwnerIds.Contains(user.Id);
-    }
-
     public class RestartConfig
     {
         public string Cmd { get; set; }

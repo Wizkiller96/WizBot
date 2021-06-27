@@ -3,7 +3,7 @@ using NadekoBot.Common.Yml;
 using NadekoBot.Services;
 using YamlDotNet.Serialization;
 
-namespace Nadeko.Common
+namespace NadekoBot.Common
 {
     public sealed class Creds : IBotCredentials
     {

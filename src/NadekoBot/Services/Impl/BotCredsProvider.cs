@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using System.IO;
 using Microsoft.Extensions.Primitives;
-using Nadeko.Common;
+using NadekoBot.Common;
 using NadekoBot.Common;
 using NadekoBot.Common.Yml;
 using Serilog;
