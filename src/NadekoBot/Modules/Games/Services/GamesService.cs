@@ -21,7 +21,7 @@ using Serilog;
 
 namespace NadekoBot.Modules.Games.Services
 {
-    public class GamesService : INService, IUnloadableService
+    public class GamesService : INService
     {
         private readonly GamesConfigService _gamesConfig;
 
@@ -99,26 +99,6 @@ namespace NadekoBot.Modules.Games.Services
                 var text = await http.GetStringAsync("https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/rategirl/rates.json");
                 return JsonConvert.DeserializeObject<RatingTexts>(text);
             }
-        }
-
-        public async Task Unload()
-        {
-            _t.Change(Timeout.Infinite, Timeout.Infinite);
-
-            AcrophobiaGames.ForEach(x => x.Value.Dispose());
-            AcrophobiaGames.Clear();
-            HangmanGames.ForEach(x => x.Value.Dispose());
-            HangmanGames.Clear();
-            await Task.WhenAll(RunningTrivias.Select(x => x.Value.StopGame())).ConfigureAwait(false);
-            RunningTrivias.Clear();
-
-            TicTacToeGames.Clear();
-
-            await Task.WhenAll(RunningContests.Select(x => x.Value.Stop()))
-                .ConfigureAwait(false);
-            RunningContests.Clear();
-            NunchiGames.ForEach(x => x.Value.Dispose());
-            NunchiGames.Clear();
         }
 
         public void AddTypingArticle(IUser user, string text)

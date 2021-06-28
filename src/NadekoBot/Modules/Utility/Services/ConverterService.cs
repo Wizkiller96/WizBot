@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace NadekoBot.Modules.Utility.Services
 {
-    public class ConverterService : INService, IUnloadableService
+    public class ConverterService : INService
     {
         public ConvertUnit[] Units =>
             _cache.Redis.GetDatabase()
@@ -86,12 +86,6 @@ namespace NadekoBot.Modules.Utility.Services
             {
                 // ignored
             }
-        }
-
-        public Task Unload()
-        {
-            _currencyUpdater?.Change(Timeout.Infinite, Timeout.Infinite);
-            return Task.CompletedTask;
         }
     }
 

@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Discord;
-using Discord.WebSocket;
 using System;
 using Discord.Commands;
 using NadekoBot.Extensions;
@@ -40,7 +39,7 @@ namespace NadekoBot.Modules.Help.Services
                 .Build();
         }
 
-        public Task LateExecute(DiscordSocketClient client, IGuild guild, IUserMessage msg)
+        public Task LateExecute(IGuild guild, IUserMessage msg)
         {
             var settings = _bss.Data;
             if (guild is null)

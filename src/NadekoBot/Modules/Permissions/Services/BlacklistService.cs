@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Discord;
-using Discord.WebSocket;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Services;
 using NadekoBot.Services.Database.Models;
@@ -12,7 +11,7 @@ using NadekoBot.Db;
 
 namespace NadekoBot.Modules.Permissions.Services
 {
-    public sealed class BlacklistService : IEarlyBehavior, INService
+    public sealed class BlacklistService : IEarlyBehavior
     {
         private readonly DbService _db;
         private readonly IPubSub _pubSub;
@@ -39,7 +38,7 @@ namespace NadekoBot.Modules.Permissions.Services
             return default;
         }
 
-        public Task<bool> RunBehavior(DiscordSocketClient _, IGuild guild, IUserMessage usrMsg)
+        public Task<bool> RunBehavior(IGuild guild, IUserMessage usrMsg)
         {
             foreach (var bl in _blacklist)
             {

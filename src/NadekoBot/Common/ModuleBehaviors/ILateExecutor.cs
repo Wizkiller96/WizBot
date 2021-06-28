@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Discord;
-using Discord.WebSocket;
 
 namespace NadekoBot.Common.ModuleBehaviors
 {
@@ -9,6 +8,6 @@ namespace NadekoBot.Common.ModuleBehaviors
     /// </summary>
     public interface ILateExecutor
     {
-        Task LateExecute(DiscordSocketClient client, IGuild guild, IUserMessage msg);
+        Task LateExecute(IGuild guild, IUserMessage msg);
     }
 }

@@ -8,7 +8,6 @@ namespace NadekoBot.Common.ModuleBehaviors
     {
         public int Priority { get; }
         
-        Task<bool> TryBlockLate(DiscordSocketClient client, ICommandContext context,
-            string moduleName, CommandInfo command);
+        Task<bool> TryBlockLate(ICommandContext context, string moduleName, CommandInfo command);
     }
 }

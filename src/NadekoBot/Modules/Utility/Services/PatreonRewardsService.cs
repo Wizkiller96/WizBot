@@ -16,7 +16,7 @@ using Serilog;
 
 namespace NadekoBot.Modules.Utility.Services
 {
-    public class PatreonRewardsService : INService, IUnloadableService
+    public class PatreonRewardsService : INService
     {
         private readonly SemaphoreSlim getPledgesLocker = new SemaphoreSlim(1, 1);
 
@@ -217,12 +217,6 @@ namespace NadekoBot.Modules.Utility.Services
             {
                 // ignored
             }
-        }
-
-        public Task Unload()
-        {
-            _updater?.Change(Timeout.Infinite, Timeout.Infinite);
-            return Task.CompletedTask;
         }
     }
 }

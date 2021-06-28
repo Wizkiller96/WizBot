@@ -5,17 +5,8 @@ using NadekoBot.Modules.Gambling.Common.AnimalRacing;
 
 namespace NadekoBot.Modules.Gambling.Services
 {
-    public class AnimalRaceService : INService, IUnloadableService
+    public class AnimalRaceService : INService
     {
         public ConcurrentDictionary<ulong, AnimalRace> AnimalRaces { get; } = new ConcurrentDictionary<ulong, AnimalRace>();
-
-        public Task Unload()
-        {
-            foreach (var kvp in AnimalRaces)
-            {
-                try { kvp.Value.Dispose(); } catch { }
-            }
-            return Task.CompletedTask;
-        }
     }
 }

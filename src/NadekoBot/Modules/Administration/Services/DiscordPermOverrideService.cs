@@ -142,8 +142,7 @@ namespace NadekoBot.Modules.Administration.Services
             }
         }
 
-        public async Task<bool> TryBlockLate(DiscordSocketClient client, ICommandContext context, string moduleName,
-            CommandInfo command)
+        public async Task<bool> TryBlockLate(ICommandContext context, string moduleName, CommandInfo command)
         {
             if (TryGetOverrides(context.Guild?.Id ?? 0, command.Name, out var perm) && perm is not null)
             {

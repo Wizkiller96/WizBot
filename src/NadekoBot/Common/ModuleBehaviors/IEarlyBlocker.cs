@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Discord;
-using Discord.WebSocket;
 
 namespace NadekoBot.Common.ModuleBehaviors
 {
@@ -12,7 +11,7 @@ namespace NadekoBot.Common.ModuleBehaviors
         int Priority { get; }
         ModuleBehaviorType BehaviorType { get; }
 
-        Task<bool> RunBehavior(DiscordSocketClient client, IGuild guild, IUserMessage msg);
+        Task<bool> RunBehavior(IGuild guild, IUserMessage msg);
     }
 
     public enum ModuleBehaviorType

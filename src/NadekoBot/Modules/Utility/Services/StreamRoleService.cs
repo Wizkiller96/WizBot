@@ -17,7 +17,7 @@ using Serilog;
 
 namespace NadekoBot.Modules.Utility.Services
 {
-    public class StreamRoleService : INService, IUnloadableService
+    public class StreamRoleService : INService
     {
         private readonly DbService _db;
         private readonly DiscordSocketClient _client;
@@ -46,12 +46,6 @@ namespace NadekoBot.Modules.Utility.Services
                     // ignored
                 }
             });
-        }
-
-        public Task Unload()
-        {
-            _client.GuildMemberUpdated -= Client_GuildMemberUpdated;
-            return Task.CompletedTask;
         }
 
         private Task Client_GuildMemberUpdated(SocketGuildUser before, SocketGuildUser after)

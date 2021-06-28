@@ -24,7 +24,6 @@ namespace NadekoBot.Services
         private IDatabase _db => _con.GetDatabase();
 
         private const string _basePath = "data/";
-        private const string _oldBasePath = "data/images/";
         private const string _cardsPath = "data/images/cards";
 
         public ImageUrls ImageUrls { get; private set; }
@@ -79,110 +78,9 @@ namespace NadekoBot.Services
             _con = con;
             _creds = creds;
             _http = new HttpClient();
-
-            Migrate();
+            
             ImageUrls = JsonConvert.DeserializeObject<ImageUrls>(
                         File.ReadAllText(Path.Combine(_basePath, "images.json")));
-        }
-
-        private void Migrate()
-        {
-            try
-            {
-                Migrate1();
-                Migrate2();
-                Migrate3();
-            }
-            catch (Exception ex)
-            {
-                Log.Warning(ex.Message);
-                Log.Error("Something has been incorrectly formatted in your 'images.json' file.\n" +
-                               "Use the 'images_example.json' file as reference to fix it and restart the bot.");
-            }
-        }
-
-        private void Migrate1()
-        {
-            if (!File.Exists(Path.Combine(_oldBasePath, "images.json")))
-                return;
-            Log.Information("Migrating images v0 to images v1.");
-            // load old images
-            var oldUrls = JsonConvert.DeserializeObject<ImageUrls>(
-                    File.ReadAllText(Path.Combine(_oldBasePath, "images.json")));
-            // load new images
-            var newUrls = JsonConvert.DeserializeObject<ImageUrls>(
-                    File.ReadAllText(Path.Combine(_basePath, "images.json")));
-
-            //swap new links with old ones if set. Also update old links.
-            newUrls.Coins = oldUrls.Coins;
-
-            newUrls.Currency = oldUrls.Currency;
-            newUrls.Dice = oldUrls.Dice;
-            newUrls.Rategirl = oldUrls.Rategirl;
-            newUrls.Xp = oldUrls.Xp;
-            newUrls.Version = 1;
-
-            File.WriteAllText(Path.Combine(_basePath, "images.json"),
-                JsonConvert.SerializeObject(newUrls, Formatting.Indented));
-            File.Delete(Path.Combine(_oldBasePath, "images.json"));
-        }
-
-        private void Migrate2()
-        {
-            // load new images
-            var urls = JsonConvert.DeserializeObject<ImageUrls>(File.ReadAllText(Path.Combine(_basePath, "images.json")));
-
-            if (urls.Version >= 2)
-                return;
-            Log.Information("Migrating images v1 to images v2.");
-            urls.Version = 2;
-
-            var prefix = $"{_creds.RedisKey()}_localimg_";
-            _db.KeyDelete(new[] {
-                prefix + "heads",
-                prefix + "tails",
-                prefix + "dice",
-                prefix + "slot_background",
-                prefix + "slotnumbers",
-                prefix + "slotemojis",
-                prefix + "wife_matrix",
-                prefix + "rategirl_dot",
-                prefix + "xp_card",
-                prefix + "rip",
-                prefix + "rip_overlay" }
-            .Select(x => (RedisKey)x).ToArray());
-
-            File.WriteAllText(Path.Combine(_basePath, "images.json"), JsonConvert.SerializeObject(urls, Formatting.Indented));
-        }
-
-        private void Migrate3()
-        {
-            var urls = JsonConvert.DeserializeObject<ImageUrls>(
-                    File.ReadAllText(Path.Combine(_basePath, "images.json")));
-
-            if (urls.Version >= 3)
-                return;
-            urls.Version = 3;
-            Log.Information("Migrating images v2 to images v3.");
-
-            var baseStr = "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/currency/";
-
-            var replacementTable = new Dictionary<Uri, Uri>()
-            {
-                {new Uri(baseStr + "0.jpg"), new Uri(baseStr + "0.png") },
-                {new Uri(baseStr + "1.jpg"), new Uri(baseStr + "1.png") },
-                {new Uri(baseStr + "2.jpg"), new Uri(baseStr + "2.png") }
-            };
-
-            if (replacementTable.Keys.Any(x => urls.Currency.Contains(x)))
-            {
-                urls.Currency = urls.Currency.Select(x => replacementTable.TryGetValue(x, out var newUri)
-                    ? newUri
-                    : x).Append(new Uri(baseStr + "3.png"))
-                    .ToArray();
-            }
-
-            File.WriteAllText(Path.Combine(_basePath, "images.json"), JsonConvert.SerializeObject(urls, Formatting.Indented));
         }
 
         public async Task<bool> AllKeysExist()

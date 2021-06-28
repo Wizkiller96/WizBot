@@ -21,7 +21,7 @@ namespace NadekoBot.Modules.Permissions.Services
         }
 
 
-        public Task<bool> TryBlockLate(DiscordSocketClient client, ICommandContext ctx, string moduleName, CommandInfo command)
+        public Task<bool> TryBlockLate(ICommandContext ctx, string moduleName, CommandInfo command)
         {
             var settings = _bss.Data; 
             var commandName = command.Name.ToLowerInvariant();

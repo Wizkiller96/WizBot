@@ -31,7 +31,7 @@ using Image = SixLabors.ImageSharp.Image;
 
 namespace NadekoBot.Modules.Searches.Services
 {
-    public class SearchesService : INService, IUnloadableService
+    public class SearchesService : INService
     {
         private readonly IHttpClientFactory _httpFactory;
         private readonly DiscordSocketClient _client;
@@ -480,19 +480,6 @@ namespace NadekoBot.Modules.Searches.Services
                 var response = await http.GetStringAsync(new Uri("http://api.icndb.com/jokes/random/")).ConfigureAwait(false);
                 return JObject.Parse(response)["value"]["joke"].ToString() + " 😆";
             }
-        }
-
-        public Task Unload()
-        {
-            AutoBoobTimers.ForEach(x => x.Value.Change(Timeout.Infinite, Timeout.Infinite));
-            AutoBoobTimers.Clear();
-            AutoButtTimers.ForEach(x => x.Value.Change(Timeout.Infinite, Timeout.Infinite));
-            AutoButtTimers.Clear();
-            AutoHentaiTimers.ForEach(x => x.Value.Change(Timeout.Infinite, Timeout.Infinite));
-            AutoHentaiTimers.Clear();
-
-            _imageCacher.Clear();
-            return Task.CompletedTask;
         }
 
         public async Task<MtgData> GetMtgCardAsync(string search)

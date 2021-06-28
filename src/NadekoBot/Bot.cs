@@ -28,32 +28,29 @@ using Serilog;
 
 namespace NadekoBot
 {
-    // todo remove all migration code from 
-    // todo read prev commit
-    public class Bot
+    public sealed class Bot
     {
         private readonly IBotCredentials _creds;
-        public DiscordSocketClient Client { get; }
-        public CommandService CommandService { get; }
-
+        private readonly CommandService _commandService;
         private readonly DbService _db;
+        private readonly BotCredsProvider _credsProvider;
+        
+        public event Func<GuildConfig, Task> JoinedGuild = delegate { return Task.CompletedTask; };
+        
+        public DiscordSocketClient Client { get; }
         public ImmutableArray<GuildConfig> AllGuildConfigs { get; private set; }
 
+        // todo change configs to records
         // todo remove colors from here
         public static Color OkColor { get; set; }
         public static Color ErrorColor { get; set; }
         public static Color PendingColor { get; set; }
 
-        // todo remove ready prop
-        public TaskCompletionSource<bool> Ready { get; private set; } = new TaskCompletionSource<bool>();
-
-        public IServiceProvider Services { get; private set; }
+        private IServiceProvider Services { get; set; }
         
-        public string Mention { get; set; }
+        public string Mention { get; private set; }
+        public bool IsReady { get; private set; }
 
-        public event Func<GuildConfig, Task> JoinedGuild = delegate { return Task.CompletedTask; };
-
-        private readonly BotCredsProvider _credsProvider;
         public Bot(int shardId, int? totalShards)
         {
             if (shardId < 0)
@@ -80,7 +77,7 @@ namespace NadekoBot
                 ExclusiveBulkDelete = true,
             });
 
-            CommandService = new CommandService(new CommandServiceConfig()
+            _commandService = new CommandService(new CommandServiceConfig()
             {
                 CaseSensitiveCommands = false,
                 DefaultRunMode = RunMode.Sync,
@@ -94,12 +91,6 @@ namespace NadekoBot
         public List<ulong> GetCurrentGuildIds()
         {
             return Client.Guilds.Select(x => x.Id).ToList();
-        }
-
-        public IEnumerable<GuildConfig> GetCurrentGuildConfigs()
-        {
-            using var uow = _db.GetDbContext();
-            return uow.GuildConfigs.GetAllGuildConfigs(GetCurrentGuildIds()).ToImmutableArray();
         }
 
         private void AddServices()
@@ -119,7 +110,7 @@ namespace NadekoBot
                 .AddSingleton(_db) // database
                 .AddRedis(_creds.RedisOptions) // redis
                 .AddSingleton(Client) // discord socket client
-                .AddSingleton(CommandService)
+                .AddSingleton(_commandService)
                 .AddSingleton(this) // pepega
                 .AddSingleton<IDataCache, RedisCache>()
                 .AddSingleton<ISeria, JsonSeria>()
@@ -130,6 +121,7 @@ namespace NadekoBot
                 .AddConfigMigrators() // todo remove config migrators
                 .AddMemoryCache()
                 .AddSingleton<IShopService, ShopService>()
+                .AddSingleton<IBehaviourExecutor, BehaviorExecutor>()
                 // music
                 .AddMusic()
                 ;
@@ -152,9 +144,27 @@ namespace NadekoBot
                     .AddSingleton<IReadyExecutor>(x => (IReadyExecutor)x.GetRequiredService<ICoordinator>());
             }
 
-            svcs.AddSingleton<IReadyExecutor>(x => x.GetService<SelfService>());
-            svcs.AddSingleton<IReadyExecutor>(x => x.GetService<CustomReactionsService>());
-            svcs.AddSingleton<IReadyExecutor>(x => x.GetService<RepeaterService>());
+            svcs.Scan(scan => scan
+                .FromAssemblyOf<IReadyExecutor>()
+                .AddClasses(classes => classes.AssignableTo<IReadyExecutor>())
+                .AsSelf()
+                .AsImplementedInterfaces()
+                .WithSingletonLifetime()
+                
+                // behaviours
+                .AddClasses(classes => classes.AssignableToAny(
+                    typeof(IEarlyBehavior),
+                    typeof(ILateBlocker),
+                    typeof(IInputTransformer),
+                    typeof(ILateExecutor)))
+                .AsSelf()
+                .AsImplementedInterfaces()
+                .WithSingletonLifetime()
+            );
+            
+            // svcs.AddSingleton<IReadyExecutor>(x => x.GetService<SelfService>());
+            // svcs.AddSingleton<IReadyExecutor>(x => x.GetService<CustomReactionsService>());
+            // svcs.AddSingleton<IReadyExecutor>(x => x.GetService<RepeaterService>());
 
             //initialize Services
             Services = svcs.BuildServiceProvider();
@@ -164,9 +174,7 @@ namespace NadekoBot
             {
                 ApplyConfigMigrations();
             }
-
-            //what the fluff
-            commandHandler.AddServices(svcs);
+            
             _ = LoadTypeReaders(typeof(Bot).Assembly);
 
             sw.Stop();
@@ -204,10 +212,10 @@ namespace NadekoBot
             var toReturn = new List<object>();
             foreach (var ft in filteredTypes)
             {
-                var x = (TypeReader)Activator.CreateInstance(ft, Client, CommandService);
+                var x = (TypeReader)Activator.CreateInstance(ft, Client, _commandService);
                 var baseType = ft.BaseType;
                 var typeArgs = baseType.GetGenericArguments();
-                CommandService.AddTypeReader(typeArgs[0], x);
+                _commandService.AddTypeReader(typeArgs[0], x);
                 toReturn.Add(x);
             }
 
@@ -233,10 +241,6 @@ namespace NadekoBot
                     catch
                     {
                         // ignored
-                    }
-                    finally
-                    {
-
                     }
                 });
                 return Task.CompletedTask;
@@ -325,7 +329,7 @@ namespace NadekoBot
                 .ConfigureAwait(false);
 
             HandleStatusChanges();
-            Ready.TrySetResult(true);
+            IsReady = true;
             _ = Task.Run(ExecuteReadySubscriptions);
             Log.Information("Shard {ShardId} ready", Client.ShardId);
         }

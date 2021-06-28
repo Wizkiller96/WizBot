@@ -17,7 +17,7 @@ using Serilog;
 
 namespace NadekoBot.Modules.Permissions.Services
 {
-    public class FilterService : IEarlyBehavior, INService
+    public class FilterService : IEarlyBehavior
     {
         private readonly DbService _db;
 
@@ -117,13 +117,13 @@ namespace NadekoBot.Modules.Permissions.Services
                     if (guild is null || usrMsg is null)
                         return Task.CompletedTask;
 
-                    return RunBehavior(null, guild, usrMsg);
+                    return RunBehavior(guild, usrMsg);
                 });
                 return Task.CompletedTask;
             };
         }
 
-        public async Task<bool> RunBehavior(DiscordSocketClient _, IGuild guild, IUserMessage msg)
+        public async Task<bool> RunBehavior(IGuild guild, IUserMessage msg)
         {
             if (!(msg.Author is IGuildUser gu) || gu.GuildPermissions.Administrator)
                 return false;

@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
-using Discord.WebSocket;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Modules.Games.Common;
 using NadekoBot.Db.Models;
@@ -16,7 +15,7 @@ using Serilog;
 
 namespace NadekoBot.Modules.Games.Services
 {
-    public class PollService : IEarlyBehavior, INService
+    public class PollService : IEarlyBehavior
     {
         public ConcurrentDictionary<ulong, PollRunner> ActivePolls { get; } = new ConcurrentDictionary<ulong, PollRunner>();
 
@@ -106,7 +105,7 @@ namespace NadekoBot.Modules.Games.Services
             try { await msg.DeleteAsync().ConfigureAwait(false); } catch { }
         }
 
-        public async Task<bool> RunBehavior(DiscordSocketClient client, IGuild guild, IUserMessage msg)
+        public async Task<bool> RunBehavior(IGuild guild, IUserMessage msg)
         {
             if (guild is null)
                 return false;

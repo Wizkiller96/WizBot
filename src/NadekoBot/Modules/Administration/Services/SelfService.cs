@@ -18,7 +18,7 @@ using Serilog;
 
 namespace NadekoBot.Modules.Administration.Services
 {
-    public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
+    public sealed class SelfService : ILateExecutor, IReadyExecutor
     {
         private readonly ConnectionMultiplexer _redis;
         private readonly CommandHandler _cmdHandler;
@@ -54,6 +54,7 @@ namespace NadekoBot.Modules.Administration.Services
             _httpFactory = factory;
             _bss = bss;
 
+            Log.Information("Self service created");
             var sub = _redis.GetSubscriber();
             if (_client.ShardId == 0)
             {
@@ -226,7 +227,7 @@ namespace NadekoBot.Modules.Administration.Services
         }
 
         // forwards dms
-        public async Task LateExecute(DiscordSocketClient client, IGuild guild, IUserMessage msg)
+        public async Task LateExecute(IGuild guild, IUserMessage msg)
         {
             var bs = _bss.Data;
             if (msg.Channel is IDMChannel && _bss.Data.ForwardMessages && ownerChannels.Any())

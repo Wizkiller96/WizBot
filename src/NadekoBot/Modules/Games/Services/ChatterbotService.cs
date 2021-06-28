@@ -15,7 +15,7 @@ using Serilog;
 
 namespace NadekoBot.Modules.Games.Services
 {
-    public class ChatterBotService : IEarlyBehavior, INService
+    public class ChatterBotService : IEarlyBehavior
     {
         private readonly DiscordSocketClient _client;
         private readonly PermissionService _perms;
@@ -103,7 +103,7 @@ namespace NadekoBot.Modules.Games.Services
             return true;
         }
 
-        public async Task<bool> RunBehavior(DiscordSocketClient client, IGuild guild, IUserMessage usrMsg)
+        public async Task<bool> RunBehavior(IGuild guild, IUserMessage usrMsg)
         {
             if (!(guild is SocketGuild sg))
                 return false;

@@ -28,7 +28,7 @@ using Image = SixLabors.ImageSharp.Image;
 
 namespace NadekoBot.Modules.Xp.Services
 {
-    public class XpService : INService, IUnloadableService
+    public class XpService : INService
     {
         private enum NotifOf
         {
@@ -1180,14 +1180,6 @@ namespace NadekoBot.Modules.Xp.Services
                     Log.Warning(ex, "Error drawing club image");
                 }
             }
-        }
-
-        public Task Unload()
-        {
-            _cmd.OnMessageNoTrigger -= _cmd_OnMessageNoTrigger;
-            _client.UserVoiceStateUpdated -= _client_OnUserVoiceStateUpdated;
-            _client.GuildAvailable -= _client_OnGuildAvailable;
-            return Task.CompletedTask;
         }
 
         public void XpReset(ulong guildId, ulong userId)

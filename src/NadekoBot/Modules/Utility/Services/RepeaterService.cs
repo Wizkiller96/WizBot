@@ -20,7 +20,7 @@ using Serilog;
 
 namespace NadekoBot.Modules.Utility.Services
 {
-    public sealed class RepeaterService : IReadyExecutor, INService
+    public sealed class RepeaterService : IReadyExecutor
     {
         public const int MAX_REPEATERS = 5;
 

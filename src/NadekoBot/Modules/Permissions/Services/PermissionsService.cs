@@ -98,8 +98,7 @@ namespace NadekoBot.Modules.Permissions.Services
             });
         }
 
-        public async Task<bool> TryBlockLate(DiscordSocketClient client, ICommandContext ctx, string moduleName,
-            CommandInfo command)
+        public async Task<bool> TryBlockLate(ICommandContext ctx, string moduleName, CommandInfo command)
         {
             var guild = ctx.Guild;
             var msg = ctx.Message;

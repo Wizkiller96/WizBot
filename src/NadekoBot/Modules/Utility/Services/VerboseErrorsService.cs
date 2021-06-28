@@ -11,7 +11,7 @@ using NadekoBot.Modules.Administration;
 
 namespace NadekoBot.Modules.Utility.Services
 {
-    public class VerboseErrorsService : INService, IUnloadableService
+    public class VerboseErrorsService : INService
     {
         private readonly ConcurrentHashSet<ulong> guildsEnabled;
         private readonly DbService _db;
@@ -30,12 +30,6 @@ namespace NadekoBot.Modules.Utility.Services
                 .AllGuildConfigs
                 .Where(x => x.VerboseErrors)
                 .Select(x => x.GuildId));
-        }
-
-        public Task Unload()
-        {
-            _ch.CommandErrored -= LogVerboseError;
-            return Task.CompletedTask;
         }
 
         private async Task LogVerboseError(CommandInfo cmd, ITextChannel channel, string reason)

@@ -22,7 +22,7 @@ using YamlDotNet.Serialization;
 
 namespace NadekoBot.Modules.CustomReactions.Services
 {
-    public sealed class CustomReactionsService : IEarlyBehavior, INService, IReadyExecutor
+    public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
     {
         public enum CrField
         {
@@ -77,6 +77,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
             _pubSub = pubSub;
             _rng = new NadekoRandom();
 
+            Log.Information("Custom reaction service created");
             _pubSub.Sub(_crsReloadedKey, OnCrsShouldReload);
             pubSub.Sub(_gcrAddedKey, OnGcrAdded);
             pubSub.Sub(_gcrDeletedkey, OnGcrDeleted);
@@ -380,7 +381,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
             return result[_rng.Next(0, result.Count)];
         }
 
-        public async Task<bool> RunBehavior(DiscordSocketClient client, IGuild guild, IUserMessage msg)
+        public async Task<bool> RunBehavior(IGuild guild, IUserMessage msg)
         {
             // maybe this message is a custom reaction
             var cr = TryGetCustomReaction(msg);
