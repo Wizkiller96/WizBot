@@ -26,7 +26,7 @@ namespace WizBot.Core.Modules.Music
             => $"🔉 {(int) (mp.Volume * 100)}%";
         
         public static string PrettyName(this ITrackInfo trackInfo)
-            => $"**[{trackInfo.Title.TrimTo(60).Replace("[", "\\[").Replace("]", "\\]")}]({trackInfo.Url})**";
+            => $"**[{trackInfo.Title.TrimTo(60).Replace("[", "\\[").Replace("]", "\\]")}]({trackInfo.Url.TrimTo(50, true)})**";
 
         public static string PrettyInfo(this IQueuedTrackInfo trackInfo)
             => $"{trackInfo.PrettyTotalTime()} | {trackInfo.Platform} | {trackInfo.Queuer}";

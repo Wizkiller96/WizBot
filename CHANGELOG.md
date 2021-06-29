@@ -2,6 +2,13 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## Unreleased
+
+### Fixed
+
+- Fixed .save for local songs
+- Fixed .lq for local songs if the song names are too long
+
 ## [2.46.1] - 21.06.2021
 
 ### Fixed
