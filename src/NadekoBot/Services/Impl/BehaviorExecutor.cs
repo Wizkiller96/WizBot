@@ -7,29 +7,29 @@ using Discord.WebSocket;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Extensions;
 using Serilog;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace NadekoBot.Services
 {
     public sealed class BehaviorExecutor : IBehaviourExecutor
     {
-        private readonly DiscordSocketClient _client;
-        private readonly IEnumerable<ILateExecutor> _lateExecutors;
-        private readonly IEnumerable<ILateBlocker> _lateBlockers;
-        private readonly IEnumerable<IEarlyBehavior> _earlyBehaviors;
-        private readonly IEnumerable<IInputTransformer> _transformers;
+        private readonly IServiceProvider _services;
+        private IEnumerable<ILateExecutor> _lateExecutors;
+        private IEnumerable<ILateBlocker> _lateBlockers;
+        private IEnumerable<IEarlyBehavior> _earlyBehaviors;
+        private IEnumerable<IInputTransformer> _transformers;
 
-        public BehaviorExecutor(
-            DiscordSocketClient client,
-            IEnumerable<ILateExecutor> lateExecutors,
-            IEnumerable<ILateBlocker> lateBlockers,
-            IEnumerable<IEarlyBehavior> earlyBehaviors,
-            IEnumerable<IInputTransformer> transformers)
+        public BehaviorExecutor(IServiceProvider services)
         {
-            _client = client;
-            _lateExecutors = lateExecutors;
-            _lateBlockers = lateBlockers;
-            _earlyBehaviors = earlyBehaviors;
-            _transformers = transformers;
+            _services = services;
+        }
+
+        public void Initialize()
+        {
+            _lateExecutors = _services.GetServices<ILateExecutor>();
+            _lateBlockers = _services.GetServices<ILateBlocker>();
+            _earlyBehaviors = _services.GetServices<IEarlyBehavior>();
+            _transformers = _services.GetServices<IInputTransformer>();
         }
 
         // todo early behaviors should print for themselves

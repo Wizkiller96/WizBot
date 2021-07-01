@@ -21,9 +21,6 @@ using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Common.Configs;
 using NadekoBot.Db;
 using NadekoBot.Modules.Gambling.Services;
-using NadekoBot.Modules.Administration.Services;
-using NadekoBot.Modules.CustomReactions.Services;
-using NadekoBot.Modules.Utility.Services;
 using Serilog;
 
 namespace NadekoBot
@@ -132,8 +129,6 @@ namespace NadekoBot
                 AllowAutoRedirect = false
             });
 
-            svcs.LoadFrom(Assembly.GetAssembly(typeof(CommandHandler)));
-
             if (Environment.GetEnvironmentVariable("NADEKOBOT_IS_COORDINATED") != "1")
             {
                 svcs.AddSingleton<ICoordinator, SingleProcessCoordinator>();
@@ -144,6 +139,7 @@ namespace NadekoBot
                     .AddSingleton<IReadyExecutor>(x => (IReadyExecutor)x.GetRequiredService<ICoordinator>());
             }
 
+            // todo no public bot attribute
             svcs.Scan(scan => scan
                 .FromAssemblyOf<IReadyExecutor>()
                 .AddClasses(classes => classes.AssignableTo<IReadyExecutor>())
@@ -160,6 +156,12 @@ namespace NadekoBot
                 .AsSelf()
                 .AsImplementedInterfaces()
                 .WithSingletonLifetime()
+                
+                // services
+                .AddClasses(classes => classes.AssignableTo<INService>())
+                .AsImplementedInterfaces()
+                .AsSelf()
+                .WithSingletonLifetime()
             );
             
             // svcs.AddSingleton<IReadyExecutor>(x => x.GetService<SelfService>());
@@ -168,7 +170,8 @@ namespace NadekoBot
 
             //initialize Services
             Services = svcs.BuildServiceProvider();
-            var commandHandler = Services.GetService<CommandHandler>();
+            var exec = Services.GetRequiredService<IBehaviourExecutor>();
+            exec.Initialize();
 
             if (Client.ShardId == 0)
             {

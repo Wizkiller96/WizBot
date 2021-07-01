@@ -3,7 +3,6 @@ using Discord.Commands;
 using Discord.Net;
 using Discord.WebSocket;
 using NadekoBot.Common.Collections;
-using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Extensions;
 using System;
 using System.Collections.Concurrent;
@@ -12,7 +11,6 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
 using NadekoBot.Common.Configs;
 using NadekoBot.Db;
 using Serilog;
@@ -28,9 +26,9 @@ namespace NadekoBot.Services
         private readonly BotConfigService _bss;
         private readonly Bot _bot;
         private readonly IBehaviourExecutor _behaviourExecutor;
-        private IServiceProvider _services;
-        
-        private ConcurrentDictionary<ulong, string> _prefixes { get; } = new ConcurrentDictionary<ulong, string>();
+        private readonly IServiceProvider _services;
+
+        private readonly ConcurrentDictionary<ulong, string> _prefixes;
 
         public event Func<IUserMessage, CommandInfo, Task> CommandExecuted = delegate { return Task.CompletedTask; };
         public event Func<CommandInfo, ITextChannel, string, Task> CommandErrored = delegate { return Task.CompletedTask; };
@@ -106,7 +104,8 @@ namespace NadekoBot.Services
                 gc.Prefix = prefix;
                 uow.SaveChanges();
             }
-            _prefixes.AddOrUpdate(guild.Id, prefix, (key, old) => prefix);
+
+            _prefixes[guild.Id] = prefix;
 
             return prefix;
         }
@@ -179,8 +178,8 @@ namespace NadekoBot.Services
                             "Message: {3}\n\t" +
                             "Error: {4}",
                             usrMsg.Author + " [" + usrMsg.Author.Id + "]", // {0}
-                            (channel is null ? "PRIVATE" : channel.Guild.Name + " [" + channel.Guild.Id + "]"), // {1}
-                            (channel is null ? "PRIVATE" : channel.Name + " [" + channel.Id + "]"), // {2}
+                            channel is null ? "PRIVATE" : channel.Guild.Name + " [" + channel.Guild.Id + "]", // {1}
+                            channel is null ? "PRIVATE" : channel.Name + " [" + channel.Id + "]", // {2}
                             usrMsg.Content,// {3}
                             errorMessage
                             //exec.Result.ErrorReason // {4}
