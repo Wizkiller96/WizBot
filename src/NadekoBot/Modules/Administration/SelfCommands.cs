@@ -432,7 +432,7 @@ namespace NadekoBot.Modules.Administration
                     .WithDefault(Context)
                     .Build();
 
-                await _bot.SetGameAsync(game is null ? game : rep.Replace(game), type).ConfigureAwait(false);
+                await _service.SetGameAsync(game is null ? game : rep.Replace(game), type).ConfigureAwait(false);
 
                 await ReplyConfirmLocalizedAsync("set_game").ConfigureAwait(false);
             }
@@ -443,7 +443,7 @@ namespace NadekoBot.Modules.Administration
             {
                 name = name ?? "";
 
-                await _client.SetGameAsync(name, url, ActivityType.Streaming).ConfigureAwait(false);
+                await _service.SetStreamAsync(name, url).ConfigureAwait(false);
 
                 await ReplyConfirmLocalizedAsync("set_stream").ConfigureAwait(false);
             }

@@ -15,6 +15,5 @@ namespace NadekoBot.Services
 
         TimeSpan GetUptime();
         string GetUptimeString(string separator = ", ");
-        void Initialize();
     }
 }

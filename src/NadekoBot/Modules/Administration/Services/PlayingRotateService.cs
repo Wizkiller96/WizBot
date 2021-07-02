@@ -18,6 +18,7 @@ namespace NadekoBot.Modules.Administration.Services
     {
         private readonly Timer _t;
         private readonly BotConfigService _bss;
+        private readonly SelfService _selfService;
         private readonly Replacer _rep;
         private readonly DbService _db;
         private readonly Bot _bot;
@@ -28,11 +29,12 @@ namespace NadekoBot.Modules.Administration.Services
         }
 
         public PlayingRotateService(DiscordSocketClient client, DbService db, Bot bot,
-            BotConfigService bss, IEnumerable<IPlaceholderProvider> phProviders)
+            BotConfigService bss, IEnumerable<IPlaceholderProvider> phProviders, SelfService selfService)
         {
             _db = db;
             _bot = bot;
             _bss = bss;
+            _selfService = selfService;
 
             if (client.ShardId == 0)
             {
@@ -70,7 +72,7 @@ namespace NadekoBot.Modules.Administration.Services
                     : rotatingStatuses[state.Index++];
 
                 var statusText = _rep.Replace(playingStatus.Status);
-                await _bot.SetGameAsync(statusText, playingStatus.Type);
+                await _selfService.SetGameAsync(statusText, playingStatus.Type);
             }
             catch (Exception ex)
             {

@@ -6,8 +6,6 @@ using NadekoBot.Common;
 using NadekoBot.Services;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Extensions;
-using Newtonsoft.Json;
-using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -103,6 +101,7 @@ namespace NadekoBot
             
             var svcs = new ServiceCollection()
                 .AddTransient<IBotCredentials>(_ => _creds) // bot creds
+                .AddSingleton(_credsProvider)
                 .AddSingleton(_db) // database
                 .AddRedis(_creds.RedisOptions) // redis
                 .AddSingleton(Client) // discord socket client
@@ -282,7 +281,6 @@ namespace NadekoBot
             return Task.CompletedTask;
         }
 
-        // todo cleanup
         public async Task RunAsync()
         {
             var sw = Stopwatch.StartNew();
@@ -303,18 +301,13 @@ namespace NadekoBot
 
             sw.Stop();
             Log.Information("Shard {ShardId} connected in {Elapsed:F2}s", Client.ShardId, sw.Elapsed.TotalSeconds);
-
-            var stats = Services.GetRequiredService<IStatsService>();
-            stats.Initialize();
             var commandHandler = Services.GetRequiredService<CommandHandler>();
 
             // start handling messages received in commandhandler
             await commandHandler.StartHandling().ConfigureAwait(false);
 
-            _ = await _commandService.AddModulesAsync(this.GetType().GetTypeInfo().Assembly, Services)
-                .ConfigureAwait(false);
-
-            HandleStatusChanges();
+            await _commandService.AddModulesAsync(typeof(Bot).Assembly, Services);
+            
             IsReady = true;
             _ = Task.Run(ExecuteReadySubscriptions);
             Log.Information("Shard {ShardId} ready", Client.ShardId);
@@ -355,54 +348,6 @@ namespace NadekoBot
         {
             await RunAsync().ConfigureAwait(false);
             await Task.Delay(-1).ConfigureAwait(false);
-        }
-
-        
-        // todo status changes don't belong here
-        private void HandleStatusChanges()
-        {
-            var sub = Services.GetService<IDataCache>().Redis.GetSubscriber();
-            sub.Subscribe(Client.CurrentUser.Id + "_status.game_set", async (ch, game) =>
-            {
-                try
-                {
-                    var obj = new { Name = default(string), Activity = ActivityType.Playing };
-                    obj = JsonConvert.DeserializeAnonymousType(game, obj);
-                    await Client.SetGameAsync(obj.Name, type: obj.Activity).ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    Log.Warning(ex, "Error setting game");
-                }
-            }, CommandFlags.FireAndForget);
-
-            sub.Subscribe(Client.CurrentUser.Id + "_status.stream_set", async (ch, streamData) =>
-            {
-                try
-                {
-                    var obj = new { Name = "", Url = "" };
-                    obj = JsonConvert.DeserializeAnonymousType(streamData, obj);
-                    await Client.SetGameAsync(obj.Name, obj.Url, ActivityType.Streaming).ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    Log.Warning(ex, "Error setting stream");
-                }
-            }, CommandFlags.FireAndForget);
-        }
-
-        public Task SetGameAsync(string game, ActivityType type)
-        {
-            var obj = new { Name = game, Activity = type };
-            var sub = Services.GetService<IDataCache>().Redis.GetSubscriber();
-            return sub.PublishAsync(Client.CurrentUser.Id + "_status.game_set", JsonConvert.SerializeObject(obj));
-        }
-
-        public Task SetStreamAsync(string name, string link)
-        {
-            var obj = new { Name = name, Url = link };
-            var sub = Services.GetService<IDataCache>().Redis.GetSubscriber();
-            return sub.PublishAsync(Client.CurrentUser.Id + "_status.stream_set", JsonConvert.SerializeObject(obj));
         }
     }
 }

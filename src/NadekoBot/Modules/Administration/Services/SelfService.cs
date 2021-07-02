@@ -14,6 +14,7 @@ using System.Threading;
 using System.Collections.Concurrent;
 using System;
 using System.Net.Http;
+using NadekoBot.Common;
 using Serilog;
 
 namespace NadekoBot.Modules.Administration.Services
@@ -38,10 +39,14 @@ namespace NadekoBot.Modules.Administration.Services
         private readonly IImageCache _imgs;
         private readonly IHttpClientFactory _httpFactory;
         private readonly BotConfigService _bss;
+        private readonly IPubSub _pubSub;
+
+        //keys
+        private readonly TypedKey<ActivityPubData> _activitySetKey;
 
         public SelfService(DiscordSocketClient client, CommandHandler cmdHandler, DbService db,
             IBotStrings strings, IBotCredentials creds, IDataCache cache, IHttpClientFactory factory,
-            BotConfigService bss)
+            BotConfigService bss, IPubSub pubSub)
         {
             _redis = cache.Redis;
             _cmdHandler = cmdHandler;
@@ -53,7 +58,11 @@ namespace NadekoBot.Modules.Administration.Services
             _imgs = cache.LocalImages;
             _httpFactory = factory;
             _bss = bss;
-
+            _pubSub = pubSub;
+            _activitySetKey = new("activity.set");
+            
+            HandleStatusChanges();
+            
             var sub = _redis.GetSubscriber();
             if (_client.ShardId == 0)
             {
@@ -383,6 +392,35 @@ namespace NadekoBot.Modules.Administration.Services
             var isToAll = false;
             _bss.ModifyConfig(config => { isToAll = config.ForwardToAllOwners = !config.ForwardToAllOwners; });
             return isToAll;
+        }
+        
+        // todo pubsub via IPubSub
+        private void HandleStatusChanges()
+        {
+            _pubSub.Sub(_activitySetKey, async data =>
+            {
+                try
+                {
+                    await _client.SetGameAsync(data.Name, data.Link, type: data.Type);
+                }
+                catch (Exception ex)
+                {
+                    Log.Warning(ex, "Error setting activity");
+                }
+            });
+        }
+
+        public Task SetGameAsync(string game, ActivityType type) 
+            => _pubSub.Pub(_activitySetKey, new() {Name = game, Link = null, Type = type});
+
+        public Task SetStreamAsync(string name, string link)
+            => _pubSub.Pub(_activitySetKey, new() { Name = name, Link = link, Type = ActivityType.Streaming });
+
+        private class ActivityPubData
+        {
+            public string Name { get; init; }
+            public string Link { get; init; }
+            public ActivityType Type { get; init; }
         }
     }
 }

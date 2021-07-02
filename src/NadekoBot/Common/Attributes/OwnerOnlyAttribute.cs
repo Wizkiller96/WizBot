@@ -3,15 +3,17 @@ using System.Threading.Tasks;
 using Discord.Commands;
 using Microsoft.Extensions.DependencyInjection;
 using NadekoBot.Extensions;
+using NadekoBot.Services;
 
 namespace NadekoBot.Common.Attributes
 {
+    // todo all getservice to getrequiredservice
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class)]
     public sealed class OwnerOnlyAttribute : PreconditionAttribute
     {
         public override Task<PreconditionResult> CheckPermissionsAsync(ICommandContext context, CommandInfo executingCommand, IServiceProvider services)
         {
-            var creds = services.GetService<IBotCredentials>();
+            var creds = services.GetRequiredService<BotCredsProvider>().GetCreds();
 
             return Task.FromResult((creds.IsOwner(context.User) || context.Client.CurrentUser.Id == context.User.Id ? PreconditionResult.FromSuccess() : PreconditionResult.FromError("Not owner")));
         }

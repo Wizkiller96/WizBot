@@ -8,17 +8,18 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using NadekoBot.Common.ModuleBehaviors;
 using Serilog;
 
 namespace NadekoBot.Services
 {
-    public class StatsService : IStatsService, INService
+    public class StatsService : IStatsService, IReadyExecutor, INService
     {
         private readonly DiscordSocketClient _client;
         private readonly IBotCredentials _creds;
         private readonly DateTime _started;
 
-        public const string BotVersion = "3.0.0-alpha1";
+        public const string BotVersion = "3.0.0-beta1";
         public string Author => "Kwoth#2452";
         public string Library => "Discord.Net";
 
@@ -156,13 +157,6 @@ namespace NadekoBot.Services
             }, null, TimeSpan.FromMinutes(5), TimeSpan.FromHours(1));
         }
 
-        public void Initialize()
-        {
-            var guilds = _client.Guilds.ToArray();
-            _textChannels = guilds.Sum(g => g.Channels.Count(cx => cx is ITextChannel));
-            _voiceChannels = guilds.Sum(g => g.Channels.Count(cx => cx is IVoiceChannel));
-        }
-
         public TimeSpan GetUptime() =>
             DateTime.UtcNow - _started;
 
@@ -170,6 +164,14 @@ namespace NadekoBot.Services
         {
             var time = GetUptime();
             return $"{time.Days} days{separator}{time.Hours} hours{separator}{time.Minutes} minutes";
+        }
+
+        public Task OnReadyAsync()
+        {
+            var guilds = _client.Guilds;
+            _textChannels = guilds.Sum(g => g.Channels.Count(cx => cx is ITextChannel));
+            _voiceChannels = guilds.Sum(g => g.Channels.Count(cx => cx is IVoiceChannel));
+            return Task.CompletedTask;
         }
     }
 }
