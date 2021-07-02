@@ -21,7 +21,6 @@ namespace NadekoBot.Modules.Administration.Services
 {
     public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
     {
-        private readonly ConnectionMultiplexer _redis;
         private readonly CommandHandler _cmdHandler;
         private readonly DbService _db;
         private readonly IBotStrings _strings;
@@ -35,7 +34,6 @@ namespace NadekoBot.Modules.Administration.Services
         private ConcurrentDictionary<ulong?, ConcurrentDictionary<int, Timer>> _autoCommands =
             new ConcurrentDictionary<ulong?, ConcurrentDictionary<int, Timer>>();
 
-        private readonly IDataCache _cache;
         private readonly IImageCache _imgs;
         private readonly IHttpClientFactory _httpFactory;
         private readonly BotConfigService _bss;
@@ -43,63 +41,64 @@ namespace NadekoBot.Modules.Administration.Services
 
         //keys
         private readonly TypedKey<ActivityPubData> _activitySetKey;
+        private readonly TypedKey<bool> _imagesReloadKey;
+        private readonly TypedKey<string> _guildLeaveKey;
 
-        public SelfService(DiscordSocketClient client, CommandHandler cmdHandler, DbService db,
-            IBotStrings strings, IBotCredentials creds, IDataCache cache, IHttpClientFactory factory,
-            BotConfigService bss, IPubSub pubSub)
+        public SelfService(
+            DiscordSocketClient client,
+            CommandHandler cmdHandler,
+            DbService db,
+            IBotStrings strings,
+            IBotCredentials creds,
+            IDataCache cache,
+            IHttpClientFactory factory,
+            BotConfigService bss,
+            IPubSub pubSub)
         {
-            _redis = cache.Redis;
             _cmdHandler = cmdHandler;
             _db = db;
             _strings = strings;
             _client = client;
             _creds = creds;
-            _cache = cache;
             _imgs = cache.LocalImages;
             _httpFactory = factory;
             _bss = bss;
             _pubSub = pubSub;
             _activitySetKey = new("activity.set");
+            _imagesReloadKey = new("images.reload");
+            _guildLeaveKey = new("guild.leave");
             
             HandleStatusChanges();
             
-            var sub = _redis.GetSubscriber();
             if (_client.ShardId == 0)
             {
-                sub.Subscribe(_creds.RedisKey() + "_reload_images",
-                    delegate { _imgs.Reload(); }, CommandFlags.FireAndForget);
+                _pubSub.Sub(_imagesReloadKey, async _ => await _imgs.Reload());
             }
 
-            sub.Subscribe(_creds.RedisKey() + "_leave_guild", async (ch, v) =>
+            _pubSub.Sub(_guildLeaveKey, async input =>
             {
-                try
-                {
-                    var guildStr = v.ToString()?.Trim().ToUpperInvariant();
-                    if (string.IsNullOrWhiteSpace(guildStr))
-                        return;
-                    var server = _client.Guilds.FirstOrDefault(g => g.Id.ToString() == guildStr) ??
-                                 _client.Guilds.FirstOrDefault(g => g.Name.Trim().ToUpperInvariant() == guildStr);
+                var guildStr = input.ToString().Trim().ToUpperInvariant();
+                if (string.IsNullOrWhiteSpace(guildStr))
+                    return;
 
-                    if (server is null)
-                    {
-                        return;
-                    }
-
-                    if (server.OwnerId != _client.CurrentUser.Id)
-                    {
-                        await server.LeaveAsync().ConfigureAwait(false);
-                        Log.Information($"Left server {server.Name} [{server.Id}]");
-                    }
-                    else
-                    {
-                        await server.DeleteAsync().ConfigureAwait(false);
-                        Log.Information($"Deleted server {server.Name} [{server.Id}]");
-                    }
-                }
-                catch
+                var server = _client.Guilds.FirstOrDefault(g => g.Id.ToString() == guildStr
+                                                                || g.Name.Trim().ToUpperInvariant() == guildStr);
+                if (server is null)
                 {
+                    return;
                 }
-            }, CommandFlags.FireAndForget);
+
+                if (server.OwnerId != _client.CurrentUser.Id)
+                {
+                    await server.LeaveAsync().ConfigureAwait(false);
+                    Log.Information($"Left server {server.Name} [{server.Id}]");
+                }
+                else
+                {
+                    await server.DeleteAsync().ConfigureAwait(false);
+                    Log.Information($"Deleted server {server.Name} [{server.Id}]");
+                }
+            });
         }
 
         public async Task OnReadyAsync()
@@ -228,11 +227,8 @@ namespace NadekoBot.Modules.Administration.Services
                 Log.Information($"Created {ownerChannels.Count} out of {_creds.OwnerIds.Count} owner message channels.");
         }
 
-        public Task LeaveGuild(string guildStr)
-        {
-            var sub = _cache.Redis.GetSubscriber();
-            return sub.PublishAsync(_creds.RedisKey() + "_leave_guild", guildStr);
-        }
+        public Task LeaveGuild(string guildStr) 
+            => _pubSub.Pub(_guildLeaveKey, guildStr);
 
         // forwards dms
         public async Task LateExecute(IGuild guild, IUserMessage msg)
@@ -373,11 +369,8 @@ namespace NadekoBot.Modules.Administration.Services
             }
         }
 
-        public void ReloadImages()
-        {
-            var sub = _cache.Redis.GetSubscriber();
-            sub.Publish(_creds.RedisKey() + "_reload_images", "");
-        }
+        public Task ReloadImagesAsync() 
+            => _pubSub.Pub(_imagesReloadKey, true);
 
         public bool ForwardMessages()
         {

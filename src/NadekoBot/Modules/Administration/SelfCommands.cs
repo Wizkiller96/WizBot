@@ -518,7 +518,7 @@ namespace NadekoBot.Modules.Administration
             [OwnerOnly]
             public async Task ImagesReload()
             {
-                _service.ReloadImages();
+                await _service.ReloadImagesAsync();
                 await ReplyConfirmLocalizedAsync("images_loading", 0).ConfigureAwait(false);
             }
             
