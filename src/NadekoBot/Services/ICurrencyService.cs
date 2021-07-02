@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace NadekoBot.Services
 {
-    public interface ICurrencyService : INService
+    public interface ICurrencyService
     {
         Task AddAsync(ulong userId, string reason, long amount, bool gamble = false);
         Task AddAsync(IUser user, string reason, long amount, bool sendMessage = false, bool gamble = false);

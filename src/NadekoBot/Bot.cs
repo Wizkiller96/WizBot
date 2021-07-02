@@ -20,7 +20,6 @@ using Discord.Net;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Common.Configs;
 using NadekoBot.Db;
-using NadekoBot.Modules.Gambling.Services;
 using Serilog;
 
 namespace NadekoBot
@@ -108,17 +107,15 @@ namespace NadekoBot
                 .AddRedis(_creds.RedisOptions) // redis
                 .AddSingleton(Client) // discord socket client
                 .AddSingleton(_commandService)
-                .AddSingleton(this) // pepega
+                .AddSingleton(this)
                 .AddSingleton<IDataCache, RedisCache>()
                 .AddSingleton<ISeria, JsonSeria>()
                 .AddSingleton<IPubSub, RedisPubSub>()
                 .AddSingleton<IConfigSeria, YamlSeria>()
                 .AddBotStringsServices()
                 .AddConfigServices()
-                .AddConfigMigrators() // todo remove config migrators
+                .AddConfigMigrators()
                 .AddMemoryCache()
-                .AddSingleton<IShopService, ShopService>()
-                .AddSingleton<IBehaviourExecutor, BehaviorExecutor>()
                 // music
                 .AddMusic()
                 ;
@@ -142,31 +139,18 @@ namespace NadekoBot
             // todo no public bot attribute
             svcs.Scan(scan => scan
                 .FromAssemblyOf<IReadyExecutor>()
-                .AddClasses(classes => classes.AssignableTo<IReadyExecutor>())
-                .AsSelf()
-                .AsImplementedInterfaces()
-                .WithSingletonLifetime()
-                
-                // behaviours
                 .AddClasses(classes => classes.AssignableToAny(
+                    // services
+                    typeof(INService),
+                    
+                    // behaviours
                     typeof(IEarlyBehavior),
                     typeof(ILateBlocker),
                     typeof(IInputTransformer),
                     typeof(ILateExecutor)))
-                .AsSelf()
-                .AsImplementedInterfaces()
-                .WithSingletonLifetime()
-                
-                // services
-                .AddClasses(classes => classes.AssignableTo<INService>())
-                .AsImplementedInterfaces()
-                .AsSelf()
+                .AsSelfWithInterfaces()
                 .WithSingletonLifetime()
             );
-            
-            // svcs.AddSingleton<IReadyExecutor>(x => x.GetService<SelfService>());
-            // svcs.AddSingleton<IReadyExecutor>(x => x.GetService<CustomReactionsService>());
-            // svcs.AddSingleton<IReadyExecutor>(x => x.GetService<RepeaterService>());
 
             //initialize Services
             Services = svcs.BuildServiceProvider();
@@ -320,15 +304,14 @@ namespace NadekoBot
             sw.Stop();
             Log.Information("Shard {ShardId} connected in {Elapsed:F2}s", Client.ShardId, sw.Elapsed.TotalSeconds);
 
-            var stats = Services.GetService<IStatsService>();
+            var stats = Services.GetRequiredService<IStatsService>();
             stats.Initialize();
-            var commandHandler = Services.GetService<CommandHandler>();
-            var CommandService = Services.GetService<CommandService>();
+            var commandHandler = Services.GetRequiredService<CommandHandler>();
 
             // start handling messages received in commandhandler
             await commandHandler.StartHandling().ConfigureAwait(false);
 
-            _ = await CommandService.AddModulesAsync(this.GetType().GetTypeInfo().Assembly, Services)
+            _ = await _commandService.AddModulesAsync(this.GetType().GetTypeInfo().Assembly, Services)
                 .ConfigureAwait(false);
 
             HandleStatusChanges();

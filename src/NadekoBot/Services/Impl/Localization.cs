@@ -11,7 +11,7 @@ using NadekoBot.Modules.Administration;
 
 namespace NadekoBot.Services
 {
-    public class Localization : ILocalization
+    public class Localization : ILocalization, INService
     {
         private readonly BotConfigService _bss;
         private readonly DbService _db;

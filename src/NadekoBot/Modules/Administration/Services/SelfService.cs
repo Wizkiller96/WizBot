@@ -18,7 +18,7 @@ using Serilog;
 
 namespace NadekoBot.Modules.Administration.Services
 {
-    public sealed class SelfService : ILateExecutor, IReadyExecutor
+    public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
     {
         private readonly ConnectionMultiplexer _redis;
         private readonly CommandHandler _cmdHandler;
@@ -54,7 +54,6 @@ namespace NadekoBot.Modules.Administration.Services
             _httpFactory = factory;
             _bss = bss;
 
-            Log.Information("Self service created");
             var sub = _redis.GetSubscriber();
             if (_client.ShardId == 0)
             {

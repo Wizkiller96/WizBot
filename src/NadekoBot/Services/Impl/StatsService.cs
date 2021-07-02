@@ -12,7 +12,7 @@ using Serilog;
 
 namespace NadekoBot.Services
 {
-    public class StatsService : IStatsService
+    public class StatsService : IStatsService, INService
     {
         private readonly DiscordSocketClient _client;
         private readonly IBotCredentials _creds;

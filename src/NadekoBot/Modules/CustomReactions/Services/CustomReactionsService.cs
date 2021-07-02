@@ -77,7 +77,6 @@ namespace NadekoBot.Modules.CustomReactions.Services
             _pubSub = pubSub;
             _rng = new NadekoRandom();
 
-            Log.Information("Custom reaction service created");
             _pubSub.Sub(_crsReloadedKey, OnCrsShouldReload);
             pubSub.Sub(_gcrAddedKey, OnGcrAdded);
             pubSub.Sub(_gcrDeletedkey, OnGcrDeleted);

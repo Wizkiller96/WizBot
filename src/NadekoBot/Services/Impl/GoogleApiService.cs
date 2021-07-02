@@ -18,7 +18,7 @@ using Serilog;
 
 namespace NadekoBot.Services
 {
-    public class GoogleApiService : IGoogleApiService
+    public class GoogleApiService : IGoogleApiService, INService
     {
         private const string SearchEngineId = "018084019232060951019:hs5piey28-e";
 

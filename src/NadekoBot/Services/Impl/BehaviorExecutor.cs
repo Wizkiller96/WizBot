@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace NadekoBot.Services
 {
-    public sealed class BehaviorExecutor : IBehaviourExecutor
+    public sealed class BehaviorExecutor : IBehaviourExecutor, INService
     {
         private readonly IServiceProvider _services;
         private IEnumerable<ILateExecutor> _lateExecutors;

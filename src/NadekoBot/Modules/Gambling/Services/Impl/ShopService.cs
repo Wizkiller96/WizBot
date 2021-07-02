@@ -11,7 +11,7 @@ using NadekoBot.Modules.Administration;
 
 namespace NadekoBot.Modules.Gambling.Services
 {
-    public class ShopService : IShopService
+    public class ShopService : IShopService, INService
     {
         private readonly DbService _db;
 

@@ -4,7 +4,7 @@ using Discord;
 
 namespace NadekoBot.Services
 {
-    public interface ILocalization : INService
+    public interface ILocalization
     {
         CultureInfo DefaultCultureInfo { get; }
         ConcurrentDictionary<ulong, CultureInfo> GuildCultureInfos { get; }

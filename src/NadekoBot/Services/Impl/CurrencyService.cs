@@ -12,7 +12,7 @@ using NadekoBot.Modules.Gambling.Services;
 
 namespace NadekoBot.Services
 {
-    public class CurrencyService : ICurrencyService
+    public class CurrencyService : ICurrencyService, INService
     {
         private readonly DbService _db;
         private readonly GamblingConfigService _gss;

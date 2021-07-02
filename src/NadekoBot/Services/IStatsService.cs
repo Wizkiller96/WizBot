@@ -2,7 +2,7 @@
 
 namespace NadekoBot.Services
 {
-    public interface IStatsService : INService
+    public interface IStatsService
     {
         string Author { get; }
         long CommandsRan { get; }
