@@ -47,7 +47,8 @@ namespace NadekoBot.Modules.Xp.Services
         private readonly Task updateXpTask;
         private readonly IHttpClientFactory _httpFactory;
         private readonly XpConfigService _xpConfig;
-        
+        private readonly IPubSub _pubSub;
+
         public const int XP_REQUIRED_LVL_1 = 36;
 
         private readonly ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>> _excludedRoles;
@@ -61,9 +62,21 @@ namespace NadekoBot.Modules.Xp.Services
         private XpTemplate _template;
         private readonly DiscordSocketClient _client;
 
-        public XpService(DiscordSocketClient client, CommandHandler cmd, Bot bot, DbService db,
-            IBotStrings strings, IDataCache cache, FontProvider fonts, IBotCredentials creds,
-            ICurrencyService cs, IHttpClientFactory http, XpConfigService xpConfig)
+        private readonly TypedKey<bool> _xpTemplateReloadKey;
+
+        public XpService(
+            DiscordSocketClient client,
+            CommandHandler cmd,
+            Bot bot,
+            DbService db,
+            IBotStrings strings,
+            IDataCache cache,
+            FontProvider fonts,
+            IBotCredentials creds,
+            ICurrencyService cs,
+            IHttpClientFactory http,
+            XpConfigService xpConfig,
+            IPubSub pubSub)
         {
             _db = db;
             _cmd = cmd;
@@ -75,17 +88,21 @@ namespace NadekoBot.Modules.Xp.Services
             _cs = cs;
             _httpFactory = http;
             _xpConfig = xpConfig;
+            _pubSub = pubSub;
             _excludedServers = new ConcurrentHashSet<ulong>();
             _excludedChannels = new ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>>();
             _client = client;
+            _xpTemplateReloadKey = new("xp.template.reload");
 
             InternalReloadXpTemplate();
 
             if (client.ShardId == 0)
             {
-                var sub = _cache.Redis.GetSubscriber();
-                sub.Subscribe(_creds.RedisKey() + "_reload_xp_template",
-                    (ch, val) => InternalReloadXpTemplate());
+                _pubSub.Sub(_xpTemplateReloadKey, _ =>
+                {
+                    InternalReloadXpTemplate();
+                    return default;
+                });
             }
 
             //load settings
@@ -303,8 +320,7 @@ namespace NadekoBot.Modules.Xp.Services
 
         public void ReloadXpTemplate()
         {
-            var sub = _cache.Redis.GetSubscriber();
-            sub.Publish(_creds.RedisKey() + "_reload_xp_template", "");
+           _pubSub.Pub(_xpTemplateReloadKey, true);
         }
 
         public void SetCurrencyReward(ulong guildId, int level, int amount)

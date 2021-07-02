@@ -3,14 +3,13 @@ using Microsoft.Extensions.Configuration;
 using System.IO;
 using Microsoft.Extensions.Primitives;
 using NadekoBot.Common;
-using NadekoBot.Common;
 using NadekoBot.Common.Yml;
 using Serilog;
 
 namespace NadekoBot.Services
 {
     // todo check why is memory usage so unstable
-    public class BotCredsProvider
+    public sealed class BotCredsProvider
     {
         private readonly int? _totalShards;
         private const string _credsFileName = "creds.yml";

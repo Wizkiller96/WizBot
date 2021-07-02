@@ -386,7 +386,6 @@ namespace NadekoBot.Modules.Administration.Services
             return isToAll;
         }
         
-        // todo pubsub via IPubSub
         private void HandleStatusChanges()
         {
             _pubSub.Sub(_activitySetKey, async data =>

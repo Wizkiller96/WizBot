@@ -30,8 +30,9 @@ namespace NadekoBot.Services
                 return AnsiConsoleTheme.Code;
 #if DEBUG
             return AnsiConsoleTheme.Code;
-#endif
+#else
             return ConsoleTheme.None;
+#endif
         }
     }
 }

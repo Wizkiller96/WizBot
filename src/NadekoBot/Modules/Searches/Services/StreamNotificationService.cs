@@ -183,7 +183,7 @@ namespace NadekoBot.Modules.Searches.Services
         /// When counter reaches 0, stream is removed from tracking because
         /// that means no guilds are subscribed to that stream anymore 
         /// </summary>
-        private async ValueTask HandleFollowStream(FollowStreamPubData info)
+        private ValueTask HandleFollowStream(FollowStreamPubData info)
         {
             _streamTracker.CacheAddData(info.Key, null, replace: false);
             lock (_shardLock)
@@ -201,6 +201,8 @@ namespace NadekoBot.Modules.Searches.Services
                     };
                 }
             }
+
+            return default;
         }
 
         /// <summary>
