@@ -48,8 +48,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
         private CustomReaction[] _globalReactions;
         private ConcurrentDictionary<ulong, CustomReaction[]> _newGuildReactions;
 
-        public int Priority => -1;
-        public ModuleBehaviorType BehaviorType => ModuleBehaviorType.Executor;
+        public int Priority => 0;
 
         private readonly DbService _db;
         private readonly DiscordSocketClient _client;
@@ -395,6 +394,10 @@ namespace NadekoBot.Modules.CustomReactions.Services
             {
                 if (_gperm.BlockedModules.Contains("ActualCustomReactions"))
                 {
+                    Log.Information("User {UserName} [{UserId}] tried to use a custom reaction but 'ActualCustomReactions' are globally disabled.",
+                        msg.Author.ToString(),
+                        msg.Author.Id);
+                    
                     return true;
                 }
 
@@ -454,6 +457,13 @@ namespace NadekoBot.Modules.CustomReactions.Services
                     }
                 }
 
+                Log.Information("s: {GuildId} c: {ChannelId} u: {UserId} | {UserName} executed expression {Expr}",
+                    guild.Id,
+                    msg.Channel.Id,
+                    msg.Author.Id,
+                    msg.Author.ToString(),
+                    cr.Trigger);
+                
                 return true;
             }
             catch (Exception ex)

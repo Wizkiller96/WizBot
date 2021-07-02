@@ -19,8 +19,7 @@ namespace NadekoBot.Modules.Games.Services
     {
         public ConcurrentDictionary<ulong, PollRunner> ActivePolls { get; } = new ConcurrentDictionary<ulong, PollRunner>();
 
-        public int Priority => -5;
-        public ModuleBehaviorType BehaviorType => ModuleBehaviorType.Executor;
+        public int Priority => 5;
 
         private readonly DbService _db;
         private readonly IBotStrings _strs;
@@ -115,7 +114,18 @@ namespace NadekoBot.Modules.Games.Services
 
             try
             {
-                return await poll.TryVote(msg).ConfigureAwait(false);
+                var voted = await poll.TryVote(msg).ConfigureAwait(false);
+
+                if (voted)
+                {
+                    Log.Information("User {UserName} [{UserId}] voted in a poll on {GuildName} [{GuildId}] server",
+                        msg.Author.ToString(),
+                        msg.Author.Id,
+                        guild.Name,
+                        guild.Id);
+                }
+                
+                return voted;
             }
             catch (Exception ex)
             {

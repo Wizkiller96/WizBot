@@ -9,14 +9,6 @@ namespace NadekoBot.Common.ModuleBehaviors
     public interface IEarlyBehavior
     {
         int Priority { get; }
-        ModuleBehaviorType BehaviorType { get; }
-
         Task<bool> RunBehavior(IGuild guild, IUserMessage msg);
-    }
-
-    public enum ModuleBehaviorType
-    {
-        Blocker,
-        Executor,
     }
 }

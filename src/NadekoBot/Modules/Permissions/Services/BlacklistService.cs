@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common;
 using NadekoBot.Db;
+using Serilog;
 
 namespace NadekoBot.Modules.Permissions.Services
 {
@@ -17,9 +18,7 @@ namespace NadekoBot.Modules.Permissions.Services
         private readonly IPubSub _pubSub;
         private readonly IBotCredentials _creds;
         private IReadOnlyList<BlacklistEntry> _blacklist;
-        public int Priority => -100;
-
-        public ModuleBehaviorType BehaviorType => ModuleBehaviorType.Blocker;
+        public int Priority => int.MaxValue;
 
         private readonly TypedKey<BlacklistEntry[]> blPubKey = new TypedKey<BlacklistEntry[]>("blacklist.reload");
         public BlacklistService(DbService db, IPubSub pubSub, IBotCredentials creds)
@@ -43,13 +42,31 @@ namespace NadekoBot.Modules.Permissions.Services
             foreach (var bl in _blacklist)
             {
                 if (guild != null && bl.Type == BlacklistType.Server && bl.ItemId == guild.Id)
+                {
+                    Log.Information("Blocked input from blacklisted guild: {GuildName} [{GuildId}]",
+                        guild.Name,
+                        guild.Id);
+                    
                     return Task.FromResult(true);
+                }
 
                 if (bl.Type == BlacklistType.Channel && bl.ItemId == usrMsg.Channel.Id)
+                {
+                    Log.Information("Blocked input from blacklisted channel: {ChannelName} [{ChannelId}]",
+                        usrMsg.Channel.Name,
+                        usrMsg.Channel.Id);
+                    
                     return Task.FromResult(true);
+                }
 
                 if (bl.Type == BlacklistType.User && bl.ItemId == usrMsg.Author.Id)
+                {
+                    Log.Information("Blocked input from blacklisted user: {UserName} [{UserId}]", 
+                        usrMsg.Author.ToString(),
+                        usrMsg.Author.Id);
+                    
                     return Task.FromResult(true);
+                }
             }
 
             return Task.FromResult(false);

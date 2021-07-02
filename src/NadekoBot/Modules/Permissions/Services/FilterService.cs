@@ -17,7 +17,7 @@ using Serilog;
 
 namespace NadekoBot.Modules.Permissions.Services
 {
-    public class FilterService : IEarlyBehavior
+    public sealed class FilterService : IEarlyBehavior
     {
         private readonly DbService _db;
 
@@ -33,8 +33,7 @@ namespace NadekoBot.Modules.Permissions.Services
         public ConcurrentHashSet<ulong> LinkFilteringChannels { get; }
         public ConcurrentHashSet<ulong> LinkFilteringServers { get; }
 
-        public int Priority => -50;
-        public ModuleBehaviorType BehaviorType => ModuleBehaviorType.Blocker;
+        public int Priority => int.MaxValue - 1;
 
         public ConcurrentHashSet<string> FilteredWordsForChannel(ulong channelId, ulong guildId)
         {
@@ -136,7 +135,7 @@ namespace NadekoBot.Modules.Permissions.Services
             return results.Any(x => x);
         }
 
-        public async Task<bool> FilterWords(IGuild guild, IUserMessage usrMsg)
+        private async Task<bool> FilterWords(IGuild guild, IUserMessage usrMsg)
         {
             if (guild is null)
                 return false;
@@ -153,6 +152,11 @@ namespace NadekoBot.Modules.Permissions.Services
                     if (filteredChannelWords.Contains(word) ||
                         filteredServerWords.Contains(word))
                     {
+                        Log.Information("User {UserName} [{UserId}] used a filtered word in {ChannelId} channel",
+                            usrMsg.Author.ToString(),
+                            usrMsg.Author.Id,
+                            usrMsg.Channel.Id);
+                        
                         try
                         {
                             await usrMsg.DeleteAsync().ConfigureAwait(false);
@@ -168,7 +172,7 @@ namespace NadekoBot.Modules.Permissions.Services
             return false;
         }
 
-        public async Task<bool> FilterInvites(IGuild guild, IUserMessage usrMsg)
+        private async Task<bool> FilterInvites(IGuild guild, IUserMessage usrMsg)
         {
             if (guild is null)
                 return false;
@@ -179,6 +183,11 @@ namespace NadekoBot.Modules.Permissions.Services
                 || InviteFilteringServers.Contains(guild.Id))
                 && usrMsg.Content.IsDiscordInvite())
             {
+                Log.Information("User {UserName} [{UserId}] sent a filtered invite to {ChannelId} channel",
+                    usrMsg.Author.ToString(),
+                    usrMsg.Author.Id,
+                    usrMsg.Channel.Id);
+                
                 try
                 {
                     await usrMsg.DeleteAsync().ConfigureAwait(false);
@@ -193,7 +202,7 @@ namespace NadekoBot.Modules.Permissions.Services
             return false;
         }
 
-        public async Task<bool> FilterLinks(IGuild guild, IUserMessage usrMsg)
+        private async Task<bool> FilterLinks(IGuild guild, IUserMessage usrMsg)
         {
             if (guild is null)
                 return false;
@@ -204,6 +213,11 @@ namespace NadekoBot.Modules.Permissions.Services
                 || LinkFilteringServers.Contains(guild.Id))
                 && usrMsg.Content.TryGetUrlPath(out _))
             {
+                Log.Information("User {UserName} [{UserId}] sent a filtered link to {ChannelId} channel",
+                    usrMsg.Author.ToString(),
+                    usrMsg.Author.Id,
+                    usrMsg.Channel.Id);
+                
                 try
                 {
                     await usrMsg.DeleteAsync().ConfigureAwait(false);

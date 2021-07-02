@@ -26,8 +26,7 @@ namespace NadekoBot.Modules.Games.Services
 
         public ConcurrentDictionary<ulong, Lazy<IChatterBotSession>> ChatterBotGuilds { get; }
 
-        public int Priority => -1;
-        public ModuleBehaviorType BehaviorType => ModuleBehaviorType.Executor;
+        public int Priority => 1;
 
         public ChatterBotService(DiscordSocketClient client, PermissionService perms,
             Bot bot, CommandHandler cmd, IBotStrings strings, IHttpClientFactory factory,

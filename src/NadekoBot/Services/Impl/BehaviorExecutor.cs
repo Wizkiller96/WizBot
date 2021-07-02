@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -28,11 +29,11 @@ namespace NadekoBot.Services
         {
             _lateExecutors = _services.GetServices<ILateExecutor>();
             _lateBlockers = _services.GetServices<ILateBlocker>();
-            _earlyBehaviors = _services.GetServices<IEarlyBehavior>();
+            _earlyBehaviors = _services.GetServices<IEarlyBehavior>()
+                .OrderByDescending(x => x.Priority);
             _transformers = _services.GetServices<IInputTransformer>();
         }
 
-        // todo early behaviors should print for themselves
         public async Task<bool> RunEarlyBehavioursAsync(SocketGuild guild, IUserMessage usrMsg)
         {
             foreach (var beh in _earlyBehaviors)

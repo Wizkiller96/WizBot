@@ -11,20 +11,18 @@ using NadekoBot.Modules.Searches.Common.StreamNotifications;
 using NadekoBot.Services;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Extensions;
-using Newtonsoft.Json;
 using StackExchange.Redis;
 using Discord;
 using Discord.WebSocket;
 using NadekoBot.Common.Collections;
 using NadekoBot.Common.Replacements;
 using NadekoBot.Db;
-using NadekoBot.Modules.Administration;
 using NadekoBot.Db.Models;
 using Serilog;
 
 namespace NadekoBot.Modules.Searches.Services
 {
-    public class StreamNotificationService : INService
+    public sealed class StreamNotificationService : INService
     {
         private readonly DbService _db;
         private readonly IBotStrings _strings;
