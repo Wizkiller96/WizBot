@@ -21,7 +21,7 @@ namespace NadekoBot.Coordinator
             services.AddGrpc();
             services.AddSingleton<CoordinatorRunner>();
             services.AddSingleton<IHostedService, CoordinatorRunner>(
-                serviceProvider => serviceProvider.GetService<CoordinatorRunner>());
+                serviceProvider => serviceProvider.GetRequiredService<CoordinatorRunner>());
         }
         
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

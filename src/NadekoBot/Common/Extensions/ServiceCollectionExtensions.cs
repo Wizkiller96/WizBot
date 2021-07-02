@@ -49,7 +49,7 @@ namespace NadekoBot.Extensions
                 .AddSingleton<IRadioResolver, RadioResolver>()
                 .AddSingleton<ITrackCacher, RedisTrackCacher>()
                 .AddSingleton<YtLoader>()
-                .AddSingleton<IPlaceholderProvider>(svc => svc.GetService<IMusicService>());
+                .AddSingleton<IPlaceholderProvider>(svc => svc.GetRequiredService<IMusicService>());
         
         // consider using scrutor, because slightly different versions
         // of this might be needed in several different places

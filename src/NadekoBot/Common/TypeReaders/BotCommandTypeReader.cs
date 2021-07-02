@@ -50,9 +50,9 @@ namespace NadekoBot.Common.TypeReaders
         {
             input = input.ToUpperInvariant();
 
-            var _crs = services.GetService<CustomReactionsService>();
+            var crs = services.GetRequiredService<CustomReactionsService>();
 
-            if (_crs.ReactionExists(context.Guild?.Id, input))
+            if (crs.ReactionExists(context.Guild?.Id, input))
             {
                 return TypeReaderResult.FromSuccess(new CommandOrCrInfo(input, CommandOrCrInfo.Type.Custom));
             }

@@ -24,7 +24,7 @@ namespace NadekoBot.Common.Attributes
             if (Seconds == 0)
                 return Task.FromResult(PreconditionResult.FromSuccess());
 
-            var cache = services.GetService<IDataCache>();
+            var cache = services.GetRequiredService<IDataCache>();
             var rem = cache.TryAddRatelimit(context.User.Id, command.Name, Seconds);
 
             if(rem is null)

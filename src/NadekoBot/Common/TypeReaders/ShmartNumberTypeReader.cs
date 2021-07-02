@@ -73,9 +73,9 @@ namespace NadekoBot.Common.TypeReaders
 
         private static long Cur(IServiceProvider services, ICommandContext ctx)
         {
-            var _db = services.GetService<DbService>();
+            var db = services.GetRequiredService<DbService>();
             long cur;
-            using (var uow = _db.GetDbContext())
+            using (var uow = db.GetDbContext())
             {
                 cur = uow.DiscordUser.GetUserCurrency(ctx.User.Id);
                 uow.SaveChanges();
@@ -85,7 +85,7 @@ namespace NadekoBot.Common.TypeReaders
 
         private static long Max(IServiceProvider services, ICommandContext ctx)
         {
-            var settings = services.GetService<GamblingConfigService>().Data;
+            var settings = services.GetRequiredService<GamblingConfigService>().Data;
             var max = settings.MaxBet;
             return max == 0
                 ? Cur(services, ctx)

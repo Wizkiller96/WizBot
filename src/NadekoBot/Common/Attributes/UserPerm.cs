@@ -23,7 +23,7 @@ namespace Discord
 
         public override Task<PreconditionResult> CheckPermissionsAsync(ICommandContext context, CommandInfo command, IServiceProvider services)
         {
-            var permService = services.GetService<DiscordPermOverrideService>();
+            var permService = services.GetRequiredService<DiscordPermOverrideService>();
             if (permService.TryGetOverrides(context.Guild?.Id ?? 0, command.Name.ToUpperInvariant(), out var _))
                 return Task.FromResult(PreconditionResult.FromSuccess());
             

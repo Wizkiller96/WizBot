@@ -177,7 +177,7 @@ namespace NadekoBot
             }
         }
 
-        // todo isn't there a built in for loading type readers?
+        // todo di typereaders
         private IEnumerable<object> LoadTypeReaders(Assembly assembly)
         {
             Type[] allTypes;

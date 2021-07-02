@@ -25,11 +25,11 @@ namespace NadekoBot.Common.TypeReaders
 
         public static GuildDateTime Parse(IServiceProvider services, ulong guildId, string input)
         {
-            var _gts = services.GetService<GuildTimezoneService>();
+            var gts = services.GetRequiredService<GuildTimezoneService>();
             if (!DateTime.TryParse(input, out var dt))
                 return null;
 
-            var tz = _gts.GetTimeZoneOrUtc(guildId);
+            var tz = gts.GetTimeZoneOrUtc(guildId);
 
             return new GuildDateTime(tz, dt);
         }
