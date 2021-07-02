@@ -6,7 +6,6 @@ using Discord.WebSocket;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Extensions;
 using NadekoBot.Services;
-using StackExchange.Redis;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Services.Database.Models;
@@ -409,7 +408,7 @@ namespace NadekoBot.Modules.Administration.Services
         public Task SetStreamAsync(string name, string link)
             => _pubSub.Pub(_activitySetKey, new() { Name = name, Link = link, Type = ActivityType.Streaming });
 
-        private class ActivityPubData
+        private sealed class ActivityPubData
         {
             public string Name { get; init; }
             public string Link { get; init; }
