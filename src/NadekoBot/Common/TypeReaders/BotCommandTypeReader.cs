@@ -4,31 +4,30 @@ using System.Threading.Tasks;
 using Discord.Commands;
 using NadekoBot.Services;
 using NadekoBot.Modules.CustomReactions.Services;
-using Discord.WebSocket;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace NadekoBot.Common.TypeReaders
 {
     public sealed class CommandTypeReader : NadekoTypeReader<CommandInfo>
     {
-        public CommandTypeReader(DiscordSocketClient client, CommandService cmds) : base(client, cmds)
+        private readonly CommandHandler _handler;
+        private readonly CommandService _cmds;
+
+        public CommandTypeReader(CommandHandler handler, CommandService cmds)
         {
+            _handler = handler;
+            _cmds = cmds;
         }
 
-        public override Task<TypeReaderResult> ReadAsync(ICommandContext context, string input, IServiceProvider services)
+        public override Task<TypeReaderResult> ReadAsync(ICommandContext context, string input)
         {
-            var cmds = services.GetRequiredService<CommandService>();
-            var cmdHandler = services.GetRequiredService<CommandHandler>();
-            
             input = input.ToUpperInvariant();
-            var prefix = cmdHandler.GetPrefix(context.Guild);
+            var prefix = _handler.GetPrefix(context.Guild);
             if (!input.StartsWith(prefix.ToUpperInvariant(), StringComparison.InvariantCulture))
                 return Task.FromResult(TypeReaderResult.FromError(CommandError.ParseFailed, "No such command found."));
 
             input = input.Substring(prefix.Length);
 
-            var cmd = cmds.Commands.FirstOrDefault(c =>
-                c.Aliases.Select(a => a.ToUpperInvariant()).Contains(input));
+            var cmd = _cmds.Commands.FirstOrDefault(c => c.Aliases.Select(a => a.ToUpperInvariant()).Contains(input));
             if (cmd is null)
                 return Task.FromResult(TypeReaderResult.FromError(CommandError.ParseFailed, "No such command found."));
 
@@ -38,26 +37,30 @@ namespace NadekoBot.Common.TypeReaders
 
     public sealed class CommandOrCrTypeReader : NadekoTypeReader<CommandOrCrInfo>
     {
-        private readonly DiscordSocketClient _client;
         private readonly CommandService _cmds;
-        public CommandOrCrTypeReader(DiscordSocketClient client, CommandService cmds) : base(client, cmds)
+        private readonly CustomReactionsService _crs;
+        private readonly CommandHandler _commandHandler;
+
+        public CommandOrCrTypeReader(
+            CommandService cmds,
+            CustomReactionsService crs,
+            CommandHandler commandHandler)
         {
-            _client = client;
             _cmds = cmds;
+            _crs = crs;
+            _commandHandler = commandHandler;
         }
 
-        public override async Task<TypeReaderResult> ReadAsync(ICommandContext context, string input, IServiceProvider services)
+        public override async Task<TypeReaderResult> ReadAsync(ICommandContext context, string input)
         {
             input = input.ToUpperInvariant();
 
-            var crs = services.GetRequiredService<CustomReactionsService>();
-
-            if (crs.ReactionExists(context.Guild?.Id, input))
+            if (_crs.ReactionExists(context.Guild?.Id, input))
             {
                 return TypeReaderResult.FromSuccess(new CommandOrCrInfo(input, CommandOrCrInfo.Type.Custom));
             }
 
-            var cmd = await new CommandTypeReader(_client, _cmds).ReadAsync(context, input, services).ConfigureAwait(false);
+            var cmd = await new CommandTypeReader(_commandHandler, _cmds).ReadAsync(context, input).ConfigureAwait(false);
             if (cmd.IsSuccess)
             {
                 return TypeReaderResult.FromSuccess(new CommandOrCrInfo(((CommandInfo)cmd.Values.First().Value).Name, CommandOrCrInfo.Type.Normal));

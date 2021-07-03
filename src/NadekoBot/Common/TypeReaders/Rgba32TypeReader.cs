@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Discord.Commands;
-using Discord.WebSocket;
 using SixLabors.ImageSharp;
 
 namespace NadekoBot.Common.TypeReaders
 {
-    public class Rgba32TypeReader : NadekoTypeReader<Color>
+    public sealed class Rgba32TypeReader : NadekoTypeReader<Color>
     {
-        public Rgba32TypeReader(DiscordSocketClient client, CommandService cmds) : base(client, cmds)
-        {
-        }
-
-        public override async Task<TypeReaderResult> ReadAsync(ICommandContext context, string input, IServiceProvider services)
+        public override async Task<TypeReaderResult> ReadAsync(ICommandContext context, string input)
         {
             await Task.Yield();
 

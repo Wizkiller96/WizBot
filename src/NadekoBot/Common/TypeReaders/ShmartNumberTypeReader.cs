@@ -1,22 +1,26 @@
 ﻿using Discord.Commands;
-using Discord.WebSocket;
-using Microsoft.Extensions.DependencyInjection;
-using NadekoBot.Services;
 using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NadekoBot.Db;
 using NadekoBot.Modules.Gambling.Services;
+using NadekoBot.Services;
 
 namespace NadekoBot.Common.TypeReaders
 {
-    public class ShmartNumberTypeReader : NadekoTypeReader<ShmartNumber>
+    // todo test max/half/all
+    public sealed class ShmartNumberTypeReader : NadekoTypeReader<ShmartNumber>
     {
-        public ShmartNumberTypeReader(DiscordSocketClient client, CommandService cmds) : base(client, cmds)
+        private readonly DbService _db;
+        private readonly GamblingConfigService _gambling;
+
+        public ShmartNumberTypeReader(DbService db, GamblingConfigService gambling)
         {
+            _db = db;
+            _gambling = gambling;
         }
 
-        public override async Task<TypeReaderResult> ReadAsync(ICommandContext context, string input, IServiceProvider services)
+        public override async Task<TypeReaderResult> ReadAsync(ICommandContext context, string input)
         {
             await Task.Yield();
 
@@ -29,12 +33,12 @@ namespace NadekoBot.Common.TypeReaders
 
             //can't add m because it will conflict with max atm
 
-            if (TryHandlePercentage(services, context, i, out var num))
+            if (TryHandlePercentage(context, i, out var num))
                 return TypeReaderResult.FromSuccess(new ShmartNumber(num, i));
             try
             {
                 var expr = new NCalc.Expression(i, NCalc.EvaluateOptions.IgnoreCase);
-                expr.EvaluateParameter += (str, ev) => EvaluateParam(str, ev, context, services);
+                expr.EvaluateParameter += (str, ev) => EvaluateParam(str, ev, context);
                 var lon = (long)(decimal.Parse(expr.Evaluate().ToString()));
                 return TypeReaderResult.FromSuccess(new ShmartNumber(lon, input));
             }
@@ -44,7 +48,7 @@ namespace NadekoBot.Common.TypeReaders
             }
         }
 
-        private static void EvaluateParam(string name, NCalc.ParameterArgs args, ICommandContext ctx, IServiceProvider svc)
+        private void EvaluateParam(string name, NCalc.ParameterArgs args, ICommandContext ctx)
         {
             switch (name.ToUpperInvariant())
             {
@@ -56,13 +60,13 @@ namespace NadekoBot.Common.TypeReaders
                     break;
                 case "ALL":
                 case "ALLIN":
-                    args.Result = Cur(svc, ctx);
+                    args.Result = Cur(ctx);
                     break;
                 case "HALF":
-                    args.Result = Cur(svc, ctx) / 2;
+                    args.Result = Cur(ctx) / 2;
                     break;
                 case "MAX":
-                    args.Result = Max(svc, ctx);
+                    args.Result = Max(ctx);
                     break;
                 default:
                     break;
@@ -71,28 +75,22 @@ namespace NadekoBot.Common.TypeReaders
 
         private static readonly Regex percentRegex = new Regex(@"^((?<num>100|\d{1,2})%)$", RegexOptions.Compiled);
 
-        private static long Cur(IServiceProvider services, ICommandContext ctx)
+        private long Cur(ICommandContext ctx)
         {
-            var db = services.GetRequiredService<DbService>();
-            long cur;
-            using (var uow = db.GetDbContext())
-            {
-                cur = uow.DiscordUser.GetUserCurrency(ctx.User.Id);
-                uow.SaveChanges();
-            }
-            return cur;
+            using var uow = _db.GetDbContext();
+            return uow.DiscordUser.GetUserCurrency(ctx.User.Id);
         }
 
-        private static long Max(IServiceProvider services, ICommandContext ctx)
+        private long Max(ICommandContext ctx)
         {
-            var settings = services.GetRequiredService<GamblingConfigService>().Data;
+            var settings = _gambling.Data;
             var max = settings.MaxBet;
             return max == 0
-                ? Cur(services, ctx)
+                ? Cur(ctx)
                 : max;
         }
 
-        private static bool TryHandlePercentage(IServiceProvider services, ICommandContext ctx, string input, out long num)
+        private bool TryHandlePercentage(ICommandContext ctx, string input, out long num)
         {
             num = 0;
             var m = percentRegex.Match(input);
@@ -101,7 +99,7 @@ namespace NadekoBot.Common.TypeReaders
                 if (!long.TryParse(m.Groups["num"].ToString(), out var percent))
                     return false;
 
-                num = (long)(Cur(services, ctx) * (percent / 100.0f));
+                num = (long)(Cur(ctx) * (percent / 100.0f));
                 return true;
             }
             return false;

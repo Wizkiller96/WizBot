@@ -2,36 +2,35 @@
 using System.Threading.Tasks;
 using Discord.Commands;
 using NadekoBot.Modules.Administration.Services;
-using NadekoBot.Common.TypeReaders;
-using Discord.WebSocket;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace NadekoBot.Common.TypeReaders
 {
-    public class GuildDateTimeTypeReader : NadekoTypeReader<GuildDateTime>
+    public sealed class GuildDateTimeTypeReader : NadekoTypeReader<GuildDateTime>
     {
-        public GuildDateTimeTypeReader(DiscordSocketClient client, CommandService cmds) : base(client, cmds)
-        {
-        }
+        private readonly GuildTimezoneService _gts;
 
-        public override Task<TypeReaderResult> ReadAsync(ICommandContext context, string input, IServiceProvider services)
+        public GuildDateTimeTypeReader(GuildTimezoneService gts)
         {
-            var gdt = Parse(services, context.Guild.Id, input);
+            _gts = gts;
+        }
+        
+        public override Task<TypeReaderResult> ReadAsync(ICommandContext context, string input)
+        {
+            var gdt = Parse(context.Guild.Id, input);
             if(gdt is null)
                 return Task.FromResult(TypeReaderResult.FromError(CommandError.ParseFailed, "Input string is in an incorrect format."));
 
             return Task.FromResult(TypeReaderResult.FromSuccess(gdt));
         }
 
-        public static GuildDateTime Parse(IServiceProvider services, ulong guildId, string input)
+        private GuildDateTime Parse(ulong guildId, string input)
         {
-            var gts = services.GetRequiredService<GuildTimezoneService>();
             if (!DateTime.TryParse(input, out var dt))
                 return null;
 
-            var tz = gts.GetTimeZoneOrUtc(guildId);
+            var tz = _gts.GetTimeZoneOrUtc(guildId);
 
-            return new GuildDateTime(tz, dt);
+            return new(tz, dt);
         }
     }
 
@@ -41,8 +40,6 @@ namespace NadekoBot.Common.TypeReaders
         public DateTime CurrentGuildTime { get; }
         public DateTime InputTime { get; }
         public DateTime InputTimeUtc { get; }
-
-        private GuildDateTime() { }
 
         public GuildDateTime(TimeZoneInfo guildTimezone, DateTime inputTime)
         {

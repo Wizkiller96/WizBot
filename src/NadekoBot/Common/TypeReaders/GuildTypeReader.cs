@@ -1,23 +1,21 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
-using NadekoBot.Common.TypeReaders;
 using Discord;
 
 namespace NadekoBot.Common.TypeReaders
 {
-    public class GuildTypeReader : NadekoTypeReader<IGuild>
+    public sealed class GuildTypeReader : NadekoTypeReader<IGuild>
     {
         private readonly DiscordSocketClient _client;
 
-        public GuildTypeReader(DiscordSocketClient client, CommandService cmds) : base(client, cmds)
+        public GuildTypeReader(DiscordSocketClient client)
         {
             _client = client;
         }
 
-        public override Task<TypeReaderResult> ReadAsync(ICommandContext context, string input, IServiceProvider _)
+        public override Task<TypeReaderResult> ReadAsync(ICommandContext context, string input)
         {
             input = input.Trim().ToUpperInvariant();
             var guilds = _client.Guilds;

@@ -198,7 +198,7 @@ namespace NadekoBot
             var toReturn = new List<object>();
             foreach (var ft in filteredTypes)
             {
-                var x = (TypeReader)Activator.CreateInstance(ft, Client, _commandService);
+                var x = (TypeReader)ActivatorUtilities.CreateInstance(Services, ft);
                 var baseType = ft.BaseType;
                 var typeArgs = baseType.GetGenericArguments();
                 _commandService.AddTypeReader(typeArgs[0], x);

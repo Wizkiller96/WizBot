@@ -1,18 +1,13 @@
 ﻿using Discord.Commands;
-using Discord.WebSocket;
 using NadekoBot.Common.TypeReaders.Models;
 using System;
 using System.Threading.Tasks;
 
 namespace NadekoBot.Common.TypeReaders
 {
-    public class StoopidTimeTypeReader : NadekoTypeReader<StoopidTime>
+    public sealed class StoopidTimeTypeReader : NadekoTypeReader<StoopidTime>
     {
-        public StoopidTimeTypeReader(DiscordSocketClient client, CommandService cmds) : base(client, cmds)
-        {
-        }
-
-        public override Task<TypeReaderResult> ReadAsync(ICommandContext context, string input, IServiceProvider services)
+        public override Task<TypeReaderResult> ReadAsync(ICommandContext context, string input)
         {
             if (string.IsNullOrWhiteSpace(input))
                 return Task.FromResult(TypeReaderResult.FromError(CommandError.Unsuccessful, "Input is empty."));

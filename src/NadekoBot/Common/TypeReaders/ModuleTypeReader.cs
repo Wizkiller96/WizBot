@@ -1,23 +1,20 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord.Commands;
 using NadekoBot.Extensions;
-using NadekoBot.Common.TypeReaders;
-using Discord.WebSocket;
 
 namespace NadekoBot.Common.TypeReaders
 {
-    public class ModuleTypeReader : NadekoTypeReader<ModuleInfo>
+    public sealed class ModuleTypeReader : NadekoTypeReader<ModuleInfo>
     {
         private readonly CommandService _cmds;
 
-        public ModuleTypeReader(DiscordSocketClient client, CommandService cmds) : base(client, cmds)
+        public ModuleTypeReader(CommandService cmds)
         {
             _cmds = cmds;
         }
 
-        public override Task<TypeReaderResult> ReadAsync(ICommandContext context, string input, IServiceProvider _)
+        public override Task<TypeReaderResult> ReadAsync(ICommandContext context, string input)
         {
             input = input.ToUpperInvariant();
             var module = _cmds.Modules.GroupBy(m => m.GetTopLevelModule()).FirstOrDefault(m => m.Key.Name.ToUpperInvariant() == input)?.Key;
@@ -28,16 +25,16 @@ namespace NadekoBot.Common.TypeReaders
         }
     }
 
-    public class ModuleOrCrTypeReader : NadekoTypeReader<ModuleOrCrInfo>
+    public sealed class ModuleOrCrTypeReader : NadekoTypeReader<ModuleOrCrInfo>
     {
         private readonly CommandService _cmds;
 
-        public ModuleOrCrTypeReader(DiscordSocketClient client, CommandService cmds) : base(client, cmds)
+        public ModuleOrCrTypeReader(CommandService cmds)
         {
             _cmds = cmds;
         }
 
-        public override Task<TypeReaderResult> ReadAsync(ICommandContext context, string input, IServiceProvider _)
+        public override Task<TypeReaderResult> ReadAsync(ICommandContext context, string input)
         {
             input = input.ToUpperInvariant();
             var module = _cmds.Modules.GroupBy(m => m.GetTopLevelModule()).FirstOrDefault(m => m.Key.Name.ToUpperInvariant() == input)?.Key;
@@ -51,7 +48,7 @@ namespace NadekoBot.Common.TypeReaders
         }
     }
 
-    public class ModuleOrCrInfo
+    public sealed class ModuleOrCrInfo
     {
         public string Name { get; set; }
     }
