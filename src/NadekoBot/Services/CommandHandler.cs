@@ -40,7 +40,6 @@ namespace NadekoBot.Services
         public ConcurrentHashSet<ulong> UsersOnShortCooldown { get; } = new ConcurrentHashSet<ulong>();
         private readonly Timer _clearUsersOnShortCooldown;
 
-        // todo move behaviours to a separate service
         public CommandHandler(
             DiscordSocketClient client,
             DbService db,

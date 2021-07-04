@@ -8,7 +8,6 @@ using NadekoBot.Services;
 
 namespace NadekoBot.Common.TypeReaders
 {
-    // todo test max/half/all
     public sealed class ShmartNumberTypeReader : NadekoTypeReader<ShmartNumber>
     {
         private readonly DbService _db;

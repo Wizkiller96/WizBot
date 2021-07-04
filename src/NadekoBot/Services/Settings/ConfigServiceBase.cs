@@ -28,7 +28,9 @@ namespace NadekoBot.Services
         private readonly TypedKey<TSettings> _changeKey;
 
         protected TSettings _data;
-        public TSettings Data => CreateCopy();
+        
+        // todo this has to be protected from mutation
+        public TSettings Data => _data;
         
         public abstract string Name { get; }
 

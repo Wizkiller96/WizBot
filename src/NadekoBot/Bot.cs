@@ -34,7 +34,6 @@ namespace NadekoBot
         public DiscordSocketClient Client { get; }
         public ImmutableArray<GuildConfig> AllGuildConfigs { get; private set; }
 
-        // todo change configs to records
         // todo remove colors from here
         public static Color OkColor { get; set; }
         public static Color ErrorColor { get; set; }
@@ -177,7 +176,6 @@ namespace NadekoBot
             }
         }
 
-        // todo di typereaders
         private IEnumerable<object> LoadTypeReaders(Assembly assembly)
         {
             Type[] allTypes;

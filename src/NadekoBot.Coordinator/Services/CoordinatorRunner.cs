@@ -13,7 +13,6 @@ using YamlDotNet.Serialization;
 
 namespace NadekoBot.Coordinator
 {
-    // todo future: test graceful and update bot to not wait for coord exit
     public sealed class CoordinatorRunner : BackgroundService
     {
         private const string CONFIG_PATH = "coord.yml";
