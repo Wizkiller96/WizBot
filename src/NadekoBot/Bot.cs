@@ -18,6 +18,7 @@ using Discord.Net;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Common.Configs;
 using NadekoBot.Db;
+using NadekoBot.Modules.Administration.Services;
 using Serilog;
 
 namespace NadekoBot
@@ -116,6 +117,12 @@ namespace NadekoBot
                 .AddMemoryCache()
                 // music
                 .AddMusic()
+                // admin
+#if GLOBAL_NADEKO
+                .AddSingleton<ILogCommandService, DummyLogCommandService>()
+#else
+                .AddSingleton<ILogCommandService, LogCommandService>()
+#endif
                 ;
 
             svcs.AddHttpClient();
@@ -145,7 +152,11 @@ namespace NadekoBot
                     typeof(IEarlyBehavior),
                     typeof(ILateBlocker),
                     typeof(IInputTransformer),
-                    typeof(ILateExecutor)))
+                    typeof(ILateExecutor))
+#if GLOBAL_NADEKO
+                    .WithoutAttribute<NoPublicBotAttribute>()
+#endif
+                )
                 .AsSelfWithInterfaces()
                 .WithSingletonLifetime()
             );

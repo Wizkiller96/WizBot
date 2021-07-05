@@ -16,9 +16,9 @@ namespace NadekoBot.Modules.Games
         [Group]
         public class PlantPickCommands : GamblingSubmodule<PlantPickService>
         {
-            private readonly LogCommandService logService;
+            private readonly ILogCommandService logService;
 
-            public PlantPickCommands(LogCommandService logService, GamblingConfigService gss) : base(gss)
+            public PlantPickCommands(ILogCommandService logService, GamblingConfigService gss) : base(gss)
             {
                 this.logService = logService;
             }

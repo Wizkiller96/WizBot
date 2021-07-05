@@ -1,5 +1,4 @@
-﻿#if !GLOBAL_NADEKO
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using NadekoBot.Common;
 using NadekoBot.Common.Attributes;
@@ -10,7 +9,6 @@ using NadekoBot.Modules.Administration.Services;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using static NadekoBot.Modules.Administration.Services.LogCommandService;
 
 namespace NadekoBot.Modules.Administration
 {
@@ -18,7 +16,7 @@ namespace NadekoBot.Modules.Administration
     {
         [Group]
         [NoPublicBot]
-        public class LogCommands : NadekoSubmodule<LogCommandService>
+        public class LogCommands : NadekoSubmodule<ILogCommandService>
         {
             public enum EnableDisable
             {
@@ -61,11 +59,11 @@ namespace NadekoBot.Modules.Administration
             [OwnerOnly]
             public async Task LogEvents()
             {
-                _service.GuildLogSettings.TryGetValue(ctx.Guild.Id, out LogSetting l);
+                var logSetting = _service.GetGuildLogSettings(ctx.Guild.Id);
                 var str = string.Join("\n", Enum.GetNames(typeof(LogType))
                     .Select(x =>
                     {
-                        var val = l is null ? null : GetLogProperty(l, Enum.Parse<LogType>(x));
+                        var val = logSetting is null ? null : GetLogProperty(logSetting, Enum.Parse<LogType>(x));
                         if (val != null)
                             return $"{Format.Bold(x)} <#{val}>";
                         return Format.Bold(x);
@@ -131,4 +129,3 @@ namespace NadekoBot.Modules.Administration
         }
     }
 }
-#endif

@@ -1,7 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using Microsoft.Extensions.DependencyInjection;
 using NadekoBot.Common;
 using NadekoBot.Common.Collections;
 using NadekoBot.Services;
@@ -12,26 +11,19 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Formats;
-using SixLabors.ImageSharp.Formats.Gif;
 using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Reflection;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using AngleSharp.Attributes;
 using NadekoBot.Common.Attributes;
-using Serilog;
 
 namespace NadekoBot.Extensions
 {
@@ -216,7 +208,7 @@ namespace NadekoBot.Extensions
             dict.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/14.0.835.202 Safari/535.1");
         }
 
-        public static IMessage DeleteAfter(this IUserMessage msg, int seconds, LogCommandService logService = null)
+        public static IMessage DeleteAfter(this IUserMessage msg, int seconds, ILogCommandService logService = null)
         {
             if (msg is null)
                 return null;

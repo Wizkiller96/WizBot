@@ -23,10 +23,10 @@ namespace NadekoBot.Modules.Administration.Services
         public ConcurrentDictionary<ulong, bool> DeleteMessagesOnCommandChannels { get; }
 
         private readonly DbService _db;
-        private readonly LogCommandService _logService;
+        private readonly ILogCommandService _logService;
 
         public AdministrationService(Bot bot, CommandHandler cmdHandler, DbService db,
-            LogCommandService logService)
+            ILogCommandService logService)
         {
             _db = db;
             _logService = logService;

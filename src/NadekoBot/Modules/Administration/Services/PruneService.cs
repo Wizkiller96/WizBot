@@ -14,9 +14,9 @@ namespace NadekoBot.Modules.Administration.Services
         //channelids where prunes are currently occuring
         private ConcurrentHashSet<ulong> _pruningGuilds = new ConcurrentHashSet<ulong>();
         private readonly TimeSpan twoWeeks = TimeSpan.FromDays(14);
-        private readonly LogCommandService _logService;
+        private readonly ILogCommandService _logService;
 
-        public PruneService(LogCommandService logService)
+        public PruneService(ILogCommandService logService)
         {
             this._logService = logService;
         }

@@ -15,40 +15,47 @@ using System.Threading.Tasks;
 
 namespace NadekoBot.Modules.CustomReactions.Extensions
 {
-    public static class Extensions
+    public static class CustomReactionExtensions
     {
         private static readonly Regex imgRegex = new Regex("%(img|image):(?<tag>.*?)%", RegexOptions.Compiled);
 
-        private static Dictionary<Regex, Func<Match, Task<string>>> regexPlaceholders { get; } = new Dictionary<Regex, Func<Match, Task<string>>>()
-        {
-            { imgRegex, async (match) => {
-                var tag = match.Groups["tag"].ToString();
-                if(string.IsNullOrWhiteSpace(tag))
-                    return "";
-
-                var fullQueryLink = $"http://imgur.com/search?q={ tag }";
-                var config = Configuration.Default.WithDefaultLoader();
-                using(var document = await BrowsingContext.New(config).OpenAsync(fullQueryLink).ConfigureAwait(false))
+        private static Dictionary<Regex, Func<Match, Task<string>>> regexPlaceholders { get; } =
+            new Dictionary<Regex, Func<Match, Task<string>>>()
+            {
                 {
-                    var elems = document.QuerySelectorAll("a.image-list-link").ToArray();
+                    imgRegex, async (match) =>
+                    {
+                        var tag = match.Groups["tag"].ToString();
+                        if (string.IsNullOrWhiteSpace(tag))
+                            return "";
 
-                    if (!elems.Any())
-                        return "";
+                        var fullQueryLink = $"http://imgur.com/search?q={tag}";
+                        var config = Configuration.Default.WithDefaultLoader();
+                        using (var document = await BrowsingContext.New(config).OpenAsync(fullQueryLink)
+                            .ConfigureAwait(false))
+                        {
+                            var elems = document.QuerySelectorAll("a.image-list-link").ToArray();
 
-                    var img = (elems.ElementAtOrDefault(new NadekoRandom().Next(0, elems.Length))?.Children?.FirstOrDefault() as IHtmlImageElement);
+                            if (!elems.Any())
+                                return "";
 
-                    if (img?.Source is null)
-                        return "";
+                            var img = (elems.ElementAtOrDefault(new NadekoRandom().Next(0, elems.Length))?.Children
+                                ?.FirstOrDefault() as IHtmlImageElement);
 
-                    return " " + img.Source.Replace("b.", ".", StringComparison.InvariantCulture) + " ";
+                            if (img?.Source is null)
+                                return "";
+
+                            return " " + img.Source.Replace("b.", ".", StringComparison.InvariantCulture) + " ";
+                        }
+                    }
                 }
-            } }
-        };
+            };
 
         private static string ResolveTriggerString(this string str, IUserMessage ctx, DiscordSocketClient client)
             => str.Replace("%bot.mention%", client.CurrentUser.Mention, StringComparison.Ordinal);
 
-        private static async Task<string> ResolveResponseStringAsync(this string str, IUserMessage ctx, DiscordSocketClient client, string resolvedTrigger, bool containsAnywhere)
+        private static async Task<string> ResolveResponseStringAsync(this string str, IUserMessage ctx,
+            DiscordSocketClient client, string resolvedTrigger, bool containsAnywhere)
         {
             var substringIndex = resolvedTrigger.Length;
             if (containsAnywhere)
@@ -61,7 +68,7 @@ namespace NadekoBot.Modules.CustomReactions.Extensions
                 else if (pos == WordPosition.Middle)
                     substringIndex += ctx.Content.IndexOf(resolvedTrigger, StringComparison.InvariantCulture);
             }
-            
+
             var canMentionEveryone = (ctx.Author as IGuildUser)?.GuildPermissions.MentionEveryone ?? true;
 
             var rep = new ReplacementBuilder()
@@ -82,12 +89,17 @@ namespace NadekoBot.Modules.CustomReactions.Extensions
             return str;
         }
 
-        public static Task<string> ResponseWithContextAsync(this CustomReaction cr, IUserMessage ctx, DiscordSocketClient client, bool containsAnywhere)
-            => cr.Response.ResolveResponseStringAsync(ctx, client, cr.Trigger.ResolveTriggerString(ctx, client), containsAnywhere);
+        public static Task<string> ResponseWithContextAsync(this CustomReaction cr, IUserMessage ctx,
+            DiscordSocketClient client, bool containsAnywhere)
+            => cr.Response.ResolveResponseStringAsync(ctx, client, cr.Trigger.ResolveTriggerString(ctx, client),
+                containsAnywhere);
 
-        public static async Task<IUserMessage> Send(this CustomReaction cr, IUserMessage ctx, DiscordSocketClient client, bool sanitize)
+        public static async Task<IUserMessage> Send(this CustomReaction cr, IUserMessage ctx,
+            DiscordSocketClient client, bool sanitize)
         {
-            var channel = cr.DmResponse ? await ctx.Author.GetOrCreateDMChannelAsync().ConfigureAwait(false) : ctx.Channel;
+            var channel = cr.DmResponse
+                ? await ctx.Author.GetOrCreateDMChannelAsync().ConfigureAwait(false)
+                : ctx.Channel;
 
             if (CREmbed.TryParse(cr.Response, out CREmbed crembed))
             {
@@ -105,7 +117,7 @@ namespace NadekoBot.Modules.CustomReactions.Extensions
                 }
 
                 var canMentionEveryone = (ctx.Author as IGuildUser)?.GuildPermissions.MentionEveryone ?? true;
-                
+
                 var rep = new ReplacementBuilder()
                     .WithDefault(ctx.Author, ctx.Channel, (ctx.Channel as ITextChannel)?.Guild as SocketGuild, client)
                     .WithOverride("%target%", () => canMentionEveryone
@@ -117,7 +129,11 @@ namespace NadekoBot.Modules.CustomReactions.Extensions
 
                 return await channel.EmbedAsync(crembed, sanitize).ConfigureAwait(false);
             }
-            return await channel.SendMessageAsync((await cr.ResponseWithContextAsync(ctx, client, cr.ContainsAnywhere).ConfigureAwait(false)).SanitizeMentions(sanitize)).ConfigureAwait(false);
+
+            return await channel
+                .SendMessageAsync(
+                    (await cr.ResponseWithContextAsync(ctx, client, cr.ContainsAnywhere).ConfigureAwait(false))
+                    .SanitizeMentions(sanitize)).ConfigureAwait(false);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

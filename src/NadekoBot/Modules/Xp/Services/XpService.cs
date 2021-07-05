@@ -28,6 +28,7 @@ using Image = SixLabors.ImageSharp.Image;
 
 namespace NadekoBot.Modules.Xp.Services
 {
+    // todo improve xp with linqtodb
     public class XpService : INService
     {
         private enum NotifOf

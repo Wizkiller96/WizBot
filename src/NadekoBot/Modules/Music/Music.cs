@@ -18,9 +18,9 @@ namespace NadekoBot.Modules.Music
     [NoPublicBot]
     public sealed partial class Music : NadekoModule<IMusicService>
     {
-        private readonly LogCommandService _logService;
+        private readonly ILogCommandService _logService;
 
-        public Music(LogCommandService _logService)
+        public Music(ILogCommandService _logService)
         {
             this._logService = _logService;
         }

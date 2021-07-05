@@ -1,5 +1,4 @@
-﻿#if !GLOBAL_NADEKO
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +17,43 @@ using NadekoBot.Modules.Administration.Common;
 
 namespace NadekoBot.Modules.Administration.Services
 {
-    public class LogCommandService : INService
+    public interface ILogCommandService
+    {
+        void AddDeleteIgnore(ulong xId);
+        Task LogServer(ulong guildId, ulong channelId, bool actionValue);
+        bool LogIgnore(ulong guildId, ulong channelId);
+        LogSetting GetGuildLogSettings(ulong guildId);
+        bool Log(ulong guildId, ulong? channelId, LogType type);
+    }
+    
+    public sealed class DummyLogCommandService : ILogCommandService
+    {
+        public void AddDeleteIgnore(ulong xId)
+        {
+        }
+
+        public Task LogServer(ulong guildId, ulong channelId, bool actionValue)
+        {
+            return Task.CompletedTask;
+        }
+
+        public bool LogIgnore(ulong guildId, ulong channelId)
+        {
+            return false;
+        }
+
+        public LogSetting GetGuildLogSettings(ulong guildId)
+        {
+            return default;
+        }
+
+        public bool Log(ulong guildId, ulong? channelId, LogType type)
+        {
+            return false;
+        }
+    }
+    
+    public sealed class LogCommandService : ILogCommandService
     {
         private readonly DiscordSocketClient _client;
         
@@ -46,6 +81,8 @@ namespace NadekoBot.Modules.Administration.Services
             _prot = prot;
             _tz = tz;
 
+#if !GLOBAL_NADEKO
+            
             using (var uow = db.GetDbContext())
             {
                 var guildIds = client.Guilds.Select(x => x.Id).ToList();
@@ -92,9 +129,7 @@ namespace NadekoBot.Modules.Administration.Services
             _client.UserVoiceStateUpdated += _client_UserVoiceStateUpdated;
             _client.UserVoiceStateUpdated += _client_UserVoiceStateUpdated_TTS;
             _client.GuildMemberUpdated += _client_GuildUserUpdated;
-#if !GLOBAL_NADEKO
             _client.UserUpdated += _client_UserUpdated;
-#endif
             _client.ChannelCreated += _client_ChannelCreated;
             _client.ChannelDestroyed += _client_ChannelDestroyed;
             _client.ChannelUpdated += _client_ChannelUpdated;
@@ -109,11 +144,19 @@ namespace NadekoBot.Modules.Administration.Services
             {
                 _ignoreMessageIds.Clear();
             }, null, TimeSpan.FromHours(1), TimeSpan.FromHours(1));
+            
+#endif
         }
 
         private readonly Timer _clearTimer;
         private readonly ConcurrentHashSet<ulong> _ignoreMessageIds = new ConcurrentHashSet<ulong>();
         private readonly IMemoryCache _memoryCache;
+
+        public LogSetting GetGuildLogSettings(ulong guildId)
+        {
+            GuildLogSettings.TryGetValue(guildId, out LogSetting logSetting);
+            return logSetting;
+        }
 
         public void AddDeleteIgnore(ulong messageId)
         {
@@ -1129,25 +1172,6 @@ namespace NadekoBot.Modules.Administration.Services
             return Task.CompletedTask;
         }
 
-        public enum LogType
-        {
-            Other,
-            MessageUpdated,
-            MessageDeleted,
-            UserJoined,
-            UserLeft,
-            UserBanned,
-            UserUnbanned,
-            UserUpdated,
-            ChannelCreated,
-            ChannelDestroyed,
-            ChannelUpdated,
-            UserPresence,
-            VoicePresence,
-            VoicePresenceTTS,
-            UserMuted
-        }
-
         private async Task<ITextChannel> TryGetLogChannel(IGuild guild, LogSetting logSetting, LogType logChannelType)
         {
             ulong? id = null;
@@ -1277,4 +1301,3 @@ namespace NadekoBot.Modules.Administration.Services
         }
     }
 }
-#endif
