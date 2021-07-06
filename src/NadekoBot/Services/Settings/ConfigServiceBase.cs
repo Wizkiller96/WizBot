@@ -4,14 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text.Json;
 using System.Threading.Tasks;
 using NadekoBot.Common.Yml;
 using NadekoBot.Common;
 using NadekoBot.Common.Configs;
-using NadekoBot.Common.JsonConverters;
-using Rgba32Converter = NadekoBot.Common.JsonConverters.Rgba32Converter;
-using CultureInfoConverter = NadekoBot.Common.JsonConverters.CultureInfoConverter;
 
 namespace NadekoBot.Services
 {
@@ -20,7 +16,7 @@ namespace NadekoBot.Services
     /// </summary>
     /// <typeparam name="TSettings">Type of the settings</typeparam>
     public abstract class ConfigServiceBase<TSettings> : IConfigService 
-        where TSettings : new()
+        where TSettings : ICloneable<TSettings>, new()
     {
         protected readonly string _filePath;
         protected readonly IConfigSeria _serializer;
@@ -29,8 +25,8 @@ namespace NadekoBot.Services
 
         protected TSettings _data;
         
-        // todo this has to be protected from mutation
-        public TSettings Data => _data;
+        // todo future config arrays are not copied - they're not protected from mutations
+        public TSettings Data => _data.Clone();
         
         public abstract string Name { get; }
 
@@ -63,21 +59,6 @@ namespace NadekoBot.Services
             _data = newData;
             OnStateUpdate();
             return default;
-        }
-
-        private static readonly JsonSerializerOptions serializerOptions = new JsonSerializerOptions()
-        {
-            MaxDepth = 0,
-            Converters = { new Rgba32Converter(), new CultureInfoConverter() }
-        };
-        private TSettings CreateCopy()
-        {
-            var serializedData = JsonSerializer.Serialize(_data, serializerOptions);
-            return JsonSerializer.Deserialize<TSettings>(serializedData, serializerOptions);
-
-            // var serializedData = _serializer.Serialize(_data);
-            //
-            // return _serializer.Deserialize<TSettings>(serializedData);
         }
 
         /// <summary>
@@ -114,14 +95,6 @@ namespace NadekoBot.Services
             
         }
         
-        public void ModifyConfig(Action<TSettings> action)
-        {
-            var copy = CreateCopy();
-            action(copy);
-            _data = copy;
-            Save();
-            PublishChange();
-        }
         private void Save()
         {
             var strData = _serializer.Serialize(_data);
@@ -162,9 +135,7 @@ namespace NadekoBot.Services
                 var expr = (MemberExpression)selector.Body;
                 var prop = (PropertyInfo)expr.Member;
 
-                var expressions = new List<MemberExpression>()
-                {
-                };
+                var expressions = new List<MemberExpression>();
                 
                 while (true)
                 {
@@ -224,6 +195,13 @@ namespace NadekoBot.Services
             return success;
         }
 
-        public TSettings GetRawData() => _data;
+        public void ModifyConfig(Action<TSettings> action)
+        {
+            var copy = Data;
+            action(copy);
+            _data = copy;
+            Save();
+            PublishChange();
+        }
     }
 }

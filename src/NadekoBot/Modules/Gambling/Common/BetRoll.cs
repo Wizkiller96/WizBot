@@ -13,10 +13,10 @@ namespace NadekoBot.Modules.Gambling.Common
         }
 
 
-        private readonly IOrderedEnumerable<GamblingConfig.BetRollConfig.Pair> _thresholdPairs;
+        private readonly IOrderedEnumerable<BetRollPair> _thresholdPairs;
         private readonly Random _rng;
         
-        public Betroll(GamblingConfig.BetRollConfig settings)
+        public Betroll(BetRollConfig settings)
         {
             _thresholdPairs = settings.Pairs.OrderByDescending(x => x.WhenAbove);
             _rng = new Random();

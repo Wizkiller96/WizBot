@@ -83,7 +83,7 @@ namespace NadekoBot.Services
                         .EmbedAsync(new EmbedBuilder()
                             .WithOkColor()
                             .WithTitle($"Received Currency")
-                            .AddField("Amount", amount + _gss.Data.Currency.Sign)
+                            .AddField("Amount", amount + sign)
                             .AddField("Reason", reason));
                 }
                 catch

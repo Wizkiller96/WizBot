@@ -34,8 +34,8 @@ namespace NadekoBot.Modules.Help.Services
 
 
             _rep = new ReplacementBuilder()
-                .WithOverride("%prefix%", () => _bss.GetRawData().Prefix)
-                .WithOverride("%bot.prefix%", () => _bss.GetRawData().Prefix)
+                .WithOverride("%prefix%", () => _bss.Data.Prefix)
+                .WithOverride("%bot.prefix%", () => _bss.Data.Prefix)
                 .Build();
         }
 

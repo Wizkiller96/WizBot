@@ -623,15 +623,16 @@ namespace NadekoBot.Modules.Xp.Services
                 if (!ShouldTrackXp(user, arg.Channel.Id))
                     return;
 
+                var xpConf = _xpConfig.Data;
                 var xp = 0;
                 if (arg.Attachments.Any(a => a.Height >= 128 && a.Width >= 128))
                 {
-                    xp = _xpConfig.GetRawData().XpFromImage;
+                    xp = xpConf.XpFromImage;
                 }
                 
                 if (arg.Content.Contains(' ') || arg.Content.Length >= 5)
                 {
-                    xp = Math.Max(xp, _xpConfig.GetRawData().XpPerMessage);
+                    xp = Math.Max(xp, xpConf.XpPerMessage);
                 }
 
                 if (xp <= 0)

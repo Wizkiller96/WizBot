@@ -1,8 +1,11 @@
-﻿using NadekoBot.Common.Yml;
+﻿using Cloneable;
+using NadekoBot.Common;
+using NadekoBot.Common.Yml;
 
 namespace NadekoBot.Modules.Xp
 {
-    public sealed class XpConfig
+    [Cloneable]
+    public sealed partial class XpConfig : ICloneable<XpConfig>
     {
         [Comment(@"DO NOT CHANGE")] 
         public int Version { get; set; } = 2;

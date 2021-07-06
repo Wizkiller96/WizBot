@@ -141,7 +141,6 @@ namespace NadekoBot
                     .AddSingleton<IReadyExecutor>(x => (IReadyExecutor)x.GetRequiredService<ICoordinator>());
             }
 
-            // todo no public bot attribute
             svcs.Scan(scan => scan
                 .FromAssemblyOf<IReadyExecutor>()
                 .AddClasses(classes => classes.AssignableToAny(

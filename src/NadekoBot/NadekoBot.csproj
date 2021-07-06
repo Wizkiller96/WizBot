@@ -11,6 +11,7 @@
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="0.16.0" />
     <PackageReference Include="AWSSDK.S3" Version="3.7.1.4" />
+    <PackageReference Include="Cloneable" Version="1.3.0" />
     <PackageReference Include="CodeHollow.FeedReader" Version="1.2.1" />
     <PackageReference Include="CommandLineParser" Version="2.8.0" />
     <PackageReference Include="Discord.Net" Version="2.4.0" />

@@ -233,7 +233,7 @@ namespace NadekoBot.Modules.Administration.Services
         public async Task LateExecute(IGuild guild, IUserMessage msg)
         {
             var bs = _bss.Data;
-            if (msg.Channel is IDMChannel && _bss.Data.ForwardMessages && ownerChannels.Any())
+            if (msg.Channel is IDMChannel && bs.ForwardMessages && ownerChannels.Any())
             {
                 var title = _strings.GetText("dm_from") +
                             $" [{msg.Author}]({msg.Author.Id})";

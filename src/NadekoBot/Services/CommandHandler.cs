@@ -142,7 +142,7 @@ namespace NadekoBot.Services
 
         private Task LogSuccessfulExecution(IUserMessage usrMsg, ITextChannel channel, params int[] execPoints)
         {
-            if (_bss.GetRawData().ConsoleOutputType == ConsoleOutputType.Normal)
+            if (_bss.Data.ConsoleOutputType == ConsoleOutputType.Normal)
             {
                 Log.Information($"Command Executed after " + string.Join("/", execPoints.Select(x => (x * _oneThousandth).ToString("F3"))) + "s\n\t" +
                         "User: {0}\n\t" +
@@ -168,7 +168,7 @@ namespace NadekoBot.Services
 
         private void LogErroredExecution(string errorMessage, IUserMessage usrMsg, ITextChannel channel, params int[] execPoints)
         {
-            if (_bss.GetRawData().ConsoleOutputType == ConsoleOutputType.Normal)
+            if (_bss.Data.ConsoleOutputType == ConsoleOutputType.Normal)
             {
                 Log.Warning($"Command Errored after " + string.Join("/", execPoints.Select(x => (x * _oneThousandth).ToString("F3"))) + "s\n\t" +
                             "User: {0}\n\t" +

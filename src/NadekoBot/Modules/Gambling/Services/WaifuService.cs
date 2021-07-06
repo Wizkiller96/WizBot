@@ -511,7 +511,7 @@ namespace NadekoBot.Modules.Gambling.Services
         public IReadOnlyList<WaifuItemModel> GetWaifuItems()
         {
             var conf = _gss.Data;
-            return _gss.Data.Waifu.Items
+            return conf.Waifu.Items
                 .Select(x => new WaifuItemModel(x.ItemEmoji, (int)(x.Price * conf.Waifu.Multipliers.AllGiftPrices), x.Name))
                 .ToList();
         }

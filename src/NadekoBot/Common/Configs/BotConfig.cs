@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
+using Cloneable;
 using NadekoBot.Common.Yml;
 using SixLabors.ImageSharp.PixelFormats;
 using YamlDotNet.Core;
@@ -7,7 +8,8 @@ using YamlDotNet.Serialization;
 
 namespace NadekoBot.Common.Configs
 {
-    public sealed class BotConfig
+    [Cloneable]
+    public sealed partial class BotConfig : ICloneable<BotConfig>
     {
         [Comment(@"DO NOT CHANGE")]
         public int Version { get; set; }
@@ -66,6 +68,7 @@ note: This setting is primarily used if you're afraid of raids, or you're runnin
       servers might get hundreds of people join at once. This is used to prevent the bot from getting ratelimited,
       and (slightly) reduce the greet spam in those servers.")]
         public bool GroupGreets { get; set; }
+        
         [Comment(@"Whether the bot will rotate through all specified statuses.
 This setting can be changed via .rots command.
 See RotatingStatuses submodule in Administration.")]
@@ -127,7 +130,8 @@ See RotatingStatuses submodule in Administration.")]
         }
     }
 
-    public class BlockedConfig
+    [Cloneable]
+    public sealed partial class BlockedConfig
     {
         public HashSet<string> Commands { get; set; }
         public HashSet<string> Modules { get; set; }
@@ -139,7 +143,8 @@ See RotatingStatuses submodule in Administration.")]
         }
     }
 
-    public class ColorConfig
+    [Cloneable]
+    public partial class ColorConfig
     {
         [Comment(@"Color used for embed responses when command successfully executes")]
         public Rgba32 Ok { get; set; }
@@ -157,6 +162,7 @@ See RotatingStatuses submodule in Administration.")]
             Pending = Rgba32.ParseHex("faa61a");
         }
     }
+    
     public enum ConsoleOutputType
     {
         Normal = 0,

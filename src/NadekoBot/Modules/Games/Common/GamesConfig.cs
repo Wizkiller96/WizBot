@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
+using Cloneable;
+using NadekoBot.Common;
 using NadekoBot.Common.Yml;
 
 namespace NadekoBot.Modules.Games.Common
 {
-    public sealed class GamesConfig
+    [Cloneable]
+    public sealed partial class GamesConfig : ICloneable<GamesConfig>
     {
         [Comment("Trivia related settings (.t command)")]
         public TriviaConfig Trivia { get; set; } = new TriviaConfig()
@@ -11,7 +14,7 @@ namespace NadekoBot.Modules.Games.Common
             CurrencyReward = 0,
             MinimumWinReq = 1,
         };
-            
+
         [Comment("List of responses for the .8ball command. A random one will be selected every time")]
         public List<string> EightBallResponses { get; set; } = new List<string>()
         {
@@ -43,18 +46,19 @@ namespace NadekoBot.Modules.Games.Common
         [Comment("List of animals which will be used for the animal race game (.race)")]
         public List<RaceAnimal> RaceAnimals { get; set; } = new List<RaceAnimal>()
         {
-            new RaceAnimal {Icon = "🐼", Name = "Panda"},
-            new RaceAnimal {Icon = "🐻", Name = "Bear"},
-            new RaceAnimal {Icon = "🐧", Name = "Pengu"},
-            new RaceAnimal {Icon = "🐨", Name = "Koala"},
-            new RaceAnimal {Icon = "🐬", Name = "Dolphin"},
-            new RaceAnimal {Icon = "🐞", Name = "Ladybird"},
-            new RaceAnimal {Icon = "🦀", Name = "Crab"},
-            new RaceAnimal {Icon = "🦄", Name = "Unicorn"}
+            new RaceAnimal { Icon = "🐼", Name = "Panda" },
+            new RaceAnimal { Icon = "🐻", Name = "Bear" },
+            new RaceAnimal { Icon = "🐧", Name = "Pengu" },
+            new RaceAnimal { Icon = "🐨", Name = "Koala" },
+            new RaceAnimal { Icon = "🐬", Name = "Dolphin" },
+            new RaceAnimal { Icon = "🐞", Name = "Ladybird" },
+            new RaceAnimal { Icon = "🦀", Name = "Crab" },
+            new RaceAnimal { Icon = "🦄", Name = "Unicorn" }
         };
     }
 
-    public sealed class TriviaConfig
+    [Cloneable]
+    public sealed partial class TriviaConfig
     {
         [Comment("The amount of currency awarded to the winner of the trivia game.")]
         public long CurrencyReward { get; set; } = 0;
@@ -64,7 +68,8 @@ a smaller win requirement than the one specified by this setting.")]
         public int MinimumWinReq { get; set; } = 1;
     }
 
-    public sealed class RaceAnimal
+    [Cloneable]
+    public sealed partial class RaceAnimal
     {
         public string Icon { get; set; }
         public string Name { get; set; }
