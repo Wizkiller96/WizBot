@@ -110,18 +110,24 @@ namespace NadekoBot.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsClubAdmin")
-                        .HasColumnType("INTEGER");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(false);
 
                     b.Property<DateTime>("LastLevelUp")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
-                        .HasDefaultValue(new DateTime(2017, 9, 21, 20, 53, 13, 305, DateTimeKind.Local));
+                        .HasDefaultValueSql("datetime('now')");
 
                     b.Property<DateTime>("LastXpGain")
-                        .HasColumnType("TEXT");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT")
+                        .HasDefaultValueSql("datetime('now', '-1 years')");
 
                     b.Property<int>("NotifyOnLevelUp")
-                        .HasColumnType("INTEGER");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(0);
 
                     b.Property<int>("TotalXp")
                         .HasColumnType("INTEGER");

@@ -7,7 +7,6 @@ using NadekoBot.Services;
 
 namespace NadekoBot.Common.Attributes
 {
-    // todo all getservice to getrequiredservice
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class)]
     public sealed class OwnerOnlyAttribute : PreconditionAttribute
     {

@@ -7,9 +7,6 @@ namespace NadekoBot.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql(
-                "DELETE FROM __EFMigrationsHistory WHERE __EFMigrationsHistory.MigrationId <> '20210621042359_squash'");
-            
             migrationBuilder.DropForeignKey(
                 name: "FK_GuildConfigs_Permission_RootPermissionId",
                 table: "GuildConfigs");
@@ -139,6 +136,43 @@ namespace NadekoBot.Migrations
             migrationBuilder.DropColumn(
                 name: "UseCount",
                 table: "CustomReactions");
+
+            migrationBuilder.AlterColumn<int>(
+                name: "NotifyOnLevelUp",
+                table: "DiscordUser",
+                type: "INTEGER",
+                nullable: false,
+                defaultValue: 0,
+                oldClrType: typeof(int),
+                oldType: "INTEGER");
+
+            migrationBuilder.AlterColumn<DateTime>(
+                name: "LastXpGain",
+                table: "DiscordUser",
+                type: "TEXT",
+                nullable: false,
+                defaultValueSql: "datetime('now', '-1 years')",
+                oldClrType: typeof(DateTime),
+                oldType: "TEXT");
+
+            migrationBuilder.AlterColumn<DateTime>(
+                name: "LastLevelUp",
+                table: "DiscordUser",
+                type: "TEXT",
+                nullable: false,
+                defaultValueSql: "datetime('now')",
+                oldClrType: typeof(DateTime),
+                oldType: "TEXT",
+                oldDefaultValue: new DateTime(2017, 9, 21, 20, 53, 13, 305, DateTimeKind.Local));
+
+            migrationBuilder.AlterColumn<bool>(
+                name: "IsClubAdmin",
+                table: "DiscordUser",
+                type: "INTEGER",
+                nullable: false,
+                defaultValue: false,
+                oldClrType: typeof(bool),
+                oldType: "INTEGER");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -322,6 +356,43 @@ namespace NadekoBot.Migrations
                 type: "INTEGER",
                 nullable: false,
                 defaultValue: false);
+
+            migrationBuilder.AlterColumn<int>(
+                name: "NotifyOnLevelUp",
+                table: "DiscordUser",
+                type: "INTEGER",
+                nullable: false,
+                oldClrType: typeof(int),
+                oldType: "INTEGER",
+                oldDefaultValue: 0);
+
+            migrationBuilder.AlterColumn<DateTime>(
+                name: "LastXpGain",
+                table: "DiscordUser",
+                type: "TEXT",
+                nullable: false,
+                oldClrType: typeof(DateTime),
+                oldType: "TEXT",
+                oldDefaultValueSql: "datetime('now', '-1 years')");
+
+            migrationBuilder.AlterColumn<DateTime>(
+                name: "LastLevelUp",
+                table: "DiscordUser",
+                type: "TEXT",
+                nullable: false,
+                defaultValue: new DateTime(2017, 9, 21, 20, 53, 13, 305, DateTimeKind.Local),
+                oldClrType: typeof(DateTime),
+                oldType: "TEXT",
+                oldDefaultValueSql: "datetime('now')");
+
+            migrationBuilder.AlterColumn<bool>(
+                name: "IsClubAdmin",
+                table: "DiscordUser",
+                type: "INTEGER",
+                nullable: false,
+                oldClrType: typeof(bool),
+                oldType: "INTEGER",
+                oldDefaultValue: false);
 
             migrationBuilder.AddColumn<bool>(
                 name: "IsRegex",

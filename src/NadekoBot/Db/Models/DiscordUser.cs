@@ -9,7 +9,7 @@ namespace NadekoBot.Db.Models
         public string Username { get; set; }
         public string Discriminator { get; set; }
         public string AvatarId { get; set; }
-        
+
         public ClubInfo Club { get; set; }
         public bool IsClubAdmin { get; set; }
 

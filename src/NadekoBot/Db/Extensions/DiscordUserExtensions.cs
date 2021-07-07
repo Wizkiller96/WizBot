@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Discord;
 using System.Collections.Generic;
 using LinqToDB;
+using LinqToDB.EntityFrameworkCore;
 using NadekoBot.Services.Database;
 
 namespace NadekoBot.Db
@@ -12,25 +13,26 @@ namespace NadekoBot.Db
     {
         public static void EnsureUserCreated(this NadekoContext ctx, ulong userId, string username, string discrim, string avatarId)
         {
-            var rows = ctx.Database.ExecuteSqlInterpolated($@"
-UPDATE OR IGNORE DiscordUser
-SET Username={username},
-    Discriminator={discrim},
-    AvatarId={avatarId}
-WHERE UserId={userId};");
-
-            if (rows == 0)
-            {
-                ctx.DiscordUser
-                    .Add(new DiscordUser()
+            ctx.DiscordUser
+                .ToLinqToDBTable()
+                .InsertOrUpdate(() => new()
                     {
                         UserId = userId,
                         Username = username,
                         Discriminator = discrim,
                         AvatarId = avatarId,
+                        TotalXp = 0,
+                        CurrencyAmount = 0
+                    },
+                    old => new()
+                    {
+                        Username = username,
+                        Discriminator = discrim,
+                        AvatarId = avatarId,
+                    }, () => new()
+                    {
+                        UserId = userId
                     });
-                ctx.SaveChanges();
-            }
         }
 
         //temp is only used in updatecurrencystate, so that i don't overwrite real usernames/discrims with Unknown

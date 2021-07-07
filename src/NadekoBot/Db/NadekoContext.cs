@@ -170,18 +170,29 @@ namespace NadekoBot.Services.Database
 
             #region DiscordUser
 
-            var du = modelBuilder.Entity<DiscordUser>();
-            du.HasAlternateKey(w => w.UserId);
-            du.HasOne(x => x.Club)
-               .WithMany(x => x.Users)
-               .IsRequired(false);
+            modelBuilder.Entity<DiscordUser>(du =>
+            {
+                du.Property(x => x.IsClubAdmin)
+                    .HasDefaultValue(false);
 
-            du.Property(x => x.LastLevelUp)
-                .HasDefaultValue(new DateTime(2017, 9, 21, 20, 53, 13, 305, DateTimeKind.Local));
+                du.Property(x => x.NotifyOnLevelUp)
+                    .HasDefaultValue(XpNotificationLocation.None);
 
-            du.HasIndex(x => x.TotalXp);
-            du.HasIndex(x => x.CurrencyAmount);
-            du.HasIndex(x => x.UserId);
+                du.Property(x => x.LastXpGain)
+                    .HasDefaultValueSql("datetime('now', '-1 years')");
+
+                du.Property(x => x.LastLevelUp)
+                    .HasDefaultValueSql("datetime('now')");
+
+                du.HasAlternateKey(w => w.UserId);
+                du.HasOne(x => x.Club)
+                    .WithMany(x => x.Users)
+                    .IsRequired(false);
+
+                du.HasIndex(x => x.TotalXp);
+                du.HasIndex(x => x.CurrencyAmount);
+                du.HasIndex(x => x.UserId);
+            });
 
 
             #endregion
