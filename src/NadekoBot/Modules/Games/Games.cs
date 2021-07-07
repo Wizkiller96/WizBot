@@ -50,7 +50,7 @@ namespace NadekoBot.Modules.Games
             var res = _service.GetEightballResponse(ctx.User.Id, question);
             await ctx.Channel.EmbedAsync(new EmbedBuilder().WithColor(Bot.OkColor)
                 .WithDescription(ctx.User.ToString())
-                .AddField(efb => efb.WithName("❓ " + GetText("question")).WithValue(question).WithIsInline(false))
+                .AddField("❓ " + GetText("question"), question, false)
                 .AddField("🎱 " + GetText("8ball"), res, false));
         }
 
@@ -80,9 +80,9 @@ namespace NadekoBot.Modules.Games
                     text: Format.Bold($"{ctx.User.Mention} Girl Rating For {usr}"),
                     embed: new EmbedBuilder()
                         .WithOkColor()
-                        .AddField(efb => efb.WithName("Hot").WithValue(gr.Hot.ToString("F2")).WithIsInline(true))
-                        .AddField(efb => efb.WithName("Crazy").WithValue(gr.Crazy.ToString("F2")).WithIsInline(true))
-                        .AddField(efb => efb.WithName("Advice").WithValue(gr.Advice).WithIsInline(false))
+                        .AddField("Hot", gr.Hot.ToString("F2"), true)
+                        .AddField("Crazy", gr.Crazy.ToString("F2"), true)
+                        .AddField("Advice", gr.Advice, false)
                         .Build()).ConfigureAwait(false);
             }
         }

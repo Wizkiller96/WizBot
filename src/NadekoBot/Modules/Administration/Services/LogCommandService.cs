@@ -260,16 +260,16 @@ namespace NadekoBot.Modules.Administration.Services
                     {
                         embed.WithTitle("👥 " + GetText(g, "username_changed"))
                             .WithDescription($"{before.Username}#{before.Discriminator} | {before.Id}")
-                            .AddField(fb => fb.WithName("Old Name").WithValue($"{before.Username}").WithIsInline(true))
-                            .AddField(fb => fb.WithName("New Name").WithValue($"{after.Username}").WithIsInline(true))
-                            .WithFooter(fb => fb.WithText(CurrentTime(g)))
+                            .AddField("Old Name", $"{before.Username}", true)
+                            .AddField("New Name", $"{after.Username}", true)
+                            .WithFooter(CurrentTime(g))
                             .WithOkColor();
                     }
                     else if (before.AvatarId != after.AvatarId)
                     {
                         embed.WithTitle("👥" + GetText(g, "avatar_changed"))
                             .WithDescription($"{before.Username}#{before.Discriminator} | {before.Id}")
-                            .WithFooter(fb => fb.WithText(CurrentTime(g)))
+                            .WithFooter(CurrentTime(g))
                             .WithOkColor();
 
                         var bav = before.RealAvatarUrl();
@@ -443,7 +443,7 @@ namespace NadekoBot.Modules.Administration.Services
 
                     var embed = new EmbedBuilder().WithAuthor(eab => eab.WithName(mutes))
                         .WithTitle($"{usr.Username}#{usr.Discriminator} | {usr.Id}")
-                        .WithFooter(fb => fb.WithText(CurrentTime(usr.Guild)))
+                        .WithFooter(CurrentTime(usr.Guild))
                         .WithOkColor();
 
                     await logChannel.EmbedAsync(embed).ConfigureAwait(false);
@@ -488,7 +488,7 @@ namespace NadekoBot.Modules.Administration.Services
 
                     var embed = new EmbedBuilder().WithAuthor(eab => eab.WithName(mutes))
                         .WithTitle($"{usr.Username}#{usr.Discriminator} | {usr.Id}")
-                        .WithFooter(fb => fb.WithText($"{CurrentTime(usr.Guild)}"))
+                        .WithFooter($"{CurrentTime(usr.Guild)}")
                         .WithOkColor();
 
                     if (!string.IsNullOrWhiteSpace(reason))
@@ -544,7 +544,7 @@ namespace NadekoBot.Modules.Administration.Services
                     var embed = new EmbedBuilder().WithAuthor(eab => eab.WithName($"🛡 Anti-{protection}"))
                         .WithTitle(GetText(logChannel.Guild, "users") + " " + punishment)
                         .WithDescription(string.Join("\n", users.Select(u => u.ToString())))
-                        .WithFooter(fb => fb.WithText(CurrentTime(logChannel.Guild)))
+                        .WithFooter(CurrentTime(logChannel.Guild))
                         .WithOkColor();
 
                     await logChannel.EmbedAsync(embed).ConfigureAwait(false);
@@ -590,7 +590,7 @@ namespace NadekoBot.Modules.Administration.Services
                             .ConfigureAwait(false)) != null)
                     {
                         var embed = new EmbedBuilder().WithOkColor()
-                            .WithFooter(efb => efb.WithText(CurrentTime(before.Guild)))
+                            .WithFooter(CurrentTime(before.Guild))
                             .WithTitle($"{before.Username}#{before.Discriminator} | {before.Id}");
                         if (before.Nickname != after.Nickname)
                         {
@@ -695,7 +695,7 @@ namespace NadekoBot.Modules.Administration.Services
                         return;
 
                     var embed = new EmbedBuilder().WithOkColor()
-                        .WithFooter(efb => efb.WithText(CurrentTime(before.Guild)));
+                        .WithFooter(CurrentTime(before.Guild));
 
                     var beforeTextChannel = cbefore as ITextChannel;
                     var afterTextChannel = cafter as ITextChannel;
@@ -761,7 +761,7 @@ namespace NadekoBot.Modules.Administration.Services
                         .WithOkColor()
                         .WithTitle("🆕 " + title)
                         .WithDescription($"{ch.Name} | {ch.Id}")
-                        .WithFooter(efb => efb.WithText(CurrentTime(ch.Guild)))).ConfigureAwait(false);
+                        .WithFooter(CurrentTime(ch.Guild))).ConfigureAwait(false);
                 }
                 catch
                 {
@@ -800,7 +800,7 @@ namespace NadekoBot.Modules.Administration.Services
                         .WithOkColor()
                         .WithTitle("🆕 " + title)
                         .WithDescription($"{ch.Name} | {ch.Id}")
-                        .WithFooter(efb => efb.WithText(CurrentTime(ch.Guild)))).ConfigureAwait(false);
+                        .WithFooter(CurrentTime(ch.Guild))).ConfigureAwait(false);
                 }
                 catch (Exception)
                 {
@@ -933,7 +933,7 @@ namespace NadekoBot.Modules.Administration.Services
                         .WithTitle("❌ " + GetText(logChannel.Guild, "user_left"))
                         .WithDescription(usr.ToString())
                         .AddField(efb => efb.WithName("Id").WithValue(usr.Id.ToString()))
-                        .WithFooter(efb => efb.WithText(CurrentTime(usr.Guild)));
+                        .WithFooter(CurrentTime(usr.Guild));
 
                     if (Uri.IsWellFormedUriString(usr.GetAvatarUrl(), UriKind.Absolute))
                         embed.WithThumbnailUrl(usr.GetAvatarUrl());
@@ -974,7 +974,7 @@ namespace NadekoBot.Modules.Administration.Services
                         .AddField(fb =>
                             fb.WithName(GetText(logChannel.Guild, "joined_discord"))
                                 .WithValue($"{usr.CreatedAt:dd.MM.yyyy HH:mm}").WithIsInline(true))
-                        .WithFooter(efb => efb.WithText(CurrentTime(usr.Guild)));
+                        .WithFooter(CurrentTime(usr.Guild));
 
                     if (Uri.IsWellFormedUriString(usr.GetAvatarUrl(), UriKind.Absolute))
                         embed.WithThumbnailUrl(usr.GetAvatarUrl());
@@ -1008,7 +1008,7 @@ namespace NadekoBot.Modules.Administration.Services
                         .WithTitle("♻️ " + GetText(logChannel.Guild, "user_unbanned"))
                         .WithDescription(usr.ToString())
                         .AddField(efb => efb.WithName("Id").WithValue(usr.Id.ToString()))
-                        .WithFooter(efb => efb.WithText(CurrentTime(guild)));
+                        .WithFooter(CurrentTime(guild));
 
                     if (Uri.IsWellFormedUriString(usr.GetAvatarUrl(), UriKind.Absolute))
                         embed.WithThumbnailUrl(usr.GetAvatarUrl());
@@ -1043,7 +1043,7 @@ namespace NadekoBot.Modules.Administration.Services
                         .WithTitle("🚫 " + GetText(logChannel.Guild, "user_banned"))
                         .WithDescription(usr.ToString())
                         .AddField(efb => efb.WithName("Id").WithValue(usr.Id.ToString()))
-                        .WithFooter(efb => efb.WithText(CurrentTime(guild)));
+                        .WithFooter(CurrentTime(guild));
 
                     var avatarUrl = usr.GetAvatarUrl();
 
@@ -1095,8 +1095,8 @@ namespace NadekoBot.Modules.Administration.Services
                             efb.WithName(GetText(logChannel.Guild, "content"))
                                 .WithValue(string.IsNullOrWhiteSpace(resolvedMessage) ? "-" : resolvedMessage)
                                 .WithIsInline(false))
-                        .AddField(efb => efb.WithName("Id").WithValue(msg.Id.ToString()).WithIsInline(false))
-                        .WithFooter(efb => efb.WithText(CurrentTime(channel.Guild)));
+                        .AddField("Id", msg.Id.ToString(), false)
+                        .WithFooter(CurrentTime(channel.Guild));
                     if (msg.Attachments.Any())
                         embed.AddField(efb =>
                             efb.WithName(GetText(logChannel.Guild, "attachments"))
@@ -1159,8 +1159,8 @@ namespace NadekoBot.Modules.Administration.Services
                                 .WithValue(string.IsNullOrWhiteSpace(after.Content)
                                     ? "-"
                                     : after.Resolve(userHandling: TagHandling.FullName)).WithIsInline(false))
-                        .AddField(efb => efb.WithName("Id").WithValue(after.Id.ToString()).WithIsInline(false))
-                        .WithFooter(efb => efb.WithText(CurrentTime(channel.Guild)));
+                        .AddField("Id", after.Id.ToString(), false)
+                        .WithFooter(CurrentTime(channel.Guild));
 
                     await logChannel.EmbedAsync(embed).ConfigureAwait(false);
                 }

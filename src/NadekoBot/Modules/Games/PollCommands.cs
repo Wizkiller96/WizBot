@@ -116,7 +116,7 @@ namespace NadekoBot.Modules.Games
                 }
 
                 return eb.WithDescription(sb.ToString())
-                    .WithFooter(efb => efb.WithText(GetText("x_votes_cast", totalVotesCast)))
+                    .WithFooter(GetText("x_votes_cast", totalVotesCast))
                     .WithOkColor();
             }
         }

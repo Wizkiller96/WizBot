@@ -229,7 +229,7 @@ namespace NadekoBot.Modules.Gambling
                 foreach (var w in waifus)
                 {
                     var j = i++;
-                    embed.AddField(efb => efb.WithName("#" + ((page * 9) + j + 1) + " - " + w.Price + CurrencySign).WithValue(w.ToString()).WithIsInline(false));
+                    embed.AddField("#" + ((page * 9) + j + 1) + " - " + w.Price + CurrencySign, w.ToString(), false);
                 }
 
                 await ctx.Channel.EmbedAsync(embed);

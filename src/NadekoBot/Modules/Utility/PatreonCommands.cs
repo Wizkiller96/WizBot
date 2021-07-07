@@ -42,7 +42,7 @@ namespace NadekoBot.Modules.Utility
                     .AddField(efb => efb.WithName(GetText("clpa_fail_wait_title")).WithValue(GetText("clpa_fail_wait")))
                     .AddField(efb => efb.WithName(GetText("clpa_fail_conn_title")).WithValue(GetText("clpa_fail_conn")))
                     .AddField(efb => efb.WithName(GetText("clpa_fail_sup_title")).WithValue(GetText("clpa_fail_sup", helpcmd)))
-                    .WithFooter(efb => efb.WithText(GetText("clpa_next_update", rem))))
+                    .WithFooter(GetText("clpa_next_update", rem)))
                     .ConfigureAwait(false);
             }
         }

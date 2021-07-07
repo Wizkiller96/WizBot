@@ -445,9 +445,9 @@ namespace NadekoBot.Modules.Administration
                 await _mute.TimedBan(Context.Guild, user, time.Time, ctx.User.ToString() + " | " + msg).ConfigureAwait(false);
                 var toSend = new EmbedBuilder().WithOkColor()
                     .WithTitle("⛔️ " + GetText("banned_user"))
-                    .AddField(efb => efb.WithName(GetText("username")).WithValue(user.ToString()).WithIsInline(true))
-                    .AddField(efb => efb.WithName("ID").WithValue(user.Id.ToString()).WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("duration")).WithValue($"{time.Time.Days}d {time.Time.Hours}h {time.Time.Minutes}m").WithIsInline(true));
+                    .AddField(GetText("username"), user.ToString(), true)
+                    .AddField("ID", user.Id.ToString(), true)
+                    .AddField(GetText("duration"), $"{time.Time.Days}d {time.Time.Hours}h {time.Time.Minutes}m", true);
 
                 if (dmFailed)
                 {
@@ -472,7 +472,7 @@ namespace NadekoBot.Modules.Administration
                     
                     await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                             .WithTitle("⛔️ " + GetText("banned_user"))
-                            .AddField(efb => efb.WithName("ID").WithValue(userId.ToString()).WithIsInline(true)))
+                            .AddField("ID", userId.ToString(), true))
                         .ConfigureAwait(false);
                 }
                 else
@@ -512,8 +512,8 @@ namespace NadekoBot.Modules.Administration
 
                 var toSend = new EmbedBuilder().WithOkColor()
                     .WithTitle("⛔️ " + GetText("banned_user"))
-                    .AddField(efb => efb.WithName(GetText("username")).WithValue(user.ToString()).WithIsInline(true))
-                    .AddField(efb => efb.WithName("ID").WithValue(user.Id.ToString()).WithIsInline(true));
+                    .AddField(GetText("username"), user.ToString(), true)
+                    .AddField("ID", user.Id.ToString(), true);
 
                 if (dmFailed)
                 {
@@ -690,8 +690,8 @@ namespace NadekoBot.Modules.Administration
 
                 var toSend = new EmbedBuilder().WithOkColor()
                     .WithTitle("☣ " + GetText("sb_user"))
-                    .AddField(efb => efb.WithName(GetText("username")).WithValue(user.ToString()).WithIsInline(true))
-                    .AddField(efb => efb.WithName("ID").WithValue(user.Id.ToString()).WithIsInline(true));
+                    .AddField(GetText("username"), user.ToString(), true)
+                    .AddField("ID", user.Id.ToString(), true);
                 
                 if (dmFailed)
                 {
@@ -745,8 +745,8 @@ namespace NadekoBot.Modules.Administration
                 
                 var toSend = new EmbedBuilder().WithOkColor()
                     .WithTitle(GetText("kicked_user"))
-                    .AddField(efb => efb.WithName(GetText("username")).WithValue(user.ToString()).WithIsInline(true))
-                    .AddField(efb => efb.WithName("ID").WithValue(user.Id.ToString()).WithIsInline(true));
+                    .AddField(GetText("username"), user.ToString(), true)
+                    .AddField("ID", user.Id.ToString(), true);
 
                 if (dmFailed)
                 {

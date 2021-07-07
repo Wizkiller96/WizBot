@@ -170,9 +170,9 @@ namespace NadekoBot.Extensions
         public static EmbedBuilder AddPaginatedFooter(this EmbedBuilder embed, int curPage, int? lastPage)
         {
             if (lastPage != null)
-                return embed.WithFooter(efb => efb.WithText($"{curPage + 1} / {lastPage + 1}"));
+                return embed.WithFooter($"{curPage + 1} / {lastPage + 1}");
             else
-                return embed.WithFooter(efb => efb.WithText(curPage.ToString()));
+                return embed.WithFooter(curPage.ToString());
         }
 
         public static EmbedBuilder WithOkColor(this EmbedBuilder eb) =>

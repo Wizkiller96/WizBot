@@ -37,14 +37,14 @@ namespace NadekoBot.Modules.Searches
                             var embed = new EmbedBuilder().WithColor(Bot.OkColor)
                                                       .WithImageUrl(comic.ImageLink)
                                                       .WithAuthor(eab => eab.WithName(comic.Title).WithUrl($"{_xkcdUrl}/{comic.Num}").WithIconUrl("https://xkcd.com/s/919f27.ico"))
-                                                      .AddField(efb => efb.WithName(GetText("comic_number")).WithValue(comic.Num.ToString()).WithIsInline(true))
-                                                      .AddField(efb => efb.WithName(GetText("date")).WithValue($"{comic.Month}/{comic.Year}").WithIsInline(true));
+                                                      .AddField(GetText("comic_number"), comic.Num.ToString(), true)
+                                                      .AddField(GetText("date"), $"{comic.Month}/{comic.Year}", true);
                             var sent = await ctx.Channel.EmbedAsync(embed)
                                          .ConfigureAwait(false);
 
                             await Task.Delay(10000).ConfigureAwait(false);
 
-                            await sent.ModifyAsync(m => m.Embed = embed.AddField(efb => efb.WithName("Alt").WithValue(comic.Alt.ToString()).WithIsInline(false)).Build()).ConfigureAwait(false);
+                            await sent.ModifyAsync(m => m.Embed = embed.AddField("Alt", comic.Alt.ToString(), false).Build()).ConfigureAwait(false);
                         }
                     }
                     catch (HttpRequestException)
@@ -72,14 +72,14 @@ namespace NadekoBot.Modules.Searches
                         var embed = new EmbedBuilder().WithColor(Bot.OkColor)
                                                       .WithImageUrl(comic.ImageLink)
                                                       .WithAuthor(eab => eab.WithName(comic.Title).WithUrl($"{_xkcdUrl}/{num}").WithIconUrl("https://xkcd.com/s/919f27.ico"))
-                                                      .AddField(efb => efb.WithName(GetText("comic_number")).WithValue(comic.Num.ToString()).WithIsInline(true))
-                                                      .AddField(efb => efb.WithName(GetText("date")).WithValue($"{comic.Month}/{comic.Year}").WithIsInline(true));
+                                                      .AddField(GetText("comic_number"), comic.Num.ToString(), true)
+                                                      .AddField(GetText("date"), $"{comic.Month}/{comic.Year}", true);
                         var sent = await ctx.Channel.EmbedAsync(embed)
                                      .ConfigureAwait(false);
 
                         await Task.Delay(10000).ConfigureAwait(false);
 
-                        await sent.ModifyAsync(m => m.Embed = embed.AddField(efb => efb.WithName("Alt").WithValue(comic.Alt.ToString()).WithIsInline(false)).Build()).ConfigureAwait(false);
+                        await sent.ModifyAsync(m => m.Embed = embed.AddField("Alt", comic.Alt.ToString(), false).Build()).ConfigureAwait(false);
                     }
                 }
                 catch (HttpRequestException)

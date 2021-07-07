@@ -91,17 +91,17 @@ namespace NadekoBot.Modules.Searches
                 sunset = sunset.ToOffset(tz.GetUtcOffset(sunset));
                 var timezone = $"UTC{sunrise:zzz}";
 
-                embed.AddField(fb => fb.WithName("🌍 " + Format.Bold(GetText("location"))).WithValue($"[{data.Name + ", " + data.Sys.Country}](https://openweathermap.org/city/{data.Id})").WithIsInline(true))
-                    .AddField(fb => fb.WithName("📏 " + Format.Bold(GetText("latlong"))).WithValue($"{data.Coord.Lat}, {data.Coord.Lon}").WithIsInline(true))
-                    .AddField(fb => fb.WithName("☁ " + Format.Bold(GetText("condition"))).WithValue(string.Join(", ", data.Weather.Select(w => w.Main))).WithIsInline(true))
-                    .AddField(fb => fb.WithName("😓 " + Format.Bold(GetText("humidity"))).WithValue($"{data.Main.Humidity}%").WithIsInline(true))
-                    .AddField(fb => fb.WithName("💨 " + Format.Bold(GetText("wind_speed"))).WithValue(data.Wind.Speed + " m/s").WithIsInline(true))
-                    .AddField(fb => fb.WithName("🌡 " + Format.Bold(GetText("temperature"))).WithValue($"{data.Main.Temp:F1}°C / {f(data.Main.Temp):F1}°F").WithIsInline(true))
-                    .AddField(fb => fb.WithName("🔆 " + Format.Bold(GetText("min_max"))).WithValue($"{data.Main.TempMin:F1}°C - {data.Main.TempMax:F1}°C\n{f(data.Main.TempMin):F1}°F - {f(data.Main.TempMax):F1}°F").WithIsInline(true))
-                    .AddField(fb => fb.WithName("🌄 " + Format.Bold(GetText("sunrise"))).WithValue($"{sunrise:HH:mm} {timezone}").WithIsInline(true))
-                    .AddField(fb => fb.WithName("🌇 " + Format.Bold(GetText("sunset"))).WithValue($"{sunset:HH:mm} {timezone}").WithIsInline(true))
+                embed.AddField("🌍 " + Format.Bold(GetText("location")), $"[{data.Name + ", " + data.Sys.Country}](https://openweathermap.org/city/{data.Id})", true)
+                    .AddField("📏 " + Format.Bold(GetText("latlong")), $"{data.Coord.Lat}, {data.Coord.Lon}", true)
+                    .AddField("☁ " + Format.Bold(GetText("condition")), string.Join(", ", data.Weather.Select(w => w.Main)), true)
+                    .AddField("😓 " + Format.Bold(GetText("humidity")), $"{data.Main.Humidity}%", true)
+                    .AddField("💨 " + Format.Bold(GetText("wind_speed")), data.Wind.Speed + " m/s", true)
+                    .AddField("🌡 " + Format.Bold(GetText("temperature")), $"{data.Main.Temp:F1}°C / {f(data.Main.Temp):F1}°F", true)
+                    .AddField("🔆 " + Format.Bold(GetText("min_max")), $"{data.Main.TempMin:F1}°C - {data.Main.TempMax:F1}°C\n{f(data.Main.TempMin):F1}°F - {f(data.Main.TempMax):F1}°F", true)
+                    .AddField("🌄 " + Format.Bold(GetText("sunrise")), $"{sunrise:HH:mm} {timezone}", true)
+                    .AddField("🌇 " + Format.Bold(GetText("sunset")), $"{sunset:HH:mm} {timezone}", true)
                     .WithOkColor()
-                    .WithFooter(efb => efb.WithText("Powered by openweathermap.org").WithIconUrl($"http://openweathermap.org/img/w/{data.Weather[0].Icon}.png"));
+                    .WithFooter("Powered by openweathermap.org", $"http://openweathermap.org/img/w/{data.Weather[0].Icon}.png");
             }
             await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
         }
@@ -186,9 +186,9 @@ namespace NadekoBot.Modules.Searches
                 .WithTitle(movie.Title)
                 .WithUrl($"http://www.imdb.com/title/{movie.ImdbId}/")
                 .WithDescription(movie.Plot.TrimTo(1000))
-                .AddField(efb => efb.WithName("Rating").WithValue(movie.ImdbRating).WithIsInline(true))
-                .AddField(efb => efb.WithName("Genre").WithValue(movie.Genre).WithIsInline(true))
-                .AddField(efb => efb.WithName("Year").WithValue(movie.Year).WithIsInline(true))
+                .AddField("Rating", movie.ImdbRating, true)
+                .AddField("Genre", movie.Genre, true)
+                .AddField("Year", movie.Year, true)
                 .WithImageUrl(movie.Poster)).ConfigureAwait(false);
         }
 
@@ -359,7 +359,7 @@ namespace NadekoBot.Modules.Searches
                 .WithAuthor(ctx.User.ToString(),
                     iconUrl: "http://i.imgur.com/G46fm8J.png")
                 .WithTitle(ctx.User.ToString())
-                .WithFooter(efb => efb.WithText(data.TotalResults))
+                .WithFooter(data.TotalResults)
                 .WithDescription($"{GetText("search_for")} **{query}**\n\n" +descStr)
                 .WithOkColor();
 
@@ -416,9 +416,9 @@ namespace NadekoBot.Modules.Searches
                 .WithTitle(card.Name)
                 .WithDescription(card.Description)
                 .WithImageUrl(card.ImageUrl)
-                .AddField(efb => efb.WithName(GetText("store_url")).WithValue(card.StoreUrl).WithIsInline(true))
-                .AddField(efb => efb.WithName(GetText("cost")).WithValue(card.ManaCost).WithIsInline(true))
-                .AddField(efb => efb.WithName(GetText("types")).WithValue(card.Types).WithIsInline(true));
+                .AddField(GetText("store_url"), card.StoreUrl, true)
+                .AddField(GetText("cost"), card.ManaCost, true)
+                .AddField(GetText("types"), card.Types, true);
 
             await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
         }
@@ -661,8 +661,8 @@ namespace NadekoBot.Modules.Searches
             }
 
             await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                .AddField(efb => efb.WithName("Username").WithValue(usr.ToString()).WithIsInline(false))
-                .AddField(efb => efb.WithName("Avatar Url").WithValue(avatarUrl).WithIsInline(false))
+                .AddField("Username", usr.ToString(), false)
+                .AddField("Avatar Url", avatarUrl, false)
                 .WithThumbnailUrl(avatarUrl.ToString()), ctx.User.Mention).ConfigureAwait(false);
         }
         
@@ -758,10 +758,10 @@ namespace NadekoBot.Modules.Searches
             //    .WithTitle(gameData.Name)
             //    .WithUrl(gameData.Link)
             //    .WithImageUrl(gameData.HeaderImage)
-            //    .AddField(efb => efb.WithName(GetText("genres")).WithValue(gameData.TotalEpisodes.ToString()).WithIsInline(true))
-            //    .AddField(efb => efb.WithName(GetText("price")).WithValue(gameData.IsFree ? GetText("FREE") : game).WithIsInline(true))
-            //    .AddField(efb => efb.WithName(GetText("links")).WithValue(gameData.GetGenresString()).WithIsInline(true))
-            //    .WithFooter(efb => efb.WithText(GetText("recommendations", gameData.TotalRecommendations)));
+            //    .AddField(GetText("genres"), gameData.TotalEpisodes.ToString(), true)
+            //    .AddField(GetText("price"), gameData.IsFree ? GetText("FREE") : game, true)
+            //    .AddField(GetText("links"), gameData.GetGenresString(), true)
+            //    .WithFooter(GetText("recommendations", gameData.TotalRecommendations));
             await ctx.Channel.SendMessageAsync($"https://store.steampowered.com/app/{appId}").ConfigureAwait(false);
         }
 
@@ -779,7 +779,7 @@ namespace NadekoBot.Modules.Searches
                 await channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                     .WithDescription($"{umsg.Author.Mention} [{tag ?? "url"}]({imgObj.FileUrl})")
                     .WithImageUrl(imgObj.FileUrl)
-                    .WithFooter(efb => efb.WithText(type.ToString()))).ConfigureAwait(false);
+                    .WithFooter(type.ToString())).ConfigureAwait(false);
         }
 
         public async Task<bool> ValidateQuery(IMessageChannel ch, string query)

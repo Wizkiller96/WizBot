@@ -174,9 +174,9 @@ namespace NadekoBot.Modules.Gambling
                             await (await ctx.User.GetOrCreateDMChannelAsync().ConfigureAwait(false))
                                 .EmbedAsync(new EmbedBuilder().WithOkColor()
                                 .WithTitle(GetText("shop_purchase", ctx.Guild.Name))
-                                .AddField(efb => efb.WithName(GetText("item")).WithValue(item.Text).WithIsInline(false))
-                                .AddField(efb => efb.WithName(GetText("price")).WithValue(entry.Price.ToString()).WithIsInline(true))
-                                .AddField(efb => efb.WithName(GetText("name")).WithValue(entry.Name).WithIsInline(true)))
+                                .AddField(GetText("item"), item.Text, false)
+                                .AddField(GetText("price"), entry.Price.ToString(), true)
+                                .AddField(GetText("name"), entry.Name, true))
                                 .ConfigureAwait(false);
 
                             await _cs.AddAsync(entry.AuthorId,
@@ -433,17 +433,17 @@ namespace NadekoBot.Modules.Gambling
                 var embed = new EmbedBuilder().WithOkColor();
 
                 if (entry.Type == ShopEntryType.Role)
-                    return embed.AddField(efb => efb.WithName(GetText("name")).WithValue(GetText("shop_role", Format.Bold(ctx.Guild.GetRole(entry.RoleId)?.Name ?? "MISSING_ROLE"))).WithIsInline(true))
-                            .AddField(efb => efb.WithName(GetText("price")).WithValue(entry.Price.ToString()).WithIsInline(true))
-                            .AddField(efb => efb.WithName(GetText("type")).WithValue(entry.Type.ToString()).WithIsInline(true));
+                    return embed.AddField(GetText("name"), GetText("shop_role", Format.Bold(ctx.Guild.GetRole(entry.RoleId)?.Name ?? "MISSING_ROLE")), true)
+                            .AddField(GetText("price"), entry.Price.ToString(), true)
+                            .AddField(GetText("type"), entry.Type.ToString(), true);
                 else if (entry.Type == ShopEntryType.List)
-                    return embed.AddField(efb => efb.WithName(GetText("name")).WithValue(entry.Name).WithIsInline(true))
-                            .AddField(efb => efb.WithName(GetText("price")).WithValue(entry.Price.ToString()).WithIsInline(true))
-                            .AddField(efb => efb.WithName(GetText("type")).WithValue(GetText("random_unique_item")).WithIsInline(true));
+                    return embed.AddField(GetText("name"), entry.Name, true)
+                            .AddField(GetText("price"), entry.Price.ToString(), true)
+                            .AddField(GetText("type"), GetText("random_unique_item"), true);
                 //else if (entry.Type == ShopEntryType.Infinite_List)
-                //    return embed.AddField(efb => efb.WithName(GetText("name")).WithValue(GetText("shop_role", Format.Bold(entry.RoleName))).WithIsInline(true))
-                //            .AddField(efb => efb.WithName(GetText("price")).WithValue(entry.Price.ToString()).WithIsInline(true))
-                //            .AddField(efb => efb.WithName(GetText("type")).WithValue(entry.Type.ToString()).WithIsInline(true));
+                //    return embed.AddField(GetText("name"), GetText("shop_role", Format.Bold(entry.RoleName)), true)
+                //            .AddField(GetText("price"), entry.Price.ToString(), true)
+                //            .AddField(GetText("type"), entry.Type.ToString(), true);
                 else return null;
             }
 

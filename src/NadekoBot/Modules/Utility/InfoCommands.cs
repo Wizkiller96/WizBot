@@ -49,15 +49,15 @@ namespace NadekoBot.Modules.Utility
                 var embed = new EmbedBuilder()
                     .WithAuthor(eab => eab.WithName(GetText("server_info")))
                     .WithTitle(guild.Name)
-                    .AddField(fb => fb.WithName(GetText("id")).WithValue(guild.Id.ToString()).WithIsInline(true))
-                    .AddField(fb => fb.WithName(GetText("owner")).WithValue(ownername.ToString()).WithIsInline(true))
-                    .AddField(fb => fb.WithName(GetText("members")).WithValue(guild.MemberCount.ToString()).WithIsInline(true))
-                    .AddField(fb => fb.WithName(GetText("text_channels")).WithValue(textchn.ToString()).WithIsInline(true))
-                    .AddField(fb => fb.WithName(GetText("voice_channels")).WithValue(voicechn.ToString()).WithIsInline(true))
-                    .AddField(fb => fb.WithName(GetText("created_at")).WithValue($"{createdAt:dd.MM.yyyy HH:mm}").WithIsInline(true))
-                    .AddField(fb => fb.WithName(GetText("region")).WithValue(guild.VoiceRegionId.ToString()).WithIsInline(true))
-                    .AddField(fb => fb.WithName(GetText("roles")).WithValue((guild.Roles.Count - 1).ToString()).WithIsInline(true))
-                    .AddField(fb => fb.WithName(GetText("features")).WithValue(features).WithIsInline(true))
+                    .AddField(GetText("id"), guild.Id.ToString(), true)
+                    .AddField(GetText("owner"), ownername.ToString(), true)
+                    .AddField(GetText("members"), guild.MemberCount.ToString(), true)
+                    .AddField(GetText("text_channels"), textchn.ToString(), true)
+                    .AddField(GetText("voice_channels"), voicechn.ToString(), true)
+                    .AddField(GetText("created_at"), $"{createdAt:dd.MM.yyyy HH:mm}", true)
+                    .AddField(GetText("region"), guild.VoiceRegionId.ToString(), true)
+                    .AddField(GetText("roles"), (guild.Roles.Count - 1).ToString(), true)
+                    .AddField(GetText("features"), features, true)
                     .WithColor(Bot.OkColor);
                 if (Uri.IsWellFormedUriString(guild.IconUrl, UriKind.Absolute))
                     embed.WithThumbnailUrl(guild.IconUrl);
@@ -86,9 +86,9 @@ namespace NadekoBot.Modules.Utility
                 var embed = new EmbedBuilder()
                     .WithTitle(ch.Name)
                     .WithDescription(ch.Topic?.SanitizeMentions(true))
-                    .AddField(fb => fb.WithName(GetText("id")).WithValue(ch.Id.ToString()).WithIsInline(true))
-                    .AddField(fb => fb.WithName(GetText("created_at")).WithValue($"{createdAt:dd.MM.yyyy HH:mm}").WithIsInline(true))
-                    .AddField(fb => fb.WithName(GetText("users")).WithValue(usercount.ToString()).WithIsInline(true))
+                    .AddField(GetText("id"), ch.Id.ToString(), true)
+                    .AddField(GetText("created_at"), $"{createdAt:dd.MM.yyyy HH:mm}", true)
+                    .AddField(GetText("users"), usercount.ToString(), true)
                     .WithColor(Bot.OkColor);
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
@@ -103,15 +103,15 @@ namespace NadekoBot.Modules.Utility
                     return;
 
                 var embed = new EmbedBuilder()
-                    .AddField(fb => fb.WithName(GetText("name")).WithValue($"**{user.Username}**#{user.Discriminator}").WithIsInline(true));
+                    .AddField(GetText("name"), $"**{user.Username}**#{user.Discriminator}", true);
                 if (!string.IsNullOrWhiteSpace(user.Nickname))
                 {
-                    embed.AddField(fb => fb.WithName(GetText("nickname")).WithValue(user.Nickname).WithIsInline(true));
+                    embed.AddField(GetText("nickname"), user.Nickname, true);
                 }
-                embed.AddField(fb => fb.WithName(GetText("id")).WithValue(user.Id.ToString()).WithIsInline(true))
-                    .AddField(fb => fb.WithName(GetText("joined_server")).WithValue($"{user.JoinedAt?.ToString("dd.MM.yyyy HH:mm") ?? "?"}").WithIsInline(true))
-                    .AddField(fb => fb.WithName(GetText("joined_discord")).WithValue($"{user.CreatedAt:dd.MM.yyyy HH:mm}").WithIsInline(true))
-                    .AddField(fb => fb.WithName(GetText("roles")).WithValue($"**({user.RoleIds.Count - 1})** - {string.Join("\n", user.GetRoles().Take(10).Where(r => r.Id != r.Guild.EveryoneRole.Id).Select(r => r.Name)).SanitizeMentions(true)}").WithIsInline(true))
+                embed.AddField(GetText("id"), user.Id.ToString(), true)
+                    .AddField(GetText("joined_server"), $"{user.JoinedAt?.ToString("dd.MM.yyyy HH:mm") ?? "?"}", true)
+                    .AddField(GetText("joined_discord"), $"{user.CreatedAt:dd.MM.yyyy HH:mm}", true)
+                    .AddField(GetText("roles"), $"**({user.RoleIds.Count - 1})** - {string.Join("\n", user.GetRoles().Take(10).Where(r => r.Id != r.Guild.EveryoneRole.Id).Select(r => r.Name)).SanitizeMentions(true)}", true)
                     .WithColor(Bot.OkColor);
 
                 var av = user.RealAvatarUrl();

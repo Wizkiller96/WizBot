@@ -101,9 +101,9 @@ namespace NadekoBot.Modules.Gambling
                 var embed = new EmbedBuilder()
                     .WithOkColor()
                     .WithTitle("Slot Stats")
-                    .AddField(efb => efb.WithName("Total Bet").WithValue(bet.ToString()).WithIsInline(true))
-                    .AddField(efb => efb.WithName("Paid Out").WithValue(paid.ToString()).WithIsInline(true))
-                    .WithFooter(efb => efb.WithText($"Payout Rate: {paid * 1.0 / bet * 100:f4}%"));
+                    .AddField("Total Bet", bet.ToString(), true)
+                    .AddField("Paid Out", paid.ToString(), true)
+                    .WithFooter($"Payout Rate: {paid * 1.0 / bet * 100:f4}%");
 
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }

@@ -617,8 +617,8 @@ namespace NadekoBot.Modules.Music
              var embed = new EmbedBuilder()
                  .WithTitle(track.Title.TrimTo(65))
                  .WithAuthor(eab => eab.WithName(GetText("song_moved")).WithIconUrl("https://cdn.discordapp.com/attachments/155726317222887425/258605269972549642/music1.png"))
-                 .AddField(fb => fb.WithName(GetText("from_position")).WithValue($"#{from + 1}").WithIsInline(true))
-                 .AddField(fb => fb.WithName(GetText("to_position")).WithValue($"#{to + 1}").WithIsInline(true))
+                 .AddField(GetText("from_position"), $"#{from + 1}", true)
+                 .AddField(GetText("to_position"), $"#{to + 1}", true)
                  .WithColor(Bot.OkColor);
 
              if (Uri.IsWellFormedUriString(track.Url, UriKind.Absolute))

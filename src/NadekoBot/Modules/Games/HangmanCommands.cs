@@ -90,7 +90,7 @@ namespace NadekoBot.Modules.Games
                     var loseEmbed = new EmbedBuilder().WithTitle($"Hangman Game ({game.TermType}) - Ended")
                                              .WithDescription(Format.Bold("You lose."))
                                              .AddField(efb => efb.WithName("It was").WithValue(game.Term.GetWord()))
-                                             .WithFooter(efb => efb.WithText(string.Join(" ", game.PreviousGuesses)))
+                                             .WithFooter(string.Join(" ", game.PreviousGuesses))
                                              .WithErrorColor();
 
                     if (Uri.IsWellFormedUriString(game.Term.ImageUrl, UriKind.Absolute))
@@ -102,7 +102,7 @@ namespace NadekoBot.Modules.Games
                 var winEmbed = new EmbedBuilder().WithTitle($"Hangman Game ({game.TermType}) - Ended")
                                              .WithDescription(Format.Bold($"{winner} Won."))
                                              .AddField(efb => efb.WithName("It was").WithValue(game.Term.GetWord()))
-                                             .WithFooter(efb => efb.WithText(string.Join(" ", game.PreviousGuesses)))
+                                             .WithFooter(string.Join(" ", game.PreviousGuesses))
                                              .WithOkColor();
 
                 if (Uri.IsWellFormedUriString(game.Term.ImageUrl, UriKind.Absolute))

@@ -83,7 +83,7 @@ namespace NadekoBot.Modules.Games
                 var embed = new EmbedBuilder().WithOkColor()
                         .WithTitle(GetText("acrophobia"))
                         .WithDescription(GetText("acro_started", Format.Bold(string.Join(".", game.StartingLetters))))
-                        .WithFooter(efb => efb.WithText(GetText("acro_started_footer", game.Opts.SubmissionTime)));
+                        .WithFooter(GetText("acro_started_footer", game.Opts.SubmissionTime));
 
                 return ctx.Channel.EmbedAsync(embed);
             }
@@ -108,7 +108,7 @@ namespace NadekoBot.Modules.Games
                             .WithDescription(
                                 GetText("acro_winner_only",
                                     Format.Bold(submissions.First().Key.UserName)))
-                            .WithFooter(efb => efb.WithText(submissions.First().Key.Input)))
+                            .WithFooter(submissions.First().Key.Input))
                         .ConfigureAwait(false);
                     return;
                 }
@@ -122,7 +122,7 @@ namespace NadekoBot.Modules.Games
 $@"--
 {submissions.Aggregate("", (agg, cur) => agg + $"`{++i}.` **{cur.Key.Input}**\n")}
 --"))
-                        .WithFooter(efb => efb.WithText(GetText("acro_vote")));
+                        .WithFooter(GetText("acro_vote"));
 
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
@@ -140,7 +140,7 @@ $@"--
                     .WithTitle(GetText("acrophobia"))
                     .WithDescription(GetText("acro_winner", Format.Bold(winner.Key.UserName),
                         Format.Bold(winner.Value.ToString())))
-                    .WithFooter(efb => efb.WithText(winner.Key.Input));
+                    .WithFooter(winner.Key.Input);
 
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }

@@ -264,14 +264,14 @@ namespace NadekoBot.Modules.Utility
                     .WithAuthor(eab => eab.WithName($"NadekoBot v{StatsService.BotVersion}")
                                           .WithUrl("http://nadekobot.readthedocs.io/en/latest/")
                                           .WithIconUrl("https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/avatar.png"))
-                    .AddField(efb => efb.WithName(GetText("author")).WithValue(_stats.Author).WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("botid")).WithValue(_client.CurrentUser.Id.ToString()).WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("shard")).WithValue($"#{_client.ShardId} / {_creds.TotalShards}").WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("commands_ran")).WithValue(_stats.CommandsRan.ToString()).WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("messages")).WithValue($"{_stats.MessageCounter} ({_stats.MessagesPerSecond:F2}/sec)").WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("memory")).WithValue($"{_stats.Heap} MB").WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("owner_ids")).WithValue(ownerIds).WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("uptime")).WithValue(_stats.GetUptimeString("\n")).WithIsInline(true))
+                    .AddField(GetText("author"), _stats.Author, true)
+                    .AddField(GetText("botid"), _client.CurrentUser.Id.ToString(), true)
+                    .AddField(GetText("shard"), $"#{_client.ShardId} / {_creds.TotalShards}", true)
+                    .AddField(GetText("commands_ran"), _stats.CommandsRan.ToString(), true)
+                    .AddField(GetText("messages"), $"{_stats.MessageCounter} ({_stats.MessagesPerSecond:F2}/sec)", true)
+                    .AddField(GetText("memory"), $"{_stats.Heap} MB", true)
+                    .AddField(GetText("owner_ids"), ownerIds, true)
+                    .AddField(GetText("uptime"), _stats.GetUptimeString("\n"), true)
                     .AddField(efb => efb.WithName(GetText("presence")).WithValue(
                         GetText("presence_txt",
                             _coord.GetGuildCount(), _stats.TextChannels, _stats.VoiceChannels)).WithIsInline(true))).ConfigureAwait(false);

@@ -125,7 +125,7 @@ namespace NadekoBot.Modules.Games.Common.Trivia
                         if (!_options.NoHint)
                             try
                             {
-                                await questionMessage.ModifyAsync(m => m.Embed = questionEmbed.WithFooter(efb => efb.WithText(CurrentQuestion.GetHint())).Build())
+                                await questionMessage.ModifyAsync(m => m.Embed = questionEmbed.WithFooter(CurrentQuestion.GetHint()).Build())
                                     .ConfigureAwait(false);
                             }
                             catch (HttpException ex) when (ex.HttpCode == System.Net.HttpStatusCode.NotFound || ex.HttpCode == System.Net.HttpStatusCode.Forbidden)

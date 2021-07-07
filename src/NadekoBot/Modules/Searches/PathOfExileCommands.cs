@@ -206,8 +206,8 @@ namespace NadekoBot.Modules.Searches
                         var embed = new EmbedBuilder().WithAuthor(eau => eau.WithName($"{leagueName} Currency Exchange")
                             .WithUrl("http://poe.ninja")
                             .WithIconUrl("https://web.poecdn.com/image/favicon/ogimage.png"))
-                            .AddField(efb => efb.WithName("Currency Type").WithValue(cleanCurrency).WithIsInline(true))
-                            .AddField(efb => efb.WithName($"{cleanConvert} Equivalent").WithValue(chaosEquivalent / conversionEquivalent).WithIsInline(true))
+                            .AddField("Currency Type", cleanCurrency, true)
+                            .AddField($"{cleanConvert} Equivalent", chaosEquivalent / conversionEquivalent, true)
                             .WithOkColor();
 
                         await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);

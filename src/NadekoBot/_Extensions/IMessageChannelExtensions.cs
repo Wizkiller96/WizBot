@@ -21,7 +21,7 @@ namespace NadekoBot.Extensions
             if (url != null && Uri.IsWellFormedUriString(url, UriKind.Absolute))
                 eb.WithUrl(url);
             if (!string.IsNullOrWhiteSpace(footer))
-                eb.WithFooter(efb => efb.WithText(footer));
+                eb.WithFooter(footer);
             return ch.SendMessageAsync("", embed: eb.Build());
         }
 
@@ -38,7 +38,7 @@ namespace NadekoBot.Extensions
             if (url != null && Uri.IsWellFormedUriString(url, UriKind.Absolute))
                 eb.WithUrl(url);
             if (!string.IsNullOrWhiteSpace(footer))
-                eb.WithFooter(efb => efb.WithText(footer));
+                eb.WithFooter(footer);
             return ch.SendMessageAsync("", embed: eb.Build());
         }
 

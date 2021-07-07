@@ -66,7 +66,7 @@ namespace NadekoBot.Common
                 foreach (var f in Fields)
                 {
                     if (!string.IsNullOrWhiteSpace(f.Name) && !string.IsNullOrWhiteSpace(f.Value))
-                        embed.AddField(efb => efb.WithName(f.Name).WithValue(f.Value).WithIsInline(f.Inline));
+                        embed.AddField(f.Name, f.Value, f.Inline);
                 }
 
             return embed;

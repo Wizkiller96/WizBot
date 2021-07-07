@@ -36,10 +36,10 @@ namespace NadekoBot.Modules.Searches
                     .WithTitle(novelData.Title)
                     .WithUrl(novelData.Link)
                     .WithImageUrl(novelData.ImageUrl)
-                    .AddField(efb => efb.WithName(GetText("authors")).WithValue(string.Join("\n", novelData.Authors)).WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("status")).WithValue(novelData.Status).WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("genres")).WithValue(string.Join(" ", novelData.Genres.Any() ? novelData.Genres : new[] { "none" })).WithIsInline(true))
-                    .WithFooter(efb => efb.WithText(GetText("score") + " " + novelData.Score));
+                    .AddField(GetText("authors"), string.Join("\n", novelData.Authors), true)
+                    .AddField(GetText("status"), novelData.Status, true)
+                    .AddField(GetText("genres"), string.Join(" ", novelData.Genres.Any() ? novelData.Genres : new[] { "none" }), true)
+                    .WithFooter(GetText("score" + " " + novelData.Score));
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
 
@@ -84,19 +84,19 @@ namespace NadekoBot.Modules.Searches
                     var embed = new EmbedBuilder()
                         .WithOkColor()
                         .WithTitle(GetText("mal_profile", name))
-                        .AddField(efb => efb.WithName("💚 " + GetText("watching")).WithValue(stats[0]).WithIsInline(true))
-                        .AddField(efb => efb.WithName("💙 " + GetText("completed")).WithValue(stats[1]).WithIsInline(true));
+                        .AddField("💚 " + GetText("watching"), stats[0], true)
+                        .AddField("💙 " + GetText("completed"), stats[1], true);
                     if (info.Count < 3)
-                        embed.AddField(efb => efb.WithName("💛 " + GetText("on_hold")).WithValue(stats[2]).WithIsInline(true));
+                        embed.AddField("💛 " + GetText("on_hold"), stats[2], true);
                     embed
-                        .AddField(efb => efb.WithName("💔 " + GetText("dropped")).WithValue(stats[3]).WithIsInline(true))
-                        .AddField(efb => efb.WithName("⚪ " + GetText("plan_to_watch")).WithValue(stats[4]).WithIsInline(true))
-                        .AddField(efb => efb.WithName("🕐 " + daysAndMean[0][0]).WithValue(daysAndMean[0][1]).WithIsInline(true))
-                        .AddField(efb => efb.WithName("📊 " + daysAndMean[1][0]).WithValue(daysAndMean[1][1]).WithIsInline(true))
-                        .AddField(efb => efb.WithName(MalInfoToEmoji(info[0].Item1) + " " + info[0].Item1).WithValue(info[0].Item2.TrimTo(20)).WithIsInline(true))
-                        .AddField(efb => efb.WithName(MalInfoToEmoji(info[1].Item1) + " " + info[1].Item1).WithValue(info[1].Item2.TrimTo(20)).WithIsInline(true));
+                        .AddField("💔 " + GetText("dropped"), stats[3], true)
+                        .AddField("⚪ " + GetText("plan_to_watch"), stats[4], true)
+                        .AddField("🕐 " + daysAndMean[0][0], daysAndMean[0][1], true)
+                        .AddField("📊 " + daysAndMean[1][0], daysAndMean[1][1], true)
+                        .AddField(MalInfoToEmoji(info[0].Item1) + " " + info[0].Item1, info[0].Item2.TrimTo(20), true)
+                        .AddField(MalInfoToEmoji(info[1].Item1) + " " + info[1].Item1, info[1].Item2.TrimTo(20), true);
                     if (info.Count > 2)
-                        embed.AddField(efb => efb.WithName(MalInfoToEmoji(info[2].Item1) + " " + info[2].Item1).WithValue(info[2].Item2.TrimTo(20)).WithIsInline(true));
+                        embed.AddField(MalInfoToEmoji(info[2].Item1) + " " + info[2].Item1, info[2].Item2.TrimTo(20), true);
 
                     embed
                         .WithDescription($@"
@@ -156,10 +156,10 @@ namespace NadekoBot.Modules.Searches
                     .WithTitle(animeData.TitleEnglish)
                     .WithUrl(animeData.Link)
                     .WithImageUrl(animeData.ImageUrlLarge)
-                    .AddField(efb => efb.WithName(GetText("episodes")).WithValue(animeData.TotalEpisodes.ToString()).WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("status")).WithValue(animeData.AiringStatus.ToString()).WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("genres")).WithValue(string.Join(",\n", animeData.Genres.Any() ? animeData.Genres : new[] { "none" })).WithIsInline(true))
-                    .WithFooter(efb => efb.WithText(GetText("score") + " " + animeData.AverageScore + " / 100"));
+                    .AddField(GetText("episodes"), animeData.TotalEpisodes.ToString(), true)
+                    .AddField(GetText("status"), animeData.AiringStatus.ToString(), true)
+                    .AddField(GetText("genres"), string.Join(",\n", animeData.Genres.Any() ? animeData.Genres : new[] { "none" }), true)
+                    .WithFooter(GetText("score" + " " + animeData.AverageScore + " / 100"));
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
 
@@ -184,10 +184,10 @@ namespace NadekoBot.Modules.Searches
                     .WithTitle(mangaData.TitleEnglish)
                     .WithUrl(mangaData.Link)
                     .WithImageUrl(mangaData.ImageUrlLge)
-                    .AddField(efb => efb.WithName(GetText("chapters")).WithValue(mangaData.TotalChapters.ToString()).WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("status")).WithValue(mangaData.PublishingStatus.ToString()).WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("genres")).WithValue(string.Join(",\n", mangaData.Genres.Any() ? mangaData.Genres : new[] { "none" })).WithIsInline(true))
-                    .WithFooter(efb => efb.WithText(GetText("score") + " " + mangaData.AverageScore + " / 100"));
+                    .AddField(GetText("chapters"), mangaData.TotalChapters.ToString(), true)
+                    .AddField(GetText("status"), mangaData.PublishingStatus.ToString(), true)
+                    .AddField(GetText("genres"), string.Join(",\n", mangaData.Genres.Any() ? mangaData.Genres : new[] { "none" }), true)
+                    .WithFooter(GetText("score" + " " + mangaData.AverageScore + " / 100"));
 
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
