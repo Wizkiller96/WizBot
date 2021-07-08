@@ -20,7 +20,7 @@ nav:
     - Commands List: https://commands.wizbot.cc/
 - Features Explained:
     - Creating and inviting the bot: create-invite.md
-    - JSON Explanations: json-explained.md
+    - Credentials & API Keys: json-explained.md
     - Permissions System: permissions-system.md
     - Custom Reactions: custom-reactions.md
     - Placeholders: placeholders.md
