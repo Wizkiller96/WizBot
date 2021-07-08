@@ -569,9 +569,7 @@ namespace NadekoBot.Modules.Gambling
                      var usrStr = x.ToString().TrimTo(20, true);
 
                      var j = i;
-                     embed.AddField(efb => efb.WithName("#" + (9 * curPage + j + 1) + " " + usrStr)
-                                              .WithValue(n(x.CurrencyAmount) + " " + CurrencySign)
-                                              .WithIsInline(true));
+                     embed.AddField("#" + (9 * curPage + j + 1) + " " + usrStr, n(x.CurrencyAmount) + " " + CurrencySign, true);
                  }
 
                  return embed;

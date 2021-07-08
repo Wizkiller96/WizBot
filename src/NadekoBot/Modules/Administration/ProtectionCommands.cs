@@ -235,14 +235,10 @@ namespace NadekoBot.Modules.Administration
                     .WithTitle(GetText("prot_active"));
 
                 if (spam != null)
-                    embed.AddField(efb => efb.WithName("Anti-Spam")
-                        .WithValue(GetAntiSpamString(spam).TrimTo(1024))
-                        .WithIsInline(true));
+                    embed.AddField("Anti-Spam", GetAntiSpamString(spam).TrimTo(1024), true);
 
                 if (raid != null)
-                    embed.AddField(efb => efb.WithName("Anti-Raid")
-                        .WithValue(GetAntiRaidString(raid).TrimTo(1024))
-                        .WithIsInline(true));
+                    embed.AddField("Anti-Raid", GetAntiRaidString(raid).TrimTo(1024), true);
 
                 if (alt is not null)
                     embed.AddField("Anti-Alt", GetAntiAltString(alt), true);

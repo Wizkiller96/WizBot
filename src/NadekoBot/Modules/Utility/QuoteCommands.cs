@@ -118,10 +118,10 @@ namespace NadekoBot.Modules.Utility
                 await ctx.Channel.EmbedAsync(new EmbedBuilder()
                     .WithOkColor()
                     .WithTitle(GetText("quote_id", $"#{data.Id}"))
-                    .AddField(efb => efb.WithName(GetText("trigger")).WithValue(data.Keyword))
-                    .AddField(efb => efb.WithName(GetText("response")).WithValue(data.Text.Length > 1000
+                    .AddField(GetText("trigger"), data.Keyword)
+                    .AddField(GetText("response"), data.Text.Length > 1000
                         ? GetText("redacted_too_long")
-                        : Format.Sanitize(data.Text)))
+                        : Format.Sanitize(data.Text))
                     .WithFooter(GetText("created_by", $"{data.AuthorName} ({data.AuthorId})"))
                 ).ConfigureAwait(false);
             }

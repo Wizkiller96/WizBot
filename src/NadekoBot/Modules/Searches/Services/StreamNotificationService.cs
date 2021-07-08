@@ -444,12 +444,8 @@ namespace NadekoBot.Modules.Searches.Services
                 .WithTitle(status.Name)
                 .WithUrl(status.StreamUrl)
                 .WithDescription(status.StreamUrl)
-                .AddField(efb => efb.WithName(GetText(guildId, "status"))
-                    .WithValue(status.IsLive ? "🟢 Online" : "🔴 Offline")
-                    .WithIsInline(true))
-                .AddField(efb => efb.WithName(GetText(guildId, "viewers"))
-                    .WithValue(status.IsLive ? status.Viewers.ToString() : "-")
-                    .WithIsInline(true))
+                .AddField(GetText(guildId, "status"), status.IsLive ? "🟢 Online" : "🔴 Offline", true)
+                .AddField(GetText(guildId, "viewers"), status.IsLive ? status.Viewers.ToString() : "-", true)
                 .WithColor(status.IsLive ? Bot.OkColor : Bot.ErrorColor);
 
             if (!string.IsNullOrWhiteSpace(status.Title))

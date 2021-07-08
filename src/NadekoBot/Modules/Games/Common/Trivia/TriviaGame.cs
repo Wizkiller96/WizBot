@@ -87,8 +87,8 @@ namespace NadekoBot.Modules.Games.Common.Trivia
                 {
                     questionEmbed = new EmbedBuilder().WithOkColor()
                         .WithTitle(GetText("trivia_game"))
-                        .AddField(eab => eab.WithName(GetText("category")).WithValue(CurrentQuestion.Category))
-                        .AddField(eab => eab.WithName(GetText("question")).WithValue(CurrentQuestion.Question));
+                        .AddField(GetText("category"), CurrentQuestion.Category)
+                        .AddField(GetText("question"), CurrentQuestion.Question);
 
                     if (showHowToQuit)
                         questionEmbed.WithFooter(GetText("trivia_quit", _quitCommand));

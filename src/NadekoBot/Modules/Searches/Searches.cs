@@ -324,11 +324,8 @@ namespace NadekoBot.Modules.Searches
 
             await ctx.Channel.EmbedAsync(new EmbedBuilder()
                 .WithColor(Bot.OkColor)
-                .AddField(efb => efb.WithName(GetText("original_url"))
-                                    .WithValue($"<{query}>"))
-                .AddField(efb => efb.WithName(GetText("short_url"))
-                                    .WithValue($"<{shortLink}>")))
-                .ConfigureAwait(false);
+                .AddField(GetText("original_url"), $"<{query}>")
+                .AddField(GetText("short_url"), $"<{shortLink}>"));
         }
 
         [NadekoCommand, Aliases]
@@ -540,7 +537,7 @@ namespace NadekoBot.Modules.Searches
                             .WithOkColor();
 
                         if (!string.IsNullOrWhiteSpace(data.Example))
-                            embed.AddField(efb => efb.WithName(GetText("example")).WithValue(data.Example));
+                            embed.AddField(GetText("example"), data.Example);
 
                         return embed;
                     }, col.Count, 1);

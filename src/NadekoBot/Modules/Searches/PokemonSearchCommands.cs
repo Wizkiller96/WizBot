@@ -67,9 +67,7 @@ namespace NadekoBot.Modules.Searches
                             .WithDescription(string.IsNullOrWhiteSpace(kvp.Value.Desc)
                                 ? kvp.Value.ShortDesc
                                 : kvp.Value.Desc)
-                            .AddField(efb => efb.WithName(GetText("rating"))
-                                                .WithValue(kvp.Value.Rating.ToString(_cultureInfo)).WithIsInline(true))
-                            ).ConfigureAwait(false);
+                            .AddField(GetText("rating"), kvp.Value.Rating.ToString(_cultureInfo), true));
                         return;
                     }
                 }

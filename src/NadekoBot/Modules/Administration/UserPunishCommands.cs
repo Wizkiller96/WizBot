@@ -62,8 +62,8 @@ namespace NadekoBot.Modules.Administration
                 {
                     await (await user.GetOrCreateDMChannelAsync().ConfigureAwait(false)).EmbedAsync(new EmbedBuilder().WithErrorColor()
                                      .WithDescription(GetText("warned_on", ctx.Guild.ToString()))
-                                     .AddField(efb => efb.WithName(GetText("moderator")).WithValue(ctx.User.ToString()))
-                                     .AddField(efb => efb.WithName(GetText("reason")).WithValue(reason ?? "-")))
+                                     .AddField(GetText("moderator"), ctx.User.ToString())
+                                     .AddField(GetText("reason"), reason ?? "-"))
                         .ConfigureAwait(false);
                 }
                 catch

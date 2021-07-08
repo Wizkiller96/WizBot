@@ -59,12 +59,9 @@ namespace NadekoBot.Modules.Administration
 
                 await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                     .WithTitle(GetText("scadd"))
-                    .AddField(efb => efb.WithName(GetText("server"))
-                        .WithValue(cmd.GuildId is null ? $"-" : $"{cmd.GuildName}/{cmd.GuildId}").WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("channel"))
-                        .WithValue($"{cmd.ChannelName}/{cmd.ChannelId}").WithIsInline(true))
-                    .AddField(efb => efb.WithName(GetText("command_text"))
-                        .WithValue(cmdText).WithIsInline(false))).ConfigureAwait(false);
+                    .AddField(GetText("server"), cmd.GuildId is null ? $"-" : $"{cmd.GuildName}/{cmd.GuildId}", true)
+                    .AddField(GetText("channel"), $"{cmd.ChannelName}/{cmd.ChannelId}", true)
+                    .AddField(GetText("command_text"), cmdText, false));
             }
 
             [NadekoCommand, Aliases]

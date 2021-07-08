@@ -63,13 +63,12 @@ namespace NadekoBot.Modules.Utility
                     embed.WithThumbnailUrl(guild.IconUrl);
                 if (guild.Emotes.Any())
                 {
-                    embed.AddField(fb => 
-                        fb.WithName(GetText("custom_emojis") + $"({guild.Emotes.Count})")
-                        .WithValue(string.Join(" ", guild.Emotes
+                    embed.AddField(GetText("custom_emojis") + $"({guild.Emotes.Count})",
+                        string.Join(" ", guild.Emotes
                             .Shuffle()
                             .Take(20)
                             .Select(e => $"{e.Name} {e.ToString()}"))
-                            .TrimTo(1020)));
+                            .TrimTo(1020));
                 }
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }

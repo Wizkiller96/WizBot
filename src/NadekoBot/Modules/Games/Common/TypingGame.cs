@@ -157,15 +157,11 @@ namespace NadekoBot.Modules.Games.Common
                         var wpm = CurrentSentence.Length / WORD_VALUE / elapsed.TotalSeconds * 60;
                         finishedUserIds.Add(msg.Author.Id);
                         await this.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                                .WithTitle($"{msg.Author} finished the race!")
-                                .AddField(efb =>
-                                    efb.WithName("Place").WithValue($"#{finishedUserIds.Count}").WithIsInline(true))
-                                .AddField(efb =>
-                                    efb.WithName("WPM").WithValue($"{wpm:F1} *[{elapsed.TotalSeconds:F2}sec]*")
-                                        .WithIsInline(true))
-                                .AddField(efb =>
-                                    efb.WithName("Errors").WithValue(distance.ToString()).WithIsInline(true)))
-                            .ConfigureAwait(false);
+                            .WithTitle($"{msg.Author} finished the race!")
+                            .AddField("Place", $"#{finishedUserIds.Count}", true)
+                            .AddField("WPM", $"{wpm:F1} *[{elapsed.TotalSeconds:F2}sec]*", true)
+                            .AddField("Errors", distance.ToString(), true));
+                        
                         if (finishedUserIds.Count % 4 == 0)
                         {
                             await this.Channel.SendConfirmAsync(

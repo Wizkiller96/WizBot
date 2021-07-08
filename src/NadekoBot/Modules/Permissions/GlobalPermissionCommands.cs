@@ -39,16 +39,14 @@ namespace NadekoBot.Modules.Permissions
                 var embed = new EmbedBuilder().WithOkColor();
 
                 if (blockedModule.Any())
-                    embed.AddField(efb => efb
-                        .WithName(GetText("blocked_modules"))
-                        .WithValue(string.Join("\n", _service.BlockedModules))
-                        .WithIsInline(false));
+                    embed.AddField(GetText("blocked_modules")
+                        , string.Join("\n", _service.BlockedModules)
+                        , false);
 
                 if (blockedCommands.Any())
-                    embed.AddField(efb => efb
-                        .WithName(GetText("blocked_commands"))
-                        .WithValue(string.Join("\n", _service.BlockedCommands))
-                        .WithIsInline(false));
+                    embed.AddField(GetText("blocked_commands")
+                        , string.Join("\n", _service.BlockedCommands)
+                        , false);
 
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }

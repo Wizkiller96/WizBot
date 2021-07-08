@@ -19,14 +19,19 @@ namespace NadekoBot.Modules.Utility
             public async Task ConvertList()
             {
                 var units = _service.Units;
-                var res = units.GroupBy(x => x.UnitType)
-                               .Aggregate(new EmbedBuilder().WithTitle(GetText("convertlist"))
-                                                            .WithOkColor(),
-                                          (embed, g) => embed.AddField(efb =>
-                                                                         efb.WithName(g.Key.ToTitleCase())
-                                                                         .WithValue(String.Join(", ", g.Select(x => x.Triggers.FirstOrDefault())
-                                                                                                       .OrderBy(x => x)))));
-                await ctx.Channel.EmbedAsync(res).ConfigureAwait(false);
+
+                var embed = new EmbedBuilder()
+                    .WithTitle(GetText("convertlist"))
+                    .WithOkColor();
+
+
+                foreach (var g in units.GroupBy(x => x.UnitType))
+                {
+                    embed.AddField(g.Key.ToTitleCase(),
+                        String.Join(", ", g.Select(x => x.Triggers.FirstOrDefault()).OrderBy(x => x)));
+                }
+                
+                await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]

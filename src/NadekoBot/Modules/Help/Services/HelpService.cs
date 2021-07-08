@@ -64,23 +64,20 @@ namespace NadekoBot.Modules.Help.Services
             if (alias != null)
                 str += $" **/ `{prefix + alias}`**";
             var em = new EmbedBuilder()
-                .AddField(fb => fb.WithName(str)
-                    .WithValue($"{com.RealSummary(_strings, guild?.Id, prefix)}")
-                    .WithIsInline(true));
+                .AddField(str, $"{com.RealSummary(_strings, guild?.Id, prefix)}", true);
 
             _dpos.TryGetOverrides(guild?.Id ?? 0, com.Name, out var overrides);
             var reqs = GetCommandRequirements(com, overrides);
             if(reqs.Any())
             {
-                em.AddField(GetText("requires", guild),
-                    string.Join("\n", reqs));
+                em.AddField(GetText("requires", guild), string.Join("\n", reqs));
             }
 
             em
-                .AddField(fb => fb.WithName(GetText("usage", guild))
-                    .WithValue(string.Join("\n", Array.ConvertAll(com.RealRemarksArr(_strings, guild?.Id, prefix),
-                        arg => Format.Code(arg))))
-                    .WithIsInline(false))
+                .AddField(GetText("usage", guild),
+                    string.Join("\n", Array.ConvertAll(com.RealRemarksArr(_strings, guild?.Id, prefix),
+                        arg => Format.Code(arg))),
+                    false)
                 .WithFooter(GetText("module", guild, com.Module.GetTopLevelModule().Name))
                 .WithColor(Bot.OkColor);
 

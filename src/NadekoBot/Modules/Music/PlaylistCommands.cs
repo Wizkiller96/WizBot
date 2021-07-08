@@ -162,11 +162,11 @@ namespace NadekoBot.Modules.Music
                     await uow.SaveChangesAsync();
                 }
 
-                await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                        .WithTitle(GetText("playlist_saved"))
-                        .AddField(efb => efb.WithName(GetText("name")).WithValue(name))
-                        .AddField(efb => efb.WithName(GetText("id")).WithValue(playlist.Id.ToString())))
-                    .ConfigureAwait(false);
+                await ctx.Channel.EmbedAsync(new EmbedBuilder()
+                    .WithOkColor()
+                    .WithTitle(GetText("playlist_saved"))
+                    .AddField(GetText("name"), name)
+                    .AddField(GetText("id"), playlist.Id.ToString()));
             }
 
 

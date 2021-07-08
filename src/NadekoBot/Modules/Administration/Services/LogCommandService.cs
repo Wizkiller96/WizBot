@@ -595,12 +595,10 @@ namespace NadekoBot.Modules.Administration.Services
                         if (before.Nickname != after.Nickname)
                         {
                             embed.WithAuthor("👥 " + GetText(logChannel.Guild, "nick_change"))
-                                .AddField(efb =>
-                                    efb.WithName(GetText(logChannel.Guild, "old_nick"))
-                                        .WithValue($"{before.Nickname}#{before.Discriminator}"))
-                                .AddField(efb =>
-                                    efb.WithName(GetText(logChannel.Guild, "new_nick"))
-                                        .WithValue($"{after.Nickname}#{after.Discriminator}"));
+                                .AddField(GetText(logChannel.Guild, "old_nick")
+                                    , $"{before.Nickname}#{before.Discriminator}")
+                                .AddField(GetText(logChannel.Guild, "new_nick")
+                                    , $"{after.Nickname}#{after.Discriminator}");
 
                             await logChannel.EmbedAsync(embed).ConfigureAwait(false);
                         }
@@ -703,19 +701,14 @@ namespace NadekoBot.Modules.Administration.Services
                     {
                         embed.WithTitle("ℹ️ " + GetText(logChannel.Guild, "ch_name_change"))
                             .WithDescription($"{after} | {after.Id}")
-                            .AddField(efb =>
-                                efb.WithName(GetText(logChannel.Guild, "ch_old_name")).WithValue(before.Name));
+                            .AddField(GetText(logChannel.Guild, "ch_old_name"), before.Name);
                     }
                     else if (beforeTextChannel?.Topic != afterTextChannel?.Topic)
                     {
                         embed.WithTitle("ℹ️ " + GetText(logChannel.Guild, "ch_topic_change"))
                             .WithDescription($"{after} | {after.Id}")
-                            .AddField(efb =>
-                                efb.WithName(GetText(logChannel.Guild, "old_topic"))
-                                    .WithValue(beforeTextChannel?.Topic ?? "-"))
-                            .AddField(efb =>
-                                efb.WithName(GetText(logChannel.Guild, "new_topic"))
-                                    .WithValue(afterTextChannel?.Topic ?? "-"));
+                            .AddField(GetText(logChannel.Guild, "old_topic") , beforeTextChannel?.Topic ?? "-")
+                            .AddField(GetText(logChannel.Guild, "new_topic"), afterTextChannel?.Topic ?? "-");
                     }
                     else
                         return;
@@ -931,7 +924,7 @@ namespace NadekoBot.Modules.Administration.Services
                         .WithOkColor()
                         .WithTitle("❌ " + GetText(logChannel.Guild, "user_left"))
                         .WithDescription(usr.ToString())
-                        .AddField(efb => efb.WithName("Id").WithValue(usr.Id.ToString()))
+                        .AddField("Id", usr.Id.ToString())
                         .WithFooter(CurrentTime(usr.Guild));
 
                     if (Uri.IsWellFormedUriString(usr.GetAvatarUrl(), UriKind.Absolute))
@@ -966,13 +959,13 @@ namespace NadekoBot.Modules.Administration.Services
                         .WithOkColor()
                         .WithTitle("✅ " + GetText(logChannel.Guild, "user_joined"))
                         .WithDescription($"{usr.Mention} `{usr}`")
-                        .AddField(efb => efb.WithName("Id").WithValue(usr.Id.ToString()))
-                        .AddField(fb =>
-                            fb.WithName(GetText(logChannel.Guild, "joined_server"))
-                                .WithValue($"{usr.JoinedAt?.ToString("dd.MM.yyyy HH:mm") ?? "?"}").WithIsInline(true))
-                        .AddField(fb =>
-                            fb.WithName(GetText(logChannel.Guild, "joined_discord"))
-                                .WithValue($"{usr.CreatedAt:dd.MM.yyyy HH:mm}").WithIsInline(true))
+                        .AddField("Id", usr.Id.ToString())
+                        .AddField(GetText(logChannel.Guild, "joined_server"),
+                            $"{usr.JoinedAt?.ToString("dd.MM.yyyy HH:mm" ?? "?")}",
+                            true)
+                        .AddField(GetText(logChannel.Guild, "joined_discord"),
+                            $"{usr.CreatedAt:dd.MM.yyyy HH:mm}",
+                            true)
                         .WithFooter(CurrentTime(usr.Guild));
 
                     if (Uri.IsWellFormedUriString(usr.GetAvatarUrl(), UriKind.Absolute))
@@ -1006,7 +999,7 @@ namespace NadekoBot.Modules.Administration.Services
                         .WithOkColor()
                         .WithTitle("♻️ " + GetText(logChannel.Guild, "user_unbanned"))
                         .WithDescription(usr.ToString())
-                        .AddField(efb => efb.WithName("Id").WithValue(usr.Id.ToString()))
+                        .AddField("Id", usr.Id.ToString())
                         .WithFooter(CurrentTime(guild));
 
                     if (Uri.IsWellFormedUriString(usr.GetAvatarUrl(), UriKind.Absolute))
@@ -1041,7 +1034,7 @@ namespace NadekoBot.Modules.Administration.Services
                         .WithOkColor()
                         .WithTitle("🚫 " + GetText(logChannel.Guild, "user_banned"))
                         .WithDescription(usr.ToString())
-                        .AddField(efb => efb.WithName("Id").WithValue(usr.Id.ToString()))
+                        .AddField("Id", usr.Id.ToString())
                         .WithFooter(CurrentTime(guild));
 
                     var avatarUrl = usr.GetAvatarUrl();
@@ -1090,16 +1083,15 @@ namespace NadekoBot.Modules.Administration.Services
                         .WithOkColor()
                         .WithTitle("🗑 " + GetText(logChannel.Guild, "msg_del", ((ITextChannel) msg.Channel).Name))
                         .WithDescription(msg.Author.ToString())
-                        .AddField(efb =>
-                            efb.WithName(GetText(logChannel.Guild, "content"))
-                                .WithValue(string.IsNullOrWhiteSpace(resolvedMessage) ? "-" : resolvedMessage)
-                                .WithIsInline(false))
+                        .AddField(GetText(logChannel.Guild, "content"),
+                            string.IsNullOrWhiteSpace(resolvedMessage) ? "-" : resolvedMessage,
+                            false)
                         .AddField("Id", msg.Id.ToString(), false)
                         .WithFooter(CurrentTime(channel.Guild));
                     if (msg.Attachments.Any())
-                        embed.AddField(efb =>
-                            efb.WithName(GetText(logChannel.Guild, "attachments"))
-                                .WithValue(string.Join(", ", msg.Attachments.Select(a => a.Url))).WithIsInline(false));
+                        embed.AddField(GetText(logChannel.Guild, "attachments"),
+                            string.Join(", ", msg.Attachments.Select(a => a.Url)),
+                            false);
 
                     await logChannel.EmbedAsync(embed).ConfigureAwait(false);
                 }
@@ -1146,18 +1138,19 @@ namespace NadekoBot.Modules.Administration.Services
 
                     var embed = new EmbedBuilder()
                         .WithOkColor()
-                        .WithTitle("📝 " + GetText(logChannel.Guild, "msg_update", ((ITextChannel) after.Channel).Name))
+                        .WithTitle("📝 " + GetText(logChannel.Guild, "msg_update", ((ITextChannel)after.Channel).Name))
                         .WithDescription(after.Author.ToString())
-                        .AddField(efb =>
-                            efb.WithName(GetText(logChannel.Guild, "old_msg"))
-                                .WithValue(string.IsNullOrWhiteSpace(before.Content)
-                                    ? "-"
-                                    : before.Resolve(userHandling: TagHandling.FullName)).WithIsInline(false))
-                        .AddField(efb =>
-                            efb.WithName(GetText(logChannel.Guild, "new_msg"))
-                                .WithValue(string.IsNullOrWhiteSpace(after.Content)
-                                    ? "-"
-                                    : after.Resolve(userHandling: TagHandling.FullName)).WithIsInline(false))
+                        .AddField(GetText(logChannel.Guild, "old_msg"),
+                            string.IsNullOrWhiteSpace(before.Content)
+                                ? "-"
+                                : before.Resolve(userHandling: TagHandling.FullName),
+                            false)
+                        .AddField(
+                            GetText(logChannel.Guild, "new_msg"),
+                            string.IsNullOrWhiteSpace(after.Content)
+                                ? "-"
+                                : after.Resolve(userHandling: TagHandling.FullName),
+                            false)
                         .AddField("Id", after.Id.ToString(), false)
                         .WithFooter(CurrentTime(channel.Guild));
 

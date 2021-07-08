@@ -44,8 +44,8 @@ namespace NadekoBot.Modules.CustomReactions
             await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                 .WithTitle(GetText("new_cust_react"))
                 .WithDescription($"#{(kwum)cr.Id}")
-                .AddField(efb => efb.WithName(GetText("trigger")).WithValue(key))
-                .AddField(efb => efb.WithName(GetText("response")).WithValue(message.Length > 1024 ? GetText("redacted_too_long") : message))
+                .AddField(GetText("trigger"), key)
+                .AddField(GetText("response"), message.Length > 1024 ? GetText("redacted_too_long") : message)
                 ).ConfigureAwait(false);
         }
 
@@ -68,8 +68,8 @@ namespace NadekoBot.Modules.CustomReactions
                 await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                     .WithTitle(GetText("edited_cust_react"))
                     .WithDescription($"#{id}")
-                    .AddField(efb => efb.WithName(GetText("trigger")).WithValue(cr.Trigger))
-                    .AddField(efb => efb.WithName(GetText("response")).WithValue(message.Length > 1024 ? GetText("redacted_too_long") : message))
+                    .AddField(GetText("trigger"), cr.Trigger)
+                    .AddField(GetText("response"), message.Length > 1024 ? GetText("redacted_too_long") : message)
                     ).ConfigureAwait(false);
             }
             else
@@ -148,8 +148,8 @@ namespace NadekoBot.Modules.CustomReactions
             {
                 await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                     .WithDescription($"#{id}")
-                    .AddField(efb => efb.WithName(GetText("trigger")).WithValue(found.Trigger.TrimTo(1024)))
-                    .AddField(efb => efb.WithName(GetText("response")).WithValue((found.Response + "\n```css\n" + found.Response).TrimTo(1020) + "```"))
+                    .AddField(GetText("trigger"), found.Trigger.TrimTo(1024))
+                    .AddField(GetText("response"), (found.Response + "\n```css\n" + found.Response).TrimTo(1020) + "```")
                     ).ConfigureAwait(false);
             }
         }
@@ -170,8 +170,8 @@ namespace NadekoBot.Modules.CustomReactions
                 await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
                     .WithTitle(GetText("deleted"))
                     .WithDescription($"#{id}")
-                    .AddField(efb => efb.WithName(GetText("trigger")).WithValue(cr.Trigger.TrimTo(1024)))
-                    .AddField(efb => efb.WithName(GetText("response")).WithValue(cr.Response.TrimTo(1024)))).ConfigureAwait(false);
+                    .AddField(GetText("trigger"), cr.Trigger.TrimTo(1024))
+                    .AddField(GetText("response"), cr.Response.TrimTo(1024))).ConfigureAwait(false);
             }
             else
             {

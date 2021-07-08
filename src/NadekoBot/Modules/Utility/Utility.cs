@@ -273,9 +273,9 @@ namespace NadekoBot.Modules.Utility
                         .AddField(GetText("memory"), $"{_stats.Heap} MB", true)
                         .AddField(GetText("owner_ids"), ownerIds, true)
                         .AddField(GetText("uptime"), _stats.GetUptimeString("\n"), true)
-                        .AddField(efb => efb.WithName(GetText("presence")).WithValue(
+                        .AddField(GetText("presence"), 
                             GetText("presence_txt",
-                                _coord.GetGuildCount(), _stats.TextChannels, _stats.VoiceChannels)).WithIsInline(true)))
+                                _coord.GetGuildCount(), _stats.TextChannels, _stats.VoiceChannels), true))
                 .ConfigureAwait(false);
         }
 
@@ -309,13 +309,13 @@ namespace NadekoBot.Modules.Utility
                 return;
             }
 
-            await ctx.Channel.EmbedAsync(guilds.Aggregate(new EmbedBuilder().WithOkColor(),
-                                     (embed, g) => embed.AddField(efb => efb.WithName(g.Name)
-                                                                           .WithValue(
-                                             GetText("listservers", g.Id, g.MemberCount,
-                                                 g.OwnerId))
-                                                                           .WithIsInline(false))))
-                         .ConfigureAwait(false);
+            var embed = new EmbedBuilder().WithOkColor();
+            foreach (var guild in guilds)
+                embed.AddField(guild.Name,
+                    GetText("listservers", guild.Id, guild.MemberCount, guild.OwnerId),
+                    false);
+
+            await ctx.Channel.EmbedAsync(embed);
         }
 
 
