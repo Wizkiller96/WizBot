@@ -36,7 +36,7 @@ namespace NadekoBot.Modules.Searches
                             var comic = JsonConvert.DeserializeObject<XkcdComic>(res);
                             var embed = new EmbedBuilder().WithColor(Bot.OkColor)
                                                       .WithImageUrl(comic.ImageLink)
-                                                      .WithAuthor(eab => eab.WithName(comic.Title).WithUrl($"{_xkcdUrl}/{comic.Num}").WithIconUrl("https://xkcd.com/s/919f27.ico"))
+                                                      .WithAuthor(comic.Title,"https://xkcd.com/s/919f27.ico", $"{_xkcdUrl}/{comic.Num}")
                                                       .AddField(GetText("comic_number"), comic.Num.ToString(), true)
                                                       .AddField(GetText("date"), $"{comic.Month}/{comic.Year}", true);
                             var sent = await ctx.Channel.EmbedAsync(embed)
@@ -69,11 +69,13 @@ namespace NadekoBot.Modules.Searches
                         var res = await http.GetStringAsync($"{_xkcdUrl}/{num}/info.0.json").ConfigureAwait(false);
 
                         var comic = JsonConvert.DeserializeObject<XkcdComic>(res);
-                        var embed = new EmbedBuilder().WithColor(Bot.OkColor)
-                                                      .WithImageUrl(comic.ImageLink)
-                                                      .WithAuthor(eab => eab.WithName(comic.Title).WithUrl($"{_xkcdUrl}/{num}").WithIconUrl("https://xkcd.com/s/919f27.ico"))
-                                                      .AddField(GetText("comic_number"), comic.Num.ToString(), true)
-                                                      .AddField(GetText("date"), $"{comic.Month}/{comic.Year}", true);
+                        var embed = new EmbedBuilder()
+                            .WithColor(Bot.OkColor)
+                            .WithImageUrl(comic.ImageLink)
+                            .WithAuthor(comic.Title, "https://xkcd.com/s/919f27.ico", $"{_xkcdUrl}/{num}")
+                            .AddField(GetText("comic_number"), comic.Num.ToString(), true)
+                            .AddField(GetText("date"), $"{comic.Month}/{comic.Year}", true);
+                        
                         var sent = await ctx.Channel.EmbedAsync(embed)
                                      .ConfigureAwait(false);
 

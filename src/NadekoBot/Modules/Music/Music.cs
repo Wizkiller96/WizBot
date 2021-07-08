@@ -9,7 +9,6 @@ using NadekoBot.Common;
 using NadekoBot.Common.Attributes;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Extensions;
-using NadekoBot.Modules;
 using NadekoBot.Modules.Administration.Services;
 using NadekoBot.Modules.Music.Services;
 
@@ -18,6 +17,7 @@ namespace NadekoBot.Modules.Music
     [NoPublicBot]
     public sealed partial class Music : NadekoModule<IMusicService>
     {
+        public const string MusicIconUrl = "http://i.imgur.com/nhKS3PT.png";
         private readonly ILogCommandService _logService;
 
         public Music(ILogCommandService _logService)
@@ -114,9 +114,9 @@ namespace NadekoBot.Modules.Music
             {
                 var embed = new EmbedBuilder()
                     .WithOkColor()
-                    .WithAuthor(eab => eab.WithName(GetText("queued_song") + " #" + (index + 1)).WithMusicIcon())
+                    .WithAuthor(GetText("queued_song") + " #" + (index + 1), MusicIconUrl)
                     .WithDescription($"{trackInfo.PrettyName()}\n{GetText("queue")} ")
-                    .WithFooter(ef => ef.WithText(trackInfo.Platform.ToString()));
+                    .WithFooter(trackInfo.Platform.ToString());
 
                 if (!string.IsNullOrWhiteSpace(trackInfo.Thumbnail))
                     embed.WithThumbnailUrl(trackInfo.Thumbnail);
@@ -329,9 +329,8 @@ namespace NadekoBot.Modules.Music
                     desc = add + "\n" + desc;
 
                 var embed = new EmbedBuilder()
-                    .WithAuthor(eab => eab
-                        .WithName(GetText("player_queue", curPage + 1, (tracks.Count / LQ_ITEMS_PER_PAGE) + 1))
-                        .WithMusicIcon())
+                    .WithAuthor(GetText("player_queue", curPage + 1, (tracks.Count / LQ_ITEMS_PER_PAGE) + 1),
+                        MusicIconUrl)
                     .WithDescription(desc)
                     .WithFooter($"  {mp.PrettyVolume()}  |  🎶 {tracks.Count}  |  ⌛ {mp.PrettyTotalTime()}  ")
                     .WithOkColor();
@@ -432,9 +431,9 @@ namespace NadekoBot.Modules.Music
             }
             
             var embed = new EmbedBuilder()
-                .WithAuthor(eab => eab.WithName(GetText("removed_song") + " #" + (index)).WithMusicIcon())
+                .WithAuthor(GetText("removed_song") + " #" + (index), MusicIconUrl)
                 .WithDescription(song.PrettyName())
-                .WithFooter(ef => ef.WithText(song.PrettyInfo()))
+                .WithFooter(song.PrettyInfo())
                 .WithErrorColor();
 
             await _service.SendToOutputAsync(Context.Guild.Id, embed);
@@ -616,7 +615,7 @@ namespace NadekoBot.Modules.Music
              
              var embed = new EmbedBuilder()
                  .WithTitle(track.Title.TrimTo(65))
-                 .WithAuthor(eab => eab.WithName(GetText("song_moved")).WithIconUrl("https://cdn.discordapp.com/attachments/155726317222887425/258605269972549642/music1.png"))
+                 .WithAuthor(GetText("song_moved"), MusicIconUrl)
                  .AddField(GetText("from_position"), $"#{from + 1}", true)
                  .AddField(GetText("to_position"), $"#{to + 1}", true)
                  .WithColor(Bot.OkColor);
@@ -703,7 +702,7 @@ namespace NadekoBot.Modules.Music
                  return;
 
              var embed = new EmbedBuilder().WithOkColor()
-                 .WithAuthor(eab => eab.WithName(GetText("now_playing")).WithMusicIcon())
+                 .WithAuthor(GetText("now_playing"), MusicIconUrl)
                  .WithDescription(currentTrack.PrettyName())
                  .WithThumbnailUrl(currentTrack.Thumbnail)
                  .WithFooter($"{mp.PrettyVolume()} | {mp.PrettyTotalTime()} | {currentTrack.Platform} | {currentTrack.Queuer}");

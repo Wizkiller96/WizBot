@@ -28,12 +28,10 @@ namespace NadekoBot.Modules.Searches
             private const string _pogiURL = "https://pathofexile.gamepedia.com/api.php?action=query&prop=imageinfo&iiprop=url&format=json&titles=File:";
             private const string _profileURL = "https://www.pathofexile.com/account/view-profile/";
 
-            private readonly DiscordSocketClient _client;
             private readonly IHttpClientFactory _httpFactory;
 
-            public PathOfExileCommands(DiscordSocketClient client, IHttpClientFactory httpFactory)
+            public PathOfExileCommands(IHttpClientFactory httpFactory)
             {
-                _client = client;
                 _httpFactory = httpFactory;
             }
 
@@ -77,10 +75,10 @@ namespace NadekoBot.Modules.Searches
                 await ctx.SendPaginatedConfirmAsync(page, (curPage) =>
                 {
                     var embed = new EmbedBuilder()
-                                    .WithAuthor(eau => eau.WithName($"Characters on {usr}'s account")
-                                    .WithUrl($"{_profileURL}{usr}")
-                                    .WithIconUrl("https://web.poecdn.com/image/favicon/ogimage.png"))
-                                    .WithOkColor();
+                        .WithAuthor($"Characters on {usr}'s account",
+                            "https://web.poecdn.com/image/favicon/ogimage.png",
+                            $"{_profileURL}{usr}")
+                        .WithOkColor();
 
                     var tempList = characters.Skip(curPage * 9).Take(9).ToList();
 
@@ -131,9 +129,9 @@ namespace NadekoBot.Modules.Searches
                 }
 
                 var embed = new EmbedBuilder()
-                    .WithAuthor(eau => eau.WithName($"Path of Exile Leagues")
-                    .WithUrl("https://www.pathofexile.com")
-                    .WithIconUrl("https://web.poecdn.com/image/favicon/ogimage.png"))
+                    .WithAuthor($"Path of Exile Leagues",
+                        "https://web.poecdn.com/image/favicon/ogimage.png",
+                        "https://www.pathofexile.com")
                     .WithOkColor();
 
                 var sb = new System.Text.StringBuilder();
@@ -203,9 +201,10 @@ namespace NadekoBot.Modules.Searches
                             conversionEquivalent = float.Parse(currencyOutput["chaosEquivalent"].ToString(), System.Globalization.CultureInfo.InvariantCulture);
                         }
 
-                        var embed = new EmbedBuilder().WithAuthor(eau => eau.WithName($"{leagueName} Currency Exchange")
-                            .WithUrl("http://poe.ninja")
-                            .WithIconUrl("https://web.poecdn.com/image/favicon/ogimage.png"))
+                        var embed = new EmbedBuilder()
+                            .WithAuthor($"{leagueName} Currency Exchange",
+                                "https://web.poecdn.com/image/favicon/ogimage.png",
+                                "http://poe.ninja")
                             .AddField("Currency Type", cleanCurrency, true)
                             .AddField($"{cleanConvert} Equivalent", chaosEquivalent / conversionEquivalent, true)
                             .WithOkColor();

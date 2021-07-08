@@ -205,7 +205,7 @@ namespace NadekoBot.Modules.Music.Services
                 _ = lastFinishedMessage?.DeleteAsync();
                 var embed = new EmbedBuilder()
                     .WithOkColor()
-                    .WithAuthor(eab => eab.WithName(GetText(guildId, "finished_song")).WithMusicIcon())
+                    .WithAuthor(GetText(guildId, "finished_song"), Music.MusicIconUrl)
                     .WithDescription(trackInfo.PrettyName())
                     .WithFooter(trackInfo.PrettyTotalTime());
 
@@ -220,9 +220,9 @@ namespace NadekoBot.Modules.Music.Services
             {
                 _ = lastPlayingMessage?.DeleteAsync();
                 var embed = new EmbedBuilder().WithOkColor()
-                    .WithAuthor(eab => eab.WithName(GetText(guildId, "playing_song", index + 1)).WithMusicIcon())
+                    .WithAuthor(GetText(guildId, "playing_song", index + 1), Music.MusicIconUrl)
                     .WithDescription(trackInfo.PrettyName())
-                    .WithFooter(ef => ef.WithText($"{mp.PrettyVolume()} | {trackInfo.PrettyInfo()}"));
+                    .WithFooter($"{mp.PrettyVolume()} | {trackInfo.PrettyInfo()}");
 
                 lastPlayingMessage = await SendToOutputAsync(guildId, embed);
             };

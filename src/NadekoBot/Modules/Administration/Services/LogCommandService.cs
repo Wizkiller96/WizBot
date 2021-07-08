@@ -441,7 +441,7 @@ namespace NadekoBot.Modules.Administration.Services
                             break;
                     }
 
-                    var embed = new EmbedBuilder().WithAuthor(eab => eab.WithName(mutes))
+                    var embed = new EmbedBuilder().WithAuthor(mutes)
                         .WithTitle($"{usr.Username}#{usr.Discriminator} | {usr.Id}")
                         .WithFooter(CurrentTime(usr.Guild))
                         .WithOkColor();
@@ -486,7 +486,7 @@ namespace NadekoBot.Modules.Administration.Services
                             break;
                     }
 
-                    var embed = new EmbedBuilder().WithAuthor(eab => eab.WithName(mutes))
+                    var embed = new EmbedBuilder().WithAuthor(mutes)
                         .WithTitle($"{usr.Username}#{usr.Discriminator} | {usr.Id}")
                         .WithFooter($"{CurrentTime(usr.Guild)}")
                         .WithOkColor();
@@ -541,7 +541,7 @@ namespace NadekoBot.Modules.Administration.Services
                             break;
                     }
 
-                    var embed = new EmbedBuilder().WithAuthor(eab => eab.WithName($"🛡 Anti-{protection}"))
+                    var embed = new EmbedBuilder().WithAuthor($"🛡 Anti-{protection}")
                         .WithTitle(GetText(logChannel.Guild, "users") + " " + punishment)
                         .WithDescription(string.Join("\n", users.Select(u => u.ToString())))
                         .WithFooter(CurrentTime(logChannel.Guild))
@@ -594,7 +594,7 @@ namespace NadekoBot.Modules.Administration.Services
                             .WithTitle($"{before.Username}#{before.Discriminator} | {before.Id}");
                         if (before.Nickname != after.Nickname)
                         {
-                            embed.WithAuthor(eab => eab.WithName("👥 " + GetText(logChannel.Guild, "nick_change")))
+                            embed.WithAuthor("👥 " + GetText(logChannel.Guild, "nick_change"))
                                 .AddField(efb =>
                                     efb.WithName(GetText(logChannel.Guild, "old_nick"))
                                         .WithValue($"{before.Nickname}#{before.Discriminator}"))
@@ -609,7 +609,7 @@ namespace NadekoBot.Modules.Administration.Services
                             if (before.Roles.Count < after.Roles.Count)
                             {
                                 var diffRoles = after.Roles.Where(r => !before.Roles.Contains(r)).Select(r => r.Name);
-                                embed.WithAuthor(eab => eab.WithName("⚔ " + GetText(logChannel.Guild, "user_role_add")))
+                                embed.WithAuthor("⚔ " + GetText(logChannel.Guild, "user_role_add"))
                                     .WithDescription(string.Join(", ", diffRoles).SanitizeMentions());
 
                                 await logChannel.EmbedAsync(embed).ConfigureAwait(false);
@@ -624,8 +624,7 @@ namespace NadekoBot.Modules.Administration.Services
 
                                 if (diffRoles.Any())
                                 {
-                                    embed.WithAuthor(eab =>
-                                            eab.WithName("⚔ " + GetText(logChannel.Guild, "user_role_rem")))
+                                    embed.WithAuthor("⚔ " + GetText(logChannel.Guild, "user_role_rem"))
                                         .WithDescription(string.Join(", ", diffRoles).SanitizeMentions());
 
                                     await logChannel.EmbedAsync(embed).ConfigureAwait(false);

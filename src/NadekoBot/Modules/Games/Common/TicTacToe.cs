@@ -96,7 +96,7 @@ namespace NadekoBot.Modules.Games.Common
             var embed = new EmbedBuilder()
                 .WithOkColor()
                 .WithDescription(Environment.NewLine + GetState())
-                .WithAuthor(eab => eab.WithName(GetText("vs", _users[0], _users[1])));
+                .WithAuthor(GetText("vs", _users[0], _users[1]));
 
             if (!string.IsNullOrWhiteSpace(title))
                 embed.WithTitle(title);

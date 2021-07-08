@@ -174,7 +174,7 @@ namespace NadekoBot.Modules.Games.Common.Trivia
             ShouldStopGame = true;
 
             await Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                    .WithAuthor(eab => eab.WithName("Trivia Game Ended"))
+                    .WithAuthor("Trivia Game Ended")
                     .WithTitle("Final Results")
                     .WithDescription(GetLeaderboard())).ConfigureAwait(false);
         }

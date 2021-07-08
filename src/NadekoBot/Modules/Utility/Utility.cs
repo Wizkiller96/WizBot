@@ -260,21 +260,23 @@ namespace NadekoBot.Modules.Utility
                 ownerIds = "-";
 
             await ctx.Channel.EmbedAsync(
-                new EmbedBuilder().WithOkColor()
-                    .WithAuthor(eab => eab.WithName($"NadekoBot v{StatsService.BotVersion}")
-                                          .WithUrl("http://nadekobot.readthedocs.io/en/latest/")
-                                          .WithIconUrl("https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/avatar.png"))
-                    .AddField(GetText("author"), _stats.Author, true)
-                    .AddField(GetText("botid"), _client.CurrentUser.Id.ToString(), true)
-                    .AddField(GetText("shard"), $"#{_client.ShardId} / {_creds.TotalShards}", true)
-                    .AddField(GetText("commands_ran"), _stats.CommandsRan.ToString(), true)
-                    .AddField(GetText("messages"), $"{_stats.MessageCounter} ({_stats.MessagesPerSecond:F2}/sec)", true)
-                    .AddField(GetText("memory"), $"{_stats.Heap} MB", true)
-                    .AddField(GetText("owner_ids"), ownerIds, true)
-                    .AddField(GetText("uptime"), _stats.GetUptimeString("\n"), true)
-                    .AddField(efb => efb.WithName(GetText("presence")).WithValue(
-                        GetText("presence_txt",
-                            _coord.GetGuildCount(), _stats.TextChannels, _stats.VoiceChannels)).WithIsInline(true))).ConfigureAwait(false);
+                    new EmbedBuilder().WithOkColor()
+                        .WithAuthor($"NadekoBot v{StatsService.BotVersion}",
+                            "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/avatar.png",
+                            "https://nadekobot.readthedocs.io/en/latest/")
+                        .AddField(GetText("author"), _stats.Author, true)
+                        .AddField(GetText("botid"), _client.CurrentUser.Id.ToString(), true)
+                        .AddField(GetText("shard"), $"#{_client.ShardId} / {_creds.TotalShards}", true)
+                        .AddField(GetText("commands_ran"), _stats.CommandsRan.ToString(), true)
+                        .AddField(GetText("messages"), $"{_stats.MessageCounter} ({_stats.MessagesPerSecond:F2}/sec)",
+                            true)
+                        .AddField(GetText("memory"), $"{_stats.Heap} MB", true)
+                        .AddField(GetText("owner_ids"), ownerIds, true)
+                        .AddField(GetText("uptime"), _stats.GetUptimeString("\n"), true)
+                        .AddField(efb => efb.WithName(GetText("presence")).WithValue(
+                            GetText("presence_txt",
+                                _coord.GetGuildCount(), _stats.TextChannels, _stats.VoiceChannels)).WithIsInline(true)))
+                .ConfigureAwait(false);
         }
 
         [NadekoCommand, Aliases]

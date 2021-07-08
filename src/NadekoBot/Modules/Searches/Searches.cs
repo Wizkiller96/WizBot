@@ -33,7 +33,6 @@ namespace NadekoBot.Modules.Searches
         private readonly IGoogleApiService _google;
         private readonly IHttpClientFactory _httpFactory;
         private readonly IMemoryCache _cache;
-        private static readonly NadekoRandom _rng = new NadekoRandom();
         private readonly GuildTimezoneService _tzSvc;
 
         public Searches(IBotCredentials creds, IGoogleApiService google, IHttpClientFactory factory, IMemoryCache cache,
@@ -46,7 +45,6 @@ namespace NadekoBot.Modules.Searches
             _tzSvc = tzSvc;
         }
 
-        //for anonymasen :^)
         [NadekoCommand, Aliases]
         public async Task Rip([Leftover] IGuildUser usr)
         {
@@ -224,9 +222,9 @@ namespace NadekoBot.Modules.Searches
                 var res = await _google.GetImageAsync(oterms).ConfigureAwait(false);
                 var embed = new EmbedBuilder()
                     .WithOkColor()
-                    .WithAuthor(eab => eab.WithName(GetText("image_search_for") + " " + oterms.TrimTo(50))
-                        .WithUrl("https://www.google.rs/search?q=" + query + "&source=lnms&tbm=isch")
-                        .WithIconUrl("http://i.imgur.com/G46fm8J.png"))
+                    .WithAuthor(GetText("image_search_for") + " " + oterms.TrimTo(50),
+                        "http://i.imgur.com/G46fm8J.png",
+                        $"https://www.google.rs/search?q={query}&source=lnms&tbm=isch")
                     .WithDescription(res.Link)
                     .WithImageUrl(res.Link)
                     .WithTitle(ctx.User.ToString());
@@ -254,9 +252,9 @@ namespace NadekoBot.Modules.Searches
 
                     var embed = new EmbedBuilder()
                         .WithOkColor()
-                        .WithAuthor(eab => eab.WithName(GetText("image_search_for") + " " + oterms.TrimTo(50))
-                            .WithUrl(fullQueryLink)
-                            .WithIconUrl("http://s.imgur.com/images/logo-1200-630.jpg?"))
+                        .WithAuthor(GetText("image_search_for") + " " + oterms.TrimTo(50),
+                            "http://s.imgur.com/images/logo-1200-630.jpg?",
+                            fullQueryLink)
                         .WithDescription(source)
                         .WithImageUrl(source)
                         .WithTitle(ctx.User.ToString());
@@ -474,7 +472,7 @@ namespace NadekoBot.Modules.Searches
                             var item = items[p];
                             return new EmbedBuilder().WithOkColor()
                                          .WithUrl(item.Permalink)
-                                         .WithAuthor(eab => eab.WithIconUrl("http://i.imgur.com/nwERwQE.jpg").WithName(item.Word))
+                                         .WithAuthor(item.Word)
                                          .WithDescription(item.Definition);
                         }, items.Length, 1).ConfigureAwait(false);
                         return;

@@ -47,7 +47,7 @@ namespace NadekoBot.Modules.Utility
                 if (string.IsNullOrWhiteSpace(features))
                     features = "-";
                 var embed = new EmbedBuilder()
-                    .WithAuthor(eab => eab.WithName(GetText("server_info")))
+                    .WithAuthor(GetText("server_info"))
                     .WithTitle(guild.Name)
                     .AddField(GetText("id"), guild.Id.ToString(), true)
                     .AddField(GetText("owner"), ownername.ToString(), true)
@@ -145,8 +145,7 @@ namespace NadekoBot.Modules.Utility
                 await ctx.Channel.EmbedAsync(new EmbedBuilder()
                     .WithTitle(GetText("activity_page", page + 1))
                     .WithOkColor()
-                    .WithFooter(efb => efb.WithText(GetText("activity_users_total",
-                        CmdHandler.UserMessagesSent.Count)))
+                    .WithFooter(GetText("activity_users_total", CmdHandler.UserMessagesSent.Count))
                     .WithDescription(str.ToString())).ConfigureAwait(false);
             }
         }
