@@ -38,7 +38,7 @@ namespace NadekoBot.Modules.Games
             if (listArr.Length < 2)
                 return;
             var rng = new NadekoRandom();
-            await ctx.Channel.SendConfirmAsync("🤔", listArr[rng.Next(0, listArr.Length)]).ConfigureAwait(false);
+            await SendConfirmAsync("🤔", listArr[rng.Next(0, listArr.Length)]).ConfigureAwait(false);
         }
 
         [NadekoCommand, Aliases]
@@ -48,7 +48,7 @@ namespace NadekoBot.Modules.Games
                 return;
 
             var res = _service.GetEightballResponse(ctx.User.Id, question);
-            await ctx.Channel.EmbedAsync(new EmbedBuilder().WithColor(Bot.OkColor)
+            await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
                 .WithDescription(ctx.User.ToString())
                 .AddField("❓ " + GetText("question"), question, false)
                 .AddField("🎱 " + GetText("8ball"), res, false));
@@ -78,7 +78,7 @@ namespace NadekoBot.Modules.Games
                 await ctx.Channel.SendFileAsync(stream: imgStream,
                     filename: $"girl_{usr}.png",
                     text: Format.Bold($"{ctx.User.Mention} Girl Rating For {usr}"),
-                    embed: new EmbedBuilder()
+                    embed: _eb.Create()
                         .WithOkColor()
                         .AddField("Hot", gr.Hot.ToString("F2"), true)
                         .AddField("Crazy", gr.Crazy.ToString("F2"), true)
@@ -152,7 +152,7 @@ namespace NadekoBot.Modules.Games
         [NadekoCommand, Aliases]
         public async Task Linux(string guhnoo, string loonix)
         {
-            await ctx.Channel.SendConfirmAsync(
+            await SendConfirmAsync(
 $@"I'd just like to interject for moment. What you're refering to as {loonix}, is in fact, {guhnoo}/{loonix}, or as I've recently taken to calling it, {guhnoo} plus {loonix}. {loonix} is not an operating system unto itself, but rather another free component of a fully functioning {guhnoo} system made useful by the {guhnoo} corelibs, shell utilities and vital system components comprising a full OS as defined by POSIX.
 
 Many computer users run a modified version of the {guhnoo} system every day, without realizing it. Through a peculiar turn of events, the version of {guhnoo} which is widely used today is often called {loonix}, and many of its users are not aware that it is basically the {guhnoo} system, developed by the {guhnoo} Project.

@@ -41,7 +41,7 @@ namespace NadekoBot.Modules.Administration
             [UserPerm(GuildPerm.Administrator)]
             public async Task DiscordPermOverrideReset()
             {
-                var result = await PromptUserConfirmAsync(new EmbedBuilder()
+                var result = await PromptUserConfirmAsync(_eb.Create()
                     .WithOkColor()
                     .WithDescription(GetText("perm_override_all_confirm")));
                 
@@ -64,7 +64,7 @@ namespace NadekoBot.Modules.Administration
 
                 await ctx.SendPaginatedConfirmAsync(page, curPage =>
                 {
-                    var eb = new EmbedBuilder()
+                    var eb = _eb.Create()
                         .WithTitle(GetText("perm_overrides"))
                         .WithOkColor();
 

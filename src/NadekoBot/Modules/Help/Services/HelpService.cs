@@ -22,15 +22,20 @@ namespace NadekoBot.Modules.Help.Services
         private readonly IBotStrings _strings;
         private readonly DiscordPermOverrideService _dpos;
         private readonly BotConfigService _bss;
+        private readonly IEmbedBuilderService _eb;
         private readonly Replacer _rep;
 
-        public HelpService(CommandHandler ch, IBotStrings strings,
-            DiscordPermOverrideService dpos, BotConfigService bss)
+        public HelpService(CommandHandler ch,
+            IBotStrings strings,
+            DiscordPermOverrideService dpos,
+            BotConfigService bss,
+            IEmbedBuilderService eb)
         {
             _ch = ch;
             _strings = strings;
             _dpos = dpos;
             _bss = bss;
+            _eb = eb;
 
 
             _rep = new ReplacementBuilder()
@@ -48,14 +53,14 @@ namespace NadekoBot.Modules.Help.Services
                     return Task.CompletedTask;
                 
                 if (CREmbed.TryParse(settings.DmHelpText, out var embed))
-                    return msg.Channel.EmbedAsync(_rep.Replace(embed));
+                    return msg.Channel.EmbedAsync(_rep.Replace(embed), _eb);
                 
                 return msg.Channel.SendMessageAsync(_rep.Replace(settings.DmHelpText));
             }
             return Task.CompletedTask;
         }
 
-        public EmbedBuilder GetCommandHelp(CommandInfo com, IGuild guild)
+        public IEmbedBuilder GetCommandHelp(CommandInfo com, IGuild guild)
         {
             var prefix = _ch.GetPrefix(guild);
 
@@ -63,7 +68,7 @@ namespace NadekoBot.Modules.Help.Services
             var alias = com.Aliases.Skip(1).FirstOrDefault();
             if (alias != null)
                 str += $" **/ `{prefix + alias}`**";
-            var em = new EmbedBuilder()
+            var em = _eb.Create()
                 .AddField(str, $"{com.RealSummary(_strings, guild?.Id, prefix)}", true);
 
             _dpos.TryGetOverrides(guild?.Id ?? 0, com.Name, out var overrides);
@@ -79,7 +84,7 @@ namespace NadekoBot.Modules.Help.Services
                         arg => Format.Code(arg))),
                     false)
                 .WithFooter(GetText("module", guild, com.Module.GetTopLevelModule().Name))
-                .WithColor(Bot.OkColor);
+                .WithOkColor();
 
             var opt = ((NadekoOptionsAttribute)com.Attributes.FirstOrDefault(x => x is NadekoOptionsAttribute))?.OptionType;
             if (opt != null)

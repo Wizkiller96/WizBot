@@ -154,7 +154,7 @@ namespace NadekoBot.Modules.Administration
                         rolesStr.AppendLine();
                     }
 
-                    return new EmbedBuilder().WithOkColor()
+                    return _eb.Create().WithOkColor()
                         .WithTitle(Format.Bold(GetText("self_assign_list", roles.Count())))
                         .WithDescription(rolesStr.ToString())
                         .WithFooter(exclusive

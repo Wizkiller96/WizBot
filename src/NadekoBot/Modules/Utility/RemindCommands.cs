@@ -8,10 +8,8 @@ using NadekoBot.Common.Attributes;
 using NadekoBot.Services;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
-using NadekoBot.Db.Models;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Administration.Services;
-using NadekoBot.Modules.Utility.Common;
 using NadekoBot.Modules.Utility.Services;
 
 namespace NadekoBot.Modules.Utility
@@ -88,7 +86,7 @@ namespace NadekoBot.Modules.Utility
                 if (--page < 0)
                     return;
 
-                var embed = new EmbedBuilder()
+                var embed = _eb.Create()
                     .WithOkColor()
                     .WithTitle(GetText("reminder_list"));
 
@@ -128,7 +126,7 @@ namespace NadekoBot.Modules.Utility
                 if (--index < 0)
                     return;
 
-                var embed = new EmbedBuilder();
+                var embed = _eb.Create();
 
                 Reminder rem = null;
                 using (var uow = _db.GetDbContext())
@@ -191,7 +189,7 @@ namespace NadekoBot.Modules.Utility
                     : TimeZoneInfo.ConvertTime(time, _tz.GetTimeZoneOrUtc(ctx.Guild.Id));
                 try
                 {
-                    await ctx.Channel.SendConfirmAsync(
+                    await SendConfirmAsync(
                         "⏰ " + GetText("remind",
                             Format.Bold(!isPrivate ? $"<#{targetId}>" : ctx.User.Username),
                             Format.Bold(message),

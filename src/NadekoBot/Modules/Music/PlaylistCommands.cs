@@ -61,11 +61,13 @@ namespace NadekoBot.Modules.Music
                     playlists = uow.MusicPlaylists.GetPlaylistsOnPage(num);
                 }
 
-                var embed = new EmbedBuilder()
+                var embed = _eb
+                    .Create(ctx)
                     .WithAuthor(GetText("playlists_page", num), MusicIconUrl)
                     .WithDescription(string.Join("\n", playlists.Select(r =>
                         GetText("playlists", r.Id, r.Name, r.Author, r.Songs.Count))))
                     .WithOkColor();
+                
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
 
@@ -122,7 +124,7 @@ namespace NadekoBot.Modules.Music
                         .Skip(cur * 20)
                         .Take(20)
                         .Select(x => $"`{++i}.` [{x.Title.TrimTo(45)}]({x.Query}) `{x.Provider}`"));
-                    return new EmbedBuilder()
+                    return _eb.Create()
                         .WithTitle($"\"{mpl.Name}\" by {mpl.Author}")
                         .WithOkColor()
                         .WithDescription(str);
@@ -162,7 +164,7 @@ namespace NadekoBot.Modules.Music
                     await uow.SaveChangesAsync();
                 }
 
-                await ctx.Channel.EmbedAsync(new EmbedBuilder()
+                await ctx.Channel.EmbedAsync(_eb.Create()
                     .WithOkColor()
                     .WithTitle(GetText("playlist_saved"))
                     .AddField(GetText("name"), name)

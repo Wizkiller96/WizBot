@@ -63,13 +63,13 @@ namespace NadekoBot.Modules.NSFW
 
             } while (img is null);
 
-            await channel.EmbedAsync(new EmbedBuilder().WithOkColor()
+            await channel.EmbedAsync(_eb.Create().WithOkColor()
                 .WithImageUrl(img.FileUrl)
                 .WithDescription($"[{GetText("tag")}: {tag}]({img})"))
                 .ConfigureAwait(false);
         }
 
-        private async Task InternalBoobs(IMessageChannel Channel)
+        private async Task InternalBoobs()
         {
             try
             {
@@ -78,11 +78,11 @@ namespace NadekoBot.Modules.NSFW
                 {
                     obj = JArray.Parse(await http.GetStringAsync($"http://api.oboobs.ru/boobs/{new NadekoRandom().Next(0, 10330)}").ConfigureAwait(false))[0];
                 }
-                await Channel.SendMessageAsync($"http://media.oboobs.ru/{obj["preview"]}").ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync($"http://media.oboobs.ru/{obj["preview"]}").ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                await Channel.SendErrorAsync(ex.Message).ConfigureAwait(false);
+                await SendErrorAsync(ex.Message).ConfigureAwait(false);
             }
         }
         private async Task InternalButts(IMessageChannel Channel)
@@ -98,7 +98,7 @@ namespace NadekoBot.Modules.NSFW
             }
             catch (Exception ex)
             {
-                await Channel.SendErrorAsync(ex.Message).ConfigureAwait(false);
+                await SendErrorAsync(ex.Message).ConfigureAwait(false);
             }
         }
 
@@ -175,7 +175,7 @@ namespace NadekoBot.Modules.NSFW
             {
                 try
                 {
-                    await InternalBoobs(ctx.Channel).ConfigureAwait(false);
+                    await InternalBoobs().ConfigureAwait(false);
                 }
                 catch
                 {
@@ -321,7 +321,7 @@ namespace NadekoBot.Modules.NSFW
             }
             catch (Exception ex)
             {
-                await ctx.Channel.SendErrorAsync(ex.Message).ConfigureAwait(false);
+                await SendErrorAsync(ex.Message).ConfigureAwait(false);
             }
         }
 
@@ -340,7 +340,7 @@ namespace NadekoBot.Modules.NSFW
             }
             catch (Exception ex)
             {
-                await ctx.Channel.SendErrorAsync(ex.Message).ConfigureAwait(false);
+                await SendErrorAsync(ex.Message).ConfigureAwait(false);
             }
         }
 
@@ -352,7 +352,7 @@ namespace NadekoBot.Modules.NSFW
             if (string.IsNullOrWhiteSpace(tag))
             {
                 var blTags = _service.GetBlacklistedTags(ctx.Guild.Id);
-                await ctx.Channel.SendConfirmAsync(GetText("blacklisted_tag_list"),
+                await SendConfirmAsync(GetText("blacklisted_tag_list"),
                     blTags.Any()
                     ? string.Join(", ", blTags)
                     : "-").ConfigureAwait(false);
@@ -419,7 +419,7 @@ namespace NadekoBot.Modules.NSFW
                 .TakeWhile(tag => (count += tag.Length) < 1000)
                 .JoinWith(" ");
             
-            var embed = new EmbedBuilder()
+            var embed = _eb.Create()
                 .WithTitle(g.Title)
                 .WithDescription(g.FullTitle)
                 .WithImageUrl(g.Thumbnail)
@@ -443,7 +443,7 @@ namespace NadekoBot.Modules.NSFW
                 await ReplyErrorLocalizedAsync("no_results").ConfigureAwait(false);
             else
             {
-                var embed = new EmbedBuilder().WithOkColor()
+                var embed = _eb.Create().WithOkColor()
                     .WithDescription($"{ctx.User} [{tag ?? "url"}]({imgObj}) ")
                     .WithFooter(type.ToString());
 

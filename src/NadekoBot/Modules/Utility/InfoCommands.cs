@@ -46,7 +46,7 @@ namespace NadekoBot.Modules.Utility
                 var features = string.Join("\n", guild.Features);
                 if (string.IsNullOrWhiteSpace(features))
                     features = "-";
-                var embed = new EmbedBuilder()
+                var embed = _eb.Create()
                     .WithAuthor(GetText("server_info"))
                     .WithTitle(guild.Name)
                     .AddField(GetText("id"), guild.Id.ToString(), true)
@@ -58,7 +58,7 @@ namespace NadekoBot.Modules.Utility
                     .AddField(GetText("region"), guild.VoiceRegionId.ToString(), true)
                     .AddField(GetText("roles"), (guild.Roles.Count - 1).ToString(), true)
                     .AddField(GetText("features"), features, true)
-                    .WithColor(Bot.OkColor);
+                    .WithOkColor();
                 if (Uri.IsWellFormedUriString(guild.IconUrl, UriKind.Absolute))
                     embed.WithThumbnailUrl(guild.IconUrl);
                 if (guild.Emotes.Any())
@@ -82,13 +82,13 @@ namespace NadekoBot.Modules.Utility
                     return;
                 var createdAt = new DateTime(2015, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(ch.Id >> 22);
                 var usercount = (await ch.GetUsersAsync().FlattenAsync().ConfigureAwait(false)).Count();
-                var embed = new EmbedBuilder()
+                var embed = _eb.Create()
                     .WithTitle(ch.Name)
                     .WithDescription(ch.Topic?.SanitizeMentions(true))
                     .AddField(GetText("id"), ch.Id.ToString(), true)
                     .AddField(GetText("created_at"), $"{createdAt:dd.MM.yyyy HH:mm}", true)
                     .AddField(GetText("users"), usercount.ToString(), true)
-                    .WithColor(Bot.OkColor);
+                    .WithOkColor();
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
 
@@ -101,7 +101,7 @@ namespace NadekoBot.Modules.Utility
                 if (user is null)
                     return;
 
-                var embed = new EmbedBuilder()
+                var embed = _eb.Create()
                     .AddField(GetText("name"), $"**{user.Username}**#{user.Discriminator}", true);
                 if (!string.IsNullOrWhiteSpace(user.Nickname))
                 {
@@ -111,7 +111,7 @@ namespace NadekoBot.Modules.Utility
                     .AddField(GetText("joined_server"), $"{user.JoinedAt?.ToString("dd.MM.yyyy HH:mm") ?? "?"}", true)
                     .AddField(GetText("joined_discord"), $"{user.CreatedAt:dd.MM.yyyy HH:mm}", true)
                     .AddField(GetText("roles"), $"**({user.RoleIds.Count - 1})** - {string.Join("\n", user.GetRoles().Take(10).Where(r => r.Id != r.Guild.EveryoneRole.Id).Select(r => r.Name)).SanitizeMentions(true)}", true)
-                    .WithColor(Bot.OkColor);
+                    .WithOkColor();
 
                 var av = user.RealAvatarUrl();
                 if (av != null && av.IsAbsoluteUri)
@@ -141,7 +141,7 @@ namespace NadekoBot.Modules.Utility
                         kvp.Value / _stats.GetUptime().TotalSeconds, kvp.Value));
                 }
 
-                await ctx.Channel.EmbedAsync(new EmbedBuilder()
+                await ctx.Channel.EmbedAsync(_eb.Create()
                     .WithTitle(GetText("activity_page", page + 1))
                     .WithOkColor()
                     .WithFooter(GetText("activity_users_total", CmdHandler.UserMessagesSent.Count))

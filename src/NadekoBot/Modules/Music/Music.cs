@@ -112,7 +112,7 @@ namespace NadekoBot.Modules.Music
 
             try
             {
-                var embed = new EmbedBuilder()
+                var embed = _eb.Create()
                     .WithOkColor()
                     .WithAuthor(GetText("queued_song") + " #" + (index + 1), MusicIconUrl)
                     .WithDescription($"{trackInfo.PrettyName()}\n{GetText("queue")} ")
@@ -281,7 +281,7 @@ namespace NadekoBot.Modules.Music
                 return;
             }
             
-            EmbedBuilder printAction(int curPage)
+            IEmbedBuilder printAction(int curPage)
             {
                 string desc = string.Empty;
                 var current = mp.GetCurrentTrack(out var currentIndex);
@@ -328,7 +328,7 @@ namespace NadekoBot.Modules.Music
                 if (!string.IsNullOrWhiteSpace(add))
                     desc = add + "\n" + desc;
 
-                var embed = new EmbedBuilder()
+                var embed = _eb.Create()
                     .WithAuthor(GetText("player_queue", curPage + 1, (tracks.Count / LQ_ITEMS_PER_PAGE) + 1),
                         MusicIconUrl)
                     .WithDescription(desc)
@@ -365,7 +365,7 @@ namespace NadekoBot.Modules.Music
                 .Select((x, i) => $"`{i + 1}.`\n\t{Format.Bold(x.Title)}\n\t{x.Url}")
                 .JoinWith('\n');
             
-            var msg = await ctx.Channel.SendConfirmAsync(resultsString);
+            var msg = await SendConfirmAsync(resultsString);
 
             try
             {
@@ -430,7 +430,7 @@ namespace NadekoBot.Modules.Music
                 return;
             }
             
-            var embed = new EmbedBuilder()
+            var embed = _eb.Create()
                 .WithAuthor(GetText("removed_song") + " #" + (index), MusicIconUrl)
                 .WithDescription(song.PrettyName())
                 .WithFooter(song.PrettyInfo())
@@ -613,12 +613,12 @@ namespace NadekoBot.Modules.Music
                  return;
              }
              
-             var embed = new EmbedBuilder()
+             var embed = _eb.Create()
                  .WithTitle(track.Title.TrimTo(65))
                  .WithAuthor(GetText("song_moved"), MusicIconUrl)
                  .AddField(GetText("from_position"), $"#{from + 1}", true)
                  .AddField(GetText("to_position"), $"#{to + 1}", true)
-                 .WithColor(Bot.OkColor);
+                 .WithOkColor();
 
              if (Uri.IsWellFormedUriString(track.Url, UriKind.Absolute))
                  embed.WithUrl(track.Url);
@@ -701,7 +701,7 @@ namespace NadekoBot.Modules.Music
              if (currentTrack is null)
                  return;
 
-             var embed = new EmbedBuilder().WithOkColor()
+             var embed = _eb.Create().WithOkColor()
                  .WithAuthor(GetText("now_playing"), MusicIconUrl)
                  .WithDescription(currentTrack.PrettyName())
                  .WithThumbnailUrl(currentTrack.Thumbnail)

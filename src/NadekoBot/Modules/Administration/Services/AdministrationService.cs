@@ -24,12 +24,14 @@ namespace NadekoBot.Modules.Administration.Services
 
         private readonly DbService _db;
         private readonly ILogCommandService _logService;
+        private readonly IEmbedBuilderService _eb;
 
         public AdministrationService(Bot bot, CommandHandler cmdHandler, DbService db,
-            ILogCommandService logService)
+            ILogCommandService logService, IEmbedBuilderService eb)
         {
             _db = db;
             _logService = logService;
+            _eb = eb;
 
             DeleteMessagesOnCommand = new ConcurrentHashSet<ulong>(bot.AllGuildConfigs
                 .Where(g => g.DeleteMessageOnCommand)
@@ -170,7 +172,7 @@ namespace NadekoBot.Modules.Administration.Services
                 rep.Replace(crembed);
                 await umsg.ModifyAsync(x =>
                 {
-                    x.Embed = crembed.ToEmbed().Build();
+                    x.Embed = crembed.ToEmbed(_eb).Build();
                     x.Content = crembed.PlainText?.SanitizeMentions() ?? "";
                 }).ConfigureAwait(false);
             }

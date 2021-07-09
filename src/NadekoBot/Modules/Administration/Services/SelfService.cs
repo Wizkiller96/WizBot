@@ -37,6 +37,7 @@ namespace NadekoBot.Modules.Administration.Services
         private readonly IHttpClientFactory _httpFactory;
         private readonly BotConfigService _bss;
         private readonly IPubSub _pubSub;
+        private readonly IEmbedBuilderService _eb;
 
         //keys
         private readonly TypedKey<ActivityPubData> _activitySetKey;
@@ -52,7 +53,8 @@ namespace NadekoBot.Modules.Administration.Services
             IDataCache cache,
             IHttpClientFactory factory,
             BotConfigService bss,
-            IPubSub pubSub)
+            IPubSub pubSub,
+            IEmbedBuilderService eb)
         {
             _cmdHandler = cmdHandler;
             _db = db;
@@ -63,6 +65,7 @@ namespace NadekoBot.Modules.Administration.Services
             _httpFactory = factory;
             _bss = bss;
             _pubSub = pubSub;
+            _eb = eb;
             _activitySetKey = new("activity.set");
             _imagesReloadKey = new("images.reload");
             _guildLeaveKey = new("guild.leave");
@@ -256,7 +259,7 @@ namespace NadekoBot.Modules.Administration.Services
                     {
                         try
                         {
-                            await ownerCh.SendConfirmAsync(title, toSend).ConfigureAwait(false);
+                            await ownerCh.SendConfirmAsync(_eb, title, toSend).ConfigureAwait(false);
                         }
                         catch
                         {
@@ -271,7 +274,7 @@ namespace NadekoBot.Modules.Administration.Services
                     {
                         try
                         {
-                            await firstOwnerChannel.SendConfirmAsync(title, toSend).ConfigureAwait(false);
+                            await firstOwnerChannel.SendConfirmAsync(_eb, title, toSend).ConfigureAwait(false);
                         }
                         catch
                         {

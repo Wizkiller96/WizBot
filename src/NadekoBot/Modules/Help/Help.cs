@@ -49,7 +49,7 @@ namespace NadekoBot.Modules.Help
             _lazyClientId = new AsyncLazy<ulong>(async () => (await _client.GetApplicationInfoAsync()).Id);
         }
 
-        public async Task<(string plainText, EmbedBuilder embed)> GetHelpStringEmbed()
+        public async Task<(string plainText, IEmbedBuilder embed)> GetHelpStringEmbed()
         {
             var botSettings = _bss.Data;
             if (string.IsNullOrWhiteSpace(botSettings.HelpText) || botSettings.HelpText == "-")
@@ -68,14 +68,14 @@ namespace NadekoBot.Modules.Help
 
             if (!CREmbed.TryParse(botSettings.HelpText, out var embed))
             {
-                var eb = new EmbedBuilder().WithOkColor()
+                var eb = _eb.Create().WithOkColor()
                     .WithDescription(String.Format(botSettings.HelpText, clientId, Prefix));
                 return ("", eb);
             }
 
             r.Replace(embed);
 
-            return (embed.PlainText, embed.ToEmbed());
+            return (embed.PlainText, embed.ToEmbed(_eb));
         }
 
         [NadekoCommand, Aliases]
@@ -91,7 +91,7 @@ namespace NadekoBot.Modules.Help
             
             await ctx.SendPaginatedConfirmAsync(page, cur =>
             {
-                var embed = new EmbedBuilder().WithOkColor()
+                var embed = _eb.Create().WithOkColor()
                     .WithTitle(GetText("list_of_modules"));
 
                 var localModules = topLevelModules.Skip(12 * cur)
@@ -207,7 +207,7 @@ namespace NadekoBot.Modules.Help
             }
             var i = 0;
             var groups = cmdsWithGroup.GroupBy(x => i++ / 48).ToArray();
-            var embed = new EmbedBuilder().WithOkColor();
+            var embed = _eb.Create().WithOkColor();
             foreach (var g in groups)
             {
                 var last = g.Count();

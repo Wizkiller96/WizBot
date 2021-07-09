@@ -36,7 +36,7 @@ namespace NadekoBot.Modules.Permissions
                     return;
                 }
 
-                var embed = new EmbedBuilder().WithOkColor();
+                var embed = _eb.Create().WithOkColor();
 
                 if (blockedModule.Any())
                     embed.AddField(GetText("blocked_modules")

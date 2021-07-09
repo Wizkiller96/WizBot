@@ -48,7 +48,9 @@ namespace NadekoBot.Modules.Games
                 {
                     return;
                 }
-                var trivia = new TriviaGame(Strings, _client, config, _cache, _cs, channel.Guild, channel, opts, Prefix + "tq");
+
+                var trivia = new TriviaGame(Strings, _client, config, _cache, _cs, channel.Guild, channel, opts,
+                    Prefix + "tq", _eb);
                 if (_service.RunningTrivias.TryAdd(channel.Guild.Id, trivia))
                 {
                     try
@@ -63,7 +65,7 @@ namespace NadekoBot.Modules.Games
                     return;
                 }
 
-                await ctx.Channel.SendErrorAsync(GetText("trivia_already_running") + "\n" + trivia.CurrentQuestion)
+                await SendErrorAsync(GetText("trivia_already_running") + "\n" + trivia.CurrentQuestion)
                     .ConfigureAwait(false);
             }
 
@@ -71,11 +73,9 @@ namespace NadekoBot.Modules.Games
             [RequireContext(ContextType.Guild)]
             public async Task Tl()
             {
-                var channel = (ITextChannel)ctx.Channel;
-
-                if (_service.RunningTrivias.TryGetValue(channel.Guild.Id, out TriviaGame trivia))
+                if (_service.RunningTrivias.TryGetValue(ctx.Guild.Id, out TriviaGame trivia))
                 {
-                    await channel.SendConfirmAsync(GetText("leaderboard"), trivia.GetLeaderboard()).ConfigureAwait(false);
+                    await SendConfirmAsync(GetText("leaderboard"), trivia.GetLeaderboard()).ConfigureAwait(false);
                     return;
                 }
 

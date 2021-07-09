@@ -50,7 +50,7 @@ namespace NadekoBot.Modules.Administration
             var guild = (SocketGuild) ctx.Guild;
             var (enabled, channels) = _service.GetDelMsgOnCmdData(ctx.Guild.Id);
 
-            var embed = new EmbedBuilder()
+            var embed = _eb.Create()
                 .WithOkColor()
                 .WithTitle(GetText("server_delmsgoncmd"))
                 .WithDescription(enabled ? "✅" : "❌");

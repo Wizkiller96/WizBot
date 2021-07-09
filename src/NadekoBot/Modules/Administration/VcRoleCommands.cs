@@ -83,7 +83,7 @@ namespace NadekoBot.Modules.Administration
                 {
                     text = GetText("no_vcroles");
                 }
-                await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
+                await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
                         .WithTitle(GetText("vc_role_list"))
                         .WithDescription(text))
                     .ConfigureAwait(false);

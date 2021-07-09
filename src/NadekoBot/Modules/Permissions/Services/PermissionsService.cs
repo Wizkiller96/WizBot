@@ -12,7 +12,6 @@ using NadekoBot.Modules.Permissions.Common;
 using NadekoBot.Services;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
-using NadekoBot.Modules.Administration;
 
 namespace NadekoBot.Modules.Permissions.Services
 {
@@ -23,20 +22,27 @@ namespace NadekoBot.Modules.Permissions.Services
         private readonly DbService _db;
         private readonly CommandHandler _cmd;
         private readonly IBotStrings _strings;
+        private readonly IEmbedBuilderService _eb;
 
         //guildid, root permission
         public ConcurrentDictionary<ulong, PermissionCache> Cache { get; } =
             new ConcurrentDictionary<ulong, PermissionCache>();
 
-        public PermissionService(DiscordSocketClient client, DbService db, CommandHandler cmd, IBotStrings strings)
+        public PermissionService(DiscordSocketClient client,
+            DbService db,
+            CommandHandler cmd,
+            IBotStrings strings,
+            IEmbedBuilderService eb)
         {
             _db = db;
             _cmd = cmd;
             _strings = strings;
+            _eb = eb;
 
             using (var uow = _db.GetDbContext())
             {
-                foreach (var x in uow.GuildConfigs.Permissionsv2ForAll(client.Guilds.ToArray().Select(x => x.Id).ToList()))
+                foreach (var x in uow.GuildConfigs.Permissionsv2ForAll(client.Guilds.ToArray().Select(x => x.Id)
+                    .ToList()))
                 {
                     Cache.TryAdd(x.GuildId, new PermissionCache()
                     {
@@ -122,7 +128,8 @@ namespace NadekoBot.Modules.Permissions.Services
                     {
                         try
                         {
-                            await channel.SendErrorAsync(_strings.GetText("perm_prevent", guild.Id, index + 1,
+                            await channel.SendErrorAsync(_eb, 
+                                    _strings.GetText("perm_prevent", guild.Id, index + 1,
                                     Format.Bold(pc.Permissions[index].GetCommand(_cmd.GetPrefix(guild), (SocketGuild) guild))))
                                 .ConfigureAwait(false);
                         }
@@ -152,7 +159,7 @@ namespace NadekoBot.Modules.Permissions.Services
                     {
                         returnMsg = $"You need Admin permissions in order to use permission commands.";
                         if (pc.Verbose)
-                            try { await channel.SendErrorAsync(returnMsg).ConfigureAwait(false); } catch { }
+                            try { await channel.SendErrorAsync(_eb, returnMsg).ConfigureAwait(false); } catch { }
 
                         return true;
                     }
@@ -160,7 +167,7 @@ namespace NadekoBot.Modules.Permissions.Services
                     {
                         returnMsg = $"You need the {Format.Bold(role.Name)} role in order to use permission commands.";
                         if (pc.Verbose)
-                            try { await channel.SendErrorAsync(returnMsg).ConfigureAwait(false); } catch { }
+                            try { await channel.SendErrorAsync(_eb, returnMsg).ConfigureAwait(false); } catch { }
 
                         return true;
                     }

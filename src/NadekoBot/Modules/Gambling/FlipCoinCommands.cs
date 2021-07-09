@@ -123,7 +123,7 @@ namespace NadekoBot.Modules.Gambling
                     str = ctx.User.ToString() + " " + GetText("better_luck");
                 }
 
-                await ctx.Channel.EmbedAsync(new EmbedBuilder()
+                await ctx.Channel.EmbedAsync(_eb.Create()
                     .WithDescription(str)
                     .WithOkColor()
                     .WithImageUrl(imageToSend.ToString())).ConfigureAwait(false);

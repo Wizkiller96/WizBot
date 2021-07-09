@@ -43,7 +43,7 @@ namespace NadekoBot.Modules.Searches
 
                 if (string.IsNullOrWhiteSpace(usr))
                 {
-                    await ctx.Channel.SendErrorAsync("Please provide an account name.").ConfigureAwait(false);
+                    await SendErrorAsync("Please provide an account name.").ConfigureAwait(false);
                     return;
                 }
 
@@ -59,7 +59,7 @@ namespace NadekoBot.Modules.Searches
                 }
                 catch
                 {
-                    var embed = new EmbedBuilder()
+                    var embed = _eb.Create()
                                     .WithDescription(GetText("account_not_found"))
                                     .WithErrorColor();
 
@@ -74,7 +74,7 @@ namespace NadekoBot.Modules.Searches
 
                 await ctx.SendPaginatedConfirmAsync(page, (curPage) =>
                 {
-                    var embed = new EmbedBuilder()
+                    var embed = _eb.Create()
                         .WithAuthor($"Characters on {usr}'s account",
                             "https://web.poecdn.com/image/favicon/ogimage.png",
                             $"{_profileURL}{usr}")
@@ -120,7 +120,7 @@ namespace NadekoBot.Modules.Searches
                 }
                 catch
                 {
-                    var eembed = new EmbedBuilder()
+                    var eembed = _eb.Create()
                         .WithDescription(GetText("leagues_not_found"))
                         .WithErrorColor();
 
@@ -128,7 +128,7 @@ namespace NadekoBot.Modules.Searches
                     return;
                 }
 
-                var embed = new EmbedBuilder()
+                var embed = _eb.Create()
                     .WithAuthor($"Path of Exile Leagues",
                         "https://web.poecdn.com/image/favicon/ogimage.png",
                         "https://www.pathofexile.com")
@@ -154,12 +154,12 @@ namespace NadekoBot.Modules.Searches
             {
                 if (string.IsNullOrWhiteSpace(leagueName))
                 {
-                    await ctx.Channel.SendErrorAsync("Please provide league name.").ConfigureAwait(false);
+                    await SendErrorAsync("Please provide league name.").ConfigureAwait(false);
                     return;
                 }
                 if (string.IsNullOrWhiteSpace(currencyName))
                 {
-                    await ctx.Channel.SendErrorAsync("Please provide currency name.").ConfigureAwait(false);
+                    await SendErrorAsync("Please provide currency name.").ConfigureAwait(false);
                     return;
                 }
 
@@ -201,7 +201,7 @@ namespace NadekoBot.Modules.Searches
                             conversionEquivalent = float.Parse(currencyOutput["chaosEquivalent"].ToString(), System.Globalization.CultureInfo.InvariantCulture);
                         }
 
-                        var embed = new EmbedBuilder()
+                        var embed = _eb.Create()
                             .WithAuthor($"{leagueName} Currency Exchange",
                                 "https://web.poecdn.com/image/favicon/ogimage.png",
                                 "http://poe.ninja")
@@ -214,7 +214,7 @@ namespace NadekoBot.Modules.Searches
                 }
                 catch
                 {
-                    var embed = new EmbedBuilder()
+                    var embed = _eb.Create()
                         .WithDescription(GetText("ninja_not_found"))
                         .WithErrorColor();
 

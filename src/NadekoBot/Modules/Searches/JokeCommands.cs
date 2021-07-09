@@ -17,20 +17,20 @@ namespace NadekoBot.Modules.Searches
             [NadekoCommand, Aliases]
             public async Task Yomama()
             {
-                await ctx.Channel.SendConfirmAsync(await _service.GetYomamaJoke().ConfigureAwait(false)).ConfigureAwait(false);
+                await SendConfirmAsync(await _service.GetYomamaJoke().ConfigureAwait(false)).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
             public async Task Randjoke()
             {
                 var (setup, punchline) = await _service.GetRandomJoke().ConfigureAwait(false);
-                await ctx.Channel.SendConfirmAsync(setup, punchline).ConfigureAwait(false);
+                await SendConfirmAsync(setup, punchline).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
             public async Task ChuckNorris()
             {
-                await ctx.Channel.SendConfirmAsync(await _service.GetChuckNorrisJoke().ConfigureAwait(false)).ConfigureAwait(false);
+                await SendConfirmAsync(await _service.GetChuckNorrisJoke().ConfigureAwait(false)).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -42,7 +42,7 @@ namespace NadekoBot.Modules.Searches
                     return;
                 }
                 var joke = _service.WowJokes[new NadekoRandom().Next(0, _service.WowJokes.Count)];
-                await ctx.Channel.SendConfirmAsync(joke.Question, joke.Answer).ConfigureAwait(false);
+                await SendConfirmAsync(joke.Question, joke.Answer).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -55,7 +55,7 @@ namespace NadekoBot.Modules.Searches
                 }
                 var item = _service.MagicItems[new NadekoRandom().Next(0, _service.MagicItems.Count)];
 
-                await ctx.Channel.SendConfirmAsync("✨" + item.Name, item.Description).ConfigureAwait(false);
+                await SendConfirmAsync("✨" + item.Name, item.Description).ConfigureAwait(false);
             }
         }
     }

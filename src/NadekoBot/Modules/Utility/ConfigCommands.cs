@@ -50,7 +50,7 @@ namespace NadekoBot.Modules.Utility
                 if (setting is null)
                 {
                     var configNames = _settingServices.Select(x => x.Name);
-                    var embed = new EmbedBuilder()
+                    var embed = _eb.Create()
                         .WithErrorColor()
                         .WithDescription(GetText("config_not_found", Format.Code(name)))
                         .AddField(GetText("config_list"), string.Join("\n", configNames));
@@ -73,7 +73,7 @@ namespace NadekoBot.Modules.Utility
                 name = name?.ToLowerInvariant();
                 if (string.IsNullOrWhiteSpace(name))
                 {
-                    var embed = new EmbedBuilder()
+                    var embed = _eb.Create()
                         .WithOkColor()
                         .WithTitle(GetText("config_list"))
                         .WithDescription(string.Join("\n", configNames));
@@ -88,7 +88,7 @@ namespace NadekoBot.Modules.Utility
                 // if config name is not found, print error and the list of configs
                 if (setting is null)
                 {
-                    var embed = new EmbedBuilder()
+                    var embed = _eb.Create()
                         .WithErrorColor()
                         .WithDescription(GetText("config_not_found", Format.Code(name)))
                         .AddField(GetText("config_list"), string.Join("\n", configNames));
@@ -105,7 +105,7 @@ namespace NadekoBot.Modules.Utility
                 if (string.IsNullOrWhiteSpace(prop))
                 {
                     var propStrings = GetPropsAndValuesString(setting, propNames);
-                    var embed = new EmbedBuilder()
+                    var embed = _eb.Create()
                         .WithOkColor()
                         .WithTitle($"⚙️ {setting.Name}")
                         .WithDescription(propStrings);
@@ -121,7 +121,7 @@ namespace NadekoBot.Modules.Utility
                 if (!exists)
                 {
                     var propStrings = GetPropsAndValuesString(setting, propNames);
-                    var propErrorEmbed = new EmbedBuilder()
+                    var propErrorEmbed = _eb.Create()
                         .WithErrorColor()
                         .WithDescription(GetText("config_prop_not_found", Format.Code(prop), Format.Code(name)))
                         .AddField($"⚙️ {setting.Name}", propStrings);
@@ -144,7 +144,7 @@ namespace NadekoBot.Modules.Utility
                         value = Format.Code(Format.Sanitize(value?.TrimTo(1000)), "json");
                     }
 
-                    var embed = new EmbedBuilder()
+                    var embed = _eb.Create()
                         .WithOkColor()
                         .AddField("Config", Format.Code(setting.Name), true)
                         .AddField("Prop", Format.Code(prop), true)

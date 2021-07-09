@@ -25,14 +25,19 @@ namespace NadekoBot.Services
         private GreetGrouper<IGuildUser> greets = new GreetGrouper<IGuildUser>();
         private GreetGrouper<IGuildUser> byes = new GreetGrouper<IGuildUser>();
         private readonly BotConfigService _bss;
+        private readonly IEmbedBuilderService _eb;
         public bool GroupGreets => _bss.Data.GroupGreets;
 
-        public GreetSettingsService(DiscordSocketClient client, Bot bot, DbService db,
-            BotConfigService bss)
+        public GreetSettingsService(DiscordSocketClient client,
+            Bot bot,
+            DbService db,
+            BotConfigService bss,
+            IEmbedBuilderService eb)
         {
             _db = db;
             _client = client;
             _bss = bss;
+            _eb = eb;
 
             GuildConfigsCache = new ConcurrentDictionary<ulong, GreetSettings>(
                 bot.AllGuildConfigs
@@ -139,7 +144,7 @@ namespace NadekoBot.Services
                 rep.Replace(embedData);
                 try
                 {
-                    var toDelete = await channel.EmbedAsync(embedData).ConfigureAwait(false);
+                    var toDelete = await channel.EmbedAsync(embedData, _eb).ConfigureAwait(false);
                     if (conf.AutoDeleteByeMessagesTimer > 0)
                     {
                         toDelete.DeleteAfter(conf.AutoDeleteByeMessagesTimer);
@@ -190,7 +195,7 @@ namespace NadekoBot.Services
                 rep.Replace(embedData);
                 try
                 {
-                    var toDelete = await channel.EmbedAsync(embedData).ConfigureAwait(false);
+                    var toDelete = await channel.EmbedAsync(embedData, _eb).ConfigureAwait(false);
                     if (conf.AutoDeleteGreetMessagesTimer > 0)
                     {
                         toDelete.DeleteAfter(conf.AutoDeleteGreetMessagesTimer);
@@ -233,7 +238,7 @@ namespace NadekoBot.Services
                 rep.Replace(embedData);
                 try
                 {
-                    await channel.EmbedAsync(embedData).ConfigureAwait(false);
+                    await channel.EmbedAsync(embedData, _eb).ConfigureAwait(false);
                 }
                 catch
                 {
@@ -247,7 +252,7 @@ namespace NadekoBot.Services
                 {
                     try
                     {
-                        await channel.SendConfirmAsync(msg).ConfigureAwait(false);
+                        await channel.SendConfirmAsync(_eb, msg).ConfigureAwait(false);
                     }
                     catch
                     {

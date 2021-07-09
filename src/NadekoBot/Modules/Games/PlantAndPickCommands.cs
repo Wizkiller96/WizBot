@@ -113,11 +113,11 @@ namespace NadekoBot.Modules.Games
 
                     if (!items.Any())
                     {
-                        return new EmbedBuilder().WithErrorColor()
+                        return _eb.Create().WithErrorColor()
                             .WithDescription("-");
                     }
 
-                    return items.Aggregate(new EmbedBuilder().WithOkColor(),
+                    return items.Aggregate(_eb.Create().WithOkColor(),
                         (eb, i) => eb.AddField(i.GuildId.ToString(), i.ChannelId));
                 }, enabledIn.Count(), 9);
             }

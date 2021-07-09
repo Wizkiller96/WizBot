@@ -40,6 +40,7 @@ namespace NadekoBot.Modules.Searches.Services
         
         private readonly IBotCredentials _creds;
         private readonly IPubSub _pubSub;
+        private readonly IEmbedBuilderService _eb;
         private readonly Timer _notifCleanupTimer;
 
         private readonly TypedKey<List<StreamData>> _streamsOnlineKey;
@@ -56,13 +57,15 @@ namespace NadekoBot.Modules.Searches.Services
             IBotCredentials creds,
             IHttpClientFactory httpFactory,
             Bot bot,
-            IPubSub pubSub)
+            IPubSub pubSub,
+            IEmbedBuilderService eb)
         {
             _db = db;
             _client = client;
             _strings = strings;
             _creds = creds;
             _pubSub = pubSub;
+            _eb = eb;
             _streamTracker = new NotifChecker(httpFactory, redis, creds.RedisKey(), client.ShardId == 0);
 
             _streamsOnlineKey = new("streams.online");
@@ -438,16 +441,20 @@ namespace NadekoBot.Modules.Searches.Services
             return data;
         }
 
-        public EmbedBuilder GetEmbed(ulong guildId, StreamData status)
+        public IEmbedBuilder GetEmbed(ulong guildId, StreamData status)
         {
-            var embed = new EmbedBuilder()
+            var embed = _eb.Create()
                 .WithTitle(status.Name)
                 .WithUrl(status.StreamUrl)
                 .WithDescription(status.StreamUrl)
                 .AddField(GetText(guildId, "status"), status.IsLive ? "🟢 Online" : "🔴 Offline", true)
-                .AddField(GetText(guildId, "viewers"), status.IsLive ? status.Viewers.ToString() : "-", true)
-                .WithColor(status.IsLive ? Bot.OkColor : Bot.ErrorColor);
+                .AddField(GetText(guildId, "viewers"), status.IsLive ? status.Viewers.ToString() : "-", true);
 
+            if (status.IsLive)
+                embed = embed.WithOkColor();
+            else
+                embed = embed.WithErrorColor();
+            
             if (!string.IsNullOrWhiteSpace(status.Title))
                 embed.WithAuthor(status.Title);
 

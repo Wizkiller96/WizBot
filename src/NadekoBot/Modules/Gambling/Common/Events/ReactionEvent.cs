@@ -29,7 +29,7 @@ namespace NadekoBot.Modules.Gambling.Common.Events
         public bool Stopped { get; private set; }
         public bool PotEmptied { get; private set; } = false;
 
-        private readonly Func<CurrencyEvent.Type, EventOptions, long, EmbedBuilder> _embedFunc;
+        private readonly Func<CurrencyEvent.Type, EventOptions, long, IEmbedBuilder> _embedFunc;
         private readonly bool _isPotLimited;
         private readonly ITextChannel _channel;
         private readonly ConcurrentHashSet<ulong> _awardedUsers = new ConcurrentHashSet<ulong>();
@@ -44,7 +44,7 @@ namespace NadekoBot.Modules.Gambling.Common.Events
 
         public ReactionEvent(DiscordSocketClient client, ICurrencyService cs,
             SocketGuild g, ITextChannel ch, EventOptions opt, GamblingConfig config,
-            Func<CurrencyEvent.Type, EventOptions, long, EmbedBuilder> embedFunc)
+            Func<CurrencyEvent.Type, EventOptions, long, IEmbedBuilder> embedFunc)
         {
             _client = client;
             _guild = g;
@@ -130,7 +130,7 @@ namespace NadekoBot.Modules.Gambling.Common.Events
             _t.Change(TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(2));
         }
 
-        private EmbedBuilder GetEmbed(long pot)
+        private IEmbedBuilder GetEmbed(long pot)
         {
             return _embedFunc(CurrencyEvent.Type.Reaction, _opts, pot);
         }

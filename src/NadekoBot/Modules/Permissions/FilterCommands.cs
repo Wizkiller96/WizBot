@@ -287,7 +287,7 @@ namespace NadekoBot.Modules.Permissions
                 var fws = fwHash.ToArray();
 
                 await ctx.SendPaginatedConfirmAsync(page,
-                    (curPage) => new EmbedBuilder()
+                    (curPage) => _eb.Create()
                         .WithTitle(GetText("filter_word_list"))
                         .WithDescription(string.Join("\n", fws.Skip(curPage * 10).Take(10)))
                         .WithOkColor()

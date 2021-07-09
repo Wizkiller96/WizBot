@@ -59,11 +59,12 @@ namespace NadekoBot.Modules.CustomReactions.Services
         private readonly GlobalPermissionService _gperm;
         private readonly CmdCdService _cmdCds;
         private readonly IPubSub _pubSub;
+        private readonly IEmbedBuilderService _eb;
         private readonly Random _rng;
 
         public CustomReactionsService(PermissionService perms, DbService db, IBotStrings strings, Bot bot,
             DiscordSocketClient client, CommandHandler cmd, GlobalPermissionService gperm, CmdCdService cmdCds,
-            IPubSub pubSub)
+            IPubSub pubSub, IEmbedBuilderService eb)
         {
             _db = db;
             _client = client;
@@ -74,6 +75,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
             _gperm = gperm;
             _cmdCds = cmdCds;
             _pubSub = pubSub;
+            _eb = eb;
             _rng = new NadekoRandom();
 
             _pubSub.Sub(_crsReloadedKey, OnCrsShouldReload);
@@ -414,7 +416,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
                                 Format.Bold(pc.Permissions[index].GetCommand(_cmd.GetPrefix(guild), sg)));
                             try
                             {
-                                await msg.Channel.SendErrorAsync(returnMsg).ConfigureAwait(false);
+                                await msg.Channel.SendErrorAsync(_eb, returnMsg).ConfigureAwait(false);
                             }
                             catch
                             {
@@ -427,7 +429,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
                     }
                 }
 
-                var sentMsg = await cr.Send(msg, _client, false).ConfigureAwait(false);
+                var sentMsg = await cr.Send(msg, _client, _eb, false).ConfigureAwait(false);
 
                 var reactions = cr.GetReactions();
                 foreach (var reaction in reactions)

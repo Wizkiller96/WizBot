@@ -41,7 +41,7 @@ namespace NadekoBot.Modules.Games
                 if (_service.StartPoll(poll))
                 {
                     await ctx.Channel
-                        .EmbedAsync(new EmbedBuilder()
+                        .EmbedAsync(_eb.Create()
                             .WithOkColor()
                             .WithTitle(GetText("poll_created", ctx.User.ToString()))
                             .WithDescription(
@@ -83,14 +83,14 @@ namespace NadekoBot.Modules.Games
                     .ConfigureAwait(false);
             }
 
-            public EmbedBuilder GetStats(Poll poll, string title)
+            public IEmbedBuilder GetStats(Poll poll, string title)
             {
                 var results = poll.Votes.GroupBy(kvp => kvp.VoteIndex)
                                     .ToDictionary(x => x.Key, x => x.Sum(kvp => 1));
 
                 var totalVotesCast = results.Sum(x => x.Value);
 
-                var eb = new EmbedBuilder().WithTitle(title);
+                var eb = _eb.Create().WithTitle(title);
 
                 var sb = new StringBuilder()
                     .AppendLine(Format.Bold(poll.Question))

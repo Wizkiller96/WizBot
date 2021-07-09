@@ -63,7 +63,7 @@ namespace NadekoBot.Modules.Searches
                         {
                             templates += $"**{template.Name}:**\n key: `{template.Id}`\n";
                         }
-                        var embed = new EmbedBuilder()
+                        var embed = _eb.Create()
                             .WithOkColor()
                             .WithDescription(templates);
 

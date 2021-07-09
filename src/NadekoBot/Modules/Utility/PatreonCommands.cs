@@ -36,7 +36,7 @@ namespace NadekoBot.Modules.Utility
                 
                 var rem = (_service.Interval - (DateTime.UtcNow - _service.LastUpdate));
                 var helpcmd = Format.Code(Prefix + "donate");
-                await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
+                await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
                     .WithDescription(GetText("clpa_obsolete"))
                     .AddField(GetText("clpa_fail_already_title"), GetText("clpa_fail_already"))
                     .AddField(GetText("clpa_fail_wait_title"), GetText("clpa_fail_wait"))

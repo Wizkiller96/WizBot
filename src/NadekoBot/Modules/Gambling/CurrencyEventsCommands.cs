@@ -45,18 +45,18 @@ namespace NadekoBot.Modules.Gambling
                 }
             }
 
-            private EmbedBuilder GetEmbed(CurrencyEvent.Type type, EventOptions opts, long currentPot)
+            private IEmbedBuilder GetEmbed(CurrencyEvent.Type type, EventOptions opts, long currentPot)
             {
                 switch (type)
                 {
                     case CurrencyEvent.Type.Reaction:
-                        return new EmbedBuilder()
+                        return _eb.Create()
                             .WithOkColor()
                             .WithTitle(GetText("event_title", type.ToString()))
                             .WithDescription(GetReactionDescription(opts.Amount, currentPot))
                             .WithFooter(GetText("event_duration_footer", opts.Hours));
                     case CurrencyEvent.Type.GameStatus:
-                        return new EmbedBuilder()
+                        return _eb.Create()
                             .WithOkColor()
                             .WithTitle(GetText("event_title", type.ToString()))
                             .WithDescription(GetGameStatusDescription(opts.Amount, currentPot))

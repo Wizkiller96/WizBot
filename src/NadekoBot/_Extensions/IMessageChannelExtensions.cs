@@ -5,45 +5,67 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NadekoBot.Services;
 
 namespace NadekoBot.Extensions
 {
     public static class IMessageChannelExtensions
     {
-        public static Task<IUserMessage> EmbedAsync(this IMessageChannel ch, EmbedBuilder embed, string msg = "")
+        public static Task<IUserMessage> EmbedAsync(this IMessageChannel ch, IEmbedBuilder embed, string msg = "")
             => ch.SendMessageAsync(msg, embed: embed.Build(),
                 options: new RequestOptions() { RetryMode  = RetryMode.AlwaysRetry });
 
-        public static Task<IUserMessage> SendErrorAsync(this IMessageChannel ch, string title, string error, string url = null, string footer = null)
+        // this is a huge problem, because now i don't have
+        // access to embed builder service
+        // as this is an extension of the message channel
+        public static Task<IUserMessage> SendErrorAsync(this IMessageChannel ch, IEmbedBuilderService eb, string title, string error, string url = null, string footer = null)
         {
-            var eb = new EmbedBuilder().WithErrorColor().WithDescription(error)
+            var embed = eb.Create()
+                .WithErrorColor()
+                .WithDescription(error)
                 .WithTitle(title);
+
             if (url != null && Uri.IsWellFormedUriString(url, UriKind.Absolute))
-                eb.WithUrl(url);
+                embed.WithUrl(url);
+                    
             if (!string.IsNullOrWhiteSpace(footer))
-                eb.WithFooter(footer);
-            return ch.SendMessageAsync("", embed: eb.Build());
+                embed.WithFooter(footer);
+            
+            return ch.SendMessageAsync("", embed: embed.Build());
         }
 
-        public static Task<IUserMessage> SendErrorAsync(this IMessageChannel ch, string error)
-             => ch.SendMessageAsync("", embed: new EmbedBuilder().WithErrorColor().WithDescription(error).Build());
+        public static Task<IUserMessage> SendErrorAsync(this IMessageChannel ch, IEmbedBuilderService eb, string error)
+            => ch.SendMessageAsync("",
+                embed: eb.Create()
+                    .WithErrorColor()
+                    .WithDescription(error)
+                    .Build());
 
-        public static Task<IUserMessage> SendPendingAsync(this IMessageChannel ch, string message)
-            => ch.SendMessageAsync("", embed: new EmbedBuilder().WithPendingColor().WithDescription(message).Build());
+        public static Task<IUserMessage> SendPendingAsync(this IMessageChannel ch, IEmbedBuilderService eb, string message)
+            => ch.SendMessageAsync("", embed: eb.Create()
+                .WithPendingColor()
+                .WithDescription(message)
+                .Build());
         
-        public static Task<IUserMessage> SendConfirmAsync(this IMessageChannel ch, string title, string text, string url = null, string footer = null)
+        public static Task<IUserMessage> SendConfirmAsync(this IMessageChannel ch, IEmbedBuilderService eb, string title, string text, string url = null, string footer = null)
         {
-            var eb = new EmbedBuilder().WithOkColor().WithDescription(text)
+            var embed = eb.Create().WithOkColor().WithDescription(text)
                 .WithTitle(title);
+            
             if (url != null && Uri.IsWellFormedUriString(url, UriKind.Absolute))
-                eb.WithUrl(url);
+                embed.WithUrl(url);
+            
             if (!string.IsNullOrWhiteSpace(footer))
-                eb.WithFooter(footer);
-            return ch.SendMessageAsync("", embed: eb.Build());
+                embed.WithFooter(footer);
+            
+            return ch.SendMessageAsync("", embed: embed.Build());
         }
 
-        public static Task<IUserMessage> SendConfirmAsync(this IMessageChannel ch, string text)
-             => ch.SendMessageAsync("", embed: new EmbedBuilder().WithOkColor().WithDescription(text).Build());
+        public static Task<IUserMessage> SendConfirmAsync(this IMessageChannel ch, IEmbedBuilderService eb, string text)
+            => ch.SendMessageAsync("", embed: eb.Create()
+                .WithOkColor()
+                .WithDescription(text)
+                .Build());
 
         public static Task<IUserMessage> SendTableAsync<T>(this IMessageChannel ch, string seed, IEnumerable<T> items, Func<T, string> howToPrint, int columns = 3)
         {
@@ -60,7 +82,7 @@ namespace NadekoBot.Extensions
         private static readonly IEmote arrow_right = new Emoji("➡");
 
         public static Task SendPaginatedConfirmAsync(this ICommandContext ctx,
-            int currentPage, Func<int, EmbedBuilder> pageFunc, int totalElements,
+            int currentPage, Func<int, IEmbedBuilder> pageFunc, int totalElements,
             int itemsPerPage, bool addPaginatedFooter = true)
             => ctx.SendPaginatedConfirmAsync(currentPage,
                 (x) => Task.FromResult(pageFunc(x)), totalElements, itemsPerPage, addPaginatedFooter);
@@ -68,7 +90,7 @@ namespace NadekoBot.Extensions
         /// danny kamisama
         /// </summary>
         public static async Task SendPaginatedConfirmAsync(this ICommandContext ctx, int currentPage, 
-            Func<int, Task<EmbedBuilder>> pageFunc, int totalElements, int itemsPerPage, bool addPaginatedFooter = true)
+            Func<int, Task<IEmbedBuilder>> pageFunc, int totalElements, int itemsPerPage, bool addPaginatedFooter = true)
         {
             var embed = await pageFunc(currentPage).ConfigureAwait(false);
 

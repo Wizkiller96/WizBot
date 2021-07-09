@@ -48,7 +48,7 @@ namespace NadekoBot.Modules.Utility
                 }
 
                 if (quotes.Any())
-                    await ctx.Channel.SendConfirmAsync(GetText("quotes_page", page + 1),
+                    await SendConfirmAsync(GetText("quotes_page", page + 1),
                             string.Join("\n", quotes.Select(q => $"`#{q.Id}` {Format.Bold(q.Keyword.SanitizeAllMentions()),-20} by {q.AuthorName.SanitizeAllMentions()}")))
                         .ConfigureAwait(false);
                 else
@@ -85,7 +85,7 @@ namespace NadekoBot.Modules.Utility
                 if (CREmbed.TryParse(quote.Text, out var crembed))
                 {
                     rep.Replace(crembed);
-                    await ctx.Channel.EmbedAsync(crembed.ToEmbed(), $"`#{quote.Id}` 📣 " + crembed.PlainText?.SanitizeAllMentions() ?? "")
+                    await ctx.Channel.EmbedAsync(crembed.ToEmbed(_eb), $"`#{quote.Id}` 📣 " + crembed.PlainText?.SanitizeAllMentions() ?? "")
                         .ConfigureAwait(false);
                     return;
                 }
@@ -115,7 +115,7 @@ namespace NadekoBot.Modules.Utility
 
             private async Task ShowQuoteData(Quote data)
             {
-                await ctx.Channel.EmbedAsync(new EmbedBuilder()
+                await ctx.Channel.EmbedAsync(_eb.Create(ctx)
                     .WithOkColor()
                     .WithTitle(GetText("quote_id", $"#{data.Id}"))
                     .AddField(GetText("trigger"), data.Keyword)
@@ -168,7 +168,7 @@ namespace NadekoBot.Modules.Utility
 
                 if (quote is null || quote.GuildId != ctx.Guild.Id)
                 {
-                    await ctx.Channel.SendErrorAsync(GetText("quotes_notfound")).ConfigureAwait(false);
+                    await SendErrorAsync(GetText("quotes_notfound")).ConfigureAwait(false);
                     return;
                 }
 
@@ -178,7 +178,7 @@ namespace NadekoBot.Modules.Utility
                 {
                     rep.Replace(crembed);
 
-                    await ctx.Channel.EmbedAsync(crembed.ToEmbed(), infoText + crembed.PlainText?.SanitizeAllMentions())
+                    await ctx.Channel.EmbedAsync(crembed.ToEmbed(_eb), infoText + crembed.PlainText?.SanitizeAllMentions())
                         .ConfigureAwait(false);
                 }
                 else
@@ -238,9 +238,9 @@ namespace NadekoBot.Modules.Utility
                     }
                 }
                 if (success)
-                    await ctx.Channel.SendConfirmAsync(response).ConfigureAwait(false);
+                    await SendConfirmAsync(response).ConfigureAwait(false);
                 else
-                    await ctx.Channel.SendErrorAsync(response).ConfigureAwait(false);
+                    await SendErrorAsync(response).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]

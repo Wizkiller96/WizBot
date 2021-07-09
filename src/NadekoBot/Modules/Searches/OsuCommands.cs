@@ -64,7 +64,7 @@ namespace NadekoBot.Modules.Searches
                         var obj = objs[0];
                         var userId = obj.UserId;
 
-                        await ctx.Channel.EmbedAsync(new EmbedBuilder()
+                        await ctx.Channel.EmbedAsync(_eb.Create()
                             .WithOkColor()
                             .WithTitle($"osu! {smode} profile for {user}")
                             .WithThumbnailUrl($"https://a.ppy.sh/{userId}")
@@ -116,7 +116,7 @@ namespace NadekoBot.Modules.Searches
                     var userData = JsonConvert.DeserializeObject<GatariUserResponse>(usrResString).Users[0];
                     var userStats = statsResponse.Stats;
 
-                    var embed = new EmbedBuilder()
+                    var embed = _eb.Create()
                         .WithOkColor()
                         .WithTitle($"osu!Gatari {modeStr} profile for {user}")
                         .WithThumbnailUrl($"https://a.gatari.pw/{userStats.Id}")
@@ -134,17 +134,16 @@ namespace NadekoBot.Modules.Searches
 
             [NadekoCommand, Aliases]
             public async Task Osu5(string user, [Leftover] string mode = null)
-            {
-                var channel = (ITextChannel) ctx.Channel;
+            {;
                 if (string.IsNullOrWhiteSpace(_creds.OsuApiKey))
                 {
-                    await channel.SendErrorAsync("An osu! API key is required.").ConfigureAwait(false);
+                    await SendErrorAsync("An osu! API key is required.").ConfigureAwait(false);
                     return;
                 }
 
                 if (string.IsNullOrWhiteSpace(user))
                 {
-                    await channel.SendErrorAsync("Please provide a username.").ConfigureAwait(false);
+                    await SendErrorAsync("Please provide a username.").ConfigureAwait(false);
                     return;
                 }
 
@@ -192,17 +191,17 @@ namespace NadekoBot.Modules.Searches
                         return (title, desc);
                     });
                     
-                    var eb = new EmbedBuilder()
+                    var eb = _eb.Create()
                         .WithOkColor()
                         .WithTitle($"Top 5 plays for {user}");
                     
                     var mapData = await Task.WhenAll(mapTasks);
                     foreach (var (title, desc) in mapData.Where(x => x != default))
                     {
-                        eb.AddField(title, desc, inline: false);
+                        eb.AddField(title, desc, false);
                     }
 
-                    await channel.EmbedAsync(eb).ConfigureAwait(false);
+                    await ctx.Channel.EmbedAsync(eb).ConfigureAwait(false);
                 }
             }
 

@@ -57,7 +57,7 @@ namespace NadekoBot.Modules.Administration
                 };
                 _service.AddNewAutoCommand(cmd);
 
-                await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
+                await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
                     .WithTitle(GetText("scadd"))
                     .AddField(GetText("server"), cmd.GuildId is null ? $"-" : $"{cmd.GuildName}/{cmd.GuildId}", true)
                     .AddField(GetText("channel"), $"{cmd.ChannelName}/{cmd.ChannelId}", true)
@@ -113,7 +113,7 @@ namespace NadekoBot.Modules.Administration
                 else
                 {
                     var i = 0;
-                    await ctx.Channel.SendConfirmAsync(
+                    await SendConfirmAsync(
                         text: string.Join("\n", scmds
                         .Select(x => $@"```css
 #{++i + page * 5}
@@ -145,7 +145,7 @@ namespace NadekoBot.Modules.Administration
                 else
                 {
                     var i = 0;
-                    await ctx.Channel.SendConfirmAsync(
+                    await SendConfirmAsync(
                         text: string.Join("\n", scmds
                         .Select(x => $@"```css
 #{++i + page * 5}
@@ -173,7 +173,7 @@ namespace NadekoBot.Modules.Administration
                 ctx.Message.DeleteAfter(0);
                 try
                 {
-                    var msg = await ctx.Channel.SendConfirmAsync($"⏲ {miliseconds}ms")
+                    var msg = await SendConfirmAsync($"⏲ {miliseconds}ms")
                         .ConfigureAwait(false);
                     msg.DeleteAfter(miliseconds / 1000);
                 }
@@ -277,7 +277,7 @@ namespace NadekoBot.Modules.Administration
                     if (string.IsNullOrWhiteSpace(str))
                         str = GetText("no_shards_on_page");
 
-                    return new EmbedBuilder()
+                    return _eb.Create()
                         .WithOkColor()
                         .WithDescription($"{status}\n\n{str}");
                 }, allShardStrings.Length, 25).ConfigureAwait(false);
@@ -477,7 +477,7 @@ namespace NadekoBot.Modules.Administration
                     if (CREmbed.TryParse(msg, out var crembed))
                     {
                         rep.Replace(crembed);
-                        await ch.EmbedAsync(crembed).ConfigureAwait(false);
+                        await ch.EmbedAsync(crembed, _eb).ConfigureAwait(false);
                         await ReplyConfirmLocalizedAsync("message_sent").ConfigureAwait(false);
                         return;
                     }
@@ -495,7 +495,8 @@ namespace NadekoBot.Modules.Administration
                     if (CREmbed.TryParse(msg, out var crembed))
                     {
                         rep.Replace(crembed);
-                        await (await user.GetOrCreateDMChannelAsync().ConfigureAwait(false)).EmbedAsync(crembed)
+                        await (await user.GetOrCreateDMChannelAsync().ConfigureAwait(false))
+                            .EmbedAsync(crembed, _eb)
                             .ConfigureAwait(false);
                         await ReplyConfirmLocalizedAsync("message_sent").ConfigureAwait(false);
                         return;

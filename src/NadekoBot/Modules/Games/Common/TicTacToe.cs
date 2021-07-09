@@ -50,14 +50,16 @@ namespace NadekoBot.Modules.Games.Common
         private readonly IBotStrings _strings;
         private readonly DiscordSocketClient _client;
         private readonly Options _options;
+        private readonly IEmbedBuilderService _eb;
 
         public TicTacToe(IBotStrings strings, DiscordSocketClient client, ITextChannel channel,
-            IGuildUser firstUser, Options options)
+            IGuildUser firstUser, Options options, IEmbedBuilderService eb)
         {
             _channel = channel;
             _strings = strings;
             _client = client;
             _options = options;
+            _eb = eb;
 
             _users = new[] { firstUser, null };
             _state = new int?[,] {
@@ -91,9 +93,9 @@ namespace NadekoBot.Modules.Games.Common
             return sb.ToString();
         }
 
-        public EmbedBuilder GetEmbed(string title = null)
+        public IEmbedBuilder GetEmbed(string title = null)
         {
-            var embed = new EmbedBuilder()
+            var embed = _eb.Create()
                 .WithOkColor()
                 .WithDescription(Environment.NewLine + GetState())
                 .WithAuthor(GetText("vs", _users[0], _users[1]));
@@ -135,12 +137,12 @@ namespace NadekoBot.Modules.Games.Common
         {
             if (_phase == Phase.Started || _phase == Phase.Ended)
             {
-                await _channel.SendErrorAsync(user.Mention + GetText("ttt_already_running")).ConfigureAwait(false);
+                await _channel.SendErrorAsync(_eb, user.Mention + GetText("ttt_already_running")).ConfigureAwait(false);
                 return;
             }
             else if (_users[0] == user)
             {
-                await _channel.SendErrorAsync(user.Mention + GetText("ttt_against_yourself")).ConfigureAwait(false);
+                await _channel.SendErrorAsync(_eb, user.Mention + GetText("ttt_against_yourself")).ConfigureAwait(false);
                 return;
             }
 

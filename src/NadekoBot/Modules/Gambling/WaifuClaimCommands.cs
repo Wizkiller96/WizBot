@@ -25,7 +25,7 @@ namespace NadekoBot.Modules.Gambling
             public async Task WaifuReset()
             {
                 var price = _service.GetResetPrice(ctx.User);
-                var embed = new EmbedBuilder()
+                var embed = _eb.Create()
                         .WithTitle(GetText("waifu_reset_confirm"))
                         .WithDescription(GetText("waifu_reset_price", Format.Bold(price + CurrencySign)));
 
@@ -75,7 +75,7 @@ namespace NadekoBot.Modules.Gambling
                     msg += "\n" + GetText("waifu_fulfilled", target, w.Price + CurrencySign);
                 else
                     msg = " " + msg;
-                await ctx.Channel.SendConfirmAsync(ctx.User.Mention + msg);
+                await SendConfirmAsync(ctx.User.Mention + msg);
             }
             
             [NadekoCommand, Aliases]
@@ -221,7 +221,7 @@ namespace NadekoBot.Modules.Gambling
                     return;
                 }
 
-                var embed = new EmbedBuilder()
+                var embed = _eb.Create()
                     .WithTitle(GetText("waifus_top_waifus"))
                     .WithOkColor();
 
@@ -282,7 +282,7 @@ namespace NadekoBot.Modules.Gambling
                 if (string.IsNullOrWhiteSpace(fansStr))
                     fansStr = "-";
 
-                var embed = new EmbedBuilder()
+                var embed = _eb.Create()
                     .WithOkColor()
                     .WithTitle(GetText("waifu") + " " + (wi.FullName ?? name ?? targetId.ToString()) + " - \"the " +
                                _service.GetClaimTitle(wi.ClaimCount) + "\"")
@@ -312,7 +312,7 @@ namespace NadekoBot.Modules.Gambling
                 var waifuItems = _service.GetWaifuItems();
                 await ctx.SendPaginatedConfirmAsync(page, (cur) =>
                 {
-                    var embed = new EmbedBuilder()
+                    var embed = _eb.Create()
                         .WithTitle(GetText("waifu_gift_shop"))
                         .WithOkColor();
 

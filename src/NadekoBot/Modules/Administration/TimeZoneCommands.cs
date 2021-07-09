@@ -51,7 +51,7 @@ namespace NadekoBot.Modules.Administration
                 
                 
                 await ctx.SendPaginatedConfirmAsync(page,
-                    (curPage) => new EmbedBuilder()
+                    (curPage) => _eb.Create()
                         .WithOkColor()
                         .WithTitle(GetText("timezones_available"))
                         .WithDescription(string.Join("\n", timezoneStrings
@@ -83,7 +83,7 @@ namespace NadekoBot.Modules.Administration
                 }
                 _service.SetTimeZone(ctx.Guild.Id, tz);
 
-                await ctx.Channel.SendConfirmAsync(tz.ToString()).ConfigureAwait(false);
+                await SendConfirmAsync(tz.ToString()).ConfigureAwait(false);
             }
         }
     }

@@ -29,6 +29,7 @@ namespace NadekoBot.Modules.Music.Services
         private readonly IBotStrings _strings;
         private readonly IGoogleApiService _googleApiService;
         private readonly YtLoader _ytLoader;
+        private readonly IEmbedBuilderService _eb;
 
         private readonly ConcurrentDictionary<ulong, IMusicPlayer> _players;
         private readonly ConcurrentDictionary<ulong, (ITextChannel Default, ITextChannel? Override)> _outputChannels;
@@ -36,7 +37,8 @@ namespace NadekoBot.Modules.Music.Services
 
         public MusicService(AyuVoiceStateService voiceStateService, ITrackResolveProvider trackResolveProvider,
             DbService db, IYoutubeResolver ytResolver, ILocalTrackResolver localResolver, ISoundcloudResolver scResolver,
-            DiscordSocketClient client, IBotStrings strings, IGoogleApiService googleApiService, YtLoader ytLoader)
+            DiscordSocketClient client, IBotStrings strings, IGoogleApiService googleApiService, YtLoader ytLoader,
+            IEmbedBuilderService eb)
         {
             _voiceStateService = voiceStateService;
             _trackResolveProvider = trackResolveProvider;
@@ -48,6 +50,7 @@ namespace NadekoBot.Modules.Music.Services
             _strings = strings;
             _googleApiService = googleApiService;
             _ytLoader = ytLoader;
+            _eb = eb;
 
             _players = new ConcurrentDictionary<ulong, IMusicPlayer>();
             _outputChannels = new ConcurrentDictionary<ulong, (ITextChannel, ITextChannel?)>();
@@ -189,7 +192,7 @@ namespace NadekoBot.Modules.Music.Services
             return mp;
         }
 
-        public Task<IUserMessage?> SendToOutputAsync(ulong guildId, EmbedBuilder embed)
+        public Task<IUserMessage?> SendToOutputAsync(ulong guildId, IEmbedBuilder embed)
         {
             if (_outputChannels.TryGetValue(guildId, out var chan))
                 return (chan.Default ?? chan.Override).EmbedAsync(embed);
@@ -203,7 +206,7 @@ namespace NadekoBot.Modules.Music.Services
             return async (mp, trackInfo) =>
             {
                 _ = lastFinishedMessage?.DeleteAsync();
-                var embed = new EmbedBuilder()
+                var embed = _eb.Create()
                     .WithOkColor()
                     .WithAuthor(GetText(guildId, "finished_song"), Music.MusicIconUrl)
                     .WithDescription(trackInfo.PrettyName())
@@ -219,7 +222,7 @@ namespace NadekoBot.Modules.Music.Services
             return async (mp, trackInfo, index) =>
             {
                 _ = lastPlayingMessage?.DeleteAsync();
-                var embed = new EmbedBuilder().WithOkColor()
+                var embed = _eb.Create().WithOkColor()
                     .WithAuthor(GetText(guildId, "playing_song", index + 1), Music.MusicIconUrl)
                     .WithDescription(trackInfo.PrettyName())
                     .WithFooter($"{mp.PrettyVolume()} | {trackInfo.PrettyInfo()}");

@@ -22,7 +22,7 @@ namespace NadekoBot.Modules.Xp
             [UserPerm(GuildPerm.Administrator)]
             public async Task XpReset(ulong userId)
             {
-                var embed = new EmbedBuilder()
+                var embed = _eb.Create()
                     .WithTitle(GetText("reset"))
                     .WithDescription(GetText("reset_user_confirm"));
 
@@ -39,7 +39,7 @@ namespace NadekoBot.Modules.Xp
             [UserPerm(GuildPerm.Administrator)]
             public async Task XpReset()
             {
-                var embed = new EmbedBuilder()
+                var embed = _eb.Create()
                        .WithTitle(GetText("reset"))
                        .WithDescription(GetText("reset_server_confirm"));
 

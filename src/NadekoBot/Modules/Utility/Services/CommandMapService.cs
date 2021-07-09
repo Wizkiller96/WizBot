@@ -18,15 +18,17 @@ namespace NadekoBot.Modules.Utility.Services
 {
     public class CommandMapService : IInputTransformer, INService
     {
-        
+        private readonly IEmbedBuilderService _eb;
+
         public ConcurrentDictionary<ulong, ConcurrentDictionary<string, string>> AliasMaps { get; } = new ConcurrentDictionary<ulong, ConcurrentDictionary<string, string>>();
 
         private readonly DbService _db;
 
         //commandmap
-        public CommandMapService(DiscordSocketClient client, DbService db)
+        public CommandMapService(DiscordSocketClient client, DbService db, IEmbedBuilderService eb)
         {
-            
+            _eb = eb;
+
             using (var uow = db.GetDbContext())
             {
                 var guildIds = client.Guilds.Select(x => x.Id).ToList();
@@ -87,7 +89,7 @@ namespace NadekoBot.Modules.Utility.Services
 
                         try
                         {
-                            var toDelete = await channel.SendConfirmAsync($"{input} => {newInput}").ConfigureAwait(false);
+                            var toDelete = await channel.SendConfirmAsync(_eb, $"{input} => {newInput}").ConfigureAwait(false);
                             var _ = Task.Run(async () =>
                             {
                                 await Task.Delay(1500).ConfigureAwait(false);

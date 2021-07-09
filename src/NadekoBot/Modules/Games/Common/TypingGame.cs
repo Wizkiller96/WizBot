@@ -9,6 +9,7 @@ using NadekoBot.Common;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Games.Services;
 using CommandLine;
+using NadekoBot.Services;
 using Serilog;
 
 namespace NadekoBot.Modules.Games.Common
@@ -37,15 +38,17 @@ namespace NadekoBot.Modules.Games.Common
         private readonly GamesService _games;
         private readonly string _prefix;
         private readonly Options _options;
+        private readonly IEmbedBuilderService _eb;
 
         public TypingGame(GamesService games, DiscordSocketClient client, ITextChannel channel, 
-            string prefix, Options options)
+            string prefix, Options options, IEmbedBuilderService eb)
         {
             _games = games;
             _client = client;
             _prefix = prefix;
             _options = options;
-    
+            _eb = eb;
+
             this.Channel = channel;
             IsActive = false;
             sw = new Stopwatch();
@@ -62,7 +65,7 @@ namespace NadekoBot.Modules.Games.Common
             sw.Reset();
             try
             {
-                await Channel.SendConfirmAsync("Typing contest stopped.").ConfigureAwait(false);
+                await Channel.SendConfirmAsync(_eb, "Typing contest stopped.");
             }
             catch (Exception ex)
             {
@@ -80,7 +83,8 @@ namespace NadekoBot.Modules.Games.Common
             var i = (int)(CurrentSentence.Length / WORD_VALUE * 1.7f);
             try
             {
-                await Channel.SendConfirmAsync($@":clock2: Next contest will last for {i} seconds. Type the bolded text as fast as you can.").ConfigureAwait(false);
+                await Channel.SendConfirmAsync(_eb,
+                    $@":clock2: Next contest will last for {i} seconds. Type the bolded text as fast as you can.");
 
 
                 var time = _options.StartTime;
@@ -156,7 +160,7 @@ namespace NadekoBot.Modules.Games.Common
                         var elapsed = sw.Elapsed;
                         var wpm = CurrentSentence.Length / WORD_VALUE / elapsed.TotalSeconds * 60;
                         finishedUserIds.Add(msg.Author.Id);
-                        await this.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
+                        await this.Channel.EmbedAsync(_eb.Create().WithOkColor()
                             .WithTitle($"{msg.Author} finished the race!")
                             .AddField("Place", $"#{finishedUserIds.Count}", true)
                             .AddField("WPM", $"{wpm:F1} *[{elapsed.TotalSeconds:F2}sec]*", true)
@@ -164,7 +168,7 @@ namespace NadekoBot.Modules.Games.Common
                         
                         if (finishedUserIds.Count % 4 == 0)
                         {
-                            await this.Channel.SendConfirmAsync(
+                            await this.Channel.SendConfirmAsync(_eb,
                                     $":exclamation: A lot of people finished, here is the text for those still typing:" +
                                     $"\n\n**{Format.Sanitize(CurrentSentence.Replace(" ", " \x200B", StringComparison.InvariantCulture)).SanitizeMentions(true)}**")
                                 .ConfigureAwait(false);

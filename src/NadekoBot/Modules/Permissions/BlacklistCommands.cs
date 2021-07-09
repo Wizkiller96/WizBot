@@ -66,13 +66,13 @@ namespace NadekoBot.Modules.Permissions
                     
                     if (pageItems.Count == 0)
                     {
-                        return new EmbedBuilder()
+                        return _eb.Create()
                             .WithOkColor()
                             .WithTitle(title)
                             .WithDescription(GetText("empty_page"));
                     }
                     
-                    return new EmbedBuilder()
+                    return _eb.Create()
                         .WithTitle(title)
                         .WithDescription(pageItems.JoinWith('\n'))
                         .WithOkColor();

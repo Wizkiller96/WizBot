@@ -117,12 +117,12 @@ namespace NadekoBot.Modules.Searches
 
                     if (elements.Count == 0)
                     {
-                        return new EmbedBuilder()
+                        return _eb.Create()
                             .WithDescription(GetText("streams_none"))
                             .WithErrorColor();
                     }
 
-                    var eb = new EmbedBuilder()
+                    var eb = _eb.Create()
                         .WithTitle(GetText("streams_follow_title"))
                         .WithOkColor();
                     for (var index = 0; index < elements.Count; index++)

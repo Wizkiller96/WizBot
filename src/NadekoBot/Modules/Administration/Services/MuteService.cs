@@ -39,12 +39,14 @@ namespace NadekoBot.Modules.Administration.Services
 
         private readonly DiscordSocketClient _client;
         private readonly DbService _db;
+        private readonly IEmbedBuilderService _eb;
 
-        public MuteService(DiscordSocketClient client, DbService db)
+        public MuteService(DiscordSocketClient client, DbService db, IEmbedBuilderService eb)
         {
             _client = client;
             _db = db;
-            
+            _eb = eb;
+
             using (var uow = db.GetDbContext())
             {
                 var guildIds = client.Guilds.Select(x => x.Id).ToList();
@@ -132,7 +134,7 @@ namespace NadekoBot.Modules.Administration.Services
             if (string.IsNullOrWhiteSpace(reason))
                 return;
             
-            var _ = Task.Run(() => user.SendMessageAsync(embed: new EmbedBuilder()
+            var _ = Task.Run(() => user.SendMessageAsync(embed: _eb.Create()
                 .WithDescription($"You've been muted in {user.Guild} server")
                 .AddField("Mute Type", type.ToString())
                 .AddField("Moderator", mod.ToString())
@@ -145,7 +147,7 @@ namespace NadekoBot.Modules.Administration.Services
             if (string.IsNullOrWhiteSpace(reason))
                 return;
         
-            var _ = Task.Run(() => user.SendMessageAsync(embed: new EmbedBuilder()
+            var _ = Task.Run(() => user.SendMessageAsync(embed: _eb.Create()
                 .WithDescription($"You've been unmuted in {user.Guild} server")
                 .AddField("Unmute Type", type.ToString())
                 .AddField("Moderator", mod.ToString())

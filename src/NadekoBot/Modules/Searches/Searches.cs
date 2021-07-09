@@ -68,7 +68,7 @@ namespace NadekoBot.Modules.Searches
             if (!await ValidateQuery(ctx.Channel, query).ConfigureAwait(false))
                 return;
 
-            var embed = new EmbedBuilder();
+            var embed = _eb.Create();
             var data = await _service.GetWeatherDataAsync(query).ConfigureAwait(false);
 
             if (data is null)
@@ -140,12 +140,12 @@ namespace NadekoBot.Modules.Searches
                 return;
             }
 
-            var eb = new EmbedBuilder()
+            var eb = _eb.Create()
                 .WithOkColor()
                 .WithTitle(GetText("time_new"))
                 .WithDescription(Format.Code(data.Time.ToString()))
-                .AddField(GetText("location"), string.Join('\n', data.Address.Split(", ")), inline: true)
-                .AddField(GetText("timezone"), data.TimeZoneName, inline: true);
+                .AddField(GetText("location"), string.Join('\n', data.Address.Split(", ")), true)
+                .AddField(GetText("timezone"), data.TimeZoneName, true);
 
             await ctx.Channel.SendMessageAsync(embed: eb.Build()).ConfigureAwait(false);
         }
@@ -180,7 +180,7 @@ namespace NadekoBot.Modules.Searches
                 await ReplyErrorLocalizedAsync("imdb_fail").ConfigureAwait(false);
                 return;
             }
-            await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
+            await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
                 .WithTitle(movie.Title)
                 .WithUrl($"http://www.imdb.com/title/{movie.ImdbId}/")
                 .WithDescription(movie.Plot.TrimTo(1000))
@@ -205,7 +205,7 @@ namespace NadekoBot.Modules.Searches
         private Task InternalRandomImage(SearchesService.ImageTag tag)
         {
             var url = _service.GetRandomImageUrl(tag);
-            return ctx.Channel.EmbedAsync(new EmbedBuilder()
+            return ctx.Channel.EmbedAsync(_eb.Create()
                 .WithOkColor()
                 .WithImageUrl(url));
         }
@@ -220,7 +220,7 @@ namespace NadekoBot.Modules.Searches
             try
             {
                 var res = await _google.GetImageAsync(oterms).ConfigureAwait(false);
-                var embed = new EmbedBuilder()
+                var embed = _eb.Create()
                     .WithOkColor()
                     .WithAuthor(GetText("image_search_for") + " " + oterms.TrimTo(50),
                         "http://i.imgur.com/G46fm8J.png",
@@ -250,7 +250,7 @@ namespace NadekoBot.Modules.Searches
 
                     var source = img.Source.Replace("b.", ".", StringComparison.InvariantCulture);
 
-                    var embed = new EmbedBuilder()
+                    var embed = _eb.Create()
                         .WithOkColor()
                         .WithAuthor(GetText("image_search_for") + " " + oterms.TrimTo(50),
                             "http://s.imgur.com/images/logo-1200-630.jpg?",
@@ -269,8 +269,8 @@ namespace NadekoBot.Modules.Searches
             if (!await ValidateQuery(ctx.Channel, ffs).ConfigureAwait(false))
                 return;
 
-            await ctx.Channel.SendConfirmAsync("<" + await _google.ShortenUrl($"http://lmgtfy.com/?q={ Uri.EscapeUriString(ffs) }").ConfigureAwait(false) + ">")
-                           .ConfigureAwait(false);
+            var shortenedUrl = await _google.ShortenUrl($"http://lmgtfy.com/?q={Uri.EscapeUriString(ffs)}");
+            await SendConfirmAsync($"<{shortenedUrl}>");
         }
 
         public class ShortenData
@@ -322,8 +322,8 @@ namespace NadekoBot.Modules.Searches
                 }
             }
 
-            await ctx.Channel.EmbedAsync(new EmbedBuilder()
-                .WithColor(Bot.OkColor)
+            await ctx.Channel.EmbedAsync(_eb.Create()
+                .WithOkColor()
                 .AddField(GetText("original_url"), $"<{query}>")
                 .AddField(GetText("short_url"), $"<{shortLink}>"));
         }
@@ -350,7 +350,7 @@ namespace NadekoBot.Modules.Searches
 
             var descStr = string.Join("\n\n", desc);
 
-            var embed = new EmbedBuilder()
+            var embed = _eb.Create()
                 .WithAuthor(ctx.User.ToString(),
                     iconUrl: "http://i.imgur.com/G46fm8J.png")
                 .WithTitle(ctx.User.ToString())
@@ -383,7 +383,7 @@ namespace NadekoBot.Modules.Searches
 
             var descStr = string.Join("\n\n", desc);
             
-            var embed = new EmbedBuilder()
+            var embed = _eb.Create()
                 .WithAuthor(ctx.User.ToString(),
                     iconUrl: "https://upload.wikimedia.org/wikipedia/en/9/90/The_DuckDuckGo_Duck.png")
                 .WithDescription($"{GetText("search_for")} **{query}**\n\n" + descStr)
@@ -407,7 +407,7 @@ namespace NadekoBot.Modules.Searches
                 return;
             }
 
-            var embed = new EmbedBuilder().WithOkColor()
+            var embed = _eb.Create().WithOkColor()
                 .WithTitle(card.Name)
                 .WithDescription(card.Description)
                 .WithImageUrl(card.ImageUrl)
@@ -439,7 +439,7 @@ namespace NadekoBot.Modules.Searches
                 await ReplyErrorLocalizedAsync("card_not_found").ConfigureAwait(false);
                 return;
             }
-            var embed = new EmbedBuilder().WithOkColor()
+            var embed = _eb.Create().WithOkColor()
                 .WithImageUrl(card.Img);
 
             if (!string.IsNullOrWhiteSpace(card.Flavor))
@@ -467,7 +467,7 @@ namespace NadekoBot.Modules.Searches
                         await ctx.SendPaginatedConfirmAsync(0, (p) =>
                         {
                             var item = items[p];
-                            return new EmbedBuilder().WithOkColor()
+                            return _eb.Create().WithOkColor()
                                          .WithUrl(item.Permalink)
                                          .WithAuthor(item.Word)
                                          .WithDescription(item.Definition);
@@ -529,10 +529,10 @@ namespace NadekoBot.Modules.Searches
                     await ctx.SendPaginatedConfirmAsync(0, page =>
                     {
                         var data = col.Skip(page).First();
-                        var embed = new EmbedBuilder()
+                        var embed = _eb.Create()
                             .WithDescription(ctx.User.Mention)
-                            .AddField(GetText("word"), data.Word, inline: true)
-                            .AddField(GetText("class"), data.WordType, inline: true)
+                            .AddField(GetText("word"), data.Word, true)
+                            .AddField(GetText("class"), data.WordType, true)
                             .AddField(GetText("definition"), data.Definition)
                             .WithOkColor();
 
@@ -559,7 +559,7 @@ namespace NadekoBot.Modules.Searches
                     return;
 
                 var fact = JObject.Parse(response)["fact"].ToString();
-                await ctx.Channel.SendConfirmAsync("🐈" + GetText("catfact"), fact).ConfigureAwait(false);
+                await SendConfirmAsync("🐈" + GetText("catfact"), fact).ConfigureAwait(false);
             }
         }
 
@@ -575,7 +575,7 @@ namespace NadekoBot.Modules.Searches
             if (av is null)
                 return;
 
-            await ctx.Channel.SendConfirmAsync($"https://images.google.com/searchbyimage?image_url={av}").ConfigureAwait(false);
+            await SendConfirmAsync($"https://images.google.com/searchbyimage?image_url={av}").ConfigureAwait(false);
         }
 
         //done in 3.0
@@ -586,12 +586,12 @@ namespace NadekoBot.Modules.Searches
 
             if (string.IsNullOrWhiteSpace(imageLink))
                 return;
-            await ctx.Channel.SendConfirmAsync($"https://images.google.com/searchbyimage?image_url={imageLink}").ConfigureAwait(false);
+            await SendConfirmAsync($"https://images.google.com/searchbyimage?image_url={imageLink}").ConfigureAwait(false);
         }
 
         [NadekoCommand, Aliases]
         public Task Safebooru([Leftover] string tag = null)
-            => InternalDapiCommand(ctx.Message, tag, DapiSearchType.Safebooru);
+            => InternalDapiCommand(tag, DapiSearchType.Safebooru);
 
         [NadekoCommand, Aliases]
         public async Task Wiki([Leftover] string query = null)
@@ -655,7 +655,7 @@ namespace NadekoBot.Modules.Searches
                 return;
             }
 
-            await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
+            await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
                 .AddField("Username", usr.ToString(), false)
                 .AddField("Avatar Url", avatarUrl, false)
                 .WithThumbnailUrl(avatarUrl.ToString()), ctx.User.Mention).ConfigureAwait(false);
@@ -721,11 +721,11 @@ namespace NadekoBot.Modules.Searches
             {
             }
             if (obj.Error != null || obj.Verses is null || obj.Verses.Length == 0)
-                await ctx.Channel.SendErrorAsync(obj.Error ?? "No verse found.").ConfigureAwait(false);
+                await SendErrorAsync(obj.Error ?? "No verse found.").ConfigureAwait(false);
             else
             {
                 var v = obj.Verses[0];
-                await ctx.Channel.EmbedAsync(new EmbedBuilder()
+                await ctx.Channel.EmbedAsync(_eb.Create()
                     .WithOkColor()
                     .WithTitle($"{v.BookName} {v.Chapter}:{v.Verse}")
                     .WithDescription(v.Text)).ConfigureAwait(false);
@@ -747,7 +747,7 @@ namespace NadekoBot.Modules.Searches
                 return;
             }
 
-            //var embed = new EmbedBuilder()
+            //var embed = _eb.Create()
             //    .WithOkColor()
             //    .WithDescription(gameData.ShortDescription)
             //    .WithTitle(gameData.Name)
@@ -760,19 +760,17 @@ namespace NadekoBot.Modules.Searches
             await ctx.Channel.SendMessageAsync($"https://store.steampowered.com/app/{appId}").ConfigureAwait(false);
         }
 
-        public async Task InternalDapiCommand(IUserMessage umsg, string tag, DapiSearchType type)
+        public async Task InternalDapiCommand(string tag, DapiSearchType type)
         {
-            var channel = umsg.Channel;
-
             tag = tag?.Trim() ?? "";
 
             var imgObj = await _service.DapiSearch(tag, type, ctx.Guild?.Id).ConfigureAwait(false);
 
             if (imgObj is null)
-                await channel.SendErrorAsync(umsg.Author.Mention + " " + GetText("no_results")).ConfigureAwait(false);
+                await SendErrorAsync(ctx.User.Mention + " " + GetText("no_results")).ConfigureAwait(false);
             else
-                await channel.EmbedAsync(new EmbedBuilder().WithOkColor()
-                    .WithDescription($"{umsg.Author.Mention} [{tag ?? "url"}]({imgObj.FileUrl})")
+                await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
+                    .WithDescription($"{ctx.User.Mention} [{tag ?? "url"}]({imgObj.FileUrl})")
                     .WithImageUrl(imgObj.FileUrl)
                     .WithFooter(type.ToString())).ConfigureAwait(false);
         }

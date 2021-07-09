@@ -53,14 +53,14 @@ namespace NadekoBot.Modules.Utility
             if (CREmbed.TryParse(message, out var embedData))
             {
                 rep.Replace(embedData);
-                await channel.EmbedAsync(embedData, sanitizeAll: !((IGuildUser)Context.User).GuildPermissions.MentionEveryone).ConfigureAwait(false);
+                await channel.EmbedAsync(embedData, _eb, sanitizeAll: !((IGuildUser)Context.User).GuildPermissions.MentionEveryone).ConfigureAwait(false);
             }
             else
             {
                 var msg = rep.Replace(message);
                 if (!string.IsNullOrWhiteSpace(msg))
                 {
-                    await channel.SendConfirmAsync(msg).ConfigureAwait(false);
+                    await channel.SendConfirmAsync(_eb, msg).ConfigureAwait(false);
                 }
             }
         }
@@ -98,7 +98,7 @@ namespace NadekoBot.Modules.Utility
                 await ReplyErrorLocalizedAsync("nobody_playing_game").ConfigureAwait(false);
             else
             {
-                await ctx.Channel.SendConfirmAsync("```css\n" + string.Join("\n", arr.GroupBy(item => (i++) / 2)
+                await SendConfirmAsync("```css\n" + string.Join("\n", arr.GroupBy(item => (i++) / 2)
                                                                                  .Select(ig => string.Concat(ig.Select(el => $"• {el,-27}")))) + "\n```")
                                                                                  .ConfigureAwait(false);
             }
@@ -128,9 +128,9 @@ namespace NadekoBot.Modules.Utility
                     .ToList();
 
                 if (pageUsers.Count == 0)
-                    return new EmbedBuilder().WithOkColor().WithDescription(GetText("no_user_on_this_page"));
+                    return _eb.Create().WithOkColor().WithDescription(GetText("no_user_on_this_page"));
                     
-                return new EmbedBuilder().WithOkColor()
+                return _eb.Create().WithOkColor()
                     .WithTitle(GetText("inrole_list", Format.Bold(role?.Name ?? "No Role")) + $" - {roleUsers.Length}")
                     .WithDescription(string.Join("\n", pageUsers));
             }, roleUsers.Length, 20).ConfigureAwait(false);
@@ -157,7 +157,7 @@ namespace NadekoBot.Modules.Utility
             {
                 builder.AppendLine($"{p.Name} : {p.GetValue(perms, null)}");
             }
-            await ctx.Channel.SendConfirmAsync(builder.ToString()).ConfigureAwait(false);
+            await SendConfirmAsync(builder.ToString()).ConfigureAwait(false);
         }
 
         [NadekoCommand, Aliases]
@@ -196,8 +196,7 @@ namespace NadekoBot.Modules.Utility
         [RequireContext(ContextType.Guild)]
         public async Task Roles(IGuildUser target, int page = 1)
         {
-            var channel = (ITextChannel)ctx.Channel;
-            var guild = channel.Guild;
+            var guild = ctx.Guild;
 
             const int rolesPerPage = 20;
 
@@ -214,7 +213,7 @@ namespace NadekoBot.Modules.Utility
                 else
                 {
 
-                    await channel.SendConfirmAsync(GetText("roles_page", page, Format.Bold(target.ToString())),
+                    await SendConfirmAsync(GetText("roles_page", page, Format.Bold(target.ToString())),
                         "\n• " + string.Join("\n• ", (IEnumerable<IRole>)roles).SanitizeMentions(true)).ConfigureAwait(false);
                 }
             }
@@ -227,7 +226,7 @@ namespace NadekoBot.Modules.Utility
                 }
                 else
                 {
-                    await channel.SendConfirmAsync(GetText("roles_all_page", page),
+                    await SendConfirmAsync(GetText("roles_all_page", page),
                         "\n• " + string.Join("\n• ", (IEnumerable<IRole>)roles).SanitizeMentions(true)).ConfigureAwait(false);
                 }
             }
@@ -249,7 +248,7 @@ namespace NadekoBot.Modules.Utility
             if (string.IsNullOrWhiteSpace(topic))
                 await ReplyErrorLocalizedAsync("no_topic_set").ConfigureAwait(false);
             else
-                await ctx.Channel.SendConfirmAsync(GetText("channel_topic"), topic).ConfigureAwait(false);
+                await SendConfirmAsync(GetText("channel_topic"), topic).ConfigureAwait(false);
         }
 
         [NadekoCommand, Aliases]
@@ -260,7 +259,7 @@ namespace NadekoBot.Modules.Utility
                 ownerIds = "-";
 
             await ctx.Channel.EmbedAsync(
-                    new EmbedBuilder().WithOkColor()
+                    _eb.Create().WithOkColor()
                         .WithAuthor($"NadekoBot v{StatsService.BotVersion}",
                             "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/avatar.png",
                             "https://nadekobot.readthedocs.io/en/latest/")
@@ -309,7 +308,8 @@ namespace NadekoBot.Modules.Utility
                 return;
             }
 
-            var embed = new EmbedBuilder().WithOkColor();
+            var embed = _eb.Create()
+                .WithOkColor();
             foreach (var guild in guilds)
                 embed.AddField(guild.Name,
                     GetText("listservers", guild.Id, guild.MemberCount, guild.OwnerId),
@@ -374,7 +374,7 @@ namespace NadekoBot.Modules.Utility
                 sw.Stop();
                 msg.DeleteAfter(0);
 
-                await ctx.Channel.SendConfirmAsync($"{Format.Bold(ctx.User.ToString())} 🏓 {(int)sw.Elapsed.TotalMilliseconds}ms").ConfigureAwait(false);
+                await SendConfirmAsync($"{Format.Bold(ctx.User.ToString())} 🏓 {(int)sw.Elapsed.TotalMilliseconds}ms").ConfigureAwait(false);
             }
             finally
             {
@@ -413,7 +413,7 @@ namespace NadekoBot.Modules.Utility
         //
         //     var inviteUsers = await _inviteService.GetInviteUsersAsync(ctx.Guild.Id);
         //     
-        //     var embed = new EmbedBuilder()
+        //     var embed = _eb.Create()
         //         .WithOkColor();
         //
         //     await ctx.SendPaginatedConfirmAsync(page, (curPage) =>

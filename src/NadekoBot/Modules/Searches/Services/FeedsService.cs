@@ -20,11 +20,12 @@ namespace NadekoBot.Modules.Searches.Services
         private readonly DbService _db;
         private readonly ConcurrentDictionary<string, HashSet<FeedSub>> _subs;
         private readonly DiscordSocketClient _client;
+        private readonly IEmbedBuilderService _eb;
 
         private readonly ConcurrentDictionary<string, DateTime> _lastPosts =
             new ConcurrentDictionary<string, DateTime>();
 
-        public FeedsService(Bot bot, DbService db, DiscordSocketClient client)
+        public FeedsService(Bot bot, DbService db, DiscordSocketClient client, IEmbedBuilderService eb)
         {
             _db = db;
 
@@ -44,6 +45,7 @@ namespace NadekoBot.Modules.Searches.Services
             }
 
             _client = client;
+            _eb = eb;
 
             var _ = Task.Run(TrackFeeds);
         }
@@ -87,7 +89,7 @@ namespace NadekoBot.Modules.Searches.Services
                                 continue;
                             }                            
 
-                            var embed = new EmbedBuilder()
+                            var embed = _eb.Create()
                                 .WithFooter(rssUrl);
 
                             _lastPosts[kvp.Key] = itemUpdateDate;

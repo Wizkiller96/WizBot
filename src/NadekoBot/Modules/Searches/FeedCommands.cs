@@ -71,7 +71,7 @@ namespace NadekoBot.Modules.Searches
 
                 if (!feeds.Any())
                 {
-                    await ctx.Channel.EmbedAsync(new EmbedBuilder()
+                    await ctx.Channel.EmbedAsync(_eb.Create()
                         .WithOkColor()
                         .WithDescription(GetText("feed_no_feed")))
                         .ConfigureAwait(false);
@@ -80,7 +80,7 @@ namespace NadekoBot.Modules.Searches
 
                 await ctx.SendPaginatedConfirmAsync(0, (cur) =>
                 {
-                    var embed = new EmbedBuilder()
+                    var embed = _eb.Create()
                        .WithOkColor();
                     var i = 0;
                     var fs = string.Join("\n", feeds.Skip(cur * 10)

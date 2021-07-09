@@ -42,7 +42,7 @@ namespace NadekoBot.Modules.Games
                         });
                         return;
                     }
-                    game = new TicTacToe(base.Strings, this._client, channel, (IGuildUser)ctx.User, options);
+                    game = new TicTacToe(base.Strings, this._client, channel, (IGuildUser)ctx.User, options, _eb);
                     _service.TicTacToeGames.Add(channel.Id, game);
                     await ReplyConfirmLocalizedAsync("ttt_created").ConfigureAwait(false);
 

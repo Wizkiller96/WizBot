@@ -133,7 +133,7 @@ namespace NadekoBot.Modules.Administration
                     return;
                 }
 
-                await ctx.Channel.SendConfirmAsync(GetText("prot_enable", "Anti-Raid"),
+                await SendConfirmAsync(GetText("prot_enable", "Anti-Raid"),
                         $"{ctx.User.Mention} {GetAntiRaidString(stats)}")
                         .ConfigureAwait(false);
             }
@@ -199,7 +199,7 @@ namespace NadekoBot.Modules.Administration
 
                 var stats = await _service.StartAntiSpamAsync(ctx.Guild.Id, messageCount, action, time, role?.Id).ConfigureAwait(false);
 
-                await ctx.Channel.SendConfirmAsync(GetText("prot_enable", "Anti-Spam"),
+                await SendConfirmAsync(GetText("prot_enable", "Anti-Spam"),
                     $"{ctx.User.Mention} {GetAntiSpamString(stats)}").ConfigureAwait(false);
             }
 
@@ -231,7 +231,7 @@ namespace NadekoBot.Modules.Administration
                     return;
                 }
 
-                var embed = new EmbedBuilder().WithOkColor()
+                var embed = _eb.Create().WithOkColor()
                     .WithTitle(GetText("prot_active"));
 
                 if (spam != null)

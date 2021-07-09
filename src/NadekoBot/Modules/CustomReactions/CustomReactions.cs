@@ -41,7 +41,7 @@ namespace NadekoBot.Modules.CustomReactions
 
             var cr = await _service.AddAsync(ctx.Guild?.Id, key, message);
 
-            await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
+            await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
                 .WithTitle(GetText("new_cust_react"))
                 .WithDescription($"#{(kwum)cr.Id}")
                 .AddField(GetText("trigger"), key)
@@ -65,7 +65,7 @@ namespace NadekoBot.Modules.CustomReactions
             var cr = await _service.EditAsync(ctx.Guild?.Id, (int)id, message).ConfigureAwait(false);
             if (cr != null)
             {
-                await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
+                await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
                     .WithTitle(GetText("edited_cust_react"))
                     .WithDescription($"#{id}")
                     .AddField(GetText("trigger"), cr.Trigger)
@@ -107,7 +107,7 @@ namespace NadekoBot.Modules.CustomReactions
                                       : " // " + string.Join(" ", cr.GetReactions())))
                     .JoinWith('\n');
 
-                return new EmbedBuilder().WithOkColor()
+                return _eb.Create().WithOkColor()
                     .WithTitle(GetText("custom_reactions"))
                     .WithDescription(desc);
 
@@ -146,7 +146,7 @@ namespace NadekoBot.Modules.CustomReactions
             }
             else
             {
-                await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
+                await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
                     .WithDescription($"#{id}")
                     .AddField(GetText("trigger"), found.Trigger.TrimTo(1024))
                     .AddField(GetText("response"), (found.Response + "\n```css\n" + found.Response).TrimTo(1020) + "```")
@@ -167,7 +167,7 @@ namespace NadekoBot.Modules.CustomReactions
 
             if (cr != null)
             {
-                await ctx.Channel.EmbedAsync(new EmbedBuilder().WithOkColor()
+                await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
                     .WithTitle(GetText("deleted"))
                     .WithDescription($"#{id}")
                     .AddField(GetText("trigger"), cr.Trigger.TrimTo(1024))
@@ -289,7 +289,7 @@ namespace NadekoBot.Modules.CustomReactions
         [UserPerm(GuildPerm.Administrator)]
         public async Task CrClear()
         {
-            if (await PromptUserConfirmAsync(new EmbedBuilder()
+            if (await PromptUserConfirmAsync(_eb.Create()
                 .WithTitle("Custom reaction clear")
                 .WithDescription("This will delete all custom reactions on this server.")).ConfigureAwait(false))
             {

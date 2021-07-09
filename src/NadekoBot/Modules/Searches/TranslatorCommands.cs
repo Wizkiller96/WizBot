@@ -30,7 +30,7 @@ namespace NadekoBot.Modules.Searches
                 {
                     await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
                     var translation = await _searches.Translate(langs, text).ConfigureAwait(false);
-                    await ctx.Channel.SendConfirmAsync(GetText("translation") + " " + langs, translation).ConfigureAwait(false);
+                    await SendConfirmAsync(GetText("translation") + " " + langs, translation).ConfigureAwait(false);
                 }
                 catch
                 {
@@ -46,7 +46,7 @@ namespace NadekoBot.Modules.Searches
             //    foreach (var item in _google.Languages.Except(new[] { "en" }).Where(x => x.Length < 4))
             //    {
             //        var txt2 = await _searches.Translate(lastItem + ">" + item, txt);
-            //        await ctx.Channel.EmbedAsync(new EmbedBuilder()
+            //        await ctx.Channel.EmbedAsync(_eb.Create()
             //            .WithOkColor()
             //            .WithTitle(lastItem + ">" + item)
             //            .AddField("Input", txt)
@@ -56,7 +56,7 @@ namespace NadekoBot.Modules.Searches
             //        lastItem = item;
             //    }
             //    txt = await _searches.Translate(lastItem + ">en", txt);
-            //    await ctx.Channel.SendConfirmAsync("Final output:\n\n" + txt);
+            //    await SendConfirmAsync("Final output:\n\n" + txt);
             //}
 
             public enum AutoDeleteAutoTranslate

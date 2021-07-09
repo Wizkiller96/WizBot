@@ -98,7 +98,7 @@ namespace NadekoBot.Modules.Gambling
                 if (bet <= 0)
                     bet = 1;
 
-                var embed = new EmbedBuilder()
+                var embed = _eb.Create()
                     .WithOkColor()
                     .WithTitle("Slot Stats")
                     .AddField("Total Bet", bet.ToString(), true)
@@ -133,7 +133,7 @@ namespace NadekoBot.Modules.Gambling
                     sb.AppendLine($"x{key} occured {dict[key]} times. {dict[key] * 1.0f / tests * 100}%");
                     payout += key * dict[key];
                 }
-                await ctx.Channel.SendConfirmAsync("Slot Test Results", sb.ToString(),
+                await SendConfirmAsync("Slot Test Results", sb.ToString(),
                     footer: $"Total Bet: {tests * bet} | Payout: {payout * bet} | {payout * 1.0f / tests * 100}%").ConfigureAwait(false);
             }
 

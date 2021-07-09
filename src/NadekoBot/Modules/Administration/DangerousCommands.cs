@@ -22,7 +22,7 @@ namespace NadekoBot.Modules.Administration
                 sql = string.Format(sql, reps);
                 try
                 {
-                    var embed = new EmbedBuilder()
+                    var embed = _eb.Create()
                         .WithTitle(GetText("sql_confirm_exec"))
                         .WithDescription(Format.Code(sql));
 
@@ -32,11 +32,11 @@ namespace NadekoBot.Modules.Administration
                     }
 
                     var res = await _service.ExecuteSql(sql).ConfigureAwait(false);
-                    await ctx.Channel.SendConfirmAsync(res.ToString()).ConfigureAwait(false);
+                    await SendConfirmAsync(res.ToString()).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
-                    await ctx.Channel.SendErrorAsync(ex.ToString()).ConfigureAwait(false);
+                    await SendErrorAsync(ex.ToString()).ConfigureAwait(false);
                 }
             }
 
@@ -52,13 +52,13 @@ namespace NadekoBot.Modules.Administration
 
                     if (!items.Any())
                     {
-                        return new EmbedBuilder()
+                        return _eb.Create()
                             .WithErrorColor()
                             .WithFooter(sql)
                             .WithDescription("-");
                     }
 
-                    return new EmbedBuilder()
+                    return _eb.Create()
                         .WithOkColor()
                         .WithFooter(sql)
                         .WithTitle(string.Join(" ║ ", result.ColumnNames))
@@ -106,7 +106,7 @@ namespace NadekoBot.Modules.Administration
             [OwnerOnly]
             public async Task PurgeUser(ulong userId)
             {
-                var embed = new EmbedBuilder()
+                var embed = _eb.Create()
                     .WithDescription(GetText("purge_user_confirm", Format.Bold(userId.ToString())));
 
                 if (!await PromptUserConfirmAsync(embed).ConfigureAwait(false))

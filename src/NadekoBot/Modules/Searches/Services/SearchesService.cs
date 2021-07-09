@@ -41,6 +41,7 @@ namespace NadekoBot.Modules.Searches.Services
         private readonly IDataCache _cache;
         private readonly FontProvider _fonts;
         private readonly IBotCredentials _creds;
+        private readonly IEmbedBuilderService _eb;
         private readonly NadekoRandom _rng;
 
         public ConcurrentDictionary<ulong, bool> TranslatedChannels { get; } = new ConcurrentDictionary<ulong, bool>();
@@ -61,7 +62,7 @@ namespace NadekoBot.Modules.Searches.Services
 
         public SearchesService(DiscordSocketClient client, IGoogleApiService google,
             DbService db, Bot bot, IDataCache cache, IHttpClientFactory factory,
-            FontProvider fonts, IBotCredentials creds)
+            FontProvider fonts, IBotCredentials creds, IEmbedBuilderService eb)
         {
             _httpFactory = factory;
             _client = client;
@@ -71,6 +72,7 @@ namespace NadekoBot.Modules.Searches.Services
             _cache = cache;
             _fonts = fonts;
             _creds = creds;
+            _eb = eb;
             _rng = new NadekoRandom();
 
             _blacklistedTags = new ConcurrentDictionary<ulong, HashSet<string>>(
@@ -100,7 +102,8 @@ namespace NadekoBot.Modules.Searches.Services
                                             .ConfigureAwait(false);
                         if (autoDelete)
                             try { await umsg.DeleteAsync().ConfigureAwait(false); } catch { }
-                        await umsg.Channel.SendConfirmAsync($"{umsg.Author.Mention} `:` "
+                        
+                        await umsg.Channel.SendConfirmAsync(_eb, $"{umsg.Author.Mention} `:` "
                             + text.Replace("<@ ", "<@", StringComparison.InvariantCulture)
                                   .Replace("<@! ", "<@!", StringComparison.InvariantCulture)).ConfigureAwait(false);
                     }

@@ -23,11 +23,13 @@ namespace NadekoBot.Modules.Games.Services
 
         private readonly DbService _db;
         private readonly IBotStrings _strs;
+        private readonly IEmbedBuilderService _eb;
 
-        public PollService(DbService db, IBotStrings strs)
+        public PollService(DbService db, IBotStrings strs, IEmbedBuilderService eb)
         {
             _db = db;
             _strs = strs;
+            _eb = eb;
 
             using (var uow = db.GetDbContext())
             {
@@ -97,7 +99,7 @@ namespace NadekoBot.Modules.Games.Services
 
         private async Task Pr_OnVoted(IUserMessage msg, IGuildUser usr)
         {
-            var toDelete = await msg.Channel.SendConfirmAsync(_strs.GetText("poll_voted", 
+            var toDelete = await msg.Channel.SendConfirmAsync(_eb, _strs.GetText("poll_voted", 
                     usr.Guild.Id, Format.Bold(usr.ToString())))
                 .ConfigureAwait(false);
             toDelete.DeleteAfter(5);

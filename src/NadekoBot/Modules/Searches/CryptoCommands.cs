@@ -22,7 +22,7 @@ namespace NadekoBot.Modules.Searches
 
                 if (nearest != null)
                 {
-                    var embed = new EmbedBuilder()
+                    var embed = _eb.Create()
                             .WithTitle(GetText("crypto_not_found"))
                             .WithDescription(GetText("did_you_mean", Format.Bold($"{nearest.Name} ({nearest.Symbol})")));
 
@@ -46,7 +46,7 @@ namespace NadekoBot.Modules.Searches
                         ? ld.ToString("F2")
                         : crypto.Quote.Usd.Percent_Change_24h;
 
-                await ctx.Channel.EmbedAsync(new EmbedBuilder()
+                await ctx.Channel.EmbedAsync(_eb.Create()
                     .WithOkColor()
                     .WithTitle($"{crypto.Name} ({crypto.Symbol})")
                     .WithUrl($"https://coinmarketcap.com/currencies/{crypto.Slug}/")

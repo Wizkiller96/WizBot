@@ -100,7 +100,7 @@ namespace NadekoBot.Modules.Gambling
 
                     var cStr = string.Concat(c.Select(x => x.Substring(0, x.Length - 1) + " "));
                     cStr += "\n" + string.Concat(c.Select(x => x.Last() + " "));
-                    var embed = new EmbedBuilder()
+                    var embed = _eb.Create()
                         .WithOkColor()
                         .WithTitle("BlackJack")
                         .AddField($"{dealerIcon} Dealer's Hand | Value: {bj.Dealer.GetHandValue()}", cStr);

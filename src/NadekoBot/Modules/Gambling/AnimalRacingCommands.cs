@@ -45,7 +45,7 @@ namespace NadekoBot.Modules.Gambling
 
                 var ar = new AnimalRace(options, _cs, _gamesConf.Data.RaceAnimals.Shuffle());
                 if (!_service.AnimalRaces.TryAdd(ctx.Guild.Id, ar))
-                    return ctx.Channel.SendErrorAsync(GetText("animal_race"), GetText("animal_race_already_started"));
+                    return SendErrorAsync(GetText("animal_race"), GetText("animal_race_already_started"));
 
                 ar.Initialize();
 
@@ -76,13 +76,13 @@ namespace NadekoBot.Modules.Gambling
                     var winner = race.FinishedUsers[0];
                     if (race.FinishedUsers[0].Bet > 0)
                     {
-                        return ctx.Channel.SendConfirmAsync(GetText("animal_race"),
+                        return SendConfirmAsync(GetText("animal_race"),
                                             GetText("animal_race_won_money", Format.Bold(winner.Username),
                                                 winner.Animal.Icon, (race.FinishedUsers[0].Bet * (race.Users.Count - 1)) + CurrencySign));
                     }
                     else
                     {
-                        return ctx.Channel.SendConfirmAsync(GetText("animal_race"),
+                        return SendConfirmAsync(GetText("animal_race"),
                             GetText("animal_race_won", Format.Bold(winner.Username), winner.Animal.Icon));
                     }
                 }
@@ -93,16 +93,16 @@ namespace NadekoBot.Modules.Gambling
                 ar.OnStarted += Ar_OnStarted;
                 _client.MessageReceived += _client_MessageReceived;
 
-                return ctx.Channel.SendConfirmAsync(GetText("animal_race"), GetText("animal_race_starting", options.StartTime),
+                return SendConfirmAsync(GetText("animal_race"), GetText("animal_race_starting", options.StartTime),
                                     footer: GetText("animal_race_join_instr", Prefix));
             }
 
             private Task Ar_OnStarted(AnimalRace race)
             {
                 if (race.Users.Count == race.MaxUsers)
-                    return ctx.Channel.SendConfirmAsync(GetText("animal_race"), GetText("animal_race_full"));
+                    return SendConfirmAsync(GetText("animal_race"), GetText("animal_race_full"));
                 else
-                    return ctx.Channel.SendConfirmAsync(GetText("animal_race"), GetText("animal_race_starting_with_x", race.Users.Count));
+                    return SendConfirmAsync(GetText("animal_race"), GetText("animal_race_starting_with_x", race.Users.Count));
             }
 
             private async Task Ar_OnStateUpdate(AnimalRace race)
@@ -119,10 +119,10 @@ namespace NadekoBot.Modules.Gambling
                 var msg = raceMessage;
 
                 if (msg is null)
-                    raceMessage = await ctx.Channel.SendConfirmAsync(text)
+                    raceMessage = await SendConfirmAsync(text)
                         .ConfigureAwait(false);
                 else
-                    await msg.ModifyAsync(x => x.Embed = new EmbedBuilder()
+                    await msg.ModifyAsync(x => x.Embed = _eb.Create()
                         .WithTitle(GetText("animal_race"))
                         .WithDescription(text)
                         .WithOkColor()
@@ -153,9 +153,9 @@ namespace NadekoBot.Modules.Gambling
                     var user = await ar.JoinRace(ctx.User.Id, ctx.User.ToString(), amount)
                         .ConfigureAwait(false);
                     if (amount > 0)
-                        await ctx.Channel.SendConfirmAsync(GetText("animal_race_join_bet", ctx.User.Mention, user.Animal.Icon, amount + CurrencySign)).ConfigureAwait(false);
+                        await SendConfirmAsync(GetText("animal_race_join_bet", ctx.User.Mention, user.Animal.Icon, amount + CurrencySign)).ConfigureAwait(false);
                     else
-                        await ctx.Channel.SendConfirmAsync(GetText("animal_race_join", ctx.User.Mention, user.Animal.Icon)).ConfigureAwait(false);
+                        await SendConfirmAsync(GetText("animal_race_join", ctx.User.Mention, user.Animal.Icon)).ConfigureAwait(false);
                 }
                 catch (ArgumentOutOfRangeException)
                 {
@@ -171,12 +171,12 @@ namespace NadekoBot.Modules.Gambling
                 }
                 catch (AnimalRaceFullException)
                 {
-                    await ctx.Channel.SendConfirmAsync(GetText("animal_race"), GetText("animal_race_full"))
+                    await SendConfirmAsync(GetText("animal_race"), GetText("animal_race_full"))
                         .ConfigureAwait(false);
                 }
                 catch (NotEnoughFundsException)
                 {
-                    await ctx.Channel.SendErrorAsync(GetText("not_enough", CurrencySign)).ConfigureAwait(false);
+                    await SendErrorAsync(GetText("not_enough", CurrencySign)).ConfigureAwait(false);
                 }
             }
         }

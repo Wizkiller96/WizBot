@@ -59,9 +59,9 @@ namespace NadekoBot.Modules.Gambling
                     var theseEntries = entries.Skip(curPage * 9).Take(9).ToArray();
 
                     if (!theseEntries.Any())
-                        return new EmbedBuilder().WithErrorColor()
+                        return _eb.Create().WithErrorColor()
                             .WithDescription(GetText("shop_none"));
-                    var embed = new EmbedBuilder().WithOkColor()
+                    var embed = _eb.Create().WithOkColor()
                         .WithTitle(GetText("shop", CurrencySign));
 
                     for (int i = 0; i < theseEntries.Length; i++)
@@ -172,7 +172,7 @@ namespace NadekoBot.Modules.Gambling
                         try
                         {
                             await (await ctx.User.GetOrCreateDMChannelAsync().ConfigureAwait(false))
-                                .EmbedAsync(new EmbedBuilder().WithOkColor()
+                                .EmbedAsync(_eb.Create().WithOkColor()
                                 .WithTitle(GetText("shop_purchase", ctx.Guild.Name))
                                 .AddField(GetText("item"), item.Text, false)
                                 .AddField(GetText("price"), entry.Price.ToString(), true)
@@ -428,9 +428,9 @@ namespace NadekoBot.Modules.Gambling
                 }
             }
             
-            public EmbedBuilder EntryToEmbed(ShopEntry entry)
+            public IEmbedBuilder EntryToEmbed(ShopEntry entry)
             {
-                var embed = new EmbedBuilder().WithOkColor();
+                var embed = _eb.Create().WithOkColor();
 
                 if (entry.Type == ShopEntryType.Role)
                     return embed.AddField(GetText("name"), GetText("shop_role", Format.Bold(ctx.Guild.GetRole(entry.RoleId)?.Name ?? "MISSING_ROLE")), true)

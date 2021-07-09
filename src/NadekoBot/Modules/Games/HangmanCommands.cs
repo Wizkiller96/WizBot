@@ -27,7 +27,7 @@ namespace NadekoBot.Modules.Games
             [RequireContext(ContextType.Guild)]
             public async Task Hangmanlist()
             {
-                await ctx.Channel.SendConfirmAsync(Format.Code(GetText("hangman_types", Prefix)) + "\n" + string.Join("\n", _service.TermPool.Data.Keys)).ConfigureAwait(false);
+                await SendConfirmAsync(Format.Code(GetText("hangman_types", Prefix)) + "\n" + string.Join("\n", _service.TermPool.Data.Keys)).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -58,7 +58,7 @@ namespace NadekoBot.Modules.Games
 
                 try
                 {
-                    await ctx.Channel.SendConfirmAsync(GetText("hangman_game_started") + $" ({hm.TermType})",
+                    await SendConfirmAsync(GetText("hangman_game_started") + $" ({hm.TermType})",
                         hm.ScrambledWord + "\n" + hm.GetHangman())
                         .ConfigureAwait(false);
                 }
@@ -87,7 +87,7 @@ namespace NadekoBot.Modules.Games
             {
                 if (winner is null)
                 {
-                    var loseEmbed = new EmbedBuilder().WithTitle($"Hangman Game ({game.TermType}) - Ended")
+                    var loseEmbed = _eb.Create().WithTitle($"Hangman Game ({game.TermType}) - Ended")
                                              .WithDescription(Format.Bold("You lose."))
                                              .AddField("It was", game.Term.GetWord())
                                              .WithFooter(string.Join(" ", game.PreviousGuesses))
@@ -99,7 +99,7 @@ namespace NadekoBot.Modules.Games
                     return ctx.Channel.EmbedAsync(loseEmbed);
                 }
 
-                var winEmbed = new EmbedBuilder().WithTitle($"Hangman Game ({game.TermType}) - Ended")
+                var winEmbed = _eb.Create().WithTitle($"Hangman Game ({game.TermType}) - Ended")
                                              .WithDescription(Format.Bold($"{winner} Won."))
                                              .AddField("It was", game.Term.GetWord())
                                              .WithFooter(string.Join(" ", game.PreviousGuesses))
@@ -113,19 +113,19 @@ namespace NadekoBot.Modules.Games
 
             private Task Hm_OnLetterAlreadyUsed(Hangman game, string user, char guess)
             {
-                return ctx.Channel.SendErrorAsync($"Hangman Game ({game.TermType})", $"{user} Letter `{guess}` has already been used. You can guess again in 3 seconds.\n" + game.ScrambledWord + "\n" + game.GetHangman(),
+                return SendErrorAsync($"Hangman Game ({game.TermType})", $"{user} Letter `{guess}` has already been used. You can guess again in 3 seconds.\n" + game.ScrambledWord + "\n" + game.GetHangman(),
                                     footer: string.Join(" ", game.PreviousGuesses));
             }
 
             private Task Hm_OnGuessSucceeded(Hangman game, string user, char guess)
             {
-                return ctx.Channel.SendConfirmAsync($"Hangman Game ({game.TermType})", $"{user} guessed a letter `{guess}`!\n" + game.ScrambledWord + "\n" + game.GetHangman(),
+                return SendConfirmAsync($"Hangman Game ({game.TermType})", $"{user} guessed a letter `{guess}`!\n" + game.ScrambledWord + "\n" + game.GetHangman(),
                     footer: string.Join(" ", game.PreviousGuesses));
             }
 
             private Task Hm_OnGuessFailed(Hangman game, string user, char guess)
             {
-                return ctx.Channel.SendErrorAsync($"Hangman Game ({game.TermType})", $"{user} Letter `{guess}` does not exist. You can guess again in 3 seconds.\n" + game.ScrambledWord + "\n" + game.GetHangman(),
+                return SendErrorAsync($"Hangman Game ({game.TermType})", $"{user} Letter `{guess}` does not exist. You can guess again in 3 seconds.\n" + game.ScrambledWord + "\n" + game.GetHangman(),
                                     footer: string.Join(" ", game.PreviousGuesses));
             }
 

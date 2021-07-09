@@ -48,7 +48,7 @@ namespace NadekoBot.Modules.Utility
                 }
                 
                 var description = GetRepeaterInfoString(removed);
-                await ctx.Channel.EmbedAsync(new EmbedBuilder()
+                await ctx.Channel.EmbedAsync(_eb.Create()
                     .WithOkColor()
                     .WithTitle(GetText("repeater_removed", index + 1))
                     .WithDescription(description));
@@ -144,7 +144,7 @@ namespace NadekoBot.Modules.Utility
                 }
                 
                 var description = GetRepeaterInfoString(runner);
-                await ctx.Channel.EmbedAsync(new EmbedBuilder()
+                await ctx.Channel.EmbedAsync(_eb.Create()
                     .WithOkColor()
                     .WithTitle(GetText("repeater_created"))
                     .WithDescription(description));
@@ -162,7 +162,7 @@ namespace NadekoBot.Modules.Utility
                     return;
                 }
             
-                var embed = new EmbedBuilder()
+                var embed = _eb.Create()
                     .WithTitle(GetText("list_of_repeaters"))
                     .WithOkColor();
 

@@ -130,7 +130,7 @@ namespace NadekoBot.Modules.Administration
             [UserPerm(GuildPerm.ManageRoles)]
             public async Task ReactionRolesList()
             {
-                var embed = new EmbedBuilder()
+                var embed = _eb.Create()
                     .WithOkColor();
                 if (!_service.Get(ctx.Guild.Id, out var rrs) ||
                     !rrs.Any())
@@ -319,7 +319,7 @@ namespace NadekoBot.Modules.Administration
             [Priority(1)]
             public async Task RoleColor([Leftover] IRole role)
             {
-                await ctx.Channel.SendConfirmAsync("Role Color", role.Color.RawValue.ToString("x6")).ConfigureAwait(false);
+                await SendConfirmAsync("Role Color", role.Color.RawValue.ToString("x6")).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]

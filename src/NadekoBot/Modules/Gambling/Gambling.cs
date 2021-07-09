@@ -64,7 +64,7 @@ namespace NadekoBot.Modules.Gambling
                 onePercent = ec.OnePercent / (ec.Cash-ec.Bot); // This stops the top 1% from owning more than 100% of the money
                 // [21:03] Bob Page: Kinda remids me of US economy
             }
-            var embed = new EmbedBuilder()
+            var embed = _eb.Create()
                 .WithTitle(GetText("economy_state"))
                 .AddField(GetText("currency_owned"), ((BigInteger)(ec.Cash - ec.Bot)) + CurrencySign)
                 .AddField(GetText("currency_one_percent"), (onePercent * 100).ToString("F2") + "%")
@@ -140,7 +140,7 @@ namespace NadekoBot.Modules.Gambling
                 return;
             }
             var usr = membersArray[new NadekoRandom().Next(0, membersArray.Length)];
-            await ctx.Channel.SendConfirmAsync("🎟 " + GetText("raffled_user"), $"**{usr.Username}#{usr.Discriminator}**", footer: $"ID: {usr.Id}").ConfigureAwait(false);
+            await SendConfirmAsync("🎟 " + GetText("raffled_user"), $"**{usr.Username}#{usr.Discriminator}**", footer: $"ID: {usr.Id}").ConfigureAwait(false);
         }
 
         [NadekoCommand, Aliases]
@@ -156,7 +156,7 @@ namespace NadekoBot.Modules.Gambling
                 return;
             }
             var usr = membersArray[new NadekoRandom().Next(0, membersArray.Length)];
-            await ctx.Channel.SendConfirmAsync("🎟 " + GetText("raffled_user"), $"**{usr.Username}#{usr.Discriminator}**", footer: $"ID: {usr.Id}").ConfigureAwait(false);
+            await SendConfirmAsync("🎟 " + GetText("raffled_user"), $"**{usr.Username}#{usr.Discriminator}**", footer: $"ID: {usr.Id}").ConfigureAwait(false);
         }
 
         [NadekoCommand, Aliases]
@@ -195,7 +195,7 @@ namespace NadekoBot.Modules.Gambling
                 trs = uow.CurrencyTransactions.GetPageFor(userId, page);
             }
 
-            var embed = new EmbedBuilder()
+            var embed = _eb.Create()
                 .WithTitle(GetText("transactions",
                     ((SocketGuild)ctx.Guild)?.GetUser(userId)?.ToString() ?? $"{userId}"))
                 .WithOkColor();
@@ -373,9 +373,11 @@ namespace NadekoBot.Modules.Gambling
             if (amount <= 0)
                 return;
 
-            var embed = new EmbedBuilder()
+            var embed = _eb.Create()
                     .WithOkColor()
                     .WithTitle(GetText("roll_duel"));
+
+            var description = string.Empty;
 
             var game = new RollDuelGame(_cs, _client.CurrentUser.Id, ctx.User.Id, u.Id, amount);
             //means challenge is just created
@@ -406,10 +408,11 @@ namespace NadekoBot.Modules.Gambling
             async Task Game_OnGameTick(RollDuelGame arg)
             {
                 var rolls = arg.Rolls.Last();
-                embed.Description += $@"{Format.Bold(ctx.User.ToString())} rolled **{rolls.Item1}**
+                description += $@"{Format.Bold(ctx.User.ToString())} rolled **{rolls.Item1}**
 {Format.Bold(u.ToString())} rolled **{rolls.Item2}**
 --
 ";
+                embed = embed.WithDescription(description);
 
                 if (rdMsg is null)
                 {
@@ -434,7 +437,10 @@ namespace NadekoBot.Modules.Gambling
                         var winner = rdGame.Winner == rdGame.P1
                             ? ctx.User
                             : u;
-                        embed.Description += $"\n**{winner}** Won {n(((long)(rdGame.Amount * 2 * 0.98))) + CurrencySign}";
+                        description += $"\n**{winner}** Won {n(((long)(rdGame.Amount * 2 * 0.98))) + CurrencySign}";
+
+                        embed = embed.WithDescription(description);
+                        
                         await rdMsg.ModifyAsync(x => x.Embed = embed.Build())
                             .ConfigureAwait(false);
                     }
@@ -485,7 +491,7 @@ namespace NadekoBot.Modules.Gambling
                 str += GetText("better_luck");
             }
             
-            await ctx.Channel.SendConfirmAsync(str).ConfigureAwait(false);
+            await SendConfirmAsync(str).ConfigureAwait(false);
         }
 
         [NadekoCommand, Aliases]
@@ -541,7 +547,7 @@ namespace NadekoBot.Modules.Gambling
 
             await Context.SendPaginatedConfirmAsync(page, curPage =>
             {
-                var embed = new EmbedBuilder()
+                var embed = _eb.Create()
                    .WithOkColor()
                    .WithTitle(CurrencySign + " " + GetText("leaderboard"));
 
@@ -615,7 +621,7 @@ namespace NadekoBot.Modules.Gambling
                         return "✂️";
                 }
             }
-            var embed = new EmbedBuilder();
+            var embed = _eb.Create();
 
             var nadekoPick = (RpsPick)new NadekoRandom().Next(0, 3);
 

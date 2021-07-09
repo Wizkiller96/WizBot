@@ -29,7 +29,7 @@ namespace NadekoBot.Modules.Utility
                 var ch = (ITextChannel)ctx.Channel;
                 var invite = await ch.CreateInviteAsync(opts.Expire, opts.MaxUses, isTemporary: opts.Temporary, isUnique: opts.Unique).ConfigureAwait(false);
 
-                await ctx.Channel.SendConfirmAsync($"{ctx.User.Mention} https://discord.gg/{invite.Code}").ConfigureAwait(false);
+                await SendConfirmAsync($"{ctx.User.Mention} https://discord.gg/{invite.Code}").ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -54,12 +54,12 @@ namespace NadekoBot.Modules.Utility
                     
                     if (!invs.Any())
                     {
-                        return new EmbedBuilder()
+                        return _eb.Create()
                             .WithErrorColor()
                             .WithDescription(GetText("no_invites"));
                     }
 
-                    var embed = new EmbedBuilder().WithOkColor();
+                    var embed = _eb.Create().WithOkColor();
                     foreach (var inv in invites)
                     {
                         var expiryString = (inv.MaxAge is null || inv.MaxAge == 0 || inv.CreatedAt is null)

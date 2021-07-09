@@ -2,6 +2,7 @@ using Discord;
 using NadekoBot.Extensions;
 using Newtonsoft.Json;
 using System;
+using NadekoBot.Services;
 
 namespace NadekoBot.Common
 {
@@ -29,7 +30,7 @@ namespace NadekoBot.Common
             (Footer != null && (!string.IsNullOrWhiteSpace(Footer.Text) || !string.IsNullOrWhiteSpace(Footer.IconUrl))) ||
             (Fields != null && Fields.Length > 0);
 
-        public EmbedBuilder ToEmbed()
+        public IEmbedBuilder ToEmbed(IEmbedBuilderService eb)
         {
             var embed = new EmbedBuilder();
 
@@ -67,7 +68,7 @@ namespace NadekoBot.Common
                         embed.AddField(f.Name, f.Value, f.Inline);
                 }
 
-            return embed;
+            return eb.Create(embed);
         }
 
         public static bool TryParse(string input, out CREmbed embed)

@@ -69,7 +69,7 @@ namespace NadekoBot.Modules.Administration
                         return Format.Bold(x);
                     }));
 
-                await ctx.Channel.SendConfirmAsync(Format.Bold(GetText("log_events")) + "\n" +
+                await SendConfirmAsync(Format.Bold(GetText("log_events")) + "\n" +
                     str)
                     .ConfigureAwait(false);
             }

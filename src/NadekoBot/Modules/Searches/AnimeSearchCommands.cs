@@ -30,7 +30,7 @@ namespace NadekoBot.Modules.Searches
                     return;
                 }
 
-                var embed = new EmbedBuilder()
+                var embed = _eb.Create()
                     .WithOkColor()
                     .WithDescription(novelData.Description.Replace("<br>", Environment.NewLine, StringComparison.InvariantCulture))
                     .WithTitle(novelData.Title)
@@ -81,7 +81,7 @@ namespace NadekoBot.Modules.Searches
                         .Select(x => x.TextContent.Split(':').Select(y => y.Trim()).ToArray())
                         .ToArray();
 
-                    var embed = new EmbedBuilder()
+                    var embed = _eb.Create()
                         .WithOkColor()
                         .WithTitle(GetText("mal_profile", name))
                         .AddField("💚 " + GetText("watching"), stats[0], true)
@@ -150,7 +150,7 @@ namespace NadekoBot.Modules.Searches
                     return;
                 }
 
-                var embed = new EmbedBuilder()
+                var embed = _eb.Create()
                     .WithOkColor()
                     .WithDescription(animeData.Synopsis.Replace("<br>", Environment.NewLine, StringComparison.InvariantCulture))
                     .WithTitle(animeData.TitleEnglish)
@@ -178,7 +178,7 @@ namespace NadekoBot.Modules.Searches
                     return;
                 }
 
-                var embed = new EmbedBuilder()
+                var embed = _eb.Create()
                     .WithOkColor()
                     .WithDescription(mangaData.Synopsis.Replace("<br>", Environment.NewLine, StringComparison.InvariantCulture))
                     .WithTitle(mangaData.TitleEnglish)

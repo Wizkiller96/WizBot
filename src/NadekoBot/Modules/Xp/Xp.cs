@@ -41,7 +41,7 @@ namespace NadekoBot.Modules.Xp
         [NadekoCommand, Aliases]
         public async Task XpRewsReset()
         {
-            var reply = await PromptUserConfirmAsync(new EmbedBuilder()
+            var reply = await PromptUserConfirmAsync(_eb.Create()
                 .WithPendingColor()
                 .WithDescription(GetText("xprewsreset_confirm")));
 
@@ -91,7 +91,7 @@ namespace NadekoBot.Modules.Xp
 
             return Context.SendPaginatedConfirmAsync(page, cur =>
             {
-                var embed = new EmbedBuilder()
+                var embed = _eb.Create()
                     .WithTitle(GetText("level_up_rewards"))
                     .WithOkColor();
                 
@@ -200,7 +200,7 @@ namespace NadekoBot.Modules.Xp
             var globalSetting = _service.GetNotificationType(ctx.User);
             var serverSetting = _service.GetNotificationType(ctx.User.Id, ctx.Guild.Id);
 
-            var embed = new EmbedBuilder()
+            var embed = _eb.Create()
                 .WithOkColor()
                 .AddField(GetText("xpn_setting_global"), GetNotifLocationString(globalSetting))
                 .AddField(GetText("xpn_setting_server"), GetNotifLocationString(serverSetting));
@@ -288,7 +288,7 @@ namespace NadekoBot.Modules.Xp
             var lines = desc.Split('\n');
             await ctx.SendPaginatedConfirmAsync(0, curpage =>
             {
-                var embed = new EmbedBuilder()
+                var embed = _eb.Create()
                     .WithTitle(GetText("exclusion_list"))
                     .WithDescription(string.Join('\n', lines.Skip(15 * curpage).Take(15)))
                     .WithOkColor();
@@ -331,7 +331,7 @@ namespace NadekoBot.Modules.Xp
 
             await ctx.SendPaginatedConfirmAsync(page, (curPage) =>
             {
-                var embed = new EmbedBuilder()
+                var embed = _eb.Create()
                     .WithTitle(GetText("server_leaderboard"))
                     .WithOkColor();
 
@@ -379,7 +379,7 @@ namespace NadekoBot.Modules.Xp
                 return;
             var users = _service.GetUserXps(page);
 
-            var embed = new EmbedBuilder()
+            var embed = _eb.Create()
                 .WithTitle(GetText("global_leaderboard"))
                 .WithOkColor();
 

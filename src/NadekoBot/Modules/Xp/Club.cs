@@ -135,7 +135,7 @@ namespace NadekoBot.Modules.Xp
 
                 await ctx.SendPaginatedConfirmAsync(0, (page) =>
                 {
-                    var embed = new EmbedBuilder()
+                    var embed = _eb.Create()
                         .WithOkColor()
                         .WithTitle($"{club.ToString()}")
                         .WithDescription(GetText("level_x", lvl.Level) + $" ({club.Xp} xp)")
@@ -187,7 +187,7 @@ namespace NadekoBot.Modules.Xp
                             .Take(10)
                             .Select(x => x.ToString()));
 
-                        return new EmbedBuilder()
+                        return _eb.Create()
                             .WithTitle(GetText("club_bans_for", club.ToString()))
                             .WithDescription(toShow)
                             .WithOkColor();
@@ -218,7 +218,7 @@ namespace NadekoBot.Modules.Xp
                             .Take(10)
                             .Select(x => x.ToString()));
 
-                        return new EmbedBuilder()
+                        return _eb.Create()
                             .WithTitle(GetText("club_apps_for", club.ToString()))
                             .WithDescription(toShow)
                             .WithOkColor();
@@ -373,7 +373,7 @@ namespace NadekoBot.Modules.Xp
 
                 var clubs = _service.GetClubLeaderboardPage(page);
 
-                var embed = new EmbedBuilder()
+                var embed = _eb.Create()
                     .WithTitle(GetText("club_leaderboard", page + 1))
                     .WithOkColor();
 

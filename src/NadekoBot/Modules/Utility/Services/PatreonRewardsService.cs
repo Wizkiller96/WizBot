@@ -31,12 +31,13 @@ namespace NadekoBot.Modules.Utility.Services
         private readonly ICurrencyService _currency;
         private readonly GamblingConfigService _gamblingConfigService;
         private readonly IHttpClientFactory _httpFactory;
+        private readonly IEmbedBuilderService _eb;
         private readonly DiscordSocketClient _client;
 
         public DateTime LastUpdate { get; private set; } = DateTime.UtcNow;
 
         public PatreonRewardsService(IBotCredentials creds, DbService db,
-            ICurrencyService currency, IHttpClientFactory factory,
+            ICurrencyService currency, IHttpClientFactory factory, IEmbedBuilderService eb,
             DiscordSocketClient client, GamblingConfigService gamblingConfigService)
         {
             _creds = creds;
@@ -44,6 +45,7 @@ namespace NadekoBot.Modules.Utility.Services
             _currency = currency;
             _gamblingConfigService = gamblingConfigService;
             _httpFactory = factory;
+            _eb = eb;
             _client = client;
 
             if (client.ShardId == 0)
@@ -211,7 +213,7 @@ namespace NadekoBot.Modules.Utility.Services
                     return;
                 
                 var channel = await user.GetOrCreateDMChannelAsync();
-                await channel.SendConfirmAsync(message);
+                await channel.SendConfirmAsync(_eb, message);
             }
             catch
             {

@@ -68,13 +68,19 @@ namespace NadekoBot.Modules.Administration.Services
         private readonly MuteService _mute;
         private readonly ProtectionService _prot;
         private readonly GuildTimezoneService _tz;
+        private readonly IEmbedBuilderService _eb;
+        private readonly IMemoryCache _memoryCache;
+        
+        private readonly Timer _clearTimer;
+        private readonly ConcurrentHashSet<ulong> _ignoreMessageIds = new ConcurrentHashSet<ulong>();
 
         public LogCommandService(DiscordSocketClient client, IBotStrings strings,
             DbService db, MuteService mute, ProtectionService prot, GuildTimezoneService tz, 
-            IMemoryCache memoryCache)
+            IMemoryCache memoryCache, IEmbedBuilderService eb)
         {
             _client = client;
-            _memoryCache = memoryCache; 
+            _memoryCache = memoryCache;
+            _eb = eb;
             _strings = strings;
             _db = db;
             _mute = mute;
@@ -111,7 +117,7 @@ namespace NadekoBot.Modules.Administration.Services
                     {
                         var title = GetText(key.Guild, "presence_updates");
                         var desc = string.Join(Environment.NewLine, msgs);
-                        return key.SendConfirmAsync(title, desc.TrimTo(2048));
+                        return key.SendConfirmAsync(_eb, title, desc.TrimTo(2048));
                     }
 
                     return Task.CompletedTask;
@@ -147,10 +153,6 @@ namespace NadekoBot.Modules.Administration.Services
             
 #endif
         }
-
-        private readonly Timer _clearTimer;
-        private readonly ConcurrentHashSet<ulong> _ignoreMessageIds = new ConcurrentHashSet<ulong>();
-        private readonly IMemoryCache _memoryCache;
 
         public LogSetting GetGuildLogSettings(ulong guildId)
         {
@@ -254,7 +256,7 @@ namespace NadekoBot.Modules.Administration.Services
                         await TryGetLogChannel(g, logSetting, LogType.UserUpdated).ConfigureAwait(false)) is null)
                         return;
 
-                    var embed = new EmbedBuilder();
+                    var embed = _eb.Create();
 
                     if (before.Username != after.Username)
                     {
@@ -441,7 +443,7 @@ namespace NadekoBot.Modules.Administration.Services
                             break;
                     }
 
-                    var embed = new EmbedBuilder().WithAuthor(mutes)
+                    var embed = _eb.Create().WithAuthor(mutes)
                         .WithTitle($"{usr.Username}#{usr.Discriminator} | {usr.Id}")
                         .WithFooter(CurrentTime(usr.Guild))
                         .WithOkColor();
@@ -486,7 +488,7 @@ namespace NadekoBot.Modules.Administration.Services
                             break;
                     }
 
-                    var embed = new EmbedBuilder().WithAuthor(mutes)
+                    var embed = _eb.Create().WithAuthor(mutes)
                         .WithTitle($"{usr.Username}#{usr.Discriminator} | {usr.Id}")
                         .WithFooter($"{CurrentTime(usr.Guild)}")
                         .WithOkColor();
@@ -541,7 +543,7 @@ namespace NadekoBot.Modules.Administration.Services
                             break;
                     }
 
-                    var embed = new EmbedBuilder().WithAuthor($"🛡 Anti-{protection}")
+                    var embed = _eb.Create().WithAuthor($"🛡 Anti-{protection}")
                         .WithTitle(GetText(logChannel.Guild, "users") + " " + punishment)
                         .WithDescription(string.Join("\n", users.Select(u => u.ToString())))
                         .WithFooter(CurrentTime(logChannel.Guild))
@@ -589,7 +591,7 @@ namespace NadekoBot.Modules.Administration.Services
                         (logChannel = await TryGetLogChannel(before.Guild, logSetting, LogType.UserUpdated)
                             .ConfigureAwait(false)) != null)
                     {
-                        var embed = new EmbedBuilder().WithOkColor()
+                        var embed = _eb.Create().WithOkColor()
                             .WithFooter(CurrentTime(before.Guild))
                             .WithTitle($"{before.Username}#{before.Discriminator} | {before.Id}");
                         if (before.Nickname != after.Nickname)
@@ -691,7 +693,7 @@ namespace NadekoBot.Modules.Administration.Services
                         .ConfigureAwait(false)) is null)
                         return;
 
-                    var embed = new EmbedBuilder().WithOkColor()
+                    var embed = _eb.Create().WithOkColor()
                         .WithFooter(CurrentTime(before.Guild));
 
                     var beforeTextChannel = cbefore as ITextChannel;
@@ -749,7 +751,7 @@ namespace NadekoBot.Modules.Administration.Services
                     else
                         title = GetText(logChannel.Guild, "text_chan_destroyed");
 
-                    await logChannel.EmbedAsync(new EmbedBuilder()
+                    await logChannel.EmbedAsync(_eb.Create()
                         .WithOkColor()
                         .WithTitle("🆕 " + title)
                         .WithDescription($"{ch.Name} | {ch.Id}")
@@ -788,7 +790,7 @@ namespace NadekoBot.Modules.Administration.Services
                     else
                         title = GetText(logChannel.Guild, "text_chan_created");
 
-                    await logChannel.EmbedAsync(new EmbedBuilder()
+                    await logChannel.EmbedAsync(_eb.Create()
                         .WithOkColor()
                         .WithTitle("🆕 " + title)
                         .WithDescription($"{ch.Name} | {ch.Id}")
@@ -920,7 +922,7 @@ namespace NadekoBot.Modules.Administration.Services
                     if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.UserLeft)
                         .ConfigureAwait(false)) is null)
                         return;
-                    var embed = new EmbedBuilder()
+                    var embed = _eb.Create()
                         .WithOkColor()
                         .WithTitle("❌ " + GetText(logChannel.Guild, "user_left"))
                         .WithDescription(usr.ToString())
@@ -955,7 +957,7 @@ namespace NadekoBot.Modules.Administration.Services
                         .ConfigureAwait(false)) is null)
                         return;
 
-                    var embed = new EmbedBuilder()
+                    var embed = _eb.Create()
                         .WithOkColor()
                         .WithTitle("✅ " + GetText(logChannel.Guild, "user_joined"))
                         .WithDescription($"{usr.Mention} `{usr}`")
@@ -995,7 +997,7 @@ namespace NadekoBot.Modules.Administration.Services
                     if ((logChannel = await TryGetLogChannel(guild, logSetting, LogType.UserUnbanned)
                         .ConfigureAwait(false)) is null)
                         return;
-                    var embed = new EmbedBuilder()
+                    var embed = _eb.Create()
                         .WithOkColor()
                         .WithTitle("♻️ " + GetText(logChannel.Guild, "user_unbanned"))
                         .WithDescription(usr.ToString())
@@ -1030,7 +1032,7 @@ namespace NadekoBot.Modules.Administration.Services
                             await TryGetLogChannel(guild, logSetting, LogType.UserBanned).ConfigureAwait(false)) ==
                         null)
                         return;
-                    var embed = new EmbedBuilder()
+                    var embed = _eb.Create()
                         .WithOkColor()
                         .WithTitle("🚫 " + GetText(logChannel.Guild, "user_banned"))
                         .WithDescription(usr.ToString())
@@ -1079,7 +1081,7 @@ namespace NadekoBot.Modules.Administration.Services
                         return;
 
                     var resolvedMessage = msg.Resolve(userHandling: TagHandling.FullName);
-                    var embed = new EmbedBuilder()
+                    var embed = _eb.Create()
                         .WithOkColor()
                         .WithTitle("🗑 " + GetText(logChannel.Guild, "msg_del", ((ITextChannel) msg.Channel).Name))
                         .WithDescription(msg.Author.ToString())
@@ -1136,7 +1138,7 @@ namespace NadekoBot.Modules.Administration.Services
                         .ConfigureAwait(false)) is null || logChannel.Id == after.Channel.Id)
                         return;
 
-                    var embed = new EmbedBuilder()
+                    var embed = _eb.Create()
                         .WithOkColor()
                         .WithTitle("📝 " + GetText(logChannel.Guild, "msg_update", ((ITextChannel)after.Channel).Name))
                         .WithDescription(after.Author.ToString())

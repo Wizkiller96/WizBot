@@ -26,16 +26,18 @@ namespace NadekoBot.Modules.Utility.Services
 
         private readonly DbService _db;
         private readonly IBotCredentials _creds;
+        private readonly IEmbedBuilderService _eb;
         private readonly DiscordSocketClient _client;
         private LinkedList<RunningRepeater> _repeaterQueue;
         private ConcurrentHashSet<int> _noRedundant;
 
         private readonly object _queueLocker = new object();
 
-        public RepeaterService(DiscordSocketClient client, DbService db, IBotCredentials creds)
+        public RepeaterService(DiscordSocketClient client, DbService db, IBotCredentials creds, IEmbedBuilderService eb)
         {
             _db = db;
             _creds = creds;
+            _eb = eb;
             _client = client;
             
             var uow = _db.GetDbContext();
@@ -261,7 +263,7 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
                 if (CREmbed.TryParse(repeater.Message, out var crEmbed))
                 {
                     rep.Replace(crEmbed);
-                    newMsg = await channel.EmbedAsync(crEmbed);
+                    newMsg = await channel.EmbedAsync(crEmbed, _eb);
                 }
                 else
                 {

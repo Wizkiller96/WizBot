@@ -88,7 +88,7 @@ namespace NadekoBot.Modules.Gambling.Services
         }
 
         public async Task<bool> TryCreateEventAsync(ulong guildId, ulong channelId, CurrencyEvent.Type type,
-            EventOptions opts, Func<CurrencyEvent.Type, EventOptions, long, EmbedBuilder> embed)
+            EventOptions opts, Func<CurrencyEvent.Type, EventOptions, long, IEmbedBuilder> embed)
         {
             SocketGuild g = _client.GetGuild(guildId);
             SocketTextChannel ch = g?.GetChannel(channelId) as SocketTextChannel;

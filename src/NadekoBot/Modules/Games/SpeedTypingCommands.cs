@@ -35,14 +35,11 @@ namespace NadekoBot.Modules.Games
                 var (options, _) = OptionsParser.ParseFrom(new TypingGame.Options(), args);
                 var channel = (ITextChannel)ctx.Channel;
 
-                var game = _service.RunningContests.GetOrAdd(channel.Guild.Id, id => new TypingGame(_games, _client, channel, Prefix, options));
+                var game = _service.RunningContests.GetOrAdd(ctx.Guild.Id, id => new TypingGame(_games, _client, channel, Prefix, options, _eb));
 
                 if (game.IsActive)
                 {
-                    await channel.SendErrorAsync(
-                            $"Contest already running in " +
-                            $"{game.Channel.Mention} channel.")
-                                .ConfigureAwait(false);
+                    await SendErrorAsync($"Contest already running in {game.Channel.Mention} channel.");
                 }
                 else
                 {
@@ -54,13 +51,13 @@ namespace NadekoBot.Modules.Games
             [RequireContext(ContextType.Guild)]
             public async Task TypeStop()
             {
-                var channel = (ITextChannel)ctx.Channel;
-                if (_service.RunningContests.TryRemove(channel.Guild.Id, out TypingGame game))
+                if (_service.RunningContests.TryRemove(ctx.Guild.Id, out TypingGame game))
                 {
                     await game.Stop().ConfigureAwait(false);
                     return;
                 }
-                await channel.SendErrorAsync("No contest to stop on this channel.").ConfigureAwait(false);
+                
+                await SendErrorAsync("No contest to stop on this channel.").ConfigureAwait(false);
             }
 
 
@@ -69,21 +66,18 @@ namespace NadekoBot.Modules.Games
             [OwnerOnly]
             public async Task Typeadd([Leftover] string text)
             {
-                var channel = (ITextChannel)ctx.Channel;
                 if (string.IsNullOrWhiteSpace(text))
                     return;
 
                 _games.AddTypingArticle(ctx.User, text);                
 
-                await channel.SendConfirmAsync("Added new article for typing game.").ConfigureAwait(false);
+                await SendConfirmAsync("Added new article for typing game.").ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             public async Task Typelist(int page = 1)
             {
-                var channel = (ITextChannel)ctx.Channel;
-
                 if (page < 1)
                     return;
 
@@ -91,11 +85,11 @@ namespace NadekoBot.Modules.Games
 
                 if (!articles.Any())
                 {
-                    await channel.SendErrorAsync($"{ctx.User.Mention} `No articles found on that page.`").ConfigureAwait(false);
+                    await SendErrorAsync($"{ctx.User.Mention} `No articles found on that page.`").ConfigureAwait(false);
                     return;
                 }
                 var i = (page - 1) * 15;
-                await channel.SendConfirmAsync("List of articles for Type Race", string.Join("\n", articles.Select(a => $"`#{++i}` - {a.Text.TrimTo(50)}")))
+                await SendConfirmAsync("List of articles for Type Race", string.Join("\n", articles.Select(a => $"`#{++i}` - {a.Text.TrimTo(50)}")))
                              .ConfigureAwait(false);
             }
 
@@ -111,7 +105,7 @@ namespace NadekoBot.Modules.Games
                     return;
                 }
 
-                var embed = new EmbedBuilder()
+                var embed = _eb.Create()
                     .WithTitle($"Removed typing article #{index + 1}")
                     .WithDescription(removed.Text.TrimTo(50))
                     .WithOkColor();

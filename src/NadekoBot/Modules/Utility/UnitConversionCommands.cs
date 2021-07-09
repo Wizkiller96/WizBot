@@ -20,7 +20,7 @@ namespace NadekoBot.Modules.Utility
             {
                 var units = _service.Units;
 
-                var embed = new EmbedBuilder()
+                var embed = _eb.Create()
                     .WithTitle(GetText("convertlist"))
                     .WithOkColor();
 
@@ -89,7 +89,7 @@ namespace NadekoBot.Modules.Utility
                 }
                 res = Math.Round(res, 4);
 
-                await ctx.Channel.SendConfirmAsync(GetText("convert", value, originUnit.Triggers.Last(), res, targetUnit.Triggers.Last())).ConfigureAwait(false);
+                await SendConfirmAsync(GetText("convert", value, originUnit.Triggers.Last(), res, targetUnit.Triggers.Last())).ConfigureAwait(false);
             }
         }
     }

@@ -49,6 +49,7 @@ namespace NadekoBot.Modules.Xp.Services
         private readonly IHttpClientFactory _httpFactory;
         private readonly XpConfigService _xpConfig;
         private readonly IPubSub _pubSub;
+        private readonly IEmbedBuilderService _eb;
 
         public const int XP_REQUIRED_LVL_1 = 36;
 
@@ -77,7 +78,8 @@ namespace NadekoBot.Modules.Xp.Services
             ICurrencyService cs,
             IHttpClientFactory http,
             XpConfigService xpConfig,
-            IPubSub pubSub)
+            IPubSub pubSub,
+            IEmbedBuilderService eb)
         {
             _db = db;
             _cmd = cmd;
@@ -90,6 +92,7 @@ namespace NadekoBot.Modules.Xp.Services
             _httpFactory = http;
             _xpConfig = xpConfig;
             _pubSub = pubSub;
+            _eb = eb;
             _excludedServers = new ConcurrentHashSet<ulong>();
             _excludedChannels = new ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>>();
             _client = client;
@@ -261,14 +264,14 @@ namespace NadekoBot.Modules.Xp.Services
                             {
                                 var chan = await x.User.GetOrCreateDMChannelAsync();
                                 if (chan != null)
-                                    await chan.SendConfirmAsync(_strings.GetText("level_up_dm",
+                                    await chan.SendConfirmAsync(_eb, _strings.GetText("level_up_dm",
                                         x.Guild.Id,
                                         x.User.Mention, Format.Bold(x.Level.ToString()),
                                         Format.Bold(x.Guild.ToString() ?? "-")));
                             }
                             else if (x.MessageChannel != null) // channel
                             {
-                                await x.MessageChannel.SendConfirmAsync(_strings.GetText("level_up_channel",
+                                await x.MessageChannel.SendConfirmAsync(_eb, _strings.GetText("level_up_channel",
                                     x.Guild.Id,
                                     x.User.Mention, Format.Bold(x.Level.ToString())));
                             }
@@ -285,7 +288,7 @@ namespace NadekoBot.Modules.Xp.Services
                                 chan = x.MessageChannel;
                             }
 
-                            await chan.SendConfirmAsync(_strings.GetText("level_up_global",
+                            await chan.SendConfirmAsync(_eb, _strings.GetText("level_up_global",
                                 x.Guild.Id,
                                 x.User.Mention, Format.Bold(x.Level.ToString())));
                         }

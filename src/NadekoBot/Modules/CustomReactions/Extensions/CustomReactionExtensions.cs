@@ -12,6 +12,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using NadekoBot.Services;
 
 namespace NadekoBot.Modules.CustomReactions.Extensions
 {
@@ -95,7 +96,7 @@ namespace NadekoBot.Modules.CustomReactions.Extensions
                 containsAnywhere);
 
         public static async Task<IUserMessage> Send(this CustomReaction cr, IUserMessage ctx,
-            DiscordSocketClient client, bool sanitize)
+            DiscordSocketClient client, IEmbedBuilderService eb, bool sanitize)
         {
             var channel = cr.DmResponse
                 ? await ctx.Author.GetOrCreateDMChannelAsync().ConfigureAwait(false)
@@ -127,7 +128,7 @@ namespace NadekoBot.Modules.CustomReactions.Extensions
 
                 rep.Replace(crembed);
 
-                return await channel.EmbedAsync(crembed, sanitize).ConfigureAwait(false);
+                return await channel.EmbedAsync(crembed, eb, sanitize).ConfigureAwait(false);
             }
 
             return await channel

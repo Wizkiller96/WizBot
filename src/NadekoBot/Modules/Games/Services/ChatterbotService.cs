@@ -22,6 +22,7 @@ namespace NadekoBot.Modules.Games.Services
         private readonly CommandHandler _cmd;
         private readonly IBotStrings _strings;
         private readonly IBotCredentials _creds;
+        private readonly IEmbedBuilderService _eb;
         private readonly IHttpClientFactory _httpFactory;
 
         public ConcurrentDictionary<ulong, Lazy<IChatterBotSession>> ChatterBotGuilds { get; }
@@ -30,13 +31,14 @@ namespace NadekoBot.Modules.Games.Services
 
         public ChatterBotService(DiscordSocketClient client, PermissionService perms,
             Bot bot, CommandHandler cmd, IBotStrings strings, IHttpClientFactory factory,
-            IBotCredentials creds)
+            IBotCredentials creds, IEmbedBuilderService eb)
         {
             _client = client;
             _perms = perms;
             _cmd = cmd;
             _strings = strings;
             _creds = creds;
+            _eb = eb;
             _httpFactory = factory;
 
             ChatterBotGuilds = new ConcurrentDictionary<ulong, Lazy<IChatterBotSession>>(
@@ -86,18 +88,18 @@ namespace NadekoBot.Modules.Games.Services
             return message;
         }
 
-        public static async Task<bool> TryAsk(IChatterBotSession cleverbot, ITextChannel channel, string message)
+        public async Task<bool> TryAsk(IChatterBotSession cleverbot, ITextChannel channel, string message)
         {
             await channel.TriggerTypingAsync().ConfigureAwait(false);
 
             var response = await cleverbot.Think(message).ConfigureAwait(false);
             try
             {
-                await channel.SendConfirmAsync(response.SanitizeMentions(true)).ConfigureAwait(false);
+                await channel.SendConfirmAsync(_eb, response.SanitizeMentions(true)).ConfigureAwait(false);
             }
             catch
             {
-                await channel.SendConfirmAsync(response.SanitizeMentions(true)).ConfigureAwait(false); // try twice :\
+                await channel.SendConfirmAsync(_eb, response.SanitizeMentions(true)).ConfigureAwait(false); // try twice :\
             }
             return true;
         }
@@ -121,7 +123,7 @@ namespace NadekoBot.Modules.Games.Services
                     if (pc.Verbose)
                     {
                         var returnMsg = _strings.GetText("trigger", guild.Id, index + 1, Format.Bold(pc.Permissions[index].GetCommand(_cmd.GetPrefix(guild), (SocketGuild)guild)));
-                        try { await usrMsg.Channel.SendErrorAsync(returnMsg).ConfigureAwait(false); } catch { }
+                        try { await usrMsg.Channel.SendErrorAsync(_eb, returnMsg).ConfigureAwait(false); } catch { }
                         Log.Information(returnMsg);
                     }
                     return true;

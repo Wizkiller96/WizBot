@@ -150,9 +150,11 @@ namespace NadekoBot.Modules.Gambling
                     {
                         rolls.Add(_fateRolls[rng.Next(0, _fateRolls.Length)]);
                     }
-                    var embed = new EmbedBuilder().WithOkColor().WithDescription(ctx.User.Mention + " " + GetText("dice_rolled_num", Format.Bold(n1.ToString())))
-                        .AddField(efb => efb.WithName(Format.Bold("Result"))
-                            .WithValue(string.Join(" ", rolls.Select(c => Format.Code($"[{c}]")))));
+                    var embed = _eb.Create()
+                        .WithOkColor()
+                        .WithDescription(ctx.User.Mention + " " + GetText("dice_rolled_num", Format.Bold(n1.ToString())))
+                        .AddField(Format.Bold("Result"), string.Join(" ", rolls.Select(c => Format.Code($"[{c}]"))));
+                    
                     await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
                 }
                 else if ((match = dndRegex.Match(arg)).Length != 0)
@@ -174,11 +176,13 @@ namespace NadekoBot.Modules.Gambling
                         }
 
                         var sum = arr.Sum();
-                        var embed = new EmbedBuilder().WithOkColor().WithDescription(ctx.User.Mention + " " + GetText("dice_rolled_num", n1) + $"`1 - {n2}`")
-                        .AddField(efb => efb.WithName(Format.Bold("Rolls"))
-                            .WithValue(string.Join(" ", (ordered ? arr.OrderBy(x => x).AsEnumerable() : arr).Select(x => Format.Code(x.ToString())))))
-                        .AddField(efb => efb.WithName(Format.Bold("Sum"))
-                            .WithValue(sum + " + " + add + " - " + sub + " = " + (sum + add - sub)));
+                        var embed = _eb.Create().WithOkColor()
+                            .WithDescription(ctx.User.Mention + " " + GetText("dice_rolled_num", n1) + $"`1 - {n2}`")
+                            .AddField(Format.Bold("Rolls"), string.Join(" ",
+                                (ordered ? arr.OrderBy(x => x).AsEnumerable() : arr).Select(x =>
+                                    Format.Code(x.ToString()))))
+                            .AddField(Format.Bold("Sum"),
+                                sum + " + " + add + " - " + sub + " = " + (sum + add - sub));
                         await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
                     }
                 }

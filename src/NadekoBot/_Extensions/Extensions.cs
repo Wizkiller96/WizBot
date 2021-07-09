@@ -24,6 +24,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NadekoBot.Common.Attributes;
+using Color = Discord.Color;
 
 namespace NadekoBot.Extensions
 {
@@ -34,13 +35,15 @@ namespace NadekoBot.Extensions
         public static TOut[] Map<TIn, TOut>(this TIn[] arr, Func<TIn, TOut> f)
             => Array.ConvertAll(arr, x => f(x));
 
-        public static Task<IUserMessage> EmbedAsync(this IMessageChannel channel, CREmbed crEmbed, bool sanitizeAll = false)
+        public static Task<IUserMessage> EmbedAsync(this IMessageChannel channel, CREmbed crEmbed, IEmbedBuilderService eb, bool sanitizeAll = false)
         {
             var plainText = sanitizeAll
                 ? crEmbed.PlainText?.SanitizeAllMentions() ?? ""
                 : crEmbed.PlainText?.SanitizeMentions() ?? "";
-            
-            return channel.SendMessageAsync(plainText, embed: crEmbed.IsEmbedValid ? crEmbed.ToEmbed().Build() : null);
+
+            return channel.SendMessageAsync(plainText, embed: crEmbed.IsEmbedValid
+                ? crEmbed.ToEmbed(eb).Build()
+                : null);
         }
 
         public static List<ulong> GetGuildIds(this DiscordSocketClient client)
@@ -167,7 +170,7 @@ namespace NadekoBot.Extensions
         public static string GetFullUsage(string commandName, string args, string prefix)
             => $"{prefix}{commandName} {string.Format(args, prefix)}";
 
-        public static EmbedBuilder AddPaginatedFooter(this EmbedBuilder embed, int curPage, int? lastPage)
+        public static IEmbedBuilder AddPaginatedFooter(this IEmbedBuilder embed, int curPage, int? lastPage)
         {
             if (lastPage != null)
                 return embed.WithFooter($"{curPage + 1} / {lastPage + 1}");
@@ -175,14 +178,17 @@ namespace NadekoBot.Extensions
                 return embed.WithFooter(curPage.ToString());
         }
 
-        public static EmbedBuilder WithOkColor(this EmbedBuilder eb) =>
-            eb.WithColor(Bot.OkColor);
-
-        public static EmbedBuilder WithPendingColor(this EmbedBuilder eb) =>
-            eb.WithColor(Bot.PendingColor);
+        public static Color ToDiscordColor(this Rgba32 color)
+            => new Color(color.R, color.G, color.B);
         
-        public static EmbedBuilder WithErrorColor(this EmbedBuilder eb) =>
-            eb.WithColor(Bot.ErrorColor);
+        public static IEmbedBuilder WithOkColor(this IEmbedBuilder eb) =>
+            eb.WithColor(EmbedColor.Ok);
+
+        public static IEmbedBuilder WithPendingColor(this IEmbedBuilder eb) =>
+            eb.WithColor(EmbedColor.Pending);
+        
+        public static IEmbedBuilder WithErrorColor(this IEmbedBuilder eb) =>
+            eb.WithColor(EmbedColor.Error);
 
         public static ReactionEventWrapper OnReaction(this IUserMessage msg, DiscordSocketClient client, Func<SocketReaction, Task> reactionAdded, Func<SocketReaction, Task> reactionRemoved = null)
         {

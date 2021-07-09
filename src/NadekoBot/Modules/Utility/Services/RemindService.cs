@@ -21,12 +21,14 @@ namespace NadekoBot.Modules.Utility.Services
         private readonly DiscordSocketClient _client;
         private readonly DbService _db;
         private readonly IBotCredentials _creds;
+        private readonly IEmbedBuilderService _eb;
 
-        public RemindService(DiscordSocketClient client, DbService db, IBotCredentials creds)
+        public RemindService(DiscordSocketClient client, DbService db, IBotCredentials creds, IEmbedBuilderService eb)
         {
             _client = client;
             _db = db;
             _creds = creds;
+            _eb = eb;
             _ = StartReminderLoop();
         }
 
@@ -167,7 +169,7 @@ namespace NadekoBot.Modules.Utility.Services
                 if (ch is null)
                     return;
 
-                await ch.EmbedAsync(new EmbedBuilder()
+                await ch.EmbedAsync(_eb.Create()
                     .WithOkColor()
                     .WithTitle("Reminder")
                     .AddField("Created At", r.DateAdded.HasValue ? r.DateAdded.Value.ToLongDateString() : "?")

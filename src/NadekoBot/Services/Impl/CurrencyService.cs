@@ -16,12 +16,14 @@ namespace NadekoBot.Services
     {
         private readonly DbService _db;
         private readonly GamblingConfigService _gss;
+        private readonly IEmbedBuilderService _eb;
         private readonly IUser _bot;
 
-        public CurrencyService(DbService db, DiscordSocketClient c, GamblingConfigService gss)
+        public CurrencyService(DbService db, DiscordSocketClient c, GamblingConfigService gss, IEmbedBuilderService eb)
         {
             _db = db;
             _gss = gss;
+            _eb = eb;
             _bot = c.CurrentUser;
         }
 
@@ -80,7 +82,7 @@ namespace NadekoBot.Services
                 {
                     var sign = _gss.Data.Currency.Sign;
                     await (await user.GetOrCreateDMChannelAsync())
-                        .EmbedAsync(new EmbedBuilder()
+                        .EmbedAsync(_eb.Create()
                             .WithOkColor()
                             .WithTitle($"Received Currency")
                             .AddField("Amount", amount + sign)
