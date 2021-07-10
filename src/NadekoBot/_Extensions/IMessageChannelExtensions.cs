@@ -185,5 +185,39 @@ namespace NadekoBot.Extensions
         
         public static Task WarningAsync(this ICommandContext ctx)
             => ctx.Message.AddReactionAsync(new Emoji("⚠️"));
+        
+        // todo fix extensions
+        // public static Task<IUserMessage> EditAsync(this IUserMessage message, SmartText text)
+        // {
+        //     switch (text)
+        //     {
+        //         case SmartEmbedText set: return message.ModifyAsync(set.PlainText ?? "", set.GetEmbed());
+        //         case SmartPlainText spt: return message.EditAsync(spt.Text);
+        //         default:
+        //             throw new ArgumentException(nameof(text));
+        //     }
+        // }
+        //
+        // public static Task<IUserMessage> SendAsync(this IUser user, SmartText text)
+        // {
+        //     switch (text)
+        //     {
+        //         case SmartEmbedText set: return user.SendAsync(set.PlainText ?? "", set.GetEmbed());
+        //         case SmartPlainText spt: return user.SendAsync(spt.Text);
+        //         default:
+        //             throw new ArgumentException(nameof(text));
+        //     }
+        // }
+        //
+        // public static Task<IUserMessage> SendAsync(this ITextChannel channel, SmartText text)
+        // {
+        //     switch (text)
+        //     {
+        //         case SmartEmbedText set: return channel.SendAsync(set.PlainText ?? "", embed: set.GetEmbed());
+        //         case SmartPlainText spt: return channel.SendAsync(spt.Text);
+        //         default:
+        //             throw new ArgumentException(nameof(text));
+        //     }
+        // }
     }
 }
