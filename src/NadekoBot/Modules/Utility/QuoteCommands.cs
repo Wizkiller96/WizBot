@@ -82,14 +82,10 @@ namespace NadekoBot.Modules.Utility
                     .WithDefault(Context)
                     .Build();
 
-                if (CREmbed.TryParse(quote.Text, out var crembed))
-                {
-                    rep.Replace(crembed);
-                    await ctx.Channel.EmbedAsync(crembed.ToEmbed(_eb), $"`#{quote.Id}` 📣 " + crembed.PlainText?.SanitizeAllMentions() ?? "")
-                        .ConfigureAwait(false);
-                    return;
-                }
-                await ctx.Channel.SendMessageAsync($"`#{quote.Id}` 📣 " + rep.Replace(quote.Text)?.SanitizeAllMentions()).ConfigureAwait(false);
+                var text = SmartText.CreateFrom(quote.Text);
+                text = rep.Replace(text);
+
+                await ctx.Channel.SendAsync(_eb, $"`#{quote.Id}` 📣 " + text, true);
             }
 
             [NadekoCommand, Aliases]
