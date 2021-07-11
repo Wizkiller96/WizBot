@@ -22,14 +22,12 @@ namespace NadekoBot.Modules.Administration
         public class SelfCommands : NadekoSubmodule<SelfService>
         {
             private readonly DiscordSocketClient _client;
-            private readonly Bot _bot;
             private readonly IBotStrings _strings;
             private readonly ICoordinator _coord;
 
-            public SelfCommands(DiscordSocketClient client, Bot bot, IBotStrings strings, ICoordinator coord)
+            public SelfCommands(DiscordSocketClient client, IBotStrings strings, ICoordinator coord)
             {
                 _client = client;
-                _bot = bot;
                 _strings = strings;
                 _coord = coord;
             }
@@ -447,14 +445,12 @@ namespace NadekoBot.Modules.Administration
 
             [NadekoCommand, Aliases]
             [OwnerOnly]
-            public async Task Send(string where, [Leftover] string msg = null)
+            public async Task Send(string where, [Leftover] SmartText text = null)
             {
-                if (string.IsNullOrWhiteSpace(msg))
-                    return;
-
                 var ids = where.Split('|');
                 if (ids.Length != 2)
                     return;
+                
                 var sid = ulong.Parse(ids[0]);
                 var server = _client.Guilds.FirstOrDefault(s => s.Id == sid);
 
@@ -470,45 +466,28 @@ namespace NadekoBot.Modules.Administration
                     var cid = ulong.Parse(ids[1].Substring(2));
                     var ch = server.TextChannels.FirstOrDefault(c => c.Id == cid);
                     if (ch is null)
-                    {
                         return;
-                    }
 
-                    if (CREmbed.TryParse(msg, out var crembed))
-                    {
-                        rep.Replace(crembed);
-                        await ch.EmbedAsync(crembed, _eb).ConfigureAwait(false);
-                        await ReplyConfirmLocalizedAsync("message_sent").ConfigureAwait(false);
-                        return;
-                    }
-                    await ch.SendMessageAsync(rep.Replace(msg).SanitizeMentions()).ConfigureAwait(false);
+                    text = rep.Replace(text);
+                    await ch.SendAsync(_eb, text, sanitizeAll: false);
                 }
                 else if (ids[1].ToUpperInvariant().StartsWith("U:", StringComparison.InvariantCulture))
                 {
                     var uid = ulong.Parse(ids[1].Substring(2));
                     var user = server.Users.FirstOrDefault(u => u.Id == uid);
                     if (user is null)
-                    {
                         return;
-                    }
 
-                    if (CREmbed.TryParse(msg, out var crembed))
-                    {
-                        rep.Replace(crembed);
-                        await (await user.GetOrCreateDMChannelAsync().ConfigureAwait(false))
-                            .EmbedAsync(crembed, _eb)
-                            .ConfigureAwait(false);
-                        await ReplyConfirmLocalizedAsync("message_sent").ConfigureAwait(false);
-                        return;
-                    }
-
-                    await (await user.GetOrCreateDMChannelAsync().ConfigureAwait(false)).SendMessageAsync(rep.Replace(msg).SanitizeMentions()).ConfigureAwait(false);
+                    var ch = await user.GetOrCreateDMChannelAsync();
+                    text = rep.Replace(text);
+                    await ch.SendAsync(_eb, text);
                 }
                 else
                 {
                     await ReplyErrorLocalizedAsync("invalid_format").ConfigureAwait(false);
                     return;
                 }
+                
                 await ReplyConfirmLocalizedAsync("message_sent").ConfigureAwait(false);
             }
 

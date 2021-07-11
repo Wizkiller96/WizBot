@@ -174,18 +174,10 @@ namespace NadekoBot.Modules.Utility
 
                 var infoText = $"`#{quote.Id} added by {quote.AuthorName.SanitizeAllMentions()}` 🗯️ " + quote.Keyword.ToLowerInvariant().SanitizeAllMentions() + ":\n";
 
-                if (CREmbed.TryParse(quote.Text, out var crembed))
-                {
-                    rep.Replace(crembed);
-
-                    await ctx.Channel.EmbedAsync(crembed.ToEmbed(_eb), infoText + crembed.PlainText?.SanitizeAllMentions())
-                        .ConfigureAwait(false);
-                }
-                else
-                {
-                    await ctx.Channel.SendMessageAsync(infoText + rep.Replace(quote.Text)?.SanitizeAllMentions())
-                        .ConfigureAwait(false);
-                }
+                
+                var text = SmartText.CreateFrom(quote.Text);
+                text = rep.Replace(text);
+                await ctx.Channel.SendAsync(_eb, infoText + text, true);
             }
 
             [NadekoCommand, Aliases]

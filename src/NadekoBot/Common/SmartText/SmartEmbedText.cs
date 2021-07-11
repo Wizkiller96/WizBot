@@ -5,7 +5,7 @@ using NadekoBot.Services;
 
 namespace NadekoBot
 {
-    public sealed class SmartEmbedText : SmartText
+    public sealed record SmartEmbedText : SmartText
     {
         public string PlainText { get; set; }
         public string Title { get; set; }

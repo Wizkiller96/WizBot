@@ -1,8 +1,8 @@
 ﻿namespace NadekoBot
 {
-    public sealed class SmartPlainText : SmartText
+    public sealed record SmartPlainText : SmartText
     {
-        public string Text { get; set; }
+        public string Text { get; init; }
 
         public SmartPlainText(string text)
         {

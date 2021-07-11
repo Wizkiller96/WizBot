@@ -35,7 +35,6 @@ namespace NadekoBot.Modules.Utility
             _creds = creds;
             _tracker = tracker;
         }
-        
 
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
@@ -47,7 +46,7 @@ namespace NadekoBot.Modules.Utility
                 .WithDefault(ctx.User, channel, (SocketGuild)ctx.Guild, (DiscordSocketClient)ctx.Client)
                 .Build();
 
-            rep.Replace(message);
+            message = rep.Replace(message);
             
             await channel.SendAsync(_eb, message, !((IGuildUser)Context.User).GuildPermissions.MentionEveryone);
         }
@@ -56,7 +55,7 @@ namespace NadekoBot.Modules.Utility
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         [Priority(0)]
-        public Task Say([Leftover] string message)
+        public Task Say([Leftover] SmartText message)
             => Say((ITextChannel)ctx.Channel, message);
 
         [NadekoCommand, Aliases]
