@@ -2,15 +2,17 @@
 
 namespace NadekoBot
 {
-    // todo 3.3 check if saving embeds in db has IsEmbed field, to prevent rechecking and generating exceptions on every use
     public abstract class SmartText
     {
         public bool IsEmbed => this is SmartEmbedText;
         public bool IsPlainText => this is SmartPlainText;
 
+        public static implicit operator SmartText(string input)
+            => new SmartPlainText(input);
+        
         public static SmartText CreateFrom(string input)
         {
-            if (string.IsNullOrWhiteSpace(input) || !input.Trim().StartsWith("{"))
+            if (string.IsNullOrWhiteSpace(input) || !input.TrimStart().StartsWith("{"))
             {
                 return new SmartPlainText(input);
             }
