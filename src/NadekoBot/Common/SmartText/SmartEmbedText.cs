@@ -29,7 +29,7 @@ namespace NadekoBot
             (Footer != null && (!string.IsNullOrWhiteSpace(Footer.Text) || !string.IsNullOrWhiteSpace(Footer.IconUrl))) ||
             (Fields != null && Fields.Length > 0);
 
-        public EmbedBuilder GetEmbed(IEmbedBuilderService eb)
+        public EmbedBuilder GetEmbed()
         {
             var embed = new EmbedBuilder()
                 .WithColor(Color);

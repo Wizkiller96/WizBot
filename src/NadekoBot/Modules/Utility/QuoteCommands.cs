@@ -85,7 +85,7 @@ namespace NadekoBot.Modules.Utility
                 var text = SmartText.CreateFrom(quote.Text);
                 text = rep.Replace(text);
 
-                await ctx.Channel.SendAsync(_eb, $"`#{quote.Id}` 📣 " + text, true);
+                await ctx.Channel.SendAsync($"`#{quote.Id}` 📣 " + text, true);
             }
 
             [NadekoCommand, Aliases]
@@ -173,7 +173,7 @@ namespace NadekoBot.Modules.Utility
                 
                 var text = SmartText.CreateFrom(quote.Text);
                 text = rep.Replace(text);
-                await ctx.Channel.SendAsync(_eb, infoText + text, true);
+                await ctx.Channel.SendAsync(infoText + text, true);
             }
 
             [NadekoCommand, Aliases]

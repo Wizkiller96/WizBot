@@ -35,6 +35,22 @@ namespace NadekoBot.Extensions
         public static TOut[] Map<TIn, TOut>(this TIn[] arr, Func<TIn, TOut> f)
             => Array.ConvertAll(arr, x => f(x));
 
+        public static Task EditAsync(this IUserMessage msg, SmartText text)
+            => text switch
+            {
+                SmartEmbedText set => msg.ModifyAsync(x =>
+                {
+                    x.Embed = set.GetEmbed().Build();
+                    x.Content = set.PlainText?.SanitizeMentions() ?? "";
+                }),
+                SmartPlainText spt => msg.ModifyAsync(x =>
+                {
+                    x.Content = spt.Text.SanitizeMentions();
+                    x.Embed = null;
+                }),
+                _ => throw new ArgumentOutOfRangeException(nameof(text))
+            };
+        
         public static Task<IUserMessage> SendAsync(this IMessageChannel channel, string plainText, Embed embed, bool sanitizeAll = false)
         {
             plainText = sanitizeAll
@@ -44,10 +60,10 @@ namespace NadekoBot.Extensions
             return channel.SendMessageAsync(plainText, embed: embed);
         }
         
-        public static Task<IUserMessage> SendAsync(this IMessageChannel channel, IEmbedBuilderService eb, SmartText text, bool sanitizeAll = false)
+        public static Task<IUserMessage> SendAsync(this IMessageChannel channel, SmartText text, bool sanitizeAll = false)
             => text switch
             {
-                SmartEmbedText set => channel.SendAsync(set.PlainText, set.GetEmbed(eb).Build(), sanitizeAll),
+                SmartEmbedText set => channel.SendAsync(set.PlainText, set.GetEmbed().Build(), sanitizeAll),
                 SmartPlainText st => channel.SendAsync(st.Text, null, sanitizeAll),
                 _ => throw new ArgumentOutOfRangeException(nameof(text))
             };

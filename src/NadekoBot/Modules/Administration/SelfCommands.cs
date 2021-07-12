@@ -469,7 +469,7 @@ namespace NadekoBot.Modules.Administration
                         return;
 
                     text = rep.Replace(text);
-                    await ch.SendAsync(_eb, text, sanitizeAll: false);
+                    await ch.SendAsync(text, sanitizeAll: false);
                 }
                 else if (ids[1].ToUpperInvariant().StartsWith("U:", StringComparison.InvariantCulture))
                 {
@@ -480,7 +480,7 @@ namespace NadekoBot.Modules.Administration
 
                     var ch = await user.GetOrCreateDMChannelAsync();
                     text = rep.Replace(text);
-                    await ch.SendAsync(_eb, text);
+                    await ch.SendAsync(text);
                 }
                 else
                 {

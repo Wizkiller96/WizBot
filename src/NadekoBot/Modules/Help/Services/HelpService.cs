@@ -23,7 +23,6 @@ namespace NadekoBot.Modules.Help.Services
         private readonly DiscordPermOverrideService _dpos;
         private readonly BotConfigService _bss;
         private readonly IEmbedBuilderService _eb;
-        private readonly Replacer _rep;
 
         public HelpService(CommandHandler ch,
             IBotStrings strings,
@@ -36,12 +35,6 @@ namespace NadekoBot.Modules.Help.Services
             _dpos = dpos;
             _bss = bss;
             _eb = eb;
-
-
-            _rep = new ReplacementBuilder()
-                .WithOverride("%prefix%", () => _bss.Data.Prefix)
-                .WithOverride("%bot.prefix%", () => _bss.Data.Prefix)
-                .Build();
         }
 
         public Task LateExecute(IGuild guild, IUserMessage msg)
@@ -51,11 +44,17 @@ namespace NadekoBot.Modules.Help.Services
             {
                 if (string.IsNullOrWhiteSpace(settings.DmHelpText) || settings.DmHelpText == "-")
                     return Task.CompletedTask;
+
+                var rep = new ReplacementBuilder()
+                    .WithOverride("%prefix%", () => _bss.Data.Prefix)
+                    .WithOverride("%bot.prefix%", () => _bss.Data.Prefix)
+                    .WithUser(msg.Author)
+                    .Build();
                 
-                if (CREmbed.TryParse(settings.DmHelpText, out var embed))
-                    return msg.Channel.EmbedAsync(_rep.Replace(embed), _eb);
-                
-                return msg.Channel.SendMessageAsync(_rep.Replace(settings.DmHelpText));
+                var text = SmartText.CreateFrom(settings.DmHelpText);
+                text = rep.Replace(text);
+
+                return msg.Channel.SendAsync(text);
             }
             return Task.CompletedTask;
         }

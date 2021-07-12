@@ -48,7 +48,7 @@ namespace NadekoBot.Modules.Utility
 
             message = rep.Replace(message);
             
-            await channel.SendAsync(_eb, message, !((IGuildUser)Context.User).GuildPermissions.MentionEveryone);
+            await channel.SendAsync(message, !((IGuildUser)Context.User).GuildPermissions.MentionEveryone);
         }
 
         [NadekoCommand, Aliases]
