@@ -1,140 +1,52 @@
-﻿using AngleSharp;
-using AngleSharp.Html.Dom;
-using Discord;
+﻿using Discord;
 using Discord.WebSocket;
-using NadekoBot.Common;
 using NadekoBot.Common.Replacements;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Extensions;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using NadekoBot.Services;
 
 namespace NadekoBot.Modules.CustomReactions.Extensions
 {
     public static class CustomReactionExtensions
     {
-        private static readonly Regex imgRegex = new Regex("%(img|image):(?<tag>.*?)%", RegexOptions.Compiled);
-
-        private static Dictionary<Regex, Func<Match, Task<string>>> regexPlaceholders { get; } =
-            new Dictionary<Regex, Func<Match, Task<string>>>()
-            {
-                {
-                    imgRegex, async (match) =>
-                    {
-                        var tag = match.Groups["tag"].ToString();
-                        if (string.IsNullOrWhiteSpace(tag))
-                            return "";
-
-                        var fullQueryLink = $"http://imgur.com/search?q={tag}";
-                        var config = Configuration.Default.WithDefaultLoader();
-                        using (var document = await BrowsingContext.New(config).OpenAsync(fullQueryLink)
-                            .ConfigureAwait(false))
-                        {
-                            var elems = document.QuerySelectorAll("a.image-list-link").ToArray();
-
-                            if (!elems.Any())
-                                return "";
-
-                            var img = (elems.ElementAtOrDefault(new NadekoRandom().Next(0, elems.Length))?.Children
-                                ?.FirstOrDefault() as IHtmlImageElement);
-
-                            if (img?.Source is null)
-                                return "";
-
-                            return " " + img.Source.Replace("b.", ".", StringComparison.InvariantCulture) + " ";
-                        }
-                    }
-                }
-            };
-
-        private static string ResolveTriggerString(this string str, IUserMessage ctx, DiscordSocketClient client)
+        private static string ResolveTriggerString(this string str, DiscordSocketClient client)
             => str.Replace("%bot.mention%", client.CurrentUser.Mention, StringComparison.Ordinal);
 
-        private static async Task<string> ResolveResponseStringAsync(this string str, IUserMessage ctx,
-            DiscordSocketClient client, string resolvedTrigger, bool containsAnywhere)
+        public static async Task<IUserMessage> Send(this CustomReaction cr, IUserMessage ctx,
+            DiscordSocketClient client, bool sanitize)
         {
-            var substringIndex = resolvedTrigger.Length;
-            if (containsAnywhere)
+            var channel = cr.DmResponse
+                ? await ctx.Author.GetOrCreateDMChannelAsync().ConfigureAwait(false)
+                : ctx.Channel;
+
+            var trigger = cr.Trigger.ResolveTriggerString(client);
+            var substringIndex = trigger.Length;
+            if (cr.ContainsAnywhere)
             {
-                var pos = ctx.Content.AsSpan().GetWordPosition(resolvedTrigger);
+                var pos = ctx.Content.AsSpan().GetWordPosition(trigger);
                 if (pos == WordPosition.Start)
                     substringIndex += 1;
                 else if (pos == WordPosition.End)
                     substringIndex = ctx.Content.Length;
                 else if (pos == WordPosition.Middle)
-                    substringIndex += ctx.Content.IndexOf(resolvedTrigger, StringComparison.InvariantCulture);
+                    substringIndex += ctx.Content.IndexOf(trigger, StringComparison.InvariantCulture);
             }
 
             var canMentionEveryone = (ctx.Author as IGuildUser)?.GuildPermissions.MentionEveryone ?? true;
 
             var rep = new ReplacementBuilder()
                 .WithDefault(ctx.Author, ctx.Channel, (ctx.Channel as ITextChannel)?.Guild as SocketGuild, client)
-                .WithOverride("%target%", () =>
-                    canMentionEveryone
-                        ? ctx.Content.Substring(substringIndex).Trim()
-                        : ctx.Content.Substring(substringIndex).Trim().SanitizeMentions(true))
+                .WithOverride("%target%", () => canMentionEveryone
+                    ? ctx.Content.Substring(substringIndex).Trim()
+                    : ctx.Content.Substring(substringIndex).Trim().SanitizeMentions(true))
                 .Build();
 
-            str = rep.Replace(str);
-#if !GLOBAL_NADEKO
-            foreach (var ph in regexPlaceholders)
-            {
-                str = await ph.Key.ReplaceAsync(str, ph.Value).ConfigureAwait(false);
-            }
-#endif
-            return str;
-        }
+            var text = SmartText.CreateFrom(cr.Response);
+            text = rep.Replace(text);
 
-        public static Task<string> ResponseWithContextAsync(this CustomReaction cr, IUserMessage ctx,
-            DiscordSocketClient client, bool containsAnywhere)
-            => cr.Response.ResolveResponseStringAsync(ctx, client, cr.Trigger.ResolveTriggerString(ctx, client),
-                containsAnywhere);
-
-        public static async Task<IUserMessage> Send(this CustomReaction cr, IUserMessage ctx,
-            DiscordSocketClient client, IEmbedBuilderService eb, bool sanitize)
-        {
-            var channel = cr.DmResponse
-                ? await ctx.Author.GetOrCreateDMChannelAsync().ConfigureAwait(false)
-                : ctx.Channel;
-
-            if (CREmbed.TryParse(cr.Response, out CREmbed crembed))
-            {
-                var trigger = cr.Trigger.ResolveTriggerString(ctx, client);
-                var substringIndex = trigger.Length;
-                if (cr.ContainsAnywhere)
-                {
-                    var pos = ctx.Content.AsSpan().GetWordPosition(trigger);
-                    if (pos == WordPosition.Start)
-                        substringIndex += 1;
-                    else if (pos == WordPosition.End)
-                        substringIndex = ctx.Content.Length;
-                    else if (pos == WordPosition.Middle)
-                        substringIndex += ctx.Content.IndexOf(trigger, StringComparison.InvariantCulture);
-                }
-
-                var canMentionEveryone = (ctx.Author as IGuildUser)?.GuildPermissions.MentionEveryone ?? true;
-
-                var rep = new ReplacementBuilder()
-                    .WithDefault(ctx.Author, ctx.Channel, (ctx.Channel as ITextChannel)?.Guild as SocketGuild, client)
-                    .WithOverride("%target%", () => canMentionEveryone
-                        ? ctx.Content.Substring(substringIndex).Trim()
-                        : ctx.Content.Substring(substringIndex).Trim().SanitizeMentions(true))
-                    .Build();
-
-                rep.Replace(crembed);
-
-                return await channel.EmbedAsync(crembed, eb, sanitize).ConfigureAwait(false);
-            }
-
-            return await channel
-                .SendMessageAsync(
-                    (await cr.ResponseWithContextAsync(ctx, client, cr.ContainsAnywhere).ConfigureAwait(false))
-                    .SanitizeMentions(sanitize)).ConfigureAwait(false);
+            return await channel.SendAsync(text, sanitize);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

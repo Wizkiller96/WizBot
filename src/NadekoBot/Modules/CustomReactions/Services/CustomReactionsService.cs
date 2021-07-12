@@ -429,7 +429,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
                     }
                 }
 
-                var sentMsg = await cr.Send(msg, _client, _eb, false).ConfigureAwait(false);
+                var sentMsg = await cr.Send(msg, _client, false).ConfigureAwait(false);
 
                 var reactions = cr.GetReactions();
                 foreach (var reaction in reactions)

@@ -68,17 +68,6 @@ namespace NadekoBot.Extensions
                 _ => throw new ArgumentOutOfRangeException(nameof(text))
             };
 
-        public static Task<IUserMessage> EmbedAsync(this IMessageChannel channel, CREmbed crEmbed, IEmbedBuilderService eb, bool sanitizeAll = false)
-        {
-            var plainText = sanitizeAll
-                ? crEmbed.PlainText?.SanitizeAllMentions() ?? ""
-                : crEmbed.PlainText?.SanitizeMentions() ?? "";
-
-            return channel.SendMessageAsync(plainText, embed: crEmbed.IsEmbedValid
-                ? crEmbed.ToEmbed(eb).Build()
-                : null);
-        }
-
         public static List<ulong> GetGuildIds(this DiscordSocketClient client)
             => client.Guilds.Select(x => x.Id).ToList();
 
