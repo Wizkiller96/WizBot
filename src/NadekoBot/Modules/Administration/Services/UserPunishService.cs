@@ -413,7 +413,7 @@ WHERE GuildId={guildId}
             }
         }
 
-        public CREmbed GetBanUserDmEmbed(ICommandContext context, IGuildUser target, string defaultMessage,
+        public SmartText GetBanUserDmEmbed(ICommandContext context, IGuildUser target, string defaultMessage,
             string banReason, TimeSpan? duration)
         {
             return GetBanUserDmEmbed(
@@ -426,7 +426,7 @@ WHERE GuildId={guildId}
                 duration);
         }
 
-        public CREmbed GetBanUserDmEmbed(DiscordSocketClient client, SocketGuild guild,
+        public SmartText GetBanUserDmEmbed(DiscordSocketClient client, SocketGuild guild,
             IGuildUser moderator, IGuildUser target, string defaultMessage, string banReason, TimeSpan? duration)
         {
             var template = GetBanTemplate(guild.Id);
@@ -450,7 +450,6 @@ WHERE GuildId={guildId}
                 .WithOverride("%ban.duration%", () => duration?.ToString(@"d\.hh\:mm")?? "perma")
                 .Build();
 
-            CREmbed crEmbed = null; 
             // if template isn't set, use the old message style
             if (string.IsNullOrWhiteSpace(template))
             {
@@ -459,8 +458,6 @@ WHERE GuildId={guildId}
                     color = Bot.ErrorColor.RawValue,
                     description = defaultMessage 
                 });
-                
-                CREmbed.TryParse(template, out crEmbed);
             }
             // if template is set to "-" do not dm the user
             else if (template == "-")
@@ -468,23 +465,18 @@ WHERE GuildId={guildId}
                 return default;
             }
             // if template is an embed, send that embed with replacements
-            else if (CREmbed.TryParse(template, out crEmbed))
-            {
-                replacer.Replace(crEmbed);
-            }
             // otherwise, treat template as a regular string with replacements
-            else
+            else if (!SmartText.CreateFrom(template).IsEmbed)
             {
                 template = JsonConvert.SerializeObject(new
                 {
                     color = Bot.ErrorColor.RawValue,
-                    description = replacer.Replace(template) 
+                    description = template
                 });
-
-                CREmbed.TryParse(template, out crEmbed);
             }
             
-            return crEmbed;
+            var output = SmartText.CreateFrom(template);
+            return replacer.Replace(output);
         }
     }
 }

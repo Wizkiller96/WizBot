@@ -49,7 +49,7 @@ namespace NadekoBot.Modules.Help
             _lazyClientId = new AsyncLazy<ulong>(async () => (await _client.GetApplicationInfoAsync()).Id);
         }
 
-        public async Task<(string plainText, IEmbedBuilder embed)> GetHelpStringEmbed()
+        public async Task<SmartText> GetHelpString()
         {
             var botSettings = _bss.Data;
             if (string.IsNullOrWhiteSpace(botSettings.HelpText) || botSettings.HelpText == "-")
@@ -64,18 +64,8 @@ namespace NadekoBot.Modules.Help
                 .WithOverride("%bot.prefix%", () => Prefix)
                 .Build();
 
-            var app = await _client.GetApplicationInfoAsync();
-
-            if (!CREmbed.TryParse(botSettings.HelpText, out var embed))
-            {
-                var eb = _eb.Create().WithOkColor()
-                    .WithDescription(String.Format(botSettings.HelpText, clientId, Prefix));
-                return ("", eb);
-            }
-
-            r.Replace(embed);
-
-            return (embed.PlainText, embed.ToEmbed(_eb));
+            var text = SmartText.CreateFrom(botSettings.HelpText);
+            return r.Replace(text);
         }
 
         [NadekoCommand, Aliases]
@@ -271,11 +261,10 @@ namespace NadekoBot.Modules.Help
                     : channel;
                 try
                 {
-                    var data = await GetHelpStringEmbed();
+                    var data = await GetHelpString();
                     if (data == default)
                         return;
-                    var (plainText, helpEmbed) = data;
-                    await ch.EmbedAsync(helpEmbed, msg: plainText ?? "").ConfigureAwait(false);
+                    await ch.SendAsync(data);
                     try{ await ctx.OkAsync(); } catch { } // ignore if bot can't react
                 }
                 catch (Exception)
