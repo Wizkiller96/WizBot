@@ -1,9 +1,11 @@
 ﻿using System;
 using Microsoft.Extensions.Configuration;
 using System.IO;
+using System.Linq;
 using Microsoft.Extensions.Primitives;
 using NadekoBot.Common;
 using NadekoBot.Common.Yml;
+using Newtonsoft.Json;
 using Serilog;
 
 namespace NadekoBot.Services
@@ -13,14 +15,17 @@ namespace NadekoBot.Services
     {
         private readonly int? _totalShards;
         private const string _credsFileName = "creds.yml";
-        private string CredsPath => Path.Combine(Directory.GetCurrentDirectory(), _credsFileName);
         private const string _credsExampleFileName = "creds_example.yml";
-        private string CredsExamplePath => Path.Combine(Directory.GetCurrentDirectory(), _credsExampleFileName);
         
-        private string _oldCredsJsonFilename = Path.Combine(Directory.GetCurrentDirectory(), "credentials.json");
+        private string CredsPath => Path.Combine(Directory.GetCurrentDirectory(), _credsFileName);
+        private string CredsExamplePath => Path.Combine(Directory.GetCurrentDirectory(), _credsExampleFileName);
+        private string OldCredsJsonPath => Path.Combine(Directory.GetCurrentDirectory(), "credentials.json");
+        private string OldCredsJsonBackupPath => Path.Combine(Directory.GetCurrentDirectory(), "credentials.json.bak");
+        
 
         private Creds _creds = new Creds();
         private IConfigurationRoot _config;
+        
 
         private readonly object reloadLock = new object();
         private void Reload()
@@ -58,6 +63,12 @@ namespace NadekoBot.Services
                         };
                     }
                 }
+                
+                if (string.IsNullOrWhiteSpace(_creds.RedisOptions))
+                    _creds.RedisOptions = "127.0.0.1,syncTimeout=3000";
+                
+                if (string.IsNullOrWhiteSpace(_creds.CoinmarketcapApiKey))
+                    _creds.CoinmarketcapApiKey = "e79ec505-0913-439d-ae07-069e296a6079";
 
                 _creds.TotalShards = _totalShards ?? _creds.TotalShards;
             }
@@ -70,6 +81,8 @@ namespace NadekoBot.Services
             {
                 File.WriteAllText(CredsExamplePath, Yaml.Serializer.Serialize(_creds));
             }
+             
+            MigrateCredentials();
             
             if (!File.Exists(CredsPath))
             {
@@ -89,7 +102,48 @@ namespace NadekoBot.Services
             
             Reload();
         }
-        
+
+        /// <summary>
+        /// Checks if there's a V2 credentials file present, loads it if it exists,
+        /// converts it to new model, and saves it to YAML. Also backs up old credentials to credentials.json.bak
+        /// </summary>
+        private void MigrateCredentials()
+        {
+            if (File.Exists(OldCredsJsonPath))
+            {
+                Log.Information("Migrating old creds...");
+                var jsonCredentialsFileText = File.ReadAllText(OldCredsJsonPath);
+                var oldCreds = JsonConvert.DeserializeObject<Creds.Old>(jsonCredentialsFileText);
+
+                var creds = new Creds
+                {
+                    Version = 1,
+                    Token = oldCreds.Token,
+                    OwnerIds = oldCreds.OwnerIds.Distinct().ToHashSet(),
+                    GoogleApiKey = oldCreds.GoogleApiKey,
+                    RapidApiKey = oldCreds.MashapeKey,
+                    OsuApiKey = oldCreds.OsuApiKey,
+                    CleverbotApiKey = oldCreds.CleverbotApiKey,
+                    TotalShards = oldCreds.TotalShards <= 1 ? 1 : oldCreds.TotalShards,
+                    Patreon = new Creds.PatreonSettings(oldCreds.PatreonAccessToken,
+                        null,
+                        null,
+                        oldCreds.PatreonCampaignId),
+                    Votes = new Creds.VotesSettings(oldCreds.VotesUrl, oldCreds.VotesToken),
+                    BotListToken = oldCreds.BotListToken,
+                    RedisOptions = oldCreds.RedisOptions,
+                    LocationIqApiKey = oldCreds.LocationIqApiKey,
+                    TimezoneDbApiKey = oldCreds.TimezoneDbApiKey,
+                    CoinmarketcapApiKey = oldCreds.CoinmarketcapApiKey,
+                };
+
+                File.Move(OldCredsJsonPath, OldCredsJsonBackupPath, true);
+                File.WriteAllText(CredsPath, Yaml.Serializer.Serialize(creds));
+
+                Log.Warning("Data from credentials.json has been moved to creds.yml\nPlease inspect your creds.yml for correctness");
+            }
+        }
+
         public Creds GetCreds() => _creds;
     }
 }

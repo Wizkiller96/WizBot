@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using NadekoBot.Common.Yml;
-using NadekoBot.Services;
 using YamlDotNet.Serialization;
 
 namespace NadekoBot.Common
@@ -78,9 +77,11 @@ Change only if you've changed the coordinator address or port.")]
         public string PatreonCampaignId => Patreon?.CampaignId;
         [YamlIgnore]
         public string PatreonAccessToken => Patreon?.AccessToken;
-        
-        public string VotesUrl { get; set; }
-        public string VotesToken { get; set; }
+
+        [YamlIgnore]
+        public string VotesUrl => Votes?.Url;
+        [YamlIgnore]
+        public string VotesToken => Votes.Key;
         
         [Comment(@"Api key obtained on https://rapidapi.com (go to MyApps -> Add New App -> Enter Name -> Application key)")]
         public string RapidApiKey { get; set; }
@@ -185,6 +186,9 @@ Windows default
             public string VotesToken { get; set; } = string.Empty;
             public string VotesUrl { get; set; } = string.Empty;
             public string RedisOptions { get; set; } = string.Empty;
+            public string LocationIqApiKey { get; set; } = string.Empty;
+            public string TimezoneDbApiKey { get; set; } = string.Empty;
+            public string CoinmarketcapApiKey { get; set; } = string.Empty;
 
             public class RestartConfig
             {

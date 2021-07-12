@@ -42,8 +42,6 @@ db:
 # Address and port of the coordinator endpoint. Leave empty for default.
 # Change only if you've changed the coordinator address or port.
 coordinatorUrl: http://localhost:3442
-votesUrl: 
-votesToken: 
 # Api key obtained on https://rapidapi.com (go to MyApps -> Add New App -> Enter Name -> Application key)
 rapidApiKey: 
 # https://locationiq.com api key (register and you will receive the token in the email).
