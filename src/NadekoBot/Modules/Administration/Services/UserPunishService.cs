@@ -25,14 +25,16 @@ namespace NadekoBot.Modules.Administration.Services
         private readonly MuteService _mute;
         private readonly DbService _db;
         private readonly BlacklistService _blacklistService;
+        private readonly BotConfigService _bcs;
         private readonly Timer _warnExpiryTimer;
 
-        public UserPunishService(MuteService mute, DbService db, BlacklistService blacklistService)
+        public UserPunishService(MuteService mute, DbService db, BlacklistService blacklistService, BotConfigService bcs)
         {
             _mute = mute;
             _db = db;
             _blacklistService = blacklistService;
-            
+            _bcs = bcs;
+
             _warnExpiryTimer = new Timer(async _ =>
             {
                 await CheckAllWarnExpiresAsync();
@@ -455,7 +457,7 @@ WHERE GuildId={guildId}
             {
                 template = JsonConvert.SerializeObject(new
                 {
-                    color = Bot.ErrorColor.RawValue,
+                    color = _bcs.Data.Color.Error,
                     description = defaultMessage 
                 });
             }
@@ -470,7 +472,7 @@ WHERE GuildId={guildId}
             {
                 template = JsonConvert.SerializeObject(new
                 {
-                    color = Bot.ErrorColor.RawValue,
+                    color = _bcs.Data.Color.Error,
                     description = template
                 });
             }

@@ -35,11 +35,6 @@ namespace NadekoBot
         public DiscordSocketClient Client { get; }
         public ImmutableArray<GuildConfig> AllGuildConfigs { get; private set; }
 
-        // todo remove colors from here
-        public static Color OkColor { get; set; }
-        public static Color ErrorColor { get; set; }
-        public static Color PendingColor { get; set; }
-
         private IServiceProvider Services { get; set; }
         
         public string Mention { get; private set; }

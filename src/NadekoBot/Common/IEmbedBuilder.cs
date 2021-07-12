@@ -1,6 +1,5 @@
 ﻿using Discord;
 
-// todo test guild colors
 namespace NadekoBot
 {
     public interface IEmbedBuilder
