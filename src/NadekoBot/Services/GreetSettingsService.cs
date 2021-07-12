@@ -139,39 +139,19 @@ namespace NadekoBot.Services
                 .WithManyUsers(users)
                 .Build();
 
-            if (CREmbed.TryParse(conf.ChannelByeMessageText, out var embedData))
+            var text = SmartText.CreateFrom(conf.ChannelByeMessageText);
+            text = rep.Replace(text);
+            try
             {
-                rep.Replace(embedData);
-                try
+                var toDelete = await channel.SendAsync(text);
+                if (conf.AutoDeleteByeMessagesTimer > 0)
                 {
-                    var toDelete = await channel.EmbedAsync(embedData, _eb).ConfigureAwait(false);
-                    if (conf.AutoDeleteByeMessagesTimer > 0)
-                    {
-                        toDelete.DeleteAfter(conf.AutoDeleteByeMessagesTimer);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Log.Warning(ex, "Error embeding bye message");
+                    toDelete.DeleteAfter(conf.AutoDeleteByeMessagesTimer);
                 }
             }
-            else
+            catch (Exception ex)
             {
-                var msg = rep.Replace(conf.ChannelByeMessageText);
-                if (string.IsNullOrWhiteSpace(msg))
-                    return;
-                try
-                {
-                    var toDelete = await channel.SendMessageAsync(msg.SanitizeMentions()).ConfigureAwait(false);
-                    if (conf.AutoDeleteByeMessagesTimer > 0)
-                    {
-                        toDelete.DeleteAfter(conf.AutoDeleteByeMessagesTimer);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Log.Warning(ex, "Error sending bye message");
-                }
+                Log.Warning(ex, "Error embeding bye message");
             }
         }
         
@@ -190,40 +170,19 @@ namespace NadekoBot.Services
                 .WithManyUsers(users)
                 .Build();
 
-            if (CREmbed.TryParse(conf.ChannelGreetMessageText, out var embedData))
+            var text = SmartText.CreateFrom(conf.ChannelGreetMessageText);
+            text = rep.Replace(text);
+            try
             {
-                rep.Replace(embedData);
-                try
+                var toDelete = await channel.SendAsync(text).ConfigureAwait(false);
+                if (conf.AutoDeleteGreetMessagesTimer > 0)
                 {
-                    var toDelete = await channel.EmbedAsync(embedData, _eb).ConfigureAwait(false);
-                    if (conf.AutoDeleteGreetMessagesTimer > 0)
-                    {
-                        toDelete.DeleteAfter(conf.AutoDeleteGreetMessagesTimer);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Log.Warning(ex, "Error embeding greet message");
+                    toDelete.DeleteAfter(conf.AutoDeleteGreetMessagesTimer);
                 }
             }
-            else
+            catch (Exception ex)
             {
-                var msg = rep.Replace(conf.ChannelGreetMessageText);
-                if (!string.IsNullOrWhiteSpace(msg))
-                {
-                    try
-                    {
-                        var toDelete = await channel.SendMessageAsync(msg.SanitizeMentions()).ConfigureAwait(false);
-                        if (conf.AutoDeleteGreetMessagesTimer > 0)
-                        {
-                            toDelete.DeleteAfter(conf.AutoDeleteGreetMessagesTimer);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Warning(ex, "Error sending greet message");
-                    }
-                }
+                Log.Warning(ex, "Error embeding greet message");
             }
         }
 
@@ -232,33 +191,16 @@ namespace NadekoBot.Services
             var rep = new ReplacementBuilder()
                 .WithDefault(user, channel, (SocketGuild)user.Guild, _client)
                 .Build();
-            
-            if (CREmbed.TryParse(conf.DmGreetMessageText, out var embedData))
+
+            var text = SmartText.CreateFrom(conf.DmGreetMessageText);
+            rep.Replace(text);
+            try
             {
-                rep.Replace(embedData);
-                try
-                {
-                    await channel.EmbedAsync(embedData, _eb).ConfigureAwait(false);
-                }
-                catch
-                {
-                    return false;
-                }
+                await channel.SendAsync(text).ConfigureAwait(false);
             }
-            else
+            catch
             {
-                var msg = rep.Replace(conf.DmGreetMessageText);
-                if (!string.IsNullOrWhiteSpace(msg))
-                {
-                    try
-                    {
-                        await channel.SendConfirmAsync(_eb, msg).ConfigureAwait(false);
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                }
+                return false;
             }
 
             return true;

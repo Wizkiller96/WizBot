@@ -259,18 +259,12 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
 
             try
             {
-                IMessage newMsg;
-                if (CREmbed.TryParse(repeater.Message, out var crEmbed))
-                {
-                    rep.Replace(crEmbed);
-                    newMsg = await channel.EmbedAsync(crEmbed, _eb);
-                }
-                else
-                {
-                    newMsg = await channel.SendMessageAsync(rep.Replace(repeater.Message));
-                }
-
+                var text = SmartText.CreateFrom(repeater.Message);
+                text = rep.Replace(text);
+                
+                var newMsg = await channel.SendAsync(text);
                 _ = newMsg.AddReactionAsync(new Emoji("🔄"));
+                
                 if (_noRedundant.Contains(repeater.Id))
                 {
                     await SetRepeaterLastMessageInternal(repeater.Id, newMsg.Id);
