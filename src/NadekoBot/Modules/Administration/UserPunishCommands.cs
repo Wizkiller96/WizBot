@@ -323,6 +323,14 @@ namespace NadekoBot.Modules.Administration
             public async Task WarnPunish(int number, AddRole _, IRole role, StoopidTime time = null)
             {
                 var punish = PunishmentAction.AddRole;
+
+                if (ctx.Guild.OwnerId != ctx.User.Id &&
+                    role.Position >= ((IGuildUser)ctx.User).GetRoles().Max(x => x.Position))
+                {
+                    await ReplyErrorLocalizedAsync("role_too_high");
+                    return;
+                }
+                
                 var success = _service.WarnPunish(ctx.Guild.Id, number, punish, time, role);
 
                 if (!success)

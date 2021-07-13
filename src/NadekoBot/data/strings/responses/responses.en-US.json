@@ -80,6 +80,7 @@
   "greet_off": "Greet announcements disabled.",
   "greet_on": "Greet announcements enabled on this channel.",
   "hierarchy": "You can't use this command on users with a role higher or equal than yours (or mine) in the role hierarchy.",
+  "role_too_high": "You can't use this command with roles which are above your highest role, unless you're server administrator.",
   "images_loading": "Images will be reloaded within a few seconds.",
   "insuf_perms_i": "I have insufficient permissions.",
   "insuf_perms_u": "You have insufficient permissions.",
