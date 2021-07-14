@@ -1401,7 +1401,7 @@ waifutransfer:
   args:
     - "@ExWaifu @NewOwner"
 waifugift:
-  desc: "Gift an item to someone. This will increase their waifu value by 50% of the gifted item's value if you are not their waifu, or 95% if you are. Provide no parameters to see a list of items that you can gift."
+  desc: "Gift an item to someone. This will increase their waifu value by 50% of the gifted item's value if they are not your waifu, or 95% if they are. Provide no parameters to see a list of items that you can gift."
   args:
     - ""
     - "Rose @Himesama"
