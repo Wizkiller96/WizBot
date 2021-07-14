@@ -375,7 +375,7 @@ namespace NadekoBot.Modules.NSFW
         public Task NsfwClearCache()
         {
             _service.ClearCache();
-            return Context.OkAsync();
+            return ctx.OkAsync();
         }
         
         [NadekoCommand, Aliases]

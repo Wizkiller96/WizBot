@@ -48,7 +48,7 @@ namespace NadekoBot.Modules.Utility
 
             message = rep.Replace(message);
             
-            await channel.SendAsync(message, !((IGuildUser)Context.User).GuildPermissions.MentionEveryone);
+            await channel.SendAsync(message, !((IGuildUser)ctx.User).GuildPermissions.MentionEveryone);
         }
 
         [NadekoCommand, Aliases]
@@ -98,7 +98,7 @@ namespace NadekoBot.Modules.Utility
             if (--page < 0)
                 return;
             
-            await Context.Channel.TriggerTypingAsync().ConfigureAwait(false);
+            await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
             await _tracker.EnsureUsersDownloadedAsync(ctx.Guild).ConfigureAwait(false);
 
             var users = await ctx.Guild.GetUsersAsync();

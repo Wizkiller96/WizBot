@@ -516,7 +516,7 @@ namespace NadekoBot.Modules.Gambling
 
             List<DiscordUser> cleanRichest = new List<DiscordUser>();
             // it's pointless to have clean on dm context
-            if (Context.Guild is null)
+            if (ctx.Guild is null)
             {
                 opts.Clean = false;
             }
@@ -530,10 +530,10 @@ namespace NadekoBot.Modules.Gambling
                     cleanRichest = uow.DiscordUser.GetTopRichest(_client.CurrentUser.Id, 10_000);
                 }
                 
-                await Context.Channel.TriggerTypingAsync().ConfigureAwait(false);
+                await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
                 await _tracker.EnsureUsersDownloadedAsync(ctx.Guild).ConfigureAwait(false);
 
-                var sg = (SocketGuild)Context.Guild;
+                var sg = (SocketGuild)ctx.Guild;
                 cleanRichest = cleanRichest.Where(x => sg.GetUser(x.UserId) != null)
                     .ToList();
             }
@@ -545,7 +545,7 @@ namespace NadekoBot.Modules.Gambling
                 }
             }
 
-            await Context.SendPaginatedConfirmAsync(page, curPage =>
+            await ctx.SendPaginatedConfirmAsync(page, curPage =>
             {
                 var embed = _eb.Create()
                    .WithOkColor()

@@ -43,8 +43,8 @@ namespace NadekoBot.Modules.Administration
                     return;
                 }
                 
-                if (Context.User.Id != Context.Guild.OwnerId &&
-                    role.Position >= ((SocketGuildUser) Context.User).Roles.Max(x => x.Position))
+                if (ctx.User.Id != ctx.Guild.OwnerId &&
+                    role.Position >= ((SocketGuildUser) ctx.User).Roles.Max(x => x.Position))
                 {
                     await ReplyErrorLocalizedAsync("insuf_perms_u").ConfigureAwait(false);
                     return;

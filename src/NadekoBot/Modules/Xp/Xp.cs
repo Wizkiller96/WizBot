@@ -205,7 +205,7 @@ namespace NadekoBot.Modules.Xp
                 .AddField(GetText("xpn_setting_global"), GetNotifLocationString(globalSetting))
                 .AddField(GetText("xpn_setting_server"), GetNotifLocationString(serverSetting));
 
-            await Context.Channel.EmbedAsync(embed);
+            await ctx.Channel.EmbedAsync(embed);
         }
 
         [NadekoCommand, Aliases]
@@ -315,13 +315,13 @@ namespace NadekoBot.Modules.Xp
 
             var (opts, _) = OptionsParser.ParseFrom(new LbOpts(), args);
 
-            await Context.Channel.TriggerTypingAsync();
+            await ctx.Channel.TriggerTypingAsync();
 
             var socketGuild = ((SocketGuild)ctx.Guild);
             List<UserXpStats> allUsers = new List<UserXpStats>();
             if (opts.Clean)
             {
-                await Context.Channel.TriggerTypingAsync().ConfigureAwait(false);
+                await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
                 await _tracker.EnsureUsersDownloadedAsync(ctx.Guild).ConfigureAwait(false);
                 
                 allUsers = _service.GetTopUserXps(ctx.Guild.Id, 1000)

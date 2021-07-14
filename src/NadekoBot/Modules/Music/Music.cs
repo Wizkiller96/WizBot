@@ -53,7 +53,7 @@ namespace NadekoBot.Modules.Music
             await voiceChannelLock.WaitAsync();
             try
             {
-                if (botUser.VoiceChannel?.Id is null || !_service.TryGetMusicPlayer(Context.Guild.Id, out _))
+                if (botUser.VoiceChannel?.Id is null || !_service.TryGetMusicPlayer(ctx.Guild.Id, out _))
                     await _service.JoinVoiceChannelAsync(ctx.Guild.Id, voiceChannelId);
             }
             finally
@@ -64,7 +64,7 @@ namespace NadekoBot.Modules.Music
         
         private async Task<bool> QueuePreconditionInternalAsync()
         {
-            var user = (IGuildUser) Context.User;
+            var user = (IGuildUser) ctx.User;
             var voiceChannelId = user.VoiceChannel?.Id;
             
             if (voiceChannelId is null)
@@ -93,7 +93,7 @@ namespace NadekoBot.Modules.Music
             if (!succ)
                 return;
             
-            var mp = await _service.GetOrCreateMusicPlayerAsync((ITextChannel) Context.Channel);
+            var mp = await _service.GetOrCreateMusicPlayerAsync((ITextChannel) ctx.Channel);
             if (mp is null)
             {
                 await ReplyErrorLocalizedAsync("no_player");
@@ -101,7 +101,7 @@ namespace NadekoBot.Modules.Music
             }
             
             var (trackInfo, index) = await mp.TryEnqueueTrackAsync(query, 
-                Context.User.ToString(),
+                ctx.User.ToString(),
                 asNext,
                 forcePlatform);
             if (trackInfo is null)
@@ -121,7 +121,7 @@ namespace NadekoBot.Modules.Music
                 if (!string.IsNullOrWhiteSpace(trackInfo.Thumbnail))
                     embed.WithThumbnailUrl(trackInfo.Thumbnail);
 
-                var queuedMessage = await _service.SendToOutputAsync(Context.Guild.Id, embed).ConfigureAwait(false);
+                var queuedMessage = await _service.SendToOutputAsync(ctx.Guild.Id, embed).ConfigureAwait(false);
                 queuedMessage?.DeleteAfter(10, _logService);
                 if (mp.IsStopped)
                 {
@@ -144,7 +144,7 @@ namespace NadekoBot.Modules.Music
             if (!succ)
                 return;
             
-            var mp = await _service.GetOrCreateMusicPlayerAsync((ITextChannel) Context.Channel);
+            var mp = await _service.GetOrCreateMusicPlayerAsync((ITextChannel) ctx.Channel);
             if (mp is null)
             {
                 await ReplyErrorLocalizedAsync("no_player");
@@ -159,7 +159,7 @@ namespace NadekoBot.Modules.Music
         [RequireContext(ContextType.Guild)]
         public async Task Join()
         {
-            var user = (IGuildUser) Context.User;
+            var user = (IGuildUser) ctx.User;
 
             var voiceChannelId = user.VoiceChannel?.Id;
 
@@ -181,7 +181,7 @@ namespace NadekoBot.Modules.Music
             if (!valid)
                 return;
 
-            await _service.LeaveVoiceChannelAsync(Context.Guild.Id);
+            await _service.LeaveVoiceChannelAsync(ctx.Guild.Id);
         }
         
         // play - no args = next
@@ -241,7 +241,7 @@ namespace NadekoBot.Modules.Music
             if (!valid)
                 return;
 
-            var success = await _service.PlayAsync(Context.Guild.Id, ((IGuildUser)Context.User).VoiceChannel.Id);
+            var success = await _service.PlayAsync(ctx.Guild.Id, ((IGuildUser)ctx.User).VoiceChannel.Id);
             if (!success)
             {
                 await ReplyErrorLocalizedAsync("no_player");
@@ -436,7 +436,7 @@ namespace NadekoBot.Modules.Music
                 .WithFooter(song.PrettyInfo())
                 .WithErrorColor();
 
-            await _service.SendToOutputAsync(Context.Guild.Id, embed);
+            await _service.SendToOutputAsync(ctx.Guild.Id, embed);
         }
 
          public enum All { All = -1 }
@@ -553,7 +553,7 @@ namespace NadekoBot.Modules.Music
              if (string.IsNullOrWhiteSpace(dirPath))
                  return;
 
-             var user = (IGuildUser) Context.User;
+             var user = (IGuildUser) ctx.User;
              var voiceChannelId = user.VoiceChannel?.Id;
         
              if (voiceChannelId is null)
@@ -573,7 +573,7 @@ namespace NadekoBot.Modules.Music
                  return;
              }
             
-             var mp = await _service.GetOrCreateMusicPlayerAsync((ITextChannel) Context.Channel);
+             var mp = await _service.GetOrCreateMusicPlayerAsync((ITextChannel) ctx.Channel);
              if (mp is null)
              {
                  await ReplyErrorLocalizedAsync("no_player");
@@ -599,7 +599,7 @@ namespace NadekoBot.Modules.Music
              if (!valid)
                  return;
              
-             var mp = await _service.GetOrCreateMusicPlayerAsync((ITextChannel) Context.Channel);
+             var mp = await _service.GetOrCreateMusicPlayerAsync((ITextChannel) ctx.Channel);
              if (mp is null)
              {
                  await ReplyErrorLocalizedAsync("no_player");
@@ -642,7 +642,7 @@ namespace NadekoBot.Modules.Music
              if (!succ)
                  return;
 
-             var mp = await _service.GetOrCreateMusicPlayerAsync((ITextChannel) Context.Channel);
+             var mp = await _service.GetOrCreateMusicPlayerAsync((ITextChannel) ctx.Channel);
              if (mp is null)
              {
                  await ReplyErrorLocalizedAsync("no_player");
@@ -667,14 +667,14 @@ namespace NadekoBot.Modules.Music
              if (!succ)
                  return;
 
-             var mp = await _service.GetOrCreateMusicPlayerAsync((ITextChannel) Context.Channel);
+             var mp = await _service.GetOrCreateMusicPlayerAsync((ITextChannel) ctx.Channel);
              if (mp is null)
              {
                  await ReplyErrorLocalizedAsync("no_player");
                  return;
              }
 
-             _ = Context.Channel.TriggerTypingAsync();
+             _ = ctx.Channel.TriggerTypingAsync();
 
 
              var queuedCount = await _service.EnqueueYoutubePlaylistAsync(mp, playlistQuery, ctx.User.ToString());
@@ -690,7 +690,7 @@ namespace NadekoBot.Modules.Music
          [RequireContext(ContextType.Guild)]
          public async Task NowPlaying()
          {
-             var mp = await _service.GetOrCreateMusicPlayerAsync((ITextChannel) Context.Channel);
+             var mp = await _service.GetOrCreateMusicPlayerAsync((ITextChannel) ctx.Channel);
              if (mp is null)
              {
                  await ReplyErrorLocalizedAsync("no_player");
@@ -718,7 +718,7 @@ namespace NadekoBot.Modules.Music
              if (!valid)
                  return;
              
-             var mp = await _service.GetOrCreateMusicPlayerAsync((ITextChannel) Context.Channel);
+             var mp = await _service.GetOrCreateMusicPlayerAsync((ITextChannel) ctx.Channel);
              if (mp is null)
              {
                  await ReplyErrorLocalizedAsync("no_player");

@@ -188,7 +188,7 @@ namespace NadekoBot.Modules.CustomReactions
                 return;
             }
 
-            var cr = _service.GetCustomReaction(Context.Guild?.Id, id);
+            var cr = _service.GetCustomReaction(ctx.Guild?.Id, id);
             if (cr is null)
             {
                 await ReplyErrorLocalizedAsync("no_found").ConfigureAwait(false);
@@ -211,7 +211,7 @@ namespace NadekoBot.Modules.CustomReactions
                 // i should try adding these emojis right away to the message, to make sure the bot can react with these emojis. If it fails, skip that emoji
                 try
                 {
-                    await Context.Message.AddReactionAsync(emote).ConfigureAwait(false);
+                    await ctx.Message.AddReactionAsync(emote).ConfigureAwait(false);
                     await Task.Delay(100).ConfigureAwait(false);
                     succ.Add(emojiStr);
 

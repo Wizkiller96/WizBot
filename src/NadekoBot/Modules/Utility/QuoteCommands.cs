@@ -96,7 +96,7 @@ namespace NadekoBot.Modules.Utility
                 using (var uow = _db.GetDbContext())
                 {
                     quote = uow.Quotes.GetById(id);
-                    if (quote.GuildId != Context.Guild.Id)
+                    if (quote.GuildId != ctx.Guild.Id)
                         quote = null;
                 }
 

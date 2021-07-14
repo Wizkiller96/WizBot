@@ -168,10 +168,10 @@ namespace NadekoBot.Modules.Administration
             [Ratelimit(5)]
             public async Task ByeTest([Leftover] IGuildUser user = null)
             {
-                user = user ?? (IGuildUser) Context.User;
+                user = user ?? (IGuildUser) ctx.User;
                 
-                await _service.ByeTest((ITextChannel)Context.Channel, user);
-                var enabled = _service.GetByeEnabled(Context.Guild.Id);
+                await _service.ByeTest((ITextChannel)ctx.Channel, user);
+                var enabled = _service.GetByeEnabled(ctx.Guild.Id);
                 if (!enabled)
                 {
                     await ReplyConfirmLocalizedAsync("byemsg_enable", $"`{Prefix}bye`").ConfigureAwait(false);
@@ -184,10 +184,10 @@ namespace NadekoBot.Modules.Administration
             [Ratelimit(5)]
             public async Task GreetTest([Leftover] IGuildUser user = null)
             {
-                user = user ?? (IGuildUser) Context.User;
+                user = user ?? (IGuildUser) ctx.User;
                 
-                await _service.GreetTest((ITextChannel)Context.Channel, user);
-                var enabled = _service.GetGreetEnabled(Context.Guild.Id);
+                await _service.GreetTest((ITextChannel)ctx.Channel, user);
+                var enabled = _service.GetGreetEnabled(ctx.Guild.Id);
                 if (!enabled)
                 {
                     await ReplyConfirmLocalizedAsync("greetmsg_enable", $"`{Prefix}greet`").ConfigureAwait(false);
@@ -200,15 +200,15 @@ namespace NadekoBot.Modules.Administration
             [Ratelimit(5)]
             public async Task GreetDmTest([Leftover] IGuildUser user = null)
             {
-                user = user ?? (IGuildUser) Context.User;
+                user = user ?? (IGuildUser) ctx.User;
                 
                 var channel = await user.GetOrCreateDMChannelAsync();
                 var success = await _service.GreetDmTest(channel, user);
                 if (success)
-                    await Context.OkAsync();
+                    await ctx.OkAsync();
                 else
-                    await Context.WarningAsync();
-                var enabled = _service.GetGreetDmEnabled(Context.Guild.Id);
+                    await ctx.WarningAsync();
+                var enabled = _service.GetGreetDmEnabled(ctx.Guild.Id);
                 if (!enabled)
                     await ReplyConfirmLocalizedAsync("greetdmmsg_enable", $"`{Prefix}greetdm`").ConfigureAwait(false);
             }

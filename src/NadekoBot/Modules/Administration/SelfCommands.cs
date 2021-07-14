@@ -385,7 +385,7 @@ namespace NadekoBot.Modules.Administration
             [Priority(1)]
             public async Task SetNick(IGuildUser gu, [Leftover] string newNick = null)
             {
-                var sg = (SocketGuild) Context.Guild;
+                var sg = (SocketGuild) ctx.Guild;
                 if (sg.OwnerId == gu.Id ||
                     gu.GetRoles().Max(r => r.Position) >= sg.CurrentUser.GetRoles().Max(r => r.Position))
                 {

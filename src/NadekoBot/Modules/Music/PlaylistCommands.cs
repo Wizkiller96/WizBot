@@ -38,7 +38,7 @@ namespace NadekoBot.Modules.Music
                 await voiceChannelLock.WaitAsync();
                 try
                 {
-                    if (botUser.VoiceChannel?.Id is null || !_service.TryGetMusicPlayer(Context.Guild.Id, out _))
+                    if (botUser.VoiceChannel?.Id is null || !_service.TryGetMusicPlayer(ctx.Guild.Id, out _))
                         await _service.JoinVoiceChannelAsync(ctx.Guild.Id, voiceChannelId);
                 }
                 finally
@@ -182,7 +182,7 @@ namespace NadekoBot.Modules.Music
                 await _playlistLock.WaitAsync();
                 try
                 {                    
-                    var user = (IGuildUser) Context.User;
+                    var user = (IGuildUser) ctx.User;
                     var voiceChannelId = user.VoiceChannel?.Id;
         
                     if (voiceChannelId is null)
@@ -202,7 +202,7 @@ namespace NadekoBot.Modules.Music
                         return;
                     }
             
-                    var mp = await _service.GetOrCreateMusicPlayerAsync((ITextChannel) Context.Channel);
+                    var mp = await _service.GetOrCreateMusicPlayerAsync((ITextChannel) ctx.Channel);
                     if (mp is null)
                     {
                         await ReplyErrorLocalizedAsync("no_player");

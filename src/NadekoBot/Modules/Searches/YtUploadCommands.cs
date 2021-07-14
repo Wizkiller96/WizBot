@@ -13,7 +13,7 @@ namespace NadekoBot.Modules.Searches
         //     [RequireContext(ContextType.Guild)]
         //     public async Task YtFollow(string ytChannelId, [Leftover] string uploadMessage = null)
         //     {
-        //         var succ = await _service.ToggleChannelFollowAsync(Context.Guild.Id, Context.Channel.Id, ytChannelId, uploadMessage);
+        //         var succ = await _service.ToggleChannelFollowAsync(ctx.Guild.Id, ctx.Channel.Id, ytChannelId, uploadMessage);
         //         if(succ)
         //         {
         //             await ReplyConfirmLocalizedAsync("yt_follow_added").ConfigureAwait(false);
@@ -28,7 +28,7 @@ namespace NadekoBot.Modules.Searches
         //     [RequireContext(ContextType.Guild)]
         //     public async Task YtTrackRm(int index)
         //     {
-        //         //var succ = await _service.ToggleChannelTrackingAsync(Context.Guild.Id, Context.Channel.Id, ytChannelId, uploadMessage);
+        //         //var succ = await _service.ToggleChannelTrackingAsync(ctx.Guild.Id, ctx.Channel.Id, ytChannelId, uploadMessage);
         //         //if (succ)
         //         //{
         //         //    await ReplyConfirmLocalizedAsync("yt_track_added").ConfigureAwait(false);
@@ -43,7 +43,7 @@ namespace NadekoBot.Modules.Searches
         //     [RequireContext(ContextType.Guild)]
         //     public async Task YtTrackList()
         //     {
-        //         //var succ = await _service.ToggleChannelTrackingAsync(Context.Guild.Id, Context.Channel.Id, ytChannelId, uploadMessage);
+        //         //var succ = await _service.ToggleChannelTrackingAsync(ctx.Guild.Id, ctx.Channel.Id, ytChannelId, uploadMessage);
         //         //if (succ)
         //         //{
         //         //    await ReplyConfirmLocalizedAsync("yt_track_added").ConfigureAwait(false);

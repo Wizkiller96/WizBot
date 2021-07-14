@@ -177,7 +177,7 @@ namespace NadekoBot.Modules.Utility
                     );
                 }
             
-                await Context.Channel.EmbedAsync(embed).ConfigureAwait(false);
+                await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
             
             private string GetRepeaterInfoString(RunningRepeater runner)

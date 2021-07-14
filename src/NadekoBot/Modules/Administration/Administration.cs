@@ -32,12 +32,12 @@ namespace NadekoBot.Modules.Administration
                 return;
             
 
-            await ((ITextChannel) Context.Channel).ModifyAsync(tcp =>
+            await ((ITextChannel) ctx.Channel).ModifyAsync(tcp =>
             {
                 tcp.SlowModeInterval = seconds;
             });
 
-            await Context.OkAsync();
+            await ctx.OkAsync();
         }
 
         [NadekoCommand, Aliases]

@@ -33,14 +33,14 @@ namespace NadekoBot.Modules.Administration
             private async Task<bool> CheckRoleHierarchy(IGuildUser target)
             {
                 var curUser = ((SocketGuild) ctx.Guild).CurrentUser;
-                var ownerId = Context.Guild.OwnerId;
+                var ownerId = ctx.Guild.OwnerId;
                 var modMaxRole = ((IGuildUser) ctx.User).GetRoles().Max(r => r.Position);
                 var targetMaxRole = target.GetRoles().Max(r => r.Position);
                 var botMaxRole = curUser.GetRoles().Max(r => r.Position);
                 // bot can't punish a user who is higher in the hierarchy. Discord will return 403
                 // moderator can be owner, in which case role hierarchy doesn't matter
                 // otherwise, moderator has to have a higher role
-                if ((botMaxRole <= targetMaxRole || (Context.User.Id != ownerId && targetMaxRole >= modMaxRole)) || target.Id == ownerId)
+                if ((botMaxRole <= targetMaxRole || (ctx.User.Id != ownerId && targetMaxRole >= modMaxRole)) || target.Id == ownerId)
                 {
                     await ReplyErrorLocalizedAsync("hierarchy");
                     return false;
@@ -150,7 +150,7 @@ namespace NadekoBot.Modules.Administration
 
                 var opts = OptionsParser.ParseFrom<WarnExpireOptions>(args);
 
-                await Context.Channel.TriggerTypingAsync().ConfigureAwait(false);
+                await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
 
                 await _service.WarnExpireAsync(ctx.Guild.Id, days, opts.Delete).ConfigureAwait(false);
                 if(days == 0)
@@ -425,7 +425,7 @@ namespace NadekoBot.Modules.Administration
                 if (time.Time > TimeSpan.FromDays(49))
                     return;
 
-                var guildUser = await ((DiscordSocketClient)Context.Client).Rest.GetGuildUserAsync(Context.Guild.Id, user.Id);
+                var guildUser = await ((DiscordSocketClient)Context.Client).Rest.GetGuildUserAsync(ctx.Guild.Id, user.Id);
 
                 if (guildUser != null && !await CheckRoleHierarchy(guildUser))
                     return;
@@ -450,7 +450,7 @@ namespace NadekoBot.Modules.Administration
                     }
                 }
 
-                await _mute.TimedBan(Context.Guild, user, time.Time, ctx.User.ToString() + " | " + msg).ConfigureAwait(false);
+                await _mute.TimedBan(ctx.Guild, user, time.Time, ctx.User.ToString() + " | " + msg).ConfigureAwait(false);
                 var toSend = _eb.Create().WithOkColor()
                     .WithTitle("⛔️ " + GetText("banned_user"))
                     .AddField(GetText("username"), user.ToString(), true)
@@ -473,7 +473,7 @@ namespace NadekoBot.Modules.Administration
             [Priority(0)]
             public async Task Ban(ulong userId, [Leftover] string msg = null)
             {
-                var user = await ((DiscordSocketClient)Context.Client).Rest.GetGuildUserAsync(Context.Guild.Id, userId);
+                var user = await ((DiscordSocketClient)Context.Client).Rest.GetGuildUserAsync(ctx.Guild.Id, userId);
                 if (user is null)
                 {
                     await ctx.Guild.AddBanAsync(userId, 7, ctx.User.ToString() + " | " + msg);
@@ -540,7 +540,7 @@ namespace NadekoBot.Modules.Administration
             {
                 if (message is null)
                 {
-                    var template = _service.GetBanTemplate(Context.Guild.Id);
+                    var template = _service.GetBanTemplate(ctx.Guild.Id);
                     if (template is null)
                     {
                         await ReplyConfirmLocalizedAsync("banmsg_default");
@@ -551,7 +551,7 @@ namespace NadekoBot.Modules.Administration
                     return;
                 }
                 
-                _service.SetBanTemplate(Context.Guild.Id, message);
+                _service.SetBanTemplate(ctx.Guild.Id, message);
                 await ctx.OkAsync();
             }
 
@@ -561,7 +561,7 @@ namespace NadekoBot.Modules.Administration
             [BotPerm(GuildPerm.BanMembers)]
             public async Task BanMsgReset()
             {
-                _service.SetBanTemplate(Context.Guild.Id, null);
+                _service.SetBanTemplate(ctx.Guild.Id, null);
                 await ctx.OkAsync();
             }
 
@@ -586,7 +586,7 @@ namespace NadekoBot.Modules.Administration
                 var dmChannel = await ctx.User.GetOrCreateDMChannelAsync();
                 var defaultMessage = GetText("bandm", Format.Bold(ctx.Guild.Name), reason);
                 var embed = _service.GetBanUserDmEmbed(Context,
-                    (IGuildUser)Context.User,
+                    (IGuildUser)ctx.User,
                     defaultMessage,
                     reason,
                     duration);
@@ -607,7 +607,7 @@ namespace NadekoBot.Modules.Administration
                         return;
                     }
 
-                    await Context.OkAsync();
+                    await ctx.OkAsync();
                 }
             }
 
@@ -669,7 +669,7 @@ namespace NadekoBot.Modules.Administration
             [BotPerm(GuildPerm.BanMembers)]
             public async Task Softban(ulong userId, [Leftover] string msg = null)
             {
-                var user = await ((DiscordSocketClient)Context.Client).Rest.GetGuildUserAsync(Context.Guild.Id, userId);
+                var user = await ((DiscordSocketClient)Context.Client).Rest.GetGuildUserAsync(ctx.Guild.Id, userId);
                 if (user is null)
                     return;
 
@@ -725,7 +725,7 @@ namespace NadekoBot.Modules.Administration
             [Priority(0)]
             public async Task Kick(ulong userId, [Leftover] string msg = null)
             {
-                var user = await ((DiscordSocketClient)Context.Client).Rest.GetGuildUserAsync(Context.Guild.Id, userId);
+                var user = await ((DiscordSocketClient)Context.Client).Rest.GetGuildUserAsync(ctx.Guild.Id, userId);
                 if (user is null)
                     return;
                 

@@ -110,7 +110,7 @@ namespace NadekoBot.Modules.Games
                     .WithDescription(removed.Text.TrimTo(50))
                     .WithOkColor();
 
-                await Context.Channel.EmbedAsync(embed);
+                await ctx.Channel.EmbedAsync(embed);
             }
         }
     }

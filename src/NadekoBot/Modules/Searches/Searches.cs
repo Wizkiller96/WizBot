@@ -80,9 +80,9 @@ namespace NadekoBot.Modules.Searches
             {
                 Func<double, double> f = StandardConversions.CelsiusToFahrenheit;
                 
-                var tz = Context.Guild is null
+                var tz = ctx.Guild is null
                     ? TimeZoneInfo.Utc
-                    : _tzSvc.GetTimeZoneOrUtc(Context.Guild.Id);
+                    : _tzSvc.GetTimeZoneOrUtc(ctx.Guild.Id);
                 var sunrise = data.Sys.Sunrise.ToUnixTimestamp();
                 var sunset = data.Sys.Sunset.ToUnixTimestamp();
                 sunrise = sunrise.ToOffset(tz.GetUtcOffset(sunrise));
@@ -738,7 +738,7 @@ namespace NadekoBot.Modules.Searches
             if (string.IsNullOrWhiteSpace(query))
                 return;
 
-            await Context.Channel.TriggerTypingAsync().ConfigureAwait(false);
+            await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
 
             var appId = await _service.GetSteamAppIdByName(query).ConfigureAwait(false);
             if (appId == -1)
