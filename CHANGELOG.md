@@ -6,6 +6,21 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 WIP
 
+## [2.46.2] - 14.07.2021
+
+### Fixed 
+
+- Fixed .save for local songs
+- Fixed .lq for local songs if the song names are too long
+- Fixed hierarchy check for .warnpunish with role argument
+
+## [2.46.1] - 21.06.2021
+
+### Fixed
+
+- Fixed some response strings (thx Ala)
+- Fixed repeaters having 5 global limit, instead of 5 server limit (thx cata)
+
 ## [2.46.0] - 17.06.2021
 
 ### Added
