@@ -32,6 +32,7 @@ namespace NadekoBot.Extensions
             return Regex.Replace(input, "<.*?>", String.Empty);
         }
 
+        // todo future maybe use humanizer lib for this kind of work
         public static string TrimTo(this string str, int maxLength, bool hideDots = false)
         {
             if (maxLength < 0)

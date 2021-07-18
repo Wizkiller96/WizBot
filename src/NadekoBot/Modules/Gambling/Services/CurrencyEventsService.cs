@@ -46,10 +46,12 @@ namespace NadekoBot.Modules.Gambling.Services
             }
         }
 
+        // todo future use votes api directly?
         private async Task BotlistUpvoteLoop()
         {
             if (string.IsNullOrWhiteSpace(_creds.VotesUrl))
                 return;
+            
             while (true)
             {
                 await Task.Delay(TimeSpan.FromHours(1)).ConfigureAwait(false);

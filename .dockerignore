@@ -1,0 +1,13 @@
+# Ignore all files
+*
+
+# Use NadekoBot project
+!src/NadekoBot/**
+# Use NadekoBot.Coordinator project
+!src/NadekoBot.Coordinator/**
+# Use Ayu stuff
+!src/ayu/**
+
+# ignore bin and obj folders in projects
+src/**/bin/*
+src/**/obj/*
