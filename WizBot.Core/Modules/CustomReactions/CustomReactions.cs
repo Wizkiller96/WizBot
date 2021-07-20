@@ -312,6 +312,7 @@ namespace WizBot.Modules.CustomReactions
             var serialized = _service.ExportCrs(ctx.Guild?.Id);
             using var stream = await serialized.ToStream();
             await ctx.Channel.SendFileAsync(stream, "crs-export.yml", text: null);
+            await Task.Delay(5000);
         }
 
         [WizBotCommand, Usage, Description, Aliases]
