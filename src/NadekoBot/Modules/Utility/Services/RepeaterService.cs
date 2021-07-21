@@ -135,8 +135,9 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
             
             var toTrigger = await uow.Repeaters
                 .AsNoTracking()
+                .Where(x => x.GuildId == guildId)
                 .Skip(index)
-                .FirstOrDefaultAsyncEF(x => x.GuildId == guildId);
+                .FirstOrDefaultAsyncEF();
 
             if (toTrigger is null)
                 return false;
@@ -361,8 +362,9 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
             using var uow = _db.GetDbContext();
             var toRemove = await uow.Repeaters
                 .AsNoTracking()
+                .Where(x => x.GuildId == guildId)
                 .Skip(index)
-                .FirstOrDefaultAsyncEF(x => x.GuildId == guildId);
+                .FirstOrDefaultAsyncEF();
 
             if (toRemove is null)
                 return null;
@@ -393,8 +395,9 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
             var toToggle = await uow
                 .Repeaters
                 .AsQueryable()
+                .Where(x => x.GuildId == guildId)
                 .Skip(index)
-                .FirstOrDefaultAsyncEF(x => x.GuildId == guildId);
+                .FirstOrDefaultAsyncEF();
 
             if (toToggle is null)
                 return null;
