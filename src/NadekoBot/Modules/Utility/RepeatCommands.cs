@@ -190,13 +190,13 @@ namespace NadekoBot.Modules.Utility
                 string description = "";
                 if (_service.IsNoRedundant(runner.Repeater.Id))
                 {
-                    description = Format.Underline(Format.Bold(GetText("no_redundant:"))) + "\n\n";
+                    description = Format.Underline(Format.Bold(GetText("no_redundant"))) + "\n\n";
                 }
                 
                 description += $"<#{runner.Repeater.ChannelId}>\n" +
-                                  $"`{GetText("interval:")}` {intervalString}\n" +
-                                  $"`{GetText("executes_in:")}` {executesInString}\n" +
-                                  $"`{GetText("message:")}` {message}";
+                                  $"`{GetText("Comment")}` {intervalString}\n" +
+                                  $"`{GetText("executes_in_colon")}` {executesInString}\n" +
+                                  $"`{GetText("message_colon")}` {message}";
             
                 return description;
             }

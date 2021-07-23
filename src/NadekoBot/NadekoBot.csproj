@@ -58,8 +58,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ayu\Ayu.Discord.Voice\Ayu.Discord.Voice.csproj" />
+    <ProjectReference Include="..\NadekoBot.Generators\NadekoBot.Generators.csproj" OutputItemType="Analyzer" />
   </ItemGroup>
   
+  <ItemGroup>
+    <AdditionalFiles Include="data\strings\responses\responses.en-US.json" />
+  </ItemGroup>
   <ItemGroup>
     <Protobuf Include="..\NadekoBot.Coordinator\Protos\coordinator.proto" GrpcServices="Client">
       <Link>Protos\coordinator.proto</Link>

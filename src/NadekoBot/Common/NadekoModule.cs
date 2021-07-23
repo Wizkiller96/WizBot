@@ -31,6 +31,9 @@ namespace NadekoBot.Modules
 
         protected string GetText(string key) =>
             Strings.GetText(key, _cultureInfo);
+        
+        protected string GetText(in LocStr key) =>
+            Strings.GetText(key.Key, _cultureInfo);
 
         protected string GetText(string key, params object[] args) =>
             Strings.GetText(key, _cultureInfo, args);

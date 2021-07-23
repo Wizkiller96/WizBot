@@ -51,7 +51,7 @@ namespace NadekoBot.Modules.Games
             await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
                 .WithDescription(ctx.User.ToString())
                 .AddField("❓ " + GetText("question"), question, false)
-                .AddField("🎱 " + GetText("8ball"), res, false));
+                .AddField("🎱 " + GetText("_8ball"), res, false));
         }
 
         [NadekoCommand, Aliases]

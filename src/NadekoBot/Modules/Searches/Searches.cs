@@ -532,7 +532,7 @@ namespace NadekoBot.Modules.Searches
                         var embed = _eb.Create()
                             .WithDescription(ctx.User.Mention)
                             .AddField(GetText("word"), data.Word, true)
-                            .AddField(GetText("class"), data.WordType, true)
+                            .AddField(GetText("_class"), data.WordType, true)
                             .AddField(GetText("definition"), data.Definition)
                             .WithOkColor();
 

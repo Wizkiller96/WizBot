@@ -249,7 +249,7 @@ namespace NadekoBot.Modules.Utility
                         .WithAuthor($"NadekoBot v{StatsService.BotVersion}",
                             "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/avatar.png",
                             "https://nadekobot.readthedocs.io/en/latest/")
-                        .AddField(GetText("author"), _stats.Author, true)
+                        .AddField(GetText(Strs.author), _stats.Author, true)
                         .AddField(GetText("botid"), _client.CurrentUser.Id.ToString(), true)
                         .AddField(GetText("shard"), $"#{_client.ShardId} / {_creds.TotalShards}", true)
                         .AddField(GetText("commands_ran"), _stats.CommandsRan.ToString(), true)
