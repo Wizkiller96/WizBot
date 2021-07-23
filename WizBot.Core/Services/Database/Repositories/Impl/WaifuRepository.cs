@@ -122,7 +122,8 @@ WHERE UserId = (SELECT Id from DiscordUser WHERE UserId={userId}) AND
 INSERT OR IGNORE INTO WaifuInfo (AffinityId, ClaimerId, Price, WaifuId)
 VALUES ({null}, {null}, {1}, (SELECT Id FROM DiscordUser WHERE UserId={userId}));");
 
-            var toReturn = _set.AsQueryable()
+            var toReturn = _set
+                .AsNoTracking()
                 .Where(w => w.WaifuId == _context.Set<DiscordUser>()
                     .AsQueryable()
                     .Where(u => u.UserId == userId)
