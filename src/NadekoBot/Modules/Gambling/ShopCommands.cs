@@ -60,7 +60,7 @@ namespace NadekoBot.Modules.Gambling
 
                     if (!theseEntries.Any())
                         return _eb.Create().WithErrorColor()
-                            .WithDescription(GetText("shop_none"));
+                            .WithDescription(GetText(strs.shop_none));
                     var embed = _eb.Create().WithOkColor()
                         .WithTitle(GetText("shop", CurrencySign));
 
@@ -174,9 +174,9 @@ namespace NadekoBot.Modules.Gambling
                             await (await ctx.User.GetOrCreateDMChannelAsync().ConfigureAwait(false))
                                 .EmbedAsync(_eb.Create().WithOkColor()
                                 .WithTitle(GetText("shop_purchase", ctx.Guild.Name))
-                                .AddField(GetText("item"), item.Text, false)
-                                .AddField(GetText("price"), entry.Price.ToString(), true)
-                                .AddField(GetText("name"), entry.Name, true))
+                                .AddField(GetText(strs.item), item.Text, false)
+                                .AddField(GetText(strs.price), entry.Price.ToString(), true)
+                                .AddField(GetText(strs.name), entry.Name, true))
                                 .ConfigureAwait(false);
 
                             await _cs.AddAsync(entry.AuthorId,
@@ -246,7 +246,7 @@ namespace NadekoBot.Modules.Gambling
                     uow.SaveChanges();
                 }
                 await ctx.Channel.EmbedAsync(EntryToEmbed(entry)
-                    .WithTitle(GetText("shop_item_add"))).ConfigureAwait(false);
+                    .WithTitle(GetText(strs.shop_item_add))).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -274,7 +274,7 @@ namespace NadekoBot.Modules.Gambling
                     uow.SaveChanges();
                 }
                 await ctx.Channel.EmbedAsync(EntryToEmbed(entry)
-                    .WithTitle(GetText("shop_item_add"))).ConfigureAwait(false);
+                    .WithTitle(GetText(strs.shop_item_add))).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -345,7 +345,7 @@ namespace NadekoBot.Modules.Gambling
                     await ReplyErrorLocalizedAsync("shop_item_not_found").ConfigureAwait(false);
                 else
                     await ctx.Channel.EmbedAsync(EntryToEmbed(removed)
-                        .WithTitle(GetText("shop_item_rm"))).ConfigureAwait(false);
+                        .WithTitle(GetText(strs.shop_item_rm))).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -433,17 +433,17 @@ namespace NadekoBot.Modules.Gambling
                 var embed = _eb.Create().WithOkColor();
 
                 if (entry.Type == ShopEntryType.Role)
-                    return embed.AddField(GetText("name"), GetText("shop_role", Format.Bold(ctx.Guild.GetRole(entry.RoleId)?.Name ?? "MISSING_ROLE")), true)
-                            .AddField(GetText("price"), entry.Price.ToString(), true)
-                            .AddField(GetText("type"), entry.Type.ToString(), true);
+                    return embed.AddField(GetText(strs.name), GetText("shop_role", Format.Bold(ctx.Guild.GetRole(entry.RoleId)?.Name ?? "MISSING_ROLE")), true)
+                            .AddField(GetText(strs.price), entry.Price.ToString(), true)
+                            .AddField(GetText(strs.type), entry.Type.ToString(), true);
                 else if (entry.Type == ShopEntryType.List)
-                    return embed.AddField(GetText("name"), entry.Name, true)
-                            .AddField(GetText("price"), entry.Price.ToString(), true)
-                            .AddField(GetText("type"), GetText("random_unique_item"), true);
+                    return embed.AddField(GetText(strs.name), entry.Name, true)
+                            .AddField(GetText(strs.price), entry.Price.ToString(), true)
+                            .AddField(GetText(strs.type), GetText(strs.random_unique_item), true);
                 //else if (entry.Type == ShopEntryType.Infinite_List)
-                //    return embed.AddField(GetText("name"), GetText("shop_role", Format.Bold(entry.RoleName)), true)
-                //            .AddField(GetText("price"), entry.Price.ToString(), true)
-                //            .AddField(GetText("type"), entry.Type.ToString(), true);
+                //    return embed.AddField(GetText(strs.name), GetText("shop_role", Format.Bold(entry.RoleName)), true)
+                //            .AddField(GetText(strs.price), entry.Price.ToString(), true)
+                //            .AddField(GetText(strs.type), entry.Type.ToString(), true);
                 else return null;
             }
 

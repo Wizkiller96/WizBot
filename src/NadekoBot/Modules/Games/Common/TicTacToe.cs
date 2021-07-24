@@ -72,8 +72,14 @@ namespace NadekoBot.Modules.Games.Common
             _moveLock = new SemaphoreSlim(1, 1);
         }
 
-        private string GetText(string key, params object[] replacements)
-            => _strings.GetText(key, _channel.GuildId, replacements);
+        private string GetText(LocStr key)
+            => _strings.GetText(key, _channel.GuildId);
+        
+        private string GetText<T>(LocStr<T> key, T param)
+            => _strings.GetText(key, _channel.GuildId, param);
+        
+        private string GetText<T1, T2>(LocStr<T1, T2> key, T1 param, T2 param2)
+            => _strings.GetText(key, _channel.GuildId, param, param2);
 
         public string GetState()
         {
@@ -98,7 +104,7 @@ namespace NadekoBot.Modules.Games.Common
             var embed = _eb.Create()
                 .WithOkColor()
                 .WithDescription(Environment.NewLine + GetState())
-                .WithAuthor(GetText("vs", _users[0], _users[1]));
+                .WithAuthor(GetText(strs.vs, _users[0], _users[1]));
 
             if (!string.IsNullOrWhiteSpace(title))
                 embed.WithTitle(title);
@@ -106,7 +112,7 @@ namespace NadekoBot.Modules.Games.Common
             if (_winner is null)
             {
                 if (_phase == Phase.Ended)
-                    embed.WithFooter(GetText("ttt_no_moves"));
+                    embed.WithFooter(GetText(strs.ttt_no_moves));
                 else
                     embed.WithFooter(GetText("ttt_users_move", _users[_curUserIndex]));
             }
@@ -137,12 +143,12 @@ namespace NadekoBot.Modules.Games.Common
         {
             if (_phase == Phase.Started || _phase == Phase.Ended)
             {
-                await _channel.SendErrorAsync(_eb, user.Mention + GetText("ttt_already_running")).ConfigureAwait(false);
+                await _channel.SendErrorAsync(_eb, user.Mention + GetText(strs.ttt_already_running)).ConfigureAwait(false);
                 return;
             }
             else if (_users[0] == user)
             {
-                await _channel.SendErrorAsync(_eb, user.Mention + GetText("ttt_against_yourself")).ConfigureAwait(false);
+                await _channel.SendErrorAsync(_eb, user.Mention + GetText(strs.ttt_against_yourself)).ConfigureAwait(false);
                 return;
             }
 
@@ -165,7 +171,7 @@ namespace NadekoBot.Modules.Games.Common
                         var del = _previousMessage?.DeleteAsync();
                         try
                         {
-                            await _channel.EmbedAsync(GetEmbed(GetText("ttt_time_expired"))).ConfigureAwait(false);
+                            await _channel.EmbedAsync(GetEmbed(GetText(strs.ttt_time_expired))).ConfigureAwait(false);
                             if (del != null)
                                 await del.ConfigureAwait(false);
                         }
@@ -184,7 +190,7 @@ namespace NadekoBot.Modules.Games.Common
             _client.MessageReceived += Client_MessageReceived;
 
 
-            _previousMessage = await _channel.EmbedAsync(GetEmbed(GetText("game_started"))).ConfigureAwait(false);
+            _previousMessage = await _channel.EmbedAsync(GetEmbed(GetText(strs.game_started))).ConfigureAwait(false);
         }
 
         private bool IsDraw()
@@ -255,14 +261,14 @@ namespace NadekoBot.Modules.Games.Common
 
                         if (_phase == Phase.Ended) // if user won, stop receiving moves
                         {
-                            reason = GetText("ttt_matched_three");
+                            reason = GetText(strs.ttt_matched_three);
                             _winner = _users[_curUserIndex];
                             _client.MessageReceived -= Client_MessageReceived;
                             OnEnded?.Invoke(this);
                         }
                         else if (IsDraw())
                         {
-                            reason = GetText("ttt_a_draw");
+                            reason = GetText(strs.ttt_a_draw);
                             _phase = Phase.Ended;
                             _client.MessageReceived -= Client_MessageReceived;
                             OnEnded?.Invoke(this);

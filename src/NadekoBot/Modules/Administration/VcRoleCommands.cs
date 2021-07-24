@@ -71,7 +71,7 @@ namespace NadekoBot.Modules.Administration
                 {
                     if (!roles.Any())
                     {
-                        text = GetText("no_vcroles");
+                        text = GetText(strs.no_vcroles);
                     }
                     else
                     {
@@ -81,10 +81,10 @@ namespace NadekoBot.Modules.Administration
                 }
                 else
                 {
-                    text = GetText("no_vcroles");
+                    text = GetText(strs.no_vcroles);
                 }
                 await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
-                        .WithTitle(GetText("vc_role_list"))
+                        .WithTitle(GetText(strs.vc_role_list))
                         .WithDescription(text))
                     .ConfigureAwait(false);
             }

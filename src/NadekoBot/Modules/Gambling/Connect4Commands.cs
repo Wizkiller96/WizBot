@@ -136,7 +136,7 @@ namespace NadekoBot.Modules.Gambling
                         title = GetText("connect4_won", Format.Bold(arg.OtherPlayer.Username), Format.Bold(arg.CurrentPlayer.Username));
                     }
                     else
-                        title = GetText("connect4_draw");
+                        title = GetText(strs.connect4_draw);
 
                     return msg.ModifyAsync(x => x.Embed = _eb.Create()
                         .WithTitle(title)

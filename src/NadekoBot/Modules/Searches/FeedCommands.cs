@@ -73,7 +73,7 @@ namespace NadekoBot.Modules.Searches
                 {
                     await ctx.Channel.EmbedAsync(_eb.Create()
                         .WithOkColor()
-                        .WithDescription(GetText("feed_no_feed")))
+                        .WithDescription(GetText(strs.feed_no_feed)))
                         .ConfigureAwait(false);
                     return;
                 }

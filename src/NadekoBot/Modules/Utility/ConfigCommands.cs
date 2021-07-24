@@ -53,7 +53,7 @@ namespace NadekoBot.Modules.Utility
                     var embed = _eb.Create()
                         .WithErrorColor()
                         .WithDescription(GetText("config_not_found", Format.Code(name)))
-                        .AddField(GetText("config_list"), string.Join("\n", configNames));
+                        .AddField(GetText(strs.config_list), string.Join("\n", configNames));
 
                     await ctx.Channel.EmbedAsync(embed);
                     return;
@@ -75,7 +75,7 @@ namespace NadekoBot.Modules.Utility
                 {
                     var embed = _eb.Create()
                         .WithOkColor()
-                        .WithTitle(GetText("config_list"))
+                        .WithTitle(GetText(strs.config_list))
                         .WithDescription(string.Join("\n", configNames));
 
                     await ctx.Channel.EmbedAsync(embed);
@@ -91,7 +91,7 @@ namespace NadekoBot.Modules.Utility
                     var embed = _eb.Create()
                         .WithErrorColor()
                         .WithDescription(GetText("config_not_found", Format.Code(name)))
-                        .AddField(GetText("config_list"), string.Join("\n", configNames));
+                        .AddField(GetText(strs.config_list), string.Join("\n", configNames));
 
                     await ctx.Channel.EmbedAsync(embed);
                     return;

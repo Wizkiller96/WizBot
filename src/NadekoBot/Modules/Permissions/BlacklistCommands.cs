@@ -69,7 +69,7 @@ namespace NadekoBot.Modules.Permissions
                         return _eb.Create()
                             .WithOkColor()
                             .WithTitle(title)
-                            .WithDescription(GetText("empty_page"));
+                            .WithDescription(GetText(strs.empty_page));
                     }
                     
                     return _eb.Create()
@@ -86,7 +86,7 @@ namespace NadekoBot.Modules.Permissions
                 if (--page < 0)
                     return Task.CompletedTask;
                 
-                return ListBlacklistInternal(GetText("blacklisted_users"), BlacklistType.User, page);
+                return ListBlacklistInternal(GetText(strs.blacklisted_users), BlacklistType.User, page);
             }
             
             [NadekoCommand, Aliases]
@@ -96,7 +96,7 @@ namespace NadekoBot.Modules.Permissions
                 if (--page < 0)
                     return Task.CompletedTask;
                 
-                return ListBlacklistInternal(GetText("blacklisted_channels"), BlacklistType.Channel, page);
+                return ListBlacklistInternal(GetText(strs.blacklisted_channels), BlacklistType.Channel, page);
             }
             
             [NadekoCommand, Aliases]
@@ -106,7 +106,7 @@ namespace NadekoBot.Modules.Permissions
                 if (--page < 0)
                     return Task.CompletedTask;
                 
-                return ListBlacklistInternal(GetText("blacklisted_servers"), BlacklistType.Server, page);
+                return ListBlacklistInternal(GetText(strs.blacklisted_servers), BlacklistType.Server, page);
             }
 
             [NadekoCommand, Aliases]

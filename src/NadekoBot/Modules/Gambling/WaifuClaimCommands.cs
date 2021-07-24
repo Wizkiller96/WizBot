@@ -26,7 +26,7 @@ namespace NadekoBot.Modules.Gambling
             {
                 var price = _service.GetResetPrice(ctx.User);
                 var embed = _eb.Create()
-                        .WithTitle(GetText("waifu_reset_confirm"))
+                        .WithTitle(GetText(strs.waifu_reset_confirm))
                         .WithDescription(GetText("waifu_reset_price", Format.Bold(price + CurrencySign)));
 
                 if (!await PromptUserConfirmAsync(embed))
@@ -222,7 +222,7 @@ namespace NadekoBot.Modules.Gambling
                 }
 
                 var embed = _eb.Create()
-                    .WithTitle(GetText("waifus_top_waifus"))
+                    .WithTitle(GetText(strs.waifus_top_waifus))
                     .WithOkColor();
 
                 var i = 0;
@@ -261,7 +261,7 @@ namespace NadekoBot.Modules.Gambling
                     .ToDictionary(x => x.ItemEmoji, x => x);
                 
                 
-                var nobody = GetText("nobody");
+                var nobody = GetText(strs.nobody);
                 var itemsStr = !wi.Items.Any()
                     ? "-"
                     : string.Join("\n", wi.Items
@@ -284,19 +284,19 @@ namespace NadekoBot.Modules.Gambling
 
                 var embed = _eb.Create()
                     .WithOkColor()
-                    .WithTitle(GetText("waifu") + " " + (wi.FullName ?? name ?? targetId.ToString()) + " - \"the " +
+                    .WithTitle(GetText(strs.waifu) + " " + (wi.FullName ?? name ?? targetId.ToString()) + " - \"the " +
                                _service.GetClaimTitle(wi.ClaimCount) + "\"")
-                    .AddField(GetText("price"), wi.Price.ToString(), true)
-                    .AddField(GetText("claimed_by"), wi.ClaimerName ?? nobody, true)
-                    .AddField(GetText("likes"), wi.AffinityName ?? nobody, true)
-                    .AddField(GetText("changes_of_heart"), $"{wi.AffinityCount} - \"the {affInfo}\"", true)
-                    .AddField(GetText("divorces"), wi.DivorceCount.ToString(), true)
+                    .AddField(GetText(strs.price), wi.Price.ToString(), true)
+                    .AddField(GetText(strs.claimed_by), wi.ClaimerName ?? nobody, true)
+                    .AddField(GetText(strs.likes), wi.AffinityName ?? nobody, true)
+                    .AddField(GetText(strs.changes_of_heart), $"{wi.AffinityCount} - \"the {affInfo}\"", true)
+                    .AddField(GetText(strs.divorces), wi.DivorceCount.ToString(), true)
                     .AddField("\u200B", "\u200B", true)
                     .AddField(GetText("fans", wi.Fans.Count), fansStr, true)
                     .AddField($"Waifus ({wi.ClaimCount})", wi.ClaimCount == 0 
                         ? nobody 
                         : string.Join("\n", wi.Claims.Shuffle().Take(30)), true)
-                    .AddField(GetText("gifts"), itemsStr, true);
+                    .AddField(GetText(strs.gifts), itemsStr, true);
 
                 return ctx.Channel.EmbedAsync(embed);
             }
@@ -313,7 +313,7 @@ namespace NadekoBot.Modules.Gambling
                 await ctx.SendPaginatedConfirmAsync(page, (cur) =>
                 {
                     var embed = _eb.Create()
-                        .WithTitle(GetText("waifu_gift_shop"))
+                        .WithTitle(GetText(strs.waifu_gift_shop))
                         .WithOkColor();
 
                     waifuItems

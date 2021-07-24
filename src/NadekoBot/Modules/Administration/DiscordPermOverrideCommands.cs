@@ -43,7 +43,7 @@ namespace NadekoBot.Modules.Administration
             {
                 var result = await PromptUserConfirmAsync(_eb.Create()
                     .WithOkColor()
-                    .WithDescription(GetText("perm_override_all_confirm")));
+                    .WithDescription(GetText(strs.perm_override_all_confirm)));
                 
                 if (!result)
                     return;
@@ -65,7 +65,7 @@ namespace NadekoBot.Modules.Administration
                 await ctx.SendPaginatedConfirmAsync(page, curPage =>
                 {
                     var eb = _eb.Create()
-                        .WithTitle(GetText("perm_overrides"))
+                        .WithTitle(GetText(strs.perm_overrides))
                         .WithOkColor();
 
                     var thisPageOverrides = overrides
@@ -74,7 +74,7 @@ namespace NadekoBot.Modules.Administration
                         .ToList();
 
                     if (thisPageOverrides.Count == 0)
-                        eb.WithDescription(GetText("perm_override_page_none"));
+                        eb.WithDescription(GetText(strs.perm_override_page_none));
                     else
                         eb.WithDescription(string.Join("\n",
                             thisPageOverrides.Select(ov => $"{ov.Command} => {ov.Perm.ToString()}")));

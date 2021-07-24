@@ -146,7 +146,7 @@ namespace NadekoBot.Modules.Utility
                 var description = GetRepeaterInfoString(runner);
                 await ctx.Channel.EmbedAsync(_eb.Create()
                     .WithOkColor()
-                    .WithTitle(GetText("repeater_created"))
+                    .WithTitle(GetText(strs.repeater_created))
                     .WithDescription(description));
             }
 
@@ -163,7 +163,7 @@ namespace NadekoBot.Modules.Utility
                 }
             
                 var embed = _eb.Create()
-                    .WithTitle(GetText("list_of_repeaters"))
+                    .WithTitle(GetText(strs.list_of_repeaters))
                     .WithOkColor();
 
                 var i = 0;
@@ -190,13 +190,13 @@ namespace NadekoBot.Modules.Utility
                 string description = "";
                 if (_service.IsNoRedundant(runner.Repeater.Id))
                 {
-                    description = Format.Underline(Format.Bold(GetText("no_redundant"))) + "\n\n";
+                    description = Format.Underline(Format.Bold(GetText(strs.no_redundant))) + "\n\n";
                 }
                 
                 description += $"<#{runner.Repeater.ChannelId}>\n" +
-                                  $"`{GetText("Comment")}` {intervalString}\n" +
-                                  $"`{GetText("executes_in_colon")}` {executesInString}\n" +
-                                  $"`{GetText("message_colon")}` {message}";
+                                  $"`{GetText(strs.interval_colon)}` {intervalString}\n" +
+                                  $"`{GetText(strs.executes_in_colon)}` {executesInString}\n" +
+                                  $"`{GetText(strs.message_colon)}` {message}";
             
                 return description;
             }

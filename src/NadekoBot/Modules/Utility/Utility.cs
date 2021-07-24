@@ -114,7 +114,7 @@ namespace NadekoBot.Modules.Utility
                     .ToList();
 
                 if (pageUsers.Count == 0)
-                    return _eb.Create().WithOkColor().WithDescription(GetText("no_user_on_this_page"));
+                    return _eb.Create().WithOkColor().WithDescription(GetText(strs.no_user_on_this_page));
                     
                 return _eb.Create().WithOkColor()
                     .WithTitle(GetText("inrole_list", Format.Bold(role?.Name ?? "No Role")) + $" - {roleUsers.Length}")
@@ -234,7 +234,7 @@ namespace NadekoBot.Modules.Utility
             if (string.IsNullOrWhiteSpace(topic))
                 await ReplyErrorLocalizedAsync("no_topic_set").ConfigureAwait(false);
             else
-                await SendConfirmAsync(GetText("channel_topic"), topic).ConfigureAwait(false);
+                await SendConfirmAsync(GetText(strs.channel_topic), topic).ConfigureAwait(false);
         }
 
         [NadekoCommand, Aliases]
@@ -249,16 +249,16 @@ namespace NadekoBot.Modules.Utility
                         .WithAuthor($"NadekoBot v{StatsService.BotVersion}",
                             "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/avatar.png",
                             "https://nadekobot.readthedocs.io/en/latest/")
-                        .AddField(GetText(Strs.author), _stats.Author, true)
-                        .AddField(GetText("botid"), _client.CurrentUser.Id.ToString(), true)
-                        .AddField(GetText("shard"), $"#{_client.ShardId} / {_creds.TotalShards}", true)
-                        .AddField(GetText("commands_ran"), _stats.CommandsRan.ToString(), true)
-                        .AddField(GetText("messages"), $"{_stats.MessageCounter} ({_stats.MessagesPerSecond:F2}/sec)",
+                        .AddField(GetText(strs.author), _stats.Author, true)
+                        .AddField(GetText(strs.botid), _client.CurrentUser.Id.ToString(), true)
+                        .AddField(GetText(strs.shard), $"#{_client.ShardId} / {_creds.TotalShards}", true)
+                        .AddField(GetText(strs.commands_ran), _stats.CommandsRan.ToString(), true)
+                        .AddField(GetText(strs.messages), $"{_stats.MessageCounter} ({_stats.MessagesPerSecond:F2}/sec)",
                             true)
-                        .AddField(GetText("memory"), $"{_stats.Heap} MB", true)
-                        .AddField(GetText("owner_ids"), ownerIds, true)
-                        .AddField(GetText("uptime"), _stats.GetUptimeString("\n"), true)
-                        .AddField(GetText("presence"), 
+                        .AddField(GetText(strs.memory), $"{_stats.Heap} MB", true)
+                        .AddField(GetText(strs.owner_ids), ownerIds, true)
+                        .AddField(GetText(strs.uptime), _stats.GetUptimeString("\n"), true)
+                        .AddField(GetText(strs.presence), 
                             GetText("presence_txt",
                                 _coord.GetGuildCount(), _stats.TextChannels, _stats.VoiceChannels), true))
                 .ConfigureAwait(false);

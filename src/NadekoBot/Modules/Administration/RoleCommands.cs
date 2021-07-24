@@ -135,7 +135,7 @@ namespace NadekoBot.Modules.Administration
                 if (!_service.Get(ctx.Guild.Id, out var rrs) ||
                     !rrs.Any())
                 {
-                    embed.WithDescription(GetText("no_reaction_roles"));
+                    embed.WithDescription(GetText(strs.no_reaction_roles));
                 }
                 else
                 {

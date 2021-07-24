@@ -44,7 +44,7 @@ namespace NadekoBot.Modules.Searches
                 }
 
                 var embed = _service.GetEmbed(ctx.Guild.Id, data);
-                await ctx.Channel.EmbedAsync(embed, GetText("stream_tracked")).ConfigureAwait(false);
+                await ctx.Channel.EmbedAsync(embed, GetText(strs.stream_tracked)).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -118,12 +118,12 @@ namespace NadekoBot.Modules.Searches
                     if (elements.Count == 0)
                     {
                         return _eb.Create()
-                            .WithDescription(GetText("streams_none"))
+                            .WithDescription(GetText(strs.streams_none))
                             .WithErrorColor();
                     }
 
                     var eb = _eb.Create()
-                        .WithTitle(GetText("streams_follow_title"))
+                        .WithTitle(GetText(strs.streams_follow_title))
                         .WithOkColor();
                     for (var index = 0; index < elements.Count; index++)
                     {

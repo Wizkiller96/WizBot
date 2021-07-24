@@ -197,7 +197,7 @@ namespace NadekoBot.Modules.Gambling
                             n++;
                         } while ((printAmount /= 10) != 0);
 
-                        var msg = GetText("better_luck");
+                        var msg = GetText(strs.better_luck);
                         if (result.Multiplier != 0)
                         {
                             await _cs.AddAsync(ctx.User, $"Slot Machine x{result.Multiplier}", amount * result.Multiplier, false, gamble: true).ConfigureAwait(false);
@@ -214,7 +214,7 @@ namespace NadekoBot.Modules.Gambling
 
                         using (var imgStream = bgImage.ToStream())
                         {
-                            await ctx.Channel.SendFileAsync(imgStream, "result.png", ctx.User.Mention + " " + msg + $"\n`{GetText("slot_bet")}:`{amount} `{GetText("won")}:` {amount * result.Multiplier}{CurrencySign}").ConfigureAwait(false);
+                            await ctx.Channel.SendFileAsync(imgStream, "result.png", ctx.User.Mention + " " + msg + $"\n`{GetText(strs.slot_bet)}:`{amount} `{GetText(strs.won)}:` {amount * result.Multiplier}{CurrencySign}").ConfigureAwait(false);
                         }
                     }
                 }

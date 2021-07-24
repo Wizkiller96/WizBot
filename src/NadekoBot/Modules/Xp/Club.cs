@@ -139,11 +139,11 @@ namespace NadekoBot.Modules.Xp
                         .WithOkColor()
                         .WithTitle($"{club.ToString()}")
                         .WithDescription(GetText("level_x", lvl.Level) + $" ({club.Xp} xp)")
-                        .AddField(GetText("desc"), string.IsNullOrWhiteSpace(club.Description) ? "-" : club.Description,
+                        .AddField(GetText(strs.desc), string.IsNullOrWhiteSpace(club.Description) ? "-" : club.Description,
                             false)
-                        .AddField(GetText("owner"), club.Owner.ToString(), true)
-                        .AddField(GetText("level_req"), club.MinimumLevelReq.ToString(), true)
-                        .AddField(GetText("members"), string.Join("\n", users
+                        .AddField(GetText(strs.owner), club.Owner.ToString(), true)
+                        .AddField(GetText(strs.level_req), club.MinimumLevelReq.ToString(), true)
+                        .AddField(GetText(strs.members), string.Join("\n", users
                             .Skip(page * 10)
                             .Take(10)
                             .Select(x =>

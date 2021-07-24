@@ -81,7 +81,7 @@ namespace NadekoBot.Modules.Games
             private Task Game_OnStarted(AcrophobiaGame game)
             {
                 var embed = _eb.Create().WithOkColor()
-                        .WithTitle(GetText("acrophobia"))
+                        .WithTitle(GetText(strs.acrophobia))
                         .WithDescription(GetText("acro_started", Format.Bold(string.Join(".", game.StartingLetters))))
                         .WithFooter(GetText("acro_started_footer", game.Opts.SubmissionTime));
 
@@ -91,7 +91,7 @@ namespace NadekoBot.Modules.Games
             private Task Game_OnUserVoted(string user)
             {
                 return SendConfirmAsync(
-                    GetText("acrophobia"),
+                    GetText(strs.acrophobia),
                     GetText("acro_vote_cast", Format.Bold(user)));
             }
 
@@ -99,7 +99,7 @@ namespace NadekoBot.Modules.Games
             {
                 if (submissions.Length == 0)
                 {
-                    await SendErrorAsync(GetText("acrophobia"), GetText("acro_ended_no_sub")).ConfigureAwait(false);
+                    await SendErrorAsync(GetText(strs.acrophobia), GetText(strs.acro_ended_no_sub)).ConfigureAwait(false);
                     return;
                 }
                 if (submissions.Length == 1)
@@ -117,12 +117,12 @@ namespace NadekoBot.Modules.Games
                 var i = 0;
                 var embed = _eb.Create()
                         .WithOkColor()
-                        .WithTitle(GetText("acrophobia") + " - " + GetText("submissions_closed"))
+                        .WithTitle(GetText(strs.acrophobia) + " - " + GetText(strs.submissions_closed))
                         .WithDescription(GetText("acro_nym_was", Format.Bold(string.Join(".", game.StartingLetters)) + "\n" +
 $@"--
 {submissions.Aggregate("", (agg, cur) => agg + $"`{++i}.` **{cur.Key.Input}**\n")}
 --"))
-                        .WithFooter(GetText("acro_vote"));
+                        .WithFooter(GetText(strs.acro_vote));
 
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
@@ -131,13 +131,13 @@ $@"--
             {
                 if (!votes.Any() || votes.All(x => x.Value == 0))
                 {
-                    await SendErrorAsync(GetText("acrophobia"), GetText("acro_no_votes_cast")).ConfigureAwait(false);
+                    await SendErrorAsync(GetText(strs.acrophobia), GetText(strs.acro_no_votes_cast)).ConfigureAwait(false);
                     return;
                 }
                 var table = votes.OrderByDescending(v => v.Value);
                 var winner = table.First();
                 var embed = _eb.Create().WithOkColor()
-                    .WithTitle(GetText("acrophobia"))
+                    .WithTitle(GetText(strs.acrophobia))
                     .WithDescription(GetText("acro_winner", Format.Bold(winner.Key.UserName),
                         Format.Bold(winner.Value.ToString())))
                     .WithFooter(winner.Key.Input);

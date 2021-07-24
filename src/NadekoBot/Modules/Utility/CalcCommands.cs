@@ -21,9 +21,9 @@ namespace NadekoBot.Modules.Utility
                 expr.EvaluateParameter += Expr_EvaluateParameter;
                 var result = expr.Evaluate();
                 if (!expr.HasErrors())
-                    await SendConfirmAsync("⚙ " + GetText("result"), result.ToString()).ConfigureAwait(false);
+                    await SendConfirmAsync("⚙ " + GetText(strs.result), result.ToString()).ConfigureAwait(false);
                 else
-                    await SendErrorAsync("⚙ " + GetText("error"), expr.Error).ConfigureAwait(false);
+                    await SendErrorAsync("⚙ " + GetText(strs.error), expr.Error).ConfigureAwait(false);
             }
 
             private static void Expr_EvaluateParameter(string name, NCalc.ParameterArgs args)

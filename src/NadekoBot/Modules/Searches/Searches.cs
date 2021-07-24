@@ -73,7 +73,7 @@ namespace NadekoBot.Modules.Searches
 
             if (data is null)
             {
-                embed.WithDescription(GetText("city_not_found"))
+                embed.WithDescription(GetText(strs.city_not_found))
                     .WithErrorColor();
             }
             else
@@ -89,15 +89,15 @@ namespace NadekoBot.Modules.Searches
                 sunset = sunset.ToOffset(tz.GetUtcOffset(sunset));
                 var timezone = $"UTC{sunrise:zzz}";
 
-                embed.AddField("🌍 " + Format.Bold(GetText("location")), $"[{data.Name + ", " + data.Sys.Country}](https://openweathermap.org/city/{data.Id})", true)
-                    .AddField("📏 " + Format.Bold(GetText("latlong")), $"{data.Coord.Lat}, {data.Coord.Lon}", true)
-                    .AddField("☁ " + Format.Bold(GetText("condition")), string.Join(", ", data.Weather.Select(w => w.Main)), true)
-                    .AddField("😓 " + Format.Bold(GetText("humidity")), $"{data.Main.Humidity}%", true)
-                    .AddField("💨 " + Format.Bold(GetText("wind_speed")), data.Wind.Speed + " m/s", true)
-                    .AddField("🌡 " + Format.Bold(GetText("temperature")), $"{data.Main.Temp:F1}°C / {f(data.Main.Temp):F1}°F", true)
-                    .AddField("🔆 " + Format.Bold(GetText("min_max")), $"{data.Main.TempMin:F1}°C - {data.Main.TempMax:F1}°C\n{f(data.Main.TempMin):F1}°F - {f(data.Main.TempMax):F1}°F", true)
-                    .AddField("🌄 " + Format.Bold(GetText("sunrise")), $"{sunrise:HH:mm} {timezone}", true)
-                    .AddField("🌇 " + Format.Bold(GetText("sunset")), $"{sunset:HH:mm} {timezone}", true)
+                embed.AddField("🌍 " + Format.Bold(GetText(strs.location)), $"[{data.Name + ", " + data.Sys.Country}](https://openweathermap.org/city/{data.Id})", true)
+                    .AddField("📏 " + Format.Bold(GetText(strs.latlong)), $"{data.Coord.Lat}, {data.Coord.Lon}", true)
+                    .AddField("☁ " + Format.Bold(GetText(strs.condition)), string.Join(", ", data.Weather.Select(w => w.Main)), true)
+                    .AddField("😓 " + Format.Bold(GetText(strs.humidity)), $"{data.Main.Humidity}%", true)
+                    .AddField("💨 " + Format.Bold(GetText(strs.wind_speed)), data.Wind.Speed + " m/s", true)
+                    .AddField("🌡 " + Format.Bold(GetText(strs.temperature)), $"{data.Main.Temp:F1}°C / {f(data.Main.Temp):F1}°F", true)
+                    .AddField("🔆 " + Format.Bold(GetText(strs.min_max)), $"{data.Main.TempMin:F1}°C - {data.Main.TempMax:F1}°C\n{f(data.Main.TempMin):F1}°F - {f(data.Main.TempMax):F1}°F", true)
+                    .AddField("🌄 " + Format.Bold(GetText(strs.sunrise)), $"{sunrise:HH:mm} {timezone}", true)
+                    .AddField("🌇 " + Format.Bold(GetText(strs.sunset)), $"{sunset:HH:mm} {timezone}", true)
                     .WithOkColor()
                     .WithFooter("Powered by openweathermap.org", $"http://openweathermap.org/img/w/{data.Weather[0].Icon}.png");
             }
@@ -142,10 +142,10 @@ namespace NadekoBot.Modules.Searches
 
             var eb = _eb.Create()
                 .WithOkColor()
-                .WithTitle(GetText("time_new"))
+                .WithTitle(GetText(strs.time_new))
                 .WithDescription(Format.Code(data.Time.ToString()))
-                .AddField(GetText("location"), string.Join('\n', data.Address.Split(", ")), true)
-                .AddField(GetText("timezone"), data.TimeZoneName, true);
+                .AddField(GetText(strs.location), string.Join('\n', data.Address.Split(", ")), true)
+                .AddField(GetText(strs.timezone), data.TimeZoneName, true);
 
             await ctx.Channel.SendMessageAsync(embed: eb.Build()).ConfigureAwait(false);
         }
@@ -222,7 +222,7 @@ namespace NadekoBot.Modules.Searches
                 var res = await _google.GetImageAsync(oterms).ConfigureAwait(false);
                 var embed = _eb.Create()
                     .WithOkColor()
-                    .WithAuthor(GetText("image_search_for") + " " + oterms.TrimTo(50),
+                    .WithAuthor(GetText(strs.image_search_for) + " " + oterms.TrimTo(50),
                         "http://i.imgur.com/G46fm8J.png",
                         $"https://www.google.rs/search?q={query}&source=lnms&tbm=isch")
                     .WithDescription(res.Link)
@@ -252,7 +252,7 @@ namespace NadekoBot.Modules.Searches
 
                     var embed = _eb.Create()
                         .WithOkColor()
-                        .WithAuthor(GetText("image_search_for") + " " + oterms.TrimTo(50),
+                        .WithAuthor(GetText(strs.image_search_for) + " " + oterms.TrimTo(50),
                             "http://s.imgur.com/images/logo-1200-630.jpg?",
                             fullQueryLink)
                         .WithDescription(source)
@@ -324,8 +324,8 @@ namespace NadekoBot.Modules.Searches
 
             await ctx.Channel.EmbedAsync(_eb.Create()
                 .WithOkColor()
-                .AddField(GetText("original_url"), $"<{query}>")
-                .AddField(GetText("short_url"), $"<{shortLink}>"));
+                .AddField(GetText(strs.original_url), $"<{query}>")
+                .AddField(GetText(strs.short_url), $"<{shortLink}>"));
         }
 
         [NadekoCommand, Aliases]
@@ -355,7 +355,7 @@ namespace NadekoBot.Modules.Searches
                     iconUrl: "http://i.imgur.com/G46fm8J.png")
                 .WithTitle(ctx.User.ToString())
                 .WithFooter(data.TotalResults)
-                .WithDescription($"{GetText("search_for")} **{query}**\n\n" +descStr)
+                .WithDescription($"{GetText(strs.search_for)} **{query}**\n\n" +descStr)
                 .WithOkColor();
 
             await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
@@ -386,7 +386,7 @@ namespace NadekoBot.Modules.Searches
             var embed = _eb.Create()
                 .WithAuthor(ctx.User.ToString(),
                     iconUrl: "https://upload.wikimedia.org/wikipedia/en/9/90/The_DuckDuckGo_Duck.png")
-                .WithDescription($"{GetText("search_for")} **{query}**\n\n" + descStr)
+                .WithDescription($"{GetText(strs.search_for)} **{query}**\n\n" + descStr)
                 .WithOkColor();
 
             await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
@@ -411,9 +411,9 @@ namespace NadekoBot.Modules.Searches
                 .WithTitle(card.Name)
                 .WithDescription(card.Description)
                 .WithImageUrl(card.ImageUrl)
-                .AddField(GetText("store_url"), card.StoreUrl, true)
-                .AddField(GetText("cost"), card.ManaCost, true)
-                .AddField(GetText("types"), card.Types, true);
+                .AddField(GetText(strs.store_url), card.StoreUrl, true)
+                .AddField(GetText(strs.cost), card.ManaCost, true)
+                .AddField(GetText(strs.types), card.Types, true);
 
             await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
         }
@@ -531,13 +531,13 @@ namespace NadekoBot.Modules.Searches
                         var data = col.Skip(page).First();
                         var embed = _eb.Create()
                             .WithDescription(ctx.User.Mention)
-                            .AddField(GetText("word"), data.Word, true)
-                            .AddField(GetText("_class"), data.WordType, true)
-                            .AddField(GetText("definition"), data.Definition)
+                            .AddField(GetText(strs.word), data.Word, true)
+                            .AddField(GetText(strs._class), data.WordType, true)
+                            .AddField(GetText(strs.definition), data.Definition)
                             .WithOkColor();
 
                         if (!string.IsNullOrWhiteSpace(data.Example))
-                            embed.AddField(GetText("example"), data.Example);
+                            embed.AddField(GetText(strs.example), data.Example);
 
                         return embed;
                     }, col.Count, 1);
@@ -559,7 +559,7 @@ namespace NadekoBot.Modules.Searches
                     return;
 
                 var fact = JObject.Parse(response)["fact"].ToString();
-                await SendConfirmAsync("🐈" + GetText("catfact"), fact).ConfigureAwait(false);
+                await SendConfirmAsync("🐈" + GetText(strs.catfact), fact).ConfigureAwait(false);
             }
         }
 
@@ -691,8 +691,8 @@ namespace NadekoBot.Modules.Searches
                     }
 
                     var url = Uri.EscapeUriString($"https://{target}.fandom.com/wiki/{title}");
-                    var response = $@"`{GetText("title")}` {title?.SanitizeMentions()}
-`{GetText("url")}:` {url}";
+                    var response = $@"`{GetText(strs.title)}` {title?.SanitizeMentions()}
+`{GetText(strs.url)}:` {url}";
                     await ctx.Channel.SendMessageAsync(response).ConfigureAwait(false);
                 }
                 catch
@@ -753,9 +753,9 @@ namespace NadekoBot.Modules.Searches
             //    .WithTitle(gameData.Name)
             //    .WithUrl(gameData.Link)
             //    .WithImageUrl(gameData.HeaderImage)
-            //    .AddField(GetText("genres"), gameData.TotalEpisodes.ToString(), true)
-            //    .AddField(GetText("price"), gameData.IsFree ? GetText("FREE") : game, true)
-            //    .AddField(GetText("links"), gameData.GetGenresString(), true)
+            //    .AddField(GetText(strs.genres), gameData.TotalEpisodes.ToString(), true)
+            //    .AddField(GetText(strs.price), gameData.IsFree ? GetText(strs.FREE) : game, true)
+            //    .AddField(GetText(strs.links), gameData.GetGenresString(), true)
             //    .WithFooter(GetText("recommendations", gameData.TotalRecommendations));
             await ctx.Channel.SendMessageAsync($"https://store.steampowered.com/app/{appId}").ConfigureAwait(false);
         }
@@ -767,7 +767,7 @@ namespace NadekoBot.Modules.Searches
             var imgObj = await _service.DapiSearch(tag, type, ctx.Guild?.Id).ConfigureAwait(false);
 
             if (imgObj is null)
-                await SendErrorAsync(ctx.User.Mention + " " + GetText("no_results")).ConfigureAwait(false);
+                await SendErrorAsync(ctx.User.Mention + " " + GetText(strs.no_results)).ConfigureAwait(false);
             else
                 await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
                     .WithDescription($"{ctx.User.Mention} [{tag ?? "url"}]({imgObj.FileUrl})")

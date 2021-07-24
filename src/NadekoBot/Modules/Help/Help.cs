@@ -82,7 +82,7 @@ namespace NadekoBot.Modules.Help
             await ctx.SendPaginatedConfirmAsync(page, cur =>
             {
                 var embed = _eb.Create().WithOkColor()
-                    .WithTitle(GetText("list_of_modules"));
+                    .WithTitle(GetText(strs.list_of_modules));
 
                 var localModules = topLevelModules.Skip(12 * cur)
                     .Take(12)
@@ -91,7 +91,7 @@ namespace NadekoBot.Modules.Help
                 if (!localModules.Any())
                 {
                     embed = embed.WithOkColor()
-                        .WithDescription(GetText("module_page_empty"));
+                        .WithDescription(GetText(strs.module_page_empty));
                     return embed;
                 }
                 
@@ -383,7 +383,7 @@ namespace NadekoBot.Modules.Help
 
             // also send the file, but indented one, to chat
             using var rDataStream = new MemoryStream(Encoding.ASCII.GetBytes(readableData));
-            await ctx.Channel.SendFileAsync(rDataStream, "cmds.json", GetText("commandlist_regen")).ConfigureAwait(false);
+            await ctx.Channel.SendFileAsync(rDataStream, "cmds.json", GetText(strs.commandlist_regen)).ConfigureAwait(false);
         }
 
         [NadekoCommand, Aliases]

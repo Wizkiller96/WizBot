@@ -43,7 +43,7 @@ namespace NadekoBot.Modules.Xp
         {
             var reply = await PromptUserConfirmAsync(_eb.Create()
                 .WithPendingColor()
-                .WithDescription(GetText("xprewsreset_confirm")));
+                .WithDescription(GetText(strs.xprewsreset_confirm)));
 
             if (!reply)
                 return;
@@ -92,7 +92,7 @@ namespace NadekoBot.Modules.Xp
             return Context.SendPaginatedConfirmAsync(page, cur =>
             {
                 var embed = _eb.Create()
-                    .WithTitle(GetText("level_up_rewards"))
+                    .WithTitle(GetText(strs.level_up_rewards))
                     .WithOkColor();
                 
                 var localRewards = allRewards
@@ -101,7 +101,7 @@ namespace NadekoBot.Modules.Xp
                     .ToList();
 
                 if (!localRewards.Any())
-                    return embed.WithDescription(GetText("no_level_up_rewards"));
+                    return embed.WithDescription(GetText(strs.no_level_up_rewards));
 
                 foreach (var reward in localRewards)
                 {
@@ -182,15 +182,15 @@ namespace NadekoBot.Modules.Xp
         {
             if (loc == XpNotificationLocation.Channel)
             {
-                return GetText("xpn_notif_channel");
+                return GetText(strs.xpn_notif_channel);
             }
 
             if (loc == XpNotificationLocation.Dm)
             {
-                return GetText("xpn_notif_dm");
+                return GetText(strs.xpn_notif_dm);
             }
 
-            return GetText("xpn_notif_disabled");
+            return GetText(strs.xpn_notif_disabled);
         }
 
         [NadekoCommand, Aliases]
@@ -202,8 +202,8 @@ namespace NadekoBot.Modules.Xp
 
             var embed = _eb.Create()
                 .WithOkColor()
-                .AddField(GetText("xpn_setting_global"), GetNotifLocationString(globalSetting))
-                .AddField(GetText("xpn_setting_server"), GetNotifLocationString(serverSetting));
+                .AddField(GetText(strs.xpn_setting_global), GetNotifLocationString(globalSetting))
+                .AddField(GetText(strs.xpn_setting_server), GetNotifLocationString(serverSetting));
 
             await ctx.Channel.EmbedAsync(embed);
         }
@@ -280,8 +280,8 @@ namespace NadekoBot.Modules.Xp
             var rolesStr = roles.Any() ? string.Join("\n", roles) + "\n" : string.Empty;
             var chansStr = chans.Count > 0 ? string.Join("\n", chans) + "\n" : string.Empty;
             var desc = Format.Code(serverExcluded
-                ? GetText("server_is_excluded")
-                : GetText("server_is_not_excluded"));
+                ? GetText(strs.server_is_excluded)
+                : GetText(strs.server_is_not_excluded));
 
             desc += "\n\n" + rolesStr + chansStr;
 
@@ -289,7 +289,7 @@ namespace NadekoBot.Modules.Xp
             await ctx.SendPaginatedConfirmAsync(0, curpage =>
             {
                 var embed = _eb.Create()
-                    .WithTitle(GetText("exclusion_list"))
+                    .WithTitle(GetText(strs.exclusion_list))
                     .WithDescription(string.Join('\n', lines.Skip(15 * curpage).Take(15)))
                     .WithOkColor();
 
@@ -332,7 +332,7 @@ namespace NadekoBot.Modules.Xp
             await ctx.SendPaginatedConfirmAsync(page, (curPage) =>
             {
                 var embed = _eb.Create()
-                    .WithTitle(GetText("server_leaderboard"))
+                    .WithTitle(GetText(strs.server_leaderboard))
                     .WithOkColor();
 
                 List<UserXpStats> users;
@@ -380,7 +380,7 @@ namespace NadekoBot.Modules.Xp
             var users = _service.GetUserXps(page);
 
             var embed = _eb.Create()
-                .WithTitle(GetText("global_leaderboard"))
+                .WithTitle(GetText(strs.global_leaderboard))
                 .WithOkColor();
 
             if (!users.Any())

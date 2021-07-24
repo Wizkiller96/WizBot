@@ -114,8 +114,8 @@ namespace NadekoBot.Modules.Music
             {
                 var embed = _eb.Create()
                     .WithOkColor()
-                    .WithAuthor(GetText("queued_song") + " #" + (index + 1), MusicIconUrl)
-                    .WithDescription($"{trackInfo.PrettyName()}\n{GetText("queue")} ")
+                    .WithAuthor(GetText(strs.queued_song) + " #" + (index + 1), MusicIconUrl)
+                    .WithDescription($"{trackInfo.PrettyName()}\n{GetText(strs.queue)} ")
                     .WithFooter(trackInfo.Platform.ToString());
 
                 if (!string.IsNullOrWhiteSpace(trackInfo.Thumbnail))
@@ -299,16 +299,16 @@ namespace NadekoBot.Modules.Music
                  //     add += Format.Bold(GetText("song_skips_after", TimeSpan.FromSeconds(mps).ToString("HH\\:mm\\:ss"))) + "\n";
                  if (repeatType == PlayerRepeatType.Track)
                  {
-                     add += "🔂 " + GetText("repeating_track") + "\n";
+                     add += "🔂 " + GetText(strs.repeating_track) + "\n";
                  }
                  else
                  {
                      // if (mp.Autoplay)
-                     //     add += "↪ " + GetText("autoplaying") + "\n";
+                     //     add += "↪ " + GetText(strs.autoplaying) + "\n";
                      // if (mp.FairPlay && !mp.Autoplay)
-                     //     add += " " + GetText("fairplay") + "\n";
+                     //     add += " " + GetText(strs.fairplay) + "\n";
                      if (repeatType == PlayerRepeatType.Queue)
-                         add += "🔁 " + GetText("repeating_queue") + "\n";
+                         add += "🔁 " + GetText(strs.repeating_queue) + "\n";
                  }
 
 
@@ -431,7 +431,7 @@ namespace NadekoBot.Modules.Music
             }
             
             var embed = _eb.Create()
-                .WithAuthor(GetText("removed_song") + " #" + (index), MusicIconUrl)
+                .WithAuthor(GetText(strs.removed_song) + " #" + (index), MusicIconUrl)
                 .WithDescription(song.PrettyName())
                 .WithFooter(song.PrettyInfo())
                 .WithErrorColor();
@@ -615,9 +615,9 @@ namespace NadekoBot.Modules.Music
              
              var embed = _eb.Create()
                  .WithTitle(track.Title.TrimTo(65))
-                 .WithAuthor(GetText("song_moved"), MusicIconUrl)
-                 .AddField(GetText("from_position"), $"#{from + 1}", true)
-                 .AddField(GetText("to_position"), $"#{to + 1}", true)
+                 .WithAuthor(GetText(strs.song_moved), MusicIconUrl)
+                 .AddField(GetText(strs.from_position), $"#{from + 1}", true)
+                 .AddField(GetText(strs.to_position), $"#{to + 1}", true)
                  .WithOkColor();
 
              if (Uri.IsWellFormedUriString(track.Url, UriKind.Absolute))
@@ -702,7 +702,7 @@ namespace NadekoBot.Modules.Music
                  return;
 
              var embed = _eb.Create().WithOkColor()
-                 .WithAuthor(GetText("now_playing"), MusicIconUrl)
+                 .WithAuthor(GetText(strs.now_playing), MusicIconUrl)
                  .WithDescription(currentTrack.PrettyName())
                  .WithThumbnailUrl(currentTrack.Thumbnail)
                  .WithFooter($"{mp.PrettyVolume()} | {mp.PrettyTotalTime()} | {currentTrack.Platform} | {currentTrack.Queuer}");

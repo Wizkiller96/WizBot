@@ -30,7 +30,7 @@ namespace NadekoBot.Modules.Searches
                 {
                     await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
                     var translation = await _searches.Translate(langs, text).ConfigureAwait(false);
-                    await SendConfirmAsync(GetText("translation") + " " + langs, translation).ConfigureAwait(false);
+                    await SendConfirmAsync(GetText(strs.translation) + " " + langs, translation).ConfigureAwait(false);
                 }
                 catch
                 {

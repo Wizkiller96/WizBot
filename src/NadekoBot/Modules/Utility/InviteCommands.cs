@@ -56,7 +56,7 @@ namespace NadekoBot.Modules.Utility
                     {
                         return _eb.Create()
                             .WithErrorColor()
-                            .WithDescription(GetText("no_invites"));
+                            .WithDescription(GetText(strs.no_invites));
                     }
 
                     var embed = _eb.Create().WithOkColor();
@@ -69,8 +69,8 @@ namespace NadekoBot.Modules.Utility
                         var creator = inv.Inviter.ToString().TrimTo(25);
                         var usesString = $"{inv.Uses} / {(inv.MaxUses == 0 ? "∞" : inv.MaxUses?.ToString())}";
                         
-                        var desc = $@"`{GetText("inv_uses")}` **{usesString}**
-`{GetText("inv_expire")}` **{expiryString}**
+                        var desc = $@"`{GetText(strs.inv_uses)}` **{usesString}**
+`{GetText(strs.inv_expire)}` **{expiryString}**
 
 {inv.Url} ";
                         embed.AddField($"#{i++} {creator}", desc);

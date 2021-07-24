@@ -43,9 +43,9 @@ namespace NadekoBot.Modules.Searches
                             .WithTitle(kvp.Key.ToTitleCase())
                             .WithDescription(p.BaseStats.ToString())
                             .WithThumbnailUrl($"https://assets.pokemon.com/assets/cms2/img/pokedex/detail/{p.Id.ToString("000")}.png")
-                            .AddField(GetText("types"), string.Join("\n", p.Types), true)
-                            .AddField(GetText("height_weight"), GetText("height_weight_val", p.HeightM, p.WeightKg), true)
-                            .AddField(GetText("abilities"), string.Join("\n", p.Abilities.Select(a => a.Value)), true)).ConfigureAwait(false);
+                            .AddField(GetText(strs.types), string.Join("\n", p.Types), true)
+                            .AddField(GetText(strs.height_weight), GetText("height_weight_val", p.HeightM, p.WeightKg), true)
+                            .AddField(GetText(strs.abilities), string.Join("\n", p.Abilities.Select(a => a.Value)), true)).ConfigureAwait(false);
                         return;
                     }
                 }
@@ -67,7 +67,7 @@ namespace NadekoBot.Modules.Searches
                             .WithDescription(string.IsNullOrWhiteSpace(kvp.Value.Desc)
                                 ? kvp.Value.ShortDesc
                                 : kvp.Value.Desc)
-                            .AddField(GetText("rating"), kvp.Value.Rating.ToString(_cultureInfo), true));
+                            .AddField(GetText(strs.rating), kvp.Value.Rating.ToString(_cultureInfo), true));
                         return;
                     }
                 }

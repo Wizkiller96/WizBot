@@ -47,23 +47,23 @@ namespace NadekoBot.Modules.Utility
                 if (string.IsNullOrWhiteSpace(features))
                     features = "-";
                 var embed = _eb.Create()
-                    .WithAuthor(GetText("server_info"))
+                    .WithAuthor(GetText(strs.server_info))
                     .WithTitle(guild.Name)
-                    .AddField(GetText("id"), guild.Id.ToString(), true)
-                    .AddField(GetText("owner"), ownername.ToString(), true)
-                    .AddField(GetText("members"), guild.MemberCount.ToString(), true)
-                    .AddField(GetText("text_channels"), textchn.ToString(), true)
-                    .AddField(GetText("voice_channels"), voicechn.ToString(), true)
-                    .AddField(GetText("created_at"), $"{createdAt:dd.MM.yyyy HH:mm}", true)
-                    .AddField(GetText("region"), guild.VoiceRegionId.ToString(), true)
-                    .AddField(GetText("roles"), (guild.Roles.Count - 1).ToString(), true)
-                    .AddField(GetText("features"), features, true)
+                    .AddField(GetText(strs.id), guild.Id.ToString(), true)
+                    .AddField(GetText(strs.owner), ownername.ToString(), true)
+                    .AddField(GetText(strs.members), guild.MemberCount.ToString(), true)
+                    .AddField(GetText(strs.text_channels), textchn.ToString(), true)
+                    .AddField(GetText(strs.voice_channels), voicechn.ToString(), true)
+                    .AddField(GetText(strs.created_at), $"{createdAt:dd.MM.yyyy HH:mm}", true)
+                    .AddField(GetText(strs.region), guild.VoiceRegionId.ToString(), true)
+                    .AddField(GetText(strs.roles), (guild.Roles.Count - 1).ToString(), true)
+                    .AddField(GetText(strs.features), features, true)
                     .WithOkColor();
                 if (Uri.IsWellFormedUriString(guild.IconUrl, UriKind.Absolute))
                     embed.WithThumbnailUrl(guild.IconUrl);
                 if (guild.Emotes.Any())
                 {
-                    embed.AddField(GetText("custom_emojis") + $"({guild.Emotes.Count})",
+                    embed.AddField(GetText(strs.custom_emojis) + $"({guild.Emotes.Count})",
                         string.Join(" ", guild.Emotes
                             .Shuffle()
                             .Take(20)
@@ -85,9 +85,9 @@ namespace NadekoBot.Modules.Utility
                 var embed = _eb.Create()
                     .WithTitle(ch.Name)
                     .WithDescription(ch.Topic?.SanitizeMentions(true))
-                    .AddField(GetText("id"), ch.Id.ToString(), true)
-                    .AddField(GetText("created_at"), $"{createdAt:dd.MM.yyyy HH:mm}", true)
-                    .AddField(GetText("users"), usercount.ToString(), true)
+                    .AddField(GetText(strs.id), ch.Id.ToString(), true)
+                    .AddField(GetText(strs.created_at), $"{createdAt:dd.MM.yyyy HH:mm}", true)
+                    .AddField(GetText(strs.users), usercount.ToString(), true)
                     .WithOkColor();
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
@@ -102,15 +102,15 @@ namespace NadekoBot.Modules.Utility
                     return;
 
                 var embed = _eb.Create()
-                    .AddField(GetText("name"), $"**{user.Username}**#{user.Discriminator}", true);
+                    .AddField(GetText(strs.name), $"**{user.Username}**#{user.Discriminator}", true);
                 if (!string.IsNullOrWhiteSpace(user.Nickname))
                 {
-                    embed.AddField(GetText("nickname"), user.Nickname, true);
+                    embed.AddField(GetText(strs.nickname), user.Nickname, true);
                 }
-                embed.AddField(GetText("id"), user.Id.ToString(), true)
-                    .AddField(GetText("joined_server"), $"{user.JoinedAt?.ToString("dd.MM.yyyy HH:mm") ?? "?"}", true)
-                    .AddField(GetText("joined_discord"), $"{user.CreatedAt:dd.MM.yyyy HH:mm}", true)
-                    .AddField(GetText("roles"), $"**({user.RoleIds.Count - 1})** - {string.Join("\n", user.GetRoles().Take(10).Where(r => r.Id != r.Guild.EveryoneRole.Id).Select(r => r.Name)).SanitizeMentions(true)}", true)
+                embed.AddField(GetText(strs.id), user.Id.ToString(), true)
+                    .AddField(GetText(strs.joined_server), $"{user.JoinedAt?.ToString("dd.MM.yyyy HH:mm") ?? "?"}", true)
+                    .AddField(GetText(strs.joined_discord), $"{user.CreatedAt:dd.MM.yyyy HH:mm}", true)
+                    .AddField(GetText(strs.roles), $"**({user.RoleIds.Count - 1})** - {string.Join("\n", user.GetRoles().Take(10).Where(r => r.Id != r.Guild.EveryoneRole.Id).Select(r => r.Name)).SanitizeMentions(true)}", true)
                     .WithOkColor();
 
                 var av = user.RealAvatarUrl();

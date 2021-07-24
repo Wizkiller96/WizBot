@@ -114,9 +114,9 @@ namespace NadekoBot.Modules.Utility
                 await ctx.Channel.EmbedAsync(_eb.Create(ctx)
                     .WithOkColor()
                     .WithTitle(GetText("quote_id", $"#{data.Id}"))
-                    .AddField(GetText("trigger"), data.Keyword)
-                    .AddField(GetText("response"), data.Text.Length > 1000
-                        ? GetText("redacted_too_long")
+                    .AddField(GetText(strs.trigger), data.Keyword)
+                    .AddField(GetText(strs.response), data.Text.Length > 1000
+                        ? GetText(strs.redacted_too_long)
                         : Format.Sanitize(data.Text))
                     .WithFooter(GetText("created_by", $"{data.AuthorName} ({data.AuthorId})"))
                 ).ConfigureAwait(false);
@@ -164,7 +164,7 @@ namespace NadekoBot.Modules.Utility
 
                 if (quote is null || quote.GuildId != ctx.Guild.Id)
                 {
-                    await SendErrorAsync(GetText("quotes_notfound")).ConfigureAwait(false);
+                    await SendErrorAsync(GetText(strs.quotes_notfound)).ConfigureAwait(false);
                     return;
                 }
 
@@ -215,7 +215,7 @@ namespace NadekoBot.Modules.Utility
 
                     if ((q?.GuildId != ctx.Guild.Id) || (!isAdmin && q.AuthorId != ctx.Message.Author.Id))
                     {
-                        response = GetText("quotes_remove_none");
+                        response = GetText(strs.quotes_remove_none);
                     }
                     else
                     {

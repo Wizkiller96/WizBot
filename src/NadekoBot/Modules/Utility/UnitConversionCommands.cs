@@ -21,7 +21,7 @@ namespace NadekoBot.Modules.Utility
                 var units = _service.Units;
 
                 var embed = _eb.Create()
-                    .WithTitle(GetText("convertlist"))
+                    .WithTitle(GetText(strs.convertlist))
                     .WithOkColor();
 
 

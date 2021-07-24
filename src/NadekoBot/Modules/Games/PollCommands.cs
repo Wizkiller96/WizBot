@@ -64,7 +64,7 @@ namespace NadekoBot.Modules.Games
                 if (!_service.ActivePolls.TryGetValue(ctx.Guild.Id, out var pr))
                     return;
 
-                await ctx.Channel.EmbedAsync(GetStats(pr.Poll, GetText("current_poll_results"))).ConfigureAwait(false);
+                await ctx.Channel.EmbedAsync(GetStats(pr.Poll, GetText(strs.current_poll_results))).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -78,7 +78,7 @@ namespace NadekoBot.Modules.Games
                 if ((p = _service.StopPoll(ctx.Guild.Id)) is null)
                     return;
 
-                var embed = GetStats(p, GetText("poll_closed"));
+                var embed = GetStats(p, GetText(strs.poll_closed));
                 await ctx.Channel.EmbedAsync(embed)
                     .ConfigureAwait(false);
             }

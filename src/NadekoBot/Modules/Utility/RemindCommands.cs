@@ -88,7 +88,7 @@ namespace NadekoBot.Modules.Utility
 
                 var embed = _eb.Create()
                     .WithOkColor()
-                    .WithTitle(GetText("reminder_list"));
+                    .WithTitle(GetText(strs.reminder_list));
 
                 List<Reminder> rems;
                 using (var uow = _db.GetDbContext())
@@ -113,7 +113,7 @@ namespace NadekoBot.Modules.Utility
                 }
                 else
                 {
-                    embed.WithDescription(GetText("reminders_none"));
+                    embed.WithDescription(GetText(strs.reminders_none));
                 }
 
                 embed.AddPaginatedFooter(page + 1, null);

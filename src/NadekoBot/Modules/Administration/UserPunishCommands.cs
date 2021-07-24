@@ -62,8 +62,8 @@ namespace NadekoBot.Modules.Administration
                 {
                     await (await user.GetOrCreateDMChannelAsync().ConfigureAwait(false)).EmbedAsync(_eb.Create().WithErrorColor()
                                      .WithDescription(GetText("warned_on", ctx.Guild.ToString()))
-                                     .AddField(GetText("moderator"), ctx.User.ToString())
-                                     .AddField(GetText("reason"), reason ?? "-"))
+                                     .AddField(GetText(strs.moderator), ctx.User.ToString())
+                                     .AddField(GetText(strs.reason), reason ?? "-"))
                         .ConfigureAwait(false);
                 }
                 catch
@@ -81,11 +81,11 @@ namespace NadekoBot.Modules.Administration
                     Log.Warning(ex.Message);
                     var errorEmbed = _eb.Create()
                         .WithErrorColor()
-                        .WithDescription(GetText("cant_apply_punishment"));
+                        .WithDescription(GetText(strs.cant_apply_punishment));
                     
                     if (dmFailed)
                     {
-                        errorEmbed.WithFooter("⚠️ " + GetText("unable_to_dm_user"));
+                        errorEmbed.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
                     }
                     
                     await ctx.Channel.EmbedAsync(errorEmbed);
@@ -107,7 +107,7 @@ namespace NadekoBot.Modules.Administration
 
                 if (dmFailed)
                 {
-                    embed.WithFooter("⚠️ " + GetText("unable_to_dm_user"));
+                    embed.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
                 }
 
                 await ctx.Channel.EmbedAsync(embed);
@@ -225,7 +225,7 @@ namespace NadekoBot.Modules.Administration
 
                     if (!warnings.Any())
                     {
-                        embed.WithDescription(GetText("warnings_none"));
+                        embed.WithDescription(GetText(strs.warnings_none));
                     }
                     else
                     {
@@ -273,7 +273,7 @@ namespace NadekoBot.Modules.Administration
                         });
 
                     return _eb.Create().WithOkColor()
-                        .WithTitle(GetText("warnings_list"))
+                        .WithTitle(GetText(strs.warnings_list))
                         .WithDescription(string.Join("\n", ws));
                 }, warnings.Length, 15).ConfigureAwait(false);
             }
@@ -408,10 +408,10 @@ namespace NadekoBot.Modules.Administration
                 }
                 else
                 {
-                    list = GetText("warnpl_none");
+                    list = GetText(strs.warnpl_none);
                 }
                 await SendConfirmAsync(
-                    GetText("warn_punish_list"),
+                    GetText(strs.warn_punish_list),
                     list).ConfigureAwait(false);
             }
 
@@ -452,14 +452,14 @@ namespace NadekoBot.Modules.Administration
 
                 await _mute.TimedBan(ctx.Guild, user, time.Time, ctx.User.ToString() + " | " + msg).ConfigureAwait(false);
                 var toSend = _eb.Create().WithOkColor()
-                    .WithTitle("⛔️ " + GetText("banned_user"))
-                    .AddField(GetText("username"), user.ToString(), true)
+                    .WithTitle("⛔️ " + GetText(strs.banned_user))
+                    .AddField(GetText(strs.username), user.ToString(), true)
                     .AddField("ID", user.Id.ToString(), true)
-                    .AddField(GetText("duration"), $"{time.Time.Days}d {time.Time.Hours}h {time.Time.Minutes}m", true);
+                    .AddField(GetText(strs.duration), $"{time.Time.Days}d {time.Time.Hours}h {time.Time.Minutes}m", true);
 
                 if (dmFailed)
                 {
-                    toSend.WithFooter("⚠️ " + GetText("unable_to_dm_user"));
+                    toSend.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
                 }
 
                 await ctx.Channel.EmbedAsync(toSend)
@@ -479,7 +479,7 @@ namespace NadekoBot.Modules.Administration
                     await ctx.Guild.AddBanAsync(userId, 7, ctx.User.ToString() + " | " + msg);
                     
                     await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
-                            .WithTitle("⛔️ " + GetText("banned_user"))
+                            .WithTitle("⛔️ " + GetText(strs.banned_user))
                             .AddField("ID", userId.ToString(), true))
                         .ConfigureAwait(false);
                 }
@@ -519,13 +519,13 @@ namespace NadekoBot.Modules.Administration
                 await ctx.Guild.AddBanAsync(user, 7, ctx.User.ToString() + " | " + msg).ConfigureAwait(false);
 
                 var toSend = _eb.Create().WithOkColor()
-                    .WithTitle("⛔️ " + GetText("banned_user"))
-                    .AddField(GetText("username"), user.ToString(), true)
+                    .WithTitle("⛔️ " + GetText(strs.banned_user))
+                    .AddField(GetText(strs.username), user.ToString(), true)
                     .AddField("ID", user.Id.ToString(), true);
 
                 if (dmFailed)
                 {
-                    toSend.WithFooter("⚠️ " + GetText("unable_to_dm_user"));
+                    toSend.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
                 }
                 
                 await ctx.Channel.EmbedAsync(toSend)
@@ -697,13 +697,13 @@ namespace NadekoBot.Modules.Administration
                 catch { await ctx.Guild.RemoveBanAsync(user).ConfigureAwait(false); }
 
                 var toSend = _eb.Create().WithOkColor()
-                    .WithTitle("☣ " + GetText("sb_user"))
-                    .AddField(GetText("username"), user.ToString(), true)
+                    .WithTitle("☣ " + GetText(strs.sb_user))
+                    .AddField(GetText(strs.username), user.ToString(), true)
                     .AddField("ID", user.Id.ToString(), true);
                 
                 if (dmFailed)
                 {
-                    toSend.WithFooter("⚠️ " + GetText("unable_to_dm_user"));
+                    toSend.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
                 }
                 
                 await ctx.Channel.EmbedAsync(toSend)
@@ -752,13 +752,13 @@ namespace NadekoBot.Modules.Administration
                 await user.KickAsync(ctx.User.ToString() + " | " + msg).ConfigureAwait(false);
                 
                 var toSend = _eb.Create().WithOkColor()
-                    .WithTitle(GetText("kicked_user"))
-                    .AddField(GetText("username"), user.ToString(), true)
+                    .WithTitle(GetText(strs.kicked_user))
+                    .AddField(GetText(strs.username), user.ToString(), true)
                     .AddField("ID", user.Id.ToString(), true);
 
                 if (dmFailed)
                 {
-                    toSend.WithFooter("⚠️ " + GetText("unable_to_dm_user"));
+                    toSend.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
                 }
                 
                 await ctx.Channel.EmbedAsync(toSend)

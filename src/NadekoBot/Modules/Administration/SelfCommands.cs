@@ -56,10 +56,10 @@ namespace NadekoBot.Modules.Administration
                 _service.AddNewAutoCommand(cmd);
 
                 await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
-                    .WithTitle(GetText("scadd"))
-                    .AddField(GetText("server"), cmd.GuildId is null ? $"-" : $"{cmd.GuildName}/{cmd.GuildId}", true)
-                    .AddField(GetText("channel"), $"{cmd.ChannelName}/{cmd.ChannelId}", true)
-                    .AddField(GetText("command_text"), cmdText, false));
+                    .WithTitle(GetText(strs.scadd))
+                    .AddField(GetText(strs.server), cmd.GuildId is null ? $"-" : $"{cmd.GuildName}/{cmd.GuildId}", true)
+                    .AddField(GetText(strs.channel), $"{cmd.ChannelName}/{cmd.ChannelId}", true)
+                    .AddField(GetText(strs.command_text), cmdText, false));
             }
 
             [NadekoCommand, Aliases]
@@ -115,9 +115,9 @@ namespace NadekoBot.Modules.Administration
                         text: string.Join("\n", scmds
                         .Select(x => $@"```css
 #{++i + page * 5}
-[{GetText("server")}]: {(x.GuildId.HasValue ? $"{x.GuildName} #{x.GuildId}" : "-")}
-[{GetText("channel")}]: {x.ChannelName} #{x.ChannelId}
-[{GetText("command_text")}]: {x.CommandText}```")),
+[{GetText(strs.server)}]: {(x.GuildId.HasValue ? $"{x.GuildName} #{x.GuildId}" : "-")}
+[{GetText(strs.channel)}]: {x.ChannelName} #{x.ChannelId}
+[{GetText(strs.command_text)}]: {x.CommandText}```")),
                         title: string.Empty,
                         footer: GetText("page", page + 1))
                     .ConfigureAwait(false);
@@ -147,10 +147,10 @@ namespace NadekoBot.Modules.Administration
                         text: string.Join("\n", scmds
                         .Select(x => $@"```css
 #{++i + page * 5}
-[{GetText("server")}]: {(x.GuildId.HasValue ? $"{x.GuildName} #{x.GuildId}" : "-")}
-[{GetText("channel")}]: {x.ChannelName} #{x.ChannelId}
+[{GetText(strs.server)}]: {(x.GuildId.HasValue ? $"{x.GuildName} #{x.GuildId}" : "-")}
+[{GetText(strs.channel)}]: {x.ChannelName} #{x.ChannelId}
 {GetIntervalText(x.Interval)}
-[{GetText("command_text")}]: {x.CommandText}```")),
+[{GetText(strs.command_text)}]: {x.CommandText}```")),
                         title: string.Empty,
                         footer: GetText("page", page + 1))
                     .ConfigureAwait(false);
@@ -159,7 +159,7 @@ namespace NadekoBot.Modules.Administration
 
             private string GetIntervalText(int interval)
             {
-                return $"[{GetText("interval")}]: {interval}";
+                return $"[{GetText(strs.interval)}]: {interval}";
             }
 
             [NadekoCommand, Aliases]
@@ -273,7 +273,7 @@ namespace NadekoBot.Modules.Administration
                     var str = string.Join("\n", allShardStrings.Skip(25 * curPage).Take(25));
 
                     if (string.IsNullOrWhiteSpace(str))
-                        str = GetText("no_shards_on_page");
+                        str = GetText(strs.no_shards_on_page);
 
                     return _eb.Create()
                         .WithOkColor()

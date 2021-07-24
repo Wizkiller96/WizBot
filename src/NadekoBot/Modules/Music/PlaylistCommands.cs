@@ -166,9 +166,9 @@ namespace NadekoBot.Modules.Music
 
                 await ctx.Channel.EmbedAsync(_eb.Create()
                     .WithOkColor()
-                    .WithTitle(GetText("playlist_saved"))
-                    .AddField(GetText("name"), name)
-                    .AddField(GetText("id"), playlist.Id.ToString()));
+                    .WithTitle(GetText(strs.playlist_saved))
+                    .AddField(GetText(strs.name), name)
+                    .AddField(GetText(strs.id), playlist.Id.ToString()));
             }
 
 
@@ -239,7 +239,7 @@ namespace NadekoBot.Modules.Music
 
                     if (msg != null)
                     {
-                        await msg.ModifyAsync(m => m.Content = GetText("playlist_queue_complete"));
+                        await msg.ModifyAsync(m => m.Content = GetText(strs.playlist_queue_complete));
                     }
                 }
                 finally

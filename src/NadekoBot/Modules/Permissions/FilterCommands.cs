@@ -288,7 +288,7 @@ namespace NadekoBot.Modules.Permissions
 
                 await ctx.SendPaginatedConfirmAsync(page,
                     (curPage) => _eb.Create()
-                        .WithTitle(GetText("filter_word_list"))
+                        .WithTitle(GetText(strs.filter_word_list))
                         .WithDescription(string.Join("\n", fws.Skip(curPage * 10).Take(10)))
                         .WithOkColor()
                 , fws.Length, 10).ConfigureAwait(false);

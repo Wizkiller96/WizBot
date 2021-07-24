@@ -62,8 +62,14 @@ namespace NadekoBot.Modules.Games.Common.Trivia
             Channel = channel;
         }
 
-        private string GetText(string key, params object[] replacements)
-            => _strings.GetText(key, Channel.GuildId, replacements);
+        private string GetText(in LocStr key)
+             => _strings.GetText(key, Channel.GuildId);
+        
+        private string GetText<T>(in LocStr<T> key, T param1)
+            => _strings.GetText(key, Channel.GuildId, param1);
+        
+        private string GetText<T1, T2>(in LocStr<T1, T2> key, T1 param1, T2 param2)
+            => _strings.GetText(key, Channel.GuildId, param1, param2);
 
         public async Task StartGame()
         {
@@ -78,7 +84,7 @@ namespace NadekoBot.Modules.Games.Common.Trivia
                 CurrentQuestion = _questionPool.GetRandomQuestion(OldQuestions, _options.IsPokemon);
                 if (string.IsNullOrWhiteSpace(CurrentQuestion?.Answer) || string.IsNullOrWhiteSpace(CurrentQuestion.Question))
                 {
-                    await Channel.SendErrorAsync(_eb, GetText("trivia_game"), GetText("failed_loading_question")).ConfigureAwait(false);
+                    await Channel.SendErrorAsync(_eb, GetText(strs.trivia_game), GetText(strs.failed_loading_question)).ConfigureAwait(false);
                     return;
                 }
                 OldQuestions.Add(CurrentQuestion); //add it to exclusion list so it doesn't show up again
@@ -88,12 +94,12 @@ namespace NadekoBot.Modules.Games.Common.Trivia
                 try
                 {
                     questionEmbed = _eb.Create().WithOkColor()
-                        .WithTitle(GetText("trivia_game"))
-                        .AddField(GetText("category"), CurrentQuestion.Category)
-                        .AddField(GetText("question"), CurrentQuestion.Question);
+                        .WithTitle(GetText(strs.trivia_game))
+                        .AddField(GetText(strs.category), CurrentQuestion.Category)
+                        .AddField(GetText(strs.question), CurrentQuestion.Question);
 
                     if (showHowToQuit)
-                        questionEmbed.WithFooter(GetText("trivia_quit", _quitCommand));
+                        questionEmbed.WithFooter(GetText(strs.trivia_quit, _quitCommand));
                     
                     if (Uri.IsWellFormedUriString(CurrentQuestion.ImageUrl, UriKind.Absolute))
                         questionEmbed.WithImageUrl(CurrentQuestion.ImageUrl);
@@ -152,8 +158,8 @@ namespace NadekoBot.Modules.Games.Common.Trivia
                     try
                     {
                         var embed = _eb.Create().WithErrorColor()
-                            .WithTitle(GetText("trivia_game"))
-                            .WithDescription(GetText("trivia_times_up", Format.Bold(CurrentQuestion.Answer)));
+                            .WithTitle(GetText(strs.trivia_game))
+                            .WithDescription(GetText(strs.trivia_times_up, Format.Bold(CurrentQuestion.Answer)));
                         if (Uri.IsWellFormedUriString(CurrentQuestion.AnswerImageUrl, UriKind.Absolute))
                             embed.WithImageUrl(CurrentQuestion.AnswerImageUrl);
 
@@ -190,8 +196,8 @@ namespace NadekoBot.Modules.Games.Common.Trivia
                 try
                 {
                     await Channel.SendConfirmAsync(_eb,
-                        GetText("trivia_game"),
-                        GetText("trivia_stopping"));
+                        GetText(strs.trivia_game),
+                        GetText(strs.trivia_stopping));
 
                 }
                 catch (Exception ex)
@@ -239,7 +245,7 @@ namespace NadekoBot.Modules.Games.Common.Trivia
                         try
                         {
                             var embedS = _eb.Create().WithOkColor()
-                                .WithTitle(GetText("trivia_game"))
+                                .WithTitle(GetText(strs.trivia_game))
                                 .WithDescription(GetText("trivia_win",
                                     guildUser.Mention,
                                     Format.Bold(CurrentQuestion.Answer)));
@@ -257,7 +263,7 @@ namespace NadekoBot.Modules.Games.Common.Trivia
                         return;
                     }
                     var embed = _eb.Create().WithOkColor()
-                        .WithTitle(GetText("trivia_game"))
+                        .WithTitle(GetText(strs.trivia_game))
                         .WithDescription(GetText("trivia_guess", guildUser.Mention, Format.Bold(CurrentQuestion.Answer)));
                     if (Uri.IsWellFormedUriString(CurrentQuestion.AnswerImageUrl, UriKind.Absolute))
                         embed.WithImageUrl(CurrentQuestion.AnswerImageUrl);
@@ -271,7 +277,7 @@ namespace NadekoBot.Modules.Games.Common.Trivia
         public string GetLeaderboard()
         {
             if (Users.Count == 0)
-                return GetText("no_results");
+                return GetText(strs.no_results);
 
             var sb = new StringBuilder();
 

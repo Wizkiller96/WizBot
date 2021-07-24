@@ -52,7 +52,7 @@ namespace NadekoBot.Modules.Administration
 
             var embed = _eb.Create()
                 .WithOkColor()
-                .WithTitle(GetText("server_delmsgoncmd"))
+                .WithTitle(GetText(strs.server_delmsgoncmd))
                 .WithDescription(enabled ? "✅" : "❌");
 
             var str = string.Join("\n", channels
@@ -67,7 +67,7 @@ namespace NadekoBot.Modules.Administration
             if (string.IsNullOrWhiteSpace(str))
                 str = "-";
 
-            embed.AddField(GetText("channel_delmsgoncmd"), str);
+            embed.AddField(GetText(strs.channel_delmsgoncmd), str);
 
             await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
         }

@@ -36,9 +36,9 @@ namespace NadekoBot.Modules.Searches
                     .WithTitle(novelData.Title)
                     .WithUrl(novelData.Link)
                     .WithImageUrl(novelData.ImageUrl)
-                    .AddField(GetText("authors"), string.Join("\n", novelData.Authors), true)
-                    .AddField(GetText("status"), novelData.Status, true)
-                    .AddField(GetText("genres"), string.Join(" ", novelData.Genres.Any() ? novelData.Genres : new[] { "none" }), true)
+                    .AddField(GetText(strs.authors), string.Join("\n", novelData.Authors), true)
+                    .AddField(GetText(strs.status), novelData.Status, true)
+                    .AddField(GetText(strs.genres), string.Join(" ", novelData.Genres.Any() ? novelData.Genres : new[] { "none" }), true)
                     .WithFooter(GetText("score" + " " + novelData.Score));
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
@@ -62,7 +62,7 @@ namespace NadekoBot.Modules.Searches
 
                     var favorites = document.QuerySelectorAll("div.user-favorites > div.di-tc");
 
-                    var favAnime = GetText("anime_no_fav");
+                    var favAnime = GetText(strs.anime_no_fav);
                     if (favorites.Length > 0 && favorites[0].QuerySelector("p") is null)
                         favAnime = string.Join("\n", favorites[0].QuerySelectorAll("ul > li > div.di-tc.va-t > a")
                            .Shuffle()
@@ -84,13 +84,13 @@ namespace NadekoBot.Modules.Searches
                     var embed = _eb.Create()
                         .WithOkColor()
                         .WithTitle(GetText("mal_profile", name))
-                        .AddField("💚 " + GetText("watching"), stats[0], true)
-                        .AddField("💙 " + GetText("completed"), stats[1], true);
+                        .AddField("💚 " + GetText(strs.watching), stats[0], true)
+                        .AddField("💙 " + GetText(strs.completed), stats[1], true);
                     if (info.Count < 3)
-                        embed.AddField("💛 " + GetText("on_hold"), stats[2], true);
+                        embed.AddField("💛 " + GetText(strs.on_hold), stats[2], true);
                     embed
-                        .AddField("💔 " + GetText("dropped"), stats[3], true)
-                        .AddField("⚪ " + GetText("plan_to_watch"), stats[4], true)
+                        .AddField("💔 " + GetText(strs.dropped), stats[3], true)
+                        .AddField("⚪ " + GetText(strs.plan_to_watch), stats[4], true)
                         .AddField("🕐 " + daysAndMean[0][0], daysAndMean[0][1], true)
                         .AddField("📊 " + daysAndMean[1][0], daysAndMean[1][1], true)
                         .AddField(MalInfoToEmoji(info[0].Item1) + " " + info[0].Item1, info[0].Item2.TrimTo(20), true)
@@ -102,7 +102,7 @@ namespace NadekoBot.Modules.Searches
                         .WithDescription($@"
 ** https://myanimelist.net/animelist/{ name } **
 
-**{GetText("top_3_fav_anime")}**
+**{GetText(strs.top_3_fav_anime)}**
 {favAnime}"
 
     )
@@ -156,9 +156,9 @@ namespace NadekoBot.Modules.Searches
                     .WithTitle(animeData.TitleEnglish)
                     .WithUrl(animeData.Link)
                     .WithImageUrl(animeData.ImageUrlLarge)
-                    .AddField(GetText("episodes"), animeData.TotalEpisodes.ToString(), true)
-                    .AddField(GetText("status"), animeData.AiringStatus.ToString(), true)
-                    .AddField(GetText("genres"), string.Join(",\n", animeData.Genres.Any() ? animeData.Genres : new[] { "none" }), true)
+                    .AddField(GetText(strs.episodes), animeData.TotalEpisodes.ToString(), true)
+                    .AddField(GetText(strs.status), animeData.AiringStatus.ToString(), true)
+                    .AddField(GetText(strs.genres), string.Join(",\n", animeData.Genres.Any() ? animeData.Genres : new[] { "none" }), true)
                     .WithFooter(GetText("score" + " " + animeData.AverageScore + " / 100"));
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
@@ -184,9 +184,9 @@ namespace NadekoBot.Modules.Searches
                     .WithTitle(mangaData.TitleEnglish)
                     .WithUrl(mangaData.Link)
                     .WithImageUrl(mangaData.ImageUrlLge)
-                    .AddField(GetText("chapters"), mangaData.TotalChapters.ToString(), true)
-                    .AddField(GetText("status"), mangaData.PublishingStatus.ToString(), true)
-                    .AddField(GetText("genres"), string.Join(",\n", mangaData.Genres.Any() ? mangaData.Genres : new[] { "none" }), true)
+                    .AddField(GetText(strs.chapters), mangaData.TotalChapters.ToString(), true)
+                    .AddField(GetText(strs.status), mangaData.PublishingStatus.ToString(), true)
+                    .AddField(GetText(strs.genres), string.Join(",\n", mangaData.Genres.Any() ? mangaData.Genres : new[] { "none" }), true)
                     .WithFooter(GetText("score" + " " + mangaData.AverageScore + " / 100"));
 
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);

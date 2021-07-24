@@ -53,7 +53,7 @@ namespace NadekoBot.Modules.Administration
                 await ctx.SendPaginatedConfirmAsync(page,
                     (curPage) => _eb.Create()
                         .WithOkColor()
-                        .WithTitle(GetText("timezones_available"))
+                        .WithTitle(GetText(strs.timezones_available))
                         .WithDescription(string.Join("\n", timezoneStrings
                             .Skip(curPage * timezonesPerPage)
                             .Take(timezonesPerPage))),

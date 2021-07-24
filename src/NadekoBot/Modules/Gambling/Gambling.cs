@@ -65,13 +65,13 @@ namespace NadekoBot.Modules.Gambling
                 // [21:03] Bob Page: Kinda remids me of US economy
             }
             var embed = _eb.Create()
-                .WithTitle(GetText("economy_state"))
-                .AddField(GetText("currency_owned"), ((BigInteger)(ec.Cash - ec.Bot)) + CurrencySign)
-                .AddField(GetText("currency_one_percent"), (onePercent * 100).ToString("F2") + "%")
-                .AddField(GetText("currency_planted"), ((BigInteger)ec.Planted) + CurrencySign)
-                .AddField(GetText("owned_waifus_total"), ((BigInteger)ec.Waifus) + CurrencySign)
-                .AddField(GetText("bot_currency"), ec.Bot + CurrencySign)
-                .AddField(GetText("total"), ((BigInteger)(ec.Cash + ec.Planted + ec.Waifus)).ToString("N", _enUsCulture) + CurrencySign)
+                .WithTitle(GetText(strs.economy_state))
+                .AddField(GetText(strs.currency_owned), ((BigInteger)(ec.Cash - ec.Bot)) + CurrencySign)
+                .AddField(GetText(strs.currency_one_percent), (onePercent * 100).ToString("F2") + "%")
+                .AddField(GetText(strs.currency_planted), ((BigInteger)ec.Planted) + CurrencySign)
+                .AddField(GetText(strs.owned_waifus_total), ((BigInteger)ec.Waifus) + CurrencySign)
+                .AddField(GetText(strs.bot_currency), ec.Bot + CurrencySign)
+                .AddField(GetText(strs.total), ((BigInteger)(ec.Cash + ec.Planted + ec.Waifus)).ToString("N", _enUsCulture) + CurrencySign)
                 .WithOkColor();
                 // ec.Cash already contains ec.Bot as it's the total of all values in the CurrencyAmount column of the DiscordUser table
             await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
@@ -140,7 +140,7 @@ namespace NadekoBot.Modules.Gambling
                 return;
             }
             var usr = membersArray[new NadekoRandom().Next(0, membersArray.Length)];
-            await SendConfirmAsync("🎟 " + GetText("raffled_user"), $"**{usr.Username}#{usr.Discriminator}**", footer: $"ID: {usr.Id}").ConfigureAwait(false);
+            await SendConfirmAsync("🎟 " + GetText(strs.raffled_user), $"**{usr.Username}#{usr.Discriminator}**", footer: $"ID: {usr.Id}").ConfigureAwait(false);
         }
 
         [NadekoCommand, Aliases]
@@ -156,7 +156,7 @@ namespace NadekoBot.Modules.Gambling
                 return;
             }
             var usr = membersArray[new NadekoRandom().Next(0, membersArray.Length)];
-            await SendConfirmAsync("🎟 " + GetText("raffled_user"), $"**{usr.Username}#{usr.Discriminator}**", footer: $"ID: {usr.Id}").ConfigureAwait(false);
+            await SendConfirmAsync("🎟 " + GetText(strs.raffled_user), $"**{usr.Username}#{usr.Discriminator}**", footer: $"ID: {usr.Id}").ConfigureAwait(false);
         }
 
         [NadekoCommand, Aliases]
@@ -375,7 +375,7 @@ namespace NadekoBot.Modules.Gambling
 
             var embed = _eb.Create()
                     .WithOkColor()
-                    .WithTitle(GetText("roll_duel"));
+                    .WithTitle(GetText(strs.roll_duel));
 
             var description = string.Empty;
 
@@ -488,7 +488,7 @@ namespace NadekoBot.Modules.Gambling
             }
             else
             {
-                str += GetText("better_luck");
+                str += GetText(strs.better_luck);
             }
             
             await SendConfirmAsync(str).ConfigureAwait(false);
@@ -549,7 +549,7 @@ namespace NadekoBot.Modules.Gambling
             {
                 var embed = _eb.Create()
                    .WithOkColor()
-                   .WithTitle(CurrencySign + " " + GetText("leaderboard"));
+                   .WithTitle(CurrencySign + " " + GetText(strs.leaderboard));
 
                 List<DiscordUser> toSend;
                 if (!opts.Clean)
@@ -565,7 +565,7 @@ namespace NadekoBot.Modules.Gambling
                 }
                  if (!toSend.Any())
                  {
-                     embed.WithDescription(GetText("no_user_on_this_page"));
+                     embed.WithDescription(GetText(strs.no_user_on_this_page));
                      return embed;
                  }
 
@@ -651,7 +651,7 @@ namespace NadekoBot.Modules.Gambling
                 await _cs.AddAsync(ctx.User.Id,
                     "Rps-win", amount, gamble: true).ConfigureAwait(false);
                 embed.WithOkColor();
-                embed.AddField(GetText("won"), n(amount));
+                embed.AddField(GetText(strs.won), n(amount));
                 msg = GetText("rps_win", ctx.User.Mention,
                     getRpsPick(pick), getRpsPick(nadekoPick));
             }

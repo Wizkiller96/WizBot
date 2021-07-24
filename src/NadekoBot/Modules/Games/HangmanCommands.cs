@@ -58,7 +58,7 @@ namespace NadekoBot.Modules.Games
 
                 try
                 {
-                    await SendConfirmAsync(GetText("hangman_game_started") + $" ({hm.TermType})",
+                    await SendConfirmAsync(GetText(strs.hangman_game_started) + $" ({hm.TermType})",
                         hm.ScrambledWord + "\n" + hm.GetHangman())
                         .ConfigureAwait(false);
                 }

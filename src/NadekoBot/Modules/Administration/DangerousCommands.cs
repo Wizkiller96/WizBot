@@ -23,7 +23,7 @@ namespace NadekoBot.Modules.Administration
                 try
                 {
                     var embed = _eb.Create()
-                        .WithTitle(GetText("sql_confirm_exec"))
+                        .WithTitle(GetText(strs.sql_confirm_exec))
                         .WithDescription(Format.Code(sql));
 
                     if (!await PromptUserConfirmAsync(embed).ConfigureAwait(false))

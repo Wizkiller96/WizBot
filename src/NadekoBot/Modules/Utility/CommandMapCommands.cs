@@ -138,7 +138,7 @@ namespace NadekoBot.Modules.Utility
                 await ctx.SendPaginatedConfirmAsync(page, (curPage) =>
                 {
                     return _eb.Create().WithOkColor()
-                    .WithTitle(GetText("alias_list"))
+                    .WithTitle(GetText(strs.alias_list))
                     .WithDescription(string.Join("\n",
                         arr.Skip(curPage * 10).Take(10).Select(x => $"`{x.Key}` => `{x.Value}`")));
 

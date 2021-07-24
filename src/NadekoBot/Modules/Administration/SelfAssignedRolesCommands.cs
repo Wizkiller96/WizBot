@@ -158,8 +158,8 @@ namespace NadekoBot.Modules.Administration
                         .WithTitle(Format.Bold(GetText("self_assign_list", roles.Count())))
                         .WithDescription(rolesStr.ToString())
                         .WithFooter(exclusive
-                            ? GetText("self_assign_are_exclusive")
-                            : GetText("self_assign_are_not_exclusive"));
+                            ? GetText(strs.self_assign_are_exclusive)
+                            : GetText(strs.self_assign_are_not_exclusive));
                 }, roles.Count(), 20).ConfigureAwait(false);
             }
 

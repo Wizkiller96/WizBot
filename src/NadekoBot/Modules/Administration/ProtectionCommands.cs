@@ -232,7 +232,7 @@ namespace NadekoBot.Modules.Administration
                 }
 
                 var embed = _eb.Create().WithOkColor()
-                    .WithTitle(GetText("prot_active"));
+                    .WithTitle(GetText(strs.prot_active));
 
                 if (spam != null)
                     embed.AddField("Anti-Spam", GetAntiSpamString(spam).TrimTo(1024), true);

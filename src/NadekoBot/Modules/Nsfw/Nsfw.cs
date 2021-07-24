@@ -65,7 +65,7 @@ namespace NadekoBot.Modules.NSFW
 
             await channel.EmbedAsync(_eb.Create().WithOkColor()
                 .WithImageUrl(img.FileUrl)
-                .WithDescription($"[{GetText("tag")}: {tag}]({img})"))
+                .WithDescription($"[{GetText(strs.tag)}: {tag}]({img})"))
                 .ConfigureAwait(false);
         }
 
@@ -352,7 +352,7 @@ namespace NadekoBot.Modules.NSFW
             if (string.IsNullOrWhiteSpace(tag))
             {
                 var blTags = _service.GetBlacklistedTags(ctx.Guild.Id);
-                await SendConfirmAsync(GetText("blacklisted_tag_list"),
+                await SendConfirmAsync(GetText(strs.blacklisted_tag_list),
                     blTags.Any()
                     ? string.Join(", ", blTags)
                     : "-").ConfigureAwait(false);
@@ -424,9 +424,9 @@ namespace NadekoBot.Modules.NSFW
                 .WithDescription(g.FullTitle)
                 .WithImageUrl(g.Thumbnail)
                 .WithUrl(g.Url)
-                .AddField(GetText("favorites"), g.Likes, true)
-                .AddField(GetText("pages"), g.PageCount, true)
-                .AddField(GetText("tags"), tagString, true)
+                .AddField(GetText(strs.favorites), g.Likes, true)
+                .AddField(GetText(strs.pages), g.PageCount, true)
+                .AddField(GetText(strs.tags), tagString, true)
                 .WithFooter(g.UploadedAt.ToString("f"))
                 .WithOkColor();
 

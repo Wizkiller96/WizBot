@@ -73,6 +73,19 @@ namespace NadekoBot.Generators
         public static implicit operator LocStr<T1, T2, T3>(string data)
             => new LocStr<T1, T2, T3>(data);    
     }
+    
+    public readonly ref struct LocStr<T1, T2, T3, T4>
+    {
+        public readonly string Key;
+        
+        public LocStr(string key)
+        {
+            Key = key;
+        }
+        
+        public static implicit operator LocStr<T1, T2, T3, T4>(string data)
+            => new LocStr<T1, T2, T3, T4>(data);    
+    }
 }";
         
         public void Initialize(GeneratorInitializationContext context)
@@ -93,7 +106,7 @@ namespace NadekoBot.Generators
                 sw.WriteLine("{");
                 sw.Indent++;
 
-                sw.WriteLine("public static class Strs");
+                sw.WriteLine("public static class strs");
                 sw.WriteLine("{");
                 sw.Indent++;
 
@@ -109,7 +122,7 @@ namespace NadekoBot.Generators
                 
                 
                 sw.Flush();
-                context.AddSource("Strs.cs", stringWriter.ToString());
+                context.AddSource("strs.cs", stringWriter.ToString());
             }
             
             context.AddSource("LocStr.cs", LocStrSource);
@@ -138,20 +151,23 @@ namespace NadekoBot.Generators
         private string GetFieldType(string value)
         {
             var matches = Regex.Matches(value, @"{(?<num>\d)}");
-            int max = 0;
+            int max = -1;
             foreach (Match match in matches)
             {
                 max = Math.Max(max, int.Parse(match.Groups["num"].Value));
             }
 
+            max += 1;
             if (max == 0)
                 return "LocStr";
             if (max == 1)
-                return "LocStr<string>";
+                return "LocStr<object>";
             if (max == 2)
-                return "LocStr<string, string>";
+                return "LocStr<object, object>";
             if (max == 3)
-                return "LocStr<string, string, string>";
+                return "LocStr<object, object, object>";
+            if (max == 4)
+                return "LocStr<object, object, object, object>";
 
             return "!Error";
         }

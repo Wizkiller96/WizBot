@@ -23,8 +23,8 @@ namespace NadekoBot.Modules.Xp
             public async Task XpReset(ulong userId)
             {
                 var embed = _eb.Create()
-                    .WithTitle(GetText("reset"))
-                    .WithDescription(GetText("reset_user_confirm"));
+                    .WithTitle(GetText(strs.reset))
+                    .WithDescription(GetText(strs.reset_user_confirm));
 
                 if (!await PromptUserConfirmAsync(embed).ConfigureAwait(false))
                     return;
@@ -40,8 +40,8 @@ namespace NadekoBot.Modules.Xp
             public async Task XpReset()
             {
                 var embed = _eb.Create()
-                       .WithTitle(GetText("reset"))
-                       .WithDescription(GetText("reset_server_confirm"));
+                       .WithTitle(GetText(strs.reset))
+                       .WithDescription(GetText(strs.reset_server_confirm));
 
                 if (!await PromptUserConfirmAsync(embed).ConfigureAwait(false))
                     return;

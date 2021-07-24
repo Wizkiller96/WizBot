@@ -39,12 +39,12 @@ namespace NadekoBot.Modules.Permissions
                 var embed = _eb.Create().WithOkColor();
 
                 if (blockedModule.Any())
-                    embed.AddField(GetText("blocked_modules")
+                    embed.AddField(GetText(strs.blocked_modules)
                         , string.Join("\n", _service.BlockedModules)
                         , false);
 
                 if (blockedCommands.Any())
-                    embed.AddField(GetText("blocked_commands")
+                    embed.AddField(GetText(strs.blocked_commands)
                         , string.Join("\n", _service.BlockedCommands)
                         , false);
 

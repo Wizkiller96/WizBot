@@ -37,8 +37,8 @@ namespace NadekoBot.Modules.Searches
                             var embed = _eb.Create().WithOkColor()
                                 .WithImageUrl(comic.ImageLink)
                                 .WithAuthor(comic.Title, "https://xkcd.com/s/919f27.ico", $"{_xkcdUrl}/{comic.Num}")
-                                .AddField(GetText("comic_number"), comic.Num.ToString(), true)
-                                .AddField(GetText("date"), $"{comic.Month}/{comic.Year}", true);
+                                .AddField(GetText(strs.comic_number), comic.Num.ToString(), true)
+                                .AddField(GetText(strs.date), $"{comic.Month}/{comic.Year}", true);
                             var sent = await ctx.Channel.EmbedAsync(embed)
                                          .ConfigureAwait(false);
 
@@ -73,8 +73,8 @@ namespace NadekoBot.Modules.Searches
                             .WithOkColor()
                             .WithImageUrl(comic.ImageLink)
                             .WithAuthor(comic.Title, "https://xkcd.com/s/919f27.ico", $"{_xkcdUrl}/{num}")
-                            .AddField(GetText("comic_number"), comic.Num.ToString(), true)
-                            .AddField(GetText("date"), $"{comic.Month}/{comic.Year}", true);
+                            .AddField(GetText(strs.comic_number), comic.Num.ToString(), true)
+                            .AddField(GetText(strs.date), $"{comic.Month}/{comic.Year}", true);
                         
                         var sent = await ctx.Channel.EmbedAsync(embed)
                                      .ConfigureAwait(false);

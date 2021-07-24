@@ -69,8 +69,8 @@ namespace NadekoBot.Modules.Gambling
                     var msg = count != 1
                         ? Format.Bold(ctx.User.ToString()) + " " + GetText("flip_results", count, headCount, tailCount)
                         : Format.Bold(ctx.User.ToString()) + " " + GetText("flipped", headCount > 0
-                            ? Format.Bold(GetText("heads"))
-                            : Format.Bold(GetText("tails")));
+                            ? Format.Bold(GetText(strs.heads))
+                            : Format.Bold(GetText(strs.tails)));
                     await ctx.Channel.SendFileAsync(stream, $"{count} coins.{format.FileExtensions.First()}", msg).ConfigureAwait(false);
                 }
             }
@@ -120,7 +120,7 @@ namespace NadekoBot.Modules.Gambling
                 }
                 else
                 {
-                    str = ctx.User.ToString() + " " + GetText("better_luck");
+                    str = ctx.User.ToString() + " " + GetText(strs.better_luck);
                 }
 
                 await ctx.Channel.EmbedAsync(_eb.Create()

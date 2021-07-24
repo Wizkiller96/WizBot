@@ -238,10 +238,10 @@ namespace NadekoBot.Modules.Administration.Services
             var bs = _bss.Data;
             if (msg.Channel is IDMChannel && bs.ForwardMessages && ownerChannels.Any())
             {
-                var title = _strings.GetText("dm_from") +
+                var title = _strings.GetText(strs.dm_from) +
                             $" [{msg.Author}]({msg.Author.Id})";
 
-                var attachamentsTxt = _strings.GetText("attachments");
+                var attachamentsTxt = _strings.GetText(strs.attachments);
 
                 var toSend = msg.Content;
 

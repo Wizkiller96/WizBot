@@ -65,7 +65,7 @@ namespace NadekoBot.Modules.Games
                     return;
                 }
 
-                await SendErrorAsync(GetText("trivia_already_running") + "\n" + trivia.CurrentQuestion)
+                await SendErrorAsync(GetText(strs.trivia_already_running) + "\n" + trivia.CurrentQuestion)
                     .ConfigureAwait(false);
             }
 
@@ -75,7 +75,7 @@ namespace NadekoBot.Modules.Games
             {
                 if (_service.RunningTrivias.TryGetValue(ctx.Guild.Id, out TriviaGame trivia))
                 {
-                    await SendConfirmAsync(GetText("leaderboard"), trivia.GetLeaderboard()).ConfigureAwait(false);
+                    await SendConfirmAsync(GetText(strs.leaderboard), trivia.GetLeaderboard()).ConfigureAwait(false);
                     return;
                 }
 

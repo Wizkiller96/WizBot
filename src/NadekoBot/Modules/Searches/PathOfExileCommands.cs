@@ -60,7 +60,7 @@ namespace NadekoBot.Modules.Searches
                 catch
                 {
                     var embed = _eb.Create()
-                                    .WithDescription(GetText("account_not_found"))
+                                    .WithDescription(GetText(strs.account_not_found))
                                     .WithErrorColor();
 
                     await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
@@ -121,7 +121,7 @@ namespace NadekoBot.Modules.Searches
                 catch
                 {
                     var eembed = _eb.Create()
-                        .WithDescription(GetText("leagues_not_found"))
+                        .WithDescription(GetText(strs.leagues_not_found))
                         .WithErrorColor();
 
                     await ctx.Channel.EmbedAsync(eembed).ConfigureAwait(false);
@@ -215,7 +215,7 @@ namespace NadekoBot.Modules.Searches
                 catch
                 {
                     var embed = _eb.Create()
-                        .WithDescription(GetText("ninja_not_found"))
+                        .WithDescription(GetText(strs.ninja_not_found))
                         .WithErrorColor();
 
                     await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
