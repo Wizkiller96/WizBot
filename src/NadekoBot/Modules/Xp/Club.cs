@@ -138,7 +138,7 @@ namespace NadekoBot.Modules.Xp
                     var embed = _eb.Create()
                         .WithOkColor()
                         .WithTitle($"{club.ToString()}")
-                        .WithDescription(GetText("level_x", lvl.Level) + $" ({club.Xp} xp)")
+                        .WithDescription(GetText(strs.level_x, lvl.Level) + $" ({club.Xp} xp)")
                         .AddField(GetText(strs.desc), string.IsNullOrWhiteSpace(club.Description) ? "-" : club.Description,
                             false)
                         .AddField(GetText(strs.owner), club.Owner.ToString(), true)
@@ -188,7 +188,7 @@ namespace NadekoBot.Modules.Xp
                             .Select(x => x.ToString()));
 
                         return _eb.Create()
-                            .WithTitle(GetText("club_bans_for", club.ToString()))
+                            .WithTitle(GetText(strs.club_bans_for, club.ToString()))
                             .WithDescription(toShow)
                             .WithOkColor();
                     }, bans.Length, 10);
@@ -219,7 +219,7 @@ namespace NadekoBot.Modules.Xp
                             .Select(x => x.ToString()));
 
                         return _eb.Create()
-                            .WithTitle(GetText("club_apps_for", club.ToString()))
+                            .WithTitle(GetText(strs.club_apps_for, club.ToString()))
                             .WithDescription(toShow)
                             .WithOkColor();
                     }, apps.Length, 10);
@@ -374,7 +374,7 @@ namespace NadekoBot.Modules.Xp
                 var clubs = _service.GetClubLeaderboardPage(page);
 
                 var embed = _eb.Create()
-                    .WithTitle(GetText("club_leaderboard", page + 1))
+                    .WithTitle(GetText(strs.club_leaderboard, page + 1))
                     .WithOkColor();
 
                 var i = page * 9;

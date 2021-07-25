@@ -264,14 +264,14 @@ namespace NadekoBot.Modules.Xp.Services
                             {
                                 var chan = await x.User.GetOrCreateDMChannelAsync();
                                 if (chan != null)
-                                    await chan.SendConfirmAsync(_eb, _strings.GetText("level_up_dm",
+                                    await chan.SendConfirmAsync(_eb, _strings.GetText(strs.level_up_dm,
                                         x.Guild.Id,
                                         x.User.Mention, Format.Bold(x.Level.ToString()),
                                         Format.Bold(x.Guild.ToString() ?? "-")));
                             }
                             else if (x.MessageChannel != null) // channel
                             {
-                                await x.MessageChannel.SendConfirmAsync(_eb, _strings.GetText("level_up_channel",
+                                await x.MessageChannel.SendConfirmAsync(_eb, _strings.GetText(strs.level_up_channel,
                                     x.Guild.Id,
                                     x.User.Mention, Format.Bold(x.Level.ToString())));
                             }
@@ -288,7 +288,7 @@ namespace NadekoBot.Modules.Xp.Services
                                 chan = x.MessageChannel;
                             }
 
-                            await chan.SendConfirmAsync(_eb, _strings.GetText("level_up_global",
+                            await chan.SendConfirmAsync(_eb, _strings.GetText(strs.level_up_global,
                                 x.Guild.Id,
                                 x.User.Mention, Format.Bold(x.Level.ToString())));
                         }

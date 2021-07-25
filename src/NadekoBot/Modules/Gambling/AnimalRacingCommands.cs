@@ -77,13 +77,13 @@ namespace NadekoBot.Modules.Gambling
                     if (race.FinishedUsers[0].Bet > 0)
                     {
                         return SendConfirmAsync(GetText(strs.animal_race),
-                                            GetText("animal_race_won_money", Format.Bold(winner.Username),
+                                            GetText(strs.animal_race_won_money, Format.Bold(winner.Username),
                                                 winner.Animal.Icon, (race.FinishedUsers[0].Bet * (race.Users.Count - 1)) + CurrencySign));
                     }
                     else
                     {
                         return SendConfirmAsync(GetText(strs.animal_race),
-                            GetText("animal_race_won", Format.Bold(winner.Username), winner.Animal.Icon));
+                            GetText(strs.animal_race_won, Format.Bold(winner.Username), winner.Animal.Icon));
                     }
                 }
 
@@ -93,8 +93,8 @@ namespace NadekoBot.Modules.Gambling
                 ar.OnStarted += Ar_OnStarted;
                 _client.MessageReceived += _client_MessageReceived;
 
-                return SendConfirmAsync(GetText(strs.animal_race), GetText("animal_race_starting", options.StartTime),
-                                    footer: GetText("animal_race_join_instr", Prefix));
+                return SendConfirmAsync(GetText(strs.animal_race), GetText(strs.animal_race_starting, options.StartTime),
+                                    footer: GetText(strs.animal_race_join_instr, Prefix));
             }
 
             private Task Ar_OnStarted(AnimalRace race)
@@ -102,7 +102,7 @@ namespace NadekoBot.Modules.Gambling
                 if (race.Users.Count == race.MaxUsers)
                     return SendConfirmAsync(GetText(strs.animal_race), GetText(strs.animal_race_full));
                 else
-                    return SendConfirmAsync(GetText(strs.animal_race), GetText("animal_race_starting_with_x", race.Users.Count));
+                    return SendConfirmAsync(GetText(strs.animal_race), GetText(strs.animal_race_starting_with_x, race.Users.Count));
             }
 
             private async Task Ar_OnStateUpdate(AnimalRace race)
@@ -153,9 +153,9 @@ namespace NadekoBot.Modules.Gambling
                     var user = await ar.JoinRace(ctx.User.Id, ctx.User.ToString(), amount)
                         .ConfigureAwait(false);
                     if (amount > 0)
-                        await SendConfirmAsync(GetText("animal_race_join_bet", ctx.User.Mention, user.Animal.Icon, amount + CurrencySign)).ConfigureAwait(false);
+                        await SendConfirmAsync(GetText(strs.animal_race_join_bet, ctx.User.Mention, user.Animal.Icon, amount + CurrencySign)).ConfigureAwait(false);
                     else
-                        await SendConfirmAsync(GetText("animal_race_join", ctx.User.Mention, user.Animal.Icon)).ConfigureAwait(false);
+                        await SendConfirmAsync(GetText(strs.animal_race_join, ctx.User.Mention, user.Animal.Icon)).ConfigureAwait(false);
                 }
                 catch (ArgumentOutOfRangeException)
                 {
@@ -176,7 +176,7 @@ namespace NadekoBot.Modules.Gambling
                 }
                 catch (NotEnoughFundsException)
                 {
-                    await SendErrorAsync(GetText("not_enough", CurrencySign)).ConfigureAwait(false);
+                    await SendErrorAsync(GetText(strs.not_enough, CurrencySign)).ConfigureAwait(false);
                 }
             }
         }

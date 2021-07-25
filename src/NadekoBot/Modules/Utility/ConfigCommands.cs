@@ -52,7 +52,7 @@ namespace NadekoBot.Modules.Utility
                     var configNames = _settingServices.Select(x => x.Name);
                     var embed = _eb.Create()
                         .WithErrorColor()
-                        .WithDescription(GetText("config_not_found", Format.Code(name)))
+                        .WithDescription(GetText(strs.config_not_found, Format.Code(name)))
                         .AddField(GetText(strs.config_list), string.Join("\n", configNames));
 
                     await ctx.Channel.EmbedAsync(embed);
@@ -90,7 +90,7 @@ namespace NadekoBot.Modules.Utility
                 {
                     var embed = _eb.Create()
                         .WithErrorColor()
-                        .WithDescription(GetText("config_not_found", Format.Code(name)))
+                        .WithDescription(GetText(strs.config_not_found, Format.Code(name)))
                         .AddField(GetText(strs.config_list), string.Join("\n", configNames));
 
                     await ctx.Channel.EmbedAsync(embed);
@@ -123,7 +123,7 @@ namespace NadekoBot.Modules.Utility
                     var propStrings = GetPropsAndValuesString(setting, propNames);
                     var propErrorEmbed = _eb.Create()
                         .WithErrorColor()
-                        .WithDescription(GetText("config_prop_not_found", Format.Code(prop), Format.Code(name)))
+                        .WithDescription(GetText(strs.config_prop_not_found, Format.Code(prop), Format.Code(name)))
                         .AddField($"⚙️ {setting.Name}", propStrings);
 
                     await ctx.Channel.EmbedAsync(propErrorEmbed);

@@ -48,7 +48,7 @@ namespace NadekoBot.Modules.Utility
                 }
 
                 if (quotes.Any())
-                    await SendConfirmAsync(GetText("quotes_page", page + 1),
+                    await SendConfirmAsync(GetText(strs.quotes_page, page + 1),
                             string.Join("\n", quotes.Select(q => $"`#{q.Id}` {Format.Bold(q.Keyword.SanitizeAllMentions()),-20} by {q.AuthorName.SanitizeAllMentions()}")))
                         .ConfigureAwait(false);
                 else
@@ -113,12 +113,12 @@ namespace NadekoBot.Modules.Utility
             {
                 await ctx.Channel.EmbedAsync(_eb.Create(ctx)
                     .WithOkColor()
-                    .WithTitle(GetText("quote_id", $"#{data.Id}"))
+                    .WithTitle(GetText(strs.quote_id, $"#{data.Id}"))
                     .AddField(GetText(strs.trigger), data.Keyword)
                     .AddField(GetText(strs.response), data.Text.Length > 1000
                         ? GetText(strs.redacted_too_long)
                         : Format.Sanitize(data.Text))
-                    .WithFooter(GetText("created_by", $"{data.AuthorName} ({data.AuthorId})"))
+                    .WithFooter(GetText(strs.created_by, $"{data.AuthorName} ({data.AuthorId})"))
                 ).ConfigureAwait(false);
             }
 
@@ -222,7 +222,7 @@ namespace NadekoBot.Modules.Utility
                         uow.Quotes.Remove(q);
                         await uow.SaveChangesAsync();
                         success = true;
-                        response = GetText("quote_deleted", id);
+                        response = GetText(strs.quote_deleted, id);
                     }
                 }
                 if (success)

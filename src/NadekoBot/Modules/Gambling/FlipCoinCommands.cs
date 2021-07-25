@@ -67,8 +67,8 @@ namespace NadekoBot.Modules.Gambling
                         i.Dispose();
                     }
                     var msg = count != 1
-                        ? Format.Bold(ctx.User.ToString()) + " " + GetText("flip_results", count, headCount, tailCount)
-                        : Format.Bold(ctx.User.ToString()) + " " + GetText("flipped", headCount > 0
+                        ? Format.Bold(ctx.User.ToString()) + " " + GetText(strs.flip_results, count, headCount, tailCount)
+                        : Format.Bold(ctx.User.ToString()) + " " + GetText(strs.flipped, headCount > 0
                             ? Format.Bold(GetText(strs.heads))
                             : Format.Bold(GetText(strs.tails)));
                     await ctx.Channel.SendFileAsync(stream, $"{count} coins.{format.FileExtensions.First()}", msg).ConfigureAwait(false);
@@ -115,7 +115,7 @@ namespace NadekoBot.Modules.Gambling
                 if (guess == result)
                 {
                     var toWin = (long)(amount * _config.BetFlip.Multiplier);
-                    str = Format.Bold(ctx.User.ToString()) + " " + GetText("flip_guess", toWin + CurrencySign);
+                    str = Format.Bold(ctx.User.ToString()) + " " + GetText(strs.flip_guess, toWin + CurrencySign);
                     await _cs.AddAsync(ctx.User, "Betflip Gamble", toWin, false, gamble: true).ConfigureAwait(false);
                 }
                 else

@@ -50,6 +50,7 @@ namespace NadekoBot.Modules.Searches.Services
             }
         }
 
+        // todo fix novel
         public async Task<NovelResult> GetNovelData(string query)
         {
             if (string.IsNullOrWhiteSpace(query))

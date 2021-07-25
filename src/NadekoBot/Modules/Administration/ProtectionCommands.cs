@@ -133,7 +133,7 @@ namespace NadekoBot.Modules.Administration
                     return;
                 }
 
-                await SendConfirmAsync(GetText("prot_enable", "Anti-Raid"),
+                await SendConfirmAsync(GetText(strs.prot_enable, "Anti-Raid"),
                         $"{ctx.User.Mention} {GetAntiRaidString(stats)}")
                         .ConfigureAwait(false);
             }
@@ -199,7 +199,7 @@ namespace NadekoBot.Modules.Administration
 
                 var stats = await _service.StartAntiSpamAsync(ctx.Guild.Id, messageCount, action, time, role?.Id).ConfigureAwait(false);
 
-                await SendConfirmAsync(GetText("prot_enable", "Anti-Spam"),
+                await SendConfirmAsync(GetText(strs.prot_enable, "Anti-Spam"),
                     $"{ctx.User.Mention} {GetAntiSpamString(stats)}").ConfigureAwait(false);
             }
 
@@ -247,7 +247,7 @@ namespace NadekoBot.Modules.Administration
             }
 
             private string GetAntiAltString(AntiAltStats alt) 
-                => GetText("anti_alt_status", 
+                => GetText(strs.anti_alt_status, 
                     Format.Bold(alt.MinAge.ToString(@"dd\d\ hh\h\ mm\m\ ")),
                     Format.Bold(alt.Action.ToString()),
                     Format.Bold(alt.Counter.ToString()));
@@ -266,7 +266,7 @@ namespace NadekoBot.Modules.Administration
                     add = $" ({TimeSpan.FromMinutes(settings.MuteTime):hh\\hmm\\m})";
                 }
 
-                return GetText("spam_stats",
+                return GetText(strs.spam_stats,
                         Format.Bold(settings.MessageThreshold.ToString()),
                         Format.Bold(settings.Action.ToString() + add),
                         ignoredString);
@@ -281,7 +281,7 @@ namespace NadekoBot.Modules.Administration
                     actionString += $" **({TimeSpan.FromMinutes(stats.AntiRaidSettings.PunishDuration):hh\\hmm\\m})**";
                 }
                 
-                return GetText("raid_stats",
+                return GetText(strs.raid_stats,
                     Format.Bold(stats.AntiRaidSettings.UserThreshold.ToString()),
                     Format.Bold(stats.AntiRaidSettings.Seconds.ToString()),
                     actionString);

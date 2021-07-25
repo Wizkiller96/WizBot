@@ -196,7 +196,7 @@ namespace NadekoBot.Modules.Gambling
             }
 
             var embed = _eb.Create()
-                .WithTitle(GetText("transactions",
+                .WithTitle(GetText(strs.transactions,
                     ((SocketGuild)ctx.Guild)?.GetUser(userId)?.ToString() ?? $"{userId}"))
                 .WithOkColor();
 
@@ -209,7 +209,7 @@ namespace NadekoBot.Modules.Gambling
             }
 
             embed.WithDescription(desc);
-            embed.WithFooter(GetText("page", page + 1));
+            embed.WithFooter(GetText(strs.page, page + 1));
             await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
         }
 
@@ -476,11 +476,11 @@ namespace NadekoBot.Modules.Gambling
             var result = br.Roll();
 
 
-            var str = Format.Bold(ctx.User.ToString()) + Format.Code(GetText("roll", result.Roll));
+            var str = Format.Bold(ctx.User.ToString()) + Format.Code(GetText(strs.roll, result.Roll));
             if (result.Multiplier > 0)
             {
                 var win = (long)(amount * result.Multiplier);
-                str += GetText("br_win",
+                str += GetText(strs.br_win,
                     n(win) + CurrencySign,
                     result.Threshold + (result.Roll == 100 ? " 👑" : ""));
                 await _cs.AddAsync(ctx.User, "Betroll Gamble",
@@ -641,7 +641,7 @@ namespace NadekoBot.Modules.Gambling
                 await _cs.AddAsync(ctx.User.Id,
                     "Rps-draw", amount, gamble: true).ConfigureAwait(false);
                 embed.WithOkColor();
-                msg = GetText("rps_draw", getRpsPick(pick));
+                msg = GetText(strs.rps_draw, getRpsPick(pick));
             }
             else if ((pick == RpsPick.Paper && nadekoPick == RpsPick.Rock) ||
                      (pick == RpsPick.Rock && nadekoPick == RpsPick.Scissors) ||
@@ -652,14 +652,14 @@ namespace NadekoBot.Modules.Gambling
                     "Rps-win", amount, gamble: true).ConfigureAwait(false);
                 embed.WithOkColor();
                 embed.AddField(GetText(strs.won), n(amount));
-                msg = GetText("rps_win", ctx.User.Mention,
+                msg = GetText(strs.rps_win, ctx.User.Mention,
                     getRpsPick(pick), getRpsPick(nadekoPick));
             }
             else
             {
                 embed.WithErrorColor();
                 amount = 0;
-                msg = GetText("rps_win", ctx.Client.CurrentUser.Mention, getRpsPick(nadekoPick),
+                msg = GetText(strs.rps_win, ctx.Client.CurrentUser.Mention, getRpsPick(nadekoPick),
                     getRpsPick(pick));
             }
 

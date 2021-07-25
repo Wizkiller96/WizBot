@@ -78,7 +78,7 @@ namespace NadekoBot.Modules.Help.Services
             }
 
             em
-                .AddField(GetText("usage", guild),
+                .AddField(_strings.GetText(strs.usage),
                     string.Join("\n", Array.ConvertAll(com.RealRemarksArr(_strings, guild?.Id, prefix),
                         arg => Format.Code(arg))),
                     false)

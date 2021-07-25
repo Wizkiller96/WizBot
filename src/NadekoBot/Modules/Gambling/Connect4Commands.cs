@@ -129,11 +129,11 @@ namespace NadekoBot.Modules.Gambling
                     string title;
                     if (result == Connect4Game.Result.CurrentPlayerWon)
                     {
-                        title = GetText("connect4_won", Format.Bold(arg.CurrentPlayer.Username), Format.Bold(arg.OtherPlayer.Username));
+                        title = GetText(strs.connect4_won, Format.Bold(arg.CurrentPlayer.Username), Format.Bold(arg.OtherPlayer.Username));
                     }
                     else if (result == Connect4Game.Result.OtherPlayerWon)
                     {
-                        title = GetText("connect4_won", Format.Bold(arg.OtherPlayer.Username), Format.Bold(arg.CurrentPlayer.Username));
+                        title = GetText(strs.connect4_won, Format.Bold(arg.OtherPlayer.Username), Format.Bold(arg.CurrentPlayer.Username));
                     }
                     else
                         title = GetText(strs.connect4_draw);
@@ -180,7 +180,7 @@ namespace NadekoBot.Modules.Gambling
 
                 if (game.CurrentPhase == Connect4Game.Phase.P1Move ||
                     game.CurrentPhase == Connect4Game.Phase.P2Move)
-                    sb.AppendLine(GetText("connect4_player_to_move", Format.Bold(game.CurrentPlayer.Username)));
+                    sb.AppendLine(GetText(strs.connect4_player_to_move, Format.Bold(game.CurrentPlayer.Username)));
 
                 for (int i = Connect4Game.NumberOfRows; i > 0; i--)
                 {

@@ -22,69 +22,82 @@ namespace NadekoBot.Generators
     {
         private const string LocStrSource = @"namespace NadekoBot
 {
-    public readonly ref struct LocStr
+    public readonly ref struct LocStr0
     {
         public readonly string Key;
         
-        public LocStr(string key)
+        public LocStr0(string key)
         {
             Key = key;
         }
         
-        public static implicit operator LocStr(string data)
-            => new LocStr(data);    
+        public static implicit operator LocStr0(string data)
+            => new LocStr0(data);    
     }
     
-    public readonly ref struct LocStr<T1>
+    public readonly ref struct LocStr1
     {
         public readonly string Key;
         
-        public LocStr(string key)
+        public LocStr1(string key)
         {
             Key = key;
         }
         
-        public static implicit operator LocStr<T1>(string data)
-            => new LocStr<T1>(data);    
+        public static implicit operator LocStr1(string data)
+            => new LocStr1(data);    
     }
     
-    public readonly ref struct LocStr<T1, T2>
+    public readonly ref struct LocStr2
+        {
+            public readonly string Key;
+            
+            public LocStr2(string key)
+            {
+                Key = key;
+            }
+            
+            public static implicit operator LocStr2(string data)
+                => new LocStr2(data);    
+        }
+        
+        public readonly ref struct LocStr3
     {
         public readonly string Key;
         
-        public LocStr(string key)
+        public LocStr3(string key)
         {
             Key = key;
         }
         
-        public static implicit operator LocStr<T1, T2>(string data)
-            => new LocStr<T1, T2>(data);    
+        public static implicit operator LocStr3(string data)
+            => new LocStr3(data);    
     }
     
-    public readonly ref struct LocStr<T1, T2, T3>
+    public readonly ref struct LocStr4
     {
         public readonly string Key;
         
-        public LocStr(string key)
+        public LocStr4(string key)
         {
             Key = key;
         }
         
-        public static implicit operator LocStr<T1, T2, T3>(string data)
-            => new LocStr<T1, T2, T3>(data);    
+        public static implicit operator LocStr4(string data)
+            => new LocStr4(data);    
     }
     
-    public readonly ref struct LocStr<T1, T2, T3, T4>
+    public readonly ref struct LocStr5
     {
         public readonly string Key;
         
-        public LocStr(string key)
+        public LocStr5(string key)
         {
             Key = key;
         }
         
-        public static implicit operator LocStr<T1, T2, T3, T4>(string data)
-            => new LocStr<T1, T2, T3, T4>(data);    
+        public static implicit operator LocStr5(string data)
+            => new LocStr5(data);    
     }
 }";
         
@@ -159,15 +172,17 @@ namespace NadekoBot.Generators
 
             max += 1;
             if (max == 0)
-                return "LocStr";
+                return "LocStr0";
             if (max == 1)
-                return "LocStr<object>";
+                return "LocStr1";
             if (max == 2)
-                return "LocStr<object, object>";
+                return "LocStr2";
             if (max == 3)
-                return "LocStr<object, object, object>";
+                return "LocStr3";
             if (max == 4)
-                return "LocStr<object, object, object, object>";
+                return "LocStr4";
+            if (max == 5)
+                return "LocStr5";
 
             return "!Error";
         }

@@ -114,10 +114,10 @@ namespace NadekoBot.Modules.Games.Common
                 if (_phase == Phase.Ended)
                     embed.WithFooter(GetText(strs.ttt_no_moves));
                 else
-                    embed.WithFooter(GetText("ttt_users_move", _users[_curUserIndex]));
+                    embed.WithFooter(GetText(strs.ttt_users_move, _users[_curUserIndex]));
             }
             else
-                embed.WithFooter(GetText("ttt_has_won", _winner));
+                embed.WithFooter(GetText(strs.ttt_has_won, _winner));
 
             return embed;
         }

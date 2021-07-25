@@ -756,7 +756,7 @@ namespace NadekoBot.Modules.Searches
             //    .AddField(GetText(strs.genres), gameData.TotalEpisodes.ToString(), true)
             //    .AddField(GetText(strs.price), gameData.IsFree ? GetText(strs.FREE) : game, true)
             //    .AddField(GetText(strs.links), gameData.GetGenresString(), true)
-            //    .WithFooter(GetText("recommendations", gameData.TotalRecommendations));
+            //    .WithFooter(GetText(strs.recommendations, gameData.TotalRecommendations));
             await ctx.Channel.SendMessageAsync($"https://store.steampowered.com/app/{appId}").ConfigureAwait(false);
         }
 

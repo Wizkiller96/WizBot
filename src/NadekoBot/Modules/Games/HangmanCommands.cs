@@ -27,7 +27,7 @@ namespace NadekoBot.Modules.Games
             [RequireContext(ContextType.Guild)]
             public async Task Hangmanlist()
             {
-                await SendConfirmAsync(Format.Code(GetText("hangman_types", Prefix)) + "\n" + string.Join("\n", _service.TermPool.Data.Keys)).ConfigureAwait(false);
+                await SendConfirmAsync(Format.Code(GetText(strs.hangman_types, Prefix)) + "\n" + string.Join("\n", _service.TermPool.Data.Keys)).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]

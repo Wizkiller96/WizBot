@@ -66,7 +66,7 @@ namespace NadekoBot.Modules.Gambling
                         toSend += $" drew `{Deck.GetHandValue(cardObjects)}`";
 
                     if (guildId != null)
-                        toSend += "\n" + GetText("cards_left", Format.Bold(cards.CardPool.Count.ToString()));
+                        toSend += "\n" + GetText(strs.cards_left, Format.Bold(cards.CardPool.Count.ToString()));
 
                     return (img.ToStream(), toSend);
                 }

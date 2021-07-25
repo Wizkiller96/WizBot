@@ -117,7 +117,7 @@ namespace NadekoBot.Modules.Utility
                     return _eb.Create().WithOkColor().WithDescription(GetText(strs.no_user_on_this_page));
                     
                 return _eb.Create().WithOkColor()
-                    .WithTitle(GetText("inrole_list", Format.Bold(role?.Name ?? "No Role")) + $" - {roleUsers.Length}")
+                    .WithTitle(GetText(strs.inrole_list, Format.Bold(role?.Name ?? "No Role")) + $" - {roleUsers.Length}")
                     .WithDescription(string.Join("\n", pageUsers));
             }, roleUsers.Length, 20).ConfigureAwait(false);
         }
@@ -199,7 +199,7 @@ namespace NadekoBot.Modules.Utility
                 else
                 {
 
-                    await SendConfirmAsync(GetText("roles_page", page, Format.Bold(target.ToString())),
+                    await SendConfirmAsync(GetText(strs.roles_page, page, Format.Bold(target.ToString())),
                         "\n• " + string.Join("\n• ", (IEnumerable<IRole>)roles).SanitizeMentions(true)).ConfigureAwait(false);
                 }
             }
@@ -212,7 +212,7 @@ namespace NadekoBot.Modules.Utility
                 }
                 else
                 {
-                    await SendConfirmAsync(GetText("roles_all_page", page),
+                    await SendConfirmAsync(GetText(strs.roles_all_page, page),
                         "\n• " + string.Join("\n• ", (IEnumerable<IRole>)roles).SanitizeMentions(true)).ConfigureAwait(false);
                 }
             }
@@ -259,7 +259,7 @@ namespace NadekoBot.Modules.Utility
                         .AddField(GetText(strs.owner_ids), ownerIds, true)
                         .AddField(GetText(strs.uptime), _stats.GetUptimeString("\n"), true)
                         .AddField(GetText(strs.presence), 
-                            GetText("presence_txt",
+                            GetText(strs.presence_txt,
                                 _coord.GetGuildCount(), _stats.TextChannels, _stats.VoiceChannels), true))
                 .ConfigureAwait(false);
         }
@@ -269,7 +269,7 @@ namespace NadekoBot.Modules.Utility
         {
             var tags = ctx.Message.Tags.Where(t => t.Type == TagType.Emoji).Select(t => (Emote)t.Value);
 
-            var result = string.Join("\n", tags.Select(m => GetText("showemojis", m, m.Url)));
+            var result = string.Join("\n", tags.Select(m => GetText(strs.showemojis, m, m.Url)));
 
             if (string.IsNullOrWhiteSpace(result))
                 await ReplyErrorLocalizedAsync("showemojis_none").ConfigureAwait(false);
@@ -298,7 +298,7 @@ namespace NadekoBot.Modules.Utility
                 .WithOkColor();
             foreach (var guild in guilds)
                 embed.AddField(guild.Name,
-                    GetText("listservers", guild.Id, guild.MemberCount, guild.OwnerId),
+                    GetText(strs.listservers, guild.Id, guild.MemberCount, guild.OwnerId),
                     false);
 
             await ctx.Channel.EmbedAsync(embed);

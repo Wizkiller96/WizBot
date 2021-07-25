@@ -52,15 +52,15 @@ namespace NadekoBot.Modules.Gambling
                     case CurrencyEvent.Type.Reaction:
                         return _eb.Create()
                             .WithOkColor()
-                            .WithTitle(GetText("event_title", type.ToString()))
+                            .WithTitle(GetText(strs.event_title, type.ToString()))
                             .WithDescription(GetReactionDescription(opts.Amount, currentPot))
-                            .WithFooter(GetText("event_duration_footer", opts.Hours));
+                            .WithFooter(GetText(strs.event_duration_footer, opts.Hours));
                     case CurrencyEvent.Type.GameStatus:
                         return _eb.Create()
                             .WithOkColor()
-                            .WithTitle(GetText("event_title", type.ToString()))
+                            .WithTitle(GetText(strs.event_title, type.ToString()))
                             .WithDescription(GetGameStatusDescription(opts.Amount, currentPot))
-                            .WithFooter(GetText("event_duration_footer", opts.Hours));
+                            .WithFooter(GetText(strs.event_duration_footer, opts.Hours));
                     default:
                         break;
                 }
@@ -72,7 +72,7 @@ namespace NadekoBot.Modules.Gambling
                 string potSizeStr = Format.Bold(potSize == 0
                     ? "∞" + CurrencySign
                     : potSize.ToString() + CurrencySign);
-                return GetText("new_reaction_event",
+                return GetText(strs.new_reaction_event,
                                    CurrencySign,
                                    Format.Bold(amount + CurrencySign),
                                    potSizeStr);
@@ -83,7 +83,7 @@ namespace NadekoBot.Modules.Gambling
                 string potSizeStr = Format.Bold(potSize == 0
                     ? "∞" + CurrencySign
                     : potSize.ToString() + CurrencySign);
-                return GetText("new_gamestatus_event",
+                return GetText(strs.new_gamestatus_event,
                                    CurrencySign,
                                    Format.Bold(amount + CurrencySign),
                                    potSizeStr);

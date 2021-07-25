@@ -62,7 +62,7 @@ namespace NadekoBot.Modules.Gambling
                         return _eb.Create().WithErrorColor()
                             .WithDescription(GetText(strs.shop_none));
                     var embed = _eb.Create().WithOkColor()
-                        .WithTitle(GetText("shop", CurrencySign));
+                        .WithTitle(GetText(strs.shop));
 
                     for (int i = 0; i < theseEntries.Length; i++)
                     {
@@ -173,7 +173,7 @@ namespace NadekoBot.Modules.Gambling
                         {
                             await (await ctx.User.GetOrCreateDMChannelAsync().ConfigureAwait(false))
                                 .EmbedAsync(_eb.Create().WithOkColor()
-                                .WithTitle(GetText("shop_purchase", ctx.Guild.Name))
+                                .WithTitle(GetText(strs.shop_purchase, ctx.Guild.Name))
                                 .AddField(GetText(strs.item), item.Text, false)
                                 .AddField(GetText(strs.price), entry.Price.ToString(), true)
                                 .AddField(GetText(strs.name), entry.Name, true))
@@ -433,7 +433,7 @@ namespace NadekoBot.Modules.Gambling
                 var embed = _eb.Create().WithOkColor();
 
                 if (entry.Type == ShopEntryType.Role)
-                    return embed.AddField(GetText(strs.name), GetText("shop_role", Format.Bold(ctx.Guild.GetRole(entry.RoleId)?.Name ?? "MISSING_ROLE")), true)
+                    return embed.AddField(GetText(strs.name), GetText(strs.shop_role, Format.Bold(ctx.Guild.GetRole(entry.RoleId)?.Name ?? "MISSING_ROLE")), true)
                             .AddField(GetText(strs.price), entry.Price.ToString(), true)
                             .AddField(GetText(strs.type), entry.Type.ToString(), true);
                 else if (entry.Type == ShopEntryType.List)
@@ -441,7 +441,7 @@ namespace NadekoBot.Modules.Gambling
                             .AddField(GetText(strs.price), entry.Price.ToString(), true)
                             .AddField(GetText(strs.type), GetText(strs.random_unique_item), true);
                 //else if (entry.Type == ShopEntryType.Infinite_List)
-                //    return embed.AddField(GetText(strs.name), GetText("shop_role", Format.Bold(entry.RoleName)), true)
+                //    return embed.AddField(GetText(strs.name), GetText(strs.shop_role, Format.Bold(entry.RoleName)), true)
                 //            .AddField(GetText(strs.price), entry.Price.ToString(), true)
                 //            .AddField(GetText(strs.type), entry.Type.ToString(), true);
                 else return null;
@@ -451,11 +451,11 @@ namespace NadekoBot.Modules.Gambling
             {
                 if (entry.Type == ShopEntryType.Role)
                 {
-                    return GetText("shop_role", Format.Bold(ctx.Guild.GetRole(entry.RoleId)?.Name ?? "MISSING_ROLE"));
+                    return GetText(strs.shop_role, Format.Bold(ctx.Guild.GetRole(entry.RoleId)?.Name ?? "MISSING_ROLE"));
                 }
                 else if (entry.Type == ShopEntryType.List)
                 {
-                    return GetText("unique_items_left", entry.Items.Count) + "\n" + entry.Name;
+                    return GetText(strs.unique_items_left, entry.Items.Count) + "\n" + entry.Name;
                 }
                 //else if (entry.Type == ShopEntryType.Infinite_List)
                 //{

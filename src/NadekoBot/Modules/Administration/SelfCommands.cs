@@ -119,7 +119,7 @@ namespace NadekoBot.Modules.Administration
 [{GetText(strs.channel)}]: {x.ChannelName} #{x.ChannelId}
 [{GetText(strs.command_text)}]: {x.CommandText}```")),
                         title: string.Empty,
-                        footer: GetText("page", page + 1))
+                        footer: GetText(strs.page, page + 1))
                     .ConfigureAwait(false);
                 }
             }
@@ -152,7 +152,7 @@ namespace NadekoBot.Modules.Administration
 {GetIntervalText(x.Interval)}
 [{GetText(strs.command_text)}]: {x.CommandText}```")),
                         title: string.Empty,
-                        footer: GetText("page", page + 1))
+                        footer: GetText(strs.page, page + 1))
                     .ConfigureAwait(false);
                 }
             }

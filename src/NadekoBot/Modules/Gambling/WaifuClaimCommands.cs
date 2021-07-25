@@ -27,7 +27,7 @@ namespace NadekoBot.Modules.Gambling
                 var price = _service.GetResetPrice(ctx.User);
                 var embed = _eb.Create()
                         .WithTitle(GetText(strs.waifu_reset_confirm))
-                        .WithDescription(GetText("waifu_reset_price", Format.Bold(price + CurrencySign)));
+                        .WithDescription(GetText(strs.waifu_reset_price, Format.Bold(price + CurrencySign)));
 
                 if (!await PromptUserConfirmAsync(embed))
                     return;
@@ -68,11 +68,11 @@ namespace NadekoBot.Modules.Gambling
                     await ReplyErrorLocalizedAsync("not_enough", CurrencySign);
                     return;
                 }
-                var msg = GetText("waifu_claimed",
+                var msg = GetText(strs.waifu_claimed,
                     Format.Bold(target.ToString()),
                     amount + CurrencySign);
                 if (w.Affinity?.UserId == ctx.User.Id)
-                    msg += "\n" + GetText("waifu_fulfilled", target, w.Price + CurrencySign);
+                    msg += "\n" + GetText(strs.waifu_fulfilled, target, w.Price + CurrencySign);
                 else
                     msg = " " + msg;
                 await SendConfirmAsync(ctx.User.Mention + msg);
@@ -292,7 +292,7 @@ namespace NadekoBot.Modules.Gambling
                     .AddField(GetText(strs.changes_of_heart), $"{wi.AffinityCount} - \"the {affInfo}\"", true)
                     .AddField(GetText(strs.divorces), wi.DivorceCount.ToString(), true)
                     .AddField("\u200B", "\u200B", true)
-                    .AddField(GetText("fans", wi.Fans.Count), fansStr, true)
+                    .AddField(GetText(strs.fans, wi.Fans.Count), fansStr, true)
                     .AddField($"Waifus ({wi.ClaimCount})", wi.ClaimCount == 0 
                         ? nobody 
                         : string.Join("\n", wi.Claims.Shuffle().Take(30)), true)

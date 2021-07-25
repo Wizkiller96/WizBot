@@ -43,7 +43,7 @@ namespace NadekoBot.Modules.Games
                     await ctx.Channel
                         .EmbedAsync(_eb.Create()
                             .WithOkColor()
-                            .WithTitle(GetText("poll_created", ctx.User.ToString()))
+                            .WithTitle(GetText(strs.poll_created, ctx.User.ToString()))
                             .WithDescription(
                                 Format.Bold(poll.Question) + "\n\n" +
                             string.Join("\n", poll.Answers
@@ -109,14 +109,14 @@ namespace NadekoBot.Modules.Games
                 for (int i = 0; i < stats.Length; i++)
                 {
                     var (Index, votes, Text) = stats[i];
-                    sb.AppendLine(GetText("poll_result",
+                    sb.AppendLine(GetText(strs.poll_result,
                         Index + 1,
                         Format.Bold(Text),
                         Format.Bold(votes.ToString())));
                 }
 
                 return eb.WithDescription(sb.ToString())
-                    .WithFooter(GetText("x_votes_cast", totalVotesCast))
+                    .WithFooter(GetText(strs.x_votes_cast, totalVotesCast))
                     .WithOkColor();
             }
         }

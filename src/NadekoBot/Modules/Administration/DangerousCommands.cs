@@ -107,7 +107,7 @@ namespace NadekoBot.Modules.Administration
             public async Task PurgeUser(ulong userId)
             {
                 var embed = _eb.Create()
-                    .WithDescription(GetText("purge_user_confirm", Format.Bold(userId.ToString())));
+                    .WithDescription(GetText(strs.purge_user_confirm, Format.Bold(userId.ToString())));
 
                 if (!await PromptUserConfirmAsync(embed).ConfigureAwait(false))
                 {

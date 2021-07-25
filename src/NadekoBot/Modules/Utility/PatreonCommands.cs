@@ -41,8 +41,8 @@ namespace NadekoBot.Modules.Utility
                     .AddField(GetText(strs.clpa_fail_already_title), GetText(strs.clpa_fail_already))
                     .AddField(GetText(strs.clpa_fail_wait_title), GetText(strs.clpa_fail_wait))
                     .AddField(GetText(strs.clpa_fail_conn_title), GetText(strs.clpa_fail_conn))
-                    .AddField(GetText(strs.clpa_fail_sup_title), GetText("clpa_fail_sup", helpcmd))
-                    .WithFooter(GetText("clpa_next_update", rem)));
+                    .AddField(GetText(strs.clpa_fail_sup_title), GetText(strs.clpa_fail_sup, helpcmd))
+                    .WithFooter(GetText(strs.clpa_next_update, rem)));
             }
         }
     }

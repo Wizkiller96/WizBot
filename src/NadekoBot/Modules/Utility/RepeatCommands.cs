@@ -50,7 +50,7 @@ namespace NadekoBot.Modules.Utility
                 var description = GetRepeaterInfoString(removed);
                 await ctx.Channel.EmbedAsync(_eb.Create()
                     .WithOkColor()
-                    .WithTitle(GetText("repeater_removed", index + 1))
+                    .WithTitle(GetText(strs.repeater_removed, index + 1))
                     .WithDescription(description));
             }
             

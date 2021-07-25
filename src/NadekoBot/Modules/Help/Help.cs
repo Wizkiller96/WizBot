@@ -99,7 +99,7 @@ namespace NadekoBot.Modules.Help
                     .OrderBy(module => module.Name)
                     .ForEach(module => embed.AddField($"{GetModuleEmoji(module.Name)} {module.Name}",
                         GetText($"module_description_{module.Name.ToLowerInvariant()}") + "\n" +
-                        Format.Code(GetText("module_footer", Prefix, module.Name.ToLowerInvariant())),
+                        Format.Code(GetText(strs.module_footer, Prefix, module.Name.ToLowerInvariant())),
                         true));
 
                 return embed;
@@ -230,7 +230,7 @@ namespace NadekoBot.Modules.Help
                     embed.AddField(g.ElementAt(i).Key, "```css\n" + string.Join("\n", transformed) + "\n```", true);
                 }
             }
-            embed.WithFooter(GetText("commands_instr", Prefix));
+            embed.WithFooter(GetText(strs.commands_instr, Prefix));
             await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
         }
 

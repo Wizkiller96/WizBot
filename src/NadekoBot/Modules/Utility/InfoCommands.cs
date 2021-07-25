@@ -135,16 +135,16 @@ namespace NadekoBot.Modules.Utility
                 StringBuilder str = new StringBuilder();
                 foreach (var kvp in CmdHandler.UserMessagesSent.OrderByDescending(kvp => kvp.Value).Skip(page * activityPerPage).Take(activityPerPage))
                 {
-                    str.AppendLine(GetText("activity_line",
+                    str.AppendLine(GetText(strs.activity_line,
                         ++startCount,
                         Format.Bold(kvp.Key.ToString()),
                         kvp.Value / _stats.GetUptime().TotalSeconds, kvp.Value));
                 }
 
                 await ctx.Channel.EmbedAsync(_eb.Create()
-                    .WithTitle(GetText("activity_page", page + 1))
+                    .WithTitle(GetText(strs.activity_page, page + 1))
                     .WithOkColor()
-                    .WithFooter(GetText("activity_users_total", CmdHandler.UserMessagesSent.Count))
+                    .WithFooter(GetText(strs.activity_users_total, CmdHandler.UserMessagesSent.Count))
                     .WithDescription(str.ToString())).ConfigureAwait(false);
             }
         }

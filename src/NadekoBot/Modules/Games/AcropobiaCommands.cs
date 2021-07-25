@@ -82,8 +82,8 @@ namespace NadekoBot.Modules.Games
             {
                 var embed = _eb.Create().WithOkColor()
                         .WithTitle(GetText(strs.acrophobia))
-                        .WithDescription(GetText("acro_started", Format.Bold(string.Join(".", game.StartingLetters))))
-                        .WithFooter(GetText("acro_started_footer", game.Opts.SubmissionTime));
+                        .WithDescription(GetText(strs.acro_started, Format.Bold(string.Join(".", game.StartingLetters))))
+                        .WithFooter(GetText(strs.acro_started_footer, game.Opts.SubmissionTime));
 
                 return ctx.Channel.EmbedAsync(embed);
             }
@@ -92,7 +92,7 @@ namespace NadekoBot.Modules.Games
             {
                 return SendConfirmAsync(
                     GetText(strs.acrophobia),
-                    GetText("acro_vote_cast", Format.Bold(user)));
+                    GetText(strs.acro_vote_cast, Format.Bold(user)));
             }
 
             private async Task Game_OnVotingStarted(AcrophobiaGame game, ImmutableArray<KeyValuePair<AcrophobiaUser, int>> submissions)
@@ -106,7 +106,7 @@ namespace NadekoBot.Modules.Games
                 {
                     await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
                             .WithDescription(
-                                GetText("acro_winner_only",
+                                GetText(strs.acro_winner_only,
                                     Format.Bold(submissions.First().Key.UserName)))
                             .WithFooter(submissions.First().Key.Input))
                         .ConfigureAwait(false);
@@ -118,7 +118,7 @@ namespace NadekoBot.Modules.Games
                 var embed = _eb.Create()
                         .WithOkColor()
                         .WithTitle(GetText(strs.acrophobia) + " - " + GetText(strs.submissions_closed))
-                        .WithDescription(GetText("acro_nym_was", Format.Bold(string.Join(".", game.StartingLetters)) + "\n" +
+                        .WithDescription(GetText(strs.acro_nym_was, Format.Bold(string.Join(".", game.StartingLetters)) + "\n" +
 $@"--
 {submissions.Aggregate("", (agg, cur) => agg + $"`{++i}.` **{cur.Key.Input}**\n")}
 --"))
@@ -138,7 +138,7 @@ $@"--
                 var winner = table.First();
                 var embed = _eb.Create().WithOkColor()
                     .WithTitle(GetText(strs.acrophobia))
-                    .WithDescription(GetText("acro_winner", Format.Bold(winner.Key.UserName),
+                    .WithDescription(GetText(strs.acro_winner, Format.Bold(winner.Key.UserName),
                         Format.Bold(winner.Value.ToString())))
                     .WithFooter(winner.Key.Input);
 

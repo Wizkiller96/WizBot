@@ -83,7 +83,7 @@ namespace NadekoBot.Modules.Searches
 
                     var embed = _eb.Create()
                         .WithOkColor()
-                        .WithTitle(GetText("mal_profile", name))
+                        .WithTitle(GetText(strs.mal_profile, name))
                         .AddField("💚 " + GetText(strs.watching), stats[0], true)
                         .AddField("💙 " + GetText(strs.completed), stats[1], true);
                     if (info.Count < 3)

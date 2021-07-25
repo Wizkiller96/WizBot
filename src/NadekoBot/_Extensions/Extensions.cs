@@ -377,21 +377,14 @@ namespace NadekoBot.Extensions
             return msg.Content.Headers.ContentLength / 1.MB();
         }
 
-        public static string GetText(this IBotStrings strings, LocStr str, ulong? guildId = null)
-            => strings.GetText(str.Key, guildId);
-        
-        public static string GetText(this IBotStrings strings, LocStr str, CultureInfo culture)
+        public static string GetText(this IBotStrings strings, LocStr0 str, ulong? guildId = null)
+            => strings.GetText(str.Key, guildId);        
+        public static string GetText(this IBotStrings strings, LocStr0 str, CultureInfo culture)
             => strings.GetText(str.Key, culture);
-        
-        public static string GetText<T>(this IBotStrings strings, LocStr<T> str, ulong? guildId, T obj1)
-            => strings.GetText(str.Key, guildId, obj1);
-        
-        public static string GetText<T>(this IBotStrings strings, LocStr<T> str, CultureInfo culture, T obj1)
-            => strings.GetText(str.Key, culture, obj1);
-        
-        public static string GetText<T1, T2>(this IBotStrings strings, LocStr<T1, T2> str, ulong? guildId, T1 obj1, T2 obj2)
-            => strings.GetText(str.Key, guildId, obj1, obj2);
-        public static string GetText<T1, T2>(this IBotStrings strings, LocStr<T1, T2> str, CultureInfo culture, T1 obj1, T2 obj2)
-            => strings.GetText(str.Key, culture, obj1, obj2);
+            
+        public static string GetText(this IBotStrings strings, LocStr0 str, ulong? guildId = null)
+                    => strings.GetText(str.Key, guildId);        
+        public static string GetText(this IBotStrings strings, LocStr0 str, CultureInfo culture)
+            => strings.GetText(str.Key, culture);
     }
 }
