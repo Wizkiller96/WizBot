@@ -133,7 +133,7 @@ namespace NadekoBot.Modules.Administration
                     return;
                 }
 
-                await SendConfirmAsync(GetText(strs.prot_enable, "Anti-Raid"),
+                await SendConfirmAsync(GetText(strs.prot_enable("Anti-Raid")),
                         $"{ctx.User.Mention} {GetAntiRaidString(stats)}")
                         .ConfigureAwait(false);
             }
@@ -199,7 +199,7 @@ namespace NadekoBot.Modules.Administration
 
                 var stats = await _service.StartAntiSpamAsync(ctx.Guild.Id, messageCount, action, time, role?.Id).ConfigureAwait(false);
 
-                await SendConfirmAsync(GetText(strs.prot_enable, "Anti-Spam"),
+                await SendConfirmAsync(GetText(strs.prot_enable("Anti-Spam")),
                     $"{ctx.User.Mention} {GetAntiSpamString(stats)}").ConfigureAwait(false);
             }
 
@@ -247,10 +247,10 @@ namespace NadekoBot.Modules.Administration
             }
 
             private string GetAntiAltString(AntiAltStats alt) 
-                => GetText(strs.anti_alt_status, 
+                => GetText(strs.anti_alt_status( 
                     Format.Bold(alt.MinAge.ToString(@"dd\d\ hh\h\ mm\m\ ")),
                     Format.Bold(alt.Action.ToString()),
-                    Format.Bold(alt.Counter.ToString()));
+                    Format.Bold(alt.Counter.ToString())));
 
             private string GetAntiSpamString(AntiSpamStats stats)
             {

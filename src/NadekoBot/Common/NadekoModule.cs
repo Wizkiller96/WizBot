@@ -33,23 +33,8 @@ namespace NadekoBot.Modules
         protected string GetText(string key) =>
             Strings.GetText(key, _cultureInfo);
         
-        protected string GetText(in LocStr0 key) =>
-            Strings.GetText(key, _cultureInfo);
-        
-        protected string GetText(in LocStr1 key, object obj1) =>
-            Strings.GetText(key, _cultureInfo, obj1);
-        
-        protected string GetText(in LocStr2 key, object obj1, object obj2) =>
-            Strings.GetText(key, _cultureInfo, obj1, obj2);
-        
-        protected string GetText(in LocStr3 key, object obj1, object obj2, object obj3) =>
-            Strings.GetText(key, _cultureInfo, obj1, obj2, obj3);
-        
-        protected string GetText(in LocStr4 key, object obj1, object obj2, object obj3, object obj4) =>
-            Strings.GetText(key, _cultureInfo, obj1, obj2, obj3, obj4);
-        
-        protected string GetText(in LocStr5 key, object obj1, object obj2, object obj3, object obj4, object obj5) =>
-            Strings.GetText(key, _cultureInfo, obj1, obj2, obj3, obj4, obj5);
+        protected string GetText(in LocStr data) =>
+            Strings.GetText(data, _cultureInfo);
 
         protected string GetText(string key, params object[] args) =>
             Strings.GetText(key, _cultureInfo, args);

@@ -24,7 +24,7 @@ namespace NadekoBot.Modules.Searches
                 {
                     var embed = _eb.Create()
                             .WithTitle(GetText(strs.crypto_not_found))
-                            .WithDescription(GetText(strs.did_you_mean, Format.Bold($"{nearest.Name} ({nearest.Symbol})")));
+                            .WithDescription(GetText(strs.did_you_mean(Format.Bold($"{nearest.Name} ({nearest.Symbol})"))));
 
                     if (await PromptUserConfirmAsync(embed).ConfigureAwait(false))
                     {

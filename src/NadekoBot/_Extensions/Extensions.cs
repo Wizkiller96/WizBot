@@ -377,14 +377,9 @@ namespace NadekoBot.Extensions
             return msg.Content.Headers.ContentLength / 1.MB();
         }
 
-        public static string GetText(this IBotStrings strings, LocStr0 str, ulong? guildId = null)
+        public static string GetText(this IBotStrings strings, in LocStr str, ulong? guildId = null)
             => strings.GetText(str.Key, guildId);        
-        public static string GetText(this IBotStrings strings, LocStr0 str, CultureInfo culture)
-            => strings.GetText(str.Key, culture);
-            
-        public static string GetText(this IBotStrings strings, LocStr0 str, ulong? guildId = null)
-                    => strings.GetText(str.Key, guildId);        
-        public static string GetText(this IBotStrings strings, LocStr0 str, CultureInfo culture)
-            => strings.GetText(str.Key, culture);
+        public static string GetText(this IBotStrings strings, in LocStr str, CultureInfo culture)
+            => strings.GetText(str.Key, culture, str.Parms);
     }
 }

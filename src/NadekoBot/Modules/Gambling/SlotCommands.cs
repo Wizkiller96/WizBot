@@ -203,13 +203,13 @@ namespace NadekoBot.Modules.Gambling
                             await _cs.AddAsync(ctx.User, $"Slot Machine x{result.Multiplier}", amount * result.Multiplier, false, gamble: true).ConfigureAwait(false);
                             Interlocked.Add(ref _totalPaidOut, amount * result.Multiplier);
                             if (result.Multiplier == 1)
-                                msg = GetText(strs.slot_single, CurrencySign, 1);
+                                msg = GetText(strs.slot_single(CurrencySign, 1));
                             else if (result.Multiplier == 4)
-                                msg = GetText(strs.slot_two, CurrencySign, 4);
+                                msg = GetText(strs.slot_two(CurrencySign, 4));
                             else if (result.Multiplier == 10)
-                                msg = GetText(strs.slot_three, 10);
+                                msg = GetText(strs.slot_three(10));
                             else if (result.Multiplier == 30)
-                                msg = GetText(strs.slot_jackpot, 30);
+                                msg = GetText(strs.slot_jackpot(30));
                         }
 
                         using (var imgStream = bgImage.ToStream())

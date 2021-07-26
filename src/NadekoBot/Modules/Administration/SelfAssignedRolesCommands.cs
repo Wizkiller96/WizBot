@@ -128,7 +128,7 @@ namespace NadekoBot.Modules.Administration
                         var groupNameText = "";
                         if (!groups.TryGetValue(kvp.Key, out var name))
                         {
-                            groupNameText = Format.Bold(GetText(strs.self_assign_group, kvp.Key));
+                            groupNameText = Format.Bold(GetText(strs.self_assign_group(kvp.Key)));
                         }
                         else
                         {
@@ -155,7 +155,7 @@ namespace NadekoBot.Modules.Administration
                     }
 
                     return _eb.Create().WithOkColor()
-                        .WithTitle(Format.Bold(GetText(strs.self_assign_list, roles.Count())))
+                        .WithTitle(Format.Bold(GetText(strs.self_assign_list(roles.Count()))))
                         .WithDescription(rolesStr.ToString())
                         .WithFooter(exclusive
                             ? GetText(strs.self_assign_are_exclusive)

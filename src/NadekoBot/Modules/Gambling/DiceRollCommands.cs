@@ -47,7 +47,7 @@ namespace NadekoBot.Modules.Gambling
                 {
                     await ctx.Channel.SendFileAsync(ms,
                         $"dice.{format.FileExtensions.First()}",
-                        Format.Bold(ctx.User.ToString()) + " " + GetText(strs.dice_rolled, Format.Code(gen.ToString()))).ConfigureAwait(false);
+                        Format.Bold(ctx.User.ToString()) + " " + GetText(strs.dice_rolled(Format.Code(gen.ToString()))).ConfigureAwait(false));
                 }
             }
 
@@ -128,7 +128,7 @@ namespace NadekoBot.Modules.Gambling
 
                     await ctx.Channel.SendFileAsync(ms, $"dice.{format.FileExtensions.First()}",
                         Format.Bold(ctx.User.ToString()) + " " +
-                        GetText(strs.dice_rolled_num, Format.Bold(values.Count.ToString())) +
+                        GetText(strs.dice_rolled_num(Format.Bold(values.Count.ToString()))) +
                         " " + GetText(strs.total_average,
                             Format.Bold(values.Sum().ToString()),
                             Format.Bold((values.Sum() / (1.0f * values.Count)).ToString("N2")))).ConfigureAwait(false);
@@ -152,7 +152,7 @@ namespace NadekoBot.Modules.Gambling
                     }
                     var embed = _eb.Create()
                         .WithOkColor()
-                        .WithDescription(ctx.User.Mention + " " + GetText(strs.dice_rolled_num, Format.Bold(n1.ToString())))
+                        .WithDescription(ctx.User.Mention + " " + GetText(strs.dice_rolled_num(Format.Bold(n1.ToString()))))
                         .AddField(Format.Bold("Result"), string.Join(" ", rolls.Select(c => Format.Code($"[{c}]"))));
                     
                     await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
@@ -177,7 +177,7 @@ namespace NadekoBot.Modules.Gambling
 
                         var sum = arr.Sum();
                         var embed = _eb.Create().WithOkColor()
-                            .WithDescription(ctx.User.Mention + " " + GetText(strs.dice_rolled_num, n1) + $"`1 - {n2}`")
+                            .WithDescription(ctx.User.Mention + " " + GetText(strs.dice_rolled_num(n1) + $"`1 - {n2}`"))
                             .AddField(Format.Bold("Rolls"), string.Join(" ",
                                 (ordered ? arr.OrderBy(x => x).AsEnumerable() : arr).Select(x =>
                                     Format.Code(x.ToString()))))

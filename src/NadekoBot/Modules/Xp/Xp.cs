@@ -72,13 +72,13 @@ namespace NadekoBot.Modules.Xp
                     var str = ctx.Guild.GetRole(x.RoleId)?.ToString();
                     
                     if (str is null)
-                        str = GetText(strs.role_not_found, Format.Code(x.RoleId.ToString()));
+                        str = GetText(strs.role_not_found(Format.Code(x.RoleId.ToString())));
                     else
                     {
                         if (!x.Remove)
-                            str = GetText(strs.xp_receive_role, Format.Bold(str));
+                            str = GetText(strs.xp_receive_role(Format.Bold(str)));
                         else
-                            str = GetText(strs.xp_lose_role, Format.Bold(str));
+                            str = GetText(strs.xp_lose_role(Format.Bold(str)));
                     }
                     return (x.Level, Text: sign + str);
                 })
@@ -105,7 +105,7 @@ namespace NadekoBot.Modules.Xp
 
                 foreach (var reward in localRewards)
                 {
-                    embed.AddField(GetText(strs.level_x, reward.Key),
+                    embed.AddField(GetText(strs.level_x(reward.Key)),
                         string.Join("\n", reward.Select(y => y.Item2)));
                 }
                 
@@ -364,7 +364,7 @@ namespace NadekoBot.Modules.Xp
 
                         embed.AddField(
                             $"#{(i + 1 + curPage * 9)} {(user?.ToString() ?? users[i].UserId.ToString())}",
-                            $"{GetText(strs.level_x, levelStats.Level)} - {levelStats.TotalXp}xp {awardStr}");
+                            $"{GetText(strs.level_x(levelStats.Level))} - {levelStats.TotalXp}xp {awardStr}");
                     }
                     return embed;
                 }
@@ -392,7 +392,7 @@ namespace NadekoBot.Modules.Xp
                     var user = users[i];
                     embed.AddField(
                         $"#{i + 1 + page * 9} {(user.ToString())}",
-                        $"{GetText(strs.level_x, new LevelStats(users[i].TotalXp).Level)} - {users[i].TotalXp}xp");
+                        $"{GetText(strs.level_x(new LevelStats(users[i].TotalXp).Level))} - {users[i].TotalXp}xp");
                 }
             }
 

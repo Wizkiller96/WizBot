@@ -99,7 +99,7 @@ namespace NadekoBot.Modules.Utility
                 var inv = invites.ElementAt(index);
                 await inv.DeleteAsync().ConfigureAwait(false);
 
-                await ReplyAsync(GetText(strs.invite_deleted, Format.Bold(inv.Code.ToString()))).ConfigureAwait(false);
+                await ReplyAsync(GetText(strs.invite_deleted(Format.Bold(inv.Code.ToString()))).ConfigureAwait(false));
             }
         }
     }

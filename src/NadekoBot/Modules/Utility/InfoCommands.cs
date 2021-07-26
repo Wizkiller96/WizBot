@@ -142,9 +142,9 @@ namespace NadekoBot.Modules.Utility
                 }
 
                 await ctx.Channel.EmbedAsync(_eb.Create()
-                    .WithTitle(GetText(strs.activity_page, page + 1))
+                    .WithTitle(GetText(strs.activity_page(page + 1)))
                     .WithOkColor()
-                    .WithFooter(GetText(strs.activity_users_total, CmdHandler.UserMessagesSent.Count))
+                    .WithFooter(GetText(strs.activity_users_total(CmdHandler.UserMessagesSent.Count)))
                     .WithDescription(str.ToString())).ConfigureAwait(false);
             }
         }

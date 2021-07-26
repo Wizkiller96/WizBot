@@ -293,10 +293,10 @@ namespace NadekoBot.Modules.Music
                 var repeatType = mp.Repeat;
                 var add = "";
                 if (mp.IsStopped)
-                    add += Format.Bold(GetText(strs.queue_stopped, Format.Code(Prefix + "play"))) + "\n";
+                    add += Format.Bold(GetText(strs.queue_stopped(Format.Code(Prefix + "play")))) + "\n";
                  // var mps = mp.MaxPlaytimeSeconds;
                  // if (mps > 0)
-                 //     add += Format.Bold(GetText(strs.song_skips_after, TimeSpan.FromSeconds(mps).ToString("HH\\:mm\\:ss"))) + "\n";
+                 //     add += Format.Bold(GetText(strs.song_skips_after(TimeSpan.FromSeconds(mps).ToString("HH\\:mm\\:ss")))) + "\n";
                  if (repeatType == PlayerRepeatType.Track)
                  {
                      add += "🔂 " + GetText(strs.repeating_track) + "\n";
@@ -329,7 +329,7 @@ namespace NadekoBot.Modules.Music
                     desc = add + "\n" + desc;
 
                 var embed = _eb.Create()
-                    .WithAuthor(GetText(strs.player_queue, curPage + 1, (tracks.Count / LQ_ITEMS_PER_PAGE) + 1),
+                    .WithAuthor(GetText(strs.player_queue(curPage + 1, (tracks.Count / LQ_ITEMS_PER_PAGE) + 1)),
                         MusicIconUrl)
                     .WithDescription(desc)
                     .WithFooter($"  {mp.PrettyVolume()}  |  🎶 {tracks.Count}  |  ⌛ {mp.PrettyTotalTime()}  ")

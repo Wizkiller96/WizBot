@@ -44,7 +44,7 @@ namespace NadekoBot.Modules.Searches
                             .WithDescription(p.BaseStats.ToString())
                             .WithThumbnailUrl($"https://assets.pokemon.com/assets/cms2/img/pokedex/detail/{p.Id.ToString("000")}.png")
                             .AddField(GetText(strs.types), string.Join("\n", p.Types), true)
-                            .AddField(GetText(strs.height_weight), GetText(strs.height_weight_val, p.HeightM, p.WeightKg), true)
+                            .AddField(GetText(strs.height_weight), GetText(strs.height_weight_val(p.HeightM, p.WeightKg), true))
                             .AddField(GetText(strs.abilities), string.Join("\n", p.Abilities.Select(a => a.Value)), true)).ConfigureAwait(false);
                         return;
                     }

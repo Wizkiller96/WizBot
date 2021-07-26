@@ -52,15 +52,15 @@ namespace NadekoBot.Modules.Gambling
                     case CurrencyEvent.Type.Reaction:
                         return _eb.Create()
                             .WithOkColor()
-                            .WithTitle(GetText(strs.event_title, type.ToString()))
+                            .WithTitle(GetText(strs.event_title(type.ToString())))
                             .WithDescription(GetReactionDescription(opts.Amount, currentPot))
-                            .WithFooter(GetText(strs.event_duration_footer, opts.Hours));
+                            .WithFooter(GetText(strs.event_duration_footer(opts.Hours)));
                     case CurrencyEvent.Type.GameStatus:
                         return _eb.Create()
                             .WithOkColor()
-                            .WithTitle(GetText(strs.event_title, type.ToString()))
+                            .WithTitle(GetText(strs.event_title(type.ToString())))
                             .WithDescription(GetGameStatusDescription(opts.Amount, currentPot))
-                            .WithFooter(GetText(strs.event_duration_footer, opts.Hours));
+                            .WithFooter(GetText(strs.event_duration_footer(opts.Hours)));
                     default:
                         break;
                 }

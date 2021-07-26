@@ -209,7 +209,7 @@ namespace NadekoBot.Modules.Gambling
             }
 
             embed.WithDescription(desc);
-            embed.WithFooter(GetText(strs.page, page + 1));
+            embed.WithFooter(GetText(strs.page(page + 1)));
             await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
         }
 
@@ -476,7 +476,7 @@ namespace NadekoBot.Modules.Gambling
             var result = br.Roll();
 
 
-            var str = Format.Bold(ctx.User.ToString()) + Format.Code(GetText(strs.roll, result.Roll));
+            var str = Format.Bold(ctx.User.ToString()) + Format.Code(GetText(strs.roll(result.Roll)));
             if (result.Multiplier > 0)
             {
                 var win = (long)(amount * result.Multiplier);
@@ -641,7 +641,7 @@ namespace NadekoBot.Modules.Gambling
                 await _cs.AddAsync(ctx.User.Id,
                     "Rps-draw", amount, gamble: true).ConfigureAwait(false);
                 embed.WithOkColor();
-                msg = GetText(strs.rps_draw, getRpsPick(pick));
+                msg = GetText(strs.rps_draw(getRpsPick(pick)));
             }
             else if ((pick == RpsPick.Paper && nadekoPick == RpsPick.Rock) ||
                      (pick == RpsPick.Rock && nadekoPick == RpsPick.Scissors) ||
@@ -659,7 +659,7 @@ namespace NadekoBot.Modules.Gambling
             {
                 embed.WithErrorColor();
                 amount = 0;
-                msg = GetText(strs.rps_win, ctx.Client.CurrentUser.Mention, getRpsPick(nadekoPick),
+                msg = GetText(strs.rps_win(ctx.Client.CurrentUser.Mention, getRpsPick(nadekoPick)),
                     getRpsPick(pick));
             }
 

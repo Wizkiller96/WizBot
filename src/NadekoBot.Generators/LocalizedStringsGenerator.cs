@@ -11,99 +11,33 @@ using Newtonsoft.Json;
 
 namespace NadekoBot.Generators
 {
-    internal class FieldData
+    internal class TranslationPair
     {
-        public string Type { get; set; }
         public string Name { get; set; }
+        public string Value { get; set; }
     }
-    
+
     [Generator]
     public class LocalizedStringsGenerator : ISourceGenerator
     {
         private const string LocStrSource = @"namespace NadekoBot
 {
-    public readonly ref struct LocStr0
+    public readonly struct LocStr
     {
         public readonly string Key;
+        public readonly object[] Parms;
         
-        public LocStr0(string key)
+        public LocStr(string key, params object[] data)
         {
             Key = key;
+            Params = data;
         }
-        
-        public static implicit operator LocStr0(string data)
-            => new LocStr0(data);    
-    }
-    
-    public readonly ref struct LocStr1
-    {
-        public readonly string Key;
-        
-        public LocStr1(string key)
-        {
-            Key = key;
-        }
-        
-        public static implicit operator LocStr1(string data)
-            => new LocStr1(data);    
-    }
-    
-    public readonly ref struct LocStr2
-        {
-            public readonly string Key;
-            
-            public LocStr2(string key)
-            {
-                Key = key;
-            }
-            
-            public static implicit operator LocStr2(string data)
-                => new LocStr2(data);    
-        }
-        
-        public readonly ref struct LocStr3
-    {
-        public readonly string Key;
-        
-        public LocStr3(string key)
-        {
-            Key = key;
-        }
-        
-        public static implicit operator LocStr3(string data)
-            => new LocStr3(data);    
-    }
-    
-    public readonly ref struct LocStr4
-    {
-        public readonly string Key;
-        
-        public LocStr4(string key)
-        {
-            Key = key;
-        }
-        
-        public static implicit operator LocStr4(string data)
-            => new LocStr4(data);    
-    }
-    
-    public readonly ref struct LocStr5
-    {
-        public readonly string Key;
-        
-        public LocStr5(string key)
-        {
-            Key = key;
-        }
-        
-        public static implicit operator LocStr5(string data)
-            => new LocStr5(data);    
     }
 }";
-        
+
         public void Initialize(GeneratorInitializationContext context)
         {
-            
+
         }
 
         public void Execute(GeneratorExecutionContext context)
@@ -125,66 +59,60 @@ namespace NadekoBot.Generators
 
                 foreach (var field in fields)
                 {
-                    sw.WriteLine($"public static {field.Type} {field.Name} => \"{field.Name}\";");
+                    var matches = Regex.Matches(field.Value, @"{(?<num>\d)}");
+                    var max = 0;
+                    foreach (Match match in matches)
+                    {
+                        max = Math.Max(max, int.Parse(match.Groups["num"].Value) + 1);
+                    }
+
+                    List<string> typedParamStrings = new List<string>();
+                    var paramStrings = string.Empty;
+                    for (var i = 0; i < max; i++)
+                    {
+                        typedParamStrings.Add($"object p{i}");
+                        paramStrings += $", p{i}";
+                    }
+
+
+                    var sig = string.Empty;
+                    if(max > 0)
+                        sig = $"({string.Join(", ", typedParamStrings)})";
+                    
+                    sw.WriteLine($"public static LocStr {field.Name}{sig} => new LocStr(\"{field.Name}\"{paramStrings});");
                 }
 
                 sw.Indent--;
                 sw.WriteLine("}");
                 sw.Indent--;
                 sw.WriteLine("}");
-                
-                
+
+
                 sw.Flush();
                 context.AddSource("strs.cs", stringWriter.ToString());
             }
-            
+
             context.AddSource("LocStr.cs", LocStrSource);
         }
 
-        private List<FieldData> GetFields(string dataText)
+        private List<TranslationPair> GetFields(string dataText)
         {
             if (string.IsNullOrWhiteSpace(dataText))
                 throw new ArgumentNullException(nameof(dataText));
-            
+
             var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(dataText);
 
-            var list = new List<FieldData>();
+            var list = new List<TranslationPair>();
             foreach (var entry in data)
             {
-                list.Add(new FieldData()
+                list.Add(new TranslationPair()
                 {
-                    Type = GetFieldType(entry.Value),
                     Name = entry.Key,
+                    Value = entry.Value
                 });
             }
 
             return list;
-        }
-
-        private string GetFieldType(string value)
-        {
-            var matches = Regex.Matches(value, @"{(?<num>\d)}");
-            int max = -1;
-            foreach (Match match in matches)
-            {
-                max = Math.Max(max, int.Parse(match.Groups["num"].Value));
-            }
-
-            max += 1;
-            if (max == 0)
-                return "LocStr0";
-            if (max == 1)
-                return "LocStr1";
-            if (max == 2)
-                return "LocStr2";
-            if (max == 3)
-                return "LocStr3";
-            if (max == 4)
-                return "LocStr4";
-            if (max == 5)
-                return "LocStr5";
-
-            return "!Error";
         }
     }
 }

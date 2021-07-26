@@ -55,7 +55,7 @@ namespace NadekoBot.Modules.Utility
                         "GetHashCode",
                         "GetType"
                     });
-                await SendConfirmAsync(GetText(strs.calcops, Prefix), string.Join(", ", selection)).ConfigureAwait(false);
+                await SendConfirmAsync(GetText(strs.calcops(Prefix), string.Join(", ", selection)).ConfigureAwait(false));
             }
         }
 

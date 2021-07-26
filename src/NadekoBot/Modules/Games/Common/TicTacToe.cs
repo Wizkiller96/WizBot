@@ -74,12 +74,6 @@ namespace NadekoBot.Modules.Games.Common
 
         private string GetText(LocStr key)
             => _strings.GetText(key, _channel.GuildId);
-        
-        private string GetText<T>(LocStr<T> key, T param)
-            => _strings.GetText(key, _channel.GuildId, param);
-        
-        private string GetText<T1, T2>(LocStr<T1, T2> key, T1 param, T2 param2)
-            => _strings.GetText(key, _channel.GuildId, param, param2);
 
         public string GetState()
         {
@@ -104,7 +98,7 @@ namespace NadekoBot.Modules.Games.Common
             var embed = _eb.Create()
                 .WithOkColor()
                 .WithDescription(Environment.NewLine + GetState())
-                .WithAuthor(GetText(strs.vs, _users[0], _users[1]));
+                .WithAuthor(GetText(strs.vs(_users[0], _users[1])));
 
             if (!string.IsNullOrWhiteSpace(title))
                 embed.WithTitle(title);
@@ -114,10 +108,10 @@ namespace NadekoBot.Modules.Games.Common
                 if (_phase == Phase.Ended)
                     embed.WithFooter(GetText(strs.ttt_no_moves));
                 else
-                    embed.WithFooter(GetText(strs.ttt_users_move, _users[_curUserIndex]));
+                    embed.WithFooter(GetText(strs.ttt_users_move(_users[_curUserIndex])));
             }
             else
-                embed.WithFooter(GetText(strs.ttt_has_won, _winner));
+                embed.WithFooter(GetText(strs.ttt_has_won(_winner)));
 
             return embed;
         }

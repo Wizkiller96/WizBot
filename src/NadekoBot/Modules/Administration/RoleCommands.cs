@@ -150,7 +150,7 @@ namespace NadekoBot.Modules.Administration
                         }
                         var content = msg?.Content.TrimTo(30) ?? "DELETED!";
                         embed.AddField($"**{rr.Index + 1}.** {(ch?.Name ?? "DELETED!")}",
-                            GetText(strs.reaction_roles_message, rr.ReactionRoles?.Count ?? 0, content));
+                            GetText(strs.reaction_roles_message(rr.ReactionRoles?.Count ?? 0, content)));
                     }
                 }
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
