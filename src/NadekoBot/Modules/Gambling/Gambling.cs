@@ -196,8 +196,8 @@ namespace NadekoBot.Modules.Gambling
             }
 
             var embed = _eb.Create()
-                .WithTitle(GetText(strs.transactions,
-                    ((SocketGuild)ctx.Guild)?.GetUser(userId)?.ToString() ?? $"{userId}"))
+                .WithTitle(GetText(strs.transactions(
+                    ((SocketGuild)ctx.Guild)?.GetUser(userId)?.ToString() ?? $"{userId}")))
                 .WithOkColor();
 
             var desc = "";
@@ -480,9 +480,9 @@ namespace NadekoBot.Modules.Gambling
             if (result.Multiplier > 0)
             {
                 var win = (long)(amount * result.Multiplier);
-                str += GetText(strs.br_win,
+                str += GetText(strs.br_win(
                     n(win) + CurrencySign,
-                    result.Threshold + (result.Roll == 100 ? " 👑" : ""));
+                    result.Threshold + (result.Roll == 100 ? " 👑" : "")));
                 await _cs.AddAsync(ctx.User, "Betroll Gamble",
                     win, false, gamble: true).ConfigureAwait(false);
             }
@@ -652,15 +652,13 @@ namespace NadekoBot.Modules.Gambling
                     "Rps-win", amount, gamble: true).ConfigureAwait(false);
                 embed.WithOkColor();
                 embed.AddField(GetText(strs.won), n(amount));
-                msg = GetText(strs.rps_win, ctx.User.Mention,
-                    getRpsPick(pick), getRpsPick(nadekoPick));
+                msg = GetText(strs.rps_win(ctx.User.Mention, getRpsPick(pick), getRpsPick(nadekoPick)));
             }
             else
             {
                 embed.WithErrorColor();
                 amount = 0;
-                msg = GetText(strs.rps_win(ctx.Client.CurrentUser.Mention, getRpsPick(nadekoPick)),
-                    getRpsPick(pick));
+                msg = GetText(strs.rps_win(ctx.Client.CurrentUser.Mention, getRpsPick(nadekoPick), getRpsPick(pick)));
             }
 
             embed

@@ -266,10 +266,10 @@ namespace NadekoBot.Modules.Administration
                     add = $" ({TimeSpan.FromMinutes(settings.MuteTime):hh\\hmm\\m})";
                 }
 
-                return GetText(strs.spam_stats,
+                return GetText(strs.spam_stats(
                         Format.Bold(settings.MessageThreshold.ToString()),
-                        Format.Bold(settings.Action.ToString() + add),
-                        ignoredString);
+                        Format.Bold(settings.Action + add),
+                        ignoredString));
             }
 
             private string GetAntiRaidString(AntiRaidStats stats)
@@ -280,11 +280,11 @@ namespace NadekoBot.Modules.Administration
                 {
                     actionString += $" **({TimeSpan.FromMinutes(stats.AntiRaidSettings.PunishDuration):hh\\hmm\\m})**";
                 }
-                
-                return GetText(strs.raid_stats,
+
+                return GetText(strs.raid_stats(
                     Format.Bold(stats.AntiRaidSettings.UserThreshold.ToString()),
                     Format.Bold(stats.AntiRaidSettings.Seconds.ToString()),
-                    actionString);
+                    actionString));
             }
         }
     }

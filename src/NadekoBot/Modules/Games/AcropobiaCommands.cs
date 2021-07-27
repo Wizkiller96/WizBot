@@ -105,9 +105,7 @@ namespace NadekoBot.Modules.Games
                 if (submissions.Length == 1)
                 {
                     await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
-                            .WithDescription(
-                                GetText(strs.acro_winner_only,
-                                    Format.Bold(submissions.First().Key.UserName)))
+                            .WithDescription(GetText(strs.acro_winner_only(Format.Bold(submissions.First().Key.UserName))))
                             .WithFooter(submissions.First().Key.Input))
                         .ConfigureAwait(false);
                     return;
@@ -138,8 +136,8 @@ $@"--
                 var winner = table.First();
                 var embed = _eb.Create().WithOkColor()
                     .WithTitle(GetText(strs.acrophobia))
-                    .WithDescription(GetText(strs.acro_winner(Format.Bold(winner.Key.UserName)),
-                        Format.Bold(winner.Value.ToString())))
+                    .WithDescription(GetText(strs.acro_winner(Format.Bold(winner.Key.UserName),
+                        Format.Bold(winner.Value.ToString()))))
                     .WithFooter(winner.Key.Input);
 
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);

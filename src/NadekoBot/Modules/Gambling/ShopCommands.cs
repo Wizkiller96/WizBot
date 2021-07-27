@@ -433,7 +433,7 @@ namespace NadekoBot.Modules.Gambling
                 var embed = _eb.Create().WithOkColor();
 
                 if (entry.Type == ShopEntryType.Role)
-                    return embed.AddField(GetText(strs.name), GetText(strs.shop_role(Format.Bold(ctx.Guild.GetRole(entry.RoleId)?.Name ?? "MISSING_ROLE")), true))
+                    return embed.AddField(GetText(strs.name), GetText(strs.shop_role(Format.Bold(ctx.Guild.GetRole(entry.RoleId)?.Name ?? "MISSING_ROLE"))), true)
                             .AddField(GetText(strs.price), entry.Price.ToString(), true)
                             .AddField(GetText(strs.type), entry.Type.ToString(), true);
                 else if (entry.Type == ShopEntryType.List)

@@ -109,10 +109,10 @@ namespace NadekoBot.Modules.Games
                 for (int i = 0; i < stats.Length; i++)
                 {
                     var (Index, votes, Text) = stats[i];
-                    sb.AppendLine(GetText(strs.poll_result,
+                    sb.AppendLine(GetText(strs.poll_result(
                         Index + 1,
                         Format.Bold(Text),
-                        Format.Bold(votes.ToString())));
+                        Format.Bold(votes.ToString()))));
                 }
 
                 return eb.WithDescription(sb.ToString())

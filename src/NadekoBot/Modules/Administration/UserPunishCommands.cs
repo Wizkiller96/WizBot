@@ -96,13 +96,12 @@ namespace NadekoBot.Modules.Administration
                     .WithOkColor();
                 if (punishment is null)
                 {
-                    embed.WithDescription(GetText(strs.user_warned,
-                        Format.Bold(user.ToString())));
+                    embed.WithDescription(GetText(strs.user_warned(Format.Bold(user.ToString()))));
                 }
                 else
                 {
-                    embed.WithDescription(GetText(strs.user_warned_and_punished(Format.Bold(user.ToString())),
-                        Format.Bold(punishment.Punishment.ToString())));
+                    embed.WithDescription(GetText(strs.user_warned_and_punished(Format.Bold(user.ToString()),
+                        Format.Bold(punishment.Punishment.ToString()))));
                 }
 
                 if (dmFailed)
@@ -233,10 +232,10 @@ namespace NadekoBot.Modules.Administration
                         foreach (var w in warnings)
                         {
                             i++;
-                            var name = GetText(strs.warned_on_by,
+                            var name = GetText(strs.warned_on_by(
                                 w.DateAdded.Value.ToString("dd.MM.yyy"),
                                 w.DateAdded.Value.ToString("HH:mm"),
-                                w.Moderator);
+                                w.Moderator));
                             
                             if (w.Forgiven)
                                 name = $"{Format.Strikethrough(name)} {GetText(strs.warn_cleared_by(w.ForgivenBy))}";
@@ -685,7 +684,7 @@ namespace NadekoBot.Modules.Administration
 
                 try
                 {
-                    await user.SendErrorAsync(_eb, GetText(strs.sbdm(Format.Bold(ctx.Guild.Name), msg)).ConfigureAwait(false));
+                    await user.SendErrorAsync(_eb, GetText(strs.sbdm(Format.Bold(ctx.Guild.Name), msg)));
                 }
                     catch
                 {
@@ -784,7 +783,7 @@ namespace NadekoBot.Modules.Administration
                 //send a message but don't wait for it
                 var banningMessageTask = ctx.Channel.EmbedAsync(_eb.Create()
                     .WithDescription(GetText(strs.mass_kill_in_progress(bans.Count())))
-                    .AddField(GetText(strs.invalid(missing), missStr))
+                    .AddField(GetText(strs.invalid(missing)), missStr)
                     .WithOkColor());
 
                 //do the banning
@@ -801,7 +800,7 @@ namespace NadekoBot.Modules.Administration
 
                 await banningMessage.ModifyAsync(x => x.Embed = _eb.Create()
                     .WithDescription(GetText(strs.mass_kill_completed(bans.Count())))
-                    .AddField(GetText(strs.invalid(missing), missStr))
+                    .AddField(GetText(strs.invalid(missing)), missStr)
                     .WithOkColor()
                     .Build()).ConfigureAwait(false);
             }

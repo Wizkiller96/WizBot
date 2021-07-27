@@ -122,12 +122,8 @@ namespace NadekoBot.Modules.Games.Services
                 {
                     if (pc.Verbose)
                     {
-                        var returnMsg = _strings.GetText(
-                            strs.perm_prevent(
-                                guild.Id,
-                                index + 1,
-                                Format.Bold(pc.Permissions[index]
-                                    .GetCommand(_cmd.GetPrefix(guild), (SocketGuild)guild))));
+                        var returnMsg = _strings.GetText(strs.perm_prevent(index + 1,
+                                Format.Bold(pc.Permissions[index].GetCommand(_cmd.GetPrefix(guild), (SocketGuild)guild))));
                         
                         try { await usrMsg.Channel.SendErrorAsync(_eb, returnMsg).ConfigureAwait(false); } catch { }
                         Log.Information(returnMsg);

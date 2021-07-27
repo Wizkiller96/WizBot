@@ -99,8 +99,8 @@ namespace NadekoBot.Modules.Games.Services
 
         private async Task Pr_OnVoted(IUserMessage msg, IGuildUser usr)
         {
-            var toDelete = await msg.Channel.SendConfirmAsync(_eb, _strs.GetText(strs.poll_voted, 
-                    usr.Guild.Id, Format.Bold(usr.ToString())))
+            var toDelete = await msg.Channel.SendConfirmAsync(_eb, 
+                    _strs.GetText(strs.poll_voted(Format.Bold(usr.ToString())), usr.GuildId))
                 .ConfigureAwait(false);
             toDelete.DeleteAfter(5);
             try { await msg.DeleteAsync().ConfigureAwait(false); } catch { }

@@ -47,7 +47,7 @@ namespace NadekoBot.Modules.Gambling
                 {
                     await ctx.Channel.SendFileAsync(ms,
                         $"dice.{format.FileExtensions.First()}",
-                        Format.Bold(ctx.User.ToString()) + " " + GetText(strs.dice_rolled(Format.Code(gen.ToString()))).ConfigureAwait(false));
+                        Format.Bold(ctx.User.ToString()) + " " + GetText(strs.dice_rolled(Format.Code(gen.ToString()))));
                 }
             }
 
@@ -129,9 +129,9 @@ namespace NadekoBot.Modules.Gambling
                     await ctx.Channel.SendFileAsync(ms, $"dice.{format.FileExtensions.First()}",
                         Format.Bold(ctx.User.ToString()) + " " +
                         GetText(strs.dice_rolled_num(Format.Bold(values.Count.ToString()))) +
-                        " " + GetText(strs.total_average,
+                        " " + GetText(strs.total_average(
                             Format.Bold(values.Sum().ToString()),
-                            Format.Bold((values.Sum() / (1.0f * values.Count)).ToString("N2")))).ConfigureAwait(false);
+                            Format.Bold((values.Sum() / (1.0f * values.Count)).ToString("N2")))));
                 }
             }
 

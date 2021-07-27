@@ -190,11 +190,11 @@ namespace NadekoBot.Modules.Utility
                 try
                 {
                     await SendConfirmAsync(
-                        "⏰ " + GetText(strs.remind,
+                        "⏰ " + GetText(strs.remind(
                             Format.Bold(!isPrivate ? $"<#{targetId}>" : ctx.User.Username),
                             Format.Bold(message),
                             $"{ts.Days}d {ts.Hours}h {ts.Minutes}min",
-                            gTime, gTime)).ConfigureAwait(false);
+                            gTime, gTime))).ConfigureAwait(false);
                 }
                 catch
                 {

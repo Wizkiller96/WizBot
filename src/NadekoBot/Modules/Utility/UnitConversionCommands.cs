@@ -89,7 +89,7 @@ namespace NadekoBot.Modules.Utility
                 }
                 res = Math.Round(res, 4);
 
-                await SendConfirmAsync(GetText(strs.convert(value, originUnit.Triggers.Last(), res, targetUnit.Triggers.Last())).ConfigureAwait(false));
+                await SendConfirmAsync(GetText(strs.convert(value, originUnit.Triggers.Last(), res, targetUnit.Triggers.Last())));
             }
         }
     }

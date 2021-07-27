@@ -72,10 +72,10 @@ namespace NadekoBot.Modules.Gambling
                 string potSizeStr = Format.Bold(potSize == 0
                     ? "∞" + CurrencySign
                     : potSize.ToString() + CurrencySign);
-                return GetText(strs.new_reaction_event,
-                                   CurrencySign,
-                                   Format.Bold(amount + CurrencySign),
-                                   potSizeStr);
+                return GetText(strs.new_reaction_event(
+                    CurrencySign,
+                    Format.Bold(amount + CurrencySign),
+                    potSizeStr));
             }
 
             private string GetGameStatusDescription(long amount, long potSize)
@@ -83,10 +83,10 @@ namespace NadekoBot.Modules.Gambling
                 string potSizeStr = Format.Bold(potSize == 0
                     ? "∞" + CurrencySign
                     : potSize.ToString() + CurrencySign);
-                return GetText(strs.new_gamestatus_event,
-                                   CurrencySign,
-                                   Format.Bold(amount + CurrencySign),
-                                   potSizeStr);
+                return GetText(strs.new_gamestatus_event(
+                    CurrencySign,
+                    Format.Bold(amount + CurrencySign),
+                    potSizeStr));
             }
         }
     }

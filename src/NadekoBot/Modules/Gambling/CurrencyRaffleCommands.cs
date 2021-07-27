@@ -35,7 +35,7 @@ namespace NadekoBot.Modules.Gambling
                     return;
                 async Task OnEnded(IUser arg, long won)
                 {
-                    await SendConfirmAsync(GetText(strs.rafflecur_ended(CurrencyName, Format.Bold(arg.ToString()), won + CurrencySign)).ConfigureAwait(false));
+                    await SendConfirmAsync(GetText(strs.rafflecur_ended(CurrencyName, Format.Bold(arg.ToString()), won + CurrencySign)));
                 }
                 var res = await _service.JoinOrCreateGame(ctx.Channel.Id,
                     ctx.User, amount, mixed, OnEnded)
@@ -45,7 +45,7 @@ namespace NadekoBot.Modules.Gambling
                 {
                     await SendConfirmAsync(GetText(strs.rafflecur(res.Item1.GameType.ToString())),
                         string.Join("\n", res.Item1.Users.Select(x => $"{x.DiscordUser} ({x.Amount})")),
-                        footer: GetText(strs.rafflecur_joined(ctx.User.ToString())).ConfigureAwait(false));
+                        footer: GetText(strs.rafflecur_joined(ctx.User.ToString())));
                 }
                 else
                 {

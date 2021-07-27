@@ -128,10 +128,10 @@ namespace NadekoBot.Modules.Permissions.Services
                     {
                         try
                         {
-                            await channel.SendErrorAsync(_eb, 
-                                    _strings.GetText(strs.perm_prevent, guild.Id, index + 1,
-                                    Format.Bold(pc.Permissions[index].GetCommand(_cmd.GetPrefix(guild), (SocketGuild) guild))))
-                                .ConfigureAwait(false);
+                            await channel.SendErrorAsync(_eb,
+                                _strings.GetText(strs.perm_prevent(index + 1,
+                                    Format.Bold(pc.Permissions[index]
+                                        .GetCommand(_cmd.GetPrefix(guild), (SocketGuild)guild))), guild.Id));
                         }
                         catch
                         {

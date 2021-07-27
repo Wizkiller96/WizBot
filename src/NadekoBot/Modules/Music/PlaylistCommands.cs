@@ -63,7 +63,7 @@ namespace NadekoBot.Modules.Music
 
                 var embed = _eb
                     .Create(ctx)
-                    .WithAuthor(GetText(strs.playlists_page(num), MusicIconUrl))
+                    .WithAuthor(GetText(strs.playlists_page(num)), MusicIconUrl)
                     .WithDescription(string.Join("\n", playlists.Select(r =>
                         GetText(strs.playlists(r.Id, r.Name, r.Author, r.Songs.Count)))))
                     .WithOkColor();

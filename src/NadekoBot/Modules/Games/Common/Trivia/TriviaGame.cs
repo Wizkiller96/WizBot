@@ -277,7 +277,7 @@ namespace NadekoBot.Modules.Games.Common.Trivia
 
             foreach (var kvp in Users.OrderByDescending(kvp => kvp.Value))
             {
-                sb.AppendLine(GetText(strs.trivia_points(Format.Bold(kvp.Key.ToString()), kvp.Value).SnPl(kvp.Value)));
+                sb.AppendLine(GetText(strs.trivia_points(Format.Bold(kvp.Key.ToString()), kvp.Value)).SnPl(kvp.Value));
             }
 
             return sb.ToString();

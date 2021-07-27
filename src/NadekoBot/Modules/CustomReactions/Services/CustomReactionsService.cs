@@ -411,9 +411,10 @@ namespace NadekoBot.Modules.CustomReactions.Services
                     {
                         if (pc.Verbose)
                         {
-                            var returnMsg = _strings.GetText(strs.perm_prevent, sg.Id,
-                                index + 1,
-                                Format.Bold(pc.Permissions[index].GetCommand(_cmd.GetPrefix(guild), sg)));
+                            var returnMsg = _strings.GetText(
+                                strs.perm_prevent(index + 1,
+                                    Format.Bold(pc.Permissions[index].GetCommand(_cmd.GetPrefix(guild), sg))),
+                                sg.Id);
                             
                             try
                             {

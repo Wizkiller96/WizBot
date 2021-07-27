@@ -25,7 +25,7 @@ namespace NadekoBot.Generators
     public readonly struct LocStr
     {
         public readonly string Key;
-        public readonly object[] Parms;
+        public readonly object[] Params;
         
         public LocStr(string key, params object[] data)
         {
@@ -59,7 +59,7 @@ namespace NadekoBot.Generators
 
                 foreach (var field in fields)
                 {
-                    var matches = Regex.Matches(field.Value, @"{(?<num>\d)}");
+                    var matches = Regex.Matches(field.Value, @"{(?<num>\d)[}:]");
                     var max = 0;
                     foreach (Match match in matches)
                     {

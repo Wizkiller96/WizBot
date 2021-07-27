@@ -77,8 +77,10 @@ namespace NadekoBot.Modules.Gambling
                     if (race.FinishedUsers[0].Bet > 0)
                     {
                         return SendConfirmAsync(GetText(strs.animal_race),
-                                            GetText(strs.animal_race_won_money(Format.Bold(winner.Username)),
-                                                winner.Animal.Icon, (race.FinishedUsers[0].Bet * (race.Users.Count - 1)) + CurrencySign));
+                            GetText(strs.animal_race_won_money(
+                                Format.Bold(winner.Username),
+                                winner.Animal.Icon,
+                                (race.FinishedUsers[0].Bet * (race.Users.Count - 1)) + CurrencySign)));
                     }
                     else
                     {
@@ -153,9 +155,9 @@ namespace NadekoBot.Modules.Gambling
                     var user = await ar.JoinRace(ctx.User.Id, ctx.User.ToString(), amount)
                         .ConfigureAwait(false);
                     if (amount > 0)
-                        await SendConfirmAsync(GetText(strs.animal_race_join_bet(ctx.User.Mention, user.Animal.Icon, amount + CurrencySign)).ConfigureAwait(false));
+                        await SendConfirmAsync(GetText(strs.animal_race_join_bet(ctx.User.Mention, user.Animal.Icon, amount + CurrencySign)));
                     else
-                        await SendConfirmAsync(GetText(strs.animal_race_join(ctx.User.Mention, user.Animal.Icon)).ConfigureAwait(false));
+                        await SendConfirmAsync(GetText(strs.animal_race_join(ctx.User.Mention, user.Animal.Icon)));
                 }
                 catch (ArgumentOutOfRangeException)
                 {
@@ -176,7 +178,7 @@ namespace NadekoBot.Modules.Gambling
                 }
                 catch (NotEnoughFundsException)
                 {
-                    await SendErrorAsync(GetText(strs.not_enough(CurrencySign)).ConfigureAwait(false));
+                    await SendErrorAsync(GetText(strs.not_enough(CurrencySign)));
                 }
             }
         }
