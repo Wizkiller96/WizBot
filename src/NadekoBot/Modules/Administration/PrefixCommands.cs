@@ -14,7 +14,7 @@ namespace NadekoBot.Modules.Administration
             [Priority(1)]
             public async Task PrefixCommand()
             {
-                await ReplyConfirmLocalizedAsync("prefix_current", Format.Code(CmdHandler.GetPrefix(ctx.Guild))).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.prefix_current(Format.Code(CmdHandler.GetPrefix(ctx.Guild)))).ConfigureAwait(false);
             }
 
             public enum Set
@@ -41,7 +41,7 @@ namespace NadekoBot.Modules.Administration
                 var oldPrefix = base.Prefix;
                 var newPrefix = CmdHandler.SetPrefix(ctx.Guild, prefix);
 
-                await ReplyConfirmLocalizedAsync("prefix_new", Format.Code(oldPrefix), Format.Code(newPrefix)).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.prefix_new(Format.Code(oldPrefix), Format.Code(newPrefix))).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -50,14 +50,14 @@ namespace NadekoBot.Modules.Administration
             {
                 if (string.IsNullOrWhiteSpace(prefix))
                 {
-                    await ReplyConfirmLocalizedAsync("defprefix_current", CmdHandler.GetPrefix()).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.defprefix_current(CmdHandler.GetPrefix())).ConfigureAwait(false);
                     return;
                 }
 
                 var oldPrefix = CmdHandler.GetPrefix();
                 var newPrefix = CmdHandler.SetDefaultPrefix(prefix);
 
-                await ReplyConfirmLocalizedAsync("defprefix_new", Format.Code(oldPrefix), Format.Code(newPrefix)).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.defprefix_new(Format.Code(oldPrefix), Format.Code(newPrefix))).ConfigureAwait(false);
             }
         }
     }

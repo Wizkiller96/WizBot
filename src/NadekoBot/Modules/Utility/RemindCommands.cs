@@ -40,7 +40,7 @@ namespace NadekoBot.Modules.Utility
             {
                 if (!_service.TryParseRemindMessage(remindString, out var remindData))
                 {
-                    await ReplyErrorLocalizedAsync("remind_invalid");
+                    await ReplyErrorLocalizedAsync(strs.remind_invalid);
                     return;
                 }
                 
@@ -49,7 +49,7 @@ namespace NadekoBot.Modules.Utility
                 if (!await RemindInternal(target, meorhere == MeOrHere.Me || ctx.Guild is null, remindData.Time, remindData.What)
                     .ConfigureAwait(false))
                 {
-                    await ReplyErrorLocalizedAsync("remind_too_long").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.remind_too_long).ConfigureAwait(false);
                 }
             }
 
@@ -62,13 +62,13 @@ namespace NadekoBot.Modules.Utility
                 var perms = ((IGuildUser) ctx.User).GetPermissions(channel);
                 if (!perms.SendMessages || !perms.ViewChannel)
                 {
-                    await ReplyErrorLocalizedAsync("cant_read_or_send").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.cant_read_or_send).ConfigureAwait(false);
                     return;
                 }
 
                 if (!_service.TryParseRemindMessage(remindString, out var remindData))
                 {
-                    await ReplyErrorLocalizedAsync("remind_invalid");
+                    await ReplyErrorLocalizedAsync(strs.remind_invalid);
                     return;
                 }
 
@@ -76,7 +76,7 @@ namespace NadekoBot.Modules.Utility
                 if (!await RemindInternal(channel.Id, false, remindData.Time, remindData.What)
                     .ConfigureAwait(false))
                 {
-                    await ReplyErrorLocalizedAsync("remind_too_long").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.remind_too_long).ConfigureAwait(false);
                 }
             }
 
@@ -144,11 +144,11 @@ namespace NadekoBot.Modules.Utility
 
                 if (rem is null)
                 {
-                    await ReplyErrorLocalizedAsync("reminder_not_exist").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.reminder_not_exist).ConfigureAwait(false);
                 }
                 else
                 {
-                    await ReplyErrorLocalizedAsync("reminder_deleted", index + 1).ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.reminder_deleted(index + 1));
                 }
             }
 

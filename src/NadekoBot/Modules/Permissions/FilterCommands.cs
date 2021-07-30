@@ -32,7 +32,7 @@ namespace NadekoBot.Modules.Permissions
             public async Task FwClear()
             {
                 _service.ClearFilteredWords(ctx.Guild.Id);
-                await ReplyConfirmLocalizedAsync("fw_cleared").ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.fw_cleared).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -52,12 +52,12 @@ namespace NadekoBot.Modules.Permissions
                 if (enabled)
                 {
                     _service.InviteFilteringServers.Add(channel.Guild.Id);
-                    await ReplyConfirmLocalizedAsync("invite_filter_server_on").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.invite_filter_server_on).ConfigureAwait(false);
                 }
                 else
                 {
                     _service.InviteFilteringServers.TryRemove(channel.Guild.Id);
-                    await ReplyConfirmLocalizedAsync("invite_filter_server_off").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.invite_filter_server_off).ConfigureAwait(false);
                 }
             }
 
@@ -91,12 +91,12 @@ namespace NadekoBot.Modules.Permissions
                 if (removed is null)
                 {
                     _service.InviteFilteringChannels.Add(channel.Id);
-                    await ReplyConfirmLocalizedAsync("invite_filter_channel_on").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.invite_filter_channel_on).ConfigureAwait(false);
                 }
                 else
                 {
                     _service.InviteFilteringChannels.TryRemove(channel.Id);
-                    await ReplyConfirmLocalizedAsync("invite_filter_channel_off").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.invite_filter_channel_off).ConfigureAwait(false);
                 }
             }
 
@@ -117,12 +117,12 @@ namespace NadekoBot.Modules.Permissions
                 if (enabled)
                 {
                     _service.LinkFilteringServers.Add(channel.Guild.Id);
-                    await ReplyConfirmLocalizedAsync("link_filter_server_on").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.link_filter_server_on).ConfigureAwait(false);
                 }
                 else
                 {
                     _service.LinkFilteringServers.TryRemove(channel.Guild.Id);
-                    await ReplyConfirmLocalizedAsync("link_filter_server_off").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.link_filter_server_off).ConfigureAwait(false);
                 }
             }
 
@@ -156,12 +156,12 @@ namespace NadekoBot.Modules.Permissions
                 if (removed is null)
                 {
                     _service.LinkFilteringChannels.Add(channel.Id);
-                    await ReplyConfirmLocalizedAsync("link_filter_channel_on").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.link_filter_channel_on).ConfigureAwait(false);
                 }
                 else
                 {
                     _service.LinkFilteringChannels.TryRemove(channel.Id);
-                    await ReplyConfirmLocalizedAsync("link_filter_channel_off").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.link_filter_channel_off).ConfigureAwait(false);
                 }
             }
 
@@ -182,12 +182,12 @@ namespace NadekoBot.Modules.Permissions
                 if (enabled)
                 {
                     _service.WordFilteringServers.Add(channel.Guild.Id);
-                    await ReplyConfirmLocalizedAsync("word_filter_server_on").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.word_filter_server_on).ConfigureAwait(false);
                 }
                 else
                 {
                     _service.WordFilteringServers.TryRemove(channel.Guild.Id);
-                    await ReplyConfirmLocalizedAsync("word_filter_server_off").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.word_filter_server_off).ConfigureAwait(false);
                 }
             }
 
@@ -221,12 +221,12 @@ namespace NadekoBot.Modules.Permissions
                 if (removed is null)
                 {
                     _service.WordFilteringChannels.Add(channel.Id);
-                    await ReplyConfirmLocalizedAsync("word_filter_channel_on").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.word_filter_channel_on).ConfigureAwait(false);
                 }
                 else
                 {
                     _service.WordFilteringChannels.TryRemove(channel.Id);
-                    await ReplyConfirmLocalizedAsync("word_filter_channel_off").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.word_filter_channel_off).ConfigureAwait(false);
                 }
             }
 
@@ -263,12 +263,12 @@ namespace NadekoBot.Modules.Permissions
                 if (removed is null)
                 {
                     filteredWords.Add(word);
-                    await ReplyConfirmLocalizedAsync("filter_word_add", Format.Code(word)).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.filter_word_add(Format.Code(word))).ConfigureAwait(false);
                 }
                 else
                 {
                     filteredWords.TryRemove(word);
-                    await ReplyConfirmLocalizedAsync("filter_word_remove", Format.Code(word)).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.filter_word_remove(Format.Code(word))).ConfigureAwait(false);
                 }
             }
 

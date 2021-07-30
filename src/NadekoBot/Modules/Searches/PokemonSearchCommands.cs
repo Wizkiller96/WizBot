@@ -49,7 +49,7 @@ namespace NadekoBot.Modules.Searches
                         return;
                     }
                 }
-                await ReplyErrorLocalizedAsync("pokemon_none").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.pokemon_none).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -71,7 +71,7 @@ namespace NadekoBot.Modules.Searches
                         return;
                     }
                 }
-                await ReplyErrorLocalizedAsync("pokemon_ability_none").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.pokemon_ability_none).ConfigureAwait(false);
             }
         }
     }

@@ -28,16 +28,9 @@ namespace NadekoBot.Modules
         {
             _cultureInfo = Localization.GetCultureInfo(ctx.Guild?.Id);
         }
-
-        // todo remove
-        protected string GetText(string key) =>
-            Strings.GetText(key, _cultureInfo);
         
         protected string GetText(in LocStr data) =>
             Strings.GetText(data, _cultureInfo);
-
-        protected string GetText(string key, params object[] args) =>
-            Strings.GetText(key, _cultureInfo, args);
 
         public Task<IUserMessage> SendErrorAsync(string error)
             => ctx.Channel.SendErrorAsync(_eb, error);
@@ -54,34 +47,23 @@ namespace NadekoBot.Modules
         public Task<IUserMessage> SendPendingAsync(string text)
             => ctx.Channel.SendPendingAsync(_eb, text);
         
-        public Task<IUserMessage> ErrorLocalizedAsync(string textKey, params object[] args)
-        {
-            var text = GetText(textKey, args);
-            return SendErrorAsync(text);
-        }
+        public Task<IUserMessage> ErrorLocalizedAsync(LocStr str) 
+            => SendErrorAsync(GetText(str));
 
-        public Task<IUserMessage> ReplyErrorLocalizedAsync(string textKey, params object[] args)
-        {
-            var text = GetText(textKey, args);
-            return SendErrorAsync(Format.Bold(ctx.User.ToString()) + " " + text);
-        }
-        public Task<IUserMessage> ReplyPendingLocalizedAsync(string textKey, params object[] args)
-        {
-            var text = GetText(textKey, args);
-            return SendPendingAsync(Format.Bold(ctx.User.ToString()) + " " + text);
-        }
+        public Task<IUserMessage> PendingLocalizedAsync(LocStr str) 
+            => SendPendingAsync(GetText(str));
+        
+        public Task<IUserMessage> ConfirmLocalizedAsync(LocStr str) 
+            => SendConfirmAsync(GetText(str));
 
-        public Task<IUserMessage> ConfirmLocalizedAsync(string textKey, params object[] args)
-        {
-            var text = GetText(textKey, args);
-            return SendConfirmAsync(text);
-        }
+        public Task<IUserMessage> ReplyErrorLocalizedAsync(LocStr str) 
+            => SendErrorAsync($"{Format.Bold(ctx.User.ToString())} {GetText(str)}");
 
-        public Task<IUserMessage> ReplyConfirmLocalizedAsync(string textKey, params object[] args)
-        {
-            var text = GetText(textKey, args);
-            return SendConfirmAsync(Format.Bold(ctx.User.ToString()) + " " + text);
-        }
+        public Task<IUserMessage> ReplyPendingLocalizedAsync(LocStr str) 
+            => SendPendingAsync($"{Format.Bold(ctx.User.ToString())} {GetText(str)}");
+
+        public Task<IUserMessage> ReplyConfirmLocalizedAsync(LocStr str)
+            => SendConfirmAsync($"{Format.Bold(ctx.User.ToString())} {GetText(str)}");
 
         public async Task<bool> PromptUserConfirmAsync(IEmbedBuilder embed)
         {

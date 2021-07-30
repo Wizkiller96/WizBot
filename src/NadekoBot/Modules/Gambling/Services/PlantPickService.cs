@@ -70,8 +70,8 @@ namespace NadekoBot.Modules.Gambling.Services
             }
         }
 
-        private string GetText(ulong gid, string key, params object[] rep)
-            => _strings.GetText(key, gid, rep);
+        private string GetText(ulong gid, LocStr str)
+            => _strings.GetText(str, gid);
 
         public bool ToggleCurrencyGeneration(ulong gid, ulong cid)
         {
@@ -214,10 +214,10 @@ namespace NadekoBot.Modules.Gambling.Services
                         {
                             var prefix = _cmdHandler.GetPrefix(channel.Guild.Id);
                             var toSend = dropAmount == 1
-                                ? GetText(channel.GuildId, "curgen_sn", config.Currency.Sign)
-                                    + " " + GetText(channel.GuildId, "pick_sn", prefix)
-                                : GetText(channel.GuildId, "curgen_pl", dropAmount, config.Currency.Sign)
-                                    + " " + GetText(channel.GuildId, "pick_pl", prefix);
+                                ? GetText(channel.GuildId, strs.curgen_sn(config.Currency.Sign))
+                                    + " " + GetText(channel.GuildId, strs.pick_sn(prefix))
+                                : GetText(channel.GuildId, strs.curgen_pl(dropAmount, config.Currency.Sign))
+                                    + " " + GetText(channel.GuildId, strs.pick_pl(prefix));
 
                             var pw = config.Generation.HasPassword ? GenerateCurrencyPassword().ToUpperInvariant() : null;
 
@@ -311,15 +311,14 @@ namespace NadekoBot.Modules.Gambling.Services
                 // get the text
                 var prefix = _cmdHandler.GetPrefix(gid);
                 var msgToSend = GetText(gid,
-                    "planted",
-                    Format.Bold(user),
-                    amount + _gss.Data.Currency.Sign,
-                    prefix);
+                    strs.planted(
+                        Format.Bold(user),
+                        amount + _gss.Data.Currency.Sign));
 
                 if (amount > 1)
-                    msgToSend += " " + GetText(gid, "pick_pl", prefix);
+                    msgToSend += " " + GetText(gid, strs.pick_pl(prefix));
                 else
-                    msgToSend += " " + GetText(gid, "pick_sn", prefix);
+                    msgToSend += " " + GetText(gid, strs.pick_sn(prefix));
 
                 //get the image
                 using (var stream = GetRandomCurrencyImage(pass, out var ext))

@@ -106,7 +106,7 @@ namespace NadekoBot.Modules.Gambling
 
                 if (entry is null)
                 {
-                    await ReplyErrorLocalizedAsync("shop_item_not_found").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.shop_item_not_found).ConfigureAwait(false);
                     return;
                 }
 
@@ -117,13 +117,13 @@ namespace NadekoBot.Modules.Gambling
 
                     if (role is null)
                     {
-                        await ReplyErrorLocalizedAsync("shop_role_not_found").ConfigureAwait(false);
+                        await ReplyErrorLocalizedAsync(strs.shop_role_not_found).ConfigureAwait(false);
                         return;
                     }
                     
                     if (guser.RoleIds.Any(id => id == role.Id))
                     {
-                        await ReplyErrorLocalizedAsync("shop_role_already_bought").ConfigureAwait(false);
+                        await ReplyErrorLocalizedAsync(strs.shop_role_already_bought).ConfigureAwait(false);
                         return;
                     }
 
@@ -137,18 +137,18 @@ namespace NadekoBot.Modules.Gambling
                         {
                             Log.Warning(ex, "Error adding shop role");
                             await _cs.AddAsync(ctx.User.Id, $"Shop error refund", entry.Price).ConfigureAwait(false);
-                            await ReplyErrorLocalizedAsync("shop_role_purchase_error").ConfigureAwait(false);
+                            await ReplyErrorLocalizedAsync(strs.shop_role_purchase_error).ConfigureAwait(false);
                             return;
                         }
                         var profit = GetProfitAmount(entry.Price);
                         await _cs.AddAsync(entry.AuthorId, $"Shop sell item - {entry.Type}", profit).ConfigureAwait(false);
                         await _cs.AddAsync(ctx.Client.CurrentUser.Id, $"Shop sell item - cut", entry.Price - profit).ConfigureAwait(false);
-                        await ReplyConfirmLocalizedAsync("shop_role_purchase", Format.Bold(role.Name)).ConfigureAwait(false);
+                        await ReplyConfirmLocalizedAsync(strs.shop_role_purchase(Format.Bold(role.Name))).ConfigureAwait(false);
                         return;
                     }
                     else
                     {
-                        await ReplyErrorLocalizedAsync("not_enough", CurrencySign).ConfigureAwait(false);
+                        await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
                         return;
                     }
                 }
@@ -156,7 +156,7 @@ namespace NadekoBot.Modules.Gambling
                 {
                     if (entry.Items.Count == 0)
                     {
-                        await ReplyErrorLocalizedAsync("out_of_stock").ConfigureAwait(false);
+                        await ReplyErrorLocalizedAsync(strs.out_of_stock).ConfigureAwait(false);
                         return;
                     }
 
@@ -202,14 +202,14 @@ namespace NadekoBot.Modules.Gambling
                                     }
                                 }
                             }
-                            await ReplyErrorLocalizedAsync("shop_buy_error").ConfigureAwait(false);
+                            await ReplyErrorLocalizedAsync(strs.shop_buy_error).ConfigureAwait(false);
                             return;
                         }
-                        await ReplyConfirmLocalizedAsync("shop_item_purchase").ConfigureAwait(false);
+                        await ReplyConfirmLocalizedAsync(strs.shop_item_purchase).ConfigureAwait(false);
                     }
                     else
                     {
-                        await ReplyErrorLocalizedAsync("not_enough", CurrencySign).ConfigureAwait(false);
+                        await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
                         return;
                     }
                 }
@@ -307,13 +307,13 @@ namespace NadekoBot.Modules.Gambling
                     }
                 }
                 if (entry is null)
-                    await ReplyErrorLocalizedAsync("shop_item_not_found").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.shop_item_not_found).ConfigureAwait(false);
                 else if (!rightType)
-                    await ReplyErrorLocalizedAsync("shop_item_wrong_type").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.shop_item_wrong_type).ConfigureAwait(false);
                 else if (added == false)
-                    await ReplyErrorLocalizedAsync("shop_list_item_not_unique").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.shop_list_item_not_unique).ConfigureAwait(false);
                 else
-                    await ReplyConfirmLocalizedAsync("shop_list_item_added").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.shop_list_item_added).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -342,7 +342,7 @@ namespace NadekoBot.Modules.Gambling
                 }
 
                 if (removed is null)
-                    await ReplyErrorLocalizedAsync("shop_item_not_found").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.shop_item_not_found).ConfigureAwait(false);
                 else
                     await ctx.Channel.EmbedAsync(EntryToEmbed(removed)
                         .WithTitle(GetText(strs.shop_item_rm))).ConfigureAwait(false);

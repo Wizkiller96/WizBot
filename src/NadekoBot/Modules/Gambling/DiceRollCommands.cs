@@ -84,7 +84,7 @@ namespace NadekoBot.Modules.Gambling
             {
                 if (num < 1 || num > 30)
                 {
-                    await ReplyErrorLocalizedAsync("dice_invalid_number", 1, 30).ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.dice_invalid_number(1, 30));
                     return;
                 }
 
@@ -177,7 +177,7 @@ namespace NadekoBot.Modules.Gambling
 
                         var sum = arr.Sum();
                         var embed = _eb.Create().WithOkColor()
-                            .WithDescription(ctx.User.Mention + " " + GetText(strs.dice_rolled_num(n1) + $"`1 - {n2}`"))
+                            .WithDescription(ctx.User.Mention + " " + GetText(strs.dice_rolled_num(n1 + $"`1 - {n2}`")))
                             .AddField(Format.Bold("Rolls"), string.Join(" ",
                                 (ordered ? arr.OrderBy(x => x).AsEnumerable() : arr).Select(x =>
                                     Format.Code(x.ToString()))))
@@ -200,7 +200,7 @@ namespace NadekoBot.Modules.Gambling
                         .ToArray();
                     if (arr[0] > arr[1])
                     {
-                        await ReplyErrorLocalizedAsync("second_larger_than_first").ConfigureAwait(false);
+                        await ReplyErrorLocalizedAsync(strs.second_larger_than_first).ConfigureAwait(false);
                         return;
                     }
                     rolled = new NadekoRandom().Next(arr[0], arr[1] + 1);
@@ -210,7 +210,7 @@ namespace NadekoBot.Modules.Gambling
                     rolled = new NadekoRandom().Next(0, int.Parse(range) + 1);
                 }
 
-                await ReplyConfirmLocalizedAsync("dice_rolled", Format.Bold(rolled.ToString())).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.dice_rolled(Format.Bold(rolled.ToString()))).ConfigureAwait(false);
             }
 
             private Image<Rgba32> GetDice(int num)

@@ -57,7 +57,7 @@ namespace NadekoBot.Modules.NSFW
                 // return the error
                 if (img is null && !listOfProviders.Any())
                 {
-                    await ReplyErrorLocalizedAsync("no_results").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.no_results).ConfigureAwait(false);
                     return;
                 }
 
@@ -116,7 +116,7 @@ namespace NadekoBot.Modules.NSFW
                 if (!_service.AutoHentaiTimers.TryRemove(ctx.Channel.Id, out t)) return;
 
                 t.Change(Timeout.Infinite, Timeout.Infinite); //proper way to disable the timer
-                await ReplyConfirmLocalizedAsync("stopped").ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.stopped).ConfigureAwait(false);
                 return;
             }
 
@@ -146,9 +146,9 @@ namespace NadekoBot.Modules.NSFW
                 return t;
             });
 
-            await ReplyConfirmLocalizedAsync("autohentai_started",
+            await ReplyConfirmLocalizedAsync(strs.autohentai_started(
                 interval,
-                string.Join(", ", tagsArr)).ConfigureAwait(false);
+                string.Join(", ", tagsArr)));
         }
 
         [NadekoCommand, Aliases]
@@ -164,7 +164,7 @@ namespace NadekoBot.Modules.NSFW
                 if (!_service.AutoBoobTimers.TryRemove(ctx.Channel.Id, out t)) return;
 
                 t.Change(Timeout.Infinite, Timeout.Infinite); //proper way to disable the timer
-                await ReplyConfirmLocalizedAsync("stopped").ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.stopped).ConfigureAwait(false);
                 return;
             }
 
@@ -189,7 +189,7 @@ namespace NadekoBot.Modules.NSFW
                 return t;
             });
 
-            await ReplyConfirmLocalizedAsync("started", interval).ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.started(interval));
         }
 
         [NadekoCommand, Aliases]
@@ -204,7 +204,7 @@ namespace NadekoBot.Modules.NSFW
                 if (!_service.AutoButtTimers.TryRemove(ctx.Channel.Id, out t)) return;
 
                 t.Change(Timeout.Infinite, Timeout.Infinite); //proper way to disable the timer
-                await ReplyConfirmLocalizedAsync("stopped").ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.stopped).ConfigureAwait(false);
                 return;
             }
 
@@ -229,7 +229,7 @@ namespace NadekoBot.Modules.NSFW
                 return t;
             });
 
-            await ReplyConfirmLocalizedAsync("started", interval).ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.started(interval));
         }
 #endif
 
@@ -254,7 +254,7 @@ namespace NadekoBot.Modules.NSFW
                 var linksEnum = images?.Where(l => l != null).ToArray();
                 if (images is null || !linksEnum.Any())
                 {
-                    await ReplyErrorLocalizedAsync("no_results").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.no_results).ConfigureAwait(false);
                     return;
                 }
 
@@ -363,9 +363,9 @@ namespace NadekoBot.Modules.NSFW
                 var added = _service.ToggleBlacklistedTag(ctx.Guild.Id, tag);
 
                 if (added)
-                    await ReplyConfirmLocalizedAsync("blacklisted_tag_add", tag).ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.blacklisted_tag_add(tag));
                 else
-                    await ReplyConfirmLocalizedAsync("blacklisted_tag_remove", tag).ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.blacklisted_tag_remove(tag));
             }
         }
 
@@ -387,7 +387,7 @@ namespace NadekoBot.Modules.NSFW
 
             if (g is null)
             {
-                await ReplyErrorLocalizedAsync("not_found");
+                await ReplyErrorLocalizedAsync(strs.not_found);
                 return;
             }
 
@@ -403,7 +403,7 @@ namespace NadekoBot.Modules.NSFW
 
             if (g is null)
             {
-                await ReplyErrorLocalizedAsync("not_found");
+                await ReplyErrorLocalizedAsync(strs.not_found);
                 return;
             }
 
@@ -440,7 +440,7 @@ namespace NadekoBot.Modules.NSFW
             imgObj = await _service.DapiSearch(tag, type, ctx.Guild?.Id, forceExplicit).ConfigureAwait(false);
 
             if (imgObj is null)
-                await ReplyErrorLocalizedAsync("no_results").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.no_results).ConfigureAwait(false);
             else
             {
                 var embed = _eb.Create().WithOkColor()

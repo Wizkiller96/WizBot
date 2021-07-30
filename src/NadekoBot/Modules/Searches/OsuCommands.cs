@@ -45,7 +45,7 @@ namespace NadekoBot.Modules.Searches
                     {
                         if (string.IsNullOrWhiteSpace(_creds.OsuApiKey))
                         {
-                            await ReplyErrorLocalizedAsync("osu_api_key").ConfigureAwait(false);
+                            await ReplyErrorLocalizedAsync(strs.osu_api_key).ConfigureAwait(false);
                             return;
                         }
 
@@ -57,7 +57,7 @@ namespace NadekoBot.Modules.Searches
 
                         if (objs.Count == 0)
                         {
-                            await ReplyErrorLocalizedAsync("osu_user_not_found").ConfigureAwait(false);
+                            await ReplyErrorLocalizedAsync(strs.osu_user_not_found).ConfigureAwait(false);
                             return;
                         }
 
@@ -79,11 +79,11 @@ namespace NadekoBot.Modules.Searches
                     }
                     catch (ArgumentOutOfRangeException)
                     {
-                        await ReplyErrorLocalizedAsync("osu_user_not_found").ConfigureAwait(false);
+                        await ReplyErrorLocalizedAsync(strs.osu_user_not_found).ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {
-                        await ReplyErrorLocalizedAsync("osu_failed").ConfigureAwait(false);
+                        await ReplyErrorLocalizedAsync(strs.osu_failed).ConfigureAwait(false);
                         Log.Warning(ex, "Osu command failed");
                     }
                 }
@@ -106,7 +106,7 @@ namespace NadekoBot.Modules.Searches
                     var statsResponse = JsonConvert.DeserializeObject<GatariUserStatsResponse>(resString);
                     if (statsResponse.Code != 200 || statsResponse.Stats.Id == 0)
                     {
-                        await ReplyErrorLocalizedAsync("osu_user_not_found").ConfigureAwait(false);
+                        await ReplyErrorLocalizedAsync(strs.osu_user_not_found).ConfigureAwait(false);
                         return;
                     }
 

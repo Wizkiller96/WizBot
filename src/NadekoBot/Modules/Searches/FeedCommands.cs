@@ -41,12 +41,12 @@ namespace NadekoBot.Modules.Searches
                     success = _service.AddFeed(ctx.Guild.Id, channel.Id, url);
                     if (success)
                     {
-                        await ReplyConfirmLocalizedAsync("feed_added").ConfigureAwait(false);
+                        await ReplyConfirmLocalizedAsync(strs.feed_added).ConfigureAwait(false);
                         return;
                     }
                 }
 
-                await ReplyErrorLocalizedAsync("feed_not_valid").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.feed_not_valid).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -56,10 +56,10 @@ namespace NadekoBot.Modules.Searches
             {
                 if (_service.RemoveFeed(ctx.Guild.Id, --index))
                 {
-                    await ReplyConfirmLocalizedAsync("feed_removed").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.feed_removed).ConfigureAwait(false);
                 }
                 else
-                    await ReplyErrorLocalizedAsync("feed_out_of_range").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.feed_out_of_range).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]

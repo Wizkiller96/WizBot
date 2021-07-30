@@ -30,7 +30,7 @@ namespace NadekoBot.Modules.Utility
 
                 if (DateTime.UtcNow.Day < 5)
                 {
-                    await ReplyErrorLocalizedAsync("clpa_too_early").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.clpa_too_early).ConfigureAwait(false);
                     return;
                 }
                 

@@ -24,16 +24,16 @@ namespace NadekoBot.Modules.Administration
                 if (perms is null || perms.Length == 0)
                 {
                     await _service.RemoveOverride(ctx.Guild.Id, cmd.Name);
-                    await ReplyConfirmLocalizedAsync("perm_override_reset");
+                    await ReplyConfirmLocalizedAsync(strs.perm_override_reset);
                     return;
                 }
 
                 var aggregatePerms = perms.Aggregate((acc, seed) => seed | acc);
                 await _service.AddOverride(ctx.Guild.Id, cmd.Name, aggregatePerms);
 
-                await ReplyConfirmLocalizedAsync("perm_override",
+                await ReplyConfirmLocalizedAsync(strs.perm_override(
                     Format.Bold(aggregatePerms.ToString()),
-                    Format.Code(cmd.Name));
+                    Format.Code(cmd.Name)));
             }
             
             [NadekoCommand, Aliases]
@@ -49,7 +49,7 @@ namespace NadekoBot.Modules.Administration
                     return;
                 await _service.ClearAllOverrides(ctx.Guild.Id);
 
-                await ReplyConfirmLocalizedAsync("perm_override_all");
+                await ReplyConfirmLocalizedAsync(strs.perm_override_all);
             }
 
             [NadekoCommand, Aliases]

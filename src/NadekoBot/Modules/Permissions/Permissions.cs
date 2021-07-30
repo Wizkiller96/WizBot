@@ -40,11 +40,11 @@ namespace NadekoBot.Modules.Permissions
             }
             if (action.Value)
             {
-                await ReplyConfirmLocalizedAsync("verbose_true").ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.verbose_true).ConfigureAwait(false);
             }
             else
             {
-                await ReplyConfirmLocalizedAsync("verbose_false").ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.verbose_false).ConfigureAwait(false);
             }
         }
 
@@ -63,11 +63,11 @@ namespace NadekoBot.Modules.Permissions
                 if (!ulong.TryParse(cache.PermRole, out var roleId) ||
                     (role = ((SocketGuild)ctx.Guild).GetRole(roleId)) is null)
                 {
-                    await ReplyConfirmLocalizedAsync("permrole_not_set", Format.Bold(cache.PermRole)).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.permrole_not_set).ConfigureAwait(false);
                 }
                 else
                 {
-                    await ReplyConfirmLocalizedAsync("permrole", Format.Bold(role.ToString())).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.permrole(Format.Bold(role.ToString()))).ConfigureAwait(false);
                 }
                 return;
             }
@@ -80,7 +80,7 @@ namespace NadekoBot.Modules.Permissions
                 _service.UpdateCache(config);
             }
 
-            await ReplyConfirmLocalizedAsync("permrole_changed", Format.Bold(role.Name)).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.permrole_changed(Format.Bold(role.Name))).ConfigureAwait(false);
         }
 
         public enum Reset { Reset };
@@ -99,7 +99,7 @@ namespace NadekoBot.Modules.Permissions
                 _service.UpdateCache(config);
             }
 
-            await ReplyConfirmLocalizedAsync("permrole_reset").ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.permrole_reset).ConfigureAwait(false);
         }
 
         [NadekoCommand, Aliases]
@@ -157,13 +157,14 @@ namespace NadekoBot.Modules.Permissions
                     await uow.SaveChangesAsync();
                     _service.UpdateCache(config);
                 }
-                await ReplyConfirmLocalizedAsync("removed",
+
+                await ReplyConfirmLocalizedAsync(strs.removed(
                     index + 1,
-                    Format.Code(p.GetCommand(Prefix, (SocketGuild)ctx.Guild))).ConfigureAwait(false);
+                    Format.Code(p.GetCommand(Prefix, (SocketGuild)ctx.Guild))));
             }
             catch (IndexOutOfRangeException)
             {
-                await ReplyErrorLocalizedAsync("perm_out_of_range").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.perm_out_of_range).ConfigureAwait(false);
             }
         }
 
@@ -188,13 +189,13 @@ namespace NadekoBot.Modules.Permissions
 
                         if (!fromFound)
                         {
-                            await ReplyErrorLocalizedAsync("not_found", ++from);
+                            await ReplyErrorLocalizedAsync(strs.perm_not_found(++from));
                             return;
                         }
 
                         if (!toFound)
                         {
-                            await ReplyErrorLocalizedAsync("not_found", ++to);
+                            await ReplyErrorLocalizedAsync(strs.perm_not_found(++to));
                             return;
                         }
                         fromPerm = permsCol[from];
@@ -204,18 +205,19 @@ namespace NadekoBot.Modules.Permissions
                         await uow.SaveChangesAsync();
                         _service.UpdateCache(config);
                     }
-                    await ReplyConfirmLocalizedAsync("moved_permission",
-                            Format.Code(fromPerm.GetCommand(Prefix, (SocketGuild)ctx.Guild)),
-                            ++from,
-                            ++to)
-                        .ConfigureAwait(false);
+
+                    await ReplyConfirmLocalizedAsync(strs.moved_permission(
+                        Format.Code(fromPerm.GetCommand(Prefix, (SocketGuild)ctx.Guild)),
+                        ++from,
+                        ++to));
+                    
                     return;
                 }
                 catch (Exception e) when (e is ArgumentOutOfRangeException || e is IndexOutOfRangeException)
                 {
                 }
             }
-            await ReplyErrorLocalizedAsync("perm_out_of_range").ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.perm_out_of_range).ConfigureAwait(false);
         }
 
         [NadekoCommand, Aliases]
@@ -234,15 +236,15 @@ namespace NadekoBot.Modules.Permissions
 
             if (action.Value)
             {
-                await ReplyConfirmLocalizedAsync("sx_enable",
+                await ReplyConfirmLocalizedAsync(strs.sx_enable(
                     Format.Code(command.Name),
-                    GetText(strs.of_command)).ConfigureAwait(false);
+                    GetText(strs.of_command)));
             }
             else
             {
-                await ReplyConfirmLocalizedAsync("sx_disable",
+                await ReplyConfirmLocalizedAsync(strs.sx_disable(
                     Format.Code(command.Name),
-                    GetText(strs.of_command)).ConfigureAwait(false);
+                    GetText(strs.of_command)));
             }
         }
 
@@ -261,15 +263,15 @@ namespace NadekoBot.Modules.Permissions
 
             if (action.Value)
             {
-                await ReplyConfirmLocalizedAsync("sx_enable",
+                await ReplyConfirmLocalizedAsync(strs.sx_enable(
                     Format.Code(module.Name),
-                    GetText(strs.of_module)).ConfigureAwait(false);
+                    GetText(strs.of_module)));
             }
             else
             {
-                await ReplyConfirmLocalizedAsync("sx_disable",
+                await ReplyConfirmLocalizedAsync(strs.sx_disable(
                     Format.Code(module.Name),
-                    GetText(strs.of_module)).ConfigureAwait(false);
+                    GetText(strs.of_module)));
             }
         }
 
@@ -289,17 +291,17 @@ namespace NadekoBot.Modules.Permissions
 
             if (action.Value)
             {
-                await ReplyConfirmLocalizedAsync("ux_enable",
+                await ReplyConfirmLocalizedAsync(strs.ux_enable(
                     Format.Code(command.Name),
                     GetText(strs.of_command),
-                    Format.Code(user.ToString())).ConfigureAwait(false);
+                    Format.Code(user.ToString())));
             }
             else
             {
-                await ReplyConfirmLocalizedAsync("ux_disable",
+                await ReplyConfirmLocalizedAsync(strs.ux_disable(
                     Format.Code(command.Name),
                     GetText(strs.of_command),
-                    Format.Code(user.ToString())).ConfigureAwait(false);
+                    Format.Code(user.ToString())));
             }
         }
 
@@ -318,17 +320,17 @@ namespace NadekoBot.Modules.Permissions
 
             if (action.Value)
             {
-                await ReplyConfirmLocalizedAsync("ux_enable",
+                await ReplyConfirmLocalizedAsync(strs.ux_enable(
                     Format.Code(module.Name),
                     GetText(strs.of_module),
-                    Format.Code(user.ToString())).ConfigureAwait(false);
+                    Format.Code(user.ToString())));
             }
             else
             {
-                await ReplyConfirmLocalizedAsync("ux_disable",
+                await ReplyConfirmLocalizedAsync(strs.ux_disable(
                     Format.Code(module.Name),
                     GetText(strs.of_module),
-                    Format.Code(user.ToString())).ConfigureAwait(false);
+                    Format.Code(user.ToString())));
             }
         }
 
@@ -351,17 +353,17 @@ namespace NadekoBot.Modules.Permissions
 
             if (action.Value)
             {
-                await ReplyConfirmLocalizedAsync("rx_enable",
+                await ReplyConfirmLocalizedAsync(strs.rx_enable(
                     Format.Code(command.Name),
                     GetText(strs.of_command),
-                    Format.Code(role.Name)).ConfigureAwait(false);
+                    Format.Code(role.Name)));
             }
             else
             {
-                await ReplyConfirmLocalizedAsync("rx_disable",
+                await ReplyConfirmLocalizedAsync(strs.rx_disable(
                     Format.Code(command.Name),
                     GetText(strs.of_command),
-                    Format.Code(role.Name)).ConfigureAwait(false);
+                    Format.Code(role.Name)));
             }
         }
 
@@ -384,17 +386,17 @@ namespace NadekoBot.Modules.Permissions
 
             if (action.Value)
             {
-                await ReplyConfirmLocalizedAsync("rx_enable",
+                await ReplyConfirmLocalizedAsync(strs.rx_enable(
                     Format.Code(module.Name),
                     GetText(strs.of_module),
-                    Format.Code(role.Name)).ConfigureAwait(false);
+                    Format.Code(role.Name)));
             }
             else
             {
-                await ReplyConfirmLocalizedAsync("rx_disable",
+                await ReplyConfirmLocalizedAsync(strs.rx_disable(
                     Format.Code(module.Name),
                     GetText(strs.of_module),
-                    Format.Code(role.Name)).ConfigureAwait(false);
+                    Format.Code(role.Name)));
             }
         }
 
@@ -414,17 +416,17 @@ namespace NadekoBot.Modules.Permissions
 
             if (action.Value)
             {
-                await ReplyConfirmLocalizedAsync("cx_enable",
+                await ReplyConfirmLocalizedAsync(strs.cx_enable(
                     Format.Code(command.Name),
                     GetText(strs.of_command),
-                    Format.Code(chnl.Name)).ConfigureAwait(false);
+                    Format.Code(chnl.Name)));
             }
             else
             {
-                await ReplyConfirmLocalizedAsync("cx_disable",
+                await ReplyConfirmLocalizedAsync(strs.cx_disable(
                     Format.Code(command.Name),
                     GetText(strs.of_command),
-                    Format.Code(chnl.Name)).ConfigureAwait(false);
+                    Format.Code(chnl.Name)));
             }
         }
 
@@ -443,17 +445,17 @@ namespace NadekoBot.Modules.Permissions
 
             if (action.Value)
             {
-                await ReplyConfirmLocalizedAsync("cx_enable",
+                await ReplyConfirmLocalizedAsync(strs.cx_enable(
                     Format.Code(module.Name),
                     GetText(strs.of_module),
-                    Format.Code(chnl.Name)).ConfigureAwait(false);
+                    Format.Code(chnl.Name)));
             }
             else
             {
-                await ReplyConfirmLocalizedAsync("cx_disable",
+                await ReplyConfirmLocalizedAsync(strs.cx_disable(
                     Format.Code(module.Name),
                     GetText(strs.of_module),
-                    Format.Code(chnl.Name)).ConfigureAwait(false);
+                    Format.Code(chnl.Name)));
             }
         }
 
@@ -472,13 +474,13 @@ namespace NadekoBot.Modules.Permissions
 
             if (action.Value)
             {
-                await ReplyConfirmLocalizedAsync("acm_enable",
-                    Format.Code(chnl.Name)).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.acm_enable(
+                    Format.Code(chnl.Name)));
             }
             else
             {
-                await ReplyConfirmLocalizedAsync("acm_disable",
-                    Format.Code(chnl.Name)).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.acm_disable(
+                    Format.Code(chnl.Name)));
             }
         }
 
@@ -500,13 +502,13 @@ namespace NadekoBot.Modules.Permissions
 
             if (action.Value)
             {
-                await ReplyConfirmLocalizedAsync("arm_enable",
-                    Format.Code(role.Name)).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.arm_enable(
+                    Format.Code(role.Name)));
             }
             else
             {
-                await ReplyConfirmLocalizedAsync("arm_disable",
-                    Format.Code(role.Name)).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.arm_disable(
+                    Format.Code(role.Name)));
             }
         }
 
@@ -525,13 +527,13 @@ namespace NadekoBot.Modules.Permissions
 
             if (action.Value)
             {
-                await ReplyConfirmLocalizedAsync("aum_enable",
-                    Format.Code(user.ToString())).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.aum_enable(
+                    Format.Code(user.ToString())));
             }
             else
             {
-                await ReplyConfirmLocalizedAsync("aum_disable",
-                    Format.Code(user.ToString())).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.aum_disable(
+                    Format.Code(user.ToString())));
             }
         }
 
@@ -563,11 +565,11 @@ namespace NadekoBot.Modules.Permissions
 
             if (action.Value)
             {
-                await ReplyConfirmLocalizedAsync("asm_enable").ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.asm_enable).ConfigureAwait(false);
             }
             else
             {
-                await ReplyConfirmLocalizedAsync("asm_disable").ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.asm_disable).ConfigureAwait(false);
             }
         }
     }

@@ -63,7 +63,7 @@ namespace NadekoBot.Modules.Games
 
             if (originalStream is null)
             {
-                await ReplyErrorLocalizedAsync("something_went_wrong").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.something_went_wrong).ConfigureAwait(false);
                 return;
             }
 

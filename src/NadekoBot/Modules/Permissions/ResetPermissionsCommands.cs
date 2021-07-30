@@ -26,7 +26,7 @@ namespace NadekoBot.Modules.Permissions
             public async Task ResetPerms()
             {
                 await _perms.Reset(ctx.Guild.Id).ConfigureAwait(false);
-                await ReplyConfirmLocalizedAsync("perms_reset").ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.perms_reset).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -34,7 +34,7 @@ namespace NadekoBot.Modules.Permissions
             public async Task ResetGlobalPerms()
             {
                 await _gps.Reset();
-                await ReplyConfirmLocalizedAsync("global_perms_reset").ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.global_perms_reset).ConfigureAwait(false);
             }
         }
     }

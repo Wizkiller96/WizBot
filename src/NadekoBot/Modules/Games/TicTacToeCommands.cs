@@ -44,7 +44,7 @@ namespace NadekoBot.Modules.Games
                     }
                     game = new TicTacToe(base.Strings, this._client, channel, (IGuildUser)ctx.User, options, _eb);
                     _service.TicTacToeGames.Add(channel.Id, game);
-                    await ReplyConfirmLocalizedAsync("ttt_created").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.ttt_created).ConfigureAwait(false);
 
                     game.OnEnded += (g) =>
                     {

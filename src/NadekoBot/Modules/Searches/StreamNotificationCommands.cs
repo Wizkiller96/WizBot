@@ -39,7 +39,7 @@ namespace NadekoBot.Modules.Searches
                 var data = await _service.FollowStream(ctx.Guild.Id, ctx.Channel.Id, link);
                 if (data is null)
                 {
-                    await ReplyErrorLocalizedAsync("stream_not_added").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.stream_not_added).ConfigureAwait(false);
                     return;
                 }
 
@@ -59,14 +59,14 @@ namespace NadekoBot.Modules.Searches
                 var fs = await _service.UnfollowStreamAsync(ctx.Guild.Id, index);
                 if (fs is null)
                 {
-                    await ReplyErrorLocalizedAsync("stream_no").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.stream_no).ConfigureAwait(false);
                     return;
                 }
-            
+
                 await ReplyConfirmLocalizedAsync(
-                    "stream_removed", 
-                    Format.Bold(fs.Username), 
-                    fs.Type).ConfigureAwait(false);
+                    strs.stream_removed(
+                        Format.Bold(fs.Username),
+                        fs.Type));
             }
 
             // [NadekoCommand, Usage, Description, Aliases]
@@ -75,7 +75,7 @@ namespace NadekoBot.Modules.Searches
             // public async Task StreamsClear()
             // {
             //     var count = _service.ClearAllStreams(ctx.Guild.Id);
-            //     await ReplyConfirmLocalizedAsync("streams_cleared", count).ConfigureAwait(false);
+            //     await ReplyErrorLocalizedAsync(strs.streams_cleared(count)));
             // }
 
             [NadekoCommand, Aliases]
@@ -146,11 +146,11 @@ namespace NadekoBot.Modules.Searches
                 var newValue = _service.ToggleStreamOffline(ctx.Guild.Id);
                 if (newValue)
                 {
-                    await ReplyConfirmLocalizedAsync("stream_off_enabled").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.stream_off_enabled).ConfigureAwait(false);
                 }
                 else
                 {
-                    await ReplyConfirmLocalizedAsync("stream_off_disabled").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.stream_off_disabled).ConfigureAwait(false);
                 }
             }
 
@@ -164,19 +164,17 @@ namespace NadekoBot.Modules.Searches
                 
                 if (!_service.SetStreamMessage(ctx.Guild.Id, index, message, out var fs))
                 {
-                    await ReplyConfirmLocalizedAsync("stream_not_following").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.stream_not_following).ConfigureAwait(false);
                     return;
                 }
             
                 if (string.IsNullOrWhiteSpace(message))
                 {
-                    await ReplyConfirmLocalizedAsync("stream_message_reset", Format.Bold(fs.Username))
-                        .ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.stream_message_reset(Format.Bold(fs.Username)));
                 }
                 else
                 {
-                    await ReplyConfirmLocalizedAsync("stream_message_set", Format.Bold(fs.Username))
-                        .ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.stream_message_set(Format.Bold(fs.Username)));
                 }
             }
             
@@ -189,11 +187,11 @@ namespace NadekoBot.Modules.Searches
 
                 if (count == 0)
                 {
-                    await ReplyConfirmLocalizedAsync("stream_not_following_any");
+                    await ReplyConfirmLocalizedAsync(strs.stream_not_following_any);
                     return;
                 }
 
-                await ReplyConfirmLocalizedAsync("stream_message_set_all", count);
+                await ReplyErrorLocalizedAsync(strs.stream_message_set_all(count));
             }
             
             [NadekoCommand, Aliases]
@@ -205,26 +203,24 @@ namespace NadekoBot.Modules.Searches
                     var data = await _service.GetStreamDataAsync(url).ConfigureAwait(false);
                     if (data is null)
                     {
-                        await ReplyErrorLocalizedAsync("no_channel_found").ConfigureAwait(false);
+                        await ReplyErrorLocalizedAsync(strs.no_channel_found).ConfigureAwait(false);
                         return;
                     }
                     
                     if (data.IsLive)
                     {
-                        await ReplyConfirmLocalizedAsync("streamer_online",
-                                Format.Bold(data.Name),
-                                Format.Bold(data.Viewers.ToString()))
-                            .ConfigureAwait(false);
+                        await ReplyConfirmLocalizedAsync(strs.streamer_online(
+                            Format.Bold(data.Name),
+                            Format.Bold(data.Viewers.ToString())));
                     }
                     else
                     {
-                        await ReplyConfirmLocalizedAsync("streamer_offline", data.Name)
-                            .ConfigureAwait(false);
+                        await ReplyConfirmLocalizedAsync(strs.streamer_offline(data.Name));
                     }
                 }
                 catch
                 {
-                    await ReplyErrorLocalizedAsync("no_channel_found").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.no_channel_found).ConfigureAwait(false);
                 }
             }
         }

@@ -79,7 +79,7 @@ namespace NadekoBot.Modules.Games
                     return;
                 }
 
-                await ReplyErrorLocalizedAsync("trivia_none").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.trivia_none).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -94,7 +94,7 @@ namespace NadekoBot.Modules.Games
                     return;
                 }
 
-                await ReplyErrorLocalizedAsync("trivia_none").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.trivia_none).ConfigureAwait(false);
             }
         }
     }

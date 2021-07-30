@@ -17,9 +17,9 @@ namespace NadekoBot.Modules.Administration
             public async Task RotatePlaying()
             {
                 if (_service.ToggleRotatePlaying())
-                    await ReplyConfirmLocalizedAsync("ropl_enabled").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.ropl_enabled).ConfigureAwait(false);
                 else
-                    await ReplyConfirmLocalizedAsync("ropl_disabled").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.ropl_disabled).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -28,7 +28,7 @@ namespace NadekoBot.Modules.Administration
             {
                 await _service.AddPlaying(t, status).ConfigureAwait(false);
 
-                await ReplyConfirmLocalizedAsync("ropl_added").ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.ropl_added).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -39,14 +39,13 @@ namespace NadekoBot.Modules.Administration
 
                 if (!statuses.Any())
                 {
-                    await ReplyErrorLocalizedAsync("ropl_not_set").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.ropl_not_set).ConfigureAwait(false);
                 }
                 else
                 {
                     var i = 1;
-                    await ReplyConfirmLocalizedAsync("ropl_list",
-                            string.Join("\n\t", statuses.Select(rs => $"`{i++}.` *{rs.Type}* {rs.Status}")))
-                        .ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.ropl_list(
+                        string.Join("\n\t", statuses.Select(rs => $"`{i++}.` *{rs.Type}* {rs.Status}"))));
                 }
 
             }
@@ -62,7 +61,7 @@ namespace NadekoBot.Modules.Administration
                 if (msg is null)
                     return;
 
-                await ReplyConfirmLocalizedAsync("reprm", msg).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.reprm(msg));
             }
         }
     }

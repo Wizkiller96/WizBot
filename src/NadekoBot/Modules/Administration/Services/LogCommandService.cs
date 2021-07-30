@@ -115,7 +115,7 @@ namespace NadekoBot.Modules.Administration.Services
                         return Task.CompletedTask;
                     if (PresenceUpdates.TryRemove(key, out var msgs))
                     {
-                        var title = GetText(key.Guild, "presence_updates");
+                        var title = GetText(key.Guild, strs.presence_updates);
                         var desc = string.Join(Environment.NewLine, msgs);
                         return key.SendConfirmAsync(_eb, title, desc.TrimTo(2048));
                     }
@@ -186,10 +186,9 @@ namespace NadekoBot.Modules.Administration.Services
 
             return removed > 0;
         }
-
-        private string GetText(IGuild guild, string key, params object[] replacements) =>
-            _strings.GetText(key, guild.Id, replacements);
-
+        
+        private string GetText(IGuild guild, LocStr str) =>
+            _strings.GetText(str, guild.Id);
 
         private string PrettyCurrentTime(IGuild g)
         {
@@ -260,7 +259,7 @@ namespace NadekoBot.Modules.Administration.Services
 
                     if (before.Username != after.Username)
                     {
-                        embed.WithTitle("👥 " + GetText(g, "username_changed"))
+                        embed.WithTitle("👥 " + GetText(g, strs.username_changed))
                             .WithDescription($"{before.Username}#{before.Discriminator} | {before.Id}")
                             .AddField("Old Name", $"{before.Username}", true)
                             .AddField("New Name", $"{after.Username}", true)
@@ -269,7 +268,7 @@ namespace NadekoBot.Modules.Administration.Services
                     }
                     else if (before.AvatarId != after.AvatarId)
                     {
-                        embed.WithTitle("👥" + GetText(g, "avatar_changed"))
+                        embed.WithTitle("👥" + GetText(g, strs.avatar_changed))
                             .WithDescription($"{before.Username}#{before.Discriminator} | {before.Id}")
                             .WithFooter(CurrentTime(g))
                             .WithOkColor();
@@ -391,15 +390,15 @@ namespace NadekoBot.Modules.Administration.Services
                     var str = "";
                     if (beforeVch?.Guild == afterVch?.Guild)
                     {
-                        str = GetText(logChannel.Guild, "log_vc_moved", usr.Username, beforeVch?.Name, afterVch?.Name);
+                        str = GetText(logChannel.Guild, strs.log_vc_moved(usr.Username, beforeVch?.Name, afterVch?.Name));
                     }
                     else if (beforeVch is null)
                     {
-                        str = GetText(logChannel.Guild, "log_vc_joined", usr.Username, afterVch.Name);
+                        str = GetText(logChannel.Guild, strs.log_vc_joined(usr.Username, afterVch.Name));
                     }
                     else if (afterVch is null)
                     {
-                        str = GetText(logChannel.Guild, "log_vc_left", usr.Username, beforeVch.Name);
+                        str = GetText(logChannel.Guild, strs.log_vc_left(usr.Username, beforeVch.Name));
                     }
 
                     var toDelete = await logChannel.SendMessageAsync(str, true).ConfigureAwait(false);
@@ -428,18 +427,18 @@ namespace NadekoBot.Modules.Administration.Services
                         .ConfigureAwait(false)) is null)
                         return;
                     var mutes = "";
-                    var mutedLocalized = GetText(logChannel.Guild, "muted_sn");
+                    var mutedLocalized = GetText(logChannel.Guild, strs.muted_sn);
                     switch (muteType)
                     {
                         case MuteType.Voice:
-                            mutes = "🔇 " + GetText(logChannel.Guild, "xmuted_voice", mutedLocalized, mod.ToString());
+                            mutes = "🔇 " + GetText(logChannel.Guild, strs.xmuted_voice(mutedLocalized, mod.ToString()));
                             break;
                         case MuteType.Chat:
-                            mutes = "🔇 " + GetText(logChannel.Guild, "xmuted_text", mutedLocalized, mod.ToString());
+                            mutes = "🔇 " + GetText(logChannel.Guild, strs.xmuted_text(mutedLocalized, mod.ToString()));
                             break;
                         case MuteType.All:
-                            mutes = "🔇 " + GetText(logChannel.Guild, "xmuted_text_and_voice", mutedLocalized,
-                                mod.ToString());
+                            mutes = "🔇 " + GetText(logChannel.Guild, strs.xmuted_text_and_voice(mutedLocalized,
+                                mod.ToString()));
                             break;
                     }
 
@@ -473,18 +472,18 @@ namespace NadekoBot.Modules.Administration.Services
                         return;
 
                     var mutes = "";
-                    var unmutedLocalized = GetText(logChannel.Guild, "unmuted_sn");
+                    var unmutedLocalized = GetText(logChannel.Guild, strs.unmuted_sn);
                     switch (muteType)
                     {
                         case MuteType.Voice:
-                            mutes = "🔊 " + GetText(logChannel.Guild, "xmuted_voice", unmutedLocalized, mod.ToString());
+                            mutes = "🔊 " + GetText(logChannel.Guild, strs.xmuted_voice(unmutedLocalized, mod.ToString()));
                             break;
                         case MuteType.Chat:
-                            mutes = "🔊 " + GetText(logChannel.Guild, "xmuted_text", unmutedLocalized, mod.ToString());
+                            mutes = "🔊 " + GetText(logChannel.Guild, strs.xmuted_text(unmutedLocalized, mod.ToString()));
                             break;
                         case MuteType.All:
-                            mutes = "🔊 " + GetText(logChannel.Guild, "xmuted_text_and_voice", unmutedLocalized,
-                                mod.ToString());
+                            mutes = "🔊 " + GetText(logChannel.Guild, strs.xmuted_text_and_voice(unmutedLocalized,
+                                mod.ToString()));
                             break;
                     }
 
@@ -527,24 +526,24 @@ namespace NadekoBot.Modules.Administration.Services
                     switch (action)
                     {
                         case PunishmentAction.Mute:
-                            punishment = "🔇 " + GetText(logChannel.Guild, "muted_pl").ToUpperInvariant();
+                            punishment = "🔇 " + GetText(logChannel.Guild, strs.muted_pl).ToUpperInvariant();
                             break;
                         case PunishmentAction.Kick:
-                            punishment = "👢 " + GetText(logChannel.Guild, "kicked_pl").ToUpperInvariant();
+                            punishment = "👢 " + GetText(logChannel.Guild, strs.kicked_pl).ToUpperInvariant();
                             break;
                         case PunishmentAction.Softban:
-                            punishment = "☣ " + GetText(logChannel.Guild, "soft_banned_pl").ToUpperInvariant();
+                            punishment = "☣ " + GetText(logChannel.Guild, strs.soft_banned_pl).ToUpperInvariant();
                             break;
                         case PunishmentAction.Ban:
-                            punishment = "⛔️ " + GetText(logChannel.Guild, "banned_pl").ToUpperInvariant();
+                            punishment = "⛔️ " + GetText(logChannel.Guild, strs.banned_pl).ToUpperInvariant();
                             break;
                         case PunishmentAction.RemoveRoles:
-                            punishment = "⛔️ " + GetText(logChannel.Guild, "remove_roles_pl").ToUpperInvariant();
+                            punishment = "⛔️ " + GetText(logChannel.Guild, strs.remove_roles_pl).ToUpperInvariant();
                             break;
                     }
 
                     var embed = _eb.Create().WithAuthor($"🛡 Anti-{protection}")
-                        .WithTitle(GetText(logChannel.Guild, "users") + " " + punishment)
+                        .WithTitle(GetText(logChannel.Guild, strs.users) + " " + punishment)
                         .WithDescription(string.Join("\n", users.Select(u => u.ToString())))
                         .WithFooter(CurrentTime(logChannel.Guild))
                         .WithOkColor();
@@ -596,10 +595,10 @@ namespace NadekoBot.Modules.Administration.Services
                             .WithTitle($"{before.Username}#{before.Discriminator} | {before.Id}");
                         if (before.Nickname != after.Nickname)
                         {
-                            embed.WithAuthor("👥 " + GetText(logChannel.Guild, "nick_change"))
-                                .AddField(GetText(logChannel.Guild, "old_nick")
+                            embed.WithAuthor("👥 " + GetText(logChannel.Guild, strs.nick_change))
+                                .AddField(GetText(logChannel.Guild, strs.old_nick)
                                     , $"{before.Nickname}#{before.Discriminator}")
-                                .AddField(GetText(logChannel.Guild, "new_nick")
+                                .AddField(GetText(logChannel.Guild, strs.new_nick)
                                     , $"{after.Nickname}#{after.Discriminator}");
 
                             await logChannel.EmbedAsync(embed).ConfigureAwait(false);
@@ -609,7 +608,7 @@ namespace NadekoBot.Modules.Administration.Services
                             if (before.Roles.Count < after.Roles.Count)
                             {
                                 var diffRoles = after.Roles.Where(r => !before.Roles.Contains(r)).Select(r => r.Name);
-                                embed.WithAuthor("⚔ " + GetText(logChannel.Guild, "user_role_add"))
+                                embed.WithAuthor("⚔ " + GetText(logChannel.Guild, strs.user_role_add))
                                     .WithDescription(string.Join(", ", diffRoles).SanitizeMentions());
 
                                 await logChannel.EmbedAsync(embed).ConfigureAwait(false);
@@ -624,7 +623,7 @@ namespace NadekoBot.Modules.Administration.Services
 
                                 if (diffRoles.Any())
                                 {
-                                    embed.WithAuthor("⚔ " + GetText(logChannel.Guild, "user_role_rem"))
+                                    embed.WithAuthor("⚔ " + GetText(logChannel.Guild, strs.user_role_rem))
                                         .WithDescription(string.Join(", ", diffRoles).SanitizeMentions());
 
                                     await logChannel.EmbedAsync(embed).ConfigureAwait(false);
@@ -641,9 +640,9 @@ namespace NadekoBot.Modules.Administration.Services
                         if (before.Status != after.Status)
                         {
                             var str = "🎭" + Format.Code(PrettyCurrentTime(after.Guild)) +
-                                      GetText(logChannel.Guild, "user_status_change",
+                                      GetText(logChannel.Guild, strs.user_status_change(
                                           "👤" + Format.Bold(after.Username),
-                                          Format.Bold(after.Status.ToString()));
+                                          Format.Bold(after.Status.ToString())));
                             PresenceUpdates.AddOrUpdate(logChannel,
                                 new List<string>() {str}, (id, list) =>
                                 {
@@ -701,16 +700,16 @@ namespace NadekoBot.Modules.Administration.Services
 
                     if (before.Name != after.Name)
                     {
-                        embed.WithTitle("ℹ️ " + GetText(logChannel.Guild, "ch_name_change"))
+                        embed.WithTitle("ℹ️ " + GetText(logChannel.Guild, strs.ch_name_change))
                             .WithDescription($"{after} | {after.Id}")
-                            .AddField(GetText(logChannel.Guild, "ch_old_name"), before.Name);
+                            .AddField(GetText(logChannel.Guild, strs.ch_old_name), before.Name);
                     }
                     else if (beforeTextChannel?.Topic != afterTextChannel?.Topic)
                     {
-                        embed.WithTitle("ℹ️ " + GetText(logChannel.Guild, "ch_topic_change"))
+                        embed.WithTitle("ℹ️ " + GetText(logChannel.Guild, strs.ch_topic_change))
                             .WithDescription($"{after} | {after.Id}")
-                            .AddField(GetText(logChannel.Guild, "old_topic") , beforeTextChannel?.Topic ?? "-")
-                            .AddField(GetText(logChannel.Guild, "new_topic"), afterTextChannel?.Topic ?? "-");
+                            .AddField(GetText(logChannel.Guild, strs.old_topic) , beforeTextChannel?.Topic ?? "-")
+                            .AddField(GetText(logChannel.Guild, strs.new_topic), afterTextChannel?.Topic ?? "-");
                     }
                     else
                         return;
@@ -746,10 +745,10 @@ namespace NadekoBot.Modules.Administration.Services
                     string title;
                     if (ch is IVoiceChannel)
                     {
-                        title = GetText(logChannel.Guild, "voice_chan_destroyed");
+                        title = GetText(logChannel.Guild, strs.voice_chan_destroyed);
                     }
                     else
-                        title = GetText(logChannel.Guild, "text_chan_destroyed");
+                        title = GetText(logChannel.Guild, strs.text_chan_destroyed);
 
                     await logChannel.EmbedAsync(_eb.Create()
                         .WithOkColor()
@@ -785,10 +784,10 @@ namespace NadekoBot.Modules.Administration.Services
                     string title;
                     if (ch is IVoiceChannel)
                     {
-                        title = GetText(logChannel.Guild, "voice_chan_created");
+                        title = GetText(logChannel.Guild, strs.voice_chan_created);
                     }
                     else
-                        title = GetText(logChannel.Guild, "text_chan_created");
+                        title = GetText(logChannel.Guild, strs.text_chan_created);
 
                     await logChannel.EmbedAsync(_eb.Create()
                         .WithOkColor()
@@ -832,22 +831,22 @@ namespace NadekoBot.Modules.Administration.Services
                     if (beforeVch?.Guild == afterVch?.Guild)
                     {
                         str = "🎙" + Format.Code(PrettyCurrentTime(usr.Guild)) + GetText(logChannel.Guild,
-                            "user_vmoved",
+                            strs.user_vmoved(
                             "👤" + Format.Bold(usr.Username + "#" + usr.Discriminator),
-                            Format.Bold(beforeVch?.Name ?? ""), Format.Bold(afterVch?.Name ?? ""));
+                            Format.Bold(beforeVch?.Name ?? ""), Format.Bold(afterVch?.Name ?? "")));
                     }
                     else if (beforeVch is null)
                     {
                         str = "🎙" + Format.Code(PrettyCurrentTime(usr.Guild)) + GetText(logChannel.Guild,
-                            "user_vjoined",
-                            "👤" + Format.Bold(usr.Username + "#" + usr.Discriminator),
-                            Format.Bold(afterVch.Name ?? ""));
+                            strs.user_vjoined(
+                                "👤" + Format.Bold(usr.Username + "#" + usr.Discriminator),
+                                Format.Bold(afterVch.Name ?? "")));
                     }
                     else if (afterVch is null)
                     {
-                        str = "🎙" + Format.Code(PrettyCurrentTime(usr.Guild)) + GetText(logChannel.Guild, "user_vleft",
-                            "👤" + Format.Bold(usr.Username + "#" + usr.Discriminator),
-                            Format.Bold(beforeVch.Name ?? ""));
+                        str = "🎙" + Format.Code(PrettyCurrentTime(usr.Guild)) + GetText(logChannel.Guild,
+                            strs.user_vleft("👤" + Format.Bold(usr.Username + "#" + usr.Discriminator),
+                                Format.Bold(beforeVch.Name ?? "")));
                     }
 
                     if (!string.IsNullOrWhiteSpace(str))
@@ -887,7 +886,7 @@ namespace NadekoBot.Modules.Administration.Services
         //            string str = "";
         //            if (before.Status != after.Status)
         //                str = "🎭" + Format.Code(PrettyCurrentTime(g)) +
-        //                      GetText(logChannel.Guild, "user_status_change",
+        //                      GetText(logChannel.Guild, strs.user_status_change(,
         //                            "👤" + Format.Bold(usr.Username),
         //                            Format.Bold(after.Status.ToString()));
 
@@ -924,7 +923,7 @@ namespace NadekoBot.Modules.Administration.Services
                         return;
                     var embed = _eb.Create()
                         .WithOkColor()
-                        .WithTitle("❌ " + GetText(logChannel.Guild, "user_left"))
+                        .WithTitle("❌ " + GetText(logChannel.Guild, strs.user_left))
                         .WithDescription(usr.ToString())
                         .AddField("Id", usr.Id.ToString())
                         .WithFooter(CurrentTime(usr.Guild));
@@ -959,13 +958,13 @@ namespace NadekoBot.Modules.Administration.Services
 
                     var embed = _eb.Create()
                         .WithOkColor()
-                        .WithTitle("✅ " + GetText(logChannel.Guild, "user_joined"))
+                        .WithTitle("✅ " + GetText(logChannel.Guild, strs.user_joined))
                         .WithDescription($"{usr.Mention} `{usr}`")
                         .AddField("Id", usr.Id.ToString())
-                        .AddField(GetText(logChannel.Guild, "joined_server"),
+                        .AddField(GetText(logChannel.Guild, strs.joined_server),
                             $"{usr.JoinedAt?.ToString("dd.MM.yyyy HH:mm" ?? "?")}",
                             true)
-                        .AddField(GetText(logChannel.Guild, "joined_discord"),
+                        .AddField(GetText(logChannel.Guild, strs.joined_discord),
                             $"{usr.CreatedAt:dd.MM.yyyy HH:mm}",
                             true)
                         .WithFooter(CurrentTime(usr.Guild));
@@ -999,7 +998,7 @@ namespace NadekoBot.Modules.Administration.Services
                         return;
                     var embed = _eb.Create()
                         .WithOkColor()
-                        .WithTitle("♻️ " + GetText(logChannel.Guild, "user_unbanned"))
+                        .WithTitle("♻️ " + GetText(logChannel.Guild, strs.user_unbanned))
                         .WithDescription(usr.ToString())
                         .AddField("Id", usr.Id.ToString())
                         .WithFooter(CurrentTime(guild));
@@ -1034,7 +1033,7 @@ namespace NadekoBot.Modules.Administration.Services
                         return;
                     var embed = _eb.Create()
                         .WithOkColor()
-                        .WithTitle("🚫 " + GetText(logChannel.Guild, "user_banned"))
+                        .WithTitle("🚫 " + GetText(logChannel.Guild, strs.user_banned))
                         .WithDescription(usr.ToString())
                         .AddField("Id", usr.Id.ToString())
                         .WithFooter(CurrentTime(guild));
@@ -1083,15 +1082,15 @@ namespace NadekoBot.Modules.Administration.Services
                     var resolvedMessage = msg.Resolve(userHandling: TagHandling.FullName);
                     var embed = _eb.Create()
                         .WithOkColor()
-                        .WithTitle("🗑 " + GetText(logChannel.Guild, "msg_del", ((ITextChannel) msg.Channel).Name))
+                        .WithTitle("🗑 " + GetText(logChannel.Guild, strs.msg_del(((ITextChannel) msg.Channel).Name)))
                         .WithDescription(msg.Author.ToString())
-                        .AddField(GetText(logChannel.Guild, "content"),
+                        .AddField(GetText(logChannel.Guild, strs.content),
                             string.IsNullOrWhiteSpace(resolvedMessage) ? "-" : resolvedMessage,
                             false)
                         .AddField("Id", msg.Id.ToString(), false)
                         .WithFooter(CurrentTime(channel.Guild));
                     if (msg.Attachments.Any())
-                        embed.AddField(GetText(logChannel.Guild, "attachments"),
+                        embed.AddField(GetText(logChannel.Guild, strs.attachments),
                             string.Join(", ", msg.Attachments.Select(a => a.Url)),
                             false);
 
@@ -1140,15 +1139,15 @@ namespace NadekoBot.Modules.Administration.Services
 
                     var embed = _eb.Create()
                         .WithOkColor()
-                        .WithTitle("📝 " + GetText(logChannel.Guild, "msg_update", ((ITextChannel)after.Channel).Name))
+                        .WithTitle("📝 " + GetText(logChannel.Guild, strs.msg_update(((ITextChannel)after.Channel).Name)))
                         .WithDescription(after.Author.ToString())
-                        .AddField(GetText(logChannel.Guild, "old_msg"),
+                        .AddField(GetText(logChannel.Guild, strs.old_msg),
                             string.IsNullOrWhiteSpace(before.Content)
                                 ? "-"
                                 : before.Resolve(userHandling: TagHandling.FullName),
                             false)
                         .AddField(
-                            GetText(logChannel.Guild, "new_msg"),
+                            GetText(logChannel.Guild, strs.new_msg),
                             string.IsNullOrWhiteSpace(after.Content)
                                 ? "-"
                                 : after.Resolve(userHandling: TagHandling.FullName),

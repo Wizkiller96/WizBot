@@ -42,7 +42,7 @@ namespace NadekoBot.Modules.Permissions
                 var channel = (ITextChannel)ctx.Channel;
                 if (secs < 0 || secs > 3600)
                 {
-                    await ReplyErrorLocalizedAsync("invalid_second_param_between", 0, 3600).ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.invalid_second_param_between(0, 3600));
                     return;
                 }
 
@@ -72,14 +72,13 @@ namespace NadekoBot.Modules.Permissions
                 {
                     var activeCds = ActiveCooldowns.GetOrAdd(channel.Guild.Id, new ConcurrentHashSet<ActiveCooldown>());
                     activeCds.RemoveWhere(ac => ac.Command == name);
-                    await ReplyConfirmLocalizedAsync("cmdcd_cleared",
-                        Format.Bold(name)).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.cmdcd_cleared(Format.Bold(name)));
                 }
                 else
                 {
-                    await ReplyConfirmLocalizedAsync("cmdcd_add",
+                    await ReplyConfirmLocalizedAsync(strs.cmdcd_add(
                         Format.Bold(name),
-                        Format.Bold(secs.ToString())).ConfigureAwait(false);
+                        Format.Bold(secs.ToString())));
                 }
             }
 
@@ -91,7 +90,7 @@ namespace NadekoBot.Modules.Permissions
                 var localSet = CommandCooldowns.GetOrAdd(channel.Guild.Id, new ConcurrentHashSet<CommandCooldown>());
 
                 if (!localSet.Any())
-                    await ReplyConfirmLocalizedAsync("cmdcd_none").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.cmdcd_none).ConfigureAwait(false);
                 else
                     await channel.SendTableAsync("", localSet.Select(c => c.CommandName + ": " + c.Seconds + GetText(strs.sec)), s => $"{s,-30}", 2).ConfigureAwait(false);
             }

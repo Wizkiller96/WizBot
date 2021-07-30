@@ -149,13 +149,13 @@ namespace NadekoBot.Modules.Gambling
                     const int maxAmount = 9999;
                     if (amount > maxAmount)
                     {
-                        await ReplyErrorLocalizedAsync("max_bet_limit", maxAmount + CurrencySign).ConfigureAwait(false);
+                        await ReplyErrorLocalizedAsync(strs.max_bet_limit(maxAmount + CurrencySign));
                         return;
                     }
 
                     if (!await _cs.RemoveAsync(ctx.User, "Slot Machine", amount, false, gamble: true).ConfigureAwait(false))
                     {
-                        await ReplyErrorLocalizedAsync("not_enough", CurrencySign).ConfigureAwait(false);
+                        await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
                         return;
                     }
                     Interlocked.Add(ref _totalBet, amount.Value);

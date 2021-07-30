@@ -28,7 +28,7 @@ namespace NadekoBot.Modules.Utility
                 var success = await _service.TriggerExternal(ctx.Guild.Id, index);
                 if (!success)
                 {
-                    await ReplyErrorLocalizedAsync("repeat_invoke_none").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.repeat_invoke_none).ConfigureAwait(false);
                 }
             }
             
@@ -43,7 +43,7 @@ namespace NadekoBot.Modules.Utility
                 var removed =  await _service.RemoveByIndexAsync(ctx.Guild.Id, index);
                 if (removed is null)
                 {
-                    await ReplyErrorLocalizedAsync("repeater_remove_fail").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.repeater_remove_fail).ConfigureAwait(false);
                     return;
                 }
                 
@@ -66,17 +66,17 @@ namespace NadekoBot.Modules.Utility
             
                 if (result is null)
                 {
-                    await ReplyErrorLocalizedAsync("index_out_of_range").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.index_out_of_range).ConfigureAwait(false);
                     return;
                 }
             
                 if (result.Value)
                 {
-                    await ReplyConfirmLocalizedAsync("repeater_redundant_no", index + 1);
+                    await ReplyErrorLocalizedAsync(strs.repeater_redundant_no(index + 1));
                 }
                 else
                 {
-                    await ReplyConfirmLocalizedAsync("repeater_redundant_yes" ,index + 1);
+                    await ReplyConfirmLocalizedAsync(strs.repeater_redundant_yes(index + 1));
                 }
             }
 
@@ -139,7 +139,7 @@ namespace NadekoBot.Modules.Utility
 
                 if (runner is null)
                 {
-                    await ReplyErrorLocalizedAsync("repeater_exceed_limit", 5);
+                    await ReplyErrorLocalizedAsync(strs.repeater_exceed_limit(5));
                     return;
                 }
                 
@@ -158,7 +158,7 @@ namespace NadekoBot.Modules.Utility
                 var repeaters = _service.GetRepeaters(ctx.Guild.Id);
                 if (repeaters.Count == 0)
                 {
-                    await ReplyConfirmLocalizedAsync("repeaters_none").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.repeaters_none).ConfigureAwait(false);
                     return;
                 }
             

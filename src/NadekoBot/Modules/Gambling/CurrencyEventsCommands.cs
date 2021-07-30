@@ -40,7 +40,7 @@ namespace NadekoBot.Modules.Gambling
                     GetEmbed
                     ).ConfigureAwait(false))
                 {
-                    await ReplyErrorLocalizedAsync("start_event_fail").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.start_event_fail).ConfigureAwait(false);
                     return;
                 }
             }

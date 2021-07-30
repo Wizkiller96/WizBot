@@ -32,7 +32,7 @@ namespace NadekoBot.Modules.Permissions
                 var blockedCommands = _service.BlockedCommands;
                 if (!blockedModule.Any() && !blockedCommands.Any())
                 {
-                    await ReplyErrorLocalizedAsync("lgp_none").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.lgp_none).ConfigureAwait(false);
                     return;
                 }
 
@@ -61,11 +61,11 @@ namespace NadekoBot.Modules.Permissions
                 
                 if (added)
                 {
-                    await ReplyConfirmLocalizedAsync("gmod_add", Format.Bold(module.Name)).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.gmod_add(Format.Bold(module.Name))).ConfigureAwait(false);
                     return;
                 }
                 
-                await ReplyConfirmLocalizedAsync("gmod_remove", Format.Bold(module.Name)).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.gmod_remove(Format.Bold(module.Name))).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -77,11 +77,11 @@ namespace NadekoBot.Modules.Permissions
                 
                 if (added)
                 {
-                    await ReplyConfirmLocalizedAsync("gcmd_add", Format.Bold(cmd.Name)).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.gcmd_add(Format.Bold(cmd.Name))).ConfigureAwait(false);
                     return;
                 }
                 
-                await ReplyConfirmLocalizedAsync("gcmd_remove", Format.Bold(cmd.Name)).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.gcmd_remove(Format.Bold(cmd.Name))).ConfigureAwait(false);
             }
         }
     }

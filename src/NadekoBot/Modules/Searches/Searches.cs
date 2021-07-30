@@ -115,20 +115,20 @@ namespace NadekoBot.Modules.Searches
             var (data, err) = await _service.GetTimeDataAsync(query).ConfigureAwait(false);
             if (err is not null)
             {
-                string errorKey;
+                LocStr errorKey;
                 switch (err)
                 {
                     case TimeErrors.ApiKeyMissing:
-                        errorKey = "api_key_missing";
+                        errorKey = strs.api_key_missing;
                         break;
                     case TimeErrors.InvalidInput:
-                        errorKey = "invalid_input";
+                        errorKey = strs.invalid_input;
                         break;
                     case TimeErrors.NotFound:
-                        errorKey = "not_found";
+                        errorKey = strs.not_found;
                         break;
                     default:
-                        errorKey = "error_occured";
+                        errorKey = strs.error_occured;
                         break;
                 }
                 await ReplyErrorLocalizedAsync(errorKey).ConfigureAwait(false);
@@ -136,7 +136,7 @@ namespace NadekoBot.Modules.Searches
             }
             else if (string.IsNullOrWhiteSpace(data.TimeZoneName))
             {
-                await ReplyErrorLocalizedAsync("timezone_db_api_key").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.timezone_db_api_key).ConfigureAwait(false);
                 return;
             }
 
@@ -159,7 +159,7 @@ namespace NadekoBot.Modules.Searches
             var result = (await _google.GetVideoLinksByKeywordAsync(query, 1).ConfigureAwait(false)).FirstOrDefault();
             if (string.IsNullOrWhiteSpace(result))
             {
-                await ReplyErrorLocalizedAsync("no_results").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.no_results).ConfigureAwait(false);
                 return;
             }
 
@@ -177,7 +177,7 @@ namespace NadekoBot.Modules.Searches
             var movie = await _service.GetMovieDataAsync(query).ConfigureAwait(false);
             if (movie is null)
             {
-                await ReplyErrorLocalizedAsync("imdb_fail").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.imdb_fail).ConfigureAwait(false);
                 return;
             }
             await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
@@ -340,7 +340,7 @@ namespace NadekoBot.Modules.Searches
             var data = await _service.GoogleSearchAsync(query);
             if (data is null)
             {
-                await ReplyErrorLocalizedAsync("no_results");
+                await ReplyErrorLocalizedAsync(strs.no_results);
                 return;
             }
             
@@ -373,7 +373,7 @@ namespace NadekoBot.Modules.Searches
             var data = await _service.DuckDuckGoSearchAsync(query);
             if (data is null)
             {
-                await ReplyErrorLocalizedAsync("no_results");
+                await ReplyErrorLocalizedAsync(strs.no_results);
                 return;
             }
             
@@ -403,7 +403,7 @@ namespace NadekoBot.Modules.Searches
 
             if (card is null)
             {
-                await ReplyErrorLocalizedAsync("card_not_found").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.card_not_found).ConfigureAwait(false);
                 return;
             }
 
@@ -427,7 +427,7 @@ namespace NadekoBot.Modules.Searches
 
             if (string.IsNullOrWhiteSpace(_creds.RapidApiKey))
             {
-                await ReplyErrorLocalizedAsync("mashape_api_missing").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.mashape_api_missing).ConfigureAwait(false);
                 return;
             }
 
@@ -436,7 +436,7 @@ namespace NadekoBot.Modules.Searches
 
             if (card is null)
             {
-                await ReplyErrorLocalizedAsync("card_not_found").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.card_not_found).ConfigureAwait(false);
                 return;
             }
             var embed = _eb.Create().WithOkColor()
@@ -479,7 +479,7 @@ namespace NadekoBot.Modules.Searches
                 {
                 }
             }
-            await ReplyErrorLocalizedAsync("ud_error").ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.ud_error).ConfigureAwait(false);
 
         }
 
@@ -509,7 +509,7 @@ namespace NadekoBot.Modules.Searches
                     if (!datas.Any())
                     {
                         Log.Warning("Definition not found: {Word}", word);
-                        await ReplyErrorLocalizedAsync("define_unknown").ConfigureAwait(false);
+                        await ReplyErrorLocalizedAsync(strs.define_unknown).ConfigureAwait(false);
                     }
 
 
@@ -606,7 +606,7 @@ namespace NadekoBot.Modules.Searches
                 var result = await http.GetStringAsync("https://en.wikipedia.org//w/api.php?action=query&format=json&prop=info&redirects=1&formatversion=2&inprop=url&titles=" + Uri.EscapeDataString(query)).ConfigureAwait(false);
                 var data = JsonConvert.DeserializeObject<WikipediaApiModel>(result);
                 if (data.Query.Pages[0].Missing || string.IsNullOrWhiteSpace(data.Query.Pages[0].FullUrl))
-                    await ReplyErrorLocalizedAsync("wiki_page_not_found").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.wiki_page_not_found).ConfigureAwait(false);
                 else
                     await ctx.Channel.SendMessageAsync(data.Query.Pages[0].FullUrl).ConfigureAwait(false);
             }
@@ -651,7 +651,7 @@ namespace NadekoBot.Modules.Searches
 
             if (avatarUrl is null)
             {
-                await ReplyErrorLocalizedAsync("avatar_none", usr.ToString()).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.avatar_none(usr.ToString())).ConfigureAwait(false);
                 return;
             }
 
@@ -666,7 +666,7 @@ namespace NadekoBot.Modules.Searches
         {
             if (string.IsNullOrWhiteSpace(target) || string.IsNullOrWhiteSpace(query))
             {
-                await ReplyErrorLocalizedAsync("wikia_input_error").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.wikia_input_error).ConfigureAwait(false);
                 return;
             }
             await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
@@ -686,7 +686,7 @@ namespace NadekoBot.Modules.Searches
                     
                     if (string.IsNullOrWhiteSpace(title))
                     {
-                        await ReplyErrorLocalizedAsync("wikia_error").ConfigureAwait(false);
+                        await ReplyErrorLocalizedAsync(strs.wikia_error).ConfigureAwait(false);
                         return;
                     }
 
@@ -697,7 +697,7 @@ namespace NadekoBot.Modules.Searches
                 }
                 catch
                 {
-                    await ReplyErrorLocalizedAsync("wikia_error").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.wikia_error).ConfigureAwait(false);
                 }
             }
         }
@@ -743,7 +743,7 @@ namespace NadekoBot.Modules.Searches
             var appId = await _service.GetSteamAppIdByName(query).ConfigureAwait(false);
             if (appId == -1)
             {
-                await ReplyErrorLocalizedAsync("not_found").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.not_found).ConfigureAwait(false);
                 return;
             }
 
@@ -782,7 +782,7 @@ namespace NadekoBot.Modules.Searches
                 return true;
             }
 
-            await ErrorLocalizedAsync("specify_search_params").ConfigureAwait(false);
+            await ErrorLocalizedAsync(strs.specify_search_params).ConfigureAwait(false);
             return false;
         }
     }

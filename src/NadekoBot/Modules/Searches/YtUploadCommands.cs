@@ -16,11 +16,11 @@ namespace NadekoBot.Modules.Searches
         //         var succ = await _service.ToggleChannelFollowAsync(ctx.Guild.Id, ctx.Channel.Id, ytChannelId, uploadMessage);
         //         if(succ)
         //         {
-        //             await ReplyConfirmLocalizedAsync("yt_follow_added").ConfigureAwait(false);
+        //             await ReplyConfirmLocalizedAsync(strs.yt_follow_added).ConfigureAwait(false);
         //         }
         //         else
         //         {
-        //             await ReplyConfirmLocalizedAsync("yt_follow_fail").ConfigureAwait(false);
+        //             await ReplyConfirmLocalizedAsync(strs.yt_follow_fail).ConfigureAwait(false);
         //         }
         //     }
         //     
@@ -31,11 +31,11 @@ namespace NadekoBot.Modules.Searches
         //         //var succ = await _service.ToggleChannelTrackingAsync(ctx.Guild.Id, ctx.Channel.Id, ytChannelId, uploadMessage);
         //         //if (succ)
         //         //{
-        //         //    await ReplyConfirmLocalizedAsync("yt_track_added").ConfigureAwait(false);
+        //         //    await ReplyConfirmLocalizedAsync(strs.yt_track_added).ConfigureAwait(false);
         //         //}
         //         //else
         //         //{
-        //         //    await ReplyConfirmLocalizedAsync("yt_track_fail").ConfigureAwait(false);
+        //         //    await ReplyConfirmLocalizedAsync(strs.yt_track_fail).ConfigureAwait(false);
         //         //}
         //     }
         //     
@@ -46,11 +46,11 @@ namespace NadekoBot.Modules.Searches
         //         //var succ = await _service.ToggleChannelTrackingAsync(ctx.Guild.Id, ctx.Channel.Id, ytChannelId, uploadMessage);
         //         //if (succ)
         //         //{
-        //         //    await ReplyConfirmLocalizedAsync("yt_track_added").ConfigureAwait(false);
+        //         //    await ReplyConfirmLocalizedAsync(strs.yt_track_added).ConfigureAwait(false);
         //         //}
         //         //else
         //         //{
-        //         //    await ReplyConfirmLocalizedAsync("yt_track_fail").ConfigureAwait(false);
+        //         //    await ReplyConfirmLocalizedAsync(strs.yt_track_fail).ConfigureAwait(false);
         //         //}
         //     }
         // }

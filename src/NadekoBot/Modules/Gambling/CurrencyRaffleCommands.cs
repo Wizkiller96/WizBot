@@ -50,9 +50,9 @@ namespace NadekoBot.Modules.Gambling
                 else
                 {
                     if (res.Item2 == CurrencyRaffleService.JoinErrorType.AlreadyJoinedOrInvalidAmount)
-                        await ReplyErrorLocalizedAsync("rafflecur_already_joined").ConfigureAwait(false);
+                        await ReplyErrorLocalizedAsync(strs.rafflecur_already_joined).ConfigureAwait(false);
                     else if (res.Item2 == CurrencyRaffleService.JoinErrorType.NotEnoughCurrency)
-                        await ReplyErrorLocalizedAsync("not_enough", CurrencySign).ConfigureAwait(false);
+                        await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
                 }
             }
         }

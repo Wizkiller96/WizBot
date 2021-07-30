@@ -76,7 +76,7 @@ namespace NadekoBot.Modules.Administration
                     }
                     catch (Discord.Net.HttpException ex) when(ex.HttpCode == HttpStatusCode.BadRequest)
                     {
-                        await ReplyErrorLocalizedAsync("reaction_cant_access", Format.Code(x.emote.ToString()));
+                        await ReplyErrorLocalizedAsync(strs.reaction_cant_access(Format.Code(x.emote.ToString())));
                         return;
                     }
 
@@ -102,7 +102,7 @@ namespace NadekoBot.Modules.Administration
                 }
                 else
                 {
-                    await ReplyErrorLocalizedAsync("reaction_roles_full").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.reaction_roles_full).ConfigureAwait(false);
                 }
             }
 
@@ -171,7 +171,7 @@ namespace NadekoBot.Modules.Administration
                 index--;
                 var rr = rrs[index];
                 _service.Remove(ctx.Guild.Id, index);
-                await ReplyConfirmLocalizedAsync("reaction_role_removed", index + 1).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.reaction_role_removed(index + 1));
             }
 
             [NadekoCommand, Aliases]
@@ -188,13 +188,14 @@ namespace NadekoBot.Modules.Administration
                 {
                     await targetUser.AddRoleAsync(roleToAdd).ConfigureAwait(false);
 
-                    await ReplyConfirmLocalizedAsync("setrole", Format.Bold(roleToAdd.Name), Format.Bold(targetUser.ToString()))
-                        .ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(
+                        strs.setrole(Format.Bold(roleToAdd.Name),
+                            Format.Bold(targetUser.ToString())));
                 }
                 catch (Exception ex)
                 {
                     Log.Warning(ex, "Error in setrole command");
-                    await ReplyErrorLocalizedAsync("setrole_err").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.setrole_err).ConfigureAwait(false);
                 }
             }
 
@@ -210,11 +211,11 @@ namespace NadekoBot.Modules.Administration
                 try
                 {
                     await targetUser.RemoveRoleAsync(roleToRemove).ConfigureAwait(false);
-                    await ReplyConfirmLocalizedAsync("remrole", Format.Bold(roleToRemove.Name), Format.Bold(targetUser.ToString())).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.remrole(Format.Bold(roleToRemove.Name), Format.Bold(targetUser.ToString()))).ConfigureAwait(false);
                 }
                 catch
                 {
-                    await ReplyErrorLocalizedAsync("remrole_err").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.remrole_err).ConfigureAwait(false);
                 }
             }
 
@@ -231,15 +232,15 @@ namespace NadekoBot.Modules.Administration
                 {
                     if (roleToEdit.Position > (await ctx.Guild.GetCurrentUserAsync().ConfigureAwait(false)).GetRoles().Max(r => r.Position))
                     {
-                        await ReplyErrorLocalizedAsync("renrole_perms").ConfigureAwait(false);
+                        await ReplyErrorLocalizedAsync(strs.renrole_perms).ConfigureAwait(false);
                         return;
                     }
                     await roleToEdit.ModifyAsync(g => g.Name = newname).ConfigureAwait(false);
-                    await ReplyConfirmLocalizedAsync("renrole").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.renrole).ConfigureAwait(false);
                 }
                 catch (Exception)
                 {
-                    await ReplyErrorLocalizedAsync("renrole_err").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.renrole_err).ConfigureAwait(false);
                 }
             }
 
@@ -260,11 +261,11 @@ namespace NadekoBot.Modules.Administration
                 try
                 {
                     await user.RemoveRolesAsync(userRoles).ConfigureAwait(false);
-                    await ReplyConfirmLocalizedAsync("rar", Format.Bold(user.ToString())).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.rar(Format.Bold(user.ToString()))).ConfigureAwait(false);
                 }
                 catch (Exception)
                 {
-                    await ReplyErrorLocalizedAsync("rar_err").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.rar_err).ConfigureAwait(false);
                 }
             }
 
@@ -278,7 +279,7 @@ namespace NadekoBot.Modules.Administration
                     return;
 
                 var r = await ctx.Guild.CreateRoleAsync(roleName, isMentionable: false).ConfigureAwait(false);
-                await ReplyConfirmLocalizedAsync("cr", Format.Bold(r.Name)).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.cr(Format.Bold(r.Name))).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -293,7 +294,7 @@ namespace NadekoBot.Modules.Administration
                     return;
 
                 await role.DeleteAsync().ConfigureAwait(false);
-                await ReplyConfirmLocalizedAsync("dr", Format.Bold(role.Name)).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.dr(Format.Bold(role.Name))).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -306,11 +307,11 @@ namespace NadekoBot.Modules.Administration
                 await role.ModifyAsync(r => r.Hoist = newHoisted).ConfigureAwait(false);
                 if (newHoisted)
                 {
-                    await ReplyConfirmLocalizedAsync("rolehoist_enabled", Format.Bold(role.Name)).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.rolehoist_enabled(Format.Bold(role.Name))).ConfigureAwait(false);
                 }
                 else
                 {
-                    await ReplyConfirmLocalizedAsync("rolehoist_disabled", Format.Bold(role.Name)).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.rolehoist_disabled(Format.Bold(role.Name))).ConfigureAwait(false);
                 }
             }
 
@@ -333,11 +334,11 @@ namespace NadekoBot.Modules.Administration
                 {
                     var rgba32 = color.ToPixel<Rgba32>();
                     await role.ModifyAsync(r => r.Color = new Color(rgba32.R, rgba32.G, rgba32.B)).ConfigureAwait(false);
-                    await ReplyConfirmLocalizedAsync("rc", Format.Bold(role.Name)).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.rc(Format.Bold(role.Name))).ConfigureAwait(false);
                 }
                 catch (Exception)
                 {
-                    await ReplyErrorLocalizedAsync("rc_perms").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.rc_perms).ConfigureAwait(false);
                 }
             }
         }

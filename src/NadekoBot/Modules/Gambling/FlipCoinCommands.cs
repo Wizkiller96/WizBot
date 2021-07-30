@@ -38,7 +38,7 @@ namespace NadekoBot.Modules.Gambling
             {
                 if (count > 10 || count < 1)
                 {
-                    await ReplyErrorLocalizedAsync("flip_invalid", 10).ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.flip_invalid(10));
                     return;
                 }
                 var headCount = 0;
@@ -94,7 +94,7 @@ namespace NadekoBot.Modules.Gambling
                 var removed = await _cs.RemoveAsync(ctx.User, "Betflip Gamble", amount, false, gamble: true).ConfigureAwait(false);
                 if (!removed)
                 {
-                    await ReplyErrorLocalizedAsync("not_enough", CurrencySign).ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
                     return;
                 }
                 BetFlipGuess result;

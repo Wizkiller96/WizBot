@@ -37,7 +37,7 @@ namespace NadekoBot.Modules.Games
                         uow.GuildConfigs.SetCleverbotEnabled(ctx.Guild.Id, false);
                         await uow.SaveChangesAsync();
                     }
-                    await ReplyConfirmLocalizedAsync("cleverbot_disabled").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.cleverbot_disabled).ConfigureAwait(false);
                     return;
                 }
 
@@ -49,7 +49,7 @@ namespace NadekoBot.Modules.Games
                     await uow.SaveChangesAsync();
                 }
 
-                await ReplyConfirmLocalizedAsync("cleverbot_enabled").ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.cleverbot_enabled).ConfigureAwait(false);
             }
         }
 

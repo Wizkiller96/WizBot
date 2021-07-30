@@ -35,7 +35,7 @@ namespace NadekoBot.Modules.CustomReactions
 
             if (!AdminInGuildOrOwnerInDm())
             {
-                await ReplyErrorLocalizedAsync("insuff_perms").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.insuff_perms).ConfigureAwait(false);
                 return;
             }
 
@@ -58,7 +58,7 @@ namespace NadekoBot.Modules.CustomReactions
 
             if ((channel is null && !_creds.IsOwner(ctx.User)) || (channel != null && !((IGuildUser)ctx.User).GuildPermissions.Administrator))
             {
-                await ReplyErrorLocalizedAsync("insuff_perms").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.insuff_perms).ConfigureAwait(false);
                 return;
             }
 
@@ -74,7 +74,7 @@ namespace NadekoBot.Modules.CustomReactions
             }
             else
             {
-                await ReplyErrorLocalizedAsync("edit_fail").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.edit_fail).ConfigureAwait(false);
             }
         }
 
@@ -89,7 +89,7 @@ namespace NadekoBot.Modules.CustomReactions
 
             if (customReactions is null || !customReactions.Any())
             {
-                await ReplyErrorLocalizedAsync("no_found").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.no_found).ConfigureAwait(false);
                 return;
             }
 
@@ -123,14 +123,14 @@ namespace NadekoBot.Modules.CustomReactions
         [Priority(0)]
         public async Task ListCustReact(All _)
         {
-            await ReplyPendingLocalizedAsync("obsolete_use", Format.Code($"{Prefix}crsexport"));
+            await ReplyPendingLocalizedAsync(strs.obsolete_use(Format.Code($"{Prefix}crsexport")));
             await CrsExport();
         }
 
         [NadekoCommand, Aliases]
         public async Task ListCustReactG(int page = 1)
         {
-            await ReplyPendingLocalizedAsync("obsolete_use", Format.Code($"{Prefix}crsexport"));
+            await ReplyPendingLocalizedAsync(strs.obsolete_use(Format.Code($"{Prefix}crsexport")));
             await CrsExport();
         }
 
@@ -141,7 +141,7 @@ namespace NadekoBot.Modules.CustomReactions
 
             if (found is null)
             {
-                await ReplyErrorLocalizedAsync("no_found_id").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.no_found_id).ConfigureAwait(false);
                 return;
             }
             else
@@ -159,7 +159,7 @@ namespace NadekoBot.Modules.CustomReactions
         {
             if (!AdminInGuildOrOwnerInDm())
             {
-                await ReplyErrorLocalizedAsync("insuff_perms").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.insuff_perms).ConfigureAwait(false);
                 return;
             }
 
@@ -175,7 +175,7 @@ namespace NadekoBot.Modules.CustomReactions
             }
             else
             {
-                await ReplyErrorLocalizedAsync("no_found_id").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.no_found_id).ConfigureAwait(false);
             }
         }
 
@@ -184,21 +184,21 @@ namespace NadekoBot.Modules.CustomReactions
         {
             if (!AdminInGuildOrOwnerInDm())
             {
-                await ReplyErrorLocalizedAsync("insuff_perms").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.insuff_perms).ConfigureAwait(false);
                 return;
             }
 
             var cr = _service.GetCustomReaction(ctx.Guild?.Id, id);
             if (cr is null)
             {
-                await ReplyErrorLocalizedAsync("no_found").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.no_found).ConfigureAwait(false);
                 return;
             }
 
             if (emojiStrs.Length == 0)
             {
                 await _service.ResetCrReactions(ctx.Guild?.Id, id);
-                await ReplyConfirmLocalizedAsync("crr_reset", Format.Bold(id.ToString())).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.crr_reset(Format.Bold(id.ToString()))).ConfigureAwait(false);
                 return;
             }
 
@@ -223,14 +223,14 @@ namespace NadekoBot.Modules.CustomReactions
 
             if(succ.Count == 0)
             {
-                await ReplyErrorLocalizedAsync("invalid_emojis").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.invalid_emojis).ConfigureAwait(false);
                 return;
             }
 
             await _service.SetCrReactions(ctx.Guild?.Id, id, succ);
 
 
-            await ReplyConfirmLocalizedAsync("crr_set", Format.Bold(id.ToString()), string.Join(", ", succ.Select(x => x.ToString()))).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.crr_set(Format.Bold(id.ToString()), string.Join(", ", succ.Select(x => x.ToString())))).ConfigureAwait(false);
 
         }
 
@@ -264,23 +264,23 @@ namespace NadekoBot.Modules.CustomReactions
             var cr = _service.GetCustomReaction(ctx.Guild?.Id, id);
             if (!AdminInGuildOrOwnerInDm())
             {
-                await ReplyErrorLocalizedAsync("insuff_perms").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.insuff_perms).ConfigureAwait(false);
                 return;
             }
             var (success, newVal) = await _service.ToggleCrOptionAsync(id, option).ConfigureAwait(false);
             if (!success)
             {
-                await ReplyErrorLocalizedAsync("no_found_id").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.no_found_id).ConfigureAwait(false);
                 return;
             }
 
             if (newVal)
             {
-                await ReplyConfirmLocalizedAsync("option_enabled", Format.Code(option.ToString()), Format.Code(id.ToString())).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.option_enabled(Format.Code(option.ToString()), Format.Code(id.ToString()))).ConfigureAwait(false);
             }
             else
             {
-                await ReplyConfirmLocalizedAsync("option_disabled", Format.Code(option.ToString()), Format.Code(id.ToString())).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.option_disabled(Format.Code(option.ToString()), Format.Code(id.ToString()))).ConfigureAwait(false);
             }
         }
 
@@ -294,7 +294,7 @@ namespace NadekoBot.Modules.CustomReactions
                 .WithDescription("This will delete all custom reactions on this server.")).ConfigureAwait(false))
             {
                 var count = _service.DeleteAllCustomReactions(ctx.Guild.Id);
-                await ReplyConfirmLocalizedAsync("cleared", count).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.cleared(count));
             }
         }
 
@@ -303,7 +303,7 @@ namespace NadekoBot.Modules.CustomReactions
         {
             if (!AdminInGuildOrOwnerInDm())
             {
-                await ReplyErrorLocalizedAsync("insuff_perms").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.insuff_perms).ConfigureAwait(false);
                 return;
             }
             
@@ -322,7 +322,7 @@ namespace NadekoBot.Modules.CustomReactions
         {
             if (!AdminInGuildOrOwnerInDm())
             {
-                await ReplyErrorLocalizedAsync("insuff_perms").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.insuff_perms).ConfigureAwait(false);
                 return;
             }
 
@@ -335,7 +335,7 @@ namespace NadekoBot.Modules.CustomReactions
                 var attachment = ctx.Message.Attachments.FirstOrDefault();
                 if (attachment is null)
                 {
-                    await ReplyErrorLocalizedAsync("expr_import_no_input");
+                    await ReplyErrorLocalizedAsync(strs.expr_import_no_input);
                     return;
                 }
 
@@ -344,7 +344,7 @@ namespace NadekoBot.Modules.CustomReactions
 
                 if (string.IsNullOrWhiteSpace(input))
                 {
-                    await ReplyErrorLocalizedAsync("expr_import_no_input");
+                    await ReplyErrorLocalizedAsync(strs.expr_import_no_input);
                     return;
                 }
             }
@@ -352,7 +352,7 @@ namespace NadekoBot.Modules.CustomReactions
             var succ = await _service.ImportCrsAsync(ctx.Guild?.Id, input);
             if (!succ)
             {
-                await ReplyErrorLocalizedAsync("expr_import_invalid_data");
+                await ReplyErrorLocalizedAsync(strs.expr_import_invalid_data);
                 return;
             }
             

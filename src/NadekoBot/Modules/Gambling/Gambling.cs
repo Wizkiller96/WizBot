@@ -84,20 +84,20 @@ namespace NadekoBot.Modules.Gambling
             var period = _config.Timely.Cooldown;
             if (val <= 0 || period <= 0)
             {
-                await ReplyErrorLocalizedAsync("timely_none").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.timely_none).ConfigureAwait(false);
                 return;
             }
 
             TimeSpan? rem;
             if ((rem = _cache.AddTimelyClaim(ctx.User.Id, period)) != null)
             {
-                await ReplyErrorLocalizedAsync("timely_already_claimed", rem?.ToString(@"dd\d\ hh\h\ mm\m\ ss\s")).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.timely_already_claimed(rem?.ToString(@"dd\d\ hh\h\ mm\m\ ss\s"))).ConfigureAwait(false);
                 return;
             }
 
             await _cs.AddAsync(ctx.User.Id, "Timely claim", val).ConfigureAwait(false);
 
-            await ReplyConfirmLocalizedAsync("timely", n(val) + CurrencySign, period).ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.timely(n(val) + CurrencySign, period));
         }
 
         [NadekoCommand, Aliases]
@@ -105,7 +105,7 @@ namespace NadekoBot.Modules.Gambling
         public async Task TimelyReset()
         {
             _cache.RemoveAllTimelyClaims();
-            await ReplyConfirmLocalizedAsync("timely_reset").ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.timely_reset).ConfigureAwait(false);
         }
 
         [NadekoCommand, Aliases]
@@ -122,9 +122,9 @@ namespace NadekoBot.Modules.Gambling
             });
             
             if (amount == 0)
-                await ReplyConfirmLocalizedAsync("timely_set_none").ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.timely_set_none).ConfigureAwait(false);
             else
-                await ReplyConfirmLocalizedAsync("timely_set", Format.Bold(n(amount) + CurrencySign), Format.Bold(period.ToString())).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.timely_set(Format.Bold(n(amount) + CurrencySign), Format.Bold(period.ToString()))).ConfigureAwait(false);
         }
 
         [NadekoCommand, Aliases]
@@ -164,7 +164,7 @@ namespace NadekoBot.Modules.Gambling
         public async Task Cash([Leftover] IUser user = null)
         {
             user = user ?? ctx.User;
-            await ConfirmLocalizedAsync("has", Format.Bold(user.ToString()), $"{GetCurrency(user.Id)} {CurrencySign}").ConfigureAwait(false);
+            await ConfirmLocalizedAsync(strs.has(Format.Bold(user.ToString()), $"{GetCurrency(user.Id)} {CurrencySign}"));
         }
 
         [NadekoCommand, Aliases]
@@ -217,7 +217,7 @@ namespace NadekoBot.Modules.Gambling
         [Priority(0)]
         public async Task Cash(ulong userId)
         {
-            await ReplyConfirmLocalizedAsync("has", Format.Code(userId.ToString()), $"{GetCurrency(userId)} {CurrencySign}").ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.has(Format.Code(userId.ToString()), $"{GetCurrency(userId)} {CurrencySign}"));
         }
 
         [NadekoCommand, Aliases]
@@ -230,12 +230,11 @@ namespace NadekoBot.Modules.Gambling
             var success = await _cs.RemoveAsync((IGuildUser)ctx.User, $"Gift to {receiver.Username} ({receiver.Id}).", amount, false).ConfigureAwait(false);
             if (!success)
             {
-                await ReplyErrorLocalizedAsync("not_enough", CurrencySign).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
                 return;
             }
             await _cs.AddAsync(receiver, $"Gift from {ctx.User.Username} ({ctx.User.Id}) - {msg}.", amount, true).ConfigureAwait(false);
-            await ReplyConfirmLocalizedAsync("gifted", n(amount) + CurrencySign, Format.Bold(receiver.ToString()), msg)
-                .ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.gifted(n(amount) + CurrencySign, Format.Bold(receiver.ToString())));
         }
 
         [NadekoCommand, Aliases]
@@ -270,7 +269,7 @@ namespace NadekoBot.Modules.Gambling
                 $"Awarded by bot owner. ({ctx.User.Username}/{ctx.User.Id}) {(msg ?? "")}",
                 amount,
                 gamble: (ctx.Client.CurrentUser.Id != usrId)).ConfigureAwait(false);
-            await ReplyConfirmLocalizedAsync("awarded", n(amount) + CurrencySign, $"<@{usrId}>").ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.awarded(n(amount) + CurrencySign, $"<@{usrId}>"));
         }
 
         [NadekoCommand, Aliases]
@@ -289,10 +288,10 @@ namespace NadekoBot.Modules.Gambling
                 gamble: true)
                 .ConfigureAwait(false);
 
-            await ReplyConfirmLocalizedAsync("mass_award",
+            await ReplyConfirmLocalizedAsync(strs.mass_award(
                 n(amount) + CurrencySign,
                 Format.Bold(users.Count.ToString()),
-                Format.Bold(role.Name)).ConfigureAwait(false);
+                Format.Bold(role.Name)));
         }
         
         [NadekoCommand, Aliases]
@@ -309,10 +308,10 @@ namespace NadekoBot.Modules.Gambling
                     gamble: true)
                 .ConfigureAwait(false);
 
-            await ReplyConfirmLocalizedAsync("mass_take",
+            await ReplyConfirmLocalizedAsync(strs.mass_take(
                 n(amount) + CurrencySign,
                 Format.Bold(users.Count.ToString()),
-                Format.Bold(role.Name)).ConfigureAwait(false);
+                Format.Bold(role.Name)));
         }
 
         [NadekoCommand, Aliases]
@@ -326,9 +325,9 @@ namespace NadekoBot.Modules.Gambling
 
             if (await _cs.RemoveAsync(user, $"Taken by bot owner.({ctx.User.Username}/{ctx.User.Id})", amount,
                 gamble: (ctx.Client.CurrentUser.Id != user.Id)).ConfigureAwait(false))
-                await ReplyConfirmLocalizedAsync("take", n(amount) + CurrencySign, Format.Bold(user.ToString())).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.take(n(amount) + CurrencySign, Format.Bold(user.ToString()))).ConfigureAwait(false);
             else
-                await ReplyErrorLocalizedAsync("take_fail", n(amount) + CurrencySign, Format.Bold(user.ToString()), CurrencySign).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.take_fail(n(amount) + CurrencySign, Format.Bold(user.ToString()), CurrencySign));
         }
 
 
@@ -341,9 +340,9 @@ namespace NadekoBot.Modules.Gambling
 
             if (await _cs.RemoveAsync(usrId, $"Taken by bot owner.({ctx.User.Username}/{ctx.User.Id})", amount,
                 gamble: (ctx.Client.CurrentUser.Id != usrId)).ConfigureAwait(false))
-                await ReplyConfirmLocalizedAsync("take", amount + CurrencySign, $"<@{usrId}>").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.take(amount + CurrencySign, $"<@{usrId}>"));
             else
-                await ReplyErrorLocalizedAsync("take_fail", amount + CurrencySign, Format.Code(usrId.ToString()), CurrencySign).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.take_fail(amount + CurrencySign, Format.Code(usrId.ToString()), CurrencySign));
         }
 
         private IUserMessage rdMsg = null;
@@ -385,7 +384,7 @@ namespace NadekoBot.Modules.Gambling
             {
                 if (other.Amount != amount)
                 {
-                    await ReplyErrorLocalizedAsync("roll_duel_already_challenged").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.roll_duel_already_challenged).ConfigureAwait(false);
                 }
                 else
                 {
@@ -398,11 +397,10 @@ namespace NadekoBot.Modules.Gambling
                 game.OnGameTick += Game_OnGameTick;
                 game.OnEnded += Game_OnEnded;
 
-                await ReplyConfirmLocalizedAsync("roll_duel_challenge",
+                await ReplyConfirmLocalizedAsync(strs.roll_duel_challenge(
                     Format.Bold(ctx.User.ToString()),
                     Format.Bold(u.ToString()),
-                    Format.Bold(amount + CurrencySign))
-                        .ConfigureAwait(false);
+                    Format.Bold(amount + CurrencySign)));
             }
 
             async Task Game_OnGameTick(RollDuelGame arg)
@@ -446,11 +444,11 @@ namespace NadekoBot.Modules.Gambling
                     }
                     else if (reason == RollDuelGame.Reason.Timeout)
                     {
-                        await ReplyErrorLocalizedAsync("roll_duel_timeout").ConfigureAwait(false);
+                        await ReplyErrorLocalizedAsync(strs.roll_duel_timeout).ConfigureAwait(false);
                     }
                     else if (reason == RollDuelGame.Reason.NoFunds)
                     {
-                        await ReplyErrorLocalizedAsync("roll_duel_no_funds").ConfigureAwait(false);
+                        await ReplyErrorLocalizedAsync(strs.roll_duel_no_funds).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -467,7 +465,7 @@ namespace NadekoBot.Modules.Gambling
 
             if (!await _cs.RemoveAsync(ctx.User, "Betroll Gamble", amount, false, gamble: true).ConfigureAwait(false))
             {
-                await ReplyErrorLocalizedAsync("not_enough", CurrencySign).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
                 return;
             }
 
@@ -630,7 +628,7 @@ namespace NadekoBot.Modules.Gambling
                 if (!await _cs.RemoveAsync(ctx.User.Id,
                     "Rps-bet", amount, gamble: true).ConfigureAwait(false))
                 {
-                    await ReplyErrorLocalizedAsync("not_enough", CurrencySign).ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
                     return;
                 }
             }

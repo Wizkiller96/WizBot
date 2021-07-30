@@ -36,8 +36,7 @@ namespace NadekoBot.Modules.Games
 
                 if (picked > 0)
                 {
-                    var msg = await ReplyConfirmLocalizedAsync("picked", picked + CurrencySign)
-                       .ConfigureAwait(false);
+                    var msg = await ReplyConfirmLocalizedAsync(strs.picked(picked + CurrencySign));
                     msg.DeleteAfter(10);
                 }
 
@@ -67,7 +66,7 @@ namespace NadekoBot.Modules.Games
                 var success = await _service.PlantAsync(ctx.Guild.Id, ctx.Channel, ctx.User.Id, ctx.User.ToString(), amount, pass);
                 if (!success)
                 {
-                    await ReplyErrorLocalizedAsync("not_enough", CurrencySign).ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.not_enough( CurrencySign));
                     return;
                 }
 
@@ -89,11 +88,11 @@ namespace NadekoBot.Modules.Games
                 bool enabled = _service.ToggleCurrencyGeneration(ctx.Guild.Id, ctx.Channel.Id);
                 if (enabled)
                 {
-                    await ReplyConfirmLocalizedAsync("curgen_enabled").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.curgen_enabled).ConfigureAwait(false);
                 }
                 else
                 {
-                    await ReplyConfirmLocalizedAsync("curgen_disabled").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.curgen_disabled).ConfigureAwait(false);
                 }
             }
 

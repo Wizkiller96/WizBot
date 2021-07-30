@@ -99,9 +99,9 @@ namespace NadekoBot.Modules.Music
                 }
 
                 if (!success)
-                    await ReplyErrorLocalizedAsync("playlist_delete_fail").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.playlist_delete_fail).ConfigureAwait(false);
                 else
-                    await ReplyConfirmLocalizedAsync("playlist_deleted").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.playlist_deleted).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -137,7 +137,7 @@ namespace NadekoBot.Modules.Music
             {
                 if (!_service.TryGetMusicPlayer(ctx.Guild.Id, out var mp))
                 {
-                    await ReplyErrorLocalizedAsync("no_player");
+                    await ReplyErrorLocalizedAsync(strs.no_player);
                     return;
                 }
 
@@ -187,7 +187,7 @@ namespace NadekoBot.Modules.Music
         
                     if (voiceChannelId is null)
                     {
-                        await ReplyErrorLocalizedAsync("must_be_in_voice");
+                        await ReplyErrorLocalizedAsync(strs.must_be_in_voice);
                         return;
                     }
 
@@ -198,14 +198,14 @@ namespace NadekoBot.Modules.Music
         
                     if (botUser.VoiceChannel?.Id != voiceChannelId)
                     {
-                        await ReplyErrorLocalizedAsync("not_with_bot_in_voice");
+                        await ReplyErrorLocalizedAsync(strs.not_with_bot_in_voice);
                         return;
                     }
             
                     var mp = await _service.GetOrCreateMusicPlayerAsync((ITextChannel) ctx.Channel);
                     if (mp is null)
                     {
-                        await ReplyErrorLocalizedAsync("no_player");
+                        await ReplyErrorLocalizedAsync(strs.no_player);
                         return;
                     }
                     
@@ -217,7 +217,7 @@ namespace NadekoBot.Modules.Music
 
                     if (mpl is null)
                     {
-                        await ReplyErrorLocalizedAsync("playlist_id_not_found").ConfigureAwait(false);
+                        await ReplyErrorLocalizedAsync(strs.playlist_id_not_found).ConfigureAwait(false);
                         return;
                     }
 

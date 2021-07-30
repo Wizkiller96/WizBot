@@ -98,7 +98,7 @@ namespace NadekoBot.Modules.Help
                 localModules
                     .OrderBy(module => module.Name)
                     .ForEach(module => embed.AddField($"{GetModuleEmoji(module.Name)} {module.Name}",
-                        GetText($"module_description_{module.Name.ToLowerInvariant()}") + "\n" +
+                        GetText(GetModuleLocStr(module.Name)) + "\n" +
                         Format.Code(GetText(strs.module_footer(Prefix, module.Name.ToLowerInvariant()))),
                         true));
 
@@ -106,6 +106,37 @@ namespace NadekoBot.Modules.Help
             }, topLevelModules.Count(), 12, false);
         }
 
+        private LocStr GetModuleLocStr(string moduleName)
+        {
+            switch (moduleName.ToLowerInvariant())
+            {
+                case "help":
+                    return strs.module_description_help;
+                case "administration":
+                    return strs.module_description_administration;
+                case "customreactions":
+                    return strs.module_description_customreactions;
+                case "searches":
+                    return strs.module_description_searches;
+                case "utility":
+                    return strs.module_description_utility;
+                case "games":
+                    return strs.module_description_games;
+                case "gambling":
+                    return strs.module_description_gambling;
+                case "music":
+                    return strs.module_description_music;
+                case "nsfw":
+                    return strs.module_description_nsfw;
+                case "permissions":
+                    return strs.module_description_permissions;
+                case "xp":
+                    return strs.module_description_xp;
+                default:
+                    return strs.module_description_missing;
+                
+            }
+        }
         private string GetModuleEmoji(string moduleName)
         {
             moduleName = moduleName.ToLowerInvariant();
@@ -190,9 +221,9 @@ namespace NadekoBot.Modules.Help
             if (!cmds.Any())
             {
                 if (opts.View != CommandsOptions.ViewType.Hide)
-                    await ReplyErrorLocalizedAsync("module_not_found").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.module_not_found).ConfigureAwait(false);
                 else
-                    await ReplyErrorLocalizedAsync("module_not_found_or_cant_exec").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.module_not_found_or_cant_exec).ConfigureAwait(false);
                 return;
             }
             var i = 0;
@@ -245,7 +276,7 @@ namespace NadekoBot.Modules.Help
                 return;
             }
 
-            await ReplyErrorLocalizedAsync("command_not_found").ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.command_not_found).ConfigureAwait(false);
         }
 
         [NadekoCommand, Aliases]
@@ -269,7 +300,7 @@ namespace NadekoBot.Modules.Help
                 }
                 catch (Exception)
                 {
-                    await ReplyErrorLocalizedAsync("cant_dm").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.cant_dm).ConfigureAwait(false);
                 }
                 return;
             }
@@ -389,15 +420,15 @@ namespace NadekoBot.Modules.Help
         [NadekoCommand, Aliases]
         public async Task Guide()
         {
-            await ConfirmLocalizedAsync("guide",
+            await ConfirmLocalizedAsync(strs.guide(
                 "https://nadeko.bot/commands",
-                "http://nadekobot.readthedocs.io/en/latest/").ConfigureAwait(false);
+                "http://nadekobot.readthedocs.io/en/latest/"));
         }
 
         [NadekoCommand, Aliases]
         public async Task Donate()
         {
-            await ReplyConfirmLocalizedAsync("donate", PatreonUrl, PaypalUrl).ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.donate(PatreonUrl, PaypalUrl));
         }
     }
 

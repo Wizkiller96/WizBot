@@ -49,7 +49,7 @@ namespace NadekoBot.Modules.Searches
                     }
                     catch (HttpRequestException)
                     {
-                        await ReplyErrorLocalizedAsync("comic_not_found").ConfigureAwait(false);
+                        await ReplyErrorLocalizedAsync(strs.comic_not_found).ConfigureAwait(false);
                     }
                     return;
                 }
@@ -86,7 +86,7 @@ namespace NadekoBot.Modules.Searches
                 }
                 catch (HttpRequestException)
                 {
-                    await ReplyErrorLocalizedAsync("comic_not_found").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.comic_not_found).ConfigureAwait(false);
                 }
             }
         }

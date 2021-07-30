@@ -162,7 +162,7 @@ namespace NadekoBot.Modules.Utility
 
                 if (!success)
                 {
-                    await ReplyErrorLocalizedAsync("config_edit_fail", Format.Code(prop), Format.Code(value));
+                    await ReplyErrorLocalizedAsync(strs.config_edit_fail(Format.Code(prop), Format.Code(value)));
                     return;
                 }
 

@@ -146,11 +146,11 @@ namespace NadekoBot.Modules.Permissions
                 }
 
                 if (action == AddRemove.Add)
-                    await ReplyConfirmLocalizedAsync("blacklisted", Format.Code(type.ToString()),
-                        Format.Code(id.ToString())).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.blacklisted(Format.Code(type.ToString()),
+                        Format.Code(id.ToString())));
                 else
-                    await ReplyConfirmLocalizedAsync("unblacklisted", Format.Code(type.ToString()),
-                        Format.Code(id.ToString())).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.unblacklisted(Format.Code(type.ToString()),
+                        Format.Code(id.ToString())));
             }
         }
     }

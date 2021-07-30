@@ -56,7 +56,7 @@ namespace NadekoBot.Modules.Gambling
                 {
                     if (!await _cs.RemoveAsync(ctx.User.Id, "Connect4-bet", options.Bet, true).ConfigureAwait(false))
                     {
-                        await ReplyErrorLocalizedAsync("not_enough", CurrencySign).ConfigureAwait(false);
+                        await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
                         _service.Connect4Games.TryRemove(ctx.Channel.Id, out _);
                         game.Dispose();
                         return;
@@ -71,11 +71,11 @@ namespace NadekoBot.Modules.Gambling
                 game.Initialize();
                 if (options.Bet == 0)
                 {
-                    await ReplyConfirmLocalizedAsync("connect4_created").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.connect4_created).ConfigureAwait(false);
                 }
                 else
                 {
-                    await ReplyConfirmLocalizedAsync("connect4_created_bet", options.Bet + CurrencySign).ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.connect4_created_bet(options.Bet + CurrencySign));
                 }
 
                 Task _client_MessageReceived(SocketMessage arg)
@@ -115,7 +115,7 @@ namespace NadekoBot.Modules.Gambling
                         _client.MessageReceived -= _client_MessageReceived;
                         toDispose.Dispose();
                     }
-                    return ErrorLocalizedAsync("connect4_failed_to_start");
+                    return ErrorLocalizedAsync(strs.connect4_failed_to_start);
                 }
 
                 Task Game_OnGameEnded(Connect4Game arg, Connect4Game.Result result)

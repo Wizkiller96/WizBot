@@ -38,7 +38,7 @@ namespace NadekoBot.Modules.Searches
             {
                 if (!_service.WowJokes.Any())
                 {
-                    await ReplyErrorLocalizedAsync("jokes_not_loaded").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.jokes_not_loaded).ConfigureAwait(false);
                     return;
                 }
                 var joke = _service.WowJokes[new NadekoRandom().Next(0, _service.WowJokes.Count)];
@@ -50,7 +50,7 @@ namespace NadekoBot.Modules.Searches
             {
                 if (!_service.WowJokes.Any())
                 {
-                    await ReplyErrorLocalizedAsync("magicitems_not_loaded").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.magicitems_not_loaded).ConfigureAwait(false);
                     return;
                 }
                 var item = _service.MagicItems[new NadekoRandom().Next(0, _service.MagicItems.Count)];

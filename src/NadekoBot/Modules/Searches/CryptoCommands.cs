@@ -34,7 +34,7 @@ namespace NadekoBot.Modules.Searches
 
                 if (crypto is null)
                 {
-                    await ReplyErrorLocalizedAsync("crypto_not_found").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.crypto_not_found).ConfigureAwait(false);
                     return;
                 }
 

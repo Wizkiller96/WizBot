@@ -52,7 +52,7 @@ namespace NadekoBot.Modules.Utility
                             string.Join("\n", quotes.Select(q => $"`#{q.Id}` {Format.Bold(q.Keyword.SanitizeAllMentions()),-20} by {q.AuthorName.SanitizeAllMentions()}")))
                         .ConfigureAwait(false);
                 else
-                    await ReplyErrorLocalizedAsync("quotes_page_none").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.quotes_page_none).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -96,13 +96,13 @@ namespace NadekoBot.Modules.Utility
                 using (var uow = _db.GetDbContext())
                 {
                     quote = uow.Quotes.GetById(id);
-                    if (quote.GuildId != ctx.Guild.Id)
+                    if (quote?.GuildId != ctx.Guild.Id)
                         quote = null;
                 }
 
                 if (quote is null)
                 {
-                    await ReplyErrorLocalizedAsync("quote_no_found_id");
+                    await ReplyErrorLocalizedAsync(strs.quotes_notfound);
                     return;
                 }
 
@@ -198,7 +198,7 @@ namespace NadekoBot.Modules.Utility
                     });
                     await uow.SaveChangesAsync();
                 }
-                await ReplyConfirmLocalizedAsync("quote_added_new", Format.Code(q.Id.ToString())).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.quote_added_new(Format.Code(q.Id.ToString()))).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -248,7 +248,7 @@ namespace NadekoBot.Modules.Utility
                     await uow.SaveChangesAsync();
                 }
 
-                await ReplyConfirmLocalizedAsync("quotes_deleted", Format.Bold(keyword.SanitizeAllMentions())).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.quotes_deleted(Format.Bold(keyword.SanitizeAllMentions()))).ConfigureAwait(false);
             }
         }
     }

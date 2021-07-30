@@ -25,14 +25,14 @@ namespace NadekoBot.Modules.Administration
                 // the user can't aar the role which is higher or equal to his highest role
                 if (ctx.User.Id != guser.Guild.OwnerId && guser.GetRoles().Max(x => x.Position) <= role.Position)
                 {
-                    await ReplyErrorLocalizedAsync("hierarchy");
+                    await ReplyErrorLocalizedAsync(strs.hierarchy);
                     return;
                 }
 
                 var roles = await _service.ToggleAarAsync(ctx.Guild.Id, role.Id);
                 if (roles.Count == 0)
                 {
-                    await ReplyConfirmLocalizedAsync("aar_disabled");
+                    await ReplyConfirmLocalizedAsync(strs.aar_disabled);
                 }
                 else if (roles.Contains(role.Id))
                 {
@@ -40,7 +40,7 @@ namespace NadekoBot.Modules.Administration
                 }
                 else
                 {
-                    await ReplyConfirmLocalizedAsync("aar_role_removed", Format.Bold(role.ToString()));
+                    await ReplyConfirmLocalizedAsync(strs.aar_role_removed(Format.Bold(role.ToString())));
                 }
             }
             
@@ -51,7 +51,7 @@ namespace NadekoBot.Modules.Administration
             {
                 if (!_service.TryGetRoles(ctx.Guild.Id, out var roles))
                 {
-                    await ReplyConfirmLocalizedAsync("aar_none");
+                    await ReplyConfirmLocalizedAsync(strs.aar_none);
                     return;
                 }
                 
@@ -63,9 +63,9 @@ namespace NadekoBot.Modules.Administration
                     await _service.SetAarRolesAsync(ctx.Guild.Id, existing.Select(x => x.Id));
                 }
 
-                await ReplyConfirmLocalizedAsync("aar_roles",
+                await ReplyConfirmLocalizedAsync(strs.aar_roles(
                     '\n' + existing.Select(x => Format.Bold(x.ToString()))
-                        .JoinWith(",\n"));
+                        .JoinWith(",\n")));
             }
         }
     }

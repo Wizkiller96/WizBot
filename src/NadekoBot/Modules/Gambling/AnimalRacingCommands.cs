@@ -135,7 +135,7 @@ namespace NadekoBot.Modules.Gambling
             private Task Ar_OnStartingFailed(AnimalRace race)
             {
                 _service.AnimalRaces.TryRemove(ctx.Guild.Id, out _);
-                return ReplyErrorLocalizedAsync("animal_race_failed");
+                return ReplyErrorLocalizedAsync(strs.animal_race_failed);
             }
 
             [NadekoCommand, Aliases]
@@ -147,7 +147,7 @@ namespace NadekoBot.Modules.Gambling
 
                 if (!_service.AnimalRaces.TryGetValue(ctx.Guild.Id, out var ar))
                 {
-                    await ReplyErrorLocalizedAsync("race_not_exist").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.race_not_exist).ConfigureAwait(false);
                     return;
                 }
                 try

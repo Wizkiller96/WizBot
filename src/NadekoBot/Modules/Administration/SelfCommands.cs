@@ -88,7 +88,7 @@ namespace NadekoBot.Modules.Administration
                 };
                 _service.AddNewAutoCommand(cmd);
 
-                await ReplyConfirmLocalizedAsync("autocmd_add", Format.Code(Format.Sanitize(cmdText)), cmd.Interval).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.autocmd_add(Format.Code(Format.Sanitize(cmdText)), cmd.Interval));
             }
 
             [NadekoCommand, Aliases]
@@ -106,7 +106,7 @@ namespace NadekoBot.Modules.Administration
                 
                 if (scmds.Count == 0)
                 {
-                    await ReplyErrorLocalizedAsync("startcmdlist_none").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.startcmdlist_none).ConfigureAwait(false);
                 }
                 else
                 {
@@ -138,7 +138,7 @@ namespace NadekoBot.Modules.Administration
                     .ToList();
                 if (!scmds.Any())
                 {
-                    await ReplyErrorLocalizedAsync("autocmdlist_none").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.autocmdlist_none).ConfigureAwait(false);
                 }
                 else
                 {
@@ -188,7 +188,7 @@ namespace NadekoBot.Modules.Administration
             {
                 if (!_service.RemoveAutoCommand(--index, out _))
                 {
-                    await ReplyErrorLocalizedAsync("acrm_fail").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.acrm_fail).ConfigureAwait(false);
                     return;
                 }
                 
@@ -201,9 +201,9 @@ namespace NadekoBot.Modules.Administration
             public async Task StartupCommandRemove([Leftover] int index)
             {
                 if (!_service.RemoveStartupCommand(--index, out _))
-                    await ReplyErrorLocalizedAsync("scrm_fail").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.scrm_fail).ConfigureAwait(false);
                 else
-                    await ReplyConfirmLocalizedAsync("scrm").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.scrm).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -214,7 +214,7 @@ namespace NadekoBot.Modules.Administration
             {
                 _service.ClearStartupCommands();
 
-                await ReplyConfirmLocalizedAsync("startcmds_cleared").ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.startcmds_cleared).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -224,9 +224,9 @@ namespace NadekoBot.Modules.Administration
                 var enabled = _service.ForwardMessages();
 
                 if (enabled)
-                    await ReplyConfirmLocalizedAsync("fwdm_start").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.fwdm_start).ConfigureAwait(false);
                 else
-                    await ReplyConfirmLocalizedAsync("fwdm_stop").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.fwdm_stop).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -236,9 +236,9 @@ namespace NadekoBot.Modules.Administration
                 var enabled = _service.ForwardToAll();
 
                 if (enabled)
-                    await ReplyConfirmLocalizedAsync("fwall_start").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.fwall_start).ConfigureAwait(false);
                 else
-                    await ReplyConfirmLocalizedAsync("fwall_stop").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.fwall_stop).ConfigureAwait(false);
 
             }
 
@@ -300,11 +300,11 @@ namespace NadekoBot.Modules.Administration
                 var success = _coord.RestartShard(shardId);
                 if (success)
                 {
-                    await ReplyConfirmLocalizedAsync("shard_reconnecting", Format.Bold("#" + shardId)).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.shard_reconnecting(Format.Bold("#" + shardId))).ConfigureAwait(false);
                 }
                 else
                 {
-                    await ReplyErrorLocalizedAsync("no_shard_id").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.no_shard_id).ConfigureAwait(false);
                 }
             }
 
@@ -322,7 +322,7 @@ namespace NadekoBot.Modules.Administration
             {
                 try
                 {
-                    await ReplyConfirmLocalizedAsync("shutting_down").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.shutting_down).ConfigureAwait(false);
                 }
                 catch
                 {
@@ -339,11 +339,11 @@ namespace NadekoBot.Modules.Administration
                 bool success = _coord.RestartBot();
                 if (!success)
                 {
-                    await ReplyErrorLocalizedAsync("restart_fail").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.restart_fail).ConfigureAwait(false);
                     return;
                 }
 
-                try { await ReplyConfirmLocalizedAsync("restarting").ConfigureAwait(false); } catch { }
+                try { await ReplyConfirmLocalizedAsync(strs.restarting).ConfigureAwait(false); } catch { }
             }
 
             [NadekoCommand, Aliases]
@@ -362,7 +362,7 @@ namespace NadekoBot.Modules.Administration
                     Log.Warning("You've been ratelimited. Wait 2 hours to change your name");
                 }
 
-                await ReplyConfirmLocalizedAsync("bot_name", Format.Bold(newName)).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.bot_name(Format.Bold(newName))).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -376,7 +376,7 @@ namespace NadekoBot.Modules.Administration
                 var curUser = await ctx.Guild.GetCurrentUserAsync().ConfigureAwait(false);
                 await curUser.ModifyAsync(u => u.Nickname = newNick).ConfigureAwait(false);
 
-                await ReplyConfirmLocalizedAsync("bot_nick", Format.Bold(newNick) ?? "-").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.bot_nick(Format.Bold(newNick) ?? "-"));
             }
 
             [NadekoCommand, Aliases]
@@ -389,13 +389,13 @@ namespace NadekoBot.Modules.Administration
                 if (sg.OwnerId == gu.Id ||
                     gu.GetRoles().Max(r => r.Position) >= sg.CurrentUser.GetRoles().Max(r => r.Position))
                 {
-                    await ReplyErrorLocalizedAsync("insuf_perms_i");
+                    await ReplyErrorLocalizedAsync(strs.insuf_perms_i);
                     return;
                 }
                 
                 await gu.ModifyAsync(u => u.Nickname = newNick).ConfigureAwait(false);
 
-                await ReplyConfirmLocalizedAsync("user_nick", Format.Bold(gu.ToString()), Format.Bold(newNick) ?? "-").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.user_nick(Format.Bold(gu.ToString()), Format.Bold(newNick) ?? "-"));
             }
 
             [NadekoCommand, Aliases]
@@ -404,7 +404,7 @@ namespace NadekoBot.Modules.Administration
             {
                 await _client.SetStatusAsync(SettableUserStatusToUserStatus(status)).ConfigureAwait(false);
 
-                await ReplyConfirmLocalizedAsync("bot_status", Format.Bold(status.ToString())).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.bot_status(Format.Bold(status.ToString()))).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -415,7 +415,7 @@ namespace NadekoBot.Modules.Administration
 
                 if (success)
                 {
-                    await ReplyConfirmLocalizedAsync("set_avatar").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.set_avatar).ConfigureAwait(false);
                 }
             }
 
@@ -429,7 +429,7 @@ namespace NadekoBot.Modules.Administration
 
                 await _service.SetGameAsync(game is null ? game : rep.Replace(game), type).ConfigureAwait(false);
 
-                await ReplyConfirmLocalizedAsync("set_game").ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.set_game).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -440,7 +440,7 @@ namespace NadekoBot.Modules.Administration
 
                 await _service.SetStreamAsync(name, url).ConfigureAwait(false);
 
-                await ReplyConfirmLocalizedAsync("set_stream").ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.set_stream).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -484,11 +484,11 @@ namespace NadekoBot.Modules.Administration
                 }
                 else
                 {
-                    await ReplyErrorLocalizedAsync("invalid_format").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.invalid_format).ConfigureAwait(false);
                     return;
                 }
                 
-                await ReplyConfirmLocalizedAsync("message_sent").ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.message_sent).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -496,7 +496,7 @@ namespace NadekoBot.Modules.Administration
             public async Task ImagesReload()
             {
                 await _service.ReloadImagesAsync();
-                await ReplyConfirmLocalizedAsync("images_loading", 0).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.images_loading);
             }
             
             [NadekoCommand, Aliases]
@@ -504,7 +504,7 @@ namespace NadekoBot.Modules.Administration
             public async Task StringsReload()
             {
                 _strings.Reload();
-                await ReplyConfirmLocalizedAsync("bot_strings_reloaded").ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.bot_strings_reloaded).ConfigureAwait(false);
             }
 
             private static UserStatus SettableUserStatusToUserStatus(SettableUserStatus sus)

@@ -26,7 +26,7 @@ namespace NadekoBot.Modules.Searches
 
                 if (novelData is null)
                 {
-                    await ReplyErrorLocalizedAsync("failed_finding_novel").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.failed_finding_novel).ConfigureAwait(false);
                     return;
                 }
 
@@ -39,7 +39,8 @@ namespace NadekoBot.Modules.Searches
                     .AddField(GetText(strs.authors), string.Join("\n", novelData.Authors), true)
                     .AddField(GetText(strs.status), novelData.Status, true)
                     .AddField(GetText(strs.genres), string.Join(" ", novelData.Genres.Any() ? novelData.Genres : new[] { "none" }), true)
-                    .WithFooter(GetText("score" + " " + novelData.Score));
+                    .WithFooter($"{GetText(strs.score)} {novelData.Score}");
+                
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
 
@@ -146,7 +147,7 @@ namespace NadekoBot.Modules.Searches
 
                 if (animeData is null)
                 {
-                    await ReplyErrorLocalizedAsync("failed_finding_anime").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.failed_finding_anime).ConfigureAwait(false);
                     return;
                 }
 
@@ -159,7 +160,7 @@ namespace NadekoBot.Modules.Searches
                     .AddField(GetText(strs.episodes), animeData.TotalEpisodes.ToString(), true)
                     .AddField(GetText(strs.status), animeData.AiringStatus.ToString(), true)
                     .AddField(GetText(strs.genres), string.Join(",\n", animeData.Genres.Any() ? animeData.Genres : new[] { "none" }), true)
-                    .WithFooter(GetText("score" + " " + animeData.AverageScore + " / 100"));
+                    .WithFooter($"{GetText(strs.score)} {animeData.AverageScore} / 100");
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
 
@@ -174,7 +175,7 @@ namespace NadekoBot.Modules.Searches
 
                 if (mangaData is null)
                 {
-                    await ReplyErrorLocalizedAsync("failed_finding_manga").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.failed_finding_manga).ConfigureAwait(false);
                     return;
                 }
 
@@ -187,7 +188,7 @@ namespace NadekoBot.Modules.Searches
                     .AddField(GetText(strs.chapters), mangaData.TotalChapters.ToString(), true)
                     .AddField(GetText(strs.status), mangaData.PublishingStatus.ToString(), true)
                     .AddField(GetText(strs.genres), string.Join(",\n", mangaData.Genres.Any() ? mangaData.Genres : new[] { "none" }), true)
-                    .WithFooter(GetText("score" + " " + mangaData.AverageScore + " / 100"));
+                    .WithFooter($"{GetText(strs.score)} {mangaData.AverageScore} / 100");
 
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }

@@ -51,9 +51,9 @@ namespace NadekoBot.Modules.Administration
             [Priority(0)]
             public async Task LanguageSet()
             {
-                await ReplyConfirmLocalizedAsync("lang_set_show", Format.Bold(_cultureInfo.ToString()),
-                        Format.Bold(_cultureInfo.NativeName))
-                    .ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.lang_set_show(
+                    Format.Bold(_cultureInfo.ToString()),
+                    Format.Bold(_cultureInfo.NativeName)));
             }
 
             [NadekoCommand, Aliases]
@@ -76,12 +76,12 @@ namespace NadekoBot.Modules.Administration
                         Localization.SetGuildCulture(ctx.Guild, ci);
                     }
 
-                    await ReplyConfirmLocalizedAsync("lang_set", Format.Bold(ci.ToString()), Format.Bold(ci.NativeName))
-                        .ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.lang_set(Format.Bold(ci.ToString()),
+                        Format.Bold(ci.NativeName)));
                 }
                 catch (Exception)
                 {
-                    await ReplyErrorLocalizedAsync("lang_set_fail").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.lang_set_fail).ConfigureAwait(false);
                 }
             }
 
@@ -89,7 +89,7 @@ namespace NadekoBot.Modules.Administration
             public async Task LanguageSetDefault()
             {
                 var cul = Localization.DefaultCultureInfo;
-                await ReplyConfirmLocalizedAsync("lang_set_bot_show", cul, cul.NativeName).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.lang_set_bot_show(cul, cul.NativeName));
             }
 
             [NadekoCommand, Aliases]
@@ -110,12 +110,12 @@ namespace NadekoBot.Modules.Administration
                         Localization.SetDefaultCulture(ci);
                     }
 
-                    await ReplyConfirmLocalizedAsync("lang_set_bot", Format.Bold(ci.ToString()),
-                        Format.Bold(ci.NativeName)).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.lang_set_bot(Format.Bold(ci.ToString()),
+                        Format.Bold(ci.NativeName)));
                 }
                 catch (Exception)
                 {
-                    await ReplyErrorLocalizedAsync("lang_set_fail").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.lang_set_fail).ConfigureAwait(false);
                 }
             }
 

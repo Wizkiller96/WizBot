@@ -208,7 +208,7 @@ namespace NadekoBot.Modules.Music.Services
                 _ = lastFinishedMessage?.DeleteAsync();
                 var embed = _eb.Create()
                     .WithOkColor()
-                    .WithAuthor(GetText(guildId, "finished_song"), Music.MusicIconUrl)
+                    .WithAuthor(GetText(guildId, strs.finished_song), Music.MusicIconUrl)
                     .WithDescription(trackInfo.PrettyName())
                     .WithFooter(trackInfo.PrettyTotalTime());
 
@@ -223,7 +223,7 @@ namespace NadekoBot.Modules.Music.Services
             {
                 _ = lastPlayingMessage?.DeleteAsync();
                 var embed = _eb.Create().WithOkColor()
-                    .WithAuthor(GetText(guildId, "playing_song", index + 1), Music.MusicIconUrl)
+                    .WithAuthor(GetText(guildId, strs.playing_song(index + 1)), Music.MusicIconUrl)
                     .WithDescription(trackInfo.PrettyName())
                     .WithFooter($"{mp.PrettyVolume()} | {trackInfo.PrettyInfo()}");
 
@@ -308,6 +308,9 @@ namespace NadekoBot.Modules.Music.Services
 
         private string GetText(ulong guildId, string key, params object[] args)
             => _strings.GetText(key, guildId, args);
+        
+        private string GetText(ulong guildId, LocStr str)
+            => _strings.GetText(str, guildId);
 
         public IEnumerable<(string Name, Func<string> Func)> GetPlaceholders()
         {

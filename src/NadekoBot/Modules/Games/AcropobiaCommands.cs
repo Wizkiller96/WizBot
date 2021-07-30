@@ -54,7 +54,7 @@ namespace NadekoBot.Modules.Games
                 }
                 else
                 {
-                    await ReplyErrorLocalizedAsync("acro_running").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.acro_running).ConfigureAwait(false);
                 }
 
                 Task _client_MessageReceived(SocketMessage msg)
@@ -116,10 +116,10 @@ namespace NadekoBot.Modules.Games
                 var embed = _eb.Create()
                         .WithOkColor()
                         .WithTitle(GetText(strs.acrophobia) + " - " + GetText(strs.submissions_closed))
-                        .WithDescription(GetText(strs.acro_nym_was(Format.Bold(string.Join(".", game.StartingLetters))) + "\n" +
+                        .WithDescription(GetText(strs.acro_nym_was(Format.Bold(string.Join(".", game.StartingLetters)) + "\n" +
 $@"--
 {submissions.Aggregate("", (agg, cur) => agg + $"`{++i}.` **{cur.Key.Input}**\n")}
---"))
+--")))
                         .WithFooter(GetText(strs.acro_vote));
 
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);

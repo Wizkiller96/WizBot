@@ -35,7 +35,7 @@ namespace NadekoBot.Modules.Games
                     ctx.Channel.Id, arg);
                 if(poll is null)
                 {
-                    await ReplyErrorLocalizedAsync("poll_invalid_input").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.poll_invalid_input).ConfigureAwait(false);
                     return;
                 }
                 if (_service.StartPoll(poll))
@@ -52,7 +52,7 @@ namespace NadekoBot.Modules.Games
                 }
                 else
                 {
-                    await ReplyErrorLocalizedAsync("poll_already_running").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.poll_already_running).ConfigureAwait(false);
                 }
             }
 

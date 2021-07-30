@@ -29,11 +29,11 @@ namespace NadekoBot.Modules.Xp
                 var club = _service.TransferClub(ctx.User, newOwner);
 
                 if (club != null)
-                    await ReplyConfirmLocalizedAsync("club_transfered",
+                    await ReplyConfirmLocalizedAsync(strs.club_transfered(
                         Format.Bold(club.Name),
-                        Format.Bold(newOwner.ToString())).ConfigureAwait(false);
+                        Format.Bold(newOwner.ToString())));
                 else
-                    await ReplyErrorLocalizedAsync("club_transfer_failed").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.club_transfer_failed).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -46,16 +46,14 @@ namespace NadekoBot.Modules.Xp
                 }
                 catch (InvalidOperationException)
                 {
-                    await ReplyErrorLocalizedAsync("club_admin_error").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.club_admin_error).ConfigureAwait(false);
                     return;
                 }
 
                 if (admin)
-                    await ReplyConfirmLocalizedAsync("club_admin_add", Format.Bold(toAdmin.ToString()))
-                        .ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.club_admin_add(Format.Bold(toAdmin.ToString())));
                 else
-                    await ReplyConfirmLocalizedAsync("club_admin_remove", Format.Bold(toAdmin.ToString()))
-                        .ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.club_admin_remove(Format.Bold(toAdmin.ToString())));
             }
 
             [NadekoCommand, Aliases]
@@ -63,17 +61,17 @@ namespace NadekoBot.Modules.Xp
             {
                 if (string.IsNullOrWhiteSpace(clubName) || clubName.Length > 20)
                 {
-                    await ReplyErrorLocalizedAsync("club_name_too_long").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.club_name_too_long).ConfigureAwait(false);
                     return;
                 }
 
                 if (!_service.CreateClub(ctx.User, clubName, out ClubInfo club))
                 {
-                    await ReplyErrorLocalizedAsync("club_create_error").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.club_create_error).ConfigureAwait(false);
                     return;
                 }
 
-                await ReplyConfirmLocalizedAsync("club_created", Format.Bold(club.ToString())).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.club_created(Format.Bold(club.ToString()))).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -82,11 +80,11 @@ namespace NadekoBot.Modules.Xp
                 if ((!Uri.IsWellFormedUriString(url, UriKind.Absolute) && url != null)
                     || !await _service.SetClubIcon(ctx.User.Id, url is null ? null : new Uri(url)))
                 {
-                    await ReplyErrorLocalizedAsync("club_icon_error").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.club_icon_error).ConfigureAwait(false);
                     return;
                 }
 
-                await ReplyConfirmLocalizedAsync("club_icon_set").ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.club_icon_set).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -97,7 +95,7 @@ namespace NadekoBot.Modules.Xp
                 var club = _service.GetClubByMember(user);
                 if (club is null)
                 {
-                    await ErrorLocalizedAsync("club_user_not_in_club", Format.Bold(user.ToString()));
+                    await ErrorLocalizedAsync(strs.club_user_not_in_club(Format.Bold(user.ToString())));
                     return;
                 }
 
@@ -116,7 +114,7 @@ namespace NadekoBot.Modules.Xp
 
                 if (!_service.GetClubByName(clubName, out ClubInfo club))
                 {
-                    await ReplyErrorLocalizedAsync("club_not_exists").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.club_not_exists).ConfigureAwait(false);
                     return;
                 }
 
@@ -138,7 +136,7 @@ namespace NadekoBot.Modules.Xp
                     var embed = _eb.Create()
                         .WithOkColor()
                         .WithTitle($"{club.ToString()}")
-                        .WithDescription(GetText(strs.level_x(lvl.Level) + $" ({club.Xp} xp)"))
+                        .WithDescription(GetText(strs.level_x(lvl.Level + $" ({club.Xp} xp)")))
                         .AddField(GetText(strs.desc), string.IsNullOrWhiteSpace(club.Description) ? "-" : club.Description,
                             false)
                         .AddField(GetText(strs.owner), club.Owner.ToString(), true)
@@ -172,7 +170,7 @@ namespace NadekoBot.Modules.Xp
 
                 var club = _service.GetClubWithBansAndApplications(ctx.User.Id);
                 if (club is null)
-                    return ReplyErrorLocalizedAsync("club_not_exists_owner");
+                    return ReplyErrorLocalizedAsync(strs.club_not_exists_owner);
 
                 var bans = club
                     .Bans
@@ -203,7 +201,7 @@ namespace NadekoBot.Modules.Xp
 
                 var club = _service.GetClubWithBansAndApplications(ctx.User.Id);
                 if (club is null)
-                    return ReplyErrorLocalizedAsync("club_not_exists_owner");
+                    return ReplyErrorLocalizedAsync(strs.club_not_exists_owner);
 
                 var apps = club
                     .Applicants
@@ -233,18 +231,17 @@ namespace NadekoBot.Modules.Xp
 
                 if (!_service.GetClubByName(clubName, out ClubInfo club))
                 {
-                    await ReplyErrorLocalizedAsync("club_not_exists").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.club_not_exists).ConfigureAwait(false);
                     return;
                 }
 
                 if (_service.ApplyToClub(ctx.User, club))
                 {
-                    await ReplyConfirmLocalizedAsync("club_applied", Format.Bold(club.ToString()))
-                        .ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.club_applied(Format.Bold(club.ToString())));
                 }
                 else
                 {
-                    await ReplyErrorLocalizedAsync("club_apply_error").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.club_apply_error).ConfigureAwait(false);
                 }
             }
 
@@ -259,20 +256,19 @@ namespace NadekoBot.Modules.Xp
             {
                 if (_service.AcceptApplication(ctx.User.Id, userName, out var discordUser))
                 {
-                    await ReplyConfirmLocalizedAsync("club_accepted", Format.Bold(discordUser.ToString()))
-                        .ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.club_accepted(Format.Bold(discordUser.ToString())));
                 }
                 else
-                    await ReplyErrorLocalizedAsync("club_accept_error").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.club_accept_error).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
             public async Task Clubleave()
             {
                 if (_service.LeaveClub(ctx.User))
-                    await ReplyConfirmLocalizedAsync("club_left").ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.club_left).ConfigureAwait(false);
                 else
-                    await ReplyErrorLocalizedAsync("club_not_in_club").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.club_not_in_club).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -285,10 +281,10 @@ namespace NadekoBot.Modules.Xp
             public Task ClubKick([Leftover] string userName)
             {
                 if (_service.Kick(ctx.User.Id, userName, out var club))
-                    return ReplyConfirmLocalizedAsync("club_user_kick", Format.Bold(userName),
-                        Format.Bold(club.ToString()));
+                    return ReplyConfirmLocalizedAsync(strs.club_user_kick(Format.Bold(userName),
+                        Format.Bold(club.ToString())));
                 else
-                    return ReplyErrorLocalizedAsync("club_user_kick_fail");
+                    return ReplyErrorLocalizedAsync(strs.club_user_kick_fail);
             }
 
             [NadekoCommand, Aliases]
@@ -301,10 +297,10 @@ namespace NadekoBot.Modules.Xp
             public Task ClubBan([Leftover] string userName)
             {
                 if (_service.Ban(ctx.User.Id, userName, out var club))
-                    return ReplyConfirmLocalizedAsync("club_user_banned", Format.Bold(userName),
-                        Format.Bold(club.ToString()));
+                    return ReplyConfirmLocalizedAsync(strs.club_user_banned(Format.Bold(userName),
+                        Format.Bold(club.ToString())));
                 else
-                    return ReplyErrorLocalizedAsync("club_user_ban_fail");
+                    return ReplyErrorLocalizedAsync(strs.club_user_ban_fail);
             }
 
             [NadekoCommand, Aliases]
@@ -317,10 +313,10 @@ namespace NadekoBot.Modules.Xp
             public Task ClubUnBan([Leftover] string userName)
             {
                 if (_service.UnBan(ctx.User.Id, userName, out var club))
-                    return ReplyConfirmLocalizedAsync("club_user_unbanned", Format.Bold(userName),
-                        Format.Bold(club.ToString()));
+                    return ReplyConfirmLocalizedAsync(strs.club_user_unbanned(Format.Bold(userName),
+                        Format.Bold(club.ToString())));
                 else
-                    return ReplyErrorLocalizedAsync("club_user_unban_fail");
+                    return ReplyErrorLocalizedAsync(strs.club_user_unban_fail);
             }
 
             [NadekoCommand, Aliases]
@@ -328,12 +324,11 @@ namespace NadekoBot.Modules.Xp
             {
                 if (_service.ChangeClubLevelReq(ctx.User.Id, level))
                 {
-                    await ReplyConfirmLocalizedAsync("club_level_req_changed", Format.Bold(level.ToString()))
-                        .ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.club_level_req_changed(Format.Bold(level.ToString())));
                 }
                 else
                 {
-                    await ReplyErrorLocalizedAsync("club_level_req_change_error").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.club_level_req_change_error).ConfigureAwait(false);
                 }
             }
 
@@ -342,12 +337,11 @@ namespace NadekoBot.Modules.Xp
             {
                 if (_service.ChangeClubDescription(ctx.User.Id, desc))
                 {
-                    await ReplyConfirmLocalizedAsync("club_desc_updated", Format.Bold(desc ?? "-"))
-                        .ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.club_desc_updated(Format.Bold(desc ?? "-")));
                 }
                 else
                 {
-                    await ReplyErrorLocalizedAsync("club_desc_update_failed").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.club_desc_update_failed).ConfigureAwait(false);
                 }
             }
 
@@ -356,12 +350,11 @@ namespace NadekoBot.Modules.Xp
             {
                 if (_service.Disband(ctx.User.Id, out ClubInfo club))
                 {
-                    await ReplyConfirmLocalizedAsync("club_disbanded", Format.Bold(club.ToString()))
-                        .ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.club_disbanded(Format.Bold(club.ToString())));
                 }
                 else
                 {
-                    await ReplyErrorLocalizedAsync("club_disband_error").ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.club_disband_error).ConfigureAwait(false);
                 }
             }
 

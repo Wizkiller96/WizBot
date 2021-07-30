@@ -43,7 +43,7 @@ namespace NadekoBot.Modules.Gambling
 
                 if (!await _cs.RemoveAsync(ctx.User.Id, "Wheel Of Fortune - bet", amount, gamble: true).ConfigureAwait(false))
                 {
-                    await ReplyErrorLocalizedAsync("not_enough", CurrencySign).ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
                     return;
                 }
 

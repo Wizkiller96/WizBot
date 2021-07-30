@@ -87,12 +87,12 @@ namespace NadekoBot.Modules.Administration
             if (_service.ToggleDeleteMessageOnCommand(ctx.Guild.Id))
             {
                 _service.DeleteMessagesOnCommand.Add(ctx.Guild.Id);
-                await ReplyConfirmLocalizedAsync("delmsg_on").ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.delmsg_on).ConfigureAwait(false);
             }
             else
             {
                 _service.DeleteMessagesOnCommand.TryRemove(ctx.Guild.Id);
-                await ReplyConfirmLocalizedAsync("delmsg_off").ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.delmsg_off).ConfigureAwait(false);
             }
         }
 
@@ -131,15 +131,15 @@ namespace NadekoBot.Modules.Administration
 
             if (s == State.Disable)
             {
-                await ReplyConfirmLocalizedAsync("delmsg_channel_off").ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.delmsg_channel_off).ConfigureAwait(false);
             }
             else if (s == State.Enable)
             {
-                await ReplyConfirmLocalizedAsync("delmsg_channel_on").ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.delmsg_channel_on).ConfigureAwait(false);
             }
             else
             {
-                await ReplyConfirmLocalizedAsync("delmsg_channel_inherit").ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.delmsg_channel_inherit).ConfigureAwait(false);
             }
         }
 
@@ -150,7 +150,7 @@ namespace NadekoBot.Modules.Administration
         public async Task Deafen(params IGuildUser[] users)
         {
             await _service.DeafenUsers(true, users).ConfigureAwait(false);
-            await ReplyConfirmLocalizedAsync("deafen").ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.deafen).ConfigureAwait(false);
         }
 
         [NadekoCommand, Aliases]
@@ -160,7 +160,7 @@ namespace NadekoBot.Modules.Administration
         public async Task UnDeafen(params IGuildUser[] users)
         {
             await _service.DeafenUsers(false, users).ConfigureAwait(false);
-            await ReplyConfirmLocalizedAsync("undeafen").ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.undeafen).ConfigureAwait(false);
         }
 
         [NadekoCommand, Aliases]
@@ -170,7 +170,7 @@ namespace NadekoBot.Modules.Administration
         public async Task DelVoiChanl([Leftover] IVoiceChannel voiceChannel)
         {
             await voiceChannel.DeleteAsync().ConfigureAwait(false);
-            await ReplyConfirmLocalizedAsync("delvoich", Format.Bold(voiceChannel.Name)).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.delvoich(Format.Bold(voiceChannel.Name))).ConfigureAwait(false);
         }
 
         [NadekoCommand, Aliases]
@@ -180,7 +180,7 @@ namespace NadekoBot.Modules.Administration
         public async Task CreatVoiChanl([Leftover] string channelName)
         {
             var ch = await ctx.Guild.CreateVoiceChannelAsync(channelName).ConfigureAwait(false);
-            await ReplyConfirmLocalizedAsync("createvoich", Format.Bold(ch.Name)).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.createvoich(Format.Bold(ch.Name))).ConfigureAwait(false);
         }
 
         [NadekoCommand, Aliases]
@@ -190,7 +190,7 @@ namespace NadekoBot.Modules.Administration
         public async Task DelTxtChanl([Leftover] ITextChannel toDelete)
         {
             await toDelete.DeleteAsync().ConfigureAwait(false);
-            await ReplyConfirmLocalizedAsync("deltextchan", Format.Bold(toDelete.Name)).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.deltextchan(Format.Bold(toDelete.Name))).ConfigureAwait(false);
         }
 
         [NadekoCommand, Aliases]
@@ -200,7 +200,7 @@ namespace NadekoBot.Modules.Administration
         public async Task CreaTxtChanl([Leftover] string channelName)
         {
             var txtCh = await ctx.Guild.CreateTextChannelAsync(channelName).ConfigureAwait(false);
-            await ReplyConfirmLocalizedAsync("createtextchan", Format.Bold(txtCh.Name)).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.createtextchan(Format.Bold(txtCh.Name))).ConfigureAwait(false);
         }
 
         [NadekoCommand, Aliases]
@@ -212,7 +212,7 @@ namespace NadekoBot.Modules.Administration
             var channel = (ITextChannel) ctx.Channel;
             topic = topic ?? "";
             await channel.ModifyAsync(c => c.Topic = topic).ConfigureAwait(false);
-            await ReplyConfirmLocalizedAsync("set_topic").ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.set_topic).ConfigureAwait(false);
         }
 
         [NadekoCommand, Aliases]
@@ -223,7 +223,7 @@ namespace NadekoBot.Modules.Administration
         {
             var channel = (ITextChannel) ctx.Channel;
             await channel.ModifyAsync(c => c.Name = name).ConfigureAwait(false);
-            await ReplyConfirmLocalizedAsync("set_channel_name").ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.set_channel_name).ConfigureAwait(false);
         }
 
         [NadekoCommand, Aliases]
@@ -238,9 +238,9 @@ namespace NadekoBot.Modules.Administration
             await channel.ModifyAsync(c => c.IsNsfw = !isEnabled).ConfigureAwait(false);
 
             if (isEnabled)
-                await ReplyConfirmLocalizedAsync("nsfw_set_false").ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.nsfw_set_false).ConfigureAwait(false);
             else
-                await ReplyConfirmLocalizedAsync("nsfw_set_true").ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.nsfw_set_true).ConfigureAwait(false);
         }
 
         [NadekoCommand, Aliases]
@@ -259,13 +259,13 @@ namespace NadekoBot.Modules.Administration
             var botPerms = ((SocketGuild) ctx.Guild).CurrentUser.GetPermissions(channel);
             if (!userPerms.Has(ChannelPermission.ManageMessages))
             {
-                await ReplyErrorLocalizedAsync("insuf_perms_u").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.insuf_perms_u).ConfigureAwait(false);
                 return;
             }
 
             if (!botPerms.Has(ChannelPermission.ViewChannel))
             {
-                await ReplyErrorLocalizedAsync("insuf_perms_i").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.insuf_perms_i).ConfigureAwait(false);
                 return;
             }
 
@@ -293,13 +293,13 @@ namespace NadekoBot.Modules.Administration
             var botPerms = ((SocketGuild) ctx.Guild).CurrentUser.GetPermissions(channel);
             if (!userPerms.Has(ChannelPermission.ManageMessages))
             {
-                await ReplyErrorLocalizedAsync("insuf_perms_u").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.insuf_perms_u).ConfigureAwait(false);
                 return;
             }
 
             if (!botPerms.Has(ChannelPermission.ManageMessages))
             {
-                await ReplyErrorLocalizedAsync("insuf_perms_i").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.insuf_perms_i).ConfigureAwait(false);
                 return;
             }
 
@@ -307,7 +307,7 @@ namespace NadekoBot.Modules.Administration
             var msg = await channel.GetMessageAsync(messageId).ConfigureAwait(false);
             if (msg is null)
             {
-                await ReplyErrorLocalizedAsync("msg_not_found").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.msg_not_found).ConfigureAwait(false);
                 return;
             }
 
@@ -325,7 +325,7 @@ namespace NadekoBot.Modules.Administration
             }
             else
             {
-                await ReplyErrorLocalizedAsync("time_too_long").ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.time_too_long).ConfigureAwait(false);
                 return;
             }
 
