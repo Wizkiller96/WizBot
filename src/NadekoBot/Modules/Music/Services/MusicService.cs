@@ -305,9 +305,6 @@ namespace NadekoBot.Modules.Music.Services
             
             return Array.Empty<(string, string)>();
         }
-
-        private string GetText(ulong guildId, string key, params object[] args)
-            => _strings.GetText(key, guildId, args);
         
         private string GetText(ulong guildId, LocStr str)
             => _strings.GetText(str, guildId);

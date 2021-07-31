@@ -447,8 +447,8 @@ namespace NadekoBot.Modules.Searches.Services
                 .WithTitle(status.Name)
                 .WithUrl(status.StreamUrl)
                 .WithDescription(status.StreamUrl)
-                .AddField(GetText(guildId, "status"), status.IsLive ? "🟢 Online" : "🔴 Offline", true)
-                .AddField(GetText(guildId, "viewers"), status.IsLive ? status.Viewers.ToString() : "-", true);
+                .AddField(GetText(guildId, strs.status), status.IsLive ? "🟢 Online" : "🔴 Offline", true)
+                .AddField(GetText(guildId, strs.viewers), status.IsLive ? status.Viewers.ToString() : "-", true);
 
             if (status.IsLive)
                 embed = embed.WithOkColor();
@@ -459,7 +459,7 @@ namespace NadekoBot.Modules.Searches.Services
                 embed.WithAuthor(status.Title);
 
             if (!string.IsNullOrWhiteSpace(status.Game))
-                embed.AddField(GetText(guildId, "streaming"), status.Game, true);
+                embed.AddField(GetText(guildId, strs.streaming), status.Game, true);
 
             if (!string.IsNullOrWhiteSpace(status.AvatarUrl))
                 embed.WithThumbnailUrl(status.AvatarUrl);
@@ -470,8 +470,8 @@ namespace NadekoBot.Modules.Searches.Services
             return embed;
         }
 
-        private string GetText(ulong guildId, string key, params object[] replacements)
-            => _strings.GetText(key, guildId, replacements);
+        private string GetText(ulong guildId, LocStr str)
+            => _strings.GetText(str, guildId);
 
         public bool ToggleStreamOffline(ulong guildId)
         {

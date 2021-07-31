@@ -258,7 +258,10 @@ namespace NadekoBot.Modules.Utility
                         .AddField(GetText(strs.uptime), _stats.GetUptimeString("\n"), true)
                         .AddField(GetText(strs.presence), 
                             GetText(strs.presence_txt(
-                                _coord.GetGuildCount(), _stats.TextChannels, _stats.VoiceChannels)), true))
+                                _coord.GetGuildCount(),
+                                _stats.TextChannels,
+                                _stats.VoiceChannels)),
+                        true))
                 .ConfigureAwait(false);
         }
 

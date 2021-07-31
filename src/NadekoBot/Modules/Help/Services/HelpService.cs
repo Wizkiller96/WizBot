@@ -74,7 +74,7 @@ namespace NadekoBot.Modules.Help.Services
             var reqs = GetCommandRequirements(com, overrides);
             if(reqs.Any())
             {
-                em.AddField(GetText("requires", guild), string.Join("\n", reqs));
+                em.AddField(GetText(strs.requires, guild), string.Join("\n", reqs));
             }
 
             em
@@ -82,7 +82,7 @@ namespace NadekoBot.Modules.Help.Services
                     string.Join("\n", Array.ConvertAll(com.RealRemarksArr(_strings, guild?.Id, prefix),
                         arg => Format.Code(arg))),
                     false)
-                .WithFooter(GetText("module", guild, com.Module.GetTopLevelModule().Name))
+                .WithFooter(GetText(strs.module(com.Module.GetTopLevelModule().Name), guild))
                 .WithOkColor();
 
             var opt = ((NadekoOptionsAttribute)com.Attributes.FirstOrDefault(x => x is NadekoOptionsAttribute))?.OptionType;
@@ -90,7 +90,7 @@ namespace NadekoBot.Modules.Help.Services
             {
                 var hs = GetCommandOptionHelp(opt);
                 if(!string.IsNullOrWhiteSpace(hs))
-                    em.AddField(GetText("options", guild), hs, false);
+                    em.AddField(GetText(strs.options, guild), hs, false);
             }
 
             return em;
@@ -172,7 +172,7 @@ namespace NadekoBot.Modules.Help.Services
                 .Replace("Guild", "Server", StringComparison.InvariantCulture);
         }
 
-        private string GetText(string text, IGuild guild, params object[] replacements) =>
-            _strings.GetText(text, guild?.Id, replacements);
+        private string GetText(LocStr str, IGuild guild, params object[] replacements) =>
+            _strings.GetText(str, guild?.Id);
     }
 }
