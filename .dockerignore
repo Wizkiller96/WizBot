@@ -5,6 +5,8 @@
 !src/NadekoBot/**
 # Use NadekoBot.Coordinator project
 !src/NadekoBot.Coordinator/**
+# Use Generators project
+!src/NadekoBot.Generators/**
 # Use Ayu stuff
 !src/ayu/**
 
