@@ -371,10 +371,8 @@ namespace WizBot.Modules.Utility
                         return msg;
                     })
                 });
-            using (var stream = await JsonConvert.SerializeObject(grouping, Formatting.Indented).ToStream().ConfigureAwait(false))
-            {
-                await ctx.User.SendFileAsync(stream, title, title, false).ConfigureAwait(false);
-            }
+            using var stream = JsonConvert.SerializeObject(grouping, Formatting.Indented).ToStream();
+            await ctx.User.SendFileAsync(stream, title, title, false).ConfigureAwait(false);
         }
         private static SemaphoreSlim sem = new SemaphoreSlim(1, 1);
 

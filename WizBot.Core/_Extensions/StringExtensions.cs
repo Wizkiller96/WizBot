@@ -122,15 +122,11 @@ namespace WizBot.Extensions
             return d[n, m];
         }
 
-        public static async Task<Stream> ToStream(this string str)
-        {
-            var ms = new MemoryStream();
-            var sw = new StreamWriter(ms);
-            await sw.WriteAsync(str).ConfigureAwait(false);
-            await sw.FlushAsync().ConfigureAwait(false);
-            ms.Position = 0;
-            return ms;
-        }
+        public static Stream ToStream(this string str)
+            => new MemoryStream(Encoding.UTF8.GetBytes(str))
+            {
+                Position = 0
+            };
 
         private static readonly Regex filterRegex = new Regex(@"discord(?:\.gg|\.io|\.me|\.li|(?:app)?\.com\/invite)\/(\w+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         public static bool IsDiscordInvite(this string str)
