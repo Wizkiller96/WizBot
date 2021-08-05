@@ -1,7 +1,8 @@
 #Manually added files
 
 command_errors*.txt
-_output/
+output/
+src/NadekoBot/output
 
 src/NadekoBot/Command Errors*.txt
 
