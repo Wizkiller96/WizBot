@@ -3,6 +3,7 @@
 command_errors*.txt
 output/
 src/NadekoBot/output
+src/NadekoBot/creds.yml
 
 src/NadekoBot/Command Errors*.txt
 
