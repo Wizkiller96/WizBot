@@ -41,6 +41,8 @@ In order to use music commands, you need ffmpeg and youtube-dl installed.
 
 ### Linux From Source
 
+Open Terminal (if you're on a linux with window manager) and navigate to the location where you want to install the bot (for example `cd ~`)
+
 ###### Prerequisites
 
 - [.net 5](https://dotnet.microsoft.com/download/dotnet/5.0)
@@ -51,7 +53,7 @@ In order to use music commands, you need ffmpeg and youtube-dl installed.
 1. `git clone https://gitlab.com/kwoth/nadekobot -b v3 --depth 1`
 2. `cd nadekobot && dotnet publish -c Release -o output/ src/NadekBot/`
 3. `cd output && cp creds_example.yml creds.yml`
-4. Open `creds.yml` with your favorite text editor (Please don't use notepad or wordpad. You can use notepad++, vscode, atom, sublime or something similar)
+4. Open `creds.yml` with your favorite text editor
 5. [Enter your bot's token](creds-guide)
 6. Run the bot `dotnet NadekoBot.dll`
 7. 🎉
@@ -77,8 +79,6 @@ This document aims to guide you through the process of creating a Discord accoun
 #### Inviting your bot to your server    
 
 ![Invite the bot to your server](https://cdn.nadeko.bot/tutorial/bot-invite-guide.gif)
-
-todo: update gif to show enabling of privileged intents
 
 - On the **General Information** tab, copy your `Application ID` from your [applications page][DiscordApp].
 - Replace the `YOUR_CLIENT_ID_HERE` in this link:
