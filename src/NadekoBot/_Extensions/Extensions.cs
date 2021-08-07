@@ -378,7 +378,8 @@ namespace NadekoBot.Extensions
         }
 
         public static string GetText(this IBotStrings strings, in LocStr str, ulong? guildId = null)
-            => strings.GetText(str.Key, guildId);        
+            => strings.GetText(str.Key, guildId, str.Params);
+        
         public static string GetText(this IBotStrings strings, in LocStr str, CultureInfo culture)
             => strings.GetText(str.Key, culture, str.Params);
     }
