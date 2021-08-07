@@ -2,7 +2,28 @@
 
 ⚠ If you're already hosting NadekoBot, You **MUST** update to latest version of 2.x and **run your bot at least once** before switching over to v3 
 
-todo: how to migrate 2.x repo to v3 repo
+#### Linux migration instruction
+
+1. In order to migrate, first update your current version to the latest 2.x version, run the bot and make sure it works
+   - If you're running linux installer version, just run the 'download' option again
+   - Run the bot
+   - Type `.stats` and **make sure** the version is `2.46.5` or later
+   - Stop the bot
+3. If your current bot folder is called `nadekobot` it would be best if you rename it to `nadekobot_2x`
+  - Move to the directory your bot is installed at, by default it's `~` - For example `cd ~`
+  - Run `mv nadekobot nadekobot_2x`
+3. Now, you need to clone the new version and copy over the data folder and the database file 
+   1. Clone the v3 branch to a separate folder 
+      - `git clone https://gitlab.com/kwoth/nadekobot -b v3 --depth 1`
+   2. Copy old data
+      - `cp -rf nadekobot_2x/src/NadekoBot/data nadekobot/src/NadekoBot/data`
+   3. Build the bot
+      - `dotnet publish -c Release -o output/ src/NadekoBot/`
+   4. Copy the database 
+      - `cp nadekobot_2x/src/NadekoBot/bin/Release/netcoreapp2.1/data/NadekoBot.db nadekobot/output/data`
+   5. Copy credentials file
+      - `cp nadekobot_2x/src/NadekoBot/credentials.json nadekobot/output/`
+
 
 ## Installation
 
@@ -26,7 +47,7 @@ Install these before proceeding
 Open PowerShell (press windows button on your keyboard and type powershell, it should show up), and navigate to the location where you want to install the bot (for example `cd ~/Desktop/`)  
 
 1. `git clone https://gitlab.com/kwoth/nadekobot -b v3 --depth 1`
-3. `dotnet publish -c Release -o output/ src/NadekBot/`
+3. `dotnet publish -c Release -o output/ src/NadekoBot/`
 4. `cd output && cp creds_example.yml creds.yml`
 5. Open `creds.yml` with your favorite text editor (Please don't use notepad or wordpad. You can use notepad++, vscode, atom, sublime or something similar)
 6. [Enter your bot's token](#creds-guide)
@@ -51,7 +72,7 @@ Open Terminal (if you're on a linux with window manager) and navigate to the loc
 ###### Instructions
 
 1. `git clone https://gitlab.com/kwoth/nadekobot -b v3 --depth 1`
-2. `cd nadekobot && dotnet publish -c Release -o output/ src/NadekBot/`
+2. `cd nadekobot && dotnet publish -c Release -o output/ src/NadekoBot/`
 3. `cd output && cp creds_example.yml creds.yml`
 4. Open `creds.yml` with your favorite text editor
 5. [Enter your bot's token](creds-guide)
