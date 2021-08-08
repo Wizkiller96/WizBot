@@ -10,6 +10,7 @@ src/NadekoBot/Command Errors*.txt
 src/NadekoBot/creds.yml
 # credentials file after migrations
 src/NadekoBot/old_credentials.json 
+src/NadekoBot/credentials.json.bak
 src/NadekoBot/data/NadekoBot.db
 
 # Created by https://www.gitignore.io/api/visualstudio,visualstudiocode,windows,linux,macos
