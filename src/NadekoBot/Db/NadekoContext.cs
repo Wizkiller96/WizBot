@@ -66,10 +66,8 @@ namespace NadekoBot.Services.Database
         }
         
 #if DEBUG
-        public static readonly LoggerFactory _debugLoggerFactory = 
-            new LoggerFactory(new[] { 
-                new Microsoft.Extensions.Logging.Debug.DebugLoggerProvider() 
-            });
+        public static readonly ILoggerFactory _debugLoggerFactory =
+            LoggerFactory.Create(x => x.AddConsole());
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {      
             optionsBuilder.UseLoggerFactory(_debugLoggerFactory);

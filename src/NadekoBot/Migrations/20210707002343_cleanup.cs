@@ -11,6 +11,8 @@ namespace NadekoBot.Migrations
                 name: "FK_GuildConfigs_Permission_RootPermissionId",
                 table: "GuildConfigs");
 
+            migrationBuilder.Sql("UPDATE Permission SET NextId = NULL;");
+
             migrationBuilder.DropTable(
                 name: "Permission");
 
