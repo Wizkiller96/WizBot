@@ -13,36 +13,10 @@ namespace NadekoBot.Migrations
 
             migrationBuilder.Sql("UPDATE Permission SET NextId = NULL;");
 
-            migrationBuilder.DropTable(
-                name: "Permission");
-
-            migrationBuilder.DropTable(
-                name: "Stakes");
-
-            migrationBuilder.DropIndex(
-                name: "IX_GuildConfigs_RootPermissionId",
-                table: "GuildConfigs");
-
-            migrationBuilder.DropColumn(
-                name: "NotifyMessage",
-                table: "XpSettings");
-
-            migrationBuilder.DropColumn(
-                name: "XpRoleRewardExclusive",
-                table: "XpSettings");
-
-            migrationBuilder.DropColumn(
-                name: "Item",
-                table: "WaifuItem");
-
-            migrationBuilder.DropColumn(
-                name: "Price",
-                table: "WaifuItem");
-
-            migrationBuilder.DropColumn(
-                name: "UseCount",
-                table: "Quotes");
-
+            migrationBuilder.Sql("DELETE FROM FilteredWord WHERE GuildConfigId NOT IN (SELECT Id from GuildConfigs)");
+            migrationBuilder.Sql("DELETE FROM FilterChannelId WHERE GuildConfigId NOT IN (SELECT Id from GuildConfigs)");
+            migrationBuilder.Sql("DELETE FROM CommandCooldown WHERE GuildConfigId NOT IN (SELECT Id from GuildConfigs)");
+            
             migrationBuilder.DropColumn(
                 name: "ChannelCreated",
                 table: "LogSettings");
@@ -106,6 +80,39 @@ namespace NadekoBot.Migrations
             migrationBuilder.DropColumn(
                 name: "VoicePresenceChannelId",
                 table: "LogSettings");
+            
+            // todo cleanup guildconfigs which have logsettings id set to null
+            migrationBuilder.Sql("UPDATE GuildConfigs SET LogSettingId = null WHERE LogSettingId NOT IN (SELECT Id from LogSettings)");
+            
+            migrationBuilder.DropTable(
+                name: "Permission");
+
+            migrationBuilder.DropTable(
+                name: "Stakes");
+
+            migrationBuilder.DropIndex(
+                name: "IX_GuildConfigs_RootPermissionId",
+                table: "GuildConfigs");
+
+            migrationBuilder.DropColumn(
+                name: "NotifyMessage",
+                table: "XpSettings");
+
+            migrationBuilder.DropColumn(
+                name: "XpRoleRewardExclusive",
+                table: "XpSettings");
+
+            migrationBuilder.DropColumn(
+                name: "Item",
+                table: "WaifuItem");
+
+            migrationBuilder.DropColumn(
+                name: "Price",
+                table: "WaifuItem");
+
+            migrationBuilder.DropColumn(
+                name: "UseCount",
+                table: "Quotes");
 
             migrationBuilder.DropColumn(
                 name: "AutoAssignRoleId",
