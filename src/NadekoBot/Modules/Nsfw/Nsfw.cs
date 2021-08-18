@@ -380,6 +380,7 @@ namespace NadekoBot.Modules.NSFW
         
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
+        [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
         [Priority(1)]
         public async Task Nhentai(uint id)
         {
@@ -396,6 +397,7 @@ namespace NadekoBot.Modules.NSFW
         
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
+        [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
         [Priority(0)]
         public async Task Nhentai([Leftover]string query)
         {

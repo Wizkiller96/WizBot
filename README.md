@@ -2,34 +2,62 @@
 
 ⚠ If you're already hosting NadekoBot, You **MUST** update to latest version of 2.x and **run your bot at least once** before switching over to v3 
 
-#### Linux migration instruction
+#### Windows migration instructions
 
-1. In order to migrate, first update your current version to the latest 2.x version, run the bot and make sure it works
-   - If you're running linux installer version, just run the 'download' option again
+###### TODO
+
+#### Linux migration instructions
+
+1. In order to migrate your bot which is hosted on a **linux**, first update your current version to the latest 2.x version using the 2.x installer, run the bot, and make sure it works
+   - Run the **old** installer `cd ~ && wget -N https://github.com/Kwoth/NadekoBot-BashScript/raw/1.9/linuxAIO.sh && bash linuxAIO.sh`
+   - Run the 'download' option again
    - Run the bot
    - Type `.stats` and **make sure** the version is `2.46.5` or later
    - Stop the bot
-3. If your current bot folder is called `nadekobot` it would be best if you rename it to `nadekobot_2x`
-  - Move to the directory your bot is installed at, by default it's `~` - For example `cd ~`
-  - Run `mv nadekobot nadekobot_2x`
-3. Now, you need to clone the new version and copy over the data folder and the database file 
+2. Make sure your bot's folder is called `NadekoBot`
+   - Run `cd ~ && ls`
+   - Confirm there is a folder NadekoBot
+3. Run the new installer, and run the options 1, 2 and 3 in that order to successfully migrate your bot's data  
+   - Run the **new** installer `cd ~ && wget -N https://gitlab.com/Kwoth/nadeko-bash-installer/-/raw/master/linuxAIO.sh && bash linuxAIO.sh`
+   - The installer should notify you that your data is ready for migration (message above the menu)
+   - Install prerequisites (type `1` and press enter) and make sure it is successful
+   - Download NadekoBot v3 (type `2` and press enter)
+   - Run the bot (type `3` and press enter)
+4. Make sure your permissions, custom reactions, credentials, and other data is preserved
+   - You can try running `.stats` to ensure owner id is correct
+   - `.lcr` to see custom reactions
+   - `.lp` to list permissions
+5. 🎉 Enjoy. If you want to learn how to update the bot, click (here)[#linux-updating-the-bot]
+
+#### Manual migration 
+
+⚠ NOT RECOMMENDED  
+⚠ NadekoBot v3 requires .net 5
+
+1. In order to migrate your bot which is hosted on a **linux**, first update your current version to the latest 2.x version using the 2.x installer, run the bot, and make sure it works
+2. Rename your old nadeko bot folder to `nadekobot_2x`
+   - `mv NadekoBot nadekobot_2x`
+3. Build the new version and move old data to the output folder 
    1. Clone the v3 branch to a separate folder 
       - `git clone https://gitlab.com/kwoth/nadekobot -b v3 --depth 1`
-   2. Copy old data
-      - `cp -rf nadekobot_2x/src/NadekoBot/data nadekobot/src/NadekoBot/data`
-   3. Build the bot
+   2. Build the bot
       - `dotnet publish -c Release -o output/ src/NadekoBot/`
+   3. Copy old data
+      - `cp -rf nadekobot_2x/src/NadekoBot/data nadekobot/src/NadekoBot/data`
    4. Copy the database 
       - `cp nadekobot_2x/src/NadekoBot/bin/Release/netcoreapp2.1/data/NadekoBot.db nadekobot/output/data`
    5. Copy credentials file
       - `cp nadekobot_2x/src/NadekoBot/credentials.json nadekobot/output/`
+4. Run the bot
+   - `cd nadekobot/output`
+   - `dotnet NadekoBot.dll`
+5. That's it. Just make sure that when you're updating the bot, you're properly backing up your old data
 
-
-## Installation
+## Fresh Installation
 
 - [Windows - Release](#windows-release)
 - [Linux - Release](#linux-release)
-- [Windows - From Source ](#windows-from-source)
+- [Windows - From Source](#windows-from-source)
 - [Linux - From Source](#linux-from-source)
 - [Docker]
 
@@ -42,7 +70,7 @@ Install these before proceeding
 - [git](https://git-scm.com/downloads) - needed to clone the repository (you can also download the zip manually and extract it but this guide assumes you're using git)
 - [redis](https://github.com/MicrosoftArchive/redis/releases/download/win-3.0.504/Redis-x64-3.0.504.msi) - to cache things needed by some features and persist through restarts
 
-###### Instructions
+###### Installation Instructions
 
 Open PowerShell (press windows button on your keyboard and type powershell, it should show up), and navigate to the location where you want to install the bot (for example `cd ~/Desktop/`)  
 
@@ -54,6 +82,19 @@ Open PowerShell (press windows button on your keyboard and type powershell, it s
 7. Run the bot `dotnet NadekoBot.dll` 
 8. 🎉
 
+###### Update Instructions (todo: WIP)
+
+Open powershell and run following commands:
+
+1. Navigate to your bot's folder, for example `cd ~/Desktop/nadekobot`
+2. Pull the latest updates (this will fail if you have custom code changes).
+   - If you don't have custom code changes, just run `git pull`
+   - If you do have custom code changes (changes to .cs files) You have 3 options
+      - Undo all changes with `git checkout -- * && git pull`
+      - Stash changes and try to re-apply them `git stash && git pull && git stash apply`
+      - Commit your changes and resolve merge conflicts `git add . && git commit -m "My commit message" && git pull`
+3. Re-build the bot `dotnet publish -c Release -o output/ src/NadekoBot/`
+4. Run the bot `cd output && dotnet NadekoBot.dll`
 
 #### Music prerequisites  
 In order to use music commands, you need ffmpeg and youtube-dl installed.
@@ -62,22 +103,27 @@ In order to use music commands, you need ffmpeg and youtube-dl installed.
 
 ### Linux From Source
 
-Open Terminal (if you're on a linux with window manager) and navigate to the location where you want to install the bot (for example `cd ~`)
+Open Terminal (if you're on a linux with window manager) and navigate to the location where you want to install the bot (for example `cd ~`) 
 
-###### Prerequisites
+###### Installation Instructions
 
-- [.net 5](https://dotnet.microsoft.com/download/dotnet/5.0)
-- [git](https://git-scm.com/downloads)
+1. Download and run the **new** installer script `cd ~ && wget -N https://gitlab.com/Kwoth/nadeko-bash-installer/-/raw/master/linuxAIO.sh && bash linuxAIO.sh`
+2. Install prerequisites (type `1` and press enter)
+3. Download the bot (type `2` and press enter)
+4. Exit the installer in order to set up your `creds.yml` 
+5. Copy the creds.yml template `cp nadekobot/output/creds_example.yml nadekobot/output/creds.yml` 
+6. Open `nadekobot/output/creds.yml` with your favorite text editor. We will use nano here
+7. `nano nadekobot/output/creds.yml`
+8. [Enter your bot's token](#creds-guide)
+9. Run the bot (type `3` and press enter)
 
-###### Instructions
+###### Update Instructions
 
-1. `git clone https://gitlab.com/kwoth/nadekobot -b v3 --depth 1`
-2. `cd nadekobot && dotnet publish -c Release -o output/ src/NadekoBot/`
-3. `cd output && cp creds_example.yml creds.yml`
-4. Open `creds.yml` with your favorite text editor
-5. [Enter your bot's token](creds-guide)
-6. Run the bot `dotnet NadekoBot.dll`
-7. 🎉
+1. ⚠ Stop the bot
+2. Download and run the **new** installer script `cd ~ && wget -N https://gitlab.com/Kwoth/nadeko-bash-installer/-/raw/master/linuxAIO.sh && bash linuxAIO.sh`
+3. Update the bot (type `2` and press enter)
+4. Run the bot (type `3` and press enter)
+5. 🎉 
 
 ## Creds Guide
 

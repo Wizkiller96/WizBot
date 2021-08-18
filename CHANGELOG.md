@@ -10,9 +10,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
   - Most of the credentials from 2.x will be automatically migrated
 - Code cleanup
   - Command attributes cleaned up
-    - Removed dummy Remarks and Usages attributes as hey were unused for a few patches but stayed in the code to avoid big git diffs
-  - All database migrations and data (json file) migrations have been removed
-    - As updating to the latest 2.x version before switching over to v3 is mandated (or fresh v3 install), that means all migration code has ran and it can be safely removed 
+    - Removed dummy Remarks and Usages attributes as hey were unused for a few patches but stayed in the code to avoid big git diffsmigration code has ran and it can be safely removed 
   - There are 2 projects: NadekoBot and NadekoBot.Coordinator
     - You can directly run NadekoBot as the regular bot with one shard
     - Run NadekoBot.Coordinator if you want more control over your shards and a grpc api for coordinator with which you can start, restart, kill and see status of shards
@@ -24,6 +22,11 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 ### Fixed
 
 - Fixed many response strings which were formatted or used incorrectly
+
+### Removed
+
+- Removed All database migrations and data (json file) migrations
+  - As updating to the latest 2.x version before switching over to v3 is mandated (or fresh v3 install), that means all
 
 ## [2.46.2] - 14.07.2021
 
