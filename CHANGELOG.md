@@ -17,7 +17,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
   - todo: Reworked from source installation (linux/windows) guide <todo link>
   - todo: Added docker support, installation guide at <todo link>
 - Guides
-  - Now instruct users to set build output to nadekobot/output instead of running from nadekobot/src/NadekoBot
+- Now instruct users to set build output to nadekobot/output instead of running from nadekobot/src/NadekoBot
 
 ### Fixed
 

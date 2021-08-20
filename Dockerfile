@@ -9,10 +9,11 @@ RUN dotnet restore src/NadekoBot/
 
 COPY . .
 WORKDIR /source/src/NadekoBot
+RUN dotnet --version
 RUN dotnet publish -c Release -o /app --no-restore
 
 # final stage/image
-FROM mcr.microsoft.com/dotnet/aspnet:5.0
+FROM mcr.microsoft.com/dotnet/runtime:5.0
 ENV shard_id=0
 ENV total_shards=1
 WORKDIR /app
