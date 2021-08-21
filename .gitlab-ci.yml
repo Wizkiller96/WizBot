@@ -3,6 +3,7 @@ image: mcr.microsoft.com/dotnet/sdk:5.0
 stages:
   - build
   - test
+  - publish
 
 variables:
   project: "NadekoBot"
@@ -18,6 +19,15 @@ build:
   script:
     - "cd $build_path"
     - "dotnet build -c Release"
+  
+publish:
+  stage: publish
+  variables:
+    build_path: "src"
+  script:
+    - "cd $build_path"
+    - "dotnet publish -c Release -r win7-x64 -o output-windows-x64 src/NadekoBot/NadekoBot.csproj"
+    - "dotnet publish -c Release -r linux-x64 -o output-linux-x64 src/NadekoBot/NadekoBot.csproj"
 
 test:
   stage: test
