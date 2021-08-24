@@ -63,14 +63,14 @@
 
 ### Windows From Source
 
-###### Prerequisites
+##### Prerequisites
 
-Install these before proceeding
+*Install these before proceeding*
 - [.net 5](https://dotnet.microsoft.com/download/dotnet/5.0)  - needed to compile and run the bot
 - [git](https://git-scm.com/downloads) - needed to clone the repository (you can also download the zip manually and extract it but this guide assumes you're using git)
 - [redis](https://github.com/MicrosoftArchive/redis/releases/download/win-3.0.504/Redis-x64-3.0.504.msi) - to cache things needed by some features and persist through restarts
 
-###### Installation Instructions
+##### Installation Instructions
 
 Open PowerShell (press windows button on your keyboard and type powershell, it should show up), and navigate to the location where you want to install the bot (for example `cd ~/Desktop/`)  
 
@@ -82,7 +82,7 @@ Open PowerShell (press windows button on your keyboard and type powershell, it s
 7. Run the bot `dotnet NadekoBot.dll` 
 8. 🎉
 
-###### Update Instructions (todo: WIP)
+##### Update Instructions (todo: WIP)
 
 Open powershell and run following commands:
 
@@ -105,7 +105,7 @@ In order to use music commands, you need ffmpeg and youtube-dl installed.
 
 Open Terminal (if you're on a linux with window manager) and navigate to the location where you want to install the bot (for example `cd ~`) 
 
-###### Installation Instructions
+##### Installation Instructions
 
 1. Download and run the **new** installer script `cd ~ && wget -N https://gitlab.com/Kwoth/nadeko-bash-installer/-/raw/master/linuxAIO.sh && bash linuxAIO.sh`
 2. Install prerequisites (type `1` and press enter)
@@ -115,13 +115,13 @@ Open Terminal (if you're on a linux with window manager) and navigate to the loc
 6. Open `nadekobot/output/creds.yml` with your favorite text editor. We will use nano here
 7. `nano nadekobot/output/creds.yml`
 8. [Enter your bot's token](#creds-guide)
-   - You can close nano (and save the file) by typing 
+   - After you're done, you can close nano (and save the file) by typing 
       - CTRL+X
       - Type `y`
       - Press Enter
 9. Run the bot (type `3` and press enter)
 
-###### Update Instructions
+##### Update Instructions
 
 1. ⚠ Stop the bot
 2. Download and run the **new** installer script `cd ~ && wget -N https://gitlab.com/Kwoth/nadeko-bash-installer/-/raw/master/linuxAIO.sh && bash linuxAIO.sh`
@@ -131,22 +131,68 @@ Open Terminal (if you're on a linux with window manager) and navigate to the loc
 
 ### Linux Release
 
+##### Installation Instructions
+
 1. Download the latest release from <https://gitlab.com/Kwoth/nadekobot/-/releases>
    - Look for the file called "X.XX.X-linux-x64-build.tar" and download it
-2. Untar it `tar xf 2.99.8-linux-x64-build.tar`
-   - Rename the `output-linux-x64` to `nadekobot` (`mv output-linux-x64 nadekobot`)
-3. Move into nadekobot directory and make NadekoBot executable `cd nadekobot && chmod +x NadekoBot`
-5. Copy the creds.yml template `cp creds_example.yml creds.yml` 
+2. Untar it 
+   - `tar xf 2.99.8-linux-x64-build.tar`
+3. Rename the `nadekobot-linux-x64` to `nadekobot` 
+   - `mv nadekobot-linux-x64 nadekobot`
+4. Move into nadekobot directory and make NadekoBot executable
+   - `cd nadekobot && chmod +x NadekoBot`
+5. Copy the creds.yml template 
+   - `cp creds_example.yml creds.yml` 
 6. Open `creds.yml` with your favorite text editor. We will use nano here
-7. `nano nadekobot/output/creds.yml`
+   - `nano nadekobot/output/creds.yml`
 8. [Enter your bot's token](#creds-guide)
-   - You can close nano (and save the file) by typing 
+   - After you're done, you can close nano (and save the file) by typing 
       - CTRL+X
       - Type `y`
-      - Press Enter
+      - Press `Enter`
 9. Run the bot `./NadekoBot`
 
-TODO: Updating release linux version
+##### Update Instructions
+
+1. Stop the bot
+2. Download the latest release from <https://gitlab.com/Kwoth/nadekobot/-/releases>
+   - Look for the file called "X.XX.X-linux-x64-build.tar" and download it
+3. Untar it 
+   - `tar xf 2.99.8-linux-x64-build.tar`
+4. Rename the old nadekobot directory to nadekobot-old (first remove old backup if you had one, or back it up under a different name)
+   - `rm -rf nadekobot-old 2>/dev/null`
+   - `mv nadekobot nadekobot-old`
+5. Rename the new nadekobot directory to nadekobot
+   - `mv nadekobot-linux-x64 nadekobot`
+6. Remove old strings and aliases to avoid overwriting updated version of those files  
+   ⚠ If you've modified these files, back them up instead
+   - `rm nadekobot-old/data/aliases.yml`
+   - `rm -r nadekobot-old/data/strings`
+7. Copy old data
+   - `cp -RT nadekobot-old/data/ nadekobot/data/`
+8. Copy creds.yml
+   - `cp nadekobot-old/creds.yml nadekobot/`
+9. Move into nadekobot directory and make NadekoBot executable
+   - `cd nadekobot && chmod +x NadekoBot`
+10. Run the bot 
+   - `./NadekoBot`
+
+🎉 Enjoy
+
+##### Steps 2 - 9 as a single command  
+
+```sh
+tar xf 2.99.8-linux-x64-build.tar && \
+rm -rf nadekobot-old 2>/dev/null && \
+mv nadekobot nadekobot-old && \
+mv nadekobot-linux-x64 nadekobot && \
+rm nadekobot-old/data/aliases.yml && \
+rm -r nadekobot-old/data/strings && \
+cp -RT nadekobot-old/data/ nadekobot/data/ && \
+cp nadekobot-old/creds.yml nadekobot/ && \
+cd nadekobot && chmod +x NadekoBot
+```
+
 
 ## Creds Guide
 

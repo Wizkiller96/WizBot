@@ -9,9 +9,9 @@ stages:
 variables:
   project: "NadekoBot"
   tests: "NadekoBot.Tests"
-  LINUX_X64_OUTPUT_DIR: "output-linux-x64"
+  LINUX_X64_OUTPUT_DIR: "nadekobot-linux-x64"
   LINUX_X64_RELEASE: "$CI_COMMIT_TAG-linux-x64-build.tar"
-  WIN_X64_OUTPUT_DIR: "output-windows-x64"
+  WIN_X64_OUTPUT_DIR: "nadekobot-windows-x64"
   WIN_X64_RELEASE: "$CI_COMMIT_TAG-windows-x64-build.zip"
   PACKAGE_REGISTRY_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/NadekoBot-build/${CI_COMMIT_TAG}"
   
