@@ -18,5 +18,5 @@ ENV shard_id=0
 ENV total_shards=1
 WORKDIR /app
 COPY --from=build /app ./
-VOLUME [ "/data" ]
+VOLUME [ "app/data", "app/creds.yml", "app/creds_example.yml" ]
 ENTRYPOINT dotnet NadekoBot.dll "$shard_id" "$total_shards"

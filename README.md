@@ -56,9 +56,9 @@
 ## Fresh Installation
 
 - [Windows - Release](#windows-release)
-- [Linux - Release](#linux-release)
 - [Windows - From Source](#windows-from-source)
 - [Linux - From Source](#linux-from-source)
+- [Linux - Release](#linux-release)
 - [Docker]
 
 ### Windows From Source
@@ -115,6 +115,10 @@ Open Terminal (if you're on a linux with window manager) and navigate to the loc
 6. Open `nadekobot/output/creds.yml` with your favorite text editor. We will use nano here
 7. `nano nadekobot/output/creds.yml`
 8. [Enter your bot's token](#creds-guide)
+   - You can close nano (and save the file) by typing 
+      - CTRL+X
+      - Type `y`
+      - Press Enter
 9. Run the bot (type `3` and press enter)
 
 ###### Update Instructions
@@ -124,6 +128,25 @@ Open Terminal (if you're on a linux with window manager) and navigate to the loc
 3. Update the bot (type `2` and press enter)
 4. Run the bot (type `3` and press enter)
 5. 🎉 
+
+### Linux Release
+
+1. Download the latest release from <https://gitlab.com/Kwoth/nadekobot/-/releases>
+   - Look for the file called "X.XX.X-linux-x64-build.tar" and download it
+2. Untar it `tar xf 2.99.8-linux-x64-build.tar`
+   - Rename the `output-linux-x64` to `nadekobot` (`mv output-linux-x64 nadekobot`)
+3. Move into nadekobot directory and make NadekoBot executable `cd nadekobot && chmod +x NadekoBot`
+5. Copy the creds.yml template `cp creds_example.yml creds.yml` 
+6. Open `creds.yml` with your favorite text editor. We will use nano here
+7. `nano nadekobot/output/creds.yml`
+8. [Enter your bot's token](#creds-guide)
+   - You can close nano (and save the file) by typing 
+      - CTRL+X
+      - Type `y`
+      - Press Enter
+9. Run the bot `./NadekoBot`
+
+TODO: Updating release linux version
 
 ## Creds Guide
 
