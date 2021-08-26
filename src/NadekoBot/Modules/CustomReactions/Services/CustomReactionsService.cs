@@ -677,6 +677,7 @@ namespace NadekoBot.Modules.CustomReactions.Services
         private const string _prependExport =
             @"# Keys are triggers, Each key has a LIST of custom reactions in the following format:
 # - res: Response string
+#   id: Alphanumeric id used for commands related to the custom reaction. (Note, when using .crsimport, a new id will be generated.)
 #   react: 
 #     - <List
 #     -  of
