@@ -4,7 +4,14 @@
 
 #### Windows migration instructions
 
-###### TODO
+⚠ Run your NadekoBot Updater first, and make sure your bot is updated to at least 2.46.5
+1. Get the new NadekoBot Updater [here](https://dl.nadeko.bot)
+2. Click on the + icon to add a new bot
+3. Next to the path, click on the folder icon and select the folder where your 2.46.5 bot is
+   - ℹ In case you're not sure where it's located, you can open your old updater and see it
+4. If you've selected the correct path, you should have an **Update** button available, click it
+5. You're done, you can now run your bot, and you can uninstall your old updater if you no longer have 2.x bots
+6. 🎉
 
 #### Linux migration instructions
 
@@ -82,26 +89,27 @@ Open PowerShell (press windows button on your keyboard and type powershell, it s
 7. Run the bot `dotnet NadekoBot.dll` 
 8. 🎉
 
-##### Update Instructions (todo: WIP)
+##### Update Instructions
 
 Open powershell and run following commands:
 
-1. Navigate to your bot's folder, for example `cd ~/Desktop/nadekobot`
+1. Navigate to your bot's folder, for example `cd ~/Desktop/nadekobot/src/NadekoBot`
 2. Pull the latest updates (this will fail if you have custom code changes).
    - If you don't have custom code changes, just run `git pull`
-   - If you do have custom code changes (changes to .cs files) You have 3 options
+   - If you do have custom code changes, You have 3 options
       - Undo all changes with `git checkout -- * && git pull`
       - Stash changes and try to re-apply them `git stash && git pull && git stash apply`
       - Commit your changes and resolve merge conflicts `git add . && git commit -m "My commit message" && git pull`
-3. Re-build the bot `dotnet publish -c Release -o output/ src/NadekoBot/`
-4. Run the bot `cd output && dotnet NadekoBot.dll`
+3. Re-run the bot `dotnet run -c Release`
+
+⚠ You're expected to understand that your database will be in bin/Release/<framework>/data/, and that if framework gets changed in the future, you will have to move your database manually
 
 #### Music prerequisites  
 In order to use music commands, you need ffmpeg and youtube-dl installed.
 - [ffmpeg-32bit] | [ffmpeg-64bit] - Download the **appropriate version** for your system (32 bit if you're running a 32 bit OS, or 64 if you're running a 64bit OS). Unzip it, and move `ffmpeg.exe` to a path that's in your PATH environment variable. If you don't know what that is, then just move the `ffmpeg.exe` file to nadekobot/output
 - [youtube-dl] - Click to download the file. Then put `youtube-dl.exe` in a path that's in your PATH environment variable. If you don't know what that is, then just move the `youtube-dl.exe` file to NadekoBot/system
 
-### Linux From Source
+### Linux From Source 
 
 Open Terminal (if you're on a linux with window manager) and navigate to the location where you want to install the bot (for example `cd ~`) 
 
