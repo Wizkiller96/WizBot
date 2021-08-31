@@ -39,11 +39,9 @@
 #### Manual migration 
 
 ⚠ NOT RECOMMENDED  
-⚠ NadekoBot v3 requires .net 5
+⚠ NadekoBot v3 requires [.net 5](https://dotnet.microsoft.com/download/dotnet/5.0)
 
-##### Windows
-
-1. In order to migrate a bot hosted **from source on Windows**, first update your current version to the latest 2.x version using the 2.x installer, run the bot, and make sure it works. Then:
+1. In order to migrate a bot hosted **on Linux or from source on Windows**, first update your current version to the latest 2.x version using the 2.x installer, run the bot, and make sure it works. Then:
 2. Rename your old nadeko bot folder to `nadekobot_2x`
    - `mv NadekoBot nadekobot_2x`
 3. Build the new version and move old data to the output folder 
@@ -52,28 +50,9 @@
    2. Build the bot
       - `dotnet publish -c Release -o output/ src/NadekoBot/`
    3. Copy old data
-      - `cp -r -fo nadekobot_2x/src/NadekoBot/data nadekobot/src/NadekoBot/data`
-   4. Copy the database 
-      - `cp nadekobot_2x/src/NadekoBot/bin/Release/netcoreapp2.1/data/NadekoBot.db nadekobot/output/data`
-   5. Copy your credentials
-      - `cp nadekobot_2x/src/NadekoBot/credentials.json nadekobot/output/`
-4. Run the bot
-   - `cd nadekobot/output`
-   - `dotnet NadekoBot.dll`
-5. That's it. Just make sure that when you're updating the bot, you're properly backing up your old data.
-
-##### Linux
-
-1. In order to migrate a bot hosted on **Linux**, first update your current version to the latest 2.x version using the 2.x installer, run the bot, and make sure it works. Then:
-2. Rename your old nadeko bot folder to `nadekobot_2x`
-   - `mv NadekoBot nadekobot_2x`
-3. Build the new version and move old data to the output folder 
-   1. Clone the v3 branch to a separate folder 
-      - `git clone https://gitlab.com/kwoth/nadekobot -b v3 --depth 1`
-   2. Build the bot
-      - `dotnet publish -c Release -o output/ src/NadekoBot/`
-   3. Copy old data
-      - `cp -rf nadekobot_2x/src/NadekoBot/data nadekobot/src/NadekoBot/data`
+      ⚠ Be sure you copy the correct command for your system!
+      - **Windows:** `cp -r -fo nadekobot_2x/src/NadekoBot/data nadekobot/src/NadekoBot/data`
+      - **Linux:** `cp -rf nadekobot_2x/src/NadekoBot/data nadekobot/src/NadekoBot/data`
    4. Copy the database 
       - `cp nadekobot_2x/src/NadekoBot/bin/Release/netcoreapp2.1/data/NadekoBot.db nadekobot/output/data`
    5. Copy your credentials
