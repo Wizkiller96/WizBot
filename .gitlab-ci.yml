@@ -81,7 +81,7 @@ publish-windows:
     - dotnet publish -c Release --runtime win7-x64 /p:Version=$CI_COMMIT_TAG src/NadekoBot
     - $env:NADEKOBOT_INSTALL_VERSION = $CI_COMMIT_TAG
     - iscc.exe "/O+" ".\exe_builder.iss"
-    - echo "{ \"VersionName\":\"$CI_COMMIT_TAG\",\"DownloadLink\":\"https:\/\/cdn.nadeko.bot\/dl\/bot\/v3\/$INSTALLER_FILE_NAME\", }" > "${INSTALLER_OUTPUT_DIR}/releases.json
+    - echo "{ \"VersionName\":\"$CI_COMMIT_TAG\",\"DownloadLink\":\"https:\/\/cdn.nadeko.bot\/dl\/bot\/v3\/$INSTALLER_FILE_NAME\", }" > "${INSTALLER_OUTPUT_DIR}/releases.json"
   tags:
     - windows
 
