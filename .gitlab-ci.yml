@@ -42,16 +42,16 @@ upload-builds:
     - |
       curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file $WIN_X64_RELEASE $PACKAGE_REGISTRY_URL/$WIN_X64_RELEASE
 
-release:
-  stage: release
-  image: registry.gitlab.com/gitlab-org/release-cli:latest
-  rules:
-    - if: $CI_COMMIT_TAG
-  script:
-    - |
-      release-cli create --name "Release $CI_COMMIT_TAG" --tag-name $CI_COMMIT_TAG \
-        --assets-link "{\"name\":\"${LINUX_X64_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${LINUX_X64_RELEASE}\"}" \
-        --assets-link "{\"name\":\"${WIN_X64_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${WIN_X64_RELEASE}\"}"
+# release:
+#   stage: release
+#   image: registry.gitlab.com/gitlab-org/release-cli:latest
+#   rules:
+#     - if: $CI_COMMIT_TAG
+#   script:
+#     - |
+#       release-cli create --name "Release $CI_COMMIT_TAG" --tag-name $CI_COMMIT_TAG \
+#         --assets-link "{\"name\":\"${LINUX_X64_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${LINUX_X64_RELEASE}\"}" \
+#         --assets-link "{\"name\":\"${WIN_X64_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${WIN_X64_RELEASE}\"}"
 
 test:
   stage: test
