@@ -69,7 +69,6 @@ procedure CurStepChanged(CurStep: TSetupStep);
 begin
   if (CurStep = ssPostInstall) then
   begin
-    if FileExists(GetFileName('creds_example.yml')) and not FileExists(GetFileName('creds.yml')) then
-      RenameFile(GetFileName('creds_example.yml'), GetFileName('creds.yml'));
+      FileCopy(GetFileName('creds_example.yml'), GetFileName('creds.yml'), True);
   end;
 end;
