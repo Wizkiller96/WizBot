@@ -81,7 +81,7 @@ publish-windows:
     - dotnet publish -c Release --runtime win7-x64 /p:Version=$CI_COMMIT_TAG src/NadekoBot
     - $env:NADEKOBOT_INSTALL_VERSION = $CI_COMMIT_TAG
     - iscc.exe "/O+" ".\exe_builder.iss"
-    - echo "{ \"VersionName\":\"$CI_COMMIT_TAG\",\"DownloadLink\":\"https:\/\/cdn.nadeko.bot\/dl\/bot\/v3\/$INSTALLER_FILE_NAME\", }" > releases.json
+    - echo "{ \"VersionName\":\"$CI_COMMIT_TAG\",\"DownloadLink\":\"https:\/\/cdn.nadeko.bot\/dl\/bot\/v3\/$INSTALLER_FILE_NAME\", }" > "${INSTALLER_OUTPUT_DIR}/releases.json
   tags:
     - windows
 
@@ -96,5 +96,5 @@ upload-windows-updater-release:
     - export NADEKOBOT_INSTALL_VERSION=$CI_COMMIT_TAG
     - ls -l "$INSTALLER_OUTPUT_DIR"
     - aws --version
-    - aws --endpoint-url $AWS_SERVICE_URL s3api put-object --bucket "$AWS_BUCKET_NAME" --key "test-dl/releases.json" --acl public-read --body "$INSTALLER_OUTPUT_DIR/releases.json"
     - aws --endpoint-url $AWS_SERVICE_URL s3api put-object --bucket "$AWS_BUCKET_NAME" --key "test-dl/$INSTALLER_FILE_NAME" --acl public-read --body "$INSTALLER_OUTPUT_DIR/$INSTALLER_FILE_NAME"
+    - aws --endpoint-url $AWS_SERVICE_URL s3api put-object --bucket "$AWS_BUCKET_NAME" --key "test-dl/releases.json" --acl public-read --body "$INSTALLER_OUTPUT_DIR/releases.json"
