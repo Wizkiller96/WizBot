@@ -5,6 +5,7 @@ stages:
   - test
   - upload-builds
   # - release
+  - publish-windows
   - upload-windows-updater-release
 
 variables:
