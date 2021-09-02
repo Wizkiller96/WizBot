@@ -17,7 +17,7 @@ Donating to us also gives you the following benefits:
 You can set up a monthly pledge on [Patreon][patreon] and support the project's growth, and also get flower rewards for every month you donate!
 
 !!! Note
-    Connect your Discord account on Patreon and then use the `.clparew` command after pledging to receive flower rewards.
+    Connect your Discord account on Patreon to receive your flowers automatically
 
 [![img][patreon-button]][patreon]
 
