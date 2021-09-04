@@ -41,7 +41,7 @@
 - If you will use the music module, click on **`Install`** next to **`FFMPEG`** and **`Youtube-DL`**.
 - If any dependencies fail to install, you can temporarily disable your Windows Defender/AV until you install them. If you don't want to, then read [the last section of this guide](#Manual-Prerequisite-Installation).
 - When installation is finished, click on **`CREDS`** to the left of **`RUN`** at the lower right.
-- Follow the guide on how to [Set up the credentials.json](../../jsons-explained) file.
+- Follow the guide on how to [Set up the creds.yml](../../creds-guide) file.
 
 #### Starting the bot
 

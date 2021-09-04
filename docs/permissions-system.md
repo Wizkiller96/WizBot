@@ -4,7 +4,7 @@ Have you ever felt confused or even overwhelmed when trying to set Nadeko's perm
 
 ## Why do we use the Permissions Commands?
 
-Permissions are very handy at setting who can use what commands in a server. All commands and modules are enabled by default. If something is a bot owner only command, it can only be ran by the bot owner, the person who is running the bot, or has their ID in the [credentials.json](jsons-explained.md) file.
+Permissions are very handy at setting who can use what commands in a server. All commands and modules are enabled by default. If something is a bot owner only command, it can only be ran by the bot owner, the person who is running the bot, or has their ID in the [creds.yml](creds-guide.md) file.
 
 Several commands still require that you have the correct permissions on Discord to be able to use them, so for users to be able to use commands like `.kick` and `.voicemute`, they need **Kick** and **Mute Members** server permissions, respectively.
 

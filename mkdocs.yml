@@ -74,6 +74,7 @@ markdown_extensions:
 nav:
     - Home: index.md
     - Guides:
+        - (!) Migration Guide: guides/migration-guide.md
         - Windows Guide: guides/windows-guide.md
         - Linux Guide: guides/linux-guide.md
         - OSX Guide: guides/osx-guide.md
@@ -83,8 +84,8 @@ nav:
         - Readme: commands-readme.md
         - Commands List: https://nadeko.bot/commands
     - Features Explained:
-        - Creating and inviting the bot: create-invite.md
-        - Credentials & API Keys: jsons-explained.md
+        - Basic Creds: creds-guide.md
+        - Advanced Creds: jsons-explained.md
         - Permissions System: permissions-system.md
         - Custom Reactions: custom-reactions.md
         - Placeholders: placeholders.md

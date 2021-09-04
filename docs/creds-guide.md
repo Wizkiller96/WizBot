@@ -16,7 +16,33 @@ This document aims to guide you through the process of creating a Discord accoun
 - Scroll down to the `Privileged Gateway Intents` section and enable both intents.
   These are required for a number of features to function properly, and should both be on.
 
-#### Inviting your bot to your server    
+##### Getting Owner ID*(s)*:
+
+- Go to your Discord server and attempt to mention yourself, but put a backslash at the start
+  *(to make it slightly easier, add the backslash after the mention has been typed)*.
+- For example, the message `\@fearnlj01#3535` will appear as `<@145521851676884992>` after you send the message.
+- The message will appear as a mention if done correctly. Copy the numbers from it **`145521851676884992`** and replace the big number on the `OwnerIds` section with your user ID.
+- Save the `creds.yml` file.
+- If done correctly, you should now be the bot owner. You can add multiple owners by adding them below the first one. Indentation matters.
+
+For a single owner, it should look like this:
+
+```yml
+    OwnerIds:
+        - 105635576866156544
+```
+
+For multiple owners, it should look like this (pay attention to the commas, the last ID should **never** have a comma next to it):
+
+```yml
+    OwnerIds:
+        - 105635123466156544
+        - 145521851676884992
+        - 341420590009417729
+```
+
+
+#### Inviting your bot to your server
 
 ![Invite the bot to your server](https://cdn.nadeko.bot/tutorial/bot-invite-guide.gif)
 

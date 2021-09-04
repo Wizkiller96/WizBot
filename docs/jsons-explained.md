@@ -1,57 +1,3 @@
-## Setting up your Credentials
-
-This document aims to guide you through the process of setting up the credentials necessary for the bot installed on your computer to be able to log into that account.
-
----
-
-#### Setting up credentials.json file
-
-- **For Windows (Updater)**: the `credentials.json` file is located in the `system` folder. You can access it through the updater by clicking on the `Creds` button.  
-- **For Windows (Source), Linux and OSX**: the `credentials.json` file is located in the `NadekoBot/src/NadekoBot` folder.
-
----
-
-##### Getting the Bot's Token:
-
-- On the **Bot** tab of your [applications page][DiscordApp], copy your `Token`.
-    - *Note: Your bot Token **is not** the Client Secret! We won't need the Client Secret for anything.*
-- Paste your bot token **between** the quotation marks on the **`"Token"`** line of your `credentials.json`.
-
-It should look like this:
-
-```json
-"Token": "MTc5MzcyXXX2MDI1ODY3MjY0.ChKs4g.I8J_R9XX0t-QY-0PzXXXiN0-7vo",
-```
-
-##### Getting Owner ID*(s)*:
-
-- Go to your Discord server and attempt to mention yourself, but put a backslash at the start
-  *(to make it slightly easier, add the backslash after the mention has been typed)*.
-- For example, the message `\@fearnlj01#3535` will appear as `<@145521851676884992>` after you send the message.
-- The message will appear as a mention if done correctly. Copy the numbers from it **`145521851676884992`** and replace the big number on the `OwnerIds` section with your user ID.
-- Save the `credentials.json` file.
-- If done correctly, you should now be the bot owner. You can add multiple owners by seperating each owner ID with a comma within the square brackets.
-
-For a single owner, it should look like this:
-
-```json
-    "OwnerIds": [
-        105635576866156544
-    ],
-```
-
-For multiple owners, it should look like this (pay attention to the commas, the last ID should **never** have a comma next to it):
-
-```json
-    "OwnerIds": [
-        105635123466156544,
-        145521851676884992,
-        341420590009417729
-    ],
-```
-
----
-
 ## Setting up your API keys
 
 This part is completely optional, **however it's necessary for music and a few other features to work properly**.
@@ -61,23 +7,23 @@ This part is completely optional, **however it's necessary for music and a few o
     - Follow these steps on how to setup Google API keys:
         - Go to [Google Console][Google Console] and log in.
         - Create a new project (name does not matter).
-        - Once the project is created, go into **`Library`**
-        - Under the **`YouTube APIs`** section, enable `YouTube Data API`
-        - On the left tab, access **`Credentials`**,
+        - Once the project is created, go into `Library`
+        - Under the `YouTube APIs` section, enable `YouTube Data API`
+        - On the left tab, access `Credentials`,
             - Click `Create Credentials` button,
             - Click on `API Key`
             - A new window will appear with your `Google API key`  
               *NOTE: You don't really need to click on `RESTRICT KEY`, just click on `CLOSE` when you are done.*
             - Copy the key.
-        - Open up **`credentials.json`** and look for **`"GoogleAPIKey"`**, paste your API key inbetween the quotation marks.
+        - Open up `creds.yml` and look for `GoogleAPIKey`, paste your API key after the `:`.
         - It should look like this:
-        ```json
+        ```yml
         "GoogleApiKey": "AIzaSyDSci1sdlWQOWNVj1vlXxxxxxbk0oWMEzM",
         ```
 - **MashapeKey**
     - Required for Hearthstone cards.
     - Api key obtained on https://rapidapi.com (register -> go to MyApps -> Add New App -> Enter Name -> Application key)
-    - Copy the key and paste it into `credentials.json`
+    - Copy the key and paste it into `creds.yml`
 - **OsuApiKey**
     - Required for Osu commands
     - You can get this key [here](https://osu.ppy.sh/p/api).
@@ -95,10 +41,10 @@ This part is completely optional, **however it's necessary for music and a few o
     - You can set `http://localhost` as the OAuth Redirect URL (and press Add button)
     - Select `Chat Bot` from the Category dropdown
     - Once created, clicking on your application will show a new Client ID field
-    - Copy it to your credentials.json as shown below
-    - *(if you're adding it as the last key inside your credentials.json, remove the trailling comma from the example below)*
-    ```json
-        "TwitchClientId": "516tr61tr1qweqwe86trg3g",
+    - Copy it to your creds.yml as shown below
+    - *(if you're adding it as the last key inside your creds.yml, remove the trailling comma from the example below)*
+    ```yml
+        TwitchClientId: "516tr61tr1qweqwe86trg3g",
     ```
 - **LocationIqApiKey**
     - Optional. Used only for the `.time` command. https://locationiq.com api key (register and you will receive the token in the email). 
@@ -119,17 +65,16 @@ This part is completely optional, **however it's necessary for music and a few o
     - Required if you want to be able to use the `.restart` command
     - If you're using the CLI installer or Linux/OSX, it's easier and more reliable setup Nadeko with auto-restart and just use `.die`
 
-For Windows (Updater), add this to your `credentials.json`
+For Windows (Updater), add this to your `creds.yml`
 
-```json
-"RestartCommand": {
-    "Cmd": "NadekoBot.exe"
-},
+```yml
+RestartCommand:
+    Cmd: "NadekoBot.exe"
 ```
 
-For Windows (Source), Linux or OSX, add this to your `credentials.json`
+For Windows (Source), Linux or OSX, add this to your `creds.yml`
 
-```json
+```yml
 "RestartCommand": {
     "Cmd": "dotnet",
     "Args": "run -c Release"
@@ -140,9 +85,9 @@ For Windows (Source), Linux or OSX, add this to your `credentials.json`
 
 #### End Result
 
-**This is an example of how the `credentials.json` looks like with multiple owners, the restart command (optional) and all the API keys (also optional):**
+**This is an example of how the `creds.yml` looks like with multiple owners, the restart command (optional) and all the API keys (also optional):**
 
-```json
+```yml
 {
   "Token": "MTc5MzcyXXX2MDI1ODY3MjY0.ChKs4g.I8J_R9XX0t-QY-0PzXXXiN0-7vo",
   "OwnerIds": [
