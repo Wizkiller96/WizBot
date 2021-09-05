@@ -32,7 +32,7 @@
    - `.stats` to ensure owner id (credentials) is correct
    - `.lcr` to see custom reactions
    - `.lp` to list permissions
-5. 🎉 Enjoy. If you want to learn how to update the bot, click (here)[https://nadekobot.readthedocs.io/en/v3/guides/linux-guide/#update-instructions].
+5. 🎉 Enjoy. If you want to learn how to update the bot, click (here)[../linux-guide/#update-instructions].
 
 ## Manual 
 

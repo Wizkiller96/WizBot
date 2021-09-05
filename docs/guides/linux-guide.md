@@ -2,7 +2,7 @@
 
 ##### ⚠ If you're already hosting NadekoBot, _You **MUST** update to latest version of 2.x and **run your bot at least once**_ before switching over to v3.
 
-#### [Linux migration instructions](https://nadekobot.readthedocs.io/en/v3/guides/migration-guide/#linux)
+#### [Linux migration instructions](../migration-guide/#linux)
 
 ## Linux From Source 
 
@@ -17,7 +17,7 @@ Open Terminal (if you're on an installation with a window manager) and navigate 
 5. Copy the creds.yml template `cp nadekobot/output/creds_example.yml nadekobot/output/creds.yml` 
 6. Open `nadekobot/output/creds.yml` with your favorite text editor. We will use nano here
    - `nano nadekobot/output/creds.yml`
-7. [Enter your bot's token](https://nadekobot.readthedocs.io/en/v3/creds-guide/)
+7. [Enter your bot's token](../../creds-guide)
    - After you're done, you can close nano (and save the file) by inputting, in order 
       - `CTRL` + `X`
       - `Y`

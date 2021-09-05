@@ -18,7 +18,7 @@ This part is completely optional, **however it's necessary for music and a few o
         - Open up `creds.yml` and look for `GoogleAPIKey`, paste your API key after the `:`.
         - It should look like this:
         ```yml
-        "GoogleApiKey": "AIzaSyDSci1sdlWQOWNVj1vlXxxxxxbk0oWMEzM",
+        GoogleApiKey: "AIzaSyDSci1sdlWQOWNVj1vlXxxxxxbk0oWMEzM",
         ```
 - **MashapeKey**
     - Required for Hearthstone cards.

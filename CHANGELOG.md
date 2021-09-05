@@ -8,16 +8,18 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 - Renamed `credentials.json` to `creds.yml` (example in `creds_example.yml`)
   - Most of the credentials from 2.x will be automatically migrated
+  - Explanations on how to get the keys are added as the comments
 - Code cleanup
   - Command attributes cleaned up
     - Removed dummy Remarks and Usages attributes as hey were unused for a few patches but stayed in the code to avoid big git diffsmigration code has ran and it can be safely removed 
   - There are 2 projects: NadekoBot and NadekoBot.Coordinator
     - You can directly run NadekoBot as the regular bot with one shard
     - Run NadekoBot.Coordinator if you want more control over your shards and a grpc api for coordinator with which you can start, restart, kill and see status of shards
-  - todo: Reworked from source installation (linux/windows) guide <todo link>
-  - todo: Added docker support, installation guide at <todo link>
-- Guides
-- Now instruct users to set build output to nadekobot/output instead of running from nadekobot/src/NadekoBot
+  - Small performance improvements
+  - Db Migrations squashed
+  - A lot of cleanup all around
+- Many guides reworked
+  - Guides now instruct users to set build output to nadekobot/output instead of running from nadekobot/src/NadekoBot
 
 ### Fixed
 

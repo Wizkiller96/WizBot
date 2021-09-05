@@ -8,7 +8,8 @@ src/NadekoBot/creds.yml
 src/NadekoBot/Command Errors*.txt
 
 src/NadekoBot/creds.yml
-# credentials file after migrations
+# credentials file before and after migrations
+src/NadekoBot/credentials.json 
 src/NadekoBot/old_credentials.json 
 src/NadekoBot/credentials.json.bak
 src/NadekoBot/data/NadekoBot.db
