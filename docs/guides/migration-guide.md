@@ -21,10 +21,10 @@
    - Stop the bot
 2. Make sure your bot's folder is called `NadekoBot`
    - Run `cd ~ && ls`
-   - Confirm there is a folder NadekoBot
+   - Confirm there is a folder called NadekoBot (not nadekobot, in all lowercase)
 3. Migrate your bot's data using the new installer:
    - Run the **new** installer `cd ~ && wget -N https://gitlab.com/Kwoth/nadeko-bash-installer/-/raw/master/linuxAIO.sh && bash linuxAIO.sh`
-   - The installer should notify you that your data is ready for migration in a message above the menu
+   - The installer should notify you that your data is ready for migration in a message above the menu.
    - Install prerequisites (type `1` and press enter), and make sure it is successful
    - Download NadekoBot v3 (type `2` and press enter)
    - Run the bot (type `3` and press enter)
@@ -32,7 +32,7 @@
    - `.stats` to ensure owner id (credentials) is correct
    - `.lcr` to see custom reactions
    - `.lp` to list permissions
-5. 🎉 Enjoy. If you want to learn how to update the bot, click (here)[#linux-updating-the-bot].
+5. 🎉 Enjoy. If you want to learn how to update the bot, click (here)[https://nadekobot.readthedocs.io/en/v3/guides/linux-guide/#update-instructions].
 
 ## Manual 
 

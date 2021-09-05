@@ -1,8 +1,8 @@
 ## Migration from 2.x 
 
-⚠ If you're already hosting NadekoBot, You **MUST** update to latest version of 2.x and **run your bot at least once** before switching over to v3.
+##### ⚠ If you're already hosting NadekoBot, _You **MUST** update to latest version of 2.x and **run your bot at least once**_ before switching over to v3.
 
-#### [Linux migration instructions](migration-instructions#linux)
+#### [Linux migration instructions](https://nadekobot.readthedocs.io/en/v3/guides/migration-guide/#linux)
 
 ## Linux From Source 
 
@@ -17,9 +17,9 @@ Open Terminal (if you're on an installation with a window manager) and navigate 
 5. Copy the creds.yml template `cp nadekobot/output/creds_example.yml nadekobot/output/creds.yml` 
 6. Open `nadekobot/output/creds.yml` with your favorite text editor. We will use nano here
    - `nano nadekobot/output/creds.yml`
-7. [Enter your bot's token](#creds-guide)
+7. [Enter your bot's token](https://nadekobot.readthedocs.io/en/v3/creds-guide/)
    - After you're done, you can close nano (and save the file) by inputting, in order 
-      - `CTRL`+`X`
+      - `CTRL` + `X`
       - `Y`
       - `Enter`
 8. Run the bot (type `3` and press enter)
@@ -39,7 +39,7 @@ Open Terminal (if you're on an installation with a window manager) and navigate 
 1. Download the latest release from <https://gitlab.com/Kwoth/nadekobot/-/releases>
    - Look for the file called "X.XX.X-linux-x64-build.tar" (where X.XX.X is a series of numbers) and download it
 2. Untar it 
-   ⚠ Make sure that you change X.XX.X to the same series of numbers as in step 1!
+   - ⚠ Make sure that you change X.XX.X to the same series of numbers as in step 1!
    - `tar xf X.XX.X-linux-x64-build.tar`
 3. Rename the `nadekobot-linux-x64` to `nadekobot` 
    - `mv nadekobot-linux-x64 nadekobot`
@@ -51,7 +51,7 @@ Open Terminal (if you're on an installation with a window manager) and navigate 
    - `nano nadekobot/output/creds.yml`
 8. [Enter your bot's token](#creds-guide)
    - After you're done, you can close nano (and save the file) by inputting, in order 
-      - `CTRL`+`X`
+      - `CTRL` + `X`
       - `Y`
       - `Enter`
 9. Run the bot
@@ -63,7 +63,7 @@ Open Terminal (if you're on an installation with a window manager) and navigate 
 2. Download the latest release from <https://gitlab.com/Kwoth/nadekobot/-/releases>
    - Look for the file called "X.XX.X-linux-x64-build.tar" (where X.XX.X is a series of numbers) and download it
 3. Untar it 
-   ⚠ Make sure that you change X.XX.X to the same series of numbers as in step 2!
+   - ⚠ Make sure that you change X.XX.X to the same series of numbers as in step 2!
    - `tar xf 2.99.8-linux-x64-build.tar`
 4. Rename the old nadekobot directory to nadekobot-old (remove your old backup first if you have one, or back it up under a different name)
    - `rm -rf nadekobot-old 2>/dev/null`
@@ -71,7 +71,7 @@ Open Terminal (if you're on an installation with a window manager) and navigate 
 5. Rename the new nadekobot directory to nadekobot
    - `mv nadekobot-linux-x64 nadekobot`
 6. Remove old strings and aliases to avoid overwriting the updated versions of those files  
-   ⚠ If you've modified said files, back them up instead
+   - ⚠ If you've modified said files, back them up instead
    - `rm nadekobot-old/data/aliases.yml`
    - `rm -r nadekobot-old/data/strings`
 7. Copy old data
