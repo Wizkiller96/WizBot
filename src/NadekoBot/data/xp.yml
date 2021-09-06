@@ -1,0 +1,12 @@
+# DO NOT CHANGE
+version: 2
+# How much XP will the users receive per message
+xpPerMessage: 3
+# How often can the users receive XP in minutes
+messageXpCooldown: 5
+# Amount of xp users gain from posting an image
+xpFromImage: 0
+# Average amount of xp earned per minute in VC
+voiceXpPerMinute: 0
+# The maximum amount of minutes the bot will keep track of a user in a voice channel
+voiceMaxMinutes: 720
