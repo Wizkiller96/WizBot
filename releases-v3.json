@@ -1,0 +1,1 @@
+{ "VersionName":"$CI_COMMIT_TAG", "DownloadLink":"https://cdn.nadeko.bot/dl/bot/INSTALLER_FILE_NAME" }
