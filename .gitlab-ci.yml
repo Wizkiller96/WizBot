@@ -74,15 +74,12 @@ publish-windows:
   artifacts:
     paths:
       - "$INSTALLER_OUTPUT_DIR/$INSTALLER_FILE_NAME"
-      - "$INSTALLER_OUTPUT_DIR/releases-v3.json"
   script:
     - dotnet clean
     - dotnet restore
     - dotnet publish -c Release --runtime win7-x64 /p:Version=$CI_COMMIT_TAG src/NadekoBot
     - $env:NADEKOBOT_INSTALL_VERSION = $CI_COMMIT_TAG
     - iscc.exe "/O+" ".\exe_builder.iss"
-    - sed -i "s/INSTALLER_FILE_NAME/$INSTALLER_FILE_NAME/g" releases-v3.json
-    - mv releases-v3.json > "${INSTALLER_OUTPUT_DIR}/releases-v3.json"
   tags:
     - windows
 
@@ -93,7 +90,8 @@ upload-windows-updater-release:
   image: 
     name: amazon/aws-cli
     entrypoint: [""]
-  script:
+  script:  
+    - sed -i "s/INSTALLER_FILE_NAME/$INSTALLER_FILE_NAME/g" releases-v3.json
     - aws --version
     - aws --endpoint-url $AWS_SERVICE_URL s3api put-object --bucket "$AWS_BUCKET_NAME" --key "dl/bot/$INSTALLER_FILE_NAME" --acl public-read --body "$INSTALLER_OUTPUT_DIR/$INSTALLER_FILE_NAME"
-    - aws --endpoint-url $AWS_SERVICE_URL s3api put-object --bucket "$AWS_BUCKET_NAME" --key "dl/bot/releases-v3.json" --acl public-read --body "$INSTALLER_OUTPUT_DIR/releases-v3.json"
+    - aws --endpoint-url $AWS_SERVICE_URL s3api put-object --bucket "$AWS_BUCKET_NAME" --key "dl/bot/releases-v3.json" --acl public-read --body "releases-v3.json"
