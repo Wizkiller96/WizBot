@@ -807,7 +807,7 @@
   "feed_out_of_range": "Indice fuori portata.",
   "feed_removed": "Feed rimosso.",
   "feed_no_feed": "Non sei iscritto a nessun feed di questo server.",
-  "restart_fail": "Devi impostate RestartCommand nel tuo credentials.json",
+  "restart_fail": "Devi impostate RestartCommand nel tuo creds.yml",
   "restarting": "Riavvio.",
   "edit_fail": "Non esiste una reazione personalizzata sotto questo ID.",
   "streaming": "Streaming",

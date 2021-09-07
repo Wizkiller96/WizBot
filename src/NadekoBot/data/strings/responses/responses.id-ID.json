@@ -807,7 +807,7 @@
   "feed_out_of_range": "Index di luar batas.",
   "feed_removed": "Feed dibuang",
   "feed_no_feed": "Anda belum melanggani feed apapun di server ini.",
-  "restart_fail": "Anda harus menyiapkan RestartCommand di credentials.json anda",
+  "restart_fail": "Anda harus menyiapkan RestartCommand di creds.yml anda",
   "restarting": "Memulai ulang.",
   "edit_fail": "Reaksi kustom dengan ID tersebut tidak ada.",
   "streaming": "Streaming",

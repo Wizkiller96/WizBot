@@ -23,7 +23,7 @@ namespace NadekoBot.Services
             if (string.IsNullOrWhiteSpace(_creds.RestartCommand?.Cmd)
                 || string.IsNullOrWhiteSpace(_creds.RestartCommand?.Args))
             {
-                Log.Error("You must set RestartCommand.Cmd and RestartCommand.Args in credentials.json");
+                Log.Error("You must set RestartCommand.Cmd and RestartCommand.Args in creds.yml");
                 return false;
             }
             

@@ -807,7 +807,7 @@
   "feed_out_of_range": "Індекс поза зоною досяжності.",
   "feed_removed": "Канал вилучений.",
   "feed_no_feed": "Ви не підписалися на будь-які канали на цьому сервері.",
-  "restart_fail": "Ви повинні налаштувати RestartCommand у вашому credentials.json",
+  "restart_fail": "Ви повинні налаштувати RestartCommand у вашому creds.yml",
   "restarting": "Перезапуск.",
   "edit_fail": "Користувацької реакції з цим ідентифікатором не існує.",
   "streaming": "Стрім",

@@ -807,7 +807,7 @@
   "feed_out_of_range": "Índice fuera de rango.",
   "feed_removed": "Contenido removido.",
   "feed_no_feed": "No se han suscrito a ningun contenido en este servidor.",
-  "restart_fail": "Debes configurar \u0060RestartCommand\u0060 en tu \u0060credentials.json\u0060",
+  "restart_fail": "Debes configurar \u0060RestartCommand\u0060 en tu \u0060creds.yml\u0060",
   "restarting": "Reiniciando.",
   "edit_fail": "El comando personalizado con esa ID no existe.",
   "streaming": "Transmitiendo",

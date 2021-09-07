@@ -37,7 +37,7 @@ namespace NadekoBot.Services
                 
                 if (string.IsNullOrWhiteSpace(_creds.Token))
                 {
-                    Log.Error("Token is missing from credentials.json or Environment variables.\n" +
+                    Log.Error("Token is missing from creds.yml or Environment variables.\n" +
                               "Add it and restart the program.");
                     Helpers.ReadErrorAndExit(5);
                     return;

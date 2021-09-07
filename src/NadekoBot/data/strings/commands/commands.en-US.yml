@@ -1152,7 +1152,7 @@ forwardmessages:
   args:
     - ""
 forwardtoall:
-  desc: "Toggles whether messages will be forwarded to all bot owners or only to the first one specified in the credentials.json file"
+  desc: "Toggles whether messages will be forwarded to all bot owners or only to the first one specified in the creds.yml file"
   args:
     - ""
 resetperms:

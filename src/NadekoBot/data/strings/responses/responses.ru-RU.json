@@ -807,7 +807,7 @@
   "feed_out_of_range": "Указатель вышел за пределы диапазона.",
   "feed_removed": "Лента новостей удалена.",
   "feed_no_feed": "Вы еще не подписались ни на одну ленту новостей на этом сервере.",
-  "restart_fail": "Вы должны настроить RestartCommand в вашем файле credentials.json",
+  "restart_fail": "Вы должны настроить RestartCommand в вашем файле creds.yml",
   "restarting": "Перезапуск",
   "edit_fail": "Пользовательская реакция с этим ID не существует.",
   "streaming": "Транслирует",

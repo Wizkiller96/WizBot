@@ -807,7 +807,7 @@
   "feed_out_of_range": "Dizin aralık dışı.",
   "feed_removed": "Besleme kaldırıldı.",
   "feed_no_feed": "Bu sunucudaki herhangi bir yayına abone değilsiniz.",
-  "restart_fail": "RestartCommand\u0027ı, credentials.json dosyanıza kurmanız gerekir",
+  "restart_fail": "RestartCommand\u0027ı, creds.yml dosyanıza kurmanız gerekir",
   "restarting": "Yeniden Başlatılıyor.",
   "edit_fail": "Bu kimliği olan özel reaksiyon mevcut değil.",
   "streaming": "Yayın Akışı",

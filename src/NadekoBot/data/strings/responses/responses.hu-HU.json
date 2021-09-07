@@ -807,7 +807,7 @@
   "feed_out_of_range": "Az index a tartományon kívül.",
   "feed_removed": "Hírcsatorna eltávolítva.",
   "feed_no_feed": "Nem iratkoztál fel egyetlen hírcsatornára sem ezen a szerveren.",
-  "restart_fail": "Be kell állítanod a RestartCommand parancsot a credentials.json fájlodban",
+  "restart_fail": "Be kell állítanod a RestartCommand parancsot a creds.yml fájlodban",
   "restarting": "Újraindítás.",
   "edit_fail": "Egyedi reakció azzal az azonosítóval nem létezik.",
   "streaming": "Közvetítés",

@@ -807,7 +807,7 @@
   "feed_out_of_range": "مؤشر خارج النطاق.",
   "feed_removed": "تمت إزالة الخلاصة.",
   "feed_no_feed": "لم تشترك في أي خلاصات على هذا الشبكة.",
-  "restart_fail": "يجب إعداد RestartCommand في ملف credentials.json",
+  "restart_fail": "يجب إعداد RestartCommand في ملف creds.yml",
   "restarting": "إعادة تشغيل",
   "edit_fail": "",
   "streaming": "بث",

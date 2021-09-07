@@ -807,7 +807,7 @@
   "feed_out_of_range": "索引在范围外。",
   "feed_removed": "已移除feed。",
   "feed_no_feed": "你尚未关注本服务器内的任何feed。",
-  "restart_fail": "你必须在credentials.json内设置RestartCommand",
+  "restart_fail": "你必须在creds.yml内设置RestartCommand",
   "restarting": "重启中。",
   "edit_fail": "与此ID关联的定制反应不存在。",
   "streaming": "直播",

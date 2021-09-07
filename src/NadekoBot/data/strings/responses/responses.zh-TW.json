@@ -807,7 +807,7 @@
   "feed_out_of_range": "超出範圍",
   "feed_removed": "RSS Feed已刪除。",
   "feed_no_feed": "您還沒有在此伺服器上訂閱任何RSS Feed。",
-  "restart_fail": "您必須要在您的credentials.json中設定RestartCommand。",
+  "restart_fail": "您必須要在您的creds.yml中設定RestartCommand。",
   "restarting": "重新啟動中。",
   "edit_fail": "該自訂回應ID不存在。",
   "streaming": "實況中",

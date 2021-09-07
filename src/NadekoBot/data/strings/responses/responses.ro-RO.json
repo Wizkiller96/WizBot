@@ -807,7 +807,7 @@
   "feed_out_of_range": "Index negăsit.",
   "feed_removed": "Feed eliminat.",
   "feed_no_feed": "Nu te-ai abonat la niciun feed pe acest server.",
-  "restart_fail": "Trebuie să instalezi RestartCommand in credentials.json",
+  "restart_fail": "Trebuie să instalezi RestartCommand in creds.yml",
   "restarting": "Se restartează.",
   "edit_fail": "Reacție personalizată cu acel ID nu există.",
   "streaming": "Transmițând flux live",

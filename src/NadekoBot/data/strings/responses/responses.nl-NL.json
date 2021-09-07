@@ -807,7 +807,7 @@
   "feed_out_of_range": "Index buiten bereik.",
   "feed_removed": "Feed verwijdert.",
   "feed_no_feed": "Je bent nog niet geabonneerd op een van de feeds van deze server.",
-  "restart_fail": "Je moet RestartCommand instellen in jouw credentials.json",
+  "restart_fail": "Je moet RestartCommand instellen in jouw creds.yml",
   "restarting": "Herstarten.",
   "edit_fail": "Aangepaste reactie met dat ID bestaat niet.",
   "streaming": "Streamen",

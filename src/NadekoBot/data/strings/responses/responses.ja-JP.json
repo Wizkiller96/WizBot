@@ -807,7 +807,7 @@
   "feed_out_of_range": "",
   "feed_removed": "",
   "feed_no_feed": "",
-  "restart_fail": "Restartコマンドをcredentials.jsonで設定しなければなりません。",
+  "restart_fail": "Restartコマンドをcreds.ymlで設定しなければなりません。",
   "restarting": "再起動しています。",
   "edit_fail": "そのIDのカスタムリアクションは存在しません。",
   "streaming": "ストリーミング",

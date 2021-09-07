@@ -224,7 +224,7 @@ namespace NadekoBot.Modules.Administration.Services
 
             if (!ownerChannels.Any())
                 Log.Warning(
-                    "No owner channels created! Make sure you've specified the correct OwnerId in the credentials.json file and invited the bot to a Discord server.");
+                    "No owner channels created! Make sure you've specified the correct OwnerId in the creds.yml file and invited the bot to a Discord server.");
             else
                 Log.Information($"Created {ownerChannels.Count} out of {_creds.OwnerIds.Count} owner message channels.");
         }

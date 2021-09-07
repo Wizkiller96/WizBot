@@ -807,7 +807,7 @@
   "feed_out_of_range": "Index out of range.",
   "feed_removed": "Feed removed. I didn\u0027t care much for it anyways...",
   "feed_no_feed": "You gotta sub to some of our feeds we made on the server.",
-  "restart_fail": "You have to setup the RestartCommand in your credentials.json",
+  "restart_fail": "You have to setup the RestartCommand in your creds.yml",
   "restarting": "Restarting, or as i call it... taking a break from you.",
   "edit_fail": "So..that reaction with that ID?? Yea that doesn\u0027t exist. Believe it or not.",
   "streaming": "Streaming",

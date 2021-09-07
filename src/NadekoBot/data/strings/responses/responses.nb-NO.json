@@ -807,7 +807,7 @@
   "feed_out_of_range": "Indeks utenfor rekkevidde.",
   "feed_removed": "Feed fjernet.",
   "feed_no_feed": "Du følger ingen feeds på denne serveren.",
-  "restart_fail": "Du må sette opp RestartCommand i credentials.json",
+  "restart_fail": "Du må sette opp RestartCommand i creds.yml",
   "restarting": "Starter på nytt.",
   "edit_fail": "Tilpasset reaksjon med den ID\u0027en eksisterer ikke.",
   "streaming": "Strømmer",

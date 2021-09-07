@@ -807,7 +807,7 @@
   "feed_out_of_range": "Index mimo dosah.",
   "feed_removed": "Feed odebrán.",
   "feed_no_feed": "Neodebíráš žádný feed na tomto serveru.",
-  "restart_fail": "Musíš nastavit RestartCommand ve svém souboru credentials.json",
+  "restart_fail": "Musíš nastavit RestartCommand ve svém souboru creds.yml",
   "restarting": "Restartování.",
   "edit_fail": "Vlastní reakce s tímto ID neexistuje.",
   "streaming": "Streamování.",
