@@ -279,7 +279,9 @@
     "Cmd": "rsar",
     "Desc": "Removes a specified role from the list of self-assignable roles.",
     "Usage": [
-      "{0}rsar"
+      "{0}rsar Gamer",
+      "{0}rsar Alliance",
+      "{0}rsar Horde"
     ]
   },
   "lsar": {

@@ -137,7 +137,9 @@ asar:
 rsar:
   desc: "Removes a specified role from the list of self-assignable roles."
   args:
-    - ""
+    - "Gamer"
+    - "Alliance"
+    - "Horde"
 lsar:
   desc: "Lists self-assignable roles. Shows 20 roles per page."
   args:
