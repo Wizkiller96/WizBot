@@ -41,8 +41,6 @@ extra_css:
   - stylesheets/theme.css
 
 plugins:
-    - minify:
-        minify_html: true
     - git-revision-date-localized:
         type: date
     - search
