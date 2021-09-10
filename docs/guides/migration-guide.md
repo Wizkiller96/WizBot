@@ -3,6 +3,7 @@
 ## Windows
 
 1. Run your NadekoBot Updater first, and **make sure your bot is updated to at least 2.46.5**
+   - **Run your 2.46.5 Bot** and make sure it works, and then **stop it**
 2. Get the new NadekoBot v3 Updater [here](https://dl.nadeko.bot/v3)
 3. Click on the + icon to add a new bot
 4. Next to the path, click on the folder icon and select the folder where your 2.46.5 bot is
