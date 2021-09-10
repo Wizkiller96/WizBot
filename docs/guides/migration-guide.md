@@ -18,7 +18,7 @@
 1. In order to migrate a bot hosted on **Linux**, first update your current version to the latest 2.x version using the 2.x installer, run the bot, and make sure it works. Then:
    - Run the **old** installer with `cd ~ && wget -N https://github.com/Kwoth/NadekoBot-BashScript/raw/1.9/linuxAIO.sh && bash linuxAIO.sh`
    - Run option **1** again
-   - Run the bot
+   - You **MUST** Run the bot now to ensure database is ready for migration
    - Type `.stats` and ensure the version is `2.46.5` or later
    - Stop the bot
 2. Make sure your bot's folder is called `NadekoBot`
@@ -41,7 +41,10 @@
 ⚠ NOT RECOMMENDED  
 ⚠ NadekoBot v3 requires [.net 5](https://dotnet.microsoft.com/download/dotnet/5.0)
 
-1. In order to migrate a bot hosted **on Linux or from source on Windows**, first update your current version to the latest 2.x version using the 2.x installer, run the bot, and make sure it works. Then:
+1. In order to migrate a bot hosted **on Linux or from source on Windows**
+   - First update your current version to the latest 2.x version using the 2.x installer
+   - Then you **must** run the bot to prepare the database for the migration, and make sure the bot works prior to upgrade.
+ Then:
 2. Rename your old nadeko bot folder to `nadekobot_2x`
    - `mv NadekoBot nadekobot_2x`
 3. Build the new version and move old data to the output folder 
