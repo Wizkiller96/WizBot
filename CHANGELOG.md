@@ -4,7 +4,11 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+## [3.1.0] - 10.09.2021
 
+### Fixed
+
+- Fixed some issues with the embeds not showing the correct data
 
 ## [3.0.0] - 06.09.2021
 
