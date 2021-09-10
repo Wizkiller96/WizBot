@@ -55,10 +55,10 @@ namespace NadekoBot.Services
             => Wrap(_embed.WithAuthor(name, iconUrl, url));
 
         public IEmbedBuilder WithUrl(string url)
-            => Wrap(_embed.WithAuthor(url));
+            => Wrap(_embed.WithUrl(url));
 
         public IEmbedBuilder WithImageUrl(string url)
-            => Wrap(_embed.WithAuthor(url));
+            => Wrap(_embed.WithImageUrl(url));
 
         public IEmbedBuilder WithThumbnailUrl(string url)
             => Wrap(_embed.WithThumbnailUrl(url));
