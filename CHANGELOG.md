@@ -4,7 +4,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
-## [3.1.0] - 10.09.2021
+## [3.0.1] - 10.09.2021
 
 ### Fixed
 
