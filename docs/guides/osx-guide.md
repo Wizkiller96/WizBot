@@ -1,6 +1,14 @@
-### Linux From Source 
+### MacOS From Source 
 
-Open Terminal (if you're on an installation with a window manager) and navigate to the location where you want to install the bot (for example `cd ~`) 
+Open Terminal (if you don't know how to, click on the magnifying glass on the top right corner of your screen and type **Terminal** on the window that pops up) and navigate to the location where you want to install the bot (for example `cd ~`) 
+
+##### Installing Homebrew and wget
+
+*Skip this step if you already have homebrew installed*
+- Copy and paste this command, then press Enter:  
+`/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
+- Install wget  
+   - `brew install wget`
 
 ##### Installation Instructions
 
