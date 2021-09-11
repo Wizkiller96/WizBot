@@ -170,13 +170,13 @@ restartCommand:
 Nadeko saves all settings and data in the database file `NadekoBot.db`, located in:
 
 - Windows (Updater): `system/data` (can be easily accessed through the `Data` button on the updater)
-- Windows (Source), Linux and OSX: `NadekoBot/src/NadekoBot/bin/Release/netcoreapp2.1/data/NadekoBot.db`
+- Windows (Source), Linux and OSX: `nadekobot/output/data/NadekoBot.db`
 
 In order to open it you will need [SQLite Browser](http://sqlitebrowser.org/).
 
 *NOTE: You don't have to worry if you don't have the `NadekoBot.db` file, it gets automatically created once you successfully run the bot for the first time.*
 
-**To make changes:**
+**To make changes to the database on windows:**
 
 - Shut your bot down.
 - Copy the `NadekoBot.db` file to someplace safe. (Back up)
@@ -195,20 +195,24 @@ In order to open it you will need [SQLite Browser](http://sqlitebrowser.org/).
 
 ## Sharding your bot
 
-- **ShardRunCommand**
-    - Command with which to run shards 1+
-    - Required if you're sharding your bot on windows using .exe, or in a custom way.
-    - This internally defaults to `dotnet`
-    - For example, if you want to shard your NadekoBot which you installed using windows installer, you would want to set it to something like this: `C:\Program Files\NadekoBot\system\NadekoBot.exe`
-- **ShardRunArguments**
-    - Arguments to the shard run command
-    - Required if you're sharding your bot on windows using .exe, or in a custom way.
-    - This internally defaults to `run -c Release --no-build -- {0} {1} {2}` which will be enough to run linux and other 'from source' setups
-    - {0} will be replaced by the `shard ID` of the shard being ran, {1} by the shard 0's process id, and {2} by the port shard communication is happening on
-    - If shard0 (main window) is closed, all other shards will close too
-    - For example, if you want to shard your NadekoBot which you installed using windows installer, you would want to set it to `{0} {1} {2}`
-- **ShardRunPort**
-    - Bot uses a random UDP port in [5000, 6000] range for communication between shards
+To run a sharded bot, you will want to run `src/NadekoBot.Coordinator` project.
+Shards communicate with the coordinator using gRPC
+To configure your Coordinator, you will need to edit the `src/NadekoBot.Coordinator/coord.yml` file
+
+```yml
+# total number of shards
+TotalShards: 3
+# How often do shards ping their state back to the coordinator
+RecheckIntervalMs: 5000
+# Command to run the shard
+ShardStartCommand: dotnet
+# Arguments to run the shard
+# {0} = shard id
+# {1} = total number of shards
+ShardStartArgs: ../../output/NadekoBot.dll -- {0} {1}
+# How long does it take for the shard to be forcefully restarted once it stops reporting its state
+UnresponsiveSec: 30
+```
 
 [Google Console]: https://console.developers.google.com
 [DiscordApp]: https://discordapp.com/developers/applications/me

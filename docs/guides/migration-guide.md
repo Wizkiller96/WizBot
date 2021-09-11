@@ -48,18 +48,18 @@
 2. Rename your old nadeko bot folder to `nadekobot_2x`
    - `mv NadekoBot nadekobot_2x`
 3. Build the new version and move old data to the output folder 
-   1. Clone the v3 branch to a separate folder 
-      - `git clone https://gitlab.com/kwoth/nadekobot -b v3 --depth 1`
-   2. Build the bot
-      - `dotnet publish -c Release -o output/ src/NadekoBot/`
-   3. Copy old data
-      - ⚠ Be sure you copy the correct command for your system!
-      - **Windows:** `cp -r -fo nadekobot_2x/src/NadekoBot/data nadekobot/src/NadekoBot/data`
-      - **Linux:** `cp -rf nadekobot_2x/src/NadekoBot/data nadekobot/src/NadekoBot/data`
-   4. Copy the database 
-      - `cp nadekobot_2x/src/NadekoBot/bin/Release/netcoreapp2.1/data/NadekoBot.db nadekobot/output/data`
-   5. Copy your credentials
-      - `cp nadekobot_2x/src/NadekoBot/credentials.json nadekobot/output/`
+    1. Clone the v3 branch to a separate folder 
+        - `git clone https://gitlab.com/kwoth/nadekobot -b v3 --depth 1`
+    2. Build the bot
+        - `dotnet publish -c Release -o output/ src/NadekoBot/`
+    3. Copy old data
+        - ⚠ Be sure you copy the correct command for your system!
+        - **Windows:** `cp -r -fo nadekobot_2x/src/NadekoBot/data nadekobot/src/NadekoBot/data`
+        - **Linux:** `cp -rf nadekobot_2x/src/NadekoBot/data nadekobot/src/NadekoBot/data`
+    4. Copy the database 
+        - `cp nadekobot_2x/src/NadekoBot/bin/Release/netcoreapp2.1/data/NadekoBot.db nadekobot/output/data`
+    5. Copy your credentials
+        - `cp nadekobot_2x/src/NadekoBot/credentials.json nadekobot/output/`
 4. Run the bot
     - `cd nadekobot/output`
     - `dotnet NadekoBot.dll`
