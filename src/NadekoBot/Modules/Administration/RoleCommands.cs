@@ -27,13 +27,13 @@ namespace NadekoBot.Modules.Administration
                 _services = services;
             }
 
-            public async Task InternalReactionRoles(bool exclusive, params string[] input)
+            public async Task InternalReactionRoles(bool exclusive, ulong? messageId, params string[] input)
             {
-                var msgs = await ((SocketTextChannel)ctx.Channel).GetMessagesAsync().FlattenAsync().ConfigureAwait(false);
-                var prev = (IUserMessage)msgs.FirstOrDefault(x => x is IUserMessage && x.Id != ctx.Message.Id);
-
-                if (prev is null)
-                    return;
+                var target = messageId is ulong msgId
+                    ? await ctx.Channel.GetMessageAsync(msgId).ConfigureAwait(false)
+                    : (await ctx.Channel.GetMessagesAsync(2).FlattenAsync().ConfigureAwait(false))
+                        .Skip(1)
+                        .FirstOrDefault();
 
                 if (input.Length % 2 != 0)
                     return;
@@ -69,7 +69,7 @@ namespace NadekoBot.Modules.Administration
                 {
                     try
                     {
-                        await prev.AddReactionAsync(x.emote, new RequestOptions()
+                        await target.AddReactionAsync(x.emote, new RequestOptions()
                         {
                             RetryMode = RetryMode.Retry502 | RetryMode.RetryRatelimit
                         }).ConfigureAwait(false);
@@ -86,8 +86,8 @@ namespace NadekoBot.Modules.Administration
                 if (_service.Add(ctx.Guild.Id, new ReactionRoleMessage()
                 {
                     Exclusive = exclusive,
-                    MessageId = prev.Id,
-                    ChannelId = prev.Channel.Id,
+                    MessageId = target.Id,
+                    ChannelId = target.Channel.Id,
                     ReactionRoles = all.Select(x =>
                     {
                         return new ReactionRole()
@@ -112,8 +112,26 @@ namespace NadekoBot.Modules.Administration
             [UserPerm(GuildPerm.ManageRoles)]
             [BotPerm(GuildPerm.ManageRoles)]
             [Priority(0)]
+            public Task ReactionRoles(ulong messageId, params string[] input) =>
+                InternalReactionRoles(false, messageId, input);
+            
+            [NadekoCommand, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [NoPublicBot]
+            [UserPerm(GuildPerm.ManageRoles)]
+            [BotPerm(GuildPerm.ManageRoles)]
+            [Priority(1)]
+            public Task ReactionRoles(ulong messageId, Exclude _, params string[] input) =>
+                InternalReactionRoles(true, messageId, input);
+            
+            [NadekoCommand, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [NoPublicBot]
+            [UserPerm(GuildPerm.ManageRoles)]
+            [BotPerm(GuildPerm.ManageRoles)]
+            [Priority(0)]
             public Task ReactionRoles(params string[] input) =>
-                InternalReactionRoles(false, input);
+                InternalReactionRoles(false, null, input);
 
             [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
@@ -122,7 +140,7 @@ namespace NadekoBot.Modules.Administration
             [BotPerm(GuildPerm.ManageRoles)]
             [Priority(1)]
             public Task ReactionRoles(Exclude _, params string[] input) =>
-                InternalReactionRoles(true, input);
+                InternalReactionRoles(true, null, input);
 
             [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]

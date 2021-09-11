@@ -362,6 +362,14 @@ namespace NadekoBot.Modules.Help
             if (!(serviceUrl is null || accessKey is null || secretAcccessKey is null))
             {
                 var config = new AmazonS3Config {ServiceURL = serviceUrl};
+                
+                using var dlClient = new AmazonS3Client(accessKey, secretAcccessKey, config);
+                var oldVersionObject = await dlClient.GetObjectAsync(new GetObjectRequest()
+                {
+                    BucketName = "nadeko-pictures",
+                    Key = "cmds/versions.json",
+                });
+                
                 using (var client = new AmazonS3Client(accessKey, secretAcccessKey, config))
                 {
                     await client.PutObjectAsync(new PutObjectRequest()
@@ -375,11 +383,10 @@ namespace NadekoBot.Modules.Help
                     });
                 }
 
-                const string cmdVersionsFilePath = "../../cmd-versions.json";
-                var versionListString = File.Exists(cmdVersionsFilePath)
-                    ? await File.ReadAllTextAsync(cmdVersionsFilePath)
-                    : "[]";
-
+                using var ms = new MemoryStream();
+                await oldVersionObject.ResponseStream.CopyToAsync(ms);
+                var versionListString = Encoding.UTF8.GetString(ms.ToArray());
+                
                 var versionList = System.Text.Json.JsonSerializer.Deserialize<List<string>>(versionListString);
                 if (!versionList.Contains(StatsService.BotVersion))
                 {
@@ -391,7 +398,6 @@ namespace NadekoBot.Modules.Help
                         {
                             WriteIndented = true
                         });
-                    await File.WriteAllTextAsync(cmdVersionsFilePath, versionListString);
                     
                     // upload the updated version list
                     using var client = new AmazonS3Client(accessKey, secretAcccessKey, config);

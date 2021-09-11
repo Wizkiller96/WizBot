@@ -328,6 +328,15 @@ namespace NadekoBot.Services.Database
                 .HasDefaultValue(100);
 
             #endregion
+
+            #region Reaction roles
+
+            modelBuilder.Entity<ReactionRoleMessage>(rrm => rrm
+                .HasMany(x => x.ReactionRoles)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade));
+
+            #endregion
         }
     }
 }

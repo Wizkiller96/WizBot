@@ -8,6 +8,8 @@ using NadekoBot.Extensions;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
+using LinqToDB;
+using LinqToDB.EntityFrameworkCore;
 using NadekoBot.Db;
 using Serilog;
 
@@ -155,19 +157,23 @@ namespace NadekoBot.Modules.Administration.Services
 
         public bool Add(ulong id, ReactionRoleMessage rrm)
         {
-            using (var uow = _db.GetDbContext())
-            {
-                var gc = uow.GuildConfigsForId(id, set => set
-                    .Include(x => x.ReactionRoleMessages)
-                    .ThenInclude(x => x.ReactionRoles));
-                if (gc.ReactionRoleMessages.Count >= 10)
-                    return false;
-                gc.ReactionRoleMessages.Add(rrm);
-                _models.AddOrUpdate(id,
-                    gc.ReactionRoleMessages,
-                    delegate { return gc.ReactionRoleMessages; });
-                uow.SaveChanges();
-            }
+            using var uow = _db.GetDbContext();
+            var table = uow.GetTable<ReactionRoleMessage>();
+            table.Delete(x => x.MessageId == rrm.MessageId);
+                
+            var gc = uow.GuildConfigsForId(id, set => set
+                .Include(x => x.ReactionRoleMessages)
+                .ThenInclude(x => x.ReactionRoles));
+                
+            if (gc.ReactionRoleMessages.Count >= 10)
+                return false;
+                
+            gc.ReactionRoleMessages.Add(rrm);
+            uow.SaveChanges();
+                
+            _models.AddOrUpdate(id,
+                gc.ReactionRoleMessages,
+                delegate { return gc.ReactionRoleMessages; });
             return true;
         }
 

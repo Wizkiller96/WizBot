@@ -4,6 +4,10 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+### Added
+
+- `.rero` now optionally takes a message id to which to attach the reaction roles
+
 ## [3.0.1] - 10.09.2021
 
 ### Fixed

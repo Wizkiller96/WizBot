@@ -10,7 +10,6 @@ using Serilog;
 
 namespace NadekoBot.Services
 {
-    // todo check why is memory usage so unstable
     public sealed class BotCredsProvider
     {
         private readonly int? _totalShards;
