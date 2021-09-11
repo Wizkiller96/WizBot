@@ -18,7 +18,7 @@ This part is completely optional, **however it's necessary for music and a few o
         - Open up `creds.yml` and look for `GoogleAPIKey`, paste your API key after the `:`.
         - It should look like this:
         ```yml
-        GoogleApiKey: "AIzaSyDSci1sdlWQOWNVj1vlXxxxxxbk0oWMEzM",
+        GoogleApiKey: "AIzaSyDSci1sdlWQOWNVj1vlXxxxxxbk0oWMEzM"
         ```
 - **MashapeKey**
     - Required for Hearthstone cards.
@@ -42,9 +42,8 @@ This part is completely optional, **however it's necessary for music and a few o
     - Select `Chat Bot` from the Category dropdown
     - Once created, clicking on your application will show a new Client ID field
     - Copy it to your creds.yml as shown below
-    - *(if you're adding it as the last key inside your creds.yml, remove the trailling comma from the example below)*
     ```yml
-        TwitchClientId: "516tr61tr1qweqwe86trg3g",
+        TwitchClientId: "516tr61tr1qweqwe86trg3g"
     ```
 - **LocationIqApiKey**
     - Optional. Used only for the `.time` command. https://locationiq.com api key (register and you will receive the token in the email). 
@@ -75,43 +74,93 @@ RestartCommand:
 For Windows (Source), Linux or OSX, add this to your `creds.yml`
 
 ```yml
-"RestartCommand": {
-    "Cmd": "dotnet",
-    "Args": "run -c Release"
-},
+RestartCommand:
+    Cmd: dotnet
+    Args: "NadekoBot.dll -- {0}"
 ```
 
 ---
 
 #### End Result
 
-**This is an example of how the `creds.yml` looks like with multiple owners, the restart command (optional) and all the API keys (also optional):**
+**This is an example of how the `creds.yml` looks like with multiple owners, the restart command (optional) and some of the API keys (also optional):**
 
 ```yml
-{
-  "Token": "MTc5MzcyXXX2MDI1ODY3MjY0.ChKs4g.I8J_R9XX0t-QY-0PzXXXiN0-7vo",
-  "OwnerIds": [
-        105635123466156544,
-        145521851676884992,
-        341420590009417729
-  ],
-  "GoogleApiKey": "AIzaSyDSci1sdlWQOWNVj1vlXxxxxxbk0oWMEzM",
-  "MashapeKey": "4UrKpcWXc2mshS8RKi00000y8Kf5p1Q8kI6jsn32bmd8oVWiY7",
-  "OsuApiKey": "4c8c8fdff8e1234581725db27fd140a7d93320d6",
-  "CleverbotApiKey": "",
-  "Db": null,
-  "TotalShards": 1,
-  "PatreonAccessToken": "",
-  "PatreonCampaignId": "334038",
-  "RestartCommand": {
-    "Cmd": "NadekoBot.exe"
-	},
-  "ShardRunCommand": "",
-  "ShardRunArguments": "",
-  "ShardRunPort": null,
-  "TwitchClientId": null,
-  "RedisOptions": null
-}
+# DO NOT CHANGE
+version: 1
+# Bot token. Do not share with anyone ever -> https://discordapp.com/developers/applications/
+token: 'MTE5Nzc3MDIxMzE5NTc3NjEw.VlhNCw.BuqJFyzdIUAK1PRf1eK1Cu89Jew'
+# List of Ids of the users who have bot owner permissions
+# **DO NOT ADD PEOPLE YOU DON'T TRUST**
+ownerIds: [
+    105635123466156544,
+    145521851676884992,
+    341420590009417729
+]
+# The number of shards that the bot will running on.
+# Leave at 1 if you don't know what you're doing.
+totalShards: 1
+# Login to https://console.cloud.google.com, create a new project, go to APIs & Services -> Library -> YouTube Data API and enable it.
+# Then, go to APIs and Services -> Credentials and click Create credentials -> API key.
+# Used only for Youtube Data Api (at the moment).
+googleApiKey: 'AIzaSyDScfdfdfi1sdlWQOWxxxxxbk0oWMEzM'
+# Settings for voting system for discordbots. Meant for use on global Nadeko.
+votes:
+  url: ''
+  key: ''
+# Patreon auto reward system settings.
+# go to https://www.patreon.com/portal -> my clients -> create client
+patreon:
+# Access token. You have to manually update this 1st of each month by refreshing the token on https://patreon.com/portal
+  accessToken: ''
+  # Unused atm
+  refreshToken: ''
+  # Unused atm
+  clientSecret: ''
+  # Campaign ID of your patreon page. Go to your patreon page (make sure you're logged in) and type "prompt('Campaign ID', window.patreon.bootstrap.creator.data.id);" in the console. (ctrl + shift + i)
+  campaignId: ''
+# Api key for sending stats to DiscordBotList.
+botListToken: ''
+# Official cleverbot api key.
+cleverbotApiKey: ''
+# Redis connection string. Don't change if you don't know what you're doing.
+redisOptions: localhost:6379,syncTimeout=30000,responseTimeout=30000,allowAdmin=true,password=
+# Database options. Don't change if you don't know what you're doing. Leave null for default values
+db:
+# Database type. Only sqlite supported atm
+  type: sqlite
+  # Connection string. Will default to "Data Source=data/NadekoBot.db"
+  connectionString: Data Source=data/NadekoBot.db
+# Address and port of the coordinator endpoint. Leave empty for default.
+# Change only if you've changed the coordinator address or port.
+coordinatorUrl: http://localhost:3442
+# Api key obtained on https://rapidapi.com (go to MyApps -> Add New App -> Enter Name -> Application key)
+rapidApiKey: 4UrKpcWXcxxxxxxxxxxxxxxp1Q8kI6jsn32xxxoVWiY7
+# https://locationiq.com api key (register and you will receive the token in the email).
+# Used only for .time command.
+locationIqApiKey: 
+# https://timezonedb.com api key (register and you will receive the token in the email).
+# Used only for .time command
+timezoneDbApiKey: 
+# https://pro.coinmarketcap.com/account/ api key. There is a free plan for personal use.
+# Used for cryptocurrency related commands.
+coinmarketcapApiKey: 
+# Api key used for Osu related commands. Obtain this key at https://osu.ppy.sh/p/api
+osuApiKey: 4c8c8fdffdsfdsfsdfsfa33f3f3140a7d93320d6
+# Command and args which will be used to restart the bot.
+# Only used if bot is executed directly (NOT through the coordinator)
+# placeholders: 
+#     {0} -> shard id 
+#     {1} -> total shards
+# Linux default
+#     cmd: dotnet
+#     args: "NadekoBot.dll -- {0}"
+# Windows default
+#     cmd: NadekoBot.exe
+#     args: {0}
+restartCommand:
+  cmd: 
+  args: 
 ```
 
 ---
