@@ -46,7 +46,7 @@
     - Then you **must** run the bot to prepare the database for the migration, and make sure the bot works prior to upgrade.
  Then:
 2. Rename your old nadeko bot folder to `nadekobot_2x`
-   - `mv NadekoBot nadekobot_2x`
+    - `mv NadekoBot nadekobot_2x`
 3. Build the new version and move old data to the output folder 
     1. Clone the v3 branch to a separate folder 
         - `git clone https://gitlab.com/kwoth/nadekobot -b v3 --depth 1`
