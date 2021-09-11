@@ -205,29 +205,33 @@ namespace WizBot.Modules.Xp.Services
                                     curRewards.Add(usr.GuildId, crews);
                                 }
 
-                                var rrew = rrews.FirstOrDefault(x => x.Level == newGuildLevelData.Level);
-                                if (rrew != null)
+                                //loop through levels since last level up, so if a high amount of xp is gained, rewards are still applied.
+                                for (var i = oldGuildLevelData.Level + 1; i <= newGuildLevelData.Level; i++)
                                 {
-                                    var role = first.User.Guild.GetRole(rrew.RoleId);
-                                    if (!(role is null))
+                                    var rrew = rrews.FirstOrDefault(x => x.Level == i);
+                                    if (rrew != null)
                                     {
-                                        if (rrew.Remove)
+                                        var role = first.User.Guild.GetRole(rrew.RoleId);
+                                        if (!(role is null))
                                         {
-                                            _ = first.User.RemoveRoleAsync(role);
-                                        }
-                                        else
-                                        {
-                                            _ = first.User.AddRoleAsync(role);
+                                            if (rrew.Remove)
+                                            {
+                                                _ = first.User.RemoveRoleAsync(role);
+                                            }
+                                            else
+                                            {
+                                                _ = first.User.AddRoleAsync(role);
+                                            }
                                         }
                                     }
-                                }
 
-                                //get currency reward for this level
-                                var crew = crews.FirstOrDefault(x => x.Level == newGuildLevelData.Level);
-                                if (crew != null)
-                                {
-                                    //give the user the reward if it exists
-                                    await _cs.AddAsync(item.Key.User.Id, "Level-up Reward", crew.Amount);
+                                    //get currency reward for this level
+                                    var crew = crews.FirstOrDefault(x => x.Level == i);
+                                    if (crew != null)
+                                    {
+                                        //give the user the reward if it exists
+                                        await _cs.AddAsync(item.Key.User.Id, "Level-up Reward", crew.Amount);
+                                    }
                                 }
                             }
                         }
