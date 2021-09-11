@@ -97,7 +97,7 @@ namespace NadekoBot.Modules.Gambling
 
             await _cs.AddAsync(ctx.User.Id, "Timely claim", val).ConfigureAwait(false);
 
-            await ReplyErrorLocalizedAsync(strs.timely(n(val) + CurrencySign, period));
+            await ReplyConfirmLocalizedAsync(strs.timely(n(val) + CurrencySign, period));
         }
 
         [NadekoCommand, Aliases]

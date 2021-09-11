@@ -8,6 +8,10 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 - `.rero` now optionally takes a message id to which to attach the reaction roles
 
+### Fixed
+
+- `.timely` will now correctly use `Ok` color
+
 ## [3.0.1] - 10.09.2021
 
 ### Fixed
