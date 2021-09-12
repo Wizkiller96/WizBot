@@ -123,7 +123,7 @@ namespace NadekoBot.Modules.Administration.Services
                     break;
                 case PunishmentAction.Ban:
                     if (minutes == 0)
-                        await guild.AddBanAsync(user, reason: reason).ConfigureAwait(false);
+                        await guild.AddBanAsync(user, reason: reason, pruneDays: 7).ConfigureAwait(false);
                     else
                         await _mute.TimedBan(user.Guild, user, TimeSpan.FromMinutes(minutes), reason)
                             .ConfigureAwait(false);
