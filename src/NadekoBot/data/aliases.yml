@@ -1181,8 +1181,6 @@ timely:
 - timely
 timelyreset:
 - timelyreset
-novel:
-- novel
 crypto:
 - crypto
 - c

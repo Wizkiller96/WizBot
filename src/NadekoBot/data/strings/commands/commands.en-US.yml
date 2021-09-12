@@ -1973,10 +1973,6 @@ timelyreset:
   desc: "Resets all user timeouts on `{0}timely` command."
   args:
     - ""
-novel:
-  desc: "Searches for a novel on `http://novelupdates.com/`. You have to provide an exact name."
-  args:
-    - "the nine cauldrons"
 crypto:
   desc: "Shows basic stats about a cryptocurrency from coinmarketcap.com. You can use either a name or an abbreviation of the currency."
   args:

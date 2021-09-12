@@ -59,7 +59,10 @@ namespace NadekoBot.Modules.Searches.Services
             query = query.Replace(" ", "-", StringComparison.InvariantCulture);
             try
             {
-                var link = "http://www.novelupdates.com/series/" + Uri.EscapeDataString(query.Replace("/", " ", StringComparison.InvariantCulture));
+                var link = "https://www.novelupdates.com/series/" + Uri.EscapeDataString(query
+                    .Replace(" ", "-")
+                    .Replace("/", " ")
+                );
                 link = link.ToLowerInvariant();
                 var (ok, data) = await _cache.TryGetNovelDataAsync(link).ConfigureAwait(false);
                 if (!ok)

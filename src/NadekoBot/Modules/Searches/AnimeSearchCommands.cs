@@ -16,33 +16,33 @@ namespace NadekoBot.Modules.Searches
         [Group]
         public class AnimeSearchCommands : NadekoSubmodule<AnimeSearchService>
         {
-            [NadekoCommand, Aliases]
-            public async Task Novel([Leftover] string query)
-            {
-                if (string.IsNullOrWhiteSpace(query))
-                    return;
-
-                var novelData = await _service.GetNovelData(query).ConfigureAwait(false);
-
-                if (novelData is null)
-                {
-                    await ReplyErrorLocalizedAsync(strs.failed_finding_novel).ConfigureAwait(false);
-                    return;
-                }
-
-                var embed = _eb.Create()
-                    .WithOkColor()
-                    .WithDescription(novelData.Description.Replace("<br>", Environment.NewLine, StringComparison.InvariantCulture))
-                    .WithTitle(novelData.Title)
-                    .WithUrl(novelData.Link)
-                    .WithImageUrl(novelData.ImageUrl)
-                    .AddField(GetText(strs.authors), string.Join("\n", novelData.Authors), true)
-                    .AddField(GetText(strs.status), novelData.Status, true)
-                    .AddField(GetText(strs.genres), string.Join(" ", novelData.Genres.Any() ? novelData.Genres : new[] { "none" }), true)
-                    .WithFooter($"{GetText(strs.score)} {novelData.Score}");
-                
-                await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
-            }
+            // [NadekoCommand, Aliases]
+            // public async Task Novel([Leftover] string query)
+            // {
+            //     if (string.IsNullOrWhiteSpace(query))
+            //         return;
+            //
+            //     var novelData = await _service.GetNovelData(query).ConfigureAwait(false);
+            //
+            //     if (novelData is null)
+            //     {
+            //         await ReplyErrorLocalizedAsync(strs.failed_finding_novel).ConfigureAwait(false);
+            //         return;
+            //     }
+            //
+            //     var embed = _eb.Create()
+            //         .WithOkColor()
+            //         .WithDescription(novelData.Description.Replace("<br>", Environment.NewLine, StringComparison.InvariantCulture))
+            //         .WithTitle(novelData.Title)
+            //         .WithUrl(novelData.Link)
+            //         .WithImageUrl(novelData.ImageUrl)
+            //         .AddField(GetText(strs.authors), string.Join("\n", novelData.Authors), true)
+            //         .AddField(GetText(strs.status), novelData.Status, true)
+            //         .AddField(GetText(strs.genres), string.Join(" ", novelData.Genres.Any() ? novelData.Genres : new[] { "none" }), true)
+            //         .WithFooter($"{GetText(strs.score)} {novelData.Score}");
+            //     
+            //     await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+            // }
 
             [NadekoCommand, Aliases]
             [Priority(0)]
