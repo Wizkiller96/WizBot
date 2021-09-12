@@ -93,15 +93,15 @@ namespace NadekoBot.Modules.Administration.Services
             {
                 var guildIds = client.Guilds.Select(x => x.Id).ToList();
                 var configs = uow
-                    .Set<GuildConfig>()
+                    .LogSettings
                     .AsQueryable()
-                    .Include(gc => gc.LogSetting)
-                    .ThenInclude(ls => ls.IgnoredChannels)
+                    .AsNoTracking()
                     .Where(x => guildIds.Contains(x.GuildId))
+                    .Include(ls => ls.IgnoredChannels)
                     .ToList();
 
                 GuildLogSettings = configs
-                    .ToDictionary(g => g.GuildId, g => g.LogSetting)
+                    .ToDictionary(ls => ls.GuildId)
                     .ToConcurrent();
             }
 
@@ -170,17 +170,15 @@ namespace NadekoBot.Modules.Administration.Services
             int removed = 0;
             using (var uow = _db.GetDbContext())
             {
-                var config = uow.LogSettingsFor(gid);
-                LogSetting logSetting = GuildLogSettings.GetOrAdd(gid, (id) => config.LogSetting);
+                var logSetting = uow.LogSettingsFor(gid);
                 removed = logSetting.IgnoredChannels.RemoveWhere(ilc => ilc.ChannelId == cid);
-                config.LogSetting.IgnoredChannels.RemoveWhere(ilc => ilc.ChannelId == cid);
                 if (removed == 0)
                 {
                     var toAdd = new IgnoredLogChannel {ChannelId = cid};
                     logSetting.IgnoredChannels.Add(toAdd);
-                    config.LogSetting.IgnoredChannels.Add(toAdd);
                 }
 
+                GuildLogSettings.AddOrUpdate(gid, logSetting, (_, _) => logSetting);
                 uow.SaveChanges();
             }
 
@@ -209,11 +207,10 @@ namespace NadekoBot.Modules.Administration.Services
 
         public async Task LogServer(ulong guildId, ulong channelId, bool value)
         {
-            LogSetting logSetting;
             using (var uow = _db.GetDbContext())
             {
-                logSetting = uow.LogSettingsFor(guildId).LogSetting;
-                GuildLogSettings.AddOrUpdate(guildId, (id) => logSetting, (id, old) => logSetting);
+                var logSetting = uow.LogSettingsFor(guildId);
+                
                 logSetting.LogOtherId =
                 logSetting.MessageUpdatedId =
                 logSetting.MessageDeletedId =
@@ -230,8 +227,9 @@ namespace NadekoBot.Modules.Administration.Services
                 logSetting.UserMutedId =
                 logSetting.LogVoicePresenceTTSId =
                     (value ? channelId : (ulong?) null);
-
+;
                 await uow.SaveChangesAsync();
+                GuildLogSettings.AddOrUpdate(guildId, (id) => logSetting, (id, old) => logSetting);
             }
         }
 
@@ -301,7 +299,7 @@ namespace NadekoBot.Modules.Administration.Services
             ulong? channelId = null;
             using (var uow = _db.GetDbContext())
             {
-                var logSetting = uow.LogSettingsFor(gid).LogSetting;
+                var logSetting = uow.LogSettingsFor(gid);
                 GuildLogSettings.AddOrUpdate(gid, (id) => logSetting, (id, old) => logSetting);
                 switch (type)
                 {
@@ -1238,7 +1236,7 @@ namespace NadekoBot.Modules.Administration.Services
         {
             using (var uow = _db.GetDbContext())
             {
-                var newLogSetting = uow.LogSettingsFor(guildId).LogSetting;
+                var newLogSetting = uow.LogSettingsFor(guildId);
                 switch (logChannelType)
                 {
                     case LogType.Other:

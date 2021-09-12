@@ -337,6 +337,14 @@ namespace NadekoBot.Services.Database
                 .OnDelete(DeleteBehavior.Cascade));
 
             #endregion
+
+            #region LogSettings
+
+            modelBuilder.Entity<LogSetting>(ls => ls
+                .HasIndex(x => x.GuildId)
+                .IsUnique());
+
+            #endregion
         }
     }
 }

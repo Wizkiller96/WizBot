@@ -57,8 +57,8 @@ namespace NadekoBot.Services
             // if user is a new booster
             // or boosted again the same server
             if ((oldUser is { PremiumSince: null } && newUser is { PremiumSince: not null })
-                || (oldUser.PremiumSince is DateTimeOffset oldDate 
-                    && newUser.PremiumSince is DateTimeOffset newDate
+                || (oldUser?.PremiumSince is DateTimeOffset oldDate 
+                    && newUser?.PremiumSince is DateTimeOffset newDate
                     && newDate > oldDate))
             {
                 var conf = GetOrAddSettingsForGuild(newUser.Guild.Id);

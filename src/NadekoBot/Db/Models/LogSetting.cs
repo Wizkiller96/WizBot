@@ -8,6 +8,7 @@ namespace NadekoBot.Services.Database.Models
         public HashSet<IgnoredLogChannel> IgnoredChannels { get; set; } = new HashSet<IgnoredLogChannel>();
         public HashSet<IgnoredVoicePresenceChannel> IgnoredVoicePresenceChannelIds { get; set; } = new HashSet<IgnoredVoicePresenceChannel>();
 
+        public ulong GuildId { get; set; }
         public ulong? LogOtherId { get; set; }
         public ulong? MessageUpdatedId { get; set; }
         public ulong? MessageDeletedId { get; set; }

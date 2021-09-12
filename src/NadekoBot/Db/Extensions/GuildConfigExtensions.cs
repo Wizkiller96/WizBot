@@ -113,33 +113,15 @@ namespace NadekoBot.Db
             return config;
         }
 
-        public static GuildConfig LogSettingsFor(this NadekoContext ctx, ulong guildId)
+        public static LogSetting LogSettingsFor(this NadekoContext ctx, ulong guildId)
         {
-            var config = ctx
-                .GuildConfigs
+            var logSetting = ctx.LogSettings
                 .AsQueryable()
-                .Include(gc => gc.LogSetting)
-                    .ThenInclude(gc => gc.IgnoredChannels)
-                .FirstOrDefault(x => x.GuildId == guildId);
-
-            if (config is null)
-            {
-                ctx.GuildConfigs.Add((config = new GuildConfig
-                {
-                    GuildId = guildId,
-                    Permissions = Permissionv2.GetDefaultPermlist,
-                    WarningsInitialized = true,
-                    WarnPunishments = DefaultWarnPunishments,
-                }));
-                ctx.SaveChanges();
-            }
-
-            if (!config.WarningsInitialized)
-            {
-                config.WarningsInitialized = true;
-                config.WarnPunishments = DefaultWarnPunishments;
-            }
-            return config;
+                .Include(x => x.IgnoredChannels)
+                .Where(x => x.GuildId == guildId)
+                .FirstOrDefault();
+            
+            return logSetting;
         }
 
         public static IEnumerable<GuildConfig> Permissionsv2ForAll(this DbSet<GuildConfig> configs, List<ulong> include)
