@@ -7,10 +7,23 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 ### Added
 
 - `.rero` now optionally takes a message id to which to attach the reaction roles
+- Fully translated to German 🎉
+- Added `.boost`, `.boostmsg` and `.boostdel` commands which allow you to have customizable messages when someone boosts your server, with auto-deletion support
+
+### Changed
+
+- Updated `.greetmsg` and `.byemsg` command help to match the new `.boost` command help
+- Updated response embed colors in greet commands
+    - Success -> green
+    - Warning or Disable -> yellow.
 
 ### Fixed
 
 - `.timely` will now correctly use `Ok` color
+
+### Removed
+
+- Removed `.novel` command as it no longer works
 
 ## [3.0.1] - 10.09.2021
 

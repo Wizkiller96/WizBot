@@ -12,8 +12,6 @@ using NadekoBot.Modules.Administration;
 namespace NadekoBot.Services
 {
     // todo future use guild locale more in the code (from guild settings) (for dates, currency, etc?)
-    // todo future maybe Write a sourcegen for response strings
-    // and use const/static fields (maybe even typed to enforce correct number of arguments)
     public class Localization : ILocalization, INService
     {
         private readonly BotConfigService _bss;

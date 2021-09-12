@@ -31,7 +31,12 @@ greet:
   args:
     - ""
 greetmsg:
-  desc: "Sets a new join announcement message which will be shown in the server's channel. Type `%user.mention%` if you want to mention the new member. Using it with no message will show the current greet message. You can use embed json from <https://eb.nadeko.bot/> instead of a regular text, if you want the message to be embedded."
+  desc: |-
+    Sets a new join announcement message which will be shown in the server's channel.
+    Type `%user.mention%` if you want to mention the new member.   
+    Full list of placeholders can be found here <https://nadekobot.readthedocs.io/en/latest/placeholders/>
+    Using it with no message will show the current greet message.  
+    You can use embed json from <https://eb.nadeko.bot/> instead of a regular text, if you want the message to be embedded.
   args:
     - "Welcome, %user.mention%."
 bye:
@@ -39,7 +44,12 @@ bye:
   args:
     - ""
 byemsg:
-  desc: "Sets a new leave announcement message. Type `%user.mention%` if you want to show the name the user who left. Type `%id%` to show id. Using this command with no message will show the current bye message. You can use embed json from <https://eb.nadeko.bot/> instead of a regular text, if you want the message to be embedded."
+  desc: |- 
+    Sets a new leave announcement message. 
+    Type `%user.mention%` if you want to show the name the user who left. 
+    Full list of placeholders can be found here <https://nadekobot.readthedocs.io/en/latest/placeholders/>  
+    Using this command with no message will show the current bye message. 
+    You can use embed json from <https://eb.nadeko.bot/> instead of a regular text, if you want the message to be embedded.
   args:
     - "%user.mention% has left."
 byedel:
@@ -66,6 +76,24 @@ byetest:
   args:
     - ""
     - "@SomeoneElse"
+boost:
+  desc: "Toggles anouncements on the current channel when someone boosts the server."
+  args:
+    - ""
+boostmsg:
+  desc: |-
+    Sets a new boost announcement message. 
+    Type `%user.mention%` if you want to show the name the user who left. 
+    Full list of placeholders can be found here <https://nadekobot.readthedocs.io/en/latest/placeholders/>
+    Using this command with no message will show the current boost message. 
+    You can use embed json from <https://eb.nadeko.bot/> instead of a regular text, if you want the message to be embedded.
+  args:
+    - "%user.mention% has boosted the server!!!"
+boostdel:
+  desc: "Sets the time it takes (in seconds) for boost messages to be auto-deleted. Set it to `0` to disable automatic deletion."
+  args:
+    - "0"
+    - "30"
 logserver:
   desc: "Enables or Disables ALL log events. If enabled, all log events will log to this channel."
   args:

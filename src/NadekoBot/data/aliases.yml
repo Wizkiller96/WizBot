@@ -32,6 +32,12 @@ greetdmtest:
 - greetdmtest
 byetest:
 - byetest
+boost:
+- boost
+boostmsg:
+- boostmsg
+boostdel:
+- boostdel
 logserver:
 - logserver
 logignore:

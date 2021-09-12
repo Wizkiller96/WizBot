@@ -48,7 +48,50 @@ namespace NadekoBot.Services
 
             bot.JoinedGuild += Bot_JoinedGuild;
             _client.LeftGuild += _client_LeftGuild;
+            
+            _client.GuildMemberUpdated += ClientOnGuildMemberUpdated;
         }
+
+        private Task ClientOnGuildMemberUpdated(SocketGuildUser oldUser, SocketGuildUser newUser)
+        {
+            if (oldUser is { PremiumSince: null } && newUser is { PremiumSince: not null })
+            {
+                var conf = GetOrAddSettingsForGuild(newUser.Guild.Id);
+                if (!conf.SendBoostMessage) return Task.CompletedTask;
+
+                _ = Task.Run(TriggerBoostMessage(conf, newUser));
+            }
+
+            return Task.CompletedTask;
+        }
+
+        private Func<Task> TriggerBoostMessage(GreetSettings conf, SocketGuildUser user) => async () =>
+        {
+            var channel = user.Guild.GetTextChannel(conf.BoostMessageChannelId);
+            if (channel is null)
+                return;
+
+            if (string.IsNullOrWhiteSpace(conf.BoostMessage))
+                return;
+
+            var toSend = SmartText.CreateFrom(conf.BoostMessage);
+            var rep = new ReplacementBuilder()
+                .WithDefault(user, channel, user.Guild, _client)
+                .Build();
+
+            try
+            {
+                var toDelete = await channel.SendAsync(rep.Replace(toSend));
+                if (conf.BoostMessageDeleteAfter > 0)
+                {
+                    toDelete.DeleteAfter(conf.BoostMessageDeleteAfter);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error sending boost message.");
+            }
+        };
 
         private Task _client_LeftGuild(SocketGuild arg)
         {
@@ -524,6 +567,48 @@ namespace NadekoBot.Services
                 await uow.SaveChangesAsync();
             }
         }
+
+        public bool SetBoostMessage(ulong guildId, ref string message)
+        {
+            message = message?.SanitizeMentions();
+                
+            using var uow = _db.GetDbContext();
+            var conf = uow.GuildConfigsForId(guildId, set => set);
+            conf.BoostMessage = message;
+            
+            var toAdd = GreetSettings.Create(conf);
+            GuildConfigsCache.AddOrUpdate(guildId, toAdd,(_, _) => toAdd);
+
+            uow.SaveChanges();
+            return conf.SendBoostMessage;
+        }
+
+        public async Task SetBoostDel(ulong guildId, int timer)
+        {
+            if (timer < 0 || timer > 600)
+                throw new ArgumentOutOfRangeException(nameof(timer));
+            
+            using var uow = _db.GetDbContext();
+            var conf = uow.GuildConfigsForId(guildId, set => set);
+            conf.BoostMessageDeleteAfter = timer;
+            
+            var toAdd = GreetSettings.Create(conf);
+            GuildConfigsCache.AddOrUpdate(guildId, toAdd,(_, _) => toAdd);
+            
+            await uow.SaveChangesAsync();
+        }
+
+        public async Task<bool> ToggleBoost(ulong guildId, ulong channelId)
+        {
+            using var uow = _db.GetDbContext();
+            var conf = uow.GuildConfigsForId(guildId, set => set);
+            conf.SendBoostMessage = !conf.SendBoostMessage;
+            await uow.SaveChangesAsync();
+
+            var toAdd = GreetSettings.Create(conf);
+            GuildConfigsCache.AddOrUpdate(guildId, toAdd,(_, _) => toAdd);
+            return conf.SendBoostMessage;
+        }
     }
 
     public class GreetSettings
@@ -542,6 +627,11 @@ namespace NadekoBot.Services
 
         public bool SendChannelByeMessage { get; set; }
         public string ChannelByeMessageText { get; set; }
+        
+        public bool SendBoostMessage { get; set; }
+        public string BoostMessage { get; set; }
+        public int BoostMessageDeleteAfter { get; set; }
+        public ulong BoostMessageChannelId { get; set; }
 
         public static GreetSettings Create(GuildConfig g) => new GreetSettings()
         {
@@ -555,6 +645,11 @@ namespace NadekoBot.Services
             ChannelGreetMessageText = g.ChannelGreetMessageText,
             SendChannelByeMessage = g.SendChannelByeMessage,
             ChannelByeMessageText = g.ChannelByeMessageText,
+            
+            SendBoostMessage = g.SendBoostMessage,
+            BoostMessage = g.BoostMessage,
+            BoostMessageDeleteAfter = g.BoostMessageDeleteAfter,
+            BoostMessageChannelId = g.BoostMessageChannelId
         };
     }
 }

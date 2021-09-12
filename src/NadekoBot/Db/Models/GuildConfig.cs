@@ -29,6 +29,15 @@ namespace NadekoBot.Services.Database.Models
         public bool SendChannelGreetMessage { get; set; }
         public string ChannelGreetMessageText { get; set; } = "Welcome to the %server% server, %user%!";
 
+        #region Boost Message
+
+        public bool SendBoostMessage { get; set; }
+        public string BoostMessage { get; set; } = "%user% just boosted this server!";
+        public ulong BoostMessageChannelId { get; set; }
+        public int BoostMessageDeleteAfter { get; set; }
+
+        #endregion
+
         public bool SendChannelByeMessage { get; set; }
         public string ChannelByeMessageText { get; set; } = "%user% has left!";
 

@@ -163,7 +163,7 @@ namespace NadekoBot.Modules.NSFW
             {
                 if (!_service.AutoBoobTimers.TryRemove(ctx.Channel.Id, out t)) return;
 
-                t.Change(Timeout.Infinite, Timeout.Infinite); //proper way to disable the timer
+                t.Change(Timeout.Infinite, Timeout.Infinite);
                 await ReplyConfirmLocalizedAsync(strs.stopped).ConfigureAwait(false);
                 return;
             }
