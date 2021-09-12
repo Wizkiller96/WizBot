@@ -4,6 +4,10 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+
+
+## [3.0.2] - 12.09.2021
+
 ### Added
 
 - `.rero` now optionally takes a message id to which to attach the reaction roles
@@ -20,6 +24,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 ### Fixed
 
 - `.timely` will now correctly use `Ok` color
+- Fixed `.log` commands
 
 ### Removed
 
