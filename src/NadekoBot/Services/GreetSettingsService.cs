@@ -54,7 +54,12 @@ namespace NadekoBot.Services
 
         private Task ClientOnGuildMemberUpdated(SocketGuildUser oldUser, SocketGuildUser newUser)
         {
-            if (oldUser is { PremiumSince: null } && newUser is { PremiumSince: not null })
+            // if user is a new booster
+            // or boosted again the same server
+            if ((oldUser is { PremiumSince: null } && newUser is { PremiumSince: not null })
+                || (oldUser.PremiumSince is DateTimeOffset oldDate 
+                    && newUser.PremiumSince is DateTimeOffset newDate
+                    && newDate > oldDate))
             {
                 var conf = GetOrAddSettingsForGuild(newUser.Guild.Id);
                 if (!conf.SendBoostMessage) return Task.CompletedTask;
@@ -603,6 +608,7 @@ namespace NadekoBot.Services
             using var uow = _db.GetDbContext();
             var conf = uow.GuildConfigsForId(guildId, set => set);
             conf.SendBoostMessage = !conf.SendBoostMessage;
+            conf.BoostMessageChannelId = channelId;
             await uow.SaveChangesAsync();
 
             var toAdd = GreetSettings.Create(conf);
