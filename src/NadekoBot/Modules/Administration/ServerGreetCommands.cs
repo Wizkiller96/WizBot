@@ -44,11 +44,20 @@ namespace NadekoBot.Modules.Administration
             [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageGuild)]
+            public Task BoostMsg()
+            {
+                var boostMessage = _service.GetBoostMessage(ctx.Guild.Id);
+                return ReplyConfirmLocalizedAsync(strs.boostmsg_cur(boostMessage?.SanitizeMentions()));
+            }
+
+            [NadekoCommand, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [UserPerm(GuildPerm.ManageGuild)]
             public async Task BoostMsg([Leftover] string text)
             {
                 if (string.IsNullOrWhiteSpace(text))
                 {
-                    await GreetMsg().ConfigureAwait(false);
+                    await BoostMsg().ConfigureAwait(false);
                     return;
                 }
 

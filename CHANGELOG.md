@@ -4,7 +4,13 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+### Changed
 
+- Ban `.warnp` will now prune user's messages
+
+### Fixed
+
+- `.boostmsg` will now properly show boost, and not greet message
 
 ## [3.0.2] - 12.09.2021
 

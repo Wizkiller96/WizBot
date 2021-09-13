@@ -172,6 +172,12 @@ namespace NadekoBot.Services
                 return uow.GuildConfigsForId(gid, set => set).ChannelGreetMessageText;
             }
         }
+        
+        public string GetBoostMessage(ulong gid)
+        {
+            using var uow = _db.GetDbContext();
+            return uow.GuildConfigsForId(gid, set => set).BoostMessage;
+        }
 
         private Task ByeUsers(GreetSettings conf, ITextChannel channel, IUser user)
             => ByeUsers(conf, channel, new[] {user});
