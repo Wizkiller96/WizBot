@@ -1912,7 +1912,7 @@ eightball:
   desc: "Ask the 8ball a yes/no question."
   args:
     - "Is b1nzy a nice guy?"
-youtubeuploadnotif:
+ytuploadnotif:
   desc: |-
     Subscribe to a youtube channel's upload rss feed.
     Shortcut for `.feed https://www.youtube.com/feeds/videos.xml?channel_id=%3Cyoutube_channel_id`
