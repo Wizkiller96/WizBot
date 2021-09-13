@@ -9,9 +9,11 @@ using NadekoBot.Services.Database.Models;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Administration.Services;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NadekoBot.Modules.Permissions.Services;
+using NadekoBot.Modules.Searches.Common;
 using Serilog;
 
 namespace NadekoBot.Modules.Administration
@@ -762,6 +764,78 @@ namespace NadekoBot.Modules.Administration
                 await ctx.Channel.EmbedAsync(toSend)
                     .ConfigureAwait(false);
             }
+            
+            [NadekoCommand, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [UserPerm(GuildPerm.BanMembers)]
+            [BotPerm(GuildPerm.BanMembers)]
+            [Ratelimit(30)]
+            public async Task MassBan(params string[] userStrings)
+            {
+                if (userStrings.Length == 0)
+                    return;
+
+                var missing = new List<string>();
+                var banning = new HashSet<IGuildUser>();
+
+                await ctx.Channel.TriggerTypingAsync();
+                foreach (var userStr in userStrings)
+                {
+                    if (ulong.TryParse(userStr, out var userId))
+                    {
+                        var user = await ctx.Guild.GetUserAsync(userId) ?? 
+                            await ((DiscordSocketClient)Context.Client).Rest.GetGuildUserAsync(ctx.Guild.Id, userId);
+
+                        if (user is null)
+                        {
+                            missing.Add(userStr);
+                            continue;
+                        }
+
+                        if (!await CheckRoleHierarchy(user))
+                        {
+                            return;
+                        }
+
+                        banning.Add(user);
+                    }
+                    else
+                    {
+                        missing.Add(userStr);
+                    }
+                }
+
+                var missStr = string.Join("\n", missing);
+                if (string.IsNullOrWhiteSpace(missStr))
+                    missStr = "-";
+                
+                var toSend = _eb.Create(ctx)
+                    .WithDescription(GetText(strs.mass_ban_in_progress(banning.Count)))
+                    .AddField(GetText(strs.invalid(missing.Count)), missStr)
+                    .WithPendingColor();
+
+                var banningMessage = await ctx.Channel.EmbedAsync(toSend);
+
+                foreach (var toBan in banning)
+                {
+                    try
+                    {
+                        await toBan.BanAsync(7);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Warning(ex, "Error banning {User} user in {GuildId} server", 
+                            toBan.Id,
+                            ctx.Guild.Id);
+                    }
+                }
+                
+                await banningMessage.ModifyAsync(x => x.Embed = _eb.Create()
+                    .WithDescription(GetText(strs.mass_ban_completed(banning.Count())))
+                    .AddField(GetText(strs.invalid(missing.Count)), missStr)
+                    .WithOkColor()
+                    .Build()).ConfigureAwait(false);
+            }
 
             [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
@@ -783,7 +857,7 @@ namespace NadekoBot.Modules.Administration
                 var banningMessageTask = ctx.Channel.EmbedAsync(_eb.Create()
                     .WithDescription(GetText(strs.mass_kill_in_progress(bans.Count())))
                     .AddField(GetText(strs.invalid(missing)), missStr)
-                    .WithOkColor());
+                    .WithPendingColor());
 
                 //do the banning
                 await Task.WhenAll(bans

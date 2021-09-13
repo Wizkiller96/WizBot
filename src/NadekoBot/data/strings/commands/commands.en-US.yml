@@ -2010,6 +2010,10 @@ rolelevelreq:
   desc: "Set a level requirement on a self-assignable role."
   args:
     - "5 SomeRole"
+massban:
+  desc: "Bans multiple users at once. Specify a space separated list of IDs of users who you wish to ban."
+  args:
+    - "123123123 3333333333 444444444"
 masskill:
   desc: "Specify a new-line separated list of `userid reason`. You can use Username#discrim instead of UserId. Specified users will be banned from the current server, blacklisted from the bot, and have all of their flowers taken away."
   args:

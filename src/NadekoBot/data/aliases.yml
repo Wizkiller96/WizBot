@@ -1193,6 +1193,8 @@ crypto:
 rolelevelreq:
 - rolelevelreq
 - rlr
+massban:
+  - massban
 masskill:
 - masskill
 pathofexile:

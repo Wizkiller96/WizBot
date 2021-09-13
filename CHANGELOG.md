@@ -4,6 +4,10 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+### Added
+
+- Added `.massban` to ban multiple people at once. 30 second cooldown
+
 ### Changed
 
 - Ban `.warnp` will now prune user's messages

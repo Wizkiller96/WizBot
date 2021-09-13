@@ -889,6 +889,8 @@
   "self_assign_not_level": "That self-assignable role requires at least server level {0}.",
   "invalid": "Invalid / Can't be found ({0})",
   "mass_kill_in_progress": "Mass Banning and Blacklisting of {0} users is in progress...",
+  "mass_ban_in_progress": "Banning {0} users...",
+  "mass_ban_completed": "Banned {0} users.",
   "mass_kill_completed": "Mass Banning and Blacklisting of {0} users is complete.",
   "failed_finding_novel": "Can't find that novel. Make sure you've typed the exact full name, and that it exists on novelupdates.com",
   "club_transfered": "Ownership of the club {0} has been transferred to {1}",
