@@ -7,7 +7,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 ### Added
 
 - Added `.massban` to ban multiple people at once. 30 second cooldown
-- Added `.youtubeuploadnotif` / `.yun` as a shortcut to a subscribing channel's rss feed
+- Added `.youtubeuploadnotif` / `.yun` as a shortcut for subscribing to a youtube channel's rss feed
 
 ### Changed
 
