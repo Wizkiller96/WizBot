@@ -5,6 +5,7 @@ using NadekoBot.Extensions;
 using NadekoBot.Modules.Searches.Services;
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Serilog;
 
@@ -15,6 +16,25 @@ namespace NadekoBot.Modules.Searches
         [Group]
         public class FeedCommands : NadekoSubmodule<FeedsService>
         {
+            private static readonly Regex YtChannelRegex =
+                new Regex(@"youtube\.com\/(?:c\/|channel\/|user\/)?(?<channelid>[a-zA-Z0-9\-]{1,})");
+            
+            [NadekoCommand, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [UserPerm(GuildPerm.ManageMessages)]
+            public Task YtUploadNotif(string url, [Leftover] ITextChannel channel = null)
+            {
+                var m = YtChannelRegex.Match(url);
+                if (!m.Success)
+                {
+                    return ReplyErrorLocalizedAsync(strs.invalid_input);
+                }
+
+                var channelId = m.Groups["channelid"].Value;
+
+                return Feed("https://www.youtube.com/feeds/videos.xml?channel_id=" + channelId, channel);
+            }
+
             [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageMessages)]

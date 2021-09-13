@@ -1912,6 +1912,12 @@ eightball:
   desc: "Ask the 8ball a yes/no question."
   args:
     - "Is b1nzy a nice guy?"
+youtubeuploadnotif:
+  desc: |-
+    Subscribe to a youtube channel's upload rss feed.
+    Shortcut for `.feed https://www.youtube.com/feeds/videos.xml?channel_id=%3Cyoutube_channel_id`
+  args:
+    - "https://www.youtube.com/channel/UCSJ4gkVC6NrvII8umztf0Ow"
 feed:
   desc: "Subscribes to a feed. Bot will post an update up to once every 10 seconds. You can have up to 10 feeds on one server. All feeds must have unique URLs. Set a channel as a second optional parameter to specify where to send the updates."
   args:
