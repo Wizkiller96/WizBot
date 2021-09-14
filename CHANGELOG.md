@@ -9,7 +9,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - Added `.massban` to ban multiple people at once. 30 second cooldown
 - Added `.youtubeuploadnotif` / `.yun` as a shortcut for subscribing to a youtube channel's rss feed
 - Added `.imageonlychannel` / `.imageonly` to prevent users from posting anything but images in the channel 
-- Fully translated to Spanish 🎉
+- Fully translated to Spanish, Russian and Ukrainian 🎉
 
 ### Changed
 
