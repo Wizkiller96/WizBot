@@ -8,6 +8,15 @@ namespace NadekoBot.Modules.Games.Common
     [Cloneable]
     public sealed partial class GamesConfig : ICloneable<GamesConfig>
     {
+        [Comment("DO NOT CHANGE")]
+        public int Version { get; set; }
+
+        [Comment("Hangman related settings (.hangman command)")]
+        public HangmanConfig Hangman { get; set; } = new HangmanConfig()
+        {
+            CurrencyReward = 0
+        };
+        
         [Comment("Trivia related settings (.t command)")]
         public TriviaConfig Trivia { get; set; } = new TriviaConfig()
         {
@@ -55,6 +64,13 @@ namespace NadekoBot.Modules.Games.Common
             new RaceAnimal { Icon = "🦀", Name = "Crab" },
             new RaceAnimal { Icon = "🦄", Name = "Unicorn" }
         };
+    }
+
+    [Cloneable]
+    public sealed partial class HangmanConfig
+    {
+        [Comment("The amount of currency awarded to the winner of a hangman game")]
+        public long CurrencyReward { get; set; }
     }
 
     [Cloneable]

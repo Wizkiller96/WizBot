@@ -45,7 +45,7 @@ namespace NadekoBot.Modules.Games.Common.Hangman
         public uint Errors { get; private set; } = 0;
         public uint MaxErrors { get; } = 6;
 
-        public event Func<Hangman, string, Task> OnGameEnded = delegate { return Task.CompletedTask; };
+        public event Func<Hangman, string, ulong, Task> OnGameEnded = delegate { return Task.CompletedTask; };
         public event Func<Hangman, string, char, Task> OnLetterAlreadyUsed = delegate { return Task.CompletedTask; };
         public event Func<Hangman, string, char, Task> OnGuessFailed = delegate { return Task.CompletedTask; };
         public event Func<Hangman, string, char, Task> OnGuessSucceeded = delegate { return Task.CompletedTask; };
@@ -68,7 +68,7 @@ namespace NadekoBot.Modules.Games.Common.Hangman
         {
             if (++Errors > MaxErrors)
             {
-                var _ = OnGameEnded(this, null);
+                var _ = OnGameEnded(this, null, 0);
                 CurrentPhase = Phase.Ended;
             }
         }
@@ -102,7 +102,7 @@ namespace NadekoBot.Modules.Games.Common.Hangman
                     if (input != Term.Word) // failed
                         return;
 
-                    var _ = OnGameEnded?.Invoke(this, userName);
+                    var _ = OnGameEnded?.Invoke(this, userName, userId);
                     CurrentPhase = Phase.Ended;
                     return;
                 }
@@ -127,7 +127,7 @@ namespace NadekoBot.Modules.Games.Common.Hangman
                 else if (Term.Word.All(x => _previousGuesses.IsSupersetOf(Term.Word.ToLowerInvariant()
                                                                             .Where(char.IsLetterOrDigit))))
                 {
-                    var _ = OnGameEnded.Invoke(this, userName); // if all letters are guessed
+                    var _ = OnGameEnded.Invoke(this, userName, userId); // if all letters are guessed
                     CurrentPhase = Phase.Ended;
                 }
                 else // guessed but not last letter

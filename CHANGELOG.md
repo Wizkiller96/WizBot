@@ -8,7 +8,9 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 - Added `.massban` to ban multiple people at once. 30 second cooldown
 - Added `.youtubeuploadnotif` / `.yun` as a shortcut for subscribing to a youtube channel's rss feed
-- Added `.imageonlychannel` / `.imageonly` to prevent users from posting anything but images in the channel 
+- Added `.imageonlychannel` / `.imageonly` to prevent users from posting anything but images in the channel
+- Added `.config games hangman.currency_reward` and a property with the same name in games.yml
+  - If set, users will gain the specified amount of currency for each hangman win
 - Fully translated to Spanish, Russian and Ukrainian 🎉
 
 ### Changed

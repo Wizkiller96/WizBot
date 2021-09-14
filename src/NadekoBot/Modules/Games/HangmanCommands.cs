@@ -8,6 +8,7 @@ using NadekoBot.Common.Attributes;
 using NadekoBot.Modules.Games.Common.Hangman;
 using NadekoBot.Modules.Games.Services;
 using NadekoBot.Modules.Games.Common.Hangman.Exceptions;
+using NadekoBot.Services;
 
 namespace NadekoBot.Modules.Games
 {
@@ -17,10 +18,14 @@ namespace NadekoBot.Modules.Games
         public class HangmanCommands : NadekoSubmodule<GamesService>
         {
             private readonly DiscordSocketClient _client;
+            private readonly ICurrencyService _cs;
+            private readonly GamesConfigService _gcs;
 
-            public HangmanCommands(DiscordSocketClient client)
+            public HangmanCommands(DiscordSocketClient client, ICurrencyService cs, GamesConfigService gcs)
             {
                 _client = client;
+                _cs = cs;
+                _gcs = gcs;
             }
 
             [NadekoCommand, Aliases]
@@ -83,7 +88,7 @@ namespace NadekoBot.Modules.Games
                 }
             }
 
-            Task Hm_OnGameEnded(Hangman game, string winner)
+            Task Hm_OnGameEnded(Hangman game, string winner, ulong userId)
             {
                 if (winner is null)
                 {
@@ -99,6 +104,10 @@ namespace NadekoBot.Modules.Games
                     return ctx.Channel.EmbedAsync(loseEmbed);
                 }
 
+                var reward = _gcs.Data.Hangman.CurrencyReward;
+                if (reward > 0)
+                    _cs.AddAsync(userId, "hangman win", reward, true);
+                
                 var winEmbed = _eb.Create().WithTitle($"Hangman Game ({game.TermType}) - Ended")
                                              .WithDescription(Format.Bold($"{winner} Won."))
                                              .AddField("It was", game.Term.GetWord())

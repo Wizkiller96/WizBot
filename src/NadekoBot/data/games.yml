@@ -1,3 +1,9 @@
+# DO NOT CHANGE
+version: 1
+# Hangman related settings (.hangman command)
+hangman:
+# The amount of currency awarded to the winner of a hangman game
+  currencyReward: 0
 # Trivia related settings (.t command)
 trivia:
 # The amount of currency awarded to the winner of the trivia game.

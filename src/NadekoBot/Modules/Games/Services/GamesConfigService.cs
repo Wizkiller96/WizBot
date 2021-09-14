@@ -18,6 +18,25 @@ namespace NadekoBot.Modules.Games.Services
                 ConfigPrinters.ToString, val => val > 0);
             AddParsedProp("trivia.currency_reward", gs => gs.Trivia.CurrencyReward, long.TryParse,
                 ConfigPrinters.ToString, val => val >= 0);
+            AddParsedProp("hangman.currency_reward", gs => gs.Hangman.CurrencyReward, long.TryParse,
+                ConfigPrinters.ToString, val => val >= 0);
+            
+            Migrate();
+        }
+        
+        private void Migrate()
+        {
+            if (_data.Version < 1)
+            {
+                ModifyConfig(c =>
+                {
+                    c.Version = 1;
+                    c.Hangman = new HangmanConfig()
+                    {
+                        CurrencyReward = 0
+                    };
+                });
+            }
         }
     }
 }
