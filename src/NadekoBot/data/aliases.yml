@@ -1255,3 +1255,7 @@ crsimport:
 crsexport:
   - crsexport
   - exexport
+imageonlychannel:
+  - imageonlychannel
+  - imageonly
+  - imagesonly

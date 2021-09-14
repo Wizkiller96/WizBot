@@ -962,5 +962,7 @@
   "empty_page": "This page is empty.",
   "pages": "Pages",
   "favorites": "Favorites",
-  "tags": "Tags"
+  "tags": "Tags",
+  "imageonly_enable": "This channel is now image-only.",
+  "imageonly_disable": "This channel is no longer image-only."
 }

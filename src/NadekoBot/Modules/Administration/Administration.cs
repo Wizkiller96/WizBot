@@ -13,13 +13,31 @@ namespace NadekoBot.Modules.Administration
 {
     public partial class Administration : NadekoModule<AdministrationService>
     {
+        private readonly ImageOnlyChannelService _imageOnly;
+
+        public Administration(ImageOnlyChannelService imageOnly)
+        {
+            _imageOnly = imageOnly;
+        }
+        
         public enum List
         {
             List = 0,
             Ls = 0
         }
 
-
+        [NadekoCommand, Aliases]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.Administrator)]
+        [BotPerm(GuildPerm.Administrator)]
+        public async Task ImageOnlyChannel(StoopidTime time = null)
+        {
+            var newValue = _imageOnly.ToggleImageOnlyChannel(ctx.Guild.Id, ctx.Channel.Id);
+            if (newValue)
+                await ReplyConfirmLocalizedAsync(strs.imageonly_enable);
+            else
+                await ReplyPendingLocalizedAsync(strs.imageonly_disable);
+        }
 
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]

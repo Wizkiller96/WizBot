@@ -2,7 +2,6 @@
 
 namespace NadekoBot.Services.Database.Models
 {
-
     public class LogSetting : DbEntity
     {
         public HashSet<IgnoredLogChannel> IgnoredChannels { get; set; } = new HashSet<IgnoredLogChannel>();

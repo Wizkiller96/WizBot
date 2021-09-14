@@ -2114,3 +2114,9 @@ nhentai:
   args:
     - "273426"
     - "cute girl"
+imageonlychannel:
+  desc: |- 
+    Toggles whether the channel only allows images.
+    Users who send more than a few non-image messages will be banned from using the channel. 
+  args:
+    - ""

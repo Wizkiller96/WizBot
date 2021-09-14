@@ -1,9 +1,7 @@
-﻿using System;
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
-using NadekoBot.Common;
 using NadekoBot.Common.Collections;
 using NadekoBot.Common.Replacements;
 using NadekoBot.Services;
@@ -24,14 +22,11 @@ namespace NadekoBot.Modules.Administration.Services
 
         private readonly DbService _db;
         private readonly ILogCommandService _logService;
-        private readonly IEmbedBuilderService _eb;
 
-        public AdministrationService(Bot bot, CommandHandler cmdHandler, DbService db,
-            ILogCommandService logService, IEmbedBuilderService eb)
+        public AdministrationService(Bot bot, CommandHandler cmdHandler, DbService db, ILogCommandService logService)
         {
             _db = db;
             _logService = logService;
-            _eb = eb;
 
             DeleteMessagesOnCommand = new ConcurrentHashSet<ulong>(bot.AllGuildConfigs
                 .Where(g => g.DeleteMessageOnCommand)

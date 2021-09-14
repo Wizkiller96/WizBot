@@ -2,11 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using NadekoBot.Services.Database.Models;
-using NadekoBot.Services;
 using System;
 using System.IO;
 using Microsoft.Extensions.Logging;
-using NadekoBot.Common;
 using NadekoBot.Db.Models;
 
 namespace NadekoBot.Services.Database
@@ -60,6 +58,7 @@ namespace NadekoBot.Services.Database
         public DbSet<Repeater> Repeaters { get; set; }
         public DbSet<Poll> Poll { get; set; }
         public DbSet<WaifuInfo> WaifuInfo { get; set; }
+        public DbSet<ImageOnlyChannel> ImageOnlyChannels { get; set; }
 
         public NadekoContext(DbContextOptions<NadekoContext> options) : base(options)
         {
@@ -345,6 +344,10 @@ namespace NadekoBot.Services.Database
                 .IsUnique());
 
             #endregion
+
+            modelBuilder.Entity<ImageOnlyChannel>(ioc => ioc
+                .HasIndex(x => x.ChannelId)
+                .IsUnique());
         }
     }
 }

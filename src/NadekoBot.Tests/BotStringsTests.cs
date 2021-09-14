@@ -2,12 +2,10 @@
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using AngleSharp.Common;
 using Discord.Commands;
 using NadekoBot.Common.Attributes;
 using NadekoBot.Services;
 using NadekoBot.Modules;
-using YamlDotNet.Serialization;
 
 namespace NadekoBot.Tests
 {
