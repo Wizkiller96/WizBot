@@ -183,7 +183,9 @@ namespace NadekoBot.Modules.Utility
             private string GetRepeaterInfoString(RunningRepeater runner)
             {
                 var intervalString = Format.Bold(runner.Repeater.Interval.ToPrettyStringHM());
-                var executesIn = runner.NextTime - DateTime.UtcNow;
+                var executesIn = runner.NextTime < DateTime.UtcNow
+                    ? TimeSpan.Zero
+                    : runner.NextTime - DateTime.UtcNow;
                 var executesInString = Format.Bold(executesIn.ToPrettyStringHM());
                 var message = Format.Sanitize(runner.Repeater.Message.TrimTo(50));
             

@@ -92,5 +92,15 @@ namespace NadekoBot.Modules.Utility.Services
             var initialIntervalMultiplier = 1 - (triggerCount - Math.Truncate(triggerCount));
             return DateTime.UtcNow + (Repeater.Interval * initialIntervalMultiplier);
         }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is RunningRepeater rr && rr.Repeater.Id == this.Repeater.Id;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Repeater.Id;
+        }
     }
 }

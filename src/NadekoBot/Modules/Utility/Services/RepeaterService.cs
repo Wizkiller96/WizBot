@@ -76,7 +76,9 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
                     // because repeaters might've been modified meanwhile
                     if (timeout > TimeSpan.Zero)
                     {
-                        await Task.Delay(timeout);
+                        await Task.Delay(timeout > TimeSpan.FromMinutes(1)
+                            ? TimeSpan.FromMinutes(1)
+                            : timeout);
                         continue;
                     }
 
@@ -84,16 +86,17 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
                     var now = DateTime.UtcNow + TimeSpan.FromSeconds(3);
 
                     var toExecute = new List<RunningRepeater>();
-                    while (true)
+                    lock (_repeaterQueue)
                     {
-                        lock (_repeaterQueue)
+                        var current = _repeaterQueue.First;
+                        while (true)
                         {
-                            var current = _repeaterQueue.First;
+
                             if (current is null || current.Value.NextTime > now)
                                 break;
 
                             toExecute.Add(current.Value);
-                            _repeaterQueue.RemoveFirst();
+                            current = current.Next;
                         }
                     }
 
@@ -121,14 +124,24 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
         {
             if (rep.ErrorCount >= 10)
             {
+                RemoveFromQueue(rep.Repeater.Id);
                 await RemoveRepeaterInternal(rep.Repeater);
                 return;
             }
-            
-            rep.UpdateNextTime();
-            AddToQueue(rep);
+
+            UpdatePosition(rep);
         }
-        
+
+        private void UpdatePosition(RunningRepeater rep)
+        {
+            lock (_queueLocker)
+            {
+                rep.UpdateNextTime();
+                _repeaterQueue.Remove(rep);
+                AddToQueue(rep);
+            }
+        }
+
         public async Task<bool> TriggerExternal(ulong guildId, int index)
         {
             using var uow = _db.GetDbContext();
