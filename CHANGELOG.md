@@ -4,6 +4,10 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+
+
+## [3.0.3] - 15.09.2021
+
 ### Added
 
 - Added `.massban` to ban multiple people at once. 30 second cooldown
