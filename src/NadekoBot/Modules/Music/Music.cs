@@ -125,7 +125,7 @@ namespace NadekoBot.Modules.Music
                 queuedMessage?.DeleteAfter(10, _logService);
                 if (mp.IsStopped)
                 {
-                    var msg = await ReplyErrorLocalizedAsync(strs.queue_stopped(Format.Code(Prefix + "play")));
+                    var msg = await ReplyPendingLocalizedAsync(strs.queue_stopped(Format.Code(Prefix + "play")));
                     msg.DeleteAfter(10, _logService);
                 }
             }
@@ -230,7 +230,7 @@ namespace NadekoBot.Modules.Music
                 return;
 
             await _service.SetVolumeAsync(ctx.Guild.Id, vol);
-            await ReplyErrorLocalizedAsync(strs.volume_set(vol));
+            await ReplyConfirmLocalizedAsync(strs.volume_set(vol)));
         }
 
         [NadekoCommand, Aliases]

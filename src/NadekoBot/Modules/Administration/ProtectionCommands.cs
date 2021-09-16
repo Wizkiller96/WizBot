@@ -28,7 +28,7 @@ namespace NadekoBot.Modules.Administration
                     return;
                 }
 
-                await ReplyErrorLocalizedAsync(strs.protection_not_running("Anti-Alt"));
+                await ReplyConfirmLocalizedAsync(strs.protection_not_running("Anti-Alt"));
             }
 
             [NadekoCommand, Aliases]
@@ -69,11 +69,11 @@ namespace NadekoBot.Modules.Administration
             {
                 if (_service.TryStopAntiRaid(ctx.Guild.Id))
                 {
-                    return ReplyErrorLocalizedAsync(strs.prot_disable("Anti-Raid"));
+                    return ReplyConfirmLocalizedAsync(strs.prot_disable("Anti-Raid"));
                 }
                 else
                 {
-                    return ReplyErrorLocalizedAsync(strs.protection_not_running("Anti-Raid"));
+                    return ReplyPendingLocalizedAsync(strs.protection_not_running("Anti-Raid"));
                 }
             }
 
@@ -145,11 +145,11 @@ namespace NadekoBot.Modules.Administration
             {
                 if (_service.TryStopAntiSpam(ctx.Guild.Id))
                 {
-                    return ReplyErrorLocalizedAsync(strs.prot_disable("Anti-Spam"));
+                    return ReplyConfirmLocalizedAsync(strs.prot_disable("Anti-Spam"));
                 }
                 else
                 {
-                    return ReplyErrorLocalizedAsync(strs.protection_not_running("Anti-Spam"));
+                    return ReplyPendingLocalizedAsync(strs.protection_not_running("Anti-Spam"));
                 }
             }
             

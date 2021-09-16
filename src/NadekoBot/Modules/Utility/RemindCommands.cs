@@ -148,7 +148,7 @@ namespace NadekoBot.Modules.Utility
                 }
                 else
                 {
-                    await ReplyErrorLocalizedAsync(strs.reminder_deleted(index + 1));
+                    await ReplyConfirmLocalizedAsync(strs.reminder_deleted(index + 1));
                 }
             }
 

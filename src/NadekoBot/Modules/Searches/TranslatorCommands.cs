@@ -118,7 +118,7 @@ namespace NadekoBot.Modules.Searches
 
                 _searches.UserLanguages.AddOrUpdate(ucp, langs, (key, val) => langs);
 
-                await ReplyErrorLocalizedAsync(strs.atl_set(from, to));
+                await ReplyConfirmLocalizedAsync(strs.atl_set(from, to));
             }
 
             [NadekoCommand, Aliases]

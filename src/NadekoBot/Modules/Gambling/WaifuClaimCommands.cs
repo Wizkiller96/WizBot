@@ -145,11 +145,11 @@ namespace NadekoBot.Modules.Gambling
 
                 if (result == DivorceResult.SucessWithPenalty)
                 {
-                    await ReplyErrorLocalizedAsync(strs.waifu_divorced_like(Format.Bold(w.Waifu.ToString()), amount + CurrencySign));
+                    await ReplyConfirmLocalizedAsync(strs.waifu_divorced_like(Format.Bold(w.Waifu.ToString()), amount + CurrencySign));
                 }
                 else if (result == DivorceResult.Success)
                 {
-                    await ReplyErrorLocalizedAsync(strs.waifu_divorced_notlike(amount + CurrencySign));
+                    await ReplyConfirmLocalizedAsync(strs.waifu_divorced_notlike(amount + CurrencySign));
                 }
                 else if (result == DivorceResult.NotYourWife)
                 {

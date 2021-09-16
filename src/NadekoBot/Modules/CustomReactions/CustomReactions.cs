@@ -294,7 +294,7 @@ namespace NadekoBot.Modules.CustomReactions
                 .WithDescription("This will delete all custom reactions on this server.")).ConfigureAwait(false))
             {
                 var count = _service.DeleteAllCustomReactions(ctx.Guild.Id);
-                await ReplyErrorLocalizedAsync(strs.cleared(count));
+                await ReplyConfirmLocalizedAsync(strs.cleared(count));
             }
         }
 

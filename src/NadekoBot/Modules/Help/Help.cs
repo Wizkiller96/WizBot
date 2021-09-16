@@ -434,7 +434,7 @@ namespace NadekoBot.Modules.Help
         [NadekoCommand, Aliases]
         public async Task Donate()
         {
-            await ReplyErrorLocalizedAsync(strs.donate(PatreonUrl, PaypalUrl));
+            await ReplyConfirmLocalizedAsync(strs.donate(PatreonUrl, PaypalUrl));
         }
     }
 

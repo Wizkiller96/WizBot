@@ -90,7 +90,7 @@ namespace NadekoBot.Modules.Administration
                         return;
 
                     await _service.TimedMute(user, ctx.User, time.Time, reason: reason).ConfigureAwait(false);
-                    await ReplyErrorLocalizedAsync(strs.user_muted_time(Format.Bold(user.ToString()), (int)time.Time.TotalMinutes));
+                    await ReplyConfirmLocalizedAsync(strs.user_muted_time(Format.Bold(user.ToString()), (int)time.Time.TotalMinutes));
                 }
                 catch (Exception ex)
                 {
@@ -150,7 +150,7 @@ namespace NadekoBot.Modules.Administration
                         return;
 
                     await _service.TimedMute(user, ctx.User, time.Time, MuteType.Chat, reason: reason).ConfigureAwait(false);
-                    await ReplyErrorLocalizedAsync(strs.user_chat_mute_time(Format.Bold(user.ToString()), (int)time.Time.TotalMinutes));
+                    await ReplyConfirmLocalizedAsync(strs.user_chat_mute_time(Format.Bold(user.ToString()), (int)time.Time.TotalMinutes));
                 }
                 catch (Exception ex)
                 {
@@ -209,7 +209,7 @@ namespace NadekoBot.Modules.Administration
                         return;
 
                     await _service.TimedMute(user, ctx.User, time.Time, MuteType.Voice, reason: reason).ConfigureAwait(false);
-                    await ReplyErrorLocalizedAsync(strs.user_voice_mute_time(Format.Bold(user.ToString()), (int)time.Time.TotalMinutes));
+                    await ReplyConfirmLocalizedAsync(strs.user_voice_mute_time(Format.Bold(user.ToString()), (int)time.Time.TotalMinutes));
                 }
                 catch
                 {

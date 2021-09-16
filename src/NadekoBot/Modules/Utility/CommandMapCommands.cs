@@ -37,7 +37,7 @@ namespace NadekoBot.Modules.Utility
             public async Task AliasesClear()
             {
                 var count = _service.ClearAliases(ctx.Guild.Id);
-                await ReplyErrorLocalizedAsync(strs.aliases_cleared(count));
+                await ReplyConfirmLocalizedAsync(strs.aliases_cleared(count));
             }
 
             [NadekoCommand, Aliases]

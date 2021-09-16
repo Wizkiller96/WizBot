@@ -217,7 +217,7 @@ namespace NadekoBot.Modules.Gambling
         [Priority(0)]
         public async Task Cash(ulong userId)
         {
-            await ReplyErrorLocalizedAsync(strs.has(Format.Code(userId.ToString()), $"{GetCurrency(userId)} {CurrencySign}"));
+            await ReplyConfirmLocalizedAsync(strs.has(Format.Code(userId.ToString()), $"{GetCurrency(userId)} {CurrencySign}"));
         }
 
         [NadekoCommand, Aliases]
@@ -269,7 +269,7 @@ namespace NadekoBot.Modules.Gambling
                 $"Awarded by bot owner. ({ctx.User.Username}/{ctx.User.Id}) {(msg ?? "")}",
                 amount,
                 gamble: (ctx.Client.CurrentUser.Id != usrId)).ConfigureAwait(false);
-            await ReplyErrorLocalizedAsync(strs.awarded(n(amount) + CurrencySign, $"<@{usrId}>"));
+            await ReplyConfirmLocalizedAsync(strs.awarded(n(amount) + CurrencySign, $"<@{usrId}>"));
         }
 
         [NadekoCommand, Aliases]
@@ -340,7 +340,7 @@ namespace NadekoBot.Modules.Gambling
 
             if (await _cs.RemoveAsync(usrId, $"Taken by bot owner.({ctx.User.Username}/{ctx.User.Id})", amount,
                 gamble: (ctx.Client.CurrentUser.Id != usrId)).ConfigureAwait(false))
-                await ReplyErrorLocalizedAsync(strs.take(amount + CurrencySign, $"<@{usrId}>"));
+                await ReplyConfirmLocalizedAsync(strs.take(amount + CurrencySign, $"<@{usrId}>"));
             else
                 await ReplyErrorLocalizedAsync(strs.take_fail(amount + CurrencySign, Format.Code(usrId.ToString()), CurrencySign));
         }

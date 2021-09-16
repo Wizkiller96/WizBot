@@ -189,7 +189,7 @@ namespace NadekoBot.Modules.Administration
                 index--;
                 var rr = rrs[index];
                 _service.Remove(ctx.Guild.Id, index);
-                await ReplyErrorLocalizedAsync(strs.reaction_role_removed(index + 1));
+                await ReplyConfirmLocalizedAsync(strs.reaction_role_removed(index + 1));
             }
 
             [NadekoCommand, Aliases]

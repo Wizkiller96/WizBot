@@ -191,7 +191,7 @@ namespace NadekoBot.Modules.Searches
                     return;
                 }
 
-                await ReplyErrorLocalizedAsync(strs.stream_message_set_all(count));
+                await ReplyConfirmLocalizedAsync(strs.stream_message_set_all(count));
             }
             
             [NadekoCommand, Aliases]

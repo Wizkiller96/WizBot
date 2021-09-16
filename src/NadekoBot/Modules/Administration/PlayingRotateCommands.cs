@@ -61,7 +61,7 @@ namespace NadekoBot.Modules.Administration
                 if (msg is null)
                     return;
 
-                await ReplyErrorLocalizedAsync(strs.reprm(msg));
+                await ReplyConfirmLocalizedAsync(strs.reprm(msg));
             }
         }
     }

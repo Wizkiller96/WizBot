@@ -128,7 +128,7 @@ namespace NadekoBot.Modules.Xp
         public async Task XpRoleReward(int level)
         {
             _service.ResetRoleReward(ctx.Guild.Id, level);
-            await ReplyErrorLocalizedAsync(strs.xp_role_reward_cleared(level));
+            await ReplyConfirmLocalizedAsync(strs.xp_role_reward_cleared(level));
         }
         
         [NadekoCommand, Aliases]

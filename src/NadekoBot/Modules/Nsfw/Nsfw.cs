@@ -189,7 +189,7 @@ namespace NadekoBot.Modules.NSFW
                 return t;
             });
 
-            await ReplyErrorLocalizedAsync(strs.started(interval));
+            await ReplyConfirmLocalizedAsync(strs.started(interval));
         }
 
         [NadekoCommand, Aliases]
@@ -229,7 +229,7 @@ namespace NadekoBot.Modules.NSFW
                 return t;
             });
 
-            await ReplyErrorLocalizedAsync(strs.started(interval));
+            await ReplyConfirmLocalizedAsync(strs.started(interval));
         }
 #endif
 
@@ -363,9 +363,9 @@ namespace NadekoBot.Modules.NSFW
                 var added = _service.ToggleBlacklistedTag(ctx.Guild.Id, tag);
 
                 if (added)
-                    await ReplyErrorLocalizedAsync(strs.blacklisted_tag_add(tag));
+                    await ReplyPendingLocalizedAsync(strs.blacklisted_tag_add(tag));
                 else
-                    await ReplyErrorLocalizedAsync(strs.blacklisted_tag_remove(tag));
+                    await ReplyPendingLocalizedAsync(strs.blacklisted_tag_remove(tag));
             }
         }
 

@@ -66,7 +66,7 @@ namespace NadekoBot.Modules.Searches
                     }
                 }
 
-                await ReplyErrorLocalizedAsync(strs.feed_not_valid).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.feed_not_valid).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]

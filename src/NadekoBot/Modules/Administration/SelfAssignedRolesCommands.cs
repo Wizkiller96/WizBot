@@ -24,11 +24,11 @@ namespace NadekoBot.Modules.Administration
 
                 if (newVal)
                 {
-                    await ReplyErrorLocalizedAsync(strs.adsarm_enable(Prefix));
+                    await ReplyConfirmLocalizedAsync(strs.adsarm_enable(Prefix));
                 }
                 else
                 {
-                    await ReplyErrorLocalizedAsync(strs.adsarm_disable(Prefix));
+                    await ReplyConfirmLocalizedAsync(strs.adsarm_disable(Prefix));
                 }
             }
 

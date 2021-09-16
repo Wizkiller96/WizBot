@@ -217,7 +217,7 @@ namespace NadekoBot.Modules.Permissions
                 {
                 }
             }
-            await ReplyErrorLocalizedAsync(strs.perm_out_of_range).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.perm_out_of_range).ConfigureAwait(false);
         }
 
         [NadekoCommand, Aliases]
