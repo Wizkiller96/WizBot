@@ -230,7 +230,7 @@ namespace NadekoBot.Modules.Music
                 return;
 
             await _service.SetVolumeAsync(ctx.Guild.Id, vol);
-            await ReplyConfirmLocalizedAsync(strs.volume_set(vol)));
+            await ReplyConfirmLocalizedAsync(strs.volume_set(vol));
         }
 
         [NadekoCommand, Aliases]
