@@ -7,13 +7,16 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 ### Added
 - Fully translated to Brazilian Portuguese 🎉
 - Added `%server.boosters%` and `%server.boost_level%` placeholders
+- Added `DmHelpTextKeywords` to `data/bot.yml`
+  - Bot now sends dm help text ONLY if the message contains one of the keywords specified
+  - If no keywords are specified, bot will reply to every DM (like before)
 
 ### Fixed
 - Possible fix for `.repeat` bug
   - Slight adjustment for repeater logic
   - Timer should no longer increase on some repeaters
-  - Repeaters should no longer have periods when they're missing from the list
-
+  - Repeaters should no longer have periods when they're missing from the list  
+- Fixed several commands which used error color for success confirmation messages
 
 ## [3.0.3] - 15.09.2021
 

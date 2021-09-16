@@ -12,7 +12,7 @@ namespace NadekoBot.Common.Configs
     public sealed partial class BotConfig : ICloneable<BotConfig>
     {
         [Comment(@"DO NOT CHANGE")]
-        public int Version { get; set; }
+        public int Version { get; set; } = 2;
 
         [Comment(@"Most commands, when executed, have a small colored line
 next to the response. The color depends whether the command
@@ -48,6 +48,11 @@ they will receive this message. Leave empty for no response. The string which wi
 Supports embeds. How it looks: https://puu.sh/B0BLV.png")]
         [YamlMember(ScalarStyle = ScalarStyle.Literal)]
         public string DmHelpText { get; set; }
+        
+        [Comment(@"Only users who send a DM to the bot containing one of the specified words will get a DmHelpText response.
+Case insensitive.
+Leave empty to reply with DmHelpText to every DM.")]
+        public List<string> DmHelpTextKeywords { get; set; }
 
         [Comment(@"This is the response for the .h command")]
         [YamlMember(ScalarStyle = ScalarStyle.Literal)]
@@ -89,7 +94,6 @@ See RotatingStatuses submodule in Administration.")]
 
         public BotConfig()
         {
-            Version = 1;
             var color = new ColorConfig();
             Color = color;
             DefaultLocale = new CultureInfo("en-US");
@@ -127,6 +131,14 @@ See RotatingStatuses submodule in Administration.")]
             Prefix = ".";
             RotateStatuses = false;
             GroupGreets = false;
+            DmHelpTextKeywords = new List<string>()
+            {
+                "help",
+                "commands",
+                "cmds",
+                "module",
+                "can you do"
+            };
         }
     }
 

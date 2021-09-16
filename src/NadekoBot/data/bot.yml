@@ -1,5 +1,5 @@
 # DO NOT CHANGE
-version: 1
+version: 2
 # Most commands, when executed, have a small colored line
 # next to the response. The color depends whether the command
 # is completed, errored or in progress (pending)
@@ -28,6 +28,15 @@ forwardToAllOwners: false
 # Supports embeds. How it looks: https://puu.sh/B0BLV.png
 dmHelpText: |-
   {"description": "Type `%prefix%h` for help."}
+# Only users who send a DM to the bot containing one of the specified words will get a DmHelpText response.
+# Case insensitive.
+# Leave empty to reply with DmHelpText to every DM.
+dmHelpTextKeywords:
+  - help
+  - commands
+  - cmds
+  - module
+  - can you do
 # This is the response for the .h command
 helpText: |-
   {

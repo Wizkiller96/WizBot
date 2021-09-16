@@ -28,19 +28,15 @@ namespace NadekoBot.Services
             AddParsedProp("locale", bs => bs.DefaultLocale, ConfigParsers.Culture, ConfigPrinters.Culture);
             AddParsedProp("prefix", bs => bs.Prefix, ConfigParsers.String, ConfigPrinters.ToString);
             
-            UpdateColors();
+            Migrate();
         }
 
-        private void UpdateColors()
+        private void Migrate()
         {
-            var ok = _data.Color.Ok;
-            var error = _data.Color.Error;
-            var pend = _data.Color.Pending;
-        }
-        
-        protected override void OnStateUpdate()
-        {
-            UpdateColors();
+            if (_data.Version < 2)
+            {
+                ModifyConfig(c => c.Version = 2);
+            }
         }
     }
 }

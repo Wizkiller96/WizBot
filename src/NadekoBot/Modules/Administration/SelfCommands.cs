@@ -88,7 +88,7 @@ namespace NadekoBot.Modules.Administration
                 };
                 _service.AddNewAutoCommand(cmd);
 
-                await ReplyErrorLocalizedAsync(strs.autocmd_add(Format.Code(Format.Sanitize(cmdText)), cmd.Interval));
+                await ReplyConfirmLocalizedAsync(strs.autocmd_add(Format.Code(Format.Sanitize(cmdText)), cmd.Interval));
             }
 
             [NadekoCommand, Aliases]
@@ -226,7 +226,7 @@ namespace NadekoBot.Modules.Administration
                 if (enabled)
                     await ReplyConfirmLocalizedAsync(strs.fwdm_start).ConfigureAwait(false);
                 else
-                    await ReplyConfirmLocalizedAsync(strs.fwdm_stop).ConfigureAwait(false);
+                    await ReplyPendingLocalizedAsync(strs.fwdm_stop).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]
@@ -238,7 +238,7 @@ namespace NadekoBot.Modules.Administration
                 if (enabled)
                     await ReplyConfirmLocalizedAsync(strs.fwall_start).ConfigureAwait(false);
                 else
-                    await ReplyConfirmLocalizedAsync(strs.fwall_stop).ConfigureAwait(false);
+                    await ReplyPendingLocalizedAsync(strs.fwall_stop).ConfigureAwait(false);
 
             }
 
@@ -376,7 +376,7 @@ namespace NadekoBot.Modules.Administration
                 var curUser = await ctx.Guild.GetCurrentUserAsync().ConfigureAwait(false);
                 await curUser.ModifyAsync(u => u.Nickname = newNick).ConfigureAwait(false);
 
-                await ReplyErrorLocalizedAsync(strs.bot_nick(Format.Bold(newNick) ?? "-"));
+                await ReplyConfirmLocalizedAsync(strs.bot_nick(Format.Bold(newNick) ?? "-"));
             }
 
             [NadekoCommand, Aliases]
@@ -395,7 +395,7 @@ namespace NadekoBot.Modules.Administration
                 
                 await gu.ModifyAsync(u => u.Nickname = newNick).ConfigureAwait(false);
 
-                await ReplyErrorLocalizedAsync(strs.user_nick(Format.Bold(gu.ToString()), Format.Bold(newNick) ?? "-"));
+                await ReplyConfirmLocalizedAsync(strs.user_nick(Format.Bold(gu.ToString()), Format.Bold(newNick) ?? "-"));
             }
 
             [NadekoCommand, Aliases]
@@ -496,7 +496,7 @@ namespace NadekoBot.Modules.Administration
             public async Task ImagesReload()
             {
                 await _service.ReloadImagesAsync();
-                await ReplyErrorLocalizedAsync(strs.images_loading);
+                await ReplyConfirmLocalizedAsync(strs.images_loading);
             }
             
             [NadekoCommand, Aliases]

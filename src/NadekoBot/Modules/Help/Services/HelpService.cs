@@ -44,6 +44,11 @@ namespace NadekoBot.Modules.Help.Services
             {
                 if (string.IsNullOrWhiteSpace(settings.DmHelpText) || settings.DmHelpText == "-")
                     return Task.CompletedTask;
+                
+                // only send dm help text if it contains one of the keywords, if they're specified
+                // if they're not, then reply to every DM
+                if (settings.DmHelpTextKeywords.Any() && !settings.DmHelpTextKeywords.Any(k => msg.Content.Contains(k)))
+                    return Task.CompletedTask;
 
                 var rep = new ReplacementBuilder()
                     .WithOverride("%prefix%", () => _bss.Data.Prefix)

@@ -30,7 +30,7 @@ namespace NadekoBot.Modules.Xp.Services
 
         private void Migrate()
         {
-            if (_data.Version <= 1)
+            if (_data.Version < 2)
             {
                 ModifyConfig(c =>
                 {
