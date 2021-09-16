@@ -306,7 +306,7 @@ namespace NadekoBot.Modules.Gambling
             [Priority(1)]
             public async Task WaifuGift(int page = 1)
             {
-                if (--page < 0 || page > 3)
+                if (--page < 0 || page > (_config.Waifu.Items.Count - 1) / 9)
                     return;
 
                 var waifuItems = _service.GetWaifuItems();

@@ -10,6 +10,8 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
   - Timer should no longer increase on some repeaters
   - Repeaters should no longer have periods when they're missing from the list
 
+
+
 ## [3.0.3] - 15.09.2021
 
 ### Added
