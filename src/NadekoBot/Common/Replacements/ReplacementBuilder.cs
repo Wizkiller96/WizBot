@@ -89,6 +89,8 @@ namespace NadekoBot.Common.Replacements
             _reps.TryAdd("%server.id%", () => g is null ? "DM" : g.Id.ToString());
             _reps.TryAdd("%server.name%", () => g is null ? "DM" : g.Name);
             _reps.TryAdd("%server.members%", () => g != null && g is SocketGuild sg ? sg.MemberCount.ToString() : "?");
+            _reps.TryAdd("%server.boosters%", () => g.PremiumSubscriptionCount.ToString());
+            _reps.TryAdd("%server.boost_level%", () => ((int)g.PremiumTier).ToString());
             _reps.TryAdd("%server.time%", () =>
             {
                 TimeZoneInfo to = TimeZoneInfo.Local;

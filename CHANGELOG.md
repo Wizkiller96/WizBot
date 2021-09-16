@@ -4,12 +4,15 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+### Added
+- Fully translated to Brazilian Portuguese 🎉
+- Added `%server.boosters%` and `%server.boost_level%` placeholders
+
 ### Fixed
 - Possible fix for `.repeat` bug
   - Slight adjustment for repeater logic
   - Timer should no longer increase on some repeaters
   - Repeaters should no longer have periods when they're missing from the list
-
 
 
 ## [3.0.3] - 15.09.2021
