@@ -1,5 +1,7 @@
 # Setting up WizBot on Linux
 
+### This applies to WizBot version 2.  For WizBot version 3 with all the latest improvements and features, click [here][v3].
+
 | Table of Contents |
 | :--- |
 | [Getting Started](#getting-started) |
@@ -267,3 +269,5 @@ If you are running your droplet for the first time, it will most likely ask you 
 **Save the new password somewhere safe.**
 
 After that, your droplet should be ready for use. [Follow the guide from the beginning](../../linux-guide.md/#getting-started) to set WizBot up on your newly created VPS.
+
+[v3]: https://wizbot.readthedocs.io/en/v3/guides/linux-guide

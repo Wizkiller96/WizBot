@@ -1,5 +1,7 @@
 # Setting up WizBot From Source
 
+### This applies to WizBot version 2.  For WizBot version 3 with all the latest improvements and features, click [here][v3].
+
 | Table of Contents |
 | :--- |
 | [Installing with the CLI Installer](#installing-with-the-cli-installer) |
@@ -147,3 +149,5 @@ Other useful commands:
 - `git stash list` to see the list of saved stashes and their corresponding ID  
 - `git stash drop stash@{n}` to delete a specific stash  
 - `git stash pop stash@{n}` to apply and delete a specific stash
+
+[v3]: https://wizbot.readthedocs.io/en/v3/guides/windows-guide/#windows-from-source

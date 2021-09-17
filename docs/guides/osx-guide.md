@@ -1,5 +1,7 @@
 ## Setting Up WizBot on OSX (macOS)
 
+### This applies to WizBot version 2.  For WizBot version 3 with all the latest improvements and features, click [here][v3].
+
 | Table of Contents                                       |
 | :------------------------------------------------------ |
 | [Prerequisites]                                         |
@@ -173,3 +175,4 @@ If music still isn't working, try reinstalling ffmpeg:
 [Using WizBot with pm2 (easiest method)]: #using-wizbot-with-pm2-easiest-method
 [Using WizBot with tmux (if you don't want to use pm2)]: #using-wizbot-with-tmux-if-you-dont-want-to-use-pm2
 [Doing a clean reinstall]: #doing-a-clean-reinstall
+[v3]: https://wizbot.readthedocs.io/en/v3/guides/osx-guide/
