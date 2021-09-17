@@ -120,6 +120,15 @@ namespace NadekoBot.Db
                 .Include(x => x.IgnoredChannels)
                 .Where(x => x.GuildId == guildId)
                 .FirstOrDefault();
+
+            if (logSetting is null)
+            {
+                ctx.LogSettings.Add(logSetting = new ()
+                {
+                    GuildId = guildId
+                });
+                ctx.SaveChanges();
+            }
             
             return logSetting;
         }

@@ -2,6 +2,12 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## Unreleased
+
+### Fixed
+- Fixed images not automatically reloading on startup if the keys don't exist
+- Fixed `.logserver` - it should no longer throw an exception if you had no logsettings previously
+
 ## [3.0.4] - 16.09.2021
 
 ### Added
@@ -17,7 +23,6 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
   - Timer should no longer increase on some repeaters
   - Repeaters should no longer have periods when they're missing from the list  
 - Fixed several commands which used error color for success confirmation messages
-- Fixed images not automatically reloading on startup if the keys don't exist
 
 ## [3.0.3] - 15.09.2021
 
