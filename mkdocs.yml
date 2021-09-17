@@ -49,8 +49,6 @@ extra:
     homepage: https://wizbot.cc
 
 plugins:
-    - minify:
-        minify_html: true
     - git-revision-date-localized:
         type: date
     - search
