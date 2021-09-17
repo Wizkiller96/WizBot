@@ -80,6 +80,7 @@ You can still install them manually:
 Open PowerShell (press windows button on your keyboard and type powershell, it should show up; alternatively, right click the start menu and select Windows PowerShell), and navigate to the location where you want to install the bot (for example `cd ~/Desktop/`)  
 
 1. `git clone https://gitlab.com/kwoth/nadekobot -b v3 --depth 1`
+2. `cd nadekobot`
 3. `dotnet publish -c Release -o output/ src/NadekoBot/`
 4. `cd output && cp creds_example.yml creds.yml`
 5. Open `creds.yml` with your favorite text editor (Please don't use Notepad or WordPad. You can use Notepad++, VSCode, Atom, Sublime, or something similar)
@@ -91,16 +92,30 @@ Open PowerShell (press windows button on your keyboard and type powershell, it s
 
 Open PowerShell as described above and run the following commands:
 
-1. Navigate to your bot's folder, for example `cd ~/Desktop/nadekobot/src/NadekoBot`
-2. Pull the latest updates (this will fail if you have custom code changes).
-   - If you don't have custom code changes, just run `git pull`
-   - If you do have custom code changes, You have 3 options
-      - Undo all changes with `git checkout -- * && git pull`
-      - Stash changes and try to re-apply them `git stash && git pull && git stash apply`
-      - Commit your changes and resolve merge conflicts `git add . && git commit -m "My commit message" && git pull`
-3. Re-run the bot `dotnet run -c Release`
+1. Stop the bot
+  - ⚠️ Make sure you don't have your database, credentials or any other nadekobot folder open in some application, this might prevent some of the steps from executing succesfully
+2. Navigate to your bot's folder, example:
+    - `cd ~/Desktop/nadekobot`
+3. Pull the new version
+    - `git pull`
+    - ⚠️ If this fails, you may want to stash or remove your code changes if you don't know how to resolve merge conflicts
+4. **Backup** old output in case your data is overwritten
+    - `cp -r -fo output/ output-old`
+5. Build the bot again
+    - `dotnet publish -c Release -o output/ src/NadekoBot/`
+6. Remove old strings and aliases to avoid overwriting the updated versions of those files  
+    - ⚠ If you've modified said files, back them up instead
+    - `rm output-old/data/aliases.yml`
+    - `rm -r output-old/data/strings`
+7. Copy old data
+    - `cp -Recurse .\output-old\data\ .\output\ -Force`
+8. Copy creds.yml
+    - `cp output-old/creds.yml output/`
+9. Run the bot 
+    - `cd output`
+    - `dotnet NadekoBot.dll`
 
-⚠ You're expected to understand that your database will be in `bin/Release/<framework>/data/`, and if `<framework>` gets changed in the future, you will have to move your database manually.
+🎉 Enjoy
 
 #### Music prerequisites  
 In order to use music commands, you need ffmpeg and youtube-dl installed.
