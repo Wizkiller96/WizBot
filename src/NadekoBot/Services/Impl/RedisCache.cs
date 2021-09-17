@@ -5,7 +5,6 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Discord;
 using Discord.WebSocket;
 
 namespace NadekoBot.Services
@@ -20,12 +19,13 @@ namespace NadekoBot.Services
         private readonly string _redisKey;
         private readonly EndPoint _redisEndpoint;
 
-        public RedisCache(ConnectionMultiplexer redis, IBotCredentials creds, DiscordSocketClient client)
+        public RedisCache(ConnectionMultiplexer redis, IBotCredentials creds,
+            IImageCache imageCache, ILocalDataCache dataCache)
         {
             Redis = redis;
             _redisEndpoint = Redis.GetEndPoints().First();
-            LocalImages = new RedisImagesCache(Redis, creds);
-            LocalData = new RedisLocalDataCache(Redis, creds, client.ShardId);
+            LocalImages = imageCache;
+            LocalData = dataCache;
             _redisKey = creds.RedisKey();
         }
 

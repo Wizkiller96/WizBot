@@ -102,7 +102,6 @@ namespace NadekoBot
                 .AddSingleton(Client) // discord socket client
                 .AddSingleton(_commandService)
                 .AddSingleton(this)
-                .AddSingleton<IDataCache, RedisCache>()
                 .AddSingleton<ISeria, JsonSeria>()
                 .AddSingleton<IPubSub, RedisPubSub>()
                 .AddSingleton<IConfigSeria, YamlSeria>()
@@ -132,10 +131,18 @@ namespace NadekoBot
             }
             else
             {
-                svcs.AddSingleton<ICoordinator, RemoteGrpcCoordinator>()
-                    .AddSingleton<IReadyExecutor>(x => (IReadyExecutor)x.GetRequiredService<ICoordinator>());
+                svcs.AddSingleton<RemoteGrpcCoordinator>()
+                    .AddSingleton<ICoordinator>(x => x.GetRequiredService<RemoteGrpcCoordinator>())
+                    .AddSingleton<IReadyExecutor>(x => x.GetRequiredService<RemoteGrpcCoordinator>());
             }
 
+            svcs.AddSingleton<RedisLocalDataCache>()
+                .AddSingleton<ILocalDataCache>(x => x.GetRequiredService<RedisLocalDataCache>())
+                .AddSingleton<RedisImagesCache>()
+                .AddSingleton<IImageCache>(x => x.GetRequiredService<RedisImagesCache>())
+                .AddSingleton<IReadyExecutor>(x => x.GetRequiredService<RedisImagesCache>())
+                .AddSingleton<IDataCache, RedisCache>();
+            
             svcs.Scan(scan => scan
                 .FromAssemblyOf<IReadyExecutor>()
                 .AddClasses(classes => classes.AssignableToAny(

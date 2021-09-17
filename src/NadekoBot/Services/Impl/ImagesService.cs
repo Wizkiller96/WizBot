@@ -11,11 +11,12 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using NadekoBot.Common.ModuleBehaviors;
 using Serilog;
 
 namespace NadekoBot.Services
 {
-    public sealed class RedisImagesCache : IImageCache
+    public sealed class RedisImagesCache : IImageCache, IReadyExecutor
     {
         private readonly ConnectionMultiplexer _con;
         private readonly IBotCredentials _creds;
@@ -71,6 +72,14 @@ namespace NadekoBot.Services
             Rip_Bg,
             Rip_Overlay,
             Currency,
+        }
+
+        public async Task OnReadyAsync()
+        {
+            if (await AllKeysExist())
+                return;
+
+            await Reload();
         }
 
         public RedisImagesCache(ConnectionMultiplexer con, IBotCredentials creds)

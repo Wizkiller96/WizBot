@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Discord;
+using Discord.WebSocket;
 using Serilog;
 
 namespace NadekoBot.Services
@@ -25,56 +27,33 @@ namespace NadekoBot.Services
 
         public IReadOnlyDictionary<string, SearchPokemon> Pokemons
         {
-            get
-            {
-                return Get<Dictionary<string, SearchPokemon>>("pokemon_list");
-            }
-            private set
-            {
-                Set("pokemon_list", value);
-            }
+            get => Get<Dictionary<string, SearchPokemon>>("pokemon_list");
+            private set => Set("pokemon_list", value);
         }
 
         public IReadOnlyDictionary<string, SearchPokemonAbility> PokemonAbilities
         {
-            get
-            {
-                return Get<Dictionary<string, SearchPokemonAbility>>("pokemon_abilities");
-            }
-            private set
-            {
-                Set("pokemon_abilities", value);
-            }
+            get => Get<Dictionary<string, SearchPokemonAbility>>("pokemon_abilities");
+            private set => Set("pokemon_abilities", value);
         }
 
         public TriviaQuestion[] TriviaQuestions
         {
-            get
-            {
-                return Get<TriviaQuestion[]>("trivia_questions");
-            }
-            private set
-            {
-                Set("trivia_questions", value);
-            }
+            get => Get<TriviaQuestion[]>("trivia_questions");
+            private set => Set("trivia_questions", value);
         }
 
         public IReadOnlyDictionary<int, string> PokemonMap
         {
-            get
-            {
-                return Get<Dictionary<int, string>>("pokemon_map");
-            }
-            private set
-            {
-                Set("pokemon_map", value);
-            }
+            get => Get<Dictionary<int, string>>("pokemon_map");
+            private set => Set("pokemon_map", value);
         }
 
-        public RedisLocalDataCache(ConnectionMultiplexer con, IBotCredentials creds, int shardId)
+        public RedisLocalDataCache(ConnectionMultiplexer con, IBotCredentials creds, DiscordSocketClient client)
         {
             _con = con;
             _creds = creds;
+            var shardId = client.ShardId;
 
             if (shardId == 0)
             {

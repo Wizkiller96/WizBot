@@ -17,6 +17,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
   - Timer should no longer increase on some repeaters
   - Repeaters should no longer have periods when they're missing from the list  
 - Fixed several commands which used error color for success confirmation messages
+- Fixed images not automatically reloading on startup if the keys don't exist
 
 ## [3.0.3] - 15.09.2021
 
