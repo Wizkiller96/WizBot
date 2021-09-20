@@ -4,6 +4,8 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+## [3.0.5] - 20.09.2021
+
 ### Fixed
 - Fixed images not automatically reloading on startup if the keys don't exist
 - Fixed `.logserver` - it should no longer throw an exception if you had no logsettings previously
