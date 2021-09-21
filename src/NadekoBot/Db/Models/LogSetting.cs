@@ -4,8 +4,7 @@ namespace NadekoBot.Services.Database.Models
 {
     public class LogSetting : DbEntity
     {
-        public HashSet<IgnoredLogChannel> IgnoredChannels { get; set; } = new HashSet<IgnoredLogChannel>();
-        public HashSet<IgnoredVoicePresenceChannel> IgnoredVoicePresenceChannelIds { get; set; } = new HashSet<IgnoredVoicePresenceChannel>();
+        public List<IgnoredLogItem> LogIgnores { get; set; } = new List<IgnoredLogItem>();
 
         public ulong GuildId { get; set; }
         public ulong? LogOtherId { get; set; }

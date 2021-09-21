@@ -100,9 +100,11 @@ logserver:
     - "enable"
     - "disable"
 logignore:
-  desc: "Toggles whether the `{0}logserver` command ignores this channel. Useful if you have hidden admin channel and public log channel."
+  desc: "Toggles whether the `{0}logserver` command ignores the specified channel or user. Provide no arguments to see the list of currently ignored users and channels"
   args:
     - ""
+    - "@SomeUser"
+    - "#some-channel"
 repeatlist:
   desc: "Shows currently repeating messages and their indexes."
   args:

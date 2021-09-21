@@ -4,6 +4,14 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+### Added
+
+- .logignore now supports ignoring users and channels. Use without parameters to see the ignore list
+
+### Fixed
+
+- Fixed an exception which caused repeater queue to break
+
 ## [3.0.5] - 20.09.2021
 
 ### Fixed

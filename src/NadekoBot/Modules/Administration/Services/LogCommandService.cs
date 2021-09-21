@@ -6,6 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using LinqToDB;
+using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using NadekoBot.Common.Collections;
@@ -21,7 +23,7 @@ namespace NadekoBot.Modules.Administration.Services
     {
         void AddDeleteIgnore(ulong xId);
         Task LogServer(ulong guildId, ulong channelId, bool actionValue);
-        bool LogIgnore(ulong guildId, ulong channelId);
+        bool LogIgnore(ulong guildId, ulong itemId, IgnoredItemType itemType);
         LogSetting GetGuildLogSettings(ulong guildId);
         bool Log(ulong guildId, ulong? channelId, LogType type);
     }
@@ -37,7 +39,7 @@ namespace NadekoBot.Modules.Administration.Services
             return Task.CompletedTask;
         }
 
-        public bool LogIgnore(ulong guildId, ulong channelId)
+        public bool LogIgnore(ulong guildId, ulong itemId, IgnoredItemType itemType)
         {
             return false;
         }
@@ -97,7 +99,7 @@ namespace NadekoBot.Modules.Administration.Services
                     .AsQueryable()
                     .AsNoTracking()
                     .Where(x => guildIds.Contains(x.GuildId))
-                    .Include(ls => ls.IgnoredChannels)
+                    .Include(ls => ls.LogIgnores)
                     .ToList();
 
                 GuildLogSettings = configs
@@ -165,21 +167,23 @@ namespace NadekoBot.Modules.Administration.Services
             _ignoreMessageIds.Add(messageId);
         }
 
-        public bool LogIgnore(ulong gid, ulong cid)
+        public bool LogIgnore(ulong gid, ulong itemId, IgnoredItemType itemType)
         {
             int removed = 0;
             using (var uow = _db.GetDbContext())
             {
                 var logSetting = uow.LogSettingsFor(gid);
-                removed = logSetting.IgnoredChannels.RemoveWhere(ilc => ilc.ChannelId == cid);
+                removed = logSetting.LogIgnores
+                    .RemoveAll(x => x.ItemType == itemType && itemId == x.LogItemId);
+                
                 if (removed == 0)
                 {
-                    var toAdd = new IgnoredLogChannel {ChannelId = cid};
-                    logSetting.IgnoredChannels.Add(toAdd);
+                    var toAdd = new IgnoredLogItem { LogItemId = itemId, ItemType = itemType};
+                    logSetting.LogIgnores.Add(toAdd);
                 }
 
-                GuildLogSettings.AddOrUpdate(gid, logSetting, (_, _) => logSetting);
                 uow.SaveChanges();
+                GuildLogSettings.AddOrUpdate(gid, logSetting, (_, _) => logSetting);
             }
 
             return removed > 0;
@@ -580,7 +584,8 @@ namespace NadekoBot.Modules.Administration.Services
             {
                 try
                 {
-                    if (!GuildLogSettings.TryGetValue(before.Guild.Id, out LogSetting logSetting))
+                    if (!GuildLogSettings.TryGetValue(before.Guild.Id, out LogSetting logSetting)
+                        || logSetting.LogIgnores.Any(ilc => ilc.LogItemId == after.Id && ilc.ItemType == IgnoredItemType.User))
                         return;
 
                     ITextChannel logChannel;
@@ -682,7 +687,7 @@ namespace NadekoBot.Modules.Administration.Services
 
                     if (!GuildLogSettings.TryGetValue(before.Guild.Id, out LogSetting logSetting)
                         || (logSetting.ChannelUpdatedId is null)
-                        || logSetting.IgnoredChannels.Any(ilc => ilc.ChannelId == after.Id))
+                        || logSetting.LogIgnores.Any(ilc => ilc.LogItemId == after.Id && ilc.ItemType == IgnoredItemType.Channel))
                         return;
 
                     ITextChannel logChannel;
@@ -733,7 +738,7 @@ namespace NadekoBot.Modules.Administration.Services
 
                     if (!GuildLogSettings.TryGetValue(ch.Guild.Id, out LogSetting logSetting)
                         || (logSetting.ChannelDestroyedId is null)
-                        || logSetting.IgnoredChannels.Any(ilc => ilc.ChannelId == ch.Id))
+                        || logSetting.LogIgnores.Any(ilc => ilc.LogItemId == ch.Id && ilc.ItemType == IgnoredItemType.Channel))
                         return;
 
                     ITextChannel logChannel;
@@ -772,7 +777,7 @@ namespace NadekoBot.Modules.Administration.Services
                         return;
 
                     if (!GuildLogSettings.TryGetValue(ch.Guild.Id, out LogSetting logSetting)
-                        || (logSetting.ChannelCreatedId is null))
+                        || logSetting.ChannelCreatedId is null)
                         return;
 
                     ITextChannel logChannel;
@@ -817,7 +822,8 @@ namespace NadekoBot.Modules.Administration.Services
                         return;
 
                     if (!GuildLogSettings.TryGetValue(usr.Guild.Id, out LogSetting logSetting)
-                        || (logSetting.LogVoicePresenceId is null))
+                        || (logSetting.LogVoicePresenceId is null)
+                        || logSetting.LogIgnores.Any(ilc => ilc.LogItemId == iusr.Id && ilc.ItemType == IgnoredItemType.User))
                         return;
 
                     ITextChannel logChannel;
@@ -862,49 +868,6 @@ namespace NadekoBot.Modules.Administration.Services
             return Task.CompletedTask;
         }
 
-        //private Task _client_UserPresenceUpdated(Optional<SocketGuild> optGuild, SocketUser usr, SocketPresence before, SocketPresence after)
-        //{
-        //    var _ = Task.Run(async () =>
-        //    {
-        //        try
-        //        {
-        //            var guild = optGuild.GetValueOrDefault() ?? (usr as SocketGuildUser)?.Guild;
-
-        //            if (guild is null)
-        //                return;
-
-        //            if (!GuildLogSettings.TryGetValue(guild.Id, out LogSetting logSetting)
-        //                || (logSetting.LogUserPresenceId is null)
-        //                || before.Status == after.Status)
-        //                return;
-
-        //            ITextChannel logChannel;
-        //            if ((logChannel = await TryGetLogChannel(guild, logSetting, LogType.UserPresence)) is null)
-        //                return;
-        //            string str = "";
-        //            if (before.Status != after.Status)
-        //                str = "🎭" + Format.Code(PrettyCurrentTime(g)) +
-        //                      GetText(logChannel.Guild, strs.user_status_change(,
-        //                            "👤" + Format.Bold(usr.Username),
-        //                            Format.Bold(after.Status.ToString()));
-
-        //            //if (before.Game?.Name != after.Game?.Name)
-        //            //{
-        //            //    if (str != "")
-        //            //        str += "\n";
-        //            //    str += $"👾`{prettyCurrentTime}`👤__**{usr.Username}**__ is now playing **{after.Game?.Name}**.";
-        //            //}
-
-        //            PresenceUpdates.AddOrUpdate(logChannel, new List<string>() { str }, (id, list) => { list.Add(str); return list; });
-        //        }
-        //        catch
-        //        {
-        //            // ignored
-        //        }
-        //    });
-        //    return Task.CompletedTask;
-        //}
-
         private Task _client_UserLeft(IGuildUser usr)
         {
             var _ = Task.Run(async () =>
@@ -912,7 +875,8 @@ namespace NadekoBot.Modules.Administration.Services
                 try
                 {
                     if (!GuildLogSettings.TryGetValue(usr.Guild.Id, out LogSetting logSetting)
-                        || (logSetting.UserLeftId is null))
+                        || (logSetting.UserLeftId is null)
+                        || logSetting.LogIgnores.Any(ilc => ilc.LogItemId == usr.Id && ilc.ItemType == IgnoredItemType.User))
                         return;
 
                     ITextChannel logChannel;
@@ -987,7 +951,8 @@ namespace NadekoBot.Modules.Administration.Services
                 try
                 {
                     if (!GuildLogSettings.TryGetValue(guild.Id, out LogSetting logSetting)
-                        || (logSetting.UserUnbannedId is null))
+                        || (logSetting.UserUnbannedId is null)
+                        || logSetting.LogIgnores.Any(ilc => ilc.LogItemId == usr.Id && ilc.ItemType == IgnoredItemType.User))
                         return;
 
                     ITextChannel logChannel;
@@ -1021,7 +986,8 @@ namespace NadekoBot.Modules.Administration.Services
                 try
                 {
                     if (!GuildLogSettings.TryGetValue(guild.Id, out LogSetting logSetting)
-                        || (logSetting.UserBannedId is null))
+                        || (logSetting.UserBannedId is null)
+                        || logSetting.LogIgnores.Any(ilc => ilc.LogItemId == usr.Id && ilc.ItemType == IgnoredItemType.User))
                         return;
 
                     ITextChannel logChannel;
@@ -1069,7 +1035,7 @@ namespace NadekoBot.Modules.Administration.Services
 
                     if (!GuildLogSettings.TryGetValue(channel.Guild.Id, out LogSetting logSetting)
                         || (logSetting.MessageDeletedId is null)
-                        || logSetting.IgnoredChannels.Any(ilc => ilc.ChannelId == channel.Id))
+                        || logSetting.LogIgnores.Any(ilc => ilc.LogItemId == channel.Id && ilc.ItemType == IgnoredItemType.Channel))
                         return;
 
                     ITextChannel logChannel;
@@ -1127,7 +1093,7 @@ namespace NadekoBot.Modules.Administration.Services
 
                     if (!GuildLogSettings.TryGetValue(channel.Guild.Id, out LogSetting logSetting)
                         || (logSetting.MessageUpdatedId is null)
-                        || logSetting.IgnoredChannels.Any(ilc => ilc.ChannelId == channel.Id))
+                        || logSetting.LogIgnores.Any(ilc => ilc.LogItemId == channel.Id && ilc.ItemType == IgnoredItemType.Channel))
                         return;
 
                     ITextChannel logChannel;

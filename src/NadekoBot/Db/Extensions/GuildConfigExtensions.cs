@@ -117,7 +117,7 @@ namespace NadekoBot.Db
         {
             var logSetting = ctx.LogSettings
                 .AsQueryable()
-                .Include(x => x.IgnoredChannels)
+                .Include(x => x.LogIgnores)
                 .Where(x => x.GuildId == guildId)
                 .FirstOrDefault();
 

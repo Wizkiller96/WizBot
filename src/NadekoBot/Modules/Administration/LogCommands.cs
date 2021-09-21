@@ -7,6 +7,7 @@ using NadekoBot.Services.Database.Models;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Administration.Services;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,12 +19,6 @@ namespace NadekoBot.Modules.Administration
         [NoPublicBot]
         public class LogCommands : NadekoSubmodule<ILogCommandService>
         {
-            public enum EnableDisable
-            {
-                Enable,
-                Disable
-            }
-
             [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
@@ -43,14 +38,51 @@ namespace NadekoBot.Modules.Administration
             [OwnerOnly]
             public async Task LogIgnore()
             {
-                var channel = (ITextChannel)ctx.Channel;
+                var settings = _service.GetGuildLogSettings(ctx.Guild.Id);
 
-                var removed = _service.LogIgnore(ctx.Guild.Id, ctx.Channel.Id);
+                var chs = settings?.LogIgnores.Where(x => x.ItemType == IgnoredItemType.Channel).ToList()
+                    ?? new List<IgnoredLogItem>();
+                var usrs = settings?.LogIgnores.Where(x => x.ItemType == IgnoredItemType.User).ToList()
+                    ?? new List<IgnoredLogItem>();
+
+                var eb = _eb.Create(ctx)
+                    .WithOkColor()
+                    .AddField(GetText(strs.log_ignored_channels),
+                        chs.Count == 0 ? "-" : string.Join('\n', chs.Select(x => $"{x.LogItemId} | <#{x.LogItemId}>")))
+                    .AddField(GetText(strs.log_ignored_users),
+                        usrs.Count == 0 ? "-" : string.Join('\n', usrs.Select(x => $"{x.LogItemId} | <@{x.LogItemId}>")));
+
+                await ctx.Channel.EmbedAsync(eb);
+            }
+
+            [NadekoCommand, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [UserPerm(GuildPerm.Administrator)]
+            [OwnerOnly]
+            public async Task LogIgnore([Leftover]ITextChannel target)
+            {
+                target ??= (ITextChannel)ctx.Channel;
+
+                var removed = _service.LogIgnore(ctx.Guild.Id, target.Id, IgnoredItemType.Channel);
 
                 if (!removed)
-                    await ReplyConfirmLocalizedAsync(strs.log_ignore(Format.Bold(channel.Mention + "(" + channel.Id + ")"))).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.log_ignore_chan(Format.Bold(target.Mention + "(" + target.Id + ")"))).ConfigureAwait(false);
                 else
-                    await ReplyConfirmLocalizedAsync(strs.log_not_ignore(Format.Bold(channel.Mention + "(" + channel.Id + ")"))).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.log_not_ignore_chan(Format.Bold(target.Mention + "(" + target.Id + ")"))).ConfigureAwait(false);
+            }
+            
+            [NadekoCommand, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [UserPerm(GuildPerm.Administrator)]
+            [OwnerOnly]
+            public async Task LogIgnore([Leftover]IUser target)
+            {
+                var removed = _service.LogIgnore(ctx.Guild.Id, target.Id, IgnoredItemType.User);
+
+                if (!removed)
+                    await ReplyConfirmLocalizedAsync(strs.log_ignore_user(Format.Bold(target.Mention + "(" + target.Id + ")"))).ConfigureAwait(false);
+                else
+                    await ReplyConfirmLocalizedAsync(strs.log_not_ignore_user(Format.Bold(target.Mention + "(" + target.Id + ")"))).ConfigureAwait(false);
             }
 
             [NadekoCommand, Aliases]

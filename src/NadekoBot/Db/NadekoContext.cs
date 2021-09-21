@@ -42,8 +42,8 @@ namespace NadekoBot.Services.Database
 
         //logging
         public DbSet<LogSetting> LogSettings { get; set; }
-        public DbSet<IgnoredLogChannel> IgnoredLogChannels { get; set; }
         public DbSet<IgnoredVoicePresenceChannel> IgnoredVoicePresenceCHannels { get; set; }
+        public DbSet<IgnoredLogItem> IgnoredLogChannels { get; set; }
 
         public DbSet<RotatingPlayingStatus> RotatingStatus { get; set; }
         public DbSet<BlacklistEntry> Blacklist { get; set; }
@@ -341,6 +341,15 @@ namespace NadekoBot.Services.Database
 
             modelBuilder.Entity<LogSetting>(ls => ls
                 .HasIndex(x => x.GuildId)
+                .IsUnique());
+            
+            modelBuilder.Entity<LogSetting>(ls => ls
+                .HasMany(x => x.LogIgnores)
+                .WithOne(x => x.LogSetting)
+                .OnDelete(DeleteBehavior.Cascade));
+
+            modelBuilder.Entity<IgnoredLogItem>(ili => ili
+                .HasIndex(x => new { ItemId = x.LogItemId, x.ItemType })
                 .IsUnique());
 
             #endregion
