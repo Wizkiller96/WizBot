@@ -218,7 +218,7 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
 
             var channel = _client.GetChannel(repeater.ChannelId) as ITextChannel;
             if (channel is null)
-                channel = await _client.Rest.GetChannelAsync(repeater.ChannelId) as ITextChannel;
+                try { channel = await _client.Rest.GetChannelAsync(repeater.ChannelId) as ITextChannel; } catch { }
 
             if (channel is null)
             {
