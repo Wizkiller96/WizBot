@@ -862,14 +862,12 @@ namespace NadekoBot.Migrations
                     b.Property<ulong>("LogItemId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("LogSettingId")
+                    b.Property<int>("LogSettingId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LogSettingId");
-
-                    b.HasIndex("LogItemId", "ItemType")
+                    b.HasIndex("LogSettingId", "LogItemId", "ItemType")
                         .IsUnique();
 
                     b.ToTable("IgnoredLogChannels");
@@ -2280,7 +2278,8 @@ namespace NadekoBot.Migrations
                     b.HasOne("NadekoBot.Services.Database.Models.LogSetting", "LogSetting")
                         .WithMany("LogIgnores")
                         .HasForeignKey("LogSettingId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("LogSetting");
                 });
@@ -2288,7 +2287,7 @@ namespace NadekoBot.Migrations
             modelBuilder.Entity("NadekoBot.Services.Database.Models.IgnoredVoicePresenceChannel", b =>
                 {
                     b.HasOne("NadekoBot.Services.Database.Models.LogSetting", "LogSetting")
-                        .WithMany("IgnoredVoicePresenceChannelIds")
+                        .WithMany()
                         .HasForeignKey("LogSettingId");
 
                     b.Navigation("LogSetting");
@@ -2605,8 +2604,6 @@ namespace NadekoBot.Migrations
 
             modelBuilder.Entity("NadekoBot.Services.Database.Models.LogSetting", b =>
                 {
-                    b.Navigation("IgnoredVoicePresenceChannelIds");
-
                     b.Navigation("LogIgnores");
                 });
 

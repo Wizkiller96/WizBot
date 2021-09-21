@@ -349,7 +349,7 @@ namespace NadekoBot.Services.Database
                 .OnDelete(DeleteBehavior.Cascade));
 
             modelBuilder.Entity<IgnoredLogItem>(ili => ili
-                .HasIndex(x => new { ItemId = x.LogItemId, x.ItemType })
+                .HasIndex(x => new { x.LogSettingId, x.LogItemId, x.ItemType })
                 .IsUnique());
 
             #endregion
