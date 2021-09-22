@@ -17,11 +17,6 @@ namespace NadekoBot.Modules.Gambling
         [Group]
         public class CurrencyEventsCommands : GamblingSubmodule<CurrencyEventsService>
         {
-            public enum OtherEvent
-            {
-                BotListUpvoters
-            }
-
             public CurrencyEventsCommands(GamblingConfigService gamblingConf) : base(gamblingConf)
             {
             }
@@ -37,41 +32,36 @@ namespace NadekoBot.Modules.Gambling
                     ctx.Channel.Id,
                     ev,
                     opts,
-                    GetEmbed
-                    ).ConfigureAwait(false))
+                    GetEmbed))
                 {
                     await ReplyErrorLocalizedAsync(strs.start_event_fail).ConfigureAwait(false);
-                    return;
                 }
             }
 
             private IEmbedBuilder GetEmbed(CurrencyEvent.Type type, EventOptions opts, long currentPot)
             {
-                switch (type)
+                return type switch
                 {
-                    case CurrencyEvent.Type.Reaction:
-                        return _eb.Create()
-                            .WithOkColor()
-                            .WithTitle(GetText(strs.event_title(type.ToString())))
-                            .WithDescription(GetReactionDescription(opts.Amount, currentPot))
-                            .WithFooter(GetText(strs.event_duration_footer(opts.Hours)));
-                    case CurrencyEvent.Type.GameStatus:
-                        return _eb.Create()
-                            .WithOkColor()
-                            .WithTitle(GetText(strs.event_title(type.ToString())))
-                            .WithDescription(GetGameStatusDescription(opts.Amount, currentPot))
-                            .WithFooter(GetText(strs.event_duration_footer(opts.Hours)));
-                    default:
-                        break;
-                }
-                throw new ArgumentOutOfRangeException(nameof(type));
+                    CurrencyEvent.Type.Reaction => _eb.Create()
+                        .WithOkColor()
+                        .WithTitle(GetText(strs.event_title(type.ToString())))
+                        .WithDescription(GetReactionDescription(opts.Amount, currentPot))
+                        .WithFooter(GetText(strs.event_duration_footer(opts.Hours))),
+                    CurrencyEvent.Type.GameStatus => _eb.Create()
+                        .WithOkColor()
+                        .WithTitle(GetText(strs.event_title(type.ToString())))
+                        .WithDescription(GetGameStatusDescription(opts.Amount, currentPot))
+                        .WithFooter(GetText(strs.event_duration_footer(opts.Hours))),
+                    _ => throw new ArgumentOutOfRangeException(nameof(type))
+                };
             }
 
             private string GetReactionDescription(long amount, long potSize)
             {
-                string potSizeStr = Format.Bold(potSize == 0
+                var potSizeStr = Format.Bold(potSize == 0
                     ? "∞" + CurrencySign
-                    : potSize.ToString() + CurrencySign);
+                    : potSize + CurrencySign);
+                
                 return GetText(strs.new_reaction_event(
                     CurrencySign,
                     Format.Bold(amount + CurrencySign),
@@ -80,9 +70,10 @@ namespace NadekoBot.Modules.Gambling
 
             private string GetGameStatusDescription(long amount, long potSize)
             {
-                string potSizeStr = Format.Bold(potSize == 0
+                var potSizeStr = Format.Bold(potSize == 0
                     ? "∞" + CurrencySign
-                    : potSize.ToString() + CurrencySign);
+                    : potSize + CurrencySign);
+                
                 return GetText(strs.new_gamestatus_event(
                     CurrencySign,
                     Format.Bold(amount + CurrencySign),

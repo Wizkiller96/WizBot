@@ -225,6 +225,9 @@ namespace NadekoBot.Modules.Gambling
             [BotPerm(GuildPerm.ManageRoles)]
             public async Task ShopAdd(Role _, int price, [Leftover] IRole role)
             {
+                if (price < 1)
+                    return;
+                
                 var entry = new ShopEntry()
                 {
                     Name = "-",
@@ -252,8 +255,11 @@ namespace NadekoBot.Modules.Gambling
             [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
-            public async Task ShopAdd(List _, int price, [Leftover]string name)
+            public async Task ShopAdd(List _, int price, [Leftover] string name)
             {
+                if (price < 1)
+                    return;
+
                 var entry = new ShopEntry()
                 {
                     Name = name.TrimTo(100),
@@ -266,13 +272,14 @@ namespace NadekoBot.Modules.Gambling
                 {
                     var entries = new IndexedCollection<ShopEntry>(uow.GuildConfigsForId(ctx.Guild.Id,
                         set => set.Include(x => x.ShopEntries)
-                                  .ThenInclude(x => x.Items)).ShopEntries)
+                            .ThenInclude(x => x.Items)).ShopEntries)
                     {
                         entry
                     };
                     uow.GuildConfigsForId(ctx.Guild.Id, set => set).ShopEntries = entries;
                     uow.SaveChanges();
                 }
+
                 await ctx.Channel.EmbedAsync(EntryToEmbed(entry)
                     .WithTitle(GetText(strs.shop_item_add))).ConfigureAwait(false);
             }

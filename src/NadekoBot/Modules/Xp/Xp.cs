@@ -123,6 +123,7 @@ namespace NadekoBot.Modules.Xp
 
         [NadekoCommand, Aliases]
         [UserPerm(GuildPerm.Administrator)]
+        [BotPerm(GuildPerm.ManageRoles)]
         [RequireContext(ContextType.Guild)]
         [Priority(2)]
         public async Task XpRoleReward(int level)
@@ -133,6 +134,7 @@ namespace NadekoBot.Modules.Xp
         
         [NadekoCommand, Aliases]
         [UserPerm(GuildPerm.Administrator)]
+        [BotPerm(GuildPerm.ManageRoles)]
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
         public async Task XpRoleReward(int level, AddRemove action, [Leftover] IRole role)
