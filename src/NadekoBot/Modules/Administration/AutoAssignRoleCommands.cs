@@ -16,6 +16,7 @@ namespace NadekoBot.Modules.Administration
             [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageRoles)]
+            [BotPerm(GuildPerm.ManageRoles)]
             public async Task AutoAssignRole([Leftover] IRole role)
             {
                 var guser = (IGuildUser) ctx.User;
@@ -47,6 +48,7 @@ namespace NadekoBot.Modules.Administration
             [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageRoles)]
+            [BotPerm(GuildPerm.ManageRoles)]
             public async Task AutoAssignRole()
             {
                 if (!_service.TryGetRoles(ctx.Guild.Id, out var roles))
