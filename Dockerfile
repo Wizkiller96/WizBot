@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build
 WORKDIR /source
 
 COPY src/NadekoBot/*.csproj src/NadekoBot/
@@ -9,14 +9,33 @@ RUN dotnet restore src/NadekoBot/
 
 COPY . .
 WORKDIR /source/src/NadekoBot
-RUN dotnet --version
-RUN dotnet publish -c Release -o /app --no-restore
+RUN set -xe; \
+    dotnet --version; \
+    dotnet publish -c Release -o /app --no-restore; \
+    mv /app/data /app/data_init; \
+    rm -Rf libopus* libsodium* opus.* runtimes/win* runtimes/osx* runtimes/linux-arm* runtimes/linux-mips*; \
+    find /app -type f -exec chmod -x {} \; ;\
+    chmod +x /app/NadekoBot
 
 # final stage/image
-FROM mcr.microsoft.com/dotnet/runtime:5.0
+FROM mcr.microsoft.com/dotnet/runtime:5.0-buster-slim
+WORKDIR /app
+
+RUN set -xe; \
+    useradd -m nadeko; \
+    apt-get update; \
+    apt-get install -y libopus0 libsodium23 libsqlite3-0 curl ffmpeg python3 sudo; \
+    update-alternatives --install /usr/bin/python python /usr/bin/python3.7 1; \
+    echo 'Defaults>nadeko env_keep+="ASPNETCORE_* DOTNET_* NadekoBot_* shard_id total_shards TZ"' > /etc/sudoers.d/nadeko; \
+    curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl; \
+    chmod +x /usr/local/bin/youtube-dl
+
+COPY --from=build /app ./
+COPY docker-entrypoint.sh /usr/local/sbin
+
 ENV shard_id=0
 ENV total_shards=1
-WORKDIR /app
-COPY --from=build /app ./
-VOLUME [ "app/data", "app/creds.yml", "app/creds_example.yml" ]
-ENTRYPOINT dotnet NadekoBot.dll "$shard_id" "$total_shards"
+
+VOLUME [ "app/data" ]
+ENTRYPOINT [ "/usr/local/sbin/docker-entrypoint.sh" ]
+CMD dotnet NadekoBot.dll "$shard_id" "$total_shards"
