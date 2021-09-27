@@ -53,6 +53,7 @@ namespace WizBot.Common.Replacements
             newEmbedData.Title = Replace(embedData.Title);
             newEmbedData.Thumbnail = Replace(embedData.Thumbnail);
             newEmbedData.Image = Replace(embedData.Image);
+            newEmbedData.Url = Replace(embedData.Url);
             if (embedData.Author != null)
             {
                 newEmbedData.Author = new SmartTextEmbedAuthor();
