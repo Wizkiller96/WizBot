@@ -9,6 +9,7 @@
 !src/WizBot.Generators/**
 # Use Ayu stuff
 !src/ayu/**
+!docker-entrypoint.sh
 
 # ignore bin and obj folders in projects
 src/**/bin/*
