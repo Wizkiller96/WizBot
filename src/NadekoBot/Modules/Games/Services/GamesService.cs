@@ -4,7 +4,6 @@ using NadekoBot.Services;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Games.Common;
 using NadekoBot.Modules.Games.Common.Acrophobia;
-using NadekoBot.Modules.Games.Common.Hangman;
 using NadekoBot.Modules.Games.Common.Nunchi;
 using NadekoBot.Modules.Games.Common.Trivia;
 using Newtonsoft.Json;
@@ -12,7 +11,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,10 +38,6 @@ namespace NadekoBot.Modules.Games.Services
 
         //channelId, game
         public ConcurrentDictionary<ulong, AcrophobiaGame> AcrophobiaGames { get; } = new ConcurrentDictionary<ulong, AcrophobiaGame>();
-
-        public ConcurrentDictionary<ulong, Hangman> HangmanGames { get; } = new ConcurrentDictionary<ulong, Hangman>();
-        public TermPool TermPool { get; } = new TermPool();
-
         public ConcurrentDictionary<ulong, TriviaGame> RunningTrivias { get; } = new ConcurrentDictionary<ulong, TriviaGame>();
         public Dictionary<ulong, TicTacToe> TicTacToeGames { get; } = new Dictionary<ulong, TicTacToe>();
         public ConcurrentDictionary<ulong, TypingGame> RunningContests { get; } = new ConcurrentDictionary<ulong, TypingGame>();
