@@ -48,6 +48,7 @@ namespace WizBot.Db
 
         private static IQueryable<GuildConfig> IncludeEverything(this DbSet<GuildConfig> configs)
         {
+            // todo split query
             return configs
                     .AsQueryable()
                     .Include(gc => gc.CommandCooldowns)
