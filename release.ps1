@@ -56,7 +56,7 @@ function Write-ReleaseFile($versionNumber) {
 	# print out the changelog to the console
     # Write-Host $changelog
 
-	$jsonReleaseFile = "[{""VersionName"": ""$versionNumber"", ""DownloadLink"": ""https://wizbot.bot/downloads/bot/wizbot-setup-$versionNumber.exe"", ""Changelog"": """"}]"
+	$jsonReleaseFile = "[{""VersionName"": ""$versionNumber"", ""DownloadLink"": ""https://wizbot.cc/downloads/bot/wizbot-setup-$versionNumber.exe"", ""Changelog"": """"}]"
 
 	$releaseJsonOutPath = [Environment]::GetFolderPath('MyDocuments') + "\_projekti\wizbot-installers\$versionNumber\"
 	New-Item -Path $releaseJsonOutPath -Value $jsonReleaseFile -Name "releases.json" -Force
