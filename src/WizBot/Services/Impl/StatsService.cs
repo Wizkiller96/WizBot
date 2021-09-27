@@ -19,7 +19,7 @@ namespace WizBot.Services
         private readonly IBotCredentials _creds;
         private readonly DateTime _started;
 
-        public const string BotVersion = "3.0.5";
+        public const string BotVersion = "3.0.6";
         public string Author => "Kwoth#2452 & Wizkiller96#5074";
         public string Library => "Discord.Net";
 

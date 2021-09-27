@@ -4,23 +4,33 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+## [3.0.6] - 27.09.2021
+
 ### Added
 
 - .logignore now supports ignoring users and channels. Use without parameters to see the ignore list
 
+### Changed
+
+- Hangman rewrite
+  - Hangman categories are now held in separate .yml files in data/hangman/XYZ.yml where XYZ is the category name
+
 ### Fixed
 
 - Fixed an exception which caused repeater queue to break
+- Fixed url field not working in embeds
 
 ## [3.0.5] - 20.09.2021
 
 ### Fixed
+
 - Fixed images not automatically reloading on startup if the keys don't exist
 - Fixed `.logserver` - it should no longer throw an exception if you had no logsettings previously
 
 ## [3.0.4] - 16.09.2021
 
 ### Added
+
 - Fully translated to Brazilian Portuguese 🎉
 - Added `%server.boosters%` and `%server.boost_level%` placeholders
 - Added `DmHelpTextKeywords` to `data/bot.yml`
@@ -28,6 +38,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
   - If no keywords are specified, bot will reply to every DM (like before)
 
 ### Fixed
+
 - Possible fix for `.repeat` bug
   - Slight adjustment for repeater logic
   - Timer should no longer increase on some repeaters
