@@ -1321,11 +1321,11 @@ magicthegathering:
   args:
     - "about face"
 hangmanlist:
-  desc: "Shows a list of hangman term types."
+  desc: "Shows a list of hangman question categories."
   args:
     - ""
 hangman:
-  desc: "Starts a game of hangman in the channel. Use `{0}hangmanlist` to see a list of available term types. Defaults to 'all'."
+  desc: "Starts a game of hangman in the channel. You can optionally select a category `{0}hangmanlist` to see a list of available categories."
   args:
     - ""
     - "movies"
