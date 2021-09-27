@@ -24,18 +24,18 @@ function Get-Changelog($lastTag)
 
 function Build-Installer($versionNumber)
 {
-    $env:NADEKOBOT_INSTALL_VERSION = $versionNumber
+    $env:WIZBOT_INSTALL_VERSION = $versionNumber
 
 	dotnet clean
-    # rm -r -fo "src\NadekoBot\bin"
-    dotnet publish -c Release --runtime win7-x64 /p:Version=$versionNumber src/NadekoBot
-    # .\rcedit-x64.exe "src\NadekoBot\bin\Release\netcoreapp2.1\win7-x64\nadekobot.exe" --set-icon "src\NadekoBot\bin\Release\netcoreapp2.1\win7-x64\nadeko_icon.ico"
+    # rm -r -fo "src\WizBot\bin"
+    dotnet publish -c Release --runtime win7-x64 /p:Version=$versionNumber src/WizBot
+    # .\rcedit-x64.exe "src\WizBot\bin\Release\netcoreapp2.1\win7-x64\wizbot.exe" --set-icon "src\WizBot\bin\Release\netcoreapp2.1\win7-x64\wizbot_icon.ico"
 
     & "iscc.exe" "/O+" ".\exe_builder.iss"
 
     Write-ReleaseFile($versionNumber)
     # $path = [Environment]::GetFolderPath('MyDocuments') + "\_projekti\new_installer\$versionNumber\";
-    # $binPath = $path + "nadeko-setup-$versionNumber.exe";
+    # $binPath = $path + "wizbot-setup-$versionNumber.exe";
     # Copy-Item -Path $path -Destination $dest -Force -ErrorAction Stop
 
 	# return $path
@@ -56,8 +56,8 @@ function Write-ReleaseFile($versionNumber) {
 	# print out the changelog to the console
     # Write-Host $changelog
 
-	$jsonReleaseFile = "[{""VersionName"": ""$versionNumber"", ""DownloadLink"": ""https://cdn.nadeko.bot/dl/bot/nadeko-setup-$versionNumber.exe"", ""Changelog"": """"}]"
+	$jsonReleaseFile = "[{""VersionName"": ""$versionNumber"", ""DownloadLink"": ""https://wizbot.bot/downloads/bot/wizbot-setup-$versionNumber.exe"", ""Changelog"": """"}]"
 
-	$releaseJsonOutPath = [Environment]::GetFolderPath('MyDocuments') + "\_projekti\nadeko-installers\$versionNumber\"
+	$releaseJsonOutPath = [Environment]::GetFolderPath('MyDocuments') + "\_projekti\wizbot-installers\$versionNumber\"
 	New-Item -Path $releaseJsonOutPath -Value $jsonReleaseFile -Name "releases.json" -Force
 }

@@ -91,4 +91,4 @@ Some features have their own specific placeholders which are noted in that featu
 - `%target%` - Returns anything the user has written after the trigger (only works on custom reactions)
 - `%img:stuff%` - Returns an `imgur.com` search for "stuff" (only works on custom reactions)
 
-![img](https://puu.sh/B7mgI.png)
+![img](https://i.imgur.com/yp0RORk.jpg)

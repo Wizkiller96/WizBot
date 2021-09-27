@@ -1,12 +1,12 @@
 # Ignore all files
 *
 
-# Use NadekoBot project
-!src/NadekoBot/**
-# Use NadekoBot.Coordinator project
-!src/NadekoBot.Coordinator/**
+# Use WizBot project
+!src/WizBot/**
+# Use WizBot.Coordinator project
+!src/WizBot.Coordinator/**
 # Use Generators project
-!src/NadekoBot.Generators/**
+!src/WizBot.Generators/**
 # Use Ayu stuff
 !src/ayu/**
 
