@@ -9,7 +9,7 @@ Upgrade from 2.x to v3 does not work because the file is mount readonly
 version: "3.7"
 services:
   nadeko:
-    image: registry.gitlab.com/veovis/wizbot:v3-docker
+    image: registry.gitlab.com/wiznet/wizbot:v3
     depends_on:
       - redis
     environment:

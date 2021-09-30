@@ -5,7 +5,7 @@
 1. Run your WizBot Updater first, and **make sure your bot is updated to at least 2.46.5**
     - **Run your 2.46.5 Bot** and make sure it works, and then **stop it**  
     - Close your old WizBot Updater
-2. Get the new WizBot v3 Updater [here](https://wizbot.cc/downloads/v3)
+2. Get the new WizBot v3 Updater [here](https://wizbot.cc/downloads/v3) **Currently not available**
 3. Click on the + icon to add a new bot
 4. Next to the path, click on the folder icon and select the folder where your 2.46.5 bot is
     - ℹ In case you're not sure where it's located, you can open your old updater and see it
@@ -25,7 +25,7 @@
     - Run `cd ~ && ls`
     - Confirm there is a folder called WizBot (not wizbot, in all lowercase)
 3. Migrate your bot's data using the new installer:
-    - Run the **new** installer `cd ~ && wget -N https://github.com/Wizkiller96/wizbot-bash-installer/-/raw/master/linuxAIO.sh && bash linuxAIO.sh`
+    - Run the **new** installer `cd ~ && wget -N https://github.com/Wizkiller96/wizbot-bash-installer/raw/master/linuxAIO.sh && bash linuxAIO.sh`
     - The installer should notify you that your data is ready for migration in a message above the menu.
     - Install prerequisites (type `1` and press enter), and make sure it is successful
     - Download WizBot v3 (type `2` and press enter)

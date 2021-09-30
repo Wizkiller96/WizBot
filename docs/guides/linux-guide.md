@@ -10,7 +10,7 @@ Open Terminal (if you're on an installation with a window manager) and navigate 
 
 ##### Installation Instructions
 
-1. Download and run the **new** installer script `cd ~ && wget -N https://github.com/Wizkiller96/wizbot-bash-installer/-/raw/master/linuxAIO.sh && bash linuxAIO.sh`
+1. Download and run the **new** installer script `cd ~ && wget -N https://github.com/Wizkiller96/wizbot-bash-installer/raw/master/linuxAIO.sh && bash linuxAIO.sh`
 2. Install prerequisites (type `1` and press enter)
 3. Download the bot (type `2` and press enter)
 4. Exit the installer in order to set up your `creds.yml` 
@@ -27,7 +27,7 @@ Open Terminal (if you're on an installation with a window manager) and navigate 
 ##### Update Instructions
 
 1. ⚠ Stop the bot
-2. Update and run the **new** installer script `cd ~ && wget -N https://github.com/Wizkiller96/wizbot-bash-installer/-/raw/master/linuxAIO.sh && bash linuxAIO.sh`
+2. Update and run the **new** installer script `cd ~ && wget -N https://github.com/Wizkiller96/wizbot-bash-installer/raw/master/linuxAIO.sh && bash linuxAIO.sh`
 3. Update the bot (type `2` and press enter)
 4. Run the bot (type `3` and press enter)
 5. 🎉 
@@ -36,7 +36,7 @@ Open Terminal (if you're on an installation with a window manager) and navigate 
 
 ##### Installation Instructions
 
-1. Download the latest release from <https://github.com/Wizkiller96/WizBot/-/releases>
+1. Download the latest release from <https://github.com/Wizkiller96/WizBot/releases>
     - Look for the file called "X.XX.X-linux-x64-build.tar" (where X.XX.X is a series of numbers) and download it
 2. Untar it 
     - ⚠ Make sure that you change X.XX.X to the same series of numbers as in step 1!
@@ -60,7 +60,7 @@ Open Terminal (if you're on an installation with a window manager) and navigate 
 ##### Update Instructions
 
 1. Stop the bot
-2. Download the latest release from <https://github.com/Wizkiller96/WizBot/-/releases>
+2. Download the latest release from <https://github.com/Wizkiller96/WizBot/releases>
     - Look for the file called "x.x.x-linux-x64-build.tar" (where `X.X.X` is a version, for example 3.0.4) and download it
 3. Untar it 
     - ⚠ Make sure that you change `X.X.X` to the same series of numbers as in step 2!
