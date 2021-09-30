@@ -69,14 +69,14 @@ namespace NadekoBot.Modules.Searches
                         fs.Type));
             }
 
-            // [NadekoCommand, Usage, Description, Aliases]
-            // [RequireContext(ContextType.Guild)]
-            // [UserPerm(GuildPerm.Administrator)]
-            // public async Task StreamsClear()
-            // {
-            //     var count = _service.ClearAllStreams(ctx.Guild.Id);
-            //     await ReplyErrorLocalizedAsync(strs.streams_cleared(count)));
-            // }
+            [NadekoCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [UserPerm(GuildPerm.Administrator)]
+            public async Task StreamsClear()
+            {
+                var count = _service.ClearAllStreams(ctx.Guild.Id);
+                await ReplyConfirmLocalizedAsync(strs.streams_cleared);
+            }
 
             [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]

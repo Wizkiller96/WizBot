@@ -14,6 +14,8 @@ using NadekoBot.Extensions;
 using StackExchange.Redis;
 using Discord;
 using Discord.WebSocket;
+using LinqToDB;
+using LinqToDB.EntityFrameworkCore;
 using NadekoBot.Common.Collections;
 using NadekoBot.Common.Replacements;
 using NadekoBot.Db;
@@ -342,19 +344,18 @@ namespace NadekoBot.Modules.Searches.Services
             return Task.CompletedTask;
         }
 
-        public int ClearAllStreams(ulong guildId)
+        public async Task<int> ClearAllStreams(ulong guildId)
         {
-            // todo future clear streams
-            int count;
-            using (var uow = _db.GetDbContext())
-            {
-                var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.FollowedStreams));
-                count = gc.FollowedStreams.Count;
-                gc.FollowedStreams.Clear();
-                uow.SaveChanges();
-            }
+            using var uow = _db.GetDbContext();
+            var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.FollowedStreams));
+            uow.RemoveRange(gc.FollowedStreams);
 
-            return count;
+            foreach (var s in gc.FollowedStreams)
+                await PublishUnfollowStream(s);
+            
+            uow.SaveChanges();
+
+            return gc.FollowedStreams.Count;
         }
 
         public async Task<FollowedStream> UnfollowStreamAsync(ulong guildId, int index)
