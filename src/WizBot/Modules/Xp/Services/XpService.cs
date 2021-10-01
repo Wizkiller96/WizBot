@@ -140,7 +140,6 @@ namespace WizBot.Modules.Xp.Services
 
             _cmd.OnMessageNoTrigger += _cmd_OnMessageNoTrigger;
             
-#if !GLOBAL_WIZBOT
             _client.UserVoiceStateUpdated += _client_OnUserVoiceStateUpdated;
             
             // Scan guilds on startup.
@@ -149,7 +148,6 @@ namespace WizBot.Modules.Xp.Services
             {
                 _client_OnGuildAvailable(guild);
             }
-#endif
             updateXpTask = Task.Run(UpdateLoop);
         }
 

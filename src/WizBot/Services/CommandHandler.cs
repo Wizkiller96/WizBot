@@ -204,10 +204,9 @@ namespace WizBot.Services
 
                 if (!(msg is SocketUserMessage usrMsg))
                     return;
-#if !GLOBAL_WIZBOT
+                
                 // track how many messagges each user is sending
                 UserMessagesSent.AddOrUpdate(usrMsg.Author.Id, 1, (key, old) => ++old);
-#endif
 
                 var channel = msg.Channel as ISocketMessageChannel;
                 var guild = (msg.Channel as SocketTextChannel)?.Guild;

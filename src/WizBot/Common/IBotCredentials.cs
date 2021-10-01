@@ -11,6 +11,7 @@ namespace WizBot
         string Token { get; }
         string GoogleApiKey { get; }
         ICollection<ulong> OwnerIds { get; }
+        ICollection<ulong> AdminIds { get; }
         string RapidApiKey { get; }
         string PatreonAccessToken { get; }
 

@@ -22,7 +22,6 @@ namespace WizBot.Modules.Administration
             [WizBotCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
-            [OwnerOnly]
             public async Task LogServer(PermissionAction action)
             {
                 await _service.LogServer(ctx.Guild.Id, ctx.Channel.Id, action.Value).ConfigureAwait(false);
@@ -35,7 +34,6 @@ namespace WizBot.Modules.Administration
             [WizBotCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
-            [OwnerOnly]
             public async Task LogIgnore()
             {
                 var settings = _service.GetGuildLogSettings(ctx.Guild.Id);
@@ -58,7 +56,6 @@ namespace WizBot.Modules.Administration
             [WizBotCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
-            [OwnerOnly]
             public async Task LogIgnore([Leftover]ITextChannel target)
             {
                 target ??= (ITextChannel)ctx.Channel;
@@ -74,7 +71,6 @@ namespace WizBot.Modules.Administration
             [WizBotCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
-            [OwnerOnly]
             public async Task LogIgnore([Leftover]IUser target)
             {
                 var removed = _service.LogIgnore(ctx.Guild.Id, target.Id, IgnoredItemType.User);
@@ -88,7 +84,6 @@ namespace WizBot.Modules.Administration
             [WizBotCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
-            [OwnerOnly]
             public async Task LogEvents()
             {
                 var logSetting = _service.GetGuildLogSettings(ctx.Guild.Id);
@@ -148,7 +143,6 @@ namespace WizBot.Modules.Administration
             [WizBotCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.Administrator)]
-            [OwnerOnly]
             public async Task Log(LogType type)
             {
                 var val = _service.Log(ctx.Guild.Id, ctx.Channel.Id, type);

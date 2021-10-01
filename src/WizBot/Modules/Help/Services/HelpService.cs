@@ -137,6 +137,9 @@ namespace WizBot.Modules.Help.Services
             if(cmd.Preconditions.Any(x => x is OwnerOnlyAttribute))
                 toReturn.Add("Bot Owner Only");
             
+            if(cmd.Preconditions.Any(x => x is AdminOnlyAttribute))
+                toReturn.Add("Bot Staff Only");
+            
             var userPerm = (UserPermAttribute)cmd.Preconditions
                 .FirstOrDefault(ca => ca is UserPermAttribute);
 

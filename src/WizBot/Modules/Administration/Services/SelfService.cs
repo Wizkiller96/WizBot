@@ -29,6 +29,9 @@ namespace WizBot.Modules.Administration.Services
 
         private ImmutableDictionary<ulong, IDMChannel> ownerChannels =
             new Dictionary<ulong, IDMChannel>().ToImmutableDictionary();
+        
+        private ImmutableDictionary<ulong, IDMChannel> adminChannels =
+            new Dictionary<ulong, IDMChannel>().ToImmutableDictionary();
 
         private ConcurrentDictionary<ulong?, ConcurrentDictionary<int, Timer>> _autoCommands =
             new ConcurrentDictionary<ulong?, ConcurrentDictionary<int, Timer>>();
@@ -133,6 +136,7 @@ namespace WizBot.Modules.Administration.Services
             if (_client.ShardId == 0)
             {
                 await LoadOwnerChannels().ConfigureAwait(false);
+                await LoadAdminChannels().ConfigureAwait(false);
             }
         }
 
@@ -227,6 +231,28 @@ namespace WizBot.Modules.Administration.Services
                     "No owner channels created! Make sure you've specified the correct OwnerId in the creds.yml file and invited the bot to a Discord server.");
             else
                 Log.Information($"Created {ownerChannels.Count} out of {_creds.OwnerIds.Count} owner message channels.");
+        }
+        
+        private async Task LoadAdminChannels()
+        {
+            var channels = await Task.WhenAll(_creds.AdminIds.Select(id =>
+            {
+                var user = _client.GetUser(id);
+                if (user is null)
+                    return Task.FromResult<IDMChannel>(null);
+
+                return user.GetOrCreateDMChannelAsync();
+            })).ConfigureAwait(false);
+
+            adminChannels = channels.Where(x => x != null)
+                .ToDictionary(x => x.Recipient.Id, x => x)
+                .ToImmutableDictionary();
+
+            if (!adminChannels.Any())
+                Log.Warning(
+                    "No admin channels created! Make sure you've specified the correct AdminId in the creds.yml file and invited the bot to a Discord server.");
+            else
+                Log.Information($"Created {adminChannels.Count} out of {_creds.AdminIds.Count} owner message channels.");
         }
 
         public Task LeaveGuild(string guildStr) 

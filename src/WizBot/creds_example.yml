@@ -5,6 +5,9 @@ token: ''
 # List of Ids of the users who have bot owner permissions
 # **DO NOT ADD PEOPLE YOU DON'T TRUST**
 ownerIds: []
+# List of Ids of the users who have bot admin permissions
+# **DO NOT ADD PEOPLE YOU DON'T TRUST**
+adminIds: []
 # The number of shards that the bot will running on.
 # Leave at 1 if you don't know what you're doing.
 totalShards: 1

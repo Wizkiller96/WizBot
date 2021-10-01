@@ -173,13 +173,13 @@ namespace WizBot.Modules.Gambling
             InternalCurrencyTransactions(ctx.User.Id, page);
 
         [WizBotCommand, Aliases]
-        [OwnerOnly]
+        [AdminOnly]
         [Priority(0)]
         public Task CurrencyTransactions([Leftover] IUser usr) =>
             InternalCurrencyTransactions(usr.Id, 1);
 
         [WizBotCommand, Aliases]
-        [OwnerOnly]
+        [AdminOnly]
         [Priority(1)]
         public Task CurrencyTransactions(IUser usr, int page) =>
             InternalCurrencyTransactions(usr.Id, page);

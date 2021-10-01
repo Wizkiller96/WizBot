@@ -11,6 +11,7 @@ namespace WizBot.Common
             Version = 1;
             Token = string.Empty;
             OwnerIds = new List<ulong>();
+            AdminIds = new List<ulong>();
             TotalShards = 1;
             GoogleApiKey = string.Empty;
             Votes = new(string.Empty, string.Empty);
@@ -40,6 +41,10 @@ namespace WizBot.Common
         [Comment(@"List of Ids of the users who have bot owner permissions
 **DO NOT ADD PEOPLE YOU DON'T TRUST**")]
         public ICollection<ulong> OwnerIds { get; set; }
+        
+        [Comment(@"List of Ids of the users who have bot admin permissions
+**DO NOT ADD PEOPLE YOU DON'T TRUST**")]
+        public ICollection<ulong> AdminIds { get; set; }
         
         [Comment(@"The number of shards that the bot will running on.
 Leave at 1 if you don't know what you're doing.")]
@@ -163,6 +168,7 @@ Windows default
         {
             public string Token { get; set; } = string.Empty;
             public ulong[] OwnerIds { get; set; } = new ulong[1];
+            public ulong[] AdminIds { get; set; } = new ulong[1];
             public string LoLApiKey { get; set; } = string.Empty;
             public string GoogleApiKey { get; set; } = string.Empty;
             public string MashapeKey { get; set; } = string.Empty;

@@ -7,7 +7,6 @@ using Discord;
 using WizBot.Modules.Administration.Services;
 using System.Linq;
 
-#if !GLOBAL_WIZBOT
 namespace WizBot.Modules.Administration
 {
     public partial class Administration
@@ -129,4 +128,3 @@ namespace WizBot.Modules.Administration
         }
     }
 }
-#endif

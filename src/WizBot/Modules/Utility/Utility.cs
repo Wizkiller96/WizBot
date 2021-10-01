@@ -238,16 +238,27 @@ namespace WizBot.Modules.Utility
         [WizBotCommand, Aliases]
         public async Task Stats()
         {
+            var sw = Stopwatch.StartNew();
+            var msg = await ctx.Channel.SendMessageAsync("Getting Ping...").ConfigureAwait(false);
+            sw.Stop();
+            msg.DeleteAfter(0);
+            
             var ownerIds = string.Join("\n", _creds.OwnerIds);
             if (string.IsNullOrWhiteSpace(ownerIds))
                 ownerIds = "-";
+            
+            var adminIds = string.Join("\n", _creds.AdminIds);
+            if (string.IsNullOrWhiteSpace(adminIds))
+                adminIds = "-";
 
             await ctx.Channel.EmbedAsync(
                     _eb.Create().WithOkColor()
                         .WithAuthor($"WizBot v{StatsService.BotVersion}",
                             "http://i.imgur.com/fObUYFS.jpg",
                             "https://wizbot.readthedocs.io/en/latest/")
+                        .WithImageUrl("https://i.imgur.com/hT2UCqu.jpg")
                         .AddField(GetText(strs.author), _stats.Author, true)
+                        .AddField(GetText(strs.library), _stats.Library, true)
                         .AddField(GetText(strs.botid), _client.CurrentUser.Id.ToString(), true)
                         .AddField(GetText(strs.shard), $"#{_client.ShardId} / {_creds.TotalShards}", true)
                         .AddField(GetText(strs.commands_ran), _stats.CommandsRan.ToString(), true)
@@ -255,6 +266,7 @@ namespace WizBot.Modules.Utility
                             true)
                         .AddField(GetText(strs.memory), $"{_stats.Heap} MB", true)
                         .AddField(GetText(strs.owner_ids), ownerIds, true)
+                        .AddField(GetText(strs.admin_ids), adminIds, true)
                         .AddField(GetText(strs.uptime), _stats.GetUptimeString("\n"), true)
                         .AddField(GetText(strs.presence), 
                             GetText(strs.presence_txt(
@@ -308,7 +320,7 @@ namespace WizBot.Modules.Utility
 
         [WizBotCommand, Aliases]
         [RequireContext(ContextType.Guild)]
-        [OwnerOnly]
+        [AdminOnly]
         public async Task SaveChat(int cnt)
         {
             var msgs = new List<IMessage>(cnt);
@@ -367,6 +379,46 @@ namespace WizBot.Modules.Utility
             {
                 sem.Release();
             }
+        }
+        
+        [WizBotCommand, Aliases]
+        public async Task Donators()
+        {
+            // Make it so it wont error when no users are found.
+            var dusers = _client.GetGuild(99273784988557312).GetRole(280182841114099722).Members;
+            var pusers = _client.GetGuild(99273784988557312).GetRole(299174013597646868).Members;
+
+            await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
+                .WithTitle($"WizBot - Donators")
+                .WithDescription("List of users who have donated to WizBot.")
+                .AddField("Donators:", string.Join("\n", dusers), false))
+                .ConfigureAwait(false);
+
+            await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
+                .WithTitle($"WizBot - Patreon Donators")
+                .WithDescription("List of users who have donated through WizNet's Patreon.")
+                .AddField("Patreon Donators:", string.Join("\n", pusers), false))
+                .ConfigureAwait(false);
+        }
+
+        [WizBotCommand, Usage, Description, Aliases]
+        public async Task WizNet()
+        {
+
+            // Make it so it wont error when no users are found.
+            var wnstaff = _client.GetGuild(99273784988557312).GetRole(348560594045108245).Members; // WizNet Staff
+            var wbstaff = _client.GetGuild(99273784988557312).GetRole(367646195889471499).Members; // WizBot Staff
+
+            await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
+                .WithTitle("WizNet's Info")
+                .WithThumbnailUrl("https://i.imgur.com/Go5ZymW.png")
+                .WithDescription("WizNet is a small internet company that was made by Wizkiller96. The site first started off more as a social platform for his friends to have a place to hangout and chat with each other and share their work. Since then the site has gone through many changes and reforms. It now sits as a small hub for all the services and work WizNet provides to the public.")
+                .AddField("Websites", "[WizNet](http://wiznet.ga/)\n[Wiz VPS](http://wiz-vps.com/)\n[WizBot](http://wizbot.cc)", true)
+                .AddField("Social Media", "[Facebook](http://facebook.com/Wizkiller96Network)\n[WizBot's Twitter](http://twitter.com/WizBot_Dev)", true)
+                .AddField("WizNet Staff", string.Join("\n", wnstaff), false)
+                .AddField("WizBot Staff", string.Join("\n", wbstaff), false)
+                .WithFooter("Note: Not all staff are listed here.")).ConfigureAwait(false);
+
         }
 
         public enum CreateInviteType

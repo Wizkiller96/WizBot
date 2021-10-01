@@ -63,7 +63,7 @@ namespace WizBot.Modules.Games
 
             [WizBotCommand, Aliases]
             [RequireContext(ContextType.Guild)]
-            [OwnerOnly]
+            [AdminOnly]
             public async Task Typeadd([Leftover] string text)
             {
                 if (string.IsNullOrWhiteSpace(text))
@@ -95,7 +95,7 @@ namespace WizBot.Modules.Games
 
             [WizBotCommand, Aliases]
             [RequireContext(ContextType.Guild)]
-            [OwnerOnly]
+            [AdminOnly]
             public async Task Typedel(int index)
             {
                 var removed = _service.RemoveTypingArticle(--index);

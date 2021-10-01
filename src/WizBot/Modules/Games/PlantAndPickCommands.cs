@@ -81,7 +81,7 @@ namespace WizBot.Modules.Games
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageMessages)]
 #if GLOBAL_WIZBOT
-            [OwnerOnly]
+            [AdminOnly]
 #endif
             public async Task GenCurrency()
             {
@@ -99,7 +99,7 @@ namespace WizBot.Modules.Games
             [WizBotCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageMessages)]
-            [OwnerOnly]
+            [AdminOnly]
             public Task GenCurList(int page = 1)
             {
                 if (--page < 0)

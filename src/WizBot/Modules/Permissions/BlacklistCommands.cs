@@ -80,7 +80,7 @@ namespace WizBot.Modules.Permissions
             }
             
             [WizBotCommand, Aliases]
-            [OwnerOnly]
+            [AdminOnly]
             public Task UserBlacklist(int page = 1)
             {
                 if (--page < 0)
@@ -90,7 +90,7 @@ namespace WizBot.Modules.Permissions
             }
             
             [WizBotCommand, Aliases]
-            [OwnerOnly]
+            [AdminOnly]
             public Task ChannelBlacklist(int page = 1)
             {
                 if (--page < 0)
@@ -100,7 +100,7 @@ namespace WizBot.Modules.Permissions
             }
             
             [WizBotCommand, Aliases]
-            [OwnerOnly]
+            [AdminOnly]
             public Task ServerBlacklist(int page = 1)
             {
                 if (--page < 0)
@@ -110,27 +110,27 @@ namespace WizBot.Modules.Permissions
             }
 
             [WizBotCommand, Aliases]
-            [OwnerOnly]
+            [AdminOnly]
             public Task UserBlacklist(AddRemove action, ulong id)
                 => Blacklist(action, id, BlacklistType.User);
 
             [WizBotCommand, Aliases]
-            [OwnerOnly]
+            [AdminOnly]
             public Task UserBlacklist(AddRemove action, IUser usr)
                 => Blacklist(action, usr.Id, BlacklistType.User);
 
             [WizBotCommand, Aliases]
-            [OwnerOnly]
+            [AdminOnly]
             public Task ChannelBlacklist(AddRemove action, ulong id)
                 => Blacklist(action, id, BlacklistType.Channel);
 
             [WizBotCommand, Aliases]
-            [OwnerOnly]
+            [AdminOnly]
             public Task ServerBlacklist(AddRemove action, ulong id)
                 => Blacklist(action, id, BlacklistType.Server);
 
             [WizBotCommand, Aliases]
-            [OwnerOnly]
+            [AdminOnly]
             public Task ServerBlacklist(AddRemove action, IGuild guild)
                 => Blacklist(action, guild.Id, BlacklistType.Server);
 

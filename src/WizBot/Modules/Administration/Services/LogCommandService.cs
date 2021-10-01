@@ -88,8 +88,7 @@ namespace WizBot.Modules.Administration.Services
             _mute = mute;
             _prot = prot;
             _tz = tz;
-
-#if !GLOBAL_WIZBOT
+            
             
             using (var uow = db.GetDbContext())
             {
@@ -153,7 +152,6 @@ namespace WizBot.Modules.Administration.Services
                 _ignoreMessageIds.Clear();
             }, null, TimeSpan.FromHours(1), TimeSpan.FromHours(1));
             
-#endif
         }
 
         public LogSetting GetGuildLogSettings(ulong guildId)

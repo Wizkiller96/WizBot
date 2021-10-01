@@ -32,6 +32,7 @@ namespace WizBot.Services
             lock (reloadLock)
             {
                 _creds.OwnerIds.Clear();
+                _creds.AdminIds.Clear();
                 _config.Bind(_creds);
                 
                 if (string.IsNullOrWhiteSpace(_creds.Token))
@@ -119,6 +120,7 @@ namespace WizBot.Services
                     Version = 1,
                     Token = oldCreds.Token,
                     OwnerIds = oldCreds.OwnerIds.Distinct().ToHashSet(),
+                    AdminIds = oldCreds.AdminIds.Distinct().ToHashSet(),
                     GoogleApiKey = oldCreds.GoogleApiKey,
                     RapidApiKey = oldCreds.MashapeKey,
                     OsuApiKey = oldCreds.OsuApiKey,

@@ -101,8 +101,72 @@ namespace WizBot.Modules.NSFW
                 await SendErrorAsync(ex.Message).ConfigureAwait(false);
             }
         }
+        
+        private async Task InternalNeko(IMessageChannel Channel, string format = "img", string category = "all_tags_lewd")
+        {
+            // List if category to pull an image from.
+            string[] img_cat = { "pantyhose_lewd", "holo_lewd", "anus_lewd", "kemonomimi_lewd", "peeing_lewd", "cosplay_lewd", "futanari_lewd", "blowjob_lewd", "shinobu_ero", "shinobu_lewd", "kitsune_lewd", "all_tags_lewd", "kemonomimi_ero", "wallpaper_lewd", "feet_ero", "anal_lewd", "femdom_lewd", "kitsune_ero", "solo_lewd", "holo_ero", "yuri_lewd", "feet_lewd", "classic_lewd", "keta_lewd", "neko_lewd", "piersing_lewd", "trap_lewd", "pantyhose_ero", "yiff_lewd", "hplay_ero", "smallboobs_lewd", "neko_ero", "pussy_lewd", "cum_lewd", "keta_avatar", "ero_wallpaper_ero", "ahegao_avatar", "piersing_ero", "bdsm_lewd", "holo_avatar", "all_tags_ero", "tits_lewd", "yuri_ero" };
 
-#if !GLOBAL_WIZBOT
+            string[] gif_cat = { "yiff", "pussy_wank", "neko", "kuni", "blow_job", "pussy", "girls_solo", "yuri", "anal", "tits", "classic", "feet", "spank", "cum", "all_tags" };
+
+            // Check to see if the command is calling for a normal image or a gif.
+            string[] img_format = { "img", "gif" };
+
+            if (string.IsNullOrWhiteSpace(category))
+                return;
+
+            if (string.IsNullOrWhiteSpace(format))
+                return;
+
+            try
+            {
+                JToken nekotitle;
+                JToken nekoimg;
+                using (var http = _httpFactory.CreateClient())
+                {
+                    nekotitle = JObject.Parse(await http.GetStringAsync($"https://api.nekos.dev/api/v3/text/cat_emote/").ConfigureAwait(false));
+                    nekoimg = JObject.Parse(await http.GetStringAsync($"https://api.nekos.dev/api/v3/images/nsfw/{format}/{category}/").ConfigureAwait(false));
+                }
+                if (img_format.Contains("img") && img_cat.Contains(category))
+                    await Channel.EmbedAsync(_eb.Create().WithOkColor()
+                        .WithAuthor($"Nekos Life - NSFW IMG Database {nekotitle["data"]["response"]["text"]}",
+                            "https://i.imgur.com/a36AMkG.png",
+                            "http://nekos.life/")
+                        .WithImageUrl($"{nekoimg["data"]["response"]["url"]}")).ConfigureAwait(false);
+                else if (img_format.Contains("gif") && gif_cat.Contains(category))
+                    await Channel.EmbedAsync(_eb.Create().WithOkColor()
+                        .WithAuthor($"Nekos Life - NSFW GIF Database {nekotitle["data"]["response"]["text"]}",
+                            "https://i.imgur.com/a36AMkG.png",
+                            "http://nekos.life/")
+                        .WithImageUrl($"{nekoimg["data"]["response"]["url"]}")).ConfigureAwait(false);
+                else if (img_format.Contains("img") && gif_cat.Contains(category))
+                    await Channel.EmbedAsync(_eb.Create().WithErrorColor()
+                    .WithAuthor("Nekos Life - Invalid NSFW IMG Category","https://i.imgur.com/a36AMkG.png","http://nekos.life/")
+                    .WithDescription("Seems the image category you was looking for could not be found. Please use the categories listed below.")
+                    .AddField("NSFW IMG Categories", "`classic_lewd`, `piersing_lewd`, `shinobu_lewd`, `feet_lewd`, `keta_avatar`, `piersing_ero`, `yuri_ero`, `solo_lewd`, `pantyhose_lewd`, `kemonomimi_lewd`, `cosplay_lewd`, `peeing_lewd`, `ahegao_avatar`, `wallpaper_lewd`, `ero_wallpaper_ero`, `blowjob_lewd`, `holo_avatar`, `neko_lewd`, `futanari_lewd`, `kitsune_ero`, `trap_lewd`, `keta_lewd`, `neko_ero`, `pantyhose_ero`, `cum_lewd`, `anal_lewd`, `smallboobs_lewd`, `all_tags_lewd`, `yuri_lewd`, `kemonomimi_ero`, `anus_lewd`, `holo_ero`, `all_tags_ero`, `kitsune_lewd`, `pussy_lewd`, `feet_ero`, `yiff_lewd`, `hplay_ero`, `bdsm_lewd`, `femdom_lewd`, `holo_lewd`, `shinobu_ero`, `tits_lewd`", false)).ConfigureAwait(false);
+                else if (img_format.Contains("gif") && img_cat.Contains(category))
+                    await Channel.EmbedAsync(_eb.Create().WithErrorColor()
+                    .WithAuthor("Nekos Life - Invalid NSFW GIF Category",
+                        "https://i.imgur.com/a36AMkG.png",
+                        "http://nekos.life/")
+                    .WithDescription("Seems the gif category you was looking for could not be found. Please use the categories listed below.")
+                    .AddField("NSFW GIF Categories", "`blow_job`, `pussy_wank`, `classic`, `kuni`, `tits`, `pussy`, `cum`, `spank`, `feet`, `all_tags`, `yuri`, `anal`, `neko`, `girls_solo`, `yiff`", false)).ConfigureAwait(false);
+                else
+                    await Channel.EmbedAsync(_eb.Create().WithErrorColor()
+                    .WithAuthor("Nekos Life - Invalid NSFW Image Type or Category",
+                        "https://i.imgur.com/a36AMkG.png",
+                        "http://nekos.life/")
+                    .WithDescription("Seems the image type or category you was looking for could not be found. Please use the image type or categories listed below.")
+                    .AddField("NSFW IMG Types", "`img`, `gif`", false)
+                    .AddField("NSFW IMG Categories", "`classic_lewd`, `piersing_lewd`, `shinobu_lewd`, `feet_lewd`, `keta_avatar`, `piersing_ero`, `yuri_ero`, `solo_lewd`, `pantyhose_lewd`, `kemonomimi_lewd`, `cosplay_lewd`, `peeing_lewd`, `ahegao_avatar`, `wallpaper_lewd`, `ero_wallpaper_ero`, `blowjob_lewd`, `holo_avatar`, `neko_lewd`, `futanari_lewd`, `kitsune_ero`, `trap_lewd`, `keta_lewd`, `neko_ero`, `pantyhose_ero`, `cum_lewd`, `anal_lewd`, `smallboobs_lewd`, `all_tags_lewd`, `yuri_lewd`, `kemonomimi_ero`, `anus_lewd`, `holo_ero`, `all_tags_ero`, `kitsune_lewd`, `pussy_lewd`, `feet_ero`, `yiff_lewd`, `hplay_ero`, `bdsm_lewd`, `femdom_lewd`, `holo_lewd`, `shinobu_ero`, `tits_lewd`", false)
+                    .AddField("NSFW GIF Categories", "`blow_job`, `pussy_wank`, `classic`, `kuni`, `tits`, `pussy`, `cum`, `spank`, `feet`, `all_tags`, `yuri`, `anal`, `neko`, `girls_solo`, `yiff`", false)).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                await SendErrorAsync(ex.Message).ConfigureAwait(false);
+            }
+        }
+        
         [WizBotCommand, Aliases]
         [RequireNsfw]
         [RequireContext(ContextType.Guild)]
@@ -231,7 +295,6 @@ namespace WizBot.Modules.NSFW
 
             await ReplyConfirmLocalizedAsync(strs.started(interval));
         }
-#endif
 
         [WizBotCommand, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
@@ -337,6 +400,88 @@ namespace WizBot.Modules.NSFW
                     obj = JArray.Parse(await http.GetStringAsync($"http://api.obutts.ru/butts/{new WizBotRandom().Next(0, 6100)}").ConfigureAwait(false))[0];
                 }
                 await ctx.Channel.SendMessageAsync($"http://media.obutts.ru/{obj["preview"]}").ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                await SendErrorAsync(ex.Message).ConfigureAwait(false);
+            }
+        }
+        
+        [WizBotCommand, Aliases]
+        [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
+        public async Task Neko(string format = "img", [Remainder] string category = "neko_lewd")
+        {
+            // List if category to pull an image from.
+            string[] img_cat = { "classic_lewd", "piersing_lewd", "shinobu_lewd", "feet_lewd", "keta_avatar", "piersing_ero", "yuri_ero", "solo_lewd", "pantyhose_lewd", "kemonomimi_lewd", "cosplay_lewd", "peeing_lewd", "ahegao_avatar", "wallpaper_lewd", "ero_wallpaper_ero", "blowjob_lewd", "holo_avatar", "neko_lewd", "futanari_lewd", "kitsune_ero", "trap_lewd", "keta_lewd", "neko_ero", "pantyhose_ero", "cum_lewd", "anal_lewd", "smallboobs_lewd", "all_tags_lewd", "yuri_lewd", "kemonomimi_ero", "anus_lewd", "holo_ero", "all_tags_ero", "kitsune_lewd", "pussy_lewd", "feet_ero", "yiff_lewd", "hplay_ero", "bdsm_lewd", "femdom_lewd", "holo_lewd", "shinobu_ero", "tits_lewd" };
+
+            string[] gif_cat = { "blow_job", "pussy_wank", "classic", "kuni", "tits", "pussy", "cum", "spank", "feet", "all_tags", "yuri", "anal", "neko", "girls_solo", "yiff" };
+
+            // Check to see if the command is calling for a normal image or a gif.
+            string[] img_format = { "img", "gif" };
+
+            if (string.IsNullOrWhiteSpace(category))
+                return;
+
+            if (string.IsNullOrWhiteSpace(format))
+                return;
+
+            try
+            {
+                JToken nekotitle;
+                JToken nekoimg;
+                using (var http = _httpFactory.CreateClient())
+                {
+                    nekotitle = JObject.Parse(await http.GetStringAsync($"https://api.nekos.dev/api/v3/text/cat_emote/").ConfigureAwait(false));
+                    nekoimg = JObject.Parse(await http.GetStringAsync($"https://api.nekos.dev/api/v3/images/nsfw/{format}/{category}/").ConfigureAwait(false));
+                }
+                if (img_format.Contains("img") && img_cat.Contains(category))
+                    await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
+                        .WithAuthor($"Nekos Life - NSFW IMG Database {nekotitle["data"]["response"]["text"]}",
+                            "https://i.imgur.com/a36AMkG.png",
+                            "http://nekos.life/")
+                        .WithImageUrl($"{nekoimg["data"]["response"]["url"]}")).ConfigureAwait(false);
+                else if (img_format.Contains("gif") && gif_cat.Contains(category))
+                    await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
+                        .WithAuthor($"Nekos Life - NSFW GIF Database {nekotitle["data"]["response"]["text"]}",
+                            "https://i.imgur.com/a36AMkG.png",
+                            "http://nekos.life/")
+                        .WithImageUrl($"{nekoimg["data"]["response"]["url"]}")).ConfigureAwait(false);
+                else if (img_format.Contains("img") && gif_cat.Contains(category))
+                    await ctx.Channel.EmbedAsync(_eb.Create().WithErrorColor()
+                    .WithAuthor("Nekos Life - Invalid NSFW IMG Category","https://i.imgur.com/a36AMkG.png","http://nekos.life/")
+                    .WithDescription("Seems the image category you was looking for could not be found. Please use the categories listed below.")
+                    .AddField("NSFW IMG Categories", "`classic_lewd`, `piersing_lewd`, `shinobu_lewd`, `feet_lewd`, `keta_avatar`, `piersing_ero`, `yuri_ero`, `solo_lewd`, `pantyhose_lewd`, `kemonomimi_lewd`, `cosplay_lewd`, `peeing_lewd`, `ahegao_avatar`, `wallpaper_lewd`, `ero_wallpaper_ero`, `blowjob_lewd`, `holo_avatar`, `neko_lewd`, `futanari_lewd`, `kitsune_ero`, `trap_lewd`, `keta_lewd`, `neko_ero`, `pantyhose_ero`, `cum_lewd`, `anal_lewd`, `smallboobs_lewd`, `all_tags_lewd`, `yuri_lewd`, `kemonomimi_ero`, `anus_lewd`, `holo_ero`, `all_tags_ero`, `kitsune_lewd`, `pussy_lewd`, `feet_ero`, `yiff_lewd`, `hplay_ero`, `bdsm_lewd`, `femdom_lewd`, `holo_lewd`, `shinobu_ero`, `tits_lewd`", false)).ConfigureAwait(false);
+                else if (img_format.Contains("gif") && img_cat.Contains(category))
+                    await ctx.Channel.EmbedAsync(_eb.Create().WithErrorColor()
+                    .WithAuthor("Nekos Life - Invalid NSFW GIF Category",
+                        "https://i.imgur.com/a36AMkG.png",
+                        "http://nekos.life/")
+                    .WithDescription("Seems the gif category you was looking for could not be found. Please use the categories listed below.")
+                    .AddField("NSFW GIF Categories", "`blow_job`, `pussy_wank`, `classic`, `kuni`, `tits`, `pussy`, `cum`, `spank`, `feet`, `all_tags`, `yuri`, `anal`, `neko`, `girls_solo`, `yiff`", false)).ConfigureAwait(false);
+                else
+                    await ctx.Channel.EmbedAsync(_eb.Create().WithErrorColor()
+                    .WithAuthor("Nekos Life - Invalid NSFW Image Type or Category",
+                        "https://i.imgur.com/a36AMkG.png",
+                        "http://nekos.life/")
+                    .WithDescription("Seems the image type or category you was looking for could not be found. Please use the image type or categories listed below.")
+                    .AddField("NSFW IMG Types", "`img`, `gif`", false)
+                    .AddField("NSFW IMG Categories", "`classic_lewd`, `piersing_lewd`, `shinobu_lewd`, `feet_lewd`, `keta_avatar`, `piersing_ero`, `yuri_ero`, `solo_lewd`, `pantyhose_lewd`, `kemonomimi_lewd`, `cosplay_lewd`, `peeing_lewd`, `ahegao_avatar`, `wallpaper_lewd`, `ero_wallpaper_ero`, `blowjob_lewd`, `holo_avatar`, `neko_lewd`, `futanari_lewd`, `kitsune_ero`, `trap_lewd`, `keta_lewd`, `neko_ero`, `pantyhose_ero`, `cum_lewd`, `anal_lewd`, `smallboobs_lewd`, `all_tags_lewd`, `yuri_lewd`, `kemonomimi_ero`, `anus_lewd`, `holo_ero`, `all_tags_ero`, `kitsune_lewd`, `pussy_lewd`, `feet_ero`, `yiff_lewd`, `hplay_ero`, `bdsm_lewd`, `femdom_lewd`, `holo_lewd`, `shinobu_ero`, `tits_lewd`", false)
+                    .AddField("NSFW GIF Categories", "`blow_job`, `pussy_wank`, `classic`, `kuni`, `tits`, `pussy`, `cum`, `spank`, `feet`, `all_tags`, `yuri`, `anal`, `neko`, `girls_solo`, `yiff`", false)).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                await SendErrorAsync(ex.Message).ConfigureAwait(false);
+            }
+        }
+        
+        [WizBotCommand, Aliases]
+        [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
+        public async Task Nudes()
+        {
+            try
+            {
+                await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
+                    .WithImageUrl($"http://wizbot.cc/assets/wizbot/nsfw/wiz_{new WizBotRandom().Next(1, 18)}.jpg")).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
