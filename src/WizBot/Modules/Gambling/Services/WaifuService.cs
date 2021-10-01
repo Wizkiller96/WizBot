@@ -394,19 +394,28 @@ namespace WizBot.Modules.Gambling.Services
                     });
                 }
 
-                w.Items.Add(new WaifuItem()
+                if (!itemObj.Negative)
                 {
-                    Name = itemObj.Name.ToLowerInvariant(),
-                    ItemEmoji = itemObj.ItemEmoji,
-                });
-                
-                if (w.Claimer?.UserId == from.Id)
-                {
-                    w.Price += (int) (itemObj.Price * _gss.Data.Waifu.Multipliers.GiftEffect);
+                    w.Items.Add(new WaifuItem()
+                    {
+                        Name = itemObj.Name.ToLowerInvariant(),
+                        ItemEmoji = itemObj.ItemEmoji,
+                    });
+                    
+                    if (w.Claimer?.UserId == from.Id)
+                    {
+                        w.Price += (int)(itemObj.Price * _gss.Data.Waifu.Multipliers.GiftEffect);
+                    }
+                    else
+                    {
+                        w.Price += itemObj.Price / 2;
+                    }
                 }
                 else
                 {
-                    w.Price += itemObj.Price / 2;
+                    w.Price -= (int)(itemObj.Price * _gss.Data.Waifu.Multipliers.NegativeGiftEffect);
+                    if (w.Price < 1)
+                        w.Price = 1;
                 }
 
                 await uow.SaveChangesAsync();
@@ -512,7 +521,7 @@ namespace WizBot.Modules.Gambling.Services
         {
             var conf = _gss.Data;
             return conf.Waifu.Items
-                .Select(x => new WaifuItemModel(x.ItemEmoji, (int)(x.Price * conf.Waifu.Multipliers.AllGiftPrices), x.Name))
+                .Select(x => new WaifuItemModel(x.ItemEmoji, (int)(x.Price * conf.Waifu.Multipliers.AllGiftPrices), x.Name, x.Negative))
                 .ToList();
         }
     }

@@ -69,14 +69,14 @@ namespace WizBot.Modules.Searches
                         fs.Type));
             }
 
-            // [WizBotCommand, Usage, Description, Aliases]
-            // [RequireContext(ContextType.Guild)]
-            // [UserPerm(GuildPerm.Administrator)]
-            // public async Task StreamsClear()
-            // {
-            //     var count = _service.ClearAllStreams(ctx.Guild.Id);
-            //     await ReplyErrorLocalizedAsync(strs.streams_cleared(count)));
-            // }
+            [WizBotCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [UserPerm(GuildPerm.Administrator)]
+            public async Task StreamsClear()
+            {
+                var count = _service.ClearAllStreams(ctx.Guild.Id);
+                await ReplyConfirmLocalizedAsync(strs.streams_cleared);
+            }
 
             [WizBotCommand, Aliases]
             [RequireContext(ContextType.Guild)]

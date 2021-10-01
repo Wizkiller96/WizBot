@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Cloneable;
 using WizBot.Common;
 using WizBot.Common.Yml;
+using YamlDotNet.Serialization;
 
 namespace WizBot.Modules.Gambling.Common
 {
@@ -179,7 +180,8 @@ default is 0.02, which is 2%")]
 
         public MultipliersData Multipliers { get; set; } = new MultipliersData();
 
-        [Comment(@"List of items available for gifting.")]
+        [Comment(@"List of items available for gifting.
+If negative is true, gift will instead reduce waifu value.")]
         public List<WaifuItemModel> Items { get; set; } = new List<WaifuItemModel>();
 
         public WaifuConfig()
@@ -260,6 +262,11 @@ Default 1 (meaning no effect)")]
 Default 0.95 (meaning 95%)
 Example: If a waifu is worth 1000, and she receives a gift worth 100, her new value will be 1095)")]
         public decimal GiftEffect { get; set; } = 0.95M;
+        
+        [Comment(@"What percentage of the value of the gift will a waifu lose when she's gifted a gift marked as 'negative'.
+Default 0.5 (meaning 50%)
+Example: If a waifu is worth 1000, and she receives a negative gift worth 100, her new value will be 950)")]
+        public decimal NegativeGiftEffect { get; set; } = 0.50M;
     }
 
     [Cloneable]
@@ -268,18 +275,23 @@ Example: If a waifu is worth 1000, and she receives a gift worth 100, her new va
         public string ItemEmoji { get; set; }
         public int Price { get; set; }
         public string Name { get; set; }
+        
+        [YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
+        public bool Negative { get; set; }
 
         public WaifuItemModel()
         {
             
         }
         
-        public WaifuItemModel(string itemEmoji, int price, string name)
+        public WaifuItemModel(string itemEmoji, int price, string name, bool negative = false)
         {
             ItemEmoji = itemEmoji;
             Price = price;
             Name = name;
+            Negative = negative;
         }
+
 
         public override string ToString() => Name;
     }

@@ -1,7 +1,11 @@
-﻿using WizBot.Common;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using WizBot.Common;
 using WizBot.Common.Configs;
 using WizBot.Modules.Gambling.Common;
 using WizBot.Services;
+using WizBot.Services.Database.Models;
 
 namespace WizBot.Modules.Gambling.Services
 {
@@ -34,9 +38,31 @@ namespace WizBot.Modules.Gambling.Services
             AddParsedProp("waifu.multi.divorce_value", gs => gs.Waifu.Multipliers.DivorceNewValue, decimal.TryParse, ConfigPrinters.ToString, val => val > 0);
             AddParsedProp("waifu.multi.all_gifts", gs => gs.Waifu.Multipliers.AllGiftPrices, decimal.TryParse, ConfigPrinters.ToString, val => val > 0);
             AddParsedProp("waifu.multi.gift_effect", gs => gs.Waifu.Multipliers.GiftEffect, decimal.TryParse, ConfigPrinters.ToString, val => val >= 0);
+            AddParsedProp("waifu.multi.negative_gift_effect", gs => gs.Waifu.Multipliers.NegativeGiftEffect, decimal.TryParse, ConfigPrinters.ToString, val => val >= 0);
             AddParsedProp("decay.percent", gs => gs.Decay.Percent, decimal.TryParse, ConfigPrinters.ToString, val => val >= 0 && val <= 1);
             AddParsedProp("decay.maxdecay", gs => gs.Decay.MaxDecay, int.TryParse, ConfigPrinters.ToString, val => val >= 0);
             AddParsedProp("decay.threshold", gs => gs.Decay.MinThreshold, int.TryParse, ConfigPrinters.ToString, val => val >= 0);
+
+            Migrate();
+        }
+
+        private readonly IEnumerable<WaifuItemModel> antiGiftSeed = new[]
+        {
+            new WaifuItemModel("🥀", 100, "WiltedRose", true),
+            new WaifuItemModel("✂️", 1000, "Haircut", true),
+            new WaifuItemModel("🧻", 10000, "ToiletPaper", true),
+        }; 
+        
+        public void Migrate()
+        {
+            if (_data.Version < 2)
+            {
+                ModifyConfig(c =>
+                {
+                    c.Waifu.Items = c.Waifu.Items.Concat(antiGiftSeed).ToList();
+                    c.Version = 2;
+                });
+            }
         }
     }
 }

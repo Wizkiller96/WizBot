@@ -532,6 +532,9 @@ streamadd:
 streamremove:
 - streamremove
 - strm
+streamsclear:
+  - streamsclear
+  - stclear
 streamlist:
 - streamlist
 - stl

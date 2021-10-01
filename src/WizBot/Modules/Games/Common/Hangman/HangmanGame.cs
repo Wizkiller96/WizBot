@@ -72,8 +72,7 @@ namespace WizBot.Modules.Games.Hangman
 
             return new(output);
         }
-
-        // todo lock
+        
         public State Guess(string guess)
         {
             if (CurrentPhase != Phase.Running)

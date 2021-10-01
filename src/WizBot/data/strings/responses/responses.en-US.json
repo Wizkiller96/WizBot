@@ -507,6 +507,7 @@
   "streamer_online": "Streamer {0} is online with {1} viewers.",
   "streams_follow_title": "Streams you're following",
   "streams_none": "You are not following any streams on this server.",
+  "streams_cleared": "All streams followed on this server have been removed.",
   "stream_no": "No such stream.",
   "stream_off_enabled": "Stream notifications will now show when a stream goes offline.",
   "stream_off_disabled": "Stream notifications will no longer show when a stream goes offline.",

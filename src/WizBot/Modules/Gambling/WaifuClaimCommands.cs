@@ -317,10 +317,14 @@ namespace WizBot.Modules.Gambling
                         .WithOkColor();
 
                     waifuItems
-                        .OrderBy(x => x.Price)
+                        .OrderBy(x => x.Negative)
+                        .ThenBy(x => x.Price)
                         .Skip(9 * cur)
                         .Take(9)
-                        .ForEach(x => embed.AddField($"{x.ItemEmoji} {x.Name}", x.Price, true));
+                        .ForEach(x => embed
+                            .AddField($"{(!x.Negative ? string.Empty : "\\💔")} {x.ItemEmoji} {x.Name}",
+                                Format.Bold(x.Price.ToString()) + _config.Currency.Sign,
+                                true));
 
                     return embed;
                 }, waifuItems.Count, 9);
