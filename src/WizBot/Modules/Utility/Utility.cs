@@ -381,6 +381,8 @@ namespace WizBot.Modules.Utility
             }
         }
         
+#if GLOBAL_WIZBOT
+        
         [WizBotCommand, Aliases]
         public async Task Donators()
         {
@@ -420,6 +422,7 @@ namespace WizBot.Modules.Utility
                 .WithFooter("Note: Not all staff are listed here.")).ConfigureAwait(false);
 
         }
+#endif
 
         public enum CreateInviteType
         {
