@@ -164,10 +164,8 @@ namespace WizBot.Modules.Help
                     return "🚓";
                 case "xp":
                     return "📝";
-#if GLOBAL_WIZBOT
                 case "roblox":
                     return "🟥";
-#endif
                 default:
                     return "📖";
                 
@@ -426,12 +424,13 @@ namespace WizBot.Modules.Help
             using var rDataStream = new MemoryStream(Encoding.ASCII.GetBytes(readableData));
             await ctx.Channel.SendFileAsync(rDataStream, "cmds.json", GetText(strs.commandlist_regen)).ConfigureAwait(false);
         }
-        
-#if GLOBAL_WIZBOT
 
         [WizBotCommand, Aliases]
         public async Task Feedback(string type, [Remainder] string message)
         {
+        
+#if GLOBAL_WIZBOT
+
             string[] rtypes = { "Bug", "Suggestion", "bug", "suggestion" };
 
             if (type == "Bug" || type == "bug")
@@ -470,11 +469,21 @@ namespace WizBot.Modules.Help
                     .WithTitle($"Error: Report not sent.")
                     .WithDescription("Please make sure you used the correct report types listed below.")
                     .AddField("Report Types:", "`Bug`, `Suggestion`")).ConfigureAwait(false);
+#else
+
+            await ctx.Channel.EmbedAsync(_eb.Create().WithErrorColor()
+                .WithTitle("Command Restricted")
+                .WithDescription("This command is disabled on self-host bots.")).ConfigureAwait(false);
+            
+#endif
         }
 
         [WizBotCommand, Aliases]
         public async Task Report(IGuildUser ruser, [Remainder] string rexplaination)
         {
+            
+#if GLOBAL_WIZBOT
+
             var user = ruser ?? ctx.User as IGuildUser;
 
             if (((user == null)) && (string.IsNullOrEmpty(rexplaination)))
@@ -510,9 +519,15 @@ namespace WizBot.Modules.Help
                     .AddField("Explaination/Proof:", $"{rexplaination}")).ConfigureAwait(false);
 
                 await ctx.Channel.SendMessageAsync("Report sent to WizBot's Staff.").ConfigureAwait(false);
-        }
-        
+
+#else
+
+            await ctx.Channel.EmbedAsync(_eb.Create().WithErrorColor()
+                .WithTitle("Command Restricted")
+                .WithDescription("This command is disabled on self-host bots.")).ConfigureAwait(false);
+            
 #endif
+        }
 
         [WizBotCommand, Aliases]
         public async Task Guide()
