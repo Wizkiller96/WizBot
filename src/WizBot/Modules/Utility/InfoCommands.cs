@@ -107,6 +107,31 @@ namespace WizBot.Modules.Utility
                 {
                     embed.AddField(GetText(strs.nickname), user.Nickname, true);
                 }
+                // Custom WizBot Titles - Will find a better way to do this in the future for WizNet and WizBot Staff
+                if (usr.Id == 99272781513920512)
+                {
+                    embed.AddField("WizBot Title", "🛠️ Developer", true);
+                }
+                if (usr.Id == 105635576866156544)
+                {
+                    embed.AddField("WizBot Title", "🛠️ Nadeko Creator", true);
+                }
+                else if (usr.Id == _client.CurrentUser.Id || usr.Id == 170849991357628416)
+                {
+                    embed.AddField("WizBot Title", "🤖 Bot", true);
+                }
+#if GLOBAL_WIZBOT
+                // WizBot Staff ID(s)
+                else if (usr.Id == 474972711798702090 || usr.Id == 216898612867629057 || usr.Id == 111566184448589824 || usr.Id == 169177230717616128 || usr.Id == 213817345334968330 || usr.Id == 313317616439525386)
+                {
+                    embed.AddField("WizBot Title", "<:WizBot:708689390934687787> WizBot Staff", true);
+                }
+                // WizNet Staff ID(s)
+                else if (usr.Id == 110535921782247424)
+                {
+                    embed.AddField("WizBot Title", "<:WizNet:705993965073334382> WizNet Staff", true);
+                }
+#endif
                 embed.AddField(GetText(strs.id), user.Id.ToString(), true)
                     .AddField(GetText(strs.joined_server), $"{user.JoinedAt?.ToString("dd.MM.yyyy HH:mm") ?? "?"}", true)
                     .AddField(GetText(strs.joined_discord), $"{user.CreatedAt:dd.MM.yyyy HH:mm}", true)

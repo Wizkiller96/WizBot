@@ -55,6 +55,45 @@ namespace WizBot.Modules.Gambling
                     await ReplyErrorLocalizedAsync(strs.waifu_not_yourself);
                     return;
                 }
+                
+                if (target.Id == 99272781513920512)
+                {
+                    var embed = _eb.Create()
+                        .WithDescription("You can't claim my master.")
+                        .WithErrorColor();
+                    await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+                    return;
+                }
+
+                // Second Bot Owner
+                if (target.Id == 474972711798702090)
+                {
+                    var embed = _eb.Create()
+                        .WithDescription("This user can't be claimed.")
+                        .WithErrorColor();
+                    await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+                    return;
+                }
+
+                // Main Bot
+                if (target.Id == 170849991357628416)
+                {
+                    var embed = _eb.Create()
+                        .WithDescription("Sorry but I already have a master.")
+                        .WithErrorColor();
+                    await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+                    return;
+                }
+
+                // Beta Bot
+                if (target.Id == 266797118356848640)
+                {
+                    var embed = _eb.Create()
+                        .WithDescription("Sorry but <@266797118356848640> can't be claim as it only use for testing purposes.")
+                        .WithErrorColor();
+                    await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+                    return;
+                }
 
                 var (w, isAffinity, result) = await _service.ClaimWaifuAsync(ctx.User, target, amount);
 
