@@ -4,6 +4,8 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+## [3.0.7]
+
 ### Added
 - `.streamsclear` re-added. It will remove all followed streams on the server.
 - `.gifts` now have 3 new ✂️ Haircut 🧻 ToiletPaper and 🥀 WiltedRose which **reduce** waifu's value
@@ -12,6 +14,9 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
   - They have a separate multiplier (`waifu.multi.negative_gift_effect` default 0.5, changeable via `.config gambling` or `data/gambling.yml`)
   - When gifted, the waifu's price will be reduced by the `price * multiplier` 
   - Negative gifts don't show up in `.waifuinfo` nor is the record of them kept in the database
+
+### Fixed 
+- Fixed `%users%` and `%shard.usercount%` placeholders not showing correct values
 
 ## [3.0.6] - 27.09.2021
 
