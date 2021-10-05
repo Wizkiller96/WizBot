@@ -19,8 +19,8 @@ namespace WizBot.Services
         private readonly IBotCredentials _creds;
         private readonly DateTime _started;
 
-        public const string BotVersion = "3.0.6";
-        public string Author => "Kwoth#2452 & Wizkiller96#5074";
+        public const string BotVersion = "3.0.7";
+        public string Author => "Kwoth#2452\nWizkiller96#5074";
         public string Library => "Discord.Net";
 
         public string Heap => Math.Round((double)GC.GetTotalMemory(false) / 1.MiB(), 2)
