@@ -66,7 +66,7 @@ namespace WizBot.Modules.Gambling
                 }
 
                 // Second Bot Owner
-                if (target.Id == 474972711798702090)
+                if (target.Id == 762386242604105758)
                 {
                     var embed = _eb.Create()
                         .WithDescription("This user can't be claimed.")
