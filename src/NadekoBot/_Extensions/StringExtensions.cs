@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -50,7 +50,7 @@ namespace NadekoBot.Extensions
             }
             else
             {
-                return string.Concat(str.Take(maxLength - 3)) + "...";
+                return string.Concat(str.Take(maxLength - 1)) + "…";
             }
         }
 
