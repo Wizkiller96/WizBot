@@ -134,6 +134,8 @@ Compared to using tmux, this method requires a little bit more work to set up, b
     echo "[Unit]
     Description=NadekoBot service
     After=network.target
+    StartLimitIntervalSec=60
+    StartLimitBurst=2
     
     [Service]
     Type=simple
@@ -144,10 +146,11 @@ Compared to using tmux, this method requires a little bit more work to set up, b
     # source code.
     #ExecStartPre=/usr/bin/dotnet build ../src/NadekoBot/NadekoBot.csproj -c Release -o output/
     ExecStart=/usr/bin/dotnet NadekoBot.dll
+    Restart=on-failure
+    RestartSec=5
     StandardOutput=syslog
     StandardError=syslog
     SyslogIdentifier=NadekoBot
-    Restart=always
     
     [Install]
     WantedBy=multi-user.target" | sudo tee /etc/systemd/system/nadeko.service
@@ -172,12 +175,16 @@ This method is similar to the one above, but requires one extra step, with the a
     echo "[Unit]
     Description=NadekoBot service
     After=network.target
+    StartLimitIntervalSec=60
+    StartLimitBurst=2
     
     [Service]
     Type=simple
     User=$USER
-    WorkingDirectory=$PWD
+    WorkingDirectory=$_WORKING_DIR
     ExecStart=/bin/bash NadekoRun.sh
+    Restart=on-failure
+    RestartSec=5
     StandardOutput=syslog
     StandardError=syslog
     SyslogIdentifier=NadekoBot
@@ -191,14 +198,14 @@ This method is similar to the one above, but requires one extra step, with the a
 4. Use the following command to create a script that will be used to start Nadeko:
     
     ```bash
-    echo "#\!/bin/bash
-    
-    echo \"\"
-    echo \"Running NadekoBot in the background with auto restart\"
+    {
+    echo '#!/bin/bash'
+    echo ""
+    echo "echo \"Running NadekoBot in the background with auto restart\"
     youtube-dl -U
     
     # If you want Nadeko to be compiled prior to every startup, uncomment the lines
-    # below. Note  that it's not neccessary unless you are personally modifying the
+    # below. Note  that it's not necessary unless you are personally modifying the
     # source code.
     #echo \"Compiling NadekoBot...\"
     #cd \"$PWD\"/nadekobot
@@ -207,22 +214,32 @@ This method is similar to the one above, but requires one extra step, with the a
     echo \"Starting NadekoBot...\"
     
     while true; do
-        {
-            cd \"$PWD\"/nadekobot/output
-            dotnet NadekoBot.dll
-        ## If a non-zero exit code is produced, exit this script.
-        } || {
-            error_code=\"\$?\"
+        if [[ -d $PWD/nadekobot/output ]]; then
+            cd $PWD/nadekobot/output || {
+                echo \"Failed to change working directory to $PWD/nadekobot/output\" >&2
+                echo \"Ensure that the working directory inside of '/etc/systemd/system/nadeko.service' is correct\"
+                echo \"Exiting...\"
+                exit 1
+            }
+        else
+            echo \"$PWD/nadekobot/output doesn't exist\"
+            exit 1
+        fi
+        
+        dotnet NadekoBot.dll || {
             echo \"An error occurred when trying to start NadekBot\"
-            echo \"EXIT CODE: \$?\"
-            exit \"\$error_code\"
+            echo \"Exiting...\"
+            exit 1
         }
-    
+        
+        echo \"Waiting for 5 seconds...\"
+        sleep 5
         youtube-dl -U
         echo \"Restarting NadekoBot...\"
     done
     
-    echo \"Stopping NadekoBot...\"" > NadekoRun.sh
+    echo \"Stopping NadekoBot...\""
+    } > NadekoRun.sh
     ```
     
 5. Start Nadeko:
