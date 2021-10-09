@@ -69,7 +69,8 @@ namespace NadekoBot.Common.Replacements
                     var newF = new SmartTextEmbedField();
                     newF.Name = Replace(f.Name);
                     newF.Value = Replace(f.Value);
-                    fields.Add(newF);
+                    newF.Inline = f.Inline;
+                    fields.Add(newF);g
                 }
 
                 newEmbedData.Fields = fields.ToArray();
