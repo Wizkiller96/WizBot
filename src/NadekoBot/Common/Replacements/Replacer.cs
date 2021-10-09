@@ -70,7 +70,7 @@ namespace NadekoBot.Common.Replacements
                     newF.Name = Replace(f.Name);
                     newF.Value = Replace(f.Value);
                     newF.Inline = f.Inline;
-                    fields.Add(newF);g
+                    fields.Add(newF);
                 }
 
                 newEmbedData.Fields = fields.ToArray();
