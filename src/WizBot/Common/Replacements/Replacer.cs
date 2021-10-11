@@ -69,6 +69,7 @@ namespace WizBot.Common.Replacements
                     var newF = new SmartTextEmbedField();
                     newF.Name = Replace(f.Name);
                     newF.Value = Replace(f.Value);
+                    newF.Inline = f.Inline;
                     fields.Add(newF);
                 }
 
