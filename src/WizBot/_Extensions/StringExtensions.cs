@@ -50,7 +50,7 @@ namespace WizBot.Extensions
             }
             else
             {
-                return string.Concat(str.Take(maxLength - 3)) + "...";
+                return string.Concat(str.Take(maxLength - 1)) + "…";
             }
         }
 
