@@ -38,6 +38,6 @@ If you're unsure whether something is an issue, ask in our support server first.
 [macos-guide]: ./guides/osx-guide.md
 [from-source-guide]: ./guides/from-source.md
 [discord-server]: https://wizbot.cc/discord
-[github]: https://gitlab.com/Wizkiller96/WizBot
-[issues]: https://gitlab.com/Wizkiller96/WizBot/issues
+[github]: https://github.com/Wizkiller96/WizBot
+[issues]: https://github.com/Wizkiller96/WizBot/issues
 [donate]: ./donate.md
