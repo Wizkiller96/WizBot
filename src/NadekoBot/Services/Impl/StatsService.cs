@@ -1,20 +1,21 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Extensions;
+using Serilog;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using NadekoBot.Common.ModuleBehaviors;
-using Serilog;
 
 namespace NadekoBot.Services
 {
     public class StatsService : IStatsService, IReadyExecutor, INService
     {
+        private readonly Process _currentProcess = Process.GetCurrentProcess();
         private readonly DiscordSocketClient _client;
         private readonly IBotCredentials _creds;
         private readonly DateTime _started;
@@ -23,8 +24,7 @@ namespace NadekoBot.Services
         public string Author => "Kwoth#2452";
         public string Library => "Discord.Net";
 
-        public string Heap => Math.Round((double)GC.GetTotalMemory(false) / 1.MiB(), 2)
-            .ToString(CultureInfo.InvariantCulture);
+        public double PrivateMemory => _currentProcess.PrivateMemorySize64 / (double)1.MiB();
         public double MessagesPerSecond => MessageCounter / GetUptime().TotalSeconds;
 
         private long _textChannels;
