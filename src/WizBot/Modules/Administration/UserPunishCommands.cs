@@ -450,7 +450,7 @@ namespace WizBot.Modules.Administration
                     }
                 }
 
-                await _mute.TimedBan(ctx.Guild, user, time.Time, ctx.User.ToString() + " | " + msg).ConfigureAwait(false);
+                await _mute.TimedBan(ctx.Guild, user, time.Time, (ctx.User.ToString() + " | " + msg).TrimTo(512)).ConfigureAwait(false);
                 var toSend = _eb.Create().WithOkColor()
                     .WithTitle("⛔️ " + GetText(strs.banned_user))
                     .AddField(GetText(strs.username), user.ToString(), true)
@@ -476,7 +476,7 @@ namespace WizBot.Modules.Administration
                 var user = await ((DiscordSocketClient)Context.Client).Rest.GetGuildUserAsync(ctx.Guild.Id, userId);
                 if (user is null)
                 {
-                    await ctx.Guild.AddBanAsync(userId, 7, ctx.User.ToString() + " | " + msg);
+                    await ctx.Guild.AddBanAsync(userId, 7, (ctx.User.ToString() + " | " + msg).TrimTo(512));
                     
                     await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
                             .WithTitle("⛔️ " + GetText(strs.banned_user))
@@ -516,7 +516,7 @@ namespace WizBot.Modules.Administration
                     dmFailed = true;
                 }
 
-                await ctx.Guild.AddBanAsync(user, 7, ctx.User.ToString() + " | " + msg).ConfigureAwait(false);
+                await ctx.Guild.AddBanAsync(user, 7, (ctx.User.ToString() + " | " + msg).TrimTo(512)).ConfigureAwait(false);
 
                 var toSend = _eb.Create().WithOkColor()
                     .WithTitle("⛔️ " + GetText(strs.banned_user))
@@ -692,7 +692,7 @@ namespace WizBot.Modules.Administration
                     dmFailed = true;
                 }
 
-                await ctx.Guild.AddBanAsync(user, 7, "Softban | " + ctx.User.ToString() + " | " + msg).ConfigureAwait(false);
+                await ctx.Guild.AddBanAsync(user, 7, ("Softban | " + ctx.User.ToString() + " | " + msg).TrimTo(512)).ConfigureAwait(false);
                 try { await ctx.Guild.RemoveBanAsync(user).ConfigureAwait(false); }
                 catch { await ctx.Guild.RemoveBanAsync(user).ConfigureAwait(false); }
 
@@ -749,7 +749,7 @@ namespace WizBot.Modules.Administration
                     dmFailed = true;
                 }
             
-                await user.KickAsync(ctx.User.ToString() + " | " + msg).ConfigureAwait(false);
+                await user.KickAsync((ctx.User.ToString() + " | " + msg).TrimTo(512)).ConfigureAwait(false);
                 
                 var toSend = _eb.Create().WithOkColor()
                     .WithTitle(GetText(strs.kicked_user))
