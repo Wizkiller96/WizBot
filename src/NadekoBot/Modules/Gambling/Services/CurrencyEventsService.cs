@@ -8,8 +8,6 @@ using System.Threading.Tasks;
 using System;
 using NadekoBot.Services.Database.Models;
 using System.Net.Http;
-using Newtonsoft.Json;
-using System.Linq;
 using NadekoBot.Modules.Gambling.Services;
 using Serilog;
 
@@ -17,76 +15,22 @@ namespace NadekoBot.Modules.Gambling.Services
 {
     public class CurrencyEventsService : INService
     {
-        public class VoteModel
-        {
-            public ulong User { get; set; }
-            public long Date { get; set; }
-        }
         private readonly DiscordSocketClient _client;
         private readonly ICurrencyService _cs;
-        private readonly IBotCredentials _creds;
-        private readonly IHttpClientFactory _http;
         private readonly GamblingConfigService _configService;
+
         private readonly ConcurrentDictionary<ulong, ICurrencyEvent> _events =
             new ConcurrentDictionary<ulong, ICurrencyEvent>();
 
-        public CurrencyEventsService(DiscordSocketClient client,
-            IBotCredentials creds, ICurrencyService cs,
-            IHttpClientFactory http, GamblingConfigService configService)
+
+        public CurrencyEventsService(
+            DiscordSocketClient client,
+            ICurrencyService cs,
+            GamblingConfigService configService)
         {
             _client = client;
             _cs = cs;
-            _creds = creds;
-            _http = http;
             _configService = configService;
-            
-            if (_client.ShardId == 0)
-            {
-                Task t = BotlistUpvoteLoop();
-            }
-        }
-
-        // todo future use votes api directly?
-        private async Task BotlistUpvoteLoop()
-        {
-            if (string.IsNullOrWhiteSpace(_creds.VotesUrl))
-                return;
-            
-            while (true)
-            {
-                await Task.Delay(TimeSpan.FromHours(1)).ConfigureAwait(false);
-                await TriggerVoteCheck().ConfigureAwait(false);
-            }
-        }
-
-        private async Task TriggerVoteCheck()
-        {
-            try
-            {
-                using (var req = new HttpRequestMessage(HttpMethod.Get, _creds.VotesUrl))
-                {
-                    if (!string.IsNullOrWhiteSpace(_creds.VotesToken))
-                        req.Headers.Add("Authorization", _creds.VotesToken);
-                    using (var http = _http.CreateClient())
-                    using (var res = await http.SendAsync(req).ConfigureAwait(false))
-                    {
-                        if (!res.IsSuccessStatusCode)
-                        {
-                            Log.Warning("Botlist API not reached.");
-                            return;
-                        }
-                        var resStr = await res.Content.ReadAsStringAsync().ConfigureAwait(false);
-                        var ids = JsonConvert.DeserializeObject<VoteModel[]>(resStr)
-                            .Select(x => x.User)
-                            .Distinct();
-                        await _cs.AddBulkAsync(ids, ids.Select(x => "Voted - <https://discordbots.org/bot/nadeko/vote>"), ids.Select(x => 10L), true).ConfigureAwait(false);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Warning(ex, "Error in TriggerVoteCheck");
-            }
         }
 
         public async Task<bool> TryCreateEventAsync(ulong guildId, ulong channelId, CurrencyEvent.Type type,
@@ -127,6 +71,7 @@ namespace NadekoBot.Modules.Gambling.Services
                     return false;
                 }
             }
+
             return added;
         }
 

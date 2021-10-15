@@ -237,3 +237,6 @@ waifu:
 # Amount of currency selfhosters will get PER pledged dollar CENT.
 # 1 = 100 currency per $. Used almost exclusively on public nadeko.
 patreonCurrencyPerCent: 1
+# Currency reward per vote.
+# This will work only if you've set up VotesApi and correct credentials for topgg and/or discords voting
+voteReward: 100

@@ -20,6 +20,7 @@ namespace NadekoBot.Common.Yml
             .WithTypeConverter(new Rgba32Converter())
             .WithTypeConverter(new CultureInfoConverter())
             .WithTypeConverter(new UriConverter())
+            .IgnoreUnmatchedProperties()
             .Build();
     }
 }
