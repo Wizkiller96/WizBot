@@ -128,7 +128,10 @@ namespace NadekoBot.Services
                         null,
                         null,
                         oldCreds.PatreonCampaignId),
-                    Votes = new Creds.VotesSettings(oldCreds.VotesUrl, oldCreds.VotesToken),
+                    Votes = new(oldCreds.VotesUrl,
+                        oldCreds.VotesToken,
+                        string.Empty,
+                        string.Empty),
                     BotListToken = oldCreds.BotListToken,
                     RedisOptions = oldCreds.RedisOptions,
                     LocationIqApiKey = oldCreds.LocationIqApiKey,
@@ -141,6 +144,17 @@ namespace NadekoBot.Services
 
                 Log.Warning("Data from credentials.json has been moved to creds.yml\nPlease inspect your creds.yml for correctness");
             }
+
+            if (File.Exists(_credsFileName))
+            {
+                var creds = Yaml.Deserializer.Deserialize<Creds>(File.ReadAllText(_credsFileName));
+                if (creds.Version <= 1)
+                {
+                    creds.Version = 2;
+                    File.WriteAllText(_credsFileName, Yaml.Serializer.Serialize(creds));
+                }
+            }
+
         }
 
         public Creds GetCreds() => _creds;
