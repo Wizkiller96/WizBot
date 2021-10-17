@@ -14,7 +14,7 @@ namespace WizBot.Common
             AdminIds = new List<ulong>();
             TotalShards = 1;
             GoogleApiKey = string.Empty;
-            Votes = new(string.Empty, string.Empty);
+            Votes = new(string.Empty, string.Empty, string.Empty, string.Empty);
             Patreon = new(string.Empty, string.Empty, string.Empty, string.Empty);
             BotListToken = string.Empty;
             CleverbotApiKey = string.Empty;
@@ -83,11 +83,6 @@ Change only if you've changed the coordinator address or port.")]
         [YamlIgnore]
         public string PatreonAccessToken => Patreon?.AccessToken;
 
-        [YamlIgnore]
-        public string VotesUrl => Votes?.Url;
-        [YamlIgnore]
-        public string VotesToken => Votes.Key;
-        
         [Comment(@"Api key obtained on https://rapidapi.com (go to MyApps -> Add New App -> Enter Name -> Application key)")]
         public string RapidApiKey { get; set; }
 
@@ -148,19 +143,44 @@ Windows default
                 ClientSecret = clientSecret;
                 CampaignId = campaignId;
             }
+            
+            public PatreonSettings()
+            {
+                
+            }
         }
 
         public sealed record VotesSettings
         {
-            [Comment(@"")]
-            public string Url { get; set; }
-            [Comment(@"")]
-            public string Key { get; set; }
+            [Comment(@"top.gg votes service url
+This is the url of your instance of the NadekoBot.Votes api
+Example: https://votes.my.cool.bot.com")]
+            public string TopggServiceUrl { get; set; }
+            
+            [Comment(@"Authorization header value sent to the TopGG service url with each request
+This should be equivalent to the TopggKey in your NadekoBot.Votes api appsettings.json file")]
+            public string TopggKey { get; set; }
+            
+            [Comment(@"discords.com votes service url
+This is the url of your instance of the NadekoBot.Votes api
+Example: https://votes.my.cool.bot.com")]
+            public string DiscordsServiceUrl { get; set; }
+            
+            [Comment(@"Authorization header value sent to the Discords service url with each request
+This should be equivalent to the DiscordsKey in your NadekoBot.Votes api appsettings.json file")]
+            public string DiscordsKey { get; set; }
 
-            public VotesSettings(string url, string key)
+            public VotesSettings()
             {
-                Url = url;
-                Key = key;
+                
+            }
+            
+            public VotesSettings(string topggServiceUrl, string topggKey, string discordsServiceUrl, string discordsKey)
+            {
+                TopggServiceUrl = topggServiceUrl;
+                TopggKey = topggKey;
+                DiscordsServiceUrl = discordsServiceUrl;
+                DiscordsKey = discordsKey;
             }
         }
 

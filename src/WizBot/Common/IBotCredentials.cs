@@ -21,8 +21,7 @@ namespace WizBot
         string PatreonCampaignId { get; }
         string CleverbotApiKey { get; }
         RestartConfig RestartCommand { get; }
-        string VotesUrl { get; }
-        string VotesToken { get; }
+        Creds.VotesSettings Votes { get; }
         string BotListToken { get; }
         string RedisOptions { get; }
         string LocationIqApiKey { get; }

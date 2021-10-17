@@ -23,7 +23,7 @@ namespace WizBot.Modules.Gambling.Common
         }
 
         [Comment(@"DO NOT CHANGE")]
-        public int Version { get; set; } = 1;
+        public int Version { get; set; } = 2;
 
         [Comment(@"Currency settings")]
         public CurrencyConfig Currency { get; set; }
@@ -60,6 +60,10 @@ Set 0 for unlimited")]
         [Comment(@"Amount of currency selfhosters will get PER pledged dollar CENT.
 1 = 100 currency per $. Used almost exclusively on public wizbot.")]
         public decimal PatreonCurrencyPerCent { get; set; } = 1;
+        
+        [Comment(@"Currency reward per vote.
+This will work only if you've set up VotesApi and correct credentials for topgg and/or discords voting")]
+        public long VoteReward { get; set; } = 100;
     }
 
     public class CurrencyConfig

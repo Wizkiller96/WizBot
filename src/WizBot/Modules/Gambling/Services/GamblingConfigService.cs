@@ -63,6 +63,14 @@ namespace WizBot.Modules.Gambling.Services
                     c.Version = 2;
                 });
             }
+            
+            if (_data.Version < 3)
+            {
+                ModifyConfig(c =>
+                {
+                    c.VoteReward = 100;
+                });
+            }
         }
     }
 }

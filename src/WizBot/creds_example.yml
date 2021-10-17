@@ -17,8 +17,20 @@ totalShards: 1
 googleApiKey: ''
 # Settings for voting system for discordbots. Meant for use on global WizBot.
 votes:
-  url: ''
-  key: ''
+# top.gg votes service url
+# This is the url of your instance of the NadekoBot.Votes api
+# Example: https://votes.my.cool.bot.com
+  topggServiceUrl: ''
+# Authorization header value sent to the TopGG service url with each request
+# This should be equivalent to the TopggKey in your NadekoBot.Votes api appsettings.json file
+  topggKey: ''
+# discords.com votes service url
+# This is the url of your instance of the NadekoBot.Votes api
+# Example: https://votes.my.cool.bot.com
+  discordsServiceUrl: ''
+# Authorization header value sent to the Discords service url with each request
+# This should be equivalent to the DiscordsKey in your NadekoBot.Votes api appsettings.json file
+  discordsKey: ''
 # Patreon auto reward system settings.
 # go to https://www.patreon.com/portal -> my clients -> create client
 patreon:
