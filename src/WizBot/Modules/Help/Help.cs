@@ -26,7 +26,7 @@ namespace WizBot.Modules.Help
     public class Help : WizBotModule<HelpService>
     {
         public const string PatreonUrl = "https://patreon.com/WizNet";
-        public const string PaypalUrl = "https://paypal.me/Kwoth";
+        public const string PaypalUrl = "https://paypal.me/Wizkiller96Network";
         private readonly CommandService _cmds;
         private readonly BotConfigService _bss;
         private readonly GlobalPermissionService _perms;
