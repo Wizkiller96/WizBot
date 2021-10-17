@@ -1,20 +1,21 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using WizBot.Common.ModuleBehaviors;
 using WizBot.Extensions;
+using Serilog;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using WizBot.Common.ModuleBehaviors;
-using Serilog;
 
 namespace WizBot.Services
 {
     public class StatsService : IStatsService, IReadyExecutor, INService
     {
+        private readonly Process _currentProcess = Process.GetCurrentProcess();
         private readonly DiscordSocketClient _client;
         private readonly IBotCredentials _creds;
         private readonly DateTime _started;
@@ -23,8 +24,7 @@ namespace WizBot.Services
         public string Author => "Kwoth#2452\nWizkiller96#5074";
         public string Library => "Discord.Net";
 
-        public string Heap => Math.Round((double)GC.GetTotalMemory(false) / 1.MiB(), 2)
-            .ToString(CultureInfo.InvariantCulture);
+        public double PrivateMemory => _currentProcess.PrivateMemorySize64 / (double)1.MiB();
         public double MessagesPerSecond => MessageCounter / GetUptime().TotalSeconds;
 
         private long _textChannels;
