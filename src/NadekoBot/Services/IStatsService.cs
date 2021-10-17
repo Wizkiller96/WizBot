@@ -15,11 +15,6 @@ namespace NadekoBot.Services
         long CommandsRan { get; }
 
         /// <summary>
-        /// The total amount of private memory used by the bot, in Megabytes.
-        /// </summary>
-        double PrivateMemory { get; }
-
-        /// <summary>
         /// The Discord framework used by the bot.
         /// </summary>
         string Library { get; }
@@ -54,5 +49,10 @@ namespace NadekoBot.Services
         /// </summary>
         /// <param name="separator">The formatting separator.</param>
         string GetUptimeString(string separator = ", ");
+
+        /// <summary>
+        /// Gets total amount of private memory currently in use by the bot, in Megabytes.
+        /// </summary>
+        double GetPrivateMemory();
     }
 }

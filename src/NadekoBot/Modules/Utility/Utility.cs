@@ -253,7 +253,7 @@ namespace NadekoBot.Modules.Utility
                         .AddField(GetText(strs.commands_ran), _stats.CommandsRan.ToString(), true)
                         .AddField(GetText(strs.messages), $"{_stats.MessageCounter} ({_stats.MessagesPerSecond:F2}/sec)",
                             true)
-                        .AddField(GetText(strs.memory), FormattableString.Invariant($"{_stats.PrivateMemory:F2} MB"), true)
+                        .AddField(GetText(strs.memory), FormattableString.Invariant($"{_stats.GetPrivateMemory():F2} MB"), true)
                         .AddField(GetText(strs.owner_ids), ownerIds, true)
                         .AddField(GetText(strs.uptime), _stats.GetUptimeString("\n"), true)
                         .AddField(GetText(strs.presence), 
