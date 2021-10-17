@@ -2,9 +2,8 @@
 
 ## Repo Status
 
-![img](https://ci.appveyor.com/api/projects/status/uuewoyb3t5f7ye4q?svg=true)
-[![pipeline status](https://gitlab.com/WizNet/WizBot/badges/1.9/pipeline.svg)](https://gitlab.com/WizNet/WizBot/commits/1.9)
-[![Documentation Status](https://readthedocs.org/projects/wizbot/badge/?version=latest)](http://wizbot.readthedocs.io/en/v3/?badge=v3)
+[![pipeline status](https://gitlab.com/WizNet/WizBot/badges/v3/pipeline.svg)](https://gitlab.com/WizNet/WizBot/commits/v3)
+[![Documentation Status](https://readthedocs.org/projects/wizbot/badge/?version=v3)](http://wizbot.readthedocs.io/en/v3/?badge=v3)
 [![CodeFactor](https://www.codefactor.io/repository/github/wizkiller96/wizbot/badge)](https://www.codefactor.io/repository/github/wizkiller96/wizbot)
 ![WizBot Website](https://img.shields.io/website-up-down-green-red/https/wizbot.cc.svg?label=wizbot.cc)
 [![Discord](https://discordapp.com/api/guilds/99273784988557312/widget.png)](https://discord.gg/0YNaDOYuD5QOpeNI)
