@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace WizBot.Services
 {
-    public class StatsService : IStatsService, IReadyExecutor, INService
+    public class StatsService : IStatsService, IReadyExecutor, INService, IDisposable
     {
         private readonly Process _currentProcess = Process.GetCurrentProcess();
         private readonly DiscordSocketClient _client;
@@ -23,8 +23,6 @@ namespace WizBot.Services
         public const string BotVersion = "3.0.7";
         public string Author => "Kwoth#2452\nWizkiller96#5074";
         public string Library => "Discord.Net";
-
-        public double PrivateMemory => _currentProcess.PrivateMemorySize64 / (double)1.MiB();
         public double MessagesPerSecond => MessageCounter / GetUptime().TotalSeconds;
 
         private long _textChannels;
@@ -172,6 +170,18 @@ namespace WizBot.Services
             _textChannels = guilds.Sum(g => g.Channels.Count(cx => cx is ITextChannel));
             _voiceChannels = guilds.Sum(g => g.Channels.Count(cx => cx is IVoiceChannel));
             return Task.CompletedTask;
+        }
+        
+        public double GetPrivateMemory()
+        {
+            _currentProcess.Refresh();
+            return _currentProcess.PrivateMemorySize64 / (double)1.MiB();
+        }
+
+        public void Dispose()
+        {
+            _currentProcess.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }

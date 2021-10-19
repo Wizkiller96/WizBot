@@ -13,11 +13,6 @@ namespace WizBot.Services
         /// The total amount of commands ran since startup.
         /// </summary>
         long CommandsRan { get; }
-        
-        /// <summary>
-        /// The total amount of private memory used by the bot, in Megabytes.
-        /// </summary>
-        double PrivateMemory { get; }
 
         /// <summary>
         /// The Discord framework used by the bot.
@@ -54,5 +49,10 @@ namespace WizBot.Services
         /// </summary>
         /// <param name="separator">The formatting separator.</param>
         string GetUptimeString(string separator = ", ");
+        
+        /// <summary>
+        /// Gets total amount of private memory currently in use by the bot, in Megabytes.
+        /// </summary>
+        double GetPrivateMemory();
     }
 }
