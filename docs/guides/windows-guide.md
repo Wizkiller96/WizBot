@@ -32,12 +32,13 @@
 
 - Download and run the [NadekoBot v3 Updater][Updater].
 - Click on the + at the top left to create a new bot.
- ![NadekoBot Updater](https://i.imgur.com/KZV49uf.png "NadekoBot Updater")
+ ![NadekoBot Updater](https://i.imgur.com/FmR7F7o.png "NadekoBot Updater")
 - Give your bot a name and then click **`Go to setup`** at the lower right.
- ![Create a new bot](https://i.imgur.com/Xnp7iQL.png "Create a new bot")
+ ![Create a new bot](https://i.imgur.com/JxtRk9e.png "Create a new bot")
 - Click on **`DOWNLOAD`** at the lower right
- ![Bot Setup](https://i.imgur.com/6RMXNqw.png "Bot Setup")
+ ![Bot Setup](https://i.imgur.com/HqAl36p.png "Bot Setup")
 - Click on **`Install`** next to **`Redis`**.
+- **Note: If Redis fails to install, install Redis manually here: [Redis Installer](https://github.com/MicrosoftArchive/redis/releases/tag/win-3.0.504) Download and run the **`.msi`** file.
 - If you will use the music module, click on **`Install`** next to **`FFMPEG`** and **`Youtube-DL`**.
 - If any dependencies fail to install, you can temporarily disable your Windows Defender/AV until you install them. If you don't want to, then read [the last section of this guide](#Manual-Prerequisite-Installation).
 - When installation is finished, click on **`CREDS`** to the left of **`RUN`** at the lower right.
