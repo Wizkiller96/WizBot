@@ -54,7 +54,6 @@ namespace NadekoBot.Db
                     .Include(gc => gc.CommandCooldowns)
                     .Include(gc => gc.FollowedStreams)
                     .Include(gc => gc.StreamRole)
-                    .Include(gc => gc.NsfwBlacklistedTags)
                     .Include(gc => gc.XpSettings)
                     .ThenInclude(x => x.ExclusionList)
                     .Include(gc => gc.DelMsgOnCmdChannels)

@@ -5,68 +5,28 @@ using NadekoBot.Common.Attributes;
 using NadekoBot.Common.Collections;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Searches.Common;
-using NadekoBot.Modules.Searches.Services;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using CommandLine;
 using Serilog;
 
-namespace NadekoBot.Modules.NSFW
+namespace NadekoBot.Modules.Nsfw
 {
-    // thanks to halitalf for adding autoboob and autobutt features :D
-    public class NSFW : NadekoModule<SearchesService>
+    [NoPublicBot]
+    public class NSFW : NadekoModule<ISearchImagesService>
     {
         private static readonly ConcurrentHashSet<ulong> _hentaiBombBlacklist = new ConcurrentHashSet<ulong>();
         private readonly IHttpClientFactory _httpFactory;
+        private readonly NadekoRandom _rng;
 
         public NSFW(IHttpClientFactory factory)
         {
             _httpFactory = factory;
-        }
-
-        private async Task InternalHentai(IMessageChannel channel, string tag)
-        {
-            // create a random number generator
-            var rng = new NadekoRandom();
-
-            // get all of the DAPI search types, except first 3 
-            // which are safebooru (not nsfw), and 2 furry ones 🤢
-            var listOfProviders = Enum.GetValues(typeof(DapiSearchType))
-                .Cast<DapiSearchType>()
-                .Skip(3)
-                .ToList();
-
-            // now try to get an image, if it fails return an error,
-            // keep trying for each provider until one of them is successful, or until 
-            // we run out of providers. If we run out, then return an error
-            ImageCacherObject img;
-            do
-            {
-                // random index of the providers
-                var num = rng.Next(0, listOfProviders.Count);
-                // get the type
-                var type = listOfProviders[num];
-                // remove it 
-                listOfProviders.RemoveAt(num);
-                // get the image
-                img = await _service.DapiSearch(tag, type, ctx.Guild?.Id, true).ConfigureAwait(false);
-                // if i can't find the image, ran out of providers, or tag is blacklisted
-                // return the error
-                if (img is null && !listOfProviders.Any())
-                {
-                    await ReplyErrorLocalizedAsync(strs.no_results).ConfigureAwait(false);
-                    return;
-                }
-
-            } while (img is null);
-
-            await channel.EmbedAsync(_eb.Create().WithOkColor()
-                .WithImageUrl(img.FileUrl)
-                .WithDescription($"[{GetText(strs.tag)}: {tag}]({img})"))
-                .ConfigureAwait(false);
+            _rng = new NadekoRandom();
         }
 
         private async Task InternalBoobs()
@@ -76,8 +36,11 @@ namespace NadekoBot.Modules.NSFW
                 JToken obj;
                 using (var http = _httpFactory.CreateClient())
                 {
-                    obj = JArray.Parse(await http.GetStringAsync($"http://api.oboobs.ru/boobs/{new NadekoRandom().Next(0, 10330)}").ConfigureAwait(false))[0];
+                    obj = JArray.Parse(await http
+                        .GetStringAsync($"http://api.oboobs.ru/boobs/{new NadekoRandom().Next(0, 10330)}")
+                        .ConfigureAwait(false))[0];
                 }
+
                 await ctx.Channel.SendMessageAsync($"http://media.oboobs.ru/{obj["preview"]}").ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -85,6 +48,7 @@ namespace NadekoBot.Modules.NSFW
                 await SendErrorAsync(ex.Message).ConfigureAwait(false);
             }
         }
+
         private async Task InternalButts(IMessageChannel Channel)
         {
             try
@@ -92,8 +56,11 @@ namespace NadekoBot.Modules.NSFW
                 JToken obj;
                 using (var http = _httpFactory.CreateClient())
                 {
-                    obj = JArray.Parse(await http.GetStringAsync($"http://api.obutts.ru/butts/{new NadekoRandom().Next(0, 4335)}").ConfigureAwait(false))[0];
+                    obj = JArray.Parse(await http
+                        .GetStringAsync($"http://api.obutts.ru/butts/{new NadekoRandom().Next(0, 4335)}")
+                        .ConfigureAwait(false))[0];
                 }
+
                 await Channel.SendMessageAsync($"http://media.obutts.ru/{obj["preview"]}").ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -102,12 +69,11 @@ namespace NadekoBot.Modules.NSFW
             }
         }
 
-#if !GLOBAL_NADEKO
         [NadekoCommand, Aliases]
         [RequireNsfw]
         [RequireContext(ContextType.Guild)]
         [UserPerm(ChannelPerm.ManageMessages)]
-        public async Task AutoHentai(int interval = 0, string tags = null)
+        public async Task AutoHentai(int interval = 0, [Leftover] string tags = null)
         {
             Timer t;
 
@@ -123,16 +89,18 @@ namespace NadekoBot.Modules.NSFW
             if (interval < 20)
                 return;
 
-            var tagsArr = tags?.Split('|');
-
             t = new Timer(async (state) =>
             {
                 try
                 {
-                    if (tagsArr is null || tagsArr.Length == 0)
-                        await InternalHentai(ctx.Channel, null).ConfigureAwait(false);
+                    if (tags is null || tags.Length == 0)
+                        await InternalDapiCommand(null, true, _service.Hentai).ConfigureAwait(false);
                     else
-                        await InternalHentai(ctx.Channel, tagsArr[new NadekoRandom().Next(0, tagsArr.Length)]).ConfigureAwait(false);
+                    {
+                        var groups = tags.Split('|');
+                        var group = groups[_rng.Next(0, groups.Length)];
+                        await InternalDapiCommand(group.Split(' '), true, _service.Hentai).ConfigureAwait(false);
+                    }
                 }
                 catch
                 {
@@ -148,7 +116,7 @@ namespace NadekoBot.Modules.NSFW
 
             await ReplyConfirmLocalizedAsync(strs.autohentai_started(
                 interval,
-                string.Join(", ", tagsArr)));
+                string.Join(", ", tags)));
         }
 
         [NadekoCommand, Aliases]
@@ -231,25 +199,24 @@ namespace NadekoBot.Modules.NSFW
 
             await ReplyConfirmLocalizedAsync(strs.started(interval));
         }
-#endif
 
         [NadekoCommand, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
-        public Task Hentai([Leftover] string tag = null) =>
-            InternalHentai(ctx.Channel, tag);
+        public Task Hentai(params string[] tags) 
+            => InternalDapiCommand(tags, true, _service.Hentai);
 
         [NadekoCommand, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
-        public async Task HentaiBomb([Leftover] string tag = null)
+        public async Task HentaiBomb(params string[] tags)
         {
             if (!_hentaiBombBlacklist.Add(ctx.Guild?.Id ?? ctx.User.Id))
                 return;
             try
             {
-                var images = await Task.WhenAll(_service.DapiSearch(tag, DapiSearchType.Gelbooru, ctx.Guild?.Id, true),
-                                                _service.DapiSearch(tag, DapiSearchType.Danbooru, ctx.Guild?.Id, true),
-                                                _service.DapiSearch(tag, DapiSearchType.Konachan, ctx.Guild?.Id, true),
-                                                _service.DapiSearch(tag, DapiSearchType.Yandere, ctx.Guild?.Id, true)).ConfigureAwait(false);
+                var images = await Task.WhenAll(_service.Yandere(ctx.Guild?.Id, true, tags),
+                    _service.Danbooru(ctx.Guild?.Id, true, tags),
+                    _service.Konachan(ctx.Guild?.Id, true, tags),
+                    _service.Gelbooru(ctx.Guild?.Id, true, tags));
 
                 var linksEnum = images?.Where(l => l != null).ToArray();
                 if (images is null || !linksEnum.Any())
@@ -258,7 +225,8 @@ namespace NadekoBot.Modules.NSFW
                     return;
                 }
 
-                await ctx.Channel.SendMessageAsync(string.Join("\n\n", linksEnum.Select(x => x.FileUrl))).ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync(string.Join("\n\n", linksEnum.Select(x => x.Url)))
+                    .ConfigureAwait(false);
             }
             finally
             {
@@ -268,43 +236,48 @@ namespace NadekoBot.Modules.NSFW
 
         [NadekoCommand, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
-        public Task Yandere([Leftover] string tag = null)
-            => InternalDapiCommand(tag, DapiSearchType.Yandere, false);
+        public Task Yandere(params string[] tags)
+            => InternalDapiCommand(tags, false, _service.Yandere);
 
         [NadekoCommand, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
-        public Task Konachan([Leftover] string tag = null)
-            => InternalDapiCommand(tag, DapiSearchType.Konachan, false);
-        
-        [NadekoCommand, Aliases]
-        [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
-        public Task Sankaku([Leftover] string tag = null)
-            => InternalDapiCommand(tag, DapiSearchType.Sankaku, false);
+        public Task Konachan(params string[] tags)
+            => InternalDapiCommand(tags, false, _service.Konachan);
 
         [NadekoCommand, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
-        public Task E621([Leftover] string tag = null)
-            => InternalDapiCommand(tag, DapiSearchType.E621, false);
+        public Task Sankaku(params string[] tags)
+            => InternalDapiCommand(tags, false, _service.Sankaku);
 
         [NadekoCommand, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
-        public Task Rule34([Leftover] string tag = null)
-            => InternalDapiCommand(tag, DapiSearchType.Rule34, false);
+        public Task E621(params string[] tags)
+            => InternalDapiCommand(tags, false, _service.E621);
 
         [NadekoCommand, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
-        public Task Danbooru([Leftover] string tag = null)
-            => InternalDapiCommand(tag, DapiSearchType.Danbooru, false);
+        public Task Rule34(params string[] tags)
+            => InternalDapiCommand(tags, false, _service.Rule34);
 
         [NadekoCommand, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
-        public Task Gelbooru([Leftover] string tag = null)
-            => InternalDapiCommand(tag, DapiSearchType.Gelbooru, false);
+        public Task Danbooru(params string[] tags)
+            => InternalDapiCommand(tags, false, _service.Danbooru);
 
         [NadekoCommand, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
-        public Task Derpibooru([Leftover] string tag = null)
-            => InternalDapiCommand(tag, DapiSearchType.Derpibooru, false);
+        public Task Gelbooru(params string[] tags)
+            => InternalDapiCommand(tags, false, _service.Gelbooru);
+
+        [NadekoCommand, Aliases]
+        [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
+        public Task Derpibooru(params string[] tags)
+            => InternalDapiCommand(tags, false, _service.DerpiBooru);
+
+        [NadekoCommand, Aliases]
+        [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
+        public Task Safebooru(params string[] tags)
+            => InternalDapiCommand(tags, false, _service.SafeBooru);
 
         [NadekoCommand, Aliases]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
@@ -315,8 +288,11 @@ namespace NadekoBot.Modules.NSFW
                 JToken obj;
                 using (var http = _httpFactory.CreateClient())
                 {
-                    obj = JArray.Parse(await http.GetStringAsync($"http://api.oboobs.ru/boobs/{new NadekoRandom().Next(0, 12000)}").ConfigureAwait(false))[0];
+                    obj = JArray.Parse(await http
+                        .GetStringAsync($"http://api.oboobs.ru/boobs/{new NadekoRandom().Next(0, 12000)}")
+                        .ConfigureAwait(false))[0];
                 }
+
                 await ctx.Channel.SendMessageAsync($"http://media.oboobs.ru/{obj["preview"]}").ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -334,8 +310,11 @@ namespace NadekoBot.Modules.NSFW
                 JToken obj;
                 using (var http = _httpFactory.CreateClient())
                 {
-                    obj = JArray.Parse(await http.GetStringAsync($"http://api.obutts.ru/butts/{new NadekoRandom().Next(0, 6100)}").ConfigureAwait(false))[0];
+                    obj = JArray.Parse(await http
+                        .GetStringAsync($"http://api.obutts.ru/butts/{new NadekoRandom().Next(0, 6100)}")
+                        .ConfigureAwait(false))[0];
                 }
+
                 await ctx.Channel.SendMessageAsync($"http://media.obutts.ru/{obj["preview"]}").ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -351,16 +330,16 @@ namespace NadekoBot.Modules.NSFW
         {
             if (string.IsNullOrWhiteSpace(tag))
             {
-                var blTags = _service.GetBlacklistedTags(ctx.Guild.Id);
+                var blTags = await _service.GetBlacklistedTags(ctx.Guild.Id);
                 await SendConfirmAsync(GetText(strs.blacklisted_tag_list),
                     blTags.Any()
-                    ? string.Join(", ", blTags)
-                    : "-").ConfigureAwait(false);
+                        ? string.Join(", ", blTags)
+                        : "-").ConfigureAwait(false);
             }
             else
             {
                 tag = tag.Trim().ToLowerInvariant();
-                var added = _service.ToggleBlacklistedTag(ctx.Guild.Id, tag);
+                var added = await _service.ToggleBlacklistTag(ctx.Guild.Id, tag);
 
                 if (added)
                     await ReplyPendingLocalizedAsync(strs.blacklisted_tag_add(tag));
@@ -369,15 +348,6 @@ namespace NadekoBot.Modules.NSFW
             }
         }
 
-        [NadekoCommand, Aliases]
-        [RequireContext(ContextType.Guild)]
-        [OwnerOnly]
-        public Task NsfwClearCache()
-        {
-            _service.ClearCache();
-            return ctx.OkAsync();
-        }
-        
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
@@ -394,12 +364,12 @@ namespace NadekoBot.Modules.NSFW
 
             await SendNhentaiGalleryInternalAsync(g);
         }
-        
+
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
         [Priority(0)]
-        public async Task Nhentai([Leftover]string query)
+        public async Task Nhentai([Leftover] string query)
         {
             var g = await _service.GetNhentaiBySearchAsync(query);
 
@@ -420,7 +390,7 @@ namespace NadekoBot.Modules.NSFW
                 .Select(tag => $"[{tag.Name}]({tag.Url})")
                 .TakeWhile(tag => (count += tag.Length) < 1000)
                 .JoinWith(" ");
-            
+
             var embed = _eb.Create()
                 .WithTitle(g.Title)
                 .WithDescription(g.FullTitle)
@@ -435,27 +405,23 @@ namespace NadekoBot.Modules.NSFW
             await ctx.Channel.EmbedAsync(embed);
         }
 
-        public async Task InternalDapiCommand(string tag, DapiSearchType type, bool forceExplicit)
+        private async Task InternalDapiCommand(string[] tags,
+            bool forceExplicit,
+            Func<ulong?, bool, string[], Task<UrlReply>> func)
         {
-            ImageCacherObject imgObj;
-
-            imgObj = await _service.DapiSearch(tag, type, ctx.Guild?.Id, forceExplicit).ConfigureAwait(false);
-
-            if (imgObj is null)
-                await ReplyErrorLocalizedAsync(strs.no_results).ConfigureAwait(false);
-            else
+            var data = await func(ctx.Guild?.Id, forceExplicit, tags);
+            
+            if (data is null || !string.IsNullOrWhiteSpace(data.Error))
             {
-                var embed = _eb.Create().WithOkColor()
-                    .WithDescription($"{ctx.User} [{tag ?? "url"}]({imgObj}) ")
-                    .WithFooter(type.ToString());
-
-                if (Uri.IsWellFormedUriString(imgObj.FileUrl, UriKind.Absolute))
-                    embed.WithImageUrl(imgObj.FileUrl);
-                else
-                    Log.Error($"Image link from {type} is not a proper Url: {imgObj.FileUrl}");
-
-                await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.no_results);
+                return;
             }
+            await ctx.Channel.EmbedAsync(_eb
+                .Create(ctx)
+                .WithOkColor()
+                .WithImageUrl(data.Url)
+                .WithDescription($"[link]({data.Url})")
+                .WithFooter($"{data.Rating} ({data.Provider}) | {string.Join(" | ", data.Tags.Where(x => !string.IsNullOrWhiteSpace(x)).Take(5))}"));
         }
     }
 }
