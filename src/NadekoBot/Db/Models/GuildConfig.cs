@@ -91,7 +91,6 @@ namespace NadekoBot.Services.Database.Models
         public bool WarningsInitialized { get; set; }
         public HashSet<SlowmodeIgnoredUser> SlowmodeIgnoredUsers { get; set; }
         public HashSet<SlowmodeIgnoredRole> SlowmodeIgnoredRoles { get; set; }
-        public HashSet<NsfwBlacklitedTag> NsfwBlacklistedTags { get; set; } = new HashSet<NsfwBlacklitedTag>();
 
         public List<ShopEntry> ShopEntries { get; set; }
         public ulong? GameVoiceChannel { get; set; } = null;

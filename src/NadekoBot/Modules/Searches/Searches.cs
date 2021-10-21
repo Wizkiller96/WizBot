@@ -22,6 +22,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using NadekoBot.Modules.Administration.Services;
+using NadekoBot.Modules.Nsfw.Common;
 using Serilog;
 using Configuration = AngleSharp.Configuration;
 
@@ -590,10 +591,6 @@ namespace NadekoBot.Modules.Searches
         }
 
         [NadekoCommand, Aliases]
-        public Task Safebooru([Leftover] string tag = null)
-            => InternalDapiCommand(tag, DapiSearchType.Safebooru);
-
-        [NadekoCommand, Aliases]
         public async Task Wiki([Leftover] string query = null)
         {
             query = query?.Trim();
@@ -758,21 +755,6 @@ namespace NadekoBot.Modules.Searches
             //    .AddField(GetText(strs.links), gameData.GetGenresString(), true)
             //    .WithFooter(GetText(strs.recommendations(gameData.TotalRecommendations)));
             await ctx.Channel.SendMessageAsync($"https://store.steampowered.com/app/{appId}").ConfigureAwait(false);
-        }
-
-        public async Task InternalDapiCommand(string tag, DapiSearchType type)
-        {
-            tag = tag?.Trim() ?? "";
-
-            var imgObj = await _service.DapiSearch(tag, type, ctx.Guild?.Id).ConfigureAwait(false);
-
-            if (imgObj is null)
-                await SendErrorAsync(ctx.User.Mention + " " + GetText(strs.no_results)).ConfigureAwait(false);
-            else
-                await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
-                    .WithDescription($"{ctx.User.Mention} [{tag ?? "url"}]({imgObj.FileUrl})")
-                    .WithImageUrl(imgObj.FileUrl)
-                    .WithFooter(type.ToString())).ConfigureAwait(false);
         }
 
         public async Task<bool> ValidateQuery(IMessageChannel ch, string query)

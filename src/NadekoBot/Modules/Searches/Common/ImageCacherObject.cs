@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using NadekoBot.Modules.Nsfw.Common;
 
 namespace NadekoBot.Modules.Searches.Common
 {
     public class ImageCacherObject : IComparable<ImageCacherObject>
     {
-        public DapiSearchType SearchType { get; }
+        public Booru SearchType { get; }
         public string FileUrl { get; }
         public HashSet<string> Tags { get; }
         public string Rating { get; }
 
-        public ImageCacherObject(DapiImageObject obj, DapiSearchType type)
+        public ImageCacherObject(DapiImageObject obj, Booru type)
         {
-            if (type == DapiSearchType.Danbooru && !Uri.IsWellFormedUriString(obj.FileUrl, UriKind.Absolute))
+            if (type == Booru.Danbooru && !Uri.IsWellFormedUriString(obj.FileUrl, UriKind.Absolute))
             {
                 this.FileUrl = "https://danbooru.donmai.us" + obj.FileUrl;
             }
@@ -25,7 +26,7 @@ namespace NadekoBot.Modules.Searches.Common
             this.Tags = new HashSet<string>((obj.Tags ?? obj.TagString).Split(' '));
         }
 
-        public ImageCacherObject(string url, DapiSearchType type, string tags, string rating)
+        public ImageCacherObject(string url, Booru type, string tags, string rating)
         {
             this.SearchType = type;
             this.FileUrl = url;
