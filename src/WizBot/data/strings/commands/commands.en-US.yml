@@ -1069,10 +1069,6 @@ revimg:
   desc: "Returns a Google reverse image search for an image from a link."
   args:
     - "Image link"
-safebooru:
-  desc: "Shows a random image from safebooru with a given tag. Tag is optional but preferred. (multiple tags are appended with +)"
-  args:
-    - "yuri+kissing"
 wiki:
   desc: "Gives you back a wikipedia link"
   args:
@@ -1087,33 +1083,55 @@ avatar:
   args:
     - "@Someone"
 hentai:
-  desc: "Shows a hentai image from a random website (gelbooru, danbooru, konachan or yandere) with a given tag. Tag is optional but preferred. Only 1 tag allowed."
+  desc: "Shows a hentai image from a random website (gelbooru, danbooru, konachan or yandere) with a given tag. Tag(s) are optional but preferred. Maximum is usually 2 tags. Only 1 tag allowed."
   args:
     - "yuri"
+nhentai:
+  desc: "Shows basic information about a hentai with the specified id, or a valid nhentai search query."
+  args:
+    - "273426"
+    - "cute girl"
+autohentai:
+  desc: "Posts a hentai every X seconds with a random tag from the provided tags. Use `|` to separate tag groups. Random group will be chosen every time the image is sent. Max 2 tags per group. 20 seconds minimum. Provide no parameters to disable."
+  args:
+    - "30 yuri kissing|tail long_hair"
+    - ""
+hentaibomb:
+  desc: "Shows a total 5 images (from gelbooru, danbooru, konachan and yandere). Tag(s) are optional but preferred. Maximum is usually 2 tags."
+  args:
+    - "yuri"
+yandere:
+  desc: "Shows a random image from yandere with a given tag. Tag(s) are optional but preferred. Maximum is usually 2 tags."
+  args:
+    - "yuri kissing"
 danbooru:
-  desc: "Shows a random hentai image from danbooru with a given tag. Tag is optional but preferred. (multiple tags are appended with +)"
+  desc: "Shows a random hentai image from danbooru with a given tag. Tag(s) are optional but preferred. Maximum is usually 2 tags."
   args:
-    - "yuri+kissing"
+    - "yuri kissing"
 derpibooru:
-  desc: "Shows a random image from derpibooru with a given tag. Tag is optional but preferred."
+  desc: "Shows a random image from derpibooru with a given tag. Tag(s) are optional but preferred. Maximum is usually 2 tags."
   args:
-    - "yuri+kissing"
+    - "yuri kissing"
 gelbooru:
-  desc: "Shows a random hentai image from gelbooru with a given tag. Tag is optional but preferred. (multiple tags are appended with +)"
+  desc: "Shows a random hentai image from gelbooru with a given tag. Tag(s) are optional but preferred. Maximum is usually 2 tags."
   args:
-    - "yuri+kissing"
+    - "yuri kissing"
 sankaku:
-  desc: "Shows a random hentai image from chan.sankakucomplex.com with a given tag. Tag is optional but preferred. (multiple tags are appended with +)"
+  desc: "Shows a random hentai image from chan.sankakucomplex.com with a given tag. Tag(s) are optional but preferred. Maximum is usually 2 tags."
   args:
-    - "yuri+kiss"
+    - "yuri kiss"
 rule34:
-  desc: "Shows a random image from rule34.xx with a given tag. Tag is optional but preferred. (multiple tags are appended with +)"
+  desc: "Shows a random image from rule34.xx with a given tag. Tag(s) are optional but preferred. Maximum is usually 2 tags."
   args:
-    - "yuri+kissing"
+    - "yuri kissing"
 e621:
-  desc: "Shows a random hentai image from e621.net with a given tag. Tag is optional but preferred. (multiple tags are appended with +)"
+  desc: "Shows a random hentai image from e621.net with a given tag. Tag(s) are optional but preferred. Maximum is usually 2 tags."
   args:
-    - "yuri+kissing"
+    - "yuri kissing"
+safebooru:
+  desc: "Shows a random image from safebooru with a given tag. Tag(s) are optional but preferred. Maximum is usually 2 tags."
+  args:
+    - "yuri kissing"
 boobs:
   desc: "Real adult content."
   args:
@@ -1229,7 +1247,7 @@ voicemute:
     - "1h30m @Someone"
     - "1h @Someone silence"
 konachan:
-  desc: "Shows a random hentai image from konachan with a given tag. Tag is optional but preferred."
+  desc: "Shows a random hentai image from konachan with a given tag. Tag(s) are optional but preferred. Maximum is usually 2 tags."
   args:
     - "yuri"
 muterole:
@@ -1299,10 +1317,6 @@ listservers:
   desc: "Lists servers the bot is on with some basic info. 15 per page."
   args:
     - "3"
-hentaibomb:
-  desc: "Shows a total 5 images (from gelbooru, danbooru, konachan and yandere). Tag is optional but preferred."
-  args:
-    - "yuri"
 cleverbot:
   desc: "Toggles cleverbot session. When enabled, the bot will reply to messages starting with bot mention in the server. Custom reactions starting with %bot.mention% won't work if cleverbot is enabled."
   args:
@@ -1316,10 +1330,6 @@ wikia:
   args:
     - "mtg Vigilance"
     - "mlp Dashy"
-yandere:
-  desc: "Shows a random image from yandere with a given tag. Tag is optional but preferred. (multiple tags are appended with +)"
-  args:
-    - "tag1+tag2"
 magicthegathering:
   desc: "Searches for a Magic The Gathering card."
   args:
@@ -1367,11 +1377,6 @@ setmaxplaytime:
 activity:
   desc: "Checks for spammers."
   args:
-    - ""
-autohentai:
-  desc: "Posts a hentai every X seconds with a random tag from the provided tags. Use `|` to separate tag groups. Random group will be chosen every time the image is sent. Use `+` for multiple tags (max 2 per group). 20 seconds minimum. Provide no parameters to disable."
-  args:
-    - "30 yuri+kissing|tail+long_hair"
     - ""
 setstatus:
   desc: "Sets the bot's status. (Online/Idle/Dnd/Invisible)"
@@ -1899,10 +1904,6 @@ clublb:
   desc: "Shows club rankings on the specified page."
   args:
     - "2"
-nsfwcc:
-  desc: "Clears nsfw cache."
-  args:
-    - ""
 clubadmin:
   desc: "Assigns (or unassigns) staff role to the member of the club. Admins can ban, kick and accept applications."
   args:
@@ -2118,11 +2119,6 @@ purgeuser:
   desc: "Purge user from the database completely. This includes currency, xp, clubs that user owns, waifu info"
   args:
     - "@Oblivion"
-nhentai:
-  desc: "Shows basic information about a hentai with the specified id, or a valid nhentai search query."    
-  args:
-    - "273426"
-    - "cute girl"
 imageonlychannel:
   desc: |- 
     Toggles whether the channel only allows images.
