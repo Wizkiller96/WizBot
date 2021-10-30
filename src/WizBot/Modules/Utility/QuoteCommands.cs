@@ -205,7 +205,7 @@ namespace WizBot.Modules.Utility
             [RequireContext(ContextType.Guild)]
             public async Task QuoteDelete(int id)
             {
-                var isAdmin = ((IGuildUser)ctx.Message.Author).GuildPermissions.Administrator;
+                var isAdmin = ((IGuildUser)ctx.Message.Author).GuildPermissions.ManageMessages;
 
                 var success = false;
                 string response;
@@ -233,7 +233,7 @@ namespace WizBot.Modules.Utility
 
             [WizBotCommand, Aliases]
             [RequireContext(ContextType.Guild)]
-            [UserPerm(GuildPerm.Administrator)]
+            [UserPerm(GuildPerm.ManageMessages)]
             public async Task DelAllQuotes([Leftover] string keyword)
             {
                 if (string.IsNullOrWhiteSpace(keyword))
