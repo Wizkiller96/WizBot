@@ -252,7 +252,7 @@ namespace WizBot.Modules.Administration.Services
                 Log.Warning(
                     "No admin channels created! Make sure you've specified the correct AdminId in the creds.yml file and invited the bot to a Discord server.");
             else
-                Log.Information($"Created {adminChannels.Count} out of {_creds.AdminIds.Count} owner message channels.");
+                Log.Information($"Created {adminChannels.Count} out of {_creds.AdminIds.Count} admin message channels.");
         }
 
         public Task LeaveGuild(string guildStr) 
