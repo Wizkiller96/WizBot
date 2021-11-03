@@ -1,11 +1,9 @@
-﻿using System;
-using NadekoBot.Common.Yml;
+using System;
 
 namespace NadekoBot.Common
 {
-    public class ImageUrls
+    public class OldImageUrls
     {
-        [Comment("DO NOT CHANGE")]
         public int Version { get; set; } = 2;
 
         public CoinData Coins { get; set; }

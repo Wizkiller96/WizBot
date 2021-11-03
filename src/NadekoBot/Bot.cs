@@ -145,7 +145,8 @@ namespace NadekoBot
             
             svcs.Scan(scan => scan
                 .FromAssemblyOf<IReadyExecutor>()
-                .AddClasses(classes => classes.AssignableToAny(
+                .AddClasses(classes => classes
+                        .AssignableToAny(
                     // services
                     typeof(INService),
                     

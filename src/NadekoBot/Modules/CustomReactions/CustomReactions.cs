@@ -149,7 +149,7 @@ namespace NadekoBot.Modules.CustomReactions
                 await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
                     .WithDescription($"#{id}")
                     .AddField(GetText(strs.trigger), found.Trigger.TrimTo(1024))
-                    .AddField(GetText(strs.response), (found.Response + "\n```css\n" + found.Response).TrimTo(1020) + "```")
+                    .AddField(GetText(strs.response), found.Response.TrimTo(1000).Replace("](", "]\\("))
                     ).ConfigureAwait(false);
             }
         }
