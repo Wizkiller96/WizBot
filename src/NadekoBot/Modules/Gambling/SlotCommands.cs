@@ -9,12 +9,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using NadekoBot.Common;
 using NadekoBot.Common.Attributes;
+using NadekoBot.Db.Models;
 using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Services;
+using SixLabors.Fonts;
 using Image = SixLabors.ImageSharp.Image;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Drawing.Processing;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace NadekoBot.Modules.Gambling
 {
@@ -33,12 +37,16 @@ namespace NadekoBot.Modules.Gambling
             //thanks to judge for helping me with this
 
             private readonly IImageCache _images;
-            private readonly ICurrencyService _cs;
+            private FontProvider _fonts;
+            private readonly DbService _db;
 
-            public SlotCommands(IDataCache data, ICurrencyService cs, GamblingConfigService gamb) : base(gamb)
+            public SlotCommands(IDataCache data,
+                FontProvider fonts, DbService db,
+                GamblingConfigService gamb) : base(gamb)
             {
                 _images = data.LocalImages;
-                _cs = cs;
+                _fonts = fonts;
+                _db = db;
             }
 
             public sealed class SlotMachine
@@ -140,92 +148,115 @@ namespace NadekoBot.Modules.Gambling
             [NadekoCommand, Aliases]
             public async Task Slot(ShmartNumber amount)
             {
-                if (!_runningUsers.Add(ctx.User.Id))
+               if (!_runningUsers.Add(ctx.User.Id))
                     return;
-                try
-                {
-                    if (!await CheckBetMandatory(amount).ConfigureAwait(false))
-                        return;
-                    const int maxAmount = 9999;
-                    if (amount > maxAmount)
-                    {
-                        await ReplyErrorLocalizedAsync(strs.max_bet_limit(maxAmount + CurrencySign));
-                        return;
-                    }
+               
+               try
+               {
+                   if (!await CheckBetMandatory(amount).ConfigureAwait(false))
+                       return;
+                    
+                   await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
 
-                    if (!await _cs.RemoveAsync(ctx.User, "Slot Machine", amount, false, gamble: true).ConfigureAwait(false))
-                    {
-                        await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
-                        return;
-                    }
-                    Interlocked.Add(ref _totalBet, amount.Value);
-                    using (var bgImage = Image.Load(_images.SlotBackground))
-                    {
-                        var result = SlotMachine.Pull();
-                        int[] numbers = result.Numbers;
+                   var result = await _service.SlotAsync(ctx.User.Id, amount);
 
-                        for (int i = 0; i < 3; i++)
-                        {
-                            using (var randomImage = Image.Load(_images.SlotEmojis[numbers[i]]))
-                            {
-                                bgImage.Mutate(x => x.DrawImage(randomImage, new Point(95 + 142 * i, 330), new GraphicsOptions()));
-                            }
-                        }
+                   if (result.Error != GamblingError.None)
+                   {
+                       if (result.Error == GamblingError.NotEnough)
+                       {
+                           await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
+                       }
 
-                        var won = amount * result.Multiplier;
-                        var printWon = won;
-                        var n = 0;
-                        do
-                        {
-                            var digit = (int)(printWon % 10);
-                            using (var img = Image.Load(_images.SlotNumbers[digit]))
-                            {
-                                bgImage.Mutate(x => x.DrawImage(img, new Point(230 - n * 16, 462), new GraphicsOptions()));
-                            }
-                            n++;
-                        } while ((printWon /= 10) != 0);
+                       return;
+                   }
 
-                        var printAmount = amount;
-                        n = 0;
-                        do
-                        {
-                            var digit = (int)(printAmount % 10);
-                            using (var img = Image.Load(_images.SlotNumbers[digit]))
-                            {
-                                bgImage.Mutate(x => x.DrawImage(img, new Point(395 - n * 16, 462), new GraphicsOptions()));
-                            }
-                            n++;
-                        } while ((printAmount /= 10) != 0);
+                   Interlocked.Add(ref _totalBet, amount);
+                   Interlocked.Add(ref _totalPaidOut, result.Won);
 
-                        var msg = GetText(strs.better_luck);
-                        if (result.Multiplier != 0)
-                        {
-                            await _cs.AddAsync(ctx.User, $"Slot Machine x{result.Multiplier}", amount * result.Multiplier, false, gamble: true).ConfigureAwait(false);
-                            Interlocked.Add(ref _totalPaidOut, amount * result.Multiplier);
-                            if (result.Multiplier == 1)
-                                msg = GetText(strs.slot_single(CurrencySign, 1));
-                            else if (result.Multiplier == 4)
-                                msg = GetText(strs.slot_two(CurrencySign, 4));
-                            else if (result.Multiplier == 10)
-                                msg = GetText(strs.slot_three(10));
-                            else if (result.Multiplier == 30)
-                                msg = GetText(strs.slot_jackpot(30));
-                        }
+                   long ownedAmount;
+                   using (var uow = _db.GetDbContext())
+                   {
+                       ownedAmount = uow.Set<DiscordUser>()
+                           .FirstOrDefault(x => x.UserId == ctx.User.Id)
+                           ?.CurrencyAmount ?? 0;
+                   }
 
-                        using (var imgStream = bgImage.ToStream())
-                        {
-                            await ctx.Channel.SendFileAsync(imgStream, "result.png", ctx.User.Mention + " " + msg + $"\n`{GetText(strs.slot_bet)}:`{amount} `{GetText(strs.won)}:` {amount * result.Multiplier}{CurrencySign}").ConfigureAwait(false);
-                        }
-                    }
-                }
-                finally
-                {
-                    var _ = Task.Run(async () =>
-                    {
-                        await Task.Delay(1000).ConfigureAwait(false);
-                        _runningUsers.Remove(ctx.User.Id);
-                    });
-                }
+                   using (var bgImage = Image.Load<Rgba32>(_images.SlotBackground, out var format))
+                   {
+                       var numbers = new int[3];
+                       result.Rolls.CopyTo(numbers, 0);
+
+                       bgImage.Mutate(x => x.DrawText(new TextGraphicsOptions
+                           {
+                               TextOptions = new TextOptions()
+                               {
+                                   HorizontalAlignment = HorizontalAlignment.Center,
+                                   VerticalAlignment = VerticalAlignment.Center,
+                                   WrapTextWidth = 140,
+                               }
+                           }, result.Won.ToString(), _fonts.DottyFont.CreateFont(65), SixLabors.ImageSharp.Color.Red,
+                           new PointF(227, 92)));
+
+                       bgImage.Mutate(x => x.DrawText(new TextGraphicsOptions
+                           {
+                               TextOptions = new TextOptions()
+                               {
+                                   HorizontalAlignment = HorizontalAlignment.Center,
+                                   VerticalAlignment = VerticalAlignment.Center,
+                                   WrapTextWidth = 135,
+                               }
+                           }, amount.ToString(), _fonts.DottyFont.CreateFont(50), SixLabors.ImageSharp.Color.Red,
+                           new PointF(129, 472)));
+
+                       bgImage.Mutate(x => x.DrawText(new TextGraphicsOptions
+                           {
+                               TextOptions = new TextOptions()
+                               {
+                                   HorizontalAlignment = HorizontalAlignment.Center,
+                                   VerticalAlignment = VerticalAlignment.Center,
+                                   WrapTextWidth = 135,
+                               }
+                           }, ownedAmount.ToString(), _fonts.DottyFont.CreateFont(50), SixLabors.ImageSharp.Color.Red,
+                           new PointF(325, 472)));
+                       //sw.PrintLap("drew red text");
+
+                       for (var i = 0; i < 3; i++)
+                       {
+                           using (var img = Image.Load(_images.SlotEmojis[numbers[i]]))
+                           {
+                               bgImage.Mutate(x => x.DrawImage(img, new Point(148 + 105 * i, 217), 1f));
+                           }
+                       }
+
+                       var msg = GetText(strs.better_luck);
+                       if (result.Multiplier > 0)
+                       {
+                           if (result.Multiplier == 1f)
+                               msg = GetText(strs.slot_single(CurrencySign, 1));
+                           else if (result.Multiplier == 4f)
+                               msg = GetText(strs.slot_two(CurrencySign, 4));
+                           else if (result.Multiplier == 10f)
+                               msg = GetText(strs.slot_three(10));
+                           else if (result.Multiplier == 30f)
+                               msg = GetText(strs.slot_jackpot(30));
+                       }
+
+                       using (var imgStream = bgImage.ToStream())
+                       {
+                           await ctx.Channel.SendFileAsync(imgStream,
+                               filename: "result.png",
+                               text: Format.Bold(ctx.User.ToString()) + " " + msg).ConfigureAwait(false);
+                       }
+                   }
+               }
+               finally
+               {
+                   var _ = Task.Run(async () =>
+                   {
+                       await Task.Delay(1000).ConfigureAwait(false);
+                       _runningUsers.Remove(ctx.User.Id);
+                   });
+               }
             }
         }
     }

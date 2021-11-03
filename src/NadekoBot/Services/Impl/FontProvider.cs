@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace NadekoBot.Services
 {
@@ -48,7 +49,10 @@ namespace NadekoBot.Services
             }
 
             RipFont = NotoSans.CreateFont(20, FontStyle.Bold);
+            DottyFont = FallBackFonts.First(x => x.Name == "dotty");
         }
+
+        public FontFamily DottyFont { get; }
 
         public FontFamily UniSans { get; }
         public FontFamily NotoSans { get; }
