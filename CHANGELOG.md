@@ -4,7 +4,26 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
-## [3.0.7]
+## [3.0.8] - 03.11.2021
+
+### Added 
+- Created VotesApi project nad re-worked vote rewards handling
+  - Updated votes entries in creds.yml with explanations on how to set up vote links
+
+### Fixed
+- Fixed adding currency to users who don't exist in the database
+- Memory used by the bot is now correct (thanks to kotz)
+- Ban/kick will no longer fail due to too long reasons
+- Fixed some fields not preserving inline after string replacements
+
+### Changed
+- `images.json` moved to `images.yml`
+  - Links will use the new cdn url
+  - Heads and Tails images will be updated if you haven't changed them already
+- `.slot` redesigned (and updated entries in `images.yml`)
+- Reduced required permissions for .qdel (thanks to tbodt)
+
+## [3.0.7] 5.10.2021
 
 ### Added
 - `.streamsclear` re-added. It will remove all followed streams on the server.
