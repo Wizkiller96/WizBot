@@ -12,6 +12,8 @@ using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using NadekoBot.Db;
 using Serilog;
+using System.Threading;
+using System;
 
 namespace NadekoBot.Modules.Administration.Services
 {
@@ -20,6 +22,11 @@ namespace NadekoBot.Modules.Administration.Services
         private readonly DbService _db;
         private readonly DiscordSocketClient _client;
         private readonly ConcurrentDictionary<ulong, IndexedCollection<ReactionRoleMessage>> _models;
+
+        /// <summary>
+        /// Contains the (Message ID, User ID) of reaction roles that are currently being processed.
+        /// </summary>
+        private readonly ConcurrentHashSet<(ulong, ulong)> _reacting = new();
 
         public RoleCommandsService(DiscordSocketClient client, DbService db,
             Bot bot)
@@ -38,75 +45,58 @@ namespace NadekoBot.Modules.Administration.Services
 
         private Task _client_ReactionAdded(Cacheable<IUserMessage, ulong> msg, ISocketMessageChannel chan, SocketReaction reaction)
         {
-            var _ = Task.Run(async () =>
+            _ = Task.Run(async () =>
             {
-                try
+                if (!reaction.User.IsSpecified ||
+                    reaction.User.Value.IsBot ||
+                    reaction.User.Value is not SocketGuildUser gusr ||
+                    chan is not SocketGuildChannel gch ||
+                    !_models.TryGetValue(gch.Guild.Id, out var confs))
+                    return;
+
+                var conf = confs.FirstOrDefault(x => x.MessageId == msg.Id);
+
+                if (conf is null)
+                    return;
+
+                // compare emote names for backwards compatibility :facepalm:
+                var reactionRole = conf.ReactionRoles.FirstOrDefault(x => x.EmoteName == reaction.Emote.Name || x.EmoteName == reaction.Emote.ToString());
+
+                if (reactionRole != null)
                 {
-                    if (!reaction.User.IsSpecified ||
-                        reaction.User.Value.IsBot ||
-                        !(reaction.User.Value is SocketGuildUser gusr))
-                        return;
-
-                    if (!(chan is SocketGuildChannel gch))
-                        return;
-
-                    if (!_models.TryGetValue(gch.Guild.Id, out var confs))
-                        return;
-
-                    var conf = confs.FirstOrDefault(x => x.MessageId == msg.Id);
-
-                    if (conf is null)
-                        return;
-
-                    // compare emote names for backwards compatibility :facepalm:
-                    var reactionRole = conf.ReactionRoles.FirstOrDefault(x => x.EmoteName == reaction.Emote.Name || x.EmoteName == reaction.Emote.ToString());
-                    if (reactionRole != null)
+                    if (!conf.Exclusive)
                     {
-                        if (conf.Exclusive)
-                        {
-                            var roleIds = conf.ReactionRoles.Select(x => x.RoleId)
-                                .Where(x => x != reactionRole.RoleId)
-                                .Select(x => gusr.Guild.GetRole(x))
-                                .Where(x => x != null);
-
-                            var __ = Task.Run(async () =>
-                            {
-                                try
-                                {
-                                    //if the role is exclusive,
-                                    // remove all other reactions user added to the message
-                                    var dl = await msg.GetOrDownloadAsync().ConfigureAwait(false);
-                                    foreach (var r in dl.Reactions)
-                                    {
-                                        if (r.Key.Name == reaction.Emote.Name)
-                                            continue;
-                                        try { await dl.RemoveReactionAsync(r.Key, gusr).ConfigureAwait(false); } catch { }
-                                        await Task.Delay(100).ConfigureAwait(false);
-                                    }
-                                }
-                                catch { }
-                            });
-                            await gusr.RemoveRolesAsync(roleIds).ConfigureAwait(false);
-                        }
-
-                        var toAdd = gusr.Guild.GetRole(reactionRole.RoleId);
-                        if (toAdd != null && !gusr.Roles.Contains(toAdd))
-                        {
-                            await gusr.AddRolesAsync(new[] { toAdd }).ConfigureAwait(false);
-                        }
+                        await AddReactionRoleAsync(gusr, reactionRole);
+                        return;
                     }
-                    else
+
+                    // If same (message, user) are being processed in an exclusive rero, quit
+                    if (!_reacting.Add((msg.Id, reaction.UserId)))
+                        return;
+
+                    try
                     {
-                        var dl = await msg.GetOrDownloadAsync().ConfigureAwait(false);
-                        await dl.RemoveReactionAsync(reaction.Emote, dl.Author,
-                            new RequestOptions()
-                            {
-                                RetryMode = RetryMode.RetryRatelimit | RetryMode.Retry502
-                            }).ConfigureAwait(false);
-                        Log.Warning("User {0} is adding unrelated reactions to the reaction roles message.", dl.Author);
+                        var removeExclusiveTask = RemoveExclusiveReactionRoleAsync(msg, gusr, reaction, conf, reactionRole, CancellationToken.None);
+                        var addRoleTask = AddReactionRoleAsync(gusr, reactionRole);
+
+                        await Task.WhenAll(removeExclusiveTask, addRoleTask).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        // Free (message/user) for another exclusive rero
+                        _reacting.TryRemove((msg.Id, reaction.UserId));
                     }
                 }
-                catch { }
+                else
+                {
+                    var dl = await msg.GetOrDownloadAsync().ConfigureAwait(false);
+                    await dl.RemoveReactionAsync(reaction.Emote, dl.Author,
+                        new RequestOptions()
+                        {
+                            RetryMode = RetryMode.RetryRatelimit | RetryMode.Retry502
+                        }).ConfigureAwait(false);
+                    Log.Warning("User {0} is adding unrelated reactions to the reaction roles message.", dl.Author);
+                }
             });
 
             return Task.CompletedTask;
@@ -114,16 +104,16 @@ namespace NadekoBot.Modules.Administration.Services
 
         private Task _client_ReactionRemoved(Cacheable<IUserMessage, ulong> msg, ISocketMessageChannel chan, SocketReaction reaction)
         {
-            var _ = Task.Run(async () =>
+            _ = Task.Run(async () =>
             {
                 try
                 {
                     if (!reaction.User.IsSpecified ||
                         reaction.User.Value.IsBot ||
-                        !(reaction.User.Value is SocketGuildUser gusr))
+                        reaction.User.Value is not SocketGuildUser gusr)
                         return;
 
-                    if (!(chan is SocketGuildChannel gch))
+                    if (chan is not SocketGuildChannel gch)
                         return;
 
                     if (!_models.TryGetValue(gch.Guild.Id, out var confs))
@@ -191,6 +181,72 @@ namespace NadekoBot.Modules.Administration.Services
                     gc.ReactionRoleMessages,
                     delegate { return gc.ReactionRoleMessages; });
                 uow.SaveChanges();
+            }
+        }
+
+        /// <summary>
+        /// Adds a reaction role to the specified user.
+        /// </summary>
+        /// <param name="user">A Discord guild user.</param>
+        /// <param name="dbRero">The database settings of this reaction role.</param>
+        private Task AddReactionRoleAsync(SocketGuildUser user, ReactionRole dbRero)
+        {
+            var toAdd = user.Guild.GetRole(dbRero.RoleId);
+
+            return (toAdd != null && !user.Roles.Contains(toAdd))
+                ? user.AddRoleAsync(toAdd)
+                : Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Removes the exclusive reaction roles and reactions from the specified user.
+        /// </summary>
+        /// <param name="reactionMessage">The Discord message that contains the reaction roles.</param>
+        /// <param name="user">A Discord guild user.</param>
+        /// <param name="reaction">The Discord reaction of the user.</param>
+        /// <param name="dbReroMsg">The database entry of the reaction role message.</param>
+        /// <param name="dbRero">The database settings of this reaction role.</param>
+        /// <param name="cToken">A cancellation token to cancel the operation.</param>
+        /// <exception cref="OperationCanceledException">Occurs when the operation is cancelled before it began.</exception>
+        /// <exception cref="TaskCanceledException">Occurs when the operation is cancelled while it's still executing.</exception>
+        private Task RemoveExclusiveReactionRoleAsync(Cacheable<IUserMessage, ulong> reactionMessage, SocketGuildUser user, SocketReaction reaction, ReactionRoleMessage dbReroMsg, ReactionRole dbRero, CancellationToken cToken = default)
+        {
+            cToken.ThrowIfCancellationRequested();
+
+            var roleIds = dbReroMsg.ReactionRoles.Select(x => x.RoleId)
+                .Where(x => x != dbRero.RoleId)
+                .Select(x => user.Guild.GetRole(x))
+                .Where(x => x != null);
+
+            var removeReactionsTask = RemoveOldReactionsAsync(reactionMessage, user, reaction, cToken);
+
+            var removeRolesTask = user.RemoveRolesAsync(roleIds);
+
+            return Task.WhenAll(removeReactionsTask, removeRolesTask);
+        }
+
+        /// <summary>
+        /// Removes old reactions from an exclusive reaction role.
+        /// </summary>
+        /// <param name="reactionMessage">The Discord message that contains the reaction roles.</param>
+        /// <param name="user">A Discord guild user.</param>
+        /// <param name="reaction">The Discord reaction of the user.</param>
+        /// <param name="cToken">A cancellation token to cancel the operation.</param>
+        /// <exception cref="OperationCanceledException">Occurs when the operation is cancelled before it began.</exception>
+        /// <exception cref="TaskCanceledException">Occurs when the operation is cancelled while it's still executing.</exception>
+        private async Task RemoveOldReactionsAsync(Cacheable<IUserMessage, ulong> reactionMessage, SocketGuildUser user, SocketReaction reaction, CancellationToken cToken = default)
+        {
+            cToken.ThrowIfCancellationRequested();
+
+            //if the role is exclusive,
+            // remove all other reactions user added to the message
+            var dl = await reactionMessage.GetOrDownloadAsync().ConfigureAwait(false);
+            foreach (var r in dl.Reactions)
+            {
+                if (r.Key.Name == reaction.Emote.Name)
+                    continue;
+                try { await dl.RemoveReactionAsync(r.Key, user).ConfigureAwait(false); } catch { }
+                await Task.Delay(100, cToken).ConfigureAwait(false);
             }
         }
     }
