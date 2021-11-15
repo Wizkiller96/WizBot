@@ -21,7 +21,7 @@
 #### Prerequisites
 
 - Windows 8 or later (64-bit)
-- [Create a Discord Bot application and invite the bot to your server](../../creds-guide.md)
+- [Create a Discord Bot application and invite the bot to your server](../creds-guide.md)
 
 **Optional**
 
