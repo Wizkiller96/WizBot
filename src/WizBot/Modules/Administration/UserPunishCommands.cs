@@ -829,7 +829,7 @@ namespace WizBot.Modules.Administration
                 {
                     try
                     {
-                        await ctx.Guild.AddBanAsync(toBan.Id, 7);
+                        await ctx.Guild.AddBanAsync(toBan.Id, 7, $"{ctx.User} | Massban");
                     }
                     catch (Exception ex)
                     {
