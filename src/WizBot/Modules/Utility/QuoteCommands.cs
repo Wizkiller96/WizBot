@@ -115,9 +115,7 @@ namespace WizBot.Modules.Utility
                     .WithOkColor()
                     .WithTitle(GetText(strs.quote_id($"#{data.Id}")))
                     .AddField(GetText(strs.trigger), data.Keyword)
-                    .AddField(GetText(strs.response), data.Text.Length > 1000
-                        ? GetText(strs.redacted_too_long)
-                        : Format.Sanitize(data.Text))
+                    .AddField(GetText(strs.response), Format.Sanitize(data.Text).Replace("](", "]\\("))
                     .WithFooter(GetText(strs.created_by($"{data.AuthorName} ({data.AuthorId})")))
                 ).ConfigureAwait(false);
             }

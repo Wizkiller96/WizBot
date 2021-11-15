@@ -72,7 +72,7 @@ namespace WizBot
                 DefaultRunMode = RunMode.Sync,
             });
 
-#if GLOBAL_NADEKO || DEBUG
+#if GLOBAL_WIZBOT || DEBUG
             Client.Log += Client_Log;
 #endif
         }
@@ -112,11 +112,11 @@ namespace WizBot
                 // music
                 .AddMusic()
                 // admin
-#if GLOBAL_NADEKO
-                .AddSingleton<ILogCommandService, DummyLogCommandService>()
-#else
+//#if GLOBAL_WIZBOT
+                //.AddSingleton<ILogCommandService, DummyLogCommandService>()
+//#else
                 .AddSingleton<ILogCommandService, LogCommandService>()
-#endif
+//#endif
                 ;
 
             svcs.AddHttpClient();
@@ -145,7 +145,8 @@ namespace WizBot
             
             svcs.Scan(scan => scan
                 .FromAssemblyOf<IReadyExecutor>()
-                .AddClasses(classes => classes.AssignableToAny(
+                .AddClasses(classes => classes
+                        .AssignableToAny(
                     // services
                     typeof(INService),
                     
@@ -154,7 +155,7 @@ namespace WizBot
                     typeof(ILateBlocker),
                     typeof(IInputTransformer),
                     typeof(ILateExecutor))
-#if GLOBAL_NADEKO
+#if GLOBAL_WIZBOT
                     .WithoutAttribute<NoPublicBotAttribute>()
 #endif
                 )

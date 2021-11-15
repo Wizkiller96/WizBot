@@ -1,11 +1,9 @@
 ﻿using System;
-using WizBot.Common.Yml;
 
 namespace WizBot.Common
 {
-    public class ImageUrls
+    public class OldImageUrls
     {
-        [Comment("DO NOT CHANGE")]
         public int Version { get; set; } = 2;
 
         public CoinData Coins { get; set; }
