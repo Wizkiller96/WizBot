@@ -776,23 +776,32 @@ namespace WizBot.Modules.Administration
                     return;
 
                 var missing = new List<string>();
-                var banning = new HashSet<IGuildUser>();
+                var banning = new HashSet<IUser>();
 
                 await ctx.Channel.TriggerTypingAsync();
                 foreach (var userStr in userStrings)
                 {
                     if (ulong.TryParse(userStr, out var userId))
                     {
-                        var user = await ctx.Guild.GetUserAsync(userId) ?? 
+                        IUser user = await ctx.Guild.GetUserAsync(userId) ?? 
                             await ((DiscordSocketClient)Context.Client).Rest.GetGuildUserAsync(ctx.Guild.Id, userId);
 
                         if (user is null)
                         {
-                            missing.Add(userStr);
-                            continue;
+                            // if IGuildUser is null, try to get IUser
+                            user = await ((DiscordSocketClient)Context.Client).Rest.GetUserAsync(userId);
+
+                            // only add to missing if *still* null
+                            if (user is null)
+                            {
+                                missing.Add(userStr);
+                                continue;
+                            }
+                            
                         }
 
-                        if (!await CheckRoleHierarchy(user))
+                        //Hierachy checks only if the user is in the guild
+                        if (user is IGuildUser gu && !await CheckRoleHierarchy(gu))
                         {
                             return;
                         }
@@ -820,7 +829,7 @@ namespace WizBot.Modules.Administration
                 {
                     try
                     {
-                        await toBan.BanAsync(7);
+                        await ctx.Guild.AddBanAsync(toBan.Id, 7);
                     }
                     catch (Exception ex)
                     {
