@@ -138,14 +138,15 @@ WHERE UserId={userId};");
             // just update the amount, there is no new user data
             if (!updatedUserData)
             {
-                ctx.Database.ExecuteSqlInterpolated($@"
+                var rows = ctx.Database.ExecuteSqlInterpolated($@"
 UPDATE OR IGNORE DiscordUser
 SET CurrencyAmount=CurrencyAmount+{amount}
 WHERE UserId={userId};
 
-INSERT OR IGNORE INTO DiscordUser (UserId, Username, Discriminator, AvatarId, CurrencyAmount)
-VALUES ({userId}, {name}, {discrim}, {avatarId}, {amount});
+INSERT OR IGNORE INTO DiscordUser (UserId, Username, Discriminator, AvatarId, CurrencyAmount, TotalXp)
+VALUES ({userId}, {name}, {discrim}, {avatarId}, {amount}, 0);
 ");
+                
             }
             else
             {
@@ -157,8 +158,8 @@ SET CurrencyAmount=CurrencyAmount+{amount},
     AvatarId={avatarId}
 WHERE UserId={userId};
 
-INSERT OR IGNORE INTO DiscordUser (UserId, Username, Discriminator, AvatarId, CurrencyAmount)
-VALUES ({userId}, {name}, {discrim}, {avatarId}, {amount});
+INSERT OR IGNORE INTO DiscordUser (UserId, Username, Discriminator, AvatarId, CurrencyAmount, TotalXp)
+VALUES ({userId}, {name}, {discrim}, {avatarId}, {amount}, 0);
 ");
             }
             return true;
