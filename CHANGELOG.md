@@ -23,7 +23,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - `.slot` redesigned (and updated entries in `images.yml`)
 - Reduced required permissions for .qdel (thanks to tbodt)
 
-## [3.0.7] 5.10.2021
+## [3.0.7] - 5.10.2021
 
 ### Added
 - `.streamsclear` re-added. It will remove all followed streams on the server.
