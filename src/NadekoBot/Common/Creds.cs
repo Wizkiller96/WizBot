@@ -73,11 +73,6 @@ go to https://www.patreon.com/portal -> my clients -> create client")]
 Change only if you've changed the coordinator address or port.")]
         public string CoordinatorUrl { get; set; }
         
-        [YamlIgnore]
-        public string PatreonCampaignId => Patreon?.CampaignId;
-        [YamlIgnore]
-        public string PatreonAccessToken => Patreon?.AccessToken;
-        
         [Comment(@"Api key obtained on https://rapidapi.com (go to MyApps -> Add New App -> Enter Name -> Application key)")]
         public string RapidApiKey { get; set; }
 
@@ -121,11 +116,9 @@ Windows default
         // todo fixup patreon
         public sealed record PatreonSettings
         {
-            [Comment(@"Access token. You have to manually update this 1st of each month by refreshing the token on https://patreon.com/portal")]
+            public string ClientId { get; set; }
             public string AccessToken { get; set; }
-            [Comment(@"Unused atm")]
             public string RefreshToken { get; set; }
-            [Comment(@"Unused atm")]
             public string ClientSecret { get; set; }
 
             [Comment(@"Campaign ID of your patreon page. Go to your patreon page (make sure you're logged in) and type ""prompt('Campaign ID', window.patreon.bootstrap.creator.data.id);"" in the console. (ctrl + shift + i)")]

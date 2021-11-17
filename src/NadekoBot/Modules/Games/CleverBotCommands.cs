@@ -2,6 +2,7 @@
 using Discord.Commands;
 using System;
 using System.Threading.Tasks;
+using NadekoBot.Common;
 using NadekoBot.Common.Attributes;
 using NadekoBot.Services;
 using NadekoBot.Db;
@@ -23,6 +24,7 @@ namespace NadekoBot.Modules.Games
                 _db = db;
             }
 
+            [NoPublicBot]
             [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageMessages)]
