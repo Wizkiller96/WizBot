@@ -28,7 +28,7 @@ namespace NadekoBot
         private readonly IBotCredentials _creds;
         private readonly CommandService _commandService;
         private readonly DbService _db;
-        private readonly BotCredsProvider _credsProvider;
+        private readonly IBotCredsProvider _credsProvider;
         
         public event Func<GuildConfig, Task> JoinedGuild = delegate { return Task.CompletedTask; };
         
@@ -95,8 +95,8 @@ namespace NadekoBot
             }
             
             var svcs = new ServiceCollection()
-                .AddTransient<IBotCredentials>(_ => _creds) // bot creds
-                .AddSingleton(_credsProvider)
+                .AddTransient<IBotCredentials>(_ => _credsProvider.GetCreds()) // bot creds
+                .AddSingleton<IBotCredsProvider>(_credsProvider)
                 .AddSingleton(_db) // database
                 .AddRedis(_creds.RedisOptions) // redis
                 .AddSingleton(Client) // discord socket client

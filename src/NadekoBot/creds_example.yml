@@ -31,11 +31,9 @@ votes:
 # Patreon auto reward system settings.
 # go to https://www.patreon.com/portal -> my clients -> create client
 patreon:
-# Access token. You have to manually update this 1st of each month by refreshing the token on https://patreon.com/portal
+  clientId: 
   accessToken: ''
-  # Unused atm
   refreshToken: ''
-  # Unused atm
   clientSecret: ''
   # Campaign ID of your patreon page. Go to your patreon page (make sure you're logged in) and type "prompt('Campaign ID', window.patreon.bootstrap.creator.data.id);" in the console. (ctrl + shift + i)
   campaignId: ''

@@ -4,6 +4,16 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+### Added
+  - Patreon Access and Refresh Tokens should now be automatically updated once a month as long as the user has provided the necessary credentials in creds.yml file:
+    - `Patreon.ClientId`
+    - `Patreon.RefreshToken` (will also get updated once a month but needs an initial value)
+    - `Patreon.ClientSecret`
+    - `Patreon.CampaignId`
+
+### Fixed
+- Fixed an error that would show up in the console when a club image couldn't be drawn in certain circumstances
+
 ## [3.0.8] - 03.11.2021
 
 ### Added 
@@ -23,7 +33,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - `.slot` redesigned (and updated entries in `images.yml`)
 - Reduced required permissions for .qdel (thanks to tbodt)
 
-## [3.0.7] - 5.10.2021
+## [3.0.7] - 05.10.2021
 
 ### Added
 - `.streamsclear` re-added. It will remove all followed streams on the server.

@@ -2,17 +2,21 @@
 using NadekoBot.Services;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Modules.Utility.Common.Patreon;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using Discord;
 using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Extensions;
 using Serilog;
+using StackExchange.Redis;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace NadekoBot.Modules.Utility.Services
 {
@@ -20,96 +24,195 @@ namespace NadekoBot.Modules.Utility.Services
     {
         private readonly SemaphoreSlim getPledgesLocker = new SemaphoreSlim(1, 1);
 
-        private PatreonUserAndReward[] _pledges;
-
         private readonly Timer _updater;
         private readonly SemaphoreSlim claimLockJustInCase = new SemaphoreSlim(1, 1);
         
         public TimeSpan Interval { get; } = TimeSpan.FromMinutes(3);
-        private readonly IBotCredentials _creds;
         private readonly DbService _db;
         private readonly ICurrencyService _currency;
         private readonly GamblingConfigService _gamblingConfigService;
+        private readonly ConnectionMultiplexer _redis;
+        private readonly IBotCredsProvider _credsProvider;
         private readonly IHttpClientFactory _httpFactory;
         private readonly IEmbedBuilderService _eb;
         private readonly DiscordSocketClient _client;
 
         public DateTime LastUpdate { get; private set; } = DateTime.UtcNow;
 
-        public PatreonRewardsService(IBotCredentials creds, DbService db,
-            ICurrencyService currency, IHttpClientFactory factory, IEmbedBuilderService eb,
-            DiscordSocketClient client, GamblingConfigService gamblingConfigService)
+        public PatreonRewardsService(
+            DbService db,
+            ICurrencyService currency,
+            IHttpClientFactory factory,
+            IEmbedBuilderService eb,
+            DiscordSocketClient client,
+            GamblingConfigService gamblingConfigService,
+            ConnectionMultiplexer redis,
+            IBotCredsProvider credsProvider)
         {
-            _creds = creds;
             _db = db;
             _currency = currency;
             _gamblingConfigService = gamblingConfigService;
+            _redis = redis;
+            _credsProvider = credsProvider;
             _httpFactory = factory;
             _eb = eb;
             _client = client;
 
             if (client.ShardId == 0)
-                _updater = new Timer(async _ => await RefreshPledges().ConfigureAwait(false),
+                _updater = new Timer(async _ => await RefreshPledges(_credsProvider.GetCreds()).ConfigureAwait(false),
                     null, TimeSpan.Zero, Interval);
         }
 
-        public async Task RefreshPledges()
+        private DateTime LastAccessTokenUpdate(IBotCredentials creds)
         {
-            if (string.IsNullOrWhiteSpace(_creds.PatreonAccessToken)
-                || string.IsNullOrWhiteSpace(_creds.PatreonAccessToken))
-                return;
+            var db = _redis.GetDatabase();
+            var val = db.StringGet($"{creds.RedisKey()}_patreon_update");
 
+            if (val == default)
+                return DateTime.MinValue;
+
+            var lastTime = DateTime.FromBinary((long)val);
+            return lastTime;
+        }
+
+
+        private sealed class PatreonRefreshData
+        {
+            [JsonPropertyName("access_token")]
+            public string AccessToken { get; set; }
+            
+            [JsonPropertyName("refresh_token")]
+            public string RefreshToken { get; set; }
+            
+            [JsonPropertyName("expires_in")]
+            public long ExpiresIn { get; set; }
+            
+            [JsonPropertyName("scope")]
+            public string Scope { get; set; }
+            
+            [JsonPropertyName("token_type")]
+            public string TokenType { get; set; }
+        }
+        
+        private async Task<bool> UpdateAccessToken(IBotCredentials creds)
+        {
+            Log.Information("Updating patreon access token...");
+            try
+            {
+                using var http = _httpFactory.CreateClient();
+                var res = await http.PostAsync($"https://www.patreon.com/api/oauth2/token" +
+                                               $"?grant_type=refresh_token" +
+                                               $"&refresh_token={creds.Patreon.RefreshToken}" +
+                                               $"&client_id={creds.Patreon.ClientId}" +
+                                               $"&client_secret={creds.Patreon.ClientSecret}",
+                    new StringContent(string.Empty));
+
+                res.EnsureSuccessStatusCode();
+
+                var data = await res.Content.ReadFromJsonAsync<PatreonRefreshData>();
+
+                if (data is null)
+                    throw new("Invalid patreon response.");
+                
+                _credsProvider.ModifyCredsFile(oldData =>
+                {
+                    oldData.Patreon.AccessToken = data.AccessToken;
+                    oldData.Patreon.RefreshToken = data.RefreshToken;
+                });
+
+                var db = _redis.GetDatabase();
+                await db.StringSetAsync($"{creds.RedisKey()}_patreon_update", DateTime.UtcNow.ToBinary());
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Failed updating patreon access token: {ErrorMessage}", ex.ToString());
+                return false;
+            }
+        }
+
+        private bool HasPatreonCreds(IBotCredentials creds)
+        {
+            var _1 = creds.Patreon.ClientId;
+            var _2 = creds.Patreon.ClientSecret;
+            var _4 = creds.Patreon.RefreshToken;
+            return !(string.IsNullOrWhiteSpace(_1)
+                     || string.IsNullOrWhiteSpace(_2)
+                     || string.IsNullOrWhiteSpace(_4));
+        }
+
+        public async Task RefreshPledges(IBotCredentials creds)
+        {
             if (DateTime.UtcNow.Day < 5)
                 return;
+
+            // if the user has the necessary patreon creds
+            // and the access token expired or doesn't exist
+            // -> update access token
+            if (!HasPatreonCreds(creds))
+                return;
+
+            if (LastAccessTokenUpdate(creds).Month < DateTime.UtcNow.Month
+                || string.IsNullOrWhiteSpace(creds.Patreon.AccessToken))
+            {
+                var success = await UpdateAccessToken(creds);
+                if (!success)
+                    return;
+            }
 
             LastUpdate = DateTime.UtcNow;
             await getPledgesLocker.WaitAsync().ConfigureAwait(false);
             try
             {
-                var rewards = new List<PatreonPledge>();
+                
+                var members = new List<PatreonMember>();
                 var users = new List<PatreonUser>();
                 using (var http = _httpFactory.CreateClient())
                 {
                     http.DefaultRequestHeaders.Clear();
-                    http.DefaultRequestHeaders.Add("Authorization", "Bearer " + _creds.PatreonAccessToken);
-                    var data = new PatreonData()
-                    {
-                        Links = new PatreonDataLinks()
-                        {
-                            next = $"https://api.patreon.com/oauth2/api/campaigns/{_creds.PatreonCampaignId}/pledges"
-                        }
-                    };
+                    http.DefaultRequestHeaders.TryAddWithoutValidation("Authorization",
+                        $"Bearer {creds.Patreon.AccessToken}");
+
+                    var page = $"https://www.patreon.com/api/oauth2/v2/campaigns/{creds.Patreon.CampaignId}/members" +
+                               "?fields%5Bmember%5D=full_name,currently_entitled_amount_cents" +
+                               "&fields%5Buser%5D=social_connections" +
+                               "&include=user";
+                    PatreonResponse data = null;
                     do
                     {
-                        var res = await http.GetStringAsync(data.Links.next)
-                            .ConfigureAwait(false);
-                        data = JsonConvert.DeserializeObject<PatreonData>(res);
-                        var pledgers = data.Data.Where(x => x["type"].ToString() == "pledge");
-                        rewards.AddRange(pledgers.Select(x => JsonConvert.DeserializeObject<PatreonPledge>(x.ToString()))
-                            .Where(x => x.attributes.declined_since is null));
-                        if (data.Included != null)
-                        {
-                            users.AddRange(data.Included
-                                .Where(x => x["type"].ToString() == "user")
-                                .Select(x => JsonConvert.DeserializeObject<PatreonUser>(x.ToString())));
-                        }
-                    } while (!string.IsNullOrWhiteSpace(data.Links.next));
+                        var res = await http.GetStringAsync(page).ConfigureAwait(false);
+                        data = JsonSerializer.Deserialize<PatreonResponse>(res);
+
+                        if (data is null)
+                            break;
+                        
+                        members.AddRange(data.Data);
+                        users.AddRange(data.Included);
+                    } while (!string.IsNullOrWhiteSpace(page = data?.Links?.Next));
                 }
-                var toSet = rewards.Join(users, (r) => r.relationships?.patron?.data?.id, (u) => u.id, (x, y) => new PatreonUserAndReward()
-                {
-                    User = y,
-                    Reward = x,
-                }).ToArray();
 
-                _pledges = toSet;
-
-                foreach (var pledge in _pledges)
-                {
-                    var userIdStr = pledge.User.attributes?.social_connections?.discord?.user_id;
-                    if (userIdStr != null && ulong.TryParse(userIdStr, out var userId))
+                var userData = members.Join(users,
+                    (m) => m.Relationships.User.Data.Id,
+                    (u) => u.Id,
+                    (m, u) => new
                     {
-                        await ClaimReward(userId);
-                    }
+                        PatreonUserId = m.Relationships.User.Data.Id,
+                        UserId = ulong.TryParse(u.Attributes?.SocialConnections?.Discord?.UserId ?? string.Empty,
+                            out var userId)
+                            ? userId
+                            : 0,
+                        EntitledTo = m.Attributes.CurrentlyEntitledAmountCents,
+                    })
+                    .Where(x => x is
+                    {
+                        UserId: not 0,
+                        EntitledTo: > 0
+                    })
+                    .ToList();
+
+                foreach (var pledge in userData)
+                {
+                    await ClaimReward(pledge.UserId, pledge.PatreonUserId, pledge.EntitledTo);
                 }
             }
             catch (Exception ex)
@@ -123,80 +226,73 @@ namespace NadekoBot.Modules.Utility.Services
 
         }
 
-        public async Task<int> ClaimReward(ulong userId)
+        public async Task<int> ClaimReward(ulong userId, string patreonUserId, int cents)
         {
             await claimLockJustInCase.WaitAsync().ConfigureAwait(false);
             var settings = _gamblingConfigService.Data;
             var now = DateTime.UtcNow;
             try
             {
-                var datas = _pledges?.Where(x => x.User.attributes?.social_connections?.discord?.user_id == userId.ToString())
-                    ?? Enumerable.Empty<PatreonUserAndReward>();
+                var eligibleFor = (int)(cents * settings.PatreonCurrencyPerCent);
 
-                var totalAmount = 0;
-                foreach (var data in datas)
+                using (var uow = _db.GetDbContext())
                 {
-                    var amount = (int)(data.Reward.attributes.amount_cents * settings.PatreonCurrencyPerCent);
+                    var users = uow.Set<RewardedUser>();
+                    var usr = await users.FirstOrDefaultAsync(x => x.PatreonUserId == patreonUserId);
 
-                    using (var uow = _db.GetDbContext())
+                    if (usr is null)
                     {
-                        var users = uow.Set<RewardedUser>();
-                        var usr = users.FirstOrDefault(x => x.PatreonUserId == data.User.id);
-
-                        if (usr is null)
+                        users.Add(new RewardedUser()
                         {
-                            users.Add(new RewardedUser()
-                            {
-                                PatreonUserId = data.User.id,
-                                LastReward = now,
-                                AmountRewardedThisMonth = amount,
-                            });
+                            PatreonUserId = patreonUserId,
+                            LastReward = now,
+                            AmountRewardedThisMonth = eligibleFor,
+                        });
 
-                            await uow.SaveChangesAsync();
+                        await uow.SaveChangesAsync();
 
-                            await _currency.AddAsync(userId, "Patreon reward - new", amount, gamble: true);
-                            totalAmount += amount;
-                            
-                            Log.Information($"Sending new currency reward to {userId}");
-                            await SendMessageToUser(userId, $"Thank you for your pledge! " +
-                                                            $"You've been awarded **{amount}**{settings.Currency.Sign} !");
-                            continue;
-                        }
-
-                        if (usr.LastReward.Month != now.Month)
-                        {
-                            usr.LastReward = now;
-                            usr.AmountRewardedThisMonth = amount;
-
-                            await uow.SaveChangesAsync();
-
-                            await _currency.AddAsync(userId, "Patreon reward - recurring", amount, gamble: true);
-                            totalAmount += amount;
-                            Log.Information($"Sending recurring currency reward to {userId}");
-                            await SendMessageToUser(userId, $"Thank you for your continued support! " +
-                                                            $"You've been awarded **{amount}**{settings.Currency.Sign} for this month's support!");
-                            continue;
-                        }
-
-                        if (usr.AmountRewardedThisMonth < amount)
-                        {
-                            var toAward = amount - usr.AmountRewardedThisMonth;
-
-                            usr.LastReward = now;
-                            usr.AmountRewardedThisMonth = amount;
-                            await uow.SaveChangesAsync();
-
-                            await _currency.AddAsync(userId, "Patreon reward - update", toAward, gamble: true);
-                            totalAmount += toAward;
-                            Log.Information($"Sending updated currency reward to {userId}");
-                            await SendMessageToUser(userId, $"Thank you for increasing your pledge! " +
-                                $"You've been awarded an additional **{toAward}**{settings.Currency.Sign} !");
-                            continue;
-                        }
+                        await _currency.AddAsync(userId, "Patreon reward - new", eligibleFor, gamble: true);
+                        
+                        Log.Information($"Sending new currency reward to {userId}");
+                        await SendMessageToUser(userId, $"Thank you for your pledge! " +
+                                                        $"You've been awarded **{eligibleFor}**{settings.Currency.Sign} !");
+                        return eligibleFor;
                     }
-                }
 
-                return totalAmount;
+                    if (usr.LastReward.Month != now.Month)
+                    {
+                        usr.LastReward = now;
+                        usr.AmountRewardedThisMonth = eligibleFor;
+
+                        await uow.SaveChangesAsync();
+
+                        await _currency.AddAsync(userId, "Patreon reward - recurring", eligibleFor, gamble: true);
+
+                        Log.Information($"Sending recurring currency reward to {userId}");
+                        await SendMessageToUser(userId, $"Thank you for your continued support! " +
+                                                        $"You've been awarded **{eligibleFor}**{settings.Currency.Sign} for this month's support!");
+
+                        return eligibleFor;
+                    }
+
+                    if (usr.AmountRewardedThisMonth < eligibleFor)
+                    {
+                        var toAward = eligibleFor - usr.AmountRewardedThisMonth;
+
+                        usr.LastReward = now;
+                        usr.AmountRewardedThisMonth = toAward;
+                        await uow.SaveChangesAsync();
+
+                        await _currency.AddAsync(userId, "Patreon reward - update", toAward, gamble: true);
+                        
+                        Log.Information($"Sending updated currency reward to {userId}");
+                        await SendMessageToUser(userId, $"Thank you for increasing your pledge! " +
+                                                        $"You've been awarded an additional **{toAward}**{settings.Currency.Sign} !");
+                        return toAward;
+                    }
+
+                    return 0;
+                }
             }
             finally
             {

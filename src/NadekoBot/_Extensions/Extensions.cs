@@ -357,7 +357,7 @@ namespace NadekoBot.Extensions
 
         public static bool IsImage(this HttpResponseMessage msg, out string mimeType)
         {
-            mimeType = msg.Content.Headers.ContentType.MediaType;
+            mimeType = msg.Content.Headers.ContentType?.MediaType;
             if (mimeType == "image/png"
                     || mimeType == "image/jpeg"
                     || mimeType == "image/gif")

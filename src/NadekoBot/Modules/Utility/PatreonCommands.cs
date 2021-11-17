@@ -6,6 +6,7 @@ using NadekoBot.Extensions;
 using Discord;
 using NadekoBot.Common.Attributes;
 using NadekoBot.Modules.Utility.Services;
+using Serilog;
 
 namespace NadekoBot.Modules.Utility
 {
@@ -25,8 +26,12 @@ namespace NadekoBot.Modules.Utility
             [RequireContext(ContextType.DM)]
             public async Task ClaimPatreonRewards()
             {
-                if (string.IsNullOrWhiteSpace(_creds.PatreonAccessToken))
+                if (string.IsNullOrWhiteSpace(_creds.Patreon.AccessToken))
+                {
+                    Log.Warning("In order to use patreon reward commands, " +
+                                "you need to specify CampaignId and AccessToken in creds.yml");
                     return;
+                }
 
                 if (DateTime.UtcNow.Day < 5)
                 {
