@@ -16,6 +16,7 @@ namespace NadekoBot.Migrations
             migrationBuilder.Sql("DELETE FROM FilteredWord WHERE GuildConfigId NOT IN (SELECT Id from GuildConfigs)");
             migrationBuilder.Sql("DELETE FROM FilterChannelId WHERE GuildConfigId NOT IN (SELECT Id from GuildConfigs)");
             migrationBuilder.Sql("DELETE FROM CommandCooldown WHERE GuildConfigId NOT IN (SELECT Id from GuildConfigs)");
+            migrationBuilder.Sql("DELETE FROM WaifuInfo where WaifuId not in (SELECT Id from DiscordUser);");
             
             migrationBuilder.DropColumn(
                 name: "ChannelCreated",
