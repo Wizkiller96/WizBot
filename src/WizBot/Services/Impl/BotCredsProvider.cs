@@ -10,7 +10,14 @@ using Serilog;
 
 namespace WizBot.Services
 {
-    public sealed class BotCredsProvider
+    public interface IBotCredsProvider
+    {
+        public void Reload();
+        public IBotCredentials GetCreds();
+        public void ModifyCredsFile(Action<Creds> func);
+    }
+    
+    public sealed class BotCredsProvider : IBotCredsProvider
     {
         private readonly int? _totalShards;
         private const string _credsFileName = "creds.yml";
@@ -27,7 +34,7 @@ namespace WizBot.Services
         
 
         private readonly object reloadLock = new object();
-        private void Reload()
+        public void Reload()
         {
             lock (reloadLock)
             {
@@ -102,6 +109,19 @@ namespace WizBot.Services
             
             Reload();
         }
+        
+        public void ModifyCredsFile(Action<Creds> func)
+        {
+            var ymlData = File.ReadAllText(_credsFileName);
+            var creds = Yaml.Deserializer.Deserialize<Creds>(ymlData);
+
+            func(creds);
+
+            ymlData = Yaml.Serializer.Serialize(creds);
+            File.WriteAllText(_credsFileName, ymlData);
+            
+            Reload();
+        }
 
         /// <summary>
         /// Checks if there's a V2 credentials file present, loads it if it exists,
@@ -159,6 +179,6 @@ namespace WizBot.Services
             
         }
 
-        public Creds GetCreds() => _creds;
+        public IBotCredentials GetCreds() => _creds;
     }
 }

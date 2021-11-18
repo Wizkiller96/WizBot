@@ -12,7 +12,7 @@ namespace WizBot.Common.Attributes
     {
         public override Task<PreconditionResult> CheckPermissionsAsync(ICommandContext context, CommandInfo executingCommand, IServiceProvider services)
         {
-            var creds = services.GetRequiredService<BotCredsProvider>().GetCreds();
+            var creds = services.GetRequiredService<IBotCredsProvider>().GetCreds();
 
             return Task.FromResult((creds.IsOwner(context.User) || creds.IsAdmin(context.User) || context.Client.CurrentUser.Id == context.User.Id ? PreconditionResult.FromSuccess() : PreconditionResult.FromError("Not bot owner or bot admin")));
         }

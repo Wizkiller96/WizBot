@@ -2,6 +2,7 @@
 using Discord.Commands;
 using System;
 using System.Threading.Tasks;
+using WizBot.Common;
 using WizBot.Common.Attributes;
 using WizBot.Services;
 using WizBot.Db;
@@ -23,6 +24,7 @@ namespace WizBot.Modules.Games
                 _db = db;
             }
 
+            [NoPublicBot]
             [WizBotCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.ManageMessages)]

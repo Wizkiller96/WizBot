@@ -13,12 +13,11 @@ namespace WizBot
         ICollection<ulong> OwnerIds { get; }
         ICollection<ulong> AdminIds { get; }
         string RapidApiKey { get; }
-        string PatreonAccessToken { get; }
 
         Creds.DbOptions Db { get; }
         string OsuApiKey { get; }
         int TotalShards { get; }
-        string PatreonCampaignId { get; }
+        Creds.PatreonSettings Patreon { get; }
         string CleverbotApiKey { get; }
         RestartConfig RestartCommand { get; }
         Creds.VotesSettings Votes { get; }
