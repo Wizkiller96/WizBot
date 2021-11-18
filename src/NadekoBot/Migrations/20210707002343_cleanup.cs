@@ -16,7 +16,12 @@ namespace NadekoBot.Migrations
             migrationBuilder.Sql("DELETE FROM FilteredWord WHERE GuildConfigId NOT IN (SELECT Id from GuildConfigs)");
             migrationBuilder.Sql("DELETE FROM FilterChannelId WHERE GuildConfigId NOT IN (SELECT Id from GuildConfigs)");
             migrationBuilder.Sql("DELETE FROM CommandCooldown WHERE GuildConfigId NOT IN (SELECT Id from GuildConfigs)");
+            
+            // fix for users who edited their waifuinfo table manually and are unable to update
             migrationBuilder.Sql("DELETE FROM WaifuInfo where WaifuId not in (SELECT Id from DiscordUser);");
+            
+            // fix for users who deleted clubs manually and are unable to update now
+            migrationBuilder.Sql("UPDATE DiscordUser SET ClubId = null WHERE ClubId is not null and ClubId not in (SELECT Id from Clubs);");
             
             migrationBuilder.DropColumn(
                 name: "ChannelCreated",
