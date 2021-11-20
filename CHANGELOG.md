@@ -6,6 +6,9 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## [3.0.9] - 21.11.2021
 
+### Changed
+- `.ea` will now use an image attachments if you omit imageUrl
+
 ### Added
 - Added `.emojiadd` with 3 overloads
   - `.ea :customEmoji:` which copies another server's emoji 
