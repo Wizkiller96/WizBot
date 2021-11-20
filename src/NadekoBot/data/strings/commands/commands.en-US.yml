@@ -1195,6 +1195,16 @@ showemojis:
   desc: "Shows a name and a link to every SPECIAL emoji in the message."
   args:
     - "A message full of SPECIAL emojis"
+emojiadd:
+  desc: |-
+    Adds the specified emoji to this server.
+    You can specify a name before the emoji to add it under a different name.
+    You can specify a name followed by an image link to add a new emoji from an image.
+    Image size has to be below 256KB.
+  args:
+    - ":someonesCustomEmoji:"
+    - "MyEmojiName :someonesCustomEmoji:"
+    - "owoNice https://cdn.discordapp.com/emojis/587930873811173386.png?size=128"
 deckshuffle:
   desc: "Reshuffles all cards back into the deck."
   args:
