@@ -8,5 +8,6 @@
         public bool Forgiven { get; set; }
         public string ForgivenBy { get; set; }
         public string Moderator { get; set; }
+        public int Weight { get; set; }
     }
 }

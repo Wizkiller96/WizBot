@@ -41,8 +41,11 @@ namespace NadekoBot.Modules.Administration.Services
             }, null, TimeSpan.FromSeconds(0), TimeSpan.FromHours(12));
         }
 
-        public async Task<WarningPunishment> Warn(IGuild guild, ulong userId, IUser mod, string reason)
+        public async Task<WarningPunishment> Warn(IGuild guild, ulong userId, IUser mod, int weight, string reason)
         {
+            if (weight <= 0)
+                throw new ArgumentOutOfRangeException(nameof(weight));
+            
             var modName = mod.ToString();
 
             if (string.IsNullOrWhiteSpace(reason))
@@ -57,6 +60,7 @@ namespace NadekoBot.Modules.Administration.Services
                 Forgiven = false,
                 Reason = reason,
                 Moderator = modName,
+                Weight = weight,
             };
 
             int warnings = 1;
@@ -70,7 +74,7 @@ namespace NadekoBot.Modules.Administration.Services
                     .Warnings
                     .ForId(guildId, userId)
                     .Where(w => !w.Forgiven && w.UserId == userId)
-                    .Count();
+                    .Sum(x => x.Weight);
 
                 uow.Warnings.Add(warn);
 

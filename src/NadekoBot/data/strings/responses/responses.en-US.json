@@ -665,6 +665,8 @@
   "warning_clear_fail": "Warning not cleared. Either the warning at that index doesn't exist, or it has already been cleared.",
   "warning_cleared": "Warning {0} has been cleared for {1}.",
   "warnings_none": "No warning on this page.",
+  "warn_weight": "Weight: {0}",
+  "warn_count": "{0} current, {1} total",
   "warnlog_for": "Warnlog for {0}",
   "warnpl_none": "No punishments set.",
   "warn_expire_set_delete": "Warnings will be deleted after {0} days.",

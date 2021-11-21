@@ -4,6 +4,10 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+### Changed
+- `.warn` now supports weighted warnings
+- `.warnlog` will now show current amount and total amount of warnings
+
 ## [3.0.9] - 21.11.2021
 
 ### Changed

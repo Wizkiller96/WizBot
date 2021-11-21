@@ -54,8 +54,17 @@ namespace NadekoBot.Modules.Administration
             [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
             [UserPerm(GuildPerm.BanMembers)]
-            public async Task Warn(IGuildUser user, [Leftover] string reason = null)
+            public Task Warn(IGuildUser user, [Leftover] string reason = null)
+                => Warn(1, user, reason);
+            
+            [NadekoCommand, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [UserPerm(GuildPerm.BanMembers)]
+            public async Task Warn(int weight, IGuildUser user, [Leftover] string reason = null)
             {
+                if (weight <= 0)
+                    return;
+                
                 if (!await CheckRoleHierarchy(user))
                     return;
 
@@ -76,7 +85,7 @@ namespace NadekoBot.Modules.Administration
                 WarningPunishment punishment;
                 try
                 {
-                    punishment = await _service.Warn(ctx.Guild, user.Id, ctx.User, reason).ConfigureAwait(false);
+                    punishment = await _service.Warn(ctx.Guild, user.Id, ctx.User, weight, reason).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -230,19 +239,29 @@ namespace NadekoBot.Modules.Administration
                     }
                     else
                     {
+                        var descText = GetText(strs.warn_count(
+                            Format.Bold(warnings.Where(x => !x.Forgiven).Sum(x => x.Weight).ToString()),
+                            Format.Bold(warnings.Sum(x => x.Weight).ToString())));
+                        
+                        embed.WithDescription(descText);
+                        
                         var i = page * 9;
                         foreach (var w in warnings)
                         {
                             i++;
                             var name = GetText(strs.warned_on_by(
-                                w.DateAdded.Value.ToString("dd.MM.yyy"),
-                                w.DateAdded.Value.ToString("HH:mm"),
+                                w.DateAdded?.ToString("dd.MM.yyy"),
+                                w.DateAdded?.ToString("HH:mm"),
                                 w.Moderator));
                             
                             if (w.Forgiven)
                                 name = $"{Format.Strikethrough(name)} {GetText(strs.warn_cleared_by(w.ForgivenBy))}";
 
-                            embed.AddField($"#`{i}` " + name, w.Reason.TrimTo(1020));
+                            
+                            embed.AddField($"#`{i}` " + name,
+                                Format.Code(GetText(strs.warn_weight(w.Weight))) + 
+                                '\n' +
+                                w.Reason.TrimTo(1000));
                         }
                     }
 
