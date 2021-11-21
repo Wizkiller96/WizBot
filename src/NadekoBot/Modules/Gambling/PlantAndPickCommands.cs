@@ -8,6 +8,7 @@ using NadekoBot.Modules.Gambling.Services;
 using System.Linq;
 using System.Threading.Tasks;
 using NadekoBot.Modules.Gambling.Common;
+using NadekoBot.Common;
 
 namespace NadekoBot.Modules.Gambling
 {
@@ -53,7 +54,7 @@ namespace NadekoBot.Modules.Gambling
 
             [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
-            public async Task Plant(int amount = 1, string pass = null)
+            public async Task Plant(ShmartNumber amount, string pass = null)
             {
                 if (amount < 1)
                     return;
@@ -63,17 +64,16 @@ namespace NadekoBot.Modules.Gambling
                     return;
                 }
 
-                var success = await _service.PlantAsync(ctx.Guild.Id, ctx.Channel, ctx.User.Id, ctx.User.ToString(), amount, pass);
-                if (!success)
-                {
-                    await ReplyErrorLocalizedAsync(strs.not_enough( CurrencySign));
-                    return;
-                }
-
                 if (((SocketGuild)ctx.Guild).CurrentUser.GuildPermissions.ManageMessages)
                 {
                     logService.AddDeleteIgnore(ctx.Message.Id);
                     await ctx.Message.DeleteAsync().ConfigureAwait(false);
+                }
+
+                var success = await _service.PlantAsync(ctx.Guild.Id, ctx.Channel, ctx.User.Id, ctx.User.ToString(), amount, pass);
+                if (!success)
+                {
+                    await ReplyErrorLocalizedAsync(strs.not_enough( CurrencySign));
                 }
             }
 
