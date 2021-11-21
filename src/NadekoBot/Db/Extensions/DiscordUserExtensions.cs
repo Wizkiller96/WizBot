@@ -1,4 +1,5 @@
-﻿using NadekoBot.Db.Models;
+﻿using System;
+using NadekoBot.Db.Models;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Discord;
@@ -168,7 +169,7 @@ VALUES ({userId}, {name}, {discrim}, {avatarId}, {amount}, 0);
         public static decimal GetTotalCurrency(this DbSet<DiscordUser> users)
         {
             return users
-                .Sum(x => x.CurrencyAmount);
+                .Sum((Func<DiscordUser, decimal>)(x => x.CurrencyAmount));
         }
 
         public static decimal GetTopOnePercentCurrency(this DbSet<DiscordUser> users, ulong botId)
