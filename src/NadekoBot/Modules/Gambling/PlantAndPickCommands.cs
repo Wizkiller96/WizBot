@@ -9,9 +9,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using NadekoBot.Modules.Gambling.Common;
 
-namespace NadekoBot.Modules.Games
+namespace NadekoBot.Modules.Gambling
 {
-    public partial class Games
+    public partial class Gambling
     {
         [Group]
         public class PlantPickCommands : GamblingSubmodule<PlantPickService>
