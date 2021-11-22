@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 using WizBot.Modules.Gambling.Common;
 using WizBot.Common;
 
-namespace WizBot.Modules.Games
+namespace WizBot.Modules.Gambling
 {
-    public partial class Games
+    public partial class Gambling
     {
         [Group]
         public class PlantPickCommands : GamblingSubmodule<PlantPickService>
