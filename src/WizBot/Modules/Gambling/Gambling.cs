@@ -247,20 +247,20 @@ namespace WizBot.Modules.Gambling
         [RequireContext(ContextType.Guild)]
         [OwnerOnly]
         [Priority(0)]
-        public Task Award(ShmartNumber amount, IGuildUser usr, [Leftover] string msg) =>
+        public Task Award(long amount, IGuildUser usr, [Leftover] string msg) =>
             Award(amount, usr.Id, msg);
 
         [WizBotCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         [OwnerOnly]
         [Priority(1)]
-        public Task Award(ShmartNumber amount, [Leftover] IGuildUser usr) =>
+        public Task Award(long amount, [Leftover] IGuildUser usr) =>
             Award(amount, usr.Id);
 
         [WizBotCommand, Aliases]
         [OwnerOnly]
         [Priority(2)]
-        public async Task Award(ShmartNumber amount, ulong usrId, [Leftover] string msg = null)
+        public async Task Award(long amount, ulong usrId, [Leftover] string msg = null)
         {
             if (amount <= 0)
                 return;
@@ -276,7 +276,7 @@ namespace WizBot.Modules.Gambling
         [RequireContext(ContextType.Guild)]
         [OwnerOnly]
         [Priority(2)]
-        public async Task Award(ShmartNumber amount, [Leftover] IRole role)
+        public async Task Award(long amount, [Leftover] IRole role)
         {
             var users = (await ctx.Guild.GetUsersAsync().ConfigureAwait(false))
                                .Where(u => u.GetRoles().Contains(role))
@@ -284,7 +284,7 @@ namespace WizBot.Modules.Gambling
 
             await _cs.AddBulkAsync(users.Select(x => x.Id),
                 users.Select(x => $"Awarded by bot owner to **{role.Name}** role. ({ctx.User.Username}/{ctx.User.Id})"),
-                users.Select(x => amount.Value),
+                users.Select(x => amount),
                 gamble: true)
                 .ConfigureAwait(false);
 
@@ -298,13 +298,13 @@ namespace WizBot.Modules.Gambling
         [RequireContext(ContextType.Guild)]
         [OwnerOnly]
         [Priority(0)]
-        public async Task Take(ShmartNumber amount, [Leftover] IRole role)
+        public async Task Take(long amount, [Leftover] IRole role)
         {
             var users = (await role.GetMembersAsync()).ToList();
 
             await _cs.RemoveBulkAsync(users.Select(x => x.Id),
                     users.Select(x => $"Taken by bot owner from **{role.Name}** role. ({ctx.User.Username}/{ctx.User.Id})"),
-                    users.Select(x => amount.Value),
+                    users.Select(x => amount),
                     gamble: true)
                 .ConfigureAwait(false);
 
@@ -318,7 +318,7 @@ namespace WizBot.Modules.Gambling
         [RequireContext(ContextType.Guild)]
         [OwnerOnly]
         [Priority(1)]
-        public async Task Take(ShmartNumber amount, [Leftover] IGuildUser user)
+        public async Task Take(long amount, [Leftover] IGuildUser user)
         {
             if (amount <= 0)
                 return;
@@ -333,7 +333,7 @@ namespace WizBot.Modules.Gambling
 
         [WizBotCommand, Aliases]
         [OwnerOnly]
-        public async Task Take(ShmartNumber amount, [Leftover] ulong usrId)
+        public async Task Take(long amount, [Leftover] ulong usrId)
         {
             if (amount <= 0)
                 return;
