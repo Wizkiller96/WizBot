@@ -720,6 +720,9 @@ removeperm:
 showemojis:
 - showemojis
 - se
+emojiadd:
+- emojiadd
+- ea
 deckshuffle:
 - deckshuffle
 - dsh

@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,15 +26,18 @@ namespace WizBot.Modules.Utility
         private readonly IStatsService _stats;
         private readonly IBotCredentials _creds;
         private readonly DownloadTracker _tracker;
+        private readonly IHttpClientFactory _httpFactory;
 
         public Utility(DiscordSocketClient client, ICoordinator coord,
-            IStatsService stats, IBotCredentials creds, DownloadTracker tracker)
+            IStatsService stats, IBotCredentials creds, DownloadTracker tracker,
+            IHttpClientFactory httpFactory)
         {
             _client = client;
             _coord = coord;
             _stats = stats;
             _creds = creds;
             _tracker = tracker;
+            _httpFactory = httpFactory;
         }
 
         [WizBotCommand, Aliases]
@@ -275,6 +279,52 @@ namespace WizBot.Modules.Utility
                                 _stats.VoiceChannels)),
                         true))
                 .ConfigureAwait(false);
+        }
+        
+        [WizBotCommand, Aliases]
+        [RequireContext(ContextType.Guild)]
+        [RequireBotPermission(GuildPermission.ManageEmojis)]
+        [RequireUserPermission(GuildPermission.ManageEmojis)]
+        [Priority(0)]
+        public Task EmojiAdd(string name, Emote emote)
+            => EmojiAdd(name, emote.Url);
+        
+        [WizBotCommand, Aliases]
+        [RequireContext(ContextType.Guild)]
+        [RequireBotPermission(GuildPermission.ManageEmojis)]
+        [RequireUserPermission(GuildPermission.ManageEmojis)]
+        public Task EmojiAdd(Emote emote)
+            => EmojiAdd(emote.Name, emote.Url);
+        
+        [WizBotCommand, Aliases]
+        [RequireContext(ContextType.Guild)]
+        [RequireBotPermission(GuildPermission.ManageEmojis)]
+        [RequireUserPermission(GuildPermission.ManageEmojis)]
+        public async Task EmojiAdd(string name, string url)
+        {
+            name = name.Trim(':');
+            using var http = _httpFactory.CreateClient();
+            var res = await http.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+            if (!res.IsImage() || res.GetImageSize() is null or > 262_144)
+            {
+                await ReplyErrorLocalizedAsync(strs.invalid_emoji_link);
+                return;
+            }
+
+            await using var imgStream = await res.Content.ReadAsStreamAsync();
+            Emote em;
+            try
+            {
+                em = await ctx.Guild.CreateEmoteAsync(name, new(imgStream));
+            }
+            catch (Exception ex)
+            {
+                Log.Warning(ex, "Error adding emoji on server {GuildId}", ctx.Guild.Id);
+
+                await ReplyErrorLocalizedAsync(strs.emoji_add_error);
+                return;
+            }
+            await ConfirmLocalizedAsync(strs.emoji_added(em.ToString()));
         }
 
         [WizBotCommand, Aliases]

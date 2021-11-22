@@ -4,7 +4,13 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+## [3.0.9] - 21.11.2021
+
 ### Added
+- Added `.emojiadd` with 3 overloads
+  - `.ea :customEmoji:` which copies another server's emoji
+  - `.ea newName :customEmoji:` which copies emoji under a different name
+  - `.ea emojiName <imagelink.png>` which creates a new emoji from the specified image
 - Patreon Access and Refresh Tokens should now be automatically updated once a month as long as the user has provided the necessary credentials in creds.yml file:
   - `Patreon.ClientId`
   - `Patreon.RefreshToken` (will also get updated once a month but needs an initial value)
