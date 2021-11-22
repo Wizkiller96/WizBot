@@ -196,10 +196,16 @@ namespace WizBot.Services.Database
             #endregion
 
             #region Warnings
-            var warn = modelBuilder.Entity<Warning>();
-            warn.HasIndex(x => x.GuildId);
-            warn.HasIndex(x => x.UserId);
-            warn.HasIndex(x => x.DateAdded);
+            
+            modelBuilder.Entity<Warning>(warn =>
+            {
+                warn.HasIndex(x => x.GuildId);
+                warn.HasIndex(x => x.UserId);
+                warn.HasIndex(x => x.DateAdded);
+                warn.Property(x => x.Weight)
+                    .HasDefaultValue(1);
+            });
+
             #endregion
 
             #region PatreonRewards

@@ -1596,9 +1596,12 @@ warnlogall:
     - ""
     - "2"
 warn:
-  desc: "Warns a user."
+  desc: |-
+    Warns a user with an optional reason.
+    You can specify a warning weight integer before the user. For example, 3 would mean that this warning counts as 3 warnings.
   args:
     - "@Someone Very rude person"
+    - "3 @Someone Very rude person"
 scadd:
   desc: "Adds a command to the list of commands which will be executed automatically in the current channel, in the order they were added in, by the bot when it startups up."
   args:

@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WizBot.Services.Database;
 
 namespace WizBot.Migrations
 {
     [DbContext(typeof(WizBotContext))]
-    partial class WizBotContextModelSnapshot : ModelSnapshot
+    [Migration("20211121002508_weighted-warnings")]
+    partial class weightedwarnings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1081,7 +1083,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("GuildId");
 
-                    b.ToTable("NsfwBlacklistedTag");
+                    b.ToTable("NsfwBlacklistedTags");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.Permissionv2", b =>
@@ -1966,7 +1968,7 @@ namespace WizBot.Migrations
 
                     b.Property<ulong>("UserId")
                         .HasColumnType("INTEGER");
-                    
+
                     b.Property<int>("Weight")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
