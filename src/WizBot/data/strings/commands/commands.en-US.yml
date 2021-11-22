@@ -1200,6 +1200,7 @@ emojiadd:
     Adds the specified emoji to this server.
     You can specify a name before the emoji to add it under a different name.
     You can specify a name followed by an image link to add a new emoji from an image.
+    You can omit imageUrl and instead upload the image as an attachment.
     Image size has to be below 256KB.
   args:
     - ":someonesCustomEmoji:"

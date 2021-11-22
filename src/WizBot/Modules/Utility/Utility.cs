@@ -285,7 +285,7 @@ namespace WizBot.Modules.Utility
         [RequireContext(ContextType.Guild)]
         [RequireBotPermission(GuildPermission.ManageEmojis)]
         [RequireUserPermission(GuildPermission.ManageEmojis)]
-        [Priority(0)]
+        [Priority(2)]
         public Task EmojiAdd(string name, Emote emote)
             => EmojiAdd(name, emote.Url);
         
@@ -293,6 +293,7 @@ namespace WizBot.Modules.Utility
         [RequireContext(ContextType.Guild)]
         [RequireBotPermission(GuildPermission.ManageEmojis)]
         [RequireUserPermission(GuildPermission.ManageEmojis)]
+        [Priority(1)]
         public Task EmojiAdd(Emote emote)
             => EmojiAdd(emote.Name, emote.Url);
         
@@ -300,9 +301,16 @@ namespace WizBot.Modules.Utility
         [RequireContext(ContextType.Guild)]
         [RequireBotPermission(GuildPermission.ManageEmojis)]
         [RequireUserPermission(GuildPermission.ManageEmojis)]
-        public async Task EmojiAdd(string name, string url)
+        [Priority(0)]
+        public async Task EmojiAdd(string name, string url = null)
         {
             name = name.Trim(':');
+            
+            url ??= ctx.Message.Attachments.FirstOrDefault()?.Url;
+
+            if (url is null)
+                return;
+
             using var http = _httpFactory.CreateClient();
             var res = await http.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
             if (!res.IsImage() || res.GetImageSize() is null or > 262_144)
