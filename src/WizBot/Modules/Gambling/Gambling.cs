@@ -66,11 +66,11 @@ namespace WizBot.Modules.Gambling
             }
             var embed = _eb.Create()
                 .WithTitle(GetText(strs.economy_state))
-                .AddField(GetText(strs.currency_owned), ((BigInteger)(ec.Cash - ec.Bot)) + CurrencySign)
+                .AddField(GetText(strs.currency_owned), ((BigInteger)(ec.Cash - ec.Bot)).ToString("N", _enUsCulture) + CurrencySign)
                 .AddField(GetText(strs.currency_one_percent), (onePercent * 100).ToString("F2") + "%")
                 .AddField(GetText(strs.currency_planted), ((BigInteger)ec.Planted) + CurrencySign)
                 .AddField(GetText(strs.owned_waifus_total), ((BigInteger)ec.Waifus) + CurrencySign)
-                .AddField(GetText(strs.bot_currency), ec.Bot + CurrencySign)
+                .AddField(GetText(strs.bot_currency), ec.Bot.ToString("N", _enUsCulture) + CurrencySign)
                 .AddField(GetText(strs.total), ((BigInteger)(ec.Cash + ec.Planted + ec.Waifus)).ToString("N", _enUsCulture) + CurrencySign)
                 .WithOkColor();
                 // ec.Cash already contains ec.Bot as it's the total of all values in the CurrencyAmount column of the DiscordUser table
