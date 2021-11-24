@@ -8,6 +8,9 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - `.warn` now supports weighted warnings
 - `.warnlog` will now show current amount and total amount of warnings
 
+### Removed 
+- Removed slot.numbers from `images.yml` as they're no longer used
+
 ## [3.0.9] - 21.11.2021
 
 ### Changed
