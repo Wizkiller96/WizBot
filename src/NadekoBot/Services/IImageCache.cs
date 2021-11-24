@@ -14,7 +14,6 @@ namespace NadekoBot.Services
         IReadOnlyList<byte[]> Dice { get; }
 
         IReadOnlyList<byte[]> SlotEmojis { get; }
-        IReadOnlyList<byte[]> SlotNumbers { get; }
         IReadOnlyList<byte[]> Currency { get; }
 
         byte[] SlotBackground { get; }
