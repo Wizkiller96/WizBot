@@ -36,7 +36,6 @@ namespace WizBot.Services
             Dice,
             SlotBg,
             SlotEmojis,
-            SlotNumbers,
             Currency,
             RategirlMatrix,
             RategirlDot,
@@ -56,9 +55,6 @@ namespace WizBot.Services
 
         public IReadOnlyList<byte[]> SlotEmojis 
             => GetByteArrayData(ImageKeys.SlotEmojis);
-
-        public IReadOnlyList<byte[]> SlotNumbers 
-            => GetByteArrayData(ImageKeys.SlotNumbers);
 
         public IReadOnlyList<byte[]> Currency 
             => GetByteArrayData(ImageKeys.Currency);
@@ -157,20 +153,7 @@ namespace WizBot.Services
                                 "https://cdn.wizbot.cc/slots/3.png",
                                 "https://cdn.wizbot.cc/slots/4.png",
                                 "https://cdn.wizbot.cc/slots/5.png"
-                            }.Map(x => new Uri(x)),
-                            Numbers = new[]
-                            {
-                                "https://cdn.wizbot.cc/other/slots/numbers/0.png",
-                                "https://cdn.wizbot.cc/other/slots/numbers/1.png",
-                                "https://cdn.wizbot.cc/other/slots/numbers/2.png",
-                                "https://cdn.wizbot.cc/other/slots/numbers/3.png",
-                                "https://cdn.wizbot.cc/other/slots/numbers/4.png",
-                                "https://cdn.wizbot.cc/other/slots/numbers/5.png",
-                                "https://cdn.wizbot.cc/other/slots/numbers/6.png",
-                                "https://cdn.wizbot.cc/other/slots/numbers/7.png",
-                                "https://cdn.wizbot.cc/other/slots/numbers/8.png",
-                                "https://cdn.wizbot.cc/other/slots/numbers/9.png"
-                            }.Map(x => new Uri(x)),
+                            }.Map(x => new Uri(x))
                         },
                         Xp = new ImageUrls.XpData()
                         {
@@ -182,6 +165,14 @@ namespace WizBot.Services
                     File.Move(oldFilePath, backupFilePath, true);
                     File.WriteAllText(_imagesPath, Yaml.Serializer.Serialize(newData));
                 }
+            }
+            
+            // removed numbers from slots
+            var localImageUrls = Yaml.Deserializer.Deserialize<ImageUrls>(File.ReadAllText(_imagesPath));
+            if (localImageUrls.Version == 2)
+            {
+                localImageUrls.Version = 3;
+                File.WriteAllText(_imagesPath, Yaml.Serializer.Serialize(localImageUrls));
             }
         }
 
@@ -206,9 +197,6 @@ namespace WizBot.Services
                         break;
                     case ImageKeys.SlotEmojis:
                         await Load(key, ImageUrls.Slots.Emojis);
-                        break;
-                    case ImageKeys.SlotNumbers:
-                        await Load(key, ImageUrls.Slots.Numbers);
                         break;
                     case ImageKeys.Currency:
                         await Load(key, ImageUrls.Currency);

@@ -1,5 +1,5 @@
 ﻿# DO NOT CHANGE
-version: 2
+version: 3
 coins:
   heads:
     - https://cdn.wizbot.cc/coins/heads.png
@@ -36,15 +36,4 @@ slots:
     - https://cdn.wizbot.cc/slots/3.png
     - https://cdn.wizbot.cc/slots/4.png
     - https://cdn.wizbot.cc/slots/5.png
-  numbers:
-    - https://cdn.wizbot.cc/other/slots/numbers/0.png
-    - https://cdn.wizbot.cc/other/slots/numbers/1.png
-    - https://cdn.wizbot.cc/other/slots/numbers/2.png
-    - https://cdn.wizbot.cc/other/slots/numbers/3.png
-    - https://cdn.wizbot.cc/other/slots/numbers/4.png
-    - https://cdn.wizbot.cc/other/slots/numbers/5.png
-    - https://cdn.wizbot.cc/other/slots/numbers/6.png
-    - https://cdn.wizbot.cc/other/slots/numbers/7.png
-    - https://cdn.wizbot.cc/other/slots/numbers/8.png
-    - https://cdn.wizbot.cc/other/slots/numbers/9.png
   bg: https://cdn.wizbot.cc/slots/slots_bg.png
