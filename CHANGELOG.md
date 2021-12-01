@@ -2,11 +2,14 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
-## Unreleased
+## [3.0.10] - 01.12.2021
 
 ### Changed
 - `.warn` now supports weighted warnings
 - `.warnlog` will now show current amount and total amount of warnings
+
+### Fixed
+- `.xprewsreset` now has correct permissions
 
 ### Removed
 - Removed slot.numbers from `images.yml` as they're no longer used
