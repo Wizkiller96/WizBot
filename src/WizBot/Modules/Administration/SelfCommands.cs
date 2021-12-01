@@ -318,7 +318,7 @@ namespace WizBot.Modules.Administration
 
             [WizBotCommand, Aliases]
             [OwnerOnly]
-            public async Task Die()
+            public async Task Die(bool graceful = false)
             {
                 try
                 {
@@ -329,7 +329,7 @@ namespace WizBot.Modules.Administration
                     // ignored
                 }
                 await Task.Delay(2000).ConfigureAwait(false);
-                _coord.Die();
+                _coord.Die(graceful);
             }
 
             [WizBotCommand, Aliases]

@@ -39,11 +39,11 @@ namespace WizBot.Services
             return true;
         }
 
-        public void Die()
+        public void Die(bool graceful)
         {
             _coordClient.Die(new DieRequest()
             {
-                Graceful = false
+                Graceful = graceful
             });
         }
 
