@@ -105,7 +105,7 @@ namespace WizBot
                 .AddSingleton<ISeria, JsonSeria>()
                 .AddSingleton<IPubSub, RedisPubSub>()
                 .AddSingleton<IConfigSeria, YamlSeria>()
-                .AddBotStringsServices()
+                .AddBotStringsServices(_creds.TotalShards)
                 .AddConfigServices()
                 .AddConfigMigrators()
                 .AddMemoryCache()

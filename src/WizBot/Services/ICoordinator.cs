@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace WizBot.Services
 {
@@ -10,6 +11,7 @@ namespace WizBot.Services
         bool RestartShard(int shardId);
         IList<ShardStatus> GetAllShardStatuses();
         int GetGuildCount();
+        Task Reload();
     }
     
     public class ShardStatus

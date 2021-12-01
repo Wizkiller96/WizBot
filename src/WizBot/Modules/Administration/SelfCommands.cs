@@ -506,6 +506,14 @@ namespace WizBot.Modules.Administration
                 _strings.Reload();
                 await ReplyConfirmLocalizedAsync(strs.bot_strings_reloaded).ConfigureAwait(false);
             }
+            
+            [WizBotCommand, Aliases]
+            [OwnerOnly]
+            public async Task CoordReload()
+            {
+                await _coord.Reload();
+                await ctx.OkAsync();
+            }
 
             private static UserStatus SettableUserStatusToUserStatus(SettableUserStatus sus)
             {
