@@ -36,7 +36,7 @@ namespace NadekoBot.Services
             return true;
         }
 
-        public void Die()
+        public void Die(bool graceful = false)
         {
             Environment.Exit(5);
         }
