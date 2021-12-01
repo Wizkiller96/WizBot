@@ -39,6 +39,8 @@ namespace NadekoBot.Modules.Xp
         }
 
         [NadekoCommand, Aliases]
+        [RequireContext(ContextType.Guild)]
+        [RequireUserPermission(GuildPermission.Administrator)]
         public async Task XpRewsReset()
         {
             var reply = await PromptUserConfirmAsync(_eb.Create()
