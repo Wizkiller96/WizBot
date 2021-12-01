@@ -506,6 +506,14 @@ namespace NadekoBot.Modules.Administration
                 _strings.Reload();
                 await ReplyConfirmLocalizedAsync(strs.bot_strings_reloaded).ConfigureAwait(false);
             }
+            
+            [NadekoCommand, Aliases]
+            [OwnerOnly]
+            public async Task CoordReload()
+            {
+                await _coord.Reload();
+                await ctx.OkAsync();
+            }
 
             private static UserStatus SettableUserStatusToUserStatus(SettableUserStatus sus)
             {

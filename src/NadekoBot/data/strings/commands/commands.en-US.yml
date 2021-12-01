@@ -2139,3 +2139,7 @@ imageonlychannel:
     Users who send more than a few non-image messages will be banned from using the channel. 
   args:
     - ""
+coordreload:
+  desc: "Reloads coordinator config"
+  args:
+    - "" 

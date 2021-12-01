@@ -14,11 +14,15 @@ namespace NadekoBot.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddBotStringsServices(this IServiceCollection services)
-            => services
-                .AddSingleton<IStringsSource, LocalFileStringsSource>()
-                .AddSingleton<IBotStringsProvider, LocalBotStringsProvider>()
-                .AddSingleton<IBotStrings, BotStrings>();
+        public static IServiceCollection AddBotStringsServices(this IServiceCollection services, int totalShards)
+            => totalShards <= 1
+                ? services
+                    .AddSingleton<IStringsSource, LocalFileStringsSource>()
+                    .AddSingleton<IBotStringsProvider, LocalBotStringsProvider>()
+                    .AddSingleton<IBotStrings, BotStrings>()
+                : services.AddSingleton<IStringsSource, LocalFileStringsSource>()
+                    .AddSingleton<IBotStringsProvider, RedisBotStringsProvider>()
+                    .AddSingleton<IBotStrings, BotStrings>();
 
         public static IServiceCollection AddConfigServices(this IServiceCollection services)
         {

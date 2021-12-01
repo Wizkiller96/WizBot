@@ -64,5 +64,10 @@ namespace NadekoBot.Services
         {
             return _client.Guilds.Count;
         }
+
+        public Task Reload()
+        {
+            return Task.CompletedTask;
+        }
     }
 }

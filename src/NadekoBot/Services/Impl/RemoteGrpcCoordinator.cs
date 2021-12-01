@@ -79,6 +79,11 @@ namespace NadekoBot.Services
             return res.Statuses.Sum(x => x.GuildCount);
         }
 
+        public async Task Reload()
+        {
+            await _coordClient.ReloadAsync(new());
+        }
+
         public Task OnReadyAsync()
         {
             Task.Run(async () =>
