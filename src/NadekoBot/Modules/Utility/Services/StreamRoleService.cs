@@ -227,6 +227,9 @@ namespace NadekoBot.Modules.Utility.Services
 
         private async Task RescanUser(IGuildUser user, StreamRoleSettings setting, IRole addRole = null)
         {
+            if (user.IsBot)
+                return;
+            
             var g = (StreamingGame)user.Activities
                 .FirstOrDefault(a => a is StreamingGame &&
                        (string.IsNullOrWhiteSpace(setting.Keyword)
@@ -240,7 +243,7 @@ namespace NadekoBot.Modules.Utility.Services
             {
                 try
                 {
-                    addRole = addRole ?? user.Guild.GetRole(setting.AddRoleId);
+                    addRole ??= user.Guild.GetRole(setting.AddRoleId);
                     if (addRole is null)
                     {
                         await StopStreamRole(user.Guild).ConfigureAwait(false);
@@ -249,9 +252,12 @@ namespace NadekoBot.Modules.Utility.Services
                     }
 
                     //check if he doesn't have addrole already, to avoid errors
-                    if (!user.RoleIds.Contains(setting.AddRoleId))
+                    if (!user.RoleIds.Contains(addRole.Id))
+                    {
                         await user.AddRoleAsync(addRole).ConfigureAwait(false);
-                    Log.Information("Added stream role to user {0} in {1} server", user.ToString(), user.Guild.ToString());
+                        Log.Information("Added stream role to user {0} in {1} server", user.ToString(),
+                            user.Guild.ToString());
+                    }
                 }
                 catch (HttpException ex) when (ex.HttpCode == System.Net.HttpStatusCode.Forbidden)
                 {
