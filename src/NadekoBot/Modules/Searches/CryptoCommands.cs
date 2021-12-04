@@ -20,7 +20,7 @@ namespace NadekoBot.Modules.Searches
 
                 var (crypto, nearest) = await _service.GetCryptoData(name).ConfigureAwait(false);
 
-                if (nearest != null)
+                if (nearest is not null)
                 {
                     var embed = _eb.Create()
                             .WithTitle(GetText(strs.crypto_not_found))

@@ -35,6 +35,9 @@ namespace NadekoBot.Modules.Searches.Services
             name = name.ToUpperInvariant();
             var cryptos = await CryptoData().ConfigureAwait(false);
 
+            if (cryptos is null)
+                return (null, null);
+            
             var crypto = cryptos
                 ?.FirstOrDefault(x => x.Id.ToUpperInvariant() == name || x.Name.ToUpperInvariant() == name
                     || x.Symbol.ToUpperInvariant() == name);
@@ -42,7 +45,8 @@ namespace NadekoBot.Modules.Searches.Services
             (CryptoResponseData Elem, int Distance)? nearest = null;
             if (crypto is null)
             {
-                nearest = cryptos.Select(x => (x, Distance: x.Name.ToUpperInvariant().LevenshteinDistance(name)))
+                nearest = cryptos
+                    .Select(x => (x, Distance: x.Name.ToUpperInvariant().LevenshteinDistance(name)))
                     .OrderBy(x => x.Distance)
                     .Where(x => x.Distance <= 2)
                     .FirstOrDefault();
@@ -68,18 +72,17 @@ namespace NadekoBot.Modules.Searches.Services
                 {
                     try
                     {
-                        using (var _http = _httpFactory.CreateClient())
-                        {
-                            var strData = await _http.GetStringAsync(new Uri($"https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?" +
-                                $"CMC_PRO_API_KEY={_creds.CoinmarketcapApiKey}" +
-                                $"&start=1" +
-                                $"&limit=500" +
-                                $"&convert=USD"));
+                        using var _http = _httpFactory.CreateClient();
+                        var strData = await _http.GetStringAsync(
+                            $"https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?" +
+                            $"CMC_PRO_API_KEY={_creds.CoinmarketcapApiKey}" +
+                            $"&start=1" +
+                            $"&limit=5000" +
+                            $"&convert=USD");
 
-                            JsonConvert.DeserializeObject<CryptoResponse>(strData); // just to see if its' valid
+                        JsonConvert.DeserializeObject<CryptoResponse>(strData); // just to see if its' valid
 
-                            return strData;
-                        }
+                        return strData;
                     }
                     catch (Exception ex)
                     {
