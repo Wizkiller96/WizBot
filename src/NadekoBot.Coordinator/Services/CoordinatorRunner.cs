@@ -171,7 +171,7 @@ namespace NadekoBot.Coordinator
                 }
             }
 
-            status.Process?.Dispose();
+            try { status.Process?.Dispose(); } catch { }
 
             var proc = StartShardProcess(shardId);
             _shardStatuses[shardId] = status with
