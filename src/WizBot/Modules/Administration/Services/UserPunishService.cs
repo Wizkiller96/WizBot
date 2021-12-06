@@ -99,6 +99,10 @@ namespace WizBot.Modules.Administration.Services
         public async Task ApplyPunishment(IGuild guild, IGuildUser user, IUser mod, PunishmentAction p, int minutes,
             ulong? roleId, string reason)
         {
+            
+            if (!await CheckPermission(guild, p))
+                return;
+
             switch (p)
             {
                 case PunishmentAction.Mute:
@@ -168,6 +172,40 @@ namespace WizBot.Modules.Administration.Services
                     break;
                 default:
                     break;
+            }
+        }
+        
+        /// <summary>
+        /// Used to prevent the bot from hitting 403's when it needs to
+        /// apply punishments with insufficient permissions 
+        /// </summary>
+        /// <param name="guild">Guild the punishment is applied in</param>
+        /// <param name="punish">Punishment to apply</param>
+        /// <returns>Whether the bot has sufficient permissions</returns>
+        private async Task<bool> CheckPermission(IGuild guild, PunishmentAction punish)
+        {
+            
+            var botUser = await guild.GetCurrentUserAsync();
+            switch (punish)
+            {
+                case PunishmentAction.Mute:
+                    return botUser.GuildPermissions.MuteMembers && botUser.GuildPermissions.ManageRoles;
+                case PunishmentAction.Kick:
+                    return botUser.GuildPermissions.KickMembers;
+                case PunishmentAction.Ban:
+                    return botUser.GuildPermissions.BanMembers;
+                case PunishmentAction.Softban:
+                    return botUser.GuildPermissions.BanMembers; // ban + unban
+                case PunishmentAction.RemoveRoles:
+                    return botUser.GuildPermissions.ManageRoles;
+                case PunishmentAction.ChatMute:
+                    return botUser.GuildPermissions.ManageRoles; // adds wizbot-mute role
+                case PunishmentAction.VoiceMute:
+                    return botUser.GuildPermissions.MuteMembers;
+                case PunishmentAction.AddRole:
+                    return botUser.GuildPermissions.ManageRoles;
+                default:
+                    return true;
             }
         }
 
