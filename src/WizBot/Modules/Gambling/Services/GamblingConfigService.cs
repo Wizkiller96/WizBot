@@ -68,6 +68,7 @@ namespace WizBot.Modules.Gambling.Services
             {
                 ModifyConfig(c =>
                 {
+                    c.Version = 3;
                     c.VoteReward = 100;
                 });
             }
