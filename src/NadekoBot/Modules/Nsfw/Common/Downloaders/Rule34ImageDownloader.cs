@@ -24,7 +24,7 @@ namespace NadekoBot.Modules.Nsfw.Common
                 return new();
             
             return images
-                .Where(img => !string.IsNullOrWhiteSpace(img.Directory) && !string.IsNullOrWhiteSpace(img.Image))
+                .Where(img => !string.IsNullOrWhiteSpace(img.Image))
                 .ToList();
         }
     }
