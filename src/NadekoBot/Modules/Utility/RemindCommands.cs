@@ -195,37 +195,6 @@ namespace NadekoBot.Modules.Utility
                     await ReplyConfirmLocalizedAsync(strs.reminder_deleted(index + 1));
                 }
             }
-            
-            [NadekoCommand, Aliases]
-            public async Task ServerRemindDelete(int index)
-            {
-                if (--index < 0)
-                    return;
-
-                Reminder rem = null;
-                using (var uow = _db.GetDbContext())
-                {
-                    var rems = uow.Reminders
-                        .RemindersForServer(ctx.Guild.Id, index / 10)
-                        .ToList();
-                    var pageIndex = index % 10;
-                    if (rems.Count > pageIndex)
-                    {
-                        rem = rems[pageIndex];
-                        uow.Reminders.Remove(rem);
-                        uow.SaveChanges();
-                    }
-                }
-
-                if (rem is null)
-                {
-                    await ReplyErrorLocalizedAsync(strs.reminder_not_exist).ConfigureAwait(false);
-                }
-                else
-                {
-                    await ReplyConfirmLocalizedAsync(strs.reminder_deleted(index + 1));
-                }
-            }
 
             private async Task<bool> RemindInternal(ulong targetId, bool isPrivate, TimeSpan ts, string message)
             {
