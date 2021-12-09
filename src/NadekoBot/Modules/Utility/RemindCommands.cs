@@ -80,21 +80,50 @@ namespace NadekoBot.Modules.Utility
                 }
             }
 
+            public enum Server
+            {
+                Server = int.MinValue,
+                Srvr = int.MinValue,
+                Serv = int.MinValue,
+                S = int.MinValue, 
+            }
+
             [NadekoCommand, Aliases]
-            public async Task RemindList(int page = 1)
+            [RequireContext(ContextType.Guild)]
+            [RequireUserPermission(GuildPermission.Administrator)]
+            [Priority(0)]
+            public Task RemindList(Server _, int page = 1)
+                => RemindList(page, true);
+            
+            [NadekoCommand, Aliases]
+            [Priority(1)]
+            public Task RemindList(int page = 1)
+                => RemindList(page, false);
+            
+            private async Task RemindList(int page, bool isServer)
             {
                 if (--page < 0)
                     return;
 
                 var embed = _eb.Create()
                     .WithOkColor()
-                    .WithTitle(GetText(strs.reminder_list));
+                    .WithTitle(GetText(isServer ? strs.reminder_server_list : strs.reminder_list));
 
                 List<Reminder> rems;
                 using (var uow = _db.GetDbContext())
                 {
-                    rems = uow.Reminders.RemindersFor(ctx.User.Id, page)
-                        .ToList();
+                    if (isServer)
+                    {
+                        rems = uow.Reminders
+                            .RemindersForServer(ctx.Guild.Id, page)
+                            .ToList();
+                    }
+                    else
+                    {
+                        rems = uow.Reminders
+                            .RemindersFor(ctx.User.Id, page)
+                            .ToList();
+                    }
                 }
 
                 if (rems.Any())
@@ -121,17 +150,63 @@ namespace NadekoBot.Modules.Utility
             }
 
             [NadekoCommand, Aliases]
-            public async Task RemindDelete(int index)
+            [RequireContext(ContextType.Guild)]
+            [RequireUserPermission(GuildPermission.Administrator)]
+            [Priority(0)]
+            public Task RemindDelete(Server _, int index)
+                => RemindDelete(index, true);
+            
+            [NadekoCommand, Aliases]
+            [Priority(1)]
+            public Task RemindDelete(int index)
+                => RemindDelete(index, false);
+            
+            private async Task RemindDelete(int index, bool isServer)
             {
                 if (--index < 0)
                     return;
 
-                var embed = _eb.Create();
+                Reminder rem = null;
+                using (var uow = _db.GetDbContext())
+                {
+                    var rems = isServer
+                        ? uow.Reminders
+                            .RemindersForServer(ctx.Guild.Id, index / 10)
+                            .ToList()
+                        : uow.Reminders
+                            .RemindersFor(ctx.User.Id, index / 10)
+                            .ToList();
+                    
+                    var pageIndex = index % 10;
+                    if (rems.Count > pageIndex)
+                    {
+                        rem = rems[pageIndex];
+                        uow.Reminders.Remove(rem);
+                        uow.SaveChanges();
+                    }
+                }
+
+                if (rem is null)
+                {
+                    await ReplyErrorLocalizedAsync(strs.reminder_not_exist).ConfigureAwait(false);
+                }
+                else
+                {
+                    await ReplyConfirmLocalizedAsync(strs.reminder_deleted(index + 1));
+                }
+            }
+            
+            [NadekoCommand, Aliases]
+            public async Task ServerRemindDelete(int index)
+            {
+                if (--index < 0)
+                    return;
 
                 Reminder rem = null;
                 using (var uow = _db.GetDbContext())
                 {
-                    var rems = uow.Reminders.RemindersFor(ctx.User.Id, index / 10)
+                    var rems = uow.Reminders
+                        .RemindersForServer(ctx.Guild.Id, index / 10)
                         .ToList();
                     var pageIndex = index % 10;
                     if (rems.Count > pageIndex)

@@ -919,6 +919,7 @@
   "reaction_role_removed": "Removed ReactionRole message #{0}",
   "reaction_roles_full": "You've reached the limit on ReactionRole messages. You have to delete some.",
   "reminder_list": "List of reminders",
+  "reminder_server_list": "List of server reminders",
   "reminder_deleted": "Reminder #{0} was deleted.",
   "reminder_not_exist": "Reminder at that index does not exist.",
   "reminders_none": "No reminder on this page.",

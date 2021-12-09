@@ -18,5 +18,12 @@ namespace NadekoBot.Db
                 .OrderBy(x => x.DateAdded)
                 .Skip(page * 10)
                 .Take(10);
+        
+        public static IEnumerable<Reminder> RemindersForServer(this DbSet<Reminder> reminders, ulong serverId, int page)
+            => reminders.AsQueryable()
+                .Where(x => x.ServerId == serverId)
+                .OrderBy(x => x.DateAdded)
+                .Skip(page * 10)
+                .Take(10);
     }
 }

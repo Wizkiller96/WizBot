@@ -4,6 +4,9 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+### Added
+- `.remindl` and `.remindrm` commands now supports optional 'server' parameter for Administrators which allows them to delete any reminder created on the server
+
 ### Fixed
 - `.crypto` now supports top 5000 coins
 
