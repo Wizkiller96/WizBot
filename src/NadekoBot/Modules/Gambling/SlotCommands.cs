@@ -19,6 +19,7 @@ using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
+using Color = SixLabors.ImageSharp.Color;
 
 namespace NadekoBot.Modules.Gambling
 {
@@ -186,6 +187,8 @@ namespace NadekoBot.Modules.Gambling
                        var numbers = new int[3];
                        result.Rolls.CopyTo(numbers, 0);
 
+                       Color fontColor = _config.Slots.CurrencyFontColor;
+                       
                        bgImage.Mutate(x => x.DrawText(new TextGraphicsOptions
                            {
                                TextOptions = new TextOptions()
@@ -194,9 +197,11 @@ namespace NadekoBot.Modules.Gambling
                                    VerticalAlignment = VerticalAlignment.Center,
                                    WrapTextWidth = 140,
                                }
-                           }, result.Won.ToString(), _fonts.DottyFont.CreateFont(65), SixLabors.ImageSharp.Color.Red,
+                           }, result.Won.ToString(), _fonts.DottyFont.CreateFont(65), fontColor,
                            new PointF(227, 92)));
 
+                       var bottomFont = _fonts.DottyFont.CreateFont(50);
+                       
                        bgImage.Mutate(x => x.DrawText(new TextGraphicsOptions
                            {
                                TextOptions = new TextOptions()
@@ -205,7 +210,7 @@ namespace NadekoBot.Modules.Gambling
                                    VerticalAlignment = VerticalAlignment.Center,
                                    WrapTextWidth = 135,
                                }
-                           }, amount.ToString(), _fonts.DottyFont.CreateFont(50), SixLabors.ImageSharp.Color.Red,
+                           }, amount.ToString(), bottomFont, fontColor,
                            new PointF(129, 472)));
 
                        bgImage.Mutate(x => x.DrawText(new TextGraphicsOptions
@@ -216,7 +221,7 @@ namespace NadekoBot.Modules.Gambling
                                    VerticalAlignment = VerticalAlignment.Center,
                                    WrapTextWidth = 135,
                                }
-                           }, ownedAmount.ToString(), _fonts.DottyFont.CreateFont(50), SixLabors.ImageSharp.Color.Red,
+                           }, ownedAmount.ToString(), bottomFont, fontColor,
                            new PointF(325, 472)));
                        //sw.PrintLap("drew red text");
 

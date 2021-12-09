@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Cloneable;
 using NadekoBot.Common;
 using NadekoBot.Common.Yml;
+using SixLabors.ImageSharp.PixelFormats;
 using YamlDotNet.Serialization;
 
 namespace NadekoBot.Modules.Gambling.Common
@@ -20,6 +21,7 @@ namespace NadekoBot.Modules.Gambling.Common
             Generation = new GenerationConfig();
             Timely = new TimelyConfig();
             Decay = new DecayConfig();
+            Slots = new SlotsConfig();
         }
 
         [Comment(@"DO NOT CHANGE")]
@@ -64,6 +66,9 @@ Set 0 for unlimited")]
         [Comment(@"Currency reward per vote.
 This will work only if you've set up VotesApi and correct credentials for topgg and/or discords voting")]
         public long VoteReward { get; set; } = 100;
+        
+        [Comment(@"Slot config")]
+        public SlotsConfig Slots { get; set; }
     }
 
     public class CurrencyConfig
@@ -271,6 +276,12 @@ Example: If a waifu is worth 1000, and she receives a gift worth 100, her new va
 Default 0.5 (meaning 50%)
 Example: If a waifu is worth 1000, and she receives a negative gift worth 100, her new value will be 950)")]
         public decimal NegativeGiftEffect { get; set; } = 0.50M;
+    }
+
+    public sealed partial class SlotsConfig
+    {
+        [Comment(@"Hex value of the color which the numbers on the slot image will have.")]
+        public Rgba32 CurrencyFontColor { get; set; } = SixLabors.ImageSharp.Color.Red;
     }
 
     [Cloneable]
