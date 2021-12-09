@@ -2,13 +2,32 @@
 
 Open Terminal (if you don't know how to, click on the magnifying glass on the top right corner of your screen and type **Terminal** on the window that pops up) and navigate to the location where you want to install the bot (for example `cd ~`) 
 
-##### Installing Homebrew and wget
+##### Installing Homebrew, wget and dotnet  
 
+###### Homebrew/wget  
 *Skip this step if you already have homebrew installed*
 - Copy and paste this command, then press Enter:  
     - `/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`  
 - Install wget  
-    - `brew install wget`
+    - `brew install wget`  
+    
+###### Dotnet
+- Download [.net5 SDK](https://dotnet.microsoft.com/download/dotnet/5.0)
+- Open the `.pkg` file you've downloaded and install it.
+- Run this command in Terminal. There might be output. If there is, disregard it. (copy-paste the entire block)
+```bash
+sudo mkdir /usr/local/bin
+
+sudo mkdir /usr/local/lib
+```
+- Run this command in Terminal. There won't be any output. (copy-paste the entire block):
+```bash
+sudo ln -s /usr/local/share/dotnet/dotnet /usr/local/bin
+
+sudo ln -s /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib /usr/local/lib/
+
+sudo ln -s /usr/local/opt/openssl/lib/libssl.1.0.0.dylib /usr/local/lib/
+```
 
 ##### Installation Instructions
 
