@@ -3,7 +3,7 @@
     public class Rule34Object : IImageData
     {
         public string Image { get; init; }
-        public string Directory { get; init; }
+        public int Directory { get; init; }
         public string Tags { get; init; }
         public int Score { get; init; }
 

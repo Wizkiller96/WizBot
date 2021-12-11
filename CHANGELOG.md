@@ -2,6 +2,11 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## Unreleased
+
+### Fixed
+- `.crypto` now supports top 5000 coins
+
 ## [3.0.10] - 01.12.2021
 
 ### Changed
