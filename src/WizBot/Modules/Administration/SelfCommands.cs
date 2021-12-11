@@ -444,7 +444,7 @@ namespace WizBot.Modules.Administration
             }
 
             [WizBotCommand, Aliases]
-            [OwnerOnly]
+            [AdminOnly]
             public async Task Send(string where, [Leftover] SmartText text = null)
             {
                 var ids = where.Split('|');
