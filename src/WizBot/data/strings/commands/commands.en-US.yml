@@ -406,13 +406,15 @@ remind:
     - "me 1d5h Do something"
     - "#general 1m Start now!"
 reminddelete:
-  desc: "Deletes a reminder on the specified index."
+  desc: "Deletes a reminder on the specified index. You can specify 'server' option if you're an Administrator, and you want to delete a reminder on this server created by someone else. "
   args:
     - "3"
+    - "server 2"
 remindlist:
-  desc: "Lists all reminders you created. Paginated."
+  desc: "Lists all reminders you created. You can specify 'server' option if you're an Administrator to list all reminders created on this server. Paginated."
   args:
     - "1"
+    - "server 2"
 serverinfo:
   desc: "Shows info about the server the bot is on. If no server is supplied, it defaults to current one."
   args:
