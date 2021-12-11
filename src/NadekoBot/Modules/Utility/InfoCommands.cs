@@ -32,35 +32,40 @@ namespace NadekoBot.Modules.Utility
                 var channel = (ITextChannel)ctx.Channel;
                 guildName = guildName?.ToUpperInvariant();
                 SocketGuild guild;
+                
                 if (string.IsNullOrWhiteSpace(guildName))
                     guild = (SocketGuild)channel.Guild;
                 else
                     guild = _client.Guilds.FirstOrDefault(g => g.Name.ToUpperInvariant() == guildName.ToUpperInvariant());
+                
                 if (guild is null)
                     return;
+                
                 var ownername = guild.GetUser(guild.OwnerId);
-                var textchn = guild.TextChannels.Count();
-                var voicechn = guild.VoiceChannels.Count();
-
+                var textchn = guild.TextChannels.Count;
+                var voicechn = guild.VoiceChannels.Count;
+                var channels = $@"{GetText(strs.text_channels(textchn))}
+{GetText(strs.voice_channels(voicechn))}";
                 var createdAt = new DateTime(2015, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(guild.Id >> 22);
-                var features = string.Join("\n", guild.Features);
+                var features = string.Join(", ", guild.Features);
                 if (string.IsNullOrWhiteSpace(features))
                     features = "-";
+                
                 var embed = _eb.Create()
                     .WithAuthor(GetText(strs.server_info))
                     .WithTitle(guild.Name)
                     .AddField(GetText(strs.id), guild.Id.ToString(), true)
                     .AddField(GetText(strs.owner), ownername.ToString(), true)
                     .AddField(GetText(strs.members), guild.MemberCount.ToString(), true)
-                    .AddField(GetText(strs.text_channels), textchn.ToString(), true)
-                    .AddField(GetText(strs.voice_channels), voicechn.ToString(), true)
+                    .AddField(GetText(strs.channels), channels, true)
                     .AddField(GetText(strs.created_at), $"{createdAt:dd.MM.yyyy HH:mm}", true)
-                    .AddField(GetText(strs.region), guild.VoiceRegionId.ToString(), true)
                     .AddField(GetText(strs.roles), (guild.Roles.Count - 1).ToString(), true)
-                    .AddField(GetText(strs.features), features, true)
+                    .AddField(GetText(strs.features), features)
                     .WithOkColor();
+                
                 if (Uri.IsWellFormedUriString(guild.IconUrl, UriKind.Absolute))
                     embed.WithThumbnailUrl(guild.IconUrl);
+                
                 if (guild.Emotes.Any())
                 {
                     embed.AddField(GetText(strs.custom_emojis) + $"({guild.Emotes.Count})",
