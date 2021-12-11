@@ -310,7 +310,7 @@ namespace NadekoBot.Modules.CustomReactions
             _ = ctx.Channel.TriggerTypingAsync();
 
             var serialized = _service.ExportCrs(ctx.Guild?.Id);
-            using var stream = await serialized.ToStream();
+            await using var stream = await serialized.ToStream();
             await ctx.Channel.SendFileAsync(stream, "crs-export.yml", text: null);
         }
 

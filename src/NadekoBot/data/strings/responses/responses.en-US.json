@@ -682,7 +682,7 @@
   "clpa_obsolete": ":tada: **Patreon currency rewards are now automatic!** :tada:\nThis command is now obsolete.\nIf you did not receive your reward for this month's pledge, below are some of the reasons as to why that might be.",
   "clpa_fail_already": "Maybe you've already received your reward for this month. You can receive rewards only once a month unless you increase your pledge.\nYou can check it by using `.curtrs` command.",
   "clpa_fail_already_title": "Already rewarded",
-  "clpa_fail_conn": "Your discord account might not be connected to Patreon. If you are unsure what that means, or don't know how to connect it - you have to go to [Patreon account settings page](https://patreon.com/settings/account) and click 'Connect to discord' button.",
+  "clpa_fail_conn": "Your discord account might not be connected to Patreon. If you are unsure what that means, or don't know how to connect it - you have to go to [Patreon account settings page](https://www.patreon.com/settings/apps) and click 'Connect to discord' button.",
   "clpa_fail_conn_title": "Discord account not connected",
   "clpa_fail_sup": "In order to be eligible for the reward, you must support the project on patreon. You can use {0} command to get the link.",
   "clpa_fail_sup_title": "Not supporting",
