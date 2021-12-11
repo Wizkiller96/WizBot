@@ -6,6 +6,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ### Added
 - `.remindl` and `.remindrm` commands now supports optional 'server' parameter for Administrators which allows them to delete any reminder created on the server
+- Added slots.currencyFontColor to gambling.yml
 
 ### Fixed
 - `.crypto` now supports top 5000 coins

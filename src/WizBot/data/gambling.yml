@@ -1,5 +1,5 @@
 # DO NOT CHANGE
-version: 3
+version: 4
 # Currency settings
 currency:
   # What is the emoji/character which represents the currency
@@ -240,3 +240,7 @@ patreonCurrencyPerCent: 1
 # Currency reward per vote.
 # This will work only if you've set up VotesApi and correct credentials for topgg and/or discords voting
 voteReward: 100
+# Slot config
+slots:
+  # Hex value of the color which the numbers on the slot image will have.
+  currencyFontColor: ff0000
