@@ -1578,6 +1578,14 @@ crsexport:
   desc: "Exports custom reactions from the current server (or global custom reactions in DMs) into a .yml file"
   args:
     - ""
+quotesimport:
+  desc: "Upload the file or send the raw .yml data with this command to import all quotes from the specified string or file into the current server."
+  args:
+    - "<upload .yml file>"
+quotesexport:
+  desc: "Exports quotes from the current server into a .yml file"
+  args:
+    - ""
 aliaslist:
   desc: "Shows the list of currently set aliases. Paginated."
   args:
@@ -2068,7 +2076,7 @@ rollduel:
     - "50 @Someone"
     - "@Challenger"
 reactionroles:
-  desc: "Specify role names and server emojis with which they're represented, the bot will then add those emojis to the previous message in the channel, and users will be able to get the roles by clicking on the emoji. You can set 'excl' as the parameter before the reactions and roles to make them exclusive. You can have up to 5 of these enabled on one server at a time. Optionally you can specify target message if you don't want it to be the previous one."
+  desc: "Specify role names and server emojis with which they're represented, the bot will then add those emojis to the previous message in the channel, and users will be able to get the roles by clicking on the emoji. You can set 'excl' as the parameter before the reactions and roles to make them exclusive. You can have up to 10 of these enabled on one server at a time. Optionally you can specify target message if you don't want it to be the previous one."
   args:
     - "Gamer :SomeServerEmoji: Streamer :Other: Watcher :Other2:"
     - "excl Horde :Horde: Alliance :Alliance:"

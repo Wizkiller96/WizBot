@@ -7,10 +7,13 @@ using WizBot.Db.Models;
 using WizBot.Extensions;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
+using WizBot.Common.Yml;
 using WizBot.Services;
 using WizBot.Services.Database.Models;
 using WizBot.Db;
+using YamlDotNet.Serialization;
 
 namespace WizBot.Modules.Utility
 {
@@ -20,10 +23,12 @@ namespace WizBot.Modules.Utility
         public class QuoteCommands : WizBotSubmodule
         {
             private readonly DbService _db;
+            private readonly IHttpClientFactory _http;
 
-            public QuoteCommands(DbService db)
+            public QuoteCommands(DbService db, IHttpClientFactory http)
             {
                 _db = db;
+                _http = http;
             }
 
             [WizBotCommand, Aliases]
@@ -247,6 +252,140 @@ namespace WizBot.Modules.Utility
                 }
 
                 await ReplyConfirmLocalizedAsync(strs.quotes_deleted(Format.Bold(keyword.SanitizeAllMentions()))).ConfigureAwait(false);
+            }
+            
+            public class ExportedQuote
+            {
+                public static ExportedQuote FromModel(Quote quote)
+                    => new ExportedQuote()
+                    {
+                        Id = ((kwum)quote.Id).ToString(),
+                        An = quote.AuthorName,
+                        Aid = quote.AuthorId,
+                        Txt = quote.Text
+                    };
+
+                public string Id { get; set; }
+                public string An { get; set; }
+                public ulong Aid { get; set; }
+                public string Txt { get; set; }
+            }
+            
+            private const string _prependExport =
+                @"# Keys are keywords, Each key has a LIST of quotes in the following format:
+# - id: Alphanumeric id used for commands related to the quote. (Note, when using .quotesimport, a new id will be generated.) 
+#   an: Author name 
+#   aid: Author id 
+#   txt: Quote text
+";
+            private static readonly ISerializer _exportSerializer = new SerializerBuilder()
+                .WithEventEmitter(args => new MultilineScalarFlowStyleEmitter(args))
+                .WithNamingConvention(YamlDotNet.Serialization.NamingConventions.CamelCaseNamingConvention.Instance)
+                .WithIndentedSequences()
+                .ConfigureDefaultValuesHandling(DefaultValuesHandling.OmitDefaults)
+                .DisableAliases()
+                .Build();
+            
+            [WizBotCommand, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [RequireUserPermission(GuildPermission.Administrator)]
+            public async Task QuotesExport()
+            {
+                IEnumerable<Quote> quotes;
+                using (var uow = _db.GetDbContext())
+                {
+                    quotes = uow.Quotes
+                        .GetForGuild(ctx.Guild.Id)
+                        .ToList();
+                }
+
+                var crsDict = quotes
+                    .GroupBy(x => x.Keyword)
+                    .ToDictionary(x => x.Key, x => x.Select(ExportedQuote.FromModel));
+            
+                var text = _prependExport + _exportSerializer
+                    .Serialize(crsDict)
+                    .UnescapeUnicodeCodePoints();
+
+                await using var stream = await text.ToStream();
+                await ctx.Channel.SendFileAsync(stream, "quote-export.yml", text: null);
+            }
+
+            [WizBotCommand, Aliases]
+            [RequireContext(ContextType.Guild)]
+            [RequireUserPermission(GuildPermission.Administrator)]
+            [Ratelimit(300)]
+#if GLOBAL_WIZBOT
+            [OwnerOnly]
+#endif
+            public async Task QuotesImport([Leftover]string input = null)
+            {
+                input = input?.Trim();
+
+                _ = ctx.Channel.TriggerTypingAsync();
+
+                if (input is null)
+                {
+                    var attachment = ctx.Message.Attachments.FirstOrDefault();
+                    if (attachment is null)
+                    {
+                        await ReplyErrorLocalizedAsync(strs.expr_import_no_input);
+                        return;
+                    }
+
+                    using var client = _http.CreateClient();
+                    input = await client.GetStringAsync(attachment.Url);
+
+                    if (string.IsNullOrWhiteSpace(input))
+                    {
+                        await ReplyErrorLocalizedAsync(strs.expr_import_no_input);
+                        return;
+                    }
+                }
+
+                var succ = await ImportCrsAsync(ctx.Guild.Id, input);
+                if (!succ)
+                {
+                    await ReplyErrorLocalizedAsync(strs.expr_import_invalid_data);
+                    return;
+                }
+            
+                await ctx.OkAsync();
+            }
+            
+            public async Task<bool> ImportCrsAsync(ulong guildId, string input)
+            {
+                Dictionary<string, List<ExportedQuote>> data;
+                try
+                {
+                    data = Yaml.Deserializer.Deserialize<Dictionary<string, List<ExportedQuote>>>(input);
+                    if (data.Sum(x => x.Value.Count) == 0)
+                        return false;
+                }
+                catch
+                {
+                    return false;
+                }
+
+                await using var uow = _db.GetDbContext();
+                foreach (var entry in data)
+                {
+                    var keyword = entry.Key;
+                    await uow.Quotes
+                        .AddRangeAsync(entry.Value
+                            .Where(quote => !string.IsNullOrWhiteSpace(quote.Txt))
+                            .Select(quote => new Quote()
+                            {
+                                GuildId = guildId,
+                                Keyword = keyword,
+                                Text = quote.Txt,
+                                AuthorId = quote.Aid,
+                                AuthorName = quote.An,
+                            }));
+                }
+
+                await uow.SaveChangesAsync();
+                return true;
             }
         }
     }

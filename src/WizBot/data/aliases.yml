@@ -1265,6 +1265,12 @@ imageonlychannel:
   - imagesonly
 coordreload:
   - coordreload
+quotesexport:
+  - quotesexport
+  - qexport
+quotesimport:
+  - quotesimport
+  - qimport
 feedback:
   - feedback
   - fb
