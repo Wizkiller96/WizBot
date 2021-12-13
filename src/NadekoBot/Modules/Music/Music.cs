@@ -763,7 +763,7 @@ namespace NadekoBot.Modules.Music
 
          [NadekoCommand, Aliases]
          [RequireContext(ContextType.Guild)]
-         [RequireUserPermission(GuildPermission.Administrator)]
+         [UserPerm(GuildPerm.Administrator)]
          public async Task MusicQuality()
          {
              var quality = await _service.GetMusicQualityAsync(ctx.Guild.Id);
@@ -772,7 +772,7 @@ namespace NadekoBot.Modules.Music
          
          [NadekoCommand, Aliases]
          [RequireContext(ContextType.Guild)]
-         [RequireUserPermission(GuildPermission.Administrator)]
+         [UserPerm(GuildPerm.Administrator)]
          public async Task MusicQuality(QualityPreset preset)
          {
              await _service.SetMusicQualityAsync(ctx.Guild.Id, preset);
