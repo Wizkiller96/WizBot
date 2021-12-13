@@ -611,7 +611,7 @@ quoteid:
   args:
     - "123456"
 quotedelete:
-  desc: "Deletes a quote with the specified ID. You have to be either server Administrator or the creator of the quote to delete it."
+  desc: "Deletes a quote with the specified ID. You have to either have the Manage Messages permission or be the creator of the quote to delete it."
   args:
     - "123456"
 draw:
