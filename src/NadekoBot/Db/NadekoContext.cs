@@ -60,6 +60,8 @@ namespace NadekoBot.Services.Database
         public DbSet<WaifuInfo> WaifuInfo { get; set; }
         public DbSet<ImageOnlyChannel> ImageOnlyChannels { get; set; }
         public DbSet<NsfwBlacklistedTag> NsfwBlacklistedTags { get; set; }
+        public DbSet<AutoTranslateChannel> AutoTranslateChannels { get; set; }
+        public DbSet<AutoTranslateUser> AutoTranslateUsers { get; set; }
 
         public NadekoContext(DbContextOptions<NadekoContext> options) : base(options)
         {
@@ -368,6 +370,21 @@ namespace NadekoBot.Services.Database
             modelBuilder.Entity<NsfwBlacklistedTag>(nbt => nbt
                 .HasIndex(x => x.GuildId)
                 .IsUnique(false));
+
+            var atch = modelBuilder.Entity<AutoTranslateChannel>();
+            atch.HasIndex(x => x.GuildId)
+                .IsUnique(false);
+
+            atch.HasIndex(x => x.ChannelId)
+                .IsUnique();
+
+            atch
+                .HasMany(x => x.Users)
+                .WithOne(x => x.Channel)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<AutoTranslateUser>(atu => atu
+                .HasAlternateKey(x => new { x.ChannelId, x.UserId }));
         }
     }
 }

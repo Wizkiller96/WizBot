@@ -1,10 +1,6 @@
-﻿using Discord;
-using Discord.WebSocket;
-using Microsoft.EntityFrameworkCore;
-using NadekoBot.Common;
+﻿using NadekoBot.Common;
 using NadekoBot.Modules.Searches.Common;
 using NadekoBot.Services;
-using NadekoBot.Services.Database.Models;
 using NadekoBot.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -13,18 +9,14 @@ using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
-using NadekoBot.Db;
-using NadekoBot.Modules.Administration;
 using Serilog;
 using HorizontalAlignment = SixLabors.Fonts.HorizontalAlignment;
 using Image = SixLabors.ImageSharp.Image;
@@ -34,70 +26,30 @@ namespace NadekoBot.Modules.Searches.Services
     public class SearchesService : INService
     {
         private readonly IHttpClientFactory _httpFactory;
-        private readonly DiscordSocketClient _client;
         private readonly IGoogleApiService _google;
-        private readonly DbService _db;
         private readonly IImageCache _imgs;
         private readonly IDataCache _cache;
         private readonly FontProvider _fonts;
         private readonly IBotCredentials _creds;
-        private readonly IEmbedBuilderService _eb;
         private readonly NadekoRandom _rng;
-
-        public ConcurrentDictionary<ulong, bool> TranslatedChannels { get; } = new ConcurrentDictionary<ulong, bool>();
-        // (userId, channelId)
-        public ConcurrentDictionary<(ulong UserId, ulong ChannelId), string> UserLanguages { get; } = new ConcurrentDictionary<(ulong, ulong), string>();
 
         public List<WoWJoke> WowJokes { get; } = new List<WoWJoke>();
         public List<MagicItem> MagicItems { get; } = new List<MagicItem>();
         private readonly List<string> _yomamaJokes;
 
-        public SearchesService(DiscordSocketClient client, IGoogleApiService google,
-            DbService db, Bot bot, IDataCache cache, IHttpClientFactory factory,
-            FontProvider fonts, IBotCredentials creds, IEmbedBuilderService eb)
+        public SearchesService(IGoogleApiService google, 
+            IDataCache cache,
+            IHttpClientFactory factory,
+            FontProvider fonts,
+            IBotCredentials creds)
         {
             _httpFactory = factory;
-            _client = client;
             _google = google;
-            _db = db;
             _imgs = cache.LocalImages;
             _cache = cache;
             _fonts = fonts;
             _creds = creds;
-            _eb = eb;
             _rng = new NadekoRandom();
-
-            //translate commands
-            _client.MessageReceived += (msg) =>
-            {
-                var _ = Task.Run(async () =>
-                {
-                    try
-                    {
-                        if (!(msg is SocketUserMessage umsg))
-                            return;
-
-                        if (!TranslatedChannels.TryGetValue(umsg.Channel.Id, out var autoDelete))
-                            return;
-
-                        var key = (umsg.Author.Id, umsg.Channel.Id);
-
-                        if (!UserLanguages.TryGetValue(key, out string langs))
-                            return;
-
-                        var text = await Translate(langs, umsg.Resolve(TagHandling.Ignore))
-                                            .ConfigureAwait(false);
-                        if (autoDelete)
-                            try { await umsg.DeleteAsync().ConfigureAwait(false); } catch { }
-                        
-                        await umsg.Channel.SendConfirmAsync(_eb, $"{umsg.Author.Mention} `:` "
-                            + text.Replace("<@ ", "<@", StringComparison.InvariantCulture)
-                                  .Replace("<@! ", "<@!", StringComparison.InvariantCulture)).ConfigureAwait(false);
-                    }
-                    catch { }
-                });
-                return Task.CompletedTask;
-            };
 
             //joke commands
             if (File.Exists("data/wowjokes.json"))
@@ -338,19 +290,6 @@ namespace NadekoBot.Modules.Searches.Services
 
             return $"https://nadeko-pictures.nyc3.digitaloceanspaces.com/{subpath}/" +
                 _rng.Next(1, max).ToString("000") + ".png";
-        }
-
-        public async Task<string> Translate(string langs, string text = null)
-        {
-            if (string.IsNullOrWhiteSpace(text))
-                throw new ArgumentException("Text is empty or null", nameof(text));
-            var langarr = langs.ToLowerInvariant().Split('>');
-            if (langarr.Length != 2)
-                throw new ArgumentException("Langs does not have 2 parts separated by a >", nameof(langs));
-            var from = langarr[0];
-            var to = langarr[1];
-            text = text?.Trim();
-            return (await _google.Translate(text, from, to).ConfigureAwait(false)).SanitizeMentions(true);
         }
 
         private readonly object yomamaLock = new object();

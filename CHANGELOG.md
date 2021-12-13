@@ -9,6 +9,18 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - Added slots.currencyFontColor to gambling.yml
 - Added `.qexport` and `.qimport` commands which allow you to export and import quotes just like `.crsexport`
 
+### Changed
+- `.at` and `.atl` commands reworked
+  - Persist restarts
+  - Will now only translate non-commands
+  - You can switch between `.at del` and `.at` without clearing the user language registrations
+  - Disabling `.at` will clear all user language registrations on that channel
+  - Users can't register languages if the `.at` is not enabled
+  - Looks much nicer
+    - Bot will now reply to user messages with a translation if `del` is disabled
+    - Bot will make an embed with original and translated text with user avatar and name if `del` is enabled
+  - If the bot is unable to delete messages while having `del` enabled, it will reset back to the no-del behavior for the current session  
+
 ### Fixed
 - `.crypto` now supports top 5000 coins
 
