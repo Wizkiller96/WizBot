@@ -265,7 +265,15 @@ namespace WizBot.Modules.Gambling
             if (amount <= 0)
                 return;
 
-            await _cs.AddAsync(usrId,
+            var usr = await ((DiscordSocketClient)Context.Client).Rest.GetUserAsync(usrId);
+
+            if(usr is null)
+            {
+                await ReplyErrorLocalizedAsync(strs.user_not_found).ConfigureAwait(false);
+                return;
+            }
+
+            await _cs.AddAsync(usr,
                 $"Awarded by bot owner. ({ctx.User.Username}/{ctx.User.Id}) {(msg ?? "")}",
                 amount,
                 gamble: (ctx.Client.CurrentUser.Id != usrId)).ConfigureAwait(false);
