@@ -288,7 +288,7 @@ namespace NadekoBot.Modules.Utility
             
             [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
-            [RequireUserPermission(GuildPermission.Administrator)]
+            [UserPerm(GuildPerm.Administrator)]
             public async Task QuotesExport()
             {
                 IEnumerable<Quote> quotes;
@@ -313,7 +313,7 @@ namespace NadekoBot.Modules.Utility
 
             [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
-            [RequireUserPermission(GuildPermission.Administrator)]
+            [UserPerm(GuildPerm.Administrator)]
             [Ratelimit(300)]
 #if GLOBAL_NADEKO
             [OwnerOnly]
