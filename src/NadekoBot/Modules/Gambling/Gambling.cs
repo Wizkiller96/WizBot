@@ -265,7 +265,15 @@ namespace NadekoBot.Modules.Gambling
             if (amount <= 0)
                 return;
 
-            await _cs.AddAsync(usrId,
+            var usr = await ((DiscordSocketClient)Context.Client).Rest.GetUserAsync(usrId);
+
+            if(usr is null)
+            {
+                await ReplyErrorLocalizedAsync(strs.user_not_found).ConfigureAwait(false);
+                return;
+            }
+
+            await _cs.AddAsync(usr,
                 $"Awarded by bot owner. ({ctx.User.Username}/{ctx.User.Id}) {(msg ?? "")}",
                 amount,
                 gamble: (ctx.Client.CurrentUser.Id != usrId)).ConfigureAwait(false);
@@ -275,7 +283,7 @@ namespace NadekoBot.Modules.Gambling
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         [OwnerOnly]
-        [Priority(2)]
+        [Priority(3)]
         public async Task Award(long amount, [Leftover] IRole role)
         {
             var users = (await ctx.Guild.GetUsersAsync().ConfigureAwait(false))
