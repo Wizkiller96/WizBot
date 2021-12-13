@@ -2153,3 +2153,8 @@ coordreload:
   desc: "Reloads coordinator config"
   args:
     - "" 
+showembed:
+  desc: "Prints the json equivalent of the embed of the message specified by its Id."
+  args:
+    - "820022733172121600"
+    - "#some-channel 820022733172121600"

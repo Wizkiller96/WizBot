@@ -362,7 +362,41 @@ namespace NadekoBot.Modules.Utility
 
             await ctx.Channel.EmbedAsync(embed);
         }
+        
+        [NadekoCommand, Aliases]
+        [RequireContext(ContextType.Guild)]
+        public Task ShowEmbed(ulong messageId)
+            => ShowEmbed((ITextChannel)ctx.Channel, messageId);
 
+        [NadekoCommand, Aliases]
+        [RequireContext(ContextType.Guild)]
+        public async Task ShowEmbed(ITextChannel ch, ulong messageId)
+        {
+            var user = (IGuildUser)ctx.User;
+            var perms = user.GetPermissions(ch);
+            if (!perms.ReadMessageHistory || !perms.ViewChannel)
+            {
+                await ReplyErrorLocalizedAsync(strs.insuf_perms_u);
+                return;
+            }
+
+            var msg = await ch.GetMessageAsync(messageId);
+            if (msg is null)
+            {
+                await ReplyErrorLocalizedAsync(strs.msg_not_found);
+                return;
+            }
+
+            var embed = msg.Embeds.FirstOrDefault();
+            if (embed is null)
+            {
+                await ReplyErrorLocalizedAsync(strs.not_found);
+                return;
+            }
+
+            var json = SmartEmbedText.FromEmbed(embed, msg.Content).ToJson();
+            await SendConfirmAsync(Format.Sanitize(json).Replace("](", "]\\("));
+        }
 
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
@@ -432,6 +466,8 @@ namespace NadekoBot.Modules.Utility
             Any,
             New
         }
+        
+        
         
         // [NadekoCommand, Usage, Description, Aliases]
         // [RequireContext(ContextType.Guild)]

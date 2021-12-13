@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Discord;
 using NadekoBot.Extensions;
 using NadekoBot.Services;
@@ -29,6 +30,47 @@ namespace NadekoBot
             (Footer != null && (!string.IsNullOrWhiteSpace(Footer.Text) || !string.IsNullOrWhiteSpace(Footer.IconUrl))) ||
             (Fields != null && Fields.Length > 0);
 
+        public static SmartEmbedText FromEmbed(IEmbed eb, string plainText = null)
+        {
+            var set = new SmartEmbedText();
+            
+            set.PlainText = plainText;
+            set.Title = eb.Title;
+            set.Description = eb.Description;
+            set.Url = eb.Url;
+            set.Thumbnail = eb.Thumbnail?.Url;
+            set.Image = eb.Image?.Url;
+            set.Author = eb.Author is EmbedAuthor ea
+                ? new()
+                {
+                    Name = ea.Name,
+                    Url = ea.Url,
+                    IconUrl = ea.IconUrl
+                }
+                : null;
+            set.Footer = eb.Footer is EmbedFooter ef
+                ? new()
+                {
+                    Text = ef.Text,
+                    IconUrl = ef.IconUrl
+                }
+                : null;
+
+            if (eb.Fields.Length > 0)
+                set.Fields = eb
+                    .Fields
+                    .Select(field => new SmartTextEmbedField()
+                    {
+                        Inline = field.Inline,
+                        Name = field.Name,
+                        Value = field.Value,
+                    })
+                    .ToArray();
+
+            set.Color = eb.Color?.RawValue ?? 0;
+            return set;
+        }
+        
         public EmbedBuilder GetEmbed()
         {
             var embed = new EmbedBuilder()
