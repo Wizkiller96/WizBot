@@ -284,24 +284,24 @@ namespace NadekoBot.Modules.Utility
 
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
-        [RequireBotPermission(GuildPermission.ManageEmojis)]
-        [RequireUserPermission(GuildPermission.ManageEmojis)]
+        [BotPerm(GuildPerm.ManageEmojis)]
+        [UserPerm(GuildPerm.ManageEmojis)]
         [Priority(2)]
         public Task EmojiAdd(string name, Emote emote)
             => EmojiAdd(name, emote.Url);
         
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
-        [RequireBotPermission(GuildPermission.ManageEmojis)]
-        [RequireUserPermission(GuildPermission.ManageEmojis)]
+        [BotPerm(GuildPerm.ManageEmojis)]
+        [UserPerm(GuildPerm.ManageEmojis)]
         [Priority(1)]
         public Task EmojiAdd(Emote emote)
             => EmojiAdd(emote.Name, emote.Url);
         
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
-        [RequireBotPermission(GuildPermission.ManageEmojis)]
-        [RequireUserPermission(GuildPermission.ManageEmojis)]
+        [BotPerm(GuildPerm.ManageEmojis)]
+        [UserPerm(GuildPerm.ManageEmojis)]
         [Priority(0)]
         public async Task EmojiAdd(string name, string url = null)
         {

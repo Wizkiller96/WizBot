@@ -208,7 +208,7 @@ namespace NadekoBot.Modules.Utility
             [RequireContext(ContextType.Guild)]
             public async Task QuoteDelete(int id)
             {
-                var isAdmin = ((IGuildUser)ctx.Message.Author).GuildPermissions.ManageMessages;
+                var hasManageMessages = ((IGuildUser)ctx.Message.Author).GuildPermissions.ManageMessages;
 
                 var success = false;
                 string response;
@@ -216,7 +216,7 @@ namespace NadekoBot.Modules.Utility
                 {
                     var q = uow.Quotes.GetById(id);
 
-                    if ((q?.GuildId != ctx.Guild.Id) || (!isAdmin && q.AuthorId != ctx.Message.Author.Id))
+                    if ((q?.GuildId != ctx.Guild.Id) || (!hasManageMessages && q.AuthorId != ctx.Message.Author.Id))
                     {
                         response = GetText(strs.quotes_remove_none);
                     }
@@ -288,7 +288,7 @@ namespace NadekoBot.Modules.Utility
             
             [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
-            [RequireUserPermission(GuildPermission.Administrator)]
+            [UserPerm(GuildPerm.Administrator)]
             public async Task QuotesExport()
             {
                 IEnumerable<Quote> quotes;
@@ -313,7 +313,7 @@ namespace NadekoBot.Modules.Utility
 
             [NadekoCommand, Aliases]
             [RequireContext(ContextType.Guild)]
-            [RequireUserPermission(GuildPermission.Administrator)]
+            [UserPerm(GuildPerm.Administrator)]
             [Ratelimit(300)]
 #if GLOBAL_NADEKO
             [OwnerOnly]
