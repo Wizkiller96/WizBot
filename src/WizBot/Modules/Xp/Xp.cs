@@ -40,7 +40,7 @@ namespace WizBot.Modules.Xp
 
         [WizBotCommand, Aliases]
         [RequireContext(ContextType.Guild)]
-        [RequireUserPermission(GuildPermission.Administrator)]
+        [UserPerm(GuildPerm.Administrator)]
         public async Task XpRewsReset()
         {
             var reply = await PromptUserConfirmAsync(_eb.Create()

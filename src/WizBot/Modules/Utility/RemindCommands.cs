@@ -90,7 +90,7 @@ namespace WizBot.Modules.Utility
 
             [WizBotCommand, Aliases]
             [RequireContext(ContextType.Guild)]
-            [RequireUserPermission(GuildPermission.Administrator)]
+            [UserPerm(GuildPerm.Administrator)]
             [Priority(0)]
             public Task RemindList(Server _, int page = 1)
                 => RemindList(page, true);
@@ -151,7 +151,7 @@ namespace WizBot.Modules.Utility
 
             [WizBotCommand, Aliases]
             [RequireContext(ContextType.Guild)]
-            [RequireUserPermission(GuildPermission.Administrator)]
+            [UserPerm(GuildPerm.Administrator)]
             [Priority(0)]
             public Task RemindDelete(Server _, int index)
                 => RemindDelete(index, true);
