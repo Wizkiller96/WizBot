@@ -11,11 +11,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using NadekoBot.Common.Replacements;
 using NadekoBot.Services;
 using Serilog;
+using SystemTextJsonSamples;
+using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
 namespace NadekoBot.Modules.Utility
 {
@@ -368,6 +371,13 @@ namespace NadekoBot.Modules.Utility
         public Task ShowEmbed(ulong messageId)
             => ShowEmbed((ITextChannel)ctx.Channel, messageId);
 
+        private static readonly JsonSerializerOptions _showEmbedSerializerOptions = new JsonSerializerOptions()
+        {
+            WriteIndented = true,
+            IgnoreNullValues = true,
+            PropertyNamingPolicy = LowerCaseNamingPolicy.Default
+        };
+            
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task ShowEmbed(ITextChannel ch, ulong messageId)
@@ -394,7 +404,7 @@ namespace NadekoBot.Modules.Utility
                 return;
             }
 
-            var json = SmartEmbedText.FromEmbed(embed, msg.Content).ToJson();
+            var json = SmartEmbedText.FromEmbed(embed, msg.Content).ToJson(_showEmbedSerializerOptions);
             await SendConfirmAsync(Format.Sanitize(json).Replace("](", "]\\("));
         }
 

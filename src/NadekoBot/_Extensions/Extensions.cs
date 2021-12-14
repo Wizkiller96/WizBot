@@ -22,10 +22,12 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NadekoBot.Common.Attributes;
 using Color = Discord.Color;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace NadekoBot.Extensions
 {
@@ -286,8 +288,8 @@ namespace NadekoBot.Extensions
         public static async Task<IEnumerable<IGuildUser>> GetMembersAsync(this IRole role) =>
             (await role.Guild.GetUsersAsync(CacheMode.CacheOnly).ConfigureAwait(false)).Where(u => u.RoleIds.Contains(role.Id)) ?? Enumerable.Empty<IGuildUser>();
 
-        public static string ToJson<T>(this T any, Formatting formatting = Formatting.Indented) =>
-            JsonConvert.SerializeObject(any, formatting);
+        public static string ToJson<T>(this T any, JsonSerializerOptions options = null) =>
+            JsonSerializer.Serialize(any, options);
 
         /// <summary>
         /// Adds fallback fonts to <see cref="TextOptions"/>
