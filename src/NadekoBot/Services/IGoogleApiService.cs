@@ -7,7 +7,7 @@ namespace NadekoBot.Services
 {
     public interface IGoogleApiService : INService
     {
-        IEnumerable<string> Languages { get; }
+        IReadOnlyDictionary<string, string> Languages { get; }
 
         Task<IEnumerable<string>> GetVideoLinksByKeywordAsync(string keywords, int count = 1);
         Task<IEnumerable<(string Name, string Id, string Url)>> GetVideoInfosByKeywordAsync(string keywords, int count = 1);

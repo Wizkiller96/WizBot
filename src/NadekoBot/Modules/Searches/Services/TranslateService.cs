@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using AngleSharp.Common;
 using Discord;
 using Discord.Net;
 using LinqToDB;
@@ -12,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Extensions;
 using NadekoBot.Services;
+using NadekoBot.Services.Database;
 
 namespace NadekoBot.Modules.Searches
 {
@@ -49,7 +51,7 @@ namespace NadekoBot.Modules.Searches
             foreach (var c in cs)
             {
                 _atcs[c.ChannelId] = c.AutoDelete;
-                _users[c.ChannelId] = new(c.Users.ToDictionary(x => x.UserId, x => (x.Source, x.Target)));
+                _users[c.ChannelId] = new(c.Users.ToDictionary(x => x.UserId, x => (x.Source.ToLower(), x.Target.ToLower())));
             }
         }
 
@@ -162,11 +164,19 @@ namespace NadekoBot.Modules.Searches
         }
 
 
+        private void UpdateUser(ulong channelId, ulong userId, string from, string to)
+        {
+            var dict = _users.GetOrAdd(channelId, new ConcurrentDictionary<ulong, (string, string)>());
+            dict[userId] = (from, to);
+        }
+        
         public async Task<bool?> RegisterUserAsync(ulong userId, ulong channelId, string from, string to)
         {
+            if (!_google.Languages.ContainsKey(from) || !_google.Languages.ContainsKey(to))
+                return null;
+
             var ctx = _db.GetDbContext();
             var ch = await ctx.AutoTranslateChannels
-                .ToLinqToDBTable()
                 .GetByChannelId(channelId);
             
             if (ch is null)
@@ -186,19 +196,25 @@ namespace NadekoBot.Modules.Searches
                 
                 await ctx.SaveChangesAsync();
 
-                var dict = _users.GetOrAdd(channelId, new ConcurrentDictionary<ulong, (string, string)>());
-                dict[userId] = (from, to);
+                UpdateUser(channelId, userId, from, to);
+                
+                return true;
+            }
+            
+            // if it's different from old settings, update
+            if (user.Source != from || user.Target != to)
+            {
+                user.Source = from;
+                user.Target = to;
+                
+                await ctx.SaveChangesAsync();
 
+                UpdateUser(channelId, userId, from, to);
+                
                 return true;
             }
 
-            ctx.AutoTranslateUsers.Remove(user);
-            await ctx.SaveChangesAsync();
-            
-            if (_users.TryGetValue(channelId, out var inner))
-                inner.TryRemove(userId, out _);
-            
-            return true;
+            return await UnregisterUser(channelId, userId);
         }
 
         public async Task<bool> UnregisterUser(ulong channelId, ulong userId)
@@ -216,6 +232,6 @@ namespace NadekoBot.Modules.Searches
             return rows > 0;
         }
         
-        public IEnumerable<string> GetLanguages() => _google.Languages;
+        public IEnumerable<string> GetLanguages() => _google.Languages.Select(x => x.Key);
     } 
 }

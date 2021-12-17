@@ -226,8 +226,7 @@ namespace NadekoBot.Services
             return new ImageResult(search.Items[0].Image, search.Items[0].Link);
         }
 
-        public IEnumerable<string> Languages => _languageDictionary.Keys.OrderBy(x => x);
-        private readonly Dictionary<string, string> _languageDictionary = new Dictionary<string, string>() {
+        public IReadOnlyDictionary<string, string> Languages { get; } = new Dictionary<string, string>() {
                     { "afrikaans", "af"},
                     { "albanian", "sq"},
                     { "arabic", "ar"},
@@ -365,8 +364,8 @@ namespace NadekoBot.Services
             await Task.Yield();
             string text;
 
-            if (!_languageDictionary.ContainsKey(sourceLanguage) ||
-               !_languageDictionary.ContainsKey(targetLanguage))
+            if (!Languages.ContainsKey(sourceLanguage) ||
+               !Languages.ContainsKey(targetLanguage))
                 throw new ArgumentException(nameof(sourceLanguage) + "/" + nameof(targetLanguage));
 
 
@@ -385,7 +384,7 @@ namespace NadekoBot.Services
 
         private string ConvertToLanguageCode(string language)
         {
-            _languageDictionary.TryGetValue(language, out var mode);
+            Languages.TryGetValue(language, out var mode);
             return mode;
         }
     }

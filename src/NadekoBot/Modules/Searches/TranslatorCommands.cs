@@ -70,7 +70,10 @@ namespace NadekoBot.Modules.Searches
             [RequireContext(ContextType.Guild)]
             public async Task AutoTransLang(string from, string to)
             {
-                var succ = await _service.RegisterUserAsync(ctx.User.Id, ctx.Channel.Id, from, to);
+                var succ = await _service.RegisterUserAsync(ctx.User.Id,
+                    ctx.Channel.Id,
+                    from.ToLower(),
+                    to.ToLower());
 
                 if (succ is null)
                 {
