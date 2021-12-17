@@ -20,7 +20,7 @@ namespace NadekoBot.Services
         private readonly IBotCredentials _creds;
         private readonly DateTime _started;
 
-        public const string BotVersion = "3.0.10";
+        public const string BotVersion = "3.0.11";
         public string Author => "Kwoth#2452";
         public string Library => "Discord.Net";
         public double MessagesPerSecond => MessageCounter / GetUptime().TotalSeconds;
