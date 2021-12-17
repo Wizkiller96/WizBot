@@ -122,9 +122,9 @@ namespace NadekoBot.Modules.Utility
 
                 if (pageUsers.Count == 0)
                     return _eb.Create().WithOkColor().WithDescription(GetText(strs.no_user_on_this_page));
-                    
+
                 return _eb.Create().WithOkColor()
-                    .WithTitle(GetText(strs.inrole_list(Format.Bold(role?.Name ?? "No Role") + $" - {roleUsers.Length}")))
+                    .WithTitle(GetText(strs.inrole_list(Format.Bold(role?.Name ?? "No Role"), roleUsers.Length)))
                     .WithDescription(string.Join("\n", pageUsers));
             }, roleUsers.Length, 20).ConfigureAwait(false);
         }
