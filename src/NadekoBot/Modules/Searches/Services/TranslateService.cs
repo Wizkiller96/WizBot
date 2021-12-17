@@ -56,6 +56,9 @@ namespace NadekoBot.Modules.Searches
         
         public async Task LateExecute(IGuild guild, IUserMessage msg)
         {
+            if (string.IsNullOrWhiteSpace(msg.Content))
+                return;
+            
             if (msg is IUserMessage { Channel: ITextChannel tch } um)
             {
                 if (!_atcs.TryGetValue(tch.Id, out var autoDelete))
@@ -67,7 +70,8 @@ namespace NadekoBot.Modules.Searches
 
                 var output = await _google.Translate(msg.Content, langs.From, langs.To);
 
-                if (string.IsNullOrWhiteSpace(output))
+                if (string.IsNullOrWhiteSpace(output) 
+                    || msg.Content.Equals(output, StringComparison.InvariantCultureIgnoreCase))
                     return;
 
                 var embed = _eb.Create()
