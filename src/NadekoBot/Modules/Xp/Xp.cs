@@ -1,4 +1,4 @@
-﻿using Discord;
+using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using NadekoBot.Common.Attributes;
@@ -274,7 +274,7 @@ namespace NadekoBot.Modules.Xp
             }
             else
             {
-                await ReplyConfirmLocalizedAsync(strs.excluded(Format.Bold(channel.ToString())));
+                await ReplyConfirmLocalizedAsync(strs.not_excluded(Format.Bold(channel.ToString())));
             }
         }
 
