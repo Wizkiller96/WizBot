@@ -12,7 +12,7 @@ namespace NadekoBot.Modules.Searches
         public class TranslateCommands : NadekoSubmodule<ITranslateService>
         {
             [NadekoCommand, Aliases]
-            public async Task Translate(string from, string to, [Leftover] string text = null)
+            public async Task Translate(string from, string to, [Leftover] string text)
             {
                 try
                 {
