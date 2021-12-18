@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using AngleSharp.Common;
 using Discord;
 using Discord.Net;
 using LinqToDB;
@@ -13,7 +12,6 @@ using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Extensions;
 using NadekoBot.Services;
-using NadekoBot.Services.Database;
 
 namespace NadekoBot.Modules.Searches
 {
