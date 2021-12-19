@@ -32,7 +32,7 @@ public partial class Games
             var (options, _) = OptionsParser.ParseFrom(new TypingGame.Options(), args);
             var channel = (ITextChannel)ctx.Channel;
 
-            var game = _service.RunningContests.GetOrAdd(ctx.Guild.Id, id => new TypingGame(_games, _client, channel, Prefix, options, _eb));
+            var game = _service.RunningContests.GetOrAdd(ctx.Guild.Id, id => new(_games, _client, channel, Prefix, options, _eb));
 
             if (game.IsActive)
             {

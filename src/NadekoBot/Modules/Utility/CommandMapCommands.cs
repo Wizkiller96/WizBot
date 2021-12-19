@@ -74,19 +74,19 @@ public partial class Utility
                 await ReplyConfirmLocalizedAsync(strs.alias_removed(Format.Code(trigger))).ConfigureAwait(false);
                 return;
             }
-            _service.AliasMaps.AddOrUpdate(ctx.Guild.Id, (_) =>
+            _service.AliasMaps.AddOrUpdate(ctx.Guild.Id, _ =>
             {
                 using (var uow = _db.GetDbContext())
                 {
                     var config = uow.GuildConfigsForId(ctx.Guild.Id, set => set.Include(x => x.CommandAliases));
-                    config.CommandAliases.Add(new CommandAlias()
+                    config.CommandAliases.Add(new()
                     {
                         Mapping = mapping,
                         Trigger = trigger
                     });
                     uow.SaveChanges();
                 }
-                return new ConcurrentDictionary<string, string>(new Dictionary<string, string>() {
+                return new(new Dictionary<string, string>() {
                     {trigger.Trim().ToLowerInvariant(), mapping.ToLowerInvariant() },
                 });
             }, (_, map) =>
@@ -131,7 +131,7 @@ public partial class Utility
 
             var arr = maps.ToArray();
 
-            await ctx.SendPaginatedConfirmAsync(page, (curPage) =>
+            await ctx.SendPaginatedConfirmAsync(page, curPage =>
             {
                 return _eb.Create().WithOkColor()
                     .WithTitle(GetText(strs.alias_list))

@@ -26,7 +26,7 @@ public class RemoteGrpcCoordinator : ICoordinator, IReadyExecutor
         
     public bool RestartBot()
     {
-        _coordClient.RestartAllShards(new RestartAllRequest
+        _coordClient.RestartAllShards(new()
         {
                 
         });
@@ -36,7 +36,7 @@ public class RemoteGrpcCoordinator : ICoordinator, IReadyExecutor
 
     public void Die(bool graceful)
     {
-        _coordClient.Die(new DieRequest()
+        _coordClient.Die(new()
         {
             Graceful = graceful
         });
@@ -44,7 +44,7 @@ public class RemoteGrpcCoordinator : ICoordinator, IReadyExecutor
 
     public bool RestartShard(int shardId)
     {
-        _coordClient.RestartShard(new RestartShardRequest
+        _coordClient.RestartShard(new()
         {
             ShardId = shardId,
         });
@@ -54,7 +54,7 @@ public class RemoteGrpcCoordinator : ICoordinator, IReadyExecutor
 
     public IList<ShardStatus> GetAllShardStatuses()
     {
-        var res = _coordClient.GetAllStatuses(new GetAllStatusesRequest());
+        var res = _coordClient.GetAllStatuses(new());
 
         return res.Statuses
             .ToArray()
@@ -69,7 +69,7 @@ public class RemoteGrpcCoordinator : ICoordinator, IReadyExecutor
 
     public int GetGuildCount()
     {
-        var res = _coordClient.GetAllStatuses(new GetAllStatusesRequest());
+        var res = _coordClient.GetAllStatuses(new());
 
         return res.Statuses.Sum(x => x.GuildCount);
     }
@@ -88,7 +88,7 @@ public class RemoteGrpcCoordinator : ICoordinator, IReadyExecutor
             {
                 try
                 {
-                    var reply = await _coordClient.HeartbeatAsync(new HeartbeatRequest
+                    var reply = await _coordClient.HeartbeatAsync(new()
                     {
                         State = ToCoordConnState(_client.ConnectionState),
                         GuildCount = _client.ConnectionState == ConnectionState.Connected ? _client.Guilds.Count : 0,

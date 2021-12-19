@@ -245,12 +245,12 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
         var locks = new object[concurrencyLevel];
         for (var i = 0; i < locks.Length; i++)
         {
-            locks[i] = new object();
+            locks[i] = new();
         }
 
         var countPerLock = new int[locks.Length];
         var buckets = new Node[capacity];
-        _tables = new Tables(buckets, locks, countPerLock);
+        _tables = new(buckets, locks, countPerLock);
 
         _growLockArray = growLockArray;
         _budget = buckets.Length / locks.Length;
@@ -480,7 +480,7 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
                 }
 
                 // The item was not found in the bucket. Insert the new item.
-                Volatile.Write(ref tables.Buckets[bucketNo], new Node(item, hashcode, tables.Buckets[bucketNo]));
+                Volatile.Write(ref tables.Buckets[bucketNo], new(item, hashcode, tables.Buckets[bucketNo]));
                 checked
                 {
                     tables.CountPerLock[lockNo]++;
@@ -628,7 +628,7 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
                 Array.Copy(tables.Locks, 0, newLocks, 0, tables.Locks.Length);
                 for (var i = tables.Locks.Length; i < newLocks.Length; i++)
                 {
-                    newLocks[i] = new object();
+                    newLocks[i] = new();
                 }
             }
 
@@ -644,7 +644,7 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
                     var next = current.Next;
                     GetBucketAndLockNo(current.Hashcode, out var newBucketNo, out var newLockNo, newBuckets.Length, newLocks.Length);
 
-                    newBuckets[newBucketNo] = new Node(current.Item, current.Hashcode, newBuckets[newBucketNo]);
+                    newBuckets[newBucketNo] = new(current.Item, current.Hashcode, newBuckets[newBucketNo]);
 
                     checked
                     {
@@ -659,7 +659,7 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
             _budget = Math.Max(1, newBuckets.Length / newLocks.Length);
 
             // Replace tables with the new versions
-            _tables = new Tables(newBuckets, newLocks, newCountPerLock);
+            _tables = new(newBuckets, newLocks, newCountPerLock);
         }
         finally
         {

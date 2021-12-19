@@ -43,7 +43,7 @@ public class TriviaGame
         TriviaOptions options, string quitCommand, IEmbedBuilderService eb)
     {
         _cache = cache;
-        _questionPool = new TriviaQuestionPool(_cache);
+        _questionPool = new(_cache);
         _strings = strings;
         _client = client;
         _config = config;
@@ -65,7 +65,7 @@ public class TriviaGame
         while (!ShouldStopGame)
         {
             // reset the cancellation source    
-            _triviaCancelSource = new CancellationTokenSource();
+            _triviaCancelSource = new();
             showHowToQuit = !showHowToQuit;
 
             // load question

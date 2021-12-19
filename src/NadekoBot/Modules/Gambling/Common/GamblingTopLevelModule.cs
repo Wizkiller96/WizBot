@@ -13,7 +13,7 @@ public abstract class GamblingModule<TService> : NadekoModule<TService>
         
     protected GamblingModule(GamblingConfigService gambService)
     {
-        _lazyConfig = new Lazy<GamblingConfig>(() => gambService.Data);
+        _lazyConfig = new(() => gambService.Data);
     }
 
     private async Task<bool> InternalCheckBet(long amount)

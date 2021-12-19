@@ -21,14 +21,14 @@ public class ImageCacherObject : IComparable<ImageCacherObject>
         }
         this.SearchType = type;
         this.Rating = obj.Rating;
-        this.Tags = new HashSet<string>((obj.Tags ?? obj.TagString).Split(' '));
+        this.Tags = new((obj.Tags ?? obj.TagString).Split(' '));
     }
 
     public ImageCacherObject(string url, Booru type, string tags, string rating)
     {
         this.SearchType = type;
         this.FileUrl = url;
-        this.Tags = new HashSet<string>(tags.Split(' '));
+        this.Tags = new(tags.Split(' '));
         this.Rating = rating;
     }
 

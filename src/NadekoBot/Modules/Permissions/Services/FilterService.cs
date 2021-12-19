@@ -87,19 +87,19 @@ public sealed class FilterService : IEarlyBehavior
                 .Where(gc => ids.Contains(gc.GuildId))
                 .ToList();
                     
-            InviteFilteringServers = new ConcurrentHashSet<ulong>(configs.Where(gc => gc.FilterInvites).Select(gc => gc.GuildId));
-            InviteFilteringChannels = new ConcurrentHashSet<ulong>(configs.SelectMany(gc => gc.FilterInvitesChannelIds.Select(fci => fci.ChannelId)));
+            InviteFilteringServers = new(configs.Where(gc => gc.FilterInvites).Select(gc => gc.GuildId));
+            InviteFilteringChannels = new(configs.SelectMany(gc => gc.FilterInvitesChannelIds.Select(fci => fci.ChannelId)));
 
-            LinkFilteringServers = new ConcurrentHashSet<ulong>(configs.Where(gc => gc.FilterLinks).Select(gc => gc.GuildId));
-            LinkFilteringChannels = new ConcurrentHashSet<ulong>(configs.SelectMany(gc => gc.FilterLinksChannelIds.Select(fci => fci.ChannelId)));
+            LinkFilteringServers = new(configs.Where(gc => gc.FilterLinks).Select(gc => gc.GuildId));
+            LinkFilteringChannels = new(configs.SelectMany(gc => gc.FilterLinksChannelIds.Select(fci => fci.ChannelId)));
 
             var dict = configs.ToDictionary(gc => gc.GuildId, gc => new ConcurrentHashSet<string>(gc.FilteredWords.Select(fw => fw.Word)));
 
-            ServerFilteredWords = new ConcurrentDictionary<ulong, ConcurrentHashSet<string>>(dict);
+            ServerFilteredWords = new(dict);
 
             var serverFiltering = configs.Where(gc => gc.FilterWords);
-            WordFilteringServers = new ConcurrentHashSet<ulong>(serverFiltering.Select(gc => gc.GuildId));
-            WordFilteringChannels = new ConcurrentHashSet<ulong>(configs.SelectMany(gc => gc.FilterWordsChannelIds.Select(fwci => fwci.ChannelId)));
+            WordFilteringServers = new(serverFiltering.Select(gc => gc.GuildId));
+            WordFilteringChannels = new(configs.SelectMany(gc => gc.FilterWordsChannelIds.Select(fwci => fwci.ChannelId)));
         }
 
         client.MessageUpdated += (oldData, newMsg, channel) =>

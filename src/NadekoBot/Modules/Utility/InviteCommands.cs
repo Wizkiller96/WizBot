@@ -42,7 +42,7 @@ public partial class Utility
 
             var invites = await channel.GetInvitesAsync().ConfigureAwait(false);
 
-            await ctx.SendPaginatedConfirmAsync(page, (cur) =>
+            await ctx.SendPaginatedConfirmAsync(page, cur =>
             {
                 var i = 1;
                 var invs = invites

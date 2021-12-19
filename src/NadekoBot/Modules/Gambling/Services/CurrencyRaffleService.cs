@@ -34,7 +34,7 @@ public class CurrencyRaffleService : INService
             if (!Games.TryGetValue(channelId, out var crg))
             {
                 newGame = true;
-                crg = new CurrencyRaffleGame(mixed
+                crg = new(mixed
                     ? CurrencyRaffleGame.Type.Mixed
                     : CurrencyRaffleGame.Type.Normal);
                 Games.Add(channelId, crg);

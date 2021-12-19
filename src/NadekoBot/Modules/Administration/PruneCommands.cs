@@ -23,9 +23,9 @@ public partial class Administration
             var user = await ctx.Guild.GetCurrentUserAsync().ConfigureAwait(false);
 
             if (parameter == "-s" || parameter == "--safe")
-                await _service.PruneWhere((ITextChannel)ctx.Channel, 100, (x) => x.Author.Id == user.Id && !x.IsPinned).ConfigureAwait(false);
+                await _service.PruneWhere((ITextChannel)ctx.Channel, 100, x => x.Author.Id == user.Id && !x.IsPinned).ConfigureAwait(false);
             else
-                await _service.PruneWhere((ITextChannel)ctx.Channel, 100, (x) => x.Author.Id == user.Id).ConfigureAwait(false);
+                await _service.PruneWhere((ITextChannel)ctx.Channel, 100, x => x.Author.Id == user.Id).ConfigureAwait(false);
             ctx.Message.DeleteAfter(3);
         }
         // prune x
@@ -43,7 +43,7 @@ public partial class Administration
                 count = 1000;
 
             if (parameter == "-s" || parameter == "--safe")
-                await _service.PruneWhere((ITextChannel)ctx.Channel, count, (x) => !x.IsPinned).ConfigureAwait(false);
+                await _service.PruneWhere((ITextChannel)ctx.Channel, count, x => !x.IsPinned).ConfigureAwait(false);
             else
                 await _service.PruneWhere((ITextChannel)ctx.Channel, count, x => true).ConfigureAwait(false);
         }

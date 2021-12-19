@@ -48,7 +48,7 @@ public class PlantPickService : INService
         _fonts = fonts;
         _cs = cs;
         _cmdHandler = cmdHandler;
-        _rng = new NadekoRandom();
+        _rng = new();
         _client = client;
         _gss = gss;
 
@@ -62,7 +62,7 @@ public class PlantPickService : INService
                 .Where(x => guildIds.Contains(x.GuildId))
                 .ToList();
                 
-            _generationChannels = new ConcurrentHashSet<ulong>(configs
+            _generationChannels = new(configs
                 .SelectMany(c => c.GenerateCurrencyChannelIds.Select(obj => obj.ChannelId)));
         }
     }
@@ -155,7 +155,7 @@ public class PlantPickService : INService
             img.Mutate(x =>
             {
                 // measure the size of the text to be drawing
-                var size = TextMeasurer.Measure(pass, new RendererOptions(font, new PointF(0, 0)));
+                var size = TextMeasurer.Measure(pass, new(font, new PointF(0, 0)));
 
                 // fill the background with black, add 5 pixels on each side to make it look better
                 x.FillPolygon(Color.ParseHex("00000080"),
@@ -168,7 +168,7 @@ public class PlantPickService : INService
                 x.DrawText(pass,
                     font,
                     SixLabors.ImageSharp.Color.White,
-                    new PointF(0, 0));
+                    new(0, 0));
             });
             // return image as a stream for easy sending
             return (img.ToStream(format), format.FileExtensions.FirstOrDefault() ?? "png");
@@ -364,7 +364,7 @@ public class PlantPickService : INService
     {
         using (var uow = _db.GetDbContext())
         {
-            uow.PlantedCurrency.Add(new PlantedCurrency
+            uow.PlantedCurrency.Add(new()
             {
                 Amount = amount,
                 GuildId = gid,

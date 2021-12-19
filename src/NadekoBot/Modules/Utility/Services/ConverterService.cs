@@ -33,7 +33,7 @@ public class ConverterService : INService
 
         if (client.ShardId == 0)
         {
-            _currencyUpdater = new Timer(async (shouldLoad) => await UpdateCurrency((bool)shouldLoad).ConfigureAwait(false),
+            _currencyUpdater = new(async shouldLoad => await UpdateCurrency((bool)shouldLoad).ConfigureAwait(false),
                 client.ShardId == 0,
                 TimeSpan.Zero,
                 _updateInterval);

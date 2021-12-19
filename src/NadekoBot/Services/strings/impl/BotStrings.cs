@@ -72,7 +72,7 @@ public class BotStrings : IBotStrings
                 Log.Warning("'{CommandName}' doesn't exist in 'en-US' command strings. Please report this",
                     commandName);
                     
-                return new CommandStrings()
+                return new()
                 {
                     Args = new[] {""},
                     Desc = "?"

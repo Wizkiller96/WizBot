@@ -16,14 +16,14 @@ public class EventPubSub : IPubSub
             Dictionary<Delegate, List<Func<object, ValueTask>>> keyActions;
             if (!_actions.TryGetValue(key.Key, out keyActions))
             {
-                keyActions = new Dictionary<Delegate, List<Func<object, ValueTask>>>();
+                keyActions = new();
                 _actions[key.Key] = keyActions;
             }
 
             List<Func<object, ValueTask>> sameActions;
             if (!keyActions.TryGetValue(action, out sameActions))
             {
-                sameActions = new List<Func<object, ValueTask>>();
+                sameActions = new();
                 keyActions[action] = sameActions;
             }
 

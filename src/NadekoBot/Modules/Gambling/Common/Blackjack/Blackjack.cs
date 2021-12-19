@@ -35,7 +35,7 @@ public class Blackjack
     {
         _cs = cs;
         _db = db;
-        Dealer = new Dealer();
+        Dealer = new();
     }
 
     public void Start()
@@ -105,7 +105,7 @@ public class Blackjack
     {
         var pause = Task.Delay(20000); //10 seconds to decide
         CurrentUser = usr;
-        _currentUserMove = new TaskCompletionSource<bool>();
+        _currentUserMove = new();
         await PrintState().ConfigureAwait(false);
         // either wait for the user to make an action and
         // if he doesn't - stand
@@ -134,7 +134,7 @@ public class Blackjack
                 return false;
             }
 
-            Players.Add(new User(user, bet));
+            Players.Add(new(user, bet));
             var _ = PrintState();
             return true;
         }

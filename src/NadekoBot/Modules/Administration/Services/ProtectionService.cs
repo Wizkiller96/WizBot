@@ -32,7 +32,7 @@ public class ProtectionService : INService
     private readonly UserPunishService _punishService;
         
     private readonly Channel<PunishQueueItem> PunishUserQueue =
-        System.Threading.Channels.Channel.CreateUnbounded<PunishQueueItem>(new UnboundedChannelOptions()
+        System.Threading.Channels.Channel.CreateUnbounded<PunishQueueItem>(new()
         {
             SingleReader = true,
             SingleWriter = false
@@ -134,11 +134,11 @@ public class ProtectionService : INService
         }
 
         if (spam != null)
-            _antiSpamGuilds[gc.GuildId] = new AntiSpamStats() { AntiSpamSettings = spam };
+            _antiSpamGuilds[gc.GuildId] = new() { AntiSpamSettings = spam };
 
         var alt = gc.AntiAltSetting;
         if (alt is not null)
-            _antiAltGuilds[gc.GuildId] = new AntiAltStats(alt);
+            _antiAltGuilds[gc.GuildId] = new(alt);
     }
 
     private Task HandleUserJoined(SocketGuildUser user)
@@ -154,7 +154,7 @@ public class ProtectionService : INService
 
         _ = Task.Run(async () =>
         {
-            if (maybeAlts is AntiAltStats alts)
+            if (maybeAlts is { } alts)
             {
                 if (user.CreatedAt != default)
                 {
@@ -177,7 +177,7 @@ public class ProtectionService : INService
                 
             try
             {
-                if (!(maybeStats is AntiRaidStats stats) || !stats.RaidUsers.Add(user))
+                if (!(maybeStats is { } stats) || !stats.RaidUsers.Add(user))
                     return;
                     
                 ++stats.UsersCount;
@@ -217,13 +217,13 @@ public class ProtectionService : INService
             try
             {
                 if (!_antiSpamGuilds.TryGetValue(channel.Guild.Id, out var spamSettings) ||
-                    spamSettings.AntiSpamSettings.IgnoredChannels.Contains(new AntiSpamIgnore()
+                    spamSettings.AntiSpamSettings.IgnoredChannels.Contains(new()
                     {
                         ChannelId = channel.Id
                     }))
                     return;
 
-                var stats = spamSettings.UserStats.AddOrUpdate(msg.Author.Id, (id) => new UserSpamStats(msg),
+                var stats = spamSettings.UserStats.AddOrUpdate(msg.Author.Id, id => new(msg),
                     (id, old) =>
                     {
                         old.ApplyNextMessage(msg); return old;
@@ -261,7 +261,7 @@ public class ProtectionService : INService
             
         foreach (var gu in gus)
         {
-            await PunishUserQueue.Writer.WriteAsync(new PunishQueueItem()
+            await PunishUserQueue.Writer.WriteAsync(new()
             {
                 Action = action,
                 Type = pt,
@@ -288,7 +288,7 @@ public class ProtectionService : INService
 
         var stats = new AntiRaidStats()
         {
-            AntiRaidSettings = new AntiRaidSetting()
+            AntiRaidSettings = new()
             {
                 Action = action,
                 Seconds = seconds,
@@ -355,7 +355,7 @@ public class ProtectionService : INService
 
         var stats = new AntiSpamStats
         {
-            AntiSpamSettings = new AntiSpamSetting()
+            AntiSpamSettings = new()
             {
                 Action = action,
                 MessageThreshold = messageCount,
@@ -457,7 +457,7 @@ public class ProtectionService : INService
     {
         using var uow = _db.GetDbContext();
         var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.AntiAltSetting));
-        gc.AntiAltSetting = new AntiAltSetting()
+        gc.AntiAltSetting = new()
         {
             Action = action,
             ActionDurationMinutes = actionDurationMinutes,
@@ -466,7 +466,7 @@ public class ProtectionService : INService
         };
 
         await uow.SaveChangesAsync();
-        _antiAltGuilds[guildId] = new AntiAltStats(gc.AntiAltSetting);
+        _antiAltGuilds[guildId] = new(gc.AntiAltSetting);
     }
 
     public async Task<bool> TryStopAntiAlt(ulong guildId)

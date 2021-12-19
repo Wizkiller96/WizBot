@@ -32,7 +32,7 @@ public class CommandMapService : IInputTransformer, INService
                 .Where(x => guildIds.Contains(x.GuildId))
                 .ToList();
                 
-            AliasMaps = new ConcurrentDictionary<ulong, ConcurrentDictionary<string, string>>(configs
+            AliasMaps = new(configs
                 .ToDictionary(
                     x => x.GuildId,
                     x => new ConcurrentDictionary<string, string>(x.CommandAliases
@@ -88,7 +88,7 @@ public class CommandMapService : IInputTransformer, INService
                         var _ = Task.Run(async () =>
                         {
                             await Task.Delay(1500).ConfigureAwait(false);
-                            await toDelete.DeleteAsync(new RequestOptions()
+                            await toDelete.DeleteAsync(new()
                             {
                                 RetryMode = RetryMode.AlwaysRetry
                             }).ConfigureAwait(false);

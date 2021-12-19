@@ -26,7 +26,7 @@ public class StreamRoleService : INService
 
         guildSettings = bot.AllGuildConfigs
             .ToDictionary(x => x.GuildId, x => x.StreamRole)
-            .Where(x => x.Value != null && x.Value.Enabled)
+            .Where(x => x.Value is { Enabled: true })
             .ToConcurrent();
 
         _client.GuildMemberUpdated += Client_GuildMemberUpdated;
@@ -197,7 +197,7 @@ public class StreamRoleService : INService
 
         foreach (var usr in await fromRole.GetMembersAsync().ConfigureAwait(false))
         {
-            if (usr is IGuildUser x)
+            if (usr is { } x)
                 await RescanUser(x, setting, addRole).ConfigureAwait(false);
         }
     }
@@ -304,7 +304,7 @@ public class StreamRoleService : INService
             var users = await guild.GetUsersAsync(CacheMode.CacheOnly).ConfigureAwait(false);
             foreach (var usr in users.Where(x => x.RoleIds.Contains(setting.FromRoleId) || x.RoleIds.Contains(addRole.Id)))
             {
-                if (usr is IGuildUser x)
+                if (usr is { } x)
                     await RescanUser(x, setting, addRole).ConfigureAwait(false);
             }
         }
@@ -312,6 +312,6 @@ public class StreamRoleService : INService
 
     private void UpdateCache(ulong guildId, StreamRoleSettings setting)
     {
-        guildSettings.AddOrUpdate(guildId, (key) => setting, (key, old) => setting);
+        guildSettings.AddOrUpdate(guildId, key => setting, (key, old) => setting);
     }
 }

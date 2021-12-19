@@ -26,7 +26,7 @@ public static class GuildConfigExtensions
             .Include(y => y.StreamRole.Blacklist));
 
         if (conf.StreamRole is null)
-            conf.StreamRole = new StreamRoleSettings();
+            conf.StreamRole = new();
 
         return conf.StreamRole;
     }
@@ -91,7 +91,7 @@ public static class GuildConfigExtensions
 
         if (config is null)
         {
-            ctx.GuildConfigs.Add((config = new GuildConfig
+            ctx.GuildConfigs.Add((config = new()
             {
                 GuildId = guildId,
                 Permissions = Permissionv2.GetDefaultPermlist,
@@ -150,7 +150,7 @@ public static class GuildConfigExtensions
 
         if (config is null) // if there is no guildconfig, create new one
         {
-            ctx.GuildConfigs.Add((config = new GuildConfig
+            ctx.GuildConfigs.Add((config = new()
             {
                 GuildId = guildId,
                 Permissions = Permissionv2.GetDefaultPermlist

@@ -47,8 +47,8 @@ public class TypingGame
 
         this.Channel = channel;
         IsActive = false;
-        sw = new Stopwatch();
-        finishedUserIds = new List<ulong>();
+        sw = new();
+        finishedUserIds = new();
     }
 
     public async Task<bool> Stop()
@@ -85,7 +85,7 @@ public class TypingGame
 
             var time = _options.StartTime;
 
-            var msg = await Channel.SendMessageAsync($"Starting new typing contest in **{time}**...", options: new RequestOptions()
+            var msg = await Channel.SendMessageAsync($"Starting new typing contest in **{time}**...", options: new()
             {
                 RetryMode = RetryMode.AlwaysRetry
             }).ConfigureAwait(false);

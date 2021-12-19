@@ -38,7 +38,7 @@ public class ChatterBotService : IEarlyBehavior
         _eb = eb;
         _httpFactory = factory;
 
-        ChatterBotGuilds = new ConcurrentDictionary<ulong, Lazy<IChatterBotSession>>(
+        ChatterBotGuilds = new(
             bot.AllGuildConfigs
                 .Where(gc => gc.CleverbotEnabled)
                 .ToDictionary(gc => gc.GuildId, gc => new Lazy<IChatterBotSession>(() => CreateSession(), true)));

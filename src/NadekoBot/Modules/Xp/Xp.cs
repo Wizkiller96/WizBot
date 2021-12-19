@@ -350,7 +350,7 @@ public partial class Xp : NadekoModule<XpService>
                 .ToList();
         }
 
-        await ctx.SendPaginatedConfirmAsync(page, (curPage) =>
+        await ctx.SendPaginatedConfirmAsync(page, curPage =>
         {
             var embed = _eb.Create()
                 .WithTitle(GetText(strs.server_leaderboard))

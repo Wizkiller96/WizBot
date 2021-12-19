@@ -22,7 +22,7 @@ public class DbService
         optionsBuilder.UseSqlite(builder.ToString());
         options = optionsBuilder.Options;
 
-        optionsBuilder = new DbContextOptionsBuilder<NadekoContext>();
+        optionsBuilder = new();
         optionsBuilder.UseSqlite(builder.ToString());
         migrateOptions = optionsBuilder.Options;
     }

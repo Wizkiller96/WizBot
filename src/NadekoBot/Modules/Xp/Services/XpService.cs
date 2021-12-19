@@ -89,8 +89,8 @@ public class XpService : INService
         _xpConfig = xpConfig;
         _pubSub = pubSub;
         _eb = eb;
-        _excludedServers = new ConcurrentHashSet<ulong>();
-        _excludedChannels = new ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>>();
+        _excludedServers = new();
+        _excludedChannels = new();
         _client = client;
         _xpTemplateReloadKey = new("xp.template.reload");
 
@@ -130,7 +130,7 @@ public class XpService : INService
                     .Distinct()))
             .ToConcurrent();
 
-        _excludedServers = new ConcurrentHashSet<ulong>(
+        _excludedServers = new(
             allGuildConfigs.Where(x => x.XpSettings.ServerExcluded)
                 .Select(x => x.GuildId));
 
@@ -321,7 +321,7 @@ public class XpService : INService
         catch (Exception ex)
         {
             Log.Error(ex, "Xp template is invalid. Loaded default values");
-            _template = new XpTemplate();
+            _template = new();
             File.WriteAllText("./data/xp_template_backup.json",
                 JsonConvert.SerializeObject(_template, Formatting.Indented));
         }
@@ -354,7 +354,7 @@ public class XpService : INService
                 if (rew != null)
                     rew.Amount = amount;
                 else
-                    settings.CurrencyRewards.Add(new XpCurrencyReward()
+                    settings.CurrencyRewards.Add(new()
                     {
                         Level = level,
                         Amount = amount,
@@ -413,7 +413,7 @@ public class XpService : INService
         }
         else
         {
-            settings.RoleRewards.Add(new XpRoleReward()
+            settings.RoleRewards.Add(new()
             {
                 Level = level,
                 RoleId = roleId,
@@ -598,7 +598,7 @@ public class XpService : INService
 
         if (actualXp > 0)
         {
-            _addMessageXp.Enqueue(new UserCacheItem
+            _addMessageXp.Enqueue(new()
             {
                 Guild = channel.Guild,
                 User = user,
@@ -649,7 +649,7 @@ public class XpService : INService
             if (!SetUserRewarded(user.Id))
                 return;
 
-            _addMessageXp.Enqueue(new UserCacheItem
+            _addMessageXp.Enqueue(new()
             {
                 Guild = user.Guild,
                 Channel = arg.Channel,
@@ -664,7 +664,7 @@ public class XpService : INService
     {
         if (amount <= 0) throw new ArgumentOutOfRangeException(nameof(amount));
             
-        _addMessageXp.Enqueue(new UserCacheItem
+        _addMessageXp.Enqueue(new()
         {
             Guild = user.Guild,
             Channel = channel,
@@ -734,10 +734,10 @@ public class XpService : INService
             await uow.SaveChangesAsync();
         }
 
-        return new FullUserStats(du,
+        return new(du,
             stats,
-            new LevelStats(totalXp),
-            new LevelStats(stats.Xp + stats.AwardedXp),
+            new(totalXp),
+            new(stats.Xp + stats.AwardedXp),
             globalRank,
             guildRank);
     }
@@ -763,7 +763,7 @@ public class XpService : INService
 
     public bool ToggleExcludeRole(ulong guildId, ulong rId)
     {
-        var roles = _excludedRoles.GetOrAdd(guildId, _ => new ConcurrentHashSet<ulong>());
+        var roles = _excludedRoles.GetOrAdd(guildId, _ => new());
         using (var uow = _db.GetDbContext())
         {
             var xpSetting = uow.XpSettingsFor(guildId);
@@ -800,7 +800,7 @@ public class XpService : INService
 
     public bool ToggleExcludeChannel(ulong guildId, ulong chId)
     {
-        var channels = _excludedChannels.GetOrAdd(guildId, _ => new ConcurrentHashSet<ulong>());
+        var channels = _excludedChannels.GetOrAdd(guildId, _ => new());
         using (var uow = _db.GetDbContext())
         {
             var xpSetting = uow.XpSettingsFor(guildId);
@@ -845,7 +845,7 @@ public class XpService : INService
         {
             var usernameTextOptions = new TextGraphicsOptions()
             {
-                TextOptions = new TextOptions()
+                TextOptions = new()
                 {
                     HorizontalAlignment = HorizontalAlignment.Left,
                     VerticalAlignment = VerticalAlignment.Center,
@@ -854,7 +854,7 @@ public class XpService : INService
                 
             var clubTextOptions = new TextGraphicsOptions()
             {
-                TextOptions = new TextOptions()
+                TextOptions = new()
                 {
                     HorizontalAlignment = HorizontalAlignment.Right,
                     VerticalAlignment = VerticalAlignment.Top,
@@ -870,7 +870,7 @@ public class XpService : INService
                     var usernameFont = _fonts.NotoSans
                         .CreateFont(fontSize, FontStyle.Bold);
 
-                    var size = TextMeasurer.Measure($"@{username}", new RendererOptions(usernameFont));
+                    var size = TextMeasurer.Measure($"@{username}", new(usernameFont));
                     var scale = 400f / size.Width;
                     if (scale < 1)
                     {
@@ -884,7 +884,7 @@ public class XpService : INService
                             "@" + username,
                             usernameFont,
                             _template.User.Name.Color,
-                            new PointF(_template.User.Name.Pos.X, _template.User.Name.Pos.Y + 8));
+                            new(_template.User.Name.Pos.X, _template.User.Name.Pos.Y + 8));
                     });
                 }
 
@@ -901,7 +901,7 @@ public class XpService : INService
                         clubName,
                         clubFont,
                         _template.Club.Name.Color,
-                        new PointF(_template.Club.Name.Pos.X + 50, _template.Club.Name.Pos.Y - 8))
+                        new(_template.Club.Name.Pos.X + 50, _template.Club.Name.Pos.Y - 8))
                     );
                 }
 
@@ -913,7 +913,7 @@ public class XpService : INService
                             stats.Global.Level.ToString(),
                             _fonts.NotoSans.CreateFont(_template.User.GlobalLevel.FontSize, FontStyle.Bold),
                             _template.User.GlobalLevel.Color,
-                            new PointF(_template.User.GlobalLevel.Pos.X, _template.User.GlobalLevel.Pos.Y)
+                            new(_template.User.GlobalLevel.Pos.X, _template.User.GlobalLevel.Pos.Y)
                         ); //level
                     });
                 }
@@ -926,7 +926,7 @@ public class XpService : INService
                             stats.Guild.Level.ToString(),
                             _fonts.NotoSans.CreateFont(_template.User.GuildLevel.FontSize, FontStyle.Bold),
                             _template.User.GuildLevel.Color,
-                            new PointF(_template.User.GuildLevel.Pos.X, _template.User.GuildLevel.Pos.Y)
+                            new(_template.User.GuildLevel.Pos.X, _template.User.GuildLevel.Pos.Y)
                         );
                     });
                 }
@@ -952,7 +952,7 @@ public class XpService : INService
                         _fonts.NotoSans.CreateFont(_template.User.Xp.Global.FontSize, FontStyle.Bold),
                         Brushes.Solid(_template.User.Xp.Global.Color),
                         pen,
-                        new PointF(_template.User.Xp.Global.Pos.X, _template.User.Xp.Global.Pos.Y)));
+                        new(_template.User.Xp.Global.Pos.X, _template.User.Xp.Global.Pos.Y)));
                 }
 
                 if (_template.User.Xp.Guild.Show)
@@ -961,7 +961,7 @@ public class XpService : INService
                         _fonts.NotoSans.CreateFont(_template.User.Xp.Guild.FontSize, FontStyle.Bold),
                         Brushes.Solid(_template.User.Xp.Guild.Color),
                         pen,
-                        new PointF(_template.User.Xp.Guild.Pos.X, _template.User.Xp.Guild.Pos.Y)));
+                        new(_template.User.Xp.Guild.Pos.X, _template.User.Xp.Guild.Pos.Y)));
                 }
 
                 if (stats.FullGuildStats.AwardedXp != 0 && _template.User.Xp.Awarded.Show)
@@ -976,7 +976,7 @@ public class XpService : INService
                         _fonts.NotoSans.CreateFont(_template.User.Xp.Awarded.FontSize, FontStyle.Bold),
                         Brushes.Solid(_template.User.Xp.Awarded.Color),
                         pen,
-                        new PointF(awX, awY)));
+                        new(awX, awY)));
                 }
 
                 //ranking
@@ -985,7 +985,7 @@ public class XpService : INService
                     img.Mutate(x => x.DrawText(stats.GlobalRanking.ToString(),
                         _fonts.UniSans.CreateFont(_template.User.GlobalRank.FontSize, FontStyle.Bold),
                         _template.User.GlobalRank.Color,
-                        new PointF(_template.User.GlobalRank.Pos.X, _template.User.GlobalRank.Pos.Y)));
+                        new(_template.User.GlobalRank.Pos.X, _template.User.GlobalRank.Pos.Y)));
                 }
 
                 if (_template.User.GuildRank.Show)
@@ -993,7 +993,7 @@ public class XpService : INService
                     img.Mutate(x => x.DrawText(stats.GuildRanking.ToString(),
                         _fonts.UniSans.CreateFont(_template.User.GuildRank.FontSize, FontStyle.Bold),
                         _template.User.GuildRank.Color,
-                        new PointF(_template.User.GuildRank.Pos.X, _template.User.GuildRank.Pos.Y)));
+                        new(_template.User.GuildRank.Pos.X, _template.User.GuildRank.Pos.Y)));
                 }
 
                 //time on this level
@@ -1010,7 +1010,7 @@ public class XpService : INService
                         x.DrawText(GetTimeSpent(stats.User.LastLevelUp, _template.User.TimeOnLevel.Format),
                             _fonts.NotoSans.CreateFont(_template.User.TimeOnLevel.Global.FontSize, FontStyle.Bold),
                             _template.User.TimeOnLevel.Global.Color,
-                            new PointF(_template.User.TimeOnLevel.Global.Pos.X,
+                            new(_template.User.TimeOnLevel.Global.Pos.X,
                                 _template.User.TimeOnLevel.Global.Pos.Y)));
                 }
 
@@ -1021,7 +1021,7 @@ public class XpService : INService
                             GetTimeSpent(stats.FullGuildStats.LastLevelUp, _template.User.TimeOnLevel.Format),
                             _fonts.NotoSans.CreateFont(_template.User.TimeOnLevel.Guild.FontSize, FontStyle.Bold),
                             _template.User.TimeOnLevel.Guild.Color,
-                            new PointF(_template.User.TimeOnLevel.Guild.Pos.X,
+                            new(_template.User.TimeOnLevel.Guild.Pos.X,
                                 _template.User.TimeOnLevel.Guild.Pos.Y)));
                 }
                 //avatar

@@ -106,7 +106,7 @@ public partial class Searches
                 }
             }
 
-            await ctx.SendPaginatedConfirmAsync(page, (cur) =>
+            await ctx.SendPaginatedConfirmAsync(page, cur =>
             {
                 var elements = streams.Skip(cur * 12).Take(12)
                     .ToList();

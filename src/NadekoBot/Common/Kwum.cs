@@ -44,7 +44,7 @@ public readonly struct kwum : IEquatable<kwum>
             if (!IsValidChar(c))
                 return false;
 
-        value = new kwum(input);
+        value = new(input);
         return true;
     }
 
@@ -80,7 +80,7 @@ public readonly struct kwum : IEquatable<kwum>
             chars[--arrSize] = ValidCharacters[(int)rem];
         }
 
-        return new string(chars);
+        return new(chars);
     }
 
     public override bool Equals(object obj)

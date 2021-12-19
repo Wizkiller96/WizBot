@@ -28,7 +28,7 @@ public class TriviaQuestionPool
         if (isPokemon)
         {
             var num = _rng.Next(1, maxPokemonId + 1);
-            return new TriviaQuestion("Who's That Pokémon?",
+            return new("Who's That Pokémon?",
                 Map[num].ToTitleCase(),
                 "Pokemon",
                 $@"https://nadeko.bot/images/pokemon/shadows/{num}.png",

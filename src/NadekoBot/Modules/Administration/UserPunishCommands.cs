@@ -273,7 +273,7 @@ public partial class Administration
                 return;
             var warnings = _service.WarnlogAll(ctx.Guild.Id);
 
-            await ctx.SendPaginatedConfirmAsync(page, (curPage) =>
+            await ctx.SendPaginatedConfirmAsync(page, curPage =>
             {
                 var ws = warnings.Skip(curPage * 15)
                     .Take(15)
@@ -885,7 +885,7 @@ public partial class Administration
             //do the banning
             await Task.WhenAll(bans
                     .Where(x => x.Id.HasValue)
-                    .Select(x => ctx.Guild.AddBanAsync(x.Id.Value, 7, x.Reason, new RequestOptions()
+                    .Select(x => ctx.Guild.AddBanAsync(x.Id.Value, 7, x.Reason, new()
                     {
                         RetryMode = RetryMode.AlwaysRetry,
                     })))

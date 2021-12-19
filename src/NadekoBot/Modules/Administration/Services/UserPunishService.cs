@@ -30,7 +30,7 @@ public class UserPunishService : INService
         _blacklistService = blacklistService;
         _bcs = bcs;
 
-        _warnExpiryTimer = new Timer(async _ =>
+        _warnExpiryTimer = new(async _ =>
         {
             await CheckAllWarnExpiresAsync();
         }, null, TimeSpan.FromSeconds(0), TimeSpan.FromHours(12));
@@ -330,7 +330,7 @@ WHERE GuildId={guildId}
 
             uow.RemoveRange(toDelete);
 
-            ps.Add(new WarningPunishment()
+            ps.Add(new()
             {
                 Count = number,
                 Punishment = punish,
@@ -437,7 +437,7 @@ WHERE GuildId={guildId}
             }
             else if (template is null)
             {
-                uow.BanTemplates.Add(new BanTemplate()
+                uow.BanTemplates.Add(new()
                 {
                     GuildId = guildId,
                     Text = text,

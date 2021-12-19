@@ -14,7 +14,7 @@ public sealed class UserSpamStats : IDisposable
     public UserSpamStats(IUserMessage msg)
     {
         LastMessage = msg.Content.ToUpperInvariant();
-        timers = new ConcurrentQueue<Timer>();
+        timers = new();
 
         ApplyNextMessage(msg);
     }
@@ -31,7 +31,7 @@ public sealed class UserSpamStats : IDisposable
                 while (timers.TryDequeue(out var old))
                     old.Change(Timeout.Infinite, Timeout.Infinite);
             }
-            var t = new Timer((_) => {
+            var t = new Timer(_ => {
                 if (timers.TryDequeue(out var old))
                     old.Change(Timeout.Infinite, Timeout.Infinite);
             }, null, TimeSpan.FromMinutes(30), TimeSpan.FromMinutes(30));

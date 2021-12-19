@@ -68,7 +68,7 @@ public class TicTacToe
         };
 
         _phase = Phase.Starting;
-        _moveLock = new SemaphoreSlim(1, 1);
+        _moveLock = new(1, 1);
     }
 
     private string GetText(LocStr key)
@@ -149,7 +149,7 @@ public class TicTacToe
 
         _phase = Phase.Started;
 
-        _timeoutTimer = new Timer(async (_) =>
+        _timeoutTimer = new(async _ =>
         {
             await _moveLock.WaitAsync().ConfigureAwait(false);
             try

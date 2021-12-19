@@ -31,9 +31,7 @@ public static class Extensions
 {
     public static Regex UrlRegex = new Regex(@"^(https?|ftp)://(?<path>[^\s/$.?#].[^\s]*)$", RegexOptions.Compiled);
 
-    public static TOut[] Map<TIn, TOut>(this TIn[] arr, Func<TIn, TOut> f)
-        => Array.ConvertAll(arr, x => f(x));
-
+    
     public static Task EditAsync(this IUserMessage msg, SmartText text)
         => text switch
         {
@@ -217,8 +215,8 @@ public static class Extensions
             reactionRemoved = _ => Task.CompletedTask;
 
         var wrap = new ReactionEventWrapper(client, msg);
-        wrap.OnReactionAdded += (r) => { var _ = Task.Run(() => reactionAdded(r)); };
-        wrap.OnReactionRemoved += (r) => { var _ = Task.Run(() => reactionRemoved(r)); };
+        wrap.OnReactionAdded += r => { var _ = Task.Run(() => reactionAdded(r)); };
+        wrap.OnReactionRemoved += r => { var _ = Task.Run(() => reactionRemoved(r)); };
         return wrap;
     }
 
@@ -323,7 +321,7 @@ public static class Extensions
         }
         else
         {
-            img.SaveAsPng(imageStream, new PngEncoder()
+            img.SaveAsPng(imageStream, new()
             {
                 ColorType = PngColorType.RgbWithAlpha,
                 CompressionLevel = PngCompressionLevel.BestCompression

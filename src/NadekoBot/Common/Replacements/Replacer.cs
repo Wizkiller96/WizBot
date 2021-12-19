@@ -26,7 +26,7 @@ public class Replacer
 
         foreach (var item in _regex)
         {
-            input = item.Regex.Replace(input, (m) => item.Replacement(m));
+            input = item.Regex.Replace(input, m => item.Replacement(m));
         }
 
         return input;
@@ -45,18 +45,22 @@ public class Replacer
 
     public SmartEmbedText Replace(SmartEmbedText embedData)
     {
-        var newEmbedData = new SmartEmbedText();
-        newEmbedData.PlainText = Replace(embedData.PlainText);
-        newEmbedData.Description = Replace(embedData.Description);
-        newEmbedData.Title = Replace(embedData.Title);
-        newEmbedData.Thumbnail = Replace(embedData.Thumbnail);
-        newEmbedData.Image = Replace(embedData.Image);
-        newEmbedData.Url = Replace(embedData.Url);
+        var newEmbedData = new SmartEmbedText
+        {
+            PlainText = Replace(embedData.PlainText),
+            Description = Replace(embedData.Description),
+            Title = Replace(embedData.Title),
+            Thumbnail = Replace(embedData.Thumbnail),
+            Image = Replace(embedData.Image),
+            Url = Replace(embedData.Url)
+        };
         if (embedData.Author != null)
         {
-            newEmbedData.Author = new SmartTextEmbedAuthor();
-            newEmbedData.Author.Name = Replace(embedData.Author.Name);
-            newEmbedData.Author.IconUrl = Replace(embedData.Author.IconUrl);
+            newEmbedData.Author = new()
+            {
+                Name = Replace(embedData.Author.Name),
+                IconUrl = Replace(embedData.Author.IconUrl)
+            };
         }
 
         if (embedData.Fields != null)
@@ -64,10 +68,12 @@ public class Replacer
             var fields = new List<SmartTextEmbedField>();
             foreach (var f in embedData.Fields)
             {
-                var newF = new SmartTextEmbedField();
-                newF.Name = Replace(f.Name);
-                newF.Value = Replace(f.Value);
-                newF.Inline = f.Inline;
+                var newF = new SmartTextEmbedField
+                {
+                    Name = Replace(f.Name),
+                    Value = Replace(f.Value),
+                    Inline = f.Inline
+                };
                 fields.Add(newF);
             }
 
@@ -76,9 +82,11 @@ public class Replacer
 
         if (embedData.Footer != null)
         {
-            newEmbedData.Footer = new SmartTextEmbedFooter();
-            newEmbedData.Footer.Text = Replace(embedData.Footer.Text);
-            newEmbedData.Footer.IconUrl = Replace(embedData.Footer.IconUrl);
+            newEmbedData.Footer = new()
+            {
+                Text = Replace(embedData.Footer.Text),
+                IconUrl = Replace(embedData.Footer.IconUrl)
+            };
         }
 
         newEmbedData.Color = embedData.Color;

@@ -112,7 +112,7 @@ public partial class Administration
 
             var (exclusive, roles, groups) = _service.GetRoles(ctx.Guild);
 
-            await ctx.SendPaginatedConfirmAsync(page, (cur) =>
+            await ctx.SendPaginatedConfirmAsync(page, cur =>
             {
                 var rolesStr = new StringBuilder();
                 var roleGroups = roles

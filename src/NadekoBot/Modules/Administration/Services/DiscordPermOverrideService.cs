@@ -64,7 +64,7 @@ public class DiscordPermOverrideService : INService, ILateBlocker
             if (over is null)
             {
                 uow.Set<DiscordPermOverride>()
-                    .Add(over = new DiscordPermOverride()
+                    .Add(over = new()
                     {
                         Command = commandName,
                         Perm = perm,

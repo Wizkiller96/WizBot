@@ -23,8 +23,8 @@ public class VcRoleService : INService
         _client = client;
 
         _client.UserVoiceStateUpdated += ClientOnUserVoiceStateUpdated;
-        VcRoles = new ConcurrentDictionary<ulong, ConcurrentDictionary<ulong, IRole>>();
-        ToAssign = new ConcurrentDictionary<ulong, ConcurrentQueue<(bool, IGuildUser, IRole)>>();
+        VcRoles = new();
+        ToAssign = new();
         var missingRoles = new ConcurrentBag<VcRoleInfo>();
 
         using (var uow = db.GetDbContext())
@@ -147,7 +147,7 @@ public class VcRoleService : INService
             {
                 uow.Remove(toDelete);
             }
-            conf.VcRoleInfos.Add(new VcRoleInfo()
+            conf.VcRoleInfos.Add(new()
             {
                 VoiceChannelId = vcId,
                 RoleId = role.Id,

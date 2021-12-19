@@ -14,7 +14,7 @@ public class IndexedCollection<T> : IList<T> where T : class, IIndexed
 
     public IndexedCollection()
     {
-        Source = new List<T>();
+        Source = new();
     }
         
     public IndexedCollection(IEnumerable<T> source)

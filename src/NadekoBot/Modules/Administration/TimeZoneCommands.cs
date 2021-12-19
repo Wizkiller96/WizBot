@@ -49,7 +49,7 @@ public partial class Administration
                 
                 
             await ctx.SendPaginatedConfirmAsync(page,
-                (curPage) => _eb.Create()
+                curPage => _eb.Create()
                     .WithOkColor()
                     .WithTitle(GetText(strs.timezones_available))
                     .WithDescription(string.Join("\n", timezoneStrings

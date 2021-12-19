@@ -66,7 +66,7 @@ public class ReplacementBuilder
         /*OBSOLETE*/
         _reps.TryAdd("%sid%", () => g is null ? "DM" : g.Id.ToString());
         _reps.TryAdd("%server%", () => g is null ? "DM" : g.Name);
-        _reps.TryAdd("%members%", () => g != null && g is SocketGuild sg ? sg.MemberCount.ToString() : "?");
+        _reps.TryAdd("%members%", () => g is { } sg ? sg.MemberCount.ToString() : "?");
         _reps.TryAdd("%server_time%", () =>
         {
             var to = TimeZoneInfo.Local;
@@ -83,7 +83,7 @@ public class ReplacementBuilder
         /*NEW*/
         _reps.TryAdd("%server.id%", () => g is null ? "DM" : g.Id.ToString());
         _reps.TryAdd("%server.name%", () => g is null ? "DM" : g.Name);
-        _reps.TryAdd("%server.members%", () => g != null && g is SocketGuild sg ? sg.MemberCount.ToString() : "?");
+        _reps.TryAdd("%server.members%", () => g is { } sg ? sg.MemberCount.ToString() : "?");
         _reps.TryAdd("%server.boosters%", () => g.PremiumSubscriptionCount.ToString());
         _reps.TryAdd("%server.boost_level%", () => ((int)g.PremiumTier).ToString());
         _reps.TryAdd("%server.time%", () =>
@@ -120,25 +120,6 @@ public class ReplacementBuilder
 
     public ReplacementBuilder WithUser(IUser user)
     {
-        // /*OBSOLETE*/
-        // _reps.TryAdd("%user%", () => user.Mention);
-        // _reps.TryAdd("%userfull%", () => user.ToString());
-        // _reps.TryAdd("%username%", () => user.Username);
-        // _reps.TryAdd("%userdiscrim%", () => user.Discriminator);
-        // _reps.TryAdd("%useravatar%", () => user.RealAvatarUrl()?.ToString());
-        // _reps.TryAdd("%id%", () => user.Id.ToString());
-        // _reps.TryAdd("%uid%", () => user.Id.ToString());
-        // /*NEW*/
-        // _reps.TryAdd("%user.mention%", () => user.Mention);
-        // _reps.TryAdd("%user.fullname%", () => user.ToString());
-        // _reps.TryAdd("%user.name%", () => user.Username);
-        // _reps.TryAdd("%user.discrim%", () => user.Discriminator);
-        // _reps.TryAdd("%user.avatar%", () => user.RealAvatarUrl()?.ToString());
-        // _reps.TryAdd("%user.id%", () => user.Id.ToString());
-        // _reps.TryAdd("%user.created_time%", () => user.CreatedAt.ToString("HH:mm"));
-        // _reps.TryAdd("%user.created_date%", () => user.CreatedAt.ToString("dd.MM.yyyy"));
-        // _reps.TryAdd("%user.joined_time%", () => (user as IGuildUser)?.JoinedAt?.ToString("HH:mm") ?? "-");
-        // _reps.TryAdd("%user.joined_date%", () => (user as IGuildUser)?.JoinedAt?.ToString("dd.MM.yyyy") ?? "-");
         WithManyUsers(new[] {user});
         return this;
     }
@@ -171,15 +152,11 @@ public class ReplacementBuilder
     {
         /*OBSOLETE*/
         _reps.TryAdd("%servers%", () => c.Guilds.Count.ToString());
-#if !GLOBAL_NADEKO
         _reps.TryAdd("%users%", () => c.Guilds.Sum(g => g.MemberCount).ToString());
-#endif
 
         /*NEW*/
-        _reps.TryAdd("%shard.servercount%", () => c.Guilds.Count.ToString());
-#if !GLOBAL_NADEKO
+        _reps.TryAdd("%shard.servercount%", () => c.Guilds.Count.ToString());S
         _reps.TryAdd("%shard.usercount%", () => c.Guilds.Sum(g => g.MemberCount).ToString());
-#endif
         _reps.TryAdd("%shard.id%", () => c.ShardId.ToString());
         return this;
     }
@@ -187,7 +164,7 @@ public class ReplacementBuilder
     public ReplacementBuilder WithRngRegex()
     {
         var rng = new NadekoRandom();
-        _regex.TryAdd(rngRegex, (match) =>
+        _regex.TryAdd(rngRegex, match =>
         {
             if (!int.TryParse(match.Groups["from"].ToString(), out var from))
                 from = 0;
@@ -213,7 +190,7 @@ public class ReplacementBuilder
 
     public Replacer Build()
     {
-        return new Replacer(_reps.Select(x => (x.Key, x.Value)).ToArray(), _regex.Select(x => (x.Key, x.Value)).ToArray());
+        return new(_reps.Select(x => (x.Key, x.Value)).ToArray(), _regex.Select(x => (x.Key, x.Value)).ToArray());
     }
 
     public ReplacementBuilder WithProviders(IEnumerable<IPlaceholderProvider> phProviders)

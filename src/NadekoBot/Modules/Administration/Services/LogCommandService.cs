@@ -102,7 +102,7 @@ public sealed class LogCommandService : ILogCommandService
                 .ToConcurrent();
         }
 
-        _timerReference = new Timer(async (state) =>
+        _timerReference = new(async state =>
         {
             var keys = PresenceUpdates.Keys.ToList();
 
@@ -143,7 +143,7 @@ public sealed class LogCommandService : ILogCommandService
 
         _prot.OnAntiProtectionTriggered += TriggeredAntiProtection;
 
-        _clearTimer = new Timer(_ =>
+        _clearTimer = new(_ =>
         {
             _ignoreMessageIds.Clear();
         }, null, TimeSpan.FromHours(1), TimeSpan.FromHours(1));
@@ -228,7 +228,7 @@ public sealed class LogCommandService : ILogCommandService
                                                                         (value ? channelId : (ulong?) null);
             ;
             await uow.SaveChangesAsync();
-            GuildLogSettings.AddOrUpdate(guildId, (id) => logSetting, (id, old) => logSetting);
+            GuildLogSettings.AddOrUpdate(guildId, id => logSetting, (id, old) => logSetting);
         }
     }
 
@@ -299,7 +299,7 @@ public sealed class LogCommandService : ILogCommandService
         using (var uow = _db.GetDbContext())
         {
             var logSetting = uow.LogSettingsFor(gid);
-            GuildLogSettings.AddOrUpdate(gid, (id) => logSetting, (id, old) => logSetting);
+            GuildLogSettings.AddOrUpdate(gid, id => logSetting, (id, old) => logSetting);
             switch (type)
             {
                 case LogType.Other:

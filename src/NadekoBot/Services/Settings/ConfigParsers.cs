@@ -21,7 +21,7 @@ public static class ConfigParsers
     {
         try
         {
-            output = new CultureInfo(input);
+            output = new(input);
             return true;
         }
         catch

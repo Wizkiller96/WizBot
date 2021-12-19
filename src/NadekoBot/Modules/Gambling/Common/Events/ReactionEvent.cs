@@ -52,10 +52,10 @@ public class ReactionEvent : ICurrencyEvent
         _opts = opt;
         _config = config;
 
-        _t = new Timer(OnTimerTick, null, Timeout.InfiniteTimeSpan, TimeSpan.FromSeconds(2));
+        _t = new(OnTimerTick, null, Timeout.InfiniteTimeSpan, TimeSpan.FromSeconds(2));
         if (_opts.Hours > 0)
         {
-            _timeout = new Timer(EventTimeout, null, TimeSpan.FromHours(_opts.Hours), Timeout.InfiniteTimeSpan);
+            _timeout = new(EventTimeout, null, TimeSpan.FromHours(_opts.Hours), Timeout.InfiniteTimeSpan);
         }
     }
 
@@ -88,7 +88,7 @@ public class ReactionEvent : ICurrencyEvent
                 await _msg.ModifyAsync(m =>
                 {
                     m.Embed = GetEmbed(PotSize).Build();
-                }, new RequestOptions() { RetryMode = RetryMode.AlwaysRetry }).ConfigureAwait(false);
+                }, new() { RetryMode = RetryMode.AlwaysRetry }).ConfigureAwait(false);
             }
 
             Log.Information("Awarded {0} users {1} currency.{2}",

@@ -53,7 +53,7 @@ public class StoopidTime
             throw new ArgumentException("Time is too long.");
         }
 
-        return new StoopidTime()
+        return new()
         {
             Input = input,
             Time = ts,

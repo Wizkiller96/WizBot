@@ -42,11 +42,11 @@ public partial class Games
                     });
                     return;
                 }
-                game = new TicTacToe(base.Strings, this._client, channel, (IGuildUser)ctx.User, options, _eb);
+                game = new(base.Strings, this._client, channel, (IGuildUser)ctx.User, options, _eb);
                 _service.TicTacToeGames.Add(channel.Id, game);
                 await ReplyConfirmLocalizedAsync(strs.ttt_created).ConfigureAwait(false);
 
-                game.OnEnded += (g) =>
+                game.OnEnded += g =>
                 {
                     _service.TicTacToeGames.Remove(channel.Id);
                     _sem.Dispose();

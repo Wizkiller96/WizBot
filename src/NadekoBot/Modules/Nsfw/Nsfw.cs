@@ -22,7 +22,7 @@ public class NSFW : NadekoModule<ISearchImagesService>
     public NSFW(IHttpClientFactory factory)
     {
         _httpFactory = factory;
-        _rng = new NadekoRandom();
+        _rng = new();
     }
 
     private async Task InternalBoobs()
@@ -85,7 +85,7 @@ public class NSFW : NadekoModule<ISearchImagesService>
         if (interval < 20)
             return;
 
-        t = new Timer(async (state) =>
+        t = new(async state =>
         {
             try
             {
@@ -135,7 +135,7 @@ public class NSFW : NadekoModule<ISearchImagesService>
         if (interval < 20)
             return;
 
-        t = new Timer(async (state) =>
+        t = new(async state =>
         {
             try
             {
@@ -175,7 +175,7 @@ public class NSFW : NadekoModule<ISearchImagesService>
         if (interval < 20)
             return;
 
-        t = new Timer(async (state) =>
+        t = new(async state =>
         {
             try
             {

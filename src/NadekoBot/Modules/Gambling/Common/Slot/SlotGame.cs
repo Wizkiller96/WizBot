@@ -36,6 +36,6 @@ public class SlotGame
         else if (rolls.Any(x => x == 5))
             multi = 1;
 
-        return new Result(multi, rolls);
+        return new(multi, rolls);
     }
 }

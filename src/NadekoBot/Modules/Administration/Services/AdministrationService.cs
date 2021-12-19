@@ -26,11 +26,11 @@ public class AdministrationService : INService
         _db = db;
         _logService = logService;
 
-        DeleteMessagesOnCommand = new ConcurrentHashSet<ulong>(bot.AllGuildConfigs
+        DeleteMessagesOnCommand = new(bot.AllGuildConfigs
             .Where(g => g.DeleteMessageOnCommand)
             .Select(g => g.GuildId));
 
-        DeleteMessagesOnCommandChannels = new ConcurrentDictionary<ulong, bool>(bot.AllGuildConfigs
+        DeleteMessagesOnCommandChannels = new(bot.AllGuildConfigs
             .SelectMany(x => x.DelMsgOnCmdChannels)
             .ToDictionary(x => x.ChannelId, x => x.State)
             .ToConcurrent());
@@ -108,7 +108,7 @@ public class AdministrationService : INService
             {
                 if (old is null)
                 {
-                    old = new DelMsgOnCmdChannel { ChannelId = chId };
+                    old = new() { ChannelId = chId };
                     conf.DelMsgOnCmdChannels.Add(old);
                 }
 

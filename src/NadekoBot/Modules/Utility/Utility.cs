@@ -113,7 +113,7 @@ public partial class Utility : NadekoModule
             .Select(u => $"`{u.Id, 18}` {u}")
             .ToArray();
 
-        await ctx.SendPaginatedConfirmAsync(page, (cur) =>
+        await ctx.SendPaginatedConfirmAsync(page, cur =>
         {
             var pageUsers = roleUsers.Skip(cur * 20)
                 .Take(20)

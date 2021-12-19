@@ -60,7 +60,7 @@ public sealed class AcrophobiaGame : IDisposable
     public AcrophobiaGame(Options options)
     {
         Opts = options;
-        _rng = new NadekoRandom();
+        _rng = new();
         InitializeStartingLetters();
     }
 

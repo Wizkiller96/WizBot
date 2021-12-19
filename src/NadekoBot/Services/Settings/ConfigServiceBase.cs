@@ -66,7 +66,7 @@ public abstract class ConfigServiceBase<TSettings> : IConfigService
         // if file is deleted, regenerate it with default values
         if (!File.Exists(_filePath))
         {
-            _data = new TSettings();
+            _data = new();
             Save();
         }
 

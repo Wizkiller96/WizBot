@@ -42,11 +42,11 @@ public class PermissionService : ILateBlocker, INService
             foreach (var x in uow.GuildConfigs.Permissionsv2ForAll(client.Guilds.ToArray().Select(x => x.Id)
                          .ToList()))
             {
-                Cache.TryAdd(x.GuildId, new PermissionCache()
+                Cache.TryAdd(x.GuildId, new()
                 {
                     Verbose = x.VerbosePermissions,
                     PermRole = x.PermissionRole,
-                    Permissions = new PermissionsCollection<Permissionv2>(x.Permissions)
+                    Permissions = new(x.Permissions)
                 });
             }
         }
@@ -64,7 +64,7 @@ public class PermissionService : ILateBlocker, INService
             }
             Cache.TryGetValue(guildId, out pc);
             if (pc is null)
-                throw new Exception("Cache is null.");
+                throw new("Cache is null.");
         }
         return pc;
     }
@@ -90,12 +90,12 @@ public class PermissionService : ILateBlocker, INService
     {
         Cache.AddOrUpdate(config.GuildId, new PermissionCache()
         {
-            Permissions = new PermissionsCollection<Permissionv2>(config.Permissions),
+            Permissions = new(config.Permissions),
             PermRole = config.PermissionRole,
             Verbose = config.VerbosePermissions
         }, (id, old) =>
         {
-            old.Permissions = new PermissionsCollection<Permissionv2>(config.Permissions);
+            old.Permissions = new(config.Permissions);
             old.PermRole = config.PermissionRole;
             old.Verbose = config.VerbosePermissions;
             return old;

@@ -67,7 +67,7 @@ public partial class Searches
                 characters.RemoveAll(c => c.League != league);
             }
 
-            await ctx.SendPaginatedConfirmAsync(page, (curPage) =>
+            await ctx.SendPaginatedConfirmAsync(page, curPage =>
             {
                 var embed = _eb.Create()
                     .WithAuthor($"Characters on {usr}'s account",

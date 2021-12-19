@@ -60,7 +60,7 @@ public class MuteService : INService
                 .ToDictionary(c => c.GuildId, c => c.MuteRoleName)
                 .ToConcurrent();
 
-            MutedUsers = new ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>>(configs
+            MutedUsers = new(configs
                 .ToDictionary(
                     k => k.GuildId,
                     v => new ConcurrentHashSet<ulong>(v.MutedUsers.Select(m => m.UserId))
@@ -194,7 +194,7 @@ public class MuteService : INService
                 var config = uow.GuildConfigsForId(usr.Guild.Id,
                     set => set.Include(gc => gc.MutedUsers)
                         .Include(gc => gc.UnmuteTimers));
-                config.MutedUsers.Add(new MutedUserId()
+                config.MutedUsers.Add(new()
                 {
                     UserId = usr.Id
                 });
@@ -327,7 +327,7 @@ public class MuteService : INService
         using (var uow = _db.GetDbContext())
         {
             var config = uow.GuildConfigsForId(user.GuildId, set => set.Include(x => x.UnmuteTimers));
-            config.UnmuteTimers.Add(new UnmuteTimer()
+            config.UnmuteTimers.Add(new()
             {
                 UserId = user.Id,
                 UnmuteAt = DateTime.UtcNow + after,
@@ -344,7 +344,7 @@ public class MuteService : INService
         using (var uow = _db.GetDbContext())
         {
             var config = uow.GuildConfigsForId(guild.Id, set => set.Include(x => x.UnbanTimer));
-            config.UnbanTimer.Add(new UnbanTimer()
+            config.UnbanTimer.Add(new()
             {
                 UserId = user.Id,
                 UnbanAt = DateTime.UtcNow + after,
@@ -361,7 +361,7 @@ public class MuteService : INService
         using (var uow = _db.GetDbContext())
         {
             var config = uow.GuildConfigsForId(user.GuildId, set => set.Include(x => x.UnroleTimer));
-            config.UnroleTimer.Add(new UnroleTimer()
+            config.UnroleTimer.Add(new()
             {
                 UserId = user.Id,
                 UnbanAt = DateTime.UtcNow + after,
@@ -433,7 +433,7 @@ public class MuteService : INService
         }, null, after, Timeout.InfiniteTimeSpan);
 
         //add it, or stop the old one and add this one
-        userUnTimers.AddOrUpdate((userId, type), (key) => toAdd, (key, old) =>
+        userUnTimers.AddOrUpdate((userId, type), key => toAdd, (key, old) =>
         {
             old.Change(Timeout.Infinite, Timeout.Infinite);
             return toAdd;

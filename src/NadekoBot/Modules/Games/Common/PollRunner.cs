@@ -43,7 +43,7 @@ public class PollRunner
             if (usr is null)
                 return false;
 
-            voteObj = new PollVote()
+            voteObj = new()
             {
                 UserId = msg.Author.Id,
                 VoteIndex = vote,

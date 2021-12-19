@@ -62,7 +62,7 @@ public sealed partial class MusicQueue : IMusicQueue
     public MusicQueue()
     {
         _index = 0;
-        _tracks = new LinkedList<QueuedTrackInfo>();
+        _tracks = new();
     }
 
     public IQueuedTrackInfo Enqueue(ITrackInfo trackInfo, string queuer, out int index)
@@ -283,7 +283,7 @@ public sealed partial class MusicQueue : IMusicQueue
                     _index = i;
             }
 
-            _tracks = new LinkedList<QueuedTrackInfo>(list);
+            _tracks = new(list);
         }
     }
 

@@ -78,7 +78,7 @@ public sealed class Connect4Game : IDisposable
         _options = options;
         _cs = cs;
 
-        _rng = new NadekoRandom();
+        _rng = new();
         for (var i = 0; i < NumberOfColumns * NumberOfRows; i++)
         {
             _gameState[i] = Field.Empty;
@@ -133,7 +133,7 @@ public sealed class Connect4Game : IDisposable
                 _players[1] = (userId, userName);
 
             CurrentPhase = Phase.P1Move; //start the game
-            _playerTimeoutTimer = new Timer(async state =>
+            _playerTimeoutTimer = new(async state =>
             {
                 await _locker.WaitAsync().ConfigureAwait(false);
                 try

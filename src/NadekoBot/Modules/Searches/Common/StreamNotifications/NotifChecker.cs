@@ -24,12 +24,12 @@ public class NotifChecker
     {
         _multi = multi;
         _key = $"{uniqueCacheKey}_followed_streams_data";
-        _streamProviders = new Dictionary<FollowedStream.FType, Provider>()
+        _streamProviders = new()
         {
             {FollowedStream.FType.Twitch, new TwitchProvider(httpClientFactory)},
             {FollowedStream.FType.Picarto, new PicartoProvider(httpClientFactory)}
         };
-        _offlineBuffer = new HashSet<(FollowedStream.FType, string)>();
+        _offlineBuffer = new();
         if (isMaster)
         {
             CacheClearAllData();
@@ -181,7 +181,7 @@ public class NotifChecker
         var db = _multi.GetDatabase();
         if (!db.KeyExists(_key))
         {
-            return new Dictionary<StreamDataKey, StreamData?>();
+            return new();
         }
 
         return db.HashGetAll(_key)

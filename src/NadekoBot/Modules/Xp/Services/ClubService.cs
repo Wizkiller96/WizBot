@@ -32,7 +32,7 @@ public class ClubService : INService
         if (xp.Level >= 5 && du.Club is null)
         {
             du.IsClubAdmin = true;
-            du.Club = new ClubInfo()
+            du.Club = new()
             {
                 Name = clubName,
                 Discrim = uow.Clubs.GetNextDiscrim(clubName),
@@ -297,7 +297,7 @@ public class ClubService : INService
             if (club.OwnerId == usr.Id || (usr.IsClubAdmin && club.Owner.UserId != bannerId)) // can't ban the owner kek, whew
                 return false;
 
-            club.Bans.Add(new ClubBans
+            club.Bans.Add(new()
             {
                 Club = club,
                 User = usr,

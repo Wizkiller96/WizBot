@@ -308,7 +308,7 @@ public partial class Gambling
                 return;
 
             var waifuItems = _service.GetWaifuItems();
-            await ctx.SendPaginatedConfirmAsync(page, (cur) =>
+            await ctx.SendPaginatedConfirmAsync(page, cur =>
             {
                 var embed = _eb.Create()
                     .WithTitle(GetText(strs.waifu_gift_shop))

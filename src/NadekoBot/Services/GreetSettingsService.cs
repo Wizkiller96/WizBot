@@ -33,7 +33,7 @@ public class GreetSettingsService : INService
         _bss = bss;
         _eb = eb;
 
-        GuildConfigsCache = new ConcurrentDictionary<ulong, GreetSettings>(
+        GuildConfigsCache = new(
             bot.AllGuildConfigs
                 .ToDictionary(g => g.GuildId, GreetSettings.Create));
 
@@ -51,8 +51,8 @@ public class GreetSettingsService : INService
         // if user is a new booster
         // or boosted again the same server
         if ((oldUser is { PremiumSince: null } && newUser is { PremiumSince: not null })
-            || (oldUser?.PremiumSince is DateTimeOffset oldDate 
-                && newUser?.PremiumSince is DateTimeOffset newDate
+            || (oldUser?.PremiumSince is { } oldDate 
+                && newUser?.PremiumSince is { } newDate
                 && newDate > oldDate))
         {
             var conf = GetOrAddSettingsForGuild(newUser.Guild.Id);

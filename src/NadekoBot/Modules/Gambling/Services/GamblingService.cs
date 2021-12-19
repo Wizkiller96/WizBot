@@ -39,7 +39,7 @@ public class GamblingService : INService
             
         if (_bot.Client.ShardId == 0)
         {
-            _decayTimer = new Timer(_ =>
+            _decayTimer = new(_ =>
             {
                 var config = _gss.Data;
                 var maxDecay = config.Decay.MaxDecay;
@@ -85,7 +85,7 @@ WHERE CurrencyAmount > {config.Decay.MinThreshold} AND UserId!={_client.CurrentU
             
         if (!takeRes)
         {
-            return new SlotResponse
+            return new()
             {
                 Error = GamblingError.NotEnough
             };

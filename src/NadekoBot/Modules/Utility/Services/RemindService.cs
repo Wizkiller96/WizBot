@@ -137,7 +137,7 @@ public class RemindService : INService
             0
         );
 
-        obj = new RemindObject()
+        obj = new()
         {
             Time = ts,
             What = what

@@ -30,7 +30,7 @@ public class GirlRating
         Advice = advice; // convenient to have it here, even though atm there are only few different ones.
         _httpFactory = factory;
             
-        Stream = new AsyncLazy<Stream>(() =>
+        Stream = new(() =>
         {
             try
             {
@@ -45,7 +45,7 @@ public class GirlRating
 
                     using (var pointImg = Image.Load(_images.RategirlDot))
                     {
-                        img.Mutate(x => x.DrawImage(pointImg, new Point(pointx - 10, pointy - 10), new GraphicsOptions()));
+                        img.Mutate(x => x.DrawImage(pointImg, new(pointx - 10, pointy - 10), new GraphicsOptions()));
                     }
 
                     var imgStream = new MemoryStream();

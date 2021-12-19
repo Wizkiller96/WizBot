@@ -278,7 +278,7 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public CustomReaction[] GetCustomReactionsFor(ulong? maybeGuildId)
     {
-        if (maybeGuildId is ulong guildId)
+        if (maybeGuildId is { } guildId)
         {
             return _newGuildReactions.TryGetValue(guildId, out var crs)
                 ? crs
@@ -489,7 +489,7 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
 
     private Task UpdateInternalAsync(ulong? maybeGuildId, CustomReaction cr)
     {
-        if (maybeGuildId is ulong guildId)
+        if (maybeGuildId is { } guildId)
             UpdateInternal(guildId, cr);
         else
             return _pubSub.Pub(_gcrEditedKey, cr);
@@ -499,7 +499,7 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
 
     private void UpdateInternal(ulong? maybeGuildId, CustomReaction cr)
     {
-        if (maybeGuildId is ulong guildId)
+        if (maybeGuildId is { } guildId)
         {
             _newGuildReactions.AddOrUpdate(guildId, new[] {cr},
                 (key, old) =>
@@ -532,7 +532,7 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
         // only do this for perf purposes
         cr.Trigger = cr.Trigger.Replace(MentionPh, _client.CurrentUser.Mention);
 
-        if (maybeGuildId is ulong guildId)
+        if (maybeGuildId is { } guildId)
         {
             _newGuildReactions.AddOrUpdate(guildId,
                 new[] {cr},
@@ -548,7 +548,7 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
         
     private Task DeleteInternalAsync(ulong? maybeGuildId, int id)
     {
-        if (maybeGuildId is ulong guildId)
+        if (maybeGuildId is { } guildId)
         {
             _newGuildReactions.AddOrUpdate(guildId,
                 Array.Empty<CustomReaction>(),

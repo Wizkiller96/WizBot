@@ -12,7 +12,6 @@ namespace NadekoBot.Modules.Nsfw.Common;
 public class SearchImageCacher : INService
 {
     private readonly IHttpClientFactory _httpFactory;
-    private readonly SemaphoreSlim _lock = new SemaphoreSlim(1, 1);
     private readonly Random _rng;
 
     private static readonly ISet<string> defaultTagBlacklist = new HashSet<string>()

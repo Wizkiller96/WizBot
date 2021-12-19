@@ -42,11 +42,11 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
             .AsNoTracking()
             .ToList();
 
-        _noRedundant = new ConcurrentHashSet<int>(shardRepeaters
+        _noRedundant = new(shardRepeaters
             .Where(x => x.NoRedundant)
             .Select(x => x.Id));
 
-        _repeaterQueue = new LinkedList<RunningRepeater>(shardRepeaters
+        _repeaterQueue = new(shardRepeaters
             .Select(rep => new RunningRepeater(rep))
             .OrderBy(x => x.NextTime));
     }
@@ -245,7 +245,7 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
             }
         }
 
-        if (repeater.LastMessageId is ulong lastMessageId)
+        if (repeater.LastMessageId is { } lastMessageId)
         {
             try
             {
@@ -318,7 +318,7 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
         await uow.Repeaters
             .AsQueryable()
             .Where(x => x.Id == repeaterId)
-            .UpdateAsync(rep => new Repeater()
+            .UpdateAsync(rep => new()
             {
                 LastMessageId = lastMsgId
             });

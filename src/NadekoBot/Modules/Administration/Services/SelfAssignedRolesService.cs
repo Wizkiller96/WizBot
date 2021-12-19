@@ -44,7 +44,7 @@ public class SelfAssignedRolesService : INService
                 return false;
             }
 
-            uow.SelfAssignableRoles.Add(new SelfAssignedRole
+            uow.SelfAssignableRoles.Add(new()
             {
                 Group = group,
                 RoleId = role.Id,
@@ -73,7 +73,7 @@ public class SelfAssignedRolesService : INService
         using (var uow = _db.GetDbContext())
         {
             var stats = uow.GetOrCreateUserXpStats(guildUser.Guild.Id, guildUser.Id);
-            userLevelData = new LevelStats(stats.Xp + stats.AwardedXp);
+            userLevelData = new(stats.Xp + stats.AwardedXp);
         }
 
         var (autoDelete, exclusive, roles) = GetAdAndRoles(guildUser.Guild.Id);
@@ -144,7 +144,7 @@ public class SelfAssignedRolesService : INService
             }
             else if (toUpdate is null)
             {
-                gc.SelfAssignableRoleGroupNames.Add(new GroupName
+                gc.SelfAssignableRoleGroupNames.Add(new()
                 {
                     Name = name,
                     Number = group,

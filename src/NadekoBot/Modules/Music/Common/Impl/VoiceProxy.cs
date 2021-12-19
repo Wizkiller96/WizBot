@@ -81,7 +81,7 @@ public sealed class VoiceProxy : IVoiceProxy
                 await Task.Delay(DELAY_ON_ERROR_MILISECONDS);
                 Log.Debug(ex, "Error performing proxy gateway action");
             }
-        } while (errorCount > 0 && errorCount <= MAX_ERROR_COUNT);
+        } while (errorCount is > 0 and <= MAX_ERROR_COUNT);
 
         return State != VoiceProxyState.Stopped && errorCount <= MAX_ERROR_COUNT;
     }
@@ -93,12 +93,12 @@ public sealed class VoiceProxy : IVoiceProxy
 
     public Task StartSpeakingAsync()
     {
-        return RunGatewayAction((gw) => gw.SendSpeakingAsync(VoiceSpeaking.State.Microphone));
+        return RunGatewayAction(gw => gw.SendSpeakingAsync(VoiceSpeaking.State.Microphone));
     }
 
     public Task StopSpeakingAsync()
     {
-        return RunGatewayAction((gw) => gw.SendSpeakingAsync(VoiceSpeaking.State.None));
+        return RunGatewayAction(gw => gw.SendSpeakingAsync(VoiceSpeaking.State.None));
     }
 
     public async Task StartGateway()
@@ -108,7 +108,7 @@ public sealed class VoiceProxy : IVoiceProxy
 
     public Task StopGateway()
     {
-        if(_gateway is VoiceGateway gw)
+        if(_gateway is { } gw)
             return gw.StopAsync();
 
         return Task.CompletedTask;

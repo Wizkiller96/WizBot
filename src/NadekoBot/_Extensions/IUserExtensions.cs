@@ -54,7 +54,7 @@ public static class IUserExtensions
     public static Uri RealAvatarUrl(this IUser usr, ushort size = 128)
     {
         return usr.AvatarId is null
-            ? new Uri(usr.GetDefaultAvatarUrl())
+            ? new(usr.GetDefaultAvatarUrl())
             : new Uri(usr.GetAvatarUrl(ImageFormat.Auto, size));
     }
 

@@ -42,7 +42,7 @@ public class Help : NadekoModule<HelpService>
         _client = client;
         _strings = strings;
 
-        _lazyClientId = new AsyncLazy<ulong>(async () => (await _client.GetApplicationInfoAsync()).Id);
+        _lazyClientId = new(async () => (await _client.GetApplicationInfoAsync()).Id);
     }
 
     public async Task<SmartText> GetHelpString()
@@ -196,7 +196,7 @@ public class Help : NadekoModule<HelpService>
         var succ = new HashSet<CommandInfo>();
         if (opts.View != CommandsOptions.ViewType.All)
         {
-            succ = new HashSet<CommandInfo>((await Task.WhenAll(cmds.Select(async x =>
+            succ = new((await Task.WhenAll(cmds.Select(async x =>
                 {
                     var pre = (await x.CheckPreconditionsAsync(Context, _services).ConfigureAwait(false));
                     return (Cmd: x, Succ: pre.IsSuccess);
@@ -360,7 +360,7 @@ public class Help : NadekoModule<HelpService>
             var config = new AmazonS3Config {ServiceURL = serviceUrl};
                 
             using var dlClient = new AmazonS3Client(accessKey, secretAcccessKey, config);
-            var oldVersionObject = await dlClient.GetObjectAsync(new GetObjectRequest()
+            var oldVersionObject = await dlClient.GetObjectAsync(new()
             {
                 BucketName = "nadeko-pictures",
                 Key = "cmds/versions.json",
@@ -368,7 +368,7 @@ public class Help : NadekoModule<HelpService>
                 
             using (var client = new AmazonS3Client(accessKey, secretAcccessKey, config))
             {
-                await client.PutObjectAsync(new PutObjectRequest()
+                await client.PutObjectAsync(new()
                 {
                     BucketName = "nadeko-pictures",
                     ContentType = "application/json",
@@ -397,7 +397,7 @@ public class Help : NadekoModule<HelpService>
                     
                 // upload the updated version list
                 using var client = new AmazonS3Client(accessKey, secretAcccessKey, config);
-                await client.PutObjectAsync(new PutObjectRequest()
+                await client.PutObjectAsync(new()
                 {
                     BucketName = "nadeko-pictures",
                     ContentType = "application/json",

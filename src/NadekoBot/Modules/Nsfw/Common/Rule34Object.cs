@@ -9,7 +9,7 @@ public class Rule34Object : IImageData
 
     public ImageData ToCachedImageData(Booru type)
     {
-        return new ImageData(
+        return new(
             $"https://img.rule34.xxx//images/{Directory}/{Image}",
             Booru.Rule34,
             Tags.Split(' '),

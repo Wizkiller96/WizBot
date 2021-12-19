@@ -95,7 +95,7 @@ See RotatingStatuses submodule in Administration.")]
     {
         var color = new ColorConfig();
         Color = color;
-        DefaultLocale = new CultureInfo("en-US");
+        DefaultLocale = new("en-US");
         ConsoleOutputType = ConsoleOutputType.Normal;
         ForwardMessages = false;
         ForwardToAllOwners = false;
@@ -130,7 +130,7 @@ See RotatingStatuses submodule in Administration.")]
         Prefix = ".";
         RotateStatuses = false;
         GroupGreets = false;
-        DmHelpTextKeywords = new List<string>()
+        DmHelpTextKeywords = new()
         {
             "help",
             "commands",
@@ -149,8 +149,8 @@ public sealed partial class BlockedConfig
 
     public BlockedConfig()
     {
-        Modules = new HashSet<string>();
-        Commands = new HashSet<string>();
+        Modules = new();
+        Commands = new();
     }
 }
 

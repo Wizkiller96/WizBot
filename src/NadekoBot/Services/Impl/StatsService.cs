@@ -44,7 +44,7 @@ public class StatsService : IStatsService, IReadyExecutor, INService, IDisposabl
         _client.MessageReceived += _ => Task.FromResult(Interlocked.Increment(ref _messageCounter));
         cmdHandler.CommandExecuted += (_, e) => Task.FromResult(Interlocked.Increment(ref _commandsRan));
 
-        _client.ChannelCreated += (c) =>
+        _client.ChannelCreated += c =>
         {
             var _ = Task.Run(() =>
             {
@@ -57,7 +57,7 @@ public class StatsService : IStatsService, IReadyExecutor, INService, IDisposabl
             return Task.CompletedTask;
         };
 
-        _client.ChannelDestroyed += (c) =>
+        _client.ChannelDestroyed += c =>
         {
             var _ = Task.Run(() =>
             {
@@ -70,7 +70,7 @@ public class StatsService : IStatsService, IReadyExecutor, INService, IDisposabl
             return Task.CompletedTask;
         };
 
-        _client.GuildAvailable += (g) =>
+        _client.GuildAvailable += g =>
         {
             var _ = Task.Run(() =>
             {
@@ -82,7 +82,7 @@ public class StatsService : IStatsService, IReadyExecutor, INService, IDisposabl
             return Task.CompletedTask;
         };
 
-        _client.JoinedGuild += (g) =>
+        _client.JoinedGuild += g =>
         {
             var _ = Task.Run(() =>
             {
@@ -94,7 +94,7 @@ public class StatsService : IStatsService, IReadyExecutor, INService, IDisposabl
             return Task.CompletedTask;
         };
 
-        _client.GuildUnavailable += (g) =>
+        _client.GuildUnavailable += g =>
         {
             var _ = Task.Run(() =>
             {
@@ -107,7 +107,7 @@ public class StatsService : IStatsService, IReadyExecutor, INService, IDisposabl
             return Task.CompletedTask;
         };
 
-        _client.LeftGuild += (g) =>
+        _client.LeftGuild += g =>
         {
             var _ = Task.Run(() =>
             {
@@ -120,7 +120,7 @@ public class StatsService : IStatsService, IReadyExecutor, INService, IDisposabl
             return Task.CompletedTask;
         };
 
-        _botlistTimer = new Timer(async (state) =>
+        _botlistTimer = new(async state =>
         {
             if (string.IsNullOrWhiteSpace(_creds.BotListToken))
                 return;

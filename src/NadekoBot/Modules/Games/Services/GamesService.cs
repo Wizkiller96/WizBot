@@ -62,11 +62,11 @@ public class GamesService : INService
             SizeLimit = 500_000
         });
 
-        Ratings = new AsyncLazy<RatingTexts>(GetRatingTexts);
+        Ratings = new(GetRatingTexts);
         _rng = new NadekoRandom();
 
         //girl ratings
-        _t = new Timer((_) =>
+        _t = new(_ =>
         {
             GirlRatings.Clear();
 
@@ -79,7 +79,7 @@ public class GamesService : INService
         catch (Exception ex)
         {
             Log.Warning("Error while loading typing articles {0}", ex.ToString());
-            TypingArticles = new List<TypingArticle>();
+            TypingArticles = new();
         }
     }
 
@@ -94,7 +94,7 @@ public class GamesService : INService
 
     public void AddTypingArticle(IUser user, string text)
     {
-        TypingArticles.Add(new TypingArticle
+        TypingArticles.Add(new()
         {
             Source = user.ToString(),
             Extra = $"Text added on {DateTime.UtcNow} by {user}.",

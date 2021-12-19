@@ -59,8 +59,8 @@ DELETE FROM Clubs;";
     {
         var result = new SelectResult()
         {
-            ColumnNames = new List<string>(),
-            Results = new List<string[]>(),
+            ColumnNames = new(),
+            Results = new(),
         };
 
         using (var uow = _db.GetDbContext())
@@ -116,14 +116,14 @@ DELETE FROM Clubs;";
                 .Set<WaifuInfo>()
                 .AsQueryable()
                 .Where(x => x.Claimer.UserId == userId)
-                .UpdateAsync(x => new WaifuInfo() {ClaimerId = null});
+                .UpdateAsync(x => new() {ClaimerId = null});
                 
             // all affinities set to this waifu are reset
             await uow
                 .Set<WaifuInfo>()
                 .AsQueryable()
                 .Where(x => x.Affinity.UserId == userId)
-                .UpdateAsync(x => new WaifuInfo() {AffinityId = null});
+                .UpdateAsync(x => new() {AffinityId = null});
         }
 
         // delete guild xp

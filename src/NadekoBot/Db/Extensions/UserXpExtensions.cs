@@ -13,7 +13,7 @@ public static class UserXpExtensions
 
         if (usr is null)
         {
-            ctx.Add(usr = new UserXpStats()
+            ctx.Add(usr = new()
             {
                 Xp = 0,
                 UserId = userId,

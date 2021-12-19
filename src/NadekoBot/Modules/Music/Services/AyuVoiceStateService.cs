@@ -180,7 +180,7 @@ public sealed class AyuVoiceStateService : INService
 
             var current = _voiceProxies.AddOrUpdate(
                 guildId,
-                (gid) => new VoiceProxy(CreateVoiceGatewayLocal()),
+                gid => new VoiceProxy(CreateVoiceGatewayLocal()),
                 (gid, currentProxy) =>
                 {
                     _ = currentProxy.StopGateway();

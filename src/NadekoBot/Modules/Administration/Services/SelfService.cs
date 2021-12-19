@@ -134,7 +134,7 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
 
     private Timer TimerFromAutoCommand(AutoCommand x)
     {
-        return new Timer(async (obj) => await ExecuteCommand((AutoCommand) obj).ConfigureAwait(false),
+        return new(async obj => await ExecuteCommand((AutoCommand) obj).ConfigureAwait(false),
             x,
             x.Interval * 1000,
             x.Interval * 1000);

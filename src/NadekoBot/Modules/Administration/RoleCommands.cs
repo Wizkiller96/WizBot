@@ -26,7 +26,7 @@ public partial class Administration
 
         public async Task InternalReactionRoles(bool exclusive, ulong? messageId, params string[] input)
         {
-            var target = messageId is ulong msgId
+            var target = messageId is { } msgId
                 ? await ctx.Channel.GetMessageAsync(msgId).ConfigureAwait(false)
                 : (await ctx.Channel.GetMessagesAsync(2).FlattenAsync().ConfigureAwait(false))
                 .Skip(1)
@@ -66,7 +66,7 @@ public partial class Administration
             {
                 try
                 {
-                    await target.AddReactionAsync(x.emote, new RequestOptions()
+                    await target.AddReactionAsync(x.emote, new()
                     {
                         RetryMode = RetryMode.Retry502 | RetryMode.RetryRatelimit
                     }).ConfigureAwait(false);
@@ -80,7 +80,7 @@ public partial class Administration
                 await Task.Delay(500).ConfigureAwait(false);
             }
 
-            if (_service.Add(ctx.Guild.Id, new ReactionRoleMessage()
+            if (_service.Add(ctx.Guild.Id, new()
                 {
                     Exclusive = exclusive,
                     MessageId = target.Id,

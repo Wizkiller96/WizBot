@@ -7,7 +7,7 @@ public class GreetGrouper<T>
 
     public GreetGrouper()
     {
-        group = new Dictionary<ulong, HashSet<T>>();
+        group = new();
     }
 
 
@@ -27,7 +27,7 @@ public class GreetGrouper<T>
                 return false;
             }
 
-            group[guildId] = new HashSet<T>();
+            group[guildId] = new();
             return true;
         }
     }

@@ -188,7 +188,7 @@ public partial class Utility
             Quote q;
             using (var uow = _db.GetDbContext())
             {
-                uow.Quotes.Add(q = new Quote
+                uow.Quotes.Add(q = new()
                 {
                     AuthorId = ctx.Message.Author.Id,
                     AuthorName = ctx.Message.Author.Username,

@@ -128,7 +128,7 @@ public sealed class AutoAssignRoleService : INService
             .GuildConfigs
             .AsNoTracking()
             .Where(x => x.GuildId == guildId)
-            .UpdateAsync(_ => new GuildConfig(){ AutoAssignRoleIds = null});
+            .UpdateAsync(_ => new(){ AutoAssignRoleIds = null});
             
         _autoAssignableRoles.TryRemove(guildId, out _);
             
@@ -154,7 +154,7 @@ public static class GuildConfigExtensions
     public static List<ulong> GetAutoAssignableRoles(this GuildConfig gc)
     {
         if (string.IsNullOrWhiteSpace(gc.AutoAssignRoleIds))
-            return new List<ulong>();
+            return new();
 
         return gc.AutoAssignRoleIds.Split(',').Select(ulong.Parse).ToList();
     }

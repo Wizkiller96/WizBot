@@ -41,7 +41,7 @@ public partial class Games
                 return;
             }
 
-            _service.ChatterBotGuilds.TryAdd(channel.Guild.Id, new Lazy<IChatterBotSession>(() => _service.CreateSession(), true));
+            _service.ChatterBotGuilds.TryAdd(channel.Guild.Id, new(() => _service.CreateSession(), true));
 
             using (var uow = _db.GetDbContext())
             {

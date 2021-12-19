@@ -54,13 +54,13 @@ public partial class Gambling
             static readonly List<Func<int[], int>> _winningCombos = new List<Func<int[], int>>()
             {
                 //three flowers
-                (arr) => arr.All(a=>a==MaxValue) ? 30 : 0,
+                arr => arr.All(a=>a==MaxValue) ? 30 : 0,
                 //three of the same
-                (arr) => !arr.Any(a => a != arr[0]) ? 10 : 0,
+                arr => !arr.Any(a => a != arr[0]) ? 10 : 0,
                 //two flowers
-                (arr) => arr.Count(a => a == MaxValue) == 2 ? 4 : 0,
+                arr => arr.Count(a => a == MaxValue) == 2 ? 4 : 0,
                 //one flower
-                (arr) => arr.Any(a => a == MaxValue) ? 1 : 0,
+                arr => arr.Any(a => a == MaxValue) ? 1 : 0,
             };
 
             public static SlotResult Pull()
@@ -78,7 +78,7 @@ public partial class Gambling
                         break;
                 }
 
-                return new SlotResult(numbers, multi);
+                return new(numbers, multi);
             }
 
             public struct SlotResult
@@ -186,40 +186,40 @@ public partial class Gambling
 
                     Color fontColor = _config.Slots.CurrencyFontColor;
                        
-                    bgImage.Mutate(x => x.DrawText(new TextGraphicsOptions
+                    bgImage.Mutate(x => x.DrawText(new()
                         {
-                            TextOptions = new TextOptions()
+                            TextOptions = new()
                             {
                                 HorizontalAlignment = HorizontalAlignment.Center,
                                 VerticalAlignment = VerticalAlignment.Center,
                                 WrapTextWidth = 140,
                             }
                         }, result.Won.ToString(), _fonts.DottyFont.CreateFont(65), fontColor,
-                        new PointF(227, 92)));
+                        new(227, 92)));
 
                     var bottomFont = _fonts.DottyFont.CreateFont(50);
                        
-                    bgImage.Mutate(x => x.DrawText(new TextGraphicsOptions
+                    bgImage.Mutate(x => x.DrawText(new()
                         {
-                            TextOptions = new TextOptions()
+                            TextOptions = new()
                             {
                                 HorizontalAlignment = HorizontalAlignment.Center,
                                 VerticalAlignment = VerticalAlignment.Center,
                                 WrapTextWidth = 135,
                             }
                         }, amount.ToString(), bottomFont, fontColor,
-                        new PointF(129, 472)));
+                        new(129, 472)));
 
-                    bgImage.Mutate(x => x.DrawText(new TextGraphicsOptions
+                    bgImage.Mutate(x => x.DrawText(new()
                         {
-                            TextOptions = new TextOptions()
+                            TextOptions = new()
                             {
                                 HorizontalAlignment = HorizontalAlignment.Center,
                                 VerticalAlignment = VerticalAlignment.Center,
                                 WrapTextWidth = 135,
                             }
                         }, ownedAmount.ToString(), bottomFont, fontColor,
-                        new PointF(325, 472)));
+                        new(325, 472)));
                     //sw.PrintLap("drew red text");
 
                     for (var i = 0; i < 3; i++)

@@ -42,7 +42,7 @@ public class VoteRewardService : INService, IReadyExecutor
         if (_client.ShardId != 0)
             return;
             
-        _http = new HttpClient(new HttpClientHandler()
+        _http = new(new HttpClientHandler()
         {
             AllowAutoRedirect = false,
             ServerCertificateCustomValidationCallback = delegate { return true; }

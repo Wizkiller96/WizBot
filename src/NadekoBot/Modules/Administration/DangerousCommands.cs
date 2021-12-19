@@ -44,7 +44,7 @@ namespace NadekoBot.Modules.Administration
             {
                 var result = _service.SelectSql(sql);
 
-                return ctx.SendPaginatedConfirmAsync(0, (cur) =>
+                return ctx.SendPaginatedConfirmAsync(0, cur =>
                 {
                     var items = result.Results.Skip(cur * 20).Take(20);
 

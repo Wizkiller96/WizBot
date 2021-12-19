@@ -24,7 +24,7 @@ public class VerboseErrorsService : INService
 
         _ch.CommandErrored += LogVerboseError;
 
-        guildsEnabled = new ConcurrentHashSet<ulong>(bot
+        guildsEnabled = new(bot
             .AllGuildConfigs
             .Where(x => x.VerboseErrors)
             .Select(x => x.GuildId));

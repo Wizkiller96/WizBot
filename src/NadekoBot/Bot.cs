@@ -44,14 +44,14 @@ public sealed class Bot
         _credsProvider = new BotCredsProvider(totalShards);
         _creds = _credsProvider.GetCreds();
             
-        _db = new DbService(_creds);
+        _db = new(_creds);
 
         if (shardId == 0)
         {
             _db.Setup();
         }
 
-        Client = new DiscordSocketClient(new DiscordSocketConfig
+        Client = new(new()
         {
             MessageCacheSize = 50,
             LogLevel = LogSeverity.Warning,
@@ -62,7 +62,7 @@ public sealed class Bot
             ExclusiveBulkDelete = true,
         });
 
-        _commandService = new CommandService(new CommandServiceConfig()
+        _commandService = new(new()
         {
             CaseSensitiveCommands = false,
             DefaultRunMode = RunMode.Sync,

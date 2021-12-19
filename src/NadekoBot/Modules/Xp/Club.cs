@@ -128,7 +128,7 @@ public partial class Xp
                         return l;
                 });
 
-            await ctx.SendPaginatedConfirmAsync(0, (page) =>
+            await ctx.SendPaginatedConfirmAsync(0, page =>
             {
                 var embed = _eb.Create()
                     .WithOkColor()

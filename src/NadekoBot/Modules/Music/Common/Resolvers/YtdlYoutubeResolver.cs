@@ -32,46 +32,46 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
         _google = google;
 
         _ytdlPlaylistOperation = 
-            new YtdlOperation("-4 " +
-                              "--geo-bypass " +
-                              "--encoding UTF8 " +
-                              "-f bestaudio " +
-                              "-e " +
-                              "--get-url " +
-                              "--get-id " +
-                              "--get-thumbnail " +
-                              "--get-duration " +
-                              "--no-check-certificate " +
-                              "-i " +
-                              "--yes-playlist " +
-                              "-- \"{0}\"");
+            new("-4 " +
+                "--geo-bypass " +
+                "--encoding UTF8 " +
+                "-f bestaudio " +
+                "-e " +
+                "--get-url " +
+                "--get-id " +
+                "--get-thumbnail " +
+                "--get-duration " +
+                "--no-check-certificate " +
+                "-i " +
+                "--yes-playlist " +
+                "-- \"{0}\"");
 
         _ytdlIdOperation = 
-            new YtdlOperation("-4 " +
-                              "--geo-bypass " +
-                              "--encoding UTF8 " +
-                              "-f bestaudio " +
-                              "-e " +
-                              "--get-url " +
-                              "--get-id " +
-                              "--get-thumbnail " +
-                              "--get-duration " +
-                              "--no-check-certificate " +
-                              "-- \"{0}\"");
+            new("-4 " +
+                "--geo-bypass " +
+                "--encoding UTF8 " +
+                "-f bestaudio " +
+                "-e " +
+                "--get-url " +
+                "--get-id " +
+                "--get-thumbnail " +
+                "--get-duration " +
+                "--no-check-certificate " +
+                "-- \"{0}\"");
             
         _ytdlSearchOperation = 
-            new YtdlOperation("-4 " +
-                              "--geo-bypass " +
-                              "--encoding UTF8 " +
-                              "-f bestaudio " +
-                              "-e " +
-                              "--get-url " +
-                              "--get-id " +
-                              "--get-thumbnail " +
-                              "--get-duration " +
-                              "--no-check-certificate " +
-                              "--default-search " +
-                              "\"ytsearch:\" -- \"{0}\"");
+            new("-4 " +
+                "--geo-bypass " +
+                "--encoding UTF8 " +
+                "-f bestaudio " +
+                "-e " +
+                "--get-url " +
+                "--get-id " +
+                "--get-thumbnail " +
+                "--get-duration " +
+                "--no-check-certificate " +
+                "--default-search " +
+                "\"ytsearch:\" -- \"{0}\"");
     }
 
     private readonly struct YtTrackData
@@ -114,7 +114,7 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
             ? dataArray[3].Trim()
             : string.Empty;
 
-        return new YtTrackData(
+        return new(
             dataArray[0],
             dataArray[1],
             thumbnail,
@@ -190,7 +190,7 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
             return toReturn;
         }
 
-        return DataToInfo(new YtTrackData(
+        return DataToInfo(new(
             cachedData.Title,
             cachedData.Id,
             cachedData.Thumbnail,
@@ -337,7 +337,7 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
             return trackInfo;
         }
             
-        return DataToInfo(new YtTrackData(
+        return DataToInfo(new(
             cachedData.Title,
             cachedData.Id,
             cachedData.Thumbnail,

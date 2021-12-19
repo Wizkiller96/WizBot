@@ -12,12 +12,12 @@ public class UserPermAttribute : PreconditionAttribute
 
     public UserPermAttribute(GuildPerm permission)
     {
-        UserPermissionAttribute = new RequireUserPermissionAttribute((GuildPermission)permission);
+        UserPermissionAttribute = new((GuildPermission)permission);
     }
 
     public UserPermAttribute(ChannelPerm permission)
     {
-        UserPermissionAttribute = new RequireUserPermissionAttribute((ChannelPermission)permission);
+        UserPermissionAttribute = new((ChannelPermission)permission);
     }
 
     public override Task<PreconditionResult> CheckPermissionsAsync(ICommandContext context, CommandInfo command, IServiceProvider services)

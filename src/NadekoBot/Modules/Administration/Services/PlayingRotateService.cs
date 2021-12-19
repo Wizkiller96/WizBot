@@ -39,7 +39,7 @@ public sealed class PlayingRotateService : INService
                 .WithProviders(phProviders)
                 .Build();
 
-            _t = new Timer(RotatingStatuses, new TimerState(), TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1));
+            _t = new(RotatingStatuses, new TimerState(), TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1));
         }
     }
 

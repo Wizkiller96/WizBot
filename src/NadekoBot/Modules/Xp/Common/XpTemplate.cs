@@ -14,157 +14,157 @@ public class XpTemplate
     };
     public XpTemplateUser User { get; set; } = new XpTemplateUser
     {
-        Name = new XpTemplateText
+        Name = new()
         {
             FontSize = 50,
             Show = true,
-            Pos = new XpTemplatePos
+            Pos = new()
             {
                 X = 130,
                 Y = 17,
             }
         },
-        Icon = new XpTemplateIcon
+        Icon = new()
         {
             Show = true,
-            Pos = new XpTemplatePos
+            Pos = new()
             {
                 X = 32,
                 Y = 10,
             },
-            Size = new XpTemplatePos
+            Size = new()
             {
                 X = 69,
                 Y = 70,
             }
         },
-        GuildLevel = new XpTemplateText
+        GuildLevel = new()
         {
             Show = true,
             FontSize = 45,
-            Pos = new XpTemplatePos
+            Pos = new()
             {
                 X = 47,
                 Y = 297,
             }
         },
-        GlobalLevel = new XpTemplateText
+        GlobalLevel = new()
         {
             Show = true,
             FontSize = 45,
-            Pos = new XpTemplatePos
+            Pos = new()
             {
                 X = 47,
                 Y = 149,
             }
         },
-        GuildRank = new XpTemplateText
+        GuildRank = new()
         {
             Show = true,
             FontSize = 30,
-            Pos = new XpTemplatePos
+            Pos = new()
             {
                 X = 148,
                 Y = 326,
             }
         },
-        GlobalRank = new XpTemplateText
+        GlobalRank = new()
         {
             Show = true,
             FontSize = 30,
-            Pos = new XpTemplatePos
+            Pos = new()
             {
                 X = 148,
                 Y = 179,
             }
         },
-        TimeOnLevel = new XpTemplateTimeOnLevel
+        TimeOnLevel = new()
         {
             Format = "{0}d{1}h{2}m",
-            Global = new XpTemplateText
+            Global = new()
             {
                 FontSize = 20,
                 Show = true,
-                Pos = new XpTemplatePos
+                Pos = new()
                 {
                     X = 50,
                     Y = 204
                 }
             },
-            Guild = new XpTemplateText
+            Guild = new()
             {
                 FontSize = 20,
                 Show = true,
-                Pos = new XpTemplatePos
+                Pos = new()
                 {
                     X = 50,
                     Y = 351
                 }
             }
         },
-        Xp = new XpTemplateXP
+        Xp = new()
         {
-            Bar = new XpTemplateXpBar
+            Bar = new()
             {
                 Show = true,
-                Global = new XpBar
+                Global = new()
                 {
                     Direction = XpTemplateDirection.Right,
                     Length = 450,
-                    Color = new Rgba32(0, 0, 0, 0.4f),
-                    PointA = new XpTemplatePos
+                    Color = new(0, 0, 0, 0.4f),
+                    PointA = new()
                     {
                         X = 321,
                         Y = 104
                     },
-                    PointB = new XpTemplatePos
+                    PointB = new()
                     {
                         X = 286,
                         Y = 235
                     }
                 },
-                Guild = new XpBar
+                Guild = new()
                 {
                     Direction = XpTemplateDirection.Right,
                     Length = 450,
-                    Color = new Rgba32(0, 0, 0, 0.4f),
-                    PointA = new XpTemplatePos
+                    Color = new(0, 0, 0, 0.4f),
+                    PointA = new()
                     {
                         X = 282,
                         Y = 248
                     },
-                    PointB = new XpTemplatePos
+                    PointB = new()
                     {
                         X = 247,
                         Y = 379
                     }
                 }
             },
-            Global = new XpTemplateText
+            Global = new()
             {
                 Show = true,
                 FontSize = 50,
-                Pos = new XpTemplatePos
+                Pos = new()
                 {
                     X = 430,
                     Y = 142
                 }
             },
-            Guild = new XpTemplateText
+            Guild = new()
             {
                 Show = true,
                 FontSize = 50,
-                Pos = new XpTemplatePos
+                Pos = new()
                 {
                     X = 400,
                     Y = 282
                 }
             },
-            Awarded = new XpTemplateText
+            Awarded = new()
             {
                 Show = true,
                 FontSize = 25,
-                Pos = new XpTemplatePos
+                Pos = new()
                 {
                     X = 445,
                     Y = 347
@@ -174,24 +174,24 @@ public class XpTemplate
     };
     public XpTemplateClub Club { get; set; } = new XpTemplateClub
     {
-        Icon = new XpTemplateIcon
+        Icon = new()
         {
             Show = true,
-            Pos = new XpTemplatePos
+            Pos = new()
             {
                 X = 722,
                 Y = 25,
             },
-            Size = new XpTemplatePos
+            Size = new()
             {
                 X = 45,
                 Y = 45,
             }
         },
-        Name = new XpTemplateText
+        Name = new()
         {
             FontSize = 35,
-            Pos = new XpTemplatePos
+            Pos = new()
             {
                 X = 650,
                 Y = 49

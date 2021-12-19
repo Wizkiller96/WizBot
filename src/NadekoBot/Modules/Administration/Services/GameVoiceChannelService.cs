@@ -19,7 +19,7 @@ public class GameVoiceChannelService : INService
         _db = db;
         _client = client;
 
-        GameVoiceChannels = new ConcurrentHashSet<ulong>(
+        GameVoiceChannels = new(
             bot.AllGuildConfigs.Where(gc => gc.GameVoiceChannel != null)
                 .Select(gc => gc.GameVoiceChannel.Value));
 
@@ -40,8 +40,7 @@ public class GameVoiceChannelService : INService
 
                 //if the activity has changed, and is a playing activity
                 if (before.Activity != after.Activity
-                    && after.Activity != null
-                    && after.Activity.Type == Discord.ActivityType.Playing)
+                    && after.Activity is { Type: Discord.ActivityType.Playing })
                 {
                     //trigger gvc
                     await TriggerGvc(after, after.Activity.Name);

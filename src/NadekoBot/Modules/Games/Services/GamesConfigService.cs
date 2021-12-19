@@ -31,7 +31,7 @@ public sealed class GamesConfigService : ConfigServiceBase<GamesConfig>
             ModifyConfig(c =>
             {
                 c.Version = 1;
-                c.Hangman = new HangmanConfig()
+                c.Hangman = new()
                 {
                     CurrencyReward = 0
                 };

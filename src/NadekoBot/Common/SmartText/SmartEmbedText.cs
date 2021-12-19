@@ -25,33 +25,34 @@ public sealed record SmartEmbedText : SmartText
         !string.IsNullOrWhiteSpace(Thumbnail) ||
         !string.IsNullOrWhiteSpace(Image) ||
         (Footer != null && (!string.IsNullOrWhiteSpace(Footer.Text) || !string.IsNullOrWhiteSpace(Footer.IconUrl))) ||
-        (Fields != null && Fields.Length > 0);
+        Fields is { Length: > 0 };
 
     public static SmartEmbedText FromEmbed(IEmbed eb, string plainText = null)
     {
-        var set = new SmartEmbedText();
-            
-        set.PlainText = plainText;
-        set.Title = eb.Title;
-        set.Description = eb.Description;
-        set.Url = eb.Url;
-        set.Thumbnail = eb.Thumbnail?.Url;
-        set.Image = eb.Image?.Url;
-        set.Author = eb.Author is EmbedAuthor ea
-            ? new()
-            {
-                Name = ea.Name,
-                Url = ea.Url,
-                IconUrl = ea.IconUrl
-            }
-            : null;
-        set.Footer = eb.Footer is EmbedFooter ef
-            ? new()
-            {
-                Text = ef.Text,
-                IconUrl = ef.IconUrl
-            }
-            : null;
+        var set = new SmartEmbedText
+        {
+            PlainText = plainText,
+            Title = eb.Title,
+            Description = eb.Description,
+            Url = eb.Url,
+            Thumbnail = eb.Thumbnail?.Url,
+            Image = eb.Image?.Url,
+            Author = eb.Author is { } ea
+                ? new()
+                {
+                    Name = ea.Name,
+                    Url = ea.Url,
+                    IconUrl = ea.IconUrl
+                }
+                : null,
+            Footer = eb.Footer is { } ef
+                ? new()
+                {
+                    Text = ef.Text,
+                    IconUrl = ef.IconUrl
+                }
+                : null
+        };
 
         if (eb.Fields.Length > 0)
             set.Fields = eb
@@ -122,7 +123,7 @@ public sealed record SmartEmbedText : SmartText
 
     public void NormalizeFields()
     {
-        if (Fields != null && Fields.Length > 0)
+        if (Fields is { Length: > 0 })
         {
             foreach (var f in Fields)
             {

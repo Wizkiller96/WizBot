@@ -69,7 +69,7 @@ public partial class Administration
                 }
                 else
                 {
-                    ci = new CultureInfo(name);
+                    ci = new(name);
                     Localization.SetGuildCulture(ctx.Guild, ci);
                 }
 
@@ -103,7 +103,7 @@ public partial class Administration
                 }
                 else
                 {
-                    ci = new CultureInfo(name);
+                    ci = new(name);
                     Localization.SetDefaultCulture(ci);
                 }
 

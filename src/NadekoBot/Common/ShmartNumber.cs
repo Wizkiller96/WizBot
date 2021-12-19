@@ -13,7 +13,7 @@ public struct ShmartNumber : IEquatable<ShmartNumber>
 
     public static implicit operator ShmartNumber(long num)
     {
-        return new ShmartNumber(num);
+        return new(num);
     }
 
     public static implicit operator long(ShmartNumber num)
@@ -23,7 +23,7 @@ public struct ShmartNumber : IEquatable<ShmartNumber>
 
     public static implicit operator ShmartNumber(int num)
     {
-        return new ShmartNumber(num);
+        return new(num);
     }
 
     public override string ToString()

@@ -76,7 +76,7 @@ public class SearchImagesService : ISearchImagesService, INService
     {
         if (!tags.All(x => IsValidTag(x)))
         {
-            return new UrlReply
+            return new()
             {
                 Error = "One or more tags are invalid.",
                 Url = ""
@@ -106,7 +106,7 @@ public class SearchImagesService : ISearchImagesService, INService
 
             if (result is null)
             {
-                return new UrlReply
+                return new()
                 {
                     Error = "Image not found.",
                     Url = ""
@@ -129,7 +129,7 @@ public class SearchImagesService : ISearchImagesService, INService
         catch (Exception ex)
         {
             Log.Error(ex, "Failed getting {Dapi} image: {Message}", dapi, ex.Message);
-            return new UrlReply
+            return new()
             {
                 Error = ex.Message,
                 Url = ""
@@ -198,7 +198,7 @@ public class SearchImagesService : ISearchImagesService, INService
         while (tasks.Count > 0); // keep looping as long as there is any task remaining to be attempted
 
         // if we ran out of tasks, that means all tasks failed - return an error
-        return new UrlReply()
+        return new()
         {
             Error = "No hentai image found."
         };
@@ -210,7 +210,7 @@ public class SearchImagesService : ISearchImagesService, INService
         {
             JToken obj;
             obj = JArray.Parse(await _http.GetStringAsync($"http://api.oboobs.ru/boobs/{_rng.Next(0, 12000)}").ConfigureAwait(false))[0];
-            return new UrlReply
+            return new()
             {
                 Error = "",
                 Url = $"http://media.oboobs.ru/{obj["preview"]}",
@@ -219,7 +219,7 @@ public class SearchImagesService : ISearchImagesService, INService
         catch (Exception ex)
         {
             Log.Error(ex, "Error retreiving boob image: {Message}", ex.Message);
-            return new UrlReply
+            return new()
             {
                 Error = ex.Message,
                 Url = "",
@@ -245,7 +245,7 @@ public class SearchImagesService : ISearchImagesService, INService
             }
             else
             {
-                uow.NsfwBlacklistedTags.Add(new NsfwBlacklistedTag()
+                uow.NsfwBlacklistedTags.Add(new()
                 {
                     Tag = tag,
                     GuildId = guildId
@@ -278,7 +278,7 @@ public class SearchImagesService : ISearchImagesService, INService
         {
             JToken obj;
             obj = JArray.Parse(await _http.GetStringAsync($"http://api.obutts.ru/butts/{_rng.Next(0, 6100)}"))[0];
-            return new UrlReply
+            return new()
             {
                 Error = "",
                 Url = $"http://media.obutts.ru/{obj["preview"]}",
@@ -287,7 +287,7 @@ public class SearchImagesService : ISearchImagesService, INService
         catch (Exception ex)
         {
             Log.Error(ex, "Error retreiving butt image: {Message}", ex.Message);
-            return new UrlReply
+            return new()
             {
                 Error = ex.Message,
                 Url = "",
@@ -311,7 +311,7 @@ public class SearchImagesService : ISearchImagesService, INService
                         + GetNhentaiExtensionInternal(model.Images.Thumbnail.T);
 
         var url = $"https://nhentai.net/g/{model.Id}";
-        return new Gallery(
+        return new(
             model.Id.ToString(),
             url,
             model.Title.English,

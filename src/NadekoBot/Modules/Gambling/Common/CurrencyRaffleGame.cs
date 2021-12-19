@@ -45,7 +45,7 @@ public class CurrencyRaffleGame
             _users.First().Amount != amount)
             return false;
 
-        if (!_users.Add(new User
+        if (!_users.Add(new()
             {
                 DiscordUser = usr,
                 Amount = amount,

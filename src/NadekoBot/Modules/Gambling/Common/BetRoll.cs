@@ -16,7 +16,7 @@ public class Betroll
     public Betroll(BetRollConfig settings)
     {
         _thresholdPairs = settings.Pairs.OrderByDescending(x => x.WhenAbove);
-        _rng = new Random();
+        _rng = new();
     }
 
     public Result Roll()
@@ -26,14 +26,14 @@ public class Betroll
         var pair = _thresholdPairs.FirstOrDefault(x => x.WhenAbove < roll);
         if (pair is null)
         {
-            return new Result
+            return new()
             {
                 Multiplier = 0,
                 Roll = roll,
             };
         }
 
-        return new Result
+        return new()
         {
             Multiplier = pair.MultiplyBy,
             Roll = roll,

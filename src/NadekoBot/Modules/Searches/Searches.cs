@@ -461,7 +461,7 @@ public partial class Searches : NadekoModule<SearchesService>
                 if (items.Any())
                 {
 
-                    await ctx.SendPaginatedConfirmAsync(0, (p) =>
+                    await ctx.SendPaginatedConfirmAsync(0, p =>
                     {
                         var item = items[p];
                         return _eb.Create().WithOkColor()

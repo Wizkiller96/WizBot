@@ -145,7 +145,7 @@ public partial class Games : NadekoModule<GamesService>
             advice = ratings.Uni;
         }
 
-        return new GirlRating(_images, _httpFactory, crazy, hot, roll, advice);
+        return new(_images, _httpFactory, crazy, hot, roll, advice);
     }
 
     [NadekoCommand, Aliases]

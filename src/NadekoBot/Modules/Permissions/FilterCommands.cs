@@ -247,7 +247,7 @@ public partial class Permissions
                 removed = config.FilteredWords.FirstOrDefault(fw => fw.Word.Trim().ToLowerInvariant() == word);
 
                 if (removed is null)
-                    config.FilteredWords.Add(new FilteredWord() { Word = word });
+                    config.FilteredWords.Add(new() { Word = word });
                 else
                 {
                     uow.Remove(removed);
@@ -285,7 +285,7 @@ public partial class Permissions
             var fws = fwHash.ToArray();
 
             await ctx.SendPaginatedConfirmAsync(page,
-                (curPage) => _eb.Create()
+                curPage => _eb.Create()
                     .WithTitle(GetText(strs.filter_word_list))
                     .WithDescription(string.Join("\n", fws.Skip(curPage * 10).Take(10)))
                     .WithOkColor()

@@ -56,7 +56,7 @@ public sealed class TranslateService : ITranslateService, ILateExecutor, IReadyE
         if (string.IsNullOrWhiteSpace(msg.Content))
             return;
             
-        if (msg is IUserMessage { Channel: ITextChannel tch } um)
+        if (msg is { Channel: ITextChannel tch } um)
         {
             if (!_atcs.TryGetValue(tch.Id, out var autoDelete))
                 return;

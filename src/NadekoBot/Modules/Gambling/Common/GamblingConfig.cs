@@ -11,15 +11,15 @@ public sealed partial class GamblingConfig : ICloneable<GamblingConfig>
 {
     public GamblingConfig()
     {
-        BetRoll = new BetRollConfig();
-        WheelOfFortune = new WheelOfFortuneSettings();
-        Waifu = new WaifuConfig();
-        Currency = new CurrencyConfig();
-        BetFlip = new BetFlipConfig();
-        Generation = new GenerationConfig();
-        Timely = new TimelyConfig();
-        Decay = new DecayConfig();
-        Slots = new SlotsConfig();
+        BetRoll = new();
+        WheelOfFortune = new();
+        Waifu = new();
+        Currency = new();
+        BetFlip = new();
+        Generation = new();
+        Timely = new();
+        Decay = new();
+        Slots = new();
     }
 
     [Comment(@"DO NOT CHANGE")]

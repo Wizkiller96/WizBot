@@ -46,9 +46,9 @@ public sealed class MusicService : IMusicService
         _ytLoader = ytLoader;
         _eb = eb;
 
-        _players = new ConcurrentDictionary<ulong, IMusicPlayer>();
+        _players = new();
         _outputChannels = new ConcurrentDictionary<ulong, (ITextChannel, ITextChannel?)>();
-        _settings = new ConcurrentDictionary<ulong, MusicPlayerSettings>();
+        _settings = new();
             
         _client.LeftGuild += ClientOnLeftGuild;
     }
@@ -149,7 +149,7 @@ public sealed class MusicService : IMusicService
         var settings = await GetSettingsInternalAsync(guildId);
 
         ITextChannel? overrideChannel = null;
-        if (settings.MusicChannelId is ulong channelId)
+        if (settings.MusicChannelId is { } channelId)
         {
             overrideChannel = _client.GetGuild(guildId)?.GetTextChannel(channelId);
 
@@ -170,7 +170,7 @@ public sealed class MusicService : IMusicService
             
         mp.SetRepeat(settings.PlayerRepeat);
 
-        if (settings.Volume >= 0 && settings.Volume <= 100)
+        if (settings.Volume is >= 0 and <= 100)
         {
             mp.SetVolume(settings.Volume);
         }
@@ -226,7 +226,7 @@ public sealed class MusicService : IMusicService
     }
 
     private Func<IMusicPlayer, Task> OnQueueStopped(ulong guildId)
-        => (mp) =>
+        => mp =>
         {
             if (_settings.TryGetValue(guildId, out var settings))
             {

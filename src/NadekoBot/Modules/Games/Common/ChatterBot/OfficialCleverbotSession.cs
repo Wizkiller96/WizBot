@@ -60,7 +60,7 @@ public class CleverbotIOSession : IChatterBotSession
         this._user = user;
         this._httpFactory = factory;
 
-        _nick = new AsyncLazy<string>((Func<Task<string>>)GetNick);
+        _nick = new((Func<Task<string>>)GetNick);
     }
 
     private async Task<string> GetNick()

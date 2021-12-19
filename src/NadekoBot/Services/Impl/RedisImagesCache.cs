@@ -92,7 +92,7 @@ public sealed class RedisImagesCache : IImageCache, IReadyExecutor
     {
         _con = con;
         _creds = creds;
-        _http = new HttpClient();
+        _http = new();
         _imagesPath = Path.Combine(_basePath, "images.yml");
 
         Migrate();
@@ -115,7 +115,7 @@ public sealed class RedisImagesCache : IImageCache, IReadyExecutor
             {
                 var newData = new ImageUrls()
                 {
-                    Coins = new ImageUrls.CoinData()
+                    Coins = new()
                     {
                         Heads = oldData.Coins.Heads.Length == 1 && 
                                 oldData.Coins.Heads[0].ToString() == "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/coins/heads.png"
@@ -128,19 +128,19 @@ public sealed class RedisImagesCache : IImageCache, IReadyExecutor
                     },
                     Dice = oldData.Dice.Map(x => x.ToNewCdn()),
                     Currency = oldData.Currency.Map(x => x.ToNewCdn()),
-                    Rategirl = new ImageUrls.RategirlData()
+                    Rategirl = new()
                     {
                         Dot = oldData.Rategirl.Dot.ToNewCdn(),
                         Matrix = oldData.Rategirl.Matrix.ToNewCdn()
                     },
-                    Rip = new ImageUrls.RipData()
+                    Rip = new()
                     {
                         Bg = oldData.Rip.Bg.ToNewCdn(),
                         Overlay = oldData.Rip.Overlay.ToNewCdn(),
                     },
-                    Slots = new ImageUrls.SlotData()
+                    Slots = new()
                     {
-                        Bg = new Uri("https://cdn.nadeko.bot/slots/slots_bg.png"),
+                        Bg = new("https://cdn.nadeko.bot/slots/slots_bg.png"),
                         Emojis = new[]
                         {
                             "https://cdn.nadeko.bot/slots/0.png",
@@ -151,7 +151,7 @@ public sealed class RedisImagesCache : IImageCache, IReadyExecutor
                             "https://cdn.nadeko.bot/slots/5.png"
                         }.Map(x => new Uri(x))
                     },
-                    Xp = new ImageUrls.XpData()
+                    Xp = new()
                     {
                         Bg = oldData.Xp.Bg.ToNewCdn(),
                     },

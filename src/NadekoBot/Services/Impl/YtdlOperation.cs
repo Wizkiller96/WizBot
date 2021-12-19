@@ -18,9 +18,9 @@ public class YtdlOperation
     private Process CreateProcess(string[] args)
     {
         args = args.Map(arg => arg.Replace("\"", ""));
-        return new Process()
+        return new()
         {
-            StartInfo = new ProcessStartInfo()
+            StartInfo = new()
             {
                 FileName = "youtube-dl",
                 Arguments = string.Format(_baseArgString, args),

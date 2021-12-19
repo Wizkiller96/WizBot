@@ -24,7 +24,7 @@ public sealed class GamblingConfigService : ConfigServiceBase<GamblingConfig>
         AddParsedProp("gen.min", gs => gs.Generation.MinAmount, int.TryParse, ConfigPrinters.ToString, val => val >= 1);
         AddParsedProp("gen.max", gs => gs.Generation.MaxAmount, int.TryParse, ConfigPrinters.ToString, val => val >= 1);
         AddParsedProp("gen.cd", gs => gs.Generation.GenCooldown, int.TryParse, ConfigPrinters.ToString, val => val > 0);
-        AddParsedProp("gen.chance", gs => gs.Generation.Chance, decimal.TryParse, ConfigPrinters.ToString, val => val >= 0 && val <= 1);
+        AddParsedProp("gen.chance", gs => gs.Generation.Chance, decimal.TryParse, ConfigPrinters.ToString, val => val is >= 0 and <= 1);
         AddParsedProp("gen.has_pw", gs => gs.Generation.HasPassword, bool.TryParse, ConfigPrinters.ToString);
         AddParsedProp("bf.multi", gs => gs.BetFlip.Multiplier, decimal.TryParse, ConfigPrinters.ToString, val => val >= 1);
         AddParsedProp("waifu.min_price", gs => gs.Waifu.MinPrice, int.TryParse, ConfigPrinters.ToString, val => val >= 0);
@@ -35,7 +35,7 @@ public sealed class GamblingConfigService : ConfigServiceBase<GamblingConfig>
         AddParsedProp("waifu.multi.all_gifts", gs => gs.Waifu.Multipliers.AllGiftPrices, decimal.TryParse, ConfigPrinters.ToString, val => val > 0);
         AddParsedProp("waifu.multi.gift_effect", gs => gs.Waifu.Multipliers.GiftEffect, decimal.TryParse, ConfigPrinters.ToString, val => val >= 0);
         AddParsedProp("waifu.multi.negative_gift_effect", gs => gs.Waifu.Multipliers.NegativeGiftEffect, decimal.TryParse, ConfigPrinters.ToString, val => val >= 0);
-        AddParsedProp("decay.percent", gs => gs.Decay.Percent, decimal.TryParse, ConfigPrinters.ToString, val => val >= 0 && val <= 1);
+        AddParsedProp("decay.percent", gs => gs.Decay.Percent, decimal.TryParse, ConfigPrinters.ToString, val => val is >= 0 and <= 1);
         AddParsedProp("decay.maxdecay", gs => gs.Decay.MaxDecay, int.TryParse, ConfigPrinters.ToString, val => val >= 0);
         AddParsedProp("decay.threshold", gs => gs.Decay.MinThreshold, int.TryParse, ConfigPrinters.ToString, val => val >= 0);
 

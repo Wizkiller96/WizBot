@@ -95,7 +95,7 @@ public partial class Searches
                 return;
             }
 
-            await ctx.SendPaginatedConfirmAsync(0, (cur) =>
+            await ctx.SendPaginatedConfirmAsync(0, cur =>
             {
                 var embed = _eb.Create()
                     .WithOkColor();

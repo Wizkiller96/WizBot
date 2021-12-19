@@ -51,13 +51,13 @@ public class PollService : IEarlyBehavior
         var col = new IndexedCollection<PollAnswer>(data.Skip(1)
             .Select(x => new PollAnswer() { Text = x }));
 
-        return new Poll()
+        return new()
         {
             Answers = col,
             Question = data[0],
             ChannelId = channelId,
             GuildId = guildId,
-            Votes = new System.Collections.Generic.HashSet<PollVote>()
+            Votes = new()
         };
     }
 

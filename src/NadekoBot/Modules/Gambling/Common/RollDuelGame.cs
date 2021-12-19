@@ -49,7 +49,7 @@ public class RollDuelGame
         this.Amount = amount;
         _cs = cs;
 
-        _timeoutTimer = new Timer(async delegate
+        _timeoutTimer = new(async delegate
         {
             await _locker.WaitAsync().ConfigureAwait(false);
             try

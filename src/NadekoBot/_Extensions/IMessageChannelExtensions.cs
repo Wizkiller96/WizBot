@@ -10,7 +10,7 @@ public static class IMessageChannelExtensions
 {
     public static Task<IUserMessage> EmbedAsync(this IMessageChannel ch, IEmbedBuilder embed, string msg = "")
         => ch.SendMessageAsync(msg, embed: embed.Build(),
-            options: new RequestOptions() { RetryMode  = RetryMode.AlwaysRetry });
+            options: new() { RetryMode  = RetryMode.AlwaysRetry });
 
     // this is a huge problem, because now i don't have
     // access to embed builder service
@@ -82,7 +82,7 @@ public static class IMessageChannelExtensions
         int currentPage, Func<int, IEmbedBuilder> pageFunc, int totalElements,
         int itemsPerPage, bool addPaginatedFooter = true)
         => ctx.SendPaginatedConfirmAsync(currentPage,
-            (x) => Task.FromResult(pageFunc(x)), totalElements, itemsPerPage, addPaginatedFooter);
+            x => Task.FromResult(pageFunc(x)), totalElements, itemsPerPage, addPaginatedFooter);
     /// <summary>
     /// danny kamisama
     /// </summary>

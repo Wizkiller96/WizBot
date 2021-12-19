@@ -33,9 +33,9 @@ public class GoogleApiService : IGoogleApiService, INService
             ApiKey = _creds.GoogleApiKey,
         };
             
-        yt = new YouTubeService(bcs);
-        sh = new UrlshortenerService(bcs);
-        cs = new CustomsearchService(bcs);
+        yt = new(bcs);
+        sh = new(bcs);
+        cs = new(bcs);
     }
     private static readonly Regex plRegex = new Regex("(?:youtu\\.be\\/|list=)(?<id>[\\da-zA-Z\\-_]*)", RegexOptions.Compiled);
     public async Task<IEnumerable<string>> GetPlaylistIdsByKeywordsAsync(string keywords, int count = 1)
@@ -126,7 +126,7 @@ public class GoogleApiService : IGoogleApiService, INService
 
         try
         {
-            var response = await sh.Url.Insert(new Url { LongUrl = url }).ExecuteAsync().ConfigureAwait(false);
+            var response = await sh.Url.Insert(new() { LongUrl = url }).ExecuteAsync().ConfigureAwait(false);
             return response.Id;
         }
         catch (GoogleApiException ex) when (ex.HttpStatusCode == HttpStatusCode.Forbidden)
@@ -219,7 +219,7 @@ public class GoogleApiService : IGoogleApiService, INService
 
         var search = await req.ExecuteAsync().ConfigureAwait(false);
 
-        return new ImageResult(search.Items[0].Image, search.Items[0].Link);
+        return new(search.Items[0].Image, search.Items[0].Link);
     }
 
     public IReadOnlyDictionary<string, string> Languages { get; } = new Dictionary<string, string>() {

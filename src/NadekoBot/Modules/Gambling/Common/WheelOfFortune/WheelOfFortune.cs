@@ -20,7 +20,7 @@ public class WheelOfFortuneGame
 
     public WheelOfFortuneGame(ulong userId, long bet, GamblingConfig config, ICurrencyService cs)
     {
-        _rng = new NadekoRandom();
+        _rng = new();
         _cs = cs;
         _bet = bet;
         _config = config;
@@ -36,7 +36,7 @@ public class WheelOfFortuneGame
         if (amount > 0)
             await _cs.AddAsync(_userId, "Wheel Of Fortune - won", amount, gamble: true).ConfigureAwait(false);
 
-        return new Result
+        return new()
         {
             Index = result,
             Amount = amount,

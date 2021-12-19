@@ -74,11 +74,11 @@ public static class CustomReactionExtensions
     private static bool isValidWordDivider(this in ReadOnlySpan<char> str, int index)
     {
         var ch = str[index];
-        if (ch >= 'a' && ch <= 'z')
+        if (ch is >= 'a' and <= 'z')
             return false;
-        if (ch >= 'A' && ch <= 'Z')
+        if (ch is >= 'A' and <= 'Z')
             return false;
-        if (ch >= '1' && ch <= '9')
+        if (ch is >= '1' and <= '9')
             return false;
 
         return true;

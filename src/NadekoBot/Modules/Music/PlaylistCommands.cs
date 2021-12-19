@@ -110,7 +110,7 @@ public sealed partial class Music
                 mpl = uow.MusicPlaylists.GetWithSongs(id);
             }
 
-            await ctx.SendPaginatedConfirmAsync(page, (cur) =>
+            await ctx.SendPaginatedConfirmAsync(page, cur =>
             {
                 var i = 0;
                 var str = string.Join("\n", mpl.Songs
@@ -146,7 +146,7 @@ public sealed partial class Music
             MusicPlaylist playlist;
             using (var uow = _db.GetDbContext())
             {
-                playlist = new MusicPlaylist
+                playlist = new()
                 {
                     Name = name,
                     Author = ctx.User.Username,

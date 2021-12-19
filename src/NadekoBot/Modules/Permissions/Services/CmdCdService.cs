@@ -18,7 +18,7 @@ public class CmdCdService : ILateBlocker, INService
             
     public CmdCdService(Bot bot)
     {
-        CommandCooldowns = new ConcurrentDictionary<ulong, ConcurrentHashSet<CommandCooldown>>(
+        CommandCooldowns = new(
             bot.AllGuildConfigs.ToDictionary(k => k.GuildId, 
                 v => new ConcurrentHashSet<CommandCooldown>(v.CommandCooldowns)));
     }
@@ -38,7 +38,7 @@ public class CmdCdService : ILateBlocker, INService
                 return Task.FromResult(true);
             }
                 
-            activeCdsForGuild.Add(new ActiveCooldown()
+            activeCdsForGuild.Add(new()
             {
                 UserId = user.Id,
                 Command = commandName,

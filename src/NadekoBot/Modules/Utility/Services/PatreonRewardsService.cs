@@ -55,7 +55,7 @@ public class PatreonRewardsService : INService
         _client = client;
 
         if (client.ShardId == 0)
-            _updater = new Timer(async _ => await RefreshPledges(_credsProvider.GetCreds()).ConfigureAwait(false),
+            _updater = new(async _ => await RefreshPledges(_credsProvider.GetCreds()).ConfigureAwait(false),
                 null, TimeSpan.Zero, Interval);
     }
 
@@ -188,8 +188,8 @@ public class PatreonRewardsService : INService
             }
 
             var userData = members.Join(users,
-                    (m) => m.Relationships.User.Data.Id,
-                    (u) => u.Id,
+                    m => m.Relationships.User.Data.Id,
+                    u => u.Id,
                     (m, u) => new
                     {
                         PatreonUserId = m.Relationships.User.Data.Id,
@@ -238,7 +238,7 @@ public class PatreonRewardsService : INService
 
                 if (usr is null)
                 {
-                    users.Add(new RewardedUser()
+                    users.Add(new()
                     {
                         PatreonUserId = patreonUserId,
                         LastReward = now,

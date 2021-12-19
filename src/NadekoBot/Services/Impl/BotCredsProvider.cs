@@ -51,7 +51,7 @@ public sealed class BotCredsProvider : IBotCredsProvider
             {
                 if (Environment.OSVersion.Platform == PlatformID.Unix)
                 {
-                    _creds.RestartCommand = new RestartConfig()
+                    _creds.RestartCommand = new()
                     {
                         Args = "dotnet",
                         Cmd = "NadekoBot.dll -- {0}",
@@ -59,7 +59,7 @@ public sealed class BotCredsProvider : IBotCredsProvider
                 }
                 else
                 {
-                    _creds.RestartCommand = new RestartConfig()
+                    _creds.RestartCommand = new()
                     {
                         Args = "NadekoBot.exe",
                         Cmd = "{0}",
@@ -141,7 +141,7 @@ public sealed class BotCredsProvider : IBotCredsProvider
                 OsuApiKey = oldCreds.OsuApiKey,
                 CleverbotApiKey = oldCreds.CleverbotApiKey,
                 TotalShards = oldCreds.TotalShards <= 1 ? 1 : oldCreds.TotalShards,
-                Patreon = new Creds.PatreonSettings(oldCreds.PatreonAccessToken,
+                Patreon = new(oldCreds.PatreonAccessToken,
                     null,
                     null,
                     oldCreds.PatreonCampaignId),

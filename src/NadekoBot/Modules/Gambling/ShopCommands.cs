@@ -49,7 +49,7 @@ public partial class Gambling
                     set => set.Include(x => x.ShopEntries)
                         .ThenInclude(x => x.Items)).ShopEntries
                 .ToIndexed();
-            return ctx.SendPaginatedConfirmAsync(page, (curPage) =>
+            return ctx.SendPaginatedConfirmAsync(page, curPage =>
             {
                 var theseEntries = entries.Skip(curPage * 9).Take(9).ToArray();
 
@@ -261,7 +261,7 @@ public partial class Gambling
                 Price = price,
                 Type = ShopEntryType.List,
                 AuthorId = ctx.User.Id,
-                Items = new HashSet<ShopEntryItem>(),
+                Items = new(),
             };
             using (var uow = _db.GetDbContext())
             {

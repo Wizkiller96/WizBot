@@ -54,12 +54,12 @@ public class GameStatusEvent : ICurrencyEvent
         _channel = ch;
         _opts = opt;
         // generate code
-        _code = new string(_sneakyGameStatusChars.Shuffle().Take(5).ToArray());
+        _code = new(_sneakyGameStatusChars.Shuffle().Take(5).ToArray());
 
-        _t = new Timer(OnTimerTick, null, Timeout.InfiniteTimeSpan, TimeSpan.FromSeconds(2));
+        _t = new(OnTimerTick, null, Timeout.InfiniteTimeSpan, TimeSpan.FromSeconds(2));
         if (_opts.Hours > 0)
         {
-            _timeout = new Timer(EventTimeout, null, TimeSpan.FromHours(_opts.Hours), Timeout.InfiniteTimeSpan);
+            _timeout = new(EventTimeout, null, TimeSpan.FromHours(_opts.Hours), Timeout.InfiniteTimeSpan);
         }
     }
 
@@ -92,7 +92,7 @@ public class GameStatusEvent : ICurrencyEvent
                 await _msg.ModifyAsync(m =>
                 {
                     m.Embed = GetEmbed(PotSize).Build();
-                }, new RequestOptions() { RetryMode = RetryMode.AlwaysRetry }).ConfigureAwait(false);
+                }, new() { RetryMode = RetryMode.AlwaysRetry }).ConfigureAwait(false);
             }
 
             Log.Information("Awarded {0} users {1} currency.{2}",
@@ -175,7 +175,7 @@ public class GameStatusEvent : ICurrencyEvent
 
             try
             {
-                await msg.DeleteAsync(new RequestOptions()
+                await msg.DeleteAsync(new()
                 {
                     RetryMode = RetryMode.AlwaysFail
                 });

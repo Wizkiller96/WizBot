@@ -137,7 +137,7 @@ public partial class Gambling
             Match match;
             if ((match = fudgeRegex.Match(arg)).Length != 0 &&
                 int.TryParse(match.Groups["n1"].ToString(), out var n1) &&
-                n1 > 0 && n1 < 500)
+                n1 is > 0 and < 500)
             {
                 var rng = new NadekoRandom();
 

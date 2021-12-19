@@ -37,7 +37,7 @@ public sealed class LocalTrackResolver : ILocalTrackResolver
         DirectoryInfo dir;
         try
         {
-            dir = new DirectoryInfo(dirPath);
+            dir = new(dirPath);
         }
         catch (Exception ex)
         {

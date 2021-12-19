@@ -54,7 +54,7 @@ public class PicartoProvider : Provider
     public async override Task<List<StreamData>> GetStreamDataAsync(List<string> logins)
     {
         if (logins.Count == 0)
-            return new List<StreamData>();
+            return new();
 
         using (var http = _httpClientFactory.CreateClient())
         {
@@ -63,7 +63,7 @@ public class PicartoProvider : Provider
             {
                 try
                 {
-                    http.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    http.DefaultRequestHeaders.Accept.Add(new("application/json"));
                     // get id based on the username
                     var res = await http.GetAsync($"https://api.picarto.tv/v1/channel/name/{login}");
                         
@@ -88,7 +88,7 @@ public class PicartoProvider : Provider
 
     private StreamData ToStreamData(PicartoChannelResponse stream)
     {
-        return new StreamData()
+        return new()
         {
             StreamType = FollowedStream.FType.Picarto,
             Name = stream.Name,

@@ -9,12 +9,12 @@ public class FontProvider : INService
 
     public FontProvider()
     {
-        _fonts = new FontCollection();
+        _fonts = new();
 
         NotoSans = _fonts.Install("data/fonts/NotoSans-Bold.ttf");
         UniSans = _fonts.Install("data/fonts/Uni Sans.ttf");
 
-        FallBackFonts = new List<FontFamily>();
+        FallBackFonts = new();
 
         //FallBackFonts.Add(_fonts.Install("data/fonts/OpenSansEmoji.ttf"));
 

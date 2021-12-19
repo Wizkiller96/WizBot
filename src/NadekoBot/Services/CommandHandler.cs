@@ -53,7 +53,7 @@ public class CommandHandler : INService
         _db = db;
         _services = services;
 
-        _clearUsersOnShortCooldown = new Timer(_ =>
+        _clearUsersOnShortCooldown = new(_ =>
         {
             UsersOnShortCooldown.Clear();
         }, null, GlobalCommandsCooldown, GlobalCommandsCooldown);
@@ -129,7 +129,7 @@ public class CommandHandler : INService
 
     public Task StartHandling()
     {
-        _client.MessageReceived += (msg) => { var _ = Task.Run(() => MessageReceivedHandler(msg)); return Task.CompletedTask; };
+        _client.MessageReceived += msg => { var _ = Task.Run(() => MessageReceivedHandler(msg)); return Task.CompletedTask; };
         return Task.CompletedTask;
     }
 
@@ -237,7 +237,7 @@ public class CommandHandler : INService
         // execute the command and measure the time it took
         if (messageContent.StartsWith(prefix, StringComparison.InvariantCulture) || isPrefixCommand)
         {
-            var (Success, Error, Info) = await ExecuteCommandAsync(new CommandContext(_client, usrMsg), messageContent, isPrefixCommand ? 1 : prefix.Length, _services, MultiMatchHandling.Best).ConfigureAwait(false);
+            var (Success, Error, Info) = await ExecuteCommandAsync(new(_client, usrMsg), messageContent, isPrefixCommand ? 1 : prefix.Length, _services, MultiMatchHandling.Best).ConfigureAwait(false);
             startTime = Environment.TickCount - startTime;
 
             if (Success)

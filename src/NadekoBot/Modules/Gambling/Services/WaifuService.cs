@@ -175,14 +175,14 @@ public class WaifuService : INService
                 }
                 else
                 {
-                    uow.WaifuInfo.Add(w = new WaifuInfo()
+                    uow.WaifuInfo.Add(w = new()
                     {
                         Waifu = waifu,
                         Claimer = claimer,
                         Affinity = null,
                         Price = amount
                     });
-                    uow.WaifuUpdates.Add(new WaifuUpdate()
+                    uow.WaifuUpdates.Add(new()
                     {
                         User = waifu,
                         Old = null,
@@ -205,7 +205,7 @@ public class WaifuService : INService
                     w.Price = amount + (amount / 4);
                     result = WaifuClaimResult.Success;
 
-                    uow.WaifuUpdates.Add(new WaifuUpdate()
+                    uow.WaifuUpdates.Add(new()
                     {
                         User = w.Waifu,
                         Old = oldClaimer,
@@ -227,7 +227,7 @@ public class WaifuService : INService
                     w.Price = amount;
                     result = WaifuClaimResult.Success;
 
-                    uow.WaifuUpdates.Add(new WaifuUpdate()
+                    uow.WaifuUpdates.Add(new()
                     {
                         User = w.Waifu,
                         Old = oldClaimer,
@@ -264,7 +264,7 @@ public class WaifuService : INService
             else if (w is null)
             {
                 var thisUser = uow.GetOrCreateUser(user);
-                uow.WaifuInfo.Add(new WaifuInfo()
+                uow.WaifuInfo.Add(new()
                 {
                     Affinity = newAff,
                     Waifu = thisUser,
@@ -273,7 +273,7 @@ public class WaifuService : INService
                 });
                 success = true;
 
-                uow.WaifuUpdates.Add(new WaifuUpdate()
+                uow.WaifuUpdates.Add(new()
                 {
                     User = thisUser,
                     Old = null,
@@ -288,7 +288,7 @@ public class WaifuService : INService
                 w.Affinity = newAff;
                 success = true;
 
-                uow.WaifuUpdates.Add(new WaifuUpdate()
+                uow.WaifuUpdates.Add(new()
                 {
                     User = w.Waifu,
                     Old = oldAff,
@@ -353,7 +353,7 @@ public class WaifuService : INService
                 var oldClaimer = w.Claimer;
                 w.Claimer = null;
 
-                uow.WaifuUpdates.Add(new WaifuUpdate()
+                uow.WaifuUpdates.Add(new()
                 {
                     User = w.Waifu,
                     Old = oldClaimer,
@@ -382,7 +382,7 @@ public class WaifuService : INService
                     .Include(x => x.Claimer));
             if (w is null)
             {
-                uow.WaifuInfo.Add(w = new WaifuInfo()
+                uow.WaifuInfo.Add(w = new()
                 {
                     Affinity = null,
                     Claimer = null,
@@ -393,7 +393,7 @@ public class WaifuService : INService
 
             if (!itemObj.Negative)
             {
-                w.Items.Add(new WaifuItem()
+                w.Items.Add(new()
                 {
                     Name = itemObj.Name.ToLowerInvariant(),
                     ItemEmoji = itemObj.ItemEmoji,
@@ -428,17 +428,17 @@ public class WaifuService : INService
             var wi = uow.GetWaifuInfo(targetId);
             if (wi is null)
             {
-                wi = new WaifuInfoStats
+                wi = new()
                 {
                     AffinityCount = 0,
                     AffinityName = null,
                     ClaimCount = 0,
                     ClaimerName = null,
-                    Claims = new List<string>(),
-                    Fans = new List<string>(),
+                    Claims = new(),
+                    Fans = new(),
                     DivorceCount = 0,
                     FullName = null,
-                    Items = new List<WaifuItem>(),
+                    Items = new(),
                     Price = 1
                 };
             }

@@ -7,15 +7,15 @@ public class QuadDeck : Deck
 {
     protected override void RefillPool()
     {
-        CardPool = new List<Card>(52 * 4);
+        CardPool = new(52 * 4);
         for (var j = 1; j < 14; j++)
         {
             for (var i = 1; i < 5; i++)
             {
-                CardPool.Add(new Card((CardSuit)i, j));
-                CardPool.Add(new Card((CardSuit)i, j));
-                CardPool.Add(new Card((CardSuit)i, j));
-                CardPool.Add(new Card((CardSuit)i, j));
+                CardPool.Add(new((CardSuit)i, j));
+                CardPool.Add(new((CardSuit)i, j));
+                CardPool.Add(new((CardSuit)i, j));
+                CardPool.Add(new((CardSuit)i, j));
             }
         }
     }
@@ -60,7 +60,7 @@ public class Deck
             {
                 var str = string.Empty;
 
-                if (Number <= 10 && Number > 1)
+                if (Number is <= 10 and > 1)
                 {
                     str += "_" + Number;
                 }
@@ -101,7 +101,7 @@ public class Deck
                 throw new ArgumentException("Invalid input", nameof(input));
             }
 
-            return new Card(s, n);
+            return new(s, n);
         }
 
         public string GetEmojiString()
@@ -189,7 +189,7 @@ public class Deck
     /// </summary>
     protected virtual void RefillPool()
     {
-        CardPool = new List<Card>(52);
+        CardPool = new(52);
         //foreach suit
         for (var j = 1; j < 14; j++)
         {
@@ -199,7 +199,7 @@ public class Deck
                 //generate a card of that suit and number and add it to the pool
 
                 // the pool will go from ace of spades,hears,diamonds,clubs all the way to the king of spades. hearts, ...
-                CardPool.Add(new Card((CardSuit)i, j));
+                CardPool.Add(new((CardSuit)i, j));
             }
         }
     }
@@ -256,7 +256,7 @@ public class Deck
                 - cards.Min(card => (int)card.Number) == 4);
             if (toReturn || cards.All(c => c.Number != 1)) return toReturn;
 
-            var newCards = cards.Select(c => c.Number == 1 ? new Card(c.Suit, 14) : c);
+            var newCards = cards.Select(c => c.Number == 1 ? new(c.Suit, 14) : c);
             return (newCards.Max(card => (int)card.Number)
                 - newCards.Min(card => (int)card.Number) == 4);
         }
@@ -281,7 +281,7 @@ public class Deck
 
         bool isStraightFlush(List<Card> cards) => hasStraightFlush(cards) && !isRoyalFlush(cards);
 
-        handValues = new Dictionary<string, Func<List<Card>, bool>>
+        handValues = new()
         {
             { "Royal Flush", isRoyalFlush },
             { "Straight Flush", isStraightFlush },

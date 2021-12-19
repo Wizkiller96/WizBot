@@ -61,7 +61,7 @@ public sealed class StreamNotificationService : INService
         _creds = creds;
         _pubSub = pubSub;
         _eb = eb;
-        _streamTracker = new NotifChecker(httpFactory, redis, creds.RedisKey(), client.ShardId == 0);
+        _streamTracker = new(httpFactory, redis, creds.RedisKey(), client.ShardId == 0);
 
         _streamsOnlineKey = new("streams.online");
         _streamsOfflineKey = new("streams.offline");
@@ -78,7 +78,7 @@ public sealed class StreamNotificationService : INService
                 .Where(x => ids.Contains(x.GuildId))
                 .ToList();
 
-            _offlineNotificationServers = new ConcurrentHashSet<ulong>(guildConfigs
+            _offlineNotificationServers = new(guildConfigs
                 .Where(gc => gc.NotifyStreamOffline)
                 .Select(x => x.GuildId)
                 .ToList());
@@ -125,7 +125,7 @@ public sealed class StreamNotificationService : INService
             _streamTracker.OnStreamsOffline += OnStreamsOffline;
             _streamTracker.OnStreamsOnline += OnStreamsOnline;
             _ = _streamTracker.RunAsync();
-            _notifCleanupTimer = new Timer(_ =>
+            _notifCleanupTimer = new(_ =>
             {
                 try
                 {
@@ -155,7 +155,7 @@ public sealed class StreamNotificationService : INService
                             uow.SaveChanges();
                                 
                             foreach(var loginToDelete in kvp.Value)
-                                _streamTracker.UntrackStreamByKey(new StreamDataKey(kvp.Key, loginToDelete));
+                                _streamTracker.UntrackStreamByKey(new(kvp.Key, loginToDelete));
                         }
                     }
                 }
@@ -191,7 +191,7 @@ public sealed class StreamNotificationService : INService
             }
             else
             {
-                _trackCounter[key] = new HashSet<ulong>()
+                _trackCounter[key] = new()
                 {
                     info.GuildId
                 };
@@ -405,7 +405,7 @@ public sealed class StreamNotificationService : INService
             var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.FollowedStreams));
 
             // add it to the database
-            fs = new FollowedStream()
+            fs = new()
             {
                 Type = data.StreamType,
                 Username = data.UniqueName,
@@ -504,14 +504,14 @@ public sealed class StreamNotificationService : INService
             }
             else
             {
-                return map[guildId] = new HashSet<FollowedStream>();
+                return map[guildId] = new();
             }
         }
         else
         {
-            _shardTrackedStreams[key] = new Dictionary<ulong, HashSet<FollowedStream>>()
+            _shardTrackedStreams[key] = new()
             {
-                {guildId, new HashSet<FollowedStream>()}
+                {guildId, new()}
             };
             return _shardTrackedStreams[key][guildId];
         }

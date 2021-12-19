@@ -18,4 +18,15 @@ public static class ArrayExtensions
         newCrs[input.Length] = added;
         return newCrs;
     }
+    
+    /// <summary>
+    /// Creates a new array by applying the specified function to every element in the input array
+    /// </summary>
+    /// <param name="arr">Array to modify</param>
+    /// <param name="f">Function to apply</param>
+    /// <typeparam name="TIn">Orignal type of the elements in the array</typeparam>
+    /// <typeparam name="TOut">Output type of the elements of the array</typeparam>
+    /// <returns>New array with updated elements</returns>
+    public static TOut[] Map<TIn, TOut>(this TIn[] arr, Func<TIn, TOut> f)
+        => Array.ConvertAll(arr, x => f(x));
 }

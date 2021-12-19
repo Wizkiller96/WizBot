@@ -264,7 +264,7 @@ public partial class Administration
                            $"| {st.GuildCount.ToString().PadBoth(maxGuildCountLength)} `";
                 })
                 .ToArray();
-            await ctx.SendPaginatedConfirmAsync(page, (curPage) =>
+            await ctx.SendPaginatedConfirmAsync(page, curPage =>
             {
                 var str = string.Join("\n", allShardStrings.Skip(25 * curPage).Take(25));
 

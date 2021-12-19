@@ -53,7 +53,7 @@ public class TwitchProvider : Provider
     public override async Task<List<StreamData>> GetStreamDataAsync(List<string> logins)
     {
         if (logins.Count == 0)
-            return new List<StreamData>();
+            return new();
 
         using (var http = _httpClientFactory.CreateClient())
         {
@@ -86,7 +86,7 @@ public class TwitchProvider : Provider
                         var chStr = await http.GetStringAsync($"https://api.twitch.tv/kraken/channels/{user.Id}");
                         var ch = JsonConvert.DeserializeObject<TwitchResponseV5.Channel>(chStr)!;
                             
-                        toReturn.Add(new StreamData
+                        toReturn.Add(new()
                         {
                             StreamType = FollowedStream.FType.Twitch,
                             Name = ch.DisplayName,
@@ -116,7 +116,7 @@ public class TwitchProvider : Provider
 
     private StreamData ToStreamData(TwitchResponseV5.Stream stream)
     {
-        return new StreamData()
+        return new()
         {
             StreamType = FollowedStream.FType.Twitch,
             Name = stream.Channel.DisplayName,

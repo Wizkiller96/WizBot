@@ -45,7 +45,7 @@ public class SearchesService : INService
         _cache = cache;
         _fonts = fonts;
         _creds = creds;
-        _rng = new NadekoRandom();
+        _rng = new();
 
         //joke commands
         if (File.Exists("data/wowjokes.json"))
@@ -70,7 +70,7 @@ public class SearchesService : INService
         }
         else
         {
-            _yomamaJokes = new List<string>();
+            _yomamaJokes = new();
             Log.Warning("data/yomama.txt is missing. .yomama command won't work");
         }
     }
@@ -86,7 +86,7 @@ public class SearchesService : INService
     }
 
     private void DrawAvatar(Image bg, Image avatarImage)
-        => bg.Mutate(x => x.Grayscale().DrawImage(avatarImage, new Point(83, 139), new GraphicsOptions()));
+        => bg.Mutate(x => x.Grayscale().DrawImage(avatarImage, new(83, 139), new GraphicsOptions()));
 
     public async Task<byte[]> GetRipPictureFactory((string text, Uri avatarUrl) arg)
     {
@@ -119,7 +119,7 @@ public class SearchesService : INService
             }
 
             bg.Mutate(x => x.DrawText(
-                new TextGraphicsOptions()
+                new()
                 {
                     TextOptions = new TextOptions
                     {
@@ -130,12 +130,12 @@ public class SearchesService : INService
                 text,
                 _fonts.RipFont,
                 SixLabors.ImageSharp.Color.Black,
-                new PointF(25, 225)));
+                new(25, 225)));
 
             //flowa
             using (var flowers = Image.Load(_imgs.RipOverlay.ToArray()))
             {
-                bg.Mutate(x => x.DrawImage(flowers, new Point(0, 0), new GraphicsOptions()));
+                bg.Mutate(x => x.DrawImage(flowers, new(0, 0), new GraphicsOptions()));
             }
 
             return bg.ToStream().ToArray();
@@ -362,7 +362,7 @@ public class SearchesService : INService
             }
             catch { storeUrl = "<url can't be found>"; }
 
-            return new MtgData
+            return new()
             {
                 Description = card.Text,
                 Name = card.Name,
@@ -573,7 +573,7 @@ public class SearchesService : INService
         }
     }
 
-    private static readonly HtmlParser _googleParser = new HtmlParser(new HtmlParserOptions()
+    private static readonly HtmlParser _googleParser = new HtmlParser(new()
     {
         IsScripting = false,
         IsEmbedded = false,
@@ -630,7 +630,7 @@ public class SearchesService : INService
             .Where(x => x != null)
             .ToList();
 
-        return new GoogleSearchResultData(
+        return new(
             results.AsReadOnly(),
             fullQueryLink,
             totalResults);
@@ -681,7 +681,7 @@ public class SearchesService : INService
             .Where(x => x != null)
             .ToList();
 
-        return new GoogleSearchResultData(
+        return new(
             results.AsReadOnly(),
             fullQueryLink,
             "0");

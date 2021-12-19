@@ -57,7 +57,7 @@ public sealed class MusicPlayer : IMusicPlayer
             
         _songBuffer = new PoopyBufferImmortalized(_vc.InputLength);
 
-        _thread = new Thread(async () =>
+        _thread = new(async () =>
         {
             await PlayLoop();
         });
@@ -67,28 +67,28 @@ public sealed class MusicPlayer : IMusicPlayer
     private static VoiceClient GetVoiceClient(QualityPreset qualityPreset)
         => qualityPreset switch
         {
-            QualityPreset.Highest => new VoiceClient(
+            QualityPreset.Highest => new(
                 SampleRate._48k,
                 Bitrate._192k,
                 Channels.Two,
                 FrameDelay.Delay20,
                 BitDepthEnum.Float32
             ),
-            QualityPreset.High => new VoiceClient(
+            QualityPreset.High => new(
                 SampleRate._48k,
                 Bitrate._128k,
                 Channels.Two,
                 FrameDelay.Delay40,
                 BitDepthEnum.Float32
             ),
-            QualityPreset.Medium => new VoiceClient(
+            QualityPreset.Medium => new(
                 SampleRate._48k,
                 Bitrate._96k,
                 Channels.Two,
                 FrameDelay.Delay40,
                 BitDepthEnum.UInt16
             ),
-            QualityPreset.Low => new VoiceClient(
+            QualityPreset.Low => new(
                 SampleRate._48k,
                 Bitrate._64k,
                 Channels.Two,
@@ -315,7 +315,7 @@ public sealed class MusicPlayer : IMusicPlayer
 
     private void HandleQueuePostTrack()
     {
-        if (_forceIndex is int forceIndex)
+        if (_forceIndex is { } forceIndex)
         {
             _queue.SetIndex(forceIndex);
             _forceIndex = null;

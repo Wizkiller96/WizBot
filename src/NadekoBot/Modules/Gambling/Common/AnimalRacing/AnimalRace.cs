@@ -38,7 +38,7 @@ public sealed class AnimalRace : IDisposable
     {
         this._currency = currency;
         this._options = options;
-        this._animalsQueue = new Queue<RaceAnimal>(availableAnimals);
+        this._animalsQueue = new(availableAnimals);
         this.MaxUsers = _animalsQueue.Count;
 
         if (this._animalsQueue.Count == 0)

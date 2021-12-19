@@ -28,14 +28,14 @@ public class Localization : ILocalization, INService
         var cultureInfoNames = bot.AllGuildConfigs
             .ToDictionary(x => x.GuildId, x => x.Locale);
             
-        GuildCultureInfos = new ConcurrentDictionary<ulong, CultureInfo>(cultureInfoNames.ToDictionary(x => x.Key, x =>
+        GuildCultureInfos = new(cultureInfoNames.ToDictionary(x => x.Key, x =>
         {
             CultureInfo cultureInfo = null;
             try
             {
                 if (x.Value is null)
                     return null;
-                cultureInfo = new CultureInfo(x.Value);
+                cultureInfo = new(x.Value);
             }
             catch { }
             return cultureInfo;
@@ -107,7 +107,7 @@ public class Localization : ILocalization, INService
         _commandData.TryGetValue(key, out var toReturn);
 
         if (toReturn is null)
-            return new CommandData
+            return new()
             {
                 Cmd = key,
                 Desc = key,

@@ -19,7 +19,7 @@ public class MultilineScalarFlowStyleEmitter : ChainedEventEmitter
             {
                 var isMultiLine = value.IndexOfAny(new char[] { '\r', '\n', '\x85', '\x2028', '\x2029' }) >= 0;
                 if (isMultiLine)
-                    eventInfo = new ScalarEventInfo(eventInfo.Source)
+                    eventInfo = new(eventInfo.Source)
                     {
                         Style = ScalarStyle.Literal,
                     };

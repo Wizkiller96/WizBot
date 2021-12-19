@@ -105,7 +105,7 @@ public partial class Gambling
                 return Task.CompletedTask;
             var enabledIn = _service.GetAllGeneratingChannels();
 
-            return ctx.SendPaginatedConfirmAsync(page, (cur) =>
+            return ctx.SendPaginatedConfirmAsync(page, cur =>
             {
                 var items = enabledIn.Skip(page * 9).Take(9);
 

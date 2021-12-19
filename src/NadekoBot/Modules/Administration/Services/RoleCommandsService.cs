@@ -88,7 +88,7 @@ public class RoleCommandsService : INService
             {
                 var dl = await msg.GetOrDownloadAsync().ConfigureAwait(false);
                 await dl.RemoveReactionAsync(reaction.Emote, dl.Author,
-                    new RequestOptions()
+                    new()
                     {
                         RetryMode = RetryMode.RetryRatelimit | RetryMode.Retry502
                     }).ConfigureAwait(false);
