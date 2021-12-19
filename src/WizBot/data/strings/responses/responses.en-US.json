@@ -557,7 +557,7 @@
   "error": "Error",
   "features": "Features",
   "index_out_of_range": "Index out of range.",
-  "inrole_list": "List of users in {0} role",
+  "inrole_list": "List of users in {0} role ({1})",
   "joined_discord": "Joined Discord",
   "joined_server": "Joined server",
   "listservers": "ID: {0}\nMembers: {1}\nOwner ID: {2}",
