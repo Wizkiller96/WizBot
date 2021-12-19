@@ -1,11 +1,8 @@
-﻿using System;
+﻿namespace NadekoBot.Services.Database.Models;
 
-namespace NadekoBot.Services.Database.Models
+public class WaifuItem : DbEntity
 {
-    public class WaifuItem : DbEntity
-    {
-        public int? WaifuInfoId { get; set; }
-        public string ItemEmoji { get; set; }
-        public string Name { get; set; }
-    }
+    public int? WaifuInfoId { get; set; }
+    public string ItemEmoji { get; set; }
+    public string Name { get; set; }
 }

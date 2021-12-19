@@ -1,9 +1,8 @@
-﻿namespace NadekoBot.Modules.Music
-{
-    public interface IQueuedTrackInfo : ITrackInfo
-    {
-        public ITrackInfo TrackInfo { get; }
+﻿namespace NadekoBot.Modules.Music;
 
-        public string Queuer { get; }
-    }
+public interface IQueuedTrackInfo : ITrackInfo
+{
+    public ITrackInfo TrackInfo { get; }
+
+    public string Queuer { get; }
 }

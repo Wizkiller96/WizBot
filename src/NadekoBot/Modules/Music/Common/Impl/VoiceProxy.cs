@@ -1,119 +1,116 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Ayu.Discord.Voice;
 using Ayu.Discord.Voice.Models;
-using Serilog;
 
-namespace NadekoBot.Modules.Music
+namespace NadekoBot.Modules.Music;
+
+public sealed class VoiceProxy : IVoiceProxy
 {
-    public sealed class VoiceProxy : IVoiceProxy
+    public enum VoiceProxyState
     {
-        public enum VoiceProxyState
-        {
-            Created,
-            Started,
-            Stopped
-        }
+        Created,
+        Started,
+        Stopped
+    }
         
-        private const int MAX_ERROR_COUNT = 20;
-        private const int DELAY_ON_ERROR_MILISECONDS = 200;
+    private const int MAX_ERROR_COUNT = 20;
+    private const int DELAY_ON_ERROR_MILISECONDS = 200;
 
-        public VoiceProxyState State
-            => _gateway switch
-            {
-                {Started: true, Stopped: false} => VoiceProxyState.Started,
-                {Stopped: false} => VoiceProxyState.Created,
-                _ => VoiceProxyState.Stopped
-            };
+    public VoiceProxyState State
+        => _gateway switch
+        {
+            {Started: true, Stopped: false} => VoiceProxyState.Started,
+            {Stopped: false} => VoiceProxyState.Created,
+            _ => VoiceProxyState.Stopped
+        };
             
         
-        private VoiceGateway _gateway;
+    private VoiceGateway _gateway;
 
-        public VoiceProxy(VoiceGateway initial)
+    public VoiceProxy(VoiceGateway initial)
+    {
+        _gateway = initial;
+    }
+
+    public bool SendPcmFrame(VoiceClient vc, Span<byte> data, int length)
+    {
+        try
         {
-            _gateway = initial;
-        }
-
-        public bool SendPcmFrame(VoiceClient vc, Span<byte> data, int length)
-        {
-            try
-            {
-                var gw = _gateway;
-                if (gw is null || gw.Stopped || !gw.Started)
-                {
-                    return false;
-                }
-
-                vc.SendPcmFrame(gw, data, 0, length);
-                return true;
-            }
-            catch (Exception)
+            var gw = _gateway;
+            if (gw is null || gw.Stopped || !gw.Started)
             {
                 return false;
             }
+
+            vc.SendPcmFrame(gw, data, 0, length);
+            return true;
         }
-
-        public async Task<bool> RunGatewayAction(Func<VoiceGateway, Task> action)
+        catch (Exception)
         {
-            var errorCount = 0;
-            do
+            return false;
+        }
+    }
+
+    public async Task<bool> RunGatewayAction(Func<VoiceGateway, Task> action)
+    {
+        var errorCount = 0;
+        do
+        {
+            if (State == VoiceProxyState.Stopped)
             {
-                if (State == VoiceProxyState.Stopped)
-                {
-                    break;
-                }
+                break;
+            }
 
-                try
-                {
-                    var gw = _gateway;
-                    if (gw is null || !gw.ConnectingFinished.Task.IsCompleted)
-                    {
-                        ++errorCount;
-                        await Task.Delay(DELAY_ON_ERROR_MILISECONDS);
-                        Log.Debug("Gateway is not ready");
-                        continue;
-                    }
-
-                    await action(gw);
-                    errorCount = 0;
-                }
-                catch (Exception ex)
+            try
+            {
+                var gw = _gateway;
+                if (gw is null || !gw.ConnectingFinished.Task.IsCompleted)
                 {
                     ++errorCount;
                     await Task.Delay(DELAY_ON_ERROR_MILISECONDS);
-                    Log.Debug(ex, "Error performing proxy gateway action");
+                    Log.Debug("Gateway is not ready");
+                    continue;
                 }
-            } while (errorCount > 0 && errorCount <= MAX_ERROR_COUNT);
 
-            return State != VoiceProxyState.Stopped && errorCount <= MAX_ERROR_COUNT;
-        }
+                await action(gw);
+                errorCount = 0;
+            }
+            catch (Exception ex)
+            {
+                ++errorCount;
+                await Task.Delay(DELAY_ON_ERROR_MILISECONDS);
+                Log.Debug(ex, "Error performing proxy gateway action");
+            }
+        } while (errorCount > 0 && errorCount <= MAX_ERROR_COUNT);
 
-        public void SetGateway(VoiceGateway gateway)
-        {
-            _gateway = gateway;
-        }
+        return State != VoiceProxyState.Stopped && errorCount <= MAX_ERROR_COUNT;
+    }
 
-        public Task StartSpeakingAsync()
-        {
-            return RunGatewayAction((gw) => gw.SendSpeakingAsync(VoiceSpeaking.State.Microphone));
-        }
+    public void SetGateway(VoiceGateway gateway)
+    {
+        _gateway = gateway;
+    }
 
-        public Task StopSpeakingAsync()
-        {
-            return RunGatewayAction((gw) => gw.SendSpeakingAsync(VoiceSpeaking.State.None));
-        }
+    public Task StartSpeakingAsync()
+    {
+        return RunGatewayAction((gw) => gw.SendSpeakingAsync(VoiceSpeaking.State.Microphone));
+    }
 
-        public async Task StartGateway()
-        {
-            await _gateway.Start();
-        }
+    public Task StopSpeakingAsync()
+    {
+        return RunGatewayAction((gw) => gw.SendSpeakingAsync(VoiceSpeaking.State.None));
+    }
 
-        public Task StopGateway()
-        {
-            if(_gateway is VoiceGateway gw)
-                return gw.StopAsync();
+    public async Task StartGateway()
+    {
+        await _gateway.Start();
+    }
 
-            return Task.CompletedTask;
-        }
+    public Task StopGateway()
+    {
+        if(_gateway is VoiceGateway gw)
+            return gw.StopAsync();
+
+        return Task.CompletedTask;
     }
 }

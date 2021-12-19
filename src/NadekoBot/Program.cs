@@ -1,7 +1,10 @@
-﻿using System;
+﻿global using System;
+global using Serilog;
+global using System.Collections.Generic;
+global using System.Linq;
+
 using NadekoBot;
 using NadekoBot.Services;
-using Serilog;
 
 var pid = System.Environment.ProcessId;
 

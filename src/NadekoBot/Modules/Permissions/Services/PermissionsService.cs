@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Linq;
+﻿using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -13,180 +11,179 @@ using NadekoBot.Services;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
 
-namespace NadekoBot.Modules.Permissions.Services
+namespace NadekoBot.Modules.Permissions.Services;
+
+public class PermissionService : ILateBlocker, INService
 {
-    public class PermissionService : ILateBlocker, INService
-    {
-        public int Priority { get; } = 0;
+    public int Priority { get; } = 0;
         
-        private readonly DbService _db;
-        private readonly CommandHandler _cmd;
-        private readonly IBotStrings _strings;
-        private readonly IEmbedBuilderService _eb;
+    private readonly DbService _db;
+    private readonly CommandHandler _cmd;
+    private readonly IBotStrings _strings;
+    private readonly IEmbedBuilderService _eb;
 
-        //guildid, root permission
-        public ConcurrentDictionary<ulong, PermissionCache> Cache { get; } =
-            new ConcurrentDictionary<ulong, PermissionCache>();
+    //guildid, root permission
+    public ConcurrentDictionary<ulong, PermissionCache> Cache { get; } =
+        new ConcurrentDictionary<ulong, PermissionCache>();
 
-        public PermissionService(DiscordSocketClient client,
-            DbService db,
-            CommandHandler cmd,
-            IBotStrings strings,
-            IEmbedBuilderService eb)
+    public PermissionService(DiscordSocketClient client,
+        DbService db,
+        CommandHandler cmd,
+        IBotStrings strings,
+        IEmbedBuilderService eb)
+    {
+        _db = db;
+        _cmd = cmd;
+        _strings = strings;
+        _eb = eb;
+
+        using (var uow = _db.GetDbContext())
         {
-            _db = db;
-            _cmd = cmd;
-            _strings = strings;
-            _eb = eb;
-
-            using (var uow = _db.GetDbContext())
+            foreach (var x in uow.GuildConfigs.Permissionsv2ForAll(client.Guilds.ToArray().Select(x => x.Id)
+                         .ToList()))
             {
-                foreach (var x in uow.GuildConfigs.Permissionsv2ForAll(client.Guilds.ToArray().Select(x => x.Id)
-                    .ToList()))
+                Cache.TryAdd(x.GuildId, new PermissionCache()
                 {
-                    Cache.TryAdd(x.GuildId, new PermissionCache()
-                    {
-                        Verbose = x.VerbosePermissions,
-                        PermRole = x.PermissionRole,
-                        Permissions = new PermissionsCollection<Permissionv2>(x.Permissions)
-                    });
-                }
+                    Verbose = x.VerbosePermissions,
+                    PermRole = x.PermissionRole,
+                    Permissions = new PermissionsCollection<Permissionv2>(x.Permissions)
+                });
             }
         }
+    }
 
-        public PermissionCache GetCacheFor(ulong guildId)
-        {
-            if (!Cache.TryGetValue(guildId, out var pc))
-            {
-                using (var uow = _db.GetDbContext())
-                {
-                    var config = uow.GuildConfigsForId(guildId,
-                        set => set.Include(x => x.Permissions));
-                    UpdateCache(config);
-                }
-                Cache.TryGetValue(guildId, out pc);
-                if (pc is null)
-                    throw new Exception("Cache is null.");
-            }
-            return pc;
-        }
-
-        public async Task AddPermissions(ulong guildId, params Permissionv2[] perms)
+    public PermissionCache GetCacheFor(ulong guildId)
+    {
+        if (!Cache.TryGetValue(guildId, out var pc))
         {
             using (var uow = _db.GetDbContext())
             {
-                var config = uow.GcWithPermissionsv2For(guildId);
-                //var orderedPerms = new PermissionsCollection<Permissionv2>(config.Permissions);
-                var max = config.Permissions.Max(x => x.Index); //have to set its index to be the highest
-                foreach (var perm in perms)
-                {
-                    perm.Index = ++max;
-                    config.Permissions.Add(perm);
-                }
-                await uow.SaveChangesAsync();
+                var config = uow.GuildConfigsForId(guildId,
+                    set => set.Include(x => x.Permissions));
                 UpdateCache(config);
             }
+            Cache.TryGetValue(guildId, out pc);
+            if (pc is null)
+                throw new Exception("Cache is null.");
         }
+        return pc;
+    }
 
-        public void UpdateCache(GuildConfig config)
+    public async Task AddPermissions(ulong guildId, params Permissionv2[] perms)
+    {
+        using (var uow = _db.GetDbContext())
         {
-            Cache.AddOrUpdate(config.GuildId, new PermissionCache()
+            var config = uow.GcWithPermissionsv2For(guildId);
+            //var orderedPerms = new PermissionsCollection<Permissionv2>(config.Permissions);
+            var max = config.Permissions.Max(x => x.Index); //have to set its index to be the highest
+            foreach (var perm in perms)
             {
-                Permissions = new PermissionsCollection<Permissionv2>(config.Permissions),
-                PermRole = config.PermissionRole,
-                Verbose = config.VerbosePermissions
-            }, (id, old) =>
-            {
-                old.Permissions = new PermissionsCollection<Permissionv2>(config.Permissions);
-                old.PermRole = config.PermissionRole;
-                old.Verbose = config.VerbosePermissions;
-                return old;
-            });
-        }
-
-        public async Task<bool> TryBlockLate(ICommandContext ctx, string moduleName, CommandInfo command)
-        {
-            var guild = ctx.Guild;
-            var msg = ctx.Message;
-            var user = ctx.User;
-            var channel = ctx.Channel;
-            var commandName = command.Name.ToLowerInvariant();
-            
-            await Task.Yield();
-            if (guild is null)
-            {
-                return false;
+                perm.Index = ++max;
+                config.Permissions.Add(perm);
             }
-            else
-            {
-                var resetCommand = commandName == "resetperms";
+            await uow.SaveChangesAsync();
+            UpdateCache(config);
+        }
+    }
 
-                PermissionCache pc = GetCacheFor(guild.Id);
-                if (!resetCommand && !pc.Permissions.CheckPermissions(msg, commandName, moduleName, out int index))
+    public void UpdateCache(GuildConfig config)
+    {
+        Cache.AddOrUpdate(config.GuildId, new PermissionCache()
+        {
+            Permissions = new PermissionsCollection<Permissionv2>(config.Permissions),
+            PermRole = config.PermissionRole,
+            Verbose = config.VerbosePermissions
+        }, (id, old) =>
+        {
+            old.Permissions = new PermissionsCollection<Permissionv2>(config.Permissions);
+            old.PermRole = config.PermissionRole;
+            old.Verbose = config.VerbosePermissions;
+            return old;
+        });
+    }
+
+    public async Task<bool> TryBlockLate(ICommandContext ctx, string moduleName, CommandInfo command)
+    {
+        var guild = ctx.Guild;
+        var msg = ctx.Message;
+        var user = ctx.User;
+        var channel = ctx.Channel;
+        var commandName = command.Name.ToLowerInvariant();
+            
+        await Task.Yield();
+        if (guild is null)
+        {
+            return false;
+        }
+        else
+        {
+            var resetCommand = commandName == "resetperms";
+
+            PermissionCache pc = GetCacheFor(guild.Id);
+            if (!resetCommand && !pc.Permissions.CheckPermissions(msg, commandName, moduleName, out int index))
+            {
+                if (pc.Verbose)
                 {
-                    if (pc.Verbose)
+                    try
                     {
-                        try
-                        {
-                            await channel.SendErrorAsync(_eb,
-                                _strings.GetText(strs.perm_prevent(index + 1,
-                                    Format.Bold(pc.Permissions[index]
-                                        .GetCommand(_cmd.GetPrefix(guild), (SocketGuild)guild))), guild.Id));
-                        }
-                        catch
-                        {
-                        }
+                        await channel.SendErrorAsync(_eb,
+                            _strings.GetText(strs.perm_prevent(index + 1,
+                                Format.Bold(pc.Permissions[index]
+                                    .GetCommand(_cmd.GetPrefix(guild), (SocketGuild)guild))), guild.Id));
                     }
+                    catch
+                    {
+                    }
+                }
+
+                return true;
+            }
+
+
+            if (moduleName == nameof(Permissions))
+            {
+                if (!(user is IGuildUser guildUser))
+                    return true;
+
+                if (guildUser.GuildPermissions.Administrator)
+                    return false;
+
+                var permRole = pc.PermRole;
+                if (!ulong.TryParse(permRole, out var rid))
+                    rid = 0;
+                string returnMsg;
+                IRole role;
+                if (string.IsNullOrWhiteSpace(permRole) || (role = guild.GetRole(rid)) is null)
+                {
+                    returnMsg = $"You need Admin permissions in order to use permission commands.";
+                    if (pc.Verbose)
+                        try { await channel.SendErrorAsync(_eb, returnMsg).ConfigureAwait(false); } catch { }
 
                     return true;
                 }
-
-
-                if (moduleName == nameof(Permissions))
+                else if (!guildUser.RoleIds.Contains(rid))
                 {
-                    if (!(user is IGuildUser guildUser))
-                        return true;
+                    returnMsg = $"You need the {Format.Bold(role.Name)} role in order to use permission commands.";
+                    if (pc.Verbose)
+                        try { await channel.SendErrorAsync(_eb, returnMsg).ConfigureAwait(false); } catch { }
 
-                    if (guildUser.GuildPermissions.Administrator)
-                        return false;
-
-                    var permRole = pc.PermRole;
-                    if (!ulong.TryParse(permRole, out var rid))
-                        rid = 0;
-                    string returnMsg;
-                    IRole role;
-                    if (string.IsNullOrWhiteSpace(permRole) || (role = guild.GetRole(rid)) is null)
-                    {
-                        returnMsg = $"You need Admin permissions in order to use permission commands.";
-                        if (pc.Verbose)
-                            try { await channel.SendErrorAsync(_eb, returnMsg).ConfigureAwait(false); } catch { }
-
-                        return true;
-                    }
-                    else if (!guildUser.RoleIds.Contains(rid))
-                    {
-                        returnMsg = $"You need the {Format.Bold(role.Name)} role in order to use permission commands.";
-                        if (pc.Verbose)
-                            try { await channel.SendErrorAsync(_eb, returnMsg).ConfigureAwait(false); } catch { }
-
-                        return true;
-                    }
-                    return false;
+                    return true;
                 }
+                return false;
             }
-
-            return false;
         }
 
-        public async Task Reset(ulong guildId)
+        return false;
+    }
+
+    public async Task Reset(ulong guildId)
+    {
+        using (var uow = _db.GetDbContext())
         {
-            using (var uow = _db.GetDbContext())
-            {
-                var config = uow.GcWithPermissionsv2For(guildId);
-                config.Permissions = Permissionv2.GetDefaultPermlist;
-                await uow.SaveChangesAsync();
-                UpdateCache(config);
-            }
+            var config = uow.GcWithPermissionsv2For(guildId);
+            config.Permissions = Permissionv2.GetDefaultPermlist;
+            await uow.SaveChangesAsync();
+            UpdateCache(config);
         }
     }
 }

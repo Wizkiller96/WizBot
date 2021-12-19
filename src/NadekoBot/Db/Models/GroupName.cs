@@ -1,11 +1,10 @@
-﻿namespace NadekoBot.Services.Database.Models
-{
-    public class GroupName : DbEntity
-    {
-        public int GuildConfigId { get; set; }
-        public GuildConfig GuildConfig { get; set; }
+﻿namespace NadekoBot.Services.Database.Models;
 
-        public int Number { get; set; }
-        public string Name { get; set; }
-    }
+public class GroupName : DbEntity
+{
+    public int GuildConfigId { get; set; }
+    public GuildConfig GuildConfig { get; set; }
+
+    public int Number { get; set; }
+    public string Name { get; set; }
 }

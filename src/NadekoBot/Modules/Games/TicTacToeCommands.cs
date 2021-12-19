@@ -8,54 +8,53 @@ using NadekoBot.Modules.Games.Services;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace NadekoBot.Modules.Games
+namespace NadekoBot.Modules.Games;
+
+public partial class Games
 {
-    public partial class Games
+    [Group]
+    public class TicTacToeCommands : NadekoSubmodule<GamesService>
     {
-        [Group]
-        public class TicTacToeCommands : NadekoSubmodule<GamesService>
+        private readonly SemaphoreSlim _sem = new SemaphoreSlim(1, 1);
+        private readonly DiscordSocketClient _client;
+
+        public TicTacToeCommands(DiscordSocketClient client)
         {
-            private readonly SemaphoreSlim _sem = new SemaphoreSlim(1, 1);
-            private readonly DiscordSocketClient _client;
+            _client = client;
+        }
 
-            public TicTacToeCommands(DiscordSocketClient client)
+        [NadekoCommand, Aliases]
+        [RequireContext(ContextType.Guild)]
+        [NadekoOptions(typeof(TicTacToe.Options))]
+        public async Task TicTacToe(params string[] args)
+        {
+            var (options, _) = OptionsParser.ParseFrom(new TicTacToe.Options(), args);
+            var channel = (ITextChannel)ctx.Channel;
+
+            await _sem.WaitAsync(1000).ConfigureAwait(false);
+            try
             {
-                _client = client;
+                if (_service.TicTacToeGames.TryGetValue(channel.Id, out TicTacToe game))
+                {
+                    var _ = Task.Run(async () =>
+                    {
+                        await game.Start((IGuildUser)ctx.User).ConfigureAwait(false);
+                    });
+                    return;
+                }
+                game = new TicTacToe(base.Strings, this._client, channel, (IGuildUser)ctx.User, options, _eb);
+                _service.TicTacToeGames.Add(channel.Id, game);
+                await ReplyConfirmLocalizedAsync(strs.ttt_created).ConfigureAwait(false);
+
+                game.OnEnded += (g) =>
+                {
+                    _service.TicTacToeGames.Remove(channel.Id);
+                    _sem.Dispose();
+                };
             }
-
-            [NadekoCommand, Aliases]
-            [RequireContext(ContextType.Guild)]
-            [NadekoOptions(typeof(TicTacToe.Options))]
-            public async Task TicTacToe(params string[] args)
+            finally
             {
-                var (options, _) = OptionsParser.ParseFrom(new TicTacToe.Options(), args);
-                var channel = (ITextChannel)ctx.Channel;
-
-                await _sem.WaitAsync(1000).ConfigureAwait(false);
-                try
-                {
-                    if (_service.TicTacToeGames.TryGetValue(channel.Id, out TicTacToe game))
-                    {
-                        var _ = Task.Run(async () =>
-                        {
-                            await game.Start((IGuildUser)ctx.User).ConfigureAwait(false);
-                        });
-                        return;
-                    }
-                    game = new TicTacToe(base.Strings, this._client, channel, (IGuildUser)ctx.User, options, _eb);
-                    _service.TicTacToeGames.Add(channel.Id, game);
-                    await ReplyConfirmLocalizedAsync(strs.ttt_created).ConfigureAwait(false);
-
-                    game.OnEnded += (g) =>
-                    {
-                        _service.TicTacToeGames.Remove(channel.Id);
-                        _sem.Dispose();
-                    };
-                }
-                finally
-                {
-                    _sem.Release();
-                }
+                _sem.Release();
             }
         }
     }

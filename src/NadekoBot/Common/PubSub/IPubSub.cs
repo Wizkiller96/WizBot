@@ -1,11 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
-namespace NadekoBot.Common
+namespace NadekoBot.Common;
+
+public interface IPubSub
 {
-    public interface IPubSub
-    {
-        public Task Pub<TData>(in TypedKey<TData> key, TData data);
-        public Task Sub<TData>(in TypedKey<TData> key, Func<TData, ValueTask> action);
-    }
+    public Task Pub<TData>(in TypedKey<TData> key, TData data);
+    public Task Sub<TData>(in TypedKey<TData> key, Func<TData, ValueTask> action);
 }

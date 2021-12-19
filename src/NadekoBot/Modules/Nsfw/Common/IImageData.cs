@@ -1,7 +1,6 @@
-﻿namespace NadekoBot.Modules.Nsfw.Common
+﻿namespace NadekoBot.Modules.Nsfw.Common;
+
+public interface IImageData
 {
-    public interface IImageData
-    {
-        ImageData ToCachedImageData(Booru type);
-    }
+    ImageData ToCachedImageData(Booru type);
 }

@@ -1,118 +1,112 @@
 ﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Extensions;
-using NadekoBot.Db.Models;
-using System;
 using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Services;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
-using NadekoBot.Modules.Administration;
 
-namespace NadekoBot.Modules.Utility.Services
+namespace NadekoBot.Modules.Utility.Services;
+
+public class CommandMapService : IInputTransformer, INService
 {
-    public class CommandMapService : IInputTransformer, INService
+    private readonly IEmbedBuilderService _eb;
+
+    public ConcurrentDictionary<ulong, ConcurrentDictionary<string, string>> AliasMaps { get; } = new ConcurrentDictionary<ulong, ConcurrentDictionary<string, string>>();
+
+    private readonly DbService _db;
+
+    //commandmap
+    public CommandMapService(DiscordSocketClient client, DbService db, IEmbedBuilderService eb)
     {
-        private readonly IEmbedBuilderService _eb;
+        _eb = eb;
 
-        public ConcurrentDictionary<ulong, ConcurrentDictionary<string, string>> AliasMaps { get; } = new ConcurrentDictionary<ulong, ConcurrentDictionary<string, string>>();
-
-        private readonly DbService _db;
-
-        //commandmap
-        public CommandMapService(DiscordSocketClient client, DbService db, IEmbedBuilderService eb)
+        using (var uow = db.GetDbContext())
         {
-            _eb = eb;
-
-            using (var uow = db.GetDbContext())
-            {
-                var guildIds = client.Guilds.Select(x => x.Id).ToList();
-                var configs = uow.Set<GuildConfig>()
-                    .Include(gc => gc.CommandAliases)
-                    .Where(x => guildIds.Contains(x.GuildId))
-                    .ToList();
+            var guildIds = client.Guilds.Select(x => x.Id).ToList();
+            var configs = uow.Set<GuildConfig>()
+                .Include(gc => gc.CommandAliases)
+                .Where(x => guildIds.Contains(x.GuildId))
+                .ToList();
                 
-                AliasMaps = new ConcurrentDictionary<ulong, ConcurrentDictionary<string, string>>(configs
-                    .ToDictionary(
-                        x => x.GuildId,
-                        x => new ConcurrentDictionary<string, string>(x.CommandAliases
-                            .Distinct(new CommandAliasEqualityComparer())
-                            .ToDictionary(ca => ca.Trigger, ca => ca.Mapping))));
+            AliasMaps = new ConcurrentDictionary<ulong, ConcurrentDictionary<string, string>>(configs
+                .ToDictionary(
+                    x => x.GuildId,
+                    x => new ConcurrentDictionary<string, string>(x.CommandAliases
+                        .Distinct(new CommandAliasEqualityComparer())
+                        .ToDictionary(ca => ca.Trigger, ca => ca.Mapping))));
 
-                _db = db;
-            }
+            _db = db;
         }
+    }
 
-        public int ClearAliases(ulong guildId)
+    public int ClearAliases(ulong guildId)
+    {
+        AliasMaps.TryRemove(guildId, out _);
+
+        int count;
+        using (var uow = _db.GetDbContext())
         {
-            AliasMaps.TryRemove(guildId, out _);
-
-            int count;
-            using (var uow = _db.GetDbContext())
-            {
-                var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.CommandAliases));
-                count = gc.CommandAliases.Count;
-                gc.CommandAliases.Clear();
-                uow.SaveChanges();
-            }
-            return count;
+            var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.CommandAliases));
+            count = gc.CommandAliases.Count;
+            gc.CommandAliases.Clear();
+            uow.SaveChanges();
         }
+        return count;
+    }
 
-        public async Task<string> TransformInput(IGuild guild, IMessageChannel channel, IUser user, string input)
+    public async Task<string> TransformInput(IGuild guild, IMessageChannel channel, IUser user, string input)
+    {
+        await Task.Yield();
+
+        if (guild is null || string.IsNullOrWhiteSpace(input))
+            return input;
+
+        if (guild != null)
         {
-            await Task.Yield();
-
-            if (guild is null || string.IsNullOrWhiteSpace(input))
-                return input;
-
-            if (guild != null)
+            if (AliasMaps.TryGetValue(guild.Id, out ConcurrentDictionary<string, string> maps))
             {
-                if (AliasMaps.TryGetValue(guild.Id, out ConcurrentDictionary<string, string> maps))
+                var keys = maps.Keys
+                    .OrderByDescending(x => x.Length);
+
+                foreach (var k in keys)
                 {
-                    var keys = maps.Keys
-                        .OrderByDescending(x => x.Length);
+                    string newInput;
+                    if (input.StartsWith(k + " ", StringComparison.InvariantCultureIgnoreCase))
+                        newInput = maps[k] + input.Substring(k.Length, input.Length - k.Length);
+                    else if (input.Equals(k, StringComparison.InvariantCultureIgnoreCase))
+                        newInput = maps[k];
+                    else
+                        continue;
 
-                    foreach (var k in keys)
+                    try
                     {
-                        string newInput;
-                        if (input.StartsWith(k + " ", StringComparison.InvariantCultureIgnoreCase))
-                            newInput = maps[k] + input.Substring(k.Length, input.Length - k.Length);
-                        else if (input.Equals(k, StringComparison.InvariantCultureIgnoreCase))
-                            newInput = maps[k];
-                        else
-                            continue;
-
-                        try
+                        var toDelete = await channel.SendConfirmAsync(_eb, $"{input} => {newInput}").ConfigureAwait(false);
+                        var _ = Task.Run(async () =>
                         {
-                            var toDelete = await channel.SendConfirmAsync(_eb, $"{input} => {newInput}").ConfigureAwait(false);
-                            var _ = Task.Run(async () =>
+                            await Task.Delay(1500).ConfigureAwait(false);
+                            await toDelete.DeleteAsync(new RequestOptions()
                             {
-                                await Task.Delay(1500).ConfigureAwait(false);
-                                await toDelete.DeleteAsync(new RequestOptions()
-                                {
-                                    RetryMode = RetryMode.AlwaysRetry
-                                }).ConfigureAwait(false);
-                            });
-                        }
-                        catch { }
-                        return newInput;
+                                RetryMode = RetryMode.AlwaysRetry
+                            }).ConfigureAwait(false);
+                        });
                     }
+                    catch { }
+                    return newInput;
                 }
             }
-
-            return input;
         }
-    }
 
-    public class CommandAliasEqualityComparer : IEqualityComparer<CommandAlias>
-    {
-        public bool Equals(CommandAlias x, CommandAlias y) => x.Trigger == y.Trigger;
-
-        public int GetHashCode(CommandAlias obj) => obj.Trigger.GetHashCode(StringComparison.InvariantCulture);
+        return input;
     }
+}
+
+public class CommandAliasEqualityComparer : IEqualityComparer<CommandAlias>
+{
+    public bool Equals(CommandAlias x, CommandAlias y) => x.Trigger == y.Trigger;
+
+    public int GetHashCode(CommandAlias obj) => obj.Trigger.GetHashCode(StringComparison.InvariantCulture);
 }

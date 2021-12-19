@@ -1,8 +1,7 @@
-﻿namespace NadekoBot.Modules.Utility.Common
+﻿namespace NadekoBot.Modules.Utility.Common;
+
+public enum StreamRoleListType
 {
-    public enum StreamRoleListType
-    {
-        Whitelist,
-        Blacklist,
-    }
+    Whitelist,
+    Blacklist,
 }

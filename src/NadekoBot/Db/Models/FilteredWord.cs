@@ -1,7 +1,6 @@
-﻿namespace NadekoBot.Services.Database.Models
+﻿namespace NadekoBot.Services.Database.Models;
+
+public class FilteredWord : DbEntity
 {
-    public class FilteredWord : DbEntity
-    {
-        public string Word { get; set; }
-    }
+    public string Word { get; set; }
 }

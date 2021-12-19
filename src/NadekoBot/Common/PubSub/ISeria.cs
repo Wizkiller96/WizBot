@@ -1,8 +1,7 @@
-﻿namespace NadekoBot.Common
+﻿namespace NadekoBot.Common;
+
+public interface ISeria
 {
-    public interface ISeria
-    {
-        byte[] Serialize<T>(T data);
-        T Deserialize<T>(byte[] data);
-    }
+    byte[] Serialize<T>(T data);
+    T Deserialize<T>(byte[] data);
 }

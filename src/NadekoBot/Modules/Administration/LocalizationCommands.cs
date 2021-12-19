@@ -1,132 +1,128 @@
 ﻿using Discord;
 using Discord.Commands;
 using NadekoBot.Extensions;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Threading.Tasks;
 using NadekoBot.Common.Attributes;
 
-namespace NadekoBot.Modules.Administration
+namespace NadekoBot.Modules.Administration;
+
+public partial class Administration
 {
-    public partial class Administration
+    [Group]
+    public class LocalizationCommands : NadekoSubmodule
     {
-        [Group]
-        public class LocalizationCommands : NadekoSubmodule
+        private static readonly IReadOnlyDictionary<string, string> supportedLocales =
+            new Dictionary<string, string>()
+            {
+                {"ar", "العربية"},
+                {"zh-TW", "繁體中文, 台灣"},
+                {"zh-CN", "简体中文, 中华人民共和国"},
+                {"nl-NL", "Nederlands, Nederland"},
+                {"en-US", "English, United States"},
+                {"fr-FR", "Français, France"},
+                {"cs-CZ", "Čeština, Česká republika"},
+                {"da-DK", "Dansk, Danmark"},
+                {"de-DE", "Deutsch, Deutschland"},
+                {"he-IL", "עברית, ישראל"},
+                {"hu-HU", "Magyar, Magyarország"},
+                {"id-ID", "Bahasa Indonesia, Indonesia"},
+                {"it-IT", "Italiano, Italia"},
+                {"ja-JP", "日本語, 日本"},
+                {"ko-KR", "한국어, 대한민국"},
+                {"nb-NO", "Norsk, Norge"},
+                {"pl-PL", "Polski, Polska"},
+                {"pt-BR", "Português Brasileiro, Brasil"},
+                {"ro-RO", "Română, România"},
+                {"ru-RU", "Русский, Россия"},
+                {"sr-Cyrl-RS", "Српски, Србија"},
+                {"es-ES", "Español, España"},
+                {"sv-SE", "Svenska, Sverige"},
+                {"tr-TR", "Türkçe, Türkiye"},
+                {"ts-TS", "Tsundere, You Baka"},
+                {"uk-UA", "Українська, Україна"}
+            };
+
+        [NadekoCommand, Aliases]
+        [RequireContext(ContextType.Guild)]
+        [Priority(0)]
+        public async Task LanguageSet()
         {
-            private static readonly IReadOnlyDictionary<string, string> supportedLocales =
-                new Dictionary<string, string>()
-                {
-                    {"ar", "العربية"},
-                    {"zh-TW", "繁體中文, 台灣"},
-                    {"zh-CN", "简体中文, 中华人民共和国"},
-                    {"nl-NL", "Nederlands, Nederland"},
-                    {"en-US", "English, United States"},
-                    {"fr-FR", "Français, France"},
-                    {"cs-CZ", "Čeština, Česká republika"},
-                    {"da-DK", "Dansk, Danmark"},
-                    {"de-DE", "Deutsch, Deutschland"},
-                    {"he-IL", "עברית, ישראל"},
-                    {"hu-HU", "Magyar, Magyarország"},
-                    {"id-ID", "Bahasa Indonesia, Indonesia"},
-                    {"it-IT", "Italiano, Italia"},
-                    {"ja-JP", "日本語, 日本"},
-                    {"ko-KR", "한국어, 대한민국"},
-                    {"nb-NO", "Norsk, Norge"},
-                    {"pl-PL", "Polski, Polska"},
-                    {"pt-BR", "Português Brasileiro, Brasil"},
-                    {"ro-RO", "Română, România"},
-                    {"ru-RU", "Русский, Россия"},
-                    {"sr-Cyrl-RS", "Српски, Србија"},
-                    {"es-ES", "Español, España"},
-                    {"sv-SE", "Svenska, Sverige"},
-                    {"tr-TR", "Türkçe, Türkiye"},
-                    {"ts-TS", "Tsundere, You Baka"},
-                    {"uk-UA", "Українська, Україна"}
-                };
+            await ReplyConfirmLocalizedAsync(strs.lang_set_show(
+                Format.Bold(_cultureInfo.ToString()),
+                Format.Bold(_cultureInfo.NativeName)));
+        }
 
-            [NadekoCommand, Aliases]
-            [RequireContext(ContextType.Guild)]
-            [Priority(0)]
-            public async Task LanguageSet()
+        [NadekoCommand, Aliases]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.Administrator)]
+        [Priority(1)]
+        public async Task LanguageSet(string name)
+        {
+            try
             {
-                await ReplyConfirmLocalizedAsync(strs.lang_set_show(
-                    Format.Bold(_cultureInfo.ToString()),
-                    Format.Bold(_cultureInfo.NativeName)));
-            }
-
-            [NadekoCommand, Aliases]
-            [RequireContext(ContextType.Guild)]
-            [UserPerm(GuildPerm.Administrator)]
-            [Priority(1)]
-            public async Task LanguageSet(string name)
-            {
-                try
+                CultureInfo ci;
+                if (name.Trim().ToLowerInvariant() == "default")
                 {
-                    CultureInfo ci;
-                    if (name.Trim().ToLowerInvariant() == "default")
-                    {
-                        Localization.RemoveGuildCulture(ctx.Guild);
-                        ci = Localization.DefaultCultureInfo;
-                    }
-                    else
-                    {
-                        ci = new CultureInfo(name);
-                        Localization.SetGuildCulture(ctx.Guild, ci);
-                    }
-
-                    await ReplyConfirmLocalizedAsync(strs.lang_set(Format.Bold(ci.ToString()),
-                        Format.Bold(ci.NativeName)));
+                    Localization.RemoveGuildCulture(ctx.Guild);
+                    ci = Localization.DefaultCultureInfo;
                 }
-                catch (Exception)
+                else
                 {
-                    await ReplyErrorLocalizedAsync(strs.lang_set_fail).ConfigureAwait(false);
+                    ci = new CultureInfo(name);
+                    Localization.SetGuildCulture(ctx.Guild, ci);
                 }
-            }
 
-            [NadekoCommand, Aliases]
-            public async Task LanguageSetDefault()
-            {
-                var cul = Localization.DefaultCultureInfo;
-                await ReplyErrorLocalizedAsync(strs.lang_set_bot_show(cul, cul.NativeName));
+                await ReplyConfirmLocalizedAsync(strs.lang_set(Format.Bold(ci.ToString()),
+                    Format.Bold(ci.NativeName)));
             }
-
-            [NadekoCommand, Aliases]
-            [OwnerOnly]
-            public async Task LanguageSetDefault(string name)
+            catch (Exception)
             {
-                try
+                await ReplyErrorLocalizedAsync(strs.lang_set_fail).ConfigureAwait(false);
+            }
+        }
+
+        [NadekoCommand, Aliases]
+        public async Task LanguageSetDefault()
+        {
+            var cul = Localization.DefaultCultureInfo;
+            await ReplyErrorLocalizedAsync(strs.lang_set_bot_show(cul, cul.NativeName));
+        }
+
+        [NadekoCommand, Aliases]
+        [OwnerOnly]
+        public async Task LanguageSetDefault(string name)
+        {
+            try
+            {
+                CultureInfo ci;
+                if (name.Trim().ToLowerInvariant() == "default")
                 {
-                    CultureInfo ci;
-                    if (name.Trim().ToLowerInvariant() == "default")
-                    {
-                        Localization.ResetDefaultCulture();
-                        ci = Localization.DefaultCultureInfo;
-                    }
-                    else
-                    {
-                        ci = new CultureInfo(name);
-                        Localization.SetDefaultCulture(ci);
-                    }
-
-                    await ReplyConfirmLocalizedAsync(strs.lang_set_bot(Format.Bold(ci.ToString()),
-                        Format.Bold(ci.NativeName)));
+                    Localization.ResetDefaultCulture();
+                    ci = Localization.DefaultCultureInfo;
                 }
-                catch (Exception)
+                else
                 {
-                    await ReplyErrorLocalizedAsync(strs.lang_set_fail).ConfigureAwait(false);
+                    ci = new CultureInfo(name);
+                    Localization.SetDefaultCulture(ci);
                 }
-            }
 
-            [NadekoCommand, Aliases]
-            public async Task LanguagesList()
-            {
-                await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
-                    .WithTitle(GetText(strs.lang_list))
-                    .WithDescription(string.Join("\n",
-                        supportedLocales.Select(x => $"{Format.Code(x.Key),-10} => {x.Value}")))).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.lang_set_bot(Format.Bold(ci.ToString()),
+                    Format.Bold(ci.NativeName)));
             }
+            catch (Exception)
+            {
+                await ReplyErrorLocalizedAsync(strs.lang_set_fail).ConfigureAwait(false);
+            }
+        }
+
+        [NadekoCommand, Aliases]
+        public async Task LanguagesList()
+        {
+            await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
+                .WithTitle(GetText(strs.lang_list))
+                .WithDescription(string.Join("\n",
+                    supportedLocales.Select(x => $"{Format.Code(x.Key),-10} => {x.Value}")))).ConfigureAwait(false);
         }
     }
 }

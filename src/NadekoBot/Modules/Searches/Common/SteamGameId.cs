@@ -1,35 +1,34 @@
 ﻿using Newtonsoft.Json;
 
-namespace NadekoBot.Modules.Searches
+namespace NadekoBot.Modules.Searches;
+
+public class SteamGameId
 {
-    public class SteamGameId
-    {
-        [JsonProperty("name")]
-        public string Name { get; set; }
+    [JsonProperty("name")]
+    public string Name { get; set; }
         
-        [JsonProperty("appid")]
-        public int AppId { get; set; }
-    }
+    [JsonProperty("appid")]
+    public int AppId { get; set; }
+}
 
-    public class SteamGameData
+public class SteamGameData
+{
+    public string ShortDescription { get; set; }
+
+    public class Container
     {
-        public string ShortDescription { get; set; }
+        [JsonProperty("success")]
+        public bool Success { get; set; }
 
-        public class Container
-        {
-            [JsonProperty("success")]
-            public bool Success { get; set; }
-
-            [JsonProperty("data")]
-            public SteamGameData Data { get; set; }
-        }
+        [JsonProperty("data")]
+        public SteamGameData Data { get; set; }
     }
+}
 
-    public enum TimeErrors
-    {
-        InvalidInput,
-        ApiKeyMissing,
-        NotFound,
-        Unknown
-    }
+public enum TimeErrors
+{
+    InvalidInput,
+    ApiKeyMissing,
+    NotFound,
+    Unknown
 }

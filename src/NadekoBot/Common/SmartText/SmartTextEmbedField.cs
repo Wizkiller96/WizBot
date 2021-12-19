@@ -1,9 +1,8 @@
-﻿namespace NadekoBot
+﻿namespace NadekoBot;
+
+public class SmartTextEmbedField
 {
-    public class SmartTextEmbedField
-    {
-        public string Name { get; set; }
-        public string Value { get; set; }
-        public bool Inline { get; set; }
-    }
+    public string Name { get; set; }
+    public string Value { get; set; }
+    public bool Inline { get; set; }
 }

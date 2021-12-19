@@ -1,19 +1,16 @@
-﻿using System;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using Discord.Commands;
-using NadekoBot.Services;
 
-namespace NadekoBot.Common.Attributes
+namespace NadekoBot.Common.Attributes;
+
+[AttributeUsage(AttributeTargets.Method)]
+public sealed class NadekoCommandAttribute : CommandAttribute
 {
-    [AttributeUsage(AttributeTargets.Method)]
-    public sealed class NadekoCommandAttribute : CommandAttribute
+    public NadekoCommandAttribute([CallerMemberName] string memberName="") 
+        : base(CommandNameLoadHelper.GetCommandNameFor(memberName))
     {
-        public NadekoCommandAttribute([CallerMemberName] string memberName="") 
-            : base(CommandNameLoadHelper.GetCommandNameFor(memberName))
-        {
-            this.MethodName = memberName.ToLowerInvariant();
-        }
-
-        public string MethodName { get; }
+        this.MethodName = memberName.ToLowerInvariant();
     }
+
+    public string MethodName { get; }
 }

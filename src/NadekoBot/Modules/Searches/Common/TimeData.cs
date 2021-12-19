@@ -1,11 +1,8 @@
-﻿using System;
+﻿namespace NadekoBot.Modules.Searches.Common;
 
-namespace NadekoBot.Modules.Searches.Common
+public class TimeData
 {
-    public class TimeData
-    {
-        public string Address { get; set; }
-        public DateTime Time { get; set; }
-        public string TimeZoneName { get; set; }
-    }
+    public string Address { get; set; }
+    public DateTime Time { get; set; }
+    public string TimeZoneName { get; set; }
 }

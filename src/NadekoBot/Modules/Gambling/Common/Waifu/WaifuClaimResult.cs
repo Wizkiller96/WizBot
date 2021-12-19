@@ -1,9 +1,8 @@
-﻿namespace NadekoBot.Modules.Gambling.Common.Waifu
+﻿namespace NadekoBot.Modules.Gambling.Common.Waifu;
+
+public enum WaifuClaimResult
 {
-    public enum WaifuClaimResult
-    {
-        Success,
-        NotEnoughFunds,
-        InsufficientAmount
-    }
+    Success,
+    NotEnoughFunds,
+    InsufficientAmount
 }

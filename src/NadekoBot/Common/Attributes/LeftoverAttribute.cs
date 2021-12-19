@@ -1,9 +1,8 @@
-﻿namespace Discord.Commands
+﻿namespace Discord.Commands;
+
+public class LeftoverAttribute : RemainderAttribute
 {
-    public class LeftoverAttribute : RemainderAttribute
+    public LeftoverAttribute()
     {
-        public LeftoverAttribute()
-        {
-        }
     }
 }

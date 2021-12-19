@@ -1,9 +1,8 @@
-﻿namespace NadekoBot.Common
+﻿namespace NadekoBot.Common;
+
+public class OsuMapData
 {
-    public class OsuMapData
-    {
-        public string Title { get; set; }
-        public string Artist { get; set; }
-        public string Version { get; set; }
-    }
+    public string Title { get; set; }
+    public string Artist { get; set; }
+    public string Version { get; set; }
 }

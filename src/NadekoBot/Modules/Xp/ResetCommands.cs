@@ -4,52 +4,51 @@ using NadekoBot.Common.Attributes;
 using NadekoBot.Modules.Xp.Services;
 using System.Threading.Tasks;
 
-namespace NadekoBot.Modules.Xp
+namespace NadekoBot.Modules.Xp;
+
+public partial class Xp
 {
-    public partial class Xp
+    public class ResetCommands : NadekoSubmodule<XpService>
     {
-        public class ResetCommands : NadekoSubmodule<XpService>
+
+        [NadekoCommand, Aliases]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.Administrator)]
+        public Task XpReset(IGuildUser user)
+            => XpReset(user.Id);
+
+        [NadekoCommand, Aliases]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.Administrator)]
+        public async Task XpReset(ulong userId)
         {
+            var embed = _eb.Create()
+                .WithTitle(GetText(strs.reset))
+                .WithDescription(GetText(strs.reset_user_confirm));
 
-            [NadekoCommand, Aliases]
-            [RequireContext(ContextType.Guild)]
-            [UserPerm(GuildPerm.Administrator)]
-            public Task XpReset(IGuildUser user)
-                => XpReset(user.Id);
+            if (!await PromptUserConfirmAsync(embed).ConfigureAwait(false))
+                return;
 
-            [NadekoCommand, Aliases]
-            [RequireContext(ContextType.Guild)]
-            [UserPerm(GuildPerm.Administrator)]
-            public async Task XpReset(ulong userId)
-            {
-                var embed = _eb.Create()
-                    .WithTitle(GetText(strs.reset))
-                    .WithDescription(GetText(strs.reset_user_confirm));
+            _service.XpReset(ctx.Guild.Id, userId);
 
-                if (!await PromptUserConfirmAsync(embed).ConfigureAwait(false))
-                    return;
+            await ReplyConfirmLocalizedAsync(strs.reset_user(userId));
+        }
 
-                _service.XpReset(ctx.Guild.Id, userId);
+        [NadekoCommand, Aliases]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.Administrator)]
+        public async Task XpReset()
+        {
+            var embed = _eb.Create()
+                .WithTitle(GetText(strs.reset))
+                .WithDescription(GetText(strs.reset_server_confirm));
 
-                await ReplyConfirmLocalizedAsync(strs.reset_user(userId));
-            }
+            if (!await PromptUserConfirmAsync(embed).ConfigureAwait(false))
+                return;
 
-            [NadekoCommand, Aliases]
-            [RequireContext(ContextType.Guild)]
-            [UserPerm(GuildPerm.Administrator)]
-            public async Task XpReset()
-            {
-                var embed = _eb.Create()
-                       .WithTitle(GetText(strs.reset))
-                       .WithDescription(GetText(strs.reset_server_confirm));
+            _service.XpReset(ctx.Guild.Id);
 
-                if (!await PromptUserConfirmAsync(embed).ConfigureAwait(false))
-                    return;
-
-                _service.XpReset(ctx.Guild.Id);
-
-                await ReplyConfirmLocalizedAsync(strs.reset_server).ConfigureAwait(false);
-            }
+            await ReplyConfirmLocalizedAsync(strs.reset_server).ConfigureAwait(false);
         }
     }
 }

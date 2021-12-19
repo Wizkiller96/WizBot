@@ -1,10 +1,9 @@
-﻿namespace NadekoBot.Modules.Gambling.Common.Waifu
+﻿namespace NadekoBot.Modules.Gambling.Common.Waifu;
+
+public enum DivorceResult
 {
-    public enum DivorceResult
-    {
-        Success,
-        SucessWithPenalty,
-        NotYourWife,
-        Cooldown
-    }
+    Success,
+    SucessWithPenalty,
+    NotYourWife,
+    Cooldown
 }

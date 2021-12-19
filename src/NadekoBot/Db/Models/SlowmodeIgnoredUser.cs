@@ -1,24 +1,23 @@
-﻿namespace NadekoBot.Services.Database.Models
+﻿namespace NadekoBot.Services.Database.Models;
+
+public class SlowmodeIgnoredUser : DbEntity
 {
-    public class SlowmodeIgnoredUser : DbEntity
+    public ulong UserId { get; set; }
+
+    // override object.Equals
+    public override bool Equals(object obj)
     {
-        public ulong UserId { get; set; }
-
-        // override object.Equals
-        public override bool Equals(object obj)
+        if (obj is null || GetType() != obj.GetType())
         {
-            if (obj is null || GetType() != obj.GetType())
-            {
-                return false;
-            }
-
-            return ((SlowmodeIgnoredUser)obj).UserId == UserId;
+            return false;
         }
 
-        // override object.GetHashCode
-        public override int GetHashCode()
-        {
-            return UserId.GetHashCode();
-        }
+        return ((SlowmodeIgnoredUser)obj).UserId == UserId;
+    }
+
+    // override object.GetHashCode
+    public override int GetHashCode()
+    {
+        return UserId.GetHashCode();
     }
 }

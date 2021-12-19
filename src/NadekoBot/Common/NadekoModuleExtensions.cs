@@ -1,7 +1,6 @@
-﻿namespace NadekoBot.Modules
+﻿namespace NadekoBot.Modules;
+
+public static class NadekoModuleExtensions
 {
-    public static class NadekoModuleExtensions
-    {
         
-    }
 }

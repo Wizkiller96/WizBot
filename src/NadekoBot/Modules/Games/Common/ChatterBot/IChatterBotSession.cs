@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace NadekoBot.Modules.Games.Common.ChatterBot
+namespace NadekoBot.Modules.Games.Common.ChatterBot;
+
+public interface IChatterBotSession
 {
-    public interface IChatterBotSession
-    {
-        Task<string> Think(string input);
-    }
+    Task<string> Think(string input);
 }

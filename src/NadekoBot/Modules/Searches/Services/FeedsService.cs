@@ -5,246 +5,241 @@ using Microsoft.EntityFrameworkCore;
 using NadekoBot.Services;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Extensions;
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using NadekoBot.Db;
-using NadekoBot.Modules.Administration;
 
-namespace NadekoBot.Modules.Searches.Services
+namespace NadekoBot.Modules.Searches.Services;
+
+public class FeedsService : INService
 {
-    public class FeedsService : INService
+    private readonly DbService _db;
+    private readonly ConcurrentDictionary<string, HashSet<FeedSub>> _subs;
+    private readonly DiscordSocketClient _client;
+    private readonly IEmbedBuilderService _eb;
+
+    private readonly ConcurrentDictionary<string, DateTime> _lastPosts =
+        new ConcurrentDictionary<string, DateTime>();
+
+    public FeedsService(Bot bot, DbService db, DiscordSocketClient client, IEmbedBuilderService eb)
     {
-        private readonly DbService _db;
-        private readonly ConcurrentDictionary<string, HashSet<FeedSub>> _subs;
-        private readonly DiscordSocketClient _client;
-        private readonly IEmbedBuilderService _eb;
+        _db = db;
 
-        private readonly ConcurrentDictionary<string, DateTime> _lastPosts =
-            new ConcurrentDictionary<string, DateTime>();
-
-        public FeedsService(Bot bot, DbService db, DiscordSocketClient client, IEmbedBuilderService eb)
+        using (var uow = db.GetDbContext())
         {
-            _db = db;
-
-            using (var uow = db.GetDbContext())
-            {
-                var guildConfigIds = bot.AllGuildConfigs.Select(x => x.Id).ToList();
-                _subs = uow.GuildConfigs
-                    .AsQueryable()
-                    .Where(x => guildConfigIds.Contains(x.Id))
-                    .Include(x => x.FeedSubs)
-                        .ThenInclude(x => x.GuildConfig)
-                    .ToList()
-                    .SelectMany(x => x.FeedSubs)
-                    .GroupBy(x => x.Url.ToLower())
-                    .ToDictionary(x => x.Key, x => x.ToHashSet())
-                    .ToConcurrent();
-            }
-
-            _client = client;
-            _eb = eb;
-
-            var _ = Task.Run(TrackFeeds);
+            var guildConfigIds = bot.AllGuildConfigs.Select(x => x.Id).ToList();
+            _subs = uow.GuildConfigs
+                .AsQueryable()
+                .Where(x => guildConfigIds.Contains(x.Id))
+                .Include(x => x.FeedSubs)
+                .ThenInclude(x => x.GuildConfig)
+                .ToList()
+                .SelectMany(x => x.FeedSubs)
+                .GroupBy(x => x.Url.ToLower())
+                .ToDictionary(x => x.Key, x => x.ToHashSet())
+                .ToConcurrent();
         }
 
-        public async Task<EmbedBuilder> TrackFeeds()
+        _client = client;
+        _eb = eb;
+
+        var _ = Task.Run(TrackFeeds);
+    }
+
+    public async Task<EmbedBuilder> TrackFeeds()
+    {
+        while (true)
         {
-            while (true)
+            var allSendTasks = new List<Task>(_subs.Count);
+            foreach (var kvp in _subs)
             {
-                var allSendTasks = new List<Task>(_subs.Count);
-                foreach (var kvp in _subs)
+                if (kvp.Value.Count == 0)
+                    continue;
+
+                var rssUrl = kvp.Key;
+                try
                 {
-                    if (kvp.Value.Count == 0)
-                        continue;
+                    var feed = await CodeHollow.FeedReader.FeedReader.ReadAsync(rssUrl).ConfigureAwait(false);
 
-                    var rssUrl = kvp.Key;
-                    try
+                    var items = feed
+                        .Items
+                        .Select(item => (Item: item, LastUpdate: item.PublishingDate?.ToUniversalTime()
+                                                                 ?? (item.SpecificItem as AtomFeedItem)?.UpdatedDate
+                                                                 ?.ToUniversalTime()))
+                        .Where(data => !(data.LastUpdate is null))
+                        .Select(data => (data.Item, LastUpdate: (DateTime) data.LastUpdate))
+                        .OrderByDescending(data => data.LastUpdate)
+                        .Reverse() // start from the oldest
+                        .ToList();
+
+                    if (!_lastPosts.TryGetValue(kvp.Key, out DateTime lastFeedUpdate))
                     {
-                        var feed = await CodeHollow.FeedReader.FeedReader.ReadAsync(rssUrl).ConfigureAwait(false);
+                        lastFeedUpdate = _lastPosts[kvp.Key] =
+                            items.Any() ? items[items.Count - 1].LastUpdate : DateTime.UtcNow;
+                    }
 
-                        var items = feed
-                            .Items
-                            .Select(item => (Item: item, LastUpdate: item.PublishingDate?.ToUniversalTime()
-                                                                     ?? (item.SpecificItem as AtomFeedItem)?.UpdatedDate
-                                                                     ?.ToUniversalTime()))
-                            .Where(data => !(data.LastUpdate is null))
-                            .Select(data => (data.Item, LastUpdate: (DateTime) data.LastUpdate))
-                            .OrderByDescending(data => data.LastUpdate)
-                            .Reverse() // start from the oldest
-                            .ToList();
-
-                        if (!_lastPosts.TryGetValue(kvp.Key, out DateTime lastFeedUpdate))
+                    foreach (var (feedItem, itemUpdateDate) in items)
+                    {
+                        if (itemUpdateDate <= lastFeedUpdate)
                         {
-                            lastFeedUpdate = _lastPosts[kvp.Key] =
-                                items.Any() ? items[items.Count - 1].LastUpdate : DateTime.UtcNow;
+                            continue;
+                        }                            
+
+                        var embed = _eb.Create()
+                            .WithFooter(rssUrl);
+
+                        _lastPosts[kvp.Key] = itemUpdateDate;
+
+                        var link = feedItem.SpecificItem.Link;
+                        if (!string.IsNullOrWhiteSpace(link) && Uri.IsWellFormedUriString(link, UriKind.Absolute))
+                            embed.WithUrl(link);
+
+                        var title = string.IsNullOrWhiteSpace(feedItem.Title)
+                            ? "-"
+                            : feedItem.Title;
+
+                        var gotImage = false;
+                        if (feedItem.SpecificItem is MediaRssFeedItem mrfi &&
+                            (mrfi.Enclosure?.MediaType?.StartsWith("image/") ?? false))
+                        {
+                            var imgUrl = mrfi.Enclosure.Url;
+                            if (!string.IsNullOrWhiteSpace(imgUrl) &&
+                                Uri.IsWellFormedUriString(imgUrl, UriKind.Absolute))
+                            {
+                                embed.WithImageUrl(imgUrl);
+                                gotImage = true;
+                            }
                         }
-
-                        foreach (var (feedItem, itemUpdateDate) in items)
+                            
+                        if (!gotImage && feedItem.SpecificItem is AtomFeedItem afi)
                         {
-                            if (itemUpdateDate <= lastFeedUpdate)
+                            var previewElement = afi.Element.Elements()
+                                .FirstOrDefault(x => x.Name.LocalName == "preview");
+
+                            if (previewElement is null)
                             {
-                                continue;
-                            }                            
-
-                            var embed = _eb.Create()
-                                .WithFooter(rssUrl);
-
-                            _lastPosts[kvp.Key] = itemUpdateDate;
-
-                            var link = feedItem.SpecificItem.Link;
-                            if (!string.IsNullOrWhiteSpace(link) && Uri.IsWellFormedUriString(link, UriKind.Absolute))
-                                embed.WithUrl(link);
-
-                            var title = string.IsNullOrWhiteSpace(feedItem.Title)
-                                ? "-"
-                                : feedItem.Title;
-
-                            var gotImage = false;
-                            if (feedItem.SpecificItem is MediaRssFeedItem mrfi &&
-                                (mrfi.Enclosure?.MediaType?.StartsWith("image/") ?? false))
+                                previewElement = afi.Element.Elements()
+                                    .FirstOrDefault(x => x.Name.LocalName == "thumbnail");
+                            }
+                                
+                            if (previewElement != null)
                             {
-                                var imgUrl = mrfi.Enclosure.Url;
-                                if (!string.IsNullOrWhiteSpace(imgUrl) &&
-                                    Uri.IsWellFormedUriString(imgUrl, UriKind.Absolute))
+                                var urlAttribute = previewElement.Attribute("url");
+                                if (urlAttribute != null && !string.IsNullOrWhiteSpace(urlAttribute.Value)
+                                                         && Uri.IsWellFormedUriString(urlAttribute.Value,
+                                                             UriKind.Absolute))
                                 {
-                                    embed.WithImageUrl(imgUrl);
+                                    embed.WithImageUrl(urlAttribute.Value);
                                     gotImage = true;
                                 }
                             }
-                            
-                            if (!gotImage && feedItem.SpecificItem is AtomFeedItem afi)
-                            {
-                                var previewElement = afi.Element.Elements()
-                                    .FirstOrDefault(x => x.Name.LocalName == "preview");
-
-                                if (previewElement is null)
-                                {
-                                    previewElement = afi.Element.Elements()
-                                        .FirstOrDefault(x => x.Name.LocalName == "thumbnail");
-                                }
-                                
-                                if (previewElement != null)
-                                {
-                                    var urlAttribute = previewElement.Attribute("url");
-                                    if (urlAttribute != null && !string.IsNullOrWhiteSpace(urlAttribute.Value)
-                                                             && Uri.IsWellFormedUriString(urlAttribute.Value,
-                                                                 UriKind.Absolute))
-                                    {
-                                        embed.WithImageUrl(urlAttribute.Value);
-                                        gotImage = true;
-                                    }
-                                }
-                            }
-
-
-                            embed.WithTitle(title.TrimTo(256));
-
-                            var desc = feedItem.Description?.StripHTML();
-                            if (!string.IsNullOrWhiteSpace(feedItem.Description))
-                                embed.WithDescription(desc.TrimTo(2048));
-
-                            //send the created embed to all subscribed channels
-                            var feedSendTasks = kvp.Value
-                                .Where(x => x.GuildConfig != null)
-                                .Select(x => _client.GetGuild(x.GuildConfig.GuildId)
-                                    ?.GetTextChannel(x.ChannelId))
-                                .Where(x => x != null)
-                                .Select(x => x.EmbedAsync(embed));
-
-                            allSendTasks.Add(Task.WhenAll(feedSendTasks));
                         }
-                    }
-                    catch
-                    {
+
+
+                        embed.WithTitle(title.TrimTo(256));
+
+                        var desc = feedItem.Description?.StripHTML();
+                        if (!string.IsNullOrWhiteSpace(feedItem.Description))
+                            embed.WithDescription(desc.TrimTo(2048));
+
+                        //send the created embed to all subscribed channels
+                        var feedSendTasks = kvp.Value
+                            .Where(x => x.GuildConfig != null)
+                            .Select(x => _client.GetGuild(x.GuildConfig.GuildId)
+                                ?.GetTextChannel(x.ChannelId))
+                            .Where(x => x != null)
+                            .Select(x => x.EmbedAsync(embed));
+
+                        allSendTasks.Add(Task.WhenAll(feedSendTasks));
                     }
                 }
-
-                await Task.WhenAll(Task.WhenAll(allSendTasks), Task.Delay(10000)).ConfigureAwait(false);
+                catch
+                {
+                }
             }
+
+            await Task.WhenAll(Task.WhenAll(allSendTasks), Task.Delay(10000)).ConfigureAwait(false);
         }
+    }
 
-        public List<FeedSub> GetFeeds(ulong guildId)
+    public List<FeedSub> GetFeeds(ulong guildId)
+    {
+        using (var uow = _db.GetDbContext())
         {
-            using (var uow = _db.GetDbContext())
-            {
-                return uow.GuildConfigsForId(guildId, 
-                        set => set.Include(x => x.FeedSubs)
-                                        .ThenInclude(x => x.GuildConfig))
-                    .FeedSubs
-                    .OrderBy(x => x.Id)
-                    .ToList();
-            }
-        }
-
-        public bool AddFeed(ulong guildId, ulong channelId, string rssFeed)
-        {
-            rssFeed.ThrowIfNull(nameof(rssFeed));
-
-            var fs = new FeedSub()
-            {
-                ChannelId = channelId,
-                Url = rssFeed.Trim(),
-            };
-
-            using (var uow = _db.GetDbContext())
-            {
-                var gc = uow.GuildConfigsForId(guildId,
+            return uow.GuildConfigsForId(guildId, 
                     set => set.Include(x => x.FeedSubs)
-                                    .ThenInclude(x => x.GuildConfig));
+                        .ThenInclude(x => x.GuildConfig))
+                .FeedSubs
+                .OrderBy(x => x.Id)
+                .ToList();
+        }
+    }
 
-                if (gc.FeedSubs.Any(x => x.Url.ToLower() == fs.Url.ToLower()))
-                {
-                    return false;
-                }
-                else if (gc.FeedSubs.Count >= 10)
-                {
-                    return false;
-                }
+    public bool AddFeed(ulong guildId, ulong channelId, string rssFeed)
+    {
+        rssFeed.ThrowIfNull(nameof(rssFeed));
 
-                gc.FeedSubs.Add(fs);
-                uow.SaveChanges();
-                //adding all, in case bot wasn't on this guild when it started
-                foreach (var feed in gc.FeedSubs)
-                {
-                    _subs.AddOrUpdate(feed.Url.ToLower(), new HashSet<FeedSub>() {feed}, (k, old) =>
-                    {
-                        old.Add(feed);
-                        return old;
-                    });
-                }
+        var fs = new FeedSub()
+        {
+            ChannelId = channelId,
+            Url = rssFeed.Trim(),
+        };
+
+        using (var uow = _db.GetDbContext())
+        {
+            var gc = uow.GuildConfigsForId(guildId,
+                set => set.Include(x => x.FeedSubs)
+                    .ThenInclude(x => x.GuildConfig));
+
+            if (gc.FeedSubs.Any(x => x.Url.ToLower() == fs.Url.ToLower()))
+            {
+                return false;
+            }
+            else if (gc.FeedSubs.Count >= 10)
+            {
+                return false;
             }
 
-            return true;
-        }
-
-        public bool RemoveFeed(ulong guildId, int index)
-        {
-            if (index < 0)
-                return false;
-
-            using (var uow = _db.GetDbContext())
+            gc.FeedSubs.Add(fs);
+            uow.SaveChanges();
+            //adding all, in case bot wasn't on this guild when it started
+            foreach (var feed in gc.FeedSubs)
             {
-                var items = uow.GuildConfigsForId(guildId, set => set.Include(x => x.FeedSubs))
-                    .FeedSubs
-                    .OrderBy(x => x.Id)
-                    .ToList();
-
-                if (items.Count <= index)
-                    return false;
-                var toRemove = items[index];
-                _subs.AddOrUpdate(toRemove.Url.ToLower(), new HashSet<FeedSub>(), (key, old) =>
+                _subs.AddOrUpdate(feed.Url.ToLower(), new HashSet<FeedSub>() {feed}, (k, old) =>
                 {
-                    old.Remove(toRemove);
+                    old.Add(feed);
                     return old;
                 });
-                uow.Remove(toRemove);
-                uow.SaveChanges();
             }
-
-            return true;
         }
+
+        return true;
+    }
+
+    public bool RemoveFeed(ulong guildId, int index)
+    {
+        if (index < 0)
+            return false;
+
+        using (var uow = _db.GetDbContext())
+        {
+            var items = uow.GuildConfigsForId(guildId, set => set.Include(x => x.FeedSubs))
+                .FeedSubs
+                .OrderBy(x => x.Id)
+                .ToList();
+
+            if (items.Count <= index)
+                return false;
+            var toRemove = items[index];
+            _subs.AddOrUpdate(toRemove.Url.ToLower(), new HashSet<FeedSub>(), (key, old) =>
+            {
+                old.Remove(toRemove);
+                return old;
+            });
+            uow.Remove(toRemove);
+            uow.SaveChanges();
+        }
+
+        return true;
     }
 }

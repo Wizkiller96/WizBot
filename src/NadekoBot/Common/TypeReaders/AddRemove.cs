@@ -1,9 +1,8 @@
-﻿namespace NadekoBot.Common.TypeReaders
+﻿namespace NadekoBot.Common.TypeReaders;
+
+public enum AddRemove
 {
-    public enum AddRemove
-    {
-        Add = int.MinValue,
-        Rem = int.MinValue + 1,
-        Rm = int.MinValue + 1,
-    }
+    Add = int.MinValue,
+    Rem = int.MinValue + 1,
+    Rm = int.MinValue + 1,
 }

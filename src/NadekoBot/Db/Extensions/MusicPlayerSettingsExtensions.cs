@@ -2,29 +2,28 @@
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Services.Database.Models;
 
-namespace NadekoBot.Db
+namespace NadekoBot.Db;
+
+public static class MusicPlayerSettingsExtensions
 {
-    public static class MusicPlayerSettingsExtensions
+    public static async Task<MusicPlayerSettings> ForGuildAsync(this DbSet<MusicPlayerSettings> settings, ulong guildId)
     {
-        public static async Task<MusicPlayerSettings> ForGuildAsync(this DbSet<MusicPlayerSettings> settings, ulong guildId)
+        var toReturn = await settings
+            .AsQueryable()
+            .FirstOrDefaultAsync(x => x.GuildId == guildId);
+
+        if (toReturn is null)
         {
-            var toReturn = await settings
-                .AsQueryable()
-                .FirstOrDefaultAsync(x => x.GuildId == guildId);
-
-            if (toReturn is null)
+            var newSettings = new MusicPlayerSettings()
             {
-                var newSettings = new MusicPlayerSettings()
-                {
-                    GuildId = guildId,
-                    PlayerRepeat = PlayerRepeatType.Queue
-                };
+                GuildId = guildId,
+                PlayerRepeat = PlayerRepeatType.Queue
+            };
 
-                await settings.AddAsync(newSettings);
-                return newSettings;
-            }
-
-            return toReturn;
+            await settings.AddAsync(newSettings);
+            return newSettings;
         }
+
+        return toReturn;
     }
 }

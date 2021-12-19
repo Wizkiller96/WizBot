@@ -1,8 +1,7 @@
-namespace NadekoBot.Modules.Gambling
+namespace NadekoBot.Modules.Gambling;
+
+public enum GamblingError
 {
-    public enum GamblingError
-    {
-        None,
-        NotEnough
-    }
+    None,
+    NotEnough
 }

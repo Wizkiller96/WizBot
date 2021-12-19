@@ -1,123 +1,119 @@
 ﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using Discord;
 using NadekoBot.Common;
 using Newtonsoft.Json;
 using System.IO;
 using NadekoBot.Db;
-using NadekoBot.Modules.Administration;
 
-namespace NadekoBot.Services
+namespace NadekoBot.Services;
+
+// todo future use guild locale more in the code (from guild settings) (for dates, currency, etc?)
+public class Localization : ILocalization, INService
 {
-    // todo future use guild locale more in the code (from guild settings) (for dates, currency, etc?)
-    public class Localization : ILocalization, INService
+    private readonly BotConfigService _bss;
+    private readonly DbService _db;
+
+    public ConcurrentDictionary<ulong, CultureInfo> GuildCultureInfos { get; }
+    public CultureInfo DefaultCultureInfo => _bss.Data.DefaultLocale;
+
+    private static readonly Dictionary<string, CommandData> _commandData = JsonConvert.DeserializeObject<Dictionary<string, CommandData>>(
+        File.ReadAllText("./data/strings/commands/commands.en-US.json"));
+
+    public Localization(BotConfigService bss, Bot bot, DbService db)
     {
-        private readonly BotConfigService _bss;
-        private readonly DbService _db;
+        _bss = bss;
+        _db = db;
 
-        public ConcurrentDictionary<ulong, CultureInfo> GuildCultureInfos { get; }
-        public CultureInfo DefaultCultureInfo => _bss.Data.DefaultLocale;
-
-        private static readonly Dictionary<string, CommandData> _commandData = JsonConvert.DeserializeObject<Dictionary<string, CommandData>>(
-                File.ReadAllText("./data/strings/commands/commands.en-US.json"));
-
-        public Localization(BotConfigService bss, Bot bot, DbService db)
-        {
-            _bss = bss;
-            _db = db;
-
-            var cultureInfoNames = bot.AllGuildConfigs
-                .ToDictionary(x => x.GuildId, x => x.Locale);
+        var cultureInfoNames = bot.AllGuildConfigs
+            .ToDictionary(x => x.GuildId, x => x.Locale);
             
-            GuildCultureInfos = new ConcurrentDictionary<ulong, CultureInfo>(cultureInfoNames.ToDictionary(x => x.Key, x =>
-              {
-                  CultureInfo cultureInfo = null;
-                  try
-                  {
-                      if (x.Value is null)
-                          return null;
-                      cultureInfo = new CultureInfo(x.Value);
-                  }
-                  catch { }
-                  return cultureInfo;
-              }).Where(x => x.Value != null));
+        GuildCultureInfos = new ConcurrentDictionary<ulong, CultureInfo>(cultureInfoNames.ToDictionary(x => x.Key, x =>
+        {
+            CultureInfo cultureInfo = null;
+            try
+            {
+                if (x.Value is null)
+                    return null;
+                cultureInfo = new CultureInfo(x.Value);
+            }
+            catch { }
+            return cultureInfo;
+        }).Where(x => x.Value != null));
+    }
+
+    public void SetGuildCulture(IGuild guild, CultureInfo ci) =>
+        SetGuildCulture(guild.Id, ci);
+
+    public void SetGuildCulture(ulong guildId, CultureInfo ci)
+    {
+        if (ci.Name == _bss.Data.DefaultLocale.Name)
+        {
+            RemoveGuildCulture(guildId);
+            return;
         }
 
-        public void SetGuildCulture(IGuild guild, CultureInfo ci) =>
-            SetGuildCulture(guild.Id, ci);
-
-        public void SetGuildCulture(ulong guildId, CultureInfo ci)
+        using (var uow = _db.GetDbContext())
         {
-            if (ci.Name == _bss.Data.DefaultLocale.Name)
-            {
-                RemoveGuildCulture(guildId);
-                return;
-            }
+            var gc = uow.GuildConfigsForId(guildId, set => set);
+            gc.Locale = ci.Name;
+            uow.SaveChanges();
+        }
 
+        GuildCultureInfos.AddOrUpdate(guildId, ci, (id, old) => ci);
+    }
+
+    public void RemoveGuildCulture(IGuild guild) =>
+        RemoveGuildCulture(guild.Id);
+
+    public void RemoveGuildCulture(ulong guildId)
+    {
+
+        if (GuildCultureInfos.TryRemove(guildId, out var _))
+        {
             using (var uow = _db.GetDbContext())
             {
                 var gc = uow.GuildConfigsForId(guildId, set => set);
-                gc.Locale = ci.Name;
+                gc.Locale = null;
                 uow.SaveChanges();
             }
-
-            GuildCultureInfos.AddOrUpdate(guildId, ci, (id, old) => ci);
         }
+    }
 
-        public void RemoveGuildCulture(IGuild guild) =>
-            RemoveGuildCulture(guild.Id);
-
-        public void RemoveGuildCulture(ulong guildId)
+    public void SetDefaultCulture(CultureInfo ci)
+    {
+        _bss.ModifyConfig(bs =>
         {
+            bs.DefaultLocale = ci;
+        });
+    }
 
-            if (GuildCultureInfos.TryRemove(guildId, out var _))
-            {
-                using (var uow = _db.GetDbContext())
-                {
-                    var gc = uow.GuildConfigsForId(guildId, set => set);
-                    gc.Locale = null;
-                    uow.SaveChanges();
-                }
-            }
-        }
+    public void ResetDefaultCulture() =>
+        SetDefaultCulture(CultureInfo.CurrentCulture);
 
-        public void SetDefaultCulture(CultureInfo ci)
-        {
-            _bss.ModifyConfig(bs =>
-            {
-                bs.DefaultLocale = ci;
-            });
-        }
+    public CultureInfo GetCultureInfo(IGuild guild) =>
+        GetCultureInfo(guild?.Id);
 
-        public void ResetDefaultCulture() =>
-            SetDefaultCulture(CultureInfo.CurrentCulture);
-
-        public CultureInfo GetCultureInfo(IGuild guild) =>
-            GetCultureInfo(guild?.Id);
-
-        public CultureInfo GetCultureInfo(ulong? guildId)
-        {
-            if (guildId is null || !GuildCultureInfos.TryGetValue(guildId.Value, out var info) || info is null)
-                return _bss.Data.DefaultLocale;
+    public CultureInfo GetCultureInfo(ulong? guildId)
+    {
+        if (guildId is null || !GuildCultureInfos.TryGetValue(guildId.Value, out var info) || info is null)
+            return _bss.Data.DefaultLocale;
             
-            return info;
-        }
+        return info;
+    }
 
-        public static CommandData LoadCommand(string key)
-        {
-            _commandData.TryGetValue(key, out var toReturn);
+    public static CommandData LoadCommand(string key)
+    {
+        _commandData.TryGetValue(key, out var toReturn);
 
-            if (toReturn is null)
-                return new CommandData
-                {
-                    Cmd = key,
-                    Desc = key,
-                    Usage = new[] { key },
-                };
+        if (toReturn is null)
+            return new CommandData
+            {
+                Cmd = key,
+                Desc = key,
+                Usage = new[] { key },
+            };
 
-            return toReturn;
-        }
+        return toReturn;
     }
 }

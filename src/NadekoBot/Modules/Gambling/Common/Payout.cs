@@ -1,8 +1,7 @@
-﻿namespace NadekoBot.Modules.Gambling.Common
+﻿namespace NadekoBot.Modules.Gambling.Common;
+
+public class Payout
 {
-    public class Payout
-    {
-        public string User { get; set; }
-        public int Amount { get; set; }
-    }
+    public string User { get; set; }
+    public int Amount { get; set; }
 }

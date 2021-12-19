@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <LangVersion>10.0</LangVersion>
+    <EnablePreviewFeatures>True</EnablePreviewFeatures>
     <RunWorkingDirectory>$(MSBuildProjectDirectory)</RunWorkingDirectory>
     <OutputType>exe</OutputType>
     <ApplicationIcon>nadeko_icon.ico</ApplicationIcon>

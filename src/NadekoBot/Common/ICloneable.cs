@@ -1,7 +1,6 @@
-﻿namespace NadekoBot.Common
+﻿namespace NadekoBot.Common;
+
+public interface ICloneable<T> where T : new()
 {
-    public interface ICloneable<T> where T : new()
-    {
-        public T Clone();
-    }
+    public T Clone();
 }

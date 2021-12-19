@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace NadekoBot.Services.Database.Models;
 
-namespace NadekoBot.Services.Database.Models
+public class BlacklistEntry : DbEntity
 {
-    public class BlacklistEntry : DbEntity
-    {
-        public ulong ItemId { get; set; }
-        public BlacklistType Type { get; set; }
-    }
+    public ulong ItemId { get; set; }
+    public BlacklistType Type { get; set; }
+}
 
-    public enum BlacklistType
-    {
-        Server,
-        Channel,
-        User
-    }
+public enum BlacklistType
+{
+    Server,
+    Channel,
+    User
 }

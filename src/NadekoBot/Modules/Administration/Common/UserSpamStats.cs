@@ -1,50 +1,47 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Linq;
+﻿using System.Collections.Concurrent;
 using System.Threading;
 using Discord;
 
-namespace NadekoBot.Modules.Administration.Common
+namespace NadekoBot.Modules.Administration.Common;
+
+public sealed class UserSpamStats : IDisposable
 {
-    public sealed class UserSpamStats : IDisposable
+    public int Count => timers.Count;
+    public string LastMessage { get; set; }
+
+    private ConcurrentQueue<Timer> timers { get; }
+
+    public UserSpamStats(IUserMessage msg)
     {
-        public int Count => timers.Count;
-        public string LastMessage { get; set; }
+        LastMessage = msg.Content.ToUpperInvariant();
+        timers = new ConcurrentQueue<Timer>();
 
-        private ConcurrentQueue<Timer> timers { get; }
+        ApplyNextMessage(msg);
+    }
 
-        public UserSpamStats(IUserMessage msg)
+    private readonly object applyLock = new object();
+    public void ApplyNextMessage(IUserMessage message)
+    {
+        lock (applyLock)
         {
-            LastMessage = msg.Content.ToUpperInvariant();
-            timers = new ConcurrentQueue<Timer>();
-
-            ApplyNextMessage(msg);
-        }
-
-        private readonly object applyLock = new object();
-        public void ApplyNextMessage(IUserMessage message)
-        {
-            lock (applyLock)
+            var upperMsg = message.Content.ToUpperInvariant();
+            if (upperMsg != LastMessage || (string.IsNullOrWhiteSpace(upperMsg) && message.Attachments.Any()))
             {
-                var upperMsg = message.Content.ToUpperInvariant();
-                if (upperMsg != LastMessage || (string.IsNullOrWhiteSpace(upperMsg) && message.Attachments.Any()))
-                {
-                    LastMessage = upperMsg;
-                    while (timers.TryDequeue(out var old))
-                        old.Change(Timeout.Infinite, Timeout.Infinite);
-                }
-                var t = new Timer((_) => {
-                    if (timers.TryDequeue(out var old))
-                        old.Change(Timeout.Infinite, Timeout.Infinite);
-                }, null, TimeSpan.FromMinutes(30), TimeSpan.FromMinutes(30));
-                timers.Enqueue(t);
+                LastMessage = upperMsg;
+                while (timers.TryDequeue(out var old))
+                    old.Change(Timeout.Infinite, Timeout.Infinite);
             }
+            var t = new Timer((_) => {
+                if (timers.TryDequeue(out var old))
+                    old.Change(Timeout.Infinite, Timeout.Infinite);
+            }, null, TimeSpan.FromMinutes(30), TimeSpan.FromMinutes(30));
+            timers.Enqueue(t);
         }
+    }
 
-        public void Dispose()
-        {
-            while (timers.TryDequeue(out var old))
-                old.Change(Timeout.Infinite, Timeout.Infinite);
-        }
+    public void Dispose()
+    {
+        while (timers.TryDequeue(out var old))
+            old.Change(Timeout.Infinite, Timeout.Infinite);
     }
 }

@@ -1,8 +1,7 @@
-﻿namespace NadekoBot.Services.Database.Models
+﻿namespace NadekoBot.Services.Database.Models;
+
+public enum WarnExpireAction
 {
-    public enum WarnExpireAction
-    {
-        Clear,
-        Delete
-    }
+    Clear,
+    Delete
 }

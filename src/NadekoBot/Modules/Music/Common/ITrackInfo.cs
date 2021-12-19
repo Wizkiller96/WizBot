@@ -1,16 +1,14 @@
 ﻿#nullable enable
-using System;
 using System.Threading.Tasks;
 
-namespace NadekoBot.Modules.Music
+namespace NadekoBot.Modules.Music;
+
+public interface ITrackInfo
 {
-    public interface ITrackInfo
-    {
-        public string Title { get; }
-        public string Url { get; }
-        public string Thumbnail { get; }
-        public TimeSpan Duration { get; }
-        public MusicPlatform Platform { get; }
-        public ValueTask<string?> GetStreamUrl();
-    }
+    public string Title { get; }
+    public string Url { get; }
+    public string Thumbnail { get; }
+    public TimeSpan Duration { get; }
+    public MusicPlatform Platform { get; }
+    public ValueTask<string?> GetStreamUrl();
 }

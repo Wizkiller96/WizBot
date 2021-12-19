@@ -1,8 +1,7 @@
-﻿namespace NadekoBot.Services.Database.Models
+﻿namespace NadekoBot.Services.Database.Models;
+
+public class CommandAlias : DbEntity
 {
-    public class CommandAlias : DbEntity
-    {
-        public string Trigger { get; set; }
-        public string Mapping { get; set; }
-    }
+    public string Trigger { get; set; }
+    public string Mapping { get; set; }
 }

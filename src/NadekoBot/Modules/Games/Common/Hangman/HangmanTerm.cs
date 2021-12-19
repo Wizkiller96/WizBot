@@ -1,8 +1,7 @@
-﻿namespace NadekoBot.Modules.Games.Hangman
+﻿namespace NadekoBot.Modules.Games.Hangman;
+
+public sealed class HangmanTerm
 {
-    public sealed class HangmanTerm
-    {
-        public string Word { get; set; }
-        public string ImageUrl { get; set; }
-    }
+    public string Word { get; set; }
+    public string ImageUrl { get; set; }
 }

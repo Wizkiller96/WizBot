@@ -1,12 +1,11 @@
 ﻿using System.Text.Json;
 
-namespace SystemTextJsonSamples
+namespace SystemTextJsonSamples;
+
+public class LowerCaseNamingPolicy : JsonNamingPolicy
 {
-    public class LowerCaseNamingPolicy : JsonNamingPolicy
-    {
-        public static LowerCaseNamingPolicy Default = new LowerCaseNamingPolicy();
+    public static LowerCaseNamingPolicy Default = new LowerCaseNamingPolicy();
         
-        public override string ConvertName(string name) =>
-            name.ToLower();
-    }
+    public override string ConvertName(string name) =>
+        name.ToLower();
 }

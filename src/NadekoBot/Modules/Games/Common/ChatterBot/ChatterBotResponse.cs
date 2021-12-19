@@ -1,8 +1,7 @@
-﻿namespace NadekoBot.Modules.Games.Common.ChatterBot
+﻿namespace NadekoBot.Modules.Games.Common.ChatterBot;
+
+public class ChatterBotResponse
 {
-    public class ChatterBotResponse
-    {
-        public string Convo_id { get; set; }
-        public string BotSay { get; set; }
-    }
+    public string Convo_id { get; set; }
+    public string BotSay { get; set; }
 }

@@ -1,44 +1,42 @@
 ﻿using NadekoBot.Common;
 using NadekoBot.Services;
 using NadekoBot.Extensions;
-using System.Collections.Generic;
 
-namespace NadekoBot.Modules.Games.Common.Trivia
+namespace NadekoBot.Modules.Games.Common.Trivia;
+
+public class TriviaQuestionPool
 {
-    public class TriviaQuestionPool
+    private readonly IDataCache _cache;
+    private readonly int maxPokemonId;
+
+    private readonly NadekoRandom _rng = new NadekoRandom();
+
+    private TriviaQuestion[] Pool => _cache.LocalData.TriviaQuestions;
+    private IReadOnlyDictionary<int, string> Map => _cache.LocalData.PokemonMap;
+
+    public TriviaQuestionPool(IDataCache cache)
     {
-        private readonly IDataCache _cache;
-        private readonly int maxPokemonId;
+        _cache = cache;
+        maxPokemonId = 721; //xd
+    }
 
-        private readonly NadekoRandom _rng = new NadekoRandom();
+    public TriviaQuestion GetRandomQuestion(HashSet<TriviaQuestion> exclude, bool isPokemon)
+    {
+        if (Pool.Length == 0)
+            return null;
 
-        private TriviaQuestion[] Pool => _cache.LocalData.TriviaQuestions;
-        private IReadOnlyDictionary<int, string> Map => _cache.LocalData.PokemonMap;
-
-        public TriviaQuestionPool(IDataCache cache)
+        if (isPokemon)
         {
-            _cache = cache;
-            maxPokemonId = 721; //xd
+            var num = _rng.Next(1, maxPokemonId + 1);
+            return new TriviaQuestion("Who's That Pokémon?",
+                Map[num].ToTitleCase(),
+                "Pokemon",
+                $@"https://nadeko.bot/images/pokemon/shadows/{num}.png",
+                $@"https://nadeko.bot/images/pokemon/real/{num}.png");
         }
+        TriviaQuestion randomQuestion;
+        while (exclude.Contains(randomQuestion = Pool[_rng.Next(0, Pool.Length)])) ;
 
-        public TriviaQuestion GetRandomQuestion(HashSet<TriviaQuestion> exclude, bool isPokemon)
-        {
-            if (Pool.Length == 0)
-                return null;
-
-            if (isPokemon)
-            {
-                var num = _rng.Next(1, maxPokemonId + 1);
-                return new TriviaQuestion("Who's That Pokémon?",
-                    Map[num].ToTitleCase(),
-                    "Pokemon",
-                    $@"https://nadeko.bot/images/pokemon/shadows/{num}.png",
-                    $@"https://nadeko.bot/images/pokemon/real/{num}.png");
-            }
-            TriviaQuestion randomQuestion;
-            while (exclude.Contains(randomQuestion = Pool[_rng.Next(0, Pool.Length)])) ;
-
-            return randomQuestion;
-        }
+        return randomQuestion;
     }
 }

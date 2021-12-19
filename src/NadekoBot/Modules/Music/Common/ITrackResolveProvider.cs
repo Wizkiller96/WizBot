@@ -1,10 +1,9 @@
 ﻿#nullable enable
 using System.Threading.Tasks;
 
-namespace NadekoBot.Modules.Music
+namespace NadekoBot.Modules.Music;
+
+public interface ITrackResolveProvider
 {
-    public interface ITrackResolveProvider
-    {
-        Task<ITrackInfo?> QuerySongAsync(string query, MusicPlatform? forcePlatform);
-    }
+    Task<ITrackInfo?> QuerySongAsync(string query, MusicPlatform? forcePlatform);
 }

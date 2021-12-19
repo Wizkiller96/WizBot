@@ -1,12 +1,11 @@
-﻿namespace NadekoBot.Modules.Nsfw
+﻿namespace NadekoBot.Modules.Nsfw;
+
+public interface INsfwService
 {
-    public interface INsfwService
-    {
         
-    }
+}
     
-    public class NsfwService
-    {
+public class NsfwService
+{
         
-    }
 }

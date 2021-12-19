@@ -1,12 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
-namespace NadekoBot.Modules.Gambling.Common
+namespace NadekoBot.Modules.Gambling.Common;
+
+public interface ICurrencyEvent
 {
-    public interface ICurrencyEvent
-    {
-        event Func<ulong, Task> OnEnded;
-        Task StopEvent();
-        Task StartEvent();
-    }
+    event Func<ulong, Task> OnEnded;
+    Task StopEvent();
+    Task StartEvent();
 }

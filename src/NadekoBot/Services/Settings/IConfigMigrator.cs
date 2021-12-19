@@ -1,7 +1,6 @@
-﻿namespace NadekoBot.Services
+﻿namespace NadekoBot.Services;
+
+public interface IConfigMigrator
 {
-    public interface IConfigMigrator
-    {
-        public void EnsureMigrated();
-    }
+    public void EnsureMigrated();
 }

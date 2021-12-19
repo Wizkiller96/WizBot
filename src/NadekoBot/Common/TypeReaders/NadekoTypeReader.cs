@@ -1,14 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Discord.Commands;
 
-namespace NadekoBot.Common.TypeReaders
-{
-    public abstract class NadekoTypeReader<T> : TypeReader
-    {
-        public abstract Task<TypeReaderResult> ReadAsync(ICommandContext ctx, string input);
+namespace NadekoBot.Common.TypeReaders;
 
-        public override Task<TypeReaderResult> ReadAsync(ICommandContext ctx, string input, IServiceProvider services)
-            => ReadAsync(ctx, input);
-    }
+public abstract class NadekoTypeReader<T> : TypeReader
+{
+    public abstract Task<TypeReaderResult> ReadAsync(ICommandContext ctx, string input);
+
+    public override Task<TypeReaderResult> ReadAsync(ICommandContext ctx, string input, IServiceProvider services)
+        => ReadAsync(ctx, input);
 }

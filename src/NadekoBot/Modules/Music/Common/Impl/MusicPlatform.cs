@@ -1,10 +1,9 @@
-﻿namespace NadekoBot.Modules.Music
+﻿namespace NadekoBot.Modules.Music;
+
+public enum MusicPlatform
 {
-    public enum MusicPlatform
-    {
-        Radio,
-        Youtube,
-        Local,
-        SoundCloud,
-    }
+    Radio,
+    Youtube,
+    Local,
+    SoundCloud,
 }

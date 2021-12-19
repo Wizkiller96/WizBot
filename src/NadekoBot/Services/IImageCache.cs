@@ -1,33 +1,31 @@
 ﻿using NadekoBot.Common;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace NadekoBot.Services
+namespace NadekoBot.Services;
+
+public interface IImageCache
 {
-    public interface IImageCache
-    {
-        ImageUrls ImageUrls { get; }
+    ImageUrls ImageUrls { get; }
 
-        IReadOnlyList<byte[]> Heads { get; }
-        IReadOnlyList<byte[]> Tails { get; }
+    IReadOnlyList<byte[]> Heads { get; }
+    IReadOnlyList<byte[]> Tails { get; }
 
-        IReadOnlyList<byte[]> Dice { get; }
+    IReadOnlyList<byte[]> Dice { get; }
 
-        IReadOnlyList<byte[]> SlotEmojis { get; }
-        IReadOnlyList<byte[]> Currency { get; }
+    IReadOnlyList<byte[]> SlotEmojis { get; }
+    IReadOnlyList<byte[]> Currency { get; }
 
-        byte[] SlotBackground { get; }
+    byte[] SlotBackground { get; }
 
-        byte[] RategirlMatrix { get; }
-        byte[] RategirlDot { get; }
+    byte[] RategirlMatrix { get; }
+    byte[] RategirlDot { get; }
 
-        byte[] XpBackground { get; }
+    byte[] XpBackground { get; }
 
-        byte[] Rip { get; }
-        byte[] RipOverlay { get; }
+    byte[] Rip { get; }
+    byte[] RipOverlay { get; }
 
-        byte[] GetCard(string key);
+    byte[] GetCard(string key);
 
-        Task Reload();
-    }
+    Task Reload();
 }

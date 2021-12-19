@@ -4,38 +4,37 @@ using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace NadekoBot.Modules.Nsfw.Common
+namespace NadekoBot.Modules.Nsfw.Common;
+
+public sealed class DanbooruImageDownloader : DapiImageDownloader
 {
-    public sealed class DanbooruImageDownloader : DapiImageDownloader
+    // using them as concurrent hashsets, value doesn't matter
+    private static readonly ConcurrentDictionary<string, bool> _existentTags = new();
+    private static readonly ConcurrentDictionary<string, bool> _nonexistentTags = new();
+
+    public override async Task<bool> IsTagValid(string tag, CancellationToken cancel = default)
     {
-        // using them as concurrent hashsets, value doesn't matter
-        private static readonly ConcurrentDictionary<string, bool> _existentTags = new();
-        private static readonly ConcurrentDictionary<string, bool> _nonexistentTags = new();
+        if (_existentTags.ContainsKey(tag))
+            return true;
 
-        public override async Task<bool> IsTagValid(string tag, CancellationToken cancel = default)
+        if (_nonexistentTags.ContainsKey(tag))
+            return false;
+
+        var tags = await _http.GetFromJsonAsync<DapiTag[]>(_baseUrl +
+                                                           "/tags.json" +
+                                                           $"?search[name_or_alias_matches]={tag}",
+            options: this._serializerOptions,
+            cancellationToken: cancel);
+        if (tags is {Length: > 0})
         {
-            if (_existentTags.ContainsKey(tag))
-                return true;
-
-            if (_nonexistentTags.ContainsKey(tag))
-                return false;
-
-            var tags = await _http.GetFromJsonAsync<DapiTag[]>(_baseUrl +
-                                                               "/tags.json" +
-                                                               $"?search[name_or_alias_matches]={tag}",
-                options: this._serializerOptions,
-                cancellationToken: cancel);
-            if (tags is {Length: > 0})
-            {
-                return _existentTags[tag] = true;
-            }
-
-            return _nonexistentTags[tag] = false;
+            return _existentTags[tag] = true;
         }
+
+        return _nonexistentTags[tag] = false;
+    }
         
-        public DanbooruImageDownloader(HttpClient http)
-            : base(Booru.Danbooru, http, "http://danbooru.donmai.us")
-        {
-        }
+    public DanbooruImageDownloader(HttpClient http)
+        : base(Booru.Danbooru, http, "http://danbooru.donmai.us")
+    {
     }
 }

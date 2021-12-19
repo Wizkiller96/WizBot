@@ -1,7 +1,6 @@
-﻿namespace NadekoBot.Common
+﻿namespace NadekoBot.Common;
+
+public interface INadekoCommandOptions
 {
-    public interface INadekoCommandOptions
-    {
-        void NormalizeOptions();
-    }
+    void NormalizeOptions();
 }

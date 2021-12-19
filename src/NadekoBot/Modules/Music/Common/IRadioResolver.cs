@@ -1,7 +1,6 @@
-﻿namespace NadekoBot.Modules.Music
+﻿namespace NadekoBot.Modules.Music;
+
+public interface IRadioResolver : IPlatformQueryResolver
 {
-    public interface IRadioResolver : IPlatformQueryResolver
-    {
         
-    }
 }

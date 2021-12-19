@@ -1,10 +1,9 @@
 ﻿using Discord;
 
-namespace NadekoBot.Services.Database.Models
+namespace NadekoBot.Services.Database.Models;
+
+public class RotatingPlayingStatus : DbEntity
 {
-    public class RotatingPlayingStatus : DbEntity
-    {
-        public string Status { get; set; }
-        public ActivityType Type { get; set; }
-    }
+    public string Status { get; set; }
+    public ActivityType Type { get; set; }
 }

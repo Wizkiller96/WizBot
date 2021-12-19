@@ -1,14 +1,11 @@
-﻿using System;
-using Discord.Commands;
+﻿using Discord.Commands;
 
-namespace NadekoBot.Common.Attributes
+namespace NadekoBot.Common.Attributes;
+
+[AttributeUsage(AttributeTargets.Class)]
+sealed class NadekoModuleAttribute : GroupAttribute
 {
-    [AttributeUsage(AttributeTargets.Class)]
-    sealed class NadekoModuleAttribute : GroupAttribute
+    public NadekoModuleAttribute(string moduleName) : base(moduleName)
     {
-        public NadekoModuleAttribute(string moduleName) : base(moduleName)
-        {
-        }
     }
 }
-
