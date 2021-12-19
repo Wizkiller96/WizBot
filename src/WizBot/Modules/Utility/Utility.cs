@@ -375,6 +375,40 @@ namespace WizBot.Modules.Utility
             await ctx.Channel.EmbedAsync(embed);
         }
 
+        [WizBotCommand, Aliases]
+        [RequireContext(ContextType.Guild)]
+        public Task ShowEmbed(ulong messageId)
+            => ShowEmbed((ITextChannel)ctx.Channel, messageId);
+        
+        [WizBotCommand, Aliases]
+        [RequireContext(ContextType.Guild)]
+        public async Task ShowEmbed(ITextChannel ch, ulong messageId)
+        {
+            var user = (IGuildUser)ctx.User;
+            var perms = user.GetPermissions(ch);
+            if (!perms.ReadMessageHistory || !perms.ViewChannel)
+            {
+                await ReplyErrorLocalizedAsync(strs.insuf_perms_u);
+                return;
+            }
+
+            var msg = await ch.GetMessageAsync(messageId);
+            if (msg is null)
+            {
+                await ReplyErrorLocalizedAsync(strs.msg_not_found);
+                return;
+            }
+
+            var embed = msg.Embeds.FirstOrDefault();
+            if (embed is null)
+            {
+                await ReplyErrorLocalizedAsync(strs.not_found);
+                return;
+            }
+
+            var json = SmartEmbedText.FromEmbed(embed, msg.Content).ToJson();
+            await SendConfirmAsync(Format.Sanitize(json).Replace("](", "]\\("));
+        }
 
         [WizBotCommand, Aliases]
         [RequireContext(ContextType.Guild)]
@@ -439,6 +473,8 @@ namespace WizBot.Modules.Utility
             }
         }
 
+        
+        
         [WizBotCommand, Aliases]
         public async Task Donators()
         {

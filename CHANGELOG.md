@@ -8,6 +8,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - `.remindl` and `.remindrm` commands now supports optional 'server' parameter for Administrators which allows them to delete any reminder created on the server
 - Added slots.currencyFontColor to gambling.yml
 - Added `.qexport` and `.qimport` commands which allow you to export and import quotes just like `.crsexport`
+- Added `.showembed <msgid>` and `.showembed #channel <msgid>` which will show you embed json from the specified message
 
 ### Changed
 - `.at` and `.atl` commands reworked

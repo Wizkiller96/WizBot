@@ -1271,6 +1271,8 @@ quotesexport:
 quotesimport:
   - quotesimport
   - qimport
+showembed:
+  - showembed
 feedback:
   - feedback
   - fb
