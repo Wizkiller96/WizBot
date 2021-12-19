@@ -19,6 +19,7 @@ using WizBot.Common.ModuleBehaviors;
 using WizBot.Common.Configs;
 using WizBot.Db;
 using WizBot.Modules.Administration.Services;
+using WizBot.Modules.Searches;
 using Serilog;
 
 namespace WizBot

@@ -1306,7 +1306,7 @@ poll:
 autotranslang:
   desc: "Sets your source and target language to be used with `{0}at`. Specify no parameters to remove previously set value."
   args:
-    - "en>fr"
+    - "en fr"
 autotranslate:
   desc: "Starts automatic translation of all messages by users who set their `{0}atl` in this channel. You can set \"del\" parameter to automatically delete all translated user messages."
   args:
