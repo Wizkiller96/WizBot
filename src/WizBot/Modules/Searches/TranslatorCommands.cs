@@ -12,7 +12,7 @@ namespace WizBot.Modules.Searches
         public class TranslateCommands : WizBotSubmodule<ITranslateService>
         {
             [WizBotCommand, Aliases]
-            public async Task Translate(string from, string to, [Leftover] string text = null)
+            public async Task Translate(string from, string to, [Leftover] string text)
             {
                 try
                 {
