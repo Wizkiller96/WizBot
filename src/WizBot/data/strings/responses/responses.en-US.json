@@ -450,7 +450,7 @@
   "atl_set": "Your auto-translate language has been set to {0}>{1}",
   "atl_started": "Started automatic translation of messages on this channel.",
   "atl_stopped": "Stopped automatic translation of messages on this channel.",
-  "atl_not_enabled": "Automatic translation is not enabled on this channel.",
+  "atl_not_enabled": "Automatic translation is not enabled on this channel or you've provided an invalid language.",
   "bad_input_format": "Bad input format, or something went wrong.",
   "card_not_found": "Couldn't find that card.",
   "catfact": "fact",
