@@ -99,8 +99,9 @@ namespace WizBot.Modules.Searches
                 }
 
                 await um.ReplyAsync(embed: embed
-                    .AddField(langs.To, output)
-                    .Build());
+                        .AddField(langs.To, output)
+                        .Build(),
+                    allowedMentions: AllowedMentions.None);
             }
         }
 
