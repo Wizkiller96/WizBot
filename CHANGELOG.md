@@ -4,6 +4,10 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+-
+
+## [3.0.11] - 19.12.2021
+
 ### Added
 - `.remindl` and `.remindrm` commands now supports optional 'server' parameter for Administrators which allows them to delete any reminder created on the server
 - Added slots.currencyFontColor to gambling.yml
