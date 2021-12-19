@@ -84,7 +84,7 @@ public partial class Gambling
 
                 var _ = Task.Run(async () =>
                 {
-                    bool success = false;
+                    var success = false;
                     if (int.TryParse(arg.Content, out var col))
                     {
                         success = await game.Input(arg.Author.Id, col).ConfigureAwait(false);
@@ -181,9 +181,9 @@ public partial class Gambling
                 game.CurrentPhase == Connect4Game.Phase.P2Move)
                 sb.AppendLine(GetText(strs.connect4_player_to_move(Format.Bold(game.CurrentPlayer.Username))));
 
-            for (int i = Connect4Game.NumberOfRows; i > 0; i--)
+            for (var i = Connect4Game.NumberOfRows; i > 0; i--)
             {
-                for (int j = 0; j < Connect4Game.NumberOfColumns; j++)
+                for (var j = 0; j < Connect4Game.NumberOfColumns; j++)
                 {
                     var cur = game.GameState[i + (j * Connect4Game.NumberOfRows) - 1];
 
@@ -197,7 +197,7 @@ public partial class Gambling
                 sb.AppendLine();
             }
 
-            for (int i = 0; i < Connect4Game.NumberOfColumns; i++)
+            for (var i = 0; i < Connect4Game.NumberOfColumns; i++)
             {
                 sb.Append(numbers[i]);
             }

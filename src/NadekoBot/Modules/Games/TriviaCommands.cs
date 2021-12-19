@@ -72,7 +72,7 @@ public partial class Games
         [RequireContext(ContextType.Guild)]
         public async Task Tl()
         {
-            if (_service.RunningTrivias.TryGetValue(ctx.Guild.Id, out TriviaGame trivia))
+            if (_service.RunningTrivias.TryGetValue(ctx.Guild.Id, out var trivia))
             {
                 await SendConfirmAsync(GetText(strs.leaderboard), trivia.GetLeaderboard()).ConfigureAwait(false);
                 return;
@@ -87,7 +87,7 @@ public partial class Games
         {
             var channel = (ITextChannel)ctx.Channel;
 
-            if (_service.RunningTrivias.TryGetValue(channel.Guild.Id, out TriviaGame trivia))
+            if (_service.RunningTrivias.TryGetValue(channel.Guild.Id, out var trivia))
             {
                 await trivia.StopGame().ConfigureAwait(false);
                 return;

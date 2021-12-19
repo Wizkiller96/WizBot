@@ -85,7 +85,7 @@ public sealed partial class MusicQueue : IMusicQueue
                 return Enqueue(trackInfo, queuer, out index);
             }
 
-            LinkedListNode<QueuedTrackInfo> currentNode = _tracks.First!;
+            var currentNode = _tracks.First!;
             int i;
             for (i = 1; i <= _index; i++)
             {

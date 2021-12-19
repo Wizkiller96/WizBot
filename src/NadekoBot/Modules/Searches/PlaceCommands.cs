@@ -36,7 +36,7 @@ public partial class Searches
         [NadekoCommand, Aliases]
         public async Task Place(PlaceType placeType, uint width = 0, uint height = 0)
         {
-            var url = "";
+            var url = string.Empty;
             switch (placeType)
             {
                 case PlaceType.Cage:

@@ -11,7 +11,7 @@ public static class PermissionExtensions
     {
         var perms = permsEnumerable as List<Permissionv2> ?? permsEnumerable.ToList();
 
-        for (int i = perms.Count - 1; i >= 0; i--)
+        for (var i = perms.Count - 1; i >= 0; i--)
         {
             var perm = perms[i];
 
@@ -68,7 +68,7 @@ public static class PermissionExtensions
 
     public static string GetCommand(this Permissionv2 perm, string prefix, SocketGuild guild = null)
     {
-        var com = "";
+        var com = string.Empty;
         switch (perm.PrimaryTarget)
         {
             case PrimaryPermissionType.User:

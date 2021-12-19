@@ -67,7 +67,7 @@ public class ReactionEvent : ICurrencyEvent
     private async void OnTimerTick(object state)
     {
         var potEmpty = PotEmptied;
-        List<ulong> toAward = new List<ulong>();
+        var toAward = new List<ulong>();
         while (_toAward.TryDequeue(out var x))
         {
             toAward.Add(x);

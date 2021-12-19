@@ -153,7 +153,7 @@ public sealed class LogCommandService : ILogCommandService
 
     public LogSetting GetGuildLogSettings(ulong guildId)
     {
-        GuildLogSettings.TryGetValue(guildId, out LogSetting logSetting);
+        GuildLogSettings.TryGetValue(guildId, out var logSetting);
         return logSetting;
     }
 
@@ -164,7 +164,7 @@ public sealed class LogCommandService : ILogCommandService
 
     public bool LogIgnore(ulong gid, ulong itemId, IgnoredItemType itemType)
     {
-        int removed = 0;
+        var removed = 0;
         using (var uow = _db.GetDbContext())
         {
             var logSetting = uow.LogSettingsFor(gid);
@@ -197,7 +197,7 @@ public sealed class LogCommandService : ILogCommandService
 
     private string CurrentTime(IGuild g)
     {
-        DateTime time = DateTime.UtcNow;
+        var time = DateTime.UtcNow;
         if (g != null)
             time = TimeZoneInfo.ConvertTime(time, _tz.GetTimeZoneOrUtc(g.Id));
 
@@ -243,7 +243,7 @@ public sealed class LogCommandService : ILogCommandService
 
                 var g = after.Guild;
 
-                if (!GuildLogSettings.TryGetValue(g.Id, out LogSetting logSetting)
+                if (!GuildLogSettings.TryGetValue(g.Id, out var logSetting)
                     || (logSetting.UserUpdatedId is null))
                     return;
 
@@ -375,7 +375,7 @@ public sealed class LogCommandService : ILogCommandService
                 if (beforeVch == afterVch)
                     return;
 
-                if (!GuildLogSettings.TryGetValue(usr.Guild.Id, out LogSetting logSetting)
+                if (!GuildLogSettings.TryGetValue(usr.Guild.Id, out var logSetting)
                     || (logSetting.LogVoicePresenceTTSId is null))
                     return;
 
@@ -384,7 +384,7 @@ public sealed class LogCommandService : ILogCommandService
                         .ConfigureAwait(false)) is null)
                     return;
 
-                var str = "";
+                var str = string.Empty;
                 if (beforeVch?.Guild == afterVch?.Guild)
                 {
                     str = GetText(logChannel.Guild, strs.log_vc_moved(usr.Username, beforeVch?.Name, afterVch?.Name));
@@ -415,7 +415,7 @@ public sealed class LogCommandService : ILogCommandService
         {
             try
             {
-                if (!GuildLogSettings.TryGetValue(usr.Guild.Id, out LogSetting logSetting)
+                if (!GuildLogSettings.TryGetValue(usr.Guild.Id, out var logSetting)
                     || (logSetting.UserMutedId is null))
                     return;
 
@@ -423,7 +423,7 @@ public sealed class LogCommandService : ILogCommandService
                 if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.UserMuted)
                         .ConfigureAwait(false)) is null)
                     return;
-                var mutes = "";
+                var mutes = string.Empty;
                 var mutedLocalized = GetText(logChannel.Guild, strs.muted_sn);
                 switch (muteType)
                 {
@@ -459,7 +459,7 @@ public sealed class LogCommandService : ILogCommandService
         {
             try
             {
-                if (!GuildLogSettings.TryGetValue(usr.Guild.Id, out LogSetting logSetting)
+                if (!GuildLogSettings.TryGetValue(usr.Guild.Id, out var logSetting)
                     || (logSetting.UserMutedId is null))
                     return;
 
@@ -468,7 +468,7 @@ public sealed class LogCommandService : ILogCommandService
                         .ConfigureAwait(false)) is null)
                     return;
 
-                var mutes = "";
+                var mutes = string.Empty;
                 var unmutedLocalized = GetText(logChannel.Guild, strs.unmuted_sn);
                 switch (muteType)
                 {
@@ -511,7 +511,7 @@ public sealed class LogCommandService : ILogCommandService
                 if (users.Length == 0)
                     return;
 
-                if (!GuildLogSettings.TryGetValue(users.First().Guild.Id, out LogSetting logSetting)
+                if (!GuildLogSettings.TryGetValue(users.First().Guild.Id, out var logSetting)
                     || (logSetting.LogOtherId is null))
                     return;
                 ITextChannel logChannel;
@@ -519,7 +519,7 @@ public sealed class LogCommandService : ILogCommandService
                         .ConfigureAwait(false)) is null)
                     return;
 
-                var punishment = "";
+                var punishment = string.Empty;
                 switch (action)
                 {
                     case PunishmentAction.Mute:
@@ -579,7 +579,7 @@ public sealed class LogCommandService : ILogCommandService
         {
             try
             {
-                if (!GuildLogSettings.TryGetValue(before.Guild.Id, out LogSetting logSetting)
+                if (!GuildLogSettings.TryGetValue(before.Guild.Id, out var logSetting)
                     || logSetting.LogIgnores.Any(ilc => ilc.LogItemId == after.Id && ilc.ItemType == IgnoredItemType.User))
                     return;
 
@@ -680,7 +680,7 @@ public sealed class LogCommandService : ILogCommandService
 
                 var after = (IGuildChannel) cafter;
 
-                if (!GuildLogSettings.TryGetValue(before.Guild.Id, out LogSetting logSetting)
+                if (!GuildLogSettings.TryGetValue(before.Guild.Id, out var logSetting)
                     || (logSetting.ChannelUpdatedId is null)
                     || logSetting.LogIgnores.Any(ilc => ilc.LogItemId == after.Id && ilc.ItemType == IgnoredItemType.Channel))
                     return;
@@ -731,7 +731,7 @@ public sealed class LogCommandService : ILogCommandService
                 if (!(ich is IGuildChannel ch))
                     return;
 
-                if (!GuildLogSettings.TryGetValue(ch.Guild.Id, out LogSetting logSetting)
+                if (!GuildLogSettings.TryGetValue(ch.Guild.Id, out var logSetting)
                     || (logSetting.ChannelDestroyedId is null)
                     || logSetting.LogIgnores.Any(ilc => ilc.LogItemId == ch.Id && ilc.ItemType == IgnoredItemType.Channel))
                     return;
@@ -771,7 +771,7 @@ public sealed class LogCommandService : ILogCommandService
                 if (!(ich is IGuildChannel ch))
                     return;
 
-                if (!GuildLogSettings.TryGetValue(ch.Guild.Id, out LogSetting logSetting)
+                if (!GuildLogSettings.TryGetValue(ch.Guild.Id, out var logSetting)
                     || logSetting.ChannelCreatedId is null)
                     return;
 
@@ -816,7 +816,7 @@ public sealed class LogCommandService : ILogCommandService
                 if (beforeVch == afterVch)
                     return;
 
-                if (!GuildLogSettings.TryGetValue(usr.Guild.Id, out LogSetting logSetting)
+                if (!GuildLogSettings.TryGetValue(usr.Guild.Id, out var logSetting)
                     || (logSetting.LogVoicePresenceId is null)
                     || logSetting.LogIgnores.Any(ilc => ilc.LogItemId == iusr.Id && ilc.ItemType == IgnoredItemType.User))
                     return;
@@ -869,7 +869,7 @@ public sealed class LogCommandService : ILogCommandService
         {
             try
             {
-                if (!GuildLogSettings.TryGetValue(usr.Guild.Id, out LogSetting logSetting)
+                if (!GuildLogSettings.TryGetValue(usr.Guild.Id, out var logSetting)
                     || (logSetting.UserLeftId is null)
                     || logSetting.LogIgnores.Any(ilc => ilc.LogItemId == usr.Id && ilc.ItemType == IgnoredItemType.User))
                     return;
@@ -904,7 +904,7 @@ public sealed class LogCommandService : ILogCommandService
         {
             try
             {
-                if (!GuildLogSettings.TryGetValue(usr.Guild.Id, out LogSetting logSetting)
+                if (!GuildLogSettings.TryGetValue(usr.Guild.Id, out var logSetting)
                     || (logSetting.UserJoinedId is null))
                     return;
 
@@ -945,7 +945,7 @@ public sealed class LogCommandService : ILogCommandService
         {
             try
             {
-                if (!GuildLogSettings.TryGetValue(guild.Id, out LogSetting logSetting)
+                if (!GuildLogSettings.TryGetValue(guild.Id, out var logSetting)
                     || (logSetting.UserUnbannedId is null)
                     || logSetting.LogIgnores.Any(ilc => ilc.LogItemId == usr.Id && ilc.ItemType == IgnoredItemType.User))
                     return;
@@ -980,7 +980,7 @@ public sealed class LogCommandService : ILogCommandService
         {
             try
             {
-                if (!GuildLogSettings.TryGetValue(guild.Id, out LogSetting logSetting)
+                if (!GuildLogSettings.TryGetValue(guild.Id, out var logSetting)
                     || (logSetting.UserBannedId is null)
                     || logSetting.LogIgnores.Any(ilc => ilc.LogItemId == usr.Id && ilc.ItemType == IgnoredItemType.User))
                     return;
@@ -1028,7 +1028,7 @@ public sealed class LogCommandService : ILogCommandService
                 if (!(ch is ITextChannel channel))
                     return;
 
-                if (!GuildLogSettings.TryGetValue(channel.Guild.Id, out LogSetting logSetting)
+                if (!GuildLogSettings.TryGetValue(channel.Guild.Id, out var logSetting)
                     || (logSetting.MessageDeletedId is null)
                     || logSetting.LogIgnores.Any(ilc => ilc.LogItemId == channel.Id && ilc.ItemType == IgnoredItemType.Channel))
                     return;
@@ -1086,7 +1086,7 @@ public sealed class LogCommandService : ILogCommandService
                 if (before.Author.IsBot)
                     return;
 
-                if (!GuildLogSettings.TryGetValue(channel.Guild.Id, out LogSetting logSetting)
+                if (!GuildLogSettings.TryGetValue(channel.Guild.Id, out var logSetting)
                     || (logSetting.MessageUpdatedId is null)
                     || logSetting.LogIgnores.Any(ilc => ilc.LogItemId == channel.Id && ilc.ItemType == IgnoredItemType.Channel))
                     return;

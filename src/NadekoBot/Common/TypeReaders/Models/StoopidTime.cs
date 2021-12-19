@@ -22,7 +22,7 @@ public class StoopidTime
             throw new ArgumentException("Invalid string input format.");
         }
 
-        string output = "";
+        var output = string.Empty;
         var namesAndValues = new Dictionary<string, int>();
 
         foreach (var groupName in _regex.GetGroupNames())

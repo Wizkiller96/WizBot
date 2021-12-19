@@ -136,14 +136,14 @@ public partial class Gambling
         {
             Match match;
             if ((match = fudgeRegex.Match(arg)).Length != 0 &&
-                int.TryParse(match.Groups["n1"].ToString(), out int n1) &&
+                int.TryParse(match.Groups["n1"].ToString(), out var n1) &&
                 n1 > 0 && n1 < 500)
             {
                 var rng = new NadekoRandom();
 
                 var rolls = new List<char>();
 
-                for (int i = 0; i < n1; i++)
+                for (var i = 0; i < n1; i++)
                 {
                     rolls.Add(_fateRolls[rng.Next(0, _fateRolls.Length)]);
                 }
@@ -158,16 +158,16 @@ public partial class Gambling
             {
                 var rng = new NadekoRandom();
                 if (int.TryParse(match.Groups["n1"].ToString(), out n1) &&
-                    int.TryParse(match.Groups["n2"].ToString(), out int n2) &&
+                    int.TryParse(match.Groups["n2"].ToString(), out var n2) &&
                     n1 <= 50 && n2 <= 100000 && n1 > 0 && n2 > 0)
                 {
-                    if (!int.TryParse(match.Groups["add"].Value, out int add))
+                    if (!int.TryParse(match.Groups["add"].Value, out var add))
                         add = 0;
-                    if (!int.TryParse(match.Groups["sub"].Value, out int sub))
+                    if (!int.TryParse(match.Groups["sub"].Value, out var sub))
                         sub = 0;
 
                     var arr = new int[n1];
-                    for (int i = 0; i < n1; i++)
+                    for (var i = 0; i < n1; i++)
                     {
                         arr[i] = rng.Next(1, n2 + 1);
                     }

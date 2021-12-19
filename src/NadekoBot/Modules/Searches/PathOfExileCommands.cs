@@ -85,7 +85,7 @@ public partial class Searches
                 {
                     var sb = new System.Text.StringBuilder();
                     sb.AppendLine($"```{"#",-5}{"Character Name",-23}{"League",-10}{"Class",-13}{"Level",-3}");
-                    for (int i = 0; i < tempList.Count; i++)
+                    for (var i = 0; i < tempList.Count; i++)
                     {
                         var character = tempList[i];
 
@@ -131,7 +131,7 @@ public partial class Searches
 
             var sb = new System.Text.StringBuilder();
             sb.AppendLine($"```{"#",-5}{"League Name",-23}");
-            for (int i = 0; i < leagues.Count; i++)
+            for (var i = 0; i < leagues.Count; i++)
             {
                 var league = leagues[i];
 
@@ -168,8 +168,8 @@ public partial class Searches
                 {
                     var obj = JObject.Parse(await http.GetStringAsync(res).ConfigureAwait(false));
 
-                    float chaosEquivalent = 0.0F;
-                    float conversionEquivalent = 0.0F;
+                    var chaosEquivalent = 0.0F;
+                    var conversionEquivalent = 0.0F;
 
                     //	poe.ninja API does not include a "chaosEquivalent" property for Chaos Orbs.
                     if (cleanCurrency == "Chaos Orb")

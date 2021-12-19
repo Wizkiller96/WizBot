@@ -332,7 +332,7 @@ public partial class Administration
         [OwnerOnly]
         public async Task Restart()
         {
-            bool success = _coord.RestartBot();
+            var success = _coord.RestartBot();
             if (!success)
             {
                 await ReplyErrorLocalizedAsync(strs.restart_fail).ConfigureAwait(false);

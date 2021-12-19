@@ -283,7 +283,7 @@ public class Help : NadekoModule<HelpService>
 
         if (com is null)
         {
-            IMessageChannel ch = channel is ITextChannel
+            var ch = channel is ITextChannel
                 ? await ((IGuildUser)ctx.User).GetOrCreateDMChannelAsync().ConfigureAwait(false)
                 : channel;
             try

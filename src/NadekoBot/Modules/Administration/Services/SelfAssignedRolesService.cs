@@ -131,7 +131,7 @@ public class SelfAssignedRolesService : INService
 
     public async Task<bool> SetNameAsync(ulong guildId, int group, string name)
     {
-        bool set = false;
+        var set = false;
         using (var uow = _db.GetDbContext())
         {
             var gc = uow.GuildConfigsForId(guildId, y => y.Include(x => x.SelfAssignableRoleGroupNames));

@@ -103,8 +103,8 @@ public static class Extensions
     // https://github.com/SixLabors/Samples/blob/master/ImageSharp/AvatarWithRoundedCorner/Program.cs
     public static IImageProcessingContext ApplyRoundedCorners(this IImageProcessingContext ctx, float cornerRadius)
     {
-        Size size = ctx.GetCurrentSize();
-        IPathCollection corners = BuildCorners(size.Width, size.Height, cornerRadius);
+        var size = ctx.GetCurrentSize();
+        var corners = BuildCorners(size.Width, size.Height, cornerRadius);
 
         ctx.SetGraphicsOptions(new GraphicsOptions()
         {
@@ -125,18 +125,18 @@ public static class Extensions
         var rect = new RectangularPolygon(-0.5f, -0.5f, cornerRadius, cornerRadius);
 
         // then cut out of the square a circle so we are left with a corner
-        IPath cornerTopLeft = rect.Clip(new EllipsePolygon(cornerRadius - 0.5f, cornerRadius - 0.5f, cornerRadius));
+        var cornerTopLeft = rect.Clip(new EllipsePolygon(cornerRadius - 0.5f, cornerRadius - 0.5f, cornerRadius));
 
         // corner is now a corner shape positions top left
         //lets make 3 more positioned correctly, we can do that by translating the original around the center of the image
 
-        float rightPos = imageWidth - cornerTopLeft.Bounds.Width + 1;
-        float bottomPos = imageHeight - cornerTopLeft.Bounds.Height + 1;
+        var rightPos = imageWidth - cornerTopLeft.Bounds.Width + 1;
+        var bottomPos = imageHeight - cornerTopLeft.Bounds.Height + 1;
 
         // move it across the width of the image - the width of the shape
-        IPath cornerTopRight = cornerTopLeft.RotateDegree(90).Translate(rightPos, 0);
-        IPath cornerBottomLeft = cornerTopLeft.RotateDegree(-90).Translate(0, bottomPos);
-        IPath cornerBottomRight = cornerTopLeft.RotateDegree(180).Translate(rightPos, bottomPos);
+        var cornerTopRight = cornerTopLeft.RotateDegree(90).Translate(rightPos, 0);
+        var cornerBottomLeft = cornerTopLeft.RotateDegree(-90).Translate(0, bottomPos);
+        var cornerBottomRight = cornerTopLeft.RotateDegree(180).Translate(rightPos, bottomPos);
 
         return new PathCollection(cornerTopLeft, cornerBottomLeft, cornerTopRight, cornerBottomRight);
     }

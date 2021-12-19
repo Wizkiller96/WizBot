@@ -83,7 +83,7 @@ public partial class Searches
                 return;
             }
 
-            List<FollowedStream> streams = new List<FollowedStream>();
+            var streams = new List<FollowedStream>();
             using (var uow = _db.GetDbContext())
             {
                 var all = uow

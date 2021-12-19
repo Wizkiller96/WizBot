@@ -84,7 +84,7 @@ public partial class Gambling
 #endif
         public async Task GenCurrency()
         {
-            bool enabled = _service.ToggleCurrencyGeneration(ctx.Guild.Id, ctx.Channel.Id);
+            var enabled = _service.ToggleCurrencyGeneration(ctx.Guild.Id, ctx.Channel.Id);
             if (enabled)
             {
                 await ReplyConfirmLocalizedAsync(strs.curgen_enabled).ConfigureAwait(false);

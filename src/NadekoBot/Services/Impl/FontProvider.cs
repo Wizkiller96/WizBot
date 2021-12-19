@@ -23,7 +23,7 @@ public class FontProvider : INService
         {
             try
             {
-                string fontsfolder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Fonts);
+                var fontsfolder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Fonts);
                 FallBackFonts.Add(_fonts.Install(Path.Combine(fontsfolder, "seguiemj.ttf")));
                 FallBackFonts.AddRange(_fonts.InstallCollection(Path.Combine(fontsfolder, "msgothic.ttc")));
                 FallBackFonts.AddRange(_fonts.InstallCollection(Path.Combine(fontsfolder, "segoe.ttc")));

@@ -89,7 +89,7 @@ public class IndexedCollection<T> : IList<T> where T : class, IIndexed
         {
             if (removed = Source.Remove(item))
             {
-                for (int i = 0; i < Source.Count; i++)
+                for (var i = 0; i < Source.Count; i++)
                 {
                     if (Source[i].Index != i)
                         Source[i].Index = i;
@@ -104,7 +104,7 @@ public class IndexedCollection<T> : IList<T> where T : class, IIndexed
         lock (_locker)
         {
             Source.Insert(index, item);
-            for (int i = index; i < Source.Count; i++)
+            for (var i = index; i < Source.Count; i++)
             {
                 Source[i].Index = i;
             }
@@ -116,7 +116,7 @@ public class IndexedCollection<T> : IList<T> where T : class, IIndexed
         lock (_locker)
         {
             Source.RemoveAt(index);
-            for (int i = index; i < Source.Count; i++)
+            for (var i = index; i < Source.Count; i++)
             {
                 Source[i].Index = i;
             }

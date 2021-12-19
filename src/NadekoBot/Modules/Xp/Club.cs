@@ -62,7 +62,7 @@ public partial class Xp
                 return;
             }
 
-            if (!_service.CreateClub(ctx.User, clubName, out ClubInfo club))
+            if (!_service.CreateClub(ctx.User, clubName, out var club))
             {
                 await ReplyErrorLocalizedAsync(strs.club_create_error).ConfigureAwait(false);
                 return;
@@ -109,7 +109,7 @@ public partial class Xp
                 return;
             }
 
-            if (!_service.GetClubByName(clubName, out ClubInfo club))
+            if (!_service.GetClubByName(clubName, out var club))
             {
                 await ReplyErrorLocalizedAsync(strs.club_not_exists).ConfigureAwait(false);
                 return;
@@ -226,7 +226,7 @@ public partial class Xp
             if (string.IsNullOrWhiteSpace(clubName))
                 return;
 
-            if (!_service.GetClubByName(clubName, out ClubInfo club))
+            if (!_service.GetClubByName(clubName, out var club))
             {
                 await ReplyErrorLocalizedAsync(strs.club_not_exists).ConfigureAwait(false);
                 return;
@@ -345,7 +345,7 @@ public partial class Xp
         [NadekoCommand, Aliases]
         public async Task ClubDisband()
         {
-            if (_service.Disband(ctx.User.Id, out ClubInfo club))
+            if (_service.Disband(ctx.User.Id, out var club))
             {
                 await ReplyConfirmLocalizedAsync(strs.club_disbanded(Format.Bold(club.ToString())));
             }

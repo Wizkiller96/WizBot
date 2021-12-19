@@ -92,7 +92,7 @@ public partial class Administration
             if (ctx.User.Id != guser.Guild.OwnerId && guser.GetRoles().Max(x => x.Position) <= role.Position)
                 return;
 
-            bool success = _service.RemoveSar(role.Guild.Id, role.Id);
+            var success = _service.RemoveSar(role.Guild.Id, role.Id);
             if (!success)
             {
                 await ReplyErrorLocalizedAsync(strs.self_assign_not).ConfigureAwait(false);
@@ -124,7 +124,7 @@ public partial class Administration
 
                 foreach (var kvp in roleGroups)
                 {
-                    var groupNameText = "";
+                    var groupNameText = string.Empty;
                     if (!groups.TryGetValue(kvp.Key, out var name))
                     {
                         groupNameText = Format.Bold(GetText(strs.self_assign_group(kvp.Key)));
@@ -168,7 +168,7 @@ public partial class Administration
         [BotPerm(GuildPerm.ManageRoles)]
         public async Task Togglexclsar()
         {
-            bool areExclusive = _service.ToggleEsar(ctx.Guild.Id);
+            var areExclusive = _service.ToggleEsar(ctx.Guild.Id);
             if (areExclusive)
                 await ReplyConfirmLocalizedAsync(strs.self_assign_excl).ConfigureAwait(false);
             else
@@ -184,7 +184,7 @@ public partial class Administration
             if (level < 0)
                 return;
 
-            bool succ = _service.SetLevelReq(ctx.Guild.Id, role, level);
+            var succ = _service.SetLevelReq(ctx.Guild.Id, role, level);
 
             if (!succ)
             {

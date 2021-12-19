@@ -105,7 +105,7 @@ public partial class Games
                 .OrderByDescending(x => x.votes)
                 .ToArray();
 
-            for (int i = 0; i < stats.Length; i++)
+            for (var i = 0; i < stats.Length; i++)
             {
                 var (Index, votes, Text) = stats[i];
                 sb.AppendLine(GetText(strs.poll_result(

@@ -156,7 +156,7 @@ public class MuteService : INService
     {
         try
         {
-            MutedUsers.TryGetValue(usr.Guild.Id, out ConcurrentHashSet<ulong> muted);
+            MutedUsers.TryGetValue(usr.Guild.Id, out var muted);
 
             if (muted is null || !muted.Contains(usr.Id))
                 return Task.CompletedTask;
@@ -198,7 +198,7 @@ public class MuteService : INService
                 {
                     UserId = usr.Id
                 });
-                if (MutedUsers.TryGetValue(usr.Guild.Id, out ConcurrentHashSet<ulong> muted))
+                if (MutedUsers.TryGetValue(usr.Guild.Id, out var muted))
                     muted.Add(usr.Id);
 
                 config.UnmuteTimers.RemoveWhere(x => x.UserId == usr.Id);
@@ -242,7 +242,7 @@ public class MuteService : INService
                 {
                     uow.Remove(toRemove);
                 }
-                if (MutedUsers.TryGetValue(guildId, out ConcurrentHashSet<ulong> muted))
+                if (MutedUsers.TryGetValue(guildId, out var muted))
                     muted.TryRemove(usrId);
 
                 config.UnmuteTimers.RemoveWhere(x => x.UserId == usrId);
@@ -442,10 +442,10 @@ public class MuteService : INService
 
     public void StopTimer(ulong guildId, ulong userId, TimerType type)
     {
-        if (!Un_Timers.TryGetValue(guildId, out ConcurrentDictionary<(ulong, TimerType), Timer> userTimer))
+        if (!Un_Timers.TryGetValue(guildId, out var userTimer))
             return;
 
-        if (userTimer.TryRemove((userId, type), out Timer removed))
+        if (userTimer.TryRemove((userId, type), out var removed))
         {
             removed.Change(Timeout.Infinite, Timeout.Infinite);
         }

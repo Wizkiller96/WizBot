@@ -261,7 +261,7 @@ public partial class Administration
             if (string.IsNullOrWhiteSpace(ignoredString))
                 ignoredString = "none";
 
-            string add = "";
+            var add = string.Empty;
             if (settings.MuteTime > 0)
             {
                 add = $" ({TimeSpan.FromMinutes(settings.MuteTime):hh\\hmm\\m})";

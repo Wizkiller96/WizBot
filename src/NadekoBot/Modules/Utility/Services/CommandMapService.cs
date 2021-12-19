@@ -67,7 +67,7 @@ public class CommandMapService : IInputTransformer, INService
 
         if (guild != null)
         {
-            if (AliasMaps.TryGetValue(guild.Id, out ConcurrentDictionary<string, string> maps))
+            if (AliasMaps.TryGetValue(guild.Id, out var maps))
             {
                 var keys = maps.Keys
                     .OrderByDescending(x => x.Length);

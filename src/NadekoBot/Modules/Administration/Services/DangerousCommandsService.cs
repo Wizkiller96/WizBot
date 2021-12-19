@@ -73,7 +73,7 @@ DELETE FROM Clubs;";
                 {
                     if (reader.HasRows)
                     {
-                        for (int i = 0; i < reader.FieldCount; i++)
+                        for (var i = 0; i < reader.FieldCount; i++)
                         {
                             result.ColumnNames.Add(reader.GetName(i));
                         }

@@ -197,7 +197,7 @@ public partial class Gambling : GamblingModule<GamblingService>
                 ((SocketGuild)ctx.Guild)?.GetUser(userId)?.ToString() ?? $"{userId}")))
             .WithOkColor();
 
-        var desc = "";
+        var desc = string.Empty;
         foreach (var tr in trs)
         {
             var type = tr.Amount > 0 ? "🔵" : "🔴";
@@ -517,7 +517,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
         var (opts, _) = OptionsParser.ParseFrom(new LbOpts(), args);
 
-        List<DiscordUser> cleanRichest = new List<DiscordUser>();
+        var cleanRichest = new List<DiscordUser>();
         // it's pointless to have clean on dm context
         if (ctx.Guild is null)
         {

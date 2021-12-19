@@ -46,14 +46,14 @@ namespace Ayu.Discord.Voice
         private IPEndPoint? _udpEp;
 
         public uint Ssrc { get; private set; }
-        public string Ip { get; private set; } = "";
+        public string Ip { get; private set; } = string.Empty;
         public int Port { get; private set; } = 0;
         public byte[] SecretKey { get; private set; } = Array.Empty<byte>();
-        public string Mode { get; private set; } = "";
+        public string Mode { get; private set; } = string.Empty;
         public ushort Sequence { get; set; }
         public uint NonceSequence { get; set; }
         public uint Timestamp { get; set; }
-        public string MyIp { get; private set; } = "";
+        public string MyIp { get; private set; } = string.Empty;
         public ushort MyPort { get; private set; }
         private bool shouldResume = false;
         
@@ -74,21 +74,21 @@ namespace Ayu.Discord.Voice
             //Log.Information("g: {GuildId} u: {UserId} sess: {Session} tok: {Token} ep: {Endpoint}",
             //    guildId, userId, session, token, endpoint);
 
-            this._websocketUrl = new Uri($"wss://{_endpoint.Replace(":80", "")}?v=4");
-            this._channel = Channel.CreateUnbounded<QueueItem>(new UnboundedChannelOptions
+            this._websocketUrl = new($"wss://{_endpoint.Replace(":80", "")}?v=4");
+            this._channel = Channel.CreateUnbounded<QueueItem>(new()
             {
                 SingleReader = true,
                 SingleWriter = false,
                 AllowSynchronousContinuations = false,
             });
 
-            ConnectingFinished = new TaskCompletionSource<bool>();
+            ConnectingFinished = new();
 
-            _rng = new Random();
+            _rng = new();
 
-            _ws = new SocketClient();
-            _udpClient = new UdpClient();
-            _stopCancellationSource = new CancellationTokenSource();
+            _ws = new();
+            _udpClient = new();
+            _stopCancellationSource = new();
             _stopCancellationToken = _stopCancellationSource.Token;
 
             _ws.PayloadReceived += _ws_PayloadReceived;
@@ -216,7 +216,7 @@ namespace Ayu.Discord.Voice
         private Task ResumeAsync()
         {
             shouldResume = false;
-            return SendCommandPayloadAsync(new VoicePayload
+            return SendCommandPayloadAsync(new()
             {
                 OpCode = VoiceOpCode.Resume,
                 Data = JToken.FromObject(new VoiceResume
@@ -234,7 +234,7 @@ namespace Ayu.Discord.Voice
 
             //Log.Information("Received ready {GuildId}, {Session}, {Token}", guildId, session, token);
 
-            _udpEp = new IPEndPoint(IPAddress.Parse(ready.Ip), ready.Port);
+            _udpEp = new(IPAddress.Parse(ready.Ip), ready.Port);
 
             var ssrcBytes = BitConverter.GetBytes(Ssrc);
             var ipDiscoveryData = new byte[70];
@@ -265,7 +265,7 @@ namespace Ayu.Discord.Voice
         private Task HandleHelloAsync(VoiceHello data)
         {
             _receivedAck = true;
-            _heartbeatTimer = new Timer(async _ =>
+            _heartbeatTimer = new(async _ =>
             {
                 await SendHeartbeatAsync();
             }, default, data.HeartbeatInterval, data.HeartbeatInterval);
@@ -279,7 +279,7 @@ namespace Ayu.Discord.Voice
         }
 
         private Task IdentifyAsync()
-            => SendCommandPayloadAsync(new VoicePayload
+            => SendCommandPayloadAsync(new()
             {
                 OpCode = VoiceOpCode.Identify,
                 Data = JToken.FromObject(new VoiceIdentify
@@ -292,13 +292,13 @@ namespace Ayu.Discord.Voice
             });
 
         private Task SelectProtocol()
-            => SendCommandPayloadAsync(new VoicePayload
+            => SendCommandPayloadAsync(new()
             {
                 OpCode = VoiceOpCode.SelectProtocol,
                 Data = JToken.FromObject(new SelectProtocol
                 {
                     Protocol = "udp",
-                    Data = new SelectProtocol.ProtocolData()
+                    Data = new()
                     {
                         Address = MyIp,
                         Port = MyPort,
@@ -319,7 +319,7 @@ namespace Ayu.Discord.Voice
             }
             
             _receivedAck = false;
-            await SendCommandPayloadAsync(new VoicePayload
+            await SendCommandPayloadAsync(new()
             {
                 OpCode = VoiceOpCode.Heartbeat,
                 Data = JToken.FromObject(_rng.Next())
@@ -327,7 +327,7 @@ namespace Ayu.Discord.Voice
         }
 
         public Task SendSpeakingAsync(VoiceSpeaking.State speaking)
-            => SendCommandPayloadAsync(new VoicePayload
+            => SendCommandPayloadAsync(new()
             {
                 OpCode = VoiceOpCode.Speaking,
                 Data = JToken.FromObject(new VoiceSpeaking

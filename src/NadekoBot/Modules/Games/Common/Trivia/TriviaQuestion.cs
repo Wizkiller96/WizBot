@@ -46,15 +46,15 @@ public class TriviaQuestion
             return true;
         }
 
-        int levDistanceClean = CleanAnswer.LevenshteinDistance(cleanGuess);
-        int levDistanceNormal = Answer.LevenshteinDistance(guess);
+        var levDistanceClean = CleanAnswer.LevenshteinDistance(cleanGuess);
+        var levDistanceNormal = Answer.LevenshteinDistance(guess);
         return JudgeGuess(CleanAnswer.Length, cleanGuess.Length, levDistanceClean)
                || JudgeGuess(Answer.Length, guess.Length, levDistanceNormal);
     }
 
     private static bool JudgeGuess(int guessLength, int answerLength, int levDistance)
     {
-        foreach (Tuple<int, int> level in strictness)
+        foreach (var level in strictness)
         {
             if (guessLength <= level.Item1 || answerLength <= level.Item1)
             {

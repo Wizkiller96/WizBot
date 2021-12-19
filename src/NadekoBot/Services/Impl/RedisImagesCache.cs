@@ -21,7 +21,7 @@ public sealed class RedisImagesCache : IImageCache, IReadyExecutor
     private IDatabase _db => _con.GetDatabase();
 
     private const string _basePath = "data/";
-    private const string _cardsPath = "data/images/cards";
+    private const string _cardsPath = $"{_basePath}images/cards";
 
     public ImageUrls ImageUrls { get; private set; }
 

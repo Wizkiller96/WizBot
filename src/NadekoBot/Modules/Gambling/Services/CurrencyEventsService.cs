@@ -31,8 +31,8 @@ public class CurrencyEventsService : INService
     public async Task<bool> TryCreateEventAsync(ulong guildId, ulong channelId, CurrencyEvent.Type type,
         EventOptions opts, Func<CurrencyEvent.Type, EventOptions, long, IEmbedBuilder> embed)
     {
-        SocketGuild g = _client.GetGuild(guildId);
-        SocketTextChannel ch = g?.GetChannel(channelId) as SocketTextChannel;
+        var g = _client.GetGuild(guildId);
+        var ch = g?.GetChannel(channelId) as SocketTextChannel;
         if (ch is null)
             return false;
 

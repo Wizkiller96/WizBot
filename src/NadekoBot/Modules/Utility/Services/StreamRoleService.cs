@@ -69,7 +69,7 @@ public class StreamRoleService : INService
     {
         userName.ThrowIfNull(nameof(userName));
 
-        bool success = false;
+        var success = false;
         using (var uow = _db.GetDbContext())
         {
             var streamRoleSettings = uow.GetStreamRoleSettings(guild.Id);

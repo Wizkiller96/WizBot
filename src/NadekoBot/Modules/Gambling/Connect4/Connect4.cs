@@ -79,7 +79,7 @@ public sealed class Connect4Game : IDisposable
         _cs = cs;
 
         _rng = new NadekoRandom();
-        for (int i = 0; i < NumberOfColumns * NumberOfRows; i++)
+        for (var i = 0; i < NumberOfColumns * NumberOfRows; i++)
         {
             _gameState[i] = Field.Empty;
         }
@@ -169,7 +169,7 @@ public sealed class Connect4Game : IDisposable
                 return false;
 
             var start = NumberOfRows * inputCol;
-            for (int i = start; i < start + NumberOfRows; i++)
+            for (var i = start; i < start + NumberOfRows; i++)
             {
                 if (_gameState[i] == Field.Empty)
                 {
@@ -181,12 +181,12 @@ public sealed class Connect4Game : IDisposable
             //check winnning condition
             // ok, i'll go from [0-2] in rows (and through all columns) and check upward if 4 are connected
 
-            for (int i = 0; i < NumberOfRows - 3; i++)
+            for (var i = 0; i < NumberOfRows - 3; i++)
             {
                 if (CurrentPhase == Phase.Ended)
                     break;
 
-                for (int j = 0; j < NumberOfColumns; j++)
+                for (var j = 0; j < NumberOfColumns; j++)
                 {
                     if (CurrentPhase == Phase.Ended)
                         break;
@@ -194,7 +194,7 @@ public sealed class Connect4Game : IDisposable
                     var first = _gameState[i + j * NumberOfRows];
                     if (first != Field.Empty)
                     {
-                        for (int k = 1; k < 4; k++)
+                        for (var k = 1; k < 4; k++)
                         {
                             var next = _gameState[i + k + j * NumberOfRows];
                             if (next == first)
@@ -211,12 +211,12 @@ public sealed class Connect4Game : IDisposable
             }
 
             // i'll go [0-1] in columns (and through all rows) and check to the right if 4 are connected
-            for (int i = 0; i < NumberOfColumns - 3; i++)
+            for (var i = 0; i < NumberOfColumns - 3; i++)
             {
                 if (CurrentPhase == Phase.Ended)
                     break;
 
-                for (int j = 0; j < NumberOfRows; j++)
+                for (var j = 0; j < NumberOfRows; j++)
                 {
                     if (CurrentPhase == Phase.Ended)
                         break;
@@ -224,7 +224,7 @@ public sealed class Connect4Game : IDisposable
                     var first = _gameState[j + i * NumberOfRows];
                     if (first != Field.Empty)
                     {
-                        for (int k = 1; k < 4; k++)
+                        for (var k = 1; k < 4; k++)
                         {
                             var next = _gameState[j + (i + k) * NumberOfRows];
                             if (next == first)
@@ -239,12 +239,12 @@ public sealed class Connect4Game : IDisposable
             }
 
             //need to check diagonal now
-            for (int col = 0; col < NumberOfColumns; col++)
+            for (var col = 0; col < NumberOfColumns; col++)
             {
                 if (CurrentPhase == Phase.Ended)
                     break;
 
-                for (int row = 0; row < NumberOfRows; row++)
+                for (var row = 0; row < NumberOfRows; row++)
                 {
                     if (CurrentPhase == Phase.Ended)
                         break;
@@ -256,7 +256,7 @@ public sealed class Connect4Game : IDisposable
                         var same = 1;
 
                         //top left
-                        for (int i = 1; i < 4; i++)
+                        for (var i = 1; i < 4; i++)
                         {
                             //while going top left, rows are increasing, columns are decreasing
                             var curRow = row + i;
@@ -283,7 +283,7 @@ public sealed class Connect4Game : IDisposable
                         same = 1;
 
                         //top right
-                        for (int i = 1; i < 4; i++)
+                        for (var i = 1; i < 4; i++)
                         {
                             //while going top right, rows are increasing, columns are increasing
                             var curRow = row + i;
@@ -361,7 +361,7 @@ public sealed class Connect4Game : IDisposable
     private bool IsColumnFull(int column)
     {
         var start = NumberOfRows * column;
-        for (int i = start; i < start + NumberOfRows; i++)
+        for (var i = start; i < start + NumberOfRows; i++)
         {
             if (_gameState[i] == Field.Empty)
                 return false;

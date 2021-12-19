@@ -75,7 +75,7 @@ public partial class Searches : NadekoModule<SearchesService>
         }
         else
         {
-            Func<double, double> f = StandardConversions.CelsiusToFahrenheit;
+            var f = StandardConversions.CelsiusToFahrenheit;
                 
             var tz = ctx.Guild is null
                 ? TimeZoneInfo.Utc
@@ -616,7 +616,7 @@ public partial class Searches : NadekoModule<SearchesService>
 
         using (var img = new Image<Rgba32>(colorObjects.Length * 50, 50))
         {
-            for (int i = 0; i < colorObjects.Length; i++)
+            for (var i = 0; i < colorObjects.Length; i++)
             {
                 var x = i * 50;
                 img.Mutate(m => m.FillPolygon(colorObjects[i], new PointF[] {

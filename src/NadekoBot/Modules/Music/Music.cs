@@ -280,7 +280,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
             
         IEmbedBuilder printAction(int curPage)
         {
-            string desc = string.Empty;
+            var desc = string.Empty;
             var current = mp.GetCurrentTrack(out var currentIndex);
             if (current is not null)
             {
@@ -288,7 +288,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
             }
 
             var repeatType = mp.Repeat;
-            var add = "";
+            var add = string.Empty;
             if (mp.IsStopped)
                 add += Format.Bold(GetText(strs.queue_stopped(Format.Code(Prefix + "play")))) + "\n";
             // var mps = mp.MaxPlaytimeSeconds;

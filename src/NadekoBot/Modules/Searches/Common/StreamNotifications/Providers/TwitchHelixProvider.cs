@@ -35,8 +35,8 @@
 //             if (_token != default && (DateTime.UtcNow - _token.Expiry) > TimeSpan.FromHours(1))
 //                 return;
 //
-//             const string clientId = "";
-//             const string clientSecret = "";
+//             const string clientId = string.Empty;
+//             const string clientSecret = string.Empty;
 //             
 //             var client = _httpClientFactory.CreateClient();
 //             var res = await client.PostAsync("https://id.twitch.tv/oauth2/token" +

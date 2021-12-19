@@ -69,7 +69,7 @@ public class ReplacementBuilder
         _reps.TryAdd("%members%", () => g != null && g is SocketGuild sg ? sg.MemberCount.ToString() : "?");
         _reps.TryAdd("%server_time%", () =>
         {
-            TimeZoneInfo to = TimeZoneInfo.Local;
+            var to = TimeZoneInfo.Local;
             if (g != null)
             {
                 if (GuildTimezoneService.AllServices.TryGetValue(client.CurrentUser.Id, out var tz))
@@ -88,7 +88,7 @@ public class ReplacementBuilder
         _reps.TryAdd("%server.boost_level%", () => ((int)g.PremiumTier).ToString());
         _reps.TryAdd("%server.time%", () =>
         {
-            TimeZoneInfo to = TimeZoneInfo.Local;
+            var to = TimeZoneInfo.Local;
             if (g != null)
             {
                 if (GuildTimezoneService.AllServices.TryGetValue(client.CurrentUser.Id, out var tz))

@@ -59,7 +59,7 @@ public partial class Gambling
                 var embed = _eb.Create().WithOkColor()
                     .WithTitle(GetText(strs.shop));
 
-                for (int i = 0; i < theseEntries.Length; i++)
+                for (var i = 0; i < theseEntries.Length; i++)
                 {
                     var entry = theseEntries[i];
                     embed.AddField(
@@ -292,8 +292,8 @@ public partial class Gambling
                 Text = itemText
             };
             ShopEntry entry;
-            bool rightType = false;
-            bool added = false;
+            var rightType = false;
+            var added = false;
             using (var uow = _db.GetDbContext())
             {
                 var entries = new IndexedCollection<ShopEntry>(uow.GuildConfigsForId(ctx.Guild.Id,

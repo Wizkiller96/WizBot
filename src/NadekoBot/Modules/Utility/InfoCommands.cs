@@ -133,9 +133,9 @@ public partial class Utility
             if (page < 0)
                 return;
 
-            int startCount = page * activityPerPage;
+            var startCount = page * activityPerPage;
 
-            StringBuilder str = new StringBuilder();
+            var str = new StringBuilder();
             foreach (var kvp in CmdHandler.UserMessagesSent.OrderByDescending(kvp => kvp.Value).Skip(page * activityPerPage).Take(activityPerPage))
             {
                 str.AppendLine(GetText(strs.activity_line(

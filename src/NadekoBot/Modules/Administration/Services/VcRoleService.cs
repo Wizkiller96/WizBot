@@ -194,10 +194,10 @@ public class VcRoleService : INService
                     ulong guildId;
                     guildId = newVc?.Guild.Id ?? oldVc.Guild.Id;
 
-                    if (VcRoles.TryGetValue(guildId, out ConcurrentDictionary<ulong, IRole> guildVcRoles))
+                    if (VcRoles.TryGetValue(guildId, out var guildVcRoles))
                     {
                         //remove old
-                        if (oldVc != null && guildVcRoles.TryGetValue(oldVc.Id, out IRole role))
+                        if (oldVc != null && guildVcRoles.TryGetValue(oldVc.Id, out var role))
                         {
                             Assign(false, gusr, role);
                         }

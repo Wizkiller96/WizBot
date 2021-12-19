@@ -199,7 +199,7 @@ public class CustomReactions : NadekoModule<CustomReactionsService>
             return;
         }
 
-        List<string> succ = new List<string>();
+        var succ = new List<string>();
         foreach (var emojiStr in emojiStrs)
         {
 

@@ -18,7 +18,7 @@ public class SoundCloudApiService : INService
         if (string.IsNullOrWhiteSpace(url))
             throw new ArgumentNullException(nameof(url));
 
-        string response = "";
+        var response = string.Empty;
 
         using (var http = _httpFactory.CreateClient())
         {
@@ -37,7 +37,7 @@ public class SoundCloudApiService : INService
         if (string.IsNullOrWhiteSpace(query))
             throw new ArgumentNullException(nameof(query));
 
-        var response = "";
+        var response = string.Empty;
         using (var http = _httpFactory.CreateClient())
         {
             response = await http.GetStringAsync(new Uri($"https://scapi.nadeko.bot/tracks?q={Uri.EscapeDataString(query)}")).ConfigureAwait(false);
@@ -55,17 +55,17 @@ public class SoundCloudApiService : INService
 
 public class SoundCloudVideo
 {
-    public string Kind { get; set; } = "";
+    public string Kind { get; set; } = string.Empty;
     public long Id { get; set; } = 0;
     public SoundCloudUser User { get; set; } = new SoundCloudUser();
-    public string Title { get; set; } = "";
+    public string Title { get; set; } = string.Empty;
     public string FullName => User.Name + " - " + Title;
     public bool? Streamable { get; set; } = false;
     public int Duration { get; set; }
     [JsonProperty("permalink_url")]
-    public string TrackLink { get; set; } = "";
+    public string TrackLink { get; set; } = string.Empty;
     [JsonProperty("artwork_url")]
-    public string ArtworkUrl { get; set; } = "";
+    public string ArtworkUrl { get; set; } = string.Empty;
 }
     
 public class SoundCloudUser

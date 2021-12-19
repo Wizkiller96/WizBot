@@ -72,7 +72,7 @@ public class FeedsService : INService
                         .Reverse() // start from the oldest
                         .ToList();
 
-                    if (!_lastPosts.TryGetValue(kvp.Key, out DateTime lastFeedUpdate))
+                    if (!_lastPosts.TryGetValue(kvp.Key, out var lastFeedUpdate))
                     {
                         lastFeedUpdate = _lastPosts[kvp.Key] =
                             items.Any() ? items[items.Count - 1].LastUpdate : DateTime.UtcNow;

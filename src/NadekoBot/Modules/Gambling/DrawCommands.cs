@@ -31,7 +31,7 @@ public partial class Gambling
             if (num < 1 || num > 10)
                 throw new ArgumentOutOfRangeException(nameof(num));
 
-            Deck cards = guildId is null ? new Deck() : _allDecks.GetOrAdd(ctx.Guild, (s) => new Deck());
+            var cards = guildId is null ? new Deck() : _allDecks.GetOrAdd(ctx.Guild, (s) => new Deck());
             var images = new List<Image<Rgba32>>();
             var cardObjects = new List<Deck.Card>();
             for (var i = 0; i < num; i++)

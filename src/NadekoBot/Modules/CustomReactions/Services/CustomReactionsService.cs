@@ -403,7 +403,7 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
             {
                 var pc = _perms.GetCacheFor(guild.Id);
                 if (!pc.Permissions.CheckPermissions(msg, cr.Trigger, "ActualCustomReactions",
-                        out int index))
+                        out var index))
                 {
                     if (pc.Verbose)
                     {

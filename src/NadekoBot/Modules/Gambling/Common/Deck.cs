@@ -58,7 +58,7 @@ public class Deck
         {
             get
             {
-                var str = "";
+                var str = string.Empty;
 
                 if (Number <= 10 && Number > 1)
                 {
@@ -106,7 +106,7 @@ public class Deck
 
         public string GetEmojiString()
         {
-            var str = "";
+            var str = string.Empty;
 
             str += _regIndicators[this.Number - 1];
             str += _suitToSuitChar[this.Suit];

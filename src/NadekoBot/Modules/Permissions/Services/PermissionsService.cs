@@ -119,8 +119,8 @@ public class PermissionService : ILateBlocker, INService
         {
             var resetCommand = commandName == "resetperms";
 
-            PermissionCache pc = GetCacheFor(guild.Id);
-            if (!resetCommand && !pc.Permissions.CheckPermissions(msg, commandName, moduleName, out int index))
+            var pc = GetCacheFor(guild.Id);
+            if (!resetCommand && !pc.Permissions.CheckPermissions(msg, commandName, moduleName, out var index))
             {
                 if (pc.Verbose)
                 {

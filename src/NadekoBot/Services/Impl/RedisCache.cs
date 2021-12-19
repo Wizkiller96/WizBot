@@ -174,7 +174,7 @@ public class RedisCache : IDataCache
     {
         var _db = Redis.GetDatabase();
 
-        RedisValue data = await _db.StringGetAsync(key).ConfigureAwait(false);
+        var data = await _db.StringGetAsync(key).ConfigureAwait(false);
         if (!data.HasValue)
         {
             var obj = await factory(param).ConfigureAwait(false);

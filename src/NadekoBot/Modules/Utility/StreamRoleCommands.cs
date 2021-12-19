@@ -39,7 +39,7 @@ public partial class Utility
         [RequireContext(ContextType.Guild)]
         public async Task StreamRoleKeyword([Leftover]string keyword = null)
         {
-            string kw = await this._service.SetKeyword(ctx.Guild, keyword).ConfigureAwait(false);
+            var kw = await this._service.SetKeyword(ctx.Guild, keyword).ConfigureAwait(false);
                 
             if(string.IsNullOrWhiteSpace(keyword))
                 await ReplyConfirmLocalizedAsync(strs.stream_role_kw_reset).ConfigureAwait(false);

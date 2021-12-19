@@ -151,7 +151,7 @@ public class GoogleApiService : IGoogleApiService, INService
 
         string nextPageToken = null;
 
-        List<string> toReturn = new List<string>(count);
+        var toReturn = new List<string>(count);
 
         do
         {
@@ -178,7 +178,7 @@ public class GoogleApiService : IGoogleApiService, INService
         await Task.Yield();
         var videoIdsList = videoIds as List<string> ?? videoIds.ToList();
 
-        Dictionary<string, TimeSpan> toReturn = new Dictionary<string, TimeSpan>();
+        var toReturn = new Dictionary<string, TimeSpan>();
 
         if (!videoIdsList.Any())
             return toReturn;

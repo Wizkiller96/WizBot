@@ -9,7 +9,7 @@ public class ClubInfo : DbEntity
     public string Name { get; set; }
     public int Discrim { get; set; }
 
-    public string ImageUrl { get; set; } = "";
+    public string ImageUrl { get; set; } = string.Empty;
     public int MinimumLevelReq { get; set; } = 5;
     public int Xp { get; set; } = 0;
         

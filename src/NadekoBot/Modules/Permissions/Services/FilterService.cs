@@ -33,7 +33,7 @@ public sealed class FilterService : IEarlyBehavior
 
     public ConcurrentHashSet<string> FilteredWordsForChannel(ulong channelId, ulong guildId)
     {
-        ConcurrentHashSet<string> words = new ConcurrentHashSet<string>();
+        var words = new ConcurrentHashSet<string>();
         if (WordFilteringChannels.Contains(channelId))
             ServerFilteredWords.TryGetValue(guildId, out words);
         return words;

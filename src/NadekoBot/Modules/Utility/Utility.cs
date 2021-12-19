@@ -81,7 +81,7 @@ public partial class Utility : NadekoModule
             .Take(60)
             .ToArray()).ConfigureAwait(false);
 
-        int i = 0;
+        var i = 0;
         if (arr.Length == 0)
             await ReplyErrorLocalizedAsync(strs.nobody_playing_game).ConfigureAwait(false);
         else
@@ -140,7 +140,7 @@ public partial class Utility : NadekoModule
     [RequireContext(ContextType.Guild)]
     public async Task CheckPerms(MeOrBot who = MeOrBot.Me)
     {
-        StringBuilder builder = new StringBuilder();
+        var builder = new StringBuilder();
         var user = who == MeOrBot.Me
             ? (IGuildUser)ctx.User
             : ((SocketGuild)ctx.Guild).CurrentUser;

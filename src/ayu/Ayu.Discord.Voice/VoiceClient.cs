@@ -37,7 +37,7 @@ namespace Ayu.Discord.Voice
             this.channels = (int) channels;
             this.bitDepth = (int) bitDepthEnum;
 
-            this.Encoder = new LibOpusEncoder(this.sampleRate, this.channels, this.bitRate, this.frameDelay);
+            this.Encoder = new(this.sampleRate, this.channels, this.bitRate, this.frameDelay);
 
             Encode = bitDepthEnum switch
             {

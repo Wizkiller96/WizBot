@@ -20,7 +20,7 @@ public class WaifuInfo : DbEntity
     public override string ToString()
     {
         var claimer = "no one";
-        var status = "";
+        var status = string.Empty;
 
         var waifuUsername = Waifu.Username.TrimTo(20);
         var claimerUsername = Claimer?.Username.TrimTo(20);
@@ -61,7 +61,7 @@ public class WaifuLbResult
     public override string ToString()
     {
         var claimer = "no one";
-        var status = "";
+        var status = string.Empty;
 
         var waifuUsername = Username.TrimTo(20);
         var claimerUsername = Claimer?.TrimTo(20);

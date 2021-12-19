@@ -339,7 +339,7 @@ public partial class Xp : NadekoModule<XpService>
         await ctx.Channel.TriggerTypingAsync();
 
         var socketGuild = ((SocketGuild)ctx.Guild);
-        List<UserXpStats> allUsers = new List<UserXpStats>();
+        var allUsers = new List<UserXpStats>();
         if (opts.Clean)
         {
             await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
@@ -370,14 +370,14 @@ public partial class Xp : NadekoModule<XpService>
                 return embed.WithDescription("-");
             else
             {
-                for (int i = 0; i < users.Count; i++)
+                for (var i = 0; i < users.Count; i++)
                 {
                     var levelStats = new LevelStats(users[i].Xp + users[i].AwardedXp);
                     var user = ((SocketGuild)ctx.Guild).GetUser(users[i].UserId);
 
                     var userXpData = users[i];
 
-                    var awardStr = "";
+                    var awardStr = string.Empty;
                     if (userXpData.AwardedXp > 0)
                         awardStr = $"(+{userXpData.AwardedXp})";
                     else if (userXpData.AwardedXp < 0)
@@ -408,7 +408,7 @@ public partial class Xp : NadekoModule<XpService>
             embed.WithDescription("-");
         else
         {
-            for (int i = 0; i < users.Length; i++)
+            for (var i = 0; i < users.Length; i++)
             {
                 var user = users[i];
                 embed.AddField(

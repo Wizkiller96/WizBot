@@ -33,7 +33,7 @@ public class PollRunner
                 return false;
 
             // has to be an integer
-            if (!int.TryParse(msg.Content, out int vote))
+            if (!int.TryParse(msg.Content, out var vote))
                 return false;
             --vote;
             if (vote < 0 || vote >= Poll.Answers.Count)

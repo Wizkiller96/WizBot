@@ -60,7 +60,7 @@ public class ChatterBotService : IEarlyBehavior
         if (channel is null)
             return null;
 
-        if (!ChatterBotGuilds.TryGetValue(channel.Guild.Id, out Lazy<IChatterBotSession> lazyCleverbot))
+        if (!ChatterBotGuilds.TryGetValue(channel.Guild.Id, out var lazyCleverbot))
             return null;
 
         cleverbot = lazyCleverbot.Value;
@@ -107,7 +107,7 @@ public class ChatterBotService : IEarlyBehavior
             return false;
         try
         {
-            var message = PrepareMessage(usrMsg, out IChatterBotSession cbs);
+            var message = PrepareMessage(usrMsg, out var cbs);
             if (message is null || cbs is null)
                 return false;
 
@@ -115,7 +115,7 @@ public class ChatterBotService : IEarlyBehavior
             if (!pc.Permissions.CheckPermissions(usrMsg,
                     "cleverbot",
                     "Games".ToLowerInvariant(),
-                    out int index))
+                    out var index))
             {
                 if (pc.Verbose)
                 {

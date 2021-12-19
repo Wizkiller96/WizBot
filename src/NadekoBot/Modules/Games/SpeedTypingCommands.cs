@@ -48,7 +48,7 @@ public partial class Games
         [RequireContext(ContextType.Guild)]
         public async Task TypeStop()
         {
-            if (_service.RunningContests.TryRemove(ctx.Guild.Id, out TypingGame game))
+            if (_service.RunningContests.TryRemove(ctx.Guild.Id, out var game))
             {
                 await game.Stop().ConfigureAwait(false);
                 return;

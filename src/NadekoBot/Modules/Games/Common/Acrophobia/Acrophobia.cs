@@ -106,7 +106,7 @@ public sealed class AcrophobiaGame : IDisposable
 
         var lettersArr = new char[wordCount];
 
-        for (int i = 0; i < wordCount; i++)
+        for (var i = 0; i < wordCount; i++)
         {
             var randChar = (char)_rng.Next(65, 91);
             lettersArr[i] = randChar == 'X' ? (char)_rng.Next(65, 88) : randChar;
@@ -160,7 +160,7 @@ public sealed class AcrophobiaGame : IDisposable
         if (inputWords.Length != StartingLetters.Length) // number of words must be the same as the number of the starting letters
             return false;
 
-        for (int i = 0; i < StartingLetters.Length; i++)
+        for (var i = 0; i < StartingLetters.Length; i++)
         {
             var letter = StartingLetters[i];
 

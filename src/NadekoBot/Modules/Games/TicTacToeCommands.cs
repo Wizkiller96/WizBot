@@ -34,7 +34,7 @@ public partial class Games
             await _sem.WaitAsync(1000).ConfigureAwait(false);
             try
             {
-                if (_service.TicTacToeGames.TryGetValue(channel.Id, out TicTacToe game))
+                if (_service.TicTacToeGames.TryGetValue(channel.Id, out var game))
                 {
                     var _ = Task.Run(async () =>
                     {

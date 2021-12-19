@@ -58,7 +58,7 @@ public class UserPunishService : INService
             Weight = weight,
         };
 
-        int warnings = 1;
+        var warnings = 1;
         List<WarningPunishment> ps;
         using (var uow = _db.GetDbContext())
         {
@@ -299,7 +299,7 @@ WHERE GuildId={guildId}
 
     public async Task<bool> WarnClearAsync(ulong guildId, ulong userId, int index, string moderator)
     {
-        bool toReturn = true;
+        var toReturn = true;
         using (var uow = _db.GetDbContext())
         {
             if (index == 0)

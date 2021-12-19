@@ -250,7 +250,7 @@ public class TicTacToe
 
                         _phase = Phase.Ended;
                     }
-                    var reason = "";
+                    var reason = string.Empty;
 
                     if (_phase == Phase.Ended) // if user won, stop receiving moves
                     {

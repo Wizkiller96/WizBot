@@ -66,7 +66,7 @@ public partial class Administration
         {
             var guild = (SocketGuild)ctx.Guild;
             string text;
-            if (_service.VcRoles.TryGetValue(ctx.Guild.Id, out ConcurrentDictionary<ulong, IRole> roles))
+            if (_service.VcRoles.TryGetValue(ctx.Guild.Id, out var roles))
             {
                 if (!roles.Any())
                 {

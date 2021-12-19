@@ -106,7 +106,7 @@ public sealed class MusicPlayer : IMusicPlayer
         {
             // wait until a song is available in the queue
             // or until the queue is resumed
-            var track = _queue.GetCurrent(out int index);
+            var track = _queue.GetCurrent(out var index);
                 
             if (track is null || IsStopped)
             {

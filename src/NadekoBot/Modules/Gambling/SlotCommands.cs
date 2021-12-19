@@ -122,7 +122,7 @@ public partial class Gambling
                 return;
             //multi vs how many times it occured
             var dict = new Dictionary<int, int>();
-            for (int i = 0; i < tests; i++)
+            for (var i = 0; i < tests; i++)
             {
                 var res = SlotMachine.Pull();
                 if (dict.ContainsKey(res.Multiplier))
@@ -133,7 +133,7 @@ public partial class Gambling
 
             var sb = new StringBuilder();
             const int bet = 1;
-            int payout = 0;
+            var payout = 0;
             foreach (var key in dict.Keys.OrderByDescending(x => x))
             {
                 sb.AppendLine($"x{key} occured {dict[key]} times. {dict[key] * 1.0f / tests * 100}%");

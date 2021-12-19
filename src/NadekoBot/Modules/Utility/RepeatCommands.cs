@@ -187,7 +187,7 @@ public partial class Utility
             var executesInString = Format.Bold(executesIn.ToPrettyStringHM());
             var message = Format.Sanitize(runner.Repeater.Message.TrimTo(50));
             
-            string description = "";
+            var description = string.Empty;
             if (_service.IsNoRedundant(runner.Repeater.Id))
             {
                 description = Format.Underline(Format.Bold(GetText(strs.no_redundant))) + "\n\n";

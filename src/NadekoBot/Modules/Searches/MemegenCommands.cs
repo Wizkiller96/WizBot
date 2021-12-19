@@ -55,7 +55,7 @@ public partial class Searches
 
                 await ctx.SendPaginatedConfirmAsync(page, curPage =>
                 {
-                    var templates = "";
+                    var templates = string.Empty;
                     foreach (var template in data.Skip(curPage * 15).Take(15))
                     {
                         templates += $"**{template.Name}:**\n key: `{template.Id}`\n";

@@ -22,7 +22,7 @@ namespace Ayu.Discord.Gateway
             var bufferWriter = new ArrayBufferWriter<byte>(CHUNK_SIZE);
             try
             {
-                using (_ws = new ClientWebSocket())
+                using (_ws = new())
                 {
                     await _ws.ConnectAsync(url, cancel).ConfigureAwait(false);
                     // WebsocketConnected!.Invoke(this);
@@ -94,10 +94,10 @@ namespace Ayu.Discord.Gateway
                 var ws = _ws;
                 if (ws is null)
                     throw new WebSocketException("Websocket is disconnected.");
-                for (int i = 0; i < data.Length; i += 4096)
+                for (var i = 0; i < data.Length; i += 4096)
                 {
                     var count = i + 4096 > data.Length ? data.Length - i : 4096;
-                    await ws.SendAsync(new ArraySegment<byte>(data, i, count),
+                    await ws.SendAsync(new(data, i, count),
                         WebSocketMessageType.Text,
                         i + count >= data.Length,
                         CancellationToken.None).ConfigureAwait(false);
@@ -115,7 +115,7 @@ namespace Ayu.Discord.Gateway
             if (ws is null)
                 throw new WebSocketException("Websocket is disconnected.");
 
-            await ws.SendAsync(new ArraySegment<byte>(data, 0, data.Length),
+            await ws.SendAsync(new(data, 0, data.Length),
                 WebSocketMessageType.Binary,
                 true,
                 CancellationToken.None).ConfigureAwait(false);

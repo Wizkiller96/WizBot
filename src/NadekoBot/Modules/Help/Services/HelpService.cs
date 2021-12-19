@@ -135,7 +135,7 @@ public class HelpService : ILateExecutor, INService
         var userPerm = (UserPermAttribute)cmd.Preconditions
             .FirstOrDefault(ca => ca is UserPermAttribute);
 
-        string userPermString = string.Empty;
+        var userPermString = string.Empty;
         if (userPerm is not null)
         {
             if (userPerm.UserPermissionAttribute.ChannelPermission is ChannelPermission cPerm)

@@ -77,7 +77,7 @@ public class SearchesService : INService
 
     public async Task<Stream> GetRipPictureAsync(string text, Uri imgUrl)
     {
-        byte[] data = await _cache.GetOrAddCachedDataAsync($"nadeko_rip_{text}_{imgUrl}",
+        var data = await _cache.GetOrAddCachedDataAsync($"nadeko_rip_{text}_{imgUrl}",
             GetRipPictureFactory,
             (text, imgUrl),
             TimeSpan.FromDays(1)).ConfigureAwait(false);
@@ -388,7 +388,7 @@ public class SearchesService : INService
                 return new MtgData[0];
 
             var tasks = new List<Task<MtgData>>(cards.Length);
-            for (int i = 0; i < cards.Length; i++)
+            for (var i = 0; i < cards.Length; i++)
             {
                 var card = cards[i];
 
