@@ -11,11 +11,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using WizBot.Common.Replacements;
 using WizBot.Services;
 using Serilog;
+using SystemTextJsonSamples;
+using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
 namespace WizBot.Modules.Utility
 {
@@ -380,6 +383,13 @@ namespace WizBot.Modules.Utility
         public Task ShowEmbed(ulong messageId)
             => ShowEmbed((ITextChannel)ctx.Channel, messageId);
         
+        private static readonly JsonSerializerOptions _showEmbedSerializerOptions = new JsonSerializerOptions()
+        {
+            WriteIndented = true,
+            IgnoreNullValues = true,
+            PropertyNamingPolicy = LowerCaseNamingPolicy.Default
+        };
+
         [WizBotCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task ShowEmbed(ITextChannel ch, ulong messageId)
@@ -406,7 +416,7 @@ namespace WizBot.Modules.Utility
                 return;
             }
 
-            var json = SmartEmbedText.FromEmbed(embed, msg.Content).ToJson();
+            var json = SmartEmbedText.FromEmbed(embed, msg.Content).ToJson(_showEmbedSerializerOptions);
             await SendConfirmAsync(Format.Sanitize(json).Replace("](", "]\\("));
         }
 
