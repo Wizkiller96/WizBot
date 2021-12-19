@@ -278,7 +278,7 @@ namespace WizBot.Modules.Xp
             }
             else
             {
-                await ReplyConfirmLocalizedAsync(strs.excluded(Format.Bold(channel.ToString())));
+                await ReplyConfirmLocalizedAsync(strs.not_excluded(Format.Bold(channel.ToString())));
             }
         }
 
