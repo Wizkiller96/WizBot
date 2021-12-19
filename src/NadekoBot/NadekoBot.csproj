@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <LangVersion>9.0</LangVersion>
+    <TargetFramework>net6.0</TargetFramework>
+    <LangVersion>10.0</LangVersion>
     <RunWorkingDirectory>$(MSBuildProjectDirectory)</RunWorkingDirectory>
     <OutputType>exe</OutputType>
     <ApplicationIcon>nadeko_icon.ico</ApplicationIcon>
@@ -26,21 +26,21 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Html2Markdown" Version="5.0.0.468" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.13" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.13">
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.13" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
     <PackageReference Include="NetEscapades.Configuration.Yaml" Version="2.1.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.2" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="6.0.0" />
     <PackageReference Include="Microsoft.SyndicationFeed.ReaderWriter" Version="1.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Scrutor" Version="3.3.0" />
@@ -50,7 +50,7 @@
     <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0010" />
     <PackageReference Include="StackExchange.Redis" Version="2.2.88" />
     <PackageReference Include="YamlDotNet" Version="11.2.1" />
-    <PackageReference Include="linq2db.EntityFrameworkCore" Version="5.9.0" />
+    <PackageReference Include="linq2db.EntityFrameworkCore" Version="6.6.1" />
   </ItemGroup>
 
   <ItemGroup>
