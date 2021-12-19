@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using AngleSharp.Common;
 using Discord;
 using Discord.Net;
 using LinqToDB;
@@ -13,7 +12,6 @@ using Microsoft.EntityFrameworkCore;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Extensions;
 using WizBot.Services;
-using WizBot.Services.Database;
 
 namespace WizBot.Modules.Searches
 {
