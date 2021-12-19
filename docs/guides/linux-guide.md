@@ -49,7 +49,7 @@ Open Terminal (if you're on an installation with a window manager) and navigate 
     - `cp creds_example.yml creds.yml` 
 6. Open `creds.yml` with your favorite text editor. We will use nano here
     - `nano nadekobot/output/creds.yml`
-8. [Enter your bot's token](#creds-guide)
+8. [Enter your bot's token](../../creds-guide)
     - After you're done, you can close nano (and save the file) by inputting, in order 
        - `CTRL` + `X`
        - `Y`
