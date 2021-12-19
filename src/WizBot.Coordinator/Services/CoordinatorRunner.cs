@@ -160,18 +160,24 @@ namespace WizBot.Coordinator
         private void StartShard(int shardId)
         {
             var status = _shardStatuses[shardId];
-            if (status.Process is {HasExited: false} p)
+            try
             {
-                try
+                if (status.Process is { HasExited: false } p)
                 {
-                    p.Kill(true);
+                    try
+                    {
+                        p.Kill(true);
+                    }
+                    catch
+                    {
+                    }
                 }
-                catch
-                {
-                }
-            }
 
-            try { status.Process?.Dispose(); } catch { }
+                status.Process?.Dispose();
+            }
+            catch
+            {
+            }
 
             var proc = StartShardProcess(shardId);
             _shardStatuses[shardId] = status with
