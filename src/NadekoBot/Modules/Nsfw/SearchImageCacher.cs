@@ -224,11 +224,11 @@ public class SearchImageCacher : INService
         }
         catch (HttpRequestException)
         {
-            return default;
         }
 
         if (!success)
             return default;
+        
         image = QueryLocal(tags, forceExplicit, type, blacklistedTags);
 
         return image;
