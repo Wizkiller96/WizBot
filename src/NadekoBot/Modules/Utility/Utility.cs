@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using NadekoBot.Common.Replacements;
@@ -373,7 +374,7 @@ public partial class Utility : NadekoModule
     private static readonly JsonSerializerOptions _showEmbedSerializerOptions = new JsonSerializerOptions()
     {
         WriteIndented = true,
-        IgnoreNullValues = true,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
         PropertyNamingPolicy = LowerCaseNamingPolicy.Default
     };
             

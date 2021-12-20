@@ -45,9 +45,9 @@ public static class GuildConfigExtensions
 
     private static IQueryable<GuildConfig> IncludeEverything(this DbSet<GuildConfig> configs)
     {
-        // todo split query
         return configs
                 .AsQueryable()
+                .AsSplitQuery()
                 .Include(gc => gc.CommandCooldowns)
                 .Include(gc => gc.FollowedStreams)
                 .Include(gc => gc.StreamRole)

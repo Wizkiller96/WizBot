@@ -358,7 +358,7 @@ public class SearchesService : INService
                                                     $"newSearch=false&" +
                                                     $"ProductType=All&" +
                                                     $"IsProductNameExact=false&" +
-                                                    $"ProductName={Uri.EscapeUriString(card.Name)}").ConfigureAwait(false);
+                                                    $"ProductName={Uri.EscapeDataString(card.Name)}").ConfigureAwait(false);
             }
             catch { storeUrl = "<url can't be found>"; }
 
@@ -376,7 +376,7 @@ public class SearchesService : INService
         using (var http = _httpFactory.CreateClient())
         {
             http.DefaultRequestHeaders.Clear();
-            var response = await http.GetStringAsync($"https://api.magicthegathering.io/v1/cards?name={Uri.EscapeUriString(search)}")
+            var response = await http.GetStringAsync($"https://api.magicthegathering.io/v1/cards?name={Uri.EscapeDataString(search)}")
                 .ConfigureAwait(false);
 
             var responseObject = JsonConvert.DeserializeObject<MtgResponse>(response);
@@ -417,7 +417,7 @@ public class SearchesService : INService
             try
             {
                 var response = await http.GetStringAsync($"https://omgvamp-hearthstone-v1.p.rapidapi.com/" +
-                                                         $"cards/search/{Uri.EscapeUriString(name)}").ConfigureAwait(false);
+                                                         $"cards/search/{Uri.EscapeDataString(name)}").ConfigureAwait(false);
                 var objs = JsonConvert.DeserializeObject<HearthstoneCardData[]>(response);
                 if (objs is null || objs.Length == 0)
                     return null;
