@@ -146,8 +146,8 @@ public class CommandHandler : INService
                             "Channel: {2}\n\t" +
                             "Message: {3}",
                 usrMsg.Author + " [" + usrMsg.Author.Id + "]", // {0}
-                (channel is null ? "PRIVATE" : channel.Guild.Name + " [" + channel.Guild.Id + "]"), // {1}
-                (channel is null ? "PRIVATE" : channel.Name + " [" + channel.Id + "]"), // {2}
+                channel is null ? "PRIVATE" : channel.Guild.Name + " [" + channel.Guild.Id + "]", // {1}
+                channel is null ? "PRIVATE" : channel.Name + " [" + channel.Id + "]", // {2}
                 usrMsg.Content // {3}
             );
         }

@@ -213,7 +213,7 @@ public partial class Utility
             {
                 var q = uow.Quotes.GetById(id);
 
-                if ((q?.GuildId != ctx.Guild.Id) || (!hasManageMessages && q.AuthorId != ctx.Message.Author.Id))
+                if (q?.GuildId != ctx.Guild.Id || !hasManageMessages && q.AuthorId != ctx.Message.Author.Id)
                 {
                     response = GetText(strs.quotes_remove_none);
                 }

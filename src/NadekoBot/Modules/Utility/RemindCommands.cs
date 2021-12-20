@@ -131,7 +131,7 @@ public partial class Utility
                     var when = rem.When;
                     var diff = when - DateTime.UtcNow;
                     embed.AddField(
-                        $"#{++i + (page * 10)} {rem.When:HH:mm yyyy-MM-dd} UTC (in {(int) diff.TotalHours}h {(int) diff.Minutes}m)",
+                        $"#{++i + page * 10} {rem.When:HH:mm yyyy-MM-dd} UTC (in {(int) diff.TotalHours}h {(int) diff.Minutes}m)",
                         $@"`Target:` {(rem.IsPrivate ? "DM" : "Channel")}
 `TargetId:` {rem.ChannelId}
 `Message:` {rem.Message?.TrimTo(50)}", false);

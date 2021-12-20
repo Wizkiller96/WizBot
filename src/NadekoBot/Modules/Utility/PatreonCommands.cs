@@ -36,7 +36,7 @@ public partial class Utility
                 return;
             }
                 
-            var rem = (_service.Interval - (DateTime.UtcNow - _service.LastUpdate));
+            var rem = _service.Interval - (DateTime.UtcNow - _service.LastUpdate);
             var helpcmd = Format.Code(Prefix + "donate");
             await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
                 .WithDescription(GetText(strs.clpa_obsolete))

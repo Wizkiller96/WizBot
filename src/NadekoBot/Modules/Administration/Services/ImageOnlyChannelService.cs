@@ -81,8 +81,8 @@ public sealed class ImageOnlyChannelService : IEarlyBehavior
         var newState = false;
         using var uow = _db.GetDbContext();
         if (forceDisable 
-            || (_enabledOn.TryGetValue(guildId, out var channels) 
-                && channels.TryRemove(channelId)))
+            || _enabledOn.TryGetValue(guildId, out var channels) 
+            && channels.TryRemove(channelId))
         {
             uow.ImageOnlyChannels.Delete(x => x.ChannelId == channelId);
         }

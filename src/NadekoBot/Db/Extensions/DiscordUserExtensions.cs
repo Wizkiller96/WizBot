@@ -48,11 +48,11 @@ public static class DiscordUserExtensions
     public static int GetUserGlobalRank(this DbSet<DiscordUser> users, ulong id)
     {
         return users.AsQueryable()
-            .Where(x => x.TotalXp > (users
+            .Where(x => x.TotalXp > users
                 .AsQueryable()
                 .Where(y => y.UserId == id)
                 .Select(y => y.TotalXp)
-                .FirstOrDefault()))
+                .FirstOrDefault())
             .Count() + 1;
     }
 

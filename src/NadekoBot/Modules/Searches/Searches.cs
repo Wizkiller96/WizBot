@@ -241,7 +241,7 @@ public partial class Searches : NadekoModule<SearchesService>
                 if (!elems.Any())
                     return;
 
-                var img = (elems.ElementAtOrDefault(new NadekoRandom().Next(0, elems.Count))?.Children?.FirstOrDefault() as IHtmlImageElement);
+                var img = elems.ElementAtOrDefault(new NadekoRandom().Next(0, elems.Count))?.Children?.FirstOrDefault() as IHtmlImageElement;
 
                 if (img?.Source is null)
                     return;

@@ -190,7 +190,7 @@ public class RoleCommandsService : INService
     {
         var toAdd = user.Guild.GetRole(dbRero.RoleId);
 
-        return (toAdd != null && !user.Roles.Contains(toAdd))
+        return toAdd != null && !user.Roles.Contains(toAdd)
             ? user.AddRoleAsync(toAdd)
             : Task.CompletedTask;
     }

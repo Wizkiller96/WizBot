@@ -252,13 +252,13 @@ public class Deck
         {
             if (cards.GroupBy(card => card.Number).Count() != cards.Count())
                 return false;
-            var toReturn = (cards.Max(card => (int)card.Number)
-                - cards.Min(card => (int)card.Number) == 4);
+            var toReturn = cards.Max(card => (int)card.Number)
+                - cards.Min(card => (int)card.Number) == 4;
             if (toReturn || cards.All(c => c.Number != 1)) return toReturn;
 
             var newCards = cards.Select(c => c.Number == 1 ? new(c.Suit, 14) : c);
-            return (newCards.Max(card => (int)card.Number)
-                - newCards.Min(card => (int)card.Number) == 4);
+            return newCards.Max(card => (int)card.Number)
+                - newCards.Min(card => (int)card.Number) == 4;
         }
 
         bool hasThreeOfKind(List<Card> cards) => cards.GroupBy(card => card.Number)

@@ -37,7 +37,7 @@ public sealed class ShmartNumberTypeReader : NadekoTypeReader<ShmartNumber>
         {
             var expr = new NCalc.Expression(i, NCalc.EvaluateOptions.IgnoreCase);
             expr.EvaluateParameter += (str, ev) => EvaluateParam(str, ev, context);
-            var lon = (long)(decimal.Parse(expr.Evaluate().ToString()));
+            var lon = (long)decimal.Parse(expr.Evaluate().ToString());
             return TypeReaderResult.FromSuccess(new ShmartNumber(lon, input));
         }
         catch (Exception)

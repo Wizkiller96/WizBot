@@ -20,8 +20,8 @@ public class CustomReactions : NadekoModule<CustomReactionsService>
         _clientFactory = clientFactory;
     }
 
-    private bool AdminInGuildOrOwnerInDm() => (ctx.Guild is null && _creds.IsOwner(ctx.User))
-                                              || (ctx.Guild != null && ((IGuildUser)ctx.User).GuildPermissions.Administrator);
+    private bool AdminInGuildOrOwnerInDm() => ctx.Guild is null && _creds.IsOwner(ctx.User)
+                                              || ctx.Guild != null && ((IGuildUser)ctx.User).GuildPermissions.Administrator;
 
     [NadekoCommand, Aliases]
     public async Task AddCustReact(string key, [Leftover] string message)
@@ -53,7 +53,7 @@ public class CustomReactions : NadekoModule<CustomReactionsService>
         if (string.IsNullOrWhiteSpace(message) || id < 0)
             return;
 
-        if ((channel is null && !_creds.IsOwner(ctx.User)) || (channel != null && !((IGuildUser)ctx.User).GuildPermissions.Administrator))
+        if (channel is null && !_creds.IsOwner(ctx.User) || channel != null && !((IGuildUser)ctx.User).GuildPermissions.Administrator)
         {
             await ReplyErrorLocalizedAsync(strs.insuff_perms).ConfigureAwait(false);
             return;

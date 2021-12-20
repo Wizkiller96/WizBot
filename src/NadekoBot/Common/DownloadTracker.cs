@@ -27,7 +27,7 @@ public class DownloadTracker : INService
             var added = LastDownloads.AddOrUpdate(
                 guild.Id,
                 now,
-                (key, old) => (now - old) > TimeSpan.FromHours(1) ? now : old);
+                (key, old) => now - old > TimeSpan.FromHours(1) ? now : old);
 
             // means that this entry was just added - download the users
             if (added == now)

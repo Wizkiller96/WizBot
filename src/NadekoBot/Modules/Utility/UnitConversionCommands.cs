@@ -79,10 +79,10 @@ public partial class Utility
             {
                 if (originUnit.UnitType == "currency")
                 {
-                    res = (value * targetUnit.Modifier) / originUnit.Modifier;
+                    res = value * targetUnit.Modifier / originUnit.Modifier;
                 }
                 else
-                    res = (value * originUnit.Modifier) / targetUnit.Modifier;
+                    res = value * originUnit.Modifier / targetUnit.Modifier;
             }
             res = Math.Round(res, 4);
 

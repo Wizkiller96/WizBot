@@ -13,6 +13,6 @@ public sealed class OwnerOnlyAttribute : PreconditionAttribute
     {
         var creds = services.GetRequiredService<IBotCredsProvider>().GetCreds();
 
-        return Task.FromResult((creds.IsOwner(context.User) || context.Client.CurrentUser.Id == context.User.Id ? PreconditionResult.FromSuccess() : PreconditionResult.FromError("Not owner")));
+        return Task.FromResult(creds.IsOwner(context.User) || context.Client.CurrentUser.Id == context.User.Id ? PreconditionResult.FromSuccess() : PreconditionResult.FromError("Not owner"));
     }
 }

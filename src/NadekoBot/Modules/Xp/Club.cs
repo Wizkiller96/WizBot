@@ -74,7 +74,7 @@ public partial class Xp
         [NadekoCommand, Aliases]
         public async Task ClubIcon([Leftover] string url = null)
         {
-            if ((!Uri.IsWellFormedUriString(url, UriKind.Absolute) && url != null)
+            if (!Uri.IsWellFormedUriString(url, UriKind.Absolute) && url != null
                 || !await _service.SetClubIcon(ctx.User.Id, url is null ? null : new Uri(url)))
             {
                 await ReplyErrorLocalizedAsync(strs.club_icon_error).ConfigureAwait(false);

@@ -375,7 +375,7 @@ public class GoogleApiService : IGoogleApiService, INService
             text = await http.GetStringAsync(url).ConfigureAwait(false);
         }
 
-        return (string.Concat(JArray.Parse(text)[0].Select(x => x[0])));
+        return string.Concat(JArray.Parse(text)[0].Select(x => x[0]));
     }
 
     private string ConvertToLanguageCode(string language)

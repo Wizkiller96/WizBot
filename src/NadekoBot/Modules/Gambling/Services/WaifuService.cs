@@ -110,7 +110,7 @@ public class WaifuService : INService
                 .Count();
 
             return (int) Math.Ceiling(waifu.Price * 1.25f) +
-                   ((divorces + affs + 2) * settings.Waifu.Multipliers.WaifuReset);
+                   (divorces + affs + 2) * settings.Waifu.Multipliers.WaifuReset;
         }
     }
 
@@ -164,7 +164,7 @@ public class WaifuService : INService
         await using (var uow = _db.GetDbContext())
         {
             w = uow.WaifuInfo.ByWaifuUserId(target.Id);
-            isAffinity = (w?.Affinity?.UserId == user.Id);
+            isAffinity = w?.Affinity?.UserId == user.Id;
             if (w is null)
             {
                 var claimer = uow.GetOrCreateUser(user);
@@ -202,7 +202,7 @@ public class WaifuService : INService
                 {
                     var oldClaimer = w.Claimer;
                     w.Claimer = uow.GetOrCreateUser(user);
-                    w.Price = amount + (amount / 4);
+                    w.Price = amount + amount / 4;
                     result = WaifuClaimResult.Success;
 
                     uow.WaifuUpdates.Add(new()

@@ -212,7 +212,7 @@ public partial class Gambling
         }
 
         private static long GetProfitAmount(int price) =>
-            (int)(Math.Ceiling(0.90 * price));
+            (int)Math.Ceiling(0.90 * price);
 
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
@@ -300,7 +300,7 @@ public partial class Gambling
                     set => set.Include(x => x.ShopEntries)
                         .ThenInclude(x => x.Items)).ShopEntries);
                 entry = entries.ElementAtOrDefault(index);
-                if (entry != null && (rightType = (entry.Type == ShopEntryType.List)))
+                if (entry != null && (rightType = entry.Type == ShopEntryType.List))
                 {
                     if (added = entry.Items.Add(item))
                     {

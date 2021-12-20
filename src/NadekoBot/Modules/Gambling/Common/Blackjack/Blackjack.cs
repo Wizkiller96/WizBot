@@ -179,7 +179,7 @@ public class Blackjack
     {
         var hw = Dealer.GetHandValue();
         while (hw < 17
-               || (hw == 17 && Dealer.Cards.Count(x => x.Number == 1) > (Dealer.GetRawHandValue() - 17) / 10))// hit on soft 17
+               || hw == 17 && Dealer.Cards.Count(x => x.Number == 1) > (Dealer.GetRawHandValue() - 17) / 10)// hit on soft 17
         {
             /* Dealer has
                  A 6

@@ -145,7 +145,7 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
         var match = expiryRegex.Match(streamUrl);
         if (match.Success && double.TryParse(match.Groups["timestamp"].ToString(), out var timestamp))
         {
-            var realExpiry = (timestamp.ToUnixTimestamp() - DateTime.UtcNow);
+            var realExpiry = timestamp.ToUnixTimestamp() - DateTime.UtcNow;
             if (realExpiry > TimeSpan.FromMinutes(60))
                 return realExpiry.Subtract(TimeSpan.FromMinutes(30));
 

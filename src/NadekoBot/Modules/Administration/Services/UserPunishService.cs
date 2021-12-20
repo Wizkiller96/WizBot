@@ -320,7 +320,7 @@ WHERE GuildId={guildId}
         // these 3 don't make sense with time
         if ((punish == PunishmentAction.Softban || punish == PunishmentAction.Kick || punish == PunishmentAction.RemoveRoles) && time != null)
             return false;
-        if (number <= 0 || (time != null && time.Time > TimeSpan.FromDays(49)))
+        if (number <= 0 || time != null && time.Time > TimeSpan.FromDays(49))
             return false;
 
         using (var uow = _db.GetDbContext())
@@ -334,7 +334,7 @@ WHERE GuildId={guildId}
             {
                 Count = number,
                 Punishment = punish,
-                Time = (int?)(time?.Time.TotalMinutes) ?? 0,
+                Time = (int?)time?.Time.TotalMinutes ?? 0,
                 RoleId = punish == PunishmentAction.AddRole ? role.Id : default(ulong?),
             });
             uow.SaveChanges();

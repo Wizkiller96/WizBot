@@ -60,7 +60,7 @@ public static class CustomReactionExtensions
             if (word.Length < str.Length && str.isValidWordDivider(word.Length))
                 return WordPosition.Start;
         }
-        else if ((wordIndex + word.Length) == str.Length)
+        else if (wordIndex + word.Length == str.Length)
         {
             if (str.isValidWordDivider(wordIndex - 1))
                 return WordPosition.End;

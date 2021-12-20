@@ -198,7 +198,7 @@ public class Help : NadekoModule<HelpService>
         {
             succ = new((await Task.WhenAll(cmds.Select(async x =>
                 {
-                    var pre = (await x.CheckPreconditionsAsync(Context, _services).ConfigureAwait(false));
+                    var pre = await x.CheckPreconditionsAsync(Context, _services).ConfigureAwait(false);
                     return (Cmd: x, Succ: pre.IsSuccess);
                 })).ConfigureAwait(false))
                 .Where(x => x.Succ)

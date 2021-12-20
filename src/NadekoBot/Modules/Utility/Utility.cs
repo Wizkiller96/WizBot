@@ -87,7 +87,7 @@ public partial class Utility : NadekoModule
             await ReplyErrorLocalizedAsync(strs.nobody_playing_game).ConfigureAwait(false);
         else
         {
-            await SendConfirmAsync("```css\n" + string.Join("\n", arr.GroupBy(item => (i++) / 2)
+            await SendConfirmAsync("```css\n" + string.Join("\n", arr.GroupBy(item => i++ / 2)
                     .Select(ig => string.Concat(ig.Select(el => $"• {el,-27}")))) + "\n```")
                 .ConfigureAwait(false);
         }
@@ -348,7 +348,7 @@ public partial class Utility : NadekoModule
         if (page < 0)
             return;
 
-        var guilds = await Task.Run(() => _client.Guilds.OrderBy(g => g.Name).Skip((page) * 15).Take(15)).ConfigureAwait(false);
+        var guilds = await Task.Run(() => _client.Guilds.OrderBy(g => g.Name).Skip(page * 15).Take(15)).ConfigureAwait(false);
 
         if (!guilds.Any())
         {

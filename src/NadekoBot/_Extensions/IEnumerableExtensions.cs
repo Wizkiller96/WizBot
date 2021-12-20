@@ -39,15 +39,15 @@ public static class IEnumerableExtensions
         var n = list.Count;
         while (n > 1)
         {
-            var box = new byte[(n / Byte.MaxValue) + 1];
+            var box = new byte[n / Byte.MaxValue + 1];
             int boxSum;
             do
             {
                 provider.GetBytes(box);
                 boxSum = box.Sum(b => b);
-            } while (!(boxSum < n * ((Byte.MaxValue * box.Length) / n)));
+            } while (!(boxSum < n * (Byte.MaxValue * box.Length / n)));
 
-            var k = (boxSum % n);
+            var k = boxSum % n;
             n--;
             var value = list[k];
             list[k] = list[n];

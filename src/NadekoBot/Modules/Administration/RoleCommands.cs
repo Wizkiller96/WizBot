@@ -154,7 +154,7 @@ public partial class Administration
             }
             else
             {
-                var g = ((SocketGuild)ctx.Guild);
+                var g = (SocketGuild)ctx.Guild;
                 foreach (var rr in rrs)
                 {
                     var ch = g.GetTextChannel(rr.ChannelId);
@@ -164,7 +164,7 @@ public partial class Administration
                         msg = await ch.GetMessageAsync(rr.MessageId).ConfigureAwait(false) as IUserMessage;
                     }
                     var content = msg?.Content.TrimTo(30) ?? "DELETED!";
-                    embed.AddField($"**{rr.Index + 1}.** {(ch?.Name ?? "DELETED!")}",
+                    embed.AddField($"**{rr.Index + 1}.** {ch?.Name ?? "DELETED!"}",
                         GetText(strs.reaction_roles_message(rr.ReactionRoles?.Count ?? 0, content)));
                 }
             }
@@ -197,7 +197,7 @@ public partial class Administration
         {
             var runnerUser = (IGuildUser)ctx.User;
             var runnerMaxRolePosition = runnerUser.GetRoles().Max(x => x.Position);
-            if ((ctx.User.Id != ctx.Guild.OwnerId) && runnerMaxRolePosition <= roleToAdd.Position)
+            if (ctx.User.Id != ctx.Guild.OwnerId && runnerMaxRolePosition <= roleToAdd.Position)
                 return;
             try
             {
@@ -271,7 +271,7 @@ public partial class Administration
                 .Where(x => !x.IsManaged && x != x.Guild.EveryoneRole)
                 .ToList();
                 
-            if (user.Id == ctx.Guild.OwnerId || (ctx.User.Id != ctx.Guild.OwnerId && guser.GetRoles().Max(x => x.Position) <= userRoles.Max(x => x.Position)))
+            if (user.Id == ctx.Guild.OwnerId || ctx.User.Id != ctx.Guild.OwnerId && guser.GetRoles().Max(x => x.Position) <= userRoles.Max(x => x.Position))
                 return;
             try
             {

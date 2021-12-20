@@ -264,7 +264,7 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
         if (toDelete is null)
             return null;
             
-        if ((toDelete.IsGlobal() && guildId is null) || (guildId == toDelete.GuildId))
+        if (toDelete.IsGlobal() && guildId is null || guildId == toDelete.GuildId)
         {
             uow.CustomReactions.Remove(toDelete);
             await uow.SaveChangesAsync();

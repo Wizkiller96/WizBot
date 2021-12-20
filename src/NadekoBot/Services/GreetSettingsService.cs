@@ -50,10 +50,10 @@ public class GreetSettingsService : INService
     {
         // if user is a new booster
         // or boosted again the same server
-        if ((oldUser is { PremiumSince: null } && newUser is { PremiumSince: not null })
-            || (oldUser?.PremiumSince is { } oldDate 
-                && newUser?.PremiumSince is { } newDate
-                && newDate > oldDate))
+        if (oldUser is { PremiumSince: null } && newUser is { PremiumSince: not null }
+            || oldUser?.PremiumSince is { } oldDate 
+            && newUser?.PremiumSince is { } newDate
+            && newDate > oldDate)
         {
             var conf = GetOrAddSettingsForGuild(newUser.Guild.Id);
             if (!conf.SendBoostMessage) return Task.CompletedTask;

@@ -36,7 +36,7 @@ public class NadekoRandom : Random
         var bytes = new byte[sizeof(int)];
         _rng.GetBytes(bytes);
         var sign = Math.Sign(BitConverter.ToInt32(bytes, 0));
-        return (sign * BitConverter.ToInt32(bytes, 0)) % (maxValue - minValue) + minValue;
+        return sign * BitConverter.ToInt32(bytes, 0) % (maxValue - minValue) + minValue;
     }
 
     public long NextLong(long minValue, long maxValue)
@@ -48,7 +48,7 @@ public class NadekoRandom : Random
         var bytes = new byte[sizeof(long)];
         _rng.GetBytes(bytes);
         var sign = Math.Sign(BitConverter.ToInt64(bytes, 0));
-        return (sign * BitConverter.ToInt64(bytes, 0)) % (maxValue - minValue) + minValue;
+        return sign * BitConverter.ToInt64(bytes, 0) % (maxValue - minValue) + minValue;
     }
 
     public override void NextBytes(byte[] buffer)

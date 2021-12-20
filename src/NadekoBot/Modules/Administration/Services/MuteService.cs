@@ -299,7 +299,7 @@ public class MuteService : INService
             }
         }
 
-        foreach (var toOverwrite in (await guild.GetTextChannelsAsync().ConfigureAwait(false)))
+        foreach (var toOverwrite in await guild.GetTextChannelsAsync().ConfigureAwait(false))
         {
             try
             {

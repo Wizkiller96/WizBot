@@ -60,12 +60,11 @@ public static class UserXpExtensions
         return xps
             .AsQueryable()
             .AsNoTracking()
-            .Where(x => x.GuildId == guildId && ((x.Xp + x.AwardedXp) >
-                                                 (xps.AsQueryable()
-                                                     .Where(y => y.UserId == userId && y.GuildId == guildId)
-                                                     .Select(y => y.Xp + y.AwardedXp)
-                                                     .FirstOrDefault())
-                ))
+            .Where(x => x.GuildId == guildId && x.Xp + x.AwardedXp >
+                xps.AsQueryable()
+                    .Where(y => y.UserId == userId && y.GuildId == guildId)
+                    .Select(y => y.Xp + y.AwardedXp)
+                    .FirstOrDefault())
             .Count() + 1;
     }
 

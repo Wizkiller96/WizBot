@@ -78,7 +78,7 @@ public partial class Gambling
                         GetText(strs.animal_race_won_money(
                             Format.Bold(winner.Username),
                             winner.Animal.Icon,
-                            (race.FinishedUsers[0].Bet * (race.Users.Count - 1)) + CurrencySign)));
+                            race.FinishedUsers[0].Bet * (race.Users.Count - 1) + CurrencySign)));
                 }
                 else
                 {
@@ -111,7 +111,7 @@ public partial class Gambling
 {String.Join("\n", race.Users.Select(p =>
 {
     var index = race.FinishedUsers.IndexOf(p);
-    var extra = (index == -1 ? "" : $"#{index + 1} {(index == 0 ? "🏆" : "")}");
+    var extra = index == -1 ? "" : $"#{index + 1} {(index == 0 ? "🏆" : "")}";
     return $"{(int)(p.Progress / 60f * 100),-2}%|{new string('‣', p.Progress) + p.Animal.Icon + extra}";
 }))}
 |🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🔚|";

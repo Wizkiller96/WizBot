@@ -185,7 +185,7 @@ public partial class Gambling
             {
                 for (var j = 0; j < Connect4Game.NumberOfColumns; j++)
                 {
-                    var cur = game.GameState[i + (j * Connect4Game.NumberOfRows) - 1];
+                    var cur = game.GameState[i + j * Connect4Game.NumberOfRows - 1];
 
                     if (cur == Connect4Game.Field.Empty)
                         sb.Append("⚫"); //black circle

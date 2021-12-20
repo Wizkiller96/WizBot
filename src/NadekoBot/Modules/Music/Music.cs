@@ -326,7 +326,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
                 desc = add + "\n" + desc;
 
             var embed = _eb.Create()
-                .WithAuthor(GetText(strs.player_queue(curPage + 1, (tracks.Count / LQ_ITEMS_PER_PAGE) + 1)),
+                .WithAuthor(GetText(strs.player_queue(curPage + 1, tracks.Count / LQ_ITEMS_PER_PAGE + 1)),
                     MusicIconUrl)
                 .WithDescription(desc)
                 .WithFooter($"  {mp.PrettyVolume()}  |  🎶 {tracks.Count}  |  ⌛ {mp.PrettyTotalTime()}  ")
@@ -428,7 +428,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
         }
             
         var embed = _eb.Create()
-            .WithAuthor(GetText(strs.removed_song) + " #" + (index), MusicIconUrl)
+            .WithAuthor(GetText(strs.removed_song) + " #" + index, MusicIconUrl)
             .WithDescription(song.PrettyName())
             .WithFooter(song.PrettyInfo())
             .WithErrorColor();

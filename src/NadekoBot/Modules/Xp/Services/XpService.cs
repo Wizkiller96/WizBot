@@ -940,9 +940,9 @@ public class XpService : INService
                 //xp bar
                 if (_template.User.Xp.Bar.Show)
                 {
-                    var xpPercent = (global.LevelXp / (float) global.RequiredXp);
+                    var xpPercent = global.LevelXp / (float) global.RequiredXp;
                     DrawXpBar(xpPercent, _template.User.Xp.Bar.Global, img);
-                    xpPercent = (guild.LevelXp / (float) guild.RequiredXp);
+                    xpPercent = guild.LevelXp / (float) guild.RequiredXp;
                     DrawXpBar(xpPercent, _template.User.Xp.Bar.Guild, img);
                 }
 
@@ -970,7 +970,7 @@ public class XpService : INService
                         ? "+ "
                         : "";
                     var awX = _template.User.Xp.Awarded.Pos.X -
-                              (Math.Max(0, (stats.FullGuildStats.AwardedXp.ToString().Length - 2)) * 5);
+                              Math.Max(0, stats.FullGuildStats.AwardedXp.ToString().Length - 2) * 5;
                     var awY = _template.User.Xp.Awarded.Pos.Y;
                     img.Mutate(x => x.DrawText($"({sign}{stats.FullGuildStats.AwardedXp})",
                         _fonts.NotoSans.CreateFont(_template.User.Xp.Awarded.FontSize, FontStyle.Bold),

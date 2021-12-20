@@ -99,7 +99,7 @@ public abstract class NadekoModule : ModuleBase
         {
             dsc.MessageReceived += MessageReceived;
 
-            if ((await Task.WhenAny(userInputTask.Task, Task.Delay(10000)).ConfigureAwait(false)) != userInputTask.Task)
+            if (await Task.WhenAny(userInputTask.Task, Task.Delay(10000)).ConfigureAwait(false) != userInputTask.Task)
             {
                 return null;
             }

@@ -158,8 +158,8 @@ public sealed class Connect4Game : IDisposable
             if (CurrentPhase == Phase.Ended || CurrentPhase == Phase.Joining)
                 return false;
 
-            if (!((_players[0].Value.UserId == userId && CurrentPhase == Phase.P1Move)
-                  || (_players[1].Value.UserId == userId && CurrentPhase == Phase.P2Move)))
+            if (!(_players[0].Value.UserId == userId && CurrentPhase == Phase.P1Move
+                  || _players[1].Value.UserId == userId && CurrentPhase == Phase.P2Move))
                 return false;
 
             if (inputCol < 0 || inputCol > NumberOfColumns) //invalid input

@@ -226,7 +226,7 @@ public sealed class Bot
                 clientReady.TrySetResult(true);
                 try
                 {
-                    foreach (var chan in (await Client.GetDMChannelsAsync().ConfigureAwait(false)))
+                    foreach (var chan in await Client.GetDMChannelsAsync().ConfigureAwait(false))
                     {
                         await chan.CloseAsync().ConfigureAwait(false);
                     }
@@ -281,7 +281,7 @@ public sealed class Bot
             GuildConfig gc;
             await using (var uow = _db.GetDbContext())
             {
-                gc = uow.GuildConfigsForId(arg.Id);
+                gc = uow.GuildConfigsForId(arg.Id, null);
             }
             await JoinedGuild.Invoke(gc).ConfigureAwait(false);
         });

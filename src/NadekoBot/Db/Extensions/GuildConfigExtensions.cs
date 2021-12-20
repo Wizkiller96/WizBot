@@ -69,10 +69,11 @@ public static class GuildConfigExtensions
     /// <summary>
     /// Gets and creates if it doesn't exist a config for a guild.
     /// </summary>
-    /// <param name="guildId">For which guild</param>
-    /// <param name="includes">Use to manipulate the set however you want</param>
+    /// <param name="ctx">Context</param>
+    /// <param name="guildId">Id of the guide</param>
+    /// <param name="includes">Use to manipulate the set however you want. Pass null to include everything</param>
     /// <returns>Config for the guild</returns>
-    public static GuildConfig GuildConfigsForId(this NadekoContext ctx, ulong guildId, Func<DbSet<GuildConfig>, IQueryable<GuildConfig>> includes = null)
+    public static GuildConfig GuildConfigsForId(this NadekoContext ctx, ulong guildId, Func<DbSet<GuildConfig>, IQueryable<GuildConfig>> includes)
     {
         GuildConfig config;
 
@@ -91,13 +92,13 @@ public static class GuildConfigExtensions
 
         if (config is null)
         {
-            ctx.GuildConfigs.Add((config = new()
+            ctx.GuildConfigs.Add(config = new()
             {
                 GuildId = guildId,
                 Permissions = Permissionv2.GetDefaultPermlist,
                 WarningsInitialized = true,
                 WarnPunishments = DefaultWarnPunishments,
-            }));
+            });
             ctx.SaveChanges();
         }
 
@@ -150,11 +151,11 @@ public static class GuildConfigExtensions
 
         if (config is null) // if there is no guildconfig, create new one
         {
-            ctx.GuildConfigs.Add((config = new()
+            ctx.GuildConfigs.Add(config = new()
             {
                 GuildId = guildId,
                 Permissions = Permissionv2.GetDefaultPermlist
-            }));
+            });
             ctx.SaveChanges();
         }
         else if (config.Permissions is null || !config.Permissions.Any()) // if no perms, add default ones
