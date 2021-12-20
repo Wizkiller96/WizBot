@@ -299,7 +299,7 @@ public class ProtectionService : INService
 
         _antiRaidGuilds.AddOrUpdate(guildId, stats, (key, old) => stats);
 
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.AntiRaidSetting));
 
@@ -370,7 +370,7 @@ public class ProtectionService : INService
             return stats;
         });
 
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.AntiSpamSetting));
 
@@ -397,7 +397,7 @@ public class ProtectionService : INService
             ChannelId = channelId
         };
         bool added;
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.AntiSpamSetting).ThenInclude(x => x.IgnoredChannels));
             var spam = gc.AntiSpamSetting;
@@ -455,7 +455,7 @@ public class ProtectionService : INService
     public async Task StartAntiAltAsync(ulong guildId, int minAgeMinutes, PunishmentAction action,
         int actionDurationMinutes = 0, ulong? roleId = null)
     {
-        using var uow = _db.GetDbContext();
+        await using var uow = _db.GetDbContext();
         var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.AntiAltSetting));
         gc.AntiAltSetting = new()
         {
@@ -473,8 +473,8 @@ public class ProtectionService : INService
     {
         if (!_antiAltGuilds.TryRemove(guildId, out _))
             return false;
-            
-        using var uow = _db.GetDbContext();
+
+        await using var uow = _db.GetDbContext();
         var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.AntiAltSetting));
         gc.AntiAltSetting = null;
         await uow.SaveChangesAsync();

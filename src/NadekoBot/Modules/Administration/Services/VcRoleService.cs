@@ -122,7 +122,7 @@ public class VcRoleService : INService
 
         if (missingRoles.Any())
         {
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 Log.Warning($"Removing {missingRoles.Count} missing roles from {nameof(VcRoleService)}");
                 uow.RemoveRange(missingRoles);

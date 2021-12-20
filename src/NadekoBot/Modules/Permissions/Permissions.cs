@@ -26,7 +26,7 @@ public partial class Permissions : NadekoModule<PermissionService>
     [RequireContext(ContextType.Guild)]
     public async Task Verbose(PermissionAction action = null)
     {
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var config = uow.GcWithPermissionsv2For(ctx.Guild.Id);
             if (action is null) action = new(!config.VerbosePermissions); // New behaviour, can toggle.
@@ -68,7 +68,7 @@ public partial class Permissions : NadekoModule<PermissionService>
             return;
         }
 
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var config = uow.GcWithPermissionsv2For(ctx.Guild.Id);
             config.PermissionRole = role.Id.ToString();
@@ -87,7 +87,7 @@ public partial class Permissions : NadekoModule<PermissionService>
     [Priority(1)]
     public async Task PermRole(Reset _)
     {
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var config = uow.GcWithPermissionsv2For(ctx.Guild.Id);
             config.PermissionRole = null;
@@ -143,7 +143,7 @@ public partial class Permissions : NadekoModule<PermissionService>
         try
         {
             Permissionv2 p;
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 var config = uow.GcWithPermissionsv2For(ctx.Guild.Id);
                 var permsCol = new PermissionsCollection<Permissionv2>(config.Permissions);
@@ -175,7 +175,7 @@ public partial class Permissions : NadekoModule<PermissionService>
             try
             {
                 Permissionv2 fromPerm;
-                using (var uow = _db.GetDbContext())
+                await using (var uow = _db.GetDbContext())
                 {
                     var config = uow.GcWithPermissionsv2For(ctx.Guild.Id);
                     var permsCol = new PermissionsCollection<Permissionv2>(config.Permissions);

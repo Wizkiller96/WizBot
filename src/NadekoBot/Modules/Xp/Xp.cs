@@ -29,7 +29,7 @@ public partial class Xp : NadekoModule<XpService>
         user = user ?? ctx.User;
         await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
         var (img, fmt) = await _service.GenerateXpImageAsync((IGuildUser)user).ConfigureAwait(false);
-        using (img)
+        await using (img)
         {
             await ctx.Channel.SendFileAsync(img, $"{ctx.Guild.Id}_{user.Id}_xp.{fmt.FileExtensions.FirstOrDefault()}")
                 .ConfigureAwait(false);

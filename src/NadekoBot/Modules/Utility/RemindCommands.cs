@@ -107,7 +107,7 @@ public partial class Utility
                 .WithTitle(GetText(isServer ? strs.reminder_server_list : strs.reminder_list));
 
             List<Reminder> rems;
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 if (isServer)
                 {
@@ -164,7 +164,7 @@ public partial class Utility
                 return;
 
             Reminder rem = null;
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 var rems = isServer
                     ? uow.Reminders
@@ -219,7 +219,7 @@ public partial class Utility
                 ServerId = ctx.Guild?.Id ?? 0
             };
 
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 uow.Reminders.Add(rem);
                 await uow.SaveChangesAsync();

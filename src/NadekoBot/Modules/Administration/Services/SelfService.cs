@@ -101,7 +101,7 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
 
     public async Task OnReadyAsync()
     {
-        using var uow = _db.GetDbContext();
+        await using var uow = _db.GetDbContext();
 
         _autoCommands = uow
             .AutoCommands
@@ -344,7 +344,7 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
 
             // i can't just do ReadAsStreamAsync because dicord.net's image poops itself
             var imgData = await sr.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
-            using (var imgStream = imgData.ToStream())
+            await using (var imgStream = imgData.ToStream())
             {
                 await _client.CurrentUser.ModifyAsync(u => u.Avatar = new Image(imgStream)).ConfigureAwait(false);
             }

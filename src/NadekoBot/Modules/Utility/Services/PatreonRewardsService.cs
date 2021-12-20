@@ -231,7 +231,7 @@ public class PatreonRewardsService : INService
         {
             var eligibleFor = (int)(cents * settings.PatreonCurrencyPerCent);
 
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 var users = uow.Set<RewardedUser>();
                 var usr = await users.FirstOrDefaultAsyncEF(x => x.PatreonUserId == patreonUserId);

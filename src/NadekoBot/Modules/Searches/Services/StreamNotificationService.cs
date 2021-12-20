@@ -339,7 +339,7 @@ public sealed class StreamNotificationService : INService
 
     public async Task<int> ClearAllStreams(ulong guildId)
     {
-        using var uow = _db.GetDbContext();
+        await using var uow = _db.GetDbContext();
         var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.FollowedStreams));
         uow.RemoveRange(gc.FollowedStreams);
 
@@ -354,7 +354,7 @@ public sealed class StreamNotificationService : INService
     public async Task<FollowedStream> UnfollowStreamAsync(ulong guildId, int index)
     {
         FollowedStream fs;
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var fss = uow.Set<FollowedStream>()
                 .AsQueryable()
@@ -400,7 +400,7 @@ public sealed class StreamNotificationService : INService
             return null;
 
         FollowedStream fs;
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.FollowedStreams));
 

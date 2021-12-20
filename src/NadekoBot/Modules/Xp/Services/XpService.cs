@@ -168,7 +168,7 @@ public class XpService : INService
                 var group = toAddTo.GroupBy(x => (GuildId: x.Guild.Id, x.User));
                 if (toAddTo.Count == 0) continue;
 
-                using (var uow = _db.GetDbContext())
+                await using (var uow = _db.GetDbContext())
                 {
                     foreach (var item in group)
                     {
@@ -450,7 +450,7 @@ public class XpService : INService
 
     public async Task ChangeNotificationType(ulong userId, ulong guildId, XpNotificationLocation type)
     {
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var user = uow.GetOrCreateUserXpStats(guildId, userId);
             user.NotifyOnLevelUp = type;
@@ -477,7 +477,7 @@ public class XpService : INService
 
     public async Task ChangeNotificationType(IUser user, XpNotificationLocation type)
     {
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var du = uow.GetOrCreateUser(user);
             du.NotifyOnLevelUp = type;
@@ -724,7 +724,7 @@ public class XpService : INService
         int totalXp;
         int globalRank;
         int guildRank;
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             du = uow.GetOrCreateUser(user);
             totalXp = du.TotalXp;
@@ -1044,7 +1044,7 @@ public class XpService : INService
                                         .Resize(_template.User.Icon.Size.X, _template.User.Icon.Size.Y)
                                         .ApplyRoundedCorners(
                                             Math.Max(_template.User.Icon.Size.X, _template.User.Icon.Size.Y) / 2));
-                                    using (var stream = tempDraw.ToStream())
+                                    await using (var stream = tempDraw.ToStream())
                                     {
                                         data = stream.ToArray();
                                     }
@@ -1157,7 +1157,7 @@ public class XpService : INService
                                 .ApplyRoundedCorners(
                                     Math.Max(_template.Club.Icon.Size.X, _template.Club.Icon.Size.Y) / 2.0f));
                             ;
-                            using (var tds = tempDraw.ToStream())
+                            await using (var tds = tempDraw.ToStream())
                             {
                                 data = tds.ToArray();
                             }
@@ -1207,7 +1207,7 @@ public class XpService : INService
 
     public async Task ResetXpRewards(ulong guildId)
     {
-        using var uow = _db.GetDbContext();
+        await using var uow = _db.GetDbContext();
         var guildConfig = uow.GuildConfigsForId(guildId, 
             set => set
                 .Include(x => x.XpSettings)

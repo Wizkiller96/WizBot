@@ -61,7 +61,7 @@ public class RemindService : INService
 
     private async Task RemoveReminders(List<Reminder> reminders)
     {
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             uow.Set<Reminder>()
                 .RemoveRange(reminders);

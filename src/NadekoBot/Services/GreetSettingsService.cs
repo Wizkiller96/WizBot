@@ -345,7 +345,7 @@ public class GreetSettingsService : INService
             return false;
         }
 
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var conf = uow.GuildConfigsForId(guildId, set => set);
             conf.DmGreetMessageText = settings.DmGreetMessageText?.SanitizeMentions();
@@ -376,7 +376,7 @@ public class GreetSettingsService : INService
     public async Task<bool> SetGreet(ulong guildId, ulong channelId, bool? value = null)
     {
         bool enabled;
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var conf = uow.GuildConfigsForId(guildId, set => set);
             enabled = conf.SendChannelGreetMessage = value ?? !conf.SendChannelGreetMessage;
@@ -415,7 +415,7 @@ public class GreetSettingsService : INService
     public async Task<bool> SetGreetDm(ulong guildId, bool? value = null)
     {
         bool enabled;
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var conf = uow.GuildConfigsForId(guildId, set => set);
             enabled = conf.SendDmGreetMessage = value ?? !conf.SendDmGreetMessage;
@@ -503,7 +503,7 @@ public class GreetSettingsService : INService
     public async Task<bool> SetBye(ulong guildId, ulong channelId, bool? value = null)
     {
         bool enabled;
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var conf = uow.GuildConfigsForId(guildId, set => set);
             enabled = conf.SendChannelByeMessage = value ?? !conf.SendChannelByeMessage;
@@ -544,7 +544,7 @@ public class GreetSettingsService : INService
         if (timer < 0 || timer > 600)
             return;
 
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var conf = uow.GuildConfigsForId(guildId, set => set);
             conf.AutoDeleteByeMessagesTimer = timer;
@@ -561,7 +561,7 @@ public class GreetSettingsService : INService
         if (timer < 0 || timer > 600)
             return;
 
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var conf = uow.GuildConfigsForId(id, set => set);
             conf.AutoDeleteGreetMessagesTimer = timer;
@@ -592,8 +592,8 @@ public class GreetSettingsService : INService
     {
         if (timer < 0 || timer > 600)
             throw new ArgumentOutOfRangeException(nameof(timer));
-            
-        using var uow = _db.GetDbContext();
+
+        await using var uow = _db.GetDbContext();
         var conf = uow.GuildConfigsForId(guildId, set => set);
         conf.BoostMessageDeleteAfter = timer;
             
@@ -605,7 +605,7 @@ public class GreetSettingsService : INService
 
     public async Task<bool> ToggleBoost(ulong guildId, ulong channelId)
     {
-        using var uow = _db.GetDbContext();
+        await using var uow = _db.GetDbContext();
         var conf = uow.GuildConfigsForId(guildId, set => set);
         conf.SendBoostMessage = !conf.SendBoostMessage;
         conf.BoostMessageChannelId = channelId;

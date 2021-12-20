@@ -70,7 +70,7 @@ public class SelfAssignedRolesService : INService
     public async Task<(AssignResult Result, bool AutoDelete, object extra)> Assign(IGuildUser guildUser, IRole role)
     {
         LevelStats userLevelData;
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var stats = uow.GetOrCreateUserXpStats(guildUser.Guild.Id, guildUser.Id);
             userLevelData = new(stats.Xp + stats.AwardedXp);
@@ -132,7 +132,7 @@ public class SelfAssignedRolesService : INService
     public async Task<bool> SetNameAsync(ulong guildId, int group, string name)
     {
         var set = false;
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var gc = uow.GuildConfigsForId(guildId, y => y.Include(x => x.SelfAssignableRoleGroupNames));
             var toUpdate = gc.SelfAssignableRoleGroupNames.FirstOrDefault(x => x.Number == group);

@@ -155,7 +155,7 @@ public class ReplacementBuilder
         _reps.TryAdd("%users%", () => c.Guilds.Sum(g => g.MemberCount).ToString());
 
         /*NEW*/
-        _reps.TryAdd("%shard.servercount%", () => c.Guilds.Count.ToString());S
+        _reps.TryAdd("%shard.servercount%", () => c.Guilds.Count.ToString());
         _reps.TryAdd("%shard.usercount%", () => c.Guilds.Sum(g => g.MemberCount).ToString());
         _reps.TryAdd("%shard.id%", () => c.ShardId.ToString());
         return this;

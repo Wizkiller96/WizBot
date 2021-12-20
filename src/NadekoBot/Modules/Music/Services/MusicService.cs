@@ -345,8 +345,8 @@ public sealed class MusicService : IMusicService
     {
         if (_settings.TryGetValue(guildId, out var settings))
             return settings;
-            
-        using var uow = _db.GetDbContext();
+
+        await using var uow = _db.GetDbContext();
         var toReturn = _settings[guildId] = await uow.MusicPlayerSettings.ForGuildAsync(guildId);
         await uow.SaveChangesAsync();
 
@@ -358,7 +358,7 @@ public sealed class MusicService : IMusicService
         Action<MusicPlayerSettings, TState> action,
         TState state)
     {
-        using var uow = _db.GetDbContext();
+        await using var uow = _db.GetDbContext();
         var ms = await uow.MusicPlayerSettings.ForGuildAsync(guildId);
         action(ms, state);
         await uow.SaveChangesAsync();
@@ -438,7 +438,7 @@ public sealed class MusicService : IMusicService
 
     public async Task<QualityPreset> GetMusicQualityAsync(ulong guildId)
     {
-        using var uow = _db.GetDbContext();
+        await using var uow = _db.GetDbContext();
         var settings = await uow.MusicPlayerSettings.ForGuildAsync(guildId);
         return settings.QualityPreset;
     }

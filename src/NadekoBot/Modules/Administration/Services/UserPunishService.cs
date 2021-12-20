@@ -60,7 +60,7 @@ public class UserPunishService : INService
 
         var warnings = 1;
         List<WarningPunishment> ps;
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             ps = uow.GuildConfigsForId(guildId, set => set.Include(x => x.WarnPunishments))
                 .WarnPunishments;
@@ -206,7 +206,7 @@ public class UserPunishService : INService
 
     public async Task CheckAllWarnExpiresAsync()
     {
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var cleared = await uow.Database.ExecuteSqlRawAsync($@"UPDATE Warnings
 SET Forgiven = 1,
@@ -228,7 +228,7 @@ WHERE GuildId in (SELECT GuildId FROM GuildConfigs WHERE WarnExpireHours > 0 AND
 
     public async Task CheckWarnExpiresAsync(ulong guildId)
     {
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var config = uow.GuildConfigsForId(guildId, inc => inc);
 
@@ -265,7 +265,7 @@ WHERE GuildId={guildId}
         
     public async Task WarnExpireAsync(ulong guildId, int days, bool delete)
     {
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var config = uow.GuildConfigsForId(guildId, inc => inc);
 
@@ -300,7 +300,7 @@ WHERE GuildId={guildId}
     public async Task<bool> WarnClearAsync(ulong guildId, ulong userId, int index, string moderator)
     {
         var toReturn = true;
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             if (index == 0)
             {

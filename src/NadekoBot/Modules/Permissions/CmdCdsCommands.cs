@@ -45,7 +45,7 @@ public partial class Permissions
             }
 
             var name = command.Name.ToLowerInvariant();
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 var config = uow.GuildConfigsForId(channel.Guild.Id, set => set.Include(gc => gc.CommandCooldowns));
                 var localSet = CommandCooldowns.GetOrAdd(channel.Guild.Id, new ConcurrentHashSet<CommandCooldown>());

@@ -41,7 +41,7 @@ public static class IUserExtensions
 
     public static async Task<IUserMessage> SendFileAsync(this IUser user, string filePath, string caption = null, string text = null, bool isTTS = false)
     {
-        using (var file = File.Open(filePath, FileMode.Open))
+        await using (var file = File.Open(filePath, FileMode.Open))
         {
             return await (await user.GetOrCreateDMChannelAsync().ConfigureAwait(false)).SendFileAsync(file, caption ?? "x", text, isTTS).ConfigureAwait(false);
         }

@@ -40,7 +40,7 @@ public partial class Gambling
             using (var img1 = GetDice(num1))
             using (var img2 = GetDice(num2))
             using (var img = new[] { img1, img2 }.Merge(out var format))
-            using (var ms = img.ToStream(format))
+            await using (var ms = img.ToStream(format))
             {
                 await ctx.Channel.SendFileAsync(ms,
                     $"dice.{format.FileExtensions.First()}",
@@ -116,7 +116,7 @@ public partial class Gambling
             }
 
             using (var bitmap = dice.Merge(out var format))
-            using (var ms = bitmap.ToStream(format))
+            await using (var ms = bitmap.ToStream(format))
             {
                 foreach (var d in dice)
                 {

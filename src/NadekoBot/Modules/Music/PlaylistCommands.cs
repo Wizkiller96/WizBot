@@ -49,7 +49,7 @@ public sealed partial class Music
 
             List<MusicPlaylist> playlists;
 
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 playlists = uow.MusicPlaylists.GetPlaylistsOnPage(num);
             }
@@ -71,7 +71,7 @@ public sealed partial class Music
             var success = false;
             try
             {
-                using (var uow = _db.GetDbContext())
+                await using (var uow = _db.GetDbContext())
                 {
                     var pl = uow.MusicPlaylists.FirstOrDefault(x => x.Id == id);
 
@@ -105,7 +105,7 @@ public sealed partial class Music
                 return;
 
             MusicPlaylist mpl;
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 mpl = uow.MusicPlaylists.GetWithSongs(id);
             }
@@ -144,7 +144,7 @@ public sealed partial class Music
                 }).ToList();
 
             MusicPlaylist playlist;
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 playlist = new()
                 {
@@ -203,7 +203,7 @@ public sealed partial class Music
                 }
                     
                 MusicPlaylist mpl;
-                using (var uow = _db.GetDbContext())
+                await using (var uow = _db.GetDbContext())
                 {
                     mpl = uow.MusicPlaylists.GetWithSongs(id);
                 }

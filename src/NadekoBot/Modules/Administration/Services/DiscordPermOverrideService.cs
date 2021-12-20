@@ -54,7 +54,7 @@ public class DiscordPermOverrideService : INService, ILateBlocker
     public async Task AddOverride(ulong guildId, string commandName, GuildPerm perm)
     {
         commandName = commandName.ToLowerInvariant();
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var over = await uow
                 .Set<DiscordPermOverride>()
@@ -84,7 +84,7 @@ public class DiscordPermOverrideService : INService, ILateBlocker
 
     public async Task ClearAllOverrides(ulong guildId)
     {
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var overrides = await uow
                 .Set<DiscordPermOverride>()
@@ -106,8 +106,8 @@ public class DiscordPermOverrideService : INService, ILateBlocker
     public async Task RemoveOverride(ulong guildId, string commandName)
     {
         commandName = commandName.ToLowerInvariant();
-            
-        using (var uow = _db.GetDbContext())
+
+        await using (var uow = _db.GetDbContext())
         {
             var over = await uow
                 .Set<DiscordPermOverride>()

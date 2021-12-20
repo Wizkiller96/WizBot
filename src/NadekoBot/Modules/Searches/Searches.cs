@@ -48,7 +48,7 @@ public partial class Searches : NadekoModule<SearchesService>
         var av = usr.RealAvatarUrl(128);
         if (av is null)
             return;
-        using (var picStream = await _service.GetRipPictureAsync(usr.Nickname ?? usr.Username, av).ConfigureAwait(false))
+        await using (var picStream = await _service.GetRipPictureAsync(usr.Nickname ?? usr.Username, av).ConfigureAwait(false))
         {
             await ctx.Channel.SendFileAsync(
                     picStream,
@@ -626,7 +626,8 @@ public partial class Searches : NadekoModule<SearchesService>
                     new PointF(x, 50)
                 }));
             }
-            using (var ms = img.ToStream())
+
+            await using (var ms = img.ToStream())
             {
                 await ctx.Channel.SendFileAsync(ms, $"colors.png").ConfigureAwait(false);
             }

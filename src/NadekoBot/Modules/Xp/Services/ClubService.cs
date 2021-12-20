@@ -115,7 +115,7 @@ public class ClubService : INService
             }
         }
 
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var club = uow.Clubs.GetByOwner(ownerUserId);
 

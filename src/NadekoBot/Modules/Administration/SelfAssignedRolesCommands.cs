@@ -135,19 +135,19 @@ public partial class Administration
                     }
 
                     rolesStr.AppendLine("\t\t\t\t ⟪" + groupNameText + "⟫");
-                    foreach (var (Model, Role) in kvp.AsEnumerable())
+                    foreach (var (model, role) in kvp.AsEnumerable())
                     {
-                        if (Role is null)
+                        if (role is null)
                         {
                             continue;
                         }
                         else
                         {
                             // first character is invisible space
-                            if (Model.LevelRequirement == 0)
-                                rolesStr.AppendLine("‌‌   " + Role.Name);
+                            if (model.LevelRequirement == 0)
+                                rolesStr.AppendLine("‌‌   " + role.Name);
                             else
-                                rolesStr.AppendLine("‌‌   " + Role.Name + $" (lvl {Model.LevelRequirement}+)");
+                                rolesStr.AppendLine("‌‌   " + role.Name + $" (lvl {model.LevelRequirement}+)");
                         }
                     }
                     rolesStr.AppendLine();

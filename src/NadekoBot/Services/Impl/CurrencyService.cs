@@ -58,7 +58,7 @@ public class CurrencyService : ICurrencyService, INService
             throw new ArgumentException("You can't add negative amounts. Use RemoveAsync method for that.", nameof(amount));
         }
 
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             InternalChange(userId, userName, discrim, avatar, reason, amount, gamble, uow);
             await uow.SaveChangesAsync();
@@ -102,7 +102,7 @@ public class CurrencyService : ICurrencyService, INService
             throw new ArgumentException("Cannot perform bulk operation. Arrays are not of equal length.");
 
         var userIdHashSet = new HashSet<ulong>(idArray.Length);
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             for (var i = 0; i < idArray.Length; i++)
             {
@@ -124,7 +124,7 @@ public class CurrencyService : ICurrencyService, INService
             throw new ArgumentException("Cannot perform bulk operation. Arrays are not of equal length.");
 
         var userIdHashSet = new HashSet<ulong>(idArray.Length);
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             for (var i = 0; i < idArray.Length; i++)
             {
@@ -144,7 +144,7 @@ public class CurrencyService : ICurrencyService, INService
         }
 
         bool result;
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             result = InternalChange(userId, userName, userDiscrim, avatar, reason, -amount, gamble, uow);
             await uow.SaveChangesAsync();

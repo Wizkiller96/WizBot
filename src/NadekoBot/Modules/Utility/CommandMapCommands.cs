@@ -57,7 +57,7 @@ public partial class Utility
                     return;
                 }
 
-                using (var uow = _db.GetDbContext())
+                await using (var uow = _db.GetDbContext())
                 {
                     var config = uow.GuildConfigsForId(ctx.Guild.Id, set => set.Include(x => x.CommandAliases));
                     var toAdd = new CommandAlias()

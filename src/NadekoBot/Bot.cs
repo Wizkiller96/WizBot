@@ -279,7 +279,7 @@ public sealed class Bot
         var _ = Task.Run(async () =>
         {
             GuildConfig gc;
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 gc = uow.GuildConfigsForId(arg.Id);
             }

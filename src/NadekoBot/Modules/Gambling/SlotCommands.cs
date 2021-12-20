@@ -172,7 +172,7 @@ public partial class Gambling
                 Interlocked.Add(ref _totalPaidOut, result.Won);
 
                 long ownedAmount;
-                using (var uow = _db.GetDbContext())
+                await using (var uow = _db.GetDbContext())
                 {
                     ownedAmount = uow.Set<DiscordUser>()
                         .FirstOrDefault(x => x.UserId == ctx.User.Id)
@@ -243,7 +243,7 @@ public partial class Gambling
                             msg = GetText(strs.slot_jackpot(30));
                     }
 
-                    using (var imgStream = bgImage.ToStream())
+                    await using (var imgStream = bgImage.ToStream())
                     {
                         await ctx.Channel.SendFileAsync(imgStream,
                             filename: "result.png",

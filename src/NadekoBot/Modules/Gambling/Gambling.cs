@@ -187,7 +187,7 @@ public partial class Gambling : GamblingModule<GamblingService>
             return;
 
         var trs = new List<CurrencyTransaction>();
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             trs = uow.CurrencyTransactions.GetPageFor(userId, page);
         }
@@ -528,7 +528,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         {
             var now = DateTime.UtcNow;
 
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 cleanRichest = uow.DiscordUser.GetTopRichest(_client.CurrentUser.Id, 10_000);
             }
@@ -542,7 +542,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         }
         else
         {
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 cleanRichest = uow.DiscordUser.GetTopRichest(_client.CurrentUser.Id, 9, page).ToList();
             }

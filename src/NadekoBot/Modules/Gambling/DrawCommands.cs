@@ -80,7 +80,7 @@ public partial class Gambling
                 num = 10;
 
             var (ImageStream, ToSend) = await InternalDraw(num, ctx.Guild.Id).ConfigureAwait(false);
-            using (ImageStream)
+            await using (ImageStream)
             {
                 await ctx.Channel.SendFileAsync(ImageStream, num + " cards.jpg", ToSend).ConfigureAwait(false);
             }
@@ -95,7 +95,7 @@ public partial class Gambling
                 num = 10;
 
             var (ImageStream, ToSend) = await InternalDraw(num).ConfigureAwait(false);
-            using (ImageStream)
+            await using (ImageStream)
             {
                 await ctx.Channel.SendFileAsync(ImageStream, num + " cards.jpg", ToSend).ConfigureAwait(false);
             }

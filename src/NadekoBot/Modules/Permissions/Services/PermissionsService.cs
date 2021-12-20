@@ -71,7 +71,7 @@ public class PermissionService : ILateBlocker, INService
 
     public async Task AddPermissions(ulong guildId, params Permissionv2[] perms)
     {
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var config = uow.GcWithPermissionsv2For(guildId);
             //var orderedPerms = new PermissionsCollection<Permissionv2>(config.Permissions);
@@ -178,7 +178,7 @@ public class PermissionService : ILateBlocker, INService
 
     public async Task Reset(ulong guildId)
     {
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var config = uow.GcWithPermissionsv2For(guildId);
             config.Permissions = Permissionv2.GetDefaultPermlist;

@@ -379,7 +379,7 @@ public class Help : NadekoModule<HelpService>
                 });
             }
 
-            using var ms = new MemoryStream();
+            await using var ms = new MemoryStream();
             await oldVersionObject.ResponseStream.CopyToAsync(ms);
             var versionListString = Encoding.UTF8.GetString(ms.ToArray());
                 
@@ -415,7 +415,7 @@ public class Help : NadekoModule<HelpService>
         }
 
         // also send the file, but indented one, to chat
-        using var rDataStream = new MemoryStream(Encoding.ASCII.GetBytes(readableData));
+        await using var rDataStream = new MemoryStream(Encoding.ASCII.GetBytes(readableData));
         await ctx.Channel.SendFileAsync(rDataStream, "cmds.json", GetText(strs.commandlist_regen)).ConfigureAwait(false);
     }
 

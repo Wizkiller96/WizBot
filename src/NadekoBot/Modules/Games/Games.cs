@@ -66,7 +66,7 @@ public partial class Games : NadekoModule<GamesService>
             return;
         }
 
-        using (var imgStream = new MemoryStream())
+        await using (var imgStream = new MemoryStream())
         {
             lock (gr)
             {

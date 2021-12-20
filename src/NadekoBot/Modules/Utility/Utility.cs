@@ -441,7 +441,7 @@ public partial class Utility : NadekoModule
                     return msg;
                 })
             });
-        using (var stream = await JsonConvert.SerializeObject(grouping, Formatting.Indented).ToStream().ConfigureAwait(false))
+        await using (var stream = await JsonConvert.SerializeObject(grouping, Formatting.Indented).ToStream().ConfigureAwait(false))
         {
             await ctx.User.SendFileAsync(stream, title, title, false).ConfigureAwait(false);
         }

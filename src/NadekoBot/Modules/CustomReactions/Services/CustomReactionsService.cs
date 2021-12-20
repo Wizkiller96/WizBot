@@ -85,7 +85,7 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
 
     private async Task ReloadInternal(IReadOnlyList<ulong> allGuildIds)
     {
-        using var uow = _db.GetDbContext();
+        await using var uow = _db.GetDbContext();
         var guildItems = await uow.CustomReactions
             .AsNoTracking()
             .Where(x => allGuildIds.Contains(x.GuildId.Value))
@@ -190,7 +190,7 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
 
     private async Task OnJoinedGuild(GuildConfig gc)
     {
-        using var uow = _db.GetDbContext();
+        await using var uow = _db.GetDbContext();
         var crs = await uow
             .CustomReactions
             .AsNoTracking()
@@ -217,7 +217,7 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
         if (cr.Response.Contains("%target%", StringComparison.OrdinalIgnoreCase))
             cr.AllowTarget = true;
 
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             uow.CustomReactions.Add(cr);
             await uow.SaveChangesAsync();
@@ -230,7 +230,7 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
 
     public async Task<CustomReaction> EditAsync(ulong? guildId, int id, string message)
     {
-        using var uow = _db.GetDbContext();
+        await using var uow = _db.GetDbContext();
         var cr = uow.CustomReactions.GetById(id);
 
         if (cr is null || cr.GuildId != guildId)
@@ -258,7 +258,7 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
 
     public async Task<CustomReaction> DeleteAsync(ulong? guildId, int id)
     {
-        using var uow = _db.GetDbContext();
+        await using var uow = _db.GetDbContext();
         var toDelete = uow.CustomReactions.GetById(id);
             
         if (toDelete is null)
@@ -477,7 +477,7 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
     public async Task ResetCrReactions(ulong? maybeGuildId, int id)
     {
         CustomReaction cr;
-        using var uow = _db.GetDbContext();
+        await using var uow = _db.GetDbContext();
         cr = uow.CustomReactions.GetById(id);
         if (cr is null)
             return;
@@ -594,7 +594,7 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
     public async Task SetCrReactions(ulong? guildId, int id, IEnumerable<string> emojis)
     {
         CustomReaction cr;
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             cr = uow.CustomReactions.GetById(id);
             if (cr is null)
@@ -612,7 +612,7 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
     {
         var newVal = false;
         CustomReaction cr;
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             cr = uow.CustomReactions.GetById(id);
             if (cr is null)
@@ -711,7 +711,7 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
             return false;
         }
 
-        using var uow = _db.GetDbContext();
+        await using var uow = _db.GetDbContext();
         foreach (var entry in data)
         {
             var trigger = entry.Key;

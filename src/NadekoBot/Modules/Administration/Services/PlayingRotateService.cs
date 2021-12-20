@@ -52,7 +52,7 @@ public sealed class PlayingRotateService : INService
             if (!_bss.Data.RotateStatuses) return;
 
             IReadOnlyList<RotatingPlayingStatus> rotatingStatuses;
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 rotatingStatuses = uow.RotatingStatus
                     .AsNoTracking()
@@ -81,7 +81,7 @@ public sealed class PlayingRotateService : INService
         if (index < 0)
             throw new ArgumentOutOfRangeException(nameof(index));
 
-        using var uow = _db.GetDbContext();
+        await using var uow = _db.GetDbContext();
         var toRemove = await uow.RotatingStatus
             .AsQueryable()
             .AsNoTracking()
@@ -98,7 +98,7 @@ public sealed class PlayingRotateService : INService
 
     public async Task AddPlaying(ActivityType t, string status)
     {
-        using var uow = _db.GetDbContext();
+        await using var uow = _db.GetDbContext();
         var toAdd = new RotatingPlayingStatus {Status = status, Type = t};
         uow.Add(toAdd);
         await uow.SaveChangesAsync();

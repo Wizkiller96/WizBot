@@ -33,7 +33,7 @@ public class ShopService : IShopService, INService
         if (newPrice <= 0)
             throw new ArgumentOutOfRangeException(nameof(newPrice));
 
-        using var uow = _db.GetDbContext();
+        await using var uow = _db.GetDbContext();
         var entries = GetEntriesInternal(uow, guildId);
 
         if (index >= entries.Count)
@@ -51,7 +51,7 @@ public class ShopService : IShopService, INService
         if (string.IsNullOrWhiteSpace(newName))
             throw new ArgumentNullException(nameof(newName));
 
-        using var uow = _db.GetDbContext();
+        await using var uow = _db.GetDbContext();
         var entries = GetEntriesInternal(uow, guildId);
 
         if (index >= entries.Count)
@@ -69,7 +69,7 @@ public class ShopService : IShopService, INService
         if (index2 < 0)
             throw new ArgumentOutOfRangeException(nameof(index2));
 
-        using var uow = _db.GetDbContext();
+        await using var uow = _db.GetDbContext();
         var entries = GetEntriesInternal(uow, guildId);
 
         if (index1 >= entries.Count || index2 >= entries.Count || index1 == index2)
@@ -89,7 +89,7 @@ public class ShopService : IShopService, INService
         if (toIndex < 0)
             throw new ArgumentOutOfRangeException(nameof(toIndex));
 
-        using var uow = _db.GetDbContext();
+        await using var uow = _db.GetDbContext();
         var entries = GetEntriesInternal(uow, guildId);
 
         if (fromIndex >= entries.Count || toIndex >= entries.Count || fromIndex == toIndex)

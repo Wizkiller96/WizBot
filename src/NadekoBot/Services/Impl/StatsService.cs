@@ -16,7 +16,7 @@ public class StatsService : IStatsService, IReadyExecutor, INService, IDisposabl
     private readonly IBotCredentials _creds;
     private readonly DateTime _started;
 
-    public const string BotVersion = "3.0.11";
+    public const string BotVersion = "4.0.0";
     public string Author => "Kwoth#2452";
     public string Library => "Discord.Net";
     public double MessagesPerSecond => MessageCounter / GetUptime().TotalSeconds;
@@ -42,7 +42,7 @@ public class StatsService : IStatsService, IReadyExecutor, INService, IDisposabl
 
         _started = DateTime.UtcNow;
         _client.MessageReceived += _ => Task.FromResult(Interlocked.Increment(ref _messageCounter));
-        cmdHandler.CommandExecuted += (_, e) => Task.FromResult(Interlocked.Increment(ref _commandsRan));
+        cmdHandler.CommandExecuted += (_, _) => Task.FromResult(Interlocked.Increment(ref _commandsRan));
 
         _client.ChannelCreated += c =>
         {

@@ -54,7 +54,8 @@ public class PollRunner
             var _ = OnVoted?.Invoke(msg, usr);
         }
         finally { _locker.Release(); }
-        using (var uow = _db.GetDbContext())
+
+        await using (var uow = _db.GetDbContext())
         {
             var trackedPoll = uow.Poll.FirstOrDefault(x => x.Id == Poll.Id);
             trackedPoll.Votes.Add(voteObj);

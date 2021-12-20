@@ -55,7 +55,7 @@ public partial class Gambling
                 }
             }
             using (var img = imgs.Merge(out var format))
-            using (var stream = img.ToStream(format))
+            await using (var stream = img.ToStream(format))
             {
                 foreach (var i in imgs)
                 {

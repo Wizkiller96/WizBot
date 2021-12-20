@@ -39,8 +39,8 @@ public class WaifuService : INService
             return false;
 
         var settings = _gss.Data;
-            
-        using (var uow = _db.GetDbContext())
+
+        await using (var uow = _db.GetDbContext())
         {
             var waifu = uow.WaifuInfo.ByWaifuUserId(waifuId);
             var ownerUser = uow.GetOrCreateUser(owner);
@@ -116,7 +116,7 @@ public class WaifuService : INService
 
     public async Task<bool> TryReset(IUser user)
     {
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var price = GetResetPrice(user);
             if (!await _cs.RemoveAsync(user.Id, "Waifu Reset", price, gamble: true))
@@ -161,7 +161,7 @@ public class WaifuService : INService
         WaifuClaimResult result;
         WaifuInfo w;
         bool isAffinity;
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             w = uow.WaifuInfo.ByWaifuUserId(target.Id);
             isAffinity = (w?.Affinity?.UserId == user.Id);
@@ -251,7 +251,7 @@ public class WaifuService : INService
         DiscordUser oldAff = null;
         var success = false;
         TimeSpan? remaining = null;
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var w = uow.WaifuInfo.ByWaifuUserId(user.Id);
             var newAff = target is null ? null : uow.GetOrCreateUser(target);
@@ -323,7 +323,7 @@ public class WaifuService : INService
         TimeSpan? remaining = null;
         long amount = 0;
         WaifuInfo w = null;
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             w = uow.WaifuInfo.ByWaifuUserId(targetId);
             var now = DateTime.UtcNow;
@@ -375,7 +375,7 @@ public class WaifuService : INService
             return false;
         }
 
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var w = uow.WaifuInfo.ByWaifuUserId(giftedWaifu.Id, 
                 set => set.Include(x => x.Items)

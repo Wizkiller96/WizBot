@@ -219,7 +219,7 @@ public class PlantPickService : INService
                         var pw = config.Generation.HasPassword ? GenerateCurrencyPassword().ToUpperInvariant() : null;
 
                         IUserMessage sent;
-                        using (var stream = GetRandomCurrencyImage(pw, out var ext))
+                        await using (var stream = GetRandomCurrencyImage(pw, out var ext))
                         {
                             sent = await channel.SendFileAsync(stream, $"currency_image.{ext}", toSend).ConfigureAwait(false);
                         }
@@ -259,7 +259,7 @@ public class PlantPickService : INService
         {
             long amount;
             ulong[] ids;
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 // this method will sum all plants with that password,
                 // remove them, and get messageids of the removed plants
@@ -318,7 +318,7 @@ public class PlantPickService : INService
                 msgToSend += " " + GetText(gid, strs.pick_sn(prefix));
 
             //get the image
-            using (var stream = GetRandomCurrencyImage(pass, out var ext))
+            await using (var stream = GetRandomCurrencyImage(pass, out var ext))
             {
                 // send it
                 var msg = await ch.SendFileAsync(stream, $"img.{ext}", msgToSend).ConfigureAwait(false);
@@ -362,7 +362,7 @@ public class PlantPickService : INService
 
     private async Task AddPlantToDatabase(ulong gid, ulong cid, ulong uid, ulong mid, long amount, string pass)
     {
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             uow.PlantedCurrency.Add(new()
             {

@@ -44,7 +44,7 @@ public partial class Utility
                 return;
 
             IEnumerable<Quote> quotes;
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 quotes = uow.Quotes.GetGroup(ctx.Guild.Id, page, order);
             }
@@ -67,7 +67,7 @@ public partial class Utility
             keyword = keyword.ToUpperInvariant();
 
             Quote quote;
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 quote = await uow.Quotes.GetRandomQuoteByKeywordAsync(ctx.Guild.Id, keyword);
                 //if (quote != null)
@@ -95,7 +95,7 @@ public partial class Utility
         public async Task QuoteShow(int id)
         {
             Quote quote;
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 quote = uow.Quotes.GetById(id);
                 if (quote?.GuildId != ctx.Guild.Id)
@@ -132,7 +132,7 @@ public partial class Utility
             keyword = keyword.ToUpperInvariant();
 
             Quote keywordquote;
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 keywordquote = await uow.Quotes.SearchQuoteKeywordTextAsync(ctx.Guild.Id, keyword, text);
             }
@@ -157,7 +157,7 @@ public partial class Utility
                 .WithDefault(Context)
                 .Build();
 
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 quote = uow.Quotes.GetById(id);
             }
@@ -186,7 +186,7 @@ public partial class Utility
             keyword = keyword.ToUpperInvariant();
             
             Quote q;
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 uow.Quotes.Add(q = new()
                 {
@@ -209,7 +209,7 @@ public partial class Utility
 
             var success = false;
             string response;
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 var q = uow.Quotes.GetById(id);
 
@@ -241,7 +241,7 @@ public partial class Utility
 
             keyword = keyword.ToUpperInvariant();
 
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 uow.Quotes.RemoveAllByKeyword(ctx.Guild.Id, keyword.ToUpperInvariant());
 
@@ -289,7 +289,7 @@ public partial class Utility
         public async Task QuotesExport()
         {
             IEnumerable<Quote> quotes;
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 quotes = uow.Quotes
                     .GetForGuild(ctx.Guild.Id)

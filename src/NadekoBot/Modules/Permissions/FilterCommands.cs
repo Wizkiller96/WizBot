@@ -40,7 +40,7 @@ public partial class Permissions
             var channel = (ITextChannel)ctx.Channel;
 
             bool enabled;
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 var config = uow.GuildConfigsForId(channel.Guild.Id, set => set);
                 enabled = config.FilterInvites = !config.FilterInvites;
@@ -66,7 +66,7 @@ public partial class Permissions
             var channel = (ITextChannel)ctx.Channel;
 
             FilterChannelId removed;
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 var config = uow.GuildConfigsForId(channel.Guild.Id, set => set.Include(gc => gc.FilterInvitesChannelIds));
                 var match = new FilterChannelId()
@@ -105,7 +105,7 @@ public partial class Permissions
             var channel = (ITextChannel)ctx.Channel;
 
             bool enabled;
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 var config = uow.GuildConfigsForId(channel.Guild.Id, set => set);
                 enabled = config.FilterLinks = !config.FilterLinks;
@@ -131,7 +131,7 @@ public partial class Permissions
             var channel = (ITextChannel)ctx.Channel;
 
             FilterLinksChannelId removed;
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 var config = uow.GuildConfigsForId(channel.Guild.Id, set => set.Include(gc => gc.FilterLinksChannelIds));
                 var match = new FilterLinksChannelId()
@@ -170,7 +170,7 @@ public partial class Permissions
             var channel = (ITextChannel)ctx.Channel;
 
             bool enabled;
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 var config = uow.GuildConfigsForId(channel.Guild.Id, set => set);
                 enabled = config.FilterWords = !config.FilterWords;
@@ -196,7 +196,7 @@ public partial class Permissions
             var channel = (ITextChannel)ctx.Channel;
 
             FilterChannelId removed;
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 var config = uow.GuildConfigsForId(channel.Guild.Id, set => set.Include(gc => gc.FilterWordsChannelIds));
 
@@ -240,7 +240,7 @@ public partial class Permissions
                 return;
 
             FilteredWord removed;
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 var config = uow.GuildConfigsForId(channel.Guild.Id, set => set.Include(gc => gc.FilteredWords));
 

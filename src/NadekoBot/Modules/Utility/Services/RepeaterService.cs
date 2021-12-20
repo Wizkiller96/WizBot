@@ -138,7 +138,7 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
 
     public async Task<bool> TriggerExternal(ulong guildId, int index)
     {
-        using var uow = _db.GetDbContext();
+        await using var uow = _db.GetDbContext();
             
         var toTrigger = await uow.Repeaters
             .AsNoTracking()
@@ -290,8 +290,8 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
     private async Task RemoveRepeaterInternal(Repeater r)
     {
         _noRedundant.TryRemove(r.Id);
-            
-        using var uow = _db.GetDbContext();
+
+        await using var uow = _db.GetDbContext();
         await uow
             .Repeaters
             .DeleteAsync(x => x.Id == r.Id);
@@ -314,7 +314,7 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
 
     private async Task SetRepeaterLastMessageInternal(int repeaterId, ulong lastMsgId)
     {
-        using var uow = _db.GetDbContext();
+        await using var uow = _db.GetDbContext();
         await uow.Repeaters
             .AsQueryable()
             .Where(x => x.Id == repeaterId)
@@ -345,7 +345,7 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
             DateAdded = DateTime.UtcNow
         };
 
-        using var uow = _db.GetDbContext();
+        await using var uow = _db.GetDbContext();
 
         if (await uow.Repeaters.CountAsyncEF(x => x.GuildId == guildId) < MAX_REPEATERS)
             uow.Repeaters.Add(rep);
@@ -365,8 +365,8 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
     {
         if (index > MAX_REPEATERS * 2)
             throw new ArgumentOutOfRangeException(nameof(index));
-            
-        using var uow = _db.GetDbContext();
+
+        await using var uow = _db.GetDbContext();
         var toRemove = await uow.Repeaters
             .AsNoTracking()
             .Where(x => x.GuildId == guildId)
@@ -398,7 +398,7 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
 
     public async Task<bool?> ToggleRedundantAsync(ulong guildId, int index)
     {
-        using var uow = _db.GetDbContext();
+        await using var uow = _db.GetDbContext();
         var toToggle = await uow
             .Repeaters
             .AsQueryable()

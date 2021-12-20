@@ -206,7 +206,7 @@ public sealed class LogCommandService : ILogCommandService
 
     public async Task LogServer(ulong guildId, ulong channelId, bool value)
     {
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var logSetting = uow.LogSettingsFor(guildId);
                 

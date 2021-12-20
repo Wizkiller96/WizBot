@@ -89,7 +89,7 @@ public partial class Gambling
             if (index < 0)
                 return;
             ShopEntry entry;
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 var config = uow.GuildConfigsForId(ctx.Guild.Id, set => set
                     .Include(x => x.ShopEntries)
@@ -159,7 +159,7 @@ public partial class Gambling
 
                 if (await _cs.RemoveAsync(ctx.User.Id, $"Shop purchase - {entry.Type}", entry.Price).ConfigureAwait(false))
                 {
-                    using (var uow = _db.GetDbContext())
+                    await using (var uow = _db.GetDbContext())
                     {
                         var x = uow.Set<ShopEntryItem>().Remove(item);
                         uow.SaveChanges();
@@ -183,7 +183,7 @@ public partial class Gambling
                         await _cs.AddAsync(ctx.User.Id,
                             $"Shop error refund - {entry.Name}",
                             entry.Price).ConfigureAwait(false);
-                        using (var uow = _db.GetDbContext())
+                        await using (var uow = _db.GetDbContext())
                         {
                             var entries = new IndexedCollection<ShopEntry>(uow.GuildConfigsForId(ctx.Guild.Id,
                                 set => set.Include(x => x.ShopEntries)
@@ -232,7 +232,7 @@ public partial class Gambling
                 RoleId = role.Id,
                 RoleName = role.Name
             };
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 var entries = new IndexedCollection<ShopEntry>(uow.GuildConfigsForId(ctx.Guild.Id,
                     set => set.Include(x => x.ShopEntries)
@@ -263,7 +263,7 @@ public partial class Gambling
                 AuthorId = ctx.User.Id,
                 Items = new(),
             };
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 var entries = new IndexedCollection<ShopEntry>(uow.GuildConfigsForId(ctx.Guild.Id,
                     set => set.Include(x => x.ShopEntries)
@@ -294,7 +294,7 @@ public partial class Gambling
             ShopEntry entry;
             var rightType = false;
             var added = false;
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 var entries = new IndexedCollection<ShopEntry>(uow.GuildConfigsForId(ctx.Guild.Id,
                     set => set.Include(x => x.ShopEntries)
@@ -327,7 +327,7 @@ public partial class Gambling
             if (index < 0)
                 return;
             ShopEntry removed;
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 var config = uow.GuildConfigsForId(ctx.Guild.Id, set => set
                     .Include(x => x.ShopEntries)

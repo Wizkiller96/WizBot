@@ -70,7 +70,7 @@ public class StreamRoleService : INService
         userName.ThrowIfNull(nameof(userName));
 
         var success = false;
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var streamRoleSettings = uow.GetStreamRoleSettings(guild.Id);
 
@@ -135,7 +135,7 @@ public class StreamRoleService : INService
     {
         keyword = keyword?.Trim()?.ToLowerInvariant();
 
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var streamRoleSettings = uow.GetStreamRoleSettings(guild.Id);
 
@@ -181,7 +181,7 @@ public class StreamRoleService : INService
         addRole.ThrowIfNull(nameof(addRole));
 
         StreamRoleSettings setting;
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var streamRoleSettings = uow.GetStreamRoleSettings(fromRole.Guild.Id);
 
@@ -208,7 +208,7 @@ public class StreamRoleService : INService
     /// <param name="guildId">Guild's Id</param>
     public async Task StopStreamRole(IGuild guild, bool cleanup = false)
     {
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var streamRoleSettings = uow.GetStreamRoleSettings(guild.Id);
             streamRoleSettings.Enabled = false;

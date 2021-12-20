@@ -42,7 +42,7 @@ DELETE FROM Clubs;";
     public async Task<int> ExecuteSql(string sql)
     {
         int res;
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             res = await uow.Database.ExecuteSqlRawAsync(sql);
         }
@@ -92,7 +92,7 @@ DELETE FROM Clubs;";
 
     public async Task PurgeUserAsync(ulong userId)
     {
-        using var uow = _db.GetDbContext();
+        await using var uow = _db.GetDbContext();
             
         // get waifu info
         var wi = await uow.Set<WaifuInfo>()

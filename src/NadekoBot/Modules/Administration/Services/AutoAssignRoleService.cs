@@ -103,7 +103,7 @@ public sealed class AutoAssignRoleService : INService
 
     public async Task<IReadOnlyList<ulong>> ToggleAarAsync(ulong guildId, ulong roleId)
     {
-        using var uow = _db.GetDbContext();
+        await using var uow = _db.GetDbContext();
         var gc = uow.GuildConfigsForId(guildId, set => set);
         var roles = gc.GetAutoAssignableRoles();
         if(!roles.Remove(roleId) && roles.Count < 3)
@@ -122,7 +122,7 @@ public sealed class AutoAssignRoleService : INService
 
     public async Task DisableAarAsync(ulong guildId)
     {
-        using var uow = _db.GetDbContext();
+        await using var uow = _db.GetDbContext();
             
         await uow
             .GuildConfigs
@@ -137,7 +137,7 @@ public sealed class AutoAssignRoleService : INService
 
     public async Task SetAarRolesAsync(ulong guildId, IEnumerable<ulong> newRoles)
     {
-        using var uow = _db.GetDbContext();
+        await using var uow = _db.GetDbContext();
             
         var gc = uow.GuildConfigsForId(guildId, set => set);
         gc.SetAutoAssignableRoles(newRoles);

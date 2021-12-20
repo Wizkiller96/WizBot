@@ -32,7 +32,7 @@ public partial class Games
 
             if (_service.ChatterBotGuilds.TryRemove(channel.Guild.Id, out _))
             {
-                using (var uow = _db.GetDbContext())
+                await using (var uow = _db.GetDbContext())
                 {
                     uow.GuildConfigs.SetCleverbotEnabled(ctx.Guild.Id, false);
                     await uow.SaveChangesAsync();
@@ -43,7 +43,7 @@ public partial class Games
 
             _service.ChatterBotGuilds.TryAdd(channel.Guild.Id, new(() => _service.CreateSession(), true));
 
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 uow.GuildConfigs.SetCleverbotEnabled(ctx.Guild.Id, true);
                 await uow.SaveChangesAsync();

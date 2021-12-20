@@ -32,7 +32,6 @@ public class FeedsService : INService
                 .AsQueryable()
                 .Where(x => guildConfigIds.Contains(x.Id))
                 .Include(x => x.FeedSubs)
-                .ThenInclude(x => x.GuildConfig)
                 .ToList()
                 .SelectMany(x => x.FeedSubs)
                 .GroupBy(x => x.Url.ToLower())

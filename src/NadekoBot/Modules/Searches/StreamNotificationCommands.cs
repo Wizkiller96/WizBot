@@ -84,7 +84,7 @@ public partial class Searches
             }
 
             var streams = new List<FollowedStream>();
-            using (var uow = _db.GetDbContext())
+            await using (var uow = _db.GetDbContext())
             {
                 var all = uow
                     .GuildConfigsForId(ctx.Guild.Id, set => set.Include(gc => gc.FollowedStreams))

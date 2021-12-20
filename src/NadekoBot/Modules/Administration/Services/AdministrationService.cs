@@ -90,7 +90,7 @@ public class AdministrationService : INService
 
     public async Task SetDelMsgOnCmdState(ulong guildId, ulong chId, Administration.State newState)
     {
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             var conf = uow.GuildConfigsForId(guildId,
                 set => set.Include(x => x.DelMsgOnCmdChannels));
