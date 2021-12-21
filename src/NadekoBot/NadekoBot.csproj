@@ -53,6 +53,7 @@
     <PackageReference Include="StackExchange.Redis" Version="2.2.88" />
     <PackageReference Include="YamlDotNet" Version="11.2.1" />
     <PackageReference Include="linq2db.EntityFrameworkCore" Version="6.6.1" />
+    <PackageReference Include="Humanizer" Version="2.13.14" />
   </ItemGroup>
 
   <ItemGroup>

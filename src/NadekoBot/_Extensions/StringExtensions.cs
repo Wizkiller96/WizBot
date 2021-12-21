@@ -27,27 +27,10 @@ public static class StringExtensions
         return Regex.Replace(input, "<.*?>", String.Empty);
     }
 
-    // todo future maybe use humanizer lib for this kind of work
     public static string TrimTo(this string str, int maxLength, bool hideDots = false)
-    {
-        if (maxLength < 0)
-            throw new ArgumentOutOfRangeException(nameof(maxLength), $"Argument {nameof(maxLength)} can't be negative.");
-        if (maxLength == 0)
-            return string.Empty;
-        if (maxLength <= 3)
-            return string.Concat(str.Select(c => '.'));
-        if (str.Length < maxLength)
-            return str;
-
-        if (hideDots)
-        {
-            return string.Concat(str.Take(maxLength));
-        }
-        else
-        {
-            return string.Concat(str.Take(maxLength - 1)) + "…";
-        }
-    }
+        => hideDots 
+            ? str?.Truncate(maxLength, string.Empty)
+            : str?.Truncate(maxLength);
 
     public static string ToTitleCase(this string str)
     {
@@ -61,22 +44,6 @@ public static class StringExtensions
         return string.Join(" ", tokens)
             .Replace(" Of ", " of ")
             .Replace(" The ", " the ");
-    }
-
-    /// <summary>
-    /// Removes trailing S or ES (if specified) on the given string if the num is 1
-    /// </summary>
-    /// <param name="str"></param>
-    /// <param name="num"></param>
-    /// <param name="es"></param>
-    /// <returns>String with the correct singular/plural form</returns>
-    public static string SnPl(this string str, int? num, bool es = false)
-    {
-        if (str is null)
-            throw new ArgumentNullException(nameof(str));
-        if (num is null)
-            throw new ArgumentNullException(nameof(num));
-        return num == 1 ? str.Remove(str.Length - 1, es ? 2 : 1) : str;
     }
 
     //http://www.dotnetperls.com/levenshtein

@@ -1,4 +1,5 @@
 using CommandLine;
+using Humanizer.Localisation;
 using NadekoBot.Common.TypeReaders.Models;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Extensions;
@@ -463,7 +464,11 @@ public partial class Administration
                 .WithTitle("⛔️ " + GetText(strs.banned_user))
                 .AddField(GetText(strs.username), user.ToString(), true)
                 .AddField("ID", user.Id.ToString(), true)
-                .AddField(GetText(strs.duration), $"{time.Time.Days}d {time.Time.Hours}h {time.Time.Minutes}m", true);
+                .AddField(GetText(strs.duration),
+                    time.Time.Humanize(3,
+                        minUnit: TimeUnit.Minute,
+                        culture: _cultureInfo),
+                    true);
 
             if (dmFailed)
             {

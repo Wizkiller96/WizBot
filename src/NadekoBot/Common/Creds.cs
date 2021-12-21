@@ -111,7 +111,6 @@ Windows default
         public string ConnectionString { get; set; }
     }
 
-    // todo fixup patreon
     public sealed record PatreonSettings
     {
         public string ClientId { get; set; }

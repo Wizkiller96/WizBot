@@ -4,7 +4,6 @@ using NadekoBot.Db;
 
 namespace NadekoBot.Services;
 
-// todo future use guild locale more in the code (from guild settings) (for dates, currency, etc?)
 public class Localization : ILocalization, INService
 {
     private readonly BotConfigService _bss;

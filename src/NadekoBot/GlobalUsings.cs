@@ -1,6 +1,8 @@
 ﻿global using Serilog;
+global using Humanizer;
 
 global using NadekoBot;
+
 global using NadekoBot.Services;
 global using NadekoBot.Common;
 global using NadekoBot.Common.Attributes;

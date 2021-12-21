@@ -1,4 +1,5 @@
-﻿using NadekoBot.Services.Database.Models;
+﻿using Humanizer.Localisation;
+using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Administration.Services;
@@ -85,14 +86,14 @@ public partial class Utility
         [UserPerm(GuildPerm.Administrator)]
         [Priority(0)]
         public Task RemindList(Server _, int page = 1)
-            => RemindList(page, true);
+            => RemindListInternal(page, true);
             
         [NadekoCommand, Aliases]
         [Priority(1)]
         public Task RemindList(int page = 1)
-            => RemindList(page, false);
+            => RemindListInternal(page, false);
             
-        private async Task RemindList(int page, bool isServer)
+        private async Task RemindListInternal(int page, bool isServer)
         {
             if (--page < 0)
                 return;
@@ -126,7 +127,8 @@ public partial class Utility
                     var when = rem.When;
                     var diff = when - DateTime.UtcNow;
                     embed.AddField(
-                        $"#{++i + page * 10} {rem.When:HH:mm yyyy-MM-dd} UTC (in {(int) diff.TotalHours}h {(int) diff.Minutes}m)",
+                        $"#{++i + page * 10} {rem.When:HH:mm yyyy-MM-dd} UTC " +
+                        $"(in {diff.Humanize(2, minUnit: TimeUnit.Minute, culture: _cultureInfo)})",
                         $@"`Target:` {(rem.IsPrivate ? "DM" : "Channel")}
 `TargetId:` {rem.ChannelId}
 `Message:` {rem.Message?.TrimTo(50)}", false);
@@ -229,7 +231,7 @@ public partial class Utility
                     "⏰ " + GetText(strs.remind(
                         Format.Bold(!isPrivate ? $"<#{targetId}>" : ctx.User.Username),
                         Format.Bold(message),
-                        $"{ts.Days}d {ts.Hours}h {ts.Minutes}min",
+                        ts.Humanize(3, minUnit: TimeUnit.Second, culture: _cultureInfo),
                         gTime, gTime))).ConfigureAwait(false);
             }
             catch
