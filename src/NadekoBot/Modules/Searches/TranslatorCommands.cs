@@ -17,7 +17,7 @@ namespace NadekoBot.Modules.Searches
                 try
                 {
                     await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
-                    var translation = await _service.Translate(from, to, text).ConfigureAwait(false);
+                    var translation = await _service.Translate(from.ToLower(), to.ToLower(), text).ConfigureAwait(false);
 
                     var embed = _eb.Create(ctx)
                         .WithOkColor()
