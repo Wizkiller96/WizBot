@@ -1,10 +1,6 @@
-﻿using Discord.Commands;
-using NadekoBot.Extensions;
+﻿using NadekoBot.Extensions;
 using NadekoBot.Modules.Searches.Services;
-using System.Threading.Tasks;
-using NadekoBot.Common.Attributes;
 using NadekoBot.Common.Pokemon;
-using NadekoBot.Services;
 
 namespace NadekoBot.Modules.Searches;
 

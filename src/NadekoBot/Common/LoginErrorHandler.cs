@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using System.Runtime.CompilerServices;
-using Discord.Net;
 
 namespace NadekoBot.Common;
 

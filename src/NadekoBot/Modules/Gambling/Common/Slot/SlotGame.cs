@@ -1,6 +1,4 @@
-﻿using NadekoBot.Common;
-
-namespace NadekoBot.Modules.Gambling.Common.Slot;
+﻿namespace NadekoBot.Modules.Gambling.Common.Slot;
 
 public class SlotGame
 {

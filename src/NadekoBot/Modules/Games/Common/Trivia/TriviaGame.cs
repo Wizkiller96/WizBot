@@ -1,12 +1,5 @@
-﻿using System.Collections.Concurrent;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Discord;
-using Discord.Net;
-using Discord.WebSocket;
+﻿using System.Text;
 using NadekoBot.Extensions;
-using NadekoBot.Services;
 
 namespace NadekoBot.Modules.Games.Common.Trivia;
 

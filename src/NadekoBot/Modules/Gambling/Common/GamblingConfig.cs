@@ -1,5 +1,4 @@
 ﻿using Cloneable;
-using NadekoBot.Common;
 using NadekoBot.Common.Yml;
 using SixLabors.ImageSharp.PixelFormats;
 using YamlDotNet.Serialization;

@@ -2,15 +2,11 @@
 using Google.Apis.Customsearch.v1;
 using Google.Apis.Services;
 using Google.Apis.Urlshortener.v1;
-using Google.Apis.Urlshortener.v1.Data;
 using Google.Apis.YouTube.v3;
-using NadekoBot.Common;
 using NadekoBot.Extensions;
 using Newtonsoft.Json.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace NadekoBot.Services;
 

@@ -1,8 +1,4 @@
-﻿using System.IO;
-using System.Net.Http;
-using NadekoBot.Common;
-using NadekoBot.Services;
-using Image = SixLabors.ImageSharp.Image;
+﻿using Image = SixLabors.ImageSharp.Image;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 

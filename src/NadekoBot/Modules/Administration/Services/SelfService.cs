@@ -1,16 +1,8 @@
 ﻿using System.Collections.Immutable;
-using System.Threading.Tasks;
-using Discord;
-using Discord.WebSocket;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Extensions;
-using NadekoBot.Services;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Services.Database.Models;
-using System.Threading;
-using System.Collections.Concurrent;
-using System.Net.Http;
-using NadekoBot.Common;
 
 namespace NadekoBot.Modules.Administration.Services;
 

@@ -1,6 +1,4 @@
-﻿using Discord;
-
-namespace NadekoBot.Modules.Xp.Services;
+﻿namespace NadekoBot.Modules.Xp.Services;
 
 public class UserCacheItem
 {

@@ -1,6 +1,5 @@
 ﻿using NadekoBot.Db.Models;
 using Microsoft.EntityFrameworkCore;
-using Discord;
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using NadekoBot.Services.Database;

@@ -1,7 +1,4 @@
-﻿using System.Threading.Tasks;
-using Discord;
-
-namespace NadekoBot.Common.ModuleBehaviors;
+﻿namespace NadekoBot.Common.ModuleBehaviors;
 
 /// <summary>
 /// Last thing to be executed, won't stop further executions

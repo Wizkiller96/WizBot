@@ -1,9 +1,4 @@
-﻿using Discord.Commands;
-using System.Threading.Tasks;
-using NadekoBot.Common;
-using NadekoBot.Common.Attributes;
-
-namespace NadekoBot.Modules.Searches;
+﻿namespace NadekoBot.Modules.Searches;
 
 public partial class Searches
 {

@@ -1,6 +1,4 @@
 ﻿#nullable enable
-using System.Threading.Tasks;
-
 namespace NadekoBot.Modules.Music;
 
 public sealed class RemoteTrackInfo : ITrackInfo

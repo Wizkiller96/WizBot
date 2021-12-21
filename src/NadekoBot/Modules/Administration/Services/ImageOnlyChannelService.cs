@@ -1,16 +1,10 @@
-﻿using System.Collections.Concurrent;
-using System.Net;
+﻿using System.Net;
 using System.Threading.Channels;
-using System.Threading.Tasks;
-using Discord;
-using Discord.Net;
-using Discord.WebSocket;
 using LinqToDB;
 using Microsoft.Extensions.Caching.Memory;
 using NadekoBot.Common.Collections;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Extensions;
-using NadekoBot.Services;
 
 namespace NadekoBot.Modules.Administration.Services;
 

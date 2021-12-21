@@ -1,10 +1,6 @@
-﻿using NadekoBot.Common;
-using NadekoBot.Extensions;
+﻿using NadekoBot.Extensions;
 using Newtonsoft.Json;
 using StackExchange.Redis;
-using System.IO;
-using System.Net.Http;
-using System.Threading.Tasks;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Common.Yml;
 

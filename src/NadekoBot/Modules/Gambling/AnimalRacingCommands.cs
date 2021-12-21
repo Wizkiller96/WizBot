@@ -1,11 +1,4 @@
-﻿using System.Threading.Tasks;
-using Discord;
-using Discord.Commands;
-using Discord.WebSocket;
-using NadekoBot.Common.Attributes;
-using NadekoBot.Common;
-using NadekoBot.Services;
-using NadekoBot.Modules.Gambling.Common;
+﻿using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Common.AnimalRacing;
 using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Extensions;

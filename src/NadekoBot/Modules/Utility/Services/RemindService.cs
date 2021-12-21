@@ -1,10 +1,6 @@
 ﻿using System.Text.RegularExpressions;
-using Discord;
-using Discord.WebSocket;
 using NadekoBot.Extensions;
-using NadekoBot.Services;
 using NadekoBot.Services.Database.Models;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 namespace NadekoBot.Modules.Utility.Services;

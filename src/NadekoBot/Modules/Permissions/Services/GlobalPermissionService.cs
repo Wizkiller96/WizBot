@@ -1,7 +1,4 @@
-﻿using System.Threading.Tasks;
-using Discord.Commands;
-using NadekoBot.Common.ModuleBehaviors;
-using NadekoBot.Services;
+﻿using NadekoBot.Common.ModuleBehaviors;
 
 namespace NadekoBot.Modules.Permissions.Services;
 

@@ -1,13 +1,7 @@
-using Discord;
-using Discord.Commands;
-using NadekoBot.Common;
-using NadekoBot.Common.Attributes;
 using NadekoBot.Extensions;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using NadekoBot.Services;
 using Image = SixLabors.ImageSharp.Image;
 
 namespace NadekoBot.Modules.Gambling;

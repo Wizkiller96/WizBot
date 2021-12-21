@@ -1,10 +1,6 @@
 ﻿using AngleSharp;
-using Discord;
-using Discord.Commands;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Searches.Services;
-using System.Threading.Tasks;
-using NadekoBot.Common.Attributes;
 using AngleSharp.Html.Dom;
 
 namespace NadekoBot.Modules.Searches;

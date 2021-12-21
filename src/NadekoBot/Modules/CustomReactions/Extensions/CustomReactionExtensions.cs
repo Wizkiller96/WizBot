@@ -1,10 +1,6 @@
-﻿using Discord;
-using Discord.WebSocket;
-using NadekoBot.Common.Replacements;
-using NadekoBot.Services.Database.Models;
+﻿using NadekoBot.Services.Database.Models;
 using NadekoBot.Extensions;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 
 namespace NadekoBot.Modules.CustomReactions.Extensions;
 

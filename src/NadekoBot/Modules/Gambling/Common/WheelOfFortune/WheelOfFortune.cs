@@ -1,8 +1,4 @@
-﻿using System.Threading.Tasks;
-using NadekoBot.Common;
-using NadekoBot.Services;
-
-namespace NadekoBot.Modules.Gambling.Common.WheelOfFortune;
+﻿namespace NadekoBot.Modules.Gambling.Common.WheelOfFortune;
 
 public class WheelOfFortuneGame
 {

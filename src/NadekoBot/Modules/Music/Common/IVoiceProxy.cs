@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Ayu.Discord.Voice;
+﻿using Ayu.Discord.Voice;
 
 namespace NadekoBot.Modules.Music;
 

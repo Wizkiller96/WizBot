@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
-using System.IO;
 using Microsoft.Extensions.Primitives;
-using NadekoBot.Common;
 using NadekoBot.Common.Yml;
 using Newtonsoft.Json;
 

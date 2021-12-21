@@ -5,14 +5,9 @@ public class FilterLinksChannelId : DbEntity
     public ulong ChannelId { get; set; }
 
     public override bool Equals(object obj)
-    {
-        return obj is FilterLinksChannelId f
-            ? f.ChannelId == ChannelId
-            : false;
-    }
+        => obj is FilterLinksChannelId f
+           && f.ChannelId == ChannelId;
 
-    public override int GetHashCode()
-    {
-        return ChannelId.GetHashCode();
-    }
+    public override int GetHashCode() 
+        => ChannelId.GetHashCode();
 }

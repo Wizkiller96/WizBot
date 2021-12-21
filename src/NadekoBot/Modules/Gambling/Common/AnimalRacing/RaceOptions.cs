@@ -1,5 +1,4 @@
 ﻿using CommandLine;
-using NadekoBot.Common;
 
 namespace NadekoBot.Modules.Gambling.Common.AnimalRacing;
 

@@ -1,17 +1,9 @@
-﻿using Discord;
-using NadekoBot.Common;
-using NadekoBot.Services;
-using NadekoBot.Extensions;
+﻿using NadekoBot.Extensions;
 using NadekoBot.Modules.Games.Common;
 using NadekoBot.Modules.Games.Common.Acrophobia;
 using NadekoBot.Modules.Games.Common.Nunchi;
 using NadekoBot.Modules.Games.Common.Trivia;
 using Newtonsoft.Json;
-using System.Collections.Concurrent;
-using System.IO;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace NadekoBot.Modules.Games.Services;

@@ -1,8 +1,4 @@
-﻿using Discord;
-using Discord.Commands;
-using NadekoBot.Extensions;
-using System.Threading.Tasks;
-using NadekoBot.Common.Attributes;
+﻿using NadekoBot.Extensions;
 
 namespace NadekoBot.Modules.Searches;
 

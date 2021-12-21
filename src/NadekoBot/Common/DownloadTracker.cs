@@ -1,10 +1,4 @@
-﻿using NadekoBot.Services;
-using System.Collections.Concurrent;
-using System.Threading;
-using System.Threading.Tasks;
-using Discord;
-
-namespace NadekoBot.Common;
+﻿namespace NadekoBot.Common;
 
 public class DownloadTracker : INService
 {

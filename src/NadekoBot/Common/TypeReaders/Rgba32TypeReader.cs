@@ -1,8 +1,5 @@
-﻿using System.Threading.Tasks;
-using Discord.Commands;
-using SixLabors.ImageSharp;
-
-namespace NadekoBot.Common.TypeReaders;
+﻿namespace NadekoBot.Common.TypeReaders;
+using Color = SixLabors.ImageSharp.Color;
 
 public sealed class Rgba32TypeReader : NadekoTypeReader<Color>
 {

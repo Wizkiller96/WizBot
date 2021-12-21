@@ -1,17 +1,10 @@
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using NadekoBot.Common;
 using NadekoBot.Modules.Searches.Common;
 using NadekoBot.Modules.Searches.Common.StreamNotifications;
-using NadekoBot.Services;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Extensions;
 using StackExchange.Redis;
-using Discord.WebSocket;
 using NadekoBot.Common.Collections;
-using NadekoBot.Common.Replacements;
 using NadekoBot.Db;
 using NadekoBot.Db.Models;
 

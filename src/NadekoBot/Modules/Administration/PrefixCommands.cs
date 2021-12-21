@@ -1,9 +1,4 @@
-﻿using Discord;
-using Discord.Commands;
-using System.Threading.Tasks;
-using NadekoBot.Common.Attributes;
-
-namespace NadekoBot.Modules.Administration;
+﻿namespace NadekoBot.Modules.Administration;
 
 public partial class Administration
 {

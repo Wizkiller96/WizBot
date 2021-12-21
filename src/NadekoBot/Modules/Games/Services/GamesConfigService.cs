@@ -1,6 +1,4 @@
-﻿using NadekoBot.Common;
-using NadekoBot.Common.Configs;
-using NadekoBot.Services;
+﻿using NadekoBot.Common.Configs;
 using NadekoBot.Modules.Games.Common;
 
 namespace NadekoBot.Modules.Games.Services;

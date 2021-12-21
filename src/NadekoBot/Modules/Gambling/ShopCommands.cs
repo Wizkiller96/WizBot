@@ -1,13 +1,7 @@
-﻿using System.Threading.Tasks;
-using Discord;
-using Discord.Commands;
-using Microsoft.EntityFrameworkCore;
-using NadekoBot.Common;
-using NadekoBot.Common.Attributes;
+﻿using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.Collections;
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Services;
-using NadekoBot.Services;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
 using NadekoBot.Extensions;

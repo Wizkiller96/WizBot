@@ -1,8 +1,5 @@
-﻿using Discord;
-using NadekoBot.Modules.Gambling.Common.Waifu;
-using NadekoBot.Services;
+﻿using NadekoBot.Modules.Gambling.Common.Waifu;
 using NadekoBot.Services.Database.Models;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Db;
 using NadekoBot.Modules.Gambling.Common;

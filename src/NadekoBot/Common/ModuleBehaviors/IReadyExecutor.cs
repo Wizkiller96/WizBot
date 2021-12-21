@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace NadekoBot.Common.ModuleBehaviors;
+﻿namespace NadekoBot.Common.ModuleBehaviors;
 
 /// <summary>
 /// All services which need to execute something after

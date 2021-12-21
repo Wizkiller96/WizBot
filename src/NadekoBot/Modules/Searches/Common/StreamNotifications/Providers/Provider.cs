@@ -1,6 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Threading.Tasks;
-using NadekoBot.Db.Models;
+﻿using NadekoBot.Db.Models;
 
 #nullable enable
 namespace NadekoBot.Modules.Searches.Common.StreamNotifications.Providers;

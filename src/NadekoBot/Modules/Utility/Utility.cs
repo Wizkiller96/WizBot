@@ -1,19 +1,9 @@
-using Discord;
-using Discord.Commands;
-using Discord.WebSocket;
-using NadekoBot.Common;
-using NadekoBot.Common.Attributes;
 using NadekoBot.Extensions;
 using Newtonsoft.Json;
 using System.Diagnostics;
-using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading;
-using System.Threading.Tasks;
-using NadekoBot.Common.Replacements;
-using NadekoBot.Services;
 using SystemTextJsonSamples;
 
 namespace NadekoBot.Modules.Utility;

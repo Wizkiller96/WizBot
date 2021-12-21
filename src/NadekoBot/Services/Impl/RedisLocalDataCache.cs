@@ -3,8 +3,6 @@ using NadekoBot.Extensions;
 using NadekoBot.Modules.Games.Common.Trivia;
 using Newtonsoft.Json;
 using StackExchange.Redis;
-using System.IO;
-using Discord.WebSocket;
 
 namespace NadekoBot.Services;
 

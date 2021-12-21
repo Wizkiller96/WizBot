@@ -1,7 +1,4 @@
-﻿using Discord;
-using NadekoBot.Common;
-
-namespace NadekoBot.Modules.Gambling.Common;
+﻿namespace NadekoBot.Modules.Gambling.Common;
 
 public class CurrencyRaffleGame
 {

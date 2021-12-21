@@ -1,7 +1,4 @@
-﻿using System.Threading.Tasks;
-using Discord;
-using Discord.WebSocket;
-using Grpc.Core;
+﻿using Grpc.Core;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Coordinator;
 using NadekoBot.Extensions;

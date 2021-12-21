@@ -1,6 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
+﻿using System.Security.Cryptography;
 using NadekoBot.Common.Collections;
 using NadekoBot.Services.Database.Models;
 

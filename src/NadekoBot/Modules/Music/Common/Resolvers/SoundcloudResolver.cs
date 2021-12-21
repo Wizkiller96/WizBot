@@ -1,7 +1,4 @@
-﻿using System.Net.Http;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using NadekoBot.Services;
+﻿using System.Runtime.CompilerServices;
 using Newtonsoft.Json.Linq;
 
 #nullable enable

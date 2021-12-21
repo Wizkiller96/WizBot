@@ -1,8 +1,4 @@
-﻿using System.Threading.Tasks;
-using Discord;
-using System.Threading;
-using NadekoBot.Services;
-using NadekoBot.Services.Database.Models;
+﻿using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Games.Common;
 

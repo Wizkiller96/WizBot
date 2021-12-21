@@ -1,9 +1,5 @@
-﻿using System.Collections.Concurrent;
-using System.Globalization;
-using Discord;
-using NadekoBot.Common;
+﻿using System.Globalization;
 using Newtonsoft.Json;
-using System.IO;
 using NadekoBot.Db;
 
 namespace NadekoBot.Services;

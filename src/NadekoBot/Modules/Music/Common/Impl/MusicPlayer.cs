@@ -3,10 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Tasks;
 using Ayu.Discord.Voice;
-using NadekoBot.Common;
 using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Music;

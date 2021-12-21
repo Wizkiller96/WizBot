@@ -1,11 +1,6 @@
-﻿using Discord;
-using Discord.Commands;
-using NadekoBot.Common.Attributes;
-using NadekoBot.Common.TypeReaders;
-using NadekoBot.Services;
+﻿using NadekoBot.Common.TypeReaders;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Permissions.Services;
-using System.Threading.Tasks;
 
 namespace NadekoBot.Modules.Permissions;
 

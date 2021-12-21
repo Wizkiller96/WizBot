@@ -1,7 +1,4 @@
-﻿using NadekoBot.Common;
-using System.Collections.Immutable;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Collections.Immutable;
 
 namespace NadekoBot.Modules.Games.Common.Nunchi;
 

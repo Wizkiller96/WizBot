@@ -1,9 +1,4 @@
-﻿using System.Threading.Tasks;
-using Discord.Commands;
-using Discord.WebSocket;
-using Discord;
-
-namespace NadekoBot.Common.TypeReaders;
+﻿namespace NadekoBot.Common.TypeReaders;
 
 public sealed class GuildTypeReader : NadekoTypeReader<IGuild>
 {

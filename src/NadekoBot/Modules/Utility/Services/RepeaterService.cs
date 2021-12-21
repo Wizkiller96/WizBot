@@ -1,15 +1,10 @@
 ﻿#nullable enable
-using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Extensions;
-using System.Threading.Tasks;
-using Discord;
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using NadekoBot.Common.Collections;
 using NadekoBot.Common.ModuleBehaviors;
-using NadekoBot.Common.Replacements;
-using NadekoBot.Services;
 using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Utility.Services;

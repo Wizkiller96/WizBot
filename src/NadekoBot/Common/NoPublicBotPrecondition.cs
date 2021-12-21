@@ -1,7 +1,4 @@
-﻿using System.Threading.Tasks;
-using Discord.Commands;
-
-namespace NadekoBot.Common;
+﻿namespace NadekoBot.Common;
 
 [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class)]
 public sealed class NoPublicBotAttribute : PreconditionAttribute

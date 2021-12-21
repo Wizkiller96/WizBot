@@ -1,7 +1,4 @@
-﻿using System.Threading.Tasks;
-using Discord.Commands;
-
-namespace NadekoBot.Common.TypeReaders;
+﻿namespace NadekoBot.Common.TypeReaders;
 
 public sealed class KwumTypeReader : NadekoTypeReader<kwum>
 {

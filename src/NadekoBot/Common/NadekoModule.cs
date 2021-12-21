@@ -1,10 +1,5 @@
-﻿using Discord;
-using Discord.Commands;
-using Discord.WebSocket;
-using NadekoBot.Services;
-using NadekoBot.Extensions;
+﻿using NadekoBot.Extensions;
 using System.Globalization;
-using System.Threading.Tasks;
 
 namespace NadekoBot.Modules;
 

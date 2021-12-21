@@ -1,10 +1,5 @@
 ﻿#nullable enable
-using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
-using Discord;
-using Discord.WebSocket;
-using NadekoBot.Services;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
 using NadekoBot.Extensions;

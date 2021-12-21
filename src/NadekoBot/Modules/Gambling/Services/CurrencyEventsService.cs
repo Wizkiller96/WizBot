@@ -1,9 +1,5 @@
-﻿using NadekoBot.Services;
-using NadekoBot.Modules.Gambling.Common.Events;
-using System.Collections.Concurrent;
+﻿using NadekoBot.Modules.Gambling.Common.Events;
 using NadekoBot.Modules.Gambling.Common;
-using Discord.WebSocket;
-using System.Threading.Tasks;
 using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Gambling.Services;

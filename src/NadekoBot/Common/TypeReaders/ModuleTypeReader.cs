@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-using Discord.Commands;
-using NadekoBot.Extensions;
+﻿using NadekoBot.Extensions;
 
 namespace NadekoBot.Common.TypeReaders;
 

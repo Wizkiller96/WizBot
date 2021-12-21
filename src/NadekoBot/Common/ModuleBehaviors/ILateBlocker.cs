@@ -1,7 +1,4 @@
-﻿using System.Threading.Tasks;
-using Discord.Commands;
-
-namespace NadekoBot.Common.ModuleBehaviors;
+﻿namespace NadekoBot.Common.ModuleBehaviors;
 
 public interface ILateBlocker
 {

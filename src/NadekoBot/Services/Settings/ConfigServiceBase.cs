@@ -1,9 +1,6 @@
-﻿using System.IO;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Reflection;
-using System.Threading.Tasks;
 using NadekoBot.Common.Yml;
-using NadekoBot.Common;
 using NadekoBot.Common.Configs;
 
 namespace NadekoBot.Services;

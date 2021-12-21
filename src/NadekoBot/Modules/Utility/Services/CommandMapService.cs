@@ -1,11 +1,6 @@
-﻿using System.Collections.Concurrent;
-using System.Threading.Tasks;
-using Discord;
-using NadekoBot.Common.ModuleBehaviors;
+﻿using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Extensions;
-using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
-using NadekoBot.Services;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
 

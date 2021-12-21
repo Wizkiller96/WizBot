@@ -1,8 +1,4 @@
-﻿using Discord;
-using Discord.Commands;
-using NadekoBot.Common.Attributes;
-using NadekoBot.Modules.Xp.Services;
-using System.Threading.Tasks;
+﻿using NadekoBot.Modules.Xp.Services;
 
 namespace NadekoBot.Modules.Xp;
 

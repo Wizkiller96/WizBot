@@ -1,5 +1,4 @@
 ﻿using Google.Apis.Customsearch.v1.Data;
-using System.Threading.Tasks;
 
 namespace NadekoBot.Services;
 

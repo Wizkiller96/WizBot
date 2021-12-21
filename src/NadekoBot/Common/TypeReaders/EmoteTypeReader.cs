@@ -1,8 +1,4 @@
-﻿using System.Threading.Tasks;
-using Discord;
-using Discord.Commands;
-
-namespace NadekoBot.Common.TypeReaders;
+﻿namespace NadekoBot.Common.TypeReaders;
 
 public sealed class EmoteTypeReader : NadekoTypeReader<Emote>
 {

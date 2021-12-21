@@ -1,6 +1,4 @@
-﻿using Discord;
-
-namespace NadekoBot.Modules.Gambling.Common.Blackjack;
+﻿namespace NadekoBot.Modules.Gambling.Common.Blackjack;
 
 public abstract class Player
 {

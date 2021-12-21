@@ -1,6 +1,4 @@
-﻿using Discord;
-
-namespace NadekoBot.Extensions;
+﻿namespace NadekoBot.Extensions;
 
 public static class MusicExtensions
 {

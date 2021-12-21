@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
 namespace NadekoBot.Modules.Xp;
@@ -285,7 +284,7 @@ public class XpRgba32Converter : JsonConverter<Rgba32>
 {
     public override Rgba32 ReadJson(JsonReader reader, Type objectType, Rgba32 existingValue, bool hasExistingValue, JsonSerializer serializer)
     {
-        return Color.ParseHex(reader.Value.ToString());
+        return SixLabors.ImageSharp.Color.ParseHex(reader.Value?.ToString());
     }
 
     public override void WriteJson(JsonWriter writer, Rgba32 value, JsonSerializer serializer)

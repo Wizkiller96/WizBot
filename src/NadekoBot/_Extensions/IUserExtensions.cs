@@ -1,8 +1,4 @@
-﻿using Discord;
-using System.IO;
-using System.Threading.Tasks;
-using NadekoBot.Db.Models;
-using NadekoBot.Services;
+﻿using NadekoBot.Db.Models;
 
 namespace NadekoBot.Extensions;
 

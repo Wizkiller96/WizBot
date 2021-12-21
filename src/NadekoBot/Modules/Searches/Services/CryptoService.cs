@@ -1,10 +1,6 @@
 ﻿using NadekoBot.Modules.Searches.Common;
-using NadekoBot.Services;
 using NadekoBot.Extensions;
 using Newtonsoft.Json;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace NadekoBot.Modules.Searches.Services;
 

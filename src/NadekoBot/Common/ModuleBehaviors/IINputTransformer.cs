@@ -1,7 +1,4 @@
-﻿using System.Threading.Tasks;
-using Discord;
-
-namespace NadekoBot.Common.ModuleBehaviors;
+﻿namespace NadekoBot.Common.ModuleBehaviors;
 
 public interface IInputTransformer
 {

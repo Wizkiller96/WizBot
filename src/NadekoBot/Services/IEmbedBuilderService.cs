@@ -1,6 +1,4 @@
-﻿using Discord;
-using Discord.Commands;
-using NadekoBot.Common.Configs;
+﻿using NadekoBot.Common.Configs;
 using NadekoBot.Extensions;
 
 namespace NadekoBot.Services;

@@ -1,7 +1,4 @@
-﻿using System.Net.Http;
-using System.Net.Http.Json;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Net.Http.Json;
 using NadekoBot.Extensions;
 
 namespace NadekoBot.Modules.Nsfw.Common;

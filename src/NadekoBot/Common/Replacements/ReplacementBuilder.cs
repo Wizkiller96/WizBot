@@ -1,12 +1,8 @@
-﻿using Discord;
-using Discord.Commands;
-using Discord.WebSocket;
-using NadekoBot.Extensions;
+﻿using NadekoBot.Extensions;
 using NadekoBot.Modules.Administration.Services;
-using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 
-namespace NadekoBot.Common.Replacements;
+namespace NadekoBot.Common;
 
 public class ReplacementBuilder
 {

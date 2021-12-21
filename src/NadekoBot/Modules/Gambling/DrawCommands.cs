@@ -1,11 +1,4 @@
-﻿using Discord;
-using Discord.Commands;
-using NadekoBot.Extensions;
-using System.Collections.Concurrent;
-using System.IO;
-using System.Threading.Tasks;
-using NadekoBot.Common.Attributes;
-using NadekoBot.Services;
+﻿using NadekoBot.Extensions;
 using NadekoBot.Modules.Gambling.Common;
 using Image = SixLabors.ImageSharp.Image;
 using SixLabors.ImageSharp;

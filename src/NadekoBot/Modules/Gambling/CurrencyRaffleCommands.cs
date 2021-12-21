@@ -1,10 +1,5 @@
-﻿using NadekoBot.Common.Attributes;
-using NadekoBot.Modules.Gambling.Services;
-using System.Threading.Tasks;
-using Discord;
-using Discord.Commands;
+﻿using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Modules.Gambling.Common;
-using NadekoBot.Common;
 
 namespace NadekoBot.Modules.Gambling;
 

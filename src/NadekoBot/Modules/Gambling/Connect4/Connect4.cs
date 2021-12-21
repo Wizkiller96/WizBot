@@ -1,9 +1,5 @@
 ﻿using CommandLine;
-using NadekoBot.Common;
-using NadekoBot.Services;
 using System.Collections.Immutable;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace NadekoBot.Modules.Gambling.Common.Connect4;
 

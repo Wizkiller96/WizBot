@@ -1,6 +1,5 @@
 ﻿#nullable enable
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace NadekoBot.Modules.Music;
 

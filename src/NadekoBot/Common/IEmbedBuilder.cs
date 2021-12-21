@@ -1,6 +1,4 @@
-﻿using Discord;
-
-namespace NadekoBot;
+﻿namespace NadekoBot;
 
 public interface IEmbedBuilder
 {

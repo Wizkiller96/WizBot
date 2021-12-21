@@ -1,5 +1,4 @@
 ﻿using SixLabors.Fonts;
-using System.IO;
 
 namespace NadekoBot.Services;
 

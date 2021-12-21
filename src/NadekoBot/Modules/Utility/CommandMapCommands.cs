@@ -1,12 +1,5 @@
-﻿using Discord;
-using Discord.Commands;
-using Discord.WebSocket;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using NadekoBot.Extensions;
-using System.Collections.Concurrent;
-using System.Threading.Tasks;
-using NadekoBot.Common.Attributes;
-using NadekoBot.Services;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
 using NadekoBot.Modules.Utility.Services;

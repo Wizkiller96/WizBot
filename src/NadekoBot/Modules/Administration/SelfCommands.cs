@@ -1,14 +1,6 @@
-using Discord;
-using Discord.Commands;
-using Discord.Net;
-using Discord.WebSocket;
-using NadekoBot.Common.Attributes;
-using NadekoBot.Common.Replacements;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Administration.Services;
-using System.Threading.Tasks;
-using NadekoBot.Services;
 
 namespace NadekoBot.Modules.Administration;
 

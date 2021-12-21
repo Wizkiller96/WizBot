@@ -1,6 +1,4 @@
-﻿using NadekoBot.Services;
-using System.Collections.Concurrent;
-using NadekoBot.Modules.Gambling.Common.AnimalRacing;
+﻿using NadekoBot.Modules.Gambling.Common.AnimalRacing;
 
 namespace NadekoBot.Modules.Gambling.Services;
 

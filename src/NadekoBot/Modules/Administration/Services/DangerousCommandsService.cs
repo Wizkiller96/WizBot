@@ -1,6 +1,4 @@
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using NadekoBot.Services;
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using NadekoBot.Services.Database.Models;

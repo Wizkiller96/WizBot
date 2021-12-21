@@ -1,5 +1,4 @@
 ﻿using System.Web;
-using Discord.WebSocket;
 using NadekoBot.Extensions;
 using StackExchange.Redis;
 

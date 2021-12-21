@@ -1,12 +1,7 @@
 ﻿using CodeHollow.FeedReader.Feeds;
-using Discord;
-using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
-using NadekoBot.Services;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Extensions;
-using System.Collections.Concurrent;
-using System.Threading.Tasks;
 using NadekoBot.Db;
 
 namespace NadekoBot.Modules.Searches.Services;

@@ -1,14 +1,9 @@
-﻿using System.Collections.Concurrent;
-using System.Net;
-using System.Threading.Tasks;
-using Discord;
-using Discord.Net;
+﻿using System.Net;
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Extensions;
-using NadekoBot.Services;
 
 namespace NadekoBot.Modules.Searches;
 

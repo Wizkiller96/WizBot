@@ -1,7 +1,4 @@
-﻿using System.Threading.Tasks;
-using Discord.Commands;
-using NadekoBot.Services;
-using NadekoBot.Modules.CustomReactions.Services;
+﻿using NadekoBot.Modules.CustomReactions.Services;
 
 namespace NadekoBot.Common.TypeReaders;
 

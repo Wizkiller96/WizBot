@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace NadekoBot.Modules.Gambling.Services;
+﻿namespace NadekoBot.Modules.Gambling.Services;
 
 public interface IShopService
 {

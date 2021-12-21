@@ -1,9 +1,5 @@
 ﻿using NadekoBot.Db.Models;
-using Discord;
 using NadekoBot.Extensions;
-using System.Net.Http;
-using System.Threading.Tasks;
-using NadekoBot.Services;
 using NadekoBot.Db;
 
 namespace NadekoBot.Modules.Xp.Services;

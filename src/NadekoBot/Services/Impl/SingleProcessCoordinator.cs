@@ -1,6 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Threading.Tasks;
-using Discord.WebSocket;
 
 namespace NadekoBot.Services;
 

@@ -1,13 +1,6 @@
-﻿using Discord;
-using Discord.Commands;
-using Discord.Net;
-using Discord.WebSocket;
-using NadekoBot.Common.Collections;
+﻿using NadekoBot.Common.Collections;
 using NadekoBot.Extensions;
-using System.Collections.Concurrent;
 using System.Collections.Immutable;
-using System.Threading;
-using System.Threading.Tasks;
 using NadekoBot.Common.Configs;
 using NadekoBot.Db;
 

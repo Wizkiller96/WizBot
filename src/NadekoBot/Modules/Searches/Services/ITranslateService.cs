@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace NadekoBot.Modules.Searches;
+﻿namespace NadekoBot.Modules.Searches;
 
 public interface ITranslateService
 {

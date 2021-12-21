@@ -1,6 +1,4 @@
-﻿using Discord.Commands;
-
-namespace Discord;
+﻿namespace Discord;
 
 public class BotPermAttribute : RequireBotPermissionAttribute
 {

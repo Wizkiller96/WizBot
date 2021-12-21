@@ -1,6 +1,4 @@
-﻿using Discord.Commands;
-
-namespace NadekoBot.Common.Attributes;
+﻿namespace NadekoBot.Common.Attributes;
 
 [AttributeUsage(AttributeTargets.Class)]
 sealed class NadekoModuleAttribute : GroupAttribute

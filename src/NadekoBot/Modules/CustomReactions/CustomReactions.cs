@@ -1,11 +1,5 @@
-﻿using Discord;
-using Discord.Commands;
-using NadekoBot.Common.Attributes;
-using NadekoBot.Extensions;
+﻿using NadekoBot.Extensions;
 using NadekoBot.Modules.CustomReactions.Services;
-using System.Net.Http;
-using System.Threading.Tasks;
-using NadekoBot.Common;
 
 namespace NadekoBot.Modules.CustomReactions;
 

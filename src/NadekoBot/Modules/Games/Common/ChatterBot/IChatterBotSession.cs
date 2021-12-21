@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace NadekoBot.Modules.Games.Common.ChatterBot;
+﻿namespace NadekoBot.Modules.Games.Common.ChatterBot;
 
 public interface IChatterBotSession
 {

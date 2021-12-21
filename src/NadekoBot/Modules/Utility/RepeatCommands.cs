@@ -1,11 +1,7 @@
 ﻿#nullable enable
-using Discord;
-using Discord.Commands;
-using NadekoBot.Common.Attributes;
 using NadekoBot.Common.TypeReaders;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Utility.Services;
-using System.Threading.Tasks;
 using NadekoBot.Common.TypeReaders.Models;
 
 namespace NadekoBot.Modules.Utility;

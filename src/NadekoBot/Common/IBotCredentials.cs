@@ -1,6 +1,4 @@
-﻿using NadekoBot.Common;
-
-namespace NadekoBot;
+﻿namespace NadekoBot;
 
 public interface IBotCredentials
 {

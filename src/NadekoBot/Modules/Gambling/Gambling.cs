@@ -1,16 +1,9 @@
-using Discord;
-using Discord.Commands;
-using Discord.WebSocket;
-using NadekoBot.Common;
-using NadekoBot.Common.Attributes;
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Db.Models;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Gambling.Services;
 using System.Globalization;
 using System.Numerics;
-using System.Threading.Tasks;
-using NadekoBot.Services;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
 

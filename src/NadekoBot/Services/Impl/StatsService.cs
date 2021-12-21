@@ -1,11 +1,6 @@
-﻿using Discord;
-using Discord.WebSocket;
-using NadekoBot.Common.ModuleBehaviors;
+﻿using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Extensions;
 using System.Diagnostics;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace NadekoBot.Services;
 

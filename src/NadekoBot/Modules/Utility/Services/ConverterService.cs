@@ -1,12 +1,6 @@
-﻿using Discord.WebSocket;
-using NadekoBot.Services;
-using NadekoBot.Extensions;
+﻿using NadekoBot.Extensions;
 using NadekoBot.Modules.Utility.Common;
 using Newtonsoft.Json;
-using System.IO;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace NadekoBot.Modules.Utility.Services;
 

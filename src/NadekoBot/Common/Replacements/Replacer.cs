@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace NadekoBot.Common.Replacements;
+namespace NadekoBot.Common;
 
 public class Replacer
 {

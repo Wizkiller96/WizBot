@@ -1,8 +1,5 @@
 ﻿#nullable enable
 using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
-using Discord;
-using NadekoBot.Common;
 using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Music.Services;

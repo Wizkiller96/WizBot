@@ -1,10 +1,6 @@
-﻿using Discord;
-using NadekoBot.Common.ModuleBehaviors;
-using NadekoBot.Services;
+﻿using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Services.Database.Models;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using NadekoBot.Common;
 using NadekoBot.Db;
 
 namespace NadekoBot.Modules.Permissions.Services;

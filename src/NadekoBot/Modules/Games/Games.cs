@@ -1,14 +1,6 @@
-﻿using Discord;
-using Discord.Commands;
-using NadekoBot.Common;
-using NadekoBot.Common.Attributes;
-using NadekoBot.Services;
-using NadekoBot.Extensions;
+﻿using NadekoBot.Extensions;
 using NadekoBot.Modules.Games.Common;
 using NadekoBot.Modules.Games.Services;
-using System.IO;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace NadekoBot.Modules.Games;
 

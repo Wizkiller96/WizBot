@@ -1,14 +1,7 @@
 using Newtonsoft.Json.Linq;
-using System.Collections.Concurrent;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Threading;
 using LinqToDB;
-using NadekoBot.Common;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Searches.Common;
-using NadekoBot.Services;
-using NadekoBot.Services.Database.Models;
 using Newtonsoft.Json;
 using Booru = NadekoBot.Modules.Nsfw.Common.Booru;
 using SearchImageCacher = NadekoBot.Modules.Nsfw.Common.SearchImageCacher;

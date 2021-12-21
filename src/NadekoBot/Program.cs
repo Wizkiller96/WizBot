@@ -1,12 +1,4 @@
-﻿global using System;
-global using Serilog;
-global using System.Collections.Generic;
-global using System.Linq;
-
-using NadekoBot;
-using NadekoBot.Services;
-
-var pid = System.Environment.ProcessId;
+﻿var pid = Environment.ProcessId;
 
 var shardId = 0;
 int? totalShards = null; // 0 to read from creds.yml

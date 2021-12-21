@@ -1,6 +1,5 @@
 ﻿#nullable enable
 using System.Diagnostics.CodeAnalysis;
-using NadekoBot.Services;
 
 namespace NadekoBot.Modules.Games.Hangman;
 

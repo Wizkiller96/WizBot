@@ -1,7 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Threading;
-using System.Threading.Tasks;
-using NadekoBot.Modules.Searches.Common;
+﻿using NadekoBot.Modules.Searches.Common;
 
 namespace NadekoBot.Modules.Nsfw;
 

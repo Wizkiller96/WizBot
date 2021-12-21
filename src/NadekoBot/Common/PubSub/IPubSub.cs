@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace NadekoBot.Common;
+﻿namespace NadekoBot.Common;
 
 public interface IPubSub
 {

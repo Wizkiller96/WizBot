@@ -1,12 +1,7 @@
 ﻿using AngleSharp;
 using AngleSharp.Html.Dom;
-using Discord;
-using Discord.Commands;
 using Microsoft.Extensions.Caching.Memory;
-using NadekoBot.Common;
-using NadekoBot.Common.Attributes;
 using NadekoBot.Modules.Searches.Common;
-using NadekoBot.Services;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Searches.Services;
 using Newtonsoft.Json;
@@ -15,11 +10,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using System.Collections.Concurrent;
-using System.Diagnostics.CodeAnalysis;
 using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using NadekoBot.Modules.Administration.Services;
 using Configuration = AngleSharp.Configuration;
 

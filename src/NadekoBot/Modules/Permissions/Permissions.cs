@@ -1,10 +1,4 @@
-﻿using System.Threading.Tasks;
-using Discord.Commands;
-using NadekoBot.Services;
-using Discord;
-using NadekoBot.Services.Database.Models;
-using Discord.WebSocket;
-using NadekoBot.Common.Attributes;
+﻿using NadekoBot.Services.Database.Models;
 using NadekoBot.Common.TypeReaders;
 using NadekoBot.Common.TypeReaders.Models;
 using NadekoBot.Db;

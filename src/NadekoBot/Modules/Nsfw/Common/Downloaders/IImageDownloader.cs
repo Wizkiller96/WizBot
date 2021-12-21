@@ -1,7 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-
-namespace NadekoBot.Modules.Nsfw.Common;
+﻿namespace NadekoBot.Modules.Nsfw.Common;
 
 public interface IImageDownloader
 {

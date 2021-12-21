@@ -1,7 +1,6 @@
 ﻿#nullable enable
 using System.Runtime.CompilerServices;
 using System.Text.Json;
-using System.Threading.Tasks;
 using StackExchange.Redis;
 
 namespace NadekoBot.Modules.Music;

@@ -1,14 +1,8 @@
-﻿using System.Collections.Concurrent;
-using System.Threading.Tasks;
-using Discord;
-using Discord.WebSocket;
-using NadekoBot.Common.ModuleBehaviors;
+﻿using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Permissions.Common;
 using NadekoBot.Modules.Permissions.Services;
-using NadekoBot.Services;
 using NadekoBot.Modules.Games.Common.ChatterBot;
-using System.Net.Http;
 
 namespace NadekoBot.Modules.Games.Services;
 

@@ -1,10 +1,5 @@
-﻿using System.Collections.Concurrent;
-using System.Threading.Tasks;
-using Discord;
-using Discord.Commands;
-using NadekoBot.Common.Collections;
+﻿using NadekoBot.Common.Collections;
 using NadekoBot.Common.ModuleBehaviors;
-using NadekoBot.Services;
 using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Permissions.Services;

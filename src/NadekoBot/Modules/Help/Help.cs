@@ -1,21 +1,11 @@
-using Discord;
-using Discord.Commands;
-using NadekoBot.Common;
-using NadekoBot.Common.Attributes;
-using NadekoBot.Common.Replacements;
 using NadekoBot.Modules.Help.Common;
-using NadekoBot.Services;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Help.Services;
 using NadekoBot.Modules.Permissions.Services;
 using Newtonsoft.Json;
-using System.IO;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using Amazon.S3;
-using Amazon.S3.Model;
-using Discord.WebSocket;
 
 namespace NadekoBot.Modules.Help;
 

@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using NadekoBot.Extensions;
+﻿using NadekoBot.Extensions;
 using StackExchange.Redis;
 
 namespace NadekoBot.Common;

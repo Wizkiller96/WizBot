@@ -1,6 +1,4 @@
-﻿using NadekoBot.Common;
-using NadekoBot.Services;
-using NadekoBot.Extensions;
+﻿using NadekoBot.Extensions;
 
 namespace NadekoBot.Modules.Games.Common.Trivia;
 

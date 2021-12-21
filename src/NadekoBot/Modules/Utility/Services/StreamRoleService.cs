@@ -1,14 +1,8 @@
-﻿using System.Collections.Concurrent;
-using System.Threading.Tasks;
-using Discord;
-using Discord.WebSocket;
-using NadekoBot.Extensions;
-using NadekoBot.Services;
+﻿using NadekoBot.Extensions;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Common.TypeReaders;
 using NadekoBot.Modules.Utility.Common;
 using NadekoBot.Modules.Utility.Common.Exceptions;
-using Discord.Net;
 using NadekoBot.Db;
 
 namespace NadekoBot.Modules.Utility.Services;

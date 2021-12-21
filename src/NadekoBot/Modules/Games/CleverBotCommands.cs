@@ -1,12 +1,5 @@
-﻿using Discord;
-using Discord.Commands;
-using System.Threading.Tasks;
-using NadekoBot.Common;
-using NadekoBot.Common.Attributes;
-using NadekoBot.Services;
-using NadekoBot.Db;
+﻿using NadekoBot.Db;
 using NadekoBot.Modules.Games.Services;
-using NadekoBot.Modules.Games.Common.ChatterBot;
 
 namespace NadekoBot.Modules.Games;
 

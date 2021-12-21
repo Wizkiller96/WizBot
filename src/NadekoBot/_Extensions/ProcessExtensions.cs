@@ -3,7 +3,6 @@
 // https://github.com/aspnet/Common/blob/dev/shared/Microsoft.Extensions.Process.Sources/ProcessHelper.cs
 
 using System.Diagnostics;
-using System.IO;
 using System.Runtime.InteropServices;
 
 namespace NadekoBot.Extensions;

@@ -1,11 +1,6 @@
-using Discord;
-using Discord.Commands;
-using Discord.WebSocket;
-using NadekoBot.Common.Attributes;
 using NadekoBot.Common.TypeReaders.Models;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Administration.Services;
-using System.Threading.Tasks;
 
 namespace NadekoBot.Modules.Administration;
 

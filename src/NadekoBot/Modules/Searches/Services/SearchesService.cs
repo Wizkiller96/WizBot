@@ -1,6 +1,4 @@
-﻿using NadekoBot.Common;
-using NadekoBot.Modules.Searches.Common;
-using NadekoBot.Services;
+﻿using NadekoBot.Modules.Searches.Common;
 using NadekoBot.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -8,10 +6,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using System.IO;
 using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
 using HorizontalAlignment = SixLabors.Fonts.HorizontalAlignment;

@@ -1,11 +1,5 @@
-﻿using System.Collections.Concurrent;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Memory;
-using NadekoBot.Common;
+﻿using Microsoft.Extensions.Caching.Memory;
 using NadekoBot.Extensions;
-using NadekoBot.Services;
 
 namespace NadekoBot.Modules.Nsfw.Common;
 

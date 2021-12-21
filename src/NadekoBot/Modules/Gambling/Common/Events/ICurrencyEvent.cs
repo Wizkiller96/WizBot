@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace NadekoBot.Modules.Gambling.Common;
+﻿namespace NadekoBot.Modules.Gambling.Common;
 
 public interface ICurrencyEvent
 {

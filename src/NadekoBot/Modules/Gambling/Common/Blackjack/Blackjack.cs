@@ -1,9 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Discord;
-using NadekoBot.Services;
-
-namespace NadekoBot.Modules.Gambling.Common.Blackjack;
+﻿namespace NadekoBot.Modules.Gambling.Common.Blackjack;
 
 public class Blackjack
 {

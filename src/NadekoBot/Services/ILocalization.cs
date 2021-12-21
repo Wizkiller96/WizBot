@@ -1,6 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Globalization;
-using Discord;
+﻿using System.Globalization;
 
 namespace NadekoBot.Services;
 

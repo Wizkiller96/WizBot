@@ -1,6 +1,4 @@
 ﻿using CommandLine;
-using NadekoBot.Common;
-using NadekoBot.Services;
 
 namespace NadekoBot.Modules.Utility.Services;
 

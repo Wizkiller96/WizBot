@@ -1,8 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Threading;
-using Discord;
-
-namespace NadekoBot.Modules.Administration.Common;
+﻿namespace NadekoBot.Modules.Administration.Common;
 
 public sealed class UserSpamStats : IDisposable
 {

@@ -1,5 +1,4 @@
 using NadekoBot.Services.Database.Models;
-using NadekoBot.Common;
 
 namespace NadekoBot.Modules.CustomReactions;
 

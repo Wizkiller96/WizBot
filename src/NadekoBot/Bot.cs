@@ -1,17 +1,9 @@
-﻿using Discord;
-using Discord.Commands;
-using Discord.WebSocket;
-using Microsoft.Extensions.DependencyInjection;
-using NadekoBot.Common;
-using NadekoBot.Services;
+﻿using Microsoft.Extensions.DependencyInjection;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Extensions;
 using System.Collections.Immutable;
 using System.Diagnostics;
-using System.Net.Http;
 using System.Reflection;
-using System.Threading.Tasks;
-using Discord.Net;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Common.Configs;
 using NadekoBot.Db;
@@ -82,11 +74,11 @@ public sealed class Bot
     {
         var startingGuildIdList = GetCurrentGuildIds();
         var sw = Stopwatch.StartNew();
-        var _bot = Client.CurrentUser;
+        var bot = Client.CurrentUser;
 
         using (var uow = _db.GetDbContext())
         {
-            uow.EnsureUserCreated(_bot.Id, _bot.Username, _bot.Discriminator, _bot.AvatarId);
+            uow.EnsureUserCreated(bot.Id, bot.Username, bot.Discriminator, bot.AvatarId);
             AllGuildConfigs = uow.GuildConfigs.GetAllGuildConfigs(startingGuildIdList).ToImmutableArray();
         }
             
@@ -199,7 +191,7 @@ public sealed class Bot
         }
         var filteredTypes = allTypes
             .Where(x => x.IsSubclassOf(typeof(TypeReader))
-                        && x.BaseType.GetGenericArguments().Length > 0
+                        && x.BaseType?.GetGenericArguments().Length > 0
                         && !x.IsAbstract);
 
         var toReturn = new List<object>();
@@ -207,6 +199,8 @@ public sealed class Bot
         {
             var x = (TypeReader)ActivatorUtilities.CreateInstance(Services, ft);
             var baseType = ft.BaseType;
+            if (baseType is null)
+                continue;
             var typeArgs = baseType.GetGenericArguments();
             _commandService.AddTypeReader(typeArgs[0], x);
             toReturn.Add(x);

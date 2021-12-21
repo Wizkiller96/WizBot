@@ -1,8 +1,6 @@
 ﻿using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
-using NadekoBot.Common;
 using NadekoBot.Modules.Music;
-using NadekoBot.Services;
 using NadekoBot.Modules.Music.Resolvers;
 using NadekoBot.Modules.Music.Services;
 using StackExchange.Redis;

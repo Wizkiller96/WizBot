@@ -1,7 +1,4 @@
-﻿using Discord.Commands;
-using System.Reflection;
-using System.Threading.Tasks;
-using NadekoBot.Common.Attributes;
+﻿using System.Reflection;
 
 namespace NadekoBot.Modules.Utility;
 

@@ -1,9 +1,5 @@
-﻿using System.Collections.Concurrent;
-using Discord.WebSocket;
-using NadekoBot.Extensions;
-using NadekoBot.Services;
+﻿using NadekoBot.Extensions;
 using NadekoBot.Services.Database.Models;
-using System.Threading.Tasks;
 using NadekoBot.Db;
 
 namespace NadekoBot.Modules.Administration.Services;

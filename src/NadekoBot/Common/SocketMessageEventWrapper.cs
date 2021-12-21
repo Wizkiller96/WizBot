@@ -1,8 +1,4 @@
-﻿using Discord;
-using Discord.WebSocket;
-using System.Threading.Tasks;
-
-namespace NadekoBot.Common;
+﻿namespace NadekoBot.Common;
 
 public sealed class ReactionEventWrapper : IDisposable
 {

@@ -1,5 +1,4 @@
-﻿using NadekoBot.Common;
-using NadekoBot.Common.Configs;
+﻿using NadekoBot.Common.Configs;
 using SixLabors.ImageSharp.PixelFormats;
 
 namespace NadekoBot.Services;

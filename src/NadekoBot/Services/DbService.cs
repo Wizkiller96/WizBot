@@ -1,7 +1,6 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Services.Database;
-using System.IO;
 using LinqToDB.EntityFrameworkCore;
 
 namespace NadekoBot.Services;

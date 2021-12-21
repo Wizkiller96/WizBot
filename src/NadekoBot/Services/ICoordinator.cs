@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace NadekoBot.Services;
+﻿namespace NadekoBot.Services;
 
 public interface ICoordinator
 {

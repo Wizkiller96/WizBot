@@ -1,8 +1,4 @@
-﻿using System.Threading.Tasks;
-using Discord;
-using Discord.Commands;
-using Discord.WebSocket;
-using NadekoBot.Common.ModuleBehaviors;
+﻿using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 

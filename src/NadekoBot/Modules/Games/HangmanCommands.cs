@@ -1,11 +1,6 @@
 #nullable enable
-using Discord.Commands;
-using System.Threading.Tasks;
-using Discord;
-using NadekoBot.Common.Attributes;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Games.Hangman;
-using NadekoBot.Services;
 
 namespace NadekoBot.Modules.Games;
 

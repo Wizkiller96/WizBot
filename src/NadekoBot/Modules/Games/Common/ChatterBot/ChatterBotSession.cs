@@ -1,7 +1,4 @@
-﻿using System.Net.Http;
-using System.Threading.Tasks;
-using NadekoBot.Common;
-using NadekoBot.Extensions;
+﻿using NadekoBot.Extensions;
 using Newtonsoft.Json;
 
 namespace NadekoBot.Modules.Games.Common.ChatterBot;

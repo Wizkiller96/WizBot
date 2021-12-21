@@ -1,13 +1,9 @@
 ﻿#nullable enable
-using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
-using Discord;
 using Microsoft.Extensions.Caching.Memory;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Extensions;
 using NadekoBot.Modules.Games.Services;
-using NadekoBot.Services;
 
 namespace NadekoBot.Modules.Games.Hangman;
 

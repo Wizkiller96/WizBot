@@ -1,10 +1,4 @@
-﻿using Discord;
-using Discord.Commands;
-using Discord.WebSocket;
-using System.Threading.Tasks;
-using NadekoBot.Services;
-
-namespace NadekoBot.Extensions;
+﻿namespace NadekoBot.Extensions;
 
 public static class IMessageChannelExtensions
 {

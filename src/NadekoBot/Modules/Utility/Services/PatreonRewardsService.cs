@@ -1,13 +1,7 @@
-﻿using Discord.WebSocket;
-using NadekoBot.Services;
-using NadekoBot.Services.Database.Models;
+﻿using NadekoBot.Services.Database.Models;
 using NadekoBot.Modules.Utility.Common.Patreon;
-using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json.Serialization;
-using System.Threading;
-using System.Threading.Tasks;
-using Discord;
 using LinqToDB.EntityFrameworkCore;
 using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Extensions;

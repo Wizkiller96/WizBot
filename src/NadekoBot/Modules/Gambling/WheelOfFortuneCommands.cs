@@ -1,12 +1,7 @@
-﻿using Discord;
-using NadekoBot.Common.Attributes;
-using System.Threading.Tasks;
-using Wof = NadekoBot.Modules.Gambling.Common.WheelOfFortune.WheelOfFortuneGame;
+﻿using Wof = NadekoBot.Modules.Gambling.Common.WheelOfFortune.WheelOfFortuneGame;
 using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Modules.Gambling.Common;
 using System.Collections.Immutable;
-using NadekoBot.Common;
-using NadekoBot.Services;
 
 namespace NadekoBot.Modules.Gambling;
 

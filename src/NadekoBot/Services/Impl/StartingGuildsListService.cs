@@ -1,5 +1,4 @@
-﻿using Discord.WebSocket;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using System.Collections;
 
 namespace NadekoBot.Services;

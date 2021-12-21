@@ -1,13 +1,5 @@
-using Discord;
-using Discord.Commands;
-using NadekoBot.Common;
-using NadekoBot.Common.Attributes;
-using NadekoBot.Common.Replacements;
 using NadekoBot.Extensions;
-using System.Net.Http;
-using System.Threading.Tasks;
 using NadekoBot.Common.Yml;
-using NadekoBot.Services;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
 using YamlDotNet.Serialization;

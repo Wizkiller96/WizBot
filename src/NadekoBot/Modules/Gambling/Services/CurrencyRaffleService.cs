@@ -1,8 +1,4 @@
-﻿using System.Threading.Tasks;
-using NadekoBot.Services;
-using NadekoBot.Modules.Gambling.Common;
-using System.Threading;
-using Discord;
+﻿using NadekoBot.Modules.Gambling.Common;
 
 namespace NadekoBot.Modules.Gambling.Services;
 

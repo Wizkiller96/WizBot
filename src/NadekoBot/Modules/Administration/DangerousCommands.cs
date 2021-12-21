@@ -1,8 +1,4 @@
-﻿using Discord.Commands;
-using NadekoBot.Common.Attributes;
-using NadekoBot.Extensions;
-using System.Threading.Tasks;
-using Discord;
+﻿using NadekoBot.Extensions;
 using NadekoBot.Modules.Administration.Services;
 
 #if !GLOBAL_NADEKO

@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using NadekoBot.Services.Database.Models;
-using System.IO;
 using Microsoft.Extensions.Logging;
 using NadekoBot.Db.Models;
 

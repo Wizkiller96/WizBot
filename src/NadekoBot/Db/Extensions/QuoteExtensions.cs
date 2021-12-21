@@ -1,7 +1,5 @@
 using NadekoBot.Services.Database.Models;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using NadekoBot.Common;
 
 namespace NadekoBot.Db;
 
