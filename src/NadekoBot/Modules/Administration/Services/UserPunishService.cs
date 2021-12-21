@@ -487,7 +487,7 @@ WHERE GuildId={guildId}
         {
             template = JsonConvert.SerializeObject(new
             {
-                color = _bcs.Data.Color.Error,
+                color = _bcs.Data.Color.Error.PackedValue >> 8,
                 description = defaultMessage 
             });
         }
@@ -502,7 +502,7 @@ WHERE GuildId={guildId}
         {
             template = JsonConvert.SerializeObject(new
             {
-                color = _bcs.Data.Color.Error,
+                color = _bcs.Data.Color.Error.PackedValue >> 8,
                 description = template
             });
         }

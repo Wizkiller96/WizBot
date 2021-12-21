@@ -270,7 +270,7 @@ public partial class Xp : NadekoModule<XpService>
         }
         else
         {
-            await ReplyConfirmLocalizedAsync(strs.excluded(Format.Bold(channel.ToString())));
+            await ReplyConfirmLocalizedAsync(strs.not_excluded(Format.Bold(channel.ToString())));
         }
     }
 
