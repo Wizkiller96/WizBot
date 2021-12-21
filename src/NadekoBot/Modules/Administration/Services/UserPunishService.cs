@@ -499,7 +499,9 @@ WHERE GuildId={guildId}
             {
                 template = JsonConvert.SerializeObject(new
                 {
-                    color = _bcs.Data.Color.Error,
+                    //To get the decimal version of the color that's expected, take the packed value of the Rgba32
+                    //and bitshift it to the right by 8 bits, thereby dropping the "a" and getting a reprensentation of the RGB value
+                    color = _bcs.Data.Color.Error.PackedValue >> 8,
                     description = defaultMessage 
                 });
             }
@@ -514,7 +516,9 @@ WHERE GuildId={guildId}
             {
                 template = JsonConvert.SerializeObject(new
                 {
-                    color = _bcs.Data.Color.Error,
+                    //To get the decimal version of the color that's expected, take the packed value of the Rgba32
+                    //and bitshift it to the right by 8 bits, thereby dropping the "a" and getting a reprensentation of the RGB value
+                    color = _bcs.Data.Color.Error.PackedValue >> 8,
                     description = template
                 });
             }
