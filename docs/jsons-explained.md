@@ -8,13 +8,16 @@ This part is completely optional, **however it's necessary for music and a few o
         - Go to [Google Console][Google Console] and log in.
         - Create a new project (name does not matter).
         - Once the project is created, go into `Library`
-        - Under the `YouTube APIs` section, enable `YouTube Data API`
-        - On the left tab, access `Credentials`,
-            - Click `Create Credentials` button,
-            - Click on `API Key`
-            - A new window will appear with your `Google API key`  
-              *NOTE: You don't really need to click on `RESTRICT KEY`, just click on `CLOSE` when you are done.*
-            - Copy the key.
+        - Under the `YouTube APIs` section
+            - Select `YouTube Data API v3`,
+            - Click enable.
+        - Open up the `Navigation menu` on the top right with the three lines.
+        - select `APIs & Services`, then select `Credentials`
+          - Click `Create Credentials` button,
+          - Click on `API Key`
+          - A new window will appear with your `Google API key`  
+          *NOTE: You don't really need to click on `RESTRICT KEY`, just click on `CLOSE` when you are done.*
+          - Copy the key.
         - Open up `creds.yml` and look for `GoogleAPIKey`, paste your API key after the `:`.
         - It should look like this:
         ```yml
