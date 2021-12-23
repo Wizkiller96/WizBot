@@ -1,5 +1,4 @@
-﻿using NadekoBot.Extensions;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using StackExchange.Redis;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Common.Yml;

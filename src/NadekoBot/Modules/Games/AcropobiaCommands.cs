@@ -1,5 +1,4 @@
-﻿using NadekoBot.Extensions;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using NadekoBot.Modules.Games.Common.Acrophobia;
 using NadekoBot.Modules.Games.Services;
 

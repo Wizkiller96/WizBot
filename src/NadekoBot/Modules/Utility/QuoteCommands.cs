@@ -1,4 +1,3 @@
-using NadekoBot.Extensions;
 using NadekoBot.Common.Yml;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;

@@ -1,5 +1,4 @@
 ﻿using System.Text.RegularExpressions;
-using NadekoBot.Extensions;
 using NadekoBot.Services.Database.Models;
 using Microsoft.EntityFrameworkCore;
 

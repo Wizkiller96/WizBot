@@ -1,5 +1,4 @@
 ﻿using NadekoBot.Common.Pokemon;
-using NadekoBot.Extensions;
 using NadekoBot.Modules.Games.Common.Trivia;
 using Newtonsoft.Json;
 using StackExchange.Redis;

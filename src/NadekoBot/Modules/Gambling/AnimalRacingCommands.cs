@@ -1,7 +1,6 @@
 ﻿using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Common.AnimalRacing;
 using NadekoBot.Modules.Gambling.Services;
-using NadekoBot.Extensions;
 using NadekoBot.Modules.Gambling.Common.AnimalRacing.Exceptions;
 using NadekoBot.Modules.Games.Services;
 

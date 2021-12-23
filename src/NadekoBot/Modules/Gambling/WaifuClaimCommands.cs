@@ -1,5 +1,4 @@
 ﻿using NadekoBot.Modules.Gambling.Common.Waifu;
-using NadekoBot.Extensions;
 using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Modules.Gambling.Common;
 

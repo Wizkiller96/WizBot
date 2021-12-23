@@ -1,6 +1,4 @@
-﻿using NadekoBot.Extensions;
-
-namespace NadekoBot.Modules.Administration;
+﻿namespace NadekoBot.Modules.Administration;
 
 public partial class Administration
 {

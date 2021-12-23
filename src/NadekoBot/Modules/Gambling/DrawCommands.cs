@@ -1,5 +1,4 @@
-﻿using NadekoBot.Extensions;
-using NadekoBot.Modules.Gambling.Common;
+﻿using NadekoBot.Modules.Gambling.Common;
 using Image = SixLabors.ImageSharp.Image;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;

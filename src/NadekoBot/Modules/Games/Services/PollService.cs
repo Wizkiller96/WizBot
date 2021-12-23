@@ -3,7 +3,6 @@ using NadekoBot.Modules.Games.Common;
 using NadekoBot.Common.Collections;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
-using NadekoBot.Extensions;
 
 namespace NadekoBot.Modules.Games.Services;
 

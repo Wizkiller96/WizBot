@@ -2,7 +2,6 @@
 using AngleSharp.Html.Dom;
 using Microsoft.Extensions.Caching.Memory;
 using NadekoBot.Modules.Searches.Common;
-using NadekoBot.Extensions;
 using NadekoBot.Modules.Searches.Services;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;

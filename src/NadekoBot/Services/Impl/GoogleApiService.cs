@@ -3,7 +3,6 @@ using Google.Apis.Customsearch.v1;
 using Google.Apis.Services;
 using Google.Apis.Urlshortener.v1;
 using Google.Apis.YouTube.v3;
-using NadekoBot.Extensions;
 using Newtonsoft.Json.Linq;
 using System.Net;
 using System.Text.RegularExpressions;

@@ -1,5 +1,4 @@
-﻿using NadekoBot.Extensions;
-using System.Text;
+﻿using System.Text;
 using CommandLine;
 
 namespace NadekoBot.Modules.Games.Common;

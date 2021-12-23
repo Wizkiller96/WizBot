@@ -1,4 +1,3 @@
-using NadekoBot.Extensions;
 using System.Text;
 
 namespace NadekoBot.Modules.Utility;

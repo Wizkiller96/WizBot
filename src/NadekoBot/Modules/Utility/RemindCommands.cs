@@ -1,7 +1,6 @@
 ﻿using Humanizer.Localisation;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
-using NadekoBot.Extensions;
 using NadekoBot.Modules.Administration.Services;
 using NadekoBot.Modules.Utility.Services;
 

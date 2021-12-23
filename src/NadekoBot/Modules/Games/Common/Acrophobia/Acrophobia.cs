@@ -1,6 +1,5 @@
 ﻿using System.Collections.Immutable;
 using CommandLine;
-using NadekoBot.Extensions;
 
 namespace NadekoBot.Modules.Games.Common.Acrophobia;
 

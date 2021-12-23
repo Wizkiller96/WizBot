@@ -2,7 +2,6 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Caching.Memory;
 using NadekoBot.Common.ModuleBehaviors;
-using NadekoBot.Extensions;
 using NadekoBot.Modules.Games.Services;
 
 namespace NadekoBot.Modules.Games.Hangman;

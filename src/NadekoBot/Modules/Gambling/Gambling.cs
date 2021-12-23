@@ -1,6 +1,5 @@
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Db.Models;
-using NadekoBot.Extensions;
 using NadekoBot.Modules.Gambling.Services;
 using System.Globalization;
 using System.Numerics;

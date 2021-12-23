@@ -1,6 +1,5 @@
 ﻿#nullable enable
 using Microsoft.EntityFrameworkCore;
-using NadekoBot.Extensions;
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using NadekoBot.Common.Collections;

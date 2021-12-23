@@ -1,7 +1,6 @@
 ﻿using Grpc.Core;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Coordinator;
-using NadekoBot.Extensions;
 
 namespace NadekoBot.Services;
 

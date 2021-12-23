@@ -1,4 +1,3 @@
-using NadekoBot.Extensions;
 using NadekoBot.Modules.Administration.Services;
 using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Modules.Gambling.Common;

@@ -1,5 +1,4 @@
-﻿using NadekoBot.Extensions;
-using NadekoBot.Modules.Games.Common;
+﻿using NadekoBot.Modules.Games.Common;
 using NadekoBot.Modules.Games.Common.Acrophobia;
 using NadekoBot.Modules.Games.Common.Nunchi;
 using NadekoBot.Modules.Games.Common.Trivia;

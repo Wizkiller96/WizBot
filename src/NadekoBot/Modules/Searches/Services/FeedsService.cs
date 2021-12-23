@@ -1,7 +1,6 @@
 ﻿using CodeHollow.FeedReader.Feeds;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Services.Database.Models;
-using NadekoBot.Extensions;
 using NadekoBot.Db;
 
 namespace NadekoBot.Modules.Searches.Services;

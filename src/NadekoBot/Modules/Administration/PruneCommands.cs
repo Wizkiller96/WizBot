@@ -1,5 +1,4 @@
-﻿using NadekoBot.Extensions;
-using NadekoBot.Modules.Administration.Services;
+﻿using NadekoBot.Modules.Administration.Services;
 using ITextChannel = Discord.ITextChannel;
 
 namespace NadekoBot.Modules.Administration;

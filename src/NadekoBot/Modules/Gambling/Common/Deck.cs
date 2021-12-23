@@ -1,6 +1,4 @@
-﻿using NadekoBot.Extensions;
-
-namespace NadekoBot.Modules.Gambling.Common;
+﻿namespace NadekoBot.Modules.Gambling.Common;
 
 public class QuadDeck : Deck
 {

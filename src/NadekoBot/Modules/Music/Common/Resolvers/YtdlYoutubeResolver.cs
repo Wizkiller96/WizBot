@@ -1,7 +1,6 @@
 ﻿#nullable enable
 using System.Globalization;
 using System.Text.RegularExpressions;
-using NadekoBot.Extensions;
 
 namespace NadekoBot.Modules.Music;
 

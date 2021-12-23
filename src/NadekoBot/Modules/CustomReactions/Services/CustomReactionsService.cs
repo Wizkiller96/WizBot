@@ -1,6 +1,5 @@
 ﻿using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Services.Database.Models;
-using NadekoBot.Extensions;
 using NadekoBot.Modules.CustomReactions.Extensions;
 using NadekoBot.Modules.Permissions.Common;
 using NadekoBot.Modules.Permissions.Services;

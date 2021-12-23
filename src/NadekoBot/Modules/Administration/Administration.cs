@@ -1,5 +1,4 @@
 using NadekoBot.Common.TypeReaders.Models;
-using NadekoBot.Extensions;
 using NadekoBot.Modules.Administration.Services;
 
 namespace NadekoBot.Modules.Administration;

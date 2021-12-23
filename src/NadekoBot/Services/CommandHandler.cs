@@ -1,5 +1,4 @@
 ﻿using NadekoBot.Common.Collections;
-using NadekoBot.Extensions;
 using System.Collections.Immutable;
 using NadekoBot.Common.Configs;
 using NadekoBot.Db;

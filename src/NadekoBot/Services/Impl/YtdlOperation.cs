@@ -1,7 +1,6 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
-using NadekoBot.Extensions;
 
 namespace NadekoBot.Services;
 

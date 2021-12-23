@@ -4,7 +4,6 @@ using System.Net.Http.Json;
 using System.Text.Json.Serialization;
 using LinqToDB.EntityFrameworkCore;
 using NadekoBot.Modules.Gambling.Services;
-using NadekoBot.Extensions;
 using StackExchange.Redis;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 

@@ -1,5 +1,4 @@
-﻿using NadekoBot.Extensions;
-using NadekoBot.Modules.Games.Common;
+﻿using NadekoBot.Modules.Games.Common;
 using NadekoBot.Modules.Games.Services;
 
 namespace NadekoBot.Modules.Games;

@@ -3,7 +3,6 @@ using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
-using NadekoBot.Extensions;
 
 namespace NadekoBot.Modules.Searches;
 

@@ -4,7 +4,6 @@ using LinqToDB;
 using Microsoft.Extensions.Caching.Memory;
 using NadekoBot.Common.Collections;
 using NadekoBot.Common.ModuleBehaviors;
-using NadekoBot.Extensions;
 
 namespace NadekoBot.Modules.Administration.Services;
 

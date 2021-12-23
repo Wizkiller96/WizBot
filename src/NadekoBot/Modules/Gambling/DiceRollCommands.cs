@@ -1,4 +1,3 @@
-using NadekoBot.Extensions;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using System.Text.RegularExpressions;

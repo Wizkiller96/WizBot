@@ -1,6 +1,5 @@
 ﻿using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
-using NadekoBot.Extensions;
 using NadekoBot.Modules.Music.Services;
 
 namespace NadekoBot.Modules.Music;

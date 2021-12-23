@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using NadekoBot.Modules.Administration.Services;
-using NadekoBot.Extensions;
 
 namespace NadekoBot.Modules.Administration;
 

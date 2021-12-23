@@ -6,7 +6,7 @@ global using NadekoBot;
 global using NadekoBot.Services;
 global using NadekoBot.Common;
 global using NadekoBot.Common.Attributes;
-// todo global using Nadekobot.Extensions;
+global using NadekoBot.Extensions;
 
 global using Discord;
 global using Discord.Commands;

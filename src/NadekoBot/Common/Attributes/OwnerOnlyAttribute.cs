@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using NadekoBot.Extensions;
 
 namespace NadekoBot.Common.Attributes;
 

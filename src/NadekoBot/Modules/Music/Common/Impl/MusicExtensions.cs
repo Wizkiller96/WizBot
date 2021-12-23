@@ -1,6 +1,4 @@
-﻿using NadekoBot.Extensions;
-
-namespace NadekoBot.Modules.Music;
+﻿namespace NadekoBot.Modules.Music;
 
 public static class MusicExtensions
 {

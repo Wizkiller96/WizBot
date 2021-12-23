@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using NadekoBot.Extensions;
 using NadekoBot.Modules.Games.Services;
 using CommandLine;
 

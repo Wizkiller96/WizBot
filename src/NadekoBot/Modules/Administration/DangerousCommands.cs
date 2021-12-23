@@ -1,5 +1,4 @@
-﻿using NadekoBot.Extensions;
-using NadekoBot.Modules.Administration.Services;
+﻿using NadekoBot.Modules.Administration.Services;
 
 #if !GLOBAL_NADEKO
 namespace NadekoBot.Modules.Administration

@@ -1,5 +1,4 @@
-﻿using NadekoBot.Extensions;
-using NadekoBot.Common.ModuleBehaviors;
+﻿using NadekoBot.Common.ModuleBehaviors;
 using CommandLine;
 using NadekoBot.Modules.Administration.Services;
 

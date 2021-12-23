@@ -1,5 +1,4 @@
 using NadekoBot.Modules.Help.Common;
-using NadekoBot.Extensions;
 using NadekoBot.Modules.Help.Services;
 using NadekoBot.Modules.Permissions.Services;
 using Newtonsoft.Json;

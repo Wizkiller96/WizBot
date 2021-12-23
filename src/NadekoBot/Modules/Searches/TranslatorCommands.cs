@@ -1,6 +1,4 @@
-﻿using NadekoBot.Extensions;
-
-namespace NadekoBot.Modules.Searches;
+﻿namespace NadekoBot.Modules.Searches;
 
 public partial class Searches
 {

@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.Collections;
-using NadekoBot.Extensions;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
 

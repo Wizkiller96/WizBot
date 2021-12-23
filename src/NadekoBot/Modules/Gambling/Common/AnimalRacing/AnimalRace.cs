@@ -1,5 +1,4 @@
-﻿using NadekoBot.Extensions;
-using NadekoBot.Modules.Gambling.Common.AnimalRacing.Exceptions;
+﻿using NadekoBot.Modules.Gambling.Common.AnimalRacing.Exceptions;
 using NadekoBot.Modules.Games.Common;
 
 namespace NadekoBot.Modules.Gambling.Common.AnimalRacing;

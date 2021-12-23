@@ -1,6 +1,4 @@
-﻿using NadekoBot.Extensions;
-
-namespace NadekoBot;
+﻿namespace NadekoBot;
 
 public sealed record SmartEmbedText : SmartText
 {

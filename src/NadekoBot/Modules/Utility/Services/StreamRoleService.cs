@@ -1,5 +1,4 @@
-﻿using NadekoBot.Extensions;
-using NadekoBot.Services.Database.Models;
+﻿using NadekoBot.Services.Database.Models;
 using NadekoBot.Common.TypeReaders;
 using NadekoBot.Modules.Utility.Common;
 using NadekoBot.Modules.Utility.Common.Exceptions;

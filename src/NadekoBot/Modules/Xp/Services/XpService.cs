@@ -1,6 +1,5 @@
 using NadekoBot.Common.Collections;
 using NadekoBot.Db.Models;
-using NadekoBot.Extensions;
 using Newtonsoft.Json;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;

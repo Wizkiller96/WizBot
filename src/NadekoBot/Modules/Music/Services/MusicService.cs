@@ -2,7 +2,6 @@
 using System.Diagnostics.CodeAnalysis;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
-using NadekoBot.Extensions;
 
 namespace NadekoBot.Modules.Music.Services;
 

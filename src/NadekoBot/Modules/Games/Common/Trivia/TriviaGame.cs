@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using NadekoBot.Extensions;
 
 namespace NadekoBot.Modules.Games.Common.Trivia;
 

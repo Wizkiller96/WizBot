@@ -1,6 +1,5 @@
 using System.Collections.Immutable;
 using System.Text;
-using NadekoBot.Extensions;
 using Newtonsoft.Json;
 
 namespace NadekoBot.Modules.Searches;

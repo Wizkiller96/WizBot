@@ -4,7 +4,6 @@ using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
-using NadekoBot.Extensions;
 
 namespace NadekoBot.Modules.Gambling;
 

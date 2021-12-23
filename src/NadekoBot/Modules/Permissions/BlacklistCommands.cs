@@ -1,7 +1,6 @@
 ﻿using NadekoBot.Common.TypeReaders;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Modules.Permissions.Services;
-using NadekoBot.Extensions;
 
 namespace NadekoBot.Modules.Permissions;
 

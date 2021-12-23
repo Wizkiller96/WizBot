@@ -1,7 +1,6 @@
 ﻿using System.Threading.Channels;
 using NadekoBot.Modules.Administration.Common;
 using NadekoBot.Services.Database.Models;
-using NadekoBot.Extensions;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Db;
 

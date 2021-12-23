@@ -1,5 +1,4 @@
 ﻿using AngleSharp;
-using NadekoBot.Extensions;
 using NadekoBot.Modules.Searches.Services;
 using AngleSharp.Html.Dom;
 

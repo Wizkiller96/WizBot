@@ -1,6 +1,4 @@
-﻿using NadekoBot.Extensions;
-
-namespace NadekoBot.Common.TypeReaders;
+﻿namespace NadekoBot.Common.TypeReaders;
 
 public sealed class ModuleTypeReader : NadekoTypeReader<ModuleInfo>
 {

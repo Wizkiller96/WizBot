@@ -1,5 +1,4 @@
 ﻿using System.Web;
-using NadekoBot.Extensions;
 using StackExchange.Redis;
 
 namespace NadekoBot.Services;

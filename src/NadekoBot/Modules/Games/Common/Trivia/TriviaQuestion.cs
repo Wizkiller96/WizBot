@@ -1,5 +1,4 @@
 ﻿using System.Text.RegularExpressions;
-using NadekoBot.Extensions;
 
 // THANKS @ShoMinamimoto for suggestions and coding help
 namespace NadekoBot.Modules.Games.Common.Trivia;

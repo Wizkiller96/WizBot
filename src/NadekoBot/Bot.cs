@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using NadekoBot.Services.Database.Models;
-using NadekoBot.Extensions;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Reflection;

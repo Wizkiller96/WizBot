@@ -1,5 +1,4 @@
-﻿using NadekoBot.Extensions;
-using NadekoBot.Modules.Searches.Services;
+﻿using NadekoBot.Modules.Searches.Services;
 using NadekoBot.Common.Pokemon;
 
 namespace NadekoBot.Modules.Searches;

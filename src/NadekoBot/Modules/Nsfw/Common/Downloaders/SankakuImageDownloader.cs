@@ -1,5 +1,4 @@
 using System.Text.Json;
-using NadekoBot.Extensions;
 
 namespace NadekoBot.Modules.Nsfw.Common;
 

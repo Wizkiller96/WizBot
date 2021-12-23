@@ -1,5 +1,4 @@
 ﻿using NadekoBot.Common.ModuleBehaviors;
-using NadekoBot.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace NadekoBot.Services;

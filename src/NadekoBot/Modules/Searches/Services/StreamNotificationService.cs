@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using NadekoBot.Modules.Searches.Common;
 using NadekoBot.Modules.Searches.Common.StreamNotifications;
 using NadekoBot.Services.Database.Models;
-using NadekoBot.Extensions;
 using StackExchange.Redis;
 using NadekoBot.Common.Collections;
 using NadekoBot.Db;

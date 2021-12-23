@@ -1,6 +1,5 @@
 using Newtonsoft.Json.Linq;
 using LinqToDB;
-using NadekoBot.Extensions;
 using NadekoBot.Modules.Searches.Common;
 using Newtonsoft.Json;
 using Booru = NadekoBot.Modules.Nsfw.Common.Booru;

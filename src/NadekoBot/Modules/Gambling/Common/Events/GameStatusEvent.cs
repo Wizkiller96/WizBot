@@ -1,6 +1,5 @@
 ﻿using NadekoBot.Common.Collections;
 using NadekoBot.Services.Database.Models;
-using NadekoBot.Extensions;
 
 namespace NadekoBot.Modules.Gambling.Common.Events;
 

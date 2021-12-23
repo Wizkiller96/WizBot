@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
-using NadekoBot.Extensions;
 
 namespace NadekoBot.Modules.Nsfw.Common;
 

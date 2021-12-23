@@ -3,7 +3,6 @@ using Microsoft.Extensions.Caching.Memory;
 using NadekoBot.Common.Collections;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
-using NadekoBot.Extensions;
 using NadekoBot.Modules.Administration.Common;
 
 namespace NadekoBot.Modules.Administration.Services;

@@ -1,5 +1,4 @@
-﻿using NadekoBot.Extensions;
-using NadekoBot.Modules.Gambling.Services;
+﻿using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Modules.Gambling.Common.Events;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Modules.Gambling.Common;

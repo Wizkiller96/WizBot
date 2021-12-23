@@ -1,5 +1,4 @@
-﻿using NadekoBot.Extensions;
-using NadekoBot.Modules.Utility.Services;
+﻿using NadekoBot.Modules.Utility.Services;
 
 namespace NadekoBot.Modules.Utility;
 

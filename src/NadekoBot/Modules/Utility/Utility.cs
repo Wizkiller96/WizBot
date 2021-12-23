@@ -1,4 +1,3 @@
-using NadekoBot.Extensions;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Text;

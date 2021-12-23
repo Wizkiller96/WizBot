@@ -1,5 +1,4 @@
-﻿using NadekoBot.Extensions;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace NadekoBot.Modules.Games.Common.ChatterBot;
 

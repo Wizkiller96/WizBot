@@ -1,5 +1,4 @@
-﻿using NadekoBot.Extensions;
-using NadekoBot.Modules.Searches.Services;
+﻿using NadekoBot.Modules.Searches.Services;
 using System.Text.RegularExpressions;
 
 namespace NadekoBot.Modules.Searches;

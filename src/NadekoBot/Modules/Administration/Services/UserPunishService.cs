@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.TypeReaders.Models;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
-using NadekoBot.Extensions;
 using NadekoBot.Modules.Permissions.Services;
 using Newtonsoft.Json;
 

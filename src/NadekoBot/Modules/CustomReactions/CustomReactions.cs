@@ -1,5 +1,4 @@
-﻿using NadekoBot.Extensions;
-using NadekoBot.Modules.CustomReactions.Services;
+﻿using NadekoBot.Modules.CustomReactions.Services;
 
 namespace NadekoBot.Modules.CustomReactions;
 
