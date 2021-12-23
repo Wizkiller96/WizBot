@@ -1782,11 +1782,6 @@ streamrolewhitelist:
   args:
     - "add @Someone#1234"
     - "rem @Someone#1234"
-botconfigedit:
-  desc: "Obsolete, use `{0}config` or `{0}config bot` instead"
-  args:
-    - "color.ok 00ff00"
-    - ""
 config:
   desc: |-
     Gets or sets configuration values.

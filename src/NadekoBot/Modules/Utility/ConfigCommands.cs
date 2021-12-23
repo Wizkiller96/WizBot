@@ -6,28 +6,12 @@ public partial class Utility
 {
     public class ConfigCommands : NadekoSubmodule
     {
-        private readonly BotConfigService _bss;
-        private readonly SelfService _selfService;
-            
         private readonly IEnumerable<IConfigService> _settingServices;
 
-        public ConfigCommands(BotConfigService bss, SelfService selfService, IEnumerable<IConfigService> settingServices)
+        public ConfigCommands(IEnumerable<IConfigService> settingServices)
         {
             _settingServices = settingServices;
-            _bss = bss;
-            _selfService = selfService;
         }
-
-        [NadekoCommand, Aliases]
-        [OwnerOnly]
-        public Task BotConfigEdit()
-            => Config("bot");
-
-        [NadekoCommand, Aliases]
-        [Priority(0)]
-        [OwnerOnly]
-        public Task BotConfigEdit(string prop, [Leftover] string newValue = null)
-            => Config("bot", prop, newValue);
 
         [NadekoCommand, Aliases]
         [OwnerOnly]

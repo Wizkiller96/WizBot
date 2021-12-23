@@ -1050,9 +1050,6 @@ streamroleblacklist:
 streamrolewhitelist:
 - streamrolewhitelist
 - srwl
-botconfigedit:
-- botconfigedit
-- bce
 config:
 - config
 - conf
