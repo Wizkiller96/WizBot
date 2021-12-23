@@ -203,7 +203,7 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
             if (user is null)
                 return Task.FromResult<IDMChannel>(null);
 
-            return user.GetOrCreateDMChannelAsync();
+            return user.CreateDMChannelAsync();
         })).ConfigureAwait(false);
 
         ownerChannels = channels.Where(x => x != null)

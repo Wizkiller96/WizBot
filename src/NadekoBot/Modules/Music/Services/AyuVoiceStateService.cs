@@ -25,7 +25,9 @@ public sealed class AyuVoiceStateService : INService
             .GetProperties(BindingFlags.NonPublic | BindingFlags.Instance)
             .First(x => x.Name == "ApiClient" && x.PropertyType.Name == "DiscordSocketApiClient");
         _dnetApiClient = prop.GetValue(_client, null);
-        _sendVoiceStateUpdateMethodInfo = _dnetApiClient.GetType().GetMethod("SendVoiceStateUpdateAsync");
+        _sendVoiceStateUpdateMethodInfo = _dnetApiClient.GetType()
+            .GetMethod("SendVoiceStateUpdateAsync",
+                types: new[] { typeof(ulong), typeof(ulong?), typeof(bool), typeof(bool), typeof(RequestOptions) });
             
         _client.LeftGuild += ClientOnLeftGuild;
     }

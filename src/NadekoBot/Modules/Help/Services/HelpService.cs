@@ -132,9 +132,9 @@ public class HelpService : ILateExecutor, INService
         var userPermString = string.Empty;
         if (userPerm is not null)
         {
-            if (userPerm.UserPermissionAttribute.ChannelPermission is { } cPerm)
+            if (userPerm.ChannelPermission is { } cPerm)
                 userPermString = GetPreconditionString((ChannelPerm) cPerm);
-            if (userPerm.UserPermissionAttribute.GuildPermission is { } gPerm)
+            if (userPerm.GuildPermission is { } gPerm)
                 userPermString = GetPreconditionString((GuildPerm) gPerm);
         }
 

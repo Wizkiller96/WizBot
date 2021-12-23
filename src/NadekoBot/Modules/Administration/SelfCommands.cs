@@ -466,7 +466,7 @@ public partial class Administration
                 if (user is null)
                     return;
 
-                var ch = await user.GetOrCreateDMChannelAsync();
+                var ch = await user.CreateDMChannelAsync();
                 text = rep.Replace(text);
                 await ch.SendAsync(text);
             }

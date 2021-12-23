@@ -34,14 +34,16 @@ public class RoleCommandsService : INService
 #endif
     }
 
-    private Task _client_ReactionAdded(Cacheable<IUserMessage, ulong> msg, ISocketMessageChannel chan, SocketReaction reaction)
+    private Task _client_ReactionAdded(Cacheable<IUserMessage, ulong> msg,
+        Cacheable<IMessageChannel, ulong> chan,
+        SocketReaction reaction)
     {
         _ = Task.Run(async () =>
         {
             if (!reaction.User.IsSpecified ||
                 reaction.User.Value.IsBot ||
                 reaction.User.Value is not SocketGuildUser gusr ||
-                chan is not SocketGuildChannel gch ||
+                chan.Value is not SocketGuildChannel gch ||
                 !_models.TryGetValue(gch.Guild.Id, out var confs))
                 return;
 
@@ -93,7 +95,9 @@ public class RoleCommandsService : INService
         return Task.CompletedTask;
     }
 
-    private Task _client_ReactionRemoved(Cacheable<IUserMessage, ulong> msg, ISocketMessageChannel chan, SocketReaction reaction)
+    private Task _client_ReactionRemoved(Cacheable<IUserMessage, ulong> msg,
+        Cacheable<IMessageChannel, ulong> chan,
+        SocketReaction reaction)
     {
         _ = Task.Run(async () =>
         {
@@ -104,7 +108,7 @@ public class RoleCommandsService : INService
                     reaction.User.Value is not SocketGuildUser gusr)
                     return;
 
-                if (chan is not SocketGuildChannel gch)
+                if (chan.Value is not SocketGuildChannel gch)
                     return;
 
                 if (!_models.TryGetValue(gch.Guild.Id, out var confs))

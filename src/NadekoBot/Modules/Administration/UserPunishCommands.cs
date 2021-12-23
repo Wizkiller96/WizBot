@@ -61,7 +61,7 @@ public partial class Administration
             var dmFailed = false;
             try
             {
-                await (await user.GetOrCreateDMChannelAsync().ConfigureAwait(false)).EmbedAsync(_eb.Create().WithErrorColor()
+                await user.EmbedAsync(_eb.Create().WithErrorColor()
                         .WithDescription(GetText(strs.warned_on(ctx.Guild.ToString())))
                         .AddField(GetText(strs.moderator), ctx.User.ToString())
                         .AddField(GetText(strs.reason), reason ?? "-"))
@@ -449,8 +449,7 @@ public partial class Administration
                     var embed = _service.GetBanUserDmEmbed(Context, guildUser, defaultMessage, msg, time.Time);
                     if (embed is not null)
                     {
-                        var userChannel = await guildUser.GetOrCreateDMChannelAsync();
-                        await userChannel.SendAsync(embed);
+                        await guildUser.SendAsync(embed);
                     }
                 }
                 catch
@@ -520,8 +519,7 @@ public partial class Administration
                 var embed = _service.GetBanUserDmEmbed(Context, user, defaultMessage, msg, null);
                 if (embed is not null)
                 {
-                    var userChannel = await user.GetOrCreateDMChannelAsync();
-                    await userChannel.SendAsync(embed);
+                    await ctx.User.SendAsync(embed);
                 }
             }
             catch
@@ -596,7 +594,6 @@ public partial class Administration
             
         private async Task InternalBanMessageTest(string reason, TimeSpan? duration)
         {
-            var dmChannel = await ctx.User.GetOrCreateDMChannelAsync();
             var defaultMessage = GetText(strs.bandm(Format.Bold(ctx.Guild.Name), reason));
             var embed = _service.GetBanUserDmEmbed(Context,
                 (IGuildUser)ctx.User,
@@ -612,7 +609,7 @@ public partial class Administration
             {
                 try
                 {
-                    await dmChannel.SendAsync(embed);
+                    await ctx.User.SendAsync(embed);
                 }
                 catch (Exception)
                 {

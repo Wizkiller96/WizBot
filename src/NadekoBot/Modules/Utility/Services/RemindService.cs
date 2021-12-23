@@ -152,7 +152,7 @@ public class RemindService : INService
                 var user = _client.GetUser(r.ChannelId);
                 if (user is null)
                     return;
-                ch = await user.GetOrCreateDMChannelAsync().ConfigureAwait(false);
+                ch = await user.CreateDMChannelAsync();
             }
             else
             {

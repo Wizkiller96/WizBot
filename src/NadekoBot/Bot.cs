@@ -51,7 +51,8 @@ public sealed class Bot
             TotalShards = _creds.TotalShards,
             ShardId = shardId,
             AlwaysDownloadUsers = false,
-            ExclusiveBulkDelete = true,
+            AlwaysResolveStickers = false,
+            AlwaysDownloadDefaultStickers = false,
         });
 
         _commandService = new(new()

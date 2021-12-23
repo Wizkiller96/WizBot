@@ -250,9 +250,7 @@ public class XpService : INService
                     {
                         if (x.NotifyType == XpNotificationLocation.Dm)
                         {
-                            var chan = await x.User.GetOrCreateDMChannelAsync();
-                            if (chan != null)
-                                await chan.SendConfirmAsync(_eb,
+                                await x.User.SendConfirmAsync(_eb,
                                     _strings.GetText(strs.level_up_dm(
                                             x.User.Mention, Format.Bold(x.Level.ToString()),
                                             Format.Bold(x.Guild.ToString() ?? "-")),
@@ -272,7 +270,7 @@ public class XpService : INService
                         IMessageChannel chan;
                         if (x.NotifyType == XpNotificationLocation.Dm)
                         {
-                            chan = await x.User.GetOrCreateDMChannelAsync();
+                            chan = await x.User.CreateDMChannelAsync();
                         }
                         else // channel
                         {

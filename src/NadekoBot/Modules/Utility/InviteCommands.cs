@@ -27,8 +27,8 @@ public partial class Utility
 
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
-        [BotPerm(ChannelPerm.ManageChannel)]
-        [UserPerm(ChannelPerm.ManageChannel)]
+        [BotPerm(ChannelPerm.ManageChannels)]
+        [UserPerm(ChannelPerm.ManageChannels)]
         public async Task InviteList(int page = 1, [Leftover]ITextChannel ch = null)
         {
             if (--page < 0)
@@ -76,8 +76,8 @@ public partial class Utility
 
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
-        [BotPerm(ChannelPerm.ManageChannel)]
-        [UserPerm(ChannelPerm.ManageChannel)]
+        [BotPerm(ChannelPerm.ManageChannels)]
+        [UserPerm(ChannelPerm.ManageChannels)]
         public async Task InviteDelete(int index)
         {
             if (--index < 0)

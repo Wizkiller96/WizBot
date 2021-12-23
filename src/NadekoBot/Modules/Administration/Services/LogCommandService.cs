@@ -567,12 +567,17 @@ public sealed class LogCommandService : ILogCommandService
         return isDeleted;
     }
 
-    private Task _client_GuildUserUpdated(SocketGuildUser before, SocketGuildUser after)
+    private Task _client_GuildUserUpdated(Cacheable<SocketGuildUser, ulong> optBefore, SocketGuildUser after)
     {
         var _ = Task.Run(async () =>
         {
             try
             {
+                var before = await optBefore.GetOrDownloadAsync();
+
+                if (before is null)
+                    return;
+                
                 if (!GuildLogSettings.TryGetValue(before.Guild.Id, out var logSetting)
                     || logSetting.LogIgnores.Any(ilc => ilc.LogItemId == after.Id && ilc.ItemType == IgnoredItemType.User))
                     return;
@@ -642,10 +647,10 @@ public sealed class LogCommandService : ILogCommandService
                                 return list;
                             });
                     }
-                    else if (before.Activity?.Name != after.Activity?.Name)
+                    else if (before.Activities.FirstOrDefault()?.Name != after.Activities.FirstOrDefault()?.Name)
                     {
                         var str =
-                            $"👾`{PrettyCurrentTime(after.Guild)}`👤__**{after.Username}**__ is now playing **{after.Activity?.Name ?? "-"}**.";
+                            $"👾`{PrettyCurrentTime(after.Guild)}`👤__**{after.Username}**__ is now playing **{after.Activities.FirstOrDefault()?.Name ?? "-"}**.";
                         PresenceUpdates.AddOrUpdate(logChannel,
                             new List<string>() {str}, (id, list) =>
                             {
@@ -857,19 +862,19 @@ public sealed class LogCommandService : ILogCommandService
         return Task.CompletedTask;
     }
 
-    private Task _client_UserLeft(IGuildUser usr)
+    private Task _client_UserLeft(SocketGuild guild, SocketUser usr)
     {
         var _ = Task.Run(async () =>
         {
             try
             {
-                if (!GuildLogSettings.TryGetValue(usr.Guild.Id, out var logSetting)
+                if (!GuildLogSettings.TryGetValue(guild.Id, out var logSetting)
                     || logSetting.UserLeftId is null
                     || logSetting.LogIgnores.Any(ilc => ilc.LogItemId == usr.Id && ilc.ItemType == IgnoredItemType.User))
                     return;
 
                 ITextChannel logChannel;
-                if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.UserLeft)
+                if ((logChannel = await TryGetLogChannel(guild, logSetting, LogType.UserLeft)
                         .ConfigureAwait(false)) is null)
                     return;
                 var embed = _eb.Create()
@@ -877,7 +882,7 @@ public sealed class LogCommandService : ILogCommandService
                     .WithTitle("❌ " + GetText(logChannel.Guild, strs.user_left))
                     .WithDescription(usr.ToString())
                     .AddField("Id", usr.Id.ToString())
-                    .WithFooter(CurrentTime(usr.Guild));
+                    .WithFooter(CurrentTime(guild));
 
                 if (Uri.IsWellFormedUriString(usr.GetAvatarUrl(), UriKind.Absolute))
                     embed.WithThumbnailUrl(usr.GetAvatarUrl());
@@ -1006,19 +1011,20 @@ public sealed class LogCommandService : ILogCommandService
         return Task.CompletedTask;
     }
 
-    private Task _client_MessageDeleted(Cacheable<IMessage, ulong> optMsg, ISocketMessageChannel ch)
+    private Task _client_MessageDeleted(Cacheable<IMessage, ulong> optMsg, Cacheable<IMessageChannel, ulong> optCh)
     {
         var _ = Task.Run(async () =>
         {
             try
             {
-                var msg = (optMsg.HasValue ? optMsg.Value : null) as IUserMessage;
+                var msg = optMsg.Value as IUserMessage;
                 if (msg is null || msg.IsAuthor(_client))
                     return;
 
                 if (_ignoreMessageIds.Contains(msg.Id))
                     return;
 
+                var ch = optCh.Value;
                 if (!(ch is ITextChannel channel))
                     return;
 

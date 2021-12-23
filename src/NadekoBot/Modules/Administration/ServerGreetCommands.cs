@@ -253,7 +253,7 @@ public partial class Administration
         {
             user = user ?? (IGuildUser) ctx.User;
                 
-            var channel = await user.GetOrCreateDMChannelAsync();
+            var channel = await user.CreateDMChannelAsync();
             var success = await _service.GreetDmTest(channel, user);
             if (success)
                 await ctx.OkAsync();

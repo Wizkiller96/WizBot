@@ -38,7 +38,7 @@ public class StreamRoleService : INService
         });
     }
 
-    private Task Client_GuildMemberUpdated(SocketGuildUser before, SocketGuildUser after)
+    private Task Client_GuildMemberUpdated(Cacheable<SocketGuildUser, ulong> cacheable, SocketGuildUser after)
     {
         var _ = Task.Run(async () =>
         {

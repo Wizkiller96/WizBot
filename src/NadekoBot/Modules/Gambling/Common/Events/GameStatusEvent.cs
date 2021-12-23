@@ -120,7 +120,7 @@ public class GameStatusEvent : ICurrencyEvent
         return _embedFunc(CurrencyEvent.Type.GameStatus, _opts, pot);
     }
 
-    private async Task OnMessageDeleted(Cacheable<IMessage, ulong> msg, ISocketMessageChannel _)
+    private async Task OnMessageDeleted(Cacheable<IMessage, ulong> msg, Cacheable<IMessageChannel, ulong> cacheable)
     {
         if (msg.Id == _msg.Id)
         {

@@ -355,7 +355,7 @@ public class CommandHandler : INService
         var chosenOverload = successfulParses[0];
         var execResult = (ExecuteResult)await chosenOverload.Key.ExecuteAsync(context, chosenOverload.Value, services).ConfigureAwait(false);
 
-        if (execResult.Exception != null && (!(execResult.Exception is HttpException he) || he.DiscordCode != 50013))
+        if (execResult.Exception != null && (!(execResult.Exception is HttpException he) || he.DiscordCode != DiscordErrorCode.InsufficientPermissions))
         {
             Log.Warning(execResult.Exception, "Command Error");
         }

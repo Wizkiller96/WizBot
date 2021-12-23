@@ -17,7 +17,9 @@ public sealed class ReactionEventWrapper : IDisposable
         _client.ReactionsCleared += Discord_ReactionsCleared;
     }
 
-    private Task Discord_ReactionsCleared(Cacheable<IUserMessage, ulong> msg, ISocketMessageChannel channel)
+    private Task Discord_ReactionsCleared(
+        Cacheable<IUserMessage, ulong> msg,
+        Cacheable<IMessageChannel, ulong> channel)
     {
         Task.Run(() =>
         {
@@ -32,7 +34,9 @@ public sealed class ReactionEventWrapper : IDisposable
         return Task.CompletedTask;
     }
 
-    private Task Discord_ReactionRemoved(Cacheable<IUserMessage, ulong> msg, ISocketMessageChannel channel, SocketReaction reaction)
+    private Task Discord_ReactionRemoved(
+        Cacheable<IUserMessage, ulong> msg,
+        Cacheable<IMessageChannel, ulong> cacheable, SocketReaction reaction)
     {
         Task.Run(() =>
         {
@@ -47,7 +51,10 @@ public sealed class ReactionEventWrapper : IDisposable
         return Task.CompletedTask;
     }
 
-    private Task Discord_ReactionAdded(Cacheable<IUserMessage, ulong> msg, ISocketMessageChannel channel, SocketReaction reaction)
+    private Task Discord_ReactionAdded(
+        Cacheable<IUserMessage, ulong> msg,
+        Cacheable<IMessageChannel, ulong> cacheable,
+        SocketReaction reaction)
     {
         Task.Run(() =>
         {
@@ -56,7 +63,9 @@ public sealed class ReactionEventWrapper : IDisposable
                 if (msg.Id == Message.Id)
                     OnReactionAdded?.Invoke(reaction);
             }
-            catch { }
+            catch
+            {
+            }
         });
 
         return Task.CompletedTask;

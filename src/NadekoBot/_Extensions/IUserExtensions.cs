@@ -4,8 +4,26 @@ namespace NadekoBot.Extensions;
 
 public static class IUserExtensions
 {
+    public static async Task<IUserMessage> EmbedAsync(this IUser user, IEmbedBuilder embed, string msg = "")
+    {
+        var ch = await user.CreateDMChannelAsync();
+        return await ch.EmbedAsync(embed, msg);
+    }
+    
+    public static async Task<IUserMessage> SendAsync(this IUser user, string plainText, Embed embed, bool sanitizeAll = false)
+    {
+        var ch = await user.CreateDMChannelAsync();
+        return await ch.SendAsync(plainText, embed, sanitizeAll);
+    }
+
+    public static async Task<IUserMessage> SendAsync(this IUser user, SmartText text, bool sanitizeAll = false)
+    {
+        var ch = await user.CreateDMChannelAsync();
+        return await ch.SendAsync(text, sanitizeAll);
+    }
+    
     public static async Task<IUserMessage> SendConfirmAsync(this IUser user, IEmbedBuilderService eb, string text)
-        => await (await user.GetOrCreateDMChannelAsync()).SendMessageAsync("", embed: eb.Create()
+        => await user.SendMessageAsync("", embed: eb.Create()
             .WithOkColor()
             .WithDescription(text)
             .Build());
@@ -16,7 +34,7 @@ public static class IUserExtensions
         if (url != null && Uri.IsWellFormedUriString(url, UriKind.Absolute))
             embed.WithUrl(url);
             
-        return await (await user.GetOrCreateDMChannelAsync()).SendMessageAsync("", embed: embed.Build());
+        return await user.SendMessageAsync("", embed: embed.Build());
     }
 
     public static async Task<IUserMessage> SendErrorAsync(this IUser user, IEmbedBuilderService eb, string title, string error, string url = null)
@@ -25,11 +43,11 @@ public static class IUserExtensions
         if (url != null && Uri.IsWellFormedUriString(url, UriKind.Absolute))
             embed.WithUrl(url);
 
-        return await (await user.GetOrCreateDMChannelAsync().ConfigureAwait(false)).SendMessageAsync("", embed: embed.Build()).ConfigureAwait(false);
+        return await user.SendMessageAsync("", embed: embed.Build()).ConfigureAwait(false);
     }
 
     public static async Task<IUserMessage> SendErrorAsync(this IUser user, IEmbedBuilderService eb, string error)
-        => await (await user.GetOrCreateDMChannelAsync())
+        => await user
             .SendMessageAsync("", embed: eb.Create()
                 .WithErrorColor()
                 .WithDescription(error)
@@ -39,12 +57,12 @@ public static class IUserExtensions
     {
         await using (var file = File.Open(filePath, FileMode.Open))
         {
-            return await (await user.GetOrCreateDMChannelAsync().ConfigureAwait(false)).SendFileAsync(file, caption ?? "x", text, isTTS).ConfigureAwait(false);
+            return await user.SendFileAsync(file, caption ?? "x", text, isTTS).ConfigureAwait(false);
         }
     }
 
     public static async Task<IUserMessage> SendFileAsync(this IUser user, Stream fileStream, string fileName, string caption = null, bool isTTS = false) =>
-        await (await user.GetOrCreateDMChannelAsync().ConfigureAwait(false)).SendFileAsync(fileStream, fileName, caption, isTTS).ConfigureAwait(false);
+        await user.SendFileAsync(fileStream, fileName, caption, isTTS).ConfigureAwait(false);
 
     // This method is used by everything that fetches the avatar from a user
     public static Uri RealAvatarUrl(this IUser usr, ushort size = 128)

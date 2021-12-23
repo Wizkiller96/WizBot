@@ -34,8 +34,8 @@ public partial class Administration : NadekoModule<AdministrationService>
 
     [NadekoCommand, Aliases]
     [RequireContext(ContextType.Guild)]
-    [UserPerm(ChannelPerm.ManageChannel)]
-    [BotPerm(ChannelPerm.ManageChannel)]
+    [UserPerm(ChannelPerm.ManageChannels)]
+    [BotPerm(ChannelPerm.ManageChannels)]
     public async Task Slowmode(StoopidTime time = null)
     {
         var seconds = (int?)time?.Time.TotalSeconds ?? 0;

@@ -5,6 +5,23 @@ public static class IMessageChannelExtensions
     public static Task<IUserMessage> EmbedAsync(this IMessageChannel ch, IEmbedBuilder embed, string msg = "")
         => ch.SendMessageAsync(msg, embed: embed.Build(),
             options: new() { RetryMode  = RetryMode.AlwaysRetry });
+    
+    public static Task<IUserMessage> SendAsync(this IMessageChannel channel, string plainText, Embed embed, bool sanitizeAll = false)
+    {
+        plainText = sanitizeAll
+            ? plainText?.SanitizeAllMentions() ?? ""
+            : plainText?.SanitizeMentions() ?? "";
+
+        return channel.SendMessageAsync(plainText, embed: embed);
+    }
+        
+    public static Task<IUserMessage> SendAsync(this IMessageChannel channel, SmartText text, bool sanitizeAll = false)
+        => text switch
+        {
+            SmartEmbedText set => channel.SendAsync(set.PlainText, set.GetEmbed().Build(), sanitizeAll),
+            SmartPlainText st => channel.SendAsync(st.Text, null, sanitizeAll),
+            _ => throw new ArgumentOutOfRangeException(nameof(text))
+        };
 
     // this is a huge problem, because now i don't have
     // access to embed builder service
@@ -97,7 +114,7 @@ public static class IMessageChannelExtensions
         else if (addPaginatedFooter)
             embed.AddPaginatedFooter(currentPage, lastPage);
 
-        var msg = await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false) as IUserMessage;
+        var msg = await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
 
         if (lastPage == 0 || !canPaginate)
             return;

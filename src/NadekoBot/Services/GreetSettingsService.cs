@@ -12,7 +12,7 @@ public class GreetSettingsService : INService
     private readonly DiscordSocketClient _client;
         
     private GreetGrouper<IGuildUser> greets = new GreetGrouper<IGuildUser>();
-    private GreetGrouper<IGuildUser> byes = new GreetGrouper<IGuildUser>();
+    private GreetGrouper<IUser> byes = new GreetGrouper<IUser>();
     private readonly BotConfigService _bss;
     private readonly IEmbedBuilderService _eb;
     public bool GroupGreets => _bss.Data.GroupGreets;
@@ -41,14 +41,15 @@ public class GreetSettingsService : INService
         _client.GuildMemberUpdated += ClientOnGuildMemberUpdated;
     }
 
-    private Task ClientOnGuildMemberUpdated(SocketGuildUser oldUser, SocketGuildUser newUser)
+    private Task ClientOnGuildMemberUpdated(Cacheable<SocketGuildUser, ulong> optOldUser, SocketGuildUser newUser)
     {
         // if user is a new booster
         // or boosted again the same server
-        if (oldUser is { PremiumSince: null } && newUser is { PremiumSince: not null }
-            || oldUser?.PremiumSince is { } oldDate 
-            && newUser?.PremiumSince is { } newDate
-            && newDate > oldDate)
+        if ((optOldUser.Value is { PremiumSince: null }
+             && newUser is { PremiumSince: not null })
+            || (optOldUser.Value?.PremiumSince is { } oldDate
+                && newUser?.PremiumSince is { } newDate
+                && newDate > oldDate))
         {
             var conf = GetOrAddSettingsForGuild(newUser.Guild.Id);
             if (!conf.SendBoostMessage) return Task.CompletedTask;
@@ -101,16 +102,16 @@ public class GreetSettingsService : INService
         return Task.CompletedTask;
     }
 
-    private Task UserLeft(IGuildUser user)
+    private Task UserLeft(SocketGuild guild, SocketUser user)
     {
         var _ = Task.Run(async () =>
         {
             try
             {
-                var conf = GetOrAddSettingsForGuild(user.GuildId);
+                var conf = GetOrAddSettingsForGuild(guild.Id);
 
                 if (!conf.SendChannelByeMessage) return;
-                var channel = (await user.Guild.GetTextChannelsAsync().ConfigureAwait(false)).SingleOrDefault(c => c.Id == conf.ByeMessageChannelId);
+                var channel = guild.TextChannels.FirstOrDefault(c => c.Id == conf.ByeMessageChannelId);
 
                 if (channel is null) //maybe warn the server owner that the channel is missing
                     return;
@@ -120,7 +121,7 @@ public class GreetSettingsService : INService
                     // if group is newly created, greet that user right away,
                     // but any user which joins in the next 5 seconds will
                     // be greeted in a group greet
-                    if (byes.CreateOrAdd(user.GuildId, user))
+                    if (byes.CreateOrAdd(guild.Id, user))
                     {
                         // greet single user
                         await ByeUsers(conf, channel, new[] {user});
@@ -128,7 +129,7 @@ public class GreetSettingsService : INService
                         while(!groupClear)
                         {
                             await Task.Delay(5000).ConfigureAwait(false);
-                            groupClear = byes.ClearGroup(user.GuildId, 5, out var toBye);
+                            groupClear = byes.ClearGroup(guild.Id, 5, out var toBye);
                             await ByeUsers(conf, channel, toBye);
                         }
                     }
@@ -290,9 +291,9 @@ public class GreetSettingsService : INService
 
                 if (conf.SendDmGreetMessage)
                 {
-                    var channel = await user.GetOrCreateDMChannelAsync().ConfigureAwait(false);
+                    var channel = await user.CreateDMChannelAsync();
 
-                    if (channel != null)
+                    if (channel is not null)
                     {
                         await GreetDmUser(conf, channel, user);
                     }

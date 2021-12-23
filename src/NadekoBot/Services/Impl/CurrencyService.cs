@@ -75,7 +75,7 @@ public class CurrencyService : ICurrencyService, INService
             try
             {
                 var sign = _gss.Data.Currency.Sign;
-                await (await user.GetOrCreateDMChannelAsync())
+                await user
                     .EmbedAsync(_eb.Create()
                         .WithOkColor()
                         .WithTitle($"Received Currency")

@@ -13,7 +13,7 @@ public static class CustomReactionExtensions
         DiscordSocketClient client, bool sanitize)
     {
         var channel = cr.DmResponse
-            ? await ctx.Author.GetOrCreateDMChannelAsync().ConfigureAwait(false)
+            ? await ctx.Author.CreateDMChannelAsync().ConfigureAwait(false)
             : ctx.Channel;
 
         var trigger = cr.Trigger.ResolveTriggerString(client);

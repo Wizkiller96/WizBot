@@ -66,7 +66,7 @@ public partial class Utility : NadekoModule
         }
         var rng = new NadekoRandom();
         var arr = await Task.Run(() => socketGuild.Users
-            .Where(u => u.Activity?.Name?.ToUpperInvariant() == game)
+            .Where(u => u.Activities.FirstOrDefault()?.Name?.ToUpperInvariant() == game)
             .Select(u => u.Username)
             .OrderBy(x => rng.Next())
             .Take(60)
@@ -277,24 +277,24 @@ public partial class Utility : NadekoModule
 
     [NadekoCommand, Aliases]
     [RequireContext(ContextType.Guild)]
-    [BotPerm(GuildPerm.ManageEmojis)]
-    [UserPerm(GuildPerm.ManageEmojis)]
+    [BotPerm(GuildPerm.ManageEmojisAndStickers)]
+    [UserPerm(GuildPerm.ManageEmojisAndStickers)]
     [Priority(2)]
     public Task EmojiAdd(string name, Emote emote)
         => EmojiAdd(name, emote.Url);
         
     [NadekoCommand, Aliases]
     [RequireContext(ContextType.Guild)]
-    [BotPerm(GuildPerm.ManageEmojis)]
-    [UserPerm(GuildPerm.ManageEmojis)]
+    [BotPerm(GuildPerm.ManageEmojisAndStickers)]
+    [UserPerm(GuildPerm.ManageEmojisAndStickers)]
     [Priority(1)]
     public Task EmojiAdd(Emote emote)
         => EmojiAdd(emote.Name, emote.Url);
         
     [NadekoCommand, Aliases]
     [RequireContext(ContextType.Guild)]
-    [BotPerm(GuildPerm.ManageEmojis)]
-    [UserPerm(GuildPerm.ManageEmojis)]
+    [BotPerm(GuildPerm.ManageEmojisAndStickers)]
+    [UserPerm(GuildPerm.ManageEmojisAndStickers)]
     [Priority(0)]
     public async Task EmojiAdd(string name, string url = null)
     {

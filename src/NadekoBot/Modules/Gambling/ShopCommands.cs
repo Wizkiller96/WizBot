@@ -160,7 +160,7 @@ public partial class Gambling
                     }
                     try
                     {
-                        await (await ctx.User.GetOrCreateDMChannelAsync().ConfigureAwait(false))
+                        await ctx.User
                             .EmbedAsync(_eb.Create().WithOkColor()
                                 .WithTitle(GetText(strs.shop_purchase(ctx.Guild.Name)))
                                 .AddField(GetText(strs.item), item.Text, false)

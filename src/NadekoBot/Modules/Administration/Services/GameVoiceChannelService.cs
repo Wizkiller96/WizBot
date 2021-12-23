@@ -4,6 +4,7 @@ using NadekoBot.Db;
 
 namespace NadekoBot.Modules.Administration.Services;
 
+// todo if any activity...
 public class GameVoiceChannelService : INService
 {
     public ConcurrentHashSet<ulong> GameVoiceChannels { get; } = new ConcurrentHashSet<ulong>();
@@ -24,7 +25,7 @@ public class GameVoiceChannelService : INService
         _client.GuildMemberUpdated += _client_GuildMemberUpdated;
     }
 
-    private Task _client_GuildMemberUpdated(SocketGuildUser before, SocketGuildUser after)
+    private Task _client_GuildMemberUpdated(Cacheable<SocketGuildUser, ulong> before, SocketGuildUser after)
     {
         var _ = Task.Run(async () =>
         {
@@ -32,15 +33,16 @@ public class GameVoiceChannelService : INService
             {
                 //if the user is in the voice channel and that voice channel is gvc
                 var vc = after.VoiceChannel;
-                if (vc is null || !GameVoiceChannels.Contains(vc.Id))
+                if (vc is null || !GameVoiceChannels.Contains(vc.Id) || !before.HasValue)
                     return;
 
                 //if the activity has changed, and is a playing activity
-                if (before.Activity != after.Activity
-                    && after.Activity is { Type: Discord.ActivityType.Playing })
+                var oldActivity = before.Value.Activities.FirstOrDefault();
+                var newActivity = after.Activities.FirstOrDefault();
+                if (oldActivity != newActivity && newActivity is { Type: ActivityType.Playing })
                 {
                     //trigger gvc
-                    await TriggerGvc(after, after.Activity.Name);
+                    await TriggerGvc(after, newActivity.Name);
                 }
 
             }
@@ -86,7 +88,7 @@ public class GameVoiceChannelService : INService
                 if (!(usr is SocketGuildUser gUser))
                     return;
 
-                var game = gUser.Activity?.Name;
+                var game = gUser.Activities.FirstOrDefault()?.Name;
 
                 if (oldState.VoiceChannel == newState.VoiceChannel ||
                     newState.VoiceChannel is null)

@@ -123,7 +123,7 @@ public class ReactionEvent : ICurrencyEvent
         return _embedFunc(CurrencyEvent.Type.Reaction, _opts, pot);
     }
 
-    private async Task OnMessageDeleted(Cacheable<IMessage, ulong> msg, ISocketMessageChannel _)
+    private async Task OnMessageDeleted(Cacheable<IMessage, ulong> msg, Cacheable<IMessageChannel, ulong> cacheable)
     {
         if (msg.Id == _msg.Id)
         {
@@ -150,7 +150,7 @@ public class ReactionEvent : ICurrencyEvent
     }
 
     private Task HandleReaction(Cacheable<IUserMessage, ulong> msg,
-        ISocketMessageChannel ch, SocketReaction r)
+        Cacheable<IMessageChannel, ulong> cacheable, SocketReaction r)
     {
         var _ = Task.Run(() =>
         {

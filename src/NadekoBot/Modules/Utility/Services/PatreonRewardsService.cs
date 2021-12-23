@@ -298,8 +298,7 @@ public class PatreonRewardsService : INService
             if (user is null)
                 return;
                 
-            var channel = await user.GetOrCreateDMChannelAsync();
-            await channel.SendConfirmAsync(_eb, message);
+            await user.SendConfirmAsync(_eb, message);
         }
         catch
         {
