@@ -27,9 +27,6 @@ public class ReplacementBuilder
 
     public ReplacementBuilder WithMention(DiscordSocketClient client)
     {
-        /*OBSOLETE*/
-        _reps.TryAdd("%mention%", () => $"<@{client.CurrentUser.Id}>");
-        /*NEW*/
         _reps.TryAdd("%bot.mention%", () => client.CurrentUser.Mention);
         return this;
     }
@@ -37,12 +34,7 @@ public class ReplacementBuilder
     public ReplacementBuilder WithClient(DiscordSocketClient client)
     {
         WithMention(client);
-
-        /*OBSOLETE*/
-        _reps.TryAdd("%shardid%", () => client.ShardId.ToString());
-        _reps.TryAdd("%time%", () => DateTime.Now.ToString("HH:mm " + TimeZoneInfo.Local.StandardName.GetInitials()));
-
-        /*NEW*/
+        
         _reps.TryAdd("%bot.status%", () => client.Status.ToString());
         _reps.TryAdd("%bot.latency%", () => client.Latency.ToString());
         _reps.TryAdd("%bot.name%", () => client.CurrentUser.Username);
@@ -58,24 +50,6 @@ public class ReplacementBuilder
 
     public ReplacementBuilder WithServer(DiscordSocketClient client, SocketGuild g)
     {
-        /*OBSOLETE*/
-        _reps.TryAdd("%sid%", () => g is null ? "DM" : g.Id.ToString());
-        _reps.TryAdd("%server%", () => g is null ? "DM" : g.Name);
-        _reps.TryAdd("%members%", () => g is { } sg ? sg.MemberCount.ToString() : "?");
-        _reps.TryAdd("%server_time%", () =>
-        {
-            var to = TimeZoneInfo.Local;
-            if (g != null)
-            {
-                if (GuildTimezoneService.AllServices.TryGetValue(client.CurrentUser.Id, out var tz))
-                    to = tz.GetTimeZoneOrDefault(g.Id) ?? TimeZoneInfo.Local;
-            }
-
-            return TimeZoneInfo.ConvertTime(DateTime.UtcNow,
-                TimeZoneInfo.Utc,
-                to).ToString("HH:mm ") + to.StandardName.GetInitials();
-        });
-        /*NEW*/
         _reps.TryAdd("%server.id%", () => g is null ? "DM" : g.Id.ToString());
         _reps.TryAdd("%server.name%", () => g is null ? "DM" : g.Name);
         _reps.TryAdd("%server.members%", () => g is { } sg ? sg.MemberCount.ToString() : "?");
@@ -99,11 +73,6 @@ public class ReplacementBuilder
 
     public ReplacementBuilder WithChannel(IMessageChannel ch)
     {
-        /*OBSOLETE*/
-        _reps.TryAdd("%channel%", () => (ch as ITextChannel)?.Mention ?? "#" + ch.Name);
-        _reps.TryAdd("%chname%", () => ch.Name);
-        _reps.TryAdd("%cid%", () => ch?.Id.ToString());
-        /*NEW*/
         _reps.TryAdd("%channel.mention%", () => (ch as ITextChannel)?.Mention ?? "#" + ch.Name);
         _reps.TryAdd("%channel.name%", () => ch.Name);
         _reps.TryAdd("%channel.id%", () => ch.Id.ToString());
@@ -121,15 +90,6 @@ public class ReplacementBuilder
 
     public ReplacementBuilder WithManyUsers(IEnumerable<IUser> users)
     {
-        /*OBSOLETE*/
-        _reps.TryAdd("%user%", () => string.Join(" ", users.Select(user => user.Mention)));
-        _reps.TryAdd("%userfull%", () => string.Join(" ", users.Select(user => user.ToString())));
-        _reps.TryAdd("%username%", () => string.Join(" ", users.Select(user => user.Username)));
-        _reps.TryAdd("%userdiscrim%", () => string.Join(" ", users.Select(user => user.Discriminator)));
-        _reps.TryAdd("%useravatar%", () => string.Join(" ", users.Select(user => user.RealAvatarUrl()?.ToString())));
-        _reps.TryAdd("%id%", () => string.Join(" ", users.Select(user => user.Id.ToString())));
-        _reps.TryAdd("%uid%", () => string.Join(" ", users.Select(user => user.Id.ToString())));
-        /*NEW*/
         _reps.TryAdd("%user.mention%", () => string.Join(" ", users.Select(user => user.Mention)));
         _reps.TryAdd("%user.fullname%", () => string.Join(" ", users.Select(user => user.ToString())));
         _reps.TryAdd("%user.name%", () => string.Join(" ", users.Select(user => user.Username)));
@@ -145,11 +105,6 @@ public class ReplacementBuilder
 
     private ReplacementBuilder WithStats(DiscordSocketClient c)
     {
-        /*OBSOLETE*/
-        _reps.TryAdd("%servers%", () => c.Guilds.Count.ToString());
-        _reps.TryAdd("%users%", () => c.Guilds.Sum(g => g.MemberCount).ToString());
-
-        /*NEW*/
         _reps.TryAdd("%shard.servercount%", () => c.Guilds.Count.ToString());
         _reps.TryAdd("%shard.usercount%", () => c.Guilds.Sum(g => g.MemberCount).ToString());
         _reps.TryAdd("%shard.id%", () => c.ShardId.ToString());
