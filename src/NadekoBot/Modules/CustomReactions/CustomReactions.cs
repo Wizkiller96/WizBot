@@ -110,21 +110,6 @@ public class CustomReactions : NadekoModule<CustomReactionsService>
     }
 
     [NadekoCommand, Aliases]
-    [Priority(0)]
-    public async Task ListCustReact(All _)
-    {
-        await ReplyPendingLocalizedAsync(strs.obsolete_use(Format.Code($"{Prefix}crsexport")));
-        await CrsExport();
-    }
-
-    [NadekoCommand, Aliases]
-    public async Task ListCustReactG(int page = 1)
-    {
-        await ReplyPendingLocalizedAsync(strs.obsolete_use(Format.Code($"{Prefix}crsexport")));
-        await CrsExport();
-    }
-
-    [NadekoCommand, Aliases]
     public async Task ShowCustReact(kwum id)
     {
         var found = _service.GetCustomReaction(ctx.Guild?.Id, (int)id);

@@ -2,6 +2,7 @@
 using System.Collections.Immutable;
 using NadekoBot.Common.Configs;
 using NadekoBot.Db;
+using Discord.Interactions;
 
 namespace NadekoBot.Services;
 
@@ -35,7 +36,8 @@ public class CommandHandler : INService
         BotConfigService bss,
         Bot bot,
         IBehaviourExecutor behaviourExecutor,
-        IServiceProvider services)
+        IServiceProvider services,
+        InteractionService interactions)
     {
         _client = client;
         _commandService = commandService;
@@ -44,6 +46,7 @@ public class CommandHandler : INService
         _behaviourExecutor = behaviourExecutor;
         _db = db;
         _services = services;
+        _interactions = interactions;
 
         _clearUsersOnShortCooldown = new(_ =>
         {
@@ -121,12 +124,20 @@ public class CommandHandler : INService
 
     public Task StartHandling()
     {
-        _client.MessageReceived += msg => { var _ = Task.Run(() => MessageReceivedHandler(msg)); return Task.CompletedTask; };
+        _client.MessageReceived += MessageReceivedHandler;
+        _client.SlashCommandExecuted += SlashCommandExecuted;
         return Task.CompletedTask;
+    }
+
+    private async Task SlashCommandExecuted(SocketSlashCommand arg)
+    {
+        var ctx = new SocketInteractionContext<SocketSlashCommand>(_client, arg);
+        await _interactions.ExecuteCommandAsync(ctx, _services);
     }
 
     private const float _oneThousandth = 1.0f / 1000;
     private readonly DbService _db;
+    private readonly InteractionService _interactions;
 
     private Task LogSuccessfulExecution(IUserMessage usrMsg, ITextChannel channel, params int[] execPoints)
     {
@@ -264,7 +275,7 @@ public class CommandHandler : INService
             return (false, null, null);
 
         var commands = searchResult.Commands;
-        var preconditionResults = new Dictionary<CommandMatch, PreconditionResult>();
+        var preconditionResults = new Dictionary<CommandMatch, Discord.Commands.PreconditionResult>();
 
         foreach (var match in commands)
         {
@@ -352,7 +363,7 @@ public class CommandHandler : INService
 
         //If we get this far, at least one parse was successful. Execute the most likely overload.
         var chosenOverload = successfulParses[0];
-        var execResult = (ExecuteResult)await chosenOverload.Key.ExecuteAsync(context, chosenOverload.Value, services).ConfigureAwait(false);
+        var execResult = (Discord.Commands.ExecuteResult)await chosenOverload.Key.ExecuteAsync(context, chosenOverload.Value, services).ConfigureAwait(false);
 
         if (execResult.Exception != null && (!(execResult.Exception is HttpException he) || he.DiscordCode != DiscordErrorCode.InsufficientPermissions))
         {

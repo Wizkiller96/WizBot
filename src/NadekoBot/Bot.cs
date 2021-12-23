@@ -7,6 +7,8 @@ using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Common.Configs;
 using NadekoBot.Db;
 using NadekoBot.Modules.Administration.Services;
+using Discord.Interactions;
+using RunMode = Discord.Interactions.RunMode;
 
 namespace NadekoBot;
 
@@ -16,7 +18,8 @@ public sealed class Bot
     private readonly CommandService _commandService;
     private readonly DbService _db;
     private readonly IBotCredsProvider _credsProvider;
-        
+    private readonly InteractionService _interactionService;
+
     public event Func<GuildConfig, Task> JoinedGuild = delegate { return Task.CompletedTask; };
         
     public DiscordSocketClient Client { get; }
@@ -57,8 +60,10 @@ public sealed class Bot
         _commandService = new(new()
         {
             CaseSensitiveCommands = false,
-            DefaultRunMode = RunMode.Sync,
+            DefaultRunMode = Discord.Commands.RunMode.Sync,
         });
+
+        _interactionService = new(Client.Rest);
 
 #if GLOBAL_NADEKO || DEBUG
         Client.Log += Client_Log;
@@ -89,6 +94,7 @@ public sealed class Bot
                 .AddRedis(_creds.RedisOptions) // redis
                 .AddSingleton(Client) // discord socket client
                 .AddSingleton(_commandService)
+                .AddSingleton(_interactionService)
                 .AddSingleton(this)
                 .AddSingleton<ISeria, JsonSeria>()
                 .AddSingleton<IPubSub, RedisPubSub>()
@@ -308,7 +314,8 @@ public sealed class Bot
         await commandHandler.StartHandling().ConfigureAwait(false);
 
         await _commandService.AddModulesAsync(typeof(Bot).Assembly, Services);
-            
+        await _interactionService.AddModulesAsync(typeof(Bot).Assembly, Services);
+        await _interactionService.RegisterCommandsToGuildAsync(117523346618318850);
         IsReady = true;
         _ = Task.Run(ExecuteReadySubscriptions);
         Log.Information("Shard {ShardId} ready", Client.ShardId);

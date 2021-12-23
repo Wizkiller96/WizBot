@@ -103,11 +103,6 @@ listcustreact:
 - lcr
 - exprli
 - exl
-listcustreactg:
-- listcustreactg
-- lcrg
-- exprlg
-- exlg
 showcustreact:
 - showcustreact
 - scr
@@ -503,9 +498,6 @@ trackremove:
 movesong:
 - movesong
 - ms
-reptcursong:
-- reptcursong
-- rcs
 queuerepeat:
 - queuerepeat
 - qrp
@@ -989,9 +981,6 @@ warnpunishlist:
 warnpunish:
 - warnpunish
 - warnp
-claimpatreonrewards:
-- clparew
-- claparew
 ping:
 - ping
 time:

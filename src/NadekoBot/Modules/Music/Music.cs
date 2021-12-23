@@ -501,14 +501,6 @@ public sealed partial class Music : NadekoModule<IMusicService>
          
     [NadekoCommand, Aliases]
     [RequireContext(ContextType.Guild)]
-    public async Task ReptCurSong()
-    {
-        await ReplyPendingLocalizedAsync(strs.obsolete_use($"`{Prefix}qrp song`"));
-        await QueueRepeat(InputRepeatType.Song);
-    }
-         
-    [NadekoCommand, Aliases]
-    [RequireContext(ContextType.Guild)]
     public async Task Pause()
     {
         var valid = await ValidateAsync();

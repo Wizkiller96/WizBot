@@ -862,10 +862,6 @@ setmaxqueue:
   args:
     - "50"
     - ""
-reptcursong:
-  desc: "Obsolete. Use `{0}queuerepeat`"
-  args:
-    - ""
 queuerepeat:
   desc: "Sets music player repeat strategy for this server.\n- `n` / `no` - player will stop once it reaches the end of the queue\n- `s` / `song` - player will repeat current song\n- `q` / `queue` or empty - player will repeat entire music queue"
   args:
@@ -1685,10 +1681,6 @@ warnpunish:
     - "5 Ban"
     - "5 Mute 2d12h"
     - "4 AddRole toxic 1h"
-clparew:
-  desc: "Claim patreon rewards. If you're subscribed to bot owner's patreon you can use this command to claim your rewards - assuming bot owner did setup has their patreon key."
-  args:
-    - ""
 ping:
   desc: "Ping the bot to see if there are latency issues."
   args:
