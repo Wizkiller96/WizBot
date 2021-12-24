@@ -39,7 +39,7 @@ public partial class Utility
         {
             var selection = typeof(Math).GetTypeInfo()
                 .GetMethods()
-                .Distinct(new MethodInfoEqualityComparer())
+                .DistinctBy(x => x.Name)
                 .Select(x => x.Name)
                 .Except(new[]
                 {
@@ -50,12 +50,5 @@ public partial class Utility
                 });
             await SendConfirmAsync(GetText(strs.calcops(Prefix)), string.Join(", ", selection));
         }
-    }
-
-    private class MethodInfoEqualityComparer : IEqualityComparer<MethodInfo>
-    {
-        public bool Equals(MethodInfo x, MethodInfo y) => x.Name == y.Name;
-
-        public int GetHashCode(MethodInfo obj) => obj.Name.GetHashCode(StringComparison.InvariantCulture);
     }
 }

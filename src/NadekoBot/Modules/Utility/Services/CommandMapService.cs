@@ -30,7 +30,7 @@ public class CommandMapService : IInputTransformer, INService
                 .ToDictionary(
                     x => x.GuildId,
                     x => new ConcurrentDictionary<string, string>(x.CommandAliases
-                        .Distinct(new CommandAliasEqualityComparer())
+                        .DistinctBy(ca => ca.Trigger)
                         .ToDictionary(ca => ca.Trigger, ca => ca.Mapping))));
 
             _db = db;
@@ -96,11 +96,4 @@ public class CommandMapService : IInputTransformer, INService
 
         return input;
     }
-}
-
-public class CommandAliasEqualityComparer : IEqualityComparer<CommandAlias>
-{
-    public bool Equals(CommandAlias x, CommandAlias y) => x.Trigger == y.Trigger;
-
-    public int GetHashCode(CommandAlias obj) => obj.Trigger.GetHashCode(StringComparison.InvariantCulture);
 }

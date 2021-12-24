@@ -159,9 +159,6 @@ public class Help : NadekoModule<HelpService>
     [NadekoOptions(typeof(CommandsOptions))]
     public async Task Commands(string module = null, params string[] args)
     {
-        var channel = ctx.Channel;
-
-
         module = module?.Trim().ToUpperInvariant();
         if (string.IsNullOrWhiteSpace(module))
         {
@@ -177,7 +174,7 @@ public class Help : NadekoModule<HelpService>
         var cmds = _cmds.Commands.Where(c => c.Module.GetTopLevelModule().Name.ToUpperInvariant().StartsWith(module, StringComparison.InvariantCulture))
             .Where(c => !_perms.BlockedCommands.Contains(c.Aliases[0].ToLowerInvariant()))
             .OrderBy(c => c.Aliases[0])
-            .Distinct(new CommandTextEqualityComparer());
+            .DistinctBy(x => x.Aliases[0]);
 
 
         // check preconditions for all commands, but only if it's not 'all'
@@ -199,11 +196,11 @@ public class Help : NadekoModule<HelpService>
                 cmds = cmds.Where(x => succ.Contains(x));
             }
         }
-
         var cmdsWithGroup = cmds.GroupBy(c => c.Module.Name.Replace("Commands", "", StringComparison.InvariantCulture))
-            .OrderBy(x => x.Key == x.First().Module.Name ? int.MaxValue : x.Count());
+            .OrderBy(x => x.Key == x.First().Module.Name ? int.MaxValue : x.Count())
+            .ToList();
 
-        if (!cmds.Any())
+        if (cmdsWithGroup.Count == 0)
         {
             if (opts.View != CommandsOptions.ViewType.Hide)
                 await ReplyErrorLocalizedAsync(strs.module_not_found).ConfigureAwait(false);
@@ -211,13 +208,14 @@ public class Help : NadekoModule<HelpService>
                 await ReplyErrorLocalizedAsync(strs.module_not_found_or_cant_exec).ConfigureAwait(false);
             return;
         }
-        var i = 0;
-        var groups = cmdsWithGroup.GroupBy(x => i++ / 48).ToArray();
+
+        var cnt = 0;
+        var groups = cmdsWithGroup.GroupBy(x => cnt++ / 48).ToArray();
         var embed = _eb.Create().WithOkColor();
         foreach (var g in groups)
         {
             var last = g.Count();
-            for (i = 0; i < last; i++)
+            for (var i = 0; i < last; i++)
             {
                 var transformed = g.ElementAt(i).Select(x =>
                 {
@@ -231,10 +229,8 @@ public class Help : NadekoModule<HelpService>
 
                 if (i == last - 1 && (i + 1) % 2 != 0)
                 {
-                    var grp = 0;
-                    var count = transformed.Count();
                     transformed = transformed
-                        .GroupBy(x => grp++ % count / 2)
+                        .Chunk(2)
                         .Select(x =>
                         {
                             if (x.Count() == 1)
@@ -308,7 +304,7 @@ public class Help : NadekoModule<HelpService>
             .OrderBy(x => x.Key)
             .ToDictionary(
                 x => x.Key,
-                x => x.Distinct(c => c.Aliases.First())
+                x => x.DistinctBy(c => c.Aliases.First())
                     .Select(com =>
                     {
                         List<string> optHelpStr = null;
@@ -421,14 +417,6 @@ public class Help : NadekoModule<HelpService>
     {
         await ReplyConfirmLocalizedAsync(strs.donate(PatreonUrl, PaypalUrl));
     }
-}
-
-public class CommandTextEqualityComparer : IEqualityComparer<CommandInfo>
-{
-    public bool Equals(CommandInfo x, CommandInfo y) => x.Aliases[0] == y.Aliases[0];
-
-    public int GetHashCode(CommandInfo obj) => obj.Aliases[0].GetHashCode(StringComparison.InvariantCulture);
-
 }
 
 internal class CommandJsonObject

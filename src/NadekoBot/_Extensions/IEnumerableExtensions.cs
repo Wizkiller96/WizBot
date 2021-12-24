@@ -20,10 +20,6 @@ public static class IEnumerableExtensions
 
         return string.Join(separator, data.Select(func));
     }
-        
-    public static IEnumerable<T> Distinct<T, U>(this IEnumerable<T> data, Func<T, U> getKey) =>
-        data.GroupBy(x => getKey(x))
-            .Select(x => x.First());
 
     /// <summary>
     /// Randomize element order by performing the Fisher-Yates shuffle

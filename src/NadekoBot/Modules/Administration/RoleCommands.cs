@@ -30,7 +30,7 @@ public partial class Administration
 
             var grp = 0;
             var results = input
-                .GroupBy(x => grp++ / 2)
+                .Chunk(input.Length / 2)
                 .Select(async x =>
                 {
                     var inputRoleStr = x.First();
