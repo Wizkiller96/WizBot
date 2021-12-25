@@ -45,8 +45,7 @@ public class NadekoContext : DbContext
 
     public DbSet<RotatingPlayingStatus> RotatingStatus { get; set; }
     public DbSet<BlacklistEntry> Blacklist { get; set; }
-    public DbSet<AutoCommand> AutoCommands { get; set; }
-        
+    public DbSet<AutoCommand> AutoCommands { get; set; } 
     public DbSet<RewardedUser> RewardedUsers { get; set; }
     public DbSet<PlantedCurrency> PlantedCurrency { get; set; }
     public DbSet<BanTemplate> BanTemplates { get; set; }

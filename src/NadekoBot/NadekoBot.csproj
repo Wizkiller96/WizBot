@@ -54,6 +54,7 @@
     <PackageReference Include="YamlDotNet" Version="11.2.1" />
     <PackageReference Include="linq2db.EntityFrameworkCore" Version="6.6.1" />
     <PackageReference Include="Humanizer" Version="2.13.14" />
+    <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" />
   </ItemGroup>
 
   <ItemGroup>

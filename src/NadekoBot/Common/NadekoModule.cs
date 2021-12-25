@@ -2,6 +2,9 @@
 
 namespace NadekoBot.Modules;
 
+[UsedImplicitly(ImplicitUseTargetFlags.Default
+                | ImplicitUseTargetFlags.WithInheritors
+                | ImplicitUseTargetFlags.WithMembers)]
 public abstract class NadekoModule : ModuleBase
 {
     protected CultureInfo _cultureInfo { get; set; }

@@ -28,7 +28,6 @@ public partial class Administration
             if (input.Length % 2 != 0)
                 return;
 
-            var grp = 0;
             var results = input
                 .Chunk(input.Length / 2)
                 .Select(async x =>

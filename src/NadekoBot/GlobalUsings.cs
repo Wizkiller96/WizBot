@@ -16,5 +16,8 @@ global using Discord.WebSocket;
 global using GuildPerm = Discord.GuildPermission;
 global using ChannelPerm = Discord.ChannelPermission;
 global using BotPermAttribute = Discord.Commands.RequireBotPermissionAttribute;
+global using LeftoverAttribute = Discord.Commands.RemainderAttribute;
 
 global using System.Collections.Concurrent;
+
+global using JetBrains.Annotations;

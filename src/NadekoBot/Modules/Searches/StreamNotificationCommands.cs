@@ -58,7 +58,7 @@ public partial class Searches
                     fs.Type));
         }
 
-        [NadekoCommand, Usage, Description, Aliases]
+        [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         public async Task StreamsClear()
