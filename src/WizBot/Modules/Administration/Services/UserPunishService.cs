@@ -63,14 +63,14 @@ namespace WizBot.Modules.Administration.Services
                 Weight = weight,
             };
 
-            int warnings = 1;
+            int warnings;
             List<WarningPunishment> ps;
             using (var uow = _db.GetDbContext())
             {
                 ps = uow.GuildConfigsForId(guildId, set => set.Include(x => x.WarnPunishments))
                     .WarnPunishments;
 
-                warnings += uow
+                warnings = uow
                     .Warnings
                     .ForId(guildId, userId)
                     .Where(w => !w.Forgiven && w.UserId == userId)
@@ -81,16 +81,19 @@ namespace WizBot.Modules.Administration.Services
                 uow.SaveChanges();
             }
 
-            var p = ps.FirstOrDefault(x => x.Count == warnings);
-
-            if (p != null)
+            for (var i = warnings + weight; i > warnings; i--)
             {
-                var user = await guild.GetUserAsync(userId).ConfigureAwait(false);
-                if (user is null)
-                    return null;
+                var p = ps.FirstOrDefault(x => x.Count == i);
 
-                await ApplyPunishment(guild, user, mod, p.Punishment, p.Time, p.RoleId, "Warned too many times.");
-                return p;
+                if (p is not null)
+                {
+                    var user = await guild.GetUserAsync(userId).ConfigureAwait(false);
+                    if (user is null)
+                        return null;
+
+                    await ApplyPunishment(guild, user, mod, p.Punishment, p.Time, p.RoleId, "Warned too many times.");
+                    return p;
+                }
             }
 
             return null;
