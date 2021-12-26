@@ -34,26 +34,24 @@ public sealed class FilterService : IEarlyBehavior
 
     public void ClearFilteredWords(ulong guildId)
     {
-        using (var uow = _db.GetDbContext())
+        using var uow = _db.GetDbContext();
+        var gc = uow.GuildConfigsForId(guildId,
+            set => set.Include(x => x.FilteredWords)
+                .Include(x => x.FilterWordsChannelIds));
+
+        WordFilteringServers.TryRemove(guildId);
+        ServerFilteredWords.TryRemove(guildId, out _);
+
+        foreach (var c in gc.FilterWordsChannelIds)
         {
-            var gc = uow.GuildConfigsForId(guildId,
-                set => set.Include(x => x.FilteredWords)
-                    .Include(x => x.FilterWordsChannelIds));
-
-            WordFilteringServers.TryRemove(guildId);
-            ServerFilteredWords.TryRemove(guildId, out _);
-
-            foreach (var c in gc.FilterWordsChannelIds)
-            {
-                WordFilteringChannels.TryRemove(c.ChannelId);
-            }
-
-            gc.FilterWords = false;
-            gc.FilteredWords.Clear();
-            gc.FilterWordsChannelIds.Clear();
-
-            uow.SaveChanges();
+            WordFilteringChannels.TryRemove(c.ChannelId);
         }
+
+        gc.FilterWords = false;
+        gc.FilteredWords.Clear();
+        gc.FilterWordsChannelIds.Clear();
+
+        uow.SaveChanges();
     }
 
     public ConcurrentHashSet<string> FilteredWordsForServer(ulong guildId)

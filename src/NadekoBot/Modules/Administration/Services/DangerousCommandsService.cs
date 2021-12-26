@@ -40,10 +40,8 @@ DELETE FROM Clubs;";
     public async Task<int> ExecuteSql(string sql)
     {
         int res;
-        await using (var uow = _db.GetDbContext())
-        {
-            res = await uow.Database.ExecuteSqlRawAsync(sql);
-        }
+        await using var uow = _db.GetDbContext();
+        res = await uow.Database.ExecuteSqlRawAsync(sql);
         return res;
     }
 
@@ -61,30 +59,25 @@ DELETE FROM Clubs;";
             Results = new(),
         };
 
-        using (var uow = _db.GetDbContext())
+        using var uow = _db.GetDbContext();
+        var conn = uow.Database.GetDbConnection();
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = sql;
+        using var reader = cmd.ExecuteReader();
+        if (reader.HasRows)
         {
-            var conn = uow.Database.GetDbConnection();
-            using (var cmd = conn.CreateCommand())
+            for (var i = 0; i < reader.FieldCount; i++)
             {
-                cmd.CommandText = sql;
-                using (var reader = cmd.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        for (var i = 0; i < reader.FieldCount; i++)
-                        {
-                            result.ColumnNames.Add(reader.GetName(i));
-                        }
-                        while (reader.Read())
-                        {
-                            var obj = new object[reader.FieldCount];
-                            reader.GetValues(obj);
-                            result.Results.Add(obj.Select(x => x.ToString()).ToArray());
-                        }
-                    }
-                }
+                result.ColumnNames.Add(reader.GetName(i));
+            }
+            while (reader.Read())
+            {
+                var obj = new object[reader.FieldCount];
+                reader.GetValues(obj);
+                result.Results.Add(obj.Select(x => x.ToString()).ToArray());
             }
         }
+
         return result;
     }
 

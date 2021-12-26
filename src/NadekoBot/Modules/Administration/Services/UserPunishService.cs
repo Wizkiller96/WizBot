@@ -198,54 +198,50 @@ public class UserPunishService : INService
 
     public async Task CheckAllWarnExpiresAsync()
     {
-        await using (var uow = _db.GetDbContext())
-        {
-            var cleared = await uow.Database.ExecuteSqlRawAsync($@"UPDATE Warnings
+        await using var uow = _db.GetDbContext();
+        var cleared = await uow.Database.ExecuteSqlRawAsync($@"UPDATE Warnings
 SET Forgiven = 1,
     ForgivenBy = 'Expiry'
 WHERE GuildId in (SELECT GuildId FROM GuildConfigs WHERE WarnExpireHours > 0 AND WarnExpireAction = 0)
 	AND Forgiven = 0
 	AND DateAdded < datetime('now', (SELECT '-' || WarnExpireHours || ' hours' FROM GuildConfigs as gc WHERE gc.GuildId = Warnings.GuildId));");
 
-            var deleted = await uow.Database.ExecuteSqlRawAsync($@"DELETE FROM Warnings
+        var deleted = await uow.Database.ExecuteSqlRawAsync($@"DELETE FROM Warnings
 WHERE GuildId in (SELECT GuildId FROM GuildConfigs WHERE WarnExpireHours > 0 AND WarnExpireAction = 1)
 	AND DateAdded < datetime('now', (SELECT '-' || WarnExpireHours || ' hours' FROM GuildConfigs as gc WHERE gc.GuildId = Warnings.GuildId));");
 
-            if(cleared > 0 || deleted > 0)
-            {
-                Log.Information($"Cleared {cleared} warnings and deleted {deleted} warnings due to expiry.");
-            }
+        if(cleared > 0 || deleted > 0)
+        {
+            Log.Information($"Cleared {cleared} warnings and deleted {deleted} warnings due to expiry.");
         }
     }
 
     public async Task CheckWarnExpiresAsync(ulong guildId)
     {
-        await using (var uow = _db.GetDbContext())
+        await using var uow = _db.GetDbContext();
+        var config = uow.GuildConfigsForId(guildId, inc => inc);
+
+        if (config.WarnExpireHours == 0)
+            return;
+
+        var hours = $"{-config.WarnExpireHours} hours";
+        if (config.WarnExpireAction == WarnExpireAction.Clear)
         {
-            var config = uow.GuildConfigsForId(guildId, inc => inc);
-
-            if (config.WarnExpireHours == 0)
-                return;
-
-            var hours = $"{-config.WarnExpireHours} hours";
-            if (config.WarnExpireAction == WarnExpireAction.Clear)
-            {
-                await uow.Database.ExecuteSqlInterpolatedAsync($@"UPDATE warnings
+            await uow.Database.ExecuteSqlInterpolatedAsync($@"UPDATE warnings
 SET Forgiven = 1,
     ForgivenBy = 'Expiry'
 WHERE GuildId={guildId}
     AND Forgiven = 0
     AND DateAdded < datetime('now', {hours})");
-            }
-            else if (config.WarnExpireAction == WarnExpireAction.Delete)
-            {
-                await uow.Database.ExecuteSqlInterpolatedAsync($@"DELETE FROM warnings
+        }
+        else if (config.WarnExpireAction == WarnExpireAction.Delete)
+        {
+            await uow.Database.ExecuteSqlInterpolatedAsync($@"DELETE FROM warnings
 WHERE GuildId={guildId}
     AND DateAdded < datetime('now', {hours})");
-            }
-
-            await uow.SaveChangesAsync();
         }
+
+        await uow.SaveChangesAsync();
     }
 
     public Task<int> GetWarnExpire(ulong guildId)
@@ -275,35 +271,29 @@ WHERE GuildId={guildId}
 
     public IGrouping<ulong, Warning>[] WarnlogAll(ulong gid)
     {
-        using (var uow = _db.GetDbContext())
-        {
-            return uow.Warnings.GetForGuild(gid).GroupBy(x => x.UserId).ToArray();
-        }
+        using var uow = _db.GetDbContext();
+        return uow.Warnings.GetForGuild(gid).GroupBy(x => x.UserId).ToArray();
     }
 
     public Warning[] UserWarnings(ulong gid, ulong userId)
     {
-        using (var uow = _db.GetDbContext())
-        {
-            return uow.Warnings.ForId(gid, userId);
-        }
+        using var uow = _db.GetDbContext();
+        return uow.Warnings.ForId(gid, userId);
     }
 
     public async Task<bool> WarnClearAsync(ulong guildId, ulong userId, int index, string moderator)
     {
         var toReturn = true;
-        await using (var uow = _db.GetDbContext())
+        await using var uow = _db.GetDbContext();
+        if (index == 0)
         {
-            if (index == 0)
-            {
-                await uow.Warnings.ForgiveAll(guildId, userId, moderator);
-            }
-            else
-            {
-                toReturn = uow.Warnings.Forgive(guildId, userId, moderator, index - 1);
-            }
-            uow.SaveChanges();
+            await uow.Warnings.ForgiveAll(guildId, userId, moderator);
         }
+        else
+        {
+            toReturn = uow.Warnings.Forgive(guildId, userId, moderator, index - 1);
+        }
+        uow.SaveChanges();
         return toReturn;
     }
 
@@ -315,22 +305,20 @@ WHERE GuildId={guildId}
         if (number <= 0 || (time != null && time.Time > TimeSpan.FromDays(49)))
             return false;
 
-        using (var uow = _db.GetDbContext())
+        using var uow = _db.GetDbContext();
+        var ps = uow.GuildConfigsForId(guildId, set => set.Include(x => x.WarnPunishments)).WarnPunishments;
+        var toDelete = ps.Where(x => x.Count == number);
+
+        uow.RemoveRange(toDelete);
+
+        ps.Add(new()
         {
-            var ps = uow.GuildConfigsForId(guildId, set => set.Include(x => x.WarnPunishments)).WarnPunishments;
-            var toDelete = ps.Where(x => x.Count == number);
-
-            uow.RemoveRange(toDelete);
-
-            ps.Add(new()
-            {
-                Count = number,
-                Punishment = punish,
-                Time = (int?)time?.Time.TotalMinutes ?? 0,
-                RoleId = punish == PunishmentAction.AddRole ? role.Id : default(ulong?),
-            });
-            uow.SaveChanges();
-        }
+            Count = number,
+            Punishment = punish,
+            Time = (int?)time?.Time.TotalMinutes ?? 0,
+            RoleId = punish == PunishmentAction.AddRole ? role.Id : default(ulong?),
+        });
+        uow.SaveChanges();
         return true;
     }
 
@@ -339,29 +327,26 @@ WHERE GuildId={guildId}
         if (number <= 0)
             return false;
 
-        using (var uow = _db.GetDbContext())
-        {
-            var ps = uow.GuildConfigsForId(guildId, set => set.Include(x => x.WarnPunishments)).WarnPunishments;
-            var p = ps.FirstOrDefault(x => x.Count == number);
+        using var uow = _db.GetDbContext();
+        var ps = uow.GuildConfigsForId(guildId, set => set.Include(x => x.WarnPunishments)).WarnPunishments;
+        var p = ps.FirstOrDefault(x => x.Count == number);
 
-            if (p != null)
-            {
-                uow.Remove(p);
-                uow.SaveChanges();
-            }
+        if (p != null)
+        {
+            uow.Remove(p);
+            uow.SaveChanges();
         }
+
         return true;
     }
 
     public WarningPunishment[] WarnPunishList(ulong guildId)
     {
-        using (var uow = _db.GetDbContext())
-        {
-            return uow.GuildConfigsForId(guildId, gc => gc.Include(x => x.WarnPunishments))
-                .WarnPunishments
-                .OrderBy(x => x.Count)
-                .ToArray();
-        }
+        using var uow = _db.GetDbContext();
+        return uow.GuildConfigsForId(guildId, gc => gc.Include(x => x.WarnPunishments))
+            .WarnPunishments
+            .OrderBy(x => x.Count)
+            .ToArray();
     }
 
     public (IEnumerable<(string Original, ulong? Id, string Reason)> Bans, int Missing) MassKill(SocketGuild guild, string people)
@@ -403,45 +388,41 @@ WHERE GuildId={guildId}
 
     public string GetBanTemplate(ulong guildId)
     {
-        using (var uow = _db.GetDbContext())
-        {
-            var template = uow.BanTemplates
-                .AsQueryable()
-                .FirstOrDefault(x => x.GuildId == guildId);
-            return template?.Text;
-        }
+        using var uow = _db.GetDbContext();
+        var template = uow.BanTemplates
+            .AsQueryable()
+            .FirstOrDefault(x => x.GuildId == guildId);
+        return template?.Text;
     }
 
     public void SetBanTemplate(ulong guildId, string text)
     {
-        using (var uow = _db.GetDbContext())
+        using var uow = _db.GetDbContext();
+        var template = uow.BanTemplates
+            .AsQueryable()
+            .FirstOrDefault(x => x.GuildId == guildId);
+
+        if (text is null)
         {
-            var template = uow.BanTemplates
-                .AsQueryable()
-                .FirstOrDefault(x => x.GuildId == guildId);
-
-            if (text is null)
-            {
-                if (template is null)
-                    return;
+            if (template is null)
+                return;
                     
-                uow.Remove(template);
-            }
-            else if (template is null)
-            {
-                uow.BanTemplates.Add(new()
-                {
-                    GuildId = guildId,
-                    Text = text,
-                });
-            }
-            else
-            {
-                template.Text = text;
-            }
-
-            uow.SaveChanges();
+            uow.Remove(template);
         }
+        else if (template is null)
+        {
+            uow.BanTemplates.Add(new()
+            {
+                GuildId = guildId,
+                Text = text,
+            });
+        }
+        else
+        {
+            template.Text = text;
+        }
+
+        uow.SaveChanges();
     }
 
     public SmartText GetBanUserDmEmbed(ICommandContext context, IGuildUser target, string defaultMessage,

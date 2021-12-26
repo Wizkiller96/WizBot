@@ -1,4 +1,5 @@
-﻿using NadekoBot.Db.Models;
+﻿using Discord;
+using NadekoBot.Db.Models;
 
 namespace NadekoBot.Extensions;
 
@@ -55,14 +56,12 @@ public static class IUserExtensions
 
     public static async Task<IUserMessage> SendFileAsync(this IUser user, string filePath, string caption = null, string text = null, bool isTTS = false)
     {
-        await using (var file = File.Open(filePath, FileMode.Open))
-        {
-            return await user.SendFileAsync(file, caption ?? "x", text, isTTS).ConfigureAwait(false);
-        }
+        await using var file = File.Open(filePath, FileMode.Open);
+        return await UserExtensions.SendFileAsync(user, file, caption ?? "x", text, isTTS).ConfigureAwait(false);
     }
 
     public static async Task<IUserMessage> SendFileAsync(this IUser user, Stream fileStream, string fileName, string caption = null, bool isTTS = false) =>
-        await user.SendFileAsync(fileStream, fileName, caption, isTTS).ConfigureAwait(false);
+        await UserExtensions.SendFileAsync(user, fileStream, fileName, caption, isTTS).ConfigureAwait(false);
 
     // This method is used by everything that fetches the avatar from a user
     public static Uri RealAvatarUrl(this IUser usr, ushort size = 128)

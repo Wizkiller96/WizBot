@@ -273,20 +273,18 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
 
     public bool RemoveStartupCommand(int index, out AutoCommand cmd)
     {
-        using (var uow = _db.GetDbContext())
-        {
-            cmd = uow.AutoCommands
-                .AsNoTracking()
-                .Where(x => x.Interval == 0)
-                .Skip(index)
-                .FirstOrDefault();
+        using var uow = _db.GetDbContext();
+        cmd = uow.AutoCommands
+            .AsNoTracking()
+            .Where(x => x.Interval == 0)
+            .Skip(index)
+            .FirstOrDefault();
 
-            if (cmd != null)
-            {
-                uow.Remove(cmd);
-                uow.SaveChanges();
-                return true;
-            }
+        if (cmd != null)
+        {
+            uow.Remove(cmd);
+            uow.SaveChanges();
+            return true;
         }
 
         return false;
@@ -294,23 +292,21 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
         
     public bool RemoveAutoCommand(int index, out AutoCommand cmd)
     {
-        using (var uow = _db.GetDbContext())
-        {
-            cmd = uow.AutoCommands
-                .AsNoTracking()
-                .Where(x => x.Interval >= 5)
-                .Skip(index)
-                .FirstOrDefault();
+        using var uow = _db.GetDbContext();
+        cmd = uow.AutoCommands
+            .AsNoTracking()
+            .Where(x => x.Interval >= 5)
+            .Skip(index)
+            .FirstOrDefault();
 
-            if (cmd != null)
-            {
-                uow.Remove(cmd);
-                if (_autoCommands.TryGetValue(cmd.GuildId, out var autos))
-                    if (autos.TryRemove(cmd.Id, out var timer))
-                        timer.Change(Timeout.Infinite, Timeout.Infinite);
-                uow.SaveChanges();
-                return true;
-            }
+        if (cmd != null)
+        {
+            uow.Remove(cmd);
+            if (_autoCommands.TryGetValue(cmd.GuildId, out var autos))
+                if (autos.TryRemove(cmd.Id, out var timer))
+                    timer.Change(Timeout.Infinite, Timeout.Infinite);
+            uow.SaveChanges();
+            return true;
         }
 
         return false;
@@ -326,35 +322,29 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
 
         var uri = new Uri(img);
 
-        using (var http = _httpFactory.CreateClient())
-        using (var sr = await http.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false))
-        {
-            if (!sr.IsImage())
-                return false;
+        using var http = _httpFactory.CreateClient();
+        using var sr = await http.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+        if (!sr.IsImage())
+            return false;
 
-            // i can't just do ReadAsStreamAsync because dicord.net's image poops itself
-            var imgData = await sr.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
-            await using (var imgStream = imgData.ToStream())
-            {
-                await _client.CurrentUser.ModifyAsync(u => u.Avatar = new Image(imgStream)).ConfigureAwait(false);
-            }
-        }
+        // i can't just do ReadAsStreamAsync because dicord.net's image poops itself
+        var imgData = await sr.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+        await using var imgStream = imgData.ToStream();
+        await _client.CurrentUser.ModifyAsync(u => u.Avatar = new Image(imgStream)).ConfigureAwait(false);
 
         return true;
     }
 
     public void ClearStartupCommands()
     {
-        using (var uow = _db.GetDbContext())
-        {
-            var toRemove = uow
-                .AutoCommands
-                .AsNoTracking()
-                .Where(x => x.Interval == 0);
+        using var uow = _db.GetDbContext();
+        var toRemove = uow
+            .AutoCommands
+            .AsNoTracking()
+            .Where(x => x.Interval == 0);
 
-            uow.AutoCommands.RemoveRange(toRemove);
-            uow.SaveChanges();
-        }
+        uow.AutoCommands.RemoveRange(toRemove);
+        uow.SaveChanges();
     }
 
     public Task ReloadImagesAsync() 

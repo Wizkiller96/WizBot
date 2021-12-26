@@ -163,19 +163,17 @@ public class RoleCommandsService : INService
 
     public void Remove(ulong id, int index)
     {
-        using (var uow = _db.GetDbContext())
-        {
-            var gc = uow.GuildConfigsForId(id,
-                set => set.Include(x => x.ReactionRoleMessages)
-                    .ThenInclude(x => x.ReactionRoles));
-            uow.Set<ReactionRole>()
-                .RemoveRange(gc.ReactionRoleMessages[index].ReactionRoles);
-            gc.ReactionRoleMessages.RemoveAt(index);
-            _models.AddOrUpdate(id,
-                gc.ReactionRoleMessages,
-                delegate { return gc.ReactionRoleMessages; });
-            uow.SaveChanges();
-        }
+        using var uow = _db.GetDbContext();
+        var gc = uow.GuildConfigsForId(id,
+            set => set.Include(x => x.ReactionRoleMessages)
+                .ThenInclude(x => x.ReactionRoles));
+        uow.Set<ReactionRole>()
+            .RemoveRange(gc.ReactionRoleMessages[index].ReactionRoles);
+        gc.ReactionRoleMessages.RemoveAt(index);
+        _models.AddOrUpdate(id,
+            gc.ReactionRoleMessages,
+            delegate { return gc.ReactionRoleMessages; });
+        uow.SaveChanges();
     }
 
     /// <summary>

@@ -28,18 +28,16 @@ public class DbService
 
     public void Setup()
     {
-        using (var context = new NadekoContext(options))
+        using var context = new NadekoContext(options);
+        if (context.Database.GetPendingMigrations().Any())
         {
-            if (context.Database.GetPendingMigrations().Any())
-            {
-                var mContext = new NadekoContext(migrateOptions);
-                mContext.Database.Migrate();
-                mContext.SaveChanges();
-                mContext.Dispose();
-            }
-            context.Database.ExecuteSqlRaw("PRAGMA journal_mode=WAL");
-            context.SaveChanges();
+            var mContext = new NadekoContext(migrateOptions);
+            mContext.Database.Migrate();
+            mContext.SaveChanges();
+            mContext.Dispose();
         }
+        context.Database.ExecuteSqlRaw("PRAGMA journal_mode=WAL");
+        context.SaveChanges();
     }
 
     private NadekoContext GetDbContextInternal()
@@ -48,11 +46,9 @@ public class DbService
         context.Database.SetCommandTimeout(60);
         var conn = context.Database.GetDbConnection();
         conn.Open();
-        using (var com = conn.CreateCommand())
-        {
-            com.CommandText = "PRAGMA journal_mode=WAL; PRAGMA synchronous=OFF";
-            com.ExecuteNonQuery();
-        }
+        using var com = conn.CreateCommand();
+        com.CommandText = "PRAGMA journal_mode=WAL; PRAGMA synchronous=OFF";
+        com.ExecuteNonQuery();
         return context;
     }
 

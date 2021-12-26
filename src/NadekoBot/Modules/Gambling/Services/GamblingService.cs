@@ -41,21 +41,20 @@ public class GamblingService : INService
                 if (config.Decay.Percent <= 0 || config.Decay.Percent > 1 || maxDecay < 0)
                     return;
 
-                using (var uow = _db.GetDbContext())
-                {
-                    var lastCurrencyDecay = _cache.GetLastCurrencyDecay();
+                using var uow = _db.GetDbContext();
+                var lastCurrencyDecay = _cache.GetLastCurrencyDecay();
                         
-                    if (DateTime.UtcNow - lastCurrencyDecay < TimeSpan.FromHours(config.Decay.HourInterval))
-                        return;
+                if (DateTime.UtcNow - lastCurrencyDecay < TimeSpan.FromHours(config.Decay.HourInterval))
+                    return;
                         
-                    Log.Information($"Decaying users' currency - decay: {config.Decay.Percent * 100}% " +
-                                    $"| max: {maxDecay} " +
-                                    $"| threshold: {config.Decay.MinThreshold}");
+                Log.Information($"Decaying users' currency - decay: {config.Decay.Percent * 100}% " +
+                                $"| max: {maxDecay} " +
+                                $"| threshold: {config.Decay.MinThreshold}");
                          
-                    if (maxDecay == 0)
-                        maxDecay = int.MaxValue;
+                if (maxDecay == 0)
+                    maxDecay = int.MaxValue;
                          
-                    uow.Database.ExecuteSqlInterpolated($@"
+                uow.Database.ExecuteSqlInterpolated($@"
 UPDATE DiscordUser
 SET CurrencyAmount=
     CASE WHEN
@@ -67,9 +66,8 @@ SET CurrencyAmount=
     END
 WHERE CurrencyAmount > {config.Decay.MinThreshold} AND UserId!={_client.CurrentUser.Id};");
 
-                    _cache.SetLastCurrencyDecay();
-                    uow.SaveChanges();
-                }
+                _cache.SetLastCurrencyDecay();
+                uow.SaveChanges();
             }, null, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(5));
         }
     }

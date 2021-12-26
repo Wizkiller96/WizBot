@@ -49,22 +49,20 @@ public static class ProcessExtensions
 
         if (exitCode == 0 && !string.IsNullOrEmpty(stdout))
         {
-            using (var reader = new StringReader(stdout))
+            using var reader = new StringReader(stdout);
+            while (true)
             {
-                while (true)
+                var text = reader.ReadLine();
+                if (text is null)
                 {
-                    var text = reader.ReadLine();
-                    if (text is null)
-                    {
-                        return;
-                    }
+                    return;
+                }
 
-                    if (int.TryParse(text, out var id))
-                    {
-                        children.Add(id);
-                        // Recursively get the children
-                        GetAllChildIdsUnix(id, children, timeout);
-                    }
+                if (int.TryParse(text, out var id))
+                {
+                    children.Add(id);
+                    // Recursively get the children
+                    GetAllChildIdsUnix(id, children, timeout);
                 }
             }
         }

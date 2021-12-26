@@ -57,24 +57,22 @@ public partial class Games : NadekoModule<GamesService>
             return;
         }
 
-        await using (var imgStream = new MemoryStream())
+        await using var imgStream = new MemoryStream();
+        lock (gr)
         {
-            lock (gr)
-            {
-                originalStream.Position = 0;
-                originalStream.CopyTo(imgStream);
-            }
-            imgStream.Position = 0;
-            await ctx.Channel.SendFileAsync(stream: imgStream,
-                filename: $"girl_{usr}.png",
-                text: Format.Bold($"{ctx.User.Mention} Girl Rating For {usr}"),
-                embed: _eb.Create()
-                    .WithOkColor()
-                    .AddField("Hot", gr.Hot.ToString("F2"), true)
-                    .AddField("Crazy", gr.Crazy.ToString("F2"), true)
-                    .AddField("Advice", gr.Advice, false)
-                    .Build()).ConfigureAwait(false);
+            originalStream.Position = 0;
+            originalStream.CopyTo(imgStream);
         }
+        imgStream.Position = 0;
+        await ctx.Channel.SendFileAsync(stream: imgStream,
+            filename: $"girl_{usr}.png",
+            text: Format.Bold($"{ctx.User.Mention} Girl Rating For {usr}"),
+            embed: _eb.Create()
+                .WithOkColor()
+                .AddField("Hot", gr.Hot.ToString("F2"), true)
+                .AddField("Crazy", gr.Crazy.ToString("F2"), true)
+                .AddField("Advice", gr.Advice, false)
+                .Build()).ConfigureAwait(false);
     }
 
     private double NextDouble(double x, double y)

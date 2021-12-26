@@ -64,18 +64,16 @@ public sealed partial class Music
             var success = false;
             try
             {
-                await using (var uow = _db.GetDbContext())
-                {
-                    var pl = uow.MusicPlaylists.FirstOrDefault(x => x.Id == id);
+                await using var uow = _db.GetDbContext();
+                var pl = uow.MusicPlaylists.FirstOrDefault(x => x.Id == id);
 
-                    if (pl != null)
+                if (pl != null)
+                {
+                    if (_creds.IsOwner(ctx.User) || pl.AuthorId == ctx.User.Id)
                     {
-                        if (_creds.IsOwner(ctx.User) || pl.AuthorId == ctx.User.Id)
-                        {
-                            uow.MusicPlaylists.Remove(pl);
-                            await uow.SaveChangesAsync();
-                            success = true;
-                        }
+                        uow.MusicPlaylists.Remove(pl);
+                        await uow.SaveChangesAsync();
+                        success = true;
                     }
                 }
             }

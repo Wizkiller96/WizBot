@@ -42,10 +42,8 @@ public class RadioResolver : IRadioResolver
         string file = null;
         try
         {
-            using (var http = new HttpClient())
-            {
-                file = await http.GetStringAsync(query).ConfigureAwait(false);
-            }
+            using var http = new HttpClient();
+            file = await http.GetStringAsync(query).ConfigureAwait(false);
         }
         catch
         {

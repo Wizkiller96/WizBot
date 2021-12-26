@@ -198,30 +198,28 @@ public sealed class LogCommandService : ILogCommandService
 
     public async Task LogServer(ulong guildId, ulong channelId, bool value)
     {
-        await using (var uow = _db.GetDbContext())
-        {
-            var logSetting = uow.LogSettingsFor(guildId);
+        await using var uow = _db.GetDbContext();
+        var logSetting = uow.LogSettingsFor(guildId);
                 
-            logSetting.LogOtherId =
-                logSetting.MessageUpdatedId =
-                    logSetting.MessageDeletedId =
-                        logSetting.UserJoinedId =
-                            logSetting.UserLeftId =
-                                logSetting.UserBannedId =
-                                    logSetting.UserUnbannedId =
-                                        logSetting.UserUpdatedId =
-                                            logSetting.ChannelCreatedId =
-                                                logSetting.ChannelDestroyedId =
-                                                    logSetting.ChannelUpdatedId =
-                                                        logSetting.LogUserPresenceId =
-                                                            logSetting.LogVoicePresenceId =
-                                                                logSetting.UserMutedId =
-                                                                    logSetting.LogVoicePresenceTTSId =
-                                                                        value ? channelId : null;
-            ;
-            await uow.SaveChangesAsync();
-            GuildLogSettings.AddOrUpdate(guildId, id => logSetting, (id, old) => logSetting);
-        }
+        logSetting.LogOtherId =
+            logSetting.MessageUpdatedId =
+                logSetting.MessageDeletedId =
+                    logSetting.UserJoinedId =
+                        logSetting.UserLeftId =
+                            logSetting.UserBannedId =
+                                logSetting.UserUnbannedId =
+                                    logSetting.UserUpdatedId =
+                                        logSetting.ChannelCreatedId =
+                                            logSetting.ChannelDestroyedId =
+                                                logSetting.ChannelUpdatedId =
+                                                    logSetting.LogUserPresenceId =
+                                                        logSetting.LogVoicePresenceId =
+                                                            logSetting.UserMutedId =
+                                                                logSetting.LogVoicePresenceTTSId =
+                                                                    value ? channelId : null;
+        ;
+        await uow.SaveChangesAsync();
+        GuildLogSettings.AddOrUpdate(guildId, id => logSetting, (id, old) => logSetting);
     }
 
     private Task _client_UserUpdated(SocketUser before, SocketUser uAfter)
@@ -1193,60 +1191,58 @@ public sealed class LogCommandService : ILogCommandService
 
     private void UnsetLogSetting(ulong guildId, LogType logChannelType)
     {
-        using (var uow = _db.GetDbContext())
+        using var uow = _db.GetDbContext();
+        var newLogSetting = uow.LogSettingsFor(guildId);
+        switch (logChannelType)
         {
-            var newLogSetting = uow.LogSettingsFor(guildId);
-            switch (logChannelType)
-            {
-                case LogType.Other:
-                    newLogSetting.LogOtherId = null;
-                    break;
-                case LogType.MessageUpdated:
-                    newLogSetting.MessageUpdatedId = null;
-                    break;
-                case LogType.MessageDeleted:
-                    newLogSetting.MessageDeletedId = null;
-                    break;
-                case LogType.UserJoined:
-                    newLogSetting.UserJoinedId = null;
-                    break;
-                case LogType.UserLeft:
-                    newLogSetting.UserLeftId = null;
-                    break;
-                case LogType.UserBanned:
-                    newLogSetting.UserBannedId = null;
-                    break;
-                case LogType.UserUnbanned:
-                    newLogSetting.UserUnbannedId = null;
-                    break;
-                case LogType.UserUpdated:
-                    newLogSetting.UserUpdatedId = null;
-                    break;
-                case LogType.UserMuted:
-                    newLogSetting.UserMutedId = null;
-                    break;
-                case LogType.ChannelCreated:
-                    newLogSetting.ChannelCreatedId = null;
-                    break;
-                case LogType.ChannelDestroyed:
-                    newLogSetting.ChannelDestroyedId = null;
-                    break;
-                case LogType.ChannelUpdated:
-                    newLogSetting.ChannelUpdatedId = null;
-                    break;
-                case LogType.UserPresence:
-                    newLogSetting.LogUserPresenceId = null;
-                    break;
-                case LogType.VoicePresence:
-                    newLogSetting.LogVoicePresenceId = null;
-                    break;
-                case LogType.VoicePresenceTTS:
-                    newLogSetting.LogVoicePresenceTTSId = null;
-                    break;
-            }
-
-            GuildLogSettings.AddOrUpdate(guildId, newLogSetting, (gid, old) => newLogSetting);
-            uow.SaveChanges();
+            case LogType.Other:
+                newLogSetting.LogOtherId = null;
+                break;
+            case LogType.MessageUpdated:
+                newLogSetting.MessageUpdatedId = null;
+                break;
+            case LogType.MessageDeleted:
+                newLogSetting.MessageDeletedId = null;
+                break;
+            case LogType.UserJoined:
+                newLogSetting.UserJoinedId = null;
+                break;
+            case LogType.UserLeft:
+                newLogSetting.UserLeftId = null;
+                break;
+            case LogType.UserBanned:
+                newLogSetting.UserBannedId = null;
+                break;
+            case LogType.UserUnbanned:
+                newLogSetting.UserUnbannedId = null;
+                break;
+            case LogType.UserUpdated:
+                newLogSetting.UserUpdatedId = null;
+                break;
+            case LogType.UserMuted:
+                newLogSetting.UserMutedId = null;
+                break;
+            case LogType.ChannelCreated:
+                newLogSetting.ChannelCreatedId = null;
+                break;
+            case LogType.ChannelDestroyed:
+                newLogSetting.ChannelDestroyedId = null;
+                break;
+            case LogType.ChannelUpdated:
+                newLogSetting.ChannelUpdatedId = null;
+                break;
+            case LogType.UserPresence:
+                newLogSetting.LogUserPresenceId = null;
+                break;
+            case LogType.VoicePresence:
+                newLogSetting.LogVoicePresenceId = null;
+                break;
+            case LogType.VoicePresenceTTS:
+                newLogSetting.LogVoicePresenceTTSId = null;
+                break;
         }
+
+        GuildLogSettings.AddOrUpdate(guildId, newLogSetting, (gid, old) => newLogSetting);
+        uow.SaveChanges();
     }
 }

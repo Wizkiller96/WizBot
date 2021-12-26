@@ -18,23 +18,21 @@ public class CommandMapService : IInputTransformer, INService
     {
         _eb = eb;
 
-        using (var uow = db.GetDbContext())
-        {
-            var guildIds = client.Guilds.Select(x => x.Id).ToList();
-            var configs = uow.Set<GuildConfig>()
-                .Include(gc => gc.CommandAliases)
-                .Where(x => guildIds.Contains(x.GuildId))
-                .ToList();
+        using var uow = db.GetDbContext();
+        var guildIds = client.Guilds.Select(x => x.Id).ToList();
+        var configs = uow.Set<GuildConfig>()
+            .Include(gc => gc.CommandAliases)
+            .Where(x => guildIds.Contains(x.GuildId))
+            .ToList();
                 
-            AliasMaps = new(configs
-                .ToDictionary(
-                    x => x.GuildId,
-                    x => new ConcurrentDictionary<string, string>(x.CommandAliases
-                        .DistinctBy(ca => ca.Trigger)
-                        .ToDictionary(ca => ca.Trigger, ca => ca.Mapping))));
+        AliasMaps = new(configs
+            .ToDictionary(
+                x => x.GuildId,
+                x => new ConcurrentDictionary<string, string>(x.CommandAliases
+                    .DistinctBy(ca => ca.Trigger)
+                    .ToDictionary(ca => ca.Trigger, ca => ca.Mapping))));
 
-            _db = db;
-        }
+        _db = db;
     }
 
     public int ClearAliases(ulong guildId)
@@ -42,13 +40,11 @@ public class CommandMapService : IInputTransformer, INService
         AliasMaps.TryRemove(guildId, out _);
 
         int count;
-        using (var uow = _db.GetDbContext())
-        {
-            var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.CommandAliases));
-            count = gc.CommandAliases.Count;
-            gc.CommandAliases.Clear();
-            uow.SaveChanges();
-        }
+        using var uow = _db.GetDbContext();
+        var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.CommandAliases));
+        count = gc.CommandAliases.Count;
+        gc.CommandAliases.Clear();
+        uow.SaveChanges();
         return count;
     }
 

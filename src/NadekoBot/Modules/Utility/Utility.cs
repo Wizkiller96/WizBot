@@ -431,10 +431,8 @@ public partial class Utility : NadekoModule
                     return msg;
                 })
             });
-        await using (var stream = await JsonConvert.SerializeObject(grouping, Formatting.Indented).ToStream().ConfigureAwait(false))
-        {
-            await ctx.User.SendFileAsync(stream, title, title, false).ConfigureAwait(false);
-        }
+        await using var stream = await JsonConvert.SerializeObject(grouping, Formatting.Indented).ToStream().ConfigureAwait(false);
+        await ctx.User.SendFileAsync(stream, title, title, false).ConfigureAwait(false);
     }
     private static SemaphoreSlim sem = new(1, 1);
 

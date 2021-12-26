@@ -1,4 +1,24 @@
 
+[*]
+charset = utf-8-bom
+end_of_line = crlf
+trim_trailing_whitespace = false
+insert_final_newline = false
+indent_style = space
+indent_size = 4
+
+[{*.har,*.inputactions,*.jsb2,*.jsb3,*.json,.babelrc,.eslintrc,.stylelintrc,bowerrc,jest.config}]
+indent_style = space
+indent_size = 2
+
+[{*.yaml,*.yml}]
+indent_style = space
+indent_size = 2
+
+[*.proto]
+indent_style = space
+indent_size = 2
+
 [*.{appxmanifest,asax,ascx,aspx,axaml,build,cg,cginc,compute,cs,cshtml,dtd,hlsl,hlsli,hlslinc,master,nuspec,paml,razor,resw,resx,shader,skin,usf,ush,vb,xaml,xamlx,xoml,xsd}]
 indent_style = space
 indent_size = 4
@@ -24,28 +44,15 @@ dotnet_naming_rule.private_constants_rule.import_to_resharper = as_predefined
 dotnet_naming_rule.private_constants_rule.severity = suggestion
 dotnet_naming_rule.private_constants_rule.style = all_upper_style
 dotnet_naming_rule.private_constants_rule.symbols = private_constants_symbols
-dotnet_naming_rule.private_static_readonly_rule.import_to_resharper = as_predefined
-dotnet_naming_rule.private_static_readonly_rule.resharper_style = _ + aaBb, aaBb
-dotnet_naming_rule.private_static_readonly_rule.severity = suggestion
-dotnet_naming_rule.private_static_readonly_rule.style = lower_camel_case_style_1
-dotnet_naming_rule.private_static_readonly_rule.symbols = private_static_readonly_symbols
 dotnet_naming_rule.unity_serialized_field_rule.import_to_resharper = True
 dotnet_naming_rule.unity_serialized_field_rule.resharper_description = Unity serialized field
 dotnet_naming_rule.unity_serialized_field_rule.resharper_guid = 5f0fdb63-c892-4d2c-9324-15c80b22a7ef
 dotnet_naming_rule.unity_serialized_field_rule.severity = suggestion
 dotnet_naming_rule.unity_serialized_field_rule.style = lower_camel_case_style
 dotnet_naming_rule.unity_serialized_field_rule.symbols = unity_serialized_field_symbols
-dotnet_naming_rule.unity_serialized_field_rule_1.import_to_resharper = True
-dotnet_naming_rule.unity_serialized_field_rule_1.resharper_description = Unity serialized field
-dotnet_naming_rule.unity_serialized_field_rule_1.resharper_guid = 5f0fdb63-c892-4d2c-9324-15c80b22a7ef
-dotnet_naming_rule.unity_serialized_field_rule_1.severity = suggestion
-dotnet_naming_rule.unity_serialized_field_rule_1.style = lower_camel_case_style
-dotnet_naming_rule.unity_serialized_field_rule_1.symbols = unity_serialized_field_symbols_1
 dotnet_naming_style.all_upper_style.capitalization = all_upper
 dotnet_naming_style.all_upper_style.word_separator = _
 dotnet_naming_style.lower_camel_case_style.capitalization = camel_case
-dotnet_naming_style.lower_camel_case_style_1.capitalization = camel_case
-dotnet_naming_style.lower_camel_case_style_1.required_prefix = _
 dotnet_naming_symbols.constants_symbols.applicable_accessibilities = public,internal,protected,protected_internal,private_protected
 dotnet_naming_symbols.constants_symbols.applicable_kinds = field
 dotnet_naming_symbols.constants_symbols.required_modifiers = const
@@ -55,17 +62,10 @@ dotnet_naming_symbols.local_constants_symbols.required_modifiers = const
 dotnet_naming_symbols.private_constants_symbols.applicable_accessibilities = private
 dotnet_naming_symbols.private_constants_symbols.applicable_kinds = field
 dotnet_naming_symbols.private_constants_symbols.required_modifiers = const
-dotnet_naming_symbols.private_static_readonly_symbols.applicable_accessibilities = private
-dotnet_naming_symbols.private_static_readonly_symbols.applicable_kinds = field
-dotnet_naming_symbols.private_static_readonly_symbols.required_modifiers = static,readonly
 dotnet_naming_symbols.unity_serialized_field_symbols.applicable_accessibilities = *
 dotnet_naming_symbols.unity_serialized_field_symbols.applicable_kinds = 
 dotnet_naming_symbols.unity_serialized_field_symbols.resharper_applicable_kinds = unity_serialised_field
 dotnet_naming_symbols.unity_serialized_field_symbols.resharper_required_modifiers = instance
-dotnet_naming_symbols.unity_serialized_field_symbols_1.applicable_accessibilities = *
-dotnet_naming_symbols.unity_serialized_field_symbols_1.applicable_kinds = 
-dotnet_naming_symbols.unity_serialized_field_symbols_1.resharper_applicable_kinds = unity_serialised_field
-dotnet_naming_symbols.unity_serialized_field_symbols_1.resharper_required_modifiers = instance
 dotnet_style_parentheses_in_arithmetic_binary_operators = never_if_unnecessary:none
 dotnet_style_parentheses_in_other_binary_operators = never_if_unnecessary:none
 dotnet_style_parentheses_in_relational_binary_operators = never_if_unnecessary:none

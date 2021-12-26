@@ -41,18 +41,18 @@ public partial class Gambling
 
         public sealed class SlotMachine
         {
-            public const int MaxValue = 5;
+            public const int MAX_VALUE = 5;
 
-            static readonly List<Func<int[], int>> _winningCombos = new()
+            private static readonly List<Func<int[], int>> _winningCombos = new()
             {
                 //three flowers
-                arr => arr.All(a=>a==MaxValue) ? 30 : 0,
+                arr => arr.All(a=>a==MAX_VALUE) ? 30 : 0,
                 //three of the same
                 arr => !arr.Any(a => a != arr[0]) ? 10 : 0,
                 //two flowers
-                arr => arr.Count(a => a == MaxValue) == 2 ? 4 : 0,
+                arr => arr.Count(a => a == MAX_VALUE) == 2 ? 4 : 0,
                 //one flower
-                arr => arr.Any(a => a == MaxValue) ? 1 : 0,
+                arr => arr.Any(a => a == MAX_VALUE) ? 1 : 0,
             };
 
             public static SlotResult Pull()
@@ -60,7 +60,7 @@ public partial class Gambling
                 var numbers = new int[3];
                 for (var i = 0; i < numbers.Length; i++)
                 {
-                    numbers[i] = new NadekoRandom().Next(0, MaxValue + 1);
+                    numbers[i] = new NadekoRandom().Next(0, MAX_VALUE + 1);
                 }
                 var multi = 0;
                 foreach (var t in _winningCombos)
@@ -84,6 +84,8 @@ public partial class Gambling
                 }
             }
         }
+        
+        public Task Test() => Task.CompletedTask; 
 
         [NadekoCommand, Aliases]
         [OwnerOnly]
@@ -124,7 +126,6 @@ public partial class Gambling
             }
 
             var sb = new StringBuilder();
-            const int bet = 1;
             var payout = 0;
             foreach (var key in dict.Keys.OrderByDescending(x => x))
             {
@@ -132,7 +133,7 @@ public partial class Gambling
                 payout += key * dict[key];
             }
             await SendConfirmAsync("Slot Test Results", sb.ToString(),
-                footer: $"Total Bet: {tests * bet} | Payout: {payout * bet} | {payout * 1.0f / tests * 100}%").ConfigureAwait(false);
+                footer: $"Total Bet: {tests} | Payout: {payout} | {payout * 1.0f / tests * 100}%").ConfigureAwait(false);
         }
 
         [NadekoCommand, Aliases]
@@ -170,7 +171,7 @@ public partial class Gambling
                         .FirstOrDefault(x => x.UserId == ctx.User.Id)
                         ?.CurrencyAmount ?? 0;
                 }
-
+                
                 using (var bgImage = Image.Load<Rgba32>(_images.SlotBackground, out var format))
                 {
                     var numbers = new int[3];
@@ -216,22 +217,20 @@ public partial class Gambling
 
                     for (var i = 0; i < 3; i++)
                     {
-                        using (var img = Image.Load(_images.SlotEmojis[numbers[i]]))
-                        {
-                            bgImage.Mutate(x => x.DrawImage(img, new Point(148 + (105 * i), 217), 1f));
-                        }
+                        using var img = Image.Load(_images.SlotEmojis[numbers[i]]);
+                        bgImage.Mutate(x => x.DrawImage(img, new Point(148 + (105 * i), 217), 1f));
                     }
 
                     var msg = GetText(strs.better_luck);
                     if (result.Multiplier > 0)
                     {
-                        if (result.Multiplier == 1f)
+                        if (Math.Abs(result.Multiplier - 1f) <= float.Epsilon)
                             msg = GetText(strs.slot_single(CurrencySign, 1));
-                        else if (result.Multiplier == 4f)
+                        else if (Math.Abs(result.Multiplier - 4f) < float.Epsilon)
                             msg = GetText(strs.slot_two(CurrencySign, 4));
-                        else if (result.Multiplier == 10f)
+                        else if (Math.Abs(result.Multiplier - 10f) <= float.Epsilon)
                             msg = GetText(strs.slot_three(10));
-                        else if (result.Multiplier == 30f)
+                        else if (Math.Abs(result.Multiplier - 30f) <= float.Epsilon)
                             msg = GetText(strs.slot_jackpot(30));
                     }
 

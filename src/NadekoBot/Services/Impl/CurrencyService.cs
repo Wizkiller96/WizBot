@@ -54,11 +54,9 @@ public class CurrencyService : ICurrencyService, INService
             throw new ArgumentException("You can't add negative amounts. Use RemoveAsync method for that.", nameof(amount));
         }
 
-        await using (var uow = _db.GetDbContext())
-        {
-            InternalChange(userId, userName, discrim, avatar, reason, amount, gamble, uow);
-            await uow.SaveChangesAsync();
-        }
+        await using var uow = _db.GetDbContext();
+        InternalChange(userId, userName, discrim, avatar, reason, amount, gamble, uow);
+        await uow.SaveChangesAsync();
     }
 
     public Task AddAsync(ulong userId, string reason, long amount, bool gamble = false)
@@ -98,16 +96,14 @@ public class CurrencyService : ICurrencyService, INService
             throw new ArgumentException("Cannot perform bulk operation. Arrays are not of equal length.");
 
         var userIdHashSet = new HashSet<ulong>(idArray.Length);
-        await using (var uow = _db.GetDbContext())
+        await using var uow = _db.GetDbContext();
+        for (var i = 0; i < idArray.Length; i++)
         {
-            for (var i = 0; i < idArray.Length; i++)
-            {
-                // i have to prevent same user changing more than once as it will cause db error
-                if (userIdHashSet.Add(idArray[i]))
-                    InternalChange(idArray[i], null, null, null, reasonArray[i], amountArray[i], gamble, uow);
-            }
-            await uow.SaveChangesAsync();
+            // i have to prevent same user changing more than once as it will cause db error
+            if (userIdHashSet.Add(idArray[i]))
+                InternalChange(idArray[i], null, null, null, reasonArray[i], amountArray[i], gamble, uow);
         }
+        await uow.SaveChangesAsync();
     }
         
     public async Task RemoveBulkAsync(IEnumerable<ulong> userIds, IEnumerable<string> reasons, IEnumerable<long> amounts, bool gamble = false)
@@ -120,16 +116,14 @@ public class CurrencyService : ICurrencyService, INService
             throw new ArgumentException("Cannot perform bulk operation. Arrays are not of equal length.");
 
         var userIdHashSet = new HashSet<ulong>(idArray.Length);
-        await using (var uow = _db.GetDbContext())
+        await using var uow = _db.GetDbContext();
+        for (var i = 0; i < idArray.Length; i++)
         {
-            for (var i = 0; i < idArray.Length; i++)
-            {
-                // i have to prevent same user changing more than once as it will cause db error
-                if (userIdHashSet.Add(idArray[i]))
-                    InternalChange(idArray[i], null, null, null, reasonArray[i], -amountArray[i], gamble, uow);
-            }
-            await uow.SaveChangesAsync();
+            // i have to prevent same user changing more than once as it will cause db error
+            if (userIdHashSet.Add(idArray[i]))
+                InternalChange(idArray[i], null, null, null, reasonArray[i], -amountArray[i], gamble, uow);
         }
+        await uow.SaveChangesAsync();
     }
 
     private async Task<bool> InternalRemoveAsync(ulong userId, string userName, string userDiscrim, string avatar, string reason, long amount, bool gamble = false)
@@ -140,11 +134,9 @@ public class CurrencyService : ICurrencyService, INService
         }
 
         bool result;
-        await using (var uow = _db.GetDbContext())
-        {
-            result = InternalChange(userId, userName, userDiscrim, avatar, reason, -amount, gamble, uow);
-            await uow.SaveChangesAsync();
-        }
+        await using var uow = _db.GetDbContext();
+        result = InternalChange(userId, userName, userDiscrim, avatar, reason, -amount, gamble, uow);
+        await uow.SaveChangesAsync();
         return result;
     }
 

@@ -117,12 +117,10 @@ public class VcRoleService : INService
 
         if (missingRoles.Any())
         {
-            await using (var uow = _db.GetDbContext())
-            {
-                Log.Warning($"Removing {missingRoles.Count} missing roles from {nameof(VcRoleService)}");
-                uow.RemoveRange(missingRoles);
-                await uow.SaveChangesAsync();
-            }
+            await using var uow = _db.GetDbContext();
+            Log.Warning($"Removing {missingRoles.Count} missing roles from {nameof(VcRoleService)}");
+            uow.RemoveRange(missingRoles);
+            await uow.SaveChangesAsync();
         }
     }
 
@@ -134,21 +132,19 @@ public class VcRoleService : INService
         var guildVcRoles = VcRoles.GetOrAdd(guildId, new ConcurrentDictionary<ulong, IRole>());
 
         guildVcRoles.AddOrUpdate(vcId, role, (key, old) => role);
-        using (var uow = _db.GetDbContext())
+        using var uow = _db.GetDbContext();
+        var conf = uow.GuildConfigsForId(guildId, set => set.Include(x => x.VcRoleInfos));
+        var toDelete = conf.VcRoleInfos.FirstOrDefault(x => x.VoiceChannelId == vcId); // remove old one
+        if(toDelete != null)
         {
-            var conf = uow.GuildConfigsForId(guildId, set => set.Include(x => x.VcRoleInfos));
-            var toDelete = conf.VcRoleInfos.FirstOrDefault(x => x.VoiceChannelId == vcId); // remove old one
-            if(toDelete != null)
-            {
-                uow.Remove(toDelete);
-            }
-            conf.VcRoleInfos.Add(new()
-            {
-                VoiceChannelId = vcId,
-                RoleId = role.Id,
-            }); // add new one
-            uow.SaveChanges();
+            uow.Remove(toDelete);
         }
+        conf.VcRoleInfos.Add(new()
+        {
+            VoiceChannelId = vcId,
+            RoleId = role.Id,
+        }); // add new one
+        uow.SaveChanges();
     }
 
     public bool RemoveVcRole(ulong guildId, ulong vcId)
@@ -159,13 +155,11 @@ public class VcRoleService : INService
         if (!guildVcRoles.TryRemove(vcId, out _))
             return false;
 
-        using (var uow = _db.GetDbContext())
-        {
-            var conf = uow.GuildConfigsForId(guildId, set => set.Include(x => x.VcRoleInfos));
-            var toRemove = conf.VcRoleInfos.Where(x => x.VoiceChannelId == vcId).ToList();
-            uow.RemoveRange(toRemove);
-            uow.SaveChanges();
-        }
+        using var uow = _db.GetDbContext();
+        var conf = uow.GuildConfigsForId(guildId, set => set.Include(x => x.VcRoleInfos));
+        var toRemove = conf.VcRoleInfos.Where(x => x.VoiceChannelId == vcId).ToList();
+        uow.RemoveRange(toRemove);
+        uow.SaveChanges();
 
         return true;
     }

@@ -44,22 +44,21 @@ public partial class Gambling
                 cardObjects.Add(currentCard);
                 images.Add(Image.Load(_images.GetCard(currentCard.ToString().ToLowerInvariant().Replace(' ', '_'))));
             }
-            using (var img = images.Merge())
+
+            using var img = images.Merge();
+            foreach (var i in images)
             {
-                foreach (var i in images)
-                {
-                    i.Dispose();
-                }
-
-                var toSend = $"{Format.Bold(ctx.User.ToString())}";
-                if (cardObjects.Count == 5)
-                    toSend += $" drew `{Deck.GetHandValue(cardObjects)}`";
-
-                if (guildId != null)
-                    toSend += "\n" + GetText(strs.cards_left(Format.Bold(cards.CardPool.Count.ToString())));
-
-                return (img.ToStream(), toSend);
+                i.Dispose();
             }
+
+            var toSend = $"{Format.Bold(ctx.User.ToString())}";
+            if (cardObjects.Count == 5)
+                toSend += $" drew `{Deck.GetHandValue(cardObjects)}`";
+
+            if (guildId != null)
+                toSend += "\n" + GetText(strs.cards_left(Format.Bold(cards.CardPool.Count.ToString())));
+
+            return (img.ToStream(), toSend);
         }
 
         [NadekoCommand, Aliases]

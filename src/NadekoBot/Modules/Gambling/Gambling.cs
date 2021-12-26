@@ -538,10 +538,8 @@ public partial class Gambling : GamblingModule<GamblingService>
         }
         else
         {
-            await using (var uow = _db.GetDbContext())
-            {
-                cleanRichest = uow.DiscordUser.GetTopRichest(_client.CurrentUser.Id, 9, page).ToList();
-            }
+            await using var uow = _db.GetDbContext();
+            cleanRichest = uow.DiscordUser.GetTopRichest(_client.CurrentUser.Id, 9, page).ToList();
         }
 
         await ctx.SendPaginatedConfirmAsync(page, curPage =>
@@ -553,10 +551,8 @@ public partial class Gambling : GamblingModule<GamblingService>
             List<DiscordUser> toSend;
             if (!opts.Clean)
             {
-                using (var uow = _db.GetDbContext())
-                {
-                    toSend = uow.DiscordUser.GetTopRichest(_client.CurrentUser.Id, 9, curPage);
-                }
+                using var uow = _db.GetDbContext();
+                toSend = uow.DiscordUser.GetTopRichest(_client.CurrentUser.Id, 9, curPage);
             }
             else
             {

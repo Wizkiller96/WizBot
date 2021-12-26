@@ -32,13 +32,11 @@ public class AdministrationService : INService
 
     public (bool DelMsgOnCmd, IEnumerable<DelMsgOnCmdChannel> channels) GetDelMsgOnCmdData(ulong guildId)
     {
-        using (var uow = _db.GetDbContext())
-        {
-            var conf = uow.GuildConfigsForId(guildId,
-                set => set.Include(x => x.DelMsgOnCmdChannels));
+        using var uow = _db.GetDbContext();
+        var conf = uow.GuildConfigsForId(guildId,
+            set => set.Include(x => x.DelMsgOnCmdChannels));
 
-            return (conf.DeleteMessageOnCommand, conf.DelMsgOnCmdChannels);
-        }
+        return (conf.DeleteMessageOnCommand, conf.DelMsgOnCmdChannels);
     }
 
     private Task DelMsgOnCmd_Handler(IUserMessage msg, CommandInfo cmd)
@@ -70,13 +68,11 @@ public class AdministrationService : INService
     public bool ToggleDeleteMessageOnCommand(ulong guildId)
     {
         bool enabled;
-        using (var uow = _db.GetDbContext())
-        {
-            var conf = uow.GuildConfigsForId(guildId, set => set);
-            enabled = conf.DeleteMessageOnCommand = !conf.DeleteMessageOnCommand;
+        using var uow = _db.GetDbContext();
+        var conf = uow.GuildConfigsForId(guildId, set => set);
+        enabled = conf.DeleteMessageOnCommand = !conf.DeleteMessageOnCommand;
 
-            uow.SaveChanges();
-        }
+        uow.SaveChanges();
         return enabled;
     }
 

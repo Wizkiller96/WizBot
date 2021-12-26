@@ -163,13 +163,11 @@ public class MuteService : INService
 
     public async Task SetMuteRoleAsync(ulong guildId, string name)
     {
-        await using (var uow = _db.GetDbContext())
-        {
-            var config = uow.GuildConfigsForId(guildId, set => set);
-            config.MuteRoleName = name;
-            GuildMuteRoles.AddOrUpdate(guildId, name, (id, old) => name);
-            await uow.SaveChangesAsync();
-        }
+        await using var uow = _db.GetDbContext();
+        var config = uow.GuildConfigsForId(guildId, set => set);
+        config.MuteRoleName = name;
+        GuildMuteRoles.AddOrUpdate(guildId, name, (id, old) => name);
+        await uow.SaveChangesAsync();
     }
 
     public async Task MuteUser(IGuildUser usr, IUser mod, MuteType type = MuteType.All, string reason = "")
@@ -445,24 +443,22 @@ public class MuteService : INService
 
     private void RemoveTimerFromDb(ulong guildId, ulong userId, TimerType type)
     {
-        using (var uow = _db.GetDbContext())
+        using var uow = _db.GetDbContext();
+        object toDelete;
+        if (type == TimerType.Mute)
         {
-            object toDelete;
-            if (type == TimerType.Mute)
-            {
-                var config = uow.GuildConfigsForId(guildId, set => set.Include(x => x.UnmuteTimers));
-                toDelete = config.UnmuteTimers.FirstOrDefault(x => x.UserId == userId);
-            }
-            else
-            {
-                var config = uow.GuildConfigsForId(guildId, set => set.Include(x => x.UnbanTimer));
-                toDelete = config.UnbanTimer.FirstOrDefault(x => x.UserId == userId);
-            }
-            if (toDelete != null)
-            {
-                uow.Remove(toDelete);
-            }
-            uow.SaveChanges();
+            var config = uow.GuildConfigsForId(guildId, set => set.Include(x => x.UnmuteTimers));
+            toDelete = config.UnmuteTimers.FirstOrDefault(x => x.UserId == userId);
         }
+        else
+        {
+            var config = uow.GuildConfigsForId(guildId, set => set.Include(x => x.UnbanTimer));
+            toDelete = config.UnbanTimer.FirstOrDefault(x => x.UserId == userId);
+        }
+        if (toDelete != null)
+        {
+            uow.Remove(toDelete);
+        }
+        uow.SaveChanges();
     }
 }

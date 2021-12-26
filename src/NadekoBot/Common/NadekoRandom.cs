@@ -4,7 +4,7 @@ namespace NadekoBot.Common;
 
 public class NadekoRandom : Random
 {
-    readonly RandomNumberGenerator _rng;
+    private readonly RandomNumberGenerator _rng;
 
     public NadekoRandom() : base()
     {

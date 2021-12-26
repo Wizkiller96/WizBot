@@ -66,12 +66,10 @@ public class Localization : ILocalization, INService
 
         if (GuildCultureInfos.TryRemove(guildId, out var _))
         {
-            using (var uow = _db.GetDbContext())
-            {
-                var gc = uow.GuildConfigsForId(guildId, set => set);
-                gc.Locale = null;
-                uow.SaveChanges();
-            }
+            using var uow = _db.GetDbContext();
+            var gc = uow.GuildConfigsForId(guildId, set => set);
+            gc.Locale = null;
+            uow.SaveChanges();
         }
     }
 

@@ -85,55 +85,49 @@ public class SearchesService : INService
     public async Task<byte[]> GetRipPictureFactory((string text, Uri avatarUrl) arg)
     {
         var (text, avatarUrl) = arg;
-        using (var bg = Image.Load<Rgba32>(_imgs.Rip.ToArray()))
+        using var bg = Image.Load<Rgba32>(_imgs.Rip.ToArray());
+        var (succ, data) = (false, (byte[])null); //await _cache.TryGetImageDataAsync(avatarUrl);
+        if (!succ)
         {
-            var (succ, data) = (false, (byte[])null); //await _cache.TryGetImageDataAsync(avatarUrl);
-            if (!succ)
+            using var http = _httpFactory.CreateClient();
+            data = await http.GetByteArrayAsync(avatarUrl);
+            using (var avatarImg = Image.Load<Rgba32>(data))
             {
-                using (var http = _httpFactory.CreateClient())
-                {
-                    data = await http.GetByteArrayAsync(avatarUrl);
-                    using (var avatarImg = Image.Load<Rgba32>(data))
-                    {
-                        avatarImg.Mutate(x => x
-                            .Resize(85, 85)
-                            .ApplyRoundedCorners(42));
-                        data = avatarImg.ToStream().ToArray();
-                        DrawAvatar(bg, avatarImg);
-                    }
-                    await _cache.SetImageDataAsync(avatarUrl, data);
-                }
+                avatarImg.Mutate(x => x
+                    .Resize(85, 85)
+                    .ApplyRoundedCorners(42));
+                data = avatarImg.ToStream().ToArray();
+                DrawAvatar(bg, avatarImg);
             }
-            else
-            {
-                using (var avatarImg = Image.Load<Rgba32>(data))
-                {
-                    DrawAvatar(bg, avatarImg);
-                }
-            }
-
-            bg.Mutate(x => x.DrawText(
-                new()
-                {
-                    TextOptions = new TextOptions
-                    {
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        WrapTextWidth = 190,
-                    }.WithFallbackFonts(_fonts.FallBackFonts)
-                },
-                text,
-                _fonts.RipFont,
-                SixLabors.ImageSharp.Color.Black,
-                new(25, 225)));
-
-            //flowa
-            using (var flowers = Image.Load(_imgs.RipOverlay.ToArray()))
-            {
-                bg.Mutate(x => x.DrawImage(flowers, new(0, 0), new GraphicsOptions()));
-            }
-
-            return bg.ToStream().ToArray();
+            await _cache.SetImageDataAsync(avatarUrl, data);
         }
+        else
+        {
+            using var avatarImg = Image.Load<Rgba32>(data);
+            DrawAvatar(bg, avatarImg);
+        }
+
+        bg.Mutate(x => x.DrawText(
+            new()
+            {
+                TextOptions = new TextOptions
+                {
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    WrapTextWidth = 190,
+                }.WithFallbackFonts(_fonts.FallBackFonts)
+            },
+            text,
+            _fonts.RipFont,
+            SixLabors.ImageSharp.Color.Black,
+            new(25, 225)));
+
+        //flowa
+        using (var flowers = Image.Load(_imgs.RipOverlay.ToArray()))
+        {
+            bg.Mutate(x => x.DrawImage(flowers, new(0, 0), new GraphicsOptions()));
+        }
+
+        return bg.ToStream().ToArray();
     }
 
     public Task<WeatherData> GetWeatherDataAsync(string query)
@@ -148,25 +142,23 @@ public class SearchesService : INService
 
     private async Task<WeatherData> GetWeatherDataFactory(string query)
     {
-        using (var http = _httpFactory.CreateClient())
+        using var http = _httpFactory.CreateClient();
+        try
         {
-            try
-            {
-                var data = await http.GetStringAsync($"http://api.openweathermap.org/data/2.5/weather?" +
-                                                     $"q={query}&" +
-                                                     $"appid=42cd627dd60debf25a5739e50a217d74&" +
-                                                     $"units=metric").ConfigureAwait(false);
+            var data = await http.GetStringAsync($"http://api.openweathermap.org/data/2.5/weather?" +
+                                                 $"q={query}&" +
+                                                 $"appid=42cd627dd60debf25a5739e50a217d74&" +
+                                                 $"units=metric").ConfigureAwait(false);
 
-                if (data is null)
-                    return null;
-
-                return JsonConvert.DeserializeObject<WeatherData>(data);
-            }
-            catch (Exception ex)
-            {
-                Log.Warning(ex.Message);
+            if (data is null)
                 return null;
-            }
+
+            return JsonConvert.DeserializeObject<WeatherData>(data);
+        }
+        catch (Exception ex)
+        {
+            Log.Warning(ex.Message);
+            return null;
         }
     }
 
@@ -195,49 +187,42 @@ public class SearchesService : INService
 
         try
         {
-            using (var _http = _httpFactory.CreateClient())
+            using var _http = _httpFactory.CreateClient();
+            var res = await _cache.GetOrAddCachedDataAsync($"geo_{query}", _ =>
             {
-                var res = await _cache.GetOrAddCachedDataAsync($"geo_{query}", _ =>
-                {
-                    var url = "https://eu1.locationiq.com/v1/search.php?" +
-                              (string.IsNullOrWhiteSpace(_creds.LocationIqApiKey) ? "key=" : $"key={_creds.LocationIqApiKey}&") +
-                              $"q={Uri.EscapeDataString(query)}&" +
-                              $"format=json";
+                var url = "https://eu1.locationiq.com/v1/search.php?" +
+                          (string.IsNullOrWhiteSpace(_creds.LocationIqApiKey) ? "key=" : $"key={_creds.LocationIqApiKey}&") +
+                          $"q={Uri.EscapeDataString(query)}&" +
+                          $"format=json";
 
-                    var res = _http.GetStringAsync(url);
-                    return res;
-                }, "", TimeSpan.FromHours(1));
+                var res = _http.GetStringAsync(url);
+                return res;
+            }, "", TimeSpan.FromHours(1));
 
-                var responses = JsonConvert.DeserializeObject<LocationIqResponse[]>(res);
-                if (responses is null || responses.Length == 0)
-                {
-                    Log.Warning("Geocode lookup failed for: {Query}", query);
-                    return (default, TimeErrors.NotFound);
-                }
-
-                var geoData = responses[0];
-
-                using (var req = new HttpRequestMessage(HttpMethod.Get, "http://api.timezonedb.com/v2.1/get-time-zone?" +
-                                                                        $"key={_creds.TimezoneDbApiKey}&format=json&" +
-                                                                        "by=position&" +
-                                                                        $"lat={geoData.Lat}&lng={geoData.Lon}"))
-                {
-
-                    using (var geoRes = await _http.SendAsync(req))
-                    {
-                        var resString = await geoRes.Content.ReadAsStringAsync();
-                        var timeObj = JsonConvert.DeserializeObject<TimeZoneResult>(resString);
-
-                        var time = new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).AddSeconds(timeObj.Timestamp);
-
-                        return ((
-                            Address: responses[0].DisplayName,
-                            Time: time,
-                            TimeZoneName: timeObj.TimezoneName
-                        ), default);
-                    }
-                }
+            var responses = JsonConvert.DeserializeObject<LocationIqResponse[]>(res);
+            if (responses is null || responses.Length == 0)
+            {
+                Log.Warning("Geocode lookup failed for: {Query}", query);
+                return (default, TimeErrors.NotFound);
             }
+
+            var geoData = responses[0];
+
+            using var req = new HttpRequestMessage(HttpMethod.Get, "http://api.timezonedb.com/v2.1/get-time-zone?" +
+                                                                   $"key={_creds.TimezoneDbApiKey}&format=json&" +
+                                                                   "by=position&" +
+                                                                   $"lat={geoData.Lat}&lng={geoData.Lon}");
+            using var geoRes = await _http.SendAsync(req);
+            var resString = await geoRes.Content.ReadAsStringAsync();
+            var timeObj = JsonConvert.DeserializeObject<TimeZoneResult>(resString);
+
+            var time = new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc).AddSeconds(timeObj.Timestamp);
+
+            return ((
+                Address: responses[0].DisplayName,
+                Time: time,
+                TimeZoneName: timeObj.TimezoneName
+            ), default);
         }
         catch (Exception ex)
         {
@@ -310,21 +295,17 @@ public class SearchesService : INService
 
     public async Task<(string Setup, string Punchline)> GetRandomJoke()
     {
-        using (var http = _httpFactory.CreateClient())
-        {
-            var res = await http.GetStringAsync("https://official-joke-api.appspot.com/random_joke");
-            var resObj = JsonConvert.DeserializeAnonymousType(res, new {setup = "", punchline = ""});
-            return (resObj.setup, resObj.punchline);
-        }
+        using var http = _httpFactory.CreateClient();
+        var res = await http.GetStringAsync("https://official-joke-api.appspot.com/random_joke");
+        var resObj = JsonConvert.DeserializeAnonymousType(res, new {setup = "", punchline = ""});
+        return (resObj.setup, resObj.punchline);
     }
 
     public async Task<string> GetChuckNorrisJoke()
     {
-        using (var http = _httpFactory.CreateClient())
-        {
-            var response = await http.GetStringAsync(new Uri("http://api.icndb.com/jokes/random/")).ConfigureAwait(false);
-            return JObject.Parse(response)["value"]["joke"].ToString() + " 😆";
-        }
+        using var http = _httpFactory.CreateClient();
+        var response = await http.GetStringAsync(new Uri("http://api.icndb.com/jokes/random/")).ConfigureAwait(false);
+        return JObject.Parse(response)["value"]["joke"].ToString() + " 😆";
     }
 
     public async Task<MtgData> GetMtgCardAsync(string search)
@@ -367,30 +348,28 @@ public class SearchesService : INService
             };
         }
 
-        using (var http = _httpFactory.CreateClient())
+        using var http = _httpFactory.CreateClient();
+        http.DefaultRequestHeaders.Clear();
+        var response = await http.GetStringAsync($"https://api.magicthegathering.io/v1/cards?name={Uri.EscapeDataString(search)}")
+            .ConfigureAwait(false);
+
+        var responseObject = JsonConvert.DeserializeObject<MtgResponse>(response);
+        if (responseObject is null)
+            return new MtgData[0];
+
+        var cards = responseObject.Cards.Take(5).ToArray();
+        if (cards.Length == 0)
+            return new MtgData[0];
+
+        var tasks = new List<Task<MtgData>>(cards.Length);
+        for (var i = 0; i < cards.Length; i++)
         {
-            http.DefaultRequestHeaders.Clear();
-            var response = await http.GetStringAsync($"https://api.magicthegathering.io/v1/cards?name={Uri.EscapeDataString(search)}")
-                .ConfigureAwait(false);
+            var card = cards[i];
 
-            var responseObject = JsonConvert.DeserializeObject<MtgResponse>(response);
-            if (responseObject is null)
-                return new MtgData[0];
-
-            var cards = responseObject.Cards.Take(5).ToArray();
-            if (cards.Length == 0)
-                return new MtgData[0];
-
-            var tasks = new List<Task<MtgData>>(cards.Length);
-            for (var i = 0; i < cards.Length; i++)
-            {
-                var card = cards[i];
-
-                tasks.Add(GetMtgDataAsync(card));
-            }
-
-            return await Task.WhenAll(tasks).ConfigureAwait(false);
+            tasks.Add(GetMtgDataAsync(card));
         }
+
+        return await Task.WhenAll(tasks).ConfigureAwait(false);
     }
 
     public Task<HearthstoneCardData> GetHearthstoneCardDataAsync(string name)
@@ -404,38 +383,36 @@ public class SearchesService : INService
 
     private async Task<HearthstoneCardData> HearthstoneCardDataFactory(string name)
     {
-        using (var http = _httpFactory.CreateClient())
+        using var http = _httpFactory.CreateClient();
+        http.DefaultRequestHeaders.Clear();
+        http.DefaultRequestHeaders.Add("x-rapidapi-key", _creds.RapidApiKey);
+        try
         {
-            http.DefaultRequestHeaders.Clear();
-            http.DefaultRequestHeaders.Add("x-rapidapi-key", _creds.RapidApiKey);
-            try
-            {
-                var response = await http.GetStringAsync($"https://omgvamp-hearthstone-v1.p.rapidapi.com/" +
-                                                         $"cards/search/{Uri.EscapeDataString(name)}").ConfigureAwait(false);
-                var objs = JsonConvert.DeserializeObject<HearthstoneCardData[]>(response);
-                if (objs is null || objs.Length == 0)
-                    return null;
-                var data = objs.FirstOrDefault(x => x.Collectible)
-                           ?? objs.FirstOrDefault(x => !string.IsNullOrEmpty(x.PlayerClass))
-                           ?? objs.FirstOrDefault();
-                if (data is null)
-                    return null;
-                if (!string.IsNullOrWhiteSpace(data.Img))
-                {
-                    data.Img = await _google.ShortenUrl(data.Img).ConfigureAwait(false);
-                }
-                if (!string.IsNullOrWhiteSpace(data.Text))
-                {
-                    var converter = new Html2Markdown.Converter();
-                    data.Text = converter.Convert(data.Text);
-                }
-                return data;
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex.Message);
+            var response = await http.GetStringAsync($"https://omgvamp-hearthstone-v1.p.rapidapi.com/" +
+                                                     $"cards/search/{Uri.EscapeDataString(name)}").ConfigureAwait(false);
+            var objs = JsonConvert.DeserializeObject<HearthstoneCardData[]>(response);
+            if (objs is null || objs.Length == 0)
                 return null;
+            var data = objs.FirstOrDefault(x => x.Collectible)
+                       ?? objs.FirstOrDefault(x => !string.IsNullOrEmpty(x.PlayerClass))
+                       ?? objs.FirstOrDefault();
+            if (data is null)
+                return null;
+            if (!string.IsNullOrWhiteSpace(data.Img))
+            {
+                data.Img = await _google.ShortenUrl(data.Img).ConfigureAwait(false);
             }
+            if (!string.IsNullOrWhiteSpace(data.Text))
+            {
+                var converter = new Html2Markdown.Converter();
+                data.Text = converter.Convert(data.Text);
+            }
+            return data;
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex.Message);
+            return null;
         }
     }
 
@@ -450,16 +427,14 @@ public class SearchesService : INService
 
     private async Task<OmdbMovie> GetMovieDataFactory(string name)
     {
-        using (var http = _httpFactory.CreateClient())
-        {
-            var res = await http.GetStringAsync(string.Format("https://omdbapi.nadeko.bot/?t={0}&y=&plot=full&r=json",
-                name.Trim().Replace(' ', '+'))).ConfigureAwait(false);
-            var movie = JsonConvert.DeserializeObject<OmdbMovie>(res);
-            if (movie?.Title is null)
-                return null;
-            movie.Poster = await _google.ShortenUrl(movie.Poster).ConfigureAwait(false);
-            return movie;
-        }
+        using var http = _httpFactory.CreateClient();
+        var res = await http.GetStringAsync(string.Format("https://omdbapi.nadeko.bot/?t={0}&y=&plot=full&r=json",
+            name.Trim().Replace(' ', '+'))).ConfigureAwait(false);
+        var movie = JsonConvert.DeserializeObject<OmdbMovie>(res);
+        if (movie?.Title is null)
+            return null;
+        movie.Poster = await _google.ShortenUrl(movie.Poster).ConfigureAwait(false);
+        return movie;
     }
 
     public async Task<int> GetSteamAppIdByName(string query)
@@ -486,20 +461,18 @@ public class SearchesService : INService
 
         var gamesMap = await _cache.GetOrAddCachedDataAsync(STEAM_GAME_IDS_KEY, async _ =>
         {
-            using (var http = _httpFactory.CreateClient())
-            {
-                // https://api.steampowered.com/ISteamApps/GetAppList/v2/
-                var gamesStr = await http.GetStringAsync("https://api.steampowered.com/ISteamApps/GetAppList/v2/").ConfigureAwait(false);
-                var apps = JsonConvert.DeserializeAnonymousType(gamesStr, new { applist = new { apps = new List<SteamGameId>() } }).applist.apps;
+            using var http = _httpFactory.CreateClient();
+            // https://api.steampowered.com/ISteamApps/GetAppList/v2/
+            var gamesStr = await http.GetStringAsync("https://api.steampowered.com/ISteamApps/GetAppList/v2/").ConfigureAwait(false);
+            var apps = JsonConvert.DeserializeAnonymousType(gamesStr, new { applist = new { apps = new List<SteamGameId>() } }).applist.apps;
 
-                return apps
-                    .OrderBy(x => x.Name, StringComparer.OrdinalIgnoreCase)
-                    .GroupBy(x => x.Name)
-                    .ToDictionary(x => x.Key, x => x.First().AppId);
-                //await db.HashSetAsync("steam_game_ids", apps.Select(app => new HashEntry(app.Name.Trim().ToLowerInvariant(), app.AppId)).ToArray()).ConfigureAwait(false);
-                //await db.StringSetAsync("steam_game_ids", gamesStr, TimeSpan.FromHours(24));
-                //await db.KeyExpireAsync("steam_game_ids", TimeSpan.FromHours(24), CommandFlags.FireAndForget).ConfigureAwait(false);
-            }
+            return apps
+                .OrderBy(x => x.Name, StringComparer.OrdinalIgnoreCase)
+                .GroupBy(x => x.Name)
+                .ToDictionary(x => x.Key, x => x.First().AppId);
+            //await db.HashSetAsync("steam_game_ids", apps.Select(app => new HashEntry(app.Name.Trim().ToLowerInvariant(), app.AppId)).ToArray()).ConfigureAwait(false);
+            //await db.StringSetAsync("steam_game_ids", gamesStr, TimeSpan.FromHours(24));
+            //await db.KeyExpireAsync("steam_game_ids", TimeSpan.FromHours(24), CommandFlags.FireAndForget).ConfigureAwait(false);
         }, default(string), TimeSpan.FromHours(24));
 
         if (gamesMap is null)

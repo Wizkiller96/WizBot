@@ -290,13 +290,11 @@ public class ProtectionService : INService
 
         _antiRaidGuilds.AddOrUpdate(guildId, stats, (key, old) => stats);
 
-        await using (var uow = _db.GetDbContext())
-        {
-            var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.AntiRaidSetting));
+        await using var uow = _db.GetDbContext();
+        var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.AntiRaidSetting));
 
-            gc.AntiRaidSetting = stats.AntiRaidSettings;
-            await uow.SaveChangesAsync();
-        }
+        gc.AntiRaidSetting = stats.AntiRaidSettings;
+        await uow.SaveChangesAsync();
 
         return stats;
     }
@@ -305,13 +303,11 @@ public class ProtectionService : INService
     {
         if (_antiRaidGuilds.TryRemove(guildId, out _))
         {
-            using (var uow = _db.GetDbContext())
-            {
-                var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.AntiRaidSetting));
+            using var uow = _db.GetDbContext();
+            var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.AntiRaidSetting));
 
-                gc.AntiRaidSetting = null;
-                uow.SaveChanges();
-            }
+            gc.AntiRaidSetting = null;
+            uow.SaveChanges();
             return true;
         }
         return false;
@@ -322,14 +318,12 @@ public class ProtectionService : INService
         if (_antiSpamGuilds.TryRemove(guildId, out var removed))
         {
             removed.UserStats.ForEach(x => x.Value.Dispose());
-            using (var uow = _db.GetDbContext())
-            {
-                var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.AntiSpamSetting)
-                    .ThenInclude(x => x.IgnoredChannels));
+            using var uow = _db.GetDbContext();
+            var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.AntiSpamSetting)
+                .ThenInclude(x => x.IgnoredChannels));
 
-                gc.AntiSpamSetting = null;
-                uow.SaveChanges();
-            }
+            gc.AntiSpamSetting = null;
+            uow.SaveChanges();
             return true;
         }
         return false;
@@ -361,23 +355,21 @@ public class ProtectionService : INService
             return stats;
         });
 
-        await using (var uow = _db.GetDbContext())
-        {
-            var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.AntiSpamSetting));
+        await using var uow = _db.GetDbContext();
+        var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.AntiSpamSetting));
 
-            if (gc.AntiSpamSetting != null)
-            {
-                gc.AntiSpamSetting.Action = stats.AntiSpamSettings.Action;
-                gc.AntiSpamSetting.MessageThreshold = stats.AntiSpamSettings.MessageThreshold;
-                gc.AntiSpamSetting.MuteTime = stats.AntiSpamSettings.MuteTime;
-                gc.AntiSpamSetting.RoleId = stats.AntiSpamSettings.RoleId;
-            }
-            else
-            {
-                gc.AntiSpamSetting = stats.AntiSpamSettings;
-            }
-            await uow.SaveChangesAsync();
+        if (gc.AntiSpamSetting != null)
+        {
+            gc.AntiSpamSetting.Action = stats.AntiSpamSettings.Action;
+            gc.AntiSpamSetting.MessageThreshold = stats.AntiSpamSettings.MessageThreshold;
+            gc.AntiSpamSetting.MuteTime = stats.AntiSpamSettings.MuteTime;
+            gc.AntiSpamSetting.RoleId = stats.AntiSpamSettings.RoleId;
         }
+        else
+        {
+            gc.AntiSpamSetting = stats.AntiSpamSettings;
+        }
+        await uow.SaveChangesAsync();
         return stats;
     }
 
@@ -388,34 +380,32 @@ public class ProtectionService : INService
             ChannelId = channelId
         };
         bool added;
-        await using (var uow = _db.GetDbContext())
+        await using var uow = _db.GetDbContext();
+        var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.AntiSpamSetting).ThenInclude(x => x.IgnoredChannels));
+        var spam = gc.AntiSpamSetting;
+        if (spam is null)
         {
-            var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.AntiSpamSetting).ThenInclude(x => x.IgnoredChannels));
-            var spam = gc.AntiSpamSetting;
-            if (spam is null)
-            {
-                return null;
-            }
-
-            if (spam.IgnoredChannels.Add(obj)) // if adding to db is successful
-            {
-                if (_antiSpamGuilds.TryGetValue(guildId, out var temp))
-                    temp.AntiSpamSettings.IgnoredChannels.Add(obj); // add to local cache
-                added = true;
-            }
-            else
-            {
-                var toRemove = spam.IgnoredChannels.First(x => x.ChannelId == channelId);
-                uow.Set<AntiSpamIgnore>().Remove(toRemove); // remove from db
-                if (_antiSpamGuilds.TryGetValue(guildId, out var temp))
-                {
-                    temp.AntiSpamSettings.IgnoredChannels.Remove(toRemove); // remove from local cache
-                }
-                added = false;
-            }
-
-            await uow.SaveChangesAsync();
+            return null;
         }
+
+        if (spam.IgnoredChannels.Add(obj)) // if adding to db is successful
+        {
+            if (_antiSpamGuilds.TryGetValue(guildId, out var temp))
+                temp.AntiSpamSettings.IgnoredChannels.Add(obj); // add to local cache
+            added = true;
+        }
+        else
+        {
+            var toRemove = spam.IgnoredChannels.First(x => x.ChannelId == channelId);
+            uow.Set<AntiSpamIgnore>().Remove(toRemove); // remove from db
+            if (_antiSpamGuilds.TryGetValue(guildId, out var temp))
+            {
+                temp.AntiSpamSettings.IgnoredChannels.Remove(toRemove); // remove from local cache
+            }
+            added = false;
+        }
+
+        await uow.SaveChangesAsync();
         return added;
     }
 

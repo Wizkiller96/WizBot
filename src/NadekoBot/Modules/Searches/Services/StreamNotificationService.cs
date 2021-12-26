@@ -130,24 +130,22 @@ public sealed class StreamNotificationService : INService
                     var deleteGroups = failingStreams.GroupBy(x => x.Type)
                         .ToDictionary(x => x.Key, x => x.Select(x => x.Name).ToList());
 
-                    using (var uow = _db.GetDbContext())
+                    using var uow = _db.GetDbContext();
+                    foreach (var kvp in deleteGroups)
                     {
-                        foreach (var kvp in deleteGroups)
-                        {
-                            Log.Information($"Deleting {kvp.Value.Count} {kvp.Key} streams because " +
-                                            $"they've been erroring for more than {errorLimit}: {string.Join(", ", kvp.Value)}");
+                        Log.Information($"Deleting {kvp.Value.Count} {kvp.Key} streams because " +
+                                        $"they've been erroring for more than {errorLimit}: {string.Join(", ", kvp.Value)}");
 
-                            var toDelete = uow.Set<FollowedStream>()
-                                .AsQueryable()
-                                .Where(x => x.Type == kvp.Key && kvp.Value.Contains(x.Username))
-                                .ToList();
+                        var toDelete = uow.Set<FollowedStream>()
+                            .AsQueryable()
+                            .Where(x => x.Type == kvp.Key && kvp.Value.Contains(x.Username))
+                            .ToList();
 
-                            uow.RemoveRange(toDelete);
-                            uow.SaveChanges();
+                        uow.RemoveRange(toDelete);
+                        uow.SaveChanges();
                                 
-                            foreach(var loginToDelete in kvp.Value)
-                                _streamTracker.UntrackStreamByKey(new(kvp.Key, loginToDelete));
-                        }
+                        foreach(var loginToDelete in kvp.Value)
+                            _streamTracker.UntrackStreamByKey(new(kvp.Key, loginToDelete));
                     }
                 }
                 catch (Exception ex)
@@ -461,20 +459,18 @@ public sealed class StreamNotificationService : INService
     public bool ToggleStreamOffline(ulong guildId)
     {
         bool newValue;
-        using (var uow = _db.GetDbContext())
-        {
-            var gc = uow.GuildConfigsForId(guildId, set => set);
-            newValue = gc.NotifyStreamOffline = !gc.NotifyStreamOffline;
-            uow.SaveChanges();
+        using var uow = _db.GetDbContext();
+        var gc = uow.GuildConfigsForId(guildId, set => set);
+        newValue = gc.NotifyStreamOffline = !gc.NotifyStreamOffline;
+        uow.SaveChanges();
 
-            if (newValue)
-            {
-                _offlineNotificationServers.Add(guildId);
-            }
-            else
-            {
-                _offlineNotificationServers.TryRemove(guildId);
-            }
+        if (newValue)
+        {
+            _offlineNotificationServers.Add(guildId);
+        }
+        else
+        {
+            _offlineNotificationServers.TryRemove(guildId);
         }
 
         return newValue;
@@ -510,34 +506,32 @@ public sealed class StreamNotificationService : INService
 
     public bool SetStreamMessage(ulong guildId, int index, string message, out FollowedStream fs)
     {
-        using (var uow = _db.GetDbContext())
+        using var uow = _db.GetDbContext();
+        var fss = uow.Set<FollowedStream>()
+            .AsQueryable()
+            .Where(x => x.GuildId == guildId)
+            .OrderBy(x => x.Id)
+            .ToList();
+
+        if (fss.Count <= index)
         {
-            var fss = uow.Set<FollowedStream>()
-                .AsQueryable()
-                .Where(x => x.GuildId == guildId)
-                .OrderBy(x => x.Id)
-                .ToList();
-
-            if (fss.Count <= index)
-            {
-                fs = null;
-                return false;
-            }
-
-            fs = fss[index];
-            fs.Message = message;
-            lock (_shardLock)
-            {
-                var streams = GetLocalGuildStreams(fs.CreateKey(), guildId);
-
-                // message doesn't participate in equality checking
-                // removing and adding = update
-                streams.Remove(fs);
-                streams.Add(fs);
-            }
-
-            uow.SaveChanges();
+            fs = null;
+            return false;
         }
+
+        fs = fss[index];
+        fs.Message = message;
+        lock (_shardLock)
+        {
+            var streams = GetLocalGuildStreams(fs.CreateKey(), guildId);
+
+            // message doesn't participate in equality checking
+            // removing and adding = update
+            streams.Remove(fs);
+            streams.Add(fs);
+        }
+
+        uow.SaveChanges();
 
         return true;
     }

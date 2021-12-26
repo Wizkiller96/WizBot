@@ -47,64 +47,62 @@ public partial class Searches
             var fullQueryLink = "https://myanimelist.net/profile/" + name;
 
             var config = Configuration.Default.WithDefaultLoader();
-            using (var document = await BrowsingContext.New(config).OpenAsync(fullQueryLink).ConfigureAwait(false))
-            {
-                var imageElem = document.QuerySelector("body > div#myanimelist > div.wrapper > div#contentWrapper > div#content > div.content-container > div.container-left > div.user-profile > div.user-image > img");
-                var imageUrl = ((IHtmlImageElement)imageElem)?.Source ?? "http://icecream.me/uploads/870b03f36b59cc16ebfe314ef2dde781.png";
+            using var document = await BrowsingContext.New(config).OpenAsync(fullQueryLink).ConfigureAwait(false);
+            var imageElem = document.QuerySelector("body > div#myanimelist > div.wrapper > div#contentWrapper > div#content > div.content-container > div.container-left > div.user-profile > div.user-image > img");
+            var imageUrl = ((IHtmlImageElement)imageElem)?.Source ?? "http://icecream.me/uploads/870b03f36b59cc16ebfe314ef2dde781.png";
 
-                var stats = document.QuerySelectorAll("body > div#myanimelist > div.wrapper > div#contentWrapper > div#content > div.content-container > div.container-right > div#statistics > div.user-statistics-stats > div.stats > div.clearfix > ul.stats-status > li > span").Select(x => x.InnerHtml).ToList();
+            var stats = document.QuerySelectorAll("body > div#myanimelist > div.wrapper > div#contentWrapper > div#content > div.content-container > div.container-right > div#statistics > div.user-statistics-stats > div.stats > div.clearfix > ul.stats-status > li > span").Select(x => x.InnerHtml).ToList();
 
-                var favorites = document.QuerySelectorAll("div.user-favorites > div.di-tc");
+            var favorites = document.QuerySelectorAll("div.user-favorites > div.di-tc");
 
-                var favAnime = GetText(strs.anime_no_fav);
-                if (favorites.Length > 0 && favorites[0].QuerySelector("p") is null)
-                    favAnime = string.Join("\n", favorites[0].QuerySelectorAll("ul > li > div.di-tc.va-t > a")
-                        .Shuffle()
-                        .Take(3)
-                        .Select(x =>
-                        {
-                            var elem = (IHtmlAnchorElement)x;
-                            return $"[{elem.InnerHtml}]({elem.Href})";
-                        }));
+            var favAnime = GetText(strs.anime_no_fav);
+            if (favorites.Length > 0 && favorites[0].QuerySelector("p") is null)
+                favAnime = string.Join("\n", favorites[0].QuerySelectorAll("ul > li > div.di-tc.va-t > a")
+                    .Shuffle()
+                    .Take(3)
+                    .Select(x =>
+                    {
+                        var elem = (IHtmlAnchorElement)x;
+                        return $"[{elem.InnerHtml}]({elem.Href})";
+                    }));
 
-                var info = document.QuerySelectorAll("ul.user-status:nth-child(3) > li.clearfix")
-                    .Select(x => Tuple.Create(x.Children[0].InnerHtml, x.Children[1].InnerHtml))
-                    .ToList();
+            var info = document.QuerySelectorAll("ul.user-status:nth-child(3) > li.clearfix")
+                .Select(x => Tuple.Create(x.Children[0].InnerHtml, x.Children[1].InnerHtml))
+                .ToList();
 
-                var daysAndMean = document.QuerySelectorAll("div.anime:nth-child(1) > div:nth-child(2) > div")
-                    .Select(x => x.TextContent.Split(':').Select(y => y.Trim()).ToArray())
-                    .ToArray();
+            var daysAndMean = document.QuerySelectorAll("div.anime:nth-child(1) > div:nth-child(2) > div")
+                .Select(x => x.TextContent.Split(':').Select(y => y.Trim()).ToArray())
+                .ToArray();
 
-                var embed = _eb.Create()
-                    .WithOkColor()
-                    .WithTitle(GetText(strs.mal_profile(name)))
-                    .AddField("💚 " + GetText(strs.watching), stats[0], true)
-                    .AddField("💙 " + GetText(strs.completed), stats[1], true);
-                if (info.Count < 3)
-                    embed.AddField("💛 " + GetText(strs.on_hold), stats[2], true);
-                embed
-                    .AddField("💔 " + GetText(strs.dropped), stats[3], true)
-                    .AddField("⚪ " + GetText(strs.plan_to_watch), stats[4], true)
-                    .AddField("🕐 " + daysAndMean[0][0], daysAndMean[0][1], true)
-                    .AddField("📊 " + daysAndMean[1][0], daysAndMean[1][1], true)
-                    .AddField(MalInfoToEmoji(info[0].Item1) + " " + info[0].Item1, info[0].Item2.TrimTo(20), true)
-                    .AddField(MalInfoToEmoji(info[1].Item1) + " " + info[1].Item1, info[1].Item2.TrimTo(20), true);
-                if (info.Count > 2)
-                    embed.AddField(MalInfoToEmoji(info[2].Item1) + " " + info[2].Item1, info[2].Item2.TrimTo(20), true);
+            var embed = _eb.Create()
+                .WithOkColor()
+                .WithTitle(GetText(strs.mal_profile(name)))
+                .AddField("💚 " + GetText(strs.watching), stats[0], true)
+                .AddField("💙 " + GetText(strs.completed), stats[1], true);
+            if (info.Count < 3)
+                embed.AddField("💛 " + GetText(strs.on_hold), stats[2], true);
+            embed
+                .AddField("💔 " + GetText(strs.dropped), stats[3], true)
+                .AddField("⚪ " + GetText(strs.plan_to_watch), stats[4], true)
+                .AddField("🕐 " + daysAndMean[0][0], daysAndMean[0][1], true)
+                .AddField("📊 " + daysAndMean[1][0], daysAndMean[1][1], true)
+                .AddField(MalInfoToEmoji(info[0].Item1) + " " + info[0].Item1, info[0].Item2.TrimTo(20), true)
+                .AddField(MalInfoToEmoji(info[1].Item1) + " " + info[1].Item1, info[1].Item2.TrimTo(20), true);
+            if (info.Count > 2)
+                embed.AddField(MalInfoToEmoji(info[2].Item1) + " " + info[2].Item1, info[2].Item2.TrimTo(20), true);
 
-                embed
-                    .WithDescription($@"
+            embed
+                .WithDescription($@"
 ** https://myanimelist.net/animelist/{ name } **
 
 **{GetText(strs.top_3_fav_anime)}**
 {favAnime}"
 
-                    )
-                    .WithUrl(fullQueryLink)
-                    .WithImageUrl(imageUrl);
+                )
+                .WithUrl(fullQueryLink)
+                .WithImageUrl(imageUrl);
 
-                await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
-            }
+            await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
         }
 
         private static string MalInfoToEmoji(string info)

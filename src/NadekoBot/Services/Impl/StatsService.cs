@@ -120,22 +120,18 @@ public class StatsService : IStatsService, IReadyExecutor, INService, IDisposabl
                 return;
             try
             {
-                using (var http = _httpFactory.CreateClient())
-                {
-                    using (var content = new FormUrlEncodedContent(
-                               new Dictionary<string, string> {
-                                   { "shard_count",  _creds.TotalShards.ToString()},
-                                   { "shard_id", client.ShardId.ToString() },
-                                   { "server_count", client.Guilds.Count().ToString() }
-                               }))
-                    {
-                        content.Headers.Clear();
-                        content.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
-                        http.DefaultRequestHeaders.Add("Authorization", _creds.BotListToken);
+                using var http = _httpFactory.CreateClient();
+                using var content = new FormUrlEncodedContent(
+                    new Dictionary<string, string> {
+                        { "shard_count",  _creds.TotalShards.ToString()},
+                        { "shard_id", client.ShardId.ToString() },
+                        { "server_count", client.Guilds.Count().ToString() }
+                    });
+                content.Headers.Clear();
+                content.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
+                http.DefaultRequestHeaders.Add("Authorization", _creds.BotListToken);
 
-                        using (await http.PostAsync(new Uri($"https://discordbots.org/api/bots/{client.CurrentUser.Id}/stats"), content).ConfigureAwait(false)) { }
-                    }
-                }
+                using (await http.PostAsync(new Uri($"https://discordbots.org/api/bots/{client.CurrentUser.Id}/stats"), content).ConfigureAwait(false)) { }
             }
             catch (Exception ex)
             {

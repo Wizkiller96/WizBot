@@ -33,34 +33,30 @@ public class SelfAssignedRolesService : INService
 
     public bool AddNew(ulong guildId, IRole role, int group)
     {
-        using (var uow = _db.GetDbContext())
+        using var uow = _db.GetDbContext();
+        var roles = uow.SelfAssignableRoles.GetFromGuild(guildId);
+        if (roles.Any(s => s.RoleId == role.Id && s.GuildId == role.Guild.Id))
         {
-            var roles = uow.SelfAssignableRoles.GetFromGuild(guildId);
-            if (roles.Any(s => s.RoleId == role.Id && s.GuildId == role.Guild.Id))
-            {
-                return false;
-            }
-
-            uow.SelfAssignableRoles.Add(new()
-            {
-                Group = group,
-                RoleId = role.Id,
-                GuildId = role.Guild.Id
-            });
-            uow.SaveChanges();
+            return false;
         }
+
+        uow.SelfAssignableRoles.Add(new()
+        {
+            Group = @group,
+            RoleId = role.Id,
+            GuildId = role.Guild.Id
+        });
+        uow.SaveChanges();
         return true;
     }
 
     public bool ToggleAdSarm(ulong guildId)
     {
         bool newval;
-        using (var uow = _db.GetDbContext())
-        {
-            var config = uow.GuildConfigsForId(guildId, set => set);
-            newval = config.AutoDeleteSelfAssignedRoleMessages = !config.AutoDeleteSelfAssignedRoleMessages;
-            uow.SaveChanges();
-        }
+        using var uow = _db.GetDbContext();
+        var config = uow.GuildConfigsForId(guildId, set => set);
+        newval = config.AutoDeleteSelfAssignedRoleMessages = !config.AutoDeleteSelfAssignedRoleMessages;
+        uow.SaveChanges();
         return newval;
     }
 
@@ -129,33 +125,31 @@ public class SelfAssignedRolesService : INService
     public async Task<bool> SetNameAsync(ulong guildId, int group, string name)
     {
         var set = false;
-        await using (var uow = _db.GetDbContext())
+        await using var uow = _db.GetDbContext();
+        var gc = uow.GuildConfigsForId(guildId, y => y.Include(x => x.SelfAssignableRoleGroupNames));
+        var toUpdate = gc.SelfAssignableRoleGroupNames.FirstOrDefault(x => x.Number == @group);
+
+        if (string.IsNullOrWhiteSpace(name))
         {
-            var gc = uow.GuildConfigsForId(guildId, y => y.Include(x => x.SelfAssignableRoleGroupNames));
-            var toUpdate = gc.SelfAssignableRoleGroupNames.FirstOrDefault(x => x.Number == group);
-
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                if (toUpdate != null)
-                    gc.SelfAssignableRoleGroupNames.Remove(toUpdate);
-            }
-            else if (toUpdate is null)
-            {
-                gc.SelfAssignableRoleGroupNames.Add(new()
-                {
-                    Name = name,
-                    Number = group,
-                });
-                set = true;
-            }
-            else
-            {
-                toUpdate.Name = name;
-                set = true;
-            }
-
-            await uow.SaveChangesAsync();
+            if (toUpdate != null)
+                gc.SelfAssignableRoleGroupNames.Remove(toUpdate);
         }
+        else if (toUpdate is null)
+        {
+            gc.SelfAssignableRoleGroupNames.Add(new()
+            {
+                Name = name,
+                Number = @group,
+            });
+            set = true;
+        }
+        else
+        {
+            toUpdate.Name = name;
+            set = true;
+        }
+
+        await uow.SaveChangesAsync();
 
         return set;
     }
@@ -187,42 +181,36 @@ public class SelfAssignedRolesService : INService
     public bool RemoveSar(ulong guildId, ulong roleId)
     {
         bool success;
-        using (var uow = _db.GetDbContext())
-        {
-            success = uow.SelfAssignableRoles.DeleteByGuildAndRoleId(guildId, roleId);
-            uow.SaveChanges();
-        }
+        using var uow = _db.GetDbContext();
+        success = uow.SelfAssignableRoles.DeleteByGuildAndRoleId(guildId, roleId);
+        uow.SaveChanges();
         return success;
     }
 
     public (bool AutoDelete, bool Exclusive, IEnumerable<SelfAssignedRole>) GetAdAndRoles(ulong guildId)
     {
-        using (var uow = _db.GetDbContext())
-        {
-            var gc = uow.GuildConfigsForId(guildId, set => set);
-            var autoDelete = gc.AutoDeleteSelfAssignedRoleMessages;
-            var exclusive = gc.ExclusiveSelfAssignedRoles;
-            var roles = uow.SelfAssignableRoles.GetFromGuild(guildId);
+        using var uow = _db.GetDbContext();
+        var gc = uow.GuildConfigsForId(guildId, set => set);
+        var autoDelete = gc.AutoDeleteSelfAssignedRoleMessages;
+        var exclusive = gc.ExclusiveSelfAssignedRoles;
+        var roles = uow.SelfAssignableRoles.GetFromGuild(guildId);
 
-            return (autoDelete, exclusive, roles);
-        }
+        return (autoDelete, exclusive, roles);
     }
 
     public bool SetLevelReq(ulong guildId, IRole role, int level)
     {
-        using (var uow = _db.GetDbContext())
+        using var uow = _db.GetDbContext();
+        var roles = uow.SelfAssignableRoles.GetFromGuild(guildId);
+        var sar = roles.FirstOrDefault(x => x.RoleId == role.Id);
+        if (sar != null)
         {
-            var roles = uow.SelfAssignableRoles.GetFromGuild(guildId);
-            var sar = roles.FirstOrDefault(x => x.RoleId == role.Id);
-            if (sar != null)
-            {
-                sar.LevelRequirement = level;
-                uow.SaveChanges();
-            }
-            else
-            {
-                return false;
-            }
+            sar.LevelRequirement = level;
+            uow.SaveChanges();
+        }
+        else
+        {
+            return false;
         }
 
         return true;
@@ -231,13 +219,11 @@ public class SelfAssignedRolesService : INService
     public bool ToggleEsar(ulong guildId)
     {
         bool areExclusive;
-        using (var uow = _db.GetDbContext())
-        {
-            var config = uow.GuildConfigsForId(guildId, set => set);
+        using var uow = _db.GetDbContext();
+        var config = uow.GuildConfigsForId(guildId, set => set);
 
-            areExclusive = config.ExclusiveSelfAssignedRoles = !config.ExclusiveSelfAssignedRoles;
-            uow.SaveChanges();
-        }
+        areExclusive = config.ExclusiveSelfAssignedRoles = !config.ExclusiveSelfAssignedRoles;
+        uow.SaveChanges();
         return areExclusive;
     }
 

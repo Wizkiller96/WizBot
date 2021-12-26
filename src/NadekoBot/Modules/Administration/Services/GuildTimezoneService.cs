@@ -59,18 +59,16 @@ public class GuildTimezoneService : INService
 
     public void SetTimeZone(ulong guildId, TimeZoneInfo tz)
     {
-        using (var uow = _db.GetDbContext())
-        {
-            var gc = uow.GuildConfigsForId(guildId, set => set);
+        using var uow = _db.GetDbContext();
+        var gc = uow.GuildConfigsForId(guildId, set => set);
 
-            gc.TimeZoneId = tz?.Id;
-            uow.SaveChanges();
+        gc.TimeZoneId = tz?.Id;
+        uow.SaveChanges();
 
-            if (tz is null)
-                _timezones.TryRemove(guildId, out tz);
-            else
-                _timezones.AddOrUpdate(guildId, tz, (key, old) => tz);
-        }
+        if (tz is null)
+            _timezones.TryRemove(guildId, out tz);
+        else
+            _timezones.AddOrUpdate(guildId, tz, (key, old) => tz);
     }
 
     public TimeZoneInfo GetTimeZoneOrUtc(ulong guildId)

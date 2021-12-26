@@ -30,15 +30,13 @@ public partial class Gambling
             var num1 = gen / 10;
             var num2 = gen % 10;
 
-            using (var img1 = GetDice(num1))
-            using (var img2 = GetDice(num2))
-            using (var img = new[] { img1, img2 }.Merge(out var format))
-            await using (var ms = img.ToStream(format))
-            {
-                await ctx.Channel.SendFileAsync(ms,
-                    $"dice.{format.FileExtensions.First()}",
-                    Format.Bold(ctx.User.ToString()) + " " + GetText(strs.dice_rolled(Format.Code(gen.ToString()))));
-            }
+            using var img1 = GetDice(num1);
+            using var img2 = GetDice(num2);
+            using var img = new[] { img1, img2 }.Merge(out var format);
+            await using var ms = img.ToStream(format);
+            await ctx.Channel.SendFileAsync(ms,
+                $"dice.{format.FileExtensions.First()}",
+                Format.Bold(ctx.User.ToString()) + " " + GetText(strs.dice_rolled(Format.Code(gen.ToString()))));
         }
 
         [NadekoCommand, Aliases]
@@ -108,21 +106,19 @@ public partial class Gambling
                 values.Insert(toInsert, randomNumber);
             }
 
-            using (var bitmap = dice.Merge(out var format))
-            await using (var ms = bitmap.ToStream(format))
+            using var bitmap = dice.Merge(out var format);
+            await using var ms = bitmap.ToStream(format);
+            foreach (var d in dice)
             {
-                foreach (var d in dice)
-                {
-                    d.Dispose();
-                }
-
-                await ctx.Channel.SendFileAsync(ms, $"dice.{format.FileExtensions.First()}",
-                    Format.Bold(ctx.User.ToString()) + " " +
-                    GetText(strs.dice_rolled_num(Format.Bold(values.Count.ToString()))) +
-                    " " + GetText(strs.total_average(
-                        Format.Bold(values.Sum().ToString()),
-                        Format.Bold((values.Sum() / (1.0f * values.Count)).ToString("N2")))));
+                d.Dispose();
             }
+
+            await ctx.Channel.SendFileAsync(ms, $"dice.{format.FileExtensions.First()}",
+                Format.Bold(ctx.User.ToString()) + " " +
+                GetText(strs.dice_rolled_num(Format.Bold(values.Count.ToString()))) +
+                " " + GetText(strs.total_average(
+                    Format.Bold(values.Sum().ToString()),
+                    Format.Bold((values.Sum() / (1.0f * values.Count)).ToString("N2")))));
         }
 
         private async Task InternallDndRoll(string arg, bool ordered)
@@ -211,11 +207,9 @@ public partial class Gambling
             if (num == 10)
             {
                 var images = _images.Dice;
-                using (var imgOne = Image.Load(images[1]))
-                using (var imgZero = Image.Load(images[0]))
-                {
-                    return new[] { imgOne, imgZero }.Merge();
-                }
+                using var imgOne = Image.Load(images[1]);
+                using var imgZero = Image.Load(images[0]);
+                return new[] { imgOne, imgZero }.Merge();
             }
             return Image.Load(_images.Dice[num]);
         }

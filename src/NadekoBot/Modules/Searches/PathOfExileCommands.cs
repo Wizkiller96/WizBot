@@ -41,11 +41,9 @@ public partial class Searches
 
             try
             {
-                using (var http = _httpFactory.CreateClient())
-                {
-                    var res = await http.GetStringAsync($"{_poeURL}{usr}").ConfigureAwait(false);
-                    characters = JsonConvert.DeserializeObject<List<Account>>(res);
-                }
+                using var http = _httpFactory.CreateClient();
+                var res = await http.GetStringAsync($"{_poeURL}{usr}").ConfigureAwait(false);
+                characters = JsonConvert.DeserializeObject<List<Account>>(res);
             }
             catch
             {
@@ -102,11 +100,9 @@ public partial class Searches
 
             try
             {
-                using (var http = _httpFactory.CreateClient())
-                {
-                    var res = await http.GetStringAsync("http://api.pathofexile.com/leagues?type=main&compact=1").ConfigureAwait(false);
-                    leagues = JsonConvert.DeserializeObject<List<Leagues>>(res);
-                }
+                using var http = _httpFactory.CreateClient();
+                var res = await http.GetStringAsync("http://api.pathofexile.com/leagues?type=main&compact=1").ConfigureAwait(false);
+                leagues = JsonConvert.DeserializeObject<List<Leagues>>(res);
             }
             catch
             {
@@ -159,48 +155,46 @@ public partial class Searches
             try
             {
                 var res = $"{_ponURL}{leagueName}";
-                using (var http = _httpFactory.CreateClient())
+                using var http = _httpFactory.CreateClient();
+                var obj = JObject.Parse(await http.GetStringAsync(res).ConfigureAwait(false));
+
+                var chaosEquivalent = 0.0F;
+                var conversionEquivalent = 0.0F;
+
+                //	poe.ninja API does not include a "chaosEquivalent" property for Chaos Orbs.
+                if (cleanCurrency == "Chaos Orb")
                 {
-                    var obj = JObject.Parse(await http.GetStringAsync(res).ConfigureAwait(false));
-
-                    var chaosEquivalent = 0.0F;
-                    var conversionEquivalent = 0.0F;
-
-                    //	poe.ninja API does not include a "chaosEquivalent" property for Chaos Orbs.
-                    if (cleanCurrency == "Chaos Orb")
-                    {
-                        chaosEquivalent = 1.0F;
-                    }
-                    else
-                    {
-                        var currencyInput = obj["lines"].Values<JObject>()
-                            .Where(i => i["currencyTypeName"].Value<string>() == cleanCurrency)
-                            .FirstOrDefault();
-                        chaosEquivalent = float.Parse(currencyInput["chaosEquivalent"].ToString(), System.Globalization.CultureInfo.InvariantCulture);
-                    }
-
-                    if (cleanConvert == "Chaos Orb")
-                    {
-                        conversionEquivalent = 1.0F;
-                    }
-                    else
-                    {
-                        var currencyOutput = obj["lines"].Values<JObject>()
-                            .Where(i => i["currencyTypeName"].Value<string>() == cleanConvert)
-                            .FirstOrDefault();
-                        conversionEquivalent = float.Parse(currencyOutput["chaosEquivalent"].ToString(), System.Globalization.CultureInfo.InvariantCulture);
-                    }
-
-                    var embed = _eb.Create()
-                        .WithAuthor($"{leagueName} Currency Exchange",
-                            "https://web.poecdn.com/image/favicon/ogimage.png",
-                            "http://poe.ninja")
-                        .AddField("Currency Type", cleanCurrency, true)
-                        .AddField($"{cleanConvert} Equivalent", chaosEquivalent / conversionEquivalent, true)
-                        .WithOkColor();
-
-                    await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+                    chaosEquivalent = 1.0F;
                 }
+                else
+                {
+                    var currencyInput = obj["lines"].Values<JObject>()
+                        .Where(i => i["currencyTypeName"].Value<string>() == cleanCurrency)
+                        .FirstOrDefault();
+                    chaosEquivalent = float.Parse(currencyInput["chaosEquivalent"].ToString(), System.Globalization.CultureInfo.InvariantCulture);
+                }
+
+                if (cleanConvert == "Chaos Orb")
+                {
+                    conversionEquivalent = 1.0F;
+                }
+                else
+                {
+                    var currencyOutput = obj["lines"].Values<JObject>()
+                        .Where(i => i["currencyTypeName"].Value<string>() == cleanConvert)
+                        .FirstOrDefault();
+                    conversionEquivalent = float.Parse(currencyOutput["chaosEquivalent"].ToString(), System.Globalization.CultureInfo.InvariantCulture);
+                }
+
+                var embed = _eb.Create()
+                    .WithAuthor($"{leagueName} Currency Exchange",
+                        "https://web.poecdn.com/image/favicon/ogimage.png",
+                        "http://poe.ninja")
+                    .AddField("Currency Type", cleanCurrency, true)
+                    .AddField($"{cleanConvert} Equivalent", chaosEquivalent / conversionEquivalent, true)
+                    .WithOkColor();
+
+                await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
             }
             catch
             {

@@ -39,29 +39,27 @@ public partial class Searches
             if (--page < 0)
                 return;
 
-            using (var http = _httpFactory.CreateClient("memelist"))
-            {
-                var res = await http.GetAsync("https://api.memegen.link/templates/")
-                    .ConfigureAwait(false);
+            using var http = _httpFactory.CreateClient("memelist");
+            var res = await http.GetAsync("https://api.memegen.link/templates/")
+                .ConfigureAwait(false);
 
-                var rawJson = await res.Content.ReadAsStringAsync();
+            var rawJson = await res.Content.ReadAsStringAsync();
                     
-                var data = JsonConvert.DeserializeObject<List<MemegenTemplate>>(rawJson);
+            var data = JsonConvert.DeserializeObject<List<MemegenTemplate>>(rawJson);
 
-                await ctx.SendPaginatedConfirmAsync(page, curPage =>
+            await ctx.SendPaginatedConfirmAsync(page, curPage =>
+            {
+                var templates = string.Empty;
+                foreach (var template in data.Skip(curPage * 15).Take(15))
                 {
-                    var templates = string.Empty;
-                    foreach (var template in data.Skip(curPage * 15).Take(15))
-                    {
-                        templates += $"**{template.Name}:**\n key: `{template.Id}`\n";
-                    }
-                    var embed = _eb.Create()
-                        .WithOkColor()
-                        .WithDescription(templates);
+                    templates += $"**{template.Name}:**\n key: `{template.Id}`\n";
+                }
+                var embed = _eb.Create()
+                    .WithOkColor()
+                    .WithDescription(templates);
 
-                    return embed;
-                }, data.Count, 15).ConfigureAwait(false);
-            }
+                return embed;
+            }, data.Count, 15).ConfigureAwait(false);
         }
 
         [NadekoCommand, Aliases]

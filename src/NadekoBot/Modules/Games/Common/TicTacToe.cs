@@ -17,7 +17,7 @@ public class TicTacToe
         public int TurnTimer { get; set; } = 15;
     }
 
-    enum Phase
+    private enum Phase
     {
         Starting,
         Started,

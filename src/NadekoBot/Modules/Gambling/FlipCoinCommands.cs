@@ -47,20 +47,19 @@ public partial class Gambling
                     tailCount++;
                 }
             }
-            using (var img = imgs.Merge(out var format))
-            await using (var stream = img.ToStream(format))
+
+            using var img = imgs.Merge(out var format);
+            await using var stream = img.ToStream(format);
+            foreach (var i in imgs)
             {
-                foreach (var i in imgs)
-                {
-                    i.Dispose();
-                }
-                var msg = count != 1
-                    ? Format.Bold(ctx.User.ToString()) + " " + GetText(strs.flip_results(count, headCount, tailCount))
-                    : Format.Bold(ctx.User.ToString()) + " " + GetText(strs.flipped(headCount > 0
-                        ? Format.Bold(GetText(strs.heads))
-                        : Format.Bold(GetText(strs.tails))));
-                await ctx.Channel.SendFileAsync(stream, $"{count} coins.{format.FileExtensions.First()}", msg).ConfigureAwait(false);
+                i.Dispose();
             }
+            var msg = count != 1
+                ? Format.Bold(ctx.User.ToString()) + " " + GetText(strs.flip_results(count, headCount, tailCount))
+                : Format.Bold(ctx.User.ToString()) + " " + GetText(strs.flipped(headCount > 0
+                    ? Format.Bold(GetText(strs.heads))
+                    : Format.Bold(GetText(strs.tails))));
+            await ctx.Channel.SendFileAsync(stream, $"{count} coins.{format.FileExtensions.First()}", msg).ConfigureAwait(false);
         }
 
         public enum BetFlipGuess

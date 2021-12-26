@@ -224,64 +224,62 @@ public class PatreonRewardsService : INService
         {
             var eligibleFor = (int)(cents * settings.PatreonCurrencyPerCent);
 
-            await using (var uow = _db.GetDbContext())
+            await using var uow = _db.GetDbContext();
+            var users = uow.Set<RewardedUser>();
+            var usr = await users.FirstOrDefaultAsyncEF(x => x.PatreonUserId == patreonUserId);
+
+            if (usr is null)
             {
-                var users = uow.Set<RewardedUser>();
-                var usr = await users.FirstOrDefaultAsyncEF(x => x.PatreonUserId == patreonUserId);
-
-                if (usr is null)
+                users.Add(new()
                 {
-                    users.Add(new()
-                    {
-                        PatreonUserId = patreonUserId,
-                        LastReward = now,
-                        AmountRewardedThisMonth = eligibleFor,
-                    });
+                    PatreonUserId = patreonUserId,
+                    LastReward = now,
+                    AmountRewardedThisMonth = eligibleFor,
+                });
 
-                    await uow.SaveChangesAsync();
+                await uow.SaveChangesAsync();
 
-                    await _currency.AddAsync(userId, "Patreon reward - new", eligibleFor, gamble: true);
+                await _currency.AddAsync(userId, "Patreon reward - new", eligibleFor, gamble: true);
                         
-                    Log.Information($"Sending new currency reward to {userId}");
-                    await SendMessageToUser(userId, $"Thank you for your pledge! " +
-                                                    $"You've been awarded **{eligibleFor}**{settings.Currency.Sign} !");
-                    return eligibleFor;
-                }
-
-                if (usr.LastReward.Month != now.Month)
-                {
-                    usr.LastReward = now;
-                    usr.AmountRewardedThisMonth = eligibleFor;
-
-                    await uow.SaveChangesAsync();
-
-                    await _currency.AddAsync(userId, "Patreon reward - recurring", eligibleFor, gamble: true);
-
-                    Log.Information($"Sending recurring currency reward to {userId}");
-                    await SendMessageToUser(userId, $"Thank you for your continued support! " +
-                                                    $"You've been awarded **{eligibleFor}**{settings.Currency.Sign} for this month's support!");
-
-                    return eligibleFor;
-                }
-
-                if (usr.AmountRewardedThisMonth < eligibleFor)
-                {
-                    var toAward = eligibleFor - usr.AmountRewardedThisMonth;
-
-                    usr.LastReward = now;
-                    usr.AmountRewardedThisMonth = toAward;
-                    await uow.SaveChangesAsync();
-
-                    await _currency.AddAsync(userId, "Patreon reward - update", toAward, gamble: true);
-                        
-                    Log.Information($"Sending updated currency reward to {userId}");
-                    await SendMessageToUser(userId, $"Thank you for increasing your pledge! " +
-                                                    $"You've been awarded an additional **{toAward}**{settings.Currency.Sign} !");
-                    return toAward;
-                }
-
-                return 0;
+                Log.Information($"Sending new currency reward to {userId}");
+                await SendMessageToUser(userId, $"Thank you for your pledge! " +
+                                                $"You've been awarded **{eligibleFor}**{settings.Currency.Sign} !");
+                return eligibleFor;
             }
+
+            if (usr.LastReward.Month != now.Month)
+            {
+                usr.LastReward = now;
+                usr.AmountRewardedThisMonth = eligibleFor;
+
+                await uow.SaveChangesAsync();
+
+                await _currency.AddAsync(userId, "Patreon reward - recurring", eligibleFor, gamble: true);
+
+                Log.Information($"Sending recurring currency reward to {userId}");
+                await SendMessageToUser(userId, $"Thank you for your continued support! " +
+                                                $"You've been awarded **{eligibleFor}**{settings.Currency.Sign} for this month's support!");
+
+                return eligibleFor;
+            }
+
+            if (usr.AmountRewardedThisMonth < eligibleFor)
+            {
+                var toAward = eligibleFor - usr.AmountRewardedThisMonth;
+
+                usr.LastReward = now;
+                usr.AmountRewardedThisMonth = toAward;
+                await uow.SaveChangesAsync();
+
+                await _currency.AddAsync(userId, "Patreon reward - update", toAward, gamble: true);
+                        
+                Log.Information($"Sending updated currency reward to {userId}");
+                await SendMessageToUser(userId, $"Thank you for increasing your pledge! " +
+                                                $"You've been awarded an additional **{toAward}**{settings.Currency.Sign} !");
+                return toAward;
+            }
+
+            return 0;
         }
         finally
         {

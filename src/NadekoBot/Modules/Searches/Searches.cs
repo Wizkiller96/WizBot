@@ -39,15 +39,13 @@ public partial class Searches : NadekoModule<SearchesService>
         var av = usr.RealAvatarUrl();
         if (av is null)
             return;
-        await using (var picStream = await _service.GetRipPictureAsync(usr.Nickname ?? usr.Username, av).ConfigureAwait(false))
-        {
-            await ctx.Channel.SendFileAsync(
-                    picStream,
-                    "rip.png",
-                    $"Rip {Format.Bold(usr.ToString())} \n\t- " +
-                    Format.Italics(ctx.User.ToString()))
-                .ConfigureAwait(false);
-        }
+        await using var picStream = await _service.GetRipPictureAsync(usr.Nickname ?? usr.Username, av).ConfigureAwait(false);
+        await ctx.Channel.SendFileAsync(
+                picStream,
+                "rip.png",
+                $"Rip {Format.Bold(usr.ToString())} \n\t- " +
+                Format.Italics(ctx.User.ToString()))
+            .ConfigureAwait(false);
     }
 
     [NadekoCommand, Aliases]
@@ -224,30 +222,28 @@ public partial class Searches : NadekoModule<SearchesService>
 
             var fullQueryLink = $"http://imgur.com/search?q={ query }";
             var config = Configuration.Default.WithDefaultLoader();
-            using (var document = await BrowsingContext.New(config).OpenAsync(fullQueryLink).ConfigureAwait(false))
-            {
-                var elems = document.QuerySelectorAll("a.image-list-link").ToList();
+            using var document = await BrowsingContext.New(config).OpenAsync(fullQueryLink).ConfigureAwait(false);
+            var elems = document.QuerySelectorAll("a.image-list-link").ToList();
 
-                if (!elems.Any())
-                    return;
+            if (!elems.Any())
+                return;
 
-                var img = elems.ElementAtOrDefault(new NadekoRandom().Next(0, elems.Count))?.Children?.FirstOrDefault() as IHtmlImageElement;
+            var img = elems.ElementAtOrDefault(new NadekoRandom().Next(0, elems.Count))?.Children?.FirstOrDefault() as IHtmlImageElement;
 
-                if (img?.Source is null)
-                    return;
+            if (img?.Source is null)
+                return;
 
-                var source = img.Source.Replace("b.", ".", StringComparison.InvariantCulture);
+            var source = img.Source.Replace("b.", ".", StringComparison.InvariantCulture);
 
-                var embed = _eb.Create()
-                    .WithOkColor()
-                    .WithAuthor(GetText(strs.image_search_for) + " " + oterms.TrimTo(50),
-                        "http://s.imgur.com/images/logo-1200-630.jpg?",
-                        fullQueryLink)
-                    .WithDescription(source)
-                    .WithImageUrl(source)
-                    .WithTitle(ctx.User.ToString());
-                await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
-            }
+            var embed = _eb.Create()
+                .WithOkColor()
+                .WithAuthor(GetText(strs.image_search_for) + " " + oterms.TrimTo(50),
+                    "http://s.imgur.com/images/logo-1200-630.jpg?",
+                    fullQueryLink)
+                .WithDescription(source)
+                .WithImageUrl(source)
+                .WithTitle(ctx.User.ToString());
+            await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
         }
     }
 
@@ -280,28 +276,24 @@ public partial class Searches : NadekoModule<SearchesService>
         {
             try
             {
-                using (var _http = _httpFactory.CreateClient())
-                using (var req = new HttpRequestMessage(HttpMethod.Post, "https://goolnk.com/api/v1/shorten"))
+                using var _http = _httpFactory.CreateClient();
+                using var req = new HttpRequestMessage(HttpMethod.Post, "https://goolnk.com/api/v1/shorten");
+                var formData = new MultipartFormDataContent
                 {
-                    var formData = new MultipartFormDataContent
-                    {
-                        { new StringContent(query), "url" }
-                    };
-                    req.Content = formData;
+                    { new StringContent(query), "url" }
+                };
+                req.Content = formData;
 
-                    using (var res = await _http.SendAsync(req).ConfigureAwait(false))
-                    {
-                        var content = await res.Content.ReadAsStringAsync();
-                        var data = JsonConvert.DeserializeObject<ShortenData>(content);
+                using var res = await _http.SendAsync(req).ConfigureAwait(false);
+                var content = await res.Content.ReadAsStringAsync();
+                var data = JsonConvert.DeserializeObject<ShortenData>(content);
 
-                        if (!string.IsNullOrWhiteSpace(data?.ResultUrl))
-                            cachedShortenedLinks.TryAdd(query, data.ResultUrl);
-                        else
-                            return;
+                if (!string.IsNullOrWhiteSpace(data?.ResultUrl))
+                    cachedShortenedLinks.TryAdd(query, data.ResultUrl);
+                else
+                    return;
 
-                        shortLink = data.ResultUrl;
-                    }
-                }
+                shortLink = data.ResultUrl;
             }
             catch (Exception ex)
             {
@@ -477,78 +469,74 @@ public partial class Searches : NadekoModule<SearchesService>
         if (!await ValidateQuery(word).ConfigureAwait(false))
             return;
 
-        using (var _http = _httpFactory.CreateClient())
+        using var _http = _httpFactory.CreateClient();
+        string res;
+        try
         {
-            string res;
-            try
+            res = await _cache.GetOrCreateAsync($"define_{word}", e =>
             {
-                res = await _cache.GetOrCreateAsync($"define_{word}", e =>
-                {
-                    e.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(12);
-                    return _http.GetStringAsync("https://api.pearson.com/v2/dictionaries/entries?headword=" + WebUtility.UrlEncode(word));
-                }).ConfigureAwait(false);
+                e.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(12);
+                return _http.GetStringAsync("https://api.pearson.com/v2/dictionaries/entries?headword=" + WebUtility.UrlEncode(word));
+            }).ConfigureAwait(false);
 
-                var data = JsonConvert.DeserializeObject<DefineModel>(res);
+            var data = JsonConvert.DeserializeObject<DefineModel>(res);
 
-                var datas = data.Results
-                    .Where(x => x.Senses is not null && x.Senses.Count > 0 && x.Senses[0].Definition is not null)
-                    .Select(x => (Sense: x.Senses[0], x.PartOfSpeech));
+            var datas = data.Results
+                .Where(x => x.Senses is not null && x.Senses.Count > 0 && x.Senses[0].Definition is not null)
+                .Select(x => (Sense: x.Senses[0], x.PartOfSpeech));
 
-                if (!datas.Any())
-                {
-                    Log.Warning("Definition not found: {Word}", word);
-                    await ReplyErrorLocalizedAsync(strs.define_unknown).ConfigureAwait(false);
-                }
-
-
-                var col = datas.Select(data => (
-                    Definition: data.Sense.Definition is string
-                        ? data.Sense.Definition.ToString()
-                        : ((JArray)JToken.Parse(data.Sense.Definition.ToString())).First.ToString(),
-                    Example: data.Sense.Examples is null || data.Sense.Examples.Count == 0
-                        ? string.Empty
-                        : data.Sense.Examples[0].Text,
-                    Word: word,
-                    WordType: string.IsNullOrWhiteSpace(data.PartOfSpeech) ? "-" : data.PartOfSpeech
-                )).ToList();
-
-                Log.Information($"Sending {col.Count} definition for: {word}");
-
-                await ctx.SendPaginatedConfirmAsync(0, page =>
-                {
-                    var data = col.Skip(page).First();
-                    var embed = _eb.Create()
-                        .WithDescription(ctx.User.Mention)
-                        .AddField(GetText(strs.word), data.Word, true)
-                        .AddField(GetText(strs._class), data.WordType, true)
-                        .AddField(GetText(strs.definition), data.Definition)
-                        .WithOkColor();
-
-                    if (!string.IsNullOrWhiteSpace(data.Example))
-                        embed.AddField(GetText(strs.example), data.Example);
-
-                    return embed;
-                }, col.Count, 1);
-            }
-            catch (Exception ex)
+            if (!datas.Any())
             {
-                Log.Error(ex, "Error retrieving definition data for: {Word}", word);
+                Log.Warning("Definition not found: {Word}", word);
+                await ReplyErrorLocalizedAsync(strs.define_unknown).ConfigureAwait(false);
             }
+
+
+            var col = datas.Select(data => (
+                Definition: data.Sense.Definition is string
+                    ? data.Sense.Definition.ToString()
+                    : ((JArray)JToken.Parse(data.Sense.Definition.ToString())).First.ToString(),
+                Example: data.Sense.Examples is null || data.Sense.Examples.Count == 0
+                    ? string.Empty
+                    : data.Sense.Examples[0].Text,
+                Word: word,
+                WordType: string.IsNullOrWhiteSpace(data.PartOfSpeech) ? "-" : data.PartOfSpeech
+            )).ToList();
+
+            Log.Information($"Sending {col.Count} definition for: {word}");
+
+            await ctx.SendPaginatedConfirmAsync(0, page =>
+            {
+                var data = col.Skip(page).First();
+                var embed = _eb.Create()
+                    .WithDescription(ctx.User.Mention)
+                    .AddField(GetText(strs.word), data.Word, true)
+                    .AddField(GetText(strs._class), data.WordType, true)
+                    .AddField(GetText(strs.definition), data.Definition)
+                    .WithOkColor();
+
+                if (!string.IsNullOrWhiteSpace(data.Example))
+                    embed.AddField(GetText(strs.example), data.Example);
+
+                return embed;
+            }, col.Count, 1);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Error retrieving definition data for: {Word}", word);
         }
     }
 
     [NadekoCommand, Aliases]
     public async Task Catfact()
     {
-        using (var http = _httpFactory.CreateClient())
-        {
-            var response = await http.GetStringAsync("https://catfact.ninja/fact").ConfigureAwait(false);
-            if (response is null)
-                return;
+        using var http = _httpFactory.CreateClient();
+        var response = await http.GetStringAsync("https://catfact.ninja/fact").ConfigureAwait(false);
+        if (response is null)
+            return;
 
-            var fact = JObject.Parse(response)["fact"].ToString();
-            await SendConfirmAsync("🐈" + GetText(strs.catfact), fact).ConfigureAwait(false);
-        }
+        var fact = JObject.Parse(response)["fact"].ToString();
+        await SendConfirmAsync("🐈" + GetText(strs.catfact), fact).ConfigureAwait(false);
     }
 
     //done in 3.0
@@ -585,15 +573,13 @@ public partial class Searches : NadekoModule<SearchesService>
         if (!await ValidateQuery(query).ConfigureAwait(false))
             return;
 
-        using (var http = _httpFactory.CreateClient())
-        {
-            var result = await http.GetStringAsync("https://en.wikipedia.org//w/api.php?action=query&format=json&prop=info&redirects=1&formatversion=2&inprop=url&titles=" + Uri.EscapeDataString(query)).ConfigureAwait(false);
-            var data = JsonConvert.DeserializeObject<WikipediaApiModel>(result);
-            if (data.Query.Pages[0].Missing || string.IsNullOrWhiteSpace(data.Query.Pages[0].FullUrl))
-                await ReplyErrorLocalizedAsync(strs.wiki_page_not_found).ConfigureAwait(false);
-            else
-                await ctx.Channel.SendMessageAsync(data.Query.Pages[0].FullUrl).ConfigureAwait(false);
-        }
+        using var http = _httpFactory.CreateClient();
+        var result = await http.GetStringAsync("https://en.wikipedia.org//w/api.php?action=query&format=json&prop=info&redirects=1&formatversion=2&inprop=url&titles=" + Uri.EscapeDataString(query)).ConfigureAwait(false);
+        var data = JsonConvert.DeserializeObject<WikipediaApiModel>(result);
+        if (data.Query.Pages[0].Missing || string.IsNullOrWhiteSpace(data.Query.Pages[0].FullUrl))
+            await ReplyErrorLocalizedAsync(strs.wiki_page_not_found).ConfigureAwait(false);
+        else
+            await ctx.Channel.SendMessageAsync(data.Query.Pages[0].FullUrl).ConfigureAwait(false);
     }
 
     [NadekoCommand, Aliases]
@@ -605,24 +591,20 @@ public partial class Searches : NadekoModule<SearchesService>
         var colorObjects = colors.Take(10)
             .ToArray();
 
-        using (var img = new Image<Rgba32>(colorObjects.Length * 50, 50))
+        using var img = new Image<Rgba32>(colorObjects.Length * 50, 50);
+        for (var i = 0; i < colorObjects.Length; i++)
         {
-            for (var i = 0; i < colorObjects.Length; i++)
-            {
-                var x = i * 50;
-                img.Mutate(m => m.FillPolygon(colorObjects[i], new PointF[] {
-                    new(x, 0),
-                    new(x + 50, 0),
-                    new(x + 50, 50),
-                    new(x, 50)
-                }));
-            }
-
-            await using (var ms = img.ToStream())
-            {
-                await ctx.Channel.SendFileAsync(ms, $"colors.png").ConfigureAwait(false);
-            }
+            var x = i * 50;
+            img.Mutate(m => m.FillPolygon(colorObjects[i], new PointF[] {
+                new(x, 0),
+                new(x + 50, 0),
+                new(x + 50, 50),
+                new(x, 50)
+            }));
         }
+
+        await using var ms = img.ToStream();
+        await ctx.Channel.SendFileAsync(ms, $"colors.png").ConfigureAwait(false);
     }
 
     [NadekoCommand, Aliases]
@@ -655,35 +637,33 @@ public partial class Searches : NadekoModule<SearchesService>
             return;
         }
         await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
-        using (var http = _httpFactory.CreateClient())
+        using var http = _httpFactory.CreateClient();
+        http.DefaultRequestHeaders.Clear();
+        try
         {
-            http.DefaultRequestHeaders.Clear();
-            try
-            {
-                var res = await http.GetStringAsync($"https://{Uri.EscapeDataString(target)}.fandom.com/api.php" +
-                                                    $"?action=query" +
-                                                    $"&format=json" +
-                                                    $"&list=search" +
-                                                    $"&srsearch={Uri.EscapeDataString(query)}" +
-                                                    $"&srlimit=1").ConfigureAwait(false);
-                var items = JObject.Parse(res);
-                var title = items["query"]?["search"]?.FirstOrDefault()?["title"]?.ToString();
+            var res = await http.GetStringAsync($"https://{Uri.EscapeDataString(target)}.fandom.com/api.php" +
+                                                $"?action=query" +
+                                                $"&format=json" +
+                                                $"&list=search" +
+                                                $"&srsearch={Uri.EscapeDataString(query)}" +
+                                                $"&srlimit=1").ConfigureAwait(false);
+            var items = JObject.Parse(res);
+            var title = items["query"]?["search"]?.FirstOrDefault()?["title"]?.ToString();
                     
-                if (string.IsNullOrWhiteSpace(title))
-                {
-                    await ReplyErrorLocalizedAsync(strs.wikia_error).ConfigureAwait(false);
-                    return;
-                }
-
-                var url = Uri.EscapeDataString($"https://{target}.fandom.com/wiki/{title}");
-                var response = $@"`{GetText(strs.title)}` {title.SanitizeMentions()}
-`{GetText(strs.url)}:` {url}";
-                await ctx.Channel.SendMessageAsync(response).ConfigureAwait(false);
-            }
-            catch
+            if (string.IsNullOrWhiteSpace(title))
             {
                 await ReplyErrorLocalizedAsync(strs.wikia_error).ConfigureAwait(false);
+                return;
             }
+
+            var url = Uri.EscapeDataString($"https://{target}.fandom.com/wiki/{title}");
+            var response = $@"`{GetText(strs.title)}` {title.SanitizeMentions()}
+`{GetText(strs.url)}:` {url}";
+            await ctx.Channel.SendMessageAsync(response).ConfigureAwait(false);
+        }
+        catch
+        {
+            await ReplyErrorLocalizedAsync(strs.wikia_error).ConfigureAwait(false);
         }
     }
 
@@ -694,13 +674,11 @@ public partial class Searches : NadekoModule<SearchesService>
         var obj = new BibleVerses();
         try
         {
-            using (var http = _httpFactory.CreateClient())
-            {
-                var res = await http
-                    .GetStringAsync("https://bible-api.com/" + book + " " + chapterAndVerse).ConfigureAwait(false);
+            using var http = _httpFactory.CreateClient();
+            var res = await http
+                .GetStringAsync("https://bible-api.com/" + book + " " + chapterAndVerse).ConfigureAwait(false);
 
-                obj = JsonConvert.DeserializeObject<BibleVerses>(res);
-            }
+            obj = JsonConvert.DeserializeObject<BibleVerses>(res);
         }
         catch
         {

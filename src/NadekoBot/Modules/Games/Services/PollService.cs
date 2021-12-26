@@ -22,17 +22,15 @@ public class PollService : IEarlyBehavior
         _strs = strs;
         _eb = eb;
 
-        using (var uow = db.GetDbContext())
-        {
-            ActivePolls = uow.Poll.GetAllPolls()
-                .ToDictionary(x => x.GuildId, x =>
-                {
-                    var pr = new PollRunner(db, x);
-                    pr.OnVoted += Pr_OnVoted;
-                    return pr;
-                })
-                .ToConcurrent();
-        }
+        using var uow = db.GetDbContext();
+        ActivePolls = uow.Poll.GetAllPolls()
+            .ToDictionary(x => x.GuildId, x =>
+            {
+                var pr = new PollRunner(db, x);
+                pr.OnVoted += Pr_OnVoted;
+                return pr;
+            })
+            .ToConcurrent();
     }
 
     public Poll CreatePoll(ulong guildId, ulong channelId, string input)

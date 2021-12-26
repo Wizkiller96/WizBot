@@ -44,18 +44,16 @@ public class PlantPickService : INService
         _gss = gss;
 
         cmd.OnMessageNoTrigger += PotentialFlowerGeneration;
-        using (var uow = db.GetDbContext())
-        {
-            var guildIds = client.Guilds.Select(x => x.Id).ToList();
-            var configs = uow.Set<GuildConfig>()
-                .AsQueryable()
-                .Include(x => x.GenerateCurrencyChannelIds)
-                .Where(x => guildIds.Contains(x.GuildId))
-                .ToList();
+        using var uow = db.GetDbContext();
+        var guildIds = client.Guilds.Select(x => x.Id).ToList();
+        var configs = uow.Set<GuildConfig>()
+            .AsQueryable()
+            .Include(x => x.GenerateCurrencyChannelIds)
+            .Where(x => guildIds.Contains(x.GuildId))
+            .ToList();
                 
-            _generationChannels = new(configs
-                .SelectMany(c => c.GenerateCurrencyChannelIds.Select(obj => obj.ChannelId)));
-        }
+        _generationChannels = new(configs
+            .SelectMany(c => c.GenerateCurrencyChannelIds.Select(obj => obj.ChannelId)));
     }
 
     private string GetText(ulong gid, LocStr str)
@@ -64,39 +62,35 @@ public class PlantPickService : INService
     public bool ToggleCurrencyGeneration(ulong gid, ulong cid)
     {
         bool enabled;
-        using (var uow = _db.GetDbContext())
-        {
-            var guildConfig = uow.GuildConfigsForId(gid, set => set.Include(gc => gc.GenerateCurrencyChannelIds));
+        using var uow = _db.GetDbContext();
+        var guildConfig = uow.GuildConfigsForId(gid, set => set.Include(gc => gc.GenerateCurrencyChannelIds));
 
-            var toAdd = new GCChannelId() { ChannelId = cid };
-            if (!guildConfig.GenerateCurrencyChannelIds.Contains(toAdd))
-            {
-                guildConfig.GenerateCurrencyChannelIds.Add(toAdd);
-                _generationChannels.Add(cid);
-                enabled = true;
-            }
-            else
-            {
-                var toDelete = guildConfig.GenerateCurrencyChannelIds.FirstOrDefault(x => x.Equals(toAdd));
-                if (toDelete != null)
-                {
-                    uow.Remove(toDelete);
-                }
-                _generationChannels.TryRemove(cid);
-                enabled = false;
-            }
-            uow.SaveChanges();
+        var toAdd = new GCChannelId() { ChannelId = cid };
+        if (!guildConfig.GenerateCurrencyChannelIds.Contains(toAdd))
+        {
+            guildConfig.GenerateCurrencyChannelIds.Add(toAdd);
+            _generationChannels.Add(cid);
+            enabled = true;
         }
+        else
+        {
+            var toDelete = guildConfig.GenerateCurrencyChannelIds.FirstOrDefault(x => x.Equals(toAdd));
+            if (toDelete != null)
+            {
+                uow.Remove(toDelete);
+            }
+            _generationChannels.TryRemove(cid);
+            enabled = false;
+        }
+        uow.SaveChanges();
         return enabled;
     }
 
     public IEnumerable<GuildConfigExtensions.GeneratingChannel> GetAllGeneratingChannels()
     {
-        using (var uow = _db.GetDbContext())
-        {
-            var chs = uow.GuildConfigs.GetGeneratingChannels();
-            return chs;
-        }
+        using var uow = _db.GetDbContext();
+        var chs = uow.GuildConfigs.GetGeneratingChannels();
+        return chs;
     }
 
     /// <summary>
@@ -139,31 +133,29 @@ public class PlantPickService : INService
     {
         // draw lower, it looks better
         pass = pass.TrimTo(10, true).ToLowerInvariant();
-        using (var img = Image.Load<Rgba32>(curImg, out var format))
+        using var img = Image.Load<Rgba32>(curImg, out var format);
+        // choose font size based on the image height, so that it's visible
+        var font = _fonts.NotoSans.CreateFont(img.Height / 12, FontStyle.Bold);
+        img.Mutate(x =>
         {
-            // choose font size based on the image height, so that it's visible
-            var font = _fonts.NotoSans.CreateFont(img.Height / 12, FontStyle.Bold);
-            img.Mutate(x =>
-            {
-                // measure the size of the text to be drawing
-                var size = TextMeasurer.Measure(pass, new(font, new PointF(0, 0)));
+            // measure the size of the text to be drawing
+            var size = TextMeasurer.Measure(pass, new(font, new PointF(0, 0)));
 
-                // fill the background with black, add 5 pixels on each side to make it look better
-                x.FillPolygon(Color.ParseHex("00000080"),
-                    new PointF(0, 0),
-                    new PointF(size.Width + 5, 0),
-                    new PointF(size.Width + 5, size.Height + 10),
-                    new PointF(0, size.Height + 10));
+            // fill the background with black, add 5 pixels on each side to make it look better
+            x.FillPolygon(Color.ParseHex("00000080"),
+                new PointF(0, 0),
+                new PointF(size.Width + 5, 0),
+                new PointF(size.Width + 5, size.Height + 10),
+                new PointF(0, size.Height + 10));
 
-                // draw the password over the background
-                x.DrawText(pass,
-                    font,
-                    SixLabors.ImageSharp.Color.White,
-                    new(0, 0));
-            });
-            // return image as a stream for easy sending
-            return (img.ToStream(format), format.FileExtensions.FirstOrDefault() ?? "png");
-        }
+            // draw the password over the background
+            x.DrawText(pass,
+                font,
+                SixLabors.ImageSharp.Color.White,
+                new(0, 0));
+        });
+        // return image as a stream for easy sending
+        return (img.ToStream(format), format.FileExtensions.FirstOrDefault() ?? "png");
     }
 
     private Task PotentialFlowerGeneration(IUserMessage imsg)
@@ -309,13 +301,11 @@ public class PlantPickService : INService
                 msgToSend += " " + GetText(gid, strs.pick_sn(prefix));
 
             //get the image
-            await using (var stream = GetRandomCurrencyImage(pass, out var ext))
-            {
-                // send it
-                var msg = await ch.SendFileAsync(stream, $"img.{ext}", msgToSend).ConfigureAwait(false);
-                // return sent message's id (in order to be able to delete it when it's picked)
-                return msg.Id;
-            }
+            await using var stream = GetRandomCurrencyImage(pass, out var ext);
+            // send it
+            var msg = await ch.SendFileAsync(stream, $"img.{ext}", msgToSend).ConfigureAwait(false);
+            // return sent message's id (in order to be able to delete it when it's picked)
+            return msg.Id;
         }
         catch
         {
@@ -353,18 +343,16 @@ public class PlantPickService : INService
 
     private async Task AddPlantToDatabase(ulong gid, ulong cid, ulong uid, ulong mid, long amount, string pass)
     {
-        await using (var uow = _db.GetDbContext())
+        await using var uow = _db.GetDbContext();
+        uow.PlantedCurrency.Add(new()
         {
-            uow.PlantedCurrency.Add(new()
-            {
-                Amount = amount,
-                GuildId = gid,
-                ChannelId = cid,
-                Password = pass,
-                UserId = uid,
-                MessageId = mid,
-            });
-            await uow.SaveChangesAsync();
-        }
+            Amount = amount,
+            GuildId = gid,
+            ChannelId = cid,
+            Password = pass,
+            UserId = uid,
+            MessageId = mid,
+        });
+        await uow.SaveChangesAsync();
     }
 }
