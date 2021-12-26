@@ -68,7 +68,8 @@ public static class EnumerableExtensions
         this IEnumerable<KeyValuePair<TKey, TValue>> dict)
         => new(dict);
 
-    public static IndexedCollection<T> ToIndexed<T>(this IEnumerable<T> enumerable) where T : class, IIndexed
+    public static IndexedCollection<T> ToIndexed<T>(this IEnumerable<T> enumerable)
+        where T : class, IIndexed
         => new(enumerable);
 
     // todo use this extension instead of Task.WhenAll

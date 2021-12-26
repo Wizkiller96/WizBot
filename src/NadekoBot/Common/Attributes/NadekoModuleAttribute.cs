@@ -3,7 +3,8 @@
 [AttributeUsage(AttributeTargets.Class)]
 internal sealed class NadekoModuleAttribute : GroupAttribute
 {
-    public NadekoModuleAttribute(string moduleName) : base(moduleName)
+    public NadekoModuleAttribute(string moduleName)
+        : base(moduleName)
     {
     }
 }

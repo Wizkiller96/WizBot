@@ -15,7 +15,10 @@ public sealed class RatelimitAttribute : PreconditionAttribute
         Seconds = seconds;
     }
 
-    public override Task<PreconditionResult> CheckPermissionsAsync(ICommandContext context, CommandInfo command, IServiceProvider services)
+    public override Task<PreconditionResult> CheckPermissionsAsync(
+        ICommandContext context,
+        CommandInfo command,
+        IServiceProvider services)
     {
         if (Seconds == 0)
             return Task.FromResult(PreconditionResult.FromSuccess());
@@ -23,7 +26,7 @@ public sealed class RatelimitAttribute : PreconditionAttribute
         var cache = services.GetRequiredService<IDataCache>();
         var rem = cache.TryAddRatelimit(context.User.Id, command.Name, Seconds);
 
-        if(rem is null)
+        if (rem is null)
             return Task.FromResult(PreconditionResult.FromSuccess());
 
         var msgContent = $"You can use this command again in {rem.Value.TotalSeconds:F1}s.";

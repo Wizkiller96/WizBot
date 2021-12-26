@@ -4,9 +4,6 @@
 // and they get looped through constantly
 public static class ArrayExtensions
 {
-    private static int x = 0;
-
-
     /// <summary>
     /// Create a new array from the old array + new element at the end
     /// </summary>

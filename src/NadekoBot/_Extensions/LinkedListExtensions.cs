@@ -10,7 +10,7 @@ public static class LinkedListExtensions
         {
             if (predicate(node.Value))
                 return node;
-                
+
             node = node.Next;
         }
 
