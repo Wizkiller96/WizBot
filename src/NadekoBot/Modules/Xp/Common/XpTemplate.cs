@@ -6,12 +6,12 @@ namespace NadekoBot.Modules.Xp;
 public class XpTemplate
 {
     [JsonProperty("output_size")]
-    public XpTemplatePos OutputSize { get; set; } = new XpTemplatePos
+    public XpTemplatePos OutputSize { get; set; } = new()
     {
         X = 450,
         Y = 220,
     };
-    public XpTemplateUser User { get; set; } = new XpTemplateUser
+    public XpTemplateUser User { get; set; } = new()
     {
         Name = new()
         {
@@ -171,7 +171,7 @@ public class XpTemplate
             }
         }
     };
-    public XpTemplateClub Club { get; set; } = new XpTemplateClub
+    public XpTemplateClub Club { get; set; } = new()
     {
         Icon = new()
         {

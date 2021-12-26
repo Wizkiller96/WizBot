@@ -113,7 +113,7 @@ public sealed class FilterService : IEarlyBehavior
 
     public async Task<bool> RunBehavior(IGuild guild, IUserMessage msg)
     {
-        if (!(msg.Author is IGuildUser gu) || gu.GuildPermissions.Administrator)
+        if (msg.Author is not IGuildUser gu || gu.GuildPermissions.Administrator)
             return false;
 
         var results = await Task.WhenAll(

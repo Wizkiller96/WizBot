@@ -49,8 +49,7 @@ public sealed class LogCommandService : ILogCommandService
         
     public ConcurrentDictionary<ulong, LogSetting> GuildLogSettings { get; }
 
-    private ConcurrentDictionary<ITextChannel, List<string>> PresenceUpdates { get; } =
-        new ConcurrentDictionary<ITextChannel, List<string>>();
+    private ConcurrentDictionary<ITextChannel, List<string>> PresenceUpdates { get; } = new();
 
     private readonly Timer _timerReference;
     private readonly IBotStrings _strings;
@@ -62,7 +61,7 @@ public sealed class LogCommandService : ILogCommandService
     private readonly IMemoryCache _memoryCache;
         
     private readonly Timer _clearTimer;
-    private readonly ConcurrentHashSet<ulong> _ignoreMessageIds = new ConcurrentHashSet<ulong>();
+    private readonly ConcurrentHashSet<ulong> _ignoreMessageIds = new();
 
     public LogCommandService(DiscordSocketClient client, IBotStrings strings,
         DbService db, MuteService mute, ProtectionService prot, GuildTimezoneService tz, 
@@ -218,7 +217,7 @@ public sealed class LogCommandService : ILogCommandService
                                                             logSetting.LogVoicePresenceId =
                                                                 logSetting.UserMutedId =
                                                                     logSetting.LogVoicePresenceTTSId =
-                                                                        value ? channelId : (ulong?) null;
+                                                                        value ? channelId : null;
             ;
             await uow.SaveChangesAsync();
             GuildLogSettings.AddOrUpdate(guildId, id => logSetting, (id, old) => logSetting);
@@ -231,7 +230,7 @@ public sealed class LogCommandService : ILogCommandService
         {
             try
             {
-                if (!(uAfter is SocketGuildUser after))
+                if (uAfter is not SocketGuildUser after)
                     return;
 
                 var g = after.Guild;
@@ -359,7 +358,7 @@ public sealed class LogCommandService : ILogCommandService
         {
             try
             {
-                if (!(iusr is IGuildUser usr))
+                if (iusr is not IGuildUser usr)
                     return;
 
                 var beforeVch = before.VoiceChannel;
@@ -673,7 +672,7 @@ public sealed class LogCommandService : ILogCommandService
         {
             try
             {
-                if (!(cbefore is IGuildChannel before))
+                if (cbefore is not IGuildChannel before)
                     return;
 
                 var after = (IGuildChannel) cafter;
@@ -726,7 +725,7 @@ public sealed class LogCommandService : ILogCommandService
         {
             try
             {
-                if (!(ich is IGuildChannel ch))
+                if (ich is not IGuildChannel ch)
                     return;
 
                 if (!GuildLogSettings.TryGetValue(ch.Guild.Id, out var logSetting)
@@ -766,7 +765,7 @@ public sealed class LogCommandService : ILogCommandService
         {
             try
             {
-                if (!(ich is IGuildChannel ch))
+                if (ich is not IGuildChannel ch)
                     return;
 
                 if (!GuildLogSettings.TryGetValue(ch.Guild.Id, out var logSetting)
@@ -805,7 +804,7 @@ public sealed class LogCommandService : ILogCommandService
         {
             try
             {
-                if (!(iusr is IGuildUser usr) || usr.IsBot)
+                if (iusr is not IGuildUser usr || usr.IsBot)
                     return;
 
                 var beforeVch = before.VoiceChannel;
@@ -1024,7 +1023,7 @@ public sealed class LogCommandService : ILogCommandService
                     return;
 
                 var ch = optCh.Value;
-                if (!(ch is ITextChannel channel))
+                if (ch is not ITextChannel channel)
                     return;
 
                 if (!GuildLogSettings.TryGetValue(channel.Guild.Id, out var logSetting)
@@ -1069,14 +1068,14 @@ public sealed class LogCommandService : ILogCommandService
         {
             try
             {
-                if (!(imsg2 is IUserMessage after) || after.IsAuthor(_client))
+                if (imsg2 is not IUserMessage after || after.IsAuthor(_client))
                     return;
 
                 var before = (optmsg.HasValue ? optmsg.Value : null) as IUserMessage;
                 if (before is null)
                     return;
 
-                if (!(ch is ITextChannel channel))
+                if (ch is not ITextChannel channel)
                     return;
 
                 if (before.Content == after.Content)

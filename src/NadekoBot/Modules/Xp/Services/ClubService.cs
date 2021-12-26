@@ -289,7 +289,7 @@ public class ClubService : INService
             if (usr is null)
                 return false;
 
-            if (club.OwnerId == usr.Id || usr.IsClubAdmin && club.Owner.UserId != bannerId) // can't ban the owner kek, whew
+            if (club.OwnerId == usr.Id || (usr.IsClubAdmin && club.Owner.UserId != bannerId)) // can't ban the owner kek, whew
                 return false;
 
             club.Bans.Add(new()
@@ -340,7 +340,7 @@ public class ClubService : INService
             if (usr is null)
                 return false;
 
-            if (club.OwnerId == usr.Id || usr.IsClubAdmin && club.Owner.UserId != kickerId)
+            if (club.OwnerId == usr.Id || (usr.IsClubAdmin && club.Owner.UserId != kickerId))
                 return false;
 
             club.Users.Remove(usr);

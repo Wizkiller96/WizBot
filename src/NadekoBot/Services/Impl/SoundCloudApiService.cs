@@ -55,7 +55,7 @@ public class SoundCloudVideo
 {
     public string Kind { get; set; } = string.Empty;
     public long Id { get; set; } = 0;
-    public SoundCloudUser User { get; set; } = new SoundCloudUser();
+    public SoundCloudUser User { get; set; } = new();
     public string Title { get; set; } = string.Empty;
     public string FullName => User.Name + " - " + Title;
     public bool? Streamable { get; set; } = false;

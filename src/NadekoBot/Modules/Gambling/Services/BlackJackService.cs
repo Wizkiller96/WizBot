@@ -4,5 +4,5 @@ namespace NadekoBot.Modules.Gambling.Services;
 
 public class BlackJackService : INService
 {
-    public ConcurrentDictionary<ulong, Blackjack> Games { get; } = new ConcurrentDictionary<ulong, Blackjack>();
+    public ConcurrentDictionary<ulong, Blackjack> Games { get; } = new();
 }

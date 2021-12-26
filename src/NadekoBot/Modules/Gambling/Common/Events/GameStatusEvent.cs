@@ -18,8 +18,8 @@ public class GameStatusEvent : ICurrencyEvent
     private readonly Func<CurrencyEvent.Type, EventOptions, long, IEmbedBuilder> _embedFunc;
     private readonly bool _isPotLimited;
     private readonly ITextChannel _channel;
-    private readonly ConcurrentHashSet<ulong> _awardedUsers = new ConcurrentHashSet<ulong>();
-    private readonly ConcurrentQueue<ulong> _toAward = new ConcurrentQueue<ulong>();
+    private readonly ConcurrentHashSet<ulong> _awardedUsers = new();
+    private readonly ConcurrentQueue<ulong> _toAward = new();
     private readonly Timer _t;
     private readonly Timer _timeout = null;
     private readonly EventOptions _opts;
@@ -127,7 +127,7 @@ public class GameStatusEvent : ICurrencyEvent
         }
     }
 
-    private readonly object stopLock = new object();
+    private readonly object stopLock = new();
     public async Task StopEvent()
     {
         await Task.Yield();
@@ -150,7 +150,7 @@ public class GameStatusEvent : ICurrencyEvent
     {
         var _ = Task.Run(async () =>
         {
-            if (!(msg.Author is IGuildUser gu) // no unknown users, as they could be bots, or alts
+            if (msg.Author is not IGuildUser gu // no unknown users, as they could be bots, or alts
                 || gu.IsBot // no bots
                 || msg.Content != _code // code has to be the same
                 || (DateTime.UtcNow - gu.CreatedAt).TotalDays <= 5) // no recently created accounts
@@ -178,7 +178,7 @@ public class GameStatusEvent : ICurrencyEvent
         return Task.CompletedTask;
     }
 
-    private readonly object potLock = new object();
+    private readonly object potLock = new();
     private bool TryTakeFromPot()
     {
         if (_isPotLimited)

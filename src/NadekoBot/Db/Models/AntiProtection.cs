@@ -25,7 +25,7 @@ public class AntiSpamSetting : DbEntity
     public int MessageThreshold { get; set; } = 3;
     public int MuteTime { get; set; } = 0;
     public ulong? RoleId { get; set; }
-    public HashSet<AntiSpamIgnore> IgnoredChannels { get; set; } = new HashSet<AntiSpamIgnore>();
+    public HashSet<AntiSpamIgnore> IgnoredChannels { get; set; } = new();
 }
 
 public class AntiAltSetting

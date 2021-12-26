@@ -3,7 +3,7 @@
 public class GreetGrouper<T>
 {
     private readonly Dictionary<ulong, HashSet<T>> group;
-    private readonly object locker = new object();
+    private readonly object locker = new();
 
     public GreetGrouper()
     {

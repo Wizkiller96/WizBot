@@ -20,7 +20,7 @@ public partial class Gambling
         private static long _totalBet;
         private static long _totalPaidOut;
 
-        private static readonly HashSet<ulong> _runningUsers = new HashSet<ulong>();
+        private static readonly HashSet<ulong> _runningUsers = new();
 
         //here is a payout chart
         //https://lh6.googleusercontent.com/-i1hjAJy_kN4/UswKxmhrbPI/AAAAAAAAB1U/82wq_4ZZc-Y/DE6B0895-6FC1-48BE-AC4F-14D1B91AB75B.jpg
@@ -43,7 +43,7 @@ public partial class Gambling
         {
             public const int MaxValue = 5;
 
-            static readonly List<Func<int[], int>> _winningCombos = new List<Func<int[], int>>()
+            static readonly List<Func<int[], int>> _winningCombos = new()
             {
                 //three flowers
                 arr => arr.All(a=>a==MaxValue) ? 30 : 0,
@@ -218,7 +218,7 @@ public partial class Gambling
                     {
                         using (var img = Image.Load(_images.SlotEmojis[numbers[i]]))
                         {
-                            bgImage.Mutate(x => x.DrawImage(img, new Point(148 + 105 * i, 217), 1f));
+                            bgImage.Mutate(x => x.DrawImage(img, new Point(148 + (105 * i), 217), 1f));
                         }
                     }
 

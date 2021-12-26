@@ -17,8 +17,7 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
     private ImmutableDictionary<ulong, IDMChannel> ownerChannels =
         new Dictionary<ulong, IDMChannel>().ToImmutableDictionary();
 
-    private ConcurrentDictionary<ulong?, ConcurrentDictionary<int, Timer>> _autoCommands =
-        new ConcurrentDictionary<ulong?, ConcurrentDictionary<int, Timer>>();
+    private ConcurrentDictionary<ulong?, ConcurrentDictionary<int, Timer>> _autoCommands = new();
 
     private readonly IImageCache _imgs;
     private readonly IHttpClientFactory _httpFactory;

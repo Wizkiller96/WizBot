@@ -12,7 +12,7 @@ public sealed class MusicPlayer : IMusicPlayer
 {
     private delegate void AdjustVolumeDelegate(Span<byte> data, float volume);
 
-    private AdjustVolumeDelegate AdjustVolume;
+    private readonly AdjustVolumeDelegate AdjustVolume;
     private readonly VoiceClient _vc;
 
     public bool IsKilled { get; private set; }
@@ -369,7 +369,7 @@ public sealed class MusicPlayer : IMusicPlayer
         for (var i = 0; i < samples.Length; i++)
         {
             ref var sample = ref samples[i];
-            sample = (float) (sample * volume);
+            sample = sample * volume;
         }
     }
 

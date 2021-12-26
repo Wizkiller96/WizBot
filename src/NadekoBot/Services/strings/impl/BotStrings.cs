@@ -8,7 +8,7 @@ public class BotStrings : IBotStrings
     /// <summary>
     /// Used as failsafe in case response key doesn't exist in the selected or default language.
     /// </summary>
-    private readonly CultureInfo _usCultureInfo = new CultureInfo("en-US");
+    private readonly CultureInfo _usCultureInfo = new("en-US");
     private readonly ILocalization _localization;
     private readonly IBotStringsProvider _stringsProvider;
 

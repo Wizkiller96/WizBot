@@ -29,12 +29,12 @@ public class StreamRoleSettings : DbEntity
     /// A collection of whitelisted users' IDs. Whitelisted users don't require 'keyword' in
     /// order to get the stream role.
     /// </summary>
-    public HashSet<StreamRoleWhitelistedUser> Whitelist { get; set; } = new HashSet<StreamRoleWhitelistedUser>();
+    public HashSet<StreamRoleWhitelistedUser> Whitelist { get; set; } = new();
 
     /// <summary>
     /// A collection of blacklisted users' IDs. Blacklisted useres will never get the stream role.
     /// </summary>
-    public HashSet<StreamRoleBlacklistedUser> Blacklist { get; set; } = new HashSet<StreamRoleBlacklistedUser>();
+    public HashSet<StreamRoleBlacklistedUser> Blacklist { get; set; } = new();
 }
 
 public class StreamRoleBlacklistedUser : DbEntity
@@ -44,7 +44,7 @@ public class StreamRoleBlacklistedUser : DbEntity
 
     public override bool Equals(object obj)
     {
-        if (!(obj is StreamRoleBlacklistedUser x))
+        if (obj is not StreamRoleBlacklistedUser x)
             return false;
 
         return x.UserId == UserId;

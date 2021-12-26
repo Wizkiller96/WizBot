@@ -13,9 +13,9 @@ public class GoogleApiService : IGoogleApiService, INService
 {
     private const string SearchEngineId = "018084019232060951019:hs5piey28-e";
 
-    private YouTubeService yt;
-    private UrlshortenerService sh;
-    private CustomsearchService cs;
+    private readonly YouTubeService yt;
+    private readonly UrlshortenerService sh;
+    private readonly CustomsearchService cs;
         
     public GoogleApiService(IBotCredentials creds, IHttpClientFactory factory)
     {
@@ -32,7 +32,7 @@ public class GoogleApiService : IGoogleApiService, INService
         sh = new(bcs);
         cs = new(bcs);
     }
-    private static readonly Regex plRegex = new Regex("(?:youtu\\.be\\/|list=)(?<id>[\\da-zA-Z\\-_]*)", RegexOptions.Compiled);
+    private static readonly Regex plRegex = new("(?:youtu\\.be\\/|list=)(?<id>[\\da-zA-Z\\-_]*)", RegexOptions.Compiled);
     public async Task<IEnumerable<string>> GetPlaylistIdsByKeywordsAsync(string keywords, int count = 1)
     {
         await Task.Yield();

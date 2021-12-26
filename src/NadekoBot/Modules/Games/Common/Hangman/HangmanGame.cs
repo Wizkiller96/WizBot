@@ -40,7 +40,7 @@ public sealed class HangmanGame
     }
 
     public State GetState(GuessResult guessResult = GuessResult.NoAction)
-        => new State(_incorrect.Count,
+        => new(_incorrect.Count,
             CurrentPhase,
             CurrentPhase == Phase.Ended
                 ? _word
@@ -64,7 +64,7 @@ public sealed class HangmanGame
             else
                 output[i*2] = '_';
 
-            output[i * 2 + 1] = ' ';
+            output[(i * 2) + 1] = ' ';
         }
 
         return new(output);

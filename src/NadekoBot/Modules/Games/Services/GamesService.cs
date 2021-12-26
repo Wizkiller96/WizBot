@@ -11,7 +11,7 @@ public class GamesService : INService
 {
     private readonly GamesConfigService _gamesConfig;
 
-    public ConcurrentDictionary<ulong, GirlRating> GirlRatings { get; } = new ConcurrentDictionary<ulong, GirlRating>();
+    public ConcurrentDictionary<ulong, GirlRating> GirlRatings { get; } = new();
 
     public IReadOnlyList<string> EightBallResponses => _gamesConfig.Data.EightBallResponses;
 
@@ -22,14 +22,14 @@ public class GamesService : INService
 
     private const string TypingArticlesPath = "data/typing_articles3.json";
 
-    public List<TypingArticle> TypingArticles { get; } = new List<TypingArticle>();
+    public List<TypingArticle> TypingArticles { get; } = new();
 
     //channelId, game
-    public ConcurrentDictionary<ulong, AcrophobiaGame> AcrophobiaGames { get; } = new ConcurrentDictionary<ulong, AcrophobiaGame>();
-    public ConcurrentDictionary<ulong, TriviaGame> RunningTrivias { get; } = new ConcurrentDictionary<ulong, TriviaGame>();
-    public Dictionary<ulong, TicTacToe> TicTacToeGames { get; } = new Dictionary<ulong, TicTacToe>();
-    public ConcurrentDictionary<ulong, TypingGame> RunningContests { get; } = new ConcurrentDictionary<ulong, TypingGame>();
-    public ConcurrentDictionary<ulong, NunchiGame> NunchiGames { get; } = new ConcurrentDictionary<ulong, NunchiGame>();
+    public ConcurrentDictionary<ulong, AcrophobiaGame> AcrophobiaGames { get; } = new();
+    public ConcurrentDictionary<ulong, TriviaGame> RunningTrivias { get; } = new();
+    public Dictionary<ulong, TicTacToe> TicTacToeGames { get; } = new();
+    public ConcurrentDictionary<ulong, TypingGame> RunningContests { get; } = new();
+    public ConcurrentDictionary<ulong, NunchiGame> NunchiGames { get; } = new();
 
     public AsyncLazy<RatingTexts> Ratings { get; }
 

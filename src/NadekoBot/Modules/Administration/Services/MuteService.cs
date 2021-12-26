@@ -17,14 +17,13 @@ public class MuteService : INService
     public ConcurrentDictionary<ulong, string> GuildMuteRoles { get; }
     public ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>> MutedUsers { get; }
 
-    public ConcurrentDictionary<ulong, ConcurrentDictionary<(ulong, TimerType), Timer>> Un_Timers { get; }
-        = new ConcurrentDictionary<ulong, ConcurrentDictionary<(ulong, TimerType), Timer>>();
+    public ConcurrentDictionary<ulong, ConcurrentDictionary<(ulong, TimerType), Timer>> Un_Timers { get; } = new();
 
     public event Action<IGuildUser, IUser, MuteType, string> UserMuted = delegate { };
     public event Action<IGuildUser, IUser, MuteType, string> UserUnmuted = delegate { };
 
     private static readonly OverwritePermissions denyOverwrite =
-        new OverwritePermissions(addReactions: PermValue.Deny, sendMessages: PermValue.Deny,
+        new(addReactions: PermValue.Deny, sendMessages: PermValue.Deny,
             attachFiles: PermValue.Deny);
 
     private readonly DiscordSocketClient _client;

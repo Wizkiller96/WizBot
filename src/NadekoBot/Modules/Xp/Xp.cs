@@ -339,7 +339,7 @@ public partial class Xp : NadekoModule<XpService>
             await _tracker.EnsureUsersDownloadedAsync(ctx.Guild).ConfigureAwait(false);
                 
             allUsers = _service.GetTopUserXps(ctx.Guild.Id, 1000)
-                .Where(user => !(socketGuild.GetUser(user.UserId) is null))
+                .Where(user => socketGuild.GetUser(user.UserId) is not null)
                 .ToList();
         }
 
@@ -377,7 +377,7 @@ public partial class Xp : NadekoModule<XpService>
                         awardStr = $"({userXpData.AwardedXp})";
 
                     embed.AddField(
-                        $"#{i + 1 + curPage * 9} {user?.ToString() ?? users[i].UserId.ToString()}",
+                        $"#{i + 1 + (curPage * 9)} {user?.ToString() ?? users[i].UserId.ToString()}",
                         $"{GetText(strs.level_x(levelStats.Level))} - {levelStats.TotalXp}xp {awardStr}");
                 }
                 return embed;
@@ -405,7 +405,7 @@ public partial class Xp : NadekoModule<XpService>
             {
                 var user = users[i];
                 embed.AddField(
-                    $"#{i + 1 + page * 9} {user.ToString()}",
+                    $"#{i + 1 + (page * 9)} {user.ToString()}",
                     $"{GetText(strs.level_x(new LevelStats(users[i].TotalXp).Level))} - {users[i].TotalXp}xp");
             }
         }

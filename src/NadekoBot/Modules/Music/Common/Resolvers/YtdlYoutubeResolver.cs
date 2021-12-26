@@ -10,7 +10,7 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
         {"ss", "m\\:ss", "mm\\:ss", "h\\:mm\\:ss", "hh\\:mm\\:ss", "hhh\\:mm\\:ss"};
 
     public Regex YtVideoIdRegex { get; }
-        = new Regex(
+        = new(
             @"(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)(?<id>[a-zA-Z0-9_-]{6,11})",
             RegexOptions.Compiled
         );
@@ -21,7 +21,7 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
     private readonly YtdlOperation _ytdlIdOperation;
     private readonly YtdlOperation _ytdlSearchOperation;
 
-    private IGoogleApiService _google;
+    private readonly IGoogleApiService _google;
 
     public YtdlYoutubeResolver(ITrackCacher trackCacher, IGoogleApiService google)
     {
@@ -136,7 +136,7 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
             async () => await ExtractNewStreamUrlAsync(id)
         );
 
-    private static readonly Regex expiryRegex = new Regex(@"(?:[\?\&]expire\=(?<timestamp>\d+))");
+    private static readonly Regex expiryRegex = new(@"(?:[\?\&]expire\=(?<timestamp>\d+))");
     private static TimeSpan GetExpiry(string streamUrl)
     {
         var match = expiryRegex.Match(streamUrl);
@@ -205,8 +205,7 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
         );
 
 
-    private static readonly Regex _simplePlaylistRegex
-        = new Regex(@"&list=(?<id>[\w\-]{12,})", RegexOptions.Compiled);
+    private static readonly Regex _simplePlaylistRegex = new(@"&list=(?<id>[\w\-]{12,})", RegexOptions.Compiled);
 
     public async IAsyncEnumerable<ITrackInfo> ResolveTracksByPlaylistIdAsync(string playlistId)
     {

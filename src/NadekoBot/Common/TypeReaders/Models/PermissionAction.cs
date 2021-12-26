@@ -2,8 +2,8 @@
 
 public class PermissionAction
 {
-    public static PermissionAction Enable => new PermissionAction(true);
-    public static PermissionAction Disable => new PermissionAction(false);
+    public static PermissionAction Enable => new(true);
+    public static PermissionAction Disable => new(false);
 
     public bool Value { get; }
 

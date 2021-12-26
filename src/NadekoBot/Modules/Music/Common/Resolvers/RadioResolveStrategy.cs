@@ -4,10 +4,10 @@ namespace NadekoBot.Modules.Music.Resolvers;
 
 public class RadioResolver : IRadioResolver
 {
-    private readonly Regex plsRegex = new Regex("File1=(?<url>.*?)\\n", RegexOptions.Compiled);
-    private readonly Regex m3uRegex = new Regex("(?<url>^[^#].*)", RegexOptions.Compiled | RegexOptions.Multiline);
-    private readonly Regex asxRegex = new Regex("<ref href=\"(?<url>.*?)\"", RegexOptions.Compiled);
-    private readonly Regex xspfRegex = new Regex("<location>(?<url>.*?)</location>", RegexOptions.Compiled);
+    private readonly Regex plsRegex = new("File1=(?<url>.*?)\\n", RegexOptions.Compiled);
+    private readonly Regex m3uRegex = new("(?<url>^[^#].*)", RegexOptions.Compiled | RegexOptions.Multiline);
+    private readonly Regex asxRegex = new("<ref href=\"(?<url>.*?)\"", RegexOptions.Compiled);
+    private readonly Regex xspfRegex = new("<location>(?<url>.*?)</location>", RegexOptions.Compiled);
 
     public RadioResolver()
     {

@@ -24,11 +24,11 @@ public sealed class BotCredsProvider : IBotCredsProvider
     private string OldCredsJsonBackupPath => Path.Combine(Directory.GetCurrentDirectory(), "credentials.json.bak");
         
 
-    private Creds _creds = new Creds();
-    private IConfigurationRoot _config;
+    private readonly Creds _creds = new();
+    private readonly IConfigurationRoot _config;
         
 
-    private readonly object reloadLock = new object();
+    private readonly object reloadLock = new();
     public void Reload()
     {
         lock (reloadLock)

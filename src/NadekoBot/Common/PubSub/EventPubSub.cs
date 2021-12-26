@@ -2,9 +2,8 @@
 
 public class EventPubSub : IPubSub
 {
-    private readonly Dictionary<string, Dictionary<Delegate, List<Func<object, ValueTask>>>> _actions
-        = new Dictionary<string, Dictionary<Delegate, List<Func<object, ValueTask>>>>();
-    private readonly object locker = new object();
+    private readonly Dictionary<string, Dictionary<Delegate, List<Func<object, ValueTask>>>> _actions = new();
+    private readonly object locker = new();
         
     public Task Sub<TData>(in TypedKey<TData> key, Func<TData, ValueTask> action)
     {

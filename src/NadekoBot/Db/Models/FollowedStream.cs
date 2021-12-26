@@ -34,6 +34,5 @@ public class FollowedStream : DbEntity
     public override bool Equals(object obj) 
         => obj is FollowedStream fs && Equals(fs);
 
-    public StreamDataKey CreateKey() =>
-        new StreamDataKey(Type, Username.ToLower());
+    public StreamDataKey CreateKey() => new(Type, Username.ToLower());
 }

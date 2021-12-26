@@ -126,7 +126,7 @@ public partial class Utility
                     var when = rem.When;
                     var diff = when - DateTime.UtcNow;
                     embed.AddField(
-                        $"#{++i + page * 10} {rem.When:HH:mm yyyy-MM-dd} UTC " +
+                        $"#{++i + (page * 10)} {rem.When:HH:mm yyyy-MM-dd} UTC " +
                         $"(in {diff.Humanize(2, minUnit: TimeUnit.Minute, culture: _cultureInfo)})",
                         $@"`Target:` {(rem.IsPrivate ? "DM" : "Channel")}
 `TargetId:` {rem.ChannelId}

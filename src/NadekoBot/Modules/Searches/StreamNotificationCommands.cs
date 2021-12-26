@@ -118,7 +118,7 @@ public partial class Searches
                 {
                     var elem = elements[index];
                     eb.AddField(
-                        $"**#{index + 1 + 12 * cur}** {elem.Username.ToLower()}",
+                        $"**#{index + 1 + (12 * cur)}** {elem.Username.ToLower()}",
                         $"【{elem.Type}】\n<#{elem.ChannelId}>\n{elem.Message?.TrimTo(50)}",
                         true);
                 }

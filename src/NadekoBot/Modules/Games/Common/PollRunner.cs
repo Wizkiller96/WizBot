@@ -9,7 +9,7 @@ public class PollRunner
 
     public event Func<IUserMessage, IGuildUser, Task> OnVoted;
 
-    private readonly SemaphoreSlim _locker = new SemaphoreSlim(1, 1);
+    private readonly SemaphoreSlim _locker = new(1, 1);
 
     public PollRunner(DbService db, Poll poll)
     {

@@ -41,5 +41,5 @@ public static class ConfigPrinters
         => culture.Name;
 
     public static string Color(Rgba32 color)
-        => ((uint) (color.B << 0 | color.G << 8 | color.R << 16)).ToString("X6");
+        => ((uint) ((color.B << 0) | (color.G << 8) | (color.R << 16))).ToString("X6");
 }

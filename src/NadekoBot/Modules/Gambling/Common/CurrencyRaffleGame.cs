@@ -25,7 +25,7 @@ public class CurrencyRaffleGame
         }
     }
 
-    private readonly HashSet<User> _users = new HashSet<User>();
+    private readonly HashSet<User> _users = new();
     public IEnumerable<User> Users => _users;
     public Type GameType { get; }
 

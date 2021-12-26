@@ -56,7 +56,7 @@ public partial class Gambling
                 {
                     var entry = theseEntries[i];
                     embed.AddField(
-                        $"#{curPage * 9 + i + 1} - {entry.Price}{CurrencySign}",
+                        $"#{(curPage * 9) + i + 1} - {entry.Price}{CurrencySign}",
                         EntryToString(entry),
                         true);
                 }

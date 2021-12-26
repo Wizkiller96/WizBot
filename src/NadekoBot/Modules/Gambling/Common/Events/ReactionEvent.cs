@@ -19,8 +19,8 @@ public class ReactionEvent : ICurrencyEvent
     private readonly Func<CurrencyEvent.Type, EventOptions, long, IEmbedBuilder> _embedFunc;
     private readonly bool _isPotLimited;
     private readonly ITextChannel _channel;
-    private readonly ConcurrentHashSet<ulong> _awardedUsers = new ConcurrentHashSet<ulong>();
-    private readonly ConcurrentQueue<ulong> _toAward = new ConcurrentQueue<ulong>();
+    private readonly ConcurrentHashSet<ulong> _awardedUsers = new();
+    private readonly ConcurrentQueue<ulong> _toAward = new();
     private readonly Timer _t;
     private readonly Timer _timeout = null;
     private readonly bool _noRecentlyJoinedServer;
@@ -130,7 +130,7 @@ public class ReactionEvent : ICurrencyEvent
         }
     }
 
-    private readonly object stopLock = new object();
+    private readonly object stopLock = new();
     public async Task StopEvent()
     {
         await Task.Yield();
@@ -160,8 +160,8 @@ public class ReactionEvent : ICurrencyEvent
                 || msg.Id != _msg.Id // same message
                 || gu.IsBot // no bots
                 || (DateTime.UtcNow - gu.CreatedAt).TotalDays <= 5 // no recently created accounts
-                || _noRecentlyJoinedServer && // if specified, no users who joined the server in the last 24h
-                (gu.JoinedAt is null || (DateTime.UtcNow - gu.JoinedAt.Value).TotalDays < 1))  // and no users for who we don't know when they joined
+                || (_noRecentlyJoinedServer && // if specified, no users who joined the server in the last 24h
+                    (gu.JoinedAt is null || (DateTime.UtcNow - gu.JoinedAt.Value).TotalDays < 1)))  // and no users for who we don't know when they joined
             {
                 return;
             }
@@ -177,7 +177,7 @@ public class ReactionEvent : ICurrencyEvent
         return Task.CompletedTask;
     }
 
-    private readonly object potLock = new object();
+    private readonly object potLock = new();
     private bool TryTakeFromPot()
     {
         if (_isPotLimited)

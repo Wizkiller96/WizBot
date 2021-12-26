@@ -9,11 +9,11 @@ public class CurrencyRaffleService : INService
         NotEnoughCurrency,
         AlreadyJoinedOrInvalidAmount
     }
-    private readonly SemaphoreSlim _locker = new SemaphoreSlim(1, 1);
+    private readonly SemaphoreSlim _locker = new(1, 1);
     private readonly DbService _db;
     private readonly ICurrencyService _cs;
 
-    public Dictionary<ulong, CurrencyRaffleGame> Games { get; } = new Dictionary<ulong, CurrencyRaffleGame>();
+    public Dictionary<ulong, CurrencyRaffleGame> Games { get; } = new();
 
     public CurrencyRaffleService(DbService db, ICurrencyService cs)
     {

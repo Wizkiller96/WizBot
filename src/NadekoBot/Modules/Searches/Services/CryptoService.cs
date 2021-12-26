@@ -53,7 +53,7 @@ public class CryptoService : INService
         return (crypto, null);
     }
 
-    private readonly SemaphoreSlim getCryptoLock = new SemaphoreSlim(1, 1);
+    private readonly SemaphoreSlim getCryptoLock = new(1, 1);
     public async Task<List<CryptoResponseData>> CryptoData()
     {
         await getCryptoLock.WaitAsync();

@@ -8,7 +8,7 @@ public partial class Games
     [Group]
     public class TicTacToeCommands : NadekoSubmodule<GamesService>
     {
-        private readonly SemaphoreSlim _sem = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _sem = new(1, 1);
         private readonly DiscordSocketClient _client;
 
         public TicTacToeCommands(DiscordSocketClient client)

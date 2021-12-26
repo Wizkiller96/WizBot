@@ -10,14 +10,14 @@ public static class StringExtensions
     public static string PadBoth(this string str, int length)
     {
         var spaces = length - str.Length;
-        var padLeft = spaces / 2 + str.Length;
+        var padLeft = (spaces / 2) + str.Length;
         return str.PadLeft(padLeft).PadRight(length);
     }
         
     public static T MapJson<T>(this string str)
         => JsonConvert.DeserializeObject<T>(str);
 
-    private static readonly HashSet<char> lettersAndDigits = new HashSet<char>(Enumerable.Range(48, 10)
+    private static readonly HashSet<char> lettersAndDigits = new(Enumerable.Range(48, 10)
         .Concat(Enumerable.Range(65, 26))
         .Concat(Enumerable.Range(97, 26))
         .Select(x => (char)x));
@@ -102,7 +102,7 @@ public static class StringExtensions
         return ms;
     }
 
-    private static readonly Regex filterRegex = new Regex(@"discord(?:\.gg|\.io|\.me|\.li|(?:app)?\.com\/invite)\/(\w+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private static readonly Regex filterRegex = new(@"discord(?:\.gg|\.io|\.me|\.li|(?:app)?\.com\/invite)\/(\w+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
     public static bool IsDiscordInvite(this string str)
         => filterRegex.IsMatch(str);
 
@@ -137,7 +137,7 @@ public static class StringExtensions
         txt.All(c => lettersAndDigits.Contains(c));
 
     private static readonly Regex CodePointRegex
-        = new Regex(@"(\\U(?<code>[a-zA-Z0-9]{8})|\\u(?<code>[a-zA-Z0-9]{4})|\\x(?<code>[a-zA-Z0-9]{2}))",
+        = new(@"(\\U(?<code>[a-zA-Z0-9]{8})|\\u(?<code>[a-zA-Z0-9]{4})|\\x(?<code>[a-zA-Z0-9]{2}))",
             RegexOptions.Compiled);
         
     public static string UnescapeUnicodeCodePoints(this string input)

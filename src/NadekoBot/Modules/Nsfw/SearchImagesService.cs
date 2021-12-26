@@ -14,7 +14,7 @@ public record UrlReply
     public string Url { get; init; }
     public string Rating { get; init; }
     public string Provider { get; init; }
-    public List<string> Tags { get; } = new List<string>();
+    public List<string> Tags { get; } = new();
 }
 
 public class SearchImagesService : ISearchImagesService, INService
@@ -26,9 +26,9 @@ public class SearchImagesService : ISearchImagesService, INService
     private readonly DbService _db;
     private ConcurrentDictionary<ulong, HashSet<string>> BlacklistedTags { get; }
 
-    public ConcurrentDictionary<ulong, Timer> AutoHentaiTimers { get; } = new ConcurrentDictionary<ulong, Timer>();
-    public ConcurrentDictionary<ulong, Timer> AutoBoobTimers { get; } = new ConcurrentDictionary<ulong, Timer>();
-    public ConcurrentDictionary<ulong, Timer> AutoButtTimers { get; } = new ConcurrentDictionary<ulong, Timer>();
+    public ConcurrentDictionary<ulong, Timer> AutoHentaiTimers { get; } = new();
+    public ConcurrentDictionary<ulong, Timer> AutoBoobTimers { get; } = new();
+    public ConcurrentDictionary<ulong, Timer> AutoButtTimers { get; } = new();
 
     public SearchImagesService(DbService db,
         IHttpClientFactory http,
@@ -219,7 +219,7 @@ public class SearchImagesService : ISearchImagesService, INService
         }
     }
 
-    private readonly object taglock = new object();
+    private readonly object taglock = new();
     public ValueTask<bool> ToggleBlacklistTag(ulong guildId, string tag)
     {
         lock (taglock)

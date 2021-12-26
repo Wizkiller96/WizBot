@@ -12,8 +12,7 @@ public class FeedsService : INService
     private readonly DiscordSocketClient _client;
     private readonly IEmbedBuilderService _eb;
 
-    private readonly ConcurrentDictionary<string, DateTime> _lastPosts =
-        new ConcurrentDictionary<string, DateTime>();
+    private readonly ConcurrentDictionary<string, DateTime> _lastPosts = new();
 
     public FeedsService(Bot bot, DbService db, DiscordSocketClient client, IEmbedBuilderService eb)
     {
@@ -59,7 +58,7 @@ public class FeedsService : INService
                         .Select(item => (Item: item, LastUpdate: item.PublishingDate?.ToUniversalTime()
                                                                  ?? (item.SpecificItem as AtomFeedItem)?.UpdatedDate
                                                                  ?.ToUniversalTime()))
-                        .Where(data => !(data.LastUpdate is null))
+                        .Where(data => data.LastUpdate is not null)
                         .Select(data => (data.Item, LastUpdate: (DateTime) data.LastUpdate))
                         .OrderByDescending(data => data.LastUpdate)
                         .Reverse() // start from the oldest

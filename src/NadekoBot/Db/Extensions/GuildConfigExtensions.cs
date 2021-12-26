@@ -32,12 +32,12 @@ public static class GuildConfigExtensions
     }
         
     private static List<WarningPunishment> DefaultWarnPunishments =>
-        new List<WarningPunishment>() {
-            new WarningPunishment() {
+        new() {
+            new() {
                 Count = 3,
                 Punishment = PunishmentAction.Kick
             },
-            new WarningPunishment() {
+            new() {
                 Count = 5,
                 Punishment = PunishmentAction.Ban
             }

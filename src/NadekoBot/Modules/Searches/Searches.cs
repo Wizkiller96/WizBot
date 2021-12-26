@@ -267,7 +267,7 @@ public partial class Searches : NadekoModule<SearchesService>
         public string ResultUrl { get; set; }
     }
 
-    private static readonly ConcurrentDictionary<string, string> cachedShortenedLinks = new ConcurrentDictionary<string, string>();
+    private static readonly ConcurrentDictionary<string, string> cachedShortenedLinks = new();
 
     [NadekoCommand, Aliases]
     public async Task Shorten([Leftover] string query)
@@ -491,7 +491,7 @@ public partial class Searches : NadekoModule<SearchesService>
                 var data = JsonConvert.DeserializeObject<DefineModel>(res);
 
                 var datas = data.Results
-                    .Where(x => !(x.Senses is null) && x.Senses.Count > 0 && !(x.Senses[0].Definition is null))
+                    .Where(x => x.Senses is not null && x.Senses.Count > 0 && x.Senses[0].Definition is not null)
                     .Select(x => (Sense: x.Senses[0], x.PartOfSpeech));
 
                 if (!datas.Any())
@@ -611,10 +611,10 @@ public partial class Searches : NadekoModule<SearchesService>
             {
                 var x = i * 50;
                 img.Mutate(m => m.FillPolygon(colorObjects[i], new PointF[] {
-                    new PointF(x, 0),
-                    new PointF(x + 50, 0),
-                    new PointF(x + 50, 50),
-                    new PointF(x, 50)
+                    new(x, 0),
+                    new(x + 50, 0),
+                    new(x + 50, 50),
+                    new(x, 50)
                 }));
             }
 

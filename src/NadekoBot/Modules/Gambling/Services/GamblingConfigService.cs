@@ -7,7 +7,7 @@ public sealed class GamblingConfigService : ConfigServiceBase<GamblingConfig>
 {
     public override string Name { get; } = "gambling";
     private const string FilePath = "data/gambling.yml";
-    private static TypedKey<GamblingConfig> changeKey = new TypedKey<GamblingConfig>("config.gambling.updated");
+    private static readonly TypedKey<GamblingConfig> changeKey = new("config.gambling.updated");
 
         
     public GamblingConfigService(IConfigSeria serializer, IPubSub pubSub)

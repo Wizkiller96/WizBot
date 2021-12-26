@@ -95,10 +95,10 @@ public abstract class ConfigServiceBase<TSettings> : IConfigService
         File.WriteAllText(_filePath, strData);
     }
         
-    private readonly Dictionary<string, Func<TSettings, string, bool>> _propSetters = new Dictionary<string, Func<TSettings, string, bool>>();
-    private readonly Dictionary<string, Func<object>> _propSelectors = new Dictionary<string, Func<object>>();
-    private readonly Dictionary<string, Func<object, string>> _propPrinters = new Dictionary<string, Func<object, string>>();
-    private readonly Dictionary<string, string> _propComments = new Dictionary<string, string>();
+    private readonly Dictionary<string, Func<TSettings, string, bool>> _propSetters = new();
+    private readonly Dictionary<string, Func<object>> _propSelectors = new();
+    private readonly Dictionary<string, Func<object, string>> _propPrinters = new();
+    private readonly Dictionary<string, string> _propComments = new();
         
     protected void AddParsedProp<TProp>(
         string key,

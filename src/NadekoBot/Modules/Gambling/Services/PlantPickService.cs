@@ -24,10 +24,10 @@ public class PlantPickService : INService
     private readonly DiscordSocketClient _client;
     private readonly GamblingConfigService _gss;
 
-    public readonly ConcurrentHashSet<ulong> _generationChannels = new ConcurrentHashSet<ulong>();
+    public readonly ConcurrentHashSet<ulong> _generationChannels = new();
     //channelId/last generation
-    public ConcurrentDictionary<ulong, DateTime> LastGenerations { get; } = new ConcurrentDictionary<ulong, DateTime>();
-    private readonly SemaphoreSlim pickLock = new SemaphoreSlim(1, 1);
+    public ConcurrentDictionary<ulong, DateTime> LastGenerations { get; } = new();
+    private readonly SemaphoreSlim pickLock = new(1, 1);
 
     public PlantPickService(DbService db, CommandHandler cmd, IBotStrings strings,
         IDataCache cache, FontProvider fonts, ICurrencyService cs,
@@ -172,7 +172,7 @@ public class PlantPickService : INService
         if (msg is null || msg.Author.IsBot)
             return Task.CompletedTask;
 
-        if (!(imsg.Channel is ITextChannel channel))
+        if (imsg.Channel is not ITextChannel channel)
             return Task.CompletedTask;
 
         if (!_generationChannels.Contains(channel.Id))
@@ -189,7 +189,7 @@ public class PlantPickService : INService
                 if (DateTime.UtcNow - TimeSpan.FromSeconds(config.Generation.GenCooldown) < lastGeneration) //recently generated in this channel, don't generate again
                     return;
 
-                var num = rng.Next(1, 101) + config.Generation.Chance * 100;
+                var num = rng.Next(1, 101) + (config.Generation.Chance * 100);
                 if (num > 100 && LastGenerations.TryUpdate(channel.Id, DateTime.UtcNow, lastGeneration))
                 {
                     var dropAmount = config.Generation.MinAmount;

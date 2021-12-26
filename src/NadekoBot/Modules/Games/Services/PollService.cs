@@ -8,7 +8,7 @@ namespace NadekoBot.Modules.Games.Services;
 
 public class PollService : IEarlyBehavior
 {
-    public ConcurrentDictionary<ulong, PollRunner> ActivePolls { get; } = new ConcurrentDictionary<ulong, PollRunner>();
+    public ConcurrentDictionary<ulong, PollRunner> ActivePolls { get; } = new();
 
     public int Priority => 5;
 

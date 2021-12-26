@@ -11,7 +11,7 @@ public class YamlSeria : IConfigSeria
     private readonly IDeserializer _deserializer;
 
     private static readonly Regex CodePointRegex
-        = new Regex(@"(\\U(?<code>[a-zA-Z0-9]{8})|\\u(?<code>[a-zA-Z0-9]{4})|\\x(?<code>[a-zA-Z0-9]{2}))",
+        = new(@"(\\U(?<code>[a-zA-Z0-9]{8})|\\u(?<code>[a-zA-Z0-9]{4})|\\x(?<code>[a-zA-Z0-9]{2}))",
             RegexOptions.Compiled);
 
     public YamlSeria()

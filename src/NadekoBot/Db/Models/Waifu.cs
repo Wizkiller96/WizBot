@@ -14,7 +14,7 @@ public class WaifuInfo : DbEntity
     public DiscordUser Affinity { get; set; }
 
     public int Price { get; set; }
-    public List<WaifuItem> Items { get; set; } = new List<WaifuItem>();
+    public List<WaifuItem> Items { get; set; } = new();
 
     public override string ToString()
     {

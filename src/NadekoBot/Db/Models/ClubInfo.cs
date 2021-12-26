@@ -16,10 +16,10 @@ public class ClubInfo : DbEntity
     public int OwnerId { get; set; }
     public DiscordUser Owner { get; set; }
 
-    public List<DiscordUser> Users { get; set; } = new List<DiscordUser>();
+    public List<DiscordUser> Users { get; set; } = new();
 
-    public List<ClubApplicants> Applicants { get; set; } = new List<ClubApplicants>();
-    public List<ClubBans> Bans { get; set; } = new List<ClubBans>();
+    public List<ClubApplicants> Applicants { get; set; } = new();
+    public List<ClubBans> Bans { get; set; } = new();
     public string Description { get; set; }
 
     public override string ToString()

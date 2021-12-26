@@ -14,7 +14,7 @@ public sealed class ImageOnlyChannelService : IEarlyBehavior
     private readonly DbService _db;
     private readonly ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>> _enabledOn;
 
-    private Channel<IUserMessage> _deleteQueue = Channel.CreateBounded<IUserMessage>(new BoundedChannelOptions(100)
+    private readonly Channel<IUserMessage> _deleteQueue = Channel.CreateBounded<IUserMessage>(new BoundedChannelOptions(100)
     {
         FullMode = BoundedChannelFullMode.DropOldest,
         SingleReader = true,
@@ -74,8 +74,8 @@ public sealed class ImageOnlyChannelService : IEarlyBehavior
         var newState = false;
         using var uow = _db.GetDbContext();
         if (forceDisable 
-            || _enabledOn.TryGetValue(guildId, out var channels) 
-            && channels.TryRemove(channelId))
+            || (_enabledOn.TryGetValue(guildId, out var channels) 
+                && channels.TryRemove(channelId)))
         {
             uow.ImageOnlyChannels.Delete(x => x.ChannelId == channelId);
         }

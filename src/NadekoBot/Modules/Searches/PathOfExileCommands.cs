@@ -84,7 +84,7 @@ public partial class Searches
                     {
                         var character = tempList[i];
 
-                        sb.AppendLine($"#{i + 1 + curPage * 9,-4}{character.Name,-23}{ShortLeagueName(character.League),-10}{character.Class,-13}{character.Level,-3}");
+                        sb.AppendLine($"#{i + 1 + (curPage * 9),-4}{character.Name,-23}{ShortLeagueName(character.League),-10}{character.Class,-13}{character.Level,-3}");
                     }
 
                     sb.AppendLine("```");
@@ -212,7 +212,7 @@ public partial class Searches
             }
         }
 
-        private Dictionary<string, string> currencyDictionary = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        private Dictionary<string, string> currencyDictionary = new(StringComparer.OrdinalIgnoreCase)
         {
             {"Chaos Orb", "Chaos Orb" },
             {"Orb of Alchemy", "Orb of Alchemy" },

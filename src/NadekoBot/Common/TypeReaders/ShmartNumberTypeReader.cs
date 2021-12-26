@@ -68,7 +68,7 @@ public sealed class ShmartNumberTypeReader : NadekoTypeReader<ShmartNumber>
         }
     }
 
-    private static readonly Regex percentRegex = new Regex(@"^((?<num>100|\d{1,2})%)$", RegexOptions.Compiled);
+    private static readonly Regex percentRegex = new(@"^((?<num>100|\d{1,2})%)$", RegexOptions.Compiled);
 
     private long Cur(ICommandContext ctx)
     {

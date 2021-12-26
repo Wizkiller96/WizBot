@@ -26,13 +26,13 @@ public class RollDuelGame
     }
         
     private readonly Timer _timeoutTimer;
-    private readonly NadekoRandom _rng = new NadekoRandom();
-    private readonly SemaphoreSlim _locker = new SemaphoreSlim(1, 1);
+    private readonly NadekoRandom _rng = new();
+    private readonly SemaphoreSlim _locker = new(1, 1);
         
     public event Func<RollDuelGame, Task> OnGameTick;
     public event Func<RollDuelGame, Reason, Task> OnEnded;
 
-    public List<(int, int)> Rolls { get; } = new List<(int, int)>();
+    public List<(int, int)> Rolls { get; } = new();
     public State CurrentState { get; private set; }
     public ulong Winner { get; private set; }
 
@@ -111,7 +111,7 @@ public class RollDuelGame
                 await _cs.AddAsync(Winner, "Roll Duel win", won)
                     .ConfigureAwait(false);
 
-                await _cs.AddAsync(_botId, "Roll Duel fee", Amount * 2 - won)
+                await _cs.AddAsync(_botId, "Roll Duel fee", (Amount * 2) - won)
                     .ConfigureAwait(false);
             }
             try { await (OnGameTick?.Invoke(this)).ConfigureAwait(false); } catch { }

@@ -5,7 +5,7 @@ namespace NadekoBot.Modules.Administration.Services;
 
 public class GuildTimezoneService : INService
 {
-    public static ConcurrentDictionary<ulong, GuildTimezoneService> AllServices { get; } = new ConcurrentDictionary<ulong, GuildTimezoneService>();
+    public static ConcurrentDictionary<ulong, GuildTimezoneService> AllServices { get; } = new();
     private readonly ConcurrentDictionary<ulong, TimeZoneInfo> _timezones;
     private readonly DbService _db;
 

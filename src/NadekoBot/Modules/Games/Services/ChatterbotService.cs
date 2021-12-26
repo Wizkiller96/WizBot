@@ -96,7 +96,7 @@ public class ChatterBotService : IEarlyBehavior
 
     public async Task<bool> RunBehavior(IGuild guild, IUserMessage usrMsg)
     {
-        if (!(guild is SocketGuild sg))
+        if (guild is not SocketGuild sg)
             return false;
         try
         {
@@ -113,7 +113,7 @@ public class ChatterBotService : IEarlyBehavior
                 if (pc.Verbose)
                 {
                     var returnMsg = _strings.GetText(strs.perm_prevent(index + 1,
-                        Format.Bold(pc.Permissions[index].GetCommand(_cmd.GetPrefix(guild), (SocketGuild)guild))));
+                        Format.Bold(pc.Permissions[index].GetCommand(_cmd.GetPrefix(sg), sg))));
                         
                     try { await usrMsg.Channel.SendErrorAsync(_eb, returnMsg).ConfigureAwait(false); } catch { }
                     Log.Information(returnMsg);

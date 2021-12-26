@@ -10,7 +10,7 @@ public sealed record SmartPlainText : SmartText
     }
 
     public static implicit operator SmartPlainText(string input)
-        => new SmartPlainText(input);
+        => new(input);
 
     public static implicit operator string(SmartPlainText input)
         => input.Text;

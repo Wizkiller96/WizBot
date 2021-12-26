@@ -10,7 +10,7 @@ public class GuildConfig : DbEntity
     public string Prefix { get; set; } = null;
 
     public bool DeleteMessageOnCommand { get; set; }
-    public HashSet<DelMsgOnCmdChannel> DelMsgOnCmdChannels { get; set; } = new HashSet<DelMsgOnCmdChannel>();
+    public HashSet<DelMsgOnCmdChannel> DelMsgOnCmdChannels { get; set; } = new();
     public string AutoAssignRoleIds { get; set; }
     //greet stuff
     public bool AutoDeleteGreetMessages { get; set; } //unused
@@ -44,31 +44,31 @@ public class GuildConfig : DbEntity
     public bool AutoDeleteSelfAssignedRoleMessages { get; set; }
 
     //stream notifications
-    public HashSet<FollowedStream> FollowedStreams { get; set; } = new HashSet<FollowedStream>();
+    public HashSet<FollowedStream> FollowedStreams { get; set; } = new();
 
     //currencyGeneration
-    public HashSet<GCChannelId> GenerateCurrencyChannelIds { get; set; } = new HashSet<GCChannelId>();
+    public HashSet<GCChannelId> GenerateCurrencyChannelIds { get; set; } = new();
 
     public List<Permissionv2> Permissions { get; set; }
     public bool VerbosePermissions { get; set; } = true;
     public string PermissionRole { get; set; } = null;
 
-    public HashSet<CommandCooldown> CommandCooldowns { get; set; } = new HashSet<CommandCooldown>();
+    public HashSet<CommandCooldown> CommandCooldowns { get; set; } = new();
 
     //filtering
     public bool FilterInvites { get; set; }
     public bool FilterLinks { get; set; }
-    public HashSet<FilterChannelId> FilterInvitesChannelIds { get; set; } = new HashSet<FilterChannelId>();
-    public HashSet<FilterLinksChannelId> FilterLinksChannelIds { get; set; } = new HashSet<FilterLinksChannelId>();
+    public HashSet<FilterChannelId> FilterInvitesChannelIds { get; set; } = new();
+    public HashSet<FilterLinksChannelId> FilterLinksChannelIds { get; set; } = new();
 
     //public bool FilterLinks { get; set; }
     //public HashSet<FilterLinksChannelId> FilterLinksChannels { get; set; } = new HashSet<FilterLinksChannelId>();
 
     public bool FilterWords { get; set; }
-    public HashSet<FilteredWord> FilteredWords { get; set; } = new HashSet<FilteredWord>();
-    public HashSet<FilterChannelId> FilterWordsChannelIds { get; set; } = new HashSet<FilterChannelId>();
+    public HashSet<FilteredWord> FilteredWords { get; set; } = new();
+    public HashSet<FilterChannelId> FilterWordsChannelIds { get; set; } = new();
 
-    public HashSet<MutedUserId> MutedUsers { get; set; } = new HashSet<MutedUserId>();
+    public HashSet<MutedUserId> MutedUsers { get; set; } = new();
 
     public string MuteRoleName { get; set; }
     public bool CleverbotEnabled { get; set; }
@@ -80,12 +80,12 @@ public class GuildConfig : DbEntity
     public string Locale { get; set; } = null;
     public string TimeZoneId { get; set; } = null;
 
-    public HashSet<UnmuteTimer> UnmuteTimers { get; set; } = new HashSet<UnmuteTimer>();
-    public HashSet<UnbanTimer> UnbanTimer { get; set; } = new HashSet<UnbanTimer>();
-    public HashSet<UnroleTimer> UnroleTimer { get; set; } = new HashSet<UnroleTimer>();
+    public HashSet<UnmuteTimer> UnmuteTimers { get; set; } = new();
+    public HashSet<UnbanTimer> UnbanTimer { get; set; } = new();
+    public HashSet<UnroleTimer> UnroleTimer { get; set; } = new();
     public HashSet<VcRoleInfo> VcRoleInfos { get; set; }
-    public HashSet<CommandAlias> CommandAliases { get; set; } = new HashSet<CommandAlias>();
-    public List<WarningPunishment> WarnPunishments { get; set; } = new List<WarningPunishment>();
+    public HashSet<CommandAlias> CommandAliases { get; set; } = new();
+    public List<WarningPunishment> WarnPunishments { get; set; } = new();
     public bool WarningsInitialized { get; set; }
     public HashSet<SlowmodeIgnoredUser> SlowmodeIgnoredUsers { get; set; }
     public HashSet<SlowmodeIgnoredRole> SlowmodeIgnoredRoles { get; set; }
@@ -97,8 +97,8 @@ public class GuildConfig : DbEntity
     public StreamRoleSettings StreamRole { get; set; }
 
     public XpSettings XpSettings { get; set; }
-    public List<FeedSub> FeedSubs { get; set; } = new List<FeedSub>();
-    public IndexedCollection<ReactionRoleMessage> ReactionRoleMessages { get; set; } = new IndexedCollection<ReactionRoleMessage>();
+    public List<FeedSub> FeedSubs { get; set; } = new();
+    public IndexedCollection<ReactionRoleMessage> ReactionRoleMessages { get; set; } = new();
     public bool NotifyStreamOffline { get; set; }
     public List<GroupName> SelfAssignableRoleGroupNames { get; set; }
     public int WarnExpireHours { get; set; } = 0;

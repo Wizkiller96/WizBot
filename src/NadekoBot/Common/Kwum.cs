@@ -49,7 +49,7 @@ public readonly struct kwum : IEquatable<kwum>
     }
 
     public static kwum operator +(kwum left, kwum right)
-        => new kwum(left._value + right._value);
+        => new(left._value + right._value);
 
     public static bool operator ==(kwum left, kwum right)
         => left._value == right._value;
@@ -63,7 +63,7 @@ public readonly struct kwum : IEquatable<kwum>
     public static implicit operator int(kwum kwum)
         => kwum._value;
     public static implicit operator kwum(int num)
-        => new kwum(num);
+        => new(num);
 
     public static bool IsValidChar(char c)
         => ValidCharacters.Contains(c);
@@ -77,7 +77,7 @@ public readonly struct kwum : IEquatable<kwum>
         while (localValue > 0)
         {
             localValue = Math.DivRem(localValue, count, out var rem);
-            chars[--arrSize] = ValidCharacters[(int)rem];
+            chars[--arrSize] = ValidCharacters[rem];
         }
 
         return new(chars);

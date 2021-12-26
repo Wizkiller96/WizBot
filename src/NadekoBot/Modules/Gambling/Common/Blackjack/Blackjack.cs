@@ -13,7 +13,7 @@ public class Blackjack
     public Dealer Dealer { get; set; }
 
         
-    public List<User> Players { get; set; } = new List<User>();
+    public List<User> Players { get; set; } = new();
     public GameState State { get; set; } = GameState.Starting;
     public User CurrentUser { get; private set; }
 
@@ -24,7 +24,7 @@ public class Blackjack
     public event Func<Blackjack, Task> StateUpdated;
     public event Func<Blackjack, Task> GameEnded;
 
-    private readonly SemaphoreSlim locker = new SemaphoreSlim(1, 1);
+    private readonly SemaphoreSlim locker = new(1, 1);
 
     public Blackjack(ICurrencyService cs, DbService db)
     {
@@ -174,7 +174,7 @@ public class Blackjack
     {
         var hw = Dealer.GetHandValue();
         while (hw < 17
-               || hw == 17 && Dealer.Cards.Count(x => x.Number == 1) > (Dealer.GetRawHandValue() - 17) / 10)// hit on soft 17
+               || (hw == 17 && Dealer.Cards.Count(x => x.Number == 1) > (Dealer.GetRawHandValue() - 17) / 10))// hit on soft 17
         {
             /* Dealer has
                  A 6

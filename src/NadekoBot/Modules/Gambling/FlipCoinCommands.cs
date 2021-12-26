@@ -13,7 +13,7 @@ public partial class Gambling
     {
         private readonly IImageCache _images;
         private readonly ICurrencyService _cs;
-        private static readonly NadekoRandom rng = new NadekoRandom();
+        private static readonly NadekoRandom rng = new();
 
         public FlipCoinCommands(IDataCache data, ICurrencyService cs, GamblingConfigService gss) : base(gss)
         {

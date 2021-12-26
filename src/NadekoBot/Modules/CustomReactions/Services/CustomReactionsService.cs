@@ -22,12 +22,12 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
         Message,
     }
 
-    private readonly object _gcrWriteLock = new object();
+    private readonly object _gcrWriteLock = new();
 
-    private readonly TypedKey<CustomReaction> _gcrAddedKey = new TypedKey<CustomReaction>("gcr.added");
-    private readonly TypedKey<int> _gcrDeletedkey = new TypedKey<int>("gcr.deleted");
-    private readonly TypedKey<CustomReaction> _gcrEditedKey = new TypedKey<CustomReaction>("gcr.edited");
-    private readonly TypedKey<bool> _crsReloadedKey = new TypedKey<bool>("crs.reloaded");
+    private readonly TypedKey<CustomReaction> _gcrAddedKey = new("gcr.added");
+    private readonly TypedKey<int> _gcrDeletedkey = new("gcr.deleted");
+    private readonly TypedKey<CustomReaction> _gcrEditedKey = new("gcr.edited");
+    private readonly TypedKey<bool> _crsReloadedKey = new("crs.reloaded");
     private const string MentionPh = "%bot.mention%";
 
     // it is perfectly fine to have global customreactions as an array
@@ -119,8 +119,7 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
     public Task OnReadyAsync() 
         => ReloadInternal(_bot.GetCurrentGuildIds());
 
-    private ValueTask OnCrsShouldReload(bool _)
-        => new ValueTask(ReloadInternal(_bot.GetCurrentGuildIds()));
+    private ValueTask OnCrsShouldReload(bool _) => new(ReloadInternal(_bot.GetCurrentGuildIds()));
         
     private ValueTask OnGcrAdded(CustomReaction c)
     {
@@ -257,7 +256,7 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
         if (toDelete is null)
             return null;
             
-        if (toDelete.IsGlobal() && guildId is null || guildId == toDelete.GuildId)
+        if ((toDelete.IsGlobal() && guildId is null) || guildId == toDelete.GuildId)
         {
             uow.CustomReactions.Remove(toDelete);
             await uow.SaveChangesAsync();
@@ -290,7 +289,7 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
         if (!ready)
             return null;
 
-        if (!(umsg.Channel is SocketTextChannel channel))
+        if (umsg.Channel is not SocketTextChannel channel)
             return null;
 
         var content = umsg.Content.Trim().ToLowerInvariant();

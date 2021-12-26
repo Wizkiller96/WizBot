@@ -45,7 +45,7 @@ public class AdministrationService : INService
     {
         var _ = Task.Run(async () =>
         {
-            if (!(msg.Channel is SocketTextChannel channel))
+            if (msg.Channel is not SocketTextChannel channel)
                 return;
 
             //wat ?!
@@ -145,7 +145,7 @@ public class AdministrationService : INService
     {
         var msg = await chanl.GetMessageAsync(messageId);
 
-        if (!(msg is IUserMessage umsg) || msg.Author.Id != context.Client.CurrentUser.Id)
+        if (msg is not IUserMessage umsg || msg.Author.Id != context.Client.CurrentUser.Id)
             return;
 
         var rep = new ReplacementBuilder()

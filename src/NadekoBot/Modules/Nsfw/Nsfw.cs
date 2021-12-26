@@ -7,7 +7,7 @@ namespace NadekoBot.Modules.Nsfw;
 [NoPublicBot]
 public class NSFW : NadekoModule<ISearchImagesService>
 {
-    private static readonly ConcurrentHashSet<ulong> _hentaiBombBlacklist = new ConcurrentHashSet<ulong>();
+    private static readonly ConcurrentHashSet<ulong> _hentaiBombBlacklist = new();
     private readonly IHttpClientFactory _httpFactory;
     private readonly NadekoRandom _rng;
 

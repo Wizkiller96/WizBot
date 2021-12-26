@@ -67,7 +67,7 @@ public class RedisCache : IDataCache
         return _db.StringSetAsync("novel_" + key, data, expiry: TimeSpan.FromHours(3));
     }
 
-    private readonly object timelyLock = new object();
+    private readonly object timelyLock = new();
     public TimeSpan? AddTimelyClaim(ulong id, int period)
     {
         if (period == 0)

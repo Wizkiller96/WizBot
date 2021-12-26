@@ -8,8 +8,8 @@ public sealed class AyuVoiceStateService : INService
     // public delegate Task VoiceProxyUpdatedDelegate(ulong guildId, IVoiceProxy proxy);
     // public event VoiceProxyUpdatedDelegate OnVoiceProxyUpdate = delegate { return Task.CompletedTask; };
         
-    private readonly ConcurrentDictionary<ulong, IVoiceProxy> _voiceProxies = new ConcurrentDictionary<ulong, IVoiceProxy>();
-    private readonly ConcurrentDictionary<ulong, SemaphoreSlim> _voiceGatewayLocks = new ConcurrentDictionary<ulong, SemaphoreSlim>();
+    private readonly ConcurrentDictionary<ulong, IVoiceProxy> _voiceProxies = new();
+    private readonly ConcurrentDictionary<ulong, SemaphoreSlim> _voiceGatewayLocks = new();
         
     private readonly DiscordSocketClient _client;
     private readonly MethodInfo _sendVoiceStateUpdateMethodInfo;
@@ -167,7 +167,7 @@ public sealed class AyuVoiceStateService : INService
             var voiceServerData = await voiceServerUpdatedSource.Task;
                 
             VoiceGateway CreateVoiceGatewayLocal() =>
-                new VoiceGateway(
+                new(
                     guildId,
                     _currentUserId,
                     session,

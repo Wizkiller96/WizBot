@@ -112,8 +112,8 @@ public abstract class NadekoModule : ModuleBase
         {
             var _ = Task.Run(() =>
             {
-                if (!(arg is SocketUserMessage userMsg) ||
-                    !(userMsg.Channel is ITextChannel chan) ||
+                if (arg is not SocketUserMessage userMsg ||
+                    userMsg.Channel is not ITextChannel chan ||
                     userMsg.Author.Id != userId ||
                     userMsg.Channel.Id != channelId)
                 {

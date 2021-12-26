@@ -13,7 +13,7 @@ public class ExportedExpr
     public string[] React;
 
     public static ExportedExpr FromModel(CustomReaction cr)
-        => new ExportedExpr()
+        => new()
         {
             Res = cr.Response,
             Id = ((kwum)cr.Id).ToString(),

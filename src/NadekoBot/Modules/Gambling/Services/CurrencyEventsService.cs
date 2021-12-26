@@ -10,8 +10,7 @@ public class CurrencyEventsService : INService
     private readonly ICurrencyService _cs;
     private readonly GamblingConfigService _configService;
 
-    private readonly ConcurrentDictionary<ulong, ICurrencyEvent> _events =
-        new ConcurrentDictionary<ulong, ICurrencyEvent>();
+    private readonly ConcurrentDictionary<ulong, ICurrencyEvent> _events = new();
 
 
     public CurrencyEventsService(

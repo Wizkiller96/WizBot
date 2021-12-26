@@ -11,7 +11,7 @@ public sealed class BotConfigService : ConfigServiceBase<BotConfig>
     public override string Name { get; } = "bot";
         
     private const string FilePath = "data/bot.yml";
-    private static TypedKey<BotConfig> changeKey = new TypedKey<BotConfig>("config.bot.updated");
+    private static readonly TypedKey<BotConfig> changeKey = new("config.bot.updated");
         
     public BotConfigService(IConfigSeria serializer, IPubSub pubSub)
         : base(FilePath, serializer, pubSub, changeKey)

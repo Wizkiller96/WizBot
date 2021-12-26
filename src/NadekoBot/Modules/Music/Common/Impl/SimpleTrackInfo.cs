@@ -9,7 +9,7 @@ public sealed class SimpleTrackInfo : ITrackInfo
     public TimeSpan Duration { get; }
     public MusicPlatform Platform { get; }
     public string? StreamUrl { get; }
-    public ValueTask<string?> GetStreamUrl() => new ValueTask<string?>(StreamUrl);
+    public ValueTask<string?> GetStreamUrl() => new(StreamUrl);
 
     public SimpleTrackInfo(string title, string url, string thumbnail, TimeSpan duration,
         MusicPlatform platform, string streamUrl)

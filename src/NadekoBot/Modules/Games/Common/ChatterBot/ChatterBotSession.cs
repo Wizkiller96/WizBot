@@ -4,7 +4,7 @@ namespace NadekoBot.Modules.Games.Common.ChatterBot;
 
 public class ChatterBotSession : IChatterBotSession
 {
-    private static NadekoRandom Rng { get; } = new NadekoRandom();
+    private static NadekoRandom Rng { get; } = new();
 
     private readonly string _chatterBotId;
     private readonly IHttpClientFactory _httpFactory;

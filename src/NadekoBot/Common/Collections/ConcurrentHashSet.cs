@@ -344,7 +344,7 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
                 Node previous = null;
                 for (var current = tables.Buckets[bucketNo]; current != null; current = current.Next)
                 {
-                    Debug.Assert(previous is null && current == tables.Buckets[bucketNo] || previous.Next == current);
+                    Debug.Assert((previous is null && current == tables.Buckets[bucketNo]) || previous.Next == current);
 
                     if (hashcode == current.Hashcode && _comparer.Equals(current.Item, item))
                     {
@@ -470,7 +470,7 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
                 Node previous = null;
                 for (var current = tables.Buckets[bucketNo]; current != null; current = current.Next)
                 {
-                    Debug.Assert(previous is null && current == tables.Buckets[bucketNo] || previous.Next == current);
+                    Debug.Assert((previous is null && current == tables.Buckets[bucketNo]) || previous.Next == current);
                     if (hashcode == current.Hashcode && _comparer.Equals(current.Item, item))
                     {
                         return false;
@@ -581,7 +581,7 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
                 checked
                 {
                     // Double the size of the buckets table and add one, so that we have an odd integer.
-                    newLength = tables.Buckets.Length * 2 + 1;
+                    newLength = (tables.Buckets.Length * 2) + 1;
 
                     // Now, we only need to check odd integers, and find the first that is not divisible
                     // by 3, 5 or 7.

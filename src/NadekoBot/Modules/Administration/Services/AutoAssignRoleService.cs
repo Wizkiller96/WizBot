@@ -14,7 +14,7 @@ public sealed class AutoAssignRoleService : INService
     //guildid/roleid
     private readonly ConcurrentDictionary<ulong, IReadOnlyList<ulong>> _autoAssignableRoles;
 
-    private Channel<SocketGuildUser> _assignQueue = Channel.CreateBounded<SocketGuildUser>(
+    private readonly Channel<SocketGuildUser> _assignQueue = Channel.CreateBounded<SocketGuildUser>(
         new BoundedChannelOptions(100)
         {
             FullMode = BoundedChannelFullMode.DropOldest,

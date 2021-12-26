@@ -16,8 +16,7 @@ public class PermissionService : ILateBlocker, INService
     private readonly IEmbedBuilderService _eb;
 
     //guildid, root permission
-    public ConcurrentDictionary<ulong, PermissionCache> Cache { get; } =
-        new ConcurrentDictionary<ulong, PermissionCache>();
+    public ConcurrentDictionary<ulong, PermissionCache> Cache { get; } = new();
 
     public PermissionService(DiscordSocketClient client,
         DbService db,
@@ -135,7 +134,7 @@ public class PermissionService : ILateBlocker, INService
 
             if (moduleName == nameof(Permissions))
             {
-                if (!(user is IGuildUser guildUser))
+                if (user is not IGuildUser guildUser)
                     return true;
 
                 if (guildUser.GuildPermissions.Administrator)

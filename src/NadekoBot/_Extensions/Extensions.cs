@@ -20,7 +20,7 @@ namespace NadekoBot.Extensions;
 
 public static class Extensions
 {
-    public static Regex UrlRegex = new Regex(@"^(https?|ftp)://(?<path>[^\s/$.?#].[^\s]*)$", RegexOptions.Compiled);
+    public static Regex UrlRegex = new(@"^(https?|ftp)://(?<path>[^\s/$.?#].[^\s]*)$", RegexOptions.Compiled);
 
     
     public static Task EditAsync(this IUserMessage msg, SmartText text)
@@ -69,7 +69,7 @@ public static class Extensions
 
     public static IEmote ToIEmote(this string emojiStr)
         => Emote.TryParse(emojiStr, out var maybeEmote)
-            ? (IEmote)maybeEmote
+            ? maybeEmote
             : new Emoji(emojiStr);
 
     // https://github.com/SixLabors/Samples/blob/master/ImageSharp/AvatarWithRoundedCorner/Program.cs
@@ -171,8 +171,7 @@ public static class Extensions
             return embed.WithFooter(curPage.ToString());
     }
 
-    public static Color ToDiscordColor(this Rgba32 color)
-        => new Color(color.R, color.G, color.B);
+    public static Color ToDiscordColor(this Rgba32 color) => new(color.R, color.G, color.B);
         
     public static IEmbedBuilder WithOkColor(this IEmbedBuilder eb) =>
         eb.WithColor(EmbedColor.Ok);

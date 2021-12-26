@@ -21,7 +21,7 @@ public class CurrencyService : ICurrencyService, INService
     }
 
     private CurrencyTransaction GetCurrencyTransaction(ulong userId, string reason, long amount) =>
-        new CurrencyTransaction
+        new()
         {
             Amount = amount,
             UserId = userId,

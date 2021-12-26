@@ -8,7 +8,7 @@ public abstract class ImageDownloader<T> : IImageDownloader
 {
     protected readonly HttpClient _http;
 
-    protected JsonSerializerOptions _serializerOptions = new JsonSerializerOptions()
+    protected JsonSerializerOptions _serializerOptions = new()
     {
         PropertyNameCaseInsensitive = true,
         NumberHandling = JsonNumberHandling.WriteAsString | JsonNumberHandling.AllowReadingFromString,

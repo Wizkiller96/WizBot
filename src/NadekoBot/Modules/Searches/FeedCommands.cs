@@ -9,7 +9,7 @@ public partial class Searches
     public class FeedCommands : NadekoSubmodule<FeedsService>
     {
         private static readonly Regex YtChannelRegex =
-            new Regex(@"youtube\.com\/(?:c\/|channel\/|user\/)?(?<channelid>[a-zA-Z0-9\-]{1,})");
+            new(@"youtube\.com\/(?:c\/|channel\/|user\/)?(?<channelid>[a-zA-Z0-9\-]{1,})");
             
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
@@ -97,7 +97,7 @@ public partial class Searches
                 var i = 0;
                 var fs = string.Join("\n", feeds.Skip(cur * 10)
                     .Take(10)
-                    .Select(x => $"`{cur * 10 + ++i}.` <#{x.ChannelId}> {x.Url}"));
+                    .Select(x => $"`{(cur * 10) + ++i}.` <#{x.ChannelId}> {x.Url}"));
 
                 return embed.WithDescription(fs);
 

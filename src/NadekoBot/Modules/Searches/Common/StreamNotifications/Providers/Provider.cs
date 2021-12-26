@@ -51,8 +51,7 @@ public abstract class Provider
     /// <summary>
     /// When was the first time the stream continually had errors while being retrieved 
     /// </summary>
-    protected readonly ConcurrentDictionary<string, DateTime> _failingStreams =
-        new ConcurrentDictionary<string, DateTime>();
+    protected readonly ConcurrentDictionary<string, DateTime> _failingStreams = new();
 
     public void ClearErrorsFor(string login) 
         => _failingStreams.TryRemove(login, out _);

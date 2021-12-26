@@ -158,7 +158,7 @@ public sealed partial class Music
         }
 
 
-        private static readonly SemaphoreSlim _playlistLock = new SemaphoreSlim(1, 1);
+        private static readonly SemaphoreSlim _playlistLock = new(1, 1);
             
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]

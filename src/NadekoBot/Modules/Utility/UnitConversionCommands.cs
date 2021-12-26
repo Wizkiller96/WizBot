@@ -66,7 +66,7 @@ public partial class Utility
                         res = res - 273.15m; //celcius!
                         break;
                     case "F":
-                        res = res * (9m / 5m) - 459.67m;
+                        res = (res * (9m / 5m)) - 459.67m;
                         break;
                 }
             }

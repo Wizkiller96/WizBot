@@ -41,7 +41,7 @@ public class DiscordPermOverrideService : INService, ILateBlocker
     public Task<PreconditionResult> ExecuteOverrides(ICommandContext ctx, CommandInfo command,
         GuildPerm perms, IServiceProvider services)
     {
-        var rupa = new RequireUserPermissionAttribute((GuildPermission) perms);
+        var rupa = new RequireUserPermissionAttribute(perms);
         return rupa.CheckPermissionsAsync(ctx, command, services);
     }
 

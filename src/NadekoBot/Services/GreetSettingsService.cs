@@ -10,8 +10,8 @@ public class GreetSettingsService : INService
     public ConcurrentDictionary<ulong, GreetSettings> GuildConfigsCache { get; }
     private readonly DiscordSocketClient _client;
         
-    private GreetGrouper<IGuildUser> greets = new GreetGrouper<IGuildUser>();
-    private GreetGrouper<IUser> byes = new GreetGrouper<IUser>();
+    private readonly GreetGrouper<IGuildUser> greets = new();
+    private readonly GreetGrouper<IUser> byes = new();
     private readonly BotConfigService _bss;
     private readonly IEmbedBuilderService _eb;
     public bool GroupGreets => _bss.Data.GroupGreets;
@@ -634,7 +634,7 @@ public class GreetSettings
     public int BoostMessageDeleteAfter { get; set; }
     public ulong BoostMessageChannelId { get; set; }
 
-    public static GreetSettings Create(GuildConfig g) => new GreetSettings()
+    public static GreetSettings Create(GuildConfig g) => new()
     {
         AutoDeleteByeMessagesTimer = g.AutoDeleteByeMessagesTimer,
         AutoDeleteGreetMessagesTimer = g.AutoDeleteGreetMessagesTimer,

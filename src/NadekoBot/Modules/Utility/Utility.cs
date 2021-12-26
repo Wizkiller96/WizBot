@@ -58,7 +58,7 @@ public partial class Utility : NadekoModule
         if (string.IsNullOrWhiteSpace(game))
             return;
 
-        if (!(ctx.Guild is SocketGuild socketGuild))
+        if (ctx.Guild is not SocketGuild socketGuild)
         {
             Log.Warning("Can't cast guild to socket guild.");
             return;
@@ -360,7 +360,7 @@ public partial class Utility : NadekoModule
     public Task ShowEmbed(ulong messageId)
         => ShowEmbed((ITextChannel)ctx.Channel, messageId);
 
-    private static readonly JsonSerializerOptions _showEmbedSerializerOptions = new JsonSerializerOptions()
+    private static readonly JsonSerializerOptions _showEmbedSerializerOptions = new()
     {
         WriteIndented = true,
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
@@ -436,7 +436,7 @@ public partial class Utility : NadekoModule
             await ctx.User.SendFileAsync(stream, title, title, false).ConfigureAwait(false);
         }
     }
-    private static SemaphoreSlim sem = new SemaphoreSlim(1, 1);
+    private static SemaphoreSlim sem = new(1, 1);
 
     [NadekoCommand, Aliases]
 #if GLOBAL_NADEKO

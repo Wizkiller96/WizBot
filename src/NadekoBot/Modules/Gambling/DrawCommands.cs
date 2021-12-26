@@ -10,7 +10,7 @@ public partial class Gambling
     [Group]
     public class DrawCommands : NadekoSubmodule
     {
-        private static readonly ConcurrentDictionary<IGuild, Deck> _allDecks = new ConcurrentDictionary<IGuild, Deck>();
+        private static readonly ConcurrentDictionary<IGuild, Deck> _allDecks = new();
         private readonly IImageCache _images;
 
         public DrawCommands(IDataCache data)

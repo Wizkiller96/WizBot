@@ -8,7 +8,6 @@ using NadekoBot.Common.Configs;
 using NadekoBot.Db;
 using NadekoBot.Modules.Administration.Services;
 using Discord.Interactions;
-using RunMode = Discord.Interactions.RunMode;
 
 namespace NadekoBot;
 

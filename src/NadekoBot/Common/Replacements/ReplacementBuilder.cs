@@ -5,9 +5,9 @@ namespace NadekoBot.Common;
 
 public class ReplacementBuilder
 {
-    private static readonly Regex rngRegex = new Regex("%rng(?:(?<from>(?:-)?\\d+)-(?<to>(?:-)?\\d+))?%", RegexOptions.Compiled);
-    private ConcurrentDictionary<string, Func<string>> _reps = new ConcurrentDictionary<string, Func<string>>();
-    private ConcurrentDictionary<Regex, Func<Match, string>> _regex = new ConcurrentDictionary<Regex, Func<Match, string>>();
+    private static readonly Regex rngRegex = new("%rng(?:(?<from>(?:-)?\\d+)-(?<to>(?:-)?\\d+))?%", RegexOptions.Compiled);
+    private readonly ConcurrentDictionary<string, Func<string>> _reps = new();
+    private readonly ConcurrentDictionary<Regex, Func<Match, string>> _regex = new();
 
     public ReplacementBuilder()
     {

@@ -6,7 +6,7 @@ namespace NadekoBot.Common.Collections;
 public class IndexedCollection<T> : IList<T> where T : class, IIndexed
 {
     public List<T> Source { get; }
-    private readonly object _locker = new object();
+    private readonly object _locker = new();
 
     public int Count => Source.Count;
     public bool IsReadOnly => false;

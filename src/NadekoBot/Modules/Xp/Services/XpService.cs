@@ -46,8 +46,7 @@ public class XpService : INService
 
     private readonly ConcurrentHashSet<ulong> _excludedServers;
 
-    private readonly ConcurrentQueue<UserCacheItem> _addMessageXp
-        = new ConcurrentQueue<UserCacheItem>();
+    private readonly ConcurrentQueue<UserCacheItem> _addMessageXp = new();
     private XpTemplate _template;
     private readonly DiscordSocketClient _client;
 
@@ -485,7 +484,7 @@ public class XpService : INService
         
     private Task _client_OnUserVoiceStateUpdated(SocketUser socketUser, SocketVoiceState before, SocketVoiceState after)
     {
-        if (!(socketUser is SocketGuildUser user) || user.IsBot)
+        if (socketUser is not SocketGuildUser user || user.IsBot)
             return Task.CompletedTask;
 
         var _ = Task.Run(() =>
@@ -608,7 +607,7 @@ public class XpService : INService
         
     private Task _cmd_OnMessageNoTrigger(IUserMessage arg)
     {
-        if (!(arg.Author is SocketGuildUser user) || user.IsBot)
+        if (arg.Author is not SocketGuildUser user || user.IsBot)
             return Task.CompletedTask;
 
         var _ = Task.Run(() =>
@@ -955,7 +954,7 @@ public class XpService : INService
                         ? "+ "
                         : "";
                     var awX = _template.User.Xp.Awarded.Pos.X -
-                              Math.Max(0, stats.FullGuildStats.AwardedXp.ToString().Length - 2) * 5;
+                              (Math.Max(0, stats.FullGuildStats.AwardedXp.ToString().Length - 2) * 5);
                     var awY = _template.User.Xp.Awarded.Pos.Y;
                     img.Mutate(x => x.DrawText($"({sign}{stats.FullGuildStats.AwardedXp})",
                         _fonts.NotoSans.CreateFont(_template.User.Xp.Awarded.FontSize, FontStyle.Bold),

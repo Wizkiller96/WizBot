@@ -33,7 +33,7 @@ public static class IEnumerableExtensions
         var n = list.Count;
         while (n > 1)
         {
-            var box = new byte[n / Byte.MaxValue + 1];
+            var box = new byte[(n / Byte.MaxValue) + 1];
             int boxSum;
             do
             {
@@ -62,12 +62,11 @@ public static class IEnumerableExtensions
         return realElems;
     }
         
-    public static ConcurrentDictionary<TKey, TValue> ToConcurrent<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> dict)
-        => new ConcurrentDictionary<TKey, TValue>(dict);
+    public static ConcurrentDictionary<TKey, TValue> ToConcurrent<TKey, TValue>(
+        this IEnumerable<KeyValuePair<TKey, TValue>> dict) => new(dict);
 
-    public static IndexedCollection<T> ToIndexed<T>(this IEnumerable<T> enumerable)
-        where T : class, IIndexed
-        => new IndexedCollection<T>(enumerable);
+    public static IndexedCollection<T> ToIndexed<T>(this IEnumerable<T> enumerable) where T : class, IIndexed =>
+        new(enumerable);
 
     public static Task<TData[]> WhenAll<TData>(this IEnumerable<Task<TData>> items)
         => Task.WhenAll(items);

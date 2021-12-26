@@ -8,14 +8,11 @@ namespace NadekoBot.Modules.Administration.Services;
 
 public class ProtectionService : INService
 {
-    private readonly ConcurrentDictionary<ulong, AntiRaidStats> _antiRaidGuilds
-        = new ConcurrentDictionary<ulong, AntiRaidStats>();
+    private readonly ConcurrentDictionary<ulong, AntiRaidStats> _antiRaidGuilds = new();
 
-    private readonly ConcurrentDictionary<ulong, AntiSpamStats> _antiSpamGuilds
-        = new ConcurrentDictionary<ulong, AntiSpamStats>();
+    private readonly ConcurrentDictionary<ulong, AntiSpamStats> _antiSpamGuilds = new();
 
-    private readonly ConcurrentDictionary<ulong, AntiAltStats> _antiAltGuilds
-        = new ConcurrentDictionary<ulong, AntiAltStats>();
+    private readonly ConcurrentDictionary<ulong, AntiAltStats> _antiAltGuilds = new();
         
     public event Func<PunishmentAction, ProtectionType, IGuildUser[], Task> OnAntiProtectionTriggered
         = delegate { return Task.CompletedTask; };
@@ -171,7 +168,7 @@ public class ProtectionService : INService
                 
             try
             {
-                if (!(maybeStats is { } stats) || !stats.RaidUsers.Add(user))
+                if (maybeStats is not { } stats || !stats.RaidUsers.Add(user))
                     return;
                     
                 ++stats.UsersCount;
@@ -201,10 +198,10 @@ public class ProtectionService : INService
 
     private Task HandleAntiSpam(SocketMessage arg)
     {
-        if (!(arg is SocketUserMessage msg) || msg.Author.IsBot)
+        if (arg is not SocketUserMessage msg || msg.Author.IsBot)
             return Task.CompletedTask;
 
-        if (!(msg.Channel is ITextChannel channel))
+        if (msg.Channel is not ITextChannel channel)
             return Task.CompletedTask;
         var _ = Task.Run(async () =>
         {

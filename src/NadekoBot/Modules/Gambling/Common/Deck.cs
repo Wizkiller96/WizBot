@@ -20,7 +20,7 @@ public class QuadDeck : Deck
 
 public class Deck
 {
-    private static readonly Dictionary<int, string> cardNames = new Dictionary<int, string>() {
+    private static readonly Dictionary<int, string> _cardNames = new() {
         { 1, "Ace" },
         { 2, "Two" },
         { 3, "Three" },
@@ -35,7 +35,7 @@ public class Deck
         { 12, "Queen" },
         { 13, "King" }
     };
-    private static Dictionary<string, Func<List<Card>, bool>> handValues;
+    private static Dictionary<string, Func<List<Card>, bool>> _handValues;
 
 
     public enum CardSuit
@@ -75,15 +75,14 @@ public class Deck
             this.Number = cardNum;
         }
 
-        public string GetValueText() => cardNames[Number];
+        public string GetValueText() => _cardNames[Number];
 
-        public override string ToString() => cardNames[Number] + " Of " + Suit;
+        public override string ToString() => _cardNames[Number] + " Of " + Suit;
 
         public int CompareTo(object obj)
         {
-            if (!(obj is Card)) return 0;
-            var c = (Card)obj;
-            return this.Number - c.Number;
+            if (obj is not Card card) return 0;
+            return this.Number - card.Number;
         }
 
         public static Card Parse(string input)
@@ -133,7 +132,7 @@ public class Deck
             {CardSuit.Spades, "♠"},
             {CardSuit.Hearts, "♥"},
         };
-        private static IReadOnlyDictionary<string, CardSuit> _suitCharToSuit = new Dictionary<string, CardSuit>
+        private static readonly IReadOnlyDictionary<string, CardSuit> _suitCharToSuit = new Dictionary<string, CardSuit>
         {
             {"♦", CardSuit.Diamonds },
             {"d", CardSuit.Diamonds },
@@ -144,7 +143,7 @@ public class Deck
             {"♥", CardSuit.Hearts },
             {"h", CardSuit.Hearts },
         };
-        private static IReadOnlyDictionary<char, int> _numberCharToNumber = new Dictionary<char, int>()
+        private static readonly IReadOnlyDictionary<char, int> _numberCharToNumber = new Dictionary<char, int>()
         {
             {'a', 1 },
             {'2', 2 },
@@ -200,7 +199,7 @@ public class Deck
             }
         }
     }
-    private Random r = new NadekoRandom();
+    private readonly Random _r = new NadekoRandom();
     /// <summary>
     /// Take a card from the pool, you either take it from the top if the deck is shuffled, or from a random place if the deck is in the default order.
     /// </summary>
@@ -211,7 +210,7 @@ public class Deck
             Restart();
         //you can either do this if your deck is not shuffled
 
-        var num = r.Next(0, CardPool.Count);
+        var num = _r.Next(0, CardPool.Count);
         var c = CardPool[num];
         CardPool.RemoveAt(num);
         return c;
@@ -230,73 +229,73 @@ public class Deck
     {
         if (CardPool.Count <= 1) return;
         var orderedPool = CardPool.Shuffle();
-        CardPool = CardPool as List<Card> ?? orderedPool.ToList();
+        CardPool ??= orderedPool.ToList();
     }
     public override string ToString() => string.Concat(CardPool.Select(c => c.ToString())) + Environment.NewLine;
 
     private static void InitHandValues()
     {
-        bool hasPair(List<Card> cards) => cards.GroupBy(card => card.Number)
+        bool HasPair(List<Card> cards) => cards.GroupBy(card => card.Number)
             .Count(group => group.Count() == 2) == 1;
-        bool isPair(List<Card> cards) => cards.GroupBy(card => card.Number)
+        bool IsPair(List<Card> cards) => cards.GroupBy(card => card.Number)
                                              .Count(group => group.Count() == 3) == 0
-                                         && hasPair(cards);
+                                         && HasPair(cards);
 
-        bool isTwoPair(List<Card> cards) => cards.GroupBy(card => card.Number)
+        bool IsTwoPair(List<Card> cards) => cards.GroupBy(card => card.Number)
             .Count(group => group.Count() == 2) == 2;
 
-        bool isStraight(List<Card> cards)
+        bool IsStraight(List<Card> cards)
         {
             if (cards.GroupBy(card => card.Number).Count() != cards.Count())
                 return false;
-            var toReturn = cards.Max(card => (int)card.Number)
-                - cards.Min(card => (int)card.Number) == 4;
+            var toReturn = cards.Max(card => card.Number)
+                - cards.Min(card => card.Number) == 4;
             if (toReturn || cards.All(c => c.Number != 1)) return toReturn;
 
             var newCards = cards.Select(c => c.Number == 1 ? new(c.Suit, 14) : c);
-            return newCards.Max(card => (int)card.Number)
-                - newCards.Min(card => (int)card.Number) == 4;
+            return newCards.Max(card => card.Number)
+                - newCards.Min(card => card.Number) == 4;
         }
 
-        bool hasThreeOfKind(List<Card> cards) => cards.GroupBy(card => card.Number)
+        bool HasThreeOfKind(List<Card> cards) => cards.GroupBy(card => card.Number)
             .Any(group => group.Count() == 3);
 
-        bool isThreeOfKind(List<Card> cards) => hasThreeOfKind(cards) && !hasPair(cards);
+        bool IsThreeOfKind(List<Card> cards) => HasThreeOfKind(cards) && !HasPair(cards);
 
-        bool isFlush(List<Card> cards) => cards.GroupBy(card => card.Suit).Count() == 1;
+        bool IsFlush(List<Card> cards) => cards.GroupBy(card => card.Suit).Count() == 1;
 
-        bool isFourOfKind(List<Card> cards) => cards.GroupBy(card => card.Number)
+        bool IsFourOfKind(List<Card> cards) => cards.GroupBy(card => card.Number)
             .Any(group => group.Count() == 4);
 
-        bool isFullHouse(List<Card> cards) => hasPair(cards) && hasThreeOfKind(cards);
+        bool IsFullHouse(List<Card> cards) => HasPair(cards) && HasThreeOfKind(cards);
 
-        bool hasStraightFlush(List<Card> cards) => isFlush(cards) && isStraight(cards);
+        bool HasStraightFlush(List<Card> cards) => IsFlush(cards) && IsStraight(cards);
 
-        bool isRoyalFlush(List<Card> cards) => cards.Min(card => card.Number) == 1 &&
+        bool IsRoyalFlush(List<Card> cards) => cards.Min(card => card.Number) == 1 &&
                                                cards.Max(card => card.Number) == 13
-                                               && hasStraightFlush(cards);
+                                               && HasStraightFlush(cards);
 
-        bool isStraightFlush(List<Card> cards) => hasStraightFlush(cards) && !isRoyalFlush(cards);
+        bool IsStraightFlush(List<Card> cards) => HasStraightFlush(cards) && !IsRoyalFlush(cards);
 
-        handValues = new()
+        _handValues = new()
         {
-            { "Royal Flush", isRoyalFlush },
-            { "Straight Flush", isStraightFlush },
-            { "Four Of A Kind", isFourOfKind },
-            { "Full House", isFullHouse },
-            { "Flush", isFlush },
-            { "Straight", isStraight },
-            { "Three Of A Kind", isThreeOfKind },
-            { "Two Pairs", isTwoPair },
-            { "A Pair", isPair }
+            { "Royal Flush", IsRoyalFlush },
+            { "Straight Flush", IsStraightFlush },
+            { "Four Of A Kind", IsFourOfKind },
+            { "Full House", IsFullHouse },
+            { "Flush", IsFlush },
+            { "Straight", IsStraight },
+            { "Three Of A Kind", IsThreeOfKind },
+            { "Two Pairs", IsTwoPair },
+            { "A Pair", IsPair }
         };
     }
 
     public static string GetHandValue(List<Card> cards)
     {
-        if (handValues is null)
+        if (_handValues is null)
             InitHandValues();
-        foreach (var kvp in handValues.Where(x => x.Value(cards)))
+        foreach (var kvp in _handValues.Where(x => x.Value(cards)))
         {
             return kvp.Key;
         }

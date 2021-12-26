@@ -41,8 +41,8 @@ public sealed class AcrophobiaGame : IDisposable
     public Phase CurrentPhase { get; private set; } = Phase.Submission;
     public ImmutableArray<char> StartingLetters { get; private set; }
 
-    private readonly Dictionary<AcrophobiaUser, int> submissions = new Dictionary<AcrophobiaUser, int>();
-    private readonly SemaphoreSlim locker = new SemaphoreSlim(1, 1);
+    private readonly Dictionary<AcrophobiaUser, int> submissions = new();
+    private readonly SemaphoreSlim locker = new(1, 1);
     public Options Opts { get; }
     private readonly NadekoRandom _rng;
 
@@ -51,7 +51,7 @@ public sealed class AcrophobiaGame : IDisposable
     public event Func<string, Task> OnUserVoted = delegate { return Task.CompletedTask; };
     public event Func<AcrophobiaGame, ImmutableArray<KeyValuePair<AcrophobiaUser, int>>, Task> OnEnded = delegate { return Task.CompletedTask; };
 
-    private readonly HashSet<ulong> _usersWhoVoted = new HashSet<ulong>();
+    private readonly HashSet<ulong> _usersWhoVoted = new();
 
     public AcrophobiaGame(Options options)
     {

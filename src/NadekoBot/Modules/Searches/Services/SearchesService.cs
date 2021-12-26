@@ -23,8 +23,8 @@ public class SearchesService : INService
     private readonly IBotCredentials _creds;
     private readonly NadekoRandom _rng;
 
-    public List<WoWJoke> WowJokes { get; } = new List<WoWJoke>();
-    public List<MagicItem> MagicItems { get; } = new List<MagicItem>();
+    public List<WoWJoke> WowJokes { get; } = new();
+    public List<MagicItem> MagicItems { get; } = new();
     private readonly List<string> _yomamaJokes;
 
     public SearchesService(IGoogleApiService google, 
@@ -282,7 +282,7 @@ public class SearchesService : INService
                _rng.Next(1, max).ToString("000") + ".png";
     }
 
-    private readonly object yomamaLock = new object();
+    private readonly object yomamaLock = new();
     private int yomamaJokeIndex = 0;
     public Task<string> GetYomamaJoke()
     {
@@ -567,7 +567,7 @@ public class SearchesService : INService
         }
     }
 
-    private static readonly HtmlParser _googleParser = new HtmlParser(new()
+    private static readonly HtmlParser _googleParser = new(new()
     {
         IsScripting = false,
         IsEmbedded = false,

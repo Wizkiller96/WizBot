@@ -2,8 +2,8 @@
 
 public class DownloadTracker : INService
 {
-    private ConcurrentDictionary<ulong, DateTime> LastDownloads { get; } = new ConcurrentDictionary<ulong, DateTime>();
-    private SemaphoreSlim downloadUsersSemaphore = new SemaphoreSlim(1, 1);
+    private ConcurrentDictionary<ulong, DateTime> LastDownloads { get; } = new();
+    private readonly SemaphoreSlim downloadUsersSemaphore = new(1, 1);
 
     /// <summary>
     /// Ensures all users on the specified guild were downloaded within the last hour. 

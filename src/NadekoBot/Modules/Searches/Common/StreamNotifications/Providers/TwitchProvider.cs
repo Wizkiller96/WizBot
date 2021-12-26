@@ -9,7 +9,7 @@ public class TwitchProvider : Provider
 {
     private readonly IHttpClientFactory _httpClientFactory;
 
-    private static Regex Regex { get; } = new Regex(@"twitch.tv/(?<name>.+[^/])/?",
+    private static Regex Regex { get; } = new(@"twitch.tv/(?<name>.+[^/])/?",
         RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     public override FollowedStream.FType Platform => FollowedStream.FType.Twitch;

@@ -2,7 +2,7 @@
 
 public class LogSetting : DbEntity
 {
-    public List<IgnoredLogItem> LogIgnores { get; set; } = new List<IgnoredLogItem>();
+    public List<IgnoredLogItem> LogIgnores { get; set; } = new();
 
     public ulong GuildId { get; set; }
     public ulong? LogOtherId { get; set; }

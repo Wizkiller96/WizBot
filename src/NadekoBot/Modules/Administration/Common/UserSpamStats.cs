@@ -15,13 +15,13 @@ public sealed class UserSpamStats : IDisposable
         ApplyNextMessage(msg);
     }
 
-    private readonly object applyLock = new object();
+    private readonly object applyLock = new();
     public void ApplyNextMessage(IUserMessage message)
     {
         lock (applyLock)
         {
             var upperMsg = message.Content.ToUpperInvariant();
-            if (upperMsg != LastMessage || string.IsNullOrWhiteSpace(upperMsg) && message.Attachments.Any())
+            if (upperMsg != LastMessage || (string.IsNullOrWhiteSpace(upperMsg) && message.Attachments.Any()))
             {
                 LastMessage = upperMsg;
                 while (timers.TryDequeue(out var old))

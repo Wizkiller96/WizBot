@@ -65,7 +65,7 @@ public class NadekoContext : DbContext
     }
         
 #if DEBUG
-    public static readonly ILoggerFactory _debugLoggerFactory =
+    private static readonly ILoggerFactory _debugLoggerFactory =
         LoggerFactory.Create(x => x.AddConsole());
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {      
@@ -162,7 +162,6 @@ public class NadekoContext : DbContext
         //     .WithOne()
         //     .OnDelete(DeleteBehavior.Cascade);
 
-        var wu = modelBuilder.Entity<WaifuUpdate>();
         #endregion
 
         #region DiscordUser

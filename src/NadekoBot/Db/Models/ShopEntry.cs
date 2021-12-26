@@ -21,7 +21,7 @@ public class ShopEntry : DbEntity, IIndexed
     public ulong RoleId { get; set; }
 
     //list
-    public HashSet<ShopEntryItem> Items { get; set; } = new HashSet<ShopEntryItem>();
+    public HashSet<ShopEntryItem> Items { get; set; } = new();
 }
 
 public class ShopEntryItem : DbEntity

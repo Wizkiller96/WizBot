@@ -6,7 +6,7 @@ public class CurrencyTransaction : DbEntity
     public string Reason { get; set; }
     public ulong UserId { get; set; }
 
-    public CurrencyTransaction Clone() => new CurrencyTransaction
+    public CurrencyTransaction Clone() => new()
     {
         Amount = Amount,
         Reason = Reason,

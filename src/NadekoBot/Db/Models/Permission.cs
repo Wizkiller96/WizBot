@@ -25,7 +25,7 @@ public class Permissionv2 : DbEntity, IIndexed
     public bool State { get; set; }
 
     [NotMapped]
-    public static Permissionv2 AllowAllPerm => new Permissionv2()
+    public static Permissionv2 AllowAllPerm => new()
     {
         PrimaryTarget = PrimaryPermissionType.Server,
         PrimaryTargetId = 0,
@@ -36,7 +36,7 @@ public class Permissionv2 : DbEntity, IIndexed
     };
 
     public static List<Permissionv2> GetDefaultPermlist =>
-        new List<Permissionv2>
+        new()
         {
             AllowAllPerm
         };

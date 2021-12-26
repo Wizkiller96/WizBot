@@ -11,7 +11,7 @@ public partial class Games : NadekoModule<GamesService>
 {
     private readonly IImageCache _images;
     private readonly IHttpClientFactory _httpFactory;
-    private readonly Random _rng = new Random();
+    private readonly Random _rng = new();
 
     public Games(IDataCache data, IHttpClientFactory factory)
     {
@@ -79,7 +79,7 @@ public partial class Games : NadekoModule<GamesService>
 
     private double NextDouble(double x, double y)
     {
-        return _rng.NextDouble() * (y - x) + x;
+        return (_rng.NextDouble() * (y - x)) + x;
     }
 
     private GirlRating GetGirl(ulong uid)
@@ -102,19 +102,19 @@ public partial class Games : NadekoModule<GamesService>
         else if (roll < 750)
         {
             hot = NextDouble(5, 8);
-            crazy = NextDouble(4, .6 * hot + 4);
+            crazy = NextDouble(4, (.6 * hot) + 4);
             advice = ratings.Fun;
         }
         else if (roll < 900)
         {
             hot = NextDouble(5, 10);
-            crazy = NextDouble(.61 * hot + 4, 10);
+            crazy = NextDouble((.61 * hot) + 4, 10);
             advice = ratings.Dan;
         }
         else if (roll < 951)
         {
             hot = NextDouble(8, 10);
-            crazy = NextDouble(7, .6 * hot + 4);
+            crazy = NextDouble(7, (.6 * hot) + 4);
             advice = ratings.Dat;
         }
         else if (roll < 990)

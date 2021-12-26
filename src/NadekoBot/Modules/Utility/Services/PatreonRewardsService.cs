@@ -11,10 +11,10 @@ namespace NadekoBot.Modules.Utility.Services;
 
 public class PatreonRewardsService : INService
 {
-    private readonly SemaphoreSlim getPledgesLocker = new SemaphoreSlim(1, 1);
+    private readonly SemaphoreSlim getPledgesLocker = new(1, 1);
 
     private readonly Timer _updater;
-    private readonly SemaphoreSlim claimLockJustInCase = new SemaphoreSlim(1, 1);
+    private readonly SemaphoreSlim claimLockJustInCase = new(1, 1);
         
     public TimeSpan Interval { get; } = TimeSpan.FromMinutes(3);
     private readonly DbService _db;

@@ -4,7 +4,7 @@ namespace NadekoBot.Modules.Games.Common.Trivia;
 
 public class TriviaGame
 {
-    private readonly SemaphoreSlim _guessLock = new SemaphoreSlim(1, 1);
+    private readonly SemaphoreSlim _guessLock = new(1, 1);
     private readonly IDataCache _cache;
     private readonly IBotStrings _strings;
     private readonly DiscordSocketClient _client;
@@ -18,9 +18,9 @@ public class TriviaGame
     private CancellationTokenSource _triviaCancelSource;
 
     public TriviaQuestion CurrentQuestion { get; private set; }
-    public HashSet<TriviaQuestion> OldQuestions { get; } = new HashSet<TriviaQuestion>();
+    public HashSet<TriviaQuestion> OldQuestions { get; } = new();
 
-    public ConcurrentDictionary<IGuildUser, int> Users { get; } = new ConcurrentDictionary<IGuildUser, int>();
+    public ConcurrentDictionary<IGuildUser, int> Users { get; } = new();
 
     public bool GameActive { get; private set; }
     public bool ShouldStopGame { get; private set; }

@@ -70,7 +70,7 @@ public partial class Gambling
                         GetText(strs.animal_race_won_money(
                             Format.Bold(winner.Username),
                             winner.Animal.Icon,
-                            race.FinishedUsers[0].Bet * (race.Users.Count - 1) + CurrencySign)));
+                            (race.FinishedUsers[0].Bet * (race.Users.Count - 1)) + CurrencySign)));
                 }
                 else
                 {

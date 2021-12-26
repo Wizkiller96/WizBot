@@ -5,7 +5,7 @@ public class TriviaQuestionPool
     private readonly IDataCache _cache;
     private readonly int maxPokemonId;
 
-    private readonly NadekoRandom _rng = new NadekoRandom();
+    private readonly NadekoRandom _rng = new();
 
     private TriviaQuestion[] Pool => _cache.LocalData.TriviaQuestions;
     private IReadOnlyDictionary<int, string> Map => _cache.LocalData.PokemonMap;

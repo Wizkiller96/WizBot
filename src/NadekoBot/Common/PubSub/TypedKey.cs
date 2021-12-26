@@ -10,7 +10,7 @@ public readonly struct TypedKey<TData>
     }
 
     public static implicit operator TypedKey<TData>(in string input)
-        => new TypedKey<TData>(input);
+        => new(input);
     public static implicit operator string(in TypedKey<TData> input)
         => input.Key;
 

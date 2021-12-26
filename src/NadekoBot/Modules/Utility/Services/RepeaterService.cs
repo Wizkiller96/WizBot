@@ -16,10 +16,10 @@ public sealed class RepeaterService : IReadyExecutor, INService
     private readonly IBotCredentials _creds;
     private readonly IEmbedBuilderService _eb;
     private readonly DiscordSocketClient _client;
-    private LinkedList<RunningRepeater> _repeaterQueue;
-    private ConcurrentHashSet<int> _noRedundant;
+    private readonly LinkedList<RunningRepeater> _repeaterQueue;
+    private readonly ConcurrentHashSet<int> _noRedundant;
 
-    private readonly object _queueLocker = new object();
+    private readonly object _queueLocker = new();
 
     public RepeaterService(DiscordSocketClient client, DbService db, IBotCredentials creds, IEmbedBuilderService eb)
     {

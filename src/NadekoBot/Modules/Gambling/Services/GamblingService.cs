@@ -17,8 +17,8 @@ public class GamblingService : INService
     private readonly IDataCache _cache;
     private readonly GamblingConfigService _gss;
 
-    public ConcurrentDictionary<(ulong, ulong), RollDuelGame> Duels { get; } = new ConcurrentDictionary<(ulong, ulong), RollDuelGame>();
-    public ConcurrentDictionary<ulong, Connect4Game> Connect4Games { get; } = new ConcurrentDictionary<ulong, Connect4Game>();
+    public ConcurrentDictionary<(ulong, ulong), RollDuelGame> Duels { get; } = new();
+    public ConcurrentDictionary<ulong, Connect4Game> Connect4Games { get; } = new();
 
     private readonly Timer _decayTimer;
 

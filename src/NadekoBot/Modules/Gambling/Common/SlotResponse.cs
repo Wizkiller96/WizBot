@@ -4,6 +4,6 @@ public class SlotResponse
 {
     public float Multiplier { get; set; }
     public long Won { get; set; }
-    public List<int> Rolls { get; set; } = new List<int>();
+    public List<int> Rolls { get; set; } = new();
     public GamblingError Error { get; set; }
 }

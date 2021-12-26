@@ -21,7 +21,7 @@ public sealed record SmartEmbedText : SmartText
         !string.IsNullOrWhiteSpace(Url) ||
         !string.IsNullOrWhiteSpace(Thumbnail) ||
         !string.IsNullOrWhiteSpace(Image) ||
-        Footer != null && (!string.IsNullOrWhiteSpace(Footer.Text) || !string.IsNullOrWhiteSpace(Footer.IconUrl)) ||
+        (Footer != null && (!string.IsNullOrWhiteSpace(Footer.Text) || !string.IsNullOrWhiteSpace(Footer.IconUrl))) ||
         Fields is { Length: > 0 };
 
     public static SmartEmbedText FromEmbed(IEmbed eb, string plainText = null)

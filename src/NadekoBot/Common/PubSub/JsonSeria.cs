@@ -5,7 +5,7 @@ namespace NadekoBot.Common;
 
 public class JsonSeria : ISeria
 {
-    private JsonSerializerOptions serializerOptions = new JsonSerializerOptions()
+    private readonly JsonSerializerOptions serializerOptions = new()
     {
         Converters =
         {

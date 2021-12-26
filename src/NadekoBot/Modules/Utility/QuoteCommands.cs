@@ -204,7 +204,7 @@ public partial class Utility
             {
                 var q = uow.Quotes.GetById(id);
 
-                if (q?.GuildId != ctx.Guild.Id || !hasManageMessages && q.AuthorId != ctx.Message.Author.Id)
+                if (q?.GuildId != ctx.Guild.Id || (!hasManageMessages && q.AuthorId != ctx.Message.Author.Id))
                 {
                     response = GetText(strs.quotes_remove_none);
                 }
@@ -245,7 +245,7 @@ public partial class Utility
         public class ExportedQuote
         {
             public static ExportedQuote FromModel(Quote quote)
-                => new ExportedQuote()
+                => new()
                 {
                     Id = ((kwum)quote.Id).ToString(),
                     An = quote.AuthorName,

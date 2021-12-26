@@ -101,7 +101,7 @@ public partial class Administration
                 await SendConfirmAsync(
                         text: string.Join("\n", scmds
                             .Select(x => $@"```css
-#{++i + page * 5}
+#{++i + (page * 5)}
 [{GetText(strs.server)}]: {(x.GuildId.HasValue ? $"{x.GuildName} #{x.GuildId}" : "-")}
 [{GetText(strs.channel)}]: {x.ChannelName} #{x.ChannelId}
 [{GetText(strs.command_text)}]: {x.CommandText}```")),
@@ -133,7 +133,7 @@ public partial class Administration
                 await SendConfirmAsync(
                         text: string.Join("\n", scmds
                             .Select(x => $@"```css
-#{++i + page * 5}
+#{++i + (page * 5)}
 [{GetText(strs.server)}]: {(x.GuildId.HasValue ? $"{x.GuildName} #{x.GuildId}" : "-")}
 [{GetText(strs.channel)}]: {x.ChannelName} #{x.ChannelId}
 {GetIntervalText(x.Interval)}

@@ -9,7 +9,7 @@ public class CommandMapService : IInputTransformer, INService
 {
     private readonly IEmbedBuilderService _eb;
 
-    public ConcurrentDictionary<ulong, ConcurrentDictionary<string, string>> AliasMaps { get; } = new ConcurrentDictionary<ulong, ConcurrentDictionary<string, string>>();
+    public ConcurrentDictionary<ulong, ConcurrentDictionary<string, string>> AliasMaps { get; } = new();
 
     private readonly DbService _db;
 

@@ -52,7 +52,7 @@ public sealed class Connect4Game : IDisposable
     public event Func<Connect4Game, Task> OnGameFailedToStart;
     public event Func<Connect4Game, Result, Task> OnGameEnded;
 
-    private readonly SemaphoreSlim _locker = new SemaphoreSlim(1, 1);
+    private readonly SemaphoreSlim _locker = new(1, 1);
     private readonly Options _options;
     private readonly ICurrencyService _cs;
     private readonly NadekoRandom _rng;
@@ -154,8 +154,8 @@ public sealed class Connect4Game : IDisposable
             if (CurrentPhase == Phase.Ended || CurrentPhase == Phase.Joining)
                 return false;
 
-            if (!(_players[0].Value.UserId == userId && CurrentPhase == Phase.P1Move
-                  || _players[1].Value.UserId == userId && CurrentPhase == Phase.P2Move))
+            if (!((_players[0].Value.UserId == userId && CurrentPhase == Phase.P1Move)
+                  || (_players[1].Value.UserId == userId && CurrentPhase == Phase.P2Move)))
                 return false;
 
             if (inputCol < 0 || inputCol > NumberOfColumns) //invalid input
@@ -187,12 +187,12 @@ public sealed class Connect4Game : IDisposable
                     if (CurrentPhase == Phase.Ended)
                         break;
 
-                    var first = _gameState[i + j * NumberOfRows];
+                    var first = _gameState[i + (j * NumberOfRows)];
                     if (first != Field.Empty)
                     {
                         for (var k = 1; k < 4; k++)
                         {
-                            var next = _gameState[i + k + j * NumberOfRows];
+                            var next = _gameState[i + k + (j * NumberOfRows)];
                             if (next == first)
                             {
                                 if (k == 3)
@@ -217,12 +217,12 @@ public sealed class Connect4Game : IDisposable
                     if (CurrentPhase == Phase.Ended)
                         break;
 
-                    var first = _gameState[j + i * NumberOfRows];
+                    var first = _gameState[j + (i * NumberOfRows)];
                     if (first != Field.Empty)
                     {
                         for (var k = 1; k < 4; k++)
                         {
-                            var next = _gameState[j + (i + k) * NumberOfRows];
+                            var next = _gameState[j + ((i + k) * NumberOfRows)];
                             if (next == first)
                                 if (k == 3)
                                     EndGame(Result.CurrentPlayerWon, CurrentPlayer.UserId);
@@ -245,7 +245,7 @@ public sealed class Connect4Game : IDisposable
                     if (CurrentPhase == Phase.Ended)
                         break;
 
-                    var first = _gameState[row + col * NumberOfRows];
+                    var first = _gameState[row + (col * NumberOfRows)];
 
                     if (first != Field.Empty)
                     {
@@ -264,7 +264,7 @@ public sealed class Connect4Game : IDisposable
                             if (curCol < 0 || curCol >= NumberOfColumns)
                                 break;
 
-                            var cur = _gameState[curRow + curCol * NumberOfRows];
+                            var cur = _gameState[curRow + (curCol * NumberOfRows)];
                             if (cur == first)
                                 same++;
                             else break;
@@ -291,7 +291,7 @@ public sealed class Connect4Game : IDisposable
                             if (curCol < 0 || curCol >= NumberOfColumns)
                                 break;
 
-                            var cur = _gameState[curRow + curCol * NumberOfRows];
+                            var cur = _gameState[curRow + (curCol * NumberOfRows)];
                             if (cur == first)
                                 same++;
                             else break;

@@ -7,7 +7,7 @@ namespace NadekoBot.Modules.Permissions.Services;
 public class CmdCdService : ILateBlocker, INService
 {
     public ConcurrentDictionary<ulong, ConcurrentHashSet<CommandCooldown>> CommandCooldowns { get; }
-    public ConcurrentDictionary<ulong, ConcurrentHashSet<ActiveCooldown>> ActiveCooldowns { get; } = new ConcurrentDictionary<ulong, ConcurrentHashSet<ActiveCooldown>>();
+    public ConcurrentDictionary<ulong, ConcurrentHashSet<ActiveCooldown>> ActiveCooldowns { get; } = new();
 
     public int Priority { get; } = 0;
             

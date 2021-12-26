@@ -89,7 +89,7 @@ public sealed class RunningRepeater
         // interval (2.4h) * 0.834 is 2.0016 and that is the initial interval
 
         var initialIntervalMultiplier = 1 - (triggerCount - Math.Truncate(triggerCount));
-        return DateTime.UtcNow + Repeater.Interval * initialIntervalMultiplier;
+        return DateTime.UtcNow + (Repeater.Interval * initialIntervalMultiplier);
     }
 
     public override bool Equals(object obj)

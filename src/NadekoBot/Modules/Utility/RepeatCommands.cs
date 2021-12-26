@@ -111,8 +111,8 @@ public partial class Utility
                 : TimeSpan.FromDays(1));
                 
             if (string.IsNullOrWhiteSpace(message)
-                || interval != null &&
-                (interval.Time > TimeSpan.FromMinutes(25000) || interval.Time < TimeSpan.FromMinutes(1)))
+                || (interval != null &&
+                    (interval.Time > TimeSpan.FromMinutes(25000) || interval.Time < TimeSpan.FromMinutes(1))))
             {
                 return;
             }

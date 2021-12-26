@@ -9,7 +9,7 @@ public class PicartoProvider : Provider
 {
     private readonly IHttpClientFactory _httpClientFactory;
 
-    private static Regex Regex { get; } = new Regex(@"picarto.tv/(?<name>.+[^/])/?",
+    private static Regex Regex { get; } = new(@"picarto.tv/(?<name>.+[^/])/?",
         RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     public override FollowedStream.FType Platform => FollowedStream.FType.Picarto;

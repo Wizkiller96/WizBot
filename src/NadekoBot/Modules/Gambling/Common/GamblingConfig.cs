@@ -108,9 +108,9 @@ Doesn't have to be ordered.")]
     {
         Pairs = new BetRollPair[]
         {
-            new BetRollPair { WhenAbove = 99, MultiplyBy = 10 },
-            new BetRollPair { WhenAbove = 90, MultiplyBy = 4 },
-            new BetRollPair { WhenAbove = 66, MultiplyBy = 2 }
+            new() { WhenAbove = 99, MultiplyBy = 10 },
+            new() { WhenAbove = 90, MultiplyBy = 4 },
+            new() { WhenAbove = 66, MultiplyBy = 2 }
         };
     }
 }
@@ -184,11 +184,11 @@ public sealed partial class WaifuConfig
     [Comment(@"Minimum price a waifu can have")]
     public int MinPrice { get; set; } = 50;
 
-    public MultipliersData Multipliers { get; set; } = new MultipliersData();
+    public MultipliersData Multipliers { get; set; } = new();
 
     [Comment(@"List of items available for gifting.
 If negative is true, gift will instead reduce waifu value.")]
-    public List<WaifuItemModel> Items { get; set; } = new List<WaifuItemModel>();
+    public List<WaifuItemModel> Items { get; set; } = new();
 
     public WaifuConfig()
     {

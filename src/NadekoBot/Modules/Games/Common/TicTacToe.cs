@@ -74,7 +74,7 @@ public class TicTacToe
         {
             for (var j = 0; j < _state.GetLength(1); j++)
             {
-                sb.Append(_state[i, j] is null ? _numbers[i * 3 + j] : GetIcon(_state[i, j]));
+                sb.Append(_state[i, j] is null ? _numbers[(i * 3) + j] : GetIcon(_state[i, j]));
                 if (j < _state.GetLength(1) - 1)
                     sb.Append("┃");
             }

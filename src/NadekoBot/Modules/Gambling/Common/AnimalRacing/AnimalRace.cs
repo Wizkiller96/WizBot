@@ -20,10 +20,10 @@ public sealed class AnimalRace : IDisposable
     public event Func<AnimalRace, Task> OnEnded = delegate { return Task.CompletedTask; };
 
     public IReadOnlyCollection<AnimalRacingUser> Users => _users.ToList();
-    public List<AnimalRacingUser> FinishedUsers { get; } = new List<AnimalRacingUser>();
+    public List<AnimalRacingUser> FinishedUsers { get; } = new();
 
-    private readonly SemaphoreSlim _locker = new SemaphoreSlim(1, 1);
-    private readonly HashSet<AnimalRacingUser> _users = new HashSet<AnimalRacingUser>();
+    private readonly SemaphoreSlim _locker = new(1, 1);
+    private readonly HashSet<AnimalRacingUser> _users = new();
     private readonly ICurrencyService _currency;
     private readonly RaceOptions _options;
     private readonly Queue<RaceAnimal> _animalsQueue;

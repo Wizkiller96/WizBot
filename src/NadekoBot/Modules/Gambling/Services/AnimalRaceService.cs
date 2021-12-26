@@ -4,5 +4,5 @@ namespace NadekoBot.Modules.Gambling.Services;
 
 public class AnimalRaceService : INService
 {
-    public ConcurrentDictionary<ulong, AnimalRace> AnimalRaces { get; } = new ConcurrentDictionary<ulong, AnimalRace>();
+    public ConcurrentDictionary<ulong, AnimalRace> AnimalRaces { get; } = new();
 }

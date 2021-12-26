@@ -5,7 +5,7 @@ namespace NadekoBot.Modules.Permissions.Common;
 
 public class PermissionsCollection<T> : IndexedCollection<T> where T : class, IIndexed
 {
-    private readonly object _localLocker = new object();
+    private readonly object _localLocker = new();
     public PermissionsCollection(IEnumerable<T> source) : base(source)
     {
     }

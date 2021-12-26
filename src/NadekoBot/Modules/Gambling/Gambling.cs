@@ -574,7 +574,7 @@ public partial class Gambling : GamblingModule<GamblingService>
                 var usrStr = x.ToString().TrimTo(20, true);
 
                 var j = i;
-                embed.AddField("#" + (9 * curPage + j + 1) + " " + usrStr, n(x.CurrencyAmount), true);
+                embed.AddField("#" + ((9 * curPage) + j + 1) + " " + usrStr, n(x.CurrencyAmount), true);
             }
 
             return embed;
@@ -642,9 +642,9 @@ public partial class Gambling : GamblingModule<GamblingService>
             embed.WithOkColor();
             msg = GetText(strs.rps_draw(getRpsPick(pick)));
         }
-        else if (pick == RpsPick.Paper && nadekoPick == RpsPick.Rock ||
-                 pick == RpsPick.Rock && nadekoPick == RpsPick.Scissors ||
-                 pick == RpsPick.Scissors && nadekoPick == RpsPick.Paper)
+        else if ((pick == RpsPick.Paper && nadekoPick == RpsPick.Rock) ||
+                 (pick == RpsPick.Rock && nadekoPick == RpsPick.Scissors) ||
+                 (pick == RpsPick.Scissors && nadekoPick == RpsPick.Paper))
         {
             amount = (long)(amount * base._config.BetFlip.Multiplier);
             await _cs.AddAsync(ctx.User.Id,

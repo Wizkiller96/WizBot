@@ -13,7 +13,7 @@ public sealed class BlacklistService : IEarlyBehavior
     private IReadOnlyList<BlacklistEntry> _blacklist;
     public int Priority => int.MaxValue;
 
-    private readonly TypedKey<BlacklistEntry[]> blPubKey = new TypedKey<BlacklistEntry[]>("blacklist.reload");
+    private readonly TypedKey<BlacklistEntry[]> blPubKey = new("blacklist.reload");
     public BlacklistService(DbService db, IPubSub pubSub, IBotCredentials creds)
     {
         _db = db;

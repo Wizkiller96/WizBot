@@ -17,10 +17,9 @@ public sealed class StreamNotificationService : INService
     private readonly DiscordSocketClient _client;
     private readonly NotifChecker _streamTracker;
 
-    private readonly object _shardLock = new object();
+    private readonly object _shardLock = new();
 
-    private readonly Dictionary<StreamDataKey, HashSet<ulong>> _trackCounter =
-        new Dictionary<StreamDataKey, HashSet<ulong>>();
+    private readonly Dictionary<StreamDataKey, HashSet<ulong>> _trackCounter = new();
 
     private readonly Dictionary<StreamDataKey, Dictionary<ulong, HashSet<FollowedStream>>> _shardTrackedStreams;
     private readonly ConcurrentHashSet<ulong> _offlineNotificationServers;

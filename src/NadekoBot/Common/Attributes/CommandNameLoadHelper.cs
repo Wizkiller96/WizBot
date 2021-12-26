@@ -3,11 +3,10 @@
 public static class CommandNameLoadHelper
 {
         
-    private static YamlDotNet.Serialization.IDeserializer _deserializer
+    private static readonly YamlDotNet.Serialization.IDeserializer _deserializer
         = new YamlDotNet.Serialization.Deserializer();
         
-    public static Lazy<Dictionary<string, string[]>> LazyCommandAliases
-        = new Lazy<Dictionary<string, string[]>>(() => LoadCommandNames()); 
+    public static Lazy<Dictionary<string, string[]>> LazyCommandAliases = new(() => LoadCommandNames()); 
     public static Dictionary<string, string[]> LoadCommandNames(string aliasesFilePath = "data/aliases.yml")
     {
         var text = File.ReadAllText(aliasesFilePath);

@@ -2,7 +2,7 @@
 
 public abstract class Player
 {
-    public List<Deck.Card> Cards { get; } = new List<Deck.Card>();
+    public List<Deck.Card> Cards { get; } = new();
 
     public int GetHandValue()
     {

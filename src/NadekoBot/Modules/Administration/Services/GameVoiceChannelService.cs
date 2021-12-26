@@ -6,7 +6,7 @@ namespace NadekoBot.Modules.Administration.Services;
 // todo if any activity...
 public class GameVoiceChannelService : INService
 {
-    public ConcurrentHashSet<ulong> GameVoiceChannels { get; } = new ConcurrentHashSet<ulong>();
+    public ConcurrentHashSet<ulong> GameVoiceChannels { get; } = new();
 
     private readonly DbService _db;
     private readonly DiscordSocketClient _client;
@@ -84,7 +84,7 @@ public class GameVoiceChannelService : INService
         {
             try
             {
-                if (!(usr is SocketGuildUser gUser))
+                if (usr is not SocketGuildUser gUser)
                     return;
 
                 var game = gUser.Activities.FirstOrDefault()?.Name;

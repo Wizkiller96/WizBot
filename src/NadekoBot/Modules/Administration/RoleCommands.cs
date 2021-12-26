@@ -263,7 +263,7 @@ public partial class Administration
                 .Where(x => !x.IsManaged && x != x.Guild.EveryoneRole)
                 .ToList();
                 
-            if (user.Id == ctx.Guild.OwnerId || ctx.User.Id != ctx.Guild.OwnerId && guser.GetRoles().Max(x => x.Position) <= userRoles.Max(x => x.Position))
+            if (user.Id == ctx.Guild.OwnerId || (ctx.User.Id != ctx.Guild.OwnerId && guser.GetRoles().Max(x => x.Position) <= userRoles.Max(x => x.Position)))
                 return;
             try
             {

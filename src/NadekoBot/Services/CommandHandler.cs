@@ -8,7 +8,7 @@ namespace NadekoBot.Services;
 
 public class CommandHandler : INService
 {
-    public const int GlobalCommandsCooldown = 750;
+    private const int GlobalCommandsCooldown = 750;
 
     private readonly DiscordSocketClient _client;
     private readonly CommandService _commandService;
@@ -24,9 +24,9 @@ public class CommandHandler : INService
     public event Func<IUserMessage, Task> OnMessageNoTrigger = delegate { return Task.CompletedTask; };
 
     //userid/msg count
-    public ConcurrentDictionary<ulong, uint> UserMessagesSent { get; } = new ConcurrentDictionary<ulong, uint>();
+    public ConcurrentDictionary<ulong, uint> UserMessagesSent { get; } = new();
 
-    public ConcurrentHashSet<ulong> UsersOnShortCooldown { get; } = new ConcurrentHashSet<ulong>();
+    public ConcurrentHashSet<ulong> UsersOnShortCooldown { get; } = new();
     private readonly Timer _clearUsersOnShortCooldown;
 
     public CommandHandler(
@@ -105,9 +105,9 @@ public class CommandHandler : INService
         if (guildId != null)
         {
             var guild = _client.GetGuild(guildId.Value);
-            if (!(guild?.GetChannel(channelId) is SocketTextChannel channel))
+            if (guild?.GetChannel(channelId) is not SocketTextChannel channel)
             {
-                Log.Warning("Channel for external execution not found.");
+                Log.Warning("Channel for external execution not found");
                 return;
             }
 
@@ -143,15 +143,16 @@ public class CommandHandler : INService
     {
         if (_bss.Data.ConsoleOutputType == ConsoleOutputType.Normal)
         {
-            Log.Information($"Command Executed after " + string.Join("/", execPoints.Select(x => (x * _oneThousandth).ToString("F3"))) + "s\n\t" +
-                            "User: {0}\n\t" +
-                            "Server: {1}\n\t" +
-                            "Channel: {2}\n\t" +
-                            "Message: {3}",
-                usrMsg.Author + " [" + usrMsg.Author.Id + "]", // {0}
-                channel is null ? "PRIVATE" : channel.Guild.Name + " [" + channel.Guild.Id + "]", // {1}
-                channel is null ? "PRIVATE" : channel.Name + " [" + channel.Id + "]", // {2}
-                usrMsg.Content // {3}
+            Log.Information(@"Command Executed after {ExecTime}s
+	User: {User}
+	Server: {Server}
+	Channel: {Channel}
+	Message: {MessageContent}",
+                string.Join("/", execPoints.Select(x => (x * _oneThousandth).ToString("F3"))),
+                usrMsg.Author + " [" + usrMsg.Author.Id + "]",
+                channel is null ? "PRIVATE" : channel.Guild.Name + " [" + channel.Guild.Id + "]",
+                channel is null ? "PRIVATE" : channel.Name + " [" + channel.Id + "]",
+                usrMsg.Content
             );
         }
         else
@@ -169,18 +170,18 @@ public class CommandHandler : INService
     {
         if (_bss.Data.ConsoleOutputType == ConsoleOutputType.Normal)
         {
-            Log.Warning($"Command Errored after " + string.Join("/", execPoints.Select(x => (x * _oneThousandth).ToString("F3"))) + "s\n\t" +
-                        "User: {0}\n\t" +
-                        "Server: {1}\n\t" +
-                        "Channel: {2}\n\t" +
-                        "Message: {3}\n\t" +
-                        "Error: {4}",
-                usrMsg.Author + " [" + usrMsg.Author.Id + "]", // {0}
-                channel is null ? "PRIVATE" : channel.Guild.Name + " [" + channel.Guild.Id + "]", // {1}
-                channel is null ? "PRIVATE" : channel.Name + " [" + channel.Id + "]", // {2}
-                usrMsg.Content,// {3}
+            Log.Warning(@"Command Errored after {ExecTime}s
+	User: {User}
+	Server: {Server}
+	Channel: {Channel}
+	Message: {MessageContent}
+	Error: {ErrorMessage}",
+                string.Join("/", execPoints.Select(x => (x * _oneThousandth).ToString("F3"))),
+                usrMsg.Author + " [" + usrMsg.Author.Id + "]",
+                channel is null ? "PRIVATE" : channel.Guild.Name + " [" + channel.Guild.Id + "]",
+                channel is null ? "PRIVATE" : channel.Name + " [" + channel.Id + "]",
+                usrMsg.Content,
                 errorMessage
-                //exec.Result.ErrorReason // {4}
             );
         }
         else
@@ -196,19 +197,20 @@ public class CommandHandler : INService
 
     private async Task MessageReceivedHandler(SocketMessage msg)
     {
+        
         try
         {
             if (msg.Author.IsBot || !_bot.IsReady) //no bots, wait until bot connected and initialized
                 return;
 
-            if (!(msg is SocketUserMessage usrMsg))
+            if (msg is not SocketUserMessage usrMsg)
                 return;
 #if !GLOBAL_NADEKO
             // track how many messagges each user is sending
             UserMessagesSent.AddOrUpdate(usrMsg.Author.Id, 1, (key, old) => ++old);
 #endif
 
-            var channel = msg.Channel as ISocketMessageChannel;
+            var channel = msg.Channel;
             var guild = (msg.Channel as SocketTextChannel)?.Guild;
 
             await TryRunCommand(guild, channel, usrMsg).ConfigureAwait(false);
@@ -240,20 +242,20 @@ public class CommandHandler : INService
         // execute the command and measure the time it took
         if (messageContent.StartsWith(prefix, StringComparison.InvariantCulture) || isPrefixCommand)
         {
-            var (Success, Error, Info) = await ExecuteCommandAsync(new(_client, usrMsg), messageContent, isPrefixCommand ? 1 : prefix.Length, _services, MultiMatchHandling.Best).ConfigureAwait(false);
+            var (success, error, info) = await ExecuteCommandAsync(new(_client, usrMsg), messageContent, isPrefixCommand ? 1 : prefix.Length, _services, MultiMatchHandling.Best).ConfigureAwait(false);
             startTime = Environment.TickCount - startTime;
 
-            if (Success)
+            if (success)
             {
                 await LogSuccessfulExecution(usrMsg, channel as ITextChannel, blockTime, startTime).ConfigureAwait(false);
-                await CommandExecuted(usrMsg, Info).ConfigureAwait(false);
+                await CommandExecuted(usrMsg, info).ConfigureAwait(false);
                 return;
             }
-            else if (Error != null)
+            else if (error != null)
             {
-                LogErroredExecution(Error, usrMsg, channel as ITextChannel, blockTime, startTime);
+                LogErroredExecution(error, usrMsg, channel as ITextChannel, blockTime, startTime);
                 if (guild != null)
-                    await CommandErrored(Info, channel as ITextChannel, Error).ConfigureAwait(false);
+                    await CommandErrored(info, channel as ITextChannel, error).ConfigureAwait(false);
             }
         }
         else
@@ -330,12 +332,13 @@ public class CommandHandler : INService
             }
 
             var totalArgsScore = (argValuesScore + paramValuesScore) / 2;
-            return match.Command.Priority + totalArgsScore * 0.99f;
+            return match.Command.Priority + (totalArgsScore * 0.99f);
         }
 
         //Order the parse results by their score so that we choose the most likely result to execute
         var parseResults = parseResultsDict
-            .OrderByDescending(x => CalculateScore(x.Key, x.Value));
+            .OrderByDescending(x => CalculateScore(x.Key, x.Value))
+            .ToList();
 
         var successfulParses = parseResults
             .Where(x => x.Value.IsSuccess)
@@ -365,7 +368,7 @@ public class CommandHandler : INService
         var chosenOverload = successfulParses[0];
         var execResult = (Discord.Commands.ExecuteResult)await chosenOverload.Key.ExecuteAsync(context, chosenOverload.Value, services).ConfigureAwait(false);
 
-        if (execResult.Exception != null && (!(execResult.Exception is HttpException he) || he.DiscordCode != DiscordErrorCode.InsufficientPermissions))
+        if (execResult.Exception != null && (execResult.Exception is not HttpException he || he.DiscordCode != DiscordErrorCode.InsufficientPermissions))
         {
             Log.Warning(execResult.Exception, "Command Error");
         }

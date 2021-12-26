@@ -21,10 +21,10 @@ public sealed class NunchiGame : IDisposable
     public event Func<NunchiGame, (ulong Id, string Name)?, Task> OnRoundEnded; // tuple of the user who failed
     public event Func<NunchiGame, string, Task> OnGameEnded; // name of the user who won
 
-    private readonly SemaphoreSlim _locker = new SemaphoreSlim(1, 1);
+    private readonly SemaphoreSlim _locker = new(1, 1);
 
-    private HashSet<(ulong Id, string Name)> _participants = new HashSet<(ulong Id, string Name)>();
-    private HashSet<(ulong Id, string Name)> _passed = new HashSet<(ulong Id, string Name)>();
+    private HashSet<(ulong Id, string Name)> _participants = new();
+    private readonly HashSet<(ulong Id, string Name)> _passed = new();
 
     public ImmutableArray<(ulong Id, string Name)> Participants => _participants.ToImmutableArray();
     public int ParticipantCount => _participants.Count;

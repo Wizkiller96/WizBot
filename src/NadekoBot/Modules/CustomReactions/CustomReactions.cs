@@ -13,8 +13,8 @@ public class CustomReactions : NadekoModule<CustomReactionsService>
         _clientFactory = clientFactory;
     }
 
-    private bool AdminInGuildOrOwnerInDm() => ctx.Guild is null && _creds.IsOwner(ctx.User)
-                                              || ctx.Guild != null && ((IGuildUser)ctx.User).GuildPermissions.Administrator;
+    private bool AdminInGuildOrOwnerInDm() => (ctx.Guild is null && _creds.IsOwner(ctx.User))
+                                              || (ctx.Guild != null && ((IGuildUser)ctx.User).GuildPermissions.Administrator);
 
     [NadekoCommand, Aliases]
     public async Task AddCustReact(string key, [Leftover] string message)
@@ -33,7 +33,7 @@ public class CustomReactions : NadekoModule<CustomReactionsService>
 
         await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
             .WithTitle(GetText(strs.new_cust_react))
-            .WithDescription($"#{(kwum)cr.Id}")
+            .WithDescription($"#{cr.Id}")
             .AddField(GetText(strs.trigger), key)
             .AddField(GetText(strs.response), message.Length > 1024 ? GetText(strs.redacted_too_long) : message)
         ).ConfigureAwait(false);
@@ -46,13 +46,13 @@ public class CustomReactions : NadekoModule<CustomReactionsService>
         if (string.IsNullOrWhiteSpace(message) || id < 0)
             return;
 
-        if (channel is null && !_creds.IsOwner(ctx.User) || channel != null && !((IGuildUser)ctx.User).GuildPermissions.Administrator)
+        if ((channel is null && !_creds.IsOwner(ctx.User)) || (channel != null && !((IGuildUser)ctx.User).GuildPermissions.Administrator))
         {
             await ReplyErrorLocalizedAsync(strs.insuff_perms).ConfigureAwait(false);
             return;
         }
 
-        var cr = await _service.EditAsync(ctx.Guild?.Id, (int)id, message).ConfigureAwait(false);
+        var cr = await _service.EditAsync(ctx.Guild?.Id, id, message).ConfigureAwait(false);
         if (cr != null)
         {
             await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
@@ -112,7 +112,7 @@ public class CustomReactions : NadekoModule<CustomReactionsService>
     [NadekoCommand, Aliases]
     public async Task ShowCustReact(kwum id)
     {
-        var found = _service.GetCustomReaction(ctx.Guild?.Id, (int)id);
+        var found = _service.GetCustomReaction(ctx.Guild?.Id, id);
 
         if (found is null)
         {
@@ -138,7 +138,7 @@ public class CustomReactions : NadekoModule<CustomReactionsService>
             return;
         }
 
-        var cr = await _service.DeleteAsync(ctx.Guild?.Id, (int)id);
+        var cr = await _service.DeleteAsync(ctx.Guild?.Id, id);
 
         if (cr != null)
         {

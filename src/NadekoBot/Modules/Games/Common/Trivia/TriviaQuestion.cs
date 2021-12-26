@@ -6,11 +6,12 @@ namespace NadekoBot.Modules.Games.Common.Trivia;
 public class TriviaQuestion
 {
     //represents the min size to judge levDistance with
-    private static readonly HashSet<Tuple<int, int>> strictness = new HashSet<Tuple<int, int>> {
-        new Tuple<int, int>(9, 0),
-        new Tuple<int, int>(14, 1),
-        new Tuple<int, int>(19, 2),
-        new Tuple<int, int>(22, 3),
+    private static readonly HashSet<Tuple<int, int>> strictness = new()
+    {
+        new(9, 0),
+        new(14, 1),
+        new(19, 2),
+        new(22, 3),
     };
     public const int maxStringLength = 22;
 

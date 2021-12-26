@@ -6,7 +6,7 @@ namespace NadekoBot.Modules.Utility.Services;
 
 public class RemindService : INService
 {
-    private readonly Regex _regex = new Regex(@"^(?:in\s?)?\s*(?:(?<mo>\d+)(?:\s?(?:months?|mos?),?))?(?:(?:\sand\s|\s*)?(?<w>\d+)(?:\s?(?:weeks?|w),?))?(?:(?:\sand\s|\s*)?(?<d>\d+)(?:\s?(?:days?|d),?))?(?:(?:\sand\s|\s*)?(?<h>\d+)(?:\s?(?:hours?|h),?))?(?:(?:\sand\s|\s*)?(?<m>\d+)(?:\s?(?:minutes?|mins?|m),?))?\s+(?:to:?\s+)?(?<what>(?:\r\n|[\r\n]|.)+)",
+    private readonly Regex _regex = new(@"^(?:in\s?)?\s*(?:(?<mo>\d+)(?:\s?(?:months?|mos?),?))?(?:(?:\sand\s|\s*)?(?<w>\d+)(?:\s?(?:weeks?|w),?))?(?:(?:\sand\s|\s*)?(?<d>\d+)(?:\s?(?:days?|d),?))?(?:(?:\sand\s|\s*)?(?<h>\d+)(?:\s?(?:hours?|h),?))?(?:(?:\sand\s|\s*)?(?<m>\d+)(?:\s?(?:minutes?|mins?|m),?))?\s+(?:to:?\s+)?(?<what>(?:\r\n|[\r\n]|.)+)",
         RegexOptions.Compiled | RegexOptions.Multiline);
 
     private readonly DiscordSocketClient _client;
@@ -126,7 +126,7 @@ public class RemindService : INService
             
         var ts = new TimeSpan
         (
-            30 * values["mo"] + 7 * values["w"] + values["d"],
+            (30 * values["mo"]) + (7 * values["w"]) + values["d"],
             values["h"],
             values["m"],
             0

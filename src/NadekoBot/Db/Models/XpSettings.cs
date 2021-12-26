@@ -5,9 +5,9 @@ public class XpSettings : DbEntity
     public int GuildConfigId { get; set; }
     public GuildConfig GuildConfig { get; set; }
 
-    public HashSet<XpRoleReward> RoleRewards { get; set; } = new HashSet<XpRoleReward>();
-    public HashSet<XpCurrencyReward> CurrencyRewards { get; set; } = new HashSet<XpCurrencyReward>();
-    public HashSet<ExcludedItem> ExclusionList { get; set; } = new HashSet<ExcludedItem>();
+    public HashSet<XpRoleReward> RoleRewards { get; set; } = new();
+    public HashSet<XpCurrencyReward> CurrencyRewards { get; set; } = new();
+    public HashSet<ExcludedItem> ExclusionList { get; set; } = new();
     public bool ServerExcluded { get; set; }
 }
 

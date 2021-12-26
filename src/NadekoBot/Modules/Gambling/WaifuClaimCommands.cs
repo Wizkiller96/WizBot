@@ -222,7 +222,7 @@ public partial class Gambling
             foreach (var w in waifus)
             {
                 var j = i++;
-                embed.AddField("#" + (page * 9 + j + 1) + " - " + w.Price + CurrencySign, w.ToString(), false);
+                embed.AddField("#" + ((page * 9) + j + 1) + " - " + w.Price + CurrencySign, w.ToString(), false);
             }
 
             await ctx.Channel.EmbedAsync(embed);
