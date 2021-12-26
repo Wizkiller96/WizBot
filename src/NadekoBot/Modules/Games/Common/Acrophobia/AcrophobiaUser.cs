@@ -14,14 +14,10 @@ public class AcrophobiaUser
     }
 
     public override int GetHashCode()
-    {
-        return UserId.GetHashCode();
-    }
+        => UserId.GetHashCode();
 
     public override bool Equals(object obj)
-    {
-        return obj is AcrophobiaUser x
+        => obj is AcrophobiaUser x
             ? x.UserId == this.UserId
             : false;
-    }
 }

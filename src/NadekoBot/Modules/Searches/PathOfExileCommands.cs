@@ -21,9 +21,7 @@ public partial class Searches
         private readonly IHttpClientFactory _httpFactory;
 
         public PathOfExileCommands(IHttpClientFactory httpFactory)
-        {
-            _httpFactory = httpFactory;
-        }
+            => _httpFactory = httpFactory;
 
         [NadekoCommand, Aliases]
         public async Task PathOfExile(string usr, string league = "", int page = 1)

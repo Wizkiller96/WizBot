@@ -27,9 +27,7 @@ public sealed class VoiceProxy : IVoiceProxy
     private VoiceGateway _gateway;
 
     public VoiceProxy(VoiceGateway initial)
-    {
-        _gateway = initial;
-    }
+        => _gateway = initial;
 
     public bool SendPcmFrame(VoiceClient vc, Span<byte> data, int length)
     {
@@ -86,24 +84,16 @@ public sealed class VoiceProxy : IVoiceProxy
     }
 
     public void SetGateway(VoiceGateway gateway)
-    {
-        _gateway = gateway;
-    }
+        => _gateway = gateway;
 
     public Task StartSpeakingAsync()
-    {
-        return RunGatewayAction(gw => gw.SendSpeakingAsync(VoiceSpeaking.State.Microphone));
-    }
+        => RunGatewayAction(gw => gw.SendSpeakingAsync(VoiceSpeaking.State.Microphone));
 
     public Task StopSpeakingAsync()
-    {
-        return RunGatewayAction(gw => gw.SendSpeakingAsync(VoiceSpeaking.State.None));
-    }
+        => RunGatewayAction(gw => gw.SendSpeakingAsync(VoiceSpeaking.State.None));
 
     public async Task StartGateway()
-    {
-        await _gateway.Start();
-    }
+        => await _gateway.Start();
 
     public Task StopGateway()
     {

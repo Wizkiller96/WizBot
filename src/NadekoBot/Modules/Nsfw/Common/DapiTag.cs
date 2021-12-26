@@ -8,7 +8,5 @@ public readonly struct DapiTag
 
     [JsonConstructor]
     public DapiTag(string name)
-    {
-        Name = name;
-    }
+        => Name = name;
 }

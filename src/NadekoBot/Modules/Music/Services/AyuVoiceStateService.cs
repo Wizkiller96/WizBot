@@ -44,10 +44,8 @@ public sealed class AyuVoiceStateService : INService
     }
 
     private Task InvokeSendVoiceStateUpdateAsync(ulong guildId, ulong? channelId = null, bool isDeafened = false, bool isMuted = false)
-    {
         // return _voiceStateUpdate(guildId, channelId, isDeafened, isMuted);
-        return (Task) _sendVoiceStateUpdateMethodInfo.Invoke(_dnetApiClient, new object[] {guildId, channelId, isMuted, isDeafened, null});
-    }
+        => (Task) _sendVoiceStateUpdateMethodInfo.Invoke(_dnetApiClient, new object[] {guildId, channelId, isMuted, isDeafened, null});
 
     private Task SendLeaveVoiceChannelInternalAsync(ulong guildId)
         => InvokeSendVoiceStateUpdateAsync(guildId);

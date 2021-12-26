@@ -713,7 +713,7 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
                 {
                     GuildId = guildId,
                     Response = cr.Res,
-                    Reactions = cr.React?.JoinWith("@@@"),
+                    Reactions = cr.React?.Join("@@@"),
                     Trigger = trigger,
                     AllowTarget = cr.At,
                     ContainsAnywhere = cr.Ca,

@@ -5,9 +5,7 @@ public readonly struct TypedKey<TData>
     public readonly string Key;
 
     public TypedKey(in string key)
-    {
-        Key = key;
-    }
+        => Key = key;
 
     public static implicit operator TypedKey<TData>(in string input)
         => new(input);

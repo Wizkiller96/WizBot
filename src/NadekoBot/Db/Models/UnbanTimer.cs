@@ -9,9 +9,7 @@ public class UnbanTimer : DbEntity
         UserId.GetHashCode();
 
     public override bool Equals(object obj)
-    {
-        return obj is UnbanTimer ut
+        => obj is UnbanTimer ut
             ? ut.UserId == UserId
             : false;
-    }
 }

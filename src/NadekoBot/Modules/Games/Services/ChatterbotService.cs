@@ -64,11 +64,11 @@ public class ChatterBotService : IEarlyBehavior
         string message;
         if (msg.Content.StartsWith(normalMention, StringComparison.InvariantCulture))
         {
-            message = msg.Content.Substring(normalMention.Length).Trim();
+            message = msg.Content[normalMention.Length..].Trim();
         }
         else if (msg.Content.StartsWith(nickMention, StringComparison.InvariantCulture))
         {
-            message = msg.Content.Substring(nickMention.Length).Trim();
+            message = msg.Content[nickMention.Length..].Trim();
         }
         else
         {

@@ -29,9 +29,7 @@ public partial class Searches
         private readonly IHttpClientFactory _httpFactory;
 
         public MemegenCommands(IHttpClientFactory factory)
-        {
-            _httpFactory = factory;
-        }
+            => _httpFactory = factory;
 
         [NadekoCommand, Aliases]
         public async Task Memelist(int page = 1)

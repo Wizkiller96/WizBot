@@ -14,7 +14,5 @@ public sealed class KwumTypeReader : NadekoTypeReader<kwum>
 public sealed class SmartTextTypeReader : NadekoTypeReader<SmartText>
 {
     public override Task<TypeReaderResult> ReadAsync(ICommandContext ctx, string input)
-    {
-        return Task.FromResult(TypeReaderResult.FromSuccess(SmartText.CreateFrom(input)));
-    }
+        => Task.FromResult(TypeReaderResult.FromSuccess(SmartText.CreateFrom(input)));
 }

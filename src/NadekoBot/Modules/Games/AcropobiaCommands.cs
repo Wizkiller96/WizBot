@@ -12,9 +12,7 @@ public partial class Games
         private readonly DiscordSocketClient _client;
 
         public AcropobiaCommands(DiscordSocketClient client)
-        {
-            _client = client;
-        }
+            => _client = client;
 
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
@@ -80,11 +78,9 @@ public partial class Games
         }
 
         private Task Game_OnUserVoted(string user)
-        {
-            return SendConfirmAsync(
+            => SendConfirmAsync(
                 GetText(strs.acrophobia),
                 GetText(strs.acro_vote_cast(Format.Bold(user))));
-        }
 
         private async Task Game_OnVotingStarted(AcrophobiaGame game, ImmutableArray<KeyValuePair<AcrophobiaUser, int>> submissions)
         {

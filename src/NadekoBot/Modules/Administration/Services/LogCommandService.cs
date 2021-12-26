@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
-using NadekoBot.Common.Collections;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
 using NadekoBot.Modules.Administration.Common;
@@ -23,24 +22,16 @@ public sealed class DummyLogCommandService : ILogCommandService
     }
 
     public Task LogServer(ulong guildId, ulong channelId, bool actionValue)
-    {
-        return Task.CompletedTask;
-    }
+        => Task.CompletedTask;
 
     public bool LogIgnore(ulong guildId, ulong itemId, IgnoredItemType itemType)
-    {
-        return false;
-    }
+        => false;
 
     public LogSetting GetGuildLogSettings(ulong guildId)
-    {
-        return default;
-    }
+        => default;
 
     public bool Log(ulong guildId, ulong? channelId, LogType type)
-    {
-        return false;
-    }
+        => false;
 }
     
 public sealed class LogCommandService : ILogCommandService
@@ -150,9 +141,7 @@ public sealed class LogCommandService : ILogCommandService
     }
 
     public void AddDeleteIgnore(ulong messageId)
-    {
-        _ignoreMessageIds.Add(messageId);
-    }
+        => _ignoreMessageIds.Add(messageId);
 
     public bool LogIgnore(ulong gid, ulong itemId, IgnoredItemType itemType)
     {
@@ -1172,7 +1161,7 @@ public sealed class LogCommandService : ILogCommandService
                 break;
         }
 
-        if (!id.HasValue || id == 0)
+        if (id is null or 0)
         {
             UnsetLogSetting(guild.Id, logChannelType);
             return null;

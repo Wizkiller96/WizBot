@@ -11,9 +11,7 @@ public partial class Games
         private readonly DiscordSocketClient _client;
 
         public NunchiCommands(DiscordSocketClient client)
-        {
-            _client = client;
-        }
+            => _client = client;
 
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
@@ -91,16 +89,12 @@ public partial class Games
         }
 
         private Task Nunchi_OnRoundStarted(NunchiGame arg, int cur)
-        {
-            return ConfirmLocalizedAsync(strs.nunchi_round_started(
+            => ConfirmLocalizedAsync(strs.nunchi_round_started(
                 Format.Bold(arg.ParticipantCount.ToString()), 
                 Format.Bold(cur.ToString())));
-        }
 
         private Task Nunchi_OnUserGuessed(NunchiGame arg)
-        {
-            return ConfirmLocalizedAsync(strs.nunchi_next_number(Format.Bold(arg.CurrentNumber.ToString())));
-        }
+            => ConfirmLocalizedAsync(strs.nunchi_next_number(Format.Bold(arg.CurrentNumber.ToString())));
 
         private Task Nunchi_OnRoundEnded(NunchiGame arg1, (ulong Id, string Name)? arg2)
         {
@@ -112,8 +106,6 @@ public partial class Games
         }
 
         private Task Nunchi_OnGameStarted(NunchiGame arg)
-        {
-            return ConfirmLocalizedAsync(strs.nunchi_started(Format.Bold(arg.ParticipantCount.ToString())));
-        }
+            => ConfirmLocalizedAsync(strs.nunchi_started(Format.Bold(arg.ParticipantCount.ToString())));
     }
 }

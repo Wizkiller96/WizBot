@@ -103,15 +103,13 @@ public partial class Utility
         }
 
         private async Task ShowQuoteData(Quote data)
-        {
-            await ctx.Channel.EmbedAsync(_eb.Create(ctx)
+            => await ctx.Channel.EmbedAsync(_eb.Create(ctx)
                 .WithOkColor()
                 .WithTitle(GetText(strs.quote_id($"#{data.Id}")))
                 .AddField(GetText(strs.trigger), data.Keyword)
                 .AddField(GetText(strs.response), Format.Sanitize(data.Text).Replace("](", "]\\("))
                 .WithFooter(GetText(strs.created_by($"{data.AuthorName} ({data.AuthorId})")))
             ).ConfigureAwait(false);
-        }
 
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]

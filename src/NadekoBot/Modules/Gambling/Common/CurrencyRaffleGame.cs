@@ -13,16 +13,12 @@ public class CurrencyRaffleGame
         public long Amount { get; set; }
 
         public override int GetHashCode()
-        {
-            return DiscordUser.GetHashCode();
-        }
+            => DiscordUser.GetHashCode();
 
         public override bool Equals(object obj)
-        {
-            return obj is User u
+            => obj is User u
                 ? u.DiscordUser == DiscordUser
                 : false;
-        }
     }
 
     private readonly HashSet<User> _users = new();
@@ -30,9 +26,7 @@ public class CurrencyRaffleGame
     public Type GameType { get; }
 
     public CurrencyRaffleGame(Type type)
-    {
-        GameType = type;
-    }
+        => GameType = type;
 
     public bool AddUser(IUser usr, long amount)
     {

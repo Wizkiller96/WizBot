@@ -12,9 +12,7 @@ public partial class Games
         private readonly DiscordSocketClient _client;
 
         public TicTacToeCommands(DiscordSocketClient client)
-        {
-            _client = client;
-        }
+            => _client = client;
 
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]

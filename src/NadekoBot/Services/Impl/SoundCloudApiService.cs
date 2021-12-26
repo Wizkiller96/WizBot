@@ -7,9 +7,7 @@ public class SoundCloudApiService : INService
     private readonly IHttpClientFactory _httpFactory;
 
     public SoundCloudApiService(IHttpClientFactory factory)
-    {
-        _httpFactory = factory;
-    }
+        => _httpFactory = factory;
 
     public async Task<SoundCloudVideo> ResolveVideoAsync(string url)
     {

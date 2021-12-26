@@ -10,9 +10,7 @@ public partial class Searches
 
         [NadekoCommand, Aliases]
         public async Task Yomama()
-        {
-            await SendConfirmAsync(await _service.GetYomamaJoke().ConfigureAwait(false)).ConfigureAwait(false);
-        }
+            => await SendConfirmAsync(await _service.GetYomamaJoke().ConfigureAwait(false)).ConfigureAwait(false);
 
         [NadekoCommand, Aliases]
         public async Task Randjoke()
@@ -23,9 +21,7 @@ public partial class Searches
 
         [NadekoCommand, Aliases]
         public async Task ChuckNorris()
-        {
-            await SendConfirmAsync(await _service.GetChuckNorrisJoke().ConfigureAwait(false)).ConfigureAwait(false);
-        }
+            => await SendConfirmAsync(await _service.GetChuckNorrisJoke().ConfigureAwait(false)).ConfigureAwait(false);
 
         [NadekoCommand, Aliases]
         public async Task WowJoke()

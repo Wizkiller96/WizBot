@@ -23,7 +23,7 @@ public partial class Administration
         [UserPerm(GuildPerm.ManageGuild)]
         public async Task BoostDel(int timer = 30)
         {
-            if (timer < 0 || timer > 600)
+            if (timer is < 0 or > 600)
                 return;
 
             await _service.SetBoostDel(ctx.Guild.Id, timer);
@@ -66,7 +66,7 @@ public partial class Administration
         [UserPerm(GuildPerm.ManageGuild)]
         public async Task GreetDel(int timer = 30)
         {
-            if (timer < 0 || timer > 600)
+            if (timer is < 0 or > 600)
                 return;
 
             await _service.SetGreetDel(ctx.Guild.Id, timer).ConfigureAwait(false);

@@ -95,7 +95,7 @@ public class CustomReactions : NadekoModule<CustomReactionsService>
                               + (string.IsNullOrWhiteSpace(cr.Reactions)
                                   ? string.Empty
                                   : " // " + string.Join(" ", cr.GetReactions())))
-                .JoinWith('\n');
+                .Join('\n');
 
             return _eb.Create().WithOkColor()
                 .WithTitle(GetText(strs.custom_reactions))

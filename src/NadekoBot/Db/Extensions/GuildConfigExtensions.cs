@@ -44,20 +44,17 @@ public static class GuildConfigExtensions
         };
 
     private static IQueryable<GuildConfig> IncludeEverything(this DbSet<GuildConfig> configs)
-    {
-        return configs
-                .AsQueryable()
-                .AsSplitQuery()
-                .Include(gc => gc.CommandCooldowns)
-                .Include(gc => gc.FollowedStreams)
-                .Include(gc => gc.StreamRole)
-                .Include(gc => gc.XpSettings)
-                .ThenInclude(x => x.ExclusionList)
-                .Include(gc => gc.DelMsgOnCmdChannels)
-                .Include(gc => gc.ReactionRoleMessages)
-                .ThenInclude(x => x.ReactionRoles)
-            ;
-    }
+        => configs
+            .AsQueryable()
+            .AsSplitQuery()
+            .Include(gc => gc.CommandCooldowns)
+            .Include(gc => gc.FollowedStreams)
+            .Include(gc => gc.StreamRole)
+            .Include(gc => gc.XpSettings)
+            .ThenInclude(x => x.ExclusionList)
+            .Include(gc => gc.DelMsgOnCmdChannels)
+            .Include(gc => gc.ReactionRoleMessages)
+            .ThenInclude(x => x.ReactionRoles);
 
     public static IEnumerable<GuildConfig> GetAllGuildConfigs(this DbSet<GuildConfig> configs, List<ulong> availableGuilds)
         => configs
@@ -168,22 +165,18 @@ public static class GuildConfigExtensions
     }
 
     public static IEnumerable<FollowedStream> GetFollowedStreams(this DbSet<GuildConfig> configs)
-    {
-        return configs
+        => configs
             .AsQueryable()
             .Include(x => x.FollowedStreams)
             .SelectMany(gc => gc.FollowedStreams)
             .ToArray();
-    }
 
     public static IEnumerable<FollowedStream> GetFollowedStreams(this DbSet<GuildConfig> configs, List<ulong> included)
-    {
-        return configs.AsQueryable()
+        => configs.AsQueryable()
             .Where(gc => included.Contains(gc.GuildId))
             .Include(gc => gc.FollowedStreams)
             .SelectMany(gc => gc.FollowedStreams)
             .ToList();
-    }
 
     public static void SetCleverbotEnabled(this DbSet<GuildConfig> configs, ulong id, bool cleverbotEnabled)
     {
@@ -212,8 +205,7 @@ public static class GuildConfigExtensions
     }
 
     public static IEnumerable<GeneratingChannel> GetGeneratingChannels(this DbSet<GuildConfig> configs)
-    {
-        return configs
+        => configs
             .AsQueryable()
             .Include(x => x.GenerateCurrencyChannelIds)
             .Where(x => x.GenerateCurrencyChannelIds.Any())
@@ -224,5 +216,4 @@ public static class GuildConfigExtensions
                 GuildId = x.GuildConfig.GuildId
             })
             .ToArray();
-    }
 }

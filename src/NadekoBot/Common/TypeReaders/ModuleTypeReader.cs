@@ -5,9 +5,7 @@ public sealed class ModuleTypeReader : NadekoTypeReader<ModuleInfo>
     private readonly CommandService _cmds;
 
     public ModuleTypeReader(CommandService cmds)
-    {
-        _cmds = cmds;
-    }
+        => _cmds = cmds;
 
     public override Task<TypeReaderResult> ReadAsync(ICommandContext context, string input)
     {
@@ -25,9 +23,7 @@ public sealed class ModuleOrCrTypeReader : NadekoTypeReader<ModuleOrCrInfo>
     private readonly CommandService _cmds;
 
     public ModuleOrCrTypeReader(CommandService cmds)
-    {
-        _cmds = cmds;
-    }
+        => _cmds = cmds;
 
     public override Task<TypeReaderResult> ReadAsync(ICommandContext context, string input)
     {

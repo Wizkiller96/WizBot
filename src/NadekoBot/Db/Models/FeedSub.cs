@@ -9,14 +9,10 @@ public class FeedSub : DbEntity
     public string Url { get; set; }
 
     public override int GetHashCode()
-    {
-        return Url.GetHashCode(StringComparison.InvariantCulture) ^ GuildConfigId.GetHashCode();
-    }
+        => Url.GetHashCode(StringComparison.InvariantCulture) ^ GuildConfigId.GetHashCode();
 
     public override bool Equals(object obj)
-    {
-        return obj is FeedSub s
-               && s.Url.ToLower() == Url.ToLower()
-               && s.GuildConfigId == GuildConfigId;
-    }
+        => obj is FeedSub s
+           && s.Url.ToLower() == Url.ToLower()
+           && s.GuildConfigId == GuildConfigId;
 }

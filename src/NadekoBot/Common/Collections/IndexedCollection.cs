@@ -13,10 +13,8 @@ public class IndexedCollection<T> : IList<T> where T : class, IIndexed
     public int IndexOf(T item) => item.Index;
 
     public IndexedCollection()
-    {
-        Source = new();
-    }
-        
+        => Source = new();
+
     public IndexedCollection(IEnumerable<T> source)
     {
         lock (_locker)
@@ -125,7 +123,7 @@ public class IndexedCollection<T> : IList<T> where T : class, IIndexed
 
     public virtual T this[int index]
     {
-        get { return Source[index]; }
+        get => Source[index];
         set
         {
             lock (_locker)

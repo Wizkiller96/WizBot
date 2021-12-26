@@ -86,8 +86,7 @@ public partial class Gambling
                         try { await arg.DeleteAsync().ConfigureAwait(false); } catch { }
                     else
                     {
-                        if (game.CurrentPhase == Connect4Game.Phase.Joining
-                            || game.CurrentPhase == Connect4Game.Phase.Ended)
+                        if (game.CurrentPhase is Connect4Game.Phase.Joining or Connect4Game.Phase.Ended)
                         {
                             return;
                         }
@@ -145,7 +144,7 @@ public partial class Gambling
             get => _repostCounter;
             set
             {
-                if (value < 0 || value > 7)
+                if (value is < 0 or > 7)
                     _repostCounter = 0;
                 else _repostCounter = value;
             }
@@ -169,8 +168,7 @@ public partial class Gambling
         {
             var sb = new StringBuilder();
 
-            if (game.CurrentPhase == Connect4Game.Phase.P1Move ||
-                game.CurrentPhase == Connect4Game.Phase.P2Move)
+            if (game.CurrentPhase is Connect4Game.Phase.P1Move or Connect4Game.Phase.P2Move)
                 sb.AppendLine(GetText(strs.connect4_player_to_move(Format.Bold(game.CurrentPlayer.Username))));
 
             for (var i = Connect4Game.NumberOfRows; i > 0; i--)

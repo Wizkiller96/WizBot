@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NadekoBot.Services.Database.Models;
-using NadekoBot.Common.Collections;
 using NadekoBot.Common.TypeReaders;
 using NadekoBot.Db;
 using NadekoBot.Modules.Permissions.Services;
@@ -31,7 +30,7 @@ public partial class Permissions
         public async Task CmdCooldown(CommandOrCrInfo command, int secs)
         {
             var channel = (ITextChannel)ctx.Channel;
-            if (secs < 0 || secs > 3600)
+            if (secs is < 0 or > 3600)
             {
                 await ReplyErrorLocalizedAsync(strs.invalid_second_param_between(0, 3600));
                 return;

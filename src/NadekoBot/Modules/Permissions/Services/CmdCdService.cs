@@ -1,5 +1,4 @@
-﻿using NadekoBot.Common.Collections;
-using NadekoBot.Common.ModuleBehaviors;
+﻿using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Permissions.Services;
@@ -12,11 +11,9 @@ public class CmdCdService : ILateBlocker, INService
     public int Priority { get; } = 0;
             
     public CmdCdService(Bot bot)
-    {
-        CommandCooldowns = new(
+        => CommandCooldowns = new(
             bot.AllGuildConfigs.ToDictionary(k => k.GuildId, 
                 v => new ConcurrentHashSet<CommandCooldown>(v.CommandCooldowns)));
-    }
 
     public Task<bool> TryBlock(IGuild guild, IUser user, string commandName)
     {

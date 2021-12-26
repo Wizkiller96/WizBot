@@ -27,9 +27,7 @@ public class SelfAssignedRolesService : INService
     }
 
     public SelfAssignedRolesService(DbService db)
-    {
-        _db = db;
-    }
+        => _db = db;
 
     public bool AddNew(ulong guildId, IRole role, int group)
     {

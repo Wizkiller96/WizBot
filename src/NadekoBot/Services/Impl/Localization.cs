@@ -74,12 +74,10 @@ public class Localization : ILocalization, INService
     }
 
     public void SetDefaultCulture(CultureInfo ci)
-    {
-        _bss.ModifyConfig(bs =>
+        => _bss.ModifyConfig(bs =>
         {
             bs.DefaultLocale = ci;
         });
-    }
 
     public void ResetDefaultCulture() =>
         SetDefaultCulture(CultureInfo.CurrentCulture);

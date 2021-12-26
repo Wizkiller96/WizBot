@@ -20,16 +20,12 @@ public class FollowedStream : DbEntity
     }
 
     protected bool Equals(FollowedStream other)
-    {
-        return ChannelId == other.ChannelId 
-               && Username.Trim().ToUpperInvariant() == other.Username.Trim().ToUpperInvariant() 
-               && Type == other.Type;
-    }
+        => ChannelId == other.ChannelId 
+           && Username.Trim().ToUpperInvariant() == other.Username.Trim().ToUpperInvariant() 
+           && Type == other.Type;
 
     public override int GetHashCode()
-    {
-        return HashCode.Combine(ChannelId, Username, (int) Type);
-    }
+        => HashCode.Combine(ChannelId, Username, (int) Type);
 
     public override bool Equals(object obj) 
         => obj is FollowedStream fs && Equals(fs);

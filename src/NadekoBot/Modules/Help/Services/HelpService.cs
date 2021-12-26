@@ -154,16 +154,12 @@ public class HelpService : ILateExecutor, INService
     }
 
     public static string GetPreconditionString(ChannelPerm perm)
-    {
-        return (perm.ToString() + " Channel Permission")
+        => (perm.ToString() + " Channel Permission")
             .Replace("Guild", "Server", StringComparison.InvariantCulture);
-    }
 
     public static string GetPreconditionString(GuildPerm perm)
-    {
-        return (perm.ToString() + " Server Permission")
+        => (perm.ToString() + " Server Permission")
             .Replace("Guild", "Server", StringComparison.InvariantCulture);
-    }
 
     private string GetText(LocStr str, IGuild guild, params object[] replacements) =>
         _strings.GetText(str, guild?.Id);

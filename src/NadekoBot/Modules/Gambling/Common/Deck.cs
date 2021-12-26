@@ -166,13 +166,11 @@ public class Deck
     /// Creates a new instance of the BlackJackGame, this allows you to create multiple games running at one time.
     /// </summary>
     public Deck()
-    {
-        RefillPool();
-    }
+        => RefillPool();
+
     static Deck()
-    {
-        InitHandValues();
-    }
+        => InitHandValues();
+
     /// <summary>
     /// Restart the game of blackjack. It will only refill the pool for now. Probably wont be used, unless you want to have only 1 bjg running at one time,
     /// then you will restart the same game every time.

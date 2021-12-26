@@ -94,14 +94,12 @@ public class GamesService : INService
     }
 
     public string GetEightballResponse(ulong userId, string question)
-    {
-        return _8BallCache.GetOrCreate($"8ball:{userId}:{question}", e =>
+        => _8BallCache.GetOrCreate($"8ball:{userId}:{question}", e =>
         {
             e.Size = question.Length;
             e.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(12);
             return EightBallResponses[_rng.Next(0, EightBallResponses.Count)];;
         });
-    }
 
     public TypingArticle RemoveTypingArticle(int index)
     {

@@ -16,9 +16,7 @@ public sealed partial class YtLoader
     };
 
     public YtLoader(IHttpClientFactory httpFactory)
-    {
-        _httpFactory = httpFactory;
-    }
+        => _httpFactory = httpFactory;
 
     // public async Task<TrackInfo> LoadTrackByIdAsync(string videoId)
     // {
@@ -115,13 +113,13 @@ public sealed partial class YtLoader
 
     private Memory<byte> GetScriptResponseSpan(byte[] response)
     {
-        var responseSpan = response.AsSpan().Slice(140_000);
+        var responseSpan = response.AsSpan()[140_000..];
         var startIndex = responseSpan.IndexOf(YT_RESULT_INITIAL_DATA);
         if (startIndex == -1)
             return null; // todo future try selecting html
         startIndex += YT_RESULT_INITIAL_DATA.Length;
 
-        var endIndex = 140_000 + startIndex + responseSpan.Slice(startIndex + 20_000).IndexOf(YT_RESULT_JSON_END) + 20_000;
+        var endIndex = 140_000 + startIndex + responseSpan[(startIndex + 20_000)..].IndexOf(YT_RESULT_JSON_END) + 20_000;
         startIndex += 140_000;
         return response.AsMemory(
             startIndex,

@@ -8,10 +8,8 @@ public partial class Administration : NadekoModule<AdministrationService>
     private readonly ImageOnlyChannelService _imageOnly;
 
     public Administration(ImageOnlyChannelService imageOnly)
-    {
-        _imageOnly = imageOnly;
-    }
-        
+        => _imageOnly = imageOnly;
+
     public enum List
     {
         List = 0,
@@ -292,9 +290,7 @@ public partial class Administration : NadekoModule<AdministrationService>
     [NadekoCommand, Aliases]
     [RequireContext(ContextType.Guild)]
     public async Task Delete(ITextChannel channel, ulong messageId, StoopidTime time = null)
-    {
-        await InternalMessageAction(channel, messageId, time, msg => msg.DeleteAsync());
-    }
+        => await InternalMessageAction(channel, messageId, time, msg => msg.DeleteAsync());
 
     private async Task InternalMessageAction(ITextChannel channel, ulong messageId, StoopidTime time,
         Func<IMessage, Task> func)

@@ -26,8 +26,7 @@ public static class UserXpExtensions
     }
 
     public static List<UserXpStats> GetUsersFor(this DbSet<UserXpStats> xps, ulong guildId, int page)
-    {
-        return xps
+        => xps
             .AsQueryable()
             .AsNoTracking()
             .Where(x => x.GuildId == guildId)
@@ -35,29 +34,24 @@ public static class UserXpExtensions
             .Skip(page * 9)
             .Take(9)
             .ToList();
-    }
 
     public static List<UserXpStats> GetTopUserXps(this DbSet<UserXpStats> xps, ulong guildId, int count)
-    {
-        return xps
+        => xps
             .AsQueryable()
             .AsNoTracking()
             .Where(x => x.GuildId == guildId)
             .OrderByDescending(x => x.Xp + x.AwardedXp)
             .Take(count)
             .ToList();
-    }
 
     public static int GetUserGuildRanking(this DbSet<UserXpStats> xps, ulong userId, ulong guildId)
-    {
         //            @"SELECT COUNT(*) + 1
         //FROM UserXpStats
         //WHERE GuildId = @p1 AND ((Xp + AwardedXp) > (SELECT Xp + AwardedXp
         //	FROM UserXpStats
         //	WHERE UserId = @p2 AND GuildId = @p1
         //	LIMIT 1));";
-
-        return xps
+        => xps
             .AsQueryable()
             .AsNoTracking()
             .Where(x => x.GuildId == guildId && x.Xp + x.AwardedXp >
@@ -66,15 +60,10 @@ public static class UserXpExtensions
                     .Select(y => y.Xp + y.AwardedXp)
                     .FirstOrDefault())
             .Count() + 1;
-    }
 
     public static void ResetGuildUserXp(this DbSet<UserXpStats> xps, ulong userId, ulong guildId)
-    {
-        xps.Delete(x => x.UserId == userId && x.GuildId == guildId);
-    }
+        => xps.Delete(x => x.UserId == userId && x.GuildId == guildId);
 
     public static void ResetGuildXp(this DbSet<UserXpStats> xps, ulong guildId)
-    {
-        xps.Delete(x => x.GuildId == guildId);
-    }
+        => xps.Delete(x => x.GuildId == guildId);
 }

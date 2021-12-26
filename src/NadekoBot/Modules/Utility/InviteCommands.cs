@@ -54,7 +54,7 @@ public partial class Utility
                 var embed = _eb.Create().WithOkColor();
                 foreach (var inv in invites)
                 {
-                    var expiryString = inv.MaxAge is null || inv.MaxAge == 0 || inv.CreatedAt is null
+                    var expiryString = inv.MaxAge is null or 0 || inv.CreatedAt is null
                         ? "∞"
                         : (inv.CreatedAt.Value.AddSeconds(inv.MaxAge.Value).UtcDateTime - DateTime.UtcNow)
                         .ToString(@"d\.hh\:mm\:ss");

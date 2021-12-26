@@ -31,18 +31,13 @@ public class SingleProcessCoordinator : ICoordinator
     }
 
     public void Die(bool graceful = false)
-    {
-        Environment.Exit(5);
-    }
+        => Environment.Exit(5);
 
     public bool RestartShard(int shardId)
-    {
-        return RestartBot();
-    }
+        => RestartBot();
 
     public IList<ShardStatus> GetAllShardStatuses()
-    {
-        return new[]
+        => new[]
         {
             new ShardStatus()
             {
@@ -52,15 +47,10 @@ public class SingleProcessCoordinator : ICoordinator
                 ShardId = _client.ShardId
             }
         };
-    }
 
     public int GetGuildCount()
-    {
-        return _client.Guilds.Count;
-    }
+        => _client.Guilds.Count;
 
     public Task Reload()
-    {
-        return Task.CompletedTask;
-    }
+        => Task.CompletedTask;
 }

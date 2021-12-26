@@ -68,6 +68,7 @@ public class SearchImageCacher : INService
                     .Distinct()
                     .Shuffle()
                     .Take(50)
+                    .ToList()
                     .ForEach(x => typeUsedTags.Add(x));
 
             foreach (var img in images)

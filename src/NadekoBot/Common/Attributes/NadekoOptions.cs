@@ -6,7 +6,5 @@ public sealed class NadekoOptionsAttribute : Attribute
     public Type OptionType { get; set; }
 
     public NadekoOptionsAttribute(Type t)
-    {
-        this.OptionType = t;
-    }
+        => this.OptionType = t;
 }

@@ -34,12 +34,10 @@ public static class ClubExtensions
             .Max() + 1;
 
     public static List<ClubInfo> GetClubLeaderboardPage(this DbSet<ClubInfo> clubs, int page)
-    {
-        return clubs
+        => clubs
             .AsNoTracking()
             .OrderByDescending(x => x.Xp)
             .Skip(page * 9)
             .Take(9)
             .ToList();
-    }
 }

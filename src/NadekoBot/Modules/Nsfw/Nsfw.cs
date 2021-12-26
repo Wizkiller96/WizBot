@@ -1,5 +1,4 @@
-﻿using NadekoBot.Common.Collections;
-using NadekoBot.Modules.Searches.Common;
+﻿using NadekoBot.Modules.Searches.Common;
 using Newtonsoft.Json.Linq;
 
 namespace NadekoBot.Modules.Nsfw;
@@ -377,7 +376,7 @@ public class NSFW : NadekoModule<ISearchImagesService>
             .Shuffle()
             .Select(tag => $"[{tag.Name}]({tag.Url})")
             .TakeWhile(tag => (count += tag.Length) < 1000)
-            .JoinWith(" ");
+            .Join(" ");
 
         var embed = _eb.Create()
             .WithTitle(g.Title)

@@ -34,9 +34,7 @@ public sealed class NunchiGame : IDisposable
     private Timer _killTimer;
 
     public NunchiGame(ulong creatorId, string creatorName)
-    {
-        _participants.Add((creatorId, creatorName));
-    }
+        => _participants.Add((creatorId, creatorName));
 
     public async Task<bool> Join(ulong userId, string userName)
     {

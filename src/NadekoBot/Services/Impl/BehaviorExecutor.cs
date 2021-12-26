@@ -12,9 +12,7 @@ public sealed class BehaviorExecutor : IBehaviourExecutor, INService
     private IEnumerable<IInputTransformer> _transformers;
 
     public BehaviorExecutor(IServiceProvider services)
-    {
-        _services = services;
-    }
+        => _services = services;
 
     public void Initialize()
     {

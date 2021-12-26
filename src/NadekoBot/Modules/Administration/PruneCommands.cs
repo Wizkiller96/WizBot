@@ -17,7 +17,7 @@ public partial class Administration
         {
             var user = await ctx.Guild.GetCurrentUserAsync().ConfigureAwait(false);
 
-            if (parameter == "-s" || parameter == "--safe")
+            if (parameter is "-s" or "--safe")
                 await _service.PruneWhere((ITextChannel)ctx.Channel, 100, x => x.Author.Id == user.Id && !x.IsPinned).ConfigureAwait(false);
             else
                 await _service.PruneWhere((ITextChannel)ctx.Channel, 100, x => x.Author.Id == user.Id).ConfigureAwait(false);
@@ -37,7 +37,7 @@ public partial class Administration
             if (count > 1000)
                 count = 1000;
 
-            if (parameter == "-s" || parameter == "--safe")
+            if (parameter is "-s" or "--safe")
                 await _service.PruneWhere((ITextChannel)ctx.Channel, count, x => !x.IsPinned).ConfigureAwait(false);
             else
                 await _service.PruneWhere((ITextChannel)ctx.Channel, count, x => true).ConfigureAwait(false);
@@ -69,7 +69,7 @@ public partial class Administration
             if (count > 1000)
                 count = 1000;
 
-            if (parameter == "-s" || parameter == "--safe")
+            if (parameter is "-s" or "--safe")
                 await _service.PruneWhere((ITextChannel)ctx.Channel, count, m => m.Author.Id == userId && DateTime.UtcNow - m.CreatedAt < twoWeeks && !m.IsPinned).ConfigureAwait(false);
             else
                 await _service.PruneWhere((ITextChannel)ctx.Channel, count, m => m.Author.Id == userId && DateTime.UtcNow - m.CreatedAt < twoWeeks).ConfigureAwait(false);

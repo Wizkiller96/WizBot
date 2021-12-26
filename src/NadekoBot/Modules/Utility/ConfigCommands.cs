@@ -1,6 +1,4 @@
-﻿using NadekoBot.Modules.Administration.Services;
-
-namespace NadekoBot.Modules.Utility;
+﻿namespace NadekoBot.Modules.Utility;
 
 public partial class Utility
 {
@@ -9,9 +7,7 @@ public partial class Utility
         private readonly IEnumerable<IConfigService> _settingServices;
 
         public ConfigCommands(IEnumerable<IConfigService> settingServices)
-        {
-            _settingServices = settingServices;
-        }
+            => _settingServices = settingServices;
 
         [NadekoCommand, Aliases]
         [OwnerOnly]

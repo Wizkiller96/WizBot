@@ -7,9 +7,7 @@ public sealed class NadekoCommandAttribute : CommandAttribute
 {
     public NadekoCommandAttribute([CallerMemberName] string memberName="") 
         : base(CommandNameLoadHelper.GetCommandNameFor(memberName))
-    {
-        this.MethodName = memberName.ToLowerInvariant();
-    }
+        => this.MethodName = memberName.ToLowerInvariant();
 
     public string MethodName { get; }
 }

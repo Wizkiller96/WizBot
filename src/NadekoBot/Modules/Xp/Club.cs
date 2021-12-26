@@ -10,9 +10,7 @@ public partial class Xp
         private readonly XpService _xps;
 
         public Club(XpService xps)
-        {
-            _xps = xps;
-        }
+            => _xps = xps;
 
         [NadekoCommand, Aliases]
         public async Task ClubTransfer([Leftover] IUser newOwner)

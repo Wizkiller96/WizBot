@@ -1,4 +1,3 @@
-using NadekoBot.Common.Collections;
 using NadekoBot.Db.Models;
 using Newtonsoft.Json;
 using SixLabors.Fonts;
@@ -312,9 +311,7 @@ public class XpService : INService
     }
 
     public void ReloadXpTemplate()
-    {
-        _pubSub.Pub(_xpTemplateReloadKey, true);
-    }
+        => _pubSub.Pub(_xpTemplateReloadKey, true);
 
     public void SetCurrencyReward(ulong guildId, int level, int amount)
     {
@@ -527,14 +524,10 @@ public class XpService : INService
     }
 
     private bool ShouldTrackVoiceChannel(SocketVoiceChannel channel)
-    {
-        return channel.Users.Where(UserParticipatingInVoiceChannel).Take(2).Count() >= 2;
-    }
+        => channel.Users.Where(UserParticipatingInVoiceChannel).Take(2).Count() >= 2;
 
     private bool UserParticipatingInVoiceChannel(SocketGuildUser user)
-    {
-        return !user.IsDeafened && !user.IsMuted && !user.IsSelfDeafened && !user.IsSelfMuted;
-    }
+        => !user.IsDeafened && !user.IsMuted && !user.IsSelfDeafened && !user.IsSelfMuted;
 
     private void UserJoinedVoiceChannel(SocketGuildUser user)
     {
@@ -650,9 +643,7 @@ public class XpService : INService
     }
 
     public bool IsServerExcluded(ulong id)
-    {
-        return _excludedServers.Contains(id);
-    }
+        => _excludedServers.Contains(id);
 
     public IEnumerable<ulong> GetExcludedRoles(ulong id)
     {

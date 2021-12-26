@@ -5,9 +5,7 @@ public sealed class GuildTypeReader : NadekoTypeReader<IGuild>
     private readonly DiscordSocketClient _client;
 
     public GuildTypeReader(DiscordSocketClient client)
-    {
-        _client = client;
-    }
+        => _client = client;
 
     public override Task<TypeReaderResult> ReadAsync(ICommandContext context, string input)
     {

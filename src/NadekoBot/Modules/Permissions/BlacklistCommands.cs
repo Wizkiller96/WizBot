@@ -12,10 +12,8 @@ public partial class Permissions
         private readonly DiscordSocketClient _client;
 
         public BlacklistCommands(DiscordSocketClient client)
-        {
-            _client = client;
-        }
-            
+            => _client = client;
+
         private async Task ListBlacklistInternal(string title, BlacklistType type, int page = 0)
         {
             if (page < 0)
@@ -65,7 +63,7 @@ public partial class Permissions
                     
                 return _eb.Create()
                     .WithTitle(title)
-                    .WithDescription(pageItems.JoinWith('\n'))
+                    .WithDescription(pageItems.Join('\n'))
                     .WithOkColor();
             }, items.Length, 10);
         }

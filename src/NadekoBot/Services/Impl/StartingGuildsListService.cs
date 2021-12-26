@@ -8,9 +8,7 @@ public class StartingGuildsService : IEnumerable<ulong>, INService
     private readonly ImmutableList<ulong> _guilds;
 
     public StartingGuildsService(DiscordSocketClient client)
-    {
-        this._guilds = client.Guilds.Select(x => x.Id).ToImmutableList();
-    }
+        => this._guilds = client.Guilds.Select(x => x.Id).ToImmutableList();
 
     public IEnumerator<ulong> GetEnumerator() =>
         _guilds.GetEnumerator();

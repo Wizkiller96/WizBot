@@ -65,24 +65,20 @@ public static class WaifuExtensions
     }
 
     public static decimal GetTotalValue(this DbSet<WaifuInfo> waifus)
-    {
-        return waifus
+        => waifus
             .AsQueryable()
             .Where(x => x.ClaimerId != null)
             .Sum(x => x.Price);
-    }
 
     public static ulong GetWaifuUserId(this DbSet<WaifuInfo> waifus, ulong ownerId, string name)
-    {
-        return waifus
+        => waifus
             .AsQueryable()
             .AsNoTracking()
             .Where(x => x.Claimer.UserId == ownerId
                         && x.Waifu.Username + "#" + x.Waifu.Discriminator == name)
             .Select(x => x.Waifu.UserId)
             .FirstOrDefault();
-    }
-        
+
     public static WaifuInfoStats GetWaifuInfo(this NadekoContext ctx, ulong userId)
     {
         ctx.Database.ExecuteSqlInterpolated($@"

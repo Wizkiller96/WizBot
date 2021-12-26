@@ -11,9 +11,7 @@ public partial class Searches
         private readonly IHttpClientFactory _httpFactory;
 
         public XkcdCommands(IHttpClientFactory factory)
-        {
-            _httpFactory = factory;
-        }
+            => _httpFactory = factory;
 
         [NadekoCommand, Aliases]
         [Priority(0)]

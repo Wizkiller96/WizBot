@@ -20,7 +20,7 @@ public sealed class CommandTypeReader : NadekoTypeReader<CommandInfo>
         if (!input.StartsWith(prefix.ToUpperInvariant(), StringComparison.InvariantCulture))
             return Task.FromResult(TypeReaderResult.FromError(CommandError.ParseFailed, "No such command found."));
 
-        input = input.Substring(prefix.Length);
+        input = input[prefix.Length..];
 
         var cmd = _cmds.Commands.FirstOrDefault(c => c.Aliases.Select(a => a.ToUpperInvariant()).Contains(input));
         if (cmd is null)

@@ -15,9 +15,7 @@ public class PicartoProvider : Provider
     public override FollowedStream.FType Platform => FollowedStream.FType.Picarto;
 
     public PicartoProvider(IHttpClientFactory httpClientFactory)
-    {
-        _httpClientFactory = httpClientFactory;
-    }
+        => _httpClientFactory = httpClientFactory;
 
     public override Task<bool> IsValidUrl(string url)
     {
@@ -82,8 +80,7 @@ public class PicartoProvider : Provider
     }
 
     private StreamData ToStreamData(PicartoChannelResponse stream)
-    {
-        return new()
+        => new()
         {
             StreamType = FollowedStream.FType.Picarto,
             Name = stream.Name,
@@ -96,5 +93,4 @@ public class PicartoProvider : Provider
             StreamUrl = $"https://picarto.tv/{stream.Name}",
             AvatarUrl = stream.Avatar
         };
-    }
 }

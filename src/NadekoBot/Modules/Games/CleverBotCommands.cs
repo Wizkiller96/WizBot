@@ -11,9 +11,7 @@ public partial class Games
         private readonly DbService _db;
 
         public ChatterBotCommands(DbService db)
-        {
-            _db = db;
-        }
+            => _db = db;
 
         [NoPublicBot]
         [NadekoCommand, Aliases]

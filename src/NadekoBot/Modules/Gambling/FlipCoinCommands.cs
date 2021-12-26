@@ -24,7 +24,7 @@ public partial class Gambling
         [NadekoCommand, Aliases]
         public async Task Flip(int count = 1)
         {
-            if (count > 10 || count < 1)
+            if (count is > 10 or < 1)
             {
                 await ReplyErrorLocalizedAsync(strs.flip_invalid(10));
                 return;

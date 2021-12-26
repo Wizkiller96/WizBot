@@ -13,24 +13,21 @@ public static class StringExtensions
         var padLeft = (spaces / 2) + str.Length;
         return str.PadLeft(padLeft).PadRight(length);
     }
-        
+
     public static T MapJson<T>(this string str)
         => JsonConvert.DeserializeObject<T>(str);
 
-    private static readonly HashSet<char> lettersAndDigits = new(Enumerable.Range(48, 10)
+    private static readonly HashSet<char> _lettersAndDigits = new(Enumerable.Range(48, 10)
         .Concat(Enumerable.Range(65, 26))
         .Concat(Enumerable.Range(97, 26))
-        .Select(x => (char)x));
+        .Select(x => (char)x)
+    );
 
-    public static string StripHTML(this string input)
-    {
-        return Regex.Replace(input, "<.*?>", String.Empty);
-    }
+    public static string StripHtml(this string input)
+        => Regex.Replace(input, "<.*?>", String.Empty);
 
     public static string TrimTo(this string str, int maxLength, bool hideDots = false)
-        => hideDots 
-            ? str?.Truncate(maxLength, string.Empty)
-            : str?.Truncate(maxLength);
+        => hideDots ? str?.Truncate(maxLength, string.Empty) : str?.Truncate(maxLength);
 
     public static string ToTitleCase(this string str)
     {
@@ -38,12 +35,10 @@ public static class StringExtensions
         for (var i = 0; i < tokens.Length; i++)
         {
             var token = tokens[i];
-            tokens[i] = token.Substring(0, 1).ToUpperInvariant() + token.Substring(1);
+            tokens[i] = token[..1].ToUpperInvariant() + token[1..];
         }
 
-        return string.Join(" ", tokens)
-            .Replace(" Of ", " of ")
-            .Replace(" The ", " the ");
+        return string.Join(" ", tokens).Replace(" Of ", " of ").Replace(" The ", " the ");
     }
 
     //http://www.dotnetperls.com/levenshtein
@@ -83,11 +78,10 @@ public static class StringExtensions
                 var cost = t[j - 1] == s[i - 1] ? 0 : 1;
 
                 // Step 6
-                d[i, j] = Math.Min(
-                    Math.Min(d[i - 1, j] + 1, d[i, j - 1] + 1),
-                    d[i - 1, j - 1] + cost);
+                d[i, j] = Math.Min(Math.Min(d[i - 1, j] + 1, d[i, j - 1] + 1), d[i - 1, j - 1] + cost);
             }
         }
+
         // Step 7
         return d[n, m];
     }
@@ -102,11 +96,15 @@ public static class StringExtensions
         return ms;
     }
 
-    private static readonly Regex filterRegex = new(@"discord(?:\.gg|\.io|\.me|\.li|(?:app)?\.com\/invite)\/(\w+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-    public static bool IsDiscordInvite(this string str)
-        => filterRegex.IsMatch(str);
+    private static readonly Regex _filterRegex = new(@"discord(?:\.gg|\.io|\.me|\.li|(?:app)?\.com\/invite)\/(\w+)",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase
+    );
 
-    public static string Unmention(this string str) => str.Replace("@", "ම", StringComparison.InvariantCulture);
+    public static bool IsDiscordInvite(this string str)
+        => _filterRegex.IsMatch(str);
+
+    public static string Unmention(this string str)
+        => str.Replace("@", "ම", StringComparison.InvariantCulture);
 
     public static string SanitizeMentions(this string str, bool sanitizeRoleMentions = false)
     {
@@ -118,11 +116,11 @@ public static class StringExtensions
         return str;
     }
 
-    public static string SanitizeRoleMentions(this string str) =>
-        str.Replace("<@&", "<ම&", StringComparison.InvariantCultureIgnoreCase);
+    public static string SanitizeRoleMentions(this string str)
+        => str.Replace("<@&", "<ම&", StringComparison.InvariantCultureIgnoreCase);
 
-    public static string SanitizeAllMentions(this string str) =>
-        str.SanitizeMentions().SanitizeRoleMentions();
+    public static string SanitizeAllMentions(this string str)
+        => str.SanitizeMentions().SanitizeRoleMentions();
 
     public static string ToBase64(this string plainText)
     {
@@ -130,23 +128,24 @@ public static class StringExtensions
         return Convert.ToBase64String(plainTextBytes);
     }
 
-    public static string GetInitials(this string txt, string glue = "") =>
-        string.Join(glue, txt.Split(' ').Select(x => x.FirstOrDefault()));
+    public static string GetInitials(this string txt, string glue = "")
+        => string.Join(glue, txt.Split(' ').Select(x => x.FirstOrDefault()));
 
-    public static bool IsAlphaNumeric(this string txt) =>
-        txt.All(c => lettersAndDigits.Contains(c));
+    public static bool IsAlphaNumeric(this string txt)
+        => txt.All(c => _lettersAndDigits.Contains(c));
 
-    private static readonly Regex CodePointRegex
-        = new(@"(\\U(?<code>[a-zA-Z0-9]{8})|\\u(?<code>[a-zA-Z0-9]{4})|\\x(?<code>[a-zA-Z0-9]{2}))",
-            RegexOptions.Compiled);
-        
+    private static readonly Regex _codePointRegex =
+        new(@"(\\U(?<code>[a-zA-Z0-9]{8})|\\u(?<code>[a-zA-Z0-9]{4})|\\x(?<code>[a-zA-Z0-9]{2}))",
+            RegexOptions.Compiled
+        );
+
     public static string UnescapeUnicodeCodePoints(this string input)
-    { 
-        return CodePointRegex.Replace(input, me =>
-        {
-            var str = me.Groups["code"].Value;
-            var newString = YamlHelper.UnescapeUnicodeCodePoint(str);
-            return newString;
-        });
-    }
+        => _codePointRegex.Replace(input,
+            me =>
+            {
+                var str = me.Groups["code"].Value;
+                var newString = YamlHelper.UnescapeUnicodeCodePoint(str);
+                return newString;
+            }
+        );
 }

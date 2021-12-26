@@ -31,12 +31,10 @@ public class RemoteGrpcCoordinator : ICoordinator, IReadyExecutor
     }
 
     public void Die(bool graceful)
-    {
-        _coordClient.Die(new()
+        => _coordClient.Die(new()
         {
             Graceful = graceful
         });
-    }
 
     public bool RestartShard(int shardId)
     {
@@ -71,9 +69,7 @@ public class RemoteGrpcCoordinator : ICoordinator, IReadyExecutor
     }
 
     public async Task Reload()
-    {
-        await _coordClient.ReloadAsync(new());
-    }
+        => await _coordClient.ReloadAsync(new());
 
     public Task OnReadyAsync()
     {

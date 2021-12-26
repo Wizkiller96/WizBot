@@ -16,10 +16,8 @@ public sealed class RunningRepeater
     }
 
     public void UpdateNextTime()
-    {
-        NextTime = DateTime.UtcNow + Repeater.Interval;
-    }
-        
+        => NextTime = DateTime.UtcNow + Repeater.Interval;
+
     private DateTime CalculateInitialExecution()
     {
         if (Repeater.StartTimeOfDay != null)
@@ -93,12 +91,8 @@ public sealed class RunningRepeater
     }
 
     public override bool Equals(object obj)
-    {
-        return obj is RunningRepeater rr && rr.Repeater.Id == this.Repeater.Id;
-    }
+        => obj is RunningRepeater rr && rr.Repeater.Id == this.Repeater.Id;
 
     public override int GetHashCode()
-    {
-        return this.Repeater.Id;
-    }
+        => this.Repeater.Id;
 }

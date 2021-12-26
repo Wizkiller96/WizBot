@@ -1,4 +1,4 @@
-﻿using NadekoBot.Common.Collections;
+﻿using Humanizer.Localisation;
 using NadekoBot.Modules.Administration.Services;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
@@ -10,32 +10,34 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using System.Globalization;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using Color = Discord.Color;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
+// todo imagesharp extensions
 namespace NadekoBot.Extensions;
 
 public static class Extensions
 {
-    public static Regex UrlRegex = new(@"^(https?|ftp)://(?<path>[^\s/$.?#].[^\s]*)$", RegexOptions.Compiled);
+    private static readonly Regex _urlRegex =
+        new(@"^(https?|ftp)://(?<path>[^\s/$.?#].[^\s]*)$", RegexOptions.Compiled);
 
-    
     public static Task EditAsync(this IUserMessage msg, SmartText text)
         => text switch
         {
             SmartEmbedText set => msg.ModifyAsync(x =>
-            {
-                x.Embed = set.GetEmbed().Build();
-                x.Content = set.PlainText?.SanitizeMentions() ?? "";
-            }),
+                {
+                    x.Embed = set.GetEmbed().Build();
+                    x.Content = set.PlainText?.SanitizeMentions() ?? "";
+                }
+            ),
             SmartPlainText spt => msg.ModifyAsync(x =>
-            {
-                x.Content = spt.Text.SanitizeMentions();
-                x.Embed = null;
-            }),
+                {
+                    x.Content = spt.Text.SanitizeMentions();
+                    x.Embed = null;
+                }
+            ),
             _ => throw new ArgumentOutOfRangeException(nameof(text))
         };
 
@@ -43,34 +45,29 @@ public static class Extensions
         => client.Guilds.Select(x => x.Id).ToList();
 
     /// <summary>
-    /// Generates a string in the format HHH:mm if timespan is <= 2m.
+    /// Generates a string in the format HHH:mm if timespan is &gt;= 2m.
     /// Generates a string in the format 00:mm:ss if timespan is less than 2m.
     /// </summary>
     /// <param name="span">Timespan to convert to string</param>
     /// <returns>Formatted duration string</returns>
-    public static string ToPrettyStringHM(this TimeSpan span)
-    {
-        if (span < TimeSpan.FromMinutes(2))
-            return $"{span:mm}m {span:ss}s";
-        return $"{(int) span.TotalHours:D2}h {span:mm}m";
-    }
+    public static string ToPrettyStringHm(this TimeSpan span)
+        => span.Humanize(2, minUnit: TimeUnit.Second);
 
     public static bool TryGetUrlPath(this string input, out string path)
     {
-        var match = UrlRegex.Match(input);
+        var match = _urlRegex.Match(input);
         if (match.Success)
         {
             path = match.Groups["path"].Value;
             return true;
         }
+
         path = string.Empty;
         return false;
     }
 
     public static IEmote ToIEmote(this string emojiStr)
-        => Emote.TryParse(emojiStr, out var maybeEmote)
-            ? maybeEmote
-            : new Emoji(emojiStr);
+        => Emote.TryParse(emojiStr, out var maybeEmote) ? maybeEmote : new Emoji(emojiStr);
 
     // https://github.com/SixLabors/Samples/blob/master/ImageSharp/AvatarWithRoundedCorner/Program.cs
     public static IImageProcessingContext ApplyRoundedCorners(this IImageProcessingContext ctx, float cornerRadius)
@@ -79,22 +76,29 @@ public static class Extensions
         var corners = BuildCorners(size.Width, size.Height, cornerRadius);
 
         ctx.SetGraphicsOptions(new GraphicsOptions()
-        {
-            Antialias = true,
-            AlphaCompositionMode = PixelAlphaCompositionMode.DestOut // enforces that any part of this shape that has color is punched out of the background
-        });
+            {
+                Antialias = true,
+                // enforces that any part of this shape that has color is punched out of the background
+                AlphaCompositionMode = PixelAlphaCompositionMode.DestOut
+            }
+        );
 
         foreach (var c in corners)
         {
             ctx = ctx.Fill(SixLabors.ImageSharp.Color.Red, c);
         }
+
         return ctx;
     }
 
     private static IPathCollection BuildCorners(int imageWidth, int imageHeight, float cornerRadius)
     {
         // first create a square
-        var rect = new RectangularPolygon(-0.5f, -0.5f, cornerRadius, cornerRadius);
+        var rect = new RectangularPolygon(-0.5f,
+            -0.5f,
+            cornerRadius,
+            cornerRadius
+        );
 
         // then cut out of the square a circle so we are left with a corner
         var cornerTopLeft = rect.Clip(new EllipsePolygon(cornerRadius - 0.5f, cornerRadius - 0.5f, cornerRadius));
@@ -110,57 +114,43 @@ public static class Extensions
         var cornerBottomLeft = cornerTopLeft.RotateDegree(-90).Translate(0, bottomPos);
         var cornerBottomRight = cornerTopLeft.RotateDegree(180).Translate(rightPos, bottomPos);
 
-        return new PathCollection(cornerTopLeft, cornerBottomLeft, cornerTopRight, cornerBottomRight);
+        return new PathCollection(cornerTopLeft,
+            cornerBottomLeft,
+            cornerTopRight,
+            cornerBottomRight
+        );
     }
 
     /// <summary>
     /// First 10 characters of teh bot token.
     /// </summary>
     public static string RedisKey(this IBotCredentials bc)
-    {
-        return bc.Token.Substring(0, 10);
-    }
-
-    public static async Task<string> ReplaceAsync(this Regex regex, string input, Func<Match, Task<string>> replacementFn)
-    {
-        var sb = new StringBuilder();
-        var lastIndex = 0;
-
-        foreach (Match match in regex.Matches(input))
-        {
-            sb.Append(input, lastIndex, match.Index - lastIndex)
-                .Append(await replacementFn(match).ConfigureAwait(false));
-
-            lastIndex = match.Index + match.Length;
-        }
-
-        sb.Append(input, lastIndex, input.Length - lastIndex);
-        return sb.ToString();
-    }
-
-    public static void ThrowIfNull<T>(this T o, string name) where T : class
-    {
-        if (o is null)
-            throw new ArgumentNullException(nameof(name));
-    }
+        => bc.Token[..10];
 
     public static bool IsAuthor(this IMessage msg, IDiscordClient client)
         => msg.Author?.Id == client.CurrentUser.Id;
 
-    public static string RealSummary(this CommandInfo cmd, IBotStrings strings, ulong? guildId, string prefix)
+    public static string RealSummary(
+        this CommandInfo cmd,
+        IBotStrings strings,
+        ulong? guildId,
+        string prefix)
         => string.Format(strings.GetCommandStrings(cmd.Name, guildId).Desc, prefix);
 
-    public static string[] RealRemarksArr(this CommandInfo cmd, IBotStrings strings, ulong? guildId, string prefix)
+    public static string[] RealRemarksArr(
+        this CommandInfo cmd,
+        IBotStrings strings,
+        ulong? guildId,
+        string prefix)
         => Array.ConvertAll(strings.GetCommandStrings(cmd.MethodName(), guildId).Args,
-            arg => GetFullUsage(cmd.Name, arg, prefix));
+            arg => GetFullUsage(cmd.Name, arg, prefix)
+        );
 
-    public static string MethodName(this CommandInfo cmd)
-        => ((NadekoCommandAttribute) cmd.Attributes.FirstOrDefault(x => x is NadekoCommandAttribute))?.MethodName
-           ?? cmd.Name;
-    // public static string RealRemarks(this CommandInfo cmd, IBotStrings strings, string prefix)
-    //     => string.Join('\n', cmd.RealRemarksArr(strings, prefix));
+    private static string MethodName(this CommandInfo cmd)
+        => ((NadekoCommandAttribute)cmd.Attributes.FirstOrDefault(x => x is NadekoCommandAttribute))?.MethodName ??
+           cmd.Name;
 
-    public static string GetFullUsage(string commandName, string args, string prefix)
+    private static string GetFullUsage(string commandName, string args, string prefix)
         => $"{prefix}{commandName} {string.Format(args, prefix)}";
 
     public static IEmbedBuilder AddPaginatedFooter(this IEmbedBuilder embed, int curPage, int? lastPage)
@@ -171,25 +161,36 @@ public static class Extensions
             return embed.WithFooter(curPage.ToString());
     }
 
-    public static Color ToDiscordColor(this Rgba32 color) => new(color.R, color.G, color.B);
-        
-    public static IEmbedBuilder WithOkColor(this IEmbedBuilder eb) =>
-        eb.WithColor(EmbedColor.Ok);
+    public static Color ToDiscordColor(this Rgba32 color)
+        => new(color.R, color.G, color.B);
 
-    public static IEmbedBuilder WithPendingColor(this IEmbedBuilder eb) =>
-        eb.WithColor(EmbedColor.Pending);
-        
-    public static IEmbedBuilder WithErrorColor(this IEmbedBuilder eb) =>
-        eb.WithColor(EmbedColor.Error);
+    public static IEmbedBuilder WithOkColor(this IEmbedBuilder eb)
+        => eb.WithColor(EmbedColor.Ok);
 
-    public static ReactionEventWrapper OnReaction(this IUserMessage msg, DiscordSocketClient client, Func<SocketReaction, Task> reactionAdded, Func<SocketReaction, Task> reactionRemoved = null)
+    public static IEmbedBuilder WithPendingColor(this IEmbedBuilder eb)
+        => eb.WithColor(EmbedColor.Pending);
+
+    public static IEmbedBuilder WithErrorColor(this IEmbedBuilder eb)
+        => eb.WithColor(EmbedColor.Error);
+
+    public static ReactionEventWrapper OnReaction(
+        this IUserMessage msg,
+        DiscordSocketClient client,
+        Func<SocketReaction, Task> reactionAdded,
+        Func<SocketReaction, Task> reactionRemoved = null)
     {
         if (reactionRemoved is null)
             reactionRemoved = _ => Task.CompletedTask;
 
         var wrap = new ReactionEventWrapper(client, msg);
-        wrap.OnReactionAdded += r => { var _ = Task.Run(() => reactionAdded(r)); };
-        wrap.OnReactionRemoved += r => { var _ = Task.Run(() => reactionRemoved(r)); };
+        wrap.OnReactionAdded += r =>
+        {
+            var _ = Task.Run(() => reactionAdded(r));
+        };
+        wrap.OnReactionRemoved += r =>
+        {
+            var _ = Task.Run(() => reactionRemoved(r));
+        };
         return wrap;
     }
 
@@ -203,24 +204,28 @@ public static class Extensions
     {
         dict.Clear();
         dict.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-        dict.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/14.0.835.202 Safari/535.1");
+        dict.Add("User-Agent",
+            "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/14.0.835.202 Safari/535.1"
+        );
     }
 
     public static IMessage DeleteAfter(this IUserMessage msg, int seconds, ILogCommandService logService = null)
     {
         if (msg is null)
             return null;
-            
+
         Task.Run(async () =>
-        {
-            await Task.Delay(seconds * 1000).ConfigureAwait(false);
-            if(logService != null)
             {
-                logService.AddDeleteIgnore(msg.Id);
+                await Task.Delay(seconds * 1000).ConfigureAwait(false);
+                if (logService != null)
+                {
+                    logService.AddDeleteIgnore(msg.Id);
+                }
+
+                try { await msg.DeleteAsync().ConfigureAwait(false); }
+                catch { }
             }
-            try { await msg.DeleteAsync().ConfigureAwait(false); }
-            catch { }
-        });
+        );
         return msg;
     }
 
@@ -230,33 +235,18 @@ public static class Extensions
         {
             module = module.Parent;
         }
+
         return module;
     }
 
-    public static void AddRange<T>(this HashSet<T> target, IEnumerable<T> elements) where T : class
+    public static async Task<IEnumerable<IGuildUser>> GetMembersAsync(this IRole role)
     {
-        foreach (var item in elements)
-        {
-            target.Add(item);
-        }
+        var users = await role.Guild.GetUsersAsync(CacheMode.CacheOnly).ConfigureAwait(false);
+        return users.Where(u => u.RoleIds.Contains(role.Id));
     }
 
-    public static void AddRange<T>(this ConcurrentHashSet<T> target, IEnumerable<T> elements) where T : class
-    {
-        foreach (var item in elements)
-        {
-            target.Add(item);
-        }
-    }
-
-    public static double UnixTimestamp(this DateTime dt) 
-        => dt.ToUniversalTime().Subtract(new DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds;
-
-    public static async Task<IEnumerable<IGuildUser>> GetMembersAsync(this IRole role) =>
-        (await role.Guild.GetUsersAsync(CacheMode.CacheOnly).ConfigureAwait(false)).Where(u => u.RoleIds.Contains(role.Id)) ?? Enumerable.Empty<IGuildUser>();
-
-    public static string ToJson<T>(this T any, JsonSerializerOptions options = null) =>
-        JsonSerializer.Serialize(any, options);
+    public static string ToJson<T>(this T any, JsonSerializerOptions options = null)
+        => JsonSerializer.Serialize(any, options);
 
     /// <summary>
     /// Adds fallback fonts to <see cref="TextOptions"/>
@@ -270,6 +260,7 @@ public static class Extensions
         {
             opts.FallbackFonts.Add(ff);
         }
+
         return opts;
     }
 
@@ -294,12 +285,11 @@ public static class Extensions
         }
         else
         {
-            img.SaveAsPng(imageStream, new()
-            {
-                ColorType = PngColorType.RgbWithAlpha,
-                CompressionLevel = PngCompressionLevel.BestCompression
-            });
+            img.SaveAsPng(imageStream,
+                new() { ColorType = PngColorType.RgbWithAlpha, CompressionLevel = PngCompressionLevel.BestCompression }
+            );
         }
+
         imageStream.Position = 0;
         return imageStream;
     }
@@ -311,27 +301,20 @@ public static class Extensions
         return ms;
     }
 
-    public static IEnumerable<IRole> GetRoles(this IGuildUser user) =>
-        user.RoleIds.Select(r => user.Guild.GetRole(r)).Where(r => r != null);
+    public static IEnumerable<IRole> GetRoles(this IGuildUser user)
+        => user.RoleIds.Select(r => user.Guild.GetRole(r)).Where(r => r != null);
 
-    public static async Task<IMessage> SendMessageToOwnerAsync(this IGuild guild, string message)
-    {
-        var owner = await guild.GetOwnerAsync();
-
-        return await owner.SendMessageAsync(message);
-    }
-
-    public static bool IsImage(this HttpResponseMessage msg) => IsImage(msg, out _);
+    public static bool IsImage(this HttpResponseMessage msg)
+        => IsImage(msg, out _);
 
     public static bool IsImage(this HttpResponseMessage msg, out string mimeType)
     {
         mimeType = msg.Content.Headers.ContentType?.MediaType;
-        if (mimeType == "image/png"
-            || mimeType == "image/jpeg"
-            || mimeType == "image/gif")
+        if (mimeType is "image/png" or "image/jpeg" or "image/gif")
         {
             return true;
         }
+
         return false;
     }
 
@@ -342,12 +325,12 @@ public static class Extensions
             return null;
         }
 
-        return msg.Content.Headers.ContentLength / 1.MB();
+        return msg.Content.Headers.ContentLength.Value / 1.Mb();
     }
 
     public static string GetText(this IBotStrings strings, in LocStr str, ulong? guildId = null)
         => strings.GetText(str.Key, guildId, str.Params);
-        
+
     public static string GetText(this IBotStrings strings, in LocStr str, CultureInfo culture)
         => strings.GetText(str.Key, culture, str.Params);
 }

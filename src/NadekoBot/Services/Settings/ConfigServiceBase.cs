@@ -44,10 +44,8 @@ public abstract class ConfigServiceBase<TSettings> : IConfigService
     }
 
     private void PublishChange()
-    {
-        _pubSub.Pub(_changeKey, _data);
-    }
-        
+        => _pubSub.Pub(_changeKey, _data);
+
     private ValueTask OnChangePublished(TSettings newData)
     {
         _data = newData;

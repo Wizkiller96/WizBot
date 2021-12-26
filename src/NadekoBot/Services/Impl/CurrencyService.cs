@@ -60,9 +60,7 @@ public class CurrencyService : ICurrencyService, INService
     }
 
     public Task AddAsync(ulong userId, string reason, long amount, bool gamble = false)
-    {
-        return InternalAddAsync(userId, null, null, null, reason, amount, gamble);
-    }
+        => InternalAddAsync(userId, null, null, null, reason, amount, gamble);
 
     public async Task AddAsync(IUser user, string reason, long amount, bool sendMessage = false, bool gamble = false)
     {
@@ -141,12 +139,8 @@ public class CurrencyService : ICurrencyService, INService
     }
 
     public Task<bool> RemoveAsync(ulong userId, string reason, long amount, bool gamble = false)
-    {
-        return InternalRemoveAsync(userId, null, null, null, reason, amount, gamble);
-    }
+        => InternalRemoveAsync(userId, null, null, null, reason, amount, gamble);
 
     public Task<bool> RemoveAsync(IUser user, string reason, long amount, bool sendMessage = false, bool gamble = false)
-    {
-        return InternalRemoveAsync(user.Id, user.Username, user.Discriminator, user.AvatarId, reason, amount, gamble);
-    }
+        => InternalRemoveAsync(user.Id, user.Username, user.Discriminator, user.AvatarId, reason, amount, gamble);
 }

@@ -75,8 +75,7 @@ public class PermissionService : ILateBlocker, INService
     }
 
     public void UpdateCache(GuildConfig config)
-    {
-        Cache.AddOrUpdate(config.GuildId, new PermissionCache()
+        => Cache.AddOrUpdate(config.GuildId, new PermissionCache()
         {
             Permissions = new(config.Permissions),
             PermRole = config.PermissionRole,
@@ -88,7 +87,6 @@ public class PermissionService : ILateBlocker, INService
             old.Verbose = config.VerbosePermissions;
             return old;
         });
-    }
 
     public async Task<bool> TryBlockLate(ICommandContext ctx, string moduleName, CommandInfo command)
     {

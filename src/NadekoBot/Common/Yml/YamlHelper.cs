@@ -26,7 +26,7 @@ public class YamlHelper
 
         // Check the value and write the character.
 
-        if (character is >= 0xD800 and <= 0xDFFF || character > 0x10FFFF)
+        if (character is >= 0xD800 and <= 0xDFFF or > 0x10FFFF)
         {
             return point;
         }
@@ -35,13 +35,8 @@ public class YamlHelper
     }
         
     public static bool IsHex(char c)
-    {
-        return
-            c is >= '0' and <= '9' ||
-            c is >= 'A' and <= 'F' ||
-            c is >= 'a' and <= 'f';
-    }
-        
+        => c is >= '0' and <= '9' or >= 'A' and <= 'F' or >= 'a' and <= 'f';
+
     public static int AsHex(char c)
     {
         if (c <= '9')

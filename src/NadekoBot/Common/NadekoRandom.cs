@@ -7,9 +7,7 @@ public class NadekoRandom : Random
     private readonly RandomNumberGenerator _rng;
 
     public NadekoRandom() : base()
-    {
-        _rng = RandomNumberGenerator.Create();
-    }
+        => _rng = RandomNumberGenerator.Create();
 
     public override int Next()
     {
@@ -52,9 +50,7 @@ public class NadekoRandom : Random
     }
 
     public override void NextBytes(byte[] buffer)
-    {
-        _rng.GetBytes(buffer);
-    }
+        => _rng.GetBytes(buffer);
 
     protected override double Sample()
     {

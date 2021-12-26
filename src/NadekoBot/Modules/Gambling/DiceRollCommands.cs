@@ -17,9 +17,7 @@ public partial class Gambling
         private readonly IImageCache _images;
 
         public DiceRollCommands(IDataCache data)
-        {
-            _images = data.LocalImages;
-        }
+            => _images = data.LocalImages;
 
         [NadekoCommand, Aliases]
         public async Task Roll()
@@ -42,35 +40,27 @@ public partial class Gambling
         [NadekoCommand, Aliases]
         [Priority(1)]
         public async Task Roll(int num)
-        {
-            await InternalRoll(num, true).ConfigureAwait(false);
-        }
+            => await InternalRoll(num, true).ConfigureAwait(false);
 
 
         [NadekoCommand, Aliases]
         [Priority(1)]
         public async Task Rolluo(int num = 1)
-        {
-            await InternalRoll(num, false).ConfigureAwait(false);
-        }
+            => await InternalRoll(num, false).ConfigureAwait(false);
 
         [NadekoCommand, Aliases]
         [Priority(0)]
         public async Task Roll(string arg)
-        {
-            await InternallDndRoll(arg, true).ConfigureAwait(false);
-        }
+            => await InternallDndRoll(arg, true).ConfigureAwait(false);
 
         [NadekoCommand, Aliases]
         [Priority(0)]
         public async Task Rolluo(string arg)
-        {
-            await InternallDndRoll(arg, false).ConfigureAwait(false);
-        }
+            => await InternallDndRoll(arg, false).ConfigureAwait(false);
 
         private async Task InternalRoll(int num, bool ordered)
         {
-            if (num < 1 || num > 30)
+            if (num is < 1 or > 30)
             {
                 await ReplyErrorLocalizedAsync(strs.dice_invalid_number(1, 30));
                 return;
@@ -201,7 +191,7 @@ public partial class Gambling
 
         private Image<Rgba32> GetDice(int num)
         {
-            if (num < 0 || num > 10)
+            if (num is < 0 or > 10)
                 throw new ArgumentOutOfRangeException(nameof(num));
 
             if (num == 10)

@@ -14,9 +14,7 @@ public partial class Searches
         public IReadOnlyDictionary<string, SearchPokemonAbility> PokemonAbilities => _cache.LocalData.PokemonAbilities;
 
         public PokemonSearchCommands(IDataCache cache)
-        {
-            _cache = cache;
-        }
+            => _cache = cache;
 
         [NadekoCommand, Aliases]
         public async Task Pokemon([Leftover] string pokemon = null)

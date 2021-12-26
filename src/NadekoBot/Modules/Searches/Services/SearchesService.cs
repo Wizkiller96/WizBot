@@ -163,13 +163,12 @@ public class SearchesService : INService
     }
 
     public Task<((string Address, DateTime Time, string TimeZoneName), TimeErrors?)> GetTimeDataAsync(string arg)
-    {
-        return GetTimeDataFactory(arg);
-        //return _cache.GetOrAddCachedDataAsync($"nadeko_time_{arg}",
-        //    GetTimeDataFactory,
-        //    arg,
-        //    TimeSpan.FromMinutes(1));
-    }
+        => GetTimeDataFactory(arg);
+
+    //return _cache.GetOrAddCachedDataAsync($"nadeko_time_{arg}",
+    //    GetTimeDataFactory,
+    //    arg,
+    //    TimeSpan.FromMinutes(1));
     private async Task<((string Address, DateTime Time, string TimeZoneName), TimeErrors?)> GetTimeDataFactory(string query)
     {
         query = query.Trim();

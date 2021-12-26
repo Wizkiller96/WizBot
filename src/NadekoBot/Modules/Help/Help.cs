@@ -82,6 +82,7 @@ public class Help : NadekoModule<HelpService>
                 
             localModules
                 .OrderBy(module => module.Name)
+                .ToList()
                 .ForEach(module => embed.AddField($"{GetModuleEmoji(module.Name)} {module.Name}",
                     GetText(GetModuleLocStr(module.Name)) + "\n" +
                     Format.Code(GetText(strs.module_footer(Prefix, module.Name.ToLowerInvariant()))),
@@ -406,17 +407,13 @@ public class Help : NadekoModule<HelpService>
 
     [NadekoCommand, Aliases]
     public async Task Guide()
-    {
-        await ConfirmLocalizedAsync(strs.guide(
+        => await ConfirmLocalizedAsync(strs.guide(
             "https://nadeko.bot/commands",
             "http://nadekobot.readthedocs.io/en/latest/"));
-    }
 
     [NadekoCommand, Aliases]
     public async Task Donate()
-    {
-        await ReplyConfirmLocalizedAsync(strs.donate(PatreonUrl, PaypalUrl));
-    }
+        => await ReplyConfirmLocalizedAsync(strs.donate(PatreonUrl, PaypalUrl));
 }
 
 internal class CommandJsonObject

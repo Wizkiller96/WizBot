@@ -10,10 +10,8 @@ public sealed class RedisTrackCacher : ITrackCacher
     private readonly ConnectionMultiplexer _multiplexer;
 
     public RedisTrackCacher(ConnectionMultiplexer multiplexer)
-    {
-        _multiplexer = multiplexer;
-    }
-        
+        => _multiplexer = multiplexer;
+
     public async Task<string?> GetOrCreateStreamLink(
         string id,
         MusicPlatform platform,

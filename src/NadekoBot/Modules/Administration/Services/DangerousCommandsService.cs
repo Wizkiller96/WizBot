@@ -33,9 +33,7 @@ DELETE FROM Clubs;";
     private readonly DbService _db;
 
     public DangerousCommandsService(DbService db)
-    {
-        _db = db;
-    }
+        => _db = db;
 
     public async Task<int> ExecuteSql(string sql)
     {

@@ -15,8 +15,15 @@ public sealed class CommentsObjectDescriptor : IObjectDescriptor
 
     public string Comment { get; private set; }
 
-    public object Value { get { return innerDescriptor.Value; } }
-    public Type Type { get { return innerDescriptor.Type; } }
-    public Type StaticType { get { return innerDescriptor.StaticType; } }
-    public ScalarStyle ScalarStyle { get { return innerDescriptor.ScalarStyle; } }
+    public object Value
+        => innerDescriptor.Value;
+
+    public Type Type
+        => innerDescriptor.Type;
+
+    public Type StaticType
+        => innerDescriptor.StaticType;
+
+    public ScalarStyle ScalarStyle
+        => innerDescriptor.ScalarStyle;
 }

@@ -25,9 +25,7 @@ public class ImageData : IComparable<ImageData>
     }
 
     public override string ToString()
-    {
-        return FileUrl;
-    }
+        => FileUrl;
 
     public override int GetHashCode() => FileUrl.GetHashCode();
     public override bool Equals(object obj)

@@ -15,9 +15,7 @@ public class TwitchProvider : Provider
     public override FollowedStream.FType Platform => FollowedStream.FType.Twitch;
 
     public TwitchProvider(IHttpClientFactory httpClientFactory)
-    {
-        _httpClientFactory = httpClientFactory;
-    }
+        => _httpClientFactory = httpClientFactory;
 
     public override Task<bool> IsValidUrl(string url)
     {
@@ -111,8 +109,7 @@ public class TwitchProvider : Provider
     }
 
     private StreamData ToStreamData(TwitchResponseV5.Stream stream)
-    {
-        return new()
+        => new()
         {
             StreamType = FollowedStream.FType.Twitch,
             Name = stream.Channel.DisplayName,
@@ -125,5 +122,4 @@ public class TwitchProvider : Provider
             StreamUrl = $"https://twitch.tv/{stream.Channel.Name}",
             AvatarUrl = stream.Channel.Logo
         };
-    }
 }

@@ -8,9 +8,7 @@ public partial class Administration
         [NadekoCommand, Aliases]
         [Priority(1)]
         public async Task PrefixCommand()
-        {
-            await ReplyConfirmLocalizedAsync(strs.prefix_current(Format.Code(CmdHandler.GetPrefix(ctx.Guild)))).ConfigureAwait(false);
-        }
+            => await ReplyConfirmLocalizedAsync(strs.prefix_current(Format.Code(CmdHandler.GetPrefix(ctx.Guild)))).ConfigureAwait(false);
 
         public enum Set
         {

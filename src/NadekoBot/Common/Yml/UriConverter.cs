@@ -7,9 +7,7 @@ namespace NadekoBot.Common.Yml;
 public class UriConverter : IYamlTypeConverter
 {
     public bool Accepts(Type type)
-    {
-        return type == typeof(Uri);
-    }
+        => type == typeof(Uri);
 
     public object ReadYaml(IParser parser, Type type)
     {

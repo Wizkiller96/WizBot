@@ -6,10 +6,8 @@ namespace NadekoBot.Db;
 public static class QuoteExtensions
 {
     public static IEnumerable<Quote> GetForGuild(this DbSet<Quote> quotes, ulong guildId)
-    {
-        return quotes.AsQueryable().Where(x => x.GuildId == guildId);
-    }
-        
+        => quotes.AsQueryable().Where(x => x.GuildId == guildId);
+
     public static IEnumerable<Quote> GetGroup(this DbSet<Quote> quotes, ulong guildId, int page, OrderType order)
     {
         var q = quotes.AsQueryable().Where(x => x.GuildId == guildId);
@@ -46,8 +44,5 @@ public static class QuoteExtensions
     }
 
     public static void RemoveAllByKeyword(this DbSet<Quote> quotes, ulong guildId, string keyword)
-    {
-        quotes.RemoveRange(quotes.AsQueryable().Where(x => x.GuildId == guildId && x.Keyword.ToUpper() == keyword));
-    }
-
+        => quotes.RemoveRange(quotes.AsQueryable().Where(x => x.GuildId == guildId && x.Keyword.ToUpper() == keyword));
 }

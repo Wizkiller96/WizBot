@@ -77,9 +77,7 @@ public sealed class MultimediaTimer : IDisposable
     }
 
     private void CallbackInternal(uint uTimerId, uint uMsg, int dwUser, int dw1, int dw2)
-    {
-        _callback(_state);
-    }
+        => _callback(_state);
 
     public void Dispose()
     {

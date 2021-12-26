@@ -5,14 +5,10 @@ public class MutedUserId : DbEntity
     public ulong UserId { get; set; }
 
     public override int GetHashCode()
-    {
-        return UserId.GetHashCode();
-    }
+        => UserId.GetHashCode();
 
     public override bool Equals(object obj)
-    {
-        return obj is MutedUserId mui
+        => obj is MutedUserId mui
             ? mui.UserId == UserId
             : false;
-    }
 }

@@ -13,10 +13,8 @@ public class EmbedBuilderService : IEmbedBuilderService, INService
     private readonly BotConfigService _botConfigService;
 
     public EmbedBuilderService(BotConfigService botConfigService)
-    {
-        _botConfigService = botConfigService;
-    }
-        
+        => _botConfigService = botConfigService;
+
     public IEmbedBuilder Create(ICommandContext ctx = null) 
         => new DiscordEmbedBuilderWrapper(_botConfigService.Data);
         

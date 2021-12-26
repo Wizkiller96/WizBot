@@ -10,9 +10,7 @@ public class UnroleTimer : DbEntity
         UserId.GetHashCode() ^ RoleId.GetHashCode();
 
     public override bool Equals(object obj)
-    {
-        return obj is UnroleTimer ut
+        => obj is UnroleTimer ut
             ? ut.UserId == UserId && ut.RoleId == RoleId
             : false;
-    }
 }

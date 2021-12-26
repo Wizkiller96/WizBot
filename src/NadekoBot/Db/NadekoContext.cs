@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Design;
 using NadekoBot.Services.Database.Models;
 using Microsoft.Extensions.Logging;
 using NadekoBot.Db.Models;
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace NadekoBot.Services.Database;
 
@@ -68,9 +69,7 @@ public class NadekoContext : DbContext
     private static readonly ILoggerFactory _debugLoggerFactory =
         LoggerFactory.Create(x => x.AddConsole());
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {      
-        optionsBuilder.UseLoggerFactory(_debugLoggerFactory);
-    }
+        => optionsBuilder.UseLoggerFactory(_debugLoggerFactory);
 #endif
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

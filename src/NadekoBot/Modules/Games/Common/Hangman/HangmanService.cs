@@ -88,8 +88,7 @@ public sealed class HangmanService : IHangmanService, ILateExecutor
                 if (state.GuessResult == HangmanGame.GuessResult.NoAction)
                     return;
 
-                if (state.GuessResult == HangmanGame.GuessResult.Incorrect
-                    || state.GuessResult == HangmanGame.GuessResult.AlreadyTried)
+                if (state.GuessResult is HangmanGame.GuessResult.Incorrect or HangmanGame.GuessResult.AlreadyTried)
                 {
                     _cdCache.Set(msg.Author.Id, string.Empty, new MemoryCacheEntryOptions()
                     {

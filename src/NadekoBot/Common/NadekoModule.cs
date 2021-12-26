@@ -22,10 +22,8 @@ public abstract class NadekoModule : ModuleBase
     }
 
     protected override void BeforeExecute(CommandInfo cmd)
-    {
-        _cultureInfo = Localization.GetCultureInfo(ctx.Guild?.Id);
-    }
-        
+        => _cultureInfo = Localization.GetCultureInfo(ctx.Guild?.Id);
+
     protected string GetText(in LocStr data) =>
         Strings.GetText(data, _cultureInfo);
 

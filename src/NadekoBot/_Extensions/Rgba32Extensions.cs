@@ -10,27 +10,26 @@ namespace NadekoBot.Extensions;
 public static class Rgba32Extensions
 {
     public static Image<Rgba32> Merge(this IEnumerable<Image<Rgba32>> images)
-    {
-        return images.Merge(out _);
-    }
+        => images.Merge(out _);
 
     public static Image<Rgba32> Merge(this IEnumerable<Image<Rgba32>> images, out IImageFormat format)
     {
         format = PngFormat.Instance;
 
-        void DrawFrame(Image<Rgba32>[] imgArray, Image<Rgba32> imgFrame, int frameNumber)
+        void DrawFrame(IList<Image<Rgba32>> imgArray, Image<Rgba32> imgFrame, int frameNumber)
         {
             var xOffset = 0;
-            for (var i = 0; i < imgArray.Length; i++)
+            for (var i = 0; i < imgArray.Count; i++)
             {
                 var frame = imgArray[i].Frames.CloneFrame(frameNumber % imgArray[i].Frames.Count);
-                imgFrame.Mutate(x => x.DrawImage(frame, new(xOffset, 0), new GraphicsOptions()));
+                var offset = xOffset;
+                imgFrame.Mutate(x => x.DrawImage(frame, new(offset, 0), new GraphicsOptions()));
                 xOffset += imgArray[i].Bounds().Width;
             }
         }
 
-        var imgs = images.ToArray();
-        var frames = images.Max(x => x.Frames.Count);
+        var imgs = images.ToList();
+        var frames = imgs.Max(x => x.Frames.Count);
 
         var width = imgs.Sum(img => img.Width);
         var height = imgs.Max(img => img.Height);

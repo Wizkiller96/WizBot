@@ -20,9 +20,7 @@ public abstract class Player
     }
 
     public int GetRawHandValue()
-    {
-        return Cards.Sum(x => x.Number == 1 ? 11 : x.Number >= 10 ? 10 : x.Number);
-    }
+        => Cards.Sum(x => x.Number == 1 ? 11 : x.Number >= 10 ? 10 : x.Number);
 }
 
 public class Dealer : Player

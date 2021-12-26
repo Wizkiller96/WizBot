@@ -10,17 +10,13 @@ public class ReplacementBuilder
     private readonly ConcurrentDictionary<Regex, Func<Match, string>> _regex = new();
 
     public ReplacementBuilder()
-    {
-        WithRngRegex();
-    }
+        => WithRngRegex();
 
     public ReplacementBuilder WithDefault(IUser usr, IMessageChannel ch, SocketGuild g, DiscordSocketClient client)
-    {
-        return this.WithUser(usr)
+        => this.WithUser(usr)
             .WithChannel(ch)
             .WithServer(client, g)
             .WithClient(client);
-    }
 
     public ReplacementBuilder WithDefault(ICommandContext ctx) =>
         WithDefault(ctx.User, ctx.Channel, ctx.Guild as SocketGuild, (DiscordSocketClient)ctx.Client);
@@ -139,9 +135,7 @@ public class ReplacementBuilder
     }
 
     public Replacer Build()
-    {
-        return new(_reps.Select(x => (x.Key, x.Value)).ToArray(), _regex.Select(x => (x.Key, x.Value)).ToArray());
-    }
+        => new(_reps.Select(x => (x.Key, x.Value)).ToArray(), _regex.Select(x => (x.Key, x.Value)).ToArray());
 
     public ReplacementBuilder WithProviders(IEnumerable<IPlaceholderProvider> phProviders)
     {

@@ -51,7 +51,7 @@ public partial class Xp : NadekoModule<XpService>
     {
         page--;
 
-        if (page < 0 || page > 100)
+        if (page is < 0 or > 100)
             return Task.CompletedTask;
 
         var allRewards = _service.GetRoleRewards(ctx.Guild.Id)

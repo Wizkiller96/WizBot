@@ -57,9 +57,7 @@ public class AntiSpamIgnore : DbEntity
     public override int GetHashCode() => ChannelId.GetHashCode();
 
     public override bool Equals(object obj)
-    {
-        return obj is AntiSpamIgnore inst
+        => obj is AntiSpamIgnore inst
             ? inst.ChannelId == ChannelId
             : false;
-    }
 }

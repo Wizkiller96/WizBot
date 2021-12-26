@@ -130,7 +130,7 @@ public class FeedsService : INService
 
                         embed.WithTitle(title.TrimTo(256));
 
-                        var desc = feedItem.Description?.StripHTML();
+                        var desc = feedItem.Description?.StripHtml();
                         if (!string.IsNullOrWhiteSpace(feedItem.Description))
                             embed.WithDescription(desc.TrimTo(2048));
 
@@ -167,7 +167,7 @@ public class FeedsService : INService
 
     public bool AddFeed(ulong guildId, ulong channelId, string rssFeed)
     {
-        rssFeed.ThrowIfNull(nameof(rssFeed));
+        ArgumentNullException.ThrowIfNull(rssFeed, nameof(rssFeed));
 
         var fs = new FeedSub()
         {

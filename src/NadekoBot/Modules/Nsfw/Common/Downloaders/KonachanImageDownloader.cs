@@ -8,9 +8,7 @@ public sealed class KonachanImageDownloader : ImageDownloader<DapiImageObject>
 
     public KonachanImageDownloader(HttpClient http)
         : base(Booru.Konachan, http)
-    {
-        _baseUrl = "https://konachan.com";
-    }
+        => _baseUrl = "https://konachan.com";
 
     public override async Task<List<DapiImageObject>> DownloadImagesAsync(string[] tags, int page, bool isExplicit = false, CancellationToken cancel = default)
     {

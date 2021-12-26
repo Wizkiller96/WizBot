@@ -155,7 +155,5 @@ public static class GuildConfigExtensions
     }
 
     public static void SetAutoAssignableRoles(this GuildConfig gc, IEnumerable<ulong> roles)
-    {
-        gc.AutoAssignRoleIds = roles.JoinWith(',');
-    }
+        => gc.AutoAssignRoleIds = roles.Join(',');
 }

@@ -18,14 +18,10 @@ public class AnimalRacingUser
     }
 
     public override bool Equals(object obj)
-    {
-        return obj is AnimalRacingUser x
+        => obj is AnimalRacingUser x
             ? x.UserId == this.UserId
             : false;
-    }
 
     public override int GetHashCode()
-    {
-        return this.UserId.GetHashCode();
-    }
+        => this.UserId.GetHashCode();
 }

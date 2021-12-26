@@ -6,9 +6,7 @@ public class GreetGrouper<T>
     private readonly object locker = new();
 
     public GreetGrouper()
-    {
-        group = new();
-    }
+        => group = new();
 
 
     /// <summary>

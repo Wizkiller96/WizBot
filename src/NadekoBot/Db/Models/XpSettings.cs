@@ -27,14 +27,10 @@ public class XpRoleReward : DbEntity
     public bool Remove { get; set; }
         
     public override int GetHashCode()
-    {
-        return Level.GetHashCode() ^ XpSettingsId.GetHashCode();
-    }
+        => Level.GetHashCode() ^ XpSettingsId.GetHashCode();
 
     public override bool Equals(object obj)
-    {
-        return obj is XpRoleReward xrr && xrr.Level == Level && xrr.XpSettingsId == XpSettingsId;
-    }
+        => obj is XpRoleReward xrr && xrr.Level == Level && xrr.XpSettingsId == XpSettingsId;
 }
 
 public class XpCurrencyReward : DbEntity
@@ -46,14 +42,10 @@ public class XpCurrencyReward : DbEntity
     public int Amount { get; set; }
 
     public override int GetHashCode()
-    {
-        return Level.GetHashCode() ^ XpSettingsId.GetHashCode();
-    }
+        => Level.GetHashCode() ^ XpSettingsId.GetHashCode();
 
     public override bool Equals(object obj)
-    {
-        return obj is XpCurrencyReward xrr && xrr.Level == Level && xrr.XpSettingsId == XpSettingsId;
-    }
+        => obj is XpCurrencyReward xrr && xrr.Level == Level && xrr.XpSettingsId == XpSettingsId;
 }
 
 public class ExcludedItem : DbEntity
@@ -62,12 +54,8 @@ public class ExcludedItem : DbEntity
     public ExcludedItemType ItemType { get; set; }
 
     public override int GetHashCode()
-    {
-        return ItemId.GetHashCode() ^ ItemType.GetHashCode();
-    }
+        => ItemId.GetHashCode() ^ ItemType.GetHashCode();
 
     public override bool Equals(object obj)
-    {
-        return obj is ExcludedItem ei && ei.ItemId == ItemId && ei.ItemType == ItemType;
-    }
+        => obj is ExcludedItem ei && ei.ItemId == ItemId && ei.ItemType == ItemType;
 }

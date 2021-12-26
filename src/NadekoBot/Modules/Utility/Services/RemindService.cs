@@ -99,7 +99,7 @@ public class RemindService : INService
             
         foreach (var groupName in _regex.GetGroupNames())
         {
-            if (groupName == "0" || groupName== "what") continue;
+            if (groupName is "0" or "what") continue;
             if (string.IsNullOrWhiteSpace(m.Groups[groupName].Value))
             {
                 values[groupName] = 0;

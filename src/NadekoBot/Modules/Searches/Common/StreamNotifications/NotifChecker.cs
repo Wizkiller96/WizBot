@@ -236,7 +236,5 @@ public class NotifChecker
     }
 
     public void UntrackStreamByKey(in StreamDataKey key)
-    {
-        CacheDeleteData(key);
-    }
+        => CacheDeleteData(key);
 }

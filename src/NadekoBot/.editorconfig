@@ -1,5 +1,5 @@
-# Remove the line below if you want to inherit .editorconfig settings from higher directories
 root = true
+# Remove the line below if you want to inherit .editorconfig settings from higher directories
 
 # C# files
 [*.cs]
@@ -20,7 +20,6 @@ insert_final_newline = false
 # Organize usings
 dotnet_separate_import_directive_groups = false
 dotnet_sort_system_directives_first = false
-file_header_template = unset
 
 # this. and Me. preferences
 dotnet_style_qualification_for_event = false
@@ -51,8 +50,8 @@ dotnet_style_object_initializer = true
 dotnet_style_operator_placement_when_wrapping = beginning_of_line
 dotnet_style_prefer_auto_properties = true:warning
 dotnet_style_prefer_compound_assignment = true
-dotnet_style_prefer_conditional_expression_over_assignment = true:suggestion
-dotnet_style_prefer_conditional_expression_over_return = true:suggestion
+dotnet_style_prefer_conditional_expression_over_assignment = false:suggestion
+dotnet_style_prefer_conditional_expression_over_return = false:suggestion
 dotnet_style_prefer_inferred_anonymous_type_member_names = true
 dotnet_style_prefer_inferred_tuple_names = true
 dotnet_style_prefer_is_null_check_over_reference_equality_method = true:error
@@ -64,13 +63,6 @@ dotnet_style_readonly_field = true:suggestion
 
 # Parameter preferences
 dotnet_code_quality_unused_parameters = all:warning
-
-# Suppression preferences
-dotnet_remove_unnecessary_suppression_exclusions = none
-
-# New line preferences
-dotnet_style_allow_multiple_blank_lines_experimental = false
-dotnet_style_allow_statement_immediately_after_block_experimental = false
 
 #### C# Coding Conventions ####
 
@@ -85,8 +77,8 @@ csharp_style_expression_bodied_constructors = when_on_single_line:suggestion
 csharp_style_expression_bodied_indexers = true:suggestion
 csharp_style_expression_bodied_lambdas = true:suggestion
 csharp_style_expression_bodied_local_functions = true:suggestion
-csharp_style_expression_bodied_methods = when_on_single_line:suggestion
-csharp_style_expression_bodied_operators = when_on_single_line:suggestion
+csharp_style_expression_bodied_methods = when_on_single_line:warning
+csharp_style_expression_bodied_operators = when_on_single_line:warning
 csharp_style_expression_bodied_properties = true:suggestion
 
 # Pattern matching preferences
@@ -123,7 +115,7 @@ csharp_style_unused_value_expression_statement_preference = discard_variable
 csharp_using_directive_placement = outside_namespace:error
 
 # Enforce file-scoped namespaces
-csharp_style_namespace_declarations=file_scoped:error
+csharp_style_namespace_declarations = file_scoped:error
 
 # New line preferences
 csharp_style_allow_blank_line_after_colon_in_constructor_initializer_experimental = true
@@ -236,6 +228,7 @@ dotnet_naming_rule.public_anything_should_be_pascal_case.style = pascal_case
 # Symbol specifications
 
 dotnet_naming_symbols.const_fields.required_modifiers = const
+dotnet_naming_symbols.const_fields.applicable_kinds = field
 
 dotnet_naming_symbols.class.applicable_kinds = class
 dotnet_naming_symbols.class.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
@@ -316,13 +309,24 @@ dotnet_naming_style.camel_case.word_separator =
 dotnet_naming_style.camel_case.capitalization = camel_case
 
 # CA1822: Mark members as static
-dotnet_diagnostic.CA1822.severity = suggestion
+dotnet_diagnostic.ca1822.severity = suggestion
 
 # IDE0004: Cast is redundant
-dotnet_diagnostic.IDE0004.severity = error 
+dotnet_diagnostic.ide0004.severity = error
 
 # IDE0058: Expression value is never used
-dotnet_diagnostic.IDE0058.severity = none
+dotnet_diagnostic.ide0058.severity = none
 
 # IDE0011: Add braces to 'if'/'else' statement
-dotnet_diagnostic.IDE0011.severity = none
+dotnet_diagnostic.ide0011.severity = none
+
+resharper_wrap_after_invocation_lpar = false
+resharper_wrap_before_invocation_rpar = false
+
+# ReSharper properties
+resharper_csharp_wrap_after_declaration_lpar = true
+resharper_csharp_wrap_before_invocation_rpar = true
+resharper_csharp_wrap_parameters_style = chop_if_long
+resharper_force_chop_compound_if_expression = true
+resharper_keep_existing_linebreaks = false
+resharper_max_formal_parameters_on_line = 3

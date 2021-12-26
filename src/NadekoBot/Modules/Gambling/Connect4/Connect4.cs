@@ -151,14 +151,14 @@ public sealed class Connect4Game : IDisposable
         try
         {
             inputCol -= 1;
-            if (CurrentPhase == Phase.Ended || CurrentPhase == Phase.Joining)
+            if (CurrentPhase is Phase.Ended or Phase.Joining)
                 return false;
 
             if (!((_players[0].Value.UserId == userId && CurrentPhase == Phase.P1Move)
                   || (_players[1].Value.UserId == userId && CurrentPhase == Phase.P2Move)))
                 return false;
 
-            if (inputCol < 0 || inputCol > NumberOfColumns) //invalid input
+            if (inputCol is < 0 or > NumberOfColumns) //invalid input
                 return false;
 
             if (IsColumnFull(inputCol)) //can't play there event?
@@ -259,9 +259,9 @@ public sealed class Connect4Game : IDisposable
                             var curCol = col - i;
 
                             //check if current values are in range
-                            if (curRow >= NumberOfRows || curRow < 0)
+                            if (curRow is >= NumberOfRows or < 0)
                                 break;
-                            if (curCol < 0 || curCol >= NumberOfColumns)
+                            if (curCol is < 0 or >= NumberOfColumns)
                                 break;
 
                             var cur = _gameState[curRow + (curCol * NumberOfRows)];
@@ -286,9 +286,9 @@ public sealed class Connect4Game : IDisposable
                             var curCol = col + i;
 
                             //check if current values are in range
-                            if (curRow >= NumberOfRows || curRow < 0)
+                            if (curRow is >= NumberOfRows or < 0)
                                 break;
-                            if (curCol < 0 || curCol >= NumberOfColumns)
+                            if (curCol is < 0 or >= NumberOfColumns)
                                 break;
 
                             var cur = _gameState[curRow + (curCol * NumberOfRows)];
@@ -328,9 +328,7 @@ public sealed class Connect4Game : IDisposable
     }
 
     private void ResetTimer()
-    {
-        _playerTimeoutTimer.Change(TimeSpan.FromSeconds(_options.TurnTimer), TimeSpan.FromSeconds(_options.TurnTimer));
-    }
+        => _playerTimeoutTimer.Change(TimeSpan.FromSeconds(_options.TurnTimer), TimeSpan.FromSeconds(_options.TurnTimer));
 
     private void EndGame(Result result, ulong? winId)
     {
@@ -378,7 +376,7 @@ public sealed class Connect4Game : IDisposable
     {
         public void NormalizeOptions()
         {
-            if (TurnTimer < 5 || TurnTimer > 60)
+            if (TurnTimer is < 5 or > 60)
                 TurnTimer = 15;
 
             if (Bet < 0)

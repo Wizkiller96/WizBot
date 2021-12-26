@@ -13,9 +13,7 @@ public partial class Searches
         private readonly DbService _db;
 
         public StreamNotificationCommands(DbService db)
-        {
-            _db = db;
-        }
+            => _db = db;
 
         // private static readonly Regex picartoRegex = new Regex(@"picarto.tv/(?<name>.+[^/])/?",
         //     RegexOptions.Compiled | RegexOptions.IgnoreCase);

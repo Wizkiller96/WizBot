@@ -6,14 +6,10 @@ public class PollVote : DbEntity
     public int VoteIndex { get; set; }
 
     public override int GetHashCode()
-    {
-        return UserId.GetHashCode();
-    }
+        => UserId.GetHashCode();
 
     public override bool Equals(object obj)
-    {
-        return obj is PollVote p
+        => obj is PollVote p
             ? p.UserId == UserId
             : false;
-    }
 }

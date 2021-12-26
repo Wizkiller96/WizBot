@@ -38,7 +38,7 @@ public class GamblingService : INService
             {
                 var config = _gss.Data;
                 var maxDecay = config.Decay.MaxDecay;
-                if (config.Decay.Percent <= 0 || config.Decay.Percent > 1 || maxDecay < 0)
+                if (config.Decay.Percent is <= 0 or > 1 || maxDecay < 0)
                     return;
 
                 using var uow = _db.GetDbContext();
@@ -156,7 +156,5 @@ WHERE CurrencyAmount > {config.Decay.MinThreshold} AND UserId!={_client.CurrentU
     }
 
     public Task<WheelOfFortuneGame.Result> WheelOfFortuneSpinAsync(ulong userId, long bet)
-    {
-        return new WheelOfFortuneGame(userId, bet, _gss.Data, _cs).SpinAsync();
-    }
+        => new WheelOfFortuneGame(userId, bet, _gss.Data, _cs).SpinAsync();
 }

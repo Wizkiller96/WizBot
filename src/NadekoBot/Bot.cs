@@ -70,9 +70,7 @@ public sealed class Bot
     }
 
     public List<ulong> GetCurrentGuildIds()
-    {
-        return Client.Guilds.Select(x => x.Id).ToList();
-    }
+        => Client.Guilds.Select(x => x.Id).ToList();
 
     private void AddServices()
     {

@@ -8,9 +8,8 @@ public sealed class YandereImageDownloader : ImageDownloader<DapiImageObject>
 
     public YandereImageDownloader(HttpClient http)
         : base(Booru.Yandere, http)
-    {
-        _baseUrl = "https://yande.re";
-    }
+        => _baseUrl = "https://yande.re";
+
     public override async Task<List<DapiImageObject>> DownloadImagesAsync(string[] tags, int page, bool isExplicit = false, CancellationToken cancel = default)
     {
         var tagString = ImageDownloaderHelper.GetTagString(tags, isExplicit);

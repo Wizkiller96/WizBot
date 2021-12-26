@@ -105,14 +105,12 @@ Doesn't have to be ordered.")]
     public BetRollPair[] Pairs { get; set; } = Array.Empty<BetRollPair>();
 
     public BetRollConfig()
-    {
-        Pairs = new BetRollPair[]
+        => Pairs = new BetRollPair[]
         {
             new() { WhenAbove = 99, MultiplyBy = 10 },
             new() { WhenAbove = 90, MultiplyBy = 4 },
             new() { WhenAbove = 66, MultiplyBy = 2 }
         };
-    }
 }
 
 [Cloneable]
@@ -163,8 +161,7 @@ public partial class WheelOfFortuneSettings
     public decimal[] Multipliers { get; set; }
 
     public WheelOfFortuneSettings()
-    {
-        Multipliers = new decimal[]
+        => Multipliers = new decimal[]
         {
             1.7M,
             1.5M,
@@ -175,7 +172,6 @@ public partial class WheelOfFortuneSettings
             1.2M,
             2.4M,
         };
-    }
 }
 
 [Cloneable]
@@ -191,8 +187,7 @@ If negative is true, gift will instead reduce waifu value.")]
     public List<WaifuItemModel> Items { get; set; } = new();
 
     public WaifuConfig()
-    {
-        Items = new()
+        => Items = new()
         {
             new("🥔", 5, "Potato"),
             new("🍪", 10, "Cookie"),
@@ -231,7 +226,6 @@ If negative is true, gift will instead reduce waifu value.")]
             new("🚀", 30000, "Spaceship"),
             new("🌕", 50000, "Moon")
         };
-    }
 }
 
 [Cloneable]

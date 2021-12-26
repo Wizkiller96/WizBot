@@ -424,29 +424,19 @@ public sealed class MusicPlayer : IMusicPlayer
     }
         
     public void EnqueueTrack(ITrackInfo track, string queuer)
-    {
-        _queue.Enqueue(track, queuer, out _);
-    }
+        => _queue.Enqueue(track, queuer, out _);
 
     public void EnqueueTracks(IEnumerable<ITrackInfo> tracks, string queuer)
-    {
-        _queue.EnqueueMany(tracks, queuer);
-    }
+        => _queue.EnqueueMany(tracks, queuer);
 
     public void SetRepeat(PlayerRepeatType type)
-    {
-        Repeat = type;
-    }
+        => Repeat = type;
 
     public void ShuffleQueue()
-    {
-        _queue.Shuffle(_rng);
-    }
+        => _queue.Shuffle(_rng);
 
     public void Stop()
-    {
-        IsStopped = true;
-    }
+        => IsStopped = true;
 
     public void Clear()
     {
@@ -484,7 +474,7 @@ public sealed class MusicPlayer : IMusicPlayer
     public void SetVolume(int newVolume)
     {
         var normalizedVolume = newVolume / 100f;
-        if (normalizedVolume < 0f || normalizedVolume > 1f)
+        if (normalizedVolume is < 0f or > 1f)
             throw new ArgumentOutOfRangeException(nameof(newVolume), "Volume must be in range 0-100");
 
         _volume = normalizedVolume;

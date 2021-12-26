@@ -78,7 +78,7 @@ public class TriviaQuestion
         str = Regex.Replace(str, "^\\s+", "");
         str = Regex.Replace(str, "\\s+$", "");
         //Trim the really long answers
-        str = str.Length <= maxStringLength ? str : str.Substring(0, maxStringLength);
+        str = str.Length <= maxStringLength ? str : str[..maxStringLength];
         return str;
     }
 

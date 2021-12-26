@@ -13,9 +13,7 @@ public partial class Administration
         public enum Exclude { Excl }
 
         public RoleCommands(IServiceProvider services)
-        {
-            _services = services;
-        }
+            => _services = services;
 
         public async Task InternalReactionRoles(bool exclusive, ulong? messageId, params string[] input)
         {
@@ -326,9 +324,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
         public async Task RoleColor([Leftover] IRole role)
-        {
-            await SendConfirmAsync("Role Color", role.Color.RawValue.ToString("x6")).ConfigureAwait(false);
-        }
+            => await SendConfirmAsync("Role Color", role.Color.RawValue.ToString("x6")).ConfigureAwait(false);
 
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]

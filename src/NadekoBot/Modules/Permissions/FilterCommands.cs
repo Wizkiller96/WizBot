@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NadekoBot.Common.Collections;
 using NadekoBot.Modules.Permissions.Services;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
@@ -14,9 +13,7 @@ public partial class Permissions
         private readonly DbService _db;
 
         public FilterCommands(DbService db)
-        {
-            _db = db;
-        }
+            => _db = db;
 
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]

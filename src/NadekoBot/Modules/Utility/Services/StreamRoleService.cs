@@ -60,7 +60,7 @@ public class StreamRoleService : INService
     /// <returns>Whether the operation was successful</returns>
     public async Task<bool> ApplyListAction(StreamRoleListType listType, IGuild guild, AddRemove action, ulong userId, string userName)
     {
-        userName.ThrowIfNull(nameof(userName));
+        ArgumentNullException.ThrowIfNull(userName, nameof(userName));
 
         var success = false;
         await using (var uow = _db.GetDbContext())
@@ -170,8 +170,8 @@ public class StreamRoleService : INService
     /// <param name="addRole">Role to add to the user</param>
     public async Task SetStreamRole(IRole fromRole, IRole addRole)
     {
-        fromRole.ThrowIfNull(nameof(fromRole));
-        addRole.ThrowIfNull(nameof(addRole));
+        ArgumentNullException.ThrowIfNull(fromRole, nameof(fromRole));
+        ArgumentNullException.ThrowIfNull(addRole, nameof(addRole));
 
         StreamRoleSettings setting;
         await using (var uow = _db.GetDbContext())
@@ -304,7 +304,5 @@ public class StreamRoleService : INService
     }
 
     private void UpdateCache(ulong guildId, StreamRoleSettings setting)
-    {
-        guildSettings.AddOrUpdate(guildId, key => setting, (key, old) => setting);
-    }
+        => guildSettings.AddOrUpdate(guildId, key => setting, (key, old) => setting);
 }

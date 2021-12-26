@@ -17,7 +17,5 @@ public class SlowmodeIgnoredUser : DbEntity
 
     // override object.GetHashCode
     public override int GetHashCode()
-    {
-        return UserId.GetHashCode();
-    }
+        => UserId.GetHashCode();
 }

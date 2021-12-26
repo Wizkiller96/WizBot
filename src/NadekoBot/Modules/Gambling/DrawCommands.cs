@@ -14,13 +14,11 @@ public partial class Gambling
         private readonly IImageCache _images;
 
         public DrawCommands(IDataCache data)
-        {
-            _images = data.LocalImages;
-        }
+            => _images = data.LocalImages;
 
         private async Task<(Stream ImageStream, string ToSend)> InternalDraw(int num, ulong? guildId = null)
         {
-            if (num < 1 || num > 10)
+            if (num is < 1 or > 10)
                 throw new ArgumentOutOfRangeException(nameof(num));
 
             var cards = guildId is null ? new() : _allDecks.GetOrAdd(ctx.Guild, s => new());

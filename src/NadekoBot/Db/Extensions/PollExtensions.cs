@@ -7,11 +7,9 @@ namespace NadekoBot.Db;
 public static class PollExtensions
 {
     public static IEnumerable<Poll> GetAllPolls(this DbSet<Poll> polls)
-    {
-        return polls.Include(x => x.Answers)
+        => polls.Include(x => x.Answers)
             .Include(x => x.Votes)
             .ToArray();
-    }
 
     public static void RemovePoll(this NadekoContext ctx, int id)
     {

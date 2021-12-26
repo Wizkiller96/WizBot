@@ -7,10 +7,8 @@ public sealed class GuildDateTimeTypeReader : NadekoTypeReader<GuildDateTime>
     private readonly GuildTimezoneService _gts;
 
     public GuildDateTimeTypeReader(GuildTimezoneService gts)
-    {
-        _gts = gts;
-    }
-        
+        => _gts = gts;
+
     public override Task<TypeReaderResult> ReadAsync(ICommandContext context, string input)
     {
         var gdt = Parse(context.Guild.Id, input);

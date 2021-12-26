@@ -2,7 +2,6 @@
 using System.Threading.Channels;
 using LinqToDB;
 using Microsoft.Extensions.Caching.Memory;
-using NadekoBot.Common.Collections;
 using NadekoBot.Common.ModuleBehaviors;
 
 namespace NadekoBot.Modules.Administration.Services;

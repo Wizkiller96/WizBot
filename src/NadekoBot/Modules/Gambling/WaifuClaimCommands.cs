@@ -257,20 +257,21 @@ public partial class Gambling
             var nobody = GetText(strs.nobody);
             var itemsStr = !wi.Items.Any()
                 ? "-"
-                : string.Join("\n", wi.Items
-                    .Where(x => waifuItems.TryGetValue(x.ItemEmoji, out _))
-                    .OrderBy(x => waifuItems[x.ItemEmoji].Price)
-                    .GroupBy(x => x.ItemEmoji)
-                    .Select(x => $"{x.Key} x{x.Count(),-3}")
-                    .Chunk(2)
-                    .Select(x => string.Join(" ", x)));
+                : string.Join("\n",
+                    wi.Items.Where(x => waifuItems.TryGetValue(x.ItemEmoji, out _))
+                        .OrderBy(x => waifuItems[x.ItemEmoji].Price)
+                        .GroupBy(x => x.ItemEmoji)
+                        .Select(x => $"{x.Key} x{x.Count(),-3}")
+                        .Chunk(2)
+                        .Select(x => string.Join(" ", x))
+                );
 
             var fansStr = wi
                 .Fans
                 .Shuffle()
                 .Take(30)
                 .Select(x => wi.Claims.Contains(x) ? $"{x} 💞" : x)
-                .JoinWith('\n');
+                .Join('\n');
                 
             if (string.IsNullOrWhiteSpace(fansStr))
                 fansStr = "-";
@@ -309,15 +310,16 @@ public partial class Gambling
                     .WithTitle(GetText(strs.waifu_gift_shop))
                     .WithOkColor();
 
-                waifuItems
-                    .OrderBy(x => x.Negative)
+                waifuItems.OrderBy(x => x.Negative)
                     .ThenBy(x => x.Price)
                     .Skip(9 * cur)
                     .Take(9)
-                    .ForEach(x => embed
-                        .AddField($"{(!x.Negative ? string.Empty : "\\💔")} {x.ItemEmoji} {x.Name}",
+                    .ToList()
+                    .ForEach(x => embed.AddField($"{(!x.Negative ? string.Empty : "\\💔")} {x.ItemEmoji} {x.Name}",
                             Format.Bold(x.Price.ToString()) + _config.Currency.Sign,
-                            true));
+                            true
+                        )
+                    );
 
                 return embed;
             }, waifuItems.Count, 9);

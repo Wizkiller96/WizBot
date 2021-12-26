@@ -22,11 +22,9 @@ public partial class Searches
 
         [NadekoCommand, Aliases]
         public async Task Placelist()
-        {
-            await SendConfirmAsync(GetText(strs.list_of_place_tags(Prefix)), 
+            => await SendConfirmAsync(GetText(strs.list_of_place_tags(Prefix)), 
                     _typesStr)
                 .ConfigureAwait(false);
-        }
 
         [NadekoCommand, Aliases]
         public async Task Place(PlaceType placeType, uint width = 0, uint height = 0)
@@ -60,10 +58,10 @@ public partial class Searches
                     break;
             }
             var rng = new NadekoRandom();
-            if (width <= 0 || width > 1000)
+            if (width is <= 0 or > 1000)
                 width = (uint)rng.Next(250, 850);
 
-            if (height <= 0 || height > 1000)
+            if (height is <= 0 or > 1000)
                 height = (uint)rng.Next(250, 850);
 
             url += $"/{width}/{height}";

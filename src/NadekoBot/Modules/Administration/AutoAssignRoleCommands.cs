@@ -61,7 +61,7 @@ public partial class Administration
 
             await ReplyConfirmLocalizedAsync(strs.aar_roles(
                 '\n' + existing.Select(x => Format.Bold(x.ToString()))
-                    .JoinWith(",\n")));
+                    .Join(",\n")));
         }
     }
 }

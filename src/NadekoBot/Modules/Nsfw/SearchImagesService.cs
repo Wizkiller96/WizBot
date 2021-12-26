@@ -53,9 +53,7 @@ public class SearchImagesService : ISearchImagesService, INService
     }
 
     private Task<UrlReply> GetNsfwImageAsync(ulong? guildId, bool forceExplicit, string[] tags, Booru dapi, CancellationToken cancel = default)
-    {
-        return GetNsfwImageAsync(guildId ?? 0, tags ?? Array.Empty<string>(), forceExplicit, dapi, cancel);
-    }
+        => GetNsfwImageAsync(guildId ?? 0, tags ?? Array.Empty<string>(), forceExplicit, dapi, cancel);
 
     private bool IsValidTag(string tag) => tag.All(x => x != '+' && x != '?' && x != '/'); // tags mustn't contain + or ? or /
 

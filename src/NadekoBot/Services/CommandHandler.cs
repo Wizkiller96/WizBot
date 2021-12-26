@@ -1,5 +1,4 @@
-﻿using NadekoBot.Common.Collections;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using NadekoBot.Common.Configs;
 using NadekoBot.Db;
 using Discord.Interactions;
@@ -267,7 +266,7 @@ public class CommandHandler : INService
     }
 
     public Task<(bool Success, string Error, CommandInfo Info)> ExecuteCommandAsync(CommandContext context, string input, int argPos, IServiceProvider serviceProvider, MultiMatchHandling multiMatchHandling = MultiMatchHandling.Exception)
-        => ExecuteCommand(context, input.Substring(argPos), serviceProvider, multiMatchHandling);
+        => ExecuteCommand(context, input[argPos..], serviceProvider, multiMatchHandling);
 
 
     public async Task<(bool Success, string Error, CommandInfo Info)> ExecuteCommand(CommandContext context, string input, IServiceProvider services, MultiMatchHandling multiMatchHandling = MultiMatchHandling.Exception)

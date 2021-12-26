@@ -11,9 +11,7 @@ public class ShopService : IShopService, INService
     private readonly DbService _db;
 
     public ShopService(DbService db)
-    {
-        _db = db;
-    }
+        => _db = db;
 
     private IndexedCollection<ShopEntry> GetEntriesInternal(NadekoContext uow, ulong guildId) =>
         uow.GuildConfigsForId(

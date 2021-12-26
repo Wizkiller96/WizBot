@@ -90,9 +90,7 @@ public class BotStrings : IBotStrings
     }
 
     public void Reload()
-    {
-        _stringsProvider.Reload();
-    }
+        => _stringsProvider.Reload();
 }
 
 public class CommandStrings

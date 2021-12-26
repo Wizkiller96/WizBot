@@ -32,8 +32,7 @@ public partial class Gambling
         }
 
         private IEmbedBuilder GetEmbed(CurrencyEvent.Type type, EventOptions opts, long currentPot)
-        {
-            return type switch
+            => type switch
             {
                 CurrencyEvent.Type.Reaction => _eb.Create()
                     .WithOkColor()
@@ -47,7 +46,6 @@ public partial class Gambling
                     .WithFooter(GetText(strs.event_duration_footer(opts.Hours))),
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
-        }
 
         private string GetReactionDescription(long amount, long potSize)
         {

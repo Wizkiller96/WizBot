@@ -203,7 +203,7 @@ public class Blackjack
         {
             foreach (var usr in Players)
             {
-                if (usr.State == User.UserState.Stand || usr.State == User.UserState.Blackjack)
+                if (usr.State is User.UserState.Stand or User.UserState.Blackjack)
                     usr.State = User.UserState.Won;
                 else
                     usr.State = User.UserState.Lost;
@@ -226,7 +226,7 @@ public class Blackjack
 
         foreach (var usr in Players)
         {
-            if (usr.State == User.UserState.Won || usr.State == User.UserState.Blackjack)
+            if (usr.State is User.UserState.Won or User.UserState.Blackjack)
             {
                 await _cs.AddAsync(usr.DiscordUser.Id, "BlackJack-win", usr.Bet * 2, gamble: true).ConfigureAwait(false);
             }

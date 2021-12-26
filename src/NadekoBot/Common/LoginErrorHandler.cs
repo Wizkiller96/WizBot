@@ -7,10 +7,8 @@ public class LoginErrorHandler
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Handle(Exception ex)
-    {
-        Log.Fatal(ex, "A fatal error has occurred while attempting to connect to Discord");
-    }
-        
+        => Log.Fatal(ex, "A fatal error has occurred while attempting to connect to Discord");
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Handle(HttpException ex)
     {

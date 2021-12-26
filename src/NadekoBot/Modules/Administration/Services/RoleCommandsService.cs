@@ -135,9 +135,7 @@ public class RoleCommandsService : INService
     }
 
     public bool Get(ulong id, out IndexedCollection<ReactionRoleMessage> rrs)
-    {
-        return _models.TryGetValue(id, out rrs);
-    }
+        => _models.TryGetValue(id, out rrs);
 
     public bool Add(ulong id, ReactionRoleMessage rrm)
     {

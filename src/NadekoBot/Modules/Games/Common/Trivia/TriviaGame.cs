@@ -86,9 +86,7 @@ public class TriviaGame
 
                 questionMessage = await Channel.EmbedAsync(questionEmbed).ConfigureAwait(false);
             }
-            catch (HttpException ex) when (ex.HttpCode == System.Net.HttpStatusCode.NotFound ||
-                                           ex.HttpCode == System.Net.HttpStatusCode.Forbidden ||
-                                           ex.HttpCode == System.Net.HttpStatusCode.BadRequest)
+            catch (HttpException ex) when (ex.HttpCode is System.Net.HttpStatusCode.NotFound or System.Net.HttpStatusCode.Forbidden or System.Net.HttpStatusCode.BadRequest)
             {
                 return;
             }
@@ -116,7 +114,7 @@ public class TriviaGame
                             await questionMessage.ModifyAsync(m => m.Embed = questionEmbed.WithFooter(CurrentQuestion.GetHint()).Build())
                                 .ConfigureAwait(false);
                         }
-                        catch (HttpException ex) when (ex.HttpCode == System.Net.HttpStatusCode.NotFound || ex.HttpCode == System.Net.HttpStatusCode.Forbidden)
+                        catch (HttpException ex) when (ex.HttpCode is System.Net.HttpStatusCode.NotFound or System.Net.HttpStatusCode.Forbidden)
                         {
                             break;
                         }

@@ -8,9 +8,7 @@ public class PermissionAction
     public bool Value { get; }
 
     public PermissionAction(bool value)
-    {
-        this.Value = value;
-    }
+        => this.Value = value;
 
     public override bool Equals(object obj)
     {

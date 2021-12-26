@@ -8,12 +8,8 @@ public class UserCacheItem
     public int XpAmount { get; set; }
 
     public override int GetHashCode()
-    {
-        return User.GetHashCode();
-    }
+        => User.GetHashCode();
 
     public override bool Equals(object obj)
-    {
-        return obj is UserCacheItem uci && uci.User == User;
-    }
+        => obj is UserCacheItem uci && uci.User == User;
 }

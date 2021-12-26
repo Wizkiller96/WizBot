@@ -10,9 +10,7 @@ public abstract class GamblingModule<TService> : NadekoModule<TService>
     protected string CurrencyName => _config.Currency.Name;
         
     protected GamblingModule(GamblingConfigService gambService)
-    {
-        _lazyConfig = new(() => gambService.Data);
-    }
+        => _lazyConfig = new(() => gambService.Data);
 
     private async Task<bool> InternalCheckBet(long amount)
     {

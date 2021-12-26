@@ -300,7 +300,7 @@ WHERE GuildId={guildId}
     public bool WarnPunish(ulong guildId, int number, PunishmentAction punish, StoopidTime time, IRole role = null)
     {
         // these 3 don't make sense with time
-        if ((punish == PunishmentAction.Softban || punish == PunishmentAction.Kick || punish == PunishmentAction.RemoveRoles) && time != null)
+        if (punish is PunishmentAction.Softban or PunishmentAction.Kick or PunishmentAction.RemoveRoles && time != null)
             return false;
         if (number <= 0 || (time != null && time.Time > TimeSpan.FromDays(49)))
             return false;
@@ -427,8 +427,7 @@ WHERE GuildId={guildId}
 
     public SmartText GetBanUserDmEmbed(ICommandContext context, IGuildUser target, string defaultMessage,
         string banReason, TimeSpan? duration)
-    {
-        return GetBanUserDmEmbed(
+        => GetBanUserDmEmbed(
             (DiscordSocketClient) context.Client,
             (SocketGuild) context.Guild,
             (IGuildUser) context.User,
@@ -436,7 +435,6 @@ WHERE GuildId={guildId}
             defaultMessage,
             banReason,
             duration);
-    }
 
     public SmartText GetBanUserDmEmbed(DiscordSocketClient client, SocketGuild guild,
         IGuildUser moderator, IGuildUser target, string defaultMessage, string banReason, TimeSpan? duration)

@@ -11,10 +11,8 @@ public sealed partial class Music : NadekoModule<IMusicService>
     private readonly ILogCommandService _logService;
 
     public Music(ILogCommandService _logService)
-    {
-        this._logService = _logService;
-    }
-        
+        => this._logService = _logService;
+
     private async Task<bool> ValidateAsync()
     {
         var user = (IGuildUser) ctx.User;
@@ -209,7 +207,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
     [RequireContext(ContextType.Guild)]
     public async Task Volume(int vol)
     {
-        if (vol < 0 || vol > 100)
+        if (vol is < 0 or > 100)
         {
             await ReplyErrorLocalizedAsync(strs.volume_input_invalid);
             return;
@@ -313,7 +311,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
                          
                     return $"`{index + 1}.` {v.PrettyFullName()}";
                 })
-                .JoinWith('\n');
+                .Join('\n');
                  
             if (!string.IsNullOrWhiteSpace(add))
                 desc = add + "\n" + desc;
@@ -353,7 +351,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
 
         var resultsString = videos
             .Select((x, i) => $"`{i + 1}.`\n\t{Format.Bold(x.Title)}\n\t{x.Url}")
-            .JoinWith('\n');
+            .Join('\n');
             
         var msg = await SendConfirmAsync(resultsString);
 

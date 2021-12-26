@@ -12,49 +12,31 @@ public struct ShmartNumber : IEquatable<ShmartNumber>
     }
 
     public static implicit operator ShmartNumber(long num)
-    {
-        return new(num);
-    }
+        => new(num);
 
     public static implicit operator long(ShmartNumber num)
-    {
-        return num.Value;
-    }
+        => num.Value;
 
     public static implicit operator ShmartNumber(int num)
-    {
-        return new(num);
-    }
+        => new(num);
 
     public override string ToString()
-    {
-        return Value.ToString();
-    }
+        => Value.ToString();
 
     public override bool Equals(object obj)
-    {
-        return obj is ShmartNumber sn
+        => obj is ShmartNumber sn
             ? Equals(sn)
             : false;
-    }
 
     public bool Equals(ShmartNumber other)
-    {
-        return other.Value == Value;
-    }
+        => other.Value == Value;
 
     public override int GetHashCode()
-    {
-        return Value.GetHashCode() ^ Input.GetHashCode(StringComparison.InvariantCulture);
-    }
+        => Value.GetHashCode() ^ Input.GetHashCode(StringComparison.InvariantCulture);
 
     public static bool operator ==(ShmartNumber left, ShmartNumber right)
-    {
-        return left.Equals(right);
-    }
+        => left.Equals(right);
 
     public static bool operator !=(ShmartNumber left, ShmartNumber right)
-    {
-        return !(left == right);
-    }
+        => !(left == right);
 }

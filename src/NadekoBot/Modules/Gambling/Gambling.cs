@@ -201,9 +201,7 @@ public partial class Gambling : GamblingModule<GamblingService>
     [NadekoCommand, Aliases]
     [Priority(0)]
     public async Task Cash(ulong userId)
-    {
-        await ReplyConfirmLocalizedAsync(strs.has(Format.Code(userId.ToString()), $"{GetCurrency(userId)}"));
-    }
+        => await ReplyConfirmLocalizedAsync(strs.has(Format.Code(userId.ToString()), $"{GetCurrency(userId)}"));
 
     [NadekoCommand, Aliases]
     [Priority(1)]

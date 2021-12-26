@@ -87,9 +87,6 @@ public partial class Searches
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task Translangs()
-        {
-            await ctx.Channel.SendTableAsync(_service.GetLanguages(), str => $"{str,-15}", 3).ConfigureAwait(false);
-        }
-
+            => await ctx.Channel.SendTableAsync(_service.GetLanguages(), str => $"{str,-15}", 3).ConfigureAwait(false);
     }
 }

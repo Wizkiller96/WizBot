@@ -1,5 +1,4 @@
-﻿using NadekoBot.Common.Collections;
-using NadekoBot.Services.Database.Models;
+﻿using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Administration.Common;
 
@@ -35,10 +34,8 @@ public class AntiAltStats
     public int Counter => _counter;
 
     public AntiAltStats(AntiAltSetting setting)
-    {
-        _setting = setting;
-    }
-        
+        => _setting = setting;
+
     public void Increment() => Interlocked.Increment(ref _counter);
         
 }

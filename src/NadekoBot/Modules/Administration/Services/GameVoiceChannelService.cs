@@ -1,5 +1,4 @@
-﻿using NadekoBot.Common.Collections;
-using NadekoBot.Db;
+﻿using NadekoBot.Db;
 
 namespace NadekoBot.Modules.Administration.Services;
 

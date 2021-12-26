@@ -20,16 +20,12 @@ public class DiscordUser : DbEntity
     public long CurrencyAmount { get; set; }
 
     public override bool Equals(object obj)
-    {
-        return obj is DiscordUser du
+        => obj is DiscordUser du
             ? du.UserId == UserId
             : false;
-    }
 
     public override int GetHashCode()
-    {
-        return UserId.GetHashCode();
-    }
+        => UserId.GetHashCode();
 
     public override string ToString() => 
         Username + "#" + Discriminator;

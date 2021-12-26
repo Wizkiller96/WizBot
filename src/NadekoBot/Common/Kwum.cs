@@ -90,7 +90,5 @@ public readonly struct kwum : IEquatable<kwum>
         => other == this;
 
     public override int GetHashCode()
-    {
-        return _value.GetHashCode();
-    }
+        => _value.GetHashCode();
 }

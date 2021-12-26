@@ -317,7 +317,11 @@ public class ProtectionService : INService
     {
         if (_antiSpamGuilds.TryRemove(guildId, out var removed))
         {
-            removed.UserStats.ForEach(x => x.Value.Dispose());
+            foreach (var (_, val) in removed.UserStats)
+            {
+                val.Dispose();
+            }
+            
             using var uow = _db.GetDbContext();
             var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.AntiSpamSetting)
                 .ThenInclude(x => x.IgnoredChannels));

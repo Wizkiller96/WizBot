@@ -123,12 +123,10 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
     }
 
     private Timer TimerFromAutoCommand(AutoCommand x)
-    {
-        return new(async obj => await ExecuteCommand((AutoCommand) obj).ConfigureAwait(false),
+        => new(async obj => await ExecuteCommand((AutoCommand) obj).ConfigureAwait(false),
             x,
             x.Interval * 1000,
             x.Interval * 1000);
-    }
 
     private async Task ExecuteCommand(AutoCommand cmd)
     {
@@ -366,8 +364,7 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
     }
         
     private void HandleStatusChanges()
-    {
-        _pubSub.Sub(_activitySetKey, async data =>
+        => _pubSub.Sub(_activitySetKey, async data =>
         {
             try
             {
@@ -378,7 +375,6 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
                 Log.Warning(ex, "Error setting activity");
             }
         });
-    }
 
     public Task SetGameAsync(string game, ActivityType type) 
         => _pubSub.Pub(_activitySetKey, new() {Name = game, Link = null, Type = type});

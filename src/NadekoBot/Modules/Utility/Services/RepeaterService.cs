@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
-using NadekoBot.Common.Collections;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Services.Database.Models;
 
@@ -418,7 +417,5 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
     }
 
     public bool IsNoRedundant(int repeaterId)
-    {
-        return _noRedundant.Contains(repeaterId);
-    }
+        => _noRedundant.Contains(repeaterId);
 }

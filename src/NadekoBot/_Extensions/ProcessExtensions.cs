@@ -13,19 +13,17 @@ public static class ProcessExtensions
     private static readonly TimeSpan _defaultTimeout = TimeSpan.FromSeconds(10);
 
     public static void KillTree(this Process process)
-    {
-        process.KillTree(_defaultTimeout);
-    }
+        => process.KillTree(_defaultTimeout);
 
     public static void KillTree(this Process process, TimeSpan timeout)
     {
         if (_isWindows)
         {
-            RunProcessAndWaitForExit(
-                "taskkill",
+            RunProcessAndWaitForExit("taskkill",
                 $"/T /F /PID {process.Id}",
                 timeout,
-                out var stdout);
+                out _
+            );
         }
         else
         {
@@ -35,19 +33,21 @@ public static class ProcessExtensions
             {
                 KillProcessUnix(childId, timeout);
             }
+
             KillProcessUnix(process.Id, timeout);
         }
     }
 
     private static void GetAllChildIdsUnix(int parentId, ISet<int> children, TimeSpan timeout)
     {
-        var exitCode = RunProcessAndWaitForExit(
-            "pgrep",
+        var exitCode = RunProcessAndWaitForExit("pgrep",
             $"-P {parentId}",
             timeout,
-            out var stdout);
+            out var stdout
+        );
 
-        if (exitCode == 0 && !string.IsNullOrEmpty(stdout))
+        if (exitCode == 0 &&
+            !string.IsNullOrEmpty(stdout))
         {
             using var reader = new StringReader(stdout);
             while (true)
@@ -69,27 +69,30 @@ public static class ProcessExtensions
     }
 
     private static void KillProcessUnix(int processId, TimeSpan timeout)
-    {
-        RunProcessAndWaitForExit(
-            "kill",
+        => RunProcessAndWaitForExit("kill",
             $"-TERM {processId}",
             timeout,
-            out var stdout);
-    }
+            out _
+        );
 
-    private static int RunProcessAndWaitForExit(string fileName, string arguments, TimeSpan timeout, out string stdout)
+    private static int RunProcessAndWaitForExit(
+        string fileName,
+        string arguments,
+        TimeSpan timeout,
+        out string stdout)
     {
+        stdout = null;
+
         var startInfo = new ProcessStartInfo
         {
-            FileName = fileName,
-            Arguments = arguments,
-            RedirectStandardOutput = true,
-            UseShellExecute = false
+            FileName = fileName, Arguments = arguments, RedirectStandardOutput = true, UseShellExecute = false
         };
 
         var process = Process.Start(startInfo);
 
-        stdout = null;
+        if (process is null)
+            return -1;
+
         if (process.WaitForExit((int)timeout.TotalMilliseconds))
         {
             stdout = process.StandardOutput.ReadToEnd();

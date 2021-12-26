@@ -154,23 +154,17 @@ public partial class Utility : NadekoModule
     [NadekoCommand, Aliases]
     [RequireContext(ContextType.Guild)]
     public async Task RoleId([Leftover] IRole role)
-    {
-        await ReplyConfirmLocalizedAsync(strs.roleid("🆔", Format.Bold(role.ToString()),
+        => await ReplyConfirmLocalizedAsync(strs.roleid("🆔", Format.Bold(role.ToString()),
             Format.Code(role.Id.ToString())));
-    }
 
     [NadekoCommand, Aliases]
     public async Task ChannelId()
-    {
-        await ReplyConfirmLocalizedAsync(strs.channelid("🆔", Format.Code(ctx.Channel.Id.ToString())));
-    }
+        => await ReplyConfirmLocalizedAsync(strs.channelid("🆔", Format.Code(ctx.Channel.Id.ToString())));
 
     [NadekoCommand, Aliases]
     [RequireContext(ContextType.Guild)]
     public async Task ServerId()
-    {
-        await ReplyConfirmLocalizedAsync(strs.serverid("🆔", Format.Code(ctx.Guild.Id.ToString())));
-    }
+        => await ReplyConfirmLocalizedAsync(strs.serverid("🆔", Format.Code(ctx.Guild.Id.ToString())));
 
     [NadekoCommand, Aliases]
     [RequireContext(ContextType.Guild)]
@@ -180,7 +174,7 @@ public partial class Utility : NadekoModule
 
         const int rolesPerPage = 20;
 
-        if (page < 1 || page > 100)
+        if (page is < 1 or > 100)
             return;
 
         if (target != null)

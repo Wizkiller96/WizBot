@@ -1,20 +1,21 @@
 ﻿namespace NadekoBot.Extensions;
 
-public static class IMessageChannelExtensions
+public static class MessageChannelExtensions
 {
     public static Task<IUserMessage> EmbedAsync(this IMessageChannel ch, IEmbedBuilder embed, string msg = "")
-        => ch.SendMessageAsync(msg, embed: embed.Build(),
-            options: new() { RetryMode  = RetryMode.AlwaysRetry });
-    
-    public static Task<IUserMessage> SendAsync(this IMessageChannel channel, string plainText, Embed embed, bool sanitizeAll = false)
+        => ch.SendMessageAsync(msg, embed: embed.Build(), options: new() { RetryMode = RetryMode.AlwaysRetry });
+
+    public static Task<IUserMessage> SendAsync(
+        this IMessageChannel channel,
+        string plainText,
+        Embed embed,
+        bool sanitizeAll = false)
     {
-        plainText = sanitizeAll
-            ? plainText?.SanitizeAllMentions() ?? ""
-            : plainText?.SanitizeMentions() ?? "";
+        plainText = sanitizeAll ? plainText?.SanitizeAllMentions() ?? "" : plainText?.SanitizeMentions() ?? "";
 
         return channel.SendMessageAsync(plainText, embed: embed);
     }
-        
+
     public static Task<IUserMessage> SendAsync(this IMessageChannel channel, SmartText text, bool sanitizeAll = false)
         => text switch
         {
@@ -26,89 +27,115 @@ public static class IMessageChannelExtensions
     // this is a huge problem, because now i don't have
     // access to embed builder service
     // as this is an extension of the message channel
-    public static Task<IUserMessage> SendErrorAsync(this IMessageChannel ch, IEmbedBuilderService eb, string title, string error, string url = null, string footer = null)
+    public static Task<IUserMessage> SendErrorAsync(
+        this IMessageChannel ch,
+        IEmbedBuilderService eb,
+        string title,
+        string error,
+        string url = null,
+        string footer = null)
     {
-        var embed = eb.Create()
-            .WithErrorColor()
-            .WithDescription(error)
-            .WithTitle(title);
+        var embed = eb.Create().WithErrorColor().WithDescription(error).WithTitle(title);
 
-        if (url != null && Uri.IsWellFormedUriString(url, UriKind.Absolute))
+        if (url != null &&
+            Uri.IsWellFormedUriString(url, UriKind.Absolute))
             embed.WithUrl(url);
-                    
+
         if (!string.IsNullOrWhiteSpace(footer))
             embed.WithFooter(footer);
-            
+
         return ch.SendMessageAsync("", embed: embed.Build());
     }
 
     public static Task<IUserMessage> SendErrorAsync(this IMessageChannel ch, IEmbedBuilderService eb, string error)
-        => ch.SendMessageAsync("",
-            embed: eb.Create()
-                .WithErrorColor()
-                .WithDescription(error)
-                .Build());
+        => ch.SendMessageAsync("", embed: eb.Create().WithErrorColor().WithDescription(error).Build());
 
     public static Task<IUserMessage> SendPendingAsync(this IMessageChannel ch, IEmbedBuilderService eb, string message)
-        => ch.SendMessageAsync("", embed: eb.Create()
-            .WithPendingColor()
-            .WithDescription(message)
-            .Build());
-        
-    public static Task<IUserMessage> SendConfirmAsync(this IMessageChannel ch, IEmbedBuilderService eb, string title, string text, string url = null, string footer = null)
+        => ch.SendMessageAsync("", embed: eb.Create().WithPendingColor().WithDescription(message).Build());
+
+    public static Task<IUserMessage> SendConfirmAsync(
+        this IMessageChannel ch,
+        IEmbedBuilderService eb,
+        string title,
+        string text,
+        string url = null,
+        string footer = null)
     {
-        var embed = eb.Create().WithOkColor().WithDescription(text)
-            .WithTitle(title);
-            
-        if (url != null && Uri.IsWellFormedUriString(url, UriKind.Absolute))
+        var embed = eb.Create().WithOkColor().WithDescription(text).WithTitle(title);
+
+        if (url != null &&
+            Uri.IsWellFormedUriString(url, UriKind.Absolute))
             embed.WithUrl(url);
-            
+
         if (!string.IsNullOrWhiteSpace(footer))
             embed.WithFooter(footer);
-            
+
         return ch.SendMessageAsync("", embed: embed.Build());
     }
 
     public static Task<IUserMessage> SendConfirmAsync(this IMessageChannel ch, IEmbedBuilderService eb, string text)
-        => ch.SendMessageAsync("", embed: eb.Create()
-            .WithOkColor()
-            .WithDescription(text)
-            .Build());
+        => ch.SendMessageAsync("", embed: eb.Create().WithOkColor().WithDescription(text).Build());
 
-    public static Task<IUserMessage> SendTableAsync<T>(this IMessageChannel ch, string seed, IEnumerable<T> items, Func<T, string> howToPrint, int columns = 3)
-    {
-        return ch.SendMessageAsync($@"{seed}```css
+    public static Task<IUserMessage> SendTableAsync<T>(
+        this IMessageChannel ch,
+        string seed,
+        IEnumerable<T> items,
+        Func<T, string> howToPrint,
+        int columns = 3)
+        => ch.SendMessageAsync($@"{seed}```css
 {string.Join("\n", items.Chunk(columns)
-    .Select(ig => string.Concat(ig.Select(el => howToPrint(el)))))}
-```");
-    }
+    .Select(ig => string.Concat(ig.Select(howToPrint))))}
+```"
+        );
 
-    public static Task<IUserMessage> SendTableAsync<T>(this IMessageChannel ch, IEnumerable<T> items, Func<T, string> howToPrint, int columns = 3) =>
-        ch.SendTableAsync("", items, howToPrint, columns);
-        
-    private static readonly IEmote arrow_left = new Emoji("⬅");
-    private static readonly IEmote arrow_right = new Emoji("➡");
+    public static Task<IUserMessage> SendTableAsync<T>(
+        this IMessageChannel ch,
+        IEnumerable<T> items,
+        Func<T, string> howToPrint,
+        int columns = 3)
+        => ch.SendTableAsync("",
+            items,
+            howToPrint,
+            columns
+        );
 
-    public static Task SendPaginatedConfirmAsync(this ICommandContext ctx,
-        int currentPage, Func<int, IEmbedBuilder> pageFunc, int totalElements,
-        int itemsPerPage, bool addPaginatedFooter = true)
+    private static readonly IEmote _arrowLeft = new Emoji("⬅");
+    private static readonly IEmote _arrowRight = new Emoji("➡");
+
+    public static Task SendPaginatedConfirmAsync(
+        this ICommandContext ctx,
+        int currentPage,
+        Func<int, IEmbedBuilder> pageFunc,
+        int totalElements,
+        int itemsPerPage,
+        bool addPaginatedFooter = true)
         => ctx.SendPaginatedConfirmAsync(currentPage,
-            x => Task.FromResult(pageFunc(x)), totalElements, itemsPerPage, addPaginatedFooter);
+            x => Task.FromResult(pageFunc(x)),
+            totalElements,
+            itemsPerPage,
+            addPaginatedFooter
+        );
+
     /// <summary>
     /// danny kamisama
     /// </summary>
-    public static async Task SendPaginatedConfirmAsync(this ICommandContext ctx, int currentPage, 
-        Func<int, Task<IEmbedBuilder>> pageFunc, int totalElements, int itemsPerPage, bool addPaginatedFooter = true)
+    public static async Task SendPaginatedConfirmAsync(
+        this ICommandContext ctx,
+        int currentPage,
+        Func<int, Task<IEmbedBuilder>> pageFunc,
+        int totalElements,
+        int itemsPerPage,
+        bool addPaginatedFooter = true)
     {
         var embed = await pageFunc(currentPage).ConfigureAwait(false);
 
         var lastPage = (totalElements - 1) / itemsPerPage;
-            
+
         var canPaginate = true;
-        var sg = ctx.Guild as SocketGuild;
-        if (sg is not null && !sg.CurrentUser.GetPermissions((IGuildChannel) ctx.Channel).AddReactions)
+        if (ctx.Guild is SocketGuild sg &&
+            !sg.CurrentUser.GetPermissions((IGuildChannel)ctx.Channel).AddReactions)
             canPaginate = false;
-            
+
         if (!canPaginate)
             embed.WithFooter("⚠️ AddReaction permission required for pagination.");
         else if (addPaginatedFooter)
@@ -116,17 +143,18 @@ public static class IMessageChannelExtensions
 
         var msg = await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
 
-        if (lastPage == 0 || !canPaginate)
+        if (lastPage == 0 ||
+            !canPaginate)
             return;
 
-        await msg.AddReactionAsync(arrow_left).ConfigureAwait(false);
-        await msg.AddReactionAsync(arrow_right).ConfigureAwait(false);
+        await msg.AddReactionAsync(_arrowLeft).ConfigureAwait(false);
+        await msg.AddReactionAsync(_arrowRight).ConfigureAwait(false);
 
         await Task.Delay(2000).ConfigureAwait(false);
 
         var lastPageChange = DateTime.MinValue;
 
-        async Task changePage(SocketReaction r)
+        async Task ChangePage(SocketReaction r)
         {
             try
             {
@@ -134,7 +162,7 @@ public static class IMessageChannelExtensions
                     return;
                 if (DateTime.UtcNow - lastPageChange < TimeSpan.FromSeconds(1))
                     return;
-                if (r.Emote.Name == arrow_left.Name)
+                if (r.Emote.Name == _arrowLeft.Name)
                 {
                     if (currentPage == 0)
                         return;
@@ -144,7 +172,7 @@ public static class IMessageChannelExtensions
                         toSend.AddPaginatedFooter(currentPage, lastPage);
                     await msg.ModifyAsync(x => x.Embed = toSend.Build()).ConfigureAwait(false);
                 }
-                else if (r.Emote.Name == arrow_right.Name)
+                else if (r.Emote.Name == _arrowRight.Name)
                 {
                     if (lastPage > currentPage)
                     {
@@ -162,21 +190,23 @@ public static class IMessageChannelExtensions
             }
         }
 
-        using (msg.OnReaction((DiscordSocketClient)ctx.Client, changePage, changePage))
+        using (msg.OnReaction((DiscordSocketClient)ctx.Client, ChangePage, ChangePage))
         {
             await Task.Delay(30000).ConfigureAwait(false);
         }
 
         try
         {
-            if(msg.Channel is ITextChannel && ((SocketGuild)ctx.Guild).CurrentUser.GuildPermissions.ManageMessages)
+            if (msg.Channel is ITextChannel &&
+                ((SocketGuild)ctx.Guild).CurrentUser.GuildPermissions.ManageMessages)
             {
                 await msg.RemoveAllReactionsAsync().ConfigureAwait(false);
             }
             else
             {
                 await Task.WhenAll(msg.Reactions.Where(x => x.Value.IsMe)
-                    .Select(x => msg.RemoveReactionAsync(x.Key, ctx.Client.CurrentUser)));
+                    .Select(x => msg.RemoveReactionAsync(x.Key, ctx.Client.CurrentUser))
+                );
             }
         }
         catch
@@ -187,10 +217,10 @@ public static class IMessageChannelExtensions
 
     public static Task OkAsync(this ICommandContext ctx)
         => ctx.Message.AddReactionAsync(new Emoji("✅"));
-        
+
     public static Task ErrorAsync(this ICommandContext ctx)
         => ctx.Message.AddReactionAsync(new Emoji("❌"));
-        
+
     public static Task WarningAsync(this ICommandContext ctx)
         => ctx.Message.AddReactionAsync(new Emoji("⚠️"));
 }

@@ -13,7 +13,7 @@ public partial class Administration
         {
             page--;
 
-            if (page < 0 || page > 20)
+            if (page is < 0 or > 20)
                 return;
 
             var timezones = TimeZoneInfo.GetSystemTimeZones()
@@ -56,9 +56,7 @@ public partial class Administration
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task Timezone()
-        {
-            await ReplyConfirmLocalizedAsync(strs.timezone_guild(_service.GetTimeZoneOrUtc(ctx.Guild.Id))).ConfigureAwait(false);
-        }
+            => await ReplyConfirmLocalizedAsync(strs.timezone_guild(_service.GetTimeZoneOrUtc(ctx.Guild.Id))).ConfigureAwait(false);
 
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]

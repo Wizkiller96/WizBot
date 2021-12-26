@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NadekoBot.Common.Collections;
 using NadekoBot.Services.Database.Models;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;

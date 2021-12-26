@@ -5,9 +5,7 @@ public sealed record SmartPlainText : SmartText
     public string Text { get; init; }
 
     public SmartPlainText(string text)
-    {
-        Text = text;
-    }
+        => Text = text;
 
     public static implicit operator SmartPlainText(string input)
         => new(input);
@@ -16,7 +14,5 @@ public sealed record SmartPlainText : SmartText
         => input.Text;
 
     public override string ToString()
-    {
-        return Text;
-    }
+        => Text;
 }

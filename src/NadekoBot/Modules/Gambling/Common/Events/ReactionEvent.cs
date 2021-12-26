@@ -1,5 +1,4 @@
-﻿using NadekoBot.Common.Collections;
-using NadekoBot.Services.Database.Models;
+﻿using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Gambling.Common.Events;
 
@@ -118,9 +117,7 @@ public class ReactionEvent : ICurrencyEvent
     }
 
     private IEmbedBuilder GetEmbed(long pot)
-    {
-        return _embedFunc(CurrencyEvent.Type.Reaction, _opts, pot);
-    }
+        => _embedFunc(CurrencyEvent.Type.Reaction, _opts, pot);
 
     private async Task OnMessageDeleted(Cacheable<IMessage, ulong> msg, Cacheable<IMessageChannel, ulong> cacheable)
     {

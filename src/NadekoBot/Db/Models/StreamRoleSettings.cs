@@ -51,9 +51,7 @@ public class StreamRoleBlacklistedUser : DbEntity
     }
 
     public override int GetHashCode()
-    {
-        return UserId.GetHashCode();
-    }
+        => UserId.GetHashCode();
 }
 
 public class StreamRoleWhitelistedUser : DbEntity
@@ -62,14 +60,10 @@ public class StreamRoleWhitelistedUser : DbEntity
     public string Username { get; set; }
 
     public override bool Equals(object obj)
-    {
-        return obj is StreamRoleWhitelistedUser x
+        => obj is StreamRoleWhitelistedUser x
             ? x.UserId == UserId
             : false;
-    }
 
     public override int GetHashCode()
-    {
-        return UserId.GetHashCode();
-    }
+        => UserId.GetHashCode();
 }

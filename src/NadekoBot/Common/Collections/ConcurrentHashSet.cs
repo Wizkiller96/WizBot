@@ -1,10 +1,9 @@
 ﻿// License MIT
 // Source: https://github.com/i3arnon/ConcurrentHashSet
 
-using System.Collections;
 using System.Diagnostics;
 
-namespace NadekoBot.Common.Collections;
+namespace System.Collections.Generic;
 
 /// <summary>
 /// Represents a thread-safe hash-based unique collection.
@@ -26,7 +25,8 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
     private int _budget;
     private volatile Tables _tables;
 
-    private static int DefaultConcurrencyLevel => PlatformHelper.ProcessorCount;
+    private static int DefaultConcurrencyLevel
+        => PlatformHelper.ProcessorCount;
 
     /// <summary>
     /// Gets the number of items contained in the <see
@@ -99,7 +99,10 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
     /// uses the default comparer for the item type.
     /// </summary>
     public ConcurrentHashSet()
-        : this(DefaultConcurrencyLevel, DefaultCapacity, true, EqualityComparer<T>.Default)
+        : this(DefaultConcurrencyLevel,
+            DefaultCapacity,
+            true,
+            EqualityComparer<T>.Default)
     {
     }
 
@@ -119,7 +122,10 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
     /// <exception cref="T:System.ArgumentOutOfRangeException"> <paramref name="capacity"/> is less than
     /// 0.</exception>
     public ConcurrentHashSet(int concurrencyLevel, int capacity)
-        : this(concurrencyLevel, capacity, false, EqualityComparer<T>.Default)
+        : this(concurrencyLevel,
+            capacity,
+            false,
+            EqualityComparer<T>.Default)
     {
     }
 
@@ -148,7 +154,10 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
     /// implementation to use when comparing items.</param>
     /// <exception cref="T:System.ArgumentNullException"><paramref name="comparer"/> is a null reference.</exception>
     public ConcurrentHashSet(IEqualityComparer<T> comparer)
-        : this(DefaultConcurrencyLevel, DefaultCapacity, true, comparer)
+        : this(DefaultConcurrencyLevel,
+            DefaultCapacity,
+            true,
+            comparer)
     {
     }
 
@@ -199,7 +208,10 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
     /// <paramref name="concurrencyLevel"/> is less than 1.
     /// </exception>
     public ConcurrentHashSet(int concurrencyLevel, IEnumerable<T> collection, IEqualityComparer<T> comparer)
-        : this(concurrencyLevel, DefaultCapacity, false, comparer)
+        : this(concurrencyLevel,
+            DefaultCapacity,
+            false,
+            comparer)
     {
         if (collection is null) throw new ArgumentNullException(nameof(collection));
         if (comparer is null) throw new ArgumentNullException(nameof(comparer));
@@ -225,7 +237,10 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
     /// </exception>
     /// <exception cref="T:System.ArgumentNullException"><paramref name="comparer"/> is a null reference.</exception>
     public ConcurrentHashSet(int concurrencyLevel, int capacity, IEqualityComparer<T> comparer)
-        : this(concurrencyLevel, capacity, false, comparer)
+        : this(concurrencyLevel,
+            capacity,
+            false,
+            comparer)
     {
     }
 
@@ -264,8 +279,8 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
     /// successfully; false if it already exists.</returns>
     /// <exception cref="T:System.OverflowException">The <see cref="ConcurrentHashSet{T}"/>
     /// contains too many items.</exception>
-    public bool Add(T item) =>
-        AddInternal(item, _comparer.GetHashCode(item), true);
+    public bool Add(T item)
+        => AddInternal(item, _comparer.GetHashCode(item), true);
 
     /// <summary>
     /// Removes all items from the <see cref="ConcurrentHashSet{T}"/>.
@@ -308,10 +323,12 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
 
         while (current != null)
         {
-            if (hashcode == current.Hashcode && _comparer.Equals(current.Item, item))
+            if (hashcode == current.Hashcode &&
+                _comparer.Equals(current.Item, item))
             {
                 return true;
             }
+
             current = current.Next;
         }
 
@@ -330,7 +347,11 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
         {
             var tables = _tables;
 
-            GetBucketAndLockNo(hashcode, out var bucketNo, out var lockNo, tables.Buckets.Length, tables.Locks.Length);
+            GetBucketAndLockNo(hashcode,
+                out var bucketNo,
+                out var lockNo,
+                tables.Buckets.Length,
+                tables.Locks.Length);
 
             lock (tables.Locks[lockNo])
             {
@@ -346,7 +367,8 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
                 {
                     Debug.Assert((previous is null && current == tables.Buckets[bucketNo]) || previous.Next == current);
 
-                    if (hashcode == current.Hashcode && _comparer.Equals(current.Item, item))
+                    if (hashcode == current.Hashcode &&
+                        _comparer.Equals(current.Item, item))
                     {
                         if (previous is null)
                         {
@@ -360,6 +382,7 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
                         tables.CountPerLock[lockNo]--;
                         return true;
                     }
+
                     previous = current;
                 }
             }
@@ -368,7 +391,8 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
         }
     }
 
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator()
+        => GetEnumerator();
 
     /// <summary>Returns an enumerator that iterates through the <see
     /// cref="ConcurrentHashSet{T}"/>.</summary>
@@ -396,9 +420,11 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
         }
     }
 
-    void ICollection<T>.Add(T item) => Add(item);
+    void ICollection<T>.Add(T item)
+        => Add(item);
 
-    bool ICollection<T>.IsReadOnly => false;
+    bool ICollection<T>.IsReadOnly
+        => false;
 
     void ICollection<T>.CopyTo(T[] array, int arrayIndex)
     {
@@ -417,9 +443,11 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
                 count += _tables.CountPerLock[i];
             }
 
-            if (array.Length - count < arrayIndex || count < 0) //"count" itself or "count + arrayIndex" can overflow
+            if (array.Length - count < arrayIndex ||
+                count < 0) //"count" itself or "count + arrayIndex" can overflow
             {
-                throw new ArgumentException("The index is equal to or greater than the length of the array, or the number of elements in the set is greater than the available space from index to the end of the destination array.");
+                throw new ArgumentException(
+                    "The index is equal to or greater than the length of the array, or the number of elements in the set is greater than the available space from index to the end of the destination array.");
             }
 
             CopyToItems(array, arrayIndex);
@@ -430,7 +458,8 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
         }
     }
 
-    bool ICollection<T>.Remove(T item) => TryRemove(item);
+    bool ICollection<T>.Remove(T item)
+        => TryRemove(item);
 
     private void InitializeFromCollection(IEnumerable<T> collection)
     {
@@ -450,7 +479,11 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
         while (true)
         {
             var tables = _tables;
-            GetBucketAndLockNo(hashcode, out var bucketNo, out var lockNo, tables.Buckets.Length, tables.Locks.Length);
+            GetBucketAndLockNo(hashcode,
+                out var bucketNo,
+                out var lockNo,
+                tables.Buckets.Length,
+                tables.Locks.Length);
 
             var resizeDesired = false;
             var lockTaken = false;
@@ -471,10 +504,12 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
                 for (var current = tables.Buckets[bucketNo]; current != null; current = current.Next)
                 {
                     Debug.Assert((previous is null && current == tables.Buckets[bucketNo]) || previous.Next == current);
-                    if (hashcode == current.Hashcode && _comparer.Equals(current.Item, item))
+                    if (hashcode == current.Hashcode &&
+                        _comparer.Equals(current.Item, item))
                     {
                         return false;
                     }
+
                     previous = current;
                 }
 
@@ -525,7 +560,8 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
         return bucketNo;
     }
 
-    private static void GetBucketAndLockNo(int hashcode, out int bucketNo, out int lockNo, int bucketCount, int lockCount)
+    private static void GetBucketAndLockNo(int hashcode, out int bucketNo, out int lockNo, int bucketCount,
+        int lockCount)
     {
         bucketNo = (hashcode & 0x7fffffff) % bucketCount;
         lockNo = bucketNo % lockCount;
@@ -569,6 +605,7 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
                 {
                     _budget = int.MaxValue;
                 }
+
                 return;
             }
 
@@ -624,7 +661,11 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
             if (_growLockArray && tables.Locks.Length < MaxLockNumber)
             {
                 newLocks = new object[tables.Locks.Length * 2];
-                Array.Copy(tables.Locks, 0, newLocks, 0, tables.Locks.Length);
+                Array.Copy(tables.Locks,
+                    0,
+                    newLocks,
+                    0,
+                    tables.Locks.Length);
                 for (var i = tables.Locks.Length; i < newLocks.Length; i++)
                 {
                     newLocks[i] = new();
@@ -641,7 +682,11 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
                 while (current != null)
                 {
                     var next = current.Next;
-                    GetBucketAndLockNo(current.Hashcode, out var newBucketNo, out var newLockNo, newBuckets.Length, newLocks.Length);
+                    GetBucketAndLockNo(current.Hashcode,
+                        out var newBucketNo,
+                        out var newLockNo,
+                        newBuckets.Length,
+                        newLocks.Length);
 
                     newBuckets[newBucketNo] = new(current.Item, current.Hashcode, newBuckets[newBucketNo]);
 
@@ -676,6 +721,7 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
             if (this.TryRemove(elem))
                 removed++;
         }
+
         return removed;
     }
 

@@ -3,7 +3,6 @@ using NadekoBot.Modules.Searches.Common;
 using NadekoBot.Modules.Searches.Common.StreamNotifications;
 using NadekoBot.Services.Database.Models;
 using StackExchange.Redis;
-using NadekoBot.Common.Collections;
 using NadekoBot.Db;
 using NadekoBot.Db.Models;
 
@@ -477,9 +476,7 @@ public sealed class StreamNotificationService : INService
     }
 
     public Task<StreamData> GetStreamDataAsync(string url)
-    {
-        return _streamTracker.GetStreamDataByUrlAsync(url);
-    }
+        => _streamTracker.GetStreamDataByUrlAsync(url);
 
     private HashSet<FollowedStream> GetLocalGuildStreams(in StreamDataKey key, ulong guildId)
     {

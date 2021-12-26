@@ -33,8 +33,8 @@ public static class CustomReactionExtensions
         var rep = new ReplacementBuilder()
             .WithDefault(ctx.Author, ctx.Channel, (ctx.Channel as ITextChannel)?.Guild as SocketGuild, client)
             .WithOverride("%target%", () => canMentionEveryone
-                ? ctx.Content.Substring(substringIndex).Trim()
-                : ctx.Content.Substring(substringIndex).Trim().SanitizeMentions(true))
+                ? ctx.Content[substringIndex..].Trim()
+                : ctx.Content[substringIndex..].Trim().SanitizeMentions(true))
             .Build();
 
         var text = SmartText.CreateFrom(cr.Response);
@@ -69,11 +69,7 @@ public static class CustomReactionExtensions
     private static bool isValidWordDivider(this in ReadOnlySpan<char> str, int index)
     {
         var ch = str[index];
-        if (ch is >= 'a' and <= 'z')
-            return false;
-        if (ch is >= 'A' and <= 'Z')
-            return false;
-        if (ch is >= '1' and <= '9')
+        if (ch is >= 'a' and <= 'z' or >= 'A' and <= 'Z' or >= '1' and <= '9')
             return false;
 
         return true;

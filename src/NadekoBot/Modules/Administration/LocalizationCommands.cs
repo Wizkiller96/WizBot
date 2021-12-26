@@ -42,11 +42,9 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [Priority(0)]
         public async Task LanguageSet()
-        {
-            await ReplyConfirmLocalizedAsync(strs.lang_set_show(
+            => await ReplyConfirmLocalizedAsync(strs.lang_set_show(
                 Format.Bold(_cultureInfo.ToString()),
                 Format.Bold(_cultureInfo.NativeName)));
-        }
 
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
@@ -113,12 +111,10 @@ public partial class Administration
 
         [NadekoCommand, Aliases]
         public async Task LanguagesList()
-        {
-            await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
+            => await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
                 .WithTitle(GetText(strs.lang_list))
                 .WithDescription(string.Join("\n",
                     supportedLocales.Select(x => $"{Format.Code(x.Key),-10} => {x.Value}")))).ConfigureAwait(false);
-        }
     }
 }
 /* list of language codes for reference. 

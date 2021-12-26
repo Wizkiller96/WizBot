@@ -89,7 +89,7 @@ public partial class Gambling
                         dealerIcon = "🏁 ";
                 }
 
-                var cStr = string.Concat(c.Select(x => x.Substring(0, x.Length - 1) + " "));
+                var cStr = string.Concat(c.Select(x => x[..^1] + " "));
                 cStr += "\n" + string.Concat(c.Select(x => x.Last() + " "));
                 var embed = _eb.Create()
                     .WithOkColor()
@@ -104,7 +104,7 @@ public partial class Gambling
                 foreach (var p in bj.Players)
                 {
                     c = p.Cards.Select(x => x.GetEmojiString());
-                    cStr = "-\t" + string.Concat(c.Select(x => x.Substring(0, x.Length - 1) + " "));
+                    cStr = "-\t" + string.Concat(c.Select(x => x[..^1] + " "));
                     cStr += "\n-\t" + string.Concat(c.Select(x => x.Last() + " "));
                     var full = $"{p.DiscordUser.ToString().TrimTo(20)} | Bet: {p.Bet} | Value: {p.GetHandValue()}";
                     if (bj.State == Blackjack.GameState.Ended)

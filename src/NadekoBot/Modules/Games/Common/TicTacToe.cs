@@ -9,7 +9,7 @@ public class TicTacToe
     {
         public void NormalizeOptions()
         {
-            if (TurnTimer < 5 || TurnTimer > 60)
+            if (TurnTimer is < 5 or > 60)
                 TurnTimer = 15;
         }
 
@@ -127,7 +127,7 @@ public class TicTacToe
 
     public async Task Start(IGuildUser user)
     {
-        if (_phase == Phase.Started || _phase == Phase.Ended)
+        if (_phase is Phase.Started or Phase.Ended)
         {
             await _channel.SendErrorAsync(_eb, user.Mention + GetText(strs.ttt_already_running)).ConfigureAwait(false);
             return;

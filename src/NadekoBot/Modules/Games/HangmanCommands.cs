@@ -11,22 +11,18 @@ public partial class Games
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task Hangmanlist()
-        {
-            await SendConfirmAsync(
+            => await SendConfirmAsync(
                 GetText(strs.hangman_types(Prefix)),
-                _service.GetHangmanTypes().JoinWith('\n'));
-        }
+                _service.GetHangmanTypes().Join('\n'));
 
         private static string Draw(HangmanGame.State state)
-        {
-            return $@". ┌─────┐
+            => $@". ┌─────┐
 .┃...............┋
 .┃...............┋
 .┃{(state.Errors > 0 ? ".............😲" : "")}
 .┃{(state.Errors > 1 ? "............./" : "")} {(state.Errors > 2 ? "|" : "")} {(state.Errors > 3 ? "\\" : "")}
 .┃{(state.Errors > 4 ? "............../" : "")} {(state.Errors > 5 ? "\\" : "")}
 /-\";
-        }
 
         public static IEmbedBuilder GetEmbed(IEmbedBuilderService eb, HangmanGame.State state)
         {
@@ -35,21 +31,21 @@ public partial class Games
                     .WithOkColor()
                     .AddField("Hangman", Draw(state))
                     .AddField("Guess", Format.Code(state.Word))
-                    .WithFooter(state.missedLetters.JoinWith(' '));
+                    .WithFooter(state.missedLetters.Join(' '));
                 
             if (state.Phase == HangmanGame.Phase.Ended && state.Failed)
                 return eb.Create()
                     .WithErrorColor()
                     .AddField("Hangman", Draw(state))
                     .AddField("Guess", Format.Code(state.Word))
-                    .WithFooter(state.missedLetters.JoinWith(' '));
+                    .WithFooter(state.missedLetters.Join(' '));
             else
             {
                 return eb.Create()
                     .WithOkColor()
                     .AddField("Hangman", Draw(state))
                     .AddField("Guess", Format.Code(state.Word))
-                    .WithFooter(state.missedLetters.JoinWith(' '));
+                    .WithFooter(state.missedLetters.Join(' '));
             }
         }
 

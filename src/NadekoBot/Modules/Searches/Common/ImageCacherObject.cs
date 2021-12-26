@@ -33,12 +33,8 @@ public class ImageCacherObject : IComparable<ImageCacherObject>
     }
 
     public override string ToString()
-    {
-        return FileUrl;
-    }
+        => FileUrl;
 
     public int CompareTo(ImageCacherObject other)
-    {
-        return string.Compare(FileUrl, other.FileUrl, StringComparison.InvariantCulture);
-    }
+        => string.Compare(FileUrl, other.FileUrl, StringComparison.InvariantCulture);
 }

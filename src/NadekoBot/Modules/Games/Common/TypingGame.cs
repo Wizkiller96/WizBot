@@ -13,7 +13,7 @@ public class TypingGame
 
         public void NormalizeOptions()
         {
-            if (StartTime < 3 || StartTime > 30)
+            if (StartTime is < 3 or > 30)
                 StartTime = 5;
         }
     }
@@ -123,9 +123,7 @@ public class TypingGame
     }
 
     private void HandleAnswers()
-    {
-        _client.MessageReceived += AnswerReceived;
-    }
+        => _client.MessageReceived += AnswerReceived;
 
     private Task AnswerReceived(SocketMessage imsg)
     {

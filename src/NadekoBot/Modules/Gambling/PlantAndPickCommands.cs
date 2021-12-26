@@ -12,9 +12,7 @@ public partial class Gambling
         private readonly ILogCommandService logService;
 
         public PlantPickCommands(ILogCommandService logService, GamblingConfigService gss) : base(gss)
-        {
-            this.logService = logService;
-        }
+            => this.logService = logService;
 
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]

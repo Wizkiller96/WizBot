@@ -12,9 +12,7 @@ public partial class Permissions : NadekoModule<PermissionService>
     private readonly DbService _db;
 
     public Permissions(DbService db)
-    {
-        _db = db;
-    }
+        => _db = db;
 
     [NadekoCommand, Aliases]
     [RequireContext(ContextType.Guild)]
@@ -203,7 +201,7 @@ public partial class Permissions : NadekoModule<PermissionService>
                     
                 return;
             }
-            catch (Exception e) when (e is ArgumentOutOfRangeException || e is IndexOutOfRangeException)
+            catch (Exception e) when (e is ArgumentOutOfRangeException or IndexOutOfRangeException)
             {
             }
         }

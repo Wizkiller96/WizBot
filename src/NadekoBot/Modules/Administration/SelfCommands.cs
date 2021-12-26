@@ -145,9 +145,7 @@ public partial class Administration
         }
 
         private string GetIntervalText(int interval)
-        {
-            return $"[{GetText(strs.interval)}]: {interval}";
-        }
+            => $"[{GetText(strs.interval)}]: {interval}";
 
         [NadekoCommand, Aliases]
         [OwnerOnly]
@@ -298,9 +296,7 @@ public partial class Administration
         [NadekoCommand, Aliases]
         [OwnerOnly]
         public Task Leave([Leftover] string guildStr)
-        {
-            return _service.LeaveGuild(guildStr);
-        }
+            => _service.LeaveGuild(guildStr);
 
 
         [NadekoCommand, Aliases]
@@ -450,7 +446,7 @@ public partial class Administration
 
             if (ids[1].ToUpperInvariant().StartsWith("C:", StringComparison.InvariantCulture))
             {
-                var cid = ulong.Parse(ids[1].Substring(2));
+                var cid = ulong.Parse(ids[1][2..]);
                 var ch = server.TextChannels.FirstOrDefault(c => c.Id == cid);
                 if (ch is null)
                     return;
@@ -460,7 +456,7 @@ public partial class Administration
             }
             else if (ids[1].ToUpperInvariant().StartsWith("U:", StringComparison.InvariantCulture))
             {
-                var uid = ulong.Parse(ids[1].Substring(2));
+                var uid = ulong.Parse(ids[1][2..]);
                 var user = server.Users.FirstOrDefault(u => u.Id == uid);
                 if (user is null)
                     return;

@@ -27,9 +27,7 @@ public class GreetSettingsService : INService
         _bss = bss;
         _eb = eb;
 
-        GuildConfigsCache = new(
-            bot.AllGuildConfigs
-                .ToDictionary(g => g.GuildId, GreetSettings.Create));
+        GuildConfigsCache = new(bot.AllGuildConfigs.ToDictionary(g => g.GuildId, GreetSettings.Create));
 
         _client.UserJoined += UserJoined;
         _client.UserLeft += UserLeft;
@@ -326,10 +324,8 @@ public class GreetSettingsService : INService
 
     public async Task<bool> SetSettings(ulong guildId, GreetSettings settings)
     {
-        if (settings.AutoDeleteByeMessagesTimer > 600 ||
-            settings.AutoDeleteByeMessagesTimer < 0 ||
-            settings.AutoDeleteGreetMessagesTimer > 600 ||
-            settings.AutoDeleteGreetMessagesTimer < 0)
+        if (settings.AutoDeleteByeMessagesTimer is > 600 or < 0 ||
+            settings.AutoDeleteGreetMessagesTimer is > 600 or < 0)
         {
             return false;
         }
@@ -510,7 +506,7 @@ public class GreetSettingsService : INService
 
     public async Task SetByeDel(ulong guildId, int timer)
     {
-        if (timer < 0 || timer > 600)
+        if (timer is < 0 or > 600)
             return;
 
         await using var uow = _db.GetDbContext();
@@ -525,7 +521,7 @@ public class GreetSettingsService : INService
 
     public async Task SetGreetDel(ulong id, int timer)
     {
-        if (timer < 0 || timer > 600)
+        if (timer is < 0 or > 600)
             return;
 
         await using var uow = _db.GetDbContext();
@@ -555,7 +551,7 @@ public class GreetSettingsService : INService
 
     public async Task SetBoostDel(ulong guildId, int timer)
     {
-        if (timer < 0 || timer > 600)
+        if (timer is < 0 or > 600)
             throw new ArgumentOutOfRangeException(nameof(timer));
 
         await using var uow = _db.GetDbContext();

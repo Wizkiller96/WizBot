@@ -407,7 +407,7 @@ public sealed class MusicService : IMusicService
 
     public async Task SetVolumeAsync(ulong guildId, int value)
     {
-        if (value < 0 || value > 100)
+        if (value is < 0 or > 100)
             throw new ArgumentOutOfRangeException(nameof(value));
             
         await ModifySettingsInternalAsync(guildId, (settings, newValue) =>
@@ -438,12 +438,10 @@ public sealed class MusicService : IMusicService
     }
 
     public Task SetMusicQualityAsync(ulong guildId, QualityPreset preset)
-    {
-        return ModifySettingsInternalAsync(guildId, (settings, _) =>
+        => ModifySettingsInternalAsync(guildId, (settings, _) =>
         {
             settings.QualityPreset = preset;
         }, preset);
-    }
 
     #endregion
 }

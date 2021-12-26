@@ -11,9 +11,7 @@ public class GlobalPermissionService : ILateBlocker, INService
     public HashSet<string> BlockedModules => _bss.Data.Blocked.Modules;
 
     public GlobalPermissionService(BotConfigService bss)
-    {
-        _bss = bss;
-    }
+        => _bss = bss;
 
 
     public Task<bool> TryBlockLate(ICommandContext ctx, string moduleName, CommandInfo command)

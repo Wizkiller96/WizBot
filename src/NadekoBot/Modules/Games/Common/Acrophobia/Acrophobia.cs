@@ -15,9 +15,9 @@ public sealed class AcrophobiaGame : IDisposable
 
         public void NormalizeOptions()
         {
-            if (SubmissionTime < 15 || SubmissionTime > 300)
+            if (SubmissionTime is < 15 or > 300)
                 SubmissionTime = 60;
-            if (VoteTime < 15 || VoteTime > 120)
+            if (VoteTime is < 15 or > 120)
                 VoteTime = 30;
         }
     }

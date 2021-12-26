@@ -12,9 +12,7 @@ public partial class Games
         private readonly DiscordSocketClient _client;
 
         public PollCommands(DiscordSocketClient client)
-        {
-            _client = client;
-        }
+            => _client = client;
 
         [NadekoCommand, Aliases]
         [UserPerm(GuildPerm.ManageMessages)]

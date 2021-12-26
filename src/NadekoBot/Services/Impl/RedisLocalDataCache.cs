@@ -82,12 +82,8 @@ public class RedisLocalDataCache : ILocalDataCache
     }
 
     private T Get<T>(string key) where T : class
-    {
-        return JsonConvert.DeserializeObject<T>(_db.StringGet($"{_creds.RedisKey()}_localdata_{key}"));
-    }
+        => JsonConvert.DeserializeObject<T>(_db.StringGet($"{_creds.RedisKey()}_localdata_{key}"));
 
     private void Set(string key, object obj)
-    {
-        _db.StringSet($"{_creds.RedisKey()}_localdata_{key}", JsonConvert.SerializeObject(obj));
-    }
+        => _db.StringSet($"{_creds.RedisKey()}_localdata_{key}", JsonConvert.SerializeObject(obj));
 }

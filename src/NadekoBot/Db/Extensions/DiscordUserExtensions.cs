@@ -9,8 +9,7 @@ namespace NadekoBot.Db;
 public static class DiscordUserExtensions
 {
     public static void EnsureUserCreated(this NadekoContext ctx, ulong userId, string username, string discrim, string avatarId)
-    {
-        ctx.DiscordUser
+        => ctx.DiscordUser
             .ToLinqToDBTable()
             .InsertOrUpdate(() => new()
                 {
@@ -30,7 +29,6 @@ public static class DiscordUserExtensions
                 {
                     UserId = userId
                 });
-    }
 
     //temp is only used in updatecurrencystate, so that i don't overwrite real usernames/discrims with Unknown
     public static DiscordUser GetOrCreateUser(this NadekoContext ctx, ulong userId, string username, string discrim, string avatarId)
@@ -45,44 +43,36 @@ public static class DiscordUserExtensions
         => ctx.GetOrCreateUser(original.Id, original.Username, original.Discriminator, original.AvatarId);
 
     public static int GetUserGlobalRank(this DbSet<DiscordUser> users, ulong id)
-    {
-        return users.AsQueryable()
+        => users.AsQueryable()
             .Where(x => x.TotalXp > users
                 .AsQueryable()
                 .Where(y => y.UserId == id)
                 .Select(y => y.TotalXp)
                 .FirstOrDefault())
             .Count() + 1;
-    }
 
     public static DiscordUser[] GetUsersXpLeaderboardFor(this DbSet<DiscordUser> users, int page)
-    {
-        return users.AsQueryable()
+        => users.AsQueryable()
             .OrderByDescending(x => x.TotalXp)
             .Skip(page * 9)
             .Take(9)
             .AsEnumerable()
             .ToArray();
-    }
 
     public static List<DiscordUser> GetTopRichest(this DbSet<DiscordUser> users, ulong botId, int count, int page = 0)
-    {
-        return users.AsQueryable()
+        => users.AsQueryable()
             .Where(c => c.CurrencyAmount > 0 && botId != c.UserId)
             .OrderByDescending(c => c.CurrencyAmount)
             .Skip(page * 9)
             .Take(count)
             .ToList();
-    }
 
     public static List<DiscordUser> GetTopRichest(this DbSet<DiscordUser> users, ulong botId, int count)
-    {
-        return users.AsQueryable()
+        => users.AsQueryable()
             .Where(c => c.CurrencyAmount > 0 && botId != c.UserId)
             .OrderByDescending(c => c.CurrencyAmount)
             .Take(count)
             .ToList();
-    }
 
     public static long GetUserCurrency(this DbSet<DiscordUser> users, ulong userId) =>
         users.AsNoTracking()
@@ -163,17 +153,13 @@ VALUES ({userId}, {name}, {discrim}, {avatarId}, {amount}, 0);
     }
 
     public static decimal GetTotalCurrency(this DbSet<DiscordUser> users)
-    {
-        return users
+        => users
             .Sum((Func<DiscordUser, decimal>)(x => x.CurrencyAmount));
-    }
 
     public static decimal GetTopOnePercentCurrency(this DbSet<DiscordUser> users, ulong botId)
-    {
-        return users.AsQueryable()
+        => users.AsQueryable()
             .Where(x => x.UserId != botId)
             .OrderByDescending(x => x.CurrencyAmount)
             .Take(users.Count() / 100 == 0 ? 1 : users.Count() / 100)
             .Sum(x => x.CurrencyAmount);
-    }
 }

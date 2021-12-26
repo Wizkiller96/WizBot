@@ -1,22 +1,19 @@
-﻿using NadekoBot.Common.Collections;
-
-namespace NadekoBot.Modules.Administration.Services;
+﻿namespace NadekoBot.Modules.Administration.Services;
 
 public class PruneService : INService
 {
     //channelids where prunes are currently occuring
     private readonly ConcurrentHashSet<ulong> _pruningGuilds = new();
-    private readonly TimeSpan twoWeeks = TimeSpan.FromDays(14);
+    private readonly TimeSpan _twoWeeks = TimeSpan.FromDays(14);
     private readonly ILogCommandService _logService;
 
     public PruneService(ILogCommandService logService)
-    {
-        this._logService = logService;
-    }
+        => this._logService = logService;
 
     public async Task PruneWhere(ITextChannel channel, int amount, Func<IMessage, bool> predicate)
     {
-        channel.ThrowIfNull(nameof(channel));
+        ArgumentNullException.ThrowIfNull(channel, nameof(channel));
+        
         if (amount <= 0)
             throw new ArgumentOutOfRangeException(nameof(amount));
 
@@ -38,7 +35,7 @@ public class PruneService : INService
                 {
                     _logService.AddDeleteIgnore(x.Id);
 
-                    if (DateTime.UtcNow - x.CreatedAt < twoWeeks)
+                    if (DateTime.UtcNow - x.CreatedAt < _twoWeeks)
                         bulkDeletable.Add(x);
                     else
                         singleDeletable.Add(x);

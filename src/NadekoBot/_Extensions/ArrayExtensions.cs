@@ -4,6 +4,9 @@
 // and they get looped through constantly
 public static class ArrayExtensions
 {
+    private static int x = 0;
+
+
     /// <summary>
     /// Create a new array from the old array + new element at the end
     /// </summary>
@@ -14,11 +17,16 @@ public static class ArrayExtensions
     public static T[] With<T>(this T[] input, T added)
     {
         var newCrs = new T[input.Length + 1];
-        Array.Copy(input, 0, newCrs, 0, input.Length);
+        Array.Copy(input,
+            0,
+            newCrs,
+            0,
+            input.Length
+        );
         newCrs[input.Length] = added;
         return newCrs;
     }
-    
+
     /// <summary>
     /// Creates a new array by applying the specified function to every element in the input array
     /// </summary>

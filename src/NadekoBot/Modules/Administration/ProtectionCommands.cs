@@ -94,13 +94,13 @@ public partial class Administration
                 return;
             }
                 
-            if (userThreshold < 2 || userThreshold > 30)
+            if (userThreshold is < 2 or > 30)
             {
                 await ReplyErrorLocalizedAsync(strs.raid_cnt(2, 30));
                 return;
             }
 
-            if (seconds < 2 || seconds > 300)
+            if (seconds is < 2 or > 300)
             {
                 await ReplyErrorLocalizedAsync(strs.raid_time(2, 300));
                 return;
@@ -115,7 +115,7 @@ public partial class Administration
             }
                 
             var time = (int?) punishTime?.Time.TotalMinutes ?? 0;
-            if (time < 0 || time > 60 * 24)
+            if (time is < 0 or > 60 * 24)
                 return;
 
             var stats = await _service.StartAntiRaidAsync(ctx.Guild.Id, userThreshold, seconds,
@@ -175,7 +175,7 @@ public partial class Administration
         public async Task InternalAntiSpam(int messageCount, PunishmentAction action,
             StoopidTime timeData = null, IRole role = null)
         {
-            if (messageCount < 2 || messageCount > 10)
+            if (messageCount is < 2 or > 10)
                 return;
 
             if (timeData is not null)
@@ -187,7 +187,7 @@ public partial class Administration
             }
 
             var time = (int?) timeData?.Time.TotalMinutes ?? 0;
-            if (time < 0 || time > 60 * 24)
+            if (time is < 0 or > 60 * 24)
                 return;
 
             var stats = await _service.StartAntiSpamAsync(ctx.Guild.Id, messageCount, action, time, role?.Id).ConfigureAwait(false);
