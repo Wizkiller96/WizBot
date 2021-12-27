@@ -23,6 +23,6 @@ int? totalShards = null; // 0 to read from creds.yml
 // }
 
 LogSetup.SetupLogger(shardId);
-Log.Information($"Pid: {pid}");
+Log.Information("Pid: {ProcessId}", pid);
 
 await new Bot(shardId, totalShards).RunAndBlockAsync();
