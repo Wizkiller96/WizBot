@@ -8,7 +8,6 @@
     <RunWorkingDirectory>$(MSBuildProjectDirectory)</RunWorkingDirectory>
     <OutputType>exe</OutputType>
     <ApplicationIcon>nadeko_icon.ico</ApplicationIcon>
-    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
   
   <ItemGroup>

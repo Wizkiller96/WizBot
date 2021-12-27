@@ -7,16 +7,16 @@ namespace NadekoBot.Services;
 
 public sealed class RedisImagesCache : IImageCache, IReadyExecutor
 {
-        
     private readonly ConnectionMultiplexer _con;
     private readonly IBotCredentials _creds;
     private readonly HttpClient _http;
     private readonly string _imagesPath;
 
-    private IDatabase _db => _con.GetDatabase();
+    private IDatabase Db
+        => _con.GetDatabase();
 
-    private const string _basePath = "data/";
-    private const string _cardsPath = $"{_basePath}images/cards";
+    private const string BASE_PATH = "data/";
+    private const string CARDS_PATH = $"{BASE_PATH}images/cards";
 
     public ImageUrls ImageUrls { get; private set; }
 
@@ -35,42 +35,42 @@ public sealed class RedisImagesCache : IImageCache, IReadyExecutor
         XpBg
     }
 
-    public IReadOnlyList<byte[]> Heads 
+    public IReadOnlyList<byte[]> Heads
         => GetByteArrayData(ImageKeys.CoinHeads);
 
-    public IReadOnlyList<byte[]> Tails 
+    public IReadOnlyList<byte[]> Tails
         => GetByteArrayData(ImageKeys.CoinTails);
 
-    public IReadOnlyList<byte[]> Dice 
+    public IReadOnlyList<byte[]> Dice
         => GetByteArrayData(ImageKeys.Dice);
 
-    public IReadOnlyList<byte[]> SlotEmojis 
+    public IReadOnlyList<byte[]> SlotEmojis
         => GetByteArrayData(ImageKeys.SlotEmojis);
 
-    public IReadOnlyList<byte[]> Currency 
+    public IReadOnlyList<byte[]> Currency
         => GetByteArrayData(ImageKeys.Currency);
 
-    public byte[] SlotBackground 
+    public byte[] SlotBackground
         => GetByteData(ImageKeys.SlotBg);
 
-    public byte[] RategirlMatrix 
+    public byte[] RategirlMatrix
         => GetByteData(ImageKeys.RategirlMatrix);
 
-    public byte[] RategirlDot 
+    public byte[] RategirlDot
         => GetByteData(ImageKeys.RategirlDot);
 
-    public byte[] XpBackground 
+    public byte[] XpBackground
         => GetByteData(ImageKeys.XpBg);
 
-    public byte[] Rip 
+    public byte[] Rip
         => GetByteData(ImageKeys.RipBg);
 
-    public byte[] RipOverlay 
+    public byte[] RipOverlay
         => GetByteData(ImageKeys.RipOverlay);
 
     public byte[] GetCard(string key)
         // since cards are always local for now, don't cache them
-        => File.ReadAllBytes(Path.Join(_cardsPath, key + ".jpg"));
+        => File.ReadAllBytes(Path.Join(CARDS_PATH, key + ".jpg"));
 
     public async Task OnReadyAsync()
     {
@@ -85,7 +85,7 @@ public sealed class RedisImagesCache : IImageCache, IReadyExecutor
         _con = con;
         _creds = creds;
         _http = new();
-        _imagesPath = Path.Combine(_basePath, "images.yml");
+        _imagesPath = Path.Combine(BASE_PATH, "images.yml");
 
         Migrate();
 
@@ -95,58 +95,50 @@ public sealed class RedisImagesCache : IImageCache, IReadyExecutor
     private void Migrate()
     {
         // migrate to yml
-        if (File.Exists(Path.Combine(_basePath, "images.json")))
+        if (File.Exists(Path.Combine(BASE_PATH, "images.json")))
         {
-            var oldFilePath = Path.Combine(_basePath, "images.json");
-            var backupFilePath = Path.Combine(_basePath, "images.json.backup");
-                
-            var oldData = JsonConvert.DeserializeObject<OldImageUrls>(
-                File.ReadAllText(oldFilePath));
+            var oldFilePath = Path.Combine(BASE_PATH, "images.json");
+            var backupFilePath = Path.Combine(BASE_PATH, "images.json.backup");
+
+            var oldData = JsonConvert.DeserializeObject<OldImageUrls>(File.ReadAllText(oldFilePath));
 
             if (oldData is not null)
             {
                 var newData = new ImageUrls()
                 {
-                    Coins = new()
-                    {
-                        Heads = oldData.Coins.Heads.Length == 1 && 
-                                oldData.Coins.Heads[0].ToString() == "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/coins/heads.png"
-                            ? new[] { new Uri("https://cdn.nadeko.bot/coins/heads3.png") }
-                            : oldData.Coins.Heads,
-                        Tails = oldData.Coins.Tails.Length == 1 && 
-                                oldData.Coins.Tails[0].ToString() == "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/coins/tails.png"
-                            ? new[] { new Uri("https://cdn.nadeko.bot/coins/tails3.png") }
-                            : oldData.Coins.Tails,
-                    },
+                    Coins =
+                        new()
+                        {
+                            Heads = oldData.Coins.Heads.Length == 1 &&
+                                    oldData.Coins.Heads[0].ToString() ==
+                                    "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/coins/heads.png"
+                                ? new[] { new Uri("https://cdn.nadeko.bot/coins/heads3.png") }
+                                : oldData.Coins.Heads,
+                            Tails = oldData.Coins.Tails.Length == 1 &&
+                                    oldData.Coins.Tails[0].ToString() ==
+                                    "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/coins/tails.png"
+                                ? new[] { new Uri("https://cdn.nadeko.bot/coins/tails3.png") }
+                                : oldData.Coins.Tails,
+                        },
                     Dice = oldData.Dice.Map(x => x.ToNewCdn()),
                     Currency = oldData.Currency.Map(x => x.ToNewCdn()),
-                    Rategirl = new()
-                    {
-                        Dot = oldData.Rategirl.Dot.ToNewCdn(),
-                        Matrix = oldData.Rategirl.Matrix.ToNewCdn()
-                    },
-                    Rip = new()
-                    {
-                        Bg = oldData.Rip.Bg.ToNewCdn(),
-                        Overlay = oldData.Rip.Overlay.ToNewCdn(),
-                    },
+                    Rategirl =
+                        new()
+                        {
+                            Dot = oldData.Rategirl.Dot.ToNewCdn(), Matrix = oldData.Rategirl.Matrix.ToNewCdn()
+                        },
+                    Rip = new() { Bg = oldData.Rip.Bg.ToNewCdn(), Overlay = oldData.Rip.Overlay.ToNewCdn(), },
                     Slots = new()
                     {
                         Bg = new("https://cdn.nadeko.bot/slots/slots_bg.png"),
                         Emojis = new[]
                         {
-                            "https://cdn.nadeko.bot/slots/0.png",
-                            "https://cdn.nadeko.bot/slots/1.png",
-                            "https://cdn.nadeko.bot/slots/2.png",
-                            "https://cdn.nadeko.bot/slots/3.png",
-                            "https://cdn.nadeko.bot/slots/4.png",
-                            "https://cdn.nadeko.bot/slots/5.png"
+                            "https://cdn.nadeko.bot/slots/0.png", "https://cdn.nadeko.bot/slots/1.png",
+                            "https://cdn.nadeko.bot/slots/2.png", "https://cdn.nadeko.bot/slots/3.png",
+                            "https://cdn.nadeko.bot/slots/4.png", "https://cdn.nadeko.bot/slots/5.png"
                         }.Map(x => new Uri(x))
                     },
-                    Xp = new()
-                    {
-                        Bg = oldData.Xp.Bg.ToNewCdn(),
-                    },
+                    Xp = new() { Bg = oldData.Xp.Bg.ToNewCdn(), },
                     Version = 2,
                 };
 
@@ -216,25 +208,25 @@ public sealed class RedisImagesCache : IImageCache, IReadyExecutor
         if (data is null)
             return;
 
-        await _db.StringSetAsync(GetRedisKey(key), data);
+        await Db.StringSetAsync(GetRedisKey(key), data);
     }
 
     private async Task Load(ImageKeys key, Uri[] uris)
     {
-        await _db.KeyDeleteAsync(GetRedisKey(key));
+        await Db.KeyDeleteAsync(GetRedisKey(key));
         var imageData = await Task.WhenAll(uris.Select(GetImageData));
-        var vals = imageData
-            .Where(x => x is not null)
-            .Select(x => (RedisValue)x)
-            .ToArray();
+        var vals = imageData.Where(x => x is not null).Select(x => (RedisValue)x).ToArray();
 
-        await _db.ListRightPushAsync(GetRedisKey(key), vals);
-            
+        await Db.ListRightPushAsync(GetRedisKey(key), vals);
+
         if (uris.Length != vals.Length)
         {
             Log.Information("{Loaded}/{Max} URIs for the key '{ImageKey}' have been loaded.\n" +
-                            "Some of the supplied URIs are either unavailable or invalid.", 
-                vals.Length, uris.Length, key);
+                            "Some of the supplied URIs are either unavailable or invalid",
+                vals.Length,
+                uris.Length,
+                key
+            );
         }
     }
 
@@ -264,24 +256,23 @@ public sealed class RedisImagesCache : IImageCache, IReadyExecutor
             return null;
         }
     }
-        
+
     private async Task<bool> AllKeysExist()
     {
-        var tasks = await Task.WhenAll(GetAllKeys()
-            .Select(x => _db.KeyExistsAsync(GetRedisKey(x))));
+        var tasks = await Task.WhenAll(GetAllKeys().Select(x => Db.KeyExistsAsync(GetRedisKey(x))));
 
         return tasks.All(exist => exist);
     }
 
-    private IEnumerable<ImageKeys> GetAllKeys() =>
-        Enum.GetValues<ImageKeys>();
+    private IEnumerable<ImageKeys> GetAllKeys()
+        => Enum.GetValues<ImageKeys>();
 
     private byte[][] GetByteArrayData(ImageKeys key)
-        => _db.ListRange(GetRedisKey(key)).Map(x => (byte[])x);
+        => Db.ListRange(GetRedisKey(key)).Map(x => (byte[])x);
 
     private byte[] GetByteData(ImageKeys key)
-        => _db.StringGet(GetRedisKey(key));
+        => Db.StringGet(GetRedisKey(key));
 
-    private RedisKey GetRedisKey(ImageKeys key) 
+    private RedisKey GetRedisKey(ImageKeys key)
         => _creds.RedisKey() + "_image_" + key;
 }

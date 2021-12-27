@@ -15,14 +15,13 @@ public sealed record SmartEmbedText : SmartText
 
     public uint Color { get; set; } = 7458112;
 
-    public bool IsValid =>
-        !string.IsNullOrWhiteSpace(Title) ||
-        !string.IsNullOrWhiteSpace(Description) ||
-        !string.IsNullOrWhiteSpace(Url) ||
-        !string.IsNullOrWhiteSpace(Thumbnail) ||
-        !string.IsNullOrWhiteSpace(Image) ||
-        (Footer != null && (!string.IsNullOrWhiteSpace(Footer.Text) || !string.IsNullOrWhiteSpace(Footer.IconUrl))) ||
-        Fields is { Length: > 0 };
+    public bool IsValid
+        => !string.IsNullOrWhiteSpace(Title) || !string.IsNullOrWhiteSpace(Description) ||
+           !string.IsNullOrWhiteSpace(Url) || !string.IsNullOrWhiteSpace(Thumbnail) ||
+           !string.IsNullOrWhiteSpace(Image) ||
+           (Footer != null &&
+            (!string.IsNullOrWhiteSpace(Footer.Text) || !string.IsNullOrWhiteSpace(Footer.IconUrl))) ||
+           Fields is { Length: > 0 };
 
     public static SmartEmbedText FromEmbed(IEmbed eb, string plainText = null)
     {
@@ -34,42 +33,23 @@ public sealed record SmartEmbedText : SmartText
             Url = eb.Url,
             Thumbnail = eb.Thumbnail?.Url,
             Image = eb.Image?.Url,
-            Author = eb.Author is { } ea
-                ? new()
-                {
-                    Name = ea.Name,
-                    Url = ea.Url,
-                    IconUrl = ea.IconUrl
-                }
-                : null,
-            Footer = eb.Footer is { } ef
-                ? new()
-                {
-                    Text = ef.Text,
-                    IconUrl = ef.IconUrl
-                }
-                : null
+            Author = eb.Author is { } ea ? new() { Name = ea.Name, Url = ea.Url, IconUrl = ea.IconUrl } : null,
+            Footer = eb.Footer is { } ef ? new() { Text = ef.Text, IconUrl = ef.IconUrl } : null
         };
 
         if (eb.Fields.Length > 0)
-            set.Fields = eb
-                .Fields
-                .Select(field => new SmartTextEmbedField()
-                {
-                    Inline = field.Inline,
-                    Name = field.Name,
-                    Value = field.Value,
-                })
+            set.Fields = eb.Fields.Select(field
+                    => new SmartTextEmbedField() { Inline = field.Inline, Name = field.Name, Value = field.Value, }
+                )
                 .ToArray();
 
         set.Color = eb.Color?.RawValue ?? 0;
         return set;
     }
-        
+
     public EmbedBuilder GetEmbed()
     {
-        var embed = new EmbedBuilder()
-            .WithColor(Color);
+        var embed = new EmbedBuilder().WithColor(Color);
 
         if (!string.IsNullOrWhiteSpace(Title))
             embed.WithTitle(Title);
@@ -77,26 +57,31 @@ public sealed record SmartEmbedText : SmartText
         if (!string.IsNullOrWhiteSpace(Description))
             embed.WithDescription(Description);
 
-        if (Url != null && Uri.IsWellFormedUriString(Url, UriKind.Absolute))
+        if (Url != null &&
+            Uri.IsWellFormedUriString(Url, UriKind.Absolute))
             embed.WithUrl(Url);
 
         if (Footer != null)
         {
             embed.WithFooter(efb =>
-            {
-                efb.WithText(Footer.Text);
-                if (Uri.IsWellFormedUriString(Footer.IconUrl, UriKind.Absolute))
-                    efb.WithIconUrl(Footer.IconUrl);
-            });
+                {
+                    efb.WithText(Footer.Text);
+                    if (Uri.IsWellFormedUriString(Footer.IconUrl, UriKind.Absolute))
+                        efb.WithIconUrl(Footer.IconUrl);
+                }
+            );
         }
 
-        if (Thumbnail != null && Uri.IsWellFormedUriString(Thumbnail, UriKind.Absolute))
+        if (Thumbnail != null &&
+            Uri.IsWellFormedUriString(Thumbnail, UriKind.Absolute))
             embed.WithThumbnailUrl(Thumbnail);
 
-        if (Image != null && Uri.IsWellFormedUriString(Image, UriKind.Absolute))
+        if (Image != null &&
+            Uri.IsWellFormedUriString(Image, UriKind.Absolute))
             embed.WithImageUrl(Image);
 
-        if (Author != null && !string.IsNullOrWhiteSpace(Author.Name))
+        if (Author != null &&
+            !string.IsNullOrWhiteSpace(Author.Name))
         {
             if (!Uri.IsWellFormedUriString(Author.IconUrl, UriKind.Absolute))
                 Author.IconUrl = null;
@@ -110,7 +95,8 @@ public sealed record SmartEmbedText : SmartText
         {
             foreach (var f in Fields)
             {
-                if (!string.IsNullOrWhiteSpace(f.Name) && !string.IsNullOrWhiteSpace(f.Value))
+                if (!string.IsNullOrWhiteSpace(f.Name) &&
+                    !string.IsNullOrWhiteSpace(f.Value))
                     embed.AddField(f.Name, f.Value, f.Inline);
             }
         }

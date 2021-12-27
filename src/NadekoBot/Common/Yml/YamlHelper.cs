@@ -15,27 +15,28 @@ public class YamlHelper
 
         // Scan the character value.
 
-        foreach(var c in point)
+        foreach (var c in point)
         {
             if (!IsHex(c))
             {
                 return point;
             }
+
             character = (character << 4) + AsHex(c);
         }
 
         // Check the value and write the character.
 
-        if (character is >= 0xD800 and <= 0xDFFF or > 0x10FFFF)
+        if (character is (>= 0xD800 and <= 0xDFFF) or > 0x10FFFF)
         {
             return point;
         }
 
         return char.ConvertFromUtf32(character);
     }
-        
+
     public static bool IsHex(char c)
-        => c is >= '0' and <= '9' or >= 'A' and <= 'F' or >= 'a' and <= 'f';
+        => c is (>= '0' and <= '9') or (>= 'A' and <= 'F') or (>= 'a' and <= 'f');
 
     public static int AsHex(char c)
     {
@@ -43,10 +44,12 @@ public class YamlHelper
         {
             return c - '0';
         }
+
         if (c <= 'F')
         {
             return c - 'A' + 10;
         }
+
         return c - 'a' + 10;
     }
 }

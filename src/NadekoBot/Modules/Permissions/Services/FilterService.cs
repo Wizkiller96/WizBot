@@ -97,9 +97,8 @@ public sealed class FilterService : IEarlyBehavior
             var _ = Task.Run(() =>
             {
                 var guild = (channel as ITextChannel)?.Guild;
-                var usrMsg = newMsg as IUserMessage;
 
-                if (guild is null || usrMsg is null)
+                if (guild is null || newMsg is not IUserMessage usrMsg)
                     return Task.CompletedTask;
 
                 return RunBehavior(guild, usrMsg);

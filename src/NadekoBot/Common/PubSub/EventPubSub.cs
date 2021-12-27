@@ -3,22 +3,20 @@
 public class EventPubSub : IPubSub
 {
     private readonly Dictionary<string, Dictionary<Delegate, List<Func<object, ValueTask>>>> _actions = new();
-    private readonly object locker = new();
-        
+    private readonly object _locker = new();
+
     public Task Sub<TData>(in TypedKey<TData> key, Func<TData, ValueTask> action)
     {
-        Func<object, ValueTask> localAction = obj => action((TData) obj);
-        lock(locker)
+        Func<object, ValueTask> localAction = obj => action((TData)obj);
+        lock (_locker)
         {
-            Dictionary<Delegate, List<Func<object, ValueTask>>> keyActions;
-            if (!_actions.TryGetValue(key.Key, out keyActions))
+            if (!_actions.TryGetValue(key.Key, out var keyActions))
             {
                 keyActions = new();
                 _actions[key.Key] = keyActions;
             }
 
-            List<Func<object, ValueTask>> sameActions;
-            if (!keyActions.TryGetValue(action, out sameActions))
+            if (!keyActions.TryGetValue(action, out var sameActions))
             {
                 sameActions = new();
                 keyActions[action] = sameActions;
@@ -29,19 +27,17 @@ public class EventPubSub : IPubSub
             return Task.CompletedTask;
         }
     }
-        
+
     public Task Pub<TData>(in TypedKey<TData> key, TData data)
     {
-        lock (locker)
+        lock (_locker)
         {
-            if(_actions.TryGetValue(key.Key, out var actions))
+            if (_actions.TryGetValue(key.Key, out var actions))
             {
                 // if this class ever gets used, this needs to be properly implemented
                 // 1. ignore all valuetasks which are completed
                 // 2. return task.whenall all other tasks
-                return Task.WhenAll(actions
-                    .SelectMany(kvp => kvp.Value)
-                    .Select(action => action(data).AsTask()));
+                return Task.WhenAll(actions.SelectMany(kvp => kvp.Value).Select(action => action(data).AsTask()));
             }
 
             return Task.CompletedTask;
@@ -50,12 +46,11 @@ public class EventPubSub : IPubSub
 
     public Task Unsub<TData>(in TypedKey<TData> key, Func<TData, ValueTask> action)
     {
-        lock (locker)
+        lock (_locker)
         {
             // get subscriptions for this action
             if (_actions.TryGetValue(key.Key, out var actions))
             {
-                var hashCode = action.GetHashCode();
                 // get subscriptions which have the same action hash code
                 // note: having this as a list allows for multiple subscriptions of
                 //       the same insance's/static method
@@ -63,13 +58,13 @@ public class EventPubSub : IPubSub
                 {
                     // remove last subscription
                     sameActions.RemoveAt(sameActions.Count - 1);
-                        
+
                     // if the last subscription was the only subscription
                     // we can safely remove this action's dictionary entry
                     if (sameActions.Count == 0)
                     {
                         actions.Remove(action);
-                            
+
                         // if our dictionary has no more elements after 
                         // removing the entry
                         // it's safe to remove it from the key's subscriptions

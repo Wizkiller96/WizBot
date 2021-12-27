@@ -18,10 +18,10 @@ public class Replacer
         if (string.IsNullOrWhiteSpace(input))
             return input;
 
-        foreach (var (Key, Text) in _replacements)
+        foreach (var (key, text) in _replacements)
         {
-            if (input.Contains(Key))
-                input = input.Replace(Key, Text(), StringComparison.InvariantCulture);
+            if (input.Contains(key))
+                input = input.Replace(key, text(), StringComparison.InvariantCulture);
         }
 
         foreach (var item in _regex)
@@ -58,8 +58,7 @@ public class Replacer
         {
             newEmbedData.Author = new()
             {
-                Name = Replace(embedData.Author.Name),
-                IconUrl = Replace(embedData.Author.IconUrl)
+                Name = Replace(embedData.Author.Name), IconUrl = Replace(embedData.Author.IconUrl)
             };
         }
 
@@ -70,9 +69,7 @@ public class Replacer
             {
                 var newF = new SmartTextEmbedField
                 {
-                    Name = Replace(f.Name),
-                    Value = Replace(f.Value),
-                    Inline = f.Inline
+                    Name = Replace(f.Name), Value = Replace(f.Value), Inline = f.Inline
                 };
                 fields.Add(newF);
             }
@@ -84,8 +81,7 @@ public class Replacer
         {
             newEmbedData.Footer = new()
             {
-                Text = Replace(embedData.Footer.Text),
-                IconUrl = Replace(embedData.Footer.IconUrl)
+                Text = Replace(embedData.Footer.Text), IconUrl = Replace(embedData.Footer.IconUrl)
             };
         }
 

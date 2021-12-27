@@ -152,8 +152,7 @@ public class ReactionEvent : ICurrencyEvent
         {
             if (_emote.Name != r.Emote.Name)
                 return;
-            var gu = (r.User.IsSpecified ? r.User.Value : null) as IGuildUser;
-            if (gu is null // no unknown users, as they could be bots, or alts
+            if ((r.User.IsSpecified ? r.User.Value : null) is not IGuildUser gu // no unknown users, as they could be bots, or alts
                 || msg.Id != _msg.Id // same message
                 || gu.IsBot // no bots
                 || (DateTime.UtcNow - gu.CreatedAt).TotalDays <= 5 // no recently created accounts

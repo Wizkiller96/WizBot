@@ -12,8 +12,11 @@ public sealed class GuildDateTimeTypeReader : NadekoTypeReader<GuildDateTime>
     public override Task<TypeReaderResult> ReadAsync(ICommandContext context, string input)
     {
         var gdt = Parse(context.Guild.Id, input);
-        if(gdt is null)
-            return Task.FromResult(TypeReaderResult.FromError(CommandError.ParseFailed, "Input string is in an incorrect format."));
+        if (gdt is null)
+            return Task.FromResult(TypeReaderResult.FromError(CommandError.ParseFailed,
+                    "Input string is in an incorrect format."
+                )
+            );
 
         return Task.FromResult(TypeReaderResult.FromSuccess(gdt));
     }

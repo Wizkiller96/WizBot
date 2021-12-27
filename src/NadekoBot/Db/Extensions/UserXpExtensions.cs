@@ -14,20 +14,17 @@ public static class UserXpExtensions
         if (usr is null)
         {
             ctx.Add(usr = new()
-            {
-                Xp = 0,
-                UserId = userId,
-                NotifyOnLevelUp = XpNotificationLocation.None,
-                GuildId = guildId,
-            });
+                {
+                    Xp = 0, UserId = userId, NotifyOnLevelUp = XpNotificationLocation.None, GuildId = guildId,
+                }
+            );
         }
 
         return usr;
     }
 
     public static List<UserXpStats> GetUsersFor(this DbSet<UserXpStats> xps, ulong guildId, int page)
-        => xps
-            .AsQueryable()
+        => xps.AsQueryable()
             .AsNoTracking()
             .Where(x => x.GuildId == guildId)
             .OrderByDescending(x => x.Xp + x.AwardedXp)
@@ -36,8 +33,7 @@ public static class UserXpExtensions
             .ToList();
 
     public static List<UserXpStats> GetTopUserXps(this DbSet<UserXpStats> xps, ulong guildId, int count)
-        => xps
-            .AsQueryable()
+        => xps.AsQueryable()
             .AsNoTracking()
             .Where(x => x.GuildId == guildId)
             .OrderByDescending(x => x.Xp + x.AwardedXp)
@@ -51,15 +47,17 @@ public static class UserXpExtensions
         //	FROM UserXpStats
         //	WHERE UserId = @p2 AND GuildId = @p1
         //	LIMIT 1));";
-        => xps
-            .AsQueryable()
-            .AsNoTracking()
-            .Where(x => x.GuildId == guildId && x.Xp + x.AwardedXp >
-                xps.AsQueryable()
-                    .Where(y => y.UserId == userId && y.GuildId == guildId)
-                    .Select(y => y.Xp + y.AwardedXp)
-                    .FirstOrDefault())
-            .Count() + 1;
+        => xps.AsQueryable()
+               .AsNoTracking()
+               .Where(x => x.GuildId == guildId &&
+                           x.Xp + x.AwardedXp >
+                           xps.AsQueryable()
+                               .Where(y => y.UserId == userId && y.GuildId == guildId)
+                               .Select(y => y.Xp + y.AwardedXp)
+                               .FirstOrDefault()
+               )
+               .Count() +
+           1;
 
     public static void ResetGuildUserXp(this DbSet<UserXpStats> xps, ulong userId, ulong guildId)
         => xps.Delete(x => x.UserId == userId && x.GuildId == guildId);

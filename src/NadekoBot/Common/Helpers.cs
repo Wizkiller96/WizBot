@@ -6,7 +6,7 @@ public static class Helpers
     {
         if (!Console.IsInputRedirected)
             Console.ReadKey();
-            
+
         Environment.Exit(exitCode);
     }
 }

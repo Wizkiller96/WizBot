@@ -24,9 +24,7 @@ public struct ShmartNumber : IEquatable<ShmartNumber>
         => Value.ToString();
 
     public override bool Equals(object obj)
-        => obj is ShmartNumber sn
-            ? Equals(sn)
-            : false;
+        => obj is ShmartNumber sn && Equals(sn);
 
     public bool Equals(ShmartNumber other)
         => other.Value == Value;

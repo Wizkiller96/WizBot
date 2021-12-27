@@ -21,7 +21,7 @@ public interface IBotCredentials
     string CoinmarketcapApiKey { get; }
     string CoordinatorUrl { get; set; }
 }
-    
+
 public class RestartConfig
 {
     public string Cmd { get; set; }

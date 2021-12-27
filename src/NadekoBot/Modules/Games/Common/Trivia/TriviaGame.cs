@@ -196,8 +196,7 @@ public class TriviaGame
 
                 var umsg = imsg as SocketUserMessage;
 
-                var textChannel = umsg?.Channel as ITextChannel;
-                if (textChannel is null || textChannel.Guild != Guild)
+                if (umsg?.Channel is not ITextChannel textChannel || textChannel.Guild != Guild)
                     return;
 
                 var guildUser = (IGuildUser)umsg.Author;

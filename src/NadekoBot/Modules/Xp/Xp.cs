@@ -106,14 +106,6 @@ public partial class Xp : NadekoModule<XpService>
         }, allRewards.Count, 9);
     }
 
-    public enum AddRemove
-    {
-        Add = 0,
-        Remove = 1,
-        Rm = 1,
-        Rem = 1,
-    }
-
     [NadekoCommand, Aliases]
     [UserPerm(GuildPerm.Administrator)]
     [BotPerm(GuildPerm.ManageRoles)]

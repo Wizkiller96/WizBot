@@ -17,36 +17,37 @@ public sealed class ReactionEventWrapper : IDisposable
         _client.ReactionsCleared += Discord_ReactionsCleared;
     }
 
-    private Task Discord_ReactionsCleared(
-        Cacheable<IUserMessage, ulong> msg,
-        Cacheable<IMessageChannel, ulong> channel)
+    private Task Discord_ReactionsCleared(Cacheable<IUserMessage, ulong> msg, Cacheable<IMessageChannel, ulong> channel)
     {
         Task.Run(() =>
-        {
-            try
             {
-                if (msg.Id == Message.Id)
-                    OnReactionsCleared?.Invoke();
+                try
+                {
+                    if (msg.Id == Message.Id)
+                        OnReactionsCleared?.Invoke();
+                }
+                catch { }
             }
-            catch { }
-        });
+        );
 
         return Task.CompletedTask;
     }
 
     private Task Discord_ReactionRemoved(
         Cacheable<IUserMessage, ulong> msg,
-        Cacheable<IMessageChannel, ulong> cacheable, SocketReaction reaction)
+        Cacheable<IMessageChannel, ulong> cacheable,
+        SocketReaction reaction)
     {
         Task.Run(() =>
-        {
-            try
             {
-                if (msg.Id == Message.Id)
-                    OnReactionRemoved?.Invoke(reaction);
+                try
+                {
+                    if (msg.Id == Message.Id)
+                        OnReactionRemoved?.Invoke(reaction);
+                }
+                catch { }
             }
-            catch { }
-        });
+        );
 
         return Task.CompletedTask;
     }
@@ -57,16 +58,17 @@ public sealed class ReactionEventWrapper : IDisposable
         SocketReaction reaction)
     {
         Task.Run(() =>
-        {
-            try
             {
-                if (msg.Id == Message.Id)
-                    OnReactionAdded?.Invoke(reaction);
+                try
+                {
+                    if (msg.Id == Message.Id)
+                        OnReactionAdded?.Invoke(reaction);
+                }
+                catch
+                {
+                }
             }
-            catch
-            {
-            }
-        });
+        );
 
         return Task.CompletedTask;
     }

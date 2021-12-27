@@ -12,7 +12,7 @@ public static class GuildConfigExtensions
         public ulong GuildId { get; set; }
         public ulong ChannelId { get; set; }
     }
-        
+
     /// <summary>
     /// Gets full stream role settings for the guild with the specified id.
     /// </summary>
@@ -21,31 +21,27 @@ public static class GuildConfigExtensions
     /// <returns>Guild'p stream role settings</returns>
     public static StreamRoleSettings GetStreamRoleSettings(this NadekoContext ctx, ulong guildId)
     {
-        var conf = ctx.GuildConfigsForId(guildId, set => set.Include(y => y.StreamRole)
-            .Include(y => y.StreamRole.Whitelist)
-            .Include(y => y.StreamRole.Blacklist));
+        var conf = ctx.GuildConfigsForId(guildId,
+            set => set.Include(y => y.StreamRole)
+                .Include(y => y.StreamRole.Whitelist)
+                .Include(y => y.StreamRole.Blacklist)
+        );
 
         if (conf.StreamRole is null)
             conf.StreamRole = new();
 
         return conf.StreamRole;
     }
-        
-    private static List<WarningPunishment> DefaultWarnPunishments =>
-        new() {
-            new() {
-                Count = 3,
-                Punishment = PunishmentAction.Kick
-            },
-            new() {
-                Count = 5,
-                Punishment = PunishmentAction.Ban
-            }
+
+    private static List<WarningPunishment> DefaultWarnPunishments
+        => new()
+        {
+            new() { Count = 3, Punishment = PunishmentAction.Kick },
+            new() { Count = 5, Punishment = PunishmentAction.Ban }
         };
 
     private static IQueryable<GuildConfig> IncludeEverything(this DbSet<GuildConfig> configs)
-        => configs
-            .AsQueryable()
+        => configs.AsQueryable()
             .AsSplitQuery()
             .Include(gc => gc.CommandCooldowns)
             .Include(gc => gc.FollowedStreams)
@@ -56,9 +52,10 @@ public static class GuildConfigExtensions
             .Include(gc => gc.ReactionRoleMessages)
             .ThenInclude(x => x.ReactionRoles);
 
-    public static IEnumerable<GuildConfig> GetAllGuildConfigs(this DbSet<GuildConfig> configs, List<ulong> availableGuilds)
-        => configs
-            .IncludeEverything()
+    public static IEnumerable<GuildConfig> GetAllGuildConfigs(
+        this DbSet<GuildConfig> configs,
+        List<ulong> availableGuilds)
+        => configs.IncludeEverything()
             .AsNoTracking()
             .Where(x => availableGuilds.Contains(x.GuildId))
             .ToList();
@@ -70,15 +67,16 @@ public static class GuildConfigExtensions
     /// <param name="guildId">Id of the guide</param>
     /// <param name="includes">Use to manipulate the set however you want. Pass null to include everything</param>
     /// <returns>Config for the guild</returns>
-    public static GuildConfig GuildConfigsForId(this NadekoContext ctx, ulong guildId, Func<DbSet<GuildConfig>, IQueryable<GuildConfig>> includes)
+    public static GuildConfig GuildConfigsForId(
+        this NadekoContext ctx,
+        ulong guildId,
+        Func<DbSet<GuildConfig>, IQueryable<GuildConfig>> includes)
     {
         GuildConfig config;
 
         if (includes is null)
         {
-            config = ctx
-                .GuildConfigs
-                .IncludeEverything()
+            config = ctx.GuildConfigs.IncludeEverything()
                 .FirstOrDefault(c => c.GuildId == guildId);
         }
         else
@@ -90,12 +88,13 @@ public static class GuildConfigExtensions
         if (config is null)
         {
             ctx.GuildConfigs.Add(config = new()
-            {
-                GuildId = guildId,
-                Permissions = Permissionv2.GetDefaultPermlist,
-                WarningsInitialized = true,
-                WarnPunishments = DefaultWarnPunishments,
-            });
+                {
+                    GuildId = guildId,
+                    Permissions = Permissionv2.GetDefaultPermlist,
+                    WarningsInitialized = true,
+                    WarnPunishments = DefaultWarnPunishments,
+                }
+            );
             ctx.SaveChanges();
         }
 
@@ -110,21 +109,17 @@ public static class GuildConfigExtensions
 
     public static LogSetting LogSettingsFor(this NadekoContext ctx, ulong guildId)
     {
-        var logSetting = ctx.LogSettings
-            .AsQueryable()
+        var logSetting = ctx.LogSettings.AsQueryable()
             .Include(x => x.LogIgnores)
             .Where(x => x.GuildId == guildId)
             .FirstOrDefault();
 
         if (logSetting is null)
         {
-            ctx.LogSettings.Add(logSetting = new ()
-            {
-                GuildId = guildId
-            });
+            ctx.LogSettings.Add(logSetting = new() { GuildId = guildId });
             ctx.SaveChanges();
         }
-            
+
         return logSetting;
     }
 
@@ -139,23 +134,18 @@ public static class GuildConfigExtensions
 
     public static GuildConfig GcWithPermissionsv2For(this NadekoContext ctx, ulong guildId)
     {
-        var config = ctx
-            .GuildConfigs
-            .AsQueryable()
+        var config = ctx.GuildConfigs.AsQueryable()
             .Where(gc => gc.GuildId == guildId)
             .Include(gc => gc.Permissions)
             .FirstOrDefault();
 
         if (config is null) // if there is no guildconfig, create new one
         {
-            ctx.GuildConfigs.Add(config = new()
-            {
-                GuildId = guildId,
-                Permissions = Permissionv2.GetDefaultPermlist
-            });
+            ctx.GuildConfigs.Add(config = new() { GuildId = guildId, Permissions = Permissionv2.GetDefaultPermlist });
             ctx.SaveChanges();
         }
-        else if (config.Permissions is null || !config.Permissions.Any()) // if no perms, add default ones
+        else if (config.Permissions is null ||
+                 !config.Permissions.Any()) // if no perms, add default ones
         {
             config.Permissions = Permissionv2.GetDefaultPermlist;
             ctx.SaveChanges();
@@ -165,8 +155,7 @@ public static class GuildConfigExtensions
     }
 
     public static IEnumerable<FollowedStream> GetFollowedStreams(this DbSet<GuildConfig> configs)
-        => configs
-            .AsQueryable()
+        => configs.AsQueryable()
             .Include(x => x.FollowedStreams)
             .SelectMany(gc => gc.FollowedStreams)
             .ToArray();
@@ -196,7 +185,8 @@ public static class GuildConfigExtensions
                 .Include(x => x.XpSettings)
                 .ThenInclude(x => x.CurrencyRewards)
                 .Include(x => x.XpSettings)
-                .ThenInclude(x => x.ExclusionList));
+                .ThenInclude(x => x.ExclusionList)
+        );
 
         if (gc.XpSettings is null)
             gc.XpSettings = new XpSettings();
@@ -205,15 +195,10 @@ public static class GuildConfigExtensions
     }
 
     public static IEnumerable<GeneratingChannel> GetGeneratingChannels(this DbSet<GuildConfig> configs)
-        => configs
-            .AsQueryable()
+        => configs.AsQueryable()
             .Include(x => x.GenerateCurrencyChannelIds)
             .Where(x => x.GenerateCurrencyChannelIds.Any())
             .SelectMany(x => x.GenerateCurrencyChannelIds)
-            .Select(x => new GeneratingChannel()
-            {
-                ChannelId = x.ChannelId,
-                GuildId = x.GuildConfig.GuildId
-            })
+            .Select(x => new GeneratingChannel() { ChannelId = x.ChannelId, GuildId = x.GuildConfig.GuildId })
             .ToArray();
 }

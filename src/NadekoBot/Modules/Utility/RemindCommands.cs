@@ -127,7 +127,7 @@ public partial class Utility
                     var diff = when - DateTime.UtcNow;
                     embed.AddField(
                         $"#{++i + (page * 10)} {rem.When:HH:mm yyyy-MM-dd} UTC " +
-                        $"(in {diff.Humanize(2, minUnit: TimeUnit.Minute, culture: _cultureInfo)})",
+                        $"(in {diff.Humanize(2, minUnit: TimeUnit.Minute, culture: Culture)})",
                         $@"`Target:` {(rem.IsPrivate ? "DM" : "Channel")}
 `TargetId:` {rem.ChannelId}
 `Message:` {rem.Message?.TrimTo(50)}", false);
@@ -230,7 +230,7 @@ public partial class Utility
                     "⏰ " + GetText(strs.remind(
                         Format.Bold(!isPrivate ? $"<#{targetId}>" : ctx.User.Username),
                         Format.Bold(message),
-                        ts.Humanize(3, minUnit: TimeUnit.Second, culture: _cultureInfo),
+                        ts.Humanize(3, minUnit: TimeUnit.Second, culture: Culture),
                         gTime, gTime))).ConfigureAwait(false);
             }
             catch

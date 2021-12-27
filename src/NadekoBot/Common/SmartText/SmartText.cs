@@ -4,8 +4,11 @@ namespace NadekoBot;
 
 public abstract record SmartText
 {
-    public bool IsEmbed => this is SmartEmbedText;
-    public bool IsPlainText => this is SmartPlainText;
+    public bool IsEmbed
+        => this is SmartEmbedText;
+
+    public bool IsPlainText
+        => this is SmartPlainText;
 
     public static SmartText operator +(SmartText text, string input)
         => text switch
@@ -14,7 +17,7 @@ public abstract record SmartText
             SmartPlainText spt => new SmartPlainText(spt.Text + input),
             _ => throw new ArgumentOutOfRangeException(nameof(text))
         };
-        
+
     public static SmartText operator +(string input, SmartText text)
         => text switch
         {
@@ -22,10 +25,11 @@ public abstract record SmartText
             SmartPlainText spt => new SmartPlainText(input + spt.Text),
             _ => throw new ArgumentOutOfRangeException(nameof(text))
         };
-        
+
     public static SmartText CreateFrom(string input)
     {
-        if (string.IsNullOrWhiteSpace(input) || !input.TrimStart().StartsWith("{"))
+        if (string.IsNullOrWhiteSpace(input) ||
+            !input.TrimStart().StartsWith("{"))
         {
             return new SmartPlainText(input);
         }
@@ -34,6 +38,9 @@ public abstract record SmartText
         {
             var smartEmbedText = JsonConvert.DeserializeObject<SmartEmbedText>(input);
 
+            if (smartEmbedText is null)
+                throw new();
+            
             smartEmbedText.NormalizeFields();
 
             if (!smartEmbedText.IsValid)

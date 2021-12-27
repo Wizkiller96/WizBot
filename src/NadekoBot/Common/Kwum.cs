@@ -4,14 +4,17 @@ namespace NadekoBot.Common;
 
 // needs proper invalid input check (character array input out of range)
 // needs negative number support
+// ReSharper disable once InconsistentNaming
+#pragma warning disable IDE1006
 public readonly struct kwum : IEquatable<kwum>
+#pragma warning restore IDE1006
 {
     private readonly int _value;
-    private const string ValidCharacters = "23456789abcdefghijkmnpqrstuvwxyz";
+    private const string VALID_CHARACTERS = "23456789abcdefghijkmnpqrstuvwxyz";
 
     public kwum(int num)
         => _value = num;
-        
+
     public kwum(in char c)
     {
         if (!IsValidChar(c))
@@ -21,11 +24,11 @@ public readonly struct kwum : IEquatable<kwum>
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static int InternalCharToValue(in char c) 
-        => ValidCharacters.IndexOf(c);
+    private static int InternalCharToValue(in char c)
+        => VALID_CHARACTERS.IndexOf(c);
 
     public kwum(in ReadOnlySpan<char> input)
-    {;
+    {
         _value = 0;
         for (var index = 0; index < input.Length; index++)
         {
@@ -33,14 +36,14 @@ public readonly struct kwum : IEquatable<kwum>
             if (!IsValidChar(c))
                 throw new ArgumentException("All characters need to be a valid kwum characters.", nameof(input));
 
-            _value += ValidCharacters.IndexOf(c) * (int)Math.Pow(ValidCharacters.Length, input.Length - index - 1);
+            _value += VALID_CHARACTERS.IndexOf(c) * (int)Math.Pow(VALID_CHARACTERS.Length, input.Length - index - 1);
         }
     }
 
     public static bool TryParse(in ReadOnlySpan<char> input, out kwum value)
     {
         value = default;
-        foreach(var c in input)
+        foreach (var c in input)
             if (!IsValidChar(c))
                 return false;
 
@@ -59,25 +62,26 @@ public readonly struct kwum : IEquatable<kwum>
 
     public static implicit operator long(kwum kwum)
         => kwum._value;
-        
+
     public static implicit operator int(kwum kwum)
         => kwum._value;
+
     public static implicit operator kwum(int num)
         => new(num);
 
     public static bool IsValidChar(char c)
-        => ValidCharacters.Contains(c);
+        => VALID_CHARACTERS.Contains(c);
 
     public override string ToString()
     {
-        var count = ValidCharacters.Length;
+        var count = VALID_CHARACTERS.Length;
         var localValue = _value;
         var arrSize = (int)Math.Log(localValue, count) + 1;
         Span<char> chars = new char[arrSize];
         while (localValue > 0)
         {
             localValue = Math.DivRem(localValue, count, out var rem);
-            chars[--arrSize] = ValidCharacters[rem];
+            chars[--arrSize] = VALID_CHARACTERS[rem];
         }
 
         return new(chars);

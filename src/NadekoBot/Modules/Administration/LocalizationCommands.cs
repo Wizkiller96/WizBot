@@ -43,8 +43,8 @@ public partial class Administration
         [Priority(0)]
         public async Task LanguageSet()
             => await ReplyConfirmLocalizedAsync(strs.lang_set_show(
-                Format.Bold(_cultureInfo.ToString()),
-                Format.Bold(_cultureInfo.NativeName)));
+                Format.Bold(Culture.ToString()),
+                Format.Bold(Culture.NativeName)));
 
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]

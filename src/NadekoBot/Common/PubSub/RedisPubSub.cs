@@ -18,13 +18,15 @@ public sealed class RedisPubSub : IPubSub
     public Task Pub<TData>(in TypedKey<TData> key, TData data)
     {
         var serialized = _serializer.Serialize(data);
-        return _multi.GetSubscriber().PublishAsync($"{_creds.RedisKey()}:{key.Key}", serialized, CommandFlags.FireAndForget);
+        return _multi.GetSubscriber()
+            .PublishAsync($"{_creds.RedisKey()}:{key.Key}", serialized, CommandFlags.FireAndForget);
     }
 
     public Task Sub<TData>(in TypedKey<TData> key, Func<TData, ValueTask> action)
     {
         var eventName = key.Key;
-        return _multi.GetSubscriber().SubscribeAsync($"{_creds.RedisKey()}:{eventName}", async (ch, data) =>
+
+        async void OnSubscribeHandler(RedisChannel _, RedisValue data)
         {
             try
             {
@@ -33,8 +35,10 @@ public sealed class RedisPubSub : IPubSub
             }
             catch (Exception ex)
             {
-                Log.Error($"Error handling the event {eventName}: {ex.Message}");
+                Log.Error("Error handling the event {EventName}: {ErrorMessage}", eventName, ex.Message);
             }
-        });
+        }
+
+        return _multi.GetSubscriber().SubscribeAsync($"{_creds.RedisKey()}:{eventName}", OnSubscribeHandler);
     }
 }

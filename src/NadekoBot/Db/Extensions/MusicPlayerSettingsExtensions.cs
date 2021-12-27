@@ -7,17 +7,12 @@ public static class MusicPlayerSettingsExtensions
 {
     public static async Task<MusicPlayerSettings> ForGuildAsync(this DbSet<MusicPlayerSettings> settings, ulong guildId)
     {
-        var toReturn = await settings
-            .AsQueryable()
+        var toReturn = await settings.AsQueryable()
             .FirstOrDefaultAsync(x => x.GuildId == guildId);
 
         if (toReturn is null)
         {
-            var newSettings = new MusicPlayerSettings()
-            {
-                GuildId = guildId,
-                PlayerRepeat = PlayerRepeatType.Queue
-            };
+            var newSettings = new MusicPlayerSettings() { GuildId = guildId, PlayerRepeat = PlayerRepeatType.Queue };
 
             await settings.AddAsync(newSettings);
             return newSettings;

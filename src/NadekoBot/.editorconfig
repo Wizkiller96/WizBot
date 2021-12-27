@@ -173,6 +173,14 @@ csharp_preserve_single_line_statements = true
 
 # Naming rules
 
+dotnet_naming_rule.private_readonly_field.symbols = private_readonly_field
+dotnet_naming_rule.private_readonly_field.style = begins_with_underscore
+dotnet_naming_rule.private_readonly_field.severity = warning
+
+dotnet_naming_rule.private_field.symbols = private_field
+dotnet_naming_rule.private_field.style = camel_case
+dotnet_naming_rule.private_field.severity = warning
+
 dotnet_naming_rule.const_fields.symbols = const_fields
 dotnet_naming_rule.const_fields.style = all_upper
 dotnet_naming_rule.const_fields.severity = warning
@@ -209,10 +217,6 @@ dotnet_naming_rule.async_method_should_be_ends_with_async.severity = error
 dotnet_naming_rule.async_method_should_be_ends_with_async.symbols = async_method
 dotnet_naming_rule.async_method_should_be_ends_with_async.style = ends_with_async
 
-dotnet_naming_rule.private_field_should_be_begins_with_underscore.severity = error
-dotnet_naming_rule.private_field_should_be_begins_with_underscore.symbols = private_field
-dotnet_naming_rule.private_field_should_be_begins_with_underscore.style = begins_with_underscore
-
 dotnet_naming_rule.non_field_members_should_be_pascal_case.severity = error
 dotnet_naming_rule.non_field_members_should_be_pascal_case.symbols = non_field_members
 dotnet_naming_rule.non_field_members_should_be_pascal_case.style = pascal_case
@@ -220,10 +224,6 @@ dotnet_naming_rule.non_field_members_should_be_pascal_case.style = pascal_case
 dotnet_naming_rule.local_variable_should_be_camel_case.severity = error
 dotnet_naming_rule.local_variable_should_be_camel_case.symbols = local_variable
 dotnet_naming_rule.local_variable_should_be_camel_case.style = camel_case
-
-dotnet_naming_rule.public_anything_should_be_pascal_case.severity = error
-dotnet_naming_rule.public_anything_should_be_pascal_case.symbols = public_anything
-dotnet_naming_rule.public_anything_should_be_pascal_case.style = pascal_case
 
 # Symbol specifications
 
@@ -262,8 +262,12 @@ dotnet_naming_symbols.non_field_members.applicable_kinds = property, event, meth
 dotnet_naming_symbols.non_field_members.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
 dotnet_naming_symbols.non_field_members.required_modifiers = 
 
+dotnet_naming_symbols.private_readonly_field.applicable_kinds = field
+dotnet_naming_symbols.private_readonly_field.applicable_accessibilities = private
+dotnet_naming_symbols.private_readonly_field.required_modifiers = readonly
+
 dotnet_naming_symbols.private_field.applicable_kinds = field
-dotnet_naming_symbols.private_field.applicable_accessibilities = private
+dotnet_naming_symbols.private_field.applicable_accessibilities = private, protected
 dotnet_naming_symbols.private_field.required_modifiers = 
 
 dotnet_naming_symbols.async_method.applicable_kinds = method, local_function
@@ -273,10 +277,6 @@ dotnet_naming_symbols.async_method.required_modifiers = async
 dotnet_naming_symbols.local_variable.applicable_kinds = parameter, local
 dotnet_naming_symbols.local_variable.applicable_accessibilities = local
 dotnet_naming_symbols.local_variable.required_modifiers = 
-
-dotnet_naming_symbols.public_anything.applicable_kinds = property, field, event, class, struct, interface, enum, delegate, method
-dotnet_naming_symbols.public_anything.applicable_accessibilities = public, internal
-dotnet_naming_symbols.public_anything.required_modifiers = 
 
 # Naming styles
 
@@ -330,8 +330,11 @@ resharper_csharp_wrap_parameters_style = chop_if_long
 resharper_force_chop_compound_if_expression = true
 resharper_keep_existing_linebreaks = false
 resharper_max_formal_parameters_on_line = 3
+resharper_wrap_chained_binary_expressions = chop_if_long
+resharper_wrap_chained_binary_patterns = chop_if_long
+resharper_wrap_chained_method_calls = chop_always
 
-resharper_csharp_wrap_before_first_type_parameter_constraint=true
-resharper_csharp_place_type_constraints_on_same_line=false
-resharper_csharp_wrap_before_extends_colon=true
-resharper_csharp_place_constructor_initializer_on_same_line=false
+resharper_csharp_wrap_before_first_type_parameter_constraint = true
+resharper_csharp_place_type_constraints_on_same_line = false
+resharper_csharp_wrap_before_extends_colon = true
+resharper_csharp_place_constructor_initializer_on_same_line = false

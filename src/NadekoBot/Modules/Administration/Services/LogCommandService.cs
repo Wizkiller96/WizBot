@@ -1002,8 +1002,7 @@ public sealed class LogCommandService : ILogCommandService
         {
             try
             {
-                var msg = optMsg.Value as IUserMessage;
-                if (msg is null || msg.IsAuthor(_client))
+                if (optMsg.Value is not IUserMessage msg || msg.IsAuthor(_client))
                     return;
 
                 if (_ignoreMessageIds.Contains(msg.Id))
@@ -1058,8 +1057,7 @@ public sealed class LogCommandService : ILogCommandService
                 if (imsg2 is not IUserMessage after || after.IsAuthor(_client))
                     return;
 
-                var before = (optmsg.HasValue ? optmsg.Value : null) as IUserMessage;
-                if (before is null)
+                if ((optmsg.HasValue ? optmsg.Value : null) is not IUserMessage before)
                     return;
 
                 if (ch is not ITextChannel channel)

@@ -63,12 +63,10 @@ public sealed class ShmartNumberTypeReader : NadekoTypeReader<ShmartNumber>
             case "MAX":
                 args.Result = Max(ctx);
                 break;
-            default:
-                break;
         }
     }
 
-    private static readonly Regex percentRegex = new(@"^((?<num>100|\d{1,2})%)$", RegexOptions.Compiled);
+    private static readonly Regex _percentRegex = new(@"^((?<num>100|\d{1,2})%)$", RegexOptions.Compiled);
 
     private long Cur(ICommandContext ctx)
     {
@@ -80,15 +78,13 @@ public sealed class ShmartNumberTypeReader : NadekoTypeReader<ShmartNumber>
     {
         var settings = _gambling.Data;
         var max = settings.MaxBet;
-        return max == 0
-            ? Cur(ctx)
-            : max;
+        return max == 0 ? Cur(ctx) : max;
     }
 
     private bool TryHandlePercentage(ICommandContext ctx, string input, out long num)
     {
         num = 0;
-        var m = percentRegex.Match(input);
+        var m = _percentRegex.Match(input);
         if (m.Captures.Count != 0)
         {
             if (!long.TryParse(m.Groups["num"].ToString(), out var percent))
@@ -97,6 +93,7 @@ public sealed class ShmartNumberTypeReader : NadekoTypeReader<ShmartNumber>
             num = (long)(Cur(ctx) * (percent / 100.0f));
             return true;
         }
+
         return false;
     }
 }

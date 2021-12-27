@@ -133,8 +133,7 @@ public class TypingGame
             {
                 if (imsg.Author.IsBot)
                     return;
-                var msg = imsg as SocketUserMessage;
-                if (msg is null)
+                if (imsg is not SocketUserMessage msg)
                     return;
 
                 if (this.Channel is null || this.Channel.Id != msg.Channel.Id) return;

@@ -3,14 +3,20 @@ using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Common.Collections;
 
-public class IndexedCollection<T> : IList<T> where T : class, IIndexed
+public class IndexedCollection<T> : IList<T>
+    where T : class, IIndexed
 {
     public List<T> Source { get; }
     private readonly object _locker = new();
 
-    public int Count => Source.Count;
-    public bool IsReadOnly => false;
-    public int IndexOf(T item) => item.Index;
+    public int Count
+        => Source.Count;
+
+    public bool IsReadOnly
+        => false;
+
+    public int IndexOf([NotNull] T item)
+        => item.Index;
 
     public IndexedCollection()
         => Source = new();
@@ -36,16 +42,17 @@ public class IndexedCollection<T> : IList<T> where T : class, IIndexed
         }
     }
 
-    public static implicit operator List<T>(IndexedCollection<T> x) =>
-        x.Source;
+    public static implicit operator List<T>(IndexedCollection<T> x)
+        => x.Source;
 
-    public List<T> ToList() => Source.ToList();
+    public List<T> ToList()
+        => Source.ToList();
 
-    public IEnumerator<T> GetEnumerator() =>
-        Source.GetEnumerator();
+    public IEnumerator<T> GetEnumerator()
+        => Source.GetEnumerator();
 
-    IEnumerator IEnumerable.GetEnumerator() =>
-        Source.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator()
+        => Source.GetEnumerator();
 
     public void Add(T item)
     {
@@ -82,19 +89,21 @@ public class IndexedCollection<T> : IList<T> where T : class, IIndexed
 
     public virtual bool Remove(T item)
     {
-        bool removed;
         lock (_locker)
         {
-            if (removed = Source.Remove(item))
+            if (Source.Remove(item))
             {
                 for (var i = 0; i < Source.Count; i++)
                 {
                     if (Source[i].Index != i)
                         Source[i].Index = i;
                 }
+
+                return true;
             }
         }
-        return removed;
+
+        return false;
     }
 
     public virtual void Insert(int index, T item)

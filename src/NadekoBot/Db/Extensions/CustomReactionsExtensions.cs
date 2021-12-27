@@ -10,11 +10,7 @@ public static class CustomReactionsExtensions
         => crs.Delete(x => x.GuildId == guildId);
 
     public static IEnumerable<CustomReaction> ForId(this DbSet<CustomReaction> crs, ulong id)
-        => crs
-            .AsNoTracking()
-            .AsQueryable()
-            .Where(x => x.GuildId == id)
-            .ToArray();
+        => crs.AsNoTracking().AsQueryable().Where(x => x.GuildId == id).ToList();
 
     public static CustomReaction GetByGuildIdAndInput(this DbSet<CustomReaction> crs, ulong? guildId, string input)
         => crs.FirstOrDefault(x => x.GuildId == guildId && x.Trigger.ToUpper() == input);

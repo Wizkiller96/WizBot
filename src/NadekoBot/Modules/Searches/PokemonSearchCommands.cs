@@ -56,7 +56,7 @@ public partial class Searches
                         .WithDescription(string.IsNullOrWhiteSpace(kvp.Value.Desc)
                             ? kvp.Value.ShortDesc
                             : kvp.Value.Desc)
-                        .AddField(GetText(strs.rating), kvp.Value.Rating.ToString(_cultureInfo), true));
+                        .AddField(GetText(strs.rating), kvp.Value.Rating.ToString(Culture), true));
                     return;
                 }
             }

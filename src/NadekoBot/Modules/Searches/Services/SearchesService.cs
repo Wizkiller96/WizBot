@@ -626,9 +626,7 @@ public class SearchesService : INService
 
         var results = elems.Select(elem =>
             {
-                var anchor = elem.QuerySelector(".result__a") as IHtmlAnchorElement;
-
-                if (anchor is null)
+                if (elem.QuerySelector(".result__a") is not IHtmlAnchorElement anchor)
                     return null;
 
                 var href = anchor.Href;

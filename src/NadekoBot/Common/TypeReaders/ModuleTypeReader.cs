@@ -10,7 +10,9 @@ public sealed class ModuleTypeReader : NadekoTypeReader<ModuleInfo>
     public override Task<TypeReaderResult> ReadAsync(ICommandContext context, string input)
     {
         input = input.ToUpperInvariant();
-        var module = _cmds.Modules.GroupBy(m => m.GetTopLevelModule()).FirstOrDefault(m => m.Key.Name.ToUpperInvariant() == input)?.Key;
+        var module = _cmds.Modules.GroupBy(m => m.GetTopLevelModule())
+            .FirstOrDefault(m => m.Key.Name.ToUpperInvariant() == input)
+            ?.Key;
         if (module is null)
             return Task.FromResult(TypeReaderResult.FromError(CommandError.ParseFailed, "No such module found."));
 
@@ -28,14 +30,14 @@ public sealed class ModuleOrCrTypeReader : NadekoTypeReader<ModuleOrCrInfo>
     public override Task<TypeReaderResult> ReadAsync(ICommandContext context, string input)
     {
         input = input.ToUpperInvariant();
-        var module = _cmds.Modules.GroupBy(m => m.GetTopLevelModule()).FirstOrDefault(m => m.Key.Name.ToUpperInvariant() == input)?.Key;
-        if (module is null && input != "ACTUALCUSTOMREACTIONS")
+        var module = _cmds.Modules.GroupBy(m => m.GetTopLevelModule())
+            .FirstOrDefault(m => m.Key.Name.ToUpperInvariant() == input)
+            ?.Key;
+        if (module is null &&
+            input != "ACTUALCUSTOMREACTIONS")
             return Task.FromResult(TypeReaderResult.FromError(CommandError.ParseFailed, "No such module found."));
 
-        return Task.FromResult(TypeReaderResult.FromSuccess(new ModuleOrCrInfo
-        {
-            Name = input,
-        }));
+        return Task.FromResult(TypeReaderResult.FromSuccess(new ModuleOrCrInfo { Name = input, }));
     }
 }
 

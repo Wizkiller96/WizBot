@@ -35,7 +35,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
     private string n(long cur)
     {
-        var flowersCi = (CultureInfo)_cultureInfo.Clone();
+        var flowersCi = (CultureInfo)Culture.Clone();
         flowersCi.NumberFormat.CurrencySymbol = CurrencySign;
         Log.Information(string.Join(",", flowersCi.NumberFormat.NativeDigits));
         return cur.ToString("C0", flowersCi);
@@ -59,12 +59,12 @@ public partial class Gambling : GamblingModule<GamblingService>
         }
         var embed = _eb.Create()
             .WithTitle(GetText(strs.economy_state))
-            .AddField(GetText(strs.currency_owned), ((BigInteger)(ec.Cash - ec.Bot)).ToString("N", _cultureInfo) + CurrencySign)
+            .AddField(GetText(strs.currency_owned), ((BigInteger)(ec.Cash - ec.Bot)).ToString("N", Culture) + CurrencySign)
             .AddField(GetText(strs.currency_one_percent), (onePercent * 100).ToString("F2") + "%")
             .AddField(GetText(strs.currency_planted), (BigInteger)ec.Planted)
             .AddField(GetText(strs.owned_waifus_total), (BigInteger)ec.Waifus + CurrencySign)
             .AddField(GetText(strs.bot_currency), n(ec.Bot))
-            .AddField(GetText(strs.total), ((BigInteger)(ec.Cash + ec.Planted + ec.Waifus)).ToString("N", _cultureInfo) + CurrencySign)
+            .AddField(GetText(strs.total), ((BigInteger)(ec.Cash + ec.Planted + ec.Waifus)).ToString("N", Culture) + CurrencySign)
             .WithOkColor();
         // ec.Cash already contains ec.Bot as it's the total of all values in the CurrencyAmount column of the DiscordUser table
         await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);

@@ -8,10 +8,7 @@ public class CmdStrings
     public string Description { get; }
 
     [JsonConstructor]
-    public CmdStrings(
-        [JsonProperty("args")]string[] usages,
-        [JsonProperty("desc")]string description
-    )
+    public CmdStrings([JsonProperty("args")] string[] usages, [JsonProperty("desc")] string description)
     {
         Usages = usages;
         Description = description;

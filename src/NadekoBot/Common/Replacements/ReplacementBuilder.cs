@@ -5,21 +5,29 @@ namespace NadekoBot.Common;
 
 public class ReplacementBuilder
 {
-    private static readonly Regex rngRegex = new("%rng(?:(?<from>(?:-)?\\d+)-(?<to>(?:-)?\\d+))?%", RegexOptions.Compiled);
+    private static readonly Regex _rngRegex = new("%rng(?:(?<from>(?:-)?\\d+)-(?<to>(?:-)?\\d+))?%",
+        RegexOptions.Compiled
+    );
+
     private readonly ConcurrentDictionary<string, Func<string>> _reps = new();
     private readonly ConcurrentDictionary<Regex, Func<Match, string>> _regex = new();
 
     public ReplacementBuilder()
         => WithRngRegex();
 
-    public ReplacementBuilder WithDefault(IUser usr, IMessageChannel ch, SocketGuild g, DiscordSocketClient client)
-        => this.WithUser(usr)
-            .WithChannel(ch)
-            .WithServer(client, g)
-            .WithClient(client);
+    public ReplacementBuilder WithDefault(
+        IUser usr,
+        IMessageChannel ch,
+        SocketGuild g,
+        DiscordSocketClient client)
+        => this.WithUser(usr).WithChannel(ch).WithServer(client, g).WithClient(client);
 
-    public ReplacementBuilder WithDefault(ICommandContext ctx) =>
-        WithDefault(ctx.User, ctx.Channel, ctx.Guild as SocketGuild, (DiscordSocketClient)ctx.Client);
+    public ReplacementBuilder WithDefault(ICommandContext ctx)
+        => WithDefault(ctx.User,
+            ctx.Channel,
+            ctx.Guild as SocketGuild,
+            (DiscordSocketClient)ctx.Client
+        );
 
     public ReplacementBuilder WithMention(DiscordSocketClient client)
     {
@@ -30,12 +38,14 @@ public class ReplacementBuilder
     public ReplacementBuilder WithClient(DiscordSocketClient client)
     {
         WithMention(client);
-        
+
         _reps.TryAdd("%bot.status%", () => client.Status.ToString());
         _reps.TryAdd("%bot.latency%", () => client.Latency.ToString());
         _reps.TryAdd("%bot.name%", () => client.CurrentUser.Username);
         _reps.TryAdd("%bot.fullname%", () => client.CurrentUser.ToString());
-        _reps.TryAdd("%bot.time%", () => DateTime.Now.ToString("HH:mm " + TimeZoneInfo.Local.StandardName.GetInitials()));
+        _reps.TryAdd("%bot.time%",
+            () => DateTime.Now.ToString("HH:mm " + TimeZoneInfo.Local.StandardName.GetInitials())
+        );
         _reps.TryAdd("%bot.discrim%", () => client.CurrentUser.Discriminator);
         _reps.TryAdd("%bot.id%", () => client.CurrentUser.Id.ToString());
         _reps.TryAdd("%bot.avatar%", () => client.CurrentUser.RealAvatarUrl()?.ToString());
@@ -51,19 +61,20 @@ public class ReplacementBuilder
         _reps.TryAdd("%server.members%", () => g is { } sg ? sg.MemberCount.ToString() : "?");
         _reps.TryAdd("%server.boosters%", () => g.PremiumSubscriptionCount.ToString());
         _reps.TryAdd("%server.boost_level%", () => ((int)g.PremiumTier).ToString());
-        _reps.TryAdd("%server.time%", () =>
-        {
-            var to = TimeZoneInfo.Local;
-            if (g != null)
+        _reps.TryAdd("%server.time%",
+            () =>
             {
-                if (GuildTimezoneService.AllServices.TryGetValue(client.CurrentUser.Id, out var tz))
-                    to = tz.GetTimeZoneOrDefault(g.Id) ?? TimeZoneInfo.Local;
-            }
+                var to = TimeZoneInfo.Local;
+                if (g != null)
+                {
+                    if (GuildTimezoneService.AllServices.TryGetValue(client.CurrentUser.Id, out var tz))
+                        to = tz.GetTimeZoneOrDefault(g.Id) ?? TimeZoneInfo.Local;
+                }
 
-            return TimeZoneInfo.ConvertTime(DateTime.UtcNow,
-                TimeZoneInfo.Utc,
-                to).ToString("HH:mm ") + to.StandardName.GetInitials();
-        });
+                return TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZoneInfo.Utc, to).ToString("HH:mm ") +
+                       to.StandardName.GetInitials();
+            }
+        );
         return this;
     }
 
@@ -80,7 +91,7 @@ public class ReplacementBuilder
 
     public ReplacementBuilder WithUser(IUser user)
     {
-        WithManyUsers(new[] {user});
+        WithManyUsers(new[] { user });
         return this;
     }
 
@@ -92,10 +103,18 @@ public class ReplacementBuilder
         _reps.TryAdd("%user.discrim%", () => string.Join(" ", users.Select(user => user.Discriminator)));
         _reps.TryAdd("%user.avatar%", () => string.Join(" ", users.Select(user => user.RealAvatarUrl()?.ToString())));
         _reps.TryAdd("%user.id%", () => string.Join(" ", users.Select(user => user.Id.ToString())));
-        _reps.TryAdd("%user.created_time%", () => string.Join(" ", users.Select(user => user.CreatedAt.ToString("HH:mm"))));
-        _reps.TryAdd("%user.created_date%", () => string.Join(" ", users.Select(user => user.CreatedAt.ToString("dd.MM.yyyy"))));
-        _reps.TryAdd("%user.joined_time%", () => string.Join(" ", users.Select(user => (user as IGuildUser)?.JoinedAt?.ToString("HH:mm") ?? "-")));
-        _reps.TryAdd("%user.joined_date%", () => string.Join(" ", users.Select(user => (user as IGuildUser)?.JoinedAt?.ToString("dd.MM.yyyy") ?? "-")));
+        _reps.TryAdd("%user.created_time%",
+            () => string.Join(" ", users.Select(user => user.CreatedAt.ToString("HH:mm")))
+        );
+        _reps.TryAdd("%user.created_date%",
+            () => string.Join(" ", users.Select(user => user.CreatedAt.ToString("dd.MM.yyyy")))
+        );
+        _reps.TryAdd("%user.joined_time%",
+            () => string.Join(" ", users.Select(user => (user as IGuildUser)?.JoinedAt?.ToString("HH:mm") ?? "-"))
+        );
+        _reps.TryAdd("%user.joined_date%",
+            () => string.Join(" ", users.Select(user => (user as IGuildUser)?.JoinedAt?.ToString("dd.MM.yyyy") ?? "-"))
+        );
         return this;
     }
 
@@ -110,21 +129,24 @@ public class ReplacementBuilder
     public ReplacementBuilder WithRngRegex()
     {
         var rng = new NadekoRandom();
-        _regex.TryAdd(rngRegex, match =>
-        {
-            if (!int.TryParse(match.Groups["from"].ToString(), out var from))
-                from = 0;
-            if (!int.TryParse(match.Groups["to"].ToString(), out var to))
-                to = 0;
+        _regex.TryAdd(_rngRegex,
+            match =>
+            {
+                if (!int.TryParse(match.Groups["from"].ToString(), out var from))
+                    from = 0;
+                if (!int.TryParse(match.Groups["to"].ToString(), out var to))
+                    to = 0;
 
-            if (from == 0 && to == 0)
-                return rng.Next(0, 11).ToString();
+                if (from == 0 &&
+                    to == 0)
+                    return rng.Next(0, 11).ToString();
 
-            if (from >= to)
-                return string.Empty;
+                if (from >= to)
+                    return string.Empty;
 
-            return rng.Next(from, to + 1).ToString();
-        });
+                return rng.Next(from, to + 1).ToString();
+            }
+        );
         return this;
     }
 

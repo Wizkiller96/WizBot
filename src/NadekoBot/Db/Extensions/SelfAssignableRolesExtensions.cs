@@ -16,8 +16,8 @@ public static class SelfAssignableRolesExtensions
         return true;
     }
 
-    public static IEnumerable<SelfAssignedRole> GetFromGuild(this DbSet<SelfAssignedRole> roles, ulong guildId) 
-        =>  roles.AsQueryable()
+    public static IEnumerable<SelfAssignedRole> GetFromGuild(this DbSet<SelfAssignedRole> roles, ulong guildId)
+        => roles.AsQueryable()
             .Where(s => s.GuildId == guildId)
             .ToArray();
 }

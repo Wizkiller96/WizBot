@@ -465,7 +465,7 @@ public partial class Administration
                 .AddField(GetText(strs.duration),
                     time.Time.Humanize(3,
                         minUnit: TimeUnit.Minute,
-                        culture: _cultureInfo),
+                        culture: Culture),
                     true);
 
             if (dmFailed)

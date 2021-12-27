@@ -159,8 +159,7 @@ public class PlantPickService : INService
 
     private Task PotentialFlowerGeneration(IUserMessage imsg)
     {
-        var msg = imsg as SocketUserMessage;
-        if (msg is null || msg.Author.IsBot)
+        if (imsg is not SocketUserMessage msg || msg.Author.IsBot)
             return Task.CompletedTask;
 
         if (imsg.Channel is not ITextChannel channel)

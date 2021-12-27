@@ -27,8 +27,7 @@ public class CurrencyEventsService : INService
         EventOptions opts, Func<CurrencyEvent.Type, EventOptions, long, IEmbedBuilder> embed)
     {
         var g = _client.GetGuild(guildId);
-        var ch = g?.GetChannel(channelId) as SocketTextChannel;
-        if (ch is null)
+        if (g?.GetChannel(channelId) is not SocketTextChannel ch)
             return false;
 
         ICurrencyEvent ce;

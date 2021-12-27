@@ -5,23 +5,19 @@ namespace NadekoBot.Common;
 
 public class JsonSeria : ISeria
 {
-    private readonly JsonSerializerOptions serializerOptions = new()
+    private readonly JsonSerializerOptions _serializerOptions = new()
     {
-        Converters =
-        {
-            new Rgba32Converter(),
-            new CultureInfoConverter(),
-        }
+        Converters = { new Rgba32Converter(), new CultureInfoConverter(), }
     };
-    public byte[] Serialize<T>(T data) 
-        => JsonSerializer.SerializeToUtf8Bytes(data, serializerOptions);
+
+    public byte[] Serialize<T>(T data)
+        => JsonSerializer.SerializeToUtf8Bytes(data, _serializerOptions);
 
     public T Deserialize<T>(byte[] data)
     {
         if (data is null)
             return default;
 
-            
-        return JsonSerializer.Deserialize<T>(data, serializerOptions);
+        return JsonSerializer.Deserialize<T>(data, _serializerOptions);
     }
 }

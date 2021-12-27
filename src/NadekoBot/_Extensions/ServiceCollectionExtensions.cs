@@ -11,8 +11,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddBotStringsServices(this IServiceCollection services, int totalShards)
         => totalShards <= 1
-            ? services
-                .AddSingleton<IStringsSource, LocalFileStringsSource>()
+            ? services.AddSingleton<IStringsSource, LocalFileStringsSource>()
                 .AddSingleton<IBotStringsProvider, LocalBotStringsProvider>()
                 .AddSingleton<IBotStrings, BotStrings>()
             : services.AddSingleton<IStringsSource, LocalFileStringsSource>()
@@ -25,7 +24,8 @@ public static class ServiceCollectionExtensions
 
         foreach (var type in Assembly.GetCallingAssembly().ExportedTypes.Where(x => x.IsSealed))
         {
-            if (type.BaseType?.IsGenericType == true && type.BaseType.GetGenericTypeDefinition() == baseType)
+            if (type.BaseType?.IsGenericType == true &&
+                type.BaseType.GetGenericTypeDefinition() == baseType)
             {
                 services.AddSingleton(type);
                 services.AddSingleton(x => (IConfigService)x.GetRequiredService(type));
@@ -39,8 +39,7 @@ public static class ServiceCollectionExtensions
         => services.AddSealedSubclassesOf(typeof(IConfigMigrator));
 
     public static IServiceCollection AddMusic(this IServiceCollection services)
-        => services
-            .AddSingleton<IMusicService, MusicService>()
+        => services.AddSingleton<IMusicService, MusicService>()
             .AddSingleton<ITrackResolveProvider, TrackResolveProvider>()
             .AddSingleton<IYoutubeResolver, YtdlYoutubeResolver>()
             .AddSingleton<ISoundcloudResolver, SoundcloudResolver>()
@@ -49,14 +48,13 @@ public static class ServiceCollectionExtensions
             .AddSingleton<ITrackCacher, RedisTrackCacher>()
             .AddSingleton<YtLoader>()
             .AddSingleton<IPlaceholderProvider>(svc => svc.GetRequiredService<IMusicService>());
-        
+
     // consider using scrutor, because slightly different versions
     // of this might be needed in several different places
     public static IServiceCollection AddSealedSubclassesOf(this IServiceCollection services, Type baseType)
     {
         var subTypes = Assembly.GetCallingAssembly()
-            .ExportedTypes
-            .Where(type => type.IsSealed && baseType.IsAssignableFrom(type));
+            .ExportedTypes.Where(type => type.IsSealed && baseType.IsAssignableFrom(type));
 
         foreach (var subType in subTypes)
         {
