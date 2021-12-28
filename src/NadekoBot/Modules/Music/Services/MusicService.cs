@@ -179,12 +179,15 @@ public sealed class MusicService : IMusicService
         return mp;
     }
 
-    public Task<IUserMessage?> SendToOutputAsync(ulong guildId, IEmbedBuilder embed)
+    public async Task<IUserMessage?> SendToOutputAsync(ulong guildId, IEmbedBuilder embed)
     {
         if (_outputChannels.TryGetValue(guildId, out var chan))
-            return (chan.Default ?? chan.Override).EmbedAsync(embed);
+        {
+            var msg = await (chan.Override ?? chan.Default).EmbedAsync(embed);
+            return msg;
+        }
 
-        return Task.FromResult<IUserMessage?>(null);
+        return null;
     }
 
     private Func<IMusicPlayer, IQueuedTrackInfo, Task> OnTrackCompleted(ulong guildId)
