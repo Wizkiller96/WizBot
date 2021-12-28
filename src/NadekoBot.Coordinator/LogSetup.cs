@@ -21,7 +21,7 @@ namespace NadekoBot.Services
                 .Enrich.WithProperty("LogSource", source)
                 .CreateLogger();
             
-            System.Console.OutputEncoding = Encoding.UTF8;
+            Console.OutputEncoding = Encoding.UTF8;
         }
 
         private static ConsoleTheme GetTheme()

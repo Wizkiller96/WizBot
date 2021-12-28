@@ -1,9 +1,9 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Buffers;
 using System.Threading;
 using System.Threading.Tasks;
 
-#nullable enable
 namespace Ayu.Discord.Voice
 {
     public sealed class PoopyBufferImmortalized : ISongBuffer
