@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using AngleSharp.Text;
 
 namespace NadekoBot.Modules.Games.Hangman;
@@ -103,6 +103,7 @@ public sealed class HangmanGame
                 return GetState(GuessResult.Win);
             }
 
+            _correct.Add(charGuess);
             return GetState(GuessResult.Guess);
         }
 
