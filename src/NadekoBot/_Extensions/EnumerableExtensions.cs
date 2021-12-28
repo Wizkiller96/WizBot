@@ -1,4 +1,4 @@
-﻿using System.Security.Cryptography;
+using System.Security.Cryptography;
 using NadekoBot.Common.Collections;
 using NadekoBot.Services.Database.Models;
 
@@ -14,7 +14,7 @@ public static class EnumerableExtensions
     /// <param name="func">Optional transformation to apply to each element before concatenation.</param>
     /// <typeparam name="T">The type of the members of values.</typeparam>
     /// <returns>A string that consists of the members of values delimited by the separator character. -or- Empty if values has no elements.</returns>
-    public static string Join<T>(this IEnumerable<T> data, char separator, Func<T, string> func = null)
+    public static string Join<T>(this IEnumerable<T> data, char separator, Func<T, string>? func = null)
         => string.Join(separator, data.Select(func ?? (x => x?.ToString() ?? string.Empty)));
 
     /// <summary>
@@ -25,7 +25,7 @@ public static class EnumerableExtensions
     /// <param name="func">Optional transformation to apply to each element before concatenation.</param>
     /// <typeparam name="T">The type of the members of values.</typeparam>
     /// <returns>A string that consists of the members of values delimited by the separator character. -or- Empty if values has no elements.</returns>
-    public static string Join<T>(this IEnumerable<T> data, string separator, Func<T, string> func = null)
+    public static string Join<T>(this IEnumerable<T> data, string separator, Func<T, string>? func = null)
         => string.Join(separator, data.Select(func ?? (x => x?.ToString() ?? string.Empty)));
 
     /// <summary>
@@ -66,6 +66,7 @@ public static class EnumerableExtensions
     /// <returns>A new instance of the <see cref="ConcurrentDictionary{TKey,TValue}"/> class</returns>
     public static ConcurrentDictionary<TKey, TValue> ToConcurrent<TKey, TValue>(
         this IEnumerable<KeyValuePair<TKey, TValue>> dict)
+        where TKey : notnull
         => new(dict);
 
     public static IndexedCollection<T> ToIndexed<T>(this IEnumerable<T> enumerable)

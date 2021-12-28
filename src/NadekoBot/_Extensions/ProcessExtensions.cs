@@ -1,4 +1,4 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 // https://github.com/aspnet/Common/blob/dev/shared/Microsoft.Extensions.Process.Sources/ProcessHelper.cs
 
@@ -79,7 +79,7 @@ public static class ProcessExtensions
         string fileName,
         string arguments,
         TimeSpan timeout,
-        out string stdout)
+        out string? stdout)
     {
         stdout = null;
 

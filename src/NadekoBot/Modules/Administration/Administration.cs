@@ -1,3 +1,4 @@
+#nullable disable
 using NadekoBot.Common.TypeReaders.Models;
 using NadekoBot.Modules.Administration.Services;
 
@@ -218,7 +219,7 @@ public partial class Administration : NadekoModule<AdministrationService>
     public async Task SetTopic([Leftover] string topic = null)
     {
         var channel = (ITextChannel) ctx.Channel;
-        topic = topic ?? "";
+        topic ??= "";
         await channel.ModifyAsync(c => c.Topic = topic).ConfigureAwait(false);
         await ReplyConfirmLocalizedAsync(strs.set_topic).ConfigureAwait(false);
     }

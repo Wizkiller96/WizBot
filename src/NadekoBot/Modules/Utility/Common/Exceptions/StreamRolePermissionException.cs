@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Modules.Utility.Common.Exceptions;
+#nullable disable
+namespace NadekoBot.Modules.Utility.Common.Exceptions;
 
 public class StreamRolePermissionException : Exception
 {

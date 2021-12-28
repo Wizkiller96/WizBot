@@ -1,4 +1,5 @@
-﻿using YamlDotNet.Core;
+#nullable disable
+using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 
 namespace NadekoBot.Common.Yml;

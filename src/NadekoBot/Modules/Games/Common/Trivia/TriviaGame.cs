@@ -1,4 +1,5 @@
-﻿using System.Text;
+#nullable disable
+using System.Text;
 
 namespace NadekoBot.Modules.Games.Common.Trivia;
 

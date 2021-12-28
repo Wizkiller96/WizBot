@@ -1,4 +1,5 @@
-﻿using NadekoBot.Services.Database.Models;
+#nullable disable
+using NadekoBot.Services.Database.Models;
 using NadekoBot.Modules.Administration.Common;
 using NadekoBot.Modules.Administration.Services;
 using NadekoBot.Common.TypeReaders.Models;

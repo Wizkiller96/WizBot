@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Modules.Music;
+#nullable disable
+namespace NadekoBot.Modules.Music;
 
 public static class MusicExtensions
 {

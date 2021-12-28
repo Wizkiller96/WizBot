@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Services;
+#nullable disable
+namespace NadekoBot.Services;
 
 public class LocalBotStringsProvider : IBotStringsProvider
 {

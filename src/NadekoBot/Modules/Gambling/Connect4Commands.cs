@@ -1,4 +1,5 @@
-﻿using NadekoBot.Modules.Gambling.Common;
+#nullable disable
+using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Common.Connect4;
 using NadekoBot.Modules.Gambling.Services;
 using System.Text;

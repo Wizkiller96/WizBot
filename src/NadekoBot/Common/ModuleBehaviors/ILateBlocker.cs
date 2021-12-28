@@ -1,4 +1,4 @@
-﻿namespace NadekoBot.Common.ModuleBehaviors;
+namespace NadekoBot.Common.ModuleBehaviors;
 
 public interface ILateBlocker
 {

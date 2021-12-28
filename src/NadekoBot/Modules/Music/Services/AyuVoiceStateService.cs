@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+#nullable disable
+using System.Reflection;
 using Ayu.Discord.Voice;
 
 namespace NadekoBot.Modules.Music.Services;

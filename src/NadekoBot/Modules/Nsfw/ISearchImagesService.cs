@@ -1,4 +1,5 @@
-﻿using NadekoBot.Modules.Searches.Common;
+#nullable disable
+using NadekoBot.Modules.Searches.Common;
 
 namespace NadekoBot.Modules.Nsfw;
 

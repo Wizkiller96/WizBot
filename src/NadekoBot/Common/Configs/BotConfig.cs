@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+#nullable disable
+using System.Globalization;
 using Cloneable;
 using NadekoBot.Common.Yml;
 using SixLabors.ImageSharp.PixelFormats;

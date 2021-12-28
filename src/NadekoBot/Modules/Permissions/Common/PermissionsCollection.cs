@@ -1,4 +1,5 @@
-﻿using NadekoBot.Common.Collections;
+#nullable disable
+using NadekoBot.Common.Collections;
 using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Permissions.Common;

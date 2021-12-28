@@ -1,4 +1,5 @@
-﻿using Ayu.Discord.Voice;
+#nullable disable
+using Ayu.Discord.Voice;
 using Ayu.Discord.Voice.Models;
 
 namespace NadekoBot.Modules.Music;

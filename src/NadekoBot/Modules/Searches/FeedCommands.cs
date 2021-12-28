@@ -1,4 +1,5 @@
-﻿using NadekoBot.Modules.Searches.Services;
+#nullable disable
+using NadekoBot.Modules.Searches.Services;
 using System.Text.RegularExpressions;
 
 namespace NadekoBot.Modules.Searches;
@@ -36,7 +37,7 @@ public partial class Searches
                           (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
             if (success)
             {
-                channel = channel ?? (ITextChannel)ctx.Channel;
+                channel ??= (ITextChannel)ctx.Channel;
                 try
                 {
                     var feeds = await CodeHollow.FeedReader.FeedReader.ReadAsync(url).ConfigureAwait(false);

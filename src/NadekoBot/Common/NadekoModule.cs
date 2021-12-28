@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+#nullable disable
+using System.Globalization;
 // ReSharper disable InconsistentNaming
 
 namespace NadekoBot.Modules;

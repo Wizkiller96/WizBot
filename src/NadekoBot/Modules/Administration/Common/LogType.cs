@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Modules.Administration;
+#nullable disable
+namespace NadekoBot.Modules.Administration;
 
 public enum LogType
 {

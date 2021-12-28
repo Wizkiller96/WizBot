@@ -1,4 +1,5 @@
-﻿using NadekoBot.Modules.Xp.Services;
+#nullable disable
+using NadekoBot.Modules.Xp.Services;
 
 namespace NadekoBot.Modules.Xp;
 
@@ -80,7 +81,7 @@ public partial class Xp
         [Priority(1)]
         public async Task ClubInformation(IUser user = null)
         {
-            user = user ?? ctx.User;
+            user ??= ctx.User;
             var club = _service.GetClubByMember(user);
             if (club is null)
             {

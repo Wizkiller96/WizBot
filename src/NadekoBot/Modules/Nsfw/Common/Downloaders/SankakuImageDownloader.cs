@@ -1,3 +1,4 @@
+#nullable disable
 using System.Text.Json;
 
 namespace NadekoBot.Modules.Nsfw.Common;

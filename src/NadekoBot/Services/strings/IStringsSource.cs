@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Services;
+#nullable disable
+namespace NadekoBot.Services;
 
 /// <summary>
 /// Basic interface used for classes implementing strings loading mechanism

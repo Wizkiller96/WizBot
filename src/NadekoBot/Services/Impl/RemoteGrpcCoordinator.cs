@@ -1,4 +1,5 @@
-﻿using Grpc.Core;
+#nullable disable
+using Grpc.Core;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Coordinator;
 

@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+#nullable disable
+using System.Text.Json;
 
 namespace SystemTextJsonSamples;
 

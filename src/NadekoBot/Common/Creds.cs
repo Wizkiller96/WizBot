@@ -1,4 +1,5 @@
-﻿using NadekoBot.Common.Yml;
+#nullable disable
+using NadekoBot.Common.Yml;
 
 namespace NadekoBot.Common;
 

@@ -1,4 +1,4 @@
-﻿namespace NadekoBot.Common.Attributes;
+namespace NadekoBot.Common.Attributes;
 
 [AttributeUsage(AttributeTargets.Method)]
 public sealed class NadekoOptionsAttribute : Attribute

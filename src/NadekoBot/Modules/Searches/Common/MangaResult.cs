@@ -1,3 +1,4 @@
+#nullable disable
 using Newtonsoft.Json;
 
 namespace NadekoBot.Modules.Searches.Common;

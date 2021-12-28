@@ -1,3 +1,4 @@
+#nullable disable
 using NadekoBot.Services.Database.Models;
 using Microsoft.EntityFrameworkCore;
 

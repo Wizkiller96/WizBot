@@ -1,3 +1,4 @@
+#nullable disable
 using CommandLine;
 using Humanizer.Localisation;
 using NadekoBot.Common.TypeReaders.Models;

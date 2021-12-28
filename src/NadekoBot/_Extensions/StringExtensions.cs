@@ -14,7 +14,7 @@ public static class StringExtensions
         return str.PadLeft(padLeft).PadRight(length);
     }
 
-    public static T MapJson<T>(this string str)
+    public static T? MapJson<T>(this string str)
         => JsonConvert.DeserializeObject<T>(str);
 
     private static readonly HashSet<char> _lettersAndDigits = new(Enumerable.Range(48, 10)
@@ -26,7 +26,7 @@ public static class StringExtensions
     public static string StripHtml(this string input)
         => Regex.Replace(input, "<.*?>", String.Empty);
 
-    public static string TrimTo(this string str, int maxLength, bool hideDots = false)
+    public static string? TrimTo(this string? str, int maxLength, bool hideDots = false)
         => hideDots ? str?.Truncate(maxLength, string.Empty) : str?.Truncate(maxLength);
 
     public static string ToTitleCase(this string str)

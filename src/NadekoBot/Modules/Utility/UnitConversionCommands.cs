@@ -1,4 +1,5 @@
-﻿using NadekoBot.Modules.Utility.Services;
+#nullable disable
+using NadekoBot.Modules.Utility.Services;
 
 namespace NadekoBot.Modules.Utility;
 
@@ -63,7 +64,7 @@ public partial class Utility
                 switch (targetUnit.Triggers.First().ToUpperInvariant())
                 {
                     case "C":
-                        res = res - 273.15m; //celcius!
+                        res -= 273.15m; //celcius!
                         break;
                     case "F":
                         res = (res * (9m / 5m)) - 459.67m;

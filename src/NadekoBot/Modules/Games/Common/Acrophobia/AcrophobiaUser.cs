@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Modules.Games.Common.Acrophobia;
+#nullable disable
+namespace NadekoBot.Modules.Games.Common.Acrophobia;
 
 public class AcrophobiaUser
 {

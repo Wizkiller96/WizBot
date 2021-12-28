@@ -1,4 +1,5 @@
-﻿using CommandLine;
+#nullable disable
+using CommandLine;
 
 namespace NadekoBot.Modules.Utility.Services;
 

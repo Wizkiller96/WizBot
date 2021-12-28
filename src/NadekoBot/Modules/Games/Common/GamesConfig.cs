@@ -1,4 +1,5 @@
-﻿using Cloneable;
+#nullable disable
+using Cloneable;
 using NadekoBot.Common.Yml;
 
 namespace NadekoBot.Modules.Games.Common;

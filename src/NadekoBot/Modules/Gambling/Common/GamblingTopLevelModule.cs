@@ -1,4 +1,5 @@
-﻿using NadekoBot.Modules.Gambling.Services;
+#nullable disable
+using NadekoBot.Modules.Gambling.Services;
 
 namespace NadekoBot.Modules.Gambling.Common;
 

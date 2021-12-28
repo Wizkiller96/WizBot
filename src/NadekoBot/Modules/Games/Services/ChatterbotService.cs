@@ -1,4 +1,5 @@
-﻿using NadekoBot.Common.ModuleBehaviors;
+#nullable disable
+using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Modules.Permissions.Common;
 using NadekoBot.Modules.Permissions.Services;
 using NadekoBot.Modules.Games.Common.ChatterBot;

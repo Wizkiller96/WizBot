@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+#nullable disable
+using Microsoft.EntityFrameworkCore;
 using NadekoBot.Db.Models;
 
 namespace NadekoBot.Db;

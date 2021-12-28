@@ -1,4 +1,4 @@
-﻿#nullable enable
+﻿
 using Microsoft.EntityFrameworkCore;
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;

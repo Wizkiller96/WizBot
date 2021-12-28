@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Modules.Gambling.Common.Slot;
+#nullable disable
+namespace NadekoBot.Modules.Gambling.Common.Slot;
 
 public class SlotGame
 {

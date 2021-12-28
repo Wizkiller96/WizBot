@@ -1,4 +1,5 @@
-﻿using NadekoBot.Modules.Gambling.Common.Events;
+#nullable disable
+using NadekoBot.Modules.Gambling.Common.Events;
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Services.Database.Models;
 

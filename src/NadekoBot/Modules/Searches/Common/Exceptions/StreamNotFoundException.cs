@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Modules.Searches.Common.Exceptions;
+#nullable disable
+namespace NadekoBot.Modules.Searches.Common.Exceptions;
 
 public class StreamNotFoundException : Exception
 {

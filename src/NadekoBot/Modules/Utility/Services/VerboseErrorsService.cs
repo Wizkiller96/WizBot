@@ -1,4 +1,5 @@
-﻿using NadekoBot.Modules.Help.Services;
+#nullable disable
+using NadekoBot.Modules.Help.Services;
 using NadekoBot.Db;
 
 namespace NadekoBot.Modules.Utility.Services;

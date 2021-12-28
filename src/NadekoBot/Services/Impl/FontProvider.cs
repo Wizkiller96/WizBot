@@ -1,4 +1,5 @@
-﻿using SixLabors.Fonts;
+#nullable disable
+using SixLabors.Fonts;
 
 namespace NadekoBot.Services;
 

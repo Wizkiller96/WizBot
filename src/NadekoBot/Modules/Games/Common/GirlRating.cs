@@ -1,4 +1,5 @@
-﻿using Image = SixLabors.ImageSharp.Image;
+#nullable disable
+using Image = SixLabors.ImageSharp.Image;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 

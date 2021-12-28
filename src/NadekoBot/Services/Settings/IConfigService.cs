@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Services;
+#nullable disable
+namespace NadekoBot.Services;
 
 /// <summary>
 /// Interface that all services which deal with configs should implement

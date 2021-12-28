@@ -1,4 +1,5 @@
-﻿using NadekoBot.Common.ModuleBehaviors;
+#nullable disable
+using NadekoBot.Common.ModuleBehaviors;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace NadekoBot.Services;

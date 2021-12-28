@@ -1,4 +1,5 @@
-﻿using System.Threading.Channels;
+#nullable disable
+using System.Threading.Channels;
 using LinqToDB;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Services.Database.Models;

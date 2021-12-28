@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Json;
+#nullable disable
+using System.Net.Http.Json;
 
 namespace NadekoBot.Modules.Nsfw.Common;
 

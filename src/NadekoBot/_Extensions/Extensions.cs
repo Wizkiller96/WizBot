@@ -1,4 +1,4 @@
-﻿using Humanizer.Localisation;
+using Humanizer.Localisation;
 using NadekoBot.Modules.Administration.Services;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
@@ -147,7 +147,7 @@ public static class Extensions
         );
 
     private static string MethodName(this CommandInfo cmd)
-        => ((NadekoCommandAttribute)cmd.Attributes.FirstOrDefault(x => x is NadekoCommandAttribute))?.MethodName ??
+        => ((NadekoCommandAttribute?)cmd.Attributes.FirstOrDefault(x => x is NadekoCommandAttribute))?.MethodName ??
            cmd.Name;
 
     private static string GetFullUsage(string commandName, string args, string prefix)
@@ -177,7 +177,7 @@ public static class Extensions
         this IUserMessage msg,
         DiscordSocketClient client,
         Func<SocketReaction, Task> reactionAdded,
-        Func<SocketReaction, Task> reactionRemoved = null)
+        Func<SocketReaction, Task>? reactionRemoved = null)
     {
         if (reactionRemoved is null)
             reactionRemoved = _ => Task.CompletedTask;
@@ -209,11 +209,8 @@ public static class Extensions
         );
     }
 
-    public static IMessage DeleteAfter(this IUserMessage msg, int seconds, ILogCommandService logService = null)
+    public static IMessage DeleteAfter(this IUserMessage msg, int seconds, ILogCommandService? logService = null)
     {
-        if (msg is null)
-            return null;
-
         Task.Run(async () =>
             {
                 await Task.Delay(seconds * 1000).ConfigureAwait(false);
@@ -245,7 +242,7 @@ public static class Extensions
         return users.Where(u => u.RoleIds.Contains(role.Id));
     }
 
-    public static string ToJson<T>(this T any, JsonSerializerOptions options = null)
+    public static string ToJson<T>(this T any, JsonSerializerOptions? options = null)
         => JsonSerializer.Serialize(any, options);
 
     /// <summary>
@@ -276,7 +273,7 @@ public static class Extensions
         return opts;
     }
 
-    public static MemoryStream ToStream(this Image<Rgba32> img, IImageFormat format = null)
+    public static MemoryStream ToStream(this Image<Rgba32> img, IImageFormat? format = null)
     {
         var imageStream = new MemoryStream();
         if (format?.Name == "GIF")
@@ -307,7 +304,7 @@ public static class Extensions
     public static bool IsImage(this HttpResponseMessage msg)
         => IsImage(msg, out _);
 
-    public static bool IsImage(this HttpResponseMessage msg, out string mimeType)
+    public static bool IsImage(this HttpResponseMessage msg, out string? mimeType)
     {
         mimeType = msg.Content.Headers.ContentType?.MediaType;
         if (mimeType is "image/png" or "image/jpeg" or "image/gif")

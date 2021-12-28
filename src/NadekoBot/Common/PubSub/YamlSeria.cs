@@ -22,6 +22,7 @@ public class YamlSeria : IConfigSeria
     }
 
     public string Serialize<T>(T obj)
+        where T: notnull
     {
         var escapedOutput = _serializer.Serialize(obj);
         var output = _codePointRegex.Replace(escapedOutput,

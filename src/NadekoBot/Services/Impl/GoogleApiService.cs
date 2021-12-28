@@ -1,4 +1,5 @@
-﻿using Google;
+#nullable disable
+using Google;
 using Google.Apis.Customsearch.v1;
 using Google.Apis.Services;
 using Google.Apis.Urlshortener.v1;

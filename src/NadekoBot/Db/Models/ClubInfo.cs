@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+#nullable disable
+using System.ComponentModel.DataAnnotations;
 using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Db.Models;

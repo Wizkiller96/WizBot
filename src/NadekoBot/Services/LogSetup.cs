@@ -1,4 +1,5 @@
-﻿using System.Text;
+#nullable disable
+using System.Text;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
 

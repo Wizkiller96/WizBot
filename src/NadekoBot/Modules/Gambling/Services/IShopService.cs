@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Modules.Gambling.Services;
+#nullable disable
+namespace NadekoBot.Modules.Gambling.Services;
 
 public interface IShopService
 {

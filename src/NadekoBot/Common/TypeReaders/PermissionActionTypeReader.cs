@@ -1,4 +1,5 @@
-﻿using NadekoBot.Common.TypeReaders.Models;
+#nullable disable
+using NadekoBot.Common.TypeReaders.Models;
 
 namespace NadekoBot.Common.TypeReaders;
 

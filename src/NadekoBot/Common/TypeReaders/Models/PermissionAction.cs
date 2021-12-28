@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Common.TypeReaders.Models;
+#nullable disable
+namespace NadekoBot.Common.TypeReaders.Models;
 
 public class PermissionAction
 {

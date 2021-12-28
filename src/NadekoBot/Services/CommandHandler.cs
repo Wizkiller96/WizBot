@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+#nullable disable
+using System.Collections.Immutable;
 using NadekoBot.Common.Configs;
 using NadekoBot.Db;
 using Discord.Interactions;
@@ -194,34 +195,42 @@ public class CommandHandler : INService
         }
     }
 
-    private async Task MessageReceivedHandler(SocketMessage msg)
+    private Task MessageReceivedHandler(SocketMessage msg)
     {
-        
-        try
-        {
-            if (msg.Author.IsBot || !_bot.IsReady) //no bots, wait until bot connected and initialized
-                return;
+        //no bots, wait until bot connected and initialized
+        if (msg.Author.IsBot || !_bot.IsReady)
+            return Task.CompletedTask;
 
-            if (msg is not SocketUserMessage usrMsg)
-                return;
+        if (msg is not SocketUserMessage usrMsg)
+            return Task.CompletedTask;
+
+        Task.Run(async () =>
+            {
+                try
+                {
 #if !GLOBAL_NADEKO
-            // track how many messagges each user is sending
-            UserMessagesSent.AddOrUpdate(usrMsg.Author.Id, 1, (key, old) => ++old);
+                    // track how many messagges each user is sending
+                    UserMessagesSent.AddOrUpdate(usrMsg.Author.Id, 1, (key, old) => ++old);
 #endif
 
-            var channel = msg.Channel;
-            var guild = (msg.Channel as SocketTextChannel)?.Guild;
+                    var channel = msg.Channel;
+                    var guild = (msg.Channel as SocketTextChannel)?.Guild;
 
-            await TryRunCommand(guild, channel, usrMsg).ConfigureAwait(false);
-        }
-        catch (Exception ex)
-        {
-            Log.Warning(ex, "Error in CommandHandler");
-            if (ex.InnerException != null)
-            {
-                Log.Warning(ex.InnerException, "Inner Exception of the error in CommandHandler");
+                    await TryRunCommand(guild, channel, usrMsg)
+                        .ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    Log.Warning(ex, "Error in CommandHandler");
+                    if (ex.InnerException != null)
+                    {
+                        Log.Warning(ex.InnerException, "Inner Exception of the error in CommandHandler");
+                    }
+                }
             }
-        }
+        );
+
+        return Task.CompletedTask;
     }
 
     public async Task TryRunCommand(SocketGuild guild, ISocketMessageChannel channel, IUserMessage usrMsg)

@@ -1,4 +1,4 @@
-﻿namespace NadekoBot.Extensions;
+namespace NadekoBot.Extensions;
 
 public static class MessageChannelExtensions
 {
@@ -7,8 +7,8 @@ public static class MessageChannelExtensions
 
     public static Task<IUserMessage> SendAsync(
         this IMessageChannel channel,
-        string plainText,
-        Embed embed,
+        string? plainText,
+        Embed? embed,
         bool sanitizeAll = false)
     {
         plainText = sanitizeAll ? plainText?.SanitizeAllMentions() ?? "" : plainText?.SanitizeMentions() ?? "";
@@ -32,8 +32,8 @@ public static class MessageChannelExtensions
         IEmbedBuilderService eb,
         string title,
         string error,
-        string url = null,
-        string footer = null)
+        string? url = null,
+        string? footer = null)
     {
         var embed = eb.Create().WithErrorColor().WithDescription(error).WithTitle(title);
 
@@ -58,8 +58,8 @@ public static class MessageChannelExtensions
         IEmbedBuilderService eb,
         string title,
         string text,
-        string url = null,
-        string footer = null)
+        string? url = null,
+        string? footer = null)
     {
         var embed = eb.Create().WithOkColor().WithDescription(text).WithTitle(title);
 

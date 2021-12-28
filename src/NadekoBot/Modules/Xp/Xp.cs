@@ -1,4 +1,5 @@
-﻿using NadekoBot.Services.Database.Models;
+#nullable disable
+using NadekoBot.Services.Database.Models;
 using NadekoBot.Modules.Xp.Services;
 using NadekoBot.Modules.Gambling.Services;
 
@@ -19,7 +20,7 @@ public partial class Xp : NadekoModule<XpService>
     [RequireContext(ContextType.Guild)]
     public async Task Experience([Leftover] IUser user = null)
     {
-        user = user ?? ctx.User;
+        user ??= ctx.User;
         await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
         var (img, fmt) = await _service.GenerateXpImageAsync((IGuildUser)user).ConfigureAwait(false);
         await using (img)

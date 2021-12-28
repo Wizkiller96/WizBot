@@ -1,4 +1,5 @@
-﻿using System.Threading.Channels;
+#nullable disable
+using System.Threading.Channels;
 using NadekoBot.Modules.Administration.Common;
 using NadekoBot.Services.Database.Models;
 using Microsoft.EntityFrameworkCore;

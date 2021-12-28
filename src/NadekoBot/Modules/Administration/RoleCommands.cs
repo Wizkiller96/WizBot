@@ -1,4 +1,5 @@
-﻿using NadekoBot.Services.Database.Models;
+#nullable disable
+using NadekoBot.Services.Database.Models;
 using NadekoBot.Modules.Administration.Services;
 using SixLabors.ImageSharp.PixelFormats;
 using System.Net;

@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Modules.Nsfw.Common;
+#nullable disable
+namespace NadekoBot.Modules.Nsfw.Common;
 
 public class E621Object : IImageData
 {

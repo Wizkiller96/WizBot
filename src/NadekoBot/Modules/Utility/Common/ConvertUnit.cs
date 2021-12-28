@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+#nullable disable
+using System.Diagnostics;
 
 namespace NadekoBot.Modules.Utility.Common;
 

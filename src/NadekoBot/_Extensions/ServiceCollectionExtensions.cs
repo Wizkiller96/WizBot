@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using NadekoBot.Modules.Music;
 using NadekoBot.Modules.Music.Resolvers;

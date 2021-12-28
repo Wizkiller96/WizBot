@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+#nullable disable
+using Microsoft.EntityFrameworkCore;
 using NadekoBot.Services.Database;
 using NadekoBot.Services.Database.Models;
 

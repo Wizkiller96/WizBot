@@ -1,3 +1,4 @@
+#nullable disable
 namespace NadekoBot.Services.Database.Models;
 
 public class AutoTranslateChannel : DbEntity

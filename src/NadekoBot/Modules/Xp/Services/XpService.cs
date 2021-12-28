@@ -1,3 +1,4 @@
+#nullable disable
 using NadekoBot.Db.Models;
 using Newtonsoft.Json;
 using SixLabors.Fonts;

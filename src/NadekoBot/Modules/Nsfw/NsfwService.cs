@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Modules.Nsfw;
+#nullable disable
+namespace NadekoBot.Modules.Nsfw;
 
 public interface INsfwService
 {

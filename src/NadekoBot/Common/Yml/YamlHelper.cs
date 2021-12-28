@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Common.Yml;
+#nullable disable
+namespace NadekoBot.Common.Yml;
 
 public class YamlHelper
 {

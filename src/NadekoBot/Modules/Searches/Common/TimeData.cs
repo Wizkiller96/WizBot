@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Modules.Searches.Common;
+#nullable disable
+namespace NadekoBot.Modules.Searches.Common;
 
 public class TimeData
 {

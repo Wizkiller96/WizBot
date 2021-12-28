@@ -1,3 +1,4 @@
+#nullable disable
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Db.Models;
 using NadekoBot.Modules.Gambling.Services;
@@ -124,7 +125,7 @@ public partial class Gambling : GamblingModule<GamblingService>
     [RequireContext(ContextType.Guild)]
     public async Task Raffle([Leftover] IRole role = null)
     {
-        role = role ?? ctx.Guild.EveryoneRole;
+        role ??= ctx.Guild.EveryoneRole;
 
         var members = (await role.GetMembersAsync().ConfigureAwait(false)).Where(u => u.Status != UserStatus.Offline);
         var membersArray = members as IUser[] ?? members.ToArray();
@@ -140,7 +141,7 @@ public partial class Gambling : GamblingModule<GamblingService>
     [RequireContext(ContextType.Guild)]
     public async Task RaffleAny([Leftover] IRole role = null)
     {
-        role = role ?? ctx.Guild.EveryoneRole;
+        role ??= ctx.Guild.EveryoneRole;
 
         var members = await role.GetMembersAsync().ConfigureAwait(false);
         var membersArray = members as IUser[] ?? members.ToArray();
@@ -207,7 +208,7 @@ public partial class Gambling : GamblingModule<GamblingService>
     [Priority(1)]
     public async Task Cash([Leftover] IUser user = null)
     {
-        user = user ?? ctx.User;
+        user ??= ctx.User;
         await ConfirmLocalizedAsync(strs.has(Format.Bold(user.ToString()), $"{GetCurrency(user.Id)}"));
     }
 

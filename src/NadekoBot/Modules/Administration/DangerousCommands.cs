@@ -1,4 +1,5 @@
-﻿using NadekoBot.Modules.Administration.Services;
+#nullable disable
+using NadekoBot.Modules.Administration.Services;
 
 #if !GLOBAL_NADEKO
 namespace NadekoBot.Modules.Administration

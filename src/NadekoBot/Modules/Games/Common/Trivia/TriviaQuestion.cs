@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+#nullable disable
+using System.Text.RegularExpressions;
 
 // THANKS @ShoMinamimoto for suggestions and coding help
 namespace NadekoBot.Modules.Games.Common.Trivia;

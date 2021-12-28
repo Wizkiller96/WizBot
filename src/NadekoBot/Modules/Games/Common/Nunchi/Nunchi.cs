@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+#nullable disable
+using System.Collections.Immutable;
 
 namespace NadekoBot.Modules.Games.Common.Nunchi;
 

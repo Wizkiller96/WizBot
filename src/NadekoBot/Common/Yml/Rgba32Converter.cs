@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+#nullable disable
+using System.Globalization;
 using SixLabors.ImageSharp.PixelFormats;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;

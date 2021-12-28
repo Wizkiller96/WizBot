@@ -1,3 +1,4 @@
+#nullable disable
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Services;
 using SixLabors.ImageSharp;

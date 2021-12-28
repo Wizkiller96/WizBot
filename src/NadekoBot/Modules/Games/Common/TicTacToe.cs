@@ -1,4 +1,5 @@
-﻿using System.Text;
+#nullable disable
+using System.Text;
 using CommandLine;
 
 namespace NadekoBot.Modules.Games.Common;

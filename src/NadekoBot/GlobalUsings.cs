@@ -1,4 +1,4 @@
-﻿global using Serilog;
+global using Serilog;
 global using Humanizer;
 
 global using NadekoBot;

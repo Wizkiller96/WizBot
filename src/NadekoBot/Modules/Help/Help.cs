@@ -1,3 +1,4 @@
+#nullable disable
 using NadekoBot.Modules.Help.Common;
 using NadekoBot.Modules.Help.Services;
 using NadekoBot.Modules.Permissions.Services;

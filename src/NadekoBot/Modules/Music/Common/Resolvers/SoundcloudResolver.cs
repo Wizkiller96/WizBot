@@ -1,7 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using Newtonsoft.Json.Linq;
 
-#nullable enable
 namespace NadekoBot.Modules.Music.Resolvers;
 
 public sealed class SoundcloudResolver : ISoundcloudResolver

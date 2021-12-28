@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+#nullable disable
+using System.Linq.Expressions;
 using System.Reflection;
 using NadekoBot.Common.Yml;
 using NadekoBot.Common.Configs;

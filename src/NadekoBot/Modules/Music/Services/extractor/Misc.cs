@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Modules.Music.Services;
+#nullable disable
+namespace NadekoBot.Modules.Music.Services;
 
 public sealed partial class YtLoader
 {

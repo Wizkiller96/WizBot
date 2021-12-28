@@ -1,3 +1,4 @@
+#nullable disable
 namespace NadekoBot.Common;
 
 public class OldImageUrls

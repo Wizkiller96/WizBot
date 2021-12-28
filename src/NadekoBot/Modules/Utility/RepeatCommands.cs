@@ -1,5 +1,4 @@
-﻿#nullable enable
-using NadekoBot.Common.TypeReaders;
+﻿using NadekoBot.Common.TypeReaders;
 using NadekoBot.Modules.Utility.Services;
 using NadekoBot.Common.TypeReaders.Models;
 

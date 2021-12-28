@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Text;
 
-#nullable enable
 namespace NadekoBot.Modules.Music.Resolvers;
 
 public sealed class LocalTrackResolver : ILocalTrackResolver

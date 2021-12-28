@@ -1,4 +1,4 @@
-﻿namespace NadekoBot.Common.Attributes;
+namespace NadekoBot.Common.Attributes;
 
 public static class CommandNameLoadHelper
 {

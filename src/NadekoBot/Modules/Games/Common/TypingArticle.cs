@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Modules.Games.Common;
+#nullable disable
+namespace NadekoBot.Modules.Games.Common;
 
 public class TypingArticle
 {

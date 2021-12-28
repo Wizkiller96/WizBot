@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Modules.Administration.Services;
+#nullable disable
+namespace NadekoBot.Modules.Administration.Services;
 
 public class PruneService : INService
 {

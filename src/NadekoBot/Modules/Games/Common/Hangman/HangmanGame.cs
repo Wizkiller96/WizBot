@@ -1,4 +1,5 @@
-﻿using AngleSharp.Text;
+#nullable disable
+using AngleSharp.Text;
 
 namespace NadekoBot.Modules.Games.Hangman;
 

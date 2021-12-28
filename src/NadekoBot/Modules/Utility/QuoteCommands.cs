@@ -1,3 +1,4 @@
+#nullable disable
 using NadekoBot.Common.Yml;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;

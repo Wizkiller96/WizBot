@@ -1,4 +1,5 @@
-﻿using NadekoBot.Modules.Gambling.Common.AnimalRacing;
+#nullable disable
+using NadekoBot.Modules.Gambling.Common.AnimalRacing;
 
 namespace NadekoBot.Modules.Gambling.Services;
 

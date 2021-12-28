@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+#nullable disable
+using System.Collections.Immutable;
 using CommandLine;
 
 namespace NadekoBot.Modules.Games.Common.Acrophobia;

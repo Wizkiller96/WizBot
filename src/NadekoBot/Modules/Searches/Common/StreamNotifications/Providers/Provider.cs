@@ -1,6 +1,5 @@
 ﻿using NadekoBot.Db.Models;
 
-#nullable enable
 namespace NadekoBot.Modules.Searches.Common.StreamNotifications.Providers;
 
 /// <summary>

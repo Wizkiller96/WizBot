@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.Sqlite;
+#nullable disable
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Services.Database;
 using LinqToDB.EntityFrameworkCore;

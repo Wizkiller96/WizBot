@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Services.Database.Models;
+#nullable disable
+namespace NadekoBot.Services.Database.Models;
 
 public class GCChannelId : DbEntity
 {

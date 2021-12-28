@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+#nullable disable
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
 using NadekoBot.Common.Yml;
 using Newtonsoft.Json;

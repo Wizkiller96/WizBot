@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Common.TypeReaders;
+#nullable disable
+namespace NadekoBot.Common.TypeReaders;
 
 public sealed class EmoteTypeReader : NadekoTypeReader<Emote>
 {

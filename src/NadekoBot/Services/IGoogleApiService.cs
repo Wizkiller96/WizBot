@@ -1,4 +1,5 @@
-﻿using Google.Apis.Customsearch.v1.Data;
+#nullable disable
+using Google.Apis.Customsearch.v1.Data;
 
 namespace NadekoBot.Services;
 

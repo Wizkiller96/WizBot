@@ -1,4 +1,5 @@
-﻿using NadekoBot.Services.Database.Models;
+#nullable disable
+using NadekoBot.Services.Database.Models;
 using NadekoBot.Common.TypeReaders;
 using NadekoBot.Modules.Utility.Common;
 using NadekoBot.Modules.Utility.Common.Exceptions;
@@ -266,7 +267,7 @@ public class StreamRoleService : INService
             {
                 try
                 {
-                    addRole = addRole ?? user.Guild.GetRole(setting.AddRoleId);
+                    addRole ??= user.Guild.GetRole(setting.AddRoleId);
                     if (addRole is null)
                         throw new StreamRoleNotFoundException();
 

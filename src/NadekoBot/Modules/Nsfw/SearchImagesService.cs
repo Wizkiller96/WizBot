@@ -1,3 +1,4 @@
+#nullable disable
 using Newtonsoft.Json.Linq;
 using LinqToDB;
 using NadekoBot.Modules.Searches.Common;

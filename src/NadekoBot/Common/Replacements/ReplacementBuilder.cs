@@ -1,4 +1,5 @@
-﻿using NadekoBot.Modules.Administration.Services;
+#nullable disable
+using NadekoBot.Modules.Administration.Services;
 using System.Text.RegularExpressions;
 
 namespace NadekoBot.Common;
@@ -56,6 +57,7 @@ public class ReplacementBuilder
 
     public ReplacementBuilder WithServer(DiscordSocketClient client, SocketGuild g)
     {
+        _reps.TryAdd("%server%", () => g is null ? "DM" : g.Name);
         _reps.TryAdd("%server.id%", () => g is null ? "DM" : g.Id.ToString());
         _reps.TryAdd("%server.name%", () => g is null ? "DM" : g.Name);
         _reps.TryAdd("%server.members%", () => g is { } sg ? sg.MemberCount.ToString() : "?");
@@ -97,6 +99,7 @@ public class ReplacementBuilder
 
     public ReplacementBuilder WithManyUsers(IEnumerable<IUser> users)
     {
+        _reps.TryAdd("%user%", () => string.Join(" ", users.Select(user => user.Mention)));
         _reps.TryAdd("%user.mention%", () => string.Join(" ", users.Select(user => user.Mention)));
         _reps.TryAdd("%user.fullname%", () => string.Join(" ", users.Select(user => user.ToString())));
         _reps.TryAdd("%user.name%", () => string.Join(" ", users.Select(user => user.Username)));

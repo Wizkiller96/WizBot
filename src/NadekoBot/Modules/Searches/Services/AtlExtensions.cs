@@ -1,4 +1,5 @@
-﻿using LinqToDB.EntityFrameworkCore;
+#nullable disable
+using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Services.Database.Models;
 

@@ -2,7 +2,6 @@
 using NadekoBot.Db.Models;
 using Newtonsoft.Json;
 
-#nullable enable
 namespace NadekoBot.Modules.Searches.Common.StreamNotifications.Providers;
 
 public class TwitchProvider : Provider
@@ -100,7 +99,11 @@ public class TwitchProvider : Provider
             }
             catch (Exception ex)
             {
-                Log.Warning($"Something went wrong retreiving {Platform} stream data for {login}: {ex.Message}");
+                Log.Warning("Something went wrong retreiving {StreamPlatform} stream data for {Login}: {ErrorMessage}",
+                    Platform,
+                    login,
+                    ex.Message
+                );
                 _failingStreams.TryAdd(login, DateTime.UtcNow);
             }
         }

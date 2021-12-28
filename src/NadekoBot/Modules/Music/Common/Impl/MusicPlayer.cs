@@ -1,4 +1,3 @@
-﻿#nullable enable
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -369,7 +368,7 @@ public sealed class MusicPlayer : IMusicPlayer
         for (var i = 0; i < samples.Length; i++)
         {
             ref var sample = ref samples[i];
-            sample = sample * volume;
+            sample *= volume;
         }
     }
 

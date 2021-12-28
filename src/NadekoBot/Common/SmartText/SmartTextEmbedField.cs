@@ -1,4 +1,5 @@
-﻿namespace NadekoBot;
+#nullable disable
+namespace NadekoBot;
 
 public class SmartTextEmbedField
 {

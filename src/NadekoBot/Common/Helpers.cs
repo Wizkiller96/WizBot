@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Common;
+#nullable disable
+namespace NadekoBot.Common;
 
 public static class Helpers
 {

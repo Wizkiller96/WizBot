@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using NadekoBot.Modules.Administration.Services;
 
 namespace Discord;
 
-[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
+[AttributeUsage(AttributeTargets.Method)]
 public class UserPermAttribute : RequireUserPermissionAttribute
 {
     public override Task<PreconditionResult> CheckPermissionsAsync(

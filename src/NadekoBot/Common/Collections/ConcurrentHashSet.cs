@@ -1,4 +1,5 @@
-﻿// License MIT
+#nullable disable
+// License MIT
 // Source: https://github.com/i3arnon/ConcurrentHashSet
 
 using System.Diagnostics;

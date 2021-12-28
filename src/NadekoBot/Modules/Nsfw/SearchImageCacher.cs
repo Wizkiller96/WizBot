@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+#nullable disable
+using Microsoft.Extensions.Caching.Memory;
 
 namespace NadekoBot.Modules.Nsfw.Common;
 

@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Modules.Administration.Common;
+#nullable disable
+namespace NadekoBot.Modules.Administration.Common;
 
 public sealed class UserSpamStats : IDisposable
 {

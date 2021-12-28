@@ -1,4 +1,5 @@
-﻿using System.Web;
+#nullable disable
+using System.Web;
 using StackExchange.Redis;
 
 namespace NadekoBot.Services;

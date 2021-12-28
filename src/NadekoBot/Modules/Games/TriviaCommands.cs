@@ -1,4 +1,5 @@
-﻿using NadekoBot.Modules.Games.Common.Trivia;
+#nullable disable
+using NadekoBot.Modules.Games.Common.Trivia;
 using NadekoBot.Modules.Games.Services;
 
 namespace NadekoBot.Modules.Games;

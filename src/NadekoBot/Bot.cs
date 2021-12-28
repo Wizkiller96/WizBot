@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+#nullable disable
+using Microsoft.Extensions.DependencyInjection;
 using NadekoBot.Services.Database.Models;
 using System.Collections.Immutable;
 using System.Diagnostics;
@@ -54,6 +55,7 @@ public sealed class Bot
             AlwaysDownloadUsers = false,
             AlwaysResolveStickers = false,
             AlwaysDownloadDefaultStickers = false,
+            GatewayIntents = GatewayIntents.All,
         });
 
         _commandService = new(new()

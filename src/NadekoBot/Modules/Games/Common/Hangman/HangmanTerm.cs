@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Modules.Games.Hangman;
+#nullable disable
+namespace NadekoBot.Modules.Games.Hangman;
 
 public sealed class HangmanTerm
 {

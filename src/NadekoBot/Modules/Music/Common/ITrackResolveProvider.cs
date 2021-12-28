@@ -1,5 +1,4 @@
-﻿#nullable enable
-namespace NadekoBot.Modules.Music;
+﻿namespace NadekoBot.Modules.Music;
 
 public interface ITrackResolveProvider
 {

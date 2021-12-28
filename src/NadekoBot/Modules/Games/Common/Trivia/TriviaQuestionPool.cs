@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Modules.Games.Common.Trivia;
+#nullable disable
+namespace NadekoBot.Modules.Games.Common.Trivia;
 
 public class TriviaQuestionPool
 {

@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Modules.Searches;
+#nullable disable
+namespace NadekoBot.Modules.Searches;
 
 public interface ITranslateService
 {

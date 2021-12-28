@@ -1,4 +1,5 @@
-﻿using NadekoBot.Modules.Utility.Common;
+#nullable disable
+using NadekoBot.Modules.Utility.Common;
 using Newtonsoft.Json;
 
 namespace NadekoBot.Modules.Utility.Services;

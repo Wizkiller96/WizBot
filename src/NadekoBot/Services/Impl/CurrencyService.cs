@@ -1,4 +1,5 @@
-﻿using NadekoBot.Services.Database;
+#nullable disable
+using NadekoBot.Services.Database;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
 using NadekoBot.Modules.Gambling.Services;

@@ -1,4 +1,5 @@
-﻿using NadekoBot.Modules.Searches.Common;
+#nullable disable
+using NadekoBot.Modules.Searches.Common;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SixLabors.ImageSharp;

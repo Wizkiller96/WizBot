@@ -1,4 +1,5 @@
-﻿using Discord.Interactions;
+#nullable disable
+using Discord.Interactions;
 
 namespace NadekoBot.Modules.Gambling;
 

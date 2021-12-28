@@ -1,4 +1,5 @@
-﻿using Humanizer.Localisation;
+#nullable disable
+using Humanizer.Localisation;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
 using NadekoBot.Modules.Administration.Services;

@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+#nullable disable
+using System.Text.Json.Serialization;
 using NadekoBot.Db.Models;
 
 namespace NadekoBot.Modules.Searches.Common;

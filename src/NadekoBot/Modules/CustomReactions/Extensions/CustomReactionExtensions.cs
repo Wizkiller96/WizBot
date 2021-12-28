@@ -1,4 +1,5 @@
-﻿using NadekoBot.Services.Database.Models;
+#nullable disable
+using NadekoBot.Services.Database.Models;
 using System.Runtime.CompilerServices;
 
 namespace NadekoBot.Modules.CustomReactions.Extensions;

@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Common.TypeReaders;
+#nullable disable
+namespace NadekoBot.Common.TypeReaders;
 
 [MeansImplicitUse(ImplicitUseTargetFlags.Default | ImplicitUseTargetFlags.WithInheritors )]
 public abstract class NadekoTypeReader<T> : TypeReader

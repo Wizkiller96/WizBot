@@ -1,4 +1,5 @@
-﻿using NadekoBot.Modules.Gambling.Common.Waifu;
+#nullable disable
+using NadekoBot.Modules.Gambling.Common.Waifu;
 using NadekoBot.Services.Database.Models;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Db;

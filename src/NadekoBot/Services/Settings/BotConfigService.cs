@@ -1,4 +1,5 @@
-﻿using NadekoBot.Common.Configs;
+#nullable disable
+using NadekoBot.Common.Configs;
 using SixLabors.ImageSharp.PixelFormats;
 
 namespace NadekoBot.Services;

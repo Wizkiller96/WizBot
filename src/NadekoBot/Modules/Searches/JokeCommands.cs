@@ -1,4 +1,5 @@
-﻿using NadekoBot.Modules.Searches.Services;
+#nullable disable
+using NadekoBot.Modules.Searches.Services;
 
 namespace NadekoBot.Modules.Searches;
 

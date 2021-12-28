@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+#nullable disable
+using Newtonsoft.Json;
 
 namespace NadekoBot.Modules.Games.Common.ChatterBot;
 

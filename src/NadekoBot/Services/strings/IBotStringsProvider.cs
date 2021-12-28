@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Services;
+#nullable disable
+namespace NadekoBot.Services;
 
 /// <summary>
 /// Implemented by classes which provide localized strings in their own ways

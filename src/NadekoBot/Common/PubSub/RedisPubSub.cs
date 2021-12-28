@@ -1,4 +1,4 @@
-﻿using StackExchange.Redis;
+using StackExchange.Redis;
 
 namespace NadekoBot.Common;
 
@@ -22,7 +22,7 @@ public sealed class RedisPubSub : IPubSub
             .PublishAsync($"{_creds.RedisKey()}:{key.Key}", serialized, CommandFlags.FireAndForget);
     }
 
-    public Task Sub<TData>(in TypedKey<TData> key, Func<TData, ValueTask> action)
+    public Task Sub<TData>(in TypedKey<TData> key, Func<TData?, ValueTask> action)
     {
         var eventName = key.Key;
 

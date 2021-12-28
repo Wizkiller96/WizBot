@@ -1,4 +1,4 @@
-﻿namespace NadekoBot.Extensions;
+namespace NadekoBot.Extensions;
 
 // made for customreactions because they almost never get added
 // and they get looped through constantly

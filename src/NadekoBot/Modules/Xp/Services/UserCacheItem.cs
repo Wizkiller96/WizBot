@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Modules.Xp.Services;
+#nullable disable
+namespace NadekoBot.Modules.Xp.Services;
 
 public class UserCacheItem
 {

@@ -1,4 +1,5 @@
-﻿using CodeHollow.FeedReader.Feeds;
+#nullable disable
+using CodeHollow.FeedReader.Feeds;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;

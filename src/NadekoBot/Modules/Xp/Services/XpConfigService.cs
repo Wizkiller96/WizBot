@@ -1,4 +1,5 @@
-﻿using NadekoBot.Common.Configs;
+#nullable disable
+using NadekoBot.Common.Configs;
 
 namespace NadekoBot.Modules.Xp.Services;
 

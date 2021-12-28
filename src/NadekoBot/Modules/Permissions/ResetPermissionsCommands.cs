@@ -1,4 +1,5 @@
-﻿using NadekoBot.Modules.Permissions.Services;
+#nullable disable
+using NadekoBot.Modules.Permissions.Services;
 
 namespace NadekoBot.Modules.Permissions;
 

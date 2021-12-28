@@ -1,3 +1,4 @@
+#nullable disable
 using System.Collections.Immutable;
 using System.Text;
 using Newtonsoft.Json;

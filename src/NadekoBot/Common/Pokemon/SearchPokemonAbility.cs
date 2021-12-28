@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Common.Pokemon;
+#nullable disable
+namespace NadekoBot.Common.Pokemon;
 
 public class SearchPokemonAbility
 {

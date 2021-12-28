@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Modules.Utility;
+#nullable disable
+namespace NadekoBot.Modules.Utility;
 
 public partial class Utility
 {

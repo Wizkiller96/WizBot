@@ -1,4 +1,3 @@
-#nullable enable
 using NadekoBot.Modules.Games.Hangman;
 
 namespace NadekoBot.Modules.Games;

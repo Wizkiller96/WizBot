@@ -1,6 +1,5 @@
 ﻿using NadekoBot.Services.Database.Models;
 
-#nullable enable
 namespace NadekoBot.Modules.Music;
 
 public interface IMusicPlayer : IDisposable

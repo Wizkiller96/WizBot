@@ -1,4 +1,5 @@
-﻿using NadekoBot.Modules.Games.Common.Nunchi;
+#nullable disable
+using NadekoBot.Modules.Games.Common.Nunchi;
 using NadekoBot.Modules.Games.Services;
 
 namespace NadekoBot.Modules.Games;

@@ -1,3 +1,4 @@
+#nullable disable
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Modules.Administration.Services;
 
@@ -419,7 +420,7 @@ public partial class Administration
         [OwnerOnly]
         public async Task SetStream(string url, [Leftover] string name = null)
         {
-            name = name ?? "";
+            name ??= "";
 
             await _service.SetStreamAsync(name, url).ConfigureAwait(false);
 

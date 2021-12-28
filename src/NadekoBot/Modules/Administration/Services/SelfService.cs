@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+#nullable disable
+using System.Collections.Immutable;
 using NadekoBot.Common.ModuleBehaviors;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Services.Database.Models;

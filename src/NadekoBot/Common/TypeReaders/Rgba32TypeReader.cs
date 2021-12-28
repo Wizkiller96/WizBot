@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Common.TypeReaders;
+#nullable disable
+namespace NadekoBot.Common.TypeReaders;
 using Color = SixLabors.ImageSharp.Color;
 
 public sealed class Rgba32TypeReader : NadekoTypeReader<Color>

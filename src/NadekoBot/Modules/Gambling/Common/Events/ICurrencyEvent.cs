@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Modules.Gambling.Common;
+#nullable disable
+namespace NadekoBot.Modules.Gambling.Common;
 
 public interface ICurrencyEvent
 {

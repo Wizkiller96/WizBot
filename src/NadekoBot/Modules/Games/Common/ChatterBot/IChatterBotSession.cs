@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Modules.Games.Common.ChatterBot;
+#nullable disable
+namespace NadekoBot.Modules.Games.Common.ChatterBot;
 
 public interface IChatterBotSession
 {

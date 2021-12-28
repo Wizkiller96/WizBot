@@ -1,4 +1,5 @@
-﻿using NadekoBot.Services.Database.Models;
+#nullable disable
+using NadekoBot.Services.Database.Models;
 using NadekoBot.Modules.Utility.Common.Patreon;
 using System.Net.Http.Json;
 using System.Text.Json.Serialization;

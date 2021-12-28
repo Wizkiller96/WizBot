@@ -1,4 +1,5 @@
-﻿using NadekoBot.Common.Pokemon;
+#nullable disable
+using NadekoBot.Common.Pokemon;
 using NadekoBot.Modules.Games.Common.Trivia;
 using Newtonsoft.Json;
 using StackExchange.Redis;

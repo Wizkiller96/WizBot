@@ -3,7 +3,6 @@ using NadekoBot.Db.Models;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 
-#nullable enable
 namespace NadekoBot.Modules.Searches.Common.StreamNotifications;
 
 public class NotifChecker
@@ -147,7 +146,7 @@ public class NotifChecker
             }
             catch (Exception ex)
             {
-                Log.Error(ex, $"Error getting stream notifications: {ex.Message}");
+                Log.Error(ex, "Error getting stream notifications: {ErrorMessage}", ex.Message);
             }
         }
     });

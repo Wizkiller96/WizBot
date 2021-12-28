@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Modules.Gambling.Common.WheelOfFortune;
+#nullable disable
+namespace NadekoBot.Modules.Gambling.Common.WheelOfFortune;
 
 public class WheelOfFortuneGame
 {

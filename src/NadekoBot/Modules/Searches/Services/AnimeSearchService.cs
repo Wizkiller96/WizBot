@@ -1,4 +1,5 @@
-﻿using AngleSharp;
+#nullable disable
+using AngleSharp;
 using AngleSharp.Html.Dom;
 using NadekoBot.Modules.Searches.Common;
 using Newtonsoft.Json;
