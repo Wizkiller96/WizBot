@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Common.Configs;
 
 namespace NadekoBot.Modules.Xp.Services;
@@ -29,7 +29,7 @@ public sealed class XpConfigService : ConfigServiceBase<XpConfig>
 
     private void Migrate()
     {
-        if (_data.Version < 2)
+        if (data.Version < 2)
         {
             ModifyConfig(c =>
             {

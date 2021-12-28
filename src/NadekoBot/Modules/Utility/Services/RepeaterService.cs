@@ -90,7 +90,7 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
                 // execute
                 foreach (var chunk in toExecute.Chunk(5))
                 {
-                    await Task.WhenAll(chunk.Select(Trigger));
+                    await chunk.Select(Trigger).WhenAll();
                 }
 
                 // reinsert
@@ -245,7 +245,7 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
                 var oldMsg = await channel.GetMessageAsync(lastMessageId);
                 if (oldMsg != null)
                 {
-                    await oldMsg.DeleteAsync().ConfigureAwait(false);
+                    await oldMsg.DeleteAsync();
                 }
             }
             catch (Exception ex)

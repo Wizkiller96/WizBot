@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Searches.Services;
 
 namespace NadekoBot.Modules.Searches;
@@ -15,7 +15,7 @@ public partial class Searches
             if (string.IsNullOrWhiteSpace(name))
                 return;
 
-            var (crypto, nearest) = await _service.GetCryptoData(name).ConfigureAwait(false);
+            var (crypto, nearest) = await _service.GetCryptoData(name);
 
             if (nearest is not null)
             {
@@ -23,7 +23,7 @@ public partial class Searches
                     .WithTitle(GetText(strs.crypto_not_found))
                     .WithDescription(GetText(strs.did_you_mean(Format.Bold($"{nearest.Name} ({nearest.Symbol})"))));
 
-                if (await PromptUserConfirmAsync(embed).ConfigureAwait(false))
+                if (await PromptUserConfirmAsync(embed))
                 {
                     crypto = nearest;
                 }
@@ -31,7 +31,7 @@ public partial class Searches
 
             if (crypto is null)
             {
-                await ReplyErrorLocalizedAsync(strs.crypto_not_found).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.crypto_not_found);
                 return;
             }
 
@@ -52,7 +52,7 @@ public partial class Searches
                 .AddField(GetText(strs.price), $"${crypto.Quote.Usd.Price}", true)
                 .AddField(GetText(strs.volume_24h), $"${crypto.Quote.Usd.Volume_24h:n0}", true)
                 .AddField(GetText(strs.change_7d_24h), $"{sevenDay}% / {lastDay}%", true)
-                .WithImageUrl($"https://s3.coinmarketcap.com/generated/sparklines/web/7d/usd/{crypto.Id}.png")).ConfigureAwait(false);
+                .WithImageUrl($"https://s3.coinmarketcap.com/generated/sparklines/web/7d/usd/{crypto.Id}.png"));
         }
     }
 }

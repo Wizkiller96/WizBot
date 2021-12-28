@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using System.Collections.Immutable;
 
 namespace NadekoBot.Modules.Games.Common.Nunchi;
@@ -39,7 +39,7 @@ public sealed class NunchiGame : IDisposable
 
     public async Task<bool> Join(ulong userId, string userName)
     {
-        await _locker.WaitAsync().ConfigureAwait(false);
+        await _locker.WaitAsync();
         try
         {
             if (CurrentPhase != Phase.Joining)
@@ -53,8 +53,8 @@ public sealed class NunchiGame : IDisposable
     public async Task<bool> Initialize()
     {
         CurrentPhase = Phase.Joining;
-        await Task.Delay(30000).ConfigureAwait(false);
-        await _locker.WaitAsync().ConfigureAwait(false);
+        await Task.Delay(30000);
+        await _locker.WaitAsync();
         try
         {
             if (_participants.Count < 3)
@@ -65,7 +65,7 @@ public sealed class NunchiGame : IDisposable
 
             _killTimer = new(async state =>
             {
-                await _locker.WaitAsync().ConfigureAwait(false);
+                await _locker.WaitAsync();
                 try
                 {
                     if (CurrentPhase != Phase.Playing)
@@ -88,7 +88,7 @@ public sealed class NunchiGame : IDisposable
 
     public async Task Input(ulong userId, string userName, int input)
     {
-        await _locker.WaitAsync().ConfigureAwait(false);
+        await _locker.WaitAsync();
         try
         {
             if (CurrentPhase != Phase.Playing)
@@ -159,7 +159,7 @@ public sealed class NunchiGame : IDisposable
         CurrentPhase = Phase.WaitingForNextRound;
         var throwawayDelay = Task.Run(async () =>
         {
-            await Task.Delay(_nextRoundTimeout).ConfigureAwait(false);
+            await Task.Delay(_nextRoundTimeout);
             CurrentPhase = Phase.Playing;
             var ___ = OnRoundStarted?.Invoke(this, CurrentNumber);
         });

@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Gambling.Common.Events;
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Services.Database.Models;
@@ -52,7 +52,7 @@ public class CurrencyEventsService : INService
             try
             {
                 ce.OnEnded += OnEventEnded;
-                await ce.StartEvent().ConfigureAwait(false);
+                await ce.StartEvent();
             }
             catch (Exception ex)
             {

@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using Humanizer.Localisation;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
@@ -39,10 +39,9 @@ public partial class Utility
                 
             ulong target;
             target = meorhere == MeOrHere.Me ? ctx.User.Id : ctx.Channel.Id;
-            if (!await RemindInternal(target, meorhere == MeOrHere.Me || ctx.Guild is null, remindData.Time, remindData.What)
-                    .ConfigureAwait(false))
+            if (!await RemindInternal(target, meorhere == MeOrHere.Me || ctx.Guild is null, remindData.Time, remindData.What))
             {
-                await ReplyErrorLocalizedAsync(strs.remind_too_long).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.remind_too_long);
             }
         }
 
@@ -55,7 +54,7 @@ public partial class Utility
             var perms = ((IGuildUser) ctx.User).GetPermissions(channel);
             if (!perms.SendMessages || !perms.ViewChannel)
             {
-                await ReplyErrorLocalizedAsync(strs.cant_read_or_send).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.cant_read_or_send);
                 return;
             }
 
@@ -66,10 +65,9 @@ public partial class Utility
             }
 
 
-            if (!await RemindInternal(channel.Id, false, remindData.Time, remindData.What)
-                    .ConfigureAwait(false))
+            if (!await RemindInternal(channel.Id, false, remindData.Time, remindData.What))
             {
-                await ReplyErrorLocalizedAsync(strs.remind_too_long).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.remind_too_long);
             }
         }
 
@@ -140,7 +138,7 @@ public partial class Utility
             }
 
             embed.AddPaginatedFooter(page + 1, null);
-            await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+            await ctx.Channel.EmbedAsync(embed);
         }
 
         [NadekoCommand, Aliases]
@@ -182,7 +180,7 @@ public partial class Utility
 
             if (rem is null)
             {
-                await ReplyErrorLocalizedAsync(strs.reminder_not_exist).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.reminder_not_exist);
             }
             else
             {
@@ -232,7 +230,7 @@ public partial class Utility
                         Format.Bold(!isPrivate ? $"<#{targetId}>" : ctx.User.Username),
                         Format.Bold(message),
                         ts.Humanize(3, minUnit: TimeUnit.Second, culture: Culture),
-                        gTime, gTime))).ConfigureAwait(false);
+                        gTime, gTime)));
             }
             catch
             {

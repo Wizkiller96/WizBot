@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 namespace NadekoBot.Modules.Gambling.Common;
 
 public class RollDuelGame
@@ -47,13 +47,13 @@ public class RollDuelGame
 
         _timeoutTimer = new(async delegate
         {
-            await _locker.WaitAsync().ConfigureAwait(false);
+            await _locker.WaitAsync();
             try
             {
                 if (CurrentState != State.Waiting)
                     return;
                 CurrentState = State.Ended;
-                await (OnEnded?.Invoke(this, Reason.Timeout)).ConfigureAwait(false);
+                await (OnEnded?.Invoke(this, Reason.Timeout));
             }
             catch { }
             finally
@@ -65,7 +65,7 @@ public class RollDuelGame
 
     public async Task StartGame()
     {
-        await _locker.WaitAsync().ConfigureAwait(false);
+        await _locker.WaitAsync();
         try
         {
             if (CurrentState != State.Waiting)
@@ -78,16 +78,16 @@ public class RollDuelGame
             _locker.Release();
         }
 
-        if(!await _cs.RemoveAsync(P1, "Roll Duel", Amount).ConfigureAwait(false))
+        if(!await _cs.RemoveAsync(P1, "Roll Duel", Amount))
         {
-            await (OnEnded?.Invoke(this, Reason.NoFunds)).ConfigureAwait(false);
+            await (OnEnded?.Invoke(this, Reason.NoFunds));
             CurrentState = State.Ended;
             return;
         }
-        if(!await _cs.RemoveAsync(P2, "Roll Duel", Amount).ConfigureAwait(false))
+        if(!await _cs.RemoveAsync(P2, "Roll Duel", Amount))
         {
-            await _cs.AddAsync(P1, "Roll Duel - refund", Amount).ConfigureAwait(false);
-            await (OnEnded?.Invoke(this, Reason.NoFunds)).ConfigureAwait(false);
+            await _cs.AddAsync(P1, "Roll Duel - refund", Amount);
+            await (OnEnded?.Invoke(this, Reason.NoFunds));
             CurrentState = State.Ended;
             return;
         }
@@ -109,20 +109,18 @@ public class RollDuelGame
                     Winner = P2;
                 }
                 var won = (long)(Amount * 2 * 0.98f);
-                await _cs.AddAsync(Winner, "Roll Duel win", won)
-                    .ConfigureAwait(false);
+                await _cs.AddAsync(Winner, "Roll Duel win", won);
 
-                await _cs.AddAsync(_botId, "Roll Duel fee", (Amount * 2) - won)
-                    .ConfigureAwait(false);
+                await _cs.AddAsync(_botId, "Roll Duel fee", (Amount * 2) - won);
             }
-            try { await (OnGameTick?.Invoke(this)).ConfigureAwait(false); } catch { }
-            await Task.Delay(2500).ConfigureAwait(false);
+            try { await (OnGameTick?.Invoke(this)); } catch { }
+            await Task.Delay(2500);
             if (n1 != n2)
                 break;
         }
         while (true);
         CurrentState = State.Ended;
-        await (OnEnded?.Invoke(this, Reason.Normal)).ConfigureAwait(false);
+        await (OnEnded?.Invoke(this, Reason.Normal));
     }
 }
 

@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Gambling.Common.Events;
@@ -78,14 +78,14 @@ public class GameStatusEvent : ICurrencyEvent
             await _cs.AddBulkAsync(toAward,
                 toAward.Select(x => "GameStatus Event"),
                 toAward.Select(x => _amount),
-                gamble: true).ConfigureAwait(false);
+                gamble: true);
 
             if (_isPotLimited)
             {
                 await _msg.ModifyAsync(m =>
                 {
                     m.Embed = GetEmbed(PotSize).Build();
-                }, new() { RetryMode = RetryMode.AlwaysRetry }).ConfigureAwait(false);
+                }, new() { RetryMode = RetryMode.AlwaysRetry });
             }
 
             Log.Information("Awarded {0} users {1} currency.{2}",
@@ -107,8 +107,8 @@ public class GameStatusEvent : ICurrencyEvent
 
     public async Task StartEvent()
     {
-        _msg = await _channel.EmbedAsync(GetEmbed(_opts.PotSize)).ConfigureAwait(false);
-        await _client.SetGameAsync(_code).ConfigureAwait(false);
+        _msg = await _channel.EmbedAsync(GetEmbed(_opts.PotSize));
+        await _client.SetGameAsync(_code);
         _client.MessageDeleted += OnMessageDeleted;
         _client.MessageReceived += HandleMessage;
         _t.Change(TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(2));
@@ -121,7 +121,7 @@ public class GameStatusEvent : ICurrencyEvent
     {
         if (msg.Id == _msg.Id)
         {
-            await StopEvent().ConfigureAwait(false);
+            await StopEvent();
         }
     }
 

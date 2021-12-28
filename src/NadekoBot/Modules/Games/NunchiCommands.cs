@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Games.Common.Nunchi;
 using NadekoBot.Modules.Games.Services;
 
@@ -25,10 +25,10 @@ public partial class Games
             if ((nunchi = _service.NunchiGames.GetOrAdd(ctx.Guild.Id, newNunchi)) != newNunchi)
             {
                 // join it
-                if (!await nunchi.Join(ctx.User.Id, ctx.User.ToString()).ConfigureAwait(false))
+                if (!await nunchi.Join(ctx.User.Id, ctx.User.ToString()))
                 {
                     // if you failed joining, that means game is running or just ended
-                    // await ReplyErrorLocalized("nunchi_already_started").ConfigureAwait(false);
+                    // await ReplyErrorLocalized("nunchi_already_started");
                     return;
                 }
 
@@ -46,12 +46,12 @@ public partial class Games
             nunchi.OnRoundStarted += Nunchi_OnRoundStarted;
             _client.MessageReceived += _client_MessageReceived;
                 
-            var success = await nunchi.Initialize().ConfigureAwait(false);
+            var success = await nunchi.Initialize();
             if (!success)
             {
                 if (_service.NunchiGames.TryRemove(ctx.Guild.Id, out var game))
                     game.Dispose();
-                await ConfirmLocalizedAsync(strs.nunchi_failed_to_start).ConfigureAwait(false);
+                await ConfirmLocalizedAsync(strs.nunchi_failed_to_start);
             }
 
             Task _client_MessageReceived(SocketMessage arg)
@@ -65,7 +65,7 @@ public partial class Games
                         return;
                     try
                     {
-                        await nunchi.Input(arg.Author.Id, arg.Author.ToString(), number).ConfigureAwait(false);
+                        await nunchi.Input(arg.Author.Id, arg.Author.ToString(), number);
                     }
                     catch
                     {

@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Games.Services;
 using NadekoBot.Services.Database.Models;
 using System.Text;
@@ -27,7 +27,7 @@ public partial class Games
                 ctx.Channel.Id, arg);
             if(poll is null)
             {
-                await ReplyErrorLocalizedAsync(strs.poll_invalid_input).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.poll_invalid_input);
                 return;
             }
             if (_service.StartPoll(poll))
@@ -39,12 +39,11 @@ public partial class Games
                         .WithDescription(
                             Format.Bold(poll.Question) + "\n\n" +
                             string.Join("\n", poll.Answers
-                                .Select(x => $"`{x.Index + 1}.` {Format.Bold(x.Text)}"))))
-                    .ConfigureAwait(false);
+                                .Select(x => $"`{x.Index + 1}.` {Format.Bold(x.Text)}"))));
             }
             else
             {
-                await ReplyErrorLocalizedAsync(strs.poll_already_running).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.poll_already_running);
             }
         }
 
@@ -56,7 +55,7 @@ public partial class Games
             if (!_service.ActivePolls.TryGetValue(ctx.Guild.Id, out var pr))
                 return;
 
-            await ctx.Channel.EmbedAsync(GetStats(pr.Poll, GetText(strs.current_poll_results))).ConfigureAwait(false);
+            await ctx.Channel.EmbedAsync(GetStats(pr.Poll, GetText(strs.current_poll_results)));
         }
 
         [NadekoCommand, Aliases]
@@ -71,8 +70,7 @@ public partial class Games
                 return;
 
             var embed = GetStats(p, GetText(strs.poll_closed));
-            await ctx.Channel.EmbedAsync(embed)
-                .ConfigureAwait(false);
+            await ctx.Channel.EmbedAsync(embed);
         }
 
         public IEmbedBuilder GetStats(Poll poll, string title)

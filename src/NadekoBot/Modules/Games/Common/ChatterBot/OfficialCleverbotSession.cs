@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using Newtonsoft.Json;
 
 namespace NadekoBot.Modules.Games.Common.ChatterBot;
@@ -23,7 +23,7 @@ public class OfficialCleverbotSession : IChatterBotSession
     public async Task<string> Think(string input)
     {
         using var http = _httpFactory.CreateClient();
-        var dataString = await http.GetStringAsync(string.Format(QueryString, input, _cs ?? "")).ConfigureAwait(false);
+        var dataString = await http.GetStringAsync(string.Format(QueryString, input, _cs ?? ""));
         try
         {
             var data = JsonConvert.DeserializeObject<CleverbotResponse>(dataString);
@@ -67,8 +67,8 @@ public class CleverbotIOSession : IChatterBotSession
             new KeyValuePair<string, string>("user", _user),
             new KeyValuePair<string, string>("key", _key),
         });
-        using var data = await _http.PostAsync(_createEndpoint, msg).ConfigureAwait(false);
-        var str = await data.Content.ReadAsStringAsync().ConfigureAwait(false);
+        using var data = await _http.PostAsync(_createEndpoint, msg);
+        var str = await data.Content.ReadAsStringAsync();
         var obj = JsonConvert.DeserializeObject<CleverbotIOCreateResponse>(str);
         if (obj.Status != "success")
             throw new OperationCanceledException(obj.Status);
@@ -86,8 +86,8 @@ public class CleverbotIOSession : IChatterBotSession
             new KeyValuePair<string, string>("nick", await _nick),
             new KeyValuePair<string, string>("text", input),
         });
-        using var data = await _http.PostAsync(_askEndpoint, msg).ConfigureAwait(false);
-        var str = await data.Content.ReadAsStringAsync().ConfigureAwait(false);
+        using var data = await _http.PostAsync(_askEndpoint, msg);
+        var str = await data.Content.ReadAsStringAsync();
         var obj = JsonConvert.DeserializeObject<CleverbotIOAskResponse>(str);
         if (obj.Status != "success")
             throw new OperationCanceledException(obj.Status);

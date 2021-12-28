@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
@@ -52,14 +52,14 @@ public class AdministrationService : INService
                 if (state && cmd.Name != "prune" && cmd.Name != "pick")
                 {
                     _logService.AddDeleteIgnore(msg.Id);
-                    try { await msg.DeleteAsync().ConfigureAwait(false); } catch { }
+                    try { await msg.DeleteAsync(); } catch { }
                 }
                 //if state is false, that means do not do it
             }
             else if (DeleteMessagesOnCommand.Contains(channel.Guild.Id) && cmd.Name != "prune" && cmd.Name != "pick")
             {
                 _logService.AddDeleteIgnore(msg.Id);
-                try { await msg.DeleteAsync().ConfigureAwait(false); } catch { }
+                try { await msg.DeleteAsync(); } catch { }
             }
         });
         return Task.CompletedTask;
@@ -128,7 +128,7 @@ public class AdministrationService : INService
         {
             try
             {
-                await u.ModifyAsync(usr => usr.Deaf = value).ConfigureAwait(false);
+                await u.ModifyAsync(usr => usr.Deaf = value);
             }
             catch
             {

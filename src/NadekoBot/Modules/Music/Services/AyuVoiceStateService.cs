@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using System.Reflection;
 using Ayu.Discord.Voice;
 
@@ -92,7 +92,7 @@ public sealed class AyuVoiceStateService : INService
     public async Task LeaveVoiceChannel(ulong guildId)
     {
         var gwLock = GetVoiceGatewayLock(guildId);
-        await gwLock.WaitAsync().ConfigureAwait(false);
+        await gwLock.WaitAsync();
         try
         {
             await LeaveVoiceChannelInternalAsync(guildId);
@@ -198,7 +198,7 @@ public sealed class AyuVoiceStateService : INService
     public async Task<IVoiceProxy> JoinVoiceChannel(ulong guildId, ulong channelId, bool forceReconnect = true)
     {
         var gwLock = GetVoiceGatewayLock(guildId);
-        await gwLock.WaitAsync().ConfigureAwait(false);
+        await gwLock.WaitAsync();
         try
         {
             await LeaveVoiceChannelInternalAsync(guildId);

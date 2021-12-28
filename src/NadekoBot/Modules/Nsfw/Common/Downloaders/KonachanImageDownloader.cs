@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using System.Net.Http.Json;
 
 namespace NadekoBot.Modules.Nsfw.Common;
@@ -15,8 +15,7 @@ public sealed class KonachanImageDownloader : ImageDownloader<DapiImageObject>
     {
         var tagString = ImageDownloaderHelper.GetTagString(tags, isExplicit);
         var uri = $"{_baseUrl}/post.json?s=post&q=index&limit=200&tags={tagString}&page={page}";
-        var imageObjects = await _http.GetFromJsonAsync<DapiImageObject[]>(uri, _serializerOptions, cancel)
-            .ConfigureAwait(false);
+        var imageObjects = await _http.GetFromJsonAsync<DapiImageObject[]>(uri, _serializerOptions, cancel);
         if (imageObjects is null)
             return new();
         return imageObjects

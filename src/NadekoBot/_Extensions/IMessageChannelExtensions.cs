@@ -127,7 +127,7 @@ public static class MessageChannelExtensions
         int itemsPerPage,
         bool addPaginatedFooter = true)
     {
-        var embed = await pageFunc(currentPage).ConfigureAwait(false);
+        var embed = await pageFunc(currentPage);
 
         var lastPage = (totalElements - 1) / itemsPerPage;
 
@@ -141,16 +141,16 @@ public static class MessageChannelExtensions
         else if (addPaginatedFooter)
             embed.AddPaginatedFooter(currentPage, lastPage);
 
-        var msg = await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+        var msg = await ctx.Channel.EmbedAsync(embed);
 
         if (lastPage == 0 ||
             !canPaginate)
             return;
 
-        await msg.AddReactionAsync(_arrowLeft).ConfigureAwait(false);
-        await msg.AddReactionAsync(_arrowRight).ConfigureAwait(false);
+        await msg.AddReactionAsync(_arrowLeft);
+        await msg.AddReactionAsync(_arrowRight);
 
-        await Task.Delay(2000).ConfigureAwait(false);
+        await Task.Delay(2000);
 
         var lastPageChange = DateTime.MinValue;
 
@@ -167,20 +167,20 @@ public static class MessageChannelExtensions
                     if (currentPage == 0)
                         return;
                     lastPageChange = DateTime.UtcNow;
-                    var toSend = await pageFunc(--currentPage).ConfigureAwait(false);
+                    var toSend = await pageFunc(--currentPage);
                     if (addPaginatedFooter)
                         toSend.AddPaginatedFooter(currentPage, lastPage);
-                    await msg.ModifyAsync(x => x.Embed = toSend.Build()).ConfigureAwait(false);
+                    await msg.ModifyAsync(x => x.Embed = toSend.Build());
                 }
                 else if (r.Emote.Name == _arrowRight.Name)
                 {
                     if (lastPage > currentPage)
                     {
                         lastPageChange = DateTime.UtcNow;
-                        var toSend = await pageFunc(++currentPage).ConfigureAwait(false);
+                        var toSend = await pageFunc(++currentPage);
                         if (addPaginatedFooter)
                             toSend.AddPaginatedFooter(currentPage, lastPage);
-                        await msg.ModifyAsync(x => x.Embed = toSend.Build()).ConfigureAwait(false);
+                        await msg.ModifyAsync(x => x.Embed = toSend.Build());
                     }
                 }
             }
@@ -192,7 +192,7 @@ public static class MessageChannelExtensions
 
         using (msg.OnReaction((DiscordSocketClient)ctx.Client, ChangePage, ChangePage))
         {
-            await Task.Delay(30000).ConfigureAwait(false);
+            await Task.Delay(30000);
         }
 
         try
@@ -200,13 +200,13 @@ public static class MessageChannelExtensions
             if (msg.Channel is ITextChannel &&
                 ((SocketGuild)ctx.Guild).CurrentUser.GuildPermissions.ManageMessages)
             {
-                await msg.RemoveAllReactionsAsync().ConfigureAwait(false);
+                await msg.RemoveAllReactionsAsync();
             }
             else
             {
-                await Task.WhenAll(msg.Reactions.Where(x => x.Value.IsMe)
+                await msg.Reactions.Where(x => x.Value.IsMe)
                     .Select(x => msg.RemoveReactionAsync(x.Key, ctx.Client.CurrentUser))
-                );
+                    .WhenAll();
             }
         }
         catch

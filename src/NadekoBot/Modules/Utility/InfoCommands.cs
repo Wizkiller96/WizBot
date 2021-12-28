@@ -67,7 +67,7 @@ public partial class Utility
                             .Select(e => $"{e.Name} {e.ToString()}"))
                         .TrimTo(1020));
             }
-            await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+            await ctx.Channel.EmbedAsync(embed);
         }
 
         [NadekoCommand, Aliases]
@@ -78,7 +78,7 @@ public partial class Utility
             if (ch is null)
                 return;
             var createdAt = new DateTime(2015, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(ch.Id >> 22);
-            var usercount = (await ch.GetUsersAsync().FlattenAsync().ConfigureAwait(false)).Count();
+            var usercount = (await ch.GetUsersAsync().FlattenAsync()).Count();
             var embed = _eb.Create()
                 .WithTitle(ch.Name)
                 .WithDescription(ch.Topic?.SanitizeMentions(true))
@@ -86,7 +86,7 @@ public partial class Utility
                 .AddField(GetText(strs.created_at), $"{createdAt:dd.MM.yyyy HH:mm}", true)
                 .AddField(GetText(strs.users), usercount.ToString(), true)
                 .WithOkColor();
-            await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+            await ctx.Channel.EmbedAsync(embed);
         }
 
         [NadekoCommand, Aliases]
@@ -113,7 +113,7 @@ public partial class Utility
             var av = user.RealAvatarUrl();
             if (av != null && av.IsAbsoluteUri)
                 embed.WithThumbnailUrl(av.ToString());
-            await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+            await ctx.Channel.EmbedAsync(embed);
         }
 
         [NadekoCommand, Aliases]
@@ -142,7 +142,7 @@ public partial class Utility
                 .WithTitle(GetText(strs.activity_page(page + 1)))
                 .WithOkColor()
                 .WithFooter(GetText(strs.activity_users_total(CmdHandler.UserMessagesSent.Count)))
-                .WithDescription(str.ToString())).ConfigureAwait(false);
+                .WithDescription(str.ToString()));
         }
     }
 }

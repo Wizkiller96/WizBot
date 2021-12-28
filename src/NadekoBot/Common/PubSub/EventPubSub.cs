@@ -36,8 +36,11 @@ public class EventPubSub : IPubSub
             {
                 // if this class ever gets used, this needs to be properly implemented
                 // 1. ignore all valuetasks which are completed
-                // 2. return task.whenall all other tasks
-                return Task.WhenAll(actions.SelectMany(kvp => kvp.Value).Select(action => action(data).AsTask()));
+                // 2. run all other tasks in parallel
+                return actions
+                    .SelectMany(kvp => kvp.Value)
+                    .Select(action => action(data).AsTask())
+                    .WhenAll();
             }
 
             return Task.CompletedTask;

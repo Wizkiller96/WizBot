@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Help.Services;
 using NadekoBot.Db;
 
@@ -37,7 +37,7 @@ public class VerboseErrorsService : INService
                 .WithDescription(reason)
                 .WithErrorColor();
 
-            await channel.EmbedAsync(embed).ConfigureAwait(false);
+            await channel.EmbedAsync(embed);
         }
         catch
         {

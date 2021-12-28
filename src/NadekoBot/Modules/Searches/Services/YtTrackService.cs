@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 namespace NadekoBot.Modules.Searches.Services;
 
 // public class YtTrackService : INService
@@ -31,7 +31,7 @@ namespace NadekoBot.Modules.Searches.Services;
 //         await Task.Delay(10000);
 //         using (var http = httpClientFactory.CreateClient())
 //         {
-//             await Task.WhenAll(followedChannels.Select(kvp => CheckChannel(kvp.Key, kvp.Value.SelectMany(x => x.Value).ToList())));
+//             await followedChannels.Select(kvp => CheckChannel(kvp.Key, kvp.Value.SelectMany(x => x.Value).ToList())).WhenAll();
 //         }
 //     }
 // }

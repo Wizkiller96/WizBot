@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using System.Reflection;
 
 namespace NadekoBot.Modules.Utility;
@@ -15,9 +15,9 @@ public partial class Utility
             expr.EvaluateParameter += Expr_EvaluateParameter;
             var result = expr.Evaluate();
             if (!expr.HasErrors())
-                await SendConfirmAsync("⚙ " + GetText(strs.result), result.ToString()).ConfigureAwait(false);
+                await SendConfirmAsync("⚙ " + GetText(strs.result), result.ToString());
             else
-                await SendErrorAsync("⚙ " + GetText(strs.error), expr.Error).ConfigureAwait(false);
+                await SendErrorAsync("⚙ " + GetText(strs.error), expr.Error);
         }
 
         private static void Expr_EvaluateParameter(string name, NCalc.ParameterArgs args)

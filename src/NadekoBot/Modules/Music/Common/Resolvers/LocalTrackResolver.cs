@@ -60,8 +60,9 @@ public sealed class LocalTrackResolver : ILocalTrackResolver
 
         var fileChunks = files.Skip(1).Chunk(10);
         foreach (var chunk in fileChunks)
-        { 
-            var part = await Task.WhenAll(chunk.Select(x => ResolveByQueryAsync(x.FullName)));
+        {
+            var part = await chunk.Select(x => ResolveByQueryAsync(x.FullName))
+                .WhenAll();
                 
             // nullable reference types being annoying
             foreach (var p in part)

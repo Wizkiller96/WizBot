@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using Newtonsoft.Json;
 
 namespace NadekoBot.Services;
@@ -19,7 +19,7 @@ public class SoundCloudApiService : INService
 
         using (var http = _httpFactory.CreateClient())
         {
-            response = await http.GetStringAsync($"https://scapi.nadeko.bot/resolve?url={url}").ConfigureAwait(false);
+            response = await http.GetStringAsync($"https://scapi.nadeko.bot/resolve?url={url}");
         }
             
         var responseObj = JsonConvert.DeserializeObject<SoundCloudVideo>(response);
@@ -37,7 +37,7 @@ public class SoundCloudApiService : INService
         var response = string.Empty;
         using (var http = _httpFactory.CreateClient())
         {
-            response = await http.GetStringAsync(new Uri($"https://scapi.nadeko.bot/tracks?q={Uri.EscapeDataString(query)}")).ConfigureAwait(false);
+            response = await http.GetStringAsync(new Uri($"https://scapi.nadeko.bot/tracks?q={Uri.EscapeDataString(query)}"));
         }
 
         var responseObj = JsonConvert.DeserializeObject<SoundCloudVideo[]>(response)

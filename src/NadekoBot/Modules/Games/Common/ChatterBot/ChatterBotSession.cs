@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using Newtonsoft.Json;
 
 namespace NadekoBot.Modules.Games.Common.ChatterBot;
@@ -26,7 +26,7 @@ public class ChatterBotSession : IChatterBotSession
     public async Task<string> Think(string message)
     {
         using var http = _httpFactory.CreateClient();
-        var res = await http.GetStringAsync(string.Format(ApiEndpoint, message)).ConfigureAwait(false);
+        var res = await http.GetStringAsync(string.Format(ApiEndpoint, message));
         var cbr = JsonConvert.DeserializeObject<ChatterBotResponse>(res);
         return cbr.BotSay.Replace("<br/>", "\n", StringComparison.InvariantCulture);
     }

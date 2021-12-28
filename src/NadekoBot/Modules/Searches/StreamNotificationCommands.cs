@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Modules.Searches.Services;
 using NadekoBot.Db;
@@ -27,12 +27,12 @@ public partial class Searches
             var data = await _service.FollowStream(ctx.Guild.Id, ctx.Channel.Id, link);
             if (data is null)
             {
-                await ReplyErrorLocalizedAsync(strs.stream_not_added).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.stream_not_added);
                 return;
             }
 
             var embed = _service.GetEmbed(ctx.Guild.Id, data);
-            await ctx.Channel.EmbedAsync(embed, GetText(strs.stream_tracked)).ConfigureAwait(false);
+            await ctx.Channel.EmbedAsync(embed, GetText(strs.stream_tracked));
         }
 
         [NadekoCommand, Aliases]
@@ -47,7 +47,7 @@ public partial class Searches
             var fs = await _service.UnfollowStreamAsync(ctx.Guild.Id, index);
             if (fs is null)
             {
-                await ReplyErrorLocalizedAsync(strs.stream_no).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.stream_no);
                 return;
             }
 
@@ -123,7 +123,7 @@ public partial class Searches
                 }
 
                 return eb;
-            }, streams.Count, 12).ConfigureAwait(false);
+            }, streams.Count, 12);
         }
 
         [NadekoCommand, Aliases]
@@ -134,11 +134,11 @@ public partial class Searches
             var newValue = _service.ToggleStreamOffline(ctx.Guild.Id);
             if (newValue)
             {
-                await ReplyConfirmLocalizedAsync(strs.stream_off_enabled).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.stream_off_enabled);
             }
             else
             {
-                await ReplyConfirmLocalizedAsync(strs.stream_off_disabled).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.stream_off_disabled);
             }
         }
 
@@ -152,7 +152,7 @@ public partial class Searches
                 
             if (!_service.SetStreamMessage(ctx.Guild.Id, index, message, out var fs))
             {
-                await ReplyConfirmLocalizedAsync(strs.stream_not_following).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.stream_not_following);
                 return;
             }
             
@@ -188,10 +188,10 @@ public partial class Searches
         {
             try
             {
-                var data = await _service.GetStreamDataAsync(url).ConfigureAwait(false);
+                var data = await _service.GetStreamDataAsync(url);
                 if (data is null)
                 {
-                    await ReplyErrorLocalizedAsync(strs.no_channel_found).ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.no_channel_found);
                     return;
                 }
                     
@@ -208,7 +208,7 @@ public partial class Searches
             }
             catch
             {
-                await ReplyErrorLocalizedAsync(strs.no_channel_found).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.no_channel_found);
             }
         }
     }

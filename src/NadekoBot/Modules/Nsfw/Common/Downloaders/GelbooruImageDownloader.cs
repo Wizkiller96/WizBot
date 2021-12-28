@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using System.Text.Json;
 
 namespace NadekoBot.Modules.Nsfw.Common;
@@ -15,7 +15,7 @@ public class GelbooruImageDownloader : ImageDownloader<DapiImageObject>
         var uri = $"http://gelbooru.com/index.php?page=dapi&s=post&json=1&q=index&limit=100" +
                   $"&tags={tagString}&pid={page}";
         using var req = new HttpRequestMessage(HttpMethod.Get, uri);
-        using var res = await _http.SendAsync(req, cancel).ConfigureAwait(false);
+        using var res = await _http.SendAsync(req, cancel);
         res.EnsureSuccessStatusCode();
         var resString = await res.Content.ReadAsStringAsync(cancel);
         if (string.IsNullOrWhiteSpace(resString))

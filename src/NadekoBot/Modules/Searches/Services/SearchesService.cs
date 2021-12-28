@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Searches.Common;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -75,7 +75,7 @@ public class SearchesService : INService
         var data = await _cache.GetOrAddCachedDataAsync($"nadeko_rip_{text}_{imgUrl}",
             GetRipPictureFactory,
             (text, imgUrl),
-            TimeSpan.FromDays(1)).ConfigureAwait(false);
+            TimeSpan.FromDays(1));
 
         return data.ToStream();
     }
@@ -149,7 +149,7 @@ public class SearchesService : INService
             var data = await http.GetStringAsync($"http://api.openweathermap.org/data/2.5/weather?" +
                                                  $"q={query}&" +
                                                  $"appid=42cd627dd60debf25a5739e50a217d74&" +
-                                                 $"units=metric").ConfigureAwait(false);
+                                                 $"units=metric");
 
             if (data is null)
                 return null;
@@ -288,7 +288,7 @@ public class SearchesService : INService
             
         // using (var http = _httpFactory.CreateClient())
         // {
-        //     var response = await http.GetStringAsync(new Uri("http://api.yomomma.info/")).ConfigureAwait(false);
+        //     var response = await http.GetStringAsync(new Uri("http://api.yomomma.info/"));
         //     return JObject.Parse(response)["joke"].ToString() + " 😆";
         // }
     }
@@ -304,7 +304,7 @@ public class SearchesService : INService
     public async Task<string> GetChuckNorrisJoke()
     {
         using var http = _httpFactory.CreateClient();
-        var response = await http.GetStringAsync(new Uri("http://api.icndb.com/jokes/random/")).ConfigureAwait(false);
+        var response = await http.GetStringAsync(new Uri("http://api.icndb.com/jokes/random/"));
         return JObject.Parse(response)["value"]["joke"].ToString() + " 😆";
     }
 
@@ -314,7 +314,7 @@ public class SearchesService : INService
         var data = await _cache.GetOrAddCachedDataAsync($"nadeko_mtg_{search}",
             GetMtgCardFactory,
             search,
-            TimeSpan.FromDays(1)).ConfigureAwait(false);
+            TimeSpan.FromDays(1));
 
         if (data is null || data.Length == 0)
             return null;
@@ -333,7 +333,7 @@ public class SearchesService : INService
                                                     $"newSearch=false&" +
                                                     $"ProductType=All&" +
                                                     $"IsProductNameExact=false&" +
-                                                    $"ProductName={Uri.EscapeDataString(card.Name)}").ConfigureAwait(false);
+                                                    $"ProductName={Uri.EscapeDataString(card.Name)}");
             }
             catch { storeUrl = "<url can't be found>"; }
 
@@ -350,26 +350,18 @@ public class SearchesService : INService
 
         using var http = _httpFactory.CreateClient();
         http.DefaultRequestHeaders.Clear();
-        var response = await http.GetStringAsync($"https://api.magicthegathering.io/v1/cards?name={Uri.EscapeDataString(search)}")
-            .ConfigureAwait(false);
+        var response = await http.GetStringAsync($"https://api.magicthegathering.io/v1/cards?name={Uri.EscapeDataString(search)}");
 
         var responseObject = JsonConvert.DeserializeObject<MtgResponse>(response);
         if (responseObject is null)
-            return new MtgData[0];
+            return Array.Empty<MtgData>();
 
         var cards = responseObject.Cards.Take(5).ToArray();
         if (cards.Length == 0)
-            return new MtgData[0];
+            return Array.Empty<MtgData>();
 
-        var tasks = new List<Task<MtgData>>(cards.Length);
-        for (var i = 0; i < cards.Length; i++)
-        {
-            var card = cards[i];
-
-            tasks.Add(GetMtgDataAsync(card));
-        }
-
-        return await Task.WhenAll(tasks).ConfigureAwait(false);
+        return await cards.Select(GetMtgDataAsync)
+                          .WhenAll();
     }
 
     public Task<HearthstoneCardData> GetHearthstoneCardDataAsync(string name)
@@ -389,7 +381,7 @@ public class SearchesService : INService
         try
         {
             var response = await http.GetStringAsync($"https://omgvamp-hearthstone-v1.p.rapidapi.com/" +
-                                                     $"cards/search/{Uri.EscapeDataString(name)}").ConfigureAwait(false);
+                                                     $"cards/search/{Uri.EscapeDataString(name)}");
             var objs = JsonConvert.DeserializeObject<HearthstoneCardData[]>(response);
             if (objs is null || objs.Length == 0)
                 return null;
@@ -400,7 +392,7 @@ public class SearchesService : INService
                 return null;
             if (!string.IsNullOrWhiteSpace(data.Img))
             {
-                data.Img = await _google.ShortenUrl(data.Img).ConfigureAwait(false);
+                data.Img = await _google.ShortenUrl(data.Img);
             }
             if (!string.IsNullOrWhiteSpace(data.Text))
             {
@@ -429,11 +421,11 @@ public class SearchesService : INService
     {
         using var http = _httpFactory.CreateClient();
         var res = await http.GetStringAsync(string.Format("https://omdbapi.nadeko.bot/?t={0}&y=&plot=full&r=json",
-            name.Trim().Replace(' ', '+'))).ConfigureAwait(false);
+            name.Trim().Replace(' ', '+')));
         var movie = JsonConvert.DeserializeObject<OmdbMovie>(res);
         if (movie?.Title is null)
             return null;
-        movie.Poster = await _google.ShortenUrl(movie.Poster).ConfigureAwait(false);
+        movie.Poster = await _google.ShortenUrl(movie.Poster);
         return movie;
     }
 
@@ -442,7 +434,7 @@ public class SearchesService : INService
         var redis = _cache.Redis;
         var db = redis.GetDatabase();
         const string STEAM_GAME_IDS_KEY = "steam_names_to_appid";
-        var exists = await db.KeyExistsAsync(STEAM_GAME_IDS_KEY).ConfigureAwait(false);
+        var exists = await db.KeyExistsAsync(STEAM_GAME_IDS_KEY);
 
         // if we didn't get steam name to id map already, get it
         //if (!exists)
@@ -450,12 +442,12 @@ public class SearchesService : INService
         //    using (var http = _httpFactory.CreateClient())
         //    {
         //        // https://api.steampowered.com/ISteamApps/GetAppList/v2/
-        //        var gamesStr = await http.GetStringAsync("https://api.steampowered.com/ISteamApps/GetAppList/v2/").ConfigureAwait(false);
+        //        var gamesStr = await http.GetStringAsync("https://api.steampowered.com/ISteamApps/GetAppList/v2/");
         //        var apps = JsonConvert.DeserializeAnonymousType(gamesStr, new { applist = new { apps = new List<SteamGameId>() } }).applist.apps;
 
-        //        //await db.HashSetAsync("steam_game_ids", apps.Select(app => new HashEntry(app.Name.Trim().ToLowerInvariant(), app.AppId)).ToArray()).ConfigureAwait(false);
+        //        //await db.HashSetAsync("steam_game_ids", apps.Select(app => new HashEntry(app.Name.Trim().ToLowerInvariant(), app.AppId)).ToArray());
         //        await db.StringSetAsync("steam_game_ids", gamesStr, TimeSpan.FromHours(24));
-        //        //await db.KeyExpireAsync("steam_game_ids", TimeSpan.FromHours(24), CommandFlags.FireAndForget).ConfigureAwait(false);
+        //        //await db.KeyExpireAsync("steam_game_ids", TimeSpan.FromHours(24), CommandFlags.FireAndForget);
         //    }
         //}
 
@@ -463,16 +455,16 @@ public class SearchesService : INService
         {
             using var http = _httpFactory.CreateClient();
             // https://api.steampowered.com/ISteamApps/GetAppList/v2/
-            var gamesStr = await http.GetStringAsync("https://api.steampowered.com/ISteamApps/GetAppList/v2/").ConfigureAwait(false);
+            var gamesStr = await http.GetStringAsync("https://api.steampowered.com/ISteamApps/GetAppList/v2/");
             var apps = JsonConvert.DeserializeAnonymousType(gamesStr, new { applist = new { apps = new List<SteamGameId>() } }).applist.apps;
 
             return apps
                 .OrderBy(x => x.Name, StringComparer.OrdinalIgnoreCase)
                 .GroupBy(x => x.Name)
                 .ToDictionary(x => x.Key, x => x.First().AppId);
-            //await db.HashSetAsync("steam_game_ids", apps.Select(app => new HashEntry(app.Name.Trim().ToLowerInvariant(), app.AppId)).ToArray()).ConfigureAwait(false);
+            //await db.HashSetAsync("steam_game_ids", apps.Select(app => new HashEntry(app.Name.Trim().ToLowerInvariant(), app.AppId)).ToArray());
             //await db.StringSetAsync("steam_game_ids", gamesStr, TimeSpan.FromHours(24));
-            //await db.KeyExpireAsync("steam_game_ids", TimeSpan.FromHours(24), CommandFlags.FireAndForget).ConfigureAwait(false);
+            //await db.KeyExpireAsync("steam_game_ids", TimeSpan.FromHours(24), CommandFlags.FireAndForget);
         }, default(string), TimeSpan.FromHours(24));
 
         if (gamesMap is null)
@@ -506,7 +498,7 @@ public class SearchesService : INService
 
         // now that we have appid, get the game info with that appid
         //var gameData = await _cache.GetOrAddCachedDataAsync($"steam_game:{appid}", SteamGameDataFactory, appid, TimeSpan.FromHours(12))
-        //    .ConfigureAwait(false);
+        //;
 
         //return gameData;
     }
@@ -516,7 +508,7 @@ public class SearchesService : INService
     //    using (var http = _httpFactory.CreateClient())
     //    {
     //        //  https://store.steampowered.com/api/appdetails?appids=
-    //        var responseStr = await http.GetStringAsync($"https://store.steampowered.com/api/appdetails?appids={appid}").ConfigureAwait(false);
+    //        var responseStr = await http.GetStringAsync($"https://store.steampowered.com/api/appdetails?appids={appid}");
     //        var data = JsonConvert.DeserializeObject<Dictionary<int, SteamGameData.Container>>(responseStr);
     //        if (!data.ContainsKey(appid) || !data[appid].Success)
     //            return null; // for some reason we can't get the game with valid appid. SHould never happen

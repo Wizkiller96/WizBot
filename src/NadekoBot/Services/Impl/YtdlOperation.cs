@@ -40,8 +40,8 @@ public class YtdlOperation
             Log.Debug($"Executing {process.StartInfo.FileName} {process.StartInfo.Arguments}");
             process.Start();
 
-            var str = await process.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
-            var err = await process.StandardError.ReadToEndAsync().ConfigureAwait(false);
+            var str = await process.StandardOutput.ReadToEndAsync();
+            var err = await process.StandardError.ReadToEndAsync();
             if (!string.IsNullOrEmpty(err))
                 Log.Warning("YTDL warning: {YtdlWarning}", err);
 

@@ -37,7 +37,7 @@ public partial class Gambling
                 try
                 {
                     logService.AddDeleteIgnore(ctx.Message.Id);
-                    await ctx.Message.DeleteAsync().ConfigureAwait(false);
+                    await ctx.Message.DeleteAsync();
                 }
                 catch { }
             }
@@ -58,7 +58,7 @@ public partial class Gambling
             if (((SocketGuild)ctx.Guild).CurrentUser.GuildPermissions.ManageMessages)
             {
                 logService.AddDeleteIgnore(ctx.Message.Id);
-                await ctx.Message.DeleteAsync().ConfigureAwait(false);
+                await ctx.Message.DeleteAsync();
             }
 
             var success = await _service.PlantAsync(ctx.Guild.Id, ctx.Channel, ctx.User.Id, ctx.User.ToString(), amount, pass);
@@ -79,11 +79,11 @@ public partial class Gambling
             var enabled = _service.ToggleCurrencyGeneration(ctx.Guild.Id, ctx.Channel.Id);
             if (enabled)
             {
-                await ReplyConfirmLocalizedAsync(strs.curgen_enabled).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.curgen_enabled);
             }
             else
             {
-                await ReplyConfirmLocalizedAsync(strs.curgen_disabled).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.curgen_disabled);
             }
         }
 

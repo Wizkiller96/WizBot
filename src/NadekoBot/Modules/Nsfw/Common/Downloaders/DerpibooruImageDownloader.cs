@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using System.Net.Http.Json;
 
 namespace NadekoBot.Modules.Nsfw.Common;
@@ -15,10 +15,10 @@ public class DerpibooruImageDownloader : ImageDownloader<DerpiImageObject>
         var uri = $"https://www.derpibooru.org/api/v1/json/search/images?q={tagString.Replace('+', ',')}&per_page=49&page={page}";
         using var req = new HttpRequestMessage(HttpMethod.Get, uri);
         req.Headers.AddFakeHeaders();
-        using var res = await _http.SendAsync(req, cancel).ConfigureAwait(false);
+        using var res = await _http.SendAsync(req, cancel);
         res.EnsureSuccessStatusCode();
             
-        var container = await res.Content.ReadFromJsonAsync<DerpiContainer>(_serializerOptions, cancel).ConfigureAwait(false);
+        var container = await res.Content.ReadFromJsonAsync<DerpiContainer>(_serializerOptions, cancel);
         if (container?.Images is null)
             return new();
             

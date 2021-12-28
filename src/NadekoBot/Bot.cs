@@ -169,7 +169,7 @@ public sealed class Bot
         _ = LoadTypeReaders(typeof(Bot).Assembly);
 
         sw.Stop();
-        Log.Information($"All services loaded in {sw.Elapsed.TotalSeconds:F2}s");
+        Log.Information("All services loaded in {ServiceLoadTime:F2}s", sw.Elapsed.TotalSeconds);
     }
 
     private void ApplyConfigMigrations()
@@ -194,10 +194,10 @@ public sealed class Bot
             Log.Warning(ex.LoaderExceptions[0], "Error getting types");
             return Enumerable.Empty<object>();
         }
-        var filteredTypes = allTypes
-            .Where(x => x.IsSubclassOf(typeof(TypeReader))
-                        && x.BaseType?.GetGenericArguments().Length > 0
-                        && !x.IsAbstract);
+
+        var filteredTypes = allTypes.Where(x => x.IsSubclassOf(typeof(TypeReader))
+                                                && x.BaseType?.GetGenericArguments().Length > 0
+                                                && !x.IsAbstract);
 
         var toReturn = new List<object>();
         foreach (var ft in filteredTypes)
@@ -225,9 +225,9 @@ public sealed class Bot
                 clientReady.TrySetResult(true);
                 try
                 {
-                    foreach (var chan in await Client.GetDMChannelsAsync().ConfigureAwait(false))
+                    foreach (var chan in await Client.GetDMChannelsAsync())
                     {
-                        await chan.CloseAsync().ConfigureAwait(false);
+                        await chan.CloseAsync();
                     }
                 }
                 catch
@@ -242,8 +242,8 @@ public sealed class Bot
         Log.Information("Shard {ShardId} logging in ...", Client.ShardId);
         try
         {
-            await Client.LoginAsync(TokenType.Bot, token).ConfigureAwait(false);
-            await Client.StartAsync().ConfigureAwait(false);
+            await Client.LoginAsync(TokenType.Bot, token);
+            await Client.StartAsync();
         }
         catch (HttpException ex)
         {
@@ -257,24 +257,24 @@ public sealed class Bot
         }
 
         Client.Ready += SetClientReady;
-        await clientReady.Task.ConfigureAwait(false);
+        await clientReady.Task;
         Client.Ready -= SetClientReady;
             
         Client.JoinedGuild += Client_JoinedGuild;
         Client.LeftGuild += Client_LeftGuild;
             
-        Log.Information("Shard {0} logged in.", Client.ShardId);
+        Log.Information("Shard {ShardId} logged in", Client.ShardId);
     }
 
     private Task Client_LeftGuild(SocketGuild arg)
     {
-        Log.Information("Left server: {0} [{1}]", arg?.Name, arg?.Id);
+        Log.Information("Left server: {GuildName} [{GuildId}]", arg?.Name, arg?.Id);
         return Task.CompletedTask;
     }
 
     private Task Client_JoinedGuild(SocketGuild arg)
     {
-        Log.Information($"Joined server: {0} [{1}]", arg.Name, arg.Id);
+        Log.Information("Joined server: {GuildName} [{GuildId}]", arg.Name, arg.Id);
         var _ = Task.Run(async () =>
         {
             GuildConfig gc;
@@ -282,7 +282,7 @@ public sealed class Bot
             {
                 gc = uow.GuildConfigsForId(arg.Id, null);
             }
-            await JoinedGuild.Invoke(gc).ConfigureAwait(false);
+            await JoinedGuild.Invoke(gc);
         });
         return Task.CompletedTask;
     }
@@ -291,7 +291,7 @@ public sealed class Bot
     {
         var sw = Stopwatch.StartNew();
 
-        await LoginAsync(_creds.Token).ConfigureAwait(false);
+        await LoginAsync(_creds.Token);
 
         Mention = Client.CurrentUser.Mention;
         Log.Information("Shard {ShardId} loading services...", Client.ShardId);
@@ -310,7 +310,7 @@ public sealed class Bot
         var commandHandler = Services.GetRequiredService<CommandHandler>();
 
         // start handling messages received in commandhandler
-        await commandHandler.StartHandling().ConfigureAwait(false);
+        await commandHandler.StartHandling();
 
         await _commandService.AddModulesAsync(typeof(Bot).Assembly, Services);
         await _interactionService.AddModulesAsync(typeof(Bot).Assembly, Services);
@@ -338,22 +338,22 @@ public sealed class Bot
             }
         });
 
-        return Task.WhenAll(tasks);
+        return tasks.WhenAll();
     }
 
     private Task Client_Log(LogMessage arg)
     {
         if (arg.Exception != null)
-            Log.Warning(arg.Exception, arg.Source + " | " + arg.Message);
+            Log.Warning(arg.Exception, "{ErrorSource} | {ErrorMessage}", arg.Source, arg.Message);
         else
-            Log.Warning(arg.Source + " | " + arg.Message);
+            Log.Warning("{ErrorSource} | {ErrorMessage}", arg.Source, arg.Message);
 
         return Task.CompletedTask;
     }
 
     public async Task RunAndBlockAsync()
     {
-        await RunAsync().ConfigureAwait(false);
-        await Task.Delay(-1).ConfigureAwait(false);
+        await RunAsync();
+        await Task.Delay(-1);
     }
 }

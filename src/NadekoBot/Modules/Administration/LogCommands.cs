@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Common.TypeReaders.Models;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Modules.Administration.Services;
@@ -17,11 +17,11 @@ public partial class Administration
         [OwnerOnly]
         public async Task LogServer(PermissionAction action)
         {
-            await _service.LogServer(ctx.Guild.Id, ctx.Channel.Id, action.Value).ConfigureAwait(false);
+            await _service.LogServer(ctx.Guild.Id, ctx.Channel.Id, action.Value);
             if (action.Value)
-                await ReplyConfirmLocalizedAsync(strs.log_all).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.log_all);
             else
-                await ReplyConfirmLocalizedAsync(strs.log_disabled).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.log_disabled);
         }
 
         [NadekoCommand, Aliases]
@@ -58,9 +58,9 @@ public partial class Administration
             var removed = _service.LogIgnore(ctx.Guild.Id, target.Id, IgnoredItemType.Channel);
 
             if (!removed)
-                await ReplyConfirmLocalizedAsync(strs.log_ignore_chan(Format.Bold(target.Mention + "(" + target.Id + ")"))).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.log_ignore_chan(Format.Bold(target.Mention + "(" + target.Id + ")")));
             else
-                await ReplyConfirmLocalizedAsync(strs.log_not_ignore_chan(Format.Bold(target.Mention + "(" + target.Id + ")"))).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.log_not_ignore_chan(Format.Bold(target.Mention + "(" + target.Id + ")")));
         }
             
         [NadekoCommand, Aliases]
@@ -72,9 +72,9 @@ public partial class Administration
             var removed = _service.LogIgnore(ctx.Guild.Id, target.Id, IgnoredItemType.User);
 
             if (!removed)
-                await ReplyConfirmLocalizedAsync(strs.log_ignore_user(Format.Bold(target.Mention + "(" + target.Id + ")"))).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.log_ignore_user(Format.Bold(target.Mention + "(" + target.Id + ")")));
             else
-                await ReplyConfirmLocalizedAsync(strs.log_not_ignore_user(Format.Bold(target.Mention + "(" + target.Id + ")"))).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.log_not_ignore_user(Format.Bold(target.Mention + "(" + target.Id + ")")));
         }
 
         [NadekoCommand, Aliases]
@@ -94,8 +94,7 @@ public partial class Administration
                 }));
 
             await SendConfirmAsync(Format.Bold(GetText(strs.log_events)) + "\n" +
-                                   str)
-                .ConfigureAwait(false);
+                                   str);
         }
 
         private static ulong? GetLogProperty(LogSetting l, LogType type)
@@ -146,9 +145,9 @@ public partial class Administration
             var val = _service.Log(ctx.Guild.Id, ctx.Channel.Id, type);
 
             if (val)
-                await ReplyConfirmLocalizedAsync(strs.log(Format.Bold(type.ToString()))).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.log(Format.Bold(type.ToString())));
             else
-                await ReplyConfirmLocalizedAsync(strs.log_stop(Format.Bold(type.ToString()))).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.log_stop(Format.Bold(type.ToString())));
         }
     }
 }

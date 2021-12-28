@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Common.Configs;
 using NadekoBot.Modules.Games.Common;
 
@@ -25,7 +25,7 @@ public sealed class GamesConfigService : ConfigServiceBase<GamesConfig>
         
     private void Migrate()
     {
-        if (_data.Version < 1)
+        if (data.Version < 1)
         {
             ModifyConfig(c =>
             {

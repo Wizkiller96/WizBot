@@ -39,8 +39,7 @@ public partial class Searches
                 return;
 
             using var http = _httpFactory.CreateClient("memelist");
-            var res = await http.GetAsync("https://api.memegen.link/templates/")
-                .ConfigureAwait(false);
+            var res = await http.GetAsync("https://api.memegen.link/templates/");
 
             var rawJson = await res.Content.ReadAsStringAsync();
                     
@@ -58,7 +57,7 @@ public partial class Searches
                     .WithDescription(templates);
 
                 return embed;
-            }, data.Count, 15).ConfigureAwait(false);
+            }, data.Count, 15);
         }
 
         [NadekoCommand, Aliases]
@@ -75,8 +74,7 @@ public partial class Searches
                 }
             }
             memeUrl += ".png";
-            await ctx.Channel.SendMessageAsync(memeUrl)
-                .ConfigureAwait(false);
+            await ctx.Channel.SendMessageAsync(memeUrl);
         }
 
         private static string Replace(string input)

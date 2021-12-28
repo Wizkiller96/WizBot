@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using Wof = NadekoBot.Modules.Gambling.Common.WheelOfFortune.WheelOfFortuneGame;
 using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Modules.Gambling.Common;
@@ -33,16 +33,16 @@ public partial class Gambling
         [NadekoCommand, Aliases]
         public async Task WheelOfFortune(ShmartNumber amount)
         {
-            if (!await CheckBetMandatory(amount).ConfigureAwait(false))
+            if (!await CheckBetMandatory(amount))
                 return;
 
-            if (!await _cs.RemoveAsync(ctx.User.Id, "Wheel Of Fortune - bet", amount, gamble: true).ConfigureAwait(false))
+            if (!await _cs.RemoveAsync(ctx.User.Id, "Wheel Of Fortune - bet", amount, gamble: true))
             {
                 await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
                 return;
             }
 
-            var result = await _service.WheelOfFortuneSpinAsync(ctx.User.Id, amount).ConfigureAwait(false);
+            var result = await _service.WheelOfFortuneSpinAsync(ctx.User.Id, amount);
 
             var wofMultipliers = _config.WheelOfFortune.Multipliers;
             await SendConfirmAsync(
@@ -52,7 +52,7 @@ public partial class Gambling
 
 『{wofMultipliers[2]}』      {_emojis[result.Index]}      『{wofMultipliers[6]}』
 
-     『{wofMultipliers[3]}』   『{wofMultipliers[4]}』   『{wofMultipliers[5]}』")).ConfigureAwait(false);
+     『{wofMultipliers[3]}』   『{wofMultipliers[4]}』   『{wofMultipliers[5]}』"));
         }
     }
 }

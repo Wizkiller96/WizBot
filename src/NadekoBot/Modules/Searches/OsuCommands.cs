@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Searches.Common;
 using Newtonsoft.Json;
 
@@ -33,19 +33,18 @@ public partial class Searches
             {
                 if (string.IsNullOrWhiteSpace(_creds.OsuApiKey))
                 {
-                    await ReplyErrorLocalizedAsync(strs.osu_api_key).ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.osu_api_key);
                     return;
                 }
 
                 var smode = ResolveGameMode(modeNumber);
                 var userReq = $"https://osu.ppy.sh/api/get_user?k={_creds.OsuApiKey}&u={user}&m={modeNumber}";
-                var userResString = await http.GetStringAsync(userReq)
-                    .ConfigureAwait(false);
+                var userResString = await http.GetStringAsync(userReq);
                 var objs = JsonConvert.DeserializeObject<List<OsuUserData>>(userResString);
 
                 if (objs.Count == 0)
                 {
-                    await ReplyErrorLocalizedAsync(strs.osu_user_not_found).ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.osu_user_not_found);
                     return;
                 }
 
@@ -67,11 +66,11 @@ public partial class Searches
             }
             catch (ArgumentOutOfRangeException)
             {
-                await ReplyErrorLocalizedAsync(strs.osu_user_not_found).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.osu_user_not_found);
             }
             catch (Exception ex)
             {
-                await ReplyErrorLocalizedAsync(strs.osu_failed).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.osu_failed);
                 Log.Warning(ex, "Osu command failed");
             }
         }
@@ -86,18 +85,16 @@ public partial class Searches
 
             var modeStr = ResolveGameMode(modeNumber);
             var resString = await http
-                .GetStringAsync($"https://api.gatari.pw/user/stats?u={user}&mode={modeNumber}")
-                .ConfigureAwait(false);
+                .GetStringAsync($"https://api.gatari.pw/user/stats?u={user}&mode={modeNumber}");
 
             var statsResponse = JsonConvert.DeserializeObject<GatariUserStatsResponse>(resString);
             if (statsResponse.Code != 200 || statsResponse.Stats.Id == 0)
             {
-                await ReplyErrorLocalizedAsync(strs.osu_user_not_found).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.osu_user_not_found);
                 return;
             }
 
-            var usrResString = await http.GetStringAsync($"https://api.gatari.pw/users/get?u={user}")
-                .ConfigureAwait(false);
+            var usrResString = await http.GetStringAsync($"https://api.gatari.pw/users/get?u={user}");
 
             var userData = JsonConvert.DeserializeObject<GatariUserResponse>(usrResString).Users[0];
             var userStats = statsResponse.Stats;
@@ -122,13 +119,13 @@ public partial class Searches
         {;
             if (string.IsNullOrWhiteSpace(_creds.OsuApiKey))
             {
-                await SendErrorAsync("An osu! API key is required.").ConfigureAwait(false);
+                await SendErrorAsync("An osu! API key is required.");
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(user))
             {
-                await SendErrorAsync("Please provide a username.").ConfigureAwait(false);
+                await SendErrorAsync("Please provide a username.");
                 return;
             }
 
@@ -146,7 +143,7 @@ public partial class Searches
                             $"&limit=5" +
                             $"&m={m}";
 
-            var resString = await http.GetStringAsync(reqString).ConfigureAwait(false);
+            var resString = await http.GetStringAsync(reqString);
             var obj = JsonConvert.DeserializeObject<List<OsuUserBests>>(resString);
 
             var mapTasks = obj.Select(async item =>
@@ -155,7 +152,7 @@ public partial class Searches
                                    $"?k={_creds.OsuApiKey}" +
                                    $"&b={item.BeatmapId}";
 
-                var mapResString = await http.GetStringAsync(mapReqString).ConfigureAwait(false);
+                var mapResString = await http.GetStringAsync(mapReqString);
                 var map = JsonConvert.DeserializeObject<List<OsuMapData>>(mapResString).FirstOrDefault();
                 if (map is null)
                     return default;
@@ -179,13 +176,13 @@ public partial class Searches
                 .WithOkColor()
                 .WithTitle($"Top 5 plays for {user}");
                     
-            var mapData = await Task.WhenAll(mapTasks);
+            var mapData = await mapTasks.WhenAll();
             foreach (var (title, desc) in mapData.Where(x => x != default))
             {
                 eb.AddField(title, desc, false);
             }
 
-            await ctx.Channel.EmbedAsync(eb).ConfigureAwait(false);
+            await ctx.Channel.EmbedAsync(eb);
         }
 
         //https://osu.ppy.sh/wiki/Accuracy

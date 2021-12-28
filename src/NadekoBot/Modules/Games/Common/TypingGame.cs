@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using System.Diagnostics;
 using NadekoBot.Modules.Games.Services;
 using CommandLine;
@@ -83,24 +83,24 @@ public class TypingGame
             var msg = await Channel.SendMessageAsync($"Starting new typing contest in **{time}**...", options: new()
             {
                 RetryMode = RetryMode.AlwaysRetry
-            }).ConfigureAwait(false);
+            });
 
             do
             {
-                await Task.Delay(2000).ConfigureAwait(false);
+                await Task.Delay(2000);
                 time -= 2;
-                try { await msg.ModifyAsync(m => m.Content = $"Starting new typing contest in **{time}**..").ConfigureAwait(false); } catch { }
+                try { await msg.ModifyAsync(m => m.Content = $"Starting new typing contest in **{time}**.."); } catch { }
             } while (time > 2);
 
             await msg.ModifyAsync(m => {
                 m.Content = CurrentSentence.Replace(" ", " \x200B", StringComparison.InvariantCulture);
-            }).ConfigureAwait(false);
+            });
             sw.Start();
             HandleAnswers();
 
             while (i > 0)
             {
-                await Task.Delay(1000).ConfigureAwait(false);
+                await Task.Delay(1000);
                 i--;
                 if (!IsActive)
                     return;
@@ -110,7 +110,7 @@ public class TypingGame
         catch { }
         finally
         {
-            await Stop().ConfigureAwait(false);
+            await Stop();
         }
     }
 
@@ -158,8 +158,7 @@ public class TypingGame
                     {
                         await this.Channel.SendConfirmAsync(_eb,
                                 $":exclamation: A lot of people finished, here is the text for those still typing:" +
-                                $"\n\n**{Format.Sanitize(CurrentSentence.Replace(" ", " \x200B", StringComparison.InvariantCulture)).SanitizeMentions(true)}**")
-                            .ConfigureAwait(false);
+                                $"\n\n**{Format.Sanitize(CurrentSentence.Replace(" ", " \x200B", StringComparison.InvariantCulture)).SanitizeMentions(true)}**");
                     }
                 }
             }

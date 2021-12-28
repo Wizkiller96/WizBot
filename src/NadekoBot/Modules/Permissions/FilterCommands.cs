@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Modules.Permissions.Services;
 using NadekoBot.Services.Database.Models;
@@ -22,7 +22,7 @@ public partial class Permissions
         public async Task FwClear()
         {
             _service.ClearFilteredWords(ctx.Guild.Id);
-            await ReplyConfirmLocalizedAsync(strs.fw_cleared).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.fw_cleared);
         }
 
         [NadekoCommand, Aliases]
@@ -42,12 +42,12 @@ public partial class Permissions
             if (enabled)
             {
                 _service.InviteFilteringServers.Add(channel.Guild.Id);
-                await ReplyConfirmLocalizedAsync(strs.invite_filter_server_on).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.invite_filter_server_on);
             }
             else
             {
                 _service.InviteFilteringServers.TryRemove(channel.Guild.Id);
-                await ReplyConfirmLocalizedAsync(strs.invite_filter_server_off).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.invite_filter_server_off);
             }
         }
 
@@ -81,12 +81,12 @@ public partial class Permissions
             if (removed is null)
             {
                 _service.InviteFilteringChannels.Add(channel.Id);
-                await ReplyConfirmLocalizedAsync(strs.invite_filter_channel_on).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.invite_filter_channel_on);
             }
             else
             {
                 _service.InviteFilteringChannels.TryRemove(channel.Id);
-                await ReplyConfirmLocalizedAsync(strs.invite_filter_channel_off).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.invite_filter_channel_off);
             }
         }
 
@@ -107,12 +107,12 @@ public partial class Permissions
             if (enabled)
             {
                 _service.LinkFilteringServers.Add(channel.Guild.Id);
-                await ReplyConfirmLocalizedAsync(strs.link_filter_server_on).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.link_filter_server_on);
             }
             else
             {
                 _service.LinkFilteringServers.TryRemove(channel.Guild.Id);
-                await ReplyConfirmLocalizedAsync(strs.link_filter_server_off).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.link_filter_server_off);
             }
         }
 
@@ -146,12 +146,12 @@ public partial class Permissions
             if (removed is null)
             {
                 _service.LinkFilteringChannels.Add(channel.Id);
-                await ReplyConfirmLocalizedAsync(strs.link_filter_channel_on).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.link_filter_channel_on);
             }
             else
             {
                 _service.LinkFilteringChannels.TryRemove(channel.Id);
-                await ReplyConfirmLocalizedAsync(strs.link_filter_channel_off).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.link_filter_channel_off);
             }
         }
 
@@ -172,12 +172,12 @@ public partial class Permissions
             if (enabled)
             {
                 _service.WordFilteringServers.Add(channel.Guild.Id);
-                await ReplyConfirmLocalizedAsync(strs.word_filter_server_on).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.word_filter_server_on);
             }
             else
             {
                 _service.WordFilteringServers.TryRemove(channel.Guild.Id);
-                await ReplyConfirmLocalizedAsync(strs.word_filter_server_off).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.word_filter_server_off);
             }
         }
 
@@ -211,12 +211,12 @@ public partial class Permissions
             if (removed is null)
             {
                 _service.WordFilteringChannels.Add(channel.Id);
-                await ReplyConfirmLocalizedAsync(strs.word_filter_channel_on).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.word_filter_channel_on);
             }
             else
             {
                 _service.WordFilteringChannels.TryRemove(channel.Id);
-                await ReplyConfirmLocalizedAsync(strs.word_filter_channel_off).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.word_filter_channel_off);
             }
         }
 
@@ -253,12 +253,12 @@ public partial class Permissions
             if (removed is null)
             {
                 filteredWords.Add(word);
-                await ReplyConfirmLocalizedAsync(strs.filter_word_add(Format.Code(word))).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.filter_word_add(Format.Code(word)));
             }
             else
             {
                 filteredWords.TryRemove(word);
-                await ReplyConfirmLocalizedAsync(strs.filter_word_remove(Format.Code(word))).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.filter_word_remove(Format.Code(word)));
             }
         }
 
@@ -281,7 +281,7 @@ public partial class Permissions
                     .WithTitle(GetText(strs.filter_word_list))
                     .WithDescription(string.Join("\n", fws.Skip(curPage * 10).Take(10)))
                     .WithOkColor()
-                , fws.Length, 10).ConfigureAwait(false);
+                , fws.Length, 10);
         }
     }
 }

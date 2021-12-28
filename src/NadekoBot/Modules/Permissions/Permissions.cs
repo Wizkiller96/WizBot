@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Common.TypeReaders;
 using NadekoBot.Common.TypeReaders.Models;
@@ -29,11 +29,11 @@ public partial class Permissions : NadekoModule<PermissionService>
         }
         if (action.Value)
         {
-            await ReplyConfirmLocalizedAsync(strs.verbose_true).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.verbose_true);
         }
         else
         {
-            await ReplyConfirmLocalizedAsync(strs.verbose_false).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.verbose_false);
         }
     }
 
@@ -52,11 +52,11 @@ public partial class Permissions : NadekoModule<PermissionService>
             if (!ulong.TryParse(cache.PermRole, out var roleId) ||
                 (role = ((SocketGuild)ctx.Guild).GetRole(roleId)) is null)
             {
-                await ReplyConfirmLocalizedAsync(strs.permrole_not_set).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.permrole_not_set);
             }
             else
             {
-                await ReplyConfirmLocalizedAsync(strs.permrole(Format.Bold(role.ToString()))).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.permrole(Format.Bold(role.ToString())));
             }
             return;
         }
@@ -69,7 +69,7 @@ public partial class Permissions : NadekoModule<PermissionService>
             _service.UpdateCache(config);
         }
 
-        await ReplyConfirmLocalizedAsync(strs.permrole_changed(Format.Bold(role.Name))).ConfigureAwait(false);
+        await ReplyConfirmLocalizedAsync(strs.permrole_changed(Format.Bold(role.Name)));
     }
 
     public enum Reset { Reset };
@@ -88,7 +88,7 @@ public partial class Permissions : NadekoModule<PermissionService>
             _service.UpdateCache(config);
         }
 
-        await ReplyConfirmLocalizedAsync(strs.permrole_reset).ConfigureAwait(false);
+        await ReplyConfirmLocalizedAsync(strs.permrole_reset);
     }
 
     [NadekoCommand, Aliases]
@@ -123,7 +123,7 @@ public partial class Permissions : NadekoModule<PermissionService>
                     return str;
                 }));
 
-        await ctx.Channel.SendMessageAsync(toSend).ConfigureAwait(false);
+        await ctx.Channel.SendMessageAsync(toSend);
     }
 
     [NadekoCommand, Aliases]
@@ -153,7 +153,7 @@ public partial class Permissions : NadekoModule<PermissionService>
         }
         catch (IndexOutOfRangeException)
         {
-            await ReplyErrorLocalizedAsync(strs.perm_out_of_range).ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.perm_out_of_range);
         }
     }
 
@@ -206,7 +206,7 @@ public partial class Permissions : NadekoModule<PermissionService>
             {
             }
         }
-        await ReplyConfirmLocalizedAsync(strs.perm_out_of_range).ConfigureAwait(false);
+        await ReplyConfirmLocalizedAsync(strs.perm_out_of_range);
     }
 
     [NadekoCommand, Aliases]
@@ -221,7 +221,7 @@ public partial class Permissions : NadekoModule<PermissionService>
             SecondaryTargetName = command.Name.ToLowerInvariant(),
             State = action.Value,
             IsCustomCommand = command.IsCustom,
-        }).ConfigureAwait(false);
+        });
 
         if (action.Value)
         {
@@ -248,7 +248,7 @@ public partial class Permissions : NadekoModule<PermissionService>
             SecondaryTarget = SecondaryPermissionType.Module,
             SecondaryTargetName = module.Name.ToLowerInvariant(),
             State = action.Value,
-        }).ConfigureAwait(false);
+        });
 
         if (action.Value)
         {
@@ -276,7 +276,7 @@ public partial class Permissions : NadekoModule<PermissionService>
             SecondaryTargetName = command.Name.ToLowerInvariant(),
             State = action.Value,
             IsCustomCommand = command.IsCustom,
-        }).ConfigureAwait(false);
+        });
 
         if (action.Value)
         {
@@ -305,7 +305,7 @@ public partial class Permissions : NadekoModule<PermissionService>
             SecondaryTarget = SecondaryPermissionType.Module,
             SecondaryTargetName = module.Name.ToLowerInvariant(),
             State = action.Value,
-        }).ConfigureAwait(false);
+        });
 
         if (action.Value)
         {
@@ -338,7 +338,7 @@ public partial class Permissions : NadekoModule<PermissionService>
             SecondaryTargetName = command.Name.ToLowerInvariant(),
             State = action.Value,
             IsCustomCommand = command.IsCustom,
-        }).ConfigureAwait(false);
+        });
 
         if (action.Value)
         {
@@ -370,7 +370,7 @@ public partial class Permissions : NadekoModule<PermissionService>
             SecondaryTarget = SecondaryPermissionType.Module,
             SecondaryTargetName = module.Name.ToLowerInvariant(),
             State = action.Value,
-        }).ConfigureAwait(false);
+        });
 
 
         if (action.Value)
@@ -401,7 +401,7 @@ public partial class Permissions : NadekoModule<PermissionService>
             SecondaryTargetName = command.Name.ToLowerInvariant(),
             State = action.Value,
             IsCustomCommand = command.IsCustom,
-        }).ConfigureAwait(false);
+        });
 
         if (action.Value)
         {
@@ -430,7 +430,7 @@ public partial class Permissions : NadekoModule<PermissionService>
             SecondaryTarget = SecondaryPermissionType.Module,
             SecondaryTargetName = module.Name.ToLowerInvariant(),
             State = action.Value,
-        }).ConfigureAwait(false);
+        });
 
         if (action.Value)
         {
@@ -459,7 +459,7 @@ public partial class Permissions : NadekoModule<PermissionService>
             SecondaryTarget = SecondaryPermissionType.AllModules,
             SecondaryTargetName = "*",
             State = action.Value,
-        }).ConfigureAwait(false);
+        });
 
         if (action.Value)
         {
@@ -487,7 +487,7 @@ public partial class Permissions : NadekoModule<PermissionService>
             SecondaryTarget = SecondaryPermissionType.AllModules,
             SecondaryTargetName = "*",
             State = action.Value,
-        }).ConfigureAwait(false);
+        });
 
         if (action.Value)
         {
@@ -512,7 +512,7 @@ public partial class Permissions : NadekoModule<PermissionService>
             SecondaryTarget = SecondaryPermissionType.AllModules,
             SecondaryTargetName = "*",
             State = action.Value,
-        }).ConfigureAwait(false);
+        });
 
         if (action.Value)
         {
@@ -550,15 +550,15 @@ public partial class Permissions : NadekoModule<PermissionService>
 
         await _service.AddPermissions(ctx.Guild.Id,
             newPerm,
-            allowUser).ConfigureAwait(false);
+            allowUser);
 
         if (action.Value)
         {
-            await ReplyConfirmLocalizedAsync(strs.asm_enable).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.asm_enable);
         }
         else
         {
-            await ReplyConfirmLocalizedAsync(strs.asm_disable).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.asm_disable);
         }
     }
 }

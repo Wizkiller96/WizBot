@@ -90,8 +90,8 @@ public static class StringExtensions
     {
         var ms = new MemoryStream();
         var sw = new StreamWriter(ms);
-        await sw.WriteAsync(str).ConfigureAwait(false);
-        await sw.FlushAsync().ConfigureAwait(false);
+        await sw.WriteAsync(str);
+        await sw.FlushAsync();
         ms.Position = 0;
         return ms;
     }

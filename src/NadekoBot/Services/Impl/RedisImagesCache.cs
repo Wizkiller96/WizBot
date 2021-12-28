@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using Newtonsoft.Json;
 using StackExchange.Redis;
 using NadekoBot.Common.ModuleBehaviors;
@@ -215,7 +215,7 @@ public sealed class RedisImagesCache : IImageCache, IReadyExecutor
     private async Task Load(ImageKeys key, Uri[] uris)
     {
         await Db.KeyDeleteAsync(GetRedisKey(key));
-        var imageData = await Task.WhenAll(uris.Select(GetImageData));
+        var imageData = await uris.Select(GetImageData).WhenAll();
         var vals = imageData.Where(x => x is not null).Select(x => (RedisValue)x).ToArray();
 
         await Db.ListRightPushAsync(GetRedisKey(key), vals);
@@ -260,7 +260,9 @@ public sealed class RedisImagesCache : IImageCache, IReadyExecutor
 
     private async Task<bool> AllKeysExist()
     {
-        var tasks = await Task.WhenAll(GetAllKeys().Select(x => Db.KeyExistsAsync(GetRedisKey(x))));
+        var tasks = await GetAllKeys()
+            .Select(x => Db.KeyExistsAsync(GetRedisKey(x)))
+            .WhenAll();
 
         return tasks.All(exist => exist);
     }

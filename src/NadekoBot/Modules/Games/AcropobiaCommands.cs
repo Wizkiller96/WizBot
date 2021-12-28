@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using System.Collections.Immutable;
 using NadekoBot.Modules.Games.Common.Acrophobia;
 using NadekoBot.Modules.Games.Services;
@@ -33,7 +33,7 @@ public partial class Games
                     game.OnVotingStarted += Game_OnVotingStarted;
                     game.OnUserVoted += Game_OnUserVoted;
                     _client.MessageReceived += _client_MessageReceived;
-                    await game.Run().ConfigureAwait(false);
+                    await game.Run();
                 }
                 finally
                 {
@@ -44,7 +44,7 @@ public partial class Games
             }
             else
             {
-                await ReplyErrorLocalizedAsync(strs.acro_running).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.acro_running);
             }
 
             Task _client_MessageReceived(SocketMessage msg)
@@ -56,10 +56,9 @@ public partial class Games
                 {
                     try
                     {
-                        var success = await game.UserInput(msg.Author.Id, msg.Author.ToString(), msg.Content)
-                            .ConfigureAwait(false);
+                        var success = await game.UserInput(msg.Author.Id, msg.Author.ToString(), msg.Content);
                         if (success)
-                            await msg.DeleteAsync().ConfigureAwait(false);
+                            await msg.DeleteAsync();
                     }
                     catch { }
                 });
@@ -87,15 +86,14 @@ public partial class Games
         {
             if (submissions.Length == 0)
             {
-                await SendErrorAsync(GetText(strs.acrophobia), GetText(strs.acro_ended_no_sub)).ConfigureAwait(false);
+                await SendErrorAsync(GetText(strs.acrophobia), GetText(strs.acro_ended_no_sub));
                 return;
             }
             if (submissions.Length == 1)
             {
                 await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
                         .WithDescription(GetText(strs.acro_winner_only(Format.Bold(submissions.First().Key.UserName))))
-                        .WithFooter(submissions.First().Key.Input))
-                    .ConfigureAwait(false);
+                        .WithFooter(submissions.First().Key.Input));
                 return;
             }
 
@@ -110,14 +108,14 @@ public partial class Games
 --")))
                 .WithFooter(GetText(strs.acro_vote));
 
-            await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+            await ctx.Channel.EmbedAsync(embed);
         }
 
         private async Task Game_OnEnded(AcrophobiaGame game, ImmutableArray<KeyValuePair<AcrophobiaUser, int>> votes)
         {
             if (!votes.Any() || votes.All(x => x.Value == 0))
             {
-                await SendErrorAsync(GetText(strs.acrophobia), GetText(strs.acro_no_votes_cast)).ConfigureAwait(false);
+                await SendErrorAsync(GetText(strs.acrophobia), GetText(strs.acro_no_votes_cast));
                 return;
             }
             var table = votes.OrderByDescending(v => v.Value);
@@ -128,7 +126,7 @@ public partial class Games
                     Format.Bold(winner.Value.ToString()))))
                 .WithFooter(winner.Key.Input);
 
-            await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+            await ctx.Channel.EmbedAsync(embed);
         }
     }
 }

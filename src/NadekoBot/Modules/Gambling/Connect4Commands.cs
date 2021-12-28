@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Common.Connect4;
 using NadekoBot.Modules.Gambling.Services;
@@ -28,7 +28,7 @@ public partial class Gambling
         public async Task Connect4(params string[] args)
         {
             var (options, _) = OptionsParser.ParseFrom(new Connect4Game.Options(), args);
-            if (!await CheckBetOptional(options.Bet).ConfigureAwait(false))
+            if (!await CheckBetOptional(options.Bet))
                 return;
 
             var newGame = new Connect4Game(ctx.User.Id, ctx.User.ToString(), options, _cs);
@@ -40,13 +40,13 @@ public partial class Gambling
 
                 newGame.Dispose();
                 //means game already exists, try to join
-                var joined = await game.Join(ctx.User.Id, ctx.User.ToString(), options.Bet).ConfigureAwait(false);
+                var joined = await game.Join(ctx.User.Id, ctx.User.ToString(), options.Bet);
                 return;
             }
 
             if (options.Bet > 0)
             {
-                if (!await _cs.RemoveAsync(ctx.User.Id, "Connect4-bet", options.Bet, true).ConfigureAwait(false))
+                if (!await _cs.RemoveAsync(ctx.User.Id, "Connect4-bet", options.Bet, true))
                 {
                     await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
                     _service.Connect4Games.TryRemove(ctx.Channel.Id, out _);
@@ -63,7 +63,7 @@ public partial class Gambling
             game.Initialize();
             if (options.Bet == 0)
             {
-                await ReplyConfirmLocalizedAsync(strs.connect4_created).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.connect4_created);
             }
             else
             {
@@ -80,11 +80,11 @@ public partial class Gambling
                     var success = false;
                     if (int.TryParse(arg.Content, out var col))
                     {
-                        success = await game.Input(arg.Author.Id, col).ConfigureAwait(false);
+                        success = await game.Input(arg.Author.Id, col);
                     }
 
                     if (success)
-                        try { await arg.DeleteAsync().ConfigureAwait(false); } catch { }
+                        try { await arg.DeleteAsync(); } catch { }
                     else
                     {
                         if (game.CurrentPhase is Connect4Game.Phase.Joining or Connect4Game.Phase.Ended)
@@ -93,7 +93,7 @@ public partial class Gambling
                         }
                         RepostCounter++;
                         if (RepostCounter == 0)
-                            try { msg = await ctx.Channel.SendMessageAsync("", embed: (Embed)msg.Embeds.First()).ConfigureAwait(false); } catch { }
+                            try { msg = await ctx.Channel.SendMessageAsync("", embed: (Embed)msg.Embeds.First()); } catch { }
                     }
                 });
                 return Task.CompletedTask;
@@ -160,9 +160,9 @@ public partial class Gambling
 
 
             if (msg is null)
-                msg = await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+                msg = await ctx.Channel.EmbedAsync(embed);
             else
-                await msg.ModifyAsync(x => x.Embed = embed.Build()).ConfigureAwait(false);
+                await msg.ModifyAsync(x => x.Embed = embed.Build());
         }
 
         private string GetGameStateText(Connect4Game game)

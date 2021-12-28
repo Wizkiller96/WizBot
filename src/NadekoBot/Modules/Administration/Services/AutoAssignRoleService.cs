@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using System.Threading.Channels;
 using LinqToDB;
 using Microsoft.EntityFrameworkCore;
@@ -50,8 +50,8 @@ public sealed class AutoAssignRoleService : INService
                         
                     if (roleIds.Any())
                     {
-                        await user.AddRolesAsync(roleIds).ConfigureAwait(false);
-                        await Task.Delay(250).ConfigureAwait(false);
+                        await user.AddRolesAsync(roleIds);
+                        await Task.Delay(250);
                     }
                     else
                     {

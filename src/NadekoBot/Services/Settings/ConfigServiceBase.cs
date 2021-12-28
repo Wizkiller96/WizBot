@@ -1,4 +1,3 @@
-#nullable disable
 using System.Linq.Expressions;
 using System.Reflection;
 using NadekoBot.Common.Yml;
@@ -18,10 +17,10 @@ public abstract class ConfigServiceBase<TSettings> : IConfigService
     protected readonly IPubSub _pubSub;
     private readonly TypedKey<TSettings> _changeKey;
 
-    protected TSettings _data;
+    protected TSettings data;
         
     // todo future config arrays are not copied - they're not protected from mutations
-    public TSettings Data => _data.Clone();
+    public TSettings Data => data.Clone();
         
     public abstract string Name { get; }
 
@@ -40,16 +39,17 @@ public abstract class ConfigServiceBase<TSettings> : IConfigService
         _pubSub = pubSub;
         _changeKey = changeKey;
 
+        data = new();
         Load();
         _pubSub.Sub(_changeKey, OnChangePublished);
     }
 
     private void PublishChange()
-        => _pubSub.Pub(_changeKey, _data);
+        => _pubSub.Pub(_changeKey, data);
 
     private ValueTask OnChangePublished(TSettings newData)
     {
-        _data = newData;
+        data = newData;
         OnStateUpdate();
         return default;
     }
@@ -62,11 +62,11 @@ public abstract class ConfigServiceBase<TSettings> : IConfigService
         // if file is deleted, regenerate it with default values
         if (!File.Exists(_filePath))
         {
-            _data = new();
+            data = new();
             Save();
         }
 
-        _data = _serializer.Deserialize<TSettings>(File.ReadAllText(_filePath));
+        data = _serializer.Deserialize<TSettings>(File.ReadAllText(_filePath));
     }
 
     /// <summary>
@@ -75,12 +75,12 @@ public abstract class ConfigServiceBase<TSettings> : IConfigService
     public void Reload()
     {
         Load();
-        _pubSub.Pub(_changeKey, _data);
+        _pubSub.Pub(_changeKey, data);
     }
 
     /// <summary>
     /// Doesn't do anything by default. This method will be executed after
-    /// <see cref="_data"/> is reloaded from <see cref="_filePath"/> or new data is recieved
+    /// <see cref="data"/> is reloaded from <see cref="_filePath"/> or new data is recieved
     /// from the publish event
     /// </summary>
     protected virtual void OnStateUpdate()
@@ -90,7 +90,7 @@ public abstract class ConfigServiceBase<TSettings> : IConfigService
         
     private void Save()
     {
-        var strData = _serializer.Serialize(_data);
+        var strData = _serializer.Serialize(data);
         File.WriteAllText(_filePath, strData);
     }
         
@@ -109,7 +109,7 @@ public abstract class ConfigServiceBase<TSettings> : IConfigService
         checker ??= _ => true;
         key = key.ToLowerInvariant();
         _propPrinters[key] = obj => printer((TProp)obj); 
-        _propSelectors[key] = () => selector.Compile()(_data);
+        _propSelectors[key] = () => selector.Compile()(data);
         _propSetters[key] = Magic(selector, parser, checker);
         _propComments[key] = ((MemberExpression)selector.Body).Member.GetCustomAttribute<CommentAttribute>()?.Comment;
     }
@@ -192,7 +192,7 @@ public abstract class ConfigServiceBase<TSettings> : IConfigService
     {
         var copy = Data;
         action(copy);
-        _data = copy;
+        data = copy;
         Save();
         PublishChange();
     }

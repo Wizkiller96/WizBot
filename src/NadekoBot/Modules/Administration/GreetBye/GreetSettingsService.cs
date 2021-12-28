@@ -127,8 +127,7 @@ public class GreetSettingsService : INService
                             var groupClear = false;
                             while (!groupClear)
                             {
-                                await Task.Delay(5000)
-                                    .ConfigureAwait(false);
+                                await Task.Delay(5000);
                                 groupClear = _byes.ClearGroup(guild.Id, 5, out var toBye);
                                 await ByeUsers(conf, channel, toBye);
                             }
@@ -217,8 +216,7 @@ public class GreetSettingsService : INService
         text = rep.Replace(text);
         try
         {
-            var toDelete = await channel.SendAsync(text)
-                .ConfigureAwait(false);
+            var toDelete = await channel.SendAsync(text);
             if (conf.AutoDeleteGreetMessagesTimer > 0)
             {
                 toDelete.DeleteAfter(conf.AutoDeleteGreetMessagesTimer);
@@ -243,8 +241,7 @@ public class GreetSettingsService : INService
         rep.Replace(text);
         try
         {
-            await channel.SendAsync(text)
-                .ConfigureAwait(false);
+            await channel.SendAsync(text);
         }
         catch
         {
@@ -279,8 +276,7 @@ public class GreetSettingsService : INService
                                     var groupClear = false;
                                     while (!groupClear)
                                     {
-                                        await Task.Delay(5000)
-                                            .ConfigureAwait(false);
+                                        await Task.Delay(5000);
                                         groupClear = _greets.ClearGroup(user.GuildId, 5, out var toGreet);
                                         await GreetUsers(conf, channel, toGreet);
                                     }

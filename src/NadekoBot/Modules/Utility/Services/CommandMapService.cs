@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Common.ModuleBehaviors;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Services.Database.Models;
@@ -75,14 +75,14 @@ public class CommandMapService : IInputTransformer, INService
 
                     try
                     {
-                        var toDelete = await channel.SendConfirmAsync(_eb, $"{input} => {newInput}").ConfigureAwait(false);
+                        var toDelete = await channel.SendConfirmAsync(_eb, $"{input} => {newInput}");
                         var _ = Task.Run(async () =>
                         {
-                            await Task.Delay(1500).ConfigureAwait(false);
+                            await Task.Delay(1500);
                             await toDelete.DeleteAsync(new()
                             {
                                 RetryMode = RetryMode.AlwaysRetry
-                            }).ConfigureAwait(false);
+                            });
                         });
                     }
                     catch { }

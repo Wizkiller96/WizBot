@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Modules.Utility.Common.Patreon;
 using System.Net.Http.Json;
@@ -49,7 +49,7 @@ public class PatreonRewardsService : INService
         _client = client;
 
         if (client.ShardId == 0)
-            _updater = new(async _ => await RefreshPledges(_credsProvider.GetCreds()).ConfigureAwait(false),
+            _updater = new(async _ => await RefreshPledges(_credsProvider.GetCreds()),
                 null, TimeSpan.Zero, Interval);
     }
 
@@ -151,7 +151,7 @@ public class PatreonRewardsService : INService
         }
 
         LastUpdate = DateTime.UtcNow;
-        await getPledgesLocker.WaitAsync().ConfigureAwait(false);
+        await getPledgesLocker.WaitAsync();
         try
         {
                 
@@ -170,7 +170,7 @@ public class PatreonRewardsService : INService
                 PatreonResponse data = null;
                 do
                 {
-                    var res = await http.GetStringAsync(page).ConfigureAwait(false);
+                    var res = await http.GetStringAsync(page);
                     data = JsonSerializer.Deserialize<PatreonResponse>(res);
 
                     if (data is null)
@@ -218,7 +218,7 @@ public class PatreonRewardsService : INService
 
     public async Task<int> ClaimReward(ulong userId, string patreonUserId, int cents)
     {
-        await claimLockJustInCase.WaitAsync().ConfigureAwait(false);
+        await claimLockJustInCase.WaitAsync();
         var settings = _gamblingConfigService.Data;
         var now = DateTime.UtcNow;
         try

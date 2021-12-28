@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using CodeHollow.FeedReader.Feeds;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Services.Database.Models;
@@ -52,7 +52,7 @@ public class FeedsService : INService
                 var rssUrl = kvp.Key;
                 try
                 {
-                    var feed = await CodeHollow.FeedReader.FeedReader.ReadAsync(rssUrl).ConfigureAwait(false);
+                    var feed = await CodeHollow.FeedReader.FeedReader.ReadAsync(rssUrl);
 
                     var items = feed
                         .Items
@@ -143,7 +143,7 @@ public class FeedsService : INService
                             .Where(x => x != null)
                             .Select(x => x.EmbedAsync(embed));
 
-                        allSendTasks.Add(Task.WhenAll(feedSendTasks));
+                        allSendTasks.Add(feedSendTasks.WhenAll());
                     }
                 }
                 catch
@@ -151,7 +151,7 @@ public class FeedsService : INService
                 }
             }
 
-            await Task.WhenAll(Task.WhenAll(allSendTasks), Task.Delay(10000)).ConfigureAwait(false);
+            await Task.WhenAll(Task.WhenAll(allSendTasks), Task.Delay(10000));
         }
     }
 

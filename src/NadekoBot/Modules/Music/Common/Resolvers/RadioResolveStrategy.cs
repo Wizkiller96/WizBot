@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using System.Text.RegularExpressions;
 
 namespace NadekoBot.Modules.Music.Resolvers;
@@ -17,7 +17,7 @@ public class RadioResolver : IRadioResolver
     public async Task<ITrackInfo> ResolveByQueryAsync(string query)
     {
         if (IsRadioLink(query))
-            query = await HandleStreamContainers(query).ConfigureAwait(false);
+            query = await HandleStreamContainers(query);
 
         return new SimpleTrackInfo(
             query.TrimTo(50),
@@ -44,7 +44,7 @@ public class RadioResolver : IRadioResolver
         try
         {
             using var http = new HttpClient();
-            file = await http.GetStringAsync(query).ConfigureAwait(false);
+            file = await http.GetStringAsync(query);
         }
         catch
         {

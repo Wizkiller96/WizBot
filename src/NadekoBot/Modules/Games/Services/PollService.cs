@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Modules.Games.Common;
 using NadekoBot.Common.Collections;
@@ -90,10 +90,9 @@ public class PollService : IEarlyBehavior
     private async Task Pr_OnVoted(IUserMessage msg, IGuildUser usr)
     {
         var toDelete = await msg.Channel.SendConfirmAsync(_eb, 
-                _strs.GetText(strs.poll_voted(Format.Bold(usr.ToString())), usr.GuildId))
-            .ConfigureAwait(false);
+                _strs.GetText(strs.poll_voted(Format.Bold(usr.ToString())), usr.GuildId));
         toDelete.DeleteAfter(5);
-        try { await msg.DeleteAsync().ConfigureAwait(false); } catch { }
+        try { await msg.DeleteAsync(); } catch { }
     }
 
     public async Task<bool> RunBehavior(IGuild guild, IUserMessage msg)
@@ -106,7 +105,7 @@ public class PollService : IEarlyBehavior
 
         try
         {
-            var voted = await poll.TryVote(msg).ConfigureAwait(false);
+            var voted = await poll.TryVote(msg);
 
             if (voted)
             {

@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Xp.Services;
 
 namespace NadekoBot.Modules.Xp;
@@ -23,7 +23,7 @@ public partial class Xp
                 .WithTitle(GetText(strs.reset))
                 .WithDescription(GetText(strs.reset_user_confirm));
 
-            if (!await PromptUserConfirmAsync(embed).ConfigureAwait(false))
+            if (!await PromptUserConfirmAsync(embed))
                 return;
 
             _service.XpReset(ctx.Guild.Id, userId);
@@ -40,12 +40,12 @@ public partial class Xp
                 .WithTitle(GetText(strs.reset))
                 .WithDescription(GetText(strs.reset_server_confirm));
 
-            if (!await PromptUserConfirmAsync(embed).ConfigureAwait(false))
+            if (!await PromptUserConfirmAsync(embed))
                 return;
 
             _service.XpReset(ctx.Guild.Id);
 
-            await ReplyConfirmLocalizedAsync(strs.reset_server).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.reset_server);
         }
     }
 }

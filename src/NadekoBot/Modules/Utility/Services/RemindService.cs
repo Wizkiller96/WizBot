@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using System.Text.RegularExpressions;
 using NadekoBot.Services.Database.Models;
 using Microsoft.EntityFrameworkCore;
@@ -42,7 +42,7 @@ public class RemindService : INService
                 foreach (var group in reminders.Chunk(5))
                 {
                     var executedReminders = group.ToList();
-                    await Task.WhenAll(executedReminders.Select(ReminderTimerAction));
+                    await executedReminders.Select(ReminderTimerAction).WhenAll();
                     await RemoveReminders(executedReminders);
                     await Task.Delay(1500); 
                 }
@@ -161,8 +161,8 @@ public class RemindService : INService
                     .WithOkColor()
                     .WithTitle("Reminder")
                     .AddField("Created At", r.DateAdded.HasValue ? r.DateAdded.Value.ToLongDateString() : "?")
-                    .AddField("By", (await ch.GetUserAsync(r.UserId).ConfigureAwait(false))?.ToString() ?? r.UserId.ToString()),
-                msg: r.Message).ConfigureAwait(false);
+                    .AddField("By", (await ch.GetUserAsync(r.UserId))?.ToString() ?? r.UserId.ToString()),
+                msg: r.Message);
         }
         catch (Exception ex) { Log.Information(ex.Message + $"({r.Id})"); }
     }

@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.CustomReactions.Services;
 
 namespace NadekoBot.Common.TypeReaders;
@@ -53,7 +53,7 @@ public sealed class CommandOrCrTypeReader : NadekoTypeReader<CommandOrCrInfo>
             return TypeReaderResult.FromSuccess(new CommandOrCrInfo(input, CommandOrCrInfo.Type.Custom));
         }
 
-        var cmd = await new CommandTypeReader(_commandHandler, _cmds).ReadAsync(context, input).ConfigureAwait(false);
+        var cmd = await new CommandTypeReader(_commandHandler, _cmds).ReadAsync(context, input);
         if (cmd.IsSuccess)
         {
             return TypeReaderResult.FromSuccess(new CommandOrCrInfo(((CommandInfo)cmd.Values.First().Value).Name,

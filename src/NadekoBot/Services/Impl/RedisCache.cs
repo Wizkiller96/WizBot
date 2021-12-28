@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using Newtonsoft.Json;
 using StackExchange.Redis;
 using System.Net;
@@ -32,7 +32,7 @@ public class RedisCache : IDataCache
     public async Task<(bool Success, byte[] Data)> TryGetImageDataAsync(Uri key)
     {
         var _db = Redis.GetDatabase();
-        byte[] x = await _db.StringGetAsync("image_" + key).ConfigureAwait(false);
+        byte[] x = await _db.StringGetAsync("image_" + key);
         return (x != null, x);
     }
 
@@ -45,7 +45,7 @@ public class RedisCache : IDataCache
     public async Task<(bool Success, string Data)> TryGetAnimeDataAsync(string key)
     {
         var _db = Redis.GetDatabase();
-        string x = await _db.StringGetAsync("anime_" + key).ConfigureAwait(false);
+        string x = await _db.StringGetAsync("anime_" + key);
         return (x != null, x);
     }
 
@@ -58,7 +58,7 @@ public class RedisCache : IDataCache
     public async Task<(bool Success, string Data)> TryGetNovelDataAsync(string key)
     {
         var _db = Redis.GetDatabase();
-        string x = await _db.StringGetAsync("novel_" + key).ConfigureAwait(false);
+        string x = await _db.StringGetAsync("novel_" + key);
         return (x != null, x);
     }
 
@@ -173,16 +173,16 @@ public class RedisCache : IDataCache
     {
         var _db = Redis.GetDatabase();
 
-        var data = await _db.StringGetAsync(key).ConfigureAwait(false);
+        var data = await _db.StringGetAsync(key);
         if (!data.HasValue)
         {
-            var obj = await factory(param).ConfigureAwait(false);
+            var obj = await factory(param);
 
             if (obj is null)
                 return default(TOut);
 
             await _db.StringSetAsync(key, JsonConvert.SerializeObject(obj),
-                expiry: expiry).ConfigureAwait(false);
+                expiry: expiry);
 
             return obj;
         }

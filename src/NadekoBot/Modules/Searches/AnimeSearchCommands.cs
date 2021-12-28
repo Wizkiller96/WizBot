@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using AngleSharp;
 using NadekoBot.Modules.Searches.Services;
 using AngleSharp.Html.Dom;
@@ -16,11 +16,11 @@ public partial class Searches
         //     if (string.IsNullOrWhiteSpace(query))
         //         return;
         //
-        //     var novelData = await _service.GetNovelData(query).ConfigureAwait(false);
+        //     var novelData = await _service.GetNovelData(query);
         //
         //     if (novelData is null)
         //     {
-        //         await ReplyErrorLocalizedAsync(strs.failed_finding_novel).ConfigureAwait(false);
+        //         await ReplyErrorLocalizedAsync(strs.failed_finding_novel);
         //         return;
         //     }
         //
@@ -35,7 +35,7 @@ public partial class Searches
         //         .AddField(GetText(strs.genres), string.Join(" ", novelData.Genres.Any() ? novelData.Genres : new[] { "none" }), true)
         //         .WithFooter($"{GetText(strs.score)} {novelData.Score}");
         //     
-        //     await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+        //     await ctx.Channel.EmbedAsync(embed);
         // }
 
         [NadekoCommand, Aliases]
@@ -48,7 +48,7 @@ public partial class Searches
             var fullQueryLink = "https://myanimelist.net/profile/" + name;
 
             var config = Configuration.Default.WithDefaultLoader();
-            using var document = await BrowsingContext.New(config).OpenAsync(fullQueryLink).ConfigureAwait(false);
+            using var document = await BrowsingContext.New(config).OpenAsync(fullQueryLink);
             var imageElem = document.QuerySelector("body > div#myanimelist > div.wrapper > div#contentWrapper > div#content > div.content-container > div.container-left > div.user-profile > div.user-image > img");
             var imageUrl = ((IHtmlImageElement)imageElem)?.Source ?? "http://icecream.me/uploads/870b03f36b59cc16ebfe314ef2dde781.png";
 
@@ -103,7 +103,7 @@ public partial class Searches
                 .WithUrl(fullQueryLink)
                 .WithImageUrl(imageUrl);
 
-            await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+            await ctx.Channel.EmbedAsync(embed);
         }
 
         private static string MalInfoToEmoji(string info)
@@ -135,11 +135,11 @@ public partial class Searches
             if (string.IsNullOrWhiteSpace(query))
                 return;
 
-            var animeData = await _service.GetAnimeData(query).ConfigureAwait(false);
+            var animeData = await _service.GetAnimeData(query);
 
             if (animeData is null)
             {
-                await ReplyErrorLocalizedAsync(strs.failed_finding_anime).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.failed_finding_anime);
                 return;
             }
 
@@ -153,7 +153,7 @@ public partial class Searches
                 .AddField(GetText(strs.status), animeData.AiringStatus.ToString(), true)
                 .AddField(GetText(strs.genres), string.Join(",\n", animeData.Genres.Any() ? animeData.Genres : new[] { "none" }), true)
                 .WithFooter($"{GetText(strs.score)} {animeData.AverageScore} / 100");
-            await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+            await ctx.Channel.EmbedAsync(embed);
         }
 
         [NadekoCommand, Aliases]
@@ -163,11 +163,11 @@ public partial class Searches
             if (string.IsNullOrWhiteSpace(query))
                 return;
 
-            var mangaData = await _service.GetMangaData(query).ConfigureAwait(false);
+            var mangaData = await _service.GetMangaData(query);
 
             if (mangaData is null)
             {
-                await ReplyErrorLocalizedAsync(strs.failed_finding_manga).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.failed_finding_manga);
                 return;
             }
 
@@ -182,7 +182,7 @@ public partial class Searches
                 .AddField(GetText(strs.genres), string.Join(",\n", mangaData.Genres.Any() ? mangaData.Genres : new[] { "none" }), true)
                 .WithFooter($"{GetText(strs.score)} {mangaData.AverageScore} / 100");
 
-            await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+            await ctx.Channel.EmbedAsync(embed);
         }
     }
 }

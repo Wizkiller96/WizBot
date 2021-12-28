@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using Microsoft.Extensions.Caching.Memory;
 
 namespace NadekoBot.Modules.Nsfw.Common;
@@ -48,7 +48,7 @@ public class SearchImageCacher : INService
     /// <returns>Whether any image is found.</returns>
     private async Task<bool> UpdateImagesInternalAsync(string[] tags, bool forceExplicit, Booru type, CancellationToken cancel)
     {
-        var images = await DownloadImagesAsync(tags, forceExplicit, type, cancel).ConfigureAwait(false);
+        var images = await DownloadImagesAsync(tags, forceExplicit, type, cancel);
         if (images is null || images.Count == 0)
         {
             // Log.Warning("Got no images for {0}, tags: {1}", type, string.Join(", ", tags));
@@ -214,7 +214,7 @@ public class SearchImageCacher : INService
         try
         {
             // if image is not found, update the cache and query again
-            success = await UpdateImagesInternalAsync(tags, forceExplicit, type, cancel).ConfigureAwait(false);
+            success = await UpdateImagesInternalAsync(tags, forceExplicit, type, cancel);
         }
         catch (HttpRequestException)
         {
@@ -253,7 +253,7 @@ public class SearchImageCacher : INService
                 page = _rng.Next(0, 11);
             }
 
-            var result = await DownloadImagesAsync(tags, isExplicit, type, page, cancel).ConfigureAwait(false);
+            var result = await DownloadImagesAsync(tags, isExplicit, type, page, cancel);
 
             if (result is null or { Count: 0 })
             {

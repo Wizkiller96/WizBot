@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Administration.Services;
 
 namespace NadekoBot.Modules.Administration;
@@ -16,11 +16,11 @@ public partial class Administration
         {
             if (_service.RemoveVcRole(ctx.Guild.Id, vcId))
             {
-                await ReplyConfirmLocalizedAsync(strs.vcrole_removed(Format.Bold(vcId.ToString()))).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.vcrole_removed(Format.Bold(vcId.ToString())));
             }
             else
             {
-                await ReplyErrorLocalizedAsync(strs.vcrole_not_found).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.vcrole_not_found);
             }
         }
 
@@ -36,7 +36,7 @@ public partial class Administration
 
             if (vc is null || vc.GuildId != user.GuildId)
             {
-                await ReplyErrorLocalizedAsync(strs.must_be_in_voice).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.must_be_in_voice);
                 return;
             }
 
@@ -44,13 +44,13 @@ public partial class Administration
             {
                 if (_service.RemoveVcRole(ctx.Guild.Id, vc.Id))
                 {
-                    await ReplyConfirmLocalizedAsync(strs.vcrole_removed(Format.Bold(vc.Name))).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.vcrole_removed(Format.Bold(vc.Name)));
                 }
             }
             else
             {
                 _service.AddVcRole(ctx.Guild.Id, role, vc.Id);
-                await ReplyConfirmLocalizedAsync(strs.vcrole_added(Format.Bold(vc.Name), Format.Bold(role.Name))).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.vcrole_added(Format.Bold(vc.Name), Format.Bold(role.Name)));
             }
         }
 
@@ -78,8 +78,7 @@ public partial class Administration
             }
             await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
                     .WithTitle(GetText(strs.vc_role_list))
-                    .WithDescription(text))
-                .ConfigureAwait(false);
+                    .WithDescription(text));
         }
     }
 }

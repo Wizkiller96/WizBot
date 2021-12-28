@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Administration.Services;
 
 namespace NadekoBot.Modules.Administration;
@@ -13,18 +13,18 @@ public partial class Administration
         public async Task RotatePlaying()
         {
             if (_service.ToggleRotatePlaying())
-                await ReplyConfirmLocalizedAsync(strs.ropl_enabled).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.ropl_enabled);
             else
-                await ReplyConfirmLocalizedAsync(strs.ropl_disabled).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.ropl_disabled);
         }
 
         [NadekoCommand, Aliases]
         [OwnerOnly]
         public async Task AddPlaying(ActivityType t, [Leftover] string status)
         {
-            await _service.AddPlaying(t, status).ConfigureAwait(false);
+            await _service.AddPlaying(t, status);
 
-            await ReplyConfirmLocalizedAsync(strs.ropl_added).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.ropl_added);
         }
 
         [NadekoCommand, Aliases]
@@ -35,7 +35,7 @@ public partial class Administration
 
             if (!statuses.Any())
             {
-                await ReplyErrorLocalizedAsync(strs.ropl_not_set).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.ropl_not_set);
             }
             else
             {
@@ -52,7 +52,7 @@ public partial class Administration
         {
             index -= 1;
 
-            var msg = await _service.RemovePlayingAsync(index).ConfigureAwait(false);
+            var msg = await _service.RemovePlayingAsync(index);
 
             if (msg is null)
                 return;

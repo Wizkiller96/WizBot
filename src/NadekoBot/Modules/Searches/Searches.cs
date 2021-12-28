@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using AngleSharp;
 using AngleSharp.Html.Dom;
 using Microsoft.Extensions.Caching.Memory;
@@ -40,23 +40,22 @@ public partial class Searches : NadekoModule<SearchesService>
         var av = usr.RealAvatarUrl();
         if (av is null)
             return;
-        await using var picStream = await _service.GetRipPictureAsync(usr.Nickname ?? usr.Username, av).ConfigureAwait(false);
+        await using var picStream = await _service.GetRipPictureAsync(usr.Nickname ?? usr.Username, av);
         await ctx.Channel.SendFileAsync(
                 picStream,
                 "rip.png",
                 $"Rip {Format.Bold(usr.ToString())} \n\t- " +
-                Format.Italics(ctx.User.ToString()))
-            .ConfigureAwait(false);
+                Format.Italics(ctx.User.ToString()));
     }
 
     [NadekoCommand, Aliases]
     public async Task Weather([Leftover] string query)
     {
-        if (!await ValidateQuery(query).ConfigureAwait(false))
+        if (!await ValidateQuery(query))
             return;
 
         var embed = _eb.Create();
-        var data = await _service.GetWeatherDataAsync(query).ConfigureAwait(false);
+        var data = await _service.GetWeatherDataAsync(query);
 
         if (data is null)
         {
@@ -88,18 +87,18 @@ public partial class Searches : NadekoModule<SearchesService>
                 .WithOkColor()
                 .WithFooter("Powered by openweathermap.org", $"http://openweathermap.org/img/w/{data.Weather[0].Icon}.png");
         }
-        await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+        await ctx.Channel.EmbedAsync(embed);
     }
 
     [NadekoCommand, Aliases]
     public async Task Time([Leftover] string query)
     {
-        if (!await ValidateQuery(query).ConfigureAwait(false))
+        if (!await ValidateQuery(query))
             return;
 
-        await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
+        await ctx.Channel.TriggerTypingAsync();
 
-        var (data, err) = await _service.GetTimeDataAsync(query).ConfigureAwait(false);
+        var (data, err) = await _service.GetTimeDataAsync(query);
         if (err is not null)
         {
             LocStr errorKey;
@@ -118,12 +117,12 @@ public partial class Searches : NadekoModule<SearchesService>
                     errorKey = strs.error_occured;
                     break;
             }
-            await ReplyErrorLocalizedAsync(errorKey).ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(errorKey);
             return;
         }
         else if (string.IsNullOrWhiteSpace(data.TimeZoneName))
         {
-            await ReplyErrorLocalizedAsync(strs.timezone_db_api_key).ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.timezone_db_api_key);
             return;
         }
 
@@ -134,37 +133,37 @@ public partial class Searches : NadekoModule<SearchesService>
             .AddField(GetText(strs.location), string.Join('\n', data.Address.Split(", ")), true)
             .AddField(GetText(strs.timezone), data.TimeZoneName, true);
 
-        await ctx.Channel.SendMessageAsync(embed: eb.Build()).ConfigureAwait(false);
+        await ctx.Channel.SendMessageAsync(embed: eb.Build());
     }
 
     [NadekoCommand, Aliases]
     public async Task Youtube([Leftover] string query = null)
     {
-        if (!await ValidateQuery(query).ConfigureAwait(false))
+        if (!await ValidateQuery(query))
             return;
 
-        var result = (await _google.GetVideoLinksByKeywordAsync(query).ConfigureAwait(false)).FirstOrDefault();
+        var result = (await _google.GetVideoLinksByKeywordAsync(query)).FirstOrDefault();
         if (string.IsNullOrWhiteSpace(result))
         {
-            await ReplyErrorLocalizedAsync(strs.no_results).ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.no_results);
             return;
         }
 
-        await ctx.Channel.SendMessageAsync(result).ConfigureAwait(false);
+        await ctx.Channel.SendMessageAsync(result);
     }
 
     [NadekoCommand, Aliases]
     public async Task Movie([Leftover] string query = null)
     {
-        if (!await ValidateQuery(query).ConfigureAwait(false))
+        if (!await ValidateQuery(query))
             return;
 
-        await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
+        await ctx.Channel.TriggerTypingAsync();
 
-        var movie = await _service.GetMovieDataAsync(query).ConfigureAwait(false);
+        var movie = await _service.GetMovieDataAsync(query);
         if (movie is null)
         {
-            await ReplyErrorLocalizedAsync(strs.imdb_fail).ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.imdb_fail);
             return;
         }
         await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
@@ -174,7 +173,7 @@ public partial class Searches : NadekoModule<SearchesService>
             .AddField("Rating", movie.ImdbRating, true)
             .AddField("Genre", movie.Genre, true)
             .AddField("Year", movie.Year, true)
-            .WithImageUrl(movie.Poster)).ConfigureAwait(false);
+            .WithImageUrl(movie.Poster));
     }
 
     [NadekoCommand, Aliases]
@@ -201,12 +200,12 @@ public partial class Searches : NadekoModule<SearchesService>
     public async Task Image([Leftover] string query = null)
     {
         var oterms = query?.Trim();
-        if (!await ValidateQuery(query).ConfigureAwait(false))
+        if (!await ValidateQuery(query))
             return;
         query = WebUtility.UrlEncode(oterms).Replace(' ', '+');
         try
         {
-            var res = await _google.GetImageAsync(oterms).ConfigureAwait(false);
+            var res = await _google.GetImageAsync(oterms);
             var embed = _eb.Create()
                 .WithOkColor()
                 .WithAuthor(GetText(strs.image_search_for) + " " + oterms.TrimTo(50),
@@ -215,7 +214,7 @@ public partial class Searches : NadekoModule<SearchesService>
                 .WithDescription(res.Link)
                 .WithImageUrl(res.Link)
                 .WithTitle(ctx.User.ToString());
-            await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+            await ctx.Channel.EmbedAsync(embed);
         }
         catch
         {
@@ -223,7 +222,7 @@ public partial class Searches : NadekoModule<SearchesService>
 
             var fullQueryLink = $"http://imgur.com/search?q={ query }";
             var config = Configuration.Default.WithDefaultLoader();
-            using var document = await BrowsingContext.New(config).OpenAsync(fullQueryLink).ConfigureAwait(false);
+            using var document = await BrowsingContext.New(config).OpenAsync(fullQueryLink);
             var elems = document.QuerySelectorAll("a.image-list-link").ToList();
 
             if (!elems.Any())
@@ -244,14 +243,14 @@ public partial class Searches : NadekoModule<SearchesService>
                 .WithDescription(source)
                 .WithImageUrl(source)
                 .WithTitle(ctx.User.ToString());
-            await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+            await ctx.Channel.EmbedAsync(embed);
         }
     }
 
     [NadekoCommand, Aliases]
     public async Task Lmgtfy([Leftover] string ffs = null)
     {
-        if (!await ValidateQuery(ffs).ConfigureAwait(false))
+        if (!await ValidateQuery(ffs))
             return;
 
         var shortenedUrl = await _google.ShortenUrl($"http://lmgtfy.com/?q={Uri.EscapeDataString(ffs)}");
@@ -269,7 +268,7 @@ public partial class Searches : NadekoModule<SearchesService>
     [NadekoCommand, Aliases]
     public async Task Shorten([Leftover] string query)
     {
-        if (!await ValidateQuery(query).ConfigureAwait(false))
+        if (!await ValidateQuery(query))
             return;
 
         query = query.Trim();
@@ -285,7 +284,7 @@ public partial class Searches : NadekoModule<SearchesService>
                 };
                 req.Content = formData;
 
-                using var res = await _http.SendAsync(req).ConfigureAwait(false);
+                using var res = await _http.SendAsync(req);
                 var content = await res.Content.ReadAsStringAsync();
                 var data = JsonConvert.DeserializeObject<ShortenData>(content);
 
@@ -313,7 +312,7 @@ public partial class Searches : NadekoModule<SearchesService>
     public async Task Google([Leftover] string query = null)
     {
         query = query?.Trim();
-        if (!await ValidateQuery(query).ConfigureAwait(false))
+        if (!await ValidateQuery(query))
             return;
 
         _ = ctx.Channel.TriggerTypingAsync();
@@ -339,14 +338,14 @@ public partial class Searches : NadekoModule<SearchesService>
             .WithDescription($"{GetText(strs.search_for)} **{query}**\n\n" +descStr)
             .WithOkColor();
 
-        await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+        await ctx.Channel.EmbedAsync(embed);
     }
         
     [NadekoCommand, Aliases]
     public async Task DuckDuckGo([Leftover] string query = null)
     {
         query = query?.Trim();
-        if (!await ValidateQuery(query).ConfigureAwait(false))
+        if (!await ValidateQuery(query))
             return;
 
         _ = ctx.Channel.TriggerTypingAsync();
@@ -370,7 +369,7 @@ public partial class Searches : NadekoModule<SearchesService>
             .WithDescription($"{GetText(strs.search_for)} **{query}**\n\n" + descStr)
             .WithOkColor();
 
-        await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+        await ctx.Channel.EmbedAsync(embed);
     }
 
     [NadekoCommand, Aliases]
@@ -379,12 +378,12 @@ public partial class Searches : NadekoModule<SearchesService>
         if (!await ValidateQuery(search))
             return;
 
-        await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
-        var card = await _service.GetMtgCardAsync(search).ConfigureAwait(false);
+        await ctx.Channel.TriggerTypingAsync();
+        var card = await _service.GetMtgCardAsync(search);
 
         if (card is null)
         {
-            await ReplyErrorLocalizedAsync(strs.card_not_found).ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.card_not_found);
             return;
         }
 
@@ -396,28 +395,28 @@ public partial class Searches : NadekoModule<SearchesService>
             .AddField(GetText(strs.cost), card.ManaCost, true)
             .AddField(GetText(strs.types), card.Types, true);
 
-        await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+        await ctx.Channel.EmbedAsync(embed);
     }
 
     [NadekoCommand, Aliases]
     public async Task Hearthstone([Leftover] string name)
     {
         var arg = name;
-        if (!await ValidateQuery(name).ConfigureAwait(false))
+        if (!await ValidateQuery(name))
             return;
 
         if (string.IsNullOrWhiteSpace(_creds.RapidApiKey))
         {
-            await ReplyErrorLocalizedAsync(strs.mashape_api_missing).ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.mashape_api_missing);
             return;
         }
 
-        await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
-        var card = await _service.GetHearthstoneCardDataAsync(name).ConfigureAwait(false);
+        await ctx.Channel.TriggerTypingAsync();
+        var card = await _service.GetHearthstoneCardDataAsync(name);
 
         if (card is null)
         {
-            await ReplyErrorLocalizedAsync(strs.card_not_found).ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.card_not_found);
             return;
         }
         var embed = _eb.Create().WithOkColor()
@@ -426,19 +425,19 @@ public partial class Searches : NadekoModule<SearchesService>
         if (!string.IsNullOrWhiteSpace(card.Flavor))
             embed.WithDescription(card.Flavor);
 
-        await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+        await ctx.Channel.EmbedAsync(embed);
     }
 
     [NadekoCommand, Aliases]
     public async Task UrbanDict([Leftover] string query = null)
     {
-        if (!await ValidateQuery(query).ConfigureAwait(false))
+        if (!await ValidateQuery(query))
             return;
 
-        await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
+        await ctx.Channel.TriggerTypingAsync();
         using (var http = _httpFactory.CreateClient())
         {
-            var res = await http.GetStringAsync($"http://api.urbandictionary.com/v0/define?term={Uri.EscapeDataString(query)}").ConfigureAwait(false);
+            var res = await http.GetStringAsync($"http://api.urbandictionary.com/v0/define?term={Uri.EscapeDataString(query)}");
             try
             {
                 var items = JsonConvert.DeserializeObject<UrbanResponse>(res).List;
@@ -452,7 +451,7 @@ public partial class Searches : NadekoModule<SearchesService>
                             .WithUrl(item.Permalink)
                             .WithAuthor(item.Word)
                             .WithDescription(item.Definition);
-                    }, items.Length, 1).ConfigureAwait(false);
+                    }, items.Length, 1);
                     return;
                 }
             }
@@ -460,14 +459,14 @@ public partial class Searches : NadekoModule<SearchesService>
             {
             }
         }
-        await ReplyErrorLocalizedAsync(strs.ud_error).ConfigureAwait(false);
+        await ReplyErrorLocalizedAsync(strs.ud_error);
 
     }
 
     [NadekoCommand, Aliases]
     public async Task Define([Leftover] string word)
     {
-        if (!await ValidateQuery(word).ConfigureAwait(false))
+        if (!await ValidateQuery(word))
             return;
 
         using var _http = _httpFactory.CreateClient();
@@ -478,7 +477,7 @@ public partial class Searches : NadekoModule<SearchesService>
             {
                 e.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(12);
                 return _http.GetStringAsync("https://api.pearson.com/v2/dictionaries/entries?headword=" + WebUtility.UrlEncode(word));
-            }).ConfigureAwait(false);
+            });
 
             var data = JsonConvert.DeserializeObject<DefineModel>(res);
 
@@ -489,7 +488,7 @@ public partial class Searches : NadekoModule<SearchesService>
             if (!datas.Any())
             {
                 Log.Warning("Definition not found: {Word}", word);
-                await ReplyErrorLocalizedAsync(strs.define_unknown).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.define_unknown);
             }
 
 
@@ -532,12 +531,12 @@ public partial class Searches : NadekoModule<SearchesService>
     public async Task Catfact()
     {
         using var http = _httpFactory.CreateClient();
-        var response = await http.GetStringAsync("https://catfact.ninja/fact").ConfigureAwait(false);
+        var response = await http.GetStringAsync("https://catfact.ninja/fact");
         if (response is null)
             return;
 
         var fact = JObject.Parse(response)["fact"].ToString();
-        await SendConfirmAsync("🐈" + GetText(strs.catfact), fact).ConfigureAwait(false);
+        await SendConfirmAsync("🐈" + GetText(strs.catfact), fact);
     }
 
     //done in 3.0
@@ -552,7 +551,7 @@ public partial class Searches : NadekoModule<SearchesService>
         if (av is null)
             return;
 
-        await SendConfirmAsync($"https://images.google.com/searchbyimage?image_url={av}").ConfigureAwait(false);
+        await SendConfirmAsync($"https://images.google.com/searchbyimage?image_url={av}");
     }
 
     //done in 3.0
@@ -563,7 +562,7 @@ public partial class Searches : NadekoModule<SearchesService>
 
         if (string.IsNullOrWhiteSpace(imageLink))
             return;
-        await SendConfirmAsync($"https://images.google.com/searchbyimage?image_url={imageLink}").ConfigureAwait(false);
+        await SendConfirmAsync($"https://images.google.com/searchbyimage?image_url={imageLink}");
     }
 
     [NadekoCommand, Aliases]
@@ -571,16 +570,16 @@ public partial class Searches : NadekoModule<SearchesService>
     {
         query = query?.Trim();
 
-        if (!await ValidateQuery(query).ConfigureAwait(false))
+        if (!await ValidateQuery(query))
             return;
 
         using var http = _httpFactory.CreateClient();
-        var result = await http.GetStringAsync("https://en.wikipedia.org//w/api.php?action=query&format=json&prop=info&redirects=1&formatversion=2&inprop=url&titles=" + Uri.EscapeDataString(query)).ConfigureAwait(false);
+        var result = await http.GetStringAsync("https://en.wikipedia.org//w/api.php?action=query&format=json&prop=info&redirects=1&formatversion=2&inprop=url&titles=" + Uri.EscapeDataString(query));
         var data = JsonConvert.DeserializeObject<WikipediaApiModel>(result);
         if (data.Query.Pages[0].Missing || string.IsNullOrWhiteSpace(data.Query.Pages[0].FullUrl))
-            await ReplyErrorLocalizedAsync(strs.wiki_page_not_found).ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.wiki_page_not_found);
         else
-            await ctx.Channel.SendMessageAsync(data.Query.Pages[0].FullUrl).ConfigureAwait(false);
+            await ctx.Channel.SendMessageAsync(data.Query.Pages[0].FullUrl);
     }
 
     [NadekoCommand, Aliases]
@@ -605,7 +604,7 @@ public partial class Searches : NadekoModule<SearchesService>
         }
 
         await using var ms = img.ToStream();
-        await ctx.Channel.SendFileAsync(ms, $"colors.png").ConfigureAwait(false);
+        await ctx.Channel.SendFileAsync(ms, $"colors.png");
     }
 
     [NadekoCommand, Aliases]
@@ -619,14 +618,14 @@ public partial class Searches : NadekoModule<SearchesService>
 
         if (avatarUrl is null)
         {
-            await ReplyErrorLocalizedAsync(strs.avatar_none(usr.ToString())).ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.avatar_none(usr.ToString()));
             return;
         }
 
         await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
             .AddField("Username", usr.ToString())
             .AddField("Avatar Url", avatarUrl)
-            .WithThumbnailUrl(avatarUrl.ToString()), ctx.User.Mention).ConfigureAwait(false);
+            .WithThumbnailUrl(avatarUrl.ToString()), ctx.User.Mention);
     }
         
     [NadekoCommand, Aliases]
@@ -634,10 +633,10 @@ public partial class Searches : NadekoModule<SearchesService>
     {
         if (string.IsNullOrWhiteSpace(target) || string.IsNullOrWhiteSpace(query))
         {
-            await ReplyErrorLocalizedAsync(strs.wikia_input_error).ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.wikia_input_error);
             return;
         }
-        await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
+        await ctx.Channel.TriggerTypingAsync();
         using var http = _httpFactory.CreateClient();
         http.DefaultRequestHeaders.Clear();
         try
@@ -647,24 +646,24 @@ public partial class Searches : NadekoModule<SearchesService>
                                                 $"&format=json" +
                                                 $"&list=search" +
                                                 $"&srsearch={Uri.EscapeDataString(query)}" +
-                                                $"&srlimit=1").ConfigureAwait(false);
+                                                $"&srlimit=1");
             var items = JObject.Parse(res);
             var title = items["query"]?["search"]?.FirstOrDefault()?["title"]?.ToString();
                     
             if (string.IsNullOrWhiteSpace(title))
             {
-                await ReplyErrorLocalizedAsync(strs.wikia_error).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.wikia_error);
                 return;
             }
 
             var url = Uri.EscapeDataString($"https://{target}.fandom.com/wiki/{title}");
             var response = $@"`{GetText(strs.title)}` {title.SanitizeMentions()}
 `{GetText(strs.url)}:` {url}";
-            await ctx.Channel.SendMessageAsync(response).ConfigureAwait(false);
+            await ctx.Channel.SendMessageAsync(response);
         }
         catch
         {
-            await ReplyErrorLocalizedAsync(strs.wikia_error).ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.wikia_error);
         }
     }
 
@@ -677,7 +676,7 @@ public partial class Searches : NadekoModule<SearchesService>
         {
             using var http = _httpFactory.CreateClient();
             var res = await http
-                .GetStringAsync("https://bible-api.com/" + book + " " + chapterAndVerse).ConfigureAwait(false);
+                .GetStringAsync("https://bible-api.com/" + book + " " + chapterAndVerse);
 
             obj = JsonConvert.DeserializeObject<BibleVerses>(res);
         }
@@ -685,14 +684,14 @@ public partial class Searches : NadekoModule<SearchesService>
         {
         }
         if (obj.Error != null || obj.Verses is null || obj.Verses.Length == 0)
-            await SendErrorAsync(obj.Error ?? "No verse found.").ConfigureAwait(false);
+            await SendErrorAsync(obj.Error ?? "No verse found.");
         else
         {
             var v = obj.Verses[0];
             await ctx.Channel.EmbedAsync(_eb.Create()
                 .WithOkColor()
                 .WithTitle($"{v.BookName} {v.Chapter}:{v.Verse}")
-                .WithDescription(v.Text)).ConfigureAwait(false);
+                .WithDescription(v.Text));
         }
     }
 
@@ -702,12 +701,12 @@ public partial class Searches : NadekoModule<SearchesService>
         if (string.IsNullOrWhiteSpace(query))
             return;
 
-        await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
+        await ctx.Channel.TriggerTypingAsync();
 
-        var appId = await _service.GetSteamAppIdByName(query).ConfigureAwait(false);
+        var appId = await _service.GetSteamAppIdByName(query);
         if (appId == -1)
         {
-            await ReplyErrorLocalizedAsync(strs.not_found).ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.not_found);
             return;
         }
 
@@ -721,7 +720,7 @@ public partial class Searches : NadekoModule<SearchesService>
         //    .AddField(GetText(strs.price), gameData.IsFree ? GetText(strs.FREE) : game, true)
         //    .AddField(GetText(strs.links), gameData.GetGenresString(), true)
         //    .WithFooter(GetText(strs.recommendations(gameData.TotalRecommendations)));
-        await ctx.Channel.SendMessageAsync($"https://store.steampowered.com/app/{appId}").ConfigureAwait(false);
+        await ctx.Channel.SendMessageAsync($"https://store.steampowered.com/app/{appId}");
     }
 
     public async Task<bool> ValidateQuery(string query)
@@ -731,7 +730,7 @@ public partial class Searches : NadekoModule<SearchesService>
             return true;
         }
 
-        await ErrorLocalizedAsync(strs.specify_search_params).ConfigureAwait(false);
+        await ErrorLocalizedAsync(strs.specify_search_params);
         return false;
     }
 }

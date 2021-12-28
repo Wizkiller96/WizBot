@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Common.ModuleBehaviors;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Services.Database.Models;
@@ -145,7 +145,7 @@ public sealed class FilterService : IEarlyBehavior
                         
                     try
                     {
-                        await usrMsg.DeleteAsync().ConfigureAwait(false);
+                        await usrMsg.DeleteAsync();
                     }
                     catch (HttpException ex)
                     {
@@ -176,7 +176,7 @@ public sealed class FilterService : IEarlyBehavior
                 
             try
             {
-                await usrMsg.DeleteAsync().ConfigureAwait(false);
+                await usrMsg.DeleteAsync();
                 return true;
             }
             catch (HttpException ex)
@@ -206,7 +206,7 @@ public sealed class FilterService : IEarlyBehavior
                 
             try
             {
-                await usrMsg.DeleteAsync().ConfigureAwait(false);
+                await usrMsg.DeleteAsync();
                 return true;
             }
             catch (HttpException ex)

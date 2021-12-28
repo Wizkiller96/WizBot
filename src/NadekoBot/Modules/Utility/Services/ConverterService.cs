@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Utility.Common;
 using Newtonsoft.Json;
 
@@ -27,7 +27,7 @@ public class ConverterService : INService
 
         if (client.ShardId == 0)
         {
-            _currencyUpdater = new(async shouldLoad => await UpdateCurrency((bool)shouldLoad).ConfigureAwait(false),
+            _currencyUpdater = new(async shouldLoad => await UpdateCurrency((bool)shouldLoad),
                 client.ShardId == 0,
                 TimeSpan.Zero,
                 _updateInterval);
@@ -37,7 +37,7 @@ public class ConverterService : INService
     private async Task<Rates> GetCurrencyRates()
     {
         using var http = _httpFactory.CreateClient();
-        var res = await http.GetStringAsync("https://convertapi.nadeko.bot/latest").ConfigureAwait(false);
+        var res = await http.GetStringAsync("https://convertapi.nadeko.bot/latest");
         return JsonConvert.DeserializeObject<Rates>(res);
     }
 
@@ -48,7 +48,7 @@ public class ConverterService : INService
             var unitTypeString = "currency";
             if (shouldLoad)
             {
-                var currencyRates = await GetCurrencyRates().ConfigureAwait(false);
+                var currencyRates = await GetCurrencyRates();
                 var baseType = new ConvertUnit()
                 {
                     Triggers = new[] { currencyRates.Base },

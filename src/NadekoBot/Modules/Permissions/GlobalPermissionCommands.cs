@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Common.TypeReaders;
 using NadekoBot.Modules.Permissions.Services;
 
@@ -26,7 +26,7 @@ public partial class Permissions
             var blockedCommands = _service.BlockedCommands;
             if (!blockedModule.Any() && !blockedCommands.Any())
             {
-                await ReplyErrorLocalizedAsync(strs.lgp_none).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.lgp_none);
                 return;
             }
 
@@ -42,7 +42,7 @@ public partial class Permissions
                     , string.Join("\n", _service.BlockedCommands)
                     , false);
 
-            await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+            await ctx.Channel.EmbedAsync(embed);
         }
 
         [NadekoCommand, Aliases]
@@ -55,11 +55,11 @@ public partial class Permissions
                 
             if (added)
             {
-                await ReplyConfirmLocalizedAsync(strs.gmod_add(Format.Bold(module.Name))).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.gmod_add(Format.Bold(module.Name)));
                 return;
             }
                 
-            await ReplyConfirmLocalizedAsync(strs.gmod_remove(Format.Bold(module.Name))).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.gmod_remove(Format.Bold(module.Name)));
         }
 
         [NadekoCommand, Aliases]
@@ -71,11 +71,11 @@ public partial class Permissions
                 
             if (added)
             {
-                await ReplyConfirmLocalizedAsync(strs.gcmd_add(Format.Bold(cmd.Name))).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.gcmd_add(Format.Bold(cmd.Name)));
                 return;
             }
                 
-            await ReplyConfirmLocalizedAsync(strs.gcmd_remove(Format.Bold(cmd.Name))).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.gcmd_remove(Format.Bold(cmd.Name)));
         }
     }
 }

@@ -176,7 +176,8 @@ public class Help : NadekoModule<HelpService>
         var cmds = _cmds.Commands.Where(c => c.Module.GetTopLevelModule().Name.ToUpperInvariant().StartsWith(module, StringComparison.InvariantCulture))
             .Where(c => !_perms.BlockedCommands.Contains(c.Aliases[0].ToLowerInvariant()))
             .OrderBy(c => c.Aliases[0])
-            .DistinctBy(x => x.Aliases[0]);
+            .DistinctBy(x => x.Aliases[0])
+            .ToList();
 
 
         // check preconditions for all commands, but only if it's not 'all'
@@ -184,18 +185,18 @@ public class Help : NadekoModule<HelpService>
         var succ = new HashSet<CommandInfo>();
         if (opts.View != CommandsOptions.ViewType.All)
         {
-            succ = new((await Task.WhenAll(cmds.Select(async x =>
+            succ = new((await cmds.Select(async x =>
                 {
-                    var pre = await x.CheckPreconditionsAsync(Context, _services).ConfigureAwait(false);
+                    var pre = await x.CheckPreconditionsAsync(Context, _services);
                     return (Cmd: x, Succ: pre.IsSuccess);
-                })).ConfigureAwait(false))
+                }).WhenAll())
                 .Where(x => x.Succ)
                 .Select(x => x.Cmd));
 
             if (opts.View == CommandsOptions.ViewType.Hide)
             {
                 // if hidden is specified, completely remove these commands from the list
-                cmds = cmds.Where(x => succ.Contains(x));
+                cmds = cmds.Where(x => succ.Contains(x)).ToList();
             }
         }
         var cmdsWithGroup = cmds.GroupBy(c => c.Module.Name.Replace("Commands", "", StringComparison.InvariantCulture))
@@ -205,9 +206,9 @@ public class Help : NadekoModule<HelpService>
         if (cmdsWithGroup.Count == 0)
         {
             if (opts.View != CommandsOptions.ViewType.Hide)
-                await ReplyErrorLocalizedAsync(strs.module_not_found).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.module_not_found);
             else
-                await ReplyErrorLocalizedAsync(strs.module_not_found_or_cant_exec).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.module_not_found_or_cant_exec);
             return;
         }
 
@@ -245,7 +246,7 @@ public class Help : NadekoModule<HelpService>
             }
         }
         embed.WithFooter(GetText(strs.commands_instr(Prefix)));
-        await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+        await ctx.Channel.EmbedAsync(embed);
     }
 
     [NadekoCommand, Aliases]
@@ -255,11 +256,11 @@ public class Help : NadekoModule<HelpService>
         var prefixless = _cmds.Commands.FirstOrDefault(x => x.Aliases.Any(cmdName => cmdName.ToLowerInvariant() == fail));
         if (prefixless != null)
         {
-            await H(prefixless).ConfigureAwait(false);
+            await H(prefixless);
             return;
         }
 
-        await ReplyErrorLocalizedAsync(strs.command_not_found).ConfigureAwait(false);
+        await ReplyErrorLocalizedAsync(strs.command_not_found);
     }
 
     [NadekoCommand, Aliases]
@@ -271,7 +272,7 @@ public class Help : NadekoModule<HelpService>
         if (com is null)
         {
             var ch = channel is ITextChannel
-                ? await ctx.User.CreateDMChannelAsync().ConfigureAwait(false)
+                ? await ctx.User.CreateDMChannelAsync()
                 : channel;
             try
             {
@@ -283,13 +284,13 @@ public class Help : NadekoModule<HelpService>
             }
             catch (Exception)
             {
-                await ReplyErrorLocalizedAsync(strs.cant_dm).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.cant_dm);
             }
             return;
         }
 
         var embed = _service.GetCommandHelp(com, ctx.Guild);
-        await channel.EmbedAsync(embed).ConfigureAwait(false);
+        await channel.EmbedAsync(embed);
     }
         
     [NadekoCommand, Aliases]
@@ -403,7 +404,7 @@ public class Help : NadekoModule<HelpService>
 
         // also send the file, but indented one, to chat
         await using var rDataStream = new MemoryStream(Encoding.ASCII.GetBytes(readableData));
-        await ctx.Channel.SendFileAsync(rDataStream, "cmds.json", GetText(strs.commandlist_regen)).ConfigureAwait(false);
+        await ctx.Channel.SendFileAsync(rDataStream, "cmds.json", GetText(strs.commandlist_regen));
     }
 
     [NadekoCommand, Aliases]

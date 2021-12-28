@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using System.Globalization;
 
 namespace NadekoBot.Modules.Administration;
@@ -72,7 +72,7 @@ public partial class Administration
             }
             catch (Exception)
             {
-                await ReplyErrorLocalizedAsync(strs.lang_set_fail).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.lang_set_fail);
             }
         }
 
@@ -106,7 +106,7 @@ public partial class Administration
             }
             catch (Exception)
             {
-                await ReplyErrorLocalizedAsync(strs.lang_set_fail).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.lang_set_fail);
             }
         }
 
@@ -115,7 +115,7 @@ public partial class Administration
             => await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
                 .WithTitle(GetText(strs.lang_list))
                 .WithDescription(string.Join("\n",
-                    supportedLocales.Select(x => $"{Format.Code(x.Key),-10} => {x.Value}")))).ConfigureAwait(false);
+                    supportedLocales.Select(x => $"{Format.Code(x.Key),-10} => {x.Value}"))));
     }
 }
 /* list of language codes for reference. 

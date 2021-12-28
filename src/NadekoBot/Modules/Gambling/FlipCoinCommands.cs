@@ -60,7 +60,7 @@ public partial class Gambling
                 : Format.Bold(ctx.User.ToString()) + " " + GetText(strs.flipped(headCount > 0
                     ? Format.Bold(GetText(strs.heads))
                     : Format.Bold(GetText(strs.tails))));
-            await ctx.Channel.SendFileAsync(stream, $"{count} coins.{format.FileExtensions.First()}", msg).ConfigureAwait(false);
+            await ctx.Channel.SendFileAsync(stream, $"{count} coins.{format.FileExtensions.First()}", msg);
         }
 
         public enum BetFlipGuess
@@ -76,10 +76,10 @@ public partial class Gambling
         [NadekoCommand, Aliases]
         public async Task Betflip(ShmartNumber amount, BetFlipGuess guess)
         {
-            if (!await CheckBetMandatory(amount).ConfigureAwait(false) || amount == 1)
+            if (!await CheckBetMandatory(amount) || amount == 1)
                 return;
 
-            var removed = await _cs.RemoveAsync(ctx.User, "Betflip Gamble", amount, false, gamble: true).ConfigureAwait(false);
+            var removed = await _cs.RemoveAsync(ctx.User, "Betflip Gamble", amount, false, gamble: true);
             if (!removed)
             {
                 await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
@@ -104,7 +104,7 @@ public partial class Gambling
             {
                 var toWin = (long)(amount * _config.BetFlip.Multiplier);
                 str = Format.Bold(ctx.User.ToString()) + " " + GetText(strs.flip_guess(toWin + CurrencySign));
-                await _cs.AddAsync(ctx.User, "Betflip Gamble", toWin, false, gamble: true).ConfigureAwait(false);
+                await _cs.AddAsync(ctx.User, "Betflip Gamble", toWin, false, gamble: true);
             }
             else
             {
@@ -114,7 +114,7 @@ public partial class Gambling
             await ctx.Channel.EmbedAsync(_eb.Create()
                 .WithDescription(str)
                 .WithOkColor()
-                .WithImageUrl(imageToSend.ToString())).ConfigureAwait(false);
+                .WithImageUrl(imageToSend.ToString()));
         }
     }
 }

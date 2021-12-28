@@ -69,7 +69,7 @@ public partial class Games
         {
             if (await _service.StopHangman(ctx.Channel.Id))
             {
-                await ReplyConfirmLocalizedAsync(strs.hangman_stopped).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.hangman_stopped);
             }
         }
     }

@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 namespace NadekoBot.Modules.Gambling.Common.Blackjack;
 
 public class Blackjack
@@ -44,8 +44,8 @@ public class Blackjack
         try
         {
             //wait for players to join
-            await Task.Delay(20000).ConfigureAwait(false);
-            await locker.WaitAsync().ConfigureAwait(false);
+            await Task.Delay(20000);
+            await locker.WaitAsync();
             try
             {
                 State = GameState.Playing;
@@ -54,7 +54,7 @@ public class Blackjack
             {
                 locker.Release();
             }
-            await PrintState().ConfigureAwait(false);
+            await PrintState();
             //if no users joined the game, end it
             if (!Players.Any())
             {
@@ -78,15 +78,15 @@ public class Blackjack
                 while (!usr.Done)
                 {
                     Log.Information($"Waiting for {usr.DiscordUser}'s move");
-                    await PromptUserMove(usr).ConfigureAwait(false);
+                    await PromptUserMove(usr);
                 }
             }
-            await PrintState().ConfigureAwait(false);
+            await PrintState();
             State = GameState.Ended;
-            await Task.Delay(2500).ConfigureAwait(false);
+            await Task.Delay(2500);
             Log.Information("Dealer moves");
-            await DealerMoves().ConfigureAwait(false);
-            await PrintState().ConfigureAwait(false);
+            await DealerMoves();
+            await PrintState();
             var _ = GameEnded?.Invoke(this);
         }
         catch (Exception ex)
@@ -102,13 +102,13 @@ public class Blackjack
         var pause = Task.Delay(20000); //10 seconds to decide
         CurrentUser = usr;
         _currentUserMove = new();
-        await PrintState().ConfigureAwait(false);
+        await PrintState();
         // either wait for the user to make an action and
         // if he doesn't - stand
-        var finished = await Task.WhenAny(pause, _currentUserMove.Task).ConfigureAwait(false);
+        var finished = await Task.WhenAny(pause, _currentUserMove.Task);
         if (finished == pause)
         {
-            await Stand(usr).ConfigureAwait(false);
+            await Stand(usr);
         }
         CurrentUser = null;
         _currentUserMove = null;
@@ -116,7 +116,7 @@ public class Blackjack
 
     public async Task<bool> Join(IUser user, long bet)
     {
-        await locker.WaitAsync().ConfigureAwait(false);
+        await locker.WaitAsync();
         try
         {
             if (State != GameState.Starting)
@@ -125,7 +125,7 @@ public class Blackjack
             if (Players.Count >= 5)
                 return false;
 
-            if (!await _cs.RemoveAsync(user, "BlackJack-gamble", bet, gamble: true).ConfigureAwait(false))
+            if (!await _cs.RemoveAsync(user, "BlackJack-gamble", bet, gamble: true))
             {
                 return false;
             }
@@ -145,14 +145,14 @@ public class Blackjack
         var cu = CurrentUser;
 
         if (cu != null && cu.DiscordUser == u)
-            return await Stand(cu).ConfigureAwait(false);
+            return await Stand(cu);
             
         return false;
     }
 
     public async Task<bool> Stand(User u)
     {
-        await locker.WaitAsync().ConfigureAwait(false);
+        await locker.WaitAsync();
         try
         {
             if (State != GameState.Playing)
@@ -229,7 +229,7 @@ public class Blackjack
         {
             if (usr.State is User.UserState.Won or User.UserState.Blackjack)
             {
-                await _cs.AddAsync(usr.DiscordUser.Id, "BlackJack-win", usr.Bet * 2, gamble: true).ConfigureAwait(false);
+                await _cs.AddAsync(usr.DiscordUser.Id, "BlackJack-win", usr.Bet * 2, gamble: true);
             }
         }
     }
@@ -239,14 +239,14 @@ public class Blackjack
         var cu = CurrentUser;
 
         if (cu != null && cu.DiscordUser == u)
-            return await Double(cu).ConfigureAwait(false);
+            return await Double(cu);
             
         return false;
     }
 
     public async Task<bool> Double(User u)
     {
-        await locker.WaitAsync().ConfigureAwait(false);
+        await locker.WaitAsync();
         try
         {
             if (State != GameState.Playing)
@@ -255,7 +255,7 @@ public class Blackjack
             if (CurrentUser != u)
                 return false;
 
-            if (!await _cs.RemoveAsync(u.DiscordUser.Id, "Blackjack-double", u.Bet).ConfigureAwait(false))
+            if (!await _cs.RemoveAsync(u.DiscordUser.Id, "Blackjack-double", u.Bet))
                 return false;
 
             u.Bet *= 2;
@@ -292,14 +292,14 @@ public class Blackjack
         var cu = CurrentUser;
 
         if (cu != null && cu.DiscordUser == u)
-            return await Hit(cu).ConfigureAwait(false);
+            return await Hit(cu);
 
         return false;
     }
 
     public async Task<bool> Hit(User u)
     {
-        await locker.WaitAsync().ConfigureAwait(false);
+        await locker.WaitAsync();
         try
         {
             if (State != GameState.Playing)

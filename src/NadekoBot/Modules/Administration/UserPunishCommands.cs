@@ -64,8 +64,7 @@ public partial class Administration
                 await user.EmbedAsync(_eb.Create().WithErrorColor()
                         .WithDescription(GetText(strs.warned_on(ctx.Guild.ToString())))
                         .AddField(GetText(strs.moderator), ctx.User.ToString())
-                        .AddField(GetText(strs.reason), reason ?? "-"))
-                    .ConfigureAwait(false);
+                        .AddField(GetText(strs.reason), reason ?? "-"));
             }
             catch
             {
@@ -75,7 +74,7 @@ public partial class Administration
             WarningPunishment punishment;
             try
             {
-                punishment = await _service.Warn(ctx.Guild, user.Id, ctx.User, weight, reason).ConfigureAwait(false);
+                punishment = await _service.Warn(ctx.Guild, user.Id, ctx.User, weight, reason);
             }
             catch (Exception ex)
             {
@@ -150,22 +149,22 @@ public partial class Administration
 
             var opts = OptionsParser.ParseFrom<WarnExpireOptions>(args);
 
-            await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
+            await ctx.Channel.TriggerTypingAsync();
 
-            await _service.WarnExpireAsync(ctx.Guild.Id, days, opts.Delete).ConfigureAwait(false);
+            await _service.WarnExpireAsync(ctx.Guild.Id, days, opts.Delete);
             if(days == 0)
             {
-                await ReplyConfirmLocalizedAsync(strs.warn_expire_reset).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.warn_expire_reset);
                 return;
             }
 
             if (opts.Delete)
             {
-                await ReplyConfirmLocalizedAsync(strs.warn_expire_set_delete(Format.Bold(days.ToString()))).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.warn_expire_set_delete(Format.Bold(days.ToString())));
             }
             else
             {
-                await ReplyConfirmLocalizedAsync(strs.warn_expire_set_clear(Format.Bold(days.ToString()))).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.warn_expire_set_clear(Format.Bold(days.ToString())));
             }
         }
 
@@ -285,7 +284,7 @@ public partial class Administration
                 return _eb.Create().WithOkColor()
                     .WithTitle(GetText(strs.warnings_list))
                     .WithDescription(string.Join("\n", ws));
-            }, warnings.Length, 15).ConfigureAwait(false);
+            }, warnings.Length, 15);
         }
 
         [NadekoCommand, Aliases]
@@ -315,7 +314,7 @@ public partial class Administration
                 }
                 else
                 {
-                    await ReplyErrorLocalizedAsync(strs.warning_clear_fail).ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.warning_clear_fail);
                 }
             }
         }
@@ -421,7 +420,7 @@ public partial class Administration
             }
             await SendConfirmAsync(
                 GetText(strs.warn_punish_list),
-                list).ConfigureAwait(false);
+                list);
         }
 
         [NadekoCommand, Aliases]
@@ -458,7 +457,7 @@ public partial class Administration
                 }
             }
 
-            await _mute.TimedBan(ctx.Guild, user, time.Time, (ctx.User.ToString() + " | " + msg).TrimTo(512)).ConfigureAwait(false);
+            await _mute.TimedBan(ctx.Guild, user, time.Time, (ctx.User.ToString() + " | " + msg).TrimTo(512));
             var toSend = _eb.Create().WithOkColor()
                 .WithTitle("⛔️ " + GetText(strs.banned_user))
                 .AddField(GetText(strs.username), user.ToString(), true)
@@ -474,8 +473,7 @@ public partial class Administration
                 toSend.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
             }
 
-            await ctx.Channel.EmbedAsync(toSend)
-                .ConfigureAwait(false);
+            await ctx.Channel.EmbedAsync(toSend);
         }
 
         [NadekoCommand, Aliases]
@@ -492,8 +490,7 @@ public partial class Administration
                     
                 await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
                         .WithTitle("⛔️ " + GetText(strs.banned_user))
-                        .AddField("ID", userId.ToString(), true))
-                    .ConfigureAwait(false);
+                        .AddField("ID", userId.ToString(), true));
             }
             else
             {
@@ -527,7 +524,7 @@ public partial class Administration
                 dmFailed = true;
             }
 
-            await ctx.Guild.AddBanAsync(user, 7, (ctx.User.ToString() + " | " + msg).TrimTo(512)).ConfigureAwait(false);
+            await ctx.Guild.AddBanAsync(user, 7, (ctx.User.ToString() + " | " + msg).TrimTo(512));
 
             var toSend = _eb.Create().WithOkColor()
                 .WithTitle("⛔️ " + GetText(strs.banned_user))
@@ -539,8 +536,7 @@ public partial class Administration
                 toSend.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
             }
                 
-            await ctx.Channel.EmbedAsync(toSend)
-                .ConfigureAwait(false);
+            await ctx.Channel.EmbedAsync(toSend);
         }
 
         [NadekoCommand, Aliases]
@@ -627,17 +623,17 @@ public partial class Administration
         [BotPerm(GuildPerm.BanMembers)]
         public async Task Unban([Leftover] string user)
         {
-            var bans = await ctx.Guild.GetBansAsync().ConfigureAwait(false);
+            var bans = await ctx.Guild.GetBansAsync();
 
             var bun = bans.FirstOrDefault(x => x.User.ToString().ToLowerInvariant() == user.ToLowerInvariant());
 
             if (bun is null)
             {
-                await ReplyErrorLocalizedAsync(strs.user_not_found).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.user_not_found);
                 return;
             }
 
-            await UnbanInternal(bun.User).ConfigureAwait(false);
+            await UnbanInternal(bun.User);
         }
 
         [NadekoCommand, Aliases]
@@ -646,24 +642,24 @@ public partial class Administration
         [BotPerm(GuildPerm.BanMembers)]
         public async Task Unban(ulong userId)
         {
-            var bans = await ctx.Guild.GetBansAsync().ConfigureAwait(false);
+            var bans = await ctx.Guild.GetBansAsync();
 
             var bun = bans.FirstOrDefault(x => x.User.Id == userId);
 
             if (bun is null)
             {
-                await ReplyErrorLocalizedAsync(strs.user_not_found).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.user_not_found);
                 return;
             }
 
-            await UnbanInternal(bun.User).ConfigureAwait(false);
+            await UnbanInternal(bun.User);
         }
 
         private async Task UnbanInternal(IUser user)
         {
-            await ctx.Guild.RemoveBanAsync(user).ConfigureAwait(false);
+            await ctx.Guild.RemoveBanAsync(user);
 
-            await ReplyConfirmLocalizedAsync(strs.unbanned_user(Format.Bold(user.ToString()))).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.unbanned_user(Format.Bold(user.ToString())));
         }
 
         [NadekoCommand, Aliases]
@@ -702,9 +698,9 @@ public partial class Administration
                 dmFailed = true;
             }
 
-            await ctx.Guild.AddBanAsync(user, 7, ("Softban | " + ctx.User.ToString() + " | " + msg).TrimTo(512)).ConfigureAwait(false);
-            try { await ctx.Guild.RemoveBanAsync(user).ConfigureAwait(false); }
-            catch { await ctx.Guild.RemoveBanAsync(user).ConfigureAwait(false); }
+            await ctx.Guild.AddBanAsync(user, 7, ("Softban | " + ctx.User.ToString() + " | " + msg).TrimTo(512));
+            try { await ctx.Guild.RemoveBanAsync(user); }
+            catch { await ctx.Guild.RemoveBanAsync(user); }
 
             var toSend = _eb.Create().WithOkColor()
                 .WithTitle("☣ " + GetText(strs.sb_user))
@@ -716,8 +712,7 @@ public partial class Administration
                 toSend.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
             }
                 
-            await ctx.Channel.EmbedAsync(toSend)
-                .ConfigureAwait(false);
+            await ctx.Channel.EmbedAsync(toSend);
         }
 
         [NadekoCommand, Aliases]
@@ -751,15 +746,14 @@ public partial class Administration
 
             try
             {
-                await user.SendErrorAsync(_eb, GetText(strs.kickdm(Format.Bold(ctx.Guild.Name), msg)))
-                    .ConfigureAwait(false);
+                await user.SendErrorAsync(_eb, GetText(strs.kickdm(Format.Bold(ctx.Guild.Name), msg)));
             }
             catch
             {                        
                 dmFailed = true;
             }
             
-            await user.KickAsync((ctx.User.ToString() + " | " + msg).TrimTo(512)).ConfigureAwait(false);
+            await user.KickAsync((ctx.User.ToString() + " | " + msg).TrimTo(512));
                 
             var toSend = _eb.Create().WithOkColor()
                 .WithTitle(GetText(strs.kicked_user))
@@ -771,8 +765,7 @@ public partial class Administration
                 toSend.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
             }
                 
-            await ctx.Channel.EmbedAsync(toSend)
-                .ConfigureAwait(false);
+            await ctx.Channel.EmbedAsync(toSend);
         }
             
         [NadekoCommand, Aliases]
@@ -853,7 +846,7 @@ public partial class Administration
                 .WithDescription(GetText(strs.mass_ban_completed(banning.Count())))
                 .AddField(GetText(strs.invalid(missing.Count)), missStr)
                 .WithOkColor()
-                .Build()).ConfigureAwait(false);
+                .Build());
         }
 
         [NadekoCommand, Aliases]
@@ -884,17 +877,16 @@ public partial class Administration
                     .Select(x => ctx.Guild.AddBanAsync(x.Id.Value, 7, x.Reason, new()
                     {
                         RetryMode = RetryMode.AlwaysRetry,
-                    })))
-                .ConfigureAwait(false);
+                    })));
 
             //wait for the message and edit it
-            var banningMessage = await banningMessageTask.ConfigureAwait(false);
+            var banningMessage = await banningMessageTask;
 
             await banningMessage.ModifyAsync(x => x.Embed = _eb.Create()
                 .WithDescription(GetText(strs.mass_kill_completed(bans.Count())))
                 .AddField(GetText(strs.invalid(missing)), missStr)
                 .WithOkColor()
-                .Build()).ConfigureAwait(false);
+                .Build());
         }
     }
 }

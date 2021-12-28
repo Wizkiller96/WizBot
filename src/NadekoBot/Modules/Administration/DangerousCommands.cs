@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Administration.Services;
 
 #if !GLOBAL_NADEKO
@@ -20,17 +20,17 @@ namespace NadekoBot.Modules.Administration
                         .WithTitle(GetText(strs.sql_confirm_exec))
                         .WithDescription(Format.Code(sql));
 
-                    if (!await PromptUserConfirmAsync(embed).ConfigureAwait(false))
+                    if (!await PromptUserConfirmAsync(embed))
                     {
                         return;
                     }
 
-                    var res = await _service.ExecuteSql(sql).ConfigureAwait(false);
-                    await SendConfirmAsync(res.ToString()).ConfigureAwait(false);
+                    var res = await _service.ExecuteSql(sql);
+                    await SendConfirmAsync(res.ToString());
                 }
                 catch (Exception ex)
                 {
-                    await SendErrorAsync(ex.ToString()).ConfigureAwait(false);
+                    await SendErrorAsync(ex.ToString());
                 }
             }
 
@@ -103,7 +103,7 @@ namespace NadekoBot.Modules.Administration
                 var embed = _eb.Create()
                     .WithDescription(GetText(strs.purge_user_confirm(Format.Bold(userId.ToString()))));
 
-                if (!await PromptUserConfirmAsync(embed).ConfigureAwait(false))
+                if (!await PromptUserConfirmAsync(embed))
                 {
                     return;
                 }

@@ -70,16 +70,15 @@ public partial class Utility : NadekoModule
             .Select(u => u.Username)
             .OrderBy(x => rng.Next())
             .Take(60)
-            .ToArray()).ConfigureAwait(false);
+            .ToArray());
 
         var i = 0;
         if (arr.Length == 0)
-            await ReplyErrorLocalizedAsync(strs.nobody_playing_game).ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.nobody_playing_game);
         else
         {
             await SendConfirmAsync("```css\n" + string.Join("\n", arr.GroupBy(item => i++ / 2)
-                    .Select(ig => string.Concat(ig.Select(el => $"• {el,-27}")))) + "\n```")
-                .ConfigureAwait(false);
+                    .Select(ig => string.Concat(ig.Select(el => $"• {el,-27}")))) + "\n```");
         }
     }
         
@@ -91,8 +90,8 @@ public partial class Utility : NadekoModule
         if (--page < 0)
             return;
             
-        await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
-        await _tracker.EnsureUsersDownloadedAsync(ctx.Guild).ConfigureAwait(false);
+        await ctx.Channel.TriggerTypingAsync();
+        await _tracker.EnsureUsersDownloadedAsync(ctx.Guild);
 
         var users = await ctx.Guild.GetUsersAsync(
 #if GLOBAL_NADEKO
@@ -116,7 +115,7 @@ public partial class Utility : NadekoModule
             return _eb.Create().WithOkColor()
                 .WithTitle(GetText(strs.inrole_list(Format.Bold(role?.Name ?? "No Role"), roleUsers.Length)))
                 .WithDescription(string.Join("\n", pageUsers));
-        }, roleUsers.Length, 20).ConfigureAwait(false);
+        }, roleUsers.Length, 20);
     }
 
     [NadekoCommand, Aliases]
@@ -140,7 +139,7 @@ public partial class Utility : NadekoModule
         {
             builder.AppendLine($"{p.Name} : {p.GetValue(perms, null)}");
         }
-        await SendConfirmAsync(builder.ToString()).ConfigureAwait(false);
+        await SendConfirmAsync(builder.ToString());
     }
 
     [NadekoCommand, Aliases]
@@ -183,13 +182,13 @@ public partial class Utility : NadekoModule
             var roles = target.GetRoles().Except(new[] { guild.EveryoneRole }).OrderBy(r => -r.Position).Skip((page - 1) * rolesPerPage).Take(rolesPerPage).ToArray();
             if (!roles.Any())
             {
-                await ReplyErrorLocalizedAsync(strs.no_roles_on_page).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.no_roles_on_page);
             }
             else
             {
 
                 await SendConfirmAsync(GetText(strs.roles_page(page, Format.Bold(target.ToString()))),
-                    "\n• " + string.Join("\n• ", (IEnumerable<IRole>)roles).SanitizeMentions(true)).ConfigureAwait(false);
+                    "\n• " + string.Join("\n• ", (IEnumerable<IRole>)roles).SanitizeMentions(true));
             }
         }
         else
@@ -197,12 +196,12 @@ public partial class Utility : NadekoModule
             var roles = guild.Roles.Except(new[] { guild.EveryoneRole }).OrderBy(r => -r.Position).Skip((page - 1) * rolesPerPage).Take(rolesPerPage).ToArray();
             if (!roles.Any())
             {
-                await ReplyErrorLocalizedAsync(strs.no_roles_on_page).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.no_roles_on_page);
             }
             else
             {
                 await SendConfirmAsync(GetText(strs.roles_all_page(page)),
-                    "\n• " + string.Join("\n• ", (IEnumerable<IRole>)roles).SanitizeMentions(true)).ConfigureAwait(false);
+                    "\n• " + string.Join("\n• ", (IEnumerable<IRole>)roles).SanitizeMentions(true));
             }
         }
     }
@@ -221,9 +220,9 @@ public partial class Utility : NadekoModule
 
         var topic = channel.Topic;
         if (string.IsNullOrWhiteSpace(topic))
-            await ReplyErrorLocalizedAsync(strs.no_topic_set).ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.no_topic_set);
         else
-            await SendConfirmAsync(GetText(strs.channel_topic), topic).ConfigureAwait(false);
+            await SendConfirmAsync(GetText(strs.channel_topic), topic);
     }
 
     [NadekoCommand, Aliases]
@@ -252,8 +251,7 @@ public partial class Utility : NadekoModule
                             _coord.GetGuildCount(),
                             _stats.TextChannels,
                             _stats.VoiceChannels)),
-                        true))
-            .ConfigureAwait(false);
+                        true));
     }
 
     [NadekoCommand, Aliases]
@@ -264,9 +262,9 @@ public partial class Utility : NadekoModule
         var result = string.Join("\n", tags.Select(m => GetText(strs.showemojis(m, m.Url))));
 
         if (string.IsNullOrWhiteSpace(result))
-            await ReplyErrorLocalizedAsync(strs.showemojis_none).ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.showemojis_none);
         else
-            await ctx.Channel.SendMessageAsync(result.TrimTo(2000)).ConfigureAwait(false);
+            await ctx.Channel.SendMessageAsync(result.TrimTo(2000));
     }
 
     [NadekoCommand, Aliases]
@@ -332,11 +330,11 @@ public partial class Utility : NadekoModule
         if (page < 0)
             return;
 
-        var guilds = await Task.Run(() => _client.Guilds.OrderBy(g => g.Name).Skip(page * 15).Take(15)).ConfigureAwait(false);
+        var guilds = await Task.Run(() => _client.Guilds.OrderBy(g => g.Name).Skip(page * 15).Take(15));
 
         if (!guilds.Any())
         {
-            await ReplyErrorLocalizedAsync(strs.listservers_none).ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.listservers_none);
             return;
         }
 
@@ -398,7 +396,7 @@ public partial class Utility : NadekoModule
     public async Task SaveChat(int cnt)
     {
         var msgs = new List<IMessage>(cnt);
-        await ctx.Channel.GetMessagesAsync(cnt).ForEachAsync(dled => msgs.AddRange(dled)).ConfigureAwait(false);
+        await ctx.Channel.GetMessagesAsync(cnt).ForEachAsync(dled => msgs.AddRange(dled));
 
         var title = $"Chatlog-{ctx.Guild.Name}/#{ctx.Channel.Name}-{DateTime.Now}.txt";
         var grouping = msgs.GroupBy(x => $"{x.CreatedAt.Date:dd.MM.yyyy}")
@@ -426,8 +424,8 @@ public partial class Utility : NadekoModule
                     return msg;
                 })
             });
-        await using var stream = await JsonConvert.SerializeObject(grouping, Formatting.Indented).ToStream().ConfigureAwait(false);
-        await ctx.User.SendFileAsync(stream, title, title, false).ConfigureAwait(false);
+        await using var stream = await JsonConvert.SerializeObject(grouping, Formatting.Indented).ToStream();
+        await ctx.User.SendFileAsync(stream, title, title, false);
     }
     private static SemaphoreSlim sem = new(1, 1);
 
@@ -437,15 +435,15 @@ public partial class Utility : NadekoModule
 #endif
     public async Task Ping()
     {
-        await sem.WaitAsync(5000).ConfigureAwait(false);
+        await sem.WaitAsync(5000);
         try
         {
             var sw = Stopwatch.StartNew();
-            var msg = await ctx.Channel.SendMessageAsync("🏓").ConfigureAwait(false);
+            var msg = await ctx.Channel.SendMessageAsync("🏓");
             sw.Stop();
             msg.DeleteAfter(0);
 
-            await SendConfirmAsync($"{Format.Bold(ctx.User.ToString())} 🏓 {(int)sw.Elapsed.TotalMilliseconds}ms").ConfigureAwait(false);
+            await SendConfirmAsync($"{Format.Bold(ctx.User.ToString())} 🏓 {(int)sw.Elapsed.TotalMilliseconds}ms");
         }
         finally
         {

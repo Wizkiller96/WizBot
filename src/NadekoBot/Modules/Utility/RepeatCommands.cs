@@ -20,7 +20,7 @@ public partial class Utility
             var success = await _service.TriggerExternal(ctx.Guild.Id, index);
             if (!success)
             {
-                await ReplyErrorLocalizedAsync(strs.repeat_invoke_none).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.repeat_invoke_none);
             }
         }
             
@@ -35,7 +35,7 @@ public partial class Utility
             var removed =  await _service.RemoveByIndexAsync(ctx.Guild.Id, index);
             if (removed is null)
             {
-                await ReplyErrorLocalizedAsync(strs.repeater_remove_fail).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.repeater_remove_fail);
                 return;
             }
                 
@@ -58,7 +58,7 @@ public partial class Utility
             
             if (result is null)
             {
-                await ReplyErrorLocalizedAsync(strs.index_out_of_range).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.index_out_of_range);
                 return;
             }
             
@@ -150,7 +150,7 @@ public partial class Utility
             var repeaters = _service.GetRepeaters(ctx.Guild.Id);
             if (repeaters.Count == 0)
             {
-                await ReplyConfirmLocalizedAsync(strs.repeaters_none).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.repeaters_none);
                 return;
             }
             
@@ -169,7 +169,7 @@ public partial class Utility
                 );
             }
             
-            await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+            await ctx.Channel.EmbedAsync(embed);
         }
             
         private string GetRepeaterInfoString(RunningRepeater runner)

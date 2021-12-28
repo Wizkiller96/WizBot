@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using System.Net;
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
@@ -102,7 +102,7 @@ public sealed class TranslateService : ITranslateService, ILateExecutor, IReadyE
         if (string.IsNullOrWhiteSpace(text))
             throw new ArgumentException("Text is empty or null", nameof(text));
 
-        var res = await _google.Translate(text, source, target).ConfigureAwait(false);
+        var res = await _google.Translate(text, source, target);
         return res.SanitizeMentions(true);
     }
 

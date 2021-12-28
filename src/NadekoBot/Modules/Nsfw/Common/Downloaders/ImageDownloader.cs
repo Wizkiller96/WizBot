@@ -29,7 +29,7 @@ public abstract class ImageDownloader<T> : IImageDownloader
     public async Task<List<ImageData>> DownloadImageDataAsync(string[] tags, int page, bool isExplicit = false,
         CancellationToken cancel = default)
     {
-        var images = await DownloadImagesAsync(tags, page, isExplicit, cancel).ConfigureAwait(false);
+        var images = await DownloadImagesAsync(tags, page, isExplicit, cancel);
         return images.Select(x => x.ToCachedImageData(Booru)).ToList();
     }
 }

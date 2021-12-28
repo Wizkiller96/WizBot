@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Common.ModuleBehaviors;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -77,7 +77,7 @@ public sealed class BehaviorExecutor : IBehaviourExecutor, INService
         {
             try
             {
-                await exec.LateExecute(guild, usrMsg).ConfigureAwait(false);
+                await exec.LateExecute(guild, usrMsg);
             }
             catch (Exception ex)
             {

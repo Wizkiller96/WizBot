@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 namespace NadekoBot.Modules.Searches;
 
 public partial class Searches
@@ -24,8 +24,7 @@ public partial class Searches
         [NadekoCommand, Aliases]
         public async Task Placelist()
             => await SendConfirmAsync(GetText(strs.list_of_place_tags(Prefix)), 
-                    _typesStr)
-                .ConfigureAwait(false);
+                    _typesStr);
 
         [NadekoCommand, Aliases]
         public async Task Place(PlaceType placeType, uint width = 0, uint height = 0)
@@ -67,7 +66,7 @@ public partial class Searches
 
             url += $"/{width}/{height}";
 
-            await ctx.Channel.SendMessageAsync(url).ConfigureAwait(false);
+            await ctx.Channel.SendMessageAsync(url);
         }
     }
 }

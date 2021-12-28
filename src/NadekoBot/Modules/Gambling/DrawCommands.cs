@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Gambling.Common;
 using Image = SixLabors.ImageSharp.Image;
 using SixLabors.ImageSharp;
@@ -31,7 +31,7 @@ public partial class Gambling
                 {
                     try
                     {
-                        await ReplyErrorLocalizedAsync(strs.no_more_cards).ConfigureAwait(false);
+                        await ReplyErrorLocalizedAsync(strs.no_more_cards);
                     }
                     catch
                     {
@@ -69,10 +69,10 @@ public partial class Gambling
             if (num > 10)
                 num = 10;
 
-            var (ImageStream, ToSend) = await InternalDraw(num, ctx.Guild.Id).ConfigureAwait(false);
+            var (ImageStream, ToSend) = await InternalDraw(num, ctx.Guild.Id);
             await using (ImageStream)
             {
-                await ctx.Channel.SendFileAsync(ImageStream, num + " cards.jpg", ToSend).ConfigureAwait(false);
+                await ctx.Channel.SendFileAsync(ImageStream, num + " cards.jpg", ToSend);
             }
         }
 
@@ -84,10 +84,10 @@ public partial class Gambling
             if (num > 10)
                 num = 10;
 
-            var (ImageStream, ToSend) = await InternalDraw(num).ConfigureAwait(false);
+            var (ImageStream, ToSend) = await InternalDraw(num);
             await using (ImageStream)
             {
-                await ctx.Channel.SendFileAsync(ImageStream, num + " cards.jpg", ToSend).ConfigureAwait(false);
+                await ctx.Channel.SendFileAsync(ImageStream, num + " cards.jpg", ToSend);
             }
         }
 
@@ -105,7 +105,7 @@ public partial class Gambling
                     return c;
                 });
 
-            await ReplyConfirmLocalizedAsync(strs.deck_reshuffled).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.deck_reshuffled);
         }
     }
 }

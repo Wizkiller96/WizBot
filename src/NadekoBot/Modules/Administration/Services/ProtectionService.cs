@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using System.Threading.Channels;
 using NadekoBot.Modules.Administration.Common;
 using NadekoBot.Services.Database.Models;
@@ -181,9 +181,9 @@ public class ProtectionService : INService
                     var settings = stats.AntiRaidSettings;
 
                     await PunishUsers(settings.Action, ProtectionType.Raiding,
-                        settings.PunishDuration, null,  users).ConfigureAwait(false);
+                        settings.PunishDuration, null,  users);
                 }
-                await Task.Delay(1000 * stats.AntiRaidSettings.Seconds).ConfigureAwait(false);
+                await Task.Delay(1000 * stats.AntiRaidSettings.Seconds);
 
                 stats.RaidUsers.TryRemove(user);
                 --stats.UsersCount;
@@ -228,8 +228,7 @@ public class ProtectionService : INService
                         stats.Dispose();
                         var settings = spamSettings.AntiSpamSettings;
                         await PunishUsers(settings.Action, ProtectionType.Spamming, settings.MuteTime,
-                                settings.RoleId, (IGuildUser)msg.Author)
-                            .ConfigureAwait(false);
+                                settings.RoleId, (IGuildUser)msg.Author);
                     }
                 }
             }
@@ -270,7 +269,7 @@ public class ProtectionService : INService
         PunishmentAction action, int minutesDuration)
     {
         var g = _client.GetGuild(guildId);
-        await _mute.GetMuteRole(g).ConfigureAwait(false);
+        await _mute.GetMuteRole(g);
 
         if (action == PunishmentAction.AddRole)
             return null;
@@ -338,7 +337,7 @@ public class ProtectionService : INService
         int punishDurationMinutes, ulong? roleId)
     {
         var g = _client.GetGuild(guildId);
-        await _mute.GetMuteRole(g).ConfigureAwait(false);
+        await _mute.GetMuteRole(g);
 
         if (!IsDurationAllowed(action))
             punishDurationMinutes = 0;

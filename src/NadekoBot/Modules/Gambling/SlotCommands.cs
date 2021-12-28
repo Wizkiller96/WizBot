@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using System.Text;
 using NadekoBot.Db.Models;
 using NadekoBot.Modules.Gambling.Services;
@@ -106,7 +106,7 @@ public partial class Gambling
                 .AddField("Paid Out", paid.ToString(), true)
                 .WithFooter($"Payout Rate: {paid * 1.0 / bet * 100:f4}%");
 
-            await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+            await ctx.Channel.EmbedAsync(embed);
         }
 
         [NadekoCommand, Aliases]
@@ -134,7 +134,7 @@ public partial class Gambling
                 payout += key * dict[key];
             }
             await SendConfirmAsync("Slot Test Results", sb.ToString(),
-                footer: $"Total Bet: {tests} | Payout: {payout} | {payout * 1.0f / tests * 100}%").ConfigureAwait(false);
+                footer: $"Total Bet: {tests} | Payout: {payout} | {payout * 1.0f / tests * 100}%");
         }
 
         [NadekoCommand, Aliases]
@@ -145,10 +145,10 @@ public partial class Gambling
                
             try
             {
-                if (!await CheckBetMandatory(amount).ConfigureAwait(false))
+                if (!await CheckBetMandatory(amount))
                     return;
                     
-                await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
+                await ctx.Channel.TriggerTypingAsync();
 
                 var result = await _service.SlotAsync(ctx.User.Id, amount);
 
@@ -239,7 +239,7 @@ public partial class Gambling
                     {
                         await ctx.Channel.SendFileAsync(imgStream,
                             filename: "result.png",
-                            text: Format.Bold(ctx.User.ToString()) + " " + msg).ConfigureAwait(false);
+                            text: Format.Bold(ctx.User.ToString()) + " " + msg);
                     }
                 }
             }
@@ -247,7 +247,7 @@ public partial class Gambling
             {
                 var _ = Task.Run(async () =>
                 {
-                    await Task.Delay(1000).ConfigureAwait(false);
+                    await Task.Delay(1000);
                     _runningUsers.Remove(ctx.User.Id);
                 });
             }

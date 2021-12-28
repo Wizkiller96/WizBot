@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Searches.Common;
 using Newtonsoft.Json.Linq;
 
@@ -25,15 +25,14 @@ public class NSFW : NadekoModule<ISearchImagesService>
             using (var http = _httpFactory.CreateClient())
             {
                 obj = JArray.Parse(await http
-                    .GetStringAsync($"http://api.oboobs.ru/boobs/{new NadekoRandom().Next(0, 10330)}")
-                    .ConfigureAwait(false))[0];
+                    .GetStringAsync($"http://api.oboobs.ru/boobs/{new NadekoRandom().Next(0, 10330)}"))[0];
             }
 
-            await ctx.Channel.SendMessageAsync($"http://media.oboobs.ru/{obj["preview"]}").ConfigureAwait(false);
+            await ctx.Channel.SendMessageAsync($"http://media.oboobs.ru/{obj["preview"]}");
         }
         catch (Exception ex)
         {
-            await SendErrorAsync(ex.Message).ConfigureAwait(false);
+            await SendErrorAsync(ex.Message);
         }
     }
 
@@ -45,15 +44,14 @@ public class NSFW : NadekoModule<ISearchImagesService>
             using (var http = _httpFactory.CreateClient())
             {
                 obj = JArray.Parse(await http
-                    .GetStringAsync($"http://api.obutts.ru/butts/{new NadekoRandom().Next(0, 4335)}")
-                    .ConfigureAwait(false))[0];
+                    .GetStringAsync($"http://api.obutts.ru/butts/{new NadekoRandom().Next(0, 4335)}"))[0];
             }
 
-            await Channel.SendMessageAsync($"http://media.obutts.ru/{obj["preview"]}").ConfigureAwait(false);
+            await Channel.SendMessageAsync($"http://media.obutts.ru/{obj["preview"]}");
         }
         catch (Exception ex)
         {
-            await SendErrorAsync(ex.Message).ConfigureAwait(false);
+            await SendErrorAsync(ex.Message);
         }
     }
 
@@ -70,7 +68,7 @@ public class NSFW : NadekoModule<ISearchImagesService>
             if (!_service.AutoHentaiTimers.TryRemove(ctx.Channel.Id, out t)) return;
 
             t.Change(Timeout.Infinite, Timeout.Infinite); //proper way to disable the timer
-            await ReplyConfirmLocalizedAsync(strs.stopped).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.stopped);
             return;
         }
 
@@ -82,12 +80,12 @@ public class NSFW : NadekoModule<ISearchImagesService>
             try
             {
                 if (tags is null || tags.Length == 0)
-                    await InternalDapiCommand(null, true, _service.Hentai).ConfigureAwait(false);
+                    await InternalDapiCommand(null, true, _service.Hentai);
                 else
                 {
                     var groups = tags.Split('|');
                     var group = groups[_rng.Next(0, groups.Length)];
-                    await InternalDapiCommand(group.Split(' '), true, _service.Hentai).ConfigureAwait(false);
+                    await InternalDapiCommand(group.Split(' '), true, _service.Hentai);
                 }
             }
             catch
@@ -120,7 +118,7 @@ public class NSFW : NadekoModule<ISearchImagesService>
             if (!_service.AutoBoobTimers.TryRemove(ctx.Channel.Id, out t)) return;
 
             t.Change(Timeout.Infinite, Timeout.Infinite);
-            await ReplyConfirmLocalizedAsync(strs.stopped).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.stopped);
             return;
         }
 
@@ -131,7 +129,7 @@ public class NSFW : NadekoModule<ISearchImagesService>
         {
             try
             {
-                await InternalBoobs().ConfigureAwait(false);
+                await InternalBoobs();
             }
             catch
             {
@@ -160,7 +158,7 @@ public class NSFW : NadekoModule<ISearchImagesService>
             if (!_service.AutoButtTimers.TryRemove(ctx.Channel.Id, out t)) return;
 
             t.Change(Timeout.Infinite, Timeout.Infinite); //proper way to disable the timer
-            await ReplyConfirmLocalizedAsync(strs.stopped).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.stopped);
             return;
         }
 
@@ -171,7 +169,7 @@ public class NSFW : NadekoModule<ISearchImagesService>
         {
             try
             {
-                await InternalButts(ctx.Channel).ConfigureAwait(false);
+                await InternalButts(ctx.Channel);
             }
             catch
             {
@@ -206,15 +204,14 @@ public class NSFW : NadekoModule<ISearchImagesService>
                 _service.Konachan(ctx.Guild?.Id, true, tags),
                 _service.Gelbooru(ctx.Guild?.Id, true, tags));
 
-            var linksEnum = images?.Where(l => l != null).ToArray();
-            if (images is null || !linksEnum.Any())
+            var linksEnum = images.Where(l => l != null).ToArray();
+            if (!linksEnum.Any())
             {
-                await ReplyErrorLocalizedAsync(strs.no_results).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.no_results);
                 return;
             }
 
-            await ctx.Channel.SendMessageAsync(string.Join("\n\n", linksEnum.Select(x => x.Url)))
-                .ConfigureAwait(false);
+            await ctx.Channel.SendMessageAsync(string.Join("\n\n", linksEnum.Select(x => x.Url)));
         }
         finally
         {
@@ -277,15 +274,14 @@ public class NSFW : NadekoModule<ISearchImagesService>
             using (var http = _httpFactory.CreateClient())
             {
                 obj = JArray.Parse(await http
-                    .GetStringAsync($"http://api.oboobs.ru/boobs/{new NadekoRandom().Next(0, 12000)}")
-                    .ConfigureAwait(false))[0];
+                    .GetStringAsync($"http://api.oboobs.ru/boobs/{new NadekoRandom().Next(0, 12000)}"))[0];
             }
 
-            await ctx.Channel.SendMessageAsync($"http://media.oboobs.ru/{obj["preview"]}").ConfigureAwait(false);
+            await ctx.Channel.SendMessageAsync($"http://media.oboobs.ru/{obj["preview"]}");
         }
         catch (Exception ex)
         {
-            await SendErrorAsync(ex.Message).ConfigureAwait(false);
+            await SendErrorAsync(ex.Message);
         }
     }
 
@@ -299,15 +295,14 @@ public class NSFW : NadekoModule<ISearchImagesService>
             using (var http = _httpFactory.CreateClient())
             {
                 obj = JArray.Parse(await http
-                    .GetStringAsync($"http://api.obutts.ru/butts/{new NadekoRandom().Next(0, 6100)}")
-                    .ConfigureAwait(false))[0];
+                    .GetStringAsync($"http://api.obutts.ru/butts/{new NadekoRandom().Next(0, 6100)}"))[0];
             }
 
-            await ctx.Channel.SendMessageAsync($"http://media.obutts.ru/{obj["preview"]}").ConfigureAwait(false);
+            await ctx.Channel.SendMessageAsync($"http://media.obutts.ru/{obj["preview"]}");
         }
         catch (Exception ex)
         {
-            await SendErrorAsync(ex.Message).ConfigureAwait(false);
+            await SendErrorAsync(ex.Message);
         }
     }
 
@@ -322,7 +317,7 @@ public class NSFW : NadekoModule<ISearchImagesService>
             await SendConfirmAsync(GetText(strs.blacklisted_tag_list),
                 blTags.Any()
                     ? string.Join(", ", blTags)
-                    : "-").ConfigureAwait(false);
+                    : "-");
         }
         else
         {

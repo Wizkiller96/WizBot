@@ -21,12 +21,11 @@ public partial class Xp : NadekoModule<XpService>
     public async Task Experience([Leftover] IUser user = null)
     {
         user ??= ctx.User;
-        await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
-        var (img, fmt) = await _service.GenerateXpImageAsync((IGuildUser)user).ConfigureAwait(false);
+        await ctx.Channel.TriggerTypingAsync();
+        var (img, fmt) = await _service.GenerateXpImageAsync((IGuildUser)user);
         await using (img)
         {
-            await ctx.Channel.SendFileAsync(img, $"{ctx.Guild.Id}_{user.Id}_xp.{fmt.FileExtensions.FirstOrDefault()}")
-                .ConfigureAwait(false);
+            await ctx.Channel.SendFileAsync(img, $"{ctx.Guild.Id}_{user.Id}_xp.{fmt.FileExtensions.FirstOrDefault()}");
         }
     }
 
@@ -199,11 +198,11 @@ public partial class Xp : NadekoModule<XpService>
     public async Task XpNotify(NotifyPlace place, XpNotificationLocation type)
     {
         if (place == NotifyPlace.Guild)
-            await _service.ChangeNotificationType(ctx.User.Id, ctx.Guild.Id, type).ConfigureAwait(false);
+            await _service.ChangeNotificationType(ctx.User.Id, ctx.Guild.Id, type);
         else
-            await _service.ChangeNotificationType(ctx.User, type).ConfigureAwait(false);
+            await _service.ChangeNotificationType(ctx.User, type);
             
-        await ctx.OkAsync().ConfigureAwait(false);
+        await ctx.OkAsync();
     }
 
     public enum Server { Server };
@@ -277,10 +276,9 @@ public partial class Xp : NadekoModule<XpService>
             .Select(x => $"`role`   {x.Mention}")
             .ToList();
 
-        var chans = (await Task.WhenAll(_service.GetExcludedChannels(ctx.Guild.Id)
-                    .Select(x => ctx.Guild.GetChannelAsync(x)))
-                .ConfigureAwait(false))
-            .Where(x => x != null)
+        var chans = (await _service.GetExcludedChannels(ctx.Guild.Id)
+                .Select(x => ctx.Guild.GetChannelAsync(x))
+                .WhenAll()).Where(x => x != null)
             .Select(x => $"`channel` <#{x.Id}>")
             .ToList();
 
@@ -328,8 +326,8 @@ public partial class Xp : NadekoModule<XpService>
         var allUsers = new List<UserXpStats>();
         if (opts.Clean)
         {
-            await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
-            await _tracker.EnsureUsersDownloadedAsync(ctx.Guild).ConfigureAwait(false);
+            await ctx.Channel.TriggerTypingAsync();
+            await _tracker.EnsureUsersDownloadedAsync(ctx.Guild);
                 
             allUsers = _service.GetTopUserXps(ctx.Guild.Id, 1000)
                 .Where(user => socketGuild.GetUser(user.UserId) is not null)
@@ -403,7 +401,7 @@ public partial class Xp : NadekoModule<XpService>
             }
         }
 
-        await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+        await ctx.Channel.EmbedAsync(embed);
     }
 
     [NadekoCommand, Aliases]
@@ -417,7 +415,7 @@ public partial class Xp : NadekoModule<XpService>
         _service.AddXp(userId, ctx.Guild.Id, amount);
         var usr = ((SocketGuild)ctx.Guild).GetUser(userId)?.ToString()
                   ?? userId.ToString();
-        await ReplyConfirmLocalizedAsync(strs.modified(Format.Bold(usr), Format.Bold(amount.ToString()))).ConfigureAwait(false);
+        await ReplyConfirmLocalizedAsync(strs.modified(Format.Bold(usr), Format.Bold(amount.ToString())));
     }
 
     [NadekoCommand, Aliases]
@@ -432,7 +430,7 @@ public partial class Xp : NadekoModule<XpService>
     public async Task XpTemplateReload()
     {
         _service.ReloadXpTemplate();
-        await Task.Delay(1000).ConfigureAwait(false);
-        await ReplyConfirmLocalizedAsync(strs.template_reloaded).ConfigureAwait(false);
+        await Task.Delay(1000);
+        await ReplyConfirmLocalizedAsync(strs.template_reloaded);
     }
 }

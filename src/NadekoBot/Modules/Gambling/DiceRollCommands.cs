@@ -41,23 +41,23 @@ public partial class Gambling
         [NadekoCommand, Aliases]
         [Priority(1)]
         public async Task Roll(int num)
-            => await InternalRoll(num, true).ConfigureAwait(false);
+            => await InternalRoll(num, true);
 
 
         [NadekoCommand, Aliases]
         [Priority(1)]
         public async Task Rolluo(int num = 1)
-            => await InternalRoll(num, false).ConfigureAwait(false);
+            => await InternalRoll(num, false);
 
         [NadekoCommand, Aliases]
         [Priority(0)]
         public async Task Roll(string arg)
-            => await InternallDndRoll(arg, true).ConfigureAwait(false);
+            => await InternallDndRoll(arg, true);
 
         [NadekoCommand, Aliases]
         [Priority(0)]
         public async Task Rolluo(string arg)
-            => await InternallDndRoll(arg, false).ConfigureAwait(false);
+            => await InternallDndRoll(arg, false);
 
         private async Task InternalRoll(int num, bool ordered)
         {
@@ -132,7 +132,7 @@ public partial class Gambling
                     .WithDescription(ctx.User.Mention + " " + GetText(strs.dice_rolled_num(Format.Bold(n1.ToString()))))
                     .AddField(Format.Bold("Result"), string.Join(" ", rolls.Select(c => Format.Code($"[{c}]"))));
                     
-                await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+                await ctx.Channel.EmbedAsync(embed);
             }
             else if ((match = dndRegex.Match(arg)).Length != 0)
             {
@@ -160,7 +160,7 @@ public partial class Gambling
                                 Format.Code(x.ToString()))))
                         .AddField(Format.Bold("Sum"),
                             sum + " + " + add + " - " + sub + " = " + (sum + add - sub));
-                    await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+                    await ctx.Channel.EmbedAsync(embed);
                 }
             }
         }
@@ -177,7 +177,7 @@ public partial class Gambling
                     .ToArray();
                 if (arr[0] > arr[1])
                 {
-                    await ReplyErrorLocalizedAsync(strs.second_larger_than_first).ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.second_larger_than_first);
                     return;
                 }
                 rolled = new NadekoRandom().Next(arr[0], arr[1] + 1);
@@ -187,7 +187,7 @@ public partial class Gambling
                 rolled = new NadekoRandom().Next(0, int.Parse(range) + 1);
             }
 
-            await ReplyConfirmLocalizedAsync(strs.dice_rolled(Format.Bold(rolled.ToString()))).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.dice_rolled(Format.Bold(rolled.ToString())));
         }
 
         private Image<Rgba32> GetDice(int num)

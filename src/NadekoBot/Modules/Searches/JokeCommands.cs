@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Searches.Services;
 
 namespace NadekoBot.Modules.Searches;
@@ -11,29 +11,29 @@ public partial class Searches
 
         [NadekoCommand, Aliases]
         public async Task Yomama()
-            => await SendConfirmAsync(await _service.GetYomamaJoke().ConfigureAwait(false)).ConfigureAwait(false);
+            => await SendConfirmAsync(await _service.GetYomamaJoke());
 
         [NadekoCommand, Aliases]
         public async Task Randjoke()
         {
-            var (setup, punchline) = await _service.GetRandomJoke().ConfigureAwait(false);
-            await SendConfirmAsync(setup, punchline).ConfigureAwait(false);
+            var (setup, punchline) = await _service.GetRandomJoke();
+            await SendConfirmAsync(setup, punchline);
         }
 
         [NadekoCommand, Aliases]
         public async Task ChuckNorris()
-            => await SendConfirmAsync(await _service.GetChuckNorrisJoke().ConfigureAwait(false)).ConfigureAwait(false);
+            => await SendConfirmAsync(await _service.GetChuckNorrisJoke());
 
         [NadekoCommand, Aliases]
         public async Task WowJoke()
         {
             if (!_service.WowJokes.Any())
             {
-                await ReplyErrorLocalizedAsync(strs.jokes_not_loaded).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.jokes_not_loaded);
                 return;
             }
             var joke = _service.WowJokes[new NadekoRandom().Next(0, _service.WowJokes.Count)];
-            await SendConfirmAsync(joke.Question, joke.Answer).ConfigureAwait(false);
+            await SendConfirmAsync(joke.Question, joke.Answer);
         }
 
         [NadekoCommand, Aliases]
@@ -41,12 +41,12 @@ public partial class Searches
         {
             if (!_service.WowJokes.Any())
             {
-                await ReplyErrorLocalizedAsync(strs.magicitems_not_loaded).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.magicitems_not_loaded);
                 return;
             }
             var item = _service.MagicItems[new NadekoRandom().Next(0, _service.MagicItems.Count)];
 
-            await SendConfirmAsync("✨" + item.Name, item.Description).ConfigureAwait(false);
+            await SendConfirmAsync("✨" + item.Name, item.Description);
         }
     }
 }

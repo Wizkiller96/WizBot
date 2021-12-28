@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Services.Database.Models;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Db;
@@ -99,8 +99,8 @@ public class SelfAssignedRolesService : INService
                 {
                     try
                     {
-                        await guildUser.RemoveRoleAsync(sameRole).ConfigureAwait(false);
-                        await Task.Delay(300).ConfigureAwait(false);
+                        await guildUser.RemoveRoleAsync(sameRole);
+                        await Task.Delay(300);
                     }
                     catch
                     {
@@ -111,7 +111,7 @@ public class SelfAssignedRolesService : INService
         }
         try
         {
-            await guildUser.AddRoleAsync(role).ConfigureAwait(false);
+            await guildUser.AddRoleAsync(role);
         }
         catch (Exception ex)
         {
@@ -167,7 +167,7 @@ public class SelfAssignedRolesService : INService
         }
         try
         {
-            await guildUser.RemoveRoleAsync(role).ConfigureAwait(false);
+            await guildUser.RemoveRoleAsync(role);
         }
         catch (Exception)
         {

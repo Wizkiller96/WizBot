@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Xp.Services;
 
 namespace NadekoBot.Modules.Xp;
@@ -23,7 +23,7 @@ public partial class Xp
                     Format.Bold(club.Name),
                     Format.Bold(newOwner.ToString())));
             else
-                await ReplyErrorLocalizedAsync(strs.club_transfer_failed).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.club_transfer_failed);
         }
 
         [NadekoCommand, Aliases]
@@ -36,7 +36,7 @@ public partial class Xp
             }
             catch (InvalidOperationException)
             {
-                await ReplyErrorLocalizedAsync(strs.club_admin_error).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.club_admin_error);
                 return;
             }
 
@@ -51,17 +51,17 @@ public partial class Xp
         {
             if (string.IsNullOrWhiteSpace(clubName) || clubName.Length > 20)
             {
-                await ReplyErrorLocalizedAsync(strs.club_name_too_long).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.club_name_too_long);
                 return;
             }
 
             if (!_service.CreateClub(ctx.User, clubName, out var club))
             {
-                await ReplyErrorLocalizedAsync(strs.club_create_error).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.club_create_error);
                 return;
             }
 
-            await ReplyConfirmLocalizedAsync(strs.club_created(Format.Bold(club.ToString()))).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.club_created(Format.Bold(club.ToString())));
         }
 
         [NadekoCommand, Aliases]
@@ -70,11 +70,11 @@ public partial class Xp
             if ((!Uri.IsWellFormedUriString(url, UriKind.Absolute) && url != null)
                 || !await _service.SetClubIcon(ctx.User.Id, url is null ? null : new Uri(url)))
             {
-                await ReplyErrorLocalizedAsync(strs.club_icon_error).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.club_icon_error);
                 return;
             }
 
-            await ReplyConfirmLocalizedAsync(strs.club_icon_set).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.club_icon_set);
         }
 
         [NadekoCommand, Aliases]
@@ -89,7 +89,7 @@ public partial class Xp
                 return;
             }
 
-            await ClubInformation(club.ToString()).ConfigureAwait(false);
+            await ClubInformation(club.ToString());
         }
 
         [NadekoCommand, Aliases]
@@ -98,13 +98,13 @@ public partial class Xp
         {
             if (string.IsNullOrWhiteSpace(clubName))
             {
-                await ClubInformation(ctx.User).ConfigureAwait(false);
+                await ClubInformation(ctx.User);
                 return;
             }
 
             if (!_service.GetClubByName(clubName, out var club))
             {
-                await ReplyErrorLocalizedAsync(strs.club_not_exists).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.club_not_exists);
                 return;
             }
 
@@ -149,7 +149,7 @@ public partial class Xp
                     return embed.WithThumbnailUrl(club.ImageUrl);
 
                 return embed;
-            }, club.Users.Count, 10).ConfigureAwait(false);
+            }, club.Users.Count, 10);
         }
 
         [NadekoCommand, Aliases]
@@ -221,7 +221,7 @@ public partial class Xp
 
             if (!_service.GetClubByName(clubName, out var club))
             {
-                await ReplyErrorLocalizedAsync(strs.club_not_exists).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.club_not_exists);
                 return;
             }
 
@@ -231,7 +231,7 @@ public partial class Xp
             }
             else
             {
-                await ReplyErrorLocalizedAsync(strs.club_apply_error).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.club_apply_error);
             }
         }
 
@@ -249,16 +249,16 @@ public partial class Xp
                 await ReplyConfirmLocalizedAsync(strs.club_accepted(Format.Bold(discordUser.ToString())));
             }
             else
-                await ReplyErrorLocalizedAsync(strs.club_accept_error).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.club_accept_error);
         }
 
         [NadekoCommand, Aliases]
         public async Task Clubleave()
         {
             if (_service.LeaveClub(ctx.User))
-                await ReplyConfirmLocalizedAsync(strs.club_left).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.club_left);
             else
-                await ReplyErrorLocalizedAsync(strs.club_not_in_club).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.club_not_in_club);
         }
 
         [NadekoCommand, Aliases]
@@ -318,7 +318,7 @@ public partial class Xp
             }
             else
             {
-                await ReplyErrorLocalizedAsync(strs.club_level_req_change_error).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.club_level_req_change_error);
             }
         }
 
@@ -331,7 +331,7 @@ public partial class Xp
             }
             else
             {
-                await ReplyErrorLocalizedAsync(strs.club_desc_update_failed).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.club_desc_update_failed);
             }
         }
 
@@ -344,7 +344,7 @@ public partial class Xp
             }
             else
             {
-                await ReplyErrorLocalizedAsync(strs.club_disband_error).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.club_disband_error);
             }
         }
 

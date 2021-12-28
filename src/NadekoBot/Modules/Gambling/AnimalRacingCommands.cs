@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Common.AnimalRacing;
 using NadekoBot.Modules.Gambling.Services;
@@ -112,15 +112,13 @@ public partial class Gambling
             var msg = raceMessage;
 
             if (msg is null)
-                raceMessage = await SendConfirmAsync(text)
-                    .ConfigureAwait(false);
+                raceMessage = await SendConfirmAsync(text);
             else
                 await msg.ModifyAsync(x => x.Embed = _eb.Create()
                         .WithTitle(GetText(strs.animal_race))
                         .WithDescription(text)
                         .WithOkColor()
-                        .Build())
-                    .ConfigureAwait(false);
+                        .Build());
         }
 
         private Task Ar_OnStartingFailed(AnimalRace race)
@@ -133,18 +131,17 @@ public partial class Gambling
         [RequireContext(ContextType.Guild)]
         public async Task JoinRace(ShmartNumber amount = default)
         {
-            if (!await CheckBetOptional(amount).ConfigureAwait(false))
+            if (!await CheckBetOptional(amount))
                 return;
 
             if (!_service.AnimalRaces.TryGetValue(ctx.Guild.Id, out var ar))
             {
-                await ReplyErrorLocalizedAsync(strs.race_not_exist).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.race_not_exist);
                 return;
             }
             try
             {
-                var user = await ar.JoinRace(ctx.User.Id, ctx.User.ToString(), amount)
-                    .ConfigureAwait(false);
+                var user = await ar.JoinRace(ctx.User.Id, ctx.User.ToString(), amount);
                 if (amount > 0)
                     await SendConfirmAsync(GetText(strs.animal_race_join_bet(ctx.User.Mention, user.Animal.Icon, amount + CurrencySign)));
                 else
@@ -164,8 +161,7 @@ public partial class Gambling
             }
             catch (AnimalRaceFullException)
             {
-                await SendConfirmAsync(GetText(strs.animal_race), GetText(strs.animal_race_full))
-                    .ConfigureAwait(false);
+                await SendConfirmAsync(GetText(strs.animal_race), GetText(strs.animal_race_full));
             }
             catch (NotEnoughFundsException)
             {

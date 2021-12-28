@@ -118,7 +118,7 @@ public class GameVoiceChannelService : INService
         if (vch is null)
             return;
 
-        await Task.Delay(1000).ConfigureAwait(false);
-        await gUser.ModifyAsync(gu => gu.Channel = vch).ConfigureAwait(false);
+        await Task.Delay(1000);
+        await gUser.ModifyAsync(gu => gu.Channel = vch);
     }
 }

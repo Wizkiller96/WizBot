@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Games.Common.Trivia;
 using NadekoBot.Modules.Games.Services;
 
@@ -48,18 +48,17 @@ public partial class Games
             {
                 try
                 {
-                    await trivia.StartGame().ConfigureAwait(false);
+                    await trivia.StartGame();
                 }
                 finally
                 {
                     _service.RunningTrivias.TryRemove(channel.Guild.Id, out trivia);
-                    await trivia.EnsureStopped().ConfigureAwait(false);
+                    await trivia.EnsureStopped();
                 }
                 return;
             }
 
-            await SendErrorAsync(GetText(strs.trivia_already_running) + "\n" + trivia.CurrentQuestion)
-                .ConfigureAwait(false);
+            await SendErrorAsync(GetText(strs.trivia_already_running) + "\n" + trivia.CurrentQuestion);
         }
 
         [NadekoCommand, Aliases]
@@ -68,11 +67,11 @@ public partial class Games
         {
             if (_service.RunningTrivias.TryGetValue(ctx.Guild.Id, out var trivia))
             {
-                await SendConfirmAsync(GetText(strs.leaderboard), trivia.GetLeaderboard()).ConfigureAwait(false);
+                await SendConfirmAsync(GetText(strs.leaderboard), trivia.GetLeaderboard());
                 return;
             }
 
-            await ReplyErrorLocalizedAsync(strs.trivia_none).ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.trivia_none);
         }
 
         [NadekoCommand, Aliases]
@@ -83,11 +82,11 @@ public partial class Games
 
             if (_service.RunningTrivias.TryGetValue(channel.Guild.Id, out var trivia))
             {
-                await trivia.StopGame().ConfigureAwait(false);
+                await trivia.StopGame();
                 return;
             }
 
-            await ReplyErrorLocalizedAsync(strs.trivia_none).ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.trivia_none);
         }
     }
 }

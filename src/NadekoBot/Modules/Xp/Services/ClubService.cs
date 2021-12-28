@@ -100,7 +100,7 @@ public class ClubService : INService
         if (url != null)
         {
             using var http = _httpFactory.CreateClient();
-            using var temp = await http.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+            using var temp = await http.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
             if (!temp.IsImage() || temp.GetImageSize() > 11)
                 return false;
         }

@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Common.TypeReaders;
@@ -81,9 +81,9 @@ public partial class Permissions
             var localSet = CommandCooldowns.GetOrAdd(channel.Guild.Id, new ConcurrentHashSet<CommandCooldown>());
 
             if (!localSet.Any())
-                await ReplyConfirmLocalizedAsync(strs.cmdcd_none).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.cmdcd_none);
             else
-                await channel.SendTableAsync("", localSet.Select(c => c.CommandName + ": " + c.Seconds + GetText(strs.sec)), s => $"{s,-30}", 2).ConfigureAwait(false);
+                await channel.SendTableAsync("", localSet.Select(c => c.CommandName + ": " + c.Seconds + GetText(strs.sec)), s => $"{s,-30}", 2);
         }
     }
 }

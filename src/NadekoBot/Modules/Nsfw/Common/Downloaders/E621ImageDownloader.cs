@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using System.Net.Http.Json;
 
 namespace NadekoBot.Modules.Nsfw.Common;
@@ -15,10 +15,10 @@ public class E621ImageDownloader : ImageDownloader<E621Object>
         var uri = $"https://e621.net/posts.json?limit=32&tags={tagString}&page={page}";
         using var req = new HttpRequestMessage(HttpMethod.Get, uri);
         req.Headers.AddFakeHeaders();
-        using var res = await _http.SendAsync(req, cancel).ConfigureAwait(false);
+        using var res = await _http.SendAsync(req, cancel);
         res.EnsureSuccessStatusCode();
 
-        var data = await res.Content.ReadFromJsonAsync<E621Response>(_serializerOptions, cancel).ConfigureAwait(false);
+        var data = await res.Content.ReadFromJsonAsync<E621Response>(_serializerOptions, cancel);
         if (data?.Posts is null)
             return new();
 

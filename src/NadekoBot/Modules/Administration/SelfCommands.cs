@@ -94,7 +94,7 @@ public partial class Administration
                 
             if (scmds.Count == 0)
             {
-                await ReplyErrorLocalizedAsync(strs.startcmdlist_none).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.startcmdlist_none);
             }
             else
             {
@@ -107,8 +107,7 @@ public partial class Administration
 [{GetText(strs.channel)}]: {x.ChannelName} #{x.ChannelId}
 [{GetText(strs.command_text)}]: {x.CommandText}```")),
                         title: string.Empty,
-                        footer: GetText(strs.page(page + 1)))
-                    .ConfigureAwait(false);
+                        footer: GetText(strs.page(page + 1)));
             }
         }
 
@@ -126,7 +125,7 @@ public partial class Administration
                 .ToList();
             if (!scmds.Any())
             {
-                await ReplyErrorLocalizedAsync(strs.autocmdlist_none).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.autocmdlist_none);
             }
             else
             {
@@ -140,8 +139,7 @@ public partial class Administration
 {GetIntervalText(x.Interval)}
 [{GetText(strs.command_text)}]: {x.CommandText}```")),
                         title: string.Empty,
-                        footer: GetText(strs.page(page + 1)))
-                    .ConfigureAwait(false);
+                        footer: GetText(strs.page(page + 1)));
             }
         }
 
@@ -157,13 +155,12 @@ public partial class Administration
             ctx.Message.DeleteAfter(0);
             try
             {
-                var msg = await SendConfirmAsync($"⏲ {miliseconds}ms")
-                    .ConfigureAwait(false);
+                var msg = await SendConfirmAsync($"⏲ {miliseconds}ms");
                 msg.DeleteAfter(miliseconds / 1000);
             }
             catch { }
 
-            await Task.Delay(miliseconds).ConfigureAwait(false);
+            await Task.Delay(miliseconds);
         }
             
         [NadekoCommand, Aliases]
@@ -174,7 +171,7 @@ public partial class Administration
         {
             if (!_service.RemoveAutoCommand(--index, out _))
             {
-                await ReplyErrorLocalizedAsync(strs.acrm_fail).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.acrm_fail);
                 return;
             }
                 
@@ -187,9 +184,9 @@ public partial class Administration
         public async Task StartupCommandRemove([Leftover] int index)
         {
             if (!_service.RemoveStartupCommand(--index, out _))
-                await ReplyErrorLocalizedAsync(strs.scrm_fail).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.scrm_fail);
             else
-                await ReplyConfirmLocalizedAsync(strs.scrm).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.scrm);
         }
 
         [NadekoCommand, Aliases]
@@ -200,7 +197,7 @@ public partial class Administration
         {
             _service.ClearStartupCommands();
 
-            await ReplyConfirmLocalizedAsync(strs.startcmds_cleared).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.startcmds_cleared);
         }
 
         [NadekoCommand, Aliases]
@@ -210,9 +207,9 @@ public partial class Administration
             var enabled = _service.ForwardMessages();
 
             if (enabled)
-                await ReplyConfirmLocalizedAsync(strs.fwdm_start).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.fwdm_start);
             else
-                await ReplyPendingLocalizedAsync(strs.fwdm_stop).ConfigureAwait(false);
+                await ReplyPendingLocalizedAsync(strs.fwdm_stop);
         }
 
         [NadekoCommand, Aliases]
@@ -222,9 +219,9 @@ public partial class Administration
             var enabled = _service.ForwardToAll();
 
             if (enabled)
-                await ReplyConfirmLocalizedAsync(strs.fwall_start).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.fwall_start);
             else
-                await ReplyPendingLocalizedAsync(strs.fwall_stop).ConfigureAwait(false);
+                await ReplyPendingLocalizedAsync(strs.fwall_stop);
 
         }
 
@@ -264,7 +261,7 @@ public partial class Administration
                 return _eb.Create()
                     .WithOkColor()
                     .WithDescription($"{status}\n\n{str}");
-            }, allShardStrings.Length, 25).ConfigureAwait(false);
+            }, allShardStrings.Length, 25);
         }
 
         private static string ConnectionStateToEmoji(ShardStatus status)
@@ -286,11 +283,11 @@ public partial class Administration
             var success = _coord.RestartShard(shardId);
             if (success)
             {
-                await ReplyConfirmLocalizedAsync(strs.shard_reconnecting(Format.Bold("#" + shardId))).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.shard_reconnecting(Format.Bold("#" + shardId)));
             }
             else
             {
-                await ReplyErrorLocalizedAsync(strs.no_shard_id).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.no_shard_id);
             }
         }
 
@@ -306,13 +303,13 @@ public partial class Administration
         {
             try
             {
-                await ReplyConfirmLocalizedAsync(strs.shutting_down).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.shutting_down);
             }
             catch
             {
                 // ignored
             }
-            await Task.Delay(2000).ConfigureAwait(false);
+            await Task.Delay(2000);
             _coord.Die(graceful);
         }
 
@@ -323,11 +320,11 @@ public partial class Administration
             var success = _coord.RestartBot();
             if (!success)
             {
-                await ReplyErrorLocalizedAsync(strs.restart_fail).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.restart_fail);
                 return;
             }
 
-            try { await ReplyConfirmLocalizedAsync(strs.restarting).ConfigureAwait(false); } catch { }
+            try { await ReplyConfirmLocalizedAsync(strs.restarting); } catch { }
         }
 
         [NadekoCommand, Aliases]
@@ -339,14 +336,14 @@ public partial class Administration
 
             try
             {
-                await _client.CurrentUser.ModifyAsync(u => u.Username = newName).ConfigureAwait(false);
+                await _client.CurrentUser.ModifyAsync(u => u.Username = newName);
             }
             catch (RateLimitedException)
             {
                 Log.Warning("You've been ratelimited. Wait 2 hours to change your name");
             }
 
-            await ReplyConfirmLocalizedAsync(strs.bot_name(Format.Bold(newName))).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.bot_name(Format.Bold(newName)));
         }
 
         [NadekoCommand, Aliases]
@@ -357,8 +354,8 @@ public partial class Administration
         {
             if (string.IsNullOrWhiteSpace(newNick))
                 return;
-            var curUser = await ctx.Guild.GetCurrentUserAsync().ConfigureAwait(false);
-            await curUser.ModifyAsync(u => u.Nickname = newNick).ConfigureAwait(false);
+            var curUser = await ctx.Guild.GetCurrentUserAsync();
+            await curUser.ModifyAsync(u => u.Nickname = newNick);
 
             await ReplyConfirmLocalizedAsync(strs.bot_nick(Format.Bold(newNick) ?? "-"));
         }
@@ -377,7 +374,7 @@ public partial class Administration
                 return;
             }
                 
-            await gu.ModifyAsync(u => u.Nickname = newNick).ConfigureAwait(false);
+            await gu.ModifyAsync(u => u.Nickname = newNick);
 
             await ReplyConfirmLocalizedAsync(strs.user_nick(Format.Bold(gu.ToString()), Format.Bold(newNick) ?? "-"));
         }
@@ -386,9 +383,9 @@ public partial class Administration
         [OwnerOnly]
         public async Task SetStatus([Leftover] SettableUserStatus status)
         {
-            await _client.SetStatusAsync(SettableUserStatusToUserStatus(status)).ConfigureAwait(false);
+            await _client.SetStatusAsync(SettableUserStatusToUserStatus(status));
 
-            await ReplyConfirmLocalizedAsync(strs.bot_status(Format.Bold(status.ToString()))).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.bot_status(Format.Bold(status.ToString())));
         }
 
         [NadekoCommand, Aliases]
@@ -399,7 +396,7 @@ public partial class Administration
 
             if (success)
             {
-                await ReplyConfirmLocalizedAsync(strs.set_avatar).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.set_avatar);
             }
         }
 
@@ -411,9 +408,9 @@ public partial class Administration
                 .WithDefault(Context)
                 .Build();
 
-            await _service.SetGameAsync(game is null ? game : rep.Replace(game), type).ConfigureAwait(false);
+            await _service.SetGameAsync(game is null ? game : rep.Replace(game), type);
 
-            await ReplyConfirmLocalizedAsync(strs.set_game).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.set_game);
         }
 
         [NadekoCommand, Aliases]
@@ -422,9 +419,9 @@ public partial class Administration
         {
             name ??= "";
 
-            await _service.SetStreamAsync(name, url).ConfigureAwait(false);
+            await _service.SetStreamAsync(name, url);
 
-            await ReplyConfirmLocalizedAsync(strs.set_stream).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.set_stream);
         }
 
         [NadekoCommand, Aliases]
@@ -468,11 +465,11 @@ public partial class Administration
             }
             else
             {
-                await ReplyErrorLocalizedAsync(strs.invalid_format).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.invalid_format);
                 return;
             }
                 
-            await ReplyConfirmLocalizedAsync(strs.message_sent).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.message_sent);
         }
 
         [NadekoCommand, Aliases]
@@ -488,7 +485,7 @@ public partial class Administration
         public async Task StringsReload()
         {
             _strings.Reload();
-            await ReplyConfirmLocalizedAsync(strs.bot_strings_reloaded).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.bot_strings_reloaded);
         }
             
         [NadekoCommand, Aliases]

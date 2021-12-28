@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Modules.Permissions.Common;
 using NadekoBot.Modules.Permissions.Services;
@@ -81,16 +81,16 @@ public class ChatterBotService : IEarlyBehavior
 
     public async Task<bool> TryAsk(IChatterBotSession cleverbot, ITextChannel channel, string message)
     {
-        await channel.TriggerTypingAsync().ConfigureAwait(false);
+        await channel.TriggerTypingAsync();
 
-        var response = await cleverbot.Think(message).ConfigureAwait(false);
+        var response = await cleverbot.Think(message);
         try
         {
-            await channel.SendConfirmAsync(_eb, response.SanitizeMentions(true)).ConfigureAwait(false);
+            await channel.SendConfirmAsync(_eb, response.SanitizeMentions(true));
         }
         catch
         {
-            await channel.SendConfirmAsync(_eb, response.SanitizeMentions(true)).ConfigureAwait(false); // try twice :\
+            await channel.SendConfirmAsync(_eb, response.SanitizeMentions(true)); // try twice :\
         }
         return true;
     }
@@ -116,13 +116,13 @@ public class ChatterBotService : IEarlyBehavior
                     var returnMsg = _strings.GetText(strs.perm_prevent(index + 1,
                         Format.Bold(pc.Permissions[index].GetCommand(_cmd.GetPrefix(sg), sg))));
                         
-                    try { await usrMsg.Channel.SendErrorAsync(_eb, returnMsg).ConfigureAwait(false); } catch { }
+                    try { await usrMsg.Channel.SendErrorAsync(_eb, returnMsg); } catch { }
                     Log.Information(returnMsg);
                 }
                 return true;
             }
 
-            var cleverbotExecuted = await TryAsk(cbs, (ITextChannel)usrMsg.Channel, message).ConfigureAwait(false);
+            var cleverbotExecuted = await TryAsk(cbs, (ITextChannel)usrMsg.Channel, message);
             if (cleverbotExecuted)
             {
                 Log.Information($@"CleverBot Executed

@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Common.Blackjack;
 using NadekoBot.Modules.Gambling.Services;
@@ -31,14 +31,14 @@ public partial class Gambling
         [RequireContext(ContextType.Guild)]
         public async Task BlackJack(ShmartNumber amount)
         {
-            if (!await CheckBetMandatory(amount).ConfigureAwait(false))
+            if (!await CheckBetMandatory(amount))
                 return;
 
             var newBj = new Blackjack(_cs, _db);
             Blackjack bj;
             if (newBj == (bj = _service.Games.GetOrAdd(ctx.Channel.Id, newBj)))
             {
-                if (!await bj.Join(ctx.User, amount).ConfigureAwait(false))
+                if (!await bj.Join(ctx.User, amount))
                 {
                     _service.Games.TryRemove(ctx.Channel.Id, out _);
                     await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
@@ -48,19 +48,19 @@ public partial class Gambling
                 bj.GameEnded += Bj_GameEnded;
                 bj.Start();
 
-                await ReplyConfirmLocalizedAsync(strs.bj_created).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.bj_created);
             }
             else
             {
-                if (await bj.Join(ctx.User, amount).ConfigureAwait(false))
-                    await ReplyConfirmLocalizedAsync(strs.bj_joined).ConfigureAwait(false);
+                if (await bj.Join(ctx.User, amount))
+                    await ReplyConfirmLocalizedAsync(strs.bj_joined);
                 else
                 {
                     Log.Information($"{ctx.User} can't join a blackjack game as it's in " + bj.State.ToString() + " state already.");
                 }
             }
 
-            await ctx.Message.DeleteAsync().ConfigureAwait(false);
+            await ctx.Message.DeleteAsync();
         }
 
         private Task Bj_GameEnded(Blackjack arg)
@@ -129,7 +129,7 @@ public partial class Gambling
                         full = "💰 " + full;
                     embed.AddField(full, cStr);
                 }
-                _msg = await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+                _msg = await ctx.Channel.EmbedAsync(embed);
             }
             catch
             {
@@ -167,18 +167,18 @@ public partial class Gambling
                 return;
 
             if (a == BjAction.Hit)
-                await bj.Hit(ctx.User).ConfigureAwait(false);
+                await bj.Hit(ctx.User);
             else if (a == BjAction.Stand)
-                await bj.Stand(ctx.User).ConfigureAwait(false);
+                await bj.Stand(ctx.User);
             else if (a == BjAction.Double)
             {
-                if (!await bj.Double(ctx.User).ConfigureAwait(false))
+                if (!await bj.Double(ctx.User))
                 {
                     await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
                 }
             }
 
-            await ctx.Message.DeleteAsync().ConfigureAwait(false);
+            await ctx.Message.DeleteAsync();
         }
     }
 }

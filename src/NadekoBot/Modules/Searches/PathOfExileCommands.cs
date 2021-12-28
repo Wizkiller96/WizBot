@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Searches.Common;
 using NadekoBot.Modules.Searches.Services;
 using Newtonsoft.Json;
@@ -32,7 +32,7 @@ public partial class Searches
 
             if (string.IsNullOrWhiteSpace(usr))
             {
-                await SendErrorAsync("Please provide an account name.").ConfigureAwait(false);
+                await SendErrorAsync("Please provide an account name.");
                 return;
             }
 
@@ -41,7 +41,7 @@ public partial class Searches
             try
             {
                 using var http = _httpFactory.CreateClient();
-                var res = await http.GetStringAsync($"{_poeURL}{usr}").ConfigureAwait(false);
+                var res = await http.GetStringAsync($"{_poeURL}{usr}");
                 characters = JsonConvert.DeserializeObject<List<Account>>(res);
             }
             catch
@@ -50,7 +50,7 @@ public partial class Searches
                     .WithDescription(GetText(strs.account_not_found))
                     .WithErrorColor();
 
-                await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+                await ctx.Channel.EmbedAsync(embed);
                 return;
             }
 
@@ -89,7 +89,7 @@ public partial class Searches
 
                     return embed;
                 }
-            }, characters.Count, 9, true).ConfigureAwait(false);
+            }, characters.Count, 9, true);
         }
 
         [NadekoCommand, Aliases]
@@ -100,7 +100,7 @@ public partial class Searches
             try
             {
                 using var http = _httpFactory.CreateClient();
-                var res = await http.GetStringAsync("http://api.pathofexile.com/leagues?type=main&compact=1").ConfigureAwait(false);
+                var res = await http.GetStringAsync("http://api.pathofexile.com/leagues?type=main&compact=1");
                 leagues = JsonConvert.DeserializeObject<List<Leagues>>(res);
             }
             catch
@@ -109,7 +109,7 @@ public partial class Searches
                     .WithDescription(GetText(strs.leagues_not_found))
                     .WithErrorColor();
 
-                await ctx.Channel.EmbedAsync(eembed).ConfigureAwait(false);
+                await ctx.Channel.EmbedAsync(eembed);
                 return;
             }
 
@@ -131,7 +131,7 @@ public partial class Searches
 
             embed.WithDescription(sb.ToString());
 
-            await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+            await ctx.Channel.EmbedAsync(embed);
         }
 
         [NadekoCommand, Aliases]
@@ -139,12 +139,12 @@ public partial class Searches
         {
             if (string.IsNullOrWhiteSpace(leagueName))
             {
-                await SendErrorAsync("Please provide league name.").ConfigureAwait(false);
+                await SendErrorAsync("Please provide league name.");
                 return;
             }
             if (string.IsNullOrWhiteSpace(currencyName))
             {
-                await SendErrorAsync("Please provide currency name.").ConfigureAwait(false);
+                await SendErrorAsync("Please provide currency name.");
                 return;
             }
 
@@ -155,7 +155,7 @@ public partial class Searches
             {
                 var res = $"{_ponURL}{leagueName}";
                 using var http = _httpFactory.CreateClient();
-                var obj = JObject.Parse(await http.GetStringAsync(res).ConfigureAwait(false));
+                var obj = JObject.Parse(await http.GetStringAsync(res));
 
                 var chaosEquivalent = 0.0F;
                 var conversionEquivalent = 0.0F;
@@ -193,7 +193,7 @@ public partial class Searches
                     .AddField($"{cleanConvert} Equivalent", chaosEquivalent / conversionEquivalent, true)
                     .WithOkColor();
 
-                await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+                await ctx.Channel.EmbedAsync(embed);
             }
             catch
             {
@@ -201,7 +201,7 @@ public partial class Searches
                     .WithDescription(GetText(strs.ninja_not_found))
                     .WithErrorColor();
 
-                await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+                await ctx.Channel.EmbedAsync(embed);
             }
         }
 

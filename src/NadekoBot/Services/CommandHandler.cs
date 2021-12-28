@@ -113,9 +113,9 @@ public class CommandHandler : INService
 
             try
             {
-                IUserMessage msg = await channel.SendMessageAsync(commandText).ConfigureAwait(false);
-                msg = (IUserMessage)await channel.GetMessageAsync(msg.Id).ConfigureAwait(false);
-                await TryRunCommand(guild, channel, msg).ConfigureAwait(false);
+                IUserMessage msg = await channel.SendMessageAsync(commandText);
+                msg = (IUserMessage)await channel.GetMessageAsync(msg.Id);
+                await TryRunCommand(guild, channel, msg);
                 //msg.DeleteAfter(5);
             }
             catch { }
@@ -216,8 +216,7 @@ public class CommandHandler : INService
                     var channel = msg.Channel;
                     var guild = (msg.Channel as SocketTextChannel)?.Guild;
 
-                    await TryRunCommand(guild, channel, usrMsg)
-                        .ConfigureAwait(false);
+                    await TryRunCommand(guild, channel, usrMsg);
                 }
                 catch (Exception ex)
                 {
@@ -250,25 +249,25 @@ public class CommandHandler : INService
         // execute the command and measure the time it took
         if (messageContent.StartsWith(prefix, StringComparison.InvariantCulture) || isPrefixCommand)
         {
-            var (success, error, info) = await ExecuteCommandAsync(new(_client, usrMsg), messageContent, isPrefixCommand ? 1 : prefix.Length, _services, MultiMatchHandling.Best).ConfigureAwait(false);
+            var (success, error, info) = await ExecuteCommandAsync(new(_client, usrMsg), messageContent, isPrefixCommand ? 1 : prefix.Length, _services, MultiMatchHandling.Best);
             startTime = Environment.TickCount - startTime;
 
             if (success)
             {
-                await LogSuccessfulExecution(usrMsg, channel as ITextChannel, blockTime, startTime).ConfigureAwait(false);
-                await CommandExecuted(usrMsg, info).ConfigureAwait(false);
+                await LogSuccessfulExecution(usrMsg, channel as ITextChannel, blockTime, startTime);
+                await CommandExecuted(usrMsg, info);
                 return;
             }
             else if (error != null)
             {
                 LogErroredExecution(error, usrMsg, channel as ITextChannel, blockTime, startTime);
                 if (guild != null)
-                    await CommandErrored(info, channel as ITextChannel, error).ConfigureAwait(false);
+                    await CommandErrored(info, channel as ITextChannel, error);
             }
         }
         else
         {
-            await OnMessageNoTrigger(usrMsg).ConfigureAwait(false);
+            await OnMessageNoTrigger(usrMsg);
         }
 
         await _behaviourExecutor.RunLateExecutorsAsync(guild, usrMsg);
@@ -289,7 +288,7 @@ public class CommandHandler : INService
 
         foreach (var match in commands)
         {
-            preconditionResults[match] = await match.Command.CheckPreconditionsAsync(context, services).ConfigureAwait(false);
+            preconditionResults[match] = await match.Command.CheckPreconditionsAsync(context, services);
         }
 
         var successfulPreconditions = preconditionResults
@@ -308,7 +307,7 @@ public class CommandHandler : INService
         var parseResultsDict = new Dictionary<CommandMatch, ParseResult>();
         foreach (var pair in successfulPreconditions)
         {
-            var parseResult = await pair.Key.ParseAsync(context, searchResult, pair.Value, services).ConfigureAwait(false);
+            var parseResult = await pair.Key.ParseAsync(context, searchResult, pair.Value, services);
 
             if (parseResult.Error == CommandError.MultipleMatches)
             {
@@ -374,7 +373,7 @@ public class CommandHandler : INService
 
         //If we get this far, at least one parse was successful. Execute the most likely overload.
         var chosenOverload = successfulParses[0];
-        var execResult = (Discord.Commands.ExecuteResult)await chosenOverload.Key.ExecuteAsync(context, chosenOverload.Value, services).ConfigureAwait(false);
+        var execResult = (Discord.Commands.ExecuteResult)await chosenOverload.Key.ExecuteAsync(context, chosenOverload.Value, services);
 
         if (execResult.Exception != null && (execResult.Exception is not HttpException he || he.DiscordCode != DiscordErrorCode.InsufficientPermissions))
         {

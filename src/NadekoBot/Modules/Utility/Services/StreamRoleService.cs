@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Common.TypeReaders;
 using NadekoBot.Modules.Utility.Common;
@@ -29,7 +29,7 @@ public class StreamRoleService : INService
         {
             try
             {
-                await Task.WhenAll(client.Guilds.Select(g => RescanUsers(g))).ConfigureAwait(false);
+                await client.Guilds.Select(g => RescanUsers(g)).WhenAll();
             }
             catch
             {
@@ -45,7 +45,7 @@ public class StreamRoleService : INService
             //if user wasn't streaming or didn't have a game status at all
             if (guildSettings.TryGetValue(after.Guild.Id, out var setting))
             {
-                await RescanUser(after, setting).ConfigureAwait(false);
+                await RescanUser(after, setting);
             }
         });
 
@@ -114,7 +114,7 @@ public class StreamRoleService : INService
         }
         if (success)
         {
-            await RescanUsers(guild).ConfigureAwait(false);
+            await RescanUsers(guild);
         }
         return success;
     }
@@ -138,7 +138,7 @@ public class StreamRoleService : INService
             uow.SaveChanges();
         }
 
-        await RescanUsers(guild).ConfigureAwait(false);
+        await RescanUsers(guild);
         return keyword;
     }
 
@@ -189,10 +189,10 @@ public class StreamRoleService : INService
 
         UpdateCache(fromRole.Guild.Id, setting);
 
-        foreach (var usr in await fromRole.GetMembersAsync().ConfigureAwait(false))
+        foreach (var usr in await fromRole.GetMembersAsync())
         {
             if (usr is { } x)
-                await RescanUser(x, setting, addRole).ConfigureAwait(false);
+                await RescanUser(x, setting, addRole);
         }
     }
 
@@ -212,7 +212,7 @@ public class StreamRoleService : INService
         }
 
         if (guildSettings.TryRemove(guild.Id, out var setting) && cleanup)
-            await RescanUsers(guild).ConfigureAwait(false);
+            await RescanUsers(guild);
     }
 
     private async Task RescanUser(IGuildUser user, StreamRoleSettings setting, IRole addRole = null)
@@ -236,7 +236,7 @@ public class StreamRoleService : INService
                 addRole ??= user.Guild.GetRole(setting.AddRoleId);
                 if (addRole is null)
                 {
-                    await StopStreamRole(user.Guild).ConfigureAwait(false);
+                    await StopStreamRole(user.Guild);
                     Log.Warning("Stream role in server {0} no longer exists. Stopping.", setting.AddRoleId);
                     return;
                 }
@@ -244,14 +244,14 @@ public class StreamRoleService : INService
                 //check if he doesn't have addrole already, to avoid errors
                 if (!user.RoleIds.Contains(addRole.Id))
                 {
-                    await user.AddRoleAsync(addRole).ConfigureAwait(false);
+                    await user.AddRoleAsync(addRole);
                     Log.Information("Added stream role to user {0} in {1} server", user.ToString(),
                         user.Guild.ToString());
                 }
             }
             catch (HttpException ex) when (ex.HttpCode == System.Net.HttpStatusCode.Forbidden)
             {
-                await StopStreamRole(user.Guild).ConfigureAwait(false);
+                await StopStreamRole(user.Guild);
                 Log.Warning(ex, "Error adding stream role(s). Forcibly disabling stream role feature");
                 throw new StreamRolePermissionException();
             }
@@ -271,12 +271,12 @@ public class StreamRoleService : INService
                     if (addRole is null)
                         throw new StreamRoleNotFoundException();
 
-                    await user.RemoveRoleAsync(addRole).ConfigureAwait(false);
+                    await user.RemoveRoleAsync(addRole);
                     Log.Information("Removed stream role from the user {0} in {1} server", user.ToString(), user.Guild.ToString());
                 }
                 catch (HttpException ex) when (ex.HttpCode == System.Net.HttpStatusCode.Forbidden)
                 {
-                    await StopStreamRole(user.Guild).ConfigureAwait(false);
+                    await StopStreamRole(user.Guild);
                     Log.Warning(ex, "Error removing stream role(s). Forcibly disabling stream role feature");
                     throw new StreamRolePermissionException();
                 }
@@ -295,11 +295,11 @@ public class StreamRoleService : INService
 
         if (setting.Enabled)
         {
-            var users = await guild.GetUsersAsync(CacheMode.CacheOnly).ConfigureAwait(false);
+            var users = await guild.GetUsersAsync(CacheMode.CacheOnly);
             foreach (var usr in users.Where(x => x.RoleIds.Contains(setting.FromRoleId) || x.RoleIds.Contains(addRole.Id)))
             {
                 if (usr is { } x)
-                    await RescanUser(x, setting, addRole).ConfigureAwait(false);
+                    await RescanUser(x, setting, addRole);
             }
         }
     }

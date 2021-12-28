@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 namespace NadekoBot.Modules.Searches;
 
 public partial class Searches
@@ -11,8 +11,8 @@ public partial class Searches
         {
             try
             {
-                await ctx.Channel.TriggerTypingAsync().ConfigureAwait(false);
-                var translation = await _service.Translate(from, to, text).ConfigureAwait(false);
+                await ctx.Channel.TriggerTypingAsync();
+                var translation = await _service.Translate(from, to, text);
 
                 var embed = _eb.Create(ctx)
                     .WithOkColor()
@@ -23,7 +23,7 @@ public partial class Searches
             }
             catch
             {
-                await ReplyErrorLocalizedAsync(strs.bad_input_format).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.bad_input_format);
             }
         }
 
@@ -43,11 +43,11 @@ public partial class Searches
             var toggle = await _service.ToggleAtl(ctx.Guild.Id, ctx.Channel.Id, autoDelete == AutoDeleteAutoTranslate.Del);
             if (toggle)
             {
-                await ReplyConfirmLocalizedAsync(strs.atl_started).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.atl_started);
             }
             else
             {
-                await ReplyConfirmLocalizedAsync(strs.atl_stopped).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.atl_stopped);
             }
         }
 
@@ -57,7 +57,7 @@ public partial class Searches
         {
             if (await _service.UnregisterUser(ctx.Channel.Id, ctx.User.Id))
             {
-                await ReplyConfirmLocalizedAsync(strs.atl_removed).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.atl_removed);
             }
         }
             
@@ -78,7 +78,7 @@ public partial class Searches
                 
             if (succ is false)
             {
-                await ReplyErrorLocalizedAsync(strs.invalid_lang).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.invalid_lang);
                 return;
             }
 
@@ -88,6 +88,6 @@ public partial class Searches
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task Translangs()
-            => await ctx.Channel.SendTableAsync(_service.GetLanguages(), str => $"{str,-15}", 3).ConfigureAwait(false);
+            => await ctx.Channel.SendTableAsync(_service.GetLanguages(), str => $"{str,-15}", 3);
     }
 }

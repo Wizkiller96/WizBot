@@ -398,12 +398,12 @@ public sealed class MusicPlayer : IMusicPlayer
             if (IsKilled)
                 break;
                 
-            var queueTasks = chunk.Select(async data =>
+            await chunk.Select(async data =>
             {
                 var (query, platform) = data;
                 try
                 {
-                    await TryEnqueueTrackAsync(query, queuer, false, forcePlatform: platform).ConfigureAwait(false);
+                    await TryEnqueueTrackAsync(query, queuer, false, forcePlatform: platform);
                     errorCount = 0;
                 }
                 catch (Exception ex)
@@ -411,9 +411,8 @@ public sealed class MusicPlayer : IMusicPlayer
                     Log.Warning(ex, "Error resolving {MusicPlatform} Track {TrackQuery}", platform, query);
                     ++errorCount;
                 }
-            });
+            }).WhenAll();
 
-            await Task.WhenAll(queueTasks);
             await Task.Delay(1000);
                 
             // > 10 errors in a row = kill

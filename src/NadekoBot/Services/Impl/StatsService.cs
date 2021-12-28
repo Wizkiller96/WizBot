@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Common.ModuleBehaviors;
 using System.Diagnostics;
 
@@ -132,7 +132,7 @@ public class StatsService : IStatsService, IReadyExecutor, INService, IDisposabl
                 content.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
                 http.DefaultRequestHeaders.Add("Authorization", _creds.BotListToken);
 
-                using (await http.PostAsync(new Uri($"https://discordbots.org/api/bots/{client.CurrentUser.Id}/stats"), content).ConfigureAwait(false)) { }
+                using (await http.PostAsync(new Uri($"https://discordbots.org/api/bots/{client.CurrentUser.Id}/stats"), content)) { }
             }
             catch (Exception ex)
             {

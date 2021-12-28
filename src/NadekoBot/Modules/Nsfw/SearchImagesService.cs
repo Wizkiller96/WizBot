@@ -92,8 +92,7 @@ public class SearchImagesService : ISearchImagesService, INService
                         tags[i] = "lesbian";
             }
 
-            var result = await _cache.GetImageNew(tags, forceExplicit, dapi, blTags ?? new HashSet<string>(), cancel)
-                .ConfigureAwait(false);
+            var result = await _cache.GetImageNew(tags, forceExplicit, dapi, blTags ?? new HashSet<string>(), cancel);
 
             if (result is null)
             {
@@ -200,7 +199,7 @@ public class SearchImagesService : ISearchImagesService, INService
         try
         {
             JToken obj;
-            obj = JArray.Parse(await _http.GetStringAsync($"http://api.oboobs.ru/boobs/{_rng.Next(0, 12000)}").ConfigureAwait(false))[0];
+            obj = JArray.Parse(await _http.GetStringAsync($"http://api.oboobs.ru/boobs/{_rng.Next(0, 12000)}"))[0];
             return new()
             {
                 Error = "",

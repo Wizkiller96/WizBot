@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using AngleSharp;
 using AngleSharp.Html.Dom;
 using NadekoBot.Modules.Searches.Common;
@@ -26,14 +26,14 @@ public class AnimeSearchService : INService
 
             var link = "https://aniapi.nadeko.bot/anime/" + Uri.EscapeDataString(query.Replace("/", " ", StringComparison.InvariantCulture));
             link = link.ToLowerInvariant();
-            var (ok, data) = await _cache.TryGetAnimeDataAsync(link).ConfigureAwait(false);
+            var (ok, data) = await _cache.TryGetAnimeDataAsync(link);
             if (!ok)
             {
                 using (var http = _httpFactory.CreateClient())
                 {
-                    data = await http.GetStringAsync(link).ConfigureAwait(false);
+                    data = await http.GetStringAsync(link);
                 }
-                await _cache.SetAnimeDataAsync(link, data).ConfigureAwait(false);
+                await _cache.SetAnimeDataAsync(link, data);
             }
 
 
@@ -58,11 +58,11 @@ public class AnimeSearchService : INService
                 .Replace("/", " ")
             );
             link = link.ToLowerInvariant();
-            var (ok, data) = await _cache.TryGetNovelDataAsync(link).ConfigureAwait(false);
+            var (ok, data) = await _cache.TryGetNovelDataAsync(link);
             if (!ok)
             {
                 var config = Configuration.Default.WithDefaultLoader();
-                using var document = await BrowsingContext.New(config).OpenAsync(link).ConfigureAwait(false);
+                using var document = await BrowsingContext.New(config).OpenAsync(link);
                 var imageElem = document.QuerySelector("div.seriesimg > img");
                 if (imageElem is null)
                     return null;
@@ -109,7 +109,7 @@ public class AnimeSearchService : INService
                 };
 
                 await _cache.SetNovelDataAsync(link,
-                    JsonConvert.SerializeObject(obj)).ConfigureAwait(false);
+                    JsonConvert.SerializeObject(obj));
 
                 return obj;
             }
@@ -132,14 +132,14 @@ public class AnimeSearchService : INService
 
             var link = "https://aniapi.nadeko.bot/manga/" + Uri.EscapeDataString(query.Replace("/", " ", StringComparison.InvariantCulture));
             link = link.ToLowerInvariant();
-            var (ok, data) = await _cache.TryGetAnimeDataAsync(link).ConfigureAwait(false);
+            var (ok, data) = await _cache.TryGetAnimeDataAsync(link);
             if (!ok)
             {
                 using (var http = _httpFactory.CreateClient())
                 {
-                    data = await http.GetStringAsync(link).ConfigureAwait(false);
+                    data = await http.GetStringAsync(link);
                 }
-                await _cache.SetAnimeDataAsync(link, data).ConfigureAwait(false);
+                await _cache.SetAnimeDataAsync(link, data);
             }
 
 

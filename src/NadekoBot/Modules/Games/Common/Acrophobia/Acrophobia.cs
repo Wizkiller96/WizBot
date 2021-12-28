@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using System.Collections.Immutable;
 using CommandLine;
 
@@ -63,36 +63,36 @@ public sealed class AcrophobiaGame : IDisposable
 
     public async Task Run()
     {
-        await OnStarted(this).ConfigureAwait(false);
-        await Task.Delay(Opts.SubmissionTime * 1000).ConfigureAwait(false);
-        await locker.WaitAsync().ConfigureAwait(false);
+        await OnStarted(this);
+        await Task.Delay(Opts.SubmissionTime * 1000);
+        await locker.WaitAsync();
         try
         {
             if (submissions.Count == 0)
             {
                 CurrentPhase = Phase.Ended;
-                await OnVotingStarted(this, ImmutableArray.Create<KeyValuePair<AcrophobiaUser, int>>()).ConfigureAwait(false);
+                await OnVotingStarted(this, ImmutableArray.Create<KeyValuePair<AcrophobiaUser, int>>());
                 return;
             }
             if (submissions.Count == 1)
             {
                 CurrentPhase = Phase.Ended;
-                await OnVotingStarted(this, submissions.ToArray().ToImmutableArray()).ConfigureAwait(false);
+                await OnVotingStarted(this, submissions.ToArray().ToImmutableArray());
                 return;
             }
 
             CurrentPhase = Phase.Voting;
 
-            await OnVotingStarted(this, submissions.ToArray().ToImmutableArray()).ConfigureAwait(false);
+            await OnVotingStarted(this, submissions.ToArray().ToImmutableArray());
         }
         finally { locker.Release(); }
 
-        await Task.Delay(Opts.VoteTime * 1000).ConfigureAwait(false);
-        await locker.WaitAsync().ConfigureAwait(false);
+        await Task.Delay(Opts.VoteTime * 1000);
+        await locker.WaitAsync();
         try
         {
             CurrentPhase = Phase.Ended;
-            await OnEnded(this, submissions.ToArray().ToImmutableArray()).ConfigureAwait(false);
+            await OnEnded(this, submissions.ToArray().ToImmutableArray());
         }
         finally { locker.Release(); }
     }
@@ -115,7 +115,7 @@ public sealed class AcrophobiaGame : IDisposable
     {
         var user = new AcrophobiaUser(userId, userName, input.ToLowerInvariant().ToTitleCase());
 
-        await locker.WaitAsync().ConfigureAwait(false);
+        await locker.WaitAsync();
         try
         {
             switch (CurrentPhase)

@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using Grpc.Core;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Coordinator;
@@ -98,7 +98,7 @@ public class RemoteGrpcCoordinator : ICoordinator, IReadyExecutor
                         break;
                     }
 
-                    await Task.Delay(22500).ConfigureAwait(false);
+                    await Task.Delay(22500);
                 }
                 catch (Exception ex)
                 {
@@ -106,7 +106,7 @@ public class RemoteGrpcCoordinator : ICoordinator, IReadyExecutor
                     break;
                 }
 
-                await Task.Delay(7500).ConfigureAwait(false);
+                await Task.Delay(7500);
             }
 
             Environment.Exit(5);

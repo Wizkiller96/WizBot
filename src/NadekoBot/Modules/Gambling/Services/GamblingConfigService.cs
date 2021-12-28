@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Common.Configs;
 using NadekoBot.Modules.Gambling.Common;
 
@@ -50,7 +50,7 @@ public sealed class GamblingConfigService : ConfigServiceBase<GamblingConfig>
         
     public void Migrate()
     {
-        if (_data.Version < 2)
+        if (data.Version < 2)
         {
             ModifyConfig(c =>
             {
@@ -59,7 +59,7 @@ public sealed class GamblingConfigService : ConfigServiceBase<GamblingConfig>
             });
         }
 
-        if (_data.Version < 3)
+        if (data.Version < 3)
         {
             ModifyConfig(c =>
             {
@@ -68,7 +68,7 @@ public sealed class GamblingConfigService : ConfigServiceBase<GamblingConfig>
             });
         }
 
-        if (_data.Version < 4)
+        if (data.Version < 4)
         {
             ModifyConfig(c =>
             {

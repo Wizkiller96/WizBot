@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Utility.Services;
 
 namespace NadekoBot.Modules.Utility;
@@ -20,9 +20,9 @@ public partial class Utility
                 return;
 
             var ch = (ITextChannel)ctx.Channel;
-            var invite = await ch.CreateInviteAsync(opts.Expire, opts.MaxUses, isTemporary: opts.Temporary, isUnique: opts.Unique).ConfigureAwait(false);
+            var invite = await ch.CreateInviteAsync(opts.Expire, opts.MaxUses, isTemporary: opts.Temporary, isUnique: opts.Unique);
 
-            await SendConfirmAsync($"{ctx.User.Mention} https://discord.gg/{invite.Code}").ConfigureAwait(false);
+            await SendConfirmAsync($"{ctx.User.Mention} https://discord.gg/{invite.Code}");
         }
 
         [NadekoCommand, Aliases]
@@ -35,7 +35,7 @@ public partial class Utility
                 return;
             var channel = ch ?? (ITextChannel)ctx.Channel;
 
-            var invites = await channel.GetInvitesAsync().ConfigureAwait(false);
+            var invites = await channel.GetInvitesAsync();
 
             await ctx.SendPaginatedConfirmAsync(page, cur =>
             {
@@ -71,7 +71,7 @@ public partial class Utility
 
                 return embed;
                     
-            }, invites.Count, 9).ConfigureAwait(false);
+            }, invites.Count, 9);
         }
 
         [NadekoCommand, Aliases]
@@ -85,12 +85,12 @@ public partial class Utility
                 
             var ch = (ITextChannel)ctx.Channel;
 
-            var invites = await ch.GetInvitesAsync().ConfigureAwait(false);
+            var invites = await ch.GetInvitesAsync();
 
             if (invites.Count <= index)
                 return;
             var inv = invites.ElementAt(index);
-            await inv.DeleteAsync().ConfigureAwait(false);
+            await inv.DeleteAsync();
 
             await ReplyAsync(GetText(strs.invite_deleted(Format.Bold(inv.Code))));
         }

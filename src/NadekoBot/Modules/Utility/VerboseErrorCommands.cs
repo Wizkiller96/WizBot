@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Utility.Services;
 
 namespace NadekoBot.Modules.Utility;
@@ -16,9 +16,9 @@ public partial class Utility
             var state = _service.ToggleVerboseErrors(ctx.Guild.Id, newstate);
 
             if (state)
-                await ReplyConfirmLocalizedAsync(strs.verbose_errors_enabled).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.verbose_errors_enabled);
             else
-                await ReplyConfirmLocalizedAsync(strs.verbose_errors_disabled).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.verbose_errors_disabled);
         }
     }
 }

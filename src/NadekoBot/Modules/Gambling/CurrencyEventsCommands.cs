@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Modules.Gambling.Common.Events;
 using NadekoBot.Services.Database.Models;
@@ -28,7 +28,7 @@ public partial class Gambling
                     opts,
                     GetEmbed))
             {
-                await ReplyErrorLocalizedAsync(strs.start_event_fail).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.start_event_fail);
             }
         }
 

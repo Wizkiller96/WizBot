@@ -73,7 +73,7 @@ public class UserPunishService : INService
 
         if (p != null)
         {
-            var user = await guild.GetUserAsync(userId).ConfigureAwait(false);
+            var user = await guild.GetUserAsync(userId);
             if (user is null)
                 return null;
 
@@ -95,50 +95,45 @@ public class UserPunishService : INService
         {
             case PunishmentAction.Mute:
                 if (minutes == 0)
-                    await _mute.MuteUser(user, mod, reason: reason).ConfigureAwait(false);
+                    await _mute.MuteUser(user, mod, reason: reason);
                 else
-                    await _mute.TimedMute(user, mod, TimeSpan.FromMinutes(minutes), reason: reason)
-                        .ConfigureAwait(false);
+                    await _mute.TimedMute(user, mod, TimeSpan.FromMinutes(minutes), reason: reason);
                 break;
             case PunishmentAction.VoiceMute:
                 if (minutes == 0)
-                    await _mute.MuteUser(user, mod, MuteType.Voice, reason).ConfigureAwait(false);
+                    await _mute.MuteUser(user, mod, MuteType.Voice, reason);
                 else
-                    await _mute.TimedMute(user, mod, TimeSpan.FromMinutes(minutes), MuteType.Voice, reason)
-                        .ConfigureAwait(false);
+                    await _mute.TimedMute(user, mod, TimeSpan.FromMinutes(minutes), MuteType.Voice, reason);
                 break;
             case PunishmentAction.ChatMute:
                 if (minutes == 0)
-                    await _mute.MuteUser(user, mod, MuteType.Chat, reason).ConfigureAwait(false);
+                    await _mute.MuteUser(user, mod, MuteType.Chat, reason);
                 else
-                    await _mute.TimedMute(user, mod, TimeSpan.FromMinutes(minutes), MuteType.Chat, reason)
-                        .ConfigureAwait(false);
+                    await _mute.TimedMute(user, mod, TimeSpan.FromMinutes(minutes), MuteType.Chat, reason);
                 break;
             case PunishmentAction.Kick:
-                await user.KickAsync(reason).ConfigureAwait(false);
+                await user.KickAsync(reason);
                 break;
             case PunishmentAction.Ban:
                 if (minutes == 0)
-                    await guild.AddBanAsync(user, reason: reason, pruneDays: 7).ConfigureAwait(false);
+                    await guild.AddBanAsync(user, reason: reason, pruneDays: 7);
                 else
-                    await _mute.TimedBan(user.Guild, user, TimeSpan.FromMinutes(minutes), reason)
-                        .ConfigureAwait(false);
+                    await _mute.TimedBan(user.Guild, user, TimeSpan.FromMinutes(minutes), reason);
                 break;
             case PunishmentAction.Softban:
-                await guild.AddBanAsync(user, 7, reason: $"Softban | {reason}").ConfigureAwait(false);
+                await guild.AddBanAsync(user, 7, reason: $"Softban | {reason}");
                 try
                 {
-                    await guild.RemoveBanAsync(user).ConfigureAwait(false);
+                    await guild.RemoveBanAsync(user);
                 }
                 catch
                 {
-                    await guild.RemoveBanAsync(user).ConfigureAwait(false);
+                    await guild.RemoveBanAsync(user);
                 }
 
                 break;
             case PunishmentAction.RemoveRoles:
-                await user.RemoveRolesAsync(user.GetRoles().Where(x => !x.IsManaged && x != x.Guild.EveryoneRole))
-                    .ConfigureAwait(false);
+                await user.RemoveRolesAsync(user.GetRoles().Where(x => !x.IsManaged && x != x.Guild.EveryoneRole));
                 break;
             case PunishmentAction.AddRole:
                 if (roleId is null)
@@ -147,10 +142,9 @@ public class UserPunishService : INService
                 if (role is not null)
                 {
                     if (minutes == 0)
-                        await user.AddRoleAsync(role).ConfigureAwait(false);
+                        await user.AddRoleAsync(role);
                     else
-                        await _mute.TimedRole(user, TimeSpan.FromMinutes(minutes), reason, role)
-                            .ConfigureAwait(false);
+                        await _mute.TimedRole(user, TimeSpan.FromMinutes(minutes), reason, role);
                 }
                 else
                 {

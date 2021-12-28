@@ -213,13 +213,13 @@ public static class Extensions
     {
         Task.Run(async () =>
             {
-                await Task.Delay(seconds * 1000).ConfigureAwait(false);
+                await Task.Delay(seconds * 1000);
                 if (logService != null)
                 {
                     logService.AddDeleteIgnore(msg.Id);
                 }
 
-                try { await msg.DeleteAsync().ConfigureAwait(false); }
+                try { await msg.DeleteAsync(); }
                 catch { }
             }
         );
@@ -238,7 +238,7 @@ public static class Extensions
 
     public static async Task<IEnumerable<IGuildUser>> GetMembersAsync(this IRole role)
     {
-        var users = await role.Guild.GetUsersAsync(CacheMode.CacheOnly).ConfigureAwait(false);
+        var users = await role.Guild.GetUsersAsync(CacheMode.CacheOnly);
         return users.Where(u => u.RoleIds.Contains(role.Id));
     }
 

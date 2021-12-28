@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Gambling.Common.Events;
@@ -74,14 +74,14 @@ public class ReactionEvent : ICurrencyEvent
             await _cs.AddBulkAsync(toAward,
                 toAward.Select(x => "Reaction Event"),
                 toAward.Select(x => _amount),
-                gamble: true).ConfigureAwait(false);
+                gamble: true);
 
             if (_isPotLimited)
             {
                 await _msg.ModifyAsync(m =>
                 {
                     m.Embed = GetEmbed(PotSize).Build();
-                }, new() { RetryMode = RetryMode.AlwaysRetry }).ConfigureAwait(false);
+                }, new() { RetryMode = RetryMode.AlwaysRetry });
             }
 
             Log.Information("Awarded {0} users {1} currency.{2}",
@@ -110,8 +110,8 @@ public class ReactionEvent : ICurrencyEvent
         {
             _emote = new Emoji(_config.Currency.Sign);
         }
-        _msg = await _channel.EmbedAsync(GetEmbed(_opts.PotSize)).ConfigureAwait(false);
-        await _msg.AddReactionAsync(_emote).ConfigureAwait(false);
+        _msg = await _channel.EmbedAsync(GetEmbed(_opts.PotSize));
+        await _msg.AddReactionAsync(_emote);
         _client.MessageDeleted += OnMessageDeleted;
         _client.ReactionAdded += HandleReaction;
         _t.Change(TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(2));
@@ -124,7 +124,7 @@ public class ReactionEvent : ICurrencyEvent
     {
         if (msg.Id == _msg.Id)
         {
-            await StopEvent().ConfigureAwait(false);
+            await StopEvent();
         }
     }
 

@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Games.Common;
 using NadekoBot.Modules.Games.Services;
 
@@ -29,7 +29,7 @@ public partial class Games : NadekoModule<GamesService>
         if (listArr.Length < 2)
             return;
         var rng = new NadekoRandom();
-        await SendConfirmAsync("🤔", listArr[rng.Next(0, listArr.Length)]).ConfigureAwait(false);
+        await SendConfirmAsync("🤔", listArr[rng.Next(0, listArr.Length)]);
     }
 
     [NadekoCommand, Aliases]
@@ -54,7 +54,7 @@ public partial class Games : NadekoModule<GamesService>
 
         if (originalStream is null)
         {
-            await ReplyErrorLocalizedAsync(strs.something_went_wrong).ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.something_went_wrong);
             return;
         }
 
@@ -73,7 +73,7 @@ public partial class Games : NadekoModule<GamesService>
                 .AddField("Hot", gr.Hot.ToString("F2"), true)
                 .AddField("Crazy", gr.Crazy.ToString("F2"), true)
                 .AddField("Advice", gr.Advice, false)
-                .Build()).ConfigureAwait(false);
+                .Build());
     }
 
     private double NextDouble(double x, double y)
@@ -144,5 +144,5 @@ public partial class Games : NadekoModule<GamesService>
 Many computer users run a modified version of the {guhnoo} system every day, without realizing it. Through a peculiar turn of events, the version of {guhnoo} which is widely used today is often called {loonix}, and many of its users are not aware that it is basically the {guhnoo} system, developed by the {guhnoo} Project.
 
 There really is a {loonix}, and these people are using it, but it is just a part of the system they use. {loonix} is the kernel: the program in the system that allocates the machine's resources to the other programs that you run. The kernel is an essential part of an operating system, but useless by itself; it can only function in the context of a complete operating system. {loonix} is normally used in combination with the {guhnoo} operating system: the whole system is basically {guhnoo} with {loonix} added, or {guhnoo}/{loonix}. All the so-called {loonix} distributions are really distributions of {guhnoo}/{loonix}."
-        ).ConfigureAwait(false);
+        );
 }

@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
 using NadekoBot.Modules.Music.Services;
@@ -55,7 +55,7 @@ public sealed partial class Music
                     GetText(strs.playlists(r.Id, r.Name, r.Author, r.Songs.Count)))))
                 .WithOkColor();
                 
-            await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+            await ctx.Channel.EmbedAsync(embed);
         }
 
         [NadekoCommand, Aliases]
@@ -84,9 +84,9 @@ public sealed partial class Music
             }
 
             if (!success)
-                await ReplyErrorLocalizedAsync(strs.playlist_delete_fail).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.playlist_delete_fail);
             else
-                await ReplyConfirmLocalizedAsync(strs.playlist_deleted).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.playlist_deleted);
         }
 
         [NadekoCommand, Aliases]
@@ -113,7 +113,7 @@ public sealed partial class Music
                     .WithTitle($"\"{mpl.Name}\" by {mpl.Author}")
                     .WithOkColor()
                     .WithDescription(str);
-            }, mpl.Songs.Count, 20).ConfigureAwait(false);
+            }, mpl.Songs.Count, 20);
         }
 
         [NadekoCommand, Aliases]
@@ -202,7 +202,7 @@ public sealed partial class Music
 
                 if (mpl is null)
                 {
-                    await ReplyErrorLocalizedAsync(strs.playlist_id_not_found).ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.playlist_id_not_found);
                     return;
                 }
 
@@ -210,8 +210,7 @@ public sealed partial class Music
                 try
                 {
                     msg = await ctx.Channel
-                        .SendMessageAsync(GetText(strs.attempting_to_queue(Format.Bold(mpl.Songs.Count.ToString()))))
-                        .ConfigureAwait(false);
+                        .SendMessageAsync(GetText(strs.attempting_to_queue(Format.Bold(mpl.Songs.Count.ToString()))));
                 }
                 catch (Exception)
                 {

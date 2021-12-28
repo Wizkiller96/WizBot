@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using CommandLine;
 using System.Collections.Immutable;
 
@@ -88,15 +88,15 @@ public sealed class Connect4Game : IDisposable
             return;
         var _ = Task.Run(async () =>
         {
-            await Task.Delay(15000).ConfigureAwait(false);
-            await _locker.WaitAsync().ConfigureAwait(false);
+            await Task.Delay(15000);
+            await _locker.WaitAsync();
             try
             {
                 if (_players[1] is null)
                 {
                     var __ = OnGameFailedToStart?.Invoke(this);
                     CurrentPhase = Phase.Ended;
-                    await _cs.AddAsync(_players[0].Value.UserId, "Connect4-refund", _options.Bet, true).ConfigureAwait(false);
+                    await _cs.AddAsync(_players[0].Value.UserId, "Connect4-refund", _options.Bet, true);
                     return;
                 }
             }
@@ -106,7 +106,7 @@ public sealed class Connect4Game : IDisposable
 
     public async Task<bool> Join(ulong userId, string userName, int bet)
     {
-        await _locker.WaitAsync().ConfigureAwait(false);
+        await _locker.WaitAsync();
         try
         {
             if (CurrentPhase != Phase.Joining) //can't join if its not a joining phase
@@ -118,7 +118,7 @@ public sealed class Connect4Game : IDisposable
             if (bet != _options.Bet) // can't join if bet amount is not the same
                 return false;
 
-            if (!await _cs.RemoveAsync(userId, "Connect4-bet", bet, true).ConfigureAwait(false)) // user doesn't have enough money to gamble
+            if (!await _cs.RemoveAsync(userId, "Connect4-bet", bet, true)) // user doesn't have enough money to gamble
                 return false;
 
             if (_rng.Next(0, 2) == 0) //rolling from 0-1, if number is 0, join as first player
@@ -132,7 +132,7 @@ public sealed class Connect4Game : IDisposable
             CurrentPhase = Phase.P1Move; //start the game
             _playerTimeoutTimer = new(async state =>
             {
-                await _locker.WaitAsync().ConfigureAwait(false);
+                await _locker.WaitAsync();
                 try
                 {
                     EndGame(Result.OtherPlayerWon, OtherPlayer.UserId);
@@ -148,7 +148,7 @@ public sealed class Connect4Game : IDisposable
 
     public async Task<bool> Input(ulong userId, int inputCol)
     {
-        await _locker.WaitAsync().ConfigureAwait(false);
+        await _locker.WaitAsync();
         try
         {
             inputCol -= 1;

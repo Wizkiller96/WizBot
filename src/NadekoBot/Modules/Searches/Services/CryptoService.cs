@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Searches.Common;
 using Newtonsoft.Json;
 
@@ -25,7 +25,7 @@ public class CryptoService : INService
         }
 
         name = name.ToUpperInvariant();
-        var cryptos = await CryptoData().ConfigureAwait(false);
+        var cryptos = await CryptoData();
 
         if (cryptos is null)
             return (null, null);

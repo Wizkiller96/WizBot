@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Modules.CustomReactions.Extensions;
@@ -407,7 +407,7 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
                             
                         try
                         {
-                            await msg.Channel.SendErrorAsync(_eb, returnMsg).ConfigureAwait(false);
+                            await msg.Channel.SendErrorAsync(_eb, returnMsg);
                         }
                         catch
                         {
@@ -420,7 +420,7 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
                 }
             }
 
-            var sentMsg = await cr.Send(msg, _client, false).ConfigureAwait(false);
+            var sentMsg = await cr.Send(msg, _client, false);
 
             var reactions = cr.GetReactions();
             foreach (var reaction in reactions)
@@ -443,7 +443,7 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
             {
                 try
                 {
-                    await msg.DeleteAsync().ConfigureAwait(false);
+                    await msg.DeleteAsync();
                 }
                 catch
                 {

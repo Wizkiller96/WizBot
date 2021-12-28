@@ -227,15 +227,14 @@ public sealed class StreamNotificationService : INService
             var key = stream.CreateKey();
             if (_shardTrackedStreams.TryGetValue(key, out var fss))
             {
-                var sendTasks = fss
+                await fss
                     // send offline stream notifications only to guilds which enable it with .stoff
                     .SelectMany(x => x.Value)
                     .Where(x => _offlineNotificationServers.Contains(x.GuildId))
                     .Select(fs => _client.GetGuild(fs.GuildId)
                         ?.GetTextChannel(fs.ChannelId)
-                        ?.EmbedAsync(GetEmbed(fs.GuildId, stream)));
-
-                await Task.WhenAll(sendTasks);
+                        ?.EmbedAsync(GetEmbed(fs.GuildId, stream)))
+                    .WhenAll();
             }
         }
     }
@@ -247,7 +246,7 @@ public sealed class StreamNotificationService : INService
             var key = stream.CreateKey();
             if (_shardTrackedStreams.TryGetValue(key, out var fss))
             {
-                var sendTasks = fss
+                await fss
                     .SelectMany(x => x.Value)
                     .Select(fs =>
                     {
@@ -266,9 +265,8 @@ public sealed class StreamNotificationService : INService
                             : rep.Replace(fs.Message);
 
                         return textChannel.EmbedAsync(GetEmbed(fs.GuildId, stream), message);
-                    });
-
-                await Task.WhenAll(sendTasks);
+                    })
+                    .WhenAll();
             }
         }
     }

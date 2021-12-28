@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Common.Configs;
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -31,7 +31,7 @@ public sealed class BotConfigService : ConfigServiceBase<BotConfig>
 
     private void Migrate()
     {
-        if (_data.Version < 2)
+        if (data.Version < 2)
         {
             ModifyConfig(c => c.Version = 2);
         }

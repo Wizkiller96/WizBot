@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Modules.Gambling.Common;
 
@@ -25,15 +25,14 @@ public partial class Gambling
         [Priority(1)]
         public async Task RaffleCur(ShmartNumber amount, bool mixed = false)
         {
-            if (!await CheckBetMandatory(amount).ConfigureAwait(false))
+            if (!await CheckBetMandatory(amount))
                 return;
             async Task OnEnded(IUser arg, long won)
             {
                 await SendConfirmAsync(GetText(strs.rafflecur_ended(CurrencyName, Format.Bold(arg.ToString()), won + CurrencySign)));
             }
             var res = await _service.JoinOrCreateGame(ctx.Channel.Id,
-                    ctx.User, amount, mixed, OnEnded)
-                .ConfigureAwait(false);
+                    ctx.User, amount, mixed, OnEnded);
 
             if (res.Item1 != null)
             {
@@ -44,7 +43,7 @@ public partial class Gambling
             else
             {
                 if (res.Item2 == CurrencyRaffleService.JoinErrorType.AlreadyJoinedOrInvalidAmount)
-                    await ReplyErrorLocalizedAsync(strs.rafflecur_already_joined).ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.rafflecur_already_joined);
                 else if (res.Item2 == CurrencyRaffleService.JoinErrorType.NotEnoughCurrency)
                     await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
             }

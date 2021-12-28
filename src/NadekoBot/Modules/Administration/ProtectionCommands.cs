@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Modules.Administration.Common;
 using NadekoBot.Modules.Administration.Services;
@@ -120,7 +120,7 @@ public partial class Administration
                 return;
 
             var stats = await _service.StartAntiRaidAsync(ctx.Guild.Id, userThreshold, seconds,
-                action, time).ConfigureAwait(false);
+                action, time);
 
             if (stats is null)
             {
@@ -128,8 +128,7 @@ public partial class Administration
             }
 
             await SendConfirmAsync(GetText(strs.prot_enable("Anti-Raid")),
-                    $"{ctx.User.Mention} {GetAntiRaidString(stats)}")
-                .ConfigureAwait(false);
+                    $"{ctx.User.Mention} {GetAntiRaidString(stats)}");
         }
 
         [NadekoCommand, Aliases]
@@ -191,10 +190,10 @@ public partial class Administration
             if (time is < 0 or > 60 * 24)
                 return;
 
-            var stats = await _service.StartAntiSpamAsync(ctx.Guild.Id, messageCount, action, time, role?.Id).ConfigureAwait(false);
+            var stats = await _service.StartAntiSpamAsync(ctx.Guild.Id, messageCount, action, time, role?.Id);
 
             await SendConfirmAsync(GetText(strs.prot_enable("Anti-Spam")),
-                $"{ctx.User.Mention} {GetAntiSpamString(stats)}").ConfigureAwait(false);
+                $"{ctx.User.Mention} {GetAntiSpamString(stats)}");
         }
 
         [NadekoCommand, Aliases]
@@ -202,7 +201,7 @@ public partial class Administration
         [UserPerm(GuildPerm.Administrator)]
         public async Task AntispamIgnore()
         {
-            var added = await _service.AntiSpamIgnoreAsync(ctx.Guild.Id, ctx.Channel.Id).ConfigureAwait(false);
+            var added = await _service.AntiSpamIgnoreAsync(ctx.Guild.Id, ctx.Channel.Id);
 
             if(added is null)
             {
@@ -224,7 +223,7 @@ public partial class Administration
 
             if (spam is null && raid is null && alt is null)
             {
-                await ReplyConfirmLocalizedAsync(strs.prot_none).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.prot_none);
                 return;
             }
 
@@ -240,7 +239,7 @@ public partial class Administration
             if (alt is not null)
                 embed.AddField("Anti-Alt", GetAntiAltString(alt), true);
 
-            await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+            await ctx.Channel.EmbedAsync(embed);
         }
 
         private string GetAntiAltString(AntiAltStats alt) 

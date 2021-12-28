@@ -37,7 +37,7 @@ public sealed class SoundcloudResolver : ISoundcloudResolver
                 .Select(VideoModelToCachedData)
                 .ToList();
 
-            await Task.WhenAll(cachableTracks.Select(_trackCacher.CacheTrackDataAsync));
+            await cachableTracks.Select(_trackCacher.CacheTrackDataAsync).WhenAll();
             foreach(var info in cachableTracks.Select(CachableDataToTrackInfo))
             {
                 yield return info;
@@ -77,8 +77,8 @@ public sealed class SoundcloudResolver : ISoundcloudResolver
             return CachableDataToTrackInfo(cached);
             
         var svideo = !IsSoundCloudLink(query)
-            ? await _sc.GetVideoByQueryAsync(query).ConfigureAwait(false)
-            : await _sc.ResolveVideoAsync(query).ConfigureAwait(false);
+            ? await _sc.GetVideoByQueryAsync(query)
+            : await _sc.ResolveVideoAsync(query);
 
         if (svideo is null)
             return null;

@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Games.Common;
@@ -21,7 +21,7 @@ public class PollRunner
     public async Task<bool> TryVote(IUserMessage msg)
     {
         PollVote voteObj;
-        await _locker.WaitAsync().ConfigureAwait(false);
+        await _locker.WaitAsync();
         try
         {
             // has to be a user message

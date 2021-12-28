@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.Collections;
 using NadekoBot.Modules.Gambling.Common;
@@ -95,7 +95,7 @@ public partial class Gambling
 
             if (entry is null)
             {
-                await ReplyErrorLocalizedAsync(strs.shop_item_not_found).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.shop_item_not_found);
                 return;
             }
 
@@ -106,33 +106,33 @@ public partial class Gambling
 
                 if (role is null)
                 {
-                    await ReplyErrorLocalizedAsync(strs.shop_role_not_found).ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.shop_role_not_found);
                     return;
                 }
                     
                 if (guser.RoleIds.Any(id => id == role.Id))
                 {
-                    await ReplyErrorLocalizedAsync(strs.shop_role_already_bought).ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.shop_role_already_bought);
                     return;
                 }
 
-                if (await _cs.RemoveAsync(ctx.User.Id, $"Shop purchase - {entry.Type}", entry.Price).ConfigureAwait(false))
+                if (await _cs.RemoveAsync(ctx.User.Id, $"Shop purchase - {entry.Type}", entry.Price))
                 {
                     try
                     {
-                        await guser.AddRoleAsync(role).ConfigureAwait(false);
+                        await guser.AddRoleAsync(role);
                     }
                     catch (Exception ex)
                     {
                         Log.Warning(ex, "Error adding shop role");
-                        await _cs.AddAsync(ctx.User.Id, $"Shop error refund", entry.Price).ConfigureAwait(false);
-                        await ReplyErrorLocalizedAsync(strs.shop_role_purchase_error).ConfigureAwait(false);
+                        await _cs.AddAsync(ctx.User.Id, $"Shop error refund", entry.Price);
+                        await ReplyErrorLocalizedAsync(strs.shop_role_purchase_error);
                         return;
                     }
                     var profit = GetProfitAmount(entry.Price);
-                    await _cs.AddAsync(entry.AuthorId, $"Shop sell item - {entry.Type}", profit).ConfigureAwait(false);
-                    await _cs.AddAsync(ctx.Client.CurrentUser.Id, $"Shop sell item - cut", entry.Price - profit).ConfigureAwait(false);
-                    await ReplyConfirmLocalizedAsync(strs.shop_role_purchase(Format.Bold(role.Name))).ConfigureAwait(false);
+                    await _cs.AddAsync(entry.AuthorId, $"Shop sell item - {entry.Type}", profit);
+                    await _cs.AddAsync(ctx.Client.CurrentUser.Id, $"Shop sell item - cut", entry.Price - profit);
+                    await ReplyConfirmLocalizedAsync(strs.shop_role_purchase(Format.Bold(role.Name)));
                     return;
                 }
                 else
@@ -145,13 +145,13 @@ public partial class Gambling
             {
                 if (entry.Items.Count == 0)
                 {
-                    await ReplyErrorLocalizedAsync(strs.out_of_stock).ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.out_of_stock);
                     return;
                 }
 
                 var item = entry.Items.ToArray()[new NadekoRandom().Next(0, entry.Items.Count)];
 
-                if (await _cs.RemoveAsync(ctx.User.Id, $"Shop purchase - {entry.Type}", entry.Price).ConfigureAwait(false))
+                if (await _cs.RemoveAsync(ctx.User.Id, $"Shop purchase - {entry.Type}", entry.Price))
                 {
                     await using (var uow = _db.GetDbContext())
                     {
@@ -165,18 +165,17 @@ public partial class Gambling
                                 .WithTitle(GetText(strs.shop_purchase(ctx.Guild.Name)))
                                 .AddField(GetText(strs.item), item.Text, false)
                                 .AddField(GetText(strs.price), entry.Price.ToString(), true)
-                                .AddField(GetText(strs.name), entry.Name, true))
-                            .ConfigureAwait(false);
+                                .AddField(GetText(strs.name), entry.Name, true));
 
                         await _cs.AddAsync(entry.AuthorId,
                             $"Shop sell item - {entry.Name}",
-                            GetProfitAmount(entry.Price)).ConfigureAwait(false);
+                            GetProfitAmount(entry.Price));
                     }
                     catch
                     {
                         await _cs.AddAsync(ctx.User.Id,
                             $"Shop error refund - {entry.Name}",
-                            entry.Price).ConfigureAwait(false);
+                            entry.Price);
                         await using (var uow = _db.GetDbContext())
                         {
                             var entries = new IndexedCollection<ShopEntry>(uow.GuildConfigsForId(ctx.Guild.Id,
@@ -191,10 +190,10 @@ public partial class Gambling
                                 }
                             }
                         }
-                        await ReplyErrorLocalizedAsync(strs.shop_buy_error).ConfigureAwait(false);
+                        await ReplyErrorLocalizedAsync(strs.shop_buy_error);
                         return;
                     }
-                    await ReplyConfirmLocalizedAsync(strs.shop_item_purchase).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.shop_item_purchase);
                 }
                 else
                 {
@@ -238,7 +237,7 @@ public partial class Gambling
                 uow.SaveChanges();
             }
             await ctx.Channel.EmbedAsync(EntryToEmbed(entry)
-                .WithTitle(GetText(strs.shop_item_add))).ConfigureAwait(false);
+                .WithTitle(GetText(strs.shop_item_add)));
         }
 
         [NadekoCommand, Aliases]
@@ -270,7 +269,7 @@ public partial class Gambling
             }
 
             await ctx.Channel.EmbedAsync(EntryToEmbed(entry)
-                .WithTitle(GetText(strs.shop_item_add))).ConfigureAwait(false);
+                .WithTitle(GetText(strs.shop_item_add)));
         }
 
         [NadekoCommand, Aliases]
@@ -303,13 +302,13 @@ public partial class Gambling
                 }
             }
             if (entry is null)
-                await ReplyErrorLocalizedAsync(strs.shop_item_not_found).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.shop_item_not_found);
             else if (!rightType)
-                await ReplyErrorLocalizedAsync(strs.shop_item_wrong_type).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.shop_item_wrong_type);
             else if (added == false)
-                await ReplyErrorLocalizedAsync(strs.shop_list_item_not_unique).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.shop_list_item_not_unique);
             else
-                await ReplyConfirmLocalizedAsync(strs.shop_list_item_added).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.shop_list_item_added);
         }
 
         [NadekoCommand, Aliases]
@@ -338,10 +337,10 @@ public partial class Gambling
             }
 
             if (removed is null)
-                await ReplyErrorLocalizedAsync(strs.shop_item_not_found).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.shop_item_not_found);
             else
                 await ctx.Channel.EmbedAsync(EntryToEmbed(removed)
-                    .WithTitle(GetText(strs.shop_item_rm))).ConfigureAwait(false);
+                    .WithTitle(GetText(strs.shop_item_rm)));
         }
 
         [NadekoCommand, Aliases]

@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Games.Common;
 using NadekoBot.Modules.Games.Services;
 
@@ -23,20 +23,20 @@ public partial class Games
             var (options, _) = OptionsParser.ParseFrom(new TicTacToe.Options(), args);
             var channel = (ITextChannel)ctx.Channel;
 
-            await _sem.WaitAsync(1000).ConfigureAwait(false);
+            await _sem.WaitAsync(1000);
             try
             {
                 if (_service.TicTacToeGames.TryGetValue(channel.Id, out var game))
                 {
                     var _ = Task.Run(async () =>
                     {
-                        await game.Start((IGuildUser)ctx.User).ConfigureAwait(false);
+                        await game.Start((IGuildUser)ctx.User);
                     });
                     return;
                 }
                 game = new(base.Strings, this._client, channel, (IGuildUser)ctx.User, options, _eb);
                 _service.TicTacToeGames.Add(channel.Id, game);
-                await ReplyConfirmLocalizedAsync(strs.ttt_created).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.ttt_created);
 
                 game.OnEnded += g =>
                 {

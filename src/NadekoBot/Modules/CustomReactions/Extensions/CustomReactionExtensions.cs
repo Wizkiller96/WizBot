@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Services.Database.Models;
 using System.Runtime.CompilerServices;
 
@@ -13,7 +13,7 @@ public static class CustomReactionExtensions
         DiscordSocketClient client, bool sanitize)
     {
         var channel = cr.DmResponse
-            ? await ctx.Author.CreateDMChannelAsync().ConfigureAwait(false)
+            ? await ctx.Author.CreateDMChannelAsync()
             : ctx.Channel;
 
         var trigger = cr.Trigger.ResolveTriggerString(client);

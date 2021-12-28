@@ -328,15 +328,18 @@ resharper_wrap_after_invocation_lpar = false
 resharper_wrap_before_invocation_rpar = false
 
 # ReSharper properties
+resharper_align_multiline_calls_chain = true
 resharper_csharp_wrap_after_declaration_lpar = true
-resharper_csharp_wrap_before_invocation_rpar = true
+resharper_csharp_wrap_after_invocation_lpar = false
+resharper_csharp_wrap_before_binary_opsign = true
+resharper_csharp_wrap_before_invocation_rpar = false
 resharper_csharp_wrap_parameters_style = chop_if_long
 resharper_force_chop_compound_if_expression = false
 resharper_keep_existing_linebreaks = false
 resharper_max_formal_parameters_on_line = 3
 resharper_wrap_chained_binary_expressions = chop_if_long
 resharper_wrap_chained_binary_patterns = chop_if_long
-resharper_wrap_chained_method_calls = chop_always
+resharper_wrap_chained_method_calls = wrap_if_long
 
 resharper_csharp_wrap_before_first_type_parameter_constraint = true
 resharper_csharp_place_type_constraints_on_same_line = false

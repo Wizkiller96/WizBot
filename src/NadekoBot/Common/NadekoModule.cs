@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using System.Globalization;
 // ReSharper disable InconsistentNaming
 
@@ -84,12 +84,10 @@ public abstract class NadekoModule : ModuleBase
         embed.WithPendingColor()
             .WithFooter("yes/no");
 
-        var msg = await ctx.Channel.EmbedAsync(embed)
-            .ConfigureAwait(false);
+        var msg = await ctx.Channel.EmbedAsync(embed);
         try
         {
-            var input = await GetUserInputAsync(ctx.User.Id, ctx.Channel.Id)
-                .ConfigureAwait(false);
+            var input = await GetUserInputAsync(ctx.User.Id, ctx.Channel.Id);
             input = input?.ToUpperInvariant();
 
             if (input != "YES" &&
@@ -115,14 +113,13 @@ public abstract class NadekoModule : ModuleBase
         {
             dsc.MessageReceived += MessageReceived;
 
-            if (await Task.WhenAny(userInputTask.Task, Task.Delay(10000))
-                    .ConfigureAwait(false) !=
+            if (await Task.WhenAny(userInputTask.Task, Task.Delay(10000)) !=
                 userInputTask.Task)
             {
                 return null;
             }
 
-            return await userInputTask.Task.ConfigureAwait(false);
+            return await userInputTask.Task;
         }
         finally
         {

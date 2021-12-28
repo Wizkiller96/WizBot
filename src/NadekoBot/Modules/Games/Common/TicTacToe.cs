@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using System.Text;
 using CommandLine;
 
@@ -130,12 +130,12 @@ public class TicTacToe
     {
         if (_phase is Phase.Started or Phase.Ended)
         {
-            await _channel.SendErrorAsync(_eb, user.Mention + GetText(strs.ttt_already_running)).ConfigureAwait(false);
+            await _channel.SendErrorAsync(_eb, user.Mention + GetText(strs.ttt_already_running));
             return;
         }
         else if (_users[0] == user)
         {
-            await _channel.SendErrorAsync(_eb, user.Mention + GetText(strs.ttt_against_yourself)).ConfigureAwait(false);
+            await _channel.SendErrorAsync(_eb, user.Mention + GetText(strs.ttt_against_yourself));
             return;
         }
 
@@ -145,7 +145,7 @@ public class TicTacToe
 
         _timeoutTimer = new(async _ =>
         {
-            await _moveLock.WaitAsync().ConfigureAwait(false);
+            await _moveLock.WaitAsync();
             try
             {
                 if (_phase == Phase.Ended)
@@ -158,9 +158,9 @@ public class TicTacToe
                     var del = _previousMessage?.DeleteAsync();
                     try
                     {
-                        await _channel.EmbedAsync(GetEmbed(GetText(strs.ttt_time_expired))).ConfigureAwait(false);
+                        await _channel.EmbedAsync(GetEmbed(GetText(strs.ttt_time_expired)));
                         if (del != null)
-                            await del.ConfigureAwait(false);
+                            await del;
                     }
                     catch { }
                 }
@@ -177,7 +177,7 @@ public class TicTacToe
         _client.MessageReceived += Client_MessageReceived;
 
 
-        _previousMessage = await _channel.EmbedAsync(GetEmbed(GetText(strs.game_started))).ConfigureAwait(false);
+        _previousMessage = await _channel.EmbedAsync(GetEmbed(GetText(strs.game_started)));
     }
 
     private bool IsDraw()
@@ -197,7 +197,7 @@ public class TicTacToe
     {
         var _ = Task.Run(async () =>
         {
-            await _moveLock.WaitAsync().ConfigureAwait(false);
+            await _moveLock.WaitAsync();
             try
             {
                 var curUser = _users[_curUserIndex];
@@ -265,9 +265,9 @@ public class TicTacToe
                     {
                         var del1 = msg.DeleteAsync();
                         var del2 = _previousMessage?.DeleteAsync();
-                        try { _previousMessage = await _channel.EmbedAsync(GetEmbed(reason)).ConfigureAwait(false); } catch { }
-                        try { await del1.ConfigureAwait(false); } catch { }
-                        try { if (del2 != null) await del2.ConfigureAwait(false); } catch { }
+                        try { _previousMessage = await _channel.EmbedAsync(GetEmbed(reason)); } catch { }
+                        try { await del1; } catch { }
+                        try { if (del2 != null) await del2; } catch { }
                     });
                     _curUserIndex ^= 1;
 

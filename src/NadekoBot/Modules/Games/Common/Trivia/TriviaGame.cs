@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using System.Text;
 
 namespace NadekoBot.Modules.Games.Common.Trivia;
@@ -65,7 +65,7 @@ public class TriviaGame
             CurrentQuestion = _questionPool.GetRandomQuestion(OldQuestions, _options.IsPokemon);
             if (string.IsNullOrWhiteSpace(CurrentQuestion?.Answer) || string.IsNullOrWhiteSpace(CurrentQuestion.Question))
             {
-                await Channel.SendErrorAsync(_eb, GetText(strs.trivia_game), GetText(strs.failed_loading_question)).ConfigureAwait(false);
+                await Channel.SendErrorAsync(_eb, GetText(strs.trivia_game), GetText(strs.failed_loading_question));
                 return;
             }
             OldQuestions.Add(CurrentQuestion); //add it to exclusion list so it doesn't show up again
@@ -85,7 +85,7 @@ public class TriviaGame
                 if (Uri.IsWellFormedUriString(CurrentQuestion.ImageUrl, UriKind.Absolute))
                     questionEmbed.WithImageUrl(CurrentQuestion.ImageUrl);
 
-                questionMessage = await Channel.EmbedAsync(questionEmbed).ConfigureAwait(false);
+                questionMessage = await Channel.EmbedAsync(questionEmbed);
             }
             catch (HttpException ex) when (ex.HttpCode is System.Net.HttpStatusCode.NotFound or System.Net.HttpStatusCode.Forbidden or System.Net.HttpStatusCode.BadRequest)
             {
@@ -94,7 +94,7 @@ public class TriviaGame
             catch (Exception ex)
             {
                 Log.Warning(ex, "Error sending trivia embed");
-                await Task.Delay(2000).ConfigureAwait(false);
+                await Task.Delay(2000);
                 continue;
             }
 
@@ -108,12 +108,11 @@ public class TriviaGame
                 try
                 {
                     //hint
-                    await Task.Delay(_options.QuestionTimer * 1000 / 2, _triviaCancelSource.Token).ConfigureAwait(false);
+                    await Task.Delay(_options.QuestionTimer * 1000 / 2, _triviaCancelSource.Token);
                     if (!_options.NoHint)
                         try
                         {
-                            await questionMessage.ModifyAsync(m => m.Embed = questionEmbed.WithFooter(CurrentQuestion.GetHint()).Build())
-                                .ConfigureAwait(false);
+                            await questionMessage.ModifyAsync(m => m.Embed = questionEmbed.WithFooter(CurrentQuestion.GetHint()).Build());
                         }
                         catch (HttpException ex) when (ex.HttpCode is System.Net.HttpStatusCode.NotFound or System.Net.HttpStatusCode.Forbidden)
                         {
@@ -122,7 +121,7 @@ public class TriviaGame
                         catch (Exception ex) { Log.Warning(ex, "Error editing triva message"); }
 
                     //timeout
-                    await Task.Delay(_options.QuestionTimer * 1000 / 2, _triviaCancelSource.Token).ConfigureAwait(false);
+                    await Task.Delay(_options.QuestionTimer * 1000 / 2, _triviaCancelSource.Token);
 
                 }
                 catch (TaskCanceledException) { _timeoutCount = 0; } //means someone guessed the answer
@@ -142,17 +141,17 @@ public class TriviaGame
                     if (Uri.IsWellFormedUriString(CurrentQuestion.AnswerImageUrl, UriKind.Absolute))
                         embed.WithImageUrl(CurrentQuestion.AnswerImageUrl);
 
-                    await Channel.EmbedAsync(embed).ConfigureAwait(false);
+                    await Channel.EmbedAsync(embed);
 
                     if (_options.Timeout != 0 && ++_timeoutCount >= _options.Timeout)
-                        await StopGame().ConfigureAwait(false);
+                        await StopGame();
                 }
                 catch (Exception ex)
                 {
                     Log.Warning(ex, "Error sending trivia time's up message");
                 }
             }
-            await Task.Delay(5000).ConfigureAwait(false);
+            await Task.Delay(5000);
         }
     }
 
@@ -163,7 +162,7 @@ public class TriviaGame
         await Channel.EmbedAsync(_eb.Create().WithOkColor()
             .WithAuthor("Trivia Game Ended")
             .WithTitle("Final Results")
-            .WithDescription(GetLeaderboard())).ConfigureAwait(false);
+            .WithDescription(GetLeaderboard()));
     }
 
     public async Task StopGame()
@@ -203,7 +202,7 @@ public class TriviaGame
                 var guildUser = (IGuildUser)umsg.Author;
 
                 var guess = false;
-                await _guessLock.WaitAsync().ConfigureAwait(false);
+                await _guessLock.WaitAsync();
                 try
                 {
                     if (GameActive && CurrentQuestion.IsAnswerCorrect(umsg.Content) && !_triviaCancelSource.IsCancellationRequested)
@@ -229,7 +228,7 @@ public class TriviaGame
                                 Format.Bold(CurrentQuestion.Answer))));
                         if (Uri.IsWellFormedUriString(CurrentQuestion.AnswerImageUrl, UriKind.Absolute))
                             embedS.WithImageUrl(CurrentQuestion.AnswerImageUrl);
-                        await Channel.EmbedAsync(embedS).ConfigureAwait(false);
+                        await Channel.EmbedAsync(embedS);
                     }
                     catch
                     {
@@ -237,7 +236,7 @@ public class TriviaGame
                     }
                     var reward = _config.Trivia.CurrencyReward;
                     if (reward > 0)
-                        await _cs.AddAsync(guildUser, "Won trivia", reward, true).ConfigureAwait(false);
+                        await _cs.AddAsync(guildUser, "Won trivia", reward, true);
                     return;
                 }
                 var embed = _eb.Create().WithOkColor()
@@ -245,7 +244,7 @@ public class TriviaGame
                     .WithDescription(GetText(strs.trivia_guess(guildUser.Mention, Format.Bold(CurrentQuestion.Answer))));
                 if (Uri.IsWellFormedUriString(CurrentQuestion.AnswerImageUrl, UriKind.Absolute))
                     embed.WithImageUrl(CurrentQuestion.AnswerImageUrl);
-                await Channel.EmbedAsync(embed).ConfigureAwait(false);
+                await Channel.EmbedAsync(embed);
             }
             catch (Exception ex) { Log.Warning(ex.ToString()); }
         });

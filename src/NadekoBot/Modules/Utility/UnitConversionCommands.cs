@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Utility.Services;
 
 namespace NadekoBot.Modules.Utility;
@@ -24,7 +24,7 @@ public partial class Utility
                     String.Join(", ", g.Select(x => x.Triggers.FirstOrDefault()).OrderBy(x => x)));
             }
                 
-            await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+            await ctx.Channel.EmbedAsync(embed);
         }
 
         [NadekoCommand, Aliases]
@@ -35,12 +35,12 @@ public partial class Utility
             var targetUnit = _service.Units.FirstOrDefault(x => x.Triggers.Select(y => y.ToUpperInvariant()).Contains(target.ToUpperInvariant()));
             if (originUnit is null || targetUnit is null)
             {
-                await ReplyErrorLocalizedAsync(strs.convert_not_found(Format.Bold(origin), Format.Bold(target))).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.convert_not_found(Format.Bold(origin), Format.Bold(target)));
                 return;
             }
             if (originUnit.UnitType != targetUnit.UnitType)
             {
-                await ReplyErrorLocalizedAsync(strs.convert_type_error(Format.Bold(originUnit.Triggers.First()), Format.Bold(targetUnit.Triggers.First()))).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.convert_type_error(Format.Bold(originUnit.Triggers.First()), Format.Bold(targetUnit.Triggers.First())));
                 return;
             }
             decimal res;

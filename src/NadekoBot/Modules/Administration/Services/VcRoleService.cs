@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
@@ -21,49 +21,60 @@ public class VcRoleService : INService
         _client.UserVoiceStateUpdated += ClientOnUserVoiceStateUpdated;
         VcRoles = new();
         ToAssign = new();
-        var missingRoles = new ConcurrentBag<VcRoleInfo>();
 
         using (var uow = db.GetDbContext())
         {
             var guildIds = client.Guilds.Select(x => x.Id).ToList();
-            var configs = uow.Set<GuildConfig>()
+            uow.Set<GuildConfig>()
                 .AsQueryable()
                 .Include(x => x.VcRoleInfos)
                 .Where(x => guildIds.Contains(x.GuildId))
-                .ToList();
-                
-            Task.WhenAll(configs.Select(InitializeVcRole));
+                .AsEnumerable()
+                .Select(InitializeVcRole)
+                .WhenAll();
         }
 
         Task.Run(async () =>
         {
             while (true)
             {
-                var tasks = ToAssign.Values.Select(queue => Task.Run(async () =>
-                {
-                    while (queue.TryDequeue(out var item))
-                    {
-                        var (add, user, role) = item;
-                        if (add)
+                Task Selector(ConcurrentQueue<(bool, IGuildUser, IRole)> queue)
+                    => Task.Run(async () =>
                         {
-                            if (!user.RoleIds.Contains(role.Id))
+                            while (queue.TryDequeue(out var item))
                             {
-                                try { await user.AddRoleAsync(role).ConfigureAwait(false); } catch { }
+                                var (add, user, role) = item;
+
+                                try
+                                {
+                                    if (add)
+                                    {
+                                        if (!user.RoleIds.Contains(role.Id))
+                                        {
+                                            await user.AddRoleAsync(role);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (user.RoleIds.Contains(role.Id))
+                                        {
+                                            await user.RemoveRoleAsync(role);
+
+                                        }
+                                    }
+                                }
+                                catch
+                                {
+                                }
+
+                                await Task.Delay(250);
                             }
                         }
-                        else
-                        {
-                            if (user.RoleIds.Contains(role.Id))
-                            {
-                                try { await user.RemoveRoleAsync(role).ConfigureAwait(false); } catch { }
-                            }
-                        }
+                    );
 
-                        await Task.Delay(250).ConfigureAwait(false);
-                    }
-                }));
-
-                await Task.WhenAll(tasks.Append(Task.Delay(1000))).ConfigureAwait(false);
+                await ToAssign.Values.Select(Selector)
+                              .Append(Task.Delay(1000))
+                              .WhenAll();
             }
         });
 
@@ -119,7 +130,10 @@ public class VcRoleService : INService
         if (missingRoles.Any())
         {
             await using var uow = _db.GetDbContext();
-            Log.Warning($"Removing {missingRoles.Count} missing roles from {nameof(VcRoleService)}");
+            Log.Warning("Removing {MissingRoleCount} missing roles from {ServiceName}",
+                missingRoles.Count,
+                nameof(VcRoleService)
+            );
             uow.RemoveRange(missingRoles);
             await uow.SaveChangesAsync();
         }
@@ -132,7 +146,7 @@ public class VcRoleService : INService
 
         var guildVcRoles = VcRoles.GetOrAdd(guildId, new ConcurrentDictionary<ulong, IRole>());
 
-        guildVcRoles.AddOrUpdate(vcId, role, (key, old) => role);
+        guildVcRoles.AddOrUpdate(vcId, role, (_, _) => role);
         using var uow = _db.GetDbContext();
         var conf = uow.GuildConfigsForId(guildId, set => set.Include(x => x.VcRoleInfos));
         var toDelete = conf.VcRoleInfos.FirstOrDefault(x => x.VoiceChannelId == vcId); // remove old one

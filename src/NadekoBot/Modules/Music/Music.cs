@@ -110,7 +110,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
             if (!string.IsNullOrWhiteSpace(trackInfo.Thumbnail))
                 embed.WithThumbnailUrl(trackInfo.Thumbnail);
 
-            var queuedMessage = await _service.SendToOutputAsync(ctx.Guild.Id, embed).ConfigureAwait(false);
+            var queuedMessage = await _service.SendToOutputAsync(ctx.Guild.Id, embed);
             queuedMessage?.DeleteAfter(10, _logService);
             if (mp.IsStopped)
             {
@@ -346,7 +346,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
 
         if (videos is null || videos.Count == 0)
         {
-            await ReplyErrorLocalizedAsync(strs.song_not_found).ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.song_not_found);
             return;
         }
 
@@ -358,7 +358,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
 
         try
         {
-            var input = await GetUserInputAsync(ctx.User.Id, ctx.Channel.Id).ConfigureAwait(false);
+            var input = await GetUserInputAsync(ctx.User.Id, ctx.Channel.Id);
             if (input is null
                 || !int.TryParse(input, out var index)
                 || (index -= 1) < 0
@@ -367,7 +367,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
                 _logService.AddDeleteIgnore(msg.Id);
                 try
                 {
-                    await msg.DeleteAsync().ConfigureAwait(false);
+                    await msg.DeleteAsync();
                 }
                 catch
                 {
@@ -384,7 +384,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
             _logService.AddDeleteIgnore(msg.Id);
             try
             {
-                await msg.DeleteAsync().ConfigureAwait(false);
+                await msg.DeleteAsync();
             }
             catch
             {
@@ -399,7 +399,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
     {
         if (index < 1)
         {
-            await ReplyErrorLocalizedAsync(strs.removed_song_error).ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.removed_song_error);
             return;
         }
             
@@ -415,7 +415,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
             
         if (!mp.TryRemoveTrackAt(index - 1, out var song))
         {
-            await ReplyErrorLocalizedAsync(strs.removed_song_error).ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.removed_song_error);
             return;
         }
             
@@ -445,7 +445,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
         }
              
         mp.Clear();
-        await ReplyConfirmLocalizedAsync(strs.queue_cleared).ConfigureAwait(false);
+        await ReplyConfirmLocalizedAsync(strs.queue_cleared);
     }
          
     [NadekoCommand, Aliases]
@@ -563,7 +563,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
              
         await _service.EnqueueDirectoryAsync(mp, dirPath, ctx.User.ToString());
              
-        await ReplyConfirmLocalizedAsync(strs.dir_queue_complete).ConfigureAwait(false);
+        await ReplyConfirmLocalizedAsync(strs.dir_queue_complete);
     }
          
     [NadekoCommand, Aliases]
@@ -572,7 +572,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
     {
         if (--from < 0 || --to < 0 || from == to)
         {
-            await ReplyErrorLocalizedAsync(strs.invalid_input).ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.invalid_input);
             return;
         }
 
@@ -590,7 +590,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
         var track = mp.MoveTrack(from, to);
         if (track is null)
         {
-            await ReplyErrorLocalizedAsync(strs.invalid_input).ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.invalid_input);
             return;
         }
              
@@ -604,7 +604,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
         if (Uri.IsWellFormedUriString(track.Url, UriKind.Absolute))
             embed.WithUrl(track.Url);
 
-        await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+        await ctx.Channel.EmbedAsync(embed);
     }
 
     [NadekoCommand, Aliases]
@@ -661,7 +661,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
         var queuedCount = await _service.EnqueueYoutubePlaylistAsync(mp, playlistQuery, ctx.User.ToString());
         if (queuedCount == 0)
         {
-            await ReplyErrorLocalizedAsync(strs.no_search_results).ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.no_search_results);
             return;
         }
         await ctx.OkAsync();
@@ -688,7 +688,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
             .WithThumbnailUrl(currentTrack.Thumbnail)
             .WithFooter($"{mp.PrettyVolume()} | {mp.PrettyTotalTime()} | {currentTrack.Platform} | {currentTrack.Queuer}");
 
-        await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
+        await ctx.Channel.EmbedAsync(embed);
     }
 
     [NadekoCommand, Aliases]

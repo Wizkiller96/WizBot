@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Administration.Services;
 
 namespace NadekoBot.Modules.Administration;
@@ -51,13 +51,13 @@ public partial class Administration
                     .WithDescription(string.Join("\n", timezoneStrings
                         .Skip(curPage * timezonesPerPage)
                         .Take(timezonesPerPage))),
-                timezones.Length, timezonesPerPage).ConfigureAwait(false);
+                timezones.Length, timezonesPerPage);
         }
 
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task Timezone()
-            => await ReplyConfirmLocalizedAsync(strs.timezone_guild(_service.GetTimeZoneOrUtc(ctx.Guild.Id))).ConfigureAwait(false);
+            => await ReplyConfirmLocalizedAsync(strs.timezone_guild(_service.GetTimeZoneOrUtc(ctx.Guild.Id)));
 
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
@@ -70,12 +70,12 @@ public partial class Administration
 
             if (tz is null)
             {
-                await ReplyErrorLocalizedAsync(strs.timezone_not_found).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.timezone_not_found);
                 return;
             }
             _service.SetTimeZone(ctx.Guild.Id, tz);
 
-            await SendConfirmAsync(tz.ToString()).ConfigureAwait(false);
+            await SendConfirmAsync(tz.ToString());
         }
     }
 }

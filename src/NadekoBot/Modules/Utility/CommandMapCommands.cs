@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
@@ -46,7 +46,7 @@ public partial class Utility
                 if (!_service.AliasMaps.TryGetValue(ctx.Guild.Id, out var maps) ||
                     !maps.TryRemove(trigger, out _))
                 {
-                    await ReplyErrorLocalizedAsync(strs.alias_remove_fail(Format.Code(trigger))).ConfigureAwait(false);
+                    await ReplyErrorLocalizedAsync(strs.alias_remove_fail(Format.Code(trigger)));
                     return;
                 }
 
@@ -64,7 +64,7 @@ public partial class Utility
                     uow.SaveChanges();
                 }
 
-                await ReplyConfirmLocalizedAsync(strs.alias_removed(Format.Code(trigger))).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.alias_removed(Format.Code(trigger)));
                 return;
             }
             _service.AliasMaps.AddOrUpdate(ctx.Guild.Id, _ =>
@@ -102,7 +102,7 @@ public partial class Utility
                 return map;
             });
 
-            await ReplyConfirmLocalizedAsync(strs.alias_added(Format.Code(trigger), Format.Code(mapping))).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.alias_added(Format.Code(trigger), Format.Code(mapping)));
         }
 
 
@@ -118,7 +118,7 @@ public partial class Utility
 
             if (!_service.AliasMaps.TryGetValue(ctx.Guild.Id, out var maps) || !maps.Any())
             {
-                await ReplyErrorLocalizedAsync(strs.aliases_none).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.aliases_none);
                 return;
             }
 
@@ -131,7 +131,7 @@ public partial class Utility
                     .WithDescription(string.Join("\n",
                         arr.Skip(curPage * 10).Take(10).Select(x => $"`{x.Key}` => `{x.Value}`")));
 
-            }, arr.Length, 10).ConfigureAwait(false);
+            }, arr.Length, 10);
         }
     }
 }

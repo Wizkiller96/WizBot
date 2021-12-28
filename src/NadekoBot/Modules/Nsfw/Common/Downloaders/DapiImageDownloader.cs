@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using System.Net.Http.Json;
 
 namespace NadekoBot.Modules.Nsfw.Common;
@@ -13,7 +13,7 @@ public abstract class DapiImageDownloader : ImageDownloader<DapiImageObject>
     public abstract Task<bool> IsTagValid(string tag, CancellationToken cancel = default);
     protected async Task<bool> AllTagsValid(string[] tags, CancellationToken cancel = default)
     {
-        var results = await Task.WhenAll(tags.Select(tag => IsTagValid(tag, cancel)));
+        var results = await tags.Select(tag => IsTagValid(tag, cancel)).WhenAll();
 
         // if any of the tags is not valid, the query is not valid
         foreach (var result in results)
@@ -32,14 +32,13 @@ public abstract class DapiImageDownloader : ImageDownloader<DapiImageObject>
         if (tags.Length > 2)
             return new();
 
-        if (!await AllTagsValid(tags, cancel).ConfigureAwait(false))
+        if (!await AllTagsValid(tags, cancel))
             return new();
 
         var tagString = ImageDownloaderHelper.GetTagString(tags, isExplicit);
 
         var uri = $"{_baseUrl}/posts.json?limit=200&tags={tagString}&page={page}";
-        var imageObjects = await _http.GetFromJsonAsync<DapiImageObject[]>(uri, _serializerOptions, cancel)
-            .ConfigureAwait(false);
+        var imageObjects = await _http.GetFromJsonAsync<DapiImageObject[]>(uri, _serializerOptions, cancel);
         if (imageObjects is null)
             return new();
         return imageObjects

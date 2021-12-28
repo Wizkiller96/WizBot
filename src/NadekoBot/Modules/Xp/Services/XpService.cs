@@ -242,7 +242,7 @@ public class XpService : INService
                     uow.SaveChanges();
                 }
 
-                await Task.WhenAll(toNotify.Select(async x =>
+                await toNotify.Select(async x =>
                 {
                     if (x.NotifOf == NotifOf.Server)
                     {
@@ -281,7 +281,7 @@ public class XpService : INService
                                     Format.Bold(x.Level.ToString())),
                                 x.Guild.Id));
                     }
-                }));
+                }).WhenAll();
             }
             catch (Exception ex)
             {

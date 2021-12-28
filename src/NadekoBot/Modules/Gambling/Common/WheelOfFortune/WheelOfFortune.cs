@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 namespace NadekoBot.Modules.Gambling.Common.WheelOfFortune;
 
 public class WheelOfFortuneGame
@@ -31,7 +31,7 @@ public class WheelOfFortuneGame
         var amount = (long)(_bet * _config.WheelOfFortune.Multipliers[result]);
 
         if (amount > 0)
-            await _cs.AddAsync(_userId, "Wheel Of Fortune - won", amount, gamble: true).ConfigureAwait(false);
+            await _cs.AddAsync(_userId, "Wheel Of Fortune - won", amount, gamble: true);
 
         return new()
         {

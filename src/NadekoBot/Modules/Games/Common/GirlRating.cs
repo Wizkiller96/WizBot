@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using Image = SixLabors.ImageSharp.Image;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
@@ -51,9 +51,9 @@ public class GirlRating
                 //{
                 //    http.AddFakeHeaders();
 
-                //    using (var reponse = await http.PutAsync("https://transfer.sh/img.png", byteContent).ConfigureAwait(false))
+                //    using (var reponse = await http.PutAsync("https://transfer.sh/img.png", byteContent))
                 //    {
-                //        url = await reponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                //        url = await reponse.Content.ReadAsStringAsync();
                 //    }
                 //}
             }

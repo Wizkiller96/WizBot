@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using System.Collections.Immutable;
 using NadekoBot.Common.ModuleBehaviors;
 using Microsoft.EntityFrameworkCore;
@@ -79,12 +79,12 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
 
             if (server.OwnerId != _client.CurrentUser.Id)
             {
-                await server.LeaveAsync().ConfigureAwait(false);
+                await server.LeaveAsync();
                 Log.Information($"Left server {server.Name} [{server.Id}]");
             }
             else
             {
-                await server.DeleteAsync().ConfigureAwait(false);
+                await server.DeleteAsync();
                 Log.Information($"Deleted server {server.Name} [{server.Id}]");
             }
         });
@@ -110,7 +110,7 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
         {
             try
             {
-                await ExecuteCommand(cmd).ConfigureAwait(false);
+                await ExecuteCommand(cmd);
             }
             catch
             {
@@ -119,12 +119,12 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
 
         if (_client.ShardId == 0)
         {
-            await LoadOwnerChannels().ConfigureAwait(false);
+            await LoadOwnerChannels();
         }
     }
 
     private Timer TimerFromAutoCommand(AutoCommand x)
-        => new(async obj => await ExecuteCommand((AutoCommand) obj).ConfigureAwait(false),
+        => new(async obj => await ExecuteCommand((AutoCommand) obj),
             x,
             x.Interval * 1000,
             x.Interval * 1000);
@@ -143,7 +143,7 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
             //if someone already has .die as their startup command, ignore it
             if (cmd.CommandText.StartsWith(prefix + "die", StringComparison.InvariantCulture))
                 return;
-            await _cmdHandler.ExecuteExternal(cmd.GuildId, cmd.ChannelId, cmd.CommandText).ConfigureAwait(false);
+            await _cmdHandler.ExecuteExternal(cmd.GuildId, cmd.ChannelId, cmd.CommandText);
         }
         catch (Exception ex)
         {
@@ -201,7 +201,7 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
                 return Task.FromResult<IDMChannel>(null);
 
             return user.CreateDMChannelAsync();
-        })).ConfigureAwait(false);
+        }));
 
         ownerChannels = channels.Where(x => x != null)
             .ToDictionary(x => x.Recipient.Id, x => x)
@@ -244,7 +244,7 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
                 {
                     try
                     {
-                        await ownerCh.SendConfirmAsync(_eb, title, toSend).ConfigureAwait(false);
+                        await ownerCh.SendConfirmAsync(_eb, title, toSend);
                     }
                     catch
                     {
@@ -259,7 +259,7 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
                 {
                     try
                     {
-                        await firstOwnerChannel.SendConfirmAsync(_eb, title, toSend).ConfigureAwait(false);
+                        await firstOwnerChannel.SendConfirmAsync(_eb, title, toSend);
                     }
                     catch
                     {
@@ -322,14 +322,14 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
         var uri = new Uri(img);
 
         using var http = _httpFactory.CreateClient();
-        using var sr = await http.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+        using var sr = await http.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
         if (!sr.IsImage())
             return false;
 
         // i can't just do ReadAsStreamAsync because dicord.net's image poops itself
-        var imgData = await sr.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+        var imgData = await sr.Content.ReadAsByteArrayAsync();
         await using var imgStream = imgData.ToStream();
-        await _client.CurrentUser.ModifyAsync(u => u.Avatar = new Image(imgStream)).ConfigureAwait(false);
+        await _client.CurrentUser.ModifyAsync(u => u.Avatar = new Image(imgStream));
 
         return true;
     }

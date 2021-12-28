@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Searches.Services;
 using NadekoBot.Common.Pokemon;
 
@@ -35,11 +35,11 @@ public partial class Searches
                         .WithThumbnailUrl($"https://assets.pokemon.com/assets/cms2/img/pokedex/detail/{p.Id.ToString("000")}.png")
                         .AddField(GetText(strs.types), string.Join("\n", p.Types), true)
                         .AddField(GetText(strs.height_weight), GetText(strs.height_weight_val(p.HeightM, p.WeightKg)), true)
-                        .AddField(GetText(strs.abilities), string.Join("\n", p.Abilities.Select(a => a.Value)), true)).ConfigureAwait(false);
+                        .AddField(GetText(strs.abilities), string.Join("\n", p.Abilities.Select(a => a.Value)), true));
                     return;
                 }
             }
-            await ReplyErrorLocalizedAsync(strs.pokemon_none).ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.pokemon_none);
         }
 
         [NadekoCommand, Aliases]
@@ -61,7 +61,7 @@ public partial class Searches
                     return;
                 }
             }
-            await ReplyErrorLocalizedAsync(strs.pokemon_ability_none).ConfigureAwait(false);
+            await ReplyErrorLocalizedAsync(strs.pokemon_ability_none);
         }
     }
 }

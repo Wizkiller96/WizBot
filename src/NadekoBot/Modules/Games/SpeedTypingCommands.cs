@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Games.Common;
 using NadekoBot.Modules.Games.Services;
 
@@ -34,7 +34,7 @@ public partial class Games
             }
             else
             {
-                await game.Start().ConfigureAwait(false);
+                await game.Start();
             }
         }
 
@@ -44,11 +44,11 @@ public partial class Games
         {
             if (_service.RunningContests.TryRemove(ctx.Guild.Id, out var game))
             {
-                await game.Stop().ConfigureAwait(false);
+                await game.Stop();
                 return;
             }
                 
-            await SendErrorAsync("No contest to stop on this channel.").ConfigureAwait(false);
+            await SendErrorAsync("No contest to stop on this channel.");
         }
 
 
@@ -62,7 +62,7 @@ public partial class Games
 
             _games.AddTypingArticle(ctx.User, text);                
 
-            await SendConfirmAsync("Added new article for typing game.").ConfigureAwait(false);
+            await SendConfirmAsync("Added new article for typing game.");
         }
 
         [NadekoCommand, Aliases]
@@ -76,12 +76,11 @@ public partial class Games
 
             if (!articles.Any())
             {
-                await SendErrorAsync($"{ctx.User.Mention} `No articles found on that page.`").ConfigureAwait(false);
+                await SendErrorAsync($"{ctx.User.Mention} `No articles found on that page.`");
                 return;
             }
             var i = (page - 1) * 15;
-            await SendConfirmAsync("List of articles for Type Race", string.Join("\n", articles.Select(a => $"`#{++i}` - {a.Text.TrimTo(50)}")))
-                .ConfigureAwait(false);
+            await SendConfirmAsync("List of articles for Type Race", string.Join("\n", articles.Select(a => $"`#{++i}` - {a.Text.TrimTo(50)}")));
         }
 
         [NadekoCommand, Aliases]

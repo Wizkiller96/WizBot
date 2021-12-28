@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Gambling.Common.AnimalRacing.Exceptions;
 using NadekoBot.Modules.Games.Common;
 
@@ -45,15 +45,15 @@ public sealed class AnimalRace : IDisposable
     {
         var _t = Task.Run(async () =>
         {
-            await Task.Delay(_options.StartTime * 1000).ConfigureAwait(false);
+            await Task.Delay(_options.StartTime * 1000);
 
-            await _locker.WaitAsync().ConfigureAwait(false);
+            await _locker.WaitAsync();
             try
             {
                 if (CurrentPhase != Phase.WaitingForPlayers)
                     return;
 
-                await Start().ConfigureAwait(false);
+                await Start();
             }
             finally { _locker.Release(); }
         });
@@ -66,7 +66,7 @@ public sealed class AnimalRace : IDisposable
 
         var user = new AnimalRacingUser(userName, userId, bet);
 
-        await _locker.WaitAsync().ConfigureAwait(false);
+        await _locker.WaitAsync();
         try
         {
             if (_users.Count == MaxUsers)
@@ -75,7 +75,7 @@ public sealed class AnimalRace : IDisposable
             if (CurrentPhase != Phase.WaitingForPlayers)
                 throw new AlreadyStartedException();
 
-            if (!await _currency.RemoveAsync(userId, "BetRace", bet).ConfigureAwait(false))
+            if (!await _currency.RemoveAsync(userId, "BetRace", bet))
                 throw new NotEnoughFundsException();
 
             if (_users.Contains(user))
@@ -86,7 +86,7 @@ public sealed class AnimalRace : IDisposable
             _users.Add(user);
 
             if (_animalsQueue.Count == 0) //start if no more spots left
-                await Start().ConfigureAwait(false);
+                await Start();
 
             return user;
         }
@@ -101,7 +101,7 @@ public sealed class AnimalRace : IDisposable
             foreach (var user in _users)
             {
                 if (user.Bet > 0)
-                    await _currency.AddAsync(user.UserId, "Race refund", user.Bet).ConfigureAwait(false);
+                    await _currency.AddAsync(user.UserId, "Race refund", user.Bet);
             }
 
             var _sf = OnStartingFailed?.Invoke(this);
@@ -128,12 +128,11 @@ public sealed class AnimalRace : IDisposable
                 FinishedUsers.AddRange(finished);
 
                 var _ignore = OnStateUpdate?.Invoke(this);
-                await Task.Delay(2500).ConfigureAwait(false);
+                await Task.Delay(2500);
             }
 
             if (FinishedUsers[0].Bet > 0)
-                await _currency.AddAsync(FinishedUsers[0].UserId, "Won a Race", FinishedUsers[0].Bet * (_users.Count - 1))
-                    .ConfigureAwait(false);
+                await _currency.AddAsync(FinishedUsers[0].UserId, "Won a Race", FinishedUsers[0].Bet * (_users.Count - 1));
 
             var _ended = OnEnded?.Invoke(this);
         });

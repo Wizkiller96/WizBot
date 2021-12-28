@@ -69,7 +69,7 @@ public class NotifChecker
                         entry => entry.AsEnumerable().ToDictionary(x => x.Key.Name, x => x.Value)
                     );
 
-                var newStreamData = await Task.WhenAll(oldStreamDataDict
+                var newStreamData = await oldStreamDataDict
                     .Select(x =>
                     {
                         // get all stream data for the streams of this type
@@ -80,7 +80,7 @@ public class NotifChecker
 
                         // this means there's no provider for this stream data, (and there was before?)
                         return Task.FromResult(new List<StreamData>());
-                    }));
+                    }).WhenAll();
 
                 var newlyOnline = new List<StreamData>();
                 var newlyOffline = new List<StreamData>();

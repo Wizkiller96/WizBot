@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Services.Database.Models;
 using SixLabors.Fonts;
@@ -203,7 +203,7 @@ public class PlantPickService : INService
                         IUserMessage sent;
                         await using (var stream = GetRandomCurrencyImage(pw, out var ext))
                         {
-                            sent = await channel.SendFileAsync(stream, $"currency_image.{ext}", toSend).ConfigureAwait(false);
+                            sent = await channel.SendFileAsync(stream, $"currency_image.{ext}", toSend);
                         }
 
                         await AddPlantToDatabase(channel.GuildId,
@@ -211,7 +211,7 @@ public class PlantPickService : INService
                             _client.CurrentUser.Id,
                             sent.Id,
                             dropAmount,
-                            pw).ConfigureAwait(false);
+                            pw);
                     }
                 }
             }
@@ -302,7 +302,7 @@ public class PlantPickService : INService
             //get the image
             await using var stream = GetRandomCurrencyImage(pass, out var ext);
             // send it
-            var msg = await ch.SendFileAsync(stream, $"img.{ext}", msgToSend).ConfigureAwait(false);
+            var msg = await ch.SendFileAsync(stream, $"img.{ext}", msgToSend);
             // return sent message's id (in order to be able to delete it when it's picked)
             return msg.Id;
         }
@@ -325,7 +325,7 @@ public class PlantPickService : INService
         if (await _cs.RemoveAsync(uid, "Planted currency", amount, gamble: false))
         {
             // try to send the message with the currency image
-            var msgId = await SendPlantMessageAsync(gid, ch, user, amount, pass).ConfigureAwait(false);
+            var msgId = await SendPlantMessageAsync(gid, ch, user, amount, pass);
             if (msgId is null)
             {
                 // if it fails it will return null, if it returns null, refund
@@ -333,7 +333,7 @@ public class PlantPickService : INService
                 return false;
             }
             // if it doesn't fail, put the plant in the database for other people to pick
-            await AddPlantToDatabase(gid, ch.Id, uid, msgId.Value, amount, pass).ConfigureAwait(false);
+            await AddPlantToDatabase(gid, ch.Id, uid, msgId.Value, amount, pass);
             return true;
         }
         // if user doesn't have enough currency, fail

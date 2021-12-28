@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Searches.Services;
 using System.Text.RegularExpressions;
 
@@ -40,7 +40,7 @@ public partial class Searches
                 channel ??= (ITextChannel)ctx.Channel;
                 try
                 {
-                    var feeds = await CodeHollow.FeedReader.FeedReader.ReadAsync(url).ConfigureAwait(false);
+                    var feeds = await CodeHollow.FeedReader.FeedReader.ReadAsync(url);
                 }
                 catch (Exception ex)
                 {
@@ -54,12 +54,12 @@ public partial class Searches
                 success = _service.AddFeed(ctx.Guild.Id, channel.Id, url);
                 if (success)
                 {
-                    await ReplyConfirmLocalizedAsync(strs.feed_added).ConfigureAwait(false);
+                    await ReplyConfirmLocalizedAsync(strs.feed_added);
                     return;
                 }
             }
 
-            await ReplyConfirmLocalizedAsync(strs.feed_not_valid).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.feed_not_valid);
         }
 
         [NadekoCommand, Aliases]
@@ -69,10 +69,10 @@ public partial class Searches
         {
             if (_service.RemoveFeed(ctx.Guild.Id, --index))
             {
-                await ReplyConfirmLocalizedAsync(strs.feed_removed).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.feed_removed);
             }
             else
-                await ReplyErrorLocalizedAsync(strs.feed_out_of_range).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.feed_out_of_range);
         }
 
         [NadekoCommand, Aliases]
@@ -86,8 +86,7 @@ public partial class Searches
             {
                 await ctx.Channel.EmbedAsync(_eb.Create()
                         .WithOkColor()
-                        .WithDescription(GetText(strs.feed_no_feed)))
-                    .ConfigureAwait(false);
+                        .WithDescription(GetText(strs.feed_no_feed)));
                 return;
             }
 
@@ -102,7 +101,7 @@ public partial class Searches
 
                 return embed.WithDescription(fs);
 
-            }, feeds.Count, 10).ConfigureAwait(false);
+            }, feeds.Count, 10);
         }
     }
 }

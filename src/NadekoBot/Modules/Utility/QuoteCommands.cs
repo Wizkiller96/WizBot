@@ -43,10 +43,9 @@ public partial class Utility
 
             if (quotes.Any())
                 await SendConfirmAsync(GetText(strs.quotes_page(page + 1)),
-                        string.Join("\n", quotes.Select(q => $"`#{q.Id}` {Format.Bold(q.Keyword.SanitizeAllMentions()),-20} by {q.AuthorName.SanitizeAllMentions()}")))
-                    .ConfigureAwait(false);
+                        string.Join("\n", quotes.Select(q => $"`#{q.Id}` {Format.Bold(q.Keyword.SanitizeAllMentions()),-20} by {q.AuthorName.SanitizeAllMentions()}")));
             else
-                await ReplyErrorLocalizedAsync(strs.quotes_page_none).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.quotes_page_none);
         }
 
         [NadekoCommand, Aliases]
@@ -110,7 +109,7 @@ public partial class Utility
                 .AddField(GetText(strs.trigger), data.Keyword)
                 .AddField(GetText(strs.response), Format.Sanitize(data.Text).Replace("](", "]\\("))
                 .WithFooter(GetText(strs.created_by($"{data.AuthorName} ({data.AuthorId})")))
-            ).ConfigureAwait(false);
+            );
 
         [NadekoCommand, Aliases]
         [RequireContext(ContextType.Guild)]
@@ -131,7 +130,7 @@ public partial class Utility
                 return;
 
             await ctx.Channel.SendMessageAsync($"`#{keywordquote.Id}` 💬 " + keyword.ToLowerInvariant() + ":  " +
-                                               keywordquote.Text.SanitizeAllMentions()).ConfigureAwait(false);
+                                               keywordquote.Text.SanitizeAllMentions());
         }
 
         [NadekoCommand, Aliases]
@@ -154,7 +153,7 @@ public partial class Utility
 
             if (quote is null || quote.GuildId != ctx.Guild.Id)
             {
-                await SendErrorAsync(GetText(strs.quotes_notfound)).ConfigureAwait(false);
+                await SendErrorAsync(GetText(strs.quotes_notfound));
                 return;
             }
 
@@ -188,7 +187,7 @@ public partial class Utility
                 });
                 await uow.SaveChangesAsync();
             }
-            await ReplyConfirmLocalizedAsync(strs.quote_added_new(Format.Code(q.Id.ToString()))).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.quote_added_new(Format.Code(q.Id.ToString())));
         }
 
         [NadekoCommand, Aliases]
@@ -216,9 +215,9 @@ public partial class Utility
                 }
             }
             if (success)
-                await SendConfirmAsync(response).ConfigureAwait(false);
+                await SendConfirmAsync(response);
             else
-                await SendErrorAsync(response).ConfigureAwait(false);
+                await SendErrorAsync(response);
         }
 
         [NadekoCommand, Aliases]
@@ -238,7 +237,7 @@ public partial class Utility
                 await uow.SaveChangesAsync();
             }
 
-            await ReplyConfirmLocalizedAsync(strs.quotes_deleted(Format.Bold(keyword.SanitizeAllMentions()))).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.quotes_deleted(Format.Bold(keyword.SanitizeAllMentions())));
         }
 
         public class ExportedQuote

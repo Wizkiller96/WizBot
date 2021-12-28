@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using System.Text;
 using NadekoBot.Modules.Administration.Services;
 
@@ -50,11 +50,11 @@ public partial class Administration
 
             if (succ)
             {
-                await ReplyConfirmLocalizedAsync(strs.role_added(Format.Bold(role.Name), Format.Bold(group.ToString()))).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.role_added(Format.Bold(role.Name), Format.Bold(group.ToString())));
             }
             else
             {
-                await ReplyErrorLocalizedAsync(strs.role_in_list(Format.Bold(role.Name))).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.role_in_list(Format.Bold(role.Name)));
             }
         }
 
@@ -67,15 +67,15 @@ public partial class Administration
         {
             var guser = (IGuildUser)ctx.User;
 
-            var set = await _service.SetNameAsync(ctx.Guild.Id, group, name).ConfigureAwait(false);
+            var set = await _service.SetNameAsync(ctx.Guild.Id, group, name);
 
             if (set)
             {
-                await ReplyConfirmLocalizedAsync(strs.group_name_added(Format.Bold(group.ToString()), Format.Bold(name.ToString()))).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.group_name_added(Format.Bold(group.ToString()), Format.Bold(name.ToString())));
             }
             else
             {
-                await ReplyConfirmLocalizedAsync(strs.group_name_removed(Format.Bold(group.ToString()))).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.group_name_removed(Format.Bold(group.ToString())));
             }
         }
 
@@ -91,11 +91,11 @@ public partial class Administration
             var success = _service.RemoveSar(role.Guild.Id, role.Id);
             if (!success)
             {
-                await ReplyErrorLocalizedAsync(strs.self_assign_not).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.self_assign_not);
             }
             else
             {
-                await ReplyConfirmLocalizedAsync(strs.self_assign_rem(Format.Bold(role.Name))).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.self_assign_rem(Format.Bold(role.Name)));
             }
         }
 
@@ -155,7 +155,7 @@ public partial class Administration
                     .WithFooter(exclusive
                         ? GetText(strs.self_assign_are_exclusive)
                         : GetText(strs.self_assign_are_not_exclusive));
-            }, roles.Count(), 20).ConfigureAwait(false);
+            }, roles.Count(), 20);
         }
 
         [NadekoCommand, Aliases]
@@ -166,9 +166,9 @@ public partial class Administration
         {
             var areExclusive = _service.ToggleEsar(ctx.Guild.Id);
             if (areExclusive)
-                await ReplyConfirmLocalizedAsync(strs.self_assign_excl).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.self_assign_excl);
             else
-                await ReplyConfirmLocalizedAsync(strs.self_assign_no_excl).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.self_assign_no_excl);
         }
 
         [NadekoCommand, Aliases]
@@ -184,7 +184,7 @@ public partial class Administration
 
             if (!succ)
             {
-                await ReplyErrorLocalizedAsync(strs.self_assign_not).ConfigureAwait(false);
+                await ReplyErrorLocalizedAsync(strs.self_assign_not);
                 return;
             }
 
@@ -199,28 +199,28 @@ public partial class Administration
         {
             var guildUser = (IGuildUser)ctx.User;
 
-            var (result, autoDelete, extra) = await _service.Assign(guildUser, role).ConfigureAwait(false);
+            var (result, autoDelete, extra) = await _service.Assign(guildUser, role);
 
             IUserMessage msg;
             if (result == SelfAssignedRolesService.AssignResult.Err_Not_Assignable)
             {
-                msg = await ReplyErrorLocalizedAsync(strs.self_assign_not).ConfigureAwait(false);
+                msg = await ReplyErrorLocalizedAsync(strs.self_assign_not);
             }
             else if (result == SelfAssignedRolesService.AssignResult.Err_Lvl_Req)
             {
-                msg = await ReplyErrorLocalizedAsync(strs.self_assign_not_level(Format.Bold(extra.ToString()))).ConfigureAwait(false);
+                msg = await ReplyErrorLocalizedAsync(strs.self_assign_not_level(Format.Bold(extra.ToString())));
             }
             else if (result == SelfAssignedRolesService.AssignResult.Err_Already_Have)
             {
-                msg = await ReplyErrorLocalizedAsync(strs.self_assign_already(Format.Bold(role.Name))).ConfigureAwait(false);
+                msg = await ReplyErrorLocalizedAsync(strs.self_assign_already(Format.Bold(role.Name)));
             }
             else if (result == SelfAssignedRolesService.AssignResult.Err_Not_Perms)
             {
-                msg = await ReplyErrorLocalizedAsync(strs.self_assign_perms).ConfigureAwait(false);
+                msg = await ReplyErrorLocalizedAsync(strs.self_assign_perms);
             }
             else
             {
-                msg = await ReplyConfirmLocalizedAsync(strs.self_assign_success(Format.Bold(role.Name))).ConfigureAwait(false);
+                msg = await ReplyConfirmLocalizedAsync(strs.self_assign_success(Format.Bold(role.Name)));
             }
 
             if (autoDelete)
@@ -236,24 +236,24 @@ public partial class Administration
         {
             var guildUser = (IGuildUser)ctx.User;
 
-            var (result, autoDelete) = await _service.Remove(guildUser, role).ConfigureAwait(false);
+            var (result, autoDelete) = await _service.Remove(guildUser, role);
 
             IUserMessage msg;
             if (result == SelfAssignedRolesService.RemoveResult.Err_Not_Assignable)
             {
-                msg = await ReplyErrorLocalizedAsync(strs.self_assign_not).ConfigureAwait(false);
+                msg = await ReplyErrorLocalizedAsync(strs.self_assign_not);
             }
             else if (result == SelfAssignedRolesService.RemoveResult.Err_Not_Have)
             {
-                msg = await ReplyErrorLocalizedAsync(strs.self_assign_not_have(Format.Bold(role.Name))).ConfigureAwait(false);
+                msg = await ReplyErrorLocalizedAsync(strs.self_assign_not_have(Format.Bold(role.Name)));
             }
             else if (result == SelfAssignedRolesService.RemoveResult.Err_Not_Perms)
             {
-                msg = await ReplyErrorLocalizedAsync(strs.self_assign_perms).ConfigureAwait(false);
+                msg = await ReplyErrorLocalizedAsync(strs.self_assign_perms);
             }
             else
             {
-                msg = await ReplyConfirmLocalizedAsync(strs.self_assign_remove(Format.Bold(role.Name))).ConfigureAwait(false);
+                msg = await ReplyConfirmLocalizedAsync(strs.self_assign_remove(Format.Bold(role.Name)));
             }
 
             if (autoDelete)

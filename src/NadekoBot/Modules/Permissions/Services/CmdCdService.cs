@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Services.Database.Models;
 
@@ -41,7 +41,7 @@ public class CmdCdService : ILateBlocker, INService
             {
                 try
                 {
-                    await Task.Delay(cdRule.Seconds * 1000).ConfigureAwait(false);
+                    await Task.Delay(cdRule.Seconds * 1000);
                     activeCdsForGuild.RemoveWhere(ac => ac.Command == commandName && ac.UserId == user.Id);
                 }
                 catch

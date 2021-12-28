@@ -90,7 +90,7 @@ public sealed class LogCommandService : ILogCommandService
         {
             var keys = PresenceUpdates.Keys.ToList();
 
-            await Task.WhenAll(keys.Select(key =>
+            await keys.Select(key =>
             {
                 if (!((SocketGuild) key.Guild).CurrentUser.GetPermissions(key).SendMessages)
                     return Task.CompletedTask;
@@ -102,7 +102,7 @@ public sealed class LogCommandService : ILogCommandService
                 }
 
                 return Task.CompletedTask;
-            })).ConfigureAwait(false);
+            }).WhenAll();
         }, null, TimeSpan.FromSeconds(15), TimeSpan.FromSeconds(15));
 
         //_client.MessageReceived += _client_MessageReceived;
@@ -229,7 +229,7 @@ public sealed class LogCommandService : ILogCommandService
 
                 ITextChannel logChannel;
                 if ((logChannel =
-                        await TryGetLogChannel(g, logSetting, LogType.UserUpdated).ConfigureAwait(false)) is null)
+                        await TryGetLogChannel(g, logSetting, LogType.UserUpdated)) is null)
                     return;
 
                 var embed = _eb.Create();
@@ -263,7 +263,7 @@ public sealed class LogCommandService : ILogCommandService
                     return;
                 }
 
-                await logChannel.EmbedAsync(embed).ConfigureAwait(false);
+                await logChannel.EmbedAsync(embed);
             }
             catch
             {
@@ -360,8 +360,7 @@ public sealed class LogCommandService : ILogCommandService
                     return;
 
                 ITextChannel logChannel;
-                if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.VoicePresenceTTS)
-                        .ConfigureAwait(false)) is null)
+                if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.VoicePresenceTTS)) is null)
                     return;
 
                 var str = string.Empty;
@@ -378,7 +377,7 @@ public sealed class LogCommandService : ILogCommandService
                     str = GetText(logChannel.Guild, strs.log_vc_left(usr.Username, beforeVch.Name));
                 }
 
-                var toDelete = await logChannel.SendMessageAsync(str, true).ConfigureAwait(false);
+                var toDelete = await logChannel.SendMessageAsync(str, true);
                 toDelete.DeleteAfter(5);
             }
             catch
@@ -400,8 +399,7 @@ public sealed class LogCommandService : ILogCommandService
                     return;
 
                 ITextChannel logChannel;
-                if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.UserMuted)
-                        .ConfigureAwait(false)) is null)
+                if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.UserMuted)) is null)
                     return;
                 var mutes = string.Empty;
                 var mutedLocalized = GetText(logChannel.Guild, strs.muted_sn);
@@ -424,7 +422,7 @@ public sealed class LogCommandService : ILogCommandService
                     .WithFooter(CurrentTime(usr.Guild))
                     .WithOkColor();
 
-                await logChannel.EmbedAsync(embed).ConfigureAwait(false);
+                await logChannel.EmbedAsync(embed);
             }
             catch
             {
@@ -444,8 +442,7 @@ public sealed class LogCommandService : ILogCommandService
                     return;
 
                 ITextChannel logChannel;
-                if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.UserMuted)
-                        .ConfigureAwait(false)) is null)
+                if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.UserMuted)) is null)
                     return;
 
                 var mutes = string.Empty;
@@ -472,7 +469,7 @@ public sealed class LogCommandService : ILogCommandService
                 if (!string.IsNullOrWhiteSpace(reason))
                     embed.WithDescription(reason);
 
-                await logChannel.EmbedAsync(embed).ConfigureAwait(false);
+                await logChannel.EmbedAsync(embed);
             }
             catch
             {
@@ -495,8 +492,7 @@ public sealed class LogCommandService : ILogCommandService
                     || logSetting.LogOtherId is null)
                     return;
                 ITextChannel logChannel;
-                if ((logChannel = await TryGetLogChannel(users.First().Guild, logSetting, LogType.Other)
-                        .ConfigureAwait(false)) is null)
+                if ((logChannel = await TryGetLogChannel(users.First().Guild, logSetting, LogType.Other)) is null)
                     return;
 
                 var punishment = string.Empty;
@@ -525,7 +521,7 @@ public sealed class LogCommandService : ILogCommandService
                     .WithFooter(CurrentTime(logChannel.Guild))
                     .WithOkColor();
 
-                await logChannel.EmbedAsync(embed).ConfigureAwait(false);
+                await logChannel.EmbedAsync(embed);
             }
             catch
             {
@@ -570,8 +566,7 @@ public sealed class LogCommandService : ILogCommandService
 
                 ITextChannel logChannel;
                 if (logSetting.UserUpdatedId != null &&
-                    (logChannel = await TryGetLogChannel(before.Guild, logSetting, LogType.UserUpdated)
-                        .ConfigureAwait(false)) != null)
+                    (logChannel = await TryGetLogChannel(before.Guild, logSetting, LogType.UserUpdated)) != null)
                 {
                     var embed = _eb.Create().WithOkColor()
                         .WithFooter(CurrentTime(before.Guild))
@@ -584,7 +579,7 @@ public sealed class LogCommandService : ILogCommandService
                             .AddField(GetText(logChannel.Guild, strs.new_nick)
                                 , $"{after.Nickname}#{after.Discriminator}");
 
-                        await logChannel.EmbedAsync(embed).ConfigureAwait(false);
+                        await logChannel.EmbedAsync(embed);
                     }
                     else if (!before.Roles.SequenceEqual(after.Roles))
                     {
@@ -594,7 +589,7 @@ public sealed class LogCommandService : ILogCommandService
                             embed.WithAuthor("⚔ " + GetText(logChannel.Guild, strs.user_role_add))
                                 .WithDescription(string.Join(", ", diffRoles).SanitizeMentions());
 
-                            await logChannel.EmbedAsync(embed).ConfigureAwait(false);
+                            await logChannel.EmbedAsync(embed);
                         }
                         else if (before.Roles.Count > after.Roles.Count)
                         {
@@ -609,7 +604,7 @@ public sealed class LogCommandService : ILogCommandService
                                 embed.WithAuthor("⚔ " + GetText(logChannel.Guild, strs.user_role_rem))
                                     .WithDescription(string.Join(", ", diffRoles).SanitizeMentions());
 
-                                await logChannel.EmbedAsync(embed).ConfigureAwait(false);
+                                await logChannel.EmbedAsync(embed);
                             }
                         }
                     }
@@ -617,8 +612,7 @@ public sealed class LogCommandService : ILogCommandService
 
                 logChannel = null;
                 if (!before.IsBot && logSetting.LogUserPresenceId != null && (logChannel =
-                        await TryGetLogChannel(before.Guild, logSetting, LogType.UserPresence)
-                            .ConfigureAwait(false)) != null)
+                        await TryGetLogChannel(before.Guild, logSetting, LogType.UserPresence)) != null)
                 {
                     if (before.Status != after.Status)
                     {
@@ -671,8 +665,7 @@ public sealed class LogCommandService : ILogCommandService
                     return;
 
                 ITextChannel logChannel;
-                if ((logChannel = await TryGetLogChannel(before.Guild, logSetting, LogType.ChannelUpdated)
-                        .ConfigureAwait(false)) is null)
+                if ((logChannel = await TryGetLogChannel(before.Guild, logSetting, LogType.ChannelUpdated)) is null)
                     return;
 
                 var embed = _eb.Create().WithOkColor()
@@ -697,7 +690,7 @@ public sealed class LogCommandService : ILogCommandService
                 else
                     return;
 
-                await logChannel.EmbedAsync(embed).ConfigureAwait(false);
+                await logChannel.EmbedAsync(embed);
             }
             catch
             {
@@ -722,8 +715,7 @@ public sealed class LogCommandService : ILogCommandService
                     return;
 
                 ITextChannel logChannel;
-                if ((logChannel = await TryGetLogChannel(ch.Guild, logSetting, LogType.ChannelDestroyed)
-                        .ConfigureAwait(false)) is null)
+                if ((logChannel = await TryGetLogChannel(ch.Guild, logSetting, LogType.ChannelDestroyed)) is null)
                     return;
                 string title;
                 if (ch is IVoiceChannel)
@@ -737,7 +729,7 @@ public sealed class LogCommandService : ILogCommandService
                     .WithOkColor()
                     .WithTitle("🆕 " + title)
                     .WithDescription($"{ch.Name} | {ch.Id}")
-                    .WithFooter(CurrentTime(ch.Guild))).ConfigureAwait(false);
+                    .WithFooter(CurrentTime(ch.Guild)));
             }
             catch
             {
@@ -761,8 +753,7 @@ public sealed class LogCommandService : ILogCommandService
                     return;
 
                 ITextChannel logChannel;
-                if ((logChannel = await TryGetLogChannel(ch.Guild, logSetting, LogType.ChannelCreated)
-                        .ConfigureAwait(false)) is null)
+                if ((logChannel = await TryGetLogChannel(ch.Guild, logSetting, LogType.ChannelCreated)) is null)
                     return;
                 string title;
                 if (ch is IVoiceChannel)
@@ -776,7 +767,7 @@ public sealed class LogCommandService : ILogCommandService
                     .WithOkColor()
                     .WithTitle("🆕 " + title)
                     .WithDescription($"{ch.Name} | {ch.Id}")
-                    .WithFooter(CurrentTime(ch.Guild))).ConfigureAwait(false);
+                    .WithFooter(CurrentTime(ch.Guild)));
             }
             catch (Exception)
             {
@@ -807,8 +798,7 @@ public sealed class LogCommandService : ILogCommandService
                     return;
 
                 ITextChannel logChannel;
-                if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.VoicePresence)
-                        .ConfigureAwait(false)) is null)
+                if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.VoicePresence)) is null)
                     return;
 
                 string str = null;
@@ -860,8 +850,7 @@ public sealed class LogCommandService : ILogCommandService
                     return;
 
                 ITextChannel logChannel;
-                if ((logChannel = await TryGetLogChannel(guild, logSetting, LogType.UserLeft)
-                        .ConfigureAwait(false)) is null)
+                if ((logChannel = await TryGetLogChannel(guild, logSetting, LogType.UserLeft)) is null)
                     return;
                 var embed = _eb.Create()
                     .WithOkColor()
@@ -873,7 +862,7 @@ public sealed class LogCommandService : ILogCommandService
                 if (Uri.IsWellFormedUriString(usr.GetAvatarUrl(), UriKind.Absolute))
                     embed.WithThumbnailUrl(usr.GetAvatarUrl());
 
-                await logChannel.EmbedAsync(embed).ConfigureAwait(false);
+                await logChannel.EmbedAsync(embed);
             }
             catch
             {
@@ -894,8 +883,7 @@ public sealed class LogCommandService : ILogCommandService
                     return;
 
                 ITextChannel logChannel;
-                if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.UserJoined)
-                        .ConfigureAwait(false)) is null)
+                if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.UserJoined)) is null)
                     return;
 
                 var embed = _eb.Create()
@@ -914,7 +902,7 @@ public sealed class LogCommandService : ILogCommandService
                 if (Uri.IsWellFormedUriString(usr.GetAvatarUrl(), UriKind.Absolute))
                     embed.WithThumbnailUrl(usr.GetAvatarUrl());
 
-                await logChannel.EmbedAsync(embed).ConfigureAwait(false);
+                await logChannel.EmbedAsync(embed);
             }
             catch (Exception)
             {
@@ -936,8 +924,7 @@ public sealed class LogCommandService : ILogCommandService
                     return;
 
                 ITextChannel logChannel;
-                if ((logChannel = await TryGetLogChannel(guild, logSetting, LogType.UserUnbanned)
-                        .ConfigureAwait(false)) is null)
+                if ((logChannel = await TryGetLogChannel(guild, logSetting, LogType.UserUnbanned)) is null)
                     return;
                 var embed = _eb.Create()
                     .WithOkColor()
@@ -949,7 +936,7 @@ public sealed class LogCommandService : ILogCommandService
                 if (Uri.IsWellFormedUriString(usr.GetAvatarUrl(), UriKind.Absolute))
                     embed.WithThumbnailUrl(usr.GetAvatarUrl());
 
-                await logChannel.EmbedAsync(embed).ConfigureAwait(false);
+                await logChannel.EmbedAsync(embed);
             }
             catch (Exception)
             {
@@ -972,7 +959,7 @@ public sealed class LogCommandService : ILogCommandService
 
                 ITextChannel logChannel;
                 if ((logChannel =
-                        await TryGetLogChannel(guild, logSetting, LogType.UserBanned).ConfigureAwait(false)) ==
+                        await TryGetLogChannel(guild, logSetting, LogType.UserBanned)) ==
                     null)
                     return;
                 var embed = _eb.Create()
@@ -987,7 +974,7 @@ public sealed class LogCommandService : ILogCommandService
                 if (Uri.IsWellFormedUriString(avatarUrl, UriKind.Absolute))
                     embed.WithThumbnailUrl(usr.GetAvatarUrl());
 
-                await logChannel.EmbedAsync(embed).ConfigureAwait(false);
+                await logChannel.EmbedAsync(embed);
             }
             catch (Exception)
             {
@@ -1019,8 +1006,7 @@ public sealed class LogCommandService : ILogCommandService
                     return;
 
                 ITextChannel logChannel;
-                if ((logChannel = await TryGetLogChannel(channel.Guild, logSetting, LogType.MessageDeleted)
-                        .ConfigureAwait(false)) is null || logChannel.Id == msg.Id)
+                if ((logChannel = await TryGetLogChannel(channel.Guild, logSetting, LogType.MessageDeleted)) is null || logChannel.Id == msg.Id)
                     return;
 
                 var resolvedMessage = msg.Resolve(userHandling: TagHandling.FullName);
@@ -1038,7 +1024,7 @@ public sealed class LogCommandService : ILogCommandService
                         string.Join(", ", msg.Attachments.Select(a => a.Url)),
                         false);
 
-                await logChannel.EmbedAsync(embed).ConfigureAwait(false);
+                await logChannel.EmbedAsync(embed);
             }
             catch (Exception)
             {
@@ -1076,8 +1062,7 @@ public sealed class LogCommandService : ILogCommandService
                     return;
 
                 ITextChannel logChannel;
-                if ((logChannel = await TryGetLogChannel(channel.Guild, logSetting, LogType.MessageUpdated)
-                        .ConfigureAwait(false)) is null || logChannel.Id == after.Channel.Id)
+                if ((logChannel = await TryGetLogChannel(channel.Guild, logSetting, LogType.MessageUpdated)) is null || logChannel.Id == after.Channel.Id)
                     return;
 
                 var embed = _eb.Create()
@@ -1098,7 +1083,7 @@ public sealed class LogCommandService : ILogCommandService
                     .AddField("Id", after.Id.ToString(), false)
                     .WithFooter(CurrentTime(channel.Guild));
 
-                await logChannel.EmbedAsync(embed).ConfigureAwait(false);
+                await logChannel.EmbedAsync(embed);
             }
             catch
             {
@@ -1166,7 +1151,7 @@ public sealed class LogCommandService : ILogCommandService
             return null;
         }
 
-        var channel = await guild.GetTextChannelAsync(id.Value).ConfigureAwait(false);
+        var channel = await guild.GetTextChannelAsync(id.Value);
 
         if (channel is null)
         {

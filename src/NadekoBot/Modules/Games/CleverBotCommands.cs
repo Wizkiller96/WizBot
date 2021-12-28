@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Db;
 using NadekoBot.Modules.Games.Services;
 
@@ -29,7 +29,7 @@ public partial class Games
                     uow.GuildConfigs.SetCleverbotEnabled(ctx.Guild.Id, false);
                     await uow.SaveChangesAsync();
                 }
-                await ReplyConfirmLocalizedAsync(strs.cleverbot_disabled).ConfigureAwait(false);
+                await ReplyConfirmLocalizedAsync(strs.cleverbot_disabled);
                 return;
             }
 
@@ -41,7 +41,7 @@ public partial class Games
                 await uow.SaveChangesAsync();
             }
 
-            await ReplyConfirmLocalizedAsync(strs.cleverbot_enabled).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.cleverbot_enabled);
         }
     }
 

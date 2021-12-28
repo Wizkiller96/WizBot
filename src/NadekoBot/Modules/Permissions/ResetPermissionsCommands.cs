@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Permissions.Services;
 
 namespace NadekoBot.Modules.Permissions;
@@ -22,8 +22,8 @@ public partial class Permissions
         [UserPerm(GuildPerm.Administrator)]
         public async Task ResetPerms()
         {
-            await _perms.Reset(ctx.Guild.Id).ConfigureAwait(false);
-            await ReplyConfirmLocalizedAsync(strs.perms_reset).ConfigureAwait(false);
+            await _perms.Reset(ctx.Guild.Id);
+            await ReplyConfirmLocalizedAsync(strs.perms_reset);
         }
 
         [NadekoCommand, Aliases]
@@ -31,7 +31,7 @@ public partial class Permissions
         public async Task ResetGlobalPerms()
         {
             await _gps.Reset();
-            await ReplyConfirmLocalizedAsync(strs.global_perms_reset).ConfigureAwait(false);
+            await ReplyConfirmLocalizedAsync(strs.global_perms_reset);
         }
     }
 }

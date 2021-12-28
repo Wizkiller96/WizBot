@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.Collections;
 using NadekoBot.Services.Database.Models;
@@ -72,7 +72,7 @@ public class RoleCommandsService : INService
                     var removeExclusiveTask = RemoveExclusiveReactionRoleAsync(msg, gusr, reaction, conf, reactionRole, CancellationToken.None);
                     var addRoleTask = AddReactionRoleAsync(gusr, reactionRole);
 
-                    await Task.WhenAll(removeExclusiveTask, addRoleTask).ConfigureAwait(false);
+                    await Task.WhenAll(removeExclusiveTask, addRoleTask);
                 }
                 finally
                 {
@@ -82,12 +82,12 @@ public class RoleCommandsService : INService
             }
             else
             {
-                var dl = await msg.GetOrDownloadAsync().ConfigureAwait(false);
+                var dl = await msg.GetOrDownloadAsync();
                 await dl.RemoveReactionAsync(reaction.Emote, dl.Author,
                     new()
                     {
                         RetryMode = RetryMode.RetryRatelimit | RetryMode.Retry502
-                    }).ConfigureAwait(false);
+                    });
                 Log.Warning("User {0} is adding unrelated reactions to the reaction roles message.", dl.Author);
             }
         });
@@ -126,7 +126,7 @@ public class RoleCommandsService : INService
                     var role = gusr.Guild.GetRole(reactionRole.RoleId);
                     if (role is null)
                         return;
-                    await gusr.RemoveRoleAsync(role).ConfigureAwait(false);
+                    await gusr.RemoveRoleAsync(role);
                 }
             }
             catch { }
@@ -231,13 +231,13 @@ public class RoleCommandsService : INService
 
         //if the role is exclusive,
         // remove all other reactions user added to the message
-        var dl = await reactionMessage.GetOrDownloadAsync().ConfigureAwait(false);
+        var dl = await reactionMessage.GetOrDownloadAsync();
         foreach (var r in dl.Reactions)
         {
             if (r.Key.Name == reaction.Emote.Name)
                 continue;
-            try { await dl.RemoveReactionAsync(r.Key, user).ConfigureAwait(false); } catch { }
-            await Task.Delay(100, cToken).ConfigureAwait(false);
+            try { await dl.RemoveReactionAsync(r.Key, user); } catch { }
+            await Task.Delay(100, cToken);
         }
     }
 }

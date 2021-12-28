@@ -53,7 +53,7 @@ public class GoogleApiService : IGoogleApiService, INService
         query.Type = "playlist";
         query.Q = keywords;
 
-        return (await query.ExecuteAsync().ConfigureAwait(false)).Items.Select(i => i.Id.PlaylistId);
+        return (await query.ExecuteAsync()).Items.Select(i => i.Id.PlaylistId);
     }
 
     //private readonly Regex YtVideoIdRegex = new Regex(@"(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)(?<id>[a-zA-Z0-9_-]{6,11})", RegexOptions.Compiled);
@@ -73,7 +73,7 @@ public class GoogleApiService : IGoogleApiService, INService
         query.MaxResults = count;
         query.RelatedToVideoId = id;
         query.Type = "video";
-        return (await query.ExecuteAsync().ConfigureAwait(false)).Items.Select(i => "http://www.youtube.com/watch?v=" + i.Id.VideoId);
+        return (await query.ExecuteAsync()).Items.Select(i => "http://www.youtube.com/watch?v=" + i.Id.VideoId);
     }
 
     public async Task<IEnumerable<string>> GetVideoLinksByKeywordAsync(string keywords, int count = 1)
@@ -90,7 +90,7 @@ public class GoogleApiService : IGoogleApiService, INService
         query.Q = keywords;
         query.Type = "video";
         query.SafeSearch = SearchResource.ListRequest.SafeSearchEnum.Strict;
-        return (await query.ExecuteAsync().ConfigureAwait(false)).Items.Select(i => "http://www.youtube.com/watch?v=" + i.Id.VideoId);
+        return (await query.ExecuteAsync()).Items.Select(i => "http://www.youtube.com/watch?v=" + i.Id.VideoId);
     }
 
     public async Task<IEnumerable<(string Name, string Id, string Url)>> GetVideoInfosByKeywordAsync(string keywords, int count = 1)
@@ -106,7 +106,7 @@ public class GoogleApiService : IGoogleApiService, INService
         query.MaxResults = count;
         query.Q = keywords;
         query.Type = "video";
-        return (await query.ExecuteAsync().ConfigureAwait(false)).Items.Select(i => (i.Snippet.Title.TrimTo(50), i.Id.VideoId, "http://www.youtube.com/watch?v=" + i.Id.VideoId));
+        return (await query.ExecuteAsync()).Items.Select(i => (i.Snippet.Title.TrimTo(50), i.Id.VideoId, "http://www.youtube.com/watch?v=" + i.Id.VideoId));
     }
 
     public Task<string> ShortenUrl(Uri url) => ShortenUrl(url.ToString());
@@ -122,7 +122,7 @@ public class GoogleApiService : IGoogleApiService, INService
 
         try
         {
-            var response = await sh.Url.Insert(new() { LongUrl = url }).ExecuteAsync().ConfigureAwait(false);
+            var response = await sh.Url.Insert(new() { LongUrl = url }).ExecuteAsync();
             return response.Id;
         }
         catch (GoogleApiException ex) when (ex.HttpStatusCode == HttpStatusCode.Forbidden)
@@ -159,7 +159,7 @@ public class GoogleApiService : IGoogleApiService, INService
             query.PlaylistId = playlistId;
             query.PageToken = nextPageToken;
 
-            var data = await query.ExecuteAsync().ConfigureAwait(false);
+            var data = await query.ExecuteAsync();
 
             toReturn.AddRange(data.Items.Select(i => i.ContentDetails.VideoId));
             nextPageToken = data.NextPageToken;
@@ -188,7 +188,7 @@ public class GoogleApiService : IGoogleApiService, INService
             var q = yt.Videos.List("contentDetails");
             q.Id = string.Join(",", videoIdsList.Take(toGet));
             videoIdsList = videoIdsList.Skip(toGet).ToList();
-            var items = (await q.ExecuteAsync().ConfigureAwait(false)).Items;
+            var items = (await q.ExecuteAsync()).Items;
             foreach (var i in items)
             {
                 toReturn.Add(i.Id, System.Xml.XmlConvert.ToTimeSpan(i.ContentDetails.Duration));
@@ -213,7 +213,7 @@ public class GoogleApiService : IGoogleApiService, INService
         req.SearchType = CseResource.ListRequest.SearchTypeEnum.Image;
         req.Start = new NadekoRandom().Next(0, 20);
 
-        var search = await req.ExecuteAsync().ConfigureAwait(false);
+        var search = await req.ExecuteAsync();
 
         return new(search.Items[0].Image, search.Items[0].Link);
     }
@@ -368,7 +368,7 @@ public class GoogleApiService : IGoogleApiService, INService
         using (var http = _httpFactory.CreateClient())
         {
             http.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36");
-            text = await http.GetStringAsync(url).ConfigureAwait(false);
+            text = await http.GetStringAsync(url);
         }
 
         return string.Concat(JArray.Parse(text)[0].Select(x => x[0]));
