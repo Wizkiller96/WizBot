@@ -3,10 +3,8 @@ using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Text;
 using Newtonsoft.Json;
 
 namespace NadekoBot.Generators
@@ -20,7 +18,7 @@ namespace NadekoBot.Generators
     [Generator]
     public class LocalizedStringsGenerator : ISourceGenerator
     {
-        private const string LocStrSource = @"namespace NadekoBot
+        private const string LOC_STR_SOURCE = @"namespace NadekoBot
 {
     public readonly struct LocStr
     {
@@ -89,10 +87,10 @@ namespace NadekoBot.Generators
 
 
                 sw.Flush();
-                context.AddSource("strs.cs", stringWriter.ToString());
+                context.AddSource("strs.g.cs", stringWriter.ToString());
             }
 
-            context.AddSource("LocStr.cs", LocStrSource);
+            context.AddSource("LocStr.g.cs", LOC_STR_SOURCE);
         }
 
         private List<TranslationPair> GetFields(string dataText)
