@@ -195,7 +195,7 @@ namespace WizBot.Modules.Music.Services
         public Task<IUserMessage?> SendToOutputAsync(ulong guildId, IEmbedBuilder embed)
         {
             if (_outputChannels.TryGetValue(guildId, out var chan))
-                return (chan.Default ?? chan.Override).EmbedAsync(embed);
+                return (chan.Override ?? chan.Default).EmbedAsync(embed);
 
             return Task.FromResult<IUserMessage?>(null);
         }
