@@ -12,11 +12,11 @@
 | [Setup](#setup)                                                                                                             |
 | [Starting the Bot](#starting-the-bot)                                                                                       |
 | [Updating WizBot](#updating-wizbot)                                                                                         |
-| [Manually Installing the Prerequisites from the Updater](#if-the-updater-fails-to-install-the-prerequisites-for-any-reason) |
+| [Manually Installing the Prerequisites from the Updater](#music-prerequisites) |
 
-*Note: If you want to make changes to WizBot's source code, please follow the [From Source][SourceGuide] guide instead.*
+*Note: If you want to make changes to WizBot's source code, please follow the [From Source](#windows-from-source) guide instead.*
 
-*If you have Windows 7 or a 32-bit system, please refer to the [From Source][SourceGuide] guide.*
+*If you have Windows 7 or a 32-bit system, please refer to the [From Source](#windows-from-source) guide.*
 
 #### Prerequisites
 
@@ -35,6 +35,7 @@
 - Give your bot a name and then click **`Go to setup`** at the lower right.
 - Click on **`DOWNLOAD`** at the lower right
 - Click on **`Install`** next to **`Redis`**.
+- Note: If Redis fails to install, install Redis manually here: [Redis Installer](https://github.com/MicrosoftArchive/redis/releases/tag/win-3.0.504) Download and run the **`.msi`** file.
 - If you will use the music module, click on **`Install`** next to **`FFMPEG`** and **`Youtube-DL`**.
 - If any dependencies fail to install, you can temporarily disable your Windows Defender/AV until you install them. If you don't want to, then read [the last section of this guide](#Manual-Prerequisite-Installation).
 - When installation is finished, click on **`CREDS`** to the left of **`RUN`** at the lower right.
@@ -126,7 +127,6 @@ In order to use music commands, you need ffmpeg and youtube-dl installed.
 [Redis]: https://github.com/MicrosoftArchive/redis/releases/download/win-3.0.504/Redis-x64-3.0.504.msi
 [Visual C++ 2010 (x86)]: https://download.microsoft.com/download/1/6/5/165255E7-1014-4D0A-B094-B6A430A6BFFC/vcredist_x86.exe
 [Visual C++ 2017 (x64)]: https://aka.ms/vs/15/release/vc_redist.x64.exe
-[SourceGuide]: ../from-source
 [ffmpeg-32bit]: https://wizbot.cc/downloads/ffmpeg-32.zip
 [ffmpeg-64bit]: https://wizbot.cc/downloads/ffmpeg-64.zip
 [youtube-dl]: https://yt-dl.org/downloads/latest/youtube-dl.exe
