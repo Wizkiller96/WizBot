@@ -27,7 +27,7 @@ public abstract class ConfigServiceBase<TSettings> : IConfigService
     private readonly Dictionary<string, Func<TSettings, string, bool>> _propSetters = new();
     private readonly Dictionary<string, Func<object>> _propSelectors = new();
     private readonly Dictionary<string, Func<object, string>> _propPrinters = new();
-    private readonly Dictionary<string, string> _propComments = new();
+    private readonly Dictionary<string, string?> _propComments = new();
 
     /// <summary>
     ///     Initialized an instance of <see cref="ConfigServiceBase{TSettings}" />
@@ -106,12 +106,12 @@ public abstract class ConfigServiceBase<TSettings> : IConfigService
         Expression<Func<TSettings, TProp>> selector,
         SettingParser<TProp> parser,
         Func<TProp, string> printer,
-        Func<TProp, bool> checker = null)
+        Func<TProp, bool>? checker = null)
     {
         checker ??= _ => true;
         key = key.ToLowerInvariant();
         _propPrinters[key] = obj => printer((TProp)obj);
-        _propSelectors[key] = () => selector.Compile()(data);
+        _propSelectors[key] = () => selector.Compile()(data)!;
         _propSetters[key] = Magic(selector, parser, checker);
         _propComments[key] = ((MemberExpression)selector.Body).Member.GetCustomAttribute<CommentAttribute>()?.Comment;
     }
@@ -146,26 +146,26 @@ public abstract class ConfigServiceBase<TSettings> : IConfigService
             foreach (var memberExpression in expressions.AsEnumerable().Reverse())
             {
                 var localProp = (PropertyInfo)memberExpression.Member;
-                targetObject = localProp.GetValue(targetObject);
+                targetObject = localProp.GetValue(targetObject)!;
             }
 
-            prop!.SetValue(targetObject, value, null);
+            prop.SetValue(targetObject, value, null);
             return true;
         };
 
     public IReadOnlyList<string> GetSettableProps()
         => _propSetters.Keys.ToList();
 
-    public string GetSetting(string prop)
+    public string? GetSetting(string prop)
     {
         prop = prop.ToLowerInvariant();
         if (!_propSelectors.TryGetValue(prop, out var selector) || !_propPrinters.TryGetValue(prop, out var printer))
-            return default;
+            return null;
 
         return printer(selector());
     }
 
-    public string GetComment(string prop)
+    public string? GetComment(string prop)
     {
         if (_propComments.TryGetValue(prop, out var comment))
             return comment;

@@ -2,12 +2,13 @@ namespace NadekoBot.Common;
 
 public class EventPubSub : IPubSub
 {
-    private readonly Dictionary<string, Dictionary<Delegate, List<Func<object?, ValueTask>>>> _actions = new();
+    private readonly Dictionary<string, Dictionary<Delegate, List<Func<object, ValueTask>>>> _actions = new();
     private readonly object _locker = new();
 
-    public Task Sub<TData>(in TypedKey<TData> key, Func<TData?, ValueTask> action)
+    public Task Sub<TData>(in TypedKey<TData> key, Func<TData, ValueTask> action)
+        where TData: notnull
     {
-        Func<object?, ValueTask> localAction = obj => action((TData?)obj);
+        Func<object, ValueTask> localAction = obj => action((TData)obj);
         lock (_locker)
         {
             if (!_actions.TryGetValue(key.Key, out var keyActions))
@@ -29,6 +30,7 @@ public class EventPubSub : IPubSub
     }
 
     public Task Pub<TData>(in TypedKey<TData> key, TData data)
+        where TData: notnull
     {
         lock (_locker)
         {

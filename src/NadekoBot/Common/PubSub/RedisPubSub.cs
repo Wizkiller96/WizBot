@@ -16,13 +16,15 @@ public sealed class RedisPubSub : IPubSub
     }
 
     public Task Pub<TData>(in TypedKey<TData> key, TData data)
+        where TData : notnull
     {
         var serialized = _serializer.Serialize(data);
         return _multi.GetSubscriber()
                      .PublishAsync($"{_creds.RedisKey()}:{key.Key}", serialized, CommandFlags.FireAndForget);
     }
 
-    public Task Sub<TData>(in TypedKey<TData> key, Func<TData?, ValueTask> action)
+    public Task Sub<TData>(in TypedKey<TData> key, Func<TData, ValueTask> action)
+        where TData : notnull
     {
         var eventName = key.Key;
 
@@ -31,7 +33,11 @@ public sealed class RedisPubSub : IPubSub
             try
             {
                 var dataObj = _serializer.Deserialize<TData>(data);
-                await action(dataObj);
+                if(dataObj is not null)
+                    await action(dataObj);
+                else
+                    Log.Warning("Publishing event {EventName} with a null value. This is not allowed",
+                        eventName);
             }
             catch (Exception ex)
             {
